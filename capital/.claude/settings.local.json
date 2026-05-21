@@ -173,7 +173,8 @@
       "WebFetch(domain:innoenergy.com)",
       "WebFetch(domain:www.crunchbase.com)",
       "WebFetch(domain:app.dealroom.co)",
-      "WebFetch(domain:28digital.eu)"
+      "WebFetch(domain:28digital.eu)",
+      "Bash(curl -sL -H \"User-Agent: Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36\" \"https://28digital.eu/newsroom/news/\")"
     ],
     "additionalDirectories": [
       "/Users/asgermollergrimberg/Desktop"
