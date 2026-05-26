@@ -593,7 +593,9 @@ q("""
     WHERE grant_amount_basis NOT IN (
         'eic_eu_grant','ipcei_state_aid','eib_debt_commitment',
         'if_eu_grant','chips_ju_total_public','edf_eu_ceiling',
-        'eit_kic_support','eit_kic_grant','eit_kic_equity'
+        'eit_kic_support','eit_kic_grant','eit_kic_equity',
+        'chp_grant','ihi_grant','eurohpc_grant','kdt_grant',
+        'horizon_eu_grant'
     )
 """, "DQ: coordinator_only + grant_amount_basis fully populated (all must be 0)")
 

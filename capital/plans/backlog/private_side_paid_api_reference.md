@@ -1,6 +1,16 @@
-# Sprint 9 — Dealroom matching and private follow-on enrichment
+# BACKLOG — Private follow-on enrichment via paid API (Dealroom / Crunchbase / equivalent)
 
-> **STALE — refresh before execution.** This plan was drafted before Sprints 4–5 (Innovation Fund + Chips JU) and predates the current sprint ordering (Sprint 6 EDF → Sprint 7 EIT KICs → Sprint 8 STEP → Sprint 9 Dealroom). The 2,619-company figure below is pre-IF; current corpus is 2,861 and will be ~4,000+ after EDF + EIT KICs. Sector taxonomy will also have a new `defense` label by Sprint 9. **Rewrite the sprint plan with current counts and roadmap context before kicking off.** The structural approach (Dealroom matching → `private_funding_events` population) remains valid.
+> **Status: BACKLOG / reference only** (deferred 2026-05-22). Originally drafted Sprint 9. Two reasons it's parked:
+> 1. **No paid-API budget or access** — user confirmed zero spend on Dealroom / Crunchbase / PitchBook / CB Insights / Tracxn. Crunchbase free API was discontinued 2021; current cheapest is $49/mo Basic, $99/mo Pro. Academic Research Access requires institutional affiliation + multi-week sales approval.
+> 2. **Strategic pivot** — user opted to first do a proper supply-side exploratory study ([`../sprint_9_exploratory_study_plan.md`](../sprint_9_exploratory_study_plan.md)). The reasoning: explore the corpus we have before deciding what specific private data we actually need; a sharp finding from the supply side may make paid enrichment unnecessary, or may pinpoint exactly which subset to enrich.
+>
+> **When to revive**:
+> - If institutional Crunchbase / Dealroom access materialises (UoX research credentials, partnership, paid subscription) — this plan slots in directly with endpoint swap.
+> - If a specific narrow analysis (e.g. only the 81 cross-instrument champions, or only the EIC-Accelerator cohort) is in scope and worth the per-call cost on a paid tier.
+>
+> **Companion plan** ([`private_side_enrichment.md`](private_side_enrichment.md)) is the free-source fallback path (GLEIF + OpenAlex + Wikidata + EU-Startups scrape). Lower coverage, higher noise; use when paid is impossible but the analysis needs *some* private signal.
+>
+> **STALE in places** — the original draft below predates Sprints 4–8. The 2,619-company figure is pre-IF; current corpus is 3,101. Sector taxonomy now includes `defense`. Reuse the structural approach (Dealroom-style match → `private_funding_events` populate) but refresh counts and roadmap context before execution.
 
 ## Goal
 

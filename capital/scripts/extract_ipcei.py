@@ -45,6 +45,7 @@ ISO_SET = set(COUNTRY_TO_ISO.values())
 
 # Canonical source codes — methodology.md must match this table.
 # unit: "M" = EUR million (×1e6), "K" = EUR thousands (×1000), "SK" = SEK thousands
+# tuple: (source, sa_case, sector, unit)
 PROGRAM_META: dict[str, tuple[str, str, str, str]] = {
     "ipcei_micro_2018.pdf":     ("ipcei_micro",      "SA.46705",   "deeptech_hardware", "K"),
     "ipcei_batteries_2019.pdf": ("ipcei_batteries",  "SA.54794",   "cleantech",         "K"),
@@ -57,6 +58,23 @@ PROGRAM_META: dict[str, tuple[str, str, str, str]] = {
     "ipcei_hy2move_2024.pdf":   ("ipcei_hy2move",    "SA.104676",  "cleantech",         "M"),
     "ipcei_med4cure_2024.pdf":  ("ipcei_med4cure",   "SA.104974",  "life_sciences",     "M"),
     "ipcei_tech4cure_2025.pdf": ("ipcei_tech4cure",  "SA.113212",  "life_sciences",     "M"),
+}
+
+# EC Commission decision dates (project_started) — these are the official approval dates
+# for each IPCEI, i.e. when state aid was authorised and projects could legally begin.
+# Source: EC presscorner press releases and competition-cases.ec.europa.eu
+IPCEI_DECISION_DATES: dict[str, str] = {
+    "ipcei_micro":     "2018-12-18",
+    "ipcei_batteries": "2019-12-09",
+    "ipcei_eubatin":   "2021-01-26",
+    "ipcei_hy2tech":   "2022-07-15",
+    "ipcei_hy2use":    "2022-09-21",
+    "ipcei_mect":      "2023-06-08",
+    "ipcei_cloud":     "2023-12-05",
+    "ipcei_hy2infra":  "2024-02-15",
+    "ipcei_hy2move":   "2024-05-28",
+    "ipcei_med4cure":  "2024-05-28",
+    "ipcei_tech4cure": "2025-07-22",
 }
 
 DB_PATH = BASE_DIR / "db.sqlite"
@@ -905,13 +923,14 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
                 aid_eur = float(aid_eur)
             except (ValueError, TypeError):
                 aid_eur = None
+        decision_date = IPCEI_DECISION_DATES.get(source)
         cur.execute(
             """INSERT INTO public_funding_events
                (company_id, source, role, call_id, grant_amount_eur,
-                sector_tags_raw, raw_source_url,
+                sector_tags_raw, raw_source_url, project_started,
                 coordinator_only, grant_amount_basis)
-               VALUES (?, ?, 'direct', ?, ?, '', ?, 0, 'ipcei_state_aid')""",
-            (company_id, source, r.get("sa_case"), aid_eur, raw_url),
+               VALUES (?, ?, 'direct', ?, ?, '', ?, ?, 0, 'ipcei_state_aid')""",
+            (company_id, source, r.get("sa_case"), aid_eur, raw_url, decision_date),
         )
         inserted += 1
     conn.commit()

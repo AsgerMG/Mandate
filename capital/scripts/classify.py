@@ -40,6 +40,36 @@ try:
 except ImportError:
     EIT_KIC_SOURCE_SECTOR: dict[str, str] = {}
 
+# Eurostars-3 — dead end (403 Forbidden + CORDIS 0 results); stub kept for future.
+try:
+    from extract_eurostars import EUROSTARS_SOURCE_SECTOR  # noqa: E402
+except ImportError:
+    EUROSTARS_SOURCE_SECTOR: dict[str, str] = {}
+
+# Clean Hydrogen Partnership / IHI JU / EuroHPC JU — loaded Sprint 11 via CORDIS open data.
+try:
+    from extract_cordis import CHP_SOURCE_SECTOR, IHI_SOURCE_SECTOR, EUROHPC_SOURCE_SECTOR  # noqa: E402
+except ImportError:
+    CHP_SOURCE_SECTOR: dict[str, str] = {}
+    IHI_SOURCE_SECTOR: dict[str, str] = {}
+    EUROHPC_SOURCE_SECTOR: dict[str, str] = {}
+
+# Horizon Europe Pillar II — Sprint 12 (CL1/CL3/CL4/CL5/CL6).
+try:
+    from extract_cordis_pillar_ii import (  # noqa: E402
+        HORIZON_EU_CL1_SOURCE_SECTOR,
+        HORIZON_EU_CL3_SOURCE_SECTOR,
+        HORIZON_EU_CL4_SOURCE_SECTOR,
+        HORIZON_EU_CL5_SOURCE_SECTOR,
+        HORIZON_EU_CL6_SOURCE_SECTOR,
+    )
+except ImportError:
+    HORIZON_EU_CL1_SOURCE_SECTOR: dict[str, str] = {}
+    HORIZON_EU_CL3_SOURCE_SECTOR: dict[str, str] = {}
+    HORIZON_EU_CL4_SOURCE_SECTOR: dict[str, str] = {}
+    HORIZON_EU_CL5_SOURCE_SECTOR: dict[str, str] = {}
+    HORIZON_EU_CL6_SOURCE_SECTOR: dict[str, str] = {}
+
 DB_PATH = Path(__file__).parent.parent / "db.sqlite"
 
 # IPCEI sources don't tag rows like EIC does. Each IPCEI is a known sector;
@@ -351,7 +381,8 @@ def classify_sector(raw_tag_strings, fallback_text="", sources=()):
             return "deeptech_hardware"
         if tags & DIGITAL_TAGS:
             return "digital"
-        return "other"
+        # Tags present but none recognised (e.g. CORDIS topic codes) — fall through
+        # to keyword + source fallback rather than locking the company into "other".
 
     fallback = _keyword_classify(fallback_text)
     if fallback:
@@ -368,6 +399,22 @@ def classify_sector(raw_tag_strings, fallback_text="", sources=()):
             return EDF_SOURCE_SECTOR[src]
         if src in EIT_KIC_SOURCE_SECTOR:
             return EIT_KIC_SOURCE_SECTOR[src]
+        if src in CHP_SOURCE_SECTOR:
+            return CHP_SOURCE_SECTOR[src]
+        if src in IHI_SOURCE_SECTOR:
+            return IHI_SOURCE_SECTOR[src]
+        if src in EUROHPC_SOURCE_SECTOR:
+            return EUROHPC_SOURCE_SECTOR[src]
+        if src in HORIZON_EU_CL1_SOURCE_SECTOR:
+            return HORIZON_EU_CL1_SOURCE_SECTOR[src]
+        if src in HORIZON_EU_CL3_SOURCE_SECTOR:
+            return HORIZON_EU_CL3_SOURCE_SECTOR[src]
+        if src in HORIZON_EU_CL4_SOURCE_SECTOR:
+            return HORIZON_EU_CL4_SOURCE_SECTOR[src]
+        if src in HORIZON_EU_CL5_SOURCE_SECTOR:
+            return HORIZON_EU_CL5_SOURCE_SECTOR[src]
+        if src in HORIZON_EU_CL6_SOURCE_SECTOR:
+            return HORIZON_EU_CL6_SOURCE_SECTOR[src]
 
     return "unclassified"
 
@@ -416,6 +463,25 @@ RESEARCH_PATTERNS = [
     r"\bfraunhofer\b|\bmax[- ]planck\b|\bhelmholtz\b|\bleibniz\b",
     r"\bcnrs\b|\bcsic\b|\bcea\b|\btno\b|\bvito\b|\bciemat\b|\binserm\b",
     r"\bdkfz\b|\bmrc\b|\bbarcelona supercomputing\b|\bimec\b",
+    # Sprint 8 audit additions — non-English research-org markers surfaced by B2
+    r"\bziekenhuis\b",                                        # Dutch hospital
+    r"\bnemocnice\b",                                         # Czech hospital
+    r"\byliopisto\b",                                         # Finnish university (already partial via korkeakoulu)
+    r"\bidryma\b|\bidrima\b|\bethniko\b|\bethnikon\b|\bkentro\b|\biatrobiologikon\b|\bepistimon\b|\bepistimi\b",
+    r"\berevnas\b|\berevnon\b",                               # Greek "research"
+    r"\bdeutsches (?:zentrum|herzzentrum|krebsforschungszentrum)\b",
+    r"\bconsiglio nazionale delle ricerche\b|\bconsejo superior de investigaciones\b",
+    r"\bconsorcio\b|\bconsorzio\b",                           # research consortia
+    r"\bcentre (?:technique|technologique|national)\b|\bcentro (?:nacional|tecnologic|tecnologico|de ciencias|de salud)\b|\bcentre tecnologic\b|\bcentre tecnol[oò]gic\b",
+    r"\bhellenic centre\b|\bhellenic foundation\b|\bhellenic university\b",
+    r"\bcommissariat\b",                                      # CEA long form
+    r"\beuropean molecular biology\b|\bhadassah\b",
+    r"\bassociacao\b|\basociacion\b|\bassociation\b|\bassociazione\b|\bassociatie\b|\bvereniging\b|\basociacio\b|\bassociacio\b",
+    r"\bfundacja\b|\bvyzkumn|\bceske vysoke\b",
+    r"\bcolegio\b|\bécole\b|\becole\b|\bescola\b|\bscuola\b",
+    r"\brecherches?\b",                                       # ONERA pattern
+    r"\bresearch (?:and )?development (?:center|centre)\b",   # EDF TECES pattern
+    r"\bnational center for scientific research\b|\bdemokritos\b",
 ]
 RESEARCH_RE = re.compile("|".join(RESEARCH_PATTERNS), re.IGNORECASE)
 
@@ -428,6 +494,9 @@ PUBLIC_BODY_PATTERNS = [
     r"\bgovern(?:ment|o|amento)\b",
     r"\bcommission europea\b|\beuropean commission\b",
     r"\bservicio\s+\w+\s+de salud\b|\bservizio sanitario",  # Spanish/Italian health services
+    # Sprint 8 audit additions
+    r"\bayuntamiento\b|\bayuntament\b",                     # Spanish municipality
+    r"\bdiputaci[oó]n\b",                                   # Spanish provincial council
 ]
 PUBLIC_BODY_RE = re.compile("|".join(PUBLIC_BODY_PATTERNS), re.IGNORECASE)
 
@@ -454,11 +523,40 @@ COMPANY_SUFFIX_PATTERNS = [
     r"\btechnologies\b|\bsolutions\b|\bsystems\b|\bsystème\b",   # Common company-name terms
     r"\bbiotech\b|\bbioscience\b|\bpharm",                       # Biotech/pharma sector terms
     r"\bholding\b|\bholdco\b|\bgroup\b",
+    # Sprint 8 audit additions
+    r"\bsirketi\b|\bsanayi\b|\bticaret\b|\banonim\b",            # Turkish corporate
+    r"\betaireia\b|\betairia\b|\baepiri\b|\baeperiorismeni\b",   # Greek SA/private capital
+    r"\bbvba\b|\bsprl\b",                                        # Belgian corporate
+    r"defenceandspacesas\b|defenceandspaceltd\b",                # Squashed Airbus DS variants
+    r"\btechnology\b",                                           # singular trailing brand
+    r"\b(?:tech|energy|industry|industries|materials|robotics|optics|photonics|battery|batteries|fuels?|cells?|networks?|digital|software|automation|aerospace|aviation|chemie|pharma|medic|therapeutics|genetics|biosciences?|genomics?|diagnostics?|imaging|nano|semic|semi|computing|cloud|works|wear|wave|grid|motors?|automotive|hydrogen|electrolyzer|innovations?|enterprises?|ai|labs?)\b\s*$",  # trailing brand-y noun
+    r"\b[A-Za-z]{3,}\s+(?:DE|FR|IT|ES|NL|BE|AT|PT|SE|FI|DK|NO|IE|GR|EL|CH|UK|US)\s*$",  # trailing country tag
+    r"\belectricite de france\b|\beurofins\b|\bhewlett packard enterprise\b",
 ]
 COMPANY_RE = re.compile("|".join(COMPANY_SUFFIX_PATTERNS), re.IGNORECASE)
 
+# Programme-driven fallback. These funding streams accept only corporate
+# beneficiaries by design (IPCEI = state-aid to direct industrial partners,
+# IF = industrial decarbonisation projects, EIT KIC = curated startup
+# portfolio, KDT/Chips JU = SME / industrial coordinators). When name
+# patterns alone cannot resolve a row, the source family is decisive.
+# EDF is intentionally absent — defense calls include research orgs (ONERA,
+# CERTH, Demokritos) that need name-level matches.
+SOURCE_FAMILY_COMPANY = {"ipcei", "innovation_fund", "eit", "chips_ju"}
 
-def classify_entity_type(name, is_accelerator_coordinator):
+
+def _source_family(source: str) -> str:
+    if source.startswith("eic_"): return "eic"
+    if source.startswith("ipcei_"): return "ipcei"
+    if source.startswith("edf_"): return "edf"
+    if source.startswith("innovation_fund"): return "innovation_fund"
+    if source.startswith("eib_"): return "eib"
+    if source.startswith("eit_"): return "eit"
+    if source.startswith("chips") or source.startswith("kdt"): return "chips_ju"
+    return source
+
+
+def classify_entity_type(name, is_accelerator_coordinator, sources=()):
     # Priority order: research_org > public body (other) > company > unknown
     if RESEARCH_RE.search(name):
         return "research_org"
@@ -468,6 +566,10 @@ def classify_entity_type(name, is_accelerator_coordinator):
         return "company"
     if is_accelerator_coordinator:
         return "company"  # Accelerator is SME-only — safe default if no suffix detected
+    # Source-family fallback — programme defines the beneficiary type
+    fams = {_source_family(s) for s in sources if s}
+    if fams & SOURCE_FAMILY_COMPANY:
+        return "company"
     return "unknown"
 
 
@@ -513,7 +615,7 @@ def main():
         sector = classify_sector(raw_strings, fallback_text, sources)
         if r["canonical_name"] in MANUAL_SECTOR_OVERRIDES:
             sector = MANUAL_SECTOR_OVERRIDES[r["canonical_name"]]
-        entity = classify_entity_type(r["canonical_name"], bool(r["is_accel_coord"]))
+        entity = classify_entity_type(r["canonical_name"], bool(r["is_accel_coord"]), sources)
         sector_counts[sector] += 1
         entity_counts[entity] += 1
 

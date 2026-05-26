@@ -1,5 +1,233 @@
 # EU Public Capital Tracker — Notes
 
+## Day 13 — 2026-05-25 — Sprint 11: Tier 2 coverage + CORDIS open-data adoption
+
+**Scope**: Add CHP / IHI JU / EuroHPC JU as new sources; refresh Chips JU + IF + EDF + EIB; backfill thin EIT sources.
+
+**DB delta**: 3,561 → 3,633 companies (+72); 5,484 → 5,733 events (+249).
+
+### Single most impactful decision
+
+**Discovering CORDIS publishes the full Horizon Europe project database as a 32MB ZIP dump** (`cordis-HORIZONprojects-csv.zip`). After Sprint 10 left CHP/IHI/EuroHPC as deferred/dead-end items requiring custom scrapers, the open-data dump made all three trivial: one unified extractor (`scripts/extract_cordis.py`) filtering by topic-code prefix handled all three plus a KDT supplement that closed the Sprint 5 KDT-2023 gap. This is now the canonical path for any future Horizon partnership work.
+
+### Workstream A/B/C — CHP + IHI + EuroHPC (CORDIS open-data)
+
+| Family | Events | Grant total | New companies |
+|---|---:|---:|---:|
+| CHP (HORIZON-JTI-CLEANH2 + HORIZON-JU-CLEANH2) | 142 | €894.8M | 49 |
+| IHI JU (HORIZON-JU-IHI) | 56 | €708.1M | 17 |
+| EuroHPC JU R&I (HORIZON-EUROHPC) | 22 | €215.9M | 1 |
+| **Total A/B/C** | **220** | **€1,818.8M** | **67** |
+
+Heavy coordinator overlap with existing EIC/Chips JU rows — research orgs like CEA, SINTEF, Fraunhofer, ULB are already in the DB. The 5-tier matcher caught most via prefix/reverse-prefix/fuzzy.
+
+### Workstream E — Refresh (idempotent re-runs of existing extractors)
+
+| Source | Before | After | Delta |
+|---|---:|---:|---:|
+| `chips_ju_kdt_2023` (OData) | 4 events | 4 events | 0 — portal still incomplete |
+| `chips_ju_kdt_2023` (incl. CORDIS supplement) | 4 | 23 | +19 — gap closed via KDT supplement workstream |
+| Chips Act 2024+ era | 0 | 0 — portal `shv_jueratype` enum still only KDT (920810000) and ECSEL (920810001) |
+| Innovation Fund | 246 | 246 | 0 — 7 NULL fiches still unpublished; IF25 still in "Invited to GA prep" (CINEA: final awards Q4 2026) |
+| EDF 2025 (second-pass with `--sleep=15`) | 55 | 59 | +4 events, +€55M |
+| EIB venture-debt incremental | 153 | 153 | 0 — EIB API returned 504; cache restored, skip |
+
+### Workstream D — EIT thin-source backfill
+
+| Target | Outcome |
+|---|---|
+| EIT InnoEnergy 2024 (14 portfolio additions) | Public sources name only Geolinks + Repono (already loaded). Other 12 not publicly disclosed. |
+| EIT InnoEnergy full portfolio (200+) | innoenergy.com/for-innovators/portfolio/ requires JS rendering. Crunchbase 403'd. Needs Playwright for next attempt. |
+| EIT RawMaterials portfolio | eitrawmaterials.eu portfolio URLs all returned 404. Press releases don't list cohort names. Needs alternative source. |
+| EIT Health Catapult Ed 5 (2020–21) | No public winners list located. Left as 0-row source. |
+
+D yielded no new events. Documented as a residual gap; the engineering option (Playwright headless scraper) deferred.
+
+### Data quality fixes
+
+1. **4 orphan companies** surfaced during KDT supplement load — ETHNICON METSOVION POLYTECHNION, ELLINIKO MESOGEIAKO PANEPISTIMIO, X FAB FRANCE, STMICROELECTRONICS FRANCE. Same root cause as Sprint 3 (extractor creates company row, then event gets dedup'd at `(source, call_id)` level, leaving orphan). Deleted directly. Follow-up: the extractor should check event dedup BEFORE inserting company; refactor planned for a future architecture sprint.
+2. **TRISTAN project row had `chips_ju_kdt_unknown` source** — its topic code is `HORIZON-KDT-JU-1-IA-Focus-Topic-1` (no year embedded). Fixed manually to `chips_ju_kdt_2022` based on project_started 2022-12-01.
+3. **HYDROGEN ONSITE merge** — HYDROGEN ONSITE SL (EIC) and HYDROGEN ONSITE (CHP) were the same company with different normalizations. Merged via direct SQL: events repointed, duplicate company row deleted.
+
+### Files added/modified
+
+- `scripts/extract_cordis.py` — **New**: unified CORDIS open-data extractor (CHP / IHI / EuroHPC / KDT supplement). Adding a new partnership requires only updating the `FAMILIES` dict.
+- `data/raw/cordis/` — **New**: project.csv, organization.csv, topics.csv, etc. (extracted from cordis-HORIZONprojects-csv.zip)
+- `scripts/classify.py` — Replaced CHP stub import with real `extract_cordis` imports; added IHI / EuroHPC source-sector lookups
+- `docs/methodology.md` — Source coverage table, HE coverage table, decision log entry
+- `docs/notes.md` — This entry
+
+### DB backup
+
+`db_backups/db.sqlite.backup_pre_sprint11`
+
+### Open follow-ups
+
+1. **EIT thin sources** — InnoEnergy full portfolio + RawMaterials require Playwright. Worth ~100–150 more companies. Stays open for future sprint.
+2. **Innovation Fund NULL fiches** — 7 events with NULL grant. Refresh when fiches published.
+3. **Innovation Fund IF25** — CINEA expects final awards Q4 2026. Re-run after that.
+4. **Chips JU Chips Act–era calls** — Re-check OData when `shv_jueratype` enum changes.
+5. **EIB extractor refresh** — needs work to handle 504 from `/page-provider/projects/list`.
+6. **Extractor architectural fix** — pre-check event dedup before company insert, to prevent orphan rows. Same risk surfaced in Sprint 3 (EIB) and Sprint 11 (KDT supplement).
+
+---
+
+## Day 12 — 2026-05-25 — Sprint 10: Tier 1 coverage completion
+
+**Scope**: Close three remaining Tier 1 data gaps: six missing EIT KICs, Eurostars, Clean Hydrogen Partnership. Formalise Tier 2/3 coverage boundaries in methodology.md.
+
+**DB delta after backfill (2026-05-25)**: 3,101 → 3,561 companies (+460); 4,969 → 5,484 events (+515).
+
+### Sprint 10 backfill (post-user-pushback)
+
+Initial Sprint 10 load came in at 231 new companies — bottom of the 200–670 expected range — because (a) Eurostars + CHP were dead-ended on first pass and (b) several KIC portfolios were thinly mined. User pushed back; backfill executed same day:
+
+| Source | Initial | After backfill |
+|---|---:|---:|
+| Urban Mobility | 23 events (A-D only, JS-limited portfolio) | 23 + 62 + 86 + 63 = 234 events across 4 sources |
+| Climate-KIC | 22 (CDR boot camp 2022 only) | 22 + 22 + 16 + 12 = 72 events across 4 programmes |
+| InnoEnergy | 38 (Highway 2021–23) | 38 + 2 = 40 (2024 partial — only 2 of 14 publicly named) |
+| CHP | dead end | Reclassified to Sprint 11 deferred after confirming CORDIS topic-code path |
+
+Sources added in backfill:
+- `eit_urban_mobility_2022` (62 startups across 5 accelerator programmes)
+- `eit_urban_mobility_2023` (86 startups across 8 accelerator programmes)
+- `eit_urban_mobility_2024` (63 startups across 6 programmes)
+- `eit_climate_kic_cdr_2023` (CDR ClimAccelerator 22 startups)
+- `eit_climate_kic_asa_2024` (Amazon Sustainability Accelerator 16 startups)
+- `eit_climate_kic_clean_cities_spain_2024` (12 startups)
+- `eit_innoenergy_highway_2024` (2 named additions of 14 disclosed)
+
+### Original load delta (pre-backfill, for reference)
+
+**Initial DB delta**: 3,101 → 3,332 companies (+231); 4,969 → 5,228 events (+259).
+
+### Workstream A — 6 EIT KICs (COMPLETED)
+
+Extended `scripts/extract_eit.py` with six new KIC sources across 25 programme×year combinations:
+
+| KIC | Sources added | Events |
+|---|---|---:|
+| EIT InnoEnergy | `eit_innoenergy_highway_2021/22/23` | 38 |
+| EIT Health | `eit_health_catapult_2021/22/23/24/25` | 105 |
+| EIT Climate-KIC | `eit_climate_kic_cdr_2022` | 22 |
+| EIT Urban Mobility | `eit_urban_mobility_portfolio` | 23 |
+| EIT RawMaterials | `eit_rawmaterials_portfolio` | 8 |
+| EIT Food | `eit_food_rfs_2021/22/23/24/25` | 63 |
+
+**Grant amount basis**: `eit_kic_equity` for InnoEnergy Highway and Urban Mobility portfolio; `eit_kic_grant` for Health Catapult winners (cash prizes); `eit_kic_support` for all acceleration/cohort programmes.
+
+**EIT Health Catapult edition mapping**: Edition 6 = 2022 cycle (42 semi-finalists), Edition 7 = 2023, Edition 8 = 2024 (30 semi-finalists), Edition 9 = 2025 (29 semi-finalists). Edition 5 (2020-21) had no accessible public data; left as empty source.
+
+**EIT Urban Mobility caveats**: portfolio page uses JavaScript alpha-filter; WebFetch always returned A-D section only (23 companies visible). Full portfolio likely larger.
+
+**EIT Climate-KIC note**: CDR boot camp October 2022; country not determinable for most companies from public lists (country="" for 15 of 22 entries).
+
+### Workstream B — Eurostars (DEAD END)
+
+Attempted three sources per plan:
+1. `eurostars-eureka.eu/projects` — returned HTTP 403 Forbidden (authentication wall).
+2. `eurekanetwork.org/data` — EUREKA open data portal has no downloadable CSV for project-level beneficiary data.
+3. CORDIS API `?programme=EUROSTARS` — 0 results. Eurostars is administered by EUREKA network, not CORDIS; the programme does not appear in the CORDIS result database.
+
+**Decision**: Skip per plan rule (fewer than ~10 companies accessible from any source). Stub import added to `classify.py` for future enrichment if EUREKA publishes open data.
+
+### Workstream C — Clean Hydrogen Partnership (DEAD END)
+
+Attempted three sources per plan:
+1. `clean-hydrogen.europa.eu/projects-dashboard` — returned HTTP 404.
+2. CORDIS API filtered by JU hydrogen programme codes — 0 results.
+3. Alternative CHP project pages — website restructured; no accessible project repository found.
+
+**Decision**: Skip per plan rule. Stub import added to `classify.py`. CHP data may become accessible via CORDIS when the JU publishes project metadata.
+
+### Workstream D — Methodology (COMPLETED)
+
+Updated `docs/methodology.md`:
+- Source coverage table: EIT KIC row updated to ✅ all 8 KICs loaded; Eurostars and CHP marked ❌ Dead end.
+- Added Tier 2 (known gaps, lower direct-funding signal) section.
+- Added Tier 3 / scope principle (direct investments only).
+- Decision log entry added.
+
+### Files modified
+
+- `scripts/extract_eit.py` — Extended with 6 new KIC sources, sector mappings, 15 company list constants, `_build_events` basis logic, `_ALL_RAW_EVENTS` aggregation
+- `scripts/classify.py` — Added try/except stubs for `EUROSTARS_SOURCE_SECTOR` and `CHP_SOURCE_SECTOR`
+- `docs/methodology.md` — Coverage tables, Tier 2/3 sections, decision log
+- `docs/notes.md` — This entry
+
+### DB backup
+
+`db_backups/db.sqlite.backup_pre_sprint10` (created at sprint start, baseline 3,101 / 4,969).
+
+---
+
+## Day 11 — 2026-05-23 — Sprint 9: EDA + findings site
+
+**Scope**: Read-only exploratory pass over the 3,101-company corpus. No DB writes, no new data extraction, no private-side enrichment, no deployment.
+
+### What was built
+
+**Analysis layer** (`analysis/`):
+- `views.sql` — 3 idempotent SQL views: `v_events` (source-family normalization + `event_year` coalesced), `v_company_breadth` (per-company Gini inputs), `v_country_sector_family` (cross-tab for heatmap)
+- `helpers.py` — shared utilities: `db()`, `df()`, `to_json()`, `save_table()`, `SECTOR_PALETTE`, `COUNTRY_POPULATION_M`
+- `run.py` — orchestrator that runs `run_q01()` through `run_q08()` + `run_synthesis()`
+- `queries/` — 15 SQL files
+- `findings/q01.md` through `q08.md` + `findings/synthesis.md`
+
+**Site** (`site/`):
+- Next.js 16.2.6, Tailwind v4, Recharts 3.8.1, App Router, static export
+- 15 routes: `/`, `/01-corpus` through `/08-gaps`, `/synthesis`, `/methodology`, `/limitations`
+- All 15 pages prerender cleanly to `site/out/` via `npm run build`
+
+### Per-analysis findings summary
+
+| Analysis | Key finding |
+|---|---|
+| Q1 Corpus | 3,101 companies, 4,969 events, €54.2B committed across 7 instruments; EIC alone covers 70.6% of companies |
+| Q2 Champions | 84 multi-instrument companies; CEA/Lynred/SINTEF each span 3 families; THALES top by capital (€449M across 2 families) |
+| Q3 Country×Sector | FR/DE/NL top by volume; cleantech dominated by Nordic and southern EU; defense by FR/DE/ES |
+| Q4 Concentration | EIT most concentrated (Gini=0.88, top decile 82%); EIC most egalitarian (Gini=0.49); EIB no grant data (NULL) |
+| Q5 STEP cohort | EIC leads adoption (75.7%); EDF second (63%); IPCEI lowest (3.7%) — state-aid logic outside STEP mechanism |
+| Q6 Time dynamics | Growth 2021→2024 driven by EIC; 317 IPCEI events have NULL `event_year` — absent from chart by design; 2025 partial |
+| Q7 Co-funding network | 84 companies bridge ≥2 families; EIC↔EDF and EIC↔EIB are the most common co-funding pairs |
+| Q8 Gaps | IS/EE/LU/FI/DK top per-capita; IT/ES/BG under-represented vs. population; €5.2B gap for all-zero countries |
+
+### Gate B2 correction
+
+Sprint 9 analysis discovered that methodology.md limitation #8 ("THALES 9 sources, CEA 8, Airbus 7") counted raw source IDs (e.g. `edf_ra_2021` as a separate source from `edf_da_2021`), not the 7 canonical source families. Correct post-normalization figures:
+- **Top by families**: CEA FR (3: eic+chips_ju+edf), Lynred FR (3: ipcei+chips_ju+edf), SINTEF NO (3: eic+chips_ju+edf)
+- **Top by committed capital**: THALES FR (2 families: eic+edf, 30 events, €449M)
+- **Champion count**: 84 (not 81 — Sprint 8 B6 ran with 143/276 EDF events; full 276-event load adds 3 more cross-instrument companies)
+
+Corrected in methodology.md #8 and Decision log.
+
+### Gate scorecard
+
+| Gate | Result |
+|---|---|
+| 9 JSON files in `site/public/data/` | ✓ |
+| `npm run build` exits 0 | ✓ (all 15 routes static) |
+| DB unchanged (no writes) | ✓ |
+| Synthesis memo written | ✓ |
+| methodology.md Gate B2 claim corrected | ✓ |
+
+### Known issues / follow-ups
+
+- **Barrel import bug fixed during build**: Next.js 16 + Turbopack resolves client components imported via a barrel that mixes server components as `undefined`. Fixed by replacing all `from "@/components"` barrel imports with direct per-file imports across all 17 files.
+- **EIT Gini anomaly (0.88)**: EIT has only 96 companies, all with `grant_amount_eur = NULL` (eit_kic_support / eit_kic_equity basis). Gini is computed over event count not capital — 8 companies hold 8+ events each while most have 1. This reflects the investments portfolio companies (multiple BoostUp + investment events) vs. single-event Champions companies.
+- **IPCEI NULL dates**: All 317 IPCEI events have NULL `event_year`. Correctly absent from all time-series charts. Flagged in Q6 findings and the reconciliation JSON (`eventsPre2020OrNull: 317`).
+
+### Files added (Sprint 9)
+
+- `analysis/views.sql`, `analysis/helpers.py`, `analysis/run.py`
+- `analysis/queries/` — 15 SQL files
+- `analysis/findings/` — 9 markdown files (q01–q08 + synthesis)
+- `site/` — full Next.js project (built, not deployed)
+- `site/public/data/` — 9 JSON output files
+
+---
+
 ## Day 1 (2026-05-20): EIC load complete
 
 ### What's in the DB
@@ -545,3 +773,169 @@ EIT Digital sources → `digital` fallback; EIT Manufacturing sources → `deept
 | Schema tables | 4 (companies, public_funding_events, private_funding_events, classify_audit) |
 | classify_audit rows | 1 (B7 migration baseline) |
 | Outstanding | C8 recovery awaiting user-supplied EIC CSV |
+
+---
+
+## Day 10 — 2026-05-22 — Sprint 8 corpus bulletproofing (workstream B)
+
+**Scope decisions** (2026-05-21):
+- Workstream A (STEP Seal tagging) **skipped** — no machine-readable seal source surfaced during discovery; user opted to skip rather than escalate or hand-curate.
+- Workstream B (audit) executed under "all-or-nothing per gate" rule — halt rather than ship a half-passing gate. Source patches landed in `classify.py`, `scripts/audit_dedup.py` (new), `data/processed/dedup_candidates.csv` (new), `data/processed/pre_dealroom_health_report.md` (new).
+
+### Headline deltas
+
+| Metric | Pre (Day 9 close) | Post (Day 10) | Δ |
+|---|---:|---:|---:|
+| Companies | 3,107 | 3,101 | −6 |
+| Events | 4,969 | 4,969 | 0 |
+| `entity_type='unknown'` | 705 (22.7%) | 186 (6.0%) | −519 |
+| NULL country | 18 | 0 | −18 |
+| PIC violations | 0 | 0 | — |
+
+### B1 dedup merges
+
+3 same-country + 3 EL↔GR alias merges. EL is the Eurostat code for Greece, GR is ISO-3166-1 alpha-2; same entity, different code — the EIC export uses one, EDF uses the other. Targets after merge: Hellenic Mediterranean University (id 559, also flipped sector cleantech → defense after gaining an EDF event), National Technical University of Athens (id 603), Technical University of Crete (id 1461), NXP-NL (id 2389), HUN-REN Termeszettudomanyi Kutatokozpont (id 846), Air Liquide Large Industry BE (id 2928). 2 pairs (Bormioli Luigi ES/IT, Holcim RO/DE) flagged `needs_human_review` for Sprint 9 Dealroom enrichment.
+
+### B2 unknowns shrinkage by source family
+
+| Family | Pre | Post |
+|---|---:|---:|
+| ipcei | 261 | 0 |
+| eic | 221 | 140 |
+| innovation_fund | 82 | 0 |
+| eit | 79 | 0 |
+| edf | 65 | 44 |
+| eib | 8 | 7 |
+| chips_ju | 7 | 0 |
+
+The big drops (ipcei, innovation_fund, eit) come from the new **source-family fallback** in `classify_entity_type()` — rows with no name match resolve to `company` if any source is in `{ipcei, innovation_fund, eit, chips_ju}`. These four programmes accept only corporate beneficiaries by design. EDF intentionally excluded (defense calls include ONERA/CERTH/Demokritos research orgs). The EIC residual is mostly EIC Pathfinder/Transition coordinators with hyper-specific project-vehicle names that pattern-matching cannot resolve without per-row enrichment — they flow to Sprint 9 Dealroom matching for resolution.
+
+### B2 already-classified row corrections (6, all correct improvements)
+
+- AGENCIA ESTATAL CSIC: `other` → `research_org` (was caught by `agencia` pattern; the new `consejo superior de investigaciones` pattern wins on priority)
+- CSEM CENTRE SUISSE D'ELECTRONIQUE ET DE MICROTECHNIQUE SA: `company` → `research_org` (was caught by `SA` suffix; the new `centre technique`-family pattern wins)
+- ASSOCIATION FOR THE ADVANCEMENT OF TISSUE ENGINEERING (PT): `company` → `research_org` (new `association` pattern)
+- EXELIXIS DIACHEIRISI EREVNAS KAI EPIKOINONIA EE (EL): `company` → `research_org` (new Greek `erevnas` pattern)
+- IDRYMA EPISTIMON KAI EREVNAS I.K.E. (EL): `company` → `research_org` (new Greek `idryma` pattern)
+- SYNERGEIES STIN EPISTIMI KAI TECHNOLOGIA-SYNEST IDIOTIKI KEFALAIOUCHIKI (EL): `company` → `research_org` (new `epistim` pattern)
+
+### B3 country backfill (18 rows)
+
+7 EDF rows derived from name patterns (Nederlands→NL, French INRIA-style→FR, Greek transliteration→EL, INESC→PT, Slovenian `racunalniske`→SI). 11 EIT Manufacturing rows resolved via web search on company / cohort pages — see the table in [`pre_dealroom_health_report.md`](../data/processed/pre_dealroom_health_report.md#b3---country-coverage-cleanup) for source per row.
+
+### B5 totals reconciliation
+
+All 7 families pass. The only non-±5% gaps are documented in methodology (IPCEI redacted partners: Microelectronics-2018/Batteries/EuBatIn fully redacted; Hy2Infra/Cloud/Med4Cure partially redacted; Chips JU KDT-2023 portal still being populated).
+
+### B6 multi-instrument profile
+
+Cross-instrument winners (≥2 source families): 81 — unchanged from pre-audit. The 6 B1 merges affected non-cross-instrument rows only.
+
+### Website coverage by source family
+
+| Family | Companies | With website | Coverage |
+|---|---:|---:|---:|
+| eic | 2,188 | 2,188 | 100% |
+| edf | 192 | 29 | 15% |
+| chips_ju | 25 | 8 | 32% |
+| eib | 151 | 16 | 11% |
+| eit | 96 | 8 | 8% |
+| innovation_fund | 236 | 6 | 3% |
+| ipcei | 301 | 7 | 2% |
+
+73% overall coverage, skewed entirely to EIC. Backfilling non-EIC families from `project_summary` URLs deferred to Sprint 9 (cheap to fold in alongside Dealroom matching).
+
+### Sector regression
+
+Re-run of `classify.py` on no-input change: 0 sector flips, 0 entity flips → idempotent. 50-row stratified spot-check: 48 clear concordance, 2 defensible borderlines (Vlasceanu loam walls → deeptech_hardware, Frisimos robotic cable assembly → digital). 96% concordance ≥ 90% gate.
+
+### Gate scorecard
+
+| Gate | Threshold | Result |
+|---|---|---|
+| B1 needs_human_review | ≤5 | 2 ✓ |
+| B2 unknowns absolute | ≤300 | 186 ✓ |
+| B2 unknowns share | ≤10% | 6.0% ✓ |
+| B3 NULL country | ≤3 | 0 ✓ |
+| B4 spot-check concordance | ≥90% | 96% ✓ |
+| B4 classify.py idempotence | 0 flips on no-change | 0 ✓ |
+| B5 totals reconciled | ±5% or documented | all within tolerance ✓ |
+| B6 PIC integrity | 0 violations | 0 ✓ |
+| sanity_check.py | all green | all green ✓ |
+| `pre_dealroom_health_report.md` committed | exists | exists ✓ |
+
+### Files added
+
+- `scripts/audit_dedup.py` — Sprint 8 B1 cross-source dedup sweep (idempotent; supports `--load-db`)
+- `data/processed/dedup_candidates.csv` — 40-row review CSV with recommendation per pair
+- `data/processed/pre_dealroom_health_report.md` — gate scorecard + per-workstream findings
+
+### Files modified
+
+- `scripts/classify.py` — augmented entity-type patterns + new `SOURCE_FAMILY_COMPANY` fallback; signature of `classify_entity_type()` gained an optional `sources` parameter (call site updated in `main`)
+- `README.md` — corpus headline updated 3,107 → 3,101; `audit_dedup.py` added to run sequence; status row added for Sprint 8 audit
+- `docs/methodology.md` — Sprint 8 decision-log entry appended
+- `docs/notes.md` — this Day 10 entry
+
+### Final DB state after Day 10
+
+| Metric | Value |
+|---|---|
+| Total companies | 3,101 |
+| Total events | 4,969 |
+| Sector distribution | life_sciences 1,090 / cleantech 941 / deeptech_hardware 529 / digital 182 / defense 173 / space 149 / other 37 |
+| Entity-type distribution | company 2,233 / research_org 674 / unknown 186 / other 8 |
+| coordinator_only=1 events | unchanged |
+| Outstanding | 186 residual unknowns (~6%, mostly EIC Pathfinder/Transition project-vehicle names) → Sprint 9; 2 dedup pairs flagged human_review → Sprint 9; non-EIC website backfill → Sprint 9 |
+
+---
+
+## Day 10 addendum (2026-05-22, late) — Workstream A unblocked
+
+User dropped the Commission "SEAL - data set" Excel export into the repo after Day-10 close. STEP Seal tagging now done — `companies.step_flagged=1` on 623 matched companies (20.1% of corpus).
+
+### Match approach
+
+Single-tier exact `(normalize_name, country_iso2)` against the SEAL file's `Applicant Legal Name` and `Project Country (Region)` columns. EL↔GR and UK↔GB country-equivalence sets (DB carries both). No fuzzy tier — match is strict. 4,069 unique SEAL applicants → 623 DB hits + 3,446 SEAL-only (consortium participants in Horizon projects we haven't loaded, plus universities/non-EU orgs).
+
+### STEP coverage by source family
+
+| Family | Companies | Step-flagged | % |
+|---|---:|---:|---:|
+| chips_ju | 25 | 10 | 40% |
+| edf | 192 | 78 | 41% |
+| innovation_fund | 236 | 88 | 37% |
+| eic | 2,188 | 468 | 21% |
+| eib | 151 | 15 | 10% |
+| eit | 96 | 4 | 4% |
+| ipcei | 301 | 10 | 3% |
+
+### Plan assumption corrected
+
+The Sprint 8 plan stated "EDF defense projects are explicitly out of STEP scope (different sovereignty regime); flag remains 0 for all EDF rows." This was wrong. The actual SEAL export shows EDF as a major STEP component (1,120 of 5,722 SEAL rows = 19.6%, second only to HORIZON). Defense IS in STEP's "deep tech" pillar. 78 of 192 EDF companies in our DB hold the seal.
+
+The plan was right about IPCEI: only 10/301 (3%) — state-aid notifications operate outside the seal mechanism, and the 10 hits are direct partners with parallel Horizon projects.
+
+### Event-level NOT tagged
+
+The SEAL export carries proposal titles but no Horizon project numbers. Mapping proposal title → `public_funding_events.project_number` would be fuzzy and unsafe. The planned `public_funding_events.step_flagged` column was NOT added; if a researcher needs per-event tagging, they can derive `event_step = (company.step_flagged AND project_year >= 2024)` as a reasonable proxy.
+
+### Files added
+
+- `scripts/tag_step.py` — STEP Seal tagger (idempotent; supports `--load-db`; revokes flag for any company no longer in input)
+- `data/raw/step/seal_data_set.xlsx` — raw Commission export (5,722 rows / 9 columns)
+- `data/processed/step_match_summary.csv` — one row per matched company (programmes, sectors, any-funded flag)
+
+### Files modified
+
+- `README.md` — STEP row updated to ✅ loaded; run sequence includes `tag_step.py`
+- `docs/methodology.md` — Sprint 8 STEP Seal decision-log entry inserted
+
+### DB delta
+
+| Metric | Before | After |
+|---|---:|---:|
+| `companies.step_flagged=1` | 0 | 623 |
+| Other tables | unchanged | unchanged |
+
+DB backup pre-STEP write: `db_backups/db.sqlite.backup_pre_step_tagging`.
