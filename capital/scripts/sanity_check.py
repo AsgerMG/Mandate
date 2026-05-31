@@ -662,4 +662,35 @@ q("""
       AND sector_inferred_updated_at < created_at
 """, "DQ: sector_inferred timestamp hygiene (both must be 0 after every classify.py run)")
 
+# ---------------------------------------------------------------------------
+# DQ: Europe scope (Sprint 14, 2026-05-29). Corpus restricted to 40 countries
+# (EU27 + EFTA + UK + Western Balkans + UA + MD). Enforced by the
+# trg_companies_country_scope BEFORE INSERT trigger; this check surfaces any
+# rows that somehow slipped through (e.g. a future loader that bypasses the
+# trigger via raw SQL, or a scope expansion that left orphan canonicalisation).
+# All three counts must be zero.
+# See docs/europe_scope.md.
+# ---------------------------------------------------------------------------
+
+q("""
+    SELECT 'companies out of Europe scope' AS metric, COUNT(*) AS value
+    FROM companies
+    WHERE country IS NOT NULL
+      AND country NOT IN (
+        'AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE',
+        'IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE',
+        'NO','CH','IS','LI','GB','AL','BA','ME','MK','RS','XK','UA','MD'
+      )
+    UNION ALL
+    SELECT 'companies with non-canonical alias still present (EL/UK/PO/SW/GL)',
+           COUNT(*)
+    FROM companies
+    WHERE UPPER(TRIM(COALESCE(country,''))) IN ('EL','UK','PO','SW','GL')
+    UNION ALL
+    SELECT 'scope enforcement triggers installed',
+           CASE WHEN COUNT(*) = 2 THEN 0 ELSE 99 END
+    FROM sqlite_master
+    WHERE type = 'trigger' AND name LIKE 'trg_companies_country_scope%'
+""", "DQ: Europe scope integrity — all values must be 0 (last row = 0 means both triggers present)")
+
 conn.close()

@@ -3,3 +3,16 @@ __pycache__/
 *.pyo
 db_backups/
 .DS_Store
+
+# Claude Code config — per-user, not project state
+.claude/
+
+# Stale 0-byte sqlite that gets created if an extractor runs from inside scripts/
+# (real DB lives at repo root)
+scripts/db.sqlite
+
+# Sprint 15 SATR raw CSV cache — large (~5-20 GB at full scale)
+data/processed/satr/
+
+# Playwright browser binary cache
+.playwright/

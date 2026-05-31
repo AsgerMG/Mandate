@@ -70,6 +70,40 @@ except ImportError:
     HORIZON_EU_CL5_SOURCE_SECTOR: dict[str, str] = {}
     HORIZON_EU_CL6_SOURCE_SECTOR: dict[str, str] = {}
 
+# Sprint 13 Tier 1 NDBs.
+try:
+    from extract_invest_nl import INVEST_NL_SOURCE_SECTOR  # noqa: E402
+    from extract_tesi import TESI_SOURCE_SECTOR  # noqa: E402
+    from extract_almi_invest import ALMI_INVEST_SOURCE_SECTOR  # noqa: E402
+    from extract_cdp_vc import CDP_VC_SOURCE_SECTOR  # noqa: E402
+    from extract_sprind import SPRIND_SOURCE_SECTOR  # noqa: E402
+    from extract_cdti import CDTI_SOURCE_SECTOR  # noqa: E402
+    from extract_htgf import HTGF_SOURCE_SECTOR  # noqa: E402
+    from extract_coparion import COPARION_SOURCE_SECTOR  # noqa: E402
+    from extract_bpifrance import BPIFRANCE_SOURCE_SECTOR  # noqa: E402
+    from extract_enterprise_ireland import EI_SOURCE_SECTOR  # noqa: E402
+    from extract_fr_innov_grants import FR_INNOV_SOURCE_SECTOR  # noqa: E402
+    from extract_innovationsfonden import INNOFOND_SOURCE_SECTOR  # noqa: E402
+    from extract_eifo import EIFO_SOURCE_SECTOR  # noqa: E402
+    from extract_ademe import ADEME_SOURCE_SECTOR  # noqa: E402
+    from extract_sudop import SUDOP_SOURCE_SECTOR  # noqa: E402
+except ImportError:
+    INVEST_NL_SOURCE_SECTOR: dict[str, str] = {}
+    TESI_SOURCE_SECTOR: dict[str, str] = {}
+    ALMI_INVEST_SOURCE_SECTOR: dict[str, str] = {}
+    CDP_VC_SOURCE_SECTOR: dict[str, str] = {}
+    SPRIND_SOURCE_SECTOR: dict[str, str] = {}
+    CDTI_SOURCE_SECTOR: dict[str, str] = {}
+    HTGF_SOURCE_SECTOR: dict[str, str] = {}
+    COPARION_SOURCE_SECTOR: dict[str, str] = {}
+    BPIFRANCE_SOURCE_SECTOR: dict[str, str] = {}
+    EI_SOURCE_SECTOR: dict[str, str] = {}
+    FR_INNOV_SOURCE_SECTOR: dict[str, str] = {}
+    INNOFOND_SOURCE_SECTOR: dict[str, str] = {}
+    EIFO_SOURCE_SECTOR: dict[str, str] = {}
+    ADEME_SOURCE_SECTOR: dict[str, str] = {}
+    SUDOP_SOURCE_SECTOR: dict[str, str] = {}
+
 DB_PATH = Path(__file__).parent.parent / "db.sqlite"
 
 # IPCEI sources don't tag rows like EIC does. Each IPCEI is a known sector;
@@ -216,6 +250,15 @@ LIFE_SCIENCES_KEYWORDS = [
     "drought resist",    # plant-biotech seed improvements
     "poultry",           # poultry health / incubation technology
     "long covid",        # post-acute sequelae therapeutics
+    # SATR NACE additions (Sprint 15)
+    "pharmaceutical",        # NACE C21 manufacturing of pharmaceuticals
+    "pharma ",               # short form
+    "in vitro diagnost",     # NACE C26.6 / 32.5 IVD
+    "medical instrument",    # NACE C26.6 / 32.5
+    "medical device",
+    "veterinary",            # veterinary medicines
+    "experimental development on biotech",  # NACE M72.11
+    "human health",          # NACE Q86
 ]
 CLEANTECH_KEYWORDS = [
     "depollut", "remediat", "solar", "photovoltaic", "wind energy", "wind turbine",
@@ -250,6 +293,13 @@ DEEPTECH_KEYWORDS = [
     "mems", "spectromet", "spectroscop", "laser", "infrared", "x-ray",
     "nanofab", "microfab", "metrolog", "advanced material",
     "objective lens", "optical", "electron microscop",
+    # SATR NACE additions (Sprint 15)
+    "electronic component",   # NACE C26.1
+    "electronic board",
+    "navigation, measur",     # NACE C26.5 measuring instruments
+    "industrial process control",
+    "machine tool",           # NACE C28.4
+    "special-purpose machinery",  # NACE C28.9
     # EIB-sourced additions
     "risc-v",              # RISC-V processor / EDA software
     "design automation",   # electronic design automation
@@ -279,6 +329,14 @@ DIGITAL_KEYWORDS = [
     "simulation platform", # engineering simulation SaaS
     "digital marketplace", # digital marketplace for direct-to-consumer
     "digital platform",    # general digital platform businesses
+    # SATR NACE additions (Sprint 15)
+    "computer programming",   # NACE J62.01 software development
+    "software publish",       # NACE J58.2 software publishing
+    "data processing",        # NACE J63.11 data hosting / cloud
+    "web portal",             # NACE J63.12
+    "computer consultancy",   # NACE J62.02
+    "telecommunication",      # NACE J61
+    "information service",    # NACE J63
     "digital technolog",   # advanced digital technologies (matches plural too)
     "software-enabl",      # software-enabled product platforms
     "cloud kitchen",       # virtual / cloud kitchen platforms
@@ -334,6 +392,148 @@ MANUAL_SECTOR_OVERRIDES = {
 }
 
 
+# ----------------------------------------------------------------------------
+# NACE-code classifier (Sprint 15: SATR rows ship sector_tags_raw as NACE strings)
+# ----------------------------------------------------------------------------
+# SATR records use NACE Rev. 2 descriptions like "Computer programming activities"
+# in the Sector (NACE) column, which we store in public_funding_events.sector_tags_raw.
+# These don't match our CORDIS-style sector_tags_raw keywords ("AI", "DIGITAL", etc.),
+# so SATR companies tend to fall to the keyword-fallback layer where most NACE
+# strings don't match either. This NACE classifier runs BEFORE keyword classify
+# and maps NACE descriptions directly to our 7-bucket taxonomy.
+#
+# Each entry is (substring_match, sector). Substring match is case-insensitive.
+# Order matters: most specific first (e.g. "Manufacture of pharmaceutical" before
+# "Manufacture of"). Strings should be unique within a NACE descriptor enough to
+# avoid wrong sector assignment; broader descriptors fall through to keyword
+# classify or end up "other".
+NACE_TO_SECTOR: list[tuple[str, str]] = [
+    # --- LIFE_SCIENCES ---
+    ("Manufacture of pharmaceutical", "life_sciences"),
+    ("Manufacture of basic pharmaceutical", "life_sciences"),
+    ("Manufacture of medical and dental instruments", "life_sciences"),
+    ("Manufacture of irradiation, electromedical", "life_sciences"),
+    ("Research and experimental development on biotechnology", "life_sciences"),
+    ("Human health activities", "life_sciences"),
+    ("Hospital activities", "life_sciences"),
+    ("General medical practice", "life_sciences"),
+    ("Medical and dental practice", "life_sciences"),
+    ("Veterinary activities", "life_sciences"),
+    # --- DIGITAL ---
+    ("Computer programming activities", "digital"),
+    ("Computer programming, consultancy", "digital"),
+    ("Computer consultancy", "digital"),
+    ("Computer facilities management", "digital"),
+    ("Other software publishing", "digital"),
+    ("Software publishing", "digital"),
+    ("Other information technology", "digital"),
+    ("Data processing, hosting", "digital"),
+    ("Web portals", "digital"),
+    ("Information service activities", "digital"),
+    ("Telecommunications", "digital"),
+    ("Wireless telecommunications", "digital"),
+    ("Wired telecommunications", "digital"),
+    ("Satellite telecommunications", "digital"),   # could also be space; deferred to space rule below for primary match
+    # --- SPACE ---
+    ("Manufacture of air and spacecraft", "space"),
+    ("Repair and maintenance of aircraft and spacecraft", "space"),
+    # --- DEEPTECH_HARDWARE ---
+    ("Manufacture of electronic components", "deeptech_hardware"),
+    ("Manufacture of loaded electronic boards", "deeptech_hardware"),
+    ("Manufacture of computers and peripheral", "deeptech_hardware"),
+    ("Manufacture of communication equipment", "deeptech_hardware"),
+    ("Manufacture of computer, electronic", "deeptech_hardware"),
+    ("Manufacture of optical instruments", "deeptech_hardware"),
+    ("Manufacture of instruments and appliances for measuring, testing and navigation", "deeptech_hardware"),
+    ("Manufacture of magnetic and optical media", "deeptech_hardware"),
+    ("Manufacture of consumer electronics", "deeptech_hardware"),
+    ("Manufacture of electric motors, generators and transformers", "deeptech_hardware"),
+    ("Manufacture of batteries and accumulators", "cleantech"),  # batteries — cleantech via EV / energy storage angle
+    ("Manufacture of other special-purpose machinery", "deeptech_hardware"),
+    ("Manufacture of other general-purpose machinery", "deeptech_hardware"),
+    ("Manufacture of machinery and equipment", "deeptech_hardware"),
+    ("Manufacture of machine tools", "deeptech_hardware"),
+    ("Manufacture of bearings, gears, gearing", "deeptech_hardware"),
+    # --- CLEANTECH ---
+    ("Steam and air conditioning supply", "cleantech"),
+    ("Production of electricity", "cleantech"),
+    ("Electric power generation, transmission and distribution", "cleantech"),
+    ("Electricity, gas, steam and air conditioning supply", "cleantech"),
+    ("Production of electricity from non-renewable", "cleantech"),
+    ("Production of electricity from renewable", "cleantech"),
+    ("Transmission of electricity", "cleantech"),
+    ("Distribution of electricity", "cleantech"),
+    ("Manufacture of gas", "cleantech"),
+    ("Distribution of gaseous fuels through mains", "cleantech"),
+    ("Trade of electricity", "cleantech"),
+    ("Water collection, treatment and supply", "cleantech"),
+    ("Sewerage", "cleantech"),
+    ("Waste collection", "cleantech"),
+    ("Waste treatment and disposal", "cleantech"),
+    ("Materials recovery", "cleantech"),
+    ("Remediation activities", "cleantech"),
+    # --- SCIENTIFIC R&D (generic) — default to deeptech_hardware ---
+    # Generic "Scientific R&D" without further qualification is most often
+    # industrial / engineering R&D; biotech R&D has its own entry above.
+    ("Research and experimental development on natural sciences and engineering", "deeptech_hardware"),
+    ("Other research and experimental development on natural sciences and engineering", "deeptech_hardware"),
+    ("Scientific research and development", "deeptech_hardware"),
+    # --- OTHER (explicit — don't try to classify) ---
+    # These NACE entries appear frequently and should NOT be guessed at.
+    ("Hotels and similar accommodation", "other"),
+    ("Accommodation", "other"),
+    ("Restaurants", "other"),
+    ("Mobile food service", "other"),
+    ("Construction of residential", "other"),
+    ("Construction of buildings", "other"),
+    ("Civil engineering", "other"),
+    ("Freight transport by road", "other"),
+    ("Sea and coastal transport", "other"),
+    ("Inland passenger water transport", "other"),
+    ("Wholesale of", "other"),
+    ("Retail sale of", "other"),
+    ("Manufacture of furniture", "other"),
+    ("Sawmilling", "other"),
+    ("Motion picture, video and television programme production", "other"),
+    ("Sound recording and music publishing", "other"),
+    ("Manufacture of food products", "other"),
+    ("Manufacture of beverages", "other"),
+    ("Manufacture of bread", "other"),
+    ("Manufacture of dairy products", "other"),
+    ("Growing of cereals", "other"),
+    ("Growing of vegetables", "other"),
+    ("Mixed farming", "other"),
+    ("AGRICULTURE, FORESTRY AND FISHING", "other"),
+    ("Activities of head offices", "other"),
+    ("Activities of holding companies", "other"),
+    ("Rental and operating of own or leased real estate", "other"),
+    ("Real estate activities", "other"),
+    ("Business and other management consultancy", "other"),
+    ("Management consultancy", "other"),
+    ("Public administration", "other"),
+    ("Other monetary intermediation", "other"),
+    ("Banking", "other"),
+    ("Activities of insurance", "other"),
+    ("Sale of motor vehicles", "other"),
+    ("Sale, maintenance and repair of motor", "other"),
+    # Civil engineering / general engineering consultancy — too broad to be
+    # confidently "deeptech"; usually buildings / infrastructure.
+    ("Engineering activities and related technical consultancy", "other"),
+    ("Architectural and engineering activities", "other"),
+]
+
+
+def _classify_by_nace(text):
+    """If text contains a known NACE descriptor, return its mapped sector. Else None."""
+    if not text:
+        return None
+    t = text.lower()
+    for pattern, sector in NACE_TO_SECTOR:
+        if pattern.lower() in t:
+            return sector
+    return None
+
+
 def _keyword_classify(text):
     if not text:
         return None
@@ -384,6 +584,23 @@ def classify_sector(raw_tag_strings, fallback_text="", sources=()):
         # Tags present but none recognised (e.g. CORDIS topic codes) — fall through
         # to keyword + source fallback rather than locking the company into "other".
 
+    # Sprint 15: NACE-string classification for SATR rows (run before generic
+    # keyword fallback because NACE is a stronger signal than aid-title text).
+    # Collect ALL NACE hits across linked events, then apply the same priority
+    # order as the tag classifier above (space > life_sciences > defense >
+    # cleantech > deeptech > digital > other). This avoids order-dependency
+    # on GROUP_CONCAT result order when a company has multiple events.
+    nace_hits = set()
+    for s in raw_tag_strings:
+        h = _classify_by_nace(s)
+        if h:
+            nace_hits.add(h)
+    if nace_hits:
+        for priority in ("space", "life_sciences", "defense", "cleantech",
+                         "deeptech_hardware", "digital", "other"):
+            if priority in nace_hits:
+                return priority
+
     fallback = _keyword_classify(fallback_text)
     if fallback:
         return fallback
@@ -415,6 +632,41 @@ def classify_sector(raw_tag_strings, fallback_text="", sources=()):
             return HORIZON_EU_CL5_SOURCE_SECTOR[src]
         if src in HORIZON_EU_CL6_SOURCE_SECTOR:
             return HORIZON_EU_CL6_SOURCE_SECTOR[src]
+        if src in INVEST_NL_SOURCE_SECTOR:
+            return INVEST_NL_SOURCE_SECTOR[src]
+        if src in TESI_SOURCE_SECTOR:
+            return TESI_SOURCE_SECTOR[src]
+        if src in ALMI_INVEST_SOURCE_SECTOR:
+            return ALMI_INVEST_SOURCE_SECTOR[src]
+        if src in CDP_VC_SOURCE_SECTOR:
+            return CDP_VC_SOURCE_SECTOR[src]
+        if src in SPRIND_SOURCE_SECTOR:
+            return SPRIND_SOURCE_SECTOR[src]
+        if src in CDTI_SOURCE_SECTOR:
+            return CDTI_SOURCE_SECTOR[src]
+        # CDTI sources use a year-suffix template — also try the bare prefix
+        if src.startswith("cdti_"):
+            stem = "_".join(src.split("_")[:-1])
+            if stem in CDTI_SOURCE_SECTOR:
+                return CDTI_SOURCE_SECTOR[stem]
+        if src in HTGF_SOURCE_SECTOR:
+            return HTGF_SOURCE_SECTOR[src]
+        if src in COPARION_SOURCE_SECTOR:
+            return COPARION_SOURCE_SECTOR[src]
+        if src in BPIFRANCE_SOURCE_SECTOR:
+            return BPIFRANCE_SOURCE_SECTOR[src]
+        if src in EI_SOURCE_SECTOR:
+            return EI_SOURCE_SECTOR[src]
+        if src in FR_INNOV_SOURCE_SECTOR:
+            return FR_INNOV_SOURCE_SECTOR[src]
+        if src in INNOFOND_SOURCE_SECTOR:
+            return INNOFOND_SOURCE_SECTOR[src]
+        if src in EIFO_SOURCE_SECTOR:
+            return EIFO_SOURCE_SECTOR[src]
+        if src in ADEME_SOURCE_SECTOR:
+            return ADEME_SOURCE_SECTOR[src]
+        if src in SUDOP_SOURCE_SECTOR:
+            return SUDOP_SOURCE_SECTOR[src]
 
     return "unclassified"
 

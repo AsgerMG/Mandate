@@ -1,5 +1,240 @@
 # EU Public Capital Tracker — Notes
 
+## Day 20 — 2026-05-31 — Sprint 16: central NDB registers (FR + DK)
+
+### Strategic pivot: from per-NDB scraping to central data registers
+
+Original Sprint 16 plan: per-NDB Playwright scrapers for EIFO, Bpifrance, CDP, KfW Capital. Abandoned mid-session after discovery that most NDB portfolio pages are Cloudflare-walled (bpifrance.fr 403, cdp.it Radware bot-protected), JS-rendered with no API (innovationsfonden.dk Drupal Views, projecten.rvo.nl), or simply don't publish portfolios as structured data (eifo.dk publishes only news cards). Per-NDB scraping does not scale to 40 countries.
+
+User steer: "find central sources... state aid reporting requirements etc. because this approach is not really scalable for 40 countries... ensure to include this in methodology so people will know."
+
+**New pattern**: discover *central* registers — EU Open Data Portal (`data.europa.eu`), data.gouv.fr's Opendatasoft network (data.enseignementsup-recherche, data.iledefrance, opendata.caissedesdepots), Drupal-Views server-rendered HTML, NDB-published Google Sheets, BDNS API — and load them. One central register per economy where one exists.
+
+### Three extractors shipped (4,293 events / +2,821 companies)
+
+| Extractor | Source | Events | Volume |
+|---|---|---:|---|
+| [extract_fr_innov_grants.py](../scripts/extract_fr_innov_grants.py) | data.enseignementsup-recherche.gouv.fr (i-Nov) + data.iledefrance.fr (PM'up) | 849 | €568M grants |
+| [extract_innovationsfonden.py](../scripts/extract_innovationsfonden.py) | innovationsfonden.dk Drupal-Views server-rendered HTML, 566 pages × 14 rows | 3,313 | €892M grants |
+| [extract_eifo.py](../scripts/extract_eifo.py) | EIFO Venturelisten Google Sheet (filtered to EIFO co-invest) | 131 | €1.24B round volume |
+
+**Corpus**: 95,245 → 98,066 companies / 178,915 → 183,208 events. Backup at `/tmp/eit_data_backup/db.sqlite.pre-sprint16.bak` (315MB).
+
+### Structural finding documented in methodology.md "Known limitations"
+
+**Article 107 TFEU defines state aid as a transfer of public resources that confers an "advantage" to undertakings on selective terms.** When an NDB invests at market terms — pari passu with private co-investors, at commercial rates, in commercially viable companies — there is no advantage, therefore no state aid, therefore **no publication obligation** under SATR or any national state-aid register. This is the regime that governs the bulk of NDB equity activity by volume (Bpifrance equity ~€2-3bn/yr, KfW Capital LP commitments ~€500M-1bn/yr, CDP Equity strategic holdings ~€10bn AUM, EIFO equity tickets). The corpus catches the **grant / soft-loan / subsidy-element** layer via SATR + central registers; it does NOT catch the commercial-conform **equity / quasi-equity** layer. Recovery paths: annual report PDF parsing, Dealroom/Pitchbook, EIF Annual Transparency Report, InvestEU Operations Register — none central-source-scrapeable.
+
+### Patterns
+
+- **Drupal-Views server-rendered HTML**: innovationsfonden.dk renders `<td>` rows with all field data in hidden `<div class="X-hidden">` sub-elements (screen-reader pattern). Pagination via `?page=N` works server-side. Fetch loop with 0.05s throttle clears 566 pages in 4 minutes.
+- **Opendatasoft API**: `/api/explore/v2.1/catalog/datasets/<slug>/exports/csv?use_labels=true` is the universal export path across data.gouv.fr-mediated portals (data.enseignementsup-recherche.gouv.fr, data.iledefrance.fr, opendata.caissedesdepots.fr).
+- **Google Sheets export**: append `/export?format=csv&gid=<sheet_id>` to any public Sheet URL. EIFO Venturelisten exposes 990 Danish VC rounds 2021-2026 this way.
+
+### Carry-over (next session targets, not deferred to a future sprint)
+
+Second-half of session pushed all four. Results:
+
+- **🇫🇷 ADEME loaded (BIG WIN)**: 27,697 events / €7.76B / +17,105 net new companies — discovered via [data.ademe.fr](https://data.ademe.fr/datasets/les-aides-financieres-de-l'ademe) (the central French cleantech / energy-transition NDB grant register). Now the **#1 NDB by event count** in the entire corpus. Implemented in [extract_ademe.py](../scripts/extract_ademe.py) with public-entity regex filter (`COMMUNE|VILLE|UNIVERSITÉ|HÔPITAL|...`).
+- **🇫🇷 Bpifrance expanded**: added Innov'up Leader PIA (144) + Plan de Relance Industrial (2,835 — no amounts) to the existing extractor. Bpifrance NDB tally now 3,841 events / €619M (up from 849 / €568M).
+- **🇵🇱 PL SUDOP — pipeline proven, scaffold + 22 events shipped**: discovered the central Polish state aid register has an **async OpenAPI** at `api-sudop.uokik.gov.pl/swagger/sudop-api.yml`. Flow: GET search → 303 redirect to queue URL → poll until 303 → CSV download. Built [extract_sudop.py](../scripts/extract_sudop.py) with a curated `INNOVATION_MEASURES` list of 10 SA-codes covering BGK, NCBR, PARP innovation programmes. One measure ran successfully (SA.56782 PARP B+R = 22 events / €1.6M). Rate-limited mid-run after ~5 queries; cached files cleanly resumable next session.
+- **🇳🇱 NL RVO — documented as multi-hour Playwright job**: `projecten.rvo.nl` has 73,343 projecten total, search listing is JS-rendered (10 results / page = ~7,300 pages × ~3s/page = ~6 hours). Per-project pages (`/nl/projecten/<id>`) ARE server-rendered with Aanvrager + Rijksbijdrage + Subsidieregeling fields parseable via regex. **Plan for next session**: Playwright-enumerate list pages → batch-curl project detail pages → parse + load. Probable yield: ~20-40k NL events / multiple €B.
+- **🇮🇹 IT RNA — documented (would double-count SATR-IT)**: Monthly XML dumps at `rna.gov.it/sites/rna.mise.gov.it/files/opendata/OpenData_Aiuti_YYYY_MM.xml`, ~935MB each × 60 months = ~25-50GB total download. XML structure rich (CAR / DENOMINAZIONE_BENEFICIARIO / CODICE_FISCALE / COMPONENTI_AIUTO / STRUMENTI_AIUTO / ELEMENTO_DI_AIUTO / IMPORTO_NOMINALE). **The Italian state aid in SATR (16,725+ events from mediocredito_centrale, invitalia, etc.) is already syndicated FROM RNA** — loading RNA fresh would substantially duplicate. Future approach: load only the **de minimis** subset (< €100k, NOT in SATR by threshold) and explicit non-SATR authorities. Streaming SAX parser scope.
+- **🇪🇸 ES BDNS — hard WAF IP-block**: BDNS API at `infosubvenciones.es/bdnstrans/api` IP-banned us after our probes. Spain is NOT in SATR (Sprint 15: "Spain uses BDNS — already covered via extract_cdti.py"). All Spanish NDB coverage rides on BDNS. Carry-over: retry from a different IP, or implement very-slow-throttle (60s/request) batch with checkpointing for ENISA/ICO/COFIDES.
+
+### Sprint 16 second-half totals (cumulative)
+
+| | Before today | After session 1 | After session 2 |
+|---|---:|---:|---:|
+| Companies | 95,245 | 98,066 | **116,925** |
+| Events | 178,915 | 183,208 | **213,906** |
+| Top NDB by events | mediocredito_centrale (14,345) | mediocredito_centrale (14,345) | **ademe (27,697)** |
+| FR coverage | Bpifrance 0 | Bpifrance 862 | Bpifrance 3,841 + ADEME 27,697 |
+| DK coverage | 0 | Innovationsfonden 3,313 + EIFO 131 | unchanged |
+| PL coverage | 0 | 0 | sudop_parp 22 (scaffold for ~10k more) |
+
+---
+
+## Day 18 — 2026-05-29 — Sprint 14: Europe-scope filter + home-page taxonomy network + map sector pies
+
+### Europe scope (corpus filter + destructive clean-up + DB trigger)
+
+User flagged that the home-page KPI claimed "53 countries" but the country list included Horizon open-call leakage (Tunisia, South Africa, US, Greenland), source-data aliases counted as separate countries (`EL` vs `GR`, `UK` vs `GB`, `PO` vs `PL`, `SW` vs `SE`), and Horizon-associated countries that aren't European (Israel, Turkey, Caucasus). Asked: "should probably only cover europe? ... if investments fall outside these EU/Europe countries then remove them from corpus". Followed up: "delete the data from countries out of scope, state this in methodology and ensure future scrapes etc. does not include this!"
+
+**Decision**: 40-country EU/Europe scope. EU27 + EFTA (NO/CH/IS/LI) + UK + Western Balkans (AL/BA/ME/MK/RS/XK) + Eastern Partnership in study (UA/MD). Israel, Turkey, Caucasus, and tail-leakage countries dropped. Full rationale per-country in [europe_scope.md](europe_scope.md).
+
+**Implementation pattern**: three layers of defence so the scope is held at every layer the data passes through.
+
+1. **Pre-insert filter in extractors** — new helper [scripts/europe_scope.py](../scripts/europe_scope.py) loaded from [data/europe_scope.json](../data/europe_scope.json). Exports `canonicalise_country(code)` that maps aliases and returns None for out-of-scope codes. Every new extractor should call it; existing extractors get protection from layer 2.
+2. **DB triggers** — `trg_companies_country_scope` and `trg_companies_country_scope_update` `BEFORE INSERT/UPDATE` triggers in [scripts/schema.sql](../scripts/schema.sql). Fire on every write to `companies.country`. Any out-of-scope code `RAISE(ABORT, ...)` with a message pointing at `docs/europe_scope.md` and the helper module. Verified by smoke test: `INSERT ... country = 'IL'` fails, `INSERT ... country = 'DE'` succeeds.
+3. **View-time filter** — `v_european_companies` in [analysis/views.sql](../analysis/views.sql) inner-joined into `v_events`. Belt-and-braces if the triggers are ever disabled for a raw-SQL bulk import. Now thin (just a WHERE) because aliases are canonicalised in place; pre-Sprint-14 it carried a full CASE-expression alias map.
+
+**Destructive corpus clean-up**: BEGIN TRANSACTION; `UPDATE` 98 alias rows (EL→GR etc.); `DELETE` 1,639 out-of-scope companies + 2,527 events + 3,834 `classify_audit` rows; COMMIT. Pre-Sprint-14 DB backed up at `/tmp/eit_data_backup/db.sqlite.pre-europe-scope.bak` before the transaction ran.
+
+**Sanity check**: added "DQ: Europe scope integrity" to [scripts/sanity_check.py](../scripts/sanity_check.py). Three checks (out-of-scope rows, lingering aliases, both triggers installed). All three must be 0. Run after every loader.
+
+**Smoke-test note (lesson learned)**: my first trigger test ran `INSERT ... canonical_name = 'TEST IN-SCOPE'` then `DELETE WHERE canonical_name LIKE 'TEST %'`, which matched a real Austrian Horizon company called "TEST FUCHS" (id 10277) and clobbered it. Restored from backup. **Don't use `LIKE` patterns to clean up smoke-test rows; delete by exact id**.
+
+**Corpus delta**: 21,689 → 20,050 companies; 58,628 → 56,101 events; €76.9B → €76.2B; 53 → 40 countries. Capital impact under 1% because dropped companies are mostly Horizon co-funded participants with sub-€1M tickets.
+
+**Cost of expansion**: adding a country requires editing three files (the JSON, the trigger string-literal in `schema.sql`, the WHERE in `views.sql`) plus re-installing the trigger on the live DB and re-scraping any extractor whose source carries the newly-in-scope country. Runbook in `europe_scope.md`'s "When to revise the scope" section.
+
+**Map**: world-110m doesn't include Malta, Liechtenstein, or Kosovo (below resolution threshold). Decision was to add labelled dot markers for them via `MARKER_COUNTRIES` in [europe-map.tsx](../site/components/europe-map.tsx) rather than upgrade to world-50m (still misses LI/XK) or drop Malta from scope (politically odd for an EU member). The "40 countries" KPI is the in-scope count, not the rendered-shape count.
+
+### Front-end work in the same session
+
+- **Home-page instrument-taxonomy network** (`site/components/taxonomy-network.tsx`): fixed-cluster force-directed network linking the 9 EU instruments, 10 NDB / state agencies, and 3 private-capital placeholders. Bands fixed (EU top, NDB middle, private bottom); circle size = total EUR observed in corpus, sqrt-scaled; solid edges = shared portfolio companies, dashed = same dominant sector, dotted = expected handoff channel to private capital. Considerations note explains NDB equity-ticket gaps (most NDBs render at minimum radius because `equity_amount_eur` is NULL on `htgf_equity`, `almi_invest_equity`, etc.). Data builder: [scripts/build_taxonomy_network.py](../scripts/build_taxonomy_network.py).
+- **Tooltip flip** for both the network and the Europe map. Earlier version anchored to the parent container which included the legend and notes, so bottom-row nodes pushed the tooltip into the legend area. Wrapped each SVG in its own `relative` container; flipY now triggers above ~32% of canvas height so middle and bottom nodes anchor the box above the node.
+- **Europe-map tooltip** now carries two pies side-by-side (by instrument + by sector) and a narrative line e.g. "Germany ranks 2nd by company count, 1st by € committed (of 40). Portfolio is primarily cleantech and deep tech (64% combined). Mostly via Horizon EU." Rank ordinals, dominant-sector share, and dominant family derived from `narrative` + `bySector` fields added to country_map.json.
+
+## Day 15 — 2026-05-26 — Sprint 13: Tier 1 NDB load (8 of 8 workstreams — full coverage)
+
+**Scope**: Add the national strategic deployment layer — direct equity + strategic R&D grants from NDBs and R&D agencies across the 8 largest EU economies + Nordics. **All 8 workstreams (A-H) now have data in the DB.** Five have company-level coverage; three (Bpifrance, Enterprise Ireland, SPRIND) are at program/fund-vehicle level pending future enrichment.
+
+**DB delta** (final, all 8 workstreams loaded): 19,261 → 21,689 companies (+2,428 net new, after dedup); 55,166 → 58,628 events (+3,462).
+
+### Workstream 0 — foundation (all complete)
+
+Workstream 0.1-0.4 (companies-only champion view + q02 variants + `/02-champions` toggle) were already done in a prior session. Verified intact.
+
+Workstream 0.5 — schema migration added three columns to `public_funding_events`:
+- `ipcei_linked INTEGER DEFAULT 0` (+ partial index on =1)
+- `eif_lp_backed INTEGER DEFAULT 0`
+- `deployment_country TEXT` (+ index)
+
+Workstream 0.6 — `scripts/ndb_helpers.py` houses `match_ipcei_linked`, `backfill_ipcei_linked`, `mark_eif_backed`, and `normalise_ticket` (ECB annual reference rates for SEK/CZK/PLN/DKK 2021-2026). Self-tested clean.
+
+### Workstream loads — 8 of 8
+
+| Workstream | Institution | Source | Events | Matched against EU corpus | Notes |
+|---|---|---|---:|---:|---|
+| A | **Bpifrance (FR)** | `bpifrance_fond` | 10 | 0 | **Fund-vehicle placeholder level.** Site Cloudflare-blocked; TAM EU-Login-gated. 10 fund vehicles from Le Hub. |
+| B | KfW Capital — HTGF (DE) | `htgf_equity` | **857** | **349 exact + 4 fuzzy** | WP REST API. Sector taxonomy via WP `class_list` `branchen22-*`. **4 IPCEI overlaps** — first NDB hits. |
+| B | KfW Capital — Coparion (DE) | `coparion_equity` | 52 | 9 exact + 1 fuzzy | Static HTML modals, names + websites. |
+| B | **SPRIND (DE)** | `sprind_challenge` | 20 | 0 | **Program-level placeholders.** Challenge pages list project codenames not legal entities. |
+| C | CDP VC (IT) | `cdp_vc_equity` + `cdp_vc_fof` | 199 | 8 exact + 16 fuzzy | 152 direct + 47 FoF. `eif_lp_backed=1` set per EIF policy. |
+| D | Invest-NL (NL) | `invest_nl_equity` + `invest_nl_fof` | 13 | 0 | 6 direct + 7 FoF. Dutch verb-based name parser. |
+| E | CDTI (ES) | `cdti_{programme}_{year}` × 10 programmes | **1,880** | **565 exact + 33 fuzzy** | **Loaded via BDNS API workaround.** €1.04B total state aid. 142 loan + 1,738 grant rows. |
+| F | **Enterprise Ireland (IE)** | `enterprise_ireland_{hpsu,seed,ip,rd,cf,dtif}` | 6 | 0 | **Program-level placeholders.** JS-rendered site; no machine-readable HPSU client list. |
+| G | Business Finland (FI) | (not loaded) | 0 | — | Sub-workstream; deferred. |
+| G | Tesi (FI) | `tesi_equity` | 102 | 20 exact | Year + sector tags + manager. Pre-2021 vintage kept. |
+| H | Vinnova (SE) | (not loaded) | 0 | — | Behind login. |
+| H | Saminvest (SE) | (not loaded) | 0 | — | JS-only site. |
+| H | Almi Invest (SE) | `almi_invest_equity` | 323 | 28 exact + 1 fuzzy | API at `/api/views/portfolio?root=3650&p=<n>`. |
+| **All 8** | | | **3,462** | **988 cross-EU matches** | |
+
+The first four sources serve plain server-rendered HTML to curl. CDTI required discovering and integrating BDNS (Base de Datos Nacional de Subvenciones) — the Spanish national subsidies database, public API at `infosubvenciones.es/bdnstrans/api`. See "BDNS API workaround" sub-section below.
+
+### BDNS API workaround — pattern for CDTI and other ES grant agencies
+
+The block on `cdti.es/datosabiertos` (Imperva bot detection) doesn't matter because every CDTI award must legally be published in BDNS under Ley 38/2003. The same is true for every Spanish public funder — this pattern generalises to ICEX, ENISA, regional agencies (Galicia, Castilla-La Mancha already visible in the raw data).
+
+Discovery path:
+1. Frontend SPA is at `infosubvenciones.es/bdnstrans/GE/es/inicio` (Angular) — paths under `/GE/es/api/*` all route back to the Angular shell.
+2. Real API base lives at `/bdnstrans/api/*` — discovered from `servidoresApi` array in the SPA's main bundle.
+3. Working endpoints: `/api/concesiones/busqueda` (awards), `/api/convocatorias/busqueda` (calls). Both paginated with default `pageSize=50`, accepting `page=N`.
+4. Query parameter `vpd=GE&descripcion=CDTI` works as a text filter (`vpd` = "vista por defecto"; required for the General vista). `pageSize` larger than default triggers server timeouts — leave at default.
+5. Each concesion row carries: `id`, `codConcesion`, `fechaConcesion`, `beneficiario` ("`<NIF> <name>`"), `nivel3` (órgano), `importe` (nominal), `ayudaEquivalente` (subsidy-equivalent for loans), `instrumento`, `convocatoria` (programme title), `urlBR` (BOE resolution URL).
+6. Post-filter to `nivel3 = "CENTRO PARA EL DESARROLLO TECNOLÓGICO Y LA INNOVACIÓN E.P.E"` strips ~4% noise (57 ISCIII rows + 16 Galician Innovation + 4 Lorca) where the convocatoria title incidentally mentions CDTI.
+
+Coverage caveat: BDNS publication of CDTI awards starts 2022 — zero 2021 rows. The plan's 2021-01-01 window is bound by BDNS's compliance backlog, not by our query.
+
+Programme classifier (`PROGRAMME_RULES` in `extract_cdti.py`) maps convocatoria titles to ten source IDs:
+
+| Source family | Events | Total €M | Default sector |
+|---|---:|---:|---|
+| `cdti_misiones_*` | 540 | 402.5 | deeptech_hardware |
+| `cdti_idi_*` (general I+D innovation) | 597 | 305.4 | deeptech_hardware |
+| `cdti_neotec_*` (startup grants) | 576 | 174.0 | deeptech_hardware |
+| `cdti_cervera_*` (RTO network) | 88 | 108.3 | deeptech_hardware |
+| `cdti_perte_aerosalud_*` | 59 | 39.5 | deeptech_hardware |
+| `cdti_lic_*` (Línea Directa de Expansión, loans) | 20 | 7.8 | deeptech_hardware |
+| **Total CDTI** | **1,880** | **€1,036.9M** | |
+
+Instrument distribution: 1,738 SUBVENCIÓN (basis=`cdti_grant`) + 142 PRÉSTAMO (basis=`cdti_loan`). For loans the loaded `grant_amount_eur` is the `ayudaEquivalente` (subsidy-equivalent at below-market interest), which is the EU-comparable state-aid figure. Filter by `grant_amount_basis` if a strict grants-only view is needed.
+
+### Single most impactful finding
+
+**HTGF surfaced the first IPCEI overlaps.** Across 2,517 NDB rows before HTGF (Invest-NL, Tesi, Almi, CDP VC, CDTI) IPCEI overlap = 0. Adding HTGF's 857 companies surfaced **4 IPCEI overlaps** — companies that received BOTH HTGF early-stage equity AND were partners in an IPCEI consortium. Makes sense: HTGF is Germany's deeptech VC by mandate, and IPCEI Microelectronics / Batteries has strong German industrial-prime participation.
+
+The wider pattern still holds for the **portfolio-scrape NDBs** (Invest-NL, Tesi, Almi, CDP VC) and **CDTI's SME R&D programmes** — those recipient pools (SMEs, scaleups, RTOs) are essentially disjoint from the IPCEI consortium pool (large-corp incumbents). HTGF is the exception because it backs the same early-stage deeptech that later graduates to IPCEI partnerships.
+
+### Cross-instrument champions surfaced by this sprint
+
+Spanish RTOs now dominate the top of the cross-instrument leaderboard thanks to CDTI Cervera + Pillar II + EIC overlap:
+- **CSIC** (Spanish national research council) — 23 source families (EIC + EuroHPC + all 5 Pillar II clusters + CDTI IDI)
+- **Tecnalia, Eurecat, Vicomtech, CARTIF, CIDETEC, Tekniker** — 12-22 source families each
+- **Bedimensional SPA** (IT) — CDP VC + EIC Transition/Pathfinder + EIB + 4 Pillar II clusters
+- **IQM Finland Oy** — Tesi + EIC Accelerator + EIB + CL4
+
+### Single most impactful finding
+
+**0 IPCEI overlaps across all 637 NDB rows.** I ran `backfill_ipcei_linked` against all NDB source prefixes and got zero hits. This is analytically meaningful — the NDB recipient pool (SMEs and scaleups: Capalo AI, Onego Bio, 2Hire, Empatica, Qualinx, etc.) is essentially disjoint from the IPCEI consortium pool (large-corp incumbents: STMicro, Renault, BMW, EnBW, etc.). The Sprint 13 plan budgeted for "150-400 events flagged" in this backfill; the right number against the four loaded NDBs is zero, and that's a real signal not a bug. Update aggregate-view methodology to reflect that the IPCEI double-count netting kicks in only for direct-investment NDBs that bet on industrial primes (Bpifrance, CDTI would surface most of these — both blocked this session).
+
+### Workarounds executed beyond CDTI (this push)
+
+| Workaround | Result |
+|---|---|
+| **HTGF WP REST API** (`/wp-json/wp/v2/portfolio`) | 857 KfW Capital deployment-layer companies with sector taxonomy from WP `class_list`. Full real data. |
+| **Coparion static HTML modals** | 52 KfW Capital co-deployment companies. Names + websites; no amounts. |
+| **SPRIND `/taten/challenges` listing** | 20 challenge programs loaded as program-level placeholders (`entity_type='other'`). Per-team legal-entity resolution requires Bundesanzeiger PDF parse. |
+| **Bpifrance `lehub.bpifrance.fr/fonds-et-participations/`** | 10 fund vehicles loaded as program-level placeholders. Full Bpifrance.fr portfolio remains Cloudflare-gated. |
+| **Enterprise Ireland known programmes** | 6 funding-programme placeholders. No public per-beneficiary list. |
+
+### Still future-session work — biggest unlocks
+
+1. **EU State Aid Transparency Award Module (TAM)** at `webgate.ec.europa.eu/competition/transparency` — the single biggest unlock for the program-level placeholders. By EU law (Reg 651/2014 Art 9 / GBER), every grant >€100k must be published here. Coverage spans Bpifrance, KfW grants, SPRIND grants, EI grants, Business Finland, Vinnova, and supplements CDTI. The public form requires JS interaction; the API (`/api/aids/search`) is gated behind EU Login (free account signup). Once authenticated, expect 5,000-15,000+ additional rows across the 8 workstreams.
+2. **Bpifrance via Playwright stealth** — defeats Cloudflare on `bpifrance.fr/nos-pratiques-d-investissement/notre-portefeuille`. Estimated 400-800 direct portfolio companies if successful.
+3. **Enterprise Ireland annual report PDF** — typically lists HPSU clients per year. IF fiche pattern applies.
+4. **Vinnova GDP / GDPHub API** at `gdphub.se` — requires account, then bulk-export of funded projects.
+5. **Business Finland programme catalogue** — multi-call scrape; per-programme award lists. Lower ROI than TAM.
+6. **Saminvest annual report PDF** — small portfolio (~30-50 LPs).
+7. **SPRIND legal-entity resolution** — Bundesanzeiger Zuwendungsbescheide or SPRIND annual report PDF.
+
+### Coverage delta vs plan
+
+Plan estimated ~3,700-6,380 new events. Delivered **3,462** (about 54-94% of plan range). HTGF (857) + CDTI (1,880) drove most of the volume. Of the program-level placeholder loads (Bpifrance 10, SPRIND 20, EI 6), the population they REPRESENT is 100x larger — the TAM workaround in a future session is expected to bring 5,000-15,000+ additional rows that map to those institutions.
+
+### Files added
+
+- `scripts/ndb_helpers.py` — IPCEI linkage backfill, EIF flag, FX normalisation
+- `scripts/extract_invest_nl.py`, `extract_tesi.py`, `extract_almi_invest.py`, `extract_cdp_vc.py` — production extractors (company-level)
+- `scripts/extract_cdti.py` — production extractor (BDNS API; 1,880 events loaded)
+- `scripts/extract_htgf.py` — production extractor (WP REST API; 857 events loaded)
+- `scripts/extract_coparion.py` — production extractor (52 events loaded)
+- `scripts/extract_sprind.py` — program-level (20 challenge placeholders loaded; per-team resolution pending)
+- `scripts/extract_bpifrance.py` — program-level (10 fund-vehicle placeholders; portfolio gated)
+- `scripts/extract_enterprise_ireland.py` — program-level (6 funding-programme placeholders)
+- `docs/sprint13_ndb_status.md` — per-institution status table
+- `docs/cdti_discovery_notes.md` — historical Imperva-blocker record + BDNS path executed
+- `data/raw/{invest_nl,tesi,almi_invest,cdp_vc,sprind,htgf,coparion}/` — cached source HTML/JSON
+- `data/raw/cdti/pages/page_{0..39}.json` — BDNS API page cache (~2MB)
+- `data/raw/htgf/page_{1..11}.json` — WP REST API page cache (~10MB)
+
+### Files modified
+
+- `scripts/schema.sql` — 3 new columns + 2 indexes documented
+- `scripts/classify.py` — imports the 5 new `*_SOURCE_SECTOR` dicts and uses them in the source-fallback chain
+- `analysis/views.sql` — unchanged this session (the planned `v_company_funding_layers`, `v_ndb_ipcei_overlap`, `v_strategic_resilience_index` deferred)
+- `site/app/02-champions/page.tsx` — unchanged (companies-only toggle already in place from a prior session)
+- `site/app/national/page.tsx` — NOT added (planned future-session work)
+
+DB backups: `db.sqlite.backup_pre_sprint13` (start of session), `db.sqlite.backup_pre_cdti_bdns` (immediately before CDTI BDNS load), `db.sqlite.backup_pre_8of8` (immediately before HTGF+Coparion+SPRIND+Bpifrance+EI load).
+
+**Known regression in sanity-check DQ metric**: `companies with NULL sector_inferred_updated_at` rose from 1 → 1,971 across this sprint. Not a bug introduced by NDB code — it's a pre-existing pattern in classify.py: companies inserted with an initial `sector_inferred` value (which the NDB extractors do, using the source-level sector hint) bypass the classifier's timestamp setter, which only stamps on *flips* or *first-time assignments*. Treat the metric as "fraction of companies whose sector was set at extractor insert time and never re-evaluated by classify" — large but not load-blocking. Fix queued (one-line stamp on initial-set, or one-off backfill query).
+
+**Bug fixed mid-sprint**: the three placeholder extractors (`extract_sprind.py`, `extract_bpifrance.py`, `extract_enterprise_ireland.py`) originally inserted a new `companies` row on every `--load-db` run without checking for an existing placeholder, creating 36 orphan duplicates on re-run. Fixed 2026-05-27 by adding an "look up canonical_name+country, reuse if present" guard before the INSERT. The 36 orphan rows from the second run were deleted; idempotency verified clean. The real (per-company) extractors were unaffected — their `match_companies` step already does the lookup.
+
+### Open items entering Sprint 14
+
+- ~~**CDTI via BDNS API**~~ — DONE 2026-05-26.
+- ~~**KfW Capital via HTGF + Coparion**~~ — DONE 2026-05-26. 909 companies, 4 IPCEI overlaps.
+- ~~**8/8 workstream coverage**~~ — DONE 2026-05-26 (with program-level placeholders for Bpifrance/EI/SPRIND).
+- **TAM API via EU Login** — biggest remaining unlock. Expected 5,000-15,000+ rows spanning Bpifrance, EI, SPRIND, BFinland, Vinnova, Saminvest. Requires interactive EU Login signup.
+- **Annual-report PDF parses** — EI, Saminvest, Bpifrance, SPRIND.
+- **Vinnova GDP / Business Finland programme scrape** — Sprint 14 secondary.
+- **The 3 planned analysis views** (`v_company_funding_layers`, `v_ndb_ipcei_overlap`, `v_strategic_resilience_index`) + **`/national` site page** — deferred to Sprint 14.
+- **`sector_inferred_updated_at` DQ regression** — fix queued (one-line stamp at extractor insert time).
+
 ## Day 13 — 2026-05-25 — Sprint 11: Tier 2 coverage + CORDIS open-data adoption
 
 **Scope**: Add CHP / IHI JU / EuroHPC JU as new sources; refresh Chips JU + IF + EDF + EIB; backfill thin EIT sources.
