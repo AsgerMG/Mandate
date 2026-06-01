@@ -16,8 +16,12 @@ db_backups/
 db.sqlite
 scripts/db.sqlite
 
-# Sprint 15 SATR raw CSV cache — large (~5-20 GB at full scale)
-data/processed/satr/
+# Source data: raw API/HTML caches and derived intermediates are generated build
+# artifacts (600MB+), not version-controlled. They are reproducible by re-running
+# scripts/extract_*.py and are backed up separately (see README, backup strategy).
+# The website never reads these; it only reads site/public/data/*.json.
+data/raw/
+data/processed/
 
 # Playwright browser binary cache
 .playwright/
