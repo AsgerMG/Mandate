@@ -54,7 +54,8 @@ SELECT
     WHEN e.source LIKE 'chp_%'             THEN 'horizon_eu_partnership'
     WHEN e.source LIKE 'ihi_%'             THEN 'horizon_eu_partnership'
     WHEN e.source LIKE 'eurohpc_%'         THEN 'horizon_eu_partnership'
-    WHEN e.source LIKE 'horizon_eu_%'      THEN 'horizon_eu_pillar_ii'
+    WHEN e.source LIKE 'erc_poc_%'         THEN 'horizon_eu_pillar_ii'  -- Sprint 17
+    WHEN e.source LIKE 'horizon_eu_%'      THEN 'horizon_eu_pillar_ii'  -- incl. Sprint 17 miss/eie/cbe
     WHEN e.source LIKE 'htgf_%'            THEN 'national_dev_banks'
     WHEN e.source LIKE 'cdti_%'            THEN 'national_dev_banks'
     WHEN e.source LIKE 'almi_%'            THEN 'national_dev_banks'
@@ -65,9 +66,23 @@ SELECT
     WHEN e.source LIKE 'bpifrance_%'       THEN 'national_dev_banks'
     WHEN e.source LIKE 'sprind_%'          THEN 'national_dev_banks'
     WHEN e.source LIKE 'enterprise_ireland_%' THEN 'national_dev_banks'
+    -- Sprint 16 central NDB registers
+    WHEN e.source LIKE 'ademe_%'           THEN 'national_dev_banks'
+    WHEN e.source LIKE 'innovationsfonden_%' THEN 'national_dev_banks'
+    WHEN e.source LIKE 'eifo_%'            THEN 'national_dev_banks'
+    WHEN e.source LIKE 'fr_relance_%'      THEN 'national_dev_banks'
+    -- Sprint 17 direct NDB scrapers (run locally where reachable)
+    WHEN e.source LIKE 'innovasjon_norge_%' THEN 'national_dev_banks'
+    WHEN e.source LIKE 'nfr_%'             THEN 'national_dev_banks'
+    WHEN e.source LIKE 'innosuisse_%'      THEN 'national_dev_banks'
+    WHEN e.source LIKE 'vinnova_%'         THEN 'national_dev_banks'
+    WHEN e.source LIKE 'business_finland_%' THEN 'national_dev_banks'
+    WHEN e.source LIKE 'altum_%' OR e.source LIKE 'ilte_%' OR e.source LIKE 'eis_%' THEN 'national_dev_banks'
+    WHEN e.source LIKE 'tacr_%'            THEN 'national_dev_banks'
     -- Sprint 15: national state-aid layer (SATR + national portals)
     WHEN e.source LIKE 'satr_%'            THEN 'state_aid_satr'
     WHEN e.source LIKE 'sudop_%'           THEN 'state_aid_satr'
+    WHEN e.source LIKE 'bdns_%'            THEN 'state_aid_satr'  -- Sprint 17: Spain SNPSAP register
     WHEN e.source LIKE 'regas_%'           THEN 'state_aid_satr'
     WHEN e.source LIKE 'gov_si_%'          THEN 'state_aid_satr'
     ELSE e.source

@@ -23,11 +23,15 @@ help:
 analyze:
 	python3 analysis/run.py
 
+views:
+	sqlite3 db.sqlite < analysis/views.sql
+
 visuals:
 	python3 scripts/build_home_visuals.py
 	python3 scripts/gen_country_map.py
+	python3 scripts/gen_coverage_indicator.py
 
-data: analyze visuals
+data: views analyze visuals
 
 site-build:
 	cd site && npm run build

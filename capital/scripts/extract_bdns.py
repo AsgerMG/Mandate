@@ -1,245 +1,347 @@
-"""Extract Spain BDNS (Base de Datos Nacional de Subvenciones) — Sprint 17.
+"""Extract Spain BDNS state-aid register (ayudasestado) — Sprint 17.
 
-Data source:
-  BDNS REST API: https://pap.hacienda.gob.es/bdnstrans/GE/es/
-  NOTE: The server uses IP-based WAF filtering. Run from a residential/VPN
-  network, not cloud/CI. Sprint 16 hit this block; confirmed IP-restricted.
+BREAKTHROUGH (2026-06-01): the legacy pap.hacienda.gob.es API is IP-WAF-blocked
+from cloud/datacenter networks. Spain's state aid register is MIRRORED at
+`www.infosubvenciones.es/bdnstrans/api` (same SNPSAP backend, no WAF). Discovered
+via the data.europa.eu catalogue entry for the BDNS dataset.
 
-  Key endpoints:
-    /concesiones.json   — company-level grant awards (beneficiario data)
-    /convocatorias.json — grant calls index
+This is Spain's equivalent of the EU SATR register — Spain opted out of the
+central EC Transparency Award Module (TAM), so its company-level state aid is
+ONLY here. The `ayudasestado` endpoint = notified + GBER block-exemption aid
+(the direct analogue of our SATR corpus); `minimis` = de minimis (excluded per
+methodology, will come via eAid 2027); `concesiones` = ALL grants incl. tiny
+municipal subsidies (25M rows, out of scope).
 
-  Core parameters for concesiones:
-    page           = 0, 1, 2, …
-    pageSize       = 200 (max)
-    tipoBeneficiario = 1 (empresas / companies)
-    organo         = <granting body code>
-    anio           = 2021|2022|…  (year filter)
-    fechaDesde, fechaHasta = date range
+Working endpoint (no portal/lang segments in the API path):
+    GET {BASE}/ayudasestado/busqueda
+        ?objetivos=<gber_objective_id>          (repeatable; ≤20 per query)
+        &fechaDesde=dd/mm/yyyy&fechaHasta=dd/mm/yyyy   (NOTE: dd/mm/yyyy, not ISO)
+        &page=N&pageSize=5000
 
-  Key organo codes for innovation-relevant bodies:
-    EA0028053   — CDTI (Centro para el Desarrollo Tecnológico e Industrial)
-    E04990001   — AEI (Agencia Estatal de Investigación)
-    EA0042577   — ENISA (Empresa Nacional de Innovación)
-    E04921901   — CDTI regional Cantabria
-    GV01002000  — Generalitat Valencia / IVACE+i
-    AV01002000  — Generalitat Catalunya / AGAUR / ACCIÓ
-    EV01002000  — Gobierno Vasco / SPRI
-    RA01902001  — Junta de Andalucía
-    GA01002001  — Xunta de Galicia / GAIN
+Record shape (per concession):
+    beneficiario      "B71408660 - VISCOFAN ESPAÑA SL"  (CIF/NIF - name)
+    importe           nominal amount (grant face value / loan principal)
+    ayudaEquivalente  aid-equivalent (subsidy element — used for loans/guarantees)
+    instrumento       SUBVENCIÓN | PRÉSTAMO | (equity: PARTICIPACIÓN/CAPITAL)
+    tipoBeneficiario  GRAN EMPRESA | PYME | PERSONA FÍSICA (filter out individuals)
+    objetivo          "ART. 25 AYUDAS A PROYECTOS DE I+D"  (GBER article)
+    reglamento        "REG (UE) 651/2014 ..."
+    convocante        granting authority (long form, region + agency)
+    region            "ES220 - Navarra"  (NUTS)
+    ayudaEstado       "SA.113403"  (EU state-aid case number)
 
-  CDTI dedup: extract_cdti.py already loads 1,880 CDTI grants.
-  On BDNS load, skip rows where organo=EA0028053 (CDTI) to avoid duplicates.
-  OR dedup by NIF + year against existing cdti_ events.
+Scope mirrors SATR methodology: GBER Art. 21-30 (R&D&I) + 36-49 (environmental/
+energy, non-agri variants only). De minimis and COVID/TCTF excluded.
+
+Instrument → amount column:
+    SUBVENCIÓN / ENTREGA DINERARIA   → grant_amount_eur
+    PRÉSTAMO / ANTICIPO REEMBOLSABLE → debt_amount_eur (aid-equivalent → grant_amount_eur)
+    PARTICIPACIÓN / CAPITAL / TOMA    → equity_amount_eur
+
+CDTI dedup: CDTI grants are already loaded via extract_cdti.py (1,880 events).
+BDNS rows whose convocante contains the CDTI marker are SKIPPED here.
 
 Run modes:
-  python extract_bdns.py --probe                  → test connectivity
-  python extract_bdns.py --load-db                → fetch all innovation organos + load
-  python extract_bdns.py --organo EA0028053        → single organo (test)
-  python extract_bdns.py --local <csv_path>        → load pre-downloaded file
-  python extract_bdns.py --year 2024               → single year
+    python extract_bdns.py --probe                 → connectivity test
+    python extract_bdns.py --load-db               → full fetch + dedup + load
+    python extract_bdns.py --objetivo 167          → single GBER objective (test)
+    python extract_bdns.py --local <jsonl>         → load pre-downloaded rows
 """
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import re
 import sqlite3
 import sys
 import time
-import urllib.request
-import urllib.error
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from ndb_ssl import fetch_json  # noqa: E402
 
 BASE_DIR = Path(__file__).parent.parent
 RAW_DIR = BASE_DIR / "data" / "raw" / "bdns"
 OUT_DIR = BASE_DIR / "data" / "processed"
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 OUT_DIR.mkdir(parents=True, exist_ok=True)
-
-CSV_PATH = OUT_DIR / "bdns_grants.csv"
+CSV_PATH = OUT_DIR / "bdns_ayudas.csv"
 DB_PATH = BASE_DIR / "db.sqlite"
+
+API_BASE = "https://www.infosubvenciones.es/bdnstrans/api"
 DEPLOYMENT_COUNTRY = "ES"
 MIN_YEAR = 2021
-PAGE_SIZE = 200
+PAGE_SIZE = 5000
+# SATR publishes only aid >= EUR100k for the other 24 countries. BDNS publishes
+# everything down to ~EUR1k (rooftop-solar/EV deployment subsidies). To keep Spain
+# CONSISTENT with the rest of the SATR corpus — and exclude deployment noise — we
+# apply the same EUR100k floor. Sub-threshold Spanish innovation aid is captured
+# separately via the CDTI direct scraper (the Spanish analogue of HTGF for DE).
+MIN_AMOUNT_EUR = 100_000
+DATE_FROM = "01/01/2021"
+DATE_TO = "31/12/2026"
 
-BDNS_BASE = "https://pap.hacienda.gob.es/bdnstrans/GE/es"
-
-# Innovation-relevant organos to extract (code → label → source slug)
-# CDTI is skipped by default (already loaded via extract_cdti.py)
-INNOVATION_ORGANOS: dict[str, dict] = {
-    "E04990001":  {"label": "AEI",        "slug": "aei",    "skip_cdti_dedup": False},
-    "EA0042577":  {"label": "ENISA",      "slug": "enisa",  "skip_cdti_dedup": False},
-    "EA0028053":  {"label": "CDTI",       "slug": "cdti",   "skip_cdti_dedup": True},   # already loaded
-    # Regional agencies (top 6 by innovation volume)
-    "GV01002000": {"label": "IVACE_Valencia", "slug": "ivace",  "skip_cdti_dedup": False},
-    "AV01002000": {"label": "AGAUR_Catalonia", "slug": "agaur", "skip_cdti_dedup": False},
-    "EV01002000": {"label": "SPRI_Basque",  "slug": "spri",   "skip_cdti_dedup": False},
-    "RA01902001": {"label": "JUNTA_Andalucia", "slug": "junta_and", "skip_cdti_dedup": False},
-    "GA01002001": {"label": "GAIN_Galicia", "slug": "gain",  "skip_cdti_dedup": False},
+# GBER objective id → (article label, sector hint). Mirrors SATR scope:
+# R&D&I block (Art. 21-30) + environmental/energy (Art. 36-49, non-agri variants).
+# objetivo ids resolved from {BASE}/objetivos (2026-06-01).
+OBJECTIVES: dict[int, tuple[str, str]] = {
+    # ── R&D & Innovation (Art. 21-30) ────────────────────────────────────────
+    167: ("Art.25 R&D projects", "unclassified"),
+    168: ("Art.25bis seal of excellence", "unclassified"),
+    170: ("Art.25quater cofunded R&D", "unclassified"),
+    171: ("Art.25quinquies teaming", "unclassified"),
+    50:  ("Art.26 research infrastructure", "unclassified"),
+    313: ("Art.26bis test & experimentation infra", "deeptech_hardware"),
+    51:  ("Art.27 innovation clusters", "unclassified"),
+    52:  ("Art.28 innovation aid for SMEs", "unclassified"),
+    53:  ("Art.29 process & organisational innovation", "unclassified"),
+    43:  ("Art.22 start-up aid", "unclassified"),
+    42:  ("Art.21 risk finance", "unclassified"),
+    # ── Environmental / Energy (Art. 36-49, non-agri) ────────────────────────
+    60:  ("Art.36 environmental investment", "cleantech"),
+    172: ("Art.36bis recharging/refuelling infra", "cleantech"),
+    314: ("Art.36ter clean vehicles", "cleantech"),
+    62:  ("Art.38 energy efficiency", "cleantech"),
+    315: ("Art.38bis energy efficiency", "cleantech"),
+    316: ("Art.38ter energy performance contracts", "cleantech"),
+    63:  ("Art.39 energy-efficient buildings", "cleantech"),
+    65:  ("Art.41 renewable energy investment", "cleantech"),
+    66:  ("Art.42 renewable operating aid", "cleantech"),
+    70:  ("Art.46 district heating/cooling", "cleantech"),
+    71:  ("Art.47 resource efficiency / circular", "cleantech"),
+    72:  ("Art.48 energy infrastructure", "cleantech"),
 }
 
-# Minimum grant amount to reduce noise (€ equivalent)
-MIN_AMOUNT_EUR = 10_000
+# bdns source slugs that are intrinsically cleantech (for classify.py fallback)
+BDNS_SOURCE_SECTOR: dict[str, str] = {}  # populated at import (per-year sources)
+
+# convocante substring → canonical NDB id (genuine agencies only, per
+# "only tag if sure" rule — generic ministries are NOT tagged).
+NDB_MARKERS: list[tuple[str, str]] = [
+    ("CENTRO PARA EL DESARROLLO TECNOLÓGICO", "cdti"),  # used only for dedup-skip
+    ("ENISA", "enisa"),
+    ("EMPRESA NACIONAL DE INNOVACI", "enisa"),
+    ("INSTITUTO DE CRÉDITO OFICIAL", "ico"),
+    ("INSTITUTO PARA LA DIVERSIFICACIÓN Y AHORRO", "idae"),
+    ("IDAE", "idae"),
+    ("INSTITUT CATALÀ D'ENERGIA", "icaen"),
+    ("ICAEN", "icaen"),
+    ("INSTITUTO VALENCIANO DE COMPETITIVIDAD EMPRESARIAL", "ivace"),
+    ("IVACE", "ivace"),
+    ("AGENCIA GALLEGA DE INNOVACIÓN", "gain"),
+    ("INSTITUTO GALLEGO DE PROMOCIÓN ECONÓMICA", "igape"),
+    ("IGAPE", "igape"),
+    ("AGÈNCIA PER A LA COMPETITIVITAT DE L'EMPRESA", "accio"),
+    ("ACCIÓ", "accio"),
+    ("AGENCIA DE DESARROLLO ECONÓMICO DE LA RIOJA", "ader"),
+    ("SOCIEDAD PARA EL DESARROLLO REGIONAL DE CANTABRIA", "sodercan"),
+    ("AGENCIA ANDALUZA DE LA ENERGÍA", "agencia_andaluza_energia"),
+    ("AGENCIA DE CIENCIA, COMPETITIVIDAD EMPRESARIAL E INNOVACI", "sekuens"),
+    ("INSTITUTO PARA LA COMPETITIVIDAD EMPRESARIAL DE CASTILLA Y LE", "icecyl"),
+    ("FUNDACIÓN EOI", "eoi"),
+]
+
+CDTI_MARKER = "CENTRO PARA EL DESARROLLO TECNOLÓGICO"
+
+# Instrument classification
+_GRANT_RE = re.compile(r"SUBVENCI|ENTREGA DINERARIA|SUBSIDIO", re.I)
+_DEBT_RE = re.compile(r"PR[EÉ]STAMO|ANTICIPO|CR[EÉ]DITO|REEMBOLSABLE", re.I)
+_EQUITY_RE = re.compile(r"PARTICIPACI|CAPITAL|TOMA DE PARTICIP|APORTACI[OÓ]N PATRIM|ACCIONES", re.I)
+
+# COVID/TCTF exclusion (mirror SATR staging filter)
+_COVID_RE = re.compile(r"COVID|CORONAVIRUS|TCTF|TEMPORARY CRISIS|MARCO TEMPORAL|PANDEMIA", re.I)
+
+# Company beneficiary types (exclude natural persons)
+_COMPANY_TIPOS = {
+    "GRAN EMPRESA", "PYME", "MEDIANA EMPRESA", "PEQUEÑA EMPRESA",
+    "MICROEMPRESA", "MEDIANA EMPRESA, PEQUEÑA EMPRESA Y MICROEMPRESA",
+}
+
+# Spanish company CIF prefixes (legal entities). Natural-person NIFs are masked
+# as ***####** so they're filtered anyway, but this is a second guard.
+_CIF_RE = re.compile(r"^[ABCDEFGHJNPQRSUVW]\d{7}[0-9A-J]$")
 
 
-def _get_json(url: str, timeout: int = 30) -> dict | list | None:
-    try:
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": "Mozilla/5.0 (compatible; EuroInvTracker/1.0)",
-                "Accept": "application/json",
-                "Referer": "https://pap.hacienda.gob.es/bdnstrans/GE/es/concesiones",
-            },
-        )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read())
-    except urllib.error.HTTPError as e:
-        if e.code == 403:
-            print(
-                f"\nHTTP 403 from BDNS. WAF IP-block active.\n"
-                f"Run this script from a residential or VPN network.\n"
-                f"The BDNS API blocks cloud/datacenter IP ranges (Sprint 16 known issue).\n",
-                file=sys.stderr)
+def _ndb_from_convocante(convocante: str) -> str | None:
+    up = (convocante or "").upper()
+    for marker, ndb in NDB_MARKERS:
+        if marker.upper() in up:
+            return ndb
+    return None
+
+
+def _instrument_amounts(instrumento: str, importe: float, ayuda_eq: float
+                        ) -> tuple[float | None, float | None, float | None, str]:
+    """Return (grant_eur, debt_eur, equity_eur, basis) for the instrument."""
+    instr = instrumento or ""
+    if _EQUITY_RE.search(instr):
+        return None, None, (importe or ayuda_eq or None), "bdns_equity"
+    if _DEBT_RE.search(instr):
+        # Loan: principal in debt, subsidy element in grant
+        return (ayuda_eq or None), (importe or None), None, "bdns_loan_aid_element"
+    if _GRANT_RE.search(instr):
+        return (importe or ayuda_eq or None), None, None, "bdns_grant"
+    # Unknown instrument → treat face value as grant, flag in basis
+    return (importe or ayuda_eq or None), None, None, "bdns_other"
+
+
+def _parse_record(rec: dict, article: str, sector: str) -> dict | None:
+    tipo = (rec.get("tipoBeneficiario") or "").strip().upper()
+    if "PERSONA F" in tipo:  # PERSONA FÍSICA — natural person
         return None
-    except Exception as e:
-        print(f"  Request error: {e}", file=sys.stderr)
+
+    benef = (rec.get("beneficiario") or "").strip()
+    if not benef or benef.startswith("***"):  # masked natural person
         return None
-
-
-def _fetch_concesiones(organo: str, year: int) -> list[dict]:
-    """Fetch all concesiones (company grant awards) for one organo+year."""
-    records = []
-    page = 0
-    while True:
-        url = (
-            f"{BDNS_BASE}/concesiones.json"
-            f"?page={page}&pageSize={PAGE_SIZE}"
-            f"&tipoBeneficiario=1"          # 1 = empresas (companies)
-            f"&organo={organo}"
-            f"&anio={year}"
-        )
-        data = _get_json(url)
-        if data is None:
-            break
-        if isinstance(data, dict):
-            batch = data.get("content") or data.get("concesiones") or data.get("data") or []
-            total = data.get("totalElements") or data.get("total") or 0
-        elif isinstance(data, list):
-            batch = data
-            total = len(data)
-        else:
-            break
-        if not batch:
-            break
-        records.extend(batch)
-        if len(records) >= total or len(batch) < PAGE_SIZE:
-            break
-        page += 1
-        time.sleep(0.5)  # polite rate-limit
-    return records
-
-
-def _parse_concesion(rec: dict, organo_cfg: dict, year: int) -> dict | None:
-    def _f(*keys: str) -> str:
-        for k in keys:
-            v = rec.get(k)
-            if v is not None:
-                return str(v).strip()
-        return ""
-
-    name = _f("beneficiario", "nombreBeneficiario", "razonSocial", "name")
+    # Split "CIF - NAME"
+    if " - " in benef:
+        nif, name = benef.split(" - ", 1)
+        nif = nif.strip()
+        name = name.strip()
+    else:
+        nif, name = "", benef
     if not name:
         return None
-
-    nif = _f("nifBeneficiario", "nif", "cifBeneficiario")
-    nif = re.sub(r"\s+", "", nif)
-
-    amt_str = _f("importeConcedido", "importe", "importeTotal", "amount")
-    amt_str = re.sub(r"[^\d.,]", "", amt_str).replace(",", ".").replace(" ", "")
-    try:
-        amount_eur = float(amt_str) if amt_str else 0.0
-    except ValueError:
-        amount_eur = 0.0
-    if amount_eur < MIN_AMOUNT_EUR:
+    # If we have a tipo that's a company OR the nif looks like a CIF, keep it.
+    if tipo not in _COMPANY_TIPOS and not _CIF_RE.match(nif.upper()):
+        # No company signal — skip to stay disciplined (avoid natural persons)
         return None
 
-    convoc = _f("convocatoria", "codigoConvocatoria", "numConvocatoria")
-    slug = organo_cfg["slug"]
-    source = f"bdns_{slug}_{year}"
-    call_id = f"{source}_{nif or name[:25]}_{convoc or ''}"
+    fecha = (rec.get("fechaConcesion") or "").strip()
+    ym = re.match(r"(\d{4})", fecha)
+    if not ym:
+        return None
+    year = int(ym.group(1))
+    if year < MIN_YEAR:
+        return None
+
+    convocatoria = (rec.get("convocatoria") or "")
+    objetivo = (rec.get("objetivo") or "")
+    if _COVID_RE.search(convocatoria) or _COVID_RE.search(objetivo):
+        return None  # COVID/TCTF emergency aid out of scope
+
+    convocante = (rec.get("convocante") or "").strip()
+    # CDTI is loaded via extract_cdti.py — skip to avoid double-count
+    if CDTI_MARKER in convocante.upper():
+        return {"_skip_cdti": True}
+
+    try:
+        importe = float(rec.get("importe") or 0)
+    except (ValueError, TypeError):
+        importe = 0.0
+    try:
+        ayuda_eq = float(rec.get("ayudaEquivalente") or 0)
+    except (ValueError, TypeError):
+        ayuda_eq = 0.0
+
+    instrumento = (rec.get("instrumento") or "").strip()
+    grant_eur, debt_eur, equity_eur, basis = _instrument_amounts(instrumento, importe, ayuda_eq)
+    # Skip zero-value rows
+    if not any([grant_eur, debt_eur, equity_eur]):
+        return None
+    # SATR-consistency floor: keep only aid >= EUR100k (face value of any instrument).
+    # Excludes the rooftop-solar / EV deployment-subsidy noise (mostly EUR1-40k).
+    face_value = max(importe or 0, ayuda_eq or 0)
+    if face_value < MIN_AMOUNT_EUR:
+        return None
+
+    ndb = _ndb_from_convocante(convocante)
+    sa_number = (rec.get("ayudaEstado") or "").strip() or None
+    region = (rec.get("region") or "").strip()
+    cod = (rec.get("codConcesion") or rec.get("idConcesion") or "").strip()
+    source = f"bdns_es_ayudas_{year}"
 
     return {
         "source": source,
-        "call_id": call_id,
+        "call_id": f"{source}_{cod or (nif + name[:15])}",
         "company_name": name,
         "company_name_norm": name.upper(),
-        "nif": nif,
+        "nif": nif.upper() if _CIF_RE.match(nif.upper()) else None,
         "country": DEPLOYMENT_COUNTRY,
         "year": year,
-        "organo": organo_cfg["label"],
-        "convocatoria": convoc,
-        "grant_amount_eur": round(amount_eur, 2),
-        "ndb_distributor": organo_cfg.get("ndb_distributor", "bdns"),
+        "project_title": convocatoria[:240] or None,
+        "sector_tags_raw": f"{objetivo}||{sector}",
+        "grant_amount_eur": grant_eur,
+        "debt_amount_eur": debt_eur,
+        "equity_amount_eur": equity_eur,
+        "grant_amount_basis": basis,
+        "ndb_distributor": ndb,
         "deployment_country": DEPLOYMENT_COUNTRY,
+        "satr_sa_number": sa_number,
+        "instrumento": instrumento,
+        "objetivo": objetivo,
     }
 
 
-def _cdti_nifs(con: sqlite3.Connection) -> set[str]:
-    """Return NIFs of companies already loaded via extract_cdti.py."""
-    cur = con.cursor()
-    cur.execute(
-        """SELECT c.national_id FROM companies c
-           JOIN public_funding_events pfe ON pfe.company_id = c.id
-           WHERE pfe.source LIKE 'cdti_%' AND c.national_id IS NOT NULL""")
-    return {row[0] for row in cur.fetchall() if row[0]}
+def _fetch_objective(obj_id: int) -> list[dict]:
+    """Paginate ayudasestado for one GBER objective, return parsed rows."""
+    article, sector = OBJECTIVES[obj_id]
+    rows: list[dict] = []
+    skipped_cdti = 0
+    page = 0
+    while True:
+        url = (f"{API_BASE}/ayudasestado/busqueda"
+               f"?objetivos={obj_id}"
+               f"&fechaDesde={DATE_FROM}&fechaHasta={DATE_TO}"
+               f"&page={page}&pageSize={PAGE_SIZE}")
+        data = fetch_json(url, timeout=60)
+        if not data:
+            print(f"    obj {obj_id} page {page}: request failed", file=sys.stderr)
+            break
+        content = data.get("content") or []
+        if not content:
+            break
+        for rec in content:
+            parsed = _parse_record(rec, article, sector)
+            if parsed is None:
+                continue
+            if parsed.get("_skip_cdti"):
+                skipped_cdti += 1
+                continue
+            rows.append(parsed)
+        total_pages = data.get("totalPages", 1)
+        page += 1
+        if page >= total_pages:
+            break
+        time.sleep(0.3)  # polite
+    print(f"  obj {obj_id} [{article}]: {len(rows)} company rows "
+          f"(skipped {skipped_cdti} CDTI)")
+    return rows
 
 
 def _load_to_db(rows: list[dict]) -> dict:
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
-    cdti_nifs = _cdti_nifs(con)
-    print(f"  CDTI NIF dedup set: {len(cdti_nifs)} NIFs already loaded via extract_cdti.py")
-
     cur.execute("PRAGMA table_info(companies)")
-    col_names = {r[1] for r in cur.fetchall()}
-    has_national_id = "national_id" in col_names
+    cols = {r[1] for r in cur.fetchall()}
+    has_natid = "national_id" in cols
+    cur.execute("PRAGMA table_info(public_funding_events)")
+    pfe_cols = {r[1] for r in cur.fetchall()}
+    has_sa = "satr_sa_number" in pfe_cols
 
-    counts = {"inserted": 0, "cdti_deduped": 0, "skipped_dup": 0, "errors": 0}
+    counts = {"inserted": 0, "skipped_dup": 0, "errors": 0,
+              "grant": 0, "debt": 0, "equity": 0}
     for r in rows:
-        norm = r["company_name_norm"]
-        nif = r.get("nif", "")
-
-        # Skip CDTI organo rows — already loaded via extract_cdti.py
-        if r.get("organo") == "CDTI":
-            counts["cdti_deduped"] += 1
-            continue
-        # Also skip by NIF match if the company is already in CDTI set
-        if nif and nif in cdti_nifs:
-            counts["cdti_deduped"] += 1
-            continue
-
         try:
+            norm = r["company_name_norm"]
             cid = None
-            if has_national_id and nif:
-                cur.execute(
-                    "SELECT id FROM companies WHERE national_id=? AND country='ES'", (nif,))
+            if has_natid and r.get("nif"):
+                cur.execute("SELECT id FROM companies WHERE national_id=? AND country='ES'",
+                            (r["nif"],))
                 row = cur.fetchone()
                 cid = row[0] if row else None
             if cid is None:
-                cur.execute(
-                    "SELECT id FROM companies WHERE canonical_name=? AND country='ES'", (norm,))
+                cur.execute("SELECT id FROM companies WHERE canonical_name=? AND country='ES'",
+                            (norm,))
                 row = cur.fetchone()
                 cid = row[0] if row else None
             if cid is None:
-                if has_national_id:
+                if has_natid:
                     cur.execute(
                         """INSERT INTO companies (canonical_name, raw_name, country, national_id,
                            entity_type, match_method, match_confidence)
                            VALUES (?, ?, 'ES', ?, 'unknown', 'bdns', 'medium')""",
-                        (norm, r["company_name"], nif or None))
+                        (norm, r["company_name"], r.get("nif")))
                 else:
                     cur.execute(
                         """INSERT INTO companies (canonical_name, raw_name, country,
@@ -247,24 +349,38 @@ def _load_to_db(rows: list[dict]) -> dict:
                            VALUES (?, ?, 'ES', 'unknown', 'bdns', 'medium')""",
                         (norm, r["company_name"]))
                 cid = cur.lastrowid
-            cur.execute(
-                "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-                (r["source"], r["call_id"]))
+
+            cur.execute("SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
+                        (r["source"], r["call_id"]))
             if cur.fetchone():
                 counts["skipped_dup"] += 1
                 continue
-            cur.execute(
-                """INSERT INTO public_funding_events
-                   (company_id, source, call_id, role, coordinator_only,
-                    project_started, grant_amount_eur, grant_amount_basis,
-                    deployment_country, ndb_distributor)
-                   VALUES (?, ?, ?, 'direct', 0, ?, ?, 'ndb_grant', ?, ?)""",
-                (cid, r["source"], r["call_id"], f"{r['year']}-01-01",
-                 r["grant_amount_eur"], r["deployment_country"], r["ndb_distributor"]))
+
+            cols_sql = ["company_id", "source", "call_id", "role", "coordinator_only",
+                        "project_title", "project_started", "grant_amount_eur",
+                        "debt_amount_eur", "equity_amount_eur", "sector_tags_raw",
+                        "grant_amount_basis", "deployment_country", "ndb_distributor"]
+            vals = [cid, r["source"], r["call_id"], "direct", 0,
+                    r.get("project_title"), f"{r['year']}-01-01",
+                    r.get("grant_amount_eur"), r.get("debt_amount_eur"),
+                    r.get("equity_amount_eur"), r.get("sector_tags_raw"),
+                    r["grant_amount_basis"], r["deployment_country"], r.get("ndb_distributor")]
+            if has_sa:
+                cols_sql.append("satr_sa_number")
+                vals.append(r.get("satr_sa_number"))
+            placeholders = ", ".join("?" * len(cols_sql))
+            cur.execute(f"INSERT INTO public_funding_events ({', '.join(cols_sql)}) "
+                        f"VALUES ({placeholders})", vals)
             counts["inserted"] += 1
+            if r.get("equity_amount_eur"):
+                counts["equity"] += 1
+            elif r.get("debt_amount_eur"):
+                counts["debt"] += 1
+            else:
+                counts["grant"] += 1
         except Exception as e:
             counts["errors"] += 1
-            if counts["errors"] <= 3:
+            if counts["errors"] <= 5:
                 print(f"  ERROR {r.get('company_name','?')}: {e}", file=sys.stderr)
     con.commit()
     con.close()
@@ -272,86 +388,81 @@ def _load_to_db(rows: list[dict]) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Extract Spain BDNS innovation grants")
-    parser.add_argument("--load-db", action="store_true")
-    parser.add_argument("--probe", action="store_true", help="Test BDNS connectivity")
-    parser.add_argument("--organo", metavar="CODE", help="Single organo code to test")
-    parser.add_argument("--year", type=int, help="Single year to fetch")
-    parser.add_argument("--local", metavar="PATH", help="Load pre-downloaded CSV")
-    args = parser.parse_args()
+    ap = argparse.ArgumentParser(description="Extract Spain BDNS state aid (infosubvenciones.es)")
+    ap.add_argument("--load-db", action="store_true")
+    ap.add_argument("--probe", action="store_true")
+    ap.add_argument("--objetivo", type=int, help="single GBER objective id (test)")
+    ap.add_argument("--local", metavar="PATH", help="load from local JSONL")
+    args = ap.parse_args()
+
+    if args.probe:
+        d = fetch_json(f"{API_BASE}/ayudasestado/busqueda?objetivos=167"
+                       f"&fechaDesde={DATE_FROM}&fechaHasta={DATE_TO}&page=0&pageSize=2",
+                       timeout=20)
+        if d and d.get("content"):
+            print(f"✓ infosubvenciones.es API live. Art.25 R&D 2021-2026 total="
+                  f"{d.get('totalElements','?'):,}")
+            print(f"  Sample: {d['content'][0].get('beneficiario')}")
+        else:
+            print("✗ API probe failed", file=sys.stderr)
+            sys.exit(1)
+        return
 
     if args.local:
         rows = []
-        with open(args.local, encoding="utf-8", errors="replace") as f:
-            for delim in (";", ",", "\t"):
-                f.seek(0)
-                reader = csv.DictReader(f, delimiter=delim)
-                sample = next(reader, None)
-                if sample and len(sample) >= 3:
-                    f.seek(0)
-                    for raw_row in csv.DictReader(f, delimiter=delim):
-                        organo_label = raw_row.get("organo", "unknown")
-                        cfg = {"label": organo_label, "slug": organo_label.lower()}
-                        yr = int(raw_row.get("year", 2021))
-                        r = _parse_concesion({k.strip(): v for k, v in raw_row.items()}, cfg, yr)
-                        if r:
-                            rows.append(r)
-                    break
-    elif args.probe:
-        print("Testing BDNS connectivity ...")
-        url = f"{BDNS_BASE}/concesiones.json?page=0&pageSize=2&tipoBeneficiario=1&organo=EA0028053&anio=2023"
-        print(f"  GET {url}")
-        data = _get_json(url)
-        if data:
-            print(f"  ✓ Connected. Response shape: {str(data)[:200]}")
-        else:
-            print(
-                "\n  FAILED. Known WAF issue from cloud IPs.\n"
-                "  Resolution: run from a home/residential/VPN network.\n"
-                "  Alternative: download BDNS bulk data from:\n"
-                "    https://www.pap.hacienda.gob.es/bdnstrans/GE/es/concesiones\n"
-                "    (filter: Tipo=Empresa, Año=2021-2026, Órgano concedente=innovation body)\n"
-                "    Export as CSV then: python extract_bdns.py --local <file.csv> --load-db\n"
-            )
-        return
+        with open(args.local, encoding="utf-8") as f:
+            for line in f:
+                rec = json.loads(line)
+                # local rows are already parsed dicts — apply the EUR100k floor
+                # (cache may pre-date the threshold) using the stored amounts.
+                face = max(rec.get("grant_amount_eur") or 0,
+                           rec.get("debt_amount_eur") or 0,
+                           rec.get("equity_amount_eur") or 0)
+                if face >= MIN_AMOUNT_EUR:
+                    rows.append(rec)
     else:
-        years = [args.year] if args.year else list(range(MIN_YEAR, 2027))
-        organos = ([args.organo] if args.organo else
-                   [k for k, v in INNOVATION_ORGANOS.items() if not v.get("skip_cdti_dedup")])
+        objectives = [args.objetivo] if args.objetivo else list(OBJECTIVES.keys())
         rows = []
-        for organo in organos:
-            cfg = INNOVATION_ORGANOS.get(organo, {"label": organo, "slug": organo.lower()})
-            if cfg.get("skip_cdti_dedup"):
-                print(f"  Skipping {cfg['label']} (already loaded via extract_cdti.py)")
-                continue
-            for year in years:
-                print(f"  Fetching {cfg['label']} ({organo}) {year} ...")
-                records = _fetch_concesiones(organo, year)
-                for rec in records:
-                    r = _parse_concesion(rec, cfg, year)
-                    if r:
-                        rows.append(r)
-                print(f"    → {len([r for r in rows if r['year'] == year])} rows so far")
+        for obj_id in objectives:
+            rows.extend(_fetch_objective(obj_id))
 
     if not rows:
         print("  No rows extracted.")
         return
 
-    with CSV_PATH.open("w", newline="", encoding="utf-8") as f:
-        if rows:
-            w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), extrasaction="ignore")
-            w.writeheader()
-            for r in rows:
-                w.writerow(r)
-    print(f"  CSV → {CSV_PATH} ({len(rows)} rows)")
+    # Dedup rows within this run by call_id (same company can hit multiple objectives)
+    seen = set()
+    deduped = []
+    for r in rows:
+        if r["call_id"] in seen:
+            continue
+        seen.add(r["call_id"])
+        deduped.append(r)
+    rows = deduped
+
+    # Save JSONL cache
+    raw_path = RAW_DIR / "bdns_ayudas.jsonl"
+    with raw_path.open("w", encoding="utf-8") as f:
+        for r in rows:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+
     from collections import Counter
-    for y, n in sorted(Counter(r["year"] for r in rows).items()):
-        print(f"    {y}: {n:>5}  €{sum(r['grant_amount_eur'] for r in rows if r['year']==y)/1e6:.1f}M")
+    by_year = Counter(r["year"] for r in rows)
+    print(f"\nTotal: {len(rows):,} company state-aid rows")
+    for y in sorted(by_year):
+        g = sum(r.get("grant_amount_eur") or 0 for r in rows if r["year"] == y)
+        print(f"  {y}: {by_year[y]:>6,} rows  €{g/1e6:>8.1f}M grants")
+    n_equity = sum(1 for r in rows if r.get("equity_amount_eur"))
+    n_debt = sum(1 for r in rows if r.get("debt_amount_eur"))
+    print(f"  Instruments: {len(rows)-n_debt-n_equity:,} grant | {n_debt:,} loan | {n_equity:,} equity")
+    print(f"  CSV/JSONL → {raw_path}")
 
     if args.load_db:
+        print("Loading into db.sqlite ...")
         counts = _load_to_db(rows)
-        print(f"  Inserted: {counts['inserted']}, CDTI-deduped: {counts['cdti_deduped']}, "
-              f"dup: {counts['skipped_dup']}, errors: {counts['errors']}")
+        print(f"  Inserted {counts['inserted']:,} "
+              f"(grant {counts['grant']:,} / loan {counts['debt']:,} / equity {counts['equity']:,}), "
+              f"dup {counts['skipped_dup']:,}, errors {counts['errors']}")
         print("  Run python3 classify.py after loading.")
 
 

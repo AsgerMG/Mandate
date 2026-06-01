@@ -60,26 +60,26 @@ DIRECT_NDB_PREFIXES = (
 
 # Known structural gaps per country (for notes field)
 STRUCTURAL_GAPS: dict[str, str] = {
-    "DE": "BMBF Projektträger grants (~€4-6B/yr to industry) have no central register",
-    "FR": "Bpifrance equity tickets and 8 of 12 regions not yet extracted",
-    "IT": "Italian RNA de minimis layer (below SATR threshold) not extracted",
-    "FI": "Finnvera loan/guarantee portfolio not public",
-    "SE": "Vinnova direct register added Sprint 17 (deduped against 514 SATR rows)",
-    "PL": "SUDOP 9 measures + NCBR not yet complete; mapadotacji.gov.pl out of scope",
-    "NL": "RVO SDE++/WBSO (largest Dutch instruments) have no public company register",
-    "ES": "BDNS regional agencies added Sprint 17; WAF-blocked from cloud IPs",
-    "NO": "Innovasjon Norge + NFR extractors added Sprint 17; network-accessible",
-    "CH": "Innosuisse extractor added Sprint 17; API discovery pending",
-    "LV": "ALTUM: data.gov.lv shows no ALTUM dataset; manual download required",
-    "LT": "ILTE: data.gov.lt access pending local network test",
-    "EE": "EIS funded-projects DB: access pending local network test",
-    "CZ": "TAČR: IS VaVaI CEP bulk download required",
-    "RO": "REGAS national SATR portal not yet extracted",
-    "SI": "gov.si static page SATR alternative not yet extracted",
-    "HU": "MFB, NKFIH: no open register found",
-    "GR": "HDB thin; HDBI FoF (3,500 portfolio cos) out of scope",
-    "IS": "Small-country SATR coverage; Rannís not extracted",
-    "LU": "Thin SATR coverage; risk of holding-company inflation in per-capita stats",
+    "DE": "Full SATR state aid (€72.7B) + HTGF/Coparion/SPRIND direct + KfW/Landesbanks/BMBF tagged. BMBF Projektträger sub-threshold grants remain off-register.",
+    "FR": "ADEME (27.7k events) + Bpifrance i-Nov/PM'up + full SATR. Bpifrance commercial equity tickets not in any register (Art.107 market-conform).",
+    "IT": "Full SATR (€29.9B) incl. MedioCredito Centrale, Invitalia, GSE, MUR; CDP VC direct. RNA de minimis layer (below €100k) not extracted.",
+    "FI": "SATR incl. Business Finland + Tesi direct. Finnvera loan/guarantee portfolio has no public company register.",
+    "SE": "SATR incl. Vinnova + Almi Invest direct. Energimyndigheten/Naturvårdsverket tagged.",
+    "PL": "SUDOP national register loaded via v1 purpose-code query (R&D Art.25-29): 2,931 events / €4.2B. NCBR + mapadotacji.gov.pl (EU cohesion) out of scope.",
+    "NL": "Full SATR incl. RVO + regional dev agencies (BOM, NOM) tagged. Invest-NL co-invest thin; RVO sub-threshold WBSO not in register.",
+    "ES": "BDNS national state-aid register loaded via infosubvenciones.es mirror (GBER Art.21-30+36-49, ≥€100k): 13.2k events / €6.9B + CDTI/IDAE/ICAEN/IVACE/GAIN/ACCIÓ direct.",
+    "NO": "EU instruments only. Innovasjon Norge + NFR extractors built; run locally (APIs unreachable from build host).",
+    "CH": "EU instruments only (non-EU, no SATR). Innosuisse extractor built; run locally.",
+    "LV": "SATR + CFLA tagged. ALTUM has no machine-readable open register.",
+    "LT": "SATR + economy-ministry/ILTE tagged. data.gov.lt bulk access pending.",
+    "EE": "SATR + EIS (KredEx+Enterprise Estonia) tagged. Funded-projects DB 403 from build host.",
+    "CZ": "Full SATR + TAČR tagged (760 events). IS VaVaI CEP bulk for full TAČR run locally.",
+    "RO": "EU instruments only. REGAS national SATR portal not yet extracted.",
+    "SI": "EU instruments only. gov.si national state-aid page (no bulk export) not yet extracted.",
+    "HU": "Full SATR + NKFIH/Hiventures tagged. MFB has no open company register.",
+    "GR": "SATR + HDB/GSRT tagged. HDBI fund-of-funds (indirect) out of scope.",
+    "IS": "Thin SATR (EEA). Rannís grant list not extracted.",
+    "LU": "Thin SATR; per-capita figures may be inflated by holding-company registrations.",
 }
 
 
@@ -117,6 +117,29 @@ def _classify_sources(sources: set[str]) -> tuple[str, list[str]]:
     return tier, sorted(families)
 
 
+# State-aid-register prefixes (SATR + national equivalents — all count as the
+# "primary public-capital register" layer for the tier test).
+STATE_AID_PREFIXES = ("satr_", "sudop_", "bdns_", "regas_", "gov_si_")
+
+
+def _refined_tier(reg_events: int, eu_events: int, ndb_events: int) -> str:
+    """Count-based tier. A = a primary register (SATR or national equivalent
+    e.g. BDNS/SUDOP, OR a substantial direct-NDB layer) AND EU instruments AND
+    an NDB layer (direct + tagged-in-register). Mirrors the manual status table."""
+    has_register = reg_events >= 500
+    has_eu = eu_events >= 500
+    has_ndb = ndb_events >= 250
+    if has_register and has_eu and has_ndb:
+        return "A"
+    if has_register and has_eu:
+        return "B"
+    if has_eu and has_ndb:
+        return "B"
+    if has_eu or has_register:
+        return "C"
+    return "X"
+
+
 def main() -> None:
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
@@ -147,21 +170,64 @@ def main() -> None:
         country_events[country] += 1
         country_companies[country].add(cid)
 
+    # Per-country event counts by layer, for the refined tier test.
+    reg_events: dict[str, int] = defaultdict(int)   # state-aid register (SATR/BDNS/SUDOP)
+    eu_events: dict[str, int] = defaultdict(int)
+    direct_ndb_events: dict[str, int] = defaultdict(int)
+    ndb_via_reg: dict[str, int] = defaultdict(int)  # ndb_distributor tagged on register rows
+    cur.execute("""
+        SELECT c.country, pfe.source, pfe.ndb_distributor
+        FROM public_funding_events pfe JOIN companies c ON c.id = pfe.company_id
+        WHERE c.country IS NOT NULL AND c.country != ''
+    """)
+    for country, source, ndb in cur.fetchall():
+        if any(source.startswith(p) for p in STATE_AID_PREFIXES):
+            reg_events[country] += 1
+            if ndb:
+                ndb_via_reg[country] += 1
+        elif any(source.startswith(p) for p in EU_INSTRUMENT_PREFIXES):
+            eu_events[country] += 1
+        elif any(source.startswith(p) for p in DIRECT_NDB_PREFIXES):
+            direct_ndb_events[country] += 1
+
     con.close()
 
     result = {"generated": datetime.now(timezone.utc).isoformat(), "countries": {}}
+    ratings: dict[str, dict] = {}
     for country in sorted(country_sources.keys()):
-        tier, families = _classify_sources(country_sources[country])
+        _, families = _classify_sources(country_sources[country])
+        reg = reg_events[country]
+        eu = eu_events[country]
+        dndb = direct_ndb_events[country]
+        ndb_total = dndb + ndb_via_reg[country]
+        # primary register = max(state-aid register, direct-NDB layer) — DK/PL use
+        # a direct/national register in place of EC-TAM SATR.
+        tier = _refined_tier(max(reg, dndb), eu, ndb_total)
         result["countries"][country] = {
             "source_families": families,
             "event_count": country_events[country],
             "company_count": len(country_companies[country]),
+            "register_events": reg,
+            "eu_events": eu,
+            "ndb_events": ndb_total,
             "coverage_tier": tier,
             "structural_gap": STRUCTURAL_GAPS.get(country, ""),
+        }
+        ratings[country] = {
+            "rating": tier,
+            "note": STRUCTURAL_GAPS.get(country, "")
+                    or f"{country_events[country]:,} events across "
+                       f"{len(families)} source families.",
         }
 
     OUT_PATH.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"Coverage indicator → {OUT_PATH}")
+
+    # Emit the site-facing ratings file (homepage reads this — keeps it live).
+    site_path = BASE_DIR / "site" / "public" / "data" / "coverage_ratings.json"
+    if site_path.parent.exists():
+        site_path.write_text(json.dumps(ratings, indent=2, ensure_ascii=False), encoding="utf-8")
+        print(f"Site coverage ratings → {site_path}")
     print()
     print("Coverage tiers:")
     from collections import Counter

@@ -94,15 +94,24 @@ SUDOP_SOURCE_SECTOR: dict[str, str] = {
 }
 
 
-# Granting authority substring → NDB id
+# Granting authority substring → NDB id.
+# Polish declines institution names by grammatical case, so match on the
+# invariant stem (e.g. "Centrum Badań i Rozwoju" catches both "Narodowe …"
+# and "Dyrektor Narodowego …").
 NDB_PATTERNS: list[tuple[str, str]] = [
     ("Polski Fundusz Rozwoju", "pfr"),
-    ("PFR ", "pfr"),
-    ("Narodowe Centrum Badań i Rozwoju", "ncbr"),
-    ("NCBR ", "ncbr"),
+    ("Funduszu Rozwoju", "pfr"),
+    ("Centrum Badań i Rozwoju", "ncbr"),            # NCBR (any declension)
+    ("NCBR", "ncbr"),
     ("Bank Gospodarstwa Krajowego", "bgk"),
-    ("Polska Agencja Rozwoju Przedsiębiorczości", "parp"),
+    ("Banku Gospodarstwa Krajowego", "bgk"),
+    ("Agencji Rozwoju Przedsiębiorczości", "parp"),  # PARP (genitive)
+    ("Agencja Rozwoju Przedsiębiorczości", "parp"),
     ("PARP", "parp"),
+    ("Agencji Badań Medycznych", "abm"),            # Medical Research Agency
+    ("Agencja Badań Medycznych", "abm"),
+    ("Ośrodek Przetwarzania Informacji", "opi"),    # OPI national research institute
+    ("Centrum Nauki", "ncn"),                       # National Science Centre
 ]
 
 
