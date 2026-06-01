@@ -25,8 +25,6 @@ analyze:
 
 visuals:
 	python3 scripts/build_home_visuals.py
-	python3 scripts/build_taxonomy_network.py
-	python3 scripts/build_valley_of_death.py
 	python3 scripts/gen_country_map.py
 
 data: analyze visuals
