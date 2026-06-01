@@ -25,7 +25,7 @@ STATE_AID_NODE = (
     "EU State Aid Transparency Register",
     "state_aid",
     None,
-    "Cross-border register where 24 national authorities publish every state-aid award above the GBER thresholds. Not a fund itself — it is the backbone through which Member-State innovation, IPCEI, Net-Zero and AR79xxx-notified aid is disclosed. Most NDB awards above the de-minimis bar appear here too, which is why NDB and SATR portfolios overlap heavily.",
+    "Cross-border register where 24 national authorities publish every state-aid award above the GBER thresholds. Not a fund itself. It is the backbone through which Member-State innovation, IPCEI, Net-Zero and AR79xxx-notified aid is disclosed. Most NDB awards above the de-minimis bar appear here too, which is why NDB and SATR portfolios overlap heavily.",
 )
 
 PRIVATE_PLACEHOLDERS = [
