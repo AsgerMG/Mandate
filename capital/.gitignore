@@ -7,8 +7,13 @@ db_backups/
 # Claude Code config — per-user, not project state
 .claude/
 
-# Stale 0-byte sqlite that gets created if an extractor runs from inside scripts/
-# (real DB lives at repo root)
+# SQLite database is a generated build artifact, never committed (330MB+,
+# exceeds GitHub's 100MB limit). Rebuilt from scripts/ + backed up separately.
+# Covers the root DB, the stale scripts/ copy, and the WAL/SHM sidecar files.
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+db.sqlite
 scripts/db.sqlite
 
 # Sprint 15 SATR raw CSV cache — large (~5-20 GB at full scale)
