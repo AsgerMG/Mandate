@@ -34,18 +34,52 @@ import sys
 from difflib import SequenceMatcher
 from pathlib import Path
 
+# Sprint 17: canonicalise_country enforces the 40-country scope (added Sprint 14).
+# Import lazily so the script can be imported without the module on path.
+try:
+    from europe_scope import canonicalise_country as _canonicalise_country
+except ImportError:
+    sys.path.insert(0, str(Path(__file__).parent))
+    from europe_scope import canonicalise_country as _canonicalise_country
+
 DATA_DIR = Path(__file__).parent.parent / "data" / "raw" / "cordis"
 PROCESSED_DIR = Path(__file__).parent.parent / "data" / "processed"
 DB_PATH = Path(__file__).parent.parent / "db.sqlite"
 
 # Cluster → (topic prefix, default sector, source-id stem)
 CLUSTERS = {
-    "CL1": {"prefix": "HORIZON-HLTH-", "sector": "life_sciences", "stem": "horizon_eu_cl1"},
-    "CL3": {"prefix": "HORIZON-CL3-",  "sector": "defense",       "stem": "horizon_eu_cl3"},
-    "CL4": {"prefix": "HORIZON-CL4-",  "sector": "digital",       "stem": "horizon_eu_cl4"},
-    "CL5": {"prefix": "HORIZON-CL5-",  "sector": "cleantech",     "stem": "horizon_eu_cl5"},
-    "CL6": {"prefix": "HORIZON-CL6-",  "sector": "other",         "stem": "horizon_eu_cl6"},
+    "CL1":  {"prefix": "HORIZON-HLTH-",   "sector": "life_sciences", "stem": "horizon_eu_cl1"},
+    "CL3":  {"prefix": "HORIZON-CL3-",    "sector": "defense",       "stem": "horizon_eu_cl3"},
+    "CL4":  {"prefix": "HORIZON-CL4-",    "sector": "digital",       "stem": "horizon_eu_cl4"},
+    "CL5":  {"prefix": "HORIZON-CL5-",    "sector": "cleantech",     "stem": "horizon_eu_cl5"},
+    "CL6":  {"prefix": "HORIZON-CL6-",    "sector": "other",         "stem": "horizon_eu_cl6"},
+    # Sprint 17: additional Horizon Europe programme families
+    "MISS":    {"prefix": "HORIZON-MISS-",   "sector": "other",         "stem": "horizon_eu_miss"},
+    "EIE":     {"prefix": "HORIZON-EIE-",    "sector": "digital",       "stem": "horizon_eu_eie"},
+    "CBE":     {"prefix": "HORIZON-JU-CBE-", "sector": "cleantech",     "stem": "horizon_eu_cbe"},
+    # ERC Proof of Concept — bridges academic research to commercial application.
+    # topic_contains restricts to PoC topics only (avoids loading STG/COG/ADG/SyG).
+    "ERC_POC": {"prefix": "ERC-",            "sector": "deeptech_hardware", "stem": "erc_poc",
+                "topic_contains": "POC"},
 }
+
+# Mission-topic prefix → finer sector override (applied on top of CLUSTERS["MISS"]["sector"]).
+# Only the sub-mission fragments that unambiguously map to a sector are listed here;
+# the default "other" is kept for cities / soil / ocean missions.
+_MISS_SECTOR: dict[str, str] = {
+    "CANCER": "life_sciences",
+    "CLIMA":  "cleantech",
+}
+
+
+def _miss_sector(topic: str) -> str:
+    """Return sector for a HORIZON-MISS-* topic code, using sub-mission name."""
+    upper = topic.upper()
+    for frag, sec in _MISS_SECTOR.items():
+        if f"-{frag}-" in upper:
+            return sec
+    return "other"
+
 
 # JU-derived topic prefixes already ingested via extract_cordis.py / extract_chips_ju.py;
 # always exclude to prevent double-counting (regardless of which cluster a project
@@ -57,6 +91,7 @@ JU_EXCLUDE_PREFIXES = (
     "HORIZON-KDT-",
     "HORIZON-JTI-CLEANH2-",
     "HORIZON-JU-CLEANH2-",
+    "HORIZON-JU-CBE-",   # deduplicated against CBE cluster load
 )
 
 # Roles that don't typically receive direct EU funding — still loaded so the
@@ -90,10 +125,12 @@ def _topic_year(topic: str) -> str:
     return m.group(1) if m else "unknown"
 
 
-def _project_topic(topics_for_pid: list[str], cluster_prefix: str) -> str | None:
+def _project_topic(topics_for_pid: list[str], cluster_prefix: str,
+                   topic_contains: str | None = None) -> str | None:
     for t in topics_for_pid:
         if t.startswith(cluster_prefix):
-            return t
+            if topic_contains is None or topic_contains.upper() in t.upper():
+                return t
     return None
 
 
@@ -120,14 +157,19 @@ def discover_cluster_rows(cluster: str, projects_by_id: dict,
     }
 
     for pid, topics in topics_by_pid.items():
-        topic = _project_topic(topics, cfg["prefix"])
+        topic = _project_topic(topics, cfg["prefix"], cfg.get("topic_contains"))
         if not topic:
             continue
 
         # Dedup: if any topic on this project belongs to a JU-derived family
         # we already loaded, skip the project entirely. (CL1 IHI projects sometimes
         # carry HORIZON-JU-IHI-* alongside HORIZON-HLTH-*.)
-        if any(any(t.startswith(p) for p in JU_EXCLUDE_PREFIXES) for t in topics):
+        # Exception: the CBE cluster IS the canonical load for CBE JU projects.
+        effective_exclude = (
+            tuple(p for p in JU_EXCLUDE_PREFIXES if p != "HORIZON-JU-CBE-")
+            if cluster == "CBE" else JU_EXCLUDE_PREFIXES
+        )
+        if any(any(t.startswith(p) for p in effective_exclude) for t in topics):
             stats["skipped_ju_dedup"] += 1
             continue
         # Belt-and-suspenders: CL1 may be invoked with --exclude-ihi; the JU
@@ -193,6 +235,11 @@ def discover_cluster_rows(cluster: str, projects_by_id: dict,
             # call_id: stable on (source, project_id, org_id) so re-runs don't dupe.
             call_id = f"{source}_{pid}_{org_id or _normalize_name(name)[:30]}"
 
+            # For EU Missions, refine sector from the sub-mission fragment in topic.
+            row_sector_raw = (
+                _miss_sector(topic) if cluster == "MISS" else cfg["sector"]
+            )
+
             rows.append({
                 "source": source,
                 "call_id": call_id,
@@ -211,7 +258,7 @@ def discover_cluster_rows(cluster: str, projects_by_id: dict,
                 "call_id_topic": topic,
                 "grant_amount_eur": grant_eur,
                 "total_project_cost_eur": total_cost,
-                "sector_tags_raw": topic,
+                "sector_tags_raw": f"{topic}||{row_sector_raw}",
                 "grant_amount_basis": "horizon_eu_grant",
                 "raw_source_url": f"https://cordis.europa.eu/project/id/{pid}",
             })
@@ -308,6 +355,17 @@ def _load_to_db(rows: list[dict], cluster: str) -> dict:
     new_companies_by_norm: dict[tuple, int] = {}
 
     for r in rows:
+        # Sprint 17: enforce 40-country scope — skip out-of-scope orgs (TR, IL, etc.);
+        # null out empty-string countries so they don't violate the scope check.
+        raw_country = r.get("country") or None
+        canon_country = _canonicalise_country(raw_country or "") if raw_country else None
+        if raw_country and canon_country is None:
+            # Out-of-scope country (e.g. TR, IL) — skip entirely
+            counts["none"] += 1
+            continue
+        # canon_country is either a valid ISO2 or None (no country info)
+        r = dict(r, country=canon_country)
+
         norm = _normalize_name(r["company_name"])
         pic = r.get("pic") or ""
 
@@ -403,7 +461,7 @@ def main() -> None:
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
     if args.cluster == "all":
-        clusters = ["CL4", "CL5", "CL3", "CL1"]
+        clusters = ["CL4", "CL5", "CL3", "CL1", "CL6", "MISS", "EIE", "CBE", "ERC_POC"]
     else:
         clusters = [args.cluster]
 

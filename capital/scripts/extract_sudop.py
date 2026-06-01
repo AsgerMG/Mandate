@@ -53,6 +53,13 @@ from pathlib import Path
 
 from ndb_helpers import backfill_ipcei_linked
 
+# Certifi CA bundle — needed for SUDOP curl calls on macOS
+try:
+    import certifi as _certifi
+    _CACERT = _certifi.where()
+except ImportError:
+    _CACERT = None
+
 BASE_DIR = Path(__file__).parent.parent
 RAW_DIR = BASE_DIR / "data" / "raw" / "sudop"
 OUT_DIR = BASE_DIR / "data" / "processed"
@@ -118,14 +125,17 @@ class SudopClient:
         self.user_agent = "Mozilla/5.0"
 
     def _curl(self, url: str, head_only: bool = False, out: Path | None = None) -> tuple[int, str, str]:
-        args = ["/usr/bin/curl", "-sL", "-A", self.user_agent, "--max-time", "60",
+        # Do NOT follow redirects (-L) — SUDOP's async API uses 303 redirects
+        # that we need to capture and handle manually (queue polling pattern).
+        args = ["/usr/bin/curl", "-s", "-A", self.user_agent, "--max-time", "120",
                 "-D", "-"]
+        if _CACERT:
+            args += ["--cacert", _CACERT]
         if head_only:
             args.append("-I")
         if out:
             args.extend(["-o", str(out)])
-        else:
-            args.append("-")
+        # No trailing "-" — body goes to stdout by default; trailing "-" breaks curl
         args.append(url)
         r = subprocess.run(args, capture_output=True, text=True)
         out_text = r.stdout
@@ -142,27 +152,18 @@ class SudopClient:
         status = int(m.group(1)) if m else 0
         return status, header, body
 
-    def fetch_measure(self, measure: str, slug: str, force: bool) -> Path | None:
-        """Run async query for one srodek-pomocowy. Returns path to result CSV, or None on failure."""
-        out = self.raw_dir / f"{slug}.csv"
-        if out.exists() and not force and out.stat().st_size > 1000:
-            return out
-
-        from urllib.parse import quote
-        url = f"{API_BASE}/api/przypadki-pomocy?srodek-pomocowy-numer={quote(measure, safe='()')}&strona=1"
-        status, header, _ = self._curl(url)
+    def _async_query(self, initial_url: str, out: Path) -> Path | None:
+        """Run the SUDOP async queue pattern: POST initial URL → poll queue → download CSV."""
+        status, header, _ = self._curl(initial_url)
         if status not in (303, 200):
-            print(f"  [{slug}] initial query failed: HTTP {status}")
+            print(f"  initial query failed: HTTP {status}")
             return None
-
         loc = re.search(r"[Ll]ocation:\s*(\S+)", header)
         if not loc:
-            print(f"  [{slug}] no Location header in response")
+            print(f"  no Location header in response")
             return None
-
         queue_url = f"https://api-sudop.uokik.gov.pl{loc.group(1)}"
-
-        for attempt in range(30):
+        for attempt in range(40):
             time.sleep(8)
             status, header, _ = self._curl(queue_url, head_only=True)
             loc = re.search(r"[Ll]ocation:\s*(\S+)", header)
@@ -172,8 +173,33 @@ class SudopClient:
                 if status2 == 200 and out.exists() and out.stat().st_size > 100:
                     return out
                 return None
-        print(f"  [{slug}] timeout after 30 polls")
+        print(f"  timeout after 40 polls")
         return None
+
+    def fetch_measure(self, measure: str, slug: str, force: bool) -> Path | None:
+        """Run async query for one srodek-pomocowy. Returns path to result CSV, or None on failure."""
+        out = self.raw_dir / f"{slug}.csv"
+        if out.exists() and not force and out.stat().st_size > 1000:
+            return out
+        from urllib.parse import quote
+        url = f"{API_BASE}/api/przypadki-pomocy?srodek-pomocowy-numer={quote(measure, safe='()')}&strona=1"
+        return self._async_query(url, out)
+
+    def fetch_by_purpose_codes(self, codes: list[str], slug: str, force: bool,
+                                date_from: str = "2021-01-01") -> Path | None:
+        """V1 API: query by przeznaczenie-pomocy-kod (purpose codes). One call for all codes.
+        Codes: e.g. ['a1.1.1','a1.1.2','a1.1.3','a1.2','a1.4','a1.9']
+        """
+        out = self.raw_dir / f"{slug}.csv"
+        if out.exists() and not force and out.stat().st_size > 1000:
+            print(f"  [{slug}] cached ({out.stat().st_size:,} bytes)")
+            return out
+        from urllib.parse import quote
+        params = "&".join(f"przeznaczenie-pomocy-kod={quote(c)}" for c in codes)
+        url = (f"{API_BASE}/v1/api/przypadki-pomocy?{params}"
+               f"&dzien-udzielenia-pomocy-od={date_from}&strona=1")
+        print(f"  [{slug}] querying v1 API with {len(codes)} purpose codes from {date_from} …")
+        return self._async_query(url, out)
 
 
 # ---------------------------------------------------------------------------
@@ -233,8 +259,8 @@ def parse_csv(path: Path, slug: str, sector_v1: str) -> list[dict]:
                 "project_title": measure_nm[:240] if measure_nm else None,
                 "project_summary": (
                     f"Authority: {authority} | "
-                    f"Sector: {r.get('sektor-dzialalnosci-nazwa','')[:80]} | "
-                    f"Form: {r.get('forma-pomocy-nazwa','')[:80]}"
+                    f"Sector: {(r.get('sektor-dzialalnosci-nazwa') or '')[:80]} | "
+                    f"Form: {(r.get('forma-pomocy-nazwa') or '')[:80]}"
                 )[:1500],
                 "sector_tags_raw": f"SUDOP | {measure_nm[:80]}",
                 "sector_v1": sector_v1,
@@ -349,17 +375,35 @@ def main() -> None:
             keep = set(args[i + 1].split(","))
             measures = [m for m in INNOVATION_MEASURES if m[0] in keep or m[1] in keep]
 
+    # v1 API mode: query by purpose codes (R&D/innovation) — covers all Polish R&D aid
+    # in one async call rather than per-measure. Use with --by-purpose flag.
+    RND_PURPOSE_CODES = ["a1.1.1", "a1.1.2", "a1.1.3", "a1.2", "a1.4", "a1.9", "a28.8"]
+    by_purpose = "--by-purpose" in args
+
     client = SudopClient(RAW_DIR)
     all_rows: list[dict] = []
-    for measure, slug, sector, desc in measures:
-        print(f"Querying SUDOP for {measure} ({desc[:60]}) …")
-        path = client.fetch_measure(measure, slug, refresh)
-        if not path:
-            print(f"  [{slug}] no result")
-            continue
-        rows = parse_csv(path, slug, sector)
-        print(f"  [{slug}] {len(rows)} eligible rows")
-        all_rows.extend(rows)
+
+    if by_purpose:
+        print("Querying SUDOP v1 API by purpose codes (R&D/innovation, 2021+) …")
+        path = client.fetch_by_purpose_codes(RND_PURPOSE_CODES, "rnd_purpose", refresh)
+        if path:
+            rows = parse_csv(path, "rnd_purpose", "deeptech_hardware")
+            print(f"  [rnd_purpose] {len(rows)} eligible rows")
+            all_rows.extend(rows)
+        else:
+            print("  [rnd_purpose] no result — falling back to per-measure queries")
+            by_purpose = False
+
+    if not by_purpose:
+        for measure, slug, sector, desc in measures:
+            print(f"Querying SUDOP for {measure} ({desc[:60]}) …")
+            path = client.fetch_measure(measure, slug, refresh)
+            if not path:
+                print(f"  [{slug}] no result")
+                continue
+            rows = parse_csv(path, slug, sector)
+            print(f"  [{slug}] {len(rows)} eligible rows")
+            all_rows.extend(rows)
 
     print(f"\nTotal: {len(all_rows)} rows across {len(measures)} measures")
     grand = sum((r["grant_amount_eur"] or 0) for r in all_rows)

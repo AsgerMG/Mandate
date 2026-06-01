@@ -46,12 +46,33 @@ NDB_PATTERNS: list[tuple[str, str]] = [
     ("Sächsische Aufbaubank", "sab_sachsen"),
     ("Technologiegründerfonds Sachsen", "tgfs"),
     ("Forschungszentrum Jülich", "fz_juelich"),
+    ("Projektträger Jülich", "fz_juelich"),
+    ("Projektträger im DLR", "dlr"),
+    ("DLR Raumfahrtagentur", "dlr"),
+    ("Deutsches Zentrum für Luft- und Raumfahrt", "dlr"),
+    ("VDI/VDE Innovation", "vdivde"),
+    # German federal agencies with specific R&D/innovation mandate (NOT generic ministries)
+    ("Bundesministerium für Bildung und Forschung", "bmbf"),   # R&D-specific ministry
+    ("Bundesamt für Wirtschaft und Ausfuhrkontrolle", "bafa"), # specialist agency (energy/trade)
+    # German Landesbanken not yet tagged
+    ("NRW.BANK", "nrw_bank"),
+    ("NBank Niedersachsen", "nbank"),
+    ("NBank", "nbank"),
+    ("Thüringer Aufbaubank", "tab"),
+    ("Bremer Aufbau-Bank", "bab_bremen"),
+    ("WIBank", "wibank"),
+    ("Bayerische Forschungsstiftung", "bfs_bavaria"),
 
     # ─── Austrian NDB / R&D agencies ─────────────────────────────────────────
     ("Österreichische Forschungsförderungsgesellschaft", "ffg"),
     ("FFG", "ffg"),
     ("Austria Wirtschaftsservice", "awssg"),
     ("AWS", "awssg"),
+    ("Kommunalkredit Public Consulting", "kpc_at"),
+    ("Wirtschaftsagentur Wien", "wirtschaftsagentur_wien"),
+    ("Kärntner Wirtschaftsförderungsfonds", "kwf_carinthia"),
+    ("Steirische Wirtschaftsförderungsgesellschaft", "sfg_steiermark"),
+    ("SFG", "sfg_steiermark"),
 
     # ─── Italian NDBs / public agencies ──────────────────────────────────────
     ("MedioCredito Centrale", "mediocredito_centrale"),
@@ -66,6 +87,26 @@ NDB_PATTERNS: list[tuple[str, str]] = [
     ("CDP Venture Capital", "cdp_vc"),
     ("CDP ", "cdp"),
     ("SIMEST", "simest"),
+    # Italian agencies/bodies — only specialist agencies, NOT generic ministries or regional govts
+    # MIMIT = Ministry of Enterprise: manages many company-direct grants → keep as it's
+    # Italy's primary industrial policy body (equivalent to BMWK in Germany)
+    ("Ministero delle Imprese e del Made in Italy", "mimit"),
+    ("MINISTERO DELLE IMPRESE", "mimit"),
+    # GSE = state-owned energy services company managing cleantech grants
+    ("Gestore servizi Energetici", "gse_it"),
+    ("GSE ", "gse_it"),
+    # MUR = university/research ministry — R&D specific mandate
+    ("MINISTERO DELL'UNIVERSITA' E DELLA RICERCA", "mur_it"),
+    ("Ministero dell'Università e della Ricerca", "mur_it"),
+    ("MINISTERO DELL'ISTRUZIONE DELL'UNIVERSITA' E DELLA RICERCA", "mur_it"),
+    # MITE = environment/energy transition agency (became MASE)
+    ("Ministero della Transizione Ecologica", "mite_it"),
+    ("Ministero dell'ambiente", "mite_it"),
+    # Regional development agencies (specialist bodies, not regional govts)
+    ("Finpiemonte", "finpiemonte"),
+    ("Lazio Innova", "lazio_innova"),
+    ("Puglia Sviluppo", "puglia_sviluppo"),
+    # Note: generic regional govts (Regione Lombardia, Friuli, Trento etc.) NOT tagged
 
     # ─── French NDBs ─────────────────────────────────────────────────────────
     ("Bpifrance", "bpifrance"),
@@ -73,6 +114,8 @@ NDB_PATTERNS: list[tuple[str, str]] = [
     ("BPI France", "bpifrance"),
     ("Caisse des Dépôts", "caisse_des_depots"),
     ("Caisse des Depots", "caisse_des_depots"),
+    # Note: French general ministries (Ministère de l'économie, Transition écologique)
+    # are NOT tagged — they are government departments, not development banks/agencies.
 
     # ─── Finnish ─────────────────────────────────────────────────────────────
     ("Business Finland Venture Capital", "business_finland_vc"),
@@ -81,12 +124,19 @@ NDB_PATTERNS: list[tuple[str, str]] = [
     ("Tesi", "tesi"),
     ("Suomen Teollisuussijoitus", "tesi"),
     ("Finnvera", "finnvera"),
+    ("elinvoimakeskus", "ely_fi"),   # ELY Centres = Finnish regional enterprise/innovation agencies
+    ("Energiavirasto", "energiavirasto_fi"),
 
     # ─── Swedish ─────────────────────────────────────────────────────────────
     ("Vinnova", "vinnova"),
     ("Almi Företagspartner", "almi"),
     ("Almi Invest", "almi"),
     ("ALMI", "almi"),
+    ("Energimyndigheten", "energimyndigheten"),
+    ("Naturvårdsverket", "naturvardsverket"),
+    ("Tillväxtverket", "tillvaxtverket"),
+    ("Rymdstyrelsen", "rymdstyrelsen"),
+    ("Formas", "formas_se"),
 
     # ─── Danish ──────────────────────────────────────────────────────────────
     ("EIFO", "eifo"),
@@ -101,8 +151,26 @@ NDB_PATTERNS: list[tuple[str, str]] = [
     ("Invest NL", "invest_nl"),
     ("Rijksdienst voor ondernemend Nederland", "rvo"),
     ("RVO", "rvo"),
+    # Ministerie van Economische Zaken = the ministry that runs RVO programs
+    ("Ministerie van Economische Zaken", "rvo"),
+    # Regional Dutch development agencies (specialist intermediaries, not generic govts)
+    ("provincie Noord-Brabant", "bom"),
+    ("Samenwerkingsverband Noord-Nederland", "nom"),
+    # Note: Kansen voor West (EU cohesion fund), generic Dutch provinces NOT tagged
 
     # ─── Belgian regional ────────────────────────────────────────────────────
+    # VLAIO = Agentschap Innoveren & Ondernemen (Flanders innovation grants)
+    ("VLAIO", "vlaio"),
+    ("Agentschap Innoveren", "vlaio"),
+    # SPW DGO = Service Public de Wallonie (Walloon R&D grants)
+    ("SPW DGO Economie", "spw_wallonie"),
+    ("SPW DGO", "spw_wallonie"),
+    ("SPW - DG Energie", "spw_energie"),
+    # Innoviris = Brussels R&D agency
+    ("Innoviris", "innoviris"),
+    ("Brussel Economie en Werkgelegenheid", "bewe_brussels"),
+    # EWI = Flanders Economy, Science and Innovation dept
+    ("EWI", "ewi_flanders"),
     ("Participatie Maatschappij Vlaanderen", "pmv"),
     ("PMV", "pmv"),
     ("SOGEPA", "sogepa"),
@@ -122,6 +190,9 @@ NDB_PATTERNS: list[tuple[str, str]] = [
 
     # ─── Irish ───────────────────────────────────────────────────────────────
     ("Enterprise Ireland", "enterprise_ireland"),
+    ("IDA Ireland", "ida_ireland"),
+    ("Sustainable Energy Authority of Ireland", "seai"),
+    ("SEAI", "seai"),
 
     # ─── Spanish ─────────────────────────────────────────────────────────────
     ("CDTI", "cdti"),
@@ -134,19 +205,35 @@ NDB_PATTERNS: list[tuple[str, str]] = [
     # ─── Greek ───────────────────────────────────────────────────────────────
     ("Ελληνική Αναπτυξιακή Τράπεζα", "hdb"),
     ("Hellenic Development Bank", "hdb"),
+    # GSRT = General Secretariat for Research & Technology — specialist R&D body
+    ("ΓΓΕΚ", "gsrt_gr"),
+    ("Γενική Γραμματεία Έρευνας", "gsrt_gr"),
+    # Note: Greek ESPA managing authorities, environment ministry NOT tagged — not NDBs
 
     # ─── Hungarian ───────────────────────────────────────────────────────────
     ("MFB Zrt", "mfb"),
     ("MFB", "mfb"),
     ("Magyar Fejlesztési Bank", "mfb"),
     ("Garantiqa", "garantiqa"),
+    ("NKFIH", "nkfih"),
+    ("Nemzeti Kutatási", "nkfih"),
+    ("Hiventures", "hiventures"),
+    ("Magyar Export-Import Bank", "exim_hu"),
+    # Note: Hungarian ministries (Pénzügyminisztérium, Nemzetgazdasági etc.) NOT tagged — ministries
 
     # ─── Baltic ──────────────────────────────────────────────────────────────
     ("Attīstības finanšu institūcija Altum", "altum"),
     ("Altum", "altum"),
-    ("KredEx", "kredex"),
+    ("Centrālā finanšu un līgumu aģentūra", "cfla"),
+    ("CFLA", "cfla"),
+    # Estonia: EIS = merged KredEx + Enterprise Estonia (2022)
+    ("Ettevõtluse ja Innovatsiooni Sihtasutus", "eis"),
+    ("Ettevõtluse Arendamise Sihtasutus", "eis"),   # old Enterprise Estonia name
+    ("KredEx", "eis"),
+    ("Keskkonnainvesteeringute Keskus", "kik_ee"),
     ("Invega", "invega"),
     ("UAB ILTE", "ilte"),
+    ("Ekonomikos ir inovacijų ministerija", "ecomin_lt"),
 
     # ─── Portuguese ──────────────────────────────────────────────────────────
     ("Banco Português de Fomento", "bpf"),
@@ -157,6 +244,44 @@ NDB_PATTERNS: list[tuple[str, str]] = [
     ("Českomoravská záruční", "cmzrb"),
     ("ČMZRB", "cmzrb"),
     ("CzechInvest", "czechinvest"),
+    ("Technologická agentura ČR", "tacr"),
+    # Note: Czech ministries (MPO, MŽP) NOT tagged — not specialist agencies
+
+    # ─── Croatian ────────────────────────────────────────────────────────────
+    ("Hrvatska banka za obnovu i razvitak", "hbor"),
+    ("HBOR", "hbor"),
+    ("Hrvatska agencija za malo gospodarstvo", "hamag_bicro"),
+    ("HAMAG-BICRO", "hamag_bicro"),
+    # Note: Croatian ministries NOT tagged — not specialist agencies
+
+    # ─── Bulgarian ───────────────────────────────────────────────────────────
+    ("Fund of Funds", "fof_bg"),
+    ("Фонд на фондовете", "fof_bg"),
+    ("Ministry of Innovation and Growth", "mig_bg"),
+
+    # ─── Cypriot ─────────────────────────────────────────────────────────────
+    ("Ίδρυμα Έρευνας και Καινοτομίας", "idek_cy"),
+    ("ΙδΕΚ", "idek_cy"),
+    ("Research and Innovation Foundation", "idek_cy"),
+
+    # ─── Maltese ─────────────────────────────────────────────────────────────
+    ("Malta Enterprise", "malta_enterprise"),
+
+    # ─── Slovak ──────────────────────────────────────────────────────────────
+    ("Slovenská inovačná a energetická agentúra", "siea_sk"),
+    ("SIEA", "siea_sk"),
+    ("Agentúra na podporu výskumu a vývoja", "apvv_sk"),
+    ("APVV", "apvv_sk"),
+    # Note: Slovak ministries NOT tagged — not development banks/agencies
+
+    # ─── UK ──────────────────────────────────────────────────────────────────
+    ("Innovate UK", "innovate_uk"),
+    ("UKRI", "innovate_uk"),
+    ("British Business Bank", "bbb_uk"),
+    ("Invest NI", "invest_ni"),
+
+    # Note: Portuguese cohesion fund managing authorities (COMPETE 2030 etc.) NOT tagged
+    # Note: Luxembourg ministries NOT tagged
 
     # ─── EU bodies (intermediaries) ──────────────────────────────────────────
     ("EIF", "eif"),
@@ -210,6 +335,18 @@ SOURCE_PREFIX_TO_NDB: dict[str, str] = {
     "ademe_": "ademe",
     # sudop_ rows set ndb_distributor directly per-row from granting-authority
     # pattern match; no static prefix mapping here. See extract_sudop.classify_ndb.
+    # Sprint 17 (2026-06-01): national thin-country registers
+    "innovasjon_norge_": "innovasjon_norge",
+    "nfr_": "nfr",
+    "innosuisse_": "innosuisse",
+    "altum_": "altum",
+    "ilte_": "ilte",
+    "eis_": "eis",
+    "tacr_": "tacr",
+    "bdns_": "bdns",
+    "vinnova_": "vinnova",
+    "business_finland_": "business_finland",
+    "fr_region_": "fr_region",
 }
 
 
@@ -298,4 +435,74 @@ NDB_LABELS: dict[str, str] = {
     "eif": "European Investment Fund",
     "eib": "European Investment Bank",
     "saminvest": "Saminvest (Sweden)",
+    # Sprint 17 — full SATR tagging pass
+    "bmbf": "BMBF (German Federal Research Ministry)",
+    "bmwk": "BMWK (German Federal Economics Ministry)",
+    "bafa": "BAFA (German Federal Office Economics & Export Control)",
+    "dlr": "DLR Projektträger (German Aerospace/R&D Agency)",
+    "vdivde": "VDI/VDE Innovation und Technik",
+    "nrw_bank": "NRW.BANK",
+    "nbank": "NBank (Lower Saxony)",
+    "tab": "Thüringer Aufbaubank",
+    "bab_bremen": "Bremer Aufbau-Bank",
+    "wibank": "WIBank (Hesse)",
+    "bfs_bavaria": "Bayerische Forschungsstiftung",
+    "kpc_at": "Kommunalkredit Public Consulting (Austria)",
+    "wirtschaftsagentur_wien": "Wirtschaftsagentur Wien",
+    "kwf_carinthia": "KWF (Carinthia)",
+    "sfg_steiermark": "SFG (Styria)",
+    "mimit": "MIMIT (Italian Ministry of Enterprise)",
+    "gse_it": "GSE (Italian Energy Services Manager)",
+    "mur_it": "MUR (Italian Ministry of Universities and Research)",
+    "mite_it": "MITE (Italian Ecological Transition Ministry)",
+    "finpiemonte": "Finpiemonte (Piedmont)",
+    "lazio_innova": "Lazio Innova",
+    "mef_fr": "Ministère de l'Économie (France)",
+    "mte_fr": "Ministère de la Transition Écologique (France)",
+    "tem_fi": "TEM (Finnish Ministry of Economy and Employment)",
+    "ely_fi": "ELY Centres (Finnish Regional Development)",
+    "energiavirasto_fi": "Energiavirasto (Finnish Energy Authority)",
+    "energimyndigheten": "Energimyndigheten (Swedish Energy Agency)",
+    "naturvardsverket": "Naturvårdsverket (Swedish Environment Agency)",
+    "tillvaxtverket": "Tillväxtverket (Swedish Growth Agency)",
+    "rymdstyrelsen": "Rymdstyrelsen (Swedish Space Agency)",
+    "formas_se": "Formas (Swedish Research Council for Environment)",
+    "ida_ireland": "IDA Ireland",
+    "seai": "SEAI (Irish Sustainable Energy Authority)",
+    "tacr": "TAČR (Czech Technology Agency)",
+    "mpo_cz": "MPO (Czech Ministry of Industry and Trade)",
+    "mzp_cz": "MŽP (Czech Environment Ministry)",
+    "nkfih": "NKFIH (Hungarian National R&D Fund)",
+    "hiventures": "Hiventures (Hungary)",
+    "exim_hu": "Magyar Eximbank",
+    "cfla": "CFLA (Latvian Central Finance and Contracting Agency)",
+    "kik_ee": "KIK (Estonian Environmental Investment Centre)",
+    "ecomin_lt": "Lithuanian Ministry of Economy and Innovation",
+    "hbor": "HBOR (Croatian Development Bank)",
+    "hamag_bicro": "HAMAG-BICRO (Croatia)",
+    "fof_bg": "Fund of Funds Bulgaria",
+    "idek_cy": "ΙδΕΚ (Cyprus Research & Innovation Foundation)",
+    "malta_enterprise": "Malta Enterprise",
+    "siea_sk": "SIEA (Slovak Innovation & Energy Agency)",
+    "apvv_sk": "APVV (Slovak Research Agency)",
+    "innovate_uk": "Innovate UK / UKRI",
+    "bbb_uk": "British Business Bank",
+    "invest_ni": "Invest Northern Ireland",
+    "compete_pt": "COMPETE / PT2030 (Portuguese cohesion funds)",
+    "lu_economie": "Ministère de l'Économie (Luxembourg)",
+    "lu_energie": "Ministère de l'Énergie (Luxembourg)",
+    # Sprint 17 — Belgian and Dutch granting authorities now tagged
+    "vlaio": "VLAIO (Flanders Innovation & Entrepreneurship)",
+    "spw_wallonie": "SPW DGO Économie (Wallonia)",
+    "innoviris": "Innoviris (Brussels R&D)",
+    "bom": "BOM (Brabantse Ontwikkelingsmaatschappij)",
+    "nom": "NOM (Noord-Nederland Ontwikkeling)",
+    # Sprint 17 additions
+    "innovasjon_norge": "Innovasjon Norge",
+    "nfr": "Norges Forskningsråd",
+    "innosuisse": "Innosuisse (Switzerland)",
+    "eis": "EIS (KredEx + Enterprise Estonia)",
+    "tacr": "TAČR (Czech Republic)",
+    "bdns": "Spain BDNS (regional agencies)",
+    "fr_region": "French Regional Innovation Grants",
 }
