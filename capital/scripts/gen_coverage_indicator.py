@@ -68,12 +68,12 @@ STRUCTURAL_GAPS: dict[str, str] = {
     "PL": "SUDOP national register loaded via v1 purpose-code query (R&D Art.25-29): 2,931 events / €4.2B. NCBR + mapadotacji.gov.pl (EU cohesion) out of scope.",
     "NL": "Full SATR incl. RVO + regional dev agencies (BOM, NOM) tagged. Invest-NL co-invest thin; RVO sub-threshold WBSO not in register.",
     "ES": "BDNS national state-aid register loaded via infosubvenciones.es mirror (GBER Art.21-30+36-49, ≥€100k): 13.2k events / €6.9B + CDTI/IDAE/ICAEN/IVACE/GAIN/ACCIÓ direct.",
-    "NO": "EU instruments only. Innovasjon Norge + NFR extractors built; run locally (APIs unreachable from build host).",
-    "CH": "EU instruments only (non-EU, no SATR). Innosuisse extractor built; run locally.",
-    "LV": "SATR + CFLA tagged. ALTUM has no machine-readable open register.",
-    "LT": "SATR + economy-ministry/ILTE tagged. data.gov.lt bulk access pending.",
-    "EE": "SATR + EIS (KredEx+Enterprise Estonia) tagged. Funded-projects DB 403 from build host.",
-    "CZ": "Full SATR + TAČR tagged (760 events). IS VaVaI CEP bulk for full TAČR run locally.",
+    "NO": "Innovasjon Norge direct register (14.4k events, grants+loans) + NFR company-led projects (2.1k) + EU instruments. No SATR (non-EU).",
+    "CH": "Innosuisse company-led projects via ARAMIS export (1.8k events) + EU instruments. No SATR (non-EU).",
+    "LV": "SATR + ALTUM recipients workbook (3.9k events: loans/guarantees/equity, agri sheets excluded). EU-instrument layer thin.",
+    "LT": "SATR + economy-ministry/ILTE tagged. No machine-readable ILTE direct register (data.gov.lt datasets are COVID/energy compensation, SATR-overlapping).",
+    "EE": "SATR + EIS funded-projects register (3.7k company events net of SATR overlap). EU-instrument layer thin.",
+    "CZ": "Full SATR + TAČR via STARFOS export (547 net-new company-led events after SATR dedup; 514 collisions skipped).",
     "RO": "EU instruments only. REGAS national SATR portal not yet extracted.",
     "SI": "EU instruments only. gov.si national state-aid page (no bulk export) not yet extracted.",
     "HU": "Full SATR + NKFIH/Hiventures tagged. MFB has no open company register.",
@@ -135,6 +135,8 @@ def _refined_tier(reg_events: int, eu_events: int, ndb_events: int) -> str:
         return "B"
     if has_eu and has_ndb:
         return "B"
+    if has_register and has_ndb:
+        return "B"  # small countries rarely reach 500 EU events
     if has_eu or has_register:
         return "C"
     return "X"

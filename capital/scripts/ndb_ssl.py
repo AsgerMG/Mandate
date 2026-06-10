@@ -43,6 +43,17 @@ def fetch_text(url: str, timeout: int = 60) -> str | None:
         return None
 
 
+def fetch_bytes(url: str, timeout: int = 60) -> bytes | None:
+    """Download URL as raw bytes (caller handles encoding). Returns None on failure."""
+    try:
+        with open_url(url, timeout=timeout) as resp:
+            return resp.read()
+    except Exception as e:
+        import sys
+        print(f"    fetch_bytes error {url}: {e}", file=sys.stderr)
+        return None
+
+
 def fetch_json(url: str, timeout: int = 30) -> dict | list | None:
     """Download URL and parse as JSON. Returns None on failure."""
     import json

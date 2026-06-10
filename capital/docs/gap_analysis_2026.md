@@ -1,10 +1,11 @@
 # EuroInvTracker: Comprehensive Coverage Gap Analysis
 *Compiled 2026-06-01. Journalism-grade audit of current coverage vs. full universe of EU investment vehicles and national industrial policy tools.*
+*Updated 2026-06-10: Sprint-17 local loads landed — Innovasjon Norge, NFR (NO), Innosuisse (CH), TAČR (CZ), EIS (EE), ALTUM (LV). Country tables below updated accordingly. Coverage ladder now 16 A / 7 B / 5 C / 12 X.*
 
 ---
 
 ## Current Database State
-**213,906 events / 116,246 companies / ~€252B tracked**
+**265,646 events / 144,122 companies / ~€275B tracked** *(as of 2026-06-10)*
 
 | Source family | Events | Companies | €B grant/invest |
 |---|---|---|---|
@@ -26,6 +27,12 @@
 | EuroHPC | 22 | 14 | — |
 | SUDOP Poland (partial) | 22 | 20 | — |
 | FR Relance Industrie | 2,835 | 2,735 | — |
+| **Innovasjon Norge (2026-06-10)** | 14,409 | 7,936 | 3.3 |
+| **NFR Norway (2026-06-10)** | 2,100 | 1,157 | 0.8 |
+| **Innosuisse (2026-06-10)** | 1,797 | 1,574 | 0.4 |
+| **EIS Estonia (2026-06-10)** | 3,694 | 2,472 | 0.5 |
+| **ALTUM Latvia (2026-06-10)** | 3,921 | 2,801 | 0.8 |
+| **TAČR Czech Rep. (2026-06-10)** | 547 | 431 | 0.3 |
 
 ---
 
@@ -245,7 +252,7 @@
 |---|---|---|---|---|
 | NRB (Národní rozvojová banka) | Dev bank | 🟡 SATR (2 events) | Very thin; new institution | — |
 | ČMZRB | Guarantee | 🟡 SATR | SME guarantees | — |
-| **TAČR** | R&D grants | ❌ | ~10,000+ projects; project database on tacr.gov.cz incl. companies | **Website database** |
+| **TAČR** | R&D grants | ✅ Loaded 2026-06-10 | STARFOS export API (isvavai.cz is WAF-blocked). 1,061 company-led 2021+ projects extracted; **547 net-new** after SATR-overlap gate (514 name+year±1 collisions vs 760 SATR rows tagged `tacr`). €298M | **STARFOS export API** |
 | **CzechInvest / dotaceEU.cz** | EU structural funds | ❌ | EU cohesion transparency data; Czech portal | **EU transparency** |
 
 ### Portugal
@@ -285,16 +292,16 @@
 
 | Institution | Country | Status | Gap/Notes | Open data? |
 |---|---|---|---|---|
-| **ALTUM** | Latvia | ❌ | NDB; open data on data.gov.lv confirmed | **data.gov.lv** |
-| **EIS (KredEx + EAS merged)** | Estonia | ❌ | Funded projects database on eis.ee confirmed | **eis.ee** |
-| **ILTE (formerly INVEGA)** | Lithuania | ❌ | Open data on data.gov.lt confirmed | **data.gov.lt** |
+| **ALTUM** | Latvia | ✅ Loaded 2026-06-10 | Monthly recipients XLSX from altum.lv (not data.gov.lv); 42 programme sheets, agri (ELFLA) excluded. **3,921 net-new** events €795M (loans/guarantees/equity typed; ANM capital rebates split out as grants). 216 SATR collisions skipped | **altum.lv XLSX** |
+| **EIS (KredEx + EAS merged)** | Estonia | ✅ Loaded 2026-06-10 | Full dataset (~8k rows) embedded as JSON in eis.ee/toetatud-projektid page. Companies only, 2021+: **3,694 net-new** events €477M; 775 SATR collisions skipped | **eis.ee (embedded JSON)** |
+| **ILTE (formerly INVEGA)** | Lithuania | ❌ Dead end | No machine-readable direct register. data.gov.lt INVEGA/EIMIN datasets are COVID/energy compensation already SATR-covered | — |
 
 ### Norway (EEA, not EU)
 
 | Institution | Type | Status | Gap/Notes | Open data? |
 |---|---|---|---|---|
-| **Innovasjon Norge** | Innovation grants | ❌ | **Tildelinger.csv direct download at data.innovasjonnorge.no. ~€300M+/yr to Norwegian companies. Highest single ROI of all gaps** | **Direct CSV download (CC0)** |
-| **Norges Forskningsråd** | R&D grants | ❌ | Open data on data.norge.no. Company grants confirmed | **data.norge.no** |
+| **Innovasjon Norge** | Innovation grants | ✅ Loaded 2026-06-10 | Tildelinger.csv via Azure blob (cp1252). 2021+, agriculture + extraordinary measures excluded: **14,409 events €3.3B** (grants + loans/guarantees split into `debt_amount_eur`). The "highest single ROI" call was right | **Direct CSV download (CC0)** |
+| **Norges Forskningsråd** | R&D grants | ✅ Loaded 2026-06-10 | Prosjektbanken REST API (no OAuth needed). Company-led (Næringsliv) 2021+: **2,100 events €766M** | **Prosjektbanken REST** |
 | Siva | Industrial parks | ❌ | Grants to incubators, not directly to companies | — |
 | Argentum | VC FoF | ❌ | FoF; no company-level register | — |
 
@@ -302,7 +309,7 @@
 
 | Institution | Type | Status | Gap/Notes | Open data? |
 |---|---|---|---|---|
-| **Innosuisse** | Innovation grants | ❌ | Data portal at innosuisse.admin.ch confirmed. CHF 341M/yr (€380M) | **Portal confirmed** |
+| **Innosuisse** | Innovation grants | ✅ Loaded 2026-06-10 | ARAMIS full-export JSON via opendata.swiss (not innosuisse.admin.ch). Company-led filter by legal-form regex: **1,797 events €394M** 2021+ | **ARAMIS / opendata.swiss** |
 | SNF | Academic grants | ❌ | Primarily academic; P-3 database open | Low relevance |
 
 ### Romania, Slovakia, Slovenia, Croatia, Bulgaria
@@ -382,7 +389,7 @@
 
 | Gap | Expected records | Data source | Effort |
 |---|---|---|---|
-| **Innovasjon Norge (Norway)** | ~5,000 company events/yr | Direct CSV `data.innovasjonnorge.no` (CC0) | **1-2 days** |
+| ~~**Innovasjon Norge (Norway)**~~ | **✅ DONE 2026-06-10** — 14,409 events €3.3B | Direct CSV via Azure blob (CC0) | — |
 | **Vinnova (Sweden)** | ~1,000 company grants/yr, 2010+ history | `portal.api.vinnova.se` open API, free key | **2-3 days** |
 | **Spain BDNS systematic** | Thousands/yr — all Spanish public bodies | REST API `pap.hacienda.gob.es` (bdns-fetch lib) | **3-5 days** |
 | **EIC Fund portfolio** | ~400+ companies | `eic.ec.europa.eu/eic-fund` (public list) | **1-2 days** |
@@ -397,10 +404,10 @@
 |---|---|---|---|
 | ~~French regional grants (SCDL)~~ | **TESTED & REJECTED** | Occitanie test (64k rows, 749 post-filter): mostly schools/associations/public bodies not private innovative companies. Regional R&D grants ≥€100k already in SATR. France is Tier-A. | — |
 | NCBR Poland | ~6,700 enterprises | `osf.opi.org.pl` | 3-5 days |
-| ALTUM (Latvia) | Hundreds | `data.gov.lv` | 1-2 days |
-| ILTE (Lithuania) | Hundreds | `data.gov.lt` | 1-2 days |
-| EIS Estonia (KredEx+EAS) | Hundreds | `eis.ee` funded projects DB | 1-2 days |
-| TAČR Czech Republic | Thousands | `tacr.gov.cz` project DB | 2-3 days |
+| ~~ALTUM (Latvia)~~ | **✅ DONE 2026-06-10** — 3,921 events €795M | altum.lv recipients XLSX | — |
+| ~~ILTE (Lithuania)~~ | **❌ DEAD END** — no machine-readable direct register; data.gov.lt datasets are SATR-covered compensation schemes | — | — |
+| ~~EIS Estonia (KredEx+EAS)~~ | **✅ DONE 2026-06-10** — 3,694 events €477M | JSON embedded in `eis.ee` page | — |
+| ~~TAČR Czech Republic~~ | **✅ DONE 2026-06-10** — 547 net-new events €298M (post SATR-dedup) | STARFOS export API | — |
 | IAPMEI/PT2030 Portugal | Hundreds | `portugal2030.pt` | 2-3 days |
 | mapadotacji.gov.pl Poland | Tens of thousands | EU cohesion transparency | 5+ days |
 | Clean Aviation JU | Hundreds | CORDIS `HORIZON-JU-CLEANAV-*` | 1 day (same pattern as Chips JU) |
@@ -409,7 +416,7 @@
 | EDIP (defence) | Dozens/yr | DG DEFIS (first results ~late 2026) | Future |
 | VLAIO Flanders | Hundreds/yr | `open.vlaanderen.be` | 2-3 days |
 | ERC-PoC | ~200-300/yr | CORDIS `HORIZON_ERC-*-POC` | < 1 day |
-| Innosuisse (Switzerland) | ~hundreds/yr | `innosuisse.admin.ch` data portal | 2-3 days |
+| ~~Innosuisse (Switzerland)~~ | **✅ DONE 2026-06-10** — 1,797 events €394M | ARAMIS full export via opendata.swiss | — |
 | ETCI portfolio companies | ~38+ (ETCI1) | Partial Crunchbase/Dealroom cross-ref | Medium |
 
 ### Tier 3 — Structural gaps (no open register; not tractable in near term)

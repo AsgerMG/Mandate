@@ -1,52 +1,53 @@
-"""Extract Innovasjon Norge grant awards (Norway) — Sprint 17.
+"""Extract Innovasjon Norge grant/loan awards (Norway) — Sprint 17.
 
 Data source:
-  Innovasjon Norge publishes an open-data CSV of all grants/tildelinger via the
-  Norwegian national open-data portal (data.norge.no). The dataset is CC0.
+  Innovasjon Norge publishes an open-data CSV of all financing decisions
+  ("Tilsagn om finansiering") via data.norge.no. The dataset is CC0.
 
-  Primary download URL (try in order):
-    1. https://data.innovasjonnorge.no/api/files?filename=Tildelinger.csv
-    2. https://data.norge.no/api/3/action/datastore_search?resource_id=<id>&limit=5000
-    3. Fallback: download from the annual transparency report page:
-       https://www.innovasjonnorge.no/no/verktoy/statistikk-og-analyse/tildelinger/
+  Dataset page: https://data.norge.no/nb/datasets/d5f090ca-4e43-3303-a5e6-54247ea69d72
+  Direct download (Azure blob, verified 2026-06-10):
+    https://indatapublic.blob.core.windows.net/tildelingsrapport/Tildelinger.csv
 
-  The CSV contains company-level grants with fields (typical):
-    Kundenummer, Organisasjonsnummer, Kundenavn, Postnummer, Kommune, Fylke,
-    Land, Virkemiddel (instrument), Bevilgningsaar (year), Beloep (NOK amount),
-    Utbetalt (paid out NOK)
+  CSV is cp1252-encoded, semicolon-delimited, with columns:
+    Fylkesnavn; Kommunenavn; Org-nr; Bedriftsnavn; Virkemiddelkategori;
+    Underkategori; Innvilget beløp (NOK); Innvilget dato (DD.MM.YY);
+    Beslutningsenhet; Næringshovedområde; Næring; Type finansiering
 
-  On data.norge.no, search for "Innovasjon Norge tildelinger" to find the
-  current resource ID. The dataset was last confirmed under publisher
-  "Innovasjon Norge" with file name "Tildelinger.csv".
+Scope decisions (Option A — direct funding to named companies):
+  - 2021+ only (project scope window)
+  - rows without Org-nr dropped (personal customers / "personkunder")
+  - 'Landbrukstilskudd' excluded (farm subsidies, not innovation/industrial)
+  - 'Ekstraordinære tiltak' excluded (COVID-era measures, consistent with the
+    SATR COVID/TCTF exclusion)
+  - Type finansiering: Tilskudd → grant_amount_eur;
+    Lån / Garanti → debt_amount_eur (instrument-type integrity rule)
 
 Schema mapping:
-  source             = 'innovasjon_norge_<instrument_slug>'
-  grant_amount_eur   = Beloep NOK → EUR via fixed rate 11.5 NOK/EUR
+  source             = 'innovasjon_norge_<category_slug>_<year>'
   deployment_country = 'NO'
   ndb_distributor    = 'innovasjon_norge'
 
 Run modes:
   python extract_innovasjon_norge.py             → fetch + CSV only
   python extract_innovasjon_norge.py --load-db   → fetch + match + load
-  python extract_innovasjon_norge.py --probe      → test download URL only
+  python extract_innovasjon_norge.py --probe     → test download URL only
   python extract_innovasjon_norge.py --local <path> → use local CSV file
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import io
 import re
 import sqlite3
 import sys
-import urllib.request
-import urllib.error
 from pathlib import Path
 
-import sys as _sys
-_sys.path.insert(0, str(Path(__file__).parent))
-from ndb_ssl import fetch_text as _ndb_fetch_text, fetch_json as _ndb_fetch_json
-from ndb_helpers import normalise_ticket
+_sys_path_dir = str(Path(__file__).parent)
+if _sys_path_dir not in sys.path:
+    sys.path.insert(0, _sys_path_dir)
+from ndb_ssl import fetch_bytes as _ndb_fetch_bytes  # noqa: E402
 
 BASE_DIR = Path(__file__).parent.parent
 RAW_DIR = BASE_DIR / "data" / "raw" / "innovasjon_norge"
@@ -59,233 +60,167 @@ DB_PATH = BASE_DIR / "db.sqlite"
 DEPLOYMENT_COUNTRY = "NO"
 NDB_DISTRIBUTOR = "innovasjon_norge"
 
-# NOK to EUR exchange rate (2024 average approx.)
-NOK_EUR = 1 / 11.5
+# ECB annual average NOK per EUR; fallback used for years not listed.
+NOK_PER_EUR = {
+    2021: 10.1633,
+    2022: 10.1026,
+    2023: 11.4248,
+    2024: 11.6290,
+    2025: 11.6700,
+    2026: 11.6700,
+}
+NOK_PER_EUR_FALLBACK = 11.5
 
-# Candidate download URLs in priority order
 DOWNLOAD_URLS = [
-    "https://data.innovasjonnorge.no/api/files?filename=Tildelinger.csv",
-    # data.norge.no CKAN API — resource IDs to try (may change; find via search)
-    "https://data.norge.no/api/3/action/datastore_search?resource_id=b7d76f48-b60d-4a38-93d5-8c89c78d7e1c&limit=50000",
+    "https://indatapublic.blob.core.windows.net/tildelingsrapport/Tildelinger.csv",
+    "https://data.innovasjonnorge.no/api/files?filename=Tildelinger.csv&container=innovasjonnorge&subfolder=tildelinger/csv",
 ]
 
-# Innovation-relevant instruments to include (Norwegian term → English label → source slug)
-# Map: lowercase substring in Virkemiddel field → source slug fragment
-INSTRUMENT_MAP: dict[str, str] = {
-    "innovasjonslaan": "loan_innovation",
-    "innovasjonslån": "loan_innovation",
-    "miljøteknologi": "grant_envirotech",
-    "miljoteknologi": "grant_envirotech",
-    "forsknings": "grant_rd",
-    "etablerer": "grant_startup",
-    "gründer": "grant_startup",
-    "grunder": "grant_startup",
-    "katapult": "grant_catapult",
-    "klynge": "grant_cluster",
-    "bio": "grant_bioeconomy",
-    "global": "grant_global",
-    "laerling": "grant_apprentice",
-    "lærling": "grant_apprentice",
-    "SMB": "grant_sme",
-    "nyskapings": "grant_innovation",
-    "nyskaping": "grant_innovation",
-    "innovasjon": "grant_innovation",   # catch-all fallback
-}
-
-# Minimum year for the 2021-2026 scope window
 MIN_YEAR = 2021
 
-
-def _instrument_slug(virkemiddel: str) -> str:
-    v_lower = (virkemiddel or "").lower()
-    for key, slug in INSTRUMENT_MAP.items():
-        if key.lower() in v_lower:
-            return slug
-    return "grant_other"
-
-
-def _fetch_csv() -> str | None:
-    """Try each URL in DOWNLOAD_URLS and return raw text of first that succeeds."""
-    for url in DOWNLOAD_URLS:
-        text = _ndb_fetch_text(url, timeout=60)
-        if text:
-            return text
-    return None
-
-
-def _parse_csv(text: str) -> list[dict]:
-    """Parse Tildelinger.csv text → list of normalised row dicts."""
-    rows = []
-    # Try common delimiters (IN usually comma or semicolon)
-    for delim in (";", ",", "\t"):
-        sample = text[:2000]
-        if sample.count(delim) > sample.count(",") or delim == ",":
-            reader = csv.DictReader(io.StringIO(text), delimiter=delim)
-            try:
-                first = next(reader)
-            except StopIteration:
-                continue
-            if len(first) < 4:
-                continue
-            # Reset
-            reader = csv.DictReader(io.StringIO(text), delimiter=delim)
-            rows = list(reader)
-            break
-    return rows
+# Virkemiddelkategori → source slug. Categories not listed are excluded.
+CATEGORY_MAP: dict[str, str] = {
+    "Oppstartstilskudd": "grant_startup",
+    "Innovasjonstilskudd": "grant_innovation",
+    "Distriktsutviklingstilskudd": "grant_regional",
+    "Distriksutviklingstilskudd": "grant_regional",  # source typo variant
+    "Risikolån og garantier": "loan_risk",
+    "Lavrisikolån": "loan_lowrisk",
+    "Klynger og nettverk": "grant_cluster",
+    "Internasjonale tilskuddsprogrammer": "grant_international",
+    "Næringsspesifikke utviklingstiltak": "grant_sector",
+}
+EXCLUDED_CATEGORIES = {
+    "Landbrukstilskudd",        # farm subsidies — out of scope
+    "Ekstraordinære tiltak",    # COVID-era extraordinary measures
+}
 
 
 def _normalise_name(name: str) -> str:
     n = (name or "").upper()
-    for suffix in [" AS", " ASA", " ANS", " DA", " SA", " BA", " SA.", " ASA.", " A/S"]:
+    for suffix in [" AS", " ASA", " ANS", " DA", " SA", " BA", " A/S"]:
         if n.endswith(suffix):
             n = n[: -len(suffix)]
     n = re.sub(r"[^A-Z0-9ÆØÅÉ ]+", " ", n).strip()
     return re.sub(r"\s+", " ", n)
 
 
-def extract(raw_text: str) -> list[dict]:
-    """Return cleaned grant rows from the CSV text."""
-    raw_rows = _parse_csv(raw_text)
+def _fetch_csv() -> str | None:
+    for url in DOWNLOAD_URLS:
+        data = _ndb_fetch_bytes(url, timeout=120)
+        if data:
+            return data.decode("cp1252", errors="replace")
+    return None
+
+
+def extract(text: str) -> list[dict]:
+    """Parse Tildelinger.csv text → cleaned, in-scope rows."""
+    reader = csv.DictReader(io.StringIO(text), delimiter=";")
+    raw_rows = list(reader)
     if not raw_rows:
         print("  ERROR: could not parse CSV", file=sys.stderr)
         return []
-
-    headers_lower = {k.lower().strip(): k for k in (raw_rows[0].keys() if raw_rows else [])}
-    print(f"  CSV columns: {list(raw_rows[0].keys())[:8]}")
-
-    # Flexible column detection
-    def _col(row: dict, *candidates: str) -> str:
-        for c in candidates:
-            if c in row:
-                return row[c].strip()
-            c_low = c.lower()
-            if c_low in headers_lower:
-                return row[headers_lower[c_low]].strip()
-        return ""
+    print(f"  CSV columns: {list(raw_rows[0].keys())}")
 
     out = []
-    skipped_year = 0
-    skipped_amount = 0
+    skipped = {"year": 0, "category": 0, "no_org": 0, "amount": 0, "unknown_cat": 0}
     for row in raw_rows:
-        # Year filter
-        year_str = _col(row, "Bevilgningsaar", "Bevilgningsår", "Aar", "År", "Year", "year")
-        try:
-            year = int(year_str)
-        except ValueError:
+        date_str = (row.get("Innvilget dato") or "").strip()
+        m = re.match(r"(\d{2})\.(\d{2})\.(\d{2})$", date_str)
+        if not m:
             continue
+        year = 2000 + int(m.group(3))
         if year < MIN_YEAR:
-            skipped_year += 1
+            skipped["year"] += 1
             continue
 
-        # Amount
-        amt_str = _col(row, "Beloep", "Beløp", "Amount", "amount", "Innvilget", "Tildelt")
-        amt_str = re.sub(r"[^\d.,]", "", amt_str).replace(",", ".").replace(" ", "")
+        category = (row.get("Virkemiddelkategori") or "").strip()
+        if category in EXCLUDED_CATEGORIES:
+            skipped["category"] += 1
+            continue
+        slug = CATEGORY_MAP.get(category)
+        if slug is None:
+            skipped["unknown_cat"] += 1
+            continue
+
+        org_nr = re.sub(r"\D", "", row.get("Org-nr") or "")
+        if not org_nr:
+            skipped["no_org"] += 1
+            continue
+
+        amt_str = (row.get("Innvilget beløp") or "").replace(",", ".").strip()
         try:
-            amount_nok = float(amt_str) if amt_str else 0.0
+            amount_nok = float(amt_str)
         except ValueError:
             amount_nok = 0.0
         if amount_nok <= 0:
-            skipped_amount += 1
+            skipped["amount"] += 1
             continue
-        amount_eur = amount_nok * NOK_EUR
+        amount_eur = amount_nok / NOK_PER_EUR.get(year, NOK_PER_EUR_FALLBACK)
 
-        # Company name
-        name = _col(row, "Kundenavn", "Navn", "Name", "Firmanavn", "Selskapsnavn")
+        name = (row.get("Bedriftsnavn") or "").strip()
         if not name:
             continue
 
-        # Org number (Norwegian national company identifier)
-        org_nr = _col(row, "Organisasjonsnummer", "OrganisasjonsNr", "OrgNr", "Orgnr")
-        org_nr = re.sub(r"\s+", "", org_nr)
+        fin_type = (row.get("Type finansiering") or "").strip()  # Tilskudd / Lån / Garanti
+        is_debt = fin_type in ("Lån", "Garanti")
 
-        # Instrument / virkemiddel
-        virkemiddel = _col(row, "Virkemiddel", "Instrument", "Program", "Produkt")
-        slug = _instrument_slug(virkemiddel)
         source = f"innovasjon_norge_{slug}_{year}"
-
-        # Geography
-        municipality = _col(row, "Kommune", "municipality")
-        county = _col(row, "Fylke", "fylke")
+        # Stable per-row id: org + date + amount + subcategory
+        sub = (row.get("Underkategori") or "").strip()
+        key = f"{org_nr}|{date_str}|{amount_nok:.0f}|{sub}"
+        call_id = f"in_{org_nr}_{hashlib.sha1(key.encode()).hexdigest()[:12]}"
 
         out.append({
             "source": source,
-            "call_id": f"{source}_{org_nr or _normalise_name(name)[:30]}_{year}",
+            "call_id": call_id,
             "company_name": name,
             "company_name_norm": _normalise_name(name),
             "org_nr": org_nr,
             "country": DEPLOYMENT_COUNTRY,
-            "city": municipality,
+            "city": (row.get("Kommunenavn") or "").strip(),
             "year": year,
-            "instrument": virkemiddel,
-            "grant_amount_eur": round(amount_eur, 2),
-            "grant_amount_nok": amount_nok,
+            "date": f"20{m.group(3)}-{m.group(2)}-{m.group(1)}",
+            "category": category,
+            "subcategory": sub,
+            "fin_type": fin_type,
+            "grant_amount_eur": round(amount_eur, 2) if not is_debt else None,
+            "debt_amount_eur": round(amount_eur, 2) if is_debt else None,
+            "amount_nok": amount_nok,
             "ndb_distributor": NDB_DISTRIBUTOR,
             "deployment_country": DEPLOYMENT_COUNTRY,
         })
 
-    print(f"  Rows: {len(raw_rows)} total → {len(out)} kept "
-          f"(skipped: {skipped_year} pre-{MIN_YEAR}, {skipped_amount} zero-amount)")
+    print(f"  Rows: {len(raw_rows)} total → {len(out)} kept (skipped: "
+          f"{skipped['year']} pre-{MIN_YEAR}, {skipped['category']} excluded-category, "
+          f"{skipped['unknown_cat']} unknown-category, {skipped['no_org']} no-org-nr, "
+          f"{skipped['amount']} zero-amount)")
     return out
-
-
-def _match_or_insert(con: sqlite3.Connection, norm_name: str, raw_name: str,
-                     org_nr: str, city: str) -> int:
-    cur = con.cursor()
-    # 1. By org number (NO-specific national ID)
-    if org_nr:
-        cur.execute("SELECT id FROM companies WHERE national_id=? AND country='NO'", (org_nr,))
-        row = cur.fetchone()
-        if row:
-            return row[0]
-    # 2. Exact canonical name match
-    cur.execute("SELECT id FROM companies WHERE canonical_name=? AND country='NO'",
-                (norm_name,))
-    row = cur.fetchone()
-    if row:
-        return row[0]
-    # 3. Insert new
-    cur.execute(
-        """INSERT INTO companies (canonical_name, raw_name, country, city,
-           national_id, entity_type, match_method, match_confidence)
-           VALUES (?, ?, 'NO', ?, ?, 'unknown', 'innovasjon_norge', 'medium')""",
-        (norm_name, raw_name, city or None, org_nr or None),
-    )
-    return cur.lastrowid
 
 
 def _load_to_db(rows: list[dict]) -> dict:
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
-
-    # Check if national_id column exists on companies
-    cur.execute("PRAGMA table_info(companies)")
-    col_names = {r[1] for r in cur.fetchall()}
-    has_national_id = "national_id" in col_names
-
-    counts = {"inserted": 0, "skipped_dup": 0, "errors": 0}
+    counts = {"inserted": 0, "skipped_dup": 0, "errors": 0, "grant": 0, "debt": 0}
     for r in rows:
         try:
             norm = r["company_name_norm"]
-            if has_national_id:
-                cid = _match_or_insert(con, norm, r["company_name"],
-                                       r["org_nr"], r["city"])
+            cur.execute(
+                "SELECT id FROM companies WHERE canonical_name=? AND country='NO'",
+                (norm,))
+            row = cur.fetchone()
+            if row:
+                cid = row[0]
             else:
                 cur.execute(
-                    "SELECT id FROM companies WHERE canonical_name=? AND country='NO'",
-                    (norm,))
-                row = cur.fetchone()
-                if row:
-                    cid = row[0]
-                else:
-                    cur.execute(
-                        """INSERT INTO companies (canonical_name, raw_name, country, city,
-                           entity_type, match_method, match_confidence)
-                           VALUES (?, ?, 'NO', ?, 'unknown', 'innovasjon_norge', 'medium')""",
-                        (norm, r["company_name"], r["city"] or None),
-                    )
-                    cid = cur.lastrowid
+                    """INSERT INTO companies (canonical_name, raw_name, country, city,
+                       entity_type, match_method, match_confidence, notes)
+                       VALUES (?, ?, 'NO', ?, 'unknown', 'innovasjon_norge', 'medium', ?)""",
+                    (norm, r["company_name"], r["city"] or None,
+                     f"org_nr:{r['org_nr']}"),
+                )
+                cid = cur.lastrowid
 
-            # Dedup by source + call_id
             cur.execute(
                 "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
                 (r["source"], r["call_id"]),
@@ -294,19 +229,21 @@ def _load_to_db(rows: list[dict]) -> dict:
                 counts["skipped_dup"] += 1
                 continue
 
+            basis = "ndb_grant" if r["grant_amount_eur"] else (
+                "ndb_guarantee" if r["fin_type"] == "Garanti" else "ndb_loan_commitment")
             cur.execute(
                 """INSERT INTO public_funding_events
                    (company_id, source, call_id, role, coordinator_only,
-                    project_started, grant_amount_eur,
-                    grant_amount_basis, deployment_country, ndb_distributor)
-                   VALUES (?, ?, ?, 'direct', 0, ?, ?, 'ndb_grant', ?, ?)""",
-                (cid, r["source"], r["call_id"],
-                 f"{r['year']}-01-01",
-                 r["grant_amount_eur"],
-                 r["deployment_country"],
-                 r["ndb_distributor"]),
+                    project_started, grant_amount_eur, debt_amount_eur,
+                    grant_amount_basis, aid_instrument, deployment_country,
+                    ndb_distributor)
+                   VALUES (?, ?, ?, 'direct', 0, ?, ?, ?, ?, ?, ?, ?)""",
+                (cid, r["source"], r["call_id"], r["date"],
+                 r["grant_amount_eur"], r["debt_amount_eur"], basis,
+                 r["fin_type"], r["deployment_country"], r["ndb_distributor"]),
             )
             counts["inserted"] += 1
+            counts["debt" if r["debt_amount_eur"] else "grant"] += 1
         except Exception as e:
             counts["errors"] += 1
             if counts["errors"] <= 3:
@@ -318,14 +255,14 @@ def _load_to_db(rows: list[dict]) -> dict:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Extract Innovasjon Norge grants")
+    parser = argparse.ArgumentParser(description="Extract Innovasjon Norge awards")
     parser.add_argument("--load-db", action="store_true", help="Load into db.sqlite")
     parser.add_argument("--probe", action="store_true", help="Test download URL only")
     parser.add_argument("--local", metavar="PATH", help="Use local CSV file instead of downloading")
     args = parser.parse_args()
 
     if args.local:
-        text = Path(args.local).read_text(encoding="utf-8", errors="replace")
+        text = Path(args.local).read_bytes().decode("cp1252", errors="replace")
         print(f"  Using local file: {args.local}")
     else:
         print("Fetching Innovasjon Norge Tildelinger.csv ...")
@@ -333,8 +270,8 @@ def main() -> None:
         if not text:
             print(
                 "\nERROR: Could not download the CSV. Manual steps:\n"
-                "  1. Visit https://data.norge.no and search for 'Innovasjon Norge tildelinger'\n"
-                "  2. Download the CSV file (Tildelinger.csv)\n"
+                "  1. Visit https://www.innovasjonnorge.no/artikkel/hvem-har-fatt-tilbud-om-finansiering-fra-oss\n"
+                "  2. Download 'Last ned tildelinger i csv-format'\n"
                 "  3. Re-run with: python extract_innovasjon_norge.py --local /path/to/Tildelinger.csv\n",
                 file=sys.stderr,
             )
@@ -343,19 +280,18 @@ def main() -> None:
             print("  Probe OK — downloaded successfully")
             print("  First 200 chars:", text[:200])
             return
-        # Cache raw file
         raw_path = RAW_DIR / "Tildelinger.csv"
         raw_path.write_text(text, encoding="utf-8")
-        print(f"  Cached to {raw_path}")
+        print(f"  Cached to {raw_path} (re-encoded UTF-8)")
 
     rows = extract(text)
     if not rows:
         print("  No rows extracted.")
         return
 
-    # Save processed CSV
     out_fields = ["source", "call_id", "company_name", "org_nr", "country",
-                  "city", "year", "instrument", "grant_amount_eur", "grant_amount_nok",
+                  "city", "year", "date", "category", "subcategory", "fin_type",
+                  "grant_amount_eur", "debt_amount_eur", "amount_nok",
                   "ndb_distributor"]
     with CSV_PATH.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=out_fields, extrasaction="ignore")
@@ -367,14 +303,17 @@ def main() -> None:
     from collections import Counter
     by_year = Counter(r["year"] for r in rows)
     for y, n in sorted(by_year.items()):
-        total_eur = sum(r["grant_amount_eur"] for r in rows if r["year"] == y)
-        print(f"    {y}: {n:>5} events  €{total_eur/1e6:.1f}M")
+        g = sum(r["grant_amount_eur"] or 0 for r in rows if r["year"] == y)
+        d = sum(r["debt_amount_eur"] or 0 for r in rows if r["year"] == y)
+        print(f"    {y}: {n:>5} events  €{g/1e6:7.1f}M grants  €{d/1e6:7.1f}M debt")
 
     if args.load_db:
         print("Loading into db.sqlite ...")
         counts = _load_to_db(rows)
-        print(f"  Inserted: {counts['inserted']}, skipped dup: {counts['skipped_dup']}, errors: {counts['errors']}")
-        print("  Run python3 classify.py after loading.")
+        print(f"  Inserted: {counts['inserted']} "
+              f"(grant {counts['grant']} / debt {counts['debt']}), "
+              f"skipped dup: {counts['skipped_dup']}, errors: {counts['errors']}")
+        print("  Run python3 scripts/classify.py after loading.")
 
 
 if __name__ == "__main__":
