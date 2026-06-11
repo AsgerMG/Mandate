@@ -548,7 +548,29 @@ q("""
     WHERE NOT EXISTS (
         SELECT 1 FROM public_funding_events e WHERE e.company_id = c.id
     )
-""", "DQ: orphan companies (no linked funding events — should be empty)")
+    AND NOT EXISTS (
+        SELECT 1 FROM public_equity_stakes s WHERE s.company_id = c.id
+    )
+""", "DQ: orphan companies (no funding events AND no equity stakes — should be empty)")
+
+q("""
+    SELECT COUNT(*) AS stakes_only_companies
+    FROM companies c
+    WHERE EXISTS (SELECT 1 FROM public_equity_stakes s WHERE s.company_id = c.id)
+      AND NOT EXISTS (SELECT 1 FROM public_funding_events e WHERE e.company_id = c.id)
+""", "DQ: stakes-only companies (Sprint 19 equity layer; informational)")
+
+q("""
+    SELECT s.disclosure_level, COUNT(*) AS stakes
+    FROM public_equity_stakes s GROUP BY 1
+""", "DQ: equity stakes by disclosure level")
+
+q("""
+    SELECT COUNT(*) AS stakes_with_missing_company
+    FROM public_equity_stakes s
+    LEFT JOIN companies c ON c.id = s.company_id
+    WHERE c.id IS NULL
+""", "DQ: stakes pointing at missing companies (must be 0)")
 
 q("""
     SELECT COUNT(*) AS unclassified_companies

@@ -62,6 +62,143 @@ DIRECT_NDB_PREFIXES = (
     "innovate_uk_",
 )
 
+# Sprint 19: equity visibility tiers — the integration criterion for the
+# public-equity layer (public_equity_stakes), mirroring the grant coverage
+# tiers. Cross-country equity comparisons only WITHIN a tier; presence-only
+# claims corpus-wide with the tier caveat; ticket-size claims only where
+# disclosure_level='amount'.
+#   E-A register-grade   : ownership register / mandatory filing makes stakes
+#                          near-complete independent of institutional goodwill
+#   E-B institution-grade: the institution publishes a complete portfolio
+#   E-C partial          : press releases / case pages only
+#   E-X opaque           : nothing recoverable
+# PRELIMINARY desk assessment (Sprint 19 Steps 1-2); Step 5/6 extractions
+# confirm or demote. Default for unlisted countries is E-X.
+EQUITY_TIERS_PRELIMINARY: dict[str, tuple[str, str]] = {
+    # Tier = what is ACHIEVED with loaded data, not the structural ceiling.
+    # Upgrade paths live in the notes; comparisons must follow loaded data.
+    "DK": ("E-B", "ACHIEVED E-B: EIFO Note 12 — 43 FUND-layer stakes at pct_exact (accounting-forced, the Route A precedent; company tickets stay aggregate-only in Note 13) + 115 Venturelisten rounds (investment register, exit status unknown). E-A potential via CVR legal-owner register — pending user S2S access"),
+    "EE": ("E-A", "ACHIEVED E-A: e-Business Register open data (osanikud bulk dump, free, daily refresh, Nasdaq-CSD-verified) — 14 SmartCap holdings at EXACT percentages with dates (incl. Stargate Hydrogen 10.5%, UP Catalyst 10.9%). Caveat: covers OÜ shareholders only; AS ownership sits in the securities register"),
+    "NO": ("E-B", "ACHIEVED E-B: Investinor 139 stakes (incl. 72 divested) + Nysnø 54 (38 companies + 16 fund-layer), name_only. E-A route CONFIRMED VIABLE: skatteetaten releases the full aksjonærregister as CSV on request (1.7M rows; FY2025 holdings open since 18 May 2026) — ordering the extract is the remaining step"),
+    "GB": ("E-A", "ACHIEVED E-A: Future Fund statutory register — two quarterly snapshots loaded (2025-06-30 + 2026-03-31; 645 current equity interests, 391 cumulative insolvencies) at name_only. CAVEAT: covers ONE legacy scheme, not all UK public equity"),
+    "DE": ("E-B", "LOADED: HTGF 538 (130 exits via '(Exit)' labels) + Coparion 52 + Bayern Kapital 133 + IBB Ventures 100 stakes. NRW.BANK Venture publishes NO portfolio (probe confirmed); KfW Capital is LP-only"),
+    "PL": ("E-B", "LOADED: PFR Ventures 1,068 stakes — ALL look-through LP exposure (via_fund set); never compare with direct stakes. Most transparent FoF in Europe"),
+    "IT": ("E-B", "LOADED: CDP Venture Capital 81 stakes from Sprint 13 listing"),
+    "PT": ("E-B", "LOADED: Portugal Ventures 252 stakes incl. 84 published exits (one of four institutions disclosing the exit side)"),
+    "FI": ("E-B", "LOADED: Tesi Financial Review note 4.2 — the ENTIRE direct portfolio (72 holdings) at EXACT percentages, the only institution found that does this voluntarily for every position (ICEYE 6.7%, IQM 6.6%, Oura 3.4%, Valmet Automotive 45.0%). Best-practice benchmark for the scorecard; fund-layer commitments with EUR amounts also published (note 4.1, extraction queued)"),
+    "SE": ("E-B", "LOADED: Almi Invest 323 stakes from Sprint 13 listing; Saminvest is FoF; Industrifonden foundation-owned"),
+    "HU": ("E-C", "DOWNGRADED from E-B on inspection: Hiventures' public archive lists only ~45 of 1,000+ claimed tickets (45 loaded) — partial disclosure, not a complete portfolio"),
+    "IE": ("E-B", "LOADED: ISIF 20 stakes WITH amounts (€602M original commitments 2015-2023, NTMA appendix) — the only per-company euro disclosure found in Europe; commitments-not-holdings caveat; Enterprise Ireland appendices pending"),
+    "LV": ("E-B", "LOADED: ALTUM 21 stakes WITH ticket_eur + 1 register-grade position (Mogotel Development Holding, 84.55% of nominal capital via Altum kapitāla fonds, from the OPEN SIA members register). Register finding: ALTUM's venture co-invest tickets are convertible-structured and do NOT appear as share ownership — an open share register still cannot see non-share state equity"),
+    "AT": ("E-B", "LOADED: aws Gründungsfonds 54 stakes (TYPO3 portfolio page)"),
+    "BE": ("E-C", "DOWNGRADED from E-B on inspection: PMV publishes NO full portfolio (news items + Invest-for-Jobs subset only); Wallonie Entreprendre partial"),
+    "NL": ("E-C", "Invest-NL case pages; regional ROMs partial"),
+    "FR": ("E-C", "E-C with an IFRS-forced island: the URD 2024 accounting notes disclose 13 flagship stakes at EXACT pct (STMicroelectronics 13.86%, Soitec 11.47%, Doctolib 12.55% — France's only disclosed venture position, published solely because it crossed 1% of Bpifrance's capital). The other ~65 Large Venture positions and all regional vehicles stay invisible: disclosure exists exactly where accounting law forces it, nowhere else"),
+    "ES": ("E-C", "CDTI Innvierte press releases; Axis/Fond-ICO is FoF; participative loans in BDNS are quasi-equity"),
+    "LT": ("E-C", "INVEGA Koinvesticinis fondas case pages"),
+    "GR": ("E-C", "Equifund is FoF; HDB direct equity thin"),
+    "CH": ("E-X", "No federal direct-equity instrument; cantonal vehicles opaque"),
+}
+EU_EQUITY_TIER = ("E-C", "EIC Fund portfolio published as names only — ticket sizes unpublished (233 positions loaded)")
+
+# Sprint 19: stake holders -> the country whose equity-tool coverage they
+# evidence. Attribution is by HOLDER country, not company HQ (the equity table
+# grades each country's INSTITUTIONS' disclosure; ~970 PFR-inserted companies
+# have country='' anyway). EU-level holders aggregate into the eu_layer block.
+HOLDER_COUNTRY: dict[str, str] = {
+    "uk_future_fund": "GB",
+    "pfr_ventures": "PL",
+    "htgf": "DE", "coparion": "DE", "bayern_kapital": "DE",
+    "ibb_ventures": "DE",
+    "almi_invest": "SE",
+    "eifo": "DK",
+    "investinor": "NO", "nysno": "NO",
+    "tesi": "FI",
+    "cdp_vc": "IT",
+    "aws_gruendungsfonds": "AT",
+    "hiventures": "HU",
+    "portugal_ventures": "PT",
+    "invest_nl": "NL",
+    "altum": "LV",
+    "isif": "IE",
+    "smartcap": "EE",
+    "bpifrance": "FR",
+    "eic_fund": "EU",
+    "eit_innoenergy": "EU", "eit_manufacturing": "EU",
+    "eit_urban_mobility": "EU",
+}
+
+HOLDER_LABELS: dict[str, str] = {
+    "uk_future_fund": "Future Fund", "pfr_ventures": "PFR Ventures*",
+    "htgf": "HTGF", "coparion": "Coparion", "bayern_kapital": "Bayern Kapital",
+    "ibb_ventures": "IBB Ventures", "almi_invest": "Almi Invest",
+    "eifo": "EIFO", "investinor": "Investinor", "nysno": "Nysnø",
+    "tesi": "Tesi", "cdp_vc": "CDP VC", "aws_gruendungsfonds": "aws GF",
+    "hiventures": "Hiventures", "portugal_ventures": "Portugal Ventures",
+    "invest_nl": "Invest-NL", "altum": "ALTUM", "isif": "ISIF",
+    "smartcap": "SmartCap",
+    "bpifrance": "Bpifrance (IFRS notes)",
+    "eic_fund": "EIC Fund", "eit_innoenergy": "EIT InnoEnergy",
+    "eit_manufacturing": "EIT Mfg", "eit_urban_mobility": "EIT UM",
+}
+
+_DISCLOSURE_RANK = {"name_only": 0, "pct_range": 1, "pct_exact": 2, "amount": 3}
+
+# Sprint 19 deep-research pass (2026-06-11): published portfolio PERFORMANCE
+# per holder country — what the institution itself discloses about returns.
+# Absence of an entry means no portfolio-level performance disclosure was
+# found, which is itself a scorecard datapoint (rendered as "not disclosed").
+# Sources: institution annual/quarterly reports; figures are theirs, not ours.
+EQUITY_PERFORMANCE: dict[str, str] = {
+    "IE": "ISIF discloses returns: 3.4% p.a. since inception (€2.9bn cumulative to 2024), 6.5% in 2024 (NTMA AR 2024).",
+    "NO": "Investinor discloses vintage-level returns: Direct-2013 cohort IRR 5.6%, TVPI 1.43, DPI 0.73; Direct-2018 IRR 1.0%; rolling 4-quarter ROI 6.5% (Q4 2025 report). Nysnø reports fair value in its annual report.",
+    "FI": "Tesi discloses results: 2024 IFRS result €165m; direct portfolio €337m invested in 63 companies, €108m returned to date; has doubled its state capital over ~30 years (Financial Review 2024).",
+    "DK": "EIFO disclosures imply fund-stake performance: Note 12 value index 1.46 (2025; (book value + distributions) / cost; 1.45 in 2024). Direct-ticket performance is aggregate-only.",
+    "GB": "Future Fund Year-3 evaluation (Sep 2025): portfolio median turnover growth 22.5% (2023) and 21.5% (2024); of 1,193 convertible loans, 645 remain equity interests and 391 ended in insolvency (33%) as at 2026-03-31.",
+    "FR": "Bpifrance URD 2024 (activity level only): Large Venture invested €134m in 21 companies in 2024 (incl. H.AI €24m, Exotec €20m follow-on); group disposals €2.4bn incl. €310m net fund-of-funds gains. No portfolio-level IRR or fair-value series published.",
+}
+EU_EQUITY_PERFORMANCE = ("The EIC Fund publishes no portfolio performance — no fair value, no IRR, no loss rate. "
+                         "The EIT KICs disclose no investment results.")
+
+
+def _equity_by_country(con: sqlite3.Connection) -> tuple[dict, dict]:
+    """Aggregate public_equity_stakes per holder country (current view:
+    latest as_of per (holder, company) so quarterly register snapshots
+    don't double-count). Returns (per_country, eu_layer)."""
+    from collections import defaultdict
+    latest: dict[tuple[str, int], tuple[str, int, str]] = {}
+    for holder, cid, as_of, exited, level in con.execute(
+        "SELECT holder, company_id, COALESCE(as_of,''), exited, "
+        "disclosure_level FROM public_equity_stakes"
+    ):
+        key = (holder, cid)
+        if key not in latest or as_of > latest[key][0]:
+            latest[key] = (as_of, exited, level)
+
+    agg: dict[str, dict] = defaultdict(lambda: {
+        "positions": 0, "exited": 0, "holders": set(), "best": 0})
+    for (holder, _cid), (_as_of, exited, level) in latest.items():
+        country = HOLDER_COUNTRY.get(holder, "")
+        if not country:
+            continue
+        a = agg[country]
+        a["positions"] += 1
+        a["exited"] += exited
+        a["holders"].add(holder)
+        a["best"] = max(a["best"], _DISCLOSURE_RANK.get(level, 0))
+    rank_to_label = {v: k for k, v in _DISCLOSURE_RANK.items()}
+    out = {}
+    for country, a in agg.items():
+        out[country] = {
+            "equity_positions": a["positions"],
+            "equity_exited": a["exited"],
+            "equity_holders": sorted(HOLDER_LABELS.get(h, h)
+                                     for h in a["holders"]),
+            "equity_best_disclosure": rank_to_label[a["best"]],
+        }
+    eu_layer = out.pop("EU", None)
+    return out, eu_layer
+
 # Known structural gaps per country (for notes field)
 STRUCTURAL_GAPS: dict[str, str] = {
     "DE": "Full SATR state aid (€72.7B) + HTGF/Coparion/SPRIND direct + KfW/Landesbanks/BMBF tagged. BMBF Projektträger sub-threshold grants remain off-register.",
@@ -197,9 +334,16 @@ def main() -> None:
         elif any(source.startswith(p) for p in DIRECT_NDB_PREFIXES):
             direct_ndb_events[country] += 1
 
+    equity_by_country, eu_equity_layer = _equity_by_country(con)
     con.close()
 
     result = {"generated": datetime.now(timezone.utc).isoformat(), "countries": {}}
+    result["eu_equity_layer"] = {
+        "equity_tier": EU_EQUITY_TIER[0],
+        "equity_tier_note": EU_EQUITY_TIER[1],
+        "equity_performance": EU_EQUITY_PERFORMANCE,
+        **(eu_equity_layer or {}),
+    }
     ratings: dict[str, dict] = {}
     for country in sorted(country_sources.keys()):
         _, families = _classify_sources(country_sources[country])
@@ -210,6 +354,8 @@ def main() -> None:
         # primary register = max(state-aid register, direct-NDB layer) — DK/PL use
         # a direct/national register in place of EC-TAM SATR.
         tier = _refined_tier(max(reg, dndb), eu, ndb_total)
+        eq_tier, eq_note = EQUITY_TIERS_PRELIMINARY.get(
+            country, ("E-X", "No recoverable public-equity disclosure identified (preliminary)"))
         result["countries"][country] = {
             "source_families": families,
             "event_count": country_events[country],
@@ -218,7 +364,14 @@ def main() -> None:
             "eu_events": eu,
             "ndb_events": ndb_total,
             "coverage_tier": tier,
+            "equity_tier": eq_tier,
+            "equity_tier_note": eq_note,
+            "equity_performance": EQUITY_PERFORMANCE.get(country),
             "structural_gap": STRUCTURAL_GAPS.get(country, ""),
+            **equity_by_country.get(country, {
+                "equity_positions": 0, "equity_exited": 0,
+                "equity_holders": [], "equity_best_disclosure": None,
+            }),
         }
         ratings[country] = {
             "rating": tier,
@@ -259,6 +412,16 @@ def main() -> None:
         countries = [c for c, v in result["countries"].items() if v["coverage_tier"] == tier]
         if countries:
             print(f"  {tier}: {', '.join(sorted(countries))}")
+
+    print()
+    print("Equity visibility tiers (preliminary, Sprint 19):")
+    eq_counts = Counter(v["equity_tier"] for v in result["countries"].values())
+    for t in ("E-A", "E-B", "E-C", "E-X"):
+        countries = sorted(c for c, v in result["countries"].items()
+                           if v["equity_tier"] == t)
+        if countries:
+            print(f"  {t} ({eq_counts[t]}): {', '.join(countries)}")
+    print(f"  EU layer: {EU_EQUITY_TIER[0]} — {EU_EQUITY_TIER[1]}")
 
     # Flag per-capita analysis risk
     thin_with_high_events = [

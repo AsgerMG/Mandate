@@ -131,11 +131,87 @@ def apply_007(conn: sqlite3.Connection) -> None:
     print("  ANALYZE done")
 
 
+def apply_008(conn: sqlite3.Connection) -> None:
+    """Sprint 19 equity layer: public_equity_stakes table + instrument_class.
+
+    - public_equity_stakes: positions, not funding events. One row per
+      (company, holding institution, as-of date). Stakes NEVER sum with
+      grants/loans — that is the whole point of a separate table.
+      disclosure_level is the unit of analysis for the disclosure scorecard.
+    - instrument_class on public_funding_events: labels already-loaded rows
+      that are equity-class instruments (SATR PRVRISKFIN risk finance, BDNS
+      participative loans, EIC Fund positions, NDB co-invest rounds) so the
+      grant channel can exclude them and the equity signal is queryable.
+    """
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS public_equity_stakes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            company_id INTEGER NOT NULL REFERENCES companies(id),
+            holder TEXT NOT NULL,
+            holder_type TEXT NOT NULL CHECK (holder_type IN (
+                'eu_instrument','ndb','state_vc','regional_agency',
+                'sovereign_fund','other')),
+            stake_pct_min REAL,
+            stake_pct_max REAL,
+            ticket_eur REAL,
+            as_of DATE,
+            first_seen DATE,
+            exited INTEGER NOT NULL DEFAULT 0,
+            source TEXT NOT NULL,
+            raw_source_url TEXT,
+            disclosure_level TEXT NOT NULL CHECK (disclosure_level IN (
+                'name_only','pct_range','pct_exact','amount')),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (company_id, holder, source, as_of)
+        )
+    """)
+    print("  CREATE TABLE IF NOT EXISTS public_equity_stakes")
+    indexes = [
+        ("idx_pes_company",
+         "CREATE INDEX IF NOT EXISTS idx_pes_company "
+         "ON public_equity_stakes(company_id)"),
+        ("idx_pes_holder",
+         "CREATE INDEX IF NOT EXISTS idx_pes_holder "
+         "ON public_equity_stakes(holder)"),
+        ("idx_pes_disclosure",
+         "CREATE INDEX IF NOT EXISTS idx_pes_disclosure "
+         "ON public_equity_stakes(disclosure_level)"),
+    ]
+    for name, sql in indexes:
+        print(f"  CREATE INDEX IF NOT EXISTS {name}")
+        conn.execute(sql)
+
+    # via_fund (2026-06-11, PFR extraction): NULL = direct holding by the
+    # institution; non-NULL = look-through LP exposure via the named private
+    # fund (PFR Ventures publishes its full look-through portfolio — unique
+    # among European FoFs). Look-through stakes NEVER compare with direct.
+    if not column_exists(conn, "public_equity_stakes", "via_fund"):
+        print("  ADD COLUMN via_fund")
+        conn.execute("ALTER TABLE public_equity_stakes ADD COLUMN via_fund TEXT")
+    else:
+        print("  skip via_fund (exists)")
+
+    if not column_exists(conn, "public_funding_events", "instrument_class"):
+        print("  ADD COLUMN instrument_class")
+        conn.execute(
+            "ALTER TABLE public_funding_events ADD COLUMN instrument_class TEXT"
+        )
+    else:
+        print("  skip instrument_class (exists)")
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_pfe_instrument_class "
+        "ON public_funding_events(instrument_class) "
+        "WHERE instrument_class IS NOT NULL"
+    )
+    print("  CREATE INDEX IF NOT EXISTS idx_pfe_instrument_class")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
     "006": apply_006,
     "007": apply_007,
+    "008": apply_008,
 }
 
 

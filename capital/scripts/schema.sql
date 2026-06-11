@@ -162,3 +162,47 @@ WHEN NEW.country IS NOT NULL
 BEGIN
   SELECT RAISE(ABORT, 'Europe-scope violation on companies.country UPDATE: not in the 40-country EU/Europe scope. See docs/europe_scope.md.');
 END;
+
+-- Sprint 19 (2026-06-11, migration 008): public equity layer.
+-- ALTER TABLE public_funding_events ADD COLUMN instrument_class TEXT;
+--   Labels already-loaded rows that are equity-class instruments so the grant
+--   channel can exclude them and the equity signal is queryable:
+--     'equity'        — a genuine equity position/round (EIC Fund, ALTUM co-invest,
+--                       EIT KIC portfolio, EIFO Venturelisten rounds)
+--     'quasi_equity'  — participative/convertible instruments (ES préstamos
+--                       participativos: nominal in debt_amount_eur, aid element
+--                       in grant_amount_eur)
+--     'risk_finance'  — SATR GBER Art.21 risk-finance awards
+--                       (aid_instrument='StateAidInstrumentPRVRISKFIN'); amounts
+--                       are aid amounts under risk-finance MEASURES (often
+--                       scheme-level), NOT confirmed tickets.
+-- CREATE INDEX idx_pfe_instrument_class ON public_funding_events(instrument_class)
+--   WHERE instrument_class IS NOT NULL;
+
+-- Stakes are POSITIONS, not funding events: one row per (company, holding
+-- institution, as-of date). Stakes NEVER sum with grants/loans/events.
+-- disclosure_level is the unit of analysis for the disclosure scorecard
+-- ("Europe's invisible public equity"). See docs/methodology.md Sprint 19.
+CREATE TABLE public_equity_stakes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    company_id INTEGER NOT NULL REFERENCES companies(id),
+    holder TEXT NOT NULL,             -- canonical institution id (ndb_taxonomy style), e.g. 'eic_fund', 'htgf'
+    holder_type TEXT NOT NULL CHECK (holder_type IN (
+        'eu_instrument','ndb','state_vc','regional_agency',
+        'sovereign_fund','other')),
+    stake_pct_min REAL,               -- ownership pct range (DK CVR style); equal min/max = exact
+    stake_pct_max REAL,
+    ticket_eur REAL,                  -- only where disclosure_level='amount'
+    as_of DATE,                       -- date the position is reported for
+    first_seen DATE,
+    exited INTEGER NOT NULL DEFAULT 0,
+    source TEXT NOT NULL,
+    raw_source_url TEXT,
+    disclosure_level TEXT NOT NULL CHECK (disclosure_level IN (
+        'name_only','pct_range','pct_exact','amount')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (company_id, holder, source, as_of)
+);
+CREATE INDEX idx_pes_company ON public_equity_stakes(company_id);
+CREATE INDEX idx_pes_holder ON public_equity_stakes(holder);
+CREATE INDEX idx_pes_disclosure ON public_equity_stakes(disclosure_level);
