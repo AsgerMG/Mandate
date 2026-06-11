@@ -1,19 +1,10 @@
-"""Build data for the redesigned home-page visuals.
+"""Build the instrument leaderboard the home-page taxonomy diagram reads.
 
-Outputs two JSON files used by the new components:
+Outputs:
 
   site/public/data/instrument_leaderboard.json
-    - rows for the ranked instrument table (companies, €, median ticket,
-      top sector, top country) for all 11 source families.
-    - top pairwise portfolio overlaps for the 'champions' panel.
-
-  site/public/data/coverage_ladder.json
-    - per-instrument horizontal bar rows for the maturity-ladder bar chart.
-    - the per-stage 'total € deployed' coverage line, with the two
-      valleys detected by the largest dips between local maxima.
-
-Stage positioning (TRL/maturity) is hardcoded per programme mandate, same
-canonical mapping the old build_valley_of_death.py used.
+    - rows for each source family (companies, €, median ticket, top sector,
+      top country), which the taxonomy diagram links its chips to.
 """
 import json
 import sqlite3
@@ -47,14 +38,6 @@ INSTRUMENTS = [
      "#15803d", "◉", 0.25, 0.80, "Seed → Growth"),
     ("state_aid_satr", "National state aid (SATR)", "state_aid_satr",
      "#ca8a04", "▮", 0.15, 0.90, "All stages (national aid)"),
-]
-
-STAGES = [
-    {"label": "Research", "sub": "TRL 1-3"},
-    {"label": "Prototype", "sub": "TRL 4-6"},
-    {"label": "Product development", "sub": "TRL 7"},
-    {"label": "Commercialisation", "sub": "TRL 8"},
-    {"label": "Market Maturity", "sub": "Scale-up & exit"},
 ]
 
 SECTOR_LABELS = {
@@ -153,126 +136,20 @@ def build_instruments(conn):
     return out
 
 
-def build_coverage_line(instruments, samples=80):
-    """For each x in [0,1], sum each instrument's € density (totalEur over its
-    stage span) where stageMin <= x <= stageMax. Returns two parallel arrays:
-    with SATR (raw) and without SATR (so the dips are readable)."""
-    line_with = []
-    line_without = []
-    for i in range(samples + 1):
-        x = i / samples
-        eur_with = 0.0
-        eur_without = 0.0
-        count = 0
-        for inst in instruments:
-            if inst["stageMin"] <= x <= inst["stageMax"]:
-                span = max(0.05, inst["stageMax"] - inst["stageMin"])
-                contrib = inst["totalEur"] / span
-                eur_with += contrib
-                if inst["id"] != "state_aid_satr":
-                    eur_without += contrib
-                count += 1
-        line_with.append({"x": x, "eur": eur_with, "n": count})
-        line_without.append({"x": x, "eur": eur_without, "n": count})
-    return line_with, line_without
-
-
-def gap_annotations(line):
-    """Editorially-positioned valley regions, validated against the data.
-
-    Coverage curve is too piecewise to auto-detect canonical EU gaps cleanly
-    (every instrument has a hard stageMin/stageMax). So we place the two
-    narrative-anchored regions and report the coverage drop measured across
-    each so the labels are still grounded in the corpus.
-    """
-    by_x = {round(p["x"], 4): p["eur"] for p in line}
-    samples = sorted(by_x.keys())
-
-    def eur_at(x: float) -> float:
-        # nearest sample
-        nearest = min(samples, key=lambda s: abs(s - x))
-        return by_x[nearest]
-
-    def drop(x_left: float, x_trough: float, x_right: float) -> float:
-        left = eur_at(x_left)
-        right = eur_at(x_right)
-        trough = eur_at(x_trough)
-        return max(0.0, (left + right) / 2 - trough)
-
-    return [
-        {
-            "label": "Pre-commercialisation Gap",
-            "sub": "EU grants taper before private VC takes over",
-            "xMin": 0.50,
-            "xMax": 0.65,
-            "xTrough": 0.58,
-            "depth": drop(0.50, 0.58, 0.65),
-        },
-        {
-            "label": "Scaling Gap",
-            "sub": "Innovation Fund / IPCEI taper before private growth equity",
-            "xMin": 0.86,
-            "xMax": 1.00,
-            "xTrough": 0.94,
-            "depth": drop(0.86, 0.94, 1.00),
-        },
-    ]
-
-
-def build_overlaps(q07_path: Path, instruments: list[dict]) -> list[dict]:
-    label_by_id = {i["family"]: i["label"] for i in instruments}
-    color_by_id = {i["family"]: i["color"] for i in instruments}
-    pairs = json.load(open(q07_path))["allPairs"]
-    out = []
-    for p in pairs[:12]:
-        a, b = p["familyA"], p["familyB"]
-        out.append({
-            "a": a,
-            "b": b,
-            "labelA": label_by_id.get(a, a),
-            "labelB": label_by_id.get(b, b),
-            "colorA": color_by_id.get(a, "#64748b"),
-            "colorB": color_by_id.get(b, "#64748b"),
-            "shared": int(p["coCompanies"]),
-        })
-    return out
-
 
 def main():
     conn = sqlite3.connect(DB)
     instruments = build_instruments(conn)
 
-    overlaps = build_overlaps(OUT_DIR / "q07.json", instruments)
     leaderboard = {
         "instruments": sorted(instruments, key=lambda x: -x["totalEur"]),
-        "overlaps": overlaps,
     }
     (OUT_DIR / "instrument_leaderboard.json").write_text(
         json.dumps(leaderboard, indent=2)
     )
 
-    line_with, line_without = build_coverage_line(instruments)
-    gaps = gap_annotations(line_without)
-    ladder = {
-        "stages": STAGES,
-        "instruments": sorted(instruments, key=lambda i: i["stageMin"]),
-        "coverageLine": {
-            "withSatr": line_with,
-            "withoutSatr": line_without,
-            "maxWithSatr": max(p["eur"] for p in line_with),
-            "maxWithoutSatr": max(p["eur"] for p in line_without),
-        },
-        "gaps": gaps,
-    }
-    (OUT_DIR / "coverage_ladder.json").write_text(json.dumps(ladder, indent=2))
-
     print(f"wrote {OUT_DIR / 'instrument_leaderboard.json'} -- "
-          f"{len(leaderboard['instruments'])} instruments, "
-          f"{len(overlaps)} overlap pairs")
-    print(f"wrote {OUT_DIR / 'coverage_ladder.json'} -- "
-          f"{len(ladder['instruments'])} bars, {len(gaps)} gaps detected")
-    for g in gaps:
-        print(f"  gap: {g['label']:30s}  x=[{g['xMin']:.2f},{g['xMax']:.2f}]  depth=€{g['depth']/1e9:.1f}B/span")
+          f"{len(leaderboard['instruments'])} instruments")
 
 
 if __name__ == "__main__":

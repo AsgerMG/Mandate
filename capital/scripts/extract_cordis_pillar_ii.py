@@ -61,7 +61,47 @@ CLUSTERS = {
     # topic_contains restricts to PoC topics only (avoids loading STG/COG/ADG/SyG).
     "ERC_POC": {"prefix": "ERC-",            "sector": "deeptech_hardware", "stem": "erc_poc",
                 "topic_contains": "POC"},
+    # JU families re-extracted at org-level (replacing the coordinator-only
+    # extract_cordis.py loads). Same source stems and basis labels as before so
+    # per-family analytics and classify.py source-sector maps keep working.
+    "CHP_JU":     {"prefixes": ("HORIZON-JTI-CLEANH2-", "HORIZON-JU-CLEANH2-"),
+                   "sector": "cleantech",         "stem": "chp",          "basis": "chp_grant"},
+    "IHI_JU":     {"prefixes": ("HORIZON-JU-IHI-",),
+                   "sector": "life_sciences",     "stem": "ihi",          "basis": "ihi_grant"},
+    "EUROHPC_JU": {"prefixes": ("HORIZON-EUROHPC-", "HORIZON-JU-EUROHPC"),
+                   "sector": "deeptech_hardware", "stem": "eurohpc",      "basis": "eurohpc_grant"},
+    "CHIPS_JU":   {"prefixes": ("HORIZON-KDT-", "HORIZON-JU-CHIPS-", "HORIZON-JU-Chips-"),
+                   "sector": "deeptech_hardware", "stem": "chips_ju_kdt", "basis": "kdt_grant"},
+    # Sprint 18 JU batch (probed 2026-06-11; all in the local CORDIS dump).
+    # NOTE: "HORIZON-JU-Chips-" above is the mixed-case Chips-Act-era prefix —
+    # topic prefixes are case-sensitive, the uppercase variant alone missed
+    # 19 projects / €1,021M.
+    "CLEAN_AVIATION": {"prefixes": ("HORIZON-JU-CLEAN-AVIATION",),
+                       "sector": "cleantech",      "stem": "clean_aviation", "basis": "clean_aviation_grant"},
+    "SNS_JU":         {"prefixes": ("HORIZON-JU-SNS",),
+                       "sector": "digital",        "stem": "sns_ju",         "basis": "sns_grant"},
+    "SESAR_JU":       {"prefixes": ("HORIZON-SESAR",),
+                       "sector": "digital",        "stem": "sesar_ju",       "basis": "sesar_grant"},
+    "EUROPES_RAIL":   {"prefixes": ("HORIZON-ER-JU",),
+                       "sector": "other",          "stem": "europes_rail",   "basis": "eu_rail_grant"},
+    "EUSPA":          {"prefixes": ("HORIZON-EUSPA",),
+                       "sector": "space",          "stem": "euspa",          "basis": "euspa_grant"},
+    "GH_EDCTP3":      {"prefixes": ("HORIZON-JU-GH-EDCTP3",),
+                       "sector": "life_sciences",  "stem": "gh_edctp3",      "basis": "edctp3_grant"},
 }
+
+# Source-sector fallback for the Sprint 18 JU stems (single dict, imported by
+# classify.py; same pattern as the CL dicts below).
+JU_BATCH_SOURCE_SECTOR: dict[str, str] = {
+    f"{cfg['stem']}_{y}": cfg["sector"]
+    for key, cfg in CLUSTERS.items()
+    if key in ("CLEAN_AVIATION", "SNS_JU", "SESAR_JU", "EUROPES_RAIL", "EUSPA", "GH_EDCTP3")
+    for y in ["2021", "2022", "2023", "2024", "2025", "2026", "2027", "unknown"]
+}
+
+
+def _cluster_prefixes(cfg: dict) -> tuple[str, ...]:
+    return cfg.get("prefixes") or (cfg["prefix"],)
 
 # Mission-topic prefix → finer sector override (applied on top of CLUSTERS["MISS"]["sector"]).
 # Only the sub-mission fragments that unambiguously map to a sector are listed here;
@@ -87,11 +127,20 @@ def _miss_sector(topic: str) -> str:
 JU_EXCLUDE_PREFIXES = (
     "HORIZON-JU-IHI-",
     "HORIZON-JU-CHIPS-",
+    "HORIZON-JU-Chips-",  # Chips-Act-era mixed-case (Sprint 18)
     "HORIZON-EUROHPC-",
+    "HORIZON-JU-EUROHPC",  # new-prefix EuroHPC calls (Sprint 18)
     "HORIZON-KDT-",
     "HORIZON-JTI-CLEANH2-",
     "HORIZON-JU-CLEANH2-",
     "HORIZON-JU-CBE-",   # deduplicated against CBE cluster load
+    # Sprint 18 JU batch — keep Pillar II re-runs from double-loading these.
+    "HORIZON-JU-CLEAN-AVIATION",
+    "HORIZON-JU-SNS",
+    "HORIZON-SESAR",
+    "HORIZON-ER-JU",
+    "HORIZON-EUSPA",
+    "HORIZON-JU-GH-EDCTP3",
 )
 
 # Roles that don't typically receive direct EU funding — still loaded so the
@@ -125,10 +174,10 @@ def _topic_year(topic: str) -> str:
     return m.group(1) if m else "unknown"
 
 
-def _project_topic(topics_for_pid: list[str], cluster_prefix: str,
+def _project_topic(topics_for_pid: list[str], cluster_prefixes: tuple[str, ...],
                    topic_contains: str | None = None) -> str | None:
     for t in topics_for_pid:
-        if t.startswith(cluster_prefix):
+        if any(t.startswith(p) for p in cluster_prefixes):
             if topic_contains is None or topic_contains.upper() in t.upper():
                 return t
     return None
@@ -156,18 +205,19 @@ def discover_cluster_rows(cluster: str, projects_by_id: dict,
         "events_other_role": 0,
     }
 
+    prefixes = _cluster_prefixes(cfg)
     for pid, topics in topics_by_pid.items():
-        topic = _project_topic(topics, cfg["prefix"], cfg.get("topic_contains"))
+        topic = _project_topic(topics, prefixes, cfg.get("topic_contains"))
         if not topic:
             continue
 
         # Dedup: if any topic on this project belongs to a JU-derived family
         # we already loaded, skip the project entirely. (CL1 IHI projects sometimes
         # carry HORIZON-JU-IHI-* alongside HORIZON-HLTH-*.)
-        # Exception: the CBE cluster IS the canonical load for CBE JU projects.
-        effective_exclude = (
-            tuple(p for p in JU_EXCLUDE_PREFIXES if p != "HORIZON-JU-CBE-")
-            if cluster == "CBE" else JU_EXCLUDE_PREFIXES
+        # Exception: a cluster is never excluded by its own prefixes (CBE and the
+        # JU org-level clusters ARE the canonical loads for those families).
+        effective_exclude = tuple(
+            p for p in JU_EXCLUDE_PREFIXES if p not in prefixes
         )
         if any(any(t.startswith(p) for p in effective_exclude) for t in topics):
             stats["skipped_ju_dedup"] += 1
@@ -259,7 +309,7 @@ def discover_cluster_rows(cluster: str, projects_by_id: dict,
                 "grant_amount_eur": grant_eur,
                 "total_project_cost_eur": total_cost,
                 "sector_tags_raw": f"{topic}||{row_sector_raw}",
-                "grant_amount_basis": "horizon_eu_grant",
+                "grant_amount_basis": cfg.get("basis", "horizon_eu_grant"),
                 "raw_source_url": f"https://cordis.europa.eu/project/id/{pid}",
             })
             stats["events_emitted"] += 1

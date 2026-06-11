@@ -54,6 +54,13 @@ SELECT
     WHEN e.source LIKE 'chp_%'             THEN 'horizon_eu_partnership'
     WHEN e.source LIKE 'ihi_%'             THEN 'horizon_eu_partnership'
     WHEN e.source LIKE 'eurohpc_%'         THEN 'horizon_eu_partnership'
+    -- Sprint 18 JU batch
+    WHEN e.source LIKE 'clean_aviation_%'  THEN 'horizon_eu_partnership'
+    WHEN e.source LIKE 'sns_ju_%'          THEN 'horizon_eu_partnership'
+    WHEN e.source LIKE 'sesar_ju_%'        THEN 'horizon_eu_partnership'
+    WHEN e.source LIKE 'europes_rail_%'    THEN 'horizon_eu_partnership'
+    WHEN e.source LIKE 'euspa_%'           THEN 'horizon_eu_partnership'
+    WHEN e.source LIKE 'gh_edctp3_%'       THEN 'horizon_eu_partnership'
     WHEN e.source LIKE 'erc_poc_%'         THEN 'horizon_eu_pillar_ii'  -- Sprint 17
     WHEN e.source LIKE 'horizon_eu_%'      THEN 'horizon_eu_pillar_ii'  -- incl. Sprint 17 miss/eie/cbe
     WHEN e.source LIKE 'htgf_%'            THEN 'national_dev_banks'
@@ -79,6 +86,7 @@ SELECT
     WHEN e.source LIKE 'business_finland_%' THEN 'national_dev_banks'
     WHEN e.source LIKE 'altum_%' OR e.source LIKE 'ilte_%' OR e.source LIKE 'eis_%' THEN 'national_dev_banks'
     WHEN e.source LIKE 'tacr_%'            THEN 'national_dev_banks'
+    WHEN e.source LIKE 'innovate_uk_%'     THEN 'national_dev_banks'  -- 2026-06-10: UK national layer via UKRI GtR
     -- Sprint 15: national state-aid layer (SATR + national portals)
     WHEN e.source LIKE 'satr_%'            THEN 'state_aid_satr'
     WHEN e.source LIKE 'sudop_%'           THEN 'state_aid_satr'

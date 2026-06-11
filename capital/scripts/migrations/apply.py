@@ -86,9 +86,56 @@ def apply_005(conn: sqlite3.Connection) -> None:
         conn.execute(sql)
 
 
+def apply_006(conn: sqlite3.Connection) -> None:
+    """company_group rollup key on companies (name-based sister-entity grouping)."""
+    if not column_exists(conn, "companies", "company_group"):
+        print("  ADD COLUMN company_group")
+        conn.execute("ALTER TABLE companies ADD COLUMN company_group TEXT")
+    else:
+        print("  skip company_group (exists)")
+    print("  CREATE INDEX IF NOT EXISTS idx_companies_group")
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_companies_group "
+        "ON companies(company_group) WHERE company_group IS NOT NULL"
+    )
+
+
+def apply_007(conn: sqlite3.Connection) -> None:
+    """Pipeline scalability: hot-path indexes + WAL (2026-06-10 audit).
+
+    - idx_companies_name_upper: every extractor's exact-match tier queries
+      WHERE UPPER(canonical_name)=? — was a full table scan (7.3 ms/row at
+      153k companies; minutes per register-scale load).
+    - idx_pfe_source_call: the per-insert dedup probe (source, call_id) —
+      was a bucket scan (4.25 ms on the 27.7k-row ademe_aid bucket).
+      NOT unique: EIC/SATR legitimately share one call_id across all
+      winners of a call / beneficiaries of an aid measure.
+    - WAL journal mode: lets sanity checks and site generators read while
+      a load is writing (loads previously held an exclusive lock for their
+      whole single transaction).
+    """
+    indexes = [
+        ("idx_companies_name_upper",
+         "CREATE INDEX IF NOT EXISTS idx_companies_name_upper "
+         "ON companies(UPPER(canonical_name))"),
+        ("idx_pfe_source_call",
+         "CREATE INDEX IF NOT EXISTS idx_pfe_source_call "
+         "ON public_funding_events(source, call_id)"),
+    ]
+    for name, sql in indexes:
+        print(f"  CREATE INDEX IF NOT EXISTS {name}")
+        conn.execute(sql)
+    mode = conn.execute("PRAGMA journal_mode=WAL").fetchone()[0]
+    print(f"  journal_mode={mode}")
+    conn.execute("ANALYZE")
+    print("  ANALYZE done")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
+    "006": apply_006,
+    "007": apply_007,
 }
 
 

@@ -23,6 +23,7 @@ CREATE TABLE companies (
     match_confidence TEXT,          -- high, medium, low, unmatched
     match_method TEXT,              -- INSERT-time only: 'none' for all rows (seed loader had nothing to match against; subsequent loaders only insert when no match was found). Per-event matching methods (exact/exact_name_only/prefix/fuzzy) are recorded in the *_match_summary.csv files, not here.
     step_flagged INTEGER DEFAULT 0,
+    company_group TEXT,             -- name-based sister-entity rollup key (migration 006, populated by build_company_groups.py); NULL = singleton
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sector_inferred_updated_at TIMESTAMP,   -- set by classify.py; NULL until first classifier run touches the row. Updates on every change (audited in classify_audit).
@@ -109,6 +110,9 @@ CREATE TABLE classify_audit (
 
 CREATE INDEX idx_companies_country ON companies(country);
 CREATE INDEX idx_companies_sector ON companies(sector_inferred);
+CREATE INDEX idx_companies_group ON companies(company_group) WHERE company_group IS NOT NULL;
+CREATE INDEX idx_companies_name_upper ON companies(UPPER(canonical_name));  -- migration 007: extractor exact-match tier
+CREATE INDEX idx_pfe_source_call ON public_funding_events(source, call_id); -- migration 007: dedup probe (non-unique by design)
 CREATE INDEX idx_pfe_company ON public_funding_events(company_id);
 CREATE INDEX idx_pfe_source ON public_funding_events(source);
 CREATE INDEX idx_pfe_date ON public_funding_events(call_deadline);

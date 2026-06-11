@@ -372,9 +372,9 @@
 | CL4 (Digital/Industry) | ✅ | ✅ | ✅ | ✅ | 🟡 partial | — |
 | CL5 (Climate/Energy) | ✅ | ✅ | ✅ | ✅ | ✅ | — |
 | CL6 (Food/Bio) | ✅ | ✅ | ✅ | ✅ | ✅ | — |
-| **Missions (HORIZON-MISS-*)** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **EIE / Eurostars (HORIZON-EIE-*)** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| ERC-PoC | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Missions (HORIZON-MISS-*) — ✅ Sprint 17, 6,878 events €2.4B | ✅ | ✅ | ✅ | ✅ | ✅ | — |
+| EIE / Eurostars (HORIZON-EIE-*) — ✅ Sprint 17, 992 events €380M | ✅ | ✅ | ✅ | ✅ | ✅ | — |
+| ERC-PoC — ✅ Sprint 17, 1,142 events €147M | ✅ | ✅ | ✅ | ✅ | ✅ | — |
 | CL2 (Culture) | skip | skip | skip | skip | skip | skip |
 | ERC main grants | skip | skip | skip | skip | skip | skip |
 | MSCA | skip | skip | skip | skip | skip | skip |
@@ -411,11 +411,11 @@
 | IAPMEI/PT2030 Portugal | Hundreds | `portugal2030.pt` | 2-3 days |
 | mapadotacji.gov.pl Poland | Tens of thousands | EU cohesion transparency | 5+ days |
 | Clean Aviation JU | Hundreds | CORDIS `HORIZON-JU-CLEANAV-*` | 1 day (same pattern as Chips JU) |
-| CBE JU (bio-based) | Hundreds | CORDIS `HORIZON-JU-CBE-*` | 1 day |
+| ~~CBE JU (bio-based)~~ | **✅ DONE Sprint 17** — 1,263 events €525M | CORDIS `HORIZON-JU-CBE-*` | — |
 | Romania REGAS | Thousands | `regas.consiliulconcurentei.ro` | 3-5 days (data quality issues) |
 | EDIP (defence) | Dozens/yr | DG DEFIS (first results ~late 2026) | Future |
 | VLAIO Flanders | Hundreds/yr | `open.vlaanderen.be` | 2-3 days |
-| ERC-PoC | ~200-300/yr | CORDIS `HORIZON_ERC-*-POC` | < 1 day |
+| ~~ERC-PoC~~ | **✅ DONE Sprint 17** — 1,142 events €147M | CORDIS `ERC-*-POC*` | — |
 | ~~Innosuisse (Switzerland)~~ | **✅ DONE 2026-06-10** — 1,797 events €394M | ARAMIS full export via opendata.swiss | — |
 | ETCI portfolio companies | ~38+ (ETCI1) | Partial Crunchbase/Dealroom cross-ref | Medium |
 
@@ -444,7 +444,33 @@
 
 ---
 
-## SECTION 6: SATR — Countries/Years Currently in DB
+## SECTION 6: CHANNEL-COMPLETENESS AUDIT (2026-06-10)
+
+Sections 1-6 inventory *sources*. This section inventories *channels* — every distinct mechanism by which public money of any kind reaches companies in the 40-country scope — and asks per channel: covered, deliberately excluded, tractable gap, or structurally invisible. This is the table to check before claiming the corpus "covers public funding".
+
+| # | Channel | Status | Assessment |
+|---|---|---|---|
+| 1 | EU competitive grants (Horizon umbrella: EIC, Pillar II, JUs, Missions, EIE, ERC-PoC, EIT) | ✅ Covered | Comprehensive for company-relevant slices. Open remainder: Clean Aviation / SESAR / Europe's Rail JUs (1 day each, same CORDIS pattern). Pillar I + CL2 out by design. |
+| 2 | EU off-budget grant programmes (Innovation Fund, EDF) | ✅ Covered | LIFE programme (CINEA, cleantech-relevant company coordinators) never assessed — probe worth 0.5 day. DEP/CEF/EU4Health decided out (capacity-building, not company R&D). |
+| 3 | State-aid implementation (SATR + national registers) | ✅ Covered | 24 EC-portal countries + ES BDNS + PL SUDOP (partial). Open: RO REGAS, SI, PL remaining measures. Quality issues documented (HU/BG NULL objectives, ES CCAA lag). |
+| 4 | NDB / innovation-agency grants and soft loans | ✅ Covered (12+ countries direct, rest via SATR) | Carry-overs: Vinnova SE, Business Finland FI, NL RVO, IT RNA de-minimis, PT IAPMEI, PL NCBR, BE VLAIO, PFR Ventures. |
+| 5 | **Public equity** (EU + national) | ❌ **Effectively absent** | **The corpus holds 25 equity events / €7M total — out of 288k events.** EIC Fund (the EU's own VC arm, ~€4bn committed, portfolio published) not loaded — Tier 1, 1-2 days. NDB direct equity Art.107-invisible (recovery: annual reports / Dealroom investor filter). EIFO Venturelisten covers round membership only. **Until the EIC Fund load + Dealroom enrichment, the corpus supports grant-side claims, not investment-side claims.** |
+| 6 | Public debt to companies | 🟡 Partial by design | EIB venture/growth debt ✅ (153 events €3.6B). EIB *standard* direct corporate R&D loans (large-corporate facilities on the same public project DB) were never explicitly decided in or out — decision needed. National promo-bank loans visible only where aid element exists (SATR) or direct scraper (Innovasjon Norge, ALTUM). Market-rate NDB debt invisible (Art. 107). |
+| 7 | Multilateral non-EU public banks (EBRD, NIB) | ❌ Not covered, never assessed | **EBRD** invests directly (equity + debt) in PL/RO/BG/Baltics/UA/Western Balkans — exactly the thin-tier countries — and publishes a project database. Tractable, 2-3 days, would lift the eastern coverage tiers. NIB (Nordics) public lending list, smaller signal. |
+| 8 | RRF / NextGenerationEU (€700B, 2021-2026 = exactly the corpus window) | 🟡 Understated as "untractable" | Tier 3 wrote it off via the top-100 rule, but Italy (OpenPNRR/ItaliaDomani) and Spain (PRTR) publish full beneficiary-level open data. Aid-channelled RRF flows already appear in SATR; the non-aid remainder is recoverable for IT/ES at 2-3 days each. |
+| 9 | Structural funds (ERDF, JTF, ESF+) | ❌ Out by scope decision (Option A) | Decision stands, but the "27 national extractors" rationale is dated: **Kohesio** is one central EU API. 2021-27 data matures ~2027 — revisit then (Tier 0 watch). |
+| 10 | **R&D tax expenditure** | ❌ **Structurally invisible — now documented** | FR CIR ~€7.5bn/yr, UK R&D credit ~£7.5bn/yr, NL WBSO ~€1.5bn/yr, IT credito d'imposta — each single-handedly larger than most NDB grant programmes in this corpus. Fiscal confidentiality: no beneficiary-level disclosure exists anywhere. Added to methodology Known limitations alongside the Art. 107 equity blind spot. |
+| 11 | De minimis aid (≤€300k) | 🟡 Country-dependent | Below SATR threshold; visible only via direct NDB scrapers. Central **eAid Register** live 2026, meaningful ~2027 (Tier 0 watch). |
+| 12 | ESA industrial contracts | ❌ Not covered | Public space money outside the EU budget; esa-star has no open bulk export. Flag in any `space`-sector analysis: ESA prime/sub contracts are not in this corpus. |
+| 13 | Public procurement of innovation (PCP/PPI, TED) | ❌ Out by research framing | Procurement is payment for delivery, not funding support. Named here so the exclusion is a decision, not an oversight. |
+
+**Verdict (2026-06-10):** the grant channel is near-complete and defensible; the debt channel is partial by documented design; **the equity channel is not usable** — any "public investment in companies" claim must either exclude equity or wait for the EIC Fund load (days) and Dealroom NDB-investor enrichment (the planned RHS). The highest-leverage moves, in order: (1) EIC Fund portfolio, (2) Clean Aviation/SESAR/Rail JUs, (3) EBRD project DB, (4) LIFE probe, (5) RRF IT/ES, (6) the existing Vinnova/Business Finland carry-overs.
+
+**2026-06-11 probe pass → executable plan in [plans/sprint_18_channel_coverage.md](../plans/sprint_18_channel_coverage.md).** All candidates probed live. Headlines: the local CORDIS dump alone holds **8 unloaded JU/programme families ≈ 5,800 org-events / €4.0B**, including **SNS JU (6G, 79 projects, €499M — absent from every prior gap list)** and the **Chips-Act-era calls (19 projects, €1,021M) hiding behind the mixed-case prefix `HORIZON-JU-Chips-`** (the 2026-05-25 "not published in the portal" caveat is obsolete — CORDIS has them); EIC Fund portfolio = ~300 companies, server-rendered, scrapeable, **no ticket sizes published**; Vinnova endpoint confirmed (`api.vinnova.se/gdp_vinnova/finansieradeaktiviteter`, free key required — user action); Business Finland + LIFE both sit behind Qlik dashboards (one engine client serves both); RRF Italy = bulk open CSV (226MB, all projects + implementing entities); RRF Spain ⊂ BDNS already loaded (verify, don't build); EIB JSON API confirmed (`page-provider/projects/list`) pending the corporate-lending scope decision; EBRD has no public bulk endpoint (timeboxed devtools discovery, then go/no-go).
+
+---
+
+## SECTION 7: SATR — Countries/Years Currently in DB
 
 | Country | SATR events | Notes |
 |---|---|---|

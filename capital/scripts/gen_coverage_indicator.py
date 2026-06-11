@@ -44,6 +44,9 @@ EU_INSTRUMENT_PREFIXES = (
     "horizon_", "eic_", "eit_", "ipcei_", "edf_", "innovation_fund_",
     "chips_ju_", "chp_", "ihi_", "eurohpc_", "eib_", "erc_poc_",
     "horizon_eu_miss_", "horizon_eu_eie_", "horizon_eu_cbe_",
+    # Sprint 18 JU batch
+    "clean_aviation_", "sns_ju_", "sesar_ju_", "europes_rail_",
+    "euspa_", "gh_edctp3_",
 )
 
 SATR_PREFIX = "satr_"
@@ -56,6 +59,7 @@ DIRECT_NDB_PREFIXES = (
     "innovasjon_norge_", "nfr_", "innosuisse_", "altum_", "ilte_", "eis_",
     "tacr_", "bdns_", "vinnova_", "business_finland_",
     "sudop_",
+    "innovate_uk_",
 )
 
 # Known structural gaps per country (for notes field)
@@ -69,6 +73,7 @@ STRUCTURAL_GAPS: dict[str, str] = {
     "NL": "Full SATR incl. RVO + regional dev agencies (BOM, NOM) tagged. Invest-NL co-invest thin; RVO sub-threshold WBSO not in register.",
     "ES": "BDNS national state-aid register loaded via infosubvenciones.es mirror (GBER Art.21-30+36-49, ≥€100k): 13.2k events / €6.9B + CDTI/IDAE/ICAEN/IVACE/GAIN/ACCIÓ direct.",
     "NO": "Innovasjon Norge direct register (14.4k events, grants+loans) + NFR company-led projects (2.1k) + EU instruments. No SATR (non-EU).",
+    "GB": "Innovate UK via UKRI GtR (17k participant rows, €5.9B, 2021+). No SATR (post-Brexit); UK subsidy database not yet loaded; EU layer thin 2021-2023 (Horizon exclusion).",
     "CH": "Innosuisse company-led projects via ARAMIS export (1.8k events) + EU instruments. No SATR (non-EU).",
     "LV": "SATR + ALTUM recipients workbook (3.9k events: loans/guarantees/equity, agri sheets excluded). EU-instrument layer thin.",
     "LT": "SATR + economy-ministry/ILTE tagged. No machine-readable ILTE direct register (data.gov.lt datasets are COVID/energy compensation, SATR-overlapping).",
@@ -230,6 +235,15 @@ def main() -> None:
     if site_path.parent.exists():
         site_path.write_text(json.dumps(ratings, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Site coverage ratings → {site_path}")
+
+    # Emit the full per-country detail for the homepage transparency table:
+    # grade, layer event counts, source families and structural-gap notes.
+    site_full_path = BASE_DIR / "site" / "public" / "data" / "country_coverage.json"
+    if site_full_path.parent.exists():
+        site_full_path.write_text(
+            json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        print(f"Site country coverage detail → {site_full_path}")
     print()
     print("Coverage tiers:")
     from collections import Counter

@@ -87,6 +87,9 @@ try:
     from extract_eifo import EIFO_SOURCE_SECTOR  # noqa: E402
     from extract_ademe import ADEME_SOURCE_SECTOR  # noqa: E402
     from extract_sudop import SUDOP_SOURCE_SECTOR  # noqa: E402
+    from extract_innovate_uk import IUK_SOURCE_SECTOR  # noqa: E402
+    from extract_cordis_pillar_ii import JU_BATCH_SOURCE_SECTOR  # noqa: E402
+    from extract_eic_fund import EIC_FUND_SOURCE_SECTOR  # noqa: E402
 except ImportError:
     INVEST_NL_SOURCE_SECTOR: dict[str, str] = {}
     TESI_SOURCE_SECTOR: dict[str, str] = {}
@@ -103,6 +106,9 @@ except ImportError:
     EIFO_SOURCE_SECTOR: dict[str, str] = {}
     ADEME_SOURCE_SECTOR: dict[str, str] = {}
     SUDOP_SOURCE_SECTOR: dict[str, str] = {}
+    IUK_SOURCE_SECTOR: dict[str, str] = {}
+    JU_BATCH_SOURCE_SECTOR: dict[str, str] = {}
+    EIC_FUND_SOURCE_SECTOR: dict[str, str] = {}
 
 DB_PATH = Path(__file__).parent.parent / "db.sqlite"
 
@@ -661,6 +667,12 @@ def classify_sector(raw_tag_strings, fallback_text="", sources=()):
             return FR_INNOV_SOURCE_SECTOR[src]
         if src in INNOFOND_SOURCE_SECTOR:
             return INNOFOND_SOURCE_SECTOR[src]
+        if src in IUK_SOURCE_SECTOR:
+            return IUK_SOURCE_SECTOR[src]
+        if src in JU_BATCH_SOURCE_SECTOR:
+            return JU_BATCH_SOURCE_SECTOR[src]
+        if src in EIC_FUND_SOURCE_SECTOR:
+            return EIC_FUND_SOURCE_SECTOR[src]
         if src in EIFO_SOURCE_SECTOR:
             return EIFO_SOURCE_SECTOR[src]
         if src in ADEME_SOURCE_SECTOR:
@@ -689,6 +701,7 @@ RESEARCH_PATTERNS = [
     r"\bvysoká škola\b|\bvysoka skola\b",     # Czech/Slovak "Vysoká škola" = university
     r"\bpolytechn|\bpolitechn|\bpolitecnico", # polytechnic / polytechnique / polytechnion / politechnika
     r"\bcollege\b",                           # King's College, etc.
+    r"\bcatapult\b",                          # UK Catapult RTO network (Innovate UK core-delivery)
     r"\binteruniversita|\binteruniversite|\binteruniversitair",
     # Institutes — match anywhere (catches compound names like AgroBioInstitute)
     r"institut|istitut|\binstytut|\bústav\b|\bustav\b",
@@ -794,7 +807,10 @@ COMPANY_RE = re.compile("|".join(COMPANY_SUFFIX_PATTERNS), re.IGNORECASE)
 # patterns alone cannot resolve a row, the source family is decisive.
 # EDF is intentionally absent — defense calls include research orgs (ONERA,
 # CERTH, Demokritos) that need name-level matches.
-SOURCE_FAMILY_COMPANY = {"ipcei", "innovation_fund", "eit", "chips_ju"}
+# innovate_uk: business-led by programme design; universities and Catapult
+# RTOs resolve via the research patterns first (incl. the \bcatapult\b rule),
+# so the fallback only sees suffix-less trading names.
+SOURCE_FAMILY_COMPANY = {"ipcei", "innovation_fund", "eit", "chips_ju", "innovate_uk"}
 
 
 def _source_family(source: str) -> str:
@@ -805,6 +821,7 @@ def _source_family(source: str) -> str:
     if source.startswith("eib_"): return "eib"
     if source.startswith("eit_"): return "eit"
     if source.startswith("chips") or source.startswith("kdt"): return "chips_ju"
+    if source.startswith("innovate_uk"): return "innovate_uk"
     return source
 
 
