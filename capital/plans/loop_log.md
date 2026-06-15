@@ -2,6 +2,19 @@
 
 One line per improvement-loop iteration, newest first.
 
+- **2026-06-15 · improve/20260615-dryrun · iter 3 (manual; nested loop quota-blocked).**
+  P0: ADEME ↔ SATR-FR overlap audit. New `scripts/ademe_satr_overlap.py` matches the
+  two FR sources on beneficiary name + grant year ±1 + amount ±15%. Result: of ADEME's
+  €7.76bn, €0.50bn is sub-€100k (cannot appear in SATR), €7.25bn is overlap-eligible;
+  ~€2.2bn (1,429 rows, 29.9% of eligible €) is a likely duplicate, name-only upper
+  bound €4.75bn. Spot-check confirmed exact-cent matches (LAST MHYLE, CENERGY, etc.).
+  ADEME never appears by granting-authority name in SATR-FR (France reports it under
+  the parent ministry), so only value-level matching catches it. Documented in
+  methodology.md (source line + new second-order caveat); FR cross-source sums read
+  net of ~€2bn. Physical netting flag queued as a follow-up backlog item.
+  Gates: numbers reproduced from db.sqlite, stop-gate silent, site data unchanged.
+  Files: scripts/ademe_satr_overlap.py, analysis/findings/ademe_satr_overlap.md,
+  docs/methodology.md, plans/improvement_backlog.md.
 - **2026-06-15 · improve/20260615-dryrun · iter 2.**
   P0: reconcile the two SATR totals on /investors. Added bridging sentence to intro
   paragraph: EUR 169.5bn register total, EUR 44.7bn outlier exclusion (Uniper, SEFE,
