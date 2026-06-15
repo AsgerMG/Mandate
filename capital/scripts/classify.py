@@ -635,6 +635,41 @@ NACE_TO_SECTOR: list[tuple[str, str]] = [
     ("Other personal service activities", "other"),
     ("Activities of other membership organisations", "other"),
     ("PROFESSIONAL, SCIENTIFIC AND TECHNICAL ACTIVITIES", "other"),
+    # ── NACE tail (2026-06-15, phase 3b): broad division families ───────────
+    # cleantech — waste/recycling
+    ("Collection of non-hazardous waste", "cleantech"),
+    ("Collection of hazardous waste", "cleantech"),
+    # deeptech — electrical machines (wording variant with "electricity distribution")
+    ("Manufacture of electric motors, generators", "deeptech_hardware"),
+    # other — construction, materials, consumer mfg, logistics, services. Broad
+    # family patterns so future register rows in these divisions resolve too.
+    # ("other" is lowest priority in multi-event resolution, so these never
+    # override a tech signal a company also carries.)
+    ("Construction of", "other"),
+    ("Development of building projects", "other"),
+    ("carpentry and joinery", "other"),
+    ("Building completion and finishing", "other"),
+    ("Plumbing, heat and air-conditioning installation", "other"),
+    ("Warehousing and storage", "other"),
+    ("Processing and preserving of", "other"),
+    ("Manufacture of textiles", "other"),
+    ("Manufacture of other textiles", "other"),
+    ("Tanning and dressing of leather", "other"),
+    ("Manufacture of articles of concrete", "other"),
+    ("Manufacture of concrete", "other"),
+    ("Cutting, shaping and finishing of stone", "other"),
+    ("Manufacture of other transport equipment", "other"),
+    ("Repair of fabricated metal", "other"),
+    ("Food and beverage service", "other"),
+    ("Rental and leasing of", "other"),
+    ("Manufacture of beer", "other"),
+    ("Manufacture of paper", "other"),
+    ("Motion picture", "other"),
+    ("passenger transport", "other"),
+    ("Wholesale on a fee", "other"),
+    ("Manufacture of basic chemicals", "other"),
+    ("Manufacture of other chemical products", "other"),
+    ("Manufacture of chemicals", "other"),
 ]
 
 
