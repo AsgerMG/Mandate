@@ -66,6 +66,10 @@ CREATE TABLE public_funding_events (
                                     --   'eit_kic_grant'        — cash prize from EIT Manufacturing BoostUp competition (€2.5K–€50K)
                                     --   'eit_kic_equity'       — EIT Manufacturing equity investment (amount undisclosed; both grant_amount_eur and equity_amount_eur are NULL)
                                     -- Sprint 15 additions (SATR + national state-aid portals):
+                                    --   'ipcei_satr_granted'   — Commission-redacted IPCEI amount backfilled as the SUM of granted SATR
+                                    --                            tranches under the IPCEI measure (scripts/backfill_ipcei_amounts_from_satr.py).
+                                    --                            Lower bound of the approved ceiling; the source SATR rows are flagged
+                                    --                            ipcei_linked=1 so corpus totals can net the overlap. Never sum with 'ipcei_state_aid'.
                                     --   'satr_aid_element'     — preferred SATR amount (the EC-published 'Aid element' field, in EUR after FX)
                                     --   'satr_nominal_amount'  — fallback when SATR aid_element is NULL; the headline 'Nominal Amount' field
                                     --   'sudop_aid_element'    — Polish SUDOP equivalent

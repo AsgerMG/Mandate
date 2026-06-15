@@ -694,7 +694,7 @@ RESEARCH_PATTERNS = [
     r"universi",
     r"\buniwers|\buniverz",                   # Polish (Uniwersytet), Slovak (Univerzita)
     r"\bpanepistimi",                         # Greek (Panepistimio)
-    r"\bhögsk|\bhogsk|\bhøgsk",               # Swedish/Norwegian higher ed (covers -skola, -skole, -skulen)
+    r"\bhögsk|\bhogsk|\bhøgsk|\bhoegsk",      # Swedish/Norwegian higher ed (covers -skola, -skole, -skulen; OE transliteration for CORDIS-style names)
     r"\bháskól|\bhaskol",                     # Icelandic
     r"\bkorkeakoulu|\btudományegyetem|\btudomanyegyetem|\begyetem\b",  # Finnish, Hungarian
     r"\bhochschule\b|\bhoch[- ]schule\b",     # German Hochschule
@@ -747,6 +747,14 @@ RESEARCH_PATTERNS = [
     r"\brecherches?\b",                                       # ONERA pattern
     r"\bresearch (?:and )?development (?:center|centre)\b",   # EDF TECES pattern
     r"\bnational center for scientific research\b|\bdemokritos\b",
+    # Sprint 19 hygiene — RTOs surfaced by the investor-page champion lists
+    r"\bsintef\b",                                            # Norwegian RTO group (SINTEF AS, SINTEF Energi, ...)
+    r"\btutkimuskeskus\b|\btutkimuslaitos\b",                 # Finnish research centre/institute (VTT, Luke)
+    r"[uü]likool",                                            # Estonian university compounds (Tallinna Tehnikaülikool)
+    r"\bcentre for process innovation\b|\buk agri tech centre\b|\brothamsted\b|\bbuilding research establishment\b",
+    r"\bifp energies nouvelles\b|\bvirtual vehicle research\b",
+    r"\bsilicon austria labs\b|\biii-v lab\b",                # Austrian COMET centre; Thales/Nokia joint research lab
+    r"\bassociacion\b",                                       # Catalan associació + N (LEITAT / Acondicionamiento Tarrasense)
 ]
 RESEARCH_RE = re.compile("|".join(RESEARCH_PATTERNS), re.IGNORECASE)
 
@@ -762,6 +770,9 @@ PUBLIC_BODY_PATTERNS = [
     # Sprint 8 audit additions
     r"\bayuntamiento\b|\bayuntament\b",                     # Spanish municipality
     r"\bdiputaci[oó]n\b",                                   # Spanish provincial council
+    # Sprint 19 hygiene — funders / NGO networks that polluted champion lists
+    r"\bunited kingdom research and innovation\b",          # UKRI is a funding agency, not a beneficiary company
+    r"\biclei\b",                                           # ICLEI city network secretariat
 ]
 PUBLIC_BODY_RE = re.compile("|".join(PUBLIC_BODY_PATTERNS), re.IGNORECASE)
 

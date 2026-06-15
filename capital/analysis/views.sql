@@ -107,7 +107,11 @@ SELECT c.id, c.canonical_name, c.country, c.sector_inferred, c.entity_type,
        c.step_flagged,
        COUNT(DISTINCT v.source_family) AS n_source_families,
        COUNT(*) AS n_events,
-       SUM(COALESCE(v.grant_amount_eur, 0)) AS total_grant_eur,
+       -- ipcei_linked rows are granted tranches of aid already counted as
+       -- IPCEI approved ceilings: exclude from per-company euro totals so
+       -- champion-style indicative sums stay single-counted (decision D-17).
+       SUM(CASE WHEN v.ipcei_linked = 1 THEN 0
+                ELSE COALESCE(v.grant_amount_eur, 0) END) AS total_grant_eur,
        SUM(COALESCE(v.debt_amount_eur, 0)) AS total_debt_eur,
        MIN(v.event_year) AS first_year,
        MAX(v.event_year) AS last_year

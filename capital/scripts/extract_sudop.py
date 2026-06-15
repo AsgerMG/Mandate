@@ -238,17 +238,29 @@ def _slug(s: str) -> str:
 def parse_csv(path: Path, slug: str, sector_v1: str) -> list[dict]:
     rows: list[dict] = []
     with path.open(encoding="utf-8", errors="replace") as f:
-        reader = csv.DictReader(f)
-        for r in reader:
+        reader = csv.reader(f)
+        header = next(reader, None)
+        if not header:
+            return rows
+        date_idx = header.index("dzien-udzielenia-pomocy")
+        for raw in reader:
+            # Some SUDOP rows carry an extra case-reference column inserted
+            # before the grant date (e.g. KPOD.05.10-IW.10-0004/24), shifting
+            # every later field one position over — the EUR value then shows
+            # the PLN amount. Realign by dropping the inserted reference.
+            if len(raw) == len(header) + 1 and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", raw[date_idx].strip()):
+                raw = raw[:date_idx] + raw[date_idx + 1:]
+            r = dict(zip(header, raw))
             name = (r.get("nazwa-beneficjenta") or "").strip()
             if not name:
                 continue
             date = (r.get("dzien-udzielenia-pomocy") or "").strip()
-            try:
-                year = int(date[:4])
-            except ValueError:
+            # Even after realignment, require a real date so residual shift
+            # patterns never put a tax ID into call_deadline.
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
                 continue
-            if year < 2021:
+            year = int(date[:4])
+            if not 2021 <= year <= 2030:
                 continue
             nip = (r.get("nip-beneficjenta") or "").strip() or None
             authority = (r.get("nazwa-udzielajacego-pomocy") or "").strip()

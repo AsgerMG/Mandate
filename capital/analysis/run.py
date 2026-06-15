@@ -30,8 +30,11 @@ def run_synthesis():
           (SELECT COUNT(*) FROM public_funding_events) AS events,
           (SELECT COUNT(*) FROM v_company_breadth WHERE n_source_families >= 2) AS champions,
           (SELECT COUNT(*) FROM companies WHERE step_flagged = 1) AS step_companies,
+          -- ipcei_linked = 1 marks SATR rows that are granted tranches of aid
+          -- the ipcei_* events already carry as approved ceilings; netting them
+          -- here keeps the headline total single-counted (see decision log D-17).
           (SELECT SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0))
-           FROM public_funding_events) AS total_capital_eur,
+           FROM public_funding_events WHERE ipcei_linked = 0) AS total_capital_eur,
           (SELECT COUNT(DISTINCT country) FROM companies WHERE country IS NOT NULL) AS countries,
           (SELECT COUNT(DISTINCT source_family) FROM v_events) AS source_families,
           (SELECT COUNT(DISTINCT c.sector_inferred)

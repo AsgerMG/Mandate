@@ -402,6 +402,20 @@ Country attribution is resolved in priority order: (1) explicit table caption be
 
 When an amount is `[…]` or fully redacted, `aid_amount_eur` is NULL and `aid_amount_redacted = 1`. When an amount is a range (`[6 000 to 10 000]`), the midpoint is **not** imputed, `aid_amount_eur` is NULL and `aid_amount_is_range = 1` with the raw string preserved. This is conservative: any aggregation over `grant_amount_eur` must account for the NULL rows.
 
+### Redacted-amount recovery via SATR (2026-06-11)
+
+Redaction is decision-time secrecy, but once the aid is **granted** it must be reported to the Transparency Award Module, and those rows are already in the corpus as `state_aid_satr` events whose `project_title` names the IPCEI measure. `scripts/backfill_ipcei_amounts_from_satr.py` joins the two through an explicit, human-reviewed mapping table (the IPCEI loader used decision short names — "SAP", "ACC" — while SATR carries legal names — "SAP SE", "Opel ACC GmbH") and fills the redacted event with the **sum of granted tranches** under basis `ipcei_satr_granted`. That figure is a lower bound of the redacted approved ceiling (tranches may still be flowing) and a different measurement basis from `ipcei_state_aid` — never sum the two. Every SATR row used is flagged `ipcei_linked = 1` so corpus totals can net the overlap. Result: 26 of 101 redacted events recovered (€2.7B), including SAP's IPCEI-CIS participation (€329.6M granted by 2024). Match log: `data/processed/ipcei_satr_backfill.csv`.
+
+**Round 2 (2026-06-12)**: the 3 PL cloud rows were recovered directly from the SUDOP API by beneficiary NIP (CloudFerro EUR 21.8m, Oktawave EUR 10.4m, Atende Industries EUR 4.24m, all SA.115784/KPO, granted June 2024; the grant to Atende went to the operating subsidiary, not the listed parent). That query also exposed a SUDOP CSV column-shift bug (an inserted case-reference pushes every field one over, so the EUR column shows PLN): extract_sudop.py now realigns shifted rows, and 41 previously mis-parsed amounts were nulled. Separately, 151 of the 163 NULL JU rows (Chips JU KDT-2023, IHI, SESAR) were filled from the refreshed local CORDIS organization.csv via scripts/backfill_ju_amounts_from_cordis.py; nearly all are known-zeros (associated-country partners, typically Swiss, funded nationally).
+
+Of the ~71 still NULL: ~16 DE Microelectronics-2018 rows are in no public register (not in the Förderkatalog, which only starts carrying IPCEI funding codes with the ME/CT and CIS waves; the Bundestag overview Drs. 21/2320 lists projects but withholds per-company amounts); ~25 IT rows await an RNA register load; 4 GB Microelectronics rows predate the UK subsidy database; Tesla's EuBatIn NULL is real (application withdrawn Nov 2021); 12 JU rows are CORDIS name-mismatches.
+
+**External cross-checks (2026-06-12)**: the corpus EDF series (~EUR 1bn per call year) matches the fund's official EUR 7.953bn 2021-27 budget; the SATR-recovered SAP IPCEI-CIS figure (EUR 329.6m) lands within 1.5% of the EUR 325m grant on the Commission's ApeiroRA project page.
+
+### Amount-completeness doctrine (2026-06-11)
+
+A corpus-wide pass classified every NULL-amount event. The rule going forward: **a NULL must mean "the number is not publicly recoverable", never "we did not look".** Known-zero cases are stored as 0, not NULL — Horizon `associatedPartner` rows (4,978) were set to 0 because that role receives no EU contribution by CORDIS design. Irreducible NULLs and their reasons: FR `fr_relance_industrie` (2,835 — the ministry dataset publishes no amount fields, re-verified against the live API 2026-06-11; presence-only by source design), NDB/EU equity placeholders (~1,900 — undisclosed tickets; the Sprint 19 stakes layer is the recovery path), EIT KIC support rows (442 — services, not cash), recent JU calls (~250 KDT/IHI/SESAR 2023 — amounts publish with delay; re-run the extractors), plus the residual IPCEI redactions above.
+
 ### Matching strategy
 
 IPCEI PDFs do **not** carry PIC codes (PIC is Horizon-specific). Match against existing `companies` by canonical_name + country:
