@@ -2,6 +2,21 @@
 
 One line per improvement-loop iteration, newest first.
 
+- **2026-06-15 · improve/20260615-dryrun · iter 6 (manual).** Classifier audit +
+  Phase 1 NACE coverage. User flagged Scaleway (cloud) misclassified as cleantech.
+  Audit (`analysis/findings/classifier_audit.md`): 52.9% of companies are classed by
+  the weakest mechanism (source default), and 49% of "cleantech" companies are
+  cleantech mainly because ADEME funds them. Root cause for Scaleway: its NACE
+  ("Rental and leasing of office machinery, equipment and computers") was unmapped, so
+  it fell through to `ademe_aid → cleantech`. Phase 1: added 14 high-confidence NACE
+  mappings (computing/hosting/rental-of-computers → digital; electrical equipment →
+  deeptech; clearly non-tech → other). Isolated dry-run before applying: 3,448 flips,
+  3,268 of them previously-unclassified register companies now bucketed, ~134 cleantech/
+  life-sci corrected; Scaleway → digital. Applied via classify.py (0 first-time, matches
+  dry-run exactly), site data rebuilt. Verified: next build clean, freshness fresh,
+  stop-gate silent. Still open: 54,777 unclassified (Phase 1b), ADEME-only cleantech
+  default (Phase 2). Files: scripts/classify.py, analysis/findings/classifier_audit.md,
+  site/public/data/*.
 - **2026-06-15 · improve/20260615-dryrun · iter 5 (manual).**
   P1: sector + country faceting on /companies. `build_company_search.py` now emits a
   facet index (per-country top-200, per-sector top-200, overall top-300, ranked by
