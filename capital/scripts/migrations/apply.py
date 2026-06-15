@@ -206,12 +206,48 @@ def apply_008(conn: sqlite3.Connection) -> None:
     print("  CREATE INDEX IF NOT EXISTS idx_pfe_instrument_class")
 
 
+def apply_009(conn: sqlite3.Connection) -> None:
+    """Cross-source duplicate flag + duplicate-free v_events.
+
+    Some events are the same grant reported by two sources (an ADEME grant also
+    published in SATR-FR). `is_duplicate=1` marks the row to drop from corpus
+    totals; `dup_reason` records why. v_events (refreshed from analysis/views.sql)
+    excludes flagged rows, so every downstream total nets the overlap at one
+    point. Reversible: clear the flag and refresh views.
+    """
+    if not column_exists(conn, "public_funding_events", "is_duplicate"):
+        print("  ADD COLUMN is_duplicate")
+        conn.execute(
+            "ALTER TABLE public_funding_events "
+            "ADD COLUMN is_duplicate INTEGER NOT NULL DEFAULT 0"
+        )
+    else:
+        print("  skip is_duplicate (exists)")
+    if not column_exists(conn, "public_funding_events", "dup_reason"):
+        print("  ADD COLUMN dup_reason")
+        conn.execute("ALTER TABLE public_funding_events ADD COLUMN dup_reason TEXT")
+    else:
+        print("  skip dup_reason (exists)")
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_pfe_is_duplicate "
+        "ON public_funding_events(is_duplicate) WHERE is_duplicate = 1"
+    )
+    print("  CREATE INDEX IF NOT EXISTS idx_pfe_is_duplicate")
+
+    # Refresh all views from the canonical source so v_events picks up the
+    # is_duplicate exclusion. views.sql drops and recreates every view.
+    views_sql = (Path(__file__).parent.parent.parent / "analysis" / "views.sql").read_text()
+    conn.executescript(views_sql)
+    print("  refreshed views from analysis/views.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
     "006": apply_006,
     "007": apply_007,
     "008": apply_008,
+    "009": apply_009,
 }
 
 

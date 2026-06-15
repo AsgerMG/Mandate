@@ -18,10 +18,9 @@ it done. Vague items are not actionable — the loop will skip and flag them.
   sentence. **Done** improve/20260615-dryrun iter 2.
 - [x] `[hygiene][data][M]` ADEME SATR-FR overlap audit. **Done** (see Done section):
   ~€2.2bn likely duplicate, €4.75bn name upper bound, documented in methodology.
-- [ ] `[hygiene][data][M]` Physically net the ADEME ↔ SATR-FR overlap: add an
-  `ademe_satr_dup` flag (mirroring `ipcei_linked`) on the ~1,429 likely-duplicate
-  ADEME rows so corpus and FR totals can exclude it at query/build time. Files:
-  migration, scripts/build_*.py. Gate: corpus total drops ~€2bn; load-auditor clean.
+- [x] `[hygiene][data][M]` Physically net the ADEME ↔ SATR-FR overlap. **Done**
+  (see Done): migration 009 `is_duplicate` flag + `v_events`/headline exclusion;
+  1,429 rows / €2.17bn netted; corpus €269.2B → €267.0B.
 
 ## P1 — founder journey (smoke-test findings)
 

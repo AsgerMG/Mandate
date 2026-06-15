@@ -2,6 +2,17 @@
 
 One line per improvement-loop iteration, newest first.
 
+- **2026-06-15 · improve/20260615-dryrun · iter 7 (manual).** Physically netted the
+  ADEME↔SATR-FR overlap (the follow-up the iter-3 audit promised). Migration 009 adds
+  `is_duplicate` + `dup_reason` columns and refreshes `v_events` to exclude flagged
+  rows; `scripts/flag_ademe_satr_duplicates.py` set the flag on 1,429 ADEME rows that
+  duplicate SATR-FR (name + year ±1 + amount ±15%); `analysis/run.py` headline KPIs
+  net `is_duplicate` alongside `ipcei_linked`. Result: corpus €269.2B → €267.0B,
+  events 294,120 → 292,691, both matching the audit. SATR is canonical so the ADEME
+  copy is dropped; reversible by clearing the flag. Verified: next build clean,
+  freshness fresh, stop-gate silent. Files: scripts/migrations/{009_dedup_flag.sql,
+  apply.py}, scripts/flag_ademe_satr_duplicates.py, analysis/{views.sql,run.py},
+  docs/methodology.md, site/public/data/*.
 - **2026-06-15 · improve/20260615-dryrun · iter 6 (manual).** Classifier audit +
   Phase 1 NACE coverage. User flagged Scaleway (cloud) misclassified as cleantech.
   Audit (`analysis/findings/classifier_audit.md`): 52.9% of companies are classed by

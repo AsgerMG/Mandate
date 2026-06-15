@@ -98,7 +98,11 @@ SELECT
   COALESCE(strftime('%Y', e.project_started),
            strftime('%Y', e.call_deadline)) AS event_year
 FROM public_funding_events e
-INNER JOIN v_european_companies c ON c.id = e.company_id;
+INNER JOIN v_european_companies c ON c.id = e.company_id
+-- Migration 009: exclude rows flagged as cross-source duplicates (e.g. an ADEME
+-- grant that is also published in SATR-FR). Netting here means every downstream
+-- total, count and per-country/per-family rollup is duplicate-free at one point.
+WHERE COALESCE(e.is_duplicate, 0) = 0;
 
 -- One row per company with breadth / depth metrics (all entity types — research orgs,
 -- companies, public bodies). Use this for total-corpus rollups.
