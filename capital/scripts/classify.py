@@ -540,6 +540,29 @@ NACE_TO_SECTOR: list[tuple[str, str]] = [
     # confidently "deeptech"; usually buildings / infrastructure.
     ("Engineering activities and related technical consultancy", "other"),
     ("Architectural and engineering activities", "other"),
+    # --- Phase 1b (2026-06-15): close the unclassified gap with unambiguous codes ---
+    # EIT/programme domain labels (numeric-prefixed taxonomy seen in register feeds).
+    ("50 ICT", "digital"),
+    ("60 Life Sciences", "life_sciences"),
+    ("70 Engineering", "deeptech_hardware"),
+    ("90 Social Sciences & Business Management", "other"),
+    # Lower-tech industrial manufacturing: real, but not one of the tech buckets.
+    # Honest "other" beats a guessed deeptech/cleantech label.
+    ("Manufacture of plastic products", "other"),
+    ("Manufacture of other plastic products", "other"),
+    ("Manufacture of rubber and plastic products", "other"),
+    ("Manufacture of fabricated metal products", "other"),
+    ("Manufacture of other fabricated metal products", "other"),
+    ("Manufacture of metal structures", "other"),
+    ("Manufacture of structural metal products", "other"),
+    ("Treatment and coating of metals", "other"),
+    ("Machining", "other"),
+    ("Other manufacturing", "other"),
+    # Clearly non-tech services / primary sector.
+    ("Other professional, scientific and technical activities", "other"),
+    ("Raising of dairy cattle", "other"),
+    ("Land transport and transport via pipelines", "other"),
+    ("Publishing, broadcasting, and content production", "other"),
 ]
 
 
