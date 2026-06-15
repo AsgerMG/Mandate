@@ -4,6 +4,24 @@ Running record of analytical, editorial and data decisions, newest first. Each e
 decision, why, and where it is implemented. Methodology mechanics live in `methodology.md`;
 this file records the *choices*.
 
+## 2026-06-15 · Agent harness and methodology backfill
+
+**D-22. The project now runs on a Claude Code agent harness.** Five agents
+(`investor-lens`, `founder-lens`, `source-scout`, `load-auditor`, `stat-verifier`),
+two skills (`ship-a-source`, `publish-finding`), a `/ship-review` dual-audience
+command, and two hooks (warn on hand-edited generated data; Stop-gate for stale
+site data + methodology gaps). Methodology consistency is enforced as a gate
+(ship-a-source step 8 + load-auditor + the Stop hook), not delegated to an agent.
+Full spec in `docs/agent_architecture.md`.
+
+**D-21. Methodology backfill caught by the new Stop hook on its first run.**
+ADEME (`ademe_aid`, 27,697 events / 18,801 companies / €7.76B — the single largest
+source by event count) and SPRIND (`sprind_challenge`, 20 events, amounts NULL)
+were loaded but never entered in `methodology.md` "Source coverage". Both added.
+ADEME flagged with a pending SATR-FR overlap audit (loaded before the Sprint 17
+overlap gate). Europe's Rail was a hook false-positive (already documented under
+Sprint 18); the hook's token match was normalised to stop nagging.
+
 ## 2026-06-12 · Investor brief and amount recovery
 
 **D-20. /for-companies is the mirror of /investors, not a copy.** Same evidence base, same

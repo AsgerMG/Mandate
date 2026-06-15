@@ -4,8 +4,12 @@ __pycache__/
 db_backups/
 .DS_Store
 
-# Claude Code config — per-user, not project state
-.claude/
+# Claude Code config — per-user local state is ignored, but the agent harness
+# (agents, skills, slash commands) is shared project infrastructure and IS tracked.
+.claude/*
+!.claude/agents/
+!.claude/skills/
+!.claude/commands/
 
 # SQLite database is a generated build artifact, never committed (330MB+,
 # exceeds GitHub's 100MB limit). Rebuilt from scripts/ + backed up separately.
