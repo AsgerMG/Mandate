@@ -25,10 +25,9 @@ it done. Vague items are not actionable — the loop will skip and flag them.
 
 ## P1 — founder journey (smoke-test findings)
 
-- [ ] `[startup][scaleup][incumbent][narrative][S]` Add a founder hand-off on
-  /investors → /for-companies and /companies (in-body banner + closing CTA);
-  today there are zero in-body links. Files: site/app/investors/. Gate:
-  founder-lens no longer flags "bounced at the door".
+- [x] `[startup][scaleup][incumbent][narrative][S]` Founder hand-off on /investors.
+  **Done** (see Done section): in-body banner at the CFO playbook + closing CTA, both
+  linking /for-companies and /companies.
 - [ ] `[startup][scaleup][narrative][M]` Add sector + country faceting to the
   company lookup (data already carries `r.s`/`r.c`); enables discovery, not just
   name search. Files: site/components/.../company-search.tsx. Gate: founder-lens
@@ -44,6 +43,11 @@ it done. Vague items are not actionable — the loop will skip and flag them.
 ## Done (loop appends here)
 
 <!-- loop moves completed items here with the commit SHA -->
+- [x] `[startup][scaleup][incumbent][narrative][S]` Founder hand-off on /investors:
+  in-body banner under "For capital advisors and CFOs" + closing CTA box, both linking
+  /for-companies (raise playbook) and /companies (lookup). Closes the founder-lens
+  "zero in-body links / bounced at the door" flag. `next build` clean, no em-dash.
+  improve/20260615-dryrun (manual).
 - [x] `[hygiene][data][M]` ADEME ↔ SATR-FR overlap audit: `scripts/ademe_satr_overlap.py`
   measures ~€2.2bn likely duplicate (1,429 rows, name+year±1+amount±15%), €4.75bn
   name-only upper bound; €0.50bn sub-€100k cannot overlap. Documented in

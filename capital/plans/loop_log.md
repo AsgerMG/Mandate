@@ -2,6 +2,13 @@
 
 One line per improvement-loop iteration, newest first.
 
+- **2026-06-15 · improve/20260615-dryrun · iter 4 (manual).**
+  P1: founder hand-off on /investors. Added an in-body banner under "For capital
+  advisors and CFOs" and a closing CTA box, both linking /for-companies (the raise
+  playbook) and /companies (the lookup). Resolves the founder-lens "zero in-body
+  links / bounced at the door" flag. Verified: `next build` clean (all 7 routes
+  prerendered, TypeScript passed), no em-dash, stop-gate silent.
+  File: site/app/investors/page.tsx.
 - **2026-06-15 · improve/20260615-dryrun · iter 3 (manual; nested loop quota-blocked).**
   P0: ADEME ↔ SATR-FR overlap audit. New `scripts/ademe_satr_overlap.py` matches the
   two FR sources on beneficiary name + grant year ±1 + amount ±15%. Result: of ADEME's
