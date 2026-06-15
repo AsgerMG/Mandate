@@ -149,6 +149,11 @@ def main():
         "SELECT DISTINCT company_id FROM public_funding_events WHERE source LIKE 'ipcei_%'")}
 
     shards: dict[str, list] = defaultdict(list)
+    # Facet-browse index: lets a founder discover companies by country and/or
+    # sector with no name typed ("who got cleantech money in ES?"). Each record
+    # carries its sector, so the client filters sector within a loaded country
+    # shard. Ranked by total funding so the head of each facet is the signal.
+    ranked: list[tuple[float, int, dict]] = []  # (funding_total, n_events, rec)
     n_companies = 0
     for r in con.execute(
             "SELECT id, canonical_name, country, sector_inferred, step_flagged FROM companies"):
@@ -175,6 +180,8 @@ def main():
             rec["i"] = 1  # IPCEI participant
         for p in token_prefixes(norm):
             shards[p].append(rec)
+        funding_total = sum(e[3] or 0 for e in (ev or []))
+        ranked.append((funding_total, len(ev or []), rec))
     con.close()
 
     if OUT_DIR.exists():
@@ -183,14 +190,55 @@ def main():
     for prefix, recs in shards.items():
         (OUT_DIR / f"{prefix}.json").write_text(
             json.dumps(recs, ensure_ascii=False, separators=(",", ":")))
+
+    # ── Facet shards ────────────────────────────────────────────────────────
+    FACET_CAP = 200          # top companies kept per country / per sector
+    FACET_ALL_CAP = 300      # top companies overall (no facet selected)
+    facet_dir = OUT_DIR / "facets"
+    facet_dir.mkdir()
+    ranked.sort(key=lambda t: (t[0], t[1]), reverse=True)  # funding desc, then events
+
+    by_country: dict[str, list[dict]] = defaultdict(list)
+    by_sector: dict[str, list[dict]] = defaultdict(list)
+    overall: list[dict] = []
+    for _total, _n, rec in ranked:
+        if len(overall) < FACET_ALL_CAP:
+            overall.append(rec)
+        cc = rec["c"]
+        if cc and len(by_country[cc]) < FACET_CAP:
+            by_country[cc].append(rec)
+        sec = rec["s"]
+        if sec and len(by_sector[sec]) < FACET_CAP:
+            by_sector[sec].append(rec)
+
+    for cc, recs in by_country.items():
+        (facet_dir / f"{cc}.json").write_text(
+            json.dumps(recs, ensure_ascii=False, separators=(",", ":")))
+    for sec, recs in by_sector.items():
+        (facet_dir / f"_sector_{sec}.json").write_text(
+            json.dumps(recs, ensure_ascii=False, separators=(",", ":")))
+    (facet_dir / "_all.json").write_text(
+        json.dumps(overall, ensure_ascii=False, separators=(",", ":")))
+
+    # Country counts so the client only offers facets that have data.
+    country_counts = sorted(
+        ({"code": cc, "count": len(recs)} for cc, recs in by_country.items()),
+        key=lambda d: d["code"])
+    sector_codes = sorted(by_sector.keys())
+
     (OUT_DIR / "manifest.json").write_text(json.dumps({
         "shards": len(shards), "companies": n_companies,
         "generatedAt": date.today().isoformat(),
+        "facetCountries": country_counts,
+        "facetSectors": sector_codes,
+        "facetCap": FACET_CAP,
     }))
-    total_mb = sum(f.stat().st_size for f in OUT_DIR.glob("*.json")) / 1e6
+    total_mb = sum(f.stat().st_size for f in OUT_DIR.rglob("*.json")) / 1e6
     biggest = max(shards.items(), key=lambda kv: len(kv[1]))
-    print(f"wrote {len(shards)} shards, {n_companies} companies, {total_mb:.1f} MB total; "
-          f"largest shard '{biggest[0]}' with {len(biggest[1])} records")
+    print(f"wrote {len(shards)} name shards + {len(by_country)} country + "
+          f"{len(by_sector)} sector facet shards, {n_companies} companies, "
+          f"{total_mb:.1f} MB total; largest name shard '{biggest[0]}' "
+          f"with {len(biggest[1])} records")
 
 
 if __name__ == "__main__":

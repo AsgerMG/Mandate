@@ -28,10 +28,9 @@ it done. Vague items are not actionable — the loop will skip and flag them.
 - [x] `[startup][scaleup][incumbent][narrative][S]` Founder hand-off on /investors.
   **Done** (see Done section): in-body banner at the CFO playbook + closing CTA, both
   linking /for-companies and /companies.
-- [ ] `[startup][scaleup][narrative][M]` Add sector + country faceting to the
-  company lookup (data already carries `r.s`/`r.c`); enables discovery, not just
-  name search. Files: site/components/.../company-search.tsx. Gate: founder-lens
-  Findability test passes for "who funds cleantech seed in ES?".
+- [x] `[startup][scaleup][narrative][M]` Sector + country faceting on the company
+  lookup. **Done** (see Done section): country + sector dropdowns browse a new facet
+  index; "cleantech in ES" returns 41 companies with no name typed.
 
 ## P2 — coverage (source-scout refills this section)
 
@@ -43,6 +42,12 @@ it done. Vague items are not actionable — the loop will skip and flag them.
 ## Done (loop appends here)
 
 <!-- loop moves completed items here with the commit SHA -->
+- [x] `[startup][scaleup][narrative][M]` Sector + country faceting on /companies:
+  build_company_search.py now emits a facet index (per-country top-200, per-sector
+  top-200, overall top-300 by funding) under data/companies/facets/; the client adds
+  country + sector dropdowns that browse with no name typed and refine name results.
+  "cleantech in ES" returns 41 companies. +10MB shards. `next build` clean, no em-dash.
+  improve/20260615-dryrun (manual).
 - [x] `[startup][scaleup][incumbent][narrative][S]` Founder hand-off on /investors:
   in-body banner under "For capital advisors and CFOs" + closing CTA box, both linking
   /for-companies (raise playbook) and /companies (lookup). Closes the founder-lens

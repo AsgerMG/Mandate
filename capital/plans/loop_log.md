@@ -2,6 +2,18 @@
 
 One line per improvement-loop iteration, newest first.
 
+- **2026-06-15 · improve/20260615-dryrun · iter 5 (manual).**
+  P1: sector + country faceting on /companies. `build_company_search.py` now emits a
+  facet index (per-country top-200, per-sector top-200, overall top-300, ranked by
+  total funding) under `data/companies/facets/`. The client gained country + sector
+  dropdowns: with no name typed they browse the facet shard (discovery), and they
+  refine name-search results when a name is present. Founder Findability test passes:
+  "cleantech in ES" returns 41 companies with no name typed. Records keep the full
+  shape so the existing card/modal renders unchanged; +10MB shards, build deterministic
+  (only manifest.json changed among existing shards). Verified: `next build` clean,
+  freshness fresh, stop-gate silent, no em-dash.
+  Files: scripts/build_company_search.py, site/components/investor/company-search.tsx,
+  site/app/companies/page.tsx, site/public/data/companies/{manifest.json,facets/}.
 - **2026-06-15 · improve/20260615-dryrun · iter 4 (manual).**
   P1: founder hand-off on /investors. Added an in-body banner under "For capital
   advisors and CFOs" and a closing CTA box, both linking /for-companies (the raise
