@@ -2,6 +2,18 @@
 
 One line per improvement-loop iteration, newest first.
 
+- **2026-06-15 · improve/20260615-dryrun · iter 9 (manual).** Classifier Phase 3:
+  comprehensive NACE-division coverage, on user direction to "classify by what the
+  company does" and close the 30% unclassified gap. Mapped the whole NACE taxonomy by
+  division (machinery → deeptech; recycling/energy/water → cleantech; information &
+  communication → digital; agriculture, lower-tech manufacturing, trade, construction,
+  business services → other) + Spanish GBER environmental aid articles → cleantech
+  (the investment is the activity); deliberately left generic R&D/SME aid-basis text
+  unclassified (no business signal). Dry-run + spot-check before apply (recyclers →
+  cleantech, farm/laser-machinery → deeptech, IT firms → digital). Applied: 12,537
+  sector flips; unclassified 48,930 → 37,075 (31.2% → 23.6%). Verified: next build
+  clean, freshness fresh, stop-gate silent. Files: scripts/classify.py,
+  analysis/findings/classifier_audit.md, site/public/data/*.
 - **2026-06-15 · improve/20260615-dryrun · iter 8 (manual).** Classifier Phase 2:
   French public bodies. Sampling the cleantech bucket surfaced municipalities (CC DE
   CHARENTE LIMOUSINE = Communauté de communes), intercommunal syndicates (SICTOM/

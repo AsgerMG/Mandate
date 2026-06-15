@@ -63,13 +63,30 @@ ADEME default.
    company with a green-tinted project can resolve cleantech because cleantech
    outranks digital.
 
-## Fix sequence
+## Fix sequence (executed)
 
-- **Phase 1 (this pass): close high-confidence NACE gaps.** Map the unambiguous
-  unmapped strings (computing/hosting → digital; clearly non-tech → other;
-  electrical equipment → deeptech). This reclassifies register companies by their
-  own business before any source default fires. Measured by a dry run against the
-  live `sector_inferred` before applying.
-- **Phase 2: demote/condition the source default**, so a thematic default never
-  overrides an own-business signal, and ambiguous industrial NACE is not guessed.
-- **Phase 3: revisit the priority order** for multi-signal companies.
+- **Phase 1 (9b79460): high-confidence NACE gaps.** computing/hosting → digital;
+  electrical equipment → deeptech; clearly non-tech → other. Scaleway → digital.
+  3,448 flips, 3,268 previously-unclassified bucketed.
+- **Phase 1b (87b43e4): more NACE + EIT domain codes.** unclassified 54,777 → 48,930.
+- **Phase 2 (8ca9b96): French public bodies.** Communauté de communes, Mairie,
+  SICTOM/SIVOM syndicates, Métropole, Département → entity_type `other`; they drop
+  out of company-level analyses. 408 entities.
+- **Phase 3 (this pass): comprehensive NACE-division coverage.** Map the whole NACE
+  taxonomy by division (machinery → deeptech; recycling/energy/water → cleantech;
+  information & communication → digital; agriculture, lower-tech manufacturing,
+  trade, construction, business services → other), plus Spanish GBER environmental
+  aid articles → cleantech (the investment is the activity; generic R&D/SME articles
+  left unclassified — no business signal). 12,537 flips, unclassified 48,930 → 37,075
+  (31.2% → 23.6%). Spot-checked: recyclers → cleantech, farm/laser-machinery makers
+  → deeptech, IT firms → digital.
+
+## What is left unclassified (23.6%)
+
+Two irreducible-ish buckets: (a) ~17k companies with no NACE/tag at all (only a
+source and an amount) — addressable only by name/keyword inference; (b) register
+rows whose only label is aid-legal-basis boilerplate that names the grant, not the
+business (Spanish ART. 22/25/28/29 generic R&D/SME aid, Polish SUDOP regulations,
+Danish "Ikke defineret"). Mapping (b) would re-introduce theme-over-business error,
+so it stays unclassified by choice. Next lever for the gap is (a): multilingual
+name/keyword classification, accepting lower precision than NACE.

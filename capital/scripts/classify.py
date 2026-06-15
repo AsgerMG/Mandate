@@ -563,6 +563,78 @@ NACE_TO_SECTOR: list[tuple[str, str]] = [
     ("Raising of dairy cattle", "other"),
     ("Land transport and transport via pipelines", "other"),
     ("Publishing, broadcasting, and content production", "other"),
+    # ── Comprehensive NACE-division coverage (2026-06-15) ───────────────────
+    # Goal: classify register companies by their actual economic activity (NACE)
+    # rather than the funding programme's theme, and close the unclassified gap.
+    # Resolution within one string is first-match, so tech sectors are listed
+    # before the broad "other" block; across a company's several events the sector
+    # priority (cleantech > deeptech > digital > other) applies, and "other" is
+    # lowest, so these can never override a genuine tech signal.
+    #
+    # CLEANTECH — energy, water, waste, environment (NACE D, E + green articles).
+    ("80 Energy & Environment", "cleantech"),            # EIT/programme domain code
+    ("Recovery of sorted materials", "cleantech"),
+    ("Recovery and recycling", "cleantech"),
+    ("Renewable", "cleantech"),
+    # Spanish GBER environmental aid articles (BDNS) — the company's investment is
+    # the activity (renewable energy, energy efficiency, decarbonisation). Generic
+    # R&D / SME / innovation articles (ART. 22/25/28/29) are NOT mapped: no
+    # business signal, they stay unclassified.
+    ("energía procedente de fuentes renova", "cleantech"),
+    ("hidrógeno renovable", "cleantech"),
+    ("cogeneración de alta eficiencia", "cleantech"),
+    ("protección del medio ambiente", "cleantech"),
+    ("eficiencia energética", "cleantech"),
+    ("eficiencia en el uso de los recursos", "cleantech"),
+    ("descarboniz", "cleantech"),
+    # DIGITAL — NACE section J.
+    ("INFORMATION AND COMMUNICATION", "digital"),
+    # DEEPTECH_HARDWARE — machinery and equipment (NACE C28 etc.).
+    ("Manufacture of general-purpose machinery", "deeptech_hardware"),
+    ("Manufacture of special-purpose machinery", "deeptech_hardware"),
+    ("Manufacture of agricultural and forestry machinery", "deeptech_hardware"),
+    ("Manufacture of metal forming machinery and machine tools", "deeptech_hardware"),
+    # OTHER — primary sector, lower-tech manufacturing, trade, construction,
+    # transport and business services. Real activities, just not a tech bucket.
+    ("Raising of", "other"),                             # livestock (swine, poultry, cattle)
+    ("Growing of", "other"),                             # crops
+    ("Support activities for crop production", "other"),
+    ("Support activities to agriculture", "other"),
+    ("Crop and animal production", "other"),
+    ("Processing and preserving of meat", "other"),
+    ("Manufacture of other food products", "other"),
+    ("Manufacture of bakery", "other"),
+    ("Manufacture of beverages", "other"),
+    ("Manufacture of products of wood", "other"),
+    ("Manufacture of articles of paper", "other"),
+    ("Manufacture of wearing apparel", "other"),
+    ("Manufacture of plastic packing goods", "other"),
+    ("Manufacture of plastic plates", "other"),
+    ("Manufacture of basic metals", "other"),
+    ("Manufacture of other non-metallic mineral products", "other"),
+    ("Forging, pressing, stamping", "other"),
+    ("Manufacture of cutlery, tools and general hardware", "other"),
+    ("Manufacture of tools", "other"),
+    ("Manufacture of locks and hinges", "other"),
+    ("Manufacture of motor vehicles", "other"),
+    ("parts and accessories for motor vehicles", "other"),
+    ("Maintenance and repair of motor vehicles", "other"),
+    ("Printing", "other"),
+    ("Wholesale trade", "other"),
+    ("Retail trade", "other"),
+    ("Retail sale", "other"),
+    ("Electrical installation", "other"),
+    ("Specialised construction activities", "other"),
+    ("Installation of industrial machinery and equipment", "other"),
+    ("Technical testing and analysis", "other"),
+    ("Manufacture of chemicals and chemical products", "other"),
+    ("Other passenger land transport", "other"),
+    ("Office administrative", "other"),
+    ("Business support service activities", "other"),
+    ("Other business support service activities", "other"),
+    ("Other personal service activities", "other"),
+    ("Activities of other membership organisations", "other"),
+    ("PROFESSIONAL, SCIENTIFIC AND TECHNICAL ACTIVITIES", "other"),
 ]
 
 
