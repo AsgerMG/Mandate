@@ -54,6 +54,24 @@ EU_DIRECT_FAMILIES = (
     "horizon_eu_pillar_ii", "horizon_eu_partnership",
 )
 
+# Legal-form suffixes that str.title() mangles ("SL" -> "Sl"). Restore their
+# canonical casing after title-casing an all-caps name.
+LEGAL_SUFFIXES = {
+    "sl": "SL", "sa": "SA", "sas": "SAS", "srl": "Srl", "spa": "SpA",
+    "gmbh": "GmbH", "ag": "AG", "kg": "KG", "se": "SE", "ug": "UG",
+    "oy": "Oy", "oyj": "Oyj", "ab": "AB", "as": "AS", "asa": "ASA",
+    "aps": "ApS", "bv": "BV", "nv": "NV", "plc": "Plc", "ltd": "Ltd",
+    "llp": "LLP", "sp": "SP", "doo": "d.o.o.", "ou": "OÜ", "sro": "s.r.o.",
+}
+
+
+def pretty_name(name: str) -> str:
+    """Title-case an ALL-CAPS legal name while preserving entity suffixes."""
+    if not name or not name.isupper():
+        return name
+    words = name.title().split()
+    return " ".join(LEGAL_SUFFIXES.get(w.lower().rstrip("."), w) for w in words)
+
 # Canonical holder ids from public_equity_stakes → display label + home country.
 HOLDERS = {
     "uk_future_fund":      ("Future Fund (British Business Bank)", "GB"),
@@ -260,6 +278,8 @@ def build_kpis(con):
             "SELECT COUNT(*) FROM v_company_breadth_companies WHERE n_source_families >= 2"),
         "deepStack": one(
             "SELECT COUNT(*) FROM v_company_breadth_companies WHERE n_source_families >= 3"),
+        "veryDeepStack": one(
+            "SELECT COUNT(*) FROM v_company_breadth_companies WHERE n_source_families >= 4"),
         "equityPositions": one("SELECT COUNT(*) FROM public_equity_stakes"),
         "equityHolders": one("SELECT COUNT(DISTINCT holder) FROM public_equity_stakes"),
     }
@@ -291,7 +311,7 @@ def build_champions(con, limit=15):
         fams = [r[0] for r in con.execute(
             "SELECT DISTINCT source_family FROM v_events WHERE company_id = ?", (cid,))]
         champions.append({
-            "name": name.title() if name.isupper() else name,
+            "name": pretty_name(name),
             "country": country,
             "sector": sector or "unclassified",
             "nFamilies": n_fam,
@@ -409,7 +429,7 @@ def build_equity(con):
             continue
         per_holder[holder] = per_holder.get(holder, 0) + 1
         notable.append({
-            "company": name.title() if name.isupper() else name,
+            "company": pretty_name(name),
             "country": country,
             "holder": HOLDERS.get(holder, (holder, ""))[0],
             "pct": pct,
