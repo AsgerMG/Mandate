@@ -810,6 +810,17 @@ PUBLIC_BODY_PATTERNS = [
     # Sprint 19 hygiene — funders / NGO networks that polluted champion lists
     r"\bunited kingdom research and innovation\b",          # UKRI is a funding agency, not a beneficiary company
     r"\biclei\b",                                           # ICLEI city network secretariat
+    # 2026-06-15 — French local government / intercommunal bodies. ADEME funds
+    # these heavily for local energy/waste projects; they are not companies and
+    # were defaulting to cleantech. Excluding them cleans company-level analyses.
+    r"\bcommunaut[eé]\b",                                   # Communauté de communes / d'agglomération / urbaine
+    r"^cc d[eu] ",                                          # "CC DE …" abbreviation for Communauté de communes
+    r"\bcommune d",                                         # Commune de / d'
+    r"\bmairie\b",                                          # town hall
+    r"\bsyndicat\b",                                        # intercommunal syndicate (water/waste/energy)
+    r"\bd[eé]partement\b|\bconseil d[eé]partemental\b",     # French département / departmental council
+    r"\bs(ictom|mictom|ivom|ivu|deee?)\b",                 # SICTOM/SMICTOM/SIVOM/SIVU/SDE intercommunal syndicates
+    r"\bm[eé]tropole\b",                                    # Métropole (metropolitan authority)
 ]
 PUBLIC_BODY_RE = re.compile("|".join(PUBLIC_BODY_PATTERNS), re.IGNORECASE)
 

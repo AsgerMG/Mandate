@@ -2,6 +2,16 @@
 
 One line per improvement-loop iteration, newest first.
 
+- **2026-06-15 · improve/20260615-dryrun · iter 8 (manual).** Classifier Phase 2:
+  French public bodies. Sampling the cleantech bucket surfaced municipalities (CC DE
+  CHARENTE LIMOUSINE = Communauté de communes), intercommunal syndicates (SICTOM/
+  SIVOM), métropoles and départements defaulting to cleantech via ADEME and typed
+  `unknown`. Added 8 French local-government patterns to PUBLIC_BODY_PATTERNS;
+  sanity-checked against false positives (COMMUNICATION DESIGN, DEPARTED LABS do not
+  match). Applied: 411 entity flips (408 unknown→other, 3 company→other), 0 sector
+  flips; all verified genuine public bodies (Métropole de Lyon, Nantes Métropole,
+  waste/energy syndicates). They now drop out of company-level analyses. Verified:
+  next build clean, freshness fresh, stop-gate silent. File: scripts/classify.py.
 - **2026-06-15 · improve/20260615-dryrun · iter 7 (manual).** Physically netted the
   ADEME↔SATR-FR overlap (the follow-up the iter-3 audit promised). Migration 009 adds
   `is_duplicate` + `dup_reason` columns and refreshes `v_events` to exclude flagged
