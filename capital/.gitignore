@@ -29,3 +29,8 @@ data/processed/
 
 # Playwright browser binary cache
 .playwright/
+
+# Local secrets (never commit)
+.env
+.env.local
+.env.*
