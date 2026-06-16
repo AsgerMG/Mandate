@@ -362,6 +362,141 @@ def eval_truth(args) -> None:
         print(line)
 
 
+# ── full / pilot classification → company_sector_llm table ───────────────────
+
+def ensure_table(conn: sqlite3.Connection) -> None:
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS company_sector_llm (
+            company_id INTEGER PRIMARY KEY REFERENCES companies(id),
+            sector TEXT NOT NULL, model TEXT NOT NULL, run_id TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)""")
+    conn.commit()
+
+
+def select_companies(conn, pilot: int | None, limit: int | None, redo: bool) -> list[dict]:
+    done = set() if redo else {r[0] for r in conn.execute(
+        "SELECT company_id FROM company_sector_llm")}
+    rows = conn.execute("""
+        SELECT c.id, c.canonical_name, c.country,
+               GROUP_CONCAT(e.sector_tags_raw,'||'),
+               GROUP_CONCAT(COALESCE(e.project_title,''),'||'),
+               GROUP_CONCAT(e.source,'||')
+        FROM companies c JOIN public_funding_events e ON e.company_id=c.id
+        GROUP BY c.id""").fetchall()
+    items = []
+    for cid, name, country, tags, titles, sources in rows:
+        if cid in done:
+            continue
+        nace = sorted({t.strip() for t in (tags or "").split("||")
+                       if t.strip() and _classify_by_nace(t)})
+        items.append({"id": cid, "name": name, "country": country, "nace": nace,
+                      "titles": [t.strip() for t in (titles or "").split("||") if t.strip()],
+                      "sources": [s for s in (sources or "").split("||") if s]})
+    random.seed(1)
+    random.shuffle(items)
+    if pilot:
+        items = items[:pilot]
+    elif limit:
+        items = items[:limit]
+    return items
+
+
+def classify_sync(items, model, conn, run_id) -> int:
+    from openai import OpenAI
+    client = OpenAI()
+
+    def one(it):
+        up = user_prompt(it["name"], it["country"], it["titles"], it["sources"], it["nace"])
+        text, _, _ = call_openai(client, model, SYSTEM_PROMPT, up)
+        return it["id"], parse_label(text)
+
+    written = 0
+    with ThreadPoolExecutor(max_workers=6) as ex:
+        futs = [ex.submit(one, it) for it in items]
+        buf = []
+        for f in as_completed(futs):
+            try:
+                cid, sec = f.result()
+            except Exception as e:
+                print(f"  err: {str(e)[:80]}")
+                continue
+            buf.append((cid, sec, model, run_id))
+            if len(buf) >= 200:
+                conn.executemany("INSERT OR REPLACE INTO company_sector_llm"
+                                 "(company_id,sector,model,run_id) VALUES(?,?,?,?)", buf)
+                conn.commit(); written += len(buf); buf = []
+        if buf:
+            conn.executemany("INSERT OR REPLACE INTO company_sector_llm"
+                             "(company_id,sector,model,run_id) VALUES(?,?,?,?)", buf)
+            conn.commit(); written += len(buf)
+    return written
+
+
+def classify_batch(items, model, conn, run_id, chunk=40000) -> int:
+    """OpenAI Batch API (50% cheaper) for the full corpus."""
+    import json, time, io
+    from openai import OpenAI
+    client = OpenAI()
+    written = 0
+    for start in range(0, len(items), chunk):
+        part = items[start:start + chunk]
+        lines = []
+        for it in part:
+            up = user_prompt(it["name"], it["country"], it["titles"], it["sources"], it["nace"])
+            lines.append(json.dumps({
+                "custom_id": str(it["id"]), "method": "POST",
+                "url": "/v1/chat/completions",
+                "body": {"model": model, "messages": [
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": up}]}}))
+        f = client.files.create(file=io.BytesIO("\n".join(lines).encode()), purpose="batch")
+        batch = client.batches.create(input_file_id=f.id, endpoint="/v1/chat/completions",
+                                      completion_window="24h")
+        print(f"  batch {start//chunk+1}: id={batch.id} ({len(part)} requests) submitted")
+        while True:
+            b = client.batches.retrieve(batch.id)
+            if b.status in ("completed", "failed", "expired", "cancelled"):
+                break
+            print(f"    status={b.status} done={b.request_counts.completed}/{b.request_counts.total}")
+            time.sleep(30)
+        if b.status != "completed":
+            print(f"  batch {batch.id} ended {b.status}; skipping")
+            continue
+        out = client.files.content(b.output_file_id).read().decode()
+        buf = []
+        for line in out.splitlines():
+            if not line.strip():
+                continue
+            r = json.loads(line)
+            cid = int(r["custom_id"])
+            content = r["response"]["body"]["choices"][0]["message"]["content"]
+            buf.append((cid, parse_label(content), model, run_id))
+        conn.executemany("INSERT OR REPLACE INTO company_sector_llm"
+                         "(company_id,sector,model,run_id) VALUES(?,?,?,?)", buf)
+        conn.commit(); written += len(buf)
+        print(f"  batch {batch.id} written: {len(buf)}")
+    return written
+
+
+def run(args) -> None:
+    from datetime import datetime, timezone
+    load_env()
+    if not os.environ.get("OPENAI_API_KEY"):
+        sys.exit("OPENAI_API_KEY not set (add to .env.local)")
+    conn = sqlite3.connect(DB)
+    ensure_table(conn)
+    items = select_companies(conn, args.pilot, args.limit, args.redo)
+    print(f"To classify: {len(items)} companies via {args.mode} ({args.openai_model})")
+    if not items:
+        print("Nothing to do (all done; use --redo to reclassify)."); return
+    run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    fn = classify_batch if args.mode == "batch" else classify_sync
+    n = fn(items, args.openai_model, conn, run_id)
+    total = conn.execute("SELECT COUNT(*) FROM company_sector_llm").fetchone()[0]
+    print(f"\nWrote {n} this run; company_sector_llm now holds {total:,} labels.")
+    conn.close()
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -376,6 +511,13 @@ def main() -> None:
     ev.add_argument("--openai-model", default="gpt-4o-mini")
     ev.add_argument("--anthropic-model", default="claude-haiku-4-5")
     ev.set_defaults(func=eval_truth)
+    rn = sub.add_parser("run", help="classify companies -> company_sector_llm table")
+    rn.add_argument("--mode", choices=["sync", "batch"], default="sync")
+    rn.add_argument("--pilot", type=int, help="random sample of N (validation)")
+    rn.add_argument("--limit", type=int, help="cap to first N selected")
+    rn.add_argument("--redo", action="store_true", help="reclassify even if already done")
+    rn.add_argument("--openai-model", default="gpt-4.1-mini")
+    rn.set_defaults(func=run)
     args = ap.parse_args()
     args.func(args)
 
