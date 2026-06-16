@@ -22,13 +22,20 @@ both the deterministic rules and candidate LLMs.
 
 ## Results
 
-| Classifier | Accuracy vs internet truth |
-|---|---:|
-| Rules (`classify.py`) | **47.4%** (9/19) |
-| OpenAI `gpt-4o-mini` | **68.4%** (13/19) |
-| Anthropic `claude-haiku-4-5` | pending (needs key) |
+| Classifier | Accuracy vs internet truth | Est. full-corpus cost (Batch API) |
+|---|---:|---:|
+| Rules (`classify.py`) | **47.4%** (9/19) | — |
+| OpenAI `gpt-4o-mini` | 68.4% (13/19) | ~$3.50 |
+| OpenAI `gpt-4o` | 78.9% (15/19) | ~$50 |
+| **OpenAI `gpt-4.1-mini`** | **84.2%** (16/19) | **~$12** |
+| OpenAI `gpt-4.1` | 84.2% (16/19) | ~$40 |
 
-The cheap LLM beats the deterministic rules by ~21 points. Examples the LLM fixed:
+(Anthropic not tested — user opted to stay on OpenAI.)
+
+**Pick: `gpt-4.1-mini`** — ties full `gpt-4.1` and beats `gpt-4o` at a fraction of
+the cost; ~84% vs the rules' ~47%, for ~$12 one-time over the whole corpus.
+
+The cheap LLM beats the deterministic rules by ~21–37 points. Examples the LLM fixed:
 Ossiform (3D-printed bone implants: rules said deeptech, truth life_sciences),
 Dråpen Fjordbad (sauna/wellness: rules unclassified, truth other), Liogier (hand
 tools: rules cleantech, truth other), APJ (printing: rules unclassified, truth
