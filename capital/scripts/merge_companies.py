@@ -216,6 +216,30 @@ def eval_merge(models: list[str]) -> None:
           "FP = unrelated firms fused; FN = real parent links missed.")
 
 
+def apply_from_csv(path: str, exclude_csv: str) -> None:
+    """Deterministically write parent_group from a reviewed proposals CSV,
+    skipping any flagged parent labels. No LLM calls — reproducible."""
+    excl = {e.strip().lower() for e in exclude_csv.split(",") if e.strip()}
+    conn = sqlite3.connect(DB)
+    cols = [c[1] for c in conn.execute("PRAGMA table_info(companies)")]
+    if "parent_group" not in cols:
+        conn.execute("ALTER TABLE companies ADD COLUMN parent_group TEXT")
+    rows, skipped = [], 0
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            if (r["parent_label"].strip().lower() in excl
+                    or r["parent_group"].strip().lower() in excl):
+                skipped += 1
+                continue
+            rows.append((r["parent_group"], int(r["company_id"])))
+    conn.executemany("UPDATE companies SET parent_group=? WHERE id=?", rows)
+    conn.commit()
+    groups = len({r[0] for r in rows})
+    print(f"Applied parent_group to {len(rows)} companies in {groups} groups "
+          f"(skipped {skipped} rows from excluded labels: {sorted(excl)}).")
+    conn.close()
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--top", type=int, default=3000, help="top recipients by EUR to scan")
@@ -225,9 +249,14 @@ def main() -> None:
     ap.add_argument("--eval", action="store_true", help="score models vs hand-verified truth")
     ap.add_argument("--models", default="gpt-4o-mini,gpt-4.1-mini",
                     help="comma list of models for --eval")
+    ap.add_argument("--from-csv", help="apply parent_group from a reviewed proposals CSV (deterministic)")
+    ap.add_argument("--exclude", default="", help="comma list of parent labels to skip on apply")
     args = ap.parse_args()
     if args.eval:
         eval_merge([m.strip() for m in args.models.split(",") if m.strip()])
+        return
+    if args.from_csv:
+        apply_from_csv(args.from_csv, args.exclude)
         return
     load_env()
     import os

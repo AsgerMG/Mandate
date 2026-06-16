@@ -401,9 +401,9 @@ def select_companies(conn, pilot: int | None, limit: int | None, redo: bool) -> 
     return items
 
 
-def classify_sync(items, model, conn, run_id) -> int:
+def classify_sync(items, model, conn, run_id, workers=16) -> int:
     from openai import OpenAI
-    client = OpenAI()
+    client = OpenAI(max_retries=6, timeout=60)
 
     def one(it):
         up = user_prompt(it["name"], it["country"], it["titles"], it["sources"], it["nace"])
@@ -411,7 +411,7 @@ def classify_sync(items, model, conn, run_id) -> int:
         return it["id"], parse_label(text)
 
     written = 0
-    with ThreadPoolExecutor(max_workers=6) as ex:
+    with ThreadPoolExecutor(max_workers=workers) as ex:
         futs = [ex.submit(one, it) for it in items]
         buf = []
         for f in as_completed(futs):
@@ -432,8 +432,10 @@ def classify_sync(items, model, conn, run_id) -> int:
     return written
 
 
-def classify_batch(items, model, conn, run_id, chunk=40000) -> int:
-    """OpenAI Batch API (50% cheaper) for the full corpus."""
+def classify_batch(items, model, conn, run_id, chunk=2500) -> int:
+    """OpenAI Batch API (50% cheaper) for the full corpus. Chunk kept small so each
+    batch stays under the org's enqueued-token cap (2M); batches run sequentially
+    (we wait for each to finish), so the cap never stacks."""
     import json, time, io
     from openai import OpenAI
     client = OpenAI()
@@ -446,7 +448,7 @@ def classify_batch(items, model, conn, run_id, chunk=40000) -> int:
             lines.append(json.dumps({
                 "custom_id": str(it["id"]), "method": "POST",
                 "url": "/v1/chat/completions",
-                "body": {"model": model, "messages": [
+                "body": {"model": model, "max_tokens": 16, "messages": [
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": up}]}}))
         f = client.files.create(file=io.BytesIO("\n".join(lines).encode()), purpose="batch")
