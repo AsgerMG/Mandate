@@ -1022,6 +1022,22 @@ def main():
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     now_iso = datetime.now(timezone.utc).isoformat(timespec="seconds")
 
+    # Preserve the pure rule-based label in sector_rule (audit / fallback), and
+    # load LLM labels (scripts/classify_llm.py) if present. Sector precedence:
+    #   MANUAL_SECTOR_OVERRIDES  >  LLM (when not 'unclassified')  >  NACE rules.
+    # The LLM scores ~84% vs the rules' ~47% against internet-verified truth
+    # (docs/llm_eval.md), so it leads; rules fill in where the LLM had no signal.
+    cols = [c[1] for c in cur.execute("PRAGMA table_info(companies)")]
+    if "sector_rule" not in cols:
+        cur.execute("ALTER TABLE companies ADD COLUMN sector_rule TEXT")
+    llm_labels: dict[int, str] = {}
+    has_llm = cur.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='company_sector_llm'"
+    ).fetchone()
+    if has_llm:
+        llm_labels = {cid: sec for cid, sec in cur.execute(
+            "SELECT company_id, sector FROM company_sector_llm")}
+
     cur.execute("""
         SELECT c.id, c.canonical_name,
                c.sector_inferred AS old_sector,
@@ -1043,16 +1059,23 @@ def main():
     entity_flips = []   # (company_id, old, new)
     sector_updates = []
     entity_updates = []
+    rule_updates = []   # (rule_sector, company_id) — pure-rule label for audit
     for r in rows:
         raw_strings = (r["all_tags"] or "").split("||")
         fallback_text = r["all_text"] or ""
         sources = (r["all_sources"] or "").split("||")
-        sector = classify_sector(raw_strings, fallback_text, sources)
+        rule_sector = classify_sector(raw_strings, fallback_text, sources)
+        # precedence: manual override > LLM (confident) > rules
+        sector = rule_sector
+        llm_sec = llm_labels.get(r["id"])
+        if llm_sec and llm_sec != "unclassified":
+            sector = llm_sec
         if r["canonical_name"] in MANUAL_SECTOR_OVERRIDES:
             sector = MANUAL_SECTOR_OVERRIDES[r["canonical_name"]]
         entity = classify_entity_type(r["canonical_name"], bool(r["is_accel_coord"]), sources)
         sector_counts[sector] += 1
         entity_counts[entity] += 1
+        rule_updates.append((rule_sector, r["id"]))
 
         # Only stamp updated_at + log audit on actual change. NULL old_value
         # (first classify-touch on a freshly inserted row) counts as a change.
@@ -1063,6 +1086,7 @@ def main():
             entity_flips.append((r["id"], r["old_entity"], entity))
             entity_updates.append((entity, now_iso, r["id"]))
 
+    cur.executemany("UPDATE companies SET sector_rule = ? WHERE id = ?", rule_updates)
     if sector_updates:
         cur.executemany(
             "UPDATE companies SET sector_inferred = ?, sector_inferred_updated_at = ? WHERE id = ?",

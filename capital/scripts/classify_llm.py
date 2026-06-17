@@ -178,6 +178,8 @@ def ground_truth_sample(conn: sqlite3.Connection, n: int) -> list[dict]:
 def call_openai(client, model: str, system: str, user: str):
     r = client.chat.completions.create(
         model=model,
+        max_tokens=16,   # one-word label; without this OpenAI reserves the model's
+                         # large default max output against TPM, crushing throughput
         messages=[{"role": "system", "content": system},
                   {"role": "user", "content": user}],
     )
@@ -401,11 +403,29 @@ def select_companies(conn, pilot: int | None, limit: int | None, redo: bool) -> 
     return items
 
 
-def classify_sync(items, model, conn, run_id, workers=16) -> int:
+def classify_sync(items, model, conn, run_id, workers=12, rpm=800) -> int:
+    """Proactively paced to stay under the org's TPM ceiling (gpt-4.1-mini = 200k
+    TPM ~= 900 calls/min). Metering submissions avoids the 429 thundering-herd that
+    high worker counts cause (everything bursts past the limit, all retries collide
+    and exhaust). Steady ~rpm/min throughput instead of near-zero."""
+    import threading, time as _t
     from openai import OpenAI
-    client = OpenAI(max_retries=6, timeout=60)
+    client = OpenAI(max_retries=8, timeout=60)
+    interval = 60.0 / max(1, rpm)
+    _lock = threading.Lock()
+    _next = [_t.monotonic()]
+
+    def pace():
+        with _lock:
+            now = _t.monotonic()
+            scheduled = max(_next[0], now)
+            _next[0] = scheduled + interval
+            wait = scheduled - now
+        if wait > 0:
+            _t.sleep(wait)
 
     def one(it):
+        pace()
         up = user_prompt(it["name"], it["country"], it["titles"], it["sources"], it["nace"])
         text, _, _ = call_openai(client, model, SYSTEM_PROMPT, up)
         return it["id"], parse_label(text)
@@ -492,8 +512,10 @@ def run(args) -> None:
     if not items:
         print("Nothing to do (all done; use --redo to reclassify)."); return
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    fn = classify_batch if args.mode == "batch" else classify_sync
-    n = fn(items, args.openai_model, conn, run_id)
+    if args.mode == "batch":
+        n = classify_batch(items, args.openai_model, conn, run_id)
+    else:
+        n = classify_sync(items, args.openai_model, conn, run_id, workers=args.workers, rpm=args.rpm)
     total = conn.execute("SELECT COUNT(*) FROM company_sector_llm").fetchone()[0]
     print(f"\nWrote {n} this run; company_sector_llm now holds {total:,} labels.")
     conn.close()
@@ -518,6 +540,8 @@ def main() -> None:
     rn.add_argument("--pilot", type=int, help="random sample of N (validation)")
     rn.add_argument("--limit", type=int, help="cap to first N selected")
     rn.add_argument("--redo", action="store_true", help="reclassify even if already done")
+    rn.add_argument("--workers", type=int, default=12, help="sync concurrency")
+    rn.add_argument("--rpm", type=int, default=800, help="paced requests/min (stay under TPM)")
     rn.add_argument("--openai-model", default="gpt-4.1-mini")
     rn.set_defaults(func=run)
     args = ap.parse_args()

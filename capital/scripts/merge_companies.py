@@ -53,6 +53,18 @@ GENERIC = {
     "institute", "institut", "istituto", "gesellschaft", "associazione", "stichting",
     "fondation", "fondazione", "fundacion", "foundation", "ventures", "capital",
     "partners", "advanced", "industrial", "industriale", "automation", "products",
+    # geographic / descriptor words that are NOT a parent brand — must not be used
+    # to anchor corpus-wide expansion (they bridge unrelated firms)
+    "noord", "zuid", "oost", "west", "nord", "sud", "est", "ouest", "north",
+    "south", "energo", "scale", "wandpark", "windpark", "solarpark", "biogas",
+    "meyer", "park", "kraft", "warmte", "energi", "energia",
+    # legal-form tokens (3+ chars) — at a 3-char blocking floor these would bridge
+    # thousands of unrelated firms into giant components, so they must be excluded
+    "gmbh", "mbh", "ggmbh", "sas", "sasu", "sarl", "srl", "srls", "spa", "scpa",
+    "snc", "sro", "spol", "llc", "llp", "inc", "corp", "ltd", "plc", "kft", "zrt",
+    "nyrt", "doo", "aps", "asa", "oyj", "bvba", "sprl", "scrl", "kgaa", "sau",
+    "slu", "sll", "scs", "sca", "sccl", "unip", "lda", "ltda", "und", "der", "des",
+    "the", "and", "for", "com", "von", "van", "den", "los", "las", "kgaa",
 }
 MODEL = "gpt-4.1-mini"
 
@@ -61,7 +73,9 @@ def norm_tokens(name: str) -> list[str]:
     import re, unicodedata
     s = unicodedata.normalize("NFKD", name).encode("ASCII", "ignore").decode()
     s = re.sub(r"[^a-z0-9 ]+", " ", s.lower())
-    return [t for t in s.split() if len(t) >= 4 and t not in GENERIC]
+    # 3-char floor catches abbreviation brands (SAP, BMW, ABB); legal forms are
+    # excluded via GENERIC so they don't bridge unrelated firms.
+    return [t for t in s.split() if len(t) >= 3 and t not in GENERIC]
 
 
 def top_recipients(conn, limit: int) -> list[dict]:
@@ -75,30 +89,75 @@ def top_recipients(conn, limit: int) -> list[dict]:
     return [{"id": r[0], "name": r[1], "country": r[2], "eur": r[3]} for r in rows]
 
 
+def all_companies(conn) -> list[dict]:
+    """Every company with funding events — full-corpus scope for the merge."""
+    rows = conn.execute("""
+        SELECT c.id, c.canonical_name, c.country,
+               COALESCE(SUM(COALESCE(v.grant_amount_eur,0)+COALESCE(v.debt_amount_eur,0)
+                            +COALESCE(v.equity_amount_eur,0)),0) AS eur
+        FROM companies c JOIN v_events v ON v.company_id=c.id
+        GROUP BY c.id""").fetchall()
+    return [{"id": r[0], "name": r[1], "country": r[2], "eur": r[3]} for r in rows]
+
+
+def process_clusters(client, comps, model, workers=12, rpm=460):
+    """Concurrent + RPM-paced LLM grouping over many clusters (stays under the
+    500 req/min ceiling). Returns flat list of groups."""
+    import threading, time
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    interval = 60.0 / max(1, rpm)
+    lock = threading.Lock(); nxt = [time.monotonic()]
+
+    def pace():
+        with lock:
+            now = time.monotonic(); s = max(nxt[0], now); nxt[0] = s + interval; w = s - now
+        if w > 0:
+            time.sleep(w)
+
+    def work(c):
+        pace()
+        groups, _, _ = llm_group(client, c, model)
+        return groups
+
+    out, errs = [], 0
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for f in as_completed([ex.submit(work, c) for c in comps]):
+            try:
+                out.extend(f.result())
+            except Exception as e:
+                errs += 1
+                if errs <= 3:
+                    print(f"  cluster err: {str(e)[:80]}")
+    if errs:
+        print(f"  ({errs} cluster errors; rerun to retry)")
+    return out
+
+
+MAX_DF = 80   # a token shared by more than this many firms is a common word, not a brand
+
+
 def components(items: list[dict]) -> list[list[dict]]:
-    """Union-find: companies sharing a distinctive token are in one component."""
-    parent = list(range(len(items)))
-
-    def find(i):
-        while parent[i] != i:
-            parent[i] = parent[parent[i]]
-            i = parent[i]
-        return i
-
-    def union(a, b):
-        parent[find(a)] = find(b)
-
+    """Per-token blocking (NO union-find): each distinctive token defines one
+    candidate cluster = the companies that carry it. No transitive chaining, so
+    no giant blob. A company may appear in a few clusters; the LLM confirms
+    matches within each and first-confirmed-parent wins downstream. A token shared
+    by 2..MAX_DF companies is a usable brand signal; above MAX_DF it's a common
+    word and is dropped."""
     by_token: dict[str, list[int]] = defaultdict(list)
     for idx, it in enumerate(items):
         for t in set(norm_tokens(it["name"])):
             by_token[t].append(idx)
+    seen: set[tuple] = set()
+    out: list[list[dict]] = []
     for idxs in by_token.values():
-        for j in idxs[1:]:
-            union(idxs[0], j)
-    comp: dict[int, list[dict]] = defaultdict(list)
-    for idx, it in enumerate(items):
-        comp[find(idx)].append(it)
-    return [c for c in comp.values() if len(c) > 1]
+        if not (2 <= len(idxs) <= MAX_DF):
+            continue
+        key = tuple(sorted(idxs))
+        if key in seen:        # dedupe identical clusters (two tokens, same members)
+            continue
+        seen.add(key)
+        out.append([items[i] for i in idxs])
+    return out
 
 
 def llm_group(client, cluster: list[dict], model: str) -> list[dict]:
@@ -114,6 +173,7 @@ def llm_group(client, cluster: list[dict], model: str) -> list[dict]:
     r = client.chat.completions.create(
         model=model,
         temperature=0,   # deterministic — merges must be reproducible, not stochastic
+        max_tokens=800,  # JSON for up to ~80 members; without it OpenAI reserves the large default vs TPM
         response_format={"type": "json_object"},
         messages=[{"role": "system", "content": sys_p},
                   {"role": "user", "content": listing}],
@@ -216,6 +276,67 @@ def eval_merge(models: list[str]) -> None:
           "FP = unrelated firms fused; FN = real parent links missed.")
 
 
+def expand_groups(in_path: str, out_path: str, exclude_csv: str) -> None:
+    """Complete each LLM-confirmed parent corpus-wide: for every group, find the
+    distinctive name token its members share, then pull in ALL companies that
+    carry that token (any funding level). Deterministic, no LLM. Fixes the
+    partial-parent problem (top-3000 caught only a fraction of each parent)."""
+    import csv as _csv
+    from collections import defaultdict
+    excl = {e.strip().lower() for e in exclude_csv.split(",") if e.strip()}
+    groups, labels = defaultdict(list), {}
+    for r in _csv.DictReader(open(in_path, encoding="utf-8")):
+        if r["parent_label"].strip().lower() in excl or r["parent_group"].strip().lower() in excl:
+            continue
+        groups[r["parent_group"]].append(r["name"])
+        labels[r["parent_group"]] = r["parent_label"]
+
+    conn = sqlite3.connect(DB)
+    comp = conn.execute("SELECT id, canonical_name FROM companies").fetchall()
+    id2name = {cid: nm for cid, nm in comp}
+    tokidx = defaultdict(list)
+    for cid, nm in comp:
+        for t in set(norm_tokens(nm)):
+            tokidx[t].append(cid)
+
+    assigned = {}            # company_id -> parent_group (first wins)
+    name2id = {nm: cid for cid, nm in comp}
+    for pg, names in groups.items():
+        for nm in names:
+            if nm in name2id:
+                assigned[name2id[nm]] = pg
+
+    summary = []
+    for pg, names in groups.items():
+        toksets = [set(norm_tokens(n)) for n in names]
+        common = set.intersection(*toksets) if toksets else set()
+        anchors = [t for t in common if len(t) >= 5]   # distinctive shared token(s)
+        added = 0
+        if anchors:
+            cand = set()
+            for a in anchors:
+                cand.update(tokidx.get(a, []))
+            for cid in cand:
+                if cid in assigned:
+                    continue
+                if all(a in set(norm_tokens(id2name[cid])) for a in anchors):
+                    assigned[cid] = pg
+                    added += 1
+        summary.append((labels[pg], len(names), added, ",".join(anchors) or "(no safe anchor)"))
+
+    with open(out_path, "w", newline="", encoding="utf-8") as f:
+        w = _csv.writer(f)
+        w.writerow(["parent_group", "parent_label", "company_id", "name"])
+        for cid, pg in sorted(assigned.items(), key=lambda x: x[1]):
+            w.writerow([pg, labels[pg], cid, id2name[cid]])
+    conn.close()
+    print(f"Expanded {len(groups)} parents -> {len(assigned)} entities (was "
+          f"{sum(len(v) for v in groups.values())}). Per-parent additions:")
+    for lbl, base, added, anchor in sorted(summary, key=lambda x: -x[2])[:25]:
+        print(f"  +{added:>3}  {lbl[:30]:30} (base {base}, anchor='{anchor}')")
+    print(f"\nWrote {out_path}")
+
+
 def apply_from_csv(path: str, exclude_csv: str) -> None:
     """Deterministically write parent_group from a reviewed proposals CSV,
     skipping any flagged parent labels. No LLM calls — reproducible."""
@@ -243,17 +364,24 @@ def apply_from_csv(path: str, exclude_csv: str) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--top", type=int, default=3000, help="top recipients by EUR to scan")
-    ap.add_argument("--max-cluster", type=int, default=15, help="skip components larger than this")
+    ap.add_argument("--full", action="store_true", help="scan the FULL corpus, not just top-N")
+    ap.add_argument("--workers", type=int, default=12, help="concurrent cluster calls")
+    ap.add_argument("--rpm", type=int, default=460, help="paced requests/min (under 500 limit)")
+    ap.add_argument("--max-cluster", type=int, default=80, help="skip components larger than this")
     ap.add_argument("--model", default="gpt-4o-mini", help="OpenAI model (test cheap first)")
     ap.add_argument("--apply", action="store_true", help="write parent_group (default: dry-run CSV)")
     ap.add_argument("--eval", action="store_true", help="score models vs hand-verified truth")
     ap.add_argument("--models", default="gpt-4o-mini,gpt-4.1-mini",
                     help="comma list of models for --eval")
     ap.add_argument("--from-csv", help="apply parent_group from a reviewed proposals CSV (deterministic)")
+    ap.add_argument("--expand", help="complete each confirmed parent corpus-wide from a proposals CSV (deterministic, no LLM)")
     ap.add_argument("--exclude", default="", help="comma list of parent labels to skip on apply")
     args = ap.parse_args()
     if args.eval:
         eval_merge([m.strip() for m in args.models.split(",") if m.strip()])
+        return
+    if args.expand:
+        expand_groups(args.expand, "data/processed/parent_merge_proposals_expanded.csv", args.exclude)
         return
     if args.from_csv:
         apply_from_csv(args.from_csv, args.exclude)
@@ -266,19 +394,18 @@ def main() -> None:
     client = OpenAI()
 
     conn = sqlite3.connect(DB)
-    items = top_recipients(conn, args.top)
+    items = all_companies(conn) if args.full else top_recipients(conn, args.top)
     comps = [c for c in components(items) if 2 <= len(c) <= args.max_cluster]
-    print(f"Scanned top {len(items)} recipients -> {len(comps)} candidate clusters "
-          f"(size 2..{args.max_cluster})")
+    scope = "FULL corpus" if args.full else f"top {len(items)} recipients"
+    print(f"Scanned {scope} ({len(items)} companies) -> {len(comps)} candidate clusters "
+          f"(size 2..{args.max_cluster}); model={args.model}, {args.workers}w @ {args.rpm}rpm")
 
+    groups = process_clusters(client, comps, args.model, workers=args.workers, rpm=args.rpm)
     proposals = []  # (parent, member_id, member_name, country, eur)
-    print(f"Using model: {args.model}")
-    for c in comps:
-        groups, _pt, _ct = llm_group(client, c, args.model)
-        for g in groups:
-            pnorm = " ".join(norm_tokens(g["parent"])) or g["parent"].lower()
-            for m in g["members"]:
-                proposals.append((pnorm, g["parent"], m["id"], m["name"], m["country"], m["eur"]))
+    for g in groups:
+        pnorm = " ".join(norm_tokens(g["parent"])) or g["parent"].lower()
+        for m in g["members"]:
+            proposals.append((pnorm, g["parent"], m["id"], m["name"], m["country"], m["eur"]))
 
     groups = len({p[0] for p in proposals})
     print(f"Proposed: {groups} parent groups covering {len(proposals)} entities")
