@@ -4,6 +4,27 @@ Running record of analytical, editorial and data decisions, newest first. Each e
 decision, why, and where it is implemented. Methodology mechanics live in `methodology.md`;
 this file records the *choices*.
 
+## 2026-06-19 · Company merge Layer 1 and sector classification
+
+**D-24. Company entities are rolled up to parents via a deterministic Layer 1 merge.**
+A `parent_group` column collapses sister entities whose normalised names are byte-identical
+(accents/punctuation/legal forms stripped, tokens sorted) — 4,774 companies into 2,310 groups
+over the full event-bearing corpus. Headline distinct-company counts read
+`COUNT(DISTINCT COALESCE(parent_group, id))` (156,836 → 154,369); euro/event totals unchanged.
+Chosen because it is bulletproof by construction: no model judgment, no generic-token bridging,
+no transitive chaining. The LLM brand/subsidiary merge (Layer 2) was built and dry-run but
+**rejected at review** — a cheap model over-merged on shared first names ("Josef") and industry
+words ("aqua"), and union-find over overlapping clusters chained one bad edge into a 23,619-company
+blob. Layer 2 will only return behind deterministic guardrails + a precision eval against
+false-bridge traps. Layer 3 (GLEIF cross-name) backlogged. Implemented in
+`scripts/merge_companies.py --dedup --apply`; documented in `methodology.md`.
+
+**D-23. Sectors are assigned LLM-first, NACE rules as fallback.** Every company carries an
+LLM sector label (`company_sector_llm`, gpt-4.1-mini, ~84% vs internet-verified truth — see
+`docs/llm_eval.md`), with deterministic precedence manual > LLM > NACE rules in `classify.py`.
+Cut unclassified ~30% → 7% and de-inflated cleantech ~24% → 18% (fixed mislabels like
+Scaleway). The build never calls the LLM — labels are cached, so site builds stay reproducible.
+
 ## 2026-06-15 · Agent harness and methodology backfill
 
 **D-22. The project now runs on a Claude Code agent harness.** Five agents

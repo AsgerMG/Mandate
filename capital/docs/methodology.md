@@ -46,6 +46,16 @@ Three in-scope countries (Malta, Liechtenstein, Kosovo) are too small for the bu
 
 **Companies without PIC**: Fall back to canonical name matching for non-EIC sources where PIC may not be reported. Match confidence and method are recorded on the company row (`match_confidence`, `match_method`).
 
+### Parent-company merge — Layer 1 (entity rollup, 2026-06-19)
+
+PIC/name dedup collapses *the same legal entity* recorded twice. A separate `parent_group` column rolls *sister entities of one company* up to a single parent, so aggregates count companies, not registrations.
+
+**Layer 1 — deterministic exact-name dedup (applied).** For every company, `dedup_key()` strips accents, punctuation and legal forms (GmbH, S.A., Ltd, S.r.l., …), lowercases, and sorts the remaining tokens. Companies with an **identical key** are the same entity in different dress and share a `parent_group`. Examples: `"Siemens AG"` = `"SIEMENS"` = `"Siemens"`; Airbus Operations ×4; Robert Bosch ×4. Scope is the full corpus of event-bearing companies (153,603; no top-N cap); the 3,233 event-less rows are skipped as immaterial to any aggregate. Result: **4,774 companies collapsed into 2,310 groups**. This layer is *bulletproof by construction* — it only merges byte-identical normalised names, so there is no model judgment, no generic-token bridging, and no transitive chaining. Implemented in `scripts/merge_companies.py --dedup --apply`.
+
+**How aggregates use it.** Headline distinct-company counts read `COUNT(DISTINCT COALESCE(parent_group, id))` (see `analysis/run.py`), which dropped the corpus count 156,836 → 154,369. Euro and event totals are unaffected — merging entities never double-counts money, it only stops counting one company as several.
+
+**Layers 2–3 (not applied).** Layer 2 (LLM brand/subsidiary merge, e.g. *Siemens Mobility* → *Siemens*) was built and dry-run but **rejected at review**: a cheap model over-merged on shared generic tokens (first names like "Josef", industry words like "aqua"), and union-find over overlapping per-token clusters chained one bad edge per cluster into a 23,619-company blob. It will be rebuilt only behind deterministic guardrails (shared distinctive-brand-token requirement, stoplist, document-frequency threshold, hard size cap, no cross-cluster chaining) and a mandatory precision eval against hand-verified false-bridge traps before any apply. Layer 3 (GLEIF LEI cross-name parents) is backlogged (`plans/backlog/gleif_lei_cross_name_merge.md`) — low LEI coverage on this SME-heavy corpus.
+
 ## Schema choices
 
 **Three core tables**: `companies` (deduplicated entities), `public_funding_events`, `private_funding_events`. Full definition in [schema.sql](schema.sql).

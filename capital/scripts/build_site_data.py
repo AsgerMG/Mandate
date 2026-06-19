@@ -47,6 +47,7 @@ GENERATED = {
     "instrument_leaderboard.json": "build_home_visuals.py",
     "synthesis.json":             "analysis/run.py",
     "investor_insights.json":     "build_investor_insights.py",
+    "recipient_explorer/manifest.json": "build_recipient_explorer.py",
     "companies/manifest.json":    "build_company_search.py",
 }
 
@@ -58,6 +59,7 @@ STEPS = [
     ("home visuals",       [sys.executable, "scripts/build_home_visuals.py"]),
     ("synthesis KPIs",     [sys.executable, "analysis/run.py"]),
     ("investor insights",  [sys.executable, "scripts/build_investor_insights.py"]),
+    ("recipient explorer", [sys.executable, "scripts/build_recipient_explorer.py"]),
     ("company lookup",     [sys.executable, "scripts/build_company_search.py"]),
 ]
 

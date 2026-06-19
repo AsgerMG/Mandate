@@ -33,6 +33,17 @@ it done. Vague items are not actionable — the loop will skip and flag them.
 
 ## P2 — coverage (source-scout refills this section)
 
+- [ ] `[data][L]` Promote SPRIND from placeholder to company-level. Today the
+  corpus holds only 20 `sprind_challenge` program placeholders (NULL amounts, no
+  legal entities) — see `scripts/extract_sprind.py` docstring. Resolve each
+  challenge's funded teams to legal entities + grant amounts via Bundesanzeiger
+  (Federal Gazette grant decisions) and/or the SPRIND annual-report PDFs, then
+  load company-level events. HARD: run the SATR-overlap gate first (SPRIND grants
+  may surface in SATR-DE) and run it against the existing `sprind` ndb_distributor
+  taxonomy. Gate: load-auditor CLEAN incl. methodology step 8; amounts each
+  reproducible from `db.sqlite`; placeholders replaced or reconciled, not
+  duplicated.
+
 - [ ] `[data][L]` (source-scout) Identify the highest-tier-lift undocumented
   source for a Tier-C / EU-layer-only country; run the SATR-overlap gate; if it
   clears, load via the ship-a-source skill. Gate: load-auditor CLEAN incl.

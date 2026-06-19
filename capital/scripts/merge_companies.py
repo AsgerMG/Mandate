@@ -32,6 +32,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DB = ROOT / "db.sqlite"
 OUT = ROOT / "data" / "processed" / "parent_merge_proposals.csv"
+CKPT = ROOT / "data" / "processed" / "parent_merge_ckpt.jsonl"  # resumable per-cluster results
 sys.path.insert(0, str(ROOT / "scripts"))
 from classify_llm import load_env  # noqa: E402
 
@@ -69,6 +70,62 @@ GENERIC = {
 MODEL = "gpt-4.1-mini"
 
 
+# Legal-form / punctuation tokens to strip when building an EXACT dedup key.
+# (Distinct from GENERIC: here we keep geographic/descriptor words — "Noord" vs
+# "Zuid" are different entities — and strip ONLY legal forms.)
+LEGAL_FORMS = {
+    "gmbh", "mbh", "ggmbh", "ag", "kg", "kgaa", "ug", "ohg", "gbr", "ev", "eg",
+    "sa", "sas", "sasu", "sarl", "srl", "srls", "spa", "scpa", "snc", "sro",
+    "spol", "llc", "llp", "inc", "corp", "ltd", "limited", "plc", "kft", "zrt",
+    "nyrt", "doo", "dd", "aps", "asa", "oy", "oyj", "ab", "bv", "nv", "bvba",
+    "sprl", "scrl", "sau", "slu", "sll", "sl", "scs", "sca", "sccl", "as", "lda",
+    "ltda", "se", "co", "and", "the", "of", "sme", "sl", "zoo", "spzoo", "zrt",
+}
+
+
+def dedup_key(name: str) -> str:
+    """Canonical key for EXACT duplicate detection: lowercase, strip accents +
+    punctuation, drop legal-form tokens, sort the rest. Same key == same entity
+    (ACERINOX EUROPA SAU / SA / S.A.U. all collapse). Safe — no fuzzy matching."""
+    import re, unicodedata
+    s = unicodedata.normalize("NFKD", name).encode("ASCII", "ignore").decode()
+    s = re.sub(r"[^a-z0-9 ]+", " ", s.lower())
+    toks = [t for t in s.split() if t and t not in LEGAL_FORMS]
+    return " ".join(sorted(toks))
+
+
+def dedup_exact(apply: bool) -> None:
+    """Layer 1 merge: assign parent_group to every set of companies that share a
+    canonical dedup_key (same entity, different legal form / punctuation / order)."""
+    conn = sqlite3.connect(DB)
+    rows = conn.execute("""SELECT DISTINCT c.id, c.canonical_name FROM companies c
+                           JOIN public_funding_events e ON e.company_id=c.id""").fetchall()
+    groups = defaultdict(list)
+    for cid, name in rows:
+        k = dedup_key(name)
+        if k:
+            groups[k].append((cid, name))
+    dupes = {k: v for k, v in groups.items() if len(v) > 1}
+    n_groups = len(dupes)
+    n_entities = sum(len(v) for v in dupes.values())
+    print(f"Exact-name dedup: {n_groups} groups covering {n_entities} entities "
+          f"(out of {len(rows)} companies)")
+    print("Sample groups:")
+    for k, v in sorted(dupes.items(), key=lambda x: -len(x[1]))[:12]:
+        print(f"  {len(v)}x [{k[:32]}]: " + " | ".join(n for _, n in v[:4]))
+    if not apply:
+        print("\n(dry run — add --apply to write parent_group)")
+        return
+    cols = [c[1] for c in conn.execute("PRAGMA table_info(companies)")]
+    if "parent_group" not in cols:
+        conn.execute("ALTER TABLE companies ADD COLUMN parent_group TEXT")
+    conn.executemany("UPDATE companies SET parent_group=? WHERE id=?",
+                     [(k, cid) for k, v in dupes.items() for cid, _ in v])
+    conn.commit()
+    print(f"\nApplied parent_group to {n_entities} companies in {n_groups} dedup groups.")
+    conn.close()
+
+
 def norm_tokens(name: str) -> list[str]:
     import re, unicodedata
     s = unicodedata.normalize("NFKD", name).encode("ASCII", "ignore").decode()
@@ -100,13 +157,40 @@ def all_companies(conn) -> list[dict]:
     return [{"id": r[0], "name": r[1], "country": r[2], "eur": r[3]} for r in rows]
 
 
-def process_clusters(client, comps, model, workers=12, rpm=460):
+def cluster_key(cluster: list[dict]) -> str:
+    """Stable id for a cluster = hash of its member company ids (DB ids are stable
+    across runs), so a re-run can skip clusters already in the checkpoint."""
+    import hashlib
+    ids = ",".join(str(c["id"]) for c in sorted(cluster, key=lambda x: x["id"]))
+    return hashlib.md5(ids.encode()).hexdigest()[:16]
+
+
+def process_clusters(client, comps, model, workers=12, rpm=460, ckpt_path=None):
     """Concurrent + RPM-paced LLM grouping over many clusters (stays under the
-    500 req/min ceiling). Returns flat list of groups."""
-    import threading, time
+    500 req/min ceiling). Resumable: each completed cluster is appended to a JSONL
+    checkpoint, so a re-run skips finished work and survives sleep/interruption.
+    Prints live progress + ETA. Returns flat list of groups."""
+    import threading, time, json as _json
     from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    # resume — load already-processed cluster keys from the checkpoint
+    done: dict[str, list] = {}
+    if ckpt_path and ckpt_path.exists():
+        for line in ckpt_path.open():
+            try:
+                rec = _json.loads(line)
+                done[rec["key"]] = rec["groups"]
+            except Exception:
+                continue
+    total = len(comps)
+    pending = [c for c in comps if cluster_key(c) not in done]
+    if done:
+        print(f"  resume: {len(done)}/{total} clusters already done; {len(pending)} to go", flush=True)
+
     interval = 60.0 / max(1, rpm)
     lock = threading.Lock(); nxt = [time.monotonic()]
+    wlock = threading.Lock()
+    ckpt_f = ckpt_path.open("a") if ckpt_path else None
 
     def pace():
         with lock:
@@ -117,19 +201,42 @@ def process_clusters(client, comps, model, workers=12, rpm=460):
     def work(c):
         pace()
         groups, _, _ = llm_group(client, c, model)
-        return groups
+        ser = [{"parent": g["parent"],
+                "members": [{"id": m["id"], "name": m["name"],
+                             "country": m["country"], "eur": m["eur"]} for m in g["members"]]}
+               for g in groups]
+        return cluster_key(c), ser
 
-    out, errs = [], 0
+    results = dict(done)
+    errs = 0
+    t0 = time.monotonic()
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        for f in as_completed([ex.submit(work, c) for c in comps]):
+        futs = [ex.submit(work, c) for c in pending]
+        for i, f in enumerate(as_completed(futs), 1):
             try:
-                out.extend(f.result())
+                key, ser = f.result()
+                results[key] = ser
+                if ckpt_f:
+                    with wlock:
+                        ckpt_f.write(_json.dumps({"key": key, "groups": ser}) + "\n")
+                        ckpt_f.flush()
             except Exception as e:
                 errs += 1
                 if errs <= 3:
-                    print(f"  cluster err: {str(e)[:80]}")
+                    print(f"  cluster err: {str(e)[:80]}", flush=True)
+            if i % 200 == 0 or i == len(pending):
+                el = time.monotonic() - t0
+                rate = i / el if el else 0
+                eta = (len(pending) - i) / rate if rate else 0
+                print(f"  {len(done) + i}/{total} clusters "
+                      f"({rate * 60:.0f}/min, ETA {eta / 60:.0f}m, {errs} errs)", flush=True)
+    if ckpt_f:
+        ckpt_f.close()
+    out: list[dict] = []
+    for ser in results.values():
+        out.extend(ser)
     if errs:
-        print(f"  ({errs} cluster errors; rerun to retry)")
+        print(f"  ({errs} cluster errors; rerun to retry — checkpoint preserves done work)")
     return out
 
 
@@ -160,29 +267,27 @@ def components(items: list[dict]) -> list[list[dict]]:
     return out
 
 
-def llm_group(client, cluster: list[dict], model: str) -> list[dict]:
-    """Ask the model which names share an ultimate parent. Returns groups:
-    [{"parent": str, "members": [name,...]}]; singletons omitted."""
-    listing = "\n".join(f'{i}. {c["name"]} ({c["country"]})' for i, c in enumerate(cluster))
-    sys_p = ("You are an entity-resolution expert. Given company names, group ONLY "
+# Shared prompt + parser so sync (llm_group) and Batch API (submit/collect) are
+# byte-identical — same model, same prompt, same parsing → reproducible merges.
+MERGE_SYS = ("You are an entity-resolution expert. Given company names, group ONLY "
              "those that share the SAME ULTIMATE PARENT company (subsidiaries, legal "
              "variants, brand vs legal name, or translations/spellings count as the "
              "same parent; merely similar or same-industry names do NOT). Return "
              'JSON: {"groups":[{"parent":"<short canonical parent name>","members":[<indices>]}]}'
              " Only include groups with 2+ members. Omit companies that stand alone.")
-    r = client.chat.completions.create(
-        model=model,
-        temperature=0,   # deterministic — merges must be reproducible, not stochastic
-        max_tokens=800,  # JSON for up to ~80 members; without it OpenAI reserves the large default vs TPM
-        response_format={"type": "json_object"},
-        messages=[{"role": "system", "content": sys_p},
-                  {"role": "user", "content": listing}],
-    )
-    pt, ct = r.usage.prompt_tokens, r.usage.completion_tokens
+MERGE_MAX_TOKENS = 400  # JSON for up to ~80 member indices fits easily
+
+
+def merge_listing(cluster: list[dict]) -> str:
+    return "\n".join(f'{i}. {c["name"]} ({c["country"]})' for i, c in enumerate(cluster))
+
+
+def parse_group_json(content: str, cluster: list[dict]) -> list[dict]:
+    """Map an LLM JSON response back to member dicts; drop singletons / bad indices."""
     try:
-        data = json.loads(r.choices[0].message.content)
+        data = json.loads(content)
     except Exception:
-        return [], pt, ct
+        return []
     out = []
     for g in data.get("groups", []):
         members = [cluster[i] for i in g.get("members", [])
@@ -190,7 +295,22 @@ def llm_group(client, cluster: list[dict], model: str) -> list[dict]:
         if len(members) >= 2:
             out.append({"parent": g.get("parent", "").strip() or members[0]["name"],
                         "members": members})
-    return out, pt, ct
+    return out
+
+
+def llm_group(client, cluster: list[dict], model: str) -> list[dict]:
+    """Ask the model which names share an ultimate parent. Returns groups:
+    [{"parent": str, "members": [name,...]}]; singletons omitted."""
+    r = client.chat.completions.create(
+        model=model,
+        temperature=0,   # deterministic — merges must be reproducible, not stochastic
+        max_tokens=MERGE_MAX_TOKENS,
+        response_format={"type": "json_object"},
+        messages=[{"role": "system", "content": MERGE_SYS},
+                  {"role": "user", "content": merge_listing(cluster)}],
+    )
+    pt, ct = r.usage.prompt_tokens, r.usage.completion_tokens
+    return parse_group_json(r.choices[0].message.content, cluster), pt, ct
 
 
 # ── Merge accuracy eval: pairwise precision/recall/F1 vs hand-verified truth ──
@@ -361,6 +481,171 @@ def apply_from_csv(path: str, exclude_csv: str) -> None:
     conn.close()
 
 
+# ── Batch API path (sidesteps the synchronous requests-per-day cap) ───────────
+BATCH_STATE = ROOT / "data" / "processed" / "parent_merge_batches.json"
+BATCH_MAX_PER_CHUNK = 3000    # ~570 tok/req -> ~1.7M, under this account's measured 2,000,000
+                              # enqueued-token ceiling (Tier 1). batch_run still halves on a
+                              # token_limit failure, so a wrong guess self-corrects.
+BATCH_MIN_CHUNK = 500         # floor for the adaptive halving
+BATCH_INFLIGHT = 1            # one batch holds the biggest allowed slice; the enqueued-token
+                              # limit is a TOTAL, so more in flight wouldn't raise throughput
+
+
+def _serialize(groups: list[dict]) -> list[dict]:
+    return [{"parent": g["parent"],
+             "members": [{"id": m["id"], "name": m["name"],
+                          "country": m["country"], "eur": m["eur"]} for m in g["members"]]}
+            for g in groups]
+
+
+def _ckpt_keys() -> set:
+    keys = set()
+    if CKPT.exists():
+        for line in CKPT.open():
+            try:
+                keys.add(json.loads(line)["key"])
+            except Exception:
+                pass
+    return keys
+
+
+def build_csv_from_ckpt() -> None:
+    """Write the proposals CSV from every group in the checkpoint (sync + batch)."""
+    proposals = []
+    for line in CKPT.open():
+        try:
+            rec = json.loads(line)
+        except Exception:
+            continue
+        for g in rec["groups"]:
+            pnorm = " ".join(norm_tokens(g["parent"])) or g["parent"].lower()
+            for m in g["members"]:
+                proposals.append((pnorm, g["parent"], m["id"], m["name"], m["country"], m["eur"]))
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    with OUT.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["parent_group", "parent_label", "company_id", "name", "country", "eur"])
+        for p in sorted(proposals):
+            w.writerow(p)
+    ngroups = len({p[0] for p in proposals})
+    print(f"Wrote {OUT}: {ngroups} parent groups covering {len(proposals)} entities", flush=True)
+
+
+def batch_run(model: str, poll: int = 60) -> None:
+    """Drive Layer 2 through the Batch API end to end: submit ~1.5M-token batches,
+    poll, collect results into the shared checkpoint, submit the next, until every
+    cluster is done — then write the proposals CSV. Resumable: state + checkpoint
+    live on disk, so a kill/sleep/restart picks up exactly where it left off."""
+    import time, io
+    load_env()
+    from openai import OpenAI
+    client = OpenAI()
+
+    conn = sqlite3.connect(DB)
+    comps = [c for c in components(all_companies(conn)) if 2 <= len(c) <= 80]
+    index = {cluster_key(c): c for c in comps}
+    all_keys = set(index)
+    total = len(all_keys)
+
+    st = json.loads(BATCH_STATE.read_text()) if BATCH_STATE.exists() else {"batches": {}}
+    st["model"] = model
+
+    def save_state():
+        BATCH_STATE.write_text(json.dumps(st))
+
+    print(f"Batch L2: {total} clusters; {len(_ckpt_keys())} already in checkpoint", flush=True)
+    while True:
+        # 1) collect completed / release dead batches
+        for bid, meta in list(st["batches"].items()):
+            if meta["collected"]:
+                continue
+            b = client.batches.retrieve(bid)
+            if b.status in ("failed", "expired", "cancelled", "cancelling"):
+                # 'cancelling' can linger; it yields no results, so release its
+                # clusters back to pending now (re-processing them is idempotent).
+                # A batch can pass create() then FAIL async on the enqueued-token
+                # limit — detect that and halve the chunk so we don't resubmit the
+                # same oversized batch forever.
+                if b.status == "failed":
+                    errtxt = str(getattr(b, "errors", "")).lower()
+                    if any(w in errtxt for w in ("token", "enqueued", "limit")) and len(meta["keys"]) > BATCH_MIN_CHUNK:
+                        st["chunk"] = max(BATCH_MIN_CHUNK, len(meta["keys"]) // 2)
+                        print(f"  batch {bid} hit the enqueued-token limit -> chunk now {st['chunk']}", flush=True)
+                print(f"  batch {bid} {b.status} — releasing {len(meta['keys'])} clusters", flush=True)
+                meta["collected"] = True
+                save_state()
+                continue
+            if b.status != "completed":
+                continue
+            out_txt = client.files.content(b.output_file_id).text
+            with CKPT.open("a") as ck:
+                n = 0
+                for line in out_txt.splitlines():
+                    if not line.strip():
+                        continue
+                    r = json.loads(line)
+                    cluster = index.get(r["custom_id"])
+                    if cluster is None:
+                        continue
+                    try:
+                        content = r["response"]["body"]["choices"][0]["message"]["content"]
+                    except Exception:
+                        content = "{}"
+                    ck.write(json.dumps({"key": r["custom_id"],
+                                         "groups": _serialize(parse_group_json(content, cluster))}) + "\n")
+                    n += 1
+            meta["collected"] = True
+            save_state()
+            print(f"  collected {bid}: {n} clusters -> checkpoint", flush=True)
+
+        done = _ckpt_keys()
+        live = [m for m in st["batches"].values() if not m["collected"]]
+        inflight = {k for m in live for k in m["keys"]}
+        pending = [k for k in all_keys if k not in done and k not in inflight]
+        print(f"  {len(done)}/{total} done | {len(inflight)} in flight | {len(pending)} pending", flush=True)
+
+        if not pending and not live:
+            break
+
+        # 2) submit the biggest chunk the enqueued-token limit allows. Start at the
+        #    persisted size (defaults to the 50k request cap) and halve on a token-
+        #    /size-limit error until it fits — discovered once, then reused.
+        if pending and len(live) < BATCH_INFLIGHT:
+            size = min(st.get("chunk", BATCH_MAX_PER_CHUNK), len(pending))
+            chunk = pending[:size]
+            lines = []
+            for key in chunk:
+                body = {"model": model, "temperature": 0, "max_tokens": MERGE_MAX_TOKENS,
+                        "response_format": {"type": "json_object"},
+                        "messages": [{"role": "system", "content": MERGE_SYS},
+                                     {"role": "user", "content": merge_listing(index[key])}]}
+                lines.append(json.dumps({"custom_id": key, "method": "POST",
+                                         "url": "/v1/chat/completions", "body": body}))
+            try:
+                fobj = client.files.create(file=io.BytesIO("\n".join(lines).encode()), purpose="batch")
+                b = client.batches.create(input_file_id=fobj.id, endpoint="/v1/chat/completions",
+                                          completion_window="24h")
+                st["batches"][b.id] = {"keys": chunk, "collected": False}
+                st["chunk"] = size
+                save_state()
+                print(f"  submitted {b.id}: {len(chunk)} clusters (chunk={size})", flush=True)
+                continue
+            except Exception as e:
+                msg = str(e).lower()
+                limit_hit = any(w in msg for w in ("token", "enqueued", "limit", "size", "too large"))
+                if limit_hit and size > BATCH_MIN_CHUNK:
+                    st["chunk"] = max(BATCH_MIN_CHUNK, size // 2)
+                    save_state()
+                    print(f"  chunk {size} exceeded the enqueued-token limit -> retry at {st['chunk']}", flush=True)
+                    continue  # retry immediately, smaller
+                print(f"  submit deferred: {str(e)[:140]}", flush=True)
+
+        time.sleep(poll)
+
+    build_csv_from_ckpt()
+    print("Batch L2 complete.", flush=True)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--top", type=int, default=3000, help="top recipients by EUR to scan")
@@ -374,11 +659,23 @@ def main() -> None:
     ap.add_argument("--models", default="gpt-4o-mini,gpt-4.1-mini",
                     help="comma list of models for --eval")
     ap.add_argument("--from-csv", help="apply parent_group from a reviewed proposals CSV (deterministic)")
+    ap.add_argument("--batch", action="store_true", help="Layer 2 via Batch API (sidesteps the requests-per-day cap); resumable")
+    ap.add_argument("--build-csv", action="store_true", help="(re)build proposals CSV from the checkpoint")
+    ap.add_argument("--dedup", action="store_true", help="Layer 1: deterministic exact-name dedup (no LLM)")
     ap.add_argument("--expand", help="complete each confirmed parent corpus-wide from a proposals CSV (deterministic, no LLM)")
     ap.add_argument("--exclude", default="", help="comma list of parent labels to skip on apply")
     args = ap.parse_args()
     if args.eval:
         eval_merge([m.strip() for m in args.models.split(",") if m.strip()])
+        return
+    if args.build_csv:
+        build_csv_from_ckpt()
+        return
+    if args.batch:
+        batch_run(args.model)
+        return
+    if args.dedup:
+        dedup_exact(args.apply)
         return
     if args.expand:
         expand_groups(args.expand, "data/processed/parent_merge_proposals_expanded.csv", args.exclude)
@@ -391,6 +688,14 @@ def main() -> None:
     if not os.environ.get("OPENAI_API_KEY"):
         sys.exit("OPENAI_API_KEY not set (.env.local)")
     from openai import OpenAI
+    # pre-flight: one tiny call with NO retries so a credit/quota/key problem
+    # fails in seconds instead of every worker hanging in retry-backoff for hours.
+    try:
+        OpenAI(max_retries=0).chat.completions.create(
+            model=args.model, max_tokens=1,
+            messages=[{"role": "user", "content": "ok"}])
+    except Exception as e:
+        sys.exit(f"OpenAI pre-flight failed (credits/quota/key?): {str(e)[:200]}")
     client = OpenAI()
 
     conn = sqlite3.connect(DB)
@@ -398,9 +703,11 @@ def main() -> None:
     comps = [c for c in components(items) if 2 <= len(c) <= args.max_cluster]
     scope = "FULL corpus" if args.full else f"top {len(items)} recipients"
     print(f"Scanned {scope} ({len(items)} companies) -> {len(comps)} candidate clusters "
-          f"(size 2..{args.max_cluster}); model={args.model}, {args.workers}w @ {args.rpm}rpm")
+          f"(size 2..{args.max_cluster}); model={args.model}, {args.workers}w @ {args.rpm}rpm",
+          flush=True)
 
-    groups = process_clusters(client, comps, args.model, workers=args.workers, rpm=args.rpm)
+    groups = process_clusters(client, comps, args.model, workers=args.workers,
+                              rpm=args.rpm, ckpt_path=CKPT)
     proposals = []  # (parent, member_id, member_name, country, eur)
     for g in groups:
         pnorm = " ".join(norm_tokens(g["parent"])) or g["parent"].lower()

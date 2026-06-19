@@ -1,5 +1,6 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(sqlite3 db.sqlite ' *)",
       "Bash(python3 classify.py)",

@@ -296,7 +296,7 @@ def build_stack(con):
     return [{"families": b, "companies": n} for b, n in rows]
 
 
-def build_champions(con, limit=15):
+def build_champions(con, limit=200):
     rows = con.execute("""
         SELECT b.id, b.canonical_name, b.country, b.sector_inferred,
                b.n_source_families, b.n_events,
@@ -308,15 +308,26 @@ def build_champions(con, limit=15):
     """, (limit,)).fetchall()
     champions = []
     for cid, name, country, sector, n_fam, n_ev, total in rows:
-        fams = [r[0] for r in con.execute(
-            "SELECT DISTINCT source_family FROM v_events WHERE company_id = ?", (cid,))]
+        # per-channel breakdown for the drill-down: events + indicative euros by family
+        brk = con.execute("""
+            SELECT source_family,
+                   COUNT(*) AS events,
+                   COALESCE(SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0)),0) AS eur
+            FROM v_events WHERE company_id = ?
+            GROUP BY source_family
+        """, (cid,)).fetchall()
+        fam_order = lambda f: list(FAMILY_LABELS).index(f) if f in FAMILY_LABELS else 99
+        breakdown = sorted(
+            [{"family": f, "events": ev, "eur": round(e or 0)} for f, ev, e in brk],
+            key=lambda d: (-d["eur"], fam_order(d["family"])),
+        )
         champions.append({
             "name": pretty_name(name),
             "country": country,
             "sector": sector or "unclassified",
             "nFamilies": n_fam,
-            "families": sorted(fams, key=lambda f: list(FAMILY_LABELS).index(f)
-                               if f in FAMILY_LABELS else 99),
+            "families": sorted([b["family"] for b in breakdown], key=fam_order),
+            "breakdown": breakdown,
             "nEvents": n_ev,
             "totalEur": round(total or 0),
         })

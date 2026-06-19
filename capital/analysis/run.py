@@ -26,7 +26,11 @@ def run_synthesis():
     overview did, so the headline numbers on the home page are unchanged."""
     kpis_row = df("""
         SELECT
-          (SELECT COUNT(*) FROM companies) AS companies,
+          -- distinct legal entities AFTER the parent-company merge: sister
+          -- entities sharing a parent_group (Sprint dedup Layer 1) collapse to
+          -- one. Falls back to the row id for the unmerged majority.
+          (SELECT COUNT(DISTINCT COALESCE(parent_group, CAST(id AS TEXT)))
+             FROM companies) AS companies,
           (SELECT COUNT(*) FROM public_funding_events WHERE is_duplicate = 0) AS events,
           (SELECT COUNT(*) FROM v_company_breadth WHERE n_source_families >= 2) AS champions,
           (SELECT COUNT(*) FROM companies WHERE step_flagged = 1) AS step_companies,
