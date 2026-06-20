@@ -99,3 +99,6 @@ One line per improvement-loop iteration, newest first.
   three figures (357m/262m/250m) verified as the genuine top-3 single IF awards.
   Gates: stat-verifier VERIFIED, freshness fresh, stop-gate silent, no em-dash.
   File: site/app/investors/page.tsx.
+
+## 2026-06-20 improve/20260620-loop
+- Layer 2c brand dictionary (scripts/lib/brand_dictionary.py) added to build_parent_groups: closes big-name recall (Siemens/VW/Bosch/... now 1 group each). Dry-run only. distinct 153,119 -> 149,087; audit 99.8% cohesive; golden-negatives 0; oversized 0. SHA below.

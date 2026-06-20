@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from merge_companies import dedup_key, norm_tokens, DB  # noqa: E402
 from lib.merge_stoplist import is_distinctive, STOPLIST  # noqa: E402
+from lib.brand_dictionary import BRANDS, DENY  # noqa: E402
 
 OUT = ROOT / "data" / "processed" / "parent_groups_dryrun.csv"
 MIN_COUNTRIES = 2     # a brand bigram must span >= this many countries to anchor
@@ -126,6 +127,13 @@ def main():
             return (toks[0], toks[1])
         return None
 
+    def brand_of(cid):
+        low = name[cid].lower()
+        if any(d in low for d in DENY):
+            return None
+        toks = [t for t in norm_tokens(name[cid]) if is_distinctive(t)]
+        return BRANDS.get(toks[0]) if toks else None
+
     big = defaultdict(list)
     for cid in name:
         b = bigram(cid)
@@ -159,6 +167,9 @@ def main():
         b = bigram(cid)
         if b in valid_bigrams:
             by_key[("2b", b)].append(cid)
+        br = brand_of(cid)
+        if br:
+            by_key[("2c", br)].append(cid)
     for (layer, key), ids in by_key.items():
         if len(ids) < 2:
             continue
@@ -193,7 +204,7 @@ def main():
     print(f"distinct after L1 (exact-name):     {distinct_l1:>8,}  (-{distinct_raw-distinct_l1:,})")
     print(f"distinct after full pipeline:       {distinct_full:>8,}  (-{distinct_raw-distinct_full:,})")
     print(f"  groups: {len(groups):,} covering {merged_in_groups:,} entities")
-    print(f"  new links: name-key (L1+suffix)={contrib['nk']:,}  brand-bigram(2b)={contrib['2b']:,}")
+    print(f"  new links: name-key(L1+2a)={contrib['nk']:,}  bigram(2b)={contrib['2b']:,}  brand-dict(2c)={contrib['2c']:,}")
     print(f"\nRISK CONTROLS")
     print(f"  golden-negative violations: {len(gn_hits)}  {'<-- INVESTIGATE' if gn_hits else 'OK'}")
     for a, b, sz in gn_hits:
