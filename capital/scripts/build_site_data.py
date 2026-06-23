@@ -75,7 +75,16 @@ def reinstall_views() -> None:
 
 
 def check_fresh() -> int:
-    """Exit 1 if any generated file is missing or older than the DB."""
+    """Exit 1 if any generated file is missing or older than the DB.
+
+    The DB is a gitignored build artifact, so it is absent in CI / on Vercel,
+    where the committed site/public/data/*.json is the source of truth and there
+    is nothing to compare against. Skip the freshness check there rather than
+    crashing the build with FileNotFoundError.
+    """
+    if not DB.exists():
+        print("db.sqlite not present (CI/deploy) — skipping freshness check.")
+        return 0
     db_mtime = DB.stat().st_mtime
     stale = []
     for fname in GENERATED:
