@@ -103,3 +103,4 @@ One line per improvement-loop iteration, newest first.
 ## 2026-06-20 improve/20260620-loop
 - Layer 2c brand dictionary (scripts/lib/brand_dictionary.py) added to build_parent_groups: closes big-name recall (Siemens/VW/Bosch/... now 1 group each). Dry-run only. distinct 153,119 -> 149,087; audit 99.8% cohesive; golden-negatives 0; oversized 0. SHA below.
 - 2026-06-24 improve/20260620-loop: APPLIED deterministic parent-merge (build_parent_groups.py, L1+2a+2b+2c). Headline 154,369 -> 152,804; euro unchanged 267.0bn; audit 99.8%; golden-neg 0. Methodology + D-25 updated. SHA below.
+- 2026-06-24 improve/20260620-loop: pragmatic-hybrid merge — token-membership brand dict + watchlist gate (29/29 big brands consolidate) + fuzzy review queue (rapidfuzz). Headline 152,806 -> 152,604; euro unchanged; cohesion 99.7%; golden-neg 0. splink OOMd (sprint deferred). SHA below.

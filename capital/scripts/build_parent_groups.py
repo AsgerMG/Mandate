@@ -16,6 +16,7 @@ Usage:
   python3 scripts/build_parent_groups.py --apply    # write companies.parent_group
 """
 import argparse
+import csv
 import re
 import sqlite3
 import sys
@@ -25,13 +26,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from merge_companies import dedup_key, norm_tokens, DB  # noqa: E402
-from lib.merge_stoplist import is_distinctive, STOPLIST  # noqa: E402
-from lib.brand_dictionary import BRANDS, DENY  # noqa: E402
+from lib.merge_stoplist import is_distinctive, STOPLIST, LEGAL  # noqa: E402
+from lib.brand_dictionary import BRANDS, DENY, WATCHLIST  # noqa: E402
 
 OUT = ROOT / "data" / "processed" / "parent_groups_dryrun.csv"
 MIN_COUNTRIES = 2     # a brand bigram must span >= this many countries to anchor
 DF_CAP = 200          # a bigram token appearing in more companies than this is generic
 SIZE_CAP = 120        # components larger than this are flagged for review, not merged
+FUZZY_AUTO = 93       # rapidfuzz token_sort_ratio >= this -> auto-merge (same country)
+FUZZY_REVIEW = 88     # [REVIEW, AUTO) -> clerical-review CSV, never auto-merged
+FUZZY_BLOCK_CAP = 40  # skip fuzzy on distinctive-token blocks bigger than this
 
 EU_ISO2 = {"AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","EL","HU","IE",
            "IT","LV","LT","LU","MT","NL","PL","PT","RO","SK","SI","ES","SE","NO","IS",
@@ -77,6 +81,27 @@ def strip_codes(name: str) -> str:
     if toks and toks[-1].lower() in COUNTRY_WORDS and len(toks) >= 2:
         s = " ".join(toks[:-1])
     return s
+
+
+_LEGAL_DESC = sorted(LEGAL, key=len, reverse=True)
+
+
+def aggressive_key(nm: str) -> str:
+    """Deterministic collapse of punctuation / spacing / diacritics / legal-form
+    spelling: 'GENESAL ENERGY IB, S.A.' == 'GENESAL ENERGY IB SA'; 'Vyoma GmH' ==
+    'Vyoma GmbH'. Works on whole tokens (drops legal-form *tokens*, not arbitrary
+    suffixes) so real words are never truncated ('Vestas' stays 'vestas', not
+    'vest'). Sorted + joined for word-order independence. Zero fuzzy risk — exact
+    equality after hard normalisation. '' if nothing distinctive remains."""
+    import unicodedata
+    out = []
+    for tok in nm.split():
+        t = unicodedata.normalize("NFKD", tok).encode("ascii", "ignore").decode().lower()
+        t = re.sub(r"[^a-z0-9]", "", t)
+        if t and t not in LEGAL:
+            out.append(t)
+    s = "".join(out)  # order-preserving: avoids anagram collisions of sorted tokens
+    return s if len(s) >= 4 else ""
 
 
 class UF:
@@ -131,8 +156,10 @@ def main():
         low = name[cid].lower()
         if any(d in low for d in DENY):
             return None
-        toks = [t for t in norm_tokens(name[cid]) if is_distinctive(t)]
-        return BRANDS.get(toks[0]) if toks else None
+        for t in norm_tokens(name[cid]):
+            if is_distinctive(t) and t in BRANDS:
+                return BRANDS[t]  # any-position match (catches 'A.P. Moller Maersk')
+        return None
 
     big = defaultdict(list)
     for cid in name:
@@ -142,6 +169,57 @@ def main():
     # a bigram anchors only if its family spans >= MIN_COUNTRIES
     valid_bigrams = {b for b, ids in big.items()
                      if len({country[i] for i in ids if country[i]}) >= MIN_COUNTRIES}
+
+    # ---- Layer 2d: fuzzy name match (record linkage, Fellegi-Sunter 3-way) ----
+    # Blocked by shared distinctive token + same country; rapidfuzz scores the
+    # pair; >= AUTO merges, [REVIEW, AUTO) goes to a clerical-review CSV (never
+    # auto-merged), below REVIEW is rejected. Catches typos like "Vyoma GmH".
+    # numbers/roman numerals that distinguish sequential vehicles ("16. Leda" vs
+    # "20. Leda", "VALMY 114" vs "110", "...XII"). If two names differ on these,
+    # they are NOT the same entity — demote to clerical review, never auto-merge.
+    ROMAN = {"ii", "iii", "iv", "vi", "vii", "viii", "ix", "xi", "xii", "xiii",
+             "xiv", "xv", "xvi", "xvii", "xviii", "xix", "xx"}
+
+    def numset(nm):
+        # any token carrying a digit (123, BOA0031966, 6AB) or a roman numeral
+        # distinguishes a vehicle; differing sets => not the same entity.
+        toks = re.findall(r"[a-z0-9]+", nm.lower())
+        return {t for t in toks if any(c.isdigit() for c in t) or t in ROMAN}
+
+    fuzzy_pairs, fuzzy_review = [], []
+    try:
+        from rapidfuzz import fuzz
+        token_block = defaultdict(list)
+        for cid in name:
+            for t in set(norm_tokens(name[cid])):
+                if is_distinctive(t) and df[t] <= DF_CAP:
+                    token_block[t].append(cid)
+        seen = set()
+        for t, ids in token_block.items():
+            if not (2 <= len(ids) <= FUZZY_BLOCK_CAP):
+                continue
+            for i in range(len(ids)):
+                for j in range(i + 1, len(ids)):
+                    a, b = ids[i], ids[j]
+                    if not country[a] or country[a] != country[b]:
+                        continue
+                    pk = (a, b) if a < b else (b, a)
+                    if pk in seen:
+                        continue
+                    seen.add(pk)
+                    if dedup_key(name[a]) == dedup_key(name[b]):
+                        continue  # already caught by L1
+                    s = fuzz.token_sort_ratio(name[a], name[b])
+                    # Fuzzy NEVER auto-merges (surname collisions like 'Köhler Kalk'
+                    # vs 'Karl Köhler' score high). It only powers a human-gated
+                    # review queue. Deterministic auto-merge is the aggressive-key
+                    # anchor above. The number guard keeps differing-vehicle pairs
+                    # out of even the review queue's top of mind.
+                    if s >= FUZZY_REVIEW:
+                        tag = "" if numset(name[a]) == numset(name[b]) else "diff-number"
+                        fuzzy_review.append((a, b, round(s), tag))
+    except ImportError:
+        print("  (rapidfuzz not installed — Layer 2d skipped)")
 
     # ---- union over high-precision anchors ----
     uf = UF()
@@ -178,6 +256,12 @@ def main():
             if ra != rb:
                 contrib[layer] += 1
             uf.union(("c", ids[0]), ("c", cid))
+    # Layer 2d: union the auto-tier fuzzy pairs (already same-country, > AUTO).
+    for a, b in fuzzy_pairs:
+        ra, rb = uf.find(("c", a)), uf.find(("c", b))
+        if ra != rb:
+            contrib["2d"] += 1
+        uf.union(("c", a), ("c", b))
 
     comp = defaultdict(list)
     for cid in name:
@@ -194,6 +278,30 @@ def main():
                 gn_hits.append((a, b, len(g)))
                 break
 
+    # cohesion audit (built in): each group should share >=1 distinctive token
+    def dset(nm):
+        return {t for t in norm_tokens(nm) if is_distinctive(t)}
+    cohesive = sum(1 for g in groups
+                   if set.intersection(*(dset(name[c]) for c in g)))
+    coh_pct = 100 * cohesive / len(groups) if groups else 100
+
+    # watchlist consolidation gate: each WATCHLIST brand must land in ONE group
+    root = {cid: uf.find(("c", cid)) for cid in name}
+    watch_frag = []
+    for wb in WATCHLIST:
+        target = BRANDS.get(wb)
+        if target:
+            # count only companies actually ASSIGNED this brand, so a JV that maps
+            # to another watch brand (Valeo Siemens -> Valeo) is not miscounted.
+            ids = [cid for cid in name if brand_of(cid) == target]
+        else:
+            ids = [cid for cid in name
+                   if any(is_distinctive(t) and t == wb for t in norm_tokens(name[cid]))
+                   and not brand_of(cid)]
+        comps_wb = {root[cid] for cid in ids}
+        if len(comps_wb) > 1:
+            watch_frag.append((wb, len(ids), len(comps_wb)))
+
     # ---- counts ----
     distinct_raw = n
     distinct_l1 = len({l1[c] for c in name if l1[c]}) + sum(1 for c in name if not l1[c])
@@ -204,11 +312,31 @@ def main():
     print(f"distinct after L1 (exact-name):     {distinct_l1:>8,}  (-{distinct_raw-distinct_l1:,})")
     print(f"distinct after full pipeline:       {distinct_full:>8,}  (-{distinct_raw-distinct_full:,})")
     print(f"  groups: {len(groups):,} covering {merged_in_groups:,} entities")
-    print(f"  new links: name-key(L1+2a)={contrib['nk']:,}  bigram(2b)={contrib['2b']:,}  brand-dict(2c)={contrib['2c']:,}")
+    print(f"  new links: name-key(L1+2a)={contrib['nk']:,}  bigram(2b)={contrib['2b']:,}  brand-dict(2c)={contrib['2c']:,}  fuzzy(2d)={contrib['2d']:,}")
+    if fuzzy_pairs:
+        au = ROOT / "data" / "processed" / "parent_merge_fuzzy_auto.csv"
+        with au.open("w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["id_a", "name_a", "id_b", "name_b", "country"])
+            for a, b in fuzzy_pairs:
+                w.writerow([a, name[a], b, name[b], country[a]])
+    if fuzzy_review:
+        rev = ROOT / "data" / "processed" / "parent_merge_fuzzy_review.csv"
+        with rev.open("w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["score", "flag", "id_a", "name_a", "id_b", "name_b", "country"])
+            for a, b, s, tag in sorted(fuzzy_review, key=lambda x: -x[2]):
+                w.writerow([s, tag, a, name[a], b, name[b], country[a]])
+        print(f"  fuzzy clerical-review band: {len(fuzzy_review)} pairs -> {rev.name} (NOT merged)")
     print(f"\nRISK CONTROLS")
+    print(f"  cohesion (groups sharing a distinctive token): {cohesive:,}/{len(groups):,} ({coh_pct:.1f}%)")
     print(f"  golden-negative violations: {len(gn_hits)}  {'<-- INVESTIGATE' if gn_hits else 'OK'}")
     for a, b, sz in gn_hits:
         print(f"     '{a}' + '{b}' in a size-{sz} group")
+    print(f"  watchlist consolidation: {len(WATCHLIST)-len(watch_frag)}/{len(WATCHLIST)} brands in one group"
+          f"  {'<-- FRAGMENTED:' if watch_frag else 'OK'}")
+    for wb, nc, ng in watch_frag:
+        print(f"     {wb}: {nc} companies still in {ng} groups")
     print(f"  components over size cap ({SIZE_CAP}): {len(over)}  (flagged, review before apply)")
     for g in sorted(over, key=len, reverse=True)[:8]:
         ns = sorted({name[c] for c in g})
@@ -224,7 +352,6 @@ def main():
 
     # ---- write provenance CSV (dry run) ----
     if not args.apply:
-        import csv
         OUT.parent.mkdir(parents=True, exist_ok=True)
         with OUT.open("w", newline="", encoding="utf-8") as f:
             w = csv.writer(f)
@@ -237,8 +364,9 @@ def main():
         print(f"\nDRY RUN -> {OUT}  (no DB writes; --apply to persist after review)")
         return
 
-    if gn_hits or over:
-        sys.exit("REFUSING --apply: golden-negative or size-cap violations present.")
+    if gn_hits or over or watch_frag or coh_pct < 99.0:
+        sys.exit(f"REFUSING --apply: gn={len(gn_hits)} over={len(over)} "
+                 f"watch_fragmented={len(watch_frag)} cohesion={coh_pct:.1f}% (need >=99).")
     cols = [r[1] for r in con.execute("PRAGMA table_info(companies)")]
     if "parent_group" not in cols:
         con.execute("ALTER TABLE companies ADD COLUMN parent_group TEXT")

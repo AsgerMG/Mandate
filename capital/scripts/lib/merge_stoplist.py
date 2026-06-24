@@ -23,6 +23,8 @@ LEGAL = {
     "oy", "oyj", "ab", "asa", "aps", "ks", "hf", "ehf", "is",
     # UK / US / Irish
     "ltd", "limited", "plc", "llp", "llc", "inc", "corp", "co", "company", "teoranta",
+    # common legal-form typos / spelling variants (so they normalise away)
+    "gmh", "gmbh", "gbmh", "mbh",
     # Central / Eastern Europe
     "kft", "zrt", "bt", "nyrt", "kkt", "spzoo", "zoo", "sp", "spk", "spj", "ska",
     "sro", "spol", "akz", "as", "ase", "doo", "dd", "doel", "ood", "ad", "eood",
@@ -109,6 +111,9 @@ GENERIC2 = {
     "dezvoltare", "pentru", "cercetari", "stiintifica",
     # French/other utility generics
     "energie", "energies", "syndicat", "departemental",
+    # generic org words surfaced by the fuzzy spot-check
+    "officina", "meccanica", "officine", "copropietarios", "copropietario",
+    "beteiligungs", "beteiligung", "schiffahrts", "schifffahrts",
     # Greek/Cyrillic generic legal terms (transliterated forms that survive folding)
     "anonymi", "etaireia", "monoprosopi", "anonymos",
 }
