@@ -114,7 +114,7 @@ def main():
         amount = r["grant_amount_eur"]
         if amount is None and r["debt_amount_eur"]:
             amount = r["debt_amount_eur"]
-        title = (r["project_title"] or r["project_acronym"] or "")[:60]
+        title = (r["project_title"] or r["project_acronym"] or "")[:120]
         events[r["company_id"]].append([
             int(r["event_year"]) if r["event_year"] else None,
             r["source_family"],
