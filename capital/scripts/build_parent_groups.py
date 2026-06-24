@@ -154,8 +154,8 @@ def main():
 
     def brand_of(cid):
         low = name[cid].lower()
-        if any(d in low for d in DENY):
-            return None
+        if " / " in name[cid] or any(d in low for d in DENY):
+            return None  # consortium record (X / Y) or a denied place/word clash
         for t in norm_tokens(name[cid]):
             if is_distinctive(t) and t in BRANDS:
                 return BRANDS[t]  # any-position match (catches 'A.P. Moller Maersk')

@@ -77,6 +77,7 @@ WATCHLIST = [
 # substrings that VETO a brand match (the name is not that brand)
 DENY = [
     "gimpera",      # Fundacio Bosch i Gimpera (Barcelona) != Bosch
+    "den bosch",    # 's-Hertogenbosch (Dutch city) != Bosch the company
     "bayerische", "bayern", "bayreuth", "bayer gradel",  # Bavaria != Bayer
     "schneider markus", "markus schneider",  # a person != Schneider Electric
     "continental group",  # Irish Continental Group (shipping) != Continental AG
