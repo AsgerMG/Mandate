@@ -153,35 +153,55 @@ def main():
     # sector with no name typed ("who got cleantech money in ES?"). Each record
     # carries its sector, so the client filters sector within a loaded country
     # shard. Ranked by total funding so the head of each facet is the signal.
+    # Roll up to parent: one lookup record per parent_group (so "Vyoma GmbH" and
+    # "Vyoma GmH" appear once, with their events combined). Index the record under
+    # EVERY member name's prefixes so searching any spelling finds the merged entry.
+    meta: dict[int, sqlite3.Row] = {}
+    members: dict[str, list[int]] = defaultdict(list)
+    for r in con.execute(
+            "SELECT id, canonical_name, country, sector_inferred, step_flagged, parent_group FROM companies"):
+        meta[r["id"]] = r
+        members[r["parent_group"] or f"id{r['id']}"].append(r["id"])
+
+    def mfund(cid):
+        return sum((e[3] or 0) for e in events.get(cid, []))
+
     ranked: list[tuple[float, int, dict]] = []  # (funding_total, n_events, rec)
     n_companies = 0
-    for r in con.execute(
-            "SELECT id, canonical_name, country, sector_inferred, step_flagged FROM companies"):
-        ev = events.get(r["id"])
-        st = stakes.get(r["id"])
-        if not ev and not st:
+    for gk, ids in members.items():
+        ev_all, st_all = [], []
+        for cid in ids:
+            ev_all += events.get(cid, [])
+            st_all += stakes.get(cid, [])
+        if not ev_all and not st_all:
             continue
         n_companies += 1
-        norm = normalize(r["canonical_name"])
+        ev_all.sort(key=lambda e: (e[0] is not None, e[0] or 0), reverse=True)
+        rep = meta[max(ids, key=mfund)]              # display = richest member
+        norms = sorted({normalize(meta[c]["canonical_name"]) for c in ids})
         rec = {
-            "n": r["canonical_name"],
-            "q": norm,
-            "c": r["country"] or "",
-            "s": r["sector_inferred"] or "",
-            "ev": (ev or [])[:EVENT_CAP],
-            "xe": max(0, len(ev or []) - EVENT_CAP),
-            "st": st or [],
+            "n": rep["canonical_name"],
+            "q": " ".join(norms),                    # search matches ANY variant
+            "c": rep["country"] or "",
+            "s": rep["sector_inferred"] or "",
+            "ev": ev_all[:EVENT_CAP],
+            "xe": max(0, len(ev_all) - EVENT_CAP),
+            "st": st_all,
         }
-        if r["step_flagged"]:
-            rec["p"] = 1  # STEP (Strategic Technologies for Europe) seal
-        if r["id"] in soe_ids:
-            rec["x"] = 1  # EIC/Horizon Seal of Excellence (derived from SoE-only schemes)
-        if r["id"] in ipcei_ids:
-            rec["i"] = 1  # IPCEI participant
-        for p in token_prefixes(norm):
-            shards[p].append(rec)
-        funding_total = sum(e[3] or 0 for e in (ev or []))
-        ranked.append((funding_total, len(ev or []), rec))
+        if any(meta[c]["step_flagged"] for c in ids):
+            rec["p"] = 1
+        if any(c in soe_ids for c in ids):
+            rec["x"] = 1
+        if any(c in ipcei_ids for c in ids):
+            rec["i"] = 1
+        seen_p: set[str] = set()
+        for nm in norms:
+            for p in token_prefixes(nm):
+                if p not in seen_p:
+                    shards[p].append(rec)
+                    seen_p.add(p)
+        funding_total = sum(e[3] or 0 for e in ev_all)
+        ranked.append((funding_total, len(ev_all), rec))
     con.close()
 
     if OUT_DIR.exists():

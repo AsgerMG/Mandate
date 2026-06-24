@@ -241,6 +241,82 @@ def verify():
     print(f"collected {len(rows):,} verdicts -> {VERD.name}: {dict(Counter(v for *_, v in rows))}")
 
 
+ESC_MODEL = "claude-sonnet-4-6"   # stronger model for the ambiguous 'unsure' cases
+VERD_ESC = PROC / "er_verdicts_esc.csv"
+ESC_STATE = PROC / "er_batch_esc.json"
+ESC_SYS = ("You are an entity-resolution expert. Given two company records WITH "
+           "context (sector, city, funding channels), decide if they are the SAME "
+           "real-world company (legal-form/translation/typo/rebrand variants and a "
+           "subsidiary vs its named parent = SAME; different firms sharing a word, "
+           "surname, place, or sequential number = NOT). Use the context to "
+           'disambiguate. Reply ONLY JSON: {"v":"yes|no"}.')
+
+
+def _context(con):
+    """id -> 'sector | city | families' context string."""
+    ctx = {}
+    fam = defaultdict(set)
+    for cid, f in con.execute("SELECT company_id, source_family FROM v_events"):
+        fam[cid].add(f)
+    for cid, sec, city in con.execute("SELECT id, COALESCE(sector_inferred,''), COALESCE(city,'') FROM companies"):
+        ctx[cid] = f"{sec}|{city}|{','.join(sorted(fam.get(cid, []))[:4])}"
+    return ctx
+
+
+def escalate():
+    """Re-verify 'unsure' pairs with a stronger model + context. Submit/collect."""
+    import json
+    cl = _client()
+    con = sqlite3.connect(DB)
+    co = load(con)
+    ctx = _context(con)
+    verd = {(r["id_a"], r["id_b"]): r["verdict"] for r in csv.DictReader(VERD.open())}
+    unsure = [(a, b) for (a, b), v in verd.items() if v == "unsure"]
+
+    def enr(cid):
+        cid = int(cid)
+        d = co.get(cid, {"name": "?", "country": ""})
+        return f'{d["name"]} | {d["country"]} | {ctx.get(cid, "")}'
+
+    if not ESC_STATE.exists():
+        ids = []
+        for i in range(0, len(unsure), MAX_PER_BATCH):
+            chunk = unsure[i:i + MAX_PER_BATCH]
+            reqs = [{"custom_id": f"{a}-{b}",
+                     "params": {"model": ESC_MODEL, "max_tokens": 16, "system": ESC_SYS,
+                                "messages": [{"role": "user",
+                                              "content": f"A: {enr(a)}\nB: {enr(b)}"}]}}
+                    for a, b in chunk]
+            bid = cl.messages.batches.create(requests=reqs).id
+            ids.append(bid)
+            print(f"  submitted escalation batch {bid} ({len(reqs):,} pairs)")
+        ESC_STATE.write_text(json.dumps(ids))
+        print(f"submitted {len(unsure):,} unsure pairs to {ESC_MODEL}. Re-run to collect.")
+        return
+
+    ids = json.loads(ESC_STATE.read_text())
+    st = {b: cl.messages.batches.retrieve(b).processing_status for b in ids}
+    print("escalation status:", st)
+    if any(s != "ended" for s in st.values()):
+        print("not all ended — re-run shortly."); return
+    from collections import Counter
+    rows = []
+    for b in ids:
+        for r in cl.messages.batches.results(b):
+            v = "no"
+            try:
+                if r.result.type == "succeeded":
+                    v = _parse(r.result.message.content[0].text)
+            except Exception:
+                pass
+            a, bb = r.custom_id.split("-")
+            rows.append((a, bb, v))
+    with VERD_ESC.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(["id_a", "id_b", "verdict"])
+        w.writerows(rows)
+    print(f"escalation collected {len(rows):,} -> {VERD_ESC.name}: {dict(Counter(v for *_, v in rows))}")
+
+
 def _numset(nm):
     ROMAN = {"ii", "iii", "iv", "vi", "vii", "viii", "ix", "xi", "xii", "xiii", "xiv", "xv"}
     return {t for t in re.findall(r"[a-z0-9]+", nm.lower())
@@ -280,15 +356,18 @@ def apply(write):
             if a in co and b in co:
                 union(a, b); exact += 1
     # 3) verified yes pairs (number guard as backstop even on a 'yes')
-    if VERD.exists():
-        verd = {(r["id_a"], r["id_b"]): r["verdict"] for r in csv.DictReader(VERD.open())}
-        for (a, b), v in verd.items():
-            ai, bi = int(a), int(b)
-            if v != "yes" or ai not in co or bi not in co:
-                continue
-            if _numset(co[ai]["name"]) != _numset(co[bi]["name"]):
-                skipped += 1; continue
-            union(ai, bi); yes += 1
+    verd = {}
+    for vf in (VERD, VERD_ESC):           # base Haiku + escalated Opus verdicts
+        if vf.exists():
+            for r in csv.DictReader(vf.open()):
+                verd[(r["id_a"], r["id_b"])] = r["verdict"]
+    for (a, b), v in verd.items():
+        ai, bi = int(a), int(b)
+        if v != "yes" or ai not in co or bi not in co:
+            continue
+        if _numset(co[ai]["name"]) != _numset(co[bi]["name"]):
+            skipped += 1; continue
+        union(ai, bi); yes += 1
 
     comp = defaultdict(list)
     for cid in co:
@@ -316,7 +395,7 @@ def apply(write):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["candidates", "verify", "apply"])
+    ap.add_argument("cmd", choices=["candidates", "verify", "escalate", "apply"])
     ap.add_argument("--apply", action="store_true", help="write parent_group (apply only)")
     ap.add_argument("--pilot", type=int, default=0, help="verify: synchronous pilot on N pairs")
     args = ap.parse_args()
@@ -324,5 +403,7 @@ if __name__ == "__main__":
         gen_candidates()
     elif args.cmd == "verify":
         verify_pilot(args.pilot) if args.pilot else verify()
+    elif args.cmd == "escalate":
+        escalate()
     elif args.cmd == "apply":
         apply(args.apply)
