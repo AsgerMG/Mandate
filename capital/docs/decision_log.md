@@ -4,6 +4,23 @@ Running record of analytical, editorial and data decisions, newest first. Each e
 decision, why, and where it is implemented. Methodology mechanics live in `methodology.md`;
 this file records the *choices*.
 
+## 2026-06-24 · Deterministic parent-merge pipeline applied
+
+**D-25. The parent-company rollup is now a deterministic four-layer pipeline,
+applied.** `scripts/build_parent_groups.py` composes L1 (exact name) + 2a (suffix/
+country-tag) + 2b (multi-country distinctive brand bigram) + 2c (curated brand
+dictionary) by anchor-union (no transitive chaining). It replaces the rejected
+LLM Layer 2. Big names now consolidate to one parent each (Volkswagen 15→1, Bosch
+24→1, Airbus/Thales/Nokia/Siemens…); headline distinct companies 156,836 → 152,804;
+euro/event totals unchanged (€267.0bn). Precision is defended, not assumed:
+zero-tolerance golden-negative set (apply refuses on any violation), a cohesion
+audit (99.8% of groups share a distinctive token), a big/small-name sanity check,
+hard size caps, and full reversibility (column recomputed from scratch). Chosen
+because it is deterministic, idempotent, and re-runnable on every future load, so
+new companies merge automatically with no model in the path. Design + risk
+framework in `plans/deterministic_merge_pipeline.md`; supersedes the Layer-2 defer
+in D-24.
+
 ## 2026-06-19 · Company merge Layer 1 and sector classification
 
 **D-24. Company entities are rolled up to parents via a deterministic Layer 1 merge.**
