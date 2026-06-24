@@ -146,45 +146,136 @@ def _prompt(a):
 
 
 def verify():
-    import os
+    """Submit on first run; collect on later runs (idempotent)."""
+    import os, json, time
     sys.path.insert(0, str(ROOT / "scripts"))
     from classify_llm import load_env
     load_env()
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        sys.exit("Set ANTHROPIC_API_KEY in .env.local (Haiku) and re-run.")
+    import anthropic
+    cl = anthropic.Anthropic()
+    state = PROC / "er_batch.txt"
     pairs = [r for r in csv.DictReader(CAND.open()) if r["via"] != "exact"]
-    print(f"verifying {len(pairs):,} candidate pairs (exact pairs skip the LLM)")
 
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        import anthropic
-        cl = anthropic.Anthropic()
+    if not state.exists():
         reqs = [{"custom_id": f'{p["id_a"]}-{p["id_b"]}',
                  "params": {"model": "claude-haiku-4-5", "max_tokens": 16,
                             "system": SYS,
                             "messages": [{"role": "user", "content": _prompt(p)}]}}
                 for p in pairs]
-        # Anthropic message batches accept up to 100k requests / 256MB
         batch = cl.messages.batches.create(requests=reqs)
-        print(f"submitted Anthropic batch {batch.id} ({len(reqs):,} pairs). "
-              f"Re-run 'verify' to collect when ended.")
-        _save_batch_id("anthropic", batch.id)
+        state.write_text(batch.id)
+        print(f"submitted Haiku batch {batch.id} ({len(reqs):,} pairs). "
+              f"Re-run 'verify' to poll/collect.")
         return
-    if os.environ.get("OPENAI_API_KEY"):
-        print("ANTHROPIC_API_KEY not set; OpenAI-batch path available — "
-              "set the key you're providing and re-run.")
-        return
-    sys.exit("No LLM API key set in .env.local")
+
+    bid = state.read_text().strip()
+    b = cl.messages.batches.retrieve(bid)
+    print(f"batch {bid}: {b.processing_status}  {b.request_counts}")
+    if b.processing_status != "ended":
+        print("not finished yet — re-run shortly."); return
+    rows = []
+    for r in cl.messages.batches.results(bid):
+        cid = r.custom_id
+        v = "unsure"
+        try:
+            if r.result.type == "succeeded":
+                txt = r.result.message.content[0].text
+                v = json.loads(txt).get("v", "unsure")
+        except Exception:
+            v = "unsure"
+        a, bb = cid.split("-")
+        rows.append((a, bb, v))
+    with VERD.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f); w.writerow(["id_a", "id_b", "verdict"])
+        w.writerows(rows)
+    from collections import Counter
+    c = Counter(v for _, _, v in rows)
+    print(f"collected {len(rows):,} verdicts -> {VERD.name}: {dict(c)}")
 
 
-def _save_batch_id(provider, bid):
-    (PROC / "er_batch.txt").write_text(f"{provider}\n{bid}\n")
+def _numset(nm):
+    ROMAN = {"ii", "iii", "iv", "vi", "vii", "viii", "ix", "xi", "xii", "xiii", "xiv", "xv"}
+    return {t for t in re.findall(r"[a-z0-9]+", nm.lower())
+            if any(c.isdigit() for c in t) or t in ROMAN}
+
+
+def apply(write):
+    from merge_companies import dedup_key
+    con = sqlite3.connect(DB)
+    co = load(con)
+    parent = {}
+
+    def find(x):
+        parent.setdefault(x, x)
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]; x = parent[x]
+        return x
+
+    def union(a, b):
+        parent[find(a)] = find(b)
+
+    for cid in co:
+        find(cid)
+    # 1) seed with the deterministic parent_group already in the DB
+    pg = defaultdict(list)
+    for cid, g in con.execute("SELECT id, parent_group FROM companies WHERE parent_group IS NOT NULL"):
+        if cid in co:
+            pg[g].append(cid)
+    for ids in pg.values():
+        for x in ids[1:]:
+            union(ids[0], x)
+    # 2) exact auto-join pairs
+    exact = yes = skipped = 0
+    for r in csv.DictReader(CAND.open()):
+        if r["via"] == "exact":
+            a, b = int(r["id_a"]), int(r["id_b"])
+            if a in co and b in co:
+                union(a, b); exact += 1
+    # 3) verified yes pairs (number guard as backstop even on a 'yes')
+    if VERD.exists():
+        verd = {(r["id_a"], r["id_b"]): r["verdict"] for r in csv.DictReader(VERD.open())}
+        for (a, b), v in verd.items():
+            ai, bi = int(a), int(b)
+            if v != "yes" or ai not in co or bi not in co:
+                continue
+            if _numset(co[ai]["name"]) != _numset(co[bi]["name"]):
+                skipped += 1; continue
+            union(ai, bi); yes += 1
+
+    comp = defaultdict(list)
+    for cid in co:
+        comp[find(cid)].append(cid)
+    groups = [g for g in comp.values() if len(g) > 1]
+    over = [g for g in groups if len(g) > SIZE_CAP]
+    distinct = len(comp)
+    print(f"clusters: {len(groups):,} | exact-joins {exact:,} | verified-yes {yes:,} "
+          f"(skipped {skipped} number-mismatch) | oversized {len(over)}")
+    print(f"distinct companies after resolution: {distinct:,} (from {len(co):,})")
+    if not write:
+        print("dry run — add --apply to write parent_group")
+        return
+    if over:
+        sys.exit(f"REFUSING: {len(over)} clusters over size cap {SIZE_CAP} — review first.")
+    con.execute("UPDATE companies SET parent_group=NULL")
+    ups = []
+    for g in groups:
+        key = dedup_key(co[max(g, key=lambda c: co[c]['eur'])]["name"])
+        ups += [(key, c) for c in g]
+    con.executemany("UPDATE companies SET parent_group=? WHERE id=?", ups)
+    con.commit()
+    print(f"APPLIED parent_group to {len(ups):,} companies in {len(groups):,} clusters.")
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["candidates", "verify", "apply"])
+    ap.add_argument("--apply", action="store_true", help="write parent_group (apply only)")
     args = ap.parse_args()
     if args.cmd == "candidates":
         gen_candidates()
     elif args.cmd == "verify":
         verify()
-    else:
-        print(f"'{args.cmd}' not yet wired in this build step")
+    elif args.cmd == "apply":
+        apply(args.apply)
