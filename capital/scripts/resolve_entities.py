@@ -47,7 +47,11 @@ CAND = PROC / "er_candidates.csv"
 VERD = PROC / "er_verdicts.csv"
 
 DF_CAP = 80
-FUZZY_MIN = 82          # candidate threshold (LLM adjudicates from here up)
+RARE_DF = 0             # 0 = fuzzy/phonetic only (high ROI). Raise (e.g. 25) to also
+                        # verify ALL pairs of rare-token blocks — but a pilot showed
+                        # that tier is ~97% unrelated companies sharing a token (low
+                        # ROI, ~$32 vs ~$1). Big brands are handled by the brand dict.
+FUZZY_MIN = 82          # only verify string-similar pairs (typos/variants)
 BLOCK_CAP = 60
 SIZE_CAP = 150
 
@@ -108,6 +112,10 @@ def gen_candidates():
     for key, ids in blocks.items():
         if not (2 <= len(ids) <= BLOCK_CAP):
             continue
+        # rare distinctive token -> verify ALL its pairs (likely a brand family,
+        # even when the names aren't string-similar). Commoner tokens / phonetic
+        # blocks -> only verify string-similar pairs (bounds cost + noise).
+        rare = key[0] == "tok" and df[key[1]] <= RARE_DF
         for a, b in itertools.combinations(ids, 2):
             pk = (a, b) if a < b else (b, a)
             if pk in seen:
@@ -116,8 +124,10 @@ def gen_candidates():
             na, nb = co[a]["name"], co[b]["name"]
             if translit(na) == translit(nb):
                 cand.append((a, b, 100, "exact"))         # auto-join, no LLM
-            elif fuzz.token_sort_ratio(na, nb) >= FUZZY_MIN:
-                cand.append((a, b, fuzz.token_sort_ratio(na, nb), key[0]))
+                continue
+            s = fuzz.token_sort_ratio(na, nb)
+            if rare or s >= FUZZY_MIN:
+                cand.append((a, b, s, "rare" if rare and s < FUZZY_MIN else key[0]))
     PROC.mkdir(parents=True, exist_ok=True)
     with CAND.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -145,54 +155,90 @@ def _prompt(a):
             f'B: {a["name_b"]} (country {a["country_b"]})')
 
 
-def verify():
-    """Submit on first run; collect on later runs (idempotent)."""
-    import os, json, time
+MODEL = "claude-haiku-4-5"
+MAX_PER_BATCH = 90_000   # Anthropic message-batch hard cap is 100k requests
+BATCH_STATE = PROC / "er_batch.json"
+
+
+def _client():
+    import os
     sys.path.insert(0, str(ROOT / "scripts"))
     from classify_llm import load_env
     load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("Set ANTHROPIC_API_KEY in .env.local (Haiku) and re-run.")
     import anthropic
-    cl = anthropic.Anthropic()
-    state = PROC / "er_batch.txt"
+    return anthropic.Anthropic()
+
+
+def _parse(text):
+    import json
+    try:
+        return json.loads(text).get("v", "unsure")
+    except Exception:
+        t = text.lower()
+        return "yes" if '"yes"' in t or t.strip() == "yes" else "unsure"
+
+
+def verify_pilot(n):
+    """Synchronous quick pilot: validates key/prompt/parsing on a sample, instantly."""
+    cl = _client()
+    pairs = [r for r in csv.DictReader(CAND.open()) if r["via"] != "exact"]
+    # bias the sample toward recognisable cases + spread
+    keyish = [p for p in pairs if any(k in (p["name_a"] + p["name_b"]).lower()
+              for k in ("vyoma", "maersk", "siemens", "bosch"))][:10]
+    sample = keyish + pairs[: max(0, n - len(keyish))]
+    print(f"PILOT: {len(sample)} pairs, synchronous {MODEL}\n")
+    for p in sample:
+        m = cl.messages.create(model=MODEL, max_tokens=16, system=SYS,
+                               messages=[{"role": "user", "content": _prompt(p)}])
+        v = _parse(m.content[0].text)
+        print(f"  {v:6} | {p['name_a'][:34]:34} || {p['name_b'][:34]}")
+
+
+def verify():
+    """Submit chunked batches on first run; poll + collect on later runs."""
+    import json
+    cl = _client()
     pairs = [r for r in csv.DictReader(CAND.open()) if r["via"] != "exact"]
 
-    if not state.exists():
-        reqs = [{"custom_id": f'{p["id_a"]}-{p["id_b"]}',
-                 "params": {"model": "claude-haiku-4-5", "max_tokens": 16,
-                            "system": SYS,
-                            "messages": [{"role": "user", "content": _prompt(p)}]}}
-                for p in pairs]
-        batch = cl.messages.batches.create(requests=reqs)
-        state.write_text(batch.id)
-        print(f"submitted Haiku batch {batch.id} ({len(reqs):,} pairs). "
+    if not BATCH_STATE.exists():
+        batches = []
+        for i in range(0, len(pairs), MAX_PER_BATCH):
+            chunk = pairs[i:i + MAX_PER_BATCH]
+            reqs = [{"custom_id": f'{p["id_a"]}-{p["id_b"]}',
+                     "params": {"model": MODEL, "max_tokens": 16, "system": SYS,
+                                "messages": [{"role": "user", "content": _prompt(p)}]}}
+                    for p in chunk]
+            b = cl.messages.batches.create(requests=reqs)
+            batches.append(b.id)
+            print(f"  submitted batch {b.id} ({len(reqs):,} pairs)")
+        BATCH_STATE.write_text(json.dumps(batches))
+        print(f"submitted {len(batches)} batch(es), {len(pairs):,} pairs total. "
               f"Re-run 'verify' to poll/collect.")
         return
 
-    bid = state.read_text().strip()
-    b = cl.messages.batches.retrieve(bid)
-    print(f"batch {bid}: {b.processing_status}  {b.request_counts}")
-    if b.processing_status != "ended":
-        print("not finished yet — re-run shortly."); return
+    batches = json.loads(BATCH_STATE.read_text())
+    statuses = {bid: cl.messages.batches.retrieve(bid).processing_status for bid in batches}
+    print("batch status:", statuses)
+    if any(s != "ended" for s in statuses.values()):
+        print("not all finished — re-run shortly."); return
+    from collections import Counter
     rows = []
-    for r in cl.messages.batches.results(bid):
-        cid = r.custom_id
-        v = "unsure"
-        try:
-            if r.result.type == "succeeded":
-                txt = r.result.message.content[0].text
-                v = json.loads(txt).get("v", "unsure")
-        except Exception:
+    for bid in batches:
+        for r in cl.messages.batches.results(bid):
             v = "unsure"
-        a, bb = cid.split("-")
-        rows.append((a, bb, v))
+            try:
+                if r.result.type == "succeeded":
+                    v = _parse(r.result.message.content[0].text)
+            except Exception:
+                pass
+            a, bb = r.custom_id.split("-")
+            rows.append((a, bb, v))
     with VERD.open("w", newline="", encoding="utf-8") as f:
         w = csv.writer(f); w.writerow(["id_a", "id_b", "verdict"])
         w.writerows(rows)
-    from collections import Counter
-    c = Counter(v for _, _, v in rows)
-    print(f"collected {len(rows):,} verdicts -> {VERD.name}: {dict(c)}")
+    print(f"collected {len(rows):,} verdicts -> {VERD.name}: {dict(Counter(v for *_, v in rows))}")
 
 
 def _numset(nm):
@@ -272,10 +318,11 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["candidates", "verify", "apply"])
     ap.add_argument("--apply", action="store_true", help="write parent_group (apply only)")
+    ap.add_argument("--pilot", type=int, default=0, help="verify: synchronous pilot on N pairs")
     args = ap.parse_args()
     if args.cmd == "candidates":
         gen_candidates()
     elif args.cmd == "verify":
-        verify()
+        verify_pilot(args.pilot) if args.pilot else verify()
     elif args.cmd == "apply":
         apply(args.apply)
