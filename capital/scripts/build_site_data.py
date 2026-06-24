@@ -49,6 +49,7 @@ GENERATED = {
     "investor_insights.json":     "build_investor_insights.py",
     "recipient_explorer/manifest.json": "build_recipient_explorer.py",
     "companies/manifest.json":    "build_company_search.py",
+    "companies_index.json":       "build_companies_index.py",
 }
 
 # (label, command) in dependency order.
@@ -61,6 +62,7 @@ STEPS = [
     ("investor insights",  [sys.executable, "scripts/build_investor_insights.py"]),
     ("recipient explorer", [sys.executable, "scripts/build_recipient_explorer.py"]),
     ("company lookup",     [sys.executable, "scripts/build_company_search.py"]),
+    ("agent index",        [sys.executable, "scripts/build_companies_index.py"]),
 ]
 
 
