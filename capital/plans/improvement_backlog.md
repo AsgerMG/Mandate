@@ -33,16 +33,21 @@ it done. Vague items are not actionable — the loop will skip and flag them.
 
 ## P2 — coverage (source-scout refills this section)
 
-- [ ] `[data][L]` Promote SPRIND from placeholder to company-level. Today the
-  corpus holds only 20 `sprind_challenge` program placeholders (NULL amounts, no
-  legal entities) — see `scripts/extract_sprind.py` docstring. Resolve each
-  challenge's funded teams to legal entities + grant amounts via Bundesanzeiger
-  (Federal Gazette grant decisions) and/or the SPRIND annual-report PDFs, then
-  load company-level events. HARD: run the SATR-overlap gate first (SPRIND grants
-  may surface in SATR-DE) and run it against the existing `sprind` ndb_distributor
-  taxonomy. Gate: load-auditor CLEAN incl. methodology step 8; amounts each
-  reproducible from `db.sqlite`; placeholders replaced or reconciled, not
-  duplicated.
+- [ ] `[data][L]` **SPRIND Phase B — load + register the Projects portfolio.**
+  Phase A is DONE and staged (no DB writes): `scripts/extract_sprind.py` rewritten
+  to parse the Nuxt/Strapi payload → 198 ventures in `data/processed/sprind_projects.csv`
+  (197 in-scope, source=`sprind_project`, instruments equity/grant, amounts NULL by
+  design); SATR-overlap gate measured in `analysis/findings/satr_overlap_sprind.md`
+  (46/197 exact SATR-DE matches → matcher must LINK not duplicate; no money
+  double-count since amounts NULL). **GATED: do NOT run until the deterministic
+  merge pipeline + name mergers are solid** (`plans/deterministic_merge_pipeline.md`,
+  see [[project_data_hygiene_merge]]) so ~150 new company rows don't pollute the
+  dedup pass — pick this up "later when the data pipelines are more solid". When
+  unblocked: `python3 scripts/extract_sprind.py --load-db` then ship-a-source steps
+  3-8 (views.sql, coverage indicator, classify.py, build_site_data, load-auditor,
+  methodology + decision_log). Gate: load-auditor CLEAN incl. methodology step 8;
+  the 20 `sprind_challenge` placeholders retained not repurposed. Full plan:
+  `~/.claude/plans/sorted-juggling-crane.md`.
 
 - [ ] `[data][L]` (source-scout) Identify the highest-tier-lift undocumented
   source for a Tier-C / EU-layer-only country; run the SATR-overlap gate; if it
