@@ -14,9 +14,9 @@ User steer: "find central sources... state aid reporting requirements etc. becau
 
 | Extractor | Source | Events | Volume |
 |---|---|---:|---|
-| [extract_fr_innov_grants.py](../scripts/extract_fr_innov_grants.py) | data.enseignementsup-recherche.gouv.fr (i-Nov) + data.iledefrance.fr (PM'up) | 849 | €568M grants |
-| [extract_innovationsfonden.py](../scripts/extract_innovationsfonden.py) | innovationsfonden.dk Drupal-Views server-rendered HTML, 566 pages × 14 rows | 3,313 | €892M grants |
-| [extract_eifo.py](../scripts/extract_eifo.py) | EIFO Venturelisten Google Sheet (filtered to EIFO co-invest) | 131 | €1.24B round volume |
+| [extract_fr_innov_grants.py](../ETL/extract/extract_fr_innov_grants.py) | data.enseignementsup-recherche.gouv.fr (i-Nov) + data.iledefrance.fr (PM'up) | 849 | €568M grants |
+| [extract_innovationsfonden.py](../ETL/extract/extract_innovationsfonden.py) | innovationsfonden.dk Drupal-Views server-rendered HTML, 566 pages × 14 rows | 3,313 | €892M grants |
+| [extract_eifo.py](../ETL/extract/extract_eifo.py) | EIFO Venturelisten Google Sheet (filtered to EIFO co-invest) | 131 | €1.24B round volume |
 
 **Corpus**: 95,245 → 98,066 companies / 178,915 → 183,208 events. Backup at `/tmp/eit_data_backup/db.sqlite.pre-sprint16.bak` (315MB).
 
@@ -34,9 +34,9 @@ User steer: "find central sources... state aid reporting requirements etc. becau
 
 Second-half of session pushed all four. Results:
 
-- **🇫🇷 ADEME loaded (BIG WIN)**: 27,697 events / €7.76B / +17,105 net new companies — discovered via [data.ademe.fr](https://data.ademe.fr/datasets/les-aides-financieres-de-l'ademe) (the central French cleantech / energy-transition NDB grant register). Now the **#1 NDB by event count** in the entire corpus. Implemented in [extract_ademe.py](../scripts/extract_ademe.py) with public-entity regex filter (`COMMUNE|VILLE|UNIVERSITÉ|HÔPITAL|...`).
+- **🇫🇷 ADEME loaded (BIG WIN)**: 27,697 events / €7.76B / +17,105 net new companies — discovered via [data.ademe.fr](https://data.ademe.fr/datasets/les-aides-financieres-de-l'ademe) (the central French cleantech / energy-transition NDB grant register). Now the **#1 NDB by event count** in the entire corpus. Implemented in [extract_ademe.py](../ETL/extract/extract_ademe.py) with public-entity regex filter (`COMMUNE|VILLE|UNIVERSITÉ|HÔPITAL|...`).
 - **🇫🇷 Bpifrance expanded**: added Innov'up Leader PIA (144) + Plan de Relance Industrial (2,835 — no amounts) to the existing extractor. Bpifrance NDB tally now 3,841 events / €619M (up from 849 / €568M).
-- **🇵🇱 PL SUDOP — pipeline proven, scaffold + 22 events shipped**: discovered the central Polish state aid register has an **async OpenAPI** at `api-sudop.uokik.gov.pl/swagger/sudop-api.yml`. Flow: GET search → 303 redirect to queue URL → poll until 303 → CSV download. Built [extract_sudop.py](../scripts/extract_sudop.py) with a curated `INNOVATION_MEASURES` list of 10 SA-codes covering BGK, NCBR, PARP innovation programmes. One measure ran successfully (SA.56782 PARP B+R = 22 events / €1.6M). Rate-limited mid-run after ~5 queries; cached files cleanly resumable next session.
+- **🇵🇱 PL SUDOP — pipeline proven, scaffold + 22 events shipped**: discovered the central Polish state aid register has an **async OpenAPI** at `api-sudop.uokik.gov.pl/swagger/sudop-api.yml`. Flow: GET search → 303 redirect to queue URL → poll until 303 → CSV download. Built [extract_sudop.py](../ETL/extract/extract_sudop.py) with a curated `INNOVATION_MEASURES` list of 10 SA-codes covering BGK, NCBR, PARP innovation programmes. One measure ran successfully (SA.56782 PARP B+R = 22 events / €1.6M). Rate-limited mid-run after ~5 queries; cached files cleanly resumable next session.
 - **🇳🇱 NL RVO — documented as multi-hour Playwright job**: `projecten.rvo.nl` has 73,343 projecten total, search listing is JS-rendered (10 results / page = ~7,300 pages × ~3s/page = ~6 hours). Per-project pages (`/nl/projecten/<id>`) ARE server-rendered with Aanvrager + Rijksbijdrage + Subsidieregeling fields parseable via regex. **Plan for next session**: Playwright-enumerate list pages → batch-curl project detail pages → parse + load. Probable yield: ~20-40k NL events / multiple €B.
 - **🇮🇹 IT RNA — documented (would double-count SATR-IT)**: Monthly XML dumps at `rna.gov.it/sites/rna.mise.gov.it/files/opendata/OpenData_Aiuti_YYYY_MM.xml`, ~935MB each × 60 months = ~25-50GB total download. XML structure rich (CAR / DENOMINAZIONE_BENEFICIARIO / CODICE_FISCALE / COMPONENTI_AIUTO / STRUMENTI_AIUTO / ELEMENTO_DI_AIUTO / IMPORTO_NOMINALE). **The Italian state aid in SATR (16,725+ events from mediocredito_centrale, invitalia, etc.) is already syndicated FROM RNA** — loading RNA fresh would substantially duplicate. Future approach: load only the **de minimis** subset (< €100k, NOT in SATR by threshold) and explicit non-SATR authorities. Streaming SAX parser scope.
 - **🇪🇸 ES BDNS — hard WAF IP-block**: BDNS API at `infosubvenciones.es/bdnstrans/api` IP-banned us after our probes. Spain is NOT in SATR (Sprint 15: "Spain uses BDNS — already covered via extract_cdti.py"). All Spanish NDB coverage rides on BDNS. Carry-over: retry from a different IP, or implement very-slow-throttle (60s/request) batch with checkpointing for ENISA/ICO/COFIDES.
@@ -64,13 +64,13 @@ User flagged that the home-page KPI claimed "53 countries" but the country list 
 
 **Implementation pattern**: three layers of defence so the scope is held at every layer the data passes through.
 
-1. **Pre-insert filter in extractors** — new helper [scripts/europe_scope.py](../scripts/europe_scope.py) loaded from [data/europe_scope.json](../data/europe_scope.json). Exports `canonicalise_country(code)` that maps aliases and returns None for out-of-scope codes. Every new extractor should call it; existing extractors get protection from layer 2.
-2. **DB triggers** — `trg_companies_country_scope` and `trg_companies_country_scope_update` `BEFORE INSERT/UPDATE` triggers in [scripts/schema.sql](../scripts/schema.sql). Fire on every write to `companies.country`. Any out-of-scope code `RAISE(ABORT, ...)` with a message pointing at `docs/europe_scope.md` and the helper module. Verified by smoke test: `INSERT ... country = 'IL'` fails, `INSERT ... country = 'DE'` succeeds.
+1. **Pre-insert filter in extractors** — new helper [ETL/lib/europe_scope.py](../ETL/lib/europe_scope.py) loaded from [data/europe_scope.json](../data/europe_scope.json). Exports `canonicalise_country(code)` that maps aliases and returns None for out-of-scope codes. Every new extractor should call it; existing extractors get protection from layer 2.
+2. **DB triggers** — `trg_companies_country_scope` and `trg_companies_country_scope_update` `BEFORE INSERT/UPDATE` triggers in [ETL/load/schema.sql](../ETL/load/schema.sql). Fire on every write to `companies.country`. Any out-of-scope code `RAISE(ABORT, ...)` with a message pointing at `docs/europe_scope.md` and the helper module. Verified by smoke test: `INSERT ... country = 'IL'` fails, `INSERT ... country = 'DE'` succeeds.
 3. **View-time filter** — `v_european_companies` in [analysis/views.sql](../analysis/views.sql) inner-joined into `v_events`. Belt-and-braces if the triggers are ever disabled for a raw-SQL bulk import. Now thin (just a WHERE) because aliases are canonicalised in place; pre-Sprint-14 it carried a full CASE-expression alias map.
 
 **Destructive corpus clean-up**: BEGIN TRANSACTION; `UPDATE` 98 alias rows (EL→GR etc.); `DELETE` 1,639 out-of-scope companies + 2,527 events + 3,834 `classify_audit` rows; COMMIT. Pre-Sprint-14 DB backed up at `/tmp/eit_data_backup/db.sqlite.pre-europe-scope.bak` before the transaction ran.
 
-**Sanity check**: added "DQ: Europe scope integrity" to [scripts/sanity_check.py](../scripts/sanity_check.py). Three checks (out-of-scope rows, lingering aliases, both triggers installed). All three must be 0. Run after every loader.
+**Sanity check**: added "DQ: Europe scope integrity" to [ETL/load/qa/sanity_check.py](../ETL/load/qa/sanity_check.py). Three checks (out-of-scope rows, lingering aliases, both triggers installed). All three must be 0. Run after every loader.
 
 **Smoke-test note (lesson learned)**: my first trigger test ran `INSERT ... canonical_name = 'TEST IN-SCOPE'` then `DELETE WHERE canonical_name LIKE 'TEST %'`, which matched a real Austrian Horizon company called "TEST FUCHS" (id 10277) and clobbered it. Restored from backup. **Don't use `LIKE` patterns to clean up smoke-test rows; delete by exact id**.
 
@@ -101,7 +101,7 @@ Workstream 0.5 — schema migration added three columns to `public_funding_event
 - `eif_lp_backed INTEGER DEFAULT 0`
 - `deployment_country TEXT` (+ index)
 
-Workstream 0.6 — `scripts/ndb_helpers.py` houses `match_ipcei_linked`, `backfill_ipcei_linked`, `mark_eif_backed`, and `normalise_ticket` (ECB annual reference rates for SEK/CZK/PLN/DKK 2021-2026). Self-tested clean.
+Workstream 0.6 — `ETL/lib/ndb_helpers.py` houses `match_ipcei_linked`, `backfill_ipcei_linked`, `mark_eif_backed`, and `normalise_ticket` (ECB annual reference rates for SEK/CZK/PLN/DKK 2021-2026). Self-tested clean.
 
 ### Workstream loads — 8 of 8
 
@@ -196,14 +196,14 @@ Plan estimated ~3,700-6,380 new events. Delivered **3,462** (about 54-94% of pla
 
 ### Files added
 
-- `scripts/ndb_helpers.py` — IPCEI linkage backfill, EIF flag, FX normalisation
-- `scripts/extract_invest_nl.py`, `extract_tesi.py`, `extract_almi_invest.py`, `extract_cdp_vc.py` — production extractors (company-level)
-- `scripts/extract_cdti.py` — production extractor (BDNS API; 1,880 events loaded)
-- `scripts/extract_htgf.py` — production extractor (WP REST API; 857 events loaded)
-- `scripts/extract_coparion.py` — production extractor (52 events loaded)
-- `scripts/extract_sprind.py` — program-level (20 challenge placeholders loaded; per-team resolution pending)
-- `scripts/extract_bpifrance.py` — program-level (10 fund-vehicle placeholders; portfolio gated)
-- `scripts/extract_enterprise_ireland.py` — program-level (6 funding-programme placeholders)
+- `ETL/lib/ndb_helpers.py` — IPCEI linkage backfill, EIF flag, FX normalisation
+- `ETL/extract/extract_invest_nl.py`, `extract_tesi.py`, `extract_almi_invest.py`, `extract_cdp_vc.py` — production extractors (company-level)
+- `ETL/extract/extract_cdti.py` — production extractor (BDNS API; 1,880 events loaded)
+- `ETL/extract/extract_htgf.py` — production extractor (WP REST API; 857 events loaded)
+- `ETL/extract/extract_coparion.py` — production extractor (52 events loaded)
+- `ETL/extract/extract_sprind.py` — program-level (20 challenge placeholders loaded; per-team resolution pending)
+- `ETL/extract/extract_bpifrance.py` — program-level (10 fund-vehicle placeholders; portfolio gated)
+- `ETL/extract/extract_enterprise_ireland.py` — program-level (6 funding-programme placeholders)
 - `docs/sprint13_ndb_status.md` — per-institution status table
 - `docs/cdti_discovery_notes.md` — historical Imperva-blocker record + BDNS path executed
 - `data/raw/{invest_nl,tesi,almi_invest,cdp_vc,sprind,htgf,coparion}/` — cached source HTML/JSON
@@ -212,8 +212,8 @@ Plan estimated ~3,700-6,380 new events. Delivered **3,462** (about 54-94% of pla
 
 ### Files modified
 
-- `scripts/schema.sql` — 3 new columns + 2 indexes documented
-- `scripts/classify.py` — imports the 5 new `*_SOURCE_SECTOR` dicts and uses them in the source-fallback chain
+- `ETL/load/schema.sql` — 3 new columns + 2 indexes documented
+- `ETL/transform/classify.py` — imports the 5 new `*_SOURCE_SECTOR` dicts and uses them in the source-fallback chain
 - `analysis/views.sql` — unchanged this session (the planned `v_company_funding_layers`, `v_ndb_ipcei_overlap`, `v_strategic_resilience_index` deferred)
 - `site/app/02-champions/page.tsx` — unchanged (companies-only toggle already in place from a prior session)
 - `site/app/national/page.tsx` — NOT added (planned future-session work)
@@ -243,7 +243,7 @@ DB backups: `db.sqlite.backup_pre_sprint13` (start of session), `db.sqlite.backu
 
 ### Single most impactful decision
 
-**Discovering CORDIS publishes the full Horizon Europe project database as a 32MB ZIP dump** (`cordis-HORIZONprojects-csv.zip`). After Sprint 10 left CHP/IHI/EuroHPC as deferred/dead-end items requiring custom scrapers, the open-data dump made all three trivial: one unified extractor (`scripts/extract_cordis.py`) filtering by topic-code prefix handled all three plus a KDT supplement that closed the Sprint 5 KDT-2023 gap. This is now the canonical path for any future Horizon partnership work.
+**Discovering CORDIS publishes the full Horizon Europe project database as a 32MB ZIP dump** (`cordis-HORIZONprojects-csv.zip`). After Sprint 10 left CHP/IHI/EuroHPC as deferred/dead-end items requiring custom scrapers, the open-data dump made all three trivial: one unified extractor (`ETL/extract/extract_cordis.py`) filtering by topic-code prefix handled all three plus a KDT supplement that closed the Sprint 5 KDT-2023 gap. This is now the canonical path for any future Horizon partnership work.
 
 ### Workstream A/B/C — CHP + IHI + EuroHPC (CORDIS open-data)
 
@@ -286,9 +286,9 @@ D yielded no new events. Documented as a residual gap; the engineering option (P
 
 ### Files added/modified
 
-- `scripts/extract_cordis.py` — **New**: unified CORDIS open-data extractor (CHP / IHI / EuroHPC / KDT supplement). Adding a new partnership requires only updating the `FAMILIES` dict.
+- `ETL/extract/extract_cordis.py` — **New**: unified CORDIS open-data extractor (CHP / IHI / EuroHPC / KDT supplement). Adding a new partnership requires only updating the `FAMILIES` dict.
 - `data/raw/cordis/` — **New**: project.csv, organization.csv, topics.csv, etc. (extracted from cordis-HORIZONprojects-csv.zip)
-- `scripts/classify.py` — Replaced CHP stub import with real `extract_cordis` imports; added IHI / EuroHPC source-sector lookups
+- `ETL/transform/classify.py` — Replaced CHP stub import with real `extract_cordis` imports; added IHI / EuroHPC source-sector lookups
 - `docs/methodology.md` — Source coverage table, HE coverage table, decision log entry
 - `docs/notes.md` — This entry
 
@@ -339,7 +339,7 @@ Sources added in backfill:
 
 ### Workstream A — 6 EIT KICs (COMPLETED)
 
-Extended `scripts/extract_eit.py` with six new KIC sources across 25 programme×year combinations:
+Extended `ETL/extract/extract_eit.py` with six new KIC sources across 25 programme×year combinations:
 
 | KIC | Sources added | Events |
 |---|---|---:|
@@ -386,8 +386,8 @@ Updated `docs/methodology.md`:
 
 ### Files modified
 
-- `scripts/extract_eit.py` — Extended with 6 new KIC sources, sector mappings, 15 company list constants, `_build_events` basis logic, `_ALL_RAW_EVENTS` aggregation
-- `scripts/classify.py` — Added try/except stubs for `EUROSTARS_SOURCE_SECTOR` and `CHP_SOURCE_SECTOR`
+- `ETL/extract/extract_eit.py` — Extended with 6 new KIC sources, sector mappings, 15 company list constants, `_build_events` basis logic, `_ALL_RAW_EVENTS` aggregation
+- `ETL/transform/classify.py` — Added try/except stubs for `EUROSTARS_SOURCE_SECTOR` and `CHP_SOURCE_SECTOR`
 - `docs/methodology.md` — Coverage tables, Tier 2/3 sections, decision log
 - `docs/notes.md` — This entry
 
@@ -1015,7 +1015,7 @@ EIT Digital sources → `digital` fallback; EIT Manufacturing sources → `deept
 
 **Scope decisions** (2026-05-21):
 - Workstream A (STEP Seal tagging) **skipped** — no machine-readable seal source surfaced during discovery; user opted to skip rather than escalate or hand-curate.
-- Workstream B (audit) executed under "all-or-nothing per gate" rule — halt rather than ship a half-passing gate. Source patches landed in `classify.py`, `scripts/audit_dedup.py` (new), `data/processed/dedup_candidates.csv` (new), `data/processed/pre_dealroom_health_report.md` (new).
+- Workstream B (audit) executed under "all-or-nothing per gate" rule — halt rather than ship a half-passing gate. Source patches landed in `classify.py`, `ETL/load/qa/audit_dedup.py` (new), `data/processed/dedup_candidates.csv` (new), `data/processed/pre_dealroom_health_report.md` (new).
 
 ### Headline deltas
 
@@ -1101,13 +1101,13 @@ Re-run of `classify.py` on no-input change: 0 sector flips, 0 entity flips → i
 
 ### Files added
 
-- `scripts/audit_dedup.py` — Sprint 8 B1 cross-source dedup sweep (idempotent; supports `--load-db`)
+- `ETL/load/qa/audit_dedup.py` — Sprint 8 B1 cross-source dedup sweep (idempotent; supports `--load-db`)
 - `data/processed/dedup_candidates.csv` — 40-row review CSV with recommendation per pair
 - `data/processed/pre_dealroom_health_report.md` — gate scorecard + per-workstream findings
 
 ### Files modified
 
-- `scripts/classify.py` — augmented entity-type patterns + new `SOURCE_FAMILY_COMPANY` fallback; signature of `classify_entity_type()` gained an optional `sources` parameter (call site updated in `main`)
+- `ETL/transform/classify.py` — augmented entity-type patterns + new `SOURCE_FAMILY_COMPANY` fallback; signature of `classify_entity_type()` gained an optional `sources` parameter (call site updated in `main`)
 - `README.md` — corpus headline updated 3,107 → 3,101; `audit_dedup.py` added to run sequence; status row added for Sprint 8 audit
 - `docs/methodology.md` — Sprint 8 decision-log entry appended
 - `docs/notes.md` — this Day 10 entry
@@ -1157,7 +1157,7 @@ The SEAL export carries proposal titles but no Horizon project numbers. Mapping 
 
 ### Files added
 
-- `scripts/tag_step.py` — STEP Seal tagger (idempotent; supports `--load-db`; revokes flag for any company no longer in input)
+- `ETL/transform/tag_step.py` — STEP Seal tagger (idempotent; supports `--load-db`; revokes flag for any company no longer in input)
 - `data/raw/step/seal_data_set.xlsx` — raw Commission export (5,722 rows / 9 columns)
 - `data/processed/step_match_summary.csv` — one row per matched company (programmes, sectors, any-funded flag)
 

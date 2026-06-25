@@ -12,13 +12,13 @@ both the deterministic rules and candidate LLMs.
 
 - Sample: 19 companies spanning sectors, with findable names, drawn from the corpus.
 - Ground truth: each company's true sector, verified via web search (company site,
-  Crunchbase/PitchBook, registries). Recorded in `scripts/classify_llm.py::TRUTH`
+  Crunchbase/PitchBook, registries). Recorded in `ETL/transform/classify_llm.py::TRUTH`
   with a one-line justification per company.
 - Evidence given to each classifier: name, country, NACE descriptors, project
   titles, funding programmes — the realistic production input. Our DB sector label
   is **not** shown to the models.
 - Score = exact-match agreement with the verified truth. Run via
-  `python3 scripts/classify_llm.py eval`.
+  `python3 ETL/transform/classify_llm.py eval`.
 
 ## Results
 

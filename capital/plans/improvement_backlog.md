@@ -34,7 +34,7 @@ it done. Vague items are not actionable — the loop will skip and flag them.
 ## P2 — coverage (source-scout refills this section)
 
 - [ ] `[data][L]` **SPRIND Phase B — load + register the Projects portfolio.**
-  Phase A is DONE and staged (no DB writes): `scripts/extract_sprind.py` rewritten
+  Phase A is DONE and staged (no DB writes): `ETL/extract/extract_sprind.py` rewritten
   to parse the Nuxt/Strapi payload → 198 ventures in `data/processed/sprind_projects.csv`
   (197 in-scope, source=`sprind_project`, instruments equity/grant, amounts NULL by
   design); SATR-overlap gate measured in `analysis/findings/satr_overlap_sprind.md`
@@ -43,7 +43,7 @@ it done. Vague items are not actionable — the loop will skip and flag them.
   merge pipeline + name mergers are solid** (`plans/deterministic_merge_pipeline.md`,
   see [[project_data_hygiene_merge]]) so ~150 new company rows don't pollute the
   dedup pass — pick this up "later when the data pipelines are more solid". When
-  unblocked: `python3 scripts/extract_sprind.py --load-db` then ship-a-source steps
+  unblocked: `python3 ETL/extract/extract_sprind.py --load-db` then ship-a-source steps
   3-8 (views.sql, coverage indicator, classify.py, build_site_data, load-auditor,
   methodology + decision_log). Gate: load-auditor CLEAN incl. methodology step 8;
   the 20 `sprind_challenge` placeholders retained not repurposed. Full plan:

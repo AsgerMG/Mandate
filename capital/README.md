@@ -12,9 +12,11 @@ Everything flows one direction. Each arrow is a stage you can re-run independent
 
 ```
 data/raw/            external API + HTML caches (per source, gitignored, backed up)
-   │  scripts/extract_*.py        one extractor per funding source, loads into the DB
+   │  ETL/extract/extract_*.py    one extractor per funding source, loads into the DB
    ▼
 db.sqlite            the built database (gitignored, backed up — not in version control)
+   │  ETL/transform/*.py          classify, merge, dedup, backfill, resolve entities
+   │  ETL/load/*.py + load/qa/    loaders, migrations, schema, post-load QA, backup
    │  make analyze   (analysis/run.py runs the SQL in analysis/queries/)
    │  make visuals   (scripts/build_*.py + gen_country_map.py)
    ▼
@@ -28,7 +30,8 @@ site/                Next.js static site (the published findings)
 
 | Folder | What's in it |
 |---|---|
-| `scripts/` | The ETL layer. `extract_*.py` (one per source), `build_*.py` (site visuals), `load_*.py`, `classify.py`, `tag_step.py`, `schema.sql`, `migrations/`, shared `lib/`. |
+| `ETL/` | The data pipeline. `extract/` (one `extract_*.py` per source), `transform/` (`classify.py`, `merge_companies.py`, dedup, backfills, entity resolution), `load/` (`load_*.py`, `schema.sql`, `migrations/`, `backup.py`, and `load/qa/` post-load checks), and `lib/` (shared modules + `etl_env.py`, the single source of truth for paths). See [ETL/README.md](ETL/README.md). |
+| `scripts/` | The publish layer (next to be reorganised): `build_*.py` (site visuals/data), `gen_*.py`, and `hooks/`. |
 | `analysis/` | `run.py` (orchestrator), `queries/` (the SQL behind each finding), `views.sql`, and `findings/` (the prose the site renders). |
 | `site/` | The Next.js website. Reads only `site/public/data/*.json`. |
 | `docs/` | `methodology.md` (canonical, rendered by the site), plus working notes and design guidelines. |
@@ -47,9 +50,11 @@ make backup        # snapshot db.sqlite + data/ to ~/EuroInvTracker-backups and 
 ```
 
 Extractors are per-source and hit external APIs, so run them one at a time, for example
-`python3 scripts/extract_cdti.py --load-db`. They detect duplicates on `(source, call_id)` and are
-safe to re-run. After any loader inserts rows, run `python3 scripts/classify.py` then
-`python3 scripts/sanity_check.py`.
+`python3 ETL/extract/extract_cdti.py --load-db`. They detect duplicates on `(source, call_id)` and
+are safe to re-run (see the re-runnability registry in [ETL/README.md](ETL/README.md)). After any
+loader inserts rows, run `make transform` (classify + sanity) — or the steps individually,
+`python3 ETL/transform/classify.py` then `python3 ETL/load/qa/sanity_check.py` — and
+`python3 ETL/load/backup.py` to snapshot the DB to local + iCloud.
 
 ## Data and backups
 

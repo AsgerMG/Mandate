@@ -15,7 +15,7 @@ Load CDTI (Centro para el Desarrollo Tecnológico Industrial) awarded grants for
 
 ## What was implemented (next-session work, executed 2026-05-26 same day)
 
-BDNS API workaround landed in `scripts/extract_cdti.py` (replacing the empty scaffold). See `docs/methodology.md` "BDNS API integration" sub-section for the full technical description.
+BDNS API workaround landed in `ETL/extract/extract_cdti.py` (replacing the empty scaffold). See `docs/methodology.md` "BDNS API integration" sub-section for the full technical description.
 
 Discovery findings worth keeping for future Spanish-public-funder work:
 - **Real API base is `/bdnstrans/api`**, not the `/GE/es/api/*` paths exposed in the SPA URLs. Those routes return the Angular shell. The actual base lives in the SPA's `servidoresApi` config object inside `main.<hash>.js`.
@@ -36,5 +36,5 @@ Fall-back paths (still good to know):
 
 - `extract_cdti.py` shipped (BDNS API edition; replaces the scaffold).
 - `data/raw/cdti/pages/page_{0..39}.json` cached (~2MB total; re-download via `python3 extract_cdti.py --refresh`).
-- `scripts/ndb_helpers.py` provides IPCEI-linkage backfill; ran after load, flagged 0 CDTI rows (no IPCEI overlap — see methodology).
+- `ETL/lib/ndb_helpers.py` provides IPCEI-linkage backfill; ran after load, flagged 0 CDTI rows (no IPCEI overlap — see methodology).
 - DB columns populated: `ipcei_linked=0`, `eif_lp_backed=0`, `deployment_country='ES'` on all 1,880 CDTI rows.

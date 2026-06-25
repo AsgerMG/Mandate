@@ -18,7 +18,7 @@ SATR floor). Consider invoking `source-scout` first to confirm the gap is real
 and the source is in scope (direct-funding, Option A).
 
 ## 1. Extract
-Write `scripts/extract_<source>.py` following the existing extractor pattern.
+Write `ETL/extract/extract_<source>.py` following the existing extractor pattern.
 Canonicalise every country through
 `scripts/europe_scope.canonicalise_country()` — never write a raw country code.
 
@@ -35,7 +35,7 @@ Run `python3 scripts/gen_coverage_indicator.py` and confirm the new source moves
 the right country/instrument tier in `data/processed/coverage_indicator.json`.
 
 ## 5. Classification
-Extend `scripts/classify.py` if the source introduces new sector/instrument
+Extend `ETL/transform/classify.py` if the source introduces new sector/instrument
 vocab. Confirm no silent fall-through to "unknown".
 
 ## 6. Rebuild site data

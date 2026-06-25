@@ -24,10 +24,12 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "scripts"))
-from merge_companies import dedup_key, norm_tokens, DB  # noqa: E402
-from lib.merge_stoplist import is_distinctive, STOPLIST, LEGAL  # noqa: E402
-from lib.brand_dictionary import BRANDS, DENY, WATCHLIST  # noqa: E402
+# This publish-layer script reuses the merge primitives from the ETL block.
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from etl_env import DB  # noqa: E402  (wires ETL extract/transform/load/qa/lib onto sys.path)
+from merge_companies import dedup_key, norm_tokens  # noqa: E402
+from merge_stoplist import is_distinctive, STOPLIST, LEGAL  # noqa: E402
+from brand_dictionary import BRANDS, DENY, WATCHLIST  # noqa: E402
 
 OUT = ROOT / "data" / "processed" / "parent_groups_dryrun.csv"
 MIN_COUNTRIES = 2     # a brand bigram must span >= this many countries to anchor

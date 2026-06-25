@@ -5,7 +5,7 @@ classified `cleantech`. This audit traces why and sizes the problem.
 
 ## How a company gets its sector
 
-`scripts/classify.py::classify_sector` resolves in this order, first hit wins:
+`ETL/transform/classify.py::classify_sector` resolves in this order, first hit wins:
 
 1. **Curated tags** (`sector_tags_raw` matched against hand-built tag sets) — EIC/CORDIS style.
 2. **NACE strings** (register rows carry a NACE descriptor) — `_classify_by_nace`.

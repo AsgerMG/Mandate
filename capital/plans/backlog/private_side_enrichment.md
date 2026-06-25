@@ -18,7 +18,7 @@
 
 You are populating the right-hand-side variable for a research question: *do companies that received EU public funding go on to attract private capital / survive / grow?* The supply-side dataset is frozen at 3,101 companies / 4,969 events after Sprint 8 (see `docs/notes.md` Day 10 + addendum). Sprint 9 attaches private-side and activity signals from free sources only.
 
-Five workstreams, executed sequentially. Each writes its own loader script following the existing patterns in `scripts/extract_chips_ju.py` (free-API loader), `scripts/audit_dedup.py` (audit script with `--load-db`), `scripts/tag_step.py` (single-tier exact match with country aliases), `scripts/classify.py` (regex-heavy classifier with audit log).
+Five workstreams, executed sequentially. Each writes its own loader script following the existing patterns in `ETL/extract/extract_chips_ju.py` (free-API loader), `scripts/audit_dedup.py` (audit script with `--load-db`), `scripts/tag_step.py` (single-tier exact match with country aliases), `ETL/transform/classify.py` (regex-heavy classifier with audit log).
 
 Each workstream is independently re-runnable. Each ends with a verifiable gate. **If a gate fails, stop and report — do not paper over.**
 

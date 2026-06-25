@@ -115,7 +115,7 @@ Location: `.claude/skills/<name>/SKILL.md`.
 The full add-a-source checklist, in dependency order, derived from the
 established rule "new source → views.sql + coverage indicator + classify.py":
 1. SATR-overlap gate (measure collision before loading).
-2. Extract via `scripts/extract_<x>.py`, country via
+2. Extract via `ETL/extract/extract_<x>.py`, country via
    `europe_scope.canonicalise_country()`.
 3. Load; confirm `BEFORE INSERT` scope trigger passes.
 4. Register in `analysis/views.sql`.

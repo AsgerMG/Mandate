@@ -25,7 +25,7 @@ For every NEW `source` value introduced by this load, confirm ALL of:
 1. Registered in `analysis/views.sql` (appears in `v_events` / relevant views).
 2. Reflected in the coverage indicator (`scripts/gen_coverage_indicator.py`
    output — `data/processed/coverage_indicator.json`).
-3. Sector/instrument vocab handled in `scripts/classify.py` (no silent
+3. Sector/instrument vocab handled in `ETL/transform/classify.py` (no silent
    fall-through to unknown).
 4. **Methodology gate (HARD FAIL):** mentioned in `docs/methodology.md` "Source
    coverage", with its amount basis declared in the limitations tiers, and a

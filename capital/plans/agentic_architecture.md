@@ -2,7 +2,7 @@
 
 Status: **planning**. Captured 2026-06-15 at user direction ("we want to build
 agentic intelligence at scale here — not just fiddling with one agent"). Not yet
-built. The Haiku classifier (`scripts/classify_llm.py`) is the first concrete
+built. The Haiku classifier (`ETL/transform/classify_llm.py`) is the first concrete
 LLM-in-the-loop step; this doc is the larger vision it slots into.
 
 ## Goal
@@ -81,6 +81,6 @@ Frontier tooling to wire in:
 ## Related
 
 - Current single-loop spec: `RALPH.md`; harness doc: `docs/agent_architecture.md`.
-- First LLM-in-loop step: `scripts/classify_llm.py` (Haiku sector classification).
+- First LLM-in-loop step: `ETL/transform/classify_llm.py` (Haiku sector classification).
 - House rules the fleet must honour: methodology.md "Known limitations", the
   SATR-overlap gate, no em-dashes in reader-facing copy.

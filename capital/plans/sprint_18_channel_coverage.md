@@ -2,7 +2,7 @@
 
 > **EXECUTION STATUS (2026-06-11, overnight):**
 > - ✅ **Phase 1 DONE** — 5,694 events / ~€3.9B loaded (`scripts/load_ju_batch.py`); 76 cross-tagged projects correctly skipped; totals match probes ±1%.
-> - ✅ **Phase 2 DONE** — EIC Fund: 233 events, 84% matched to existing EIC companies (`scripts/extract_eic_fund.py`).
+> - ✅ **Phase 2 DONE** — EIC Fund: 233 events, 84% matched to existing EIC companies (`ETL/extract/extract_eic_fund.py`).
 > - ✅ **Phase 4b DONE** — ES RRF ⊂ BDNS verified: 3,518/13,244 BDNS rows carry PRTR markers. No extractor needed.
 > - 🟡 **Phase 4a DATA READY, LOAD PARKED** — OpenPNRR CSVs in `data/raw/rrf_it/` (117MB, 298k projects). Company-attuatore slice: 28,618 projects / €12.8B / 686 companies, **dominated by SOE utilities** (E-Distribuzione €3.5B, GSE €2.2B, Trenitalia, SNAM); genuine tail exists (STMicroelectronics €292M). **USER DECISION NEEDED: measure whitelist + SOE in/out policy before load.**
 > - ⛔ **Phase 3a Vinnova** — blocked on API key (user registering).
@@ -88,7 +88,7 @@ Acceptance: ≥250 companies loaded post-scope-trim; ≥60% matched to existing 
 
 ### 3a. Vinnova (SE) — blocked on API key (pre-flight #2)
 - Endpoint (verified): `https://api.vinnova.se/gdp_vinnova/finansieradeaktiviteter` + key header (`Ocp-Apim-Subscription-Key`, standard Azure APIM). GDP-standard schema: calls / applications / funded-activities; filter `fromDate=2021-01-01`, organisationsnummer present per recipient.
-- `scripts/extract_vinnova.py` exists as a scaffold — replace its endpoint-guessing `--probe` with the confirmed URL, keep its load path.
+- `ETL/extract/extract_vinnova.py` exists as a scaffold — replace its endpoint-guessing `--probe` with the confirmed URL, keep its load path.
 - **HARD RULE — SATR gate**: 514 SATR rows pre-tagged `ndb_distributor='vinnova'`. Run `satr_overlap_audit.py` extended to `vinnova_`; dedup on normalize_name + year±1 before insert (the TAČR/EIS precedent: expect a few hundred collisions, keep net-new only).
 - Expected: ~1,000 company grants/yr × 5 yrs minus overlap ≈ 3,000-4,500 net-new.
 

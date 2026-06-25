@@ -4,6 +4,25 @@ Running record of analytical, editorial and data decisions, newest first. Each e
 decision, why, and where it is implemented. Methodology mechanics live in `methodology.md`;
 this file records the *choices*.
 
+## 2026-06-25 · Pipeline reorganised into an ETL block
+
+**D-26. The data pipeline now lives under `ETL/` as `extract/` → `transform/` →
+`load/` (with post-load QA inside `load/qa/`).** The flat `scripts/` bucket mixed
+extraction, transformation, loading, QA and the publish layer; it is now split so
+the flow reads top-to-bottom. `extract/` holds the 43 `extract_*.py` (one per
+source); `transform/` holds `classify*`, `merge_companies`, dedup, backfills and
+entity resolution; `load/` holds `load_*`, `schema.sql`, `migrations/`, the new
+`backup.py`, and `load/qa/` (sanity/audit/overlap checks that run right after a
+load). Shared modules + a new `etl_env.py` (single source of truth for the DB path
+and sys.path wiring) sit in `ETL/lib/`. Imports were kept low-churn: every stage
+script carries a 2-line `etl_env` bootstrap so flat sibling imports and the DB path
+resolve no matter where it is run from — no package rename. The publish layer
+(`build_*`, `gen_*`, `analysis/`) stays in `scripts/` for a later, separate pass.
+Backup is now a real step (`ETL/load/backup.py`, db + data → local + iCloud),
+wired into `make backup` and documented as the post-load action. Chosen for
+legibility and re-triggerability: each stage is an obvious place to run and re-run.
+Source-to-folder map and per-extractor re-runnability registry in `ETL/README.md`.
+
 ## 2026-06-24 · Deterministic parent-merge pipeline applied
 
 **D-25. The parent-company rollup is now a deterministic four-layer pipeline,

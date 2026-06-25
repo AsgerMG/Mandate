@@ -62,20 +62,20 @@ Alternative considered and rejected: upgrade the topology to `world-50m`. The 50
 ## How the scope propagates through the pipeline
 
 1. [data/europe_scope.json](../data/europe_scope.json) — authoritative country list and aliases.
-2. [scripts/europe_scope.py](../scripts/europe_scope.py) — Python helper. **Every extractor should call `canonicalise_country()` before inserting a company.** Maps aliases (EL→GR, UK→GB, PO→PL, SW→SE, GL→DK) and returns `None` for out-of-scope codes so the caller can skip the row. Has a self-test runnable with `python3 scripts/europe_scope.py`.
-3. [scripts/schema.sql](../scripts/schema.sql) — defines `trg_companies_country_scope` (INSERT) and `trg_companies_country_scope_update` (UPDATE) which `RAISE(ABORT, ...)` if an out-of-scope country code is written to `companies.country`. **This is the enforcement floor**: any extractor that skips the Python helper will hit the trigger and fail with a pointer to this file.
+2. [ETL/lib/europe_scope.py](../ETL/lib/europe_scope.py) — Python helper. **Every extractor should call `canonicalise_country()` before inserting a company.** Maps aliases (EL→GR, UK→GB, PO→PL, SW→SE, GL→DK) and returns `None` for out-of-scope codes so the caller can skip the row. Has a self-test runnable with `python3 ETL/lib/europe_scope.py`.
+3. [ETL/load/schema.sql](../ETL/load/schema.sql) — defines `trg_companies_country_scope` (INSERT) and `trg_companies_country_scope_update` (UPDATE) which `RAISE(ABORT, ...)` if an out-of-scope country code is written to `companies.country`. **This is the enforcement floor**: any extractor that skips the Python helper will hit the trigger and fail with a pointer to this file.
 4. [analysis/views.sql](../analysis/views.sql) — defines `v_european_companies` (defensive filter) and inner-joins it into `v_events`. Belt-and-braces — if the trigger is ever disabled (e.g. for a raw-SQL bulk import), the view layer still keeps analytics clean. Every q* query joins through `v_events` so analyses inherit the filter automatically.
 5. [analysis/queries/q01_corpus_overview.sql](../analysis/queries/q01_corpus_overview.sql), [q01c_by_sector.sql](../analysis/queries/q01c_by_sector.sql), [q01d_top_countries.sql](../analysis/queries/q01d_top_countries.sql) — refactored to source from `v_european_companies` directly (previously hit the unfiltered `companies` table).
 6. [scripts/gen_country_map.py](../scripts/gen_country_map.py) — loads `europe_scope.json`, regenerates [site/public/data/country_map.json](../site/public/data/country_map.json) (40 countries).
 7. [site/components/europe-map.tsx](../site/components/europe-map.tsx) — `NUMERIC_TO_ISO2` carries the 40-country geographic-Europe subset; `MARKER_COUNTRIES` carries MT/LI/XK markers (below world-110m's resolution threshold).
-8. [scripts/sanity_check.py](../scripts/sanity_check.py) — "DQ: Europe scope integrity" block at the end. All three values must be `0` (no out-of-scope rows, no non-canonical aliases, both triggers installed). Run after every loader.
+8. [ETL/load/qa/sanity_check.py](../ETL/load/qa/sanity_check.py) — "DQ: Europe scope integrity" block at the end. All three values must be `0` (no out-of-scope rows, no non-canonical aliases, both triggers installed). Run after every loader.
 
 ## Enforcement: how the scope is actually held
 
 The corpus is held in scope by **three layers of defence**, in order of how the data flows:
 
 1. **Pre-insert filter in extractors** — `scripts/europe_scope.canonicalise_country()`. Extractors call it before INSERT, alias-map their country code, and `continue` if it returns `None`. Cheap, explicit, lives in code review.
-2. **Database BEFORE INSERT trigger** — `trg_companies_country_scope` in `scripts/schema.sql`. Fires inside the DB itself for every `INSERT INTO companies` and every `UPDATE companies SET country = ...`. Out-of-scope writes `RAISE(ABORT, ...)` with a message pointing at this doc. Cannot be bypassed by a forgetful extractor; can only be bypassed by an explicit `DROP TRIGGER`.
+2. **Database BEFORE INSERT trigger** — `trg_companies_country_scope` in `ETL/load/schema.sql`. Fires inside the DB itself for every `INSERT INTO companies` and every `UPDATE companies SET country = ...`. Out-of-scope writes `RAISE(ABORT, ...)` with a message pointing at this doc. Cannot be bypassed by a forgetful extractor; can only be bypassed by an explicit `DROP TRIGGER`.
 3. **View-time filter** — `v_european_companies` in `analysis/views.sql`. Inner-joined into `v_events`, so even if a row somehow lands in `companies` with an out-of-scope country (raw SQL import, trigger disabled), the analytics never see it.
 
 The destructive step taken on 2026-05-29 — `DELETE`'ing 1,639 out-of-scope companies and their 2,527 events from the live DB — closed the question of "what does the corpus actually contain". Before Sprint 14, the corpus contained 53 countries' worth of data and a view-time filter pretended it didn't. After Sprint 14, the corpus contains 40 countries' worth of data and nothing else.
@@ -106,20 +106,20 @@ Capital impact is small (<1%) because dropped companies are mostly Horizon co-fu
 The scope is hard-coded in three places that must stay in sync:
 
 1. `data/europe_scope.json` — source of truth.
-2. The SQL string literal inside `trg_companies_country_scope` and `trg_companies_country_scope_update` in [scripts/schema.sql](../scripts/schema.sql).
+2. The SQL string literal inside `trg_companies_country_scope` and `trg_companies_country_scope_update` in [ETL/load/schema.sql](../ETL/load/schema.sql).
 3. The SQL string literal inside `v_european_companies` in [analysis/views.sql](../analysis/views.sql).
-4. (`scripts/europe_scope.py` reads the JSON at import — no edit needed.)
+4. (`ETL/lib/europe_scope.py` reads the JSON at import — no edit needed.)
 
 SQLite triggers can't read JSON files at parse time, hence the duplication. A future improvement would auto-generate the SQL from the JSON via a `make` step.
 
 ### Adding a country
 
 1. Add the entry to `data/europe_scope.json` (with `numeric` for the topojson ID; mark `rendererFallback: "marker"` if the country is too small for world-110m).
-2. Update the country-code allowlist in **both** SQL triggers in `scripts/schema.sql` AND in `v_european_companies` in `analysis/views.sql`.
-3. Reinstall the triggers on the live DB: `sqlite3 db.sqlite "DROP TRIGGER trg_companies_country_scope; DROP TRIGGER trg_companies_country_scope_update;"` and re-apply the relevant block from `scripts/schema.sql`.
+2. Update the country-code allowlist in **both** SQL triggers in `ETL/load/schema.sql` AND in `v_european_companies` in `analysis/views.sql`.
+3. Reinstall the triggers on the live DB: `sqlite3 db.sqlite "DROP TRIGGER trg_companies_country_scope; DROP TRIGGER trg_companies_country_scope_update;"` and re-apply the relevant block from `ETL/load/schema.sql`.
 4. Re-run `sqlite3 db.sqlite < analysis/views.sql && python3 analysis/run.py && python3 scripts/gen_country_map.py && python3 scripts/build_taxonomy_network.py`.
 5. Update `NUMERIC_TO_ISO2` (or `MARKER_COUNTRIES`) in [site/components/europe-map.tsx](../site/components/europe-map.tsx).
-6. Run `python3 scripts/sanity_check.py | grep "Europe scope integrity"` — both data values must be 0 and the trigger-presence value must be 0.
+6. Run `python3 ETL/load/qa/sanity_check.py | grep "Europe scope integrity"` — both data values must be 0 and the trigger-presence value must be 0.
 7. Re-load any extractors whose source data now contains rows for the newly-in-scope country.
 
 ### Removing a country

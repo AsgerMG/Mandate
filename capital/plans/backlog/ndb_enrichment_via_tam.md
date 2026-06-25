@@ -70,9 +70,9 @@ Pure market-economy-investor equity (MEI compliance) is **excluded** from TAM by
 
 ## Files to add when revived
 
-- `scripts/extract_tam.py` — generic TAM search client. One extractor, multiple --source flags.
-- `scripts/extract_bpifrance_portfolio.py` (optional) — Playwright stealth path for equity-side enrichment.
-- `scripts/extract_ei_annual.py` (optional) — annual report PDF parser for HPSU clients.
+- `ETL/extract/extract_tam.py` — generic TAM search client. One extractor, multiple --source flags.
+- `ETL/extract/extract_bpifrance_portfolio.py` (optional) — Playwright stealth path for equity-side enrichment.
+- `ETL/extract/extract_ei_annual.py` (optional) — annual report PDF parser for HPSU clients.
 
 ## Schema impact
 
