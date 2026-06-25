@@ -1,0 +1,8349 @@
+{
+  "generatedAt": "2026-06-25",
+  "kpis": {
+    "companies": 153119,
+    "events": 291880,
+    "families": 11,
+    "countries": 40,
+    "multiInstrument": 3700,
+    "deepStack": 827,
+    "veryDeepStack": 199,
+    "equityPositions": 5570,
+    "equityHolders": 24
+  },
+  "stats": {
+    "momentum": {
+      "p2": 28.5,
+      "p3given2": 40.7,
+      "p5given4": 60.1,
+      "p10given9": 79.2
+    },
+    "bosch": {
+      "entities": 42,
+      "countries": 12,
+      "families": 7,
+      "awards": 248,
+      "totalBn": 2.1
+    },
+    "futureFund": [
+      {
+        "asOf": "2025-06-30",
+        "positions": 996,
+        "dead": 325
+      },
+      {
+        "asOf": "2026-03-31",
+        "positions": 1034,
+        "dead": 390
+      }
+    ],
+    "eicAvgDaysToStart": 313,
+    "conviction": {
+      "companies": 536,
+      "withPriorAward": 175,
+      "pct": 32.6
+    },
+    "eicCohort": {
+      "companies": 676,
+      "wonLater": 460,
+      "pct": 68.0
+    },
+    "aidConcentration": {
+      "recipients": 75909,
+      "top1Pct": 42.1,
+      "top10Pct": 70.8,
+      "totalBn": 124.8
+    },
+    "edfPerYear": [
+      {
+        "year": 2022,
+        "eurBn": 1.16
+      },
+      {
+        "year": 2023,
+        "eurBn": 0.81
+      },
+      {
+        "year": 2024,
+        "eurBn": 0.99
+      },
+      {
+        "year": 2025,
+        "eurBn": 0.99
+      },
+      {
+        "year": 2026,
+        "eurBn": 1.03
+      }
+    ]
+  },
+  "moneyRotation": {
+    "years": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "sectors": [
+      {
+        "id": "cleantech",
+        "eurBn": [
+          8.49,
+          6.51,
+          9.41,
+          12.17,
+          8.51
+        ]
+      },
+      {
+        "id": "deeptech_hardware",
+        "eurBn": [
+          5.15,
+          2.43,
+          8.92,
+          6.45,
+          3.02
+        ]
+      },
+      {
+        "id": "life_sciences",
+        "eurBn": [
+          1.32,
+          1.86,
+          1.19,
+          1.35,
+          1.24
+        ]
+      },
+      {
+        "id": "digital",
+        "eurBn": [
+          1.39,
+          0.9,
+          1.7,
+          1.68,
+          1.33
+        ]
+      },
+      {
+        "id": "defense",
+        "eurBn": [
+          0.11,
+          0.12,
+          0.05,
+          0.04,
+          0.08
+        ]
+      },
+      {
+        "id": "space",
+        "eurBn": [
+          0.72,
+          0.47,
+          0.35,
+          0.36,
+          0.35
+        ]
+      }
+    ]
+  },
+  "stack": [
+    {
+      "families": "1",
+      "companies": 71868
+    },
+    {
+      "families": "2",
+      "companies": 2873
+    },
+    {
+      "families": "3",
+      "companies": 628
+    },
+    {
+      "families": "4+",
+      "companies": 199
+    }
+  ],
+  "champions": [
+    {
+      "name": "Multiverse Computing SL",
+      "country": "ES",
+      "sector": "digital",
+      "nFamilies": 8,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "edf",
+        "eit",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 26814043
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 4943941
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 5,
+          "eur": 3814915
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2500000
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 342375
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 225150
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 210625
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 19,
+      "totalEur": 38851048
+    },
+    {
+      "name": "Thales",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 7,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "edf",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 14,
+          "eur": 437549450
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 65,
+          "eur": 42608675
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 26,
+          "eur": 17691579
+        },
+        {
+          "family": "eic",
+          "events": 16,
+          "eur": 11012693
+        },
+        {
+          "family": "chips_ju",
+          "events": 17,
+          "eur": 6125042
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 12,
+          "eur": 4482981
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 151,
+      "totalEur": 519470419
+    },
+    {
+      "name": "Arkema France SA",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 6,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 18,
+          "eur": 160347797
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 19,
+          "eur": 7493175
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 4,
+          "eur": 4302516
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 12,
+          "eur": 2235934
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 616875
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 200312
+        }
+      ],
+      "nEvents": 55,
+      "totalEur": 60436569
+    },
+    {
+      "name": "Iqm Finland Oy",
+      "country": "FI",
+      "sector": "deeptech_hardware",
+      "nFamilies": 6,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "eib",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 35000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 14695796
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 565000
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 115090
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 12,
+      "totalEur": 50375886
+    },
+    {
+      "name": "Airbus",
+      "country": "FR",
+      "sector": "space",
+      "nFamilies": 6,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "edf",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 8,
+          "eur": 333367358
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 24900000
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 22,
+          "eur": 9941550
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 8517299
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 12,
+          "eur": 5235769
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 50000
+        }
+      ],
+      "nEvents": 53,
+      "totalEur": 34841550
+    },
+    {
+      "name": "Leonardo -Societa Per Azioni",
+      "country": "IT",
+      "sector": "defense",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 5,
+          "eur": 255999959
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 25,
+          "eur": 46185119
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 25,
+          "eur": 36508909
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 11,
+          "eur": 7101348
+        },
+        {
+          "family": "chips_ju",
+          "events": 7,
+          "eur": 1995413
+        }
+      ],
+      "nEvents": 73,
+      "totalEur": 347790747
+    },
+    {
+      "name": "Genvia",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 279000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 206122124
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 4,
+          "eur": 1374588
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 867515
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 209366
+        }
+      ],
+      "nEvents": 11,
+      "totalEur": 280374588
+    },
+    {
+      "name": "Soitec",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "ipcei",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 12,
+          "eur": 198596924
+        },
+        {
+          "family": "ipcei",
+          "events": 2,
+          "eur": 198475137
+        },
+        {
+          "family": "chips_ju",
+          "events": 10,
+          "eur": 14262323
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1235142
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 28,
+      "totalEur": 212737460
+    },
+    {
+      "name": "Siemens",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 93,
+          "eur": 141505570
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 40361184
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 52,
+          "eur": 35144246
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 20,
+          "eur": 14014845
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 142928
+        }
+      ],
+      "nEvents": 167,
+      "totalEur": 190807589
+    },
+    {
+      "name": "Sener Aeroespacial Sociedad Anonima",
+      "country": "ES",
+      "sector": "space",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "edf",
+        "chips_ju",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 2,
+          "eur": 124833201
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 7,
+          "eur": 3044268
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1528475
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 165000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 121539
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 129692483
+    },
+    {
+      "name": "Safran Electrical Power",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 23,
+          "eur": 78813941
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 16,
+          "eur": 33257972
+        },
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 14707080
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 8,
+          "eur": 2324044
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 133391
+        }
+      ],
+      "nEvents": 49,
+      "totalEur": 129236428
+    },
+    {
+      "name": "Avl List GmbH",
+      "country": "AT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 57,
+          "eur": 59593053
+        },
+        {
+          "family": "chips_ju",
+          "events": 16,
+          "eur": 41569808
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 34,
+          "eur": 16533552
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 7,
+          "eur": 2925302
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 268750
+        }
+      ],
+      "nEvents": 115,
+      "totalEur": 88972203
+    },
+    {
+      "name": "Robert Bosch GmbH",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 51926000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 27,
+          "eur": 11751832
+        },
+        {
+          "family": "chips_ju",
+          "events": 15,
+          "eur": 10408901
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 10,
+          "eur": 8569907
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 4,
+          "eur": 2301909
+        }
+      ],
+      "nEvents": 57,
+      "totalEur": 84958549
+    },
+    {
+      "name": "Bull SAS",
+      "country": "FR",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 21,
+          "eur": 71767494
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 9,
+          "eur": 17503991
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 3494090
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 3152045
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 2414411
+        }
+      ],
+      "nEvents": 37,
+      "totalEur": 78805823
+    },
+    {
+      "name": "Thales Las France SAS",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "edf",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 17,
+          "eur": 43899772
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 23294735
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 8,
+          "eur": 9954936
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 201250
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 45278
+        }
+      ],
+      "nEvents": 30,
+      "totalEur": 77395970
+    },
+    {
+      "name": "Orange",
+      "country": "FR",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 11,
+          "eur": 71697748
+        },
+        {
+          "family": "ipcei",
+          "events": 2,
+          "eur": 70100000
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 10,
+          "eur": 4517459
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 627625
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 4,
+          "eur": 61281
+        }
+      ],
+      "nEvents": 30,
+      "totalEur": 74617459
+    },
+    {
+      "name": "Aledia",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "ipcei",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 71543346
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 70600000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 1266534
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 70600000
+    },
+    {
+      "name": "Dassault Systemes",
+      "country": "FR",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 18,
+          "eur": 62950585
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 1517231
+        },
+        {
+          "family": "chips_ju",
+          "events": 3,
+          "eur": 910839
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 342176
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 200071
+        }
+      ],
+      "nEvents": 24,
+      "totalEur": 65920902
+    },
+    {
+      "name": "Infineon Technologies Austria AG",
+      "country": "AT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 51,
+          "eur": 227604001
+        },
+        {
+          "family": "chips_ju",
+          "events": 18,
+          "eur": 11254390
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 12,
+          "eur": 6835604
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1289305
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 395323
+        }
+      ],
+      "nEvents": 84,
+      "totalEur": 59426444
+    },
+    {
+      "name": "Codasip",
+      "country": "CZ",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "ipcei",
+        "chips_ju"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 42800000
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 14375842
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1730500
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 302094
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 59208435
+    },
+    {
+      "name": "Basf SE",
+      "country": "DE",
+      "sector": "cleantech",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 29,
+          "eur": 48881945
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 15,
+          "eur": 7447108
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 384024
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 47,
+      "totalEur": 56713077
+    },
+    {
+      "name": "Nokia Networks France",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 21,
+          "eur": 46477257
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 9,
+          "eur": 2795950
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 1817388
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 797000
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 101440
+        }
+      ],
+      "nEvents": 38,
+      "totalEur": 51989034
+    },
+    {
+      "name": "Rina Consulting SpA",
+      "country": "IT",
+      "sector": "other",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 96,
+          "eur": 40685163
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 4996117
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 15,
+          "eur": 4938239
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 1023213
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 324375
+        }
+      ],
+      "nEvents": 120,
+      "totalEur": 51967107
+    },
+    {
+      "name": "Ericsson",
+      "country": "DE",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 34600000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 6,
+          "eur": 15653641
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 16,
+          "eur": 9166659
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 6,
+          "eur": 3283500
+        },
+        {
+          "family": "chips_ju",
+          "events": 3,
+          "eur": 594038
+        }
+      ],
+      "nEvents": 32,
+      "totalEur": 51200967
+    },
+    {
+      "name": "Fabentech SA",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eib",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 20000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 17406336
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 11248284
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 461090
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 12,
+      "totalEur": 49115710
+    },
+    {
+      "name": "Alice & Bob",
+      "country": "FR",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 16,
+          "eur": 37094579
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2500000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 1676848
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 554500
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 88812
+        }
+      ],
+      "nEvents": 22,
+      "totalEur": 41914740
+    },
+    {
+      "name": "Electricite De France",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 24,
+          "eur": 24754187
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 35,
+          "eur": 15011263
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 10,
+          "eur": 696719
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 670000
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 115000
+        }
+      ],
+      "nEvents": 72,
+      "totalEur": 41247169
+    },
+    {
+      "name": "Sipearl",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "eib",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 25000000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 6,
+          "eur": 3429068
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2500000
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 3,
+          "eur": 557812
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 524715
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 32011595
+    },
+    {
+      "name": "Lynred",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "ipcei",
+        "edf",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 2,
+          "eur": 46999998
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 37154587
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 26900000
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 1299295
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 27000
+        }
+      ],
+      "nEvents": 16,
+      "totalEur": 28199295
+    },
+    {
+      "name": "Menta SAS",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eib",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 14920924
+        },
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 8000000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 1374748
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 1111247
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 983646
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 26390565
+    },
+    {
+      "name": "Axelera Ai BV",
+      "country": "NL",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 13541808
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 6677661
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 3063512
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 25782980
+    },
+    {
+      "name": "Codasip GmbH",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 20906938
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2499999
+        },
+        {
+          "family": "chips_ju",
+          "events": 4,
+          "eur": 1225913
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 611077
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 330681
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 25574608
+    },
+    {
+      "name": "Agfa Gevaert NV",
+      "country": "BE",
+      "sector": "cleantech",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 11031000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 9803495
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 820316
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 229375
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 221112
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 22105298
+    },
+    {
+      "name": "Ubitech Limited",
+      "country": "CY",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 25,
+          "eur": 10457645
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 6099450
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 3,
+          "eur": 2446750
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 542500
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 404366
+        }
+      ],
+      "nEvents": 33,
+      "totalEur": 19950711
+    },
+    {
+      "name": "Cy.R.I.C Cyprus Research And Innovation Center Ltd",
+      "country": "CY",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "edf",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 18,
+          "eur": 11094469
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 3435186
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 38,
+          "eur": 2693982
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 549688
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 191188
+        }
+      ],
+      "nEvents": 59,
+      "totalEur": 17964512
+    },
+    {
+      "name": "Vysoke Uceni Technicke V Brne",
+      "country": "CZ",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 12,
+          "eur": 6085932
+        },
+        {
+          "family": "chips_ju",
+          "events": 13,
+          "eur": 3477915
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 1947731
+        },
+        {
+          "family": "eic",
+          "events": 3,
+          "eur": 1679125
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 49125
+        }
+      ],
+      "nEvents": 32,
+      "totalEur": 13239828
+    },
+    {
+      "name": "Lionix International BV",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 9,
+          "eur": 5764537
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 5224921
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 3,
+          "eur": 1564852
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 237500
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 197970
+        }
+      ],
+      "nEvents": 22,
+      "totalEur": 12989780
+    },
+    {
+      "name": "Carl Zeiss",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "chips_ju",
+          "events": 6,
+          "eur": 10984027
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 1185544
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 564048
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 223750
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 14,
+      "totalEur": 12957369
+    },
+    {
+      "name": "Ct Ingenieros Aeronauticos De Automocion E Industriales SL",
+      "country": "ES",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "chips_ju",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 9989713
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 5,
+          "eur": 2445690
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 217938
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 157579
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 101953
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 12912872
+    },
+    {
+      "name": "E 4 Computer Engineering SpA",
+      "country": "IT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 4997589
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 2350502
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 7,
+          "eur": 2032070
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 1092983
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 591458
+        }
+      ],
+      "nEvents": 19,
+      "totalEur": 11064602
+    },
+    {
+      "name": "Heliup",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "innovation_fund",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 3224825
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 2093216
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 1242372
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 282188
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 6842600
+    },
+    {
+      "name": "Phix BV",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 8,
+          "eur": 3543369
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 393500
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 392500
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 312750
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 302938
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 4945056
+    },
+    {
+      "name": "Plexigrid Sociedad Limitada",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2450000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 676250
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 622825
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 100161
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 3849236
+    },
+    {
+      "name": "Extoll",
+      "country": "DE",
+      "sector": "digital",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 703502
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 703440
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 644075
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 640375
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 2691392
+    },
+    {
+      "name": "Fev France",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1135064
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 880104
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 156465
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 77313
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 2248946
+    },
+    {
+      "name": "SCINTIL Photonics",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 5,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 555000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 464586
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 159874
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 1179460
+    },
+    {
+      "name": "Symbio",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 672040316
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 669000000
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 4,
+          "eur": 856000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 218750
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 672895066
+    },
+    {
+      "name": "Fincantieri",
+      "country": "IT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "ipcei",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 2,
+          "eur": 386850000
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 13901714
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 15,
+          "eur": 9592024
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 7,
+          "eur": 1660364
+        }
+      ],
+      "nEvents": 25,
+      "totalEur": 412004102
+    },
+    {
+      "name": "Renault",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "ipcei",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 50,
+          "eur": 294830941
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 27200000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 10,
+          "eur": 3147097
+        },
+        {
+          "family": "chips_ju",
+          "events": 4,
+          "eur": 1245
+        }
+      ],
+      "nEvents": 65,
+      "totalEur": 297979284
+    },
+    {
+      "name": "Dassault Aviation",
+      "country": "FR",
+      "sector": "defense",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 24,
+          "eur": 146257454
+        },
+        {
+          "family": "edf",
+          "events": 2,
+          "eur": 123809385
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 4,
+          "eur": 6430555
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 848733
+        }
+      ],
+      "nEvents": 32,
+      "totalEur": 277346127
+    },
+    {
+      "name": "Faurecia",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "chips_ju"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 213000000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 886972
+        },
+        {
+          "family": "chips_ju",
+          "events": 4,
+          "eur": 75672
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 11,
+      "totalEur": 213962644
+    },
+    {
+      "name": "Ge Avio Srl",
+      "country": "IT",
+      "sector": "space",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 2,
+          "eur": 96999564
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 12,
+          "eur": 46302464
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 7,
+          "eur": 46156133
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 890728
+        }
+      ],
+      "nEvents": 24,
+      "totalEur": 190348888
+    },
+    {
+      "name": "Iberdrola Clientes Sociedad Anonima",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 3,
+          "eur": 184900809
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 1067812
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 706749
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 304312
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 186979682
+    },
+    {
+      "name": "Neste",
+      "country": "FI",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "innovation_fund"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 150000000
+        },
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 28000000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 938591
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 178938591
+    },
+    {
+      "name": "Repsol SA",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 155000000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 10064695
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 400750
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 391714
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 165857159
+    },
+    {
+      "name": "Linde GmbH",
+      "country": "DE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 17,
+          "eur": 82666544
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 74600000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 733143
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 3,
+          "eur": 123994
+        }
+      ],
+      "nEvents": 24,
+      "totalEur": 158123681
+    },
+    {
+      "name": "Aura Aero SAS",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "innovation_fund",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 95000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 11,
+          "eur": 47489466
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499358
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 29700
+        }
+      ],
+      "nEvents": 16,
+      "totalEur": 145018524
+    },
+    {
+      "name": "Solar Foods Oyj",
+      "country": "FI",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 111000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 43990250
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2328825
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 48300
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 113721125
+    },
+    {
+      "name": "Infineon",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "chips_ju"
+      ],
+      "breakdown": [
+        {
+          "family": "chips_ju",
+          "events": 36,
+          "eur": 98028363
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 18,
+          "eur": 8735867
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 1485104
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 57,
+      "totalEur": 108249334
+    },
+    {
+      "name": "OHB System AG",
+      "country": "DE",
+      "sector": "space",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 90000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 6,
+          "eur": 2354994
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 425911
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 308250
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 93089155
+    },
+    {
+      "name": "Omv Downstream GmbH",
+      "country": "AT",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 81630000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 8867729
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 309088
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 90806818
+    },
+    {
+      "name": "Petrogal SA",
+      "country": "PT",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 84227910
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 1766107
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1121633
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 420000
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 87535650
+    },
+    {
+      "name": "Ideol",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "innovation_fund",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 74196074
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 3311294
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 2335042
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 12,
+      "totalEur": 79842410
+    },
+    {
+      "name": "Nxp Semiconductors Germany GmbH",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 29,
+          "eur": 320735025
+        },
+        {
+          "family": "chips_ju",
+          "events": 9,
+          "eur": 56750082
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 2556844
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 744424
+        }
+      ],
+      "nEvents": 43,
+      "totalEur": 77484958
+    },
+    {
+      "name": "Naval Group",
+      "country": "FR",
+      "sector": "defense",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "edf",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 64999999
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 10,
+          "eur": 5453305
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 8,
+          "eur": 66252
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 20922
+        }
+      ],
+      "nEvents": 20,
+      "totalEur": 70540477
+    },
+    {
+      "name": "SNAM S.p.A.",
+      "country": "IT",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 46270000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 3651932
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 11,
+          "eur": 3183225
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 849500
+        }
+      ],
+      "nEvents": 21,
+      "totalEur": 53954656
+    },
+    {
+      "name": "Corwave",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "ipcei",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 51880000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 11833905
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 500000
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 51880000
+    },
+    {
+      "name": "Valeo",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "ipcei",
+        "chips_ju",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 48400000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 17,
+          "eur": 5276159
+        },
+        {
+          "family": "chips_ju",
+          "events": 5,
+          "eur": 598512
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 50000
+        }
+      ],
+      "nEvents": 24,
+      "totalEur": 48998512
+    },
+    {
+      "name": "Nokia Solutions And Networks",
+      "country": "FI",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 92997456
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 6,
+          "eur": 2412841
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 774461
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 216562
+        }
+      ],
+      "nEvents": 17,
+      "totalEur": 48401321
+    },
+    {
+      "name": "Treefrog Therapeutics",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eib",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 30000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 11925138
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 449528
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 42374666
+    },
+    {
+      "name": "Modvion AB",
+      "country": "SE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "innovation_fund",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 39100000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 1800247
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 40900247
+    },
+    {
+      "name": "Volvo Technology",
+      "country": "SE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 16,
+          "eur": 20155508
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 13936170
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 7,
+          "eur": 6678510
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 26,
+      "totalEur": 40770189
+    },
+    {
+      "name": "Isfm Intelligent Systems For Mobility",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 18,
+          "eur": 37517348
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 526750
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 478500
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 21,
+      "totalEur": 38522598
+    },
+    {
+      "name": "Abb",
+      "country": "FI",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 13,
+          "eur": 29656791
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 3,
+          "eur": 3508690
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 11,
+          "eur": 3452316
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 674425
+        }
+      ],
+      "nEvents": 29,
+      "totalEur": 37292222
+    },
+    {
+      "name": "Prinses Maxima Centrum Voor Kinderoncologie BV",
+      "country": "NL",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 32936453
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 2850880
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 961500
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 487475
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 37236308
+    },
+    {
+      "name": "Aixtron SE",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 12,
+          "eur": 28103333
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 4107500
+        },
+        {
+          "family": "chips_ju",
+          "events": 4,
+          "eur": 1565824
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 328625
+        }
+      ],
+      "nEvents": 19,
+      "totalEur": 34105282
+    },
+    {
+      "name": "Varjo Technologies Oy",
+      "country": "FI",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eib",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 20000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 12919736
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 358125
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 33277861
+    },
+    {
+      "name": "Philips Electronics Nederland B.V.",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "chips_ju",
+          "events": 5,
+          "eur": 23189569
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 7,
+          "eur": 4755352
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 2185894
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 1882285
+        }
+      ],
+      "nEvents": 22,
+      "totalEur": 32013101
+    },
+    {
+      "name": "Txt E-Tech Srl",
+      "country": "IT",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 27997206
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 6,
+          "eur": 3022576
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 576550
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 305750
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 31902082
+    },
+    {
+      "name": "Philips Medical Systems Nederland",
+      "country": "NL",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 13,
+          "eur": 27627922
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 1886228
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 613844
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 429000
+        }
+      ],
+      "nEvents": 17,
+      "totalEur": 30556994
+    },
+    {
+      "name": "Quandela",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 13,
+          "eur": 23539554
+        },
+        {
+          "family": "eic",
+          "events": 3,
+          "eur": 2742762
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 2088128
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1041632
+        }
+      ],
+      "nEvents": 22,
+      "totalEur": 29412077
+    },
+    {
+      "name": "Blue World Technologies ApS",
+      "country": "DK",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eib",
+        "chips_ju",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 25000000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 2910404
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 116250
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 96250
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 28122904
+    },
+    {
+      "name": "Aktsiaselts Elcogen",
+      "country": "EE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 24932000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 6314328
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 6,
+          "eur": 2398611
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 155188
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 27796794
+    },
+    {
+      "name": "Telefonica Innovacion Digital SL",
+      "country": "ES",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 46,
+          "eur": 14980605
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 26,
+          "eur": 11184657
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 1192250
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 196063
+        }
+      ],
+      "nEvents": 75,
+      "totalEur": 27553575
+    },
+    {
+      "name": "Stmicroelectronics Crolles 2",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 6,
+          "eur": 43605958
+        },
+        {
+          "family": "chips_ju",
+          "events": 10,
+          "eur": 17722500
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 1005208
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 929294
+        }
+      ],
+      "nEvents": 21,
+      "totalEur": 27001631
+    },
+    {
+      "name": "Holosolis",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 15950652
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 10214615
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 210000
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 26375267
+    },
+    {
+      "name": "Quobly",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 16489346
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 4940325
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 3003290
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 328435
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 24761396
+    },
+    {
+      "name": "Airbus Defence And Space GmbH",
+      "country": "DE",
+      "sector": "space",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 12,
+          "eur": 10893777
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 9,
+          "eur": 7980971
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 10,
+          "eur": 5435897
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 301468
+        }
+      ],
+      "nEvents": 32,
+      "totalEur": 24612112
+    },
+    {
+      "name": "Scania Cv",
+      "country": "SE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 12,
+          "eur": 14312030
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 7166250
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 2927962
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 127000
+        }
+      ],
+      "nEvents": 17,
+      "totalEur": 24533242
+    },
+    {
+      "name": "Bedimensional SpA",
+      "country": "IT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "eib",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 20000000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 2471193
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 684571
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 23155764
+    },
+    {
+      "name": "Northvolt",
+      "country": "SE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "ipcei",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 21468640
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 21468640
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 1115438
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 75000
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 22659078
+    },
+    {
+      "name": "Axelera Ai",
+      "country": "BE",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 17275484
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 1332672
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 251008
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 18859164
+    },
+    {
+      "name": "Stam Srl",
+      "country": "IT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 31,
+          "eur": 9874230
+        },
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 5912181
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 13,
+          "eur": 1404748
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 6,
+          "eur": 1376295
+        }
+      ],
+      "nEvents": 51,
+      "totalEur": 18567454
+    },
+    {
+      "name": "Imst",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 24,
+          "eur": 12822704
+        },
+        {
+          "family": "chips_ju",
+          "events": 4,
+          "eur": 1852276
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 1049077
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 799395
+        }
+      ],
+      "nEvents": 31,
+      "totalEur": 16523451
+    },
+    {
+      "name": "Corpower Ocean AB",
+      "country": "SE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 13662147
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 348143
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 16510290
+    },
+    {
+      "name": "Greenov-Ites",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 10,
+          "eur": 8133974
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 3065569
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2392688
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 2217833
+        }
+      ],
+      "nEvents": 18,
+      "totalEur": 15810063
+    },
+    {
+      "name": "Tactotek Oy",
+      "country": "FI",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eib",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 15000000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 201500
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 152500
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 15354000
+    },
+    {
+      "name": "Greenbone Ortho SpA",
+      "country": "IT",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eib",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 8000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 4749722
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2458129
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 15207851
+    },
+    {
+      "name": "Onego Bio Ltd",
+      "country": "FI",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 10743686
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 13243685
+    },
+    {
+      "name": "Blue Solutions",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "innovation_fund",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 6750000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 3224685
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 1612908
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 1475818
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 13063411
+    },
+    {
+      "name": "Cybernetica AS",
+      "country": "EE",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 9102281
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 6,
+          "eur": 1485382
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 1471238
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 682500
+        }
+      ],
+      "nEvents": 12,
+      "totalEur": 12741401
+    },
+    {
+      "name": "Orixha",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 8116158
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2449869
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 2166300
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 12732327
+    },
+    {
+      "name": "John Cockerill",
+      "country": "BE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 11000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 1203950
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 30000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 23216
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 12257166
+    },
+    {
+      "name": "Everzom",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 6446870
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 2914797
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1700000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 297000
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 11358667
+    },
+    {
+      "name": "Space Applications Services NV",
+      "country": "BE",
+      "sector": "space",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "edf",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 4995883
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 7,
+          "eur": 4488361
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 1160375
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 597197
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 11241816
+    },
+    {
+      "name": "Mbryonics Limited",
+      "country": "IE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 4971010
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 2668406
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 691569
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 10830984
+    },
+    {
+      "name": "Dracula Technologies",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 7614155
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1622881
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 579471
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 338279
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 10154786
+    },
+    {
+      "name": "Kiutra GmbH",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 6468712
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 2635200
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 1034231
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 10138144
+    },
+    {
+      "name": "Philips",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 7,
+          "eur": 9408698
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 500001
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 214000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 10122698
+    },
+    {
+      "name": "Hydrogen Onsite, SL",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 4972054
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 2180000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 433686
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 10085739
+    },
+    {
+      "name": "Acciaierie Bertoli Safau SpA",
+      "country": "IT",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 4150000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 3311920
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 1620818
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 922834
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 10005572
+    },
+    {
+      "name": "Graphenea Semiconductor SL",
+      "country": "ES",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 11,
+          "eur": 6453650
+        },
+        {
+          "family": "eic",
+          "events": 3,
+          "eur": 1272625
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 1075554
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 584274
+        }
+      ],
+      "nEvents": 18,
+      "totalEur": 9386103
+    },
+    {
+      "name": "Smart Photonics BV",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 5173402
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 2838297
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1156860
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 152084
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 9320643
+    },
+    {
+      "name": "Microfluidic Chipshop GmbH",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 5062655
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 2632195
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 599938
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 389500
+        }
+      ],
+      "nEvents": 12,
+      "totalEur": 8684287
+    },
+    {
+      "name": "Thales Alenia Space France",
+      "country": "FR",
+      "sector": "space",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 6275454
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 4,
+          "eur": 2058020
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 50000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 12400
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 8395874
+    },
+    {
+      "name": "Bound 4 Blue SL",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 4098569
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2396802
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 927779
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 827687
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 8250837
+    },
+    {
+      "name": "Avl Deutschland",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 10,
+          "eur": 6111164
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 1832079
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 33338
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 16,
+      "totalEur": 7976580
+    },
+    {
+      "name": "Stmicroelectronics France",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 448975365
+        },
+        {
+          "family": "chips_ju",
+          "events": 9,
+          "eur": 4017860
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 292381
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 193786
+        }
+      ],
+      "nEvents": 19,
+      "totalEur": 7970676
+    },
+    {
+      "name": "Intel Deutschland",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 3029125
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 6,
+          "eur": 2904892
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 1830512
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 68791
+        }
+      ],
+      "nEvents": 19,
+      "totalEur": 7833321
+    },
+    {
+      "name": "Ligentec France",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 3254805
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 2354247
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1380500
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 658000
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 7647552
+    },
+    {
+      "name": "Enel Green Power SpA",
+      "country": "IT",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 5822492
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 962270
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 431375
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 421840
+        }
+      ],
+      "nEvents": 15,
+      "totalEur": 7637977
+    },
+    {
+      "name": "Qblox BV",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 3081000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 2595819
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1363875
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 591500
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 7632194
+    },
+    {
+      "name": "Pal Robotics Slu",
+      "country": "ES",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 11,
+          "eur": 5785982
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 1098685
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 451250
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 276559
+        }
+      ],
+      "nEvents": 15,
+      "totalEur": 7612476
+    },
+    {
+      "name": "Cellfion AB",
+      "country": "SE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 4819007
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2435182
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 340502
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 7594692
+    },
+    {
+      "name": "Umicore",
+      "country": "DE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 7,
+          "eur": 6237248
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 993650
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 230274
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 7461172
+    },
+    {
+      "name": "Dynelectro ApS",
+      "country": "DK",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "national_dev_banks",
+          "events": 7,
+          "eur": 2896095
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2499999
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 1245625
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 759598
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 7401317
+    },
+    {
+      "name": "Semiqon Technologies Oy",
+      "country": "FI",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 3,
+          "eur": 4813019
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 1585738
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 568000
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 313425
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 7280182
+    },
+    {
+      "name": "Irt Antoine De Saint Exupery",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 8,
+          "eur": 4844820
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 6,
+          "eur": 1242727
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 726892
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 332191
+        }
+      ],
+      "nEvents": 19,
+      "totalEur": 7146630
+    },
+    {
+      "name": "Innolume GmbH",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 4394312
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 1999999
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 393450
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 143503
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 6931264
+    },
+    {
+      "name": "Green Spot Technologies",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 3854391
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2474938
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 400000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 59938
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 6789266
+    },
+    {
+      "name": "Salvia Bioelectronics BV",
+      "country": "NL",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 2600025
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 944815
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 614342
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 6659181
+    },
+    {
+      "name": "Qubit Pharmaceuticals",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2500000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 1842699
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 1636726
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 290303
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 6269728
+    },
+    {
+      "name": "Xenomatix",
+      "country": "BE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2482564
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 1874643
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 927050
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 853860
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 6138117
+    },
+    {
+      "name": "Frequentis",
+      "country": "AT",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 10,
+          "eur": 3474779
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 6,
+          "eur": 2089076
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 416875
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 145000
+        }
+      ],
+      "nEvents": 18,
+      "totalEur": 6125730
+    },
+    {
+      "name": "Humanitas Mirasole SpA",
+      "country": "IT",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 9,
+          "eur": 3023886
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 1979630
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 557250
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 506250
+        }
+      ],
+      "nEvents": 15,
+      "totalEur": 6067016
+    },
+    {
+      "name": "Ciel Et Terre International",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "innovation_fund",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 2650000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 1641469
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 1566308
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 100000
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 5957777
+    },
+    {
+      "name": "Arcelormittal Innovacion Investigacion E Inversion SL",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 3866299
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1546676
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 296140
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 239138
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 5948252
+    },
+    {
+      "name": "Spartha Medical",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2389625
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 1702510
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 1545525
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 23560
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 5661220
+    },
+    {
+      "name": "Cemex Espana Operaciones SL",
+      "country": "ES",
+      "sector": "other",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "innovation_fund",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 4416864
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 730188
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 298344
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 112866
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 5558262
+    },
+    {
+      "name": "Vexlum Oy",
+      "country": "FI",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2749188
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 1697671
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 1037725
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 5484584
+    },
+    {
+      "name": "Nxp Semiconductors Austria GmbH Co KG",
+      "country": "AT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 9,
+          "eur": 19860025
+        },
+        {
+          "family": "chips_ju",
+          "events": 5,
+          "eur": 1932219
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 580679
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 118554
+        }
+      ],
+      "nEvents": 16,
+      "totalEur": 5445683
+    },
+    {
+      "name": "Rohde Schwarz GmbH Co Kommanditgesellschaft",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 8,
+          "eur": 16126608
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 1157024
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 620095
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 119172
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 5416177
+    },
+    {
+      "name": "Cedrat Technologies SA",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "edf",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "edf",
+          "events": 1,
+          "eur": 3544262
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 1433579
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 241800
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 5219641
+    },
+    {
+      "name": "Single Quantum BV",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 2592750
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1103125
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 848345
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 667124
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 5211344
+    },
+    {
+      "name": "Qurv Technologies SL",
+      "country": "ES",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2370938
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 1591009
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 1101148
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 115196
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 5178290
+    },
+    {
+      "name": "Orange Quantum Systems Operational BV",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "eit",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2877999
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 990300
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 892500
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 4760799
+    },
+    {
+      "name": "Qilimanjaro Quantum Tech SL",
+      "country": "ES",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2495000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 1301520
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 866696
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 68750
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 4731966
+    },
+    {
+      "name": "Cefriel Societa Consortile A Responsabilita Limitata Societa Benefit",
+      "country": "IT",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 9,
+          "eur": 3451500
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 993314
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 169575
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 99250
+        }
+      ],
+      "nEvents": 16,
+      "totalEur": 4713639
+    },
+    {
+      "name": "Pixel Photonics GmbH",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 1900611
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 1591250
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 1033000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 4524861
+    },
+    {
+      "name": "Emc Information Systems International Unlimited Company",
+      "country": "IE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 6,
+          "eur": 3558029
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 373275
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 258438
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 199485
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 4389227
+    },
+    {
+      "name": "Toyota Motor Europe NV",
+      "country": "BE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 13,
+          "eur": 3009408
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 557261
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 545655
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 272200
+        }
+      ],
+      "nEvents": 17,
+      "totalEur": 4384524
+    },
+    {
+      "name": "Eden Tech",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 1662175
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 1169448
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 773271
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 742339
+        }
+      ],
+      "nEvents": 10,
+      "totalEur": 4347233
+    },
+    {
+      "name": "Namlab Ggmbh",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 2532275
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 1089086
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 496300
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 207109
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 4324770
+    },
+    {
+      "name": "Build To Zero SL",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2491249
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 671745
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 665296
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 337993
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 4166284
+    },
+    {
+      "name": "Carmat",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2500000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 1397538
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 112500
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 4010038
+    },
+    {
+      "name": "Hewlett Packard Italiana Srl",
+      "country": "IT",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 9,
+          "eur": 2514799
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 856267
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 565939
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 17,
+      "totalEur": 3937005
+    },
+    {
+      "name": "Nevomo Poland Spolka Z Ograniczona Odpowiedzialnoscia",
+      "country": "PL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "eit"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 3,
+          "eur": 859316
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 459375
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 3818690
+    },
+    {
+      "name": "Nopalm Ingredients BV",
+      "country": "NL",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "eit",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499999
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 861824
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 356700
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 3718523
+    },
+    {
+      "name": "Eura AG",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 8,
+          "eur": 2191075
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 640812
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 476875
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 269704
+        }
+      ],
+      "nEvents": 14,
+      "totalEur": 3578466
+    },
+    {
+      "name": "Elem Biotech SL",
+      "country": "ES",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2482097
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 575188
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 274320
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 187145
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 3518749
+    },
+    {
+      "name": "Basquevolt SA",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "eit",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499219
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 604750
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 325000
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 3428969
+    },
+    {
+      "name": "Geyser Batteries Oy",
+      "country": "FI",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2437812
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 709629
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 161000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 3308441
+    },
+    {
+      "name": "Kaffe Bueno ApS",
+      "country": "DK",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "eit",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2490688
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 703312
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 108053
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 3302053
+    },
+    {
+      "name": "Time Is Brain SL",
+      "country": "ES",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2500000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 648330
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 116485
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 3264815
+    },
+    {
+      "name": "Vortex.Io",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2500000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 351841
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 211430
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 140745
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 3204016
+    },
+    {
+      "name": "Moa Biotech SL",
+      "country": "ES",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2258016
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 498359
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 325000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 110086
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 3191461
+    },
+    {
+      "name": "Haltian",
+      "country": "FI",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 2180000
+        },
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 870000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 26254
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 3076254
+    },
+    {
+      "name": "Connecting Food",
+      "country": "FR",
+      "sector": "other",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2500000
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 360000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 104683
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 2964683
+    },
+    {
+      "name": "Acorai AB",
+      "country": "SE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "eit",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 2299633
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 381539
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 178875
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 2860047
+    },
+    {
+      "name": "Stellantis Auto",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 6,
+          "eur": 1564492
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 1071414
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 117016
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 74393
+        }
+      ],
+      "nEvents": 12,
+      "totalEur": 2827315
+    },
+    {
+      "name": "Ekkono Solutions AB",
+      "country": "SE",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2499875
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 210645
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 2710520
+    },
+    {
+      "name": "Nano4Energy Slne",
+      "country": "ES",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_partnership",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 1382737
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 457500
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 455571
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 408578
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 2704386
+    },
+    {
+      "name": "Computomics GmbH",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2447812
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 247224
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 2695036
+    },
+    {
+      "name": "Pdm E Fc Projecto Desenvolvimento Manutencao Formacao E Consultadoria",
+      "country": "PT",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 1745325
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 536625
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 199938
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 192742
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 2674630
+    },
+    {
+      "name": "Ebenbuild GmbH",
+      "country": "DE",
+      "sector": "digital",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 2330125
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 287435
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 2617560
+    },
+    {
+      "name": "Demcon Life Sciences Health Enschede",
+      "country": "NL",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 1499388
+        },
+        {
+          "family": "chips_ju",
+          "events": 3,
+          "eur": 747718
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 150153
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 2397259
+    },
+    {
+      "name": "Berliner Nanotest Und Design GmbH",
+      "country": "DE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 797167
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 696250
+        },
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 611250
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 116250
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 2220917
+    },
+    {
+      "name": "Yellowscan",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 976251
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 453830
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 400000
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 351277
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 2181358
+    },
+    {
+      "name": "Variolytics GmbH",
+      "country": "DE",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 1724625
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 261406
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 193112
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 2179143
+    },
+    {
+      "name": "Interactive Fully Electrical Vehicles Srl",
+      "country": "IT",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "chips_ju",
+          "events": 4,
+          "eur": 766000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 5,
+          "eur": 759103
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 341250
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 200375
+        }
+      ],
+      "nEvents": 11,
+      "totalEur": 2066728
+    },
+    {
+      "name": "Sivers Wireless",
+      "country": "SE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 1209231
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 496070
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 186047
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 163855
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 2055202
+    },
+    {
+      "name": "Jobst Technologies GmbH",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 905500
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 676500
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 219100
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 219080
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 2020180
+    },
+    {
+      "name": "BeFC",
+      "country": "FR",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 993967
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 3,
+          "eur": 627893
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 373612
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 8,
+      "totalEur": 1995472
+    },
+    {
+      "name": "Multi Channel Systems Mcs GmbH",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 651061
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 564688
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 356506
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 356494
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 1928748
+    },
+    {
+      "name": "Insel Gruppe",
+      "country": "CH",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "national_dev_banks",
+          "events": 3,
+          "eur": 1657227
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 0
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 9,
+      "totalEur": 1657227
+    },
+    {
+      "name": "Ibm Research GmbH",
+      "country": "CH",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eic",
+        "chips_ju"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 1322410
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 11,
+          "eur": 0
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 15,
+      "totalEur": 1322410
+    },
+    {
+      "name": "Finnadvance Oy",
+      "country": "FI",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "eit",
+        "chips_ju"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 806284
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 310188
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 196692
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 1313163
+    },
+    {
+      "name": "Thermo Fisher Scientific Bremen",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 699100
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 183800
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 183795
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 1066695
+    },
+    {
+      "name": "Nemi Mobility Solutions",
+      "country": "ES",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "eit",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 428050
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 282906
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 276054
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 987010
+    },
+    {
+      "name": "Agreenculture",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 430113
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 341690
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 183242
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 955046
+    },
+    {
+      "name": "Swegan",
+      "country": "SE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 307851
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 294689
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 153750
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 756290
+    },
+    {
+      "name": "4Mod Technology",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 234789
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 200000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 139927
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 115172
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 689888
+    },
+    {
+      "name": "Mov Eo",
+      "country": "FR",
+      "sector": "other",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "chips_ju",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 230956
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 201000
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 65581
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 60000
+        }
+      ],
+      "nEvents": 5,
+      "totalEur": 557537
+    },
+    {
+      "name": "Magna Electronics Sweden",
+      "country": "SE",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 211359
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 130312
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 113364
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 60375
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 515411
+    },
+    {
+      "name": "Demcon High Tech Systems Enschede",
+      "country": "NL",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "chips_ju",
+          "events": 2,
+          "eur": 247498
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 243886
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 0
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 491384
+    },
+    {
+      "name": "Ligentec",
+      "country": "CH",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "chips_ju",
+        "national_dev_banks"
+      ],
+      "breakdown": [
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 452560
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 4,
+          "eur": 0
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "chips_ju",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 452560
+    },
+    {
+      "name": "Reefilla",
+      "country": "IT",
+      "sector": "cleantech",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eit",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 318643
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "eit",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 318643
+    },
+    {
+      "name": "Cortec GmbH",
+      "country": "DE",
+      "sector": "life_sciences",
+      "nFamilies": 4,
+      "families": [
+        "eic",
+        "ipcei",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eic",
+          "events": 2,
+          "eur": 3487931
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 0
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 0
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 0
+    },
+    {
+      "name": "Carbon",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "ipcei",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 315111
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 300240
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 45036
+        },
+        {
+          "family": "ipcei",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 0
+    },
+    {
+      "name": "Verkor",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 3,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 13,
+          "eur": 637088435
+        },
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 76282817
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 8,
+          "eur": 3024787
+        }
+      ],
+      "nEvents": 22,
+      "totalEur": 716396039
+    }
+  ],
+  "rotation": {
+    "years": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "sectors": [
+      {
+        "id": "cleantech",
+        "counts": [
+          6794,
+          9037,
+          12414,
+          13850,
+          10578
+        ],
+        "shares": [
+          0.3494,
+          0.3262,
+          0.3134,
+          0.3091,
+          0.2949
+        ]
+      },
+      {
+        "id": "deeptech_hardware",
+        "counts": [
+          6860,
+          8123,
+          12365,
+          14320,
+          11459
+        ],
+        "shares": [
+          0.3528,
+          0.2932,
+          0.3121,
+          0.3196,
+          0.3195
+        ]
+      },
+      {
+        "id": "life_sciences",
+        "counts": [
+          2491,
+          5572,
+          7377,
+          7671,
+          6086
+        ],
+        "shares": [
+          0.1281,
+          0.2011,
+          0.1862,
+          0.1712,
+          0.1697
+        ]
+      },
+      {
+        "id": "digital",
+        "counts": [
+          2869,
+          4201,
+          6287,
+          7931,
+          6891
+        ],
+        "shares": [
+          0.1476,
+          0.1516,
+          0.1587,
+          0.177,
+          0.1921
+        ]
+      },
+      {
+        "id": "defense",
+        "counts": [
+          83,
+          207,
+          274,
+          237,
+          282
+        ],
+        "shares": [
+          0.0043,
+          0.0075,
+          0.0069,
+          0.0053,
+          0.0079
+        ]
+      },
+      {
+        "id": "space",
+        "counts": [
+          346,
+          564,
+          899,
+          804,
+          570
+        ],
+        "shares": [
+          0.0178,
+          0.0204,
+          0.0227,
+          0.0179,
+          0.0159
+        ]
+      }
+    ]
+  },
+  "concentration": [
+    {
+      "id": "state_aid_satr",
+      "label": "National state aid",
+      "basis": "satr_aid_element",
+      "events": 120336,
+      "companies": 76308,
+      "totalEur": 169529922987,
+      "top10Share": 0.3021,
+      "medianTicket": 302490,
+      "p90Ticket": 1553649
+    },
+    {
+      "id": "ipcei",
+      "label": "IPCEI",
+      "basis": "ipcei_state_aid",
+      "events": 216,
+      "companies": 211,
+      "totalEur": 27282210000,
+      "top10Share": 0.2466,
+      "medianTicket": 68730000,
+      "p90Ticket": 323600000
+    },
+    {
+      "id": "horizon_eu_pillar_ii",
+      "label": "Horizon Europe Pillar II",
+      "basis": "horizon_eu_grant",
+      "events": 49950,
+      "companies": 15713,
+      "totalEur": 22505873099,
+      "top10Share": 0.067,
+      "medianTicket": 312375,
+      "p90Ticket": 818799
+    },
+    {
+      "id": "innovation_fund",
+      "label": "Innovation Fund",
+      "basis": "if_eu_grant",
+      "events": 239,
+      "companies": 229,
+      "totalEur": 13497054946,
+      "top10Share": 0.1925,
+      "medianTicket": 31333250,
+      "p90Ticket": 153386598
+    },
+    {
+      "id": "national_dev_banks",
+      "label": "National development banks",
+      "basis": "ademe_grant",
+      "events": 26268,
+      "companies": 18157,
+      "totalEur": 5590679856,
+      "top10Share": 0.1798,
+      "medianTicket": 20000,
+      "p90Ticket": 200000
+    },
+    {
+      "id": "edf",
+      "label": "European Defence Fund",
+      "basis": "edf_eu_ceiling",
+      "events": 279,
+      "companies": 194,
+      "totalEur": 4980221298,
+      "top10Share": 0.4113,
+      "medianTicket": 9530059,
+      "p90Ticket": 44669179
+    },
+    {
+      "id": "eic",
+      "label": "EIC",
+      "basis": "eic_eu_grant",
+      "events": 3682,
+      "companies": 2076,
+      "totalEur": 3439718716,
+      "top10Share": 0.0699,
+      "medianTicket": 584688,
+      "p90Ticket": 2496988
+    },
+    {
+      "id": "chips_ju",
+      "label": "Chips JU",
+      "basis": "kdt_grant",
+      "events": 2180,
+      "companies": 1080,
+      "totalEur": 1586921437,
+      "top10Share": 0.5946,
+      "medianTicket": 233914,
+      "p90Ticket": 729066
+    },
+    {
+      "id": "horizon_eu_partnership",
+      "label": "Horizon partnerships",
+      "basis": "chp_grant",
+      "events": 1479,
+      "companies": 882,
+      "totalEur": 881272061,
+      "top10Share": 0.156,
+      "medianTicket": 351312,
+      "p90Ticket": 1186875
+    }
+  ],
+  "equity": {
+    "totalPositions": 5570,
+    "holders": [
+      {
+        "id": "uk_future_fund",
+        "label": "Future Fund (British Business Bank)",
+        "country": "GB",
+        "type": "ndb",
+        "positions": 2030,
+        "nameOnly": 2030,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "pfr_ventures",
+        "label": "PFR Ventures",
+        "country": "PL",
+        "type": "state_vc",
+        "positions": 1068,
+        "nameOnly": 1068,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "htgf",
+        "label": "High-Tech Gründerfonds",
+        "country": "DE",
+        "type": "state_vc",
+        "positions": 538,
+        "nameOnly": 538,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "almi_invest",
+        "label": "Almi Invest",
+        "country": "SE",
+        "type": "state_vc",
+        "positions": 323,
+        "nameOnly": 323,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "portugal_ventures",
+        "label": "Portugal Ventures",
+        "country": "PT",
+        "type": "state_vc",
+        "positions": 252,
+        "nameOnly": 252,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "eic_fund",
+        "label": "EIC Fund",
+        "country": "EU",
+        "type": "eu_instrument",
+        "positions": 233,
+        "nameOnly": 233,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "tesi",
+        "label": "Tesi",
+        "country": "FI",
+        "type": "state_vc",
+        "positions": 171,
+        "nameOnly": 99,
+        "pct": 72,
+        "amount": 0
+      },
+      {
+        "id": "eifo",
+        "label": "EIFO",
+        "country": "DK",
+        "type": "ndb",
+        "positions": 158,
+        "nameOnly": 115,
+        "pct": 43,
+        "amount": 0
+      },
+      {
+        "id": "investinor",
+        "label": "Investinor",
+        "country": "NO",
+        "type": "state_vc",
+        "positions": 139,
+        "nameOnly": 139,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "bayern_kapital",
+        "label": "Bayern Kapital",
+        "country": "DE",
+        "type": "state_vc",
+        "positions": 133,
+        "nameOnly": 133,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "ibb_ventures",
+        "label": "IBB Ventures",
+        "country": "DE",
+        "type": "state_vc",
+        "positions": 100,
+        "nameOnly": 100,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "cdp_vc",
+        "label": "CDP Venture Capital",
+        "country": "IT",
+        "type": "state_vc",
+        "positions": 81,
+        "nameOnly": 81,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "aws_gruendungsfonds",
+        "label": "aws Gründungsfonds",
+        "country": "AT",
+        "type": "state_vc",
+        "positions": 54,
+        "nameOnly": 54,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "nysno",
+        "label": "Nysnø Climate Investments",
+        "country": "NO",
+        "type": "state_vc",
+        "positions": 54,
+        "nameOnly": 54,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "coparion",
+        "label": "Coparion",
+        "country": "DE",
+        "type": "state_vc",
+        "positions": 52,
+        "nameOnly": 52,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "hiventures",
+        "label": "Hiventures",
+        "country": "HU",
+        "type": "state_vc",
+        "positions": 45,
+        "nameOnly": 45,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "eit_innoenergy",
+        "label": "EIT InnoEnergy",
+        "country": "EU",
+        "type": "eu_instrument",
+        "positions": 23,
+        "nameOnly": 23,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "altum",
+        "label": "ALTUM",
+        "country": "LV",
+        "type": "ndb",
+        "positions": 22,
+        "nameOnly": 0,
+        "pct": 1,
+        "amount": 21
+      },
+      {
+        "id": "eit_urban_mobility",
+        "label": "EIT Urban Mobility",
+        "country": "EU",
+        "type": "eu_instrument",
+        "positions": 21,
+        "nameOnly": 21,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "eit_manufacturing",
+        "label": "EIT Manufacturing",
+        "country": "EU",
+        "type": "eu_instrument",
+        "positions": 20,
+        "nameOnly": 20,
+        "pct": 0,
+        "amount": 0
+      },
+      {
+        "id": "isif",
+        "label": "ISIF",
+        "country": "IE",
+        "type": "sovereign_fund",
+        "positions": 20,
+        "nameOnly": 0,
+        "pct": 0,
+        "amount": 20
+      },
+      {
+        "id": "smartcap",
+        "label": "SmartCap",
+        "country": "EE",
+        "type": "state_vc",
+        "positions": 14,
+        "nameOnly": 0,
+        "pct": 14,
+        "amount": 0
+      },
+      {
+        "id": "bpifrance",
+        "label": "Bpifrance",
+        "country": "FR",
+        "type": "ndb",
+        "positions": 13,
+        "nameOnly": 0,
+        "pct": 13,
+        "amount": 0
+      },
+      {
+        "id": "invest_nl",
+        "label": "Invest-NL",
+        "country": "NL",
+        "type": "ndb",
+        "positions": 6,
+        "nameOnly": 6,
+        "pct": 0,
+        "amount": 0
+      }
+    ],
+    "disclosure": [
+      {
+        "level": "name_only",
+        "label": "Name only",
+        "positions": 5386
+      },
+      {
+        "level": "pct_exact",
+        "label": "Exact percentage",
+        "positions": 143
+      },
+      {
+        "level": "amount",
+        "label": "Euro amount",
+        "positions": 41
+      }
+    ],
+    "notableStakes": [
+      {
+        "company": "Aker Arctic Technology Inc",
+        "country": "FI",
+        "holder": "Tesi",
+        "pct": 66.4,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Valmet Automotive",
+        "country": "FI",
+        "holder": "Tesi",
+        "pct": 45.0,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Foamit Group",
+        "country": "FI",
+        "holder": "Tesi",
+        "pct": 33.1,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Nordic Rescue Group Oy",
+        "country": "FI",
+        "holder": "Tesi",
+        "pct": 25.8,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Stmicroelectronics",
+        "country": "IT",
+        "holder": "Bpifrance",
+        "pct": 13.86,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Eutelsat Communications",
+        "country": "FR",
+        "holder": "Bpifrance",
+        "pct": 13.59,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Verallia",
+        "country": "FR",
+        "holder": "Bpifrance",
+        "pct": 12.84,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Doctolib",
+        "country": "FR",
+        "holder": "Bpifrance",
+        "pct": 12.55,
+        "asOf": "2024-12-31"
+      },
+      {
+        "company": "Up Catalyst OÜ",
+        "country": "EE",
+        "holder": "SmartCap",
+        "pct": 10.88,
+        "asOf": "2026-06-11"
+      },
+      {
+        "company": "OÜ Stargate Hydrogen",
+        "country": "EE",
+        "holder": "SmartCap",
+        "pct": 10.46,
+        "asOf": "2026-06-11"
+      },
+      {
+        "company": "Paul-Tech OÜ",
+        "country": "EE",
+        "holder": "SmartCap",
+        "pct": 9.89,
+        "asOf": "2026-06-11"
+      },
+      {
+        "company": "CupLoop OÜ",
+        "country": "EE",
+        "holder": "SmartCap",
+        "pct": 9.16,
+        "asOf": "2026-06-11"
+      }
+    ]
+  },
+  "countryMix": [
+    {
+      "iso2": "FR",
+      "name": "France",
+      "euDirect": 6843,
+      "ndb": 30106,
+      "stateAid": 17773,
+      "total": 54722
+    },
+    {
+      "iso2": "DE",
+      "name": "Germany",
+      "euDirect": 8634,
+      "ndb": 929,
+      "stateAid": 29931,
+      "total": 39494
+    },
+    {
+      "iso2": "IT",
+      "name": "Italy",
+      "euDirect": 7605,
+      "ndb": 78,
+      "stateAid": 28517,
+      "total": 36200
+    },
+    {
+      "iso2": "ES",
+      "name": "Spain",
+      "euDirect": 9192,
+      "ndb": 1881,
+      "stateAid": 13246,
+      "total": 24319
+    },
+    {
+      "iso2": "GB",
+      "name": "United Kingdom",
+      "euDirect": 3250,
+      "ndb": 17012,
+      "stateAid": 407,
+      "total": 20669
+    },
+    {
+      "iso2": "NO",
+      "name": "Norway",
+      "euDirect": 1784,
+      "ndb": 16509,
+      "stateAid": 0,
+      "total": 18293
+    },
+    {
+      "iso2": "NL",
+      "name": "Netherlands",
+      "euDirect": 4734,
+      "ndb": 14,
+      "stateAid": 6772,
+      "total": 11520
+    },
+    {
+      "iso2": "BE",
+      "name": "Belgium",
+      "euDirect": 4486,
+      "ndb": 0,
+      "stateAid": 5161,
+      "total": 9647
+    },
+    {
+      "iso2": "AT",
+      "name": "Austria",
+      "euDirect": 2320,
+      "ndb": 0,
+      "stateAid": 5428,
+      "total": 7748
+    },
+    {
+      "iso2": "HU",
+      "name": "Hungary",
+      "euDirect": 595,
+      "ndb": 0,
+      "stateAid": 5883,
+      "total": 6478
+    },
+    {
+      "iso2": "GR",
+      "name": "Greece",
+      "euDirect": 4186,
+      "ndb": 0,
+      "stateAid": 1953,
+      "total": 6139
+    },
+    {
+      "iso2": "SE",
+      "name": "Sweden",
+      "euDirect": 2120,
+      "ndb": 323,
+      "stateAid": 3595,
+      "total": 6038
+    }
+  ]
+}

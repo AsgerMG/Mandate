@@ -163,8 +163,8 @@ Location: `.claude/settings.json` → `hooks`. **No agent-spawning in hooks.**
 
 | Event | Gate | Action |
 |---|---|---|
-| `PostToolUse` (Edit/Write on `site/public/data/*.json`) | data edited by hand without a rebuild | warn: "edited generated data — `build_site_data.py` is the source of truth (writer map in GENERATED)" |
-| `Stop` | site data stale vs. `db.sqlite` | run `python3 scripts/build_site_data.py --check`; surface its stale-file report |
+| `PostToolUse` (Edit/Write on `website/frontend/public/data/*.json`) | data edited by hand without a rebuild | warn: "edited generated data — `build_site_data.py` is the source of truth (writer map in GENERATED)" |
+| `Stop` | site data stale vs. `db.sqlite` | run `python3 website/build/build_site_data.py --check`; surface its stale-file report |
 | `Stop` | **methodology gate** — a `source` value in `db.sqlite` with no mention in `docs/methodology.md` | warn: "new source loaded but methodology.md not updated — see ship-a-source step 8" |
 
 These mirror checks the codebase already has (`GENERATED` map + `check_fresh()`),

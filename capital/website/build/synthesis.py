@@ -4,17 +4,15 @@ The Sprint 9 exploratory deep dives (q01–q08 + the synthesis page) have been
 retired; this orchestrator now only produces the corpus-wide counts that the
 home page KPI grid and the layout footer depend on.
 
-  site/public/data/synthesis.json
+  website/frontend/public/data/synthesis.json
 """
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "analysis"))
-
+sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+from web_env import SITE_DATA  # noqa: E402
 from helpers import df, to_json, fmt_eur  # noqa: E402
 
-SITE_DATA = ROOT / "site" / "public" / "data"
 SITE_DATA.mkdir(parents=True, exist_ok=True)
 
 
@@ -67,4 +65,4 @@ def run_synthesis():
 if __name__ == "__main__":
     print("Building corpus KPIs...")
     run_synthesis()
-    print("\nDone. synthesis.json written to site/public/data/")
+    print("\nDone. synthesis.json written to website/frontend/public/data/")

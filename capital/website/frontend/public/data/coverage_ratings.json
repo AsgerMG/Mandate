@@ -1,0 +1,162 @@
+{
+  "AL": {
+    "rating": "X",
+    "note": "31 events across 1 source families."
+  },
+  "AT": {
+    "rating": "A",
+    "note": "7,748 events across 19 source families."
+  },
+  "BA": {
+    "rating": "X",
+    "note": "34 events across 2 source families."
+  },
+  "BE": {
+    "rating": "A",
+    "note": "9,647 events across 19 source families."
+  },
+  "BG": {
+    "rating": "B",
+    "note": "1,207 events across 13 source families."
+  },
+  "CH": {
+    "rating": "A",
+    "note": "Innosuisse company-led projects via ARAMIS export (1.8k events) + EU instruments. No SATR (non-EU)."
+  },
+  "CY": {
+    "rating": "B",
+    "note": "1,095 events across 13 source families."
+  },
+  "CZ": {
+    "rating": "A",
+    "note": "Full SATR + TAČR via STARFOS export (547 net-new company-led events after SATR dedup; 514 collisions skipped)."
+  },
+  "DE": {
+    "rating": "A",
+    "note": "Full SATR state aid (€72.7B) + HTGF/Coparion/SPRIND direct + KfW/Landesbanks/BMBF tagged. BMBF Projektträger sub-threshold grants remain off-register."
+  },
+  "DK": {
+    "rating": "A",
+    "note": "5,220 events across 21 source families."
+  },
+  "EE": {
+    "rating": "A",
+    "note": "SATR + EIS funded-projects register (3.7k company events net of SATR overlap). EU-instrument layer thin."
+  },
+  "ES": {
+    "rating": "A",
+    "note": "BDNS national state-aid register loaded via infosubvenciones.es mirror (GBER Art.21-30+36-49, ≥€100k): 13.2k events / €6.9B + CDTI/IDAE/ICAEN/IVACE/GAIN/ACCIÓ direct."
+  },
+  "FI": {
+    "rating": "A",
+    "note": "SATR incl. Business Finland + Tesi direct. Finnvera loan/guarantee portfolio has no public company register."
+  },
+  "FR": {
+    "rating": "A",
+    "note": "ADEME (27.7k events) + Bpifrance i-Nov/PM'up + full SATR. Bpifrance commercial equity tickets not in any register (Art.107 market-conform)."
+  },
+  "GB": {
+    "rating": "A",
+    "note": "Innovate UK via UKRI GtR (17k participant rows, €5.9B, 2021+). No SATR (post-Brexit); UK subsidy database not yet loaded; EU layer thin 2021-2023 (Horizon exclusion)."
+  },
+  "GR": {
+    "rating": "B",
+    "note": "SATR + HDB/GSRT tagged. HDBI fund-of-funds (indirect) out of scope."
+  },
+  "HR": {
+    "rating": "C",
+    "note": "1,404 events across 15 source families."
+  },
+  "HU": {
+    "rating": "A",
+    "note": "Full SATR + NKFIH/Hiventures tagged. MFB has no open company register."
+  },
+  "IE": {
+    "rating": "A",
+    "note": "2,925 events across 19 source families."
+  },
+  "IS": {
+    "rating": "X",
+    "note": "Thin SATR (EEA). Rannís grant list not extracted."
+  },
+  "IT": {
+    "rating": "A",
+    "note": "Full SATR (€29.9B) incl. MedioCredito Centrale, Invitalia, GSE, MUR; CDP VC direct. RNA de minimis layer (below €100k) not extracted."
+  },
+  "LI": {
+    "rating": "X",
+    "note": "1 events across 1 source families."
+  },
+  "LT": {
+    "rating": "B",
+    "note": "SATR + economy-ministry/ILTE tagged. No machine-readable ILTE direct register (data.gov.lt datasets are COVID/energy compensation, SATR-overlapping)."
+  },
+  "LU": {
+    "rating": "X",
+    "note": "Thin SATR; per-capita figures may be inflated by holding-company registrations."
+  },
+  "LV": {
+    "rating": "B",
+    "note": "SATR + ALTUM recipients workbook (3.9k events: loans/guarantees/equity, agri sheets excluded). EU-instrument layer thin."
+  },
+  "MD": {
+    "rating": "X",
+    "note": "52 events across 2 source families."
+  },
+  "ME": {
+    "rating": "X",
+    "note": "13 events across 1 source families."
+  },
+  "MK": {
+    "rating": "X",
+    "note": "36 events across 2 source families."
+  },
+  "MT": {
+    "rating": "X",
+    "note": "270 events across 8 source families."
+  },
+  "NL": {
+    "rating": "A",
+    "note": "Full SATR incl. RVO + regional dev agencies (BOM, NOM) tagged. Invest-NL co-invest thin; RVO sub-threshold WBSO not in register."
+  },
+  "NO": {
+    "rating": "A",
+    "note": "Innovasjon Norge direct register (14.4k events, grants+loans) + NFR company-led projects (2.1k) + EU instruments. No SATR (non-EU)."
+  },
+  "PL": {
+    "rating": "A",
+    "note": "SUDOP national register loaded via v1 purpose-code query (R&D Art.25-29): 2,931 events / €4.2B. NCBR + mapadotacji.gov.pl (EU cohesion) out of scope."
+  },
+  "PT": {
+    "rating": "B",
+    "note": "3,548 events across 18 source families."
+  },
+  "RO": {
+    "rating": "C",
+    "note": "EU instruments only. REGAS national SATR portal not yet extracted."
+  },
+  "RS": {
+    "rating": "X",
+    "note": "330 events across 8 source families."
+  },
+  "SE": {
+    "rating": "A",
+    "note": "SATR incl. Vinnova + Almi Invest direct. Energimyndigheten/Naturvårdsverket tagged."
+  },
+  "SI": {
+    "rating": "C",
+    "note": "EU instruments only. gov.si national state-aid page (no bulk export) not yet extracted."
+  },
+  "SK": {
+    "rating": "C",
+    "note": "2,293 events across 14 source families."
+  },
+  "UA": {
+    "rating": "X",
+    "note": "206 events across 9 source families."
+  },
+  "XK": {
+    "rating": "X",
+    "note": "7 events across 1 source families."
+  }
+}

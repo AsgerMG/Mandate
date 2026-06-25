@@ -1,0 +1,3458 @@
+{
+  "countries": {
+    "FR": {
+      "name": "France",
+      "companies": 30463,
+      "totalEur": 47864047927,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 13791
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 3381
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 22915
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 348
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 50
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 51
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 36
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 23
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 60
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 245
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 15230
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 7683
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 2773
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 2062
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 1327
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 226
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 47
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 1,
+        "rankByEur": 2,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "DE": {
+      "name": "Germany",
+      "companies": 22165,
+      "totalEur": 91061961202,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 24138
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 4189
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 1062
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 386
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 88
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 85
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 19
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 21
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 22
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 349
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 6820
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 6201
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 3699
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 3329
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 1548
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 169
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 40
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 2,
+        "rankByEur": 1,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Deep tech / hardware"
+        ]
+      }
+    },
+    "IT": {
+      "name": "Italy",
+      "companies": 20496,
+      "totalEur": 38185317254,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 21560
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 3971
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 457
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 225
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 21
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 48
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 19
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 16
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 29
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 190
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 12498
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 3330
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 1984
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 1286
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 946
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 115
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 21
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 3,
+        "rankByEur": 3,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Deep tech / hardware"
+        ]
+      }
+    },
+    "ES": {
+      "name": "Spain",
+      "companies": 11717,
+      "totalEur": 15708235988,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 4956
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 12173
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 310
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 60
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 22
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 33
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 18
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 42
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 122
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 3692
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 3368
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 1480
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 1128
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 1103
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 82
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 55
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 4,
+        "rankByEur": 4,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Cleantech",
+          "Other"
+        ]
+      }
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "companies": 10541,
+      "totalEur": 7076667423,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 401
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1930
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 12118
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 52
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 38
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 4
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 19
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 2444
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 2063
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 1863
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 1823
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 1307
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 55
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 26
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 5,
+        "rankByEur": 8,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Digital"
+        ]
+      }
+    },
+    "NO": {
+      "name": "Norway",
+      "companies": 9001,
+      "totalEur": 4370814128,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1012
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 14803
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 49
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 16
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 20
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 5
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 20
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 2798
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 1159
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 871
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 795
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 541
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 38
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 25
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 6,
+        "rankByEur": 13,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "NL": {
+      "name": "Netherlands",
+      "companies": 5618,
+      "totalEur": 12120764883,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 5393
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 2261
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 190
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 227
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 23
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 16
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 14
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 13
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 7
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 188
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 2784
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 1006
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 649
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 647
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 409
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 33
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 8
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 7,
+        "rankByEur": 5,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "HU": {
+      "name": "Hungary",
+      "companies": 4305,
+      "totalEur": 3022595247,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 4301
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 425
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 13
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 21
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 4
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 5
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 2
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 13
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 3398
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 332
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 188
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 156
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 138
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 7
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 3
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 8,
+        "rankByEur": 15,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Deep tech / hardware"
+        ]
+      }
+    },
+    "BE": {
+      "name": "Belgium",
+      "companies": 3802,
+      "totalEur": 7635142759,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 3620
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 2449
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 157
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 111
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 10
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 8
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 18
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 8
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 6
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 58
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1682
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 515
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 486
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 468
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 461
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 37
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 13
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 9,
+        "rankByEur": 7,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "CZ": {
+      "name": "Czechia",
+      "companies": 3630,
+      "totalEur": 9225427574,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 3674
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 511
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 569
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 40
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 6
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 3
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 3
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 1
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 30
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1387
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 826
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 677
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 408
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 208
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 33
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 19
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 10,
+        "rankByEur": 6,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Deep tech / hardware"
+        ]
+      }
+    },
+    "AT": {
+      "name": "Austria",
+      "companies": 3467,
+      "totalEur": 4862205776,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 4283
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1243
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 126
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 84
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 17
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 11
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 4
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 3
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 5
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 116
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1557
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 661
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 563
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 359
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 226
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 20
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 7
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 11,
+        "rankByEur": 12,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "LV": {
+      "name": "Latvia",
+      "companies": 3438,
+      "totalEur": 597953925,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 608
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 204
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3564
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 6
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 4
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 1
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 3
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 11
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1577
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 287
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 251
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 233
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 175
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 8
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 5
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 12,
+        "rankByEur": 26,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Deep tech / hardware"
+        ]
+      }
+    },
+    "EE": {
+      "name": "Estonia",
+      "companies": 3109,
+      "totalEur": 1735107854,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 603
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 322
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3463
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 16
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 6
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 2
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 2
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 9
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 4
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1100
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 316
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 310
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 282
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 143
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 22
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 19
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 13,
+        "rankByEur": 20,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Digital"
+        ]
+      }
+    },
+    "DK": {
+      "name": "Denmark",
+      "companies": 2964,
+      "totalEur": 2726163853,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 6
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 886
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 2944
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 72
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 11
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 2
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 13
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 8
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 6
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 25
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 664
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 661
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 555
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 506
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 497
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 13
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 12
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 14,
+        "rankByEur": 16,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Life sciences",
+          "Digital"
+        ]
+      }
+    },
+    "SE": {
+      "name": "Sweden",
+      "companies": 2623,
+      "totalEur": 5436160954,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2142
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1010
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 414
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 114
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 20
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 14
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 10
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 7
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 75
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1311
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 561
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 254
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 234
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 201
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 31
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 9
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 15,
+        "rankByEur": 9,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "GR": {
+      "name": "Greece",
+      "companies": 2566,
+      "totalEur": 5416868453,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 1711
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 2223
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 145
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 46
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 1
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 8
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 8
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 3
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 29
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 48
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1345
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 389
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 346
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 210
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 187
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 20
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 13
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 16,
+        "rankByEur": 10,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Digital"
+        ]
+      }
+    },
+    "FI": {
+      "name": "Finland",
+      "companies": 2118,
+      "totalEur": 5058231228,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2389
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 942
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 146
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 84
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 15
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 11
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 8
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 5
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 4
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 101
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 610
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 465
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 459
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 333
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 146
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 8
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 8
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 17,
+        "rankByEur": 11,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Digital"
+        ]
+      }
+    },
+    "CH": {
+      "name": "Switzerland",
+      "companies": 2055,
+      "totalEur": 465798762,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1054
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 1859
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 28
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 7
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 79
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 465
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 450
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 441
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 345
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 342
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 10
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 2
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 18,
+        "rankByEur": 27,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Life sciences",
+          "Deep tech / hardware"
+        ]
+      }
+    },
+    "PL": {
+      "name": "Poland",
+      "companies": 1987,
+      "totalEur": 4327097968,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 886
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 1558
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 54
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 15
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 11
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 11
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 7
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 1
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 16
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 517
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 252
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 232
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 151
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 130
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 14
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 10
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 19,
+        "rankByEur": 14,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Life sciences"
+        ]
+      }
+    },
+    "PT": {
+      "name": "Portugal",
+      "companies": 1665,
+      "totalEur": 2632363501,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 790
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1352
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 92
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 78
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 7
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 4
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 6
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 3
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 44
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 576
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 248
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 199
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 190
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 161
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 6
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 3
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 20,
+        "rankByEur": 17,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Deep tech / hardware"
+        ]
+      }
+    },
+    "IE": {
+      "name": "Ireland",
+      "companies": 1595,
+      "totalEur": 2156237841,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 1366
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 781
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 58
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 76
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 14
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 1
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 4
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 21
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 619
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 346
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 234
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 171
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 146
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 5
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 5
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 21,
+        "rankByEur": 18,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Digital"
+        ]
+      }
+    },
+    "SK": {
+      "name": "Slovakia",
+      "companies": 1533,
+      "totalEur": 1765561923,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 1583
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 247
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 9
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 9
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 5
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 14
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 1
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 7
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 693
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 404
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 189
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 128
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 68
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 26
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 5
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 22,
+        "rankByEur": 19,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Cleantech",
+          "Other"
+        ]
+      }
+    },
+    "BG": {
+      "name": "Bulgaria",
+      "companies": 938,
+      "totalEur": 801590732,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 704
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 384
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 10
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 15
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 3
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 1
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 1
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 450
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 278
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 56
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 54
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 49
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 7
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 4
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 23,
+        "rankByEur": 23,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "HR": {
+      "name": "Croatia",
+      "companies": 905,
+      "totalEur": 929744203,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 746
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 326
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 8
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 9
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 4
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 1
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 3
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 1
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 1
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 335
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 232
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 134
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 96
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 59
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 2
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 24,
+        "rankByEur": 22,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "LT": {
+      "name": "Lithuania",
+      "companies": 566,
+      "totalEur": 761964772,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 471
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 299
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 7
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 19
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 1
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 2
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 1
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 2
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 4
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 174
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 136
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 95
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 75
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 60
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 5
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 5
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 25,
+        "rankByEur": 24,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Digital"
+        ]
+      }
+    },
+    "LU": {
+      "name": "Luxembourg",
+      "companies": 437,
+      "totalEur": 1337998443,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 396
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 239
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 24
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 11
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 2
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 2
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 1
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 127
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 114
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 105
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 41
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 17
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 10
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 26,
+        "rankByEur": 21,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "RO": {
+      "name": "Romania",
+      "companies": 399,
+      "totalEur": 609040942,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 679
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 25
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 11
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 7
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 4
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 28
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 165
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 76
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 58
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 52
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 34
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 8
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 6
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 27,
+        "rankByEur": 25,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "CY": {
+      "name": "Cyprus",
+      "companies": 298,
+      "totalEur": 317828360,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 152
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 495
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 33
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 13
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 4
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 4
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 104
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 73
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 45
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 34
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 28
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 3
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 2
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 28,
+        "rankByEur": 30,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Digital"
+        ]
+      }
+    },
+    "SI": {
+      "name": "Slovenia",
+      "companies": 290,
+      "totalEur": 350820704,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 592
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 22
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 15
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 1
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 6
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 3
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 107
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 67
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 41
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 37
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 33
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 3
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 2
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 29,
+        "rankByEur": 29,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "MT": {
+      "name": "Malta",
+      "companies": 163,
+      "totalEur": 288956788,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 126
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 96
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 3
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 1
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 2
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 80
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 30
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 23
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 14
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 11
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 30,
+        "rankByEur": 31,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "UA": {
+      "name": "Ukraine",
+      "companies": 161,
+      "totalEur": 36847954,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 179
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 8
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 4
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 5
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 64
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 42
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 22
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 21
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 8
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 2
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 31,
+        "rankByEur": 33,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "IS": {
+      "name": "Iceland",
+      "companies": 148,
+      "totalEur": 366302383,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 147
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 109
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 5
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 8
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 2
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 2
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 1
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 40
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 32
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 32
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 22
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 10
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 32,
+        "rankByEur": 28,
+        "totalCountries": 40,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Digital",
+          "Cleantech"
+        ]
+      }
+    },
+    "RS": {
+      "name": "Serbia",
+      "companies": 137,
+      "totalEur": 84209774,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 245
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 15
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 7
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 1
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 59
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 24
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 23
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 15
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 12
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 2
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 2
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 33,
+        "rankByEur": 32,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "BA": {
+      "name": "Bosnia and Herzegovina",
+      "companies": 24,
+      "totalEur": 4874092,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 34
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 16
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 3
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 3
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 1
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 34,
+        "rankByEur": 35,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "AL": {
+      "name": "Albania",
+      "companies": 23,
+      "totalEur": 3006743,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 30
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 13
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 6
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 3
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 35,
+        "rankByEur": 37,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "MK": {
+      "name": "North Macedonia",
+      "companies": 21,
+      "totalEur": 4441641,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 29
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 13
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 4
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 3
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 36,
+        "rankByEur": 36,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "MD": {
+      "name": "Moldova",
+      "companies": 19,
+      "totalEur": 6553582,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 27
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 1
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 9
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 7
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 2
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 37,
+        "rankByEur": 34,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Life sciences",
+          "Other"
+        ]
+      }
+    },
+    "ME": {
+      "name": "Montenegro",
+      "companies": 10,
+      "totalEur": 1140066,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 13
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 6
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 3
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 38,
+        "rankByEur": 38,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
+    "XK": {
+      "name": "Kosovo",
+      "companies": 5,
+      "totalEur": 628522,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 6
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 2
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 2
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 39,
+        "rankByEur": 39,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Life sciences",
+          "Other"
+        ]
+      }
+    },
+    "LI": {
+      "name": "Liechtenstein",
+      "companies": 1,
+      "totalEur": 0,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 40,
+        "rankByEur": 40,
+        "totalCountries": 40,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Deep tech / hardware"
+        ]
+      }
+    }
+  }
+}

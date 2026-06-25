@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """PostToolUse hook: warn when a *generated* site-data file is hand-edited.
 
-`site/public/data/*.json` is written by `scripts/build_site_data.py` (see its
-GENERATED map). Editing it by hand is silently overwritten on the next build.
+`website/frontend/public/data/*.json` is written by `website/build/build_site_data.py`
+(see its GENERATED map). Editing it by hand is silently overwritten on the next build.
 This hook surfaces that to the model (exit 2 feeds stderr back as feedback).
 
 Reads the hook payload as JSON on stdin; never raises (a hook must not break the
@@ -27,17 +27,17 @@ def main() -> int:
         return 0
 
     norm = path.replace("\\", "/")
-    if "site/public/data/" not in norm:
+    if "website/frontend/public/data/" not in norm:
         return 0
     if norm.rsplit("/", 1)[-1] in EXEMPT:
         return 0
 
     sys.stderr.write(
-        "⚠ You edited a GENERATED data file under site/public/data/.\n"
-        "  These are written by scripts/build_site_data.py (see its GENERATED "
+        "⚠ You edited a GENERATED data file under website/frontend/public/data/.\n"
+        "  These are written by website/build/build_site_data.py (see its GENERATED "
         "map) and will be overwritten on the next build.\n"
-        "  Edit the upstream writer/script instead, then run "
-        "`python3 scripts/build_site_data.py`.\n"
+        "  Edit the upstream builder instead, then run "
+        "`python3 website/build/build_site_data.py`.\n"
     )
     return 2  # surface to the model as actionable feedback
 

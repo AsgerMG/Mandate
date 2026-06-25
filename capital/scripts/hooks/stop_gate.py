@@ -15,10 +15,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / "db.sqlite"
-SITE_DATA = ROOT / "site" / "public" / "data"
+SITE_DATA = ROOT / "website" / "frontend" / "public" / "data"
 METHODOLOGY = ROOT / "docs" / "methodology.md"
 
-# Keep in sync with scripts/build_site_data.py GENERATED.
+# Keep in sync with website/build/build_site_data.py GENERATED.
 GENERATED = [
     "coverage_ratings.json",
     "country_coverage.json",
@@ -74,7 +74,7 @@ def main() -> int:
     stale = check_freshness()
     if stale:
         msgs.append(
-            "⚠ STALE site data — run `python3 scripts/build_site_data.py`:\n  "
+            "⚠ STALE site data — run `python3 website/build/build_site_data.py`:\n  "
             + "\n  ".join(stale)
         )
     undocumented = check_methodology()

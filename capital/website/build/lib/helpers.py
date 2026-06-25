@@ -1,13 +1,15 @@
-"""Shared helpers for Sprint 9 EDA. Read-only DB access, palette, formatters, JSON export."""
+"""Shared helpers for the website build layer. Read-only DB access, palette,
+formatters, JSON export. (Originally the Sprint 9 EDA helpers.)"""
 import json
 import math
 import sqlite3
+import sys
 from pathlib import Path
 
 import pandas as pd
 
-ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = ROOT / "db.sqlite"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from web_env import ROOT, DB as DB_PATH  # noqa: E402,F401
 
 # ── Sector palette (7 labels → hex) ────────────────────────────────────────
 SECTOR_PALETTE = {

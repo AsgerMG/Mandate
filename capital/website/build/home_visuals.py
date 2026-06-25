@@ -2,17 +2,19 @@
 
 Outputs:
 
-  site/public/data/instrument_leaderboard.json
+  website/frontend/public/data/instrument_leaderboard.json
     - rows for each source family (companies, €, median ticket, top sector,
       top country), which the taxonomy diagram links its chips to.
 """
 import json
 import sqlite3
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-DB = ROOT / "db.sqlite"
-OUT_DIR = ROOT / "site" / "public" / "data"
+sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+from web_env import DB, SITE_DATA  # noqa: E402
+
+OUT_DIR = SITE_DATA
 
 # (id, label, source_family value in v_events, color, glyph, stageMin, stageMax, stageLabel)
 INSTRUMENTS = [

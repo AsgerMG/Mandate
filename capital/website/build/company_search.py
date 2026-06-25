@@ -3,8 +3,8 @@
 The site is a static export, so search runs fully client-side against
 pre-built JSON shards:
 
-  site/public/data/companies/manifest.json     {"shards": N, "companies": M, "generatedAt": ...}
-  site/public/data/companies/{xx}.json         one shard per 2-character token prefix
+  website/frontend/public/data/companies/manifest.json     {"shards": N, "companies": M, "generatedAt": ...}
+  website/frontend/public/data/companies/{xx}.json         one shard per 2-character token prefix
 
 Sharding is by NAME TOKEN, not by first letter: a company is written into the
 shard of every distinct 2-char prefix of its name tokens ("Robert Bosch GmbH"
@@ -31,10 +31,12 @@ import unicodedata
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
+import sys
 
-ROOT = Path(__file__).resolve().parent.parent
-DB = ROOT / "db.sqlite"
-OUT_DIR = ROOT / "site" / "public" / "data" / "companies"
+sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+from web_env import DB, SITE_DATA  # noqa: E402
+
+OUT_DIR = SITE_DATA / "companies"
 
 EVENT_CAP = 100
 

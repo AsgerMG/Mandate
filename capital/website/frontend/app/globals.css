@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/* Force light mode only. The `dark:` Tailwind variant will never apply because
+   the selector matches a class that is never present in our markup. */
+@custom-variant dark (&:where(.dark-disabled, .dark-disabled *));
+
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --primary: #003399;
+  --primary-hover: #002277;
+  --accent: #FFCC00;
+
+  /* Sector colours */
+  --color-sector-life-sciences: #7B3F61;
+  --color-sector-cleantech: #2D6A4F;
+  --color-sector-deeptech: #1F3A93;
+  --color-sector-defense: #5C2A2A;
+  --color-sector-digital: #D97706;
+  --color-sector-space: #1B263B;
+  --color-sector-other: #6B7280;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --font-serif: Georgia, "Times New Roman", "Iowan Old Style", "Palatino Linotype", serif;
+  --font-sans: Georgia, "Times New Roman", "Iowan Old Style", "Palatino Linotype", serif;
+  --font-mono: Georgia, "Times New Roman", "Iowan Old Style", "Palatino Linotype", serif;
+}
+
+html { color-scheme: light; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  font-feature-settings: "lnum" 1, "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+h1, h2 { color: var(--primary); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.005em;
+}
+
+/* Numerals always render with old-style table figures in the Economist tradition.
+   Where alignment is needed (tables, KPI grids), the `.tabular-nums` utility flips to lining figures. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Prose styles for findings markdown */
+.prose {
+  color: var(--foreground);
+  max-width: 65ch;
+  font-family: var(--font-serif);
+}
+.prose h1, .prose h2, .prose h3 {
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.005em;
+}
+.prose h1 { font-size: 1.5rem; }
+.prose h2 { font-size: 1.25rem; }
+.prose h3 { font-size: 1.125rem; }
+.prose p { margin-bottom: 1em; line-height: 1.7; }
+.prose ul, .prose ol { margin-bottom: 1em; padding-left: 1.5em; }
+.prose li { margin-bottom: 0.25em; line-height: 1.7; }
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+.prose a { color: var(--primary); text-decoration: underline; }
+.prose code {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95em;
+  background: var(--muted);
+  padding: 0.05em 0.25em;
+  border-radius: 0.25rem;
+}
+
+/* Small uppercase eyebrow labels — keep crisp sans for these only via wider tracking on serif */
+.eyebrow {
+  font-family: var(--font-serif);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-variant-caps: small-caps;
+}
+
+/* ── Print: export only the intelligence report as a clean PDF ──────────────
+   When the user hits "Export PDF" we call window.print(). This hides the whole
+   page and surfaces only #print-report (the three report sections), positioned
+   at the top of the page. The visibility trick preserves the report's internal
+   layout while blanking everything else (nav, form, the manual below it). */
+@media print {
+  body * { visibility: hidden; }
+  #print-report, #print-report * { visibility: visible; }
+  #print-report {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0 0.25in;
+  }
+  @page { margin: 0.6in; }
+  /* Force backgrounds/colours to render in the PDF. */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

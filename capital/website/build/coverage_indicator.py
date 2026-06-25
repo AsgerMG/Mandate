@@ -25,18 +25,20 @@ Coverage tiers:
   D = SATR only (no EU instruments, no direct national register)
   X = Not in SATR and no direct register (no coverage)
 
-Run: python gen_coverage_indicator.py
+Run: python coverage_indicator.py
 """
 from __future__ import annotations
 
 import json
 import sqlite3
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parent.parent
-DB_PATH = BASE_DIR / "db.sqlite"
-OUT_PATH = BASE_DIR / "data" / "processed" / "coverage_indicator.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+from web_env import DB_PATH, DATA_PROCESSED, SITE_DATA  # noqa: E402
+
+OUT_PATH = DATA_PROCESSED / "coverage_indicator.json"
 OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # Source families by type
@@ -384,14 +386,14 @@ def main() -> None:
     print(f"Coverage indicator → {OUT_PATH}")
 
     # Emit the site-facing ratings file (homepage reads this — keeps it live).
-    site_path = BASE_DIR / "site" / "public" / "data" / "coverage_ratings.json"
+    site_path = SITE_DATA / "coverage_ratings.json"
     if site_path.parent.exists():
         site_path.write_text(json.dumps(ratings, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Site coverage ratings → {site_path}")
 
     # Emit the full per-country detail for the homepage transparency table:
     # grade, layer event counts, source families and structural-gap notes.
-    site_full_path = BASE_DIR / "site" / "public" / "data" / "country_coverage.json"
+    site_full_path = SITE_DATA / "country_coverage.json"
     if site_full_path.parent.exists():
         site_full_path.write_text(
             json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8"

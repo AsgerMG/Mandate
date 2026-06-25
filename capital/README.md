@@ -17,13 +17,12 @@ data/raw/            external API + HTML caches (per source, gitignored, backed 
 db.sqlite            the built database (gitignored, backed up — not in version control)
    │  ETL/transform/*.py          classify, merge, dedup, backfill, resolve entities
    │  ETL/load/*.py + load/qa/    loaders, migrations, schema, post-load QA, backup
-   │  make analyze   (analysis/run.py runs the SQL in analysis/queries/)
-   │  make visuals   (scripts/build_*.py + gen_country_map.py)
+   │  make data      (website/build/build_site_data.py: views + every builder)
    ▼
-site/public/data/*.json   the only data the website reads
+website/frontend/public/data/*.json   the only data the website reads
    │  make site-build
    ▼
-site/                Next.js static site (the published findings)
+website/frontend/    Next.js static site (the published findings)
 ```
 
 ## Directory map
@@ -31,9 +30,9 @@ site/                Next.js static site (the published findings)
 | Folder | What's in it |
 |---|---|
 | `ETL/` | The data pipeline. `extract/` (one `extract_*.py` per source), `transform/` (`classify.py`, `merge_companies.py`, dedup, backfills, entity resolution), `load/` (`load_*.py`, `schema.sql`, `migrations/`, `backup.py`, and `load/qa/` post-load checks), and `lib/` (shared modules + `etl_env.py`, the single source of truth for paths). See [ETL/README.md](ETL/README.md). |
-| `scripts/` | The publish layer (next to be reorganised): `build_*.py` (site visuals/data), `gen_*.py`, and `hooks/`. |
-| `analysis/` | `run.py` (orchestrator), `queries/` (the SQL behind each finding), `views.sql`, and `findings/` (the prose the site renders). |
-| `site/` | The Next.js website. Reads only `site/public/data/*.json`. |
+| `website/` | The publish layer. `build/` (the Python builders that turn `db.sqlite` into the site JSON, + `lib/web_env.py` path bootstrap) and `frontend/` (the Next.js app). See [website/README.md](website/README.md). |
+| `analysis/` | `queries/` (the SQL behind each finding), `views.sql` (the `v_*` views, shared with ETL + the website builders), and `findings/` (the prose the site renders). |
+| `scripts/` | Remaining non-website helpers: `build_company_groups.py` / `build_parent_groups.py` (DB parent-group transforms) and `hooks/`. |
 | `docs/` | `methodology.md` (canonical, rendered by the site), plus working notes and design guidelines. |
 | `plans/` | `backlog/` (active future work) and `archive/` (completed sprint plans, kept for reference). |
 | `data/` | Source caches: `raw/` and `processed/`. Gitignored and backed up, not version-controlled. `europe_scope.json` (the country scope config) is the one tracked file here. |
@@ -41,10 +40,10 @@ site/                Next.js static site (the published findings)
 ## Common commands
 
 ```bash
-make analyze       # rebuild site JSON from db.sqlite
-make visuals       # rebuild the home-page visuals
-make data          # both of the above
-make site-build    # static build of the site -> site/out/
+make data          # rebuild EVERY site JSON from db.sqlite (views + all builders)
+make analyze       # corpus KPIs only (website/build/synthesis.py)
+make visuals       # home-page visuals only (taxonomy, map, coverage)
+make site-build    # static build of the site -> website/frontend/out/
 make site-dev      # run the site locally at localhost:3000
 make backup        # snapshot db.sqlite + data/ to ~/EuroInvTracker-backups and iCloud
 ```
@@ -61,7 +60,7 @@ loader inserts rows, run `make transform` (classify + sanity) — or the steps i
 The database and the `data/` caches are **generated build artifacts**, not version-controlled
 (they are large and reproducible). They live on disk and are backed up by `make backup`, which
 writes dated archives to `~/EuroInvTracker-backups/` and copies them to iCloud Drive. The code,
-the SQL, and the small derived JSON in `site/public/data/` are the version-controlled record of
+the SQL, and the small derived JSON in `website/frontend/public/data/` are the version-controlled record of
 results. To rebuild the database from scratch, re-run the extractors against `data/raw/`.
 
 ## Method, in one line

@@ -1,11 +1,11 @@
 """Build a single compact company index for the competitive-intelligence agent.
 
-The /companies lookup ships ~994 client-side shards (build_company_search.py).
+The /companies lookup ships ~994 client-side shards (company_search.py).
 The intelligence agent runs server-side and needs the opposite shape: one file
 it can load once per warm serverless invocation and fuzzy-match competitor names
 against. This script writes that file.
 
-  site/public/data/companies_index.json
+  website/frontend/public/data/companies_index.json
     {"generatedAt": ..., "companies": N, "rows": [[n, q, c, s, eur, [ch,...]], ...]}
 
 Rows are positional (terser than keyed objects at ~95k records):
@@ -16,7 +16,7 @@ Rows are positional (terser than keyed objects at ~95k records):
   4 eur  total grant+debt EUR across all events (rounded), 0 if none
   5 ch   distinct source_family channels, EU capital "doors" the group used
 
-Parent-group rollup mirrors build_company_search.py so the agent sees the same
+Parent-group rollup mirrors company_search.py so the agent sees the same
 deduplicated entities as the public lookup. A group is included if it has at
 least one funding event (equity-only groups carry no EU "capital accessed"
 figure and are not useful competitor signal here).
@@ -30,10 +30,12 @@ import unicodedata
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
+import sys
 
-ROOT = Path(__file__).resolve().parent.parent
-DB = ROOT / "db.sqlite"
-OUT = ROOT / "site" / "public" / "data" / "companies_index.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+from web_env import ROOT, DB, SITE_DATA  # noqa: E402
+
+OUT = SITE_DATA / "companies_index.json"
 
 
 def normalize(name: str) -> str:

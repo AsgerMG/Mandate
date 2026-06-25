@@ -1,10 +1,11 @@
 # EuroInvTracker — common entry points.
 # Run `make help` for the list. The data pipeline flows:
 #   ETL/extract/* -> db.sqlite -> ETL/transform/* -> ETL/load/* (+ QA + backup)
-#                 -> make analyze+visuals -> site/public/data -> site
+#                 -> make data -> website/frontend/public/data -> website/frontend
 #
 # The ETL block (extract -> transform -> load) lives under ETL/. Extractors are
 # per-source and hit external APIs; run them individually (see ETL/README.md).
+# The website block (build -> frontend) lives under website/ (see website/README.md).
 # This Makefile covers the regular transform/analysis/backup loop.
 
 DATE    := $(shell date +%Y%m%d)
@@ -21,10 +22,10 @@ help:
 	@echo "  make sanity      Post-load corpus integrity checks (ETL/load/qa/sanity_check.py)"
 	@echo "  make transform   classify + sanity (re-derive everything from loaded rows)"
 	@echo "  make backup      Back up db.sqlite + data/ to local + iCloud (ETL/load/backup.py)"
-	@echo "  make analyze     Rebuild site JSON from db.sqlite (analysis/run.py)"
-	@echo "  make visuals     Rebuild home-page visuals (taxonomy, valley, ladder, map)"
-	@echo "  make data        analyze + visuals (refresh everything the site reads)"
-	@echo "  make site-build  Static build of the Next.js site (site/out/)"
+	@echo "  make analyze     Rebuild corpus KPIs (website/build/synthesis.py)"
+	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
+	@echo "  make data        Rebuild EVERY site JSON from db.sqlite (website/build/build_site_data.py)"
+	@echo "  make site-build  Static build of the Next.js site (website/frontend/out/)"
 	@echo "  make site-dev    Run the site dev server at localhost:3000"
 
 sources:
@@ -42,23 +43,26 @@ sanity:
 transform: classify sanity
 
 analyze:
-	python3 analysis/run.py
+	python3 website/build/synthesis.py
 
 views:
 	sqlite3 db.sqlite < analysis/views.sql
 
 visuals:
-	python3 scripts/build_home_visuals.py
-	python3 scripts/gen_country_map.py
-	python3 scripts/gen_coverage_indicator.py
+	python3 website/build/home_visuals.py
+	python3 website/build/country_map.py
+	python3 website/build/coverage_indicator.py
 
-data: views analyze visuals
+# The orchestrator reinstalls the SQL views, runs every builder in dependency
+# order, and verifies freshness — use this rather than the partial targets above.
+data:
+	python3 website/build/build_site_data.py
 
 site-build:
-	cd site && npm run build
+	cd website/frontend && npm run build
 
 site-dev:
-	cd site && npm run dev
+	cd website/frontend && npm run dev
 
 backup:
 	python3 ETL/load/backup.py

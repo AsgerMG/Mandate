@@ -15,8 +15,8 @@ Outputs:
                       national state aid)
 
 Reads the v_events / v_company_breadth_companies views, so run
-scripts/build_site_data.py (which reinstalls analysis/views.sql first) rather
-than calling this directly after a schema change.
+website/build/build_site_data.py (which reinstalls analysis/views.sql first)
+rather than calling this directly after a schema change.
 
 Amount discipline: every euro aggregate here is computed within a single
 grant_amount_basis per instrument family (the family's dominant basis).
@@ -27,10 +27,12 @@ import re
 import sqlite3
 from datetime import date
 from pathlib import Path
+import sys
 
-ROOT = Path(__file__).resolve().parent.parent
-DB = ROOT / "db.sqlite"
-OUT = ROOT / "site" / "public" / "data" / "investor_insights.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+from web_env import ROOT, DB, SITE_DATA  # noqa: E402
+
+OUT = SITE_DATA / "investor_insights.json"
 
 YEARS = ["2021", "2022", "2023", "2024", "2025"]
 SECTORS = ["cleantech", "deeptech_hardware", "life_sciences", "digital", "defense", "space"]

@@ -1,7 +1,7 @@
 """
 Generate per-country map data for the landing page Europe map.
 
-Output: site/public/data/country_map.json
+Output: website/frontend/public/data/country_map.json
 Schema:
   {
     "countries": {
@@ -21,10 +21,14 @@ Schema:
 import sqlite3
 import json
 import os
+import sys
+from pathlib import Path
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "db.sqlite")
-OUT_PATH = os.path.join(os.path.dirname(__file__), "..", "site", "public", "data", "country_map.json")
-SCOPE_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "europe_scope.json")
+sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+from web_env import DB_PATH, SITE_DATA, DATA  # noqa: E402
+
+OUT_PATH = str(SITE_DATA / "country_map.json")
+SCOPE_PATH = str(DATA / "europe_scope.json")
 
 # Single source of truth for the corpus's Europe scope. See docs/europe_scope.md
 # for the rationale. Edit data/europe_scope.json — not this file — to change.

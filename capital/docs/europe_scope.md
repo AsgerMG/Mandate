@@ -49,7 +49,7 @@ Three concrete failure modes the filter eliminates:
 
 ## Map rendering: three countries can't be drawn at 110m
 
-The Europe map on the home page uses [world-110m.json](../site/public/data/world-110m.json), a simplified topology bundled with `world-atlas`. Three countries in the corpus scope are below its resolution threshold and therefore have no shape at all in the topology:
+The Europe map on the home page uses [world-110m.json](../website/frontend/public/data/world-110m.json), a simplified topology bundled with `world-atlas`. Three countries in the corpus scope are below its resolution threshold and therefore have no shape at all in the topology:
 
 - **Malta (MT)** — 35 companies; EU27 member.
 - **Liechtenstein (LI)** — 1 company; EFTA.
@@ -66,7 +66,7 @@ Alternative considered and rejected: upgrade the topology to `world-50m`. The 50
 3. [ETL/load/schema.sql](../ETL/load/schema.sql) — defines `trg_companies_country_scope` (INSERT) and `trg_companies_country_scope_update` (UPDATE) which `RAISE(ABORT, ...)` if an out-of-scope country code is written to `companies.country`. **This is the enforcement floor**: any extractor that skips the Python helper will hit the trigger and fail with a pointer to this file.
 4. [analysis/views.sql](../analysis/views.sql) — defines `v_european_companies` (defensive filter) and inner-joins it into `v_events`. Belt-and-braces — if the trigger is ever disabled (e.g. for a raw-SQL bulk import), the view layer still keeps analytics clean. Every q* query joins through `v_events` so analyses inherit the filter automatically.
 5. [analysis/queries/q01_corpus_overview.sql](../analysis/queries/q01_corpus_overview.sql), [q01c_by_sector.sql](../analysis/queries/q01c_by_sector.sql), [q01d_top_countries.sql](../analysis/queries/q01d_top_countries.sql) — refactored to source from `v_european_companies` directly (previously hit the unfiltered `companies` table).
-6. [scripts/gen_country_map.py](../scripts/gen_country_map.py) — loads `europe_scope.json`, regenerates [site/public/data/country_map.json](../site/public/data/country_map.json) (40 countries).
+6. [website/build/country_map.py](../website/build/country_map.py) — loads `europe_scope.json`, regenerates [website/frontend/public/data/country_map.json](../website/frontend/public/data/country_map.json) (40 countries).
 7. [site/components/europe-map.tsx](../site/components/europe-map.tsx) — `NUMERIC_TO_ISO2` carries the 40-country geographic-Europe subset; `MARKER_COUNTRIES` carries MT/LI/XK markers (below world-110m's resolution threshold).
 8. [ETL/load/qa/sanity_check.py](../ETL/load/qa/sanity_check.py) — "DQ: Europe scope integrity" block at the end. All three values must be `0` (no out-of-scope rows, no non-canonical aliases, both triggers installed). Run after every loader.
 
@@ -117,7 +117,7 @@ SQLite triggers can't read JSON files at parse time, hence the duplication. A fu
 1. Add the entry to `data/europe_scope.json` (with `numeric` for the topojson ID; mark `rendererFallback: "marker"` if the country is too small for world-110m).
 2. Update the country-code allowlist in **both** SQL triggers in `ETL/load/schema.sql` AND in `v_european_companies` in `analysis/views.sql`.
 3. Reinstall the triggers on the live DB: `sqlite3 db.sqlite "DROP TRIGGER trg_companies_country_scope; DROP TRIGGER trg_companies_country_scope_update;"` and re-apply the relevant block from `ETL/load/schema.sql`.
-4. Re-run `sqlite3 db.sqlite < analysis/views.sql && python3 analysis/run.py && python3 scripts/gen_country_map.py && python3 scripts/build_taxonomy_network.py`.
+4. Re-run `make data` (reinstalls `analysis/views.sql`, then regenerates every site JSON including `country_map.json`).
 5. Update `NUMERIC_TO_ISO2` (or `MARKER_COUNTRIES`) in [site/components/europe-map.tsx](../site/components/europe-map.tsx).
 6. Run `python3 ETL/load/qa/sanity_check.py | grep "Europe scope integrity"` — both data values must be 0 and the trigger-presence value must be 0.
 7. Re-load any extractors whose source data now contains rows for the newly-in-scope country.
