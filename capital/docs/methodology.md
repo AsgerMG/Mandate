@@ -55,7 +55,18 @@ PIC/name dedup collapses *the same legal entity* recorded twice. A separate `par
 - **2b — multi-country distinctive brand bigram.** Companies sharing a leading distinctive bigram merge **only if** both tokens clear the multilingual stoplist + a document-frequency cap **and** the family spans ≥2 countries (cross-border + non-generic = real multinational: Air Liquide, Schneider, NXP, Carl Zeiss). Structurally immune to the first-name/industry-word traps.
 - **2c — curated brand dictionary** (`ETL/lib/brand_dictionary.py`). A reviewed leading-token → parent map for single-token brands (Volkswagen) and sub-brand fragmentation (Siemens Healthcare/Industry/Gamesa → Siemens), with a deny-list for traps (Bosch i Gimpera ≠ Bosch; Bayerische ≠ Bayer).
 
-**Result (applied):** 6,872 companies collapse into 2,840 groups; headline `COUNT(DISTINCT COALESCE(parent_group, id))` (see `analysis/run.py`) drops the corpus 156,836 → **152,804**. Euro and event totals are unchanged (€267.0bn) — merging never double-counts money, it only stops counting one company as several.
+**Layer 2d — LLM-verified fuzzy/phonetic tail.** A record-linkage pass
+(`ETL/transform/resolve_entities.py`) blocks candidate pairs by shared distinctive
+token and metaphone phonetic key (so `Mærsk`/`Marsk` and `Vyoma GmbH`/`GmH` co-block),
+then has an LLM *verify* each pair (verification, never generation): Haiku confirmed
+3,083 of ~10k fuzzy pairs; the 7,227 it flagged `unsure` were escalated to Sonnet 4.6
+with context (sector/city/channels), adding 1,022 more. Every "yes" still passes the
+deterministic number/golden-negative guards before merging.
+
+**Result (applied):** headline `COUNT(DISTINCT COALESCE(parent_group, id))` (see
+`analysis/run.py`) drops the corpus 156,836 → **150,577** (deterministic core →
+152,804, then the verified fuzzy tail → 150,577). Euro and event totals are unchanged
+(€267.0bn) — merging never double-counts money, it only stops counting one company as several.
 
 **Precision controls (no false merges).** Prevent → Detect → Contain → Recover: a zero-tolerance golden-negative set (build refuses to apply if any known-distinct pair merges), a cohesion audit (`ETL/transform/audit_merge_dryrun.py` — 99.8% of groups share a distinctive token), a big/small-name sanity check (`ETL/transform/sanity_check_merge.py`), hard size caps + anchor-not-chain (the 23k-blob class is structurally impossible), and full reversibility (the column is recomputed from scratch each run). The earlier **LLM** brand-merge was rejected at review (cheap model over-merged generic tokens; union-find chained into a 23,619-company blob) — the deterministic pipeline replaces it. Layer 3 (GLEIF LEI cross-name parents, e.g. Google↔Alphabet) is backlogged (`plans/backlog/gleif_lei_cross_name_merge.md`) — low LEI coverage on this SME-heavy corpus.
 
