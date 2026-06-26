@@ -23,6 +23,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from europe_scope import canonicalise_country  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
@@ -249,9 +250,15 @@ def extract_all(download_missing: bool = False) -> list[dict]:
 
         source_id, awarded_date = src_info
 
-        # Country → ISO
+        # Country → ISO, then canonicalise to Europe scope (PO→PL, SW→SE, …).
+        # A non-empty source country that canonicalises to None is genuinely
+        # out of scope → skip the row (don't let the scope trigger abort the load).
         country_raw = p.get("country", "")
         country = COUNTRY_NAME_TO_ISO.get(country_raw, country_raw[:2].upper() if country_raw else "")
+        canon = canonicalise_country(country)
+        if canon is None and country:
+            continue
+        country = canon or ""
 
         # Fiche PDF
         fiche_path = None

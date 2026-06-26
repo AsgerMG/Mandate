@@ -12,7 +12,9 @@ while aksjonaerregister access (the E-A route) is unconfirmed.
 Country: 'NO' unless data-geography='utlandet' (3 foreign-domiciled) -> ''.
 Matching: exact tier corpus-wide, fuzzy tiers NO-scoped (PFR pattern).
 
-Run: python3 scripts/extract_investinor_portfolio.py data/raw/investinor/portefolje_20260611.html 2026-06-11
+Run:
+  python3 ETL/extract/extract_investinor_portfolio.py --load-db          # fetch live, as_of=today
+  python3 ETL/extract/extract_investinor_portfolio.py <html> <as-of>     # reproducible from a saved page
 """
 from __future__ import annotations
 
@@ -29,7 +31,9 @@ from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 
 import re
 import sqlite3
+import subprocess
 import sys
+from datetime import date
 from pathlib import Path
 
 pass  # sys.path handled by etl_env bootstrap
@@ -38,6 +42,21 @@ from matching import CompanyMatcher, normalize_name
 BASE = _ETL_ROOT
 DB_PATH = _ETL_DB
 PAGE_URL = "https://investinor.no/portefolje/"
+RAW_DIR = BASE / "data" / "raw" / "investinor"
+
+
+def fetch_page() -> str:
+    """Fetch the live portfolio page (server-rendered) and cache it."""
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(
+        ["curl", "-sL", "--max-time", "60", "-A", "Mozilla/5.0", PAGE_URL],
+        capture_output=True, timeout=90,
+    )
+    if result.returncode != 0 or not result.stdout:
+        raise RuntimeError(f"curl failed: {result.stderr.decode()[:200]}")
+    html = result.stdout.decode("utf-8", errors="replace")
+    (RAW_DIR / f"portefolje_{date.today():%Y%m%d}.html").write_text(html, encoding="utf-8")
+    return html
 
 BUCKETS = {"selskapsportefolje": ("company", 0),
            "avhendet-portefolje": ("company", 1),
@@ -61,10 +80,22 @@ def parse(html: str) -> list[dict]:
 
 
 def main() -> None:
-    if len(sys.argv) != 3:
-        sys.exit("Usage: extract_investinor_portfolio.py <html> <as-of>")
-    rows = parse(Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace"))
-    as_of = sys.argv[2]
+    if "--load-db" in sys.argv[1:]:
+        html = fetch_page()
+        as_of = f"{date.today():%Y-%m-%d}"
+    elif len(sys.argv) == 3:
+        html = Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+        as_of = sys.argv[2]
+    else:
+        sys.exit("Usage: extract_investinor_portfolio.py [--load-db | <html> <as-of>]")
+    rows = parse(html)
+    if not rows:
+        sys.exit(
+            "investinor: 0 portfolio cards parsed — investinor.no/portefolje is now "
+            "a client-rendered SPA (no portfolio markup in the served HTML and no "
+            "static data endpoint). Auto-fetch needs a headless browser (Playwright, "
+            "same as the RVO NL pattern). Until then, save a rendered page and run: "
+            "extract_investinor_portfolio.py <html> <as-of>.")
     print(f"parsed {len(rows)}: "
           f"{sum(r['kind']=='company' and not r['exited'] for r in rows)} active, "
           f"{sum(r['exited'] for r in rows)} divested, "

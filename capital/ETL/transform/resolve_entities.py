@@ -100,7 +100,10 @@ def load(con):
 
 
 # ── candidates ────────────────────────────────────────────────────────────────
-def gen_candidates():
+def gen_candidates(new_min_id: int = 0):
+    """Generate candidate pairs. If new_min_id > 0, only emit pairs that touch a
+    company with id >= new_min_id (incremental ER: block the new companies against
+    the whole corpus, but skip re-verifying pairs of already-resolved old rows)."""
     con = sqlite3.connect(DB)
     co = load(con)
     df = defaultdict(int)
@@ -132,6 +135,9 @@ def gen_candidates():
             if pk in seen:
                 continue
             seen.add(pk)
+            # Incremental: only verify pairs involving at least one new company.
+            if new_min_id and a < new_min_id and b < new_min_id:
+                continue
             na, nb = co[a]["name"], co[b]["name"]
             if translit(na) == translit(nb):
                 cand.append((a, b, 100, "exact"))         # auto-join, no LLM
@@ -409,9 +415,12 @@ if __name__ == "__main__":
     ap.add_argument("cmd", choices=["candidates", "verify", "escalate", "apply"])
     ap.add_argument("--apply", action="store_true", help="write parent_group (apply only)")
     ap.add_argument("--pilot", type=int, default=0, help="verify: synchronous pilot on N pairs")
+    ap.add_argument("--since-id", type=int, default=0,
+                    help="candidates: only emit pairs touching a company id >= this "
+                         "(incremental ER over newly loaded companies)")
     args = ap.parse_args()
     if args.cmd == "candidates":
-        gen_candidates()
+        gen_candidates(args.since_id)
     elif args.cmd == "verify":
         verify_pilot(args.pilot) if args.pilot else verify()
     elif args.cmd == "escalate":

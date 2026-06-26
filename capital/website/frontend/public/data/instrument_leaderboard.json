@@ -30,16 +30,37 @@
       "stageMin": 0.65,
       "stageMax": 0.95,
       "stageLabel": "Commercial demo \u2192 Scale-up",
-      "companies": 301,
-      "totalEur": 30034963155.58,
-      "medianTicket": 59500000.0,
+      "companies": 306,
+      "totalEur": 57317173155.58,
+      "medianTicket": 60300000.0,
       "topSector": {
         "name": "Deep tech / hardware",
-        "companies": 141
+        "companies": 142
       },
       "topCountry": {
         "iso": "DE",
-        "companies": 79
+        "companies": 81
+      }
+    },
+    {
+      "id": "national_dev_banks",
+      "label": "National development banks",
+      "family": "national_dev_banks",
+      "color": "#15803d",
+      "glyph": "\u25c9",
+      "stageMin": 0.25,
+      "stageMax": 0.8,
+      "stageLabel": "Seed \u2192 Growth",
+      "companies": 53296,
+      "totalEur": 22720775415.249874,
+      "medianTicket": 57474.13,
+      "topSector": {
+        "name": "Other",
+        "companies": 20489
+      },
+      "topCountry": {
+        "iso": "FR",
+        "companies": 21291
       }
     },
     {
@@ -61,27 +82,6 @@
       "topCountry": {
         "iso": "ES",
         "companies": 2165
-      }
-    },
-    {
-      "id": "national_dev_banks",
-      "label": "National development banks",
-      "family": "national_dev_banks",
-      "color": "#15803d",
-      "glyph": "\u25c9",
-      "stageMin": 0.25,
-      "stageMax": 0.8,
-      "stageLabel": "Seed \u2192 Growth",
-      "companies": 50808,
-      "totalEur": 20129323190.5499,
-      "medianTicket": 55019.93,
-      "topSector": {
-        "name": "Other",
-        "companies": 20476
-      },
-      "topCountry": {
-        "iso": "FR",
-        "companies": 21191
       }
     },
     {
@@ -219,16 +219,16 @@
       "stageMin": 0.1,
       "stageMax": 0.5,
       "stageLabel": "Research \u2192 Prototype",
-      "companies": 451,
+      "companies": 469,
       "totalEur": 387500.0,
       "medianTicket": 7500.0,
       "topSector": {
         "name": "Life sciences",
-        "companies": 108
+        "companies": 112
       },
       "topCountry": {
         "iso": "DE",
-        "companies": 84
+        "companies": 86
       }
     }
   ]

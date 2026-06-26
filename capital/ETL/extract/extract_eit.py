@@ -31,6 +31,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from europe_scope import canonicalise_country  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
@@ -2626,6 +2627,13 @@ def match_companies(
     for r in rows:
         raw_name = r["company_name"]
         country = (r["country"] or "").upper()
+        # Canonicalise to Europe scope; a non-empty country that resolves to None
+        # is a genuine out-of-scope KIC partner (IL/TR/TN) → skip so the scope
+        # trigger doesn't abort the whole load. Empty country stays empty (allowed).
+        canon = canonicalise_country(country)
+        if canon is None and country:
+            continue
+        country = canon or ""
         norm = normalize_name(raw_name)
 
         company_id: int | None = None

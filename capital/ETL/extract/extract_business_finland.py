@@ -1,28 +1,24 @@
-"""Extract Business Finland funded projects — Sprint 17.
+"""Extract Business Finland funded projects.
 
-Data source:
-  Business Finland (Innovaatiorahoituskeskus Business Finland) publishes
-  its funding data via the Finnish open data portal avoindata.fi.
+Data source (rewired 2026-06-26 — the old avoindata.fi CKAN feed is gone: the
+portal migrated to avoindata.suomi.fi and Business Finland removed its grants
+dataset, leaving only a tourism dataset):
+  research.fi (Research Information Hub, run by CSC) exposes every Finnish public
+  funding decision via an Elasticsearch portal API. We query the `funding` index
+  filtered to funder = "Innovaatiorahoituskeskus Business Finland":
+    POST https://researchfi-api-production.2.rahtiapp.fi/portalapi/funding/_search
 
-  Confirmed publisher: https://www.avoindata.fi/data/en_GB/organization/business-finland
-  Dataset search: https://www.avoindata.fi/data/en_GB/dataset?q=business+finland+grants
+  Each decision carries a `fundingGroupPerson` list naming each recipient
+  organisation (consortiumOrganizationNameEn), its Finnish business ID, and its
+  share of the grant (shareOfFundingInEur, already in EUR). Amounts need no FX.
 
-  The dataset is likely published as CSV with fields like:
-    ApplicationId, CompanyName, BusinessId, Region, Programme,
-    DecisionYear, GrantedAmountEUR, ProjectTitle
-
-  API access (CKAN-based avoindata.fi):
-    Base: https://www.avoindata.fi/data/api/3
-    Action: /action/datastore_search?resource_id=<id>&limit=5000
-    Find resource ID: search for "Business Finland" on avoindata.fi
-
-  SATR dedup rule: 1,988 SATR rows already tagged ndb_distributor='business_finland'.
+  SATR dedup rule: ~1,988 SATR rows already tagged ndb_distributor='business_finland'.
   Dedup by canonical_name + country='FI' + year ± 1.
 
 Run modes:
-  python extract_business_finland.py --probe           → test API + find dataset
+  python extract_business_finland.py --probe           → fetch + show parsed sample
   python extract_business_finland.py --load-db         → fetch + dedup + load
-  python extract_business_finland.py --local <path>    → load local CSV/JSON
+  python extract_business_finland.py --local <path>    → load a saved ES JSON dump
 """
 from __future__ import annotations
 
@@ -42,8 +38,8 @@ import csv
 import json
 import re
 import sqlite3
+import subprocess
 import sys
-import urllib.request
 from pathlib import Path
 
 BASE_DIR = _ETL_ROOT
@@ -59,125 +55,96 @@ NDB_DISTRIBUTOR = "business_finland"
 MIN_YEAR = 2021
 PAGE_SIZE = 5000
 
-# CKAN API base for avoindata.fi
-CKAN_BASE = "https://www.avoindata.fi/data/api/3"
-
-# Known dataset/resource IDs (may change; run --probe to rediscover)
-KNOWN_RESOURCE_IDS = [
-    # Add IDs found via manual search of avoindata.fi
-    # Example format: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-]
-
-# Alternative direct endpoints
-API_CANDIDATES = [
-    f"{CKAN_BASE}/action/datastore_search?resource_id=business-finland-grants&limit=2",
-    "https://api.businessfinland.fi/v1/grants?limit=2",
-    "https://data.businessfinland.fi/api/v1/projects?limit=2",
-]
+# research.fi portal API (Research Information Hub, CSC). The `funding` index
+# holds every Finnish public funding decision, including Business Finland's.
+RFI_SEARCH = ("https://researchfi-api-production.2.rahtiapp.fi"
+              "/portalapi/funding/_search")
+RFI_FUNDER = "Innovaatiorahoituskeskus Business Finland"
+ES_WINDOW = 10000  # ES max_result_window; BF doc count is below this
 
 
-def _get_json(url: str) -> dict | list | None:
+def _fetch_research_fi() -> list[dict]:
+    """Fetch every Business Finland funding decision from research.fi.
+
+    Uses curl (long timeout) like the other large-payload extractors. One bulk
+    query — the BF doc count is under the 10k result window.
+    """
+    body = json.dumps({
+        "size": ES_WINDOW,
+        "query": {"match_phrase": {"funderNameEn": RFI_FUNDER}},
+    })
+    print(f"  POST {RFI_SEARCH}  (funder='{RFI_FUNDER}')")
+    result = subprocess.run(
+        ["curl", "-sL", "--max-time", "180", "-X", "POST",
+         "-H", "Content-Type: application/json",
+         "-H", "User-Agent: EuroInvTracker/1.0",
+         "-d", body, RFI_SEARCH],
+        capture_output=True, timeout=240,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"curl failed: {result.stderr.decode()[:200]}")
+    data = json.loads(result.stdout)
+    hits = (data.get("hits") or {}).get("hits") or []
+    if not hits:
+        raise SystemExit(f"research.fi returned no BF hits: {str(data)[:160]}")
+    print(f"  fetched {len(hits)} funding docs")
+    return [h["_source"] for h in hits]
+
+
+def _parse_record(rec: dict) -> list[dict]:
+    """One row per funded organisation in a research.fi funding decision.
+
+    Each decision carries a `fundingGroupPerson` list; every entry names the
+    recipient organisation (consortiumOrganizationName*), its Finnish business
+    ID, and its share of the grant (shareOfFundingInEur).
+    """
     try:
-        req = urllib.request.Request(
-            url, headers={"User-Agent": "EuroInvTracker/1.0", "Accept": "application/json"})
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read())
-    except Exception:
-        return None
-
-
-def _search_ckan_for_bf() -> list[str]:
-    """Search avoindata.fi CKAN for Business Finland datasets, return resource IDs."""
-    url = f"{CKAN_BASE}/action/package_search?q=business+finland&fq=organization:business-finland&rows=10"
-    data = _get_json(url)
-    if not data:
+        year = int(rec.get("fundingStartYear") or 0)
+    except (TypeError, ValueError):
         return []
-    results = data.get("result", {}).get("results", [])
-    resource_ids = []
-    for pkg in results:
-        for res in pkg.get("resources", []):
-            if res.get("format", "").upper() in ("CSV", "JSON", "XLSX"):
-                print(f"  Found resource: {res.get('name')} — {res.get('id')} ({res.get('format')})")
-                resource_ids.append(res["id"])
-    return resource_ids
-
-
-def _fetch_from_ckan(resource_id: str) -> list[dict]:
-    all_records = []
-    offset = 0
-    while True:
-        url = f"{CKAN_BASE}/action/datastore_search?resource_id={resource_id}&limit={PAGE_SIZE}&offset={offset}"
-        data = _get_json(url)
-        if not data:
-            break
-        result = data.get("result", {})
-        records = result.get("records", [])
-        if not records:
-            break
-        all_records.extend(records)
-        print(f"  Offset {offset}: +{len(records)} (total {len(all_records)})")
-        total = result.get("total", 0)
-        offset += PAGE_SIZE
-        if offset >= total:
-            break
-    return all_records
-
-
-def _parse_record(rec: dict) -> dict | None:
-    def _f(*keys: str) -> str:
-        for k in keys:
-            v = rec.get(k)
-            if v is not None:
-                return str(v).strip()
-        return ""
-
-    year_str = _f("DecisionYear", "Year", "GrantYear", "startDate", "year",
-                   "Paatosvuosi", "Myontamisvuosi")
-    year_match = re.search(r"(20\d{2})", year_str)
-    if not year_match:
-        return None
-    year = int(year_match.group(1))
     if year < MIN_YEAR:
-        return None
+        return []
 
-    name = _f("CompanyName", "Organisation", "Yritys", "Hakija", "company_name",
-              "organisationName", "name")
-    if not name:
-        return None
+    proj_no = str(rec.get("funderProjectNumber") or rec.get("projectId") or "").strip()
+    title = str(rec.get("projectNameEn") or rec.get("projectNameFi")
+                or rec.get("projectNameUnd") or "").strip()
+    source = f"business_finland_{year}"
 
-    business_id = _f("BusinessId", "business_id", "YTunnus", "y_tunnus", "orgNr")
-
-    amt_str = _f("GrantedAmountEUR", "Amount", "Grant", "Summa", "Myontosumma",
-                 "GrantEUR", "amount_eur", "granted_amount")
-    amt_str = re.sub(r"[^\d.,]", "", amt_str).replace(",", ".").replace(" ", "")
-    try:
-        amount_eur = float(amt_str) if amt_str else 0.0
-    except ValueError:
-        amount_eur = 0.0
-
-    programme = _f("Programme", "Program", "Ohjelma", "FundingInstrument", "type")
-    proj_id = _f("ApplicationId", "ProjectId", "Hakemustunnus", "id")
-    title = _f("ProjectTitle", "Title", "Otsikko", "Projektin_nimi")
-
-    slug = re.sub(r"[^a-z0-9]+", "_", programme.lower())[:20] or "grant"
-    source = f"business_finland_{slug}_{year}"
-    call_id = f"{source}_{proj_id or business_id or name[:20]}"
-
-    return {
-        "source": source,
-        "call_id": call_id,
-        "company_name": name,
-        "company_name_norm": name.upper(),
-        "business_id": business_id,
-        "country": DEPLOYMENT_COUNTRY,
-        "year": year,
-        "project_id": proj_id,
-        "project_title": title[:200],
-        "programme": programme,
-        "grant_amount_eur": round(amount_eur, 2),
-        "ndb_distributor": NDB_DISTRIBUTOR,
-        "deployment_country": DEPLOYMENT_COUNTRY,
-    }
+    rows: list[dict] = []
+    seen: set[str] = set()
+    for fgp in rec.get("fundingGroupPerson") or []:
+        if not isinstance(fgp, dict):
+            continue
+        name = (fgp.get("consortiumOrganizationNameEn")
+                or fgp.get("consortiumOrganizationNameFi") or "").strip()
+        if not name:
+            continue
+        business_id = str(fgp.get("consortiumOrganizationBusinessId") or "").strip()
+        try:
+            amount_eur = float(fgp.get("shareOfFundingInEur") or 0)
+        except (TypeError, ValueError):
+            amount_eur = 0.0
+        key = business_id or name.upper()
+        if key in seen:        # one org may appear twice in a consortium list
+            continue
+        seen.add(key)
+        call_id = f"{source}_{proj_no or title[:20]}_{key}"
+        rows.append({
+            "source": source,
+            "call_id": call_id,
+            "company_name": name,
+            "company_name_norm": name.upper(),
+            "business_id": business_id,
+            "country": DEPLOYMENT_COUNTRY,
+            "year": year,
+            "project_id": proj_no,
+            "project_title": title[:200],
+            "programme": "business_finland",
+            "grant_amount_eur": round(amount_eur, 2),
+            "ndb_distributor": NDB_DISTRIBUTOR,
+            "deployment_country": DEPLOYMENT_COUNTRY,
+        })
+    return rows
 
 
 def _satr_dedup_set(con: sqlite3.Connection) -> set[tuple[str, int]]:
@@ -269,53 +236,24 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.local:
-        if args.local.endswith(".csv"):
-            rows = []
-            with open(args.local, encoding="utf-8", errors="replace") as f:
-                for delim in (";", ",", "\t"):
-                    f.seek(0)
-                    reader = csv.DictReader(f, delimiter=delim)
-                    sample = next(reader, None)
-                    if sample and len(sample) >= 3:
-                        f.seek(0)
-                        for raw_row in csv.DictReader(f, delimiter=delim):
-                            r = _parse_record({k.strip(): v for k, v in raw_row.items()})
-                            if r:
-                                rows.append(r)
-                        break
-        else:
-            with open(args.local) as f:
-                raw = json.load(f)
-            records = raw if isinstance(raw, list) else raw.get("records", raw.get("data", []))
-            rows = [r for rec in records if (r := _parse_record(rec)) is not None]
+        with open(args.local) as f:
+            raw = json.load(f)
+        records = (raw if isinstance(raw, list)
+                   else [h["_source"] for h in (raw.get("hits") or {}).get("hits") or []])
+        rows = [row for rec in records for row in _parse_record(rec)]
     elif args.probe:
-        print("Searching avoindata.fi CKAN for Business Finland datasets ...")
-        resource_ids = _search_ckan_for_bf()
-        if not resource_ids:
-            print("  No datasets found via CKAN search.")
-        for rid in resource_ids[:3]:
-            url = f"{CKAN_BASE}/action/datastore_search?resource_id={rid}&limit=2"
-            print(f"  Testing resource {rid}: {url}")
-            data = _get_json(url)
-            if data:
-                print(f"    Response shape: {list(data.keys() if isinstance(data, dict) else [])}")
-        print(
-            "\nManual steps:\n"
-            "  1. Visit https://www.avoindata.fi/data/en_GB/organization/business-finland\n"
-            "  2. Find the grants/funded projects dataset\n"
-            "  3. Download as CSV\n"
-            "  4. Re-run: python extract_business_finland.py --local <file.csv> [--load-db]\n"
-        )
+        print(f"Probing research.fi funding index for '{RFI_FUNDER}' ...")
+        recs = _fetch_research_fi()
+        sample = [row for rec in recs[:50] for row in _parse_record(rec)]
+        print(f"  {len(recs)} docs → {len(sample)} parsed org-rows (first 50 docs)")
+        for r in sample[:5]:
+            print(f"    {r['year']} {r['company_name'][:40]:<40} €{r['grant_amount_eur']/1e3:.0f}k")
         return
     else:
-        # Try CKAN search + fetch
-        resource_ids = _search_ckan_for_bf()
-        rows = []
-        for rid in resource_ids:
-            records = _fetch_from_ckan(rid)
-            rows.extend(r for rec in records if (r := _parse_record(rec)) is not None)
+        records = _fetch_research_fi()
+        rows = [row for rec in records for row in _parse_record(rec)]
         if not rows:
-            print("ERROR: No data found. Run --probe for diagnostics.", file=sys.stderr)
+            print("ERROR: No data parsed from research.fi.", file=sys.stderr)
             sys.exit(1)
 
     if not rows:

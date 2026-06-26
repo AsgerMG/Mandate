@@ -2,8 +2,8 @@
   "countries": {
     "FR": {
       "name": "France",
-      "companies": 30463,
-      "totalEur": 47864047927,
+      "companies": 30581,
+      "totalEur": 53201280614,
       "byFamily": [
         {
           "family": "state_aid",
@@ -18,7 +18,7 @@
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 22915
+          "companies": 23016
         },
         {
           "family": "eic",
@@ -28,7 +28,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 50
+          "companies": 55
         },
         {
           "family": "ipcei",
@@ -65,7 +65,7 @@
         {
           "sector": "cleantech",
           "label": "Cleantech",
-          "companies": 7683
+          "companies": 7772
         },
         {
           "sector": "deeptech_hardware",
@@ -80,7 +80,7 @@
         {
           "sector": "life_sciences",
           "label": "Life sciences",
-          "companies": 1327
+          "companies": 1335
         },
         {
           "sector": "space",
@@ -106,8 +106,8 @@
     },
     "DE": {
       "name": "Germany",
-      "companies": 22165,
-      "totalEur": 91061961202,
+      "companies": 22167,
+      "totalEur": 100181581202,
       "byFamily": [
         {
           "family": "state_aid",
@@ -122,7 +122,7 @@
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 1062
+          "companies": 1063
         },
         {
           "family": "eic",
@@ -132,12 +132,12 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 88
+          "companies": 91
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 85
+          "companies": 87
         },
         {
           "family": "innovation_fund",
@@ -169,12 +169,12 @@
         {
           "sector": "deeptech_hardware",
           "label": "Deep tech / hardware",
-          "companies": 6201
+          "companies": 6199
         },
         {
           "sector": "cleantech",
           "label": "Cleantech",
-          "companies": 3699
+          "companies": 3700
         },
         {
           "sector": "digital",
@@ -211,7 +211,7 @@
     "IT": {
       "name": "Italy",
       "companies": 20496,
-      "totalEur": 38185317254,
+      "totalEur": 42312757254,
       "byFamily": [
         {
           "family": "state_aid",
@@ -236,7 +236,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 21
+          "companies": 22
         },
         {
           "family": "ipcei",
@@ -315,7 +315,7 @@
     "ES": {
       "name": "Spain",
       "companies": 11717,
-      "totalEur": 15708235988,
+      "totalEur": 17837595988,
       "byFamily": [
         {
           "family": "state_aid",
@@ -340,7 +340,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 60
+          "companies": 61
         },
         {
           "family": "ipcei",
@@ -444,7 +444,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 38
+          "companies": 43
         },
         {
           "family": "ipcei",
@@ -496,7 +496,7 @@
       ],
       "narrative": {
         "rankByCompanies": 5,
-        "rankByEur": 8,
+        "rankByEur": 9,
         "totalCountries": 40,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
@@ -507,8 +507,8 @@
     },
     "NO": {
       "name": "Norway",
-      "companies": 9001,
-      "totalEur": 4370814128,
+      "companies": 9067,
+      "totalEur": 4381759419,
       "byFamily": [
         {
           "family": "horizon_eu",
@@ -518,7 +518,7 @@
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 14803
+          "companies": 14930
         },
         {
           "family": "eic",
@@ -528,7 +528,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 16
+          "companies": 17
         },
         {
           "family": "innovation_fund",
@@ -555,7 +555,7 @@
         {
           "sector": "cleantech",
           "label": "Cleantech",
-          "companies": 1159
+          "companies": 1160
         },
         {
           "sector": "deeptech_hardware",
@@ -570,7 +570,7 @@
         {
           "sector": "life_sciences",
           "label": "Life sciences",
-          "companies": 541
+          "companies": 543
         },
         {
           "sector": "defense",
@@ -585,7 +585,7 @@
       ],
       "narrative": {
         "rankByCompanies": 6,
-        "rankByEur": 13,
+        "rankByEur": 14,
         "totalCountries": 40,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
@@ -596,8 +596,8 @@
     },
     "NL": {
       "name": "Netherlands",
-      "companies": 5618,
-      "totalEur": 12120764883,
+      "companies": 5619,
+      "totalEur": 14074324883,
       "byFamily": [
         {
           "family": "state_aid",
@@ -627,7 +627,7 @@
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 16
+          "companies": 17
         },
         {
           "family": "innovation_fund",
@@ -664,7 +664,7 @@
         {
           "sector": "deeptech_hardware",
           "label": "Deep tech / hardware",
-          "companies": 649
+          "companies": 650
         },
         {
           "sector": "life_sciences",
@@ -698,10 +698,114 @@
         ]
       }
     },
+    "SE": {
+      "name": "Sweden",
+      "companies": 4715,
+      "totalEur": 7294351821,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2142
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1010
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3745
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 114
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 20
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 4
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 14
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 10
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 7
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 75
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1311
+        },
+        {
+          "sector": "cleantech",
+          "label": "Cleantech",
+          "companies": 681
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 439
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 320
+        },
+        {
+          "sector": "digital",
+          "label": "Digital",
+          "companies": 254
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 38
+        },
+        {
+          "sector": "defense",
+          "label": "Defence",
+          "companies": 15
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 8,
+        "rankByEur": 8,
+        "totalCountries": 40,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Cleantech"
+        ]
+      }
+    },
     "HU": {
       "name": "Hungary",
       "companies": 4305,
-      "totalEur": 3022595247,
+      "totalEur": 3159945247,
       "byFamily": [
         {
           "family": "state_aid",
@@ -726,7 +830,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 4
+          "companies": 5
         },
         {
           "family": "ipcei",
@@ -782,8 +886,8 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 8,
-        "rankByEur": 15,
+        "rankByCompanies": 9,
+        "rankByEur": 16,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
@@ -794,8 +898,8 @@
     },
     "BE": {
       "name": "Belgium",
-      "companies": 3802,
-      "totalEur": 7635142759,
+      "companies": 3803,
+      "totalEur": 7702562759,
       "byFamily": [
         {
           "family": "state_aid",
@@ -820,7 +924,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 10
+          "companies": 11
         },
         {
           "family": "ipcei",
@@ -886,7 +990,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 9,
+        "rankByCompanies": 10,
         "rankByEur": 7,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
@@ -899,7 +1003,7 @@
     "CZ": {
       "name": "Czechia",
       "companies": 3630,
-      "totalEur": 9225427574,
+      "totalEur": 9311627574,
       "byFamily": [
         {
           "family": "state_aid",
@@ -990,7 +1094,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 10,
+        "rankByCompanies": 11,
         "rankByEur": 6,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
@@ -1003,7 +1107,7 @@
     "AT": {
       "name": "Austria",
       "companies": 3467,
-      "totalEur": 4862205776,
+      "totalEur": 5358505776,
       "byFamily": [
         {
           "family": "state_aid",
@@ -1028,7 +1132,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 17
+          "companies": 18
         },
         {
           "family": "ipcei",
@@ -1094,7 +1198,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 11,
+        "rankByCompanies": 12,
         "rankByEur": 12,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
@@ -1193,7 +1297,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 12,
+        "rankByCompanies": 13,
         "rankByEur": 26,
         "totalCountries": 40,
         "dominantFamily": "National Dev. Banks",
@@ -1206,7 +1310,7 @@
     "EE": {
       "name": "Estonia",
       "companies": 3109,
-      "totalEur": 1735107854,
+      "totalEur": 1799877854,
       "byFamily": [
         {
           "family": "state_aid",
@@ -1297,7 +1401,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 13,
+        "rankByCompanies": 14,
         "rankByEur": 20,
         "totalCountries": 40,
         "dominantFamily": "National Dev. Banks",
@@ -1309,8 +1413,8 @@
     },
     "DK": {
       "name": "Denmark",
-      "companies": 2964,
-      "totalEur": 2726163853,
+      "companies": 3092,
+      "totalEur": 2930559534,
       "byFamily": [
         {
           "family": "state_aid",
@@ -1325,7 +1429,7 @@
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 2944
+          "companies": 3130
         },
         {
           "family": "eic",
@@ -1335,7 +1439,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 11
+          "companies": 12
         },
         {
           "family": "ipcei",
@@ -1365,14 +1469,19 @@
       ],
       "bySector": [
         {
-          "sector": "life_sciences",
-          "label": "Life sciences",
-          "companies": 664
-        },
-        {
           "sector": "digital",
           "label": "Digital",
-          "companies": 661
+          "companies": 698
+        },
+        {
+          "sector": "life_sciences",
+          "label": "Life sciences",
+          "companies": 674
+        },
+        {
+          "sector": "deeptech_hardware",
+          "label": "Deep tech / hardware",
+          "companies": 578
         },
         {
           "sector": "other",
@@ -1380,14 +1489,9 @@
           "companies": 555
         },
         {
-          "sector": "deeptech_hardware",
-          "label": "Deep tech / hardware",
-          "companies": 506
-        },
-        {
           "sector": "cleantech",
           "label": "Cleantech",
-          "companies": 497
+          "companies": 499
         },
         {
           "sector": "space",
@@ -1401,124 +1505,20 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 14,
-        "rankByEur": 16,
+        "rankByCompanies": 15,
+        "rankByEur": 17,
         "totalCountries": 40,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Life sciences",
-          "Digital"
-        ]
-      }
-    },
-    "SE": {
-      "name": "Sweden",
-      "companies": 2623,
-      "totalEur": 5436160954,
-      "byFamily": [
-        {
-          "family": "state_aid",
-          "label": "State Aid (SATR)",
-          "companies": 2142
-        },
-        {
-          "family": "horizon_eu",
-          "label": "Horizon EU",
-          "companies": 1010
-        },
-        {
-          "family": "ndb",
-          "label": "National Dev. Banks",
-          "companies": 414
-        },
-        {
-          "family": "eic",
-          "label": "EIC",
-          "companies": 114
-        },
-        {
-          "family": "eit",
-          "label": "EIT KIC",
-          "companies": 20
-        },
-        {
-          "family": "ipcei",
-          "label": "IPCEI",
-          "companies": 3
-        },
-        {
-          "family": "innovation_fund",
-          "label": "Innovation Fund",
-          "companies": 14
-        },
-        {
-          "family": "eib",
-          "label": "EIB",
-          "companies": 10
-        },
-        {
-          "family": "edf",
-          "label": "EDF",
-          "companies": 7
-        },
-        {
-          "family": "chips_ju",
-          "label": "Chips JU",
-          "companies": 75
-        }
-      ],
-      "bySector": [
-        {
-          "sector": "other",
-          "label": "Other",
-          "companies": 1311
-        },
-        {
-          "sector": "cleantech",
-          "label": "Cleantech",
-          "companies": 561
-        },
-        {
-          "sector": "deeptech_hardware",
-          "label": "Deep tech / hardware",
-          "companies": 254
-        },
-        {
-          "sector": "life_sciences",
-          "label": "Life sciences",
-          "companies": 234
-        },
-        {
-          "sector": "digital",
-          "label": "Digital",
-          "companies": 201
-        },
-        {
-          "sector": "space",
-          "label": "Space",
-          "companies": 31
-        },
-        {
-          "sector": "defense",
-          "label": "Defence",
-          "companies": 9
-        }
-      ],
-      "narrative": {
-        "rankByCompanies": 15,
-        "rankByEur": 9,
-        "totalCountries": 40,
-        "dominantFamily": "State Aid (SATR)",
-        "dominantSectors": [
-          "Other",
-          "Cleantech"
+          "Digital",
+          "Life sciences"
         ]
       }
     },
     "GR": {
       "name": "Greece",
       "companies": 2566,
-      "totalEur": 5416868453,
+      "totalEur": 6217668453,
       "byFamily": [
         {
           "family": "state_aid",
@@ -1610,7 +1610,7 @@
       ],
       "narrative": {
         "rankByCompanies": 16,
-        "rankByEur": 10,
+        "rankByEur": 11,
         "totalCountries": 40,
         "dominantFamily": "Horizon EU",
         "dominantSectors": [
@@ -1621,8 +1621,8 @@
     },
     "FI": {
       "name": "Finland",
-      "companies": 2118,
-      "totalEur": 5058231228,
+      "companies": 2158,
+      "totalEur": 6379831951,
       "byFamily": [
         {
           "family": "state_aid",
@@ -1637,7 +1637,7 @@
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 146
+          "companies": 316
         },
         {
           "family": "eic",
@@ -1647,12 +1647,12 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 15
+          "companies": 16
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 11
+          "companies": 12
         },
         {
           "family": "innovation_fund",
@@ -1714,7 +1714,7 @@
       ],
       "narrative": {
         "rankByCompanies": 17,
-        "rankByEur": 11,
+        "rankByEur": 10,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
@@ -1746,7 +1746,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 7
+          "companies": 9
         },
         {
           "family": "chips_ju",
@@ -1805,7 +1805,7 @@
     "PL": {
       "name": "Poland",
       "companies": 1987,
-      "totalEur": 4327097968,
+      "totalEur": 5107767968,
       "byFamily": [
         {
           "family": "state_aid",
@@ -1897,7 +1897,7 @@
       ],
       "narrative": {
         "rankByCompanies": 19,
-        "rankByEur": 14,
+        "rankByEur": 13,
         "totalCountries": 40,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
@@ -1909,7 +1909,7 @@
     "PT": {
       "name": "Portugal",
       "companies": 1665,
-      "totalEur": 2632363501,
+      "totalEur": 3243923501,
       "byFamily": [
         {
           "family": "state_aid",
@@ -1996,7 +1996,7 @@
       ],
       "narrative": {
         "rankByCompanies": 20,
-        "rankByEur": 17,
+        "rankByEur": 15,
         "totalCountries": 40,
         "dominantFamily": "Horizon EU",
         "dominantSectors": [
@@ -2008,7 +2008,7 @@
     "IE": {
       "name": "Ireland",
       "companies": 1595,
-      "totalEur": 2156237841,
+      "totalEur": 2241237841,
       "byFamily": [
         {
           "family": "state_aid",
@@ -2033,7 +2033,7 @@
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 14
+          "companies": 17
         },
         {
           "family": "ipcei",
@@ -2107,7 +2107,7 @@
     "SK": {
       "name": "Slovakia",
       "companies": 1533,
-      "totalEur": 1765561923,
+      "totalEur": 2152041923,
       "byFamily": [
         {
           "family": "state_aid",
@@ -2283,7 +2283,7 @@
       ],
       "narrative": {
         "rankByCompanies": 23,
-        "rankByEur": 23,
+        "rankByEur": 24,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
@@ -2294,7 +2294,7 @@
     },
     "HR": {
       "name": "Croatia",
-      "companies": 905,
+      "companies": 906,
       "totalEur": 929744203,
       "byFamily": [
         {
@@ -2481,7 +2481,7 @@
       ],
       "narrative": {
         "rankByCompanies": 25,
-        "rankByEur": 24,
+        "rankByEur": 25,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
@@ -2582,7 +2582,7 @@
     "RO": {
       "name": "Romania",
       "companies": 399,
-      "totalEur": 609040942,
+      "totalEur": 804640942,
       "byFamily": [
         {
           "family": "state_aid",
@@ -2669,7 +2669,7 @@
       ],
       "narrative": {
         "rankByCompanies": 27,
-        "rankByEur": 25,
+        "rankByEur": 23,
         "totalCountries": 40,
         "dominantFamily": "Horizon EU",
         "dominantSectors": [
@@ -2758,7 +2758,7 @@
       ],
       "narrative": {
         "rankByCompanies": 28,
-        "rankByEur": 30,
+        "rankByEur": 31,
         "totalCountries": 40,
         "dominantFamily": "Horizon EU",
         "dominantSectors": [
@@ -2770,7 +2770,7 @@
     "SI": {
       "name": "Slovenia",
       "companies": 290,
-      "totalEur": 350820704,
+      "totalEur": 357400704,
       "byFamily": [
         {
           "family": "horizon_eu",
@@ -2859,7 +2859,7 @@
     "MT": {
       "name": "Malta",
       "companies": 163,
-      "totalEur": 288956788,
+      "totalEur": 348956788,
       "byFamily": [
         {
           "family": "state_aid",
@@ -2921,7 +2921,7 @@
       ],
       "narrative": {
         "rankByCompanies": 30,
-        "rankByEur": 31,
+        "rankByEur": 30,
         "totalCountries": 40,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [

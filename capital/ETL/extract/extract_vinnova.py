@@ -1,34 +1,28 @@
-"""Extract Vinnova (Sweden) funded activities — Sprint 17.
+"""Extract Vinnova (Sweden) funded projects.
 
-Data source:
-  GDP Hub (Gemensamma dataplattformen) — formerly portal.api.vinnova.se, now:
-    https://gdphub.se
+Data source (rewired 2026-06-26 — the old gdphub.se / portal.api.vinnova.se
+endpoints are dead):
+  Vinnova's official open-data API (CC0):
+    https://data.vinnova.se/api/projekt/{YYYY-MM-DD}
+  Returns every project whose record was modified on/after the given date.
+  We pull from an early date and filter to start year >= 2021.
 
-  The API is CC0 licensed and covers Vinnova, Formas, Forte, and
-  Vetenskapsrådet. We filter to Vinnova-funded activities only.
+  Response fields per project (coordinator-level; no participant breakdown):
+    Diarienummer, Ärenderubrik / ÄrenderubrikEngelska, DiarienummerUtlysning,
+    BeviljatBidrag (granted amount, SEK), ProjektStart, KoordinatorOrg, Status
 
-  API discovery:
-    Base URL:   https://gdphub.se/api/finansierade-aktiviteter
-    Parameters: ?financier=vinnova&page=0&size=500&fromYear=2021
-    OR legacy:  https://portal.api.vinnova.se/vinnova (may redirect)
-
-  Typical response fields per funded activity:
-    id, title, startDate, endDate, budget, approvedBudget,
-    coordinatingOrganisation { name, organisationNumber },
-    participants [ { name, organisationNumber, allocatedBudget } ],
-    callIdentifier, callTitle, programArea
+  Amounts are SEK → converted to EUR via ECB annual reference rates
+  (ndb_helpers.normalise_ticket).
 
   SATR dedup rule (pre-measured): 514 SATR rows already tagged with
-  ndb_distributor='vinnova'. On load, dedup by:
-    1. canonical_name + country='SE' + year ± 1  (on public_funding_events)
-  The SATR rows came via grant-with-aid-element (subsidy component); Vinnova
-  direct data adds the sub-threshold + recent awards SATR misses.
+  ndb_distributor='vinnova'. On load, dedup by canonical_name + country='SE'
+  + year ± 1 (on public_funding_events). Vinnova direct data adds the
+  sub-threshold + recent awards SATR misses.
 
 Run modes:
-  python extract_vinnova.py --probe                → test API endpoint
   python extract_vinnova.py --load-db              → fetch + dedup + load
-  python extract_vinnova.py --api-base <url>       → override API base
-  python extract_vinnova.py --local <path>         → load from local file
+  python extract_vinnova.py --since 2021-01-01     → narrower modified-since window
+  python extract_vinnova.py --local <path>         → load from local JSON file
 """
 from __future__ import annotations
 
@@ -41,6 +35,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from ndb_helpers import normalise_ticket  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -48,8 +43,8 @@ import csv
 import json
 import re
 import sqlite3
+import subprocess
 import sys
-import urllib.request
 from pathlib import Path
 
 BASE_DIR = _ETL_ROOT
@@ -65,185 +60,93 @@ NDB_DISTRIBUTOR = "vinnova"
 MIN_YEAR = 2021
 PAGE_SIZE = 500
 
-API_CANDIDATES = [
-    # GDP Hub (new home since 2024)
-    "https://gdphub.se/api/finansierade-aktiviteter",
-    "https://gdphub.se/finansierade-aktiviteter",
-    # Legacy Vinnova API (may still redirect)
-    "https://portal.api.vinnova.se/vinnova/finansierade-aktiviteter",
-    "https://portal.api.vinnova.se/vinnova/projekter",
-    "https://portal.api.vinnova.se/vinnova/beviljade",
-    # Direct Vinnova project database
-    "https://www.vinnova.se/api/projects",
-]
+# Vinnova's official open-data API (CC0). `/api/projekt/{date}` returns every
+# project whose record was modified on/after {date}; we then filter by start year.
+# Granted amounts (BeviljatBidrag) are in SEK and converted to EUR via ECB rates.
+API_BASE = "https://data.vinnova.se/api"
+# Early enough to capture every project with a 2021+ start (records are touched
+# around award time, well after this date). One bulk pull; no paging on this API.
+SINCE_DATE = "2018-01-01"
 
 
-def _get_json(url: str) -> dict | list | None:
-    try:
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": "EuroInvTracker/1.0",
-                "Accept": "application/json",
-                "Accept-Language": "en,sv",
-            },
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            return json.loads(resp.read())
-    except Exception:
-        return None
+def _fetch_projekt(since_date: str = SINCE_DATE) -> list[dict]:
+    """Fetch the funded-projects list from data.vinnova.se.
+
+    Uses curl (long timeout + robust SSL) like the other europa/large-payload
+    extractors; the full dump is several MB so urllib's short timeout is unsafe.
+    """
+    url = f"{API_BASE}/projekt/{since_date}"
+    print(f"  GET {url}")
+    result = subprocess.run(
+        ["curl", "-sL", "--max-time", "240", "-H", "User-Agent: EuroInvTracker/1.0",
+         "-H", "Accept: application/json", url],
+        capture_output=True, timeout=300,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"curl failed: {result.stderr.decode()[:200]}")
+    data = json.loads(result.stdout)
+    if not isinstance(data, list):
+        raise SystemExit(f"vinnova: unexpected response shape {str(data)[:160]}")
+    print(f"  fetched {len(data)} project records")
+    return data
 
 
-def _probe_api(candidates: list[str]) -> tuple[str | None, str]:
-    """Return (working_base, params_template) or (None, '')."""
-    param_variants = [
-        "?financier=vinnova&page=0&size=2&fromYear=2021",
-        "?page=0&size=2&fromYear=2021",
-        "?page=0&size=2",
-        "",
-    ]
-    for base in candidates:
-        for params in param_variants:
-            url = base + params
-            print(f"  Trying: {url}")
-            data = _get_json(url)
-            if data and (isinstance(data, list) or (
-                    isinstance(data, dict) and (
-                    "content" in data or "aktiviteter" in data or
-                    "items" in data or "results" in data or "data" in data))):
-                print(f"  ✓ API at: {base} with params: {params}")
-                return base, params
-            if data:
-                print(f"    Got JSON: {str(data)[:80]}")
-    return None, ""
+_HTML_RE = re.compile(r"<[^>]+>")
 
 
-def _fetch_all(api_base: str, params_template: str) -> list[dict]:
-    all_records: list[dict] = []
-    for page in range(200):
-        # Replace page=0 with current page
-        params = re.sub(r"page=\d+", f"page={page}", params_template)
-        if "page=" not in params:
-            params += f"&page={page}" if params else f"?page={page}"
-        params = re.sub(r"size=\d+", f"size={PAGE_SIZE}", params)
-        if "size=" not in params:
-            params += f"&size={PAGE_SIZE}"
-        url = api_base + params
-        data = _get_json(url)
-        if not data:
-            break
-        records = data if isinstance(data, list) else (
-            data.get("content") or data.get("aktiviteter") or
-            data.get("items") or data.get("results") or data.get("data") or [])
-        if not records:
-            break
-        all_records.extend(records)
-        print(f"  Page {page}: +{len(records)} (total {len(all_records)})")
-        if isinstance(data, dict):
-            if data.get("last") or len(all_records) >= int(data.get("totalElements") or 99999):
-                break
-        if len(records) < PAGE_SIZE:
-            break
-    return all_records
+def _strip_html(s: str) -> str:
+    return _HTML_RE.sub(" ", s or "").replace("&nbsp;", " ").strip()
 
 
 def _parse_record(rec: dict) -> list[dict]:
-    """Return one row per funded organisation in the record (coord + participants)."""
-    def _f(*keys: str) -> str:
-        for k in keys:
-            v = rec.get(k)
-            if v is not None:
-                return str(v).strip()
-        return ""
+    """Return one coordinator-level row per data.vinnova.se project (2021+).
 
-    year_str = _f("startDate", "start_date", "startYear", "callYear", "year", "beviljar_ar")
-    year_match = re.search(r"(20\d{2})", year_str)
-    if not year_match:
+    The official API exposes the coordinating organisation (KoordinatorOrg) and
+    the granted amount (BeviljatBidrag, SEK) — there is no participant breakdown.
+    """
+    start = str(rec.get("ProjektStart") or "").strip()
+    m = re.search(r"(20\d{2})", start)
+    if not m:
         return []
-    year = int(year_match.group(1))
+    year = int(m.group(1))
     if year < MIN_YEAR:
         return []
 
-    project_id = _f("id", "diarienummer", "projectId", "dnr")
-    title = _f("title", "tittel", "projectTitle", "rubrik")
-    call_id_raw = _f("callIdentifier", "utlysning", "call", "utlysningsId")
-    programme = _f("programArea", "programomrade", "category", "type")
+    coord_name = str(rec.get("KoordinatorOrg") or "").strip()
+    if not coord_name:
+        return []
 
-    rows = []
-    # Coordinating organisation
-    coord = rec.get("coordinatingOrganisation") or rec.get("koordinerandeOrganisation") or {}
-    if isinstance(coord, dict):
-        coord_name = coord.get("name") or coord.get("namn") or ""
-        coord_nr = coord.get("organisationNumber") or coord.get("organisationsnummer") or ""
-        budget_str = (rec.get("approvedBudget") or rec.get("budget") or
-                      rec.get("beviljatBidrag") or coord.get("allocatedBudget") or
-                      coord.get("beviljadesumma") or "0")
-    else:
-        coord_name = _f("coordinatingOrganisation", "organisation", "organisation_name")
-        coord_nr = ""
-        budget_str = _f("approvedBudget", "budget", "beviljatBidrag", "amount")
+    project_id = str(rec.get("Diarienummer") or "").strip()
+    if not project_id:
+        return []
+    title = _strip_html(rec.get("ÄrenderubrikEngelska") or rec.get("Ärenderubrik") or "")
+    call_id_raw = str(rec.get("DiarienummerUtlysning") or "").strip()
 
-    budget_str = re.sub(r"[^\d.,]", "", str(budget_str)).replace(",", ".").replace(" ", "")
+    # BeviljatBidrag is in SEK → ECB annual-average conversion to EUR.
     try:
-        budget_eur = float(budget_str) if budget_str else 0.0
-    except ValueError:
-        budget_eur = 0.0
+        sek = float(rec.get("BeviljatBidrag") or 0)
+    except (TypeError, ValueError):
+        sek = 0.0
+    eur = normalise_ticket(sek, "SEK", year) or 0.0
 
-    if coord_name:
-        slug = re.sub(r"[^a-z0-9]+", "_", programme.lower())[:20] or "grant"
-        source = f"vinnova_{slug}_{year}"
-        rows.append({
-            "source": source,
-            "call_id": f"{source}_{project_id or coord_name[:20]}",
-            "company_name": coord_name,
-            "company_name_norm": coord_name.upper(),
-            "org_nr": coord_nr,
-            "country": DEPLOYMENT_COUNTRY,
-            "year": year,
-            "project_id": project_id,
-            "project_title": title[:200],
-            "call_id_vinnova": call_id_raw,
-            "role": "coordinator",
-            "coordinator_only": 1,
-            "grant_amount_eur": round(budget_eur, 2),
-            "ndb_distributor": NDB_DISTRIBUTOR,
-            "deployment_country": DEPLOYMENT_COUNTRY,
-        })
-
-    # Participants
-    participants = (rec.get("participants") or rec.get("deltagare") or
-                    rec.get("partners") or [])
-    for p in (participants if isinstance(participants, list) else []):
-        if not isinstance(p, dict):
-            continue
-        p_name = p.get("name") or p.get("namn") or ""
-        p_nr = p.get("organisationNumber") or p.get("organisationsnummer") or ""
-        p_budget = p.get("allocatedBudget") or p.get("beviljadesumma") or 0
-        try:
-            p_eur = float(re.sub(r"[^\d.,]", "", str(p_budget)).replace(",", ".")) or 0.0
-        except ValueError:
-            p_eur = 0.0
-        if p_name:
-            slug = re.sub(r"[^a-z0-9]+", "_", programme.lower())[:20] or "grant"
-            source = f"vinnova_{slug}_{year}"
-            rows.append({
-                "source": source,
-                "call_id": f"{source}_{project_id or ''}_{p_nr or p_name[:15]}",
-                "company_name": p_name,
-                "company_name_norm": p_name.upper(),
-                "org_nr": p_nr,
-                "country": DEPLOYMENT_COUNTRY,
-                "year": year,
-                "project_id": project_id,
-                "project_title": title[:200],
-                "call_id_vinnova": call_id_raw,
-                "role": "participant",
-                "coordinator_only": 0,
-                "grant_amount_eur": round(p_eur, 2),
-                "ndb_distributor": NDB_DISTRIBUTOR,
-                "deployment_country": DEPLOYMENT_COUNTRY,
-            })
-    return rows
+    source = f"vinnova_grant_{year}"
+    return [{
+        "source": source,
+        "call_id": f"{source}_{project_id}",
+        "company_name": coord_name,
+        "company_name_norm": coord_name.upper(),
+        "org_nr": "",
+        "country": DEPLOYMENT_COUNTRY,
+        "year": year,
+        "project_id": project_id,
+        "project_title": title[:200],
+        "call_id_vinnova": call_id_raw,
+        "role": "coordinator",
+        "coordinator_only": 1,
+        "grant_amount_eur": round(eur, 2),
+        "ndb_distributor": NDB_DISTRIBUTOR,
+        "deployment_country": DEPLOYMENT_COUNTRY,
+    }]
 
 
 def _satr_dedup_set(con: sqlite3.Connection) -> set[tuple[str, int]]:
@@ -334,8 +237,8 @@ def _load_to_db(rows: list[dict]) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Extract Vinnova funded activities")
     parser.add_argument("--load-db", action="store_true")
-    parser.add_argument("--probe", action="store_true")
-    parser.add_argument("--api-base", metavar="URL")
+    parser.add_argument("--since", metavar="YYYY-MM-DD", default=SINCE_DATE,
+                        help="fetch projects modified on/after this date")
     parser.add_argument("--local", metavar="PATH")
     args = parser.parse_args()
 
@@ -346,23 +249,7 @@ def main() -> None:
             raw.get("content") or raw.get("data") or raw.get("aktiviteter") or [])
         rows = [row for rec in records for row in _parse_record(rec)]
     else:
-        candidates = ([args.api_base] if args.api_base else []) + API_CANDIDATES
-        if args.probe:
-            base, params = _probe_api(candidates)
-            if not base:
-                print(
-                    "\nAPI not found. Vinnova open data is now at gdphub.se.\n"
-                    "Try: https://gdphub.se — look for API documentation.\n"
-                    "Or download manually from:\n"
-                    "  https://www.vinnova.se/en/results-and-offers/open-data/\n"
-                    "Then: python extract_vinnova.py --local <file.json>\n"
-                )
-            return
-        base, params = _probe_api(candidates)
-        if not base:
-            print("ERROR: No working API. Run --probe.", file=sys.stderr)
-            sys.exit(1)
-        raw_records = _fetch_all(base, params)
+        raw_records = _fetch_projekt(args.since)
         rows = [row for rec in raw_records for row in _parse_record(rec)]
         raw_path = RAW_DIR / "vinnova_raw.json"
         raw_path.write_text(json.dumps(raw_records[:5000], ensure_ascii=False), encoding="utf-8")

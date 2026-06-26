@@ -244,6 +244,22 @@ def fetch_projects(force_refresh: bool = False) -> list[dict]:
     if result.returncode != 0:
         raise RuntimeError(f"curl failed: {result.stderr.decode()[:200]}")
     data = json.loads(result.stdout)
+    # The chips-ju.europa.eu Power Apps portal withdrew the shv_webprojectses
+    # OData entity (now 404 "Resource not found for the segment shv_webprojects").
+    # This source is superseded by CORDIS HORIZON-JU-Chips-*, so degrade gracefully:
+    # fall back to the cached snapshot if present, else raise a clear, non-traceback
+    # message rather than KeyError so `renew --auto` doesn't abort the batch.
+    if "value" not in data:
+        err = (data.get("error", {}) or {}).get("message", str(data)[:200])
+        if RAW_JSON.exists() and RAW_JSON.stat().st_size > 1000:
+            print(f"  WARN: live OData unavailable ({err}); using cached snapshot. "
+                  "Chips JU is superseded by CORDIS HORIZON-JU-Chips-*.")
+            with open(RAW_JSON) as f:
+                return json.load(f)["value"]
+        raise SystemExit(
+            "chips_ju: OData entity withdrawn upstream and no cache present "
+            f"({err}). This source is covered by CORDIS HORIZON-JU-Chips-*; "
+            "run extract_cordis_pillar_ii instead.")
     with open(RAW_JSON, "w") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     return data["value"]
