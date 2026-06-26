@@ -252,6 +252,31 @@ def apply_009(conn: sqlite3.Connection) -> None:
     print("  refreshed views from data/views.sql")
 
 
+def apply_010(conn: sqlite3.Connection) -> None:
+    """Two-tier sector taxonomy columns on companies (see nace_taxonomy.md)."""
+    targets = [
+        "sector_top",
+        "subsector",
+        "sector_taxonomy_method",
+        "sector_taxonomy_updated_at",
+    ]
+    for col in targets:
+        if not column_exists(conn, "companies", col):
+            typ = "TIMESTAMP" if col.endswith("_at") else "TEXT"
+            print(f"  ADD COLUMN {col}")
+            conn.execute(f"ALTER TABLE companies ADD COLUMN {col} {typ}")
+        else:
+            print(f"  skip {col} (exists)")
+    for name, sql in [
+        ("idx_companies_sector_top",
+         "CREATE INDEX IF NOT EXISTS idx_companies_sector_top ON companies(sector_top) WHERE sector_top IS NOT NULL"),
+        ("idx_companies_subsector",
+         "CREATE INDEX IF NOT EXISTS idx_companies_subsector ON companies(subsector) WHERE subsector IS NOT NULL"),
+    ]:
+        print(f"  CREATE INDEX IF NOT EXISTS {name}")
+        conn.execute(sql)
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -259,6 +284,7 @@ MIGRATIONS = {
     "007": apply_007,
     "008": apply_008,
     "009": apply_009,
+    "010": apply_010,
 }
 
 
