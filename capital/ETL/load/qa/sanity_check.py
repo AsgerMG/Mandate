@@ -13,7 +13,7 @@ from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 import sqlite3
 from pathlib import Path
 
-conn = sqlite3.connect(_ETL_ROOT / "db.sqlite")
+conn = sqlite3.connect(_ETL_DB)
 conn.row_factory = sqlite3.Row
 cur = conn.cursor()
 

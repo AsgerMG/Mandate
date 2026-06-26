@@ -9,7 +9,7 @@
 --   public_funding_events.is_duplicate  INTEGER NOT NULL DEFAULT 0
 --   public_funding_events.dup_reason    TEXT        -- why it was flagged
 --   idx_pfe_is_duplicate                partial index on is_duplicate = 1
--- and refreshes v_events (from analysis/views.sql) to exclude is_duplicate = 1
+-- and refreshes v_events (from data/views.sql) to exclude is_duplicate = 1
 -- rows, so every downstream total/count nets the overlap at one point.
 --
 -- Population is done by scripts/flag_ademe_satr_duplicates.py (re-runnable).

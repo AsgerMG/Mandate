@@ -1,18 +1,19 @@
 # ETL — the data pipeline
 
-Everything that turns external funding registers into `db.sqlite` lives here, split
+Everything that turns external funding registers into `data/db.sqlite` lives here, split
 into the three stages of an ETL pipeline. Data flows one direction:
 
 ```
-extract/   one extract_*.py per funding source  ──►  db.sqlite
-transform/ classify, merge, dedup, backfill, resolve entities
+extract/   one extract_*.py per funding source  ──►  data/db.sqlite
+transform/ classify, merge, dedup, backfill, resolve entities, parent-group rollups
 load/      load_*.py, schema.sql, migrations/, backup.py
 load/qa/   post-load integrity checks (run right after a load)
 lib/       shared modules + etl_env.py (paths + import wiring)
 ```
 
-The publish layer that reads `db.sqlite` (site visuals, `analysis/`) still lives in
-`scripts/` and is a separate concern.
+The publish layer that reads `data/db.sqlite` and turns it into the site is a separate
+block under `website/` (`website/build/` builders → `website/frontend/`). The read-side
+SQL it relies on (`data/views.sql`) lives in `data/`.
 
 ## How paths and imports work (`lib/etl_env.py`)
 
@@ -117,12 +118,12 @@ Triggering a renewal is `ETL/extract/renew.py` (registry of record:
 ¹ SATR: `bash ETL/extract/run_satr_all.sh` (per-country pull) → `python3 ETL/load/load_satr.py --staging --apply`.
 
 **25 auto · 9 network · 8 manual · 1 rejected.** When you add or change a source, update
-`extract/manifest.py` and re-list with `make sources` (see the ship-a-source skill).
+`extract/manifest.py` and re-list with `make sources`.
 
 ## Adding a new source
 
-Use the **ship-a-source** skill — it enforces the full checklist (SATR-overlap gate →
-extractor → loader → `analysis/views.sql` + coverage indicator + `classify.py` +
-`methodology.md` → load-auditor). New extractors must call
-`ETL/lib/europe_scope.canonicalise_country()` before insert, carry the `etl_env`
-bootstrap, expose `--load-db`, and get a row in `extract/manifest.py`.
+Work the full checklist in order: SATR-overlap gate → extractor → loader →
+`data/views.sql` + coverage indicator + `ETL/transform/classify.py` →
+update `project-mgmt/methodology.md` → post-load QA (`ETL/load/qa/sanity_check.py`).
+New extractors must call `ETL/lib/europe_scope.canonicalise_country()` before insert,
+carry the `etl_env` bootstrap, expose `--load-db`, and get a row in `extract/manifest.py`.

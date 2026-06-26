@@ -22,9 +22,9 @@ from pathlib import Path
 ETL = Path(__file__).resolve().parents[1]          # <repo>/ETL
 ROOT = ETL.parent                                  # <repo> (repo root)
 
-# Database + data locations.
-DB = ROOT / "db.sqlite"
+# Database + data locations. The DB lives inside data/ alongside its backups.
 DATA = ROOT / "data"
+DB = DATA / "db.sqlite"
 DATA_RAW = DATA / "raw"
 DATA_PROCESSED = DATA / "processed"
 

@@ -1,29 +1,29 @@
 __pycache__/
 *.pyc
 *.pyo
-db_backups/
+data/backups/
 .DS_Store
 
 # Claude Code config — per-user local state is ignored, but the agent harness
-# (agents, skills, slash commands) is shared project infrastructure and IS tracked.
+# (agents, skills, slash commands, hooks) is shared project infrastructure and IS tracked.
 .claude/*
 !.claude/agents/
 !.claude/skills/
 !.claude/commands/
+!.claude/hooks/
 
 # SQLite database is a generated build artifact, never committed (330MB+,
-# exceeds GitHub's 100MB limit). Rebuilt from scripts/ + backed up separately.
-# Covers the root DB, the stale scripts/ copy, and the WAL/SHM sidecar files.
+# exceeds GitHub's 100MB limit). Rebuilt by the ETL pipeline + backed up separately.
+# Covers the DB in data/ and its WAL/SHM sidecar files.
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
-db.sqlite
-scripts/db.sqlite
+data/db.sqlite
 
 # Source data: raw API/HTML caches and derived intermediates are generated build
 # artifacts (600MB+), not version-controlled. They are reproducible by re-running
-# scripts/extract_*.py and are backed up separately (see README, backup strategy).
-# The website never reads these; it only reads site/public/data/*.json.
+# ETL/extract/extract_*.py and are backed up separately (see README, backup strategy).
+# The website never reads these; it only reads website/frontend/public/data/*.json.
 data/raw/
 data/processed/
 

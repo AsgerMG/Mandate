@@ -5,7 +5,7 @@ export const metadata = { title: "Limitations · EuroInvTracker" };
 
 function getContent(): string {
   try {
-    const full = readFileSync(join(process.cwd(), "..", "docs", "methodology.md"), "utf-8");
+    const full = readFileSync(join(process.cwd(), "..", "..", "project-mgmt", "methodology.md"), "utf-8");
     const match = full.match(/## Known limitations[\s\S]*?(?=\n## |$)/);
     return match ? match[0] : "_Known limitations section not found in methodology.md._";
   } catch {
@@ -31,7 +31,7 @@ export default function Page() {
         <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Reference document</p>
         <h1 className="mt-2 text-3xl sm:text-4xl font-semibold">Known limitations</h1>
         <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-          Sourced from <code>docs/methodology.md</code>. Every analysis page links here via the Scope qualifiers callout.
+          Sourced from <code>project-mgmt/methodology.md</code>. Every analysis page links here via the Scope qualifiers callout.
         </p>
       </header>
 
@@ -48,7 +48,7 @@ export default function Page() {
 
       <div className="mt-10 text-xs text-[var(--muted-foreground)] border-t border-[var(--border)] pt-4">
         Full methodology: <a href="/methodology" className="underline">methodology</a>.
-        Canonical source: <code>docs/methodology.md</code> in the repository.
+        Canonical source: <code>project-mgmt/methodology.md</code> in the repository.
       </div>
     </article>
   );

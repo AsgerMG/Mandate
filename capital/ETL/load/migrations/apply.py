@@ -222,7 +222,7 @@ def apply_009(conn: sqlite3.Connection) -> None:
 
     Some events are the same grant reported by two sources (an ADEME grant also
     published in SATR-FR). `is_duplicate=1` marks the row to drop from corpus
-    totals; `dup_reason` records why. v_events (refreshed from analysis/views.sql)
+    totals; `dup_reason` records why. v_events (refreshed from data/views.sql)
     excludes flagged rows, so every downstream total nets the overlap at one
     point. Reversible: clear the flag and refresh views.
     """
@@ -247,9 +247,9 @@ def apply_009(conn: sqlite3.Connection) -> None:
 
     # Refresh all views from the canonical source so v_events picks up the
     # is_duplicate exclusion. views.sql drops and recreates every view.
-    views_sql = (_ETL_ROOT / "analysis" / "views.sql").read_text()
+    views_sql = (_ETL_ROOT / "data" / "views.sql").read_text()
     conn.executescript(views_sql)
-    print("  refreshed views from analysis/views.sql")
+    print("  refreshed views from data/views.sql")
 
 
 MIGRATIONS = {

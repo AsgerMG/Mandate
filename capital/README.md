@@ -14,7 +14,7 @@ Everything flows one direction. Each arrow is a stage you can re-run independent
 data/raw/            external API + HTML caches (per source, gitignored, backed up)
    │  ETL/extract/extract_*.py    one extractor per funding source, loads into the DB
    ▼
-db.sqlite            the built database (gitignored, backed up — not in version control)
+data/db.sqlite       the built database (gitignored, backed up — not in version control)
    │  ETL/transform/*.py          classify, merge, dedup, backfill, resolve entities
    │  ETL/load/*.py + load/qa/    loaders, migrations, schema, post-load QA, backup
    │  make data      (website/build/build_site_data.py: views + every builder)
@@ -27,25 +27,25 @@ website/frontend/    Next.js static site (the published findings)
 
 ## Directory map
 
+Five top-level folders, each owning one concern:
+
 | Folder | What's in it |
 |---|---|
-| `ETL/` | The data pipeline. `extract/` (one `extract_*.py` per source), `transform/` (`classify.py`, `merge_companies.py`, dedup, backfills, entity resolution), `load/` (`load_*.py`, `schema.sql`, `migrations/`, `backup.py`, and `load/qa/` post-load checks), and `lib/` (shared modules + `etl_env.py`, the single source of truth for paths). See [ETL/README.md](ETL/README.md). |
-| `website/` | The publish layer. `build/` (the Python builders that turn `db.sqlite` into the site JSON, + `lib/web_env.py` path bootstrap) and `frontend/` (the Next.js app). See [website/README.md](website/README.md). |
-| `analysis/` | `queries/` (the SQL behind each finding), `views.sql` (the `v_*` views, shared with ETL + the website builders), and `findings/` (the prose the site renders). |
-| `scripts/` | Remaining non-website helpers: `build_company_groups.py` / `build_parent_groups.py` (DB parent-group transforms) and `hooks/`. |
-| `docs/` | `methodology.md` (canonical, rendered by the site), plus working notes and design guidelines. |
-| `plans/` | `backlog/` (active future work) and `archive/` (completed sprint plans, kept for reference). |
-| `data/` | Source caches: `raw/` and `processed/`. Gitignored and backed up, not version-controlled. `europe_scope.json` (the country scope config) is the one tracked file here. |
+| `ETL/` | The data pipeline. `extract/` (one `extract_*.py` per source), `transform/` (`classify.py`, `merge_companies.py`, the `build_*_groups.py` parent-group rollups, dedup, backfills, entity resolution), `load/` (`load_*.py`, `schema.sql`, `migrations/`, `backup.py`, and `load/qa/` post-load checks), and `lib/` (shared modules + `etl_env.py`, the single source of truth for paths). See [ETL/README.md](ETL/README.md). |
+| `website/` | The publish layer. `build/` (the Python builders that turn `data/db.sqlite` into the site JSON, + `lib/web_env.py` path bootstrap) and `frontend/` (the Next.js app). See [website/README.md](website/README.md). |
+| `data/` | The database (`db.sqlite` + `backups/`, both under data/), the read-side SQL (`views.sql`, `queries/`), the source caches (`raw/`, `processed/`), and `europe_scope.json`. See [data/README.md](data/README.md). |
+| `project-mgmt/` | `methodology.md` (canonical, rendered by the site), `decision_log.md`, `design-guidelines.md`, `europe_scope.md`, the dev journal (`notes.md`), `plans/` (active plans + `backlog/`), and `findings/` (analysis write-ups). |
+| `.claude/` | Harness config: `settings.json` and `hooks/` (the stop-gate + generated-edit guards). |
 
 ## Common commands
 
 ```bash
-make data          # rebuild EVERY site JSON from db.sqlite (views + all builders)
+make data          # rebuild EVERY site JSON from data/db.sqlite (views + all builders)
 make analyze       # corpus KPIs only (website/build/synthesis.py)
 make visuals       # home-page visuals only (taxonomy, map, coverage)
 make site-build    # static build of the site -> website/frontend/out/
 make site-dev      # run the site locally at localhost:3000
-make backup        # snapshot db.sqlite + data/ to ~/EuroInvTracker-backups and iCloud
+make backup        # snapshot data/ (db.sqlite + caches) to ~/EuroInvTracker-backups and iCloud
 ```
 
 Extractors are per-source and hit external APIs, so run them one at a time, for example
@@ -67,4 +67,4 @@ results. To rebuild the database from scratch, re-run the extractors against `da
 
 Descriptive framing only: does public funding *coincide with* private follow-on, not *cause* it.
 One company row, many event rows; deduplicated across instruments. See
-[docs/methodology.md](docs/methodology.md) for scope, source coverage, and known limitations.
+[project-mgmt/methodology.md](project-mgmt/methodology.md) for scope, source coverage, and known limitations.

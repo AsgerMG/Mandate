@@ -11,7 +11,7 @@ Match key, in order of preference:
   3. normalised name fuzzy match (token-set ≥0.85) + same country + year window ±2
 
 Outputs:
-  analysis/findings/satr_overlap_<source_prefix>.md      — markdown report per NDB
+  project-mgmt/findings/satr_overlap_<source_prefix>.md      — markdown report per NDB
   data/processed/satr_overlap/<source_prefix>_matched.csv — full match table for inspection
 """
 from __future__ import annotations
@@ -36,7 +36,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 DB_PATH = _ETL_DB
-OUT_DIR_MD = _ETL_ROOT / "analysis" / "findings"
+OUT_DIR_MD = _ETL_ROOT / "project-mgmt" / "findings"
 OUT_DIR_CSV = _ETL_ROOT / "data" / "processed" / "satr_overlap"
 OUT_DIR_MD.mkdir(parents=True, exist_ok=True)
 OUT_DIR_CSV.mkdir(parents=True, exist_ok=True)
@@ -278,7 +278,7 @@ def main():
         # Quick check that staging is populated
         n = conn.execute("SELECT COUNT(*) FROM satr_staging").fetchone()[0]
         if n == 0:
-            sys.exit("satr_staging is empty. Run `python scripts/load_satr.py --staging` first.")
+            sys.exit("satr_staging is empty. Run `python ETL/load/load_satr.py --staging` first.")
         print(f"satr_staging: {n:,} rows\n")
         print("Running overlap audit per NDB...\n")
         results = []

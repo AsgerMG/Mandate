@@ -1,6 +1,6 @@
 # EuroInvTracker — common entry points.
 # Run `make help` for the list. The data pipeline flows:
-#   ETL/extract/* -> db.sqlite -> ETL/transform/* -> ETL/load/* (+ QA + backup)
+#   ETL/extract/* -> data/db.sqlite -> ETL/transform/* -> ETL/load/* (+ QA + backup)
 #                 -> make data -> website/frontend/public/data -> website/frontend
 #
 # The ETL block (extract -> transform -> load) lives under ETL/. Extractors are
@@ -46,7 +46,7 @@ analyze:
 	python3 website/build/synthesis.py
 
 views:
-	sqlite3 db.sqlite < analysis/views.sql
+	sqlite3 data/db.sqlite < data/views.sql
 
 visuals:
 	python3 website/build/home_visuals.py

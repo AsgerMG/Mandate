@@ -15,7 +15,7 @@ Outputs:
                       national state aid)
 
 Reads the v_events / v_company_breadth_companies views, so run
-website/build/build_site_data.py (which reinstalls analysis/views.sql first)
+website/build/build_site_data.py (which reinstalls data/views.sql first)
 rather than calling this directly after a schema change.
 
 Amount discipline: every euro aggregate here is computed within a single

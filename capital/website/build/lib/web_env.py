@@ -22,14 +22,14 @@ BUILD = Path(__file__).resolve().parents[1]        # <repo>/website/build
 WEBSITE = BUILD.parent                             # <repo>/website
 ROOT = WEBSITE.parent                              # <repo> (repo root)
 
-# Database + data locations.
-DB = ROOT / "db.sqlite"
+# Database + data locations. The DB lives inside data/ alongside its backups.
 DATA = ROOT / "data"
+DB = DATA / "db.sqlite"
 DATA_PROCESSED = DATA / "processed"
 
-# SQL views the builders read (v_events …). Shared with ETL migrations and
-# `make views`, so it stays under analysis/, not here.
-VIEWS_SQL = ROOT / "analysis" / "views.sql"
+# SQL views the builders read (v_events …). Read-side SQL lives in data/,
+# alongside the DB it queries (shared with ETL migrations and `make views`).
+VIEWS_SQL = DATA / "views.sql"
 
 # Where every generated *.json lands — read by the Next.js app at build time.
 FRONTEND = WEBSITE / "frontend"

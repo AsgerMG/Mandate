@@ -5,7 +5,7 @@ export const metadata = { title: "Methodology · EuroInvTracker" };
 
 function getContent(): string {
   try {
-    return readFileSync(join(process.cwd(), "..", "docs", "methodology.md"), "utf-8");
+    return readFileSync(join(process.cwd(), "..", "..", "project-mgmt", "methodology.md"), "utf-8");
   } catch {
     return "_Methodology document not found._";
   }
@@ -29,7 +29,7 @@ export default function Page() {
         <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Reference document</p>
         <h1 className="mt-2 text-3xl sm:text-4xl font-semibold">Methodology</h1>
         <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-          Canonical source: <code>docs/methodology.md</code> in the repository.
+          Canonical source: <code>project-mgmt/methodology.md</code> in the repository.
         </p>
       </header>
 

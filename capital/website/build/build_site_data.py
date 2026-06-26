@@ -9,7 +9,7 @@ funder shows in the leaderboard but not the map). Run this one command instead
 of remembering the list.
 
 Order matters:
-  1. analysis/views.sql    — reinstall (a new source_family CASE here is
+  1. data/views.sql        — reinstall (a new source_family CASE here is
                              invisible until the views are recreated)
   2. coverage_indicator    — coverage_ratings.json + country_coverage.json
                              + data/processed/coverage_indicator.json

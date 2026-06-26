@@ -16,8 +16,7 @@ renewal *tier* describing how hands-off that pull is:
   REJECTED— evaluated and deliberately not loaded (kept for provenance).
 
 `renew.py` consumes this file; `ETL/README.md` renders it as a table. Keep it in
-sync when an extractor is added or its access path changes (see the ship-a-source
-skill).
+sync when an extractor is added or its access path changes.
 """
 from __future__ import annotations
 

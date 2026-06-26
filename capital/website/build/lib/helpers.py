@@ -146,7 +146,7 @@ def to_json(data, path: Path):
 
 
 def save_table(data: pd.DataFrame, path: Path):
-    """Write DataFrame as CSV to analysis/findings/_data/ for debug inspection."""
+    """Write DataFrame as CSV to project-mgmt/findings/_data/ for debug inspection."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     data.to_csv(path, index=False)

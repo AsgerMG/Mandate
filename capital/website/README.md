@@ -1,6 +1,6 @@
 # website — the publish layer
 
-Everything that turns the built `db.sqlite` into the live site lives here, split into the
+Everything that turns the built `data/db.sqlite` into the live site lives here, split into the
 two halves of a publish pipeline. Data flows one direction:
 
 ```
@@ -28,7 +28,7 @@ from web_env import ROOT, DB, SITE_DATA   # + VIEWS_SQL / DATA_PROCESSED as need
 ```
 
 `web_env` exposes the canonical locations — `ROOT`, `DB`, `SITE_DATA`
-(`= frontend/public/data`), `VIEWS_SQL` (`analysis/views.sql`, shared with ETL),
+(`= frontend/public/data`), `VIEWS_SQL` (`data/views.sql`, shared with ETL),
 `DATA_PROCESSED` — so **no builder recomputes `db.sqlite` or the data dir by counting
 `.parent` hops**. Change a location once, in `web_env.py`. A builder runs from anywhere
 (`python3 website/build/synthesis.py`), no `cd`, no `PYTHONPATH`.
@@ -38,7 +38,7 @@ from web_env import ROOT, DB, SITE_DATA   # + VIEWS_SQL / DATA_PROCESSED as need
 ```bash
 # Rebuild EVERYTHING the site reads (views + every builder, in dependency order):
 make data                                   # = python3 website/build/build_site_data.py
-python3 website/build/build_site_data.py --check   # verify JSON is fresh vs db.sqlite
+python3 website/build/build_site_data.py --check   # verify JSON is fresh vs data/db.sqlite
 
 # Run a single builder:
 python3 website/build/synthesis.py          # corpus KPIs -> synthesis.json
@@ -68,5 +68,5 @@ make site-dev                               # cd frontend && npm run dev     -> 
   `frontend/next.config.ts` `outputFileTracingIncludes` and `lib/intelligence/corpus.ts`).
 - **No barrel** re-exports the `"use client"` panel together with the server-only
   `corpus.ts` (fs reads) — that breaks under Turbopack. Import intelligence files directly.
-- `analysis/views.sql` is reinstalled by `build_site_data.py` before the builders run; a new
+- `data/views.sql` is reinstalled by `build_site_data.py` before the builders run; a new
   `source_family` CASE there is invisible to the site until the views are recreated.
