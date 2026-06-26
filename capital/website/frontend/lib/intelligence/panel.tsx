@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type {
   IntelligenceReport,
   PipelineStep,
@@ -12,10 +12,8 @@ const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
 const STEPS: { key: PipelineStep; label: string }[] = [
   { key: "discovering", label: "Finding & researching competitors" },
   { key: "querying_db", label: "Querying EU funding database" },
-  { key: "generating", label: "Writing your report" },
+  { key: "generating", label: "Writing your memo" },
 ];
-
-type Tab = "overview" | "stakeholders" | "todos";
 
 export function IntelligencePanel() {
   const [company, setCompany] = useState("");
@@ -27,8 +25,6 @@ export function IntelligencePanel() {
   const [step, setStep] = useState<PipelineStep | null>(null);
   const [report, setReport] = useState<IntelligenceReport | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<Tab>("overview");
-  const reportRef = useRef<HTMLDivElement>(null);
 
   async function run(e: React.FormEvent) {
     e.preventDefault();
@@ -65,10 +61,8 @@ export function IntelligencePanel() {
           if (!line) continue;
           const event = JSON.parse(line) as ProgressEvent;
           if (event.type === "status") setStep(event.step);
-          else if (event.type === "report") {
-            setReport(event.data);
-            setTab("overview");
-          } else if (event.type === "error") setError(event.message);
+          else if (event.type === "report") setReport(event.data);
+          else if (event.type === "error") setError(event.message);
         }
       }
     } catch (err) {
@@ -91,10 +85,10 @@ export function IntelligencePanel() {
           See what your competitors have raised from Europe
         </h2>
         <p className="mt-3 max-w-2xl leading-relaxed text-[var(--foreground)]">
-          Enter your company. We find your closest European peers, look up the EU
-          grants, state aid and public capital each has accessed in our database,
-          and hand you a one-page competitive brief, a stakeholder map of the
-          funders that matter, and a prioritised to-do list. Export it as a PDF.
+          Enter your company. We find your closest European peers, trace the exact
+          EU grants, state aid and public capital each has drawn from our database,
+          and write you a single executive memo: where you stand, who to engage,
+          and the moves to make next. Export it as a PDF.
         </p>
 
         <form onSubmit={run} className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -142,10 +136,10 @@ export function IntelligencePanel() {
               disabled={running || !company.trim()}
               className="rounded-lg bg-[#003399] px-5 py-2.5 font-semibold text-white transition-colors hover:bg-[#002277] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {running ? "Analysing…" : "Run competitive analysis"}
+              {running ? "Writing your memo…" : "Write my funding memo"}
             </button>
             <span className="ml-3 text-xs text-[var(--muted-foreground)]">
-              Takes ~1 minute. 5 reports per hour.
+              Takes ~1 minute. 5 memos per hour.
             </span>
           </div>
         </form>
@@ -186,48 +180,48 @@ export function IntelligencePanel() {
         )}
       </div>
 
-      {report && <ReportView report={report} tab={tab} setTab={setTab} reportRef={reportRef} />}
+      {report && <Memo report={report} />}
     </section>
   );
 }
 
-function ReportView({
-  report,
-  tab,
-  setTab,
-  reportRef,
-}: {
-  report: IntelligenceReport;
-  tab: Tab;
-  setTab: (t: Tab) => void;
-  reportRef: React.RefObject<HTMLDivElement | null>;
-}) {
-  const tabs: { key: Tab; label: string }[] = [
-    { key: "overview", label: "Overview" },
-    { key: "stakeholders", label: "Stakeholder map" },
-    { key: "todos", label: "To-dos" },
-  ];
+/** A numbered, EU-blue section heading in the house serif. */
+function MemoHeading({ n, children }: { n: number; children: React.ReactNode }) {
+  return (
+    <h3
+      className="mt-9 mb-3 text-[15px] font-bold uppercase tracking-[0.12em] text-[#003399] print:mt-7"
+      style={serif}
+    >
+      <span className="mr-2 tabular-nums opacity-60">{String(n).padStart(2, "0")}</span>
+      {children}
+    </h3>
+  );
+}
+
+/**
+ * The whole report rendered as a single, branded executive memorandum — one
+ * flowing document, no tabs. Reads top to bottom and prints to a clean PDF.
+ */
+function Memo({ report }: { report: IntelligenceReport }) {
+  const o = report.overview;
+  const self = report.self;
+  const date = new Date(report.generatedAt).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const moves = [...report.todos].sort((a, b) => a.priority - b.priority);
+  const pLabel = (p: number) => (p === 1 ? "NOW" : p === 2 ? "NEXT" : "LATER");
+  const pColour = (p: number) =>
+    p === 1 ? "bg-[#003399]" : p === 2 ? "bg-[#2D6A4F]" : "bg-[#6B7280]";
 
   return (
-    <div ref={reportRef} id="print-report" className="mt-6 print:mt-0">
-      {/* Controls — hidden in print */}
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
-        <div className="inline-flex rounded-lg border border-[var(--border)] bg-white p-1">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={
-                "rounded-md px-3 py-1.5 text-sm font-semibold transition-colors " +
-                (tab === t.key
-                  ? "bg-[#003399] text-white"
-                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]")
-              }
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+    <div
+      id="print-report"
+      className="mt-8 rounded-xl border border-[var(--border)] bg-white px-6 py-7 sm:px-10 sm:py-9 shadow-sm print:mt-0 print:rounded-none print:border-0 print:px-0 print:py-0 print:shadow-none"
+    >
+      {/* Export — screen only */}
+      <div className="mb-6 flex justify-end print:hidden">
         <button
           onClick={() => window.print()}
           className="rounded-lg border border-[#003399] px-4 py-2 text-sm font-semibold text-[#003399] transition-colors hover:bg-[#003399] hover:text-white"
@@ -236,135 +230,151 @@ function ReportView({
         </button>
       </div>
 
-      {/* Print header (only visible when printing) */}
-      <div className="hidden print:block mb-6">
-        <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">
-          EuroInvTracker · competitive funding brief
+      {/* ── Masthead ───────────────────────────────────────────────── */}
+      <div className="border-t-[3px] border-[#003399] pt-3">
+        <div className="flex items-baseline justify-between">
+          <span className="text-sm font-bold tracking-[0.18em] text-[#003399]" style={serif}>
+            EUROINVTRACKER
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
+            Confidential funding memorandum
+          </span>
+        </div>
+      </div>
+
+      {/* ── Memo header block ──────────────────────────────────────── */}
+      <dl className="mt-5 grid grid-cols-[5.5rem_1fr] gap-x-4 gap-y-1.5 text-sm">
+        <dt className="text-[var(--muted-foreground)]">To</dt>
+        <dd className="font-semibold">The leadership of {report.company}</dd>
+        <dt className="text-[var(--muted-foreground)]">From</dt>
+        <dd>EuroInvTracker · competitive funding desk</dd>
+        <dt className="text-[var(--muted-foreground)]">Date</dt>
+        <dd>{date}</dd>
+        <dt className="text-[var(--muted-foreground)]">Re</dt>
+        <dd className="font-semibold leading-snug" style={serif}>
+          {o.headline}
+        </dd>
+      </dl>
+
+      {/* ── Bottom line up front ───────────────────────────────────── */}
+      <div className="mt-7 border-l-[3px] border-[#003399] bg-[#f6f8ff] px-5 py-4 print:bg-transparent">
+        <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#003399]">
+          Bottom line
         </p>
-        <h1 className="text-2xl font-bold" style={serif}>
-          {report.company}
-        </h1>
-        <p className="text-xs text-[var(--muted-foreground)]">
-          Generated {new Date(report.generatedAt).toLocaleDateString("en-GB")}
+        <p className="text-lg leading-relaxed" style={serif}>
+          {o.bottomLine}
         </p>
       </div>
 
-      {/* All three sections render in print; only the active tab on screen */}
-      <div className={tab === "overview" ? "" : "hidden print:block"}>
-        <Overview report={report} />
-      </div>
-      <div className={tab === "stakeholders" ? "" : "hidden print:block"}>
-        <Stakeholders report={report} />
-      </div>
-      <div className={tab === "todos" ? "" : "hidden print:block"}>
-        <Todos report={report} />
-      </div>
-
-      <p className="mt-6 border-t border-[var(--border)] pt-3 text-xs leading-relaxed text-[var(--muted-foreground)]">
-        {report.caveats}
+      {/* ── 1 · Where you stand ────────────────────────────────────── */}
+      <MemoHeading n={1}>Where you stand</MemoHeading>
+      <p className="mb-3 text-sm">
+        <span className="text-[var(--muted-foreground)]">Your traced public funding: </span>
+        <span className="font-semibold">{self.euCapital}</span>
+        {self.channelBreakdown && (
+          <span className="text-[var(--muted-foreground)]"> · {self.channelBreakdown}</span>
+        )}
+        {self.activeYears && (
+          <span className="text-[var(--muted-foreground)]"> · {self.activeYears}</span>
+        )}
       </p>
-    </div>
-  );
-}
+      <p className="leading-relaxed">{o.yourPosition}</p>
 
-function Overview({ report }: { report: IntelligenceReport }) {
-  const o = report.overview;
-  return (
-    <div className="print:break-after-page">
-      <h3 className="text-lg font-bold" style={serif}>
-        Where you stand
-      </h3>
-      <p className="mt-2 text-lg leading-relaxed">{o.headline}</p>
-
-      <div className="mt-5 overflow-x-auto rounded-xl border border-[var(--border)]">
-        <table className="w-full text-sm">
-          <thead className="border-b border-[var(--border)] bg-[var(--muted)] text-left text-xs uppercase tracking-wide text-[var(--muted-foreground)]">
-            <tr>
-              <th className="px-3 py-2">Competitor</th>
-              <th className="px-3 py-2">EU capital</th>
-              <th className="px-3 py-2">Channels</th>
-              <th className="px-3 py-2">Stage</th>
-              <th className="px-3 py-2">Positioning</th>
+      {/* ── 2 · The competitive field ──────────────────────────────── */}
+      <MemoHeading n={2}>The competitive field</MemoHeading>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-y border-[var(--border)] text-left text-[11px] uppercase tracking-wide text-[var(--muted-foreground)]">
+              <th className="py-2 pr-3 font-semibold">Peer</th>
+              <th className="py-2 pr-3 font-semibold">Public capital traced</th>
+              <th className="py-2 pr-3 font-semibold">Recent private round</th>
+              <th className="py-2 font-semibold">Positioning</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[var(--border)] align-top">
             {o.competitors.map((c, i) => (
               <tr key={i}>
-                <td className="px-3 py-2 font-semibold">{c.name}</td>
-                <td className="px-3 py-2 tabular-nums whitespace-nowrap">{c.euCapital}</td>
-                <td className="px-3 py-2 text-xs">{c.channels.join(", ") || "—"}</td>
-                <td className="px-3 py-2">{c.stage}</td>
-                <td className="px-3 py-2">{c.positioning}</td>
+                <td className="py-3 pr-3">
+                  <span className="font-semibold">{c.name}</span>
+                  {c.country && (
+                    <span className="ml-1 text-xs text-[var(--muted-foreground)]">{c.country}</span>
+                  )}
+                </td>
+                <td className="py-3 pr-3">
+                  {c.channelBreakdown ? (
+                    <>
+                      <span className="font-semibold tabular-nums">{c.euCapital}</span>
+                      <span className="block text-xs text-[var(--muted-foreground)]">
+                        {c.channelBreakdown}
+                        {c.activeYears ? ` · ${c.activeYears}` : ""}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-[var(--muted-foreground)]">{c.euCapital}</span>
+                  )}
+                </td>
+                <td className="py-3 pr-3">{c.stage}</td>
+                <td className="py-3">{c.positioning}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <p className="mt-5 leading-relaxed">{o.yourPosition}</p>
-    </div>
-  );
-}
-
-function Stakeholders({ report }: { report: IntelligenceReport }) {
-  return (
-    <div className="print:break-after-page">
-      <h3 className="text-lg font-bold" style={serif}>
-        Stakeholder map
-      </h3>
-      <div className="mt-4 space-y-4">
+      {/* ── 3 · Funders to engage ──────────────────────────────────── */}
+      <MemoHeading n={3}>Funders to engage</MemoHeading>
+      <div className="space-y-4">
         {report.stakeholderMap.map((s, i) => (
-          <div key={i} className="rounded-xl border border-[var(--border)] bg-white p-4">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div key={i} className="border-l-2 border-[var(--border)] pl-4">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-3">
               <p className="font-semibold text-[#003399]">{s.funder}</p>
               {s.nextDeadline && (
                 <span className="text-xs text-[var(--muted-foreground)]">
-                  Next deadline: {s.nextDeadline}
+                  Next window: {s.nextDeadline}
                 </span>
               )}
             </div>
             {s.competitorsUsing.length > 0 && (
-              <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                Used by: {s.competitorsUsing.join(", ")}
+              <p className="mt-0.5 text-xs text-[var(--muted-foreground)]">
+                Used by {s.competitorsUsing.join(", ")}
               </p>
             )}
-            <p className="mt-2 text-sm leading-relaxed">{s.relevanceToYou}</p>
-            <p className="mt-2 text-sm leading-relaxed">
-              <span className="font-semibold">Next step: </span>
+            <p className="mt-1.5 text-sm leading-relaxed">{s.relevanceToYou}</p>
+            <p className="mt-1 text-sm leading-relaxed">
+              <span className="font-semibold">Move: </span>
               {s.nextStep}
             </p>
           </div>
         ))}
       </div>
-    </div>
-  );
-}
 
-function Todos({ report }: { report: IntelligenceReport }) {
-  const ordered = [...report.todos].sort((a, b) => a.priority - b.priority);
-  const colour = (p: number) =>
-    p === 1 ? "bg-[#5C2A2A]" : p === 2 ? "bg-[#D97706]" : "bg-[#6B7280]";
-  return (
-    <div>
-      <h3 className="text-lg font-bold" style={serif}>
-        Prioritised to-dos
-      </h3>
-      <ol className="mt-4 space-y-3">
-        {ordered.map((t, i) => (
-          <li key={i} className="flex gap-3 rounded-xl border border-[var(--border)] bg-white p-4">
+      {/* ── 4 · Recommended moves ──────────────────────────────────── */}
+      <MemoHeading n={4}>Recommended moves</MemoHeading>
+      <ol className="space-y-4">
+        {moves.map((t, i) => (
+          <li key={i} className="flex gap-3">
             <span
-              className={`mt-0.5 h-6 shrink-0 rounded-full px-2 text-xs font-semibold leading-6 text-white ${colour(t.priority)}`}
+              className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white ${pColour(t.priority)}`}
             >
-              P{t.priority}
+              {pLabel(t.priority)}
             </span>
             <div>
-              <p className="font-semibold">{t.action}</p>
-              <p className="mt-1 text-sm leading-relaxed text-[var(--foreground)]">{t.rationale}</p>
-              <p className="mt-1 text-xs text-[var(--muted-foreground)]">Timeframe: {t.timeframe}</p>
+              <p className="font-semibold leading-snug">{t.action}</p>
+              <p className="mt-0.5 text-sm leading-relaxed">{t.rationale}</p>
+              <p className="mt-0.5 text-xs text-[var(--muted-foreground)]">{t.timeframe}</p>
             </div>
           </li>
         ))}
       </ol>
+
+      {/* ── Footer ─────────────────────────────────────────────────── */}
+      <div className="mt-9 border-t border-[var(--border)] pt-4">
+        <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
+        <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+          EuroInvTracker · the public funding record of European companies, 2021–2025
+        </p>
+      </div>
     </div>
   );
 }

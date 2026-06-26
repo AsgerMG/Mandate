@@ -1,5 +1,11 @@
 // Shared types for the competitive EU-funding intelligence agent.
 
+/** Committed EUR on one funding channel, from the corpus. */
+export interface ChannelAmount {
+  channel: string;
+  eur: number;
+}
+
 /** A competitor as matched against the EuroInvTracker corpus. */
 export interface CompetitorRecord {
   name: string;
@@ -11,6 +17,11 @@ export interface CompetitorRecord {
   euCapitalEur: number;
   /** Distinct funding channels (source_family codes) the company used. */
   channels: string[];
+  /** Per-channel committed EUR, largest first. Concrete signal for the memo. */
+  channelAmounts: ChannelAmount[];
+  /** First / last event year across the group, 0 when no dated event. */
+  firstYear: number;
+  lastYear: number;
   /** True when the name was found in our database; false = no public funding traced. */
   matched: boolean;
 }
@@ -18,22 +29,42 @@ export interface CompetitorRecord {
 /** Web-research snapshot for one competitor (open-web colour, never funding amounts). */
 export interface CompetitorIntel {
   name: string;
+  /** Country the peer operates from (helps disambiguate the DB match). */
+  country?: string;
   product: string;
   positioning: string;
   lastPrivateRound: string;
   notes: string;
 }
 
+/** One row of the competitive-field table, finalised in code (never the model). */
+export interface CompetitorRow {
+  name: string;
+  country: string; // ISO2 or ""
+  euCapital: string; // formatted total, e.g. "€1.2M" or "No public funding traced"
+  channelBreakdown: string; // e.g. "€2.5M EIC · €1.8M dev banks", or ""
+  channels: string[];
+  activeYears: string; // e.g. "2021–2024", or ""
+  stage: string; // recent private round (web colour)
+  positioning: string; // web colour
+}
+
 export interface OverviewSection {
+  /** The memo subject line — one factual sentence on the founder's position. */
   headline: string;
-  competitors: {
-    name: string;
-    euCapital: string; // formatted, e.g. "€1.2M" or "No public funding traced"
-    channels: string[];
-    stage: string;
-    positioning: string;
-  }[];
+  /** Bottom line up front: the single most important takeaway, 1–2 sentences. */
+  bottomLine: string;
+  competitors: CompetitorRow[];
   yourPosition: string;
+}
+
+/** The founder's own company as traced in the corpus (drives the BLUF). */
+export interface SelfRecord {
+  matched: boolean;
+  euCapital: string; // formatted total or "No public funding traced"
+  channelBreakdown: string;
+  channels: string[];
+  activeYears: string;
 }
 
 export interface StakeholderEntry {
@@ -54,6 +85,8 @@ export interface TodoEntry {
 export interface IntelligenceReport {
   company: string;
   generatedAt: string;
+  /** The founder's own funding footprint in the corpus. */
+  self: SelfRecord;
   overview: OverviewSection;
   stakeholderMap: StakeholderEntry[];
   todos: TodoEntry[];

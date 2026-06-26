@@ -5,9 +5,33 @@ import { readFileSync } from "fs";
 import path from "path";
 import type { CompetitorRecord } from "./types";
 
-// Index row layout (positional, written by scripts/build_companies_index.py):
-//   0 name, 1 normalized-name(s), 2 country, 3 sector, 4 totalEur, 5 channels[]
-type IndexRow = [string, string, string, string, number, string[]];
+// Country name (as the web search returns it) → ISO2, to disambiguate matches.
+// Only the European countries in scope; anything else stays undefined and the
+// match falls back to name-only scoring.
+const COUNTRY_ISO: Record<string, string> = {
+  austria: "AT", belgium: "BE", bulgaria: "BG", croatia: "HR", cyprus: "CY",
+  czechia: "CZ", "czech republic": "CZ", denmark: "DK", estonia: "EE",
+  finland: "FI", france: "FR", germany: "DE", greece: "GR", hungary: "HU",
+  iceland: "IS", ireland: "IE", italy: "IT", latvia: "LV", lithuania: "LT",
+  luxembourg: "LU", malta: "MT", netherlands: "NL", "the netherlands": "NL",
+  norway: "NO", poland: "PL", portugal: "PT", romania: "RO", slovakia: "SK",
+  slovenia: "SI", spain: "ES", sweden: "SE", switzerland: "CH",
+  "united kingdom": "GB", uk: "GB", "great britain": "GB", britain: "GB",
+};
+
+function toIso2(country?: string): string {
+  if (!country) return "";
+  const c = country.trim().toLowerCase();
+  if (/^[a-z]{2}$/.test(c)) return c.toUpperCase();
+  return COUNTRY_ISO[c] ?? "";
+}
+
+// Index row layout (positional, written by website/build/companies_index.py):
+//   0 name, 1 normalized-name(s), 2 country, 3 sector, 4 totalEur,
+//   5 per-channel EUR [[channel, eur], ...] (desc), 6 firstYear, 7 lastYear
+type IndexRow = [
+  string, string, string, string, number, [string, number][], number, number,
+];
 
 interface IndexFile {
   generatedAt: string;
@@ -75,8 +99,13 @@ export function loadAgentInstructions(): string {
  * Fuzzy-match one company name against the corpus. Returns a record either way:
  * `matched: false` with zeroed funding when the name is not found, so callers
  * can faithfully report "no public funding traced" rather than implying zero.
+ *
+ * An optional `countryHint` (web-researched, any spelling or ISO2) raises recall
+ * safely: it lets a single distinctive token resolve to one entity in that
+ * country instead of being rejected as ambiguous, and breaks ties between
+ * equally-scored homonyms in different countries.
  */
-export function matchCompany(name: string): CompetitorRecord {
+export function matchCompany(name: string, countryHint?: string): CompetitorRecord {
   const q = normalize(name);
   const unmatched: CompetitorRecord = {
     name,
@@ -84,13 +113,22 @@ export function matchCompany(name: string): CompetitorRecord {
     sector: "",
     euCapitalEur: 0,
     channels: [],
+    channelAmounts: [],
+    firstYear: 0,
+    lastYear: 0,
     matched: false,
   };
   if (!q) return unmatched;
 
+  const iso = toIso2(countryHint);
   const qTokens = q.split(" ").filter((t) => t.length >= 3 && !STOP_TOKENS.has(t));
   const qSet = new Set(qTokens);
   const { rows } = loadIndex();
+
+  // A lone short token ("GMV", "EOS") is an acronym: an exact name hit on it is
+  // almost worthless without corroboration, because dozens of unrelated entities
+  // share three letters across the corpus.
+  const acronym = qSet.size === 1 && qTokens[0].length <= 3;
 
   let best: IndexRow | null = null;
   let bestScore = 0;
@@ -99,6 +137,8 @@ export function matchCompany(name: string): CompetitorRecord {
     // Rows whose names are non-Latin normalize to an empty/tiny string and are
     // unmatchable by a Latin query — skip them outright.
     if (rq.length < 3) continue;
+    const sameCountry = iso !== "" && row[2] === iso;
+    const countryConflict = iso !== "" && row[2] !== "" && row[2] !== iso;
     let score = 0;
     if (rq === q) {
       score = 1;
@@ -121,17 +161,31 @@ export function matchCompany(name: string): CompetitorRecord {
           score = 0.9 - 0.05 * extra; // multi-token name: confident
         } else if (extra === 0) {
           score = 0.9; // single-token query, and the corpus name is just that token
+        } else {
+          // A lone token ("Vyoma") sitting inside a larger corpus name
+          // ("Vyoma Space GmbH"). Trust it only when the web-researched country
+          // pins it to this entity, or the token is very distinctive (long).
+          const t = qTokens[0];
+          if (sameCountry && t.length >= 5) score = 0.8 - 0.02 * extra;
+          else if (t.length >= 8) score = 0.75 - 0.02 * extra;
         }
-        // else: a lone generic token ("Alice") sitting inside a larger name
-        // ("Alice & Bob") is too weak to trust — leave score 0.
       } else if (qSet.size >= 2) {
         score = (overlap / qSet.size) * 0.5; // partial multi-token: stays sub-threshold
       }
     }
+    // Country guards. A web-researched country that contradicts the corpus row
+    // means we matched the wrong entity — kill a single-token match outright
+    // (a multinational's multi-token name can legitimately sit in another
+    // country, so only the ambiguous single-token case is killed). An acronym
+    // is trusted only when the country actively confirms it.
+    if (countryConflict && qSet.size === 1) score = 0;
+    if (acronym && !sameCountry) score = 0;
+    // Nudge a country-confirmed row above an equally-scored homonym elsewhere.
+    if (score > 0 && sameCountry) score += 0.03;
     if (score > bestScore) {
       bestScore = score;
       best = row;
-      if (score === 1) break;
+      if (score >= 1) break;
     }
   }
 
@@ -141,7 +195,10 @@ export function matchCompany(name: string): CompetitorRecord {
     country: best[2],
     sector: best[3],
     euCapitalEur: best[4],
-    channels: best[5],
+    channels: best[5].map(([c]) => c),
+    channelAmounts: best[5].map(([channel, eur]) => ({ channel, eur })),
+    firstYear: best[6],
+    lastYear: best[7],
     matched: true,
   };
 }

@@ -12,12 +12,14 @@ import {
   matchCompany,
 } from "./corpus";
 import type {
+  ChannelAmount,
   CompetitorIntel,
   CompetitorRecord,
+  CompetitorRow,
   IntelligenceReport,
   IntelligenceRequest,
-  OverviewSection,
   ProgressEvent,
+  SelfRecord,
 } from "./types";
 
 // The whole pipeline runs on cheap, fast models, guided by the Opus-authored
@@ -27,12 +29,48 @@ import type {
 // well at a fraction of the cost and latency. No runtime Opus call, so the
 // pipeline lands well under Vercel's 300s function cap (Hobby).
 const SEARCH_MODEL = "claude-sonnet-4-6";
-const WRITER_MODEL = "claude-haiku-4-5";
+// The memo is the product, so the writer earns a capable model. Sonnet 4.6 writes
+// the executive prose; with only one writer call plus one search call the run
+// still lands well under Vercel's 300s cap.
+const WRITER_MODEL = "claude-sonnet-4-6";
 const MAX_COMPETITORS = 5;
 
 const client = new Anthropic(); // reads ANTHROPIC_API_KEY from the environment
 
 type Emit = (event: ProgressEvent) => void;
+
+// Short, human display labels for the channel codes, for the funding breakdown.
+const CHANNEL_LABEL: Record<string, string> = {
+  eic: "EIC",
+  horizon_eu_pillar_ii: "Horizon",
+  horizon_eu_partnership: "Horizon partnership",
+  innovation_fund: "Innovation Fund",
+  ipcei: "IPCEI",
+  chips_ju: "Chips JU",
+  edf: "EDF",
+  eit: "EIT",
+  eib: "EIB",
+  state_aid_satr: "state aid",
+  national_dev_banks: "dev banks",
+};
+
+const channelLabel = (code: string) => CHANNEL_LABEL[code] ?? code;
+
+/** "€2.5M EIC · €1.8M dev banks" — the top doors, with figures where known. */
+function fundingBreakdown(channelAmounts: ChannelAmount[]): string {
+  return channelAmounts
+    .slice(0, 3)
+    .map((c) => (c.eur > 0 ? `${fmtEur(c.eur)} ${channelLabel(c.channel)}` : channelLabel(c.channel)))
+    .join(" · ");
+}
+
+/** "2021–2024", "2023", or "" when no dated event is on file. */
+function activeYears(first: number, last: number): string {
+  if (!first && !last) return "";
+  if (!first) return String(last);
+  if (!last || first === last) return String(first);
+  return `${first}–${last}`;
+}
 
 /** Pull the first fenced JSON block (or the first {...}/[...]) out of model text. */
 function extractJson<T>(text: string): T {
@@ -128,10 +166,12 @@ async function discoverAndResearch(
       `companies operating in Europe, since the goal is to compare public-funding ` +
       `access. Use web search to ground your answer.\n\n${ctx}\n\n` +
       `Return ONLY a JSON array, most relevant first, one object per company:\n` +
-      `[{"name": "...", "product": "...", "positioning": "...", ` +
+      `[{"name": "...", "country": "...", "product": "...", "positioning": "...", ` +
       `"lastPrivateRound": "...", "notes": "..."}]\n` +
-      `Use legal or common company names. Keep each field to one or two sentences. ` +
-      `If something is unknown, say "Unknown".`,
+      `"country" is the country the company operates from (full English name, or ` +
+      `"Unknown"); it helps us look up the right legal entity. Use legal or common ` +
+      `company names. Keep each field to one or two sentences. If something is ` +
+      `unknown, say "Unknown".`,
   );
   const intel = extractJson<CompetitorIntel[]>(text);
   return intel
@@ -139,6 +179,7 @@ async function discoverAndResearch(
     .filter((i) => i && i.name && String(i.name).trim())
     .map((i) => ({
       name: String(i.name).trim(),
+      country: i.country && i.country !== "Unknown" ? String(i.country).trim() : undefined,
       product: i.product ?? "Unknown",
       positioning: i.positioning ?? "Unknown",
       lastPrivateRound: i.lastPrivateRound ?? "Unknown",
@@ -162,9 +203,10 @@ const REPORT_SCHEMA = {
       additionalProperties: false,
       properties: {
         headline: { type: "string" },
+        bottomLine: { type: "string" },
         yourPosition: { type: "string" },
       },
-      required: ["headline", "yourPosition"],
+      required: ["headline", "bottomLine", "yourPosition"],
     },
     stakeholderMap: {
       type: "array",
@@ -209,23 +251,39 @@ const REPORT_SCHEMA = {
 function buildCompetitors(
   records: CompetitorRecord[],
   intel: CompetitorIntel[],
-): OverviewSection["competitors"] {
+): CompetitorRow[] {
   return records.map((r, i) => {
     const web = intel[i];
     return {
       name: web?.name || r.name || "Unknown",
+      country: r.matched ? r.country : "",
       euCapital: r.matched ? fmtEur(r.euCapitalEur) : "No public funding traced",
+      channelBreakdown: r.matched ? fundingBreakdown(r.channelAmounts) : "",
       channels: r.matched ? r.channels : [],
+      activeYears: r.matched ? activeYears(r.firstYear, r.lastYear) : "",
       stage: web?.lastPrivateRound || "Unknown",
       positioning: web?.positioning || "Unknown",
     };
   });
 }
 
+/** The founder's own footprint in the corpus, formatted for the BLUF. */
+function buildSelf(req: IntelligenceRequest): SelfRecord {
+  const r = matchCompany(req.company, req.country);
+  return {
+    matched: r.matched,
+    euCapital: r.matched ? fmtEur(r.euCapitalEur) : "No public funding traced",
+    channelBreakdown: r.matched ? fundingBreakdown(r.channelAmounts) : "",
+    channels: r.matched ? r.channels : [],
+    activeYears: r.matched ? activeYears(r.firstYear, r.lastYear) : "",
+  };
+}
+
 async function synthesize(
   req: IntelligenceRequest,
   records: CompetitorRecord[],
   intel: CompetitorIntel[],
+  self: SelfRecord,
   instructions: string,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt">> {
   // The competitor table is finalised HERE, in code — funding figures and
@@ -236,13 +294,25 @@ async function synthesize(
   // The single authoritative evidence block the model writes from. Each line is
   // already correct (DB funding + web colour), so the model cannot fabricate.
   const evidence = competitors
-    .map(
-      (c) =>
-        `- ${c.name}: EU/public capital ${c.euCapital}` +
-        `${c.channels.length ? ` via [${c.channels.join(", ")}]` : ""}; ` +
-        `positioning — ${c.positioning}; recent private round — ${c.stage}`,
-    )
+    .map((c) => {
+      const where = c.country ? ` (${c.country})` : "";
+      const traced = c.channelBreakdown
+        ? `${c.euCapital} — ${c.channelBreakdown}${c.activeYears ? `, ${c.activeYears}` : ""}`
+        : c.euCapital;
+      return (
+        `- ${c.name}${where}: EU/public capital ${traced}; ` +
+        `positioning — ${c.positioning}; recent private round — ${c.stage}`
+      );
+    })
     .join("\n");
+
+  // The founder's own footprint, so the BLUF can open with where THEY stand.
+  const selfLine = self.matched
+    ? `${req.company}: EU/public capital ${self.euCapital}` +
+      `${self.channelBreakdown ? ` — ${self.channelBreakdown}` : ""}` +
+      `${self.activeYears ? `, ${self.activeYears}` : ""}`
+    : `${req.company}: no public funding traced in our database (which is not ` +
+      `proof of none — coverage varies by country).`;
 
   // Inject only the process briefs for channels that actually appear.
   const channels = [...new Set(records.flatMap((r) => (r.matched ? r.channels : [])))];
@@ -272,7 +342,8 @@ async function synthesize(
       {
         role: "user",
         content:
-          `Write the intelligence report for the founder.\n\n${ctx}\n\n` +
+          `Write the executive funding memo for the founder.\n\n${ctx}\n\n` +
+          `## The founder's own footprint (AUTHORITATIVE)\n${selfLine}\n\n` +
           `## Competitor evidence (AUTHORITATIVE — already finalised)\n` +
           `EU/public-capital figures are committed amounts from our database; ` +
           `"No public funding traced" means not found there. Use these figures ` +
@@ -281,9 +352,11 @@ async function synthesize(
           `${evidence || "(no competitors gathered)"}\n\n` +
           `## Relevant funding-process briefs (use to make to-dos concrete)\n` +
           `${processes || "(none)"}\n\n` +
-          `Write the overview headline and "your position" paragraph, the ` +
-          `stakeholder map, and prioritised to-dos per your instructions. In ` +
-          `"caveats", note in one or two sentences that figures are committed ` +
+          `Write, per your instructions: the headline (subject line), the ` +
+          `bottomLine (the single most important takeaway, up front), the ` +
+          `"your position" paragraph that compares the founder's own footprint ` +
+          `above against the peers, the stakeholder map, and prioritised to-dos. ` +
+          `In "caveats", note in one or two sentences that figures are committed ` +
           `amounts from public registers, coverage varies by country, and ` +
           `absence from the database is not proof of no funding.`,
       },
@@ -295,7 +368,7 @@ async function synthesize(
     .map((b) => b.text)
     .join("");
   const narrative = extractJson<{
-    overview: { headline: string; yourPosition: string };
+    overview: { headline: string; bottomLine: string; yourPosition: string };
     stakeholderMap: IntelligenceReport["stakeholderMap"];
     todos: IntelligenceReport["todos"];
     caveats: string;
@@ -303,6 +376,7 @@ async function synthesize(
 
   // Merge the code-built competitor table into the model's narrative.
   return {
+    self,
     overview: { ...narrative.overview, competitors },
     stakeholderMap: narrative.stakeholderMap,
     todos: narrative.todos,
@@ -318,10 +392,11 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
   const intel = await discoverAndResearch(req, instructions);
 
   emit({ type: "status", step: "querying_db", detail: `${intel.length} peers` });
-  const records = intel.map((i) => matchCompany(i.name));
+  const records = intel.map((i) => matchCompany(i.name, i.country));
+  const self = buildSelf(req);
 
   emit({ type: "status", step: "generating" });
-  const body = await synthesize(req, records, intel, instructions);
+  const body = await synthesize(req, records, intel, self, instructions);
 
   emit({
     type: "report",

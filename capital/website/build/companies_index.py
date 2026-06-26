@@ -6,15 +6,20 @@ it can load once per warm serverless invocation and fuzzy-match competitor names
 against. This script writes that file.
 
   website/frontend/public/data/companies_index.json
-    {"generatedAt": ..., "companies": N, "rows": [[n, q, c, s, eur, [ch,...]], ...]}
+    {"generatedAt": ..., "companies": N,
+     "rows": [[n, q, c, s, eur, [[ch,eur],...], y0, y1], ...]}
 
-Rows are positional (terser than keyed objects at ~95k records):
+Rows are positional (terser than keyed objects at ~149k records):
   0 n   canonical display name (richest member of the parent group)
   1 q   normalized name(s), space-joined across every spelling variant
   2 c   ISO2 country
   3 s    sector_inferred
   4 eur  total grant+debt EUR across all events (rounded), 0 if none
-  5 ch   distinct source_family channels, EU capital "doors" the group used
+  5 ca  per-channel committed EUR, [[source_family, eur], ...] sorted desc.
+        The intelligence memo needs concrete per-door figures ("€2.5M via EIC,
+        €1.8M via Bpifrance"), not just a lump sum and a bare channel list.
+  6 y0  first event year across the group (int), 0 if no dated event
+  7 y1  last event year across the group (int), 0 if no dated event
 
 Parent-group rollup mirrors company_search.py so the agent sees the same
 deduplicated entities as the public lookup. A group is included if it has at
@@ -48,12 +53,13 @@ def main():
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
 
-    # Per company: total EUR (grant, else debt) and the set of channels used.
+    # Per company: total EUR (grant, else debt), per-channel EUR, year span.
     totals: dict[int, float] = defaultdict(float)
-    channels: dict[int, set] = defaultdict(set)
+    chan_eur: dict[int, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+    years: dict[int, list[int]] = defaultdict(list)
     for r in con.execute("""
         SELECT v.company_id, v.source_family,
-               v.grant_amount_eur, v.debt_amount_eur
+               v.grant_amount_eur, v.debt_amount_eur, v.event_year
         FROM v_events v
     """):
         amount = r["grant_amount_eur"]
@@ -62,7 +68,9 @@ def main():
         if amount:
             totals[r["company_id"]] += amount
         if r["source_family"]:
-            channels[r["company_id"]].add(r["source_family"])
+            chan_eur[r["company_id"]][r["source_family"]] += amount or 0.0
+        if r["event_year"]:
+            years[r["company_id"]].append(int(r["event_year"]))
 
     meta: dict[int, sqlite3.Row] = {}
     members: dict[str, list[int]] = defaultdict(list)
@@ -75,22 +83,29 @@ def main():
 
     rows: list[list] = []
     for gk, ids in members.items():
-        ch: set = set()
+        ch_eur: dict[str, float] = defaultdict(float)
         eur = 0.0
+        yrs: list[int] = []
         for cid in ids:
-            ch |= channels.get(cid, set())
+            for c, a in chan_eur.get(cid, {}).items():
+                ch_eur[c] += a
             eur += totals.get(cid, 0.0)
-        if not ch:                                   # no funding event → skip
+            yrs.extend(years.get(cid, ()))
+        if not ch_eur:                               # no funding event → skip
             continue
         rep = meta[max(ids, key=lambda c: totals.get(c, 0.0))]
         norms = sorted({normalize(meta[c]["canonical_name"]) for c in ids})
+        ca = sorted(([c, round(a)] for c, a in ch_eur.items()),
+                    key=lambda x: x[1], reverse=True)
         rows.append([
             rep["canonical_name"],
             " ".join(norms),
             rep["country"] or "",
             rep["sector_inferred"] or "",
             round(eur),
-            sorted(ch),
+            ca,
+            min(yrs) if yrs else 0,
+            max(yrs) if yrs else 0,
         ])
 
     # Heaviest-funded first: if the agent ever truncates, it keeps the signal.
