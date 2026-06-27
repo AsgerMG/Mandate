@@ -26,6 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
 from web_env import DB_PATH, SITE_DATA, DATA  # noqa: E402
+from sector_labels import label as sector_label  # noqa: E402
 
 OUT_PATH = str(SITE_DATA / "country_map.json")
 SCOPE_PATH = str(DATA / "europe_scope.json")
@@ -53,17 +54,6 @@ FAMILY_LABELS = {
 }
 
 FAMILY_ORDER = ["state_aid", "horizon_eu", "ndb", "eic", "eit", "ipcei", "innovation_fund", "eib", "edf", "chips_ju"]
-
-SECTOR_LABELS = {
-    "cleantech": "Cleantech",
-    "life_sciences": "Life sciences",
-    "deeptech_hardware": "Deep tech / hardware",
-    "digital": "Digital",
-    "space": "Space",
-    "defense": "Defence",
-    "other": "Other",
-    "unclassified": "Unclassified",
-}
 
 def source_to_family(source: str) -> str:
     if source.startswith("satr_"):            return "state_aid"
@@ -131,9 +121,10 @@ def main():
     """)
     source_rows = cur.fetchall()
 
-    # Per-country + sector: distinct companies (from companies.sector_inferred)
+    # Per-country + sector: distinct companies (from companies.sector_top, the
+    # broad Tier-1 of the two-tier taxonomy).
     cur.execute("""
-        SELECT c.country, COALESCE(c.sector_inferred, 'unclassified') AS sector,
+        SELECT c.country, COALESCE(NULLIF(c.sector_top,''), 'unclassified') AS sector,
                COUNT(DISTINCT c.id) AS companies
         FROM companies c
         WHERE c.country IS NOT NULL AND c.country != ''
@@ -186,7 +177,7 @@ def main():
             reverse=True,
         )
         by_sector = [
-            {"sector": s, "label": SECTOR_LABELS.get(s, s), "companies": n}
+            {"sector": s, "label": sector_label(s), "companies": n}
             for s, n in by_sector_sorted
         ]
 

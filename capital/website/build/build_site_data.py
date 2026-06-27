@@ -41,6 +41,7 @@ from web_env import ROOT, BUILD, DB, SITE_DATA, VIEWS_SQL  # noqa: E402
 GENERATED = {
     "coverage_ratings.json":      "coverage_indicator.py",
     "country_coverage.json":      "coverage_indicator.py",
+    "taxonomy.json":              "taxonomy.py",
     "country_map.json":           "country_map.py",
     "instrument_leaderboard.json": "home_visuals.py",
     "synthesis.json":             "synthesis.py",
@@ -53,6 +54,7 @@ GENERATED = {
 STEPS = [
     ("reinstall SQL views", None),  # handled specially
     ("coverage indicator", "coverage_indicator.py"),
+    ("sector taxonomy",    "taxonomy.py"),
     ("country map",        "country_map.py"),
     ("home visuals",       "home_visuals.py"),
     ("synthesis KPIs",     "synthesis.py"),

@@ -5,7 +5,7 @@
 // ~0.1-3 MB shard (cached), filtering happens in the browser.
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FAMILY_LABELS, FAMILY_SHORT } from "@/lib/palette";
+import { FAMILY_LABELS, FAMILY_SHORT, sectorLabel } from "@/lib/palette";
 import { fmtEur, fmtInt } from "@/lib/format";
 import manifest from "@/public/data/companies/manifest.json";
 
@@ -76,11 +76,9 @@ const BASIS_NOTE: Record<string, string> = {
   d: "debt commitment",
 };
 
-const SECTOR_LABEL: Record<string, string> = {
-  life_sciences: "Life sciences", cleantech: "Cleantech",
-  deeptech_hardware: "Deep tech", defense: "Defence", digital: "Digital",
-  space: "Space", other: "Other", unclassified: "", "": "",
-};
+// Sector labels come from the live taxonomy (taxonomy.json via palette), so the
+// dropdown and per-company labels follow the classification automatically.
+const SECTOR_LABEL = (s: string): string => (s ? sectorLabel(s) : "");
 
 function normalize(s: string): string {
   return s
@@ -202,9 +200,9 @@ export function CompanySearch() {
           className="rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
         >
           <option value="">All sectors</option>
-          {FACET_SECTORS.filter((s) => SECTOR_LABEL[s]).map((s) => (
+          {FACET_SECTORS.filter((s) => SECTOR_LABEL(s)).map((s) => (
             <option key={s} value={s}>
-              {SECTOR_LABEL[s]}
+              {SECTOR_LABEL(s)}
             </option>
           ))}
         </select>
@@ -242,7 +240,7 @@ export function CompanySearch() {
                 <span className="font-medium">{r.n}</span>
                 <span className="ml-2 text-xs text-[var(--muted-foreground)]">
                   {r.c}
-                  {SECTOR_LABEL[r.s] ? ` · ${SECTOR_LABEL[r.s]}` : ""}
+                  {SECTOR_LABEL(r.s) ? ` · ${SECTOR_LABEL(r.s)}` : ""}
                 </span>
                 {SEALS.filter((seal) => r[seal.key] === 1).map((seal) => (
                   <span

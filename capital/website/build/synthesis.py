@@ -41,10 +41,10 @@ def run_synthesis():
            FROM public_funding_events WHERE ipcei_linked = 0 AND is_duplicate = 0) AS total_capital_eur,
           (SELECT COUNT(DISTINCT country) FROM companies WHERE country IS NOT NULL) AS countries,
           (SELECT COUNT(DISTINCT source_family) FROM v_events) AS source_families,
-          (SELECT COUNT(DISTINCT c.sector_inferred)
+          (SELECT COUNT(DISTINCT c.sector_top)
              FROM v_european_companies c
              JOIN v_events v ON v.company_id = c.id
-             WHERE c.sector_inferred IS NOT NULL) AS sectors
+             WHERE c.sector_top IS NOT NULL AND c.sector_top != '') AS sectors
     """).iloc[0]
 
     payload = {

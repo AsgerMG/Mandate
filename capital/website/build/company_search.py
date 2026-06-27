@@ -161,7 +161,8 @@ def main():
     meta: dict[int, sqlite3.Row] = {}
     members: dict[str, list[int]] = defaultdict(list)
     for r in con.execute(
-            "SELECT id, canonical_name, country, sector_inferred, step_flagged, parent_group FROM companies"):
+            "SELECT id, canonical_name, country, sector_top, subsector, "
+            "step_flagged, parent_group FROM companies"):
         meta[r["id"]] = r
         members[r["parent_group"] or f"id{r['id']}"].append(r["id"])
 
@@ -185,7 +186,8 @@ def main():
             "n": rep["canonical_name"],
             "q": " ".join(norms),                    # search matches ANY variant
             "c": rep["country"] or "",
-            "s": rep["sector_inferred"] or "",
+            "s": rep["sector_top"] or "",          # broad Tier-1 (two-tier taxonomy)
+            "ss": rep["subsector"] or "",          # granular Tier-2
             "ev": ev_all[:EVENT_CAP],
             "xe": max(0, len(ev_all) - EVENT_CAP),
             "st": st_all,

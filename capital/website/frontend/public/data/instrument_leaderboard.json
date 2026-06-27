@@ -14,7 +14,7 @@
       "medianTicket": 286592.0,
       "topSector": {
         "name": "Other",
-        "companies": 39506
+        "companies": 18947
       },
       "topCountry": {
         "iso": "DE",
@@ -34,8 +34,8 @@
       "totalEur": 57317173155.58,
       "medianTicket": 60300000.0,
       "topSector": {
-        "name": "Deep tech / hardware",
-        "companies": 142
+        "name": "Energy & cleantech",
+        "companies": 110
       },
       "topCountry": {
         "iso": "DE",
@@ -56,7 +56,7 @@
       "medianTicket": 57474.13,
       "topSector": {
         "name": "Other",
-        "companies": 20489
+        "companies": 11695
       },
       "topCountry": {
         "iso": "FR",
@@ -76,8 +76,8 @@
       "totalEur": 22505873098.539997,
       "medianTicket": 312375.0,
       "topSector": {
-        "name": "Other",
-        "companies": 5843
+        "name": "Energy & cleantech",
+        "companies": 4061
       },
       "topCountry": {
         "iso": "ES",
@@ -97,8 +97,8 @@
       "totalEur": 13497054946.0,
       "medianTicket": 31333250.0,
       "topSector": {
-        "name": "Cleantech",
-        "companies": 177
+        "name": "Energy & cleantech",
+        "companies": 230
       },
       "topCountry": {
         "iso": "FR",
@@ -118,8 +118,8 @@
       "totalEur": 4980221298.139999,
       "medianTicket": 9530059.37,
       "topSector": {
-        "name": "Defence",
-        "companies": 72
+        "name": "Defence & security",
+        "companies": 179
       },
       "topCountry": {
         "iso": "FR",
@@ -139,8 +139,8 @@
       "totalEur": 4384376814.42003,
       "medianTicket": 354125.0,
       "topSector": {
-        "name": "Life sciences",
-        "companies": 917
+        "name": "Health & life sciences",
+        "companies": 842
       },
       "topCountry": {
         "iso": "DE",
@@ -160,8 +160,8 @@
       "totalEur": 3590000000.0,
       "medianTicket": 20000000.0,
       "topSector": {
-        "name": "Life sciences",
-        "companies": 57
+        "name": "Health & life sciences",
+        "companies": 56
       },
       "topCountry": {
         "iso": "FR",
@@ -181,8 +181,8 @@
       "totalEur": 3439718715.800002,
       "medianTicket": 584688.35,
       "topSector": {
-        "name": "Life sciences",
-        "companies": 910
+        "name": "Health & life sciences",
+        "companies": 781
       },
       "topCountry": {
         "iso": "DE",
@@ -202,8 +202,8 @@
       "totalEur": 1957165807.3100119,
       "medianTicket": 234871.0,
       "topSector": {
-        "name": "Deep tech / hardware",
-        "companies": 794
+        "name": "Semiconductors & electronics",
+        "companies": 1050
       },
       "topCountry": {
         "iso": "DE",
@@ -223,8 +223,8 @@
       "totalEur": 387500.0,
       "medianTicket": 7500.0,
       "topSector": {
-        "name": "Life sciences",
-        "companies": 112
+        "name": "Software, data & AI",
+        "companies": 106
       },
       "topCountry": {
         "iso": "DE",

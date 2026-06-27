@@ -13,6 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
 from web_env import DB, SITE_DATA  # noqa: E402
+from sector_labels import label as sector_label  # noqa: E402
 
 OUT_DIR = SITE_DATA
 
@@ -41,18 +42,6 @@ INSTRUMENTS = [
     ("state_aid_satr", "National state aid (SATR)", "state_aid_satr",
      "#ca8a04", "▮", 0.15, 0.90, "All stages (national aid)"),
 ]
-
-SECTOR_LABELS = {
-    "cleantech": "Cleantech",
-    "life_sciences": "Life sciences",
-    "deeptech_hardware": "Deep tech / hardware",
-    "digital": "Digital",
-    "space": "Space",
-    "defense": "Defence",
-    "other": "Other",
-    "unclassified": "Unclassified",
-}
-
 
 def percentile(sorted_vals, q):
     if not sorted_vals:
@@ -89,15 +78,14 @@ def per_instrument_stats(conn, family: str) -> dict:
     median = percentile(tickets, 0.50)
 
     top_sector = conn.execute(
-        "SELECT COALESCE(c.sector_inferred, 'unclassified') AS s, "
-        "       COUNT(DISTINCT c.id) AS n "
+        "SELECT c.sector_top AS s, COUNT(DISTINCT c.id) AS n "
         "FROM v_events v JOIN companies c ON c.id = v.company_id "
-        "WHERE v.source_family = ? AND c.sector_inferred IS NOT NULL "
-        "  AND c.sector_inferred != 'unclassified' "
+        "WHERE v.source_family = ? AND c.sector_top IS NOT NULL "
+        "  AND c.sector_top != '' "
         "GROUP BY s ORDER BY n DESC LIMIT 1",
         (family,),
     ).fetchone()
-    sector_name = SECTOR_LABELS.get(top_sector[0], top_sector[0]) if top_sector else "—"
+    sector_name = sector_label(top_sector[0]) if top_sector else "—"
     sector_n = int(top_sector[1]) if top_sector else 0
 
     top_country = conn.execute(
