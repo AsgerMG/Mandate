@@ -20,6 +20,12 @@ Rows are positional (terser than keyed objects at ~149k records):
         €1.8M via Bpifrance"), not just a lump sum and a bare channel list.
   6 y0  first event year across the group (int), 0 if no dated event
   7 y1  last event year across the group (int), 0 if no dated event
+  8 st  sector_top (broad Tier-1 of the two-tier taxonomy), "" if unclassified
+  9 ss  subsector (granular Tier-2), "" if unclassified
+        Tiers 8/9 power database-native peer discovery: find funded companies in
+        the same sub-sector instead of relying only on web-search name matches.
+ 10 et  entity_type ("company"/"research_org"/"unknown"/...), to keep universities
+        and public bodies out of competitive-peer lists.
 
 Parent-group rollup mirrors company_search.py so the agent sees the same
 deduplicated entities as the public lookup. A group is included if it has at
@@ -75,8 +81,8 @@ def main():
     meta: dict[int, sqlite3.Row] = {}
     members: dict[str, list[int]] = defaultdict(list)
     for r in con.execute(
-            "SELECT id, canonical_name, country, sector_inferred, parent_group "
-            "FROM companies"):
+            "SELECT id, canonical_name, country, sector_inferred, parent_group, "
+            "sector_top, subsector, entity_type FROM companies"):
         meta[r["id"]] = r
         members[r["parent_group"] or f"id{r['id']}"].append(r["id"])
     con.close()
@@ -106,6 +112,9 @@ def main():
             ca,
             min(yrs) if yrs else 0,
             max(yrs) if yrs else 0,
+            rep["sector_top"] or "",
+            rep["subsector"] or "",
+            rep["entity_type"] or "",
         ])
 
     # Heaviest-funded first: if the agent ever truncates, it keeps the signal.

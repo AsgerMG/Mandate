@@ -13,6 +13,9 @@ export interface CompetitorRecord {
   country: string;
   /** Inferred sector tag, or "". */
   sector: string;
+  /** Two-tier taxonomy of the matched company, "" if unclassified. */
+  sectorTop: string;
+  subsector: string;
   /** Total EUR committed across all traced events (grants + debt). */
   euCapitalEur: number;
   /** Distinct funding channels (source_family codes) the company used. */
@@ -40,6 +43,9 @@ export interface CompetitorIntel {
 /** One row of the competitive-field table, finalised in code (never the model). */
 export interface CompetitorRow {
   name: string;
+  /** "web" = a web-found direct competitor; "corpus" = a same-sub-sector funded
+   *  peer pulled straight from the database (guaranteed funding signal). */
+  source: "web" | "corpus";
   country: string; // ISO2 or ""
   euCapital: string; // formatted total, e.g. "€1.2M" or "No public funding traced"
   channelBreakdown: string; // e.g. "€2.5M EIC · €1.8M dev banks", or ""

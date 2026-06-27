@@ -7,6 +7,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import {
+  findPeersBySubsector,
   loadAgentInstructions,
   loadFundProcess,
   matchCompany,
@@ -256,6 +257,7 @@ function buildCompetitors(
     const web = intel[i];
     return {
       name: web?.name || r.name || "Unknown",
+      source: "web" as const,
       country: r.matched ? r.country : "",
       euCapital: r.matched ? fmtEur(r.euCapitalEur) : "No public funding traced",
       channelBreakdown: r.matched ? fundingBreakdown(r.channelAmounts) : "",
@@ -267,9 +269,23 @@ function buildCompetitors(
   });
 }
 
+/** Database-native peers (same sub-sector, all funded) → competitor rows. */
+function buildDbPeers(peers: CompetitorRecord[]): CompetitorRow[] {
+  return peers.map((r) => ({
+    name: r.name,
+    source: "corpus" as const,
+    country: r.country,
+    euCapital: fmtEur(r.euCapitalEur),
+    channelBreakdown: fundingBreakdown(r.channelAmounts),
+    channels: r.channels,
+    activeYears: activeYears(r.firstYear, r.lastYear),
+    stage: "Unknown",
+    positioning: `Funded in your sub-sector (${r.subsector.replace(/_/g, " ")})`,
+  }));
+}
+
 /** The founder's own footprint in the corpus, formatted for the BLUF. */
-function buildSelf(req: IntelligenceRequest): SelfRecord {
-  const r = matchCompany(req.company, req.country);
+function buildSelf(r: CompetitorRecord): SelfRecord {
   return {
     matched: r.matched,
     euCapital: r.matched ? fmtEur(r.euCapitalEur) : "No public funding traced",
@@ -283,24 +299,27 @@ async function synthesize(
   req: IntelligenceRequest,
   records: CompetitorRecord[],
   intel: CompetitorIntel[],
+  dbPeers: CompetitorRecord[],
   self: SelfRecord,
   instructions: string,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt">> {
   // The competitor table is finalised HERE, in code — funding figures and
   // channels are taken straight from the DB match. The model never sees these as
-  // editable; it only writes the narrative around them.
-  const competitors = buildCompetitors(records, intel);
+  // editable; it only writes the narrative around them. Web-found direct
+  // competitors first, then same-sub-sector funded peers from the database.
+  const competitors = [...buildCompetitors(records, intel), ...buildDbPeers(dbPeers)];
 
   // The single authoritative evidence block the model writes from. Each line is
   // already correct (DB funding + web colour), so the model cannot fabricate.
   const evidence = competitors
     .map((c) => {
       const where = c.country ? ` (${c.country})` : "";
+      const tag = c.source === "corpus" ? " [same sub-sector, from database]" : "";
       const traced = c.channelBreakdown
         ? `${c.euCapital} — ${c.channelBreakdown}${c.activeYears ? `, ${c.activeYears}` : ""}`
         : c.euCapital;
       return (
-        `- ${c.name}${where}: EU/public capital ${traced}; ` +
+        `- ${c.name}${where}${tag}: EU/public capital ${traced}; ` +
         `positioning — ${c.positioning}; recent private round — ${c.stage}`
       );
     })
@@ -315,7 +334,12 @@ async function synthesize(
       `proof of none — coverage varies by country).`;
 
   // Inject only the process briefs for channels that actually appear.
-  const channels = [...new Set(records.flatMap((r) => (r.matched ? r.channels : [])))];
+  const channels = [
+    ...new Set([
+      ...records.flatMap((r) => (r.matched ? r.channels : [])),
+      ...dbPeers.flatMap((r) => r.channels),
+    ]),
+  ];
   const processes = channels
     .map((c) => loadFundProcess(c))
     .filter(Boolean)
@@ -348,7 +372,10 @@ async function synthesize(
           `EU/public-capital figures are committed amounts from our database; ` +
           `"No public funding traced" means not found there. Use these figures ` +
           `EXACTLY as given — never restate a private round as public capital, ` +
-          `and never introduce a funding figure or funder not listed here.\n` +
+          `and never introduce a funding figure or funder not listed here. Rows ` +
+          `tagged "[same sub-sector, from database]" are not necessarily direct ` +
+          `competitors — they are funded companies in the founder's sub-sector, ` +
+          `useful as evidence of what peers in the space have raised.\n` +
           `${evidence || "(no competitors gathered)"}\n\n` +
           `## Relevant funding-process briefs (use to make to-dos concrete)\n` +
           `${processes || "(none)"}\n\n` +
@@ -393,10 +420,26 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
 
   emit({ type: "status", step: "querying_db", detail: `${intel.length} peers` });
   const records = intel.map((i) => matchCompany(i.name, i.country));
-  const self = buildSelf(req);
+  const selfRecord = matchCompany(req.company, req.country);
+  const self = buildSelf(selfRecord);
+
+  // Database-native peers: target the founder's own sub-sector if we matched
+  // them, else the most common sub-sector among the matched web peers. These are
+  // guaranteed-funded companies in the same space, independent of web matching.
+  let targetSub = selfRecord.matched ? selfRecord.subsector : "";
+  if (!targetSub) {
+    const subs = records.filter((r) => r.matched && r.subsector).map((r) => r.subsector);
+    const freq = new Map<string, number>();
+    for (const s of subs) freq.set(s, (freq.get(s) ?? 0) + 1);
+    targetSub = [...freq.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+  }
+  const exclude = [req.company, ...intel.map((i) => i.name)];
+  const dbPeers = targetSub
+    ? findPeersBySubsector(targetSub, { country: req.country, limit: 4, exclude })
+    : [];
 
   emit({ type: "status", step: "generating" });
-  const body = await synthesize(req, records, intel, self, instructions);
+  const body = await synthesize(req, records, intel, dbPeers, self, instructions);
 
   emit({
     type: "report",

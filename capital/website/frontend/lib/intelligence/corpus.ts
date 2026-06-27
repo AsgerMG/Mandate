@@ -28,9 +28,12 @@ function toIso2(country?: string): string {
 
 // Index row layout (positional, written by website/build/companies_index.py):
 //   0 name, 1 normalized-name(s), 2 country, 3 sector, 4 totalEur,
-//   5 per-channel EUR [[channel, eur], ...] (desc), 6 firstYear, 7 lastYear
+//   5 per-channel EUR [[channel, eur], ...] (desc), 6 firstYear, 7 lastYear,
+//   8 sector_top, 9 subsector (two-tier taxonomy; drive DB-native peer discovery),
+//   10 entity_type (keep research orgs / public bodies out of peer lists)
 type IndexRow = [
   string, string, string, string, number, [string, number][], number, number,
+  string, string, string,
 ];
 
 interface IndexFile {
@@ -111,6 +114,8 @@ export function matchCompany(name: string, countryHint?: string): CompetitorReco
     name,
     country: "",
     sector: "",
+    sectorTop: "",
+    subsector: "",
     euCapitalEur: 0,
     channels: [],
     channelAmounts: [],
@@ -194,6 +199,8 @@ export function matchCompany(name: string, countryHint?: string): CompetitorReco
     name: best[0],
     country: best[2],
     sector: best[3],
+    sectorTop: best[8] ?? "",
+    subsector: best[9] ?? "",
     euCapitalEur: best[4],
     channels: best[5].map(([c]) => c),
     channelAmounts: best[5].map(([channel, eur]) => ({ channel, eur })),
@@ -201,4 +208,51 @@ export function matchCompany(name: string, countryHint?: string): CompetitorReco
     lastYear: best[7],
     matched: true,
   };
+}
+
+/**
+ * Database-native peer discovery. Given a sub-sector (and optionally a country to
+ * prefer), return the most-funded corpus companies in that bucket — guaranteed to
+ * carry a real public-funding signal, unlike web-found names that may not match.
+ * Excludes any names in `exclude` (the founder + web peers already gathered).
+ */
+export function findPeersBySubsector(
+  subsector: string,
+  opts: { country?: string; limit?: number; exclude?: string[] } = {},
+): CompetitorRecord[] {
+  if (!subsector) return [];
+  const { rows } = loadIndex();
+  const iso = toIso2(opts.country);
+  const limit = opts.limit ?? 5;
+  const skip = new Set((opts.exclude ?? []).map((n) => normalize(n)));
+
+  const hits = rows.filter(
+    (r) =>
+      r[9] === subsector &&
+      r[4] > 0 &&
+      r[10] !== "research_org" && // universities / institutes are not peers
+      !skip.has(normalize(r[0])),
+  );
+  // Prefer same-country peers, then rank by traced public capital (desc).
+  hits.sort((a, b) => {
+    if (iso) {
+      const ac = a[2] === iso ? 1 : 0;
+      const bc = b[2] === iso ? 1 : 0;
+      if (ac !== bc) return bc - ac;
+    }
+    return b[4] - a[4];
+  });
+  return hits.slice(0, limit).map((r) => ({
+    name: r[0],
+    country: r[2],
+    sector: r[3],
+    sectorTop: r[8] ?? "",
+    subsector: r[9] ?? "",
+    euCapitalEur: r[4],
+    channels: r[5].map(([c]) => c),
+    channelAmounts: r[5].map(([channel, eur]) => ({ channel, eur })),
+    firstYear: r[6],
+    lastYear: r[7],
+    matched: true,
+  }));
 }

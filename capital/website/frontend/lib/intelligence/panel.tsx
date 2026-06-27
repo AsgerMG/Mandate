@@ -300,6 +300,11 @@ function Memo({ report }: { report: IntelligenceReport }) {
                   {c.country && (
                     <span className="ml-1 text-xs text-[var(--muted-foreground)]">{c.country}</span>
                   )}
+                  {c.source === "corpus" && (
+                    <span className="ml-1.5 align-middle rounded bg-[#eef2ff] px-1 py-0.5 text-[10px] font-medium text-[#003399] print:border print:border-[#003399] print:bg-transparent">
+                      sub-sector peer
+                    </span>
+                  )}
                 </td>
                 <td className="py-3 pr-3">
                   {c.channelBreakdown ? (
