@@ -31,6 +31,7 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
 from web_env import ROOT, DB, SITE_DATA  # noqa: E402
+from synthesis import compute_kpis  # the one canonical corpus-figure definition  # noqa: E402
 
 OUT = SITE_DATA / "investor_insights.json"
 
@@ -269,9 +270,14 @@ def build_stats(con):
 
 def build_kpis(con):
     one = lambda sql: con.execute(sql).fetchone()[0]
+    # Corpus-wide companies/events come from the ONE canonical definition
+    # (synthesis.compute_kpis), never a local recount, so this file can never show
+    # a headline figure that disagrees with synthesis.json. The build guardrail
+    # asserts this equality too.
+    canon = compute_kpis(con)
     return {
-        "companies": one("SELECT COUNT(DISTINCT company_id) FROM v_events"),
-        "events": one("SELECT COUNT(*) FROM v_events"),
+        "companies": canon["companies"],
+        "events": canon["events"],
         "families": one("SELECT COUNT(DISTINCT source_family) FROM v_events"),
         "countries": one(
             "SELECT COUNT(DISTINCT country) FROM companies c"

@@ -28,13 +28,16 @@ After this, rebuild the static site:  (cd website/frontend && npx next build)
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sqlite3
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from web_env import ROOT, BUILD, DB, SITE_DATA, VIEWS_SQL  # noqa: E402
+from synthesis import compute_kpis  # the one canonical corpus-figure definition  # noqa: E402
 
 # Every generated file (excludes the static world-110m.json geo asset) → the
 # builder that writes it. Used by --check to flag any file older than the DB.
@@ -102,6 +105,69 @@ def check_fresh() -> int:
     return 0
 
 
+# Generated files that publish a corpus-wide companies/events figure, and the
+# JSON path to it. The guardrail asserts each equals the canonical synthesis
+# number. Add any new file that surfaces a headline count here — that is the
+# whole point: one source of truth, enforced.
+CORPUS_COUNT_CLAIMS = {
+    "synthesis.json":         {"companies": ("companies",), "events": ("events",)},
+    "investor_insights.json": {"companies": ("kpis", "companies"), "events": ("kpis", "events")},
+}
+
+
+def _dig(obj, path):
+    for key in path:
+        obj = obj[key]
+    return obj
+
+
+def check_consistency() -> int:
+    """Fail (exit 1) if any generated file disagrees with the canonical KPIs.
+
+    The single source of truth is synthesis.compute_kpis(DB). This re-derives it
+    and asserts (a) synthesis.json matches the live DB and (b) every other file
+    that publishes a corpus-wide count matches synthesis. A drift that used to
+    ship silently (148k vs 152k vs 155k across pages) now blocks the build.
+    """
+    if not DB.exists():
+        print("db.sqlite not present (CI/deploy) — skipping consistency check.")
+        return 0
+    con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+    try:
+        canon = compute_kpis(con)
+    finally:
+        con.close()
+    canonical = {"companies": canon["companies"], "events": canon["events"]}
+
+    problems: list[str] = []
+    for fname, claims in CORPUS_COUNT_CLAIMS.items():
+        p = SITE_DATA / fname
+        if not p.exists():
+            problems.append(f"{fname}: MISSING")
+            continue
+        data = json.loads(p.read_text())
+        for metric, path in claims.items():
+            try:
+                got = int(_dig(data, path))
+            except (KeyError, TypeError):
+                problems.append(f"{fname}: no {'.'.join(path)}")
+                continue
+            if got != canonical[metric]:
+                problems.append(
+                    f"{fname}: {metric}={got:,} but canonical={canonical[metric]:,} "
+                    f"(rebuild: python3 website/build/build_site_data.py)")
+
+    if problems:
+        print("✗ STATS CONSISTENCY FAILED — corpus figures disagree with the "
+              "single source of truth (synthesis.compute_kpis):")
+        for x in problems:
+            print(f"    {x}")
+        return 1
+    print(f"✓ Corpus figures consistent everywhere: "
+          f"{canonical['companies']:,} companies · {canonical['events']:,} events.")
+    return 0
+
+
 def run() -> int:
     for label, script in STEPS:
         print(f"\n▶ {label}")
@@ -113,9 +179,11 @@ def run() -> int:
         if result.returncode != 0:
             print(f"\n✗ FAILED at: {label} (exit {result.returncode})")
             return result.returncode
-    # Verify outputs are now fresh.
+    # Verify outputs are now fresh AND internally consistent.
     print()
     rc = check_fresh()
+    if rc == 0:
+        rc = check_consistency()
     if rc == 0:
         print("\n✓ All site data regenerated. Now: (cd website/frontend && npx next build)")
     return rc
@@ -124,9 +192,11 @@ def run() -> int:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--check", action="store_true",
-                        help="verify freshness only; exit 1 if any file is stale")
+                        help="verify freshness + cross-file consistency; exit 1 if stale or divergent")
     args = parser.parse_args()
-    sys.exit(check_fresh() if args.check else run())
+    if args.check:
+        sys.exit(check_fresh() or check_consistency())
+    sys.exit(run())
 
 
 if __name__ == "__main__":

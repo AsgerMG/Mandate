@@ -7,14 +7,14 @@ import { EquityCoverageTable } from "@/components/equity-coverage-table";
 import { Section } from "@/components/section";
 import { Callout } from "@/components/callout";
 import Link from "next/link";
-import synthesisRaw from "@/public/data/synthesis.json";
 import countryMapRaw from "@/public/data/country_map.json";
 import coverageRatingsRaw from "@/public/data/coverage_ratings.json";
-import type { Synthesis } from "@/lib/data";
+import { corpusStats } from "@/lib/data";
 
-// Headline counts come from the corpus-wide figures (synthesis.json), which also
-// drive the layout footer, so the home page is internally consistent.
-const synth = synthesisRaw as Synthesis;
+// Headline counts come from the single corpus-wide source (lib/data.corpusStats
+// → synthesis.json), which also drives the layout footer and /for-companies, so
+// every page shows the same number.
+const synth = corpusStats;
 
 const coverageRatings = coverageRatingsRaw as Record<string, { rating: string; note: string }>;
 

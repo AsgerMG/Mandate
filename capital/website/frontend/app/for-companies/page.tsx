@@ -5,6 +5,7 @@ import { TicketChart, CountryMixChart } from "@/components/charts";
 import { Finding, Stat, Signal } from "@/components/finding";
 import { IntelligencePanel } from "@/lib/intelligence/panel";
 import { fmtEur, fmtInt } from "@/lib/format";
+import { corpusStats } from "@/lib/data";
 import insightsRaw from "@/public/data/investor_insights.json";
 
 export const metadata: Metadata = {
@@ -14,7 +15,6 @@ export const metadata: Metadata = {
 };
 
 interface Insights {
-  kpis: { companies: number; events: number };
   stats: {
     conviction: { companies: number; withPriorAward: number; pct: number };
     eicCohort: { companies: number; wonLater: number; pct: number };
@@ -88,7 +88,7 @@ function Src({ n }: { n: number }) {
 }
 
 export default function ForCompaniesPage() {
-  const { kpis, stats, concentration, countryMix } = insights;
+  const { stats, concentration, countryMix } = insights;
   const satr = concentration.find((c) => c.id === "state_aid_satr");
   const eic = concentration.find((c) => c.id === "eic");
   const ipcei = concentration.find((c) => c.id === "ipcei");
@@ -122,8 +122,8 @@ export default function ForCompaniesPage() {
             sheet.
           </p>
           <p>
-            This manual is built on the funding record itself: {fmtInt(kpis.events)} public
-            awards to {fmtInt(kpis.companies)} companies and organisations, 2021 to 2025. It
+            This manual is built on the funding record itself: {fmtInt(corpusStats.events)} public
+            awards to {fmtInt(corpusStats.companies)} companies and organisations, 2021 to 2025. It
             answers four questions in order: what you can get, which door is yours, what the data
             proves about how winners behave, and in what sequence to raise. You can check any
             company&apos;s public funding history, including your competitors&apos;, in the{" "}

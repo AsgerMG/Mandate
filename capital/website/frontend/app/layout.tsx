@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
-import synthesis from "@/public/data/synthesis.json";
+import { corpusStats } from "@/lib/data";
 
-// Single source of truth for the headline company count — regenerated from
-// db.sqlite by `make data`, so metadata + footer never go stale.
-const companyCount = (synthesis as { companies: number }).companies.toLocaleString();
+// Single source of truth for the headline company count (lib/data.corpusStats →
+// synthesis.json), regenerated from db.sqlite by `make data`, so metadata +
+// footer never go stale or disagree with other pages.
+const companyCount = corpusStats.companies.toLocaleString();
 
 export const metadata: Metadata = {
   title: "EuroInvTracker",
