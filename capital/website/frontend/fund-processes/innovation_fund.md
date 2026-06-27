@@ -48,3 +48,10 @@ replicability; (5) cost efficiency (public cost per tonne of CO2 avoided).
   up the GHG case and offtake early.
 - The Clean Industrial Deal is moving support toward exactly this industrial
   capex tier — position as a supplier to, or owner of, the buildout.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Large capex grants: small-scale from €2.5M, large-scale tens to hundreds of €M
+- Speed: 12+ months call-to-grant; milestone-based payout over several years
+- You give up: Non-dilutive, but demands matched private capex, a hard GHG-avoidance metric, and a multi-year build commitment
+- Best for: First-of-a-kind net-zero industrial and clean-tech capex projects

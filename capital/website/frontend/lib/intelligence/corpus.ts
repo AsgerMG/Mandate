@@ -3,7 +3,7 @@
 // and fuzzy-matches competitor names against the corpus.
 import { readFileSync } from "fs";
 import path from "path";
-import type { CompetitorRecord } from "./types";
+import type { CompetitorRecord, FundSnapshot } from "./types";
 
 // Country name (as the web search returns it) → ISO2, to disambiguate matches.
 // Only the European countries in scope; anything else stays undefined and the
@@ -83,6 +83,41 @@ export function loadFundProcess(channel: string): string {
     }
   }
   return fundCache.get(channel) ?? "";
+}
+
+const snapshotCache = new Map<string, FundSnapshot | null>();
+
+/**
+ * Parse the `## At a glance` block of a fund brief into structured trade-off
+ * fields. This is the only source for the instrument-comparison table: the
+ * figures are curated in the brief, never written by the model, so the table
+ * cannot be fabricated. Returns null when a brief has no snapshot block.
+ */
+export function loadFundSnapshot(channel: string): FundSnapshot | null {
+  if (!snapshotCache.has(channel)) {
+    snapshotCache.set(channel, parseSnapshot(loadFundProcess(channel)));
+  }
+  return snapshotCache.get(channel) ?? null;
+}
+
+function parseSnapshot(md: string): FundSnapshot | null {
+  const idx = md.indexOf("## At a glance");
+  if (idx === -1) return null;
+  // Read only to the next heading so a later section can't leak in.
+  const next = md.indexOf("\n## ", idx + 1);
+  const block = md.slice(idx, next === -1 ? undefined : next);
+  const field = (key: string): string => {
+    const m = block.match(new RegExp(`^- ${key}:\\s*(.+)$`, "m"));
+    return m ? m[1].trim() : "";
+  };
+  const ticket = field("Ticket");
+  if (!ticket) return null;
+  return {
+    ticket,
+    speed: field("Speed"),
+    giveUp: field("You give up"),
+    bestFor: field("Best for"),
+  };
 }
 
 /** The shared agent-instructions brief, injected into every stage. */
@@ -211,16 +246,30 @@ export function matchCompany(name: string, countryHint?: string): CompetitorReco
 }
 
 /**
+ * Catch-all taxonomy buckets ("other", "software_general", "industrial_general",
+ * etc.) hold tens of thousands of unrelated companies. The most-funded names in
+ * them are giant state-aid recipients with no real relation to the founder, so
+ * "peers" drawn from them destroy the memo's credibility (a €370M chip fab as a
+ * space-startup peer). Treat these buckets as "no meaningful peers".
+ */
+export function isGenericSubsector(subsector: string): boolean {
+  const s = subsector.trim().toLowerCase();
+  return s === "" || s === "other" || s === "general" || s === "unclassified" ||
+    s.endsWith("_general");
+}
+
+/**
  * Database-native peer discovery. Given a sub-sector (and optionally a country to
  * prefer), return the most-funded corpus companies in that bucket — guaranteed to
  * carry a real public-funding signal, unlike web-found names that may not match.
  * Excludes any names in `exclude` (the founder + web peers already gathered).
+ * Returns none for catch-all buckets, where "peers" would be unrelated giants.
  */
 export function findPeersBySubsector(
   subsector: string,
   opts: { country?: string; limit?: number; exclude?: string[] } = {},
 ): CompetitorRecord[] {
-  if (!subsector) return [];
+  if (!subsector || isGenericSubsector(subsector)) return [];
   const { rows } = loadIndex();
   const iso = toIso2(opts.country);
   const limit = opts.limit ?? 5;

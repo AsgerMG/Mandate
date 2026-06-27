@@ -73,10 +73,32 @@ export interface SelfRecord {
   activeYears: string;
 }
 
+/** Curated trade-off snapshot parsed from a fund brief's "At a glance" block. */
+export interface FundSnapshot {
+  ticket: string;
+  speed: string;
+  giveUp: string;
+  bestFor: string;
+}
+
+/** One row of the instrument-comparison table, built in code from FundSnapshot. */
+export interface InstrumentRow {
+  channel: string;
+  instrument: string; // display name, e.g. "EIC Accelerator"
+  ticket: string;
+  speed: string;
+  giveUp: string;
+  bestFor: string;
+  /** True when a peer or the founder has actually drawn on this channel. */
+  usedInField: boolean;
+}
+
 export interface StakeholderEntry {
   funder: string; // e.g. "EIC Accelerator"
   competitorsUsing: string[];
   relevanceToYou: string;
+  /** What this money costs you, named honestly and fund-specifically. */
+  tradeoff: string;
   nextStep: string;
   nextDeadline: string | null;
 }
@@ -94,6 +116,8 @@ export interface IntelligenceReport {
   /** The founder's own funding footprint in the corpus. */
   self: SelfRecord;
   overview: OverviewSection;
+  /** The capital on the table: instruments relevant to this founder, side by side. */
+  instrumentTable: InstrumentRow[];
   stakeholderMap: StakeholderEntry[];
   todos: TodoEntry[];
   caveats: string;

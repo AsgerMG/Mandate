@@ -51,3 +51,10 @@ II appearance means the company was in a funded EU collaborative project.
 - Map which cluster your technology serves and track its Work Programme calls.
 - A competitor's Pillar II participation signals EU network embeddedness and
   access to research partners — consider where you could join the same calls.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Typically €0.5M–€5M per partner inside a multi-partner consortium
+- Speed: 8–12 months from call to grant; fixed annual cut-offs
+- You give up: Non-dilutive, but you must build or join a 3+ country consortium and carry shared IP and coordination overhead
+- Best for: Collaborative R&D you can run with cross-border partners at TRL 3–6

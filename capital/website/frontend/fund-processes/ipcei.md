@@ -50,3 +50,10 @@ art; cross-border spillovers; the company's own co-investment and capability.
   funding and is hard to dislodge. Map which value chain they entered.
 - Keep the receiving entity's records clean — investors and the state both look
   the entity up.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Very large, member-state routed: often €10M–€1B+ per project
+- Speed: Years: national pre-notification plus EC approval under Art. 107(3)(b)
+- You give up: Requires a national government to sponsor and co-fund you; a long political process; first-of-a-kind and spillover obligations that reduce flexibility
+- Best for: Strategic value-chain projects (batteries, hydrogen, microelectronics, cloud) with a member state behind you

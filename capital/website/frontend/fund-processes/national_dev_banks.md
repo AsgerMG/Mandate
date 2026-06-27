@@ -47,3 +47,10 @@ co-investor syndicate.
   instruments on top.
 - If the institution invests equity (HTGF, Bpifrance, CDP VC, EIFO, etc.),
   treat it as a cap-table investor: negotiate terms like any VC round.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Wide: grants and soft loans from €100k to €10M+
+- Speed: Fast to medium: weeks to months
+- You give up: National-priority alignment; loans are repayable; non-dilutive grants are common
+- Best for: The everyday workhorse layer: national grants, soft loans and guarantees in your home market

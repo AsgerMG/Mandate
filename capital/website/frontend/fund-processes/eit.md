@@ -45,3 +45,10 @@ EIT and EIC populations overlap (~12% in our corpus); a company can sit in both.
   follow-on as much as the cash.
 - If a KIC vehicle (e.g. InnoEnergy) took equity in a competitor, treat that KIC
   as an active strategic investor in your space.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Smaller tickets: typically €50k–€2M via KIC calls, grants and acceleration
+- Speed: 3–9 months; rolling KIC calls
+- You give up: Community membership and alignment; co-investment expectations; equity in some KIC instruments
+- Best for: Startups wanting market access plus grants inside a sector community (climate, health, energy, digital)

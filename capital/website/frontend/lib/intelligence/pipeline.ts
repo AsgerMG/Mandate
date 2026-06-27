@@ -8,8 +8,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import {
   findPeersBySubsector,
+  isGenericSubsector,
   loadAgentInstructions,
   loadFundProcess,
+  loadFundSnapshot,
   matchCompany,
 } from "./corpus";
 import type {
@@ -17,6 +19,7 @@ import type {
   CompetitorIntel,
   CompetitorRecord,
   CompetitorRow,
+  InstrumentRow,
   IntelligenceReport,
   IntelligenceRequest,
   ProgressEvent,
@@ -56,6 +59,80 @@ const CHANNEL_LABEL: Record<string, string> = {
 };
 
 const channelLabel = (code: string) => CHANNEL_LABEL[code] ?? code;
+
+/**
+ * House rule: no em-dashes anywhere. The writer model breaks this silently, so we
+ * enforce it in code on its prose. Em-dashes become commas; en-dashes (numeric
+ * ranges like €0.5M–€2.5M) are left untouched. Applied only to model-written
+ * fields, never to the code-built tables.
+ */
+function deDash(s: string): string {
+  return s
+    .replace(/\s*—\s*/g, ", ")
+    .replace(/\s+,/g, ",")
+    .replace(/,\s*,/g, ",")
+    .replace(/,\s*$/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+// Full instrument names for the comparison table (the short labels above are for
+// the dense funding-breakdown cells). Order doubles as relevance priority: the
+// everyday entry points first, the slow strategic vehicles last.
+const INSTRUMENT_NAME: Record<string, string> = {
+  national_dev_banks: "National development banks",
+  state_aid_satr: "National state aid (GBER)",
+  eic: "EIC Accelerator",
+  eit: "EIT (KIC programmes)",
+  horizon_eu_pillar_ii: "Horizon Europe (Pillar II)",
+  horizon_eu_partnership: "Horizon Europe partnership",
+  eib: "EIB / EIF venture debt",
+  innovation_fund: "EU Innovation Fund",
+  edf: "European Defence Fund",
+  chips_ju: "Chips Joint Undertaking",
+  ipcei: "IPCEI",
+};
+const INSTRUMENT_PRIORITY = Object.keys(INSTRUMENT_NAME);
+
+// Universal entry points shown even when the field uses nothing, so a founder in
+// an unfunded space still gets a shortlist to act on.
+const DEFAULT_INSTRUMENTS = ["national_dev_banks", "state_aid_satr", "eic"];
+
+/**
+ * Build the instrument-comparison table: the capital actually on the table for
+ * this founder, side by side. Channels a peer or the founder has drawn on lead
+ * (flagged usedInField); the table is topped up to a useful shortlist from the
+ * universal entry points. Every figure comes from the curated fund snapshot,
+ * never the model. Returns at most six rows so the memo stays a memo.
+ */
+function buildInstrumentTable(fieldChannels: Set<string>): InstrumentRow[] {
+  const codes = new Set(fieldChannels);
+  for (const c of DEFAULT_INSTRUMENTS) {
+    if (codes.size >= 4) break;
+    codes.add(c);
+  }
+  return [...codes]
+    .map((channel) => {
+      const snap = loadFundSnapshot(channel);
+      if (!snap) return null;
+      return {
+        channel,
+        instrument: INSTRUMENT_NAME[channel] ?? channelLabel(channel),
+        ticket: snap.ticket,
+        speed: snap.speed,
+        giveUp: snap.giveUp,
+        bestFor: snap.bestFor,
+        usedInField: fieldChannels.has(channel),
+      } as InstrumentRow;
+    })
+    .filter((r): r is InstrumentRow => r !== null)
+    .sort((a, b) => {
+      // Proven-in-field first, then the curated priority order.
+      if (a.usedInField !== b.usedInField) return a.usedInField ? -1 : 1;
+      return INSTRUMENT_PRIORITY.indexOf(a.channel) - INSTRUMENT_PRIORITY.indexOf(b.channel);
+    })
+    .slice(0, 6);
+}
 
 /** "€2.5M EIC · €1.8M dev banks" — the top doors, with figures where known. */
 function fundingBreakdown(channelAmounts: ChannelAmount[]): string {
@@ -218,10 +295,13 @@ const REPORT_SCHEMA = {
           funder: { type: "string" },
           competitorsUsing: { type: "array", items: { type: "string" } },
           relevanceToYou: { type: "string" },
+          tradeoff: { type: "string" },
           nextStep: { type: "string" },
           nextDeadline: { type: ["string", "null"] },
         },
-        required: ["funder", "competitorsUsing", "relevanceToYou", "nextStep", "nextDeadline"],
+        required: [
+          "funder", "competitorsUsing", "relevanceToYou", "tradeoff", "nextStep", "nextDeadline",
+        ],
       },
     },
     todos: {
@@ -259,12 +339,17 @@ function buildCompetitors(
       name: web?.name || r.name || "Unknown",
       source: "web" as const,
       country: r.matched ? r.country : "",
-      euCapital: r.matched ? fmtEur(r.euCapitalEur) : "No public funding traced",
+      euCapital: !r.matched
+        ? "No public funding traced"
+        : r.euCapitalEur > 0
+          ? fmtEur(r.euCapitalEur)
+          : "Amount not disclosed",
       channelBreakdown: r.matched ? fundingBreakdown(r.channelAmounts) : "",
       channels: r.matched ? r.channels : [],
       activeYears: r.matched ? activeYears(r.firstYear, r.lastYear) : "",
-      stage: web?.lastPrivateRound || "Unknown",
-      positioning: web?.positioning || "Unknown",
+      // Web colour goes into table cells, so it obeys the no-em-dash rule too.
+      stage: deDash(web?.lastPrivateRound || "Unknown"),
+      positioning: deDash(web?.positioning || "Unknown"),
     };
   });
 }
@@ -288,7 +373,11 @@ function buildDbPeers(peers: CompetitorRecord[]): CompetitorRow[] {
 function buildSelf(r: CompetitorRecord): SelfRecord {
   return {
     matched: r.matched,
-    euCapital: r.matched ? fmtEur(r.euCapitalEur) : "No public funding traced",
+    euCapital: !r.matched
+      ? "No public funding traced"
+      : r.euCapitalEur > 0
+        ? fmtEur(r.euCapitalEur)
+        : "Amount not disclosed",
     channelBreakdown: r.matched ? fundingBreakdown(r.channelAmounts) : "",
     channels: r.matched ? r.channels : [],
     activeYears: r.matched ? activeYears(r.firstYear, r.lastYear) : "",
@@ -301,6 +390,7 @@ async function synthesize(
   intel: CompetitorIntel[],
   dbPeers: CompetitorRecord[],
   self: SelfRecord,
+  instrumentTable: InstrumentRow[],
   instructions: string,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt">> {
   // The competitor table is finalised HERE, in code — funding figures and
@@ -354,6 +444,18 @@ async function synthesize(
     .filter(Boolean)
     .join("\n");
 
+  // The instrument-comparison table, already finalised in code. The model reads
+  // it so its prose and per-funder trade-offs stay consistent with the table; it
+  // must not restate the table row by row or alter a figure in it.
+  const instruments = instrumentTable
+    .map(
+      (r) =>
+        `- ${r.instrument}${r.usedInField ? " [used by peers in your field]" : ""}: ` +
+        `ticket ${r.ticket}; speed ${r.speed}; you give up ${r.giveUp}; ` +
+        `best for ${r.bestFor}`,
+    )
+    .join("\n");
+
   const res = await client.messages.create({
     model: WRITER_MODEL,
     max_tokens: 8000,
@@ -377,15 +479,26 @@ async function synthesize(
           `competitors — they are funded companies in the founder's sub-sector, ` +
           `useful as evidence of what peers in the space have raised.\n` +
           `${evidence || "(no competitors gathered)"}\n\n` +
+          `## The capital on the table (AUTHORITATIVE — already finalised)\n` +
+          `These are the instruments relevant to this founder, with curated ` +
+          `ticket sizes, speed and trade-offs. They render as a table; do NOT ` +
+          `restate them row by row and do NOT alter a figure. Use them so your ` +
+          `prose, your per-funder trade-offs and your to-dos stay consistent ` +
+          `with this table.\n${instruments || "(none)"}\n\n` +
           `## Relevant funding-process briefs (use to make to-dos concrete)\n` +
           `${processes || "(none)"}\n\n` +
           `Write, per your instructions: the headline (subject line), the ` +
           `bottomLine (the single most important takeaway, up front), the ` +
           `"your position" paragraph that compares the founder's own footprint ` +
-          `above against the peers, the stakeholder map, and prioritised to-dos. ` +
-          `In "caveats", note in one or two sentences that figures are committed ` +
-          `amounts from public registers, coverage varies by country, and ` +
-          `absence from the database is not proof of no funding.`,
+          `above against the peers, and the stakeholder map. For each funder in ` +
+          `the map, "tradeoff" must name in one short clause what that capital ` +
+          `actually costs the founder, fund-specifically and honestly (dilution, ` +
+          `repayment, co-financing, member-state sponsorship, reporting load, ` +
+          `lost flexibility, slow money) drawn from the table and briefs above. ` +
+          `Then prioritised to-dos. In "caveats", note in one or two sentences ` +
+          `that figures are committed amounts from public registers, coverage ` +
+          `varies by country, and absence from the database is not proof of no ` +
+          `funding.`,
       },
     ],
   });
@@ -401,13 +514,31 @@ async function synthesize(
     caveats: string;
   }>(text);
 
-  // Merge the code-built competitor table into the model's narrative.
+  // Merge the code-built tables (competitors + instruments) into the narrative,
+  // and strip em-dashes from every model-written field (house rule).
   return {
     self,
-    overview: { ...narrative.overview, competitors },
-    stakeholderMap: narrative.stakeholderMap,
-    todos: narrative.todos,
-    caveats: narrative.caveats,
+    overview: {
+      headline: deDash(narrative.overview.headline),
+      bottomLine: deDash(narrative.overview.bottomLine),
+      yourPosition: deDash(narrative.overview.yourPosition),
+      competitors,
+    },
+    instrumentTable,
+    stakeholderMap: narrative.stakeholderMap.map((s) => ({
+      ...s,
+      funder: deDash(s.funder),
+      relevanceToYou: deDash(s.relevanceToYou),
+      tradeoff: deDash(s.tradeoff),
+      nextStep: deDash(s.nextStep),
+    })),
+    todos: narrative.todos.map((t) => ({
+      ...t,
+      action: deDash(t.action),
+      rationale: deDash(t.rationale),
+      timeframe: deDash(t.timeframe),
+    })),
+    caveats: deDash(narrative.caveats),
   };
 }
 
@@ -426,9 +557,15 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
   // Database-native peers: target the founder's own sub-sector if we matched
   // them, else the most common sub-sector among the matched web peers. These are
   // guaranteed-funded companies in the same space, independent of web matching.
-  let targetSub = selfRecord.matched ? selfRecord.subsector : "";
+  // Only a *specific* sub-sector yields meaningful peers; catch-all buckets are
+  // skipped (findPeersBySubsector returns none for them anyway, but we also avoid
+  // selecting one as the target so a specific bucket among the web peers can win).
+  let targetSub =
+    selfRecord.matched && !isGenericSubsector(selfRecord.subsector) ? selfRecord.subsector : "";
   if (!targetSub) {
-    const subs = records.filter((r) => r.matched && r.subsector).map((r) => r.subsector);
+    const subs = records
+      .filter((r) => r.matched && r.subsector && !isGenericSubsector(r.subsector))
+      .map((r) => r.subsector);
     const freq = new Map<string, number>();
     for (const s of subs) freq.set(s, (freq.get(s) ?? 0) + 1);
     targetSub = [...freq.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
@@ -438,8 +575,17 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
     ? findPeersBySubsector(targetSub, { country: req.country, limit: 4, exclude })
     : [];
 
+  // The capital on the table: every channel the founder or a peer has drawn on,
+  // topped up to a useful shortlist. Built in code from curated fund snapshots.
+  const fieldChannels = new Set<string>([
+    ...(selfRecord.matched ? selfRecord.channels : []),
+    ...records.flatMap((r) => (r.matched ? r.channels : [])),
+    ...dbPeers.flatMap((r) => r.channels),
+  ]);
+  const instrumentTable = buildInstrumentTable(fieldChannels);
+
   emit({ type: "status", step: "generating" });
-  const body = await synthesize(req, records, intel, dbPeers, self, instructions);
+  const body = await synthesize(req, records, intel, dbPeers, self, instrumentTable, instructions);
 
   emit({
     type: "report",

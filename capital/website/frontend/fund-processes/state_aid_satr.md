@@ -46,3 +46,10 @@ absence of public support — only of *disclosed state aid*.
 - Your national door depends on your address: development-bank-led (France),
   scheme-led (Germany, Italy), single-agency (UK). Apply to the machine your
   country runs.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Wide, scheme-dependent: from €100k to tens of €M under GBER
+- Speed: Fast: weeks to a few months, administered locally
+- You give up: Non-dilutive, but country-specific and bound to national priorities and strict eligible-cost rules
+- Best for: Repeatable, fast, local co-funding of R&D and investment in your home country

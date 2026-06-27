@@ -45,3 +45,10 @@ targets).
   is co-funding with industry; identify the partnership and assess whether your
   technology fits its agenda.
 - These are multi-year relationships, not one-off applications.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Typically €0.5M–€5M per partner, partnership-routed
+- Speed: 8–12 months from call to grant; fixed annual calls
+- You give up: Non-dilutive, but you align to the partnership's strategic agenda and run a consortium
+- Best for: R&D that fits a thematic partnership (clean energy, health, key digital tech)

@@ -46,3 +46,10 @@ supercycle.
 - A competitor in the EDF holds a defence-prime relationship and consortium
   position; map which capability area they entered.
 - Mind the ownership/control rules — non-EU control can block eligibility.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Project totals often €5M–€100M+ across a consortium; the grant is your share
+- Speed: 12+ months; annual calls
+- You give up: A cross-border defence consortium (3 entities across 3 states), security constraints, and a dual-use or defence remit
+- Best for: Dual-use and defence technology developers

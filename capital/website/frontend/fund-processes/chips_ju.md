@@ -44,3 +44,10 @@ strategic autonomy in chips; consortium strength across the value chain.
   RTOs and foundries already inside the JU.
 - Confirm your national authority's co-funding route early — the EU grant alone
   does not close the budget.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Large; EU grant blended with national co-funding
+- Speed: 12+ months; call-based
+- You give up: National-budget co-funding, a consortium, and a strategic-autonomy framing for your project
+- Best for: Semiconductor value-chain R&D and pilot lines

@@ -85,10 +85,11 @@ export function IntelligencePanel() {
           See what your competitors have raised from Europe
         </h2>
         <p className="mt-3 max-w-2xl leading-relaxed text-[var(--foreground)]">
-          Enter your company. We find your closest European peers, trace the exact
-          EU grants, state aid and public capital each has drawn from our database,
-          and write you a single executive memo: where you stand, who to engage,
-          and the moves to make next. Export it as a PDF.
+          New to EU public capital? Enter your company. We trace the exact grants,
+          state aid and public capital your closest European peers have drawn,
+          then write you one executive memo: whether you are positioned for it,
+          which instruments to look at, what each one costs you, and the next move
+          to make. Export it as a PDF.
         </p>
 
         <form onSubmit={run} className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -327,8 +328,54 @@ function Memo({ report }: { report: IntelligenceReport }) {
         </table>
       </div>
 
-      {/* ── 3 · Funders to engage ──────────────────────────────────── */}
-      <MemoHeading n={3}>Funders to engage</MemoHeading>
+      {/* ── 3 · The capital on the table ───────────────────────────── */}
+      {report.instrumentTable?.length > 0 && (
+        <>
+          <MemoHeading n={3}>The capital on the table</MemoHeading>
+          <p className="mb-3 text-sm text-[var(--muted-foreground)]">
+            The public instruments that fit your field, side by side. Rows marked
+            <span className="mx-1 align-middle rounded bg-[#eef2ff] px-1 py-0.5 text-[10px] font-medium text-[#003399] print:border print:border-[#003399] print:bg-transparent">
+              in your field
+            </span>
+            are ones your peers have already drawn on. Read the trade-off before
+            the ticket: public capital is rarely free of strings.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-y border-[var(--border)] text-left text-[11px] uppercase tracking-wide text-[var(--muted-foreground)]">
+                  <th className="py-2 pr-3 font-semibold">Instrument</th>
+                  <th className="py-2 pr-3 font-semibold">Typical ticket</th>
+                  <th className="py-2 pr-3 font-semibold">Speed to cash</th>
+                  <th className="py-2 pr-3 font-semibold">What you give up</th>
+                  <th className="py-2 font-semibold">Best for</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--border)] align-top">
+                {report.instrumentTable.map((r, i) => (
+                  <tr key={i}>
+                    <td className="py-3 pr-3">
+                      <span className="font-semibold">{r.instrument}</span>
+                      {r.usedInField && (
+                        <span className="ml-1.5 inline-block align-middle rounded bg-[#eef2ff] px-1 py-0.5 text-[10px] font-medium text-[#003399] print:border print:border-[#003399] print:bg-transparent">
+                          in your field
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 pr-3 tabular-nums">{r.ticket}</td>
+                    <td className="py-3 pr-3">{r.speed}</td>
+                    <td className="py-3 pr-3">{r.giveUp}</td>
+                    <td className="py-3">{r.bestFor}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {/* ── 4 · Funders to engage ──────────────────────────────────── */}
+      <MemoHeading n={4}>Funders to engage</MemoHeading>
       <div className="space-y-4">
         {report.stakeholderMap.map((s, i) => (
           <div key={i} className="border-l-2 border-[var(--border)] pl-4">
@@ -346,6 +393,12 @@ function Memo({ report }: { report: IntelligenceReport }) {
               </p>
             )}
             <p className="mt-1.5 text-sm leading-relaxed">{s.relevanceToYou}</p>
+            {s.tradeoff && (
+              <p className="mt-1 text-sm leading-relaxed">
+                <span className="font-semibold">Trade-off: </span>
+                {s.tradeoff}
+              </p>
+            )}
             <p className="mt-1 text-sm leading-relaxed">
               <span className="font-semibold">Move: </span>
               {s.nextStep}
@@ -354,8 +407,8 @@ function Memo({ report }: { report: IntelligenceReport }) {
         ))}
       </div>
 
-      {/* ── 4 · Recommended moves ──────────────────────────────────── */}
-      <MemoHeading n={4}>Recommended moves</MemoHeading>
+      {/* ── 5 · Recommended moves ──────────────────────────────────── */}
+      <MemoHeading n={5}>Recommended moves</MemoHeading>
       <ol className="space-y-4">
         {moves.map((t, i) => (
           <li key={i} className="flex gap-3">

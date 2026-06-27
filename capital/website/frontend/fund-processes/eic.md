@@ -51,3 +51,10 @@ out directly — worth chasing as a fallback.
   parallel so a Seal of Excellence is not wasted.
 - If equity is offered, negotiate information rights and exit-consent terms
   before signing; the EIC Fund is a cap-table investor, not just a grantor.
+
+## At a glance
+*Structured trade-off snapshot. Drives the instrument-comparison table; keep each line to one clause.*
+- Ticket: Grant up to €2.5M; equity €0.5M–€10M via the EIC Fund
+- Speed: 5–9+ months to a signed grant; equity diligence adds months
+- You give up: Optional equity dilution and a cap-table investor; heavy reporting; single-digit interview success
+- Best for: Deep-tech SMEs at TRL 5–6 commercialising a genuine breakthrough
