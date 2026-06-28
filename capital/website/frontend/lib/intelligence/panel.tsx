@@ -1,13 +1,35 @@
 "use client";
 
 import { useState } from "react";
-import type {
-  IntelligenceReport,
-  PipelineStep,
-  ProgressEvent,
+import {
+  CAPITAL_OPTIONS,
+  type IntelligenceReport,
+  type PipelineStep,
+  type ProgressEvent,
 } from "@/lib/intelligence/types";
 
 const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
+
+/** A small always-present ⓘ that reveals guidance on hover or keyboard focus. */
+function InfoDot({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="group relative ml-1 inline-flex align-middle">
+      <button
+        type="button"
+        aria-label="More information"
+        className="flex h-4 w-4 items-center justify-center rounded-full border border-[#003399] text-[10px] font-bold leading-none text-[#003399] outline-none transition-colors hover:bg-[#003399] hover:text-white focus-visible:bg-[#003399] focus-visible:text-white"
+      >
+        i
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 w-64 -translate-x-1/2 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-xs font-normal leading-relaxed text-[var(--foreground)] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
 
 const STEPS: { key: PipelineStep; label: string }[] = [
   { key: "discovering", label: "Finding & researching competitors" },
@@ -19,7 +41,17 @@ export function IntelligencePanel() {
   const [company, setCompany] = useState("");
   const [sector, setSector] = useState("");
   const [country, setCountry] = useState("");
+  const [companyType, setCompanyType] = useState("");
   const [description, setDescription] = useState("");
+  const [capitalSought, setCapitalSought] = useState<string[]>([]);
+
+  const allCapital = capitalSought.length === CAPITAL_OPTIONS.length;
+  const toggleCapital = (value: string) =>
+    setCapitalSought((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
+    );
+  const toggleAllCapital = () =>
+    setCapitalSought(allCapital ? [] : CAPITAL_OPTIONS.map((o) => o.value));
 
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState<PipelineStep | null>(null);
@@ -38,7 +70,14 @@ export function IntelligencePanel() {
       const res = await fetch("/api/intelligence", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ company, sector, country, description }),
+        body: JSON.stringify({
+          company,
+          sector,
+          country,
+          companyType,
+          description,
+          capitalSought,
+        }),
       });
 
       if (!res.ok || !res.body) {
@@ -94,7 +133,15 @@ export function IntelligencePanel() {
 
         <form onSubmit={run} className="mt-6 grid gap-3 sm:grid-cols-2">
           <label className="sm:col-span-2 text-sm">
-            <span className="mb-1 block font-semibold">Your company *</span>
+            <span className="mb-1 block font-semibold">
+              Your company *
+              <InfoDot>
+                The legal or common name of your company. We match it against the
+                funding record to trace what you and your closest peers have drawn.
+                Add the country below if the name is common, so we pin the right
+                legal entity.
+              </InfoDot>
+            </span>
             <input
               value={company}
               onChange={(e) => setCompany(e.target.value)}
@@ -104,7 +151,14 @@ export function IntelligencePanel() {
             />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block font-semibold">Sector <span className="font-normal text-[var(--muted-foreground)]">(optional)</span></span>
+            <span className="mb-1 block font-semibold">
+              Sector <span className="font-normal text-[var(--muted-foreground)]">(optional)</span>
+              <InfoDot>
+                The market you operate in, in your own words. Sharpens peer
+                discovery, e.g. &ldquo;space situational awareness&rdquo; finds
+                tighter peers than &ldquo;space&rdquo;. Leave blank and we infer it.
+              </InfoDot>
+            </span>
             <input
               value={sector}
               onChange={(e) => setSector(e.target.value)}
@@ -113,7 +167,14 @@ export function IntelligencePanel() {
             />
           </label>
           <label className="text-sm">
-            <span className="mb-1 block font-semibold">Country <span className="font-normal text-[var(--muted-foreground)]">(optional)</span></span>
+            <span className="mb-1 block font-semibold">
+              Country <span className="font-normal text-[var(--muted-foreground)]">(optional)</span>
+              <InfoDot>
+                Where the company is incorporated. It disambiguates common names and
+                decides which national schemes you can actually access (promotional
+                banks and state aid are country-specific).
+              </InfoDot>
+            </span>
             <input
               value={country}
               onChange={(e) => setCountry(e.target.value)}
@@ -122,7 +183,37 @@ export function IntelligencePanel() {
             />
           </label>
           <label className="sm:col-span-2 text-sm">
-            <span className="mb-1 block font-semibold">What you do <span className="font-normal text-[var(--muted-foreground)]">(optional, improves accuracy)</span></span>
+            <span className="mb-1 block font-semibold">
+              Company type{" "}
+              <span className="font-normal text-[var(--muted-foreground)]">(optional)</span>
+              <InfoDot>
+                How would a funder classify you? This shifts which doors fit.
+                e.g. <strong>deep-tech breakthrough</strong> (novel science or
+                hardware, real technical risk), <strong>applied innovation</strong>{" "}
+                (new product, existing tech), <strong>application-layer software
+                or platform</strong>, <strong>services</strong>. Be honest: &ldquo;AI
+                on top of existing models&rdquo; opens very different funding than
+                &ldquo;we train our own&rdquo;.
+              </InfoDot>
+            </span>
+            <input
+              value={companyType}
+              onChange={(e) => setCompanyType(e.target.value)}
+              placeholder="e.g. deep-tech breakthrough, application-layer SaaS"
+              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
+            />
+          </label>
+          <label className="sm:col-span-2 text-sm">
+            <span className="mb-1 block font-semibold">
+              What you do{" "}
+              <span className="font-normal text-[var(--muted-foreground)]">(optional, improves accuracy)</span>
+              <InfoDot>
+                One or two sentences on your product, customer and what is genuinely
+                novel. This is the single biggest accuracy lever: it sharpens peer
+                matching and lets us read whether you are deep tech or an
+                application layer, which changes the funding shortlist.
+              </InfoDot>
+            </span>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -131,6 +222,53 @@ export function IntelligencePanel() {
               className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
             />
           </label>
+          <fieldset className="sm:col-span-2 text-sm">
+            <legend className="mb-1.5 block font-semibold">
+              Capital you want{" "}
+              <span className="font-normal text-[var(--muted-foreground)]">(optional — pick any)</span>
+              <InfoDot>
+                We tailor the shortlist to the kind of money you actually want. Pick
+                any combination, or &ldquo;Show me everything&rdquo;. Asking for
+                non-dilutive capital, for instance, demotes equity and blended
+                instruments and flags what they would cost you.
+              </InfoDot>
+            </legend>
+            <div className="flex flex-wrap gap-2">
+              {CAPITAL_OPTIONS.map((o) => {
+                const on = capitalSought.includes(o.value);
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    onClick={() => toggleCapital(o.value)}
+                    aria-pressed={on}
+                    title={o.hint}
+                    className={
+                      "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+                      (on
+                        ? "border-[#003399] bg-[#003399] text-white"
+                        : "border-[var(--border)] bg-white text-[var(--foreground)] hover:border-[#003399]")
+                    }
+                  >
+                    {o.label}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={toggleAllCapital}
+                aria-pressed={allCapital}
+                className={
+                  "rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors " +
+                  (allCapital
+                    ? "border-[#2D6A4F] bg-[#2D6A4F] text-white"
+                    : "border-dashed border-[var(--muted-foreground)] bg-white text-[var(--muted-foreground)] hover:border-[#2D6A4F] hover:text-[#2D6A4F]")
+                }
+              >
+                Show me everything
+              </button>
+            </div>
+          </fieldset>
           <div className="sm:col-span-2">
             <button
               type="submit"

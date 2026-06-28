@@ -14,16 +14,17 @@ import {
   loadFundSnapshot,
   matchCompany,
 } from "./corpus";
-import type {
-  ChannelAmount,
-  CompetitorIntel,
-  CompetitorRecord,
-  CompetitorRow,
-  InstrumentRow,
-  IntelligenceReport,
-  IntelligenceRequest,
-  ProgressEvent,
-  SelfRecord,
+import {
+  CAPITAL_OPTIONS,
+  type ChannelAmount,
+  type CompetitorIntel,
+  type CompetitorRecord,
+  type CompetitorRow,
+  type InstrumentRow,
+  type IntelligenceReport,
+  type IntelligenceRequest,
+  type ProgressEvent,
+  type SelfRecord,
 } from "./types";
 
 // The whole pipeline runs on cheap, fast models, guided by the Opus-authored
@@ -59,6 +60,13 @@ const CHANNEL_LABEL: Record<string, string> = {
 };
 
 const channelLabel = (code: string) => CHANNEL_LABEL[code] ?? code;
+
+/** Human phrase for the founder's selected capital types, or "" when none/all. */
+function capitalSoughtLabel(values?: string[]): string {
+  if (!values || values.length === 0 || values.length >= CAPITAL_OPTIONS.length) return "";
+  const labels = CAPITAL_OPTIONS.filter((o) => values.includes(o.value)).map((o) => o.label);
+  return labels.join(", ");
+}
 
 /**
  * House rule: no em-dashes anywhere. The writer model breaks this silently, so we
@@ -231,6 +239,7 @@ async function discoverAndResearch(
     `Company: ${req.company}`,
     req.sector ? `Sector: ${req.sector}` : "",
     req.country ? `Country: ${req.country}` : "",
+    req.companyType ? `Company type: ${req.companyType}` : "",
     req.description ? `What they do: ${req.description}` : "",
   ]
     .filter(Boolean)
@@ -435,11 +444,19 @@ async function synthesize(
     .filter(Boolean)
     .join("\n\n---\n\n");
 
+  const capitalPref = capitalSoughtLabel(req.capitalSought);
   const ctx = [
     `Founder's company: ${req.company}`,
     req.sector ? `Sector: ${req.sector}` : "",
     req.country ? `Country: ${req.country}` : "",
+    req.companyType ? `Company type (founder's own words): ${req.companyType}` : "",
     req.description ? `What they do: ${req.description}` : "",
+    capitalPref
+      ? `Capital sought (founder's preference): ${capitalPref}. Respect this as a ` +
+        `filter and a ranking signal: lead with these capital types, demote and ` +
+        `flag the cost of anything that conflicts (e.g. equity/blended dilution ` +
+        `when they asked for non-dilutive).`
+      : "",
   ]
     .filter(Boolean)
     .join("\n");

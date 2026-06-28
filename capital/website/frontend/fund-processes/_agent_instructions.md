@@ -52,22 +52,69 @@ reads well.
 
 ## The funding stack (for interpreting database channels)
 
-Each database record lists the *channels* a company used. Channel codes:
+Each database record lists the *channels* a company used. Channel codes, with the
+**capital type** (what kind of money) and whether it **gates on deep tech**:
 
-- `eic` — EIC Accelerator: selective EU grant+equity, strong certification signal.
+- `eic` — EIC Accelerator: selective EU grant + optional equity (the equity makes
+  it *blended* and dilutive). **Gates hard on deep tech / TRL 5–6.** Strong
+  certification signal. Poor fit for application-layer software.
 - `horizon_eu_pillar_ii` / `horizon_eu_partnership` — EU collaborative R&D consortia.
-- `innovation_fund` — conviction-tier net-zero capex (large tickets).
-- `ipcei` — strategic value-chain projects, member-state routed (very large).
-- `chips_ju` — semiconductor value chain (EU + national co-funding).
-- `edf` — European Defence Fund (dual-use / defence).
-- `eit` — EIT KIC programmes (sector innovation communities).
-- `eib` — EIB/EIF debt and venture debt (growth stage, repayable).
-- `state_aid_satr` — national state aid (volume floor; fast, local, repeatable).
-- `national_dev_banks` — national promotional banks/agencies (Bpifrance, CDTI,
-  HTGF, Innovate UK, etc.). The everyday workhorse layer.
+  Grant (non-dilutive) but **requires a cross-border consortium**, not a solo cheque.
+- `innovation_fund` — grant for conviction-tier net-zero capex (large tickets);
+  non-dilutive; gates on emissions impact, not deep tech per se.
+- `ipcei` — strategic value-chain projects, member-state routed (very large grants;
+  non-dilutive but multi-year political process).
+- `chips_ju` — semiconductor value chain (EU + national co-funding grant).
+- `edf` — European Defence Fund (dual-use / defence grant).
+- `eit` — EIT KIC programmes (grants + acceleration; sector innovation communities).
+- `eib` — EIB/EIF debt and venture debt (repayable, **non-dilutive**, growth stage).
+- `state_aid_satr` — national state aid (grant; volume floor; fast, local, repeatable;
+  non-dilutive).
+- `national_dev_banks` — national promotional banks/agencies (Bpifrance, CDTI, HTGF,
+  Innovate UK, etc.). The everyday workhorse: a **mix of grants, recoverable advances,
+  innovation loans and tax-credit-adjacent schemes — mostly non-dilutive**. This layer
+  is where accessible money usually sits for pure software, and eligibility turns on
+  where the company is incorporated.
 
 Full per-channel process briefs are provided to the synthesis stage. Use them to
 make each to-do concrete: eligibility, timeline, and what evaluators weight.
+
+## Reading the founder: archetype, capital appetite, framing
+
+Before you rank instruments, read three things off the founder's input (company,
+sector, country, and especially the free-text **"what they do"**). They re-order the
+shortlist far more than sector does. When the input is silent, infer from the
+description and the peers, and state the read plainly rather than hedging.
+
+1. **Archetype — deep-tech breakthrough vs applied innovation vs application-layer.**
+   This is the single biggest fork and it is orthogonal to sector. A "deep-tech
+   breakthrough" (novel science/hardware, real technical uncertainty, their own
+   models) unlocks EIC, research tax credits and the deep-tech routes. An
+   "application-layer" product (a workflow or UX on top of existing tech/models) does
+   not — for it, EIC is a poor fit that gates on a breakthrough it does not have, and
+   the honest move is the national dev-bank / state-aid / innovation-loan lane. **Do
+   not push EIC, Chips JU or deep-tech routes at an application-layer company**; say
+   why, and point to the workhorse layer instead. If the archetype is genuinely
+   unclear, name the fork and tell the founder which way it resolves the ranking.
+
+2. **Capital appetite — what kind of money, and dilution tolerance.** If the founder
+   signals a preference (non-dilutive, grants only, debt, open to equity), respect it
+   as a filter and a ranking signal. For a non-dilutive preference, **demote EIC's
+   blended path and name the dilution as the cost**, lead with grants / recoverable
+   advances / innovation loans, and do not headline an equity instrument. Never
+   present a dilutive instrument as if it were free money.
+
+3. **Framing register — the door decides the dress code.** When a to-do or funder
+   note is about *how to position the application*, make it instrument-specific.
+   Use the brief's framing guidance; in shorthand: EIC wants a **dual** register
+   (venture-grade pitch + genuine deep-tech excellence — neither alone survives the
+   jury); Horizon / EIT / Innovation Fund want **public-purpose** prose written
+   literally to the evaluation rubric (EU added value, impact pathway), where overt
+   sales language costs points; national dev-bank loans want a **banker** register
+   (business plan, cashflow, repayment); state aid / tax credits want an
+   **audit-grade** technical file (state of the art, the technical lock, the R&D
+   actually performed). One concrete framing instruction in a to-do beats a generic
+   "prepare an application".
 
 ## Field-by-field rubric (synthesis stage)
 

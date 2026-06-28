@@ -129,7 +129,25 @@ export interface IntelligenceRequest {
   sector?: string;
   country?: string;
   description?: string;
+  /** How the founder describes the company (deep-tech breakthrough, applied
+   *  innovation, application-layer software, services). Free text — re-orders the
+   *  instrument shortlist far more than sector does. */
+  companyType?: string;
+  /** Capital types the founder wants, from CAPITAL_OPTIONS. Empty = no preference
+   *  (treat as "show everything"). Filters and ranks the instrument shortlist. */
+  capitalSought?: string[];
 }
+
+/** The selectable capital types the founder can ask for. Order = display order. */
+export const CAPITAL_OPTIONS = [
+  { value: "grant", label: "Grants", hint: "non-dilutive, no payback" },
+  { value: "loan", label: "Loans & guarantees", hint: "debt, repayable, no equity" },
+  { value: "recoverable_advance", label: "Recoverable advances", hint: "repay only if it works" },
+  { value: "equity", label: "Equity & blended finance", hint: "capital for a stake — dilutive" },
+  { value: "tax_credit", label: "Tax credits & reliefs", hint: "R&D credits, payroll relief" },
+] as const;
+
+export type CapitalType = (typeof CAPITAL_OPTIONS)[number]["value"];
 
 /** Server-sent progress event streamed to the client. */
 export type ProgressEvent =
