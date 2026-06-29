@@ -97,20 +97,47 @@ export default function ForCompaniesPage() {
   const horizon = concentration.find((c) => c.id === "horizon_eu_pillar_ii");
 
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12">
-      {/* ── Competitive intelligence agent (the headline tool) ───── */}
-      <div className="mb-14">
-        <IntelligencePanel />
-      </div>
+    <>
+      {/* ── Full-screen hero: the headline tool ──────────────────── */}
+      <section className="relative flex min-h-[calc(100svh-4rem)] flex-col px-4 sm:px-6 py-10">
+        <div className="flex flex-1 items-center">
+          <div className="mx-auto w-full max-w-5xl">
+            <IntelligencePanel />
+          </div>
+        </div>
+        <div className="flex justify-center pt-6">
+          <a
+            href="#why"
+            aria-label="Why you should care about raising public European capital"
+            className="group inline-flex flex-col items-center gap-1.5 text-[var(--muted-foreground)] transition-colors hover:text-[#003399]"
+          >
+            <span className="text-[11px] uppercase tracking-widest">Why you should care</span>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-6 w-6 animate-bounce"
+              aria-hidden
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </a>
+        </div>
+      </section>
 
-      {/* ── Masthead ─────────────────────────────────────────────── */}
-      <header className="mb-12 border-b border-[var(--border)] pb-10">
-        <p className="mb-3 text-xs uppercase tracking-widest text-[var(--muted-foreground)]">
-          The manual · for companies and startups
-        </p>
-        <h1 className="text-3xl sm:text-4xl font-bold leading-tight" style={serif}>
-          The cheapest capital in Europe is the capital you qualify for
-        </h1>
+      {/* ── The manual ───────────────────────────────────────────── */}
+      <div id="why" className="mx-auto max-w-5xl px-4 sm:px-6 py-12 scroll-mt-16">
+        {/* ── Masthead ─────────────────────────────────────────────── */}
+        <header className="mb-12 border-b border-[var(--border)] pb-10">
+          <p className="mb-3 text-xs uppercase tracking-widest text-[var(--muted-foreground)]">
+            The manual · for companies and startups
+          </p>
+          <h1 className="text-3xl sm:text-4xl font-bold leading-tight" style={serif}>
+            Why you should care about raising public European capital
+          </h1>
         <div className="prose-article mt-6 max-w-3xl space-y-4 text-lg leading-relaxed text-[var(--foreground)]">
           <p>
             Before any investor prices your equity, Europe&apos;s public system will hand a
@@ -390,6 +417,7 @@ export default function ForCompaniesPage() {
           ))}
         </ol>
       </Section>
-    </div>
+      </div>
+    </>
   );
 }

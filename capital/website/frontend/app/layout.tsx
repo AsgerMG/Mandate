@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full scroll-smooth">
       <body className="min-h-full flex flex-col">
         <NavBar />
         <main className="flex-1">{children}</main>
