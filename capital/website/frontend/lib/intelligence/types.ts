@@ -136,6 +136,19 @@ export interface IntelligenceRequest {
   /** Capital types the founder wants, from CAPITAL_OPTIONS. Empty = no preference
    *  (treat as "show everything"). Filters and ranks the instrument shortlist. */
   capitalSought?: string[];
+  /** Answers to the tailored intake questions (phase 1), folded into the memo
+   *  context. Each is a question the agent asked and the option the founder picked. */
+  clarifications?: { question: string; answer: string }[];
+}
+
+/** One tailored multiple-choice question the intake stage asks before the memo. */
+export interface IntakeQuestion {
+  /** Stable id for client state. */
+  id: string;
+  /** The question, in plain English. */
+  question: string;
+  /** 2–4 answer options. The client appends its own "Not sure / skip". */
+  options: string[];
 }
 
 /** The selectable capital types the founder can ask for. Order = display order. */

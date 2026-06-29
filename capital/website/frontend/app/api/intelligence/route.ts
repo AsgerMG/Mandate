@@ -75,6 +75,17 @@ export async function POST(request: NextRequest) {
             capitalSought: Array.isArray(body.capitalSought)
               ? body.capitalSought.filter((v) => typeof v === "string")
               : undefined,
+            clarifications: Array.isArray(body.clarifications)
+              ? body.clarifications
+                  .filter(
+                    (c) =>
+                      c &&
+                      typeof c.question === "string" &&
+                      typeof c.answer === "string" &&
+                      c.answer.trim(),
+                  )
+                  .map((c) => ({ question: c.question.trim(), answer: c.answer.trim() }))
+              : undefined,
           },
           send,
         );

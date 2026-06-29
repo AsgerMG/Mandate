@@ -3,12 +3,127 @@
 import { useState } from "react";
 import {
   CAPITAL_OPTIONS,
+  type IntakeQuestion,
   type IntelligenceReport,
   type PipelineStep,
   type ProgressEvent,
 } from "@/lib/intelligence/types";
 
 const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
+
+// The interface adds this option to every intake question; picking it (or leaving
+// a question blank) just omits that clarification from the memo.
+const SKIP_ANSWER = "Not sure / skip";
+
+// The four archetypes, as a one-tap picker. The label is sent verbatim as the
+// founder's `companyType`; the hint is the funder's-eye definition.
+const COMPANY_TYPES: { label: string; hint: string }[] = [
+  { label: "Deep-tech breakthrough", hint: "novel science or hardware, real technical risk" },
+  { label: "Applied innovation", hint: "a new product built on existing tech" },
+  { label: "Application-layer software", hint: "a platform or app on top of existing models" },
+  { label: "Services", hint: "consulting, agency or delivery" },
+];
+
+// European scope, full English names, for the country picker.
+const COUNTRIES = [
+  "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark",
+  "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland",
+  "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg",
+  "Malta", "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Serbia",
+  "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland", "Turkey", "Ukraine",
+  "United Kingdom",
+];
+
+/** A clean multi-select dropdown for the capital types: a single field that opens
+ *  a checklist, with a summary of the picks and a "show me everything" shortcut. */
+function CapitalSelect({
+  value,
+  onToggle,
+  onToggleAll,
+  all,
+}: {
+  value: string[];
+  onToggle: (v: string) => void;
+  onToggleAll: () => void;
+  all: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const labels = CAPITAL_OPTIONS.filter((o) => value.includes(o.value)).map((o) => o.label);
+  const summary = all
+    ? "Anything, show me everything"
+    : labels.length === 0
+      ? "Select capital types"
+      : labels.length <= 2
+        ? labels.join(", ")
+        : `${labels.slice(0, 2).join(", ")} +${labels.length - 2}`;
+
+  return (
+    <div className="relative">
+      {open && (
+        <button
+          type="button"
+          aria-hidden
+          tabIndex={-1}
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-10 cursor-default"
+        />
+      )}
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-left text-[15px] outline-none transition-colors focus:border-[#003399]"
+      >
+        <span className={"truncate " + (labels.length || all ? "" : "text-[var(--muted-foreground)]")}>
+          {summary}
+        </span>
+        <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
+      </button>
+      {open && (
+        <div
+          role="listbox"
+          className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-white p-1 shadow-lg"
+        >
+          {CAPITAL_OPTIONS.map((o) => {
+            const on = value.includes(o.value);
+            return (
+              <button
+                key={o.value}
+                type="button"
+                role="option"
+                aria-selected={on}
+                onClick={() => onToggle(o.value)}
+                className="flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]"
+              >
+                <span
+                  className={
+                    "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
+                    (on ? "border-[#003399] bg-[#003399] text-white" : "border-[var(--border)]")
+                  }
+                >
+                  {on ? "✓" : ""}
+                </span>
+                <span>
+                  <span className="block text-[14px] font-medium">{o.label}</span>
+                  <span className="block text-[12px] text-[var(--muted-foreground)]">{o.hint}</span>
+                </span>
+              </button>
+            );
+          })}
+          <div className="my-1 border-t border-[var(--border)]" />
+          <button
+            type="button"
+            onClick={onToggleAll}
+            className="w-full rounded-md px-2.5 py-2 text-left text-[14px] font-semibold text-[#2D6A4F] transition-colors hover:bg-[var(--muted)]"
+          >
+            {all ? "Clear all" : "Show me everything"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 /** A small always-present ⓘ that reveals guidance on hover or keyboard focus. */
 function InfoDot({ children }: { children: React.ReactNode }) {
@@ -39,7 +154,6 @@ const STEPS: { key: PipelineStep; label: string }[] = [
 
 export function IntelligencePanel() {
   const [company, setCompany] = useState("");
-  const [sector, setSector] = useState("");
   const [country, setCountry] = useState("");
   const [companyType, setCompanyType] = useState("");
   const [description, setDescription] = useState("");
@@ -53,14 +167,58 @@ export function IntelligencePanel() {
   const toggleAllCapital = () =>
     setCapitalSought(allCapital ? [] : CAPITAL_OPTIONS.map((o) => o.value));
 
+  const [preparing, setPreparing] = useState(false);
+  const [questions, setQuestions] = useState<IntakeQuestion[] | null>(null);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState<PipelineStep | null>(null);
   const [report, setReport] = useState<IntelligenceReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function run(e: React.FormEvent) {
+  const basePayload = () => ({
+    company,
+    country,
+    companyType,
+    description,
+    capitalSought,
+  });
+
+  // Phase 1: fetch the tailored questions, then show them. If none come back (or
+  // the call fails), skip straight to the memo so the founder is never blocked.
+  async function startIntake(e: React.FormEvent) {
     e.preventDefault();
-    if (!company.trim() || running) return;
+    if (!company.trim() || preparing || running) return;
+    setPreparing(true);
+    setError(null);
+    setReport(null);
+    setQuestions(null);
+    setAnswers({});
+
+    try {
+      const res = await fetch("/api/intelligence/intake", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(basePayload()),
+      });
+      const data = (await res.json().catch(() => ({}))) as { questions?: IntakeQuestion[] };
+      const qs = Array.isArray(data.questions) ? data.questions : [];
+      if (qs.length === 0) {
+        await runMemo([]);
+        return;
+      }
+      setQuestions(qs);
+    } catch {
+      // Intake is best-effort; on any failure go straight to the memo.
+      await runMemo([]);
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  // Phase 2: stream the memo, folding in whatever clarifications we have.
+  async function runMemo(clarifications: { question: string; answer: string }[]) {
+    if (running) return;
     setRunning(true);
     setError(null);
     setReport(null);
@@ -70,14 +228,7 @@ export function IntelligencePanel() {
       const res = await fetch("/api/intelligence", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          company,
-          sector,
-          country,
-          companyType,
-          description,
-          capitalSought,
-        }),
+        body: JSON.stringify({ ...basePayload(), clarifications }),
       });
 
       if (!res.ok || !res.body) {
@@ -112,6 +263,18 @@ export function IntelligencePanel() {
     }
   }
 
+  // Turn the answered questions into clarifications and run the memo.
+  function submitAnswers() {
+    const qs = questions ?? [];
+    const clarifications = qs
+      .map((q) => ({ question: q.question, answer: answers[q.id] ?? "" }))
+      .filter((c) => c.answer && c.answer !== SKIP_ANSWER);
+    setQuestions(null);
+    void runMemo(clarifications);
+  }
+
+  const busy = preparing || running;
+
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
   return (
@@ -131,15 +294,16 @@ export function IntelligencePanel() {
           to make. Export it as a PDF.
         </p>
 
-        <form onSubmit={run} className="mt-6 grid gap-3 sm:grid-cols-2">
-          <label className="sm:col-span-2 text-sm">
-            <span className="mb-1 block font-semibold">
-              Your company *
+        {!questions && !running && (
+        <form onSubmit={startIntake} className="mt-6 space-y-5">
+          {/* Company name — the one thing we truly need */}
+          <label className="block text-sm">
+            <span className="mb-1.5 flex items-center font-semibold">
+              Your company
               <InfoDot>
                 The legal or common name of your company. We match it against the
                 funding record to trace what you and your closest peers have drawn.
-                Add the country below if the name is common, so we pin the right
-                legal entity.
+                Set the country if the name is common, so we pin the right entity.
               </InfoDot>
             </span>
             <input
@@ -147,141 +311,190 @@ export function IntelligencePanel() {
               onChange={(e) => setCompany(e.target.value)}
               required
               placeholder="e.g. Vyoma"
-              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
+              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#003399]"
             />
           </label>
-          <label className="text-sm">
-            <span className="mb-1 block font-semibold">
-              Sector <span className="font-normal text-[var(--muted-foreground)]">(optional)</span>
-              <InfoDot>
-                The market you operate in, in your own words. Sharpens peer
-                discovery, e.g. &ldquo;space situational awareness&rdquo; finds
-                tighter peers than &ldquo;space&rdquo;. Leave blank and we infer it.
-              </InfoDot>
-            </span>
-            <input
-              value={sector}
-              onChange={(e) => setSector(e.target.value)}
-              placeholder="e.g. space situational awareness"
-              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
-            />
-          </label>
-          <label className="text-sm">
-            <span className="mb-1 block font-semibold">
-              Country <span className="font-normal text-[var(--muted-foreground)]">(optional)</span>
-              <InfoDot>
-                Where the company is incorporated. It disambiguates common names and
-                decides which national schemes you can actually access (promotional
-                banks and state aid are country-specific).
-              </InfoDot>
-            </span>
-            <input
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              placeholder="e.g. Germany"
-              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
-            />
-          </label>
-          <label className="sm:col-span-2 text-sm">
-            <span className="mb-1 block font-semibold">
+
+          {/* What you do + Country, side by side */}
+          <div className="grid gap-5 sm:grid-cols-[1fr_13rem]">
+            <label className="block text-sm">
+              <span className="mb-1.5 flex items-center font-semibold">
+                What you do{" "}
+                <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
+                <InfoDot>
+                  One line on your product, customer and what is genuinely novel.
+                  This is the single biggest accuracy lever: it sharpens peer
+                  matching and grounds the whole memo.
+                </InfoDot>
+              </span>
+              <input
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="e.g. AI collision-avoidance for satellites"
+                className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#003399]"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1.5 flex items-center font-semibold">
+                Country{" "}
+                <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
+                <InfoDot>
+                  Where the company is incorporated. It disambiguates common names
+                  and decides which national schemes you can actually access.
+                </InfoDot>
+              </span>
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className={
+                  "w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#003399] " +
+                  (country ? "" : "text-[var(--muted-foreground)]")
+                }
+              >
+                <option value="">Select…</option>
+                {COUNTRIES.map((c) => (
+                  <option key={c} value={c} className="text-[var(--foreground)]">
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {/* Company type — a one-tap archetype picker */}
+          <div className="text-sm">
+            <span className="mb-2 flex items-center font-semibold">
               Company type{" "}
-              <span className="font-normal text-[var(--muted-foreground)]">(optional)</span>
+              <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
               <InfoDot>
-                How would a funder classify you? This shifts which doors fit.
-                e.g. <strong>deep-tech breakthrough</strong> (novel science or
-                hardware, real technical risk), <strong>applied innovation</strong>{" "}
-                (new product, existing tech), <strong>application-layer software
-                or platform</strong>, <strong>services</strong>. Be honest: &ldquo;AI
-                on top of existing models&rdquo; opens very different funding than
-                &ldquo;we train our own&rdquo;.
+                How a funder would classify you. This is the single biggest fork in
+                what you are eligible for: deep tech opens doors (like the EIC) that
+                an application layer does not. Pick the closest.
               </InfoDot>
             </span>
-            <input
-              value={companyType}
-              onChange={(e) => setCompanyType(e.target.value)}
-              placeholder="e.g. deep-tech breakthrough, application-layer SaaS"
-              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
-            />
-          </label>
-          <label className="sm:col-span-2 text-sm">
-            <span className="mb-1 block font-semibold">
-              What you do{" "}
-              <span className="font-normal text-[var(--muted-foreground)]">(optional, improves accuracy)</span>
-              <InfoDot>
-                One or two sentences on your product, customer and what is genuinely
-                novel. This is the single biggest accuracy lever: it sharpens peer
-                matching and lets us read whether you are deep tech or an
-                application layer, which changes the funding shortlist.
-              </InfoDot>
-            </span>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-              placeholder="One sentence on your product and market."
-              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
-            />
-          </label>
-          <fieldset className="sm:col-span-2 text-sm">
-            <legend className="mb-1.5 block font-semibold">
-              Capital you want{" "}
-              <span className="font-normal text-[var(--muted-foreground)]">(optional — pick any)</span>
-              <InfoDot>
-                We tailor the shortlist to the kind of money you actually want. Pick
-                any combination, or &ldquo;Show me everything&rdquo;. Asking for
-                non-dilutive capital, for instance, demotes equity and blended
-                instruments and flags what they would cost you.
-              </InfoDot>
-            </legend>
-            <div className="flex flex-wrap gap-2">
-              {CAPITAL_OPTIONS.map((o) => {
-                const on = capitalSought.includes(o.value);
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {COMPANY_TYPES.map((t) => {
+                const on = companyType === t.label;
                 return (
                   <button
-                    key={o.value}
+                    key={t.label}
                     type="button"
-                    onClick={() => toggleCapital(o.value)}
+                    onClick={() => setCompanyType(on ? "" : t.label)}
                     aria-pressed={on}
-                    title={o.hint}
+                    title={t.hint}
                     className={
-                      "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+                      "rounded-lg border px-3 py-2.5 text-left text-[13px] font-medium leading-snug transition-colors " +
                       (on
                         ? "border-[#003399] bg-[#003399] text-white"
                         : "border-[var(--border)] bg-white text-[var(--foreground)] hover:border-[#003399]")
                     }
                   >
-                    {o.label}
+                    {t.label}
                   </button>
                 );
               })}
-              <button
-                type="button"
-                onClick={toggleAllCapital}
-                aria-pressed={allCapital}
-                className={
-                  "rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors " +
-                  (allCapital
-                    ? "border-[#2D6A4F] bg-[#2D6A4F] text-white"
-                    : "border-dashed border-[var(--muted-foreground)] bg-white text-[var(--muted-foreground)] hover:border-[#2D6A4F] hover:text-[#2D6A4F]")
-                }
-              >
-                Show me everything
-              </button>
             </div>
-          </fieldset>
-          <div className="sm:col-span-2">
+          </div>
+
+          {/* Capital you want — multi-select dropdown */}
+          <div className="text-sm">
+            <span className="mb-2 flex items-center font-semibold">
+              Capital you want{" "}
+              <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
+              <InfoDot>
+                We tailor the shortlist to the kind of money you actually want.
+                Asking for non-dilutive capital, for instance, demotes equity and
+                blended instruments and flags what they would cost you.
+              </InfoDot>
+            </span>
+            <CapitalSelect
+              value={capitalSought}
+              onToggle={toggleCapital}
+              onToggleAll={toggleAllCapital}
+              all={allCapital}
+            />
+          </div>
+
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
             <button
               type="submit"
-              disabled={running || !company.trim()}
-              className="rounded-lg bg-[#003399] px-5 py-2.5 font-semibold text-white transition-colors hover:bg-[#002277] disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={busy || !company.trim()}
+              className="rounded-lg bg-[#003399] px-6 py-2.5 font-semibold text-white transition-colors hover:bg-[#002277] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {running ? "Writing your memo…" : "Write my funding memo"}
+              {preparing ? "Tailoring a few questions…" : "Continue"}
             </button>
-            <span className="ml-3 text-xs text-[var(--muted-foreground)]">
-              Takes ~1 minute. 5 memos per hour.
+            <span className="text-xs text-[var(--muted-foreground)]">
+              A few quick questions, then your memo. ~1 minute · 5 memos per hour.
             </span>
           </div>
         </form>
+        )}
+
+        {/* Phase 1: tailored intake questions */}
+        {questions && !running && (
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white p-5 sm:p-6">
+            <p className="mb-1 text-xs uppercase tracking-widest text-[#003399]">
+              A few questions, so the memo fits you
+            </p>
+            <p className="mb-5 text-sm text-[var(--muted-foreground)]">
+              These shift which instruments we recommend and how to position for them.
+              Answer what you can; skip anything you are unsure of.
+            </p>
+            <div className="space-y-5">
+              {questions.map((q) => (
+                <div key={q.id}>
+                  <p className="mb-2 text-sm font-semibold" style={serif}>
+                    {q.question}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {[...q.options, SKIP_ANSWER].map((opt) => {
+                      const on = answers[q.id] === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() =>
+                            setAnswers((prev) => ({ ...prev, [q.id]: prev[q.id] === opt ? "" : opt }))
+                          }
+                          aria-pressed={on}
+                          className={
+                            "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+                            (on
+                              ? "border-[#003399] bg-[#003399] text-white"
+                              : opt === SKIP_ANSWER
+                                ? "border-dashed border-[var(--muted-foreground)] bg-white text-[var(--muted-foreground)] hover:border-[#003399]"
+                                : "border-[var(--border)] bg-white text-[var(--foreground)] hover:border-[#003399]")
+                          }
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex items-center gap-4">
+              <button
+                type="button"
+                onClick={submitAnswers}
+                className="rounded-lg bg-[#003399] px-5 py-2.5 font-semibold text-white transition-colors hover:bg-[#002277]"
+              >
+                Write my funding memo
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setQuestions(null);
+                  void runMemo([]);
+                }}
+                className="text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#003399] hover:underline"
+              >
+                Skip and write it now
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Progress */}
         {running && (
@@ -324,22 +537,19 @@ export function IntelligencePanel() {
   );
 }
 
-/** A numbered, EU-blue section heading in the house serif. */
-function MemoHeading({ n, children }: { n: number; children: React.ReactNode }) {
+/** A quiet editorial section title in the house serif — no number, no colour. */
+function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3
-      className="mt-9 mb-3 text-[15px] font-bold uppercase tracking-[0.12em] text-[#003399] print:mt-7"
-      style={serif}
-    >
-      <span className="mr-2 tabular-nums opacity-60">{String(n).padStart(2, "0")}</span>
+    <h3 className="mt-10 mb-3 text-[17px] font-bold text-[var(--foreground)] print:mt-8" style={serif}>
       {children}
     </h3>
   );
 }
 
 /**
- * The whole report rendered as a single, branded executive memorandum — one
- * flowing document, no tabs. Reads top to bottom and prints to a clean PDF.
+ * The whole report rendered as a single advisory letter — flowing serif prose,
+ * hairline rules, one restrained comparables table. No cards, boxes, pills or
+ * colour blocks. Reads top to bottom and prints to a clean PDF.
  */
 function Memo({ report }: { report: IntelligenceReport }) {
   const o = report.overview;
@@ -350,224 +560,200 @@ function Memo({ report }: { report: IntelligenceReport }) {
     year: "numeric",
   });
   const moves = [...report.todos].sort((a, b) => a.priority - b.priority);
-  const pLabel = (p: number) => (p === 1 ? "NOW" : p === 2 ? "NEXT" : "LATER");
-  const pColour = (p: number) =>
-    p === 1 ? "bg-[#003399]" : p === 2 ? "bg-[#2D6A4F]" : "bg-[#6B7280]";
+  const pWord = (p: number) => (p === 1 ? "Now" : p === 2 ? "Next" : "Later");
+
+  // The founder's own footprint, as a single quiet line of prose.
+  const selfLine = [self.euCapital, self.channelBreakdown, self.activeYears]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <div
       id="print-report"
-      className="mt-8 rounded-xl border border-[var(--border)] bg-white px-6 py-7 sm:px-10 sm:py-9 shadow-sm print:mt-0 print:rounded-none print:border-0 print:px-0 print:py-0 print:shadow-none"
+      style={serif}
+      className="mt-8 border border-[var(--border)] bg-white px-7 py-9 sm:px-12 sm:py-12 text-[15px] leading-relaxed text-[var(--foreground)] print:mt-0 print:border-0 print:px-0 print:py-0"
     >
       {/* Export — screen only */}
-      <div className="mb-6 flex justify-end print:hidden">
+      <div className="mb-8 flex justify-end print:hidden">
         <button
           onClick={() => window.print()}
-          className="rounded-lg border border-[#003399] px-4 py-2 text-sm font-semibold text-[#003399] transition-colors hover:bg-[#003399] hover:text-white"
+          className="border border-[#003399] px-4 py-1.5 text-sm font-semibold text-[#003399] transition-colors hover:bg-[#003399] hover:text-white"
         >
           Export PDF
         </button>
       </div>
 
-      {/* ── Masthead ───────────────────────────────────────────────── */}
-      <div className="border-t-[3px] border-[#003399] pt-3">
-        <div className="flex items-baseline justify-between">
-          <span className="text-sm font-bold tracking-[0.18em] text-[#003399]" style={serif}>
-            EUROINVTRACKER
-          </span>
-          <span className="text-[10px] uppercase tracking-[0.18em] text-[var(--muted-foreground)]">
-            Confidential funding memorandum
-          </span>
-        </div>
+      {/* ── Letterhead ─────────────────────────────────────────────── */}
+      <div className="flex items-baseline justify-between border-t-2 border-[#003399] pt-3">
+        <span className="text-sm font-bold tracking-[0.2em] text-[#003399]">
+          EUROINVTRACKER
+        </span>
+        <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+          Private funding memorandum
+        </span>
       </div>
 
-      {/* ── Memo header block ──────────────────────────────────────── */}
-      <dl className="mt-5 grid grid-cols-[5.5rem_1fr] gap-x-4 gap-y-1.5 text-sm">
+      {/* ── Salutation block ───────────────────────────────────────── */}
+      <dl className="mt-6 grid grid-cols-[4.5rem_1fr] gap-x-4 gap-y-1 text-[14px]">
         <dt className="text-[var(--muted-foreground)]">To</dt>
-        <dd className="font-semibold">The leadership of {report.company}</dd>
-        <dt className="text-[var(--muted-foreground)]">From</dt>
-        <dd>EuroInvTracker · competitive funding desk</dd>
+        <dd>The leadership of {report.company}</dd>
         <dt className="text-[var(--muted-foreground)]">Date</dt>
         <dd>{date}</dd>
         <dt className="text-[var(--muted-foreground)]">Re</dt>
-        <dd className="font-semibold leading-snug" style={serif}>
-          {o.headline}
-        </dd>
+        <dd className="font-semibold">{o.headline}</dd>
       </dl>
 
-      {/* ── Bottom line up front ───────────────────────────────────── */}
-      <div className="mt-7 border-l-[3px] border-[#003399] bg-[#f6f8ff] px-5 py-4 print:bg-transparent">
-        <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#003399]">
-          Bottom line
-        </p>
-        <p className="text-lg leading-relaxed" style={serif}>
-          {o.bottomLine}
-        </p>
-      </div>
+      <hr className="mt-6 border-[var(--border)]" />
 
-      {/* ── 1 · Where you stand ────────────────────────────────────── */}
-      <MemoHeading n={1}>Where you stand</MemoHeading>
-      <p className="mb-3 text-sm">
-        <span className="text-[var(--muted-foreground)]">Your traced public funding: </span>
-        <span className="font-semibold">{self.euCapital}</span>
-        {self.channelBreakdown && (
-          <span className="text-[var(--muted-foreground)]"> · {self.channelBreakdown}</span>
-        )}
-        {self.activeYears && (
-          <span className="text-[var(--muted-foreground)]"> · {self.activeYears}</span>
-        )}
-      </p>
-      <p className="leading-relaxed">{o.yourPosition}</p>
+      {/* ── Opening: the bottom line as the lead paragraph ─────────── */}
+      <p className="mt-6 text-[19px] leading-[1.6]">{o.bottomLine}</p>
 
-      {/* ── 2 · The competitive field ──────────────────────────────── */}
-      <MemoHeading n={2}>The competitive field</MemoHeading>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-y border-[var(--border)] text-left text-[11px] uppercase tracking-wide text-[var(--muted-foreground)]">
-              <th className="py-2 pr-3 font-semibold">Peer</th>
-              <th className="py-2 pr-3 font-semibold">Public capital traced</th>
-              <th className="py-2 pr-3 font-semibold">Recent private round</th>
-              <th className="py-2 font-semibold">Positioning</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--border)] align-top">
-            {o.competitors.map((c, i) => (
-              <tr key={i}>
-                <td className="py-3 pr-3">
-                  <span className="font-semibold">{c.name}</span>
-                  {c.country && (
-                    <span className="ml-1 text-xs text-[var(--muted-foreground)]">{c.country}</span>
-                  )}
-                  {c.source === "corpus" && (
-                    <span className="ml-1.5 align-middle rounded bg-[#eef2ff] px-1 py-0.5 text-[10px] font-medium text-[#003399] print:border print:border-[#003399] print:bg-transparent">
-                      sub-sector peer
+      {/* ── Where you stand ────────────────────────────────────────── */}
+      <SectionTitle>Where you stand</SectionTitle>
+      <p>{o.yourPosition}</p>
+      {selfLine && (
+        <p className="mt-2 text-[13px] italic text-[var(--muted-foreground)]">
+          Your traced public funding: {selfLine}.
+        </p>
+      )}
+
+      {/* ── The comparable field (the one centrepiece table) ───────── */}
+      <SectionTitle>Comparable companies</SectionTitle>
+      <table className="w-full border-collapse text-[14px]">
+        <thead>
+          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
+            <th className="py-2 pr-3 font-semibold">Company</th>
+            <th className="py-2 pr-3 font-semibold">Public capital traced</th>
+            <th className="py-2 pr-3 font-semibold">Recent round</th>
+            <th className="py-2 font-semibold">Positioning</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-[var(--border)] align-top">
+          {o.competitors.map((c, i) => (
+            <tr key={i}>
+              <td className="py-2.5 pr-3">
+                <span className="font-semibold">{c.name}</span>
+                {c.country && (
+                  <span className="ml-1 text-[12px] text-[var(--muted-foreground)]">{c.country}</span>
+                )}
+                {c.source === "corpus" && (
+                  <span className="block text-[12px] italic text-[var(--muted-foreground)]">
+                    peer in your sub-sector
+                  </span>
+                )}
+              </td>
+              <td className="py-2.5 pr-3">
+                {c.channelBreakdown ? (
+                  <>
+                    <span className="tabular-nums">{c.euCapital}</span>
+                    <span className="block text-[12px] text-[var(--muted-foreground)]">
+                      {c.channelBreakdown}
+                      {c.activeYears ? ` · ${c.activeYears}` : ""}
                     </span>
-                  )}
-                </td>
-                <td className="py-3 pr-3">
-                  {c.channelBreakdown ? (
-                    <>
-                      <span className="font-semibold tabular-nums">{c.euCapital}</span>
-                      <span className="block text-xs text-[var(--muted-foreground)]">
-                        {c.channelBreakdown}
-                        {c.activeYears ? ` · ${c.activeYears}` : ""}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-[var(--muted-foreground)]">{c.euCapital}</span>
-                  )}
-                </td>
-                <td className="py-3 pr-3">{c.stage}</td>
-                <td className="py-3">{c.positioning}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                  </>
+                ) : (
+                  <span className="text-[var(--muted-foreground)]">{c.euCapital}</span>
+                )}
+              </td>
+              <td className="py-2.5 pr-3">{c.stage}</td>
+              <td className="py-2.5">{c.positioning}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      {/* ── 3 · The capital on the table ───────────────────────────── */}
+      {/* ── The capital on the table ───────────────────────────────── */}
       {report.instrumentTable?.length > 0 && (
         <>
-          <MemoHeading n={3}>The capital on the table</MemoHeading>
-          <p className="mb-3 text-sm text-[var(--muted-foreground)]">
-            The public instruments that fit your field, side by side. Rows marked
-            <span className="mx-1 align-middle rounded bg-[#eef2ff] px-1 py-0.5 text-[10px] font-medium text-[#003399] print:border print:border-[#003399] print:bg-transparent">
-              in your field
-            </span>
-            are ones your peers have already drawn on. Read the trade-off before
-            the ticket: public capital is rarely free of strings.
+          <SectionTitle>The capital on the table</SectionTitle>
+          <p className="mb-3">
+            The public instruments that fit your field, side by side. Read the
+            trade-off before the ticket: public capital is rarely free of strings.
+            Instruments your peers have already drawn on are marked.
           </p>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-sm">
-              <thead>
-                <tr className="border-y border-[var(--border)] text-left text-[11px] uppercase tracking-wide text-[var(--muted-foreground)]">
-                  <th className="py-2 pr-3 font-semibold">Instrument</th>
-                  <th className="py-2 pr-3 font-semibold">Typical ticket</th>
-                  <th className="py-2 pr-3 font-semibold">Speed to cash</th>
-                  <th className="py-2 pr-3 font-semibold">What you give up</th>
-                  <th className="py-2 font-semibold">Best for</th>
+          <table className="w-full border-collapse text-[14px]">
+            <thead>
+              <tr className="border-b border-[var(--foreground)] text-left align-bottom">
+                <th className="py-2 pr-3 font-semibold">Instrument</th>
+                <th className="py-2 pr-3 font-semibold">Typical ticket</th>
+                <th className="py-2 pr-3 font-semibold">Speed to cash</th>
+                <th className="py-2 pr-3 font-semibold">What you give up</th>
+                <th className="py-2 font-semibold">Best for</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border)] align-top">
+              {report.instrumentTable.map((r, i) => (
+                <tr key={i}>
+                  <td className="py-2.5 pr-3">
+                    <span className="font-semibold">{r.instrument}</span>
+                    {r.usedInField && (
+                      <span className="block text-[12px] italic text-[var(--muted-foreground)]">
+                        in your field
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-2.5 pr-3 tabular-nums">{r.ticket}</td>
+                  <td className="py-2.5 pr-3">{r.speed}</td>
+                  <td className="py-2.5 pr-3">{r.giveUp}</td>
+                  <td className="py-2.5">{r.bestFor}</td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--border)] align-top">
-                {report.instrumentTable.map((r, i) => (
-                  <tr key={i}>
-                    <td className="py-3 pr-3">
-                      <span className="font-semibold">{r.instrument}</span>
-                      {r.usedInField && (
-                        <span className="ml-1.5 inline-block align-middle rounded bg-[#eef2ff] px-1 py-0.5 text-[10px] font-medium text-[#003399] print:border print:border-[#003399] print:bg-transparent">
-                          in your field
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 pr-3 tabular-nums">{r.ticket}</td>
-                    <td className="py-3 pr-3">{r.speed}</td>
-                    <td className="py-3 pr-3">{r.giveUp}</td>
-                    <td className="py-3">{r.bestFor}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </>
       )}
 
-      {/* ── 4 · Funders to engage ──────────────────────────────────── */}
-      <MemoHeading n={4}>Funders to engage</MemoHeading>
-      <div className="space-y-4">
+      {/* ── Funders to engage (prose, no cards) ────────────────────── */}
+      <SectionTitle>Funders to engage</SectionTitle>
+      <div className="space-y-5">
         {report.stakeholderMap.map((s, i) => (
-          <div key={i} className="border-l-2 border-[var(--border)] pl-4">
-            <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-              <p className="font-semibold text-[#003399]">{s.funder}</p>
+          <div key={i}>
+            <p>
+              <span className="font-semibold">{s.funder}</span>
               {s.nextDeadline && (
-                <span className="text-xs text-[var(--muted-foreground)]">
-                  Next window: {s.nextDeadline}
+                <span className="text-[13px] text-[var(--muted-foreground)]">
+                  {" "}· next window {s.nextDeadline}
                 </span>
               )}
-            </div>
-            {s.competitorsUsing.length > 0 && (
-              <p className="mt-0.5 text-xs text-[var(--muted-foreground)]">
-                Used by {s.competitorsUsing.join(", ")}
-              </p>
-            )}
-            <p className="mt-1.5 text-sm leading-relaxed">{s.relevanceToYou}</p>
-            {s.tradeoff && (
-              <p className="mt-1 text-sm leading-relaxed">
-                <span className="font-semibold">Trade-off: </span>
-                {s.tradeoff}
-              </p>
-            )}
-            <p className="mt-1 text-sm leading-relaxed">
-              <span className="font-semibold">Move: </span>
-              {s.nextStep}
+              {s.competitorsUsing.length > 0 && (
+                <span className="text-[13px] italic text-[var(--muted-foreground)]">
+                  {" "}· used by {s.competitorsUsing.join(", ")}
+                </span>
+              )}
+            </p>
+            <p className="mt-1">
+              {s.relevanceToYou}
+              {s.tradeoff ? ` The trade-off is ${s.tradeoff.replace(/\.$/, "")}.` : ""}
+            </p>
+            <p className="mt-1">
+              <span className="font-semibold">Move.</span> {s.nextStep}
             </p>
           </div>
         ))}
       </div>
 
-      {/* ── 5 · Recommended moves ──────────────────────────────────── */}
-      <MemoHeading n={5}>Recommended moves</MemoHeading>
+      {/* ── Recommended moves (numbered list, no pills) ────────────── */}
+      <SectionTitle>Recommended moves</SectionTitle>
       <ol className="space-y-4">
         {moves.map((t, i) => (
-          <li key={i} className="flex gap-3">
-            <span
-              className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white ${pColour(t.priority)}`}
-            >
-              {pLabel(t.priority)}
-            </span>
+          <li key={i} className="grid grid-cols-[1.4rem_1fr] gap-x-2">
+            <span className="font-semibold tabular-nums">{i + 1}.</span>
             <div>
-              <p className="font-semibold leading-snug">{t.action}</p>
-              <p className="mt-0.5 text-sm leading-relaxed">{t.rationale}</p>
-              <p className="mt-0.5 text-xs text-[var(--muted-foreground)]">{t.timeframe}</p>
+              <p>
+                <span className="font-semibold">{t.action}</span>
+                <span className="text-[13px] italic text-[var(--muted-foreground)]"> · {pWord(t.priority)}</span>
+              </p>
+              <p className="mt-0.5">{t.rationale}</p>
+              <p className="mt-0.5 text-[13px] text-[var(--muted-foreground)]">{t.timeframe}</p>
             </div>
           </li>
         ))}
       </ol>
 
       {/* ── Footer ─────────────────────────────────────────────────── */}
-      <div className="mt-9 border-t border-[var(--border)] pt-4">
-        <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
-        <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+      <div className="mt-12 border-t border-[var(--border)] pt-4">
+        <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
+        <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
           EuroInvTracker · the public funding record of European companies, 2021–2025
         </p>
       </div>

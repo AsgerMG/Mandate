@@ -21,6 +21,7 @@ import {
   type CompetitorRecord,
   type CompetitorRow,
   type InstrumentRow,
+  type IntakeQuestion,
   type IntelligenceReport,
   type IntelligenceRequest,
   type ProgressEvent,
@@ -34,6 +35,10 @@ import {
 // well at a fraction of the cost and latency. No runtime Opus call, so the
 // pipeline lands well under Vercel's 300s function cap (Hobby).
 const SEARCH_MODEL = "claude-sonnet-4-6";
+// The intake stage just selects the few questions whose answers most change the
+// routing, as structured output. Haiku is fast enough that the founder barely
+// waits before the questions appear.
+const INTAKE_MODEL = "claude-haiku-4-5";
 // The memo is the product, so the writer earns a capable model. Sonnet 4.6 writes
 // the executive prose; with only one writer call plus one search call the run
 // still lands well under Vercel's 300s cap.
@@ -457,6 +462,13 @@ async function synthesize(
         `flag the cost of anything that conflicts (e.g. equity/blended dilution ` +
         `when they asked for non-dilutive).`
       : "",
+    req.clarifications && req.clarifications.length > 0
+      ? `Founder's clarifications (their own answers to targeted questions, ` +
+        `AUTHORITATIVE about their situation): ` +
+        req.clarifications.map((c) => `${c.question} -> ${c.answer}`).join("; ") +
+        `. Use these to read archetype, ticket floor, dilution tolerance and ` +
+        `consortium-willingness, and route accordingly.`
+      : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -557,6 +569,100 @@ async function synthesize(
     })),
     caveats: deDash(narrative.caveats),
   };
+}
+
+// ── Phase 1: tailored intake questions ───────────────────────────────────────
+const INTAKE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    questions: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          question: { type: "string" },
+          options: { type: "array", items: { type: "string" } },
+        },
+        required: ["question", "options"],
+      },
+    },
+  },
+  required: ["questions"],
+} as const;
+
+/**
+ * Generate up to four tailored multiple-choice questions whose answers most change
+ * which public instruments fit and how to position for them. Adaptive: only asks
+ * what is still unknown from the form. Returns [] on any failure so the memo can
+ * still run without the extra signal.
+ */
+export async function generateIntakeQuestions(
+  req: IntelligenceRequest,
+): Promise<IntakeQuestion[]> {
+  const known = [
+    `Company: ${req.company}`,
+    req.sector ? `Sector: ${req.sector}` : "",
+    req.country ? `Country: ${req.country}` : "",
+    req.companyType ? `Company type (their words): ${req.companyType}` : "",
+    req.description ? `What they do: ${req.description}` : "",
+    capitalSoughtLabel(req.capitalSought)
+      ? `Capital sought: ${capitalSoughtLabel(req.capitalSought)}`
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  try {
+    const res = await client.messages.create({
+      model: INTAKE_MODEL,
+      max_tokens: 1500,
+      thinking: { type: "disabled" },
+      system: loadAgentInstructions(),
+      output_config: { format: { type: "json_schema", schema: INTAKE_SCHEMA } },
+      messages: [
+        {
+          role: "user",
+          content:
+            `A founder wants a public-funding memo. Before writing it, ask up to ` +
+            `FOUR short multiple-choice questions whose answers would most change ` +
+            `which instruments fit and how to position for them. Ask ONLY what is ` +
+            `still unknown or ambiguous from what they gave you below; if a thing ` +
+            `is already clear, do not ask it.\n\n` +
+            `Prioritise the high-signal routing forks: (1) archetype, i.e. genuine ` +
+            `deep-tech breakthrough vs applied innovation vs application-layer ` +
+            `software on existing tech, since it decides EIC and deep-tech ` +
+            `eligibility; (2) technology readiness (rough TRL band); (3) minimum ` +
+            `useful cheque size, e.g. would they bother below 100k; (4) dilution ` +
+            `tolerance / capital preference if not already given; (5) willingness ` +
+            `to join a cross-border consortium; (6) stage and runway. Pick the ` +
+            `four that matter most for THIS company.\n\n` +
+            `Each question: plain English, one clause, and 2 to 4 mutually ` +
+            `exclusive options written as short founder-friendly phrases (not ` +
+            `jargon). Do not include a "not sure" option; the interface adds one.\n\n` +
+            `What we already know:\n${known}\n\n` +
+            `Return ONLY the JSON object for the schema.`,
+        },
+      ],
+    });
+    const text = res.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+    const parsed = extractJson<{ questions: { question: string; options: string[] }[] }>(text);
+    return (parsed.questions ?? [])
+      .filter((q) => q && q.question?.trim() && Array.isArray(q.options) && q.options.length >= 2)
+      .slice(0, 4)
+      .map((q, i) => ({
+        id: `q${i}`,
+        question: deDash(q.question.trim()),
+        options: q.options.map((o) => deDash(String(o).trim())).filter(Boolean).slice(0, 4),
+      }));
+  } catch (err) {
+    console.error("intake question generation failed:", err);
+    return [];
+  }
 }
 
 /** Run the full pipeline, emitting progress events as each stage completes. */
