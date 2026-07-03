@@ -85,7 +85,7 @@ function CapitalSelect({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]"
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]"
       >
         <span className={"truncate " + (labels.length || all ? "" : "text-[var(--muted-foreground)]")}>
           {summary}
@@ -290,24 +290,23 @@ export function IntelligencePanel() {
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
   return (
-    <section className="rounded-2xl border border-black/10 bg-white p-6 md:p-8 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
+    <section className="rounded-2xl border border-black/10 bg-white p-5 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
       <div className="print:hidden text-[var(--foreground)]" style={darkVars}>
-        <p className="mb-2 text-xs uppercase tracking-widest text-[var(--muted-foreground)]">
+        <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
           Free tool · powered by the funding record
         </p>
-        <h2 className="text-2xl sm:text-3xl font-bold leading-tight" style={serif}>
+        <h2 className="text-xl sm:text-2xl font-bold leading-tight" style={serif}>
           See what your competitors have raised from Europe
         </h2>
-        <p className="mt-3 max-w-2xl leading-relaxed text-[var(--foreground)]">
-          New to EU public capital? Enter your company. We trace the exact grants,
-          state aid and public capital your closest European peers have drawn,
-          then write you one executive memo: whether you are positioned for it,
-          which instruments to look at, what each one costs you, and the next move
-          to make. Export it as a PDF.
+        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
+          Enter your company. We trace the grants, state aid and public capital
+          your closest European peers have drawn, then write you one executive
+          memo: your position, the instruments that fit, what each one costs you,
+          and the next move. Export it as a PDF.
         </p>
 
         {!questions && !running && (
-        <form onSubmit={startIntake} className="mt-6 space-y-5">
+        <form onSubmit={startIntake} className="mt-4 space-y-4">
           {/* Company name — the one thing we truly need */}
           <label className="block text-sm">
             <span className="mb-1.5 flex items-center font-semibold">
@@ -323,7 +322,7 @@ export function IntelligencePanel() {
               onChange={(e) => setCompany(e.target.value)}
               required
               placeholder="e.g. Vyoma"
-              className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
+              className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
             />
           </label>
 
@@ -343,7 +342,7 @@ export function IntelligencePanel() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. AI collision-avoidance for satellites"
-                className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
+                className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
               />
             </label>
             <label className="block text-sm">
@@ -359,7 +358,7 @@ export function IntelligencePanel() {
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
                 className={
-                  "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#12264f] " +
+                  "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] outline-none transition-colors focus:border-[#12264f] " +
                   (country ? "text-[var(--foreground)]" : "text-[var(--muted-foreground)]")
                 }
               >

@@ -163,7 +163,7 @@ export default function ForCompaniesPage() {
           The light tool card is deliberately kept light-themed (it must stay
           readable and interactive), so it reads as the bright focal point on
           the dark stage rather than a white void. ──────────────────── */}
-      <section className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden bg-[#f3f2ed] px-4 sm:px-6 py-10">
+      <section className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden bg-[#f3f2ed] px-4 sm:px-6 pt-5 pb-3">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
@@ -174,19 +174,16 @@ export default function ForCompaniesPage() {
         />
         <div className="relative flex flex-1 items-center">
           <div className="mx-auto w-full max-w-5xl">
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">
-              For companies raising in Europe
-            </p>
             <IntelligencePanel />
           </div>
         </div>
-        <div className="relative flex justify-center pt-6">
+        <div className="relative flex justify-center pt-4 pb-2">
           <a
             href="#why"
             aria-label="Why you should care about raising public European capital"
-            className="group inline-flex flex-col items-center gap-1.5 text-[#12264f]/80 transition-opacity hover:opacity-70"
+            className="group inline-flex items-center gap-2 text-[#12264f]/80 transition-opacity hover:opacity-70"
           >
-            <span className="text-[11px] uppercase tracking-widest">Climb the ladder</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.16em]">Climb the ladder</span>
             <svg
               viewBox="0 0 24 24"
               fill="none"
