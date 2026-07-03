@@ -156,7 +156,7 @@ export const CAPITAL_OPTIONS = [
   { value: "grant", label: "Grants", hint: "non-dilutive, no payback" },
   { value: "loan", label: "Loans & guarantees", hint: "debt, repayable, no equity" },
   { value: "recoverable_advance", label: "Recoverable advances", hint: "repay only if it works" },
-  { value: "equity", label: "Equity & blended finance", hint: "capital for a stake — dilutive" },
+  { value: "equity", label: "Equity & blended finance", hint: "capital for a stake: dilutive" },
   { value: "tax_credit", label: "Tax credits & reliefs", hint: "R&D credits, payroll relief" },
 ] as const;
 
