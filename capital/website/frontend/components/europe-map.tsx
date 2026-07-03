@@ -245,7 +245,7 @@ function PieBlock({
             name: hasOtherAlready ? "Remaining" : "Other",
             value: rest.reduce((s, e) => s + e.value, 0),
             key: "__other",
-            color: "#94a3b8",
+            color: "#6b6b64",
           },
         ]
       : displayed;
@@ -450,7 +450,8 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
   // Quantile breakpoints are derived from the data at render time — not
   // hardcoded — so the scale re-ranks itself whenever the corpus changes.
   const scale = useMemo(() => {
-    const RAMP = ["#dbeafe", "#bcd4fb", "#7eaaf3", "#3f6fd6", "#003399"];
+    // Pale to deep navy, so more companies = deeper ink on the paper stage.
+    const RAMP = ["#e2e8f2", "#bccbe3", "#8aa3cc", "#51709f", "#12264f"];
     const counts = Object.values(countryData)
       .map((c) => c.companies)
       .filter((n) => n > 0)
@@ -568,7 +569,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                   const iso2 = NUMERIC_TO_ISO2[numericId];
                   const datum = iso2 ? countryData[iso2] : undefined;
                   const hasData = Boolean(datum);
-                  const fill = datum ? scale.fillFor(datum.companies) : "#f1f5f9";
+                  const fill = datum ? scale.fillFor(datum.companies) : "#e7e4da";
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -580,19 +581,19 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                       style={{
                         default: {
                           fill,
-                          stroke: "#cbd5e1",
+                          stroke: "rgba(10,10,10,0.14)",
                           strokeWidth: 0.5,
                           outline: "none",
                         },
                         hover: {
-                          fill: hasData ? "#003399" : "#e2e8f0",
-                          stroke: "#93c5fd",
-                          strokeWidth: 0.5,
+                          fill: hasData ? "#dbeafe" : "#1b2740",
+                          stroke: "#12264f",
+                          strokeWidth: 0.75,
                           outline: "none",
                           cursor: hasData ? "pointer" : "default",
                         },
                         pressed: {
-                          fill: "#003399",
+                          fill: "#12264f",
                           outline: "none",
                         },
                       }}
@@ -653,11 +654,18 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                   onMouseLeave={handleMouseLeave}
                   onClick={onClick}
                 >
-                  <circle r={4.5} fill="#003399" stroke="white" strokeWidth={1.2} />
+                  <circle r={4.5} fill="#12264f" stroke="#f3f2ed" strokeWidth={1.2} />
                   <text
                     textAnchor="middle"
                     y={-9}
-                    style={{ fontSize: 9, fontWeight: 600, fill: "#1e293b" }}
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      fill: "#1d1c18",
+                      stroke: "#f3f2ed",
+                      strokeWidth: 0.6,
+                      paintOrder: "stroke",
+                    }}
                   >
                     {m.iso2}
                   </text>
@@ -681,8 +689,8 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
         />
       )}
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--muted-foreground)]">
-        <span className="font-medium text-[var(--foreground)]">Companies in study</span>
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5d5b52]">
+        <span className="font-medium text-[#33322c]">Companies in study</span>
         <span className="flex items-center gap-0.5">
           {scale.buckets.map((b) => (
             <span
@@ -700,10 +708,10 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
           </span>
         )}
         <span className="flex items-center gap-1">
-          <span className="inline-block h-3 w-3 rounded-sm bg-[#f1f5f9] border border-[#cbd5e1]" />
+          <span className="inline-block h-3 w-3 rounded-sm bg-[#e7e4da] border border-black/10" />
           Not covered
         </span>
-        <span className="text-[var(--muted-foreground)]">· Click to pin</span>
+        <span className="text-[#6b6b64]">· Click to pin</span>
       </div>
     </div>
   );

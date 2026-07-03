@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   CAPITAL_OPTIONS,
   type IntakeQuestion,
@@ -9,7 +9,19 @@ import {
   type ProgressEvent,
 } from "@/lib/intelligence/types";
 
-const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
+const serif = { fontFamily: "var(--font-playfair), Georgia, serif" };
+
+// The intake form rides the dark "Follow the Euro" stage on /for-companies, so
+// it re-themes to match by overriding the CSS variables its controls read from.
+// The generated Memo below keeps the site's light theme on purpose: it is a
+// printable white memorandum, not part of the dark trip.
+const darkVars = {
+  "--foreground": "#1d1c18",
+  "--muted-foreground": "#6b6b64",
+  "--border": "rgba(10,10,10,0.14)",
+  "--muted": "rgba(10,10,10,0.06)",
+  "--primary": "#0a0a0a",
+} as CSSProperties;
 
 // The interface adds this option to every intake question; picking it (or leaving
 // a question blank) just omits that clarification from the memo.
@@ -73,7 +85,7 @@ function CapitalSelect({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-left text-[15px] outline-none transition-colors focus:border-[#003399]"
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]"
       >
         <span className={"truncate " + (labels.length || all ? "" : "text-[var(--muted-foreground)]")}>
           {summary}
@@ -83,7 +95,7 @@ function CapitalSelect({
       {open && (
         <div
           role="listbox"
-          className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-white p-1 shadow-lg"
+          className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-black/10 bg-[#ffffff] p-1 shadow-lg"
         >
           {CAPITAL_OPTIONS.map((o) => {
             const on = value.includes(o.value);
@@ -99,7 +111,7 @@ function CapitalSelect({
                 <span
                   className={
                     "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
-                    (on ? "border-[#003399] bg-[#003399] text-white" : "border-[var(--border)]")
+                    (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]" : "border-[var(--border)]")
                   }
                 >
                   {on ? "✓" : ""}
@@ -115,7 +127,7 @@ function CapitalSelect({
           <button
             type="button"
             onClick={onToggleAll}
-            className="w-full rounded-md px-2.5 py-2 text-left text-[14px] font-semibold text-[#2D6A4F] transition-colors hover:bg-[var(--muted)]"
+            className="w-full rounded-md px-2.5 py-2 text-left text-[14px] font-semibold text-[#12264f] transition-colors hover:bg-[var(--muted)]"
           >
             {all ? "Clear all" : "Show me everything"}
           </button>
@@ -132,13 +144,13 @@ function InfoDot({ children }: { children: React.ReactNode }) {
       <button
         type="button"
         aria-label="More information"
-        className="flex h-4 w-4 items-center justify-center rounded-full border border-[#003399] text-[10px] font-bold leading-none text-[#003399] outline-none transition-colors hover:bg-[#003399] hover:text-white focus-visible:bg-[#003399] focus-visible:text-white"
+        className="flex h-4 w-4 items-center justify-center rounded-full border border-[#12264f] text-[10px] font-bold leading-none text-[#12264f] outline-none transition-colors hover:bg-[#12264f] hover:text-[#f3f2ed] focus-visible:bg-[#12264f] focus-visible:text-[#f3f2ed]"
       >
         i
       </button>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 w-64 -translate-x-1/2 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-xs font-normal leading-relaxed text-[var(--foreground)] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 w-64 -translate-x-1/2 rounded-lg border border-black/10 bg-[#ffffff] px-3 py-2 text-xs font-normal leading-relaxed text-[#33322c] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
       >
         {children}
       </span>
@@ -278,8 +290,8 @@ export function IntelligencePanel() {
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
   return (
-    <section className="rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[#eef2ff] via-white to-[#f0fdf4] p-6 md:p-8 print:border-0 print:bg-white print:p-0">
-      <div className="print:hidden">
+    <section className="rounded-2xl border border-black/10 bg-white p-6 md:p-8 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
+      <div className="print:hidden text-[var(--foreground)]" style={darkVars}>
         <p className="mb-2 text-xs uppercase tracking-widest text-[var(--muted-foreground)]">
           Free tool · powered by the funding record
         </p>
@@ -311,7 +323,7 @@ export function IntelligencePanel() {
               onChange={(e) => setCompany(e.target.value)}
               required
               placeholder="e.g. Vyoma"
-              className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#003399]"
+              className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
             />
           </label>
 
@@ -331,7 +343,7 @@ export function IntelligencePanel() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. AI collision-avoidance for satellites"
-                className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#003399]"
+                className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
               />
             </label>
             <label className="block text-sm">
@@ -347,13 +359,13 @@ export function IntelligencePanel() {
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
                 className={
-                  "w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#003399] " +
-                  (country ? "" : "text-[var(--muted-foreground)]")
+                  "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2.5 text-[15px] outline-none transition-colors focus:border-[#12264f] " +
+                  (country ? "text-[var(--foreground)]" : "text-[var(--muted-foreground)]")
                 }
               >
-                <option value="">Select…</option>
+                <option value="" className="bg-[#ffffff] text-[#5d5b52]">Select…</option>
                 {COUNTRIES.map((c) => (
-                  <option key={c} value={c} className="text-[var(--foreground)]">
+                  <option key={c} value={c} className="bg-[#ffffff] text-[#141414]">
                     {c}
                   </option>
                 ))}
@@ -385,8 +397,8 @@ export function IntelligencePanel() {
                     className={
                       "rounded-lg border px-3 py-2.5 text-left text-[13px] font-medium leading-snug transition-colors " +
                       (on
-                        ? "border-[#003399] bg-[#003399] text-white"
-                        : "border-[var(--border)] bg-white text-[var(--foreground)] hover:border-[#003399]")
+                        ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
+                        : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
                     }
                   >
                     {t.label}
@@ -419,7 +431,7 @@ export function IntelligencePanel() {
             <button
               type="submit"
               disabled={busy || !company.trim()}
-              className="rounded-lg bg-[#003399] px-6 py-2.5 font-semibold text-white transition-colors hover:bg-[#002277] disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-full bg-[#0a0a0a] px-6 py-2.5 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {preparing ? "Tailoring a few questions…" : "Continue"}
             </button>
@@ -432,8 +444,8 @@ export function IntelligencePanel() {
 
         {/* Phase 1: tailored intake questions */}
         {questions && !running && (
-          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white p-5 sm:p-6">
-            <p className="mb-1 text-xs uppercase tracking-widest text-[#003399]">
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
+            <p className="mb-1 text-xs uppercase tracking-widest text-[#12264f]">
               A few questions, so the memo fits you
             </p>
             <p className="mb-5 text-sm text-[var(--muted-foreground)]">
@@ -460,10 +472,10 @@ export function IntelligencePanel() {
                           className={
                             "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
                             (on
-                              ? "border-[#003399] bg-[#003399] text-white"
+                              ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
                               : opt === SKIP_ANSWER
-                                ? "border-dashed border-[var(--muted-foreground)] bg-white text-[var(--muted-foreground)] hover:border-[#003399]"
-                                : "border-[var(--border)] bg-white text-[var(--foreground)] hover:border-[#003399]")
+                                ? "border-dashed border-[var(--muted-foreground)] bg-white/70 text-[var(--muted-foreground)] hover:border-[#12264f]"
+                                : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
                           }
                         >
                           {opt}
@@ -478,7 +490,7 @@ export function IntelligencePanel() {
               <button
                 type="button"
                 onClick={submitAnswers}
-                className="rounded-lg bg-[#003399] px-5 py-2.5 font-semibold text-white transition-colors hover:bg-[#002277]"
+                className="rounded-full bg-[#0a0a0a] px-5 py-2.5 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
               >
                 Write my funding memo
               </button>
@@ -488,7 +500,7 @@ export function IntelligencePanel() {
                   setQuestions(null);
                   void runMemo([]);
                 }}
-                className="text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#003399] hover:underline"
+                className="text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#12264f] hover:underline"
               >
                 Skip and write it now
               </button>
@@ -508,9 +520,9 @@ export function IntelligencePanel() {
                     className={
                       "flex h-5 w-5 items-center justify-center rounded-full text-[11px] " +
                       (state === "done"
-                        ? "bg-[#2D6A4F] text-white"
+                        ? "bg-[#2D6A4F] text-[#141414]"
                         : state === "active"
-                          ? "bg-[#003399] text-white animate-pulse"
+                          ? "bg-[#12264f] text-[#f3f2ed] animate-pulse"
                           : "bg-[var(--muted)] text-[var(--muted-foreground)] border border-[var(--border)]")
                     }
                   >
@@ -577,15 +589,15 @@ function Memo({ report }: { report: IntelligenceReport }) {
       <div className="mb-8 flex justify-end print:hidden">
         <button
           onClick={() => window.print()}
-          className="border border-[#003399] px-4 py-1.5 text-sm font-semibold text-[#003399] transition-colors hover:bg-[#003399] hover:text-white"
+          className="border border-[#12264f] px-4 py-1.5 text-sm font-semibold text-[#12264f] transition-colors hover:bg-[#12264f] hover:text-[#f3f2ed]"
         >
           Export PDF
         </button>
       </div>
 
       {/* ── Letterhead ─────────────────────────────────────────────── */}
-      <div className="flex items-baseline justify-between border-t-2 border-[#003399] pt-3">
-        <span className="text-sm font-bold tracking-[0.2em] text-[#003399]">
+      <div className="flex items-baseline justify-between border-t-2 border-[#12264f] pt-3">
+        <span className="text-sm font-bold tracking-[0.2em] text-[#12264f]">
           EUROINVTRACKER
         </span>
         <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">

@@ -170,7 +170,7 @@ export function CompanySearch() {
           setOpen(null);
         }}
         placeholder="Type a company name, e.g. Northvolt, Doctolib, Bosch…"
-        className="w-full rounded-lg border border-[var(--border)] bg-white px-4 py-3 text-base shadow-sm outline-none focus:border-[#003399]"
+        className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-4 py-3 text-base text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] shadow-sm outline-none focus:border-[#12264f]"
       />
       <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
         <span className="text-xs uppercase tracking-wide text-[var(--muted-foreground)]">
@@ -182,11 +182,11 @@ export function CompanySearch() {
             setCountry(e.target.value);
             setOpen(null);
           }}
-          className="rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
+          className="rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[var(--foreground)] outline-none focus:border-[#12264f]"
         >
-          <option value="">All countries</option>
+          <option value="" className="bg-[#ffffff] text-[#141414]">All countries</option>
           {FACET_COUNTRIES.map((c) => (
-            <option key={c.code} value={c.code}>
+            <option key={c.code} value={c.code} className="bg-[#ffffff] text-[#141414]">
               {COUNTRY_NAME[c.code] ?? c.code}
             </option>
           ))}
@@ -197,11 +197,11 @@ export function CompanySearch() {
             setSector(e.target.value);
             setOpen(null);
           }}
-          className="rounded-lg border border-[var(--border)] bg-white px-3 py-2 outline-none focus:border-[#003399]"
+          className="rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[var(--foreground)] outline-none focus:border-[#12264f]"
         >
-          <option value="">All sectors</option>
+          <option value="" className="bg-[#ffffff] text-[#141414]">All sectors</option>
           {FACET_SECTORS.filter((s) => SECTOR_LABEL(s)).map((s) => (
-            <option key={s} value={s}>
+            <option key={s} value={s} className="bg-[#ffffff] text-[#141414]">
               {SECTOR_LABEL(s)}
             </option>
           ))}
@@ -213,7 +213,7 @@ export function CompanySearch() {
               setCountry("");
               setSector("");
             }}
-            className="text-xs text-[#003399] underline"
+            className="text-xs text-[#12264f] underline"
           >
             clear
           </button>
@@ -231,7 +231,7 @@ export function CompanySearch() {
 
       <div className="mt-4 space-y-2">
         {results.map((r) => (
-          <div key={`${r.n}|${r.c}`} className="rounded-lg border border-[var(--border)] bg-white">
+          <div key={`${r.n}|${r.c}`} className="rounded-lg border border-[var(--border)] bg-white/70">
             <button
               className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-[var(--muted)]"
               onClick={() => setOpen(open === r ? null : r)}
@@ -245,7 +245,7 @@ export function CompanySearch() {
                 {SEALS.filter((seal) => r[seal.key] === 1).map((seal) => (
                   <span
                     key={seal.key}
-                    className="ml-2 rounded bg-[#eef2ff] px-1.5 py-0.5 text-[10px] font-semibold text-[#003399]"
+                    className="ml-2 rounded bg-[#12264f]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[#12264f]"
                     title={seal.title}
                   >
                     {seal.label}
@@ -305,7 +305,7 @@ export function CompanySearch() {
                       {r.st.map((s, i) => (
                         <li key={i}>
                           {s[0]}
-                          {s[1] != null && <span className="font-semibold text-[#003399]"> · {s[1]}%</span>}
+                          {s[1] != null && <span className="font-semibold text-[#12264f]"> · {s[1]}%</span>}
                           {s[2] != null && ` · ${fmtEur(s[2])}`}
                           <span className="text-xs text-[var(--muted-foreground)]"> as of {s[3]}{s[4] ? " · exited" : ""}</span>
                         </li>

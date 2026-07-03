@@ -1,12 +1,9 @@
-import { KpiGrid } from "@/components/kpi-grid";
 import { EuropeMap } from "@/components/europe-map";
-import { TaxonomyDiagram } from "@/components/taxonomy-diagram";
-import { ThesisIllustration } from "@/components/thesis-illustration";
-import { CountryCoverageTable } from "@/components/country-coverage-table";
-import { EquityCoverageTable } from "@/components/equity-coverage-table";
-import { Section } from "@/components/section";
-import { Callout } from "@/components/callout";
+import { ChannelsGraph } from "@/components/channels-graph";
+import { EuroJourney, Chapter } from "@/components/euro-journey";
+import { Reveal, CountUp } from "@/components/immersive";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import countryMapRaw from "@/public/data/country_map.json";
 import coverageRatingsRaw from "@/public/data/coverage_ratings.json";
 import { corpusStats } from "@/lib/data";
@@ -15,6 +12,37 @@ import { corpusStats } from "@/lib/data";
 // → synthesis.json), which also drives the layout footer and /for-companies, so
 // every page shows the same number.
 const synth = corpusStats;
+
+const serif = { fontFamily: "var(--font-playfair), Georgia, serif" };
+
+// Parse "€296.9B" into a number + suffix so the headline figure can count up.
+const capMatch = synth.totalCapitalEur.match(/([\d.]+)\s*([^\d.\s]*)/);
+const capValue = capMatch ? parseFloat(capMatch[1]) : 0;
+const capSuffix = capMatch ? capMatch[2] : "";
+const capDecimals = capValue % 1 !== 0 ? 1 : 0;
+
+/** One cell of a side KPI matrix. */
+function MatrixCell({ value, label }: { value: ReactNode; label: string }) {
+  return (
+    <div className="border-black/10 p-5 sm:p-6 [&:nth-child(odd)]:border-r [&:nth-last-child(n+3)]:border-b">
+      <div className="text-2xl font-bold tabular-nums text-[#141414] sm:text-3xl" style={serif}>
+        {value}
+      </div>
+      <div className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[#6b6b64]">{label}</div>
+    </div>
+  );
+}
+
+/** A 2-column KPI matrix that rides alongside the narrative. */
+function StatMatrix({ children }: { children: ReactNode }) {
+  return (
+    <Reveal delay={120}>
+      <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-black/10 bg-white/70">
+        {children}
+      </div>
+    </Reveal>
+  );
+}
 
 const coverageRatings = coverageRatingsRaw as Record<string, { rating: string; note: string }>;
 
@@ -32,199 +60,233 @@ const countryData = Object.fromEntries(
 export default function Home() {
   return (
     <div>
-      {/* ── Full-screen founder landing: only the tool pitch, centered ─── */}
-      <section className="relative flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center bg-gradient-to-br from-[#eef2ff] via-white to-[#f0fdf4] px-4 text-center">
-        <div className="max-w-3xl">
-          <p className="mb-3 text-xs uppercase tracking-widest text-[var(--muted-foreground)]">
-            For companies raising in Europe
-          </p>
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-            See what your competitors have raised from Europe&apos;s public purse
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-[var(--foreground)]">
-            We mapped the EU grants, state aid and public capital behind{" "}
-            {synth.companies.toLocaleString()} European companies. Enter yours and get a one-page
-            competitive brief: who your peers are, what public money each has accessed, and a
-            prioritised to-do list for your own raise.
-          </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/for-companies"
-              className="rounded-lg bg-[#003399] px-5 py-2.5 font-semibold text-white transition-colors hover:bg-[#002277]"
-            >
-              Check your competitors
-            </Link>
-            <Link
-              href="/companies"
-              className="rounded-lg border border-[#003399] px-5 py-2.5 font-semibold text-[#003399] transition-colors hover:bg-[#003399] hover:text-white"
-            >
-              Search the company database
-            </Link>
+      {/* ── Cold open: headline left, Brussels right — the editorial split. ── */}
+      <section className="relative overflow-hidden bg-[#f3f2ed] px-4 pt-16 pb-16 sm:px-6 sm:pt-24">
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(60% 50% at 22% 0%, rgba(18,38,79,0.05), transparent 62%)",
+          }}
+          aria-hidden
+        />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          <div>
+            <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">
+              For companies raising in Europe
+            </p>
+            <h1 className="text-4xl font-medium leading-[1.08] tracking-tight sm:text-[3.4rem]" style={serif}>
+              See what your competitors have raised from Europe&apos;s public purse
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#5d5b52]">
+              We mapped the EU grants, state aid and public capital behind{" "}
+              {synth.companies.toLocaleString()} European companies. Enter yours and get a one-page
+              competitive brief: who your peers are, what public money each has accessed, and a
+              prioritised to-do list for your own raise.
+            </p>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link
+                href="/for-companies"
+                className="rounded-full bg-[#0a0a0a] px-6 py-3 text-[15px] font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
+              >
+                Check your competitors
+              </Link>
+              <Link
+                href="/companies"
+                className="rounded-full border border-black/15 px-6 py-3 text-[15px] font-medium text-[#141414] transition-colors hover:bg-black/5"
+              >
+                Search the database
+              </Link>
+            </div>
           </div>
+
+          {/* Brussels, in a quiet editorial frame. */}
+          <figure className="relative">
+            <div className="overflow-hidden rounded-2xl border border-black/10 shadow-[0_2px_32px_rgba(20,18,12,0.10)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/eu/berlaymont.jpg"
+                alt="The Berlaymont building in Brussels, seat of the European Commission, lined with member-state flags"
+                className="h-[26rem] w-full object-cover lg:h-[30rem]"
+              />
+            </div>
+            <figcaption className="mt-2 text-right font-mono text-[10px] uppercase tracking-[0.12em] text-[#8a887f]">
+              Berlaymont, Brussels · F. Romero · CC BY 2.0
+            </figcaption>
+          </figure>
         </div>
 
-        {/* Scroll cue into the study below */}
+        {/* Scroll cue into the trip below */}
         <a
           href="#understand"
-          className="absolute bottom-8 flex flex-col items-center gap-1.5 text-sm font-semibold text-[#003399] transition-opacity hover:opacity-70"
+          className="relative mx-auto mt-14 flex w-fit flex-col items-center gap-1.5 text-sm font-medium text-[#12264f]/80 transition-opacity hover:opacity-70"
         >
-          <span>Understand the EuroInvTracker</span>
+          <span className="font-mono text-[11px] uppercase tracking-[0.18em]">Follow the euro</span>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce" aria-hidden="true">
             <path d="M12 5v14M19 12l-7 7-7-7" />
           </svg>
         </a>
       </section>
 
-      {/* ── Study body ───────────────────────────────────────────── */}
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12">
-      {/* ── Masthead ─────────────────────────────────────────────── */}
-      <header id="understand" className="scroll-mt-20 mb-10 border-b border-[var(--border)] pb-10">
-        <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] mb-3">
-          An investigation into European public capital
-        </p>
-        <h1 className="text-3xl sm:text-4xl font-bold leading-tight" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
-          EuroInvTracker - Understand where Europe&apos;s public capital actually goes
-        </h1>
-        <p className="mt-4 text-lg text-[var(--muted-foreground)] max-w-2xl leading-relaxed">
-          Across the continent, governments and the European Union are pouring public money into
-          companies, betting that the state can shape markets the private sector will not enter
-          alone. This is an attempt to map that machine: what it is, where the money goes, and
-          whether the money follows the design.
-        </p>
-      </header>
-
-      {/* ── How it plays out in Europe: corpus KPIs + map ────────── */}
-      <Section title="How it plays out in Europe" caption="The corpus, and where the money actually lands">
-        <KpiGrid
-          cols={6}
-          items={[
-            { label: "Companies", value: synth.companies.toLocaleString() },
-            { label: "Events", value: synth.events.toLocaleString() },
-            { label: "Total committed", value: synth.totalCapitalEur },
-            { label: "Instruments", value: synth.sourceFamilies },
-            { label: "Countries", value: synth.countries },
-            { label: "Sectors", value: synth.sectors },
-          ]}
+      {/* ── The trip: Follow the Euro ───────────────────────────── */}
+      <div className="relative bg-[#f3f2ed] text-[#3f3e37]">
+        {/* Ambient glow: EU-blue at the top, a warm coin-gold lower down. */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(66% 42% at 50% 0%, rgba(18,38,79,0.05), transparent 60%)",
+          }}
+          aria-hidden
         />
+        <div className="relative">
+          <EuroJourney>
+            {/* Chapter 1 — Launch */}
+            <Chapter id="understand" className="flex min-h-[92vh] flex-col justify-center scroll-mt-16 py-24">
+              <Reveal>
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">
+                  A study of European public capital
+                </p>
+              </Reveal>
+              <Reveal delay={120}>
+                <h2
+                  className="mt-6 max-w-4xl text-4xl font-bold leading-[1.05] sm:text-6xl"
+                  style={serif}
+                >
+                  How the state funds European companies.
+                </h2>
+              </Reveal>
+              <Reveal delay={260}>
+                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#5d5b52]">
+                  Grants, state aid and development-bank finance push hundreds of billions of euros
+                  into companies every year. We traced the channels, and where the money lands.
+                </p>
+              </Reveal>
+              <Reveal delay={420}>
+                <div className="mt-10 flex items-center gap-3 text-sm text-[#12264f]/80">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#12264f] font-serif text-base font-bold text-[#f3f2ed] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
+                    €
+                  </span>
+                  <span className="uppercase tracking-[0.2em]">Scroll to begin</span>
+                </div>
+              </Reveal>
+            </Chapter>
 
-        <div className="prose-article max-w-2xl space-y-4 text-[var(--foreground)] leading-relaxed mt-8">
-          <p>
-            To see the machine at work we assembled every company we could find in the two public
-            layers from 2020 to 2025: the main EU instruments, the national development banks, and
-            the EU State Aid Transparency Register covering two dozen national authorities.
-          </p>
+            {/* Chapter 2 — The channels graph: the pinned, camera-driven anchor */}
+            <ChannelsGraph />
+
+            {/* Chapter 3 — We tried to track it: the KPIs */}
+            <Chapter className="py-24 sm:py-32">
+              <div className="grid gap-12 lg:grid-cols-[1fr_23rem] lg:items-center">
+                <div>
+                  <Reveal>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">The record</p>
+                  </Reveal>
+                  <Reveal delay={100}>
+                    <h3 className="mt-4 text-3xl font-bold text-[#141414] sm:text-4xl" style={serif}>
+                      We tried to track all of it.
+                    </h3>
+                  </Reveal>
+                  <Reveal delay={160}>
+                    <p className="mt-5 max-w-xl leading-relaxed text-[#5d5b52]">
+                      We assembled every company we could find across those channels, 2020 to 2025:
+                      the main EU instruments, the national development banks, and the EU State Aid
+                      Transparency Register covering two dozen national authorities.
+                    </p>
+                  </Reveal>
+                </div>
+                <StatMatrix>
+                  <MatrixCell
+                    label="Total committed"
+                    value={
+                      <CountUp value={capValue} prefix="€" suffix={capSuffix} decimals={capDecimals} />
+                    }
+                  />
+                  <MatrixCell label="Companies reached" value={<CountUp value={Number(synth.companies)} />} />
+                  <MatrixCell label="Public awards" value={<CountUp value={Number(synth.events)} />} />
+                  <MatrixCell label="Countries" value={<CountUp value={Number(synth.countries)} />} />
+                </StatMatrix>
+              </div>
+            </Chapter>
+
+            {/* Chapter 5 — Where it lands: the map */}
+            <Chapter className="py-24 sm:py-32">
+              <Reveal>
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">Where it lands</p>
+              </Reveal>
+              <Reveal delay={100}>
+                <h3 className="mt-4 max-w-3xl text-3xl font-bold text-[#141414] sm:text-4xl" style={serif}>
+                  Across the continent, unevenly.
+                </h3>
+              </Reveal>
+              <Reveal delay={150}>
+                <figure className="mt-10">
+                  <div className="rounded-2xl border border-black/10 bg-white/70 p-3 sm:p-5">
+                    <EuropeMap countryData={countryData} />
+                  </div>
+                  <figcaption className="mt-4 text-sm leading-relaxed text-[#6b6b64]">
+                    Countries are shaded by the number of companies reached, not the size of the
+                    awards, so a country that publishes many small state-aid line items shows up darker than one making a few large bets. Hover a country to break its total
+                    into the three public layers and see which instruments reach it.
+                  </figcaption>
+                </figure>
+              </Reveal>
+              <Reveal>
+                <div className="mt-10 rounded-xl border border-black/10 bg-white/70 p-5">
+                  <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#12264f]">
+                    What the corpus is not
+                  </p>
+                  <p className="text-sm leading-relaxed text-[#5d5b52]">
+                    Coverage is uneven by design. Several instruments record only the named
+                    coordinator of a consortium, so participants are undercounted. Horizon Europe
+                    Pillar II is loaded at organisation level, which inflates its company count
+                    relative to the rest. Capital figures are amounts committed, not amounts
+                    disbursed, and some instruments report ceilings rather than awards. And the three
+                    channels are not watertight: an IPCEI project is an EU affair but is paid out as
+                    national state aid, and much development-bank money is itself state aid, so the
+                    split is partly one of who reports it, not of economics.
+                  </p>
+                </div>
+              </Reveal>
+            </Chapter>
+
+            {/* Chapter 6 — The handoff / CTA */}
+            <Chapter className="py-28 text-center sm:py-36">
+              <Reveal>
+                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#12264f] font-serif text-xl font-bold text-[#f3f2ed] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
+                  €
+                </span>
+              </Reveal>
+              <Reveal delay={100}>
+                <h3 className="mt-7 text-3xl font-bold text-[#141414] sm:text-5xl" style={serif}>
+                  Check your company.
+                </h3>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="mx-auto mt-5 max-w-xl leading-relaxed text-[#5d5b52]">
+                  See what your competitors have drawn from Europe&apos;s public funding, and the moves
+                  that fit your own raise.
+                </p>
+              </Reveal>
+              <Reveal delay={220}>
+                <div className="mt-9 flex flex-wrap justify-center gap-3">
+                  <Link
+                    href="/for-companies"
+                    className="rounded-full bg-[#0a0a0a] px-6 py-3 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
+                  >
+                    Trace your competitors
+                  </Link>
+                  <Link
+                    href="/companies"
+                    className="rounded-full border border-black/10 px-6 py-3 font-semibold text-[#141414] transition-colors hover:bg-black/5"
+                  >
+                    Search the database
+                  </Link>
+                </div>
+              </Reveal>
+            </Chapter>
+          </EuroJourney>
         </div>
-
-        <div className="mt-6">
-          <EuropeMap countryData={countryData} />
-          <p className="mt-3 text-xs leading-relaxed text-[var(--muted-foreground)]">
-            Countries are shaded by company count, ranked into bands taken from the data rather than
-            fixed thresholds. Hover a country to reveal its funding mix and which instruments reach
-            it.
-          </p>
-        </div>
-
-        <Callout title="What the corpus is not">
-          <p>
-            Coverage is uneven by design. Several instruments record only the named coordinator of
-            a consortium, so participants are undercounted. Horizon Europe Pillar II is loaded at
-            organisation level, which inflates its company count relative to the rest. Capital
-            figures are amounts committed, not amounts disbursed, and some instruments report
-            ceilings rather than awards.
-          </p>
-        </Callout>
-      </Section>
-
-      {/* ── Why public money (the theory), illustration alongside ── */}
-      <Section title="Why governments back companies" caption="The idea behind public capital as an anchor">
-        <div className="grid gap-8 md:grid-cols-2 md:items-center">
-          <div className="prose-article space-y-4 text-[var(--foreground)] leading-relaxed">
-            <p>
-              The oldest case for public money in innovation is market failure. Knowledge spills
-              over, so private firms underinvest in the risky, early research whose benefits they
-              cannot fully capture. Capital markets, in turn, shy away from the long, uncertain
-              gap between a laboratory result and a sellable product, the so-called valley of death.
-              On this view the state has a narrow job: fix the failure, fund the basic science, then
-              step back and let the market take over.
-            </p>
-            <p>
-              A more ambitious view now shapes European policy. In the work of economists such as
-              Mariana Mazzucato, the state is not a patch for market failure but an active investor
-              that takes risks and shapes markets, an entrepreneurial state that sets missions and
-              crowds private money in behind it. Public capital becomes an anchor: it de-risks the
-              first, hardest bets and signals where private capital should follow. The return of
-              industrial policy, from the IPCEI projects to the Net-Zero and chips agendas and the
-              scramble for strategic autonomy, runs on exactly this logic.
-            </p>
-            <p>
-              Both views share a promise: public money is supposed to lead somewhere, to pull private
-              investment in behind it rather than substitute for it. This study asks how that promise
-              looks in the data.
-            </p>
-          </div>
-
-          <ThesisIllustration />
-        </div>
-      </Section>
-
-      {/* ── The taxonomy: diagram left, text right ───────────────── */}
-      <Section title="The taxonomy" caption="The three layers of capital a European company can draw on">
-        <div className="grid gap-8 md:grid-cols-5 md:items-start">
-          <div className="md:col-span-3">
-            <TaxonomyDiagram />
-          </div>
-
-          <div className="prose-article md:col-span-2 space-y-4 text-[var(--foreground)] leading-relaxed md:pt-4">
-            <p>
-              Before the data, the map of the territory. A company in Europe sits beneath three
-              layers of capital. At the top is the <strong>pan-European</strong>{" "}layer: the EU&apos;s
-              own instruments, funding missions and strategic projects from the common budget. Beneath
-              it sits <strong>national industrial policy</strong>: each member state&apos;s own state
-              aid and development banks, executing national plans. At the bottom is the
-              {" "}<strong>private market</strong>, the venture capital, growth equity and bank lending
-              that the public layers are meant to hand off to.
-            </p>
-            <p>
-              This study covers the two public layers. The private layer sits outside it, shown here
-              only as the destination the public anchors are designed to reach.
-            </p>
-          </div>
-        </div>
-      </Section>
-
-      {/* ── Country-by-country transparency ──────────────────────── */}
-      <Section
-        title="Country by country, graded"
-        caption="Every country in scope: its coverage grade, the sources behind it, and the known gaps"
-      >
-        <div className="prose-article max-w-2xl text-[var(--foreground)] leading-relaxed mb-3">
-          <p className="text-sm">
-            Every country graded for coverage. Click a row for sources and known gaps. A low grade
-            means thin sources, not necessarily thin spending.
-          </p>
-        </div>
-
-        <CountryCoverageTable />
-
-        <div className="prose-article max-w-2xl text-[var(--foreground)] leading-relaxed mb-3 mt-10">
-          <h3 className="text-base font-semibold mb-2">The same grading, for public equity</h3>
-          <p className="text-sm">
-            Grants and loans are published because state-aid law forces it. Equity invested at
-            market terms is not, so the equity layer gets its own grading: not how much each state
-            invests, but how much of it the state lets you see. E-A means an independent register
-            makes positions near-complete; E-B means the institution publishes its own portfolio;
-            E-C means press releases or aggregate statistics; E-X means nothing is recoverable.
-            Two countries earn E-A: the United Kingdom, through one statutory register, and
-            Estonia, whose business register publishes every shareholding as open data. France,
-            home of the continent&apos;s largest state investor, sits at E-C. The EU itself is
-            graded in the table as an entity, and does not score well. Expanded rows also carry
-            what each institution discloses about its own returns; for most, the answer is
-            nothing.
-          </p>
-        </div>
-
-        <EquityCoverageTable />
-      </Section>
       </div>
     </div>
   );

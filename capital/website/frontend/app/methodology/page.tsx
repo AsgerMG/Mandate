@@ -1,5 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
+import { CountryCoverageTable } from "@/components/country-coverage-table";
+import { EquityCoverageTable } from "@/components/equity-coverage-table";
 
 export const metadata = { title: "Methodology · EuroInvTracker" };
 
@@ -43,6 +45,37 @@ export default function Page() {
           return <p key={i} className="leading-relaxed">{renderInline(line)}</p>;
         })}
       </div>
+
+      {/* ── Data collection: coverage grading, country by country ── */}
+      <section className="mt-14 border-t border-[var(--border)] pt-10">
+        <h2 className="text-xl font-semibold">Data collection: coverage, country by country</h2>
+        <p className="mt-3 text-sm leading-relaxed text-[var(--muted-foreground)]">
+          Every country graded for coverage. Click a row for the sources behind it and the known
+          gaps. A low grade means thin sources, not necessarily thin spending.
+        </p>
+
+        <div className="mt-5">
+          <CountryCoverageTable />
+        </div>
+
+        <h3 className="mt-10 text-lg font-semibold">The same grading, for public equity</h3>
+        <p className="mt-2 text-sm leading-relaxed text-[var(--muted-foreground)]">
+          Grants and loans are published because state-aid law forces it. Equity invested at market
+          terms is not, so the equity layer gets its own grading: not how much each state invests,
+          but how much of it the state lets you see. E-A means an independent register makes positions
+          near-complete; E-B means the institution publishes its own portfolio; E-C means press
+          releases or aggregate statistics; E-X means nothing is recoverable. Two countries earn E-A:
+          the United Kingdom, through one statutory register, and Estonia, whose business register
+          publishes every shareholding as open data. France, home of the continent&apos;s largest
+          state investor, sits at E-C. The EU itself is graded in the table as an entity, and does not
+          score well. Expanded rows also carry what each institution discloses about its own returns;
+          for most, the answer is nothing.
+        </p>
+
+        <div className="mt-5">
+          <EquityCoverageTable />
+        </div>
+      </section>
     </article>
   );
 }

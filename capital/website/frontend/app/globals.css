@@ -5,16 +5,17 @@
 @custom-variant dark (&:where(.dark-disabled, .dark-disabled *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
+  /* Legora-style warm paper + ink, with one deep EU-navy accent. */
+  --background: #f3f2ed;
+  --foreground: #1d1c18;
+  --muted: #ecebe4;
+  --muted-foreground: #6b6b64;
+  --border: #dbd8cd;
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --primary: #003399;
-  --primary-hover: #002277;
-  --accent: #FFCC00;
+  --card-foreground: #1d1c18;
+  --primary: #0a0a0a;
+  --primary-hover: #000000;
+  --accent: #12264f;
 
   /* Sector colours */
   --color-sector-life-sciences: #7B3F61;
@@ -33,9 +34,9 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-card: var(--card);
-  --font-serif: Georgia, "Times New Roman", "Iowan Old Style", "Palatino Linotype", serif;
-  --font-sans: Georgia, "Times New Roman", "Iowan Old Style", "Palatino Linotype", serif;
-  --font-mono: Georgia, "Times New Roman", "Iowan Old Style", "Palatino Linotype", serif;
+  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-fragment), ui-monospace, monospace;
 }
 
 html { color-scheme: light; }
@@ -43,7 +44,7 @@ html { color-scheme: light; }
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-feature-settings: "lnum" 1, "tnum" 0;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -53,7 +54,7 @@ h1, h2 { color: var(--primary); }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
 }
 
 /* Numerals always render with old-style table figures in the Economist tradition.
@@ -66,7 +67,7 @@ h1, h2, h3, h4, h5, h6 {
 .prose {
   color: var(--foreground);
   max-width: 65ch;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
 }
 .prose h1, .prose h2, .prose h3 {
   color: var(--primary);
@@ -85,9 +86,8 @@ h1, h2, h3, h4, h5, h6 {
 .prose em { font-style: italic; }
 .prose a { color: var(--primary); text-decoration: underline; }
 .prose code {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 0.95em;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
   background: var(--muted);
   padding: 0.05em 0.25em;
   border-radius: 0.25rem;
@@ -95,10 +95,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Small uppercase eyebrow labels — keep crisp sans for these only via wider tracking on serif */
 .eyebrow {
-  font-family: var(--font-serif);
-  letter-spacing: 0.12em;
+  font-family: var(--font-mono);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  font-variant-caps: small-caps;
 }
 
 /* ── Print: export only the intelligence report as a clean PDF ──────────────
@@ -119,4 +118,10 @@ h1, h2, h3, h4, h5, h6 {
   @page { margin: 0.6in; }
   /* Force backgrounds/colours to render in the PDF. */
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Scrollytelling: a gentle fade as a pinned caption swaps per active step. */
+@keyframes scrollyFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
