@@ -4,9 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// Primary links sit directly in the header. Everything else is folded into the
-// "More" menu so the bar reads as a product (for companies + lookup) first.
+// The lookup link sits directly in the header; the for-companies product entry
+// is the pill CTA on the right (Legora pattern). Everything else folds into
+// "More". Mobile keeps a flat list of all four.
 const PRIMARY_LINKS = [
+  { href: "/companies", label: "Company lookup" },
+];
+
+const MOBILE_LINKS = [
   { href: "/for-companies", label: "For companies" },
   { href: "/companies", label: "Company lookup" },
 ];
@@ -98,6 +103,14 @@ export function NavBar() {
               </div>
             )}
           </div>
+
+          {/* The product CTA, as an ink pill. */}
+          <Link
+            href="/for-companies"
+            className="rounded-full bg-[#0a0a0a] px-4 py-1.5 text-sm font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
+          >
+            Check your competitors
+          </Link>
         </div>
 
         {/* Mobile hamburger button */}
@@ -121,7 +134,7 @@ export function NavBar() {
       {/* Mobile dropdown */}
       {open && (
         <div className="md:hidden border-t border-[var(--border)] bg-[var(--background)] px-4 pb-2">
-          {[...PRIMARY_LINKS, ...MORE_LINKS].map((link) => (
+          {[...MOBILE_LINKS, ...MORE_LINKS].map((link) => (
             <Link
               key={link.href}
               href={link.href}

@@ -33,12 +33,17 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <NavBar />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-black/10 bg-[var(--background)] py-8 text-xs text-[var(--muted-foreground)]">
-          <div className="mx-auto max-w-6xl px-4 flex flex-wrap gap-4 items-center justify-between">
-            <span>EuroInvTracker · {companyCount} companies · EU instruments, national development banks, and state aid register</span>
-            <div className="flex gap-4">
-              <a href="/methodology" className="hover:text-[var(--foreground)] transition-colors">Methodology</a>
-              <a href="/limitations" className="hover:text-[var(--foreground)] transition-colors">Limitations</a>
+        <footer className="border-t border-black/10 bg-[var(--background)] py-10">
+          <div className="mx-auto max-w-6xl px-4 flex flex-wrap items-baseline justify-between gap-6">
+            <div>
+              <p className="font-serif text-lg font-semibold text-[var(--foreground)]">EuroInvTracker</p>
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+                {companyCount} companies · EU instruments · development banks · state aid register
+              </p>
+            </div>
+            <div className="flex gap-6 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+              <a href="/methodology" className="transition-colors hover:text-[var(--foreground)]">Methodology</a>
+              <a href="/limitations" className="transition-colors hover:text-[var(--foreground)]">Limitations</a>
             </div>
           </div>
         </footer>
