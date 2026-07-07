@@ -35,22 +35,31 @@ from etl.enrichment import Embedder, semantic_search
 from .profile import CompanyProfile
 
 # The answer `id`s deliberately match CompanyProfile field names, so the
-# front-end can post answers straight back into the profile.
+# front-end can post answers straight back into the profile. `group` has no
+# effect on retrieval or scoping — it only drives how the front-end paginates
+# the scoping step (see website/app/brief/page.tsx GROUP_META).
 SIZE_QUESTION = {
     "id": "company_size",
     "question": "How large is the company?",
     "why_it_matters": (
-        "SME status gates many obligations — the AI Act, GDPR record-keeping and "
-        "several reporting duties apply differently below the 250-employee / "
-        "€50M-turnover thresholds."
+        "Size thresholds decide whole instruments, not just nuances: SME status gates "
+        "AI Act and GDPR duties (250 staff / €50M), sustainability reporting under the "
+        "revised CSRD starts at 1,000 employees and €450M turnover, and NIS2 coverage "
+        "for digital providers turns on the 50-staff/€10M line. A precise band lets the "
+        "report say in or out of scope instead of guessing."
     ),
     "kind": "choice",
+    # Bands align with the thresholds that actually gate instruments — the old
+    # coarse "large (250+)" bucket forced the model to guess on CSRD (1,000 /
+    # €450M) and produced run-to-run verdict flips on real briefs.
     "options": [
         "micro (<10 staff, <€2M)",
         "small (<50 staff, <€10M)",
         "medium (<250 staff, <€50M)",
-        "large (250+ staff or €50M+)",
+        "large (250–999 staff, €50M–€450M)",
+        "enterprise (1,000+ staff or €450M+ turnover)",
     ],
+    "group": "business",
 }
 
 AI_ROLE_QUESTION = {
@@ -68,6 +77,7 @@ AI_ROLE_QUESTION = {
         "both",
         "none",
     ],
+    "group": "ai",
 }
 
 EU_USERS_QUESTION = {
@@ -80,6 +90,7 @@ EU_USERS_QUESTION = {
     ),
     "kind": "choice",
     "options": ["<100k", "100k–1M", "1M–45M", "45M+", "not a user-facing service"],
+    "group": "users_data",
 }
 
 DATA_CATEGORIES_QUESTION = {
@@ -98,6 +109,7 @@ DATA_CATEGORIES_QUESTION = {
         "financial/credit data",
         "none of these",
     ],
+    "group": "users_data",
 }
 
 CUSTOMER_TYPE_QUESTION = {
@@ -110,6 +122,7 @@ CUSTOMER_TYPE_QUESTION = {
     ),
     "kind": "choice",
     "options": ["businesses (B2B)", "consumers (B2C)", "both"],
+    "group": "business",
 }
 
 # Unlike the five questions above, this has no matching CompanyProfile field —
@@ -121,17 +134,21 @@ CUSTOMER_TYPE_QUESTION = {
 # across dossiers too — not just DMA/antitrust dynamics, but DSA duties, AI
 # Act compliance costs, and Digital-Omnibus-style deregulation can all land
 # unevenly across a market.
+#
+# The question text itself stays short — the examples that used to be packed
+# into the question live in `placeholder` instead, so the ask reads as one
+# sentence and the examples are optional supporting text.
 COMPETITIVE_CONTEXT_QUESTION = {
     "id": "competitive_context",
     "question": (
-        "Is there a company, platform, or industry dynamic that puts you at a "
-        "disadvantage, or that a rule might affect differently than it affects you? For "
-        "example: a bigger rival with more compliance resources, a dominant platform "
-        "that sets terms you depend on (ranks itself above you, controls a marketplace "
-        "or app store), a competitor whose data/content practices you think should draw "
-        "more scrutiny, or a looming rule change (including simplification/deregulation) "
-        "that could help or hurt you more than your rivals. If so, name it and briefly "
-        "describe the issue. If not, that's a complete answer too."
+        "Is there a competitor or industry dynamic that puts you at a disadvantage — "
+        "or that a new rule might affect differently than it affects you?"
+    ),
+    "placeholder": (
+        "e.g. a bigger rival with more compliance resources, a dominant platform whose "
+        "terms you depend on, a competitor whose data practices deserve more scrutiny, "
+        "a rule change that could help or hurt you more than rivals. Leave blank if "
+        "nothing comes to mind."
     ),
     "why_it_matters": (
         "Regulation rarely lands evenly across a market — a dominant rival being "
@@ -143,6 +160,7 @@ COMPETITIVE_CONTEXT_QUESTION = {
     ),
     "kind": "text",
     "options": [],
+    "group": "context",
 }
 
 
@@ -206,10 +224,13 @@ EXTRAS_SYSTEM = (
     "You are a tech-policy analyst preparing to scope a regulatory report. Given a "
     "company profile and the policy passages retrieved for it, propose at most three "
     "scoping questions that would materially change which instruments apply — "
-    "thresholds, roles, or activities the profile leaves ambiguous. Never re-ask "
-    "what the profile or the standard scoping set already covers (size, AI role, EU "
-    "user count, data categories, customer type). If nothing more is needed, "
-    "propose zero questions."
+    "thresholds, roles, or activities the profile leaves ambiguous. The bar is "
+    "genuine doubt: if the in/out-of-scope verdict for a major retrieved instrument "
+    "hinges on a specific fact the profile does not answer (a quantitative threshold, "
+    "a role in a value chain, an activity), that is exactly the question to ask — but "
+    "asking is the exception, not the default. Never re-ask what the profile or the "
+    "standard scoping set already covers (size, AI role, EU user count, data "
+    "categories, customer type). If nothing more is needed, propose zero questions."
 )
 
 
@@ -251,6 +272,7 @@ def parse_extras_response(content_blocks: list[Any], already_asked: set[str]) ->
             if q.get("id") and q.get("question") and q["id"] not in already_asked:
                 q.setdefault("kind", "text")
                 q.setdefault("options", [])
+                q.setdefault("group", "more")
                 extras.append(q)
     return extras
 

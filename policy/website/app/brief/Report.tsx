@@ -15,16 +15,25 @@ function inline(text: string, key = 0): ReactNode {
       {parts.map((p, i) => {
         if (/^\*\*[^*]+\*\*$/.test(p)) return <strong key={i}>{p.slice(2, -2)}</strong>;
         if (/^\*[^*]+\*$/.test(p)) return <em key={i}>{p.slice(1, -1)}</em>;
-        if (/^\[\d+(?:,\s*\d+)*\]$/.test(p))
-          return (
-            <sup key={i} className="footref">
-              {p}
-            </sup>
-          );
+        // Citation markers are stripped from the displayed text — traceability
+        // lives in the Coverage & sources fold-out, where each source lists
+        // the exact claims it supports.
+        if (/^\[\d+(?:,\s*\d+)*\]$/.test(p)) return null;
         return p;
       })}
     </Fragment>
   );
+}
+
+// The appendix (Out of Scope register) is generated for completeness but
+// belongs in the fold-out, not the main executive read.
+export function splitAppendix(text: string): { main: string; appendix: string | null } {
+  const match = text.match(/^##\s+Appendix:.*$/m);
+  if (!match || match.index === undefined) return { main: text, appendix: null };
+  return {
+    main: text.slice(0, match.index).trimEnd(),
+    appendix: text.slice(match.index).trim(),
+  };
 }
 
 export function ReportMarkdown({ text }: { text: string }) {
@@ -93,30 +102,63 @@ export function ReportMarkdown({ text }: { text: string }) {
   return <div className="report">{blocks}</div>;
 }
 
-export function ReportSources({ citations }: { citations: Citation[] }) {
-  const unique = new Map<number, Citation>();
-  for (const c of citations) if (c.n && !unique.has(c.n)) unique.set(c.n, c);
-  if (!unique.size) return null;
+export function ReportCoverage({
+  appendix,
+  citations,
+}: {
+  appendix: string | null;
+  citations: Citation[];
+}) {
+  // Group every citation occurrence by source: with inline markers stripped
+  // from the report text, each source entry instead lists the exact claims
+  // (cited snippets) it supports — traceability by source, not by marker.
+  const bySource = new Map<number, { citation: Citation; snippets: string[] }>();
+  for (const c of citations) {
+    if (!c.n) continue;
+    const entry = bySource.get(c.n) ?? { citation: c, snippets: [] };
+    if (c.cited_text && !entry.snippets.includes(c.cited_text)) entry.snippets.push(c.cited_text);
+    bySource.set(c.n, entry);
+  }
+  if (!appendix && !bySource.size) return null;
   return (
-    <div className="sources">
-      <h2>Sources</h2>
-      {[...unique.entries()]
-        .sort(([a], [b]) => a - b)
-        .map(([n, c]) => (
-          <div className="source-item" key={n}>
-            <div className="row">
-              <strong>
-                [{n}] {c.celex || c.title}
-              </strong>
-              {c.url && (
-                <a href={c.url} target="_blank" rel="noreferrer">
-                  official text ↗
-                </a>
-              )}
-            </div>
-            {c.cited_text && <div className="cited">“{c.cited_text}”</div>}
-          </div>
-        ))}
-    </div>
+    <details className="coverage">
+      <summary>Coverage &amp; sources</summary>
+      {appendix && (
+        <div className="report-sheet">
+          <ReportMarkdown text={appendix} />
+        </div>
+      )}
+      {bySource.size > 0 && (
+        <div className="sources">
+          <h2>Sources</h2>
+          {[...bySource.entries()]
+            .sort(([a], [b]) => a - b)
+            .map(([n, { citation: c, snippets }]) => (
+              <div className="source-item" key={n}>
+                <div className="row">
+                  <strong>
+                    [{n}] {c.celex || c.title}
+                  </strong>
+                  {c.url && (
+                    <a href={c.url} target="_blank" rel="noreferrer">
+                      official text ↗
+                    </a>
+                  )}
+                </div>
+                {snippets.length > 0 && (
+                  <div className="cited">
+                    Used for:
+                    <ul className="used-for">
+                      {snippets.map((s, i) => (
+                        <li key={i}>“{s}”</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
+      )}
+    </details>
   );
 }

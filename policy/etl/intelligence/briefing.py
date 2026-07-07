@@ -77,13 +77,20 @@ SYSTEM_PROMPT = (
     "'Out of Scope' — never a fourth option, never hedged. Never write 'unclear', "
     "'may', 'possibly', 'TBD', 'not defined', or hedge in prose. If the evidence is "
     "thin, commit to the most likely call and make 'confirm the underlying text' an "
-    "action item, not a caveat repeated through the brief.\n\n"
-    "Length: 700-1000 words total, excluding tables, bullet lists and the two action "
-    "lines. Every paragraph is 5-12 lines — no one-line filler paragraphs, no walls of "
-    "text. Target the whole brief, main body plus appendix, at roughly 2-2.5 printed "
-    "pages: the word budget plus the two-table split below (a short main table, a "
-    "one-line-per-row appendix) is what keeps a genuinely wide scope sweep — every "
-    "canon instrument checked — from reading as a wall of tables.\n\n"
+    "action item, not a caveat repeated through the brief. ONE deterministic "
+    "exception: when a verdict hinges on a quantitative threshold or role fact the "
+    "profile does not answer (an employee/turnover line, a user count, a value-chain "
+    "role), the verdict is ALWAYS '**Monitor**' with the hinge named in Why/Trigger "
+    "('hinges on whether turnover exceeds €450M — confirm'). Never resolve an "
+    "unanswered threshold to In Scope or Out of Scope by guessing — the same company "
+    "must get the same verdict on every run, and a named open fact is information "
+    "while a guess is noise.\n\n"
+    "Length: 700-1000 words total, excluding tables and bullet lists. Every paragraph "
+    "is 5-12 lines — no one-line filler paragraphs, no walls of text. Target the whole "
+    "brief, main body plus appendix, at roughly 2-2.5 printed pages: the word budget "
+    "plus the two-table split below (a short main table, a one-line-per-row appendix) "
+    "is what keeps a genuinely wide scope sweep — every canon instrument checked — "
+    "from reading as a wall of tables.\n\n"
     "Structure, exactly these sections, in Markdown:\n"
     "# Regulatory Exposure Brief: <company name>\n"
     "A single bold sentence immediately under the title — the headline verdict: what "
@@ -91,20 +98,46 @@ SYSTEM_PROMPT = (
     "nothing else.\n"
     "## Bottom line — one dense paragraph (5-12 lines) synthesizing every verdict and "
     "why it adds up the way it does. State the calls; do not re-derive them.\n"
-    "## Compliance exposure — a Markdown table, columns exactly: Instrument | Verdict | "
-    "Why / Trigger | Action. This table holds ONLY '**In Scope**' and '**Monitor**' "
+    "## Compliance exposure — a Markdown table, columns exactly: Instrument | Prio | "
+    "Verdict | Why / Trigger. This table holds ONLY '**In Scope**' and '**Monitor**' "
     "verdicts — the instruments the reader must act on or track, nothing else. Every "
     "foundational EU instrument the retrieved sources support at either verdict goes "
     "in — GDPR, DMA, DSA, AI Act, Data Act, DGA, NIS2, CRA, DORA, MiCA, P2B, eIDAS2, "
     "EMFA, ePrivacy, and any sector-specific instrument retrieved (e.g. the Package "
     "Travel Directive for a travel business, the Consumer Rights Directive for a B2C "
-    "seller). Order rows In Scope first, then Monitor. Do NOT put an Out of Scope row "
-    "in this table — every Out of Scope instrument goes in the Appendix instead (see "
-    "the final section below), so this table stays a short, scannable action list, not "
-    "a scope map. Follow the table with one paragraph (5-12 lines) of expert "
+    "seller). Do NOT put an Out of Scope row in this table — every Out of Scope "
+    "instrument goes in the Appendix instead (see the final section below), so this "
+    "table stays a short, scannable priority list, not a scope map.\n"
+    "The Prio column ranks where the company's attention and public-affairs effort "
+    "goes, on a 1-3 scale — it is an attention ranking, deliberately separate from the "
+    "legal Verdict (a file can be verdict-Monitor yet Prio 1, like a live enforcement "
+    "case against a dominant competitor; or verdict-In Scope yet Prio 2, like routine "
+    "GDPR hygiene). Assign it by these criteria and no others:\n"
+    "**Prio 1** — any of: (a) material non-compliance exposure under a live, actively "
+    "enforced regime (e.g. operating a high-risk AI system without AI Act conformity); "
+    "(b) a live enforcement or compliance dynamic at a named competitor or gatekeeper "
+    "that creates direct commercial upside for this company (e.g. Google being forced "
+    "into DMA Art. 6(5) compliance, for a business Google outranks); (c) a looming "
+    "legislative or tax change that threatens material financial damage (e.g. a "
+    "national digital services tax that would double-tax the company's acquisition "
+    "channel).\n"
+    "**Prio 2** — real, bounded obligations: standard implementation and compliance "
+    "work with no existential enforcement risk and no major commercial upside.\n"
+    "**Prio 3** — peripheral, conditional, or long-dated: monitoring only, nothing to "
+    "resource this year.\n"
+    "Order rows by Prio ascending (all 1s first); within the same Prio, In Scope "
+    "before Monitor. Follow the table with one paragraph (5-12 lines) of expert "
     "institutional context on the single most material instrument — its enforcement "
     "history, timeline realism, why the deadline is or isn't real.\n"
-    "## Political radar — one or two paragraphs (5-12 lines each) naming who actually "
+    "## Political landscape & strategic play — the who-runs-what map and the "
+    "engagement agenda, merged. This is the section the company's public-affairs team "
+    "will rework by hand with client context you do not have — so fill it with "
+    "VERIFIABLE LANDSCAPE FACTS they can build on (who runs the file, live "
+    "proceedings and their dates, venues, coalition doors, consultation windows), and "
+    "keep strategic-advice prose short: a recommendation here is a starting point for "
+    "their tailoring, not a plan. Facts survive manual editing; generic strategy gets "
+    "deleted. Structure:\n"
+    "First, one or two landscape paragraphs (5-12 lines each) naming who actually "
     "runs the relevant dossiers at WORKING level, their mandate, track record, and what "
     "that predicts about where the rules move next. Working level means: the rapporteur "
     "and shadow rapporteurs and their committee on a live legislative file, the lead DG "
@@ -115,12 +148,18 @@ SYSTEM_PROMPT = (
     "personally drives the file; a brief that says 'von der Leyen' where it should say "
     "'the IMCO rapporteur' has failed. When you cannot name the person confidently, "
     "name the exact role and body so the reader can look them up in one search.\n"
-    "## Strategic play — the public-affairs action agenda, in three labelled parts:\n"
+    "Then three labelled parts:\n"
     "**Lobbying focus** — one paragraph: the single dossier or proceeding where this "
     "company's effort buys the most, the venue (a case team, a consultation, a "
-    "committee), and the realistic ask given precedent. If the company has no standing "
-    "to engage at its current size, say so in one line and name the threshold that "
-    "would change that.\n"
+    "committee), and the realistic ask given precedent. Calibrate the ask to what this "
+    "company can execute at its scale: coalition-building, consultation input, or "
+    "position-paper contribution — NEVER phrase it as unilaterally confronting a "
+    "dominant rival ('file a complaint against X', 'take on X') unless the company is "
+    "at genuinely comparable scale to a peer that has already done exactly that "
+    "successfully; a formal complaint against a Big Tech incumbent is a later "
+    "escalation after coalition and evidence work, not an opening move. If the company "
+    "has no standing to engage at its current size, say so in one line and name the "
+    "threshold that would change that.\n"
     "**Coalitions** — 2-4 bullets naming specific trade associations, complainant "
     "groups, or peer companies already organized around the company's issues, drawn "
     "from the retrieved sources; per bullet, one line on why that door is the right "
@@ -128,7 +167,7 @@ SYSTEM_PROMPT = (
     "**Watchlist** — 3-6 bullets, each one concrete upcoming decision, milestone, "
     "vote, deadline or report with its date (or the most precise timing the sources "
     "give) and one line on why it moves the company's interests.\n"
-    "Across all three Strategic play parts: if the company's profile names a specific larger "
+    "Across this whole section: if the company's profile names a specific larger "
     "competitor or describes an unfair-advantage complaint, and the retrieved sources "
     "document a live legislative or enforcement development that constrains, burdens, or "
     "advantages that named competitor or dynamic differently than it affects this "
@@ -149,19 +188,10 @@ SYSTEM_PROMPT = (
     "own answers and present in a retrieved source; never infer a competitor's identity "
     "from context alone. If the profile gives no competitive context, or the retrieved "
     "sources contain no evidence tying a development to a named competitor or coalition, "
-    "leave this angle out entirely and keep Strategic play focused on the standard "
+    "leave this angle out entirely and keep the section focused on the standard "
     "compliance-driven engagement opportunities — do not speculate to fill the space.\n"
-    "## Next actions — exactly two lines: '**Next 30 days:** ...' and '**Next 90 "
-    "days:** ...', each one concrete, ownable action, not a list of considerations. "
-    "Calibrate to what this company can actually execute alone: 30 days is internal "
-    "work (audits, evidence-gathering, classification). For the competitive/coalition "
-    "angle specifically, 90 days is coalition-building, a consultation response, or "
-    "position-paper input — NEVER phrase it as unilaterally confronting a dominant "
-    "rival ('file a complaint against X', 'take on X') unless the company is at "
-    "genuinely comparable scale to a peer that has already done exactly that "
-    "successfully. Filing a formal complaint against a Big Tech incumbent is a "
-    "later escalation after coalition and evidence work, not a first 90-day move for "
-    "a mid-size company — default to the cheaper, lower-risk standard PA move.\n"
+    "Do NOT write a 'Next actions' or '30/90 days' section — recommended action "
+    "sequencing is the public-affairs team's manual value-add, not this brief's job.\n"
     "## Appendix: Out of Scope Register — a second Markdown table, columns exactly: "
     "Instrument | Why Out of Scope | What Would Change It. One row for EVERY "
     "foundational EU instrument the retrieved sources cover that did NOT clear In "
@@ -176,7 +206,11 @@ SYSTEM_PROMPT = (
     "that shows completeness. Do not omit an instrument here because its answer is "
     "obvious ('no crypto-asset activity of any kind' is a complete, correct reason, "
     "not a reason to drop the row) — an obvious dismissal recorded is what separates "
-    "a scoped brief from an unscoped one.\n\n"
+    "a scoped brief from an unscoped one. Never reference the appendix's position from "
+    "the main body ('the register below', 'see appendix') — exports of this document "
+    "omit the appendix, so the main body must read complete on its own; naming files "
+    "as out of scope in the Bottom line is fine, pointing at where the register sits "
+    "is not.\n\n"
     "Write like an analyst who has already made up their mind, not one thinking out "
     "loud. No throat-clearing, no 'it is important to note', no summarizing what you "
     "are about to say — just say it. Cite the sources for every substantive factual "
@@ -254,6 +288,12 @@ def build_documents(passages: list[dict]) -> list[dict]:
                 "citations": {"enabled": True},
             }
         )
+    # generate_briefing sends this same passage set in every one of its up to
+    # 5 sequential calls (draft, revise, citation-retry, canon-fix) — a cache
+    # breakpoint on the last document lets every call after the first reuse
+    # the already-processed prefix instead of reprocessing it cold.
+    if docs:
+        docs[-1] = {**docs[-1], "cache_control": {"type": "ephemeral"}}
     return docs
 
 
@@ -308,11 +348,11 @@ REVISE_INSTRUCTION = (
     "common enough in a first draft against long legal-text sources that it deserves a "
     "dedicated pass over the Compliance table specifically: for every cell, either wrap "
     "the one load-bearing phrase in quotation marks and cut the rest, or restate the "
-    "cell's operative fact fully in your own words. (6) Is a 90-day action in Next "
-    "actions phrased as unilaterally confronting a dominant rival ('file a complaint "
-    "against X', 'take on X') for a company not at that rival's scale? Replace with "
-    "the realistic sequence: "
-    "coalition-building, consultation input, or position-paper contribution. Rewrite "
+    "cell's operative fact fully in your own words. (6) Is a recommended play in "
+    "Lobbying focus phrased as unilaterally confronting a dominant rival ('file a "
+    "complaint against X', 'take on X') for a company not at that rival's scale? "
+    "Replace with the realistic sequence: coalition-building, consultation input, or "
+    "position-paper contribution. Rewrite "
     "every sentence that fails any of these checks. (7) INSTRUMENT IDENTITY CHECK — go "
     "through every law/directive/regulation/proposal named anywhere in your draft (both "
     "tables and prose) and confirm each one is actually among the documents above by "
@@ -330,17 +370,41 @@ REVISE_INSTRUCTION = (
 )
 
 
-def build_revise_request(passages: list[dict], draft: str) -> dict[str, Any]:
+def build_revise_request(
+    passages: list[dict], draft: str, canon_issues: list[str] | None = None
+) -> dict[str, Any]:
     """Second-pass request: same documents (so citation indices stay valid),
     the model's own first draft, and an instruction to self-critique against
     the sharpness checklist before returning a final version. No profile
     needed — the draft already opens with the company name and every fact
-    it needs to check itself against is in the documents + draft."""
+    it needs to check itself against is in the documents + draft.
+
+    ``canon_issues``, when the deterministic canon check already found
+    problems on the draft (see _canon_issues), folds their correction into
+    this same mandatory revise call instead of paying for a dedicated fix
+    call afterward — generate_briefing still re-checks and falls back to a
+    dedicated call if problems remain, but that becomes the rare case."""
     settings = get_settings()
     content = build_documents(passages) + [
         {"type": "text", "text": f"YOUR DRAFT:\n\n{draft}"},
         {"type": "text", "text": REVISE_INSTRUCTION},
     ]
+    if canon_issues:
+        numbered = "\n".join(f"{i + 1}. {issue}" for i, issue in enumerate(canon_issues))
+        content.append(
+            {
+                "type": "text",
+                "text": (
+                    "A mechanical cross-check of your draft's tables against the retrieved "
+                    "documents also found the specific problems listed below — fix these as "
+                    "part of this same revision, in addition to the sharpness checklist "
+                    "above. Fix ONLY these listed problems, applying your own judgment for "
+                    "any verdict or substance a fix requires; do not change any other row, "
+                    "verdict, fact or wording beyond what the checklist above and these "
+                    f"fixes require.\n\nProblems found:\n{numbered}"
+                ),
+            }
+        )
     return {
         "model": settings.llm_model,
         "max_tokens": settings.llm_max_tokens,
@@ -349,6 +413,159 @@ def build_revise_request(passages: list[dict], draft: str) -> dict[str, Any]:
         # the model already wrote, not fresh synthesis — "low" is enough
         # thinking depth to catch the sharpness/citation-hygiene violations
         # and meaningfully cuts the second call's latency.
+        "output_config": {"effort": "low"},
+        "system": SYSTEM_PROMPT,
+        "messages": [{"role": "user", "content": content}],
+    }
+
+
+# --- Deterministic canon consistency check -----------------------------------
+#
+# Live testing showed the model occasionally freelancing on instrument
+# identity: a table row naming a real-but-different act than the one its
+# CELEX number denotes ("Green Claims Directive (2024/825)" where 2024/825 is
+# the ECGT), or silently dropping a canon act from both tables. Prompt rules
+# reduced but did not eliminate this. The check below is deliberately
+# judgment-free: it verifies SPELLING (does the row's name match the retrieved
+# document's own canonical name for that number?) and COMPLETENESS (does every
+# canon act in context appear in one of the two tables?), and hands any
+# violations back to the MODEL to correct — verdicts, priorities and substance
+# are never touched by code.
+
+_MARKER_RE = re.compile(r"\[\d+(?:,\s*\d+)*\]")
+_NUMREF_RE = re.compile(r"(\d{4})\s*/\s*(\d{1,4})")
+# Words too generic to identify an instrument on their own.
+_NAME_STOPWORDS = {"the", "of", "and", "for", "on", "in", "a", "an", "eu", "european"}
+
+
+def _celex_ref(celex: str) -> tuple[str, int] | None:
+    """'32024R0900' -> ('2024', 900); works for sector-5 proposals too."""
+    m = re.match(r"^\d(\d{4})[A-Z]{1,2}(\d+)$", celex)
+    if not m:
+        return None
+    return m.group(1), int(m.group(2))
+
+
+def _instrument_cells(briefing: str) -> list[str]:
+    """First cell of every table body row, both tables."""
+    cells = []
+    for line in briefing.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        first = stripped.strip("|").split("|")[0].strip()
+        if first and first != "Instrument" and set(first) - {"-", ":", " "}:
+            cells.append(first)
+    return cells
+
+
+def _name_matches(cell: str, short: str) -> bool:
+    """Does this instrument cell plausibly name the canon act ``short``?
+
+    Deliberately lenient — a false match occasionally hides an omission, but
+    a false MISmatch would trigger a spurious correction call, which is the
+    costlier error. Matches on: an acronym-grade token (parenthetical,
+    all-caps, or digit-bearing, e.g. DMA/TTPA/NIS2/eIDAS), any two-word
+    phrase from the name, or — for short names — a distinctive single word."""
+    cell_l = cell.lower()
+    grade: list[str] = []
+    for par in re.findall(r"\(([^)]+)\)", short):
+        grade += re.split(r"[/\s]+", par)
+    base = re.sub(r"\([^)]*\)", " ", short)
+    for tok in re.findall(r"[A-Za-z0-9]+", base):
+        if any(ch.isdigit() for ch in tok) or (tok.isupper() and len(tok) >= 3):
+            grade.append(tok)
+    for tok in grade:
+        if len(tok) >= 3 and tok.lower() in cell_l:
+            return True
+    words = [w.lower() for w in re.findall(r"[A-Za-z0-9]+", base)]
+    words = [w for w in words if w not in _NAME_STOPWORDS]
+    if not words:
+        return False
+    if len(words) == 1:
+        return re.search(rf"\b{re.escape(words[0])}\b", cell_l) is not None
+    if any(f"{a} {b}" in cell_l for a, b in zip(words, words[1:], strict=False)):
+        return True
+    # Distinctive leading word ("ePrivacy ..." cells often drop "Directive").
+    return len(words[0]) >= 6 and re.search(rf"\b{re.escape(words[0])}", cell_l) is not None
+
+
+def _canon_issues(briefing: str, passages: list[dict]) -> list[str]:
+    """Judgment-free cross-check of the report's tables against the canon acts
+    actually in context. Returns human-readable problems for the model to fix:
+    mislabeled instrument rows (number and name disagree) and canon acts with
+    a row in neither table. Empty list = consistent. Reports without any table
+    (dry runs, degenerate outputs) are skipped rather than flagged."""
+    canon_in_context: dict[str, str] = {}
+    for p in passages:
+        short = KEY_ACTS.get(p.get("celex") or "")
+        if short:
+            canon_in_context[p["celex"]] = short
+    cells = _instrument_cells(briefing)
+    if not canon_in_context or not cells:
+        return []
+
+    ref_to_celex = {}
+    for celex in canon_in_context:
+        ref = _celex_ref(celex)
+        if ref:
+            ref_to_celex[ref] = celex
+
+    issues: list[str] = []
+    for cell in cells:
+        for year, num in _NUMREF_RE.findall(cell):
+            celex = ref_to_celex.get((year, int(num)))
+            if celex and not _name_matches(cell, canon_in_context[celex]):
+                issues.append(
+                    f"A table row names its instrument '{cell}', but {year}/{int(num)} "
+                    f"in the retrieved documents is '{canon_in_context[celex]}'. Correct "
+                    "the row: fix the name if the row's substance is genuinely about "
+                    "this instrument; otherwise replace the row with an accurate one "
+                    "for it."
+                )
+
+    for celex, short in canon_in_context.items():
+        ref = _celex_ref(celex)
+        present = any(
+            _name_matches(cell, short)
+            or (ref is not None and any((y, int(n)) == ref for y, n in _NUMREF_RE.findall(cell)))
+            for cell in cells
+        )
+        if not present:
+            ref_str = f"{ref[0]}/{ref[1]}" if ref else celex
+            issues.append(
+                f"'{short}' ({ref_str}) is among the retrieved documents but has a row "
+                "in neither the Compliance exposure table nor the Out of Scope "
+                "appendix — add it to whichever table its verdict warrants."
+            )
+    return issues
+
+
+FIX_INSTRUCTION = (
+    "Above are the source documents and your report. A mechanical cross-check of the "
+    "report's tables against the retrieved documents found the specific problems "
+    "listed below — instrument names that disagree with what their own number denotes "
+    "in the documents, or retrieved foundational instruments missing from both "
+    "tables. Fix ONLY these listed problems, applying your own judgment for any "
+    "verdict or substance a fix requires. Do not change any other row, verdict, fact "
+    "or wording. Return the complete corrected report in the same Markdown format: "
+    "no preamble, no commentary.\n\nProblems found:\n{issues}"
+)
+
+
+def build_fix_request(passages: list[dict], draft: str, issues: list[str]) -> dict[str, Any]:
+    """Targeted correction pass: same documents, the current report, and the
+    deterministic check's findings. The check finds; the model fixes."""
+    settings = get_settings()
+    numbered = "\n".join(f"{i + 1}. {issue}" for i, issue in enumerate(issues))
+    content = build_documents(passages) + [
+        {"type": "text", "text": f"YOUR REPORT:\n\n{draft}"},
+        {"type": "text", "text": FIX_INSTRUCTION.format(issues=numbered)},
+    ]
+    return {
+        "model": settings.llm_model,
+        "max_tokens": settings.llm_max_tokens,
+        "thinking": {"type": "adaptive"},
         "output_config": {"effort": "low"},
         "system": SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": content}],
@@ -484,12 +701,35 @@ def generate_briefing(
         from .llm import get_client
 
         client = get_client()
+
     def _one_pass() -> dict[str, Any]:
-        resp = client.messages.create(**request)
-        if sharpen:
-            draft = _raw_text(resp.content)
-            resp = client.messages.create(**build_revise_request(passages, draft))
-        return parse_response(resp.content, passages)
+        draft_resp = client.messages.create(**request)
+        if not sharpen:
+            return parse_response(draft_resp.content, passages)
+
+        draft_parsed = parse_response(draft_resp.content, passages)
+        # Checking citations here, before the mandatory revise call, means a
+        # citation-less draft gets retried on the draft alone (one call) —
+        # not on the whole draft+revise pass, which used to be the only
+        # retry point and doubled the cost of recovering from this. The
+        # post-revise safety net below still runs as a second-chance
+        # fallback for the rarer case where revise itself drops citations
+        # that were present in the draft.
+        if not draft_parsed["citations"] and passages:
+            retry_resp = client.messages.create(**request)
+            retry_parsed = parse_response(retry_resp.content, passages)
+            if retry_parsed["citations"]:
+                draft_resp, draft_parsed = retry_resp, retry_parsed
+
+        # Canon issues checked on the draft, before revise, so the fix rides
+        # along in the same mandatory revise call instead of paying for a
+        # dedicated correction call afterward (see build_revise_request).
+        draft_text = _raw_text(draft_resp.content)
+        pre_issues = _canon_issues(draft_parsed["briefing"], passages)
+        revise_resp = client.messages.create(
+            **build_revise_request(passages, draft_text, pre_issues or None)
+        )
+        return parse_response(revise_resp.content, passages)
 
     parsed = _one_pass()
     # Native citations depend on the model's own phrasing landing close
@@ -504,4 +744,17 @@ def generate_briefing(
         retry = _one_pass()
         if retry["citations"]:
             parsed = retry
-    return {"query": query, "passages": passages, **parsed}
+    # Deterministic canon check (see _canon_issues): mislabeled instrument
+    # rows or missing canon acts get one targeted correction call — the check
+    # finds, the model fixes. Anything still unresolved is surfaced as
+    # canon_notes instead of silently shipped.
+    issues = _canon_issues(parsed["briefing"], passages)
+    if issues:
+        draft = _MARKER_RE.sub("", parsed["briefing"])
+        fixed_resp = client.messages.create(**build_fix_request(passages, draft, issues))
+        fixed = parse_response(fixed_resp.content, passages)
+        if fixed["citations"]:
+            remaining = _canon_issues(fixed["briefing"], passages)
+            if len(remaining) < len(issues):
+                parsed, issues = fixed, remaining
+    return {"query": query, "passages": passages, "canon_notes": issues, **parsed}

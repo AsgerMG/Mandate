@@ -23,6 +23,7 @@ from etl.enrichment import embed_pending
 from etl.intelligence import CompanyProfile, build_documents, build_request, generate_briefing
 from etl.intelligence.briefing import (
     SYSTEM_PROMPT,
+    _canon_issues,
     _competitive_query,
     _merge_passages,
     parse_response,
@@ -153,6 +154,115 @@ def test_system_prompt_keeps_appendix_rows_to_one_line():
     # register, not a second copy of the paragraph-style main table.
     assert "Every row is exactly one line" in SYSTEM_PROMPT
     assert "2-2.5 printed pages" in SYSTEM_PROMPT
+
+
+def test_system_prompt_hinge_rule_makes_doubt_deterministic():
+    # Found via two identical live runs flipping NIS2 between Monitor and Out
+    # of Scope: when a verdict hinges on a threshold fact the profile doesn't
+    # answer, the model must always land Monitor with the hinge named — never
+    # coin-flip In/Out of Scope from an unanswered fact.
+    assert "hinges on a quantitative threshold" in SYSTEM_PROMPT
+    assert "Never resolve an unanswered threshold" in SYSTEM_PROMPT
+    assert "the same company must get the same verdict on every run" in SYSTEM_PROMPT
+
+
+# --- deterministic canon consistency check -----------------------------------
+
+_ECGT_PASSAGE = {
+    "celex": "32024L0825",
+    "title": "Empowering Consumers for the Green Transition Directive (ECGT)",
+    "text": "x",
+}
+_TTPA_PASSAGE = {
+    "celex": "32024R0900",
+    "title": "Political Advertising Regulation (TTPA)",
+    "text": "x",
+}
+
+_TABLE = (
+    "# Brief\n"
+    "## Compliance exposure\n"
+    "| Instrument | Prio | Verdict | Why / Trigger |\n"
+    "|---|---|---|---|\n"
+    "| {row1} | 2 | In Scope | stuff |\n"
+    "## Appendix: Out of Scope Register\n"
+    "| Instrument | Why Out of Scope | What Would Change It |\n"
+    "|---|---|---|\n"
+    "| {row2} | reason | change |\n"
+)
+
+
+def test_canon_issues_clean_report_passes():
+    briefing = _TABLE.format(
+        row1="Empowering Consumers Directive (2024/825)",  # abbreviated but right act
+        row2="Political Advertising Regulation (TTPA) (2024/900)",
+    )
+    assert _canon_issues(briefing, [_ECGT_PASSAGE, _TTPA_PASSAGE]) == []
+
+
+def test_canon_issues_flags_mislabeled_instrument():
+    # The exact real-world failure: 2024/825 is the ECGT, but the row calls
+    # it by the name of a different (stalled) proposal.
+    briefing = _TABLE.format(
+        row1="Green Claims Directive (Dir. 2024/825)",
+        row2="Political Advertising Regulation (TTPA) (2024/900)",
+    )
+    issues = _canon_issues(briefing, [_ECGT_PASSAGE, _TTPA_PASSAGE])
+    assert len(issues) == 1
+    assert "Green Claims Directive" in issues[0]
+    assert "Empowering Consumers for the Green Transition Directive" in issues[0]
+
+
+def test_canon_issues_flags_missing_canon_act():
+    briefing = _TABLE.format(
+        row1="Empowering Consumers for the Green Transition Directive (ECGT)",
+        row2="GDPR",
+    )
+    issues = _canon_issues(briefing, [_ECGT_PASSAGE, _TTPA_PASSAGE])
+    assert len(issues) == 1
+    assert "Political Advertising Regulation (TTPA)" in issues[0]
+    assert "neither" in issues[0]
+
+
+def test_canon_issues_skips_reports_without_tables():
+    # Dry-run/degenerate outputs (and simple test fixtures) have no tables —
+    # the completeness contract only applies to real table-bearing reports.
+    assert _canon_issues("The AI Act applies to you.", [_ECGT_PASSAGE]) == []
+
+
+def test_canon_issues_ignores_non_canon_passages():
+    passages = [{"celex": "52026SC0123", "title": "Staff working doc", "text": "x"}]
+    briefing = _TABLE.format(row1="Whatever Act (2019/999)", row2="Other")
+    assert _canon_issues(briefing, passages) == []
+
+
+def test_system_prompt_prio_ranking_with_boss_guardrails():
+    # Format v3, from direct stakeholder feedback: the table carries a Prio
+    # 1-3 attention ranking next to the legal verdict, assigned by exactly
+    # three guardrails — live non-compliance exposure, commercial upside from
+    # a competitor/gatekeeper being forced to comply, or looming material
+    # financial damage. Locks in the column spec and all three criteria.
+    assert "Instrument | Prio | Verdict | Why / Trigger" in SYSTEM_PROMPT
+    assert "material non-compliance exposure under a live, actively enforced regime" in (
+        SYSTEM_PROMPT
+    )
+    assert "creates direct commercial upside" in SYSTEM_PROMPT
+    assert "threatens material financial damage" in SYSTEM_PROMPT
+    assert "Order rows by Prio ascending" in SYSTEM_PROMPT
+
+
+def test_system_prompt_merges_landscape_and_play_drops_next_actions():
+    # Format v3: Political radar + Strategic play merged into one section the
+    # PA team tailors by hand (biased toward verifiable facts over strategy
+    # prose), Action column gone, and no 30/90-day Next actions section —
+    # action sequencing is the team's manual value-add.
+    assert "## Political landscape & strategic play" in SYSTEM_PROMPT
+    assert "## Political radar" not in SYSTEM_PROMPT
+    assert "## Strategic play" not in SYSTEM_PROMPT
+    assert "VERIFIABLE LANDSCAPE FACTS" in SYSTEM_PROMPT
+    assert "## Next actions" not in SYSTEM_PROMPT
+    assert "Do NOT write a 'Next actions' or '30/90 days' section" in SYSTEM_PROMPT
+    assert "| Action" not in SYSTEM_PROMPT
 
 
 def test_system_prompt_demands_operational_detail():
@@ -494,3 +604,60 @@ def test_generate_briefing_gives_up_gracefully_after_one_retry(db_session):
     assert client.messages.call_count == 2  # tried twice, then returned what it had
     assert result["citations"] == []
     assert result["briefing"] == "Applies broadly."
+
+
+def test_generate_briefing_runs_canon_fix_pass_on_mislabeled_row(db_session):
+    # The seeded doc is the AI Act (32024R1689, canon). A report whose table
+    # row calls 2024/1689 something else must trigger exactly one correction
+    # call; the corrected report is adopted and canon_notes comes back empty.
+    _seed(db_session)
+    embed_pending(db_session, FakeEmbedder())
+
+    bad_table = (
+        "# Brief\n## Compliance exposure\n"
+        "| Instrument | Prio | Verdict | Why / Trigger |\n|---|---|---|---|\n"
+        "| Machine Learning Act (2024/1689) | 2 | In Scope | applies |\n"
+    )
+    good_table = bad_table.replace("Machine Learning Act (2024/1689)", "AI Act (2024/1689)")
+    cite = [{"cited_text": "ai", "document_index": 0}]
+    bad = _Resp([{"type": "text", "text": bad_table, "citations": cite}])
+    good = _Resp([{"type": "text", "text": good_table, "citations": cite}])
+    messages = _SequenceFakeMessages([bad, good])
+    client = _ClientWithMessages(messages)
+
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    result = generate_briefing(
+        db_session, FakeEmbedder(), profile, k=5, client=client, sharpen=False
+    )
+
+    assert len(messages.calls) == 2  # draft + one fix call, no loop
+    fix_text = " ".join(
+        b["text"] for b in messages.calls[1]["messages"][0]["content"] if b["type"] == "text"
+    )
+    assert "Machine Learning Act" in fix_text  # the finding was handed to the model
+    assert "AI Act" in result["briefing"]
+    assert result["canon_notes"] == []
+
+
+def test_generate_briefing_surfaces_unfixed_canon_notes(db_session):
+    # If the correction pass doesn't resolve the finding, it must surface in
+    # canon_notes rather than silently shipping — and there is no retry loop.
+    _seed(db_session)
+    embed_pending(db_session, FakeEmbedder())
+
+    bad_table = (
+        "# Brief\n## Compliance exposure\n"
+        "| Instrument | Prio | Verdict | Why / Trigger |\n|---|---|---|---|\n"
+        "| Machine Learning Act (2024/1689) | 2 | In Scope | applies |\n"
+    )
+    cite = [{"cited_text": "ai", "document_index": 0}]
+    client = _FakeClient(_Resp([{"type": "text", "text": bad_table, "citations": cite}]))
+
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    result = generate_briefing(
+        db_session, FakeEmbedder(), profile, k=5, client=client, sharpen=False
+    )
+
+    assert client.messages.call_count == 2  # draft + one fix attempt, then stop
+    assert len(result["canon_notes"]) == 1
+    assert "Machine Learning Act" in result["canon_notes"][0]

@@ -8,8 +8,10 @@ and reused. The Next.js site (website/) talks to this over HTTP.
 from __future__ import annotations
 
 import threading
+import time
 from functools import lru_cache
 
+import structlog
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -31,6 +33,8 @@ from .enrichment import get_embedder, semantic_search
 from .intelligence import CompanyProfile, generate_briefing, generate_questions
 from .intelligence.llm import has_api_key
 from .intelligence.pdf import render_report_pdf
+
+log = structlog.get_logger(__name__)
 
 app = FastAPI(title="EuroPolTracker API", version="0.1.0")
 
@@ -201,14 +205,31 @@ def questions(req: BriefRequest) -> dict:
 @app.post("/api/brief")
 def brief(req: BriefRequest) -> dict:
     dry = not has_api_key()
+    started = time.monotonic()
     with session_scope() as s:
         result = generate_briefing(s, _embedder(), _profile(req), k=req.k, dry_run=dry)
+    elapsed = round(time.monotonic() - started, 1)
+    # Real wall-clock, not a guess — the two-pass sharpen plus canon-guaranteed
+    # retrieval means latency isn't obvious from request volume alone; log it
+    # so a "this felt slow" report can be checked against actual numbers.
+    log.info(
+        "brief_generated",
+        company=req.name,
+        elapsed_seconds=elapsed,
+        passages=len(result["passages"]),
+        dry_run=dry,
+    )
     return {
         "query": result["query"],
         "passages": result["passages"],
         "briefing": result.get("briefing"),
         "citations": result.get("citations", []),
+        # Residual findings from the deterministic canon cross-check that the
+        # one correction pass couldn't resolve — the site can surface these
+        # so an unresolved identity/coverage problem is never invisible.
+        "canon_notes": result.get("canon_notes", []),
         "dry_run": dry,
+        "elapsed_seconds": elapsed,
     }
 
 

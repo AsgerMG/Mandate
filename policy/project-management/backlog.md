@@ -428,6 +428,84 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       chased further; a programmatic n-gram-overlap check on generated text
       (flag/auto-quote spans with high source overlap) would be the more
       reliable next lever if this needs to go to zero
+- ✅ Report format v3 (2026-07-07), from direct stakeholder (boss) feedback
+      on a real GetYourGuide brief ("SIGNIFICANTLY better", plus four asks):
+      (1) **Prio 1-3 column** added to the Compliance table next to Verdict,
+      assigned by exactly three guardrails supplied by the stakeholder —
+      material non-compliance exposure under a live regime, direct commercial
+      upside from a competitor/gatekeeper being forced to comply, or looming
+      material financial damage; rows sort by Prio, not verdict. Verified
+      live: DMA/Google lands Prio 1 via the upside guardrail, routine
+      GDPR/DSA/ePrivacy land Prio 2. (2) **Political radar + Strategic play
+      merged** into '## Political landscape & strategic play', explicitly
+      biased toward verifiable landscape facts (who runs the file, live
+      proceedings, dates, venues) over strategic-advice prose — the PA team
+      tailors strategy by hand; the escalation-realism rule moved into the
+      Lobbying focus instruction. (3) **Action column dropped** (too slim/
+      vague) and the **Next actions 30/90-day section dropped entirely** —
+      action sequencing is the team's manual value-add. (4) **Export/site
+      split**: the PDF is the shareable executive artifact — `_export_markdown`
+      in pdf.py truncates the appendix and strips inline [n] markers, and the
+      Sources block is gone from the PDF; the website keeps everything in a
+      'Coverage & sources' fold-out (`ReportCoverage` in Report.tsx) where
+      each source now lists every claim it supports ("Used for: ..." via
+      cited_text snippets) — traceability by source, not by inline marker.
+      Also banned positional appendix references from the main body ("the
+      register below") since exports omit the appendix
+- 🔄 Instrument-identity mislabeling, third occurrence (2026-07-07): the
+      format-v3 live run mislabeled Regulation (EU) 2024/900 (Political
+      Advertising Regulation/TTPA, correctly retrieved and in context) as a
+      "Dark Patterns Regulation" and gave it an In Scope verdict on
+      booking-flow design — a wrong verdict on a real instrument, no
+      citation on the row. The prompt-level identity check (SYSTEM_PROMPT +
+      revise checklist) reduced but does not eliminate this failure mode.
+      Next lever is deterministic, not prompt: post-generation validation
+      mapping every instrument name in table rows to the canonical KEY_ACTS
+      short name via the row's resolved citation CELEX, auto-correcting or
+      flagging mismatches — scoped narrowly to table Instrument cells where
+      the name↔citation correspondence is unambiguous. Fourth occurrence on
+      the very next run (2026-07-07): Dir. 2024/825 (ECGT) rendered as "Green
+      Claims Directive" in the appendix — right number and substance, wrong
+      display name
+- 🔄 Run-to-run verdict instability on borderline instruments (2026-07-07),
+      observed across two consecutive identical GetYourGuide runs: NIS2
+      flipped Monitor → Out of Scope ("no evidence GYG qualifies") even
+      though NIS2's own definition covers "online marketplace" digital
+      providers and the client's real internal tracker treats it as likely
+      applicable; ePrivacy flipped In Scope → Monitor; the CSRD/CSDDD
+      Omnibus I (32026L0470, in canon and in context) was mischaracterized
+      as an "administrative support portal Directive" in one run and omitted
+      entirely in the next, despite the client's tracker rating GYG "very
+      likely in scope" from FY2027; TTPA got a wrong In-Scope row in one run
+      and no row at all in the next. (A "verdict hints by business model" map
+      was considered and dropped on user feedback — it would hardcode domain
+      judgment into the tool and go stale.)
+- ✅ Anti-freelancing layers (2026-07-07), the systematic fix for the two
+      entries above, designed around the user's constraint that verdicts stay
+      100% the model's call and deterministic code only checks "spelling":
+      (1) **Facts for verdicts** — `SIZE_QUESTION` bands sharpened to the
+      thresholds instruments actually turn on (split the coarse "large 250+"
+      bucket into 250-999/€50-450M and 1,000+/€450M+, resolving the CSRD line
+      that caused the guessing), plus a deterministic hinge rule in
+      `SYSTEM_PROMPT`: a verdict hinging on a threshold fact the profile
+      doesn't answer is ALWAYS Monitor with the hinge named ("hinges on
+      whether turnover exceeds €450M — confirm"), never a run-to-run
+      coin-flip. The LLM-extras question step may now ask a threshold-hinge
+      question when genuine doubt exists — explicitly the exception, not the
+      default, per user direction. (2) **Deterministic canon cross-check**
+      (`_canon_issues` in briefing.py) — judgment-free by construction: for
+      every table row carrying a year/number reference that maps to a canon
+      act in context, verify the row's instrument name matches that act's
+      canonical name (catches "Green Claims Directive (2024/825)" vs the real
+      ECGT); and verify every canon act in context has a row in one of the
+      two tables (catches the dropped CSRD/TTPA rows). Violations are handed
+      back to the MODEL in one targeted correction call (`build_fix_request`)
+      — the check finds, the model fixes, verdicts/priorities/substance never
+      touched by code. One fix call max; anything still unresolved surfaces
+      as `canon_notes` in the CLI output and API response (never silently
+      shipped). Name-matching is deliberately lenient (acronym / bigram /
+      distinctive-word) so a spurious mismatch — the costlier error — stays
+      rare
 - ⬜ Jurisdiction/lifecycle/sector metadata filters on retrieval
 - ⬜ Run a real briefing once ANTHROPIC_API_KEY is provided
 - ⬜ Optional hosted embedder (Voyage) for higher retrieval quality

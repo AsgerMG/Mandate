@@ -12,7 +12,7 @@ import {
   postQuestions,
 } from "@/lib/api";
 import { Fragment } from "react";
-import { ReportMarkdown, ReportSources } from "./Report";
+import { ReportCoverage, ReportMarkdown, splitAppendix } from "./Report";
 
 type Step = "profile" | "questions" | "report";
 
@@ -31,6 +31,19 @@ const STEPS: { key: Step; label: string }[] = [
   { key: "report", label: "Report" },
 ];
 
+// Order in which scoping groups appear; a group is skipped entirely when no
+// question in it survived core_questions()'s conditional logic (e.g. "AI
+// role" for a company that doesn't use AI). LLM-generated extras always land
+// in "more" (see questions.py parse_extras_response).
+const GROUP_ORDER = ["business", "users_data", "ai", "context", "more"];
+const GROUP_LABELS: Record<string, string> = {
+  business: "About your business",
+  users_data: "Users & data",
+  ai: "AI role",
+  context: "Market context",
+  more: "A few more, specific to you",
+};
+
 export default function BriefPage() {
   const [step, setStep] = useState<Step>("profile");
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -43,9 +56,10 @@ export default function BriefPage() {
   const [usesAi, setUsesAi] = useState(false);
   const [personalData, setPersonalData] = useState(false);
 
-  // Step 2 — scoping
+  // Step 2 — scoping, paginated by group
   const [questions, setQuestions] = useState<ScopingQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
+  const [groupIndex, setGroupIndex] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<BriefResult | null>(null);
@@ -100,6 +114,7 @@ export default function BriefPage() {
         return;
       }
       setQuestions(r.questions);
+      setGroupIndex(0);
       setStep("questions");
     } catch {
       setError("Request failed. Is the API running?");
@@ -135,10 +150,19 @@ export default function BriefPage() {
     }
   }
 
-  const answered = questions.filter((q) => {
+  const isAnswered = (q: ScopingQuestion) => {
     const a = answers[q.id];
     return a !== undefined && a !== "" && (!Array.isArray(a) || a.length > 0);
-  }).length;
+  };
+  const answered = questions.filter(isAnswered).length;
+
+  const groups = GROUP_ORDER.map((key) => ({
+    key,
+    label: GROUP_LABELS[key],
+    questions: questions.filter((q) => (q.group ?? "more") === key),
+  })).filter((g) => g.questions.length > 0);
+  const currentGroup = groups[groupIndex];
+  const isLastGroup = groupIndex === groups.length - 1;
 
   return (
     <>
@@ -249,25 +273,39 @@ export default function BriefPage() {
         </form>
       )}
 
-      {step === "questions" && (
+      {step === "questions" && currentGroup && (
         <div className="form">
+          <div className="substepper">
+            <div className="substepper-head">
+              <span className="stepper-label">
+                Scoping · {groupIndex + 1} of {groups.length}
+              </span>
+              <span className="substepper-name">{currentGroup.label}</span>
+            </div>
+            <div className="stepper-track substepper-track">
+              {groups.map((g, i) => (
+                <span key={g.key} className={i < groupIndex ? "done" : i === groupIndex ? "current" : ""} />
+              ))}
+            </div>
+          </div>
+
           <p className="muted" style={{ marginTop: 0 }}>
             These thresholds decide which instruments actually apply to <strong>{name}</strong>.
             Skip anything you don&apos;t know — the report will treat it as unconfirmed.
           </p>
 
-          {questions.map((q) => (
+          {currentGroup.questions.map((q) => (
             <div className="field question" key={q.id}>
               <label>{q.question}</label>
               <p className="why">{withEmphasis(q.why_it_matters)}</p>
               {q.kind === "text" ? (
-                <input
-                  type="text"
+                <textarea
                   value={(answers[q.id] as string) ?? ""}
+                  placeholder={q.placeholder}
                   onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
                 />
               ) : (
-                <div className="chips">
+                <div className="option-list">
                   {q.options.map((opt) => {
                     const current = answers[q.id];
                     const on =
@@ -275,23 +313,25 @@ export default function BriefPage() {
                         ? Array.isArray(current) && current.includes(opt)
                         : current === opt;
                     return (
-                      <span
-                        key={opt}
-                        className={`chip ${on ? "on" : ""}`}
-                        onClick={() => {
-                          if (q.kind === "multi") {
-                            const cur = Array.isArray(current) ? current : [];
-                            setAnswers({
-                              ...answers,
-                              [q.id]: on ? cur.filter((x) => x !== opt) : [...cur, opt],
-                            });
-                          } else {
-                            setAnswers({ ...answers, [q.id]: on ? "" : opt });
-                          }
-                        }}
-                      >
-                        {opt}
-                      </span>
+                      <label key={opt} className={`option-row ${on ? "on" : ""}`}>
+                        <input
+                          type={q.kind === "multi" ? "checkbox" : "radio"}
+                          name={q.id}
+                          checked={on}
+                          onChange={() => {
+                            if (q.kind === "multi") {
+                              const cur = Array.isArray(current) ? current : [];
+                              setAnswers({
+                                ...answers,
+                                [q.id]: on ? cur.filter((x) => x !== opt) : [...cur, opt],
+                              });
+                            } else {
+                              setAnswers({ ...answers, [q.id]: opt });
+                            }
+                          }}
+                        />
+                        <span>{opt}</span>
+                      </label>
                     );
                   })}
                 </div>
@@ -300,14 +340,24 @@ export default function BriefPage() {
           ))}
 
           <div style={{ display: "flex", gap: 12 }}>
-            <button className="btn" onClick={generateReport} disabled={loading}>
+            <button
+              className="btn"
+              onClick={() => (isLastGroup ? generateReport() : setGroupIndex(groupIndex + 1))}
+              disabled={loading}
+            >
               {loading
                 ? "Analyzing…"
-                : answered < questions.length
-                  ? `Generate report (${answered}/${questions.length} answered)`
-                  : "Generate report"}
+                : !isLastGroup
+                  ? "Next"
+                  : answered < questions.length
+                    ? `Generate report (${answered}/${questions.length} answered)`
+                    : "Generate report"}
             </button>
-            <button className="btn secondary" onClick={() => setStep("profile")} disabled={loading}>
+            <button
+              className="btn secondary"
+              onClick={() => (groupIndex === 0 ? setStep("profile") : setGroupIndex(groupIndex - 1))}
+              disabled={loading}
+            >
               Back
             </button>
           </div>
@@ -332,14 +382,23 @@ export default function BriefPage() {
                 <button className="btn" onClick={onDownload} disabled={downloading}>
                   {downloading ? "Preparing PDF…" : "Download PDF"}
                 </button>
-                <button className="btn secondary" onClick={() => setStep("questions")}>
+                <button
+                  className="btn secondary"
+                  onClick={() => {
+                    setGroupIndex(0);
+                    setStep("questions");
+                  }}
+                >
                   Adjust answers
                 </button>
               </div>
               <div className="report-sheet">
-                <ReportMarkdown text={result.briefing} />
+                <ReportMarkdown text={splitAppendix(result.briefing).main} />
               </div>
-              <ReportSources citations={result.citations} />
+              <ReportCoverage
+                appendix={splitAppendix(result.briefing).appendix}
+                citations={result.citations}
+              />
             </>
           ) : (
             <div className="sources">

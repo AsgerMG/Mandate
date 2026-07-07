@@ -1,14 +1,20 @@
 """Render the regulatory exposure report as a PDF.
 
-The briefing arrives as constrained Markdown (headings, one table, bullets,
+The briefing arrives as constrained Markdown (headings, tables, bullets,
 bold, ``[n]`` footnote markers — see the system prompt in briefing.py), so a
 small line-based renderer covers it without an HTML engine. Core PDF fonts are
 Latin-1, so text is sanitized through a lookup of the typographic characters
 Claude actually emits.
+
+The PDF is the shareable executive artifact: the Out-of-Scope appendix,
+the sources list, and inline citation markers are deliberately stripped
+(``_export_markdown``) — full traceability lives on the website, where each
+source lists the exact claims it supports.
 """
 
 from __future__ import annotations
 
+import re
 from datetime import date
 
 from fpdf import FPDF
@@ -39,6 +45,21 @@ _UNICODE_FALLBACKS = str.maketrans(
 def _safe(text: str) -> str:
     text = text.translate(_UNICODE_FALLBACKS)
     return text.encode("latin-1", "replace").decode("latin-1")
+
+
+_CITATION_MARKER = re.compile(r"\[\d+(?:,\s*\d+)*\]")
+
+
+def _export_markdown(briefing: str) -> str:
+    """The export view of the briefing: appendix truncated, citation markers
+    stripped. With no sources list in the PDF the markers would dangle, and
+    the appendix is a coverage register for the site, not the executive read."""
+    lines = briefing.splitlines()
+    for i, line in enumerate(lines):
+        if line.lstrip().startswith("## Appendix:"):
+            lines = lines[:i]
+            break
+    return _CITATION_MARKER.sub("", "\n".join(lines)).rstrip()
 
 
 def _fpdf_markdown(text: str) -> str:
@@ -94,10 +115,11 @@ def _flush_table(pdf: ReportPDF, rows: list[list[str]]) -> None:
     pdf.set_text_color(*INK)
     pdf.set_draw_color(*RULE)
     pdf.set_line_width(0.15)
-    # Instrument | Verdict | Trigger / Deadline | Action — give Action the spare width.
+    # Instrument | Prio | Verdict | Why / Trigger — Prio is a single digit;
+    # Why/Trigger takes the spare width.
     widths = [1.0] * len(rows[0])
     if len(rows[0]) == 4:
-        widths = [1.5, 0.9, 1.2, 2.6]
+        widths = [1.5, 0.5, 0.9, 3.1]
     elif len(rows[0]) >= 5:
         widths = [1.6, 0.9, 0.9, 0.7, 2.2][: len(rows[0])]
     # No fill anywhere — a bare header row set off by rule weight, not color, is the
@@ -127,7 +149,12 @@ def render_report_pdf(
     citations: list[dict],
     generated: date | None = None,
 ) -> bytes:
-    """Markdown report + numbered citations → PDF bytes."""
+    """Markdown report → PDF bytes (export view: no appendix, no citations).
+
+    ``citations`` is accepted for call-site compatibility but no longer
+    rendered — the sources block and inline markers are site-only."""
+    del citations
+    briefing = _export_markdown(briefing)
     pdf = ReportPDF(company)
     pdf.add_page()
     generated = generated or date.today()
@@ -197,38 +224,5 @@ def render_report_pdf(
         )
         pdf.ln(1.6)
     _flush_table(pdf, table_rows)
-
-    # --- Sources (numbered footnotes) ----------------------------------------
-    unique: dict[int, dict] = {}
-    for c in citations:
-        n = c.get("n")
-        if isinstance(n, int) and n not in unique:
-            unique[n] = c
-    if unique:
-        pdf.ln(5)
-        pdf.set_font("helvetica", "B", 10.5)
-        pdf.set_text_color(*ACCENT)
-        pdf.set_char_spacing(0.6)
-        pdf.cell(0, 5.5, "SOURCES", new_x="LMARGIN", new_y="NEXT")
-        pdf.set_char_spacing(0)
-        pdf.set_draw_color(*RULE)
-        pdf.set_line_width(0.2)
-        pdf.line(20, pdf.get_y() + 1, 190, pdf.get_y() + 1)
-        pdf.ln(4.5)
-        for n in sorted(unique):
-            c = unique[n]
-            label = c.get("celex") or c.get("title") or "Source"
-            url = c.get("url")
-            pdf.set_font("helvetica", "B", 8.5)
-            pdf.set_text_color(*INK)
-            pdf.cell(8, 4.6, f"[{n}]")
-            # Link the title itself rather than printing the URL — source redirect
-            # links (e.g. Google News) can run past 200 characters of gibberish.
-            pdf.set_font("helvetica", "U" if url else "", 8.5)
-            pdf.set_text_color(*ACCENT if url else INK)
-            pdf.multi_cell(
-                0, 4.6, _safe(str(label)), new_x="LMARGIN", new_y="NEXT", link=url or ""
-            )
-            pdf.ln(1.5)
 
     return bytes(pdf.output())

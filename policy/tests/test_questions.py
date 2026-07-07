@@ -5,6 +5,8 @@ from __future__ import annotations
 from etl.intelligence import CompanyProfile, core_questions
 from etl.intelligence.questions import (
     COMPETITIVE_CONTEXT_QUESTION,
+    EXTRAS_SYSTEM,
+    SIZE_QUESTION,
     build_extras_request,
     generate_questions,
     parse_extras_response,
@@ -103,3 +105,23 @@ def test_generate_questions_dry_run_is_core_only(db_session):
     p = CompanyProfile(name="Acme", uses_ai=True, handles_personal_data=True)
     out = generate_questions(db_session, None, p, dry_run=True)
     assert _ids(out["questions"]) == _ids(core_questions(p))
+
+
+def test_size_bands_resolve_the_thresholds_that_gate_instruments():
+    # Found via run-to-run verdict flips on a real brief: the old coarse
+    # "large (250+)" bucket couldn't answer the CSRD 1,000-employee/€450M
+    # test or the NIS2 size test, so the model guessed differently each run.
+    # The bands must carry the numbers the instruments actually turn on.
+    opts = " ".join(SIZE_QUESTION["options"])
+    assert "1,000+" in opts and "€450M" in opts  # CSRD line
+    assert "<50 staff" in opts  # NIS2 digital-provider line
+    assert "CSRD" in SIZE_QUESTION["why_it_matters"]
+
+
+def test_extras_ask_only_when_a_verdict_hinges_on_an_unanswered_fact():
+    # Extra questions are the exception, not the default: the LLM-extras
+    # prompt asks only when a major instrument's verdict hinges on a fact
+    # the profile leaves open.
+    assert "genuine doubt" in EXTRAS_SYSTEM
+    assert "asking is the exception, not the default" in EXTRAS_SYSTEM
+    assert "propose zero questions" in EXTRAS_SYSTEM

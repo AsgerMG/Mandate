@@ -249,6 +249,8 @@ def brief(
 
     if result.get("briefing"):
         typer.echo(result["briefing"])
+        for note in result.get("canon_notes", []):
+            typer.echo(f"\n⚠ Unresolved consistency finding: {note}")
         typer.echo("\n— Sources —")
         seen = set()
         for c in result["citations"]:

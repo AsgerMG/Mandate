@@ -68,6 +68,8 @@ export type ScopingQuestion = {
   why_it_matters: string;
   kind: "choice" | "multi" | "text";
   options: string[];
+  group?: string;
+  placeholder?: string;
 };
 
 export type BriefResult = {
