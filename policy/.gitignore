@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Env / secrets
+.env
+*.local
+
+# Persistent local embedded database (DATABASE_URL=local)
+.localdb/
+
+# Corpus export (materialized view of the DB; regenerate with `ept export`)
+exports/
+
+# Node / website
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Claude Code local session config (machine-specific permissions, paths)
+.claude/

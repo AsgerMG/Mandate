@@ -1,0 +1,82 @@
+"""Engine / session factory and schema bootstrap.
+
+The engine is built lazily on first use (not at import) so that importing the
+models or pipeline never has the side effect of starting a database — and so
+the ``local`` default can boot the embedded Postgres only when something
+actually needs a connection.
+"""
+
+from __future__ import annotations
+
+from collections.abc import Iterator
+from contextlib import contextmanager
+
+from sqlalchemy import Engine, create_engine, text
+from sqlalchemy.orm import Session, sessionmaker
+
+from . import models  # noqa: F401  (ensure models register on Base.metadata)
+from .base import Base
+from .config import get_settings
+
+_engine: Engine | None = None
+_session_factory: sessionmaker[Session] | None = None
+
+
+def _resolve_url() -> str:
+    url = get_settings().database_url
+    if url in ("local", "", None):
+        from .local_db import ensure_local_db
+
+        return ensure_local_db()
+    return url
+
+
+def get_engine() -> Engine:
+    global _engine
+    if _engine is None:
+        _engine = create_engine(_resolve_url(), pool_pre_ping=True, future=True)
+    return _engine
+
+
+def get_sessionmaker() -> sessionmaker[Session]:
+    global _session_factory
+    if _session_factory is None:
+        _session_factory = sessionmaker(
+            bind=get_engine(), expire_on_commit=False, class_=Session
+        )
+    return _session_factory
+
+
+@contextmanager
+def session_scope() -> Iterator[Session]:
+    """Transactional session: commit on success, rollback on error."""
+    session = get_sessionmaker()()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
+
+def init_db() -> None:
+    """Create the pgvector extension and all tables.
+
+    Convenience bootstrap for early development. Once the schema stabilizes we
+    switch to Alembic migrations (the constraint naming convention is already
+    set up for clean autogenerate).
+    """
+    engine = get_engine()
+    with engine.begin() as conn:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+    Base.metadata.create_all(engine)
+    # HNSW index for fast cosine similarity over passage embeddings.
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS ix_passages_embedding_hnsw "
+                "ON passages USING hnsw (embedding vector_cosine_ops)"
+            )
+        )
