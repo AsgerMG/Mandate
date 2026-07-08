@@ -77,7 +77,13 @@ export type BriefResult = {
   passages: Passage[];
   briefing: string | null;
   citations: Citation[];
+  canon_notes?: string[];
   dry_run: boolean;
+};
+
+export type BriefStage = {
+  stage: string;
+  label: string;
 };
 
 export type BriefInput = {
@@ -120,7 +126,45 @@ async function post<T>(path: string, body: unknown): Promise<T> {
   return res.json();
 }
 
-export const postBrief = (body: BriefInput) => post<BriefResult>("/api/brief", body);
+/**
+ * /api/brief streams newline-delimited JSON — one `{type: "status", ...}`
+ * line per real stage the analyst is working through (see generate_briefing's
+ * on_stage), then a final `{type: "result", ...}`. This is what lets the UI
+ * show what's actually happening during the report's 1-3 minute generation
+ * instead of a silent wait; `onStage` fires once per line as it arrives.
+ */
+export async function postBrief(
+  body: BriefInput,
+  onStage?: (stage: BriefStage) => void
+): Promise<BriefResult> {
+  const res = await fetch(`${BASE}/api/brief`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok || !res.body) throw new Error(`API ${res.status}: /api/brief`);
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? ""; // last split piece may be a partial line — hold it
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const event = JSON.parse(line);
+      if (event.type === "status") onStage?.({ stage: event.stage, label: event.label });
+      else if (event.type === "error") throw new Error(event.message);
+      else if (event.type === "result") return event as BriefResult;
+    }
+  }
+  throw new Error("Report stream ended before a result arrived.");
+}
+
 export const postQuestions = (body: BriefInput) =>
   post<{ questions: ScopingQuestion[] }>("/api/questions", body);
 

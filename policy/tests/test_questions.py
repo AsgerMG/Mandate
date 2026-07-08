@@ -2,8 +2,22 @@
 
 from __future__ import annotations
 
+import datetime as dt
+
+from data.config import get_settings
+from data.models import (
+    Document,
+    DocumentType,
+    DocumentVersion,
+    Jurisdiction,
+    LifecycleStage,
+    Passage,
+    Source,
+)
+from etl.enrichment import embed_pending
 from etl.intelligence import CompanyProfile, core_questions
 from etl.intelligence.questions import (
+    AI_ROLE_QUESTION,
     COMPETITIVE_CONTEXT_QUESTION,
     EXTRAS_SYSTEM,
     SIZE_QUESTION,
@@ -11,6 +25,43 @@ from etl.intelligence.questions import (
     generate_questions,
     parse_extras_response,
 )
+
+DIM = get_settings().embedding_dim
+
+
+class _FakeEmbedder:
+    dim = DIM
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        out = []
+        for t in texts:
+            v = [0.0] * DIM
+            tl = t.lower()
+            v[0] = float(tl.count("ai")) + float("intelligence" in tl)
+            v[1] = float(tl.count("fish"))
+            v[2] = 1.0
+            out.append(v)
+        return out
+
+
+class _Resp:
+    def __init__(self, content):
+        self.content = content
+
+
+class _FakeMessages:
+    def __init__(self, response):
+        self._response = response
+        self.kwargs = None
+
+    def create(self, **kwargs):
+        self.kwargs = kwargs
+        return self._response
+
+
+class _FakeClient:
+    def __init__(self, response):
+        self.messages = _FakeMessages(response)
 
 
 def _ids(questions: list[dict]) -> set[str]:
@@ -81,7 +132,24 @@ def test_build_extras_request_shape():
     passages = [{"text": "high-risk AI", "celex": "C1", "title": "T"}]
     req = build_extras_request(p, passages, ["ai_role"])
     assert req["tool_choice"] == {"type": "tool", "name": "propose_scoping_questions"}
-    assert "already being asked: ai_role" in req["messages"][0]["content"].lower()
+    assert "being asked this round (do not duplicate): ai_role" in req["messages"][0]["content"].lower()
+
+
+def test_build_extras_request_surfaces_already_known_scoping_facts():
+    # Found via a real run: monthly_eu_users was already answered, but the
+    # extras prompt never said so, so the model proposed a near-duplicate
+    # question about the same threshold. scoping_lines() output must appear
+    # so the model can see it's already settled.
+    p = CompanyProfile(
+        name="Acme",
+        monthly_eu_users="1M–45M",
+        answers={"competitive_context": "No dominant rival."},
+    )
+    req = build_extras_request(p, [{"text": "x", "celex": "C1", "title": "T"}], [])
+    content = req["messages"][0]["content"]
+    assert "Already-known scoping facts:" in content
+    assert "Approx. monthly active EU users: 1M–45M." in content
+    assert "Competitive context: No dominant rival." in content
 
 
 def test_parse_extras_drops_duplicates_and_fills_defaults():
@@ -125,3 +193,95 @@ def test_extras_ask_only_when_a_verdict_hinges_on_an_unanswered_fact():
     assert "genuine doubt" in EXTRAS_SYSTEM
     assert "asking is the exception, not the default" in EXTRAS_SYSTEM
     assert "propose zero questions" in EXTRAS_SYSTEM
+
+
+def test_extras_prompt_forbids_fishing_from_canon_presence():
+    # Found via live testing right after adding canon-guaranteed retrieval to
+    # the extras step (2026-07-08): a pure invoicing SaaS company with no
+    # hardware signal anywhere in its profile got asked about "IoT-enabled
+    # products" and "connected accounting hardware" — the model treated a
+    # CRA passage's mere presence (guaranteed for every company, so the
+    # final report can say Out of Scope) as if it were evidence of doubt.
+    # The prompt must explicitly kill that inference.
+    assert "a passage being retrieved is NOT evidence of doubt" in EXTRAS_SYSTEM
+    assert "gets ZERO product-safety or" in EXTRAS_SYSTEM
+    assert "zero is a common, correct outcome" in EXTRAS_SYSTEM
+
+
+def test_extras_prompt_requires_instrument_diversity():
+    # Found on a real idealo run: a competitive-context answer naming Google
+    # made retrieval DMA-heavy, and because extras questions are generated
+    # FROM retrieved passages, the questions skewed DMA too — a feedback
+    # loop. The extras prompt must demand spread across instruments and
+    # refuse to let a named rival dominate the question set.
+    assert "never propose two questions about the same instrument" in EXTRAS_SYSTEM
+    assert "must not pull every question toward the competition file" in EXTRAS_SYSTEM
+
+
+def test_ai_role_options_split_gpai_provider_from_system_provider():
+    # The AI Act's heaviest tier (Chapter V, GPAI obligations) only binds
+    # companies that train their own general-purpose model — not every
+    # "provider" of an AI system. Same question, same single click, sharper
+    # answer: no new friction for AI companies that already answer this.
+    opts = " ".join(AI_ROLE_QUESTION["options"])
+    assert "our own general-purpose AI model" in opts
+    assert "on top of others' models" in opts
+    assert "GPAI" in AI_ROLE_QUESTION["why_it_matters"]
+
+
+def test_generate_questions_extras_get_canon_guaranteed_retrieval(db_session):
+    # Mirrors generate_briefing's canon guarantee (see _cap_per_document /
+    # canon_passages tests in test_briefing.py): without it, an
+    # off-vocabulary instrument (here NIS2) never reaches the extras model
+    # at k=1, so its activity question can never even be considered — not
+    # because it's irrelevant, but because retrieval missed it.
+    src = Source(key="tq", name="tq", jurisdiction=Jurisdiction.EU)
+    db_session.add(src)
+    db_session.flush()
+    ai_doc = Document(
+        source_id=src.id,
+        external_id="Dq1",
+        title="AI Act",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.REGULATION,
+        lifecycle_stage=LifecycleStage.IN_FORCE,
+        url="http://x/ai",
+        celex="32024R1689",
+    )
+    nis2_doc = Document(
+        source_id=src.id,
+        external_id="Dq2",
+        title="NIS2",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.DIRECTIVE,
+        lifecycle_stage=LifecycleStage.IN_FORCE,
+        url="http://x/nis2",
+        celex="32022L2555",
+    )
+    db_session.add_all([ai_doc, nis2_doc])
+    db_session.flush()
+    for doc, text in [
+        (ai_doc, "ai obligations and intelligence"),
+        (nis2_doc, "fish quota reporting duties"),
+    ]:
+        ver = DocumentVersion(
+            document_id=doc.id,
+            content_hash=f"h{doc.id}",
+            text="t",
+            char_count=1,
+            fetched_at=dt.datetime.now(dt.UTC),
+        )
+        db_session.add(ver)
+        db_session.flush()
+        db_session.add(
+            Passage(version_id=ver.id, ordinal=0, text=text, char_start=0, char_end=len(text))
+        )
+    db_session.commit()
+    embed_pending(db_session, _FakeEmbedder())
+
+    client = _FakeClient(_Resp([{"type": "tool_use", "input": {"questions": []}}]))
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    generate_questions(db_session, _FakeEmbedder(), profile, k=1, client=client)
+
+    sent = client.messages.kwargs["messages"][0]["content"]
+    assert "32022L2555" in sent  # NIS2 present despite losing the open top-1

@@ -506,6 +506,129 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       shipped). Name-matching is deliberately lenient (acronym / bigram /
       distinctive-word) so a spurious mismatch — the costlier error — stays
       rare
+- ✅ Activity-hinge questions without adding friction (2026-07-08): the
+      user's constraint was explicit — capture just enough to tailor,
+      never ask a SaaS company about manufacturing. Three changes, all
+      inside the existing conditional-question mechanism, zero new
+      questions added to the static set: (1) the LLM-extras retrieval step
+      now gets the same `canon_passages()` guarantee `generate_briefing`
+      already has, so an instrument whose activity question matters most
+      (CRA, P2B, ECGT) can't lose its chance to be asked about just because
+      it doesn't win the open top-k for a thin/off-vocabulary description;
+      (2) `build_extras_request()` now includes `profile.scoping_lines()` —
+      previously it only saw name/description/sectors/two booleans, so it
+      could (and did, on a real PriceScout run) propose a question
+      re-deriving a fact — monthly EU users — already answered; (3) the
+      `ai_role` question's "provider" option split into GPAI-model-provider
+      vs. system-provider-on-others'-models, since only the former carries
+      the AI Act's Chapter V duties — same single click, no new screen.
+      Caught and fixed during live verification: change (1) initially
+      backfired — a pure invoicing SaaS company got asked about "connected
+      accounting hardware" because a CRA passage's mere guaranteed presence
+      in context read to the model as grounds for doubt. Tightened
+      EXTRAS_SYSTEM to state explicitly that canon passages are guaranteed
+      for every company regardless of relevance (so the report can say Out
+      of Scope), and that a question needs the company's own profile to
+      give a specific, plausible reason — not an invented hypothetical.
+      Verified live post-fix: SaaS company → 0 extras; hardware company
+      (thin description) → 2 well-targeted questions (Data Act connected-
+      product data access, CRA remote-updatable firmware); PriceScout →
+      duplicate MAU question gone, replaced by two non-duplicate P2B/DSA
+      questions.
+- ✅ Draft/revise call-count reduction + prompt caching (2026-07-07): brief
+      generation was taking 86-192s even before retries, and one real run hit
+      316s — traced to the citation-retry safety net always re-running the
+      *entire* draft+revise pass (2 calls) even when only revise had dropped
+      citations the draft already had. Three changes, no prompt/effort/
+      quality change: (1) `cache_control` on the last passage document block
+      — confirmed working via a direct probe (call 1: 7,812 tokens written to
+      cache; call 2, same passages: 7,812 read, 0 written) — so every call
+      after the first within one report reuses the already-processed source
+      text instead of reprocessing it; (2) citations now checked right after
+      the draft, before the mandatory revise call, so a citation-less draft
+      retries itself alone instead of paying for draft+revise again; (3) the
+      deterministic canon check now runs on the draft too, folding any fix
+      into the same revise call instead of a dedicated 3rd call. Also added:
+      when revise's own rewrite drops citations the draft had (the actual
+      316s root cause), retry revise alone on the same draft before falling
+      back to the full-pass retry.
+- ✅ Sub-140s latency target vs. quality — real floor found, accepted as a
+      soft target (2026-07-07): a 3-profile sweep after the fixes above measured
+      139.5s / 144.8s / 258.1s end to end (target: 120-140s). Root cause is
+      structural, not a bug: the single mandatory draft call alone measured
+      77-117s across profiles (effort=medium, adaptive thinking, ~1000-word
+      structured output with two tables) — caching cannot help this call
+      (nothing to read from cache yet on the first call of a report), so this
+      is the real latency floor, not overhead. The 258s run additionally
+      needed a full draft retry (the draft came back with zero citations; the
+      retry redid the entire ~120s draft from scratch). Any further latency
+      win now requires touching generation itself — lower draft effort,
+      shorter target length, or a looser citation-retry threshold — all real
+      quality trade-offs, not free reordering. Decision (2026-07-07): accept
+      120-140s as a soft target rather than touch generation quality to force
+      a hard ceiling — the live stage-progress panel (below) already makes
+      the wait transparent, and occasional runs past 140s are an acceptable
+      trade against not degrading report quality. Revisit if it recurs often
+      enough to matter. Also surfaced in the same sweep: the Acme Robotics
+      run shipped with only 1 resolved citation across a ~9,300-character
+      report with ~10 compliance-table rows — passes the existing "zero
+      citations" retry check (1 > 0) but is barely better grounded than zero
+      for a product whose core promise is "every claim traced to its
+      source." The retry threshold checks presence, not sufficiency, of
+      citations — worth a look independent of the latency question.
+- ✅ Deterministic Compliance-table row sort (2026-07-07), from user review of
+      a real idealo run: the model rendered a Prio-2 In-Scope row (ePrivacy)
+      *after* the Prio-3 AI Act row, violating SYSTEM_PROMPT's explicit
+      "Prio ascending, In Scope before Monitor" rule. Ordering is pure
+      presentation with a fully specified rule, so — unlike names/verdicts,
+      which stay the model's call — it's now enforced in code:
+      `_sort_compliance_table()` stable-sorts body rows of any table whose
+      header has a Prio column (the appendix has none, so it's untouched)
+      after all generation/fix passes. Same user review also verified a
+      confidentiality worry: the report's "Staff Working Document" reference
+      resolved to the Commission's own public DMA-review SWD (52026SC0123,
+      ingested from EUR-Lex) — NOT the user's internal tracker template,
+      which has never been ingested (no upload path exists; all sources are
+      official public feeds; the tracker was only used manually as a
+      KEY_ACTS gap cross-check).
+- ✅ Competitive-context retrieval bias (2026-07-07/08), same idealo review:
+      naming Google as the dominant rival made the whole run DMA-heavy —
+      DMA got the sole Prio-1 row, and the LLM-extras scoping questions
+      skewed DMA too. Mechanics: (a) the dedicated competitive retrieval
+      pass guarantees rival-focused passages a seat (by design, bounded at
+      4); (b) the freshly ingested DMA Art. 53 review report + SWD are
+      large, recent, DMA-dense docs that won many open-retrieval slots on
+      raw similarity; (c) extras questions are generated FROM retrieved
+      passages, so retrieval bias compounds into question bias. Decision:
+      KEEP the competitive-context question — the report's grounding rules
+      deliberately forbid inferring a competitor from world knowledge
+      ("never infer a competitor's identity from context alone"), so the
+      question is the only guardrail-compatible source for the strategic-
+      play angle; removing it loses that half of the product or reopens
+      hallucinated-rival risk. Bounded its influence instead: (b) fixed via
+      `_cap_per_document()` — open retrieval now over-fetches 2k and keeps
+      at most 3 passages per document, backfilling capped slots with other
+      documents' next-best; (c) fixed via EXTRAS_SYSTEM diversity rule —
+      never two questions on one instrument, retrieval volume ≠ open
+      scoping facts, a named rival must not pull every question toward the
+      competition file.
+- ✅ Conditional-applicability verdicts — activity-hinge rule (2026-07-08),
+      same review: ECGT (2024/825) got a flat "In Scope" for idealo on the
+      comparison-tool provision — but that provision only bites if the
+      platform actually compares environmental/social characteristics
+      (idealo compares prices). The hinge rule covered quantitative
+      thresholds and value-chain roles; an *activity* hinge ("does the
+      company do X at all?") slipped through to a flat verdict — the exact
+      credibility failure the verdict discipline exists to prevent.
+      Extended SYSTEM_PROMPT's deterministic exception to activity facts
+      ("must NOT get a flat In Scope merely because the company is the
+      kind of business that COULD do X") with a mirror discipline so it
+      can't overcorrect (profile answers the fact → commit, Monitor is
+      never a hedge), and added VERDICT HINGE CHECK as revise-pass check
+      (8) with row-changing authority like the identity check. Same row's
+      Why cell was near-verbatim directive text without quote marks —
+      citation-hygiene defect surviving the revise pass; existing check
+      (5) covers it, kept as a watch item.
 - ⬜ Jurisdiction/lifecycle/sector metadata filters on retrieval
 - ⬜ Run a real briefing once ANTHROPIC_API_KEY is provided
 - ⬜ Optional hosted embedder (Voyage) for higher retrieval quality
@@ -521,6 +644,23 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ✅ Next.js app in `website/` (App Router, TS) — builds clean, serves 200
 - ✅ Company profile intake → briefing UI (sources when no key; cited when key)
 - ✅ "What's moving" dashboard grouped by lifecycle stage + document detail view
+- ✅ Scoping step regrouped into a paginated wizard + vertical answer rows
+      (2026-07-07): the single scoping screen could show up to 9 questions at
+      once with horizontal chip-cloud answers — friction flagged directly by
+      the user. Regrouped into business/users_data/ai/context/more sections
+      (one screen per group, with its own sub-progress indicator), switched
+      choice/multi answers to a vertical stacked-row layout, and trimmed the
+      competitive-context question from a ~100-word single ask down to one
+      sentence with the examples moved into the textarea placeholder.
+- ✅ Live stage-progress panel during report generation (2026-07-07):
+      `/api/brief` now streams newline-delimited JSON — a status event each
+      time `generate_briefing`'s `on_stage` callback fires for a real unit of
+      work (retrieval, draft, revise, and the conditional citation/canon
+      recovery passes), then a final result event — instead of one JSON body
+      returned after a silent 1-3+ minute wait. The brief page shows an
+      elapsed-time counter and the live stage list in place of a static
+      button label. Verified live in-browser: stages append progressively as
+      each real LLM call starts, no console errors.
 - ⬜ Briefing as a conversational/chat UI (currently single-shot)
 - ⬜ Render inline citation markers within the briefing text (not just a list)
 - ⬜ Deploy (API + site) once a shared Postgres (Neon) is chosen

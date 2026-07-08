@@ -30,8 +30,9 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from data.config import get_settings
-from etl.enrichment import Embedder, semantic_search
+from etl.enrichment import Embedder, canon_passages, semantic_search
 
+from .briefing import _CANON_CELEX, _merge_passages
 from .profile import CompanyProfile
 
 # The answer `id`s deliberately match CompanyProfile field names, so the
@@ -68,12 +69,16 @@ AI_ROLE_QUESTION = {
     "why_it_matters": (
         "The AI Act assigns most duties to *providers* (who develop or place AI "
         "systems on the market) and a lighter set to *deployers* (who use them). "
-        "Getting this wrong misstates your whole obligation set."
+        "Getting this wrong misstates your whole obligation set. Providers split "
+        "further: training your own general-purpose model carries the Act's "
+        "heaviest tier (Chapter V, GPAI obligations) — building a product on top of "
+        "someone else's model does not, even though both count as 'providing' AI."
     ),
     "kind": "choice",
     "options": [
-        "provider — we develop/sell AI systems",
-        "deployer — we use third-party AI",
+        "provider — we develop/train our own general-purpose AI model",
+        "provider — we build AI systems/products on top of others' models",
+        "deployer — we use third-party AI tools",
         "both",
         "none",
     ],
@@ -228,9 +233,28 @@ EXTRAS_SYSTEM = (
     "genuine doubt: if the in/out-of-scope verdict for a major retrieved instrument "
     "hinges on a specific fact the profile does not answer (a quantitative threshold, "
     "a role in a value chain, an activity), that is exactly the question to ask — but "
-    "asking is the exception, not the default. Never re-ask what the profile or the "
-    "standard scoping set already covers (size, AI role, EU user count, data "
-    "categories, customer type). If nothing more is needed, propose zero questions."
+    "asking is the exception, not the default. Spread the questions across DIFFERENT "
+    "instruments: never propose two questions about the same instrument, and never "
+    "let one theme dominate the set just because it dominates the retrieved passages "
+    "— retrieval volume reflects what the corpus happens to hold (a fresh enforcement "
+    "report, a named competitor), not which scoping facts are genuinely open. In "
+    "particular, a competitive-context answer naming a rival must not pull every "
+    "question toward the competition file; the company's own compliance hinges come "
+    "first. CRITICAL — a passage being retrieved is NOT evidence of doubt: every "
+    "foundational EU tech-policy act (GDPR, DMA, DSA, AI Act, CRA, NIS2, DORA, MiCA...) "
+    "is guaranteed a passage in your context for EVERY company, specifically so the "
+    "final report can state 'Out of Scope' with a citation instead of silently omitting "
+    "the instrument — its presence tells you nothing about relevance to THIS company. "
+    "Before proposing a question tied to an instrument, check that the company's own "
+    "name, description, or sector already gives a plausible, specific reason it might "
+    "apply — never invent a hypothetical ('might they also...', 'could they possibly...') "
+    "for an activity nothing in the profile suggests. A cloud software company with no "
+    "hardware/manufacturing signal anywhere in its profile gets ZERO product-safety or "
+    "connected-device questions, no matter what passages are in context — asking 'just "
+    "in case' is exactly the failure this rule exists to prevent. Never re-ask what the "
+    "profile or the standard scoping set already covers (size, AI role, EU user count, "
+    "data categories, customer type). If nothing more is needed, propose zero questions "
+    "— zero is a common, correct outcome, not a fallback."
 )
 
 
@@ -242,12 +266,17 @@ def build_extras_request(
     corpus = "\n\n".join(
         f"[{p.get('celex') or p.get('title')}] {p['text'][:600]}" for p in passages
     )
+    # Everything already known — not just the Step-1 booleans — so the model
+    # can't propose a question that duplicates a fact already on the profile
+    # (e.g. re-asking the EU-user-count band after it's been answered).
+    scoping = "\n".join(f"- {line}" for line in profile.scoping_lines())
     prompt = (
         f"Company: {profile.name}\n"
         f"Profile: {profile.description or '(none)'}\n"
         f"Sectors: {', '.join(profile.sectors) or '(unspecified)'}\n"
         f"Uses AI: {profile.uses_ai} | Personal data: {profile.handles_personal_data}\n"
-        f"Already being asked: {', '.join(already_asked) or '(nothing)'}\n\n"
+        + (f"Already-known scoping facts:\n{scoping}\n" if scoping else "")
+        + f"Being asked this round (do not duplicate): {', '.join(already_asked) or '(nothing)'}\n\n"
         f"Retrieved policy passages:\n{corpus}"
     )
     return {
@@ -292,7 +321,16 @@ def generate_questions(
     asked_ids = [q["id"] for q in questions]
 
     if not dry_run:
-        passages = semantic_search(session, embedder, profile.to_query(), k=k)
+        query = profile.to_query()
+        passages = semantic_search(session, embedder, query, k=k)
+        # Same guarantee generate_briefing() gives the report itself: every
+        # foundational act gets a seat in context regardless of whether it
+        # wins open retrieval. Without this, an instrument whose activity
+        # question would matter most (CRA, P2B, ECGT) can simply lose the
+        # open top-k for a thin or off-vocabulary company description, and
+        # its question never even gets considered.
+        canon = canon_passages(session, embedder, query, _CANON_CELEX)
+        passages = _merge_passages(passages, canon)
         if passages:
             if client is None:
                 from .llm import get_client

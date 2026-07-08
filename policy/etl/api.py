@@ -7,6 +7,9 @@ and reused. The Next.js site (website/) talks to this over HTTP.
 
 from __future__ import annotations
 
+import asyncio
+import json
+import queue
 import threading
 import time
 from functools import lru_cache
@@ -14,6 +17,7 @@ from functools import lru_cache
 import structlog
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 
@@ -203,34 +207,73 @@ def questions(req: BriefRequest) -> dict:
 
 
 @app.post("/api/brief")
-def brief(req: BriefRequest) -> dict:
+def brief(req: BriefRequest) -> StreamingResponse:
+    """Streams newline-delimited JSON: one `{"type": "status", ...}` line per
+    real stage generate_briefing's on_stage reports (retrieval, each LLM
+    call), then a final `{"type": "result", ...}` line with the finished
+    report — or `{"type": "error", ...}` if generation failed. The report
+    takes 1-3 minutes; this is what lets the front-end show what the model is
+    actually doing instead of a silent wait. generate_briefing itself is
+    synchronous (sequential LLM calls), so it runs on a worker thread and
+    reports progress through a queue the async generator below drains."""
     dry = not has_api_key()
-    started = time.monotonic()
-    with session_scope() as s:
-        result = generate_briefing(s, _embedder(), _profile(req), k=req.k, dry_run=dry)
-    elapsed = round(time.monotonic() - started, 1)
-    # Real wall-clock, not a guess — the two-pass sharpen plus canon-guaranteed
-    # retrieval means latency isn't obvious from request volume alone; log it
-    # so a "this felt slow" report can be checked against actual numbers.
-    log.info(
-        "brief_generated",
-        company=req.name,
-        elapsed_seconds=elapsed,
-        passages=len(result["passages"]),
-        dry_run=dry,
-    )
-    return {
-        "query": result["query"],
-        "passages": result["passages"],
-        "briefing": result.get("briefing"),
-        "citations": result.get("citations", []),
-        # Residual findings from the deterministic canon cross-check that the
-        # one correction pass couldn't resolve — the site can surface these
-        # so an unresolved identity/coverage problem is never invisible.
-        "canon_notes": result.get("canon_notes", []),
-        "dry_run": dry,
-        "elapsed_seconds": elapsed,
-    }
+    events: queue.Queue = queue.Queue()
+
+    def on_stage(stage: str, label: str) -> None:
+        events.put({"type": "status", "stage": stage, "label": label})
+
+    def run() -> None:
+        started = time.monotonic()
+        try:
+            with session_scope() as s:
+                result = generate_briefing(
+                    s, _embedder(), _profile(req), k=req.k, dry_run=dry, on_stage=on_stage
+                )
+            elapsed = round(time.monotonic() - started, 1)
+            # Real wall-clock, not a guess — the two-pass sharpen plus
+            # canon-guaranteed retrieval means latency isn't obvious from
+            # request volume alone; log it so a "this felt slow" report can
+            # be checked against actual numbers.
+            log.info(
+                "brief_generated",
+                company=req.name,
+                elapsed_seconds=elapsed,
+                passages=len(result["passages"]),
+                dry_run=dry,
+            )
+            events.put(
+                {
+                    "type": "result",
+                    "query": result["query"],
+                    "passages": result["passages"],
+                    "briefing": result.get("briefing"),
+                    "citations": result.get("citations", []),
+                    # Residual findings from the deterministic canon
+                    # cross-check that the one correction pass couldn't
+                    # resolve — the site can surface these so an unresolved
+                    # identity/coverage problem is never invisible.
+                    "canon_notes": result.get("canon_notes", []),
+                    "dry_run": dry,
+                    "elapsed_seconds": elapsed,
+                }
+            )
+        except Exception as exc:
+            log.error("brief_generation_failed", company=req.name, error=str(exc))
+            events.put({"type": "error", "message": str(exc)})
+        finally:
+            events.put(None)  # sentinel: stream is done
+
+    threading.Thread(target=run, daemon=True).start()
+
+    async def event_stream():
+        loop = asyncio.get_event_loop()
+        while True:
+            item = await loop.run_in_executor(None, events.get)
+            if item is None:
+                break
+            yield json.dumps(item) + "\n"
+
+    return StreamingResponse(event_stream(), media_type="application/x-ndjson")
 
 
 _refresh_lock = threading.Lock()

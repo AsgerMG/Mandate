@@ -24,8 +24,10 @@ from etl.intelligence import CompanyProfile, build_documents, build_request, gen
 from etl.intelligence.briefing import (
     SYSTEM_PROMPT,
     _canon_issues,
+    _cap_per_document,
     _competitive_query,
     _merge_passages,
+    _sort_compliance_table,
     parse_response,
 )
 
@@ -164,6 +166,22 @@ def test_system_prompt_hinge_rule_makes_doubt_deterministic():
     assert "hinges on a quantitative threshold" in SYSTEM_PROMPT
     assert "Never resolve an unanswered threshold" in SYSTEM_PROMPT
     assert "the same company must get the same verdict on every run" in SYSTEM_PROMPT
+
+
+def test_system_prompt_hinge_rule_covers_activity_hinges():
+    # Found on a real idealo run: ECGT got a flat In Scope on the
+    # comparison-tool provision even though it only applies if the platform
+    # actually compares environmental characteristics — an activity fact the
+    # profile never established. Activity hinges must bind like numeric ones,
+    # and the mirror discipline (profile answers it → commit, don't hedge)
+    # keeps the rule from turning every verdict into Monitor.
+    assert "activity fact the profile does not answer" in SYSTEM_PROMPT
+    assert "kind of business that COULD do X" in SYSTEM_PROMPT
+    assert "Monitor is reserved for genuinely unanswered" in SYSTEM_PROMPT
+    from etl.intelligence.briefing import REVISE_INSTRUCTION
+
+    assert "VERDICT HINGE CHECK" in REVISE_INSTRUCTION
+    assert "checks (7) and (8)" in REVISE_INSTRUCTION
 
 
 # --- deterministic canon consistency check -----------------------------------
@@ -398,6 +416,62 @@ def test_parse_response_numbers_sources_stably():
     out = parse_response(blocks, passages)
     assert out["briefing"] == "A[1] B[2] C[1]"
     assert [c["n"] for c in out["citations"]] == [1, 2, 1]
+
+
+def test_sort_compliance_table_enforces_prio_then_verdict_order():
+    # Reproduces a real run (idealo, 2026-07-07): a Prio-2 In-Scope row
+    # rendered after the Prio-3 AI Act row, violating the prompt's ordering
+    # rule. The sort must fix order without touching content, and must leave
+    # the Prio-less appendix table alone.
+    briefing = (
+        "# Brief\n## Compliance exposure\n"
+        "| Instrument | Prio | Verdict | Why / Trigger |\n|---|---|---|---|\n"
+        "| DMA | 1 | **Monitor** | live case [1] |\n"
+        "| GDPR | 2 | **In Scope** | data [2] |\n"
+        "| AI Act | 3 | **Monitor** | deployer |\n"
+        "| ePrivacy | 2 | **In Scope** | pixels [3] |\n"
+        "| P2B | 2 | **Monitor** | ranking |\n"
+        "\nProse between tables.\n\n"
+        "## Appendix: Out of Scope Register\n"
+        "| Instrument | Why Out of Scope | What Would Change It |\n|---|---|---|\n"
+        "| ZZZ Act | not applicable | nothing |\n"
+        "| AAA Act | not applicable | nothing |\n"
+    )
+    sorted_briefing = _sort_compliance_table(briefing)
+    rows = [
+        line.strip().strip("|").split("|")[0].strip()
+        for line in sorted_briefing.splitlines()
+        if line.strip().startswith("|") and "Prio" not in line and "---" not in line
+        and "Out of Scope Register" not in line and "Why Out of Scope" not in line
+    ]
+    compliance_rows = rows[: rows.index("ZZZ Act")] if "ZZZ Act" in rows else rows
+    # Prio 1 first; within Prio 2, In Scope (GDPR, ePrivacy) before Monitor (P2B);
+    # Prio 3 last. Stable: GDPR keeps its place ahead of ePrivacy.
+    assert compliance_rows == ["DMA", "GDPR", "ePrivacy", "P2B", "AI Act"]
+    # Appendix table (no Prio column) untouched — ZZZ still before AAA.
+    assert sorted_briefing.index("ZZZ Act") < sorted_briefing.index("AAA Act")
+    # Content preserved — citation markers travel with their rows.
+    assert "| ePrivacy | 2 | **In Scope** | pixels [3] |" in sorted_briefing
+
+
+def test_sort_compliance_table_no_table_is_noop():
+    text = "# Brief\n\nJust prose, no tables at all.\n"
+    assert _sort_compliance_table(text) == text
+
+
+def test_cap_per_document_restores_breadth():
+    # Found on a real idealo run: the freshly-ingested DMA review SWD won a
+    # large share of the open top-k on raw similarity, crowding other
+    # instruments out of context. Cap keeps the best N per document,
+    # preserving best-first order within and across documents.
+    swd = [{"celex": "52026SC0123", "url": "u1", "char_start": i, "text": "x"} for i in range(5)]
+    gdpr = {"celex": "32016R0679", "url": "u2", "char_start": 0, "text": "y"}
+    untitled = {"celex": None, "url": "u3", "char_start": 0, "text": "z"}
+    capped = _cap_per_document([*swd[:2], gdpr, *swd[2:], untitled], max_per_doc=3)
+    swd_kept = [p for p in capped if p.get("celex") == "52026SC0123"]
+    assert len(swd_kept) == 3  # best three kept, order preserved
+    assert [p["char_start"] for p in swd_kept] == [0, 1, 2]
+    assert gdpr in capped and untitled in capped  # other docs untouched
 
 
 # --- full orchestration with fakes ------------------------------------------

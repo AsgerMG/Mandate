@@ -15,7 +15,7 @@ retrieval + request assembly + citation parsing are all testable without a key.
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, Callable
 
 from sqlalchemy.orm import Session
 
@@ -78,13 +78,25 @@ SYSTEM_PROMPT = (
     "'may', 'possibly', 'TBD', 'not defined', or hedge in prose. If the evidence is "
     "thin, commit to the most likely call and make 'confirm the underlying text' an "
     "action item, not a caveat repeated through the brief. ONE deterministic "
-    "exception: when a verdict hinges on a quantitative threshold or role fact the "
-    "profile does not answer (an employee/turnover line, a user count, a value-chain "
-    "role), the verdict is ALWAYS '**Monitor**' with the hinge named in Why/Trigger "
-    "('hinges on whether turnover exceeds €450M — confirm'). Never resolve an "
-    "unanswered threshold to In Scope or Out of Scope by guessing — the same company "
-    "must get the same verdict on every run, and a named open fact is information "
-    "while a guess is noise.\n\n"
+    "exception: when a verdict hinges on a quantitative threshold, role fact, or "
+    "activity fact the profile does not answer (an employee/turnover line, a user "
+    "count, a value-chain role, or whether the company actually performs the "
+    "specific activity a provision regulates), the verdict is ALWAYS '**Monitor**' "
+    "with the hinge named in Why/Trigger ('hinges on whether turnover exceeds €450M "
+    "— confirm'). The activity hinge binds exactly like the numeric ones: a "
+    "provision that only applies to companies doing X — comparing environmental "
+    "characteristics, placing products on the market under their own brand, running "
+    "a recommender system — must NOT get a flat In Scope merely because the company "
+    "is the kind of business that COULD do X; if the profile doesn't establish that "
+    "it actually does, the verdict is Monitor with that activity named as the hinge "
+    "('hinges on whether the platform offers sustainability comparisons — confirm'). "
+    "Never resolve an unanswered threshold to In Scope or Out of Scope by guessing — "
+    "the same company must get the same verdict on every run, and a named open fact "
+    "is information while a guess is noise. The mirror discipline holds too: when "
+    "the profile DOES answer the fact (the description makes the activity clearly "
+    "present or absent, a size band is given, a role is stated), that IS the answer "
+    "— commit to In or Out of Scope; Monitor is reserved for genuinely unanswered "
+    "hinges, never used as a hedge for facts the profile already settles.\n\n"
     "Length: 700-1000 words total, excluding tables and bullet lists. Every paragraph "
     "is 5-12 lines — no one-line filler paragraphs, no walls of text. Target the whole "
     "brief, main body plus appendix, at roughly 2-2.5 printed pages: the word budget "
@@ -360,10 +372,19 @@ REVISE_INSTRUCTION = (
     "is a hallucination, even if a real, similarly-named or similarly-themed act exists "
     "in the world — delete that row/mention and, if a retrieved document actually covers "
     "that substance, replace it with a row using the retrieved document's own name "
-    "instead. Do not change facts, citations, or verdicts for instruments you keep "
-    "unchanged, and do not restructure sections — but table rows ARE subject to check "
-    "(7): remove any row naming an unretrieved instrument, and add a row for any "
-    "retrieved foundational instrument your draft skipped entirely. This is a "
+    "instead. (8) VERDICT HINGE CHECK — for every In Scope and Out of Scope row, "
+    "confirm the draft's own scoping facts actually establish the fact the verdict "
+    "turns on. A provision that only applies to companies doing a specific activity "
+    "(comparing environmental characteristics, own-brand products, running a "
+    "recommender system) must not stand at flat In Scope when nothing in the profile "
+    "establishes the company actually does it — change that row to Monitor with the "
+    "activity named as the hinge, exactly as the deterministic-exception rule in "
+    "your instructions requires for numeric thresholds. Do not change facts, "
+    "citations, or verdicts for instruments you keep unchanged, and do not "
+    "restructure sections — but table rows ARE subject to checks (7) and (8): remove "
+    "any row naming an unretrieved instrument, add a row for any retrieved "
+    "foundational instrument your draft skipped entirely, and correct any flat "
+    "verdict standing on an unestablished hinge. This is a "
     "sharpening pass over your own prose, not a new draft. Return ONLY the complete "
     "revised brief in the same Markdown format: no preamble, no note about what you "
     "changed, no meta-commentary about the revision itself."
@@ -436,6 +457,55 @@ _MARKER_RE = re.compile(r"\[\d+(?:,\s*\d+)*\]")
 _NUMREF_RE = re.compile(r"(\d{4})\s*/\s*(\d{1,4})")
 # Words too generic to identify an instrument on their own.
 _NAME_STOPWORDS = {"the", "of", "and", "for", "on", "in", "a", "an", "eu", "european"}
+
+
+def _sort_compliance_table(briefing: str) -> str:
+    """Enforce the Compliance table's row order deterministically: Prio
+    ascending, In Scope before Monitor within the same Prio. The prompt
+    states this rule but the model doesn't reliably follow it (observed
+    live: a Prio-2 row rendered after a Prio-3 one). Ordering is pure
+    presentation with a fully specified rule, so unlike names/verdicts —
+    which stay the model's call, corrected only via a model round-trip —
+    this is safe to just fix in code. Only tables whose header carries a
+    Prio column are touched (the Out-of-Scope appendix has none); rows
+    whose Prio cell doesn't parse keep their relative position at the end.
+    The sort is stable, so the model's own ordering survives within each
+    (Prio, Verdict) group. Citation markers travel with their row."""
+
+    def row_key(line: str) -> tuple[int, int]:
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        prio_m = re.search(r"\d", cells[1]) if len(cells) > 1 else None
+        prio = int(prio_m.group()) if prio_m else 99
+        verdict_rank = 0 if len(cells) > 2 and "in scope" in cells[2].lower() else 1
+        return (prio, verdict_rank)
+
+    lines = briefing.splitlines()
+    out: list[str] = []
+    i = 0
+    while i < len(lines):
+        stripped = lines[i].strip()
+        is_prio_header = (
+            stripped.startswith("|")
+            and any(c.strip().lower() == "prio" for c in stripped.strip("|").split("|"))
+        )
+        if not is_prio_header:
+            out.append(lines[i])
+            i += 1
+            continue
+        out.append(lines[i])  # header
+        i += 1
+        if i < len(lines) and set(lines[i].strip()) <= {"|", "-", ":", " "}:
+            out.append(lines[i])  # separator
+            i += 1
+        body: list[str] = []
+        while i < len(lines) and lines[i].strip().startswith("|"):
+            body.append(lines[i])
+            i += 1
+        out.extend(sorted(body, key=row_key))
+    result = "\n".join(out)
+    if briefing.endswith("\n") and not result.endswith("\n"):
+        result += "\n"
+    return result
 
 
 def _celex_ref(celex: str) -> tuple[str, int] | None:
@@ -610,6 +680,27 @@ def _merge_passages(primary: list[dict], extra: list[dict]) -> list[dict]:
     return merged
 
 
+def _cap_per_document(passages: list[dict], *, max_per_doc: int = 3) -> list[dict]:
+    """Keep at most ``max_per_doc`` passages per source document, preserving
+    order (semantic_search returns best-first, so the kept ones are the best).
+
+    Observed live (idealo, 2026-07-07): one large, freshly-ingested document
+    — the DMA review Staff Working Document — won a big share of the open
+    top-k on raw similarity, crowding the company's own compliance files out
+    of context and tilting the whole report toward that one dossier.
+    Retrieval volume reflects what the corpus happens to hold, not relevance
+    breadth; capping per document restores breadth without touching how any
+    passage is used downstream."""
+    counts: dict[str, int] = {}
+    kept = []
+    for p in passages:
+        key = str(p.get("celex") or p.get("url") or p.get("title"))
+        counts[key] = counts.get(key, 0) + 1
+        if counts[key] <= max_per_doc:
+            kept.append(p)
+    return kept
+
+
 def _attr(obj: Any, key: str, default=None):
     """Read a field whether obj is an SDK model or a plain dict (for tests)."""
     if isinstance(obj, dict):
@@ -662,6 +753,7 @@ def generate_briefing(
     client: Any | None = None,
     dry_run: bool = False,
     sharpen: bool = True,
+    on_stage: Callable[[str, str], None] | None = None,
 ) -> dict[str, Any]:
     """Retrieve relevant passages, then (unless dry_run) ask Claude for a grounded
     briefing. Returns the briefing, its citations, and the supporting passages.
@@ -674,9 +766,26 @@ def generate_briefing(
     matters is' — same template, different words); a model is much better at
     catching that pattern in a second look at its own text than in a single
     pass with instructions alone. Costs roughly 2x the tokens/latency of one
-    pass — set False for draft/cheap runs."""
+    pass — set False for draft/cheap runs.
+
+    ``on_stage(stage_id, label)``, when given, is called synchronously right
+    before each real unit of work the caller might want to surface as
+    progress (retrieval, each LLM call). It fires only for work that actually
+    happens — the citation-retry and canon-fix stages are conditional and are
+    only announced when that call is genuinely about to be made, so a
+    progress UI built on this never claims a step that didn't occur."""
+
+    def _emit(stage: str, label: str) -> None:
+        if on_stage is not None:
+            on_stage(stage, label)
+
+    _emit("retrieving", "Retrieving the sources that apply to your profile")
     query = profile.to_query()
-    passages = semantic_search(session, embedder, query, k=k)
+    # Over-fetch then cap per document: without the cap, one big fresh
+    # document can win most of the top-k on raw similarity (see
+    # _cap_per_document); the over-fetch backfills the capped slots with the
+    # next-best passages from OTHER documents instead of just shrinking k.
+    passages = _cap_per_document(semantic_search(session, embedder, query, k=k * 2))[:k]
     # The competitive angle gets its own retrieval pass: blended into the main
     # query it reliably loses to the profile's compliance signal (an AI-using
     # company's query retrieves AI Act content, and a named rival's antitrust
@@ -703,6 +812,7 @@ def generate_briefing(
         client = get_client()
 
     def _one_pass() -> dict[str, Any]:
+        _emit("drafting", "Drafting the report")
         draft_resp = client.messages.create(**request)
         if not sharpen:
             return parse_response(draft_resp.content, passages)
@@ -716,6 +826,7 @@ def generate_briefing(
         # fallback for the rarer case where revise itself drops citations
         # that were present in the draft.
         if not draft_parsed["citations"] and passages:
+            _emit("verifying", "First pass came back without traceable citations — retrying")
             retry_resp = client.messages.create(**request)
             retry_parsed = parse_response(retry_resp.content, passages)
             if retry_parsed["citations"]:
@@ -726,10 +837,27 @@ def generate_briefing(
         # dedicated correction call afterward (see build_revise_request).
         draft_text = _raw_text(draft_resp.content)
         pre_issues = _canon_issues(draft_parsed["briefing"], passages)
-        revise_resp = client.messages.create(
-            **build_revise_request(passages, draft_text, pre_issues or None)
-        )
-        return parse_response(revise_resp.content, passages)
+        _emit("sharpening", "Sharpening the analysis against our style and accuracy checklist")
+        revise_request = build_revise_request(passages, draft_text, pre_issues or None)
+        revise_resp = client.messages.create(**revise_request)
+        revised = parse_response(revise_resp.content, passages)
+
+        # Measured on real runs: the draft having citations is no guarantee
+        # revise's own rewrite keeps them — rephrasing during the sharpness
+        # pass is exactly what can shift wording away from a retrieved span's
+        # exact text. When that happens, the draft already proved the content
+        # is citable, so retrying revise alone (same draft, same instructions)
+        # recovers it for one call — far cheaper than the outer safety net
+        # below re-running the whole draft+revise pass from scratch, which is
+        # the right escalation only when the draft itself lacked citations.
+        if not revised["citations"] and draft_parsed["citations"]:
+            _emit("verifying", "The revised draft lost its citation links — reattaching them")
+            retry_revise_resp = client.messages.create(**revise_request)
+            retry_revised = parse_response(retry_revise_resp.content, passages)
+            if retry_revised["citations"]:
+                revised = retry_revised
+
+        return revised
 
     parsed = _one_pass()
     # Native citations depend on the model's own phrasing landing close
@@ -750,6 +878,7 @@ def generate_briefing(
     # canon_notes instead of silently shipped.
     issues = _canon_issues(parsed["briefing"], passages)
     if issues:
+        _emit("cross-checking", "Cross-checking the regulatory register for consistency")
         draft = _MARKER_RE.sub("", parsed["briefing"])
         fixed_resp = client.messages.create(**build_fix_request(passages, draft, issues))
         fixed = parse_response(fixed_resp.content, passages)
@@ -757,4 +886,5 @@ def generate_briefing(
             remaining = _canon_issues(fixed["briefing"], passages)
             if len(remaining) < len(issues):
                 parsed, issues = fixed, remaining
+    parsed["briefing"] = _sort_compliance_table(parsed["briefing"])
     return {"query": query, "passages": passages, "canon_notes": issues, **parsed}

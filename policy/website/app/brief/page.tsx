@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   BriefInput,
   BriefResult,
+  BriefStage,
   Meta,
   ScopingQuestion,
   downloadPdf,
@@ -66,6 +67,12 @@ export default function BriefPage() {
   const [error, setError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
 
+  // Report generation — separate from `loading` since it drives a dedicated
+  // progress screen (see the "report" step below) rather than a button label.
+  const [generating, setGenerating] = useState(false);
+  const [stages, setStages] = useState<BriefStage[]>([]);
+  const [elapsedSec, setElapsedSec] = useState(0);
+
   useEffect(() => {
     getMeta().then(setMeta).catch(() => setError("Can't reach the API (`uv run ept serve`)."));
   }, []);
@@ -124,16 +131,28 @@ export default function BriefPage() {
   }
 
   async function generateReport() {
-    setLoading(true);
+    setStep("report");
+    setResult(null);
+    setGenerating(true);
     setError(null);
+    setStages([]);
+    setElapsedSec(0);
+    const startedAt = Date.now();
+    const timer = window.setInterval(
+      () => setElapsedSec(Math.round((Date.now() - startedAt) / 1000)),
+      1000
+    );
     try {
-      const r = await postBrief(scopedInput());
+      const r = await postBrief(scopedInput(), (s) => setStages((prev) => [...prev, s]));
       setResult(r);
-      setStep("report");
     } catch {
       setError("Report generation failed. Is the API running?");
+      // Back to wherever the user came from — their answers are untouched in
+      // state, so this doesn't cost them any of the scoping work they did.
+      setStep(questions.length > 0 ? "questions" : "profile");
     } finally {
-      setLoading(false);
+      window.clearInterval(timer);
+      setGenerating(false);
     }
   }
 
@@ -343,20 +362,16 @@ export default function BriefPage() {
             <button
               className="btn"
               onClick={() => (isLastGroup ? generateReport() : setGroupIndex(groupIndex + 1))}
-              disabled={loading}
             >
-              {loading
-                ? "Analyzing…"
-                : !isLastGroup
-                  ? "Next"
-                  : answered < questions.length
-                    ? `Generate report (${answered}/${questions.length} answered)`
-                    : "Generate report"}
+              {!isLastGroup
+                ? "Next"
+                : answered < questions.length
+                  ? `Generate report (${answered}/${questions.length} answered)`
+                  : "Generate report"}
             </button>
             <button
               className="btn secondary"
               onClick={() => (groupIndex === 0 ? setStep("profile") : setGroupIndex(groupIndex - 1))}
-              disabled={loading}
             >
               Back
             </button>
@@ -366,7 +381,35 @@ export default function BriefPage() {
 
       {error && <div className="notice" style={{ marginTop: 20 }}>{error}</div>}
 
-      {step === "report" && result && (
+      {step === "report" && (generating || !result) && (
+        <div className="form generating-panel">
+          <div className="generating-head">
+            <h2>Generating your report</h2>
+            <span className="elapsed">{elapsedSec}s elapsed</span>
+          </div>
+          <ul className="stage-list">
+            {stages.length === 0 && (
+              <li className="active">
+                <span className="stage-dot" />
+                Starting…
+              </li>
+            )}
+            {stages.map((s, i) => (
+              <li key={i} className={i === stages.length - 1 ? "active" : "done"}>
+                <span className="stage-dot" />
+                {s.label}
+              </li>
+            ))}
+          </ul>
+          <p className="muted generating-note">
+            This typically takes 1–3 minutes. The analyst reads the full text of every applicable
+            law rather than summarizing from memory, then rereads its own draft against our
+            accuracy checklist before handing it back.
+          </p>
+        </div>
+      )}
+
+      {step === "report" && result && !generating && (
         <div className="section">
           {result.dry_run && (
             <div className="notice">
