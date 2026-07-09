@@ -5,6 +5,30 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-09 — Retrieval must filter on `DocumentVersion.is_current`
+**Decision:** `semantic_search()`, `canon_passages()`, and `embed_pending()`
+in `etl/enrichment/embeddings.py` now all filter/join on
+`DocumentVersion.is_current.is_(True)`.
+**Why:** Found live while testing whether the new verbatim-transcript
+sources actually improved briefing output: re-rendering `ep_verbatim` to fix
+an unrelated speaker-attribution bug created new `DocumentVersion` rows for
+58 of 73 documents (the pipeline's existing hash-based versioning working
+exactly as designed), but the *old* versions' passages — stale text,
+"Unknown speaker" bug and all — kept winning top-k slots right alongside the
+corrected ones. Retrieval had never filtered on version currency at all.
+**Why this matters beyond this session:** the bug is not specific to the
+verbatim adapters — it affects every document in the corpus that has ever
+been re-versioned (any amendment, correction, or re-fetch that changes
+content hash), which is the entire point `DocumentVersion.is_current`
+exists for. It was invisible until something forced a document through a
+second version and someone actually compared retrieval results before and
+after.
+**Implementation:** filter added to both retrieval queries and to
+`embed_pending()` itself (a superseded version's passages will never be
+retrievable, so embedding them going forward is pure waste). Two regression
+tests seed a document with an old and a current version, each scored to
+otherwise win on similarity, and prove the stale one never surfaces.
+
 ## 2026-07-09 — Re-verify blockers by rendering the actual page, not the note
 **Decision:** Before building `de_verbatim.py`, re-checked the Bundestag DIP
 API's own help page live (headless-rendered, since it's a JS app) instead of

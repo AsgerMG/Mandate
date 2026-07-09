@@ -174,3 +174,74 @@ def test_canon_passages_silently_skips_uningested_instruments(db_session):
 
 def test_canon_passages_empty_celex_list_returns_empty():
     assert canon_passages(None, FakeEmbedder(), "ai", []) == []
+
+
+def _seed_superseded_version(session) -> None:
+    """One document, two versions: an old one (is_current=False) whose
+    passage still scores well on 'ai', and a current one whose passage
+    does not. Reproduces a real bug found live 2026-07-09: re-ingesting a
+    corrected EP verbatim transcript created a new DocumentVersion, but
+    retrieval had no is_current filter at all, so the superseded version's
+    stale text (with an "Unknown speaker" attribution bug already fixed in
+    the current version) kept winning top-k forever."""
+    doc = Document(
+        source_id=_source(session),
+        external_id="DOC-VERSIONED",
+        title="Versioned doc",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.OTHER,
+        lifecycle_stage=LifecycleStage.UNKNOWN,
+        url="http://example/versioned",
+    )
+    session.add(doc)
+    session.flush()
+    old_ver = DocumentVersion(
+        document_id=doc.id,
+        content_hash="old",
+        text="x",
+        char_count=1,
+        fetched_at=dt.datetime.now(dt.UTC),
+        is_current=False,
+    )
+    new_ver = DocumentVersion(
+        document_id=doc.id,
+        content_hash="new",
+        text="y",
+        char_count=1,
+        fetched_at=dt.datetime.now(dt.UTC),
+        is_current=True,
+    )
+    session.add_all([old_ver, new_ver])
+    session.flush()
+    session.add_all(
+        [
+            Passage(
+                version_id=old_ver.id, ordinal=0, text="ai ai ai stale", char_start=0, char_end=14
+            ),
+            Passage(
+                version_id=new_ver.id,
+                ordinal=0,
+                text="fish quota fresh",
+                char_start=0,
+                char_end=16,
+            ),
+        ]
+    )
+    session.commit()
+
+
+def test_embed_pending_skips_superseded_versions(db_session):
+    _seed_superseded_version(db_session)
+    n = embed_pending(db_session, FakeEmbedder())
+    assert n == 1  # only the current version's passage
+
+
+def test_semantic_search_never_returns_superseded_version_passages(db_session):
+    _seed_superseded_version(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    # Query for "ai" — the STALE passage is a near-perfect match and would
+    # win easily if retrieval didn't filter by is_current; it must never
+    # appear, and the only thing embedded/returned is the current passage.
+    hits = semantic_search(db_session, FakeEmbedder(), "ai", k=5)
+    assert len(hits) == 1
+    assert hits[0]["text"] == "fish quota fresh"

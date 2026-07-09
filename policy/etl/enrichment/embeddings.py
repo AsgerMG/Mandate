@@ -49,11 +49,21 @@ def get_embedder(settings: Settings) -> Embedder:
 
 def embed_pending(session: Session, embedder: Embedder, *, batch_size: int = 128) -> int:
     """Embed every passage whose vector is still NULL, in batches. Returns the
-    number embedded."""
+    number embedded.
+
+    Restricted to current-version passages: a superseded version's passages
+    (kept around for the schema's own change-tracking/audit purpose — see
+    models.py) are never retrievable once ``semantic_search``/
+    ``canon_passages`` filter on ``is_current`` (see below), so embedding
+    them would just burn CPU on vectors nothing will ever read."""
     total = 0
     while True:
         passages = session.scalars(
-            select(Passage).where(Passage.embedding.is_(None)).order_by(Passage.id).limit(batch_size)
+            select(Passage)
+            .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
+            .where(Passage.embedding.is_(None), DocumentVersion.is_current.is_(True))
+            .order_by(Passage.id)
+            .limit(batch_size)
         ).all()
         if not passages:
             break
@@ -106,7 +116,7 @@ def semantic_search(session: Session, embedder: Embedder, query: str, *, k: int 
         )
         .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
         .join(Document, DocumentVersion.document_id == Document.id)
-        .where(Passage.embedding.is_not(None))
+        .where(Passage.embedding.is_not(None), DocumentVersion.is_current.is_(True))
         .order_by("distance")
         .limit(k)
     )
@@ -148,7 +158,11 @@ def canon_passages(
         )
         .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
         .join(Document, DocumentVersion.document_id == Document.id)
-        .where(Passage.embedding.is_not(None), Document.celex.in_(celex_codes))
+        .where(
+            Passage.embedding.is_not(None),
+            DocumentVersion.is_current.is_(True),
+            Document.celex.in_(celex_codes),
+        )
         .distinct(Document.celex)
         .order_by(Document.celex, distance)
     )

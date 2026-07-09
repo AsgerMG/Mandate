@@ -629,8 +629,82 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       Why cell was near-verbatim directive text without quote marks —
       citation-hygiene defect surviving the revise pass; existing check
       (5) covers it, kept as a watch item.
+- ✅ Verbatim-transcript sources wired into the briefing layer, and two real
+      retrieval bugs found along the way (2026-07-09) — the user asked to
+      "run some tests on how this affects the output," which surfaced more
+      than the prompt-tuning question it started as:
+      (1) **Zero of 2,545 new ep_verbatim/an_verbatim/de_verbatim passages
+      were embedded.** `ept embed` had never been run after ingestion — the
+      new content was completely invisible to `semantic_search()` no matter
+      how good the prompts were. Obvious in hindsight, invisible until
+      someone actually tried to retrieve it.
+      (2) **Retrieval had no `is_current` filter at all** — a real,
+      previously-invisible bug, not new to this session: `semantic_search()`
+      and `canon_passages()` joined `Passage` → `DocumentVersion` → `Document`
+      but never filtered on `DocumentVersion.is_current`, so a superseded
+      version's passages stay permanently retrievable forever alongside the
+      current one. Found live: re-rendering `ep_verbatim` to fix the
+      speaker-attribution bug below created new `DocumentVersion` rows, but
+      the *old*, buggy-text passages kept winning top-k right alongside the
+      corrected ones — same document, two versions, both live in search
+      results. Fixed in `etl/enrichment/embeddings.py`: added
+      `DocumentVersion.is_current.is_(True)` to both retrieval queries and
+      to `embed_pending()` itself (no point spending CPU embedding a
+      passage that can never be retrieved once superseded). Two new
+      regression tests (`test_embed_pending_skips_superseded_versions`,
+      `test_semantic_search_never_returns_superseded_version_passages`)
+      seed a document with an old and current version and prove the stale
+      one never surfaces even when it would otherwise win on similarity.
+      This bug predates the verbatim adapters entirely — any document that
+      ever gets amended/corrected (which is the whole *point* of the
+      versioning schema) was silently affected the same way.
+      (3) **EP speaker attribution bug**: re-checking real retrieved
+      passages surfaced "Unknown speaker —" in several of the
+      highest-relevance hits. Root cause: an MEP's remarks are split across
+      several `<p class="contents">` tags in the EP's HTML, but the name
+      markup only appears on the first one — `_split_items()` treated every
+      untagged continuation paragraph as a fresh, unattributed speaker turn
+      instead of the same person still talking. Fixed by tracking a running
+      per-item "current speaker" and merging continuation paragraphs into
+      the last entry. Re-rendered all 84 EP days: 58 of 73 documents
+      changed text (confirms the bug was widespread, not an edge case),
+      0 "Unknown speaker" remaining across all of them. AN/DE were checked
+      and don't have this bug — their HTML/XML wraps one whole speech in a
+      single container element, so there's no cross-tag continuation to
+      lose.
+      (4) **SYSTEM_PROMPT changes**: `document_type` for all three verbatim
+      adapters is "other" (the schema has no dedicated type, by design —
+      see decision-log.md 2026-07-09), so a floor-speech transcript was
+      structurally indistinguishable from a press summary in Claude's own
+      document labels. Added a `kind` field end-to-end
+      (`Document.extra["kind"]` → `_row_to_passage()` → passage dict →
+      `_source_label()`) so a verbatim source gets its own
+      `[Jurisdiction · Verbatim debate]` label instead of the generic
+      "Other" bucket, plus new SYSTEM_PROMPT guidance in the Political
+      landscape & strategic play section: a Verbatim debate source outranks
+      a generic "the rapporteur" reference, name the actual speaker/group
+      and what they said (paraphrase or quote per existing CITATION HYGIENE
+      rules), and treat it as a direct input to the Coalitions bullets
+      (one MEP's remarks ≠ their whole group's settled position, though).
+      Also propagated the `kind` tag through to the human-facing citation
+      list (CLI/PDF/website), not just Claude's internal document labels —
+      previously only the model could tell a floor speech apart from any
+      other source.
+      **Live proof, real API call** (SentriCam, an industrial IoT/camera
+      manufacturer profile): the model independently found and used two
+      different verbatim sources, naming Executive Vice-President Henna
+      Virkkunen and Commissioner Costas Kadis by name and role, quoting
+      each properly with quotation marks (citation-hygiene compliant, not
+      blended unmarked), and correctly declined to invent a coalition when
+      none was named in the sources rather than fabricate one. The
+      generated Sources footer now reads e.g. "[1] US AI chip export
+      restrictions... (debate) (verbatim debate) https://...". This is one
+      test, not a broad sweep — worth another pass on a France/Germany-
+      weighted profile to confirm `an_verbatim`/`de_verbatim` content gets
+      used the same way, since this run only exercised `ep_verbatim`.
 - ⬜ Jurisdiction/lifecycle/sector metadata filters on retrieval
-- ⬜ Run a real briefing once ANTHROPIC_API_KEY is provided
+- ✅ Run a real briefing once ANTHROPIC_API_KEY is provided — done 2026-07-09
+      (see entry above); ANTHROPIC_API_KEY was already configured
 - ⬜ Optional hosted embedder (Voyage) for higher retrieval quality
 - ⬜ PDF-text / manifestation-choice fallback for Cellar 300/no-HTML acts —
       now has two blocked documents: CSAM proposal (52022PC0209, PDF-only)

@@ -764,6 +764,13 @@ def parse_response(content_blocks: list[Any], passages: list[dict]) -> dict[str,
                     "url": src.get("url"),
                     "char_start": src.get("char_start"),
                     "char_end": src.get("char_end"),
+                    # Carries "verbatim_debate" through to the human-facing
+                    # source list (CLI, PDF, website) — Claude already sees
+                    # the "[Jurisdiction · Verbatim debate]" document label
+                    # via build_documents(); a reader skimming citations
+                    # afterward should be able to tell a floor speech from
+                    # any other source too.
+                    "kind": src.get("kind"),
                 }
             )
         marker = "".join(f"[{n}]" for n in block_refs)

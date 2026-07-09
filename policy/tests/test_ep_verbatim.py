@@ -31,6 +31,7 @@ SAMPLE_HTML = f"""
 <span class="bold">René Repasi, </span></span>
 <span class="italic">Rapporteur</span><span class="bold">.</span>
 &#8211; This digital regime helps firms.</p>
+<p class="contents">It also cuts red tape for scale-ups.</p>
 
 <a name="title14"></a><a name="creitem14"></a>
 <table><tr><td class="doc_title">14. Human rights and citizenship</td></tr></table>
@@ -48,10 +49,15 @@ def test_split_items_extracts_titles_speakers_and_procedure_refs():
     assert items[13]["title"] == "Rules for innovative companies (debate)"
 
     speakers = items[13]["speakers"]
+    # Two names, not three — the unmarked continuation paragraph must merge
+    # into René Repasi's turn, not mint an "Unknown speaker" entry (the bug
+    # found live 2026-07-09: a speech split across several <p class=
+    # "contents"> tags only carries the name span on the first one).
     assert [s["name"] for s in speakers] == ["Przewodnicząca.", "René Repasi"]
     rapporteur = speakers[1]
     assert rapporteur["role"] == "Rapporteur"
     assert "digital regime" in rapporteur["text"]
+    assert "red tape for scale-ups" in rapporteur["text"]
 
     assert items[13]["procedure_refs"] == ["2025/2079(INL)"]
     assert items[12]["procedure_refs"] == []

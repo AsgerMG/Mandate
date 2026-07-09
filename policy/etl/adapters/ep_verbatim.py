@@ -136,6 +136,11 @@ def _split_items(html: str) -> dict[int, dict]:
         return {}
     items: dict[int, dict] = {}
     current: int | None = None
+    # A speaker's remarks routinely span several <p class="contents">
+    # paragraphs, but the name markup only appears on the first one — a
+    # continuation paragraph must be attributed to whoever is still
+    # talking, not treated as a fresh (unknown) speaker turn.
+    running_speaker: dict[int, tuple[str | None, str | None]] = {}
     for el in body.descendants:
         if not hasattr(el, "attrs"):
             continue  # text node
@@ -155,9 +160,26 @@ def _split_items(html: str) -> dict[int, dict]:
             items[current]["title"] = _clean_title(el.get_text(" ", strip=True))
         elif el.name == "p" and "contents" in classes:
             speaker, role, speech = _split_speaker_paragraph(el)
-            if speech:
+            if not speech:
+                pass
+            elif speaker:
+                running_speaker[current] = (speaker, role)
                 items[current]["speakers"].append(
                     {"name": speaker, "role": role, "text": speech}
+                )
+            elif current in running_speaker:
+                # Continuation of the same speech turn — extend the last
+                # entry rather than mint a new "Unknown speaker" one.
+                prev_name, prev_role = running_speaker[current]
+                speakers = items[current]["speakers"]
+                if speakers and speakers[-1]["name"] == prev_name:
+                    speakers[-1]["text"] += " " + speech
+                else:
+                    speakers.append({"name": prev_name, "role": prev_role, "text": speech})
+            else:
+                # No speaker context at all yet (rare) — genuinely unknown.
+                items[current]["speakers"].append(
+                    {"name": None, "role": None, "text": speech}
                 )
             for a in el.find_all("a", href=True):
                 m = _PROCEDURE_REF_RE.search(a["href"])

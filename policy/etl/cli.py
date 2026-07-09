@@ -258,7 +258,8 @@ def brief(
             if key and key not in seen:
                 seen.add(key)
                 n = f"[{c['n']}] " if c.get("n") else ""
-                typer.echo(f"  {n}{c.get('celex') or c.get('title')}  {c.get('url')}")
+                tag = " (verbatim debate)" if c.get("kind") == "verbatim_debate" else ""
+                typer.echo(f"  {n}{c.get('celex') or c.get('title')}{tag}  {c.get('url')}")
         if pdf:
             from etl.intelligence.pdf import render_report_pdf
 

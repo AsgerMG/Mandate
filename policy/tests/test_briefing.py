@@ -422,6 +422,29 @@ def test_parse_response_resolves_citations_to_sources():
     assert out["citations"][0]["char_start"] == 10
 
 
+def test_parse_response_carries_verbatim_debate_kind_to_citations():
+    # Claude sees the "[Jurisdiction · Verbatim debate]" label via
+    # build_documents(); the human-facing citation list (CLI/PDF/website)
+    # needs the same signal so a reader can tell a floor speech apart from
+    # any other source, not just the model.
+    passages = [
+        {
+            "title": "Presentation of the Cybersecurity Act (debate)",
+            "url": "http://x/cre",
+            "char_start": 0,
+            "char_end": 50,
+            "kind": "verbatim_debate",
+        },
+    ]
+    blocks = [
+        {"type": "text", "text": "The Commission adopted a package.", "citations": [
+            {"cited_text": "we adopted a new cybersecurity package", "document_index": 0},
+        ]},
+    ]
+    out = parse_response(blocks, passages)
+    assert out["citations"][0]["kind"] == "verbatim_debate"
+
+
 def test_parse_response_numbers_sources_stably():
     passages = [
         {"title": "GDPR", "celex": "32016R0679", "url": "http://x/gdpr"},
