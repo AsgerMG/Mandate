@@ -357,6 +357,25 @@ def test_build_documents_prefix_jurisdiction_and_type():
     assert docs[1]["title"] == "[DE · Press] Bitkom press release"
 
 
+def test_build_documents_verbatim_debate_overrides_generic_other_label():
+    # document_type is "other" for ep_verbatim/an_verbatim/de_verbatim (same
+    # generic bucket as a press summary) — kind="verbatim_debate" is what
+    # actually distinguishes a named speaker's real floor remarks.
+    passages = [
+        {
+            "text": "Henna Virkkunen (Executive Vice-President) — ...",
+            "title": "Presentation of the Cybersecurity Act (debate)",
+            "jurisdiction": "EU",
+            "document_type": "other",
+            "kind": "verbatim_debate",
+        }
+    ]
+    docs = build_documents(passages)
+    assert docs[0]["title"] == (
+        "[EU · Verbatim debate] Presentation of the Cybersecurity Act (debate)"
+    )
+
+
 def test_build_request_shape():
     p = CompanyProfile(name="Acme")
     req = build_request(p, [{"text": "x", "celex": "C1", "title": "T"}])

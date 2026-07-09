@@ -38,14 +38,49 @@ TECH_KEYWORDS = [
     "cyber", "platform", "online", "internet", "telecom", "algorithm", "cloud",
     "crypto", "software", "surveillance", "biometric", "chip", "semiconductor",
     "dsa", "dma", "gdpr", "nis2", "e-evidence", "data act", "ai act",
+    # EU tech/scale-up economy vocabulary — added 2026-07-09 for verbatim-
+    # transcript title matching (e.g. "The 28th Regime: a new legal
+    # framework for innovative companies" names no other tech keyword).
+    "innovative compan", "start-up", "startup", "scale-up",
+    # Recall gaps found via a full audit of every EP verbatim item title,
+    # kept and dropped, across a 2-year window (2026-07-09) — each verified
+    # to hit exactly once across 2,445 dropped titles, no collisions. Bare
+    # "media freedom" was tried and rejected: it also matches an unrelated
+    # Georgia press-freedom debate and a journalist-memorial debate; the
+    # specific instrument name avoids both.
+    "media freedom act", "communication infrastructure", "tech race",
     # FR
     "intelligence artificielle", "numérique", "données", "cybersécurité",
     "plateforme", "en ligne", "télécom", "algorithme", "biométri",
     "rgpd", "informatique",
+    # Recall gaps found via the same full-audit method applied to
+    # an_verbatim (2026-07-09): "TikTok" (a coined brand name, not a
+    # dictionary word — low collision risk, unlike "Google"/"Amazon"/
+    # "Apple", which were considered and rejected for exactly that reason)
+    # and "réseaux sociaux" (social networks), neither caught by
+    # "plateforme"/"en ligne". Each verified to hit exactly once across
+    # 928 dropped AN titles.
+    "tiktok", "réseaux sociaux",
     # DE
     "künstliche intelligenz", " ki ", "digitale", "datenschutz", "daten",
     "cybersicherheit", "plattform", "telekommunikation", "algorithmus",
-    "biometrie", "dsgvo", "software", "netz",
+    "biometrie", "dsgvo", "software",
+    # "netz" (bare) removed 2026-07-09 — found live via de_verbatim: German
+    # freely compounds nouns, so "netz" (network) matches "Gasnetzentgelten"
+    # (gas-network fees) and "BNetzA" just as readily as anything digital.
+    # Same class of bug as " ai "/"chip"/"daten" colliding in EP/AN speech
+    # text — except this one was in the ORIGINAL keyword list, exposed only
+    # once a source's titles got long/technical enough to collide (likely
+    # already a silent false-positive source in bundesrat_neueingaenge/
+    # bundestag_hib/gesetze_aktudienst too, which share this filter — not
+    # yet re-audited). Replaced with specific, collision-safe compounds.
+    "netzneutralität", "mobilfunknetz", "telekommunikationsnetz",
+    "breitbandnetz", "glasfasernetz", "soziale netzwerke",
+    # "netzabdeckung" (network coverage) added same day: catches a genuine
+    # telecom-connectivity motion ("Mobilfunklücken schließen – Nationale
+    # Netzabdeckung") that the compound replacements above missed. Verified
+    # against both confirmed "netz" false positives above — no collision.
+    "netzabdeckung",
 ]
 
 

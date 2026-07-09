@@ -160,6 +160,18 @@ SYSTEM_PROMPT = (
     "personally drives the file; a brief that says 'von der Leyen' where it should say "
     "'the IMCO rapporteur' has failed. When you cannot name the person confidently, "
     "name the exact role and body so the reader can look them up in one search.\n"
+    "A source labelled '[Jurisdiction · Verbatim debate]' is a plenary floor-debate "
+    "transcript — a named MEP/MP/deputy's own recorded remarks, with their party or "
+    "political group, not a press paraphrase of what someone might think. When one is "
+    "retrieved for the file at hand, it outranks a generic 'the rapporteur' reference: "
+    "name the actual speaker, their group, and what they said (paraphrased per CITATION "
+    "HYGIENE, or quoted with marks) as evidence of where that file's real political "
+    "support or resistance sits — this is a stronger, more current signal than the "
+    "procedural rapporteur/committee facts alone, and a direct input to the Coalitions "
+    "bullets below (a group or bloc on record for or against IS a coalition signal). Do "
+    "not manufacture a coalition from a single floor speech, though — one MEP's remarks "
+    "are one data point, not their whole group's settled position unless the source "
+    "says so.\n"
     "Then three labelled parts:\n"
     "**Lobbying focus** — one paragraph: the single dossier or proceeding where this "
     "company's effort buys the most, the venue (a case team, a consultation, a "
@@ -253,7 +265,11 @@ SYSTEM_PROMPT = (
     "or '[DE · Press]'. Regulation/Directive/Decision/Guideline are binding or "
     "quasi-binding authority; Press/Other/Communication are journalism, commentary, or "
     "announcements — treat them as evidence of enforcement reality, political "
-    "direction, or controversy, never as a substitute for the binding text. When a "
+    "direction, or controversy, never as a substitute for the binding text. "
+    "'Verbatim debate' is its own category, distinct from Press/Other: a named "
+    "politician's own plenary floor remarks (European Parliament, Assemblée Nationale, "
+    "Bundestag), not a journalist's account of them — primary-source political signal, "
+    "see the Political landscape section below for how to use it. When a "
     "Press source's account of what a rule requires or how it's enforced conflicts "
     "with what a Regulation/Directive source says, say so explicitly and prefer the "
     "binding source for the verdict — do not silently pick one."
@@ -273,14 +289,25 @@ _DOCTYPE_LABELS = {
 }
 
 
-def _source_label(jurisdiction: str | None, document_type: str | None) -> str:
+def _source_label(
+    jurisdiction: str | None, document_type: str | None, kind: str | None = None
+) -> str:
     """'[EU · Regulation]'-style prefix, or '' if we don't know either field —
     lets Claude weigh binding law against press/commentary instead of having
-    to infer source authority from text alone."""
+    to infer source authority from text alone.
+
+    ``kind == "verbatim_debate"`` (ep_verbatim/an_verbatim/de_verbatim)
+    overrides the generic document_type label — these carry a named
+    speaker's actual floor-debate remarks, not a press summary or procedural
+    text, and both the model and a human skimming citations should be able
+    to tell that apart from the generic "Other" every other non-legal
+    source_type also falls into."""
     if not jurisdiction and not document_type:
         return ""
     juris = jurisdiction or "?"
-    dtype = _DOCTYPE_LABELS.get(document_type or "", document_type or "?")
+    dtype = "Verbatim debate" if kind == "verbatim_debate" else _DOCTYPE_LABELS.get(
+        document_type or "", document_type or "?"
+    )
     return f"[{juris} · {dtype}]"
 
 
@@ -290,7 +317,7 @@ def build_documents(passages: list[dict]) -> list[dict]:
     docs = []
     for p in passages:
         label = p.get("celex") or p.get("title") or "source"
-        prefix = _source_label(p.get("jurisdiction"), p.get("document_type"))
+        prefix = _source_label(p.get("jurisdiction"), p.get("document_type"), p.get("kind"))
         title = f"{prefix} {label}" if prefix else str(label)
         docs.append(
             {

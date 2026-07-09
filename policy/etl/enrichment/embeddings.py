@@ -74,6 +74,11 @@ def _row_to_passage(row) -> dict:
         "stage": row.lifecycle_stage.value,
         "jurisdiction": row.jurisdiction.value,
         "document_type": row.document_type.value,
+        # Distinguishes a primary-source floor-debate transcript (named
+        # speaker, real stated position) from every other document_type
+        # "other" — a generic label the model otherwise can't tell apart
+        # from, say, a press summary. See briefing.py's _source_label().
+        "kind": (row.extra or {}).get("kind"),
         "char_start": row.char_start,
         "char_end": row.char_end,
         "score": round(1.0 - float(row.distance), 3),  # cosine similarity
@@ -96,6 +101,7 @@ def semantic_search(session: Session, embedder: Embedder, query: str, *, k: int 
             Document.lifecycle_stage,
             Document.jurisdiction,
             Document.document_type,
+            Document.extra,
             Passage.embedding.cosine_distance(qvec).label("distance"),
         )
         .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
@@ -137,6 +143,7 @@ def canon_passages(
             Document.lifecycle_stage,
             Document.jurisdiction,
             Document.document_type,
+            Document.extra,
             distance.label("distance"),
         )
         .join(DocumentVersion, Passage.version_id == DocumentVersion.id)

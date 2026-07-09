@@ -5,6 +5,71 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-09 — Re-verify blockers by rendering the actual page, not the note
+**Decision:** Before building `de_verbatim.py`, re-checked the Bundestag DIP
+API's own help page live (headless-rendered, since it's a JS app) instead of
+trusting the existing backlog note that it "needs a registered key." Found an
+official public demo API key published directly on the page
+(`R2BZaee.DjdCyihKZMf8AOjtScubP2EVydegzjmBIQ`, valid through 2027-05) —
+distinct from a since-revoked community-maintained fallback key that WAS
+correctly confirmed dead the same session. No registration needed after all.
+**Why:** The earlier "needs a key" conclusion was reasonable given what was
+checked at the time (a dead fallback key, a JS-shell help page not rendered),
+but it was a conclusion about a *specific key*, not proof no usable key
+exists. A stale "confirmed blocked" note is exactly as risky as a stale
+"confirmed working" one — both should be re-checked live before being acted
+on, especially once new tooling (headless rendering, added this session for
+`ep_verbatim`) makes the re-check cheap.
+**Implementation impact:** `de_verbatim.py` uses the public key directly (no
+`.env` config needed) and turned out to be the easiest of the three verbatim
+adapters — real semantic XML, no bot wall, plain `httpx`. Also unblocks the
+separate, not-yet-built "Bundestag DIP procedure API for `bundestag_hib`"
+backlog item, which shares the same key.
+
+## 2026-07-09 — Headless-browser exception for EP plenary verbatim reports (CRE)
+**Decision:** Added `etl/adapters/ep_verbatim.py`, ingesting the actual text of
+European Parliament plenary debates — named speaker, role/political-group cue,
+full speech text, linked OEIL procedure reference — via headless Chromium
+(Playwright), the one adapter in the codebase that renders a real browser
+instead of a plain `httpx` request.
+**Why:** The stated goal was a much better read on live EU tech-policy
+conversations: who's actually saying what, not just which files exist. The
+EP's own verbatim-report pages (`doceo/document/CRE-*.html`) sit behind an AWS
+WAF JS challenge — confirmed live on every content type (HTML/PDF/XML), with
+full browser headers, with no Cellar-equivalent machine endpoint (checked and
+404s) and no working captions API either. Council of Europe PACE verbatim
+records were checked too and are blocked the same way by Cloudflare, with no
+open-data fallback (403 on every path tried) — not pursued further since PACE
+is also a different jurisdiction than this tracker's EU/FR/DE scope. This
+project has consistently accepted this class of block elsewhere (Council of
+the EU press, CJEU, EDPS — see source-map.md) rather than fight it. The
+difference here: a real headless browser demonstrably solves the EP's
+challenge (verified live — 614KB of correct, real page content back where
+`curl`/`httpx` get an empty 202), and the resulting content — named MEPs,
+rapporteurs, Commissioners, on record, on a specific dossier — was judged
+worth the one-time cost of a new heavy dependency.
+**Options considered:** (1) Stop at structural stakeholder metadata only (who
+attended/voted, no words) — rejected as insufficient once the browser route
+proved to work live; (2) roll-call vote data (`howtheyvote.eu`, MIT-licensed,
+itself scrapes the EP's RCV XML past this same wall) as a lighter-weight
+proxy for "who stands where" — a good complementary future source, not yet
+integrated, tracked in backlog.md; (3) headless-browser rendering — chosen.
+**Trade-offs accepted:** `playwright` + a ~260MB Chromium binary is now a real
+project dependency (`uv run playwright install chromium`, one-time, see
+README); each new plenary sitting day costs a several-second browser render
+(mitigated by a `processed_days` cursor entry so a day is only ever rendered
+once, never per-refresh). Relevance filtering judges title *and* the first
+few speakers' actual words, not title alone — a real gap found live (e.g.
+"The 28th Regime: a new legal framework for innovative companies" carries no
+literal tech keyword despite being a digital-economy debate).
+**Findings baked in:** discovery deliberately mirrors `oeil.py`'s hardcoded
+current+previous-year window rather than the generic 20-year `backfill_days`
+(rendering a decade of sittings on first run would be prohibitive); a
+day-processed cursor is necessary and separate from the item-level off-topic
+cursor, because `since` (which collapses to "today" after the first run)
+would otherwise silently stop discovering every past day forever — caught by
+running the adapter live twice, not just by unit tests.
+
 ## 2026-06-26 — Strictly four top-level folders; web = FastAPI + Next.js
 **Decision:** The repo keeps exactly four architecture folders — **ETL, Data,
 Website, Project-management** — and every module maps into them. The Python

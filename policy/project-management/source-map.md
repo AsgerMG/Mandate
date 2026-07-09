@@ -23,6 +23,18 @@ headline-only before). See "Backlog — mapped but not yet integrated" at the
 end of this file for what's still open, split by why (needs a bespoke
 adapter, needs further verification, or genuinely blocked).
 
+74th/75th/76th sources added 2026-07-09: `ep_verbatim` (EP plenary
+verbatim-report CRE adapter), `an_verbatim` (Assemblée Nationale
+compte-rendu adapter), and `de_verbatim` (Bundestag Plenarprotokolle) —
+actual debate transcripts with named speakers, not just document metadata,
+across all three jurisdictions. See their rows in Layer 1 and
+decision-log.md. Only the EP needed the headless-browser workaround — AN's
+equivalent pages have no bot wall at all, and DE turned out to need neither
+a browser nor (contrary to the original assumption) a registered API key:
+re-checking the Bundestag's own DIP help page directly (rendered live,
+rather than trusting the earlier "needs a key" note) surfaced an official
+public demo key published on the page itself.
+
 ## Layer 1 — law & pipeline
 
 | Key | Channel | Juris. | What it gives us |
@@ -46,7 +58,10 @@ adapter, needs further verification, or genuinely blocked).
 | `ccomptes_rapports` | Cour des comptes — rapports (RSS) | FR | Public-spending audits incl. digital admin/cyber budgets, tech-filtered |
 | `an_dossiers` | Assemblée Nationale — dossiers législatifs (open data zip) | FR | The real fix for the broken AN RSS: full dossier timeline (deposits, readings, votes), tech-filtered |
 | `senat_dossiers` | Sénat — dossiers législatifs (open data CSV) | FR | Richer than `senat_textes`: adds procedural stage, Conseil constitutionnel decision, promulgated law number |
+| `an_verbatim` | Assemblée Nationale — comptes rendus des débats (séance publique) | FR | The actual floor-debate transcripts: named deputy + full speech text, for tech-relevant agenda items. Plain `httpx` — no bot wall on this one, unlike the EP's equivalent |
+| `de_verbatim` | Bundestag — Plenarprotokolle (DIP API + dserver.bundestag.de XML) | DE | The actual floor-debate transcripts: named MP, party/group, full speech text, for tech-relevant agenda items. No bot wall, no headless browser, and — despite the initial assumption — no registration: the Bundestag publishes an official public demo API key directly on its own DIP help page. Best-structured of the three verbatim sources: real semantic XML with structured `<redner>` name/party fields, not HTML class-parsing |
 | `gesetze_aktudienst` | Gesetze-im-internet.de — Aktualitätendienst (RSS) | DE | Per-statute amendment notifications (rolling ~6mo window), tech-filtered |
+| `ep_verbatim` | EP plenary verbatim reports (CRE), rendered via headless Chromium | EU | The actual debate transcripts: named speaker + role/group + full speech text + linked OEIL procedure ref, for tech-relevant agenda items. The one adapter that renders a real browser instead of `httpx` — see decision-log.md 2026-07-09 for why |
 
 ## Layer 2 — regulators & institutions
 
@@ -118,6 +133,7 @@ adapter, needs further verification, or genuinely blocked).
 | Channel | Blocker | Workaround status |
 |---|---|---|
 | Council of the EU press | Akamai 403 on all paths + newsroom | Re-confirmed still 403; Council outcomes surface via `gnews_eu_tech` + EP press |
+| PACE (Council of Europe Parliamentary Assembly) verbatim records | Cloudflare JS challenge (`cf-mitigated: challenge`) on `pace.coe.int`, 403 on every `opendata`/`/api` path tried, `data.coe.int` unreachable | Checked live 2026-07-09 while investigating EP transcripts. Not pursued: different bot-protection vendor than the EP's AWS WAF (untested whether headless-browser rendering would also solve it) **and** a different institution/jurisdiction (Council of Europe, not EU/FR/DE) than this tracker's scope — would be a new jurisdiction, not an extension |
 | European Council | Same consilium.europa.eu infra as Council press | Same Akamai block; no separate path found |
 | EDPS press | 403 / empty responses | Re-confirmed still 403; EDPB covers the DP signal. EDPS runs a ~10/yr newsletter that may be a feed-based workaround — unconfirmed, worth a direct check |
 | CJEU (curia) press | No working RSS found on re-test (`communiques/rss.htm`, `site/rss.jsp`, `feeds/rssfren.xml` all return HTML/404) | Confirmed still blocked as of 2026-07-03; rulings surface via news monitors |
@@ -126,7 +142,7 @@ adapter, needs further verification, or genuinely blocked).
 | Assemblée nationale feeds | Feeds carry ≤1 item | Sénat feed + `gnews_fr_tech` cover FR pipeline; `data.assemblee-nationale.fr` open-data platform is the real fix (bespoke adapter, not yet built — see backlog) |
 | Légifrance | Requires PISTE/DILA API key | **User action: register key** → adapter slot ready. Stopgap: third-party OSS wrapper `justicelibre` (GitHub) mirrors ~3M court decisions + LEGI/JORF/KALI |
 | Judilibre (Cour de cassation case-law) | **Correction (2026-07-03)**: same PISTE gateway/account as Légifrance, not a separate no-auth API as initially believed — confirmed by a live unauthenticated call returning `HTTP 400 "Unable to find token in the message"` | **User action: register the same PISTE key** used for Légifrance also unlocks this — one registration, two adapters |
-| Bundestag DIP API | Requires (free) API key; documented public key rotated out | **User action: register key** via parlamentsdokumentation@bundestag.de. Interim: community-maintained rotating key (`bundesAPI/dip-bundestag-api`, valid through 05/2026) |
+| Bundestag DIP API | **Resolved 2026-07-09.** Previously assumed to need a registered key (the community-maintained fallback key is confirmed dead — tested live, 401) — but rendering the DIP help page itself (`dip.bundestag.de/über-dip/hilfe/api`) directly, rather than relying on the earlier note, surfaced an **official public demo key published on the page itself** (`R2BZaee...`, valid through 2027-05). No registration needed. Verified live end-to-end, now powers `de_verbatim` | No longer blocked — see `de_verbatim` in Layer 1 |
 | BMDV RSS | Ministry renamed/restructured | **Correction (2026-07-03)**: `bmdv.bund.de` now permanently redirects to `bmv.de` (renamed Bundesministerium für Verkehr) — no RSS replacement found; genuine absence post-restructuring, not a bot block. BMWK's equivalent issue was resolved: it's `bmwe_presse` now (see above) |
 | Bundesverfassungsgericht | No RSS found | Site redesign dropped RSS in favor of an email newsletter only; genuine absence, not a block (confirmed 2026-07-03: robots.txt disallows the old service path, no autodiscovery, no working guessed URL) |
 | European Court of Auditors | No RSS found | Runs on SharePoint with no public feed endpoint (native SharePoint feed routes redirect to the homepage); genuine absence, not a block |
@@ -171,6 +187,30 @@ adapter, needs further verification, or genuinely blocked).
   enrichment doesn't apply to it automatically.
 - **Adding a channel** = one `FeedSpec` (verified URL!) in
   `etl/adapters/feeds.py`. Non-feed sources get a full `SourceAdapter`.
+- **Headless-browser exception (`ep_verbatim`, 2026-07-09)**: every other
+  adapter is plain HTTP (`httpx`) by design — WAF/Cloudflare blocks are
+  normally accepted rather than fought (see the blocked tables above). One
+  exception: EP verbatim reports (CRE), where a real headless Chromium
+  (Playwright) demonstrably passes the AWS WAF JS challenge that a plain
+  request never does (confirmed live: 202/empty vs. 614KB of real content).
+  The adapter renders each sitting day at most once (cached via a
+  `processed_days` cursor entry, separate from the usual off-topic cursor)
+  and judges relevance against the agenda item's title *and* its first few
+  speakers' actual words — title alone misses real cases (e.g. "The 28th
+  Regime: a new legal framework for innovative companies" has no literal
+  tech keyword). See decision-log.md for the full trade-off writeup.
+- **`an_verbatim` known precision limitation (2026-07-09)**: the Assemblée
+  Nationale's numbered agenda items are coarser than the EP's — a single
+  item like "Questions au gouvernement" (government question time) can
+  bundle 100+ unrelated Q&As under one item number. When exactly one of
+  them mentions a tech keyword, the whole bundle (every unrelated Q&A) gets
+  stored as one document. Verified live: real matches include genuine ones
+  (a textile-industry bill explicitly targeting online fast-fashion
+  platforms) alongside weak ones (one question mentioning "données" pulls
+  in ~140 unrelated speaker turns). Same class of looseness this project
+  already accepts for broad `filter_tech` RSS feeds — not fixed, since
+  splitting bundled items by sub-topic would need a different heuristic
+  entirely and isn't low-hanging fruit.
 
 ## Backlog — mapped but not yet integrated
 
@@ -183,7 +223,7 @@ pattern as `eurlex.py`/`oeil.py`/`have_your_say.py`)**
 | Candidate | Jurisdiction | Why it's worth the adapter |
 |---|---|---|
 | QPC360 (Conseil constitutionnel) | FR | `rss.xml` returns 200 but 0 items — site's real feed mechanism is a JS-driven tree, not a static URL; needs the API/JSON layer behind it, not RSS |
-| Bundestag DIP API | DE | Blocked on a key (see above) — once registered, replaces `bundestag_hib` filtering with real structured procedure data |
+| Bundestag DIP API — procedure data (Vorgänge) | DE | No longer blocked (see Layer 1 / `de_verbatim`'s note above) — the key exists, just not yet used for this specific purpose; would replace `bundestag_hib`'s RSS-agenda filtering with real structured procedure data |
 
 **Needs further verification** (a feed/API might exist; not confirmed after
 two verification passes) — a much shorter list now: EU Agency for Fundamental

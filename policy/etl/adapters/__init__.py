@@ -7,7 +7,10 @@ orchestrator and CLI pick it up automatically.
 
 from .adlc_decisions import AutoriteConcurrenceAdapter
 from .an_dossiers import AssembleeNationaleAdapter
+from .an_verbatim import AnVerbatimAdapter
 from .base import DocRef, ParsedDocument, RawDocument, SourceAdapter
+from .de_verbatim import DeVerbatimAdapter
+from .ep_verbatim import EpVerbatimAdapter
 from .eurlex import EurLexAdapter
 from .eurlex_key_acts import EurLexKeyActsAdapter
 from .feeds import FEED_ADAPTERS
@@ -21,10 +24,13 @@ ADAPTERS: list[type[SourceAdapter]] = [
     EurLexKeyActsAdapter,
     LawTrackerAdapter,
     OeilAdapter,
+    EpVerbatimAdapter,
     HaveYourSayAdapter,
     AssembleeNationaleAdapter,
+    AnVerbatimAdapter,
     SenatDossiersAdapter,
     AutoriteConcurrenceAdapter,
+    DeVerbatimAdapter,
     *FEED_ADAPTERS,
 ]
 

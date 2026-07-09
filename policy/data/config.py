@@ -55,6 +55,13 @@ class Settings(BaseSettings):
     # was observed truncating mid-sentence on a real report.
     llm_max_tokens: int = 16000
 
+    # --- API / CORS -----------------------------------------------------------
+    # Comma-separated origins the browser is allowed to call the API from.
+    # localhost is always included (dev never breaks); add the deployed
+    # front-end's real origin(s) here in production — e.g.
+    # "https://europoltracker.vercel.app,https://europoltracker.com".
+    cors_allow_origins: str = ""
+
     # --- HTTP / ingestion (used by the ETL layer) ---------------------------
     http_user_agent: str = "EuroPolTracker/0.1 (+policy-tracker; contact: ops@example.com)"
     http_timeout_seconds: float = 30.0

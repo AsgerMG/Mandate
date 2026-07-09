@@ -636,6 +636,130 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       now has two blocked documents: CSAM proposal (52022PC0209, PDF-only)
       and the GDPR/ePrivacy Digital Omnibus proposal (52025PC0837, ambiguous
       300 on every Accept type tried)
+- ✅ EP plenary verbatim reports (`ep_verbatim`, 2026-07-09) — real debate
+      transcripts (named speaker, role/group, full speech text, linked OEIL
+      procedure ref) for tech-relevant agenda items, not just document
+      metadata. The EP's `doceo/document/CRE-*.html` sits behind an AWS WAF
+      JS challenge with no machine-readable fallback (confirmed live: every
+      content type, full browser headers, no Cellar-equivalent, no working
+      captions API); a real headless Chromium (Playwright) passes it where
+      `httpx` gets nothing — the one adapter in the codebase that renders a
+      browser instead of a plain request. See decision-log.md 2026-07-09 for
+      the full trade-off. Verified live end-to-end against the real site and
+      local DB: correctly surfaced named MEP/Commissioner speeches on the
+      Cybersecurity Act, the Digital Networks Act, and AI-deepfakes
+      enforcement, each linked to its OEIL procedure reference. A real
+      parsing bug was caught and fixed during live verification: the
+      dash-splitting heuristic matched plain ASCII hyphens too, so roles
+      like "Executive Vice-President" cut the speech text at the wrong
+      point — fixed to match only the EP's actual en-dash separator. A real
+      incremental-refresh bug was also caught (only visible across two live
+      runs, not unit tests): using the pipeline's generic `since` cursor
+      would silently stop discovering every past sitting day forever after
+      the first run (it collapses to "today"); fixed with a dedicated
+      `processed_days` cursor entry, mirroring `oeil.py`'s "current +
+      previous year, ignore `since`" convention instead
+- ✅ Assemblée Nationale verbatim (`an_verbatim`, 2026-07-09) — the FR
+      sibling to `ep_verbatim`. No bot wall at all on this one (plain
+      `httpx` works); discovery covers the current + previous legislative
+      year (mirrors `ep_verbatim`'s 2-year window) by also crawling the
+      root listing page's sibling session-group index pages, which the
+      root page doesn't inline. A transient 503 from the AN's server was
+      caught crashing the *entire* source run (an unhandled exception
+      inside `discover()`'s generator, unlike `fetch()`/`parse()` which
+      pipeline.py already isolates per-document) — fixed with a try/except
+      around the per-sitting fetch that skips and leaves the sitting
+      un-marked-processed (retried next run) rather than aborting
+- ✅ False-positive fix + full recall audit, both verbatim adapters
+      (2026-07-09): a first bulk run surfaced systemic false positives —
+      "Post-election situation in Uganda", "Gender pay and pension gap",
+      "Questions au gouvernement" all got ingested. Root cause: relevance
+      was checked against title *plus* the first few speakers' raw text
+      (added for recall — some genuine debates have generic titles), but
+      that text is long and multilingual, and a few `TECH_KEYWORDS` entries
+      are short/ambiguous substrings that collide inside it — " ai " inside
+      French "j'ai", "chip" inside "citizenship"/"relationship", "daten"
+      inside German "Mandaten", "internet" inside the boilerplate
+      "available on Parliament's website" sign-off every item ends with.
+      Verified live on a 34-doc batch: 9/9 genuine matches already passed
+      on title alone; 0/16 false positives did. Fix: dropped the
+      speaker-text fallback entirely, title-only now (mirrors `oeil.py`).
+      Purged the false positives, reset both cursors, re-ran clean.
+      User pushback ("28th Regime is also relevant... arising from the
+      need for tech startups to scale across Europe") correctly rejected
+      the sacrifice-recall tradeoff — fixed by widening `TECH_KEYWORDS`
+      with a few precise, title-safe phrases ("innovative compan",
+      "start-up"/"startup"/"scale-up") instead of reopening the risky
+      fallback. Then, rather than assume title-only was sufficient, ran a
+      full audit: re-scanned every one of the 2,515 EP items (84 sitting
+      days) and 929 AN items (317 sittings) in the 2-year window, dumping
+      every title — kept AND dropped — for a full manual eyeball review.
+      Found 5 genuine, concrete misses this way, each verified to hit
+      exactly once across the full dropped set before adding (same
+      collision-safety discipline as the fix above): EP — "media freedom
+      act" (a debate on the EU's own EMFA, one of the 24 pinned foundational
+      acts; bare "media freedom" was tried and rejected, since it also
+      matches an unrelated Georgia press-freedom debate and a journalist
+      memorial), "communication infrastructure", "tech race"; AN —
+      "tiktok" (a coined brand name, low collision risk, unlike "Google"/
+      "Amazon"/"Apple" which were considered and rejected for exactly that
+      dictionary-word-collision reason), "réseaux sociaux". Also tested and
+      rejected a theoretically safer alternative signal — cross-checking
+      each item's linked OEIL procedure reference against the existing
+      `oeil`/`law_tracker` corpus — because the reference lives in speech
+      content, not the title (still needs a fetch either way), and that
+      corpus only tracks 26 procedures total, too sparse to be a useful
+      oracle yet. Final: 73 `ep_verbatim` + 3 `an_verbatim` documents, 0
+      title-only-check failures on re-verification, local DB 149MB (from
+      164MB baseline — far under an initial ~300-400MB worst-case estimate,
+      since the false-positive fix cut ingested volume substantially)
+- ✅ Bundestag verbatim (`de_verbatim`, 2026-07-09) — the DE sibling to
+      `ep_verbatim`/`an_verbatim`, and unblocked the same day it was parked:
+      re-checking the DIP API's own help page (rendered live, not assumed
+      from the earlier backlog note) surfaced an official public demo key
+      published directly on it (`R2BZaee...`, valid through 2027-05) —
+      distinct from the dead community-maintained key already confirmed
+      revoked. No user action needed. Best-structured of the three sources:
+      real semantic XML (`<redner>` tags with structured name/party fields,
+      no HTML-class parsing) at `dserver.bundestag.de`, no bot wall
+      anywhere, no headless browser needed — plain `httpx`. Agenda-item
+      titles come from the protocol's own table of contents, matched to
+      the body by a shared `top-id` string. Same `processed_protocols`
+      cursor pattern as the other two, and the same per-item try/except
+      fix as `an_verbatim` (a not-yet-published sitting 404s for a day or
+      two; skipped and retried, not fatal to the run). Caught a real,
+      *pre-existing* bug in the shared `TECH_KEYWORDS` list this way: bare
+      "netz" (network) matched "Gasnetzentgelten" (gas-network fees) and
+      "BNetzA" just as readily as anything digital — German compounds
+      nouns freely, so this was likely already a silent false-positive
+      source in `bundesrat_neueingaenge`/`bundestag_hib`/
+      `gesetze_aktudienst` too (not yet re-audited). Replaced with specific
+      compounds ("netzneutralität", "mobilfunknetz", "netzabdeckung", etc.)
+      — one of which ("netzabdeckung") had to be added back after the
+      first replacement pass over-corrected and dropped a genuine telecom-
+      coverage motion. Final: 41 documents, full 2-year window (Sept 2024–
+      Jun 2026), 0 title-only-check failures on re-verification, including
+      Germany's own AI Act and Data Act implementation laws, a "Digitale
+      Zeitenwende für Deutschland" motion, and an AfD motion to abolish the
+      DSA. Local DB 150MB (from 149MB)
+- ⬜ Council of Europe PACE plenary verbatim records — investigated
+      alongside `ep_verbatim` (2026-07-09) since the user asked about them
+      directly; blocked by a Cloudflare JS challenge (different vendor than
+      the EP's AWS WAF) with no open-data fallback found. Not pursued: PACE
+      is also a different institution/jurisdiction (Council of Europe) than
+      this tracker's EU/FR/DE scope, so it would be a new jurisdiction, not
+      an extension of existing coverage — worth a deliberate scope decision
+      before investing in it, not a quick add
+- ⬜ Roll-call vote data (`howtheyvote.eu`, MIT-licensed, no-auth JSON API) —
+      found while investigating `ep_verbatim`: a real, live, per-MEP
+      FOR/AGAINST/ABSTENTION breakdown for every EP plenary vote back to
+      2019, with a per-political-group summary, linked directly to the OEIL/
+      COD procedure reference (same `reference` format `law_tracker.py`
+      already uses). Not yet integrated as its own adapter — would be a
+      lighter-weight, purely structural complement to `ep_verbatim`'s actual
+      speech text (a MEP's recorded position on a specific tech dossier,
+      without needing to parse rhetoric): a real "who stands where" signal,
+      not a replacement for it
 
 ## Milestone 4 — Website
 
@@ -679,4 +803,9 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ✅ France — CNIL, ANSSI, Sénat bill feed integrated
 - ✅ Germany — BfDI, Bundestag agendas, netzpolitik integrated
 - ⬜ France — Légifrance adapter (needs PISTE/DILA API key)
-- ⬜ Germany — Bundestag DIP procedure API (needs free key); Bundesgesetzblatt scraper
+- ⬜ Germany — Bundestag DIP procedure API for `bundestag_hib`-quality
+      structured procedure data (replacing RSS-agenda filtering). No longer
+      actually blocked as of 2026-07-09 — see `de_verbatim` below, which
+      found the Bundestag's own official public demo key on its help page
+      (no registration needed). Not yet built for this specific use;
+      `de_verbatim` only uses the key for Plenarprotokoll lookup so far

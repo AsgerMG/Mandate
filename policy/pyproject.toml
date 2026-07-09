@@ -28,6 +28,11 @@ dependencies = [
     "uvicorn[standard]>=0.30",
     "fpdf2>=2.7",
     "python-dotenv>=1.2.2",
+    # Real-browser rendering for the one source behind a JS bot-challenge
+    # with no machine-readable fallback (EP plenary verbatim reports —
+    # ep_verbatim.py). Needs `uv run playwright install chromium` once after
+    # install; every other adapter stays plain-HTTP via httpx.
+    "playwright>=1.61",
 ]
 
 [project.optional-dependencies]

@@ -34,6 +34,7 @@ specific passage of a specific document version.
 
 ```bash
 uv sync --extra dev                 # install (Python 3.12 via uv)
+uv run playwright install chromium  # one-time: browser for ep_verbatim (see below)
 uv run ept init                     # schema + pgvector + HNSW + seed + sources
 uv run ept refresh --limit 25       # THE TRIGGER — collect/update the corpus
 uv run ept embed                    # vectorize passages (local model, no key)
