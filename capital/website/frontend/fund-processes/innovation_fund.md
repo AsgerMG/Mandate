@@ -42,7 +42,7 @@ Five criteria: (1) degree of innovation; (2) GHG emission avoidance;
 replicability; (5) cost efficiency (public cost per tonne of CO2 avoided).
 
 ## How a founder should act on this
-- A competitor with Innovation Fund money has a state-anchored capex line and a
+- A comparable company with Innovation Fund money has a state-anchored capex line and a
   credible first-of-a-kind plant — a serious moat. Read it as such.
 - This is not a form you fire off: build maturity, secure co-financing, and line
   up the GHG case and offtake early.

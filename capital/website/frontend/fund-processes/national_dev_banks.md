@@ -40,7 +40,7 @@ sectors). Several run as venture investors and weigh team, market and
 co-investor syndicate.
 
 ## How a founder should act on this
-- Identify the institution and **specific programme** behind a competitor's
+- Identify the institution and **specific programme** behind a comparable company's
   award (the granting body and programme name usually reveal it) and check your
   fit for the same line.
 - Use your national door first to start the compounding clock, then stack EU

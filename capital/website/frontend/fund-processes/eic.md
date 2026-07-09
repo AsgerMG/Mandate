@@ -44,7 +44,7 @@ funding can earn a **Seal of Excellence**, which several national schemes pay
 out directly — worth chasing as a fallback.
 
 ## How a founder should act on this
-- If a competitor holds EIC, they carry a strong third-party certification.
+- If a comparable company holds EIC, they carry a strong third-party certification.
   The academic evidence is that an EIC/SME-Instrument win roughly triples the
   odds of subsequent private investment — match the signal or beat it.
 - Enter at TRL 5–6 with a sharp counterfactual. Apply to a national grant in

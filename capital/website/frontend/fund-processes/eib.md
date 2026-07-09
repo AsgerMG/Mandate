@@ -40,7 +40,7 @@ they are loans/quasi-equity to be repaid, not non-dilutive money.
 ## How a founder should act on this
 - This is a **growth-stage** tool: blend it into the balance sheet once you have
   an equity base and revenue, not as early non-dilutive cash.
-- A competitor with EIB financing has institutional debt validation and likely a
+- A comparable company with EIB financing has institutional debt validation and likely a
   prior equity round — read it as a maturity signal.
 - If you are approaching growth stage, the TechEU envelope prices against your
   public track record; a conviction-tier award strengthens the case.

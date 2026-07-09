@@ -38,7 +38,7 @@ Excellence and impact within the semiconductor agenda; contribution to EU
 strategic autonomy in chips; consortium strength across the value chain.
 
 ## How a founder should act on this
-- A competitor in the Chips JU is embedded in Europe's semiconductor
+- A comparable company in the Chips JU is embedded in Europe's semiconductor
   strategic-autonomy push and is co-funded by both the EU and a member state.
 - Entry requires a consortium and a fit to the chips value chain; partner with
   RTOs and foundries already inside the JU.

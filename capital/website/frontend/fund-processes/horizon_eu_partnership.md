@@ -41,7 +41,7 @@ targets).
 ## How a founder should act on this
 - Partnerships reward early, visible presence in the roadmap conversations and
   membership of the backing association.
-- A competitor in a partnership is plugged into a strategic value chain the EU
+- A comparable company in a partnership is plugged into a strategic value chain the EU
   is co-funding with industry; identify the partnership and assess whether your
   technology fits its agenda.
 - These are multi-year relationships, not one-off applications.

@@ -49,7 +49,7 @@ II appearance means the company was in a funded EU collaborative project.
 - This is a relationship game: get into consortia early, ideally via partners or
   a research institution already inside the cluster.
 - Map which cluster your technology serves and track its Work Programme calls.
-- A competitor's Pillar II participation signals EU network embeddedness and
+- A comparable company's Pillar II participation signals EU network embeddedness and
   access to research partners — consider where you could join the same calls.
 
 ## At a glance

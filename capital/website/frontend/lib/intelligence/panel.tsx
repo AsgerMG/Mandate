@@ -159,7 +159,7 @@ function InfoDot({ children }: { children: React.ReactNode }) {
 }
 
 const STEPS: { key: PipelineStep; label: string }[] = [
-  { key: "discovering", label: "Finding & researching competitors" },
+  { key: "discovering", label: "Finding & researching comparable companies" },
   { key: "querying_db", label: "Querying EU funding database" },
   { key: "generating", label: "Writing your memo" },
 ];
@@ -296,7 +296,7 @@ export function IntelligencePanel() {
           Free tool · powered by the funding record
         </p>
         <h2 className="text-xl sm:text-2xl font-bold leading-tight" style={serif}>
-          See what your competitors have raised from Europe
+          Understand how comparable companies raise public capital
         </h2>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
           Enter your company. We trace the grants, state aid and public capital
@@ -717,7 +717,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
       {/* ── Funders to engage (prose, no cards) ────────────────────── */}
       <SectionTitle>Funders to engage</SectionTitle>
       <div className="space-y-5">
-        {report.stakeholderMap.map((s, i) => (
+        {report.funderMap.map((s, i) => (
           <div key={i}>
             <p>
               <span className="font-semibold">{s.funder}</span>
@@ -726,9 +726,9 @@ function Memo({ report }: { report: IntelligenceReport }) {
                   {" "}· next window {s.nextDeadline}
                 </span>
               )}
-              {s.competitorsUsing.length > 0 && (
+              {s.comparablesUsing.length > 0 && (
                 <span className="text-[13px] italic text-[var(--muted-foreground)]">
-                  {" "}· used by {s.competitorsUsing.join(", ")}
+                  {" "}· used by {s.comparablesUsing.join(", ")}
                 </span>
               )}
             </p>

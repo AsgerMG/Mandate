@@ -6,7 +6,7 @@ export interface ChannelAmount {
   eur: number;
 }
 
-/** A competitor as matched against the EuroInvTracker corpus. */
+/** A comparable company as matched against the EuroInvTracker corpus. */
 export interface CompetitorRecord {
   name: string;
   /** ISO2 country of the richest matched entity, or "" if unknown. */
@@ -46,7 +46,7 @@ export interface CompetitorIntel {
 /** One row of the competitive-field table, finalised in code (never the model). */
 export interface CompetitorRow {
   name: string;
-  /** "web" = a web-found direct competitor; "corpus" = a same-sub-sector funded
+  /** "web" = a web-found comparable; "corpus" = a same-sub-sector funded
    *  peer pulled straight from the database (guaranteed funding signal). */
   source: "web" | "corpus";
   country: string; // ISO2 or ""
@@ -96,9 +96,9 @@ export interface InstrumentRow {
   usedInField: boolean;
 }
 
-export interface StakeholderEntry {
+export interface FunderEntry {
   funder: string; // e.g. "EIC Accelerator"
-  competitorsUsing: string[];
+  comparablesUsing: string[];
   relevanceToYou: string;
   /** What this money costs you, named honestly and fund-specifically. */
   tradeoff: string;
@@ -121,7 +121,7 @@ export interface IntelligenceReport {
   overview: OverviewSection;
   /** The capital on the table: instruments relevant to this founder, side by side. */
   instrumentTable: InstrumentRow[];
-  stakeholderMap: StakeholderEntry[];
+  funderMap: FunderEntry[];
   todos: TodoEntry[];
   caveats: string;
 }

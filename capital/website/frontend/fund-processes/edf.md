@@ -43,7 +43,7 @@ supercycle.
 ## How a founder should act on this
 - If any part of your stack is dual-use, build the defence track record now,
   before the crowd arrives.
-- A competitor in the EDF holds a defence-prime relationship and consortium
+- A comparable company in the EDF holds a defence-prime relationship and consortium
   position; map which capability area they entered.
 - Mind the ownership/control rules — non-EU control can block eligibility.
 

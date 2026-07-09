@@ -305,21 +305,21 @@ const REPORT_SCHEMA = {
       },
       required: ["headline", "bottomLine", "yourPosition"],
     },
-    stakeholderMap: {
+    funderMap: {
       type: "array",
       items: {
         type: "object",
         additionalProperties: false,
         properties: {
           funder: { type: "string" },
-          competitorsUsing: { type: "array", items: { type: "string" } },
+          comparablesUsing: { type: "array", items: { type: "string" } },
           relevanceToYou: { type: "string" },
           tradeoff: { type: "string" },
           nextStep: { type: "string" },
           nextDeadline: { type: ["string", "null"] },
         },
         required: [
-          "funder", "competitorsUsing", "relevanceToYou", "tradeoff", "nextStep", "nextDeadline",
+          "funder", "comparablesUsing", "relevanceToYou", "tradeoff", "nextStep", "nextDeadline",
         ],
       },
     },
@@ -339,7 +339,7 @@ const REPORT_SCHEMA = {
     },
     caveats: { type: "string" },
   },
-  required: ["overview", "stakeholderMap", "todos", "caveats"],
+  required: ["overview", "funderMap", "todos", "caveats"],
 } as const;
 
 /**
@@ -375,7 +375,7 @@ function buildCompetitors(
   });
 }
 
-/** Database-native peers (same sub-sector, all funded) → competitor rows. */
+/** Database-native peers (same sub-sector, all funded) → comparable rows. */
 function buildDbPeers(peers: CompetitorRecord[]): CompetitorRow[] {
   return peers.map((r) => ({
     name: r.name,
@@ -527,7 +527,7 @@ async function synthesize(
           `Write, per your instructions: the headline (subject line), the ` +
           `bottomLine (the single most important takeaway, up front), the ` +
           `"your position" paragraph that compares the founder's own footprint ` +
-          `above against the peers, and the stakeholder map. For each funder in ` +
+          `above against the comparables, and the funder map. For each funder in ` +
           `the map, "tradeoff" must name in one short clause what that capital ` +
           `actually costs the founder, fund-specifically and honestly (dilution, ` +
           `repayment, co-financing, member-state sponsorship, reporting load, ` +
@@ -546,7 +546,7 @@ async function synthesize(
     .join("");
   const narrative = extractJson<{
     overview: { headline: string; bottomLine: string; yourPosition: string };
-    stakeholderMap: IntelligenceReport["stakeholderMap"];
+    funderMap: IntelligenceReport["funderMap"];
     todos: IntelligenceReport["todos"];
     caveats: string;
   }>(text);
@@ -562,7 +562,7 @@ async function synthesize(
       competitors,
     },
     instrumentTable,
-    stakeholderMap: narrative.stakeholderMap.map((s) => ({
+    funderMap: narrative.funderMap.map((s) => ({
       ...s,
       funder: deDash(s.funder),
       relevanceToYou: deDash(s.relevanceToYou),

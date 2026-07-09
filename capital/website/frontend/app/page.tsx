@@ -80,20 +80,20 @@ export default function Home() {
               For companies raising in Europe
             </p>
             <h1 className="text-4xl font-medium leading-[1.08] tracking-tight sm:text-[3.4rem]" style={serif}>
-              See what your competitors have raised from Europe&apos;s public purse
+              Understand how companies like yours raise Europe&apos;s public capital
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#5d5b52]">
               We mapped the EU grants, state aid and public capital behind{" "}
               {synth.companies.toLocaleString()} European companies. Enter yours and get a one-page
-              competitive brief: who your peers are, what public money each has accessed, and a
-              prioritised to-do list for your own raise.
+              brief: which comparable companies have drawn public funding, through which
+              instruments, and a prioritised to-do list for your own raise.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/for-companies"
                 className="rounded-full bg-[#0a0a0a] px-6 py-3 text-[15px] font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
               >
-                Check your competitors
+                See your comparables
               </Link>
               <Link
                 href="/companies"
@@ -268,8 +268,8 @@ export default function Home() {
               </Reveal>
               <Reveal delay={160}>
                 <p className="mx-auto mt-5 max-w-xl leading-relaxed text-[#5d5b52]">
-                  See what your competitors have drawn from Europe&apos;s public funding, and the moves
-                  that fit your own raise.
+                  See where, for what and how comparable companies have drawn Europe&apos;s public
+                  funding, and the instruments that fit your own raise.
                 </p>
               </Reveal>
               <Reveal delay={220}>
@@ -278,7 +278,7 @@ export default function Home() {
                     href="/for-companies"
                     className="rounded-full bg-[#0a0a0a] px-6 py-3 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
                   >
-                    Trace your competitors
+                    Map your comparables
                   </Link>
                   <Link
                     href="/companies"

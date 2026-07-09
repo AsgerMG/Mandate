@@ -46,7 +46,7 @@ art; cross-border spillovers; the company's own co-investment and capability.
 ## How a founder should act on this
 - If you sit in a strategic value chain (chips, batteries, hydrogen, cloud,
   health), say so in every interaction and get on your member state's radar now.
-- A competitor in an IPCEI is positioned for a decade of strategic-autonomy
+- A comparable company in an IPCEI is positioned for a decade of strategic-autonomy
   funding and is hard to dislodge. Map which value chain they entered.
 - Keep the receiving entity's records clean — investors and the state both look
   the entity up.

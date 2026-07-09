@@ -39,11 +39,11 @@ innovation-ecosystem contribution.
 EIT and EIC populations overlap (~12% in our corpus); a company can sit in both.
 
 ## How a founder should act on this
-- Identify **which KIC** a competitor engaged (the programme/award names point to
+- Identify **which KIC** a comparable company engaged (the programme/award names point to
   it) and whether your sector maps to that community.
 - KICs are network and ecosystem plays — value is partners, customers and
   follow-on as much as the cash.
-- If a KIC vehicle (e.g. InnoEnergy) took equity in a competitor, treat that KIC
+- If a KIC vehicle (e.g. InnoEnergy) took equity in a comparable company, treat that KIC
   as an active strategic investor in your space.
 
 ## At a glance

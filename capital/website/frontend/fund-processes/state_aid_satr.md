@@ -40,7 +40,7 @@ absence of public support — only of *disclosed state aid*.
 ## How a founder should act on this
 - This is usually your **fastest first award** and starts the compounding clock
   cheaply. Find the scheme your country/region actually runs.
-- A competitor with many state-aid awards is working its national machine well;
+- A comparable company with many state-aid awards is working its national machine well;
   identify which national/regional schemes they used (the award titles and the
   granting authority point to it) and check your eligibility for the same ones.
 - Your national door depends on your address: development-bank-led (France),

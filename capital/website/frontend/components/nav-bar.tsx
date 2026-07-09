@@ -109,7 +109,7 @@ export function NavBar() {
             href="/for-companies"
             className="rounded-full bg-[#0a0a0a] px-4 py-1.5 text-sm font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
           >
-            Check your competitors
+            See your comparables
           </Link>
         </div>
 

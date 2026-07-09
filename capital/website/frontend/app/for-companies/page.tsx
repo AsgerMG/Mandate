@@ -248,7 +248,7 @@ export default function ForCompaniesPage() {
                     companies and organisations, 2021 to 2025. It answers four questions in order: what
                     you can get, which door is yours, what the data proves about how winners behave, and
                     in what sequence to raise. You can check any company&apos;s public funding history,
-                    including your competitors&apos;, in the{" "}
+                    including any comparable company&apos;s, in the{" "}
                     <Link href="/companies" className="text-[#12264f] underline">company lookup</Link>.
                   </p>
                 </Reveal>
@@ -521,7 +521,7 @@ export default function ForCompaniesPage() {
                       The Clean Industrial Deal redirects support from R&amp;D grants toward a EUR 100bn
                       decarbonisation bank serving industrial capex<Src n={4} />. Our data already shows
                       the euros consolidating in gigafactories and hydrogen infrastructure. The winning
-                      position for a small company is supplier to that buildout, not competitor for its
+                      position for a small company is supplier to that buildout, not contender for its
                       subsidies.
                     </p>
                   </Signal>
