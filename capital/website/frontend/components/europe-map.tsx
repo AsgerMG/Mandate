@@ -135,9 +135,12 @@ function formatEur(n: number): string {
 
 interface CountryData {
   name: string;
-  companies: number;
-  totalEur: number;
-  byFamily: { family: string; label: string; companies: number }[];
+  // Below the €1B public-support corpus threshold: rendered on the map but
+  // outside the study. Stubs carry only `name` + this flag.
+  excluded?: boolean;
+  companies?: number;
+  totalEur?: number;
+  byFamily?: { family: string; label: string; companies: number }[];
   bySector?: { sector: string; label: string; companies: number }[];
   narrative?: {
     rankByCompanies: number | null;
@@ -303,7 +306,7 @@ function MapTooltip({
 }: MapTooltipExtraProps) {
   // Shrink to fit narrow containers (the map renders at half page width).
   const TOOLTIP_WIDTH = Math.min(420, containerWidth - 12);
-  const TOOLTIP_HEIGHT_EST = 500;
+  const TOOLTIP_HEIGHT_EST = data.excluded ? 120 : 500;
   const preferredLeft =
     x + TOOLTIP_WIDTH + 18 > containerWidth ? x - TOOLTIP_WIDTH - 14 : x + 14;
   const left = Math.max(6, Math.min(containerWidth - TOOLTIP_WIDTH - 6, preferredLeft));
@@ -312,7 +315,38 @@ function MapTooltip({
       ? Math.max(8, y - TOOLTIP_HEIGHT_EST - 14)
       : y + 18;
 
-  const familyBars = [...data.byFamily]
+  // Countries below the €1B corpus threshold: a compact explanatory card
+  // instead of the full stats tooltip.
+  if (data.excluded) {
+    return (
+      <div
+        className={`absolute z-50 rounded border border-[var(--border)] bg-white shadow-lg ${
+          pinned ? "pointer-events-auto" : "pointer-events-none"
+        }`}
+        style={{ left, top, width: TOOLTIP_WIDTH }}
+      >
+        <div className="px-4 py-3 relative">
+          {pinned && (
+            <button
+              onClick={onClose}
+              className="absolute top-2.5 right-3 flex h-5 w-5 items-center justify-center rounded text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] text-[10px]"
+            >
+              ✕
+            </button>
+          )}
+          <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] pr-7">
+            {data.name}
+          </p>
+          <p className="mt-2 text-[12px] leading-relaxed text-[var(--foreground)]">
+            Not in the data corpus for now. We follow the tech scene and its
+            developments in {data.name} with excitement.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const familyBars = [...(data.byFamily ?? [])]
     .sort((a, b) => b.companies - a.companies)
     .map((d) => ({
       name: d.label,
@@ -330,7 +364,7 @@ function MapTooltip({
       color: SECTOR_COLORS[d.sector] ?? "#6b7280",
     }));
 
-  const present = new Set(data.byFamily.map((d) => d.family));
+  const present = new Set((data.byFamily ?? []).map((d) => d.family));
   const missing = familyUniverse.filter((f) => !present.has(f.family));
   const rating = data.coverageRating;
   const ratingConf = rating ? (RATING_CONFIG[rating.rating] ?? null) : null;
@@ -339,7 +373,7 @@ function MapTooltip({
     data.name,
     data.narrative,
     data.bySector ?? [],
-    data.byFamily.length,
+    (data.byFamily ?? []).length,
     familyUniverse.length,
   );
 
@@ -367,10 +401,10 @@ function MapTooltip({
             </p>
             <div className="mt-1 flex items-baseline gap-3">
               <span className="text-base font-semibold tabular-nums text-[var(--primary)]">
-                {data.companies.toLocaleString()} companies
+                {(data.companies ?? 0).toLocaleString()} companies
               </span>
               <span className="text-xs text-[var(--muted-foreground)] tabular-nums">
-                {formatEur(data.totalEur)} public support
+                {formatEur(data.totalEur ?? 0)} public support
               </span>
             </div>
           </div>
@@ -453,7 +487,8 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
     // Pale to deep navy, so more companies = deeper ink on the paper stage.
     const RAMP = ["#e2e8f2", "#bccbe3", "#8aa3cc", "#51709f", "#12264f"];
     const counts = Object.values(countryData)
-      .map((c) => c.companies)
+      .filter((c) => !c.excluded)
+      .map((c) => c.companies ?? 0)
       .filter((n) => n > 0)
       .sort((a, b) => a - b);
     if (counts.length === 0) {
@@ -484,7 +519,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
   const familyUniverse = useMemo(() => {
     const totals = new Map<string, { family: string; label: string; total: number }>();
     for (const c of Object.values(countryData)) {
-      for (const f of c.byFamily) {
+      for (const f of c.byFamily ?? []) {
         const cur = totals.get(f.family) ?? { family: f.family, label: f.label, total: 0 };
         cur.total += f.companies;
         totals.set(f.family, cur);
@@ -569,7 +604,8 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                   const iso2 = NUMERIC_TO_ISO2[numericId];
                   const datum = iso2 ? countryData[iso2] : undefined;
                   const hasData = Boolean(datum);
-                  const fill = datum ? scale.fillFor(datum.companies) : "#e7e4da";
+                  const fill =
+                    datum && !datum.excluded ? scale.fillFor(datum.companies ?? 0) : "#e7e4da";
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -654,14 +690,19 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                   onMouseLeave={handleMouseLeave}
                   onClick={onClick}
                 >
-                  <circle r={4.5} fill="#12264f" stroke="#f3f2ed" strokeWidth={1.2} />
+                  <circle
+                    r={4.5}
+                    fill={data.excluded ? "#c9c6bb" : "#12264f"}
+                    stroke="#f3f2ed"
+                    strokeWidth={1.2}
+                  />
                   <text
                     textAnchor="middle"
                     y={-9}
                     style={{
                       fontSize: 9,
                       fontWeight: 600,
-                      fill: "#1d1c18",
+                      fill: data.excluded ? "#6b6b64" : "#1d1c18",
                       stroke: "#f3f2ed",
                       strokeWidth: 0.6,
                       paintOrder: "stroke",
@@ -709,7 +750,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
         )}
         <span className="flex items-center gap-1">
           <span className="inline-block h-3 w-3 rounded-sm bg-[#e7e4da] border border-black/10" />
-          Not covered
+          Outside the corpus
         </span>
         <span className="text-[#6b6b64]">· Click to pin</span>
       </div>

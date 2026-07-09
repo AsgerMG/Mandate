@@ -29,14 +29,17 @@ export interface CompetitorRecord {
   matched: boolean;
 }
 
-/** Web-research snapshot for one competitor (open-web colour, never funding amounts). */
+/** Web-research snapshot for one comparable company (open-web colour, never funding amounts). */
 export interface CompetitorIntel {
   name: string;
   /** Country the peer operates from (helps disambiguate the DB match). */
   country?: string;
   product: string;
   positioning: string;
-  lastPrivateRound: string;
+  /** Rough company maturity (lab-stage / scaling / listed …). Deliberately NOT
+   *  a private-round figure: the study tracks public support, and "who raised
+   *  what with which VC" is out of scope for the brief. */
+  maturity: string;
   notes: string;
 }
 
@@ -51,7 +54,7 @@ export interface CompetitorRow {
   channelBreakdown: string; // e.g. "€2.5M EIC · €1.8M dev banks", or ""
   channels: string[];
   activeYears: string; // e.g. "2021–2024", or ""
-  stage: string; // recent private round (web colour)
+  stage: string; // company maturity (web colour, no private-round figures)
   positioning: string; // web colour
 }
 

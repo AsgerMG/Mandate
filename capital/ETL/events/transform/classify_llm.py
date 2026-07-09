@@ -60,6 +60,9 @@ TECH_SECTORS = {"life_sciences", "cleantech", "deeptech_hardware", "digital",
 # Verify current prices; override models via CLI if these IDs are stale.
 PRICES = {
     "claude-haiku-4-5": (1.00, 5.00),
+    "claude-sonnet-4-6": (3.00, 15.00),
+    "claude-sonnet-5":  (2.00, 10.00),  # intro until 2026-08-31, then (3.00, 15.00)
+    "claude-fable-5":   (10.00, 50.00),
     "gpt-4o-mini":      (0.15, 0.60),
     "gpt-4.1-nano":     (0.10, 0.40),
     "gpt-5-nano":       (0.05, 0.40),

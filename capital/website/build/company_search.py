@@ -105,6 +105,14 @@ def main():
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
 
+    # 2026-07-08 country-scope reduction: events already inherit the €1B corpus
+    # threshold via v_events, but equity-stake-only companies would leak through
+    # the `ev_all or st_all` inclusion test below — guard on country too.
+    in_corpus = {
+        row[0] for row in con.execute(
+            "SELECT country FROM v_country_public_support WHERE in_corpus = 1")
+    }
+
     events = defaultdict(list)
     for r in con.execute("""
         SELECT v.company_id, v.event_year, v.source_family, v.project_title,
@@ -178,9 +186,13 @@ def main():
             st_all += stakes.get(cid, [])
         if not ev_all and not st_all:
             continue
-        n_companies += 1
         ev_all.sort(key=lambda e: (e[0] is not None, e[0] or 0), reverse=True)
         rep = meta[max(ids, key=mfund)]              # display = richest member
+        # Skip groups whose country is outside the €1B corpus (blank country
+        # stays in — it is a data-quality bucket, not an excluded country).
+        if rep["country"] and rep["country"] not in in_corpus:
+            continue
+        n_companies += 1
         norms = sorted({normalize(meta[c]["canonical_name"]) for c in ids})
         rec = {
             "n": rep["canonical_name"],

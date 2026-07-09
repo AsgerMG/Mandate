@@ -1,25 +1,6 @@
 {
-  "generated": "2026-07-03T17:23:59.004533+00:00",
+  "generated": "2026-07-09T11:10:07.523803+00:00",
   "countries": {
-    "AL": {
-      "source_families": [
-        "horizon"
-      ],
-      "event_count": 31,
-      "company_count": 23,
-      "register_events": 0,
-      "eu_events": 31,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
     "AT": {
       "source_families": [
         "chips_ju",
@@ -59,26 +40,6 @@
       ],
       "equity_best_disclosure": "name_only"
     },
-    "BA": {
-      "source_families": [
-        "horizon",
-        "ihi"
-      ],
-      "event_count": 34,
-      "company_count": 24,
-      "register_events": 0,
-      "eu_events": 34,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
     "BE": {
       "source_families": [
         "chips_ju",
@@ -109,101 +70,6 @@
       "coverage_tier": "A",
       "equity_tier": "E-C",
       "equity_tier_note": "DOWNGRADED from E-B on inspection: PMV publishes NO full portfolio (news items + Invest-for-Jobs subset only); Wallonie Entreprendre partial",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "BG": {
-      "source_families": [
-        "chp",
-        "edf",
-        "eib",
-        "eic",
-        "eit",
-        "eurohpc",
-        "europes_rail",
-        "euspa",
-        "horizon",
-        "ihi",
-        "satr",
-        "sesar_ju",
-        "sns_ju"
-      ],
-      "event_count": 1207,
-      "company_count": 938,
-      "register_events": 726,
-      "eu_events": 481,
-      "ndb_events": 260,
-      "coverage_tier": "B",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "CH": {
-      "source_families": [
-        "chips_ju",
-        "chp",
-        "clean_aviation",
-        "eic",
-        "eit",
-        "erc_poc",
-        "eurohpc",
-        "europes_rail",
-        "euspa",
-        "gh_edctp3",
-        "horizon",
-        "ihi",
-        "innosuisse",
-        "sesar_ju",
-        "sns_ju"
-      ],
-      "event_count": 3686,
-      "company_count": 2055,
-      "register_events": 0,
-      "eu_events": 1889,
-      "ndb_events": 1797,
-      "coverage_tier": "A",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No federal direct-equity instrument; cantonal vehicles opaque",
-      "equity_performance": null,
-      "structural_gap": "Innosuisse company-led projects via ARAMIS export (1.8k events) + EU instruments. No SATR (non-EU).",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "CY": {
-      "source_families": [
-        "chips_ju",
-        "chp",
-        "edf",
-        "eic",
-        "erc_poc",
-        "eurohpc",
-        "euspa",
-        "horizon",
-        "ihi",
-        "innovation_fund",
-        "satr",
-        "sesar_ju",
-        "sns_ju"
-      ],
-      "event_count": 1095,
-      "company_count": 298,
-      "register_events": 355,
-      "eu_events": 740,
-      "ndb_events": 355,
-      "coverage_tier": "B",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
       "equity_performance": null,
       "structural_gap": "",
       "equity_positions": 0,
@@ -568,39 +434,6 @@
       "equity_holders": [],
       "equity_best_disclosure": null
     },
-    "HR": {
-      "source_families": [
-        "chips_ju",
-        "chp",
-        "eib",
-        "eic",
-        "eit",
-        "erc_poc",
-        "eurohpc",
-        "europes_rail",
-        "euspa",
-        "horizon",
-        "ihi",
-        "innovation_fund",
-        "ipcei",
-        "satr",
-        "sesar_ju"
-      ],
-      "event_count": 1405,
-      "company_count": 905,
-      "register_events": 999,
-      "eu_events": 406,
-      "ndb_events": 104,
-      "coverage_tier": "C",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
     "HU": {
       "source_families": [
         "chips_ju",
@@ -675,34 +508,6 @@
       ],
       "equity_best_disclosure": "amount"
     },
-    "IS": {
-      "source_families": [
-        "chp",
-        "eib",
-        "eic",
-        "eit",
-        "erc_poc",
-        "eurohpc",
-        "horizon",
-        "innovation_fund",
-        "satr",
-        "sesar_ju"
-      ],
-      "event_count": 296,
-      "company_count": 148,
-      "register_events": 148,
-      "eu_events": 148,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "Thin SATR (EEA). Rannís grant list not extracted.",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
     "IT": {
       "source_families": [
         "cdp_vc",
@@ -742,58 +547,6 @@
         "CDP VC"
       ],
       "equity_best_disclosure": "name_only"
-    },
-    "LI": {
-      "source_families": [
-        "horizon"
-      ],
-      "event_count": 1,
-      "company_count": 1,
-      "register_events": 0,
-      "eu_events": 1,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "LT": {
-      "source_families": [
-        "chips_ju",
-        "chp",
-        "edf",
-        "eib",
-        "eic",
-        "eit",
-        "erc_poc",
-        "eurohpc",
-        "europes_rail",
-        "euspa",
-        "horizon",
-        "ihi",
-        "innovation_fund",
-        "satr",
-        "sesar_ju"
-      ],
-      "event_count": 958,
-      "company_count": 566,
-      "register_events": 517,
-      "eu_events": 441,
-      "ndb_events": 365,
-      "coverage_tier": "B",
-      "equity_tier": "E-C",
-      "equity_tier_note": "INVEGA Koinvesticinis fondas case pages",
-      "equity_performance": null,
-      "structural_gap": "SATR + economy-ministry/ILTE tagged. No machine-readable ILTE direct register (data.gov.lt datasets are COVID/energy compensation, SATR-overlapping).",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
     },
     "LU": {
       "source_families": [
@@ -861,91 +614,6 @@
         "ALTUM"
       ],
       "equity_best_disclosure": "amount"
-    },
-    "MD": {
-      "source_families": [
-        "gh_edctp3",
-        "horizon"
-      ],
-      "event_count": 52,
-      "company_count": 19,
-      "register_events": 0,
-      "eu_events": 52,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "ME": {
-      "source_families": [
-        "horizon"
-      ],
-      "event_count": 13,
-      "company_count": 10,
-      "register_events": 0,
-      "eu_events": 13,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "MK": {
-      "source_families": [
-        "chp",
-        "horizon"
-      ],
-      "event_count": 36,
-      "company_count": 21,
-      "register_events": 0,
-      "eu_events": 36,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "MT": {
-      "source_families": [
-        "chips_ju",
-        "chp",
-        "eic",
-        "euspa",
-        "horizon",
-        "ipcei",
-        "satr",
-        "sesar_ju"
-      ],
-      "event_count": 271,
-      "company_count": 163,
-      "register_events": 149,
-      "eu_events": 122,
-      "ndb_events": 28,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
     },
     "NL": {
       "source_families": [
@@ -1105,66 +773,6 @@
       ],
       "equity_best_disclosure": "name_only"
     },
-    "RO": {
-      "source_families": [
-        "cdp_vc",
-        "chips_ju",
-        "chp",
-        "clean_aviation",
-        "edf",
-        "eic",
-        "eit",
-        "eurohpc",
-        "euspa",
-        "horizon",
-        "ihi",
-        "innovation_fund",
-        "ipcei",
-        "satr",
-        "sesar_ju",
-        "sns_ju"
-      ],
-      "event_count": 916,
-      "company_count": 399,
-      "register_events": 2,
-      "eu_events": 913,
-      "ndb_events": 1,
-      "coverage_tier": "C",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "EU instruments only. REGAS national SATR portal not yet extracted.",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "RS": {
-      "source_families": [
-        "eic",
-        "eit",
-        "europes_rail",
-        "euspa",
-        "horizon",
-        "ihi",
-        "sesar_ju",
-        "sns_ju"
-      ],
-      "event_count": 330,
-      "company_count": 137,
-      "register_events": 0,
-      "eu_events": 330,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
     "SE": {
       "source_families": [
         "almi",
@@ -1206,39 +814,6 @@
       ],
       "equity_best_disclosure": "name_only"
     },
-    "SI": {
-      "source_families": [
-        "chips_ju",
-        "chp",
-        "clean_aviation",
-        "edf",
-        "eic",
-        "erc_poc",
-        "eurohpc",
-        "europes_rail",
-        "euspa",
-        "horizon",
-        "ihi",
-        "innovation_fund",
-        "ipcei",
-        "sesar_ju",
-        "sns_ju"
-      ],
-      "event_count": 885,
-      "company_count": 290,
-      "register_events": 0,
-      "eu_events": 885,
-      "ndb_events": 0,
-      "coverage_tier": "C",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "EU instruments only. gov.si national state-aid page (no bulk export) not yet extracted.",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
     "SK": {
       "source_families": [
         "chips_ju",
@@ -1262,52 +837,6 @@
       "eu_events": 367,
       "ndb_events": 164,
       "coverage_tier": "C",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "UA": {
-      "source_families": [
-        "chp",
-        "clean_aviation",
-        "eic",
-        "eit",
-        "europes_rail",
-        "euspa",
-        "horizon",
-        "ihi",
-        "sesar_ju"
-      ],
-      "event_count": 206,
-      "company_count": 161,
-      "register_events": 0,
-      "eu_events": 206,
-      "ndb_events": 0,
-      "coverage_tier": "X",
-      "equity_tier": "E-X",
-      "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
-      "equity_performance": null,
-      "structural_gap": "",
-      "equity_positions": 0,
-      "equity_exited": 0,
-      "equity_holders": [],
-      "equity_best_disclosure": null
-    },
-    "XK": {
-      "source_families": [
-        "horizon"
-      ],
-      "event_count": 7,
-      "company_count": 5,
-      "register_events": 0,
-      "eu_events": 7,
-      "ndb_events": 0,
-      "coverage_tier": "X",
       "equity_tier": "E-X",
       "equity_tier_note": "No recoverable public-equity disclosure identified (preliminary)",
       "equity_performance": null,

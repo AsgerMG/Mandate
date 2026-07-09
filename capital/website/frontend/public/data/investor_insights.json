@@ -1,28 +1,28 @@
 {
-  "generatedAt": "2026-07-03",
+  "generatedAt": "2026-07-09",
   "kpis": {
-    "companies": 152777,
-    "events": 301657,
+    "companies": 146911,
+    "events": 290228,
     "families": 11,
-    "countries": 40,
-    "multiInstrument": 3751,
-    "deepStack": 841,
-    "veryDeepStack": 201,
+    "countries": 22,
+    "multiInstrument": 3616,
+    "deepStack": 810,
+    "veryDeepStack": 196,
     "equityPositions": 5570,
     "equityHolders": 24
   },
   "stats": {
     "momentum": {
-      "p2": 28.9,
+      "p2": 28.8,
       "p3given2": 40.9,
-      "p5given4": 60.2,
-      "p10given9": 79.2
+      "p5given4": 60.0,
+      "p10given9": 79.3
     },
     "bosch": {
-      "entities": 42,
-      "countries": 12,
+      "entities": 41,
+      "countries": 11,
       "families": 7,
-      "awards": 252,
+      "awards": 243,
       "totalBn": 3.1
     },
     "futureFund": [
@@ -39,41 +39,41 @@
     ],
     "eicAvgDaysToStart": 313,
     "conviction": {
-      "companies": 541,
-      "withPriorAward": 179,
-      "pct": 33.1
+      "companies": 525,
+      "withPriorAward": 177,
+      "pct": 33.7
     },
     "eicCohort": {
-      "companies": 676,
-      "wonLater": 464,
-      "pct": 68.6
+      "companies": 654,
+      "wonLater": 452,
+      "pct": 69.1
     },
     "aidConcentration": {
-      "recipients": 75909,
-      "top1Pct": 42.1,
-      "top10Pct": 70.8,
-      "totalBn": 124.8
+      "recipients": 73770,
+      "top1Pct": 42.4,
+      "top10Pct": 70.9,
+      "totalBn": 122.4
     },
     "edfPerYear": [
       {
         "year": 2022,
-        "eurBn": 1.16
+        "eurBn": 1.12
       },
       {
         "year": 2023,
-        "eurBn": 0.81
+        "eurBn": 0.8
       },
       {
         "year": 2024,
-        "eurBn": 0.99
+        "eurBn": 0.98
       },
       {
         "year": 2025,
-        "eurBn": 0.99
+        "eurBn": 0.92
       },
       {
         "year": 2026,
-        "eurBn": 1.03
+        "eurBn": 1.02
       }
     ]
   },
@@ -89,41 +89,41 @@
       {
         "id": "cleantech",
         "eurBn": [
-          8.49,
-          6.51,
-          9.41,
-          12.17,
-          8.51
+          8.29,
+          6.4,
+          9.34,
+          12.04,
+          8.21
         ]
       },
       {
         "id": "deeptech_hardware",
         "eurBn": [
-          5.15,
-          2.43,
-          8.92,
-          6.45,
-          3.02
+          5.08,
+          2.41,
+          8.67,
+          6.39,
+          2.99
         ]
       },
       {
         "id": "life_sciences",
         "eurBn": [
-          1.32,
-          1.86,
-          1.19,
-          1.35,
-          1.24
+          1.3,
+          1.82,
+          1.17,
+          1.33,
+          1.23
         ]
       },
       {
         "id": "digital",
         "eurBn": [
-          1.39,
-          0.9,
-          1.7,
-          1.68,
-          1.33
+          1.34,
+          0.86,
+          1.63,
+          1.61,
+          1.31
         ]
       },
       {
@@ -151,19 +151,19 @@
   "stack": [
     {
       "families": "1",
-      "companies": 73701
+      "companies": 71965
     },
     {
       "families": "2",
-      "companies": 2910
+      "companies": 2806
     },
     {
       "families": "3",
-      "companies": 640
+      "companies": 614
     },
     {
       "families": "4+",
-      "companies": 201
+      "companies": 196
     }
   ],
   "champions": [
@@ -1600,90 +1600,6 @@
       ],
       "nEvents": 13,
       "totalEur": 22105298
-    },
-    {
-      "name": "Ubitech Limited",
-      "country": "CY",
-      "sector": "digital",
-      "nFamilies": 5,
-      "families": [
-        "horizon_eu_pillar_ii",
-        "horizon_eu_partnership",
-        "eic",
-        "edf",
-        "state_aid_satr"
-      ],
-      "breakdown": [
-        {
-          "family": "horizon_eu_pillar_ii",
-          "events": 25,
-          "eur": 10457645
-        },
-        {
-          "family": "edf",
-          "events": 1,
-          "eur": 6099450
-        },
-        {
-          "family": "horizon_eu_partnership",
-          "events": 3,
-          "eur": 2446750
-        },
-        {
-          "family": "eic",
-          "events": 1,
-          "eur": 542500
-        },
-        {
-          "family": "state_aid_satr",
-          "events": 3,
-          "eur": 404366
-        }
-      ],
-      "nEvents": 33,
-      "totalEur": 19950711
-    },
-    {
-      "name": "Cy.R.I.C Cyprus Research And Innovation Center Ltd",
-      "country": "CY",
-      "sector": "deeptech_hardware",
-      "nFamilies": 5,
-      "families": [
-        "horizon_eu_pillar_ii",
-        "eic",
-        "edf",
-        "chips_ju",
-        "state_aid_satr"
-      ],
-      "breakdown": [
-        {
-          "family": "horizon_eu_pillar_ii",
-          "events": 18,
-          "eur": 11094469
-        },
-        {
-          "family": "edf",
-          "events": 1,
-          "eur": 3435186
-        },
-        {
-          "family": "state_aid_satr",
-          "events": 38,
-          "eur": 2693982
-        },
-        {
-          "family": "eic",
-          "events": 1,
-          "eur": 549688
-        },
-        {
-          "family": "chips_ju",
-          "events": 1,
-          "eur": 191188
-        }
-      ],
-      "nEvents": 59,
-      "totalEur": 17964512
     },
     {
       "name": "Vysoke Uceni Technicke V Brne",
@@ -7194,78 +7110,6 @@
       "totalEur": 1928748
     },
     {
-      "name": "Insel Gruppe",
-      "country": "CH",
-      "sector": "life_sciences",
-      "nFamilies": 4,
-      "families": [
-        "horizon_eu_pillar_ii",
-        "horizon_eu_partnership",
-        "chips_ju",
-        "national_dev_banks"
-      ],
-      "breakdown": [
-        {
-          "family": "national_dev_banks",
-          "events": 3,
-          "eur": 1657227
-        },
-        {
-          "family": "horizon_eu_pillar_ii",
-          "events": 4,
-          "eur": 0
-        },
-        {
-          "family": "horizon_eu_partnership",
-          "events": 1,
-          "eur": 0
-        },
-        {
-          "family": "chips_ju",
-          "events": 1,
-          "eur": 0
-        }
-      ],
-      "nEvents": 9,
-      "totalEur": 1657227
-    },
-    {
-      "name": "Ibm Research GmbH",
-      "country": "CH",
-      "sector": "deeptech_hardware",
-      "nFamilies": 4,
-      "families": [
-        "horizon_eu_pillar_ii",
-        "horizon_eu_partnership",
-        "eic",
-        "chips_ju"
-      ],
-      "breakdown": [
-        {
-          "family": "eic",
-          "events": 2,
-          "eur": 1322410
-        },
-        {
-          "family": "horizon_eu_pillar_ii",
-          "events": 11,
-          "eur": 0
-        },
-        {
-          "family": "horizon_eu_partnership",
-          "events": 1,
-          "eur": 0
-        },
-        {
-          "family": "chips_ju",
-          "events": 1,
-          "eur": 0
-        }
-      ],
-      "nEvents": 15,
-      "totalEur": 1322410
-    },
-    {
       "name": "Finnadvance Oy",
       "country": "FI",
       "sector": "life_sciences",
@@ -7590,42 +7434,6 @@
       "totalEur": 491384
     },
     {
-      "name": "Ligentec",
-      "country": "CH",
-      "sector": "deeptech_hardware",
-      "nFamilies": 4,
-      "families": [
-        "horizon_eu_pillar_ii",
-        "horizon_eu_partnership",
-        "chips_ju",
-        "national_dev_banks"
-      ],
-      "breakdown": [
-        {
-          "family": "national_dev_banks",
-          "events": 1,
-          "eur": 452560
-        },
-        {
-          "family": "horizon_eu_pillar_ii",
-          "events": 4,
-          "eur": 0
-        },
-        {
-          "family": "horizon_eu_partnership",
-          "events": 1,
-          "eur": 0
-        },
-        {
-          "family": "chips_ju",
-          "events": 1,
-          "eur": 0
-        }
-      ],
-      "nEvents": 7,
-      "totalEur": 452560
-    },
-    {
       "name": "Reefilla",
       "country": "IT",
       "sector": "cleantech",
@@ -7696,6 +7504,162 @@
       ],
       "nEvents": 7,
       "totalEur": 0
+    },
+    {
+      "name": "Carbon",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "ipcei",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 3,
+          "eur": 315111
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 300240
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 45036
+        },
+        {
+          "family": "ipcei",
+          "events": 2,
+          "eur": 0
+        }
+      ],
+      "nEvents": 7,
+      "totalEur": 0
+    },
+    {
+      "name": "Orlen",
+      "country": "PL",
+      "sector": "cleantech",
+      "nFamilies": 3,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 2,
+          "eur": 1022000000
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 2,
+          "eur": 658542
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 2,
+          "eur": 645879
+        }
+      ],
+      "nEvents": 6,
+      "totalEur": 1023304421
+    },
+    {
+      "name": "Shell",
+      "country": "NL",
+      "sector": "cleantech",
+      "nFamilies": 3,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 2,
+          "eur": 772000000
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 5,
+          "eur": 4117759
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 6,
+          "eur": 1191429
+        }
+      ],
+      "nEvents": 13,
+      "totalEur": 777309188
+    },
+    {
+      "name": "Verkor",
+      "country": "FR",
+      "sector": "cleantech",
+      "nFamilies": 3,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "innovation_fund",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "state_aid_satr",
+          "events": 13,
+          "eur": 637088435
+        },
+        {
+          "family": "innovation_fund",
+          "events": 1,
+          "eur": 76282817
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 8,
+          "eur": 3024787
+        }
+      ],
+      "nEvents": 22,
+      "totalEur": 716396039
+    },
+    {
+      "name": "Alstom",
+      "country": "FR",
+      "sector": "deeptech_hardware",
+      "nFamilies": 3,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "ipcei"
+      ],
+      "breakdown": [
+        {
+          "family": "ipcei",
+          "events": 2,
+          "eur": 494000000
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 9,
+          "eur": 14801867
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 925875
+        }
+      ],
+      "nEvents": 12,
+      "totalEur": 509727742
     }
   ],
   "rotation": {
@@ -7710,103 +7674,103 @@
       {
         "id": "cleantech",
         "counts": [
-          6988,
-          9252,
-          12542,
-          14023,
-          10683
+          6897,
+          8921,
+          12027,
+          13466,
+          10054
         ],
         "shares": [
-          0.3438,
-          0.3241,
-          0.3111,
-          0.3086,
-          0.2936
+          0.3459,
+          0.3277,
+          0.3145,
+          0.3115,
+          0.2906
         ]
       },
       {
         "id": "deeptech_hardware",
         "counts": [
-          7132,
-          8353,
-          12516,
-          14398,
-          11524
+          6971,
+          8016,
+          11982,
+          13770,
+          11115
         ],
         "shares": [
-          0.3508,
-          0.2926,
-          0.3105,
-          0.3168,
-          0.3167
+          0.3496,
+          0.2944,
+          0.3134,
+          0.3185,
+          0.3212
         ]
       },
       {
         "id": "life_sciences",
         "counts": [
-          2787,
-          5832,
-          7627,
-          7928,
-          6306
+          2717,
+          5548,
+          7196,
+          7496,
+          5952
         ],
         "shares": [
-          0.1371,
-          0.2043,
-          0.1892,
-          0.1745,
-          0.1733
+          0.1363,
+          0.2038,
+          0.1882,
+          0.1734,
+          0.172
         ]
       },
       {
         "id": "digital",
         "counts": [
-          2915,
-          4252,
-          6342,
-          7959,
-          6936
+          2850,
+          3922,
+          5797,
+          7405,
+          6567
         ],
         "shares": [
-          0.1434,
-          0.149,
-          0.1573,
-          0.1751,
-          0.1906
+          0.1429,
+          0.1441,
+          0.1516,
+          0.1713,
+          0.1898
         ]
       },
       {
         "id": "defense",
         "counts": [
           87,
-          208,
-          278,
-          240,
-          290
+          185,
+          258,
+          219,
+          275
         ],
         "shares": [
-          0.0043,
-          0.0073,
-          0.0069,
-          0.0053,
-          0.008
+          0.0044,
+          0.0068,
+          0.0067,
+          0.0051,
+          0.0079
         ]
       },
       {
         "id": "space",
         "counts": [
-          419,
-          646,
-          1007,
-          896,
-          648
+          417,
+          632,
+          978,
+          878,
+          639
         ],
         "shares": [
-          0.0206,
-          0.0226,
-          0.025,
-          0.0197,
-          0.0178
+          0.0209,
+          0.0232,
+          0.0256,
+          0.0203,
+          0.0185
         ]
       }
     ]
@@ -7816,21 +7780,21 @@
       "id": "state_aid_satr",
       "label": "National state aid",
       "basis": "satr_aid_element",
-      "events": 120336,
-      "companies": 76308,
-      "totalEur": 169529922987,
-      "top10Share": 0.3021,
-      "medianTicket": 302490,
+      "events": 117443,
+      "companies": 74169,
+      "totalEur": 167151019629,
+      "top10Share": 0.3064,
+      "medianTicket": 305315,
       "p90Ticket": 1553649
     },
     {
       "id": "ipcei",
       "label": "IPCEI",
       "basis": "ipcei_state_aid",
-      "events": 432,
-      "companies": 214,
-      "totalEur": 54564420000,
-      "top10Share": 0.2466,
+      "events": 422,
+      "companies": 209,
+      "totalEur": 54040060000,
+      "top10Share": 0.249,
       "medianTicket": 68730000,
       "p90Ticket": 323600000
     },
@@ -7838,23 +7802,23 @@
       "id": "horizon_eu_pillar_ii",
       "label": "Horizon Europe Pillar II",
       "basis": "horizon_eu_grant",
-      "events": 49950,
-      "companies": 15713,
-      "totalEur": 22505873099,
-      "top10Share": 0.067,
-      "medianTicket": 312375,
-      "p90Ticket": 818799
+      "events": 45953,
+      "companies": 14015,
+      "totalEur": 21341143382,
+      "top10Share": 0.0706,
+      "medianTicket": 322812,
+      "p90Ticket": 841250
     },
     {
       "id": "innovation_fund",
       "label": "Innovation Fund",
       "basis": "if_eu_grant",
-      "events": 239,
-      "companies": 229,
-      "totalEur": 13497054946,
-      "top10Share": 0.1925,
-      "medianTicket": 31333250,
-      "p90Ticket": 153386598
+      "events": 229,
+      "companies": 219,
+      "totalEur": 13063882794,
+      "top10Share": 0.1989,
+      "medianTicket": 31643527,
+      "p90Ticket": 157116975
     },
     {
       "id": "national_dev_banks",
@@ -7871,44 +7835,44 @@
       "id": "edf",
       "label": "European Defence Fund",
       "basis": "edf_eu_ceiling",
-      "events": 279,
-      "companies": 194,
-      "totalEur": 4980221298,
-      "top10Share": 0.4113,
-      "medianTicket": 9530059,
-      "p90Ticket": 44669179
+      "events": 262,
+      "companies": 178,
+      "totalEur": 4849229212,
+      "top10Share": 0.4224,
+      "medianTicket": 9803532,
+      "p90Ticket": 44936144
     },
     {
       "id": "eic",
       "label": "EIC",
       "basis": "eic_eu_grant",
-      "events": 3682,
-      "companies": 2076,
-      "totalEur": 3439718716,
-      "top10Share": 0.0699,
-      "medianTicket": 584688,
-      "p90Ticket": 2496988
+      "events": 3537,
+      "companies": 1965,
+      "totalEur": 3324694896,
+      "top10Share": 0.0723,
+      "medianTicket": 591000,
+      "p90Ticket": 2497250
     },
     {
       "id": "chips_ju",
       "label": "Chips JU",
       "basis": "kdt_grant",
-      "events": 2180,
-      "companies": 1080,
-      "totalEur": 1586921437,
-      "top10Share": 0.5946,
-      "medianTicket": 233914,
-      "p90Ticket": 729066
+      "events": 2126,
+      "companies": 1053,
+      "totalEur": 1571790207,
+      "top10Share": 0.6004,
+      "medianTicket": 236204,
+      "p90Ticket": 743600
     },
     {
       "id": "horizon_eu_partnership",
       "label": "Horizon partnerships",
       "basis": "chp_grant",
-      "events": 1479,
-      "companies": 882,
-      "totalEur": 881272061,
-      "top10Share": 0.156,
-      "medianTicket": 351312,
+      "events": 1400,
+      "companies": 818,
+      "totalEur": 837452628,
+      "top10Share": 0.1642,
+      "medianTicket": 360375,
       "p90Ticket": 1186875
     }
   ],

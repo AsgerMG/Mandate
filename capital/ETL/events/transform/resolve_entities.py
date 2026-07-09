@@ -258,7 +258,7 @@ def verify():
     print(f"collected {len(rows):,} verdicts -> {VERD.name}: {dict(Counter(v for *_, v in rows))}")
 
 
-ESC_MODEL = "claude-sonnet-4-6"   # stronger model for the ambiguous 'unsure' cases
+ESC_MODEL = "claude-sonnet-5"   # stronger model for the ambiguous 'unsure' cases
 VERD_ESC = PROC / "er_verdicts_esc.csv"
 ESC_STATE = PROC / "er_batch_esc.json"
 ESC_SYS = ("You are an entity-resolution expert. Given two company records WITH "
@@ -299,8 +299,11 @@ def escalate():
         ids = []
         for i in range(0, len(unsure), MAX_PER_BATCH):
             chunk = unsure[i:i + MAX_PER_BATCH]
+            # Sonnet 5 enables adaptive thinking by default; disable it or the
+            # thinking tokens swallow the tiny max_tokens verdict budget.
             reqs = [{"custom_id": f"{a}-{b}",
-                     "params": {"model": ESC_MODEL, "max_tokens": 16, "system": ESC_SYS,
+                     "params": {"model": ESC_MODEL, "max_tokens": 24, "system": ESC_SYS,
+                                "thinking": {"type": "disabled"},
                                 "messages": [{"role": "user",
                                               "content": f"A: {enr(a)}\nB: {enr(b)}"}]}}
                     for a, b in chunk]

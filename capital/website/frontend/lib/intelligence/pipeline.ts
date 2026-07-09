@@ -30,19 +30,19 @@ import {
 
 // The whole pipeline runs on cheap, fast models, guided by the Opus-authored
 // briefs in fund-processes/ (especially _agent_instructions.md, a strict rubric).
-// The two web-search stages use Sonnet 4.6. The final report is filled into a
+// The two web-search stages use Sonnet 5. The final report is filled into a
 // strict JSON schema of short fields, so Haiku 4.5 — given the rubric — writes it
 // well at a fraction of the cost and latency. No runtime Opus call, so the
 // pipeline lands well under Vercel's 300s function cap (Hobby).
-const SEARCH_MODEL = "claude-sonnet-4-6";
+const SEARCH_MODEL = "claude-sonnet-5";
 // The intake stage just selects the few questions whose answers most change the
 // routing, as structured output. Haiku is fast enough that the founder barely
 // waits before the questions appear.
 const INTAKE_MODEL = "claude-haiku-4-5";
-// The memo is the product, so the writer earns a capable model. Sonnet 4.6 writes
+// The memo is the product, so the writer earns a capable model. Sonnet 5 writes
 // the executive prose; with only one writer call plus one search call the run
 // still lands well under Vercel's 300s cap.
-const WRITER_MODEL = "claude-sonnet-4-6";
+const WRITER_MODEL = "claude-sonnet-5";
 const MAX_COMPETITORS = 5;
 
 const client = new Anthropic(); // reads ANTHROPIC_API_KEY from the environment
@@ -253,17 +253,22 @@ async function discoverAndResearch(
   const text = await askWithSearch(
     SEARCH_MODEL,
     instructions,
-    `Identify the ${MAX_COMPETITORS} most relevant European competitors or direct ` +
-      `peers of this company, and for each give a short, current snapshot. Prefer ` +
-      `companies operating in Europe, since the goal is to compare public-funding ` +
-      `access. Use web search to ground your answer.\n\n${ctx}\n\n` +
+    `Identify ${MAX_COMPETITORS} comparable European companies for this company, ` +
+      `and for each give a short, current snapshot. Comparable means operating in ` +
+      `a similar field at a similar altitude — it does NOT need to be a direct ` +
+      `competitor. The goal is to understand who receives public funding and how, ` +
+      `so prefer companies likely to have drawn on public support (EU programmes, ` +
+      `national agencies, development banks). Private venture rounds are out of ` +
+      `scope — do not report who raised what with which investor. Use web search ` +
+      `to ground your answer.\n\n${ctx}\n\n` +
       `Return ONLY a JSON array, most relevant first, one object per company:\n` +
       `[{"name": "...", "country": "...", "product": "...", "positioning": "...", ` +
-      `"lastPrivateRound": "...", "notes": "..."}]\n` +
+      `"maturity": "...", "notes": "..."}]\n` +
       `"country" is the country the company operates from (full English name, or ` +
       `"Unknown"); it helps us look up the right legal entity. Use legal or common ` +
-      `company names. Keep each field to one or two sentences. If something is ` +
-      `unknown, say "Unknown".`,
+      `company names. "maturity" is a rough label (lab-stage, scaling, established, ` +
+      `listed), not a financing round. Keep each field to one or two sentences. ` +
+      `If something is unknown, say "Unknown".`,
   );
   const intel = extractJson<CompetitorIntel[]>(text);
   return intel
@@ -274,7 +279,7 @@ async function discoverAndResearch(
       country: i.country && i.country !== "Unknown" ? String(i.country).trim() : undefined,
       product: i.product ?? "Unknown",
       positioning: i.positioning ?? "Unknown",
-      lastPrivateRound: i.lastPrivateRound ?? "Unknown",
+      maturity: i.maturity ?? "Unknown",
       notes: i.notes ?? "",
     }));
 }
@@ -338,33 +343,35 @@ const REPORT_SCHEMA = {
 } as const;
 
 /**
- * Build the competitor table deterministically. euCapital and channels come ONLY
- * from the DB match (never the model, never the open web); stage and positioning
- * are web colour. `records` is aligned 1:1 with `intel` (records = intel mapped
- * through matchCompany), so they share an index.
+ * Build the comparable-companies table deterministically. euCapital and channels
+ * come ONLY from the DB match (never the model, never the open web); maturity and
+ * positioning are web colour. `records` is aligned 1:1 with `intel` (records =
+ * intel mapped through matchCompany), so they share an index.
+ *
+ * HARD RULE (user, 2026-07-09): a company appears in the table ONLY if it has
+ * traced public funding. Web-found names with no DB match are dropped here —
+ * the study tracks public support, not the venture market, so "found on the
+ * web but no public funding" is not a row, it is an absence.
  */
 function buildCompetitors(
   records: CompetitorRecord[],
   intel: CompetitorIntel[],
 ): CompetitorRow[] {
-  return records.map((r, i) => {
+  return records.flatMap((r, i) => {
+    if (!r.matched) return [];
     const web = intel[i];
-    return {
+    return [{
       name: web?.name || r.name || "Unknown",
       source: "web" as const,
-      country: r.matched ? r.country : "",
-      euCapital: !r.matched
-        ? "No public funding traced"
-        : r.euCapitalEur > 0
-          ? fmtEur(r.euCapitalEur)
-          : "Amount not disclosed",
-      channelBreakdown: r.matched ? fundingBreakdown(r.channelAmounts) : "",
-      channels: r.matched ? r.channels : [],
-      activeYears: r.matched ? activeYears(r.firstYear, r.lastYear) : "",
+      country: r.country,
+      euCapital: r.euCapitalEur > 0 ? fmtEur(r.euCapitalEur) : "Amount not disclosed",
+      channelBreakdown: fundingBreakdown(r.channelAmounts),
+      channels: r.channels,
+      activeYears: activeYears(r.firstYear, r.lastYear),
       // Web colour goes into table cells, so it obeys the no-em-dash rule too.
-      stage: deDash(web?.lastPrivateRound || "Unknown"),
+      stage: deDash(web?.maturity || "Unknown"),
       positioning: deDash(web?.positioning || "Unknown"),
-    };
+    }];
   });
 }
 
@@ -488,9 +495,9 @@ async function synthesize(
   const res = await client.messages.create({
     model: WRITER_MODEL,
     max_tokens: 8000,
-    // Haiku 4.5 supports neither adaptive thinking nor the effort param; use a
-    // small fixed thinking budget (< max_tokens) for the prioritisation judgement.
-    thinking: { type: "enabled", budget_tokens: 2000 },
+    // Sonnet 5 rejects fixed thinking budgets (400); adaptive lets the model
+    // size the prioritisation judgement itself.
+    thinking: { type: "adaptive" },
     system: instructions,
     output_config: { format: { type: "json_schema", schema: REPORT_SCHEMA } },
     messages: [
@@ -499,15 +506,16 @@ async function synthesize(
         content:
           `Write the executive funding memo for the founder.\n\n${ctx}\n\n` +
           `## The founder's own footprint (AUTHORITATIVE)\n${selfLine}\n\n` +
-          `## Competitor evidence (AUTHORITATIVE — already finalised)\n` +
-          `EU/public-capital figures are committed amounts from our database; ` +
-          `"No public funding traced" means not found there. Use these figures ` +
-          `EXACTLY as given — never restate a private round as public capital, ` +
-          `and never introduce a funding figure or funder not listed here. Rows ` +
-          `tagged "[same sub-sector, from database]" are not necessarily direct ` +
-          `competitors — they are funded companies in the founder's sub-sector, ` +
-          `useful as evidence of what peers in the space have raised.\n` +
-          `${evidence || "(no competitors gathered)"}\n\n` +
+          `## Comparable-company evidence (AUTHORITATIVE — already finalised)\n` +
+          `Every company listed here has traced public funding; the figures are ` +
+          `committed amounts from our database. Use them EXACTLY as given — ` +
+          `never introduce a private round, a funding figure or a funder not ` +
+          `listed here. These are comparable entities, not necessarily direct ` +
+          `competitors: the point is where, for what and through which vehicles ` +
+          `they received public support, and what that implies for how the ` +
+          `founder positions their own applications. Never frame them as a race ` +
+          `or a threat.\n` +
+          `${evidence || "(no comparable companies gathered)"}\n\n` +
           `## The capital on the table (AUTHORITATIVE — already finalised)\n` +
           `These are the instruments relevant to this founder, with curated ` +
           `ticket sizes, speed and trade-offs. They render as a table; do NOT ` +

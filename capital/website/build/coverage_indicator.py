@@ -290,6 +290,15 @@ def main() -> None:
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
 
+    # 2026-07-08 country-scope reduction: only corpus countries (≥€1B cumulative
+    # public support, see v_country_public_support in data/views.sql) get a
+    # coverage rating — excluded countries would otherwise reappear here after
+    # being filtered from every other surface.
+    in_corpus = {
+        row[0] for row in cur.execute(
+            "SELECT country FROM v_country_public_support WHERE in_corpus = 1")
+    }
+
     # Get all sources per country from companies + events join
     cur.execute("""
         SELECT c.country, pfe.source, COUNT(*) as n
@@ -347,7 +356,7 @@ def main() -> None:
         **(eu_equity_layer or {}),
     }
     ratings: dict[str, dict] = {}
-    for country in sorted(country_sources.keys()):
+    for country in sorted(country_sources.keys() & in_corpus):
         _, families = _classify_sources(country_sources[country])
         reg = reg_events[country]
         eu = eu_events[country]

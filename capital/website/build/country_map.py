@@ -83,6 +83,16 @@ def main():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
+    # 2026-07-08 country-scope reduction: v_country_public_support (installed
+    # from data/views.sql) is the single €1B-threshold definition. Countries
+    # with in_corpus = 0 are excluded from every stat, rank and chart here,
+    # but still emitted as {"excluded": true} stubs so the map can render them
+    # with the standing "not in the corpus" hover instead of a dead area.
+    in_corpus = {
+        row[0] for row in cur.execute(
+            "SELECT country FROM v_country_public_support WHERE in_corpus = 1")
+    }
+
     # Per-country: company count and total EUR (post-canonicalisation)
     cur.execute("""
         SELECT
@@ -96,11 +106,11 @@ def main():
     """)
     raw_country_rows = cur.fetchall()
 
-    # Merge aliases + drop non-European entries
+    # Merge aliases + drop non-European and below-threshold entries
     merged: dict[str, dict[str, float]] = {}
     for country, companies, total_eur in raw_country_rows:
         canon = canonical(country)
-        if canon is None:
+        if canon is None or canon not in in_corpus:
             continue
         agg = merged.setdefault(canon, {"companies": 0, "total_eur": 0.0})
         agg["companies"] += companies
@@ -204,12 +214,20 @@ def main():
             "narrative": narrative,
         }
 
+    # Every Europe-scope country NOT in the corpus gets a stub so the map can
+    # hover-explain the exclusion rather than rendering a silent gap. Data for
+    # these countries stays in the DB (soft-exclude) — it just isn't published.
+    excluded = sorted(EUROPEAN_ALLOWLIST - set(result))
+    for code in excluded:
+        result[code] = {"name": COUNTRY_NAMES.get(code, code), "excluded": True}
+
     out = {"countries": result}
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w") as f:
         json.dump(out, f, indent=2)
 
-    print(f"Written {len(result)} countries to {OUT_PATH}")
+    print(f"Written {len(result) - len(excluded)} corpus countries "
+          f"+ {len(excluded)} excluded stubs to {OUT_PATH}")
     conn.close()
 
 

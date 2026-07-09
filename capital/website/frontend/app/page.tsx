@@ -46,13 +46,17 @@ function StatMatrix({ children }: { children: ReactNode }) {
 
 const coverageRatings = coverageRatingsRaw as Record<string, { rating: string; note: string }>;
 
+// Countries below the €1B corpus threshold arrive as {name, excluded: true}
+// stubs (see website/build/country_map.py) — kept so the map can explain the
+// exclusion on hover instead of rendering a silent gap.
 const countryData = Object.fromEntries(
   Object.entries(
     (countryMapRaw as { countries: Record<string, {
       name: string;
-      companies: number;
-      totalEur: number;
-      byFamily: { family: string; label: string; companies: number }[];
+      excluded?: boolean;
+      companies?: number;
+      totalEur?: number;
+      byFamily?: { family: string; label: string; companies: number }[];
     }> }).countries
   ).map(([iso2, d]) => [iso2, { ...d, coverageRating: coverageRatings[iso2] }])
 );

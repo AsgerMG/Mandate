@@ -4,16 +4,16 @@ The single entry point for "pull fresh data". Reads the source registry in
 `manifest.py` and runs the matching extractor with the arguments that load a fresh
 pull into `db.sqlite`. After any renewal, re-derive and snapshot:
 
-    python3 ETL/transform/classify.py
-    python3 ETL/load/qa/sanity_check.py
-    python3 ETL/load/backup.py
+    python3 ETL/events/transform/classify.py
+    python3 ETL/events/load/qa/sanity_check.py
+    python3 ETL/events/load/backup.py
 
 Usage:
-  python3 ETL/extract/renew.py --list                 # registry, grouped by tier
-  python3 ETL/extract/renew.py --auto                  # run every AUTO source
-  python3 ETL/extract/renew.py --auto --dry-run        # show the commands only
-  python3 ETL/extract/renew.py --source ademe cdti     # run specific sources
-  python3 ETL/extract/renew.py --source isif_direct -- annual.pdf 2024-12-31   # MANUAL: pass the file
+  python3 ETL/events/extract/renew.py --list                 # registry, grouped by tier
+  python3 ETL/events/extract/renew.py --auto                  # run every AUTO source
+  python3 ETL/events/extract/renew.py --auto --dry-run        # show the commands only
+  python3 ETL/events/extract/renew.py --source ademe cdti     # run specific sources
+  python3 ETL/events/extract/renew.py --source isif_direct -- annual.pdf 2024-12-31   # MANUAL: pass the file
 """
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ import sys
 
 from manifest import SOURCES, BY_KEY, TIERS
 
-EXTRACT_DIR = ETL / "extract"
+EXTRACT_DIR = ETL / "events" / "extract"
 ICON = {"AUTO": "🟢", "NETWORK": "🟡", "MANUAL": "📄", "REJECTED": "⛔"}
 
 
@@ -107,8 +107,8 @@ def main() -> None:
         print("FAILED:", ", ".join(f"{k}(rc={rc})" for k, rc in failures))
         sys.exit(1)
     if not args.dry_run:
-        print("Done. Next: python3 ETL/transform/classify.py "
-              "&& python3 ETL/load/qa/sanity_check.py && python3 ETL/load/backup.py")
+        print("Done. Next: python3 ETL/events/transform/classify.py "
+              "&& python3 ETL/events/load/qa/sanity_check.py && python3 ETL/events/load/backup.py")
 
 
 if __name__ == "__main__":

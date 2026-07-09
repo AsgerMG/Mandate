@@ -49,7 +49,9 @@ DEFAULT_MODEL = "claude-haiku-4-5"
 PRICES = {  # $/MTok (standard); batch halves both.
     "claude-haiku-4-5": (1.00, 5.00),
     "claude-sonnet-4-6": (3.00, 15.00),
+    "claude-sonnet-5": (2.00, 10.00),  # intro until 2026-08-31, then (3.00, 15.00)
     "claude-opus-4-8": (5.00, 25.00),
+    "claude-fable-5": (10.00, 50.00),
 }
 GOLD_MODEL = "claude-opus-4-8"   # the reference labeller (full context incl. tags)
 TECH_OLD = {"life_sciences", "cleantech", "deeptech_hardware", "digital",
@@ -679,7 +681,7 @@ def cmd_apply_nace(args) -> None:
         print(f"  {k:<28} {v:>7}")
 
 
-SONNET = "claude-sonnet-4-6"     # full Tier-1+Tier-2 on the no-NACE residual
+SONNET = "claude-sonnet-5"       # full Tier-1+Tier-2 on the no-NACE residual
 HAIKU = "claude-haiku-4-5"       # Tier-2-only on the NACE-fixed-sector rows
 
 
@@ -689,7 +691,10 @@ def _user(item) -> str:
 
 
 def _full_params(item) -> dict:
-    return {"model": SONNET, "max_tokens": 256,
+    # Sonnet 5 enables adaptive thinking by default; disable it so the schema
+    # output keeps the whole budget. 340 ≈ old 256 + ~30% new-tokenizer headroom.
+    return {"model": SONNET, "max_tokens": 340,
+            "thinking": {"type": "disabled"},
             "system": [{"type": "text", "text": SYSTEM_RESIDUAL,
                         "cache_control": {"type": "ephemeral"}}],
             "output_config": {"format": {"type": "json_schema", "schema": SCHEMA}},

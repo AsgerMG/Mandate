@@ -28,6 +28,12 @@ DB = DATA / "db.sqlite"
 DATA_RAW = DATA / "raw"
 DATA_PROCESSED = DATA / "processed"
 
+# News/signals layer: qualitative, forward-looking corpus (articles, entity
+# links, signals, embeddings) lives in its OWN file so its rebuild cadence
+# never touches the events DB the site build depends on. Joined at query time
+# via ATTACH DATABASE (see ETL/load/load_signals.py).
+SIGNALS_DB = DATA / "signals.sqlite"
+
 # Backup destinations (mirrors the historical Makefile `backup` target).
 BACKUP_LOCAL = Path.home() / "EuroInvTracker-backups"
 BACKUP_ICLOUD = (
@@ -38,9 +44,16 @@ BACKUP_ICLOUD = (
     / "EuroInvTracker-backups"
 )
 
-# Put every stage directory on the import path so cross-stage flat imports work.
-# `load/qa` is the one nested stage dir whose scripts import each other.
-for _rel in ("extract", "transform", "load", "load/qa", "lib"):
+# Put every stage directory of BOTH tracks on the import path so cross-stage
+# flat imports work. Track 1 `events/` = investment events (grants, tax
+# credits, equity stakes → db.sqlite). Track 2 `intelligence/` = public
+# capital intelligence (news/signals → signals.sqlite). `events/load/qa` is
+# the one nested stage dir whose scripts import each other.
+for _rel in (
+    "events/extract", "events/transform", "events/load", "events/load/qa",
+    "intelligence/extract", "intelligence/transform", "intelligence/load",
+    "lib",
+):
     _p = str(ETL / _rel)
     if _p not in sys.path:
         sys.path.insert(0, _p)
@@ -58,6 +71,7 @@ __all__ = [
     "DATA",
     "DATA_RAW",
     "DATA_PROCESSED",
+    "SIGNALS_DB",
     "BACKUP_LOCAL",
     "BACKUP_ICLOUD",
 ]

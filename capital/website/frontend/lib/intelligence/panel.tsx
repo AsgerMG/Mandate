@@ -635,7 +635,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
           <tr className="border-b border-[var(--foreground)] text-left align-bottom">
             <th className="py-2 pr-3 font-semibold">Company</th>
             <th className="py-2 pr-3 font-semibold">Public capital traced</th>
-            <th className="py-2 pr-3 font-semibold">Recent round</th>
+            <th className="py-2 pr-3 font-semibold">Maturity</th>
             <th className="py-2 font-semibold">Positioning</th>
           </tr>
         </thead>

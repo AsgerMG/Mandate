@@ -31,20 +31,41 @@ SITE_DATA.mkdir(parents=True, exist_ok=True)
 #                as ipcei_* ceilings, decision log D-17) and is_duplicate rows
 #                (ADEME also in SATR-FR, migration 009). Single-counted on purpose;
 #                a raw SUM(grant_amount_eur) over-states it by ~€13B.
+# 2026-07-08 country-scope reduction: countries below €1B cumulative public
+# support are outside the corpus (soft-exclude — rows stay in the DB, the read
+# layer filters). The view v_country_public_support (data/views.sql) is the one
+# definition of the threshold; these fragments apply it to the raw-table KPIs
+# that don't go through v_events. NULL/blank-country companies keep counting
+# (they are a data-quality bucket, not an excluded country), so the guard is
+# "not in an explicitly out-of-corpus country" rather than "in corpus".
+_CO_IN_SCOPE = (
+    " (country IS NULL OR country = '' OR country NOT IN"
+    "  (SELECT country FROM v_country_public_support WHERE in_corpus = 0))"
+)
+_EV_IN_SCOPE = (
+    " (company_id IS NULL OR company_id NOT IN"
+    "  (SELECT id FROM companies WHERE country IN"
+    "   (SELECT country FROM v_country_public_support WHERE in_corpus = 0)))"
+)
+
 CANONICAL_KPI_SQL = {
     "companies":
-        "SELECT COUNT(DISTINCT COALESCE(parent_group, CAST(id AS TEXT))) FROM companies",
+        "SELECT COUNT(DISTINCT COALESCE(parent_group, CAST(id AS TEXT))) FROM companies"
+        " WHERE" + _CO_IN_SCOPE,
     "events":
-        "SELECT COUNT(*) FROM public_funding_events WHERE is_duplicate = 0",
+        "SELECT COUNT(*) FROM public_funding_events WHERE is_duplicate = 0"
+        " AND" + _EV_IN_SCOPE,
     "champions":
         "SELECT COUNT(*) FROM v_company_breadth WHERE n_source_families >= 2",
     "step_companies":
-        "SELECT COUNT(*) FROM companies WHERE step_flagged = 1",
+        "SELECT COUNT(*) FROM companies WHERE step_flagged = 1"
+        " AND" + _CO_IN_SCOPE,
     "total_capital_eur_raw":
         "SELECT COALESCE(SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0)),0)"
-        " FROM public_funding_events WHERE ipcei_linked = 0 AND is_duplicate = 0",
+        " FROM public_funding_events WHERE ipcei_linked = 0 AND is_duplicate = 0"
+        " AND" + _EV_IN_SCOPE,
     "countries":
-        "SELECT COUNT(DISTINCT country) FROM companies WHERE country IS NOT NULL",
+        "SELECT COUNT(*) FROM v_country_public_support WHERE in_corpus = 1",
     "source_families":
         "SELECT COUNT(DISTINCT source_family) FROM v_events",
     "sectors":

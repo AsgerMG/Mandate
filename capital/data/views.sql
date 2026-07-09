@@ -13,6 +13,33 @@ DROP VIEW IF EXISTS v_company_breadth_companies;
 DROP VIEW IF EXISTS v_company_breadth;
 DROP VIEW IF EXISTS v_events;
 DROP VIEW IF EXISTS v_european_companies;
+DROP VIEW IF EXISTS v_country_public_support;
+
+-- 2026-07-08 country-scope reduction: per-country cumulative public support
+-- and the €1B corpus-inclusion flag. This is the SINGLE definition of which
+-- countries are in the study — recomputed live on every query, so a country
+-- crossing the threshold as new sources load flips in/out automatically with
+-- no manual list to maintain. Soft-exclude by design: extraction keeps loading
+-- all 40 Europe-scope countries (the Sprint 14 trigger is untouched); only the
+-- read/build layer filters. Sums follow the canonical dedup rule
+-- (is_duplicate = 0). NULL/blank-country rows are a data-quality bucket, not a
+-- country — they never appear here.
+CREATE VIEW v_country_public_support AS
+SELECT
+  c.country,
+  COUNT(DISTINCT COALESCE(c.parent_group, CAST(c.id AS TEXT))) AS companies,
+  SUM(COALESCE(e.grant_amount_eur, 0)
+      + COALESCE(e.equity_amount_eur, 0)
+      + COALESCE(e.debt_amount_eur, 0))                        AS total_eur,
+  CASE WHEN SUM(COALESCE(e.grant_amount_eur, 0)
+                + COALESCE(e.equity_amount_eur, 0)
+                + COALESCE(e.debt_amount_eur, 0)) >= 1000000000.0
+       THEN 1 ELSE 0 END                                       AS in_corpus
+FROM companies c
+JOIN public_funding_events e ON e.company_id = c.id
+WHERE COALESCE(e.is_duplicate, 0) = 0
+  AND c.country IS NOT NULL AND c.country != ''
+GROUP BY c.country;
 
 -- Companies are already restricted to the 40-country EU/Europe scope by the
 -- `trg_companies_country_scope` BEFORE INSERT trigger (Sprint 14, see
@@ -22,6 +49,10 @@ DROP VIEW IF EXISTS v_european_companies;
 -- bypassed (e.g. by raw SQL imports), the WHERE clause here still keeps the
 -- analytics clean. `country_canon` is identical to `country` post-Sprint-14
 -- because aliases were canonicalised in place during the data clean-up.
+-- 2026-07-08: additionally restricted to countries at/above the €1B corpus
+-- threshold (see v_country_public_support above) — every downstream view and
+-- builder that goes through v_european_companies / v_events inherits the
+-- country-scope reduction from this one WHERE clause.
 CREATE VIEW v_european_companies AS
 SELECT
   c.*,
@@ -34,7 +65,8 @@ WHERE c.country IN (
   'GB',
   'AL','BA','ME','MK','RS','XK',
   'UA','MD'
-);
+)
+AND c.country IN (SELECT country FROM v_country_public_support WHERE in_corpus = 1);
 
 -- One row per (event, source family, normalised year). Filtered to events
 -- whose company is in the Europe scope (see v_european_companies above).
