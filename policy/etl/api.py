@@ -15,7 +15,7 @@ import time
 from functools import lru_cache
 
 import structlog
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, Response
+from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -55,6 +55,37 @@ app.add_middleware(
 @lru_cache
 def _embedder():
     return get_embedder(get_settings())
+
+
+# --- Abuse protection ---------------------------------------------------
+# /api/brief and /api/questions each make real, billed Anthropic API calls
+# (a brief is several calls with draft+revise+retries) — worth bounding
+# before this is reachable from the public internet. A shared secret (as
+# used for /api/refresh below) doesn't fit here: these are genuine
+# end-user-facing features the website's own browser-side code calls, and
+# any secret baked into client-side JS is visible and replayable, so it
+# protects nothing. Per-IP rate limiting is the right shape instead.
+#
+# In-memory and per-process by design — correct for this project's actual
+# single-instance Railway deployment; would need a shared store (Redis) to
+# stay correct across multiple instances if this is ever scaled out.
+_rate_limit_hits: dict[str, list[float]] = {}
+_rate_limit_lock = threading.Lock()
+
+
+def _check_rate_limit(request, *, max_per_hour: int) -> None:
+    ip = request.client.host if request.client else "unknown"
+    now = time.time()
+    window_start = now - 3600
+    with _rate_limit_lock:
+        hits = [t for t in _rate_limit_hits.get(ip, []) if t > window_start]
+        if len(hits) >= max_per_hour:
+            raise HTTPException(
+                status_code=429,
+                detail="Too many requests — please try again later.",
+            )
+        hits.append(now)
+        _rate_limit_hits[ip] = hits
 
 
 class BriefRequest(BaseModel):
@@ -200,8 +231,9 @@ def search(q: str, k: int = Query(8, le=30)) -> dict:
 
 
 @app.post("/api/questions")
-def questions(req: BriefRequest) -> dict:
+def questions(req: BriefRequest, request: Request) -> dict:
     """The scoping step: which follow-up questions to ask before the report."""
+    _check_rate_limit(request, max_per_hour=get_settings().questions_rate_limit_per_hour)
     dry = not has_api_key()
     with session_scope() as s:
         result = generate_questions(s, _embedder(), _profile(req), k=req.k, dry_run=dry)
@@ -209,7 +241,7 @@ def questions(req: BriefRequest) -> dict:
 
 
 @app.post("/api/brief")
-def brief(req: BriefRequest) -> StreamingResponse:
+def brief(req: BriefRequest, request: Request) -> StreamingResponse:
     """Streams newline-delimited JSON: one `{"type": "status", ...}` line per
     real stage generate_briefing's on_stage reports (retrieval, each LLM
     call), then a final `{"type": "result", ...}` line with the finished
@@ -218,6 +250,7 @@ def brief(req: BriefRequest) -> StreamingResponse:
     actually doing instead of a silent wait. generate_briefing itself is
     synchronous (sequential LLM calls), so it runs on a worker thread and
     reports progress through a queue the async generator below drains."""
+    _check_rate_limit(request, max_per_hour=get_settings().brief_rate_limit_per_hour)
     dry = not has_api_key()
     events: queue.Queue = queue.Queue()
 
@@ -309,10 +342,21 @@ def _run_refresh() -> None:
 
 
 @app.post("/api/refresh")
-def refresh(background: BackgroundTasks) -> dict:
+def refresh(
+    background: BackgroundTasks, x_refresh_secret: str | None = Header(default=None)
+) -> dict:
     """THE TRIGGER, over HTTP: collect from every enabled source, then embed —
     the corpus augments itself with the newest developments. Non-blocking; poll
-    GET /api/refresh for the outcome."""
+    GET /api/refresh for the outcome.
+
+    Guarded once REFRESH_SECRET is configured (see data/config.py) — unset
+    (the local-dev default) means no auth, matching prior behavior. Set it
+    before deploying publicly: this endpoint is meant for a trusted caller
+    (you, a cron job), not an anonymous visitor, and unlike /api/brief a
+    shared secret is the right fit here since the caller isn't the browser."""
+    secret = get_settings().refresh_secret
+    if secret and x_refresh_secret != secret:
+        raise HTTPException(status_code=403, detail="Invalid or missing refresh secret.")
     if not _refresh_lock.acquire(blocking=False):
         return {"started": False, "reason": "refresh already running"}
     _refresh_state["running"] = True

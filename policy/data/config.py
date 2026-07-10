@@ -62,6 +62,20 @@ class Settings(BaseSettings):
     # "https://europoltracker.vercel.app,https://europoltracker.com".
     cors_allow_origins: str = ""
 
+    # Guards POST /api/refresh once the API is reachable from the public
+    # internet — unset (the local-dev default) means no auth, matching prior
+    # behavior; set it before deploying so a random visitor can't trigger a
+    # full corpus refresh. Caller sends it back as the X-Refresh-Secret header.
+    refresh_secret: str = ""
+
+    # Per-IP hourly caps on the two endpoints that make real, billed Claude
+    # API calls (/api/brief runs several calls with draft+revise+retries;
+    # /api/questions is one lighter call). Generous enough for a real user
+    # working through the wizard a few times, tight enough to bound cost
+    # from a public deployment being hit by a script.
+    brief_rate_limit_per_hour: int = 10
+    questions_rate_limit_per_hour: int = 20
+
     # --- HTTP / ingestion (used by the ETL layer) ---------------------------
     http_user_agent: str = "EuroPolTracker/0.1 (+policy-tracker; contact: ops@example.com)"
     http_timeout_seconds: float = 30.0
