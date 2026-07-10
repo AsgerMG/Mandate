@@ -166,6 +166,7 @@ def health() -> dict:
     return {
         "ok": True,
         "llm_available": has_api_key(),
+        "test_ping": os.environ.get("TEST_PING"),
         "db_debug_from_settings": _safe(get_settings().database_url),
         "db_debug_raw_env_present": raw_env is not None,
         "db_debug_raw_env_len": len(raw_env) if raw_env else 0,
