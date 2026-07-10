@@ -146,7 +146,20 @@ def _doc_summary(d: Document) -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "llm_available": has_api_key()}
+    # TEMPORARY debug field (2026-07-10) — host/port/dbname only, never the
+    # credentials — added to diagnose a live deployment mismatch where the
+    # app connects successfully but sees no tables. Remove once resolved.
+    db_url = get_settings().database_url
+    db_debug = None
+    if db_url and db_url != "local":
+        try:
+            from sqlalchemy.engine import make_url
+
+            u = make_url(db_url)
+            db_debug = f"{u.host}:{u.port}/{u.database}"
+        except Exception as exc:  # noqa: BLE001 - debug output must never 500
+            db_debug = f"<unparseable: {exc}>"
+    return {"ok": True, "llm_available": has_api_key(), "db_debug": db_debug}
 
 
 @app.get("/api/stats")
