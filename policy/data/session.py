@@ -23,8 +23,15 @@ _session_factory: sessionmaker[Session] | None = None
 
 
 def _resolve_url() -> str:
-    url = get_settings().database_url
-    if url in ("local", "", None):
+    # .strip() guards against a trailing newline/whitespace in the
+    # DATABASE_URL env var — hit live 2026-07-10 on Railway: a stray \n
+    # after the value made Postgres see the dbname as "railway\n" and
+    # reject every connection with "database does not exist", even though
+    # every other field (host, port, credentials) was correct. Cheap
+    # insurance against however a value got into a platform's variable
+    # store, not specific to Railway.
+    url = (get_settings().database_url or "").strip()
+    if url in ("local", ""):
         from .local_db import ensure_local_db
 
         return ensure_local_db()
