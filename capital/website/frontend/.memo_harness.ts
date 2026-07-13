@@ -20,6 +20,7 @@ const req = {
     fteBand: "250+",
     turnoverBand: "10-50M",
     ownerOver25: "yes",
+    lossesOverHalfCapital: undefined as never,
     cofinancingBand: ">50%",
     lossesOverHalfCapital: "no",
     conditionality: ["geo_commitments"],
@@ -46,6 +47,9 @@ const emit = (e: ProgressEvent) => {
     console.log("\n=== COMPARABLES (" + r.overview.competitors.length + ") ===");
     for (const c of r.overview.competitors.slice(0, 6))
       console.log(`- ${c.name} (${c.source}): ${c.euCapital}`);
+    console.log("\n=== ELIGIBILITY SCREEN ===");
+    for (const c of r.eligibilityScreen ?? [])
+      console.log(`- [${c.status}] ${c.check}: ${c.finding.slice(0, 90)}${c.cure ? " | PATH: " + c.cure.slice(0, 60) : ""} (${c.source.file} ${c.source.locator})`);
     console.log("\n=== INSTRUMENT TABLE ===");
     for (const t of r.instrumentTable)
       console.log(`- ${t.instrument} [${t.ticket}]${t.usedInField ? " (used in field)" : ""}`);

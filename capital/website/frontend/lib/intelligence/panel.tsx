@@ -1041,6 +1041,59 @@ function Memo({ report }: { report: IntelligenceReport }) {
         </p>
       )}
 
+      {/* ── Eligibility screen: deterministic, cited, never model-written ── */}
+      {report.eligibilityScreen && report.eligibilityScreen.length > 0 && (
+        <>
+          <SectionTitle>Eligibility screen</SectionTitle>
+          <p className="mb-3 text-[13px] text-[var(--muted-foreground)]">
+            Evaluated in code against the primary texts (framework level). Each
+            row cites its legal basis; failed gates name the cure.
+          </p>
+          <table className="w-full border-collapse text-[14px]">
+            <thead>
+              <tr className="border-b border-[var(--foreground)] text-left align-bottom">
+                <th className="py-2 pr-3 font-semibold">Check</th>
+                <th className="py-2 pr-3 font-semibold">Status</th>
+                <th className="py-2 font-semibold">Finding</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--border)] align-top">
+              {report.eligibilityScreen.map((r, i) => (
+                <tr key={i}>
+                  <td className="py-2.5 pr-3 font-semibold">{r.check}</td>
+                  <td className="py-2.5 pr-3">
+                    <span
+                      className={
+                        "rounded px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wide " +
+                        (r.status === "met"
+                          ? "bg-[#2D6A4F]/15 text-[#1f4d3a]"
+                          : r.status === "not_met"
+                            ? "bg-[#9b2c2c]/10 text-[#9b2c2c]"
+                            : "bg-[var(--muted)] text-[var(--muted-foreground)]")
+                      }
+                    >
+                      {r.status === "not_met" ? "not met" : r.status === "info" ? "note" : r.status}
+                    </span>
+                  </td>
+                  <td className="py-2.5">
+                    {r.verified ? r.finding : `Verify: ${r.finding}`}
+                    {r.cure && (
+                      <span className="block text-[13px]">
+                        <span className="font-semibold">Path.</span> {r.cure}
+                      </span>
+                    )}
+                    <span className="block text-[11px] text-[var(--muted-foreground)]">
+                      {r.source.file}
+                      {r.source.locator ? ` · ${r.source.locator}` : ""}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
       {/* ── The comparable field (the one centrepiece table) ───────── */}
       <SectionTitle>Comparable companies</SectionTitle>
       <table className="w-full border-collapse text-[14px]">

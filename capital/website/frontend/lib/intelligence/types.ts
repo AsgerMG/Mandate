@@ -125,6 +125,17 @@ export interface TodoEntry {
   timeframe: string;
 }
 
+/** One row of the deterministic eligibility screen — code-evaluated against
+ *  verified term records (never model-written). */
+export interface EligibilityCheck {
+  check: string;                       // e.g. "EU SME status"
+  status: "met" | "not_met" | "unknown" | "info";
+  finding: string;                     // one declarative sentence
+  cure?: string;                       // when not_met: what would clear it
+  source: { file: string; locator: string };  // primary-text citation
+  verified: boolean;                   // false → renders as "verify:"
+}
+
 export interface IntelligenceReport {
   company: string;
   generatedAt: string;
@@ -134,6 +145,10 @@ export interface IntelligenceReport {
   /** The capital on the table: instruments relevant to this founder, side by side. */
   instrumentTable: InstrumentRow[];
   funderMap: FunderEntry[];
+  /** Deterministic eligibility screen: intake answers × verified term records.
+   *  Framework-level v1 (EU law); instrument-level rows land as national
+   *  documents are verified. Code-built — the writer narrates, never edits. */
+  eligibilityScreen: EligibilityCheck[];
   /** What's moving in public funding that this founder should track. */
   landscape: LandscapeSection;
   todos: TodoEntry[];

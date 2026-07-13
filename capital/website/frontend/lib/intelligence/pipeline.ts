@@ -6,6 +6,7 @@
 //   4. generate  — Claude + structured output → the final report
 import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
+import { evaluateEligibility } from "./eligibility";
 import {
   findPeersBySubsector,
   isGenericSubsector,
@@ -538,6 +539,21 @@ async function synthesize(
   sectorTop: string,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt">> {
   const profileBlock = eligibilityContext(req.eligibility, req.targetMarkets);
+  // Stage D (v1): the deterministic eligibility screen — computed here, in
+  // code, from the verified term records. The writer narrates it; the rows
+  // themselves are never model-written.
+  const eligibilityScreen = evaluateEligibility(req.eligibility);
+  const screenBlock = eligibilityScreen.length
+    ? "## Eligibility screen (AUTHORITATIVE, code-evaluated against primary law)\n" +
+      eligibilityScreen.map((r) =>
+        `- ${r.check}: ${r.status.toUpperCase()} — ${r.finding}` +
+        (r.cure ? ` Cure: ${r.cure}` : "") +
+        ` [${r.source.file}${r.source.locator ? ", " + r.source.locator : ""}]`,
+      ).join("\n") +
+      "\nYour prose, funder map and to-dos must be CONSISTENT with these rows " +
+      "(never recommend an instrument a NOT_MET row closes without naming the " +
+      "cure first; treat UNKNOWN rows as verification to-dos)."
+    : "";
   // Current-landscape grounding: build-time export of the intelligence corpus
   // (signals_digest.json). The digest captures the FULL A-Z topic universe on
   // every build (scale capital, InvestEU, grants, state aid, industrial policy,
@@ -702,6 +718,7 @@ async function synthesize(
         content:
           `Write the executive funding memo for the founder.\n\n${ctx}\n\n` +
           `${profileBlock ? profileBlock + "\n\n" : ""}` +
+          `${screenBlock ? screenBlock + "\n\n" : ""}` +
           `## The founder's own footprint (AUTHORITATIVE)\n${selfLine}\n\n` +
           `## Comparable-company evidence (AUTHORITATIVE — already finalised)\n` +
           `Every company listed here has traced public funding; the figures are ` +
@@ -784,6 +801,7 @@ async function synthesize(
   // and strip em-dashes from every model-written field (house rule).
   return {
     self,
+    eligibilityScreen,
     overview: {
       headline: deDash(narrative.overview.headline),
       bottomLine: deDash(narrative.overview.bottomLine),
