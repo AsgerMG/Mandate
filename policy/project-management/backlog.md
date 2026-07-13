@@ -1056,7 +1056,36 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       each real LLM call starts, no console errors.
 - ⬜ Briefing as a conversational/chat UI (currently single-shot)
 - ⬜ Render inline citation markers within the briefing text (not just a list)
-- ⬜ Deploy (API + site) once a shared Postgres (Neon) is chosen
+- ✅ Deploy (API + site) — closed 2026-07-13, but the item was stale in both
+      directions: the stack had ALREADY been deployed (Railway Postgres
+      `pgvector` + Railway API service `EuroPolTracker`, git-connected
+      auto-deploy; Vercel site `euro-pol-tracker`) without this line being
+      checked off, AND the site had been silently broken since its first
+      deploy — `NEXT_PUBLIC_API_URL` existed in Vercel's production env but
+      was EMPTY, so `lib/api.ts` fell back to `http://127.0.0.1:8000` and
+      every data-driven page showed its empty-state ("Corpus is empty")
+      while the static marketing pages rendered fine, masking the failure.
+      Fixed the var, redeployed (NEXT_PUBLIC_ vars are baked at build time —
+      the env fix alone changes nothing), and also corrected the Railway
+      service's stale `BACKFILL_DAYS=730` (same drift as the local `.env`,
+      fixed earlier the same day). Verified truly end-to-end with a real
+      headless-browser run against production: the live register shows the
+      full corpus (2,441 documents), and the complete brief wizard — live
+      `/api/meta` chips, LLM-generated scoping questions, streamed
+      generation — produced a real cited report against the live DB,
+      correctly applying same-day corpus additions (Machinery Directive
+      transition handled per the new TRANSITIONAL APPLICABILITY rule; prod
+      runs commit 413f64d with all of today's changes). Full security pass
+      done the same day: no secrets in git history, `/api/refresh` 403s
+      without the secret, CORS scoped to the Vercel origin, rate limits on
+      both LLM endpoints; `website/.gitignore` (excludes `.vercel`/`.env*`)
+      turned out to never have been committed — added. Secret rotation
+      (ANTHROPIC_API_KEY / DB password / REFRESH_SECRET were printed into a
+      session by `railway variables`) deliberately deferred by the user to
+      the onboarding milestone. Runbook now exists: DEPLOYMENT.md at repo
+      root — wiring, env vars with their gotchas, redeploy commands, and
+      what deliberately does NOT run in the deployed container
+      (ep_verbatim's headless browser, heavy embedding)
 - ✅ Bottom line → bullets (2026-07-13), direct user feedback that the top
       section needs to work for a VC/investor/founder reader's attention span:
       `SYSTEM_PROMPT`'s Bottom line instruction changed from "one dense
