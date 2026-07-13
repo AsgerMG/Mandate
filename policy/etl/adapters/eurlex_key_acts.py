@@ -19,7 +19,7 @@ from collections.abc import Iterable
 
 from data.models import Jurisdiction
 
-from .eurlex import CELLAR_CONTENT_URL, EurLexAdapter
+from .eurlex import EurLexAdapter, cellar_content_url
 
 # CELEX → short name. Sector 3 = enacted law, sector 5 = proposals still in
 # (or abandoned from) procedure — both matter for "what applies vs. what's
@@ -51,17 +51,59 @@ KEY_ACTS: dict[str, str] = {
     "32024L0825": "Empowering Consumers for the Green Transition Directive (ECGT)",
     "32026L0470": "Corporate Sustainability Omnibus I (CSRD/CSDDD)",
     "52025PC0836": "Digital Omnibus on AI (AI Act simplification)",
+    "52025PC0837": "Digital Omnibus (GDPR/ePrivacy/Data Act simplification)",
+    "32023R1230": "Machinery Regulation",
+    "52023PC0369": "Digital Euro Regulation proposal",
+    "52026PC0100": "Industrial Accelerator Act proposal",
+    "52026PC0502": "Cloud and AI Development Act (CADA) proposal",
     # 52022PC0209 (CSAM Regulation proposal) is PDF-only in Cellar — add it
     # back once the PDF-text fallback lands (see backlog).
-    # 52025PC0837 (Digital Omnibus — GDPR/ePrivacy/Data Act simplification) is
-    # ambiguous in Cellar for both text/html and application/xhtml+xml
-    # (content negotiation returns 300 Multiple Choices, not a clean single
-    # manifestation) — same class of problem as the CSAM PDF-only gap. Its
-    # sibling proposal COM(2025) 836 above fetches cleanly, so this appears to
-    # be a per-document Cellar quirk, not a systemic negotiation bug. Revisit
-    # once Cellar publishes a disambiguated manifestation, or a manifestation-
-    # picking fallback (fetch the 300's choice list, take the first HTML one)
-    # lands.
+    # The four entries above (837/369/0100/0502) all hit the exact ambiguous-
+    # manifestation 300 this comment used to describe as unresolved — fixed
+    # 2026-07-13 via HttpClient._resolve_ambiguous() (etl/http.py), which
+    # fetches the 300 body's first stream_order item directly instead of
+    # giving up. CSAM is a different failure mode (no HTML/XHTML manifestation
+    # exists at all, so it 404s rather than 300s) and still needs the PDF-text
+    # fallback.
+    # Council/Commission Recommendations (2026-07-13) — non-binding but
+    # authoritative, actively-referenced coordination frameworks in the
+    # cybersecurity/critical-infrastructure space. `eurlex`'s general
+    # discovery never surfaces these on its own: at the time these were
+    # added, none of them were in the corpus despite matching TECH_SUBJECT_
+    # TERMS on title, because they're older than any realistic backfill
+    # window's first run — the exact same gap this file exists to close for
+    # GDPR/DMA/AI Act.
+    "32025H03445": "Council Recommendation — EU Blueprint for Cyber Crisis Management (2025)",
+    "32024H04371": "Council Recommendation — Blueprint for a Coordinated Response to "
+    "Critical Infrastructure Disruptions (2024)",
+    "32023H0120(01)": "Council Recommendation — Coordinated Approach to Strengthen "
+    "Critical Infrastructure Resilience (2022)",
+    "32024H2659": "Commission Recommendation — Cyber-Surveillance Items Export Guidelines "
+    "(2024)",
+    # Corrected 2026-07-13: this CELEX was originally added under the label
+    # "5G Cybersecurity Toolbox" — wrong. A live brief-generation test
+    # (AutoForge Robotics) surfaced the model citing this instrument with
+    # 2019/534's real 5G content attached to this one's number, which sent us
+    # back to the source text: 32021H0946 is actually the Commission's
+    # toolbox recommendation for the European Digital Identity Framework
+    # (eIDAS2-adjacent), not 5G security at all. No standalone numbered
+    # Recommendation for the real "5G Cybersecurity Toolbox" (the NIS
+    # Cooperation Group's Jan-2020 report) was found — it was endorsed via
+    # Council conclusions/a joint Commission-ENISA communication, not issued
+    # as its own CELEX instrument, so it isn't re-added under another id.
+    "32021H0946": "Commission Recommendation — European Digital Identity Framework Toolbox (2021)",
+    "32021H1086": "Commission Recommendation — Joint Cyber Unit (2021)",
+    "32019H0534": "Commission Recommendation — Cybersecurity of 5G Networks (2019)",
+    # Machinery Directive 2006/42/EC (2026-07-13) — the Machinery Regulation
+    # (32023R1230, above) doesn't apply until 20 January 2027; until then
+    # THIS is the currently-in-force law a company's machinery must comply
+    # with. Added after a live keyword sweep for "machinery"/"robot"/
+    # "automation" etc. against ALL of Cellar (see backlog) found this to be
+    # the one genuinely load-bearing gap — everything else the sweep
+    # surfaced was merger-control notices (e.g. "SBG / ABB ROBOTICS") or
+    # implementing-decision corrigenda, not standalone instruments worth a
+    # KEY_ACTS entry.
+    "32006L0042": "Machinery Directive (2006/42/EC, in force until Jan 2027)",
 }
 
 
@@ -78,7 +120,7 @@ class EurLexKeyActsAdapter(EurLexAdapter):
         for celex in KEY_ACTS:
             yield DocRef(
                 external_id=celex,
-                url=CELLAR_CONTENT_URL.format(celex=celex),
+                url=cellar_content_url(celex),
                 # title deliberately unset: parse() extracts the official title
                 # from the document itself, then we prefix the short name.
                 hint={"celex": celex, "date": None, "type_uri": None},

@@ -175,6 +175,201 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ⬜ Lifecycle enrichment from Cellar in-force/repeal metadata
 - ⬜ Alembic migrations once schema stabilizes
 - 🔄 Tests: ✅ chunker offsets, ✅ type/stage classification; ⬜ version-dedup (needs DB)
+- ✅ Cellar 300 manifestation-picking fallback + 5 new curated acts (2026-07-13),
+      from direct user feedback naming specific instruments the corpus was
+      missing (machinery regulation, digital euro, "data omnibus", industrial
+      accelerator act/public procurement act, CADA). Checked each live against
+      Cellar first: only the Machinery Regulation (32023R1230) resolved
+      cleanly — the other four all hit the exact ambiguous-manifestation 300
+      response `eurlex_key_acts.py` already flagged as unresolved for the
+      GDPR/ePrivacy Digital Omnibus proposal (52025PC0837). Inspected the 300
+      body directly (`HttpClient._resolve_ambiguous`, `etl/http.py`): Cellar
+      lists every part of the matching manifestation as a direct `DOC_N` URL
+      in `stream_order` (part 1 = main act text, part 2 = annex) — exactly the
+      "fetch the 300's choice list, take the first HTML one" fallback the old
+      comment proposed but never built. Implemented and verified live: all
+      five acts now ingest with 0 errors — Machinery Regulation (32023R1230,
+      323K chars), Digital Euro Regulation proposal (52023PC0369, 206K),
+      Digital Omnibus/GDPR-ePrivacy-Data Act simplification (52025PC0837,
+      358K — the previously-blocked one), Industrial Accelerator Act proposal
+      (52026PC0100, 277K), Cloud and AI Development Act/CADA proposal
+      (52026PC0502, 326K). CSAM (52022PC0209) stays excluded — different
+      failure mode (no HTML/XHTML manifestation exists at all → 404, not 300),
+      still needs the separate PDF-text fallback. The **EU Public Procurement
+      Act** the user also named is a distinct, not-yet-published initiative
+      (Commission's 2026 Work Programme target was Q2 2026; as of 2026-07-13
+      only the pre-proposal evaluation/consultation is out, no COM number
+      exists yet to track) — nothing to add until the Commission tables it.
+      **Council Recommendations** (also user-named, as source material for
+      policy recommendations): confirmed these need no separate adapter —
+      they're EU legal acts with CELEX ids, already in scope for `eurlex`/
+      `eurlex_oj_l`/`eurlex_ep_council_legislation`'s existing title-keyword
+      discovery. A DB check found zero currently ingested, because that
+      discovery is recency-scoped — the exact same gap `eurlex_key_acts` was
+      built to close for GDPR/DMA/AI Act. Per direct user follow-up
+      ("we need the council recommendation... just keep pushing"), identified
+      and added 7 real, currently-relevant, verified-live cybersecurity/
+      critical-infrastructure Council/Commission Recommendations to
+      `eurlex_key_acts` (found via a live SPARQL sweep for "recommendation"
+      + tech terms across all history, cross-checked against known real
+      instruments before adding): Council Recommendations on the EU Blueprint
+      for Cyber Crisis Management (32025H03445, 2025) and on a coordinated
+      response to critical-infrastructure disruptions (32024H04371, 2024) and
+      resilience (32023H0120(01), 2022); Commission Recommendations on
+      cyber-surveillance export guidelines (32024H2659, 2024), the 5G
+      Cybersecurity Toolbox (32021H0946, 2021), the Joint Cyber Unit
+      (32021H1086, 2021), and 5G network cybersecurity (32019H0534, 2019,
+      the Toolbox's foundational predecessor). All 7 ingested live with 0
+      errors. Found and fixed a real, separate bug along the way: CELEX ids
+      with a parenthetical suffix (documents sharing an OJ number, e.g.
+      corrigenda or same-issue recommendations) 404'd unencoded —
+      `CELLAR_CONTENT_URL.format()` left literal `(01)` in the URL, which
+      Cellar's server rejects even though bare parentheses are valid URI
+      sub-delims and `httpx` passes them through unescaped. Added
+      `cellar_content_url()` (percent-encodes via `urllib.parse.quote`) and
+      switched both call sites (`eurlex.py`, `eurlex_key_acts.py`) to it.
+- ✅ Legislation recency-filter audit (2026-07-13), from direct user pushback
+      ("for legislation there is no recency filter, please audit and ensure
+      all legislation is present in data corpus" — tech legislation
+      specifically, not a scope-widening ask). Found the general `eurlex`
+      keyword-discovery adapter was silently much narrower than intended, via
+      two compounding bugs, neither visible from `backlog.md`'s own earlier
+      claim of a 730→7,300-day widening: (1) **`.env`'s `BACKFILL_DAYS=730`
+      was overriding the code's already-widened 7,300-day default** — the
+      env file was never updated when the code default changed, so every
+      `eurlex` run was still scoped to 2 years, not 20; (2) even with a wide
+      window, `discovery_limit = 200` combined with the SPARQL query's
+      `ORDER BY DESC(?date) LIMIT 200` means older matches within the window
+      were silently dropped in favor of the newest 200 — a wide `since` alone
+      can't fix a hard result cap applied after sorting. Quantified the real
+      scope via a live SPARQL `COUNT` against Cellar with no date filter at
+      all: **1,814** distinct sector-3/5 works match `TECH_SUBJECT_TERMS` by
+      title across ALL of EU legal history — a small, entirely tractable
+      number, not a reason to keep the window narrow. Fixed: `.env` corrected
+      to `7300`; `discovery_limit` raised 200 → 3,000 (headroom above the
+      live count); `eurlex`'s source cursor reset (`last_run_at = None`) and
+      re-run, since `_since()` in `pipeline.py` uses `last_run_at` for any
+      source that has ever run before and only falls back to `backfill_days`
+      on a genuinely first run — fixing the settings alone would have been a
+      silent no-op against the already-initialized production source. Full
+      historical re-run completed live: 1,550 of the 1,814 discovered (some
+      of the count's 264-work gap is non-English-title works excluded by the
+      SPARQL query's `lang:ENG` requirement), **906 new documents** ingested
+      with 0 fetch errors of their own — the run's 624 errors are almost all
+      `ValueError: No HTML/XHTML manifestation` on pre-~2010 acts that are
+      genuinely PDF-only in Cellar (confirmed via a sample, e.g.
+      `52006AB0038`, an ECB opinion) — the same class of gap already tracked
+      as its own backlog item (PDF-text fallback), not a new failure mode.
+      This is the same root-cause shape as the Council Recommendations gap
+      above and the pre-`eurlex_key_acts` GDPR/DMA/AI Act gap — recency-scoped
+      discovery structurally can't surface anything older than its window's
+      first run, however wide that window nominally is, unless nothing above
+      it (env override, result
+      cap) silently narrows it back down.
+- ✅ CELEX parenthetical-suffix encoding bug (2026-07-13), found while adding
+      one of the Council Recommendations above: `32023H0120(01)` 404'd from
+      Cellar even though it's a real, live document. Root cause:
+      `CELLAR_CONTENT_URL.format(celex=celex)` left the literal `(01)` in the
+      URL — bare parentheses are valid URI sub-delims so `httpx` passes them
+      through unescaped, but Cellar's own server rejects the unencoded form
+      (percent-encoded `%2801%29` resolves fine). Any CELEX with a
+      parenthetical suffix — corrigenda, or multiple documents sharing one OJ
+      number, which recommendations often do — was silently unfetchable.
+      Added `cellar_content_url()` (`etl/adapters/eurlex.py`, percent-encodes
+      via `urllib.parse.quote`) and switched both call sites to it.
+- ✅ `an_verbatim` 13-month discovery gap (2026-07-13), from direct user
+      follow-up ("recheck whether we have french parliament... transcripts
+      ingested properly"). DB check found the most recent `an_verbatim`
+      document was dated 2025-06-11 despite the live site having sittings
+      through 2026-07-10, and the most recent `ept refresh` had discovered
+      exactly 0 new items from it. Root cause: the module docstring's claim
+      that "the root listing page inlines every sitting in the current
+      session directly" was wrong (or stopped being true) — live-checked and
+      found the root page only inlines a rolling ~5-week window (23-36
+      sittings). `PRIOR_YEAR_GROUPS` already worked around this for the
+      *previous* legislative year by crawling each group's own full-history
+      index page directly, but nothing did the equivalent for the *current*
+      year — so any refresh gap wider than ~5 weeks permanently dropped every
+      sitting in between, since they'd scroll off the root page's window
+      before ever being seen and weren't archived under last year's groups
+      either. Confirmed live: the current year's own group index page
+      (`session-ordinaire-de-2025-2026`) inlines its full 592-sitting history
+      back to October 2025, the same way a prior-year group's page does.
+      Added `CURRENT_YEAR_GROUPS` (mirrors `PRIOR_YEAR_GROUPS`, same "bump
+      forward each legislative year" discipline) and now crawl it the same
+      way. Verified live: re-run recovered real content spanning the full
+      gap — genuine tech-relevant floor debates on AI's economic impact,
+      minors and social media, and digital-tools merchant protection, dated
+      2025-06-11 through 2026-02-16. `de_verbatim` was checked too and has no
+      equivalent bug — it uses the Bundestag's real paginated API with an
+      explicit `WINDOW_DAYS` date filter, not a single-page HTML listing, so
+      it can't silently truncate the same way.
+- ✅ Machinery/robotics keyword-widening audit (2026-07-13), from the same
+      user follow-up ("all legal texts on tech, from digital stuff to machine
+      production"). `DIGITAL_ECONOMY_SUBJECT_TERMS` (`etl/adapters/base.py`)
+      has zero machinery/robotics/automation terms — confirmed as the reason
+      the Machinery Regulation needed manual curation rather than being
+      auto-discovered. Live-tested candidate terms ("machinery", "robot",
+      "autonomous vehicle", "automated vehicle", "industrial automation",
+      "3d printing", "additive manufactur[ing]") against all of Cellar before
+      committing to anything, per this project's established
+      test-before-integrate discipline. Result: **not added to the shared
+      discovery vocabulary** — the sweep's 100 matches were almost entirely
+      merger-control notices (concentration cases mentioning a company
+      literally named "ROBOTICS", e.g. "SBG / ABB ROBOTICS") and implementing-
+      decision/corrigendum administrivia, not standalone instruments; adding
+      these terms to `eurlex`'s general discovery would flood every future
+      refresh with that noise for one real hit. That one real hit — Directive
+      2006/42/EC, the Machinery *Directive* — was added directly to
+      `eurlex_key_acts` instead: it's the currently-in-force machinery law
+      until the Machinery *Regulation* (32023R1230, added earlier today)
+      takes over on 20 January 2027, so a brief generated today needs it, not
+      just its eventual successor. Verified live, 0 errors.
+- ✅ Live brief test on today's new content + 2 real bugs found and fixed
+      (2026-07-13), per direct user request to "test what this new ingestion
+      does" and assess critically. Ran a real `ept brief` (AutoForge
+      Robotics, an AI-driven industrial-robotics profile chosen to exercise
+      Machinery Regulation, AI Act, CRA and the new Recommendations) with a
+      live Anthropic call, not `--dry-run`. Found: (1) **`eurlex_key_acts`
+      data error** — `32021H0946` was labeled "5G Cybersecurity Toolbox" but
+      its real text (checked directly) is the Commission's Recommendation on
+      a toolbox for the European Digital Identity Framework (eIDAS2-
+      adjacent) — a research mistake from the original candidate sweep, not
+      a code bug. The brief's own output surfaced it: it cited "5G
+      Cybersecurity Toolbox (2019/534)" — the real 5G recommendation's
+      number attached to the wrong instrument's name — which sent us back to
+      the source. Corrected the label; confirmed no standalone numbered
+      Recommendation exists for the actual "5G Cybersecurity Toolbox" (the
+      NIS Cooperation Group's Jan-2020 report was endorsed via Council
+      conclusions/a joint communication, never its own CELEX instrument), so
+      it isn't re-added under a different id. `_persist()` in `pipeline.py`
+      refreshes `doc.title` on every sighting regardless of content-hash
+      changes, so a plain re-run of `eurlex_key_acts` fixed the DB without
+      re-ingesting content. (2) **Real SYSTEM_PROMPT gap**: the same test
+      run called Machinery Directive 2006/42/EC "superseded" by the
+      Machinery Regulation 2023/1230 — wrong, since the Regulation isn't
+      applicable until 20 January 2027, which is the entire reason
+      2006/42/EC was added earlier today. No existing rule told the model to
+      check a successor's stated application date before treating a
+      predecessor as dead law. Added a TRANSITIONAL APPLICABILITY rule to
+      `SYSTEM_PROMPT` naming this exact case. Re-ran the identical brief
+      after both fixes: Machinery Directive correctly landed **In Scope/
+      Prio 1** ("remains the binding text... Regulation only takes over from
+      20 January 2027"), the Regulation itself correctly landed **Monitor**
+      with the transition date carried into the Watchlist, the corrected eID
+      toolbox recommendation appeared with accurate reasoning, and resolved
+      citations rose from 2 to 5 — including a real grounded quote from
+      CADA (52026PC0502) and a correct, non-hallucinated use of the Digital
+      Omnibus (52025PC0837) as a Monitor-verdict watch item. Confirms today's
+      additions are usable in a live brief, not just present in the DB.
+- ⬜ Newsletter ingestion — user-requested (2026-07-13): a source-agnostic way
+      to pull in policy newsletters the team already reads (candidates:
+      EDPS's own ~10/yr newsletter, already flagged as an unconfirmed feed-
+      based workaround in source-map.md; sector newsletters from law firms/
+      trade press). Needs scoping — most newsletters are email-delivery only,
+      no public RSS, so this likely means either a forwarding-address ingest
+      (email → adapter) or per-newsletter feed discovery same as the existing
+      `FeedSpec` sweep. Backlogged, not built.
 
 ## Milestone 2 — Enrichment + embeddings
 
@@ -862,6 +1057,18 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ⬜ Briefing as a conversational/chat UI (currently single-shot)
 - ⬜ Render inline citation markers within the briefing text (not just a list)
 - ⬜ Deploy (API + site) once a shared Postgres (Neon) is chosen
+- ✅ Bottom line → bullets (2026-07-13), direct user feedback that the top
+      section needs to work for a VC/investor/founder reader's attention span:
+      `SYSTEM_PROMPT`'s Bottom line instruction changed from "one dense
+      paragraph (5-12 lines)" to "4-6 bullets, each one line, no sub-bullets,"
+      told to lead every bullet with the verdict/number rather than a lead-in
+      clause. No downstream code changes needed — both the PDF renderer
+      (`_flush_table`-adjacent line handling in `pdf.py`) and the website's
+      `ReportMarkdown` (`Report.tsx`) already handle `- `/`* ` bullet lines
+      generically, and the word-budget line already excludes bullet lists
+      from the 700-1000 word count (same treatment as Coalitions/Watchlist).
+      `test_pdf.py`/`test_briefing.py` don't assert on Bottom line's internal
+      structure — all 45 tests still pass unchanged.
 
 ## Automation / ops
 

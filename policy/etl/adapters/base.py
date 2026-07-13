@@ -56,6 +56,37 @@ DIGITAL_ECONOMY_SUBJECT_TERMS = [
     "payment service",
 ]
 
+# Title substrings that prove a false-positive collision with a broad term
+# above ("platform", "cloud") rather than genuine tech-policy content —
+# found via a live audit of the 2026-07-13 historical backfill (37 of 926
+# `eurlex` documents): CFSP military-assistance decisions matching "platform"
+# via "weapons platform" jargon, generic merger-control notices mentioning a
+# company literally named "...Cloud..."/"...Platform...", EU ETS carbon-
+# allowance auction platforms, literal vehicle/tractor load platforms, and a
+# handful of EU social-policy initiatives also branded "platform" (anti-
+# poverty, gender equality, undeclared work). Specific phrases only, same
+# collision-safety discipline as `feeds.py`'s `TECH_KEYWORDS` "netz"/"chip"
+# fixes — a bare word would risk cutting genuine recall along with the noise.
+NOISE_EXCLUDE_TERMS = [
+    "concentration (case m.",
+    "cfsp",
+    "auctioning",
+    "auction platform",
+    "load platform",
+    "platform against poverty",
+    "platform for action for gender equality",
+    "prevention and deterrence of undeclared work",
+    "non-performing loans",
+]
+
+
+def is_noise_collision(text: str) -> bool:
+    """True if ``text`` only looks tech-relevant because of one of the
+    collision patterns above — callers should treat this as a hard
+    exclusion even when a positive keyword also matches."""
+    lowered = text.lower()
+    return any(term in lowered for term in NOISE_EXCLUDE_TERMS)
+
 
 @dataclass(slots=True)
 class DocRef:

@@ -14,10 +14,19 @@ an ``<h2 class="presidence">`` item header (a new numbered agenda item) or a
 tracks the current item and collects speeches under it, mirroring the
 ``ep_verbatim`` design.
 
-Discovery reads the comptes-rendus listing page, which inlines every sitting
-in the current session directly — no separate per-session-group crawl
-needed for recency (mirrors ``ep_verbatim``'s "current window, not full
-history" scope).
+Discovery reads the comptes-rendus listing page — **correction (2026-07-13)**:
+the root page does NOT inline every sitting in the current session as
+originally assumed; live checks confirmed it only inlines a rolling ~5-week
+recent window (23-36 sittings). Any refresh gap wider than that window
+permanently drops sittings between runs, since they're not in the previous-
+year archive either — confirmed live: `an_verbatim` had gone stale for
+~13 months (last document 2025-06-11) with a live site that had sittings
+through 2026-07-10, entirely because of this. Each session group's own
+index page (e.g. ``session-ordinaire-de-2025-2026``) DOES inline its full
+history (592 sittings back to October 2025, verified live) the same way
+the prior-year group pages already did — so the current year's own groups
+now get crawled the same way, closing the gap. The root page is still
+fetched too as a cheap redundant safety net.
 """
 
 from __future__ import annotations
@@ -45,15 +54,25 @@ _SITTING_HREF_RE = re.compile(
     rf'href="/dyn/{LEGISLATURE}/comptes-rendus/seance/([^"?#]+/[^"?#]+)"'
 )
 
-# The root listing page only *inlines* the current parliamentary year's
-# session groups' individual sittings directly — confirmed live 2026-07-09
-# (session-ordinaire/extraordinaire-de-2025-2026 have their leaf links on
-# the root page; every other group has none). Mirrors oeil.py's "current +
-# previous year" window: fetch last year's group index pages too, each of
-# which inlines its own leaf links the same way the root page does for the
-# current year. Irregular session-group names (not a clean year template)
-# mean this is a small explicit list, not a formula — bump it forward each
-# legislative year alongside LEGISLATURE.
+# The current legislative year's own session groups. Confirmed live
+# 2026-07-13 (see module docstring correction) that only these two groups
+# exist for 2025-2026 (a "2e-session-extraordinaire" and "session-de-droit"
+# variant were tried and both 500 — genuinely don't exist this year, not a
+# fetch problem). Each group's own index page inlines its FULL sitting
+# history, unlike the root page's rolling recent-only window — bump this
+# list forward each legislative year alongside LEGISLATURE, same as
+# PRIOR_YEAR_GROUPS below.
+CURRENT_YEAR_GROUPS = [
+    "session-ordinaire-de-2025-2026",
+    "session-extraordinaire-de-2025-2026",
+]
+
+# Mirrors oeil.py's "current + previous year" window: fetch last year's
+# group index pages too, each of which inlines its own leaf links the same
+# way a group's index page does for the current year. Irregular
+# session-group names (not a clean year template) mean this is a small
+# explicit list, not a formula — bump it forward each legislative year
+# alongside LEGISLATURE.
 PRIOR_YEAR_GROUPS = [
     "session-ordinaire-de-2024-2025",
     "session-extraordinaire-de-2024-2025",
@@ -142,7 +161,7 @@ class AnVerbatimAdapter(SourceAdapter):
         all_paths: set[str] = set()
         for listing_url in [LISTING_URL] + [
             f"https://www.assemblee-nationale.fr/dyn/{LEGISLATURE}/comptes-rendus/seance/{g}"
-            for g in PRIOR_YEAR_GROUPS
+            for g in CURRENT_YEAR_GROUPS + PRIOR_YEAR_GROUPS
         ]:
             resp = self.http.get(listing_url, accept="text/html")
             all_paths |= set(_SITTING_HREF_RE.findall(resp.text))

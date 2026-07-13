@@ -14,13 +14,21 @@ from __future__ import annotations
 import datetime as dt
 import warnings
 from collections.abc import Iterable
+from urllib.parse import quote
 
 import structlog
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 
 from data.models import DocumentType, Jurisdiction, LifecycleStage
 
-from .base import DIGITAL_ECONOMY_SUBJECT_TERMS, DocRef, ParsedDocument, RawDocument, SourceAdapter
+from .base import (
+    DIGITAL_ECONOMY_SUBJECT_TERMS,
+    NOISE_EXCLUDE_TERMS,
+    DocRef,
+    ParsedDocument,
+    RawDocument,
+    SourceAdapter,
+)
 
 log = structlog.get_logger(__name__)
 
@@ -42,6 +50,16 @@ CONTENT_ACCEPTS = ["text/html", "application/xhtml+xml"]
 
 # Human-facing URL stored on the Document for click-through.
 PUBLIC_URL = "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:{celex}"
+
+
+def cellar_content_url(celex: str) -> str:
+    """CELLAR_CONTENT_URL with the CELEX percent-encoded. Most CELEX ids are
+    URL-safe as-is, but ones with a parenthetical suffix (multiple documents
+    published under one OJ number, e.g. corrigenda or same-issue recommend-
+    ations — "32023H0120(01)") 404 unencoded: literal parentheses are valid
+    URI sub-delims so httpx passes them through raw, but Cellar's own server
+    requires them percent-encoded."""
+    return CELLAR_CONTENT_URL.format(celex=quote(celex, safe=""))
 
 # CELEX sector/descriptor heuristics → our document_type vocabulary.
 # CELEX descriptor letter (position 5) encodes the document nature:
@@ -67,6 +85,9 @@ def _build_discovery_query(since: dt.date, limit: int) -> str:
     title_filter = " || ".join(
         f'CONTAINS(LCASE(STR(?title)), "{t}")' for t in TECH_SUBJECT_TERMS
     )
+    exclude_filter = " && ".join(
+        f'!CONTAINS(LCASE(STR(?title)), "{t}")' for t in NOISE_EXCLUDE_TERMS
+    )
     return f"""
     PREFIX cdm: <http://publications.europa.eu/ontology/cdm#>
     PREFIX lang: <http://publications.europa.eu/resource/authority/language/>
@@ -83,6 +104,10 @@ def _build_discovery_query(since: dt.date, limit: int) -> str:
       # (1/2) etc. that match on title alone.
       FILTER (STRSTARTS(?celex, "3") || STRSTARTS(?celex, "5"))
       FILTER ({title_filter})
+      # Broad terms like "platform"/"cloud" also match false positives (CFSP
+      # military decisions, merger notices, carbon-auction platforms...) —
+      # see NOISE_EXCLUDE_TERMS in base.py for the live-audit writeup.
+      FILTER ({exclude_filter})
     }}
     ORDER BY DESC(?date)
     LIMIT {limit}
@@ -95,7 +120,15 @@ class EurLexAdapter(SourceAdapter):
     jurisdiction = Jurisdiction.EU
     base_url = "https://eur-lex.europa.eu"
 
-    discovery_limit = 200
+    # A live COUNT of every sector-3/5 work matching TECH_SUBJECT_TERMS across
+    # ALL of Cellar's history (no date filter) came back at 1,814 (2026-07-13)
+    # — comfortably under this cap, with headroom for growth. `discover()`
+    # combines this with `ORDER BY DESC(?date)`, so as long as the true count
+    # stays under the limit nothing is silently dropped regardless of how wide
+    # `backfill_days` is; a limit near the true count (the old 200) would
+    # silently truncate older matches within the window even without a
+    # `since` bug, since SPARQL applies LIMIT after ORDER BY.
+    discovery_limit = 3000
 
     def discover(self, since: dt.date | None, cursor: dict | None) -> Iterable[DocRef]:
         since = since or (dt.date.today() - dt.timedelta(days=self.settings.backfill_days))
@@ -110,7 +143,7 @@ class EurLexAdapter(SourceAdapter):
             celex = row["celex"]["value"]
             yield DocRef(
                 external_id=celex,
-                url=CELLAR_CONTENT_URL.format(celex=celex),
+                url=cellar_content_url(celex),
                 title=row.get("title", {}).get("value"),
                 hint={
                     "celex": celex,

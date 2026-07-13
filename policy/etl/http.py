@@ -7,6 +7,7 @@ import time
 
 import httpx
 import structlog
+from bs4 import BeautifulSoup
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 from data.config import Settings
@@ -83,19 +84,45 @@ class HttpClient:
         self, url: str, accepts: list[str], *, accept_language: str | None = None
     ) -> httpx.Response | None:
         """Return the first 200 response across an ordered list of Accept types,
-        skipping types the resource doesn't offer (404) or can't disambiguate
-        via a single Accept header (300 — Cellar returns this instead of a 404
-        when a CELEX has manifestations but none matches cleanly, e.g. some
-        recent COM proposals). Returns None if none of the requested
-        representations exist."""
+        skipping types the resource doesn't offer (404). A 300 (Cellar's
+        "Multiple Choices" — the CELEX has manifestations of that media type,
+        but content negotiation alone can't pick one, e.g. most recent COM
+        proposals) is resolved via ``_resolve_ambiguous`` instead of skipped
+        outright. Returns None if nothing usable is found."""
+        ambiguous: httpx.Response | None = None
         for accept in accepts:
             try:
                 return self.get(url, accept=accept, accept_language=accept_language)
             except httpx.HTTPStatusError as exc:
-                if exc.response.status_code in (404, 300):
+                if exc.response.status_code == 300:
+                    ambiguous = ambiguous or exc.response
+                    continue
+                if exc.response.status_code == 404:
                     continue
                 raise
+        if ambiguous is not None:
+            resolved = self._resolve_ambiguous(ambiguous, accept_language)
+            if resolved is not None:
+                return resolved
         return None
+
+    def _resolve_ambiguous(
+        self, resp: httpx.Response, accept_language: str | None
+    ) -> httpx.Response | None:
+        """Cellar's 300 body lists every part of the matching manifestation as
+        a direct ``DOC_N`` URL, in ``stream_order`` (part 1 is the main act
+        text; later parts are annexes/impact assessments). Fetch part 1
+        directly — a concrete ``DOC_N`` resource returns its content with no
+        further Accept negotiation needed, sidestepping the ambiguity."""
+        soup = BeautifulSoup(resp.content, "lxml")
+        item = soup.find("li", attrs={"title": "item"})
+        href = item.find("a")["href"] if item else None
+        if not href:
+            return None
+        try:
+            return self.get(href, accept_language=accept_language)
+        except httpx.HTTPStatusError:
+            return None
 
     def close(self) -> None:
         self._client.close()

@@ -27,7 +27,7 @@ from lxml import etree
 
 from data.models import DocumentType, Jurisdiction, LifecycleStage
 
-from .base import DocRef, ParsedDocument, RawDocument, SourceAdapter
+from .base import DocRef, ParsedDocument, RawDocument, SourceAdapter, is_noise_collision
 
 log = structlog.get_logger(__name__)
 
@@ -85,6 +85,8 @@ TECH_KEYWORDS = [
 
 
 def is_tech_relevant(text: str) -> bool:
+    if is_noise_collision(text):
+        return False
     lowered = f" {text.lower()} "
     return any(kw in lowered for kw in TECH_KEYWORDS)
 
