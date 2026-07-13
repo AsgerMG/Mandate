@@ -1,0 +1,45 @@
+# Not an instrument itself — the cross-cutting ceiling every national scheme
+# checks first. Fully grounded in the fetched regulation; exemplar of a
+# VERIFIED record.
+id: eu_de_minimis_ceiling
+name: De minimis aid ceiling (Regulation 2023/2831)
+administering_body: European Commission (framework); applied by every granting authority
+country: EU
+capital_type: framework
+borrower_models: [operating_company, balance_sheet_lender, originator, fund_manager]
+status: verified
+gates:
+  - id: de_minimis_headroom
+    gate_family: G3_financial
+    requirement: >-
+      Total de minimis aid to the single undertaking (group level, "single
+      undertaking" definition) must not exceed EUR 300,000 over any rolling
+      3-year period.
+    value: "EUR 300,000 / 3 years"
+    source: {file: de_minimis_2023_2831.pdf, locator: "Art. 3(2)"}
+    verified: true
+  - id: single_undertaking_scope
+    gate_family: G2_size_ownership
+    requirement: >-
+      The ceiling counts ALL linked enterprises (control relationships) as one
+      undertaking - group structure must be declared, not just the applicant
+      entity.
+    value: ""
+    source: {file: de_minimis_2023_2831.pdf, locator: "Art. 2(2)"}
+    verified: true
+obligations:
+  - requirement: >-
+      Declare all de minimis aid received in the current and two previous
+      fiscal years at each new application (until the central register applies).
+    source: {file: de_minimis_2023_2831.pdf, locator: "Art. 6"}
+    verified: true
+cumulation: >-
+  De minimis aid cannot be cumulated with GBER/notified aid for the SAME
+  eligible costs where that would exceed the applicable intensity
+  (de_minimis Art. 5; GBER Art. 8 cross-reference).
+application: {channel: "n/a (framework)", typical_timeline: "n/a"}
+ticket: {min_eur: 0, max_eur: 300000}
+verify_by: 2027-01-01
+notes: >-
+  Our events DB can PRE-FILL part of the headroom picture from traced aid,
+  but registers lag: the memo must still require the founder's declaration.

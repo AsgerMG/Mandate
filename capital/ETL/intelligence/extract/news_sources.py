@@ -108,16 +108,16 @@ SOURCES: dict[str, dict] = {
         "name": "European Investment Fund news", "tier": "funder_press",
         "country": None, "language": "en", "kind": "html",
         "url": "https://www.eif.org/what_we_do/news/index.htm",
-        "topics": ["programmes", "vehicles"], "priority": 1},
+        "topics": ["scale_capital", "investeu", "vehicles"], "priority": 1},
     "eib_press": {
         "name": "EIB press releases", "tier": "funder_press",
         "country": None, "language": "en", "kind": "rss",
         "url": "https://www.eib.org/en/press/rss.htm",
-        "topics": ["programmes", "vehicles"], "priority": 1},
+        "topics": ["scale_capital", "investeu", "vehicles"], "priority": 1},
     "cinea_news": {
         "name": "CINEA news (EU Innovation Fund)", "tier": "funder_press",
         "country": None, "language": "en", "kind": "html",
-        "url": "https://cinea.ec.europa.eu/news-events_en", "topics": ["programmes"],
+        "url": "https://cinea.ec.europa.eu/news-events_en", "topics": ["innovation_fund", "programmes"],
         "priority": 2},
     "eca_press": {
         "name": "European Court of Auditors (programme audits — how vehicles behave)",
@@ -184,6 +184,67 @@ SOURCES: dict[str, dict] = {
         "name": "Google News — EU tech funding (broad)", "tier": "general_news",
         "country": None, "language": "en", "kind": "gnews",
         "url": "EU tech public funding grant", "topics": ["broad"], "priority": 2},
+    "gnews_investeu": {
+        "name": "Google News — InvestEU guarantees, fund-of-funds, ETCI",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": 'InvestEU OR "European Tech Champions Initiative" guarantee fund',
+        "topics": ["investeu", "scale_capital"], "priority": 1},
+    "gnews_eib_scale_capital": {
+        "name": "Google News — EIB/EIF venture debt and scale-up financing",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"European Investment Bank" OR EIF venture debt OR "venture loan" startup scaleup',
+        "topics": ["scale_capital"], "priority": 1},
+    "gnews_innovation_fund": {
+        "name": "Google News — EU Innovation Fund (industrial-scale cleantech capital)",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"EU Innovation Fund" OR "Hydrogen Bank" cleantech funding',
+        "topics": ["innovation_fund"], "priority": 1},
+    "gnews_industrial_policy": {
+        "name": "Google News — Clean Industrial Deal, NZIA, decarbonisation bank",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"Clean Industrial Deal" OR "Net-Zero Industry Act" OR "Industrial Decarbonisation Bank"',
+        "topics": ["industrial_policy"], "priority": 1},
+    # ── Independent landscape sweep (2026-07-09): channels identified by
+    # walking the full lifecycle (first grant → industrial scale) across EU,
+    # intergovernmental and national layers — not user-named. Rationale inline.
+    "gnews_digital_ai": {
+        "name": "Google News — Digital Europe Programme, AI factories, InvestAI, EuroHPC",
+        # The €20B AI-compute push: directly relevant to every software/AI founder.
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"Digital Europe Programme" OR "AI factory" OR "AI gigafactory" OR InvestAI OR EuroHPC',
+        "topics": ["digital_ai"], "priority": 1},
+    "gnews_chips": {
+        "name": "Google News — European Chips Act (incl. 2.0 debate), Chips JU",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"European Chips Act" OR "Chips Act" OR "Chips Joint Undertaking" semiconductor funding',
+        "topics": ["chips"], "priority": 1},
+    "gnews_defence_capital": {
+        "name": "Google News — defence capital beyond EDF: EDIP, SAFE, ReArm, NATO IF/DIANA",
+        # Dual-use/deep-tech founders increasingly raise from this layer.
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"European Defence Fund" OR EDIP OR "SAFE loans" OR "ReArm Europe" OR "NATO Innovation Fund" OR DIANA defence funding',
+        "topics": ["defence"], "priority": 1},
+    "gnews_esa_space": {
+        "name": "Google News — ESA contracts, BASS/InCubed, IRIS², EU space programme",
+        # ESA is intergovernmental, not EU — but it IS the space sector's funder.
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": 'site:esa.int OR "European Space Agency" contract funding startup OR IRIS2',
+        "topics": ["space"], "priority": 1},
+    "gnews_eit_kics": {
+        "name": "Google News — EIT KIC investment vehicles (InnoEnergy is Europe's largest cleantech investor)",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"EIT InnoEnergy" OR "EIT Manufacturing" OR "EIT Digital" OR "EIT Health" investment funding',
+        "topics": ["eit_kics"], "priority": 2},
+    "gnews_ebrd": {
+        "name": "Google News — EBRD venture and scale debt (CEE/Baltic corpus countries)",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": 'EBRD venture OR technology investment startup Europe',
+        "topics": ["scale_capital"], "priority": 2},
+    "gnews_state_aid_reform": {
+        "name": "Google News — state aid framework changes (GBER, CISAF)",
+        "tier": "general_news", "country": None, "language": "en", "kind": "gnews",
+        "url": '"state aid" EU framework GBER OR CISAF reform tech',
+        "topics": ["state_aid_reform"], "priority": 2},
     "gnews_ft_eu_funding": {
         "name": "Google News — FT on EU industrial policy/funding (headline signal;"
                 " full text paywalled)", "tier": "general_news", "country": None,
@@ -243,6 +304,33 @@ SOURCES: dict[str, dict] = {
         "name": "Google News FR — tech (broad)", "tier": "general_news", "country": "FR",
         "language": "fr", "kind": "gnews", "url": "startup technologie financement public",
         "topics": ["broad"], "priority": 3},
+
+    # ── Ireland (added 2026-07-09 — the Cenotian test memo exposed the gap:
+    # an Irish founder's landscape section had only FR/DE national colour) ────
+    "enterprise_ireland_news": {
+        "name": "Enterprise Ireland press (IE agency: grants, HPSU equity)",
+        "tier": "funder_press", "country": "IE", "language": "en", "kind": "gnews",
+        "url": 'site:enterprise-ireland.com OR "Enterprise Ireland" funding startup',
+        "topics": ["ndb_agenda"], "priority": 1},
+    "gnews_ie_funding": {
+        "name": "Google News IE — public funding (EI, ISIF, IDA, disruptive tech fund)",
+        "tier": "general_news", "country": "IE", "language": "en", "kind": "gnews",
+        "url": '"Enterprise Ireland" OR ISIF OR "Disruptive Technologies Innovation Fund" Ireland funding',
+        "topics": ["ndb_agenda"], "priority": 1},
+
+    # ── Italy (added 2026-07-09: target-market support — the corpus already
+    # holds IT events at scale, mediocredito €15B / invitalia €2.2B, but the
+    # news registry had no Italian layer) ────────────────────────────────────
+    "cdp_venture_news": {
+        "name": "CDP Venture Capital / Fondo Nazionale Innovazione newsflow",
+        "tier": "funder_press", "country": "IT", "language": "it", "kind": "gnews",
+        "url": '"CDP Venture Capital" OR "Fondo Nazionale Innovazione" investimento startup',
+        "topics": ["ndb_agenda"], "priority": 1},
+    "gnews_it_funding": {
+        "name": "Google News IT — public funding (Invitalia, MIMIT, transizione)",
+        "tier": "general_news", "country": "IT", "language": "it", "kind": "gnews",
+        "url": 'Invitalia OR MIMIT OR "credito d\'imposta" finanziamento pubblico startup tecnologia',
+        "topics": ["ndb_agenda", "industrial_policy"], "priority": 1},
 
     # ── Germany ──────────────────────────────────────────────────────────────
     "bmwe_presse": {

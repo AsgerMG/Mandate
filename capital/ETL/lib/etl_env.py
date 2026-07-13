@@ -52,6 +52,7 @@ BACKUP_ICLOUD = (
 for _rel in (
     "events/extract", "events/transform", "events/load", "events/load/qa",
     "intelligence/extract", "intelligence/transform", "intelligence/load",
+    "terms",
     "lib",
 ):
     _p = str(ETL / _rel)

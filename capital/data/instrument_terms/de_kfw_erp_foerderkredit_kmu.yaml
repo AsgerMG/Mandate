@@ -1,0 +1,50 @@
+# Exemplar of a DRAFT record: structure complete, gates awaiting verification
+# against the KfW programme datasheet (MANIFEST wave 2). Shows how domestic
+# entity + domestic investment requirements are encoded.
+id: de_kfw_erp_foerderkredit_kmu
+name: KfW ERP-Foerderkredit KMU (programmes 365/366)
+administering_body: KfW via the house-bank principle (Hausbank applies, KfW refinances)
+country: DE
+capital_type: loan
+borrower_models: [operating_company]
+status: draft
+gates:
+  - id: german_nexus
+    gate_family: G1_nexus
+    requirement: >-
+      Applicant needs a German commercial presence and the financed investment
+      or working capital must relate to activity in Germany (foreign SMEs:
+      eligible for investments located in Germany).
+    value: "German entity/Betriebsstaette or investment in Germany"
+    source: {file: PENDING_kfw_datasheet_365_366.pdf, locator: "Wer kann Antraege stellen / Was foerdern wir"}
+    verified: false
+  - id: sme_test
+    gate_family: G2_size_ownership
+    requirement: EU SME definition per GBER Annex I (linked/partner enterprises counted).
+    value: "<250 FTE and <=EUR 50M turnover or <=EUR 43M balance sheet"
+    source: {file: gber_651_2014_consolidated.pdf, locator: "Annex I, Art. 2-6"}
+    verified: true
+  - id: not_in_difficulty
+    gate_family: G3_financial
+    requirement: >-
+      Applicant must not be an undertaking in difficulty: for a limited company
+      >3 years old, accumulated losses must not exceed half of subscribed share
+      capital.
+    value: ""
+    source: {file: gber_651_2014_consolidated.pdf, locator: "Art. 2(18)(a)"}
+    verified: true
+  - id: house_bank
+    gate_family: G6_conditionality
+    requirement: Application runs through a German house bank that takes the credit decision.
+    value: "Hausbankprinzip"
+    source: {file: PENDING_kfw_datasheet_365_366.pdf, locator: "Antragstellung"}
+    verified: false
+obligations:
+  - requirement: Funds tied to the stated investment/working-capital purpose in Germany.
+    source: {file: PENDING_kfw_datasheet_365_366.pdf, locator: "Verwendungszweck"}
+    verified: false
+cumulation: "Aid value of the interest advantage counts against de minimis / GBER ceilings (verify which regime the current datasheet applies)."
+application: {channel: "house bank -> KfW", typical_timeline: "weeks (bank-dependent)"}
+ticket: {min_eur: 25000, max_eur: 25000000}
+verify_by: 2026-08-15
+notes: "DO NOT let the memo assert unverified gates as fact - they render as 'verify with source'."

@@ -12,7 +12,7 @@ DATE    := $(shell date +%Y%m%d)
 BACKUP  := $(HOME)/EuroInvTracker-backups
 ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/EuroInvTracker-backups
 
-.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals
+.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest
 
 help:
 	@echo "EuroInvTracker make targets:"
@@ -66,6 +66,11 @@ data:
 # source registry, so this is a clean no-op until sources exist.
 signals:
 	python3 ETL/intelligence/load/load_signals.py
+
+# Export the intelligence digest the /for-companies brief reads (topics +
+# per-sector passages from signals.sqlite). Run after ingest/hydrate/embed.
+signals-digest:
+	python3 website/build/signals_digest.py
 
 site-build:
 	cd website/frontend && npm run build

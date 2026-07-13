@@ -1,0 +1,120 @@
+id: eu_investeu_intermediary
+name: InvestEU financial-intermediary architecture (Reg. 2021/523)
+administering_body: see source document
+country: EU
+capital_type: counter_guarantee
+borrower_models:
+- operating_company
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: The EU guarantee under InvestEU is implemented indirectly through implementing
+    partners, which may act via financial intermediaries, to reach final recipients; the borrower's
+    financing may be direct or intermediated.
+  value: final recipient reached directly by implementing partner or indirectly via financial
+    intermediary
+  intake_field: borrowerModel
+  quote: ‘financing and investment operations’ or ‘financing or investment operations’ means
+    operations to provide finance directly or indirectly to final recipients through financial
+    products, carried out by an implementing partner in its own name
+  source:
+    file: investeu_regulation_2021_523.pdf
+    locator: p.16
+  verified: false
+  verify_note: The quote only defines 'financing and investment operations' as operations
+    carried out by an implementing partner in its own name to provide finance directly or
+    indirectly to final recipients through financial products. It does not mention the EU
+    guarantee, InvestEU, financial intermediaries, or borrowers, so it does not establish
+    the claimed requirement about intermediated financing via financial intermediaries.
+- id: g2
+  gate_family: G1_nexus
+  requirement: The EU guarantee may be used for loans, guarantees, equity or similar financing
+    provided directly or indirectly through financial intermediaries, funds, investment platforms
+    or other vehicles to final recipients, establishing the originator/on-lending intermediary
+    model.
+  value: direct or indirect (originator) financing via intermediaries, funds, investment platforms
+    or vehicles
+  intake_field: borrowerModel
+  quote: loans, guarantees, counter-guarantees, capital market instruments, any other form
+    of funding or credit enhancement, including subordinated debt, or equity or quasi-equity
+    investments, provided directly or indirectly through financial intermediaries, funds,
+    investment platforms or other vehicles to be channelled to final recipients
+  source:
+    file: investeu_regulation_2021_523.pdf
+    locator: p.31
+  verified: llm_2pass
+- id: g3
+  gate_family: G1_nexus
+  requirement: The EU guarantee may also cover funding or guarantees extended by an implementing
+    partner to another financial institution enabling that institution to undertake on-lending
+    financing, i.e. a balance-sheet lender relationship between implementing partner and intermediary.
+  value: funding/guarantees by implementing partner to another financial institution to enable
+    further financing (balance_sheet_lender relationship)
+  intake_field: borrowerModel
+  quote: funding or guarantees by an implementing partner to another financial institution
+    enabling the latter to undertake financing referred to in point (a).
+  source:
+    file: investeu_regulation_2021_523.pdf
+    locator: p.31
+  verified: llm_2pass
+- id: g4
+  gate_family: G1_nexus
+  requirement: Financing and investment operations must be carried out by an implementing
+    partner in its own name and accounted for in its own financial statements, establishing
+    that the implementing partner (not the final recipient) holds the direct contractual/banking
+    relationship under the EU guarantee.
+  value: implementing partner acts in its own name and bears the financing on its balance
+    sheet
+  intake_field: bankRelationship
+  quote: carried out by an implementing partner in its own name, provided by the implementing
+    partner in accordance with its internal rules, policies and procedures and accounted for
+    in the implementing partner’s financial statements or, where applicable, disclosed in
+    the notes to those financial statements
+  source:
+    file: investeu_regulation_2021_523.pdf
+    locator: p.16
+  verified: false
+  verify_note: The quote states that activities are carried out by an implementing partner
+    in its own name, per its internal rules, and accounted for in its financial statements.
+    It does not mention 'financing and investment operations' specifically, does not mention
+    the EU guarantee, and does not establish anything about direct contractual/banking relationships
+    versus final recipients. The claim adds interpretive context (EU guarantee, contractual/banking
+    relationship, final recipient contrast) that is not present in the quote.
+- id: g5
+  gate_family: G1_nexus
+  requirement: For intermediated financing operations, including SME support, the additionality
+    (eligibility) test is applied at the level of the financial intermediary rather than the
+    final recipient, confirming the intermediary/originator model as the relevant nexus point.
+  value: additionality verified at intermediary level, not final recipient level, for intermediated
+    operations
+  intake_field: borrowerModel
+  quote: For intermediated financing and investment operations, in particular for SME support,
+    additionality shall be verified at the level of the intermediary rather than at the level
+    of the final recipient.
+  source:
+    file: investeu_regulation_2021_523.pdf
+    locator: p.58
+  verified: llm_2pass
+- id: g6
+  gate_family: G1_nexus
+  requirement: Final recipients eligible for InvestEU-backed financing must be legal entities
+    established in a Member State, an associated third country, an overseas country/territory
+    linked to a Member State, or other qualifying third countries under specified conditions.
+  value: final recipient must be a legal entity established in an eligible Member State/territory/associated
+    third country
+  intake_field: entityCountries
+  quote: 'The InvestEU Fund may support financing and investment operations that provide finance
+    to final recipients which are legal entities established in any of the following countries
+    or territories:'
+  source:
+    file: investeu_regulation_2021_523.pdf
+    locator: p.30
+  verified: false
+  verify_note: The quote is truncated and only introduces a list of countries/territories
+    without actually specifying them. It does not state that eligible locations include Member
+    States, associated third countries, overseas countries/territories linked to a Member
+    State, or other qualifying third countries. The specific categories claimed are not present
+    in the quote itself.
+verify_by: '2026-10-01'
+notes: Extracted 3/6 gates at llm_2pass by ETL/terms/extract_terms.py.

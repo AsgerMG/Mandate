@@ -121,6 +121,39 @@ function parseSnapshot(md: string): FundSnapshot | null {
 }
 
 /** The shared agent-instructions brief, injected into every stage. */
+export interface DigestItem {
+  title: string;
+  source: string;
+  tier: string;
+  date: string | null;
+  url: string;
+  excerpt: string;
+  similarity: number;
+}
+
+interface SignalsDigest {
+  generatedAt: string;
+  topics: Record<string, DigestItem[]>;
+  sectors: Record<string, DigestItem[]>;
+}
+
+let digestCache: SignalsDigest | null | undefined;
+
+/** The build-time export of the public-capital-intelligence corpus
+ *  (website/build/signals_digest.py). null = not generated yet — the brief
+ *  then simply omits the landscape grounding rather than failing. */
+export function loadSignalsDigest(): SignalsDigest | null {
+  if (digestCache === undefined) {
+    try {
+      const file = path.join(process.cwd(), "public", "data", "signals_digest.json");
+      digestCache = JSON.parse(readFileSync(file, "utf8")) as SignalsDigest;
+    } catch {
+      digestCache = null;
+    }
+  }
+  return digestCache;
+}
+
 export function loadAgentInstructions(): string {
   if (instructionsCache === null) {
     try {
@@ -275,11 +308,18 @@ export function findPeersBySubsector(
   const limit = opts.limit ?? 5;
   const skip = new Set((opts.exclude ?? []).map((n) => normalize(n)));
 
+  // Universities / institutes are not peers. entity_type catches the labelled
+  // ones; the name pattern catches unmerged sisters still typed "unknown"
+  // (e.g. "NORCE RESEARCH" sitting next to the labelled "Norwegian Research
+  // Centre" row — surfaced by the Cenotian test memo).
+  const RESEARCH_NAME =
+    /\b(RESEARCH|UNIVERSIT|INSTITUT|FRAUNHOFER|CNRS|LABORATOR|ACADEM|HOCHSCHULE|POLYTECH)\w*\b/i;
   const hits = rows.filter(
     (r) =>
       r[9] === subsector &&
       r[4] > 0 &&
-      r[10] !== "research_org" && // universities / institutes are not peers
+      r[10] !== "research_org" &&
+      !(r[10] !== "company" && RESEARCH_NAME.test(r[0])) &&
       !skip.has(normalize(r[0])),
   );
   // Prefer same-country peers, then rank by traced public capital (desc).

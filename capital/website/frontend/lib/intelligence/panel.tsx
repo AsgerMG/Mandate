@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import {
+  BORROWER_MODELS,
   CAPITAL_OPTIONS,
-  type IntakeQuestion,
+  TICKET_BANDS,
+  type EligibilityAnswers,
+  type IntakeGroup,
   type IntelligenceReport,
   type PipelineStep,
   type ProgressEvent,
@@ -158,6 +161,107 @@ function InfoDot({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** A chip-row single select for band/enum answers. */
+function Chips({
+  options, value, onPick, allowUnset = true,
+}: {
+  options: { value: string; label: string; hint?: string }[];
+  value?: string;
+  onPick: (v: string | undefined) => void;
+  allowUnset?: boolean;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((o) => {
+        const on = value === o.value;
+        return (
+          <button
+            key={o.value}
+            type="button"
+            title={o.hint}
+            aria-pressed={on}
+            onClick={() => onPick(on && allowUnset ? undefined : o.value)}
+            className={
+              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+              (on
+                ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
+                : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
+            }
+          >
+            {o.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Multi-select country chips backed by a dropdown-free grid (fast to scan). */
+function CountryChips({
+  value, onToggle, compact = false,
+}: {
+  value: string[];
+  onToggle: (c: string) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div className={"flex flex-wrap gap-1.5 " + (compact ? "max-h-40 overflow-y-auto pr-1" : "")}>
+      {COUNTRIES.map((c) => {
+        const on = value.includes(c);
+        return (
+          <button
+            key={c}
+            type="button"
+            aria-pressed={on}
+            onClick={() => onToggle(c)}
+            className={
+              "rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors " +
+              (on
+                ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
+                : "border-[var(--border)] bg-white/70 text-[var(--muted-foreground)] hover:border-[#12264f]")
+            }
+          >
+            {c}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+const YES_NO_UNSURE = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+  { value: "unsure", label: "Not sure" },
+];
+
+const CONDITIONALITY_OPTIONS = [
+  { value: "local_entity", label: "Opening a local entity" },
+  { value: "geo_commitments", label: "Committing investment to a specific country" },
+  { value: "state_shareholder", label: "The state on the cap table" },
+  { value: "job_commitments", label: "Job-creation commitments" },
+];
+
+// Rotating engagement lines per pipeline step — shown with the elapsed timer so
+// a three-minute generation never looks stalled.
+const STEP_CHATTER: Record<string, string[]> = {
+  discovering: [
+    "Searching the open web for comparable companies…",
+    "Reading recent coverage of your space…",
+  ],
+  querying_db: [
+    "Matching names against 146,911 companies in the funding record…",
+    "Tracing grants, state aid and public capital per comparable…",
+  ],
+  generating: [
+    "Assembling the instrument table for your ticket size…",
+    "Grounding the road ahead in the intelligence corpus…",
+    "Drafting your position against the comparable field…",
+    "Writing the funder map with honest trade-offs…",
+    "Checking every figure against the database…",
+  ],
+};
+
 const STEPS: { key: PipelineStep; label: string }[] = [
   { key: "discovering", label: "Finding & researching comparable companies" },
   { key: "querying_db", label: "Querying EU funding database" },
@@ -165,11 +269,37 @@ const STEPS: { key: PipelineStep; label: string }[] = [
 ];
 
 export function IntelligencePanel() {
+  // ── Screen machine: basics → operate → finances → adaptive[0..n] → running ──
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
   const [companyType, setCompanyType] = useState("");
   const [description, setDescription] = useState("");
   const [capitalSought, setCapitalSought] = useState<string[]>([]);
+  const [elig, setElig] = useState<EligibilityAnswers>({});
+  const [targetMarkets, setTargetMarkets] = useState<string[]>([]);
+
+  const [screen, setScreen] = useState<"basics" | "project" | "operate" | "finances" | "adaptive">("basics");
+  const [preparing, setPreparing] = useState(false);
+  const [groups, setGroups] = useState<IntakeGroup[] | null>(null);
+  const [groupIdx, setGroupIdx] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  const [running, setRunning] = useState(false);
+  const [step, setStep] = useState<PipelineStep | null>(null);
+  const [statusDetail, setStatusDetail] = useState<string>("");
+  const [elapsed, setElapsed] = useState(0);
+  const [chatter, setChatter] = useState(0);
+  const [report, setReport] = useState<IntelligenceReport | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Elapsed-seconds ticker + rotating chatter while the memo generates.
+  useEffect(() => {
+    if (!running) return;
+    const t0 = Date.now();
+    const tick = setInterval(() => setElapsed(Math.floor((Date.now() - t0) / 1000)), 1000);
+    const rot = setInterval(() => setChatter((c) => c + 1), 7000);
+    return () => { clearInterval(tick); clearInterval(rot); };
+  }, [running]);
 
   const allCapital = capitalSought.length === CAPITAL_OPTIONS.length;
   const toggleCapital = (value: string) =>
@@ -178,15 +308,8 @@ export function IntelligencePanel() {
     );
   const toggleAllCapital = () =>
     setCapitalSought(allCapital ? [] : CAPITAL_OPTIONS.map((o) => o.value));
-
-  const [preparing, setPreparing] = useState(false);
-  const [questions, setQuestions] = useState<IntakeQuestion[] | null>(null);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-
-  const [running, setRunning] = useState(false);
-  const [step, setStep] = useState<PipelineStep | null>(null);
-  const [report, setReport] = useState<IntelligenceReport | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const toggleList = (list: string[], v: string) =>
+    list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
 
   const basePayload = () => ({
     company,
@@ -194,47 +317,49 @@ export function IntelligencePanel() {
     companyType,
     description,
     capitalSought,
+    targetMarkets,
+    eligibility: elig,
   });
 
-  // Phase 1: fetch the tailored questions, then show them. If none come back (or
-  // the call fails), skip straight to the memo so the founder is never blocked.
-  async function startIntake(e: React.FormEvent) {
-    e.preventDefault();
-    if (!company.trim() || preparing || running) return;
+  // After the fixed screens: fetch the themed follow-up groups (best-effort —
+  // on failure or empty result the memo runs straight away).
+  async function fetchGroups() {
     setPreparing(true);
     setError(null);
-    setReport(null);
-    setQuestions(null);
-    setAnswers({});
-
     try {
       const res = await fetch("/api/intelligence/intake", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(basePayload()),
       });
-      const data = (await res.json().catch(() => ({}))) as { questions?: IntakeQuestion[] };
-      const qs = Array.isArray(data.questions) ? data.questions : [];
-      if (qs.length === 0) {
+      const data = (await res.json().catch(() => ({}))) as { groups?: IntakeGroup[] };
+      const gs = (Array.isArray(data.groups) ? data.groups : []).filter(
+        (g) => g && Array.isArray(g.questions) && g.questions.length > 0,
+      );
+      if (gs.length === 0) {
         await runMemo([]);
         return;
       }
-      setQuestions(qs);
+      setGroups(gs);
+      setGroupIdx(0);
+      setScreen("adaptive");
     } catch {
-      // Intake is best-effort; on any failure go straight to the memo.
       await runMemo([]);
     } finally {
       setPreparing(false);
     }
   }
 
-  // Phase 2: stream the memo, folding in whatever clarifications we have.
+  // Stream the memo, folding in whatever clarifications we have.
   async function runMemo(clarifications: { question: string; answer: string }[]) {
     if (running) return;
     setRunning(true);
     setError(null);
     setReport(null);
+    setElapsed(0);
+    setChatter(0);
     setStep("discovering");
+    setStatusDetail("");
 
     try {
       const res = await fetch("/api/intelligence", {
@@ -248,7 +373,6 @@ export function IntelligencePanel() {
         throw new Error(msg.error || `Request failed (${res.status})`);
       }
 
-      // Read the newline-delimited JSON stream incrementally.
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
@@ -262,8 +386,10 @@ export function IntelligencePanel() {
           buffer = buffer.slice(nl + 1);
           if (!line) continue;
           const event = JSON.parse(line) as ProgressEvent;
-          if (event.type === "status") setStep(event.step);
-          else if (event.type === "report") setReport(event.data);
+          if (event.type === "status") {
+            setStep(event.step);
+            if (event.detail) setStatusDetail(event.detail);
+          } else if (event.type === "report") setReport(event.data);
           else if (event.type === "error") setError(event.message);
         }
       }
@@ -275,19 +401,32 @@ export function IntelligencePanel() {
     }
   }
 
-  // Turn the answered questions into clarifications and run the memo.
   function submitAnswers() {
-    const qs = questions ?? [];
+    const qs = (groups ?? []).flatMap((g) => g.questions);
     const clarifications = qs
       .map((q) => ({ question: q.question, answer: answers[q.id] ?? "" }))
       .filter((c) => c.answer && c.answer !== SKIP_ANSWER);
-    setQuestions(null);
+    setGroups(null);
     void runMemo(clarifications);
   }
 
   const busy = preparing || running;
-
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
+
+  const FIXED_SCREENS = ["basics", "project", "operate", "finances"] as const;
+  const screenIdx =
+    screen === "adaptive"
+      ? FIXED_SCREENS.length + groupIdx
+      : FIXED_SCREENS.indexOf(screen as (typeof FIXED_SCREENS)[number]);
+  const totalScreens = FIXED_SCREENS.length + (groups?.length ?? 1);
+
+  const inputCls =
+    "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]";
+  const nextBtn =
+    "rounded-full bg-[#0a0a0a] px-6 py-2.5 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f] disabled:cursor-not-allowed disabled:opacity-50";
+  const backBtn =
+    "text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#12264f] hover:underline";
+  const fieldLabel = "mb-1.5 flex items-center font-semibold";
 
   return (
     <section className="rounded-2xl border border-black/10 bg-white p-5 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
@@ -299,184 +438,444 @@ export function IntelligencePanel() {
           Understand how comparable companies raise public capital
         </h2>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
-          Enter your company. We trace the grants, state aid and public capital
-          your closest European peers have drawn, then write you one executive
-          memo: your position, the instruments that fit, what each one costs you,
-          and the next move. Export it as a PDF.
+          A few structured screens about your company, then tailored follow-ups,
+          then one executive memo: what you can qualify for, what each option
+          requires, and what to watch. Export it as a PDF.
         </p>
 
-        {!questions && !running && (
-        <form onSubmit={startIntake} className="mt-4 space-y-4">
-          {/* Company name — the one thing we truly need */}
-          <label className="block text-sm">
-            <span className="mb-1.5 flex items-center font-semibold">
-              Your company
-              <InfoDot>
-                The legal or common name of your company. We match it against the
-                funding record to trace what you and your closest peers have drawn.
-                Set the country if the name is common, so we pin the right entity.
-              </InfoDot>
-            </span>
-            <input
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              required
-              placeholder="e.g. Vyoma"
-              className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
-            />
-          </label>
-
-          {/* What you do + Country, side by side */}
-          <div className="grid gap-5 sm:grid-cols-[1fr_13rem]">
-            <label className="block text-sm">
-              <span className="mb-1.5 flex items-center font-semibold">
-                What you do{" "}
-                <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
-                <InfoDot>
-                  One line on your product, customer and what is genuinely novel.
-                  This is the single biggest accuracy lever: it sharpens peer
-                  matching and grounds the whole memo.
-                </InfoDot>
-              </span>
-              <input
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="e.g. AI collision-avoidance for satellites"
-                className="w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]"
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="mb-1.5 flex items-center font-semibold">
-                Country{" "}
-                <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
-                <InfoDot>
-                  Where the company is incorporated. It disambiguates common names
-                  and decides which national schemes you can actually access.
-                </InfoDot>
-              </span>
-              <select
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
+        {/* Wizard progress dots */}
+        {!running && !report && (
+          <div className="mt-4 flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
+            {Array.from({ length: totalScreens }).map((_, i) => (
+              <span
+                key={i}
                 className={
-                  "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] outline-none transition-colors focus:border-[#12264f] " +
-                  (country ? "text-[var(--foreground)]" : "text-[var(--muted-foreground)]")
+                  "h-1.5 rounded-full transition-all " +
+                  (i === screenIdx ? "w-6 bg-[#12264f]" : i < screenIdx ? "w-3 bg-[#12264f]/50" : "w-3 bg-[var(--muted)]")
                 }
-              >
-                <option value="" className="bg-[#ffffff] text-[#5d5b52]">Select…</option>
-                {COUNTRIES.map((c) => (
-                  <option key={c} value={c} className="bg-[#ffffff] text-[#141414]">
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </label>
+              />
+            ))}
+            <span className="ml-1">Step {Math.min(screenIdx + 1, totalScreens)} of {totalScreens}</span>
           </div>
-
-          {/* Company type — a one-tap archetype picker */}
-          <div className="text-sm">
-            <span className="mb-2 flex items-center font-semibold">
-              Company type{" "}
-              <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
-              <InfoDot>
-                How a funder would classify you. This is the single biggest fork in
-                what you are eligible for: deep tech opens doors (like the EIC) that
-                an application layer does not. Pick the closest.
-              </InfoDot>
-            </span>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {COMPANY_TYPES.map((t) => {
-                const on = companyType === t.label;
-                return (
-                  <button
-                    key={t.label}
-                    type="button"
-                    onClick={() => setCompanyType(on ? "" : t.label)}
-                    aria-pressed={on}
-                    title={t.hint}
-                    className={
-                      "rounded-lg border px-3 py-2.5 text-left text-[13px] font-medium leading-snug transition-colors " +
-                      (on
-                        ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                        : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
-                    }
-                  >
-                    {t.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Capital you want — multi-select dropdown */}
-          <div className="text-sm">
-            <span className="mb-2 flex items-center font-semibold">
-              Capital you want{" "}
-              <span className="ml-1 font-normal text-[var(--muted-foreground)]">(optional)</span>
-              <InfoDot>
-                We tailor the shortlist to the kind of money you actually want.
-                Asking for non-dilutive capital, for instance, demotes equity and
-                blended instruments and flags what they would cost you.
-              </InfoDot>
-            </span>
-            <CapitalSelect
-              value={capitalSought}
-              onToggle={toggleCapital}
-              onToggleAll={toggleAllCapital}
-              all={allCapital}
-            />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
-            <button
-              type="submit"
-              disabled={busy || !company.trim()}
-              className="rounded-full bg-[#0a0a0a] px-6 py-2.5 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {preparing ? "Tailoring a few questions…" : "Continue"}
-            </button>
-            <span className="text-xs text-[var(--muted-foreground)]">
-              A few quick questions, then your memo. ~1 minute · 5 memos per hour.
-            </span>
-          </div>
-        </form>
         )}
 
-        {/* Phase 1: tailored intake questions */}
-        {questions && !running && (
+        {/* ── Screen 1: the basics ─────────────────────────────────────── */}
+        {screen === "basics" && !running && (
+          <form
+            onSubmit={(e) => { e.preventDefault(); if (company.trim()) setScreen("project"); }}
+            className="mt-4 space-y-4"
+          >
+            <label className="block text-sm">
+              <span className={fieldLabel}>
+                Your company
+                <InfoDot>
+                  The legal or common name. We match it against the funding record
+                  to trace what you and your closest peers have drawn.
+                </InfoDot>
+              </span>
+              <input value={company} onChange={(e) => setCompany(e.target.value)} required
+                placeholder="e.g. Vyoma" className={inputCls} />
+            </label>
+
+            <div className="grid gap-5 sm:grid-cols-[1fr_13rem]">
+              <label className="block text-sm">
+                <span className={fieldLabel}>
+                  What you do <span className="ml-1 font-normal text-[var(--muted-foreground)]">(one line)</span>
+                  <InfoDot>
+                    Product, customer, and what is genuinely novel. The single
+                    biggest accuracy lever for the whole memo.
+                  </InfoDot>
+                </span>
+                <input value={description} onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g. AI collision-avoidance for satellites" className={inputCls} />
+              </label>
+              <label className="block text-sm">
+                <span className={fieldLabel}>
+                  Incorporated in
+                  <InfoDot>
+                    Where the main entity is incorporated. National schemes gate
+                    hard on this; target markets come on the next screen.
+                  </InfoDot>
+                </span>
+                <select value={country} onChange={(e) => setCountry(e.target.value)}
+                  className={inputCls + (country ? "" : " text-[var(--muted-foreground)]")}>
+                  <option value="" className="bg-[#ffffff] text-[#5d5b52]">Select…</option>
+                  {COUNTRIES.map((c) => (
+                    <option key={c} value={c} className="bg-[#ffffff] text-[#141414]">{c}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Company type
+                <InfoDot>
+                  How a funder would classify you. Deep tech opens doors (like the
+                  EIC) that an application layer does not.
+                </InfoDot>
+              </span>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {COMPANY_TYPES.map((t) => {
+                  const on = companyType === t.label;
+                  return (
+                    <button key={t.label} type="button" title={t.hint} aria-pressed={on}
+                      onClick={() => setCompanyType(on ? "" : t.label)}
+                      className={
+                        "rounded-lg border px-3 py-2.5 text-left text-[13px] font-medium leading-snug transition-colors " +
+                        (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
+                            : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
+                      }>
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Who ends up owing the money?
+                <InfoDot>
+                  The single biggest routing fork. A company financing customers or
+                  originating credit belongs in a completely different funnel
+                  (guarantees to intermediaries, securitisation support) than one
+                  funding its own operations.
+                </InfoDot>
+              </span>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {BORROWER_MODELS.map((m) => {
+                  const on = elig.borrowerModel === m.value;
+                  return (
+                    <button key={m.value} type="button" aria-pressed={on}
+                      onClick={() => setElig((p) => ({ ...p, borrowerModel: on ? undefined : m.value }))}
+                      className={
+                        "rounded-lg border px-3 py-2.5 text-left transition-colors " +
+                        (on ? "border-[#12264f] bg-[#12264f]/20"
+                            : "border-[var(--border)] bg-white/70 hover:border-[#12264f]")
+                      }>
+                      <span className="block text-[13px] font-medium">{m.label}</span>
+                      <span className="block text-[11px] text-[var(--muted-foreground)]">{m.hint}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  How much are you looking for?
+                  <InfoDot>
+                    Scale routes everything: a EUR 20M+ build-out lives in a
+                    different instrument universe than a EUR 300K grant.
+                  </InfoDot>
+                </span>
+                <Chips options={[...TICKET_BANDS]} value={elig.ticketBand}
+                  onPick={(v) => setElig((p) => ({ ...p, ticketBand: v as EligibilityAnswers["ticketBand"] }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Capital you want
+                  <InfoDot>
+                    Non-dilutive first? Loans? Equity? We tailor the shortlist and
+                    name what each kind costs you.
+                  </InfoDot>
+                </span>
+                <CapitalSelect value={capitalSought} onToggle={toggleCapital}
+                  onToggleAll={toggleAllCapital} all={allCapital} />
+              </div>
+            </div>
+
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Where do you want to raise public capital?
+                <InfoDot>
+                  Target markets can differ from where you are incorporated. Many
+                  national schemes require a domestic entity; we will flag exactly
+                  which ones and what opening one buys you.
+                </InfoDot>
+              </span>
+              <CountryChips value={targetMarkets} onToggle={(c) => setTargetMarkets((p) => toggleList(p, c))} compact />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
+              <button type="submit" disabled={busy || !company.trim()} className={nextBtn}>
+                Continue
+              </button>
+              <span className="text-xs text-[var(--muted-foreground)]">
+                2 more short screens, tailored follow-ups, then your memo.
+              </span>
+            </div>
+          </form>
+        )}
+
+        {/* ── Screen 2: your project (derived from instrument gates, §2b) ── */}
+        {screen === "project" && !running && (
+          <div className="mt-4 space-y-5">
+            <p className="text-xs uppercase tracking-widest text-[#12264f]">Your project</p>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Where is the product today?
+                  <InfoDot>
+                    Grant lanes gate on development stage: research programmes fund
+                    early work, the EIC wants a working prototype or better, and
+                    industrial instruments want deployment-ready.
+                  </InfoDot>
+                </span>
+                <Chips options={[
+                  { value: "research", label: "Research / concept" },
+                  { value: "prototype", label: "Working prototype" },
+                  { value: "pilot_customers", label: "Pilots with customers" },
+                  { value: "scaling_revenue", label: "Scaling with revenue" },
+                ]} value={elig.developmentStage}
+                  onPick={(v) => setElig((p) => ({ ...p, developmentStage: v }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  When do you need the money?
+                  <InfoDot>
+                    Guaranteed bank loans move in weeks; grants take 9 to 18
+                    months. Timeline removes instruments that cannot serve you.
+                  </InfoDot>
+                </span>
+                <Chips options={[
+                  { value: "asap_weeks", label: "Weeks" },
+                  { value: "months_6", label: "Within 6 months" },
+                  { value: "months_18", label: "6–18 months" },
+                  { value: "flexible", label: "Flexible" },
+                ]} value={elig.needBy} onPick={(v) => setElig((p) => ({ ...p, needBy: v }))} />
+              </div>
+            </div>
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Where will the funded activity physically sit?
+                <InfoDot>
+                  Distinct from where you are incorporated: many schemes fund the
+                  ACTIVITY in-country (a plant, a team, a deployment), and regional
+                  aid maps price the same project differently by location.
+                </InfoDot>
+              </span>
+              <CountryChips value={elig.activityCountries ?? []}
+                onToggle={(c) => setElig((p) => ({ ...p, activityCountries: toggleList(p.activityCountries ?? [], c) }))}
+                compact />
+            </div>
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Could you run a project with 3+ consortium partners?
+                <InfoDot>
+                  Horizon Europe, the Joint Undertakings and the Defence Fund fund
+                  consortia, not single companies. A clear no removes them cleanly.
+                </InfoDot>
+              </span>
+              <Chips options={YES_NO_UNSURE} value={elig.consortium}
+                onPick={(v) => setElig((p) => ({ ...p, consortium: v as EligibilityAnswers["consortium"] }))} />
+            </div>
+            <div className="flex items-center gap-4 pt-1">
+              <button type="button" onClick={() => setScreen("operate")} className={nextBtn}>Continue</button>
+              <button type="button" onClick={() => setScreen("basics")} className={backBtn}>Back</button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Screen 3: where you operate ──────────────────────────────── */}
+        {screen === "operate" && !running && (
+          <div className="mt-4 space-y-5">
+            <p className="text-xs uppercase tracking-widest text-[#12264f]">Where you operate</p>
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Countries where you already have an entity or permanent establishment
+                <InfoDot>
+                  Subsidiaries, branches, registered establishments. This decides
+                  which national doors are open TODAY versus after a structural step.
+                </InfoDot>
+              </span>
+              <CountryChips value={elig.entityCountries ?? []}
+                onToggle={(c) => setElig((p) => ({ ...p, entityCountries: toggleList(p.entityCountries ?? [], c) }))}
+                compact />
+            </div>
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Would you open a local entity where a scheme requires it?
+              </span>
+              <Chips options={[
+                { value: "yes", label: "Yes, if it unlocks the right capital" },
+                { value: "depends", label: "Depends on the terms" },
+                { value: "no", label: "No" },
+              ]} value={elig.wouldOpenEntity}
+                onPick={(v) => setElig((p) => ({ ...p, wouldOpenEntity: v as EligibilityAnswers["wouldOpenEntity"] }))} />
+            </div>
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Which conditions could you accept for the right capital?
+                <InfoDot>
+                  Public money comes with strings. Knowing which you would accept
+                  removes dead ends before we recommend anything.
+                </InfoDot>
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {CONDITIONALITY_OPTIONS.map((o) => {
+                  const on = (elig.conditionality ?? []).includes(o.value);
+                  return (
+                    <button key={o.value} type="button" aria-pressed={on}
+                      onClick={() => setElig((p) => ({ ...p, conditionality: toggleList(p.conditionality ?? [], o.value) }))}
+                      className={
+                        "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+                        (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
+                            : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
+                      }>
+                      {o.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="flex items-center gap-4 pt-1">
+              <button type="button" onClick={() => setScreen("finances")} className={nextBtn}>Continue</button>
+              <button type="button" onClick={() => setScreen("project")} className={backBtn}>Back</button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Screen 3: size & finances ────────────────────────────────── */}
+        {screen === "finances" && !running && (
+          <div className="mt-4 space-y-5">
+            <p className="text-xs uppercase tracking-widest text-[#12264f]">Size and finances</p>
+            <p className="-mt-3 text-sm text-[var(--muted-foreground)]">
+              Bands only, nothing precise. These decide the SME test, aid ceilings
+              and co-financing feasibility. Skip anything you prefer not to answer.
+            </p>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="text-sm">
+                <span className="mb-2 block font-semibold">Team size</span>
+                <Chips options={[
+                  { value: "1-9", label: "1–9" }, { value: "10-49", label: "10–49" },
+                  { value: "50-249", label: "50–249" }, { value: "250+", label: "250+" },
+                ]} value={elig.fteBand} onPick={(v) => setElig((p) => ({ ...p, fteBand: v }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 block font-semibold">Annual turnover</span>
+                <Chips options={[
+                  { value: "<2M", label: "Under €2M" }, { value: "2-10M", label: "€2–10M" },
+                  { value: "10-50M", label: "€10–50M" }, { value: ">50M", label: "Over €50M" },
+                ]} value={elig.turnoverBand} onPick={(v) => setElig((p) => ({ ...p, turnoverBand: v }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Any single owner holding 25% or more?
+                  <InfoDot>
+                    The EU SME test counts linked and partner enterprises. A large
+                    corporate or fund owner can change what you qualify for.
+                  </InfoDot>
+                </span>
+                <Chips options={YES_NO_UNSURE} value={elig.ownerOver25}
+                  onPick={(v) => setElig((p) => ({ ...p, ownerOver25: v as EligibilityAnswers["ownerOver25"] }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Could you co-finance 25–50% of a project?
+                  <InfoDot>
+                    Most grants fund only part of a project. Co-financing capacity
+                    decides whether the big grant lanes are realistic.
+                  </InfoDot>
+                </span>
+                <Chips options={[
+                  { value: ">50%", label: "Yes, more than half" },
+                  { value: "25-50%", label: "Yes, 25–50%" },
+                  { value: "<25%", label: "Below 25%" },
+                  { value: "unsure", label: "Not sure" },
+                ]} value={elig.cofinancingBand} onPick={(v) => setElig((p) => ({ ...p, cofinancingBand: v }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  A bank that would lend to you if the loan were guaranteed?
+                  <InfoDot>
+                    Every guarantee route (KfW, Bpifrance, Fondo di Garanzia) runs
+                    through a lending bank. No relationship yet is fine, it just
+                    changes the first step.
+                  </InfoDot>
+                </span>
+                <Chips options={YES_NO_UNSURE} value={elig.bankRelationship}
+                  onPick={(v) => setElig((p) => ({ ...p, bankRelationship: v as EligibilityAnswers["bankRelationship"] }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Institutional investors aboard, or ready to anchor?
+                  <InfoDot>
+                    EIB venture debt and most public equity co-invest alongside
+                    institutional sponsors rather than replacing them.
+                  </InfoDot>
+                </span>
+                <Chips options={YES_NO_UNSURE} value={elig.institutionalBacking}
+                  onPick={(v) => setElig((p) => ({ ...p, institutionalBacking: v as EligibilityAnswers["institutionalBacking"] }))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Founded in
+                  <InfoDot>
+                    Young-company statuses (JEI in France, startup innovativa in
+                    Italy) unlock extra windows below certain company ages.
+                  </InfoDot>
+                </span>
+                <input type="number" min={1950} max={2026} placeholder="e.g. 2022"
+                  value={elig.foundedYear ?? ""}
+                  onChange={(e) => setElig((p) => ({ ...p, foundedYear: e.target.value ? Number(e.target.value) : undefined }))}
+                  className={inputCls + " max-w-[9rem]"} />
+              </div>
+              <div className="text-sm sm:col-span-2">
+                <span className="mb-2 flex items-center font-semibold">
+                  Have accumulated losses eaten more than half of your share capital?
+                  <InfoDot>
+                    The "undertaking in difficulty" test. If yes, most state aid is
+                    blocked until equity is restored; the memo will say so plainly
+                    and name the cure. Answering honestly here saves wasted
+                    applications.
+                  </InfoDot>
+                </span>
+                <Chips options={YES_NO_UNSURE} value={elig.lossesOverHalfCapital}
+                  onPick={(v) => setElig((p) => ({ ...p, lossesOverHalfCapital: v as EligibilityAnswers["lossesOverHalfCapital"] }))} />
+              </div>
+            </div>
+            <div className="flex items-center gap-4 pt-1">
+              <button type="button" disabled={preparing} onClick={() => void fetchGroups()} className={nextBtn}>
+                {preparing ? "Preparing follow-ups…" : "Continue"}
+              </button>
+              <button type="button" onClick={() => setScreen("operate")} className={backBtn}>Back</button>
+              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
+                Skip and write the memo now
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Adaptive screens: themed follow-ups ──────────────────────── */}
+        {screen === "adaptive" && groups && !running && (
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
             <p className="mb-1 text-xs uppercase tracking-widest text-[#12264f]">
-              A few questions, so the memo fits you
+              {groups[groupIdx].theme}
             </p>
             <p className="mb-5 text-sm text-[var(--muted-foreground)]">
-              These shift which instruments we recommend and how to position for them.
-              Answer what you can; skip anything you are unsure of.
+              Tailored to your answers. Each one shifts which instruments fit.
+              Skip anything you are unsure of.
             </p>
             <div className="space-y-5">
-              {questions.map((q) => (
+              {groups[groupIdx].questions.map((q) => (
                 <div key={q.id}>
-                  <p className="mb-2 text-sm font-semibold" style={serif}>
-                    {q.question}
-                  </p>
+                  <p className="mb-2 text-sm font-semibold" style={serif}>{q.question}</p>
                   <div className="flex flex-wrap gap-2">
                     {[...q.options, SKIP_ANSWER].map((opt) => {
                       const on = answers[q.id] === opt;
                       return (
-                        <button
-                          key={opt}
-                          type="button"
-                          onClick={() =>
-                            setAnswers((prev) => ({ ...prev, [q.id]: prev[q.id] === opt ? "" : opt }))
-                          }
-                          aria-pressed={on}
+                        <button key={opt} type="button" aria-pressed={on}
+                          onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: prev[q.id] === opt ? "" : opt }))}
                           className={
                             "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
-                            (on
-                              ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                              : opt === SKIP_ANSWER
-                                ? "border-dashed border-[var(--muted-foreground)] bg-white/70 text-[var(--muted-foreground)] hover:border-[#12264f]"
-                                : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
-                          }
-                        >
+                            (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
+                                : opt === SKIP_ANSWER
+                                  ? "border-dashed border-[var(--muted-foreground)] bg-white/70 text-[var(--muted-foreground)] hover:border-[#12264f]"
+                                  : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
+                          }>
                           {opt}
                         </button>
                       );
@@ -486,54 +885,68 @@ export function IntelligencePanel() {
               ))}
             </div>
             <div className="mt-6 flex items-center gap-4">
-              <button
-                type="button"
-                onClick={submitAnswers}
-                className="rounded-full bg-[#0a0a0a] px-5 py-2.5 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
-              >
-                Write my funding memo
+              {groupIdx < groups.length - 1 ? (
+                <button type="button" onClick={() => setGroupIdx((i) => i + 1)} className={nextBtn}>
+                  Continue
+                </button>
+              ) : (
+                <button type="button" onClick={submitAnswers} className={nextBtn}>
+                  Write my funding memo
+                </button>
+              )}
+              <button type="button"
+                onClick={() => (groupIdx > 0 ? setGroupIdx((i) => i - 1) : setScreen("finances"))}
+                className={backBtn}>
+                Back
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setQuestions(null);
-                  void runMemo([]);
-                }}
-                className="text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#12264f] hover:underline"
-              >
-                Skip and write it now
+              <button type="button" onClick={submitAnswers} className={backBtn}>
+                Skip the rest and write it now
               </button>
             </div>
           </div>
         )}
 
-        {/* Progress */}
+        {/* ── Generation: live status + elapsed time ───────────────────── */}
         {running && (
-          <ol className="mt-6 space-y-2">
-            {STEPS.map((s, i) => {
-              const state =
-                activeIndex > i ? "done" : activeIndex === i ? "active" : "pending";
-              return (
-                <li key={s.key} className="flex items-center gap-3 text-sm">
-                  <span
-                    className={
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
+            <div className="flex items-baseline justify-between">
+              <p className="text-xs uppercase tracking-widest text-[#12264f]">Writing your memo</p>
+              <p className="font-mono text-xs tabular-nums text-[var(--muted-foreground)]">
+                {Math.floor(elapsed / 60) > 0 ? `${Math.floor(elapsed / 60)}m ` : ""}{elapsed % 60}s elapsed
+              </p>
+            </div>
+            <ol className="mt-4 space-y-2">
+              {STEPS.map((s, i) => {
+                const state = activeIndex > i ? "done" : activeIndex === i ? "active" : "pending";
+                return (
+                  <li key={s.key} className="flex items-center gap-3 text-sm">
+                    <span className={
                       "flex h-5 w-5 items-center justify-center rounded-full text-[11px] " +
-                      (state === "done"
-                        ? "bg-[#2D6A4F] text-[#141414]"
-                        : state === "active"
-                          ? "bg-[#12264f] text-[#f3f2ed] animate-pulse"
-                          : "bg-[var(--muted)] text-[var(--muted-foreground)] border border-[var(--border)]")
-                    }
-                  >
-                    {state === "done" ? "✓" : i + 1}
-                  </span>
-                  <span className={state === "pending" ? "text-[var(--muted-foreground)]" : ""}>
-                    {s.label}
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
+                      (state === "done" ? "bg-[#2D6A4F] text-[#141414]"
+                        : state === "active" ? "bg-[#12264f] text-[#f3f2ed] animate-pulse"
+                        : "bg-[var(--muted)] text-[var(--muted-foreground)] border border-[var(--border)]")
+                    }>
+                      {state === "done" ? "✓" : i + 1}
+                    </span>
+                    <span className={state === "pending" ? "text-[var(--muted-foreground)]" : ""}>
+                      {s.label}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+            <p className="mt-4 min-h-[1.25rem] text-sm italic text-[var(--muted-foreground)]">
+              {(() => {
+                const pool = step ? (STEP_CHATTER[step] ?? []) : [];
+                const line = pool.length ? pool[chatter % pool.length] : "";
+                return statusDetail && chatter % 2 === 0 ? statusDetail : line || statusDetail;
+              })()}
+            </p>
+            <p className="mt-1 text-xs text-[var(--muted-foreground)]">
+              Typically 2–3 minutes. Every figure is checked against the funding
+              record before it reaches the page.
+            </p>
+          </div>
         )}
 
         {error && (
@@ -711,6 +1124,37 @@ function Memo({ report }: { report: IntelligenceReport }) {
               ))}
             </tbody>
           </table>
+        </>
+      )}
+
+      {/* ── The road ahead (grounded in the signals digest) ─────────── */}
+      {report.landscape && report.landscape.outlook && (
+        <>
+          <SectionTitle>The road ahead</SectionTitle>
+          <p>{report.landscape.outlook}</p>
+          {report.landscape.watchItems.length > 0 && (
+            <ul className="mt-3 space-y-2.5">
+              {report.landscape.watchItems.map((w, i) => (
+                <li key={i} className="flex gap-2.5">
+                  <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
+                  <span>
+                    <span className="font-semibold">{w.item}</span>
+                    {w.timeframe && (
+                      <span className="text-[13px] text-[var(--muted-foreground)]">
+                        {" "}· {w.timeframe}
+                      </span>
+                    )}
+                    <span className="block text-[14px]">
+                      {w.why}
+                      <span className="text-[13px] italic text-[var(--muted-foreground)]">
+                        {" "}({w.source})
+                      </span>
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </>
       )}
 

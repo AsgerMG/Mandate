@@ -12,11 +12,17 @@ import {
   loadAgentInstructions,
   loadFundProcess,
   loadFundSnapshot,
+  loadSignalsDigest,
   matchCompany,
+  type DigestItem,
 } from "./corpus";
 import {
+  BORROWER_MODELS,
   CAPITAL_OPTIONS,
+  TICKET_BANDS,
   type ChannelAmount,
+  type EligibilityAnswers,
+  type IntakeGroup,
   type CompetitorIntel,
   type CompetitorRecord,
   type CompetitorRow,
@@ -48,6 +54,36 @@ const MAX_COMPETITORS = 5;
 const client = new Anthropic(); // reads ANTHROPIC_API_KEY from the environment
 
 type Emit = (event: ProgressEvent) => void;
+
+/** Human-readable scoping profile for prompts (writer + intake conditioning). */
+function eligibilityContext(e?: EligibilityAnswers, targetMarkets?: string[]): string {
+  if (!e && !targetMarkets?.length) return "";
+  const band = TICKET_BANDS.find((b) => b.value === e?.ticketBand);
+  const model = BORROWER_MODELS.find((m) => m.value === e?.borrowerModel);
+  const lines = [
+    band ? `Ticket sought: ${band.label}` : "",
+    model ? `Borrower model: ${model.label}` : "",
+    targetMarkets?.length ? `Target markets for public capital: ${targetMarkets.join(", ")}` : "",
+    e?.entityCountries?.length ? `Entities/establishments in: ${e.entityCountries.join(", ")}` : "",
+    e?.wouldOpenEntity ? `Would open a local entity where required: ${e.wouldOpenEntity}` : "",
+    e?.fteBand ? `Team size: ${e.fteBand} FTE` : "",
+    e?.turnoverBand ? `Turnover: ${e.turnoverBand}` : "",
+    e?.ownerOver25 === "yes" ? "Has an owner holding 25% or more (SME test needs the linked-enterprise check)" : "",
+    e?.nonEuControl === "yes" ? "Majority non-EU controlled (defence lanes restricted)" : "",
+    e?.cofinancingBand ? `Co-financing capacity: ${e.cofinancingBand} of project cost` : "",
+    e?.lossesOverHalfCapital === "yes"
+      ? "FLAG: accumulated losses may exceed half of share capital (undertaking-in-difficulty risk: most GBER aid blocked until equity is restored)"
+      : "",
+    e?.conditionality?.length ? `Accepts conditions: ${e.conditionality.join(", ")}` : "",
+    e?.developmentStage ? `Development stage: ${e.developmentStage.replace(/_/g, " ")}` : "",
+    e?.activityCountries?.length ? `Funded activity will sit in: ${e.activityCountries.join(", ")}` : "",
+    e?.consortium ? `Consortium-ready (3+ partners): ${e.consortium}` : "",
+    e?.bankRelationship ? `Bank relationship that would lend if guaranteed: ${e.bankRelationship}` : "",
+    e?.institutionalBacking ? `Institutional investors aboard or anchoring: ${e.institutionalBacking}` : "",
+    e?.needBy ? `Capital needed: ${e.needBy.replace(/_/g, " ")}` : "",
+  ].filter(Boolean);
+  return lines.length ? `## Scoping profile (structured intake, AUTHORITATIVE)\n${lines.join("\n")}` : "";
+}
 
 // Short, human display labels for the channel codes, for the funding breakdown.
 const CHANNEL_LABEL: Record<string, string> = {
@@ -111,6 +147,38 @@ const INSTRUMENT_PRIORITY = Object.keys(INSTRUMENT_NAME);
 // an unfunded space still gets a shortlist to act on.
 const DEFAULT_INSTRUMENTS = ["national_dev_banks", "state_aid_satr", "eic"];
 
+// Scale routing (advisory_pipeline Stage D.1, first cut): which ticket bands
+// each channel realistically serves, as [min,max] indices into TICKET_BANDS.
+// A €20M+ ask must never get EIC Accelerator as its headline. Coarse by
+// design — the terms engine (W1) replaces this with verified ticket gates.
+const CHANNEL_BANDS: Record<string, [number, number]> = {
+  national_dev_banks: [0, 4],
+  state_aid_satr: [0, 3],
+  eic: [0, 2],
+  eit: [0, 1],
+  horizon_eu_pillar_ii: [1, 3],
+  horizon_eu_partnership: [1, 3],
+  eib: [2, 4],
+  innovation_fund: [2, 4],
+  edf: [1, 3],
+  chips_ju: [2, 4],
+  ipcei: [3, 4],
+};
+const BAND_INDEX: Record<string, number> = Object.fromEntries(
+  TICKET_BANDS.map((b, i) => [b.value, i]));
+
+function channelServesBand(channel: string, band?: string): boolean {
+  if (!band || !(band in BAND_INDEX)) return true;
+  const range = CHANNEL_BANDS[channel];
+  if (!range) return true;
+  const i = BAND_INDEX[band];
+  return i >= range[0] && i <= range[1];
+}
+
+// Large-scale channels surfaced when the ask is €15M+ even if absent from the
+// field (the field's history skews small; the ask defines the universe).
+const LARGE_SCALE_TOPUP = ["eib", "innovation_fund", "ipcei"];
+
 /**
  * Build the instrument-comparison table: the capital actually on the table for
  * this founder, side by side. Channels a peer or the founder has drawn on lead
@@ -118,11 +186,18 @@ const DEFAULT_INSTRUMENTS = ["national_dev_banks", "state_aid_satr", "eic"];
  * universal entry points. Every figure comes from the curated fund snapshot,
  * never the model. Returns at most six rows so the memo stays a memo.
  */
-function buildInstrumentTable(fieldChannels: Set<string>): InstrumentRow[] {
-  const codes = new Set(fieldChannels);
+function buildInstrumentTable(
+  fieldChannels: Set<string>,
+  ticketBand?: string,
+): InstrumentRow[] {
+  const codes = new Set([...fieldChannels].filter((c) => channelServesBand(c, ticketBand)));
+  const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;
+  if (idx !== undefined && idx >= 3) {
+    for (const c of LARGE_SCALE_TOPUP) codes.add(c);
+  }
   for (const c of DEFAULT_INSTRUMENTS) {
     if (codes.size >= 4) break;
-    codes.add(c);
+    if (channelServesBand(c, ticketBand)) codes.add(c);
   }
   return [...codes]
     .map((channel) => {
@@ -193,7 +268,32 @@ function extractJson<T>(text: string): T {
       break;
     }
   }
-  return JSON.parse(raw.slice(start, end === -1 ? undefined : end)) as T;
+  const candidate = raw.slice(start, end === -1 ? undefined : end);
+  try {
+    return JSON.parse(candidate) as T;
+  } catch {
+    // The model occasionally emits raw control characters (unescaped newlines,
+    // tabs) INSIDE string literals — invalid JSON. Escape them string-aware:
+    // control chars between tokens are legal whitespace and must stay.
+    let out = "";
+    let inS = false;
+    let e2 = false;
+    for (const ch of candidate) {
+      if (inS) {
+        if (e2) e2 = false;
+        else if (ch === "\\") e2 = true;
+        else if (ch === '"') inS = false;
+        else if (ch === "\n") { out += "\\n"; continue; }
+        else if (ch === "\t") { out += "\\t"; continue; }
+        else if (ch === "\r") continue;
+        else if (ch.charCodeAt(0) < 0x20) continue;
+      } else if (ch === '"') {
+        inS = true;
+      }
+      out += ch;
+    }
+    return JSON.parse(out) as T;
+  }
 }
 
 /** One non-streaming message turn with the web-search tool available. */
@@ -305,6 +405,28 @@ const REPORT_SCHEMA = {
       },
       required: ["headline", "bottomLine", "yourPosition"],
     },
+    landscape: {
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        outlook: { type: "string" },
+        watchItems: {
+          type: "array",
+          items: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              item: { type: "string" },
+              why: { type: "string" },
+              source: { type: "string" },
+              timeframe: { type: ["string", "null"] },
+            },
+            required: ["item", "why", "source", "timeframe"],
+          },
+        },
+      },
+      required: ["outlook", "watchItems"],
+    },
     funderMap: {
       type: "array",
       items: {
@@ -339,7 +461,7 @@ const REPORT_SCHEMA = {
     },
     caveats: { type: "string" },
   },
-  required: ["overview", "funderMap", "todos", "caveats"],
+  required: ["overview", "landscape", "funderMap", "todos", "caveats"],
 } as const;
 
 /**
@@ -413,7 +535,81 @@ async function synthesize(
   self: SelfRecord,
   instrumentTable: InstrumentRow[],
   instructions: string,
+  sectorTop: string,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt">> {
+  const profileBlock = eligibilityContext(req.eligibility, req.targetMarkets);
+  // Current-landscape grounding: build-time export of the intelligence corpus
+  // (signals_digest.json). The digest captures the FULL A-Z topic universe on
+  // every build (scale capital, InvestEU, grants, state aid, industrial policy,
+  // defence, the future-budget files); tailoring to THIS founder happens here,
+  // at the last moment — capital sought, sector, and the channels actually used
+  // in the field pick which slices the writer sees. The writer may ONLY ground
+  // the `landscape` section in these lines — no invention.
+  const digest = loadSignalsDigest();
+  const fieldChannels = new Set(
+    instrumentTable.filter((r) => r.usedInField).map((r) => r.channel));
+  const topics = new Set<string>(["competitiveness_fund", "startup_scaleup"]);
+  const cap = new Set(req.capitalSought ?? []);
+  const wantsEverything = cap.size === 0;
+  // Scale capital: cheap, abundant financing for industrial-scale operations —
+  // always on the menu for loan/equity seekers and capital-intensive sectors.
+  if (wantsEverything || cap.has("loan") || cap.has("equity")) {
+    topics.add("scale_capital");
+    topics.add("investeu");
+  }
+  if (wantsEverything || cap.has("grant") || cap.has("recoverable_advance") ||
+      cap.has("tax_credit")) {
+    topics.add("horizon_eic");
+    topics.add("national_dev_banks");
+    topics.add("state_aid_reform");
+  }
+  const INDUSTRIAL = new Set([
+    "energy_cleantech", "industrial_manufacturing", "materials_chemicals",
+    "semiconductors_electronics", "mobility_transport",
+  ]);
+  if (INDUSTRIAL.has(sectorTop)) {
+    topics.add("industrial_policy");
+    topics.add("innovation_fund");
+    topics.add("ipcei");
+    topics.add("scale_capital");
+  }
+  if (sectorTop === "defense_security") topics.add("defence");
+  if (sectorTop === "space") topics.add("space");
+  if (sectorTop === "software_data_ai") topics.add("digital_ai");
+  if (sectorTop === "semiconductors_electronics") topics.add("chips");
+  if (sectorTop === "energy_cleantech") topics.add("eit_kics");
+  if (req.companyType === "Deep-tech breakthrough") topics.add("step");
+  const bandIdx = req.eligibility?.ticketBand ? BAND_INDEX[req.eligibility.ticketBand] : undefined;
+  if (bandIdx !== undefined && bandIdx >= 3) {
+    topics.add("scale_capital");
+    topics.add("investeu");
+    topics.add("ipcei");
+    topics.add("industrial_policy");
+  }
+  if (req.eligibility?.borrowerModel === "balance_sheet_lender" ||
+      req.eligibility?.borrowerModel === "originator") {
+    topics.add("investeu");
+    topics.add("scale_capital");
+  }
+  for (const [ch, t] of [
+    ["ipcei", "ipcei"], ["edf", "defence"], ["chips_ju", "chips"],
+    ["eit", "eit_kics"], ["innovation_fund", "innovation_fund"],
+    ["eib", "scale_capital"],
+  ] as const) {
+    if (fieldChannels.has(ch)) topics.add(t);
+  }
+  const digestLine = (tag: string) => (it: DigestItem) =>
+    `- [${tag}] ${it.title} (${it.source}${it.date ? `, ${it.date}` : ""}): ` +
+    `${it.excerpt.slice(0, 320)}`;
+  const landscapeEvidence = digest
+    ? [
+        ...[...topics].flatMap((t) =>
+          (digest.topics[t] ?? []).slice(0, 2).map(digestLine(t))),
+        ...(digest.sectors[sectorTop] ?? digest.sectors["other"] ?? [])
+          .slice(0, 4)
+          .map(digestLine("your sector")),
+      ].join("\n")
+    : "";
   // The competitor table is finalised HERE, in code — funding figures and
   // channels are taken straight from the DB match. The model never sees these as
   // editable; it only writes the narrative around them. Web-found direct
@@ -431,7 +627,7 @@ async function synthesize(
         : c.euCapital;
       return (
         `- ${c.name}${where}${tag}: EU/public capital ${traced}; ` +
-        `positioning — ${c.positioning}; recent private round — ${c.stage}`
+        `positioning — ${c.positioning}; maturity — ${c.stage}`
       );
     })
     .join("\n");
@@ -494,7 +690,7 @@ async function synthesize(
 
   const res = await client.messages.create({
     model: WRITER_MODEL,
-    max_tokens: 8000,
+    max_tokens: 16000,
     // Sonnet 5 rejects fixed thinking budgets (400); adaptive lets the model
     // size the prioritisation judgement itself.
     thinking: { type: "adaptive" },
@@ -505,6 +701,7 @@ async function synthesize(
         role: "user",
         content:
           `Write the executive funding memo for the founder.\n\n${ctx}\n\n` +
+          `${profileBlock ? profileBlock + "\n\n" : ""}` +
           `## The founder's own footprint (AUTHORITATIVE)\n${selfLine}\n\n` +
           `## Comparable-company evidence (AUTHORITATIVE — already finalised)\n` +
           `Every company listed here has traced public funding; the figures are ` +
@@ -524,6 +721,16 @@ async function synthesize(
           `with this table.\n${instruments || "(none)"}\n\n` +
           `## Relevant funding-process briefs (use to make to-dos concrete)\n` +
           `${processes || "(none)"}\n\n` +
+          `## Current landscape (curated intelligence corpus — the ONLY basis ` +
+          `for the "landscape" section)\n` +
+          `Recent reporting and official announcements on public-funding ` +
+          `programmes, drawn from our news corpus. Ground landscape.outlook ` +
+          `and every watchItem EXCLUSIVELY in these lines; never invent a ` +
+          `development, date or source. Prefer the most recent and the most ` +
+          `decision-shaping items. Informational register: what is changing ` +
+          `and what it means for this founder's raise — never urgency about ` +
+          `other companies.\n` +
+          `${landscapeEvidence || "(the intelligence corpus has nothing usable — write landscape.outlook as one sentence saying current-landscape coverage is thin for this sector, and return an empty watchItems array)"}\n\n` +
           `Write, per your instructions: the headline (subject line), the ` +
           `bottomLine (the single most important takeaway, up front), the ` +
           `"your position" paragraph that compares the founder's own footprint ` +
@@ -532,6 +739,22 @@ async function synthesize(
           `actually costs the founder, fund-specifically and honestly (dilution, ` +
           `repayment, co-financing, member-state sponsorship, reporting load, ` +
           `lost flexibility, slow money) drawn from the table and briefs above. ` +
+          `The funder map may ONLY contain instruments that appear in the ` +
+          `capital-on-the-table table above; if an instrument was excluded ` +
+          `there (wrong ticket range for the stated ask), it must not appear ` +
+          `in the funder map either, however familiar it is. ` +
+          `Respect the scoping profile strictly: never lead with instruments ` +
+          `whose ticket range cannot serve the stated ask, and when the ` +
+          `borrower model is lender/originator/fund manager, route the funder ` +
+          `map to the intermediary architecture (portfolio counter-guarantees, ` +
+          `accreditation as financial intermediary, securitisation support, ` +
+          `partner-bank paths presented as grounded leads to investigate). ` +
+          `Then the "landscape" section: outlook is at most 60 words tying the ` +
+          `two or three most relevant developments above to this founder's ` +
+          `raise; watchItems is 2 to 4 entries, each with item (the ` +
+          `development, at most 14 words), why (what it changes for this ` +
+          `founder, at most 25 words), source (the outlet or institution name ` +
+          `from the evidence line), timeframe (like "H2 2026" or null). ` +
           `Then prioritised to-dos. In "caveats", note in one or two sentences ` +
           `that figures are committed amounts from public registers, coverage ` +
           `varies by country, and absence from the database is not proof of no ` +
@@ -544,8 +767,14 @@ async function synthesize(
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
     .map((b) => b.text)
     .join("");
+  if (!text.trim()) {
+    // Adaptive thinking can consume the whole budget on heavy cases — surface
+    // the stop reason instead of a bare "No JSON found".
+    throw new Error(`writer returned no text (stop_reason=${res.stop_reason})`);
+  }
   const narrative = extractJson<{
     overview: { headline: string; bottomLine: string; yourPosition: string };
+    landscape: IntelligenceReport["landscape"];
     funderMap: IntelligenceReport["funderMap"];
     todos: IntelligenceReport["todos"];
     caveats: string;
@@ -562,6 +791,15 @@ async function synthesize(
       competitors,
     },
     instrumentTable,
+    landscape: {
+      outlook: deDash(narrative.landscape?.outlook ?? ""),
+      watchItems: (narrative.landscape?.watchItems ?? []).slice(0, 4).map((w) => ({
+        item: deDash(w.item),
+        why: deDash(w.why),
+        source: deDash(w.source),
+        timeframe: w.timeframe ? deDash(w.timeframe) : null,
+      })),
+    },
     funderMap: narrative.funderMap.map((s) => ({
       ...s,
       funder: deDash(s.funder),
@@ -579,25 +817,36 @@ async function synthesize(
   };
 }
 
-// ── Phase 1: tailored intake questions ───────────────────────────────────────
-const INTAKE_SCHEMA = {
+// ── Phase 1: tailored intake questions, grouped into themed screens ──────────
+const INTAKE_GROUPS_SCHEMA = {
   type: "object",
   additionalProperties: false,
   properties: {
-    questions: {
+    groups: {
       type: "array",
       items: {
         type: "object",
         additionalProperties: false,
         properties: {
-          question: { type: "string" },
-          options: { type: "array", items: { type: "string" } },
+          theme: { type: "string" },
+          questions: {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              properties: {
+                question: { type: "string" },
+                options: { type: "array", items: { type: "string" } },
+              },
+              required: ["question", "options"],
+            },
+          },
         },
-        required: ["question", "options"],
+        required: ["theme", "questions"],
       },
     },
   },
-  required: ["questions"],
+  required: ["groups"],
 } as const;
 
 /**
@@ -606,9 +855,9 @@ const INTAKE_SCHEMA = {
  * what is still unknown from the form. Returns [] on any failure so the memo can
  * still run without the extra signal.
  */
-export async function generateIntakeQuestions(
+export async function generateIntakeGroups(
   req: IntelligenceRequest,
-): Promise<IntakeQuestion[]> {
+): Promise<IntakeGroup[]> {
   const known = [
     `Company: ${req.company}`,
     req.sector ? `Sector: ${req.sector}` : "",
@@ -618,6 +867,8 @@ export async function generateIntakeQuestions(
     capitalSoughtLabel(req.capitalSought)
       ? `Capital sought: ${capitalSoughtLabel(req.capitalSought)}`
       : "",
+    eligibilityContext(req.eligibility, req.targetMarkets).replace(
+      "## Scoping profile (structured intake, AUTHORITATIVE)\n", ""),
   ]
     .filter(Boolean)
     .join("\n");
@@ -628,27 +879,30 @@ export async function generateIntakeQuestions(
       max_tokens: 1500,
       thinking: { type: "disabled" },
       system: loadAgentInstructions(),
-      output_config: { format: { type: "json_schema", schema: INTAKE_SCHEMA } },
+      output_config: { format: { type: "json_schema", schema: INTAKE_GROUPS_SCHEMA } },
       messages: [
         {
           role: "user",
           content:
-            `A founder wants a public-funding memo. Before writing it, ask up to ` +
-            `FOUR short multiple-choice questions whose answers would most change ` +
-            `which instruments fit and how to position for them. Ask ONLY what is ` +
-            `still unknown or ambiguous from what they gave you below; if a thing ` +
-            `is already clear, do not ask it.\n\n` +
-            `Prioritise the high-signal routing forks: (1) archetype, i.e. genuine ` +
-            `deep-tech breakthrough vs applied innovation vs application-layer ` +
-            `software on existing tech, since it decides EIC and deep-tech ` +
-            `eligibility; (2) technology readiness (rough TRL band); (3) minimum ` +
-            `useful cheque size, e.g. would they bother below 100k; (4) dilution ` +
-            `tolerance / capital preference if not already given; (5) willingness ` +
-            `to join a cross-border consortium; (6) stage and runway. Pick the ` +
-            `four that matter most for THIS company.\n\n` +
-            `Each question: plain English, one clause, and 2 to 4 mutually ` +
-            `exclusive options written as short founder-friendly phrases (not ` +
-            `jargon). Do not include a "not sure" option; the interface adds one.\n\n` +
+            `A founder wants a qualification memo for European public capital. ` +
+            `You may ask follow-up questions before it is written, grouped into ` +
+            `THEMED SCREENS the founder clicks through. Return 1 to 3 groups, ` +
+            `each with a short theme title (2-4 words) and 2 to 3 multiple-choice ` +
+            `questions.\n\n` +
+            `Follow the funnel: first pin down WHAT they build (product nature, ` +
+            `technology readiness, what makes it fundable), then WHAT the money ` +
+            `is for (project shape, timeline, cheque logic), then WHAT that kind ` +
+            `of funding will require of them (consortium willingness, bank ` +
+            `relationships, location of the funded activity, licenses if they ` +
+            `finance others).\n\n` +
+            `THE ENTROPY RULE: only ask a question if its answer could move at ` +
+            `least one funding instrument between fitting and not fitting for ` +
+            `this company. Never ask what is already answered below, never ask ` +
+            `out of curiosity, and fewer questions is better than more.\n\n` +
+            `Each question: plain English, one clause, 2 to 4 mutually exclusive ` +
+            `options as short founder-friendly phrases (no jargon, no acronyms ` +
+            `without expansion). Do not include a "not sure" option; the ` +
+            `interface adds one.\n\n` +
             `What we already know:\n${known}\n\n` +
             `Return ONLY the JSON object for the schema.`,
         },
@@ -658,15 +912,24 @@ export async function generateIntakeQuestions(
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
       .join("");
-    const parsed = extractJson<{ questions: { question: string; options: string[] }[] }>(text);
-    return (parsed.questions ?? [])
-      .filter((q) => q && q.question?.trim() && Array.isArray(q.options) && q.options.length >= 2)
-      .slice(0, 4)
-      .map((q, i) => ({
-        id: `q${i}`,
-        question: deDash(q.question.trim()),
-        options: q.options.map((o) => deDash(String(o).trim())).filter(Boolean).slice(0, 4),
-      }));
+    const parsed = extractJson<{
+      groups: { theme: string; questions: { question: string; options: string[] }[] }[];
+    }>(text);
+    let n = 0;
+    return (parsed.groups ?? [])
+      .slice(0, 3)
+      .map((g) => ({
+        theme: deDash(String(g.theme ?? "").trim()) || "A few more things",
+        questions: (g.questions ?? [])
+          .filter((q) => q && q.question?.trim() && Array.isArray(q.options) && q.options.length >= 2)
+          .slice(0, 3)
+          .map((q) => ({
+            id: `q${n++}`,
+            question: deDash(q.question.trim()),
+            options: q.options.map((o) => deDash(String(o).trim())).filter(Boolean).slice(0, 4),
+          })),
+      }))
+      .filter((g) => g.questions.length > 0);
   } catch (err) {
     console.error("intake question generation failed:", err);
     return [];
@@ -677,10 +940,10 @@ export async function generateIntakeQuestions(
 export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Promise<void> {
   const instructions = loadAgentInstructions();
 
-  emit({ type: "status", step: "discovering" });
+  emit({ type: "status", step: "discovering", detail: "Searching the record and the open web for comparable companies" });
   const intel = await discoverAndResearch(req, instructions);
 
-  emit({ type: "status", step: "querying_db", detail: `${intel.length} peers` });
+  emit({ type: "status", step: "querying_db", detail: `Found ${intel.length} candidates; matching against the funding record` });
   const records = intel.map((i) => matchCompany(i.name, i.country));
   const selfRecord = matchCompany(req.company, req.country);
   const self = buildSelf(selfRecord);
@@ -713,10 +976,16 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
     ...records.flatMap((r) => (r.matched ? r.channels : [])),
     ...dbPeers.flatMap((r) => r.channels),
   ]);
-  const instrumentTable = buildInstrumentTable(fieldChannels);
+  const instrumentTable = buildInstrumentTable(fieldChannels, req.eligibility?.ticketBand);
 
-  emit({ type: "status", step: "generating" });
-  const body = await synthesize(req, records, intel, dbPeers, self, instrumentTable, instructions);
+  emit({ type: "status", step: "generating", detail: "Assembling evidence: instruments, comparables, current landscape" });
+  const sectorTop =
+    (selfRecord.matched && selfRecord.sectorTop) ||
+    dbPeers.find((p) => p.sectorTop)?.sectorTop ||
+    records.find((r) => r.matched && r.sectorTop)?.sectorTop ||
+    "other";
+  const body = await synthesize(
+    req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop);
 
   emit({
     type: "report",

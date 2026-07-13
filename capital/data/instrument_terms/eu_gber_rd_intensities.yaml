@@ -1,0 +1,131 @@
+id: eu_gber_rd_intensities
+name: GBER R&D aid intensities (Art. 25)
+administering_body: see source document
+country: EU
+capital_type: grant
+borrower_models:
+- operating_company
+status: draft
+gates:
+- id: g1
+  gate_family: G3_financial
+  requirement: Aid intensity for industrial research shall not exceed 50% of eligible costs,
+    meaning the beneficiary must self-fund at least 50% of eligible costs (before bonuses).
+  value: Max 50% aid / min 50% own-funding for industrial research
+  intake_field: cofinancingBand
+  quote: 'The aid intensity for each beneficiary shall not exceed:
+
+    (a) 100 % of the eligible costs for fundamental research;
+
+    (b) 50 % of the eligible costs for industrial research;
+
+    (c) 25 % of the eligible costs for experimental development;
+
+    (d) 50 % of the eligible costs for feasibility studies.'
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.90
+  verified: llm_2pass
+- id: g2
+  gate_family: G3_financial
+  requirement: Aid intensity for experimental development shall not exceed 25% of eligible
+    costs, meaning the beneficiary must self-fund at least 75% of eligible costs (before bonuses).
+  value: Max 25% aid / min 75% own-funding for experimental development
+  intake_field: cofinancingBand
+  quote: 'The aid intensity for each beneficiary shall not exceed:
+
+    (a) 100 % of the eligible costs for fundamental research;
+
+    (b) 50 % of the eligible costs for industrial research;
+
+    (c) 25 % of the eligible costs for experimental development;
+
+    (d) 50 % of the eligible costs for feasibility studies.'
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.90
+  verified: llm_2pass
+- id: g3
+  gate_family: G3_financial
+  requirement: The aid intensities for industrial research and experimental development may
+    be increased up to a maximum of 80% of eligible costs via SME and collaboration/dissemination
+    bonuses, reducing the minimum own-funding share accordingly.
+  value: Max combined aid intensity 80% (min 20% own-funding) for industrial research/experimental
+    development with bonuses
+  intake_field: cofinancingBand
+  quote: 'The aid intensities for industrial research and experimental development may be
+    increased up to a maximum aid intensity of 80 % of the eligible costs in accordance with
+    points (a) to (d), where points (b), (c) and (d) must not be combined with each other:'
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.90
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The aid intensities for industrial research
+    and ex'''
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: 'SME size determines the applicable aid-intensity bonus: +20 percentage points
+    for small enterprises, +10 percentage points for medium-sized enterprises, on top of the
+    base industrial research/experimental development intensity.'
+  value: 'Small: +20pp; Medium: +10pp bonus'
+  intake_field: fteBand
+  quote: by 10 percentage points for medium-sized enterprises and by 20 percentage point for
+    small enterprises;
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.90
+  verified: false
+  verify_note: The quote confirms the +10pp for medium and +20pp for small bonuses, but it
+    does not mention that these bonuses apply 'on top of the base industrial research/experimental
+    development intensity' - that context is not established by the quote itself, which appears
+    to be a fragment without specifying what base rate it modifies.
+- id: g5
+  gate_family: G4_borrower_model
+  requirement: 'The aided part of a research and development project must fall entirely within
+    one or more defined R&D categories: fundamental research, industrial research, experimental
+    development, or feasibility studies.'
+  value: fundamental research / industrial research / experimental development / feasibility
+    studies
+  intake_field: developmentStage
+  quote: 'The aided part of the research and development project shall completely fall within
+    one or more of the following categories:
+
+    (a) fundamental research;
+
+    (b) industrial research;
+
+    (c) experimental development;
+
+    (d) feasibility studies.'
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.89
+  verified: llm_2pass
+- id: g6
+  gate_family: G6_conditionality
+  requirement: An additional 15 percentage point aid-intensity bonus applies if the project
+    involves effective collaboration between undertakings (at least one SME, or cross-border)
+    with no single undertaking bearing more than 70% of eligible costs, or other qualifying
+    collaboration/dissemination conditions.
+  value: +15pp bonus for qualifying collaboration (no single undertaking >70% of eligible
+    costs)
+  intake_field: consortium
+  quote: 'by 15 percentage points if one of the following conditions is fulfilled:
+
+    (i) the project involves effective collaboration:
+
+    — between undertakings among which at least one is an SME,
+
+    or is carried out in at least two Member States, or in a
+
+    Member State and in a Contracting Party of the EEA
+
+    Agreement, and no single undertaking bears more than
+
+    70 % of the eli gible costs, or'
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.90
+  verified: llm_2pass
+verify_by: '2026-10-01'
+notes: Extracted 4/6 gates at llm_2pass by ETL/terms/extract_terms.py.

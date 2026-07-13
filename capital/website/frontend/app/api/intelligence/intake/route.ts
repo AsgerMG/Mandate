@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { generateIntakeQuestions } from "@/lib/intelligence/pipeline";
+import { generateIntakeGroups } from "@/lib/intelligence/pipeline";
 import type { IntelligenceRequest } from "@/lib/intelligence/types";
 
 // Phase 1: a fast, single model call that returns the tailored clarifying
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const questions = await generateIntakeQuestions({
+    const groups = await generateIntakeGroups({
       company: body.company.trim(),
       sector: body.sector?.trim() || undefined,
       country: body.country?.trim() || undefined,
@@ -31,11 +31,15 @@ export async function POST(request: NextRequest) {
       capitalSought: Array.isArray(body.capitalSought)
         ? body.capitalSought.filter((v) => typeof v === "string")
         : undefined,
+      targetMarkets: Array.isArray(body.targetMarkets)
+        ? body.targetMarkets.filter((v) => typeof v === "string")
+        : undefined,
+      eligibility: body.eligibility,
     });
-    // Never block the memo on intake: an empty list just skips the questions.
-    return Response.json({ questions });
+    // Never block the memo on intake: an empty list just skips the screens.
+    return Response.json({ groups });
   } catch (err) {
     console.error("intake route failed:", err);
-    return Response.json({ questions: [] });
+    return Response.json({ groups: [] });
   }
 }

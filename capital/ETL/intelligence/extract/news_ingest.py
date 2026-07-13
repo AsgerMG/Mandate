@@ -75,6 +75,7 @@ GNEWS_LOCALE = {
     "en": ("en", "US", "US:en"),
     "fr": ("fr", "FR", "FR:fr"),
     "de": ("de", "DE", "DE:de"),
+    "it": ("it", "IT", "IT:it"),
 }
 
 # Outlets whose 2-year archive we reconstruct via windowed `site:` queries.
@@ -379,7 +380,9 @@ def cmd_hydrate(args) -> None:
     # Sonnet signal stage). Funder/trade tiers and newest articles first.
     sql = """SELECT a.id, a.url FROM articles a JOIN sources s ON s.id = a.source_id
              WHERE a.full_text_fetched = 0
-             ORDER BY CASE s.tier WHEN 'funder_press' THEN 0
+             ORDER BY CASE COALESCE(a.is_relevant, -1) WHEN 1 THEN 0
+                           WHEN -1 THEN 1 ELSE 2 END,
+                      CASE s.tier WHEN 'funder_press' THEN 0
                                   WHEN 'trade_press' THEN 1 ELSE 2 END,
                       a.published_at DESC"""
     rows = con.execute(sql + (f" LIMIT {int(args.limit)}" if args.limit else "")).fetchall()
@@ -426,8 +429,11 @@ _OG_TITLE_RE = re.compile(
     r'<meta[^>]+property="og:title"[^>]+content="([^"]+)"', re.IGNORECASE)
 _H1_RE = re.compile(r"<h1\b[^>]*>(.*?)</h1>", re.DOTALL | re.IGNORECASE)
 _META_DATE_RE = re.compile(
-    r'<(?:meta[^>]+(?:property|name)="(?:article:published_time|date|dc\.date[^"]*)"'
-    r'[^>]+content="([^"]+)"|time[^>]+datetime="([^"]+)")', re.IGNORECASE)
+    r'<(?:meta[^>]+(?:property|name)="(?:article:published_time|og:updated_time|'
+    r'date|dc\.date[^"]*|datePublished)"[^>]+content="([^"]+)"'
+    r'|time[^>]+datetime="([^"]+)")', re.IGNORECASE)
+# JSON-LD is the reliable channel on EC/gov newsrooms.
+_JSONLD_DATE_RE = re.compile(r'"datePublished"\s*:\s*"([^"]+)"')
 
 
 def _page_links(raw: bytes, base_url: str, pattern: str) -> list[str]:
@@ -449,6 +455,9 @@ def _article_page(raw: bytes, url: str) -> dict | None:
     title = _strip_tags(m.group(1)) if m else ""
     dm = _META_DATE_RE.search(body)
     published = _parse_date((dm.group(1) or dm.group(2)) if dm else "")
+    if not published:
+        jd = _JSONLD_DATE_RE.search(body)
+        published = _parse_date(jd.group(1)) if jd else None
     text = extract_main_text(body)
     if not title or len(text) < 200:
         return None
