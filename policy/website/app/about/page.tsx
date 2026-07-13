@@ -63,7 +63,7 @@ const COVERAGE = [
 export default function AboutPage() {
   return (
     <>
-      <div className="about-intro">
+      <div className="viewport-intro">
         <section className="hero">
           <div className="eyebrow">About EuroPolTracker</div>
           <h1>An analyst desk, run as software</h1>

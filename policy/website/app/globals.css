@@ -53,6 +53,14 @@ main.container { flex: 1 0 auto; width: 100%; }
 @media (max-width: 640px) {
   .container { padding: 0 16px; }
 }
+/* Body copy is separately capped at 760px (see .report/.excerpt) regardless
+   of container width, so widening the container on very large monitors adds
+   breathing room to grids/columns without making any paragraph line too long
+   to read — it just stops the page reading as a narrow island in a mostly
+   empty canvas on an ultrawide/4K display. */
+@media (min-width: 1600px) {
+  .container { max-width: 1320px; }
+}
 
 /* Masthead */
 .masthead { background: var(--paper); border-bottom: 3px double var(--ink); }
@@ -166,12 +174,17 @@ main.container { flex: 1 0 auto; width: 100%; }
   .hero-actions .link-arrow { width: 100%; text-align: center; }
 }
 
-/* About page: center the intro (hero + why-this-exists) within the first
-   screen instead of pinning it to the top — a fixed bottom margin looked like
-   broken padding rather than intentional whitespace. "How it's built" then
-   just continues in normal flow right after and can peek in a little, which
-   reads as a natural "keep scrolling" cue instead of a glitch. */
-.about-intro {
+/* Shared by any page whose first section is short relative to the viewport
+   (About's hero + why-this-exists, Home's hero) — centers it within the
+   first screen instead of pinning it to the top. Without this, the sticky
+   footer (main { flex: 1 0 auto }) pushes all of a short page's leftover
+   height into one dead gap between the content and the footer, which on a
+   tall/wide monitor reads as "the page ran out of content" rather than a
+   deliberate design. Centering redistributes that same slack above and
+   below instead. Whatever comes after this wrapper continues in normal flow
+   and can peek in a little, which reads as a natural "keep scrolling" cue.
+   Kept generic (not `.about-intro`) since Home uses the identical pattern. */
+.viewport-intro {
   min-height: calc(100vh - 100px);
   display: flex;
   flex-direction: column;
@@ -182,7 +195,7 @@ main.container { flex: 1 0 auto; width: 100%; }
      the viewport is taller than the content; on a short phone screen the
      text is often taller than 100vh, so centering instead clips the top of
      the hero above the fold. Fall back to normal top-aligned flow. */
-  .about-intro { min-height: 0; display: block; }
+  .viewport-intro { min-height: 0; display: block; }
 }
 /* Compound selector so it reliably beats .section's margin shorthand
    regardless of source order (equal specificity would otherwise let

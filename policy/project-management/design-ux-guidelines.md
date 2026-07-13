@@ -25,6 +25,26 @@ identical pixels, but no device where it feels like an afterthought. Concretely:
   (`.report-table`) are deliberately left uncapped since tabular data benefits
   from the extra width, and get `overflow-x: auto` on their wrapper instead of
   wrapping cell text.
+- **A short page on a tall/wide monitor needs its slack distributed, not left
+  to pool.** `main { flex: 1 0 auto }` (the sticky-footer fix) means any page
+  shorter than the viewport has leftover height — and since content is
+  top-aligned by default, 100% of that leftover pools into one dead gap right
+  above the footer on a big monitor. It reads as "the page ran out of
+  content." Fix: wrap the page's first section in `.viewport-intro`
+  (`min-height: calc(100vh - 100px); display:flex; flex-direction:column;
+  justify-content:center`) so the slack splits above and below instead —
+  disabled below 640px (see the class) since centering a too-tall block on a
+  short phone screen clips it above the fold. Both `/` and `/about` use this;
+  apply it to any new short/marketing page. This is *not* caught by the
+  overflow check below — it's a whitespace-distribution problem, not an
+  overflow — so it only shows up if you actually look at a full-page
+  screenshot at a large viewport, not just check `scrollWidth`.
+- **Container width isn't one-size-fits-all either.** `.container` widens from
+  1160px to 1320px above 1600px viewport width — otherwise a 2560px+ monitor
+  centers a relatively narrow column in a very large empty canvas, which
+  reads as "doesn't use the screen" even though the column itself is properly
+  centered. Reading-width caps (above) mean this is safe: wider container,
+  same max line length for prose, just more breathing room for grids/columns.
 
 ## Checklist for any new component
 
@@ -86,6 +106,11 @@ Test against real data, not the empty-corpus state — overflow bugs in list
 rows and long titles only show up with actual content. Run `uv run ept serve`
 + `cd website && npm run dev`, then drive both with Playwright (`.venv` already
 has it installed) rather than eyeballing a single breakpoint in devtools.
+
+The automated `scrollWidth` check only catches horizontal overflow. It won't
+catch a short page leaving a dead vertical gap above the footer on a tall
+monitor — for that, actually look at a full-page screenshot at 1920×1080 and
+2560×1200+, specifically on the shortest pages (`/`, `/about`).
 
 ## Deliberately not done (and why)
 
