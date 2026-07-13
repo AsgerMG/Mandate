@@ -185,7 +185,7 @@ export default function BriefPage() {
 
   return (
     <>
-      <section className="hero">
+      <section className="page-head">
         <p className="eyebrow">Regulatory exposure report</p>
         <h1>Know what applies before it applies to you</h1>
         <p>
@@ -194,7 +194,7 @@ export default function BriefPage() {
         </p>
       </section>
 
-      <div className="stepper">
+      <div className="stepper brief-width">
         <div className="stepper-head">
           <span className="stepper-label">
             Step {STEPS.findIndex((s) => s.key === step) + 1} of {STEPS.length}
