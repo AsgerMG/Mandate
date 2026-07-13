@@ -256,8 +256,12 @@ main.container { flex: 1 0 auto; width: 100%; }
    hero text vertically centered against the (taller) grid instead of
    pinned to the top, where it read as floating relative to it. */
 .lede-row { display: flex; align-items: center; gap: 44px; }
-.lede-row .lede-hero { flex: 1 1 460px; padding: 0; }
-.built-col { flex: 0 1 340px; min-width: 0; }
+/* flex-grow set to the same 460:340 ratio as each side's basis, so extra
+   width on wide screens splits proportionally instead of piling entirely
+   into the hero text (which happened with .built-col at grow: 0 — the hero
+   ballooned to ~70% of the row while the grid sat frozen at 340px). */
+.lede-row .lede-hero { flex: 1.35 1 460px; padding: 0; }
+.built-col { flex: 1 1 340px; min-width: 0; }
 .built-label {
   display: flex; align-items: center;
   font-size: clamp(11.5px, 8.97px + 0.1977vw, 14.03px); font-weight: 700; text-transform: uppercase;
