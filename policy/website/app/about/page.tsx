@@ -76,7 +76,7 @@ export default function AboutPage() {
 
         <section className="section">
           <h2>Why this exists</h2>
-          <p style={{ maxWidth: 720, color: "var(--ink-soft)", fontSize: 15.5, lineHeight: 1.75 }}>
+          <p style={{ maxWidth: 720, color: "var(--ink-soft)", lineHeight: 1.75 }}>
             EU tech policy moves fast and across many registers at once — consultations,
             proposals, adopted law, amendments. Tracking it by hand doesn&apos;t scale, and
             generic AI summaries invite a specific failure: confident, plausible, unverifiable
@@ -107,7 +107,7 @@ export default function AboutPage() {
           {COVERAGE.map((c) => (
             <div className="card" key={c.label}>
               <div className="row">
-                <h3 style={{ fontSize: 15 }}>{c.label}</h3>
+                <h3>{c.label}</h3>
                 <span className={`badge ${c.state === "live" ? "in_force" : "planned"}`}>
                   {c.state === "live" ? "Live" : "Next"}
                 </span>

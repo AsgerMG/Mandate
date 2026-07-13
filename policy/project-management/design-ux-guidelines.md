@@ -45,6 +45,26 @@ identical pixels, but no device where it feels like an afterthought. Concretely:
   reads as "doesn't use the screen" even though the column itself is properly
   centered. Reading-width caps (above) mean this is safe: wider container,
   same max line length for prose, just more breathing room for grids/columns.
+- **Type itself must scale up on large monitors too, not just layout.** Every
+  `font-size` in the file is a `clamp(original, ramp, original×1.22)` that
+  holds flat at its original value up to 1280px viewport width, then ramps to
+  +22% by 2560px (generated mechanically — see git history for the
+  regex/formula, reused for consistency across ~45 declarations). Layout
+  alone scaling (wider container, more grid columns) while type stays a fixed
+  px is what reads as "tiny text on a big screen" — the whitespace grows but
+  nothing else does. The four headings that already had their own
+  mobile-shrink `clamp(min, Nvw, max)` (`.hero h1`, `.masthead-brand`,
+  `.cta-band h2`, `.report h1`) plateau at their max well before 1280px (one
+  as early as ~500px) and need a *second*, large-viewport-only clamp layered
+  on top via `@media (min-width: 1600px)` — don't just leave them out of the
+  scale because they already have "a" clamp; check where that clamp actually
+  stops growing.
+- **A hardcoded inline `style={{ fontSize: N }}` in JSX silently opts an
+  element out of the shared type scale**, even if its CSS class already has
+  the fluid `clamp()`. Found and removed two of these (`about/page.tsx`) that
+  were redundant with their own class's font-size and would otherwise have
+  frozen that one paragraph/heading flat while everything around it scaled —
+  inline font-size overrides should be treated as a smell, not a convenience.
 
 ## Checklist for any new component
 

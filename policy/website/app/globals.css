@@ -39,7 +39,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 15.5px;
+  font-size: clamp(15.5px, 12.09px + 0.2664vw, 18.91px);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -61,6 +61,22 @@ main.container { flex: 1 0 auto; width: 100%; }
 @media (min-width: 1600px) {
   .container { max-width: 1320px; }
 }
+/* The four headings below manage their own mobile-shrink via clamp(min,
+   Nvw, max) — necessary so long titles don't overflow a phone — but that
+   same vw coefficient makes them plateau at their max well before 1600px
+   (.masthead-brand as early as ~500px) and then stay perfectly flat all the
+   way to a 2560px+ monitor. Every other font-size on the site now scales
+   fluidly up to 2560px (see the font-size clamp()s throughout this file);
+   leaving these four flat while everything around them keeps growing is
+   what made the page feel static/tiny on a big monitor. Layer a second ramp
+   on top, active only above 1600px, continuous with each element's existing
+   plateau value, growing to roughly +22% by 2560px — matching the scale
+   applied everywhere else. */
+@media (min-width: 1600px) {
+  .hero h1 { font-size: clamp(46px, 29.13px + 1.054vw, 56px); }
+  .masthead-brand a { font-size: clamp(25px, 15.83px + 0.573vw, 30.5px); }
+  .cta-band h2, .report h1 { font-size: clamp(28px, 17.73px + 0.6417vw, 34.16px); }
+}
 
 /* Masthead */
 .masthead { background: var(--paper); border-bottom: 3px double var(--ink); }
@@ -73,25 +89,25 @@ main.container { flex: 1 0 auto; width: 100%; }
   letter-spacing: -0.01em; color: var(--ink);
 }
 .masthead-brand a:hover { text-decoration: none; opacity: 0.8; }
-.masthead-nav { display: flex; align-items: center; gap: 24px; font-size: 13.5px; font-weight: 500; flex-wrap: wrap; row-gap: 8px; }
+.masthead-nav { display: flex; align-items: center; gap: 24px; font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); font-weight: 500; flex-wrap: wrap; row-gap: 8px; }
 .masthead-nav a:not(.masthead-cta) { color: var(--ink-soft); }
 .masthead-nav a:not(.masthead-cta):hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .masthead-cta {
   border: 1px solid var(--ink) !important; color: var(--ink) !important;
   padding: 8px 16px; border-radius: var(--radius);
-  font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px;
+  font-weight: 600 !important; text-transform: uppercase; letter-spacing: 0.06em; font-size: clamp(12px, 9.36px + 0.2063vw, 14.64px);
 }
 .masthead-cta:hover { background: var(--ink); color: var(--paper) !important; text-decoration: none; }
 .masthead-dateline {
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
-  padding: 7px 0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 7px 0; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); text-transform: uppercase; letter-spacing: 0.12em;
   color: var(--muted); border-top: 1px solid var(--rule);
 }
 
 /* Eyebrow / kicker */
 .eyebrow {
   display: flex; align-items: center;
-  font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+  font-size: clamp(11.5px, 8.97px + 0.1977vw, 14.03px); font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.16em; color: var(--accent-deep); margin: 0 0 10px;
 }
 
@@ -112,11 +128,11 @@ main.container { flex: 1 0 auto; width: 100%; }
   font-family: var(--font-serif); font-weight: 600; font-size: clamp(30px, 4.2vw, 46px);
   line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 12px; color: var(--ink); max-width: 800px;
 }
-.hero p { color: var(--ink-soft); margin: 0 0 18px; max-width: 640px; font-size: 16px; line-height: 1.6; }
+.hero p { color: var(--ink-soft); margin: 0 0 18px; max-width: 640px; font-size: clamp(16px, 12.48px + 0.275vw, 19.52px); line-height: 1.6; }
 .hero-actions { display: flex; align-items: center; gap: 22px; margin-top: 2px; flex-wrap: wrap; }
 
 .link-arrow {
-  font-size: 13.5px; font-weight: 600; color: var(--ink);
+  font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); font-weight: 600; color: var(--ink);
   text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--rule);
 }
 .link-arrow:hover { color: var(--accent-deep); text-decoration-color: currentColor; }
@@ -129,11 +145,11 @@ main.container { flex: 1 0 auto; width: 100%; }
 .flow-step { flex: 1; padding: 18px 18px 18px 0; }
 .flow-step + .flow-step { padding-left: 18px; border-left: 1px solid var(--rule); }
 .flow-num {
-  font-family: var(--font-serif); font-style: italic; font-size: 25px; font-weight: 600;
+  font-family: var(--font-serif); font-style: italic; font-size: clamp(25px, 19.5px + 0.4297vw, 30.5px); font-weight: 600;
   color: var(--accent-deep); display: block; margin-bottom: 8px;
 }
-.flow-step h3 { font-family: var(--font-serif); font-size: 17px; font-weight: 600; margin: 0 0 6px; }
-.flow-step p { color: var(--muted); font-size: 13.5px; line-height: 1.6; margin: 0; }
+.flow-step h3 { font-family: var(--font-serif); font-size: clamp(17px, 13.26px + 0.2922vw, 20.74px); font-weight: 600; margin: 0 0 6px; }
+.flow-step p { color: var(--muted); font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); line-height: 1.6; margin: 0; }
 @media (max-width: 760px) {
   .flow { flex-direction: column; }
   .flow-step + .flow-step { border-left: none; border-top: 1px solid var(--rule); padding-left: 0; padding-top: 18px; }
@@ -146,7 +162,7 @@ main.container { flex: 1 0 auto; width: 100%; }
 @media (max-width: 640px) {
   .hero { padding: 22px 0 4px; }
   .masthead-bar { padding: 16px 0 10px; }
-  .masthead-cta { padding: 7px 12px; font-size: 11px; }
+  .masthead-cta { padding: 7px 12px; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); }
   /* The rightmost dateline item is decorative reinforcement of the brand,
      not information — on a narrow screen it just eats a whole extra line
      above the fold, so drop it rather than let it wrap. */
@@ -205,7 +221,7 @@ main.container { flex: 1 0 auto; width: 100%; }
 /* Register: per-stage "show more" toggle instead of dumping every row */
 .show-more {
   display: inline-block; margin-top: 10px; background: none; border: none; cursor: pointer;
-  padding: 0; font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; color: var(--ink-soft);
+  padding: 0; font-family: var(--font-sans); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); font-weight: 600; color: var(--ink-soft);
   text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule);
 }
 .show-more:hover { color: var(--accent-deep); text-decoration-color: currentColor; }
@@ -215,7 +231,7 @@ main.container { flex: 1 0 auto; width: 100%; }
 .filters input[type="text"] { max-width: 320px; }
 .filter-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .filter-label {
-  font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  font-size: clamp(10.5px, 8.19px + 0.1805vw, 12.81px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
   color: var(--muted);
 }
 
@@ -228,11 +244,11 @@ main.container { flex: 1 0 auto; width: 100%; }
 .register-row:hover { text-decoration: none; background: rgba(16, 32, 63, 0.025); }
 .register-row:hover .register-title { text-decoration: underline; text-decoration-color: var(--rule); }
 .register-title {
-  flex: 1; font-family: var(--font-serif); font-size: 15px; color: var(--ink); line-height: 1.4;
+  flex: 1; font-family: var(--font-serif); font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); color: var(--ink); line-height: 1.4;
   min-width: 200px; overflow-wrap: break-word;
 }
 .register-meta {
-  display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--muted);
+  display: flex; gap: 12px; align-items: center; font-size: clamp(12px, 9.36px + 0.2063vw, 14.64px); color: var(--muted);
   flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end;
 }
 @media (max-width: 640px) {
@@ -262,7 +278,7 @@ main.container { flex: 1 0 auto; width: 100%; }
 /* Layout helpers */
 .section { margin: 34px 0; }
 .section h2 {
-  font-size: 12.5px; margin: 0 0 14px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin: 0 0 14px; letter-spacing: 0.1em; text-transform: uppercase;
   font-weight: 700; color: var(--ink-soft); display: flex; align-items: center; gap: 10px;
   padding-bottom: 8px; border-bottom: 1px solid var(--rule);
 }
@@ -275,16 +291,16 @@ main.container { flex: 1 0 auto; width: 100%; }
   transition: border-color 0.15s ease;
 }
 .card:hover { border-color: var(--ink); }
-.card h3 { font-size: 15px; margin: 0; line-height: 1.35; font-weight: 600; overflow-wrap: break-word; }
+.card h3 { font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); margin: 0; line-height: 1.35; font-weight: 600; overflow-wrap: break-word; }
 .card h3 a { color: var(--ink); }
-.card .meta { color: var(--muted); font-size: 12.5px; display: flex; gap: 10px; flex-wrap: wrap; }
+.card .meta { color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); display: flex; gap: 10px; flex-wrap: wrap; }
 /* Not scoped to .card — brief/page.tsx and Report.tsx also render a bare
    `.row` inside .source-item, which needs the same space-between layout. */
 .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 
 /* Badge — bracket/stamp style, not a filled pill */
 .badge {
-  display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 600;
+  display: inline-flex; align-items: center; font-size: clamp(10.5px, 8.19px + 0.1805vw, 12.81px); font-weight: 600;
   padding: 3px 8px; border-radius: var(--radius); border: 1px solid currentColor;
   white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; background: transparent;
 }
@@ -302,7 +318,7 @@ main.container { flex: 1 0 auto; width: 100%; }
 .btn {
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
   background: var(--ink); color: var(--paper); border: 1px solid var(--ink); border-radius: var(--radius);
-  padding: 12px 22px; font-size: 13px; font-weight: 600; font-family: var(--font-sans);
+  padding: 12px 22px; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); font-weight: 600; font-family: var(--font-sans);
   text-transform: uppercase; letter-spacing: 0.06em;
 }
 .btn:hover { background: var(--ink-soft); border-color: var(--ink-soft); text-decoration: none; }
@@ -316,12 +332,12 @@ main.container { flex: 1 0 auto; width: 100%; }
   border-radius: var(--radius); padding: 32px; max-width: 720px;
 }
 .field { margin-bottom: 20px; }
-.field label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 7px;
+.field label { display: block; font-weight: 700; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin-bottom: 7px;
   text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); }
-.field .hint { color: var(--muted); font-weight: 400; font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+.field .hint { color: var(--muted); font-weight: 400; font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); text-transform: none; letter-spacing: 0; }
 input[type="text"], textarea {
   width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: var(--radius);
-  font-family: var(--font-sans); font-size: 16px; background: #fff; color: var(--ink);
+  font-family: var(--font-sans); font-size: clamp(16px, 12.48px + 0.275vw, 19.52px); background: #fff; color: var(--ink);
   /* iOS Safari zooms the whole page in on focus if a text input renders
      below 16px — 16px is the smallest size that avoids it, so this isn't a
      stylistic choice, it's the floor for a usable mobile form. */
@@ -331,12 +347,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
   border: 1px solid var(--rule); background: #fff; border-radius: var(--radius); padding: 7px 14px;
-  font-size: 13px; cursor: pointer; user-select: none; font-weight: 500; color: var(--ink-soft);
+  font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); cursor: pointer; user-select: none; font-weight: 500; color: var(--ink-soft);
 }
 .chip:hover { border-color: var(--ink); }
 .chip.on { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
 .checks { display: flex; gap: 18px; flex-wrap: wrap; }
-.check { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.check { display: flex; align-items: center; gap: 8px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); }
 
 /* Stepper (brief flow) */
 .stepper { margin: 30px 0 26px; }
@@ -345,10 +361,10 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
   flex-wrap: wrap; row-gap: 4px;
 }
 .stepper-label {
-  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+  font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
 }
 .stepper-name {
-  font-family: var(--font-serif); font-size: 16px; font-weight: 600; color: var(--ink);
+  font-family: var(--font-serif); font-size: clamp(16px, 12.48px + 0.275vw, 19.52px); font-weight: 600; color: var(--ink);
 }
 .stepper-track { display: flex; gap: 6px; height: 3px; background: var(--line-soft); }
 .stepper-track span { flex: 1; background: transparent; transition: background 0.2s ease; }
@@ -356,13 +372,13 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .stepper-track span.current { background: var(--accent); }
 
 /* Scoping questions */
-.question .why { color: var(--muted); font-size: 12.5px; margin: -3px 0 9px; }
+.question .why { color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin: -3px 0 9px; }
 
 /* Vertical option rows (scoping choice/multi questions) */
 .option-list { display: flex; flex-direction: column; gap: 8px; }
 .option-row {
   display: flex; align-items: center; gap: 11px; border: 1px solid var(--rule); background: #fff;
-  border-radius: var(--radius); padding: 11px 14px; font-size: 14px; font-weight: 500;
+  border-radius: var(--radius); padding: 11px 14px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); font-weight: 500;
   color: var(--ink-soft); cursor: pointer;
 }
 .option-row:hover { border-color: var(--ink); }
@@ -372,7 +388,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 /* Sub-stepper (scoping groups, nested under the main 3-step stepper) */
 .substepper { margin: 0 0 22px; }
 .substepper-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; row-gap: 4px; }
-.substepper-name { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+.substepper-name { font-family: var(--font-serif); font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); font-weight: 600; color: var(--ink); }
 .substepper-track { height: 3px; }
 
 /* Report generation — live progress panel */
@@ -382,14 +398,14 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
   flex-wrap: wrap; row-gap: 4px;
 }
 .generating-head h2 {
-  font-family: var(--font-serif); font-size: 19px; font-weight: 600; margin: 0; color: var(--ink);
+  font-family: var(--font-serif); font-size: clamp(19px, 14.82px + 0.3266vw, 23.18px); font-weight: 600; margin: 0; color: var(--ink);
 }
 .generating-head .elapsed {
-  font-variant-numeric: tabular-nums; font-size: 12.5px; color: var(--muted);
+  font-variant-numeric: tabular-nums; font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); color: var(--muted);
 }
 .stage-list { list-style: none; margin: 0 0 20px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 .stage-list li {
-  display: flex; align-items: center; gap: 11px; font-size: 14px; color: var(--muted);
+  display: flex; align-items: center; gap: 11px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); color: var(--muted);
 }
 .stage-list li.done { color: var(--ink-soft); }
 .stage-list li.active { color: var(--ink); font-weight: 600; }
@@ -404,12 +420,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.7); }
 }
-.generating-note { font-size: 13px; margin: 0; }
+.generating-note { font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin: 0; }
 
 /* Briefing output */
 .notice {
   background: var(--accent-soft); border: 1px solid #e2cd9a; border-left: 3px solid var(--accent);
-  border-radius: var(--radius); padding: 13px 16px; font-size: 13.5px; margin-bottom: 18px;
+  border-radius: var(--radius); padding: 13px 16px; font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); margin-bottom: 18px;
   color: var(--accent-deep);
 }
 .sources { margin-top: 26px; }
@@ -417,23 +433,23 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
   background: var(--paper); border: 1px solid var(--rule); border-left: 3px solid var(--navy);
   border-radius: var(--radius); padding: 13px 15px; margin-bottom: 10px;
 }
-.source-item .cited { color: var(--muted); font-style: italic; font-size: 13px; margin-top: 4px; }
+.source-item .cited { color: var(--muted); font-style: italic; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin-top: 4px; }
 .source-item .used-for { margin: 4px 0 0 0; padding-left: 18px; }
 .source-item .used-for li { margin-bottom: 3px; }
 
 .coverage { margin-top: 26px; }
 .coverage > summary {
-  cursor: pointer; font-weight: 600; font-size: 14px; color: var(--accent-deep);
+  cursor: pointer; font-weight: 600; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); color: var(--accent-deep);
   padding: 11px 15px; background: var(--paper); border: 1px solid var(--rule);
   border-radius: var(--radius); user-select: none;
 }
 .coverage[open] > summary { margin-bottom: 14px; }
-.score { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12.5px; }
+.score { font-variant-numeric: tabular-nums; color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); }
 
 .muted { color: var(--muted); }
 .excerpt {
   background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius);
-  padding: 22px 24px; white-space: pre-wrap; line-height: 1.65; font-size: 14px;
+  padding: 22px 24px; white-space: pre-wrap; line-height: 1.65; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px);
   max-height: 480px; overflow: auto; overflow-wrap: break-word;
   /* Body text, not tabular data — cap the measure so a line doesn't run
      the full 1160px container width on a large monitor, which is well past
@@ -441,7 +457,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
   max-width: 760px;
 }
 .spinner { color: var(--muted); padding: 20px 0; }
-.back { font-size: 13.5px; font-weight: 600; }
+.back { font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); font-weight: 600; }
 
 /* Report sheet */
 .report-actions { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
@@ -455,11 +471,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
   border-bottom: 1px solid var(--rule); max-width: 760px; overflow-wrap: break-word;
 }
 .report h2 {
-  font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-deep);
+  font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-deep);
   margin: 30px 0 12px; display: flex; align-items: center; gap: 10px; max-width: 760px;
 }
 .report h2::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
-.report h3 { font-family: var(--font-serif); font-weight: 600; font-size: 16.5px; margin: 20px 0 8px; max-width: 760px; }
+.report h3 { font-family: var(--font-serif); font-weight: 600; font-size: clamp(16.5px, 12.87px + 0.2836vw, 20.13px); margin: 20px 0 8px; max-width: 760px; }
 /* Body copy, not tabular data — capped to a readable measure (see .excerpt);
    .report-table is deliberately excluded so data columns can still use the
    full sheet width. */
@@ -467,15 +483,15 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .report p { margin: 0 0 12px; line-height: 1.7; }
 .report ul { margin: 0 0 14px; padding-left: 22px; }
 .report li { margin-bottom: 5px; line-height: 1.6; }
-.report .footref { color: var(--accent-deep); font-weight: 600; font-size: 10px; margin-left: 1px; }
+.report .footref { color: var(--accent-deep); font-weight: 600; font-size: clamp(10px, 7.8px + 0.1719vw, 12.2px); margin-left: 1px; }
 .report-table-wrap { overflow-x: auto; margin: 0 0 16px; }
-.report-table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+.report-table { border-collapse: collapse; width: 100%; font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); }
 .report-table th {
-  text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  text-align: left; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--ink-soft); padding: 8px 12px 8px 0; border-bottom: 2px solid var(--ink);
 }
 .report-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 
-footer { background: var(--paper); color: var(--muted); font-size: 12.5px; margin-top: 70px; border-top: 3px double var(--ink); }
+footer { background: var(--paper); color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin-top: 70px; border-top: 3px double var(--ink); }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; flex-wrap: wrap; }
-.footer-mark { font-family: var(--font-serif); font-weight: 600; color: var(--ink); font-size: 14px; flex-shrink: 0; }
+.footer-mark { font-family: var(--font-serif); font-weight: 600; color: var(--ink); font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); flex-shrink: 0; }
