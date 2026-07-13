@@ -41,6 +41,14 @@ export type Meta = {
   stages: string[];
 };
 
+export type SourceInfo = {
+  key: string;
+  name: string;
+  jurisdiction: string;
+  enabled: boolean;
+  documents: number;
+};
+
 export type Passage = {
   title: string;
   celex: string | null;
@@ -109,6 +117,7 @@ async function get<T>(path: string): Promise<T> {
 
 export const getStats = () => get<Stats>("/api/stats");
 export const getMeta = () => get<Meta>("/api/meta");
+export const getSources = () => get<{ sources: SourceInfo[] }>("/api/sources");
 export const getDocument = (id: number) => get<DocDetail>(`/api/documents/${id}`);
 
 export function getDocuments(params: Record<string, string> = {}) {

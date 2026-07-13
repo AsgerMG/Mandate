@@ -15,6 +15,28 @@ identical pixels, but no device where it feels like an afterthought. Concretely:
   literal like "1000+" in JSX. See `lib/api.ts:getStats` and its call sites in
   `layout.tsx` / `page.tsx`. The moment the corpus grows, a hardcoded number
   goes stale and someone has to remember to bump it; a fetched one never does.
+- **This applies to *descriptions* of the corpus, not just counts.** About's
+  "Coverage" section used to be a hand-maintained array claiming ~6 sources
+  across "EU/France/Germany" with manually-set `live`/`next` flags — it was
+  wrong (Bundestag DIP's "awaiting an API key" note was stale; the key had
+  already been found — see decision-log.md 2026-07-09) and it drastically
+  understated reality (78 real sources existed, not ~6). Fixed by adding
+  `GET /api/sources` (real `Source` rows: key, name, jurisdiction, enabled,
+  document count) and having the page group + count them live
+  (`lib/sourceCategories.ts` maps each adapter key to a content-type category
+  — that mapping is a codebase-structural fact that only changes when an
+  adapter is added, not a corpus statistic, so it's fine for it to be
+  hand-maintained; what must never be hand-maintained is *how many* sources
+  are live or what their true status is). Genuine roadmap items (an adapter
+  that doesn't exist yet) necessarily stay hand-maintained in
+  `PLANNED_SOURCES` — but re-verify the *reason* stated for each against
+  current reality before trusting an old note (see the entry below).
+- **Re-verify a stale "blocked" note before repeating it, the same way you'd
+  re-verify a stale "working" one.** Trusting "needs an API key" without
+  re-checking is exactly as risky as trusting a hardcoded count — both are
+  claims about state that drift. Cross-referenced `project-management/
+  decision-log.md` before writing `PLANNED_SOURCES`' descriptions and it
+  saved us from repeating a corrected mistake.
 - **Fluid over stepped, where it's cheap.** Prefer `clamp(min, vw, max)` for
   type that scales continuously (`.hero h1`, `.masthead-brand a`,
   `.report h1`) over a fixed size that only changes at a breakpoint — it reads
@@ -106,6 +128,15 @@ real bug during the audit:
    not just the first/last.** Adding flex behavior to a class that's reused
    elsewhere (see #6) can silently rearrange unrelated rows — check every call
    site, not just the one you're editing.
+9. **A media query that flips `flex-direction: row` → `column` must also
+   reset any child's `flex-basis`.** `flex: 1 1 460px` sizes a *width* in row
+   mode, but the same declaration sizes a *height* once the axis flips to
+   column — About's hero+grid layout (`.lede-row`) silently forced the hero
+   into a ~460px-tall box on tablet widths, well past its actual ~200px of
+   text, leaving a large dead gap before the next section. Only showed up
+   full-page at exactly the width where the row-to-column breakpoint fires;
+   never assume a `flex: N N Npx` is safe across a direction change without
+   checking a screenshot at that breakpoint specifically.
 
 ## How this was verified (repeat this for future audits)
 

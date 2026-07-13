@@ -182,6 +182,32 @@ def meta() -> dict:
         }
 
 
+@app.get("/api/sources")
+def sources() -> dict:
+    """Every registered ingestion adapter and its live document count — the
+    ground truth for what the corpus actually covers. The website's About
+    page groups these by content type instead of hardcoding a coverage
+    description, so that page can't drift out of sync with what's actually
+    running the way a hand-maintained list eventually would."""
+    with session_scope() as s:
+        counts = dict(
+            s.execute(select(Document.source_id, func.count()).group_by(Document.source_id)).all()
+        )
+        rows = s.scalars(select(Source).order_by(Source.key)).all()
+        return {
+            "sources": [
+                {
+                    "key": r.key,
+                    "name": r.name,
+                    "jurisdiction": r.jurisdiction.value,
+                    "enabled": r.enabled,
+                    "documents": counts.get(r.id, 0),
+                }
+                for r in rows
+            ]
+        }
+
+
 @app.get("/api/documents")
 def documents(
     stage: str | None = None,

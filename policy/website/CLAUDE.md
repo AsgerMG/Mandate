@@ -13,9 +13,12 @@ context, etc.) — the rules there exist specifically so those don't recur.
 
 The two rules worth internalizing even if you don't read the rest:
 
-1. **No hardcoded numbers describing the corpus** (source counts, doc counts).
-   Fetch from `getStats()` (`lib/api.ts`) with a non-numeric fallback, the way
-   `layout.tsx` and `app/page.tsx` already do.
+1. **No hardcoded numbers *or descriptions* of the corpus** (source counts,
+   doc counts, what's covered/live). Fetch from `getStats()` / `getSources()`
+   (`lib/api.ts`) with a non-numeric fallback, the way `layout.tsx` and
+   About's Coverage section do. About's old hand-maintained coverage list
+   was factually wrong and covered ~6 sources when 78 existed — a hardcoded
+   description goes stale exactly like a hardcoded count.
 2. **Any new flex row needs `flex-wrap`** unless its children's combined width
    is provably bounded — this is the #1 cause of mobile horizontal-scroll bugs
    found in the audit (document list rows, badge rows, button rows).

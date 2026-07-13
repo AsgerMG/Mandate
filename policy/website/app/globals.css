@@ -137,8 +137,8 @@ main.container { flex: 1 0 auto; width: 100%; }
 }
 .link-arrow:hover { color: var(--accent-deep); text-decoration-color: currentColor; }
 
-/* Flow (numbered process, roman numerals) */
-.section.landing-flow { margin: 12px 0 0; }
+/* Flow (numbered process, roman numerals) — used by About's "How it's
+   built"; the landing page's own copy of this section was removed. */
 .flow {
   display: flex; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
 }
@@ -213,10 +213,74 @@ main.container { flex: 1 0 auto; width: 100%; }
      the hero above the fold. Fall back to normal top-aligned flow. */
   .viewport-intro { min-height: 0; display: block; }
 }
-/* Compound selector so it reliably beats .section's margin shorthand
-   regardless of source order (equal specificity would otherwise let
-   whichever rule is declared last in the file win). */
-.section.built-section { margin-top: 20px; }
+/* About page: hero paired with "How it's built" side by side in the first
+   screen, inside .viewport-intro. */
+.lede-row { display: flex; align-items: flex-start; gap: 44px; }
+.lede-row .lede-hero { flex: 1 1 460px; padding: 0; }
+.built-col { flex: 1 1 420px; min-width: 0; }
+.built-label {
+  display: flex; align-items: center;
+  font-size: clamp(11.5px, 8.97px + 0.1977vw, 14.03px); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.16em; color: var(--accent-deep); margin: 0 0 10px;
+}
+/* 2x2 variant of .flow: border-top/left on the container plus border-
+   right/bottom on each cell draws a full grid without doubled rule lines. */
+.built-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--ink); border-left: 1px solid var(--ink);
+  border-bottom: none;
+}
+.built-grid .flow-step {
+  border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  border-left: none; padding: 16px 18px;
+}
+@media (max-width: 900px) {
+  /* flex-basis is main-axis-relative: the 460px/420px values above set a
+     sensible starting *width* in row mode, but once flex-direction flips to
+     column here, the same numbers are read as a minimum *height* — forcing
+     the hero into a ~460px-tall box regardless of its actual (much
+     shorter) content and leaving a large dead gap before the grid below it.
+     Reset both to their natural content height when stacked. */
+  .lede-row { flex-direction: column; gap: 26px; }
+  .lede-row .lede-hero, .built-col { flex: none; }
+}
+@media (max-width: 640px) {
+  .built-grid { grid-template-columns: 1fr; }
+}
+
+/* Coverage: expandable per-category source list, styled like .show-more
+   rather than the boxed .coverage disclosure (a second bordered box nested
+   inside a .card would be visually heavy). */
+.source-disclosure summary {
+  cursor: pointer; list-style: none; margin-top: 8px;
+  font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); font-weight: 600; color: var(--ink-soft);
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule);
+}
+.source-disclosure summary::-webkit-details-marker,
+.source-disclosure summary::marker { display: none; content: ""; }
+.source-disclosure summary:hover { color: var(--accent-deep); text-decoration-color: currentColor; }
+.source-disclosure[open] summary { margin-bottom: 6px; }
+.source-name-list {
+  margin: 0; padding-left: 0; list-style: none;
+  font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); color: var(--muted);
+}
+.source-name-list li {
+  display: flex; align-items: center; gap: 7px; padding: 4px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.source-name-list li:last-child { border-bottom: none; }
+.planned-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
+/* Plain inline flow (not flex) so the badge stays glued to the name it
+   labels and only trailing words wrap, instead of the whole name jumping to
+   its own line whenever it's a little too long. */
+.planned-item { font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); color: var(--ink-soft); margin-top: 8px; }
+.planned-item:first-child { margin-top: 0; }
+.planned-item .meta { margin-top: 3px; }
+
+/* Coverage card: badges sit on their own row below the title, always — a
+   flex row combining a variable-length title with a badge wrapped
+   inconsistently depending on how long that particular category's name was. */
+.coverage-badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 2px; }
 
 /* Register: per-stage "show more" toggle instead of dumping every row */
 .show-more {
