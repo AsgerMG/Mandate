@@ -255,13 +255,14 @@ main.container { flex: 1 0 auto; width: 100%; }
    screen, inside .viewport-intro. align-items: center keeps the (shorter)
    hero text vertically centered against the (taller) grid instead of
    pinned to the top, where it read as floating relative to it. */
-.lede-row { display: flex; align-items: center; gap: 44px; }
-/* flex-grow set to the same 460:340 ratio as each side's basis, so extra
-   width on wide screens splits proportionally instead of piling entirely
-   into the hero text (which happened with .built-col at grow: 0 — the hero
-   ballooned to ~70% of the row while the grid sat frozen at 340px). */
-.lede-row .lede-hero { flex: 1.35 1 460px; padding: 0; }
-.built-col { flex: 1 1 340px; min-width: 0; }
+.lede-row { display: flex; align-items: center; justify-content: center; gap: 44px; }
+/* Both sides capped at their own basis (max-width, not just flex-grow: 0)
+   so neither absorbs leftover row width on wide screens — the hero used to
+   grow past 800px into empty tracking space. Any slack becomes matching
+   margin on both sides via justify-content: center instead of piling
+   asymmetrically into one column. */
+.lede-row .lede-hero { flex: 1 1 460px; max-width: 460px; padding: 0; }
+.built-col { flex: 1 1 340px; max-width: 340px; min-width: 0; }
 .built-label {
   display: flex; align-items: center;
   font-size: clamp(11.5px, 8.97px + 0.1977vw, 14.03px); font-weight: 700; text-transform: uppercase;
