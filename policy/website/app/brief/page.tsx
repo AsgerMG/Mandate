@@ -74,7 +74,7 @@ export default function BriefPage() {
   const [elapsedSec, setElapsedSec] = useState(0);
 
   useEffect(() => {
-    getMeta().then(setMeta).catch(() => setError("Can't reach the API (`uv run ept serve`)."));
+    getMeta().then(setMeta).catch(() => setError("The report tool is temporarily unavailable — please try again shortly."));
   }, []);
 
   const toggle = (arr: string[], v: string, set: (x: string[]) => void) =>

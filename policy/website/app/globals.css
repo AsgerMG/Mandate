@@ -321,14 +321,6 @@ main.container { flex: 1 0 auto; width: 100%; }
   border-bottom: 1px solid var(--line-soft);
 }
 .source-name-list li:last-child { border-bottom: none; }
-.planned-list { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft); }
-/* Plain inline flow (not flex) so the badge stays glued to the name it
-   labels and only trailing words wrap, instead of the whole name jumping to
-   its own line whenever it's a little too long. */
-.planned-item { font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); color: var(--ink-soft); margin-top: 8px; }
-.planned-item:first-child { margin-top: 0; }
-.planned-item .meta { margin-top: 3px; }
-
 /* Coverage card: badges sit on their own row below the title, always — a
    flex row combining a variable-length title with a badge wrapped
    inconsistently depending on how long that particular category's name was. */
@@ -400,13 +392,17 @@ main.container { flex: 1 0 auto; width: 100%; }
 }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
 
-/* Card (used for About coverage) */
+/* Card (used for the register's Coverage section) */
 .card {
   background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius);
   padding: 18px 20px; display: flex; flex-direction: column; gap: 9px;
   transition: border-color 0.15s ease;
 }
 .card:hover { border-color: var(--ink); }
+/* Coverage cards double as the register's category filter (documents/
+   page.tsx) — .on marks the active selection the same way .chip.on does. */
+.card[role="button"] { cursor: pointer; }
+.card.on { border-color: var(--ink); background: var(--accent-soft); }
 .card h3 { font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); margin: 0; line-height: 1.35; font-weight: 600; overflow-wrap: break-word; }
 .card h3 a { color: var(--ink); }
 .card .meta { color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); display: flex; gap: 10px; flex-wrap: wrap; }

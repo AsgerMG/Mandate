@@ -1098,6 +1098,47 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       from the 700-1000 word count (same treatment as Coalitions/Watchlist).
       `test_pdf.py`/`test_briefing.py` don't assert on Bottom line's internal
       structure — all 45 tests still pass unchanged.
+- ✅ Dev-facing content audit (2026-07-13), per direct user request to check
+      the public site for anything that belongs in this backlog instead.
+      Found three CLI-leak error/empty-states written for a developer running
+      locally, not a real visitor: `documents/page.tsx`'s fetch-failure and
+      empty-corpus messages named `uv run ept serve` / `ept refresh` / `ept
+      embed` directly, and `brief/page.tsx`'s fetch-failure message did the
+      same. Replaced all three with plain user-facing copy ("temporarily
+      unavailable — try again shortly" / "No documents to show right now").
+      Separately, removed the About page's `PLANNED_SOURCES` "Next" roadmap
+      entries (Légifrance PISTE/DILA key, Bundestag DIP procedure adapter) —
+      internal blocker detail (which API key is missing, whether an adapter
+      is built yet) has no business being advertised to a company evaluating
+      the product, and both facts were already tracked here (Jurisdiction
+      depth section above). Deleted `PlannedSource`/`PLANNED_SOURCES` from
+      `lib/sourceCategories.ts` as dead code rather than leaving it unused.
+- ✅ About/Live-register IA rework (2026-07-13), direct user feedback on two
+      fronts: (1) the About page's "How it's built" 2x2 read as an engineering
+      changelog, not a pitch to a compliance/PA buyer — rewrote all four
+      principles from implementation detail ("single-trigger collection",
+      "hashed and versioned", "polled politely, rate-limited, retried with
+      backoff") to plain benefit statements ("Nothing goes stale", "Every
+      claim is sourced", "Changes are tracked, not hidden", "One bad source
+      can't break the rest"). (2) The About page's "Coverage" section (per-
+      category live counts, jurisdiction badges, source list) was flagged as
+      misplaced — genuinely useful for intelligibility, but about the corpus,
+      not the company pitch — and the Live register's own filtering was
+      needlessly split across two parallel, drifting taxonomies: a 4-value
+      `SourceCategory` (`lib/sourceCategories.ts`, law/regulator/press/
+      consultation, used by About) and a separate ad-hoc 2-value `LAYERS`
+      constant local to `documents/page.tsx` (law-vs-monitor by
+      `document_type`). Moved Coverage from About into the register page
+      wholesale and made its category cards the actual category filter
+      (`category` state + `categoryFor()`, replacing `LAYERS`/`LAW_TYPES`
+      entirely) — clicking a card both narrows the list below and shows the
+      same live-count/jurisdiction/source-list detail that used to live on
+      About. About now ends at the "How it's built" grid before "Why this
+      exists"; no longer fetches `getSources()` at all. Verified live:
+      `tsc --noEmit` and `next build` both clean, and in-browser — clicking
+      "Law & legislative pipeline" narrows 200→29 documents and highlights
+      the active card, "Clear category filter" resets it, no horizontal
+      overflow at 1400px.
 
 ## Automation / ops
 

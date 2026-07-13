@@ -103,34 +103,3 @@ export function categoryFor(sourceKey: string): SourceCategory {
 }
 
 export const CATEGORY_ORDER: SourceCategory[] = ["law", "regulator", "press", "consultation"];
-
-// Adapters that exist in the codebase and are unblocked (a working API key
-// has been found/verified — see project-management/decision-log.md), but
-// don't have a Source row yet because the adapter itself isn't written.
-// Kept here (not in the DB) because "what's on the roadmap" is a planning
-// judgment call, not something a live corpus query can answer — but the
-// description text must stay accurate to the actual blocker, not go stale.
-export type PlannedSource = {
-  key: string;
-  name: string;
-  jurisdiction: string;
-  category: SourceCategory;
-  note: string;
-};
-
-export const PLANNED_SOURCES: PlannedSource[] = [
-  {
-    key: "legifrance",
-    name: "Légifrance (FR consolidated law texts)",
-    jurisdiction: "FR",
-    category: "law",
-    note: "Adapter not yet built — needs a PISTE/DILA API key, which hasn't been obtained.",
-  },
-  {
-    key: "bundestag_dip_procedures",
-    name: "Bundestag DIP (DE structured procedure data)",
-    jurisdiction: "DE",
-    category: "law",
-    note: "No longer blocked on a key — a public demo key was found and is already used by de_verbatim — but the procedure-tracking adapter itself hasn't been built yet.",
-  },
-];
