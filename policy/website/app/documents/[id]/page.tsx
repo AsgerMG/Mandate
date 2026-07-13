@@ -30,7 +30,10 @@ export default function DocumentPage() {
       </div>
 
       <section className="hero" style={{ paddingTop: 18 }}>
-        <div className="row" style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+        <div
+          className="row"
+          style={{ display: "flex", gap: 10, marginBottom: 10, flexWrap: "wrap", justifyContent: "flex-start" }}
+        >
           <span className={`badge ${doc.stage}`}>{STAGE_LABELS[doc.stage] ?? doc.stage}</span>
           <span className="badge juris">{doc.jurisdiction}</span>
           <span className="badge unknown">{doc.type}</span>

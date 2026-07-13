@@ -73,3 +73,6 @@ built in), or local Docker via `docker compose up -d`.
   the principles.
 - [Decision log](project-management/decision-log.md) — what was decided and why.
 - [Backlog](project-management/backlog.md) — what's done and what's next.
+- [Design & UX guidelines](project-management/design-ux-guidelines.md) — the
+  responsiveness/cross-device rules for `website/`, each tied to a real bug it
+  prevents.

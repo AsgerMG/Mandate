@@ -358,7 +358,7 @@ export default function BriefPage() {
             </div>
           ))}
 
-          <div style={{ display: "flex", gap: 12 }}>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <button
               className="btn"
               onClick={() => (isLastGroup ? generateReport() : setGroupIndex(groupIndex + 1))}

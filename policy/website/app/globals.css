@@ -22,9 +22,20 @@
 
 * { box-sizing: border-box; }
 
-html, body {
+/* Stop iOS Safari auto-bumping text size on rotation — we size type
+   deliberately at every breakpoint, so let the layout be the only thing
+   that adapts, not an extra multiplier the browser applies on top. */
+html { height: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* Sticky footer: body is the flex column so short pages (e.g. an empty
+   register, or a wide/tall monitor) still pin the footer to the viewport
+   bottom instead of leaving it floating right under a half-empty page. */
+body {
   margin: 0;
   padding: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -36,7 +47,12 @@ html, body {
 a { color: var(--accent-deep); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+main.container { flex: 1 0 auto; width: 100%; }
+
 .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+}
 
 /* Masthead */
 .masthead { background: var(--paper); border-bottom: 3px double var(--ink); }
@@ -45,11 +61,11 @@ a:hover { text-decoration: underline; }
   padding: 20px 0 12px; gap: 20px; flex-wrap: wrap;
 }
 .masthead-brand a {
-  font-family: var(--font-serif); font-size: 25px; font-weight: 600;
+  font-family: var(--font-serif); font-size: clamp(19px, 5vw, 25px); font-weight: 600;
   letter-spacing: -0.01em; color: var(--ink);
 }
 .masthead-brand a:hover { text-decoration: none; opacity: 0.8; }
-.masthead-nav { display: flex; align-items: center; gap: 24px; font-size: 13.5px; font-weight: 500; }
+.masthead-nav { display: flex; align-items: center; gap: 24px; font-size: 13.5px; font-weight: 500; flex-wrap: wrap; row-gap: 8px; }
 .masthead-nav a:not(.masthead-cta) { color: var(--ink-soft); }
 .masthead-nav a:not(.masthead-cta):hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .masthead-cta {
@@ -115,6 +131,41 @@ a:hover { text-decoration: underline; }
   .flow-step + .flow-step { border-left: none; border-top: 1px solid var(--rule); padding-left: 0; padding-top: 18px; }
 }
 
+/* Small screens: the site otherwise had a single 760px breakpoint, so every
+   fixed desktop padding value (form panels, the report sheet, the CTA band)
+   just got squeezed rather than actually resized — this is what read as
+   "hyper compressed" on a phone. */
+@media (max-width: 640px) {
+  .hero { padding: 22px 0 4px; }
+  .masthead-bar { padding: 16px 0 10px; }
+  .masthead-cta { padding: 7px 12px; font-size: 11px; }
+  /* The rightmost dateline item is decorative reinforcement of the brand,
+     not information — on a narrow screen it just eats a whole extra line
+     above the fold, so drop it rather than let it wrap. */
+  .masthead-dateline span:last-child { display: none; }
+
+  .form { padding: 20px; }
+  .report-sheet { padding: 24px 20px; }
+  .excerpt { padding: 16px 18px; }
+
+  .cta-band {
+    flex-direction: column; align-items: flex-start;
+    padding: 26px 22px; margin: 40px 0 30px;
+  }
+  .cta-band .btn { width: 100%; justify-content: center; }
+
+  /* Thumb-sized tap targets: chips and option-rows are tapped repeatedly
+     while scoping a report, and at their desktop padding several sit under
+     the ~44px minimum comfortable touch target. */
+  .chip { padding: 10px 15px; }
+  .option-row { padding: 13px 14px; }
+
+  /* Make the primary action full-width and thumb-reachable rather than a
+     compact inline button competing with a secondary text link. */
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .hero-actions .link-arrow { width: 100%; text-align: center; }
+}
+
 /* About page: center the intro (hero + why-this-exists) within the first
    screen instead of pinning it to the top — a fixed bottom margin looked like
    broken padding rather than intentional whitespace. "How it's built" then
@@ -125,6 +176,13 @@ a:hover { text-decoration: underline; }
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+@media (max-width: 640px) {
+  /* Centering a min-height section only reads as intentional whitespace when
+     the viewport is taller than the content; on a short phone screen the
+     text is often taller than 100vh, so centering instead clips the top of
+     the hero above the fold. Fall back to normal top-aligned flow. */
+  .about-intro { min-height: 0; display: block; }
 }
 /* Compound selector so it reliably beats .section's margin shorthand
    regardless of source order (equal specificity would otherwise let
@@ -158,11 +216,20 @@ a:hover { text-decoration: underline; }
 .register-row:hover .register-title { text-decoration: underline; text-decoration-color: var(--rule); }
 .register-title {
   flex: 1; font-family: var(--font-serif); font-size: 15px; color: var(--ink); line-height: 1.4;
-  min-width: 200px;
+  min-width: 200px; overflow-wrap: break-word;
 }
 .register-meta {
   display: flex; gap: 12px; align-items: center; font-size: 12px; color: var(--muted);
   flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end;
+}
+@media (max-width: 640px) {
+  /* register-title's 200px min-width plus a non-shrinking register-meta was
+     wider than the viewport, forcing the whole page to scroll horizontally
+     and everything else to render squeezed. Let each row wrap onto two lines
+     instead. */
+  .register-row { flex-wrap: wrap; row-gap: 6px; }
+  .register-title { flex-basis: 100%; min-width: 0; }
+  .register-meta { justify-content: flex-start; }
 }
 
 /* Closing CTA band */
@@ -186,7 +253,7 @@ a:hover { text-decoration: underline; }
   font-weight: 700; color: var(--ink-soft); display: flex; align-items: center; gap: 10px;
   padding-bottom: 8px; border-bottom: 1px solid var(--rule);
 }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
 
 /* Card (used for About coverage) */
 .card {
@@ -195,10 +262,12 @@ a:hover { text-decoration: underline; }
   transition: border-color 0.15s ease;
 }
 .card:hover { border-color: var(--ink); }
-.card h3 { font-size: 15px; margin: 0; line-height: 1.35; font-weight: 600; }
+.card h3 { font-size: 15px; margin: 0; line-height: 1.35; font-weight: 600; overflow-wrap: break-word; }
 .card h3 a { color: var(--ink); }
 .card .meta { color: var(--muted); font-size: 12.5px; display: flex; gap: 10px; flex-wrap: wrap; }
-.card .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+/* Not scoped to .card — brief/page.tsx and Report.tsx also render a bare
+   `.row` inside .source-item, which needs the same space-between layout. */
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 
 /* Badge — bracket/stamp style, not a filled pill */
 .badge {
@@ -239,7 +308,10 @@ a:hover { text-decoration: underline; }
 .field .hint { color: var(--muted); font-weight: 400; font-size: 12.5px; text-transform: none; letter-spacing: 0; }
 input[type="text"], textarea {
   width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: var(--radius);
-  font-family: var(--font-sans); font-size: 14.5px; background: #fff; color: var(--ink);
+  font-family: var(--font-sans); font-size: 16px; background: #fff; color: var(--ink);
+  /* iOS Safari zooms the whole page in on focus if a text input renders
+     below 16px — 16px is the smallest size that avoids it, so this isn't a
+     stylistic choice, it's the floor for a usable mobile form. */
 }
 textarea { min-height: 90px; resize: vertical; }
 input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(16, 32, 63, 0.08); }
@@ -257,6 +329,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .stepper { margin: 30px 0 26px; }
 .stepper-head {
   display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;
+  flex-wrap: wrap; row-gap: 4px;
 }
 .stepper-label {
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
@@ -285,7 +358,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 
 /* Sub-stepper (scoping groups, nested under the main 3-step stepper) */
 .substepper { margin: 0 0 22px; }
-.substepper-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.substepper-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; row-gap: 4px; }
 .substepper-name { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: var(--ink); }
 .substepper-track { height: 3px; }
 
@@ -293,6 +366,7 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .generating-panel { max-width: 640px; }
 .generating-head {
   display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px;
+  flex-wrap: wrap; row-gap: 4px;
 }
 .generating-head h2 {
   font-family: var(--font-serif); font-size: 19px; font-weight: 600; margin: 0; color: var(--ink);
@@ -347,27 +421,36 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .excerpt {
   background: var(--paper); border: 1px solid var(--rule); border-radius: var(--radius);
   padding: 22px 24px; white-space: pre-wrap; line-height: 1.65; font-size: 14px;
-  max-height: 480px; overflow: auto;
+  max-height: 480px; overflow: auto; overflow-wrap: break-word;
+  /* Body text, not tabular data — cap the measure so a line doesn't run
+     the full 1160px container width on a large monitor, which is well past
+     the ~75-character line length that stays comfortable to read. */
+  max-width: 760px;
 }
 .spinner { color: var(--muted); padding: 20px 0; }
 .back { font-size: 13.5px; font-weight: 600; }
 
 /* Report sheet */
-.report-actions { display: flex; gap: 12px; margin-bottom: 18px; }
+.report-actions { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
 .report-sheet {
   background: var(--paper); border: 1px solid var(--rule); border-top: 3px solid var(--accent);
   border-radius: var(--radius); padding: 42px 46px;
 }
 .report h1 {
-  font-family: var(--font-serif); font-weight: 600; font-size: 28px; letter-spacing: -0.01em;
-  line-height: 1.15; margin: 0 0 6px; padding-bottom: 14px; border-bottom: 1px solid var(--rule);
+  font-family: var(--font-serif); font-weight: 600; font-size: clamp(22px, 4.5vw, 28px);
+  letter-spacing: -0.01em; line-height: 1.15; margin: 0 0 6px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule); max-width: 760px; overflow-wrap: break-word;
 }
 .report h2 {
   font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-deep);
-  margin: 30px 0 12px; display: flex; align-items: center; gap: 10px;
+  margin: 30px 0 12px; display: flex; align-items: center; gap: 10px; max-width: 760px;
 }
 .report h2::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
-.report h3 { font-family: var(--font-serif); font-weight: 600; font-size: 16.5px; margin: 20px 0 8px; }
+.report h3 { font-family: var(--font-serif); font-weight: 600; font-size: 16.5px; margin: 20px 0 8px; max-width: 760px; }
+/* Body copy, not tabular data — capped to a readable measure (see .excerpt);
+   .report-table is deliberately excluded so data columns can still use the
+   full sheet width. */
+.report p, .report ul { max-width: 760px; overflow-wrap: break-word; }
 .report p { margin: 0 0 12px; line-height: 1.7; }
 .report ul { margin: 0 0 14px; padding-left: 22px; }
 .report li { margin-bottom: 5px; line-height: 1.6; }
