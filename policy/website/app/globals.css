@@ -251,53 +251,32 @@ main.container { flex: 1 0 auto; width: 100%; }
      the hero above the fold. Fall back to normal top-aligned flow. */
   .viewport-intro { min-height: 0; display: block; }
 }
-/* About page: hero paired with "How it's built" side by side in the first
+/* About page: hero paired with a supporting image side by side in the first
    screen, inside .viewport-intro. align-items: center keeps the (shorter)
-   hero text vertically centered against the (taller) grid instead of
-   pinned to the top, where it read as floating relative to it. */
+   hero text vertically centered against the image instead of pinned to the
+   top, where it read as floating relative to it. Mirrors Home's .hero-row. */
 .lede-row { display: flex; align-items: center; justify-content: center; gap: 44px; }
-/* Hero text capped at its own basis via max-width (not just flex-grow: 0)
-   so it stops growing past 460px on wide screens. .built-col keeps growing
-   (flex-grow: 1, no cap) and absorbs the leftover width instead — the grid
-   stays the same size it always was; only the text column got narrower. */
+/* Both sides capped at their own basis via max-width (not just flex-grow: 0)
+   so neither grows past its slot on wide screens — the image originally had
+   no cap here and ballooned to fill all leftover row width (768px vs the
+   text's fixed 460px at 1920px+), reading as gigantic next to the text. Any
+   slack becomes matching margin on both sides via .lede-row's
+   justify-content: center instead. */
 .lede-row .lede-hero { flex: 1 1 460px; max-width: 460px; padding: 0; }
-.built-col { flex: 1 1 340px; min-width: 0; }
-.built-label {
-  display: flex; align-items: center;
-  font-size: clamp(11.5px, 8.97px + 0.1977vw, 14.03px); font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.16em; color: var(--accent-deep); margin: 0 0 10px;
+.lede-image { flex: 1 1 340px; max-width: 340px; min-width: 0; }
+.lede-image img {
+  width: 100%; height: auto; display: block;
+  border: 1px solid var(--rule); border-radius: var(--radius);
 }
-/* 2x2 variant of .flow: border-top/left on the container plus border-
-   right/bottom on each cell draws a full grid without doubled rule lines.
-   Sized down from .flow-step's default type scale — at full size, four full
-   descriptions in a 2x2 grid made it much taller than the hero text next to
-   it (~460px vs ~200px), reading as disproportionate. */
-.built-grid {
-  display: grid; grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--ink); border-left: 1px solid var(--ink);
-  border-bottom: none;
-}
-.built-grid .flow-step {
-  border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
-  border-left: none; padding: 11px 13px;
-}
-.built-grid .flow-num {
-  font-size: clamp(15px, 12px + 0.6vw, 19px); margin-bottom: 4px;
-}
-.built-grid h3 { font-size: clamp(12.5px, 11px + 0.3vw, 14px); margin: 0 0 3px; line-height: 1.25; }
-.built-grid p { font-size: clamp(11px, 10px + 0.2vw, 12px); line-height: 1.45; }
 @media (max-width: 900px) {
-  /* flex-basis is main-axis-relative: the 460px/420px values above set a
+  /* flex-basis is main-axis-relative: the 460px/340px values above set a
      sensible starting *width* in row mode, but once flex-direction flips to
      column here, the same numbers are read as a minimum *height* — forcing
      the hero into a ~460px-tall box regardless of its actual (much
-     shorter) content and leaving a large dead gap before the grid below it.
+     shorter) content and leaving a large dead gap before the image below it.
      Reset both to their natural content height when stacked. */
   .lede-row { flex-direction: column; gap: 26px; }
-  .lede-row .lede-hero, .built-col { flex: none; }
-}
-@media (max-width: 640px) {
-  .built-grid { grid-template-columns: 1fr; }
+  .lede-row .lede-hero, .lede-image { flex: none; }
 }
 
 /* Coverage: expandable per-category source list, styled like .show-more

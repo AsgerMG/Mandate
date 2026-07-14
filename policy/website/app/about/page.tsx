@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const PRINCIPLES = [
@@ -42,20 +43,30 @@ export default function AboutPage() {
             </p>
           </section>
 
-          <div className="built-col">
-            <div className="built-label">How it&apos;s built</div>
-            <div className="flow built-grid">
-              {PRINCIPLES.map((p) => (
-                <div className="flow-step" key={p.n}>
-                  <span className="flow-num">{p.n}</span>
-                  <h3>{p.title}</h3>
-                  <p>{p.body}</p>
-                </div>
-              ))}
-            </div>
+          <div className="lede-image">
+            <Image
+              src="/images/parliament.png"
+              alt="Illustrated European Parliament building in black and white"
+              width={1536}
+              height={1024}
+              priority
+            />
           </div>
         </div>
       </div>
+
+      <section className="section">
+        <h2>How it&apos;s built</h2>
+        <div className="flow">
+          {PRINCIPLES.map((p) => (
+            <div className="flow-step" key={p.n}>
+              <span className="flow-num">{p.n}</span>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="section">
         <h2>Why this exists</h2>
