@@ -163,12 +163,6 @@ main.container { flex: 1 0 auto; width: 100%; }
 }
 .page-head p { color: var(--ink-soft); margin: 0; max-width: 640px; font-size: clamp(14px, 12px + 0.3vw, 16px); line-height: 1.5; }
 
-/* Utility: align an element's width with .form's 720px cap — the stepper
-   used to span the full container (up to 1320px) while the form below it
-   was capped at 720px, so the progress bar visibly overshot the box it was
-   tracking progress for. */
-.brief-width { max-width: 720px; }
-
 .link-arrow {
   font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); font-weight: 600; color: var(--ink);
   text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--rule);
@@ -422,17 +416,12 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .checks { display: flex; gap: 18px; flex-wrap: wrap; }
 .check { display: flex; align-items: center; gap: 8px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); }
 
-/* Stepper (brief flow) */
-.stepper { margin: 16px 0 18px; }
-.stepper-head {
-  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;
-  flex-wrap: wrap; row-gap: 4px;
-}
+/* Stepper track/label — the old top-level 3-step bar for the brief wizard
+   was replaced by the vertical ProgressRail (brief/ProgressRail.tsx), but
+   the scoping sub-stepper below still reuses this track/label styling for
+   its own "group X of Y" progress within step 2. */
 .stepper-label {
   font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
-}
-.stepper-name {
-  font-family: var(--font-serif); font-size: clamp(16px, 12.48px + 0.275vw, 19.52px); font-weight: 600; color: var(--ink);
 }
 .stepper-track { display: flex; gap: 6px; height: 3px; background: var(--line-soft); }
 .stepper-track span { flex: 1; background: transparent; transition: background 0.2s ease; }
@@ -459,36 +448,79 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .substepper-name { font-family: var(--font-serif); font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); font-weight: 600; color: var(--ink); }
 .substepper-track { height: 3px; }
 
-/* Report generation — live progress panel */
-.generating-panel { max-width: 640px; }
-.generating-head {
-  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px;
-  flex-wrap: wrap; row-gap: 4px;
-}
+/* Report generation — live progress panel. The stage-by-stage list used to
+   live here; it's now in the vertical ProgressRail beside this panel (see
+   .brief-layout below) so this box just sets the scene. */
+.generating-head { margin-bottom: 14px; }
 .generating-head h2 {
   font-family: var(--font-serif); font-size: clamp(19px, 14.82px + 0.3266vw, 23.18px); font-weight: 600; margin: 0; color: var(--ink);
 }
-.generating-head .elapsed {
-  font-variant-numeric: tabular-nums; font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); color: var(--muted);
-}
-.stage-list { list-style: none; margin: 0 0 20px; padding: 0; display: flex; flex-direction: column; gap: 12px; }
-.stage-list li {
-  display: flex; align-items: center; gap: 11px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); color: var(--muted);
-}
-.stage-list li.done { color: var(--ink-soft); }
-.stage-list li.active { color: var(--ink); font-weight: 600; }
-.stage-dot {
-  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--rule);
-}
-.stage-list li.done .stage-dot { background: var(--ink-soft); }
-.stage-list li.active .stage-dot {
-  background: var(--accent); animation: stage-pulse 1.4s ease-in-out infinite;
-}
-@keyframes stage-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.7); }
-}
 .generating-note { font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin: 0; }
+
+/* Brief wizard layout: main form/panel beside the vertical ProgressRail,
+   set tight together (not a generous section-gap) — the rail reads as a
+   companion strip attached to the box beside it, not an independent block.
+   align-items: stretch makes the rail match whichever box is currently on
+   the left (data-entry form, scoping form, or the generating panel) at its
+   natural height. Dropped once the finished report renders (see page.tsx) —
+   a multi-page report stretching a short rail to match its height would
+   leave the rail mostly empty air. */
+.brief-layout { display: flex; align-items: stretch; gap: 24px; }
+/* max-width matches .form's own 720px cap — .brief-main is a flex item that
+   otherwise keeps growing to fill the row even once its .form child has
+   already hit its own max-width, leaving invisible empty space between the
+   visible end of the form and the rail sitting right after brief-main. */
+.brief-main { flex: 1 1 480px; min-width: 0; max-width: 720px; }
+@media (max-width: 900px) {
+  .brief-layout { flex-direction: column; gap: 20px; }
+  .brief-main, .rail { flex: none; }
+}
+
+/* ProgressRail (brief/ProgressRail.tsx) — one flat vertical list, every
+   step visible from the start (idle → current → done), not a list that
+   grows as the user progresses. No frame — it reads as an extension of the
+   box beside it, not a separate card. display: flex column + justify-
+   content: space-between spreads the fixed 9-step list across the rail's
+   full stretched height so it reaches the bottom of the box beside it. */
+.rail {
+  flex: 0 0 240px; background: transparent; padding: 4px 0 4px 6px;
+  display: flex; flex-direction: column;
+}
+.rail-steps {
+  list-style: none; margin: 0; padding: 0; position: relative; flex: 1;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+}
+/* One continuous connecting line for the whole list (not per-row segments)
+   so it stays correct regardless of how much space-between spreads rows
+   apart — each icon's opaque background punches through it as it passes. */
+.rail-steps::before {
+  content: ""; position: absolute; left: 8px; top: 10px; bottom: 10px; width: 1px; background: var(--rule);
+  z-index: 0;
+}
+.rail-step { display: flex; align-items: center; gap: 11px; transition: opacity 0.2s ease; }
+.rail-icon {
+  position: relative; z-index: 1; width: 17px; height: 17px; display: flex; align-items: center;
+  justify-content: center; border-radius: 50%; flex-shrink: 0; color: var(--muted);
+  /* background matches the page (not .rail, which is transparent) so the
+     circle cleanly "punches through" the connecting line behind it. */
+  background: var(--bg);
+}
+.rail-step.current .rail-icon { color: var(--accent-deep); }
+/* Idle: faint, waiting its turn. Current: the one thing happening right
+   now — full-strength ink, accent icon. Done: greyed out — it mattered a
+   moment ago, not anymore. */
+.rail-step.upcoming { opacity: 0.55; }
+.rail-step.done { opacity: 0.45; }
+.rail-step-label {
+  font-family: var(--font-sans); font-weight: 500; font-size: clamp(14px, 12.28px + 0.1146vw, 15.3px);
+  color: var(--muted);
+}
+.rail-step.done .rail-step-label { color: var(--ink-soft); }
+.rail-step.current .rail-step-label { color: var(--ink); font-weight: 600; }
+.rail-elapsed {
+  margin-left: auto; font-variant-numeric: tabular-nums; font-size: clamp(11.5px, 10.06px + 0.0938vw, 12.6px);
+  color: var(--muted); flex-shrink: 0; padding-left: 8px;
+}
 
 /* Briefing output */
 .notice {

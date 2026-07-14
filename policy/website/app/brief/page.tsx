@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
   BriefInput,
   BriefResult,
-  BriefStage,
   Meta,
   ScopingQuestion,
   downloadPdf,
@@ -13,6 +12,7 @@ import {
   postQuestions,
 } from "@/lib/api";
 import { Fragment } from "react";
+import ProgressRail, { TimedSubStage } from "./ProgressRail";
 import { ReportCoverage, ReportMarkdown, splitAppendix } from "./Report";
 
 type Step = "profile" | "questions" | "report";
@@ -25,12 +25,6 @@ function withEmphasis(text: string) {
     /^\*[^*]+\*$/.test(p) ? <em key={i}>{p.slice(1, -1)}</em> : <Fragment key={i}>{p}</Fragment>
   );
 }
-
-const STEPS: { key: Step; label: string }[] = [
-  { key: "profile", label: "Your company" },
-  { key: "questions", label: "Scoping" },
-  { key: "report", label: "Report" },
-];
 
 // Order in which scoping groups appear; a group is skipped entirely when no
 // question in it survived core_questions()'s conditional logic (e.g. "AI
@@ -46,8 +40,16 @@ const GROUP_LABELS: Record<string, string> = {
 };
 
 export default function BriefPage() {
-  const [step, setStep] = useState<Step>("profile");
+  const [step, goToStep] = useState<Step>("profile");
   const [meta, setMeta] = useState<Meta | null>(null);
+
+  // Rail timing: a live-ticking clock for the current AI sub-stage's
+  // elapsed display, and the moment generation actually finished (freezes
+  // the last sub-stage's timer instead of letting it tick after the report
+  // is already on screen). Only LLM-call sub-stages show a timer at all —
+  // see ProgressRail.tsx's LLM_CALL_STAGES.
+  const [reportEndedAt, setReportEndedAt] = useState<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
 
   // Step 1 — profile
   const [name, setName] = useState("");
@@ -70,12 +72,23 @@ export default function BriefPage() {
   // Report generation — separate from `loading` since it drives a dedicated
   // progress screen (see the "report" step below) rather than a button label.
   const [generating, setGenerating] = useState(false);
-  const [stages, setStages] = useState<BriefStage[]>([]);
-  const [elapsedSec, setElapsedSec] = useState(0);
+  const [subStages, setSubStages] = useState<TimedSubStage[]>([]);
 
   useEffect(() => {
     getMeta().then(setMeta).catch(() => setError("The report tool is temporarily unavailable — please try again shortly."));
   }, []);
+
+  // Single shared clock driving every live-ticking elapsed display in
+  // ProgressRail (the current macro step and, once report generation
+  // starts, the current AI sub-stage) — one interval instead of one per
+  // row. Stops once the finished report is on screen (the rail is hidden
+  // there — nothing left to tick).
+  const finished = Boolean(result) && !generating;
+  useEffect(() => {
+    if (finished) return;
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, [finished]);
 
   const toggle = (arr: string[], v: string, set: (x: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -122,7 +135,7 @@ export default function BriefPage() {
       }
       setQuestions(r.questions);
       setGroupIndex(0);
-      setStep("questions");
+      goToStep("questions");
     } catch {
       setError("Request failed. Is the API running?");
     } finally {
@@ -131,27 +144,24 @@ export default function BriefPage() {
   }
 
   async function generateReport() {
-    setStep("report");
+    goToStep("report");
     setResult(null);
     setGenerating(true);
     setError(null);
-    setStages([]);
-    setElapsedSec(0);
-    const startedAt = Date.now();
-    const timer = window.setInterval(
-      () => setElapsedSec(Math.round((Date.now() - startedAt) / 1000)),
-      1000
-    );
+    setSubStages([]);
+    setReportEndedAt(null);
     try {
-      const r = await postBrief(scopedInput(), (s) => setStages((prev) => [...prev, s]));
+      const r = await postBrief(scopedInput(), (s) =>
+        setSubStages((prev) => [...prev, { ...s, at: Date.now() }])
+      );
       setResult(r);
     } catch {
       setError("Report generation failed. Is the API running?");
       // Back to wherever the user came from — their answers are untouched in
       // state, so this doesn't cost them any of the scoping work they did.
-      setStep(questions.length > 0 ? "questions" : "profile");
+      goToStep(questions.length > 0 ? "questions" : "profile");
     } finally {
-      window.clearInterval(timer);
+      setReportEndedAt(Date.now());
       setGenerating(false);
     }
   }
@@ -194,220 +204,200 @@ export default function BriefPage() {
         </p>
       </section>
 
-      <div className="stepper brief-width">
-        <div className="stepper-head">
-          <span className="stepper-label">
-            Step {STEPS.findIndex((s) => s.key === step) + 1} of {STEPS.length}
-          </span>
-          <span className="stepper-name">{STEPS.find((s) => s.key === step)?.label}</span>
-        </div>
-        <div className="stepper-track">
-          {STEPS.map((s, i) => {
-            const currentIdx = STEPS.findIndex((x) => x.key === step);
-            return (
-              <span
-                key={s.key}
-                className={i < currentIdx ? "done" : i === currentIdx ? "current" : ""}
-              />
-            );
-          })}
-        </div>
-      </div>
-
-      {step === "profile" && (
-        <form className="form" onSubmit={startScoping}>
-          <div className="field">
-            <label>Company name</label>
-            <input type="text" value={name} required onChange={(e) => setName(e.target.value)} />
-          </div>
-
-          <div className="field">
-            <label>
-              What does it do?{" "}
-              <span className="hint">— products, business model, how you use data/AI</span>
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. We provide automated credit-scoring software to consumer lenders across the EU."
-            />
-          </div>
-
-          {meta && (
-            <div className="field">
-              <label>Sectors</label>
-              <div className="chips">
-                {meta.sectors.map((s) => (
-                  <span
-                    key={s.slug}
-                    className={`chip ${sectors.includes(s.slug) ? "on" : ""}`}
-                    onClick={() => toggle(sectors, s.slug, setSectors)}
-                  >
-                    {s.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="field">
-            <label>Markets</label>
-            <div className="chips">
-              {(meta?.jurisdictions ?? ["EU"]).map((j) => (
-                <span
-                  key={j}
-                  className={`chip ${markets.includes(j) ? "on" : ""}`}
-                  onClick={() => toggle(markets, j, setMarkets)}
-                >
-                  {j}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="field">
-            <div className="checks">
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={usesAi}
-                  onChange={(e) => setUsesAi(e.target.checked)}
-                />
-                Develops or deploys AI
-              </label>
-              <label className="check">
-                <input
-                  type="checkbox"
-                  checked={personalData}
-                  onChange={(e) => setPersonalData(e.target.checked)}
-                />
-                Handles personal data
-              </label>
-            </div>
-          </div>
-
-          <button className="btn" type="submit" disabled={loading || !name}>
-            {loading ? "Preparing questions…" : "Continue"}
-          </button>
-        </form>
-      )}
-
-      {step === "questions" && currentGroup && (
-        <div className="form">
-          <div className="substepper">
-            <div className="substepper-head">
-              <span className="stepper-label">
-                Scoping · {groupIndex + 1} of {groups.length}
-              </span>
-              <span className="substepper-name">{currentGroup.label}</span>
-            </div>
-            <div className="stepper-track substepper-track">
-              {groups.map((g, i) => (
-                <span key={g.key} className={i < groupIndex ? "done" : i === groupIndex ? "current" : ""} />
-              ))}
-            </div>
-          </div>
-
-          <p className="muted" style={{ marginTop: 0 }}>
-            These thresholds decide which instruments actually apply to <strong>{name}</strong>.
-            Skip anything you don&apos;t know — the report will treat it as unconfirmed.
-          </p>
-
-          {currentGroup.questions.map((q) => (
-            <div className="field question" key={q.id}>
-              <label>{q.question}</label>
-              <p className="why">{withEmphasis(q.why_it_matters)}</p>
-              {q.kind === "text" ? (
-                <textarea
-                  value={(answers[q.id] as string) ?? ""}
-                  placeholder={q.placeholder}
-                  onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
-                />
-              ) : (
-                <div className="option-list">
-                  {q.options.map((opt) => {
-                    const current = answers[q.id];
-                    const on =
-                      q.kind === "multi"
-                        ? Array.isArray(current) && current.includes(opt)
-                        : current === opt;
-                    return (
-                      <label key={opt} className={`option-row ${on ? "on" : ""}`}>
-                        <input
-                          type={q.kind === "multi" ? "checkbox" : "radio"}
-                          name={q.id}
-                          checked={on}
-                          onChange={() => {
-                            if (q.kind === "multi") {
-                              const cur = Array.isArray(current) ? current : [];
-                              setAnswers({
-                                ...answers,
-                                [q.id]: on ? cur.filter((x) => x !== opt) : [...cur, opt],
-                              });
-                            } else {
-                              setAnswers({ ...answers, [q.id]: opt });
-                            }
-                          }}
-                        />
-                        <span>{opt}</span>
-                      </label>
-                    );
-                  })}
+      {!(step === "report" && result && !generating) && (
+        <div className="brief-layout">
+          <div className="brief-main">
+            {step === "profile" && (
+              <form className="form" onSubmit={startScoping}>
+                <div className="field">
+                  <label>Company name</label>
+                  <input type="text" value={name} required onChange={(e) => setName(e.target.value)} />
                 </div>
-              )}
-            </div>
-          ))}
 
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <button
-              className="btn"
-              onClick={() => (isLastGroup ? generateReport() : setGroupIndex(groupIndex + 1))}
-            >
-              {!isLastGroup
-                ? "Next"
-                : answered < questions.length
-                  ? `Generate report (${answered}/${questions.length} answered)`
-                  : "Generate report"}
-            </button>
-            <button
-              className="btn secondary"
-              onClick={() => (groupIndex === 0 ? setStep("profile") : setGroupIndex(groupIndex - 1))}
-            >
-              Back
-            </button>
+                <div className="field">
+                  <label>
+                    What does it do?{" "}
+                    <span className="hint">— products, business model, how you use data/AI</span>
+                  </label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="e.g. We provide automated credit-scoring software to consumer lenders across the EU."
+                  />
+                </div>
+
+                {meta && (
+                  <div className="field">
+                    <label>Sectors</label>
+                    <div className="chips">
+                      {meta.sectors.map((s) => (
+                        <span
+                          key={s.slug}
+                          className={`chip ${sectors.includes(s.slug) ? "on" : ""}`}
+                          onClick={() => toggle(sectors, s.slug, setSectors)}
+                        >
+                          {s.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="field">
+                  <label>Markets</label>
+                  <div className="chips">
+                    {(meta?.jurisdictions ?? ["EU"]).map((j) => (
+                      <span
+                        key={j}
+                        className={`chip ${markets.includes(j) ? "on" : ""}`}
+                        onClick={() => toggle(markets, j, setMarkets)}
+                      >
+                        {j}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="field">
+                  <div className="checks">
+                    <label className="check">
+                      <input
+                        type="checkbox"
+                        checked={usesAi}
+                        onChange={(e) => setUsesAi(e.target.checked)}
+                      />
+                      Develops or deploys AI
+                    </label>
+                    <label className="check">
+                      <input
+                        type="checkbox"
+                        checked={personalData}
+                        onChange={(e) => setPersonalData(e.target.checked)}
+                      />
+                      Handles personal data
+                    </label>
+                  </div>
+                </div>
+
+                <button className="btn" type="submit" disabled={loading || !name}>
+                  {loading ? "Preparing questions…" : "Continue"}
+                </button>
+              </form>
+            )}
+
+            {step === "questions" && currentGroup && (
+              <div className="form">
+                <div className="substepper">
+                  <div className="substepper-head">
+                    <span className="stepper-label">
+                      Scoping · {groupIndex + 1} of {groups.length}
+                    </span>
+                    <span className="substepper-name">{currentGroup.label}</span>
+                  </div>
+                  <div className="stepper-track substepper-track">
+                    {groups.map((g, i) => (
+                      <span key={g.key} className={i < groupIndex ? "done" : i === groupIndex ? "current" : ""} />
+                    ))}
+                  </div>
+                </div>
+
+                <p className="muted" style={{ marginTop: 0 }}>
+                  These thresholds decide which instruments actually apply to <strong>{name}</strong>.
+                  Skip anything you don&apos;t know — the report will treat it as unconfirmed.
+                </p>
+
+                {currentGroup.questions.map((q) => (
+                  <div className="field question" key={q.id}>
+                    <label>{q.question}</label>
+                    <p className="why">{withEmphasis(q.why_it_matters)}</p>
+                    {q.kind === "text" ? (
+                      <textarea
+                        value={(answers[q.id] as string) ?? ""}
+                        placeholder={q.placeholder}
+                        onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                      />
+                    ) : (
+                      <div className="option-list">
+                        {q.options.map((opt) => {
+                          const current = answers[q.id];
+                          const on =
+                            q.kind === "multi"
+                              ? Array.isArray(current) && current.includes(opt)
+                              : current === opt;
+                          return (
+                            <label key={opt} className={`option-row ${on ? "on" : ""}`}>
+                              <input
+                                type={q.kind === "multi" ? "checkbox" : "radio"}
+                                name={q.id}
+                                checked={on}
+                                onChange={() => {
+                                  if (q.kind === "multi") {
+                                    const cur = Array.isArray(current) ? current : [];
+                                    setAnswers({
+                                      ...answers,
+                                      [q.id]: on ? cur.filter((x) => x !== opt) : [...cur, opt],
+                                    });
+                                  } else {
+                                    setAnswers({ ...answers, [q.id]: opt });
+                                  }
+                                }}
+                              />
+                              <span>{opt}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  <button
+                    className="btn"
+                    onClick={() => (isLastGroup ? generateReport() : setGroupIndex(groupIndex + 1))}
+                  >
+                    {!isLastGroup
+                      ? "Next"
+                      : answered < questions.length
+                        ? `Generate report (${answered}/${questions.length} answered)`
+                        : "Generate report"}
+                  </button>
+                  <button
+                    className="btn secondary"
+                    onClick={() => (groupIndex === 0 ? goToStep("profile") : setGroupIndex(groupIndex - 1))}
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === "report" && (generating || !result) && (
+              <div className="form generating-panel">
+                <div className="generating-head">
+                  <h2>Generating your report</h2>
+                </div>
+                <p className="muted generating-note">
+                  This typically takes 1–3 minutes. The analyst reads the full text of every applicable
+                  law rather than summarizing from memory, then rereads its own draft against our
+                  accuracy checklist before handing it back.
+                </p>
+              </div>
+            )}
           </div>
+          <ProgressRail
+            phase={step}
+            scopingGroups={groups.map((g) => ({ key: g.key, label: g.label }))}
+            scopingIndex={groupIndex}
+            generating={generating}
+            reportEndedAt={reportEndedAt}
+            subStages={subStages}
+            now={now}
+          />
         </div>
       )}
 
       {error && <div className="notice" style={{ marginTop: 20 }}>{error}</div>}
-
-      {step === "report" && (generating || !result) && (
-        <div className="form generating-panel">
-          <div className="generating-head">
-            <h2>Generating your report</h2>
-            <span className="elapsed">{elapsedSec}s elapsed</span>
-          </div>
-          <ul className="stage-list">
-            {stages.length === 0 && (
-              <li className="active">
-                <span className="stage-dot" />
-                Starting…
-              </li>
-            )}
-            {stages.map((s, i) => (
-              <li key={i} className={i === stages.length - 1 ? "active" : "done"}>
-                <span className="stage-dot" />
-                {s.label}
-              </li>
-            ))}
-          </ul>
-          <p className="muted generating-note">
-            This typically takes 1–3 minutes. The analyst reads the full text of every applicable
-            law rather than summarizing from memory, then rereads its own draft against our
-            accuracy checklist before handing it back.
-          </p>
-        </div>
-      )}
 
       {step === "report" && result && !generating && (
         <div className="section">
@@ -429,7 +419,7 @@ export default function BriefPage() {
                   className="btn secondary"
                   onClick={() => {
                     setGroupIndex(0);
-                    setStep("questions");
+                    goToStep("questions");
                   }}
                 >
                   Adjust answers

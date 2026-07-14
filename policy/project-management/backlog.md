@@ -1059,6 +1059,46 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       rather than defaulting to generic "large fines" language. All 45
       existing tests pass unchanged (neither test file asserts Bottom line's
       internal structure).
+- ✅ Vertical end-to-end ProgressRail for the brief wizard (2026-07-14),
+      direct user request: the old horizontal 3-step bar (company → scoping
+      → report) gave no sense of progress during report generation, "so
+      people are not discouraged while waiting for AI stuff." Went through
+      several rounds of live-tested iteration to the final design — a new
+      `brief/ProgressRail.tsx`, right-side, spanning the whole flow: one flat
+      list of every real screen the user passes through (profile, each
+      scoping group actually shown, then each AI call streamed from
+      `/api/brief`'s `on_stage` events in `generate_briefing`), not the
+      nested macro/sub-step structure first tried. Every step gets a hand-
+      drawn inline-SVG icon and a wordplay name on the real EU legislative
+      process, deliberately non-repeating end to end: informal intake reads
+      as preliminary process (Filing the dossier → Preliminary review →
+      Impact assessment → Technical consultation → Stakeholder consultation
+      → Committee referral), the AI's actual writing reads as the formal
+      readings that follow (First reading → Committee markup → Second
+      reading → Point of order → Plenary vote). Elapsed-time timers only
+      appear on steps that are real LLM calls (drafting/sharpening/
+      verifying/cross-checking) — not on scoping groups, not on "First
+      reading" (`retrieving`, a vector-search DB query, not an LLM call) —
+      and freeze once a step completes rather than ticking forever. Scoping
+      groups are known in full once questions are fetched, so they're pre-
+      rendered as upcoming; AI sub-stages are appended only once they
+      actually happen, preserving `generate_briefing`'s own documented
+      guarantee that a progress UI built on it "never claims a step that
+      didn't occur." Layout: `.brief-layout` (flex, `align-items: stretch`,
+      14px gap) makes the rail match whichever box is on the left at its
+      natural height, dropped once the finished report renders full-width.
+      Fixed a real bug found via live screenshot during iteration: with only
+      one step known (before scoping questions load), the connecting line
+      (drawn once for the whole list, not per-row, so it stays correct under
+      `justify-content: space-between`'s variable gaps) dangled into empty
+      space — scoped the line to `.rail-steps.multi` (2+ steps only).
+      Verified live end-to-end with a real Anthropic call: all ~8 steps for
+      a real profile (RailTest GmbH) correctly show done/current/upcoming
+      states, "Committee markup" ticks a live per-second timer, no
+      horizontal overflow at 700/1400px. Removed as dead code in the
+      process: the old `.stepper`/`.stepper-head`/`.stepper-name`/
+      `.brief-width` CSS and the `.stage-list`/`.stage-dot`/`stage-pulse`
+      keyframes it used.
 
 ## Milestone 4 — Website
 
