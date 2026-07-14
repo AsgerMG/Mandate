@@ -263,7 +263,13 @@ main.container { flex: 1 0 auto; width: 100%; }
    slack becomes matching margin on both sides via .lede-row's
    justify-content: center instead. */
 .lede-row .lede-hero { flex: 1 1 460px; max-width: 460px; padding: 0; }
-.lede-image { flex: 1 1 340px; max-width: 340px; min-width: 0; }
+/* Same flex-basis as Home's .hero-image (420px) so the two pages' pictures
+   render at the same size. Capped via max-width too, unlike .hero-image —
+   Home's hero-text grows right along with its image so the pair stays
+   balanced on wide screens, but About's .lede-hero is deliberately fixed at
+   460px, so leaving .lede-image uncapped here would let it alone absorb all
+   leftover row width again (the earlier "gigantic" bug). */
+.lede-image { flex: 1 1 420px; max-width: 420px; min-width: 0; }
 .lede-image img {
   width: 100%; height: auto; display: block;
   border: 1px solid var(--rule); border-radius: var(--radius);
