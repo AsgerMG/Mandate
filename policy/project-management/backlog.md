@@ -1169,6 +1169,69 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       "Law & legislative pipeline" narrows 200→29 documents and highlights
       the active card, "Clear category filter" resets it, no horizontal
       overflow at 1400px.
+- ✅ Live register filters simplified (2026-07-14), direct user feedback: (1)
+      the Consultations coverage tile was noise — hidden from the Coverage
+      grid (its one source, `have_your_say`, stays in the register list and
+      in `categoryFor`'s classification, just not called out as its own
+      card). (2) The "Showing (200 of latest 200, 2441 total)" line was
+      confusing — it exposed `FETCH_LIMIT`, an internal client-side fetch-
+      window cap, as if it were meaningful to a visitor. Deleted it
+      entirely, along with the `getStats()` call and `totalDocs` state that
+      only existed to feed it — the per-stage headers below ("Proposed (2)",
+      "In force (1)") already show real counts. Presented the user three
+      revamp options with ASCII previews (delete only the count line; show a
+      plain count only when filtered; fold a total into the hero intro) —
+      user asked to simplify the whole filters block instead, so merged
+      search + Market chips into one row with no heading, dropped the
+      "MARKET" text label (kept as an `aria-label` for accessibility), and
+      moved "Clear category filter" from separate button text onto a small
+      × directly on the active Coverage card (`.card-clear`, absolutely
+      positioned, `.card.on h3` gets right-padding so long labels don't run
+      under it). Removed now-dead `.filter-group`/`.filter-label` CSS.
+      Verified live: 3 Coverage cards (no Consultations), one-line search +
+      chips row, no count text anywhere, clicking a card still narrows the
+      register and shows a × on the active card to clear it.
+- ✅ Register search fixed + stage grouping dropped for "Hot right now"
+      (2026-07-14), direct user feedback that search "is still ass" and the
+      Proposed/In force/Other stage grouping at the bottom is pointless when
+      a group has 1-2 items. Found a real, separate bug while investigating:
+      the search box only ever filtered the client's already-fetched newest-
+      200-document window (`docs.filter(title.includes(q))`), so searching
+      for anything older than that window silently returned nothing — not a
+      styling complaint, a correctness bug on a page whose whole job is
+      being the ground truth. Fixed by making search hit `/api/documents`'s
+      real `q` (title ILIKE) + `jurisdiction` params server-side instead,
+      debounced 300ms, across the full corpus. Verified live: searching
+      "Machinery" now correctly surfaces the 2023 Machinery Regulation AND
+      the 2006 Machinery Directive, neither of which is anywhere near the
+      newest-200 window. Separately, replaced the whole
+      Proposed/In force/Other `STAGE_ORDER`-grouped listing with one flat,
+      date-sorted list (stage still shown per-row via the existing inline
+      badge, just no more group headers/per-group show-more) and added a new
+      "Hot right now" section: 6 curated topics (AI Act, GDPR & data
+      protection, Minors & social media age limits, DSA enforcement, DMA &
+      gatekeepers, Digital Omnibus), each with a live-fetched doc count
+      (never hardcoded, per website/CLAUDE.md's no-hardcoded-corpus-numbers
+      rule) and click-through to its real matching documents. The six were
+      not guessed — ran a real frequency pass (`data.session_scope` direct
+      DB query) over the last 60 days of titles across ~20 candidate
+      instrument/topic keyword groups before picking: AI Act (36 recent
+      mentions), GDPR/data protection (23), and the minors/social-media
+      fight (18) were the clear top three by volume; a generic
+      "cybersecurity" bucket scored high (20) but turned out mostly
+      unrelated G7-summit security logistics on inspection, so it was left
+      out in favor of DSA/DMA/Digital Omnibus — lower raw counts but clean,
+      zero-false-positive signal and genuinely major live news (Apple's DMA
+      gatekeeper-status court loss, Meta's DSA addictive-design finding).
+      Each topic's keyword variants (e.g. GDPR/RGPD/Datenschutz for the
+      multilingual data-protection bucket) are fetched in parallel and
+      deduped by document id once on page load, so the tile count and its
+      click-through result list are always the same underlying data — no
+      separate "trending" computation that could drift from what clicking
+      the tile actually shows. `tsc --noEmit` and `next build` both clean;
+      verified live clicking "Digital Omnibus" correctly returns all 17 real
+      matches (the actual COM(2025) 836/837 proposals, EP vote records, law-
+      firm client alerts, press coverage), sorted newest first.
 
 ## Automation / ops
 

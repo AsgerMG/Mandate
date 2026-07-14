@@ -335,13 +335,8 @@ main.container { flex: 1 0 auto; width: 100%; }
 .show-more:hover { color: var(--accent-deep); text-decoration-color: currentColor; }
 
 /* Document filters row */
-.filters { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 8px; }
+.filters { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin: 34px 0 8px; }
 .filters input[type="text"] { max-width: 320px; }
-.filter-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.filter-label {
-  font-size: clamp(10.5px, 8.19px + 0.1805vw, 12.81px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
-  color: var(--muted);
-}
 
 /* Register (document list) */
 .register { border-top: 1px solid var(--ink); }
@@ -391,6 +386,10 @@ main.container { flex: 1 0 auto; width: 100%; }
   padding-bottom: 8px; border-bottom: 1px solid var(--rule);
 }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
+/* Hot-topic tiles carry far less content than a Coverage card (just a label
+   + a live count), so a narrower column fits more per row instead of
+   stretching each tile out to match Coverage's wider minimum. */
+.topic-grid { grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr)); }
 
 /* Card (used for the register's Coverage section) */
 .card {
@@ -401,8 +400,14 @@ main.container { flex: 1 0 auto; width: 100%; }
 .card:hover { border-color: var(--ink); }
 /* Coverage cards double as the register's category filter (documents/
    page.tsx) — .on marks the active selection the same way .chip.on does. */
-.card[role="button"] { cursor: pointer; }
+.card[role="button"] { cursor: pointer; position: relative; }
 .card.on { border-color: var(--ink); background: var(--accent-soft); }
+.card-clear {
+  position: absolute; top: 14px; right: 16px; color: var(--muted); font-weight: 700;
+  font-size: 13px; line-height: 1;
+}
+.card-clear:hover { color: var(--ink); }
+.card.on h3 { padding-right: 20px; }
 .card h3 { font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); margin: 0; line-height: 1.35; font-weight: 600; overflow-wrap: break-word; }
 .card h3 a { color: var(--ink); }
 .card .meta { color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); display: flex; gap: 10px; flex-wrap: wrap; }
