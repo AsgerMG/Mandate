@@ -32,8 +32,8 @@ export default function AboutPage() {
   return (
     <>
       <div className="viewport-intro">
-        <div className="lede-row">
-          <section className="hero lede-hero">
+        <div className="hero-row">
+          <section className="hero hero-text">
             <div className="eyebrow">About EuroPolTracker</div>
             <h1>An analyst desk, run as software</h1>
             <p>
@@ -43,7 +43,7 @@ export default function AboutPage() {
             </p>
           </section>
 
-          <div className="lede-image">
+          <div className="hero-image">
             <Image
               src="/images/parliament.png"
               alt="Illustrated European Parliament building in black and white"
