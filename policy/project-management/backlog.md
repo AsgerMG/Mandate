@@ -1029,6 +1029,36 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       speech text (a MEP's recorded position on a specific tech dossier,
       without needing to parse rhetoric): a real "who stands where" signal,
       not a replacement for it
+- ✅ Bottom line restructured into ACTION + ATTENTION bullets (2026-07-14),
+      direct user feedback: the Bottom line was mixing all Prio levels
+      together and had no explicit risk/opportunity framing — "only start
+      with urgent stuff that requires action, then the attention getters
+      that highlight regulatory risks and regulatory opportunities."
+      `SYSTEM_PROMPT`'s Bottom line instruction (`briefing.py`) now specifies
+      two bullet types in fixed order: ACTION bullets — exactly one per
+      Prio 1 row in the Compliance table, nothing lower-priority, with an
+      explicit "zero Prio 1 rows → say so in one bullet" fallback instead of
+      padding with Prio 2/3; then up to two ATTENTION bullets — RISK (the
+      most material Prio-1-criterion-(a) row's concrete downside: the
+      instrument's actual penalty ceiling from the retrieved sources, plus
+      licence/designation/market-access exposure when the sources support
+      it) and OPPORTUNITY (the most material Prio-1-criterion-(b) row's
+      concrete business opening from a named competitor/gatekeeper's own
+      compliance dynamic) — both explicitly optional and never fabricated to
+      hit a bullet-count target, reusing the existing "never infer a
+      competitor from world knowledge alone" guardrail from the Political
+      landscape section. Verified live (ClickHarbor: a marketplace profile
+      with a self-declared GDPR gap and Amazon named as a competitor):
+      Bottom line came back as exactly 2 ACTION bullets (GDPR, DSA — its two
+      real Prio 1 rows, no Prio 2/3 leakage), 1 RISK bullet, and 1
+      OPPORTUNITY bullet naming Amazon's VLOP obligations as a concrete
+      opening. Notably the RISK bullet correctly declined to state a fine
+      percentage — the retrieved CPC-network precedent (Wish.com, Tinder)
+      showed the realistic outcome is a forced practice change, not a
+      penalty, and the guardrail against stating an unsupported figure held
+      rather than defaulting to generic "large fines" language. All 45
+      existing tests pass unchanged (neither test file asserts Bottom line's
+      internal structure).
 
 ## Milestone 4 — Website
 
