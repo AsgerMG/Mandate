@@ -400,7 +400,7 @@ def pdf(req: PdfRequest) -> Response:
     """Render a generated report as a downloadable PDF."""
     data = render_report_pdf(req.name, req.briefing, req.citations)
     safe_name = "".join(c if c.isalnum() or c in "-_ " else "" for c in req.name).strip()
-    filename = f"regulatory-exposure-report-{safe_name or 'company'}.pdf".replace(" ", "-")
+    filename = f"regulatory-intelligence-report-{safe_name or 'company'}.pdf".replace(" ", "-")
     return Response(
         content=data,
         media_type="application/pdf",

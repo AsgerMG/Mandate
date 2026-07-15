@@ -1,4 +1,4 @@
-"""Render the regulatory exposure report as a PDF.
+"""Render the regulatory intelligence report as a PDF.
 
 The briefing arrives as constrained Markdown (headings, tables, bullets,
 bold, ``[n]`` footnote markers — see the system prompt in briefing.py), so a
@@ -88,7 +88,7 @@ class ReportPDF(FPDF):
         self.cell(0, 5, "EUROPOLTRACKER", align="L")
         self.set_font("helvetica", "", 8)
         self.set_text_color(*MUTED)
-        self.cell(0, 5, f"Regulatory Exposure Brief - {self.company}", align="R")
+        self.cell(0, 5, f"Regulatory Intelligence Brief - {self.company}", align="R")
         self.ln(7)
         self.set_draw_color(*RULE)
         self.set_line_width(0.2)

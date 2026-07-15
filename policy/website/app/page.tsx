@@ -10,8 +10,8 @@ export default function Home() {
           <h1>What&apos;s moving in tech policy</h1>
           <p>
             Law, legislative pipelines, regulators and specialist press across the EU, France and
-            Germany — automatically collected and turned into a source-cited exposure report for
-            your company, exportable as PDF.
+            Germany — automatically collected and turned into a source-cited intelligence report
+            for your company, exportable as PDF.
           </p>
           <div className="hero-actions">
             <Link className="btn" href="/brief">

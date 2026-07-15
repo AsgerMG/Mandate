@@ -63,6 +63,12 @@ export default function BriefPage() {
   const [questions, setQuestions] = useState<ScopingQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [groupIndex, setGroupIndex] = useState(0);
+  // For text questions with suggested_answers: which presets are picked and
+  // what extra detail was typed, tracked separately from `answers` (which
+  // only ever holds the combined string actually sent to the backend) so
+  // chip state survives navigating Back/Next between groups.
+  const [suggestionSelections, setSuggestionSelections] = useState<Record<string, string[]>>({});
+  const [detailText, setDetailText] = useState<Record<string, string>>({});
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<BriefResult | null>(null);
@@ -92,6 +98,11 @@ export default function BriefPage() {
 
   const toggle = (arr: string[], v: string, set: (x: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
+
+  // Combines picked suggestion chips with free-typed detail into the single
+  // string that actually travels to the backend as this question's answer.
+  const setTextAnswer = (qid: string, selected: string[], detail: string) =>
+    setAnswers({ ...answers, [qid]: [...selected, detail.trim()].filter(Boolean).join(". ") });
 
   function baseInput(): BriefInput {
     return {
@@ -196,11 +207,12 @@ export default function BriefPage() {
   return (
     <>
       <section className="page-head">
-        <p className="eyebrow">Regulatory exposure report</p>
+        <p className="eyebrow">Regulatory intelligence report</p>
         <h1>Know what applies before it applies to you</h1>
         <p>
-          Tell us about your company, answer a few scoping questions, and receive an
-          analyst-grade report — every claim traced to its official source, exportable as PDF.
+          EuroPolTracker turns the official EU, French and German regulatory record into a
+          source-cited intelligence report — not a generic AI summary. Describe your company,
+          answer a few scoping questions, and get an analyst-grade report, exportable as PDF.
         </p>
       </section>
 
@@ -311,11 +323,47 @@ export default function BriefPage() {
                     <label>{q.question}</label>
                     <p className="why">{withEmphasis(q.why_it_matters)}</p>
                     {q.kind === "text" ? (
-                      <textarea
-                        value={(answers[q.id] as string) ?? ""}
-                        placeholder={q.placeholder}
-                        onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
-                      />
+                      q.suggested_answers && q.suggested_answers.length > 0 ? (
+                        <div className="text-with-suggestions">
+                          <div className="chips suggestions">
+                            {q.suggested_answers.map((sugg) => {
+                              const selected = suggestionSelections[q.id] ?? [];
+                              const on = selected.includes(sugg);
+                              return (
+                                <span
+                                  key={sugg}
+                                  className={`chip suggestion ${on ? "on" : ""}`}
+                                  onClick={() => {
+                                    const next = on
+                                      ? selected.filter((x) => x !== sugg)
+                                      : [...selected, sugg];
+                                    setSuggestionSelections({ ...suggestionSelections, [q.id]: next });
+                                    setTextAnswer(q.id, next, detailText[q.id] ?? "");
+                                  }}
+                                >
+                                  {sugg}
+                                </span>
+                              );
+                            })}
+                          </div>
+                          <textarea
+                            className="detail"
+                            value={detailText[q.id] ?? ""}
+                            placeholder={q.placeholder ?? "Anything to add? (optional)"}
+                            onChange={(e) => {
+                              const detail = e.target.value;
+                              setDetailText({ ...detailText, [q.id]: detail });
+                              setTextAnswer(q.id, suggestionSelections[q.id] ?? [], detail);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <textarea
+                          value={(answers[q.id] as string) ?? ""}
+                          placeholder={q.placeholder}
+                          onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                        />
+                      )
                     ) : (
                       <div className="option-list">
                         {q.options.map((opt) => {
@@ -351,7 +399,7 @@ export default function BriefPage() {
                   </div>
                 ))}
 
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <div className="wizard-actions">
                   <button
                     className="btn"
                     onClick={() => (isLastGroup ? generateReport() : setGroupIndex(groupIndex + 1))}
@@ -411,7 +459,7 @@ export default function BriefPage() {
 
           {result.briefing ? (
             <>
-              <div className="report-actions">
+              <div className="wizard-actions">
                 <button className="btn" onClick={onDownload} disabled={downloading}>
                   {downloading ? "Preparing PDF…" : "Download PDF"}
                 </button>

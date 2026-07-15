@@ -215,7 +215,7 @@ def brief(
     ),
     pdf: str = typer.Option(None, "--pdf", help="Also write the report as a PDF to this path."),
 ) -> None:
-    """Generate a grounded, citation-backed regulatory exposure report for a company."""
+    """Generate a grounded, citation-backed regulatory intelligence report for a company."""
     from etl.enrichment import get_embedder
     from etl.intelligence import CompanyProfile, generate_briefing
     from etl.intelligence.llm import has_api_key

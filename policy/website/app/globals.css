@@ -155,8 +155,11 @@ main.container { flex: 1 0 auto; width: 100%; }
    marketing-landing treatment. The brief flow's actual job is the form below
    it, not the headline — a full .hero (large clamp'd h1, generous padding)
    was pushing nearly 400px of decorative space above the form, so on a
-   typical laptop viewport almost none of the form was visible on load. */
-.page-head { padding: 18px 0 2px; }
+   typical laptop viewport almost none of the form was visible on load. The
+   original 2px bottom padding pushed this too far the other way though —
+   the last line of the paragraph nearly touched the form's border-top,
+   reading as cramped rather than compact. */
+.page-head { padding: 18px 0 18px; }
 .page-head h1 {
   font-family: var(--font-serif); font-weight: 600; font-size: clamp(22px, 16px + 1.2vw, 30px);
   line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 6px; color: var(--ink); max-width: 720px;
@@ -413,6 +416,16 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 }
 .chip:hover { border-color: var(--ink); }
 .chip.on { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+
+/* Suggested answers for open (text) scoping questions: multi-select preset
+   chips above an optional free-text box, so picking one is as fast as a
+   choice question while custom detail is still possible. Dashed border
+   distinguishes these "add a preset" chips from the exclusive-pick .chip
+   used for sectors/markets, without a from-scratch visual language. */
+.text-with-suggestions { display: flex; flex-direction: column; gap: 10px; }
+.chip.suggestion { border-style: dashed; }
+.chip.suggestion.on { border-style: solid; }
+textarea.detail { min-height: 56px; }
 .checks { display: flex; gap: 18px; flex-wrap: wrap; }
 .check { display: flex; align-items: center; gap: 8px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); }
 
@@ -428,8 +441,16 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .stepper-track span.done { background: var(--ink); }
 .stepper-track span.current { background: var(--accent); }
 
-/* Scoping questions */
-.question .why { color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin: -3px 0 9px; }
+/* Scoping questions — full-sentence questions, not short field names, so
+   they get their own label treatment instead of .field label's uppercase/
+   tracked style (built for two-word labels like "Company name" and shouty
+   stretched over a sentence). Sentence case, still weighted, full ink since
+   the question is the primary thing being asked. */
+.question label {
+  font-weight: 600; font-size: clamp(15px, 12.6px + 0.1146vw, 16.3px);
+  text-transform: none; letter-spacing: 0; color: var(--ink); margin-bottom: 4px;
+}
+.question .why { color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin: 4px 0 10px; }
 
 /* Vertical option rows (scoping choice/multi questions) */
 .option-list { display: flex; flex-direction: column; gap: 8px; }
@@ -559,8 +580,11 @@ input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shado
 .spinner { color: var(--muted); padding: 20px 0; }
 .back { font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); font-weight: 600; }
 
+/* Shared action row — Next/Back on the questions step, download/restart on
+   the report step. One rule instead of each step re-declaring flex+gap. */
+.wizard-actions { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+
 /* Report sheet */
-.report-actions { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
 .report-sheet {
   background: var(--paper); border: 1px solid var(--rule); border-top: 3px solid var(--accent);
   border-radius: var(--radius); padding: 42px 46px;

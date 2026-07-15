@@ -76,6 +76,7 @@ export type ScopingQuestion = {
   why_it_matters: string;
   kind: "choice" | "multi" | "text";
   options: string[];
+  suggested_answers?: string[];
   group?: string;
   placeholder?: string;
 };
@@ -189,7 +190,7 @@ export async function downloadPdf(name: string, briefing: string, citations: Cit
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `regulatory-exposure-report-${name.replace(/[^\w-]+/g, "-")}.pdf`;
+  a.download = `regulatory-intelligence-report-${name.replace(/[^\w-]+/g, "-")}.pdf`;
   a.click();
   URL.revokeObjectURL(url);
 }

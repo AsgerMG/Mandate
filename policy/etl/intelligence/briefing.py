@@ -32,7 +32,7 @@ from .profile import CompanyProfile
 _CANON_CELEX = list(KEY_ACTS)
 
 SYSTEM_PROMPT = (
-    "You are a senior public-affairs analyst producing a regulatory exposure brief for "
+    "You are a senior public-affairs analyst producing a regulatory intelligence brief for "
     "an executive who is about to brief a business leader. This is a decision document, "
     "not a legal memo. Use ONLY the retrieved source documents for factual claims about "
     "obligations, deadlines, and instrument text — never assert a specific obligation "
@@ -117,7 +117,7 @@ SYSTEM_PROMPT = (
     "is what keeps a genuinely wide scope sweep — every canon instrument checked — "
     "from reading as a wall of tables.\n\n"
     "Structure, exactly these sections, in Markdown:\n"
-    "# Regulatory Exposure Brief: <company name>\n"
+    "# Regulatory Intelligence Brief: <company name>\n"
     "A single bold sentence immediately under the title — the headline verdict: what "
     "applies, what doesn't, what's coming. The one line a rushed executive reads if "
     "nothing else.\n"
@@ -393,7 +393,7 @@ def build_request(profile: CompanyProfile, passages: list[dict]) -> dict[str, An
         f"Markets: {', '.join(m.value for m in profile.markets)}\n"
         f"Uses AI: {profile.uses_ai} | Handles personal data: {profile.handles_personal_data}\n"
         + (f"Scoping facts:\n{scoping}\n" if scoping else "")
-        + "\nWrite the regulatory exposure brief per your instructions: a decisive "
+        + "\nWrite the regulatory intelligence brief per your instructions: a decisive "
         "verdict on every instrument judged against these scoping facts, expert "
         "political context, and concrete owned actions. Cite sources throughout."
     )

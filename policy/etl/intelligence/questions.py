@@ -165,6 +165,14 @@ COMPETITIVE_CONTEXT_QUESTION = {
     ),
     "kind": "text",
     "options": [],
+    # Covers the common cases so most people can answer by picking rather than
+    # writing — the free-text box next to these stays for anything specific.
+    "suggested_answers": [
+        "No obvious competitor or dynamic",
+        "A bigger rival with more compliance resources",
+        "A dominant platform whose terms we depend on",
+        "A rule change could hit us and rivals unevenly",
+    ],
     "group": "context",
 }
 
@@ -216,6 +224,16 @@ QUESTIONS_TOOL = {
                         },
                         "kind": {"type": "string", "enum": ["choice", "multi", "text"]},
                         "options": {"type": "array", "items": {"type": "string"}},
+                        "suggested_answers": {
+                            "type": "array",
+                            "maxItems": 4,
+                            "items": {"type": "string"},
+                            "description": (
+                                "Only for kind=text: 2-4 short (<8 word) canned answers "
+                                "covering the likely cases, so the person can pick instead "
+                                "of writing. Always populate for kind=text questions."
+                            ),
+                        },
                     },
                     "required": ["id", "question", "why_it_matters", "kind"],
                 },
@@ -254,7 +272,11 @@ EXTRAS_SYSTEM = (
     "in case' is exactly the failure this rule exists to prevent. Never re-ask what the "
     "profile or the standard scoping set already covers (size, AI role, EU user count, "
     "data categories, customer type). If nothing more is needed, propose zero questions "
-    "— zero is a common, correct outcome, not a fallback."
+    "— zero is a common, correct outcome, not a fallback. For any question with "
+    "kind=text, always include 2-4 short suggested_answers covering the likely cases "
+    "(e.g. \"No\", \"Not currently\", \"Yes, under our own brand\") so the person can "
+    "pick one instead of writing a paragraph — a text question with no suggestions is "
+    "the failure mode this exists to prevent."
 )
 
 
@@ -298,9 +320,10 @@ def parse_extras_response(content_blocks: list[Any], already_asked: set[str]) ->
             continue
         payload = block.get("input") if isinstance(block, dict) else getattr(block, "input", {})
         for q in (payload or {}).get("questions", []):
-            if q.get("id") and q.get("question") and q["id"] not in already_asked:
+            if isinstance(q, dict) and q.get("id") and q.get("question") and q["id"] not in already_asked:
                 q.setdefault("kind", "text")
                 q.setdefault("options", [])
+                q.setdefault("suggested_answers", [])
                 q.setdefault("group", "more")
                 extras.append(q)
     return extras
