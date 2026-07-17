@@ -356,8 +356,19 @@ def _run_refresh() -> None:
             for cls in ADAPTERS:
                 adapter = cls(http, settings)
                 source = ensure_source(s, adapter)
-                if source.enabled:
+                if not source.enabled:
+                    continue
+                try:
                     totals[adapter.key] = run_adapter(s, adapter)
+                    # Commit per source, same as the CLI refresh: one source's
+                    # total failure (e.g. a discover()-time ReadTimeout, which
+                    # run_adapter's per-document guard can't catch) must not
+                    # abort the run or roll back sources already ingested.
+                    s.commit()
+                except Exception:
+                    s.rollback()
+                    log.exception("source_run_crashed", source=adapter.key)
+                    totals[adapter.key] = {"crashed": True}
         with session_scope() as s:
             totals["_embedded"] = {"passages": embed_pending(s, _embedder())}
         _refresh_state["last_result"] = totals
