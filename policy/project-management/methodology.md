@@ -1,6 +1,6 @@
 # Methodology
 
-How we build EuroPolTracker.
+How we build Regina.
 
 ## Architecture (four layers, mirrored in the repo)
 
@@ -24,7 +24,7 @@ and is added once the corpus exists.
 ## Principles
 
 1. **Automated, single-trigger collection.** Data is never entered by hand. One
-   trigger (`ept refresh`) updates everything. See the decision log.
+   trigger (`regina refresh`) updates everything. See the decision log.
 2. **Grounded, not generative-by-default.** Every company-facing claim must
    trace to a passage of a specific document version. No hallucinated obligations.
 3. **Adapters are thin; the pipeline is smart.** Hashing, versioning, upserts,
@@ -46,7 +46,7 @@ and is added once the corpus exists.
 ```bash
 uv sync --extra dev            # create .venv, install deps
 cp .env.example .env           # set DATABASE_URL (Neon or local Docker)
-uv run ept init                # schema + pgvector + seed vocab + register sources
-uv run ept refresh --limit 25  # the trigger (EUR-Lex live; others pending)
-uv run ept sources             # inspect run state
+uv run regina init                # schema + pgvector + seed vocab + register sources
+uv run regina refresh --limit 25  # the trigger (EUR-Lex live; others pending)
+uv run regina sources             # inspect run state
 ```

@@ -1,13 +1,13 @@
 """Command-line entrypoint.
 
 The automation goal: a user (or a scheduler, or later an API endpoint) triggers
-ONE command — `ept refresh` — and the whole corpus updates itself. Everything
+ONE command — `regina refresh` — and the whole corpus updates itself. Everything
 else here is setup/inspection around that single trigger.
 
-    ept init        create the schema + pgvector extension, seed vocabularies
-    ept sources     list registered sources and their last-run state
-    ept refresh     run every enabled adapter end-to-end (the trigger)
-    ept run <key>   run a single adapter (debugging)
+    regina init        create the schema + pgvector extension, seed vocabularies
+    regina sources     list registered sources and their last-run state
+    regina refresh     run every enabled adapter end-to-end (the trigger)
+    regina run <key>   run a single adapter (debugging)
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from .adapters import ADAPTERS, ADAPTERS_BY_KEY
 from .http import HttpClient
 from .pipeline import ensure_source, run_adapter
 
-app = typer.Typer(help="EuroPolTracker ETL — automated tech-policy data collection.")
+app = typer.Typer(help="Regina — regulatory intelligence analyst. Automated regulatory data collection.")
 log = structlog.get_logger(__name__)
 
 
@@ -50,7 +50,7 @@ def sources() -> None:
     with session_scope() as session:
         rows = session.scalars(select(Source).order_by(Source.key)).all()
         if not rows:
-            typer.echo("No sources registered yet — run `ept init`.")
+            typer.echo("No sources registered yet — run `regina init`.")
             return
         for s in rows:
             last = s.last_run_at.isoformat() if s.last_run_at else "never"
@@ -183,7 +183,7 @@ def search(query: str, k: int = typer.Option(5, help="Number of results.")) -> N
     with session_scope() as session:
         hits = semantic_search(session, embedder, query, k=k)
     if not hits:
-        typer.echo("No embedded passages yet — run `ept embed` first.")
+        typer.echo("No embedded passages yet — run `regina embed` first.")
         return
     for h in hits:
         cite = h["celex"] or h["title"][:40]
@@ -244,7 +244,7 @@ def brief(
         )
 
     if not result["passages"]:
-        typer.echo("No embedded passages found. Run `ept refresh` then `ept embed` first.")
+        typer.echo("No embedded passages found. Run `regina refresh` then `regina embed` first.")
         return
 
     if result.get("briefing"):

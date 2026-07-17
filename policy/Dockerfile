@@ -25,4 +25,4 @@ EXPOSE 8080
 
 # Shell form (not exec-form CMD) so $PORT is substituted at container start —
 # Railway assigns this dynamically, it isn't always 8080.
-CMD uv run ept serve --host 0.0.0.0 --port ${PORT:-8080}
+CMD uv run regina serve --host 0.0.0.0 --port ${PORT:-8080}

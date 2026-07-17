@@ -154,7 +154,7 @@ means something forced horizontal scroll):
 ```
 
 Test against real data, not the empty-corpus state — overflow bugs in list
-rows and long titles only show up with actual content. Run `uv run ept serve`
+rows and long titles only show up with actual content. Run `uv run regina serve`
 + `cd website && npm run dev`, then drive both with Playwright (`.venv` already
 has it installed) rather than eyeballing a single breakpoint in devtools.
 

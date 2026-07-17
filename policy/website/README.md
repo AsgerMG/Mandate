@@ -17,7 +17,7 @@ The Next.js front-end. It is a pure client of the Python backend API
 From the repo root, start the API (serves the corpus + briefing engine):
 
 ```bash
-uv run ept serve            # http://127.0.0.1:8000
+uv run regina serve            # http://127.0.0.1:8000
 ```
 
 Then, in this folder:

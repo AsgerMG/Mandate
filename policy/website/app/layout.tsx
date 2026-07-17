@@ -20,9 +20,9 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "EuroPolTracker — EU tech-policy intelligence",
+  title: "Regina — regulatory intelligence analyst",
   description:
-    "Track EU tech-policy documents and get a realistic, citation-backed briefing for your company.",
+    "Regina turns the official EU, French and German regulatory record into realistic, citation-backed briefings for your company.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <div className="masthead">
           <div className="container masthead-bar">
             <div className="masthead-brand">
-              <Link href="/">EuroPolTracker</Link>
+              <Link href="/">Regina</Link>
             </div>
             <nav className="masthead-nav">
               <Link href="/documents">Live register</Link>
@@ -53,7 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main className="container">{children}</main>
         <footer>
           <div className="container footer-inner">
-            <span className="footer-mark">EuroPolTracker</span>
+            <span className="footer-mark">Regina</span>
             <span>
               Tech-policy corpus · automatically collected · citation-grounded. Coverage: EU,
               France &amp; Germany — {sourceCount ?? "dozens of"} verified channels across law,

@@ -85,7 +85,7 @@ class ReportPDF(FPDF):
     def header(self) -> None:
         self.set_font("helvetica", "B", 8)
         self.set_text_color(*ACCENT)
-        self.cell(0, 5, "EUROPOLTRACKER", align="L")
+        self.cell(0, 5, "REGINA", align="L")
         self.set_font("helvetica", "", 8)
         self.set_text_color(*MUTED)
         self.cell(0, 5, f"Regulatory Intelligence Brief - {self.company}", align="R")

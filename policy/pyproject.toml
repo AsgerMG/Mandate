@@ -1,7 +1,7 @@
 [project]
-name = "europoltracker"
+name = "regina"
 version = "0.1.0"
-description = "Automated ETL + structured corpus for EU/FR/DE tech-policy documents, grounded for citation-based RAG."
+description = "Regina — regulatory intelligence analyst. Automated ETL + structured corpus for EU/FR/DE tech-policy documents, grounded for citation-based RAG."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -44,7 +44,7 @@ dev = [
 
 [project.scripts]
 # The single automated-collection trigger.
-ept = "etl.cli:app"
+regina = "etl.cli:app"
 
 [build-system]
 requires = ["hatchling"]

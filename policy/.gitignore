@@ -14,7 +14,7 @@ __pycache__/
 # Persistent local embedded database (DATABASE_URL=local)
 .localdb/
 
-# Corpus export (materialized view of the DB; regenerate with `ept export`)
+# Corpus export (materialized view of the DB; regenerate with `regina export`)
 exports/
 
 # Node / website

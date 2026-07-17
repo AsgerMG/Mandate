@@ -5,7 +5,7 @@ free, local model (BGE via fastembed) so meaning-search works offline with no
 API key; a hosted model (Voyage, OpenAI) is a drop-in replacement later.
 
 The embedding step is intentionally separate from ingestion so the pipeline can
-run offline; populate vectors afterwards with ``ept embed``.
+run offline; populate vectors afterwards with ``regina embed``.
 """
 
 from __future__ import annotations

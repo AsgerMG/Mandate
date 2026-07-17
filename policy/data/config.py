@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     # Comma-separated origins the browser is allowed to call the API from.
     # localhost is always included (dev never breaks); add the deployed
     # front-end's real origin(s) here in production — e.g.
-    # "https://europoltracker.vercel.app,https://europoltracker.com".
+    # "https://regina.vercel.app,https://regina-intel.com".
     cors_allow_origins: str = ""
 
     # Guards POST /api/refresh once the API is reachable from the public
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     questions_rate_limit_per_hour: int = 20
 
     # --- HTTP / ingestion (used by the ETL layer) ---------------------------
-    http_user_agent: str = "EuroPolTracker/0.1 (+policy-tracker; contact: ops@example.com)"
+    http_user_agent: str = "Regina/0.1 (+regulatory-intelligence; contact: ops@example.com)"
     http_timeout_seconds: float = 30.0
     request_delay_seconds: float = 1.0  # politeness delay between source requests
 

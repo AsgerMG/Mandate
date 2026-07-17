@@ -40,7 +40,7 @@ from .intelligence.pdf import render_report_pdf
 
 log = structlog.get_logger(__name__)
 
-app = FastAPI(title="EuroPolTracker API", version="0.1.0")
+app = FastAPI(title="Regina API", version="0.1.0")
 
 _extra_origins = [o.strip() for o in get_settings().cors_allow_origins.split(",") if o.strip()]
 

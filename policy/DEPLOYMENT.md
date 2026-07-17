@@ -9,8 +9,8 @@ existed precisely because none of this was written down.
 | Piece | Platform | Where | Deploys how |
 |---|---|---|---|
 | Postgres + pgvector (the corpus) | Railway | project `nurturing-delight`, service `pgvector` | n/a — managed; data flows in via `ept refresh`/`ept embed` from anywhere that has `DATABASE_URL` |
-| FastAPI backend (`etl/api.py`) | Railway | same project, service `EuroPolTracker` → https://europoltracker-production.up.railway.app | **Auto-deploys on push to `main`** (git-connected to `AsgerMG/EuroPolTracker`, builds via the root `Dockerfile`, config in `railway.json`) |
-| Next.js site (`website/`) | Vercel | project `euro-pol-tracker` (team `asgermgs-projects`) → https://euro-pol-tracker.vercel.app | Push to `main` (git-connected) or `vercel redeploy <latest-deployment-url> --target production` from `website/` |
+| FastAPI backend (`etl/api.py`) | Railway | same project, service `Regina` → https://regina-production.up.railway.app | **Auto-deploys on push to `main`** (git-connected to `AsgerMG/Regina`, builds via the root `Dockerfile`, config in `railway.json`) |
+| Next.js site (`website/`) | Vercel | project `regina` (team `asgermgs-projects`) → https://regina.vercel.app | Push to `main` (git-connected) or `vercel redeploy <latest-deployment-url> --target production` from `website/` |
 
 There is exactly ONE database. Local runs, the deployed API, and `ept
 refresh` from any machine all read/write the same Railway Postgres via
@@ -19,7 +19,7 @@ are live immediately.
 
 ## Environment variables
 
-### Railway service `EuroPolTracker`
+### Railway service `Regina`
 
 Set via `railway variables --set "KEY=value"` (CLI, from the repo root after
 `railway link -p nurturing-delight`) or the Railway dashboard.
@@ -33,14 +33,14 @@ Set via `railway variables --set "KEY=value"` (CLI, from the repo root after
 | `BACKFILL_DAYS` | first-run discovery window per source | **keep in sync with `.env` and `data/config.py`'s default (7300)** — a stale low value here silently narrows discovery (this exact drift happened; found 2026-07-13) |
 | `HTTP_USER_AGENT`, `REQUEST_DELAY_SECONDS`, `LOG_LEVEL` | ingestion politeness / logging | |
 
-### Vercel project `euro-pol-tracker`
+### Vercel project `regina`
 
 | Var | Purpose | Gotcha |
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | the Railway API base URL | **Baked in at build time** (Next.js `NEXT_PUBLIC_` semantics): changing it does nothing until the next build/redeploy. If empty/missing, `lib/api.ts` silently falls back to `http://127.0.0.1:8000` and every page shows its empty-state ("Corpus is empty") while the site otherwise looks fine — this was broken in prod from first deploy until 2026-07-13 |
 
 Manage via `vercel env ls|add|rm` from `website/` (after `vercel link
---project euro-pol-tracker` — **always pass `--project`**; a bare
+--project regina` — **always pass `--project`**; a bare
 `vercel link --yes` creates a brand-new empty project named after the
 directory).
 
@@ -50,7 +50,7 @@ directory).
 # --- one-time CLI setup ---
 npm i -g @railway/cli vercel
 railway login && railway link -p nurturing-delight
-cd website && vercel link --yes --project euro-pol-tracker
+cd website && vercel link --yes --project regina
 
 # --- deploy backend (normal path: just push) ---
 git push                        # Railway auto-builds main via Dockerfile
@@ -58,17 +58,17 @@ git push                        # Railway auto-builds main via Dockerfile
 # --- deploy site ---
 git push                        # if Vercel git integration is on
 # or force a rebuild (e.g. after an env-var change, which needs a new build):
-cd website && vercel ls euro-pol-tracker   # grab latest deployment URL
+cd website && vercel ls regina   # grab latest deployment URL
 vercel redeploy <that-url> --target production
 
 # --- refresh the corpus remotely (no laptop needed) ---
-curl -X POST https://europoltracker-production.up.railway.app/api/refresh \
+curl -X POST https://regina-production.up.railway.app/api/refresh \
   -H "X-Refresh-Secret: $REFRESH_SECRET"
-curl https://europoltracker-production.up.railway.app/api/refresh   # status
+curl https://regina-production.up.railway.app/api/refresh   # status
 
 # --- sanity-check prod end to end ---
-curl https://europoltracker-production.up.railway.app/api/stats
-# then open https://euro-pol-tracker.vercel.app/documents and confirm the
+curl https://regina-production.up.railway.app/api/stats
+# then open https://regina.vercel.app/documents and confirm the
 # register shows real counts, NOT "Corpus is empty" (that message = the site
 # can't reach the API: check NEXT_PUBLIC_API_URL and CORS_ALLOW_ORIGINS)
 ```

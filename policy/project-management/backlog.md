@@ -16,7 +16,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ✅ Single-trigger CLI: `init`, `sources`, `refresh`, `run`
 - ✅ Verify EUR-Lex SPARQL discovery against live endpoint (137 docs, sectors 3+5)
 - ✅ Verify EUR-Lex fetch+parse end-to-end (Cellar machine endpoint, no WAF)
-- ✅ Run `ept refresh` end-to-end on real Postgres+pgvector (embedded pgserver):
+- ✅ Run `regina refresh` end-to-end on real Postgres+pgvector (embedded pgserver):
       10 docs / 10 versions / 175 passages from live EUR-Lex + Have Your Say
 - ✅ Zero-infra local runner (`scripts/run_local_refresh.py`) + pgvector integration tests
 - 🔄 Run against managed Postgres (Neon) for the persistent/shared corpus
@@ -31,7 +31,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       (incl. Data Act, DGA, NIS2, CRA, DORA, MiCA, TTPA, P2B, eIDAS 2, EMFA,
       ePrivacy, DST proposal). Note: the "DFA" (Digital Fairness Act) has no
       CELEX yet — it's still at fitness-check stage, tracked via have_your_say
-- ✅ `ept export` (2026-07-06): materializes the corpus into
+- ✅ `regina export` (2026-07-06): materializes the corpus into
       `exports/corpus/<source_key>/` folders — one Markdown file per document
       (metadata front matter + current version's full text). The Postgres DB
       (embedded, under `.localdb/`) stays canonical — it is what powers
@@ -50,7 +50,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ✅ Source expansion pass (2026-07-03): mapped ~113 candidate outlets across
       EU/FR/DE (news, regulators, law/pipeline). Integrated 34 new `FeedSpec`
       channels + 2 new bespoke `SourceAdapter`s (59 sources total, up from
-      23), confirmed end-to-end via `ept refresh` + `ept embed` against the
+      23), confirmed end-to-end via `regina refresh` + `regina embed` against the
       local corpus (762+ documents, 1,100+ passages, all embedded). Remaining
       candidates (needs-verification and confirmed-blocked) tracked in
       project-management/source-map.md's "Backlog — mapped but not yet
@@ -90,7 +90,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       relevant). 73 sources total now (up from 23); 926 documents / 1,272
       passages, all embedded
 - ✅ Fixed a real reliability gap found while re-running the full refresh: a
-      single source's unhandled failure (e.g. a DNS blip) crashed `ept refresh`
+      single source's unhandled failure (e.g. a DNS blip) crashed `regina refresh`
       entirely via one big transaction, silently rolling back every source
       already processed in that run. `refresh()` in `etl/cli.py` now commits
       per-source and isolates per-source exceptions, matching the pipeline's
@@ -111,7 +111,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       Rights, CEN/CENELEC, Global Competition Review, VoxEurop, ZDNet France,
       a franceinfo tech-specific feed, Bundeskartellamt Sektoruntersuchungen
       (PDF-only)
-- ✅ Diagnosed a real quality gap while stress-testing `ept brief`: RSS
+- ✅ Diagnosed a real quality gap while stress-testing `regina brief`: RSS
       summaries are mostly headline-only (avg 62-400 chars for most feed
       sources vs. 5,000-79,000 for real legal/regulatory text), so the LLM
       could gesture at "coverage suggests controversy" but couldn't cite
@@ -281,7 +281,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       follow-up ("recheck whether we have french parliament... transcripts
       ingested properly"). DB check found the most recent `an_verbatim`
       document was dated 2025-06-11 despite the live site having sittings
-      through 2026-07-10, and the most recent `ept refresh` had discovered
+      through 2026-07-10, and the most recent `regina refresh` had discovered
       exactly 0 new items from it. Root cause: the module docstring's claim
       that "the root listing page inlines every sitting in the current
       session directly" was wrong (or stopped being true) — live-checked and
@@ -327,7 +327,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       just its eventual successor. Verified live, 0 errors.
 - ✅ Live brief test on today's new content + 2 real bugs found and fixed
       (2026-07-13), per direct user request to "test what this new ingestion
-      does" and assess critically. Ran a real `ept brief` (AutoForge
+      does" and assess critically. Ran a real `regina brief` (AutoForge
       Robotics, an AI-driven industrial-robotics profile chosen to exercise
       Machinery Regulation, AI Act, CRA and the new Recommendations) with a
       live Anthropic call, not `--dry-run`. Found: (1) **`eurlex_key_acts`
@@ -374,9 +374,9 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 ## Milestone 2 — Enrichment + embeddings
 
 - ✅ Pluggable embedder; local default (BGE/fastembed, 384-dim, no API key)
-- ✅ `ept embed` backfills NULL passage vectors in batches
+- ✅ `regina embed` backfills NULL passage vectors in batches
 - ✅ HNSW cosine index on `passages.embedding`
-- ✅ `ept search` — semantic search returning citation-ready passages (verified
+- ✅ `regina search` — semantic search returning citation-ready passages (verified
       on live corpus: "AI obligations" → AI files; "cybersecurity" → Digital Networks Act)
 - ⬜ Optional hosted embedder (Voyage/OpenAI) behind the same interface
 - ⬜ Auto-embed as part of `refresh` (currently a separate step)
@@ -390,7 +390,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ✅ Retrieval over passages (semantic search; profile-driven)
 - ✅ Citation-grounded briefing via Claude's native Citations feature
       (each passage a citation-enabled document; claims map back to source)
-- ✅ `ept brief` CLI (works `--dry-run` with no API key; full run with key)
+- ✅ `regina brief` CLI (works `--dry-run` with no API key; full run with key)
 - ✅ `intelligence/` package + tests (assembly + citation parsing, fake client)
 - ✅ `[Jurisdiction · Type]` prefix on every retrieved source's citation title
       (`build_documents()` in briefing.py) so Claude has a structural signal
@@ -829,7 +829,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       "run some tests on how this affects the output," which surfaced more
       than the prompt-tuning question it started as:
       (1) **Zero of 2,545 new ep_verbatim/an_verbatim/de_verbatim passages
-      were embedded.** `ept embed` had never been run after ingestion — the
+      were embedded.** `regina embed` had never been run after ingestion — the
       new content was completely invisible to `semantic_search()` no matter
       how good the prompts were. Obvious in hindsight, invisible until
       someone actually tried to retrieve it.
@@ -1103,7 +1103,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 ## Milestone 4 — Website
 
 - ✅ HTTP API (`etl/api.py`, FastAPI): stats, meta, documents, search, brief
-- ✅ `ept serve` command
+- ✅ `regina serve` command
 - ✅ Next.js app in `website/` (App Router, TS) — builds clean, serves 200
 - ✅ Company profile intake → briefing UI (sources when no key; cited when key)
 - ✅ "What's moving" dashboard grouped by lifecycle stage + document detail view
@@ -1128,8 +1128,9 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ⬜ Render inline citation markers within the briefing text (not just a list)
 - ✅ Deploy (API + site) — closed 2026-07-13, but the item was stale in both
       directions: the stack had ALREADY been deployed (Railway Postgres
-      `pgvector` + Railway API service `EuroPolTracker`, git-connected
-      auto-deploy; Vercel site `euro-pol-tracker`) without this line being
+      `pgvector` + Railway API service `EuroPolTracker` (renamed `Regina` in
+      the 2026-07-17 rebrand), git-connected
+      auto-deploy; Vercel site `euro-pol-tracker` (now `regina`)) without this line being
       checked off, AND the site had been silently broken since its first
       deploy — `NEXT_PUBLIC_API_URL` existed in Vercel's production env but
       was EMPTY, so `lib/api.ts` fell back to `http://127.0.0.1:8000` and
@@ -1172,7 +1173,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       the public site for anything that belongs in this backlog instead.
       Found three CLI-leak error/empty-states written for a developer running
       locally, not a real visitor: `documents/page.tsx`'s fetch-failure and
-      empty-corpus messages named `uv run ept serve` / `ept refresh` / `ept
+      empty-corpus messages named `uv run regina serve` / `regina refresh` / `regina
       embed` directly, and `brief/page.tsx`'s fetch-failure message did the
       same. Replaced all three with plain user-facing copy ("temporarily
       unavailable — try again shortly" / "No documents to show right now").

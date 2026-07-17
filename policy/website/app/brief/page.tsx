@@ -210,7 +210,7 @@ export default function BriefPage() {
         <p className="eyebrow">Regulatory intelligence report</p>
         <h1>Know what applies before it applies to you</h1>
         <p>
-          EuroPolTracker turns the official EU, French and German regulatory record into a
+          Regina turns the official EU, French and German regulatory record into a
           source-cited intelligence report — not a generic AI summary. Describe your company,
           answer a few scoping questions, and get an analyst-grade report, exportable as PDF.
         </p>

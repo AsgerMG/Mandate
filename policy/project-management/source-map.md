@@ -1,6 +1,6 @@
 # Source map — EU / France / Germany
 
-The channel inventory behind `ept refresh`. Three layers:
+The channel inventory behind `regina refresh`. Three layers:
 
 1. **Law & pipeline** — authoritative texts and live procedure state
 2. **Regulators & institutions** — DPAs, sector regulators, courts, agencies
@@ -9,7 +9,7 @@ The channel inventory behind `ept refresh`. Three layers:
 Every URL below was verified live before integration (initial pass 2026-07-02;
 expansion batch 2026-07-03). Adapters live in `etl/adapters/`; RSS/Atom
 channels are one `FeedSpec` each in `feeds.py`. All extraction is **automated
-and triggerable**: `ept refresh` (CLI) or `POST /api/refresh` (HTTP) runs
+and triggerable**: `regina refresh` (CLI) or `POST /api/refresh` (HTTP) runs
 every enabled source incrementally (cursors + content hashing dedupe) and
 auto-embeds, so the corpus augments itself with the newest developments on
 every trigger.

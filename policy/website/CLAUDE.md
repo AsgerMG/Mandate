@@ -29,7 +29,7 @@ Don't eyeball one breakpoint in devtools. Start both servers and check a
 spread of real widths with Playwright (already in the repo's `.venv`):
 
 ```bash
-uv run ept serve                            # API at :8000 (repo root)
+uv run regina serve                            # API at :8000 (repo root)
 cd website && npm run dev                   # site at :3000
 ```
 

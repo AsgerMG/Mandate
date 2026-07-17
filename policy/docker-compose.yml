@@ -4,18 +4,18 @@ services:
   db:
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: ept
-      POSTGRES_PASSWORD: ept
-      POSTGRES_DB: europoltracker
+      POSTGRES_USER: regina
+      POSTGRES_PASSWORD: regina
+      POSTGRES_DB: regina
     ports:
       - "5432:5432"
     volumes:
-      - ept_pgdata:/var/lib/postgresql/data
+      - regina_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ept -d europoltracker"]
+      test: ["CMD-SHELL", "pg_isready -U regina -d regina"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  ept_pgdata:
+  regina_pgdata:

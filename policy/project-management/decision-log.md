@@ -5,6 +5,24 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-17 — Rebrand: EuroPolTracker → Regina
+**Decision:** Full end-to-end rename of the product to **Regina** (a backronym
+for **REG**ulatory **IN**telligence **A**nalyst): display name, site title and
+copy, PDF wordmark, FastAPI title, Python package (`europoltracker` →
+`regina`), CLI console script (`ept` → `regina`), HTTP user agent, local
+docker-compose Postgres names, docs, plus the external GitHub repo, Railway
+service, and Vercel project (with their generated domains).
+**Why:** "EuroPolTracker" reads as security/law-enforcement (Europol) — wrong
+associations for a regulatory-intelligence product. "Regina" matches the
+"analyst desk, run as software" positioning and the terminology shift to
+"regulatory intelligence" already made across the site.
+**Implementation notes:** the infra cutover is order-sensitive — the Railway
+generated domain is baked into Vercel's `NEXT_PUBLIC_API_URL` at build time,
+and the Vercel URL sits in Railway's `CORS_ALLOW_ORIGINS` (see DEPLOYMENT.md
+history for the incident this coupling caused). Old identifiers survive only
+in historical log entries, annotated with the rename. Python package
+directories (`data/`, `etl/`) are unchanged — no imports were renamed.
+
 ## 2026-07-09 — Retrieval must filter on `DocumentVersion.is_current`
 **Decision:** `semantic_search()`, `canon_passages()`, and `embed_pending()`
 in `etl/enrichment/embeddings.py` now all filter/join on
@@ -105,7 +123,7 @@ were folded back in to honor this.
 **Why:** The user fixed the four-folder structure ("all ops linked to these").
 Decoupling the Next.js client from the Python backend via HTTP (not imports)
 keeps the split clean and lets either side be deployed/replaced independently.
-**Implementation:** `ept serve` runs the API (`uvicorn etl.api:app`); the site
+**Implementation:** `regina serve` runs the API (`uvicorn etl.api:app`); the site
 is `cd website && npm run dev`. Verified end-to-end: site serves 200, API feeds
 real corpus data, briefing dry-run returns ranked sources.
 
@@ -120,7 +138,7 @@ provenance (CELEX, URL, char offsets). Lives in a new `intelligence/` package
 source span for each claim, rather than us trusting a "please cite" instruction.
 Directly delivers the "very realistic, no hallucinated obligations" requirement.
 **Findings baked in:** built key-free — retrieval, request assembly, and citation
-parsing are pure/testable; `ept brief --dry-run` runs with no API key; the live
+parsing are pure/testable; `regina brief --dry-run` runs with no API key; the live
 run needs only `ANTHROPIC_API_KEY`. Verified retrieval end-to-end (a fintech/AI
 profile surfaces the AI Act/liability/ethics instruments).
 
@@ -136,7 +154,7 @@ embedder (Voyage/OpenAI).
 self-driving. Local-first removes all setup friction while preserving the exact
 same schema/capability — including citations — as the hosted path.
 **Findings baked in:** embedding dimension is config-driven (column rebuilt on
-change); HNSW cosine index added; `ept embed` + `ept search` verified on the
+change); HNSW cosine index added; `regina embed` + `regina search` verified on the
 live corpus (semantic discrimination confirmed). Citation capability is a
 property of the schema (full text + passage char-offsets + version + URL), so
 it is identical whether storage is local or hosted.
@@ -160,13 +178,13 @@ only on transient errors (network/429/5xx), never on 404.
 
 ## 2026-06-26 — Fully automated, single-trigger data collection
 **Decision:** All corpus data is collected programmatically. A refresh is one
-trigger — `ept refresh` — that runs every registered source adapter end-to-end
+trigger — `regina refresh` — that runs every registered source adapter end-to-end
 (discover → fetch → parse → version → chunk). No manual data entry, ever. The
 same orchestrator will later be exposed as an API endpoint and a scheduled job.
 **Why:** The product promise is current, trustworthy policy intelligence; that
 requires the corpus to refresh on demand and on a schedule without human steps.
 **Implementation:** `etl/adapters/__init__.py` registry + `etl/pipeline.py`
-orchestrator + `ept refresh` CLI. Adding a source = one subclass + one registry
+orchestrator + `regina refresh` CLI. Adding a source = one subclass + one registry
 line; the trigger picks it up automatically.
 
 ## 2026-06-26 — Repository structure mirrors the architecture

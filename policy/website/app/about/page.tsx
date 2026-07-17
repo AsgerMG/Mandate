@@ -34,10 +34,10 @@ export default function AboutPage() {
       <div className="viewport-intro">
         <div className="hero-row">
           <section className="hero hero-text">
-            <div className="eyebrow">About EuroPolTracker</div>
+            <div className="eyebrow">About Regina</div>
             <h1>An analyst desk, run as software</h1>
             <p>
-              EuroPolTracker exists so a compliance or public-affairs team can answer &quot;what
+              Regina — a regulatory intelligence analyst — exists so a compliance or public-affairs team can answer &quot;what
               applies to us, and what&apos;s about to change&quot; without waiting on a manual
               policy scan — and without trusting a summary they can&apos;t verify.
             </p>

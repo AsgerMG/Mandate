@@ -1,4 +1,4 @@
-// Thin typed client for the EuroPolTracker API (etl/api.py).
+// Thin typed client for the Regina API (etl/api.py).
 
 const BASE = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
 
