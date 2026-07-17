@@ -8,11 +8,11 @@ existed precisely because none of this was written down.
 
 | Piece | Platform | Where | Deploys how |
 |---|---|---|---|
-| Postgres + pgvector (the corpus) | Railway | project `nurturing-delight`, service `pgvector` | n/a — managed; data flows in via `ept refresh`/`ept embed` from anywhere that has `DATABASE_URL` |
+| Postgres + pgvector (the corpus) | Railway | project `regina`, service `pgvector` | n/a — managed; data flows in via `regina refresh`/`regina embed` from anywhere that has `DATABASE_URL` |
 | FastAPI backend (`etl/api.py`) | Railway | same project, service `Regina` → https://regina-production.up.railway.app | **Auto-deploys on push to `main`** (git-connected to `AsgerMG/Regina`, builds via the root `Dockerfile`, config in `railway.json`) |
-| Next.js site (`website/`) | Vercel | project `regina` (team `asgermgs-projects`) → https://regina.vercel.app | Push to `main` (git-connected) or `vercel redeploy <latest-deployment-url> --target production` from `website/` |
+| Next.js site (`website/`) | Vercel | project `regina` (team `asgermgs-projects`) → https://regina-intel.vercel.app | Push to `main` (git-connected) or `vercel redeploy <latest-deployment-url> --target production` from `website/` |
 
-There is exactly ONE database. Local runs, the deployed API, and `ept
+There is exactly ONE database. Local runs, the deployed API, and `regina
 refresh` from any machine all read/write the same Railway Postgres via
 `DATABASE_URL`. There is no staging copy and no "push the DB" step — writes
 are live immediately.
@@ -22,7 +22,7 @@ are live immediately.
 ### Railway service `Regina`
 
 Set via `railway variables --set "KEY=value"` (CLI, from the repo root after
-`railway link -p nurturing-delight`) or the Railway dashboard.
+`railway link -p regina`) or the Railway dashboard.
 
 | Var | Purpose | Gotcha |
 |---|---|---|
@@ -49,7 +49,7 @@ directory).
 ```bash
 # --- one-time CLI setup ---
 npm i -g @railway/cli vercel
-railway login && railway link -p nurturing-delight
+railway login && railway link -p regina
 cd website && vercel link --yes --project regina
 
 # --- deploy backend (normal path: just push) ---
@@ -68,7 +68,7 @@ curl https://regina-production.up.railway.app/api/refresh   # status
 
 # --- sanity-check prod end to end ---
 curl https://regina-production.up.railway.app/api/stats
-# then open https://regina.vercel.app/documents and confirm the
+# then open https://regina-intel.vercel.app/documents and confirm the
 # register shows real counts, NOT "Corpus is empty" (that message = the site
 # can't reach the API: check NEXT_PUBLIC_API_URL and CORS_ALLOW_ORIGINS)
 ```
@@ -77,14 +77,26 @@ curl https://regina-production.up.railway.app/api/stats
 
 - `ep_verbatim` (EP debate transcripts) needs headless Chromium — deliberately
   excluded from the Docker image (see `Dockerfile` comment and
-  decision-log.md 2026-07-09). Run `ept refresh --only ep_verbatim` locally;
+  decision-log.md 2026-07-09). Run `regina refresh --only ep_verbatim` locally;
   it writes to the same shared DB.
-- Embedding (`ept embed`) runs wherever refresh runs. It is CPU-heavy
+- Embedding (`regina embed`) runs wherever refresh runs. It is CPU-heavy
   (~30-40 passages/min/core on the local BGE model) — for large backfills run
   it locally under `caffeinate -i`, not on the Railway hobby container.
 
 ## History (why this file exists)
 
+- **2026-07-17**: full rebrand EuroPolTracker → Regina (see decision-log.md).
+  Renamed: GitHub repo (`AsgerMG/EuroPolTracker` → `AsgerMG/Regina`, GitHub
+  redirects the old URL), Railway project (`nurturing-delight` → `regina`),
+  Railway service (`EuroPolTracker` → `Regina`) and its generated domain
+  (`europoltracker-production.up.railway.app` →
+  `regina-production.up.railway.app` — old domain is DEAD), Vercel project
+  (`euro-pol-tracker` → `regina`). `regina.vercel.app` was taken by another
+  Vercel user, so the site's domain is **`regina-intel.vercel.app`**;
+  `euro-pol-tracker.vercel.app` remains attached as a 308 redirect to it.
+  `NEXT_PUBLIC_API_URL` (Vercel) and `CORS_ALLOW_ORIGINS`/`HTTP_USER_AGENT`
+  (Railway) were updated in the same cutover, followed by a Vercel rebuild
+  (build-time baking) and a Railway redeploy (var changes need one).
 - **2026-07-13**: live site had shown "Corpus is empty" since first deploy —
   `NEXT_PUBLIC_API_URL` was set but EMPTY in Vercel prod env, so the client
   fell back to localhost. Nobody noticed because the marketing pages render
