@@ -94,6 +94,30 @@ KEY_ACTS: dict[str, str] = {
     "32021H0946": "Commission Recommendation — European Digital Identity Framework Toolbox (2021)",
     "32021H1086": "Commission Recommendation — Joint Cyber Unit (2021)",
     "32019H0534": "Commission Recommendation — Cybersecurity of 5G Networks (2019)",
+    # Coverage-audit additions (2026-07-17) — a systematic sweep against the
+    # mid-2026 EU tech-regulation landscape found these enacted instruments
+    # missing. All CELEX ids verified against Cellar (real ids 400 on bare
+    # fetch, nonexistent ids 404 — plus the adapter's full header set works).
+    # Time-critical first:
+    "32023R1543": "e-Evidence Regulation",  # applies 18 Aug 2026
+    "32024L2853": "Product Liability Directive (revised, software/AI)",  # transposition 9 Dec 2026
+    "32025R2518": "GDPR Procedural Regulation",  # applies 2 Apr 2027
+    "32019L0882": "European Accessibility Act (EAA)",
+    "32019L0790": "Copyright DSM Directive",  # Art. 4 TDM opt-out — AI training
+    "32019R0881": "Cybersecurity Act",  # under revision (CSA 2.0, Jan 2026)
+    "32018L1972": "European Electronic Communications Code (EECC)",
+    "32023R0988": "General Product Safety Regulation (GPSR)",
+    "32022L2557": "CER Directive (critical entities resilience)",
+    "32025R0327": "European Health Data Space (EHDS)",
+    "32024R1309": "Gigabit Infrastructure Act",
+    "32023R1781": "European Chips Act",
+    "32021R0784": "Terrorist Content Online Regulation",
+    "52025PC0838": "European Business Wallet proposal",
+    "32024R0903": "Interoperable Europe Act",
+    "32018R0302": "Geo-blocking Regulation",
+    "32019L1024": "Open Data Directive",
+    "32016L2102": "Web Accessibility Directive",
+    "52018PC0147": "Significant Digital Presence proposal (COM/2018/147, DST sibling)",
     # Machinery Directive 2006/42/EC (2026-07-13) — the Machinery Regulation
     # (32023R1230, above) doesn't apply until 20 January 2027; until then
     # THIS is the currently-in-force law a company's machinery must comply
