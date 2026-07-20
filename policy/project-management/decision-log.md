@@ -5,6 +5,34 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-20 — Weekly self-improving data loop + review workflow
+**Decision:** Two-part weekly loop: (1) a Railway cron service (`refresh-cron`)
+hits production `POST /api/refresh` every Sunday 05:00 UTC — no code involved,
+just the existing trigger on a schedule; (2) a Claude cloud routine ("Regina
+weekly data audit", Sunday 06:30 UTC) audits refresh health, lists what got
+newly embedded that week, and web-researches EU/DE/FR regulatory developments
+against the current corpus to flag coverage gaps. The routine is **report
+only**: no repo access, no commits, no autonomous changes to KEY_ACTS or
+adapters — findings get pasted into `weekly-audit-pending.md` for review in
+the next working session, and whatever we decide to act on gets its own dated
+entry here, after which the pending file is cleared.
+**Options considered:** auto-commit verified additions (rejected — a research
+agent auto-writing legal-citation data unreviewed is exactly the failure mode
+report-only exists to prevent); PR-per-week (rejected as unnecessary process
+for something this low-volume); Slack/email/Asana delivery (rejected — the
+user wants the artifact to live in the repo, reviewed together, not scattered
+across another tool).
+**Why:** Data-quality risk (a wrong CELEX number or mislabeled act flowing into
+citation-backed briefs) is the real risk here, not cost or infrastructure —
+so a human stays in the loop for anything that touches what the corpus
+contains, while the mechanical parts (refresh, research, drafting the report)
+are fully automated.
+**Caveat:** the routine has no GitHub App connection yet (private repo), so it
+audits from the public API plus a hardcoded coverage snapshot rather than
+live-reading `eurlex_key_acts.py` — connect the GitHub App to upgrade this.
+It also can't reliably push a notification from a detached cloud sandbox, so
+in practice the trigger for review is the next conversation, not a ping.
+
 ## 2026-07-17 — Rebrand: EuroPolTracker → Regina
 **Decision:** Full end-to-end rename of the product to **Regina** (a backronym
 for **REG**ulatory **IN**telligence **A**nalyst): display name, site title and
