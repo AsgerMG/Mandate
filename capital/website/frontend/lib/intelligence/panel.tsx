@@ -4,11 +4,12 @@ import { useEffect, useState, type CSSProperties } from "react";
 import {
   BORROWER_MODELS,
   CAPITAL_OPTIONS,
+  FIELD_ENUM_HINTS,
   TICKET_BANDS,
   type EligibilityAnswers,
   type EligibilityCheck,
+  type GroundedRound,
   type InstrumentRow,
-  type IntakeGroup,
   type IntelligenceReport,
   type PipelineStep,
   type ProgressEvent,
@@ -28,9 +29,9 @@ const darkVars = {
   "--primary": "#0a0a0a",
 } as CSSProperties;
 
-// The interface adds this option to every intake question; picking it (or leaving
-// a question blank) just omits that clarification from the memo.
-const SKIP_ANSWER = "Not sure / skip";
+// Grounded adaptive rounds (Phase 3C): capped so worst-case added latency/cost
+// stays bounded even when the shortlist never fully collapses.
+const MAX_ROUNDS = 2;
 
 // The four archetypes, as a one-tap picker. The label is sent verbatim as the
 // founder's `companyType`; the hint is the funder's-eye definition.
@@ -347,9 +348,14 @@ export function IntelligencePanel() {
 
   const [screen, setScreen] = useState<"basics" | "verdict" | "adaptive">("basics");
   const [preparing, setPreparing] = useState(false);
-  const [groups, setGroups] = useState<IntakeGroup[] | null>(null);
-  const [groupIdx, setGroupIdx] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  // One grounded round at a time (advisory_pipeline Phase 3C) — the server
+  // decides per-call whether another round is worth asking, grounded in the
+  // founder's actual candidate-instrument shortlist. roundAnswers is keyed by
+  // EligibilityAnswers field name; a multi-select field (FIELD_ENUM_HINTS[f].multi)
+  // holds a string[], everything else a plain string.
+  const [round, setRound] = useState<GroundedRound | null>(null);
+  const [roundAnswers, setRoundAnswers] = useState<Record<string, string | string[]>>({});
+  const [roundCount, setRoundCount] = useState(0);
 
   // The fast path: a deterministic eligibility verdict, computed with zero
   // model calls, shown right after the finances screen (before the memo's
@@ -360,6 +366,7 @@ export function IntelligencePanel() {
     eligibilityScreen: EligibilityCheck[];
     instrumentTable: InstrumentRow[];
     selfMatched: boolean;
+    candidateInstrumentIds: string[];
   } | null>(null);
 
   const [running, setRunning] = useState(false);
@@ -399,9 +406,16 @@ export function IntelligencePanel() {
     eligibility: elig,
   });
 
-  // Right after the finances screen: compute the fast, model-free eligibility
+  type Verdict = {
+    eligibilityScreen: EligibilityCheck[];
+    instrumentTable: InstrumentRow[];
+    selfMatched: boolean;
+    candidateInstrumentIds: string[];
+  };
+
+  // Right after the core screen: compute the fast, model-free eligibility
   // verdict and show it immediately. Falls straight through to the adaptive
-  // follow-ups on any failure — the verdict screen is a bonus, never a gate.
+  // round on any failure — the verdict screen is a bonus, never a gate.
   async function fetchVerdict() {
     setVerdictLoading(true);
     setError(null);
@@ -411,50 +425,88 @@ export function IntelligencePanel() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify(basePayload()),
       });
-      const data = (await res.json().catch(() => ({}))) as {
-        eligibilityScreen?: EligibilityCheck[];
-        instrumentTable?: InstrumentRow[];
-        selfMatched?: boolean;
-      };
+      const data = (await res.json().catch(() => ({}))) as Partial<Verdict>;
       if (!data.eligibilityScreen && !data.instrumentTable) {
-        await fetchGroups();
+        await fetchRound(elig, []);
         return;
       }
-      setVerdict({
+      const v: Verdict = {
         eligibilityScreen: data.eligibilityScreen ?? [],
         instrumentTable: data.instrumentTable ?? [],
         selfMatched: Boolean(data.selfMatched),
-      });
+        candidateInstrumentIds: data.candidateInstrumentIds ?? [],
+      };
+      setVerdict(v);
       setScreen("verdict");
     } catch {
-      await fetchGroups();
+      await fetchRound(elig, []);
     } finally {
       setVerdictLoading(false);
     }
   }
 
-  // After the fixed screens: fetch the themed follow-up groups (best-effort —
-  // on failure or empty result the memo runs straight away).
-  async function fetchGroups() {
+  // Phase 3C: fetch exactly one grounded adaptive round, scoped to the given
+  // shortlist. Best-effort — a null/empty round (nothing left worth asking,
+  // or any failure) just runs the memo straight away.
+  async function fetchRound(eligForRequest: EligibilityAnswers, candidateInstrumentIds: string[]) {
     setPreparing(true);
     setError(null);
     try {
       const res = await fetch("/api/intelligence/intake", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(basePayload()),
+        body: JSON.stringify({ ...basePayload(), eligibility: eligForRequest, candidateInstrumentIds }),
       });
-      const data = (await res.json().catch(() => ({}))) as { groups?: IntakeGroup[] };
-      const gs = (Array.isArray(data.groups) ? data.groups : []).filter(
-        (g) => g && Array.isArray(g.questions) && g.questions.length > 0,
-      );
-      if (gs.length === 0) {
+      const data = (await res.json().catch(() => ({}))) as { round?: GroundedRound | null };
+      if (!data.round || !Array.isArray(data.round.questions) || data.round.questions.length === 0) {
         await runMemo([]);
         return;
       }
-      setGroups(gs);
-      setGroupIdx(0);
+      setRound(data.round);
+      setRoundAnswers({});
       setScreen("adaptive");
+    } catch {
+      await runMemo([]);
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  // Merge this round's answers into elig, then either fetch one more grounded
+  // round (recomputing the verdict first, cheap and model-free, so the next
+  // round reasons over the founder's now-narrower shortlist) or, past
+  // MAX_ROUNDS, go straight to the memo.
+  async function advanceRound() {
+    const merged: EligibilityAnswers = { ...elig };
+    for (const q of round?.questions ?? []) {
+      const ans = roundAnswers[q.field];
+      if (ans === undefined || ans === "" || (Array.isArray(ans) && ans.length === 0)) continue;
+      (merged as Record<string, unknown>)[q.field] = ans;
+    }
+    setElig(merged);
+    setRound(null);
+    const nextCount = roundCount + 1;
+    setRoundCount(nextCount);
+    if (nextCount >= MAX_ROUNDS) {
+      await runMemo([]);
+      return;
+    }
+    setPreparing(true);
+    try {
+      const res = await fetch("/api/intelligence/verdict", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...basePayload(), eligibility: merged }),
+      });
+      const data = (await res.json().catch(() => ({}))) as Partial<Verdict>;
+      const v: Verdict = {
+        eligibilityScreen: data.eligibilityScreen ?? [],
+        instrumentTable: data.instrumentTable ?? [],
+        selfMatched: Boolean(data.selfMatched),
+        candidateInstrumentIds: data.candidateInstrumentIds ?? [],
+      };
+      setVerdict(v);
+      await fetchRound(merged, v.candidateInstrumentIds);
     } catch {
       await runMemo([]);
     } finally {
@@ -513,23 +565,14 @@ export function IntelligencePanel() {
     }
   }
 
-  function submitAnswers() {
-    const qs = (groups ?? []).flatMap((g) => g.questions);
-    const clarifications = qs
-      .map((q) => ({ question: q.question, answer: answers[q.id] ?? "" }))
-      .filter((c) => c.answer && c.answer !== SKIP_ANSWER);
-    setGroups(null);
-    void runMemo(clarifications);
-  }
-
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
   const FIXED_SCREENS = ["basics", "verdict"] as const;
   const screenIdx =
     screen === "adaptive"
-      ? FIXED_SCREENS.length + groupIdx
+      ? FIXED_SCREENS.length + roundCount
       : FIXED_SCREENS.indexOf(screen as (typeof FIXED_SCREENS)[number]);
-  const totalScreens = FIXED_SCREENS.length + (groups?.length ?? 1);
+  const totalScreens = FIXED_SCREENS.length + MAX_ROUNDS;
 
   const inputCls =
     "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]";
@@ -760,8 +803,9 @@ export function IntelligencePanel() {
               )}
             </div>
             <div className="mt-5 flex items-center gap-4">
-              <button type="button" disabled={preparing} onClick={() => void fetchGroups()} className={nextBtn}>
-                {preparing ? "Preparing follow-ups…" : "See the full memo"}
+              <button type="button" disabled={preparing}
+                onClick={() => void fetchRound(elig, verdict.candidateInstrumentIds)} className={nextBtn}>
+                {preparing ? "Checking what's still open…" : "See the full memo"}
               </button>
               <button type="button" onClick={() => setScreen("basics")} className={backBtn}>Back</button>
               <button type="button" onClick={() => void runMemo([])} className={backBtn}>
@@ -771,57 +815,65 @@ export function IntelligencePanel() {
           </div>
         )}
 
-        {/* ── Adaptive screens: themed follow-ups ──────────────────────── */}
-        {screen === "adaptive" && groups && !running && (
+        {/* ── Adaptive round: grounded in the founder's real remaining gates ── */}
+        {screen === "adaptive" && round && !running && (
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
             <p className="mb-1 text-xs uppercase tracking-widest text-[#12264f]">
-              {groups[groupIdx].theme}
+              {round.theme}
             </p>
             <p className="mb-5 text-sm text-[var(--muted-foreground)]">
-              Tailored to your answers. Each one shifts which instruments fit.
-              Skip anything you are unsure of.
+              Each question here comes from a real requirement of a fund still on
+              your shortlist. Skip anything you are unsure of.
             </p>
             <div className="space-y-5">
-              {groups[groupIdx].questions.map((q) => (
-                <div key={q.id}>
-                  <p className="mb-2 text-sm font-semibold" style={serif}>{q.question}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {[...q.options, SKIP_ANSWER].map((opt) => {
-                      const on = answers[q.id] === opt;
-                      return (
-                        <button key={opt} type="button" aria-pressed={on}
-                          onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: prev[q.id] === opt ? "" : opt }))}
-                          className={
-                            "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
-                            (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                                : opt === SKIP_ANSWER
-                                  ? "border-dashed border-[var(--muted-foreground)] bg-white/70 text-[var(--muted-foreground)] hover:border-[#12264f]"
+              {round.questions.map((q) => {
+                const hint = FIELD_ENUM_HINTS[q.field];
+                if (!hint) return null;
+                const current = roundAnswers[q.field];
+                return (
+                  <div key={q.field}>
+                    <p className="mb-2 text-sm font-semibold" style={serif}>{q.question}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {hint.options.map((o) => {
+                        const on = hint.multi
+                          ? Array.isArray(current) && current.includes(o.value)
+                          : current === o.value;
+                        return (
+                          <button key={o.value} type="button" aria-pressed={on}
+                            onClick={() => setRoundAnswers((prev) => {
+                              if (hint.multi) {
+                                const list = Array.isArray(prev[q.field]) ? (prev[q.field] as string[]) : [];
+                                const next = list.includes(o.value)
+                                  ? list.filter((v) => v !== o.value)
+                                  : [...list, o.value];
+                                return { ...prev, [q.field]: next };
+                              }
+                              return { ...prev, [q.field]: prev[q.field] === o.value ? "" : o.value };
+                            })}
+                            className={
+                              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+                              (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
                                   : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
-                          }>
-                          {opt}
-                        </button>
-                      );
-                    })}
+                            }>
+                            {o.label}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
             <div className="mt-6 flex items-center gap-4">
-              {groupIdx < groups.length - 1 ? (
-                <button type="button" onClick={() => setGroupIdx((i) => i + 1)} className={nextBtn}>
-                  Continue
-                </button>
-              ) : (
-                <button type="button" onClick={submitAnswers} className={nextBtn}>
-                  Write my funding memo
-                </button>
-              )}
-              <button type="button"
-                onClick={() => (groupIdx > 0 ? setGroupIdx((i) => i - 1) : setScreen(verdict ? "verdict" : "basics"))}
-                className={backBtn}>
+              <button type="button" disabled={preparing} onClick={() => void advanceRound()} className={nextBtn}>
+                {preparing
+                  ? "Checking…"
+                  : roundCount + 1 >= MAX_ROUNDS ? "Write my funding memo" : "Continue"}
+              </button>
+              <button type="button" onClick={() => setScreen(verdict ? "verdict" : "basics")} className={backBtn}>
                 Back
               </button>
-              <button type="button" onClick={submitAnswers} className={backBtn}>
+              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
                 Skip the rest and write it now
               </button>
             </div>

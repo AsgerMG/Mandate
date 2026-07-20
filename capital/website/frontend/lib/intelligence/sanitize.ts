@@ -80,3 +80,13 @@ export function sanitizeTargetMarkets(raw: unknown): string[] | undefined {
 export function sanitizeCapitalSought(raw: unknown): string[] | undefined {
   return pickEnumList(raw, CAPITAL_TYPE_VALUES);
 }
+
+const INSTRUMENT_ID_RE = /^[a-z0-9_]{1,60}$/;
+
+/** Whitelist a raw request body's `candidateInstrumentIds` field — internal
+ *  DB ids only, never free text: lowercase/digits/underscore, length-capped. */
+export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const out = raw.filter((x): x is string => typeof x === "string" && INSTRUMENT_ID_RE.test(x)).slice(0, 40);
+  return out.length ? out : undefined;
+}

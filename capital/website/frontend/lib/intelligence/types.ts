@@ -200,12 +200,10 @@ export interface IntelligenceRequest {
   clarifications?: { question: string; answer: string }[];
   /** Structured scoping answers (the wizard's deterministic screens). */
   eligibility?: EligibilityAnswers;
-}
-
-/** A themed group of adaptive questions — one wizard screen each. */
-export interface IntakeGroup {
-  theme: string;               // short screen title, e.g. "Your project"
-  questions: IntakeQuestion[];
+  /** The founder's current candidate instrument shortlist (from a prior
+   *  verdict computation) — grounds the adaptive round in gates that are
+   *  actually still open for THESE instruments, not the whole 320-row corpus. */
+  candidateInstrumentIds?: string[];
 }
 
 /** Scale bands: which instrument universe the ask opens (advisory_pipeline §B2). */
@@ -260,14 +258,81 @@ export interface EligibilityAnswers {
   needBy?: string;             // "asap_weeks" | "months_6" | "months_18" | "flexible"
 }
 
-/** One tailored multiple-choice question the intake stage asks before the memo. */
-export interface IntakeQuestion {
-  /** Stable id for client state. */
-  id: string;
-  /** The question, in plain English. */
+/** The fixed founder-facing options for every EligibilityAnswers field that's
+ *  deferred off the first page (Phase 3B) and eligible for the grounded
+ *  adaptive round (Phase 3C) — excludes free-text/numeric fields
+ *  (entityCountries, activityCountries, foundedYear), which stay out of this
+ *  mechanism. The model picks WHICH fields to ask about and phrases the
+ *  question from real gate text; it never invents the option labels — those
+ *  come from here, so an answer is always a real, valid EligibilityAnswers
+ *  value. Shared between the server (prompt/schema construction) and the
+ *  client (rendering the picked answer). */
+export const FIELD_ENUM_HINTS: Record<string, { multi: boolean; options: { value: string; label: string }[] }> = {
+  consortium: { multi: false, options: [
+    { value: "yes", label: "Yes, we could run a 3+ partner consortium" },
+    { value: "no", label: "No, single applicant only" },
+    { value: "unsure", label: "Not sure" },
+  ] },
+  cofinancingBand: { multi: false, options: [
+    { value: ">50%", label: "Yes, more than half" },
+    { value: "25-50%", label: "Yes, 25–50%" },
+    { value: "<25%", label: "Below 25%" },
+    { value: "unsure", label: "Not sure" },
+  ] },
+  conditionality: { multi: true, options: [
+    { value: "local_entity", label: "Opening a local entity" },
+    { value: "geo_commitments", label: "Committing investment to a specific country" },
+    { value: "state_shareholder", label: "The state on the cap table" },
+    { value: "job_commitments", label: "Job-creation commitments" },
+  ] },
+  wouldOpenEntity: { multi: false, options: [
+    { value: "yes", label: "Yes, if it unlocks the right capital" },
+    { value: "depends", label: "Depends on the terms" },
+    { value: "no", label: "No" },
+  ] },
+  ownerOver25: { multi: false, options: [
+    { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
+  ] },
+  institutionalOwner: { multi: false, options: [
+    { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
+  ] },
+  nonEuControl: { multi: false, options: [
+    { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
+  ] },
+  bankRelationship: { multi: false, options: [
+    { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
+  ] },
+  institutionalBacking: { multi: false, options: [
+    { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
+  ] },
+  needBy: { multi: false, options: [
+    { value: "asap_weeks", label: "Weeks" },
+    { value: "months_6", label: "Within 6 months" },
+    { value: "months_18", label: "6–18 months" },
+    { value: "flexible", label: "Flexible" },
+  ] },
+  turnoverBand: { multi: false, options: [
+    { value: "<2M", label: "Under €2M" }, { value: "2-10M", label: "€2–10M" },
+    { value: "10-50M", label: "€10–50M" }, { value: ">50M", label: "Over €50M" },
+  ] },
+  balanceBand: { multi: false, options: [
+    { value: "<2M", label: "Under €2M" }, { value: "2-43M", label: "€2–43M" }, { value: ">43M", label: "Over €43M" },
+  ] },
+};
+
+/** One question in a grounded adaptive round: the model picks which field
+ *  (from the real open-gate evidence it was given) and phrases the question;
+ *  the answer options always come from FIELD_ENUM_HINTS, never the model. */
+export interface GroundedQuestion {
+  field: string;
   question: string;
-  /** 2–4 answer options. The client appends its own "Not sure / skip". */
-  options: string[];
+}
+
+/** One themed adaptive round — Phase 3C generates exactly one at a time,
+ *  grounded in the founder's actual candidate-instrument shortlist. */
+export interface GroundedRound {
+  theme: string;
+  questions: GroundedQuestion[];
 }
 
 /** The selectable capital types the founder can ask for. Order = display order. */

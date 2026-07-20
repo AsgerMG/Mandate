@@ -7,6 +7,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
+import { type OpenFieldEvidence } from "./gateReach";
 import {
   findPeersBySubsector,
   isGenericSubsector,
@@ -23,17 +24,17 @@ import {
 import {
   BORROWER_MODELS,
   CAPITAL_OPTIONS,
+  FIELD_ENUM_HINTS,
   TICKET_BANDS,
   type ChannelAmount,
   type EligibilityAnswers,
   type EligibilityCheck,
   type FounderFit,
-  type IntakeGroup,
+  type GroundedRound,
   type CompetitorIntel,
   type CompetitorRecord,
   type CompetitorRow,
   type InstrumentRow,
-  type IntakeQuestion,
   type IntelligenceReport,
   type IntelligenceRequest,
   type ProgressEvent,
@@ -313,9 +314,14 @@ function selectLeafInstruments(
  * never presented as equivalent to startup-ready options. Within each
  * selected channel, real DB-native leaf instruments are picked and shown
  * separately when the founder's country/capital-type/ticket answers can
- * resolve them (falls back to the channel-level row otherwise). Returns at
- * most six rows so the memo stays a memo.
+ * resolve them (falls back to the channel-level row otherwise). Returns the
+ * full ranked candidate list, unsliced — callers cap to DISPLAY_CAP for
+ * anything user-facing; the fuller list is what grounds the adaptive round
+ * (Phase 3C) in gates from every instrument still plausibly in play, not
+ * just the six shown in the table.
  */
+const DISPLAY_CAP = 6;
+
 function buildInstrumentTable(
   fieldChannels: Set<string>,
   ticketBand?: string,
@@ -373,8 +379,7 @@ function buildInstrumentTable(
       const da = demote(a), db = demote(b);
       if (da !== db) return da ? 1 : -1;
       return INSTRUMENT_PRIORITY.indexOf(a.channel) - INSTRUMENT_PRIORITY.indexOf(b.channel);
-    })
-    .slice(0, 6);
+    });
 }
 
 /** "€2.5M EIC · €1.8M dev banks" — the top doors, with figures where known. */
@@ -998,93 +1003,78 @@ async function synthesize(
   };
 }
 
-// ── Phase 1: tailored intake questions, grouped into themed screens ──────────
-const INTAKE_GROUPS_SCHEMA = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    groups: {
-      type: "array",
-      items: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          theme: { type: "string" },
-          questions: {
-            type: "array",
-            items: {
-              type: "object",
-              additionalProperties: false,
-              properties: {
-                question: { type: "string" },
-                options: { type: "array", items: { type: "string" } },
-              },
-              required: ["question", "options"],
-            },
+/**
+ * Phase 3C: one grounded adaptive round. Unlike the old generateIntakeGroups
+ * (retired — it invented questions from a soft "entropy rule" prompt
+ * instruction with zero access to real gate data), this reads the ACTUAL
+ * unresolved eligibility_gates for the founder's current candidate-instrument
+ * shortlist (openFieldsForShortlist, computed by the caller) and asks the
+ * model only to translate real, cited requirement text into founder-friendly
+ * question phrasing — never to invent the answer options, which always come
+ * from FIELD_ENUM_HINTS. Returns null when there's nothing worth asking.
+ */
+export async function generateGroundedRound(
+  req: IntelligenceRequest,
+  openFields: OpenFieldEvidence[],
+): Promise<GroundedRound | null> {
+  if (!openFields.length) return null;
+  const top = openFields.slice(0, 3);
+  const fieldNames = top.map((f) => f.field);
+
+  const schema = {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      theme: { type: "string" },
+      questions: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            field: { type: "string", enum: fieldNames },
+            question: { type: "string" },
           },
+          required: ["field", "question"],
         },
-        required: ["theme", "questions"],
       },
     },
-  },
-  required: ["groups"],
-} as const;
+    required: ["theme", "questions"],
+  } as const;
 
-/**
- * Generate up to four tailored multiple-choice questions whose answers most change
- * which public instruments fit and how to position for them. Adaptive: only asks
- * what is still unknown from the form. Returns [] on any failure so the memo can
- * still run without the extra signal.
- */
-export async function generateIntakeGroups(
-  req: IntelligenceRequest,
-): Promise<IntakeGroup[]> {
-  const known = [
-    `Company: ${req.company}`,
-    req.sector ? `Sector: ${req.sector}` : "",
-    req.country ? `Country: ${req.country}` : "",
-    req.companyType ? `Company type (their words): ${req.companyType}` : "",
-    req.description ? `What they do: ${req.description}` : "",
-    capitalSoughtLabel(req.capitalSought)
-      ? `Capital sought: ${capitalSoughtLabel(req.capitalSought)}`
-      : "",
-    eligibilityContext(req.eligibility, req.targetMarkets).replace(
-      "## Scoping profile (structured intake, AUTHORITATIVE)\n", ""),
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const evidence = top
+    .map((f) => {
+      const hint = FIELD_ENUM_HINTS[f.field];
+      const examples = f.examples.map((e) => `  - ${e.instrument}: "${e.requirement}"`).join("\n");
+      const optionsLine = hint ? `  Must resolve to one of: ${hint.options.map((o) => o.label).join(" / ")}` : "";
+      return `Field "${f.field}" — still open on ${f.nInstruments} of the founder's candidate ` +
+        `instruments (${f.reachPct}% of shortlist weight). Real requirement text:\n${examples}\n${optionsLine}`;
+    })
+    .join("\n\n");
 
   try {
     const res = await client.messages.create({
       model: INTAKE_MODEL,
-      max_tokens: 1500,
+      max_tokens: 700,
       thinking: { type: "disabled" },
       system: loadAgentInstructions(),
-      output_config: { format: { type: "json_schema", schema: INTAKE_GROUPS_SCHEMA } },
+      output_config: { format: { type: "json_schema", schema } },
       messages: [
         {
           role: "user",
           content:
-            `A founder wants a qualification memo for European public capital. ` +
-            `You may ask follow-up questions before it is written, grouped into ` +
-            `THEMED SCREENS the founder clicks through. Return 1 to 3 groups, ` +
-            `each with a short theme title (2-4 words) and 2 to 3 multiple-choice ` +
-            `questions.\n\n` +
-            `Follow the funnel: first pin down WHAT they build (product nature, ` +
-            `technology readiness, what makes it fundable), then WHAT the money ` +
-            `is for (project shape, timeline, cheque logic), then WHAT that kind ` +
-            `of funding will require of them (consortium willingness, bank ` +
-            `relationships, location of the funded activity, licenses if they ` +
-            `finance others).\n\n` +
-            `THE ENTROPY RULE: only ask a question if its answer could move at ` +
-            `least one funding instrument between fitting and not fitting for ` +
-            `this company. Never ask what is already answered below, never ask ` +
-            `out of curiosity, and fewer questions is better than more.\n\n` +
-            `Each question: plain English, one clause, 2 to 4 mutually exclusive ` +
-            `options as short founder-friendly phrases (no jargon, no acronyms ` +
-            `without expansion). Do not include a "not sure" option; the ` +
-            `interface adds one.\n\n` +
-            `What we already know:\n${known}\n\n` +
+            `A founder is mid-qualification for European public capital. Below are ` +
+            `REAL, DOCUMENTED requirements from the specific funds still on their ` +
+            `shortlist that we cannot yet resolve. Write ONE themed screen (2-4 ` +
+            `word theme) with EXACTLY ONE plain-English question per field below ` +
+            `(never two questions tagged with the same field — if a field has ` +
+            `several unrelated pieces of evidence, pick the single most decisive ` +
+            `one and phrase ONE question from it) — phrase each question from ` +
+            `the real requirement text given, never inventing a requirement the ` +
+            `text doesn't support. Include every field below that has usable ` +
+            `evidence; omit a field only if its evidence is too thin to phrase a ` +
+            `fair question. Do not invent answer options — the interface renders ` +
+            `the real fixed options itself.\n\n${evidence}\n\n` +
             `Return ONLY the JSON object for the schema.`,
         },
       ],
@@ -1093,27 +1083,21 @@ export async function generateIntakeGroups(
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
       .join("");
-    const parsed = extractJson<{
-      groups: { theme: string; questions: { question: string; options: string[] }[] }[];
-    }>(text);
-    let n = 0;
-    return (parsed.groups ?? [])
-      .slice(0, 3)
-      .map((g) => ({
-        theme: deDash(String(g.theme ?? "").trim()) || "A few more things",
-        questions: (g.questions ?? [])
-          .filter((q) => q && q.question?.trim() && Array.isArray(q.options) && q.options.length >= 2)
-          .slice(0, 3)
-          .map((q) => ({
-            id: `q${n++}`,
-            question: deDash(q.question.trim()),
-            options: q.options.map((o) => deDash(String(o).trim())).filter(Boolean).slice(0, 4),
-          })),
-      }))
-      .filter((g) => g.questions.length > 0);
+    const parsed = extractJson<{ theme: string; questions: { field: string; question: string }[] }>(text);
+    const seen = new Set<string>();
+    const questions = (parsed.questions ?? [])
+      .filter((q) => q && fieldNames.includes(q.field) && q.question?.trim())
+      // Never trust the model alone to keep one question per field (seen it
+      // ask 3 differently-worded questions all tagged the same field, which
+      // would render as duplicate checkbox groups with wrong-looking options)
+      // — first occurrence per field wins, mechanically enforced.
+      .filter((q) => (seen.has(q.field) ? false : (seen.add(q.field), true)))
+      .map((q) => ({ field: q.field, question: deDash(q.question.trim()) }));
+    if (!questions.length) return null;
+    return { theme: deDash(String(parsed.theme ?? "").trim()) || "A few more things", questions };
   } catch (err) {
-    console.error("intake question generation failed:", err);
-    return [];
+    console.error("grounded round generation failed:", err);
+    return null;
   }
 }
 
@@ -1121,6 +1105,9 @@ export interface VerdictResult {
   eligibilityScreen: EligibilityCheck[];
   instrumentTable: InstrumentRow[];
   selfMatched: boolean;
+  /** Every real DB-native instrument id still plausibly in play (unsliced,
+   *  wider than the 6-row display table) — grounds the adaptive round. */
+  candidateInstrumentIds: string[];
 }
 
 /**
@@ -1149,7 +1136,7 @@ export function computeVerdict(
     ...dbPeers.flatMap((r) => r.channels),
   ]);
   const founderCountries = founderCountryList(country, opts.targetMarkets, eligibility?.entityCountries);
-  const instrumentTable = buildInstrumentTable(
+  const candidates = buildInstrumentTable(
     fieldChannels,
     eligibility?.ticketBand,
     eligibility?.consortium === "yes",
@@ -1158,8 +1145,9 @@ export function computeVerdict(
   );
   return {
     eligibilityScreen: evaluateEligibility(eligibility),
-    instrumentTable,
+    instrumentTable: candidates.slice(0, DISPLAY_CAP),
     selfMatched: selfRecord.matched,
+    candidateInstrumentIds: candidates.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
   };
 }
 
@@ -1209,7 +1197,7 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
     req.eligibility?.consortium === "yes",
     founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
     req.capitalSought ?? [],
-  );
+  ).slice(0, DISPLAY_CAP);
 
   emit({ type: "status", step: "generating", detail: "Assembling evidence: instruments, comparables, current landscape" });
   const sectorTop =
