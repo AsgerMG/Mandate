@@ -8,6 +8,7 @@ and reused. The Next.js site (website/) talks to this over HTTP.
 from __future__ import annotations
 
 import asyncio
+import datetime as dt
 import json
 import queue
 import threading
@@ -141,6 +142,7 @@ def _doc_summary(d: Document) -> dict:
         "date": d.date_document.isoformat() if d.date_document else None,
         "url": d.url,
         "source": d.source.key if d.source else None,
+        "ingested_at": d.created_at.isoformat() if d.created_at else None,
     }
 
 
@@ -214,6 +216,7 @@ def documents(
     jurisdiction: str | None = None,
     type: str | None = None,  # noqa: A002 - external query name
     q: str | None = None,
+    since: dt.datetime | None = None,
     limit: int = Query(50, le=200),
 ) -> dict:
     with session_scope() as s:
@@ -226,7 +229,15 @@ def documents(
             stmt = stmt.where(Document.document_type == type)
         if q:
             stmt = stmt.where(Document.title.ilike(f"%{q}%"))
-        stmt = stmt.order_by(Document.date_document.desc().nullslast()).limit(limit)
+        if since:
+            # `since` asks "what got ingested recently" (created_at), a
+            # different axis from date_document (the act's own date) — so it
+            # also switches the sort, newest-ingested first, to match intent.
+            stmt = stmt.where(Document.created_at >= since)
+            stmt = stmt.order_by(Document.created_at.desc())
+        else:
+            stmt = stmt.order_by(Document.date_document.desc().nullslast())
+        stmt = stmt.limit(limit)
         return {"documents": [_doc_summary(d) for d in s.scalars(stmt)]}
 
 
@@ -342,8 +353,6 @@ _refresh_state: dict = {"running": False, "last_result": None, "last_finished": 
 
 
 def _run_refresh() -> None:
-    import datetime as dt
-
     from etl.adapters import ADAPTERS
     from etl.enrichment import embed_pending
     from etl.http import HttpClient
