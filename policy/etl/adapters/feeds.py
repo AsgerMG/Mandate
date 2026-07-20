@@ -81,6 +81,41 @@ TECH_KEYWORDS = [
     # Netzabdeckung") that the compound replacements above missed. Verified
     # against both confirmed "netz" false positives above — no collision.
     "netzabdeckung",
+    # Recall gap found 2026-07-20: the Machinery Regulation (32023R1230) is a
+    # canon act (KEY_ACTS) — AI-embedded machinery falls under its Annex I
+    # high-risk overlap with the AI Act — but "machinery" never appeared in
+    # this list, so broad-feed coverage of it was silently dropped unless an
+    # article also happened to mention an existing keyword. Zero press
+    # coverage existed in the corpus for an instrument with 73+ AI Act
+    # articles, which is what surfaced the gap.
+    "machinery regulation", "machinery directive",
+    # Same day, same method, applied systematically: ran every KEY_ACTS
+    # canon act's short name through is_tech_relevant() and added a keyword
+    # for each miss whose act is genuinely tech-policy scoped. Unlike the
+    # entries above, these were not verified against 2 years of live
+    # dropped-title data — they're reasoned from term distinctiveness, not
+    # empirically confirmed collision-free, and worth spot-checking once
+    # more feed volume runs through them.
+    "data governance act", "mica",  # "mica" collides with the mineral;
+    # accepted given these feeds are already policy-scoped, not open web
+    "political advertising", "critical infrastructure", "critical entities",
+    "product liability", "accessibility act", "web accessibility",
+    "electronic communications code", "health data space",
+    "gigabit infrastructure", "interoperable europe", "geo-blocking",
+    "geoblocking", "open data directive",
+    # Deliberately NOT added a keyword for: DORA (bare "dora" collides
+    # heavily with the name/cartoon — relies on "digital" catching
+    # spelled-out "Digital Operational Resilience Act" mentions instead,
+    # accepted residual gap for acronym-only headlines); Copyright DSM
+    # Directive (bare "copyright" is too generic/collision-prone for a
+    # broad-institutional-feed filter — same reasoning as rejecting bare
+    # "netz"); Package Travel Directive (x2), Consumer Rights Directive,
+    # ECGT, CSRD/CSDDD, Industrial Accelerator Act, GPSR, European Business
+    # Wallet — these are canon for their EU-tech-adjacent hinges (e.g.
+    # ECGT's "comparison tool" activity hinge) but are fundamentally
+    # consumer/sustainability law, not tech-policy news topics; forcing a
+    # keyword for each would broaden this filter past the "keep the corpus
+    # focused" purpose stated at the top of this file.
 ]
 
 

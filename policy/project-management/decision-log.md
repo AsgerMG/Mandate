@@ -5,6 +5,94 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-20 — Brief self-improvement tool (`regina brief-improve`)
+**Decision:** Built an on-demand CLI tool (`etl/brief_eval/`) that tests
+candidate edits to `briefing.py`'s `SYSTEM_PROMPT` against a fixed 5-profile
+company panel, scores them (batched LLM judge + the existing deterministic
+canon check), and reports what helped — never applies anything automatically.
+Deliberately **not scheduled**: no Railway cron, no API endpoint, run
+manually whenever wanted. A hard `$` budget guard (`BudgetGuard`/
+`MeteredClient`) stops the run before exceeding its cap, and every run
+persists the full generated brief text (not just scores) to a JSON sidecar
+so nothing from a billed run is ever unverifiable after the fact.
+**Options considered:** a scheduled weekly Railway cron + HTTP endpoint
+exposing a prompt-override parameter (rejected — a network-reachable
+"override the system prompt" surface is a materially worse attack surface
+than a no-argument trigger like `/api/refresh`; the in-process
+monkeypatch-and-restore approach used instead needs no such endpoint at
+all). A broad diagnostic-sweep mode was also discussed as a complementary future
+mode — generate a much larger, diverse batch of briefs under the real
+production prompt, batch-judge them, then run one meta-analysis pass over
+just the critiques to surface systematic patterns rather than one-off
+findings — but not built today; the narrow hill-climbing loop shipped
+instead.
+**Why:** Real cost surprised us by ~10x on the first raw run ($6.01 for a
+partial baseline) — root causes found and fixed: no system-prompt caching
+across panel profiles within a round, and (once `sharpen=False` was adopted
+for cheap exploration) a wasted 1.25x cache-write premium on retrieved
+passages with zero matching reads. A separate real bug was found in the
+judge's own canon-issue penalty (`min(2.0, 0.5 * count)`, saturating
+instantly against real single-pass counts of 7-32) — masking whether any
+candidate fix actually helped; rescaled to `0.05 * count`.
+**Real finding from the tool**: four independent critique rounds, across
+two full runs, converged on the same defect — see the entry below.
+**Total spend across all test runs today: ~$29.75.**
+
+## 2026-07-20 — Fixed verdict/hinge-consistency bug + press retrieval gap
+**Decision:** Two related fixes to `briefing.py`, found via the tool above:
+1. **Verdict consistency** — a brief's Compliance table could commit a
+   definitive verdict (observed: AI Act high-risk/Annex III) while other
+   prose elsewhere in the same brief still treated that classification as
+   open/unresolved. New `SYSTEM_PROMPT` paragraph + new `REVISE_INSTRUCTION`
+   checklist item (9) VERDICT CONSISTENCY CHECK, with explicit remedy
+   ordering (fix the prose by default; only downgrade to Monitor if the
+   hinge genuinely was never established) to avoid a Monitor-as-hedge
+   escape valve. New regression tests lock in that ordering.
+2. **Press/political-narrative retrieval** — the corpus holds 701+
+   press/news documents, properly ingested and embedded, but retrieval
+   never surfaced a single one (0 of 40 slots across the test panel),
+   regardless of recency. Root cause: `semantic_search`/`canon_passages`
+   are deliberately relevance-ranked and recency-agnostic (correct for
+   legal text — GDPR from 2016 is as valid as anything new), but press
+   coverage needs the opposite: relevance *and* recency. Added a third
+   retrieval pass, `press_passages()`, filtered by a curated `Source.key`
+   allowlist (not `document_type` — confirmed unreliable: `heise_news`/
+   `golem_news` are typed `OTHER`, not `PRESS`) and a 90-day recency
+   window, merged into the same passage set via the existing
+   `_merge_passages()`/`_cap_per_document()` (both worked unchanged).
+   Includes parliamentary floor-debate transcripts (`ep_verbatim`/
+   `an_verbatim`/`de_verbatim`) in the same allowlist — same recency
+   concern, same "Political landscape" destination per the existing
+   `SYSTEM_PROMPT` paragraph.
+**Options considered:** a deterministic code-level check for the
+verdict-consistency bug, mirroring `_canon_issues()` (rejected — unlike
+instrument-name matching, a clean bounded string/number comparison,
+"does this prose contradict that table verdict" is an inherently semantic
+judgment with real false-positive risk from a keyword/regex approach, since
+the prompt already trains the model to use words like "unresolved" near
+instruments with genuinely-open Monitor hinges elsewhere in the same brief).
+**Why:** No prompt changes were needed for the press-retrieval fix —
+`SYSTEM_PROMPT` already told the model exactly how to treat Press sources
+("evidence of enforcement reality... never a substitute for the binding
+text"); the system was designed correctly, it just never retrieved the
+content that existed.
+**Related, not fixed today:** `etl/brief_eval/recency.py`'s own coverage
+metric was checking `Document.created_at` (DB row-insertion time) instead
+of `Document.date_document` (real-world publication date) — a one-time
+bulk reingest event (2026-07-13, ~1,300 docs in a single day) had polluted
+it, counting decades-old acts like GDPR as "recent." Fixed alongside this
+work since it's the same underlying investigation.
+**Also fixed same day, same method:** audited every `KEY_ACTS` canon act's
+short name against `TECH_KEYWORDS` (the vocabulary that filters broad
+institutional feeds) and added keywords for genuinely tech-policy-scoped
+gaps (Machinery Regulation, Data Governance Act, MiCA, critical
+infrastructure/entities, accessibility, health data space, and others) —
+see the dated comment in `etl/adapters/feeds.py` for the full list and the
+ones deliberately left uncovered (DORA's bare acronym — collision risk;
+Copyright DSM Directive — bare "copyright" too generic; several
+consumer/sustainability acts that are canon for tech-adjacent hinges but
+aren't tech-policy news topics).
+
 ## 2026-07-20 — Weekly self-improving data loop + review workflow
 **Decision:** Two-part weekly loop: (1) a Railway cron service (`refresh-cron`)
 hits production `POST /api/refresh` every Sunday 05:00 UTC — no code involved,

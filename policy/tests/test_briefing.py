@@ -811,3 +811,63 @@ def test_generate_briefing_surfaces_unfixed_canon_notes(db_session):
     assert client.messages.call_count == 2  # draft + one fix attempt, then stop
     assert len(result["canon_notes"]) == 1
     assert "Machine Learning Act" in result["canon_notes"][0]
+
+
+def _seed_press_doc(session) -> None:
+    """A recent, allowlisted-source document — proves generate_briefing's
+    press_passages() pass actually reaches the final merged passage set,
+    not just that press_passages() itself works in isolation
+    (tests/test_embeddings.py covers the filtering logic directly)."""
+    src = Source(key="netzpolitik", name="netzpolitik", jurisdiction=Jurisdiction.EU)
+    session.add(src)
+    session.flush()
+    doc = Document(
+        source_id=src.id,
+        external_id="PRESS-1",
+        title="AI Act enforcement debate heats up",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.OTHER,
+        lifecycle_stage=LifecycleStage.UNKNOWN,
+        url="http://netzpolitik.example/ai-act-debate",
+        date_document=dt.date.today() - dt.timedelta(days=10),
+    )
+    session.add(doc)
+    session.flush()
+    ver = DocumentVersion(
+        document_id=doc.id,
+        content_hash="press-h",
+        text="t",
+        char_count=1,
+        fetched_at=dt.datetime.now(dt.UTC),
+    )
+    session.add(ver)
+    session.flush()
+    session.add(
+        Passage(
+            version_id=ver.id,
+            ordinal=0,
+            text="ai policy stakeholders debate enforcement",
+            char_start=0,
+            char_end=42,
+        )
+    )
+    session.commit()
+
+
+def test_generate_briefing_includes_recent_press_passages(db_session):
+    _seed(db_session)
+    _seed_press_doc(db_session)
+    embed_pending(db_session, FakeEmbedder())
+
+    block = {
+        "type": "text",
+        "text": "The AI Act applies to your systems.",
+        "citations": [{"cited_text": "high-risk AI systems", "document_index": 0}],
+    }
+    client = _FakeClient(_Resp([block]))
+
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    result = generate_briefing(db_session, FakeEmbedder(), profile, k=5, client=client)
+
+    urls = {p.get("url") for p in result["passages"]}
+    assert "http://netzpolitik.example/ai-act-debate" in urls

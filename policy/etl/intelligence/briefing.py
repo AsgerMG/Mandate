@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 
 from data.config import get_settings
 from etl.adapters.eurlex_key_acts import KEY_ACTS
-from etl.enrichment import Embedder, canon_passages, semantic_search
+from etl.enrichment import Embedder, canon_passages, press_passages, semantic_search
 
 from .profile import CompanyProfile
 
@@ -30,6 +30,37 @@ from .profile import CompanyProfile
 # can render an explicit, grounded verdict for each, not just whichever acts
 # happen to win open semantic search against the company's own language.
 _CANON_CELEX = list(KEY_ACTS)
+
+# Curated allowlist for press_passages() — document_type doesn't reliably
+# separate press/political-narrative sources from other "other"-typed feeds
+# (e.g. heise_news and golem_news are typed OTHER, not PRESS; legislative-
+# tracking feeds and verbatim debates are also OTHER). Feeds the Political
+# landscape section only; SYSTEM_PROMPT already tells the model never to
+# treat these as a substitute for binding legal text. Adjust this list based
+# on real output quality — it's a judgment call about what counts as
+# political-narrative-relevant, not a fixed classification.
+_PRESS_SOURCE_KEYS = {
+    # General tech-policy journalism
+    "netzpolitik", "sifted", "techcrunch_eu", "next_ink", "heise_news",
+    "golem_news", "irights_info", "01net", "numerama", "lemonde_pixels",
+    "siecledigital", "contexte_articles", "latribune", "euobserver",
+    "gnews_eu_tech", "gnews_de_tech", "gnews_fr_tech", "verfassungsblog",
+    "eu_law_live", "eu_law_analysis", "stiftung_datenschutz",
+    # Official institutional/stakeholder press releases — kept in scope
+    # since they directly serve "which stakeholders are at play"
+    "ec_press", "ec_digital", "ecb_press", "edpb_news", "cnil_news",
+    "bsi_presse", "bitkom_presse", "arcep_presse", "amf_presse",
+    "bmwe_presse", "bfdi_news", "anssi_news", "eba_news", "berec_news",
+    "eiopa_news", "eu_ombudsman", "ep_press", "bundestag_hib",
+    "bundesrat_neueingaenge", "hmbbfdi_news", "defenseurdesdroits_actu",
+    "laquadrature", "ep_written_questions",
+    # Parliamentary floor-debate transcripts — a named politician's own
+    # stated position, not a journalist's account of it; SYSTEM_PROMPT
+    # already routes "verbatim_debate"-kind passages to the Political
+    # landscape section as primary-source political signal, same as press
+    "ep_verbatim", "an_verbatim", "de_verbatim",
+}
+_PRESS_RECENCY_DAYS = 90
 
 SYSTEM_PROMPT = (
     "You are a senior public-affairs analyst producing a regulatory intelligence brief for "
@@ -906,6 +937,20 @@ def generate_briefing(
     # Scope" with a real citation instead of silently dropping the row.
     canon = canon_passages(session, embedder, query, _CANON_CELEX)
     passages = _merge_passages(passages, canon)
+    # Political landscape needs current context, which the retrieval above
+    # can't supply — semantic_search/canon_passages are deliberately
+    # recency-agnostic (legal text doesn't go stale) and never touch
+    # press/political-narrative sources at all in practice: they don't rank
+    # competitively against formal legal-text queries regardless of how
+    # recent they are. This is a separate, capped pass so it can't crowd out
+    # the legal grounding the rest of the brief depends on.
+    press = _cap_per_document(
+        press_passages(
+            session, embedder, query, _PRESS_SOURCE_KEYS, days=_PRESS_RECENCY_DAYS, k=5
+        ),
+        max_per_doc=2,
+    )
+    passages = _merge_passages(passages, press)
     request = build_request(profile, passages)
 
     if dry_run or not passages:

@@ -18,7 +18,7 @@ from data.models import (
     LifecycleStage,
     Passage,
 )
-from etl.enrichment.embeddings import canon_passages, embed_pending, semantic_search
+from etl.enrichment.embeddings import canon_passages, embed_pending, press_passages, semantic_search
 
 DIM = get_settings().embedding_dim
 
@@ -245,3 +245,122 @@ def test_semantic_search_never_returns_superseded_version_passages(db_session):
     hits = semantic_search(db_session, FakeEmbedder(), "ai", k=5)
     assert len(hits) == 1
     assert hits[0]["text"] == "fish quota fresh"
+
+
+# --- press_passages: recency + source-allowlist filtering --------------------
+
+
+def _source_with_key(session, key: str) -> int:
+    from data.models import Source
+
+    s = Source(key=key, name=key, jurisdiction=Jurisdiction.EU)
+    session.add(s)
+    session.flush()
+    return s.id
+
+
+def _press_doc(session, *, external_id, source_id, date_document, text) -> None:
+    doc = Document(
+        source_id=source_id,
+        external_id=external_id,
+        title=external_id,
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.OTHER,
+        lifecycle_stage=LifecycleStage.UNKNOWN,
+        date_document=date_document,
+        url=f"http://example/{external_id}",
+    )
+    session.add(doc)
+    session.flush()
+    ver = DocumentVersion(
+        document_id=doc.id,
+        content_hash=external_id,
+        text="x",
+        char_count=1,
+        fetched_at=dt.datetime.now(dt.UTC),
+    )
+    session.add(ver)
+    session.flush()
+    session.add(Passage(version_id=ver.id, ordinal=0, text=text, char_start=0, char_end=len(text)))
+    session.commit()
+
+
+def _seed_press_docs(session) -> None:
+    today = dt.date.today()
+    good_source_id = _source_with_key(session, "good_source")
+    other_source_id = _source_with_key(session, "other_source")
+    # In the recency window, in the source allowlist — the one that should
+    # survive every filter below.
+    _press_doc(
+        session,
+        external_id="GOOD",
+        source_id=good_source_id,
+        date_document=today - dt.timedelta(days=10),
+        text="ai ai ai",
+    )
+    # Same allowlisted source, but stale — scores BETTER on raw similarity
+    # (more "ai" occurrences) and must still be excluded on recency alone.
+    _press_doc(
+        session,
+        external_id="STALE",
+        source_id=good_source_id,
+        date_document=today - dt.timedelta(days=200),
+        text="ai ai ai ai",
+    )
+    # In the window, scores best of all, but from a source NOT in the
+    # allowlist — must be excluded regardless of recency or score.
+    _press_doc(
+        session,
+        external_id="WRONG_SOURCE",
+        source_id=other_source_id,
+        date_document=today - dt.timedelta(days=5),
+        text="ai ai ai ai ai",
+    )
+    # Highest score of all, allowlisted source, but no date_document at
+    # all — can't verify recency, so it must be excluded too.
+    _press_doc(
+        session,
+        external_id="NO_DATE",
+        source_id=good_source_id,
+        date_document=None,
+        text="ai ai ai ai ai ai",
+    )
+
+
+def test_press_passages_includes_recent_allowlisted_doc(db_session):
+    _seed_press_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    titles = {h["title"] for h in hits}
+    assert "GOOD" in titles
+
+
+def test_press_passages_excludes_stale_doc_despite_higher_score(db_session):
+    _seed_press_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    titles = {h["title"] for h in hits}
+    assert "STALE" not in titles
+
+
+def test_press_passages_excludes_source_not_in_allowlist(db_session):
+    _seed_press_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    titles = {h["title"] for h in hits}
+    assert "WRONG_SOURCE" not in titles
+
+
+def test_press_passages_excludes_missing_date_document(db_session):
+    _seed_press_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    titles = {h["title"] for h in hits}
+    assert "NO_DATE" not in titles
+
+
+def test_press_passages_only_the_good_doc_survives_all_filters(db_session):
+    _seed_press_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    assert [h["title"] for h in hits] == ["GOOD"]

@@ -10,6 +10,7 @@ run offline; populate vectors afterwards with ``regina embed``.
 
 from __future__ import annotations
 
+import datetime as dt
 from typing import Protocol
 
 import structlog
@@ -17,7 +18,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from data.config import Settings
-from data.models import Document, DocumentVersion, Passage
+from data.models import Document, DocumentVersion, Passage, Source
 
 log = structlog.get_logger(__name__)
 
@@ -93,6 +94,11 @@ def _row_to_passage(row) -> dict:
         "char_end": row.char_end,
         "score": round(1.0 - float(row.distance), 3),  # cosine similarity
         "text": row.text,
+        # Only populated by press_passages() below (semantic_search and
+        # canon_passages don't select it — legal text is recency-agnostic by
+        # design, so they have no need for it). None for any passage from
+        # those two paths.
+        "date_document": row.date_document.isoformat() if getattr(row, "date_document", None) else None,
     }
 
 
@@ -169,3 +175,60 @@ def canon_passages(
     results = [_row_to_passage(row) for row in session.execute(stmt).all()]
     results.sort(key=lambda r: r["score"], reverse=True)
     return results
+
+
+def press_passages(
+    session: Session,
+    embedder: Embedder,
+    query: str,
+    source_keys: set[str],
+    *,
+    days: int = 90,
+    k: int = 5,
+) -> list[dict]:
+    """Recency-filtered semantic search restricted to press/political-
+    narrative sources (news outlets, institutional press releases,
+    parliamentary floor-debate transcripts).
+
+    A separate pass from semantic_search()'s relevance-only ranking:
+    legal text doesn't go stale (GDPR from 2016 is as valid as anything
+    new), so semantic_search/canon_passages are deliberately
+    recency-agnostic — but press/political coverage does go stale, and an
+    old article isn't useful "political landscape" context. ``source_keys``
+    is a curated allowlist (see briefing.py's _PRESS_SOURCE_KEYS) rather
+    than a document_type filter, since document_type doesn't reliably
+    separate press from other "other"-typed sources (verbatim debates,
+    legislative-tracking feeds) — mirrors how _CANON_CELEX is a curated
+    allowlist for the same reason (automatic classification wasn't precise
+    enough)."""
+    cutoff = dt.date.today() - dt.timedelta(days=days)
+    qvec = embedder.embed([query])[0]
+    stmt = (
+        select(
+            Passage.text,
+            Passage.char_start,
+            Passage.char_end,
+            Document.title,
+            Document.celex,
+            Document.url,
+            Document.date_document,
+            Document.lifecycle_stage,
+            Document.jurisdiction,
+            Document.document_type,
+            Document.extra,
+            Passage.embedding.cosine_distance(qvec).label("distance"),
+        )
+        .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
+        .join(Document, DocumentVersion.document_id == Document.id)
+        .join(Source, Document.source_id == Source.id)
+        .where(
+            Passage.embedding.is_not(None),
+            DocumentVersion.is_current.is_(True),
+            Source.key.in_(source_keys),
+            Document.date_document.is_not(None),
+            Document.date_document >= cutoff,
+        )
+        .order_by("distance")
+        .limit(k)
+    )
+    return [_row_to_passage(row) for row in session.execute(stmt).all()]
