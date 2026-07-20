@@ -76,12 +76,20 @@ export interface SelfRecord {
   activeYears: string;
 }
 
+/** Which founders an instrument is actually built for — drives ordering and
+ *  the "not a default for solo founders" flag, so consortium/institutional
+ *  and large-scale-industrial capital is never presented as equivalent to
+ *  startup-ready capital. See data/instrument_terms/_SCHEMA.md. */
+export type FounderFit = "startup_ready" | "consortium_institutional" | "large_scale_industrial";
+
 /** Curated trade-off snapshot parsed from a fund brief's "At a glance" block. */
 export interface FundSnapshot {
   ticket: string;
   speed: string;
   giveUp: string;
   bestFor: string;
+  /** "" when a brief hasn't declared a Fit line yet (treated as startup_ready-neutral, never blocking). */
+  fit: FounderFit | "";
 }
 
 /** One row of the instrument-comparison table, built in code from FundSnapshot. */
@@ -94,6 +102,18 @@ export interface InstrumentRow {
   bestFor: string;
   /** True when a peer or the founder has actually drawn on this channel. */
   usedInField: boolean;
+  fit: FounderFit | "";
+  /** Set for non-startup_ready rows: a short, visible distinguishing annotation. */
+  fitFlag?: string;
+  /** The real DB-native instrument id this row resolves to within `channel`'s
+   *  family (e.g. "eic_pathfinder" within the "eic" channel), when the
+   *  320-instrument inventory could resolve one. Absent for rows still
+   *  falling back to channel-only display. */
+  instrumentId?: string;
+  /** ISO2, or "EU" for pan-European instruments. */
+  country?: string;
+  capitalType?: string;
+  eventCount?: number;
 }
 
 export interface FunderEntry {
@@ -126,10 +146,12 @@ export interface TodoEntry {
 }
 
 /** One row of the deterministic eligibility screen — code-evaluated against
- *  verified term records (never model-written). */
+ *  verified term records (never model-written). "likely_met"/"likely_not_met"
+ *  are the honest middle tier: a gate below llm_2pass/human_verified can
+ *  compute a comparator result but must never claim it as asserted fact. */
 export interface EligibilityCheck {
   check: string;                       // e.g. "EU SME status"
-  status: "met" | "not_met" | "unknown" | "info";
+  status: "met" | "not_met" | "likely_met" | "likely_not_met" | "unknown" | "info";
   finding: string;                     // one declarative sentence
   cure?: string;                       // when not_met: what would clear it
   source: { file: string; locator: string };  // primary-text citation

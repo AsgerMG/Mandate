@@ -51,3 +51,4 @@ they are loans/quasi-equity to be repaid, not non-dilutive money.
 - Speed: 6–12 months of due diligence
 - You give up: Repayable debt you must service; covenants and sometimes warrants; balance-sheet risk rather than dilution
 - Best for: Growth-stage companies with revenue that can carry repayable capital
+- Fit: Large-scale industrial (capital-intensive, mid-cap+ tickets)

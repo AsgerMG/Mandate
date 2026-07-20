@@ -11,10 +11,13 @@ import {
   findPeersBySubsector,
   isGenericSubsector,
   loadAgentInstructions,
+  loadDbInstruments,
   loadFundProcess,
   loadFundSnapshot,
   loadSignalsDigest,
   matchCompany,
+  toIso2,
+  type DbInstrument,
   type DigestItem,
 } from "./corpus";
 import {
@@ -23,6 +26,8 @@ import {
   TICKET_BANDS,
   type ChannelAmount,
   type EligibilityAnswers,
+  type EligibilityCheck,
+  type FounderFit,
   type IntakeGroup,
   type CompetitorIntel,
   type CompetitorRecord,
@@ -180,16 +185,143 @@ function channelServesBand(channel: string, band?: string): boolean {
 // field (the field's history skews small; the ask defines the universe).
 const LARGE_SCALE_TOPUP = ["eib", "innovation_fund", "ipcei"];
 
+/** The Fit line from a channel's curated brief, "" if not yet declared. */
+function fitOf(channel: string): FounderFit | "" {
+  return loadFundSnapshot(channel)?.fit ?? "";
+}
+
+const FIT_FLAG: Record<Exclude<FounderFit, "startup_ready">, string> = {
+  consortium_institutional:
+    "Consortium required — informational for most solo-founder raises, not a target.",
+  large_scale_industrial:
+    "Large-scale industrial — sized well above a typical early-stage ask.",
+};
+
+// Maps the founder-facing CAPITAL_OPTIONS values to the DB's capital_type
+// enum — not 1:1, "Loans & guarantees" spans three DB values.
+const CAPITAL_SOUGHT_TO_DB: Record<string, string[]> = {
+  grant: ["grant"],
+  loan: ["loan", "guarantee", "counter_guarantee"],
+  recoverable_advance: ["recoverable_advance"],
+  equity: ["equity", "blended"],
+  tax_credit: ["tax_credit"],
+};
+
+// Representative euro value per ticket band, for ranking real DB leaf
+// instruments by proximity to the founder's stated ask, against each
+// instrument's own historical total_eur/event_count average award.
+const TICKET_MIDPOINT: Record<string, number> = {
+  lt500k: 250_000, b500k_2m5: 1_500_000, b2m5_15m: 8_000_000,
+  b15m_50m: 32_000_000, gt50m: 75_000_000,
+};
+
+/** Which countries' national instruments should be in play: explicit
+ *  targetMarkets (where the founder wants to RAISE) wins when given, else
+ *  HQ country + wherever an entity already exists. */
+function founderCountryList(country?: string, targetMarkets?: string[], entityCountries?: string[]): string[] {
+  const explicit = (targetMarkets ?? []).filter(Boolean);
+  if (explicit.length) return explicit;
+  return [...new Set([country, ...(entityCountries ?? [])].filter((c): c is string => Boolean(c)))];
+}
+
+function instrumentServesCountry(instrumentCountry: string, founderCountries: string[]): boolean {
+  if (!founderCountries.length) return true;      // no info yet — don't over-filter
+  if (instrumentCountry === "EU") return true;     // EU-wide instruments always in play
+  return founderCountries.some((c) => toIso2(c) === instrumentCountry);
+}
+
+function instrumentServesCapital(instrumentCapitalType: string, capitalSought: string[]): boolean {
+  if (!capitalSought.length) return true;
+  const allowed = new Set(capitalSought.flatMap((c) => CAPITAL_SOUGHT_TO_DB[c] ?? []));
+  return allowed.size === 0 || allowed.has(instrumentCapitalType);
+}
+
+function typicalAward(inst: DbInstrument): number | null {
+  return inst.eventCount > 0 ? inst.totalEur / inst.eventCount : null;
+}
+
+let dbInstrumentsByBucketCache: Map<string, DbInstrument[]> | null = null;
+function dbInstrumentsByBucket(): Map<string, DbInstrument[]> {
+  if (!dbInstrumentsByBucketCache) {
+    dbInstrumentsByBucketCache = new Map();
+    for (const inst of loadDbInstruments()) {
+      if (inst.isFramework || !inst.sourceFamilyBucket) continue;
+      const list = dbInstrumentsByBucketCache.get(inst.sourceFamilyBucket) ?? [];
+      list.push(inst);
+      dbInstrumentsByBucketCache.set(inst.sourceFamilyBucket, list);
+    }
+  }
+  return dbInstrumentsByBucketCache;
+}
+
+/**
+ * Within a channel/family, select the 1-2 real DB-native leaf instruments
+ * most relevant to this founder: country- and capital-type-filtered, then
+ * ranked by how close the instrument's own historical average award is to
+ * the founder's ticket band (falling back to event_count when the band or
+ * the instrument's own scale is unknown). This is what turns "EIC" into
+ * "EIC Pathfinder" / "EIC Accelerator" shown separately, and turns the
+ * 200-row national_dev_banks bucket into the 1-2 schemes actually in the
+ * founder's country. Returns [] if the family has no DB-native leaves yet
+ * (the caller falls back to channel-only display).
+ */
+function selectLeafInstruments(
+  channel: string,
+  founderCountries: string[],
+  capitalSought: string[],
+  ticketBand?: string,
+): DbInstrument[] {
+  const all = dbInstrumentsByBucket().get(channel) ?? [];
+  if (!all.length) return [];
+  let candidates = all.filter(
+    (i) => instrumentServesCountry(i.country, founderCountries) && instrumentServesCapital(i.capitalType, capitalSought),
+  );
+  if (!candidates.length) candidates = all; // don't over-filter into nothing on a data mismatch
+  const target = ticketBand ? TICKET_MIDPOINT[ticketBand] : undefined;
+  const isExactCountry = (i: DbInstrument) =>
+    founderCountries.length > 0 && founderCountries.some((c) => toIso2(c) === i.country);
+  const sorted = [...candidates].sort((a, b) => {
+    // An exact country match always outranks an EU-wide/foreign fallback
+    // row, before ticket-size proximity — a founder's own national scheme
+    // is more useful than a better-sized but irrelevant one.
+    const ea = isExactCountry(a), eb = isExactCountry(b);
+    if (ea !== eb) return ea ? -1 : 1;
+    if (target !== undefined) {
+      const da = typicalAward(a), db = typicalAward(b);
+      if (da !== null && db !== null) {
+        const diff = Math.abs(da - target) - Math.abs(db - target);
+        if (diff !== 0) return diff;
+      } else if ((da !== null) !== (db !== null)) {
+        return da !== null ? -1 : 1; // known scale beats unknown
+      }
+    }
+    return b.eventCount - a.eventCount;
+  });
+  return sorted.slice(0, 2);
+}
+
 /**
  * Build the instrument-comparison table: the capital actually on the table for
  * this founder, side by side. Channels a peer or the founder has drawn on lead
  * (flagged usedInField); the table is topped up to a useful shortlist from the
  * universal entry points. Every figure comes from the curated fund snapshot,
- * never the model. Returns at most six rows so the memo stays a memo.
+ * never the model. Startup-ready capital (grants, SME loans/guarantees, EIC,
+ * tax credits) leads; consortium/institutional and large-scale-industrial
+ * instruments (Horizon, EIT, Chips JU, EDF, IPCEI, Innovation Fund, EIB growth
+ * debt) are never added as a silent default — only when peer-proven or the
+ * founder's own answers support them — and carry a visible fitFlag so they're
+ * never presented as equivalent to startup-ready options. Within each
+ * selected channel, real DB-native leaf instruments are picked and shown
+ * separately when the founder's country/capital-type/ticket answers can
+ * resolve them (falls back to the channel-level row otherwise). Returns at
+ * most six rows so the memo stays a memo.
  */
 function buildInstrumentTable(
   fieldChannels: Set<string>,
   ticketBand?: string,
+  consortiumOk?: boolean,
+  founderCountries: string[] = [],
+  capitalSought: string[] = [],
 ): InstrumentRow[] {
   const codes = new Set([...fieldChannels].filter((c) => channelServesBand(c, ticketBand)));
   const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;
@@ -198,26 +330,48 @@ function buildInstrumentTable(
   }
   for (const c of DEFAULT_INSTRUMENTS) {
     if (codes.size >= 4) break;
-    if (channelServesBand(c, ticketBand)) codes.add(c);
+    if (!channelServesBand(c, ticketBand)) continue;
+    if (fitOf(c) === "consortium_institutional" && !fieldChannels.has(c) && !consortiumOk) continue;
+    codes.add(c);
   }
   return [...codes]
-    .map((channel) => {
+    .flatMap((channel) => {
       const snap = loadFundSnapshot(channel);
-      if (!snap) return null;
-      return {
+      if (!snap) return [];
+      const fitFlag = snap.fit && snap.fit !== "startup_ready" ? FIT_FLAG[snap.fit] : undefined;
+      const base = {
         channel,
-        instrument: INSTRUMENT_NAME[channel] ?? channelLabel(channel),
         ticket: snap.ticket,
         speed: snap.speed,
         giveUp: snap.giveUp,
         bestFor: snap.bestFor,
         usedInField: fieldChannels.has(channel),
-      } as InstrumentRow;
+        fit: snap.fit,
+        fitFlag,
+      };
+      const leaves = selectLeafInstruments(channel, founderCountries, capitalSought, ticketBand);
+      if (!leaves.length) {
+        return [{ ...base, instrument: INSTRUMENT_NAME[channel] ?? channelLabel(channel) } as InstrumentRow];
+      }
+      return leaves.map((leaf) => ({
+        ...base,
+        instrument: leaf.name,
+        instrumentId: leaf.id,
+        country: leaf.country,
+        capitalType: leaf.capitalType,
+        eventCount: leaf.eventCount,
+      } as InstrumentRow));
     })
-    .filter((r): r is InstrumentRow => r !== null)
     .sort((a, b) => {
-      // Proven-in-field first, then the curated priority order.
+      // Proven-in-field first.
       if (a.usedInField !== b.usedInField) return a.usedInField ? -1 : 1;
+      // Startup-ready capital next, unless the founder is consortium-ready
+      // (then consortium/institutional rows aren't artificially demoted).
+      const demote = (r: InstrumentRow) =>
+        r.fit !== "" && r.fit !== "startup_ready" &&
+        !(r.fit === "consortium_institutional" && consortiumOk);
+      const da = demote(a), db = demote(b);
+      if (da !== db) return da ? 1 : -1;
       return INSTRUMENT_PRIORITY.indexOf(a.channel) - INSTRUMENT_PRIORITY.indexOf(b.channel);
     })
     .slice(0, 6);
@@ -698,7 +852,8 @@ async function synthesize(
   const instruments = instrumentTable
     .map(
       (r) =>
-        `- ${r.instrument}${r.usedInField ? " [used by peers in your field]" : ""}: ` +
+        `- ${r.instrument}${r.usedInField ? " [used by peers in your field]" : ""}` +
+        `${r.fitFlag ? ` [${r.fitFlag}]` : ""}: ` +
         `ticket ${r.ticket}; speed ${r.speed}; you give up ${r.giveUp}; ` +
         `best for ${r.bestFor}`,
     )
@@ -759,7 +914,15 @@ async function synthesize(
           `The funder map may ONLY contain instruments that appear in the ` +
           `capital-on-the-table table above; if an instrument was excluded ` +
           `there (wrong ticket range for the stated ask), it must not appear ` +
-          `in the funder map either, however familiar it is. ` +
+          `in the funder map either, however familiar it is. Instruments ` +
+          `flagged in brackets (e.g. "[Consortium required...]" or ` +
+          `"[Large-scale industrial...]") are structurally not a default fit ` +
+          `for most solo-founder raises: keep them visibly separate in the ` +
+          `funder map, name the flag plainly in their tradeoff clause, and ` +
+          `never present them as equivalent alternatives to unflagged ` +
+          `startup-ready capital (grants, SME loans/guarantees, EIC, tax ` +
+          `credits) unless the founder's own answers (e.g. consortium-ready) ` +
+          `or field evidence say otherwise. ` +
           `Respect the scoping profile strictly: never lead with instruments ` +
           `whose ticket range cannot serve the stated ask, and when the ` +
           `borrower model is lender/originator/fund manager, route the funder ` +
@@ -954,6 +1117,52 @@ export async function generateIntakeGroups(
   }
 }
 
+export interface VerdictResult {
+  eligibilityScreen: EligibilityCheck[];
+  instrumentTable: InstrumentRow[];
+  selfMatched: boolean;
+}
+
+/**
+ * The fast path: a deterministic eligibility verdict with zero model calls,
+ * so a founder sees it in well under a second instead of waiting through the
+ * full memo's web research. Self-only/preliminary — DB match plus
+ * same-sub-sector DB peers, no web-discovered comparables. runIntelligence()
+ * later reruns buildInstrumentTable() with the richer web+DB peer evidence
+ * the full memo gathers, but always with the same ticketBand/consortium
+ * rules, so the fast verdict is only ever extended, never contradicted.
+ */
+export function computeVerdict(
+  company: string,
+  country: string | undefined,
+  eligibility: EligibilityAnswers | undefined,
+  opts: { targetMarkets?: string[]; capitalSought?: string[] } = {},
+): VerdictResult {
+  const selfRecord = matchCompany(company, country);
+  const targetSub =
+    selfRecord.matched && !isGenericSubsector(selfRecord.subsector) ? selfRecord.subsector : "";
+  const dbPeers = targetSub
+    ? findPeersBySubsector(targetSub, { country, limit: 4, exclude: [company] })
+    : [];
+  const fieldChannels = new Set<string>([
+    ...(selfRecord.matched ? selfRecord.channels : []),
+    ...dbPeers.flatMap((r) => r.channels),
+  ]);
+  const founderCountries = founderCountryList(country, opts.targetMarkets, eligibility?.entityCountries);
+  const instrumentTable = buildInstrumentTable(
+    fieldChannels,
+    eligibility?.ticketBand,
+    eligibility?.consortium === "yes",
+    founderCountries,
+    opts.capitalSought ?? [],
+  );
+  return {
+    eligibilityScreen: evaluateEligibility(eligibility),
+    instrumentTable,
+    selfMatched: selfRecord.matched,
+  };
+}
+
 /** Run the full pipeline, emitting progress events as each stage completes. */
 export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Promise<void> {
   const instructions = loadAgentInstructions();
@@ -994,7 +1203,13 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
     ...records.flatMap((r) => (r.matched ? r.channels : [])),
     ...dbPeers.flatMap((r) => r.channels),
   ]);
-  const instrumentTable = buildInstrumentTable(fieldChannels, req.eligibility?.ticketBand);
+  const instrumentTable = buildInstrumentTable(
+    fieldChannels,
+    req.eligibility?.ticketBand,
+    req.eligibility?.consortium === "yes",
+    founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
+    req.capitalSought ?? [],
+  );
 
   emit({ type: "status", step: "generating", detail: "Assembling evidence: instruments, comparables, current landscape" });
   const sectorTop =

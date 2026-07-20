@@ -54,3 +54,4 @@ co-investor syndicate.
 - Speed: Fast to medium: weeks to months
 - You give up: National-priority alignment; loans are repayable; non-dilutive grants are common
 - Best for: The everyday workhorse layer: national grants, soft loans and guarantees in your home market
+- Fit: Startup-ready (single applicant, SME-scaled)

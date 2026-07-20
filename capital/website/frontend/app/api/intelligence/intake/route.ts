@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { generateIntakeGroups } from "@/lib/intelligence/pipeline";
+import { sanitizeEligibility, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest } from "@/lib/intelligence/types";
 
 // Phase 1: a fast, single model call that returns the tailored clarifying
@@ -31,10 +32,8 @@ export async function POST(request: NextRequest) {
       capitalSought: Array.isArray(body.capitalSought)
         ? body.capitalSought.filter((v) => typeof v === "string")
         : undefined,
-      targetMarkets: Array.isArray(body.targetMarkets)
-        ? body.targetMarkets.filter((v) => typeof v === "string")
-        : undefined,
-      eligibility: body.eligibility,
+      targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
+      eligibility: sanitizeEligibility(body.eligibility),
     });
     // Never block the memo on intake: an empty list just skips the screens.
     return Response.json({ groups });

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
+import { sanitizeEligibility, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest, ProgressEvent } from "@/lib/intelligence/types";
 
 // Needs the Node runtime (filesystem + the Anthropic SDK), and must never be
@@ -86,6 +87,8 @@ export async function POST(request: NextRequest) {
                   )
                   .map((c) => ({ question: c.question.trim(), answer: c.answer.trim() }))
               : undefined,
+            targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
+            eligibility: sanitizeEligibility(body.eligibility),
           },
           send,
         );

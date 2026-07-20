@@ -6,6 +6,8 @@ import {
   CAPITAL_OPTIONS,
   TICKET_BANDS,
   type EligibilityAnswers,
+  type EligibilityCheck,
+  type InstrumentRow,
   type IntakeGroup,
   type IntelligenceReport,
   type PipelineStep,
@@ -278,11 +280,22 @@ export function IntelligencePanel() {
   const [elig, setElig] = useState<EligibilityAnswers>({});
   const [targetMarkets, setTargetMarkets] = useState<string[]>([]);
 
-  const [screen, setScreen] = useState<"basics" | "project" | "operate" | "finances" | "adaptive">("basics");
+  const [screen, setScreen] = useState<"basics" | "project" | "operate" | "finances" | "verdict" | "adaptive">("basics");
   const [preparing, setPreparing] = useState(false);
   const [groups, setGroups] = useState<IntakeGroup[] | null>(null);
   const [groupIdx, setGroupIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  // The fast path: a deterministic eligibility verdict, computed with zero
+  // model calls, shown right after the finances screen (before the memo's
+  // 2-3 minute AI research runs). Self-only/preliminary — the full memo's
+  // table can only grow from here (more peers), never contradict it.
+  const [verdictLoading, setVerdictLoading] = useState(false);
+  const [verdict, setVerdict] = useState<{
+    eligibilityScreen: EligibilityCheck[];
+    instrumentTable: InstrumentRow[];
+    selfMatched: boolean;
+  } | null>(null);
 
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState<PipelineStep | null>(null);
@@ -320,6 +333,40 @@ export function IntelligencePanel() {
     targetMarkets,
     eligibility: elig,
   });
+
+  // Right after the finances screen: compute the fast, model-free eligibility
+  // verdict and show it immediately. Falls straight through to the adaptive
+  // follow-ups on any failure — the verdict screen is a bonus, never a gate.
+  async function fetchVerdict() {
+    setVerdictLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/intelligence/verdict", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(basePayload()),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        eligibilityScreen?: EligibilityCheck[];
+        instrumentTable?: InstrumentRow[];
+        selfMatched?: boolean;
+      };
+      if (!data.eligibilityScreen && !data.instrumentTable) {
+        await fetchGroups();
+        return;
+      }
+      setVerdict({
+        eligibilityScreen: data.eligibilityScreen ?? [],
+        instrumentTable: data.instrumentTable ?? [],
+        selfMatched: Boolean(data.selfMatched),
+      });
+      setScreen("verdict");
+    } catch {
+      await fetchGroups();
+    } finally {
+      setVerdictLoading(false);
+    }
+  }
 
   // After the fixed screens: fetch the themed follow-up groups (best-effort —
   // on failure or empty result the memo runs straight away).
@@ -413,7 +460,7 @@ export function IntelligencePanel() {
   const busy = preparing || running;
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
-  const FIXED_SCREENS = ["basics", "project", "operate", "finances"] as const;
+  const FIXED_SCREENS = ["basics", "project", "operate", "finances", "verdict"] as const;
   const screenIdx =
     screen === "adaptive"
       ? FIXED_SCREENS.length + groupIdx
@@ -838,12 +885,43 @@ export function IntelligencePanel() {
               </div>
             </div>
             <div className="flex items-center gap-4 pt-1">
-              <button type="button" disabled={preparing} onClick={() => void fetchGroups()} className={nextBtn}>
-                {preparing ? "Preparing follow-ups…" : "Continue"}
+              <button type="button" disabled={verdictLoading} onClick={() => void fetchVerdict()} className={nextBtn}>
+                {verdictLoading ? "Checking…" : "See what you're eligible for"}
               </button>
               <button type="button" onClick={() => setScreen("operate")} className={backBtn}>Back</button>
               <button type="button" onClick={() => void runMemo([])} className={backBtn}>
                 Skip and write the memo now
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Verdict screen: the fast, model-free eligibility answer ──── */}
+        {screen === "verdict" && verdict && !running && (
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
+            <p className="text-xs uppercase tracking-widest text-[#12264f]">Your eligibility, right now</p>
+            <p className="-mt-1 mb-4 text-sm text-[var(--muted-foreground)]">
+              Computed instantly, code-only, no model call. The full memo below
+              adds comparable companies and a funder-by-funder brief, on top of
+              exactly this, never contradicting it.
+            </p>
+            <div className="border border-[var(--border)] bg-white px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
+              <EligibilityTable rows={verdict.eligibilityScreen} />
+              <InstrumentTable rows={verdict.instrumentTable} />
+              {verdict.eligibilityScreen.length === 0 && verdict.instrumentTable.length === 0 && (
+                <p className="text-sm text-[var(--muted-foreground)]">
+                  Not enough answered yet to compute a verdict — the full memo
+                  below will still gather comparables and a funder brief.
+                </p>
+              )}
+            </div>
+            <div className="mt-5 flex items-center gap-4">
+              <button type="button" disabled={preparing} onClick={() => void fetchGroups()} className={nextBtn}>
+                {preparing ? "Preparing follow-ups…" : "See the full memo"}
+              </button>
+              <button type="button" onClick={() => setScreen("finances")} className={backBtn}>Back</button>
+              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
+                Skip straight to the memo
               </button>
             </div>
           </div>
@@ -895,7 +973,7 @@ export function IntelligencePanel() {
                 </button>
               )}
               <button type="button"
-                onClick={() => (groupIdx > 0 ? setGroupIdx((i) => i - 1) : setScreen("finances"))}
+                onClick={() => (groupIdx > 0 ? setGroupIdx((i) => i - 1) : setScreen(verdict ? "verdict" : "finances"))}
                 className={backBtn}>
                 Back
               </button>
@@ -967,6 +1045,123 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
     <h3 className="mt-10 mb-3 text-[17px] font-bold text-[var(--foreground)] print:mt-8" style={serif}>
       {children}
     </h3>
+  );
+}
+
+/** Deterministic, cited, never model-written — shared by the fast verdict
+ *  screen and the final memo so both render identically. */
+function EligibilityTable({ rows }: { rows: EligibilityCheck[] }) {
+  if (!rows || rows.length === 0) return null;
+  return (
+    <>
+      <SectionTitle>Eligibility screen</SectionTitle>
+      <p className="mb-3 text-[13px] text-[var(--muted-foreground)]">
+        Evaluated in code against the primary texts (framework level). Each
+        row cites its legal basis; failed gates name the cure.
+      </p>
+      <table className="w-full border-collapse text-[14px]">
+        <thead>
+          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
+            <th className="py-2 pr-3 font-semibold">Check</th>
+            <th className="py-2 pr-3 font-semibold">Status</th>
+            <th className="py-2 font-semibold">Finding</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-[var(--border)] align-top">
+          {rows.map((r, i) => (
+            <tr key={i}>
+              <td className="py-2.5 pr-3 font-semibold">{r.check}</td>
+              <td className="py-2.5 pr-3">
+                <span
+                  className={
+                    "rounded px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wide " +
+                    (r.status === "met"
+                      ? "bg-[#2D6A4F]/15 text-[#1f4d3a]"
+                      : r.status === "not_met"
+                        ? "bg-[#9b2c2c]/10 text-[#9b2c2c]"
+                        : r.status === "likely_met"
+                          ? "bg-[#2D6A4F]/10 text-[#1f4d3a]/70"
+                          : r.status === "likely_not_met"
+                            ? "bg-[#9b2c2c]/5 text-[#9b2c2c]/70"
+                            : "bg-[var(--muted)] text-[var(--muted-foreground)]")
+                  }
+                >
+                  {r.status === "not_met" ? "not met"
+                    : r.status === "likely_met" ? "likely met"
+                    : r.status === "likely_not_met" ? "likely not met"
+                    : r.status === "info" ? "note" : r.status}
+                </span>
+              </td>
+              <td className="py-2.5">
+                {r.verified ? r.finding : `Verify: ${r.finding}`}
+                {r.cure && (
+                  <span className="block text-[13px]">
+                    <span className="font-semibold">Path.</span> {r.cure}
+                  </span>
+                )}
+                <span className="block text-[11px] text-[var(--muted-foreground)]">
+                  {r.source.file}
+                  {r.source.locator ? ` · ${r.source.locator}` : ""}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
+/** The public instruments that fit the founder's field, side by side. Shared
+ *  by the fast verdict screen and the final memo so both render identically. */
+function InstrumentTable({ rows }: { rows: InstrumentRow[] }) {
+  if (!rows || rows.length === 0) return null;
+  return (
+    <>
+      <SectionTitle>The capital on the table</SectionTitle>
+      <p className="mb-3">
+        The public instruments that fit your field, side by side. Read the
+        trade-off before the ticket: public capital is rarely free of strings.
+        Instruments your peers have already drawn on are marked.
+      </p>
+      <table className="w-full border-collapse text-[14px]">
+        <thead>
+          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
+            <th className="py-2 pr-3 font-semibold">Instrument</th>
+            <th className="py-2 pr-3 font-semibold">Typical ticket</th>
+            <th className="py-2 pr-3 font-semibold">Speed to cash</th>
+            <th className="py-2 pr-3 font-semibold">What you give up</th>
+            <th className="py-2 font-semibold">Best for</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-[var(--border)] align-top">
+          {rows.map((r, i) => (
+            <tr key={i}>
+              <td className="py-2.5 pr-3">
+                <span className="font-semibold">{r.instrument}</span>
+                {r.usedInField && (
+                  <span className="block text-[12px] italic text-[var(--muted-foreground)]">
+                    in your field
+                  </span>
+                )}
+                {r.fitFlag && (
+                  <span className="mt-1 flex items-start gap-1.5 text-[12px] text-[var(--muted-foreground)]">
+                    <span className="mt-0.5 rounded bg-[var(--muted)] px-1 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--foreground)]">
+                      {r.fit === "consortium_institutional" ? "consortium" : "large-scale"}
+                    </span>
+                    <span className="italic">{r.fitFlag}</span>
+                  </span>
+                )}
+              </td>
+              <td className="py-2.5 pr-3 tabular-nums">{r.ticket}</td>
+              <td className="py-2.5 pr-3">{r.speed}</td>
+              <td className="py-2.5 pr-3">{r.giveUp}</td>
+              <td className="py-2.5">{r.bestFor}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 }
 
@@ -1042,57 +1237,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
       )}
 
       {/* ── Eligibility screen: deterministic, cited, never model-written ── */}
-      {report.eligibilityScreen && report.eligibilityScreen.length > 0 && (
-        <>
-          <SectionTitle>Eligibility screen</SectionTitle>
-          <p className="mb-3 text-[13px] text-[var(--muted-foreground)]">
-            Evaluated in code against the primary texts (framework level). Each
-            row cites its legal basis; failed gates name the cure.
-          </p>
-          <table className="w-full border-collapse text-[14px]">
-            <thead>
-              <tr className="border-b border-[var(--foreground)] text-left align-bottom">
-                <th className="py-2 pr-3 font-semibold">Check</th>
-                <th className="py-2 pr-3 font-semibold">Status</th>
-                <th className="py-2 font-semibold">Finding</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)] align-top">
-              {report.eligibilityScreen.map((r, i) => (
-                <tr key={i}>
-                  <td className="py-2.5 pr-3 font-semibold">{r.check}</td>
-                  <td className="py-2.5 pr-3">
-                    <span
-                      className={
-                        "rounded px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wide " +
-                        (r.status === "met"
-                          ? "bg-[#2D6A4F]/15 text-[#1f4d3a]"
-                          : r.status === "not_met"
-                            ? "bg-[#9b2c2c]/10 text-[#9b2c2c]"
-                            : "bg-[var(--muted)] text-[var(--muted-foreground)]")
-                      }
-                    >
-                      {r.status === "not_met" ? "not met" : r.status === "info" ? "note" : r.status}
-                    </span>
-                  </td>
-                  <td className="py-2.5">
-                    {r.verified ? r.finding : `Verify: ${r.finding}`}
-                    {r.cure && (
-                      <span className="block text-[13px]">
-                        <span className="font-semibold">Path.</span> {r.cure}
-                      </span>
-                    )}
-                    <span className="block text-[11px] text-[var(--muted-foreground)]">
-                      {r.source.file}
-                      {r.source.locator ? ` · ${r.source.locator}` : ""}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
+      <EligibilityTable rows={report.eligibilityScreen} />
 
       {/* ── The comparable field (the one centrepiece table) ───────── */}
       <SectionTitle>Comparable companies</SectionTitle>
@@ -1140,45 +1285,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
       </table>
 
       {/* ── The capital on the table ───────────────────────────────── */}
-      {report.instrumentTable?.length > 0 && (
-        <>
-          <SectionTitle>The capital on the table</SectionTitle>
-          <p className="mb-3">
-            The public instruments that fit your field, side by side. Read the
-            trade-off before the ticket: public capital is rarely free of strings.
-            Instruments your peers have already drawn on are marked.
-          </p>
-          <table className="w-full border-collapse text-[14px]">
-            <thead>
-              <tr className="border-b border-[var(--foreground)] text-left align-bottom">
-                <th className="py-2 pr-3 font-semibold">Instrument</th>
-                <th className="py-2 pr-3 font-semibold">Typical ticket</th>
-                <th className="py-2 pr-3 font-semibold">Speed to cash</th>
-                <th className="py-2 pr-3 font-semibold">What you give up</th>
-                <th className="py-2 font-semibold">Best for</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--border)] align-top">
-              {report.instrumentTable.map((r, i) => (
-                <tr key={i}>
-                  <td className="py-2.5 pr-3">
-                    <span className="font-semibold">{r.instrument}</span>
-                    {r.usedInField && (
-                      <span className="block text-[12px] italic text-[var(--muted-foreground)]">
-                        in your field
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-2.5 pr-3 tabular-nums">{r.ticket}</td>
-                  <td className="py-2.5 pr-3">{r.speed}</td>
-                  <td className="py-2.5 pr-3">{r.giveUp}</td>
-                  <td className="py-2.5">{r.bestFor}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
+      <InstrumentTable rows={report.instrumentTable} />
 
       {/* ── The road ahead (grounded in the signals digest) ─────────── */}
       {report.landscape && report.landscape.outlook && (

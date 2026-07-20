@@ -19,7 +19,7 @@ const COUNTRY_ISO: Record<string, string> = {
   "united kingdom": "GB", uk: "GB", "great britain": "GB", britain: "GB",
 };
 
-function toIso2(country?: string): string {
+export function toIso2(country?: string): string {
   if (!country) return "";
   const c = country.trim().toLowerCase();
   if (/^[a-z]{2}$/.test(c)) return c.toUpperCase();
@@ -112,12 +112,79 @@ function parseSnapshot(md: string): FundSnapshot | null {
   };
   const ticket = field("Ticket");
   if (!ticket) return null;
+  const fitRaw = field("Fit");
+  const fit: FundSnapshot["fit"] = fitRaw.startsWith("Startup-ready")
+    ? "startup_ready"
+    : fitRaw.startsWith("Consortium/institutional")
+      ? "consortium_institutional"
+      : fitRaw.startsWith("Large-scale industrial")
+        ? "large_scale_industrial"
+        : "";
   return {
     ticket,
     speed: field("Speed"),
     giveUp: field("You give up"),
     bestFor: field("Best for"),
+    fit,
   };
+}
+
+// ── DB-native instrument inventory (funding_instruments/eligibility_gates,
+// exported by website/build/eligibility_export.py) ─────────────────────────
+export interface DbGate {
+  id: string;
+  gateFamily?: string;
+  requirement: string;
+  value: string;
+  valueSpec?: unknown | null;
+  intakeField: string;
+  quote: string;
+  source: { file: string; locator: string };
+  verificationLevel?: string;
+  verified: boolean;
+}
+
+export interface DbInstrument {
+  id: string;
+  parentId: string | null;
+  name: string;
+  country: string;
+  capitalType: string;
+  isFramework: boolean;
+  eventCount: number;
+  companyCount: number;
+  totalEur: number;
+  sourceFamilyBucket: string | null;
+  sampleProjectTitles: string[] | null;
+  gates: DbGate[];
+}
+
+let dbInstrumentsCache: DbInstrument[] | null | undefined;
+
+/** The full 320+-row instrument inventory, cached once per warm invocation —
+ *  the single canonical loader for public/data/instrument_terms.json.
+ *  eligibility.ts reads through this rather than parsing the file a second
+ *  time. Returns [] (never throws) if the export hasn't been generated. */
+export function loadDbInstruments(): DbInstrument[] {
+  if (dbInstrumentsCache === undefined) {
+    try {
+      const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
+      dbInstrumentsCache = (JSON.parse(readFileSync(file, "utf8")) as { records: DbInstrument[] }).records;
+    } catch {
+      dbInstrumentsCache = null;
+    }
+  }
+  return dbInstrumentsCache ?? [];
+}
+
+/** A leaf/sub-track instrument (e.g. eic_pathfinder) has no curated "At a
+ *  glance" prose of its own — it inherits its family's brief via
+ *  sourceFamilyBucket, which always resolves to one of the 11
+ *  fund-processes/*.md files. */
+export function fundSnapshotFor(instrumentId: string): FundSnapshot | null {
+  const inst = loadDbInstruments().find((r) => r.id === instrumentId);
+  if (!inst?.sourceFamilyBucket) return null;
+  return loadFundSnapshot(inst.sourceFamilyBucket);
 }
 
 /** The shared agent-instructions brief, injected into every stage. */

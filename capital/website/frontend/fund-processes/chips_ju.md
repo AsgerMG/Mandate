@@ -51,3 +51,4 @@ strategic autonomy in chips; consortium strength across the value chain.
 - Speed: 12+ months; call-based
 - You give up: National-budget co-funding, a consortium, and a strategic-autonomy framing for your project
 - Best for: Semiconductor value-chain R&D and pilot lines
+- Fit: Consortium/institutional (3+ partners required; not a default for solo founders)

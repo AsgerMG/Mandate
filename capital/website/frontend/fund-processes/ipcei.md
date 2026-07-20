@@ -57,3 +57,4 @@ art; cross-border spillovers; the company's own co-investment and capability.
 - Speed: Years: national pre-notification plus EC approval under Art. 107(3)(b)
 - You give up: Requires a national government to sponsor and co-fund you; a long political process; first-of-a-kind and spillover obligations that reduce flexibility
 - Best for: Strategic value-chain projects (batteries, hydrogen, microelectronics, cloud) with a member state behind you
+- Fit: Large-scale industrial (capital-intensive, mid-cap+ tickets)

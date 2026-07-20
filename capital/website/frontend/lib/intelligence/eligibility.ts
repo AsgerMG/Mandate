@@ -1,47 +1,41 @@
-// The deterministic eligibility evaluator — advisory_pipeline Stage D, v1.
+// The deterministic eligibility evaluator — advisory_pipeline Stage D.
 //
 // Pure functions over the exported term records (public/data/instrument_terms.json,
-// written by website/build/instrument_terms_export.py from the two-pass-verified
-// YAML gates). NO model call anywhere in this file — this is the trust anchor:
-// the memo's verdict rows are computed, cited, and reproducible. The writer may
-// narrate them; it can never mint or edit one.
+// written by website/build/eligibility_export.py from the DB-native
+// funding_instruments/eligibility_gates tables — migration 011. NO model call
+// anywhere in this file — this is the trust anchor: the memo's verdict rows
+// are computed, cited, and reproducible. The writer may narrate them; it can
+// never mint or edit one.
 //
-// v1 scope: framework-level checks grounded in the EU texts we hold verified
-// (GBER Annex I SME test, Art. 2(18) in-difficulty, Art. 25 intensities, the
-// IPCEI Communication, InvestEU intermediary architecture, de minimis).
-// Instrument-level rows (KfW, Bpifrance, Fondo di Garanzia…) join as their
-// primary documents get fetched and verified.
-import { readFileSync } from "fs";
-import path from "path";
+// Two layers, additive:
+//  1. Hand-written framework checks (below) — genuinely bespoke multi-field
+//     branching (e.g. the SME-status check combines four fields into one
+//     nuanced finding) that doesn't compress into a generic comparator.
+//  2. A generic loop (bottom of the file) over every gate that carries a
+//     machine-evaluable valueSpec — the mechanism that scales past the ~10
+//     hand-written instruments to the full 320+-instrument inventory as
+//     Tier 1 (llm_classified) and Tier 2 (llm_2pass) research populates
+//     valueSpec. A gate below llm_2pass/human_verified can only ever produce
+//     "likely_met"/"likely_not_met", never an asserted "met"/"not_met".
+import { loadDbInstruments, type DbInstrument } from "./corpus";
 import type { EligibilityAnswers, EligibilityCheck } from "./types";
 
-interface TermGate {
-  id: string;
-  requirement: string;
-  value: string;
-  intakeField: string;
-  quote: string;
-  source: { file: string; locator: string };
-  verified: boolean;
-}
-interface TermRecord {
-  id: string;
-  name: string;
-  gates: TermGate[];
-}
+type ValueSpec =
+  | { op: "band_max"; field: string; maxAllowed: string; order: string[] }
+  | { op: "in"; field: string; allowed: string[] }
+  | { op: "equals"; field: string; value: string }
+  | { op: "boolean_true" | "boolean_false"; field: string }
+  | { op: "numeric_gte" | "numeric_lte"; field: string; threshold: number };
 
-let termsCache: TermRecord[] | null | undefined;
+// TermGate/TermRecord are gone — this file now reads DbInstrument/DbGate
+// straight from corpus.ts's shared loader (one parse of instrument_terms.json
+// per warm invocation, not one per module). ValueSpec stays local: corpus.ts
+// carries it as `unknown` since it's just a data-transport type there.
+type TermRecord = DbInstrument;
 
 function loadTerms(): TermRecord[] | null {
-  if (termsCache === undefined) {
-    try {
-      const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
-      termsCache = (JSON.parse(readFileSync(file, "utf8")) as { records: TermRecord[] }).records;
-    } catch {
-      termsCache = null;
-    }
-  }
-  return termsCache;
+  const records = loadDbInstruments();
+  return records.length ? records : null;
 }
 
 /** Best citation for a check: a verified gate on the given record matching one
@@ -226,5 +220,76 @@ export function evaluateEligibility(e?: EligibilityAnswers): EligibilityCheck[] 
     });
   }
 
+  out.push(...evaluateGenericGates(records, e));
+
+  return out;
+}
+
+/** Ordinal comparison helper for band_max: is `answer` at or below `maxAllowed` in `order`? */
+function bandAtOrBelow(order: string[], answer: string, maxAllowed: string): boolean | null {
+  const ai = order.indexOf(answer);
+  const mi = order.indexOf(maxAllowed);
+  if (ai === -1 || mi === -1) return null;
+  return ai <= mi;
+}
+
+/** Evaluate one gate's valueSpec against the founder's answer. Returns null
+ *  when the spec references a field the answer doesn't have a usable form
+ *  for (renders as "unknown" upstream, never guessed). */
+function evalComparator(spec: ValueSpec, answer: unknown): boolean | null {
+  switch (spec.op) {
+    case "band_max":
+      return typeof answer === "string" ? bandAtOrBelow(spec.order, answer, spec.maxAllowed) : null;
+    case "in":
+      return typeof answer === "string" ? spec.allowed.includes(answer) : null;
+    case "equals":
+      return typeof answer === "string" ? answer === spec.value : null;
+    case "boolean_true":
+      return answer === "yes" ? true : answer === "no" ? false : null;
+    case "boolean_false":
+      return answer === "no" ? true : answer === "yes" ? false : null;
+    case "numeric_gte":
+      return typeof answer === "number" ? answer >= spec.threshold : null;
+    case "numeric_lte":
+      return typeof answer === "number" ? answer <= spec.threshold : null;
+    default:
+      return null;
+  }
+}
+
+/**
+ * The generic loop: scales the evaluator past the ~10 hand-written framework
+ * checks above to every instrument in the DB-native inventory (320+ and
+ * growing) without a new out.push() block per instrument. Only fires for
+ * gates that are BOTH machine-evaluable (a populated valueSpec) AND answered
+ * by the founder — a gate with no valueSpec yet (the norm today: Tier 0/0.5
+ * inventory rows and most Tier 1 classifications are prose-only) is silently
+ * skipped here rather than rendered as a global "unknown" row, since nothing
+ * yet scopes 320 instruments down to the ones actually relevant to a given
+ * founder's country/instrument fit — that scoping is future work once
+ * funding_instruments.source_family_bucket is wired into the memo pipeline.
+ */
+function evaluateGenericGates(records: TermRecord[], e?: EligibilityAnswers): EligibilityCheck[] {
+  if (!e) return [];
+  const out: EligibilityCheck[] = [];
+  for (const inst of records) {
+    for (const gate of inst.gates) {
+      if (gate.intakeField === "none" || !gate.valueSpec) continue;
+      const answer = (e as Record<string, unknown>)[gate.intakeField];
+      if (answer === undefined || answer === null || answer === "") continue;
+      const result = evalComparator(gate.valueSpec as ValueSpec, answer);
+      const level = gate.verificationLevel ?? "inventory_inferred";
+      const hard = level === "llm_2pass" || level === "human_verified";
+      const status: EligibilityCheck["status"] =
+        result === null ? "unknown" : hard ? (result ? "met" : "not_met") : (result ? "likely_met" : "likely_not_met");
+      out.push({
+        check: `${inst.name} — ${gate.requirement}`,
+        status,
+        finding: gate.requirement,
+        source: gate.source,
+        verified: hard && result !== null,
+      });
+    }
+  }
   return out;
 }

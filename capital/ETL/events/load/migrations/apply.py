@@ -277,6 +277,14 @@ def apply_010(conn: sqlite3.Connection) -> None:
         conn.execute(sql)
 
 
+def apply_011(conn: sqlite3.Connection) -> None:
+    """funding_instruments + funding_instrument_sources + eligibility_gates
+    (see 011_funding_instruments.sql for the full schema rationale)."""
+    sql = (MIG_DIR / "011_funding_instruments.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 011_funding_instruments.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -285,6 +293,7 @@ MIGRATIONS = {
     "008": apply_008,
     "009": apply_009,
     "010": apply_010,
+    "011": apply_011,
 }
 
 

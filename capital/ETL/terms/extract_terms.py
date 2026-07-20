@@ -4,6 +4,11 @@ Turns the ground-truth corpus (data/raw/instrument_docs/) into the structured
 term records (data/instrument_terms/*.yaml) the eligibility engine evaluates
 intake answers against. Three passes, each cheap and auditable:
 
+  plan      print, per job, which INTAKE_FIELDS it's expected to gate and
+            any NEW field it would need — the schema-first review step, run
+            BEFORE spending any API calls. A job with a non-empty new_fields
+            list is refused by `run` until INTAKE_FIELDS/EligibilityAnswers/
+            the wizard screen are updated to carry that field.
   extract   Sonnet reads keyword-targeted pages of a source document and
             proposes gate records: requirement + threshold + EXACT QUOTE +
             page locator + which intake field answers it.
@@ -18,6 +23,7 @@ intake answers against. Three passes, each cheap and auditable:
   write     merge into data/instrument_terms/<record>.yaml.
 
 Usage:
+  python3 ETL/terms/extract_terms.py plan [--job ID]
   python3 ETL/terms/extract_terms.py run [--job ID] [--dry-run]
   python3 ETL/terms/extract_terms.py status
 """
@@ -65,6 +71,8 @@ JOBS: dict[str, dict] = {
                  "thresholds, and how linked and partner enterprises are counted. "
                  "Map thresholds to fteBand/turnoverBand/balanceBand and the "
                  "linked-enterprise rule to ownerOver25.",
+        "intake_fields": ["fteBand", "turnoverBand", "balanceBand", "ownerOver25"],
+        "new_fields": [],
     },
     "eu_undertaking_in_difficulty": {
         "doc": "gber_651_2014_consolidated.pdf",
@@ -75,6 +83,8 @@ JOBS: dict[str, dict] = {
         "focus": "The definition of 'undertaking in difficulty' in Art. 2(18) "
                  "and the exclusion of such undertakings from aid. Map the "
                  "half-of-share-capital limb to lossesOverHalfCapital.",
+        "intake_fields": ["lossesOverHalfCapital"],
+        "new_fields": [],
     },
     "eu_de_minimis": {
         "doc": "de_minimis_2023_2831.pdf",
@@ -85,6 +95,8 @@ JOBS: dict[str, dict] = {
         "focus": "The ceiling amount and period, the 'single undertaking' scope, "
                  "cumulation limits and the declaration duty. Field: none "
                  "(pre-filled from our registers) except group scope → ownerOver25.",
+        "intake_fields": ["ownerOver25"],
+        "new_fields": [],
     },
     "eu_ipcei": {
         "doc": "ipcei_communication_2021.pdf",
@@ -96,6 +108,8 @@ JOBS: dict[str, dict] = {
                  "first-industrial-deployment definition (vs mass production), "
                  "funding-gap limitation, spillover requirements. Map to "
                  "developmentStage, ticketBand, needBy (multi-year), consortium.",
+        "intake_fields": ["developmentStage", "ticketBand", "needBy", "consortium"],
+        "new_fields": [],
     },
     "it_startup_innovativa": {
         "doc": "startup_innovativa_dl179.html",
@@ -108,6 +122,8 @@ JOBS: dict[str, dict] = {
                  "requirements (R&D spend share, qualified team, IP). Map to "
                  "foundedYear, entityCountries, developmentStage. Quote in "
                  "Italian; requirement text in English.",
+        "intake_fields": ["foundedYear", "entityCountries", "developmentStage"],
+        "new_fields": [],
     },
     "eu_investeu_intermediary": {
         "doc": "investeu_regulation_2021_523.pdf",
@@ -119,6 +135,8 @@ JOBS: dict[str, dict] = {
                  "partners, financial intermediaries, who counts as a final "
                  "recipient. Map the intermediary role to borrowerModel "
                  "(balance_sheet_lender / originator) and bankRelationship.",
+        "intake_fields": ["borrowerModel", "bankRelationship"],
+        "new_fields": [],
     },
     "eu_gber_rd_intensities": {
         "doc": "gber_651_2014_consolidated.pdf",
@@ -129,6 +147,8 @@ JOBS: dict[str, dict] = {
         "focus": "Aid-intensity ceilings for industrial research vs experimental "
                  "development, and the SME bonuses. Map to cofinancingBand "
                  "(what share the company must fund itself) and developmentStage.",
+        "intake_fields": ["cofinancingBand", "developmentStage"],
+        "new_fields": [],
     },
 }
 
@@ -306,12 +326,38 @@ def write_record(job_id: str, job: dict, gates: list[dict]) -> None:
     print(f"  → {out.name}: {verified_n}/{len(gates)} gates verified")
 
 
+def cmd_plan(args) -> None:
+    """Schema-first review, before spending any API calls: what each job hunts
+    for and which INTAKE_FIELDS it's expected to gate. A job proposing a
+    new_fields entry must be resolved (INTAKE_FIELDS/EligibilityAnswers/the
+    wizard screen updated) before `run` will touch it."""
+    jobs = {args.job: JOBS[args.job]} if args.job else JOBS
+    for job_id, job in jobs.items():
+        print(f"{job_id} — {job['name']}")
+        print(f"  doc:           {job['doc']}")
+        print(f"  focus:         {job['focus']}")
+        print(f"  intake_fields: {', '.join(job.get('intake_fields', [])) or '(none declared)'}")
+        new_fields = job.get("new_fields", [])
+        if new_fields:
+            print(f"  new_fields:    {', '.join(new_fields)}  ← BLOCKS `run` until resolved")
+        print()
+
+
 def cmd_run(args) -> None:
     load_env()
     import anthropic
     client = anthropic.Anthropic()
     jobs = {args.job: JOBS[args.job]} if args.job else JOBS
     for job_id, job in jobs.items():
+        new_fields = job.get("new_fields", [])
+        if new_fields:
+            print(f"{job_id}: SKIPPED — proposes new intake field(s) "
+                  f"{', '.join(new_fields)} not yet in INTAKE_FIELDS. "
+                  f"Add them to INTAKE_FIELDS (this file), EligibilityAnswers "
+                  f"(website/frontend/lib/intelligence/types.ts) and the "
+                  f"relevant wizard screen (panel.tsx) first, then clear "
+                  f"new_fields on this job to run it.")
+            continue
         print(f"{job_id} ({job['doc']})")
         gates = extract_job(client, job_id, job)
         print(f"  extracted {len(gates)} gate proposals")
@@ -340,6 +386,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
+    pl = sub.add_parser("plan")
+    pl.add_argument("--job", choices=list(JOBS))
+    pl.set_defaults(fn=cmd_plan)
     p = sub.add_parser("run")
     p.add_argument("--job", choices=list(JOBS))
     p.add_argument("--dry-run", action="store_true")

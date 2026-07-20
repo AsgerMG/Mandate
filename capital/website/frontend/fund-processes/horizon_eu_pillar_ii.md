@@ -58,3 +58,4 @@ II appearance means the company was in a funded EU collaborative project.
 - Speed: 8–12 months from call to grant; fixed annual cut-offs
 - You give up: Non-dilutive, but you must build or join a 3+ country consortium and carry shared IP and coordination overhead
 - Best for: Collaborative R&D you can run with cross-border partners at TRL 3–6
+- Fit: Consortium/institutional (3+ partners required; not a default for solo founders)

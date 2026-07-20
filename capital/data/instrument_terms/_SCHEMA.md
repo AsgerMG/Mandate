@@ -13,6 +13,22 @@ administering_body: ""                   # who decides
 country: DE | IT | FR | IE | EU
 capital_type: grant | loan | guarantee | counter_guarantee | equity | blended | tax_credit
 borrower_models: [operating_company, balance_sheet_lender, originator, fund_manager]
+founder_fit: startup_ready | consortium_institutional | large_scale_industrial
+                                          # startup_ready = single applicant, SME-scaled,
+                                          # no consortium/large-capex prerequisite (grants,
+                                          # SME loans/guarantees, EIC, tax credits).
+                                          # consortium_institutional = requires a 3+ partner
+                                          # consortium or targets research orgs (Horizon,
+                                          # EIT, Chips JU, EDF).
+                                          # large_scale_industrial = scaled for capital-
+                                          # intensive/mid-cap+ projects regardless of
+                                          # consortium shape (IPCEI, Innovation Fund, EIB
+                                          # growth debt). Drives instrument-table
+                                          # ordering/flagging in buildInstrumentTable() —
+                                          # never presented as equivalent to startup_ready.
+fit_rationale: ""                        # one clause: why this bucket, cited if it turns
+                                          # on a legal fact (e.g. mono-beneficiary vs
+                                          # consortium requirement)
 status: draft | verified                 # record-level; gates carry their own flag
 gates:
   - id: sme_test

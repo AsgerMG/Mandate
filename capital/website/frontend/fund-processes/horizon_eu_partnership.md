@@ -52,3 +52,4 @@ targets).
 - Speed: 8–12 months from call to grant; fixed annual calls
 - You give up: Non-dilutive, but you align to the partnership's strategic agenda and run a consortium
 - Best for: R&D that fits a thematic partnership (clean energy, health, key digital tech)
+- Fit: Consortium/institutional (partnership-routed; not a default for solo founders)
