@@ -313,6 +313,24 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
                 passages=len(result["passages"]),
                 dry_run=dry,
             )
+            # Optional, off by default (Settings.brief_eval_enabled) — logs
+            # which retrieved passages actually got cited, so it's possible
+            # to ask later "is content we embed actually being used". Never
+            # allowed to affect the response: a logging failure here must
+            # not turn a successful brief into an error.
+            if not dry and get_settings().brief_eval_enabled:
+                try:
+                    from etl.brief_eval.logging import log_retrieval_event
+
+                    with session_scope() as log_session:
+                        log_retrieval_event(
+                            log_session,
+                            result["query"],
+                            result["passages"],
+                            result.get("citations", []),
+                        )
+                except Exception:
+                    log.exception("retrieval_event_log_failed")
             events.put(
                 {
                     "type": "result",

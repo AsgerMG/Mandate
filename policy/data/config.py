@@ -94,6 +94,20 @@ class Settings(BaseSettings):
 
     log_level: str = "INFO"
 
+    # --- Brief self-improvement (optional, off by default) ------------------
+    # Gates the ONE hook this feature adds to the live /api/brief path: a
+    # best-effort log of which retrieved passages actually got cited, used to
+    # answer "is the vector DB content we're paying to embed actually being
+    # used". Everything else (the eval panel, judge, candidate search loop)
+    # lives in etl/brief_eval/ and is only imported when `regina
+    # brief-improve` is run directly — this flag does not gate that; it only
+    # gates whether real /api/brief traffic gets logged.
+    brief_eval_enabled: bool = False
+    # RetrievalEvent rows carry real user-submitted company descriptions
+    # (the retrieval query text) — self-pruned on every write rather than
+    # kept indefinitely, so no separate cleanup job is needed.
+    brief_eval_retention_days: int = 14
+
 
 @lru_cache
 def get_settings() -> Settings:

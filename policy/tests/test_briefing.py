@@ -181,7 +181,41 @@ def test_system_prompt_hinge_rule_covers_activity_hinges():
     from etl.intelligence.briefing import REVISE_INSTRUCTION
 
     assert "VERDICT HINGE CHECK" in REVISE_INSTRUCTION
-    assert "checks (7) and (8)" in REVISE_INSTRUCTION
+    assert "checks (7), (8), and (9)" in REVISE_INSTRUCTION
+
+
+def test_system_prompt_forbids_verdict_contradicting_prose():
+    # Found via an automated eval loop, 4 independent times across two runs:
+    # a brief's Compliance table committed a flat In Scope verdict for a
+    # classification-dependent instrument (AI Act high-risk status) while
+    # other prose elsewhere in the same brief still called that same
+    # classification question open/unresolved. Nothing previously checked
+    # that a committed table verdict stays consistent with prose elsewhere
+    # in the same document — item (8) only checks a verdict against the
+    # profile's own facts, not against the rest of the draft.
+    assert "that verdict is final everywhere else in the brief" in SYSTEM_PROMPT
+    assert "cannot both stand" in SYSTEM_PROMPT
+    from etl.intelligence.briefing import REVISE_INSTRUCTION
+
+    assert "VERDICT CONSISTENCY CHECK" in REVISE_INSTRUCTION
+
+
+def test_revise_instruction_verdict_consistency_defaults_to_fixing_prose():
+    # Regression guard: item (9)'s remedy order matters. If a lazy model can
+    # dodge a real inconsistency by downgrading to Monitor instead of fixing
+    # the contradicting prose, this quietly erodes the "BE DECISIVE" /
+    # anti-hedge discipline test_system_prompt_hinge_rule_covers_activity_hinges
+    # already guards — Monitor must stay reserved for genuinely unanswered
+    # hinges, not become an escape valve for inconsistency the model doesn't
+    # want to reconcile.
+    from etl.intelligence.briefing import REVISE_INSTRUCTION
+
+    default_fix_pos = REVISE_INSTRUCTION.index("The default fix")
+    monitor_fallback_pos = REVISE_INSTRUCTION.index(
+        "Only fall back to downgrading the table verdict to Monitor"
+    )
+    assert default_fix_pos < monitor_fallback_pos
+    assert "do not use a Monitor downgrade as a shortcut" in REVISE_INSTRUCTION
 
 
 # --- deterministic canon consistency check -----------------------------------

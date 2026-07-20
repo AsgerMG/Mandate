@@ -273,6 +273,56 @@ def brief(
             typer.echo(f"  [{p['score']:.3f}] {p.get('celex') or p['title'][:60]}  {p['url']}")
 
 
+@app.command(name="brief-improve")
+def brief_improve(
+    rounds: int = typer.Option(3, help="Max candidate-search rounds after the baseline."),
+    budget: float = typer.Option(6.0, help="Hard $ cap for this run; stops early if hit."),
+    out: str = typer.Option(
+        None, "--out", help="Write the markdown report to this path instead of stdout."
+    ),
+) -> None:
+    """Test prompt tweaks against a fixed company panel and report what
+    helped. On-demand only — run this whenever you want to check whether the
+    brief prompt could be improved; nothing here runs automatically, and
+    nothing it finds gets applied without you doing it yourself. See
+    etl/brief_eval/ for the full mechanics (panel, judge, candidate search,
+    budget guard)."""
+    from etl.brief_eval.report import render_report
+    from etl.brief_eval.search import run_search
+
+    typer.echo(f"Running baseline + up to {rounds} rounds, capped at ${budget:.2f}...\n")
+
+    def _progress(line: str) -> None:
+        # flush explicitly — stdout is block-buffered when redirected to a
+        # file/pipe (e.g. a background run), and this is the only visibility
+        # into a process that otherwise runs dark for many minutes.
+        typer.echo(line, err=False)
+        import sys
+
+        sys.stdout.flush()
+
+    report = run_search(max_rounds=rounds, budget_usd=budget, on_progress=_progress)
+    markdown = render_report(report)
+
+    # Always save the full report as JSON — including every generated
+    # brief's actual text, not just its score — so nothing from a real,
+    # billed run is ever unverifiable after the fact. Not optional: a run
+    # already cost real money whether or not this file gets looked at.
+    import json
+
+    raw_path = (out or "brief-improve-report") + ".json"
+    with open(raw_path, "w") as fh:
+        json.dump(report, fh, indent=2, default=str)
+    typer.echo(f"Full raw output (every generated brief, verbatim) saved to {raw_path}")
+
+    if out:
+        with open(out, "w") as fh:
+            fh.write(markdown)
+        typer.echo(f"Summary report written to {out}")
+    else:
+        typer.echo(markdown)
+
+
 @app.command()
 def serve(
     host: str = typer.Option("127.0.0.1"),

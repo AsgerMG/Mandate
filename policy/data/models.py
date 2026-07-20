@@ -220,6 +220,28 @@ class Enrichment(Base, TimestampMixin):
     document: Mapped[Document] = relationship(back_populates="enrichment")
 
 
+class RetrievalEvent(Base, TimestampMixin):
+    """Best-effort log of retrieval usage from real ``/api/brief`` calls.
+
+    Answers "is the vector DB content we embed actually being surfaced and
+    cited" — a question the corpus otherwise has no record of. Written only
+    when ``Settings.brief_eval_enabled`` is true (see the ``/api/brief``
+    handler in ``etl/api.py``); this table has no other writers or readers in
+    the live pipeline, so leaving the flag off leaves it permanently empty.
+    Keys passages by (celex/url/title, char_start, char_end) rather than
+    Passage.id since that's the identity scheme ``parse_response`` already
+    uses to resolve citations — no schema change needed upstream to support
+    this.
+    """
+
+    __tablename__ = "retrieval_events"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    query: Mapped[str] = mapped_column(Text)
+    retrieved: Mapped[list] = mapped_column(JSONB)  # every passage handed to the model
+    cited: Mapped[list] = mapped_column(JSONB)  # the subset the model actually cited
+
+
 class PolicyArea(Base):
     __tablename__ = "policy_areas"
 
