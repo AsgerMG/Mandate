@@ -142,6 +142,111 @@ function CapitalSelect({
   );
 }
 
+/** A compact single-select dropdown, visually matching CapitalSelect — one
+ *  line instead of a grid of description-cards, for fields with a small
+ *  fixed option set (company type, borrower model). */
+function DropdownSelect({
+  options, value, onPick, placeholder,
+}: {
+  options: { value: string; label: string; hint?: string }[];
+  value?: string;
+  onPick: (v: string | undefined) => void;
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const picked = options.find((o) => o.value === value);
+  return (
+    <div className="relative">
+      {open && (
+        <button type="button" aria-hidden tabIndex={-1} onClick={() => setOpen(false)}
+          className="fixed inset-0 z-10 cursor-default" />
+      )}
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]">
+        <span className={"truncate " + (picked ? "" : "text-[var(--muted-foreground)]")}>
+          {picked?.label ?? placeholder}
+        </span>
+        <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
+      </button>
+      {open && (
+        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-black/10 bg-[#ffffff] p-1 shadow-lg">
+          {options.map((o) => {
+            const on = o.value === value;
+            return (
+              <button key={o.value} type="button" role="option" aria-selected={on}
+                onClick={() => { onPick(on ? undefined : o.value); setOpen(false); }}
+                className="flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]">
+                <span className={
+                  "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[10px] " +
+                  (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]" : "border-[var(--border)]")
+                }>
+                  {on ? "●" : ""}
+                </span>
+                <span>
+                  <span className="block text-[14px] font-medium">{o.label}</span>
+                  {o.hint && <span className="block text-[12px] text-[var(--muted-foreground)]">{o.hint}</span>}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** A searchable multi-select dropdown for the 27-country picker — one line
+ *  instead of every country exposed as a button at all times. */
+function CountrySelect({ value, onToggle }: { value: string[]; onToggle: (c: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const filtered = COUNTRIES.filter((c) => c.toLowerCase().includes(query.toLowerCase()));
+  const summary = value.length === 0
+    ? "Home market + EU-wide"
+    : value.length <= 2
+      ? value.join(", ")
+      : `${value.slice(0, 2).join(", ")} +${value.length - 2}`;
+  return (
+    <div className="relative">
+      {open && (
+        <button type="button" aria-hidden tabIndex={-1} onClick={() => setOpen(false)}
+          className="fixed inset-0 z-10 cursor-default" />
+      )}
+      <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]">
+        <span className={"truncate " + (value.length ? "" : "text-[var(--muted-foreground)]")}>{summary}</span>
+        <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
+      </button>
+      {open && (
+        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-black/10 bg-[#ffffff] shadow-lg">
+          <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search countries…"
+            className="w-full border-b border-[var(--border)] px-3 py-2 text-[14px] outline-none" />
+          <div className="max-h-52 overflow-y-auto p-1">
+            {filtered.map((c) => {
+              const on = value.includes(c);
+              return (
+                <button key={c} type="button" role="option" aria-selected={on} onClick={() => onToggle(c)}
+                  className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[14px] transition-colors hover:bg-[var(--muted)]">
+                  <span className={
+                    "flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
+                    (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]" : "border-[var(--border)]")
+                  }>
+                    {on ? "✓" : ""}
+                  </span>
+                  {c}
+                </button>
+              );
+            })}
+            {filtered.length === 0 && (
+              <p className="px-2.5 py-2 text-[13px] text-[var(--muted-foreground)]">No match</p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** A small always-present ⓘ that reveals guidance on hover or keyboard focus. */
 function InfoDot({ children }: { children: React.ReactNode }) {
   return (
@@ -198,50 +303,10 @@ function Chips({
   );
 }
 
-/** Multi-select country chips backed by a dropdown-free grid (fast to scan). */
-function CountryChips({
-  value, onToggle, compact = false,
-}: {
-  value: string[];
-  onToggle: (c: string) => void;
-  compact?: boolean;
-}) {
-  return (
-    <div className={"flex flex-wrap gap-1.5 " + (compact ? "max-h-40 overflow-y-auto pr-1" : "")}>
-      {COUNTRIES.map((c) => {
-        const on = value.includes(c);
-        return (
-          <button
-            key={c}
-            type="button"
-            aria-pressed={on}
-            onClick={() => onToggle(c)}
-            className={
-              "rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors " +
-              (on
-                ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                : "border-[var(--border)] bg-white/70 text-[var(--muted-foreground)] hover:border-[#12264f]")
-            }
-          >
-            {c}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
 const YES_NO_UNSURE = [
   { value: "yes", label: "Yes" },
   { value: "no", label: "No" },
   { value: "unsure", label: "Not sure" },
-];
-
-const CONDITIONALITY_OPTIONS = [
-  { value: "local_entity", label: "Opening a local entity" },
-  { value: "geo_commitments", label: "Committing investment to a specific country" },
-  { value: "state_shareholder", label: "The state on the cap table" },
-  { value: "job_commitments", label: "Job-creation commitments" },
 ];
 
 // Rotating engagement lines per pipeline step — shown with the elapsed timer so
@@ -280,7 +345,7 @@ export function IntelligencePanel() {
   const [elig, setElig] = useState<EligibilityAnswers>({});
   const [targetMarkets, setTargetMarkets] = useState<string[]>([]);
 
-  const [screen, setScreen] = useState<"basics" | "project" | "operate" | "finances" | "verdict" | "adaptive">("basics");
+  const [screen, setScreen] = useState<"basics" | "verdict" | "adaptive">("basics");
   const [preparing, setPreparing] = useState(false);
   const [groups, setGroups] = useState<IntakeGroup[] | null>(null);
   const [groupIdx, setGroupIdx] = useState(0);
@@ -457,10 +522,9 @@ export function IntelligencePanel() {
     void runMemo(clarifications);
   }
 
-  const busy = preparing || running;
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
-  const FIXED_SCREENS = ["basics", "project", "operate", "finances", "verdict"] as const;
+  const FIXED_SCREENS = ["basics", "verdict"] as const;
   const screenIdx =
     screen === "adaptive"
       ? FIXED_SCREENS.length + groupIdx
@@ -485,9 +549,10 @@ export function IntelligencePanel() {
           Understand how comparable companies raise public capital
         </h2>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
-          A few structured screens about your company, then tailored follow-ups,
-          then one executive memo: what you can qualify for, what each option
-          requires, and what to watch. Export it as a PDF.
+          One short screen, an instant eligibility read, then a few follow-ups
+          tailored to your specific case, then one executive memo: what you can
+          qualify for, what each option requires, and what to watch. Export it
+          as a PDF.
         </p>
 
         {/* Wizard progress dots */}
@@ -509,7 +574,7 @@ export function IntelligencePanel() {
         {/* ── Screen 1: the basics ─────────────────────────────────────── */}
         {screen === "basics" && !running && (
           <form
-            onSubmit={(e) => { e.preventDefault(); if (company.trim()) setScreen("project"); }}
+            onSubmit={(e) => { e.preventDefault(); if (company.trim()) void fetchVerdict(); }}
             className="mt-4 space-y-4"
           >
             <label className="block text-sm">
@@ -554,58 +619,30 @@ export function IntelligencePanel() {
               </label>
             </div>
 
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Company type
-                <InfoDot>
-                  How a funder would classify you. Deep tech opens doors (like the
-                  EIC) that an application layer does not.
-                </InfoDot>
-              </span>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {COMPANY_TYPES.map((t) => {
-                  const on = companyType === t.label;
-                  return (
-                    <button key={t.label} type="button" title={t.hint} aria-pressed={on}
-                      onClick={() => setCompanyType(on ? "" : t.label)}
-                      className={
-                        "rounded-lg border px-3 py-2.5 text-left text-[13px] font-medium leading-snug transition-colors " +
-                        (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                            : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
-                      }>
-                      {t.label}
-                    </button>
-                  );
-                })}
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Company type
+                  <InfoDot>
+                    How a funder would classify you. Deep tech opens doors (like the
+                    EIC) that an application layer does not.
+                  </InfoDot>
+                </span>
+                <DropdownSelect options={COMPANY_TYPES.map((t) => ({ value: t.label, label: t.label, hint: t.hint }))}
+                  value={companyType || undefined} onPick={(v) => setCompanyType(v ?? "")}
+                  placeholder="Select company type" />
               </div>
-            </div>
-
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Who ends up owing the money?
-                <InfoDot>
-                  The single biggest routing fork. A company financing customers or
-                  originating credit belongs in a completely different funnel
-                  (guarantees to intermediaries, securitisation support) than one
-                  funding its own operations.
-                </InfoDot>
-              </span>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {BORROWER_MODELS.map((m) => {
-                  const on = elig.borrowerModel === m.value;
-                  return (
-                    <button key={m.value} type="button" aria-pressed={on}
-                      onClick={() => setElig((p) => ({ ...p, borrowerModel: on ? undefined : m.value }))}
-                      className={
-                        "rounded-lg border px-3 py-2.5 text-left transition-colors " +
-                        (on ? "border-[#12264f] bg-[#12264f]/20"
-                            : "border-[var(--border)] bg-white/70 hover:border-[#12264f]")
-                      }>
-                      <span className="block text-[13px] font-medium">{m.label}</span>
-                      <span className="block text-[11px] text-[var(--muted-foreground)]">{m.hint}</span>
-                    </button>
-                  );
-                })}
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Who ends up owing the money?
+                  <InfoDot>
+                    A company financing customers or originating credit belongs in a
+                    completely different funnel than one funding its own operations.
+                  </InfoDot>
+                </span>
+                <DropdownSelect options={[...BORROWER_MODELS]} value={elig.borrowerModel}
+                  onPick={(v) => setElig((p) => ({ ...p, borrowerModel: v as EligibilityAnswers["borrowerModel"] }))}
+                  placeholder="We fund our own operations" />
               </div>
             </div>
 
@@ -634,33 +671,32 @@ export function IntelligencePanel() {
               </div>
             </div>
 
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Where do you want to raise public capital?
-                <InfoDot>
-                  Target markets can differ from where you are incorporated. Many
-                  national schemes require a domestic entity; we will flag exactly
-                  which ones and what opening one buys you.
-                </InfoDot>
-              </span>
-              <CountryChips value={targetMarkets} onToggle={(c) => setTargetMarkets((p) => toggleList(p, c))} compact />
+            {/* ── Fit signals: the empirically highest-determining-power
+                questions (ETL/terms/aggregate_intake_usage.py), real reach
+                against the 320-instrument corpus — fteBand 79%, developmentStage
+                65%, lossesOverHalfCapital 57%. Everything else is asked
+                adaptively once the shortlist is known, never blind upfront. ── */}
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Where do you want to raise public capital?
+                  <InfoDot>
+                    Target markets can differ from where you are incorporated. Many
+                    national schemes require a domestic entity; we will flag exactly
+                    which ones and what opening one buys you. Leave blank for home
+                    market + EU-wide.
+                  </InfoDot>
+                </span>
+                <CountrySelect value={targetMarkets} onToggle={(c) => setTargetMarkets((p) => toggleList(p, c))} />
+              </div>
+              <div className="text-sm">
+                <span className="mb-2 block font-semibold">Team size</span>
+                <Chips options={[
+                  { value: "1-9", label: "1–9" }, { value: "10-49", label: "10–49" },
+                  { value: "50-249", label: "50–249" }, { value: "250+", label: "250+" },
+                ]} value={elig.fteBand} onPick={(v) => setElig((p) => ({ ...p, fteBand: v }))} />
+              </div>
             </div>
-
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
-              <button type="submit" disabled={busy || !company.trim()} className={nextBtn}>
-                Continue
-              </button>
-              <span className="text-xs text-[var(--muted-foreground)]">
-                2 more short screens, tailored follow-ups, then your memo.
-              </span>
-            </div>
-          </form>
-        )}
-
-        {/* ── Screen 2: your project (derived from instrument gates, §2b) ── */}
-        {screen === "project" && !running && (
-          <div className="mt-4 space-y-5">
-            <p className="text-xs uppercase tracking-widest text-[#12264f]">Your project</p>
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
@@ -681,219 +717,27 @@ export function IntelligencePanel() {
               </div>
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
-                  When do you need the money?
-                  <InfoDot>
-                    Guaranteed bank loans move in weeks; grants take 9 to 18
-                    months. Timeline removes instruments that cannot serve you.
-                  </InfoDot>
-                </span>
-                <Chips options={[
-                  { value: "asap_weeks", label: "Weeks" },
-                  { value: "months_6", label: "Within 6 months" },
-                  { value: "months_18", label: "6–18 months" },
-                  { value: "flexible", label: "Flexible" },
-                ]} value={elig.needBy} onPick={(v) => setElig((p) => ({ ...p, needBy: v }))} />
-              </div>
-            </div>
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Where will the funded activity physically sit?
-                <InfoDot>
-                  Distinct from where you are incorporated: many schemes fund the
-                  ACTIVITY in-country (a plant, a team, a deployment), and regional
-                  aid maps price the same project differently by location.
-                </InfoDot>
-              </span>
-              <CountryChips value={elig.activityCountries ?? []}
-                onToggle={(c) => setElig((p) => ({ ...p, activityCountries: toggleList(p.activityCountries ?? [], c) }))}
-                compact />
-            </div>
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Could you run a project with 3+ consortium partners?
-                <InfoDot>
-                  Horizon Europe, the Joint Undertakings and the Defence Fund fund
-                  consortia, not single companies. A clear no removes them cleanly.
-                </InfoDot>
-              </span>
-              <Chips options={YES_NO_UNSURE} value={elig.consortium}
-                onPick={(v) => setElig((p) => ({ ...p, consortium: v as EligibilityAnswers["consortium"] }))} />
-            </div>
-            <div className="flex items-center gap-4 pt-1">
-              <button type="button" onClick={() => setScreen("operate")} className={nextBtn}>Continue</button>
-              <button type="button" onClick={() => setScreen("basics")} className={backBtn}>Back</button>
-            </div>
-          </div>
-        )}
-
-        {/* ── Screen 3: where you operate ──────────────────────────────── */}
-        {screen === "operate" && !running && (
-          <div className="mt-4 space-y-5">
-            <p className="text-xs uppercase tracking-widest text-[#12264f]">Where you operate</p>
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Countries where you already have an entity or permanent establishment
-                <InfoDot>
-                  Subsidiaries, branches, registered establishments. This decides
-                  which national doors are open TODAY versus after a structural step.
-                </InfoDot>
-              </span>
-              <CountryChips value={elig.entityCountries ?? []}
-                onToggle={(c) => setElig((p) => ({ ...p, entityCountries: toggleList(p.entityCountries ?? [], c) }))}
-                compact />
-            </div>
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Would you open a local entity where a scheme requires it?
-              </span>
-              <Chips options={[
-                { value: "yes", label: "Yes, if it unlocks the right capital" },
-                { value: "depends", label: "Depends on the terms" },
-                { value: "no", label: "No" },
-              ]} value={elig.wouldOpenEntity}
-                onPick={(v) => setElig((p) => ({ ...p, wouldOpenEntity: v as EligibilityAnswers["wouldOpenEntity"] }))} />
-            </div>
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Which conditions could you accept for the right capital?
-                <InfoDot>
-                  Public money comes with strings. Knowing which you would accept
-                  removes dead ends before we recommend anything.
-                </InfoDot>
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {CONDITIONALITY_OPTIONS.map((o) => {
-                  const on = (elig.conditionality ?? []).includes(o.value);
-                  return (
-                    <button key={o.value} type="button" aria-pressed={on}
-                      onClick={() => setElig((p) => ({ ...p, conditionality: toggleList(p.conditionality ?? [], o.value) }))}
-                      className={
-                        "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
-                        (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                            : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
-                      }>
-                      {o.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="flex items-center gap-4 pt-1">
-              <button type="button" onClick={() => setScreen("finances")} className={nextBtn}>Continue</button>
-              <button type="button" onClick={() => setScreen("project")} className={backBtn}>Back</button>
-            </div>
-          </div>
-        )}
-
-        {/* ── Screen 3: size & finances ────────────────────────────────── */}
-        {screen === "finances" && !running && (
-          <div className="mt-4 space-y-5">
-            <p className="text-xs uppercase tracking-widest text-[#12264f]">Size and finances</p>
-            <p className="-mt-3 text-sm text-[var(--muted-foreground)]">
-              Bands only, nothing precise. These decide the SME test, aid ceilings
-              and co-financing feasibility. Skip anything you prefer not to answer.
-            </p>
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="text-sm">
-                <span className="mb-2 block font-semibold">Team size</span>
-                <Chips options={[
-                  { value: "1-9", label: "1–9" }, { value: "10-49", label: "10–49" },
-                  { value: "50-249", label: "50–249" }, { value: "250+", label: "250+" },
-                ]} value={elig.fteBand} onPick={(v) => setElig((p) => ({ ...p, fteBand: v }))} />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 block font-semibold">Annual turnover</span>
-                <Chips options={[
-                  { value: "<2M", label: "Under €2M" }, { value: "2-10M", label: "€2–10M" },
-                  { value: "10-50M", label: "€10–50M" }, { value: ">50M", label: "Over €50M" },
-                ]} value={elig.turnoverBand} onPick={(v) => setElig((p) => ({ ...p, turnoverBand: v }))} />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Any single owner holding 25% or more?
-                  <InfoDot>
-                    The EU SME test counts linked and partner enterprises. A large
-                    corporate or fund owner can change what you qualify for.
-                  </InfoDot>
-                </span>
-                <Chips options={YES_NO_UNSURE} value={elig.ownerOver25}
-                  onPick={(v) => setElig((p) => ({ ...p, ownerOver25: v as EligibilityAnswers["ownerOver25"] }))} />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Could you co-finance 25–50% of a project?
-                  <InfoDot>
-                    Most grants fund only part of a project. Co-financing capacity
-                    decides whether the big grant lanes are realistic.
-                  </InfoDot>
-                </span>
-                <Chips options={[
-                  { value: ">50%", label: "Yes, more than half" },
-                  { value: "25-50%", label: "Yes, 25–50%" },
-                  { value: "<25%", label: "Below 25%" },
-                  { value: "unsure", label: "Not sure" },
-                ]} value={elig.cofinancingBand} onPick={(v) => setElig((p) => ({ ...p, cofinancingBand: v }))} />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  A bank that would lend to you if the loan were guaranteed?
-                  <InfoDot>
-                    Every guarantee route (KfW, Bpifrance, Fondo di Garanzia) runs
-                    through a lending bank. No relationship yet is fine, it just
-                    changes the first step.
-                  </InfoDot>
-                </span>
-                <Chips options={YES_NO_UNSURE} value={elig.bankRelationship}
-                  onPick={(v) => setElig((p) => ({ ...p, bankRelationship: v as EligibilityAnswers["bankRelationship"] }))} />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Institutional investors aboard, or ready to anchor?
-                  <InfoDot>
-                    EIB venture debt and most public equity co-invest alongside
-                    institutional sponsors rather than replacing them.
-                  </InfoDot>
-                </span>
-                <Chips options={YES_NO_UNSURE} value={elig.institutionalBacking}
-                  onPick={(v) => setElig((p) => ({ ...p, institutionalBacking: v as EligibilityAnswers["institutionalBacking"] }))} />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Founded in
-                  <InfoDot>
-                    Young-company statuses (JEI in France, startup innovativa in
-                    Italy) unlock extra windows below certain company ages.
-                  </InfoDot>
-                </span>
-                <input type="number" min={1950} max={2026} placeholder="e.g. 2022"
-                  value={elig.foundedYear ?? ""}
-                  onChange={(e) => setElig((p) => ({ ...p, foundedYear: e.target.value ? Number(e.target.value) : undefined }))}
-                  className={inputCls + " max-w-[9rem]"} />
-              </div>
-              <div className="text-sm sm:col-span-2">
-                <span className="mb-2 flex items-center font-semibold">
-                  Have accumulated losses eaten more than half of your share capital?
+                  Losses over half your share capital?
                   <InfoDot>
                     The "undertaking in difficulty" test. If yes, most state aid is
                     blocked until equity is restored; the memo will say so plainly
-                    and name the cure. Answering honestly here saves wasted
-                    applications.
+                    and name the cure. Not sure is fine, this is never forced.
                   </InfoDot>
                 </span>
                 <Chips options={YES_NO_UNSURE} value={elig.lossesOverHalfCapital}
                   onPick={(v) => setElig((p) => ({ ...p, lossesOverHalfCapital: v as EligibilityAnswers["lossesOverHalfCapital"] }))} />
               </div>
             </div>
-            <div className="flex items-center gap-4 pt-1">
-              <button type="button" disabled={verdictLoading} onClick={() => void fetchVerdict()} className={nextBtn}>
+
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
+              <button type="submit" disabled={verdictLoading || !company.trim()} className={nextBtn}>
                 {verdictLoading ? "Checking…" : "See what you're eligible for"}
               </button>
-              <button type="button" onClick={() => setScreen("operate")} className={backBtn}>Back</button>
-              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
-                Skip and write the memo now
-              </button>
+              <span className="text-xs text-[var(--muted-foreground)]">
+                Instant, code-only. Tailored follow-ups and your memo come next.
+              </span>
             </div>
-          </div>
+          </form>
         )}
 
         {/* ── Verdict screen: the fast, model-free eligibility answer ──── */}
@@ -919,7 +763,7 @@ export function IntelligencePanel() {
               <button type="button" disabled={preparing} onClick={() => void fetchGroups()} className={nextBtn}>
                 {preparing ? "Preparing follow-ups…" : "See the full memo"}
               </button>
-              <button type="button" onClick={() => setScreen("finances")} className={backBtn}>Back</button>
+              <button type="button" onClick={() => setScreen("basics")} className={backBtn}>Back</button>
               <button type="button" onClick={() => void runMemo([])} className={backBtn}>
                 Skip straight to the memo
               </button>
@@ -973,7 +817,7 @@ export function IntelligencePanel() {
                 </button>
               )}
               <button type="button"
-                onClick={() => (groupIdx > 0 ? setGroupIdx((i) => i - 1) : setScreen(verdict ? "verdict" : "finances"))}
+                onClick={() => (groupIdx > 0 ? setGroupIdx((i) => i - 1) : setScreen(verdict ? "verdict" : "basics"))}
                 className={backBtn}>
                 Back
               </button>
