@@ -4,6 +4,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import {
   BORROWER_MODELS,
   CAPITAL_OPTIONS,
+  COMPANY_TYPE_OPTIONS,
   FIELD_ENUM_HINTS,
   TICKET_BANDS,
   type EligibilityAnswers,
@@ -12,6 +13,7 @@ import {
   type InstrumentRow,
   type IntelligenceReport,
   type PipelineStep,
+  type ProfileSignal,
   type ProgressEvent,
 } from "@/lib/intelligence/types";
 
@@ -33,14 +35,9 @@ const darkVars = {
 // stays bounded even when the shortlist never fully collapses.
 const MAX_ROUNDS = 2;
 
-// The four archetypes, as a one-tap picker. The label is sent verbatim as the
-// founder's `companyType`; the hint is the funder's-eye definition.
-const COMPANY_TYPES: { label: string; hint: string }[] = [
-  { label: "Deep-tech breakthrough", hint: "novel science or hardware, real technical risk" },
-  { label: "Applied innovation", hint: "a new product built on existing tech" },
-  { label: "Application-layer software", hint: "a platform or app on top of existing models" },
-  { label: "Services", hint: "consulting, agency or delivery" },
-];
+// COMPANY_TYPE_OPTIONS (types.ts) is the four archetypes, as a one-tap
+// picker — shared with the server-side free-text inference layer (Phase 4)
+// so the two can never drift onto different literal strings.
 
 // European scope, full English names, for the country picker.
 const COUNTRIES = [
@@ -369,6 +366,11 @@ export function IntelligencePanel() {
     candidateInstrumentIds: string[];
   } | null>(null);
 
+  // Phase 4: the model's own read of the free-text description, fetched once
+  // (see fetchRound's wantProfileSignal) and passed straight through to the
+  // memo — never re-derived, never touches the verdict screen.
+  const [profileSignal, setProfileSignal] = useState<ProfileSignal | null>(null);
+
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState<PipelineStep | null>(null);
   const [statusDetail, setStatusDetail] = useState<string>("");
@@ -404,6 +406,7 @@ export function IntelligencePanel() {
     capitalSought,
     targetMarkets,
     eligibility: elig,
+    profileSignal,
   });
 
   type Verdict = {
@@ -427,7 +430,7 @@ export function IntelligencePanel() {
       });
       const data = (await res.json().catch(() => ({}))) as Partial<Verdict>;
       if (!data.eligibilityScreen && !data.instrumentTable) {
-        await fetchRound(elig, []);
+        await fetchRound(elig, [], true);
         return;
       }
       const v: Verdict = {
@@ -439,7 +442,7 @@ export function IntelligencePanel() {
       setVerdict(v);
       setScreen("verdict");
     } catch {
-      await fetchRound(elig, []);
+      await fetchRound(elig, [], true);
     } finally {
       setVerdictLoading(false);
     }
@@ -447,17 +450,33 @@ export function IntelligencePanel() {
 
   // Phase 3C: fetch exactly one grounded adaptive round, scoped to the given
   // shortlist. Best-effort — a null/empty round (nothing left worth asking,
-  // or any failure) just runs the memo straight away.
-  async function fetchRound(eligForRequest: EligibilityAnswers, candidateInstrumentIds: string[]) {
+  // or any failure) just runs the memo straight away. Phase 4: on the
+  // founder's genuine first call (wantProfileSignal), the free-text profile
+  // read rides alongside it — same request, same loading state, fetched
+  // exactly once per session (round 2 in advanceRound passes false).
+  async function fetchRound(
+    eligForRequest: EligibilityAnswers,
+    candidateInstrumentIds: string[],
+    wantProfileSignal: boolean,
+  ) {
     setPreparing(true);
     setError(null);
     try {
       const res = await fetch("/api/intelligence/intake", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...basePayload(), eligibility: eligForRequest, candidateInstrumentIds }),
+        body: JSON.stringify({
+          ...basePayload(),
+          eligibility: eligForRequest,
+          candidateInstrumentIds,
+          wantProfileSignal,
+        }),
       });
-      const data = (await res.json().catch(() => ({}))) as { round?: GroundedRound | null };
+      const data = (await res.json().catch(() => ({}))) as {
+        round?: GroundedRound | null;
+        profileSignal?: ProfileSignal | null;
+      };
+      if (data.profileSignal) setProfileSignal(data.profileSignal);
       if (!data.round || !Array.isArray(data.round.questions) || data.round.questions.length === 0) {
         await runMemo([]);
         return;
@@ -506,7 +525,7 @@ export function IntelligencePanel() {
         candidateInstrumentIds: data.candidateInstrumentIds ?? [],
       };
       setVerdict(v);
-      await fetchRound(merged, v.candidateInstrumentIds);
+      await fetchRound(merged, v.candidateInstrumentIds, false);
     } catch {
       await runMemo([]);
     } finally {
@@ -671,7 +690,7 @@ export function IntelligencePanel() {
                     EIC) that an application layer does not.
                   </InfoDot>
                 </span>
-                <DropdownSelect options={COMPANY_TYPES.map((t) => ({ value: t.label, label: t.label, hint: t.hint }))}
+                <DropdownSelect options={[...COMPANY_TYPE_OPTIONS]}
                   value={companyType || undefined} onPick={(v) => setCompanyType(v ?? "")}
                   placeholder="Select company type" />
               </div>
@@ -804,7 +823,7 @@ export function IntelligencePanel() {
             </div>
             <div className="mt-5 flex items-center gap-4">
               <button type="button" disabled={preparing}
-                onClick={() => void fetchRound(elig, verdict.candidateInstrumentIds)} className={nextBtn}>
+                onClick={() => void fetchRound(elig, verdict.candidateInstrumentIds, true)} className={nextBtn}>
                 {preparing ? "Checking what's still open…" : "See the full memo"}
               </button>
               <button type="button" onClick={() => setScreen("basics")} className={backBtn}>Back</button>
@@ -1012,6 +1031,7 @@ function EligibilityTable({ rows }: { rows: EligibilityCheck[] }) {
  *  by the fast verdict screen and the final memo so both render identically. */
 function InstrumentTable({ rows }: { rows: InstrumentRow[] }) {
   if (!rows || rows.length === 0) return null;
+  const hasProfileNotes = rows.some((r) => r.profileNote);
   return (
     <>
       <SectionTitle>The capital on the table</SectionTitle>
@@ -1019,6 +1039,11 @@ function InstrumentTable({ rows }: { rows: InstrumentRow[] }) {
         The public instruments that fit your field, side by side. Read the
         trade-off before the ticket: public capital is rarely free of strings.
         Instruments your peers have already drawn on are marked.
+        {hasProfileNotes && (
+          <> Notes marked &ldquo;your own words suggest&rdquo; are the AI&rsquo;s read of
+            your free-text description, not a verified fact and not what you
+            selected under Company type.</>
+        )}
       </p>
       <table className="w-full border-collapse text-[14px]">
         <thead>
@@ -1047,6 +1072,12 @@ function InstrumentTable({ rows }: { rows: InstrumentRow[] }) {
                     </span>
                     <span className="italic">{r.fitFlag}</span>
                   </span>
+                )}
+                {r.profileNote && (
+                  <div className="mt-1.5 border-l-2 border-[#6b5b95]/40 pl-2 text-[12px] text-[#6b5b95]">
+                    <span className="font-semibold uppercase tracking-wide text-[10px]">Your own words suggest</span>{" "}
+                    <span className="italic">{r.profileNote}</span>
+                  </div>
                 )}
               </td>
               <td className="py-2.5 pr-3 tabular-nums">{r.ticket}</td>

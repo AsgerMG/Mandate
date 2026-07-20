@@ -3,9 +3,19 @@
 // profile (structured intake, AUTHORITATIVE)" block) and into the
 // deterministic evaluator, so a stray field or an oversized string should be
 // dropped, not forwarded.
-import { CAPITAL_OPTIONS, type BorrowerModel, type CapitalType, type EligibilityAnswers, type TicketBand } from "./types";
+import {
+  CAPITAL_OPTIONS,
+  COMPANY_TYPE_OPTIONS,
+  type BorrowerModel,
+  type CapitalType,
+  type CompanyTypeValue,
+  type EligibilityAnswers,
+  type ProfileSignal,
+  type TicketBand,
+} from "./types";
 
 const CAPITAL_TYPE_VALUES: readonly CapitalType[] = CAPITAL_OPTIONS.map((o) => o.value);
+const COMPANY_TYPE_VALUES: readonly CompanyTypeValue[] = COMPANY_TYPE_OPTIONS.map((o) => o.value);
 const TICKET_BAND_VALUES: readonly TicketBand[] = ["lt500k", "b500k_2m5", "b2m5_15m", "b15m_50m", "gt50m"];
 const BORROWER_MODEL_VALUES: readonly BorrowerModel[] = ["operating", "balance_sheet_lender", "originator", "fund_manager"];
 const YES_NO_UNSURE = ["yes", "no", "unsure"] as const;
@@ -39,6 +49,12 @@ function pickYear(v: unknown): number | undefined {
   if (typeof v !== "number" || !Number.isFinite(v)) return undefined;
   const y = Math.trunc(v);
   return y >= 1900 && y <= 2100 ? y : undefined;
+}
+
+function pickString(v: unknown, maxLen: number): string | undefined {
+  if (typeof v !== "string") return undefined;
+  const s = v.trim();
+  return s.length > 0 && s.length <= maxLen ? s : undefined;
 }
 
 /** Whitelist a raw request body's `eligibility` field into EligibilityAnswers, or undefined if empty/invalid. */
@@ -89,4 +105,16 @@ export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
   if (!Array.isArray(raw)) return undefined;
   const out = raw.filter((x): x is string => typeof x === "string" && INSTRUMENT_ID_RE.test(x)).slice(0, 40);
   return out.length ? out : undefined;
+}
+
+/** Whitelist a raw request body's `profileSignal` field (Phase 4) — the
+ *  client only ever echoes back what our own /api/intelligence/intake
+ *  response gave it, but never trust that round-trip: techDepthRead must be
+ *  a real COMPANY_TYPE_OPTIONS value, note is length-capped free text. */
+export function sanitizeProfileSignal(raw: unknown): ProfileSignal | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const b = raw as Record<string, unknown>;
+  const techDepthRead = pickEnum(b.techDepthRead, COMPANY_TYPE_VALUES);
+  const note = pickString(b.note, 300);
+  return techDepthRead && note ? { techDepthRead, note } : undefined;
 }

@@ -82,6 +82,30 @@ export interface SelfRecord {
  *  startup-ready capital. See data/instrument_terms/_SCHEMA.md. */
 export type FounderFit = "startup_ready" | "consortium_institutional" | "large_scale_industrial";
 
+/** The founder's self-reported archetype, one-tap on the core screen. Shared
+ *  here (not just local wizard state) so the server-side free-text inference
+ *  layer (Phase 4, pipeline.ts's inferProfileSignal()) and the client picker
+ *  can never drift onto different literal strings for the same 4 values. */
+export const COMPANY_TYPE_OPTIONS = [
+  { value: "Deep-tech breakthrough", label: "Deep-tech breakthrough", hint: "novel science or hardware, real technical risk" },
+  { value: "Applied innovation", label: "Applied innovation", hint: "a new product built on existing tech" },
+  { value: "Application-layer software", label: "Application-layer software", hint: "a platform or app on top of existing models" },
+  { value: "Services", label: "Services", hint: "consulting, agency or delivery" },
+] as const;
+export type CompanyTypeValue = (typeof COMPANY_TYPE_OPTIONS)[number]["value"];
+
+/** The model's own read of the founder's free-text description, on the same
+ *  4-point scale as their self-reported companyType — never the same field,
+ *  never authoritative, never checked against any primary text. Strictly
+ *  softer than the weakest eligibility_gates tier (inventory_inferred): it
+ *  isn't grounded in law or a curated brief at all, only in the founder's own
+ *  prose. `note` must be traceable to language actually present in that
+ *  prose (same "grounded, not invented" discipline as GroundedRound). */
+export interface ProfileSignal {
+  techDepthRead: CompanyTypeValue;
+  note: string;
+}
+
 /** Curated trade-off snapshot parsed from a fund brief's "At a glance" block. */
 export interface FundSnapshot {
   ticket: string;
@@ -114,6 +138,14 @@ export interface InstrumentRow {
   country?: string;
   capitalType?: string;
   eventCount?: number;
+  /** Set only for a small, hardcoded set of tech-depth-sensitive channels
+   *  (DEPTH_SENSITIVE_CHANNELS in pipeline.ts), and only when the model's
+   *  read of the founder's own description (ProfileSignal) diverges from
+   *  what they self-reported as companyType. Grounded in the founder's own
+   *  words, never in a curated brief or primary legal text — render this
+   *  visually distinct from fitFlag, never on the same footing. Only ever
+   *  set by runIntelligence()'s full-memo path, never by computeVerdict(). */
+  profileNote?: string;
 }
 
 export interface FunderEntry {
@@ -204,6 +236,10 @@ export interface IntelligenceRequest {
    *  verdict computation) — grounds the adaptive round in gates that are
    *  actually still open for THESE instruments, not the whole 320-row corpus. */
   candidateInstrumentIds?: string[];
+  /** The model's own read of the founder's free-text description (Phase 4),
+   *  computed once per session by inferProfileSignal() and passed straight
+   *  through — a soft, additive annotation only, never re-derived here. */
+  profileSignal?: ProfileSignal;
 }
 
 /** Scale bands: which instrument universe the ask opens (advisory_pipeline §B2). */

@@ -24,6 +24,7 @@ import {
 import {
   BORROWER_MODELS,
   CAPITAL_OPTIONS,
+  COMPANY_TYPE_OPTIONS,
   FIELD_ENUM_HINTS,
   TICKET_BANDS,
   type ChannelAmount,
@@ -37,6 +38,7 @@ import {
   type InstrumentRow,
   type IntelligenceReport,
   type IntelligenceRequest,
+  type ProfileSignal,
   type ProgressEvent,
   type SelfRecord,
 } from "./types";
@@ -382,6 +384,33 @@ function buildInstrumentTable(
     });
 }
 
+// Channels where "genuine breakthrough vs applied/incremental" actually
+// changes how a founder should approach the fund — EIC/Horizon/EIT panels
+// explicitly screen for technical risk; national dev banks and GBER loans do
+// not. Deliberately small and easy to extend; adding a channel here is the
+// only way Phase 4's profile signal ever touches a new row.
+const DEPTH_SENSITIVE_CHANNELS = new Set(["eic", "horizon_eu_pillar_ii", "horizon_eu_partnership", "eit"]);
+
+/**
+ * Phase 4: attach the founder's free-text profile signal to the instrument
+ * table as a visible, clearly-non-authoritative annotation — never reorders,
+ * promotes, or demotes a row, never touches which instruments are shown.
+ * That's the whole trust argument: this can only ever add a sentence, never
+ * hide or resurface an eligibility-relevant instrument. Skipped entirely
+ * when the model's read agrees with what the founder already self-selected
+ * (nothing new to tell them), and only ever attached to the small
+ * DEPTH_SENSITIVE_CHANNELS set.
+ */
+function applyProfileSignal(
+  rows: InstrumentRow[],
+  signal: ProfileSignal | null | undefined,
+  selfReportedType: string | undefined,
+): InstrumentRow[] {
+  if (!signal?.note || signal.techDepthRead === selfReportedType) return rows;
+  return rows.map((r) =>
+    DEPTH_SENSITIVE_CHANNELS.has(r.channel) ? { ...r, profileNote: signal.note } : r);
+}
+
 /** "€2.5M EIC · €1.8M dev banks" — the top doors, with figures where known. */
 function fundingBreakdown(channelAmounts: ChannelAmount[]): string {
   return channelAmounts
@@ -713,6 +742,22 @@ async function synthesize(
       "(never recommend an instrument a NOT_MET row closes without naming the " +
       "cure first; treat UNKNOWN rows as verification to-dos)."
     : "";
+  // Phase 4: the model's OWN read of the founder's free-text description —
+  // deliberately NOT labeled AUTHORITATIVE, unlike every block above. Only
+  // present when it diverges from what the founder self-selected; the writer
+  // may mention it as colour, never as fact, never overriding the founder's
+  // own pick or the eligibility screen.
+  const softSignalBlock =
+    req.profileSignal && req.profileSignal.techDepthRead !== req.companyType
+      ? `## Free-text read (SOFT SIGNAL — not authoritative, not verified)\n` +
+        `The founder's own description reads more like "${req.profileSignal.techDepthRead}" ` +
+        `than the "${req.companyType ?? "unstated"}" they selected under Company type. ` +
+        `Reason: ${req.profileSignal.note}\n` +
+        `You may mention this as a nuance if it's genuinely useful, but never ` +
+        `treat it as fact, never let it override the founder's own selection or ` +
+        `the eligibility screen, and never present it with the same certainty ` +
+        `as the AUTHORITATIVE blocks above.`
+      : "";
   // Current-landscape grounding: build-time export of the intelligence corpus
   // (signals_digest.json). The digest captures the FULL A-Z topic universe on
   // every build (scale capital, InvestEU, grants, state aid, industrial policy,
@@ -879,6 +924,7 @@ async function synthesize(
           `Write the executive funding memo for the founder.\n\n${ctx}\n\n` +
           `${profileBlock ? profileBlock + "\n\n" : ""}` +
           `${screenBlock ? screenBlock + "\n\n" : ""}` +
+          `${softSignalBlock ? softSignalBlock + "\n\n" : ""}` +
           `## The founder's own footprint (AUTHORITATIVE)\n${selfLine}\n\n` +
           `## Comparable-company evidence (AUTHORITATIVE — already finalised)\n` +
           `Every company listed here has traced public funding; the figures are ` +
@@ -1101,6 +1147,72 @@ export async function generateGroundedRound(
   }
 }
 
+const PROFILE_SIGNAL_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    techDepthRead: { type: "string", enum: COMPANY_TYPE_OPTIONS.map((o) => o.value) },
+    note: { type: "string" },
+  },
+  required: ["techDepthRead", "note"],
+} as const;
+
+/**
+ * Phase 4: a soft, additive read of the founder's own free-text description —
+ * distinct from Phase 3C (which asks the founder MORE questions grounded in
+ * real gate text). This reads what's already given and infers a signal a
+ * checkbox can't capture, on the SAME 4-point scale as the founder's own
+ * self-reported `companyType`, never a different or freer vocabulary. Fires
+ * once per session, in parallel with the first grounded-round fetch — never
+ * before or blocking computeVerdict(), which must stay instant and
+ * zero-cost. Strictly softer than the weakest eligibility_gates tier
+ * (inventory_inferred): not grounded in any legal text or curated brief, only
+ * in the founder's own prose, and `applyProfileSignal()` is the only thing
+ * allowed to act on it — never a hard verdict, never authoritative.
+ */
+export async function inferProfileSignal(req: IntelligenceRequest): Promise<ProfileSignal | null> {
+  const desc = req.description?.trim();
+  if (!desc || desc.length < 25) return null; // too thin to ground anything — no signal beats a fabricated one
+  try {
+    const res = await client.messages.create({
+      model: WRITER_MODEL,
+      max_tokens: 400,
+      thinking: { type: "disabled" },
+      system: loadAgentInstructions(),
+      output_config: { format: { type: "json_schema", schema: PROFILE_SIGNAL_SCHEMA } },
+      messages: [
+        {
+          role: "user",
+          content:
+            `A founder described their company in their own words. Read ONLY ` +
+            `what is actually there — do not infer facts the text doesn't ` +
+            `support. Classify how the description ITSELF reads on this scale ` +
+            `(not what the founder later self-selected): ` +
+            `${COMPANY_TYPE_OPTIONS.map((o) => o.value).join(" / ")}.\n\n` +
+            `Description: "${desc}"\n\n` +
+            `"note" must be one short sentence, in your own words, that a ` +
+            `founder could immediately verify against their own description — ` +
+            `quote or closely paraphrase specific language from it. Never ` +
+            `assert anything about eligibility or funding fit; this is purely ` +
+            `a read of how the writing itself comes across to a technical ` +
+            `reviewer.\n\nReturn ONLY the JSON object for the schema.`,
+        },
+      ],
+    });
+    const text = res.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+    const parsed = extractJson<{ techDepthRead: string; note: string }>(text);
+    const validType = COMPANY_TYPE_OPTIONS.find((o) => o.value === parsed.techDepthRead)?.value;
+    if (!validType || !parsed.note?.trim()) return null;
+    return { techDepthRead: validType, note: deDash(parsed.note.trim()) };
+  } catch (err) {
+    console.error("profile signal inference failed:", err);
+    return null;
+  }
+}
+
 export interface VerdictResult {
   eligibilityScreen: EligibilityCheck[];
   instrumentTable: InstrumentRow[];
@@ -1191,13 +1303,17 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
     ...records.flatMap((r) => (r.matched ? r.channels : [])),
     ...dbPeers.flatMap((r) => r.channels),
   ]);
-  const instrumentTable = buildInstrumentTable(
-    fieldChannels,
-    req.eligibility?.ticketBand,
-    req.eligibility?.consortium === "yes",
-    founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
-    req.capitalSought ?? [],
-  ).slice(0, DISPLAY_CAP);
+  const instrumentTable = applyProfileSignal(
+    buildInstrumentTable(
+      fieldChannels,
+      req.eligibility?.ticketBand,
+      req.eligibility?.consortium === "yes",
+      founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
+      req.capitalSought ?? [],
+    ).slice(0, DISPLAY_CAP),
+    req.profileSignal,
+    req.companyType,
+  );
 
   emit({ type: "status", step: "generating", detail: "Assembling evidence: instruments, comparables, current landscape" });
   const sectorTop =
