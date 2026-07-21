@@ -5,12 +5,130 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-21 — SYSTEM_PROMPT fixes from a manual review
+**Decision:** A close manual review of the full SYSTEM_PROMPT (not an
+automated eval finding) surfaced 7 substantive gaps plus 4 smaller items;
+all fixed and confirmed under the real production path (`sharpen=True`)
+against the pre-edit prompt: **+0.4 aggregate, zero dimension regressions,
+$5.91**.
+1. Injected today's date into the per-call instruction — `TRANSITIONAL
+   APPLICABILITY`'s "has the successor's application date arrived yet"
+   check had no anchor at all; the model's only fallback was its training
+   cutoff, always wrong (always too early) for every brief run after that
+   cutoff.
+2. `ACTION` bullets now name a concrete owned action when the sources
+   support one, not just verdict-and-reason — the eval panel itself
+   includes a 2-person pre-revenue company with no compliance function to
+   translate a diagnosis into a step itself.
+3. Added a `DIRECTIVE TRANSPOSITION` paragraph, distinct from the existing
+   predecessor/successor-timing rule: covers a Directive (e.g. NIS2, which
+   is in canon) whose retrieved text has no retrieved national
+   transposition act.
+4. Exempted accurately-reported statutory discretion ("the authority may
+   impose a fine...") from the blanket "may" hedge ban, which previously
+   forced a choice between breaking the rule or misreporting real legal
+   discretion as automatic.
+5. Resolved a real Monitor/Out-of-Scope collision: an instrument the
+   company is itself settled out of scope for can still carry a
+   Monitor+Prio-1 row tracking a named third party's dynamic under that
+   same instrument — both rows (the company's own Appendix row and the
+   third party's Compliance-table row) are now explicitly permitted
+   side by side, distinguished by Why/Trigger wording.
+6. Added a thin-footprint exception to the 700-1000 word target so a
+   genuinely small-footprint company isn't pushed to pad sentences to
+   hit the range.
+7. Four smaller items: a hard bold-verdict-cell rule, a defined
+   all-Out-of-Scope empty-table case, a recency-preference rule between
+   two conflicting same-type sources, and extending the officeholder-name
+   hedge to track-record/enforcement-posture claims.
+**Options considered:** routing this through the automated candidate-search
+loop instead of hand-editing — rejected for a 7-item bundle from a manual
+review (the loop is built to test one small AI-proposed edit at a time, not
+a bundle); confirmed directly under `sharpen=True` instead, skipping the
+cheap `sharpen=False` exploration pass since these weren't AI-discovered
+candidates needing a first cheap screen.
+**Why:** every item was checked against the actual code before being
+accepted as real (e.g. grepped for date-injection and confirmed it never
+existed) rather than taken on faith from the review. `political_currency`
+and `stakeholder_specificity` stayed flat rather than improving — expected,
+since none of these 7 fixes targeted them; they remain the next weak spot
+to address, per the diagnosis in the entry below.
+
+## 2026-07-21 — Brief-eval tooling: 7-dimension judge, structured reporting, uncapped budget
+**Decision:** Extended `regina brief-improve`'s judge from 3 to 7 scored
+dimensions (added `prioritization`, `political_currency`,
+`stakeholder_specificity`, `tone_and_structure`) — the prompt already asked
+for all of these, but nothing had ever measured whether it delivered them.
+Diagnosed the two weakest baseline dimensions as `political_currency` (2.4/5)
+and `stakeholder_specificity` (2.2/5). Also overhauled how a run's output is
+consumed, after finding it genuinely hard to work with:
+- `project-management/brief-improve-log.md` — a persistent, accumulating log
+  (mirrors this file's own "newest at top" convention) instead of one-off
+  files per run; every entry includes a dimension-by-dimension table (not
+  just the blended score), wall-clock timing per round, and a real
+  before/after text diff of the actual generated brief — for every round
+  that produced output, accepted or rejected, not only the winner, since the
+  automated accept/reject bar is a heuristic a human should be able to
+  check, not a verdict to trust blindly.
+- Budget is uncapped by default. A single run's cost is already bounded by
+  the fixed 5-profile panel and `--rounds`; a cap's only real effect, found
+  live, was stopping mid-confirmation and discarding already-completed,
+  already-paid-for work for no actual savings.
+- Fixed that discarding bug independent of cap size: confirmation now
+  preserves whichever side (baseline/candidate) actually finished, instead
+  of throwing away a fully successful side because the other one failed.
+- Added retry-on-transient-error (429/5xx, matching the policy already used
+  by `HttpClient`/`VoyageEmbedder`) to the Anthropic client wrapper — a live
+  `529 Overloaded` had crashed a whole $2+ run with nothing saved, because
+  this was the one network client in the codebase without retry logic.
+**Options considered:** for the output-diff granularity, diffing whole
+paragraphs vs. named Markdown sections — sections won, since four of the
+seven judge dimensions map almost 1:1 onto specific sections (`## Bottom
+line`, `## Compliance exposure`, `## Political landscape & strategic play`),
+making a section-scoped diff both shorter and self-explanatory.
+**Why:** found and fixed via direct use of the tool itself today — the
+7-dimension upgrade immediately surfaced two real, previously-invisible
+weaknesses; the reporting overhaul was a direct response to "I don't have
+any structured way of engaging with this stuff"; the budget/retry fixes
+were found live, mid-session, when a real run hit both failure modes.
+
+## 2026-07-21 — Embedding provider: local BGE-small → Voyage (voyage-4-large)
+**Decision:** Swapped the default embedder from local `BAAI/bge-small-en-v1.5`
+(384-dim, free, English-only) to hosted Voyage `voyage-4-large` (1024-dim,
+multilingual). Migrated the full corpus (55,797 current-version passages) —
+required a `pgvector` column-dimension migration and a full re-embed backfill
+on the live database.
+**Options considered:** OpenAI `text-embedding-3-large` — rejected in favor
+of Voyage: Voyage's own published cross-domain benchmarks (including law)
+beat OpenAI's equivalent, Voyage's 200M free-token tier covers this corpus's
+entire backfill at $0 (OpenAI has no free tier), and Anthropic's own docs
+recommend Voyage as their embeddings partner, keeping one fewer vendor
+relationship for a project already all-in on Claude for generation. Also
+considered `voyage-law-2` (domain-tuned for legal text) — rejected because
+its multilingual support is undocumented/likely absent, while the corpus's
+real gap is specifically the French/German press and verbatim-debate content,
+not the EU legal text (which is already retrieved in English by design).
+**Why:** the local model's English-only training was a real, live gap — this
+corpus has genuine French/German content (an_verbatim/de_verbatim, FR/DE
+press) that an English-only embedder cannot meaningfully cross-match against
+an English query. Live-verified before committing to the migration: the
+same English sentence and its French translation scored 0.69 cosine
+similarity under Voyage vs. an unrelated topic at 0.21-0.23 — confirming
+real cross-lingual retrieval, which the prior model could not do at all.
+Hit two real operational snags during the migration, both fixed: Voyage's
+free-trial tier caps at 3 RPM/10K TPM until a payment method is added, and a
+handful of legacy passages (chunked before a same-day chunking-size fix)
+blew past Voyage's 120K-tokens-per-request cap, requiring token-aware
+sub-batching in `VoyageEmbedder` rather than fixed row-count batching.
+
 ## 2026-07-21 — Retrieval-pipeline audit fixes + sector/policy-area classification
 **Decision:** A full audit of both retrieval pipelines (legal-text and
 press/political-narrative) surfaced eight operational/data-quality flaws;
-all fixed except three explicitly excluded (embedding-model swap,
-jurisdiction expansion, new English-language press sources — each its own
-future initiative, not a retrieval-logic fix):
+all fixed except three explicitly excluded at the time (embedding-model
+swap, jurisdiction expansion, new English-language press sources — each its
+own future initiative, not a retrieval-logic fix). The embedding-model
+exclusion was later revisited the same day — see the Voyage migration entry
+above.
 1. Removed the dead `techcrunch_eu` feed from `_PRESS_SOURCE_KEYS` (its own
    `<lastBuildDate>` verified frozen since Feb 2026, server-side staleness).
 2. Added observability counters to `an_verbatim`'s `discover()` — no
