@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import datetime as dt
 
-from data.config import get_settings
+import httpx
+
+from data.config import Settings, get_settings
 from data.models import (
     Document,
     DocumentType,
@@ -18,7 +20,14 @@ from data.models import (
     LifecycleStage,
     Passage,
 )
-from etl.enrichment.embeddings import canon_passages, embed_pending, press_passages, semantic_search
+from etl.enrichment.embeddings import (
+    VoyageEmbedder,
+    canon_passages,
+    embed_pending,
+    get_embedder,
+    press_passages,
+    semantic_search,
+)
 
 DIM = get_settings().embedding_dim
 
@@ -364,3 +373,196 @@ def test_press_passages_only_the_good_doc_survives_all_filters(db_session):
     embed_pending(db_session, FakeEmbedder())
     hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
     assert [h["title"] for h in hits] == ["GOOD"]
+
+
+# --- min_score floor: semantic_search and press_passages ---------------------
+
+
+def _seed_min_score_docs(session) -> None:
+    """One clearly on-topic doc ('ai ai ai', cosine ~0.89 against query 'ai'
+    under FakeEmbedder's scheme) and one clearly off-topic doc ('fish fish
+    fish', cosine ~0.22) — far enough apart that a min_score of 0.5 cleanly
+    separates them regardless of exact float precision."""
+    source_id = _source_with_key(session, "min_score_source")
+    _press_doc(
+        session,
+        external_id="ON_TOPIC",
+        source_id=source_id,
+        date_document=dt.date.today() - dt.timedelta(days=1),
+        text="ai ai ai",
+    )
+    _press_doc(
+        session,
+        external_id="OFF_TOPIC",
+        source_id=source_id,
+        date_document=dt.date.today() - dt.timedelta(days=1),
+        text="fish fish fish",
+    )
+
+
+def test_semantic_search_min_score_none_returns_everything(db_session):
+    _seed_min_score_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = semantic_search(db_session, FakeEmbedder(), "ai", k=5)
+    assert {h["title"] for h in hits} == {"ON_TOPIC", "OFF_TOPIC"}
+
+
+def test_semantic_search_min_score_drops_weak_matches(db_session):
+    _seed_min_score_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = semantic_search(db_session, FakeEmbedder(), "ai", k=5, min_score=0.5)
+    titles = {h["title"] for h in hits}
+    assert "ON_TOPIC" in titles
+    assert "OFF_TOPIC" not in titles
+
+
+def test_press_passages_min_score_drops_weak_matches(db_session):
+    _seed_min_score_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    no_floor = press_passages(
+        db_session, FakeEmbedder(), "ai", {"min_score_source"}, days=90, k=5
+    )
+    assert {h["title"] for h in no_floor} == {"ON_TOPIC", "OFF_TOPIC"}
+
+    floored = press_passages(
+        db_session, FakeEmbedder(), "ai", {"min_score_source"}, days=90, k=5, min_score=0.5
+    )
+    titles = {h["title"] for h in floored}
+    assert "ON_TOPIC" in titles
+    assert "OFF_TOPIC" not in titles
+
+
+# --- VoyageEmbedder -----------------------------------------------------------
+
+class _FakeVoyageResponse:
+    def __init__(self, payload, status_code=200):
+        self._payload = payload
+        self.status_code = status_code
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            request = httpx.Request("POST", "http://x")
+            response = httpx.Response(self.status_code, request=request)
+            raise httpx.HTTPStatusError("error", request=request, response=response)
+
+    def json(self):
+        return self._payload
+
+
+class _FakeVoyageClient:
+    def __init__(self, responses):
+        self._responses = list(responses)
+        self.calls: list[dict] = []
+
+    def post(self, url, *, headers, json):
+        self.calls.append({"url": url, "headers": headers, "json": json})
+        resp = self._responses[len(self.calls) - 1]
+        if isinstance(resp, Exception):
+            raise resp
+        return resp
+
+
+def test_voyage_embedder_sends_model_input_and_auth_header():
+    client = _FakeVoyageClient([_FakeVoyageResponse({"data": [{"embedding": [1.0, 2.0]}]})])
+    embedder = VoyageEmbedder("voyage-4-large", 2, "test-key", client=client)
+    vectors = embedder.embed(["hello"])
+    assert vectors == [[1.0, 2.0]]
+    call = client.calls[0]
+    assert call["headers"]["Authorization"] == "Bearer test-key"
+    assert call["json"] == {"input": ["hello"], "model": "voyage-4-large", "output_dimension": 2}
+
+
+def test_voyage_embedder_splits_oversized_batch_by_token_budget():
+    # Regression: a batch of 128 row-count-sized passages blew past Voyage's
+    # 120K-tokens-per-request cap in production because a handful of legacy
+    # passages (chunked before chunking.py's MAX_CHARS ceiling existed) run
+    # to hundreds of thousands of characters. Two ~350K-char texts (~87.5K
+    # tokens each) plus a small one must split into two requests, not one —
+    # together (175K+) they'd blow past the 100K-token budget in one request.
+    big_a = "x" * 350_000
+    big_b = "y" * 350_000
+    small = "z" * 100
+    client = _FakeVoyageClient(
+        [
+            _FakeVoyageResponse({"data": [{"embedding": [1.0]}]}),
+            _FakeVoyageResponse({"data": [{"embedding": [2.0]}, {"embedding": [3.0]}]}),
+        ]
+    )
+    embedder = VoyageEmbedder("voyage-4-large", 1, "test-key", client=client)
+    vectors = embedder.embed([big_a, big_b, small])
+    assert vectors == [[1.0], [2.0], [3.0]]  # order preserved across the split
+    assert len(client.calls) == 2
+    assert client.calls[0]["json"]["input"] == [big_a]
+    assert client.calls[1]["json"]["input"] == [big_b, small]
+
+
+def test_voyage_embedder_preserves_order_across_multiple_inputs():
+    client = _FakeVoyageClient(
+        [_FakeVoyageResponse({"data": [{"embedding": [1.0]}, {"embedding": [2.0]}]})]
+    )
+    embedder = VoyageEmbedder("voyage-4-large", 1, "test-key", client=client)
+    assert embedder.embed(["a", "b"]) == [[1.0], [2.0]]
+
+
+def test_voyage_embedder_empty_input_makes_no_request():
+    client = _FakeVoyageClient([])
+    embedder = VoyageEmbedder("voyage-4-large", 1, "test-key", client=client)
+    assert embedder.embed([]) == []
+    assert client.calls == []
+
+
+def test_voyage_embedder_retries_on_429_then_succeeds():
+    request = httpx.Request("POST", "http://x")
+    rate_limited = httpx.HTTPStatusError(
+        "rate limited", request=request, response=httpx.Response(429, request=request)
+    )
+    client = _FakeVoyageClient(
+        [rate_limited, _FakeVoyageResponse({"data": [{"embedding": [1.0]}]})]
+    )
+    embedder = VoyageEmbedder("voyage-4-large", 1, "test-key", client=client)
+    assert embedder.embed(["x"]) == [[1.0]]
+    assert len(client.calls) == 2
+
+
+def test_voyage_embedder_does_not_retry_on_400():
+    request = httpx.Request("POST", "http://x")
+    bad_request = httpx.HTTPStatusError(
+        "bad request", request=request, response=httpx.Response(400, request=request)
+    )
+    client = _FakeVoyageClient([bad_request])
+    embedder = VoyageEmbedder("voyage-4-large", 1, "test-key", client=client)
+    try:
+        embedder.embed(["x"])
+        raise AssertionError("expected HTTPStatusError to propagate")
+    except httpx.HTTPStatusError:
+        pass
+    assert len(client.calls) == 1
+
+
+def test_get_embedder_picks_voyage_when_model_name_says_so(monkeypatch):
+    monkeypatch.setenv("VOYAGE_API_KEY", "test-key")
+    settings = Settings(embedding_model="voyage-4-large", embedding_dim=1024)
+    embedder = get_embedder(settings)
+    assert isinstance(embedder, VoyageEmbedder)
+    assert embedder.dim == 1024
+
+
+def test_get_embedder_requires_voyage_api_key(monkeypatch):
+    monkeypatch.delenv("VOYAGE_API_KEY", raising=False)
+    settings = Settings(embedding_model="voyage-4-large", embedding_dim=1024)
+    try:
+        get_embedder(settings)
+        raise AssertionError("expected RuntimeError for missing VOYAGE_API_KEY")
+    except RuntimeError:
+        pass
+
+
+def test_get_embedder_defaults_to_local():
+    # Settings(), not get_settings(): the latter reflects this project's real
+    # ambient .env, which now points at Voyage — the branch under test is
+    # "a non-voyage model name picks LocalEmbedder", independent of whatever
+    # the real environment happens to be configured for.
+    from etl.enrichment.embeddings import LocalEmbedder
+
+    settings = Settings(embedding_model="BAAI/bge-small-en-v1.5", embedding_dim=384)
+    assert isinstance(get_embedder(settings), LocalEmbedder)

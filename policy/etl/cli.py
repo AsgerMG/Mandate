@@ -22,7 +22,9 @@ from .adapters import ADAPTERS, ADAPTERS_BY_KEY
 from .http import HttpClient
 from .pipeline import ensure_source, run_adapter
 
-app = typer.Typer(help="Regina — regulatory intelligence analyst. Automated regulatory data collection.")
+app = typer.Typer(
+    help="Regina — regulatory intelligence analyst. Automated regulatory data collection."
+)
 log = structlog.get_logger(__name__)
 
 
@@ -102,6 +104,18 @@ def refresh(
         with session_scope() as session:
             n = embed_pending(session, get_embedder(settings))
         typer.echo(f"\nEmbedded {n} new passages — corpus is retrieval-ready.")
+
+        from etl.intelligence.llm import has_api_key
+
+        if has_api_key():
+            from etl.enrichment import classify_pending
+            from etl.intelligence.llm import get_client
+
+            with session_scope() as session:
+                n = classify_pending(session, get_client())
+            typer.echo(f"Classified {n} new documents by policy area/sector.")
+        else:
+            typer.echo("No ANTHROPIC_API_KEY set — skipping sector/policy-area classification.")
 
 
 @app.command()
@@ -273,10 +287,55 @@ def brief(
             typer.echo(f"  [{p['score']:.3f}] {p.get('celex') or p['title'][:60]}  {p['url']}")
 
 
+_BRIEF_LOG_PATH = "project-management/brief-improve-log.md"
+_BRIEF_LOG_HEADER = (
+    "# Brief-Improve Log\n\n"
+    "Chronological record of `regina brief-improve` runs — newest at the top. Each "
+    "entry is the full rendered report for that run (round-by-round scores, the "
+    "dimension breakdown, and a before/after diff of the actual generated text), "
+    "plus a pointer to that run's raw JSON sidecar for full-fidelity drill-down.\n\n"
+    "---\n\n"
+)
+
+
+def _brief_log_title(report: dict) -> str:
+    if report.get("stop_reason") == "budget_exhausted_mid_baseline":
+        return "(partial — budget exhausted)"
+    winner = report.get("winner") or {}
+    if winner.get("changed"):
+        return f"candidate accepted, aggregate {winner['improvement']:+}"
+    return "no candidate accepted"
+
+
+def _prepend_brief_log_entry(entry_markdown: str) -> None:
+    """Insert a new dated entry right after the log's header, ahead of every
+    prior entry — mirrors project-management/decision-log.md's own
+    "newest at the top" convention, but keyed by a full timestamp rather
+    than just a date since this tool gets re-run repeatedly in one day."""
+    try:
+        with open(_BRIEF_LOG_PATH) as fh:
+            existing = fh.read()
+    except FileNotFoundError:
+        existing = _BRIEF_LOG_HEADER
+    if "---\n\n" not in existing:
+        existing = _BRIEF_LOG_HEADER + existing
+    header, sep, rest = existing.partition("---\n\n")
+    with open(_BRIEF_LOG_PATH, "w") as fh:
+        fh.write(header + sep + entry_markdown.rstrip() + "\n\n" + rest)
+
+
 @app.command(name="brief-improve")
 def brief_improve(
     rounds: int = typer.Option(3, help="Max candidate-search rounds after the baseline."),
-    budget: float = typer.Option(6.0, help="Hard $ cap for this run; stops early if hit."),
+    budget: float = typer.Option(
+        None,
+        help=(
+            "Optional hard $ cap; stops early if hit. Omit for uncapped — a "
+            "single run's cost is already bounded by the fixed 5-profile panel "
+            "and --rounds, so a cap's only real effect is stopping mid-"
+            "confirmation and losing whichever side hadn't finished yet."
+        ),
+    ),
     out: str = typer.Option(
         None, "--out", help="Write the markdown report to this path instead of stdout."
     ),
@@ -287,10 +346,13 @@ def brief_improve(
     nothing it finds gets applied without you doing it yourself. See
     etl/brief_eval/ for the full mechanics (panel, judge, candidate search,
     budget guard)."""
-    from etl.brief_eval.report import render_report
+    import datetime as dt
+
+    from etl.brief_eval.report import render_log_entry, render_report
     from etl.brief_eval.search import run_search
 
-    typer.echo(f"Running baseline + up to {rounds} rounds, capped at ${budget:.2f}...\n")
+    budget_label = f"capped at ${budget:.2f}" if budget is not None else "uncapped"
+    typer.echo(f"Running baseline + up to {rounds} rounds, {budget_label}...\n")
 
     def _progress(line: str) -> None:
         # flush explicitly — stdout is block-buffered when redirected to a
@@ -304,13 +366,22 @@ def brief_improve(
     report = run_search(max_rounds=rounds, budget_usd=budget, on_progress=_progress)
     markdown = render_report(report)
 
+    if "error" in report:
+        # No API key: nothing ran, nothing was spent, nothing to log.
+        typer.echo(markdown)
+        return
+
     # Always save the full report as JSON — including every generated
     # brief's actual text, not just its score — so nothing from a real,
     # billed run is ever unverifiable after the fact. Not optional: a run
     # already cost real money whether or not this file gets looked at.
+    # Timestamped by default (not a fixed name) so repeated runs in one
+    # session stop overwriting each other's raw output.
     import json
 
-    raw_path = (out or "brief-improve-report") + ".json"
+    now = dt.datetime.now(dt.UTC)
+    default_stem = f"brief-improve-report-{now.strftime('%Y-%m-%dT%H-%M-%SZ')}"
+    raw_path = (out or default_stem) + ".json"
     with open(raw_path, "w") as fh:
         json.dump(report, fh, indent=2, default=str)
     typer.echo(f"Full raw output (every generated brief, verbatim) saved to {raw_path}")
@@ -321,6 +392,11 @@ def brief_improve(
         typer.echo(f"Summary report written to {out}")
     else:
         typer.echo(markdown)
+
+    title = f"{now.strftime('%Y-%m-%d %H:%M UTC')} — {_brief_log_title(report)}"
+    entry = render_log_entry(report, title) + f"\n\nFull raw output: `{raw_path}`\n"
+    _prepend_brief_log_entry(entry)
+    typer.echo(f"\nLogged this run to {_BRIEF_LOG_PATH}")
 
 
 @app.command()

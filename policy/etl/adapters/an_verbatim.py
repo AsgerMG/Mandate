@@ -166,6 +166,17 @@ class AnVerbatimAdapter(SourceAdapter):
             resp = self.http.get(listing_url, accept="text/html")
             all_paths |= set(_SITTING_HREF_RE.findall(resp.text))
         paths = sorted(p for p in all_paths if not p.endswith(".pdf"))
+        # Counters surfaced at the end of the run (see log.info below) so a
+        # future "why has this gone quiet" question is answerable from logs
+        # alone — a sitting is permanently retired the moment it's checked
+        # once (see class docstring / _newly_processed_sittings below),
+        # regardless of whether anything was actually yielded from it, and
+        # nothing previously distinguished "genuinely no tech-relevant
+        # content" from "something's silently broken" (a markup drift, a
+        # title-extraction miss) without a live re-fetch to check by hand.
+        sittings_checked = 0
+        sittings_zero_yield = 0
+        items_skipped_offtopic = 0
         for path in paths:
             if path in processed:
                 continue
@@ -178,6 +189,8 @@ class AnVerbatimAdapter(SourceAdapter):
                 # it's simply retried on the next run.
                 log.warning("an_verbatim_sitting_fetch_failed", path=path, exc_info=True)
                 continue
+            sittings_checked += 1
+            yielded_from_this_sitting = False
             for number, item in items.items():
                 ext_id = f"AN-{LEGISLATURE}-{path}-ITM-{number:03d}"
                 if ext_id in known_offtopic:
@@ -192,14 +205,24 @@ class AnVerbatimAdapter(SourceAdapter):
                 # unrelated speech.
                 if not item["title"] or not is_tech_relevant(item["title"]):
                     self._skipped.add(ext_id)
+                    items_skipped_offtopic += 1
                     continue
+                yielded_from_this_sitting = True
                 yield DocRef(
                     external_id=ext_id,
                     url=f"{SITTING_URL.format(path=path)}#{number}",
                     title=item["title"],
                     hint={"path": path, "number": number},
                 )
+            if not yielded_from_this_sitting:
+                sittings_zero_yield += 1
             self._newly_processed_sittings.add(path)
+        log.info(
+            "an_verbatim_discover_complete",
+            sittings_checked=sittings_checked,
+            sittings_zero_yield=sittings_zero_yield,
+            items_skipped_offtopic=items_skipped_offtopic,
+        )
 
     def fetch(self, ref: DocRef) -> RawDocument:
         path, number = ref.hint["path"], ref.hint["number"]

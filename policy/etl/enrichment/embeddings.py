@@ -11,11 +11,14 @@ run offline; populate vectors afterwards with ``regina embed``.
 from __future__ import annotations
 
 import datetime as dt
+import os
 from typing import Protocol
 
+import httpx
 import structlog
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 from data.config import Settings
 from data.models import Document, DocumentVersion, Passage, Source
@@ -42,9 +45,102 @@ class LocalEmbedder:
         return [v.tolist() for v in self._model.embed(list(texts))]
 
 
+def _is_retryable_voyage(exc: BaseException) -> bool:
+    """Same policy as etl/http.py's HttpClient: retry transient failures
+    (network errors, 429, 5xx) only — a 4xx like a bad model name or an
+    invalid key is permanent and must surface immediately, not retry-loop."""
+    if isinstance(exc, httpx.TransportError):
+        return True
+    if isinstance(exc, httpx.HTTPStatusError):
+        return exc.response.status_code == 429 or exc.response.status_code >= 500
+    return False
+
+
+class VoyageEmbedder:
+    """Voyage AI-backed embedder (hosted, paid) — a drop-in Embedder for a
+    corpus that has outgrown the local model's quality and, specifically,
+    its English-only training (this corpus has real French/German content
+    from an_verbatim/de_verbatim and FR/DE press).
+
+    Doesn't reuse etl/http.py's HttpClient: that client's per-request
+    politeness sleep exists for scraping courtesy on free public feeds, not
+    a paid, already-rate-limited embeddings API — and it has no seam for a
+    custom Authorization header. Retries the same transient failures it
+    does, via the same tenacity policy.
+    """
+
+    _ENDPOINT = "https://api.voyageai.com/v1/embeddings"
+    # Voyage's own cap for "large" models (e.g. voyage-4-large) is 120K tokens
+    # per request; this leaves margin since we estimate tokens from character
+    # count rather than real tokenization. A handful of this corpus's
+    # passages were chunked before chunking.py's MAX_CHARS ceiling existed
+    # and run to hundreds of thousands of characters — a fixed row-count
+    # batch (embed_pending's default 128) can contain enough of them to blow
+    # past the cap even though no single passage does, so batching here has
+    # to be token-aware, not just row-count-aware.
+    _MAX_TOKENS_PER_REQUEST = 100_000
+    _CHARS_PER_TOKEN_ESTIMATE = 4
+
+    def __init__(
+        self, model_name: str, dim: int, api_key: str, *, client: httpx.Client | None = None
+    ):
+        self._model = model_name
+        self.dim = dim
+        self._client = client or httpx.Client(timeout=60.0)
+        self._headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        if not texts:
+            return []
+        vectors: list[list[float]] = []
+        for batch in self._token_aware_batches(list(texts)):
+            data = self._request(batch)
+            vectors.extend(row["embedding"] for row in data["data"])
+        return vectors
+
+    def _token_aware_batches(self, texts: list[str]) -> list[list[str]]:
+        batches: list[list[str]] = []
+        current: list[str] = []
+        current_tokens = 0
+        for text in texts:
+            text_tokens = max(1, len(text) // self._CHARS_PER_TOKEN_ESTIMATE)
+            if current and current_tokens + text_tokens > self._MAX_TOKENS_PER_REQUEST:
+                batches.append(current)
+                current, current_tokens = [], 0
+            current.append(text)
+            current_tokens += text_tokens
+        if current:
+            batches.append(current)
+        return batches
+
+    @retry(
+        retry=retry_if_exception(_is_retryable_voyage),
+        stop=stop_after_attempt(4),
+        wait=wait_exponential(multiplier=1, min=1, max=20),
+        reraise=True,
+    )
+    def _request(self, texts: list[str]) -> dict:
+        resp = self._client.post(
+            self._ENDPOINT,
+            headers=self._headers,
+            json={"input": texts, "model": self._model, "output_dimension": self.dim},
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+
 def get_embedder(settings: Settings) -> Embedder:
-    """Return the configured embedder. Local by default; extend here for
-    hosted providers (e.g. a VoyageEmbedder keyed on the model name)."""
+    """Return the configured embedder. Local by default; a Voyage model name
+    (see .env.example) switches to the hosted VoyageEmbedder — VOYAGE_API_KEY
+    is read directly from the environment, matching how ANTHROPIC_API_KEY is
+    read directly by etl/intelligence/llm.py rather than through Settings."""
+    if settings.embedding_model.startswith("voyage-"):
+        api_key = os.environ.get("VOYAGE_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "EMBEDDING_MODEL is set to a Voyage model but VOYAGE_API_KEY is not set."
+            )
+        return VoyageEmbedder(settings.embedding_model, settings.embedding_dim, api_key)
     return LocalEmbedder(settings.embedding_model, settings.embedding_dim)
 
 
@@ -98,13 +194,25 @@ def _row_to_passage(row) -> dict:
         # canon_passages don't select it — legal text is recency-agnostic by
         # design, so they have no need for it). None for any passage from
         # those two paths.
-        "date_document": row.date_document.isoformat() if getattr(row, "date_document", None) else None,
+        "date_document": (
+            row.date_document.isoformat() if getattr(row, "date_document", None) else None
+        ),
     }
 
 
-def semantic_search(session: Session, embedder: Embedder, query: str, *, k: int = 5) -> list[dict]:
+def semantic_search(
+    session: Session, embedder: Embedder, query: str, *, k: int = 5, min_score: float | None = None
+) -> list[dict]:
     """Return the k passages closest in meaning to the query, each with the
-    citation context needed to quote it."""
+    citation context needed to quote it.
+
+    ``min_score`` (cosine similarity, 0-1), when given, drops any result
+    below the floor rather than backfilling with the next-best match — a
+    genuine "nothing here is relevant enough" can return fewer than k
+    passages, or none. Default None preserves the historical no-floor
+    behavior; canon_passages() deliberately has no equivalent parameter,
+    since every foundational act must get a guaranteed seat regardless of
+    score for the Compliance table to render an explicit verdict."""
     qvec = embedder.embed([query])[0]
     stmt = (
         select(
@@ -126,7 +234,10 @@ def semantic_search(session: Session, embedder: Embedder, query: str, *, k: int 
         .order_by("distance")
         .limit(k)
     )
-    return [_row_to_passage(row) for row in session.execute(stmt).all()]
+    results = [_row_to_passage(row) for row in session.execute(stmt).all()]
+    if min_score is not None:
+        return [r for r in results if r["score"] >= min_score]
+    return results
 
 
 def canon_passages(
@@ -185,6 +296,7 @@ def press_passages(
     *,
     days: int = 90,
     k: int = 5,
+    min_score: float | None = None,
 ) -> list[dict]:
     """Recency-filtered semantic search restricted to press/political-
     narrative sources (news outlets, institutional press releases,
@@ -200,7 +312,13 @@ def press_passages(
     separate press from other "other"-typed sources (verbatim debates,
     legislative-tracking feeds) — mirrors how _CANON_CELEX is a curated
     allowlist for the same reason (automatic classification wasn't precise
-    enough)."""
+    enough).
+
+    ``min_score`` matters more here than for semantic_search(): a weak
+    press match becomes weak, generic-sounding narrative color in the
+    brief, not just a slightly-off citation — see semantic_search()'s
+    docstring for the general floor semantics (drops results below the
+    floor rather than backfilling; None preserves no-floor behavior)."""
     cutoff = dt.date.today() - dt.timedelta(days=days)
     qvec = embedder.embed([query])[0]
     stmt = (
@@ -231,4 +349,7 @@ def press_passages(
         .order_by("distance")
         .limit(k)
     )
-    return [_row_to_passage(row) for row in session.execute(stmt).all()]
+    results = [_row_to_passage(row) for row in session.execute(stmt).all()]
+    if min_score is not None:
+        return [r for r in results if r["score"] >= min_score]
+    return results

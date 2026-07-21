@@ -19,7 +19,7 @@ from collections.abc import Iterable
 
 from data.models import Jurisdiction
 
-from .eurlex import EurLexAdapter, cellar_content_url
+from .eurlex import SPARQL_ENDPOINT, EurLexAdapter, cellar_content_url
 
 # CELEX → short name. Sector 3 = enacted law, sector 5 = proposals still in
 # (or abandoned from) procedure — both matter for "what applies vs. what's
@@ -131,6 +131,26 @@ KEY_ACTS: dict[str, str] = {
 }
 
 
+def _build_date_lookup_query(celex_codes: list[str]) -> str:
+    """SPARQL over Cellar for the work_date_document of a specific CELEX set.
+
+    A targeted VALUES lookup rather than ``eurlex.py``'s title/date-filtered
+    discovery query — that query's ``since`` filter is exactly what excludes
+    these decades-old foundational acts in the first place (see module
+    docstring), so it can't be reused as-is; this is the minimal query that
+    reuses the same ``work_date_document`` predicate for a fixed CELEX list.
+    """
+    values = " ".join(f'"{c}"' for c in celex_codes)
+    return f"""
+    PREFIX cdm: <http://publications.europa.eu/ontology/cdm#>
+    SELECT ?celex ?date WHERE {{
+      VALUES ?celex {{ {values} }}
+      ?work cdm:resource_legal_id_celex ?celex .
+      ?work cdm:work_date_document ?date .
+    }}
+    """
+
+
 class EurLexKeyActsAdapter(EurLexAdapter):
     key = "eurlex_key_acts"
     name = "EUR-Lex — foundational tech acts (curated full texts)"
@@ -141,14 +161,31 @@ class EurLexKeyActsAdapter(EurLexAdapter):
         # corpus regardless of age. Dedup/versioning happens in the pipeline.
         from .base import DocRef
 
+        dates = self._lookup_dates(list(KEY_ACTS))
         for celex in KEY_ACTS:
             yield DocRef(
                 external_id=celex,
                 url=cellar_content_url(celex),
                 # title deliberately unset: parse() extracts the official title
                 # from the document itself, then we prefix the short name.
-                hint={"celex": celex, "date": None, "type_uri": None},
+                hint={"celex": celex, "date": dates.get(celex), "type_uri": None},
             )
+
+    def _lookup_dates(self, celex_codes: list[str]) -> dict[str, str]:
+        # One batched query for the whole curated list (55 acts, well within
+        # Cellar's VALUES-clause limits) rather than one query per act — this
+        # is a fixed list checked on every run, not worth 55 round-trips.
+        # A missing act (e.g. Cellar has no work_date_document for a still-
+        # in-procedure proposal) just falls back to the prior None behavior —
+        # no worse than before this fix.
+        query = _build_date_lookup_query(celex_codes)
+        resp = self.http.get(
+            SPARQL_ENDPOINT,
+            accept="application/sparql-results+json",
+            params={"query": query, "format": "application/sparql-results+json"},
+        )
+        bindings = resp.json().get("results", {}).get("bindings", [])
+        return {row["celex"]["value"]: row["date"]["value"] for row in bindings}
 
     def parse(self, raw):
         doc = super().parse(raw)

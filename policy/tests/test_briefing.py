@@ -22,11 +22,13 @@ from data.models import (
 from etl.enrichment import embed_pending
 from etl.intelligence import CompanyProfile, build_documents, build_request, generate_briefing
 from etl.intelligence.briefing import (
+    _PRESS_SOURCE_KEYS,
     SYSTEM_PROMPT,
     _canon_issues,
     _cap_per_document,
     _competitive_query,
     _merge_passages,
+    _select_breadth_first,
     _sort_compliance_table,
     parse_response,
 )
@@ -216,6 +218,80 @@ def test_revise_instruction_verdict_consistency_defaults_to_fixing_prose():
     )
     assert default_fix_pos < monitor_fallback_pos
     assert "do not use a Monitor downgrade as a shortcut" in REVISE_INSTRUCTION
+
+
+def test_build_request_injects_todays_date():
+    # Without this, TRANSITIONAL APPLICABILITY's "has the successor's
+    # application date arrived yet" check has no anchor — the model's only
+    # fallback is its training cutoff, always wrong (always too early) for
+    # every brief run after that cutoff. Verified missing live 2026-07-21.
+    p = CompanyProfile(name="Acme")
+    req = build_request(p, [])
+    instruction = req["messages"][0]["content"][-1]["text"]
+    assert f"Today's date is {dt.date.today().isoformat()}" in instruction
+
+
+def test_system_prompt_may_ban_exempts_statutory_discretion():
+    # "The authority may impose a fine..." is a fact about the regime's own
+    # discretionary structure, not an analyst hedge — the blanket 'may' ban
+    # must not force the model to either break the rule or misreport
+    # genuine legal discretion as automatic.
+    assert "does not ban accurately reporting a source's own discretionary" in SYSTEM_PROMPT
+    assert "the authority may impose a fine of up to 4%" in SYSTEM_PROMPT.lower() or (
+        "may impose a fine" in SYSTEM_PROMPT
+    )
+
+
+def test_system_prompt_covers_directive_transposition():
+    # Distinct from predecessor/successor timing: a Directive isn't
+    # self-executing, and TRANSITIONAL APPLICABILITY previously said nothing
+    # about verdicting against a Directive's own text vs. a national
+    # transposition act (NIS2 is exactly this case, and is in canon).
+    assert "DIRECTIVE TRANSPOSITION" in SYSTEM_PROMPT
+    assert "not self-executing" in SYSTEM_PROMPT
+
+
+def test_system_prompt_allows_third_party_dynamic_row_alongside_out_of_scope():
+    # The Compliance table banned Out-of-Scope rows, but Prio 1(b)'s own
+    # worked example (a competitor's DMA dynamic) needs a Monitor+Prio-1 row
+    # for an instrument the company itself is genuinely out of scope for —
+    # previously no rule reconciled these two, now both rows are explicit.
+    assert "One exception, and only this one" in SYSTEM_PROMPT
+    assert "tracks the third party's dynamic, not the company's own scope" in SYSTEM_PROMPT
+
+
+def test_system_prompt_word_count_has_thin_footprint_exception():
+    # The 700-1000 word range previously had no carve-out for a genuinely
+    # thin-footprint company, in tension with SENTENCE-LEVEL SHARPNESS's own
+    # "delete any sentence that doesn't add a fact" rule.
+    assert "genuinely thin footprint" in SYSTEM_PROMPT
+    assert "not a floor to pad toward" in SYSTEM_PROMPT
+
+
+def test_system_prompt_action_bullets_name_a_concrete_action():
+    # A verdict-and-reason bullet alone is a diagnosis with no next step —
+    # this doesn't contradict the "no Next actions section" ban, which is
+    # about sequencing a roadmap, not naming what one specific row requires.
+    assert "the single concrete owned action it requires" in SYSTEM_PROMPT
+    assert "not the 'Next actions' sequencing plan banned below" in SYSTEM_PROMPT
+
+
+def test_system_prompt_bold_verdict_is_a_hard_rule():
+    assert "Always bold the Verdict cell's value itself" in SYSTEM_PROMPT
+
+
+def test_system_prompt_defines_all_out_of_scope_case():
+    assert "No instrument reaches In Scope or Monitor at this company's current" in SYSTEM_PROMPT
+
+
+def test_system_prompt_same_type_source_conflict_prefers_recency():
+    assert "two sources of the SAME type conflict" in SYSTEM_PROMPT
+    assert "prefer whichever source is more recent" in SYSTEM_PROMPT
+
+
+def test_system_prompt_track_record_hedge_matches_officeholder_hedge():
+    assert "track-record or enforcement-posture claim" in SYSTEM_PROMPT
+    assert "goes stale the same way an officeholder's name does" in SYSTEM_PROMPT
 
 
 # --- deterministic canon consistency check -----------------------------------
@@ -548,6 +624,55 @@ def test_cap_per_document_restores_breadth():
     assert len(swd_kept) == 3  # best three kept, order preserved
     assert [p["char_start"] for p in swd_kept] == [0, 1, 2]
     assert gdpr in capped and untitled in capped  # other docs untouched
+
+
+def test_select_breadth_first_survives_a_flat_slice_would_not():
+    # The composition this actually guards: _cap_per_document restores
+    # breadth in its OUTPUT, but generate_briefing used to slice that
+    # output with a bare [:k] afterward — which re-sorts nothing and just
+    # keeps the first k items in raw best-first order. Two dominant
+    # documents (A, B) with 3 capped passages each already fill 6 of an
+    # 8-slot budget before four other genuinely-relevant single-passage
+    # documents (C, D, E, F) even get a turn — a flat [:8] slice keeps
+    # only 2 of those 4 (whichever sort earliest), silently dropping the
+    # rest. Round-robin selection must keep all of them.
+    def doc(key: str, n: int, base_score: float) -> list[dict]:
+        return [
+            {"celex": key, "url": f"u-{key}", "char_start": i, "score": base_score - i * 0.01}
+            for i in range(n)
+        ]
+
+    # Already best-first overall, exactly as semantic_search would return —
+    # A's block first (highest scores), then B's, then the four singles.
+    passages = doc("A", 5, 0.95) + doc("B", 5, 0.85) + [
+        {"celex": "C", "url": "u-C", "char_start": 0, "score": 0.70},
+        {"celex": "D", "url": "u-D", "char_start": 0, "score": 0.65},
+        {"celex": "E", "url": "u-E", "char_start": 0, "score": 0.60},
+        {"celex": "F", "url": "u-F", "char_start": 0, "score": 0.55},
+    ]
+    capped = _cap_per_document(passages, max_per_doc=3)
+
+    # Prove the flat-slice failure mode this replaces actually would occur:
+    flat_slice = capped[:8]
+    flat_docs = {p["celex"] for p in flat_slice}
+    assert flat_docs == {"A", "B", "C", "D"}  # E and F silently dropped
+
+    selected = _select_breadth_first(capped, 8)
+    assert len(selected) == 8
+    assert {p["celex"] for p in selected} == {"A", "B", "C", "D", "E", "F"}
+
+
+def test_press_source_keys_are_all_registered_adapters():
+    # Catches typos and removed feeds immediately (does not catch a newly
+    # added feed nobody remembered to add to this allowlist — that's a
+    # process gap, not a testable one). Found and fixed one real case this
+    # way already: techcrunch_eu's own feed went stale server-side and was
+    # removed from this list — this test guards against silent drift going
+    # forward, in either direction.
+    from etl.adapters import ADAPTERS_BY_KEY
+
+    missing = _PRESS_SOURCE_KEYS - set(ADAPTERS_BY_KEY)
+    assert not missing, f"_PRESS_SOURCE_KEYS references unregistered adapter keys: {missing}"
 
 
 # --- full orchestration with fakes ------------------------------------------

@@ -17,8 +17,16 @@ from dataclasses import dataclass
 # spanning a boundary still retrieve. Measured in characters as a cheap proxy.
 TARGET_CHARS = 1500
 OVERLAP_CHARS = 200
+# No blank-line boundary exists inside a single oversized paragraph (a
+# run-on recital, an annex without blank-line breaks) — without a hard
+# ceiling the paragraph-atomic rule below produces one arbitrarily large
+# chunk, diluting its embedding across multiple distinct legal points.
+# Sentence-level sub-splitting kicks in only above this ceiling; a normal
+# paragraph up to 2x target is still kept whole, exactly as before.
+MAX_CHARS = TARGET_CHARS * 2
 
 _PARAGRAPH = re.compile(r"\n\s*\n")
+_SENTENCE_BOUNDARY = re.compile(r"(?<=[.?!])\s+")
 
 
 @dataclass(slots=True)
@@ -50,6 +58,20 @@ def chunk_text(
             spans.append((start, end))
         pos = end
 
+    # A paragraph past the hard ceiling gets sub-split on sentence
+    # boundaries before the normal greedy accumulation below ever sees it —
+    # so no single chunk this function produces can exceed MAX_CHARS,
+    # regardless of how the source document is formatted.
+    spans = [
+        sub_span
+        for start, end in spans
+        for sub_span in (
+            _split_oversized_span(text, start, end, target)
+            if end - start > MAX_CHARS
+            else [(start, end)]
+        )
+    ]
+
     chunks: list[Chunk] = []
     ordinal = 0
     cur_start: int | None = None
@@ -72,6 +94,34 @@ def chunk_text(
         chunks.append(_make(ordinal, text, cur_start, cur_end))
 
     return chunks
+
+
+def _split_oversized_span(text: str, start: int, end: int, target: int) -> list[tuple[int, int]]:
+    """Sub-split one paragraph span that exceeds MAX_CHARS, on sentence
+    boundaries, into pieces close to ``target`` size — the same greedy
+    accumulation chunk_text's main loop uses, just applied to sentence
+    starts instead of paragraph starts. Falls back to a raw character split
+    if the span has no sentence-ending punctuation at all, so nothing is
+    ever left unbounded regardless of content shape."""
+    boundaries = sorted(
+        {start, end} | {start + m.end() for m in _SENTENCE_BOUNDARY.finditer(text[start:end])}
+    )
+    if len(boundaries) <= 2:
+        return [(s, min(s + target, end)) for s in range(start, end, target)]
+
+    pieces: list[tuple[int, int]] = []
+    cur_start = boundaries[0]
+    cur_end = boundaries[0]
+    for b in boundaries[1:]:
+        if b - cur_start <= target:
+            cur_end = b
+        else:
+            pieces.append((cur_start, cur_end))
+            cur_start = cur_end
+            cur_end = b
+    if cur_end > cur_start:
+        pieces.append((cur_start, cur_end))
+    return pieces
 
 
 def _make(ordinal: int, text: str, start: int, end: int) -> Chunk:

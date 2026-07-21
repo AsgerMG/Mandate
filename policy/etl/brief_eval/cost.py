@@ -23,6 +23,9 @@ from __future__ import annotations
 
 from typing import Any
 
+import anthropic
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
+
 # $ per million tokens. This project only ever runs generation/judge/
 # candidate calls on claude-sonnet-5 (data/config.py's llm_model default) —
 # a single price table is enough; revisit if that changes.
@@ -71,9 +74,19 @@ class BudgetGuard:
     """set_context(...) labels every call made until the next set_context —
     the caller (search.py) sets it once before each phase (generation, judge,
     candidate-proposal) so the report can show where the money actually went,
-    instead of only a single opaque total."""
+    instead of only a single opaque total.
 
-    def __init__(self, max_usd: float) -> None:
+    ``max_usd=None`` means uncapped: exhausted() never fires. A hard cap's
+    only real job is to stop a run before it does something genuinely
+    unbounded (many candidate-search rounds); for a single, already-
+    bounded run (one round, a fixed 5-profile panel, one confirmation
+    pass), a cap either doesn't bind at all or binds mid-confirmation and
+    throws away already-completed, already-paid-for work for no actual
+    savings — that happened live 2026-07-21. Uncapped is the sane default;
+    pass a real number only when a run's cost genuinely isn't bounded in
+    advance (many rounds) and you want a stop-loss."""
+
+    def __init__(self, max_usd: float | None) -> None:
         self.max_usd = max_usd
         self.spent_usd = 0.0
         self.calls = 0
@@ -96,7 +109,21 @@ class BudgetGuard:
         bucket["cache_write_tokens"] += getattr(usage, "cache_creation_input_tokens", 0) or 0
 
     def exhausted(self) -> bool:
-        return self.spent_usd >= self.max_usd
+        return self.max_usd is not None and self.spent_usd >= self.max_usd
+
+
+def _is_retryable_anthropic(exc: BaseException) -> bool:
+    """Same policy as etl/http.py's HttpClient and VoyageEmbedder: retry
+    transient failures (network errors, 429, 5xx — including Anthropic's
+    529 'overloaded') only. A 4xx like a malformed request is permanent and
+    must surface immediately, not retry-loop. Found live 2026-07-21: an
+    unretried 529 crashed a whole $2+ run before anything got saved — see
+    _MeteredMessages.create()'s docstring."""
+    if isinstance(exc, anthropic.APIConnectionError):
+        return True
+    if isinstance(exc, anthropic.APIStatusError):
+        return exc.status_code == 429 or exc.status_code >= 500
+    return False
 
 
 class _MeteredMessages:
@@ -131,9 +158,23 @@ class _MeteredMessages:
         messages = kwargs.get("messages")
         if isinstance(messages, list):
             kwargs = {**kwargs, "messages": _strip_message_cache_control(messages)}
-        response = self._real.create(**kwargs)
+        response = self._create_with_retry(**kwargs)
         self._budget.record(response.usage)
         return response
+
+    # A run can be several dollars deep by the time a single transient 529
+    # lands — retrying here (rather than letting it propagate and crash the
+    # whole run with nothing saved, as it did live) is the fix, not a nice-
+    # to-have. Same backoff policy as etl/http.py's HttpClient and
+    # VoyageEmbedder, for consistency across the codebase's network clients.
+    @retry(
+        retry=retry_if_exception(_is_retryable_anthropic),
+        stop=stop_after_attempt(4),
+        wait=wait_exponential(multiplier=1, min=1, max=20),
+        reraise=True,
+    )
+    def _create_with_retry(self, **kwargs: Any) -> Any:
+        return self._real.create(**kwargs)
 
 
 def _strip_message_cache_control(messages: list[Any]) -> list[Any]:

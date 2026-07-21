@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 
 from bs4 import BeautifulSoup
 
@@ -82,3 +83,42 @@ def test_key_acts_parse_replaces_manifestation_filename_title():
     adapter = EurLexKeyActsAdapter(http=None, settings=None)
     doc = adapter.parse(raw)
     assert doc.title == KEY_ACTS[celex]
+
+
+class _FakeSparqlHttp:
+    def __init__(self, dated_celex: dict[str, str]):
+        self._payload = {
+            "results": {
+                "bindings": [
+                    {"celex": {"value": celex}, "date": {"value": date}}
+                    for celex, date in dated_celex.items()
+                ]
+            }
+        }
+
+    def get(self, url, **kw):
+        payload = self._payload
+
+        class R:
+            content = json.dumps(payload).encode()
+
+            def json(self):
+                return payload
+
+        return R()
+
+
+def test_key_acts_discover_populates_date_from_sparql_lookup():
+    # Regression: discover() used to hardcode hint={"date": None, ...} for
+    # every canon act, so date_document was always null downstream (see
+    # eurlex.py's parse(), which reads solely from this hint) — GDPR and
+    # every other foundational act never got a real publication date.
+    gdpr = "32016R0679"
+    http = _FakeSparqlHttp({gdpr: "2016-04-27"})
+    adapter = EurLexKeyActsAdapter(http=http, settings=None)
+    refs = {r.external_id: r for r in adapter.discover(None, None)}
+    assert refs[gdpr].hint["date"] == "2016-04-27"
+    # An act absent from the SPARQL response (e.g. Cellar has no
+    # work_date_document for it) falls back to None — no worse than before.
+    other = next(c for c in KEY_ACTS if c != gdpr)
+    assert refs[other].hint["date"] is None

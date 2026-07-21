@@ -60,12 +60,70 @@ BATCH_JUDGE_SCHEMA = {
                             "as unconfirmed)."
                         ),
                     },
+                    "prioritization": {
+                        "type": "integer",
+                        "description": (
+                            "Does Prio 1 in the Compliance table actually earn its place per "
+                            "the brief's own criteria (live enforcement exposure, a competitor "
+                            "dynamic creating commercial upside, or a looming change "
+                            "threatening material financial damage)? 1 (a Prio 1 row has none "
+                            "of those stakes — or a row that clearly has one of them is "
+                            "buried at Prio 2/3) to 5 (Prio 1 is reserved for instruments "
+                            "meeting one of the three criteria, nothing high-stakes is "
+                            "demoted, and nothing low-stakes is inflated to fill the top)."
+                        ),
+                    },
+                    "political_currency": {
+                        "type": "integer",
+                        "description": (
+                            "1 (Political landscape & strategic play reads as generic "
+                            "'monitor the file' filler — no live proceeding, ruling, or named "
+                            "dispute) to 5 (names a specific live tension or ongoing battle — "
+                            "an actual ruling, investigation, or contested provision — and "
+                            "gives a recommendation genuinely informed by THIS company's own "
+                            "stake in it, not a neutral institutional summary)."
+                        ),
+                    },
+                    "stakeholder_specificity": {
+                        "type": "integer",
+                        "description": (
+                            "1 (stakeholders named only as generic institutions — 'the "
+                            "European Commission', 'policymakers', 'regulators' — with "
+                            "nothing specific enough to contact) to 5 (names the actual "
+                            "working-level people or bodies — a rapporteur, a DG unit, a "
+                            "national regulator, a specific NGO or trade association — "
+                            "precisely enough that the reader could look them up in one "
+                            "search)."
+                        ),
+                    },
+                    "tone_and_structure": {
+                        "type": "integer",
+                        "description": (
+                            "1 (buries the bottom line, reads as a hedged legal memo with "
+                            "throat-clearing and analyst-jargon, or doesn't lead with an "
+                            "urgent-priorities table before the political-landscape "
+                            "narrative) to 5 (leads with a bottom-line verdict a founder/"
+                            "investor can act on immediately, zero hedging, and follows the "
+                            "priorities-table-then-political-landscape structure without "
+                            "padding)."
+                        ),
+                    },
                     "critique": {
                         "type": "string",
                         "description": "One or two sentences: the single biggest weakness.",
                     },
                 },
-                "required": ["profile", "relevance", "citation_quality", "scope_matching", "critique"],
+                "required": [
+                    "profile",
+                    "relevance",
+                    "citation_quality",
+                    "scope_matching",
+                    "prioritization",
+                    "political_currency",
+                    "stakeholder_specificity",
+                    "tone_and_structure",
+                    "critique",
+                ],
                 "additionalProperties": False,
             },
         },
@@ -73,6 +131,21 @@ BATCH_JUDGE_SCHEMA = {
     "required": ["scores"],
     "additionalProperties": False,
 }
+
+
+# The seven dimensions averaged into `score` — kept as one list so the
+# average and every fallback dict below stay in lockstep with the schema
+# above; add a dimension in both places or it silently drops out of the
+# average while still being schema-required.
+_SCORE_DIMENSIONS = [
+    "relevance",
+    "citation_quality",
+    "scope_matching",
+    "prioritization",
+    "political_currency",
+    "stakeholder_specificity",
+    "tone_and_structure",
+]
 
 
 def _score_from_llm(raw: dict[str, Any], canon_issue_count: int) -> dict[str, Any]:
@@ -87,11 +160,8 @@ def _score_from_llm(raw: dict[str, Any], canon_issue_count: int) -> dict[str, An
     # 0.05/issue the realistic 7-32 range (0.35-1.6) stays inside the cap with
     # headroom — differentiable again — and only re-saturates at ~40 issues.
     penalty = min(2.0, 0.05 * canon_issue_count)
-    scores["score"] = max(
-        1.0,
-        (scores["relevance"] + scores["citation_quality"] + scores["scope_matching"]) / 3
-        - penalty,
-    )
+    average = sum(scores[dim] for dim in _SCORE_DIMENSIONS) / len(_SCORE_DIMENSIONS)
+    scores["score"] = max(1.0, average - penalty)
     return scores
 
 
@@ -118,9 +188,7 @@ def judge_panel(
     if all(not (result.get("briefing") or "") for _, result in items):
         return [
             {
-                "relevance": 1,
-                "citation_quality": 1,
-                "scope_matching": 1,
+                **{dim: 1 for dim in _SCORE_DIMENSIONS},
                 "critique": "No briefing text produced (dry run or generation failure).",
                 "canon_issues": c,
                 "score": 1.0,
@@ -137,7 +205,10 @@ def judge_panel(
     settings = get_settings()
     response = client.messages.create(
         model=settings.llm_model,
-        max_tokens=2048,
+        # Bumped from 2048: seven scored dimensions plus a critique per
+        # profile, across a 5-profile panel, needs more room than the
+        # original three-dimension schema did.
+        max_tokens=4096,
         thinking={"type": "adaptive"},
         output_config={
             "effort": "low",
@@ -157,9 +228,7 @@ def judge_panel(
         if raw is None:
             results.append(
                 {
-                    "relevance": 1,
-                    "citation_quality": 1,
-                    "scope_matching": 1,
+                    **{dim: 1 for dim in _SCORE_DIMENSIONS},
                     "critique": "Judge response didn't include a score for this profile.",
                     "canon_issues": canon_counts[i],
                     "score": 1.0,

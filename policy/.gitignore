@@ -17,6 +17,13 @@ __pycache__/
 # Corpus export (materialized view of the DB; regenerate with `regina export`)
 exports/
 
+# brief-improve raw JSON sidecars and ad-hoc eval artifacts — full-fidelity
+# data for one specific run, regenerable by re-running `regina brief-improve`;
+# project-management/brief-improve-log.md is the curated, committed record.
+/brief-improve-report-*.json
+project-management/brief-eval-post-voyage.md
+project-management/brief-eval-post-voyage.md.json
+
 # Node / website
 node_modules/
 .next/

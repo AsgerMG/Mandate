@@ -398,6 +398,13 @@ def _run_refresh() -> None:
                     totals[adapter.key] = {"crashed": True}
         with session_scope() as s:
             totals["_embedded"] = {"passages": embed_pending(s, _embedder())}
+        if has_api_key():
+            from etl.enrichment import classify_pending
+
+            from .intelligence.llm import get_client
+
+            with session_scope() as s:
+                totals["_classified"] = {"documents": classify_pending(s, get_client())}
         _refresh_state["last_result"] = totals
     finally:
         _refresh_state["last_finished"] = dt.datetime.now(dt.UTC).isoformat()

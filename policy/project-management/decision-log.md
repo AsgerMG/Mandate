@@ -5,6 +5,56 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-21 — Retrieval-pipeline audit fixes + sector/policy-area classification
+**Decision:** A full audit of both retrieval pipelines (legal-text and
+press/political-narrative) surfaced eight operational/data-quality flaws;
+all fixed except three explicitly excluded (embedding-model swap,
+jurisdiction expansion, new English-language press sources — each its own
+future initiative, not a retrieval-logic fix):
+1. Removed the dead `techcrunch_eu` feed from `_PRESS_SOURCE_KEYS` (its own
+   `<lastBuildDate>` verified frozen since Feb 2026, server-side staleness).
+2. Added observability counters to `an_verbatim`'s `discover()` — no
+   confirmed bug, but closes a blind spot a live re-fetch had to resolve
+   manually.
+3. Fixed a cap→truncate breadth bug in `generate_briefing()`: capping
+   per-document crowding, then slicing to `k` by raw score, could silently
+   re-introduce the crowding the cap was built to prevent. New
+   `_select_breadth_first()` round-robins across documents instead.
+4. Added a hard ceiling (`MAX_CHARS`) + sentence-boundary sub-splitting to
+   `chunking.py` — an unbroken single paragraph (a run-on recital, an annex
+   with no blank lines) previously produced one unboundedly large chunk.
+5. Added a permanent regression test asserting every `_PRESS_SOURCE_KEYS`
+   entry maps to a registered adapter — catches the kind of drift #1 fixed.
+6. Added an optional `min_score` floor to `semantic_search()`/
+   `press_passages()` (deliberately not `canon_passages()` — canon acts
+   always get a guaranteed seat); wired a `0.3` floor into the press-
+   retrieval call only, where a weak match reads as narrative color, not
+   just an off-target citation.
+7. Fixed canon-act `date_document` gaps: `eurlex_key_acts.py`'s `discover()`
+   hardcoded `hint={"date": None, ...}` for all 55 curated acts (GDPR
+   included), bypassing the SPARQL-based date lookup the sibling `eurlex.py`
+   adapter uses. Added a batched `VALUES`-clause SPARQL query (one round
+   trip for the whole list) to populate real `work_date_document` values.
+8. Populated the previously-dead sector/policy-area tagging pipe:
+   `etl/pipeline.py`'s `_attach_vocab()` write-path already existed but was
+   never fed by any adapter. New `etl/enrichment/classification.py` —
+   `classify_pending()`, mirroring `embed_pending()`'s loop-while-untagged
+   pattern — uses a forced tool-call (`questions.py`'s pattern) on Haiku
+   4.5 to tag each untagged document against the small `POLICY_AREAS`/
+   `SECTORS` vocab from `data/seeds.py`. Wired into `regina refresh` and
+   `/api/refresh`, right after `embed_pending()`, gated on `has_api_key()`.
+**Options considered:** for #7, hand-backfilling the well-known publication
+dates (rejected in favor of the SPARQL fix — automatic and correct for all
+55 acts going forward, not just the ones checked today). For #8, Sonnet 5
+(the project default) instead of Haiku — rejected: simple category-picking,
+not legal reasoning, and cost matters at corpus scale (~$2 for a full
+~2,687-document backfill at Haiku's rates vs. several times that on Sonnet).
+**Why:** everything above was verified against real code and, where
+possible, live data (the dead feed was fetched live; `an_verbatim`'s parsing
+was confirmed structurally intact against a real sitting page) — this was a
+fix list grounded in evidence, not speculation, scoped explicitly to exclude
+anything requiring a new embedding-API decision or new data-source vetting.
+
 ## 2026-07-20 — Brief self-improvement tool (`regina brief-improve`)
 **Decision:** Built an on-demand CLI tool (`etl/brief_eval/`) that tests
 candidate edits to `briefing.py`'s `SYSTEM_PROMPT` against a fixed 5-profile

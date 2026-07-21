@@ -17,7 +17,9 @@ winning candidate for real is a separate, human decision.
 from __future__ import annotations
 
 import difflib
-from typing import Any, Callable
+import time
+from collections.abc import Callable
+from typing import Any
 
 import structlog
 
@@ -27,7 +29,7 @@ from etl.intelligence import briefing as briefing_module
 from etl.intelligence.llm import get_client, has_api_key
 
 from .cost import BudgetExceeded, BudgetGuard, MeteredClient
-from .judge import judge_panel
+from .judge import _SCORE_DIMENSIONS, judge_panel
 from .panel import EVAL_PANEL
 from .recency import recency_coverage
 
@@ -66,6 +68,20 @@ CANDIDATE_SCHEMA = {
 }
 
 
+def _dimension_means(profile_results: list[dict]) -> dict[str, float]:
+    """Mean of each judge dimension (plus canon_issues) across the panel —
+    the aggregate `score` blends these into one number, but a candidate can
+    trade one dimension for another (e.g. sharper tone, weaker citations)
+    invisibly if only the blend is ever reported."""
+    if not profile_results:
+        return {}
+    keys = [*_SCORE_DIMENSIONS, "canon_issues"]
+    return {
+        key: round(sum(r["judge"][key] for r in profile_results) / len(profile_results), 3)
+        for key in keys
+    }
+
+
 def _run_panel(
     session,
     embedder,
@@ -74,6 +90,7 @@ def _run_panel(
     on_progress: Callable[[str], None] | None = None,
     sharpen: bool = False,
 ) -> dict[str, Any]:
+    start = time.perf_counter()
     generated: list[tuple[Any, dict]] = []
     all_retrieved_celex: set[str] = set()
     for i, profile in enumerate(EVAL_PANEL, start=1):
@@ -116,7 +133,7 @@ def _run_panel(
             "briefing": result.get("briefing"),
             "citations": result.get("citations", []),
         }
-        for (profile, result), score in zip(generated, scores)
+        for (profile, result), score in zip(generated, scores, strict=True)
     ]
     if on_progress:
         on_progress(
@@ -132,7 +149,9 @@ def _run_panel(
     return {
         "profiles": profile_results,
         "aggregate": round(aggregate, 3),
+        "dimension_means": _dimension_means(profile_results),
         "recency": recency_coverage(session, all_retrieved_celex),
+        "elapsed_seconds": round(time.perf_counter() - start, 1),
     }
 
 
@@ -178,12 +197,16 @@ def _propose_candidate(client, current_prompt: str, worst_round: dict, budget) -
     if similarity < _MIN_SIMILARITY:
         log.warning("brief_eval_candidate_rejected_too_large", similarity=round(similarity, 3))
         return None
+    # The profile the rationale was actually written against — report.py
+    # anchors its before/after output diff on this profile by default,
+    # rather than guessing from score deltas alone.
+    candidate["targeted_profile"] = worst_profile["profile"]
     return candidate
 
 
 def run_search(
     max_rounds: int = 3,
-    budget_usd: float = 6.0,
+    budget_usd: float | None = None,
     on_progress: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
     """Entry point for `regina brief-improve`. Returns the full report as a
@@ -275,7 +298,12 @@ def run_search(
                 log.warning("brief_eval_stopped_on_budget", round=round_num, detail=str(exc))
                 stop_reason = "budget_exhausted"
                 rounds.append(
-                    {"round": round_num, "candidate": None, "accepted": False, "reason": stop_reason}
+                    {
+                        "round": round_num,
+                        "candidate": None,
+                        "accepted": False,
+                        "reason": stop_reason,
+                    }
                 )
                 break
 
@@ -297,8 +325,9 @@ def run_search(
                     **trial,
                 }
             )
+            delta_vs_best = trial["aggregate"] - best["aggregate"]
             _progress(
-                f"  -> aggregate {trial['aggregate']}/5 ({trial['aggregate'] - best['aggregate']:+}), "
+                f"  -> aggregate {trial['aggregate']}/5 ({delta_vs_best:+}), "
                 f"{'ACCEPTED' if accepted else 'discarded'} "
                 f"(spent so far: ${budget.spent_usd:.2f})\n"
             )
@@ -317,6 +346,15 @@ def run_search(
             # this only fires when something was actually accepted, not on
             # every round.
             _progress("\nConfirming with sharpen=True (the real production path)...")
+            # confirm_baseline/confirm_candidate are set as each side actually
+            # completes — a failure on the candidate side (budget or a
+            # transient error surviving retries) must not throw away the
+            # baseline side's already-completed, already-paid-for result.
+            # That happened live 2026-07-21: a $2.86 fully-finished
+            # confirmation-baseline run was silently discarded because the
+            # old code only ever saved confirmation as an all-or-nothing pair.
+            confirm_baseline: dict[str, Any] | None = None
+            confirm_candidate: dict[str, Any] | None = None
             try:
                 _progress("  baseline:")
                 confirm_baseline = _run_panel(
@@ -346,7 +384,14 @@ def run_search(
                 )
             except BudgetExceeded as exc:
                 _progress(f"  -> confirmation skipped: budget exhausted ({exc})\n")
-                confirmation = {"skipped": True, "reason": "budget_exhausted"}
+                confirmation = {
+                    "skipped": True,
+                    "reason": "budget_exhausted",
+                    # Whichever side(s) actually finished before the failure —
+                    # None if a side never started or never completed.
+                    "baseline": confirm_baseline,
+                    "candidate": confirm_candidate,
+                }
 
     # Belt-and-suspenders: guarantee the module is never left mutated after
     # run_search() returns, regardless of which branch above ran last.

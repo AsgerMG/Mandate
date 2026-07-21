@@ -14,8 +14,10 @@ retrieval + request assembly + citation parsing are all testable without a key.
 
 from __future__ import annotations
 
+import datetime as dt
 import re
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from sqlalchemy.orm import Session
 
@@ -41,11 +43,16 @@ _CANON_CELEX = list(KEY_ACTS)
 # political-narrative-relevant, not a fixed classification.
 _PRESS_SOURCE_KEYS = {
     # General tech-policy journalism
-    "netzpolitik", "sifted", "techcrunch_eu", "next_ink", "heise_news",
+    "netzpolitik", "sifted", "next_ink", "heise_news",
     "golem_news", "irights_info", "01net", "numerama", "lemonde_pixels",
     "siecledigital", "contexte_articles", "latribune", "euobserver",
     "gnews_eu_tech", "gnews_de_tech", "gnews_fr_tech", "verfassungsblog",
     "eu_law_live", "eu_law_analysis", "stiftung_datenschutz",
+    # "techcrunch_eu" excluded 2026-07-21 — verified live: the feed's own
+    # <lastBuildDate> is frozen at 17 Feb 2026 (an external, server-side
+    # staleness, not our adapter). Registered in feeds.py but dormant; if
+    # TechCrunch's feed ever recovers, re-add here — no other code change
+    # needed since discover()'s since-filter already handles it correctly.
     # Official institutional/stakeholder press releases — kept in scope
     # since they directly serve "which stakeholders are at play"
     "ec_press", "ec_digital", "ecb_press", "edpb_news", "cnil_news",
@@ -61,6 +68,13 @@ _PRESS_SOURCE_KEYS = {
     "ep_verbatim", "an_verbatim", "de_verbatim",
 }
 _PRESS_RECENCY_DAYS = 90
+# A weak press match becomes weak, generic-sounding narrative color in the
+# brief (not just a slightly-off citation, as a weak legal-text match would
+# be) — worth a floor here even without the calibration data to justify one
+# for the main legal-text retrieval. 0.3 is a starting point, not an
+# empirically-derived cutoff — real press scores observed so far run
+# ~0.7-0.76 for genuinely on-topic matches; revisit once more runs exist.
+_PRESS_MIN_SCORE = 0.3
 
 SYSTEM_PROMPT = (
     "You are a senior public-affairs analyst producing a regulatory intelligence brief for "
@@ -92,6 +106,18 @@ SYSTEM_PROMPT = (
     "text and belongs in the main Compliance table if the company's product is in "
     "scope, with the successor's future application date named as what to plan for, not "
     "in the Out of Scope appendix as if it no longer matters.\n\n"
+    "DIRECTIVE TRANSPOSITION is a separate question from predecessor/successor timing "
+    "above, and just as easy to get wrong: an EU Directive (unlike a Regulation) is not "
+    "self-executing — it binds through each Member State's own national implementing "
+    "act, and transposition timing and substance both vary by Member State, often years "
+    "past the nominal deadline. When the retrieved source for a Directive-type "
+    "instrument (e.g. NIS2) is the Directive's own EU-level text with no retrieved "
+    "national transposition act, verdict against the Directive's own text — its "
+    "substantive obligations are the reliable signal of where national law is heading "
+    "even before or during transposition — but name the transposition gap explicitly in "
+    "Why/Trigger ('binds via national transposition; confirm the implementing act in "
+    "the company's Member State') rather than treating the EU text as if it were "
+    "itself the directly binding national rule.\n\n"
     "CITATION HYGIENE: cite sources for facts, never paste their wording into your "
     "sentence unmarked. Every cited span must either be (a) fully paraphrased in your "
     "own words with the citation marker at the end, or (b) a genuine quotation wrapped "
@@ -119,8 +145,13 @@ SYSTEM_PROMPT = (
     "quote the single most load-bearing phrase with quotation marks and drop the rest.\n\n"
     "BE DECISIVE. Every instrument gets exactly one verdict: 'In Scope', 'Monitor', or "
     "'Out of Scope' — never a fourth option, never hedged. Never write 'unclear', "
-    "'may', 'possibly', 'TBD', 'not defined', or hedge in prose. If the evidence is "
-    "thin, commit to the most likely call and make 'confirm the underlying text' an "
+    "'may', 'possibly', 'TBD', 'not defined', or hedge in prose about YOUR OWN verdict "
+    "or analysis. This does not ban accurately reporting a source's own discretionary "
+    "language about itself — 'the authority may impose a fine of up to 4% of global "
+    "turnover' is a fact about the regime's structure, not an analyst hedge, and must "
+    "be reported as the regulation actually states it; only your own uncertainty about "
+    "the verdict is banned, never a source's genuine legal discretion. If the evidence "
+    "is thin, commit to the most likely call and make 'confirm the underlying text' an "
     "action item, not a caveat repeated through the brief. ONE deterministic "
     "exception: when a verdict hinges on a quantitative threshold, role fact, or "
     "activity fact the profile does not answer (an employee/turnover line, a user "
@@ -153,12 +184,18 @@ SYSTEM_PROMPT = (
     "it genuinely is not settled, the table verdict itself must be Monitor with "
     "the hinge named — never park the hedge in a later section while the table "
     "quietly asserts a flat verdict it hasn't earned.\n\n"
-    "Length: 700-1000 words total, excluding tables and bullet lists. Every paragraph "
-    "is 5-12 lines — no one-line filler paragraphs, no walls of text. Target the whole "
-    "brief, main body plus appendix, at roughly 2-2.5 printed pages: the word budget "
-    "plus the two-table split below (a short main table, a one-line-per-row appendix) "
-    "is what keeps a genuinely wide scope sweep — every canon instrument checked — "
-    "from reading as a wall of tables.\n\n"
+    "Length: 700-1000 words total, excluding tables and bullet lists, for a typical "
+    "mid-complexity company. This is a target shaped by keeping a genuinely wide scope "
+    "sweep — every canon instrument checked — from reading as a wall of tables, not a "
+    "floor to pad toward: a company with a genuinely thin footprint (2-3 applicable "
+    "instruments, no live competitor angle) should run shorter, honestly, rather than "
+    "padding sentences that add no fact to hit the range; a genuinely wide-scope company "
+    "(e.g. a fintech touching MiCA, DORA, GDPR, NIS2 and eIDAS2 at once) may run longer "
+    "rather than cutting real, cited facts to stay under it. Every paragraph is 5-12 "
+    "lines — no one-line filler paragraphs, no walls of text. Target the whole brief, "
+    "main body plus appendix, at roughly 2-2.5 printed pages for that typical case: the "
+    "word budget plus the two-table split below (a short main table, a one-line-per-row "
+    "appendix) is what keeps the sweep from reading as a wall of tables.\n\n"
     "Structure, exactly these sections, in Markdown:\n"
     "# Regulatory Intelligence Brief: <company name>\n"
     "A single bold sentence immediately under the title — the headline verdict: what "
@@ -168,8 +205,17 @@ SYSTEM_PROMPT = (
     "Written for a founder/investor skimming on a phone, not reading prose. Two "
     "bullet types, always in this order:\n"
     "ACTION bullets first — exactly one bullet per Prio 1 row in the Compliance "
-    "exposure table below, and nothing else: state that row's verdict and why it's "
-    "Prio 1, not a re-derivation of the table cell. Never include a Prio 2 or Prio 3 "
+    "exposure table below, and nothing else: state that row's verdict, why it's Prio "
+    "1, and — when the retrieved sources support one — the single concrete owned "
+    "action it requires (a specific compliance step, registration, filing, or "
+    "deadline), not just a re-derivation of the table cell. A verdict-and-reason alone "
+    "is a diagnosis with no next step; many readers of this brief have no in-house "
+    "compliance function to translate a diagnosis into an action themselves, so naming "
+    "one is not optional polish — only fall back to verdict-and-reason alone when no "
+    "concrete action is genuinely supportable from the sources, never invent one to "
+    "fill the slot. This is one action tied to one row, not the 'Next actions' "
+    "sequencing plan banned below — naming what THIS row requires is not the same as "
+    "sequencing a roadmap across all of them. Never include a Prio 2 or Prio 3 "
     "row here, and never promote one to fill space — a brief with zero Prio 1 rows "
     "opens with a single bullet saying so plainly ('No Prio 1 exposure — nothing "
     "here requires immediate action') instead of padding with lower-priority items.\n"
@@ -208,7 +254,17 @@ SYSTEM_PROMPT = (
     "Travel Directive for a travel business, the Consumer Rights Directive for a B2C "
     "seller). Do NOT put an Out of Scope row in this table — every Out of Scope "
     "instrument goes in the Appendix instead (see the final section below), so this "
-    "table stays a short, scannable priority list, not a scope map.\n"
+    "table stays a short, scannable priority list, not a scope map. One exception, and "
+    "only this one: an instrument the company is itself genuinely Out of Scope for "
+    "(its own status is a settled fact, e.g. definitively not a gatekeeper) can still "
+    "get a Monitor row here if a NAMED third party's compliance dynamic under that same "
+    "instrument is strategically relevant per Prio 1(b) below — that row tracks the "
+    "third party's dynamic, not the company's own scope, and its Why/Trigger cell must "
+    "say so explicitly ('not a gatekeeper itself; tracking Google's Art. 6(5) "
+    "compliance for the distribution opening it creates'). The company's own settled "
+    "Out-of-Scope status for that same instrument still also gets its normal Appendix "
+    "row — the two rows answer two different questions about the same instrument, not "
+    "a contradiction.\n"
     "The Prio column ranks where the company's attention and public-affairs effort "
     "goes, on a 1-3 scale — it is an attention ranking, deliberately separate from the "
     "legal Verdict (a file can be verdict-Monitor yet Prio 1, like a live enforcement "
@@ -227,9 +283,16 @@ SYSTEM_PROMPT = (
     "**Prio 3** — peripheral, conditional, or long-dated: monitoring only, nothing to "
     "resource this year.\n"
     "Order rows by Prio ascending (all 1s first); within the same Prio, In Scope "
-    "before Monitor. Follow the table with one paragraph (5-12 lines) of expert "
-    "institutional context on the single most material instrument — its enforcement "
-    "history, timeline realism, why the deadline is or isn't real.\n"
+    "before Monitor. Always bold the Verdict cell's value itself ('**In Scope**', "
+    "'**Monitor**') — not just in the rule text above, in every row you write. If "
+    "genuinely no instrument clears In Scope or Monitor (a pre-launch or extremely "
+    "thin-footprint company), do not render an empty table with just headers — replace "
+    "this whole subsection with one line stating that plainly ('No instrument reaches "
+    "In Scope or Monitor at this company's current footprint — see the Out of Scope "
+    "register below for the full scoping record'); the Appendix still does its normal "
+    "exhaustive job regardless. Otherwise, follow the table with one paragraph (5-12 "
+    "lines) of expert institutional context on the single most material instrument — "
+    "its enforcement history, timeline realism, why the deadline is or isn't real.\n"
     "## Political landscape & strategic play — the who-runs-what map and the "
     "engagement agenda, merged. This is the section the company's public-affairs team "
     "will rework by hand with client context you do not have — so fill it with "
@@ -248,7 +311,13 @@ SYSTEM_PROMPT = (
     "supply them. Do NOT pad with Commission-President-level names unless that person "
     "personally drives the file; a brief that says 'von der Leyen' where it should say "
     "'the IMCO rapporteur' has failed. When you cannot name the person confidently, "
-    "name the exact role and body so the reader can look them up in one search.\n"
+    "name the exact role and body so the reader can look them up in one search. The "
+    "same hedge applies to a track-record or enforcement-posture claim, not just a "
+    "name: 'known for aggressive enforcement' or 'has signaled a lighter touch' goes "
+    "stale the same way an officeholder's name does — ground it in a specific past "
+    "action or statement from the retrieved sources or well-established public "
+    "knowledge rather than asserting a general reputation as a settled, unchanging "
+    "fact.\n"
     "A source labelled '[Jurisdiction · Verbatim debate]' is a plenary floor-debate "
     "transcript — a named MEP/MP/deputy's own recorded remarks, with their party or "
     "political group, not a press paraphrase of what someone might think. When one is "
@@ -361,7 +430,12 @@ SYSTEM_PROMPT = (
     "see the Political landscape section below for how to use it. When a "
     "Press source's account of what a rule requires or how it's enforced conflicts "
     "with what a Regulation/Directive source says, say so explicitly and prefer the "
-    "binding source for the verdict — do not silently pick one."
+    "binding source for the verdict — do not silently pick one. The same discipline "
+    "applies when two sources of the SAME type conflict — two Press articles giving "
+    "different enforcement figures, or a pre- and post-amendment version of the same "
+    "legal text: prefer whichever source is more recent by its own stated or evident "
+    "date, and say so explicitly rather than silently picking one or blending both as "
+    "if they agreed."
 )
 
 
@@ -430,6 +504,12 @@ def build_request(profile: CompanyProfile, passages: list[dict]) -> dict[str, An
     settings = get_settings()
     scoping = "\n".join(f"- {line}" for line in profile.scoping_lines())
     instruction = (
+        # Without this, TRANSITIONAL APPLICABILITY's whole "has the
+        # successor's application date arrived yet" check has no anchor —
+        # the model's only fallback would be its training cutoff, which is
+        # always wrong (always too early) for every brief generated after
+        # that cutoff. Found live 2026-07-21: never injected anywhere.
+        f"Today's date is {dt.date.today().isoformat()}.\n"
         f"Company: {profile.name}\n"
         f"Profile: {profile.description or '(none provided)'}\n"
         f"Sectors: {', '.join(profile.sectors) or '(unspecified)'}\n"
@@ -830,6 +910,44 @@ def _cap_per_document(passages: list[dict], *, max_per_doc: int = 3) -> list[dic
     return kept
 
 
+def _select_breadth_first(passages: list[dict], k: int) -> list[dict]:
+    """Select up to k passages, round-robin across documents rather than a
+    flat best-score truncation.
+
+    _cap_per_document already bounds how many passages any one document can
+    contribute — but a plain ``[:k]`` slice applied afterward can still
+    re-concentrate on whichever 2-3 documents happen to rank highest on raw
+    similarity: capping controls crowding within the pre-slice set, but
+    doesn't survive a subsequent truncation by score alone. This restores
+    what _cap_per_document's own docstring already claims — breadth up to
+    k distinct documents, not just up to the cap."""
+    groups: dict[str, list[dict]] = {}
+    order: list[str] = []
+    for p in passages:
+        key = str(p.get("celex") or p.get("url") or p.get("title"))
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(p)
+    # Groups are already internally best-first (input is best-first); order
+    # the groups themselves by their own best passage's score, descending.
+    order.sort(key=lambda key: groups[key][0].get("score", 0.0), reverse=True)
+    selected: list[dict] = []
+    round_idx = 0
+    while len(selected) < k:
+        added_this_round = False
+        for key in order:
+            if round_idx < len(groups[key]):
+                selected.append(groups[key][round_idx])
+                added_this_round = True
+                if len(selected) >= k:
+                    break
+        if not added_this_round:
+            break
+        round_idx += 1
+    return selected
+
+
 def _attr(obj: Any, key: str, default=None):
     """Read a field whether obj is an SDK model or a plain dict (for tests)."""
     if isinstance(obj, dict):
@@ -921,7 +1039,12 @@ def generate_briefing(
     # document can win most of the top-k on raw similarity (see
     # _cap_per_document); the over-fetch backfills the capped slots with the
     # next-best passages from OTHER documents instead of just shrinking k.
-    passages = _cap_per_document(semantic_search(session, embedder, query, k=k * 2))[:k]
+    # _select_breadth_first (not a flat [:k] slice) is what makes that
+    # restored breadth actually survive to the final passage set — see its
+    # own docstring for why a plain score-sorted slice would undo the cap.
+    passages = _select_breadth_first(
+        _cap_per_document(semantic_search(session, embedder, query, k=k * 2)), k
+    )
     # The competitive angle gets its own retrieval pass: blended into the main
     # query it reliably loses to the profile's compliance signal (an AI-using
     # company's query retrieves AI Act content, and a named rival's antitrust
@@ -946,7 +1069,13 @@ def generate_briefing(
     # the legal grounding the rest of the brief depends on.
     press = _cap_per_document(
         press_passages(
-            session, embedder, query, _PRESS_SOURCE_KEYS, days=_PRESS_RECENCY_DAYS, k=5
+            session,
+            embedder,
+            query,
+            _PRESS_SOURCE_KEYS,
+            days=_PRESS_RECENCY_DAYS,
+            k=5,
+            min_score=_PRESS_MIN_SCORE,
         ),
         max_per_doc=2,
     )
