@@ -351,6 +351,35 @@ FEED_SPECS: list[FeedSpec] = [
         language="fr",
         filter_tech=True,
     ),
+    # --- EU: political-currency sources (verified live 2026-07-22) ------------
+    FeedSpec(
+        key="techpolicy_press",
+        name="Tech Policy Press",
+        url="https://www.techpolicy.press/rss/feed.xml",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.OTHER,
+    ),
+    FeedSpec(
+        key="dg_comp_news",
+        name="DG COMP news (EU competition authority)",
+        url="https://ec.europa.eu/newsroom/comp/feed?item_type_id=1066&lang=en&orderby=item_date",
+        jurisdiction=Jurisdiction.EU,
+    ),
+    FeedSpec(
+        key="dg_grow_news",
+        name="DG GROW news (Internal Market, Industry, Entrepreneurship and SMEs)",
+        # Confirmed live via the site's own News page — the plan's original
+        # node/2046 guess 404s; node/2 is the current News feed.
+        url="https://single-market-economy.ec.europa.eu/node/2/rss_en",
+        jurisdiction=Jurisdiction.EU,
+    ),
+    FeedSpec(
+        key="politico_eu",
+        name="Politico Europe",
+        url="https://www.politico.eu/feed/",
+        jurisdiction=Jurisdiction.EU,
+        filter_tech=True,
+    ),
     # --- France ---------------------------------------------------------------
     FeedSpec(
         key="cnil_news",
@@ -465,6 +494,23 @@ FEED_SPECS: list[FeedSpec] = [
         key="lemonde_pixels",
         name="Le Monde — Pixels (digital culture & policy)",
         url="https://www.lemonde.fr/pixels/rss_full.xml",
+        jurisdiction=Jurisdiction.FR,
+        language="fr",
+        filter_tech=True,
+    ),
+    # --- France: political-currency sources (verified live 2026-07-22) --------
+    FeedSpec(
+        key="lemonde_politique",
+        name="Le Monde — Politique",
+        url="https://www.lemonde.fr/politique/rss_full.xml",
+        jurisdiction=Jurisdiction.FR,
+        language="fr",
+        filter_tech=True,
+    ),
+    FeedSpec(
+        key="lemonde_europe",
+        name="Le Monde — International/Europe",
+        url="https://www.lemonde.fr/europe/rss_full.xml",
         jurisdiction=Jurisdiction.FR,
         language="fr",
         filter_tech=True,
@@ -694,6 +740,16 @@ FEED_SPECS: list[FeedSpec] = [
         key="bitkom_presse",
         name="Bitkom — Presseinformationen (digital-industry association)",
         url="https://www.bitkom.org/Presse/Presseinformation/index.xml",
+        jurisdiction=Jurisdiction.DE,
+        document_type=DocumentType.OTHER,
+        language="de",
+        filter_tech=True,
+    ),
+    # --- Germany: political-currency sources (verified live 2026-07-22) -------
+    FeedSpec(
+        key="handelsblatt_politik",
+        name="Handelsblatt — Politik",
+        url="https://www.handelsblatt.com/contentexport/feed/politik",
         jurisdiction=Jurisdiction.DE,
         document_type=DocumentType.OTHER,
         language="de",

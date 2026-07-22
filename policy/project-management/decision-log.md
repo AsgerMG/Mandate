@@ -5,6 +5,60 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-22 — 21 new press/newsletter sources for political-currency coverage
+**Decision:** Added 7 plain RSS `FeedSpec` entries and two new custom
+`SourceAdapter`s (14 concrete sources total) targeting the low
+`political_currency`/`stakeholder_specificity` eval dimensions with named-
+individual, live-contested-fight content: TechPolicy.Press, DG COMP news, DG
+GROW news, Politico's general RSS feed, Le Monde Politique/Europe,
+Handelsblatt Politik (Tier 1/2, `etl/adapters/feeds.py`); a Politico
+newsletter-archive adapter covering 9 EU-relevant newsletters (Brussels/
+Berlin/London Playbook, Playbook Paris, Sunday Crunch, EU Influence, London
+Influence, Forecast, Digital Bridge — `etl/adapters/politico_newsletters.py`);
+and an EU Commission DG newsletter-archive adapter covering 5 DGs (CNECT/DAE,
+COMP, GROW, Trade, JUST — `etl/adapters/ec_newsroom_newsletters.py`). All 21
+source keys added to `_PRESS_SOURCE_KEYS` in `etl/intelligence/briefing.py`.
+**Why:** Traced in the prior HNSW-fix entry — even with retrieval fixed,
+`political_currency`/`stakeholder_specificity` need a corpus that actually
+contains current political/stakeholder content, which the corpus was thin
+on. Politico and the EU DGs both publish full, unpaywalled newsletter issues
+as ordinary web pages with a stable archive URL — a pattern the initial
+RSS/API-only research pass missed entirely; user feedback ("check if you can
+access full newsletter issues... typically it is available") corrected the
+methodology mid-research and surfaced both clusters.
+**Verified live (2026-07-22), not assumed:**
+- Every Politico slug was individually spot-checked against the site's own
+  "SUBSCRIBE to the POLITICO newsletter family" footer list, not guessed —
+  two differ from the obvious slug (`politico-eu-influence`, not
+  `eu-influence`; `politico-london-influence`, not `london-influence`), and
+  "London Playbook PM" turned out to redirect into the plain `london-playbook`
+  archive rather than being a separate one.
+- DG GROW's feed URL from the original research (`node/2046/rss_en`) 404s;
+  the real News feed is `node/2/rss_en` — found via the site's own News page,
+  not assumed from the pattern of the other language-variant links.
+- Les Echos (both feeds) returned HTTP 403 under both our production
+  User-Agent and a generic browser one — genuinely bot-walled, not a UA
+  issue — dropped from this batch entirely (not added anywhere).
+- DG Trade has no plain RSS feed (`policy.trade.ec.europa.eu` 404s /
+  serves an empty SPA shell) — its newsletter-archive (Tier 3b) is its only
+  route into the corpus.
+- The subagent research tool's WebFetch reported politico.eu as unreachable
+  on every attempt; direct `curl` from Bash got HTTP 200 on every URL tried.
+  A tool-level fetch failure is not evidence a site is actually blocked —
+  worth re-testing with a different client before concluding infeasibility.
+- Both archive adapters' pagination was confirmed to terminate cleanly on a
+  genuinely empty page (zero issue rows), not a 404 or an error — safety-
+  capped at `MAX_PAGES = 60` per adapter run regardless.
+**Scope decisions:** Politico Pro (paid), Reuters (no EU/tech feed since
+2020), Table.Media/Tagesspiegel (site-wide bot wall blocking even their free
+verticals), and Handelsblatt/Pioneer's written newsletters (genuine content
+paywalls) all confirmed infeasible with a specific reason — no adapter work
+attempted for any of them.
+**Verification:** all 21 sources live-smoke-tested individually via
+`regina run <key> --limit 3` (zero errors, real dated documents landed); 14
+new automated tests added (`tests/test_politico_newsletters.py`,
+`tests/test_ec_newsroom_newsletters.py`); full suite green (207 passed).
+
 ## 2026-07-21 — SYSTEM_PROMPT fixes from a manual review
 **Decision:** A close manual review of the full SYSTEM_PROMPT (not an
 automated eval finding) surfaced 7 substantive gaps plus 4 smaller items;

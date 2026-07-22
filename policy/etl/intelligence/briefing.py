@@ -66,6 +66,19 @@ _PRESS_SOURCE_KEYS = {
     # already routes "verbatim_debate"-kind passages to the Political
     # landscape section as primary-source political signal, same as press
     "ep_verbatim", "an_verbatim", "de_verbatim",
+    # Added 2026-07-22 — political-currency/stakeholder-specificity sources
+    # (named individuals, live contested fights, active enforcement), see
+    # decision-log.md for the feasibility research behind this batch
+    "techpolicy_press", "dg_comp_news", "dg_grow_news", "politico_eu",
+    "lemonde_politique", "lemonde_europe", "handelsblatt_politik",
+    # Full-issue newsletter archives (custom adapters, not FeedSpec RSS) —
+    # same real-time signal as the RSS feeds above plus multi-year backfill
+    "politico_brussels_playbook", "politico_digital_bridge",
+    "politico_berlin_playbook", "politico_playbook_paris",
+    "politico_london_playbook", "politico_sunday_crunch",
+    "politico_eu_influence", "politico_london_influence", "politico_forecast",
+    "ec_newsroom_dae", "ec_newsroom_comp", "ec_newsroom_growth",
+    "ec_newsroom_trade", "ec_newsroom_just",
 }
 _PRESS_RECENCY_DAYS = 90
 # A weak press match becomes weak, generic-sounding narrative color in the
