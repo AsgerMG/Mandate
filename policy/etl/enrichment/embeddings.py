@@ -16,7 +16,7 @@ from typing import Protocol
 
 import httpx
 import structlog
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
@@ -102,13 +102,13 @@ class VoyageEmbedder:
         batches: list[list[str]] = []
         current: list[str] = []
         current_tokens = 0
-        for text in texts:
-            text_tokens = max(1, len(text) // self._CHARS_PER_TOKEN_ESTIMATE)
-            if current and current_tokens + text_tokens > self._MAX_TOKENS_PER_REQUEST:
+        for item in texts:
+            item_tokens = max(1, len(item) // self._CHARS_PER_TOKEN_ESTIMATE)
+            if current and current_tokens + item_tokens > self._MAX_TOKENS_PER_REQUEST:
                 batches.append(current)
                 current, current_tokens = [], 0
-            current.append(text)
-            current_tokens += text_tokens
+            current.append(item)
+            current_tokens += item_tokens
         if current:
             batches.append(current)
         return batches
@@ -321,6 +321,18 @@ def press_passages(
     floor rather than backfilling; None preserves no-floor behavior)."""
     cutoff = dt.date.today() - dt.timedelta(days=days)
     qvec = embedder.embed([query])[0]
+    # pgvector's HNSW index approximates nearest neighbors by exploring a
+    # bounded region of the graph (hnsw.ef_search, default 40). That's fine
+    # for semantic_search()'s near-unfiltered scan of the whole corpus, but
+    # this query's Source.key + date filter narrows the eligible pool to a
+    # sparse subset (~1,600 of 58,000+ passages) — when the query is
+    # topically far from that subset, the default exploration budget can
+    # fail to find ANY of them and silently return zero rows, not just
+    # weaker ones. Found live 2026-07-22: 3 of 5 eval-panel profiles got 0
+    # press passages despite thousands of eligible rows existing; ef_search
+    # >=100 reliably found the true nearest matches in every case tested.
+    # SET LOCAL scopes this to the current transaction only.
+    session.execute(text("SET LOCAL hnsw.ef_search = 100"))
     stmt = (
         select(
             Passage.text,
