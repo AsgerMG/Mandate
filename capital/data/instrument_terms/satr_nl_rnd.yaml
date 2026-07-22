@@ -1,0 +1,276 @@
+id: satr_nl_rnd
+name: satr_nl_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G6_conditionality
+  requirement: The Minister must decide on a subsidy application within an administrative
+    deadline that varies depending on the allocation method used (order of receipt, ranking,
+    proportional distribution or lottery) and whether public co-financing is involved.
+  value: 8 to 22 weeks depending on procedure and co-financing status
+  intake_field: needBy
+  quote: 8 weken na ontvangst van de aanvraag
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: A subsidy application to a financier will be refused if the expertise of those
+    responsible for providing, managing and disposing of capital and securities is insufficiently
+    guaranteed.
+  value: Financier expertise must be sufficiently guaranteed
+  intake_field: borrowerModel
+  quote: de deskundigheid van degenen die zijn belast met het verstrekken, beheren en vervreemden
+    van kapitaal en zekerheden onvoldoende gewaarborgd is
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: A subsidy application to a financier will be refused if the integrity of the
+    financier is insufficiently guaranteed.
+  value: Financier integrity must be sufficiently guaranteed
+  intake_field: borrowerModel
+  quote: de integriteit van de financier onvoldoende gewaarborgd is
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: A subsidy application to a financier will be refused if the financial capacity
+    and stability of the financier is insufficiently guaranteed.
+  value: Financier financial capacity/stability must be sufficiently guaranteed
+  intake_field: institutionalBacking
+  quote: de financiële draagkracht en stabiliteit van de financier onvoldoende gewaarborgd
+    is
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g5
+  gate_family: G6_conditionality
+  requirement: An application is rejected if there is insufficient confidence in the technical
+    feasibility of the activities.
+  value: Sufficient confidence in technical feasibility required
+  intake_field: developmentStage
+  quote: onvoldoende vertrouwen bestaat in de technische haalbaarheid van de activiteiten
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g6
+  gate_family: G6_conditionality
+  requirement: An application is rejected if there is insufficient confidence in the economic
+    feasibility of the activities.
+  value: Sufficient confidence in economic feasibility required
+  intake_field: developmentStage
+  quote: onvoldoende vertrouwen bestaat in de economische haalbaarheid van de activiteiten
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g7
+  gate_family: G6_conditionality
+  requirement: An application is rejected if the activities do not sufficiently contribute
+    to the objectives of the subsidy.
+  value: Activities must sufficiently contribute to subsidy objectives
+  intake_field: conditionality
+  quote: de activiteiten onvoldoende bijdrage aan de doelstellingen van de subsidie leveren
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g8
+  gate_family: G6_conditionality
+  requirement: An application is rejected if there is insufficient confidence that those involved
+    have the capacity to properly carry out the activities.
+  value: Applicant capacity to execute activities required
+  intake_field: borrowerModel
+  quote: onvoldoende vertrouwen bestaat dat de betrokkenen de capaciteiten hebben om de activiteiten
+    naar behoren uit te voeren
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g9
+  gate_family: G6_conditionality
+  requirement: An application is rejected if there is an unacceptable risk, in the Minister's
+    judgment, that implementation of the proposed activity will disproportionately harm the
+    economic, ecological or social dimension of sustainability.
+  value: No disproportionate harm to sustainability dimensions
+  intake_field: conditionality
+  quote: er een naar het oordeel van Onze Minister onaanvaardbaar risico bestaat dat de uitvoering
+    van een voorgenomen activiteit een onevenredige inbreuk zal maken op de economische, ecologische
+    of sociale dimensie van duurzaamheid
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited
+- id: g10
+  gate_family: G6_conditionality
+  requirement: By ministerial regulation a subsidy ceiling (budget cap) is established for
+    granting subsidies on applications received within a given period under this Decree, unless
+    the Minister of Finance has agreed to forgo this.
+  value: Subsidy ceiling set per period unless waived by Finance Minister
+  intake_field: cofinancingBand
+  quote: Bij ministeriële regeling wordt een subsidieplafond vastgesteld voor het verstrekken
+    van subsidies op in een bepaalde periode ontvangen aanvragen op grond van dit besluit,
+    tenzij Onze Minister van Financiën heeft ingestemd met het achterwege laten daarvan
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 5
+  verified: llm_cited
+- id: g11
+  gate_family: G4_borrower_model
+  requirement: Ministerial regulation determines the allocation method for the subsidy ceiling,
+    choosing among order of arrival, ranking order, proportional distribution, maximum amount
+    per financier, or lottery.
+  value: One of five allocation methods chosen by ministerial regulation
+  intake_field: borrowerModel
+  quote: verdeling van het subsidieplafond op volgorde van binnenkomst van de aanvragen
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 5
+  verified: llm_cited
+- id: g12
+  gate_family: G6_conditionality
+  requirement: If the maximum subsidy amount per application equals or exceeds €25,000, or
+    if a subsidy is granted to a financier, ministerial regulation may require that advice
+    be obtained from an advisory committee before deciding on applications.
+  value: €25,000 threshold triggers advisory committee review
+  intake_field: ticketBand
+  quote: als het maximale subsidiebedrag per aanvraag gelijk is aan of meer bedraagt dan €
+    25.000 of als een subsidie wordt verstrekt aan een financier, worden bepaald dat over
+    aanvragen om subsidie ten behoeve van de beoordeling hiervan advies wordt ingewonnen bij
+    een adviescommissie
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 5
+  verified: llm_cited
+- id: g13
+  gate_family: G3_financial
+  requirement: Under the SME agricultural credit guarantee scheme, the guarantee covers 70%
+    of the credit amount for financing that is not for supplementary investments, or 90% for
+    financing supplementary investments, subject to a maximum credit amount of €1,200,000
+    (or €2,500,000 for specified qualifying investments).
+  value: Guarantee covers 70%-90% of credit; cap €1,200,000 or €2,500,000
+  intake_field: ticketBand
+  quote: 70 procent van het kredietbedrag voor zover het krediet niet strekt tot financiering
+    van aanvullende investeringen
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 34
+  verified: llm_cited
+- id: g14
+  gate_family: G2_size_ownership
+  requirement: The Minister allocates the subsidy ceiling for the agricultural loan guarantee
+    scheme by setting a maximum subsidy amount per financier that has registered with the
+    Minister, distinguishing between agricultural guarantee credits related to agricultural
+    innovation or supplementary investments.
+  value: Maximum subsidy amount set per registered financier annually
+  intake_field: institutionalBacking
+  quote: De minister verdeelt het subsidieplafond door vaststelling van een maximum subsidiebedrag
+    per financier die zich bij de minister heeft aangemeld
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 34
+  verified: llm_cited
+- id: g15
+  gate_family: G5_use_of_funds
+  requirement: 'Certain costs are explicitly excluded from eligibility for subsidy under the
+    national parks title: costs for physical investments, costs for economic activities, and
+    costs for nature management.'
+  value: Physical investment, economic activity, and nature management costs are non-eligible
+  intake_field: none
+  quote: a. kosten voor fysieke investeringen; b. kosten voor economische activiteiten; c.
+    kosten voor natuurbeheer.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 41
+  verified: llm_cited
+obligations:
+- requirement: A subsidy recipient carrying out both non-economic and economic activities
+    under the national parks scheme must keep separate accounting for the financing, costs
+    and income of those economic activities.
+  quote: voert de subsidieontvanger met betrekking tot de financiering van en de kosten en
+    inkomsten uit die economische activiteiten een gescheiden boekhouding
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 41
+  verified: llm_cited
+- requirement: The subsidized activities must not favour individual businesses.
+  quote: De activiteiten, bedoeld in artikel 2.12.2, eerste lid, bevoordelen geen individuele
+    bedrijven.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 41
+  verified: false
+  verify_note: 'fragment not found verbatim: ''De activiteiten, bedoeld in artikel 2.12.2,
+    eerste'''
+- requirement: Outsourcing of the subsidized activities to third parties must occur on the
+    basis of transparent criteria and at market-conform rates.
+  quote: Opdrachtverlening aan derden voor het verrichten van de activiteiten, bedoeld in
+    artikel 2.12.2, eerste lid, of een deel van die activiteiten, vindt plaats op basis van
+    transparante criteria en tegen marktconforme tarieven.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 41
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Opdrachtverlening aan derden voor het verrichten
+    v'''
+- requirement: All results of the subsidized activities must be made freely and costlessly
+    accessible to everyone without distinction.
+  quote: Alle resultaten van de activiteiten, bedoeld in artikel 2.12.2, eerste lid, worden
+    voor een ieder zonder onderscheid kosteloos toegankelijk gemaakt.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 41
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Alle resultaten van de activiteiten, bedoeld
+    in ar'''
+- requirement: An application for subsidy must include applicant/participant data, contact
+    person details, a project plan with planning, a budget, and an intention statement from
+    a regional authority confirming responsibility for co-financing.
+  quote: gegevens over de aanvrager of, in geval van een samenwerkingsverband nationaal park
+    of nationaal park in oprichting, over de deelnemers, waaronder de naam van de organisatie,
+    het post- en bezoekadres, het rekeningnummer
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 41
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 2/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Contributions from municipalities, provinces, water boards, public bodies under the
+    Joint Regulations Act, or other administrative bodies are treated as public co-financing
+    and are disregarded when calculating the maximum amount that may be granted per application
+    under this title.
+  quote: Bijdragen van gemeenten, provincies, waterschappen, openbare lichamen als bedoeld
+    in artikel 8, eerste lid, van de Wet gemeenschappelijke regelingen, of andere bestuursorganen,
+    worden aangemerkt als publieke cofinanciering, en blijven bij de toepassing van artikel
+    6, eerste lid, van het besluit buiten beschouwing voor zover het de berekening betreft
+    van het maximumbedrag dat krachtens deze titel per aanvraag kan worden verstrekt.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_rnes_wetten_overheid_2023.html#chunk 41
+  verified: false
+application:
+  channel: Application submitted to the Minister (Ministry of EZK/LNV) under the relevant
+    title of the Regeling nationale EZK- en LNV-subsidies, subject to allocation method and,
+    where applicable, advisory committee review.
+  typical_timeline: 8 to 22 weeks after receipt of application or after the closing date of
+    the application period, depending on allocation method and presence of public co-financing.
+  quote: Onze Minister geeft een beschikking op een aanvraag om subsidie binnen de in onderstaande
+    tabel aangegeven termijn of, indien geen subsidieplafond is vastgesteld, een bij ministeriële
+    regeling bepaalde termijn.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: nl_kaderbesluit_ezk_lnv_subsidies.html#chunk 7
+  verified: llm_cited

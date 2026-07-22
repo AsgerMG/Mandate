@@ -1,0 +1,419 @@
+id: satr_sk_rnd
+name: satr_sk_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_entity_type
+  gate_family: G1_nexus
+  requirement: The beneficiary must be an undertaking (podnik) carrying out an economic activity,
+    implementing an eligible project under Article H of the scheme.
+  value: Beneficiary must be an 'undertaking' performing economic activity and implementing
+    an eligible project
+  intake_field: borrowerModel
+  quote: Príjemcom pomoci podľa tejto schémy (ďalej len „príjemca“) je subjekt, ktorý spĺňa
+    definíciu podniku podľa článku C tejto schémy a realizuje oprávnené projekty podľa článku
+    H. tejto schémy.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.8
+  verified: llm_cited
+- id: g1_no_hq_requirement
+  gate_family: G1_nexus
+  requirement: Granting of aid is not conditioned on the beneficiary having its head office
+    or being established primarily in Slovakia, though requiring an establishment or branch
+    in Slovakia at the time of payment is allowed.
+  value: No requirement for HQ in SK; branch/establishment in SK permitted requirement
+  intake_field: entityCountries
+  quote: nie je podmienené povinnosťou, aby mal príjemca pomoci hlavné sídlo alebo aby bol
+    usadený predovšetkým v SR,; požiadavka mať prevádzkareň alebo pobočku v SR v čase vyplatenia
+    pomoci je však povolená
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.9
+  verified: false
+  verify_note: 'fragment not found verbatim: ''nie je podmienené povinnosťou, aby mal príjemca
+    po'''
+- id: g1_project_location
+  gate_family: G1_nexus
+  requirement: Aid may be granted for eligible projects implemented anywhere in Slovakia regardless
+    of the beneficiary's seat; research infrastructure funded under the scheme must be located
+    in Slovakia.
+  value: Project implementation must occur in SR; research infrastructure must be located
+    in SR
+  intake_field: activityCountries
+  quote: Pomoc podľa tejto schémy je možné poskytnúť na realizáciu oprávnených projektov na
+    celom území SR bez ohľadu na sídlo príjemcu. Projekt môže byť realizovaný na viacerých
+    miestach, pričom časť projekt môže byť (ak to vyplýva z podmienok výzvy) realizovaná aj
+    mimo územia SR. Výskumná infraštruktúra, na ktorú sa poskytuje pomoc podľa tejto schémy
+    musí byť umiestnená na území SR.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.9
+  verified: llm_cited
+- id: g2_size_all_categories
+  gate_family: G2_size_ownership
+  requirement: Aid under the scheme can be granted to undertakings of all size categories,
+    i.e. SMEs and large enterprises.
+  value: All size categories (SME and large) eligible
+  intake_field: fteBand
+  quote: Pomoc v rámci schémy je možné poskytnúť podnikom vo všetkých veľkostných kategóriách,
+    t. j. MSP a veľkým podnikom.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.8
+  verified: llm_cited
+- id: g2_undertaking_in_difficulty
+  gate_family: G2_size_ownership
+  requirement: Aid cannot be granted to an undertaking in difficulty, except those that were
+    not in difficulty on 31 December 2019 but became so between 1 January 2020 and 31 December
+    2021.
+  value: Excludes undertakings in difficulty (with COVID-period exception)
+  intake_field: lossesOverHalfCapital
+  quote: podniku v ťažkostiach7 (s výnimkou podnikov, ktoré neboli v ťažkostiach k 31. decembru
+    2019, ale stali sa podnikmi v ťažkostiach v období od 1. januára 2020 do 31. decembra
+    2021)
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.8
+  verified: llm_cited
+- id: g2_single_economic_unit
+  gate_family: G2_size_ownership
+  requirement: Multiple separate legal entities with controlling interests and other functional,
+    economic and organisational links may be treated as a single economic unit (undertaking)
+    for purposes of the scheme.
+  value: Linked/controlled entities aggregated as single economic unit for beneficiary determination
+  intake_field: institutionalOwner
+  quote: Viaceré oddelené právne subjekty, ktoré majú kontrolné podiely a iné funkčné, hospodárske
+    a organizačné prepojenie, možno na účely uplatnenia tejto schémy pokladať za subjekty
+    tvoriace jednu hospodársku jednotku.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.8
+  verified: llm_cited
+- id: g2_recovery_order_exclusion
+  gate_family: G2_size_ownership
+  requirement: Aid cannot be granted to a recipient subject to an outstanding recovery order
+    following a European Commission decision declaring aid illegal and incompatible with the
+    internal market.
+  value: Excludes recipients subject to EC recovery order
+  intake_field: institutionalBacking
+  quote: príjemcovi, voči ktorému sa uplatňuje vrátenie štátnej pomoci na základe rozhodnutia
+    Európskej komisie, v ktorom bola táto štátna pomoc označená za neoprávnenú a nezlučiteľnú
+    s vnútorným trhom
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.8
+  verified: llm_cited
+- id: g4_grant_form
+  gate_family: G4_borrower_model
+  requirement: Aid under the scheme is provided in the form of a grant of mechanism funds
+    (transparent aid), paid via a contract on the provision of mechanism funds.
+  value: Grant (mechanism funds), transparent aid form
+  intake_field: borrowerModel
+  quote: Pomoc podľa tejto schémy sa poskytuje formou poskytnutia prostriedkov mechanizmu
+    (grantu), a teda je považovaná za transparentnú pomoc v súlade s článku 5 ods. 2 písm.
+    a) nariadenia o skupinových výnimkách.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g4_disbursement_mechanism
+  gate_family: G4_borrower_model
+  requirement: Mechanism funds are disbursed based on a submitted payment request, via advance
+    payments, pre-financing, refunding, or a combination thereof under the terms of the contract.
+  value: Disbursement via advances/pre-financing/refunding per contract
+  intake_field: borrowerModel
+  quote: Prostriedky mechanizmu sa vyplácajú na základe predloženej žiadosti o platbu, a to
+    systémom zálohových platieb, predfinancovania, refundácie alebo ich kombináciou v súlade
+    s podmienkami stanovenými v zmluve o PPM.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g3_ceiling_basic_research
+  gate_family: G3_financial
+  requirement: Maximum aid amount for a project predominantly consisting of basic research
+    is EUR 55 million per undertaking and project.
+  value: EUR 55,000,000 cap for predominantly basic research projects
+  intake_field: ticketBand
+  quote: 'ak je predmetom projektu prevažne základný výskum: 55 mil. EUR na jeden podnik a
+    jeden projekt'
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g3_ceiling_industrial_research
+  gate_family: G3_financial
+  requirement: Maximum aid amount for a project predominantly consisting of industrial research
+    is EUR 35 million per undertaking and project.
+  value: EUR 35,000,000 cap for predominantly industrial research projects
+  intake_field: ticketBand
+  quote: 'ak je predmetom projektu prevažne priemyselný výskum: 35 mil. EUR na jeden podnik
+    a jeden projekt'
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g3_ceiling_experimental_dev
+  gate_family: G3_financial
+  requirement: Maximum aid amount for a project predominantly consisting of experimental development
+    is EUR 25 million per undertaking and project.
+  value: EUR 25,000,000 cap for predominantly experimental development projects
+  intake_field: ticketBand
+  quote: 'ak je predmetom projektu prevažne experimentálny vývoj: 25 mil. EUR na jeden podnik
+    a jeden projekt'
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g3_ceiling_feasibility_study
+  gate_family: G3_financial
+  requirement: Maximum aid amount for a feasibility study is EUR 8.25 million per study.
+  value: EUR 8,250,000 cap per feasibility study
+  intake_field: ticketBand
+  quote: 'pomoc na štúdie uskutočniteľnosti v rámci prípravy výskumných činností: 8,25 mil.
+    EUR na jednu štúdiu'
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g3_ceiling_infrastructure
+  gate_family: G3_financial
+  requirement: Maximum investment aid for establishing or modernising research infrastructure
+    is EUR 35 million per infrastructure.
+  value: EUR 35,000,000 cap per research infrastructure
+  intake_field: ticketBand
+  quote: 'investičná pomoc na zriadenie alebo modernizáciu výskumnej infraštruktúry: 35 mil.
+    EUR na jednu infraštruktúru'
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g3_intensity_table
+  gate_family: G3_financial
+  requirement: 'Maximum aid intensity varies by category of aid and beneficiary size: basic
+    research 100% for all sizes; industrial research 70%/60%/50% (small/medium/large); experimental
+    development 45%/35%/25% (small/medium/large); feasibility study 70%/60%/50%; research
+    infrastructure 50%.'
+  value: Basic research 100%; Industrial research 70/60/50%; Experimental dev 45/35/25%; Feasibility
+    study 70/60/50%; Infrastructure 50%
+  intake_field: ticketBand
+  quote: Základný výskum 100 % 100 % 100 % Priemyselný výskum 70 % 60 % 50 % Experimentálny
+    vývoj 45 % 35 % 25 %
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.13
+  verified: llm_cited
+- id: g3_intensity_bonus
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for industrial research and experimental development
+    may be increased by 15 percentage points, up to a maximum of 80%, if effective collaboration,
+    wide dissemination of results, or implementation in a supported region conditions are
+    met.
+  value: Up to +15pp bonus, max 80%, under collaboration/dissemination/region conditions
+  intake_field: ticketBand
+  quote: Maximálnu intenzitu pomoci na priemyselný výskum a experimentálny vývoj je možné
+    zvýšiť o 15 percentuálnych bodov, maximálne však na 80 %, ak je splnená jedna z týchto
+    podmienok
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.13
+  verified: llm_cited
+- id: g3_no_artificial_splitting
+  gate_family: G3_financial
+  requirement: The ceilings must not be circumvented by artificially dividing aid projects
+    into several projects with similar features, objectives or beneficiaries.
+  value: Prohibition on artificial splitting of projects to bypass ceilings
+  intake_field: ticketBand
+  quote: Stropy stanovené v ods. 3 tohto článku sa nesmú obchádzať umelým rozdeľovaním projektov
+    pomoci do niekoľkých projektov s podobnými črtami, cieľmi alebo príjemcami.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.12
+  verified: llm_cited
+- id: g3_scheme_budget_cap
+  gate_family: G3_financial
+  requirement: The scheme shall not apply if the average annual budget for state aid under
+    the scheme exceeds EUR 150 million.
+  value: Scheme inapplicable if average annual budget exceeds EUR 150 million
+  intake_field: cofinancingBand
+  quote: Táto schéma sa nebude uplatňovať, ak priemerný ročný rozpočet na štátnu pomoc podľa
+    tejto schémy presiahne 150 miliónov EUR.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.9
+  verified: llm_cited
+- id: g5_eligible_projects
+  gate_family: G5_use_of_funds
+  requirement: Funds may only be used for R&D projects (basic research, industrial research,
+    experimental development), feasibility studies related to such projects, or establishment/modernisation
+    of research infrastructure performing economic activities.
+  value: 'Eligible use: basic/industrial research, experimental development, feasibility studies,
+    research infrastructure'
+  intake_field: developmentStage
+  quote: Výskumné a vývojové projekty s oprávnenými aktivitami v kategóriách základného výskumu,
+    priemyselného výskumu a experimentálneho vývoja a štúdie uskutočniteľnosti v súvislosti
+    s týmito projektmi
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.10
+  verified: llm_cited
+- id: g5_eligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs for R&D projects include personnel costs, instruments/equipment
+    costs (or depreciation), building depreciation, contracted research/knowledge/patents,
+    and additional overheads/operating costs directly incurred by the project.
+  value: Personnel, equipment, buildings, contract research, overheads eligible for R&D projects
+  intake_field: none
+  quote: personálne výdavky na výskumných pracovníkov, technikov a iných pomocných pracovníkov
+    v rozsahu, v ktorom sa priamo podieľajú na realizácii projektu
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.11
+  verified: llm_cited
+- id: g5_ineligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Ineligible expenditures include debts and related fees, provisions for future
+    losses, interest payable, exchange losses, bank fees, recoverable VAT, and application
+    preparation costs.
+  value: Excludes debts, provisions, interest, FX losses, bank fees, recoverable VAT, application
+    prep costs
+  intake_field: none
+  quote: dlhy a poplatky s nimi spojené; rezervy na budúce straty alebo dlhy; dlžné úroky;
+    kurzové straty; bankové poplatky; DPH v prípade, keď je nárokovateľná na vrátenie akýmkoľvek
+    spôsobom; výdavky na prípravu žiadosti
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.11
+  verified: false
+  verify_note: 'fragment not found verbatim: ''dlhy a poplatky s nimi spojené; rezervy na
+    budúce '''
+- id: g5_no_double_financing
+  gate_family: G5_use_of_funds
+  requirement: Aid under the scheme cannot be granted to recipients who receive a subsidy,
+    contribution, grant, or other form of aid for financing the same expenditures, which would
+    constitute double financing.
+  value: No double financing of same expenditures
+  intake_field: none
+  quote: Pomoc v rámci tejto schémy (prostriedky mechanizmu) nie je možné poskytnúť príjemcom,
+    ktorí prijímajú dotáciu, príspevok, grant alebo inú formu pomoci na financovanie tých
+    istých výdavkov a ktorá by predstavovala dvojité financovanie
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.11
+  verified: llm_cited
+- id: g6_incentive_effect
+  gate_family: G6_conditionality
+  requirement: Aid may only be granted if its incentive effect is demonstrated, i.e., the
+    applicant submitted the application before starting work on the project or activity.
+  value: Application must be submitted before start of works/activity (incentive effect)
+  intake_field: conditionality
+  quote: Pomoc podľa tejto schémy sa považuje za pomoc, ktorá má stimulačný účinok, ak žiadateľ
+    predložil žiadosť v zmysle príslušnej výzvy pred začatím prác na projekte alebo pred začatím
+    činnosti.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.14
+  verified: llm_cited
+- id: g6_no_cumulation_same_costs
+  gate_family: G6_conditionality
+  requirement: Aid under this scheme cannot be cumulated with other state aid or de minimis
+    aid in relation to the same, wholly or partially overlapping eligible costs.
+  value: No cumulation with other aid for same/overlapping eligible costs
+  intake_field: cofinancingBand
+  quote: Pomoc poskytnutá podľa tejto schémy sa nekumuluje so žiadnou inou štátnou pomocou
+    alebo s pomocou de minimis v súvislosti s tými istými čiastočne alebo úplne sa prekrývajúcimi
+    oprávnenými výdavkami.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.16
+  verified: llm_cited
+- id: g6_no_legal_entitlement
+  gate_family: G6_conditionality
+  requirement: There is no legal entitlement to receive aid under this scheme.
+  value: No legal right to receive aid
+  intake_field: conditionality
+  quote: Na poskytnutie pomoci podľa tejto schémy nie je právny nárok.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.15
+  verified: llm_cited
+obligations:
+- requirement: The recipient must demonstrate to the provider/implementer the use of state
+    aid funds and eligibility of expenditure and allow inspection.
+  quote: príjemca pomoci podľa § 14 ods. 1 zákona o štátnej pomoci povinný preukázať poskytovateľovi,
+    resp. vykonávateľovi použitie prostriedkov štátnej pomoci a oprávnenosť vynaložených výdavkov
+    a umožniť poskytovateľovi, resp. vykonávateľovi vykonanie kontroly použitia prostriedkov
+    štátnej pomoci, oprávnenosti vynaložených výdavkov a dodržania podmienok poskytnutia štátnej
+    pomoci.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.19
+  verified: llm_cited
+- requirement: The recipient must provide necessary cooperation and information/documents
+    to persons authorized to conduct inspections/audits.
+  quote: Príjemca vytvára osobám oprávneným vykonať kontrolu / audit primerané podmienky na
+    riadne a včasné vykonanie kontroly a auditu a poskytuje im potrebnú súčinnosť a všetky
+    vyžiadané informácie a listiny
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.19
+  verified: llm_cited
+- requirement: The recipient must promptly take corrective measures for deficiencies identified
+    in inspection/audit reports within the deadline set.
+  quote: Príjemca prijme bezodkladne opatrenia na nápravu zistených nedostatkov uvedených
+    v správe z kontroly / auditu v lehote stanovenej osobami oprávnenými na výkon kontroly
+    / auditu.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.19
+  verified: llm_cited
+- requirement: If a research infrastructure is used for both economic and non-economic activities,
+    financing, costs and revenues of each type of activity must be accounted for separately
+    based on consistently applied and objectively justifiable cost accounting principles.
+  quote: financovanie a náklady na každý druh činnosti, ako aj príjmy z každého druhu činnosti
+    sa musia účtovať osobitne na základe dôsledne uplatňovaných a objektívne zdôvodniteľných
+    zásad nákladového účtovníctva
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.10
+  verified: llm_cited
+- requirement: Access to research infrastructures must be open to multiple users on a transparent,
+    non-discriminatory basis and at market conditions, with the price charged corresponding
+    to the market price.
+  quote: Prístup k výskumným infraštruktúram musí byť otvorený pre viacero používateľov a
+    musí sa poskytovať na transparentnom a nediskriminačnom základe a za trhových podmienok.
+    Cena účtovaná za prevádzku alebo používanie infraštruktúry zodpovedá trhovej cene.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.10
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (23/25 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid under the scheme can be cumulated with other state aid only if concerning other
+    identifiable eligible costs; it cannot be cumulated with any other state aid or de minimis
+    aid concerning the same, wholly or partially overlapping eligible costs; and when checking
+    maximum intensity and notification ceilings, total state aid per undertaking and project
+    is considered regardless of funding source (local, regional, national, or EU).
+  quote: Pomoc poskytnutá podľa tejto schémy sa môže kumulovať s akoukoľvek inou štátnou pomocou,
+    pokiaľ sa dané pomoci týkajú iných identifikovateľných oprávnených výdavkov.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.16
+  verified: llm_cited
+application:
+  channel: Applications are submitted in response to calls (výzva) published by the provider
+    (Úrad vlády SR) on www.vaia.gov.sk, in accordance with the scheme, and assessed by the
+    provider or implementer (Výskumná agentúra or Ministerstvo hospodárstva SR).
+  typical_timeline: The scheme's validity and effect end on 30 June 2026; the PPM contract
+    or amendment must take effect by that date.
+  quote: Poskytovateľ zverejní výzvu na webovom sídle www.vaia.gov.sk. Výzva obsahuje odkaz
+    na úplné znenie tejto schémy, zverejnené v Obchodnom vestníku.
+  source:
+    file: satr_sk_rnd_component9_scheme.pdf
+    locator: satr_sk_rnd_component9_scheme.pdf#p.16
+  verified: llm_cited

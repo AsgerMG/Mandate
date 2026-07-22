@@ -1,0 +1,240 @@
+id: eis_rakendusuuringute_toetus
+name: eis_rakendusuuringute_toetus
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-registry
+  gate_family: G1_nexus
+  requirement: Applicant must be a company registered in the Estonian business registry.
+  value: Estonian-registered company
+  intake_field: entityCountries
+  quote: The programme is open for all companies registered in the Estonian business registry,
+    regardless of their size or years of operation.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-not-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: The company must not be an undertaking in difficulty.
+  value: not in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: The company must not be in difficulties.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-any-size
+  gate_family: G2_size_ownership
+  requirement: The programme is open to companies of any size and any years of operation.
+  value: any size, any age
+  intake_field: fteBand
+  quote: The programme is open for all companies registered in the Estonian business registry,
+    regardless of their size or years of operation.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-grant-amount
+  gate_family: G3_financial
+  requirement: Grant amount requested must be between 250,000 and 2,000,000 euros.
+  value: €250,000–€2,000,000
+  intake_field: ticketBand
+  quote: The amount of support requested is 250,000 to 2,000,000 euros.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-budget-round
+  gate_family: G3_financial
+  requirement: Total budget for the application round is capped at 15,000,000 euros.
+  value: €15,000,000 total round budget
+  intake_field: ticketBand
+  quote: The budget for the application round is 15,000,000 euros.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-selffinancing
+  gate_family: G3_financial
+  requirement: Applicant must provide self-financing (co-financing) of between 20% and 75%
+    depending on activity and company size.
+  value: 20%-75% self-financing
+  intake_field: cofinancingBand
+  quote: "Self-financing \n 20% - 75%"
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-intensity-applied-research
+  gate_family: G3_financial
+  requirement: Grant intensity for applied research (TRL 3-5) is 70% for small, 60% for medium,
+    50% for large enterprises, increased under effective cooperation.
+  value: 50-80% depending on size/cooperation
+  intake_field: ticketBand
+  quote: "Proportion of applied research grant depending on the size of the company: \n \n\
+    \ 70% (small business) \n 60% (medium business) \n 50% (large business)"
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-intensity-experimental
+  gate_family: G3_financial
+  requirement: Grant intensity for experimental development (TRL 6-7) is 45% for small, 35%
+    for medium, 25% for large enterprises, increased under effective cooperation.
+  value: 25-60% depending on size/cooperation
+  intake_field: ticketBand
+  quote: "Proportion of experimental development grant depending on the size of the company:\
+    \ \n \n 45% (small) \n 35% (medium) \n 25% (large)"
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-intensity-feasibility
+  gate_family: G3_financial
+  requirement: Grant intensity for feasibility studies preceding applied research/development
+    is 70% small, 60% medium, 50% large.
+  value: 50-70% for feasibility study
+  intake_field: ticketBand
+  quote: We will grant support for conducting feasibility studies as a preliminary step for
+    conducting applied research or developing products. Grants are only given to feasibility
+    studies that precede applied research or experimental development activities.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-ip-protection
+  gate_family: G3_financial
+  requirement: IP protection support intensity is 50% under GBER (SMEs only) or 80% under
+    de minimis aid (all enterprises).
+  value: 50% GBER SME / 80% de minimis all firms
+  intake_field: ticketBand
+  quote: The percentage of support for this grant is 50% if support is applied under GBER
+    (applies for SMEs only) or 80% if support is applied under de minimis aid (applies to
+    all enterprises).
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4-grant-mechanism
+  gate_family: G4_borrower_model
+  requirement: Support is provided as a co-financed grant, not a loan or equity instrument.
+  value: grant
+  intake_field: borrowerModel
+  quote: "Maximum grant \n 2 000 000"
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-trl-scope
+  gate_family: G5_use_of_funds
+  requirement: Eligible projects must be within TRL 3-7, covering applied research (TRL 3-5)
+    or experimental product development (TRL 6-7).
+  value: TRL 3-7
+  intake_field: developmentStage
+  quote: Eligible projects are those with TRL 3–7. Conducting applied research (TRL 3–5) Experimental
+    product development (TRL 6–7)
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5-project-duration
+  gate_family: G5_use_of_funds
+  requirement: Maximum eligible project period is 36 months.
+  value: max 36 months
+  intake_field: needBy
+  quote: The maximum eligible project period is 36 months.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5-purpose
+  gate_family: G5_use_of_funds
+  requirement: Funds must be used to develop innovative technologies, processes, products
+    or services, test new materials, or gather knowledge on technological feasibility.
+  value: innovation R&D activities
+  intake_field: none
+  quote: This programme is for companies that wish to develop innovative technologies, processes,
+    products or services, test new materials or gather knowledge about technological feasibility.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-preliminary-consultation
+  gate_family: G6_conditionality
+  requirement: Companies must complete a mandatory preliminary consultation and receive a
+    positive preliminary assessment before submitting an application.
+  value: mandatory preliminary consultation and assessment
+  intake_field: conditionality
+  quote: In order to be a part of the applied research programme, companies must first attend
+    a mandatory preliminary consultation.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1-consortium-cooperation
+  gate_family: G1_nexus
+  requirement: A company may apply independently or in cooperation with other companies, scientific
+    establishments, testing laboratories or intellectual property experts.
+  value: solo or in cooperation
+  intake_field: consortium
+  quote: A company will be able to apply independently or in cooperation with other companies,
+    scientific establishments, testing laboratories or intellectual property experts.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Support recipients must declare their research and development activity in
+    their yearly report collected by Statistics Estonia.
+  quote: Support recipients must declare their research and development activity in their
+    yearly report collected by Statistics Estonia.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: If the applying company purchases R&D services, providers must be companies
+    or scientific organisations with acknowledged references in their field, from Estonia
+    or abroad.
+  quote: If the applying company purchases research and development services, the service
+    providers can only be companies and scientific organisations that have references acknowledged
+    in their field. The service provider can be from Estonia or from a foreign country.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Project reports and payment requests must be submitted through the online E-toetus
+    system, with a mandatory action plan completion form annex, plus foreign partner expense
+    documents if applicable.
+  quote: Submit your project reports and requests for payment through the online E-toetus
+    (e-grant) system.
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 3
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/16 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: IP protection support may be granted either under GBER (SMEs only, 50%) or under de
+    minimis aid (all enterprises, 80%), indicating alternative state aid legal bases.
+  quote: The percentage of support for this grant is 50% if support is applied under GBER
+    (applies for SMEs only) or 80% if support is applied under de minimis aid (applies to
+    all enterprises).
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 2
+  verified: llm_cited
+application:
+  channel: Mandatory preliminary consultation and preliminary assessment via RUP consultant,
+    then application submitted through the online E-toetus environment.
+  typical_timeline: 11th application round open 03.08.2026 09:00 to 28.09.2026 16:00; preliminary
+    assessment documents due by 31.08.2026.
+  quote: The 11th application round is open from 03.08.2026 at 9:00 to 28.09.2026 at 16:00
+    .
+  source:
+    file: eis_rakendusuuringute_toetus_programme_en.html
+    locator: chunk 1
+  verified: llm_cited

@@ -1,0 +1,119 @@
+id: eit_digital_champions
+name: eit_digital_champions
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-incorporation
+  gate_family: G1_nexus
+  requirement: The applicant company must be incorporated in an EU27 country or a Horizon
+    Europe Associated Country.
+  value: EU27 or Horizon Europe Associated Countries
+  intake_field: entityCountries
+  quote: Company incorporated in EU27 or Horizon Europe Associated Countries**
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-company-age
+  gate_family: G2_size_ownership
+  requirement: The applicant company must be a maximum of ten years old (incorporated after
+    01/01/2015).
+  value: max. 10 years old, incorporated after 01/01/2015
+  intake_field: foundedYear
+  quote: Company max. ten years old *
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-company-age-footnote
+  gate_family: G2_size_ownership
+  requirement: The company must have been incorporated after 1 January 2015.
+  value: incorporated after 01/01/2015
+  intake_field: foundedYear
+  quote: '*Company incorporated after 01/01/2015'
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-growth-stage-financial
+  gate_family: G3_financial
+  requirement: The applicant must be in growth stage, demonstrated by minimum €500,000 in
+    revenue in 2024 OR at least €2,000,000 in total funding raised to date.
+  value: min €500,000 revenue (2024) OR at least €2,000,000 total funding to date
+  intake_field: turnoverBand
+  quote: 'Growth stage: min €500,000 in revenue (2024), OR  at least €2,000,000 in total funding
+    to date'
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1-fast-growing-international
+  gate_family: G1_nexus
+  requirement: The applicant must be a fast-growing technology company with international
+    ambitions.
+  value: Fast-growing technology company with international ambitions
+  intake_field: developmentStage
+  quote: Fast-growing technology company with international ambitions
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4-thematic-area
+  gate_family: G4_borrower_model
+  requirement: 'Applicants must apply within one of the five defined thematic areas: Digital
+    Tech, Digital Industry, Digital Cities, Digital Wellbeing, or Digital Finance.'
+  value: Digital Tech, Digital Industry, Digital Cities, Digital Wellbeing, Digital Finance
+  intake_field: borrowerModel
+  quote: 'Startups in growth stage (scaleups) can apply in five thematic areas: Digital Tech,
+    Digital Industry, Digital Cities, Digital Wellbeing, and Digital Finance.'
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-language-pitch
+  gate_family: G6_conditionality
+  requirement: Applicants must be prepared to pitch in public, and both the pitch and application
+    must be conducted in English.
+  value: Pitch and application must be in English
+  intake_field: conditionality
+  quote: In addition, you must be prepared to pitch in public. Pitch and application must
+    be done in English.
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Winners (Champions) receive one year of tailored fundraising support from the
+    Growth Services team and gain free admission to the programme.
+  quote: The winners, the  Champions , will receive one year of tailored fundraising support
+    from our Growth Services team.
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: Champions must be prepared to pitch their company, connect with investors,
+    and work toward raising their next funding round through the Prepare, Connect, Raise process.
+  quote: Our team will PREPARE them to pitch their company, CONNECT them with international
+    investors, and help them RAISE their next round.
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (7/7 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online application/pitch competition submitted via 28DIGITAL Champions call, contact
+    champions@28digital.eu
+  typical_timeline: Applications Open Sept 25 2024; Submission Deadline Dec 2 2024 23:59 CET;
+    Online Pitch Competition Jan 14-15 2025; Proclamation of Champions Feb 28 2025; VIP Investor
+    Dinner Q2 2025
+  quote: September 25, 2024 December 2, 2024 23:59 CET January 14-15, 2025 February 28, 2025
+    Q2, 2025 Applications Open Submission Deadline Online Pitch Competition with VC Investors
+    Proclamation of Champions Champions attend VIP Investor Dinner
+  source:
+    file: eit_digital_champions_faq_page.html
+    locator: chunk 1
+  verified: llm_cited

@@ -1,0 +1,175 @@
+id: eis_starditoetus
+name: eis_starditoetus
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G6_conditionality
+  requirement: Applicant must complete mandatory pre-counselling and obtain a preliminary
+    assessment from the county development centre before submitting the application.
+  value: Mandatory pre-counselling required before application
+  intake_field: conditionality
+  quote: Enne taotluse esitamist on  kohustuslik läbida eelnõustamine ja saada eelhinnang
+    kohalikus maakondlikus arenduskeskuses.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g2
+  gate_family: G6_conditionality
+  requirement: The interim report must be submitted within four months of the funding decision,
+    proving creation of one full-time-equivalent job within three months of the funding decision.
+  value: Job creation within 3 months, interim report within 4 months
+  intake_field: conditionality
+  quote: Vahearuanne esitatakse nelja kuu jooksul pärast taotluse rahuldamise otsuse tegemist.
+    Vahearuandes tuleb tõendada kolme kuu jooksul pärast taotluse rahuldamise otsuse tegemist
+    ühe täistööajale taandatud töökoha loomine.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3
+  gate_family: G4_borrower_model
+  requirement: First tranche of support (€15,000) is paid out only after the interim report
+    is approved; if the job has not been created, no payment is made.
+  value: €15,000 first tranche, conditional on job creation
+  intake_field: conditionality
+  quote: Peale vahearuande kinnitamist tehakse toetuse esimese osa väljamakse (15 000€). Juhul
+    kui töökohta ei ole loodud, siis toetuse väljamakset ei toimu.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4
+  gate_family: G6_conditionality
+  requirement: The final report must be submitted within 30 calendar days of the end of the
+    project's eligibility period, proving payment of at least the minimum wage for the created
+    job and fulfilment of growth potential.
+  value: Final report within 30 days, minimum wage and growth potential proof required
+  intake_field: conditionality
+  quote: Lõpparuanne esitatakse 30 kalendripäeva jooksul projekti abikõlblikkuse perioodi
+    lõppemisest. Lõpparuandes tuleb tõendada loodud ühele täistööajale taandatud töökoha vähemalt
+    kehtinud alampalga maksmine ja kasvupotentsiaali täitmine.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g5
+  gate_family: G4_borrower_model
+  requirement: Second tranche of support (€5,000) is paid after approval of the final report.
+  value: €5,000 second tranche
+  intake_field: conditionality
+  quote: Peale lõpparuande kinnitamist tehakse toetuse teise osa väljamakse (5 000€).
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g6
+  gate_family: G6_conditionality
+  requirement: The beneficiary must ensure the project result is maintained for at least three
+    years from the date of the final payment (durability requirement).
+  value: 3-year durability period
+  intake_field: conditionality
+  quote: Kestusnõude kohaselt peab toetuse saaja tagama, et projekti tulemus säilib vähemalt
+    kolme aasta jooksul alates projekti lõppmakse tegemise kuupäevast.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g7
+  gate_family: G6_conditionality
+  requirement: 'Applicant must prepare and submit for pre-counselling: business plan, financial
+    forecasts, CVs of shareholders and board members, and balance sheet/profit statement as
+    of the quarter preceding pre-counselling.'
+  value: Required documents for pre-counselling
+  intake_field: conditionality
+  quote: äriplaan (ettevõtja poolt digitaalselt allkirjastatud) (versioon 2, kehtiv alates
+    12.05.2026) finantsprognoosid (kehtiv alates 28.05.2026) CVd / elulookirjeldused (osanike
+    ja juhatuse liikmete) ettevõtte bilanss ja kasumiaruanne eelnõustamisele vahetult eelneva
+    kvartali seisuga
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g8
+  gate_family: G6_conditionality
+  requirement: Application must include the pre-assessment (digitally signed by county development
+    centre staff), business plan, financial forecasts, balance sheet/profit statement, and
+    CVs.
+  value: Required documents for application
+  intake_field: conditionality
+  quote: Eelhinnang (maakondliku arenduskeskuse töötaja poolt digiallkirjastatult) Äriplaan
+    (versioon 2, kehtiv alates 12.05.2026) Finantsprognoosid (kehtiv alates 28.05.2026) Bilanss
+    ja kasumiaruanne taotluse esitamisele vahetult eelnenud kvartali seisuga
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g9
+  gate_family: G6_conditionality
+  requirement: Application processing deadline is 20 working days from submission, with EIS
+    making the final funding decision, using AI assistance in evaluation.
+  value: 20 working days processing time
+  intake_field: conditionality
+  quote: Taotluste menetlemise tähtaeg on 20 tööpäeva taotluse esitamisest.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g10
+  gate_family: G6_conditionality
+  requirement: Recipients must fulfil publicity obligations, including displaying a poster
+    at least A3 in size at the project implementation site with EU co-financing logo covering
+    at least 25% of poster area, throughout the project's eligibility period.
+  value: Publicity poster requirement (A3 minimum, 25% logo area)
+  intake_field: conditionality
+  quote: Plakat peab olema suurusega vähemalt A3 ning sellel peab asetsema logo kirjaga „Kaasrahastanud
+    Euroopa Liit“, millele eraldatakse vähemalt 25 protsenti plakati pindalast.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g11
+  gate_family: G6_conditionality
+  requirement: If the company has a website, it must publish the EU co-financing logo, project
+    description, objective, result and support amount; if not, publicity may be given via
+    the company's social media account.
+  value: Website/social media publicity requirement
+  intake_field: conditionality
+  quote: Kui ettevõttel on olemas veebileht, tuleb ka seal avaldada logo kirjaga „Kaasrahastanud
+    Euroopa Liit“, projekti lühikirjeldus, eesmärk, tulemus ja toetuse summa.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+obligations:
+- requirement: Submit interim report via e-toetus environment proving creation of one full-time
+    job, with signed employment contract and employment register extract.
+  quote: Tuleb esitada kahepoolselt allkirjastatud tööleping Töötamise registrist (TÖR) väljavõte
+    (saate võtta Maksu- ja Tolliameti e-teenindusest ) antud töölepinguga seotud töökohast.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Submit final report with TSD Annex 1 (or Annex 2 for non-resident wages) and
+    profit statements proving sales revenue from the project's activity area in the eligible
+    second project year.
+  quote: Esitage TSD lisa 1 või kui on deklareeritud mitteresidendi töötasu, siis TSD lisa
+    2 ja kahepoolselt allkirjastatud tööleping (kui see on esitatud vahearuandega, uuesti
+    esitada ei ole vaja)
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Fulfil the obligation to inform the public about the use of the support, per
+    the EU communication requirements.
+  quote: Olles saanud toetust, on sul kohustus avalikkust toetuse kasutamisest teavitada.
+  source:
+    file: eis_starditoetus_terms_eis.html
+    locator: chunk 4
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).

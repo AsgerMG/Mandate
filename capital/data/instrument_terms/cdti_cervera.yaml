@@ -1,0 +1,88 @@
+id: cdti_cervera
+name: cdti_cervera
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates: []
+obligations:
+- requirement: Applicants must be able to demonstrate compliance with obligations; if certificates
+    cannot be obtained directly, applicant will be required to provide corresponding certificates
+    during the correction (subsanación) process.
+  quote: En caso de que no pueda obtenerse de forma directa la acreditación del cumplimiento
+    de estas obligaciones, se requerirá al solicitante que aporte los certificados correspondientes
+    en el trámite de subsanación.
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Submission of the application authorizes CDTI to consult official registries
+    and other public sources for financial and/or legal information on applicants relevant
+    to the procedure.
+  quote: la presentación de la solicitud habilitará a CDTI a consultar en los registros oficiales
+    y otras fuentes de acceso público la información financiera y/o jurídica de los solicitantes
+    o de las solicitudes
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Documentary proof of compliance with requirements may be substituted by a responsible
+    declaration (declaración responsable) by the applicant, per Ley 38/2003 art. 23.4.
+  quote: Se podrá admitir la sustitución de la presentación de la documentación acreditativa
+    del cumplimiento de los requisitos establecidos en el artículo 13 de la Ley 38/2003, de
+    17 de noviembre... por una declaración responsable del solicitante
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Applicants included in the provisional grant proposal may be required to provide
+    documentation proving the accuracy of data in their declaration within a period not exceeding
+    ten days.
+  quote: los solicitantes incluidos en la propuesta de resolución provisional de concesión
+    de la ayuda podrán ser requeridos al efecto de que aporten la documentación que acredite
+    la realidad de los datos contenidos en su declaración en un plazo no superior a diez días
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Inaccuracy, falsehood or omission of essential data in a responsible declaration,
+    or failure to submit required documentation, results in dismissal or revocation of the
+    aid, without prejudice to other liabilities.
+  quote: la inexactitud, falsedad u omisión, de carácter esencial, de cualquier dato o información
+    que se incorpore a una declaración responsable o a una comunicación, o la no presentación
+    de la documentación que sea en su caso requerida para acreditar el cumplimiento de lo
+    declarado, determinará la imposibilidad de continuar con el procedimiento dando lugar
+    a la desestimación de la ayuda o en su caso su revocación
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: If an application does not meet the requirements set in the call, the applicant
+    will be required to correct the deficiency within ten working days, or be deemed to have
+    withdrawn the application.
+  quote: el órgano instructor requerirá al interesado para que subsane en el plazo de diez
+    días hábiles la falta o acompañe los documentos preceptivos, con advertencia de que, si
+    no lo hiciese, se le tendrá por desistido de la solicitud
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Where scoring thresholds are established in the evaluation criteria, applicants
+    must reach them to be eligible for the aid.
+  quote: En los casos en los que se establezcan umbrales de puntuación, será necesario alcanzarlos
+    para poder optar a la ayuda.
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: No voluntary changes or improvements to the application are allowed after submission,
+    as this is a competitive procedure initiated ex officio.
+  quote: Por tratarse de procedimientos de concesión en concurrencia competitiva y, como tales
+    iniciados de oficio, no se admitirán cambios ni mejoras voluntarias de la solicitud.
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (0/0 gates, 8/8 obligations passed mechanical
+  check -> llm_cited).

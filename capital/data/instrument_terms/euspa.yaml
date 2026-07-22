@@ -1,0 +1,333 @@
+id: euspa
+name: euspa
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Participation is limited to legal entities established in EU Member States,
+    Iceland, Norway, and specific additional associated countries (Canada, Israel, Republic
+    of Korea, New Zealand, Switzerland, United Kingdom) for certain topics, to safeguard the
+    Union's strategic assets and autonomy.
+  value: Member States, Iceland, Norway, Canada, Israel, Republic of Korea, New Zealand, Switzerland,
+    United Kingdom
+  intake_field: entityCountries
+  quote: 'For this reason, participation is limited to legal entities established in Member
+    States, Iceland and Norway and the following additional associated countries: Canada,
+    Israel, Republic of Korea, New Zealand, Switzerland, and the United Kingdom.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: For certain space-related topics, participation is restricted more narrowly
+    to legal entities established in Member States, Norway and Iceland only, with entities
+    from other countries deemed ineligible.
+  value: Member States, Norway, Iceland
+  intake_field: entityCountries
+  quote: 'participation is
+
+    limited to legal entities established in Member States, Norway and Iceland.
+
+    Proposals including entities established in countries outside the scope
+
+    specified in the call/topic/action will be ineligible.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.193
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: For a highly sensitive topic, participation is limited exclusively to legal
+    entities established in EU Member States, with no third countries eligible.
+  value: Member States only
+  intake_field: entityCountries
+  quote: 'participation is limited to legal entities established in Member
+
+    States. Proposals including entities established in countries outside the scope specified
+    in
+
+    the call/topic/action will be ineligible.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.279
+  verified: llm_cited
+- id: g4
+  gate_family: G1_nexus
+  requirement: For quantum computing FPA-related specific grant agreements, participation
+    is limited to legal entities established in Member States, Iceland, Norway and Israel
+    as the sole additional associated country.
+  value: Member States, Iceland, Norway, Israel
+  intake_field: entityCountries
+  quote: 'For this reason, participation is limited to legal entities established in Member
+    States, Iceland
+
+    and Norway and the following associated country: Israel.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.296
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: Third-country entities that may become associated to Horizon Europe during
+    2026-2027 may become eligible if the third country is designated eligible for the specific
+    topic at the time of application submission, but the association agreement must be in
+    force by the time of grant agreement signature.
+  value: conditional third-country eligibility pending association
+  intake_field: entityCountries
+  quote: 'entities established in third countries which may become associated to
+
+    Horizon Europe during 2026 and 2027 may be eligible to participate in
+
+    this topic if the third country is identified for this topic as an eligible
+
+    country in the List of Participating Countries in Horizon Europe at the
+
+    time of submission of the application'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+- id: g6
+  gate_family: G2_size_ownership
+  requirement: Entities established in an eligible country but directly or indirectly controlled
+    by a non-eligible country or non-eligible country entity may not participate unless guarantees
+    positively assessed by their eligible country of establishment demonstrate no negative
+    impact on Union strategic interests.
+  value: non-EU control restriction with guarantee exception
+  intake_field: nonEuControl
+  quote: 'entities established in an eligible country listed above, but which are
+
+    directly or indirectly controlled by a non-
+
+    eligible country or by a non-eligible country entity, may not participate in
+
+    the action unless it can be demonstrated, by means of guarantees
+
+    positively assessed by their eligible country of establishment, that their
+
+    participation to the action would not negatively impact the Union’s
+
+    strategic assets, interests, autonomy, or security.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: Entities assessed as high-risk suppliers of mobile network communication equipment
+    (or entities owned/controlled by such a supplier) are barred from submitting the control
+    guarantees, effectively excluding them from participation.
+  value: high-risk supplier exclusion
+  intake_field: nonEuControl
+  quote: 'Entities assessed as high-
+
+    risk suppliers of mobile network communication equipment within the
+
+    meaning of ‘restrictions for the protection of European communication
+
+    networks’ (or entities fully or partially owned or controlled by a high-risk
+
+    supplier) cannot submit guarantees.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+- id: g8
+  gate_family: G2_size_ownership
+  requirement: For a specific quantum navigation CSA topic, proposals must be submitted by
+    a single legal entity that qualifies as an SME (mono-beneficiary CSA).
+  value: single SME beneficiary required
+  intake_field: borrowerModel
+  quote: 'Proposals must be
+
+    submitted by a single legal entity (mono-beneficiary CSA) wich is an
+
+    SME.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.163
+  verified: llm_cited
+- id: g9
+  gate_family: G3_financial
+  requirement: For a specific SST sensor performance topic, the maximum amount granted to
+    each third party via financial support may exceed the standard EUR 60,000 cap, with each
+    FSTP proposal expected in the range of EUR 3-4 million minimum and EUR 9 million maximum.
+  value: EUR 3-9 million per FSTP proposal
+  intake_field: ticketBand
+  quote: 'The minimum amount of each FSTP proposal is expected to be in the range of
+
+    EUR 3 to 4 million and the maximum amount is EUR 9 million.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.282
+  verified: llm_cited
+- id: g10
+  gate_family: G3_financial
+  requirement: A specific topic is designated as an Innovation Action with a reduced funding
+    rate of 45%, lower than the standard IA funding rate.
+  value: 45% funding rate
+  intake_field: cofinancingBand
+  quote: This is an Innovation Action (IA) with reduced funding rate (45%).
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.279
+  verified: llm_cited
+- id: g11
+  gate_family: G3_financial
+  requirement: The funding rate for each FSTP grant under a specific topic is 65%, with third
+    parties financing the remaining 35% of the FSTP proposal amount themselves.
+  value: 65% funding rate, 35% third-party co-financing
+  intake_field: cofinancingBand
+  quote: 'The funding rate for each FSTP grant is 65%. Third parties will finance the remaining
+
+    35% of the amount of the FSTP proposal.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.282
+  verified: llm_cited
+- id: g12
+  gate_family: G4_borrower_model
+  requirement: Beneficiaries must provide financial support to third parties (FSTP), and this
+    support can only be provided in the form of grants, not loans or equity.
+  value: FSTP grants only
+  intake_field: borrowerModel
+  quote: 'Beneficiaries must provide financial support to third parties. The support
+
+    to third parties can only be provided in the form of grants.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.152
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Beneficiaries must provide financial support
+    to th'''
+- id: g13
+  gate_family: G4_borrower_model
+  requirement: FSTP grants under a specific topic may be provided only to a single SME, research
+    organisation, public body, or secondary/higher education establishment, or a small team
+    composed of such organisations.
+  value: restricted FSTP recipient types
+  intake_field: borrowerModel
+  quote: 'FSTP grants may be provided to either a single SME, research
+
+    organisation or public body secondary or higher education establishment
+
+    or a small team composed of such organizations.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.152
+  verified: llm_cited
+- id: g14
+  gate_family: G5_use_of_funds
+  requirement: For projects using satellite-based earth observation, positioning, navigation
+    and/or related timing data and services, beneficiaries must make use of Copernicus and/or
+    Galileo/EGNOS, with other data and services usable only additionally.
+  value: mandatory use of Copernicus/Galileo/EGNOS
+  intake_field: none
+  quote: 'If projects use satellite-based earth observation, positioning, navigation
+
+    and/or related timing data and services, beneficiaries must make use of
+
+    Copernicus and/or Galileo/EGNOS (other data and services may
+
+    additionally be used).'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.193
+  verified: llm_cited
+- id: g15
+  gate_family: G6_conditionality
+  requirement: Some resulting activities may involve using classified information, implying
+    security clearance and handling obligations for beneficiaries.
+  value: classified information handling obligation
+  intake_field: none
+  quote: Some activities resulting from this topic may involve using classified
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.214
+  verified: llm_cited
+obligations:
+- requirement: Guarantees submitted by controlled entities must substantiate that control
+    is not exercised in a manner restricting the entity's ability to carry out the action,
+    imposing restrictions on infrastructure/IP/know-how, or undermining capabilities needed
+    for the action.
+  quote: 'control over the applicant legal entity is not exercised in a manner that retrains
+    or
+
+    restricts its ability to carry out the action and to deliver results, that imposes restrictions
+    concerning its
+
+    infrastructure, facilities, assets, resources, intellectual property or know-how needed
+    for the purpose of
+
+    the action, or that undermines its capabilities and standards necessary to carry out the
+    action'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+- requirement: Guarantees must ensure that access by non-eligible countries or entities to
+    sensitive action-related information is prevented and that involved personnel hold national
+    security clearance from an eligible country where appropriate.
+  quote: 'access
+
+    by a non-eligible country or by a non-eligible country entity to sensitive information
+    relating to the
+
+    action is prevented; and the employees or other persons involved in the action have a
+    national security
+
+    clearance issued by an eligible country, where appropriate'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+- requirement: Guarantees must ensure that IP ownership arising from the action remains with
+    the recipient, is not controlled by non-eligible entities, and is not exported or made
+    accessible outside eligible countries without approval.
+  quote: 'ownership of the intellectual property
+
+    arising from, and the results of, the action remain within the recipient during and after
+    completion of the
+
+    action, are not subject to control or restrictions by non-eligible countries or non-eligible
+    country entity,
+
+    and are not exported outside the eligible countries, nor is access to them from outside
+    the eligible
+
+    countries granted, without the approval of the eligible country in which the legal entity
+    is established'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+- requirement: The association agreement to Horizon Europe for a newly associating third country
+    must be legally in force by the time the grant agreement is signed, even if the country
+    was listed as eligible at application time.
+  quote: 'In any case, the association
+
+    agreement to the Programme
+
+    must apply by the time of the signature of the grant
+
+    agreement.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.107
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/15 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Not specified in extracted sections beyond reference to General Annexes and Funding
+    and Tenders Portal.
+  typical_timeline: Indicative timetable examples given for specific topics, e.g. Q4 2027.
+  quote: 'Indicative timetable: in quarter Q4 of year 2027.'
+  source:
+    file: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf
+    locator: euspa_horizon_wp7_digital_industry_space_2026_2027.pdf#p.282
+  verified: llm_cited

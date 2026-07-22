@@ -1,0 +1,290 @@
+id: satr_it_rnd
+name: satr_it_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-territorio
+  gate_family: G1_nexus
+  requirement: 'The applicant enterprise must be located in the target territories of the
+    Programme (less developed regions: Basilicata, Calabria, Campania, Molise, Puglia, Sardegna,
+    Sicilia).'
+  value: Basilicata, Calabria, Campania, Molise, Puglia, Sardegna, Sicilia
+  intake_field: activityCountries
+  quote: 'Lo strumento, rivolto alle imprese ubicate nei territori delle Regioni meno sviluppate
+    (Basilicata,
+
+    Calabria, Campania, Molise, Puglia, Sardegna e Sicilia)'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.1
+  verified: llm_cited
+- id: g1-sector
+  gate_family: G1_nexus
+  requirement: Eligible entities must carry out industrial, agro-industrial, artisan, or industry-service
+    activities (per art. 2195 civil code nos. 1,3,5), or be research centres.
+  value: industrial/agro-industrial/artisan/service to industry activities or research centres
+  intake_field: borrowerModel
+  quote: 'che esercitano attività industriali, agroindustriali, artigiane, di servizi all’industria
+    (attività di cui all’art. 2195
+
+    del codice civile, numeri 1, 3 e 5) ed i Centri di ricerca'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.1
+  verified: llm_cited
+- id: g2-any-size
+  gate_family: G2_size_ownership
+  requirement: Enterprises of any size are eligible, provided they have at least two approved
+    financial statements at the time of application.
+  value: any size; minimum 2 approved balance sheets
+  intake_field: foundedYear
+  quote: 'Sono agevolabili le imprese di qualsiasi dimensione ubicate nei territori obiettivo
+    del Programma con
+
+    almeno due bilanci approvati al momento della presentazione della domanda di agevolazioni'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.1
+  verified: llm_cited
+- id: g2-joint-project-composition
+  gate_family: G2_size_ownership
+  requirement: Following the 11 August 2023 decree, joint projects must include at least one
+    SME among co-proposers, or a small mid-cap collaborating with SMEs/small mid-caps/research
+    bodies; single-proposer projects must be an SME or small mid-cap.
+  value: SME or small mid-cap participation required
+  intake_field: consortium
+  quote: 'nel caso di progetto realizzato congiuntamente da più proponenti, il progetto deve
+    prevedere
+
+    almeno una PMI tra i soggetti proponenti oppure il progetto deve prevedere la partecipazione
+
+    di una piccola impresa a media capitalizzazione in collaborazione con uno o più dei seguenti
+
+    soggetti: PMI; piccola impresa a media capitalizzazione; organismo di ricerca'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.1
+  verified: llm_cited
+- id: g1-joint-project-limit
+  gate_family: G1_nexus
+  requirement: Joint projects are eligible with a maximum of five co-proposing entities.
+  value: max 5 co-proposers
+  intake_field: consortium
+  quote: Sono agevolabili anche progetti congiunti, fino a un massimo di cinque soggetti co-proponenti.
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.1
+  verified: llm_cited
+- id: g1-research-bodies-agri
+  gate_family: G1_nexus
+  requirement: Research bodies may be co-proposers, and for projects in the Food/Bioeconomy/Natural
+    resources/Agriculture/Environment thematic pole, agricultural enterprises under art. 2135
+    civil code may also co-propose.
+  value: Organismi di ricerca and agricultural enterprises (art. 2135) eligible as co-proposers
+    under conditions
+  intake_field: consortium
+  quote: 'Possono essere soggetti co-proponenti di un progetto congiunto anche gli Organismi
+    di ricerca e,
+
+    limitatamente ai progetti afferenti alle aree di intervento riconducibili al Polo tematico
+    “Prodotti
+
+    alimentari, bioeconomia, risorse naturali, agricoltura e ambiente” del Programma “Orizzonte
+    Europa”,
+
+    anche le imprese agricole che esercitano le attività di cui all’articolo 2135 del codice
+    civile'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.1
+  verified: llm_cited
+- id: g6-network-contract
+  gate_family: G6_conditionality
+  requirement: Joint projects must be implemented through a network contract or other contractual
+    collaboration forms such as a partnership agreement or consortium.
+  value: contratto di rete, accordo di partenariato, or consorzio required
+  intake_field: consortium
+  quote: 'In caso di progetti congiunti, gli stessi devono essere realizzati mediante il ricorso
+    allo
+
+    strumento del contratto di rete o ad altre forme contrattuali di collaborazione quali,
+    ad esempio,
+
+    l’accordo di partenariato e il consorzio'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.1
+  verified: llm_cited
+- id: g3-min-costs
+  gate_family: G3_financial
+  requirement: Projects must have eligible costs of not less than EUR 5 million.
+  value: minimum EUR 5,000,000 eligible costs
+  intake_field: ticketBand
+  quote: I progetti devono prevedere spese e costi ammissibili non inferiori a 5 milioni di
+    euro
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- id: g3-duration
+  gate_family: G3_financial
+  requirement: Projects must have a duration of not less than 18 months and not more than
+    36 months, and must start after submission of the project proposal.
+  value: 18-36 months duration
+  intake_field: developmentStage
+  quote: 'avere una
+
+    durata non inferiore a 18 mesi e non superiore a 36 mesi ed essere avviati successivamente
+    alla
+
+    presentazione della proposta progettuale al Ministero'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- id: g3-cofinancing-share
+  gate_family: G3_financial
+  requirement: In joint projects, each proposer must bear at least 10% of total eligible costs
+    if a large enterprise, or at least 5% in all other cases.
+  value: min 10% (large) / 5% (other) of costs per co-proposer
+  intake_field: cofinancingBand
+  quote: 'i progetti devono prevedere che ciascun proponente sostenga almeno il 10% dei costi
+
+    complessivi ammissibili, se di grande dimensione, e almeno il 5% in tutti gli altri casi'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- id: g3-aid-intensity
+  gate_family: G3_financial
+  requirement: Maximum aid intensity is 50% of eligible costs for industrial research and
+    25% of eligible costs for experimental development.
+  value: 50% industrial research / 25% experimental development
+  intake_field: turnoverBand
+  quote: 'il limite massimo dell’intensità d’aiuto delle agevolazioni concedibili è pari al
+    50% dei costi
+
+    ammissibili di ricerca industriale e al 25% dei costi ammissibili di sviluppo sperimentale'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- id: g4-loan-limit
+  gate_family: G4_borrower_model
+  requirement: The soft loan, if requested, is available only to enterprises, limited to 20%
+    of total eligible project costs.
+  value: loan capped at 20% of eligible project costs, enterprises only
+  intake_field: borrowerModel
+  quote: 'il finanziamento agevolato, qualora richiesto, è concedibile esclusivamente alle
+    imprese, nel
+
+    limite del 20% del totale dei costi ammissibili di progetto'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- id: g4-forms
+  gate_family: G4_borrower_model
+  requirement: Aid is granted as a direct grant on expenditure and, upon request, as a soft
+    loan drawn from resources made available by the signatory administrations.
+  value: direct grant plus optional soft loan
+  intake_field: borrowerModel
+  quote: 'Le agevolazioni sono concesse nella forma del contributo diretto alla spesa e su
+    richiesta del
+
+    finanziamento agevolato, a valere sulle risorse messe a disposizione dalle amministrazioni
+
+    sottoscrittrici dell’accordo per l’innovazione'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- id: g1-reapplication-restriction
+  gate_family: G1_nexus
+  requirement: Only enterprises that already submitted an application under the second window
+    (DM 31 December 2021) and were not admitted to the evaluation phase due to lack of resources
+    may submit this access instance.
+  value: restricted to previously non-admitted second-window applicants
+  intake_field: bankRelationship
+  quote: 'È consentita la presentazione dell’istanza di accesso all’utilizzo delle risorse
+    del PN RIC 2021-2027,
+
+    Azione 1.1.4 solo alle imprese che già hanno presentato domanda a valere sul secondo sportello
+
+    agevolativo di cui al decreto ministeriale 31 dicembre 2021 e non sono state ammesse alla
+    fase
+
+    istruttoria per carenza di risorse'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- id: g5-fund-purpose
+  gate_family: G5_use_of_funds
+  requirement: Funds must be used to finance programmes and interventions relevant to strengthening
+    national productive competitiveness, including R&D&I, production structure reinforcement,
+    and internationalization/investment attraction.
+  value: R&D, production structure reinforcement, internationalization, special projects
+  intake_field: none
+  quote: Il nuovo Fondo è destinato al finanziamento di programmi e interventi con un impatto
+    significativo in ambito nazionale sulla competitività dell'apparato produttivo
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_mimit_fcs_landing.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Projects must be consistent with the thematic objectives of the PN RIC 2021-2027
+    and satisfy the general and specific selection criteria of Action 1.1.4 'Ricerca collaborativa'.
+  quote: 'I progetti devono essere coerenti con gli obiettivi tematici del PN RIC 2021-2027
+    e soddisfare gli
+
+    ulteriori criteri di selezione del Programma, generali e specifici dell’Azione 1.1.4 “Ricerca
+
+    collaborativa".'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+- requirement: The managing body conducts project evaluation respecting the ranking position
+    established in the 17 February 2023 ranking decree, exclusively based on documentation
+    submitted with the 31 January 2023 application.
+  quote: 'Il Soggetto gestore, procede all’istruttoria dei progetti nel rispetto della posizione
+    assunta nell’ambito
+
+    della graduatoria di cui al decreto direttoriale 17 febbraio 2023, esclusivamente sulla
+    base della
+
+    documentazione presentata in sede di domanda in data 31 gennaio 2023.'
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_accordi_innovazione_scheda.pdf#p.2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The possibility of granting incentives in a form other than the soft loan is subject
+    to EU or regional co-financing.
+  quote: La possibilità di concedere incentivi in forma diversa è subordinata al cofinanziamento
+    comunitario o regionale.
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_mimit_fcs_landing.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Application via directorial decree procedures under the Fondo per la crescita sostenibile
+    (FCS), managed by the Soggetto gestore per MIMIT directives/bandi.
+  typical_timeline: Access windows are opened and closed by directorial decree (e.g., decree
+    of 31 January 2023 closed the window due to exhausted resources; new instance access defined
+    by decree 11 August 2023).
+  quote: Gli interventi del Fondo sono attuati con bandi ovvero direttive del Ministro dello
+    sviluppo economico, in cui sono individuati, in particolare, l'ammontare delle risorse
+    disponibili, i requisiti di accesso dei soggetti beneficiari, le condizioni di ammissibilità
+    dei programmi d’investimento o dei progetti di ricerca e sviluppo, le spese ammissibili,
+    la forma e l'intensità delle agevolazioni
+  source:
+    file: satr_it_rnd_accordi_innovazione_scheda.pdf
+    locator: satr_it_rnd_mimit_fcs_landing.html#chunk 1
+  verified: llm_cited

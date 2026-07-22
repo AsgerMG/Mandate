@@ -1,0 +1,520 @@
+id: sesar_ju
+name: sesar_ju
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Consortium must include at least three independent legal entities each established
+    in a different eligible country (one in a Member State, two others in different Member
+    States or Associated Countries).
+  value: 3 independent legal entities, 3 different countries, min. 1 in a Member State
+  intake_field: entityCountries
+  quote: 'at least one independent legal entity es-
+
+    tablished in a Member State; and
+
+    − at least two other independent legal en-
+
+    tities, each established in different Mem-
+
+    ber States or Associated Countries.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.3
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Entities established in Switzerland are eligible to participate under equivalent
+    conditions as EU Member State entities for award procedures from 2025 onwards.
+  value: Switzerland eligible under transitional arrangements from 2025
+  intake_field: entityCountries
+  quote: 'Entities established in Switzerland can participate
+
+    in these SJU calls under equivalent condi-
+
+    tions as legal entities from EU Member
+
+    States for award procedures implement-
+
+    ing the Union budget for the year 2025 on-
+
+    wards.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.4
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Entities established in the UK are eligible to participate under equivalent
+    conditions as EU Member State entities from 2024 onwards.
+  value: UK eligible under association agreement from 2024
+  intake_field: entityCountries
+  quote: 'United Kingdom is associated for award
+
+    procedures implementing Union budget
+
+    for the year 2024 and onwards.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.4
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: Entities established in Ukraine are eligible to participate under equivalent
+    conditions as EU Member State entities.
+  value: Ukraine eligible under association agreement
+  intake_field: entityCountries
+  quote: 'the association
+
+    agreement with Ukraine has started to
+
+    produce legal effects and legal entities es-
+
+    tablished in Ukraine can participate under
+
+    equivalent conditions as legal entities
+
+    from the EU Member States.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.4
+  verified: llm_cited
+- id: G1-05
+  gate_family: G1_nexus
+  requirement: Entities established in Canada are eligible to participate under equivalent
+    conditions as EU Member State entities from 2024 onwards.
+  value: Canada eligible for Pillar II from 2024
+  intake_field: entityCountries
+  quote: 'Canada is associ-
+
+    ated to Horizon Europe Pillar II ‘Global
+
+    Challenges and European Industrial Com-
+
+    petitiveness’ and for award procedures
+
+    implementing the Union budget for the
+
+    year 2024 and onwards.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Canada is associ-\nated to Horizon Europe Pillar
+    II'''
+- id: G1-06
+  gate_family: G1_nexus
+  requirement: US entities may participate but do not automatically receive EU funding unless
+    exceptional funding conditions apply.
+  value: US entities eligible to participate, funding only exceptional
+  intake_field: entityCountries
+  quote: 'Entities established in US can take part in
+
+    DES calls without receiving funding from
+
+    the EU.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.5
+  verified: llm_cited
+- id: G1-07
+  gate_family: G1_nexus
+  requirement: Entities established in the Republic of Korea are eligible under transitional
+    arrangements from 1 January 2025.
+  value: Republic of Korea eligible from 2025
+  intake_field: entityCountries
+  quote: 'As of 1 January 2025, transitional arrangements
+
+    apply to Republic of Korea. Entities established in
+
+    Republic of Korea can par-
+
+    ticipate in these SJU calls under equivalent
+
+    conditions as legal entities from EU Mem-
+
+    ber States, for award procedures imple-
+
+    menting the Union budget starting from
+
+    year 2025.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''As of 1 January 2025, transitional arrangements\nap'''
+- id: G1-08
+  gate_family: G1_nexus
+  requirement: Entities established in third countries not listed as participating countries
+    may take part without EU funding, unless their participation is deemed essential.
+  value: Non-listed third country entities eligible to participate without funding
+  intake_field: entityCountries
+  quote: 'Legal entities established in countries not
+
+    listed in the General Annexes, can take
+
+    part in DES calls without receiving funding
+
+    from the EU.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.5
+  verified: llm_cited
+- id: G1-09
+  gate_family: G1_nexus
+  requirement: Legal entities established in Russia, Belarus, or non-government controlled
+    territories of Ukraine cannot currently participate in actions under the programme due
+    to EU sanctions.
+  value: Russia/Belarus/non-controlled Ukraine territories excluded
+  intake_field: entityCountries
+  quote: 'there is currently no appropriate context allowing the implementation of the actions
+
+    foreseen in this programme with legal entities established in Russia, Belarus, or in non-government
+
+    controlled territories of Ukraine.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_bawp_2026_2027.pdf#p.25
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: SMEs are eligible to lead (coordinate) a consortium or participate as partners,
+    with no special SME rules restricting their role.
+  value: SMEs may act as coordinator or participant
+  intake_field: borrowerModel
+  quote: 'Yes, SMEs can be consortium coordina-
+
+    tors.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Yes, SMEs can be consortium coordina-\ntors.'''
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: There are no specific eligibility rules limiting SME participation type; a
+    newly established start-up may participate with no restriction on its role.
+  value: No limitations on role for newly established start-ups
+  intake_field: foundedYear
+  quote: 'There are no limitations on the role that
+
+    entities can take in a project.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''There are no limitations on the role that\nentities'''
+- id: G3-01
+  gate_family: G3_financial
+  requirement: For Exploratory Research (ER) proposals the applicable EU funding rate is 100%
+    of eligible costs.
+  value: 100% funding rate for ER
+  intake_field: turnoverBand
+  quote: 'applicants have
+
+    to choose the funding rate which is 100%
+
+    for ER and 70% for IR call.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''applicants have\nto choose the funding rate
+    which i'''
+- id: G3-02
+  gate_family: G3_financial
+  requirement: For Industrial Research and validation (IR) proposals the applicable EU funding
+    rate is 70% of eligible costs for all entities, including non-profit entities.
+  value: 70% funding rate for IR (all entity types)
+  intake_field: turnoverBand
+  quote: 'For the IR call, all entities are entitled to a
+
+    co-funding rate of 70%, regardless of their
+
+    legal nature. Therefore, the 70 % funding
+
+    rate applies also to non-profit entities.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''For the IR call, all entities are entitled
+    to a\nco'''
+- id: G3-03
+  gate_family: G3_financial
+  requirement: The IR2 call had a total budget of €230 million split across seven Work Areas.
+  value: €230 million call budget (IR2)
+  intake_field: cofinancingBand
+  quote: 'The call amount of € 230 million is
+
+    divided between seven Work Areas
+
+    aligned with the six development priorities of the ATM Master Plan for industrial research
+    (IR-
+
+    1 to IR-6).'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_bawp_2026_2027.pdf#p.18
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The call amount of € 230 million is\ndivided
+    betwee'''
+- id: G3-04
+  gate_family: G3_financial
+  requirement: The ER3 call had a total budget of €24 million split between two work areas
+    (fundamental and applied research).
+  value: €24 million call budget (ER3)
+  intake_field: cofinancingBand
+  quote: 'The call amount
+
+    of € 24 million is divided between WA1 on
+
+    Fundamental research (€ 10 million to cover the Development Priorities FR-1 to FR-3),
+    and WA2 on
+
+    Applied research (€ 14 million to cover the Development Priorities AR-1 to AR-3).'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_bawp_2026_2027.pdf#p.17
+  verified: llm_cited
+- id: G3-05
+  gate_family: G3_financial
+  requirement: 'A single prefinancing rate applies uniformly to all projects within a call:
+    40% for ER projects and 60% for IR projects.'
+  value: 40% prefinancing ER / 60% prefinancing IR
+  intake_field: cofinancingBand
+  quote: 'A single prefinancing of 40% is foreseen
+
+    for ER projects and 60% for IR projects.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.14
+  verified: false
+  verify_note: 'fragment not found verbatim: ''A single prefinancing of 40% is foreseen\nfor
+    ER pr'''
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: SESAR 3 JU provides financial support mainly in the form of grants to R&I indirect
+    actions, awarded via open, transparent and competitive calls.
+  value: Grant-based funding via competitive calls
+  intake_field: borrowerModel
+  quote: 'The SESAR 3 JU
+
+    provides financial support, mainly in the form of grants, to R&I indirect actions,
+
+    selected following open, transparent and competitive calls ensuring their openness for
+    newcomers'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_bawp_2026_2027.pdf#p.10
+  verified: llm_cited
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: Grant preparation and signature is required before project costs are eligible;
+    costs incurred prior to grant signature are generally not eligible unless a retroactive
+    fixed starting date is justified.
+  value: Costs eligible from grant signature/agreed start date
+  intake_field: borrowerModel
+  quote: 'The starting date will also affect the eligi-
+
+    bility of costs. Therefore, by starting the
+
+    action before signing the GA, you risk that
+
+    the starting date will not be accepted'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.12
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Funding covers exploratory research (TRL 0-2), industrial research and validation
+    (TRL 3-6), fast-track innovation and uptake (TRL 2-7), and Digital Sky Demonstrators (TRL
+    8) under CEF.
+  value: TRL 0-8 across four pipeline categories
+  intake_field: developmentStage
+  quote: '1. exploratory research (TRLs 0–2), funded under Horizon Europe for the EU part;
+
+    2. industrial research and validation (TRLs 3–6), funded under Horizon Europe for the
+    EU part;
+
+    3. fast-track innovation and uptake (TRLs 2–7), funded under Horizon Europe for the EU
+    part;
+
+    4. Digital Sky Demonstrators (TRL 8), funded under the Connecting Europe Facility (CEF)
+    for the
+
+    EU part9, in collaboration with CINEA.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_bawp_2026_2027.pdf#p.10
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: Coordination tasks of the coordinator cannot be subcontracted, and subcontracting
+    must remain a limited, proportionate part of the action.
+  value: Subcontracting limited; coordinator tasks excluded
+  intake_field: none
+  quote: 'In terms of tasks, coordination tasks of the
+
+    coordinator cannot be subcontracted.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.13
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Public bodies, research organisations, and higher education establishments
+    must have a valid Gender Equality Plan to be declared eligible during grant agreement
+    preparation.
+  value: Gender Equality Plan required for public bodies/research orgs/higher education entities
+  intake_field: conditionality
+  quote: 'To be eligible, legal entities from Member
+
+    States and Associated Countries that are
+
+    public bodies, research organisations or
+
+    higher education establishments (includ-
+
+    ing private research organisations and
+
+    higher education establishments) must
+
+    have a gender equality plan.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.10
+  verified: false
+  verify_note: 'fragment not found verbatim: ''To be eligible, legal entities from Member\nStates
+    '''
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: A written consortium agreement between beneficiaries is mandatory before Grant
+    Agreement signature.
+  value: Consortium agreement mandatory before GA signature
+  intake_field: conditionality
+  quote: 'A written ‘consortium agree-
+
+    ment’ is mandatory before Grant Agree-
+
+    ment signature (Article 7 of the Horizon
+
+    Europe model grant agreement) but not at
+
+    proposal submission.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.6
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: Beneficiaries must sign Accession Forms within 30 days of the Grant Agreement
+    entering into force, or the Granting Authority may terminate the Grant Agreement.
+  value: 30-day deadline to sign Accession Forms
+  intake_field: conditionality
+  quote: 'If a Beneficiary does not sign the Acces-
+
+    sion Form within 30 days of the Grant
+
+    Agreement entering into force, the Grant-
+
+    ing Authority may terminate the Grant
+
+    Agreement.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.12
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries must ensure that associated partners comply with contractual
+    obligations on proper implementation, conflict of interests, confidentiality and security,
+    ethics, visibility, specific rules for carrying out the action, information, and record-keeping.
+  quote: 'beneficiaries must ensure that
+
+    their contractual obligations under Arti-
+
+    cles 11 (proper implementation), 12 (con-
+
+    flict of interests), 13 (confidentiality and
+
+    security), 14 (ethics), 17.2 (visibility), 18
+
+    (specific rules for carrying out action), 19
+
+    (information) and 20 (record-keeping)
+
+    also apply to the associated partners.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''beneficiaries must ensure that\ntheir contractual
+    o'''
+- requirement: Applicants must ensure their proposal complies with all national security requirements,
+    including technology restrictions and national classification.
+  quote: 'applicants
+
+    must always make sure that it complies
+
+    with all national security requirements
+
+    (technology restrictions, national classifi-
+
+    cation).'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.11
+  verified: llm_cited
+- requirement: All DES projects must produce and maintain a communication, dissemination and
+    exploitation (CDE) plan covering objectives, messages, dissemination schedule, and exploitation
+    strategy.
+  quote: 'All the DES projects are expected to pro-
+
+    duce and maintain a communication, dis-
+
+    semination and exploitation (CDE) plan
+
+    documenting all the planned activities in
+
+    these areas.'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_qa_document_v1.pdf#p.20
+  verified: false
+  verify_note: 'fragment not found verbatim: ''All the DES projects are expected to pro-\nduce
+    and'''
+- requirement: Each operation of the JU is subject to at least an ex ante control on the operational
+    and financial aspects, based on a multiannual risk-based control strategy.
+  quote: 'each operation shall be subject at least to an ex ante
+
+    control relating to the operational and financial aspects of the operation, on the basis
+    of a multiannual
+
+    control strategy which takes risk into account'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_bawp_2026_2027.pdf#p.43
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/23 gates, 2/4 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Open, transparent and competitive calls for proposals published under Horizon Europe
+    (DES ER/IR calls) and CEF (Digital Sky Demonstrators), submitted via the Funding & Tenders
+    Portal.
+  typical_timeline: Calls open with several months between publication and deadline, followed
+    by evaluation, grant preparation, and signature; e.g. IR2/ER3 opened 1 April 2025 with
+    deadline 16 September 2025, grants to be signed by mid-May 2026.
+  quote: 'On 15 January 2025, the SESAR 3 JU published the IR2 call, which opened on 1 April,
+    with a call
+
+    deadline on 16 September. The call amount of € 230 million is divided between seven Work
+    Areas'
+  source:
+    file: sesar_ju_qa_document_v1.pdf
+    locator: sesar_ju_bawp_2026_2027.pdf#p.18
+  verified: llm_cited

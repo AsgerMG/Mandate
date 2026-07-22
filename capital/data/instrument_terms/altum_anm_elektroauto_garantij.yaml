@@ -1,0 +1,23 @@
+id: altum_anm_elektroauto_garantij
+name: altum_anm_elektroauto_garantij
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: The support is administered by AS 'Attīstības finanšu institūcija Altum' as
+    part of Latvia's Ministry of Economics energy efficiency and electric vehicle guarantee
+    programme.
+  value: Altum / Latvia
+  intake_field: none
+  quote: AS “Attīstības finanšu institūcija Altum”
+  source:
+    file: altum_anm_elektroauto_garantij_em_gov_lv.html
+    locator: chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (1/1 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).

@@ -1,0 +1,240 @@
+id: tesi_equity
+name: tesi_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-finland
+  gate_family: G1_nexus
+  requirement: Applicant must be a Finnish company (Tesi invests in Finnish companies to grow
+    domestic high-tech and industrial sectors).
+  value: Finland-based companies
+  intake_field: activityCountries
+  quote: We aim to grow new high-tech companies in Finland and enable them to scale up with
+    domestic capital.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g1-minority-investor
+  gate_family: G1_nexus
+  requirement: Tesi acts only as a market-driven minority investor, never a majority or sole
+    investor, with no predefined sectoral or thematic restrictions.
+  value: Minority investor only
+  intake_field: borrowerModel
+  quote: Tesi remains a market-driven minority investor, with no predefined sectoral or thematic
+    restrictions.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g1-syndicate-required
+  gate_family: G1_nexus
+  requirement: Investments are always made in collaboration/syndicate with private professional
+    investors; Tesi does not invest alone.
+  value: Co-investment with private/professional investors required
+  intake_field: consortium
+  quote: Investments are always made in collaboration with private professional investors,
+    primarily domestic and international venture capital funds.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g2-venture-stage
+  gate_family: G2_size_ownership
+  requirement: Venture capital investments require companies with strong potential for international
+    growth, typically entering from Series A or B rounds.
+  value: Series A/B or later, scalable tech companies
+  intake_field: developmentStage
+  quote: We enhance venture capital market by participating as a minority investor in syndicates
+    starting typically from Series A or B rounds, with sizes ranging from approximately EUR
+    5 million to tens of millions.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g2-growth-revenue
+  gate_family: G2_size_ownership
+  requirement: Growth equity target companies typically already have significant, often strongly
+    growing revenue exceeding ten million euros.
+  value: Revenue > EUR 10 million (typical)
+  intake_field: turnoverBand
+  quote: Our target companies typically already have significant, often strongly growing revenue
+    exceeding ten million euros.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g2-industrial-lead-investor
+  gate_family: G2_size_ownership
+  requirement: Every industrial-scale project Tesi invests in must have a strong industrial
+    lead investor.
+  value: Strong industrial lead investor required
+  intake_field: consortium
+  quote: Every project Tesi invests in must have a strong industrial lead investor.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g3-venture-ticket
+  gate_family: G3_financial
+  requirement: Individual venture capital investments by Tesi usually range from EUR 2 to
+    10 million, within syndicate rounds of approx. EUR 5 million to tens of millions.
+  value: EUR 2-10 million per investment
+  intake_field: ticketBand
+  quote: Our individual investments usually range from EUR 2 to 10 million.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g3-growth-ticket
+  gate_family: G3_financial
+  requirement: Growth equity investment rounds generally range from EUR 30-200+ million, with
+    Tesi's investments typically amounting to EUR 10-50 million.
+  value: EUR 10-50 million per investment (rounds EUR 30-200+ million)
+  intake_field: ticketBand
+  quote: Investment rounds generally range from EUR 30\u2013200+ million, with Tesin\u2019s
+    investments typically amounting to EUR 10\u201350 million.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Investment rounds generally range from EUR
+    30\\u201'''
+- id: g3-industrial-ticket
+  gate_family: G3_financial
+  requirement: Financing needs for domestic industrial scaleup companies typically range EUR
+    50-200 million; industrial-scale projects require EUR 100 million to several billion euros.
+  value: EUR 50-200 million (scaleup); EUR 100 million+ (projects)
+  intake_field: ticketBand
+  quote: The financing needs of domestic industrial scaleup companies typically range from
+    EUR 50\u2013200 million, while industrial-scale projects require anywhere from EUR 100
+    million to several billion euros.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The financing needs of domestic industrial
+    scaleup'''
+- id: g3-private-capital-share
+  gate_family: G3_financial
+  requirement: The share of private capital in any investment must be at least half.
+  value: Private capital >= 50%
+  intake_field: cofinancingBand
+  quote: The share of private capital must be at least half, and we aim for returns on our
+    investments.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_our_approach.html#chunk 1
+  verified: llm_cited
+- id: g3-efsi-egf-size
+  gate_family: G3_financial
+  requirement: The EFSI and EGF co-financing programmes with the EIB are each EUR 100 million
+    in size, split equally between EIB and Tesi.
+  value: EUR 100 million per programme, 50/50 EIB/Tesi
+  intake_field: cofinancingBand
+  quote: Both programmes are EUR 100 million in size, with one-half of their financing coming
+    from the EIB and one-half from Tesi.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 2
+  verified: llm_cited
+- id: g4-equity-model
+  gate_family: G4_borrower_model
+  requirement: Tesi provides equity-type minority investments (not loans/grants), made jointly
+    with co-investors on the same terms.
+  value: Direct equity minority investment
+  intake_field: borrowerModel
+  quote: We make minority investments in Finnish companies together and on the same terms
+    as other investors.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_our_approach.html#chunk 1
+  verified: llm_cited
+- id: g4-efsi-egf-followon-only
+  gate_family: G4_borrower_model
+  requirement: For the EFSI and EGF programmes, the period for initial investments has ended;
+    only follow-on investments in existing portfolio companies are possible, no new companies.
+  value: Follow-on investments only, no new entrants
+  intake_field: developmentStage
+  quote: While investments in new companies are not made, follow-on investments are possible.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 2
+  verified: llm_cited
+- id: g5-use-of-funds-growth
+  gate_family: G5_use_of_funds
+  requirement: Capital needs of growth equity target companies may include international expansion,
+    product and service development, investments, balance sheet strengthening, and corporate
+    transactions.
+  value: International expansion, R&D, investments, balance sheet, M&A
+  intake_field: none
+  quote: The capital needs of our target companies may include international expansion, product
+    and service development, investments, balance sheet strengthening, and corporate transactions.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g5-use-industrial
+  gate_family: G5_use_of_funds
+  requirement: Domestic industrial scaleup companies require capital for development, piloting,
+    production scaling, and commercialization; industrial projects are for project development
+    and construction phases.
+  value: Piloting, scaling, commercialization, project development/construction
+  intake_field: none
+  quote: Domestic industrial scaleup companies are typically Finnish industrial technology
+    companies with proprietary new technology that require capital for development, piloting,
+    production scaling, and commercialization.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited
+- id: g6-no-competition-private
+  gate_family: G6_conditionality
+  requirement: Tesi does not compete with private investors and acts as a countercyclical
+    investor.
+  value: Non-competitive, countercyclical role
+  intake_field: conditionality
+  quote: Tesi does not compete with private investors, and acts as a countercyclical investor.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_our_approach.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Tesi aims to maximize its impact on society and returns on its investments,
+    requiring at least half of capital in a round to be private.
+  quote: We aim to maximize our impact on the society and returns for our investments. The
+    share of private capital must be at least half, and we aim for returns on our investments.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_our_approach.html#chunk 1
+  verified: llm_cited
+- requirement: Portfolio companies are expected to engage with responsible investment and
+    sustainability practices promoted through Tesi's active ownership.
+  quote: We share best practices throughout the market and strive to promote sustainable practices
+    in our investment targets through active ownership.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_our_approach.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/16 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: EFSI and EGF investments are always made jointly with the EIB, not separately, reflecting
+    a fixed co-financing structure rather than a stacking rule.
+  quote: Investments are always made together, not separately.
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 2
+  verified: llm_cited
+application:
+  channel: Not specified in provided text; general contact via Tesi's investment teams (Venture
+    & Growth Investments, Industrial Investments).
+  typical_timeline: Not specified in provided text.
+  quote: Our Venture &amp; Growth Investments team
+  source:
+    file: tesi_equity_our_approach.html
+    locator: tesi_equity_for_companies.html#chunk 1
+  verified: llm_cited

@@ -1,0 +1,300 @@
+id: fondo_di_garanzia
+name: fondo_di_garanzia
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Investments financed by the guaranteed transaction must be carried out on national
+    (Italian) territory.
+  value: investments must be realized in Italy
+  intake_field: activityCountries
+  quote: 'per le operazioni finanziarie concesse a fronte dei seguenti investimenti da effettuare
+    nel
+
+    territorio nazionale'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.124
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Final beneficiaries not resident in Italy must have a registered office or
+    branch in Italy at the date of guarantee grant, while investments must still be carried
+    out in national territory.
+  value: non-resident beneficiaries must have Italian office/branch
+  intake_field: entityCountries
+  quote: 'Nel caso di soggetti beneficiari finali non residenti sul territorio italiano, gli
+    stessi devono
+
+    avere, alla data di concessione della garanzia del Fondo, una sede o una filiale in Italia,
+
+    fermo restando che gli investimenti devono essere realizzati nel territorio nazionale.'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.124
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: The beneficiary must qualify as an SME (PMI) under the EU definition, verified
+    against Commission Recommendation 2003/361/EC size thresholds.
+  value: must meet SME size parameters
+  intake_field: fteBand
+  quote: 'il Gestore del Fondo verifica che il soggetto beneficiario finale rispetti i parametri
+    dimensionali previsti dalla raccomandazione della Commissione europea
+
+    2003/361/CE del 6 maggio 2003 pubblicata sulla G.U.U.E. n. L124 del 20 maggio 2003'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.78
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Aid intensity for SME investment aid is capped at 20% of eligible costs for
+    small enterprises and 10% for medium enterprises, per Article 17(6) of Regulation (EU)
+    No 651/2014.
+  value: 20% small / 10% medium enterprises
+  intake_field: turnoverBand
+  quote: 'pari al 20 percento dei costi ammissibili nel caso
+
+    delle piccole imprese e al 10 percento dei costi ammissibili nel caso delle medie imprese'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.124
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: For fishery/aquaculture SME investment aid, eligible project expenses may not
+    exceed €2.5 million, and aid per beneficiary per year may not exceed €1.25 million.
+  value: max €2.5m eligible costs / €1.25m aid per year
+  intake_field: ticketBand
+  quote: 'l’aiuto non può esser concesso a favore di progetti con spese ammissibili
+
+    superiori a 2,5 milioni di euro, né può essere superiore a 1,25 milioni di euro per
+
+    beneficiario e per anno'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.130
+  verified: llm_cited
+- id: g6
+  gate_family: G3_financial
+  requirement: The maximum guaranteed amount per final beneficiary is capped at €2,500,000,
+    net of capital shares already repaid.
+  value: €2,500,000 max guarantee per beneficiary
+  intake_field: ticketBand
+  quote: 'L’importo massimo garantito per soggetto beneficiario finale è pari a euro 2.500.000,00
+
+    (due milioni e cinquecentomila), tenuto conto delle quote di capitale già rimborsate dal
+
+    medesimo soggetto beneficiario finale in relazione alle operazioni garantite.'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.24
+  verified: llm_cited
+- id: g7
+  gate_family: G3_financial
+  requirement: For tripartite risk transactions, the financial transaction amount may not
+    exceed €120,000 per single final beneficiary.
+  value: max €120,000 per beneficiary (tripartite risk)
+  intake_field: ticketBand
+  quote: 'l’importo dell’operazione finanziaria non sia superiore a euro 120.000,00
+
+    (centoventimila) per singolo soggetto beneficiario finale'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.22
+  verified: llm_cited
+- id: g8
+  gate_family: G4_borrower_model
+  requirement: Guaranteed financial transactions must be directly aimed at business activity
+    and cannot be used to extinguish previous financing already disbursed by the same or related
+    lender.
+  value: must fund business activity, not refinance existing debt
+  intake_field: borrowerModel
+  quote: devono essere direttamente finalizzate all’attività d’impresa
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.21
+  verified: llm_cited
+- id: g9
+  gate_family: G4_borrower_model
+  requirement: Eligible financial transactions must have a fixed and certain duration or maturity;
+    revocable operations qualify only if a certain duration/maturity is derivable from the
+    grant resolution or related documentation.
+  value: fixed/certain duration required
+  intake_field: borrowerModel
+  quote: devono avere una durata ovvero una scadenza stabilita e certa
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.21
+  verified: llm_cited
+- id: g10
+  gate_family: G5_use_of_funds
+  requirement: Transactions cannot fund export-related activities directly connected to exported
+    quantities, distribution networks, or other export-related current expenses.
+  value: export-related activities excluded
+  intake_field: none
+  quote: 'non devono essere a favore di attività connesse all’esportazione, vale a dire
+
+    direttamente connesse ai quantitativi esportati, alla costituzione e alla gestione di
+    una
+
+    rete di distribuzione o ad altre spese correnti connesse all''attività d''esportazione'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.21
+  verified: llm_cited
+- id: g11
+  gate_family: G5_use_of_funds
+  requirement: For investment-backed transactions under the exemption regulation, works must
+    start only after the beneficiary has signed the aid application.
+  value: works must start after aid application signature
+  intake_field: developmentStage
+  quote: 'l’avvio dei lavori degli investimenti di cui al paragrafo A.1 deve essere successivo
+    alla
+
+    data di sottoscrizione, da parte dei soggetti beneficiari finali, della domanda di
+
+    agevolazione'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.124
+  verified: llm_cited
+- id: g12
+  gate_family: G5_use_of_funds
+  requirement: Intangible assets financed must be used exclusively in the final beneficiary's
+    establishment, be amortizable, purchased at market conditions from unrelated third parties,
+    and remain on the beneficiary's balance sheet for at least 3 years.
+  value: intangible asset conditions (exclusive use, amortizable, market purchase, 3-year
+    retention)
+  intake_field: none
+  quote: 'a) essere utilizzati esclusivamente nello stabilimento del soggetto beneficiario
+    finale;
+
+    b) essere considerati ammortizzabili;
+
+    c) essere acquistati a condizioni di mercato da terzi che non hanno relazioni con
+
+    l’acquirente;
+
+    d) figurare nell’attivo del soggetto beneficiario finale per almeno 3 anni.'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.124
+  verified: llm_cited
+- id: g13
+  gate_family: G6_conditionality
+  requirement: Financial transactions must not already be resolved/finalized by the requesting
+    entity before guarantee admission except under specific conditional and time-limited circumstances
+    (max 6 months prior).
+  value: pre-resolution/finalization restrictions
+  intake_field: conditionality
+  quote: 'non devono essere già
+
+    deliberate dai soggetti richiedenti, salvo che la delibera dell’operazione finanziaria
+
+    stessa sia condizionata, nella propria esecutività, all’acquisizione della garanzia'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.21
+  verified: llm_cited
+obligations:
+- requirement: The requesting entity must obtain and retain the signed aid application and
+    supporting documentation prior to submitting the guarantee admission request, and verify
+    consistency with the beneficiary's SME status declaration, under penalty of guarantee
+    ineffectiveness.
+  quote: 'il soggetto richiedente ha l’obbligo di acquisire e di conservare la domanda di
+    agevolazione,
+
+    debitamente compilata e sottoscritta dal legale rappresentante del soggetto beneficiario
+
+    finale e la documentazione sulla cui base è inviata la richiesta di ammissione alla
+
+    garanzia'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.29
+  verified: llm_cited
+- requirement: Risk events must be communicated to the Fund Manager within specified deadlines
+    (3 months, or 4 months for reinsurance/counter-guarantee operations), under penalty of
+    guarantee ineffectiveness.
+  quote: 'A pena di inefficacia della garanzia, fatta eccezione per le operazioni sul capitale
+    di
+
+    rischio, deve essere comunicato al Gestore del Fondo, mediante Portale FdG, entro il
+
+    termine di cui al paragrafo F.2'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.46
+  verified: llm_cited
+- requirement: The final beneficiary must complete the investment program within 3 years from
+    disbursement (single tranche) or from reaching 25% of the total declared amount (multiple
+    tranches), and prepare a final report on fund utilization.
+  quote: 'Il programma di investimento oggetto delle operazioni finanziarie a fronte di investimenti
+
+    deve essere completato dal soggetto beneficiario finale entro:
+
+    a) nel caso di perfezionamento dell’operazione finanziaria in un’unica soluzione, 3 anni
+
+    dalla data del predetto perfezionamento'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.76
+  verified: llm_cited
+- requirement: The final beneficiary must retain the final report on the investment program
+    for 5 years from the maturity date of the guaranteed financial transaction.
+  quote: 'La relazione finale sul programma di investimento di cui al precedente paragrafo
+    A.2 deve
+
+    essere conservata per un periodo di 5 anni dalla data di scadenza dell''operazione
+
+    finanziaria garantita dal Fondo.'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.76
+  verified: llm_cited
+- requirement: The guarantee request must be submitted exclusively via the FdG Portal, and
+    requests not submitted through this channel are inadmissible.
+  quote: 'I soggetti richiedenti possono inviare al Gestore del Fondo la richiesta di ammissione
+    alla
+
+    garanzia esclusivamente attraverso l’apposita funzionalità del Portale FdG.'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.29
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (13/13 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The guarantee follows either the exemption regulation (GBER, e.g., Article 17 aid
+    for SME investments) or, if conditions are not met or upon beneficiary request, the de
+    minimis regulation, with different obligations attached depending on which framework applies.
+  quote: 'ai sensi del regolamento de minimis qualora ne sia fatta richiesta dal soggetto
+
+    beneficiario finale, ovvero nei casi in cui non sia soddisfatta una o più delle condizioni
+
+    stabilite dal regolamento di esenzione'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.22
+  verified: llm_cited
+application:
+  channel: Online submission exclusively via the Portale FdG (Fund Guarantee Portal) by the
+    requesting entity (bank/financial intermediary), with the Portale per le imprese used
+    for SME data verification.
+  typical_timeline: Admission/non-admission proposals are resolved by the Management Board
+    within 2 months from the date of arrival or completion of the request; requesting entities
+    must respond to information requests within 3 months.
+  quote: 'Le proposte di ammissione ovvero di non ammissione sono deliberate dal Consiglio
+    di
+
+    gestione entro 2 mesi dalla data di arrivo o di completamento della richiesta.'
+  source:
+    file: fondo_di_garanzia_disposizioni_operative_2023.pdf
+    locator: fondo_di_garanzia_disposizioni_operative_2023.pdf#p.31
+  verified: llm_cited

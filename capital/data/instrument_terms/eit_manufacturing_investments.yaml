@@ -1,0 +1,90 @@
+id: eit_manufacturing_investments
+name: eit_manufacturing_investments
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sector
+  gate_family: G1_nexus
+  requirement: Applicant must be a B2B Industrial Tech start-up or scale-up addressing critical
+    challenges in the manufacturing sector.
+  value: B2B Industrial Tech start-ups and scale-ups addressing manufacturing sector challenges
+  intake_field: borrowerModel
+  quote: EIT Manufacturing invests in B2B Industrial Tech start-ups and scale-ups with innovative
+    solutions and technologies, that address critical challenges in the manufacturing sector,
+    and are helping the European manufacturing sector to become more efficient, resilient,
+    green, and globally competitive.
+  source:
+    file: eit_manufacturing_investments_page_wayback20260313.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-headquarters
+  gate_family: G1_nexus
+  requirement: Start-up must have its headquarters in an EU27 member state or a Horizon Europe
+    associated state.
+  value: HQ in EU27 or Horizon Europe associated country
+  intake_field: entityCountries
+  quote: Start-ups should have their headquarters in European Union member state (EU27) or
+    in a Horizon Europe associated state.
+  source:
+    file: eit_manufacturing_investments_page_wayback20260313.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-alignment
+  gate_family: G1_nexus
+  requirement: Solutions must be strategically important for European manufacturing and aligned
+    with EIT Manufacturing Strategic Objectives.
+  value: Solutions strategically important for European manufacturing, aligned with EIT Manufacturing
+    Strategic Objectives
+  intake_field: borrowerModel
+  quote: …bold, forward-looking European B2B industry start-ups that build the manufacturing
+    industry of tomorrow, and whose solutions are strategically important for European manufacturing.
+  source:
+    file: eit_manufacturing_investments_page_wayback20260313.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-growth-potential
+  gate_family: G1_nexus
+  requirement: Start-ups considered must show high growth potential and impact, and can address
+    any range of technologies and business models, including incremental improvement and disruption.
+  value: High growth potential and impact required
+  intake_field: developmentStage
+  quote: Start-ups considered show high growth potential and impact and address all range
+    of technologies and business models, incremental improvement, and disruption.
+  source:
+    file: eit_manufacturing_investments_page_wayback20260313.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-strategic-fit
+  gate_family: G1_nexus
+  requirement: Solutions should be aligned with the EIT Manufacturing Strategic Objectives.
+  value: Alignment with EIT Manufacturing Strategic Objectives required
+  intake_field: borrowerModel
+  quote: Solutions should be aligned with the EIT Manufacturing Strategic Objectives
+  source:
+    file: eit_manufacturing_investments_page_wayback20260313.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-ticket-size
+  gate_family: G3_financial
+  requirement: Investment tickets offered to startups are up to €500,000.
+  value: Up to €500,000
+  intake_field: ticketBand
+  quote: Tickets up to € 500,000
+  source:
+    file: eit_manufacturing_investments_page_wayback20260313.html
+    locator: chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (6/6 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Apply via the EIT Manufacturing Funding Accelerate call application link
+  typical_timeline: Apply for Funding Accelerate 2024 (annual call cycle referenced)
+  quote: Apply for Funding Accelerate 2024 Apply here
+  source:
+    file: eit_manufacturing_investments_page_wayback20260313.html
+    locator: chunk 1
+  verified: llm_cited

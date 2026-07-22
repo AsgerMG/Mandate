@@ -1,0 +1,352 @@
+id: satr_fr_equity
+name: satr_fr_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_scope_territory
+  gate_family: G1_nexus
+  requirement: The scheme applies to the whole national territory of France; beneficiaries
+    may be required to have an establishment or branch in France at the time aid is paid.
+  value: France (établissement/succursale requis au versement)
+  intake_field: entityCountries
+  quote: Il est toutefois autorisé d’exiger que le bénéficiaire ait un établissement ou une
+    succursale dans l’Etat membre qui octroie l’aide au moment du versement de l’aide
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.4
+  verified: llm_cited
+- id: g1_no_export_conditionality
+  gate_family: G1_nexus
+  requirement: Aid must not be conditional on export-related activity or on preference for
+    domestic over imported products.
+  value: 'excluded: export-linked and domestic-preference aid'
+  intake_field: activityCountries
+  quote: aux aides en faveur d’activités liées à l’exportation vers des pays tiers ou des
+    États membres, c’est-à-dire aux aides directement liées aux quantités exportées
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.4
+  verified: llm_cited
+- id: g2_sme_definition
+  gate_family: G2_size_ownership
+  requirement: Beneficiary must qualify as an SME (micro/small/medium) under Annex I of the
+    GBER, i.e. fewer than 250 employees and turnover ≤ EUR 50 million or balance sheet ≤ EUR
+    43 million.
+  value: <250 FTE; turnover ≤€50m or balance sheet ≤€43m
+  intake_field: fteBand
+  quote: La catégorie des micro, petites et moyennes entreprises (PME) est constituée des
+    entreprises qui occupent moins de 250 personnes et dont le chiffre d'affaires annuel n'excède
+    pas 50 millions EUR ou dont le total du bilan annuel n'excède pas 43 millions EUR.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.32
+  verified: llm_cited
+- id: g2_small_unlisted_enterprise
+  gate_family: G2_size_ownership
+  requirement: 'For young-company/start-up type aid, the beneficiary must be a small unlisted
+    company: fewer than 50 employees, turnover or balance sheet not exceeding EUR 10 million,
+    and not listed on an official stock exchange (excluding alternative trading platforms).'
+  value: <50 FTE; turnover/balance ≤€10m; unlisted
+  intake_field: balanceBand
+  quote: 'Petite entreprise non cotée : une entreprise dont l''effectif est inférieur à 50
+    personnes, dont le chiffre d''affaires ou le total du bilan annuel n''excède pas 10 millions
+    d''euros, et qui est non reprise à la cote officielle d’une bourse de valeurs, exception
+    faite des plateformes de négociation alternatives.'
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.25
+  verified: llm_cited
+- id: g2_undertaking_in_difficulty_excluded
+  gate_family: G2_size_ownership
+  requirement: Undertakings in difficulty are excluded from the scheme, except young-company
+    aid and certain financial intermediaries; companies less than 3 years old are generally
+    not deemed in difficulty.
+  value: excluded unless start-up/derogation applies
+  intake_field: lossesOverHalfCapital
+  quote: aux aides aux entreprises en difficulté à l’exception des aides aux jeunes pousses
+    et des aides aux intermédiaires financiers considérés comme tels au titre de la section
+    5.2.1 du présent régime
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.4
+  verified: llm_cited
+- id: g2_ownership_control_test
+  gate_family: G2_size_ownership
+  requirement: SME status calculation must take into account partner and linked enterprises,
+    notably where another undertaking holds 25% or more of capital or voting rights.
+  value: 25% capital/voting rights threshold for partner enterprise
+  intake_field: ownerOver25
+  quote: une entreprise (entreprise en amont) détient, seule ou conjointement avec une ou
+    plusieurs entreprises liées au sens du paragraphe 3, 25 % ou plus du capital ou des droits
+    de vote d'une autre entreprise (entreprise en aval)
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.32
+  verified: llm_cited
+- id: g1_recovery_injunction_exclusion
+  gate_family: G1_nexus
+  requirement: Undertakings subject to an outstanding recovery order following a prior Commission
+    decision declaring French aid illegal and incompatible are excluded.
+  value: excluded if unexecuted recovery order exists
+  intake_field: none
+  quote: aux aides en faveur d’une entreprise faisant l’objet d’une injonction de récupération
+    non exécutée, émise dans une décision antérieure de la Commission déclarant une aide octroyée
+    par la France illégale et incompatible avec le marché intérieur
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.4
+  verified: llm_cited
+- id: g1_sector_exclusions
+  gate_family: G1_nexus
+  requirement: Primary agricultural production (except risk-finance aid) and certain agricultural
+    processing/marketing activities tied to producer prices or quantities are excluded sectors.
+  value: agriculture primary production and price/quantity-linked processing excluded
+  intake_field: none
+  quote: la production agricole primaire, exception faite des aides au financement des risques
+    ;
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.4
+  verified: llm_cited
+- id: g4_young_company_age
+  gate_family: G4_borrower_model
+  requirement: For start-up (jeunes pousses) aid eligibility, an unlisted SME must be operating
+    in any market for less than 10 years after registration, or less than 7 years after its
+    first commercial sale.
+  value: unlisted SME <10y since registration or <7y since first commercial sale
+  intake_field: foundedYear
+  quote: une PME non cotée exerçant des activités sur n’importe quel marché depuis moins de
+    10 après son enregistrement ou moins de 7 ans après sa première vente commerciale
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.4
+  verified: llm_cited
+- id: g4_risk_finance_loss_sharing
+  gate_family: G4_borrower_model
+  requirement: For risk-finance aid with unequal loss-sharing, the first-loss tranche borne
+    by the public investor is capped at 25% of the risk-finance investment; for guarantees,
+    the guarantee rate is capped at 80% and total losses borne by the Member State are capped
+    at 25% of the underlying guaranteed portfolio.
+  value: first loss ≤25%; guarantee rate ≤80%; total losses ≤25% of portfolio
+  intake_field: borrowerModel
+  quote: la première perte supportée par l’investisseur public est plafonnée à 25 % de l’investissement
+    en faveur du financement des risques
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.8
+  verified: llm_cited
+- id: g3_prospecting_aid_intensity
+  gate_family: G3_financial
+  requirement: Aid intensity for prospecting costs (due diligence/investment research) must
+    not exceed 50% of eligible costs.
+  value: ≤50% of eligible costs
+  intake_field: cofinancingBand
+  quote: L’intensité de l’aide ne doit pas être supérieure à 50 % des coûts admissibles.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.17
+  verified: llm_cited
+- id: g3_ipr_transfer_cap
+  gate_family: G3_financial
+  requirement: For start-up aid, the aid amount linked to transfer of IP rights or granting
+    of access rights must not exceed EUR 1 million, beyond which it must be notified individually.
+  value: ≤€1,000,000 per IP transfer/access right grant
+  intake_field: ticketBand
+  quote: le montant d’aide du transfert de DPI ou de l’octroi des droits d’accès liés au titre
+    du présent paragraphe ne dépasse pas 1 million EUR
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.16
+  verified: llm_cited
+- id: g3_publication_threshold
+  gate_family: G3_financial
+  requirement: Individual aid amounts above EUR 100,000 (or EUR 10,000 for primary agricultural
+    production) must be published on the Transparency Award Module.
+  value: '>€100,000 (or >€10,000 agri) triggers publication'
+  intake_field: ticketBand
+  quote: concernant chaque aide individuelle de plus de 100 000€ ( ou de 10 000 € si l’entreprise
+    est active dans le secteur de la production agricole primaire)
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.19
+  verified: llm_cited
+- id: g3_pole_innovation_investment_intensity
+  gate_family: G3_financial
+  requirement: Investment aid intensity for innovation clusters is capped at 50% of eligible
+    costs, with regional bonuses of up to 15% (zone a) or 5% (zone c).
+  value: ≤50% (up to 65% zone a, 55% zone c)
+  intake_field: cofinancingBand
+  quote: L’intensité des aides à l’investissement en faveur des pôles d’innovation est limitée
+    à 50 % des coûts admissibles.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.18
+  verified: llm_cited
+- id: g3_pole_innovation_notification_threshold
+  gate_family: G3_financial
+  requirement: Individual notification to the Commission is mandatory if the GGE aid amount
+    exceeds EUR 10 million per innovation cluster (investment and operating aid combined).
+  value: '>€10,000,000 GGE per pôle triggers notification'
+  intake_field: ticketBand
+  quote: Une notification individuelle de l’aide à la Commission européenne est obligatoire
+    si le montant de l’aide exprimé en ESB est supérieur à 10 000 000 EUR par pôle
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.18
+  verified: llm_cited
+- id: g3_sme_innovation_notification_threshold
+  gate_family: G3_financial
+  requirement: Individual notification is mandatory for SME innovation aid if the GGE amount
+    exceeds EUR 10 million per undertaking and per project.
+  value: '>€10,000,000 GGE per undertaking/project'
+  intake_field: ticketBand
+  quote: Une notification individuelle de l’aide à la Commission européenne est obligatoire
+    si le montant de l’aide exprimé en ESB est supérieur à 10 000 000 EUR par entreprise et
+    par projet.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.19
+  verified: llm_cited
+- id: g3_process_org_innovation_notification_threshold
+  gate_family: G3_financial
+  requirement: Individual notification is mandatory for process/organisational innovation
+    aid if the GGE amount exceeds EUR 12.5 million per undertaking and per project.
+  value: '>€12,500,000 GGE per undertaking/project'
+  intake_field: ticketBand
+  quote: Une notification individuelle de l’aide à la Commission européenne est obligatoire
+    si le montant de l’aide exprimé en ESB est supérieur à 12 500 000 EUR par entreprise et
+    par projet.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.20
+  verified: llm_cited
+- id: g3_test_infra_notification_threshold
+  gate_family: G3_financial
+  requirement: Individual notification is mandatory for testing/experimentation infrastructure
+    aid if the GGE amount exceeds EUR 25 million per infrastructure.
+  value: '>€25,000,000 GGE per infrastructure'
+  intake_field: ticketBand
+  quote: Une notification individuelle de l’aide à la Commission européenne est obligatoire
+    si le montant de l’aide exprimé en ESB est supérieur à 25 000 000 EUR par infrastructures
+    d’essai et d’expérimentation.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.16
+  verified: llm_cited
+- id: g4_process_org_innovation_large_enterprise_condition
+  gate_family: G4_borrower_model
+  requirement: Aid for process/organisational innovation to large enterprises is only allowed
+    if they effectively collaborate with SMEs bearing at least 30% of eligible costs.
+  value: large enterprises require SME collaboration bearing ≥30% costs
+  intake_field: consortium
+  quote: les aides en faveur des grandes entreprises ne sont autorisées que si ces dernières
+    collaborent effectivement avec des PME dans l’activité bénéficiant de l’aide (les PME
+    supportant, quant à elles, au moins 30 % des coûts admissibles).
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.19
+  verified: llm_cited
+- id: g5_prospecting_eligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs for prospecting aid are limited to initial screening/formal
+    due-diligence costs and investment research costs on individual eligible companies, subject
+    to public dissemination conditions.
+  value: due diligence and investment research costs only
+  intake_field: none
+  quote: les coûts de premier examen et de contrôle préalable formel effectués par des gestionnaires
+    d’intermédiaires financiers ou des investisseurs pour déterminer quelles sont les entreprises
+    admissibles aux aides au financement des risques
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.17
+  verified: llm_cited
+- id: g5_innovation_aid_eligible_costs
+  gate_family: G5_use_of_funds
+  requirement: SME innovation aid may fund costs of obtaining/validating/defending patents
+    and other intangible assets, secondment of highly qualified personnel, and innovation
+    advisory/support services.
+  value: patents, personnel secondment, innovation advisory services
+  intake_field: none
+  quote: Ces aides à l’innovation peuvent être octroyées pour l’obtention, la validation et
+    la défense de brevets ou d’autres actifs incorporels, pour le détachement de personnel
+    hautement qualifié et pour l’acquisition de services de conseil et d’appui à l’innovation.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_rnd_sa111723_regime_cadre_2024_2026.pdf#p.19
+  verified: llm_cited
+obligations:
+- requirement: Aid granted under the scheme must comply with all its conditions and must directly
+    reference the scheme number in the granting act.
+  quote: Les aides d’Etat accordées aux entreprises sur la base de ce régime doivent en respecter
+    toutes les conditions et y faire directement référence.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.1
+  verified: llm_cited
+- requirement: Granting authorities must keep detailed records on individual aid for 10 years,
+    until 31 December 2036 (or 10 years after expiry if extended), and provide information
+    to the Commission within 20 working days of request.
+  quote: Les dossiers concernant les aides individuelles versées sur le fondement du présent
+    régime (dont les pièces justificatives évoquées au point 5.1.3) sont conservés jusqu’au
+    31 décembre 2036
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.19
+  verified: llm_cited
+- requirement: Financial intermediaries must be managed on a commercial basis, sharing investment
+    risk and acting under duty of care, avoiding conflicts of interest, with market-conform
+    remuneration.
+  quote: ils sont tenus, légalement ou contractuellement, d’agir dans le respect des bonnes
+    pratiques et avec la diligence d’un gestionnaire professionnel agissant de bonne foi et
+    évitant les conflits d’intérêts
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.8
+  verified: llm_cited
+- requirement: Individual aid above the publication threshold must be published within six
+    months of grant and remain accessible for at least ten years.
+  quote: Elles sont publiées dans les six mois suivant la date à laquelle l’aide a été octroyée
+    et peuvent être consultées pendant au moins dix ans après la date à laquelle l’aide a
+    été octroyée.
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.19
+  verified: llm_cited
+- requirement: An annual report must be transmitted to the European Commission by French authorities
+    in accordance with Regulation (EU) 2015/1589 and Regulation (EC) 794/2004.
+  quote: Le présent régime d’aide cadre fera l’objet d’un rapport annuel transmis à la Commission
+    européenne par les autorités françaises
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.19
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/21 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid with identifiable eligible costs may be cumulated with other State aid on different
+    eligible costs, or on overlapping costs only if the combined intensity/amount ceilings
+    under GBER are not exceeded; aid without identifiable eligible costs may be cumulated
+    up to the highest applicable financing ceiling; cumulation with de minimis aid on the
+    same costs is barred if it would exceed the scheme's ceilings.
+  quote: 'Les aides aux coûts admissibles identifiables octroyées sur la base du présent régime
+    sont cumulables avec : - toute autre aide d’Etat dès lors qu’elle porte sur des coûts
+    admissibles identifiables différents'
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.18
+  verified: llm_cited
+application:
+  channel: Aid may be granted on a rolling basis (au fil de l'eau) or through calls for projects/expressions
+    of interest/tenders/competitions referencing the scheme number SA.111729.
+  typical_timeline: Not specified; scheme in force 1 January 2024 to 31 December 2026 (extendable
+    subject to Commission decision).
+  quote: Le présent régime peut être utilisé pour octroyer des aides au fil de l’eau. Il peut
+    être également utilisé dans le cadre d’appels à projets (AAP), d’appels à manifestation
+    d’intérêts (AMI), d’appels d’offres (AO), ou de concours
+  source:
+    file: satr_fr_equity_regime_cadre_sa111729.pdf
+    locator: satr_fr_equity_regime_cadre_sa111729.pdf#p.2
+  verified: llm_cited

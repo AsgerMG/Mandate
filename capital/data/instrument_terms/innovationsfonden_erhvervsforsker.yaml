@@ -1,0 +1,417 @@
+id: innovationsfonden_erhvervsforsker
+name: innovationsfonden_erhvervsforsker
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-company-cvr
+  gate_family: G1_nexus
+  requirement: The company must have a branch with an independent CVR number geographically
+    located in Denmark, where the Industrial PhD student is employed and performs their work.
+  value: Company branch with independent CVR number located in Denmark
+  intake_field: entityCountries
+  quote: Have a branch with an independent CVR number and geographically located in Denmark2.
+    The Industrial PhD student is employed and can perform his or her work for the company
+    here.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g1-nexus-university
+  gate_family: G1_nexus
+  requirement: The participating university must be a university or higher educational institution
+    in Denmark or abroad officially approved to conduct a PhD programme, and must appoint
+    a university supervisor.
+  value: University in Denmark or abroad, officially approved to award PhDs
+  intake_field: entityCountries
+  quote: Be a university or a higher educational institution in Denmark or abroad that is
+    officially approved to conduct a PhD programme.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.6
+  verified: llm_cited
+- id: g1-nexus-borrower-model
+  gate_family: G1_nexus
+  requirement: An Industrial PhD project must be a collaboration between a company, a university,
+    and an Industrial PhD student.
+  value: Tripartite collaboration required
+  intake_field: consortium
+  quote: An Industrial PhD project is a collaboration between a company, a university and
+    an Industrial PhD student.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g2-financial-independence
+  gate_family: G2_size_ownership
+  requirement: The company must be financially independent of the university, meaning the
+    university may own at most 25% of the company and there may be no significant cash flow
+    from the university to the company.
+  value: University ownership ≤25%; no significant cash flow from university to company
+  intake_field: institutionalOwner
+  quote: the university may own a maximum of 25 % of the company; and there may not be a significant3
+    cash flow from the university to the company.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''the university may own a maximum of 25 % of
+    the co'''
+- id: g2-private-sector-status
+  gate_family: G2_size_ownership
+  requirement: The company must be part of the private sector, meaning it must not be a state,
+    regional, or municipal organisation or interest organisation for public organisations,
+    and must have turnover with no more than 50% coming from public funds.
+  value: 'Private sector: not public body; ≤50% turnover from public funds'
+  intake_field: institutionalOwner
+  quote: Be neither a state, nor a regional, nor a municipal organisation or be an interest
+    organisation for public organisations. Have a turnover with no more than 50 % coming from
+    public funds (including EU subsidies and payments from citizens as required by law).
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Be neither a state, nor a regional, nor a municipa'''
+- id: g2-undertaking-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: The company must not be an 'undertaking in difficulty' as defined in the GBER,
+    with an exception for companies that fell into difficulty only between 1 January 2020
+    and 31 December 2021.
+  value: Not an undertaking in difficulty (GBER Art. 2(1) No.18), with COVID-period exception
+  intake_field: lossesOverHalfCapital
+  quote: Must not be an ‘undertaking in difficulty’ as defined in Article 2 (1), No. 18 of
+    the Commission Regulation (EU) No. 651/2014 of 17 June 2014 declaring certain categories
+    of aid compatible with the internal market pursuant to Articles 107 and 108 of the Treaty.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g2-financial-capacity
+  gate_family: G2_size_ownership
+  requirement: The company must have the finances and facilities to manage the project throughout
+    the entire project period.
+  value: Financial and operational capacity for full project duration
+  intake_field: turnoverBand
+  quote: Have the finances and facilities to manage the project throughout the entire project
+    period.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g2-no-insolvency
+  gate_family: G2_size_ownership
+  requirement: The company must not be subject to compulsory dissolution, bankruptcy, voluntary
+    liquidation, or suspension of payments.
+  value: No insolvency/dissolution/liquidation proceedings
+  intake_field: lossesOverHalfCapital
+  quote: Not be subject to compulsory dissolution, bankruptcy, voluntary liquidation or suspension
+    of payments.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g2-repayment-compliance
+  gate_family: G2_size_ownership
+  requirement: The company must have complied with any repayment orders issued by the European
+    Commission regarding illegal state aid.
+  value: No outstanding illegal state aid recovery orders
+  intake_field: none
+  quote: Have complied with any repayment orders issued by the European Commission in one
+    or more decisions where state aid granted by the Danish authorities has been found illegal
+    and incompatible with the internal market.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g4-candidate-education
+  gate_family: G4_borrower_model
+  requirement: The Industrial PhD candidate must have completed a project-relevant education
+    with a master's degree and meet minimum thesis grade and grade-point average requirements.
+  value: Master's degree, thesis grade ≥10, GPA thresholds per scale
+  intake_field: developmentStage
+  quote: Have a project-relevant education completed with a master's degree.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.6
+  verified: llm_cited
+- id: g4-candidate-timeline
+  gate_family: G4_borrower_model
+  requirement: If applying without a named candidate, or with a candidate who has up to eight
+    months of studies remaining, the qualified candidate must be found/complete studies within
+    six months of the grant award.
+  value: Candidate must be secured within 6 months of grant
+  intake_field: needBy
+  quote: the company and the university must find a candidate who meets the requirements within
+    six months from the date the grant is awarded.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.6
+  verified: llm_cited
+- id: g4-employment-fulltime
+  gate_family: G4_borrower_model
+  requirement: The Industrial PhD student must be employed full time in the company, with
+    work fully allocated to the project and programme, and the employment contract must release
+    the student from unrelated assignments.
+  value: Full-time employment, fully allocated to project
+  intake_field: borrowerModel
+  quote: the Industrial PhD student must be employed full time in the company and thus work
+    under the conditions that apply for private employment. The student's work assignments
+    and time must be fully allocated to the Industrial PhD project and programme
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.18
+  verified: llm_cited
+- id: g4-min-pay
+  gate_family: G4_borrower_model
+  requirement: The Industrial PhD student's total salary (salary plus pension) must at least
+    correspond to the total salary for state-employed PhD fellows under the relevant collective
+    agreement.
+  value: Minimum pay = state PhD fellow collective agreement level
+  intake_field: borrowerModel
+  quote: The Industrial PhD student's total salary (the sum of salary and pension) must at
+    least correspond to the total salary for PhD fellows employed in the state as determined
+    in the relevant collective agreement.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.19
+  verified: llm_cited
+- id: g3-salary-funding-cap
+  gate_family: G3_financial
+  requirement: Innovation Fund Denmark finances up to DKK 17,000 per month of the Industrial
+    PhD student's salary for three years, capped at a maximum of 50% of total salary expenses.
+  value: Up to DKK 17,000/month, max 50% of total salary, for 3 years
+  intake_field: ticketBand
+  quote: Innovation Fund Denmark finances up to DKK 17,000 per month of the Industrial PhD
+    student's salary for three years. However, a maximum 50% of the total salary (actual salary
+    expenses calculated on the basis of the annual gross salary, including pension, insurance
+    and holiday pay) can be covered.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g3-travel-funding-cap
+  gate_family: G3_financial
+  requirement: The company has DKK 100,000 available for the Industrial PhD student's travel
+    and PhD courses, with sub-limits for supervisor travel expenses.
+  value: DKK 100,000 for student travel/courses; up to DKK 5,000 + DKK 5,000 for supervisor
+    travel
+  intake_field: ticketBand
+  quote: The company will also have DKK 100,000 available for the Industrial PhD student's
+    • travels ... and • participation in PhD courses that yield ECTS points and are not offered
+    at the host university.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g3-foreign-university-travel
+  gate_family: G3_financial
+  requirement: If the host university is located outside Denmark, up to DKK 122,000 additional
+    grant is given for travel and accommodation.
+  value: Up to DKK 122,000 additional for foreign host university
+  intake_field: ticketBand
+  quote: If the host university for the Industrial PhD programme is located outside Denmark,
+    up to DKK 122,000 will be given as an additional grant for travel and accommodation at
+    the university.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g3-overall-cofinancing-cap
+  gate_family: G3_financial
+  requirement: A maximum of 50% of a company's total expenses for an Industrial PhD project
+    may be financed by public funds.
+  value: Max 50% public co-financing of total project costs
+  intake_field: cofinancingBand
+  quote: Please note that a maximum of 50 % of a company's total expenses for an Industrial
+    PhD project may be financed by public funds.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g3-university-fixed-grant
+  gate_family: G3_financial
+  requirement: Innovation Fund Denmark gives the university a fixed amount of DKK 360,000
+    (incl. overhead), corresponding to DKK 10,000 per month, to cover supervision and related
+    costs.
+  value: DKK 360,000 fixed grant to university (DKK 10,000/month)
+  intake_field: ticketBand
+  quote: 'Innovation Fund Denmark gives the university a fixed amount of DKK 360,000 (incl.
+    overhead) to cover:'
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g3-state-aid-basis
+  gate_family: G3_financial
+  requirement: Investments are provided under GBER Article 25, requiring the entire funded
+    part of the project to fall within the definition of 'industrial research', and the company's
+    public funding must not exceed 50% of eligible project costs.
+  value: GBER Art.25 industrial research; public funding ≤50% eligible costs
+  intake_field: cofinancingBand
+  quote: in as far as the part of the project receiving funding must in its entirety fall
+    within “industrial research” as defined in the General Block Exemption Regulation article
+    2 (84) and (85).
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.23
+  verified: llm_cited
+- id: g5-use-of-funds-scope
+  gate_family: G5_use_of_funds
+  requirement: Funds may only be used to cover the company's and university's respective project-related
+    expenses, and only within the project period as defined in e-grant.
+  value: Restricted to project-related expenses within defined project period
+  intake_field: none
+  quote: The funds may only be used to cover the respective project-related expenses of the
+    company and the university, and only within the project period as defined in e-grant.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.12
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The funds may only be used to cover the respective'''
+- id: g5-project-duration
+  gate_family: G5_use_of_funds
+  requirement: The project duration corresponds to the three-year Danish PhD education programme;
+    if the programme exceeds three years, funding covers only the final three years.
+  value: 3-year funded duration (final 3 years if programme is longer)
+  intake_field: none
+  quote: The duration of the project corresponds to the duration of the education programme,
+    which in Denmark is three years. If the project exceeds three years, for example in the
+    case of a foreign PhD programme, Innovation Fund Denmark will only finance the project
+    for the final three years.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.13
+  verified: llm_cited
+- id: g5-five-year-completion
+  gate_family: G5_use_of_funds
+  requirement: Innovation Fund Denmark reserves the right to discontinue the project if the
+    PhD degree has not been achieved within five years after project start (excluding leaves
+    of absence).
+  value: PhD must be achieved within 5 years or project may be discontinued
+  intake_field: needBy
+  quote: Innovation Fund Denmark reserves the right to discontinue the project if the PhD
+    degree has not been achieved within five years after the start of the project (excluding
+    leaves of absence).
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.13
+  verified: llm_cited
+- id: g6-non-compete-restriction
+  gate_family: G6_conditionality
+  requirement: Non-compete clauses in the employment contract must not limit the student's
+    ability to obtain employment elsewhere, and the contract must not require reimbursement
+    of educational expenses on termination or job change.
+  value: No restrictive non-compete or reimbursement clauses allowed
+  intake_field: conditionality
+  quote: Non-compete clauses or the like in the employment contract must not limit the possibility
+    for the student to obtain employment elsewhere.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.18
+  verified: llm_cited
+- id: g6-duty-to-inform
+  gate_family: G6_conditionality
+  requirement: The company and university must immediately notify the Fund of significant
+    changes to the grant premises; the project may only continue once changes are approved
+    by the Fund.
+  value: Mandatory notification of significant changes; Fund approval required to continue
+  intake_field: conditionality
+  quote: The company and the university must immediately notify the Fund if there are significant
+    changes in the premises for the grant.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.21
+  verified: llm_cited
+obligations:
+- requirement: The student must gain experience with knowledge dissemination related to the
+    PhD project, per the Danish PhD Regulation, agreed among company, student and university
+    before project start.
+  quote: In a Danish PhD programme, the student must gain experience with knowledge dissemination
+    related to the PhD project, cf. Chapter 3, Section 7 of the Danish PhD Regulation.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.20
+  verified: llm_cited
+- requirement: The company must declare in good faith that total public subsidies to the company
+    do not exceed 50% of total project costs.
+  quote: the company must declare in good faith that the total public subsidies to the company
+    do not exceed 50 % of the company's total project costs, cf. section 8.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.20
+  verified: llm_cited
+- requirement: At the end of the project, the company must submit final accounts, an auditor's
+    statement, and a final project evaluation before receiving the final grant payment.
+  quote: 'The company receives the last part of the total grant when – at the end of the project
+    – Innovation Fund Denmark has received and approved: • The final accounts • An auditor''s
+    statement • A final project evaluation'
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.20
+  verified: llm_cited
+- requirement: The university receives the final 15% of its grant only upon documentation
+    that the student obtained the PhD degree; if not obtained within five years, the final
+    15% is retained.
+  quote: If the student does not obtain the PhD degree within five years of the project start
+    date (excluding leaves of absence approved by the Fund), the last 15 % will be retained.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.21
+  verified: llm_cited
+- requirement: Eighteen months after project start, the student must complete a questionnaire
+    about project status and collaboration.
+  quote: Eighteen months after the start of the Industrial PhD project, the student must complete
+    a questionnaire about the status of the project and collaboration within the project.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.21
+  verified: llm_cited
+- requirement: If a project is terminated, project participants must prepare a joint signed
+    statement about the interruption within three months, and repayment of unspent advance
+    funding may be ordered.
+  quote: The statement must be signed by the company, the university and the student and reach
+    the Fund no later than three months after the interruption.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.22
+  verified: llm_cited
+- requirement: Accounting records relating to the grant must be retained for ten years by
+    private companies, as the grant is awarded under GBER Article 25.
+  quote: For private companies, the retention period for accounting records is ten years from
+    the date of the grant, as the grant is awarded pursuant to Article 25 of the EU General
+    Block Exemption Regulation (see section 8).
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.22
+  verified: llm_cited
+- requirement: The applicant guarantees that receipt and use of the investment does not violate
+    national or international sanctions, including EU restrictive measures concerning Russia/Ukraine.
+  quote: The applicant guarantees that receipt and use of the investment from Innovation Fund
+    Denmark does not violate existing national or international sanctions, including sanctions
+    on freezing funds or bans on direct or indirect control.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.26
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/24 gates, 8/8 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Public funding to the company (including this grant) may not exceed 50% of the company's
+    total eligible project costs, and the company must declare compliance in good faith.
+  quote: Irrespective of those limits, the public funding for the company may not exceed 50
+    % of the company’s eligible project costs.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.24
+  verified: llm_cited
+application:
+  channel: Electronic application via www.e-grant.dk, submitted by the company supervisor
+  typical_timeline: Innovation Fund Denmark aims to process applications within 13 weeks;
+    approved projects must start within six months of the letter of commitment
+  quote: The Innovation Fund Denmark aims to process applications within 13 weeks.
+  source:
+    file: innovationsfonden_erhvervsforsker_industrial_phd_guidelines_2026.pdf
+    locator: p.18
+  verified: llm_cited

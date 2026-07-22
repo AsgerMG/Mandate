@@ -1,0 +1,161 @@
+id: satr_gr_equity
+name: satr_gr_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-greek-market
+  gate_family: G1_nexus
+  requirement: The initiative targets Greek companies or companies with a strong Greek footprint
+    operating in the Greek market.
+  value: Greek companies / strong Greek footprint
+  intake_field: activityCountries
+  quote: καθώς αναφερόμαστε σε αμιγώς ελληνικές επιχειρήσεις ή επιχειρήσεις με ισχυρό ελληνικό
+    αποτύπωμα, που χωρίς την πρωτοβουλία αυτή πιθανώς δεν θα ετύγχαναν χρηματοδότησης
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g1-nexus-nationwide-coverage
+  gate_family: G1_nexus
+  requirement: The initiative covers the whole country and most economic sectors and all stages
+    of business maturity.
+  value: All of Greece, most sectors, all business stages
+  intake_field: activityCountries
+  quote: Είναι μια πρωτοβουλία που καλύπτει όλη την χώρα, τους περισσότερους τομείς της οικονομίας
+    και όλα τα στάδια επιχειρηματικής ωρίμανσης μιας επιχείρησης
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-size-sme
+  gate_family: G2_size_ownership
+  requirement: Investments target micro, small and medium-sized enterprises (SMEs).
+  value: SMEs
+  intake_field: fteBand
+  quote: κάθε 1 ευρώ, που επενδύεται από τους πόρους των ΕΔΕΤ μέσω της πρωτοβουλίας σε μικρομεσαίες
+    επιχειρήσεις, αντιστοιχεί σε περίπου 4,5 ευρώ συνολικών επενδύσεων προς τις επιχειρήσεις
+    αυτές
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4-borrower-equity
+  gate_family: G4_borrower_model
+  requirement: Funding is provided as venture capital / equity participation, not as a loan
+    or grant, channeled via intermediary fund managers.
+  value: Equity / venture capital investment
+  intake_field: borrowerModel
+  quote: δημιουργήθηκε με απώτερο σκοπό την επιτάχυνση της εξέλιξης του τομέα κεφαλαίων επιχειρηματικών
+    συμμετοχών στην Ελλάδα
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-borrower-intermediaries
+  gate_family: G4_borrower_model
+  requirement: Capital is channeled from EquiFund to intermediary financial entities (selected
+    fund management teams), who independently select and invest in businesses.
+  value: Intermediated via selected fund managers
+  intake_field: borrowerModel
+  quote: Ο ανωτέρω σκοπός της πρωτοβουλίας επιτυγχάνεται με τη διοχέτευση κεφαλαίων από το
+    EquiFund σε ενδιάμεσους χρηματοοικονομικούς φορείς, δηλαδή σε επιλεγμένες από το ΕΤαΕ
+    ομάδες διαχείρισης
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-early-stage
+  gate_family: G5_use_of_funds
+  requirement: Funds under the Early Stage window support start-up companies.
+  value: Start-ups (Early Stage window)
+  intake_field: developmentStage
+  quote: Ένας από τους στόχους της πρωτοβουλίας ήταν η στήριξη και πάλι των νεοφυών εταιριών
+    (start-ups), οι οποίες και αποτελούν ένα σημαντικό μέρος της επιχειρηματικότητας (το παράθυρο
+    της πρωτοβουλίας με την ονομασία Early Stage)
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5-use-growth
+  gate_family: G5_use_of_funds
+  requirement: Funds under the Growth window provide growth capital to larger enterprises
+    needing expansion capital.
+  value: Growth capital (Growth window)
+  intake_field: developmentStage
+  quote: Και φυσικά υπάρχει και η στόχευση σε μεγαλύτερες επιχειρήσεις που χρειάζονται κεφάλαια
+    ανάπτυξης (το παράθυρο Growth)
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5-use-innovation
+  gate_family: G5_use_of_funds
+  requirement: Funds under the Innovation window support seed capital, technology transfer
+    and business acceleration for early-stage ventures, including commercial exploitation
+    of research results.
+  value: Seed capital, technology transfer, accelerators (Innovation window)
+  intake_field: developmentStage
+  quote: το EquiFund εισήγαγε την ενίσχυση επιχειρηματικών εγχειρημάτων και σε πρωθύστερο
+    στάδιο, με κεφάλαια σποράς (seed capital), μεταφοράς τεχνολογίας (technology transfer)
+    και επιχειρηματικής επιτάχυνσης (accelerators) (το παράθυρο Innovation)
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-cond-viability
+  gate_family: G6_conditionality
+  requirement: Investment risk is only taken where the idea, team and overall venture are
+    projected to be viable and profitable.
+  value: Viable and profitable venture required
+  intake_field: conditionality
+  quote: Αλλά μόνο όταν η ιδέα, η ομάδα και το όλο εγχείρημα προδιαγράφονται βιώσιμα και προσοδοφόρα
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-cond-independent-selection
+  gate_family: G6_conditionality
+  requirement: Selected fund management teams have exclusive discretion to evaluate proposals
+    and business ventures and to select which ones to invest in.
+  value: Independent professional selection by fund managers
+  intake_field: conditionality
+  quote: οι επιλεγμένες από το ΕΤαΕ διαχειριστικές ομάδες έχουν την αποκλειστική ευχέρεια
+    να προβούν οι ίδιες στην αξιολόγηση των προτάσεων και των επιχειρηματικών εγχειρημάτων
+    και τελικώς στην επιλογή αυτών, στις οποίες θα επενδύσουν
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-cond-investment-period
+  gate_family: G6_conditionality
+  requirement: The investment period of the existing funds cannot extend beyond the year 2023,
+    with follow-on investments possible for four years after for companies already financed
+    before 2023.
+  value: Investment period ends 2023, follow-on investments for 4 years thereafter
+  intake_field: needBy
+  quote: Υπενθυμίζεται ότι η επενδυτική περίοδος των υφιστάμενων ταμείων δε μπορεί να ξεπεράσει
+    το έτος 2023. Μετά το 2023 και για μια περίοδο 4 ετών, θα γίνονται συμπληρωματικές επενδύσεις
+    σε επιχειρήσεις που θα έχουν λάβει χρηματοδότηση πριν το 2023
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 3
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Applications for fund management teams were submitted via an open call for expression
+    of interest published on the EIF website; underlying businesses apply directly to the
+    selected intermediary fund managers, not to HDB/EquiFund directly.
+  typical_timeline: The call for fund managers ran from 28.12.2016 with a submission deadline
+    of 1 March 2017; ongoing business investments occur continuously through the selected
+    fund managers.
+  quote: Η διαδικασία επιλογής διεξήχθη μέσω ανοιχτής πρόσκλησης για εκδήλωση ενδιαφέροντος,
+    η οποία αναρτήθηκε στην ιστοσελίδα του ΕΤαΕ στις 28.12.2016
+  source:
+    file: satr_gr_equity_hdb_equifund_page.html
+    locator: chunk 2
+  verified: llm_cited

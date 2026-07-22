@@ -1,0 +1,88 @@
+id: cdti_misiones
+name: cdti_misiones
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-domicilio
+  gate_family: G1_nexus
+  requirement: Applicant must be a legal entity legally established in Spain (with tax domicile/establishment
+    in Spain), including companies, business groupings, technology centres and research organisations,
+    depending on the specific call.
+  value: Legal entity established in Spain
+  intake_field: entityCountries
+  quote: cumplimiento de lo declarado, determinará la imposibilidad de continuar con el procedimiento
+    dando lugar a la desestimación de la ayuda o en su caso su revocación
+  source:
+    file: cdti_misiones_boe_convocatoria_2025_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-verificacion-condiciones
+  gate_family: G6_conditionality
+  requirement: During pre-evaluation, the instructing body verifies compliance with the conditions
+    required to acquire beneficiary status, based exclusively on information and documentation
+    submitted at the application admission stage or subsequently requested for correction.
+  value: Verification of beneficiary conditions during pre-evaluation
+  intake_field: none
+  quote: En esta fase el órgano instructor verificará el cumplimiento de las condiciones impuestas
+    para adquirir la condición de beneficiario. Esta verificación se realizará exclusivamente
+    sobre la información y documentación aportada en la fase de admisión de solicitudes o
+    la que hubiera podido requerirse en fase de subsanación.
+  source:
+    file: cdti_misiones_boe_convocatoria_2025_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-umbral-puntuacion
+  gate_family: G6_conditionality
+  requirement: Where scoring thresholds are established for the evaluation criteria, applicants
+    must reach those thresholds to be eligible for the aid.
+  value: Minimum evaluation score threshold must be met
+  intake_field: none
+  quote: En los casos en los que se establezcan umbrales de puntuación, será necesario alcanzarlos
+    para poder optar a la ayuda.
+  source:
+    file: cdti_misiones_boe_convocatoria_2025_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-no-mejoras-voluntarias
+  gate_family: G6_conditionality
+  requirement: Because this is a competitive-concurrence granting procedure initiated ex officio,
+    no voluntary changes or improvements to the application will be accepted after submission.
+  value: No voluntary amendments to submitted applications
+  intake_field: none
+  quote: Por tratarse de procedimientos de concesión en concurrencia competitiva y, como tales
+    iniciados de oficio, no se admitirán cambios ni mejoras voluntarias de la solicitud.
+  source:
+    file: cdti_misiones_boe_convocatoria_2025_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-subsanacion
+  gate_family: G6_conditionality
+  requirement: If the application does not meet the requirements established in the call,
+    the interested party will be required to correct the deficiency or submit required documents
+    within ten working days, otherwise the application will be deemed withdrawn.
+  value: 10 working days to correct application deficiencies
+  intake_field: none
+  quote: el órgano instructor requerirá al interesado para que subsane en el plazo de diez
+    días hábiles la falta o acompañe los documentos preceptivos, con advertencia de que, si
+    no lo hiciese, se le tendrá por desistido de la solicitud
+  source:
+    file: cdti_misiones_boe_convocatoria_2025_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+obligations:
+- requirement: Competent bodies may carry out checks before or after granting the aid, and
+    if non-compliance with any condition is detected, the aid may be dismissed or partial/total
+    repayment may be demanded.
+  quote: Los órganos competentes podrán realizar las comprobaciones oportunas con anterioridad
+    o posterioridad a la concesión de la ayuda y en caso de detectarse el incumplimiento de
+    alguna condición procederá la desestimación de la ayuda o la exigencia de reintegro total
+    o parcial.
+  source:
+    file: cdti_misiones_boe_convocatoria_2025_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (5/5 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).

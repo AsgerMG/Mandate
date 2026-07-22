@@ -1,0 +1,367 @@
+id: invitalia_smart_start
+name: invitalia_smart_start
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_soggetti_ammissibili
+  gate_family: G1_nexus
+  requirement: Applicant must be an innovative start-up registered in the special section
+    of the Business Register, or a natural person (including foreign visa-holders) who intends
+    to establish one within the required deadline.
+  value: Innovative start-ups (imprese startup innovativa) registered under art. 25 DL 179/2012,
+    or founders-to-be
+  intake_field: borrowerModel
+  quote: Possono altresì richiedere le agevolazioni di cui al presente decreto le persone
+    fisiche che intendono costituire una start-up innovativa, ivi compresi i cittadini stranieri
+    in possesso del visto start-up, purché l’impresa sia formalmente costituita entro e non
+    oltre il termine di cui al comma 4.
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g1_iscrizione_registro
+  gate_family: G1_nexus
+  requirement: Applicant company must be duly established and registered in the special section
+    of the Business Register dedicated to innovative start-ups.
+  value: Registered in special innovative start-up register section
+  intake_field: entityCountries
+  quote: essere regolarmente costituite e iscritte nell’apposita sezione speciale del Registro
+    delle imprese di cui all’articolo 25, comma 8, del decreto-legge n. 179/2012
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g1_sede_italia
+  gate_family: G1_nexus
+  requirement: Non-Italian resident companies must demonstrate registration in the special
+    register and availability of at least one office in Italy by the date of the first disbursement
+    request, on pain of forfeiture.
+  value: At least one operative site in Italy required for non-resident companies
+  intake_field: entityCountries
+  quote: l’iscrizione nell’apposita sezione speciale del Registro delle imprese di cui all’articolo
+    25, comma 8, del decreto-legge n. 179/2012 e la disponibilità di almeno una sede sul territorio
+    italiano devono essere dimostrate, pena la decadenza dal beneficio, alla data di richiesta
+    della prima erogazione dell’agevolazione
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g2_diritti_pieno_esercizio
+  gate_family: G2_size_ownership
+  requirement: Applicant must be in full and free exercise of its rights, not in voluntary
+    liquidation, and not subject to insolvency proceedings.
+  value: Not in liquidation or insolvency proceedings
+  intake_field: developmentStage
+  quote: essere nel pieno e libero esercizio dei propri diritti, non essere in liquidazione
+    volontaria e non essere sottoposte a procedure concorsuali
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g2_aiuti_illegali
+  gate_family: G2_size_ownership
+  requirement: Applicant must not be among companies that received and subsequently failed
+    to repay or deposit in a blocked account aid deemed illegal or incompatible by the European
+    Commission.
+  value: No unpaid illegal/incompatible State aid recovery orders outstanding
+  intake_field: none
+  quote: non rientrare tra le imprese che hanno ricevuto e, successivamente, non rimborsato
+    o depositato in un conto bloccato, gli aiuti individuati quali illegali o incompatibili
+    dalla Commissione europea
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g2_recupero_agevolazioni
+  gate_family: G2_size_ownership
+  requirement: Applicant must have repaid any prior benefits for which the Ministry ordered
+    recovery.
+  value: No outstanding recovery orders on prior benefits
+  intake_field: none
+  quote: aver restituito agevolazioni godute per le quali è stato disposto dal Ministero un
+    ordine di recupero
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g2_impresa_in_difficolta
+  gate_family: G2_size_ownership
+  requirement: Applicant must not be an 'undertaking in difficulty' as defined by article
+    2, point 18, of the GBER exemption regulation.
+  value: Not an undertaking in difficulty (GBER Art. 2(18))
+  intake_field: lossesOverHalfCapital
+  quote: non essere “in difficoltà”, secondo quanto previsto dall’articolo 2, sub 18, del
+    Regolamento di esenzione
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g2_controllo_soci_cessati
+  gate_family: G2_size_ownership
+  requirement: Companies controlled (per art. 2359 civil code) by controlling shareholders
+    whose similar prior activity ceased in the 12 months preceding the application are not
+    eligible.
+  value: Excluded if controlled by shareholders who ceased similar activity in prior 12 months
+  intake_field: ownerOver25
+  quote: Non sono ammissibili agli aiuti di cui al presente decreto le imprese controllate,
+    ai sensi di quanto previsto all’articolo 2359 del codice civile, da soci controllanti
+    imprese che abbiano cessato, nei 12 mesi precedenti la data di presentazione della richiesta,
+    un’attività analoga a quella cui si riferisce la domanda di agevolazione
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g1_settori_esclusi
+  gate_family: G1_nexus
+  requirement: Companies operating in primary agricultural production or in the non-competitive
+    coal mine closure sector are not eligible.
+  value: 'Excluded sectors: primary agriculture (Annex I TFEU), coal mine closures'
+  intake_field: none
+  quote: 'le imprese operanti nei settori: a) della produzione primaria dei prodotti agricoli
+    di cui all’allegato I del TFUE; b) del settore carboniero relativamente agli aiuti per
+    agevolare la chiusura di miniere di carbone non competitive, di cui alla decisione 2010/787/UE
+    del Consiglio'
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g5_export_esclusi
+  gate_family: G5_use_of_funds
+  requirement: Funds may not support export-related activities to third countries or Member
+    States (export-linked programmes, distribution network setup, other export-related running
+    costs) or interventions conditional on preferring domestic over imported products.
+  value: Export-related activities and import-substitution conditionality excluded
+  intake_field: none
+  quote: Le agevolazioni di cui al presente decreto non possono essere altresì concesse per
+    il sostegno ad attività connesse all’esportazione verso paesi terzi o Stati membri, ossia
+    per programmi d’impresa direttamente collegati ai quantitativi esportati, alla costituzione
+    e gestione di una rete di distribuzione o ad altre spese correnti connesse con l’attività
+    d’esportazione e per gli interventi subordinati all’impiego preferenziale di prodotti
+    interni rispetto ai prodotti di importazione
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.8
+  verified: llm_cited
+- id: g3_importo_spese_ammissibili
+  gate_family: G3_financial
+  requirement: Total eligible expenses/costs in the business plan must be between EUR 100,000
+    and EUR 1,500,000.
+  value: EUR 100,000 - EUR 1,500,000
+  intake_field: ticketBand
+  quote: per un importo complessivo di spese e/o costi ammissibili non superiore a euro 1.500.000,00
+    (unmilionecinquecentomila) e non inferiore a euro 100.000,00 (centomila)
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.7
+  verified: llm_cited
+- id: g4_finanziamento_agevolato_70
+  gate_family: G4_borrower_model
+  requirement: The facility grants an interest-free repayable subsidised loan equal to 70%
+    of eligible expenses/costs, under the conditions of art. 22(3)(a) GBER.
+  value: 70% interest-free repayable loan (sovvenzione rimborsabile)
+  intake_field: borrowerModel
+  quote: un finanziamento agevolato, senza interessi, nella forma della sovvenzione rimborsabile,
+    per un importo pari al 70% (settanta percento) delle spese e/o costi ammissibili, ai sensi
+    e nei limiti previsti dall’articolo 22, comma 3, lettera a), del Regolamento di esenzione
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.10
+  verified: llm_cited
+- id: g4_finanziamento_80_giovani_donne
+  gate_family: G4_borrower_model
+  requirement: If the start-up's ownership is entirely composed of persons aged 35 or under
+    and/or women, or includes a PhD-qualified expert working abroad, the loan amount rises
+    to 80% of eligible expenses.
+  value: 80% loan for youth/women-led start-ups or those with qualifying foreign-based PhD
+    expert
+  intake_field: ownerOver25
+  quote: l’importo del finanziamento agevolato di cui al comma 1, lettera a), è pari all’80%
+    (ottanta percento) delle spese ammissibili
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.10
+  verified: llm_cited
+- id: g4_rimborso_parziale_sud
+  gate_family: G4_borrower_model
+  requirement: For start-ups located in Basilicata, Calabria, Campania, Puglia, Sardegna,
+    Sicilia and the L'Aquila earthquake crater area, only 80% of the granted loan amount is
+    repayable (the remainder is a non-repayable grant component).
+  value: 'Southern/crater regions: only 80% of loan repayable'
+  intake_field: activityCountries
+  quote: il finanziamento agevolato è restituito dall’impresa beneficiaria in misura parziale,
+    per un ammontare pari all’80% (ottanta percento) dell’importo del finanziamento agevolato
+    concesso
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.10
+  verified: llm_cited
+- id: g5_programmi_investimento
+  gate_family: G5_use_of_funds
+  requirement: Eligible investment programmes cover acquisition of new technological/scientific
+    plant, machinery and equipment, hardware/software, patents/licences, certifications/know-how,
+    and related design/development/consultancy services functional to the project.
+  value: 'Eligible investment categories: new plant/equipment, hardware/software, patents,
+    know-how, technical consultancy'
+  intake_field: none
+  quote: impianti, macchinari e attrezzature tecnologici, ovvero tecnico-scientifici, nuovi
+    di fabbrica, funzionali alla realizzazione del progetto
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.8
+  verified: llm_cited
+- id: g5_spese_escluse
+  gate_family: G5_use_of_funds
+  requirement: Expenses for mere replacement investments, turnkey contracts, internal work
+    orders, financial leasing, used equipment, operating expenses, notarial fees, taxes and
+    inventories are not eligible.
+  value: Excluded expense categories listed
+  intake_field: none
+  quote: Non sono ammissibili alle agevolazioni le spese riferite a investimenti di mera sostituzione
+    di impianti, macchinari e attrezzature, le spese effettuate, in tutto o in parte, mediante
+    il cosiddetto “contratto chiavi in mano”, le spese relative a commesse interne, le spese
+    sostenute attraverso il sistema della locazione finanziaria, le spese relative a macchinari,
+    impianti e attrezzature usati, le spese di funzionamento, le spese notarili e quelle relative
+    a imposte, tasse, scorte
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.9
+  verified: llm_cited
+- id: g5_costi_esercizio
+  gate_family: G5_use_of_funds
+  requirement: Eligible operating costs (interest on external financing, depreciation quotas,
+    leasing fees, salary costs, IP licences, software licences) must be incurred within 24
+    months following signature of the financing contract.
+  value: Operating costs eligible within 24 months of financing contract signature
+  intake_field: none
+  quote: sono ammissibili i seguenti costi di esercizio, sostenuti dall’impresa beneficiaria
+    nei 24 mesi successivi alla data di stipula del contratto di finanziamento di cui all’articolo
+    9, comma 1
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.9
+  verified: llm_cited
+- id: g6_termine_realizzazione
+  gate_family: G6_conditionality
+  requirement: Investment programmes must be started after the application is submitted and
+    completed within 24 months of the signing of the financing contract, on pain of revocation
+    of the benefits.
+  value: 24 months to complete investment programme from contract signature
+  intake_field: needBy
+  quote: essere realizzati entro 24 mesi dalla stipula del contratto di finanziamento di cui
+    all’articolo 9, comma 1, pena la revoca delle agevolazioni concesse
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.8
+  verified: llm_cited
+- id: g6_cumulo
+  gate_family: G6_conditionality
+  requirement: The benefits under this decree are not cumulable with other aid granted to
+    the same beneficiary (including de minimis) referring to the same eligible expenses, except
+    for the SME Guarantee Fund guarantee on bank financing covering the non-subsidised part
+    of the plan.
+  value: No cumulation with other aid on same eligible expenses, except SME Guarantee Fund
+    guarantee
+  intake_field: cofinancingBand
+  quote: Le agevolazioni di cui al presente decreto non sono cumulabili con altre agevolazioni
+    concesse al soggetto beneficiario, anche a titolo di de minimis, laddove riferite alle
+    stesse spese ammissibili
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.15
+  verified: llm_cited
+- id: g6_conversione_equity_limiti_651
+  gate_family: G6_conditionality
+  requirement: Innovative start-ups may request conversion of part of the subsidised loan
+    into a non-repayable grant, subject to the limits of art. 22 GBER (EU 651/2014) and the
+    conditions of art. 6-bis, against third-party or individual shareholder risk-capital investments.
+  value: Conversion to grant conditional on GBER art. 22 limits and art. 6-bis conditions
+  intake_field: conditionality
+  quote: Le start-up innovative beneficiarie delle agevolazioni previste dal decreto del Ministro
+    dello sviluppo economico 24 settembre 2014 possono richiedere, nel rispetto dei limiti
+    di cui all’articolo 22 del regolamento (UE) n. 651/2014 della Commissione, del 17 giugno
+    2014 e alle condizioni di cui all’articolo 6-bis, la conversione di una quota del finanziamento
+    agevolato concesso ai sensi dell’articolo 6 in contributo a fondo perduto, a fronte di
+    investimenti nel relativo capitale di rischio attuati da investitori terzi ovvero da soci
+    persone fisiche
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_dm2022_modifiche.pdf#p.8
+  verified: llm_cited
+obligations:
+- requirement: Beneficiary companies must submit useful documentation to the managing entity
+    for monitoring of initiatives, according to forms and modalities set by ministerial circular.
+  quote: Le imprese beneficiarie delle agevolazioni trasmettono al Soggetto gestore la documentazione
+    utile, anche tenuto conto degli specifici adempimenti richiesti in relazione all’utilizzo
+    delle diverse fonti finanziarie di cui all’articolo 13, al monitoraggio delle iniziative,
+    con le forme e modalità definite con la circolare del Ministero di cui all’articolo 5,
+    comma 8
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.14
+  verified: llm_cited
+- requirement: Beneficiary companies must respond to all requests for information, data and
+    periodic technical reports issued by the managing entity and the Ministry.
+  quote: Le imprese beneficiarie sono tenute a corrispondere a tutte le richieste di informazioni,
+    dati e rapporti tecnici periodici disposte dal Soggetto gestore e dal Ministero
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.15
+  verified: llm_cited
+- requirement: Beneficiary companies must allow inspections and controls to verify conditions
+    for use and maintenance of the benefits and implementation of financed interventions.
+  quote: L’impresa è tenuta a consentire lo svolgimento di tutti i controlli e le ispezioni
+    disposti al fine di verificare le condizioni per la fruizione e il mantenimento delle
+    agevolazioni e l’attuazione degli interventi finanziati
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.20
+  verified: llm_cited
+- requirement: The company must not cease, transfer, sell or lease the subsidised business
+    activity before 3 years have elapsed from the date of disbursement of the last benefit
+    instalment, on pain of revocation.
+  quote: l’attività di impresa agevolata venga a cessare, sia alienata in tutto o in parte,
+    o concessa in locazione prima che siano trascorsi 3 anni dalla data di erogazione dell’ultima
+    quota di agevolazione
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.16
+  verified: llm_cited
+- requirement: Assets acquired under the investment programme must remain in the beneficiary
+    company's balance sheet for at least 3 years and be used exclusively in the aided production
+    unit.
+  quote: figurare nell’attivo di bilancio dell’impresa beneficiaria per almeno 3 anni
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.9
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (20/20 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Benefits under this decree cannot be cumulated with other aid (including de minimis)
+    granted to the same beneficiary for the same eligible expenses, except for the SME Guarantee
+    Fund guarantee on bank financing covering the unaided portion of the business plan.
+  quote: Le agevolazioni di cui al presente decreto non sono cumulabili con altre agevolazioni
+    concesse al soggetto beneficiario, anche a titolo di de minimis, laddove riferite alle
+    stesse spese ammissibili, fatta salva, nel rispetto dell’articolo 8 del Regolamento di
+    esenzione, la garanzia rilasciata dal Fondo di garanzia per le piccole e medie imprese
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.15
+  verified: llm_cited
+application:
+  channel: Applications are submitted to the Soggetto gestore (managing entity, Invitalia)
+    accompanied by the business plan, according to modalities and terms specified in a ministerial
+    directorial circular.
+  typical_timeline: Applications are processed in chronological order of submission/completion
+    so decisions can be issued within 60 days of the application or its completion.
+  quote: Le domande di agevolazione, complete dei dati previsti dal modulo di richiesta, sono
+    istruite, nel rispetto dell’ordine cronologico di presentazione o di completamento, in
+    tempo utile perché possano essere deliberate entro 60 giorni dalla data di presentazione
+    della richiesta o di completamento della stessa
+  source:
+    file: invitalia_smart_start_regolamento_dm2014.pdf
+    locator: invitalia_smart_start_regolamento_dm2014.pdf#p.13
+  verified: llm_cited

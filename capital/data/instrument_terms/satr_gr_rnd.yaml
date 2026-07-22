@@ -1,0 +1,212 @@
+id: satr_gr_rnd
+name: satr_gr_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_state_aid_regime
+  gate_family: G4_borrower_model
+  requirement: Support to enterprises is provided as grants under the General Block Exemption
+    Regulation (GBER) Reg. (EU) 651/2014 as amended; support to research organisations is
+    provided as grants under the R&D&I State Aid Framework (2022/C 414/01).
+  value: Grant (non-repayable aid) under GBER Art. 25/25a or R&D&I Framework point 20
+  intake_field: borrowerModel
+  quote: Για τις επιχειρήσεις, οι ενισχύσεις της Δράσης αποτελούν επιχορηγήσεις και θα διατεθούν
+    στο πλαίσιο του Κανονισμού (ΕΕ) αριθ. 651/2014 της Επιτροπής της 17ης Ιουνίου 2014
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.40
+  verified: llm_cited
+- id: g5_eligible_categories
+  gate_family: G5_use_of_funds
+  requirement: Funded activities must fall within the categories of industrial research and/or
+    experimental development under Articles 25 and 25a of GBER Reg. 651/2014.
+  value: Industrial research and/or experimental development only
+  intake_field: none
+  quote: οι επιλέξιμες για χρηματοδότηση δραστηριότητες θα πρέπει να εντάσσονται στις κατηγορίες
+    βιομηχανική έρευνα ή/και πειραματική ανάπτυξη σύμφωνα με τα άρθρα 25 «Ενισχύσεις για έργα
+    έρευνας και ανάπτυξης» και 25α «Ενισχύσεις για έργα στα οποία έχει απονεμηθεί το σήμα
+    ποιότητας ‘Σφραγίδα Αριστείας’» του Καν. (ΕΕ) αριθ. 651/2014, όπως ισχύει
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.40
+  verified: llm_cited
+- id: g3_aid_intensity_determinants
+  gate_family: G3_financial
+  requirement: The aid intensity applicable to a beneficiary is determined by the R&D category
+    of each work package (industrial research vs experimental development) and by the size
+    of the enterprise (micro/small, medium, large).
+  value: Aid intensity varies by R&D category and enterprise size band
+  intake_field: fteBand
+  quote: 'Η ένταση ενίσχυσης του έργου έρευνας και ανάπτυξης ενός δικαιούχου καθορίζεται από:
+    τον χαρακτηρισμό της κατηγορίας έρευνας και ανάπτυξης (βιομηχανική έρευνα, πειραματική
+    ανάπτυξη) κάθε ενότητας εργασίας του έργου και το μέγεθος της επιχείρησης (πολύ μικρή/Μικρή,
+    Μεσαία, Μεγάλη)'
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.40
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Η ένταση ενίσχυσης του έργου έρευνας και ανάπτυξης'''
+- id: g3_ceiling_gber
+  gate_family: G3_financial
+  requirement: In present value terms, aid intensity at the time of granting must not exceed
+    the ceilings set out in Regulation (EU) No 651/2014.
+  value: Aid intensity capped per GBER Art. 25/25a ceilings
+  intake_field: turnoverBand
+  quote: η ένταση της ενίσχυσης, σε όρους παρούσας αξίας κατά το χρόνο χορήγησης της ενίσχυσης,
+    δεν υπερβαίνει τα κατωτέρω αναφερόμενα ποσοστά , σύμφωνα με τα οριζόμενα στον Καν. (ΕΕ)
+    αριθ. 651/2014
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.40
+  verified: llm_cited
+- id: g6_incentive_effect
+  gate_family: G6_conditionality
+  requirement: Work on the research project must not start before the electronic submission
+    of the funding application, otherwise the entire application is rejected, since the aid
+    must have an incentive effect per Article 6 of GBER Reg. 651/2014.
+  value: No project start before application submission (incentive effect requirement)
+  intake_field: developmentStage
+  quote: Η έναρξη εργασιών του ερευνητικού έργου πριν την ηλεκτρονική υποβολή της αίτησης
+    χρηματοδότησης έχει ως αποτέλεσμα την απόρριψη της αίτησης για το σύνολο του ερευνητικού
+    έργου γιατί η ενίσχυση πρέπει να έχει χαρακτήρα κινήτρου
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.44
+  verified: llm_cited
+- id: g1_application_channel
+  gate_family: G1_nexus
+  requirement: The funding application must be submitted electronically in the Greek language
+    exclusively through the OΠΣΚΕ (Integrated Information System for Management of State Aid).
+  value: Electronic submission via OΠΣΚΕ in Greek only
+  intake_field: none
+  quote: Η αίτηση χρηματοδότησης υποβάλλεται ηλεκτρονικά στην ελληνική γλώσσα αποκλειστικά
+    μέσω του Ολοκληρωμένου Πληροφοριακού Συστήματος Διαχείρισης Κρατικών Ενισχύσεων (OΠΣΚΕ)
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.44
+  verified: llm_cited
+- id: g6_mandatory_fields
+  gate_family: G6_conditionality
+  requirement: Funding applications in which not all mandatory fields of OΠΣΚΕ have been completed
+    cannot be submitted.
+  value: All mandatory OΠΣΚΕ fields must be completed
+  intake_field: none
+  quote: Αιτήσεις χρηματοδότησης στις οποίες δεν έχουν συμπληρωθεί όλα τα υποχρεωτικά προς
+    συμπλήρωση πεδία του OΠΣΚΕ, δεν θα είναι δυνατό να υποβληθούν
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.44
+  verified: llm_cited
+- id: g1_fast_track_eic
+  gate_family: G1_nexus
+  requirement: Only individual SMEs applying under Intervention III, or under Intervention
+    I as non-collaborative projects, may opt into the fast-track pre-assessment procedure
+    for the EIC Accelerator of Horizon Europe.
+  value: Individual SME, Intervention III or non-collaborative Intervention I only, eligible
+    for EIC Accelerator fast-track
+  intake_field: borrowerModel
+  quote: μεμονωμένες μικρομεσαίες επιχειρήσεις που αιτούνται χρηματοδότησης στην Παρέμβαση
+    III καθώς και στην Παρέμβαση I (όχι συνεργατικά έργα) δύνανται να δηλώσουν εάν επιθυμούν
+    να συμμετέχουν σε μια fast track διαδικασία προ-κρίσης ως υποψήφιοι για συμμετοχή στο
+    πρόγραμμα EIC Accelerator του Horizon Europe
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.44
+  verified: llm_cited
+- id: g4_score_threshold_intervention_I
+  gate_family: G4_borrower_model
+  requirement: For Intervention I, the minimum acceptable total score is 10.00, with minimum
+    per-criterion scores of 3 for Excellence, Impact and Implementation.
+  value: Min total score 10.00; min 3 per criterion (A/B/C) for Intervention I
+  intake_field: none
+  quote: Η ελάχιστη αποδεκτή συνολική βαθμολογία (κατώφλι) είναι το δέκα (10.00) και οι ελάχιστες
+    αποδεκτές βαθμολογίες ανά κριτήριο για την Παρέμβαση Ι φαίνεται στον πίνακα που ακολουθεί
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.53
+  verified: llm_cited
+- id: g4_score_threshold_intervention_II
+  gate_family: G4_borrower_model
+  requirement: For Intervention II, the minimum acceptable total score is 10.00, with minimum
+    per-criterion scores of 3 for Excellence, Impact and Implementation, and a maximum total
+    score of 15.00.
+  value: Min total score 10.00; min 3 per criterion (A/B/C); max 15.00 for Intervention II
+  intake_field: none
+  quote: Η ελάχιστη αποδεκτή συνολική βαθμολογία (κατώφλι) είναι το δέκα (10.00) και οι ελάχιστες
+    αποδεκτές βαθμολογίες ανά κριτήριο για την Παρέμβαση ΙΙ φαίνεται στον πίνακα που ακολουθεί
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.55
+  verified: llm_cited
+- id: g4_score_threshold_intervention_III
+  gate_family: G4_borrower_model
+  requirement: For Intervention III, the minimum acceptable total score is 10.00, with minimum
+    per-criterion scores of 4 (Excellence), 3 (Impact), 3 (Implementation).
+  value: Min total score 10.00; min A=4,B=3,C=3 for Intervention III
+  intake_field: none
+  quote: Η ελάχιστη αποδεκτή συνολική βαθμολογία (κατώφλι) είναι το δέκα (10.00) και οι ελάχιστες
+    αποδεκτές βαθμολογίες ανά κριτήριο για την Παρέμβαση ΙΙΙ φαίνεται στον πίνακα που ακολουθεί
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.58
+  verified: llm_cited
+- id: g6_collaborative_funding_sufficiency
+  gate_family: G6_conditionality
+  requirement: For collaborative projects, funds must be sufficient to cover all potential
+    beneficiaries participating in the funding application; otherwise, the application is
+    not proposed for funding.
+  value: All consortium partners must be fully funded or the whole application is excluded
+  intake_field: consortium
+  quote: για τη χρηματοδότηση συνεργατικών έργων θα πρέπει να επαρκούν τα κονδύλια για όλους
+    τους δυνητικούς δικαιούχους που συμμετέχουν στην Αίτηση Χρηματοδότησης. Διαφορετικά η
+    Αίτηση Χρηματοδότησης δεν προτείνεται προς χρηματοδότηση
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.53
+  verified: llm_cited
+obligations:
+- requirement: The beneficiary is obliged to submit the loan agreement, any additional acts,
+    and the assignment agreement with the credit institution, where applicable.
+  quote: ο δικαιούχος είναι υποχρεωμένος να προσκομίσει τη σύμβαση δανείου, τυχόν πρόσθετες
+    πράξεις, καθώς και τη σύμβαση εκχώρησης με το Πιστωτικό Ίδρυμα
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.40
+  verified: llm_cited
+- requirement: Evaluation committee members and independent experts must submit a sworn statement
+    of no conflict of interest and confidentiality.
+  quote: Τα μέλη των Επιτροπών Αξιολόγησης καθώς και οι ανεξάρτητοι εμπειρογνώμονες (όταν
+    κληθούν), υποβάλλουν Υπεύθυνη Δήλωση περί μη σύγκρουσης συμφερόντων και περί εμπιστευτικότητας
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.51
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/12 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: State aid exempted under the GBER regulation may not be cumulated with any de minimis
+    aid concerning the same eligible costs if such cumulation would result in exceeding the
+    applicable aid intensity.
+  quote: Οι κρατικές ενισχύσεις που τυγχάνουν απαλλαγής δυνάμει του κανονισμού δεν σωρεύονται
+    με οποιεσδήποτε ενισχύσεις ήσσονος σημασίας που αφορούν τις ίδιες επιλέξιμες δαπάνες,
+    εάν η σώρευση αυτή θα οδηγήσει σε υπέρβαση της έντασης ενίσχυσης που προβλέπεται
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.44
+  verified: llm_cited
+application:
+  channel: Electronic submission exclusively via the OΠΣΚΕ (Integrated Information System
+    for Management of State Aid), in Greek, using the standardised Part A form; Part B technical
+    description attached as a non-editable PDF.
+  typical_timeline: Not specified in extracted text beyond reference to a submission period
+    defined explicitly in the Call.
+  quote: Η αίτηση χρηματοδότησης υποβάλλεται ηλεκτρονικά στην ελληνική γλώσσα αποκλειστικά
+    μέσω του Ολοκληρωμένου Πληροφοριακού Συστήματος Διαχείρισης Κρατικών Ενισχύσεων (OΠΣΚΕ)
+    κάνοντας χρήση του τυποποιημένου στο OΠΣΚΕ Εντύπου Υποβολής Αίτησης Χρηματοδότησης
+  source:
+    file: satr_gr_rnd_erevno_kainotomo_call.pdf
+    locator: satr_gr_rnd_erevno_kainotomo_call.pdf#p.44
+  verified: llm_cited

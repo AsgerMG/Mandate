@@ -1,0 +1,330 @@
+id: innovation_fund_lsp
+name: innovation_fund_lsp
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-countries
+  gate_family: G1_nexus
+  requirement: Applicants (beneficiaries and affiliated entities) must be legal entities established
+    in an eligible country, defined as any country in the world.
+  value: any country in the world
+  intake_field: entityCountries
+  quote: 'be established in one of the eligible countries: any country in the world.'
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.15
+  verified: llm_cited
+- id: g1-project-location
+  gate_family: G1_nexus
+  requirement: The physical project must be located in an EU Member State or EEA country (Norway,
+    Iceland, Liechtenstein), with limited exception for Northern Ireland electricity projects.
+  value: EU/EEA (Norway, Iceland, Liechtenstein); NI only for electricity
+  intake_field: activityCountries
+  quote: Projects must be located in EU Member States or EEA countries (i.e. Norway, Iceland
+    or Liechtenstein).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.17
+  verified: llm_cited
+- id: g1-natural-persons
+  gate_family: G1_nexus
+  requirement: Natural persons are not eligible applicants, except self-employed sole traders
+    without separate legal personality.
+  value: natural persons excluded (except sole traders)
+  intake_field: borrowerModel
+  quote: Natural persons are NOT eligible (with the exception of self-employed persons, i.e.
+    sole traders, where the company does not have legal personality separate from that of
+    the natural person).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.16
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Natural persons are NOT eligible (with the
+    excepti'''
+- id: g1-eu-bodies
+  gate_family: G1_nexus
+  requirement: EU bodies, other than the Joint Research Centre, cannot be part of the consortium.
+  value: EU bodies excluded (except JRC)
+  intake_field: borrowerModel
+  quote: EU bodies (with the exception of the European Commission Joint Research Centre) can
+    NOT be part of the consortium.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.16
+  verified: llm_cited
+- id: g1-restrictive-measures
+  gate_family: G1_nexus
+  requirement: Entities subject to EU restrictive measures under Article 29 TEU / Article
+    215 TFEU are not eligible in any capacity.
+  value: excluded if subject to EU restrictive measures
+  intake_field: none
+  quote: Such entities are not eligible to participate in any capacity, including as beneficiaries,
+    affiliated entities, associated partners, subcontractors or recipients of financial support
+    to third parties (if any).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.16
+  verified: llm_cited
+- id: g1-conditionality-measures
+  gate_family: G1_nexus
+  requirement: Entities subject to measures under EU conditionality Regulation 2020/2092 (e.g.
+    Hungarian public interest trusts) are not eligible in any funded role.
+  value: excluded if subject to Reg. 2020/2092 measures
+  intake_field: none
+  quote: Such entities are not eligible to participate in any funded role (beneficiaries,
+    affiliated entities, subcontractors, recipients of financial support to third parties,
+    etc).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.16
+  verified: llm_cited
+- id: g2-sme-bonus
+  gate_family: G2_size_ownership
+  requirement: A bonus point is available only if the project is coordinated and implemented
+    entirely by SMEs as defined in the EU SME Recommendation 2003/361.
+  value: all beneficiaries/affiliated entities must be SMEs
+  intake_field: fteBand
+  quote: Only for projects coordinated and implemented by small and medium-sized enterprises
+    (SMEs) as defined in the EU SME Recommendation 2003/361 (1 point).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.29
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Only for projects coordinated and implemented
+    by s'''
+- id: g3-max-grant-general-lsp
+  gate_family: G3_financial
+  requirement: For the LSP topic (pilot projects sub-topic), the maximum Innovation Fund grant
+    for an individual project is capped at EUR 40 million.
+  value: EUR 40,000,000 max grant (pilot projects)
+  intake_field: ticketBand
+  quote: The maximum amount of Innovation Fund grant for an individual project under this
+    topic is limited to EUR 40 million.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g3-funding-rate-cap
+  gate_family: G3_financial
+  requirement: The maximum Innovation Fund grant amount must not exceed 60% of the relevant
+    (eligible) project costs.
+  value: max 60% of relevant costs
+  intake_field: cofinancingBand
+  quote: The maximum grant amount must not exceed 60 % of the relevant costs.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.18
+  verified: llm_cited
+- id: g3-capex-threshold-lsp
+  gate_family: G3_financial
+  requirement: Only projects with capital expenditure above EUR 100 million are eligible under
+    the LSP (Large-Scale Projects) topic.
+  value: CAPEX above EUR 100,000,000 (LSP)
+  intake_field: ticketBand
+  quote: Capital expenditure above EUR 100 000 000
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.18
+  verified: llm_cited
+- id: g3-relevant-costs-positive
+  gate_family: G3_financial
+  requirement: Only projects with relevant costs higher than zero are eligible.
+  value: relevant costs must be > 0
+  intake_field: none
+  quote: Only projects with relevant costs higher than zero are eligible.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.18
+  verified: llm_cited
+- id: g3-financial-close-not-reached
+  gate_family: G3_financial
+  requirement: Only projects that have not reached financial close at the proposal submission
+    date can be funded (LSP pilots sub-topic).
+  value: financial close not yet reached
+  intake_field: developmentStage
+  quote: Only projects that have not reached financial close at proposal submission date can
+    be funded.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g3-cost-efficiency-threshold
+  gate_family: G3_financial
+  requirement: For general topics, the cost efficiency ratio (grant requested divided by absolute
+    GHG emission avoidance) must be equal to or lower than 200 EUR per tonne CO2-eq, otherwise
+    the score is zero and the proposal is rejected.
+  value: cost efficiency ratio ≤ 200 EUR/t CO2-eq (non-pilot topics)
+  intake_field: none
+  quote: if the cost efficiency ratio is higher than 200 EUR/t CO2-eq, the score is zero points,
+    and the proposal will be rejected.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.28
+  verified: llm_cited
+- id: g4-lump-sum-grant
+  gate_family: G4_borrower_model
+  requirement: Funding under this call is provided as a lump sum grant based on relevant costs
+    and a fixed 60% funding rate, not a loan or equity instrument.
+  value: lump sum grant, 60% funding rate
+  intake_field: borrowerModel
+  quote: The grant will be a lump sum grant. This means that it will reimburse a fixed amount,
+    based on a lump sum.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.35
+  verified: llm_cited
+- id: g4-no-fsttp
+  gate_family: G4_borrower_model
+  requirement: Financial support to third parties is not allowed under this call.
+  value: no financial support to third parties
+  intake_field: borrowerModel
+  quote: Financial support to third parties is not allowed.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.17
+  verified: llm_cited
+- id: g4-lump-sum-budget-split
+  gate_family: G4_borrower_model
+  requirement: The grant amount budgeted until financial close must not exceed 40% of the
+    maximum grant amount, and at least 10% must be budgeted after entry into operation.
+  value: ≤40% pre-financial-close, ≥10% post-operation
+  intake_field: none
+  quote: the portion of the grant amount budgeted until the financial close must not exceed
+    40% of the maximum grant amount
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.35
+  verified: llm_cited
+- id: g5-eligible-activities
+  gate_family: G5_use_of_funds
+  requirement: Funded activities must correspond to the topic description, covering innovative
+    low-carbon technology demonstration such as CCU, energy storage, CO2 storage, and renewable
+    energy installations, excluding fossil-fuel-based generation, DNSH-non-compliant activities,
+    certain software services, and non-EU/EEA ship/plane building.
+  value: topic-specific low-carbon/decarbonisation activities only
+  intake_field: none
+  quote: Applications will only be considered eligible if their content corresponds wholly
+    (or at least in part) to the topic description for which they are submitted.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.17
+  verified: llm_cited
+- id: g5-excluded-fossil
+  gate_family: G5_use_of_funds
+  requirement: Activities primarily aimed at electricity/heat generation from non-recycled
+    fossil fuels or fuel production from non-recycled fossil feedstocks are not eligible.
+  value: fossil-fuel-based generation excluded
+  intake_field: none
+  quote: activities primarily aimed at electricity generation (or combined heat and power)
+    from non-recycled fossil fuels, as well as activities primarily aimed at fuel production
+    based on non-recycled fossil feedstocks, excluding the production of low-carbon fuels.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.17
+  verified: llm_cited
+- id: g5-relative-ghg-threshold
+  gate_family: G5_use_of_funds
+  requirement: The project's relative GHG emission avoidance must be at least 50% (or 75%
+    for the PILOTS topic) as a minimum requirement.
+  value: relative GHG avoidance ≥50% (75% for pilots)
+  intake_field: none
+  quote: 'for all topics except INNOVFUND-2025-NZT-PILOTS: at least 50%'
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.25
+  verified: llm_cited
+- id: g6-duration-financial-close
+  gate_family: G6_conditionality
+  requirement: Projects must reach financial close within four years after grant signature
+    and operate at least five years after entry into operation (three years for SSP/PILOTS
+    topics).
+  value: financial close ≤4 years; operation ≥5 years (3 years for SSP/PILOTS)
+  intake_field: none
+  quote: reach financial close within four years after grant signature (maximum time to financial
+    close)
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.18
+  verified: llm_cited
+- id: g6-exclusion-situations
+  gate_family: G6_conditionality
+  requirement: Applicants subject to an EU exclusion decision or in defined exclusion situations
+    (bankruptcy, tax/social security breaches, grave professional misconduct, fraud/corruption,
+    etc.) cannot participate.
+  value: excluded if in EU exclusion situations
+  intake_field: none
+  quote: Applicants which are subject to an EU exclusion decision or in one of the following
+    exclusion situations that bar them from receiving EU funding can NOT participate
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.20
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries and affiliated entities must register in the Participant Register
+    and be validated by the Central Validation Service before submitting the proposal.
+  quote: Beneficiaries and affiliated entities must register in the Participant Register —
+    before submitting the proposal — and will have to be validated by the Central Validation
+    Service (REA Validation).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.16
+  verified: llm_cited
+- requirement: Each beneficiary and affiliated entity must sign a declaration of honour confirming
+    compliance with funding conditions before grant signature.
+  quote: Before signing the grant, each beneficiary and affiliated entity will have to confirm
+    this again by signing a declaration of honour (DoH).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.15
+  verified: llm_cited
+- requirement: Applicants must maintain records of all work performed under the grant.
+  quote: Please also note that you are responsible for keeping records on all the work done.
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.37
+  verified: llm_cited
+- requirement: Beneficiaries must comply with IPR, communication, dissemination and visibility
+    requirements set out in the Model Grant Agreement.
+  quote: 'Communication, dissemination and visibility of funding: see Model Grant Agreement'
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.37
+  verified: llm_cited
+- requirement: Applicants must ensure a balanced project budget with sufficient other resources
+    to implement the project successfully.
+  quote: Balanced project budget — Grant applications must ensure a balanced project budget
+    and sufficient other resources to implement the project successfully
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.41
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (19/21 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Innovation Fund grants may be combined with funding from another directly-managed
+    EU programme only if the EU Synergies clause is enabled in both grant agreements and combined
+    funding rates do not exceed 100%; combination with EU operating grants is also possible
+    under specified conditions.
+  quote: Innovation Fund grants may be combined with funding from another EU programme (directly
+    managed by the EU Commission), if in both grants the EU Synergies actions’ clause is enabled
+    in Article 6.3 of the Model Grant Agreement and the combined funding rates at grant level
+    do not exceed 100%
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.41
+  verified: llm_cited
+application:
+  channel: Electronic submission via the EU Funding & Tenders Portal Electronic Submission
+    System
+  typical_timeline: Call opens 4 December 2025; submission deadline 23 April 2026; evaluation
+    April-September 2026; results October-November 2026; grant signature November 2026-March
+    2027 (time-to-grant up to 11 months)
+  quote: Proposals must be submitted electronically via the Funding & Tenders Portal Electronic
+    Submission System (accessible via the Topic page in the Calls for proposals section).
+  source:
+    file: innovfund_2025_nzt_call_document_lsp_msp_ssp_mfg_plt.pdf
+    locator: p.14
+  verified: llm_cited

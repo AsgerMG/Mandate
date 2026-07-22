@@ -1,0 +1,302 @@
+id: europes_rail
+name: europes_rail
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G4_borrower_model
+  requirement: Applicant Private Members of EU-Rail participating in the consortium must provide
+    in-kind contributions to additional activities, in aggregate no less than 1.26364 times
+    the funding request, declared via the F&T portal template.
+  value: 1.26364x funding request (in-kind contribution ratio)
+  intake_field: cofinancingBand
+  quote: 'The amount of total in-kind
+
+    contributions (i.e. in-kind contributions for operational activities and in-kind
+
+    contributions for additional activities) must be no less than 1.26364 times the funding
+
+    request, in aggregate, of these applicant Private Members.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.157
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The amount of total in-kind\ncontributions
+    (i.e. in'''
+- id: g2
+  gate_family: G4_borrower_model
+  requirement: Applicant Private Members of the EU-Rail part of consortia responding to the
+    hyperloop topic must provide in-kind contributions to additional activities, in aggregate
+    no less than 1.26373 times the funding request.
+  value: 1.26373x funding request (in-kind contribution ratio)
+  intake_field: cofinancingBand
+  quote: 'The amount of total in-kind
+
+    contributions (i.e. in-kind contributions for operational activities and in-kind
+
+    contributions for additional activities) must be no less than 1.26373 times the
+
+    funding request, in aggregate, of these applicant Private Members.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.164
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: General admissibility conditions follow Part A of the Horizon Europe Work Programme
+    2026-2027 General Annexes, except that full Research and Innovation Action proposals are
+    limited to 70 pages.
+  value: Admissibility per HE WP General Annexes Part A, with 70-page RIA limit exception
+  intake_field: none
+  quote: 'Regarding admissibility conditions and related requirements, part A of the Horizon
+
+    Europe Work Programme 2026-2027 General Annexes applies with the following
+
+    exception: the limit for a full Research and Innovation Action application is set to 70
+
+    pages.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.157
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Regarding admissibility conditions and related
+    req'''
+- id: g4
+  gate_family: G1_nexus
+  requirement: Country-specific eligibility rules follow Part B of the Horizon Europe Work
+    Programme 2026-2027 General Annexes without exceptions for EU-Rail.
+  value: Country eligibility per HE WP General Annexes Part B, no exceptions
+  intake_field: entityCountries
+  quote: 'The conditions described in part B of the Horizon Europe Work Programme 2026-2027
+    General
+
+    Annexes will be applied by EU-Rail without exceptions.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.57
+  verified: llm_cited
+- id: g5
+  gate_family: G4_borrower_model
+  requirement: Type of Action for the FA2/hyperloop topics is Research and Innovation Action.
+  value: Research and Innovation Action
+  intake_field: borrowerModel
+  quote: Type of Action Research and Innovation Action
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.157
+  verified: llm_cited
+- id: g6
+  gate_family: G5_use_of_funds
+  requirement: Funded activities must target a specified minimum Technology Readiness Level
+    range (TRL 4 to 6, or higher, depending on the enabler) by end of project for the FA topic.
+  value: TRL 4-6 minimum by end of project
+  intake_field: developmentStage
+  quote: 'Activities are expected to achieve a minimum between TRL 4 and TRL 6,
+
+    depending on the enabler addressed, or higher by the end of the project'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.157
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Activities are expected to achieve a minimum
+    betwe'''
+- id: g7
+  gate_family: G5_use_of_funds
+  requirement: Funded activities under the hyperloop topic must achieve a TRL 4 sub-system
+    validation level.
+  value: TRL 4 sub-system validation
+  intake_field: developmentStage
+  quote: 'Activities are expected to achieve a TRL 4 sub-system validation– see part B
+
+    of Horizon Europe Work Programme 2026-2027 General Annexes for a guide
+
+    to the TRL definitions and criteria to be used.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.164
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Activities are expected to achieve a TRL 4
+    sub-sys'''
+- id: g8
+  gate_family: G3_financial
+  requirement: The total indicative budget for the hyperloop topic is capped at EUR 3 million.
+  value: EUR 3 million indicative budget
+  intake_field: ticketBand
+  quote: The total indicative budget for the topic is EUR 3 million.
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.164
+  verified: llm_cited
+- id: g9
+  gate_family: G6_conditionality
+  requirement: EU-Rail may award funding to only one project per topic depending on evaluation
+    outcome and complementarity of proposed actions.
+  value: Only one project funded per topic
+  intake_field: none
+  quote: 'EU-Rail may award up to one project with funding depending on the outcome
+
+    of the evaluation and the complementarity of the proposed actions.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.164
+  verified: false
+  verify_note: 'fragment not found verbatim: ''EU-Rail may award up to one project with funding
+    d'''
+- id: g10
+  gate_family: G2_size_ownership
+  requirement: Applicant consortium must aggregate technical, engineering and operational
+    expertise, including hyperloop technology providers, research institutes and rail stakeholders,
+    to be eligible for the hyperloop topic.
+  value: Consortium must include hyperloop tech providers, research institutes, rail stakeholders
+    with system engineering/certification/safety/standardisation expertise
+  intake_field: consortium
+  quote: 'The applicants are expected to gather and reflect expertise from hyperloop
+
+    technology providers and promoters, European Research Institutes, rail
+
+    stakeholders to encompass Knowledge and vision on hyperloop solutions'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.164
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The applicants are expected to gather and reflect
+    '''
+- id: g11
+  gate_family: G1_nexus
+  requirement: Grants awarded under the hyperloop topic may have a retroactive starting date
+    as of the submission date of the application, provided the applicant justifies the need.
+  value: Retroactive start date allowed if justified
+  intake_field: needBy
+  quote: 'The starting date of grants awarded under this topic may be as of the
+
+    submission date of the application. Applicants must justify the need for
+
+    a retroactive starting date in their application.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.165
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The starting date of grants awarded under this
+    top'''
+- id: g12
+  gate_family: G4_borrower_model
+  requirement: Eligible costs under the hyperloop topic are reimbursed in the form of a lump
+    sum as defined under the Horizon Europe lump sum decision.
+  value: Lump sum grant funding mechanism
+  intake_field: borrowerModel
+  quote: 'Eligible costs will take the form of a lump sum as defined in the Decision of 7
+
+    July 2021 authorising the use of lump sum contributions under the Horizon
+
+    Europe Programme'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.165
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries must inform EU-Rail up to four years after the end of the action
+    if results can reasonably be expected to contribute to European or international standards.
+  quote: 'Beneficiaries must inform EU-Rail (up to four years after the
+
+    end of the action) if the results can be reasonably expected to contribute to
+
+    European or international standards.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.157
+  verified: llm_cited
+- requirement: Grant agreements will set annual deliverables on in-kind contributions and
+    mandatory reporting requirements for applicants who are Private Members of EU-Rail.
+  quote: 'the grant agreements will set, in principle, annual deliverable on in-
+
+    kind contributions for the projects selected under this topic, as well as mandatory
+
+    reporting requirements, for those applicants who are Private Members of EU-Rail.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.157
+  verified: llm_cited
+- requirement: Proposals must include dissemination and communication activities aligned with
+    EU-Rail Communication and Dissemination Guidelines and coherent with overall EU-Rail Programme
+    objectives.
+  quote: 'the proposal shall
+
+    consider that the project will be part of the overall EU-Rail Programme and to
+
+    ensure coherence across the programme and alignment with Europe’s Rail
+
+    objectives will have to follow the Europe’s Rail Communication and
+
+    Dissemination Guidelines for Europe’s Rail Funded Projects'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.165
+  verified: llm_cited
+- requirement: Actions must plan, design, coordinate and contribute to the EU-Rail Programme
+    Communication and Dissemination activities in agreement with the JU, as an additional
+    exploitation/dissemination obligation starting from the proposal phase.
+  quote: 'the actions must
+
+    plan, design, coordinate and contribute to the EU-Rail Programme Communication and Dissemination
+
+    activities, aligned with the Stakeholder Relations and Dissemination/structure and in
+    agreement with
+
+    the JU.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.57
+  verified: llm_cited
+- requirement: The JU reserves the right to object to transfers or licensing of results up
+    to four years after the end of the action.
+  quote: 'the JU reserves the right to object to transfers or
+
+    licensing up to four years after the end of the
+
+    action, in accordance with the conditions set in the Horizon Europe Model Grant Agreement'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.57
+  verified: llm_cited
+- requirement: Private Members and their constituent or affiliated entities established in
+    third countries may be required by the JU to take appropriate measures to safeguard Union
+    and JU security or public order interests.
+  quote: 'the JU should be able to request private members to take appropriate
+
+    measures. Such measures could include the appropriate handling of confidential information
+    or
+
+    limitation of certain entities in specific operational activities of the private Member'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.57
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (5/12 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Any discrepancy between the required in-kind contribution ratio and the amount actually
+    declared by applicant Private Members must be duly justified.
+  quote: 'Any discrepancy must
+
+    be well and duly justified.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.157
+  verified: llm_cited
+application:
+  channel: Funding and Tenders (F&T) Portal, via EU-Rail calls for proposals under the Horizon
+    Europe Work Programme 2026-2027
+  typical_timeline: Indicative project duration 36-42 months; Grant Agreements for topics
+    referenced expected to be signed in 2026
+  quote: 'Applicant Private72 Members of the EU-Rail part of consortia responding to this
+
+    topic must provide in-kind contributions to additional activities to be declared
+
+    via the template model available on the F&T portal.'
+  source:
+    file: europes_rail_wp2026_full.pdf
+    locator: europes_rail_wp2026_amendment1.pdf#p.164
+  verified: llm_cited

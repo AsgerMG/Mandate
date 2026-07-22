@@ -1,0 +1,471 @@
+id: satr_de_rnd
+name: satr_de_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_nexus_establishment_de
+  gate_family: G1_nexus
+  requirement: Applicant must have or plan to have a business establishment, branch, or non-economic
+    facility in Germany at the time the grant is paid out.
+  value: Establishment/branch in Germany required at payout
+  intake_field: entityCountries
+  quote: 'wird das
+
+    Vorhandensein einer Betriebsstätte oder Niederlassung (Unternehmen) beziehungsweise einer
+    sonstigen Einrichtung,
+
+    die der nichtwirtschaftlichen Tätigkeit des Zuwendungsempfängers dient (Hochschule, Forschungseinrichtung),
+    in
+
+    Deutschland verlangt'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.3
+  verified: llm_cited
+- id: g1_nexus_eligible_applicant_types_nuklear
+  gate_family: G1_nexus
+  requirement: Eligible applicants are universities and non-university research institutions,
+    regional/local authorities, and commercial enterprises.
+  value: Hochschulen, außeruniversitäre Forschungseinrichtungen, Gebietskörperschaften, Unternehmen
+    der gewerblichen Wirtschaft
+  intake_field: borrowerModel
+  quote: 'Antragsberechtigt sind Hochschulen und außeruniversitäre Forschungseinrichtungen,
+    Gebietskörperschaften sowie
+
+    Unternehmen der gewerblichen Wirtschaft.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.3
+  verified: llm_cited
+- id: g1_nexus_eligible_applicant_types_sicherheit
+  gate_family: G1_nexus
+  requirement: Eligible applicants for the security research programme include civil society
+    organisations and private security industry companies, among others, with an establishment/facility
+    in Germany required at payout.
+  value: Zivilgesellschaftliche Organisationen, Unternehmen der privaten Sicherheitswirtschaft,
+    etc.
+  intake_field: borrowerModel
+  quote: 'iv) relevante zivilgesellschaftliche Organisationen sowie
+
+    v) Unternehmen der privaten Sicherheitswirtschaft und -industrie.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4
+  verified: llm_cited
+- id: g1_nexus_eligible_applicant_types_dns
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises (with priority given to SME
+    participation), universities, non-university research institutions, associations, foundations
+    and public-law bodies with automotive-industry competence.
+  value: Unternehmen der gewerblichen Wirtschaft, Hochschulen, Forschungseinrichtungen, Verbände
+    etc.
+  intake_field: borrowerModel
+  quote: 'Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft, insbesondere juristische
+    Personen des Privatrechts
+
+    und unternehmerisch tätige Personengesellschaften; besondere Berücksichtigung findet dabei
+    die Beteiligung kleiner
+
+    und mittlerer Unternehmen (KMU).'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.2
+  verified: llm_cited
+- id: g1_nexus_works_in_germany_dns
+  gate_family: G1_nexus
+  requirement: Work under the DNS Mobilität programme must generally be carried out in Germany,
+    and results should primarily be used in Germany or the EEA.
+  value: Arbeiten grundsätzlich in Deutschland; Ergebnisse vorrangig in Deutschland/EWR genutzt
+  intake_field: activityCountries
+  quote: 'Die Arbeiten sind grundsätzlich in der Bundesrepublik Deutschland durchzuführen.
+
+    Gefördert werden Projekte, deren Ergebnisse vorrangig in der Bundesrepublik Deutschland
+    oder dem Europäischen
+
+    Wirtschaftsraum (EWR) genutzt werden'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.3
+  verified: llm_cited
+- id: g1_nexus_partner_countries_ost
+  gate_family: G1_nexus
+  requirement: For Modules 1-8, cooperation with a partner institution from at least one of
+    the specified Eastern Partnership countries is required; for Module 9 the first recipient
+    must be a German institution.
+  value: Kooperation mit Partnerinstitution aus mind. einem Partnerland (Nummer 1.1)
+  intake_field: entityCountries
+  quote: 'um so die Kooperation zwischen deutschen Einrichtungen
+
+    und Partnerinstitutionen aus mindestens einem der in Nummer 1.1 genannten Partnerländer
+    zu vertiefen'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_oestliche_partnerschaft_2023.pdf#p.4
+  verified: llm_cited
+- id: g2_kmu_definition_all
+  gate_family: G2_size_ownership
+  requirement: SMEs (KMU) for purposes of this funding directive are enterprises meeting the
+    EU SME definition; applicant must self-declare classification per Annex I AGVO.
+  value: EU SME definition applies; self-declaration required
+  intake_field: fteBand
+  quote: 'Kleine und mittlere Unternehmen oder „KMU“ im Sinne dieser Förderrichtlinie sind
+    Unternehmen, die die Vorausset-
+
+    zungen der KMU-Definition der EU erfüllen.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.3
+  verified: llm_cited
+- id: g2_undertaking_in_difficulty_exclusion
+  gate_family: G2_size_ownership
+  requirement: Aid is not granted to undertakings in difficulty as defined by Article 2(18)
+    AGVO, with a limited exception for firms that became distressed only between 1 Jan 2020
+    and 31 Dec 2021.
+  value: Exclusion of 'Unternehmen in Schwierigkeiten'
+  intake_field: lossesOverHalfCapital
+  quote: 'Gleiches gilt für eine Beihilfengewährung an Unternehmen in Schwierigkeiten gemäß
+    der Definition nach Artikel 2
+
+    Absatz 18 AGVO. Ausgenommen von diesem Verbot sind allein Unternehmen, die sich am 31.
+    Dezember 2019 nicht
+
+    bereits in Schwierigkeiten befanden, aber im Zeitraum vom 1. Januar 2020 bis 31. Dezember
+    2021 zu Unternehmen in
+
+    Schwierigkeiten wurden nach Artikel 1 Absatz 4 Buchstabe c AGVO.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.8
+  verified: llm_cited
+- id: g2_recovery_order_exclusion_dns
+  gate_family: G2_size_ownership
+  requirement: Companies that have failed to comply with a prior Commission recovery order
+    are excluded from applying, as are companies in insolvency proceedings.
+  value: Exclusion for outstanding recovery orders or insolvency
+  intake_field: institutionalOwner
+  quote: 'Unternehmen, die gemäß Artikel 1 Absatz 4 Buchstabe a und b AGVO einer Rückforderungsanordnung
+    aufgrund
+
+    einer früheren Kommissionsentscheidung zur Feststellung der Rechtswidrigkeit und Unvereinbarkeit
+    einer Beihilfe
+
+    mit dem Binnenmarkt nicht Folge geleistet haben'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.3
+  verified: llm_cited
+- id: g3_max_aid_amounts_nuklear
+  gate_family: G3_financial
+  requirement: AGVO caps state aid for economic activities at fixed maximum amounts per undertaking/project
+    depending on research category (e.g. €35m industrial research, €25m experimental development).
+  value: €55m basic research / €35m industrial research / €25m experimental development /
+    €8.25m feasibility studies per project
+  intake_field: ticketBand
+  quote: '55 Millionen Euro pro Unternehmen und Vorhaben für Grundlagenforschung (Artikel
+    4 Absatz 1 Buchstabe i Ziffer i
+
+    AGVO)
+
+    – 35 Millionen Euro pro Unternehmen und Vorhaben für industrielle Forschung (Artikel 4
+    Absatz 1 Buchstabe i Ziffer ii
+
+    AGVO)
+
+    – 25 Millionen Euro pro Unternehmen und Vorhaben für experimentelle Entwicklung (Artikel
+    4 Absatz 1 Buchstabe i
+
+    Ziffer iii AGVO)'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.8
+  verified: llm_cited
+- id: g3_own_contribution_sicherheit
+  gate_family: G3_financial
+  requirement: An appropriate own contribution to eligible costs is required, generally at
+    least 75% of eligible costs for commercial enterprises and economically-active research
+    bodies.
+  value: Minimum ~75% own contribution for economic activities
+  intake_field: cofinancingBand
+  quote: 'Nach BMFTR-Grundsätzen wird eine angemessene Eigenbeteiligung an den
+
+    entstehenden zuwendungsfähigen Kosten vorausgesetzt, in der Regel mindestens 75 Prozent
+    der entstehenden
+
+    zuwendungsfähigen Kosten.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4
+  verified: llm_cited
+- id: g3_sme_bonus_sicherheit
+  gate_family: G3_financial
+  requirement: SMEs may receive an increased aid intensity via bonuses under Article 25(6)(a)
+    AGVO if conditions are met.
+  value: SME aid-intensity bonus available
+  intake_field: ticketBand
+  quote: 'Für KMU kann die Beihilfeintensität nach Artikel 25 Absatz 6 Buchstabe a AGVO durch
+    entsprechende Aufschläge
+
+    erhöht werden, sofern die dort genannten Voraussetzungen erfüllt sind (siehe Anlage).'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4
+  verified: llm_cited
+- id: g3_deminimis_ceiling_ost
+  gate_family: G3_financial
+  requirement: Total de minimis aid to a single undertaking must not exceed €200,000 over
+    a three fiscal-year period.
+  value: €200,000 de minimis ceiling per single undertaking over 3 tax years
+  intake_field: ticketBand
+  quote: 'Nach Artikel 3 Absatz 2 der De-minimis-Verordnung darf der Gesamtbetrag der einem
+    einzigen Unternehmen gewähr-
+
+    ten De-minimis-Beihilfe in einem Zeitraum von drei Steuerjahren 200 000 Euro nicht übersteigen.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_oestliche_partnerschaft_2023.pdf#p.11
+  verified: llm_cited
+- id: g3_max_amounts_dns
+  gate_family: G3_financial
+  requirement: Maximum eligible-cost funding amounts under AGVO apply per undertaking/project
+    by category, e.g. up to €35m for industrial research and €8.25m per feasibility study.
+  value: Up to €35m industrial research; €8.25m feasibility study
+  intake_field: ticketBand
+  quote: 'der Höchstbetrag der Förderung der beihilfefähigen Kosten beträgt für Durchführbarkeitsstu-
+
+    dien zur Vorbereitung von Forschungstätigkeiten nach Artikel 4 Absatz 1 Buchstabe i Ziffer
+    vi AGVO bis zu
+
+    8,25 Millionen Euro pro Studie, für Vorhaben, die überwiegend die industrielle Forschung
+    betreffen, nach Artikel 4
+
+    Absatz 1 Buchstabe i Ziffer ii AGVO bis zu 35 Millionen Euro pro Unternehmen und Vorhaben'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.4
+  verified: llm_cited
+- id: g4_grant_form_all
+  gate_family: G4_borrower_model
+  requirement: Funding under these directives is provided as non-repayable grants (project
+    funding), not loans or equity.
+  value: Non-repayable grant / Zuschuss
+  intake_field: borrowerModel
+  quote: Die Zuwendungen werden im Wege der Projektförderung als nicht rückzahlbarer Zuschuss
+    gewährt.
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4
+  verified: llm_cited
+- id: g4_grant_form_dns
+  gate_family: G4_borrower_model
+  requirement: Funding is granted as a proportional financing of eligible costs in the form
+    of a non-repayable grant, capped at a maximum amount at award.
+  value: Anteilsfinanzierung; nicht rückzahlbarer Zuschuss
+  intake_field: borrowerModel
+  quote: 'Sie wird in Form eines nicht rückzahlbaren Zuschusses
+
+    (Artikel 5 Absatz 2 Buchstabe a AGVO) gewährt und bei der Bewilligung auf einen Höchstbetrag
+    begrenzt.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.4
+  verified: llm_cited
+- id: g4_no_entitlement_dns
+  gate_family: G4_borrower_model
+  requirement: There is no legal entitlement to receive funding; the granting authority decides
+    at its discretion within available budget.
+  value: No legal claim to funding
+  intake_field: none
+  quote: 'Ein Anspruch auf Gewährung der Zuwendung besteht nicht. Vielmehr entscheidet die
+    Bewilligungsbehörde aufgrund
+
+    ihres pflichtgemäßen Ermessens im Rahmen der verfügbaren Haushaltsmittel.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.2
+  verified: llm_cited
+- id: g5_use_of_funds_categories_dns
+  gate_family: G5_use_of_funds
+  requirement: Funded project parts must fall entirely within industrial research, experimental
+    development, or feasibility studies as defined by AGVO.
+  value: Industrial research / experimental development / feasibility studies only
+  intake_field: none
+  quote: 'Der geförderte Teil des Forschungs- und Entwicklungsvorhabens muss vollständig einer
+    oder mehreren der folgenden
+
+    Kategorien zuzuordnen sein:
+
+    – industrielle Forschung im Sinne von Artikel 2 Absatz 85 AGVO,
+
+    – experimentelle Entwicklung im Sinne von Artikel 2 Absatz 86 AGVO,
+
+    – Durchführbarkeitsstudien im Sinne von Artikel 2 Absatz 87 AGVO.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.4
+  verified: llm_cited
+- id: g5_not_started_dns
+  gate_family: G5_use_of_funds
+  requirement: Selected projects must not have started before the grant decision is issued;
+    work commencement is defined as conclusion of a binding supply/service contract.
+  value: Project must not have begun before grant approval
+  intake_field: developmentStage
+  quote: 'Die ausgewählten Gesamtvorhaben dürfen vor Erlass des Zuwendungsbescheids noch nicht
+    begonnen worden sein.
+
+    Als Vorhabenbeginn ist grundsätzlich der Abschluss eines der Ausführung zuzurechnenden
+    Lieferungs- oder Leis-
+
+    tungsvertrags zu werten.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.3
+  verified: llm_cited
+- id: g5_not_started_nuklear
+  gate_family: G5_use_of_funds
+  requirement: Work on the project may not begin before the application is submitted and approved.
+  value: No work before application and approval
+  intake_field: developmentStage
+  quote: Mit den Arbeiten darf vor Antragstellung und Bewilligung nicht begonnen werden.
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.3
+  verified: llm_cited
+- id: g6_incentive_effect_all
+  gate_family: G6_conditionality
+  requirement: 'The aid must have an incentive effect per Article 6 AGVO, requiring a written
+    application before work begins containing at minimum: company name/size, project description
+    with start/end dates, location, costs, and type/amount of aid.'
+  value: Written application before project start; minimum content required
+  intake_field: conditionality
+  quote: 'Diese Bekanntmachung gilt nur im Zusammenhang mit Beihilfen, die einen Anreizeffekt
+    nach Artikel 6 AGVO haben.
+
+    Der in diesem Zusammenhang erforderliche Beihilfeantrag muss mindestens die folgenden
+    Angaben enthalten:
+
+    a) Name und Größe des Unternehmens
+
+    b) Beschreibung des Vorhabens mit Angabe des Beginns und des Abschlusses
+
+    c) Standort des Vorhabens
+
+    d) die Kosten des Vorhabens sowie
+
+    e) die Art der Beihilfe'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.8
+  verified: llm_cited
+- id: g6_cumulation_agvo_deminimis
+  gate_family: G6_conditionality
+  requirement: AGVO-exempted state aid may not be cumulated with de minimis aid for the same
+    eligible costs if the cumulation would exceed the aid intensities or maximum amounts set
+    out in Chapter III AGVO.
+  value: No cumulation with de minimis beyond Chapter III ceilings
+  intake_field: cofinancingBand
+  quote: 'Nach der AGVO freigestellte staatliche Beihilfen dürfen nicht mit De-minimis-Beihilfen
+    für dieselben beihilfefähigen
+
+    Kosten kumuliert werden, wenn durch diese Kumulierung die in Kapitel III AGVO festgelegten
+    Beihilfeintensitäten oder
+
+    Beihilfehöchstbeträge überschritten werden.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.12
+  verified: llm_cited
+- id: g6_transparency_publication
+  gate_family: G6_conditionality
+  requirement: Aid amounts above €100,000 must be published by the granting ministry in the
+    EU Commission's transparency database, and all supporting documents retained for ten years.
+  value: Publication above €100,000; 10-year record retention
+  intake_field: conditionality
+  quote: 'das BMBF alle Unterlagen über gewährte Beihilfen, die die Einhaltung der vorliegend
+    genannten Voraussetzungen
+
+    belegen, für zehn Jahre nach Gewährung der Beihilfe aufbewahrt und der Europäischen Kommission
+    auf Verlangen
+
+    aushändigt;
+
+    – das BMBF Beihilfen über 100 000 Euro auf der Transparenzdatenbank der EU-Kommission
+    veröffentlicht.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.8
+  verified: llm_cited
+- id: g6_no_artificial_splitting_sicherheit
+  gate_family: G6_conditionality
+  requirement: Maximum notification thresholds may not be circumvented by artificially splitting
+    up projects that are substantively linked; partial approval up to the notification threshold
+    is not permitted.
+  value: No artificial project splitting to avoid notification thresholds
+  intake_field: conditionality
+  quote: 'Die Maximalbeträge dürfen nicht durch eine künstliche Aufspaltung von inhaltlich
+    zu-
+
+    sammenhängenden Vorhaben umgangen werden. Die Teilgenehmigung bis zur Anmeldeschwelle
+    einer notifizierungs-
+
+    pflichtigen Beihilfe ist nicht zulässig.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.9
+  verified: llm_cited
+obligations:
+- requirement: Recipients must submit a completed 'Erklärung Unternehmen in Schwierigkeiten'
+    form confirming they are not an undertaking in difficulty before/during the application
+    process.
+  quote: 'Hierfür müssen Unternehmen das Formular „Erklärung Unternehmen in Schwierigkeiten“
+    rechtsverbindlich unter-
+
+    schreiben und einen Scan des originalen Papierdokuments als PDF-Datei als Anhang zur Projektskizze
+    im elektro-
+
+    nischen Antragssystem hochladen.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.8
+  verified: llm_cited
+- requirement: Recipients agree to cooperate with the granting authority regarding compliance
+    with state aid law, provide requested documentation on creditworthiness/compliance, and
+    cooperate with any European Commission proceedings.
+  quote: 'zur Mitwirkung bei der Einhaltung der beihilferechtlichen Vorgaben;
+
+    – zur Vorlage von angeforderten Angaben und/oder Belegen zum Nachweis der Bonität und
+    der beihilferechtlichen
+
+    Konformität;
+
+    – zur Mitwirkung im Fall von Verfahren (bei) der Europäischen Kommission.'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.9
+  verified: llm_cited
+- requirement: Consortium partners must formalize their cooperation in a written cooperation
+    agreement before the funding decision on a joint project.
+  quote: 'Die Partner eines Verbundprojekts regeln ihre Zusammenarbeit in einer schriftlichen
+    Kooperationsvereinbarung. Vor
+
+    der Förderentscheidung über ein Verbundprojekt muss eine grundsätzliche Übereinkunft über
+    weitere vom BMFTR
+
+    vorgegebene Kriterien nachgewiesen werden'
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4
+  verified: llm_cited
+- requirement: Recipients must submit a target-achievement monitoring concept with the application
+    and participate in evaluation surveys, interviews, and other data collection as requested
+    by the funder.
+  quote: Mit Antragstellung ist ein Konzept für die Zielerreichungskontrolle des Projekts
+    auf Verbundebene vorzulegen.
+  source:
+    file: satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf
+    locator: satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.7
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (24/24 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).

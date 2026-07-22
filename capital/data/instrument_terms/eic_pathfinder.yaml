@@ -1,0 +1,162 @@
+id: eic_pathfinder
+name: eic_pathfinder
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-consortium-composition
+  gate_family: G1_nexus
+  requirement: Applicants must form a consortium of at least three different independent legal
+    entities established in different countries, with at least one in a Member State and at
+    least two others each in different Member States or Associated Countries.
+  value: Consortia of at least 3 different independent legal entities established in different
+    countries
+  intake_field: consortium
+  quote: Consortia of at least three different independent legal entities At least one legal
+    entity established in a Member State At least two other independent legal entities, each
+    established in different Member States or Associated Countries
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (Who can apply?)'
+  verified: llm_cited
+- id: g1-single-applicant-challenges
+  gate_family: G1_nexus
+  requirement: Single applicants and small/larger consortia (two partners) may apply, but
+    only under the EIC Pathfinder Challenges strand.
+  value: Single applicants allowed only for EIC Pathfinder Challenges
+  intake_field: consortium
+  quote: Additionally, single applicants, small and larger consortia (two partners) for EIC
+    Pathfinder Challenges only
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (Who can apply?)'
+  verified: llm_cited
+- id: g1-country-eligibility
+  gate_family: G1_nexus
+  requirement: Consortium members must come from EU Member States or countries associated
+    to the Horizon Europe programme.
+  value: EU Member States and Horizon Europe Associated Countries
+  intake_field: entityCountries
+  quote: Consortia from EU Member States and countries associated to the Horizon Europe programme
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (Who can apply?)'
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Consortia from EU Member States and countries
+    asso'''
+- id: g1-trl-scope
+  gate_family: G1_nexus
+  requirement: Projects must address deep tech at low technology readiness levels (TRL 1-4)
+    with high scientific/technological ambition and risk.
+  value: TRL 1-4
+  intake_field: developmentStage
+  quote: Taking forward breakthrough deep tech projects with a high degree of scientific and
+    technological ambition and risk and potential to create a new market (TRL 1-4)
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (What for)'
+  verified: llm_cited
+- id: g4-grant-standard
+  gate_family: G4_borrower_model
+  requirement: Funding is provided as grants of up to EUR 4 million, or more if duly justified,
+    to support early-stage development of future technologies.
+  value: Grants up to EUR 4 million (or more if justified)
+  intake_field: borrowerModel
+  quote: grants of up to EUR 4 million or more if duly justified
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (Grant funding)'
+  verified: false
+  verify_note: 'fragment not found verbatim: ''grants of up to EUR 4 million or more if duly
+    just'''
+- id: g4-booster-grant
+  gate_family: G4_borrower_model
+  requirement: Booster grants are a fixed amount not exceeding EUR 50,000, intended for testing
+    the commercialisation potential of research outputs.
+  value: Booster grants up to EUR 50,000
+  intake_field: borrowerModel
+  quote: Booster grants - grants of a fixed amount not exceeding EUR 50 000 for testing the
+    commercialisation potential of their research outputs
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (Grant funding)'
+  verified: llm_cited
+- id: g5-use-of-funds-research
+  gate_family: G5_use_of_funds
+  requirement: Grant funds must be used to support early-stage development of future technologies,
+    including activities at low TRL 1-4, up to proof of concept.
+  value: Early-stage R&D activities up to proof of concept (TRL 1-4)
+  intake_field: developmentStage
+  quote: Grants to support early stage development of future technologies (e.g. various activities
+    at low TRL 1-4), up to proof of concept and booster grants for complementary activities
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (Grant funding)'
+  verified: llm_cited
+- id: g5-thematic-challenges
+  gate_family: G5_use_of_funds
+  requirement: Projects submitted under EIC Pathfinder Challenges must match one of the predefined
+    thematic areas of the Challenges call.
+  value: Must match predefined thematic areas (Challenges strand)
+  intake_field: none
+  quote: For projects that match any of the predefined thematic areas of the Pathfinder Challenges.
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (EIC Pathfinder Challenges)'
+  verified: false
+  verify_note: 'fragment not found verbatim: ''For projects that match any of the predefined
+    them'''
+- id: g5-open-any-field
+  gate_family: G5_use_of_funds
+  requirement: Under EIC Pathfinder Open, projects may be in any field of science, technology
+    or application without predefined thematic priorities.
+  value: Any field of science/technology/application (Open strand)
+  intake_field: none
+  quote: For projects in any field of science, technology or application without predefined
+    thematic priorities.
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (EIC Pathfinder Open)'
+  verified: false
+  verify_note: 'fragment not found verbatim: ''For projects in any field of science, technology
+    o'''
+- id: g6-proposal-requirements
+  gate_family: G6_conditionality
+  requirement: Proposals must demonstrate a convincing long-term vision, a concrete novel
+    science-towards-technology breakthrough, and a high-risk/high-gain research approach with
+    plausible objectives.
+  value: Must meet three essential characteristics
+  intake_field: none
+  quote: Convincing long-term vision of a radically new technology that has the potential
+    to have a transformative positive effect to solving a challenge in our economy and society
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (Who can apply? Requirements)'
+  verified: llm_cited
+- id: g6-submission-deadline
+  gate_family: G6_conditionality
+  requirement: Proposals must be submitted via the Funding and Tender Opportunities Portal
+    by the specified call deadline.
+  value: 'Deadlines: EIC Pathfinder Open 12 May 2026; Challenges 28 October 2026'
+  intake_field: needBy
+  quote: You must submit your proposal via the Funding and Tender Opportunities Portal before
+    the given deadline.
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (How to apply?)'
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (7/11 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Funding and Tender Opportunities Portal
+  typical_timeline: EIC Pathfinder Open deadline 12 May 2026; EIC Pathfinder Challenges deadline
+    28 October 2026
+  quote: You must submit your proposal via the Funding and Tender Opportunities Portal before
+    the given deadline.
+  source:
+    file: eic_pathfinder_eligibility.html
+    locator: '#chunk 1 (How to apply?)'
+  verified: llm_cited

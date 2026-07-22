@@ -1,0 +1,290 @@
+id: eib_venture
+name: eib_venture
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: The investee's R&D investment plans must be geographically located in the European
+    Union.
+  value: EU-located investment plans
+  intake_field: activityCountries
+  quote: The investee must have investment plans for research and development that are geographically
+    located in the European Union (EU).
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: For the EGFF venture debt facility, an SME is eligible by default if its headquarters
+    or the subsidiaries expected to receive financing are located within the EU.
+  value: EU headquarters/subsidiaries
+  intake_field: entityCountries
+  quote: the company is an SME with less than 250 full-time employees and its headquarters
+    or its subsidiaries, which are expected to receive the financing, are located within the
+    EU
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: Eligible applicants are SMEs and mid-caps developing highly innovative technologies,
+    solutions or platforms.
+  value: SME or mid-cap
+  intake_field: fteBand
+  quote: Small and medium-sized enterprises (SMEs) and mid-caps developing highly innovative
+    technologies, solutions or platforms.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: An SME with fewer than 250 full-time employees qualifies by default for eligibility
+    under the EGFF venture debt criteria.
+  value: <250 FTE
+  intake_field: fteBand
+  quote: the company is an SME with less than 250 full-time employees
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g5
+  gate_family: G2_size_ownership
+  requirement: Firms with more than 250 employees (mid-caps) are eligible only if they meet
+    at least one additional criterion, such as being an innovation/R&D-driven or fast-growing
+    enterprise, or targeting convergence regions.
+  value: mid-cap requires additional criterion
+  intake_field: fteBand
+  quote: firms with more than 250 employees become eligible only if they meet one additional
+    criterion, which could be that growth is R&D driven, as documented by patent applications
+    during the last two years
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g6
+  gate_family: G2_size_ownership
+  requirement: Any company larger than a mid-cap (i.e., over 3,000 employees) is excluded
+    from eligibility.
+  value: excluded if >3,000 employees
+  intake_field: fteBand
+  quote: Any company larger than a mid-cap is excluded.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.26
+  verified: llm_cited
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: To qualify as a fast-growing enterprise by employment growth, a firm must have
+    at least 100 employees at the start of the observation period and average annualised FTE
+    growth of at least 5% per year over three years.
+  value: 100+ FTE base, 5%/yr growth over 3 yrs
+  intake_field: fteBand
+  quote: an average annualised growth in full-time employees of at least 5% a year, over a
+    three year period, and have one hundred or more employees at the beginning of the observation
+    period
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.26
+  verified: llm_cited
+- id: g8
+  gate_family: G2_size_ownership
+  requirement: To qualify as a fast-growing enterprise by turnover growth, a firm must show
+    average annualised turnover growth greater than 10% per year over a three-year period.
+  value: '>10%/yr turnover growth over 3 yrs'
+  intake_field: turnoverBand
+  quote: an average annualised growth in turnover greater than 10% a year, over a three-year
+    period
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.26
+  verified: llm_cited
+- id: g9
+  gate_family: G4_borrower_model
+  requirement: An applicant must have already raised equity from professional investors, have
+    a sustainable business model and business plan, and have solid corporate governance in
+    place.
+  value: prior VC/equity raise, sustainable business model, governance
+  intake_field: borrowerModel
+  quote: The company must have already raised equity from professional investors, have a sustainable
+    business model and business plan and have a solid corporate governance in place.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- id: g10
+  gate_family: G4_borrower_model
+  requirement: A counterparty is deemed eligible if it satisfies at least one of the listed
+    alternative criteria (SME size, innovative use of funds, fast-growing status, R&I-driven
+    status, or convergence-region targeting).
+  value: at least one of five criteria
+  intake_field: borrowerModel
+  quote: a counterparty is deemed eligible if it complies with at least one of the following
+    criteria
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g11
+  gate_family: G4_borrower_model
+  requirement: Eligibility may be met if the company intends to use EIB financing to develop
+    innovative products, processes or services where the business plan indicates a risk of
+    technological, industrial or business failure.
+  value: innovative products/processes/services with risk of failure
+  intake_field: borrowerModel
+  quote: the company should intend to use the EIB financing to invest in producing or developing
+    products, processes and/or services that are innovative and where the business plan indicates
+    a risk of technological or industrial failure, or a business risk
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g12
+  gate_family: G4_borrower_model
+  requirement: Eligibility may be met if the company is a 'fast-growing enterprise' as measured
+    by employment or turnover growth.
+  value: fast-growing enterprise (turnover or FTE)
+  intake_field: borrowerModel
+  quote: the company is a “fast-growing enterprise”, as measured by employment or by turnover
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g13
+  gate_family: G4_borrower_model
+  requirement: Eligibility may be met if the company has significant innovation potential
+    and/or is a Research and Innovation driven enterprise.
+  value: significant innovation potential / R&I driven
+  intake_field: borrowerModel
+  quote: the company shall have a significant innovation potential and/or be an “Research
+    and Innovation (R&I) driven enterprise”
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g14
+  gate_family: G4_borrower_model
+  requirement: A company not meeting any other criterion may still be eligible if its investment
+    programme targets convergence/cohesion regions within EU Member States.
+  value: convergence region targeting fallback
+  intake_field: activityCountries
+  quote: the company does not meet any of the above conditions but its investment programme
+    is targeting convergence regions within EU Member States
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.24
+  verified: llm_cited
+- id: g15
+  gate_family: G5_use_of_funds
+  requirement: Projects should be at commercial stage, though pre-commercial stage projects
+    may exceptionally be accepted if the company develops technologies of strategic importance
+    to the EU.
+  value: commercial stage (exceptions for pre-commercial strategic tech)
+  intake_field: developmentStage
+  quote: The projects should be in commercial stage. Exceptionally, projects in pre-commercial
+    stage may be accepted if the company develops technologies in areas of strategic importance
+    to the EU.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- id: g16
+  gate_family: G5_use_of_funds
+  requirement: 'Eligible projects must fall under one of the designated innovative areas:
+    life science and biotech, deep tech and digital, or cleantech.'
+  value: life science/biotech, deep tech/digital, cleantech
+  intake_field: none
+  quote: 'The projects should fall under one of the following innovative areas:'
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- id: g17
+  gate_family: G3_financial
+  requirement: Standard EIB venture debt financing typically ranges between €10 million and
+    €50 million.
+  value: €10m-€50m
+  intake_field: ticketBand
+  quote: We typically offer financing between €10 million and €50 million.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- id: g18
+  gate_family: G3_financial
+  requirement: Scale-up companies with a valuation exceeding €500 million are eligible for
+    financing above €50 million.
+  value: '>€500m valuation unlocks >€50m ticket'
+  intake_field: ticketBand
+  quote: Scale-up companies with a valuation exceeding €500 million are eligible for financing
+    superior to €50 million.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- id: g19
+  gate_family: G3_financial
+  requirement: EIB venture debt ticket sizes for this instrument range from €7.5 million to
+    €50 million, per market comparison data.
+  value: €7.5m-€50m per Deloitte comparison
+  intake_field: ticketBand
+  quote: €7.5m - €50m
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.11
+  verified: llm_cited
+- id: g20
+  gate_family: G4_borrower_model
+  requirement: EIB venture debt is typically offered with a tenor of 5 to 7 years.
+  value: 5-7 year tenor
+  intake_field: none
+  quote: 5 - 7 years
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.11
+  verified: llm_cited
+obligations:
+- requirement: Companies applying under InvestEU-supported venture debt financing must apply
+    through that programme framework to be eligible.
+  quote: Projects that apply for financing under InvestEU are eligible for venture debt financing.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited
+- requirement: The EIB does not directly involve itself in the daily management of the enterprise
+    as part of its non-dilutive financing approach.
+  quote: the EIB typically assumes no direct involvement in the daily management of the enterprise
+    and does not convert any warrants into shares, but rather cash equivalents
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.11
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (20/20 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: EIB venture debt is generally accompanied by co-financing from other sources, predominantly
+    the promoter company itself and external corporates, with the EIB financing mobilizing
+    additional funds at a ratio of at least 1.4-fold.
+  quote: On average, for every euro loaned by the EIB, another EUR 1.37 flows into the financed
+    venture debt projects from other sources.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_impact_assessment.pdf#p.15
+  verified: llm_cited
+application:
+  channel: Applicants sign up for an EIB contact account and apply directly to the EIB Venture
+    Debt team.
+  typical_timeline: Median time to disbursement following signature is approximately 3 months.
+  quote: Sign up for a contact account to send all inquiries directly to our Venture Debt
+    team. Once signed up, your company can get in touch with us, make a general enquiry or
+    apply for venture debt financing.
+  source:
+    file: eib_venture_debt_impact_assessment.pdf
+    locator: eib_venture_debt_page.html#chunk 2
+  verified: llm_cited

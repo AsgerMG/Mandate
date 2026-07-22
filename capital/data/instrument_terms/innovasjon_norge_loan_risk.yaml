@@ -1,0 +1,185 @@
+id: innovasjon_norge_loan_risk
+name: innovasjon_norge_loan_risk
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a Norwegian business (bedrift) undertaking climate- and environment-friendly
+    investments.
+  value: Norwegian companies
+  intake_field: entityCountries
+  quote: Grønt risikolån retter seg mot klima- og miljøvennlige investeringer i norske bedrifter.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G2_size_ownership
+  requirement: The loan target group is all businesses (no size restriction stated).
+  value: Alle bedrifter
+  intake_field: fteBand
+  quote: Målgruppe Alle bedrifter
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: The maximum loan amount available under Grønt risikolån is up to NOK 35 million.
+  value: Up to NOK 35,000,000
+  intake_field: ticketBand
+  quote: Hvor mye Inntil 35 millioner kroner
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g4_1
+  gate_family: G4_borrower_model
+  requirement: The financial instrument is a loan (not a grant or equity investment).
+  value: Loan
+  intake_field: borrowerModel
+  quote: Type tjeneste Lån
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g4_2
+  gate_family: G4_borrower_model
+  requirement: Innovasjon Norge has an agreement with the European Investment Fund (EIF) which,
+    under given conditions, can guarantee part of the loan amount so the borrower can obtain
+    better terms.
+  value: EIF partial guarantee possible
+  intake_field: institutionalBacking
+  quote: Vi har inngått avtale med Det Europeiske Investeringsfondet (EIF), som under gitte
+    betingelser kan garantere for deler av lånebeløpet slik at låntaker kan få bedre betingelser.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g4_3
+  gate_family: G4_borrower_model
+  requirement: Risikolån (risk loans) cover part of the capital need for investment projects
+    within establishment, innovation, internationalisation, capital strengthening, growth
+    and restructuring, and are often cheaper than investor capital.
+  value: Risikolån financing scope
+  intake_field: borrowerModel
+  quote: Risikolån dekker deler av kapitalbehovet for investeringsprosjekter innen etableringer,
+    nyskaping, internasjonalisering, kapitalstyrking, vekst og omstilling.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_seksjon_lan.html#chunk 1
+  verified: llm_cited
+- id: g5_1
+  gate_family: G5_use_of_funds
+  requirement: The loan must be used for climate- and environment-friendly investments contributing
+    to the green transition of Norwegian industry, relevant for both established businesses
+    changing production processes and new industrial establishments.
+  value: Green/climate investment projects
+  intake_field: developmentStage
+  quote: Lånet skal bidra til grønn omstilling av norsk næringsliv, og kan være aktuelt for
+    både etablert næringsliv som skal endre sine produksjonsprosesser og for nye industrietableringer.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g5_2
+  gate_family: G5_use_of_funds
+  requirement: Both risk loans and market loans can be used to finance development projects,
+    investments and working capital.
+  value: Development projects, investments, working capital
+  intake_field: none
+  quote: Begge lånene kan benyttes til å finansiere utviklingsprosjekter, investeringer og
+    arbeidskapital.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_seksjon_lan.html#chunk 1
+  verified: llm_cited
+- id: g6_1
+  gate_family: G6_conditionality
+  requirement: Financing from Innovasjon Norge must comply with the State aid rules, including
+    the five general conditions for State aid.
+  value: Compliance with State aid rules required
+  intake_field: conditionality
+  quote: Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket. Det
+    er fem generelle vilkår for statsstøtte som må ivaretas .
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g6_2
+  gate_family: G6_conditionality
+  requirement: The block exemption regulation (GBER) is part of the State aid framework and
+    may be applied to the case.
+  value: GBER may apply
+  intake_field: conditionality
+  quote: Gruppeunntaksregelverket (GBER) er en del av statsstøtteregelverket og er en samling
+    med artikler/støttehjemler som gir oss mulighet til å gi bedrifter støtte i ulike saker.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- id: g6_3
+  gate_family: G6_conditionality
+  requirement: To receive services, the business must uphold principles of responsible business
+    conduct and have a conscious approach to its own sustainability risk.
+  value: Responsible business conduct required
+  intake_field: conditionality
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: The application must disclose whether other public aid has been or will be
+    sought for the project.
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- requirement: If other public aid, including SkatteFunn, is nevertheless received after the
+    offer is given and covers the same costs, the grant may be reduced correspondingly or
+    lapse.
+  quote: I tilfelle slik annen offentlig støtte, herunder SkatteFunn, likevel blir mottatt
+    etter at vårt tilbud er gitt, og til dekning av de samme kostnadene, vil tilskuddet fra
+    oss kunne bli redusert tilsvarende eller bortfalle.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+- requirement: If changes to loan terms or securities are needed for an ongoing loan, an application
+    for this must be submitted.
+  quote: Dersom det er behov for endringer i lånevilkår eller sikkerheter, må det sendes søknad
+    om dette.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid measurement is based on an overall assessment of how much public aid is needed
+    to trigger the project; grant calculation assumes no other public aid beyond what is stated
+    in the application for the same eligible costs, but the company may still receive other
+    public aid for other project costs.
+  quote: Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas
+    annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søknaden.
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Online application via Min side (Innovasjon Norge's applicant portal)
+  typical_timeline: Rolling deadline (løpende); feedback on project within 1-2 working days
+    via the quick-response tool
+  quote: Søknadsfrist Løpende
+  source:
+    file: innovasjon_norge_loan_risk_gront_risikolan.html
+    locator: innovasjon_norge_loan_risk_gront_risikolan.html#chunk 1
+  verified: llm_cited

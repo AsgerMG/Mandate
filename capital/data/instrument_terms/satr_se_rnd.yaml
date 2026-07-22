@@ -1,0 +1,474 @@
+id: satr_se_rnd
+name: satr_se_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants-klimatklivet
+  gate_family: G1_nexus
+  requirement: All types of organisations (companies, regions, municipalities, municipal companies,
+    associations, housing cooperatives, foundations) may apply for Klimatklivet support; private
+    individuals cannot.
+  value: Organisations yes; private persons no
+  intake_field: borrowerModel
+  quote: Alla typer av organisationer kan få stöd från Klimatklivet – företag, regioner och
+    landsting, kommuner och kommunala bolag, föreningar, bostadsrättsföreningar, stiftelser.
+    Privatpersoner kan inte få stöd.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g1-local-regional-investment
+  gate_family: G1_nexus
+  requirement: The measure must be a local or regional investment carried out physically in
+    Sweden.
+  value: Local/regional investment required
+  intake_field: activityCountries
+  quote: Åtgärden ska vara en lokal eller regional investering.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g2-sme-size-thresholds-formas
+  gate_family: G2_size_ownership
+  requirement: Company size category (small/medium/large) determines applicable maximum aid
+    intensity, based on employee headcount and turnover/balance sheet thresholds.
+  value: 'Small: 10-49 FTE, turnover/balance ≤€10m; Medium: 50-249 FTE, turnover ≤€50m or
+    balance ≤€43m; Large: >250 FTE and higher turnover/balance'
+  intake_field: fteBand
+  quote: 'Små företag sysselsätter mellan 10 och 49 personer och har en omsättning eller balansomslutning
+    som inte överstiger 10 miljoner euro per år
+
+    • Medelstora företag sysselsätter mellan 50 och 249 personer och har en omsättning om
+    högst
+
+    50 miljoner euro eller en balansomslutning om högst 43 miljoner euro per år
+
+    • Stora företag sysselsätter fler än 250 personer och har en högre omsättning eller
+
+    balansomslutning än medelstora företag'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_stodnivaer.pdf#p.1
+  verified: llm_cited
+- id: g2-status-change-notification
+  gate_family: G2_size_ownership
+  requirement: The recipient must notify the agency if its size status changes (e.g. from
+    small/medium to large enterprise) during the project.
+  value: Must notify status change SME to large
+  intake_field: fteBand
+  quote: 'samt om
+
+    ändring av stödmottagares status (t.ex. från litet eller medelstort företag till stort
+
+    företag.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.5
+  verified: llm_cited
+- id: g3-gber-ceiling-notification
+  gate_family: G3_financial
+  requirement: If aid exceeds the notification thresholds specified in GBER, the block exemption
+    cannot be applied and the aid must be notified to the European Commission.
+  value: Above GBER thresholds requires EU Commission notification
+  intake_field: cofinancingBand
+  quote: 'Om stödet överskrider vissa angivna tröskelvärden får inte GBER tillämpas.4 Stödet
+    behöver i så
+
+    fall notifieras till EU-kommissionen.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_stodnivaer.pdf#p.1
+  verified: llm_cited
+- id: g3-rd-project-aid-intensity
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for R&D projects under GBER art. 25 depends on research
+    category and company size, ranging from 25% up to 100% of eligible costs.
+  value: Fundamental research 100%; industrial research 50-80%; experimental development 25-60%;
+    feasibility studies 50-70%
+  intake_field: turnoverBand
+  quote: 'GBER art. 25
+
+    - grundforskning 100 100 100
+
+    - industriell forskning 70/80* 60/75* 50/65*
+
+    - experimentell utveckling 45/60* 35/50* 25/40*
+
+    - genomförbarhetsstudier 70 60 50'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_stodnivaer.pdf#p.2
+  verified: llm_cited
+- id: g3-rd-threshold-values
+  gate_family: G3_financial
+  requirement: GBER art. 25 aid is subject to notification thresholds per beneficiary per
+    project depending on research category.
+  value: Fundamental research €55m; industrial research €35m; experimental development €25m;
+    feasibility studies €8.25m per study
+  intake_field: cofinancingBand
+  quote: 'Grundforskning – 55 miljoner euro per stödmottagare per projekt
+
+    • Industriell forskning – 35 miljoner euro per stödmottagare per projekt
+
+    • Experimentell utveckling – 25 miljoner euro per stödmottagare per projekt
+
+    • Genomförbarhetsstudier – 8,25 miljoner euro per studie.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_stodnivaer.pdf#p.5
+  verified: llm_cited
+- id: g3-de-minimis-cap
+  gate_family: G3_financial
+  requirement: De minimis aid to a single undertaking (including group companies) may not
+    exceed €300,000 over a rolling three-year period.
+  value: €300,000 per undertaking per 3 years
+  intake_field: cofinancingBand
+  quote: 'Takbelopp. 300 000 euro per företag under en period av tre år. Allt stöd av mindre
+    betydelse till
+
+    en koncern läggs ihop.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_stodnivaer.pdf#p.12
+  verified: llm_cited
+- id: g3-de-minimis-cap-klimatklivet
+  gate_family: G3_financial
+  requirement: Aid granted under the de minimis regulation for Klimatklivet may not exceed
+    €300,000 over a three-year period.
+  value: €300,000 per 3-year period
+  intake_field: cofinancingBand
+  quote: Stödbelopp som beviljas enligt förordningen får inte överstiga 300 000 euro under
+    en treårsperiod.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_regler.html#chunk 1
+  verified: llm_cited
+- id: g3-cofinancing-required
+  gate_family: G3_financial
+  requirement: The recipient must finance the portion of project costs not covered by the
+    grant using own funds or funds from another financier, and is responsible for financing
+    any cost increases.
+  value: Own co-financing required for uncovered costs and cost overruns
+  intake_field: cofinancingBand
+  quote: 'Stödmottagaren ska finansiera den del av sina kostnader som inte täcks av stödet
+
+    från Energimyndigheten med egna medel eller med medel från annan finansiär.
+
+    Stödmottagaren ansvarar för finansiering av kostnadsökningar som uppstår under
+
+    projekttiden.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.1
+  verified: llm_cited
+- id: g4-grant-mechanism-energy
+  gate_family: G4_borrower_model
+  requirement: Support is disbursed as a grant to finance implementation of the project specified
+    in the funding decision, contingent on government appropriations being available.
+  value: Grant instrument, contingent on government funding availability
+  intake_field: borrowerModel
+  quote: 'Stödet har beviljats för att finansiera genomförandet av det projekt som anges i
+
+    Energimyndighetens beslut om stöd.
+
+    Stödmottagarna har rätt till beslutade medel endast om Energimyndigheten får de
+
+    medel som behövs från regeringen.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.1
+  verified: llm_cited
+- id: g4-payment-withheld-90pct
+  gate_family: G4_borrower_model
+  requirement: The agency may withhold payment of grant instalments if the recipient has not
+    utilised at least 90% of previously disbursed support in the same project.
+  value: Payments withheld unless 90% of prior disbursement utilised
+  intake_field: borrowerModel
+  quote: 'Energimyndigheten har rätt att
+
+    hålla inne utbetalningar av stöd om stödmottagaren inte har arbetat upp minst 90
+
+    procent av tidigare utbetalt stöd i samma projekt.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.5
+  verified: llm_cited
+- id: g4-monthly-disbursement-formas
+  gate_family: G4_borrower_model
+  requirement: Formas grants are normally paid out monthly in equal twelfths of the annual
+    amount specified in the decision, to the fund manager, unless otherwise stated.
+  value: Monthly disbursement in 1/12 instalments to fund manager
+  intake_field: borrowerModel
+  quote: 'Utbetalningen sker nor ma l t
+
+    månadsvis, med en tolftedel av det för respektive år
+
+    angivna beloppet, om inte annat anges i beslutet.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_generella_villkor_bidrag.pdf#p.1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Utbetalningen sker nor ma l t\nmånadsvis, med
+    en to'''
+- id: g5-physical-investment-required
+  gate_family: G5_use_of_funds
+  requirement: The supported measure under Klimatklivet must be a physical investment that
+    reduces greenhouse gas emissions compared to a no-investment scenario, and work may only
+    start after a decision has been made.
+  value: Physical investment reducing GHG emissions, not started before decision
+  intake_field: developmentStage
+  quote: "Åtgärden ska vara en fysisk investering. \n Växthusgasutsläppen ska minska jämfört\
+    \ med om investeringen inte genomförs. \n Åtgärden får påbörjas först efter att beslut\
+    \ har fattats."
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g5-exclusion-ets-activities
+  gate_family: G5_use_of_funds
+  requirement: Klimatklivet does not fund investments in activities covered by the EU Emissions
+    Trading System, except for waste heat recovery and non-core activities.
+  value: EU ETS-covered activities excluded (with limited exceptions)
+  intake_field: developmentStage
+  quote: "Klimatklivet ger inte stöd till investeringar inom verksamheter som kommer omfattas\
+    \ av EU:s utsläppshandel (EU ETS), men det finns två undantag: \n Spillvärme – Du kan\
+    \ få stöd för att använda spillvärme, till exempel i fjärrvärmenät. \n Ej huvudverksamhet\
+    \ – Du kan också få stöd för investeringar som ligger utanför kärnverksamheten"
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g5-exclusion-electricity-production
+  gate_family: G5_use_of_funds
+  requirement: Investments to produce electricity, such as solar panels and power plants,
+    cannot receive Klimatklivet support.
+  value: Electricity generation investments excluded
+  intake_field: developmentStage
+  quote: "Investeringar för att producera el kan inte få stöd från Klimatklivet. Det betyder\
+    \ att stöd inte kan beviljas till installationer av \n solceller \n kraftverk."
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g5-exclusion-hvo-reduction-obligation
+  gate_family: G5_use_of_funds
+  requirement: Klimatklivet does not support investments promoting HVO biodiesel replacing
+    diesel covered by the reduction obligation, unless no other policy instrument exists (e.g.
+    shipping).
+  value: HVO-replacing-diesel excluded except where no other instrument applies
+  intake_field: developmentStage
+  quote: Klimatklivet ger inte stöd till investeringar som främjar biodiesel av typen HVO
+    (hydrerad vegetabilisk olja) när den ersätter diesel som omfattas av reduktionsplikten.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g5-exclusion-pilot-marketing
+  gate_family: G5_use_of_funds
+  requirement: Pilot projects, test facilities, feasibility studies, mapping/testing of technology,
+    and marketing measures are not eligible for Klimatklivet support.
+  value: Pilots, feasibility studies, testing, marketing excluded
+  intake_field: developmentStage
+  quote: Klimatklivet ger inte stöd till försöksanläggningar eller andra åtgärder som inte
+    bidrar till en tydlig utsläppsminskning, det vill säga pilotprojekt, testanläggningar,
+    förstudier, kartläggning eller testning och verifiering av teknik. Marknadsföringsinsatser
+    Åtgärder som klassas som marknadsföring
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g5-exclusion-already-started
+  gate_family: G5_use_of_funds
+  requirement: An action cannot receive support if physical work has already started or if
+    material/equipment necessary for the action has already been ordered before the decision.
+  value: Started/ordered actions excluded (limited preparatory work exempted)
+  intake_field: developmentStage
+  quote: "En åtgärd kan inte få stöd om \n det fysiska arbetet med åtgärden har startat \n\
+    \ material, utrustning eller annat som är nödvändigt för åtgärden har beställts."
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g5-additionality-requirement
+  gate_family: G5_use_of_funds
+  requirement: The investment must depend on the aid to be realised; support cannot be granted
+    if the investment would have happened anyway, has short payback time, or is required by
+    a procurement (except where it exceeds procurement requirements).
+  value: Additionality/financing gap required
+  intake_field: developmentStage
+  quote: "Stöd från Klimatklivet kan inte beviljas om \n investeringen skulle ha genomförts\
+    \ även utan stödet \n återbetalningstiden är kort, vilket gör åtgärden lönsam utan stöd\
+    \ \n åtgärden är ett krav i en upphandling."
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g5-exclusion-legal-requirement
+  gate_family: G5_use_of_funds
+  requirement: A measure required by law, regulation or permit conditions cannot receive support
+    unless the measure is more ambitious than what the law requires.
+  value: Legally mandated measures excluded unless more ambitious than required
+  intake_field: developmentStage
+  quote: En åtgärd som ska genomföras enligt lag, författningar eller villkor i tillstånd
+    kan inte få stöd från Klimatklivet, förutom om åtgärden är mer ambitiös än vad lagen kräver.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+- id: g6-cumulation-other-measures
+  gate_family: G6_conditionality
+  requirement: Klimatklivet complements other policy instruments; measures already covered
+    by other investment aid schemes or emissions trading cannot also receive Klimatklivet
+    support.
+  value: No stacking with other overlapping policy instruments for same measure
+  intake_field: conditionality
+  quote: Det betyder att åtgärder som omfattas av andra styrmedel, som andra investeringsstöd
+    eller utsläppshandel, inte kan få stöd från Klimatklivet.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_forutsattningar.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: In all presentation of the project, it must be stated that the work was carried
+    out with support from the Swedish Energy Agency.
+  quote: 'Vid all presentation av projektet ska det anges att arbetet utförts med stöd från
+
+    Energimyndigheten (namnet återges på engelska med Swedish Energy Agency).'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.1
+  verified: llm_cited
+- requirement: The project leader must immediately notify the Energy Agency in writing if
+    any recipient applies for or receives funds for the project from another financier, or
+    of other material changes affecting the project's implementation or financing.
+  quote: 'Projektledaren ska omgående skriftligen underrätta Energimyndigheten om
+
+    någon stödmottagare ansöker om eller får medel för projektet från annan
+
+    finansiär än Energimyndigheten.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.5
+  verified: llm_cited
+- requirement: If a project party receives SEK 3 million or more from the Energy Agency, an
+    auditor's certificate from an authorised or approved auditor must be attached to the final
+    report.
+  quote: 'Om projektpart enligt beslutet får medel motsvarande tre miljoner kronor eller
+
+    mer från Energimyndigheten ska revisorsintyg från auktoriserad eller godkänd
+
+    revisor avseende denna projektpart bifogas slutredovisningen.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.5
+  verified: llm_cited
+- requirement: The project leader must apply in advance to the Energy Agency for approval
+    of changes to the project, such as change of project leader, recipient, project period,
+    or budget shifts over 10% and above SEK 50,000.
+  quote: 'Projektledaren ska i förväg ansöka hos Energimyndigheten om att få göra
+
+    ändringar i projektet, främst genom att skicka in en ändringsansökan via Mina
+
+    sidor.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.6
+  verified: llm_cited
+- requirement: Disbursed funds that have not been utilised by the recipient must be repaid
+    to the Energy Agency.
+  quote: 'Utbetalda medel som inte har arbetats upp av stödmottagaren ska återbetalas till
+
+    Energimyndigheten.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_energimyndigheten_allmanna_villkor_forskning_innovation.pdf#p.6
+  verified: llm_cited
+- requirement: The project leader must ensure research results are made available via Open
+    Access within six months of publication.
+  quote: 'Projektledaren ska garantera att forskningsresultaten
+
+    finns tillgängliga för alla (Open Access) inom sex
+
+    månader efter publicering.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_generella_villkor_bidrag.pdf#p.2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Projektledaren ska garantera att forskningsresulta'''
+- requirement: The applicant must report any applications to other financiers for the same
+    or similar purpose, and any funds already received from other financiers.
+  quote: 'Sökanden ska anmäla eventuella ansökningar till
+
+    and ra f in a n s iär er avseende medel för samma eller
+
+    liknande ändamål.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_generella_villkor_bidrag.pdf#p.2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Sökanden ska anmäla eventuella ansökningar
+    till\nan'''
+- requirement: Upon final financial reporting, the fund manager must repay all unused grant
+    funds to Formas; amounts below half a base amount may be retained for similar research
+    purposes.
+  quote: 'I samband med att den ekonomiska
+
+    slutredovisningen lämnas in ska medelsförvaltaren
+
+    återbetala allt outnyttjat bidrag till Formas.
+
+    Om överskottet understiger ett halvt prisbasbelopp
+
+    får det emellertid behållas och användas för
+
+    forskningsändamål liknande det som bidraget avsåg.'
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_formas_generella_villkor_bidrag.pdf#p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''I samband med att den ekonomiska\nslutredovisningen'''
+- requirement: For de minimis aid applications, the applicant must disclose all other de minimis
+    aid received by the undertaking in the preceding three-year period.
+  quote: För att få stöd enligt de minimis-förordningen måste den sökande redovisa om den
+    här sortens stöd tagits emot tidigare.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_regler.html#chunk 1
+  verified: llm_cited
+- requirement: If the de minimis ceiling is exceeded, the entire aid amount causing the excess
+    must be reclaimed from the company.
+  quote: Observera att om takbeloppet för stöd av mindre betydelse överskrids så gäller att
+    hela det stödbelopp som medfört överskridandet ska återkrävas från företaget.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_regler.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/22 gates, 7/10 obligations passed
+  mechanical check -> llm_cited).
+cumulation:
+  text: Funding from Klimatklivet may be combined with other state co-financing only as long
+    as the combined aid does not exceed the thresholds set out in GBER or the de minimis regulation;
+    de minimis aid to a single undertaking or group is aggregated and capped at €300,000 over
+    a rolling three-year period.
+  quote: Medel från Klimatklivet kan kombineras med annan statlig medfinansiering så länge
+    man totalt sett inte överskrider tröskelvärdena i gruppundantagsförordningen respektive
+    de minimis-förordningen.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_regler.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Applications for Klimatklivet are submitted to Naturvårdsverket (Swedish Environmental
+    Protection Agency), with regional support from Länsstyrelsen; Energimyndigheten and Formas
+    grants are administered directly by those agencies with decisions communicated via 'Mina
+    sidor'.
+  typical_timeline: Not specified in source text beyond payment being monthly in twelfths
+    and final reporting deadlines of three months after the disposal period ends.
+  quote: Det är Naturvårdsverket som fattar beslut och ansvarar för utbetalningar.
+  source:
+    file: satr_se_rnd_klimatklivet_forutsattningar.html
+    locator: satr_se_rnd_klimatklivet_regler.html#chunk 1
+  verified: llm_cited

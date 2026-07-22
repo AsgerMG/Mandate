@@ -1,0 +1,317 @@
+id: satr_cz_rnd
+name: satr_cz_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_uchazec_eligible
+  gate_family: G1_nexus
+  requirement: Applicant must be a legal entity (uchazeč) eligible to apply, including businesses,
+    research organisations, or other legal/natural persons engaging in applied research, development
+    and innovation.
+  value: legal or natural person applying under public competition rules
+  intake_field: borrowerModel
+  quote: uchazečem organizační složka státu nebo organizační jednotka ministerstva, zabývající
+    se výzkumem a vývojem, a dále právnická osoba nebo fyzická osoba, která se uchází o poskytnutí
+    podpory
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 1
+  verified: llm_cited
+- id: g2_sme_definition
+  gate_family: G2_size_ownership
+  requirement: SME status (malý/střední podnik) must be assessed per Annex I of GBER Regulation
+    (EU) No 651/2014.
+  value: SME per GBER Annex I criteria
+  intake_field: fteBand
+  quote: „malými a středními podniky“ (MSP) se rozumí podniky, které splňují kritéria stanovená
+    v Příloze I Nařízení Komise (EU) č. 651/2014 / Nařízení GBER.
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+- id: g2_size_partner_linked
+  gate_family: G2_size_ownership
+  requirement: Enterprise size must be assessed across the whole circle of the applicant's
+    partner and linked enterprises.
+  value: size assessed including partner and linked enterprises
+  intake_field: ownerOver25
+  quote: Velikost podniku se přitom posuzuje za celý okruh partnerských a propojených podniků
+    uchazeče
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+- id: g2_large_enterprise_restriction
+  gate_family: G2_size_ownership
+  requirement: Large enterprises may only participate in the call if conditions for effective
+    collaboration bonus with SMEs or research organisations are met.
+  value: large enterprise participation restricted absent effective collaboration
+  intake_field: fteBand
+  quote: 'velký podnik se nemůže dle podmínek této veřejné soutěže účastnit v případech, kdy
+    nejsou naplněny
+
+    podmínky pro přiznání bonifikace za účinnou spolupráci (s MSP či s VO)'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g2_undertaking_in_difficulty
+  gate_family: G2_size_ownership
+  requirement: Applicant (and its group of connected enterprises) must not be an 'undertaking
+    in difficulty' as defined, e.g. companies with unlimited liability that have lost more
+    than half their subscribed capital due to accumulated losses.
+  value: not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: 'kde v důsledku kumulace
+
+    ztrát došlo ke ztrátě více než poloviny jejího kapitálu zaznamenaného v účetnictví této
+    společnosti'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+- id: g2_insolvency_exclusion
+  gate_family: G2_size_ownership
+  requirement: Applicant must not be subject to collective insolvency proceedings or meet
+    national law criteria for opening such proceedings at creditors' request.
+  value: not subject to collective insolvency proceedings
+  intake_field: none
+  quote: 'Jestliže vůči podniku bylo zahájeno kolektivní úpadkové řízení nebo tento podnik
+    splňuje kritéria
+
+    vnitrostátního práva pro zahájení kolektivního úpadkového řízení na žádost svých věřitelů.'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+- id: g2_rescue_restructuring_exclusion
+  gate_family: G2_size_ownership
+  requirement: Applicant must not have received rescue aid not yet repaid, or be subject to
+    an ongoing restructuring plan under restructuring aid.
+  value: no unresolved rescue/restructuring aid
+  intake_field: none
+  quote: 'Jestliže podnik obdržel podporu na záchranu a zatím nesplatil půjčku nebo neukončil
+    záruku nebo
+
+    jestliže obdržel podporu na restrukturalizaci a stále se na něj uplatňuje plán restrukturalizace.'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+- id: g2_debt_ebitda_ratio
+  gate_family: G2_size_ownership
+  requirement: For non-SME applicants, the debt-to-equity ratio must not exceed 7.5 and EBIT/EBITDA
+    interest coverage ratio must not be below 1.0 over the past two years to avoid classification
+    as undertaking in difficulty.
+  value: debt/equity <=7.5 and interest coverage >=1.0 for non-SME
+  intake_field: balanceBand
+  quote: 'účetní poměr dluhu společnosti k vlastnímu kapitálu je vyšší než 7,5 a
+
+    2) poměr úrokového krytí hospodářského výsledku společnosti před úroky, zdaněním a odpisy
+
+    (EBITDA) je nižší než 1,0'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+- id: g3_max_grant_amount
+  gate_family: G3_financial
+  requirement: Maximum total funding (účelová podpora) per project is capped at CZK 30 million.
+  value: CZK 30,000,000 maximum per project
+  intake_field: ticketBand
+  quote: Maximální výše účelové podpory jednoho projektu je stanovena na 30 mil. Kč.
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g3_max_aid_intensity_overall
+  gate_family: G3_financial
+  requirement: Aid intensity may reach at most 70% of the project's eligible costs.
+  value: max 70% of eligible costs
+  intake_field: cofinancingBand
+  quote: Intenzita podpory může dosáhnout nejvýše 70 % způsobilých nákladů projektu.
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g3_intensity_by_category
+  gate_family: G3_financial
+  requirement: Maximum aid intensity per participant is capped depending on enterprise size
+    (small/medium/large) and activity type (industrial research vs experimental development),
+    with or without the effective collaboration bonus, per GBER Article 25 and TWIST programme
+    rules.
+  value: 'tiered intensity: e.g. industrial research 70%/60%/NR (small/medium/large), experimental
+    development 45%/35%/NR, higher with collaboration bonus'
+  intake_field: cofinancingBand
+  quote: 'průmyslový výzkum (článek 25 GBER) 70 % 60 % NR* 90 %
+
+    průmyslový výzkum v případě účinné spolupráce 80 % 75 % 65 % 90 %
+
+    experimentální vývoj (článek 25 GBER) 45 % 35 % NR* 90 %
+
+    experimentální vývoj v případě účinné spolupráce 60 % 50 % 40 % 90 %'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g3_effective_collaboration_bonus_conditions
+  gate_family: G3_financial
+  requirement: The collaboration bonus applies only when the project involves effective collaboration
+    meeting specific cost-sharing/publication conditions between an SME and another enterprise,
+    or between an enterprise and a research organisation.
+  value: bonus requires SME cost share <=70% or research org cost share >=10% with publication
+    rights
+  intake_field: consortium
+  quote: 'mezi podniky, z nichž alespoň jeden je malým nebo středním podnikem a jednotlivý
+    podnik nehradí
+
+    více než 70 % způsobilých nákladů projektu, nebo
+
+    • mezi podnikem a výzkumnou organizací, jestliže tato organizace nese alespoň 10 % způsobilých
+
+    nákladů projektu a má právo zveřejňovat výsledky vlastního výzkumu'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g4_funding_form_grant
+  gate_family: G4_borrower_model
+  requirement: Support is provided in the form of a grant (dotace) to legal entities, not
+    a loan or equity instrument.
+  value: grant (dotace) to legal persons
+  intake_field: borrowerModel
+  quote: Podpora bude poskytována formou dotace právnickým osobám.
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g4_no_legal_entitlement
+  gate_family: G4_borrower_model
+  requirement: There is no legal entitlement to receive the support; award is discretionary.
+  value: no legal claim to funding
+  intake_field: conditionality
+  quote: Na poskytnutí podpory není právní nárok.
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g5_ineligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Certain cost categories are ineligible for project funding, including VAT (if
+    VAT-registered), customs/administrative fees, entertainment/gift expenses, land/building
+    acquisition, financial leasing, guarantees/interest/bank fees/exchange losses, debts and
+    damages, liquidation costs, and costs unrelated to the project.
+  value: list of excluded cost categories per §5.2
+  intake_field: none
+  quote: 'daň z přidané hodnoty (DPH), pokud je uchazeč plátcem DPH,
+
+    • celní a správní poplatky,
+
+    • náklady na pohoštění, dary a reprezentaci,
+
+    • náklady/výdaje na pořízení budov a pozemků,
+
+    • náklady na finanční leasing,
+
+    • výdaje na záruky, úroky, bankovní poplatky, kursové ztráty,
+
+    • úroky z dluhů, manka a škody,
+
+    • výdaje související s likvidací příjemce, nedobytné pohledávky'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g5_project_definition
+  gate_family: G5_use_of_funds
+  requirement: Funded activities must constitute a 'project' - an indivisible task of precise
+    economic, scientific or technical nature with clearly defined objectives, related to introducing
+    innovations.
+  value: project must be indivisible task with predefined objectives in applied research/innovation
+  intake_field: developmentStage
+  quote: '„projektem“ se zde obecně rozumí činnosti z oblasti zavádění inovací, které mají
+    splnit nedělitelný úkol
+
+    přesné hospodářské, vědecké nebo technické povahy s předem jasně určenými cíli, formulovaný
+    uchazečem
+
+    ve veřejné soutěži ve výzkumu, vývoji a inovacích.'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+- id: g6_grant_agreement_conditions
+  gate_family: G6_conditionality
+  requirement: Support is disbursed to the beneficiary under terms and conditions set out
+    in the Agreement (Smlouva), pursuant to §10 of Act 130/2002.
+  value: disbursement per Smlouva under §10 zákona
+  intake_field: conditionality
+  quote: 'Podpora bude příjemci poskytována v termínech a za podmínek stanovených Smlouvou
+    (vzor viz
+
+    Přílohu VI. ZD) v souladu s § 10 Zákona.'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+- id: g6_difficulty_assessed_at_group_level
+  gate_family: G6_conditionality
+  requirement: The 'undertaking in difficulty' assessment is made both at the level of the
+    applicant and at the level of the group of enterprises including linked undertakings of
+    the applicant.
+  value: assessed at both applicant and connected-enterprise-group level
+  intake_field: institutionalOwner
+  quote: 'Naplnění znaků podniku v obtížích je
+
+    vyhodnocováno jak na úrovni uchazeče, tak na úrovni skupiny podniků, do které jsou započítány
+    propojené
+
+    podniky uchazeče'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.3
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries must comply with the terms and conditions stipulated in the funding
+    Agreement (Smlouva) concluded under the Research and Development Support Act.
+  quote: 'Podpora bude příjemci poskytována v termínech a za podmínek stanovených Smlouvou
+    (vzor viz
+
+    Přílohu VI. ZD) v souladu s § 10 Zákona.'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (18/18 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid intensity ceilings are set per category of participant and type of activity (industrial
+    research vs experimental development), reflecting cumulative rules under GBER Article
+    25 including collaboration bonuses.
+  quote: 'Současně platí pro každého z účastníků jako nepřekročitelný limit pro intenzitu
+    podpory jeho části
+
+    způsobilých nákladů projektu procento stanovené v závislosti na kategorii subjektů, do
+    níž účastník patří,
+
+    na charakteru činnosti (průmyslový výzkum / experimentální vývoj) a na přiznání či nepřiznání
+    bonifikace
+
+    za účinnou spolupráci'
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited
+application:
+  channel: Public competition (veřejná soutěž) administered by the Ministry of Industry and
+    Trade (MPO) under the TWIST programme, pursuant to Act No. 130/2002 Sb.
+  typical_timeline: Not specified in extracted text beyond reference to the 2nd public competition
+    call of the TWIST programme in 2025.
+  quote: Zadávací dokumentace 2. veřejné soutěže v programu TWIST vyhlášené MPO
+  source:
+    file: cz_mpo_twist_program_call_2025.pdf
+    locator: cz_mpo_twist_program_call_2025.pdf#p.15
+  verified: llm_cited

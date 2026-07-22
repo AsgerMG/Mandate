@@ -1,0 +1,41 @@
+id: eis_e_veoselehe_liidestamise
+name: eis_e_veoselehe_liidestamise
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Maximum grant amount per enterprise is 15,000 euros.
+  value: 15000 EUR max per enterprise
+  intake_field: ticketBand
+  quote: Maksimaalne toetuse summa ettevõtja kohta 15  000 eurot ja toetuse osakaal 90% abikõlblikest
+    kuludest.
+  source:
+    file: eis_e_veoselehe_liidestamise_news_eis.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: Grant covers 90% of eligible costs.
+  value: 90% of eligible costs
+  intake_field: ticketBand
+  quote: toetuse osakaal on 90% abikõlblikest kuludest
+  source:
+    file: eis_e_veoselehe_liidestamise_news_eis.html
+    locator: chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (2/2 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Applications submitted to Ettevõtlus- ja Innovatsiooni Sihtasutus (EIS)
+  typical_timeline: Applications accepted until 30 April 2025 (deadline extended)
+  quote: Toetuse taotlusi võtab Ettevõtlus- ja Innovatsiooni Sihtasutus vastu kuni 30. aprill
+    2025.
+  source:
+    file: eis_e_veoselehe_liidestamise_news_eis.html
+    locator: chunk 2
+  verified: llm_cited

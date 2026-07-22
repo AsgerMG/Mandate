@@ -1,0 +1,213 @@
+id: nfr_forny20
+name: nfr_forny20
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-origin
+  gate_family: G1_nexus
+  requirement: Applicant projects must originate wholly or partly from publicly funded research
+    institutions in Norway.
+  value: origin from publicly funded research institution (Norway)
+  intake_field: borrowerModel
+  quote: finansierer kommersialiseringsprosjekter med utspring helt eller delvis fra offentlig
+    finansiert forsknings-institusjoner i Norge
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''finansierer kommersialiseringsprosjekter med
+    utspr'''
+- id: g1-nexus-applicant-channel
+  gate_family: G1_nexus
+  requirement: Verification funding is accessed via the main partner TTOs (technology transfer
+    offices) affiliated with research institutions, not directly by individual researchers.
+  value: apply through TTO partner
+  intake_field: borrowerModel
+  quote: FORNY Verifisering er en konkurransebasert finansieringsordning for å selektere,
+    finansiere, følge opp og synliggjøre de kommersielt mest lovende forskerprosjektene på
+    nasjonalt nivå.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.9
+  verified: llm_cited
+- id: g1-nexus-stud-ent
+  gate_family: G1_nexus
+  requirement: STUD-ENT funding requires students to apply in cooperation with a higher education
+    institution.
+  value: students in cooperation with higher education institution
+  intake_field: consortium
+  quote: STUD-ENT er Forskningsrådets nasjonale konkurransearena hvor studenter i samarbeid
+    med høyere utdanningsinstitusjoner kan søke om økonomisk støtte til å realisere sine kunnskaps-
+    og / eller forskningsbaserte forretningsideer.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.9
+  verified: llm_cited
+- id: g1-nexus-local-funds
+  gate_family: G1_nexus
+  requirement: Local project funds are a competition among the programme's main partner TTOs
+    for regional early verification funding.
+  value: TTO-level regional competition
+  intake_field: consortium
+  quote: Lokale prosjektmidler er en nasjonal konkurranse om finansielle midler til tidligverifisering
+    på regionalt nivå hos programmets hovedsamarbeidspartnere TTOene.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.10
+  verified: llm_cited
+- id: g4-borrower-no-alternative-financing
+  gate_family: G4_borrower_model
+  requirement: Projects that already have other financing, or are considered positioned to
+    obtain other financing, may be assessed as falling outside the target group for FORNY
+    Verifisering, since the scheme is not meant to be an alternative to private financing.
+  value: excluded if already financed or positioned for other financing
+  intake_field: cofinancingBand
+  quote: Virkemidlet er ikke ment å være et alternativ til privat finansiering, prosjekter
+    som allerede har annen finansiering eller ansees å være i posisjon til å kunne oppnå annen
+    finansiering vil kunne vurderes til å falle utenfor målgruppen til FORNY Verifisering.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.9
+  verified: llm_cited
+- id: g5-use-verification-not-full-commercialisation
+  gate_family: G5_use_of_funds
+  requirement: Funding is not intended to finance the entire commercialisation phase and does
+    not support general product and company development.
+  value: excludes full commercialisation phase and general product/company development
+  intake_field: none
+  quote: Virkemidlet er ikke ment å finansiere hele kommersialiseringsfasen og støtter heller
+    ikke generell produkt- og selskapsutvikling.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.9
+  verified: llm_cited
+- id: g5-use-verification-purpose
+  gate_family: G5_use_of_funds
+  requirement: Funds must be used to clarify uncertainty related to the commercial application
+    of the research, resolving critical unresolved questions that otherwise block further
+    commercialisation.
+  value: clarify commercial-application uncertainty
+  intake_field: none
+  quote: FORNY Verifisering skal brukes til å avklare usikkerhet knyttet til den kommersielle
+    anvendelsen av forskningen, spørsmål som ved å forbli uløst, hindrer prosjektet i å komme
+    videre i kommersialiseringen.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.9
+  verified: llm_cited
+- id: g5-use-local-funds-purpose
+  gate_family: G5_use_of_funds
+  requirement: Local project funds are used for regional early verification of whether ideas
+    and research results are suitable for commercialisation, and to qualify projects for further
+    financing.
+  value: regional early verification and qualification for further financing
+  intake_field: none
+  quote: '1) regional tidligverifisering av om ideer og forskningsresultater er egnet for
+    kommersialisering
+
+    2) kvalifisering av mulighet for videre finansiering (private eller offentlige finansierings-ordninger,
+    inkludert FORNY verifiseringsmidler)'
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.10
+  verified: false
+  verify_note: 'fragment not found verbatim: ''1) regional tidligverifisering av om ideer
+    og fors'''
+- id: g6-conditionality-business-driven
+  gate_family: G6_conditionality
+  requirement: Verification projects must be business-driven and business-managed, not research-driven.
+  value: must be business-driven, not research-driven
+  intake_field: conditionality
+  quote: Verifiseringsprosjekter skal være forretningsdrevne og forretningsstyrte, og ikke
+    forskningsdrevne.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.9
+  verified: llm_cited
+- id: g6-conditionality-no-trl-requirement
+  gate_family: G6_conditionality
+  requirement: There is no single fixed TRL-level requirement, but clear requirements apply
+    regarding type of verification activities, measurable results, execution capability and
+    triggering effect.
+  value: no fixed TRL requirement, but activity/results/capability requirements apply
+  intake_field: developmentStage
+  quote: Det stilles ikke et entydig krav til TRL-nivå 8, men det stilles tydelige krav til
+    type verifiseringsaktiviteter, målbare resultater, gjennomføringsevne samt utløsende effekt.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.8
+  verified: llm_cited
+- id: g6-conditionality-no-thematic-priority
+  gate_family: G6_conditionality
+  requirement: FORNY has no prioritised thematic, disciplinary, sector or industry areas and
+    supports projects across all industries.
+  value: no thematic/sector restriction
+  intake_field: none
+  quote: FORNY har ingen prioriterte tematiske-, faglige-, sektor- eller næringsområder, men
+    finansierer kommersialiseringsprosjekter med utspring helt eller delvis fra offentlig
+    finansiert forsknings-institusjoner.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''FORNY har ingen prioriterte tematiske-, faglige-,
+    '''
+- id: g6-conditionality-selection-criteria
+  gate_family: G6_conditionality
+  requirement: The programme prioritises projects with high expected commercial and/or societal
+    return and high execution capability.
+  value: prioritises high commercial/societal return and high execution capability
+  intake_field: none
+  quote: Programmet prioriterer prosjekter med høy forventet kommersiell og / eller samfunnsmessig
+    avkastning og høy gjennomføringsevne.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.4
+  verified: llm_cited
+obligations:
+- requirement: TTOs must report to FORNY on aggregated results from their research institutions
+    across a range of indicators relevant to the programme (e.g. capital raised, finished
+    products, licensing contracts, patents sought), since individual projects do not report
+    directly.
+  quote: I FORNY rapporterer ikke prosjektene selv på resultater, men hver TTO sender inn
+    samlede resultater fra sine forskningsinstitusjoner på en rekke indikatorer som er relevante
+    for programmet.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.11
+  verified: llm_cited
+- requirement: Applications are assessed exclusively by external experts with relevant experience
+    related to each specific application.
+  quote: I vurderingen av søknadene bruker Forskningsrådet utelukkende eksterne eksperter
+    som har relevant erfaring knyttet til hver enkelt søknad.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.8
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (9/12 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Projects already having other financing or in a position to obtain other financing
+    may be excluded from the FORNY Verifisering target group, indicating a no-alternative/no-duplication
+    logic with private financing.
+  quote: Virkemidlet er ikke ment å være et alternativ til privat finansiering, prosjekter
+    som allerede har annen finansiering eller ansees å være i posisjon til å kunne oppnå annen
+    finansiering vil kunne vurderes til å falle utenfor målgruppen til FORNY Verifisering.
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.9
+  verified: llm_cited
+application:
+  channel: Applications are submitted via the programme's main partner TTOs (technology transfer
+    offices) at research institutions, which mobilise, assess, finance and follow up projects;
+    STUD-ENT applications go through higher education institutions.
+  typical_timeline: Not specified in the source text.
+  quote: Mobilisere, vurdere, finansiere, følge opp og synliggjøre de beste og mest lovende
+    student- og forskerprosjektene
+  source:
+    file: nfr_forny20_programplan_2019.pdf
+    locator: nfr_forny20_programplan_2019.pdf#p.8
+  verified: llm_cited

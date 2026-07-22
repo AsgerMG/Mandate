@@ -1,0 +1,386 @@
+id: bdns_es_ayudas
+name: bdns_es_ayudas
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-fiscal-residence-es
+  gate_family: G1_nexus
+  requirement: Beneficiary entities must have their own legal personality and have tax residence
+    or a permanent establishment in Spain.
+  value: Legal personality + tax residence/permanent establishment in Spain
+  intake_field: entityCountries
+  quote: válidamente constituidas y tengan residencia fiscal o establecimiento permanente
+    en España
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G1-prior-constitution-date
+  gate_family: G1_nexus
+  requirement: Only companies and sectoral business associations constituted or with activity
+    started before the first day of the month prior to publication of the order in the BOE
+    may be beneficiaries.
+  value: Constitution/activity start before month prior to BOE publication
+  intake_field: foundedYear
+  quote: Solo podrán adquirir la condición de beneficiarias aquellas empresas y asociaciones
+    empresariales sectoriales, cuya constitución o inicio de actividad haya tenido lugar con
+    anterioridad al primer día del mes anterior al de la fecha de publicación de esta orden
+    en el «Boletín Oficial del Estado»
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G1-aie-excluded
+  gate_family: G1_nexus
+  requirement: Economic interest groupings (AIE) cannot be beneficiaries of these grants.
+  value: AIE excluded
+  intake_field: borrowerModel
+  quote: Las agrupaciones de interés económico (AIE) no podrán ser beneficiarias de estas
+    ayudas.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G1-consortium-lead-role
+  gate_family: G1_nexus
+  requirement: The consortium representative must be a company acting as sole applicant and
+    single point of contact with the granting body.
+  value: Company must lead consortium as sole applicant/interlocutor
+  intake_field: consortium
+  quote: El representante de la agrupación de entidades que presente el proyecto deberá ser
+    una empresa, en el sentido expresado en el artículo 5.1.h). Esta empresa actuará como
+    solicitante de la ayuda y como interlocutor único con el órgano concedente
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G2-art13-ley38-exclusions
+  gate_family: G2_size_ownership
+  requirement: Entities in any of the disqualifying circumstances of Article 13 of Law 38/2003
+    cannot obtain beneficiary status.
+  value: Must not fall under Art. 13 Ley 38/2003 exclusions
+  intake_field: borrowerModel
+  quote: No podrán obtener la condición de beneficiario las entidades en quienes concurra
+    alguna de las circunstancias descritas en el artículo 13 de la Ley 38/2003, de 17 de noviembre.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G2-company-in-crisis-exclusion
+  gate_family: G2_size_ownership
+  requirement: Entities classified as companies in crisis (per Regulation (EU) 651/2014 definition)
+    cannot be beneficiaries, unless they became a company in crisis only between 1 Jan 2020
+    and 31 Dec 2021.
+  value: Company-in-crisis status excludes beneficiary status (with COVID exception)
+  intake_field: lossesOverHalfCapital
+  quote: no podrán obtener la condición de beneficiario las entidades calificadas en crisis,
+    de acuerdo con la definición de empresa en crisis establecida en el apartado 16 del anexo
+    II, conforme a lo dispuesto en el artículo 1 apartado 4.c) del Reglamento (UE) n.º 651/2014.
+    No obstante, como excepción, podrán ser beneficiarias aquellas que no se encontraban en
+    crisis el 31 de diciembre de 2019, pero pasaron a ser empresas en crisis durante el período
+    comprendido entre el 1 de enero de 2020 y el 31 de diciembre de 2021.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G2-loan-arrears-exclusion
+  gate_family: G2_size_ownership
+  requirement: Entities receiving aid in the form of a loan must prove they are up to date
+    on repayment obligations for any other loans or advances previously granted from the State
+    General Budget.
+  value: Must be current on repayment of prior State-budget loans/advances
+  intake_field: borrowerModel
+  quote: No podrán obtener la condición de beneficiario las entidades que reciban ayuda en
+    forma de préstamo y que no acrediten que se encuentran al corriente del pago de las obligaciones
+    de reembolso de cualesquiera otros préstamos o anticipos concedidos anteriormente con
+    cargo a los presupuestos generales del Estado.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G2-eu-recovery-order-exclusion
+  gate_family: G2_size_ownership
+  requirement: Entities subject to an EU state-aid recovery procedure, having had aid declared
+    illegal and incompatible, cannot be beneficiaries.
+  value: No pending EU illegal-aid recovery order
+  intake_field: borrowerModel
+  quote: No podrán obtener la condición de beneficiario las entidades que se encuentren incursas
+    en un procedimiento de recuperación de ayudas, por haber sido estas declaradas ilegales
+    e incompatibles por la Comisión Europea.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G2-minimis-loan-insolvency
+  gate_family: G2_size_ownership
+  requirement: Where the de minimis Regulation applies and the aid modality is a loan, entities
+    in bankruptcy/insolvency proceedings or meeting criteria for insolvency proceedings cannot
+    obtain beneficiary status; large enterprises additionally must not be in a situation comparable
+    to a credit rating below B.
+  value: No insolvency/bankruptcy proceedings for de minimis loans; large firms not below
+    B-equivalent rating
+  intake_field: borrowerModel
+  quote: no podrán obtener la condición de beneficiario las entidades incursas en un procedimiento
+    de quiebra o insolvencia o que reúnan los criterios establecidos para ser sometidas a
+    un procedimiento concursal. Tratándose de grandes empresas, además, que se hallen en una
+    situación comparable a una calificación crediticia inferior a B.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1025_2022_aei_bases.html#chunk 6
+  verified: llm_cited
+- id: G2-minimis-excluded-sectors
+  gate_family: G2_size_ownership
+  requirement: Where the de minimis Regulation applies, companies operating in fisheries and
+    aquaculture or primary agricultural production, and other sectors excluded under Article
+    1 of the de minimis Regulation, cannot obtain beneficiary status unless they separate
+    accounting for included/excluded activities.
+  value: Excluded sectors under de minimis Regulation Art. 1 barred unless activities/costs
+    separated
+  intake_field: borrowerModel
+  quote: no podrán obtener la condición de beneficiario las empresas que operen en los sectores
+    de la pesca y la acuicultura... en la producción primaria de los productos agrícolas;
+    y, con carácter general, en todos aquellos incluidos en el artículo 1 del Reglamento de
+    minimis
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1025_2022_aei_bases.html#chunk 6
+  verified: llm_cited
+- id: G3-min-project-budget
+  gate_family: G3_financial
+  requirement: The minimum project budget for the collaborative experimental development projects
+    under this call must be 400,000 euros.
+  value: 'Minimum project budget: €400,000'
+  intake_field: ticketBand
+  quote: El presupuesto mínimo del proyecto será de 400.000 euros.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G3-total-budget-cap
+  gate_family: G3_financial
+  requirement: Total subsidies granted may never, alone or combined with other aid, exceed
+    the total eligible budget cost of the project.
+  value: Aid cannot exceed total eligible project cost
+  intake_field: cofinancingBand
+  quote: El importe total de las subvenciones concedidas en ningún caso podrá ser de tal cuantía
+    que, aisladamente o en concurrencia con otras, supere el coste total del presupuesto financiable
+    del proyecto.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 31
+  verified: llm_cited
+- id: G3-additional-budget-increase
+  gate_family: G3_financial
+  requirement: The maximum budget amount for chapter 7 may be increased by up to 50% of the
+    total amount under specified budgetary circumstances before the granting resolution.
+  value: Possible +50% budget increase (chapter 7) before award resolution
+  intake_field: ticketBand
+  quote: La cuantía máxima establecida en el apartado anterior podrá incrementarse para el
+    capítulo 7 con una cuantía adicional de hasta el 50 % del importe total
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 31
+  verified: llm_cited
+- id: G4-loan-advance-repayment
+  gate_family: G4_borrower_model
+  requirement: Where the resolution grants reimbursable advances or loans, the award resolution
+    must specify the granting and repayment conditions.
+  value: Loan/advance repayable aid requires stated repayment conditions in the resolution
+  intake_field: borrowerModel
+  quote: Tratándose de anticipos reembolsables, préstamos, las condiciones de concesión y
+    devolución de los mismos.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 19
+  verified: llm_cited
+- id: G4-fixed-or-variable-payment
+  gate_family: G4_borrower_model
+  requirement: Grants awarded may have fixed or variable economic allocation and be paid as
+    a single or split payment, annual or multi-annual, in advance, on account, or after completion
+    of the funded activity.
+  value: 'Payment structure: fixed/variable, single/split, advance/on-account/post-completion'
+  intake_field: borrowerModel
+  quote: Las ayudas que se concedan podrán tener una dotación económica fija o variable y
+    el pago podrá hacerse en forma de pago único o fraccionado, anual o plurianual, y de forma
+    anticipada, a cuenta, con posterioridad a la realización de la actividad objeto de ayuda,
+    o en una combinación de las formas anteriormente citadas.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 19
+  verified: llm_cited
+- id: G5-project-duration-timing
+  gate_family: G5_use_of_funds
+  requirement: Projects must have a duration of three years, beginning execution after the
+    application deadline and within the year 2022.
+  value: 'Project duration: 3 years; start date after application deadline, within 2022'
+  intake_field: developmentStage
+  quote: Los proyectos tendrán una duración de tres años y comenzarán su ejecución en la fecha
+    indicada en la solicitud. En cualquier caso, la fecha de inicio deberá ser posterior a
+    la fecha de finalización de presentación de solicitudes y estar comprendida a lo largo
+    del año 2022.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G5-collaborative-experimental-dev
+  gate_family: G5_use_of_funds
+  requirement: Funded projects must be collaborative experimental development projects carried
+    out effectively by several beneficiary entities, per the definitions in Annex II, sections
+    8 and 9.
+  value: Must be collaborative experimental development project (multi-entity)
+  intake_field: developmentStage
+  quote: Los proyectos objeto de ayuda de la presente convocatoria serán proyectos de desarrollo
+    experimental en colaboración efectiva por varias entidades beneficiarias en los que las
+    actividades objeto de ayuda se desarrollarán conforme la definición del apartado 8 y 9
+    del anexo II de la presente orden.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 25
+  verified: llm_cited
+- id: G5-no-cost-category-transfer
+  gate_family: G5_use_of_funds
+  requirement: Transfers between direct cost and indirect cost categories are not permitted
+    when modifying a grant resolution.
+  value: No transfers between direct/indirect cost categories
+  intake_field: none
+  quote: No podrán realizarse trasvases entre los conceptos de costes directos y costes indirectos.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 19
+  verified: llm_cited
+- id: G6-cumulation-no-double-financing
+  gate_family: G6_conditionality
+  requirement: Aid must comply with cumulation and incompatibility rules with other Community
+    aid and maximum intensities, and cumulative subsidies for the same purpose may not cover
+    the same cost.
+  value: Must respect cumulation/incompatibility rules; no double-financing of same cost
+  intake_field: cofinancingBand
+  quote: en todo caso respetando las reglas de acumulación de ayudas y las de incompatibilidad
+    entre ayudas comunitarias, así como con las intensidades máximas, procurando que las categorías
+    de ayudas, en la medida de lo posible, no sean concurrentes sino complementarias y que
+    no financien el mismo gasto. En caso de adicionalidad de subvenciones, estas no podrán
+    cubrir el mismo coste.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 31
+  verified: llm_cited
+- id: G6-declare-no-concurrent-aid
+  gate_family: G6_conditionality
+  requirement: The applicant must submit a formal declaration of not having received concurrent
+    grants, or an exhaustive list of other grants/aid/income affecting compatibility, including
+    de minimis aid received in the current and prior two fiscal years.
+  value: Mandatory declaration of concurrent/de minimis aid received
+  intake_field: cofinancingBand
+  quote: el solicitante deberá aportar declaración responsable expresa de no haber recibido
+    subvenciones concurrentes o, en su caso, la relación exhaustiva de otras subvenciones,
+    ayudas, ingresos o recursos públicos o privados que pudieran afectar a la compatibilidad
+    para las mismas actuaciones objeto de ayuda
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1025_2022_aei_bases.html#chunk 16
+  verified: llm_cited
+- id: G6-false-declaration-consequences
+  gate_family: G6_conditionality
+  requirement: Any essential inaccuracy, falsehood or omission in a declaration, or failure
+    to submit required documentation, results in denial or revocation of the aid, and obtaining
+    aid by falsifying required conditions triggers reimbursement plus late-payment interest.
+  value: False declarations => denial/revocation + reimbursement with interest
+  intake_field: none
+  quote: la inexactitud, falsedad u omisión, de carácter esencial, de cualquier dato o información
+    que se incorpore a una declaración responsable o a una comunicación, o la no presentación
+    de la documentación que sea en su caso requerida para acreditar el cumplimiento de lo
+    declarado, determinará la imposibilidad de continuar con el procedimiento dando lugar
+    a la desestimación de la ayuda o en su caso su revocación
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1025_2022_aei_bases.html#chunk 16
+  verified: llm_cited
+- id: G6-recovery-mechanism-obligations
+  gate_family: G6_conditionality
+  requirement: Beneficiaries under the Recovery Mechanism financing must submit to EU institutional
+    controls, digital/green labelling, non-significant-harm principle, state aid rules, and
+    anti-fraud/corruption/conflict-of-interest/double-financing measures.
+  value: Recovery Mechanism compliance obligations (control, DNSH, anti-fraud)
+  intake_field: conditionality
+  quote: Se someterán a las actuaciones de control de las instituciones de la Unión, en virtud
+    del artículo 22.2.e) del Reglamento (UE) 2021/241 del Parlamento Europeo y del Consejo,
+    de 12 de febrero, especialmente en materia de etiquetado digital y verde, no causar daño
+    significativo, pleno respeto a la normativa reguladora de las ayudas de Estado, las medidas
+    relativas a evitar fraude, corrupción, conflicto de intereses y doble financiación
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 7
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries must comply with the obligations set out in Article 14 of Law
+    38/2003 and its implementing regulation, as well as those established in the calls, granting
+    resolutions, and specific execution/justification instructions.
+  quote: Los beneficiarios deberán cumplir las obligaciones recogidas en el artículo 14 de
+    la Ley 38/2003, de 17 de noviembre y concordantes de su Reglamento de desarrollo aprobado
+    por el Real Decreto 887/2006, de 21 de julio, así como las que se establezcan en las convocatorias,
+    en las resoluciones de concesión y en las instrucciones de ejecución y justificación específicas
+    del órgano concedente
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1025_2022_aei_bases.html#chunk 6
+  verified: llm_cited
+- requirement: Beneficiaries must gather harmonized data categories for audit and control
+    purposes, including NIF, name/company name, tax domicile, and proof of business registration
+    reflecting the economic activity at the time of application.
+  quote: Recabarán, a efectos de auditoría y control del uso de los fondos y en formato electrónico,
+    las categorías armonizadas de datos contempladas en el artículo 22.2.d) del Reglamento
+    (UE) 2021/241 del Parlamento Europeo y del Consejo, de 12 de febrero.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 7
+  verified: llm_cited
+- requirement: Beneficiaries must communicate via responsible declaration any aid obtained
+    for the subsidized activity, both at application and at any later point when it occurs,
+    no later than the annual justification.
+  quote: El solicitante y los participantes deberán dar a conocer mediante declaración responsable
+    las ayudas que hayan obtenido para la actividad subvencionada tanto al presentar la solicitud
+    de ayudas, como en cualquier momento ulterior en el que se produzca esta circunstancia.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 31
+  verified: llm_cited
+- requirement: Beneficiaries are responsible for the reliability and monitoring of the execution
+    of the subsidized actions so that the level of achievement of milestones and objectives
+    can be known at all times.
+  quote: Serán responsables de la fiabilidad y el seguimiento de la ejecución de las actuaciones
+    subvencionadas, de manera que pueda conocerse en todo momento el nivel de consecución
+    de cada actuación y de los hitos y objetivos que se hayan establecido
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 7
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (22/22 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid under this scheme is compatible with other public or private subsidies for the
+    same purpose from any administration, national or international body, provided cumulation
+    and incompatibility rules and maximum aid intensities are respected, and that the same
+    cost is not financed twice.
+  quote: La percepción de estas ayudas será compatible, de acuerdo con el artículo 9, del
+    Reglamento (UE) 2021/241 del Parlamento Europeo y del Consejo, de 12 de febrero, con la
+    percepción de otras subvenciones, ayudas, ingresos o recursos para la misma finalidad,
+    procedentes de cualesquiera administraciones públicas o entes públicos o privados, nacionales,
+    internacionales, de la Unión Europea o de organismos internacionales
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 31
+  verified: llm_cited
+application:
+  channel: Electronic submission via the Ministerio de Ciencia e Innovación's electronic headquarters
+    (sede electrónica), using advanced electronic signature through the electronic register.
+  typical_timeline: Application window as short as 7 days minimum to 30 days maximum; resolution
+    to be issued and notified within a maximum of six months from publication of the call
+    extract in the BOE, extendable by up to six more months.
+  quote: El plazo de solicitud no podrá ser inferior a siete días ni superior a treinta.
+  source:
+    file: bdns_es_orden_cin_1502_2021_bases_cpp.html
+    locator: bdns_es_orden_cin_1502_2021_bases_cpp.html#chunk 15
+  verified: llm_cited

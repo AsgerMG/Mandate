@@ -1,0 +1,331 @@
+id: altum_covid_19_kr_zes_aizdevum
+name: altum_covid_19_kr_zes_aizdevum
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-1
+  gate_family: G1_nexus
+  requirement: Support is provided by the joint-stock company 'Attīstības finanšu institūcija
+    Altum' under the conditions set by these regulations.
+  value: ALTUM-administered loan programme
+  intake_field: none
+  quote: Aizdevumus saimnieciskās darbības veicējiem piešķir akciju sabiedrība "Attīstības
+    finanšu institūcija Altum" (turpmāk – sabiedrība "Altum"), ievērojot šajos noteikumos
+    paredzētos nosacījumus.
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1, §2
+  verified: llm_cited
+- id: G1-2
+  gate_family: G1_nexus
+  requirement: Loans are intended for business operators whose activity has been negatively
+    affected by the spread of Covid-19, requiring the working capital loan to mitigate that
+    negative impact.
+  value: Covid-19 negatively affected business operators
+  intake_field: borrowerModel
+  quote: Aizdevumi paredzēti Covid-19 izplatības seku negatīvi ietekmēto saimnieciskās darbības
+    veicēju apgrozāmo līdzekļu finansēšanai
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1-2, §8
+  verified: llm_cited
+- id: G2-1
+  gate_family: G2_size_ownership
+  requirement: Eligible support recipients are micro, small and medium-sized business operators
+    meeting the SME definition of Commission Regulation No 651/2014 Annex I, or the definition
+    in Commission Regulation No 2022/2472.
+  value: Micro/small/medium enterprises per EU SME definition
+  intake_field: fteBand
+  quote: sīkie (mikro), mazie un vidējie saimnieciskās darbības veicēji, kuri atbilst Komisijas
+    2014. gada 17. jūnija Regulas (ES) Nr.  651/2014 , ar ko noteiktas atbalsta kategorijas
+    atzīst par saderīgām ar iekšējo tirgu, piemērojot Līguma 107. un 108. pantu (turpmāk –
+    Komisijas regula Nr.  651/2014 ), 1. pielikumā noteiktajai definīcijai
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1, §3.1
+  verified: llm_cited
+- id: G2-2
+  gate_family: G2_size_ownership
+  requirement: Large business operators are also eligible if they are legal persons meeting
+    the large enterprise definition in Commission Regulation No 651/2014 Article 2(24) or
+    Commission Regulation No 2022/2472 Article 2(34).
+  value: Large enterprises also eligible
+  intake_field: fteBand
+  quote: lielie saimnieciskās darbības veicēji – juridiskās personas, kuras atbilst Komisijas
+    regulas Nr.  651/2014 2. panta 24. punktā vai Komisijas regulas Nr.  2022/2472 2. panta
+    34. punktā noteiktajai definīcijai
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1, §3.2
+  verified: llm_cited
+- id: G2-3
+  gate_family: G2_size_ownership
+  requirement: Related persons are defined as business operators meeting the linked-enterprise
+    definition under Commission Regulation No 651/2014 Annex I Article 3(3) or Commission
+    Regulation No 2022/2472 Annex I Article 3(3), relevant for aggregating the maximum loan
+    ceiling across a group.
+  value: Related-persons/linked enterprise aggregation applies
+  intake_field: institutionalOwner
+  quote: saistītās personas ir saimnieciskās darbības veicēji, kas atbilst Komisijas regulas
+    Nr. 651/2014 1. pielikuma 3. panta 3. punktā noteiktajai saistīto uzņēmumu definīcijai
+    vai Komisijas regulas Nr. 2022/2472 1. pielikuma 3. panta 3. punktā noteiktajai definīcijai
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1, §4
+  verified: llm_cited
+- id: G3-1
+  gate_family: G3_financial
+  requirement: The state budget funding available to Altum for implementing this programme
+    is up to EUR 21,000,000.
+  value: EUR 21,000,000 total programme budget
+  intake_field: none
+  quote: Sabiedrībai "Altum" pieejamais valsts budžeta finansējums šīs programmas īstenošanai
+    ir līdz 21 000 000  euro
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1, §6
+  verified: llm_cited
+- id: G3-2
+  gate_family: G3_financial
+  requirement: Altum attracts a state loan of up to EUR 150,000,000 in the form of a credit
+    line or a loan from international financial institutions to fund the loan program.
+  value: EUR 150,000,000 credit line ceiling
+  intake_field: none
+  quote: sabiedrība "Altum" piesaista valsts aizdevumu līdz 150 000 000 euro apmērā kredītlīnijas
+    veidā vai piesaista aizdevumu no starptautiskajām finanšu institūcijām
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1, §7
+  verified: llm_cited
+- id: G3-3
+  gate_family: G3_financial
+  requirement: The maximum loan amount for one business operator and its group of related
+    persons is up to EUR 1,500,000.
+  value: EUR 1,500,000 maximum per borrower/group
+  intake_field: ticketBand
+  quote: Maksimālā aizdevumu summa vienam saimnieciskās darbības veicējam un ar to saistīto
+    personu grupai ir līdz 1 500 000 euro
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §9
+  verified: llm_cited
+- id: G3-4
+  gate_family: G3_financial
+  requirement: Where a loan is granted under §5.1 (per European Commission decision), the
+    maximum loan amount may not exceed double the operator's 2019 (or last available year)
+    wage costs including social charges, or the projected two-year wage costs for companies
+    founded after 1 January 2019.
+  value: 'Cap: 2x annual wage costs (or projected for new companies)'
+  intake_field: foundedYear
+  quote: divkāršus saimnieciskās darbības veicēja izdevumus par atalgojumu (ieskaitot sociālās
+    izmaksas) 2019. gadā vai pēdējā pieejamā gadā par atalgojumu (ieskaitot sociālās izmaksas).
+    Uzņēmumiem, kuri izveidoti pēc 2019. gada 1. janvāra, maksimālais aizdevums nedrīkst pārsniegt
+    paredzamo gada atalgojuma apmēru pirmajos divos darbības gados
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §9.1
+  verified: llm_cited
+- id: G3-5
+  gate_family: G3_financial
+  requirement: Alternatively the loan cap under §5.1 may be set as 25% of the operator's total
+    2019 turnover.
+  value: 'Cap: 25% of 2019 turnover'
+  intake_field: turnoverBand
+  quote: 25 % no saimnieciskās darbības veicēja kopējā apgrozījuma 2019. gadā
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §9.2
+  verified: llm_cited
+- id: G3-6
+  gate_family: G3_financial
+  requirement: Alternatively the loan cap under §5.1 may be based on the calculated liquidity
+    needs for the next 18 months for micro/small/medium operators or 12 months for large operators,
+    per submitted documents and liquidity need statements.
+  value: 'Cap: calculated liquidity needs (18 or 12 months)'
+  intake_field: turnoverBand
+  quote: pamatojoties uz tam aprēķināto nepieciešamo likviditātes vajadzības apjomu turpmākajiem
+    18 mēnešiem sīkajam (mikro), mazajam un vidējam saimnieciskās darbības veicējam un 12
+    mēnešiem – lielajam saimnieciskās darbības veicējam
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §9.3
+  verified: llm_cited
+- id: G4-1
+  gate_family: G4_borrower_model
+  requirement: The instrument is a working capital loan (not a grant or equity investment),
+    repayable within a maximum term of four years, taking into account the operator's business
+    and working capital cycle.
+  value: Working capital loan, max 4-year term
+  intake_field: borrowerModel
+  quote: Aizdevuma atmaksas termiņš nepārsniedz četrus gadus, ievērojot saimnieciskās darbības
+    veicēja darbības un apgrozāmo līdzekļu aprites ciklu.
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §10
+  verified: llm_cited
+- id: G4-2
+  gate_family: G4_borrower_model
+  requirement: Repayment of the loan principal can be deferred for a period of up to 24 months.
+  value: Grace period up to 24 months
+  intake_field: borrowerModel
+  quote: Aizdevuma atmaksas uzsākšanu var atlikt par termiņu līdz 24 mēnešiem.
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §11
+  verified: llm_cited
+- id: G4-3
+  gate_family: G4_borrower_model
+  requirement: For loans issued under §5.1, the interest rate is determined taking into account
+    the conditions specified in the annex to these regulations (credit risk margins varying
+    by enterprise size and term).
+  value: Risk-based interest margin pricing (25-200 basis points by size/term)
+  intake_field: none
+  quote: Atbilstoši šo noteikumu 5.1. apakšpunktam izsniegtajiem aizdevumiem procentu likmi
+    nosaka, ņemot vērā šo noteikumu pielikumā minētos nosacījumus.
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §12
+  verified: llm_cited
+- id: G4-4
+  gate_family: G4_borrower_model
+  requirement: If the borrower cannot meet its loan obligations but cash flow or a business
+    development plan demonstrates future ability to repay, Altum may restructure the loan,
+    extending the term up to six years and altering the payment schedule and structure.
+  value: 'Restructuring option: term extension to 6 years'
+  intake_field: borrowerModel
+  quote: sabiedrība "Altum" restrukturizē aizdevumu, pagarinot šo noteikumu  10. punktā  minēto
+    termiņu līdz sešiem gadiem, kā arī maina maksājumu kārtību (apmēru) un struktūru (periodiskumu)
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §17
+  verified: llm_cited
+- id: G5-1
+  gate_family: G5_use_of_funds
+  requirement: Loan funds must be used to finance working capital of Covid-19 negatively affected
+    business operators, needed to mitigate the negative impact of Covid-19 spread on business
+    or financial condition.
+  value: 'Use of funds: working capital financing to mitigate Covid-19 impact'
+  intake_field: borrowerModel
+  quote: apgrozāmo līdzekļu aizdevums ir nepieciešams, lai mazinātu Covid-19 izplatības seku
+    negatīvo ietekmi uz tā saimniecisko darbību vai finanšu stāvokli
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1-2, §8
+  verified: llm_cited
+- id: G5-2
+  gate_family: G5_use_of_funds
+  requirement: Support is not granted for weapons and ammunition trade, tobacco production/trade,
+    alcohol trade, gambling and betting, financial and insurance activities, real estate operations,
+    residential real estate development, freight vehicle purchases for road transport carriers,
+    or refinancing of other loans.
+  value: Excluded sectors/activities list
+  intake_field: none
+  quote: ieroču un munīcijas tirdzniecībai (NACE 2. redakcijas grupa 47.78 "Citur neklasificēta
+    jaunu preču mazumtirdzniecība specializētajos veikalos")
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §18.4
+  verified: llm_cited
+- id: G5-3
+  gate_family: G5_use_of_funds
+  requirement: Funds may not be used to refinance other loans.
+  value: No refinancing of other loans
+  intake_field: none
+  quote: citu aizdevumu refinansēšanai
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §18.12
+  verified: llm_cited
+- id: G6-1
+  gate_family: G6_conditionality
+  requirement: Loans and loan extensions are provided either per a European Commission decision
+    until its validity expires, or as de minimis aid under Commission Regulations No 2023/2831,
+    No 1408/2013, or No 717/2014 thereafter or where conditions of the Commission decision
+    are not met.
+  value: 'Dual legal basis: EC decision or de minimis regulations'
+  intake_field: conditionality
+  quote: kā de minimis atbalstu pēc Eiropas Komisijas lēmumā noteiktā spēkā esamības termiņa
+    beigām vai gadījumos, kad piešķirtais aizdevums neatbilst Eiropas Komisijas lēmuma nosacījumiem
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1, §5.2
+  verified: llm_cited
+- id: G6-2
+  gate_family: G6_conditionality
+  requirement: To receive a loan, the business operator must submit a loan application and
+    other information specified on Altum's website.
+  value: Application submission requirement
+  intake_field: none
+  quote: Lai saņemtu aizdevumu, saimnieciskās darbības veicēji iesniedz sabiedrībā "Altum"
+    aizdevuma pieteikumu un citu sabiedrības "Altum" tīmekļvietnē norādīto informāciju.
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §15
+  verified: llm_cited
+- id: G6-3
+  gate_family: G6_conditionality
+  requirement: Altum grants the loan only for activities it has assessed as economically viable,
+    evaluating sustainability, required funding amount, collateral, financial situation, knowledge/experience,
+    and business risks.
+  value: Economic viability assessment required
+  intake_field: conditionality
+  quote: finansējot tikai tādas darbības, kuras sabiedrība "Altum" ir atzinusi par ekonomiski
+    dzīvotspējīgām, tai skaitā izvērtējot saimnieciskās darbības veicēja ilgtspēju, nepieciešamo
+    finansējuma apjomu, nodrošinājumu, saimnieciskās darbības veicēja esošo un nākotnes finanšu
+    situāciju, zināšanu un pieredzes atbilstību, kā arī analizējot uzņēmējdarbības riskus
+    un citus faktorus
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §16
+  verified: llm_cited
+obligations:
+- requirement: The business operator must be assessed by Altum as economically viable considering
+    business potential and sustainability, collateral and its liquidity, current and future
+    financial situation, knowledge and experience, business risks and other factors, before
+    a loan is granted.
+  quote: ja saimnieciskās darbības veicējs ir ekonomiski dzīvotspējīgs, vērtējot saimnieciskās
+    darbības potenciālu un ilgtspēju, nodrošinājumu un tā likviditāti, saimnieciskās darbības
+    veicēja esošo un nākotnes finanšu situāciju, zināšanas un pieredzi, uzņēmējdarbības riskus
+    un citus faktorus
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 1-2, §8
+  verified: llm_cited
+- requirement: The business operator can receive multiple loans provided the total outstanding
+    balance of all loans, including the new one, does not exceed the maximum aggregate loan
+    amount.
+  quote: Saimnieciskās darbības veicējs var saņemt vairākus aizdevumus, ja aizdevuma piešķiršanas
+    brīdī piešķiramā un iepriekš saņemto aizdevumu neatmaksātā kopsumma nepārsniedz šajā punktā
+    noteikto maksimālo aizdevumu summu.
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §9
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/21 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Where a business operator receiving a loan under Commission Regulation No 2023/2831,
+    No 1408/2013 or No 717/2014 simultaneously operates in both supported and excluded sectors
+    or performs non-supportable activities under the respective regulation, specific rules
+    apply on how the aid is to be treated per sector/activity.
+  quote: Ja saimnieciskās darbības veicējs, kuram aizdevumu piešķir saskaņā ar Komisijas regulu
+    Nr. 2023/2831 , Komisijas regulu Nr. 1408/2013 vai Komisijas regulu Nr. 717/2014 , vienlaikus
+    darbojas vienā vai vairākās atbalstāmajās nozarēs, gan izslēgtajās nozarēs vai veic neatbalstāmas
+    darbības saskaņā ar attiecīgo regulu
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §19
+  verified: llm_cited
+application:
+  channel: Application submitted directly to ALTUM via loan application and supporting documents
+    specified on ALTUM's website.
+  typical_timeline: Not specified in the extracted text.
+  quote: Lai saņemtu aizdevumu, saimnieciskās darbības veicēji iesniedz sabiedrībā "Altum"
+    aizdevuma pieteikumu un citu sabiedrības "Altum" tīmekļvietnē norādīto informāciju.
+  source:
+    file: altum_covid_19_kr_zes_aizdevum_mk_noteikumi_313370.html
+    locator: chunk 2, §15
+  verified: llm_cited

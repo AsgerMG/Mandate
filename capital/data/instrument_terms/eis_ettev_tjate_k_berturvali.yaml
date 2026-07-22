@@ -1,0 +1,279 @@
+id: eis_ettev_tjate_k_berturvali
+name: eis_ettev_tjate_k_berturvali
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-1
+  gate_family: G1_nexus
+  requirement: Applicant must be a company entered in the Estonian Commercial Register with
+    business activity related to cybersecurity products and services.
+  value: Estonian Commercial Register entity, cybersecurity business
+  intake_field: entityCountries
+  quote: Funding may be applied for by a company entered in the Estonian Commercial Register
+    whose business activity relates to cybersecurity products and services
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G1-2
+  gate_family: G1_nexus
+  requirement: Applicant's principal activity must fall within EMTAK 2025 division K (telecommunication,
+    computer programming, consulting, computing infrastructure and other information service
+    activities).
+  value: EMTAK 2025 division K
+  intake_field: borrowerModel
+  quote: 'The applicant\u2019s principal activity falls within EMTAK 2025 division K: telecommunication,
+    computer programming, consulting, computing infrastructure and other information service
+    activities'
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The applicant\\u2019s principal activity falls
+    with'''
+- id: G1-3
+  gate_family: G1_nexus
+  requirement: Project activities must involve a partner.
+  value: partner required
+  intake_field: consortium
+  quote: Project activities must involve a partner
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G1-4
+  gate_family: G1_nexus
+  requirement: Project activities must take place in an EU or EEA member state (Norway, Iceland,
+    Liechtenstein); the applicant company and the company controlling the partner must also
+    be registered in the EU or EEA.
+  value: EU/EEA location and registration required
+  intake_field: activityCountries
+  quote: Project activities must take place in a member state of the European Union or the
+    European Economic Area (Norway, Iceland, Liechtenstein). The applicant company and the
+    company controlling the partner must also be registered in the EU or EEA.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G1-5
+  gate_family: G1_nexus
+  requirement: The partner must be a research and development institution, undertaking or
+    organisation positively evaluated in Estonia, EU or EEA, or one that has participated
+    as a partner in at least one Horizon Europe-funded project.
+  value: qualifying partner type
+  intake_field: consortium
+  quote: The partner can be a research and development institution, an undertaking or an organisation
+    that has been positively evaluated in Estonia, in the European Union or in the European
+    Economic Area, or that has participated as a partner in at least one project funded by
+    the Horizon Europe framework programme.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G1-6
+  gate_family: G1_nexus
+  requirement: Together with the applicant, the partner must carry out project activities
+    representing at least 40% of the total project costs.
+  value: partner \u2265 40% of project costs
+  intake_field: consortium
+  quote: Together with the applicant, the partner must carry out project activities representing
+    at least 40% of the total project costs.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G3-1
+  gate_family: G3_financial
+  requirement: The grant amount must be between EUR 60,000 and EUR 100,000.
+  value: EUR 60,000-100,000
+  intake_field: ticketBand
+  quote: The amount of the grant is between EUR 60,000 and EUR 100,000.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G3-2
+  gate_family: G3_financial
+  requirement: Maximum grant amount is EUR 100,000 with a minimum self-financing rate of 30%.
+  value: Max EUR 100,000; 30% self-financing
+  intake_field: ticketBand
+  quote: Maximum grant \n 100 000
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Maximum grant \\n 100 000'''
+- id: G3-3
+  gate_family: G3_financial
+  requirement: Under de minimis aid, the support rate is 70% regardless of company size.
+  value: 70% de minimis rate
+  intake_field: turnoverBand
+  quote: 70% (regardless of size)
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G3-4
+  gate_family: G3_financial
+  requirement: 'Under General Block Exemption Regulation Article 25 aid, support rates vary
+    by enterprise size: 45% for small/micro, 35% for medium, 25% for large enterprises.'
+  value: 45%/35%/25% by size under GBER art 25
+  intake_field: fteBand
+  quote: 45% Small enterprise (and micro) \n 35% Medium enterprise \n 25% Large enterprise
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''45% Small enterprise (and micro) \\n 35% Medium
+    ent'''
+- id: G3-5
+  gate_family: G3_financial
+  requirement: Total grant scheme amount is EUR 1,500,000.
+  value: EUR 1,500,000 total budget
+  intake_field: ticketBand
+  quote: Total grant amount \n 1 500 000
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Total grant amount \\n 1 500 000'''
+- id: G5-1
+  gate_family: G5_use_of_funds
+  requirement: 'Funded activities must fall within specified cybersecurity innovation and
+    development areas: automation, AI in cybersecurity, quantum-resistant cryptography, and
+    space technology cybersecurity.'
+  value: restricted to listed thematic areas
+  intake_field: developmentStage
+  quote: cybersecurity automation \n the use of artificial intelligence in cybersecurity \n
+    tools and strategies for the transition to quantum-resistant cryptographic algorithms
+    \n cybersecurity of space technologies
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''cybersecurity automation \\n the use of artificial
+    '''
+- id: G5-2
+  gate_family: G5_use_of_funds
+  requirement: Eligible activities include proof of concept, prototyping and testing, developing/testing/demonstrating
+    technological components, product trials, industrial experiments and feasibility studies.
+  value: eligible main activities
+  intake_field: none
+  quote: proof of concept or prototyping and testing
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G5-3
+  gate_family: G5_use_of_funds
+  requirement: Additional eligible activities for implementation of main activities include
+    accreditation/certification/standardisation, metrology, IP legal advice, technology consultancy,
+    and recruiting doctoral candidates.
+  value: eligible supporting activities
+  intake_field: none
+  quote: accreditation, certification, standardisation and conformity assessment \nmetrology
+    services \n advice on the legal protection of patents, utility models or designs, or on
+    applying for registration protection \n technology-based consultancy in the field of product
+    and service design \n the recruitment of a doctoral candidate or doctoral degree holder
+    to carry out activities planned in the project \n participation in an industrial doctorate
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''accreditation, certification, standardisation
+    and '''
+- id: G5-4
+  gate_family: G5_use_of_funds
+  requirement: The grant may be used to cover salaries and statutory contributions, mission/subsistence
+    expenses, materials and supplies, and studies/analyses/consultancy costs directly linked
+    to the project.
+  value: eligible cost categories
+  intake_field: none
+  quote: covering the salaries of the project team members and the related statutory taxes
+    and contributions
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G5-5
+  gate_family: G5_use_of_funds
+  requirement: The grant cannot be used for expenditures incurred before application submission,
+    VAT, bank charges, cash expenses, state fees, holiday/sickness pay, transactions between
+    connected persons, or costs unrelated to supported activities.
+  value: excluded cost categories
+  intake_field: none
+  quote: expenditures incurred before the application was submitted to the Estonian Business
+    and Innovation Agency. PLEASE NOTE! When applying for the grant, the applicant may not
+    start any activities or undertake any commitments related to the project before submitting
+    the application
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G4-1
+  gate_family: G4_borrower_model
+  requirement: Support is provided as a non-repayable grant, sized according to company size
+    and type of state aid applied (de minimis or GBER art 25).
+  value: grant instrument
+  intake_field: borrowerModel
+  quote: The size of the grant depends on the size of the company and the type of state aid.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G6-1
+  gate_family: G6_conditionality
+  requirement: The applicant may not start project activities or undertake commitments before
+    submitting the application.
+  value: no activities before application submission
+  intake_field: conditionality
+  quote: the applicant may not start any activities or undertake any commitments related to
+    the project before submitting the application to the Estonian Business and Innovation
+    Agency
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 3
+  verified: llm_cited
+obligations:
+- requirement: Applications must be submitted through the online E-toetus environment in Estonian.
+  quote: The application can be compiled and submitted in the online E-toetus environment
+    \nGrant can be applied only in Estonian language.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The application can be compiled and submitted
+    in t'''
+- requirement: Expenditures must not be incurred before the application is submitted, and
+    no project activities or commitments may begin before submission.
+  quote: expenditures incurred before the application was submitted to the Estonian Business
+    and Innovation Agency. PLEASE NOTE! When applying for the grant, the applicant may not
+    start any activities or undertake any commitments related to the project before submitting
+    the application to the Estonian Business and Innovation Agency.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 3
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/18 gates, 1/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Not explicitly detailed in the extracted text beyond state aid type selection (de
+    minimis vs GBER art 25).
+  quote: The size of the grant depends on the size of the company and the type of state aid.
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 2
+  verified: llm_cited
+application:
+  channel: Online E-toetus environment, applications reviewed on an ongoing basis
+  typical_timeline: Application open from 12.01.2026 09:00 to 15.12.2026 16:00, reviewed on
+    an ongoing basis
+  quote: The application for the grant is open from 12.01.2026 at 9:00 to 15.12.2026 at 16:00
+    . \nApplications for the grant are reviewed on an ongoing basis .
+  source:
+    file: eis_ettev_tjate_k_berturvali_innovation_dev_en.html
+    locator: chunk 1
+  verified: false

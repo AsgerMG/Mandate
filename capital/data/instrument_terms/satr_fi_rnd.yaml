@@ -1,0 +1,340 @@
+id: satr_fi_rnd
+name: satr_fi_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-recipient-scope
+  gate_family: G1_nexus
+  requirement: Funding is granted to a company (beneficiary) that must confirm receipt of
+    the funding decision and its terms and conditions, and be authorized to sign for the organization,
+    before funding can be paid.
+  value: beneficiary confirmation required
+  intake_field: borrowerModel
+  quote: Funding cannot be paid until the funding decision, and its conditions have been confirmed
+    as received. The recipient of the decision must be authorized to sign for the organization.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.2
+  verified: llm_cited
+- id: g1-accountable-leader
+  gate_family: G1_nexus
+  requirement: The beneficiary must appoint an accountable project leader who is employed
+    by the beneficiary or holds a position of responsibility in the company; failure to do
+    so is grounds for discontinuation of payment.
+  value: accountable leader employed by beneficiary required
+  intake_field: none
+  quote: The beneficiary authorizes an accountable project leader who is in an employment
+    relationship with the beneficiary or holds a position of responsibility in the company.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.2
+  verified: llm_cited
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: For purposes of purchased services and IPR cost eligibility, an SME is defined
+    as a Finnish company with fewer than 250 employees.
+  value: SME = <250 employees (Finnish company)
+  intake_field: fteBand
+  quote: Services purchased from domestic SMEs; for these purposes, a small and medium-sized
+    enterprise (SME) is defined as a Finnish company with fewer than 250 employees.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.10
+  verified: llm_cited
+- id: g2-large-company-definition
+  gate_family: G2_size_ownership
+  requirement: A large company is defined as a company that is not considered an SME under
+    Article 2 of Annex I of the EU General Block Exemption Regulation (651/2014), which affects
+    eligibility of IPR application costs.
+  value: large company = non-SME under Art.2 Annex I GBER
+  intake_field: fteBand
+  quote: A large company refers to a company that is not considered an SME under Article 2
+    of Annex I of the Block Exemption Regulation.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.10
+  verified: llm_cited
+- id: g2-associated-company-ownership
+  gate_family: G2_size_ownership
+  requirement: Companies are treated as associated (related party) where at least 20% of share
+    capital or equivalent equity is directly or indirectly owned or controlled by the other
+    company, triggering special cost-reporting rules.
+  value: ownership threshold 20%
+  intake_field: institutionalOwner
+  quote: At least 20% of the entire share capital or equivalent equity of another company
+    is directly or indirectly owned or controlled by the other company
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.10
+  verified: llm_cited
+- id: g3-max-public-funding-limit
+  gate_family: G3_financial
+  requirement: Combined public funding for the project from Business Finland and other public
+    funders may not exceed the project's maximum public funding limit, with Business Finland
+    reducing its own contribution if necessary.
+  value: aggregate public funding capped at project maximum limit
+  intake_field: cofinancingBand
+  quote: The combined total funding that the project receives from the Funding Agency and
+    other providers of public funding may not exceed the project's maximum limit for public
+    funding.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.13
+  verified: llm_cited
+- id: g3-ipr-cost-cap-sme
+  gate_family: G3_financial
+  requirement: SMEs can include IPR application costs as purchased service costs, with funding
+    level up to 50% of these costs.
+  value: IPR application cost funding up to 50%
+  intake_field: turnoverBand
+  quote: In addition, SMEs can include the costs of initial applications for intellectual
+    property rights incurred during the project in the purchased service costs. The level
+    of funding may be up to 50%.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.10
+  verified: llm_cited
+- id: g3-grant-final-instalment-threshold
+  gate_family: G3_financial
+  requirement: A minimum of 10 per cent of the funding granted for a grant project is withheld
+    until approval of the final report.
+  value: min 10% of grant held back to final report
+  intake_field: ticketBand
+  quote: A minimum of 10 per cent of the funding granted for the project will only be paid
+    after the approval of the final report.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.4
+  verified: llm_cited
+- id: g3-loan-final-instalment-threshold
+  gate_family: G3_financial
+  requirement: The final instalment of a loan is at least 20 per cent of the principal of
+    the granted loan and is only paid after the final report is approved.
+  value: min 20% of loan principal as final instalment
+  intake_field: ticketBand
+  quote: The final instalment of the loan is at least 20 per cent of the principal of the
+    granted loan.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.4
+  verified: llm_cited
+- id: g3-procurement-tender-threshold
+  gate_family: G3_financial
+  requirement: Procurements with a total value of at least 60,000 euros must be tendered as
+    a public procurement when procurement rules apply.
+  value: procurement tender threshold €60,000
+  intake_field: ticketBand
+  quote: When the total value of the procurement is at least 60,000 euros, the procurement
+    must be tendered as a public procurement.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.6
+  verified: llm_cited
+- id: g3-public-procurement-share-threshold
+  gate_family: G3_financial
+  requirement: Public procurement rules must be observed where public funding covers more
+    than 50 per cent of the project costs or the beneficiary is a public procurement unit.
+  value: public funding share >50% triggers procurement rules
+  intake_field: cofinancingBand
+  quote: When the beneficiary is a public procurement unit or the funding provided by the
+    Funding Agency or other public funding covers more than 50 per cent of the project costs,
+    the beneficiary must observe the provisions of the Act on Public Procurement and Concession
+    Contracts (1397/2016).
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.6
+  verified: llm_cited
+- id: g4-grant-vs-loan-mechanics
+  gate_family: G4_borrower_model
+  requirement: 'Funding is provided either as a grant or as a loan, each with distinct payment
+    administration: loans are administered and paid out via the State Treasury with a promissory
+    note, while grants are paid based on approved reports.'
+  value: grant or loan instrument
+  intake_field: borrowerModel
+  quote: The State Treasury is responsible for administering the loan and the related practical
+    payment arrangements.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.4
+  verified: llm_cited
+- id: g4-loan-drawdown-deadline
+  gate_family: G4_borrower_model
+  requirement: For loans, the right to granted funding expires if the beneficiary has not
+    delivered requested documents or signed the promissory note within six months from the
+    date of the loan advance payment decision.
+  value: 6 months to sign promissory note
+  intake_field: needBy
+  quote: The right to the granted funding expires if the beneficiary of the funding has not
+    delivered the documents requested by the State Treasury or signed the promissory note
+    within six months from the date of the loan advance payment decision.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.4
+  verified: llm_cited
+- id: g4-loan-term-extension-cap
+  gate_family: G4_borrower_model
+  requirement: The Funding Agency may extend the loan period to a maximum of twenty years
+    for extremely weighty reasons, with a grace period not exceeding ten years.
+  value: loan max term 20 years, grace period max 10 years
+  intake_field: borrowerModel
+  quote: the Funding Agency may for extremely weighty reasons extend the loan period to a
+    maximum of twenty years. The grace period may not exceed ten (10) years.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.15
+  verified: llm_cited
+- id: g5-cost-timing-eligibility
+  gate_family: G5_use_of_funds
+  requirement: Only procurements and work ordered or agreed in writing after submission of
+    the funding application are approved as eligible project costs, with narrow exceptions.
+  value: costs eligible only from application submission date
+  intake_field: none
+  quote: To ensure the effectiveness of the funding, only procurements and work ordered or
+    agreed upon in writing after submitting the funding application are approved for the project.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.6
+  verified: llm_cited
+- id: g5-ineligible-costs
+  gate_family: G5_use_of_funds
+  requirement: Certain cost types are categorically ineligible, including entertainment, marketing/sales
+    costs, financing costs, and IPR costs for large companies.
+  value: list of ineligible cost categories
+  intake_field: none
+  quote: entertainment expenses, gifts and donations, stipends, or grants
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.12
+  verified: llm_cited
+- id: g5-large-company-ipr-exclusion
+  gate_family: G5_use_of_funds
+  requirement: Costs related to IPR applications of large enterprises (including midcap companies)
+    are not eligible for funding.
+  value: large company IPR costs excluded
+  intake_field: none
+  quote: Costs related to the IPR applications of large enterprises (incl. midcap companies),
+    as defined by the EU, will not be approved.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.10
+  verified: llm_cited
+- id: g6-double-funding-exclusion
+  gate_family: G6_conditionality
+  requirement: Costs for which public funding that may not be combined with other types of
+    public funding is allocated (e.g., costs already covered by a startup grant for the same
+    period) are ineligible, preventing double funding.
+  value: no combination with incompatible public funding
+  intake_field: none
+  quote: costs for which public funding that may not be combined with other types of public
+    funding is allocated (for example, the payroll costs of a person who has received a startup
+    grant for the same period)
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.12
+  verified: llm_cited
+obligations:
+- requirement: The beneficiary must maintain and disclose accurate financial and project information,
+    and inform the Funding Agency without delay of any change affecting the use of funding.
+  quote: The beneficiary must inform the Funding Agency without delay of any change affecting
+    the realization of the intended use of the funding or of any other change affecting the
+    use of the funding.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.15
+  verified: llm_cited
+- requirement: The beneficiary must submit an auditor's report prepared by an independent
+    auditor covering the entire project duration as part of the final report.
+  quote: The beneficiary must submit an auditor's report covering the entire duration of the
+    project and prepared by an independent auditor as part of the final report.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.3
+  verified: llm_cited
+- requirement: The beneficiary must report on project results for up to five years after project
+    completion if requested, for effectiveness monitoring.
+  quote: If necessary, the beneficiary must report on project results for five years after
+    the completion of the project.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.13
+  verified: llm_cited
+- requirement: The beneficiary must retain project accounting records and supporting documents
+    for at least ten years from the date of the last payment.
+  quote: Project accounting and all documents related to the implementation and costs of the
+    project, as well as other material necessary for the supervision and auditing of the project,
+    must be retained for at least ten years from the date of the last payment for the project.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.5
+  verified: llm_cited
+- requirement: The beneficiary must obtain the Funding Agency's prior written consent for
+    significant project changes, including plan changes, cost category changes, schedule changes,
+    or change of accountable leader.
+  quote: Consent must be sought from the Funding Agency in writing in advance / before the
+    change if the project's progress deviates from the plan
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.14
+  verified: llm_cited
+- requirement: The beneficiary must repay without delay any funding received through error,
+    in excess, or manifestly without cause.
+  quote: The beneficiary must, without delay, repay any funding or part thereof received through
+    error, in excess or manifestly without cause.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.17
+  verified: llm_cited
+- requirement: The beneficiary must ensure bidders, subcontractors, or their beneficial owners
+    are not subject to EU/UN sanctions or Finnish asset-freeze decisions in all procurements.
+  quote: In all procurements, the beneficiary must ensure that the bidders, subcontractors,
+    or their beneficiaries are not subject to sanctions imposed by the European Union or the
+    United Nations (UN), or decisions to freeze assets imposed by the Finnish authorities.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.6
+  verified: llm_cited
+- requirement: The beneficiary must record and report working time for every person on the
+    project on an hourly basis for the entire project duration.
+  quote: Every person working for the project must record the time they allocate to the project
+    on an hourly basis for the entire duration of the project.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.5
+  verified: llm_cited
+- requirement: The beneficiary must report income generated through project-related costs
+    to the Funding Agency without delay, and notify in writing if a pilot/prototype is industrialized.
+  quote: If the beneficiary receives income obtained through costs reported to Business Finland,
+    it must report such income to the Funding Agency without delay.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.12
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (18/18 gates, 9/9 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Combined public funding from Business Finland and other public funders for the project
+    may not exceed the project's maximum permitted public funding limit; Business Finland
+    will reduce its contribution as necessary to respect this ceiling.
+  quote: The combined total funding that the project receives from the Funding Agency and
+    other providers of public funding may not exceed the project's maximum limit for public
+    funding. If necessary, the Funding Agency will reduce its own contribution so that the
+    maximum amount of public funding is not exceeded.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.13
+  verified: llm_cited
+application:
+  channel: Business Finland online service / funding decision and confirmation process, with
+    reporting and forms submitted via Business Finland's website
+  typical_timeline: Not specified in this document beyond procedural deadlines (e.g., six
+    months for loan promissory note signature, ten years retention/inspection period)
+  quote: The right to the granted funding expires if the beneficiary of the funding has not
+    delivered the documents requested by the State Treasury or signed the promissory note
+    within six months from the date of the loan advance payment decision.
+  source:
+    file: fi_business_finland_rd_funding_terms_2026.pdf
+    locator: fi_business_finland_rd_funding_terms_2026.pdf#p.4
+  verified: llm_cited

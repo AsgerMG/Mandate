@@ -1,0 +1,91 @@
+id: htgf_equity
+name: htgf_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: The startup must be headquartered in Germany, or if from another country, have
+    a German base of operations.
+  value: Germany-headquartered or German base of operations required
+  intake_field: entityCountries
+  quote: Your startup is headquartered in Germany or – in the case of start-ups from other
+    countries – has a German base of operations.
+  source:
+    file: htgf_investment_criteria.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: The startup should be active in digital tech, industrial tech, life sciences,
+    chemistry or related business areas.
+  value: Digital Tech, Industrial Tech, Life Sciences, Chemistry or related fields
+  intake_field: borrowerModel
+  quote: Your startup should be active in the fields of digital tech, industrial tech, life
+    sciences, chemistry or related business areas.
+  source:
+    file: htgf_investment_criteria.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: The company must be an early-stage company no older than three years to be
+    eligible for investment.
+  value: Company age <= 3 years
+  intake_field: foundedYear
+  quote: We invest in early-stage companies that are no older than three years.
+  source:
+    file: htgf_investment_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: The sweet spot of HTGF's initial investments in pre-seed and seed stage is
+    €800,000 or more.
+  value: €800,000+
+  intake_field: ticketBand
+  quote: The sweet spot of our initial investments in pre-seed and seed is €800,000+.
+  source:
+    file: htgf_investment_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: In growth rounds, HTGF can invest up to €30 million in a startup already in
+    its portfolio.
+  value: Up to €30 million for growth rounds
+  intake_field: ticketBand
+  quote: In growth rounds, we can invest up to €30 million in a startup from our portfolio.
+  source:
+    file: htgf_investment_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G4_borrower_model
+  requirement: HTGF acts as a lead investor and works with co-investment partners from its
+    national and international network.
+  value: Lead investor with syndicated co-investors
+  intake_field: borrowerModel
+  quote: 'As a lead investor, we work with many partners: we will find suitable co-investors
+    for you from our national and international network.'
+  source:
+    file: htgf_investment_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g7
+  gate_family: G4_borrower_model
+  requirement: HTGF's investment mechanism is flexible equity investment depending on the
+    startup's needs, supporting through to exit or IPO.
+  value: Flexible equity investment through to exit/IPO
+  intake_field: borrowerModel
+  quote: We invest flexibly – depending on your needs.
+  source:
+    file: htgf_investment_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (7/7 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).

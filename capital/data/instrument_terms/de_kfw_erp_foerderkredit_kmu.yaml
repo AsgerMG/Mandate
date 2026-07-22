@@ -1,50 +1,437 @@
-# Exemplar of a DRAFT record: structure complete, gates awaiting verification
-# against the KfW programme datasheet (MANIFEST wave 2). Shows how domestic
-# entity + domestic investment requirements are encoded.
 id: de_kfw_erp_foerderkredit_kmu
 name: KfW ERP-Foerderkredit KMU (programmes 365/366)
-administering_body: KfW via the house-bank principle (Hausbank applies, KfW refinances)
+administering_body: see source document
 country: DE
 capital_type: loan
-borrower_models: [operating_company]
 status: draft
 gates:
-  - id: german_nexus
-    gate_family: G1_nexus
-    requirement: >-
-      Applicant needs a German commercial presence and the financed investment
-      or working capital must relate to activity in Germany (foreign SMEs:
-      eligible for investments located in Germany).
-    value: "German entity/Betriebsstaette or investment in Germany"
-    source: {file: PENDING_kfw_datasheet_365_366.pdf, locator: "Wer kann Antraege stellen / Was foerdern wir"}
-    verified: false
-  - id: sme_test
-    gate_family: G2_size_ownership
-    requirement: EU SME definition per GBER Annex I (linked/partner enterprises counted).
-    value: "<250 FTE and <=EUR 50M turnover or <=EUR 43M balance sheet"
-    source: {file: gber_651_2014_consolidated.pdf, locator: "Annex I, Art. 2-6"}
-    verified: true
-  - id: not_in_difficulty
-    gate_family: G3_financial
-    requirement: >-
-      Applicant must not be an undertaking in difficulty: for a limited company
-      >3 years old, accumulated losses must not exceed half of subscribed share
-      capital.
-    value: ""
-    source: {file: gber_651_2014_consolidated.pdf, locator: "Art. 2(18)(a)"}
-    verified: true
-  - id: house_bank
-    gate_family: G6_conditionality
-    requirement: Application runs through a German house bank that takes the credit decision.
-    value: "Hausbankprinzip"
-    source: {file: PENDING_kfw_datasheet_365_366.pdf, locator: "Antragstellung"}
-    verified: false
+- id: g1_applicant_types
+  gate_family: G1_nexus
+  requirement: Applicant must be a natural person, majority privately-owned legal entity,
+    or legal partnership pursuing a commercial or freelance activity.
+  value: Natürliche Personen; Juristische Personen, die sich mehrheitlich in Privatbesitz
+    befinden; Rechtsfähige Personengesellschaften
+  intake_field: borrowerModel
+  quote: "Natürliche Personen\n Juristische Personen, die sich mehrheitlich in Privatbesitz\
+    \ befinden\n Rechtsfähige Personengesellschaften,\ndie in Ausübung oder zur Aufnahme einer\
+    \ gewerblichen oder selbständigen freiberuflichen Tätigkeit handeln,"
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Natürliche Personen\n Juristische Personen,
+    die sic'''
+- id: g1_seat_domestic_foreign
+  gate_family: G1_nexus
+  requirement: Applicant must have its company seat in Germany or abroad, for projects to
+    be carried out in Germany.
+  value: Unternehmenssitz in Deutschland oder im Ausland, für Vorhaben in Deutschland
+  intake_field: entityCountries
+  quote: "mit Unternehmenssitz in Deutschland\n mit Unternehmenssitz im Ausland\nfür Vorhaben\
+    \ in Deutschland."
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''mit Unternehmenssitz in Deutschland\n mit Unternehm'''
+- id: g1_foreign_project_eligibility
+  gate_family: G1_nexus
+  requirement: For projects abroad, eligible applicants are German-seated companies, foreign
+    subsidiaries of German companies, or joint ventures abroad with significant German participation
+    of at least 25%.
+  value: Unternehmen mit Sitz in Deutschland; Tochtergesellschaften; Joint Ventures mit deutscher
+    Beteiligung >=25%
+  intake_field: activityCountries
+  quote: "Antragsberechtigt für Vorhaben im Ausland sind:\n Unternehmen mit Unternehmenssitz\
+    \ in Deutschland\n Tochtergesellschaften deutscher Unternehmen mit Sitz im Ausland\n Joint\
+    \ Ventures im Ausland mit eigener Rechtspersönlichkeit und maßgeblicher deutscher Beteiligung\
+    \ von\nmindestens 25 %"
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Antragsberechtigt für Vorhaben im Ausland sind:\n
+    U'''
+- id: g2_sme_definition
+  gate_family: G2_size_ownership
+  requirement: Applicant must be a small or medium-sized enterprise per the EU Commission
+    definition, with fewer than 250 employees and annual turnover of at most €50 million or
+    annual balance sheet total of at most €43 million.
+  value: <250 employees; turnover ≤€50m or balance sheet ≤€43m
+  intake_field: fteBand
+  quote: 'Gefördert werden kleine und mittlere Unternehmen im Sinne der Definition der Europäischen
+    Kommission mit weniger
+
+    als 250 Mitarbeitern und einem Jahresumsatz von höchstens 50 Millionen Euro oder einer
+    Jahresbilanzsumme von
+
+    höchstens 43 Millionen Euro'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.1
+  verified: llm_cited
+- id: g2_natural_person_qualification
+  gate_family: G2_size_ownership
+  requirement: Where the applicant is a natural person, professional and commercial qualification
+    for the entrepreneurial activity and sufficient entrepreneurial influence are required;
+    a voting share of other shareholders enabling autonomous statute changes is detrimental.
+  value: Fachliche und kaufmännische Qualifikation; hinreichender unternehmerischer Einfluss
+    erforderlich
+  intake_field: ownerOver25
+  quote: 'Fachliche und kaufmännische Qualifikation für die unternehmerische Tätigkeit sowie
+    hinreichender
+
+    unternehmerischer Einfluss. Förderschädlich ist ein Stimmenanteil anderer Gesellschafter,
+    der autonome
+
+    Satzungsänderungen ermöglicht.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.2
+  verified: llm_cited
+- id: g2_refinancing_institution_cap
+  gate_family: G2_size_ownership
+  requirement: The directly refinancing credit institution may hold at most 25% direct or
+    indirect participation in the applicant company over the entire credit term (365); for
+    366, no credit institution/insurance/comparable financial institution may hold more than
+    25%.
+  value: max 25% ownership by refinancing/financial institution
+  intake_field: institutionalOwner
+  quote: 'Für dieses gilt über die gesamte Kreditlaufzeit eine maximale Grenze für die unmittelbare
+    oder mittelbare
+
+    Beteiligung am geförderten Unternehmen in Höhe von 25 %.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.2
+  verified: llm_cited
+- id: g2_min_2_years_active_366
+  gate_family: G2_size_ownership
+  requirement: For the guarantee-exempted variant (366), the company must have been active
+    on the market for at least 2 years.
+  value: seit mindestens 2 Jahren am Markt aktiv
+  intake_field: foundedYear
+  quote: Das Unternehmen ist seit mindestens 2 Jahren am Markt aktiv.
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.1
+  verified: llm_cited
+- id: g2_min_2_full_years_financials_366
+  gate_family: G2_size_ownership
+  requirement: Guarantee exemption (Haftungsfreistellung) requires the applicant to have at
+    least two complete financial years with meaningful annual financial statements.
+  value: mindestens 2 vollständige Geschäftsjahre mit Jahresabschlussunterlagen
+  intake_field: foundedYear
+  quote: 'Voraussetzung ist, dass der Antragssteller mindestens über eine Unternehmenshistorie
+    mit aussagefähigen
+
+    Jahresabschlussunterlagen von 2 vollständigen Geschäftsjahren verfügt.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.1
+  verified: llm_cited
+- id: g3_max_loan_amount_365
+  gate_family: G3_financial
+  requirement: Maximum loan amount is €25 million per project under programme 365.
+  value: max. 25 Millionen Euro pro Vorhaben
+  intake_field: ticketBand
+  quote: maximal 25 Millionen Euro pro Vorhaben
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.3
+  verified: llm_cited
+- id: g3_max_loan_amounts_366
+  gate_family: G3_financial
+  requirement: Under programme 366, maximum loan is €25 million for investments/M&A and €7.5
+    million for working capital/inventory financing per project.
+  value: €25m (Investitionen/Übernahme); €7,5m (Betriebsmittel/Warenlager)
+  intake_field: ticketBand
+  quote: "Investitionen\n maximal 25 Millionen Euro pro Vorhaben\nÜbernahme und Beteiligung\n\
+    \ maximal 25 Millionen Euro pro Vorhaben\nBetriebsmittel\n maximal 7,5 Millionen Euro\
+    \ pro Vorhaben\nWarenlager\n maximal 7,5 Millionen Euro pro Vorhaben"
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Investitionen\n maximal 25 Millionen Euro pro
+    Vorha'''
+- id: g3_working_capital_balance_cap_366
+  gate_family: G3_financial
+  requirement: For working capital and inventory loans above €2 million, the loan amount is
+    limited to a maximum of 30% of the last balance sheet total of the corporate group.
+  value: max 30% der letzten Bilanzsumme der Unternehmensgruppe
+  intake_field: balanceBand
+  quote: 'Für Betriebsmittel- und Warenlagerkredite größer als 2 Millionen Euro ist der Kreditbetrag
+    auf maximal 30 % der letzten
+
+    Bilanzsumme der Unternehmensgruppe beschränkt.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.3
+  verified: llm_cited
+- id: g3_financing_share
+  gate_family: G3_financial
+  requirement: Up to 100% of eligible costs are financed, and VAT can be co-financed if input
+    tax deduction is not available.
+  value: bis zu 100% der förderfähigen Kosten
+  intake_field: none
+  quote: 'Es werden bis zu 100 % der förderfähigen Kosten finanziert.
+
+    Die Mehrwertsteuer kann mitfinanziert werden, sofern die Berechtigung zum Vorsteuerabzug
+    nicht vorliegt.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.3
+  verified: llm_cited
+- id: g3_de_minimis_ceiling
+  gate_family: G3_financial
+  requirement: Total de minimis aid granted to a single undertaking by one Member State must
+    not cumulatively exceed €300,000 over a three-year period.
+  value: €300,000 over 3 years cumulative de minimis cap
+  intake_field: cofinancingBand
+  quote: 'Der Gesamtbetrag der einem einzigen Unternehmen von einem Mitgliedstaat gewährten
+    De minimis-Beihilfen darf
+
+    in einem Zeitraum von drei Jahren kumuliert 300.000 Euro nicht übersteigen.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.4
+  verified: llm_cited
+- id: g4_loan_instrument
+  gate_family: G4_borrower_model
+  requirement: The instrument is a low-interest loan (not a grant) distributed through financing
+    partners (banks/savings banks), with interest subsidised from ERP special assets.
+  value: loan via financing partner banks
+  intake_field: borrowerModel
+  quote: 'Die KfW gewährt Kredite aus diesem Programm über Finanzierungspartner (Banken und
+    Sparkassen). Ihren Antrag
+
+    stellen Sie bei einem Finanzierungspartner Ihrer Wahl vor Beginn des Vorhabens.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.4
+  verified: llm_cited
+- id: g4_liability_exemption_366
+  gate_family: G4_borrower_model
+  requirement: Under programme 366, KfW exempts the financing partner from 50% of liability
+    on the loan.
+  value: 50% Haftungsfreistellung
+  intake_field: borrowerModel
+  quote: Die KfW stellt den Finanzierungspartner zu 50 Prozent von der Haftung frei.
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.4
+  verified: llm_cited
+- id: g5_eligible_measures
+  gate_family: G5_use_of_funds
+  requirement: Eligible measures comprise investments, working capital, inventory financing,
+    and company acquisitions/participations.
+  value: Investitionen, Betriebsmittel, Warenlager, Übernahme und Beteiligung
+  intake_field: none
+  quote: "Investitionen\n Betriebsmittel\n Warenlager\n Übernahme und Beteiligung"
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Investitionen\n Betriebsmittel\n Warenlager\n
+    Übernah'''
+- id: g5_exclusions
+  gate_family: G5_use_of_funds
+  requirement: Debt rescheduling, refinancing of already-started/completed projects, trust
+    constructions, silent participations, and related-party transfers (e.g. between affiliated
+    companies, shareholders, spouses) are excluded from funding.
+  value: exclusion list of use cases
+  intake_field: none
+  quote: "Umschuldungen und Nachfinanzierungen bereits begonnener beziehungsweise abgeschlossener\
+    \ Vorhaben\n Treuhandkonstruktionen\n Stille Beteiligungen\n Entgeltliche und sonstige\
+    \ Vermögensübertragungen (zum Beispiel käuflicher Erwerb)"
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Umschuldungen und Nachfinanzierungen bereits
+    begon'''
+- id: g5_sole_share_acquisition_excluded
+  gate_family: G5_use_of_funds
+  requirement: The sole acquisition of company shares purely as a financial investment is
+    not eligible for funding.
+  value: alleinige Übernahme von Unternehmensanteilen als Finanzinvestition nicht förderfähig
+  intake_field: none
+  quote: Die alleinige Übernahme von Unternehmensanteilen im Sinne von Finanzinvestitionen
+    ist nicht förderfähig.
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.2
+  verified: llm_cited
+- id: g6_de_minimis_sector_exclusion
+  gate_family: G6_conditionality
+  requirement: Undertakings/sectors under Article 1(1) of the De-minimis Regulation are excluded
+    from funding.
+  value: sector exclusions per Art. 1(1) De-minimis Regulation
+  intake_field: none
+  quote: 'Unternehmen beziehungsweise Sektoren gemäß Artikel 1 Absatz 1 De-minimis-Verordnung
+    sind von der
+
+    Förderung ausgeschlossen.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.4
+  verified: llm_cited
+- id: g6_agvo_exclusion_undertaking_in_difficulty
+  gate_family: G6_conditionality
+  requirement: Undertakings in difficulty per Article 1(4)(c) and Article 2(18)(a-e) GBER
+    are excluded from funding.
+  value: Unternehmen in Schwierigkeiten ausgeschlossen
+  intake_field: lossesOverHalfCapital
+  quote: 'Von der Förderung sind Unternehmen in Schwierigkeiten nach Artikel 1 Absatz 4 litera
+    c Allgemeine
+
+    Gruppenfreistellungsverordnung ausgeschlossen. Unternehmen in Schwierigkeiten sind Unternehmen,
+    auf die
+
+    mindestens einer der Umstände nach Artikel 2 Nummer 18 litera a-e AGVO zutrifft.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.5
+  verified: llm_cited
+- id: g6_repayment_order_exclusion
+  gate_family: G6_conditionality
+  requirement: Companies that have not complied with a prior EU Commission aid recovery order
+    are not eligible.
+  value: nicht förderfähig bei ausstehender Rückforderungsanordnung
+  intake_field: none
+  quote: 'Darüber hinaus sind Unternehmen, die einer früheren Beihilfenrückforderungsanordnung
+    der EU-Kommission zur
+
+    Feststellung der Unzulässigkeit einer von demselben Mitgliedstaat gewährten Beihilfe und
+    ihrer Unvereinbarkeit mit
+
+    dem Binnenmarkt nicht nachgekommen sind, nicht förderfähig.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.5
+  verified: llm_cited
+- id: g6_application_before_start
+  gate_family: G6_conditionality
+  requirement: The application must be submitted to a financing partner before the start of
+    the project.
+  value: Antragstellung vor Beginn des Vorhabens
+  intake_field: needBy
+  quote: 'Ihren Antrag
+
+    stellen Sie bei einem Finanzierungspartner Ihrer Wahl vor Beginn des Vorhabens.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.4
+  verified: llm_cited
+- id: g6_environmental_social_standards
+  gate_family: G6_conditionality
+  requirement: The project must meet the environmental and social law requirements and standards
+    applicable in the investment country; projects outside the EU/OECD high-income countries
+    are reviewed individually by KfW.
+  value: Einhaltung umwelt- und sozialrechtlicher Standards des Investitionslandes
+  intake_field: activityCountries
+  quote: 'Das Vorhaben muss die im Investitionsland geltenden umwelt- und sozialrechtlichen
+    Anforderungen und Standards
+
+    erfüllen. Vorhaben mit Investitionsort in Ländern, die weder EU-Mitglied noch OECD (Organisation
+    für wirtschaftliche
+
+    Zusammenarbeit und Entwicklung)-Hocheinkommensland sind, werden von der KfW im Einzelfall
+    geprüft.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.2
+  verified: llm_cited
 obligations:
-  - requirement: Funds tied to the stated investment/working-capital purpose in Germany.
-    source: {file: PENDING_kfw_datasheet_365_366.pdf, locator: "Verwendungszweck"}
-    verified: false
-cumulation: "Aid value of the interest advantage counts against de minimis / GBER ceilings (verify which regime the current datasheet applies)."
-application: {channel: "house bank -> KfW", typical_timeline: "weeks (bank-dependent)"}
-ticket: {min_eur: 25000, max_eur: 25000000}
-verify_by: 2026-08-15
-notes: "DO NOT let the memo assert unverified gates as fact - they render as 'verify with source'."
+- requirement: Applicant must maintain agreed credit lines in full for at least 12 months
+    after KfW's commitment for working capital/inventory loans.
+  quote: 'Die beim Finanzierungspartner zum Zeitpunkt der Antragstellung
+
+    bewilligten Kreditlinien müssen für mindestens 12 Monate nach der Zusage der KfW in voller
+    Höhe aufrechterhalten
+
+    werden.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.3
+  verified: llm_cited
+- requirement: Self-declaration confirming compliance with the EU SME definition must be provided
+    and remains with the financing partner.
+  quote: 'Für kleine und mittlere Unternehmen gemäß Definition der Europäischen Kommission
+    die Selbsterklärung zur
+
+    Einhaltung dieser Definition (für verflochtene Unternehmen Bestellnummer 600 000 0196;
+    für nicht verflochtene
+
+    Unternehmen Bestellnummer 600 000 0095).'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.4
+  verified: llm_cited
+- requirement: Applicant must submit a de-minimis declaration on previously received de-minimis
+    aid.
+  quote: 'Anlage De-minimis-Erklärung des Antragstellers über bereits erhaltene De-minimis-Beihilfen,
+    Bestellnummer 600
+
+    000 0075.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.4
+  verified: llm_cited
+- requirement: Intentional or grossly negligent false statement or omission of subsidy-relevant
+    facts is punishable under criminal law.
+  quote: 'Die vorsätzliche oder leichtfertige falsche Angabe oder unterlassene Mitteilung
+
+    von subventionserheblichen Tatsachen ist nach den vorgenannten Vorschriften strafbar.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.5
+  verified: llm_cited
+- requirement: For programme 366, KfW will exchange data with credit agency Creditreform and,
+    for freelancers/small traders/natural persons/GbR shareholders, obtain a SCHUFA report.
+  quote: 'Für alle Anträge mit Haftungsfreistellung wird die KfW in diesem Programm im Rahmen
+    der Kreditentscheidung Daten
+
+    mit der Wirtschaftsauskunftei Creditreform Frankfurt Emil Vogt Kommanditgesellschaft Daten
+    austauschen.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.4
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/23 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Combination with other funding programmes (loans or grants) is generally possible
+    within the applicable state aid ceilings; cumulation rules under Article 5 De-minimis
+    Regulation and Article 8 GBER must be observed.
+  quote: 'Grundsätzlich ist die Kombination einer Förderung aus diesem Programm mit anderen
+    Fördermitteln (Kredite oder
+
+    Zulagen/Zuschüsse) im Rahmen der zulässigen Beihilfeobergrenzen möglich.'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf#p.2
+  verified: llm_cited
+application:
+  channel: Application submitted through a financing partner (bank or savings bank) of the
+    applicant's choice before project start.
+  typical_timeline: For loans with liability exemption, KfW offers an accelerated Fast Track
+    risk review typically within a maximum of 5 banking business days if Fast Track criteria
+    are met and total KfW exposure is at most €750,000.
+  quote: 'Wenn die Erfüllung der Fast Track Kriterien der KfW gemäß
+
+    „Checkliste für die Unterlagen zur Risikoprüfung“ durch den Finanzierungspartner bestätigt
+    wird, bietet die KfW eine
+
+    beschleunigte Risikoprüfung in der Regel innerhalb von maximal 5 Bankarbeitstagen an'
+  source:
+    file: kfw_merkblatt_365_erp_foerderkredit_kmu.pdf
+    locator: kfw_merkblatt_366_erp_foerderkredit_kmu_haftungsfreistellung.pdf#p.4
+  verified: llm_cited
+borrower_models:
+- operating_company
+ticket:
+  min_eur: 25000
+  max_eur: 25000000

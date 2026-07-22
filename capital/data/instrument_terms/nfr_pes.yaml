@@ -1,0 +1,423 @@
+id: nfr_pes
+name: nfr_pes
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-role
+  gate_family: G1_nexus
+  requirement: Applicant must be a Norwegian actor with a formal role in an EU application
+    (Horizon Europe or EDF).
+  value: Norwegian actor with formal role in EU application
+  intake_field: entityCountries
+  quote: Norske aktører med en formell rolle i en EU-søknad kan søke om støtte.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g1-project-responsible-approval
+  gate_family: G1_nexus
+  requirement: The responsible organisation listed as project-responsible in the application
+    form must have approved submission of the application.
+  value: Project-responsible organisation must approve submission
+  intake_field: borrowerModel
+  quote: Den prosjektansvarlige organisasjonen som står som prosjektansvarlig i søknadsskjemaet,
+    må ha godkjent at søknaden sendes inn.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g2-research-org-with-framework-grant-excluded
+  gate_family: G2_size_ownership
+  requirement: Research organisations holding a 2025-27 framework grant (rammebevilgning)
+    cannot submit individual applications to this call, except for EDF applications or extra
+    support for applications including African or Ukrainian participants.
+  value: Excluded if holding rammebevilgning 2025-27 (unless EDF or Africa/Ukraine bonus)
+  intake_field: institutionalBacking
+  quote: Forskningsorganisasjoner med rammebevilgning for 2025-27 kan ikke sende inn enkeltsøknader
+    til denne utlysningen, med mindre EU-søknaden gjelder Det europeiske forsvarsfondet (EDF)
+    eller ekstra støttebeløp til EU-søknader som koordineres fra norsk side og inkluderer
+    deltakere fra ett eller flere afrikanske land eller deltagere fra Ukraina.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g2-research-org-cap-without-framework
+  gate_family: G2_size_ownership
+  requirement: Research organisations without a framework grant may receive a maximum of NOK
+    500,000 in support from the scheme per year.
+  value: Max NOK 500,000/year for research orgs without rammebevilgning
+  intake_field: institutionalBacking
+  quote: Forskningsorganisasjoner uten rammebevilgning kan få utbetalt maksimalt 500 000 kroner
+    i støtte fra ordningen per år.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g2-eic-accelerator-sme
+  gate_family: G2_size_ownership
+  requirement: For EIC Accelerator PES support, applicants must be Norwegian small and medium-sized
+    enterprises qualified for step 2 of the Accelerator.
+  value: Norwegian SME qualified for step 2 of EIC Accelerator
+  intake_field: turnoverBand
+  quote: Norske små og mellomstore bedrifter som er kvalifisert for å søke om steg 2 i Acceleratoren.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g2-eic-step-scaleup-sme
+  gate_family: G2_size_ownership
+  requirement: For EIC STEP Scale Up PES support, applicants must be Norwegian small and medium-sized
+    enterprises as defined by the EU SME definition.
+  value: Norwegian SME per EU SME definition
+  intake_field: turnoverBand
+  quote: Norske små- og mellomstore bedrifter ( SME definition - European Commission )
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 3
+  verified: llm_cited
+- id: g2-rammebevilgning-approved-research-org
+  gate_family: G2_size_ownership
+  requirement: Only approved Norwegian research organisations may apply for the framework
+    grant (rammebevilgning); multi-unit organisations must submit one joint application.
+  value: Only approved Norwegian research organisations
+  intake_field: institutionalBacking
+  quote: Bare godkjente, norske forskningsorganisasjoner kan søke. Organisasjoner som består
+    av flere enheter må sende en samlet søknad på vegne av alle enheter.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_rammebevilgning_2025_2027.html#chunk 1
+  verified: llm_cited
+- id: g3-eic-accelerator-max-support
+  gate_family: G3_financial
+  requirement: Maximum PES support for EIC Accelerator step 2 application (based on step 1/Plug-In)
+    is NOK 100,000.
+  value: Max NOK 100,000
+  intake_field: ticketBand
+  quote: 'Maksimalt støttebeløp basert på trinn 1 og Plug-IN: 100 000 kroner.'
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g3-womentecheu-support
+  gate_family: G3_financial
+  requirement: PES may grant NOK 50,000 for Women TechEU applications, conditional on the
+    application scoring 10 or higher overall; NOK 25,000 available for resubmission if above
+    threshold.
+  value: NOK 50,000 (WomenTechEU), NOK 25,000 resubmission
+  intake_field: ticketBand
+  quote: Gjennom PES-utlysningen kan vi innvilge 50 000 kroner til søkere som skal skrive
+    søknad rettet mot en Women TechEU-utlysning.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g3-eic-step-scaleup-max
+  gate_family: G3_financial
+  requirement: Maximum PES support for EIC STEP Scale Up applications is NOK 100,000.
+  value: Max NOK 100,000
+  intake_field: ticketBand
+  quote: 'Maksimalt støttebeløp: 100 000 kroner.'
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 3
+  verified: llm_cited
+- id: g3-collab-coordinator-ria-ia
+  gate_family: G3_financial
+  requirement: For RIA/IA coordinator role, maximum support ranges from NOK 200,000 (budget
+    up to €5M) to NOK 400,000 (budget over €10M), depending on total EU project budget.
+  value: NOK 200,000-400,000 depending on project budget size
+  intake_field: cofinancingBand
+  quote: Inntil 400 000 kroner for å koordinere et stort prosjekt med et budsjett på over
+    10 millioner euro
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 3
+  verified: llm_cited
+- id: g3-collab-participant-ria-ia
+  gate_family: G3_financial
+  requirement: For RIA/IA work package leader or participant roles, maximum support is NOK
+    70,000 or NOK 50,000 respectively.
+  value: NOK 70,000 (WP leader) / NOK 50,000 (participant)
+  intake_field: ticketBand
+  quote: Arbeidspakkeleder 70 000 kroner Deltaker 50 000 kroner
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 3
+  verified: llm_cited
+- id: g3-eurostars-max
+  gate_family: G3_financial
+  requirement: For Eurostars applications, total maximum support per project (including Norwegian
+    partners) is NOK 100,000, contingent on meeting Eurostars scoring criteria.
+  value: Max NOK 100,000 per project (Eurostars)
+  intake_field: ticketBand
+  quote: Total ramme per prosjekt er 100 000 kroner for en søknad som er koordinert fra norsk
+    side, inkludert andre norske samarbeidspartnere.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 4
+  verified: llm_cited
+- id: g3-de-minimis-cap
+  gate_family: G3_financial
+  requirement: Enterprises receiving support as de minimis aid can receive a maximum of EUR
+    300,000 over a rolling three-year period, applied at group level if part of a corporate
+    group.
+  value: Max EUR 300,000 per 3-year period (de minimis)
+  intake_field: ticketBand
+  quote: Det betyr at foretaket maksimalt kan få utbetalt 300 000 euro i løpet av en tre-årsperiode.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g3-edf-max-support
+  gate_family: G3_financial
+  requirement: For EDF applications, maximum support is NOK 500,000 (coordinator), NOK 200,000
+    (work package leader), or NOK 75,000 (participant), conditional on scoring at least the
+    threshold value.
+  value: NOK 500,000/200,000/75,000 depending on role (EDF)
+  intake_field: ticketBand
+  quote: 500 000 kroner   200 000 kroner   75 000 kroner
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 4
+  verified: llm_cited
+- id: g3-rammebevilgning-range
+  gate_family: G3_financial
+  requirement: The framework grant (rammebevilgning) support ranges from NOK 250,000 to NOK
+    33,000,000 per award, with a total available envelope of NOK 138,000,000 for 2025-2027.
+  value: NOK 250,000 - 33,000,000 per award
+  intake_field: ticketBand
+  quote: Støttegrenser Kr 250 000-33 000 000
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_rammebevilgning_2025_2027.html#chunk 1
+  verified: llm_cited
+- id: g3-eic-step-investor-requirement
+  gate_family: G3_financial
+  requirement: EIC STEP Scale Up applicants must demonstrate a pre-qualified investor covering
+    at least 20% of the total financing round, approved by EIC.
+  value: Pre-qualified investor covering min. 20% of financing round
+  intake_field: cofinancingBand
+  quote: Bedrifter som søker PES-ordningen, må vise til at de har fått med seg en forhåndsgodkjent
+    investor (Pre-qualified investor som dekker minst 20 % av den totale finansieringsrunden).
+    Det er EIC som godkjenner investoren.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 3
+  verified: llm_cited
+- id: g4-fixed-price-per-application
+  gate_family: G4_borrower_model
+  requirement: Support is paid as a fixed price per submitted EU application, disbursed as
+    a lump sum, not as a loan or equity instrument.
+  value: Fixed price grant per submitted EU application, paid as lump sum
+  intake_field: borrowerModel
+  quote: Støtten utbetales som en fast pris per innsendte EU-søknad.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g4-non-economic-activity
+  gate_family: G4_borrower_model
+  requirement: Support to a research organisation goes to the organisation's non-economic
+    activity and therefore does not constitute state aid, requiring adequate accounting separation.
+  value: Grant to non-economic activity; not state aid for research orgs
+  intake_field: borrowerModel
+  quote: Støtte til en forskningsorganisasjon går til organisasjonens ikke-økonomiske aktivitet.
+    Den utgjør dermed ikke statsstøtte. Forskningsrådet forutsetter at nødvendig regnskapsmessig
+    skille er på plass.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g4-firms-de-minimis
+  gate_family: G4_borrower_model
+  requirement: Enterprises (foretak) receive the support disbursed as de minimis aid.
+  value: Support to enterprises is de minimis aid
+  intake_field: borrowerModel
+  quote: Foretak vil få utbetalt støtten som "bagatellmessig støtte".
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g5-use-of-funds-cost-types
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for costs related to travel, participation in networking
+    events, positioning, staff hours, and procurement of services to prepare project proposals.
+  value: Travel, networking, positioning, staff hours, service procurement for proposal preparation
+  intake_field: needBy
+  quote: Midlene kan for eksempel gå til å dekke kostnader knyttet til reiser, deltakelse
+    på møteplasser, til posisjonering og timer og innkjøp av tjenester for å utarbeide prosjektforslag.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g5-scope-exclusions
+  gate_family: G5_use_of_funds
+  requirement: Calls from other EU programmes such as Digital Europe, COSME and InvestEU are
+    not covered by this scheme; a separate ENOVA scheme exists for the EU Innovation Fund.
+  value: Excludes Digital Europe, COSME, InvestEU; excludes EU Innovation Fund (covered by
+    ENOVA)
+  intake_field: needBy
+  quote: Utlysninger fra andre programmer, som Digital Europe, COSME og Invest EU, dekker
+    vi ikke. ENOVA har en egen ordning for støtte til prosjektetablering for EUs Innovasjonsfond.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g5-rammebevilgning-scope
+  gate_family: G5_use_of_funds
+  requirement: The framework grant may cover internal costs related to project establishment
+    (proposal preparation) for Horizon Europe applications, including partnerships; it excludes
+    work on Digital Europe, COSME, EDF and InvestEU calls.
+  value: Covers internal proposal-preparation costs for Horizon Europe; excludes Digital Europe,
+    COSME, EDF, InvestEU
+  intake_field: needBy
+  quote: Arbeid med søknader rettet mot utlysninger fra andre EU-programmer som Digital Europe,
+    COSME, EDF og Invest EU dekkes ikke.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_rammebevilgning_2025_2027.html#chunk 1
+  verified: llm_cited
+- id: g6-threshold-condition
+  gate_family: G6_conditionality
+  requirement: Payment of support is conditional on the submitted EU project proposal achieving
+    a score equal to or above the threshold value in the given call; for two-stage proposals,
+    only stage two counts.
+  value: EU proposal must reach threshold score or better
+  intake_field: conditionality
+  quote: Vi betaler ut støtten dersom det innsendte EU-prosjektforslaget oppnår en karakter
+    som tilsvarer terskelverdi ("threshold") eller bedre i den gitte utlysningen.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited
+- id: g6-gep-condition
+  gate_family: G6_conditionality
+  requirement: Grant recipients in research organisations and the public sector (project-responsible
+    and partners) must have a Gender Equality Plan (GEP) available on their website before
+    contracting; this requirement does not apply to private enterprises, interest organisations,
+    or voluntary sector.
+  value: GEP required for research orgs/public sector recipients before contract
+  intake_field: conditionality
+  quote: Tilskuddsmottakere i forskningsorganisasjoner og offentlig sektor (prosjektansvarlige
+    og samarbeidspartnere) skal ha  handlingsplaner for likestilling (GEP)  tilgjengelig på
+    sine nettsider.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g6-firms-in-difficulty-excluded-eurostars
+  gate_family: G6_conditionality
+  requirement: Enterprises classified as 'undertaking in difficulty' cannot expect to receive
+    support for writing Eurostars applications.
+  value: Firms in difficulty excluded from Eurostars support
+  intake_field: conditionality
+  quote: Bedrifter som faller inn under definisjonen "foretak i vanskeligheter" kan ikke regne
+    med å få støtte til å skrive Eurostars-søknader.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- id: g6-no-double-funding-with-framework-grant
+  gate_family: G6_conditionality
+  requirement: Organisations awarded a framework grant (rammebevilgning) through this call
+    cannot later apply for support from the ongoing PES call, even if that would yield lower
+    funding.
+  value: Cannot combine rammebevilgning with later PES call applications
+  intake_field: conditionality
+  quote: organisasjoner som får tilkjent rammebevilgning gjennom denne utlysningen ikke kan
+    søke om støtte senere fra den løpende PES-utlysningen, selv om dette skulle gi en lavere
+    uttelling enn om dere hadde søkt den løpende PES-utlysningen.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_rammebevilgning_2025_2027.html#chunk 1
+  verified: llm_cited
+- id: g6-eurostars-threshold-criteria
+  gate_family: G6_conditionality
+  requirement: For Eurostars, PES payout requires a score above the minimum 3.6 threshold
+    on each of three criteria (Quality, Impact, Excellence) and a passed Legal and Financial
+    Viability Check.
+  value: Score >3.6 on each of 3 criteria + passed viability check (Eurostars)
+  intake_field: conditionality
+  quote: Score over minimumskravet på 3,6 for hvert av de tre kriteriene (Quality, Impact,
+    Excellence)   2) Søknaden må være er godkjent når det gjelder Legal and Financial Viability
+    Check
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 4
+  verified: llm_cited
+- id: g6-african-ukrainian-role-requirement
+  gate_family: G6_conditionality
+  requirement: African or Ukrainian participants must hold a formal 'beneficiary' role with
+    their own budget in the Horizon Europe application; being an 'Associated Partner' is not
+    sufficient to qualify for the extra PES bonus.
+  value: Must be 'beneficiary' with own budget, not merely Associated Partner
+  intake_field: conditionality
+  quote: Afrikanske eller ukrainske deltakere må ha en formell rolle som “beneficiary” og
+    eget budsjett i Horisont Europa-søknaden. Å være "Associated Partner" er ikke tilstrekkelig
+    for å kvalifisere for ekstra midler fra PES-ordningen.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 3
+  verified: llm_cited
+obligations:
+- requirement: Applicants must submit a final report via 'Mitt nettsted' after receiving the
+    EU evaluation, including the Evaluation Summary Report (ESR) or equivalent.
+  quote: Sluttrapport for prosjektet skal leveres via Mitt nettsted, og skal sendes til Forskningsrådet
+    når søker har mottatt evaluering fra EU. Sluttrapporten skal inneholde Evaluation Summary
+    Report (ESR) eller tilsvarende søknadsvurdering.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- requirement: Enterprises must provide a written confirmation and overview of all other de
+    minimis aid received during the previous three fiscal years prior to payout.
+  quote: Vi vil i forkant av en eventuell utbetaling av bagatellmessig støtte, be om en skriftlig
+    bekreftelse og oversikt over all annen bagatellmessig støtte som foretaket har mottatt
+    i løpet av de siste tre regnskapsårene.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+- requirement: Companies participating in a Eurostars project must attach documentation confirming
+    they hold at least NOK 500,000 in equity at the time of application.
+  quote: 'Eurostars-søknader: Bedrifter som skal delta i et Eurostars-prosjekt må vedlegge
+    dokumentasjon som bekrefter at bedriften har minst 500 000 kroner i egenkapital ved søketidspunktet.'
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 4
+  verified: llm_cited
+- requirement: Applications and all attachments must be written in Norwegian or English, using
+    the required templates, and must be submitted together with the application by the deadline.
+  quote: Søknaden og alle vedlegg må være skrevet på norsk eller engelsk.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 4
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (29/29 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: De minimis aid to an enterprise is capped at EUR 300,000 over a rolling three-year
+    period, applied at the level of the corporate group as a general rule if the enterprise
+    is part of a group.
+  quote: For foretak som er del av et konsern, gjelder maksimalgrensen som hovedregel for
+    konsernet som sådan.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 2
+  verified: llm_cited
+application:
+  channel: Electronic application ('eSøknad') submitted via 'Mitt nettsted' (Forskningsrådet's
+    applicant portal), with mandatory template attachments.
+  typical_timeline: Applications should be submitted as early as possible and no later than
+    four weeks before the EU deadline; for coordinated collaborative projects, contact with
+    an NCP is recommended at least 12 weeks before the EU deadline. Decisions are usually
+    communicated within four weeks of receipt.
+  quote: Du må søke om støtte så tidlig som mulig – helst så snart et prosjektforslag begynner
+    å ta form – og seinest fire uker før EU-fristen.
+  source:
+    file: nfr_pes_horisont_europa_call_2025.html
+    locator: nfr_pes_horisont_europa_call_2025.html#chunk 1
+  verified: llm_cited

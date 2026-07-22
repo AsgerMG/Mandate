@@ -1,0 +1,338 @@
+id: satr_pt_rnd
+name: satr_pt_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sector-scope
+  gate_family: G1_nexus
+  requirement: Operation must be in an eligible economic activity under CAE Rev.3, excluding
+    financial/insurance, defence, and lotteries/gambling sectors.
+  value: excludes financial, defence, lottery/gambling sectors
+  intake_field: activityCountries
+  quote: a) Financeiras e de seguros; b) Defesa; c) Lotarias e outros jogos de aposta.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.4
+  verified: llm_cited
+- id: g1-territory
+  gate_family: G1_nexus
+  requirement: The regulation applies across mainland Portugal territory, subject to programme
+    delimitation criteria in Annex I.
+  value: Portugal continental
+  intake_field: activityCountries
+  quote: O disposto no presente Regulamento tem aplicação em todo o território de Portugal
+    continental e obedece aos critérios de delimitação de intervenção dos programas constantes
+    do anexo I
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.3
+  verified: llm_cited
+- id: g1-excluded-operations
+  gate_family: G1_nexus
+  requirement: Operations related to concession contracts with central/local administration
+    or arising from mandatory legal obligations are not eligible.
+  value: excludes concession-contract and legal-obligation investments
+  intake_field: none
+  quote: Os investimentos previstos no âmbito de contratos de concessão com a administração
+    central ou local, ou decorrentes do cumprimento de obrigações legais aplicáveis às atividades
+    das empresas candidatas.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.4
+  verified: llm_cited
+- id: g2-beneficiary-productiva
+  gate_family: G2_size_ownership
+  requirement: Beneficiaries of the 'Inovação Produtiva' intervention type must be SMEs (large
+    companies only eligible if financed by the FTJ under approved Territorial Just Transition
+    Plans).
+  value: SME (or large company under FTJ/PTTJ)
+  intake_field: fteBand
+  quote: São beneficiárias da tipologia de intervenção «Inovação Produtiva» as PME.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.10
+  verified: llm_cited
+- id: g2-beneficiary-qualificacao
+  gate_family: G2_size_ownership
+  requirement: For individually submitted applications under 'Qualificação e Internacionalização
+    das PME', beneficiaries must be SMEs.
+  value: SME
+  intake_field: fteBand
+  quote: Nas candidaturas apresentadas individualmente são beneficiárias as PME.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.15
+  verified: llm_cited
+- id: g2-not-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: Applicant must not be an undertaking in difficulty as defined by EU State aid
+    rules, from application date until completion of the operation.
+  value: not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Não ser uma empresa em dificuldade, de acordo com a definição prevista no ponto 18
+    do artigo 2.º do Regulamento (UE) n.º 651/2014, da Comissão, de 17 de junho, na sua redação
+    atual
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.5
+  verified: llm_cited
+- id: g2-sme-certification
+  gate_family: G2_size_ownership
+  requirement: Applicant must present, when applicable, Electronic Certification proving SME
+    status at time of approval.
+  value: SME electronic certification required
+  intake_field: fteBand
+  quote: Apresentar, quando aplicável, Certificação Eletrónica que comprove o estatuto PME,
+    nos termos previstos no Decreto -Lei n.º 372/2007, de 6 de novembro, na sua redação atual,
+    no momento da aprovação
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.5
+  verified: llm_cited
+- id: g3-financial-health
+  gate_family: G3_financial
+  requirement: Applicant must present a balanced economic-financial situation and demonstrate
+    financing capacity, per Annex III ratios (e.g., financial autonomy ratio not below 0.15
+    for SMEs, 0.20 for large companies).
+  value: financial autonomy ratio ≥0.15 (SME) / ≥0.20 (large)
+  intake_field: balanceBand
+  quote: Tratando -se de PME e de Small Mid Caps, apresentem um rácio de autonomia financeira
+    não inferior a 0,15
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.19
+  verified: llm_cited
+- id: g3-own-financing-25pct
+  gate_family: G3_financial
+  requirement: Operations under Inovação Produtiva must ensure financing of at least 25% of
+    eligible costs through own or external resources excluding any state funding.
+  value: ≥25% own/external financing, no state aid component
+  intake_field: cofinancingBand
+  quote: Assegurar o financiamento de pelo menos 25 % dos custos elegíveis através de recursos
+    próprios ou alheios, sem que incluam qualquer financiamento estatal, conforme previsto
+    no n.º 14 do artigo 14.º do Regulamento (UE) n.º 651/2014
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.9
+  verified: llm_cited
+- id: g3-max-funding-rate-productiva
+  gate_family: G3_financial
+  requirement: Funding rate for eligible expenses under 'Investimento Empresarial Produtivo'
+    is capped at a maximum of 75%, combining base rate and bonuses.
+  value: max 75% funding rate
+  intake_field: ticketBand
+  quote: até ao limite máximo de 75 %
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.11
+  verified: llm_cited
+- id: g3-max-funding-rate-qualificacao
+  gate_family: G3_financial
+  requirement: Funding rate for operations under 'Qualificação e Internacionalização das PME'
+    is up to 50%, subject to specific exceptions.
+  value: up to 50% funding rate
+  intake_field: ticketBand
+  quote: A taxa de financiamento das operações no âmbito da tipologia de intervenção «Qualificação
+    e Internacionalização das PME» é de até 50 %
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.15
+  verified: llm_cited
+- id: g3-new-establishment-cost-multiple
+  gate_family: G3_financial
+  requirement: For incentives supporting diversification of an existing establishment, eligible
+    costs must exceed by at least 200% the book value of reused assets.
+  value: eligible costs >200% of reused asset book value
+  intake_field: none
+  quote: os custos elegíveis devem exceder em, pelo menos, 200 % o valor contabilístico dos
+    ativos que são reutilizados
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.10
+  verified: llm_cited
+- id: g4-form-of-support-productiva
+  gate_family: G4_borrower_model
+  requirement: Incentives under Inovação Produtiva may take the form of a grant (subvenção)
+    or a hybrid format combining grant and a loan component, the latter possibly via a Financial
+    Instrument.
+  value: grant or hybrid grant+loan
+  intake_field: borrowerModel
+  quote: Os incentivos a conceder na tipologia de intervenção «Inovação Produtiva» podem assumir
+    a forma de subvenção ou um formato híbrido, integrando uma subvenção e uma componente
+    de empréstimo, podendo esta última ser concedida através de um Instrumento Financeiro
+    financiado pelo Portugal 2030.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.11
+  verified: llm_cited
+- id: g4-form-of-support-qualificacao
+  gate_family: G4_borrower_model
+  requirement: Incentives under Qualificação e Internacionalização das PME take the form of
+    grants only, as real costs and/or simplified cost options.
+  value: grant only
+  intake_field: borrowerModel
+  quote: Os incentivos a conceder no âmbito da tipologia de intervenção «Qualificação e Internaciona-lização
+    das PME» assumem a natureza de subvenções, na forma de custos reais e/ou opções de custos
+    simplificados (OCS), nos termos a definir em aviso para apresentação de candidaturas.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.15
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Os incentivos a conceder no âmbito da tipologia
+    de'''
+- id: g5-eligible-expenses-productiva
+  gate_family: G5_use_of_funds
+  requirement: Eligible expenses under Inovação Produtiva include tangible assets (machinery,
+    equipment, IT), intangible assets (patents, licences, software), other investment expenses,
+    and human resources training, directly related to the operation.
+  value: tangible/intangible assets, other investment costs, HR training
+  intake_field: none
+  quote: Ativos corpóreos, incluindo a aquisição de máquinas e equipamentos, custos diretamente
+    atribuíveis para os colocar na localização e condições necessárias para os mesmos serem
+    capazes de funcionar, bem como a aquisição de equipamentos informáticos, incluindo o software
+    necessário ao seu funcionamento
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.12
+  verified: llm_cited
+- id: g5-ineligible-expenses-general
+  gate_family: G5_use_of_funds
+  requirement: General ineligible expenses include normal operating costs, maintenance/replacement
+    investments, direct foreign investment costs, working capital, purchase of real estate,
+    second-hand goods, and vehicles (with exceptions).
+  value: list of ineligible costs
+  intake_field: none
+  quote: Custos normais de funcionamento do beneficiário e investimentos de manutenção e substi-tuição,
+    bem como os custos relacionados com atividades de tipo periódico ou contínuo, como publi-cidade
+    corrente, despesas de consultoria fiscal de rotina e serviços jurídicos e administrativos
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.6
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Custos normais de funcionamento do beneficiário
+    e '''
+- id: g5-eligible-expenses-qualificacao
+  gate_family: G5_use_of_funds
+  requirement: Eligible expenses under Qualificação e Internacionalização das PME exclude
+    costs directly related to the beneficiaries' productive or operational area.
+  value: excludes production/operational-area costs
+  intake_field: none
+  quote: Não são elegíveis custos diretamente relacionados com a área produtiva ou operacional
+    dos beneficiários.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.16
+  verified: llm_cited
+- id: g6-incentive-effect
+  gate_family: G6_conditionality
+  requirement: Operations must demonstrate compliance with the incentive effect, i.e., the
+    application must be submitted before the start of works on the operation.
+  value: application before start of works required
+  intake_field: conditionality
+  quote: considera -se que os auxílios têm um efeito de incentivo se o benefi-ciário tiver
+    apresentado candidatura ou pedido de auxílio em data anterior ao início dos trabalhos
+    relativos à operação
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''considera -se que os auxílios têm um efeito
+    de inc'''
+- id: g6-no-relocation
+  gate_family: G6_conditionality
+  requirement: Beneficiaries under Inovação Produtiva must confirm no relocation to the establishment
+    in the two years before application and commit not to relocate for two years after completion.
+  value: no relocation 2 years before/after
+  intake_field: conditionality
+  quote: Confirmar que não efetuaram uma relocalização para o estabelecimento em que se reali-zará
+    a operação prevista na candidatura, nos dois anos anteriores à data da sua apresentação,
+    e comprometer -se a não o fazer por um período de dois anos após a conclusão da operação
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.11
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Confirmar que não efetuaram uma relocalização
+    para'''
+- id: g6-no-wage-arrears
+  gate_family: G6_conditionality
+  requirement: Applicant must declare that it has no wages in arrears.
+  value: no wage arrears declaration
+  intake_field: conditionality
+  quote: Declarar que não tem salários em atraso.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.5
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries under Inovação Produtiva must maintain jobs created via the operation
+    at the location for at least three years from hiring date, and must not reduce total workforce
+    during execution.
+  quote: é ainda exigível, na tipologia de intervenção «Inovação Produtiva», a manutenção
+    dos postos de trabalho, criados nos termos previstos no n.º 5 do artigo anterior, na localização
+    da operação, durante um período mínimo de três anos a contar da data da respetiva contratação,
+    não podendo ainda o beneficiário, durante a execução da operação, reduzir o número total
+    de trabalhadores ao serviço da empresa.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.13
+  verified: llm_cited
+- requirement: Beneficiaries under Qualificação e Internacionalização das PME must maintain
+    supported jobs for three years from completion of the operation.
+  quote: são ainda exigíveis, para a tipologia de inter-venção «Qualificação e Internacionalização
+    das PME», a manutenção no beneficiário dos postos de trabalho apoiados, durante três anos
+    a partir da data da conclusão da operação
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.16
+  verified: false
+  verify_note: 'fragment not found verbatim: ''são ainda exigíveis, para a tipologia de inter-ven'''
+- requirement: Beneficiaries must submit a qualitative self-assessment of achievements and
+    results with the final payment balance request.
+  quote: Os beneficiários devem apresentar no pedido de pagamento de saldo final uma auto-avaliação
+    qualitativa das realizações e resultados atingidos
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.16
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Os beneficiários devem apresentar no pedido
+    de pag'''
+- requirement: Beneficiaries must demonstrate non-overlap of financing when activities are
+    supported by other instruments, ensuring necessary cost segregation.
+  quote: Demonstrar, mediante declaração subscrita pelo beneficiário, não ter obtido financiamento
+    por qualquer outro tipo de instrumento, ou, quando incluir atividades apoiadas por outros
+    instrumentos, evidenciar a inexistência de sobreposição de financiamentos, permitindo
+    identificar a necessária segregação desses custos.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.5
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/20 gates, 2/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: For the same eligible expenses, incentives under these Support Systems are not cumulative
+    with other incentives of the same nature; where an operation benefits from incentives
+    of a different nature (e.g. tax benefits or financial instruments), the total accumulated
+    incentive must respect applicable State aid limits.
+  quote: Para as mesmas despesas elegíveis, os apoios concedidos ao abrigo dos Sistemas de
+    Incentivos previstos no presente Regulamento não são cumuláveis com quaisquer outros da
+    mesma natureza.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.6
+  verified: llm_cited
+application:
+  channel: Applications are submitted under calls for applications (avisos para apresentação
+    de candidaturas), potentially preceded by a pre-qualification aid request notice.
+  typical_timeline: Following a pre-qualification aid request, the applicant must submit a
+    formal application to the first subsequent call for applications after the aid request
+    date.
+  quote: As candidaturas aos apoios são apresentadas no âmbito de avisos para apresentação
+    de candidaturas, conforme previsto no artigo 12.º do Decreto -Lei n.º 20 -A/2023, de 22
+    de março.
+  source:
+    file: pt_portaria_103a_2023_compete2030_id_regulation.pdf
+    locator: pt_portaria_103a_2023_compete2030_id_regulation.pdf#p.4
+  verified: llm_cited

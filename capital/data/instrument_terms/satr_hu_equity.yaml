@@ -1,0 +1,337 @@
+id: satr_hu_equity
+name: satr_hu_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_belfoldi_vallalkozas
+  gate_family: G1_nexus
+  requirement: Only domestic (Hungarian) enterprises, including foreign-owned branches/self-employed
+    operating domestically, qualify as eligible debtor/borrower.
+  value: Belföldi vállalkozás required
+  intake_field: entityCountries
+  quote: 'Belföldi vállalkozás: az a vállalkozás, amely nem áll – a társasági adóról és az
+    osztalékadóról szóló 1996. LXXXI. törvény 4. § 11. pontja szerinti – ellenőrzött külföldi
+    társaság (offshore cég) közvetlen tulajdonában, és amelynek székhelye belföldön van'
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.5
+  verified: llm_cited
+- id: g1_cosme_state_participation
+  gate_family: G1_nexus
+  requirement: For COSME guarantees, the enterprise must be registered and operate in a state
+    participating in the COSME programme.
+  value: Registered/operating in COSME participating state
+  intake_field: entityCountries
+  quote: A vállalkozás olyan államban került bejegyezésre és folytatja tevékenységét, amely
+    COSME programban részt vesz.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.55
+  verified: llm_cited
+- id: g6_exclusion_bankruptcy
+  gate_family: G6_conditionality
+  requirement: The enterprise must not be under bankruptcy, liquidation, winding-up or deregistration
+    proceedings, nor already terminated or dissolved.
+  value: Excluded if insolvency/liquidation proceedings pending
+  intake_field: none
+  quote: A vállalkozás csőd-, felszámolási, végelszámolási, vagy törlési eljárás hatálya alatt
+    áll, illetve megszűnt vagy megszüntetésre került.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.10
+  verified: llm_cited
+- id: g6_exclusion_tax_debt
+  gate_family: G6_conditionality
+  requirement: The enterprise must not have overdue public/tax debt as verified via NAV certificate
+    or database within 60 days preceding the financial institution's risk decision.
+  value: No overdue tax debt (60-day certificate)
+  intake_field: none
+  quote: A vállalkozásnak lejárt köztartozása áll fenn – a kockázatvállalásról szóló pénzügyi
+    intézményi döntést megelőző 60 napnál nem régebbi
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.10
+  verified: llm_cited
+- id: g6_exclusion_khr_arrears
+  gate_family: G6_conditionality
+  requirement: The enterprise must not have arrears older than 90 days on existing contracts
+    according to KHR credit registry data (except the contract being refinanced by the guarantee
+    request).
+  value: No KHR arrears over 90 days
+  intake_field: none
+  quote: A vállalkozásnak az Alapítvány által lekért KHR adatok alapján – a fennálló szerződések
+    vonatkozásában – 90 napnál régebbi lejárt tartozása van, ide nem értve az alapítványi
+    kezességgel biztosított lejárt szerződést, amelynek kiváltására a kezességi kérelem irányul.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.10
+  verified: llm_cited
+- id: g6_exclusion_prior_called_guarantee_debt
+  gate_family: G6_conditionality
+  requirement: The enterprise must not have outstanding debt to the Foundation arising from
+    a previously called (paid-out) guarantee, unless that debt has been written off the Foundation's
+    books.
+  value: No outstanding called-guarantee debt to Foundation
+  intake_field: none
+  quote: A vállalkozásnak az Alapítványnál beváltott kezességből eredő tartozása áll fenn
+    azzal, hogy alapítványi szabályok szerint a tartozás már nem áll fenn, amennyiben a beváltásból
+    eredő tartozás az Alapítvány könyveiből kivezetésre került.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.10
+  verified: llm_cited
+- id: g4_contract_duration
+  gate_family: G4_borrower_model
+  requirement: The underlying loan/lease/factoring contract term must be more than 90 days
+    and not exceed 25 years.
+  value: 91 days to 25 years contract term
+  intake_field: none
+  quote: A szerződés időtartama, illetve futamideje 91 napnál kevesebb, vagy a 25 évet meghaladja.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.10
+  verified: llm_cited
+- id: g3_ceiling_2_5m_eur
+  gate_family: G3_financial
+  requirement: The total Foundation guarantee amount outstanding for a single enterprise's
+    contracts must not exceed EUR 2.5 million, regardless of guarantee category, subject to
+    further limits per aid category.
+  value: Max EUR 2.5 million guaranteed amount per enterprise
+  intake_field: ticketBand
+  quote: Egy vállalkozás szerződéseihez vállalt alapítványi kezesség összege adott időpontban
+    – a kezesség kategóriájától függetlenül – nem haladhatja meg a 2,5 millió eurót
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.13
+  verified: llm_cited
+- id: g3_ceiling_150m_huf_eased_collateral
+  gate_family: G3_financial
+  requirement: The total amount of the enterprise's eased-collateral (könnyített fedezetű)
+    transactions must not exceed HUF 150 million, including those under review but excluding
+    refinanced transactions.
+  value: Max HUF 150 million eased-collateral transactions
+  intake_field: ticketBand
+  quote: A vállalkozás könnyített fedezetű ügyleteinek összege nem haladhatja meg a 150 millió
+    Ft-ot, ideértve a bírálat alatt lévő ügyleteket is, de bele nem értve hitelkiváltás esetén
+    a kiváltandó ügyletet.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.13
+  verified: llm_cited
+- id: g3_guarantee_rate_ceiling
+  gate_family: G3_financial
+  requirement: The maximum Foundation guarantee rate per enterprise (excluding COSME guarantees)
+    ranges from 50% to 80% depending on guaranteed amount tier and internal debtor rating/collateral
+    coverage.
+  value: Guarantee rate 50%-80% depending on tier and rating
+  intake_field: none
+  quote: Az alapítványi kockázatvállalás mértéke – ide nem értve a COSME kezességeket – a
+    Kockázatvállalási szabályzatban rögzítettek figyelembevételével vállalkozásonként legfeljebb
+    az alábbi lehet
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.13
+  verified: llm_cited
+- id: g4_currency_huf_only
+  gate_family: G4_borrower_model
+  requirement: The Foundation only assumes guarantees denominated in HUF, without currency
+    risk, though it may secure FX-based underlying loan/leasing/factoring contracts converted
+    at the MNB rate.
+  value: Guarantee issued only in HUF
+  intake_field: none
+  quote: Az Alapítvány kezességet csak forintban, árfolyamkockázat nélkül vállal.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.13
+  verified: llm_cited
+- id: g3_de_minimis_aid_intensity
+  gate_family: G3_financial
+  requirement: The preferential (state-aid) guarantee fee is only available if the enterprise's
+    cumulative aid content already used plus the aid content of the new guarantee does not
+    exceed the statutory maximum or aid intensity.
+  value: Preferential fee subject to aid intensity ceiling
+  intake_field: none
+  quote: Az Alapítvány a kezességet kedvezményes kezességi díjon vállalja, amennyiben a vállalkozás
+    által már igénybe vett és a kezességnyújtással összefüggésben számolt támogatástartalom
+    együttes összege a jogszabályi maximumot, illetve támogatási intenzitást nem lépi túl.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.14
+  verified: llm_cited
+- id: g6_khr_no_arrears_cosme
+  gate_family: G6_conditionality
+  requirement: For COSME guarantees, the enterprise must have no overdue debt according to
+    KHR credit registry data (unless the reporting institution confirms the debt no longer
+    exists).
+  value: No KHR arrears for COSME eligibility
+  intake_field: none
+  quote: A vállalkozásnak az Alapítvány által lekért KHR adatok alapján nincs lejárt tartozása.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.55
+  verified: llm_cited
+- id: g5_cosme_excluded_sectors
+  gate_family: G5_use_of_funds
+  requirement: The credit purpose's or enterprise's main activity NACE/TEÁOR code must not
+    fall within COSME-excluded sectors (tobacco, distilled spirits, weapons/ammunition, gambling).
+  value: 'Excluded sectors: tobacco, spirits, weapons, gambling'
+  intake_field: none
+  quote: A hitel céljának TEÁOR kódja, vagy a vállalkozás főtevékenységének TEÁOR kódja nem
+    tartozik a kizárt tevékenységek10 közé.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.55
+  verified: llm_cited
+- id: g4_cosme_contract_term
+  gate_family: G4_borrower_model
+  requirement: For COSME guarantees, the underlying contract must have a term of at least
+    12 months and not more than 10 years, with revolving credits limited to 5 years.
+  value: COSME contract term 12 months to 10 years (revolving max 5 years)
+  intake_field: none
+  quote: A szerződés futamideje legalább 12 hónap.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.56
+  verified: llm_cited
+- id: g5_cosme_no_refinancing
+  gate_family: G5_use_of_funds
+  requirement: COSME guarantees must not be used for the purpose of refinancing an existing
+    or overdue loan of the enterprise, or for prefinancing of a grant.
+  value: No refinancing/prefinancing purpose for COSME
+  intake_field: none
+  quote: A szerződés célja nem a vállalkozásnak fennálló vagy lejárt hitele kiváltása vagy
+    támogatás előfinanszírozás.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.56
+  verified: llm_cited
+- id: g3_cosme_ceiling_300m
+  gate_family: G3_financial
+  requirement: The total guaranteed amount of all COSME-backed transactions of an enterprise
+    must not exceed HUF 300 million (HUF 292 million for road freight transport enterprises
+    with 5-10 year terms), including transactions under review.
+  value: Max HUF 300 million COSME guaranteed amount per enterprise
+  intake_field: ticketBand
+  quote: A vállalkozás COSME viszontgaranciával biztosított valamennyi ügyletének kezességgel
+    biztosított összege nem haladhatja meg a 300 millió Ft-ot, ideértve a bírálat alatt lévő
+    ügyleteket is.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.57
+  verified: llm_cited
+- id: g3_cosme_combined_ceiling_350m
+  gate_family: G3_financial
+  requirement: The combined guaranteed amount of all COSME-backed transactions plus eased-collateral
+    transactions of an enterprise must not exceed HUF 350 million.
+  value: Max HUF 350 million combined COSME + eased-collateral
+  intake_field: ticketBand
+  quote: A vállalkozás COSME viszontgaranciával biztosított valamennyi ügylete és a könnyített
+    fedezetű ügyletei együttes kezességgel biztosított összege nem haladhatja meg a 350 millió
+    Ft-ot, ideértve a bírálat alatt lévő ügyleteket is, de bele nem értve hitelkiváltás esetén
+    a kiváltandó ügyletet.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.57
+  verified: llm_cited
+- id: g3_cosme_group_ceiling_500m
+  gate_family: G3_financial
+  requirement: For a client group, the total COSME guaranteed amount must not exceed HUF 500
+    million in aggregate.
+  value: Max HUF 500 million COSME guarantee per client group
+  intake_field: ticketBand
+  quote: Ügyfélcsoportonként a COSME kezességek kezességgel biztosított összege összesen legfeljebb
+    500 millió Ft lehet.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.57
+  verified: llm_cited
+- id: g1_cosme_non_cooperative_jurisdiction
+  gate_family: G1_nexus
+  requirement: The enterprise must not have its registered seat in a Non-Cooperative Jurisdiction
+    as defined by EU/OECD/FATF lists, and the contract must not finance illegal activity or
+    artificial tax-avoidance arrangements.
+  value: Seat must not be in non-cooperative jurisdiction
+  intake_field: entityCountries
+  quote: székhelye nem lehet Nem együttműködő országban és területen13, továbbá a szerződés
+    nem finanszírozhat Jogellenes tevékenységet14 és adóelkerülést szolgáló mesterséges ügyletet
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.56
+  verified: llm_cited
+obligations:
+- requirement: The financial institution must pay a guarantee fee to the Foundation as consideration
+    for the guarantee (preferential, market, statutory, own-risk, or COSME fee depending on
+    category).
+  quote: A pénzügyi intézmény az alapítványi kezességvállalás ellenértékeként díjat köteles
+    fizetni
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.14
+  verified: llm_cited
+- requirement: The financial institution must submit any missing data/documents requested
+    by the Foundation within a maximum of 60 days during the deficiency remedy procedure,
+    or the request is rejected.
+  quote: A hiánypótlási igénynek az Alapítvány által megszabott határidőn, maximum 60 napon
+    belül a pénzügyi intézmény köteles eleget tenni, ellenkező esetben az Alapítvány a kérelmet
+    elutasítja.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.18
+  verified: llm_cited
+- requirement: The financial institution must ensure that the contract continuously meets
+    the COSME term and structure conditions throughout its duration, or the Foundation may
+    terminate the guarantee contract immediately.
+  quote: A pénzügyi intézmény kötelezettsége biztosítani, hogy a szerződés a futamidő alatt
+    folyamatosan megfelel a jelen melléklet 3.7.-3.10 pontjában foglalt feltételeknek.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.57
+  verified: llm_cited
+- requirement: The financial institution must notify the Foundation immediately if it becomes
+    aware that the enterprise no longer meets COSME conditions related to illegal activity,
+    tax havens, or Innovfin criteria.
+  quote: Amennyiben a pénzügyi intézmény tudomására jut, hogy a jelen melléklet 3.11.-3.12.
+    pontjában foglalt feltételek nem állnak fenn, illetve nem folyamatosan álltak fenn, köteles
+    erről az Alapítványt értesíteni
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.58
+  verified: llm_cited
+- requirement: The financial institution must retain all documentation related to the guarantee
+    and loan contract and make it available to the Foundation and Authorised Bodies for 7
+    years after termination of the guarantee contract.
+  quote: Vállalom, hogy a kezességgel és kölcsönszerződéssel kapcsolatos minden dokumentációt
+    megőrzök, és az Alapítvány kérésére, valamint ellenőrzésre bemutatom a Felhatalmazott
+    Szervezetnek a kezességi szerződés megszűnésétől számított 7 évig.
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.59
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (20/20 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: When applying preferential fees, the aggregate aid content already used by the enterprise
+    plus the aid content of the new guarantee must not exceed the statutory maximum aid amount
+    or aid intensity threshold; if exceeded, only a corrected or market fee may apply.
+  quote: amennyiben a vállalkozás által már igénybe vett és a kezességnyújtással összefüggésben
+    számolt támogatástartalom együttes összege a jogszabályi maximumot, illetve támogatási
+    intenzitást nem lépi túl
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.14
+  verified: llm_cited
+application:
+  channel: Applications are submitted by the financial institution (not directly by the enterprise)
+    via the E-garancia electronic system (Rendszer) or on paper, using the Igénylő Lap (Application
+    Form) with mandatory attachments.
+  typical_timeline: The Foundation decides within 3 business days for guarantees up to HUF
+    25 million, 5 business days for HUF 25,000,001-200 million, and 8 business days above
+    HUF 200 million, extendable in case of deficiency remedy or collateral relief.
+  quote: 3 munkanap alatt bírálja el 25 millió Ft kezességgel biztosított összegig
+  source:
+    file: hu_avhga_uzletszabalyzat_2019.pdf
+    locator: hu_avhga_uzletszabalyzat_2019.pdf#p.18
+  verified: llm_cited

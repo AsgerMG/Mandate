@@ -1,0 +1,394 @@
+id: ipcei_hy2move
+name: ipcei_hy2move
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-multi-ms
+  gate_family: G1_nexus
+  requirement: The IPCEI must ordinarily involve at least four Member States.
+  value: Minimum 4 Member States; Hy2Move involves 7
+  intake_field: entityCountries
+  quote: 'Point 16 of the IPCEI Communication requires that at least four Member State shall
+
+    ordinarily be involved. The notified Hy2Move involves seven Member States,
+
+    namely Estonia, France, Germany, Italy, the Netherlands, Slovakia, and Spain.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.91
+  verified: llm_cited
+- id: g1-open-participation
+  gate_family: G1_nexus
+  requirement: The IPCEI initiative must be open to any interested EU and EFTA Member States
+    willing to participate.
+  value: Open to EU/EFTA Member States
+  intake_field: entityCountries
+  quote: 'The initiative was, therefore, open to any EU and EFTA Member States
+
+    willing to participate in the design of an IPCEI on hydrogen.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.91
+  verified: llm_cited
+- id: g1-application-precede-works
+  gate_family: G1_nexus
+  requirement: Applicants must submit their aid application before starting works on the individual
+    project.
+  value: Application must precede start of works
+  intake_field: needBy
+  quote: 'The Commission has verified that all undertakings have submitted their
+
+    applications for aid to the relevant Member States before the start of the works on
+
+    their individual projects included in Hy2Move, therefore the formal incentive effect
+
+    criterion, as required by the IPCEI Communication (footnote 26) is met.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.113
+  verified: llm_cited
+- id: g2-sme-clawback-threshold
+  gate_family: G2_size_ownership
+  requirement: A claw-back mechanism threshold of EUR 50 million applies to SMEs as well as
+    large undertakings receiving aid.
+  value: EUR 50 million claw-back threshold applies to SMEs too
+  intake_field: turnoverBand
+  quote: Moreover, the threshold of EUR 50 million applies also to SMEs.
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.121
+  verified: llm_cited
+- id: g2-sme-turnover-definition
+  gate_family: G2_size_ownership
+  requirement: SME qualification requires that the undertaking's annual turnover does not
+    exceed EUR 50 million, per the EU SME definition.
+  value: 'SME turnover ceiling: EUR 50 million'
+  intake_field: turnoverBand
+  quote: 'One of the conditions to qualify as an SME is that the undertaking’s annual turnover
+    must not exceed
+
+    EUR 50 million, in line with the Annex I to the Commission Regulation (EU) No 651/2014'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.121
+  verified: llm_cited
+- id: g2-undertaking-difficulty
+  gate_family: G2_size_ownership
+  requirement: Aid must not be granted to undertakings in difficulty as defined in the Rescue
+    and Restructuring Guidelines.
+  value: Excludes undertakings in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: 'the participating Member
+
+    States have further confirmed that the direct participants are not undertakings in
+
+    difficulty as defined in the Guidelines on State aid for rescuing and restructuring
+
+    non-financial undertakings in difficulty'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.77
+  verified: llm_cited
+- id: g3-funding-gap-cap
+  gate_family: G3_financial
+  requirement: The discounted state aid amount requested for a project must not exceed the
+    calculated funding gap.
+  value: Aid ≤ funding gap (discounted)
+  intake_field: cofinancingBand
+  quote: 'The participating Member States must demonstrate for each individual project that
+
+    the discounted value of the State aid amounts requested for a project does not
+
+    exceed the funding gap (both expressed in discounted terms based on the same
+
+    valuation year).'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.118
+  verified: llm_cited
+- id: g3-nominal-aid-cap
+  gate_family: G3_financial
+  requirement: The nominal aid amount shall not exceed the eligible costs of the project.
+  value: Nominal aid amount ≤ eligible costs
+  intake_field: cofinancingBand
+  quote: 'the aid intensity could cover all of the eligible costs. However, the
+
+    nominal aid amount shall not exceed the eligible costs.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.74
+  verified: llm_cited
+- id: g3-total-eligible-costs
+  gate_family: G3_financial
+  requirement: Total eligible costs across the Hy2Move IPCEI amount to EUR 2.1 billion.
+  value: EUR 2.1 billion total eligible costs
+  intake_field: turnoverBand
+  quote: 'The participating Member States submit that the total eligible costs (49) in
+
+    Hy2Move amount to EUR 2.1 billion.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.74
+  verified: llm_cited
+- id: g3-clawback-cap
+  gate_family: G3_financial
+  requirement: The claw-back mechanism can recapture no more than 60% of unforeseen profitability
+    above the beneficiary's cost of capital.
+  value: Claw-back capped at 60% of unforeseen profit
+  intake_field: cofinancingBand
+  quote: 'By limiting the share of the non-forecasted profits that can be clawed back up to
+
+    60% of the unforeseen profitability (see Annex I)'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.121
+  verified: llm_cited
+- id: g4-grant-instrument
+  gate_family: G4_borrower_model
+  requirement: The aid to Hy2Move participants is provided exclusively as direct grants.
+  value: Direct grants only
+  intake_field: borrowerModel
+  quote: All participating Member States will grant the aid in form of direct grants.
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.77
+  verified: llm_cited
+- id: g4-eligibility-period
+  gate_family: G4_borrower_model
+  requirement: Each workstream has a defined eligibility period during which aided activities
+    (R&D&I and FID) must occur.
+  value: 'WS3: Q4 2022–Q4 2031; WS4: Q4 2022–Q4 2029'
+  intake_field: developmentStage
+  quote: '3 – Onboard storage solutions for Q4 2022 Q4 2031
+
+    mobility and transport
+
+    applications
+
+    4 – Hydrogen production Q4 2022 Q4 2029
+
+    technologies for mobility and
+
+    transport applications'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.77
+  verified: llm_cited
+- id: g5-rdi-fid-only
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs must relate only to R&D&I and First Industrial Deployment (FID)
+    activities, excluding mass production and commercial activities.
+  value: Funds restricted to R&D&I/FID, excluding mass production/commercial activities
+  intake_field: developmentStage
+  quote: 'The Commission’s assessment confirms that the notified FID phases of all aid
+
+    beneficiaries comply with the requirement of the IPCEI Communication not to
+
+    cover either mass production or commercial activities'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.118
+  verified: llm_cited
+- id: g5-fid-innovation-requirement
+  gate_family: G5_use_of_funds
+  requirement: FID costs are eligible only where they embed R&D&I related to highly/fundamentally
+    innovative technologies, not mere regular upgrades or engineering work accompanying normal
+    activities.
+  value: FID must embed significant R&D&I; excludes regular upgrades/mere engineering
+  intake_field: developmentStage
+  quote: 'the Commission verified, on the basis of the parameters
+
+    established in recitals (325) and (329), that the FID is not a mere regular upgrade,
+
+    without an innovative dimension, of existing facilities, or a development of newer
+
+    versions of existing products or technologies. Mere engineering work
+
+    accompanying normal activities of FID does not constitute eligible costs for the
+
+    required R&D&I in FID.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.117
+  verified: llm_cited
+- id: g5-kpi-cutoff
+  gate_family: G5_use_of_funds
+  requirement: Costs relating to production occurring after beneficiary-established KPIs for
+    stabilised mass production have been met cannot be included in eligible FID costs.
+  value: Eligible costs excluded after KPI-defined mass production stabilisation
+  intake_field: developmentStage
+  quote: Any costs relating to production occurring after the KPIs have been met cannot be
+    included in eligible FID costs.
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.117
+  verified: llm_cited
+- id: g5-operating-costs-scope
+  gate_family: G5_use_of_funds
+  requirement: Operating costs must be limited in scope and time to the R&D&I that the FID
+    phase entails, per the Annex to the IPCEI Communication.
+  value: Operating costs limited to FID R&D&I scope/time
+  intake_field: developmentStage
+  quote: 'With regard to the operating costs, which should be limited both in scope and in
+
+    time to the R&D&I that the FID entails according to the Annex to the IPCEI
+
+    Communication'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.118
+  verified: llm_cited
+- id: g6-no-recovery-order
+  gate_family: G6_conditionality
+  requirement: Aid must not be granted to undertakings subject to an outstanding recovery
+    order from a prior Commission decision declaring aid illegal and incompatible.
+  value: Excludes undertakings with outstanding recovery orders
+  intake_field: conditionality
+  quote: 'under point 10(b) of the IPCEI Communication, aid must not be granted
+
+    to undertakings that are subject to an outstanding recovery order, following a
+
+    previous Commission decision declaring an aid illegal and incompatible with the
+
+    internal market.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.127
+  verified: llm_cited
+- id: g6-union-law-compliance
+  gate_family: G6_conditionality
+  requirement: The aid, supported activity, or conditions attached must not entail a violation
+    of relevant Union law, including headquarters/localisation or national goods/services
+    obligations.
+  value: No non-severable violation of Union law; no HQ or national-goods conditions
+  intake_field: conditionality
+  quote: 'granting of aid that is subject to the obligation for the beneficiary to have
+
+    its headquarters in the Member State concerned or to be predominantly
+
+    established in that Member State,'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.77
+  verified: llm_cited
+obligations:
+- requirement: Direct participants must report annually to competent national authorities
+    on execution of their projects, focusing on technological advancements and spillover activities.
+  quote: 'first, the direct participants will report annually to the competent national
+
+    authorities the execution of their projects, with a focus on technological
+
+    advancements and spillover activities.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.127
+  verified: llm_cited
+- requirement: Beneficiaries subject to the claw-back mechanism must undergo yearly test runs
+    and report the application of the claw-back mechanism to the Commission every July within
+    the reporting period.
+  quote: 'The annual application of the Claw-back mechanism will be reported by the relevant
+
+    Member State to the Commission every July within the CB reporting period.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.131
+  verified: llm_cited
+- requirement: If a positive Repayment Obligation results from the claw-back calculation,
+    the beneficiary must repay the Member State the calculated amount by August of the claw-back
+    end year.
+  quote: 'The final Surplus and Repayment Obligation (if applicable) are calculated in the
+    CB end
+
+    year, at which point the aid beneficiary will repay the Member State the calculated amount
+
+    by August of the CB end year.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.132
+  verified: llm_cited
+- requirement: Beneficiaries must guarantee fulfilment of any Repayment Obligation via a letter
+    of credit, a claw-back account, or an equivalent accepted instrument.
+  quote: 'The following methods are available to the Member States to guarantee the fulfilment
+    of
+
+    the Repayment Obligation (should one exist): (1) a letter of credit renewed every year,
+    (2)
+
+    a “Claw-back” account with regular transfers, or (3) an equivalent instrument accepted
+    by
+
+    the respective Member State’s authorities and the Commission services.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.132
+  verified: llm_cited
+- requirement: Several direct participants committed to provide SMEs, RTOs, start-ups and
+    universities access to testing facilities, production lines or innovation centres on fair,
+    accessible, or FRAND terms to foster dissemination.
+  quote: 'Michelin will grant access to its production lines to a number of SMEs on
+
+    FRAND terms.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.67
+  verified: llm_cited
+- requirement: Participating Member States must confirm that no State aid is granted before
+    the Commission's approving decision on Hy2Move.
+  quote: 'All participating Member States commit to implement the State aid only following
+
+    its approval by the European Commission.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.77
+  verified: llm_cited
+- requirement: Granting of aid must be suspended if the beneficiary still has unlawful, incompatible
+    aid outstanding until it is reimbursed with recovery interest.
+  quote: 'The participating Member States have committed to suspend the granting of the
+
+    notified aid if the beneficiary still has at its disposal earlier unlawful aid that was
+
+    declared incompatible by a Commission Decision (either as individual aid or aid
+
+    under an aid scheme having been declared incompatible), until that beneficiary has
+
+    reimbursed or paid into a blocked account the total amount of unlawful and
+
+    incompatible aid and the corresponding recovery interest, pursuant to point 10 (b)
+
+    of the IPCEI Communication.'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.77
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (18/18 gates, 7/7 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation of the notified aid with other aid, de minimis aid, or Union funding covering
+    the same eligible costs is permitted, provided the total public funding does not exceed
+    the most favourable funding rate under applicable Union law rules.
+  quote: 'the participating Member States have confirmed that the total amount of
+
+    public funding granted in relation to the same eligible costs will not exceed the
+
+    most favourable funding rate laid down in the applicable rules of Union law'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.121
+  verified: llm_cited
+application:
+  channel: National funding authorities of participating Member States, via national funding
+    agreements concluded following Commission approval
+  typical_timeline: Applications must precede the start of works; national funding agreements
+    are expected to be concluded following the Commission's decision approving the IPCEI.
+  quote: 'The granting of State aid will be governed by
+
+    national funding agreements that are expected to be concluded following the
+
+    Commission’s decision (see recital (214)).'
+  source:
+    file: ipcei_hy2move_commission_decision_SA104676.pdf
+    locator: p.80
+  verified: llm_cited

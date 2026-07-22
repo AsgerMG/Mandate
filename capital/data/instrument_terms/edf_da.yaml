@@ -1,0 +1,380 @@
+id: edf_da
+name: edf_da
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-consortium
+  gate_family: G1_nexus
+  requirement: Applicants must form an eligible consortium as defined in Articles 9 and 10(4)
+    of the EDF Regulation.
+  value: Consortium required per Art. 9 and 10(4) EDF Regulation
+  intake_field: consortium
+  quote: Any eligible consortium as defined in Articles 9 and 10(4) of the EDF Regulation
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.13
+  verified: llm_cited
+- id: g1-dis-min-entities
+  gate_family: G1_nexus
+  requirement: For disruptive-technologies actions, the consortium must involve at least two
+    legal entities established in at least two different Member States or EDF Associated Countries,
+    not controlled by the same entity.
+  value: Min. 2 legal entities in 2 different Member States/Associated Countries, independent
+    control
+  intake_field: entityCountries
+  quote: Any consortium of eligible entities as defined in Article 9 of the EDF Regulation
+    and involving at least two legal entities established in at least two different Member
+    States or EDF Associated Countries. At least two of the eligible legal entities established
+    in at least two Member States or EDF Associated Countries shall not, during the entire
+    period in which the action is carried out, be controlled, directly or indirectly, by the
+    same legal entity, and shall not control each other.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.13
+  verified: llm_cited
+- id: g2-sme-coordinator
+  gate_family: G2_size_ownership
+  requirement: For SME-dedicated calls, all consortium members must be SMEs (as defined in
+    Commission Recommendation 2003/361/EC) or research organisations, and the coordinator
+    must be an SME.
+  value: Consortium members must be SMEs or research organisations; coordinator must be SME
+  intake_field: fteBand
+  quote: Members of the consortium need to be SMEs (as defined in Commission Recommendation
+    2003/361/EC) or research organisations. The coordinator of the consortium must be an SME.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.32
+  verified: llm_cited
+- id: g2-research-org-cap
+  gate_family: G2_size_ownership
+  requirement: The budget allocated to research organisations in SME/research-organisation
+    calls cannot exceed 40% of the total requested grant amount.
+  value: Max 40% of grant to research organisations
+  intake_field: none
+  quote: The budget allocated to research organisations cannot exceed 40% of the total requested
+    grant amount.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.32
+  verified: llm_cited
+- id: g2-nfp-consortium-size
+  gate_family: G2_size_ownership
+  requirement: NFP network consortium must consist of national support structures from at
+    least 10 Member States or EDF Associated Countries.
+  value: Min. 10 Member States/Associated Countries represented
+  intake_field: consortium
+  quote: A consortium should consist of national support structures of at least 10 Member
+    States or EDF Associated Countries.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.33
+  verified: false
+  verify_note: 'fragment not found verbatim: ''A consortium should consist of national support
+    st'''
+- id: g1-equity-facility-control
+  gate_family: G1_nexus
+  requirement: Under the defence equity facility, both financial intermediaries and final
+    beneficiaries must be established in the EU or EDF Associated Countries and must not be
+    controlled by entities from non-associated third countries.
+  value: Must be established in EU/EDF Associated Countries; no non-associated third-country
+    control
+  intake_field: nonEuControl
+  quote: both financial intermediaries and final beneficiaries will have to be established
+    in the EU or EDF Associated Countries, and must not be controlled by entities from non-associated
+    third countries
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.38
+  verified: llm_cited
+- id: g1-equity-facility-control-2026
+  gate_family: G1_nexus
+  requirement: Under the 2026 equity facility, financial intermediaries and final beneficiaries
+    must be established and have executive management in the EU or EDF associated countries
+    and must not be controlled by non-associated third-country entities, unless a Member State
+    approves a guarantee.
+  value: EU/EDF-associated establishment plus management location; non-associated control
+    disqualifies absent Member State guarantee
+  intake_field: nonEuControl
+  quote: both financial intermediaries and final beneficiaries must be established and have
+    their executive management structure in the EU or EDF associated countries and must not
+    be controlled by non-associated third country entities
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.37
+  verified: llm_cited
+- id: g4-lump-sum-grant
+  gate_family: G4_borrower_model
+  requirement: Funding under most calls is provided as lump sum grants following a call for
+    proposals.
+  value: Lump sum grant
+  intake_field: borrowerModel
+  quote: 'Form of funding: Lump sum grants following the call for proposals'
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.13
+  verified: llm_cited
+- id: g4-actual-costs-grant
+  gate_family: G4_borrower_model
+  requirement: Development actions under EDF-2025-DA are funded via actual costs grants following
+    a call for proposals.
+  value: Actual costs grant
+  intake_field: borrowerModel
+  quote: 'Form of funding: Actual costs grants following the call for proposals'
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.13
+  verified: llm_cited
+- id: g4-blending-equity
+  gate_family: G4_borrower_model
+  requirement: The defence equity facility under InvestEU is implemented as a blending operation
+    providing equity/guarantee support rather than grants.
+  value: Blending operation (equity guarantee)
+  intake_field: borrowerModel
+  quote: Form of funding Blending operations
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.38
+  verified: llm_cited
+- id: g5-civil-precursor-rights
+  gate_family: G5_use_of_funds
+  requirement: Proposals building on civil-application EU-funded projects must confirm applicants
+    have or will have necessary rights to use and commercialise the previous project's results.
+  value: Must hold or obtain rights to use/commercialise prior civil project results
+  intake_field: none
+  quote: applicants must provide a confirmation that they have or will have the necessary
+    rights to use and commercialise the results of the previous project(s)
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.13
+  verified: llm_cited
+- id: g5-sme-nt-activity-scope
+  gate_family: G5_use_of_funds
+  requirement: Non-thematic SME development-action proposals must address at least one of
+    design, system prototyping, testing, qualification, certification or increasing efficiency
+    activities, not merely studies.
+  value: Must include at least one non-study eligible activity
+  intake_field: none
+  quote: the proposals must address at least one activity among design, system prototyping,
+    testing, qualification, certification and increasing efficiency
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.35
+  verified: llm_cited
+- id: g5-research-nt-not-studies-only
+  gate_family: G5_use_of_funds
+  requirement: Non-thematic SME/research-organisation research-action proposals must not be
+    limited to studies.
+  value: Proposals must not be limited to studies
+  intake_field: none
+  quote: 'Targeted types of activities: Any activities eligible for a research action. However,
+    proposals must not be limited to studies.'
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.34
+  verified: llm_cited
+- id: g3-per-proposal-cap-smero-nt-2025
+  gate_family: G3_financial
+  requirement: The EU financial contribution requested per proposal under EDF-2025-LS-RA-SMERO-NT
+    cannot exceed EUR 4,000,000.
+  value: Max EUR 4,000,000 per proposal
+  intake_field: ticketBand
+  quote: The requested funding cannot exceed EUR 4 000 000.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.34
+  verified: llm_cited
+- id: g3-per-proposal-cap-sme-nt-2025
+  gate_family: G3_financial
+  requirement: The EU financial contribution requested per proposal under EDF-2025-LS-DA-SME-NT
+    cannot exceed EUR 6,000,000.
+  value: Max EUR 6,000,000 per proposal
+  intake_field: ticketBand
+  quote: The requested funding cannot exceed EUR 6 000 000.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.35
+  verified: llm_cited
+- id: g3-per-proposal-cap-dis-nt-2025
+  gate_family: G3_financial
+  requirement: The EU financial contribution requested per proposal under EDF-2025-LS-RA-DIS-NT
+    cannot exceed EUR 4,000,000.
+  value: Max EUR 4,000,000 per proposal
+  intake_field: ticketBand
+  quote: The requested funding cannot exceed EUR 4 000 000.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.35
+  verified: llm_cited
+- id: g3-max-funding-rate-100pct
+  gate_family: G3_financial
+  requirement: NFP network coordination and support action is funded at up to 100% of eligible
+    costs.
+  value: Maximum funding rate 100% of eligible costs
+  intake_field: none
+  quote: 'Applicable maximum funding rate: 100% of the eligible costs of the action.'
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.33
+  verified: llm_cited
+- id: g3-bonus-cap-35pct
+  gate_family: G3_financial
+  requirement: The overall increase (bonus) to the baseline funding rate cannot exceed 35%
+    of total eligible costs of the activity.
+  value: Bonus capped at +35 percentage points
+  intake_field: none
+  quote: The overall increase in the baseline-funding rate following the application of the
+    increase of funding rates listed in Table 2 cannot exceed 35% of the total eligible costs
+    of the activity.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.41
+  verified: llm_cited
+- id: g3-per-proposal-cap-smero-nt-2026
+  gate_family: G3_financial
+  requirement: The EU financial contribution requested per proposal under EDF-2026-LS-DIS-RA-SMERO-NT
+    cannot exceed EUR 5,000,000.
+  value: Max EUR 5,000,000 per proposal
+  intake_field: ticketBand
+  quote: The requested funding cannot exceed EUR 5 000 000.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.31
+  verified: llm_cited
+- id: g3-per-proposal-cap-sme-nt-2026
+  gate_family: G3_financial
+  requirement: The EU financial contribution requested per proposal under EDF-2026-LS-DA-SME-NT
+    cannot exceed EUR 6,000,000.
+  value: Max EUR 6,000,000 per proposal
+  intake_field: ticketBand
+  quote: The requested funding cannot exceed EUR 6 000 000.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.32
+  verified: llm_cited
+- id: g3-fstp-cap-per-third-party
+  gate_family: G3_financial
+  requirement: The maximum amount to be granted to each third party under financial support
+    to third parties (FSTP) is EUR 60,000.
+  value: Max EUR 60,000 per third party
+  intake_field: none
+  quote: The maximum amount to be granted to each third party is EUR 60 000.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.40
+  verified: llm_cited
+- id: g3-fstp-cap-percentage
+  gate_family: G3_financial
+  requirement: FSTP included in proposals must not exceed 5% of the requested EU contribution
+    under the relevant call topic.
+  value: FSTP capped at 5% of requested EU contribution
+  intake_field: none
+  quote: FSTP in the proposals must not exceed 5% of the requested EU contribution under the
+    call topic concerned.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.40
+  verified: llm_cited
+- id: g1-fstp-third-party-location
+  gate_family: G1_nexus
+  requirement: Third parties receiving FSTP must be established in the EU, in EDF associated
+    countries or in Ukraine.
+  value: Third parties must be established in EU/EDF associated countries/Ukraine
+  intake_field: entityCountries
+  quote: Third parties must be established in the EU, in EDF associated countries or in Ukraine
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.41
+  verified: llm_cited
+- id: g6-trl-minimum
+  gate_family: G6_conditionality
+  requirement: Proposals for non-thematic disruptive-technology actions must address technologies
+    reaching at least TRL 4.
+  value: Minimum TRL 4
+  intake_field: developmentStage
+  quote: Proposals must address disruptive knowledge, products and technologies in any area
+    of defence interest (8) reaching at least TRL 4 (9)
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.31
+  verified: llm_cited
+- id: g6-award-criteria-staged
+  gate_family: G6_conditionality
+  requirement: Proposals for certain disruptive-technology calls are evaluated against three
+    award criteria in stages, requiring a passing score at each stage before progressing.
+  value: Staged evaluation with passing score per criterion
+  intake_field: conditionality
+  quote: Proposals will be evaluated against the three award criteria set out in points (a),
+    (b) and (f) of Article 12 of the EDF Regulation. As set out in the call documentation,
+    the evaluation process may be carried out in stages. Proposals may require a passing score
+    for each of the award criteria before they can progress to the next stage.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.12
+  verified: llm_cited
+obligations:
+- requirement: Where Member States or EDF associated countries have confirmed co-financing
+    to legal entities of a consortium, all legal entities of the selected consortium must
+    provide those states with rights to use or have used the results for defence purposes.
+  quote: all legal entities of the selected consortium are expected to provide such Member
+    States or EDF associated countries with rights to use or have used the results generated
+    during the action for their defence purposes
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.40
+  verified: llm_cited
+- requirement: 'No profit rule: potential revenue generated by development actions after EU
+    financing will not be taken into consideration.'
+  quote: potential revenue to be generated by these actions will not be taken into consideration
+    in accordance with point (a) of Article 195(3) of the Financial Regulation
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2026.pdf#p.40
+  verified: llm_cited
+- requirement: Applicants opting for actual indirect cost accounting must describe their usual
+    accounting practices in detail in the application and obtain national authority certification.
+  quote: The applicant opting for this possibility must describe in detail in the application
+    their usual accounting practices to calculate their indirect costs.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.41
+  verified: llm_cited
+- requirement: Final beneficiaries under the defence equity facility are subject to limitations
+    on transfer or exclusive licensing of their technology to non-EU and non-associated third-country
+    entities.
+  quote: Final beneficiaries will also be subject to limitations on the transfer or exclusive
+    licensing of their technology to non-EU and non-associated third-country entities.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.38
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Final beneficiaries will also be subject to
+    limita'''
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (24/25 gates, 3/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Not addressed with a specific cumulation clause in the extracted source text; general
+    funding-rate and bonus caps apply instead.
+  quote: The overall increase in the baseline-funding rate following the application of the
+    increase of funding rates listed in Table 2 cannot exceed 35% of the total eligible costs
+    of the activity.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.41
+  verified: llm_cited
+application:
+  channel: Competitive calls for proposals published by the European Commission, with grants
+    awarded to consortia following evaluation; some actions implemented under indirect management
+    via Contribution Agreements with the European Defence Agency, and some via Specific Grant
+    Agreements under Framework Partnership Agreements without a call.
+  typical_timeline: Calls run annually (e.g., EDF-2025-DA, EDF-2026-DA); expedited (EDF-2026-DA-EXP)
+    and accelerated (EDF-2026-DA-ACC) calls have shorter submission/evaluation timeframes;
+    recommended action durations vary (e.g. 3 years for NFP action, 12-36 months for SMERO-NT).
+  quote: Grants will be awarded to consortia after the evaluation of the proposals submitted
+    following the publication of calls for proposals.
+  source:
+    file: edf_work_programme_2025_partII.pdf
+    locator: edf_work_programme_2025_partII.pdf#p.41
+  verified: llm_cited

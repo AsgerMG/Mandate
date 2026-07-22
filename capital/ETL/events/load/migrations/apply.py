@@ -285,6 +285,18 @@ def apply_011(conn: sqlite3.Connection) -> None:
     print("  applied 011_funding_instruments.sql")
 
 
+def apply_012(conn: sqlite3.Connection) -> None:
+    """'llm_cited' verification tier + eligibility_clauses table (Phase 5:
+    comprehensive text-first eligibility research, see
+    012_llm_cited_and_clauses.sql for the full rationale)."""
+    if column_exists(conn, "eligibility_gates", "verify_by"):
+        print("  skip 012 (already applied — verify_by exists)")
+        return
+    sql = (MIG_DIR / "012_llm_cited_and_clauses.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 012_llm_cited_and_clauses.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -294,6 +306,7 @@ MIGRATIONS = {
     "009": apply_009,
     "010": apply_010,
     "011": apply_011,
+    "012": apply_012,
 }
 
 

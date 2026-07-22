@@ -1,0 +1,342 @@
+id: innovation_fund_battery
+name: innovation_fund_battery
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Applicants must be legal entities (public or private bodies) established in
+    an eligible country, which for this call is any country in the world.
+  value: any country in the world
+  intake_field: entityCountries
+  quote: 'be established in one of the eligible countries: any country in the world.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.11
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Natural persons are not eligible, except self-employed persons (sole traders)
+    without separate legal personality.
+  value: natural persons excluded except sole traders
+  intake_field: borrowerModel
+  quote: 'Natural persons are NOT eligible (with the exception of self-
+
+    employed persons, i.e. sole traders, where the company does not have legal personality
+
+    separate from that of the natural person).'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.11
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Entities subject to EU restrictive measures under Article 29 TEU/Article 215
+    TFEU are not eligible to participate in any capacity.
+  value: excluded if subject to EU restrictive measures
+  intake_field: nonEuControl
+  quote: 'Such entities are not eligible to participate in any capacity, including as beneficiaries,
+    affiliated entities, associated
+
+    partners, subcontractors or recipients of financial support to third parties (if any).'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.12
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: The physical project must be located in an EU Member State or an EEA country
+    (Norway, Iceland or Liechtenstein).
+  value: EU Member States or EEA countries (Norway, Iceland, Liechtenstein)
+  intake_field: activityCountries
+  quote: 'Projects must be located in EU Member States or EEA countries (i.e. Norway, Iceland
+
+    or Liechtenstein).'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.13
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Funded activities must correspond to the topic description; projects must produce
+    battery cells, and certain activities (e.g. EV manufacturing, cell assembly into modules/packs,
+    excess upstream/recycling capacity, mining) are excluded.
+  value: battery cell manufacturing only; excludes EV assembly, module/pack assembly, excess
+    upstream/recycling, mining
+  intake_field: developmentStage
+  quote: 'battery application production (e.g. electric vehicles manufacturing)
+
+    − activities related to assembly of electric vehicle battery cells in modules or
+
+    packs. Projects must produce battery cells
+
+    − upstream component production or recycling activities exceeding 100% of the
+
+    project’s battery cell production capacity
+
+    − mining activities.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.12
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: Financial support to third parties is not allowed under this call.
+  value: no financial support to third parties
+  intake_field: none
+  quote: Financial support to third parties is not allowed.
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.13
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Only projects with a capital expenditure above EUR 2,500,000 are eligible under
+    the EV-CELLS topic.
+  value: capital expenditure > EUR 2,500,000
+  intake_field: ticketBand
+  quote: 'INNOVFUND-2024-BATT-EV-CELLS Capital expenditure above EUR 2
+
+    500 000'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.13
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: The maximum Innovation Fund grant must not exceed 60% of the relevant costs,
+    and only projects with relevant costs higher than zero are eligible.
+  value: grant capped at 60% of relevant costs; relevant costs > 0
+  intake_field: cofinancingBand
+  quote: 'The maximum grant amount must not exceed 60 % of the relevant costs. Only projects
+    with relevant costs higher
+
+    than zero are eligible.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.13
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: The relative GHG emission avoidance minimum requirement is at least 50%, below
+    which the proposal is rejected.
+  value: relative GHG emission avoidance >= 50%
+  intake_field: none
+  quote: 'the relative GHG emission avoidance must be:
+
+    − at least 50%.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.19
+  verified: llm_cited
+- id: G3-04
+  gate_family: G3_financial
+  requirement: The cost efficiency ratio must be equal to or lower than 200 EUR per tonne
+    CO2-eq, otherwise the score is zero and the proposal is rejected.
+  value: cost efficiency ratio <= 200 EUR/t CO2-eq
+  intake_field: none
+  quote: 'if the cost efficiency ratio is higher than 200 EUR/t CO2-eq,
+
+    the score is zero points, and the proposal will be rejected.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.22
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: Applicants and affiliated entities must be validated by the Central Validation
+    Service (REA Validation) after registering in the Participant Register before proposal
+    submission.
+  value: must register in Participant Register and be validated before submission
+  intake_field: institutionalBacking
+  quote: 'Beneficiaries and affiliated entities must register in the Participant Register
+    — before
+
+    submitting the proposal — and will have to be validated by the Central Validation
+
+    Service (REA Validation).'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.11
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: Applicants must have stable and sufficient financial resources; financial capacity
+    checks apply to all beneficiaries except public bodies, international organisations, or
+    where the requested grant is not more than EUR 60,000.
+  value: financial capacity required; exemptions for public bodies/int'l orgs/grants <= EUR
+    60,000
+  intake_field: turnoverBand
+  quote: 'The check will normally be done for all beneficiaries, except:
+
+    − public bodies (entities established as public body under national law, including
+
+    local, regional or national authorities) or international organisations
+
+    − if the individual requested grant amount is not more than EUR 60 000.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.14
+  verified: llm_cited
+- id: G2-03
+  gate_family: G2_size_ownership
+  requirement: Applicants must have the know-how, qualifications and resources (operational
+    capacity) including sufficient experience in projects of comparable size and nature.
+  value: operational capacity required, including comparable-scale experience
+  intake_field: institutionalBacking
+  quote: 'Applicants must have the know-how, qualifications and resources to successfully
+
+    implement the projects and contribute their share (including sufficient experience in
+
+    projects of comparable size and nature).'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.14
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: The Innovation Fund provides a lump sum grant, reimbursing a fixed amount based
+    on relevant costs and a fixed funding rate of 60% (or lower requested amount).
+  value: lump sum grant, 60% funding rate
+  intake_field: borrowerModel
+  quote: 'The grant will be a lump sum grant. This means that it will reimburse a fixed amount,
+
+    based on a lump sum. The amount will be fixed by the granting authority on the basis
+
+    of the relevant costs of the project calculated in accordance with the Guidance on the
+
+    relevant cost methodology and a fixed funding rate of 60% (or lower requested grant
+
+    amount, if any).'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.26
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Applicants subject to EU exclusion decisions or in defined exclusion situations
+    (bankruptcy, tax/social security breaches, grave professional misconduct, fraud/corruption,
+    significant deficiencies, irregularities, jurisdiction circumvention) cannot participate.
+  value: excluded if in listed exclusion situations
+  intake_field: none
+  quote: 'Applicants which are subject to an EU exclusion decision or in one of the following
+
+    exclusion situations that bar them from receiving EU funding can NOT participate'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.15
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: Projects must reach financial close within four years after grant signature
+    and must operate at least three years after entry into operation.
+  value: financial close within 4 years; minimum 3-year operation
+  intake_field: needBy
+  quote: 'reach financial close within four years after grant signature (maximum time to
+
+    financial close)
+
+    − operate at least three years after entry into operation (minimum GHG emission
+
+    avoidance monitoring period)'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.13
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries must confirm compliance with EU funding conditions by signing
+    a declaration of honour before grant signature.
+  quote: 'Before signing the grant, each beneficiary and affiliated entity will have to confirm
+    this
+
+    again by signing a declaration of honour (DoH).'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.11
+  verified: llm_cited
+- requirement: The maximum grant amount will only be paid out if the project reaches at least
+    75% of the total planned GHG emission avoidance over the project duration.
+  quote: 'the maximum grant amount will only be paid out, if over the entire project
+
+    duration, the project reaches at least 75% of the total amount of GHG
+
+    emission planned to be avoided.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.27
+  verified: llm_cited
+- requirement: Beneficiaries must submit a statement by an independent auditor confirming
+    correctness of the relevant cost calculation shortly before entry into operation.
+  quote: 'Shortly before entry into operation, you will be required to submit a statement
+    by
+
+    an independent auditor confirming the correctness of the relevant cost calculation.'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.27
+  verified: llm_cited
+- requirement: Beneficiaries must actively share project knowledge with the public and market
+    participants, including presenting the project on their websites and social media accounts.
+  quote: Beneficiaries must present the project on their websites and social media accounts.
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.37
+  verified: llm_cited
+- requirement: Beneficiaries must submit periodic progress and annual reports, including GHG
+    emission avoidance and manufacturing carbon footprint data, throughout the project and
+    operation period.
+  quote: 'annual GHG emission avoidance report
+
+    (including manufacturing carbon footprint reduction); annual report on
+
+    battery cells output (in kWh) and in terms of quantity and key
+
+    performance parameters (including on their EU/EEA-originating
+
+    content)'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.26
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/16 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Innovation Fund grants may be combined with funding from another EU programme directly
+    managed by the Commission if the EU Synergies clause is enabled in both grant agreements
+    and combined funding rates do not exceed 100%; combination with EU operating grants is
+    also possible under conditions.
+  quote: 'Innovation Fund grants may be combined with funding
+
+    from another EU programme (directly managed by the EU Commission), if in both
+
+    grants the EU Synergies actions’ clause is enabled in Article 6.3 of the Model Grant
+
+    Agreement and the combined funding rates at grant level do not exceed 100%'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.32
+  verified: llm_cited
+application:
+  channel: Electronic submission via the Funding & Tenders Portal Electronic Submission System
+    (one-stage submission, one-step evaluation)
+  typical_timeline: Call opening 3 December 2024; submission deadline 24 April 2025; evaluation
+    April-September 2025; results September 2025; grant agreement signature September 2025
+    to January 2026
+  quote: 'Call opening: 3 December 2024
+
+    Deadline for submission: 24 April 2025 – 17:00:00 CET
+
+    (Brussels)
+
+    Evaluation: April-September 2025
+
+    Information on evaluation results: September 2025
+
+    GA signature: September 2025 – January 2026'
+  source:
+    file: innovfund_2024_battery_call_document.pdf
+    locator: p.9
+  verified: llm_cited

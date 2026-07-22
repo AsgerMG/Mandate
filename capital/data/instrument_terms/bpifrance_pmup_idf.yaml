@@ -1,0 +1,316 @@
+id: bpifrance_pmup_idf
+name: bpifrance_pmup_idf
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_location_establishment
+  gate_family: G1_nexus
+  requirement: The company must have at least one establishment located in Île-de-France.
+  value: At least 1 establishment in Île-de-France
+  intake_field: entityCountries
+  quote: Ayant au moins 1 établissement en Île-de-France
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6
+  verified: llm_cited
+- id: g1_project_location
+  gate_family: G1_nexus
+  requirement: The investment must be operated/exploited within the Île-de-France territory.
+  value: Exploited in Île-de-France territory
+  intake_field: activityCountries
+  quote: est exploité sur le territoire francilien
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.23
+  verified: false
+  verify_note: 'fragment not found verbatim: ''est exploité sur le territoire francilien'''
+- id: g2_headcount
+  gate_family: G2_size_ownership
+  requirement: The company must employ between 5 and fewer than 250 employees.
+  value: 5 to <250 employees
+  intake_field: fteBand
+  quote: Les entreprises employeuses de 5 à moins de 250 salariés
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6
+  verified: llm_cited
+- id: g2_turnover_or_balance
+  gate_family: G2_size_ownership
+  requirement: The company's turnover must not exceed €50M or its balance sheet total must
+    not exceed €43M.
+  value: Turnover ≤ €50M or balance sheet ≤ €43M
+  intake_field: turnoverBand
+  quote: Dont le chiffre d’affaires n’excède pas 50 M€ ou dont le bilan total n’excède pas
+    43 M€
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6
+  verified: llm_cited
+- id: g2_group_thresholds
+  gate_family: G2_size_ownership
+  requirement: The company must not belong to a group exceeding the size thresholds (headcount,
+    turnover, balance sheet).
+  value: Not part of a group exceeding SME thresholds
+  intake_field: institutionalOwner
+  quote: N’appartenant pas à un groupe qui dépasse ces seuils
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6
+  verified: llm_cited
+- id: g2_not_in_difficulty
+  gate_family: G2_size_ownership
+  requirement: The company must not be an 'undertaking in difficulty' within the meaning of
+    EU law.
+  value: Not an undertaking in difficulty (EU definition)
+  intake_field: lossesOverHalfCapital
+  quote: Ne répondant pas à la notion « entreprise en difficulté » au sens communautaire
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6
+  verified: llm_cited
+- id: g1_legal_form_any
+  gate_family: G1_nexus
+  requirement: Any legal form is eligible, including associations with economic activity.
+  value: Any legal form, incl. associations with economic activity
+  intake_field: borrowerModel
+  quote: Quelle que soit leur forme juridique, y compris les associations ayant une activité
+    économique
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6
+  verified: llm_cited
+- id: g1_excluded_sectors
+  gate_family: G1_nexus
+  requirement: Companies operating in listed excluded sectors (trading, business consulting,
+    regulated professions, financial/insurance/real estate activities, cafés/hotels/restaurants,
+    training bodies, road freight transport, logistics, digital services consulting/maintenance/training,
+    personal services, communication/multimedia, primary agriculture/fishing/aquaculture/forestry)
+    are excluded from the scheme.
+  value: Excluded sectors list applies
+  intake_field: activityCountries
+  quote: 'Les entreprises évoluant dans les secteurs d’activités suivants sont exclues du
+    dispositif PM’up :
+
+    • Activités de négoce
+
+    • Activités de conseil aux entreprises et aux particuliers'
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6
+  verified: llm_cited
+- id: g4_grant_instrument
+  gate_family: G4_borrower_model
+  requirement: The support is a grant/subvention (not a loan) based on the PM'up intervention
+    regulation.
+  value: Non-repayable grant (subvention)
+  intake_field: borrowerModel
+  quote: L’aide est une subvention s'appuyant sur le règlement d'intervention PM'up.
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_iledefrance_page.html#chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: "L’aide est une subvention s''appuyant sur le
+    règlem"'
+- id: g3_grant_ceiling
+  gate_family: G3_financial
+  requirement: The grant is capped at €250,000, exceptionally increased to €375,000 for projects
+    in economic reconquest zones or with strong ecological impact.
+  value: Cap €250,000; bonus up to €375,000
+  intake_field: ticketBand
+  quote: 'L’aide plafonnée à 250 000€ permet le financement, des investissements matériels
+    et immatériels, des prestations de conseil, des recrutements structurants ainsi que les
+    dépenses de développement à l’international (conseil, salons, VIE) et de dépôt et extension
+    de brevets
+
+    L’aide peut être exceptionnellement bonifiée à hauteur de 375 000 €'
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.5
+  verified: llm_cited
+- id: g3_max_intensity
+  gate_family: G3_financial
+  requirement: The maximum aid intensity is generally 50% of eligible expenditure, per the
+    intervention regulation, with lower rates (10-20%) for standard material/immaterial investments
+    outside bonus categories.
+  value: Max intensity 50% (10-50% depending on category)
+  intake_field: cofinancingBand
+  quote: Le taux de prise en charge maximum est de 50% des dépenses éligibles, conformément
+    au règlement d'intervention.
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_iledefrance_page.html#chunk 2
+  verified: llm_cited
+- id: g3_aid_cumulation_cap
+  gate_family: G3_financial
+  requirement: Cumulation of public subsidies beyond 50% (or beyond 10%/20% for amortizable
+    investments) of the total amount is not permitted on the same expenditure line.
+  value: Cumulative public aid capped at 50% (10-20% for amortizable investments)
+  intake_field: cofinancingBand
+  quote: Le cumul de subventions publiques, au-delà de 50%, ou au- delà de 10% ou 20% pour
+    les investissements amortissables du montant total, n’est pas possible
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.22
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Le cumul de subventions publiques, au-delà
+    de 50%,'''
+- id: g6_project_not_started
+  gate_family: G6_conditionality
+  requirement: The project must not have started, and expenses must not have been committed,
+    before the application submission date.
+  value: No commitment/expenditure before application date
+  intake_field: conditionality
+  quote: Le projet ne doit pas avoir commencé avant le dépôt de la candidature. Les dépenses
+    ne doivent pas avoir été engagées avant le dépôt de la candidature (ex. devis signé, acompte
+    sur commande, réservation de salon,…)
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.5
+  verified: llm_cited
+- id: g6_ecological_transition_axis
+  gate_family: G6_conditionality
+  requirement: Projects must systematically include actions dedicated to ecological and energy
+    transition linked to their growth strategy, and must justify implementing at least one
+    such action for balance payment.
+  value: Mandatory ecological/energy transition axis with proof at balance payment
+  intake_field: conditionality
+  quote: IMPORTANT. Conformément au règlement d’intervention, les projets doivent présenter
+    un axe de développement dédié à la transition écologique et énergétique. Pour le versement
+    du solde de la subvention, l’entreprise devra justifier de la mise en œuvre d’au moins
+    une action relevant de cette transition.
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.29
+  verified: llm_cited
+- id: g6_no_conflict_of_interest
+  gate_family: G6_conditionality
+  requirement: Expenditure must be incurred with a third party at arm's length market conditions,
+    without the buyer being able to exercise control over the seller or vice versa.
+  value: No conflict of interest between company and provider
+  intake_field: conditionality
+  quote: Les dépenses doivent être effectuées auprès d’un tiers aux conditions du marché,
+    sans que l’acquéreur soit en position d’exercer un contrôle sur le vendeur, et vice versa
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.22
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Les dépenses doivent être effectuées auprès
+    d’un t'''
+- id: g5_rd_exclusion
+  gate_family: G5_use_of_funds
+  requirement: Expenditures relating to the technological development of products and services
+    (R&D) are not eligible for funding.
+  value: R&D expenditures excluded
+  intake_field: none
+  quote: Les dépenses qui relèvent du développement technologique des produits et services
+    ne sont pas recevables
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.22
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Les dépenses qui relèvent du développement
+    technol'''
+- id: g5_routine_operations_exclusion
+  gate_family: G5_use_of_funds
+  requirement: Expenditures relating to the routine day-to-day operation of the business are
+    not eligible.
+  value: Routine operating expenses excluded
+  intake_field: none
+  quote: Les dépenses qui relèvent du fonctionnement courant de l’entreprise ne sont pas recevables
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.22
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Les dépenses qui relèvent du fonctionnement
+    couran'''
+- id: g5_eligible_categories
+  gate_family: G5_use_of_funds
+  requirement: Eligible expense categories are material/immaterial investments, consulting
+    services, patent filing/extension, structuring recruitments, and international development
+    spending.
+  value: Investments, consulting, patents, structuring recruitment, international dev.
+  intake_field: none
+  quote: 'Dépenses éligibles : Investissements matériels/immatériels, Prestations de conseil,
+    Dépôt et extension de brevet, Recrutements structurants, Développement international.'
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_iledefrance_page.html#chunk 2
+  verified: llm_cited
+- id: g1_priority_sectors
+  gate_family: G1_nexus
+  requirement: Eligible projects belong to strategic regional sectors/activities and the social
+    and solidarity economy, with issues of sovereignty, industrialization and decarbonization.
+  value: Strategic regional sectors, ESS, sovereignty/industrialization/decarbonization
+  intake_field: none
+  quote: 'Sont éligibles :  projets de filières et activités stratégiques régionales et de
+    l''économie sociale et solidaire, avec enjeux de souveraineté, d''industrialisation et
+    de décarbonation.'
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_iledefrance_page.html#chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Applicant commits to respect the values of the Republic and secularism per
+    the regional charter.
+  quote: Respecter des valeurs de la République et de la laïcité conformément à la Charte
+    régionale des valeurs de la République et de la laïcité
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.16
+  verified: llm_cited
+- requirement: Applicant commits to implement progress measures as described in the regional
+    charter for corporate citizen engagement.
+  quote: Mettre en place des axes de progrès tels que décris dans la Charte francilienne pour
+    l’engagement citoyen des entreprises
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.16
+  verified: llm_cited
+- requirement: Applicant commits to publish one or more internship offers.
+  quote: Publier d’une/des d’offre(s) de stage
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.16
+  verified: llm_cited
+- requirement: The company must request the disbursement of its subsidy after submitting proof
+    of expenses via a funding call.
+  quote: L’entreprise demande le versement de sa subvention après transmission des justificatifs
+    de dépenses (factures, bulletin de salaires, livrables de fin de mission… ) présentés
+    dans un appel de fonds.
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.11
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (13/19 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation of public subsidies on the same expenditure line is capped at 50% of the
+    total amount, or 10%/20% for amortizable investments, and double regional funding (agriculture,
+    culture, environment, training) is excluded.
+  quote: 'Le cumul de subventions publiques, au-delà de 50%, ou au- delà de 10% ou 20% pour
+    les investissements amortissables du montant total, n’est pas possible
+
+
+    • Exclusion du double financement de régional (agriculture, culture, environnement, formation
+    … )'
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_guide_candidat_2024.pdf#p.22
+  verified: false
+application:
+  channel: Application filed via the regional platform mesdemarches.iledefrance.fr, following
+    a preliminary intention form, pre-selection committee review, in-depth diagnostic instruction,
+    and monthly regional selection jury.
+  typical_timeline: Pre-qualification phase up to 20 days; complementary documents to be returned
+    within 4 weeks; jury meets monthly; applications accepted on a rolling basis throughout
+    the year.
+  quote: La demande est à déposer sur la plateforme régionale mesdemarches.iledefrance.fr
+    Les candidatures peuvent être déposées « au fil de l'eau »  et sont relevées régulièrement
+    tout au long de l'année. Le jury de sélection se réunit à un rythme mensuel.
+  source:
+    file: bpifrance_pmup_idf_guide_candidat_2024.pdf
+    locator: bpifrance_pmup_idf_iledefrance_page.html#chunk 2
+  verified: llm_cited

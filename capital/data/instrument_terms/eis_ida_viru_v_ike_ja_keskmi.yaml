@@ -1,0 +1,232 @@
+id: eis_ida_viru_v_ike_ja_keskmi
+name: eis_ida_viru_v_ike_ja_keskmi
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a company entered in the Estonian Commercial Register.
+  value: Estonian-registered company
+  intake_field: entityCountries
+  quote: Toetust võib taotleda Eesti äriregistrisse kantud äriühing.
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Applicant's activity or the project for which support is sought must not fall
+    within excluded sectors (agriculture/forestry/fishing, wholesale/retail trade, gambling,
+    programming/consulting, legal/accounting, head office/management consultancy, advertising/market
+    research, rental/leasing, labour recruitment/employment services).
+  value: excluded sectors listed
+  intake_field: activityCountries
+  quote: 'Toetust ei saa taotleda äriühing, kelle tegevusala või projekt, millele toetust
+    taotletakse, kuulub järgmiste tegevusalade hulka:'
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: Applicant must be a small or medium-sized enterprise (SME).
+  value: SME
+  intake_field: fteBand
+  quote: Toetuse taotleja peab olema väike- või keskmise suurusega ettevõte (
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G1_nexus
+  requirement: Support cannot be requested for activities in certain further excluded NACE
+    codes including fish/crustacean/mollusc processing, tobacco products, coke and refined
+    petroleum, chemical fibres, steel/iron production, tube/pipe manufacturing, nuclear fuel
+    processing, steel casting, steel drums/containers, tobacco industry machinery, and shipbuilding.
+  value: 'excluded NACE codes: 102, 12, 19, 2060, 2410, 242, 243, 2446, 2452, 2591, 2893 (tobacco
+    machinery), 301'
+  intake_field: activityCountries
+  quote: alajagu 102 kala, vähilaadsete ja limuste töötlemine ja säilitamine, 12 tubakatoodete
+    tootmine, 19 koksi ja puhastatud naftatoodete tootmine, 2060 keemilise kiu tootmine, 2410
+    raua, terase ja ferrosulamite tootmine, 242 terastorude, -õõnesprofiilide jms -toruliitmike
+    tootmine, 243 muude terase esmatöötlustoodete tootmine, 2446 tuumkütuse töötlemine, 2452
+    terasevalu, 2591 terasvaatide jms mahutite tootmine, 2893 toiduaine, joogi- ja tubakatööstusmasinate
+    tootmise alla kuuluv tubakatööstusmasinate tootmise tegevusala, 301 laeva- ja paadiehitus
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: Support cannot be requested for activities in electricity production from non-renewable
+    energy sources (NACE 35111).
+  value: excluded NACE code 35111
+  intake_field: activityCountries
+  quote: 35111 elektrienergia tootmine mittetaastuvast energiaallikast
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g6
+  gate_family: G5_use_of_funds
+  requirement: Support may not be used to fund fossil-fuel related activities including production,
+    processing, storage, distribution, combustion, or acquisition of fossil-fuel-powered equipment.
+  value: fossil fuel activities excluded
+  intake_field: none
+  quote: 'Ei toetata fossiilkütustega seotud tegevusi:'
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g7
+  gate_family: G3_financial
+  requirement: The grant amount requested in an application round must be between 30,000 and
+    3,000,000 euros.
+  value: €30,000–€3,000,000
+  intake_field: ticketBand
+  quote: Taotlusvoorus taotletava toetuse suurus on 30 000 kuni 3 000 000 eurot.
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g8
+  gate_family: G3_financial
+  requirement: Applicant must provide own financing (co-financing) of at least 20%.
+  value: ≥20% own financing
+  intake_field: cofinancingBand
+  quote: vähemalt 20%
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g9
+  gate_family: G3_financial
+  requirement: Maximum grant per project is 3,000,000 euros, from a total measure budget of
+    17,000,000 euros.
+  value: max €3,000,000; total budget €17,000,000
+  intake_field: ticketBand
+  quote: "Suurim toetus \n 3 000 000"
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g10
+  gate_family: G6_conditionality
+  requirement: Applications are currently closed/paused as the measure's budget has been reached
+    as of 04.12.2025 16:00.
+  value: applications paused since 04.12.2025
+  intake_field: needBy
+  quote: Seoses meetme eelarve täitumisega on taotluste vastuvõtmine peatatud alates 04.12.2025
+    kell 16.00 .
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Applicant must submit the application together with a project and business
+    plan, financial statement projections, activity plan and budget, and (where applicable)
+    a Do No Significant Harm (DNSH) assessment.
+  quote: "Valmista taotluse lisadokumendid eelnevalt ette: \n Taotlusvormi näidis (täidetakse\
+    \ ja esitatakse e-toetuse keskkonnas) \n Projekti- ja äriplaani vorm"
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Applicant must submit documents confirming ownership or right of use of the
+    property where equipment will be installed, or at minimum a written preliminary agreement
+    to acquire/rent the property for the eligibility period plus at least three years thereafter.
+  quote: Dokumendid, mis kinnitavad taotleja kinnistu, millele tarnitavate seadmete ostuks
+    toetust taotletakse, omandi- või kasutusõigust, või asjaolu, et taotleja on sõlminud vähemalt
+    kirjaliku eelkokkuleppe kinnistu omanikuga kinnistu omandamiseks või rentimiseks projekti
+    abikõlblikkuse perioodil ja vähemalt kolme aasta jooksul projekti abikõlblikkuse perioodi
+    lõppemisest arvates
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Beneficiary must submit current-year balance sheet and income statement as
+    of the end of the last completed quarter, plus prior year's annual report if not available
+    in the Commercial Register.
+  quote: Jooksva aasta bilanss ja kasumiaruanne viimase lõppenud kvartali seisuga
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Beneficiary must comply with procurement principles (economical use of funds,
+    equal treatment of bidders, use of competition, documentation retention, prohibition on
+    transactions between related parties) and use the state procurement register for purchases
+    of €100,000 or more.
+  quote: 100 000 eurot ja enam maksvate ostude puhul tuleb ostumenetlus viia läbi riigihangete
+    registris (RHR)
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Beneficiary must keep project costs separate from other costs, e.g. via a dedicated
+    cost account or cost-code tagging.
+  quote: Toetuse saajal on kohustus eristada projektiga seotud kulud teistest kuludest.
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: If total project cost exceeds €100,000, beneficiary must install a signboard
+    with project name, objective and EU logo at the investment site, erected immediately upon
+    starting related works or equipment installation, and kept up for three years from the
+    final payment.
+  quote: Kui projekti kogumaksumus on suurem kui 100 000 eurot , tuleb paigaldada investeeringu
+    asukohta tahvel, millel on kajastatud projekti nimi, eesmärk ja Euroopa Liidu logo.
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: 'Beneficiary must meet signboard specification requirements: at least 25% of
+    area for the logo, at least 30% of height for project name and objective, minimum size
+    500x300mm.'
+  quote: "tahvlile paigutatakse logo, millele eraldatakse vähemalt 25 protsenti tahvli pindalast\
+    \ \n tahvlile kirjutatakse projekti nimetus ja peamine eesmärk, millele eraldatakse vähemalt\
+    \ 30 protsenti tahvli kõrgusest \n tahvli minimaalne suurus on 500×300 mm"
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Beneficiary must submit interim and final reports and payment claims through
+    the structural funds e-support environment.
+  quote: 'Esita projektiga seonduv aruandlus ja väljamaksetaotlused struktuurifondide e-​toetuse
+    keskkonna kaudu:'
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Recipient of Just Transition Fund support has an obligation to inform the public
+    about the use of the support.
+  quote: Olles saanud toetust Õiglase Ülemineku Fondist, on sul kohustus avalikkust toetuse
+    kasutamisest teavitada.
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Support cannot be used for state taxes and state fees (except employee-related
+    taxes), for acquisition of certain vehicles/mobile machinery, for VAT, or for certain
+    personnel costs (holiday pay, severance/termination benefits, health check costs).
+  quote: "riiklik maks ja riigilõiv, välja arvatud töötaja töötasuga seotud maks ja makse\
+    \ \n liiklusseaduse § 2 punktis 34 sätestatud liikurmasina soetamise kulu \n liiklusvahendi\
+    \ soetamise kulu \n käibemaks"
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (10/10 gates, 10/10 obligations passed
+  mechanical check -> llm_cited).
+application:
+  channel: Application is completed and submitted through the structural funds e-support environment
+    (e-toetuse keskkond).
+  typical_timeline: Applications are currently closed as of 04.12.2025; excess applications
+    are processed in order of receipt.
+  quote: Taotlus täidetakse ja esitatakse struktuurifondide e-​toetuse keskkonnas
+  source:
+    file: eis_ida_viru_v_ike_ja_keskmi_investeeringute_toetus.html
+    locator: chunk 3
+  verified: llm_cited

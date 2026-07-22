@@ -1,0 +1,22 @@
+id: altum_aizdevumi_produktivit_te
+name: altum_aizdevumi_produktivit_te
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-latvia
+  gate_family: G1_nexus
+  requirement: Support is administered by AS 'Attīstības finanšu institūcija Altum', the Latvian
+    national development finance institution, implying applicants must be Latvian-based businesses.
+  value: Latvia
+  intake_field: entityCountries
+  quote: AS “Attīstības finanšu institūcija Altum”
+  source:
+    file: altum_aizdevumi_produktivit_te_em_gov_lv_sam_1212.html
+    locator: chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (1/1 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).

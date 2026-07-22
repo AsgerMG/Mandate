@@ -217,6 +217,14 @@ def load_doc(fname: str) -> list[tuple[str, str]]:
     raw = path.read_text(errors="replace")
     text = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", raw, flags=re.S | re.I)
     text = re.sub(r"<[^>]+>", " ", text)
+    # Some sites (seen on Norwegian gov HTML) serve accented characters as
+    # literal named/numeric entities (&oslash; etc.) rather than raw UTF-8 —
+    # left undecoded, a model's naturally-typed "ø" in a quote can never
+    # verbatim-match this page's literal "&oslash;" text, silently failing
+    # every gate touching an accented word even though the sentence is a
+    # perfect real match.
+    import html as _html
+    text = _html.unescape(text)
     text = re.sub(r"[ \t]+", " ", text)
     chunks = [text[i:i + 6000] for i in range(0, min(len(text), 300000), 6000)]
     return [(f"chunk {i+1}", c) for i, c in enumerate(chunks) if c.strip()]

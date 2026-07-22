@@ -1,0 +1,271 @@
+id: altum_kult_ras_komersantu_atba
+name: altum_kult_ras_komersantu_atba
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-registration
+  gate_family: G1_nexus
+  requirement: Applicant must be a commercial entity registered in Latvia.
+  value: Registered in Latvia
+  intake_field: entityCountries
+  quote: Atbalstu var saņemt Latvijā reģistrēts komersants
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 1, §7
+  verified: llm_cited
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: Applicant must qualify as a micro, small or medium enterprise per Commission
+    Regulation No 651/2014 Annex I.
+  value: Micro/small/medium enterprise
+  intake_field: fteBand
+  quote: kurš atbilst sīkā (mikro), mazā vai vidējā uzņēmuma definīcijai, kas noteikta Komisijas
+    2014. gada 17. jūnija Regulas (ES) Nr. 651/2014, ar ko noteiktas atbalsta kategorijas
+    atzīst par saderīgām ar iekšējo tirgu, piemērojot Līguma 107. un 108. pantu (turpmāk –
+    Komisijas regula Nr. 651/2014), 1. pielikumā
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 1, §7.1
+  verified: llm_cited
+- id: g3-min-turnover-2019
+  gate_family: G3_financial
+  requirement: Applicant's total turnover in 2019 must be at least EUR 40,000.
+  value: ≥ EUR 40,000 (2019 turnover)
+  intake_field: turnoverBand
+  quote: kura kopējais apgrozījums 2019. gadā ir vismaz 40 000 euro
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 1, §7.2
+  verified: llm_cited
+- id: g1-sector-nace
+  gate_family: G1_nexus
+  requirement: Applicant's main or secondary activity must be in one of the specified NACE
+    sectors (arts, entertainment, recreation, related professional/technical or equipment
+    rental activities).
+  value: NACE M74.9, N77.39, R90, R91, R93
+  intake_field: activityCountries
+  quote: 'kurš savu pamatdarbību vai blakus darbību veic kādā no šīm nozarēm: 7.3.1. NACE
+    2. red. M sadaļas "Profesionālie zinātniskie un tehniskie pakalpojumi" grupa 74.9'
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 1, §7.3
+  verified: llm_cited
+- id: g4-economic-viability
+  gate_family: G4_borrower_model
+  requirement: Applicant must be economically viable and need the support to mitigate the
+    negative impact of Covid-19 on its business or financial situation.
+  value: Economically viable, Covid-19 impacted
+  intake_field: borrowerModel
+  quote: kurš ir ekonomiski dzīvotspējīgs un kuram atbalsts nepieciešams, lai mazinātu Covid-19
+    izplatības seku negatīvo ietekmi uz tā saimniecisko darbību vai finanšu stāvokli
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 1, §7.4
+  verified: llm_cited
+- id: g2-exclude-undertaking-in-difficulty-medium
+  gate_family: G2_size_ownership
+  requirement: Support is not granted to a medium-sized undertaking that was already in difficulty
+    on 31 December 2019 and remains in difficulty at the time of granting support, per Regulation
+    651/2014 Art 2(18).
+  value: Excluded if undertaking in difficulty (medium)
+  intake_field: lossesOverHalfCapital
+  quote: vidējais saimnieciskās darbības veicējs, kurš jau 2019. gada 31. decembrī bija un
+    atbalsta piešķiršanas brīdī ir uzskatāms par nonākušu grūtībās atbilstoši Komisijas regulas
+    Nr. 651/2014 2. panta 18. punktā minētajai definīcijai
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 1, §8.1
+  verified: llm_cited
+- id: g2-exclude-undertaking-in-difficulty-micro-small
+  gate_family: G2_size_ownership
+  requirement: Support is not granted to a micro or small undertaking that was already in
+    difficulty on 31 December 2019 and, at the time of granting, is subject to legal protection
+    proceedings, insolvency proceedings, or has received unrepaid rescue aid or is under a
+    restructuring plan.
+  value: Excluded if in difficulty + insolvency/restructuring status
+  intake_field: lossesOverHalfCapital
+  quote: tas jau 2019. gada 31. decembrī bija nonācis grūtībās atbilstoši Komisijas regulas
+    Nr. 651/2014 2. panta 18. punktā minētajai definīcijai
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §8.2.1
+  verified: llm_cited
+- id: g5-use-of-funds-project-cost
+  gate_family: G5_use_of_funds
+  requirement: Support applies only to events (pasākums) whose total costs exceed EUR 15,000.
+  value: '> EUR 15,000 total event cost'
+  intake_field: cofinancingBand
+  quote: pasākumam, kura kopējās izmaksas pārsniedz 15 000 euro
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §10.3
+  verified: llm_cited
+- id: g3-max-support-per-event
+  gate_family: G3_financial
+  requirement: Maximum support amount for implementation of one event is EUR 300,000.
+  value: Max EUR 300,000 per event
+  intake_field: ticketBand
+  quote: Maksimālais atbalsta apmērs viena pasākuma īstenošanai ir 300 000 euro
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §11
+  verified: llm_cited
+- id: g3-loan-grant-ratio
+  gate_family: G3_financial
+  requirement: The combined loan and grant amount for implementing an event cannot exceed
+    100% of the event's costs.
+  value: Loan + grant ≤ 100% of event costs
+  intake_field: cofinancingBand
+  quote: pasākuma īstenošanai piešķirtā aizdevuma un granta kopējais apmērs nevar pārsniegt
+    100 %
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §13
+  verified: llm_cited
+- id: g3-max-cumulative-support
+  gate_family: G3_financial
+  requirement: The cumulative outstanding grants and loans previously received and newly granted
+    to one recipient and its group of related persons under this programme cannot exceed EUR
+    900,000.
+  value: ≤ EUR 900,000 cumulative per recipient/group
+  intake_field: ticketBand
+  quote: iepriekš saņemto grantu un aizdevumu neatmaksātā kopsumma vienam atbalsta saņēmējam
+    un ar to saistīto personu grupai, kas piešķirta šo noteikumu ietvaros, nepārsniedz 900
+    000  euro
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §14
+  verified: llm_cited
+- id: g4-loan-repayment-term
+  gate_family: G4_borrower_model
+  requirement: Loan repayment term must not exceed 30 months, considering the recipient's
+    business and working capital cycle.
+  value: Max 30 months repayment term
+  intake_field: borrowerModel
+  quote: Aizdevuma atmaksas termiņš nepārsniedz 30 mēnešus, ievērojot atbalsta saņēmēja darbības
+    un apgrozāmo līdzekļu aprites ciklu
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §15
+  verified: llm_cited
+- id: g4-loan-deferral
+  gate_family: G4_borrower_model
+  requirement: Start of loan repayment can be deferred by up to 24 months.
+  value: Deferral up to 24 months
+  intake_field: borrowerModel
+  quote: Aizdevuma atmaksas uzsākšanu var atlikt līdz 24 mēnešiem
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §16
+  verified: llm_cited
+- id: g3-max-grant-share
+  gate_family: G3_financial
+  requirement: Maximum grant amount for implementation of one event does not exceed 40% of
+    the total support amount for the event, and the maximum grant amount is up to EUR 120,000.
+  value: Grant ≤ 40% of total support, max EUR 120,000
+  intake_field: ticketBand
+  quote: Viena pasākuma īstenošanai maksimālais granta apmērs nepārsniedz 40 % no kopējā piešķirtā
+    atbalsta apmēra pasākuma īstenošanai arī tad, ja atbalstu saņem vairāki viena pasākuma
+    īstenošanā iesaistītie atbalsta saņēmēji. Viena pasākuma īstenošanai maksimālais granta
+    apmērs ir līdz 120 000 euro
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §17
+  verified: llm_cited
+- id: g5-implementation-timeline
+  gate_family: G5_use_of_funds
+  requirement: The recipient must confirm the event will be implemented within 24 months from
+    the date of the Altum decision granting support.
+  value: Implementation within 24 months of decision
+  intake_field: needBy
+  quote: ja atbalsta saņēmējs apliecina, ka pasākums tiks īstenots 24 mēnešu laikā no datuma,
+    kad sabiedrība "Altum" pieņēmusi lēmumu par atbalsta piešķiršanu
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §10.2
+  verified: llm_cited
+- id: g1-exclude-financial-insurance
+  gate_family: G1_nexus
+  requirement: Support is not granted to financial and insurance activities (NACE Rev.2 Section
+    K).
+  value: Excludes NACE Section K
+  intake_field: activityCountries
+  quote: Atbalsts šo noteikumu ietvaros netiek piešķirts finanšu un apdrošināšanas darbībai
+    (NACE 2.  redakcijas K sadaļa "Finanšu un apdrošināšanas darbības")
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 1, §5
+  verified: llm_cited
+- id: g5-grant-eligible-costs
+  gate_family: G5_use_of_funds
+  requirement: 'The grant portion of support may only be used to compensate specific event
+    costs: artistic preparation costs and performer fees, and technical equipment costs.'
+  value: Artistic preparation/performer fees + technical equipment
+  intake_field: none
+  quote: 'Atbalstu granta veidā sniedz, kompensējot šādas pasākuma izmaksas: 18.1. pasākuma
+    mākslinieciskās sagatavošanas izmaksas un atlīdzība izpildītājiem (piemēram, māksliniekiem,
+    scenogrāfiem, režisoriem); 18.2. tehniskā nodrošinājuma izmaksas (piemēram, skatuvei,
+    gaismām, telpām)'
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §18
+  verified: llm_cited
+obligations:
+- requirement: Applicant must submit information and confirmation about previously received
+    and planned limited-amount aid under the Temporary Framework, including grant date, granting
+    authority, legal basis, instrument, and repaid amount if applicable.
+  quote: informāciju un apliecinājumu par iepriekš saņemtā un plānotā ierobežota apjoma atbalsta
+    apmēru, kas izsniegts saskaņā ar Eiropas Komisijas 2020. gada 19. marta paziņojumu "Pagaidu
+    regulējums valsts atbalsta pasākumiem, ar ko atbalsta ekonomiku pašreizējā Covid-19 uzliesmojuma
+    situācijā" (C(2020)1863) (turpmāk – Pagaidu regulējums), tā piešķiršanas datumu, atbalsta
+    sniedzēja nosaukumu, normatīvos aktus, saskaņā ar kuriem ierobežota apjoma atbalsts ir
+    piešķirts vai plānots to piešķirt, atbalsta instrumentu un, ja attiecināms, atmaksātā
+    ierobežota apjoma atbalsta apmēru
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §20.2
+  verified: llm_cited
+- requirement: If multiple recipients apply for the same event, each must confirm that its
+    application does not include cost items for which another recipient has applied or plans
+    to apply.
+  quote: apliecinājumu, ka atbalsta pieteikumā nav iekļautas tādas pasākuma īstenošanas izmaksu
+    pozīcijas, par kurām atbalstam ir pieteicies vai plāno pieteikties cits atbalsta saņēmējs
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §20.3
+  verified: llm_cited
+- requirement: After the event takes place, the recipient must submit a report to Altum on
+    the implementation of the event, including revenue and expenses, timing, visitor numbers
+    and other related matters; if the event did not take place due to Covid-19 restrictions,
+    additional information on the reasons must be provided.
+  quote: Pēc pasākuma norises atbalsta saņēmējs sabiedrībā "Altum" iesniedz pārskatu par pasākuma
+    īstenošanu. Pārskatā sniedz informāciju par ieņēmumiem un izdevumiem, pasākuma norises
+    laiku, apmeklētāju skaitu un citiem ar pasākuma īstenošanu saistītiem jautājumiem
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §23.1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/17 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Recipients receiving support for the same event cannot be compensated for the same
+    implementation costs, and grants under this programme are counted toward Temporary Framework
+    limited-amount aid ceilings via the recipient's declaration obligations.
+  quote: tie nevar saņemt atbalstu par vienām un tām pašām pasākuma īstenošanas izmaksām
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §12
+  verified: llm_cited
+application:
+  channel: Application submitted to AS "Attīstības finanšu institūcija Altum"
+  typical_timeline: Not specified in extracted text beyond 24-month implementation requirement
+    post-decision
+  quote: 'Lai saņemtu atbalstu, atbalsta saņēmējs iesniedz sabiedrībā "Altum": 20.1. atbalsta
+    pieteikumu'
+  source:
+    file: altum_kult_ras_komersantu_atba_mk_noteikumi_320816.html
+    locator: chunk 2, §20
+  verified: llm_cited

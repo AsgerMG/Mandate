@@ -1,0 +1,377 @@
+id: ipcei_hy2use
+name: ipcei_hy2use
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-1
+  gate_family: G1_nexus
+  requirement: Aid is granted by the notified Member States to participating undertakings
+    located/operating in those Member States under Article 107(3)(b) TFEU as an IPCEI.
+  value: Multi-country IPCEI (AT, BE, DK, FI, FR, GR, IT, NL, PL, PT, SK, ES, SE)
+  intake_field: entityCountries
+  quote: Based on the assessment under the IPCEI Communication, the Commission concludes that
+    the notified aid measures are compatible with the internal market pursuant to Article
+    107(3)(b) TFEU.
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.103
+  verified: llm_cited
+- id: G1-2
+  gate_family: G1_nexus
+  requirement: The project must qualify as an integrated project inserted in a common structure,
+    roadmap or programme, with individual components that are complementary and significantly
+    add value.
+  value: Integrated project requirement
+  intake_field: consortium
+  quote: the Commission may consider eligible an "integrated project", that is to say, a group
+    of single projects inserted in a common structure, roadmap or programme aiming at the
+    same objective and based on a coherent systemic approach.
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.59
+  verified: llm_cited
+- id: G2-1
+  gate_family: G2_size_ownership
+  requirement: Beneficiaries must not be undertakings in difficulty as defined in the rescue
+    and restructuring guidelines.
+  value: Not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: The Member States have further confirmed that the participating undertakings are
+    not undertakings in difficulty as defined in the rescue and restructuring guidelines
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.57
+  verified: llm_cited
+- id: G2-2
+  gate_family: G2_size_ownership
+  requirement: To qualify as an SME under the relevant Union definition, the enterprise's
+    annual turnover must not exceed EUR 50 million.
+  value: SME turnover threshold EUR 50 million
+  intake_field: turnoverBand
+  quote: 'in order to qualify as an SME under the relevant Union definition, the enterprise’s
+    annual turnover must not exceed EUR
+
+    50 million'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.99
+  verified: false
+  verify_note: 'fragment not found verbatim: ''in order to qualify as an SME under the relevant
+    U'''
+- id: G3-1
+  gate_family: G3_financial
+  requirement: The aid is capped in nominal terms by the notified and actual eligible costs
+    and the discounted value of aid must not exceed the notified funding gap.
+  value: Aid ≤ min(eligible costs, funding gap)
+  intake_field: turnoverBand
+  quote: 'The aid is capped in nominal terms by the notified and actual eligible costs. Member
+
+    States will also ensure that the discounted value in 2022 terms of the aid (using the
+
+    notified WACC as a discount factor) will not exceed the notified funding gap.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.105
+  verified: llm_cited
+- id: G3-2
+  gate_family: G3_financial
+  requirement: The claw-back mechanism applies to individual aid projects where the notified
+    aid amount, per Member State and per individual project, exceeds EUR 50 million.
+  value: 'Claw-back threshold: aid amount > EUR 50 million per project'
+  intake_field: ticketBand
+  quote: 'The claw-back mechanism will apply to those individual aid projects by the aid
+
+    beneficiaries for which the notified aid amount, per Member State and per individual
+
+    project, is above EUR 50 million.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.105
+  verified: llm_cited
+- id: G3-3
+  gate_family: G3_financial
+  requirement: Total Hy2Use eligible costs across all Member States amount to approximately
+    EUR 9,545 million.
+  value: Total eligible costs ≈ EUR 9,545 million
+  intake_field: ticketBand
+  quote: 'They also submit that the total Hy2Use eligible costs21 are approximatively EUR
+
+    9 545 million.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.53
+  verified: llm_cited
+- id: G3-4
+  gate_family: G3_financial
+  requirement: The claw-back allocation ratio to the State is capped at the lesser of 60%
+    or the ratio of net disbursed State aid to verified eligible costs.
+  value: Max 60% clawback share
+  intake_field: ticketBand
+  quote: 'Surplus, if it is positive, will be multiplied by an allocation ratio ShareState
+    defined as
+
+    i i
+
+    the lesser between 60% or the net disbursed State aid from 2022 to year “i” divided by
+
+    the verified eligible costs from 2022 to year “i” (both expressed in nominal terms).'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.106
+  verified: llm_cited
+- id: G4-1
+  gate_family: G4_borrower_model
+  requirement: The aid to be granted by all Member States will take the form of direct grants.
+  value: Direct grant instrument
+  intake_field: borrowerModel
+  quote: The aid to be granted by all the Member States will take the form of direct grants.
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.56
+  verified: llm_cited
+- id: G4-2
+  gate_family: G4_borrower_model
+  requirement: A claw-back mechanism (via letter of credit or account-based system) must be
+    implemented to recoup a share of excess project profitability above the beneficiary's
+    cost of capital.
+  value: Claw-back mechanism triggered by positive NPV surplus above WACC-based return
+  intake_field: conditionality
+  quote: 'The claw-back mechanism only applies in case of positive net present values of cash
+
+    flows after taking into account the actual State aid disbursements. No surplus can be
+
+    generated by projects with negative net present value after State aid'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.106
+  verified: llm_cited
+- id: G5-1
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs are restricted to R&D&I and FID activities (TF2) or infrastructure
+    construction until full operation (TF1), and must comply with the requirements of the
+    Annex to the IPCEI Communication.
+  value: Eligible costs limited to R&D&I/FID or infrastructure construction
+  intake_field: developmentStage
+  quote: 'Eligible costs are only those costs of the individual projects, which comply with
+    the requirements of
+
+    the Annex to the IPCEI Communication.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.53
+  verified: llm_cited
+- id: G5-2
+  gate_family: G5_use_of_funds
+  requirement: For infrastructure projects (TF1), eligible costs cover only capital expenditures
+    for construction until full operation, excluding operational costs such as supplies, maintenance
+    or refurbishment.
+  value: TF1 eligible costs = construction CAPEX only, excludes OPEX
+  intake_field: developmentStage
+  quote: 'the Commission notes that all of the individual projects within TF
+
+    1 include in their eligible costs only the capital expenditures needed for the
+
+    construction of the infrastructure to the exclusion of any costs related to its
+
+    operation, including costs for supplies and for maintenance or refurbishments.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.92
+  verified: llm_cited
+- id: G5-3
+  gate_family: G5_use_of_funds
+  requirement: FID activities must not correspond to mass production or commercial activities
+    and must contain a very important R&D&I component integral to successful project implementation.
+  value: FID excludes mass production/commercial activities
+  intake_field: developmentStage
+  quote: do not correspond to mass production nor to commercial activities
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.93
+  verified: llm_cited
+- id: G6-1
+  gate_family: G6_conditionality
+  requirement: State aid must not be granted before the Commission's approval decision, and
+    the granting of aid is suspended for beneficiaries with outstanding unlawful/incompatible
+    aid until repayment.
+  value: Suspension pending prior repayment of unlawful aid; no aid before Commission approval
+  intake_field: conditionality
+  quote: 'The Member States have committed to suspend the granting of the notified aid if
+
+    the beneficiary still has at its disposal earlier unlawful aid that was declared
+
+    incompatible by a Commission Decision (either as individual aid or aid under an
+
+    aid scheme having been declared incompatible), until that beneficiary has
+
+    reimbursed or paid into a blocked account the total amount of unlawful and
+
+    incompatible aid and the corresponding recovery interest.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.56
+  verified: llm_cited
+- id: G6-2
+  gate_family: G6_conditionality
+  requirement: Cumulation with other aid, de minimis aid or EU funding to cover the same eligible
+    costs is allowed only if total public funding does not exceed the most favourable funding
+    rate under applicable Union law.
+  value: Cumulation capped at most favourable applicable funding rate
+  intake_field: cofinancingBand
+  quote: 'the Member States have indicated that cumulation with other aid, de minimis aid26
+    or EU funding will be allowed to cover the same eligible costs,
+
+    provided that the total amount of public funding granted in relation to the same
+
+    eligible costs does not exceed the most favourable funding rate laid down in the
+
+    applicable rules of Union law.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.57
+  verified: llm_cited
+- id: G6-3
+  gate_family: G6_conditionality
+  requirement: The application for aid must precede the start of works.
+  value: Aid application must precede start of works
+  intake_field: needBy
+  quote: 'According to footnote 26 of the IPCEI Communication,
+
+    the application for aid must precede the starts of the works.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.90
+  verified: llm_cited
+- id: G6-4
+  gate_family: G6_conditionality
+  requirement: Beneficiaries must commit to disseminate R&D&I results and unconditionally
+    license IP-protected results of funded projects on FRAND conditions.
+  value: Mandatory dissemination and FRAND licensing of IP results
+  intake_field: conditionality
+  quote: 'potential negative effects in terms of market foreclosure and
+
+    dominance are be mitigated by the participating undertakings’ commitments to
+
+    disseminate R&D&I results (see recitals (223) to (224)) and to unconditionally
+
+    license IP-protected results of the funded projects based on FRAND conditions'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.102
+  verified: llm_cited
+obligations:
+- requirement: Participating undertakings must report annually on the execution of their activities,
+    spillovers, and compliance with the 'do no significant harm' principle to national funding
+    authorities.
+  quote: 'the participating undertakings will report annually the execution of
+
+    their activities, as regards the advancements of their individual projects, the
+
+    individually committed spillovers and the compliance with the principle of
+
+    ‘do no significant harm’ to the national funding authorities and any other
+
+    complementary activities with other EU initiatives'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.103
+  verified: llm_cited
+- requirement: Member States must provide an annual summary report of undertakings' execution
+    of activities to the Commission.
+  quote: 'the Member States will provide annually a summary report (of the
+
+    undertakings’ execution of their activities) to the Commission.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.103
+  verified: llm_cited
+- requirement: The Steering Board must report annually to the Commission on the progress of
+    Hy2Use, including through KPIs.
+  quote: 'the SB, which has the role of supervising the monitoring and
+
+    implementation of Hy2Use as a whole (see recital (33)), will report
+
+    annually to the Commission on the progress of Hy2Use (including through
+
+    KPIs).'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.103
+  verified: llm_cited
+- requirement: Member States must report to the Commission on the application of the claw-back
+    mechanism within one month following completion of each test-run and after the End date.
+  quote: 'The application of the claw-back mechanism will be reported by the relevant Member
+
+    State to the Commission within 1 month following completion of each test-run and after
+
+    the End date.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.106
+  verified: llm_cited
+- requirement: Member States must publish the full text of individual aid granting decisions
+    and related information per the transparency requirements of the IPCEI Communication.
+  quote: 'Member States have committed to publish in the
+
+    Commission’s transparency award module or on a comprehensive State aid
+
+    website, at national or regional level, the full text of the individual aid granting
+
+    decision and its implementing provisions or a link to it, as well as all related
+
+    information as specified in point 48 of the IPCEI Communication.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.58
+  verified: llm_cited
+- requirement: Separate analytical accounting is required from aid beneficiaries for their
+    individual project(s) to support the claw-back mechanism.
+  quote: 'For this purpose, separate analytical
+
+    accounting will be required from the aid beneficiaries in the relevant Member State for
+
+    their individual project or projects.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.105
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/17 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation with other State aid, de minimis aid, or EU funding covering the same eligible
+    costs is permitted provided total public funding does not exceed the most favourable applicable
+    Union funding rate.
+  quote: 'cumulation with other aid, de minimis aid26 or EU
+
+    funding will be allowed to cover the same eligible costs,
+
+    provided that the total amount of public funding granted in relation to the same
+
+    eligible costs does not exceed the most favourable funding rate laid down in the
+
+    applicable rules of Union law.'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.57
+  verified: llm_cited
+application:
+  channel: Notification by Member States to the European Commission under Article 108(3) TFEU;
+    national funding agreements concluded following Commission approval decision
+  typical_timeline: Aid granted following prior Commission approval; national funding agreements
+    expected to be concluded after the Commission's decision
+  quote: 'The Member States submit that they shall not grant State aid to any of the
+
+    individual projects before notification of the Commission’s decision approving
+
+    aid for the execution of Hy2Use. The granting of State aid will be governed by
+
+    national funding agreements that are expected to be concluded following the
+
+    Commission’s decision'
+  source:
+    file: ipcei_hy2use_commission_decision_SA64650.pdf
+    locator: p.59
+  verified: llm_cited

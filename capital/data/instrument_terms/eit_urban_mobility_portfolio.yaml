@@ -1,0 +1,220 @@
+id: eit_urban_mobility_portfolio
+name: eit_urban_mobility_portfolio
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-incorporation
+  gate_family: G1_nexus
+  requirement: The applicant must be incorporated in an EU Member State or a Horizon Europe
+    Associated Country.
+  value: EU Member State or Horizon Europe Associated Country
+  intake_field: entityCountries
+  quote: Incorporated in EU Member State or Horizon Europe Associated Country
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1-target-market
+  gate_family: G1_nexus
+  requirement: The applicant's proposed innovations must target the urban mobility market.
+  value: Urban mobility market
+  intake_field: activityCountries
+  quote: Your proposed innovations target the urban mobility market.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4-fundraising-stage
+  gate_family: G4_borrower_model
+  requirement: The applicant must be a startup currently engaged in an active fundraising
+    round at pre-seed/seed or Series A stage.
+  value: Pre-seed/seed or Series A active fundraising round
+  intake_field: developmentStage
+  quote: You are a startup currently engaged in an active fundraising round (pre-seed/seed
+    or series A round).
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1-not-existing-portfolio
+  gate_family: G1_nexus
+  requirement: The applicant must not currently be part of the EIT Urban Mobility investment
+    portfolio.
+  value: Not already a portfolio company
+  intake_field: none
+  quote: You are not currently part of EIT Urban Mobility investment portfolio.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-valuation-cap
+  gate_family: G3_financial
+  requirement: The applicant company's pre-money valuation must not exceed €50,000,000.
+  value: ≤ €50,000,000 pre-money valuation
+  intake_field: turnoverBand
+  quote: Your company pre-money valuation does not exceed €50,000,000.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-founder-ownership
+  gate_family: G2_size_ownership
+  requirement: Individual founders or executive team members must jointly hold more than 40%
+    of the company's equity before the current fundraising round.
+  value: '>40% founder/executive equity ownership pre-round'
+  intake_field: ownerOver25
+  quote: Your startup has individual founders or executive team members who jointly hold more
+    than 40% share of the company’s equity before the current fund raising.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4-development-stage
+  gate_family: G4_borrower_model
+  requirement: The applicant must have a prototype, pilot, or Minimum Viable Product (MVP).
+  value: Prototype, pilot, or MVP required
+  intake_field: developmentStage
+  quote: You have a prototype, pilot, or Minimum Viable Product (MVP).
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5-core-topics
+  gate_family: G5_use_of_funds
+  requirement: The innovative product/service must contribute to at least one of the EIT Urban
+    Mobility core topics.
+  value: Contribution to EIT Urban Mobility core topics
+  intake_field: none
+  quote: Innovative product/service contributing to at least one of the EIT Urban Mobility
+    core topics
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-investment-amount
+  gate_family: G3_financial
+  requirement: Financial support offered is up to €2.5M per startup as the target of the initial
+    investment.
+  value: Up to €2.5M initial investment
+  intake_field: ticketBand
+  quote: 'Target of the initial investment: up to €2.5M'
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3-target-equity
+  gate_family: G3_financial
+  requirement: EIT Urban Mobility targets acquiring 5%-10% equity in the investment.
+  value: 5%-10% target equity
+  intake_field: ownerOver25
+  quote: 'Target equity: 5% – 10%'
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4-lead-investor-required
+  gate_family: G4_borrower_model
+  requirement: Companies must be fundraising and have secured a lead investor to be eligible
+    for investment.
+  value: Lead investor secured required
+  intake_field: consortium
+  quote: EIT Urban Mobility invests in companies that are fundraising and have a lead investor
+    secured.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4-coinvestor-model
+  gate_family: G4_borrower_model
+  requirement: EIT Urban Mobility operates as a co-investor alongside other accredited investors
+    on a pari-passu basis, though it may act as initial non-local investor in RIS ecosystems
+    for pre-seed/seed startups.
+  value: Co-investor pari-passu; may lead in RIS pre-seed/seed
+  intake_field: borrowerModel
+  quote: EIT Urban Mobility operates as a co-investor alongside other accredited investors
+    on a pari-passu basis. Nevertheless, it has the flexibility to act as the initial non-local
+    investor, particularly in Regional Innovation Scheme (RIS) ecosystems, focusing on pre-seed
+    and seed-stage startups.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4-instrument-form
+  gate_family: G4_borrower_model
+  requirement: The investment consists of a cash element and in-kind support, both capitalised
+    either through a capital increase event or a SAFE instrument.
+  value: Cash + in-kind, via capital increase or SAFE
+  intake_field: borrowerModel
+  quote: The investment consists of a cash element and in-kind support, both to be capitalised
+    either through a capital increase event or SAFE instrument.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4-grant-plus-shares
+  gate_family: G4_borrower_model
+  requirement: Financial support typically takes the form of a Horizon Europe grant combined
+    with a service package, and startups must allocate shares at nominal value to EIT Urban
+    Mobility as a key requirement.
+  value: Horizon Europe grant + service package + nominal-value share allocation
+  intake_field: borrowerModel
+  quote: This support typically takes the form of a grant awarded under the Horizon Europe
+    framework, which is often combined with a service package component. For startups funded
+    under the Financial Support to Startups Open Call, a key requirement is contributing to
+    EIT Urban Mobility’s financial sustainability by allocating shares, with the subscription
+    price of these shares set at their nominal value.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 4
+  verified: llm_cited
+obligations:
+- requirement: Both the grant and the subscription of shares at nominal value may have tax
+    implications depending on the country of incorporation, and applicants are advised to
+    consult a local tax advisor.
+  quote: It is important to note that both the grant and the subscription of shares at nominal
+    value may have tax implications, which can vary depending on the country of incorporation.
+    We strongly recommend consulting with a local tax advisor to fully understand any potential
+    tax liabilities or obligations related to these aspects of the funding.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 4
+  verified: llm_cited
+- requirement: Applicants must submit their application form within the given deadline via
+    the EIT Urban Mobility Programmes Portal, following registration and Partner Information
+    Form completion.
+  quote: Access the  EIT Urban Mobility Programmes Portal  and find the call for the currently
+    open cut-off date under Grant Management → Grant Management → Open Calls. See section
+    4.2 of the Call Manual for submission steps. Submit your application form within the given
+    deadline.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: After submission, EIT Urban Mobility checks eligibility and admissibility,
+    then evaluates content with independent expert evaluators, and all applicants receive
+    Summary Evaluation Reports.
+  quote: 'Once the applicants have submitted their proposals and the cut-off has passed, EIT
+    Urban Mobility will proceed to: Check eligibility and admissibility of those proposals
+    and, if successful, Evaluate the content of the proposals with the support of independent
+    expert evaluators.'
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 3
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/14 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Applications are submitted via the EIT Urban Mobility Programmes Portal (NetSuite),
+    under Grant Management → Open Calls, following registration and Partner Information Form
+    completion.
+  typical_timeline: Cut-offs occur 4 times per year; the Financial Support to Startups Call
+    referenced is open until 10 January 2025.
+  quote: Access the  EIT Urban Mobility Programmes Portal  and find the call for the currently
+    open cut-off date under Grant Management → Grant Management → Open Calls.
+  source:
+    file: eit_urban_mobility_portfolio_startup_investment_page.html
+    locator: chunk 2
+  verified: llm_cited

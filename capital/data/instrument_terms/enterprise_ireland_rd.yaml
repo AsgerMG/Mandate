@@ -1,0 +1,518 @@
+id: enterprise_ireland_rd
+name: enterprise_ireland_rd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Applicant must be an existing or potential client of Enterprise Ireland, Údarás
+    na Gaeltachta, or a Local Enterprise Office (subject to prevailing agency policies), unless
+    exempt under the Housing for All Offer.
+  value: EI/Údarás/LEO client status required
+  intake_field: bankRelationship
+  quote: Eligible companies are limited to Enterprise Ireland 1, Údarás na Gaeltachta or any
+    of the Local Enterprise Offices subject to the prevailing policies of those agencies.
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.6
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Company must operate in the manufacturing or internationally traded services
+    sector and be currently trading internationally or expected to trade internationally in
+    the short term.
+  value: Manufacturing or internationally traded services, internationally trading
+  intake_field: activityCountries
+  quote: Companies must operate in the Manufacturing or internationally traded services areas
+    of business to be eligible for this support and be either currently trading internationally
+    or trading internationally within the short term.
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.6
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: The majority of the project must be carried out in Ireland, with cost analysis
+    distinguishing costs incurred in the State from costs incurred outside the State.
+  value: Majority of project in Ireland
+  intake_field: activityCountries
+  quote: 'The majority of the project must be carried out in Ireland and the assessment criteria
+    will
+
+    require an analysis of costs incurred in the State and costs incurred outside the State.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.5
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: Where a company sources more than 50% of its materials for the RD&I project
+    in another State and/or more than 50% of subcontract RD&I work is carried out in another
+    State, this breaches legal/policy requirements and is ineligible.
+  value: Max 50% materials/subcontract work abroad
+  intake_field: activityCountries
+  quote: 'where a company sources more than 50% of its materials for the RD&I project in
+
+    another State and/or more than 50% of the subcontract RD&I work is carried out in another
+
+    State then that would breach the legal and policy requirements in respect of building
+    RD&I
+
+    capability and capacity in the State and in the applicant company.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.5
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: 'SME status is defined per Annex 1 of Commission Regulation (EU) No 651/2014:
+    fewer than 250 employees and either annual turnover not exceeding €50 million or annual
+    balance sheet total not exceeding €43 million.'
+  value: <250 FTE and (turnover ≤€50m or balance sheet ≤€43m)
+  intake_field: fteBand
+  quote: 'The category of micro, small and medium-sized enterprises (‘SMEs’) is made up of
+    enterprises
+
+    which employ fewer than 250 persons and which have an annual turnover not exceeding EUR
+    50 million,
+
+    and/or an annual balance sheet total not exceeding EUR 43 million.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.15
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: Small enterprise is defined as employing fewer than 50 persons and having annual
+    turnover and/or balance sheet total not exceeding €10 million.
+  value: <50 FTE and (turnover ≤€10m or balance sheet ≤€10m)
+  intake_field: fteBand
+  quote: 'a small enterprise is defined as an enterprise which employs fewer than
+
+    50 persons and whose annual turnover and/or annual balance sheet total does not exceed
+    EUR 10
+
+    million.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.15
+  verified: llm_cited
+- id: G2-03
+  gate_family: G2_size_ownership
+  requirement: A company exceeding medium enterprise thresholds is automatically classed as
+    a Large Enterprise, affecting applicable grant rates.
+  value: Above medium thresholds = Large Enterprise
+  intake_field: fteBand
+  quote: 'A company that exceeds the upper limits of the Medium Enterprise is automatically
+    classed as a
+
+    Large Enterprise.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.15
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Applications with total RD&I grant funding up to €150,000 are approved under
+    Delegated Powers by the Management Approvals Committee (MAC); above that threshold the
+    Investment Committee decides.
+  value: €150,000 threshold for MAC vs Investment Committee
+  intake_field: ticketBand
+  quote: 'RD&I Applications (with one or more projects inclusive of all funding applied for)
+    up to total grant
+
+    funding threshold of €150,000 will be considered under Delegated Powers by the Management
+
+    Approvals Committee (MAC).'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.13
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: Built To Innovate projects have a maximum project value of €500,000; amounts
+    above are evaluated case-by-case by the Investment Committee.
+  value: Max €500k project value (Built To Innovate)
+  intake_field: ticketBand
+  quote: 'Built To Innovate projects have a maximum project value of €500k.
+
+    Companies with projects seeking financial support in excess of this amount will be evaluated
+    on a
+
+    caseby-case basis by the Enterprise Ireland Investment Committee.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: Grant rates for experimental development are 45% for small enterprises, 35%
+    for medium, and 25% for large enterprises; collaborative projects receive 60%/50%/40%
+    respectively.
+  value: 45/35/25% (60/50/40% with collaboration)
+  intake_field: turnoverBand
+  quote: 'Experimental development (RD&I) 45% 35% 25%
+
+    60% 50% 40%
+
+    Experimental Development with Collaboration:'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: G3-04
+  gate_family: G3_financial
+  requirement: A regional aid bonus of 5 percentage points applies if the R&D project is carried
+    out in an assisted region and the applicant is located there.
+  value: +5pp regional aid bonus
+  intake_field: activityCountries
+  quote: 'The RD&I project costs may by be increased by 5 percentage points if the research
+    and
+
+    development project is carried out in an assisted region.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: G3-05
+  gate_family: G3_financial
+  requirement: Where the grant rate exceeds 50%, public procurement guidelines must be followed
+    for project expenditures.
+  value: '>50% grant rate triggers public procurement rules'
+  intake_field: cofinancingBand
+  quote: 'Where the grant rate is greater than 50%, public procurement guidelines must be
+    followed for
+
+    expenditures on the project.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.13
+  verified: llm_cited
+- id: G3-06
+  gate_family: G3_financial
+  requirement: Maximum eligible consultancy/subcontracted cost is €900 per day per project,
+    and if such costs amount to a majority of total costs the project is ineligible.
+  value: €900/day cap; majority subcontract disqualifies
+  intake_field: cofinancingBand
+  quote: 'The maximum eligible cost for consultancy is €900 per day per
+
+    project.
+
+    If the amount of eligible expenditure for subcontracted/consultancy work on the project,
+    amounts to a
+
+    majority of the total costs, the project is deemed ineligible.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.10
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: Funding is normally provided as a grant but may instead be offered as equity
+    or a Convertible Loan Note (CLN) at Enterprise Ireland's discretion based on the company's
+    financial position.
+  value: Grant, equity, or CLN
+  intake_field: borrowerModel
+  quote: 'Funding will normally be in the form of an RD&I grant but may be offered in the
+    form of equity or a
+
+    Convertible loan note (CLN), at the discretion of Enterprise Ireland, based on the financial
+    position of the
+
+    company.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: Grant-assisted companies incur a Contingent Grant Liability (repayment of all
+    grants) for 5 years if in material breach of the EI Agreement, with parent/holding companies
+    generally required to underwrite this at approval stage.
+  value: 5-year Contingent Grant Liability, group underwriting
+  intake_field: borrowerModel
+  quote: Contingent Grant Liability applies for a period of 5 years for both R&D & BII
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_rdi_fund_reference_doc.pdf#p.11
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: 'Eligible costs are limited to defined categories: salaries, technical consultancy,
+    contractual research, certification/clinical, patent costs, equipment rental, capital
+    equipment, and (under defined costing) materials.'
+  value: Defined eligible cost categories only
+  intake_field: none
+  quote: 'Cost Categories Eligible for support
+
+    • Salaries
+
+    • Technical Consultancy
+
+    • Contractual research
+
+    • Certification/Clinical trails
+
+    • Patent costs
+
+    • Equipment rental
+
+    • Capital Equipment (depreciated)
+
+    • Materials'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.9
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: At least 40% of RD&I project expenditure related to salaries must be carried
+    out in-house to build RD&I capability.
+  value: Min 40% in-house salary spend
+  intake_field: none
+  quote: 'An absolute minimum threshold of 40% of the expenditure on the
+
+    RD&I project (related to salaries) must be carried out in house in order to build RD&I
+    capability.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.10
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: Project expenditure incurred prior to Enterprise Ireland's receipt of the application
+    renders the project ineligible for support.
+  value: No pre-application spend eligible
+  intake_field: needBy
+  quote: 'Project expenditure incurred prior to the receipt of the application by Enterprise
+    Ireland will render the
+
+    project ineligible for support.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.11
+  verified: llm_cited
+- id: G5-04
+  gate_family: G5_use_of_funds
+  requirement: Marketing, sales, or training-related travel and production/operating costs
+    are not eligible use of funds; patent costs for large companies are not supported.
+  value: 'Excluded uses: marketing/sales/training travel; large-co patent costs'
+  intake_field: none
+  quote: Patent costs for large companies cannot be supported.
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.11
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: The project must not commence prior to the company submitting the application
+    to Enterprise Ireland (State Aid rule).
+  value: No commencement before application submission
+  intake_field: conditionality
+  quote: 'It is a requirement of the State Aid rules under which this initiative is approved,
+    that the project
+
+    must not commence prior to the company submitting the application to Enterprise Ireland.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.6
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: Projects should begin within six months of formal approval, otherwise the approval
+    may be withdrawn, and must be completed by the deadline stated in the grant agreement
+    or revised extension.
+  value: Must start within 6 months of approval
+  intake_field: conditionality
+  quote: 'Projects should begin within six months of the formal approval, otherwise approval
+    may be
+
+    withdrawn. Projects approved for aid must be completed by the deadline for completion
+    stated
+
+    in the grant agreement or by the revised deadline where an extension has been given.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: HPSU-funded start-up clients are typically ineligible for RD&I funding for
+    three years after investment, unless they meet minimum FTE, revenue, EBITDA-positivity,
+    and no-recent-equity-raise conditions.
+  value: 3-year HPSU exclusion with carve-out conditions
+  intake_field: conditionality
+  quote: 'Enterprise Ireland start-up clients who have received HPSU investment funding are
+    typically not
+
+    eligible for RD&I funding for a period of three years after the date of investment. Eligible
+    HPSU
+
+    clients must employ a minimum of 5 Full Time Staff in Ireland, have achieved sustainable
+
+    revenues of €500K, and are EBITDA positive in the previous accounting period, or for at
+    least the
+
+    previous nine months prior to application, and can demonstrate sustainable future EBITDA,
+    and
+
+    in the previous 6 months and during the course of the business plan the company has not
+    raised
+
+    external finance in the form of equity (Subject to no double funding).'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: G6-04
+  gate_family: G6_conditionality
+  requirement: All applicant companies must be EBITDA positive in the previous accounting
+    period, or for at least the previous nine months prior to application, and demonstrate
+    sustainable future EBITDA-positivity.
+  value: EBITDA positive required
+  intake_field: lossesOverHalfCapital
+  quote: 'All companies submitting an application for RD&I support must be EBITDA positive
+    in the
+
+    previous accounting period, or EBITDA positive for at least the previous nine months prior
+    to
+
+    application and can demonstrate sustainable future EBITDA-positivity.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: G6-05
+  gate_family: G6_conditionality
+  requirement: The Undertaking in Difficulty (UID) rule under GBER must be tested and applied
+    to all RD&I projects seeking support.
+  value: UID test applies
+  intake_field: lossesOverHalfCapital
+  quote: 'The Undertaking in Difficulty (UID) rule to be tested and applied to all RD&I projects
+    seeking
+
+    support under GBER.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: G6-06
+  gate_family: G6_conditionality
+  requirement: For a collaborative bonus, at least two independent companies must participate,
+    no single company may bear more than 70% of costs, and either an SME must be involved
+    or R&D carried out in at least two Member States; subcontracting does not count as collaboration.
+  value: Collaboration bonus conditions
+  intake_field: consortium
+  quote: 'In order to be eligible for a collaborative bonus there must be at least two companies,
+    which are
+
+    independent of each other. No single company can bear more than 70% of the costs of the
+    collaboration
+
+    project. The collaborative project must either involve at least one SME, or, where no
+    SME is involved, then
+
+    the RD&I must be carried out in at least two Member States.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.15
+  verified: llm_cited
+- id: G6-07
+  gate_family: G6_conditionality
+  requirement: Projects funded under the EU Recovery and Resilience Facility must comply with
+    'Do No Significant Harm' rules, excluding fossil fuel, high-emission ETS, waste landfill/incineration,
+    and harmful long-term waste disposal activities.
+  value: DNSH exclusions for RRF-funded projects
+  intake_field: conditionality
+  quote: 'Specifically, the following projects are not eligible:
+
+    • activities related to fossil fuels, including downstream use3
+
+    • activities under the EU Emission Trading System (ETS) achieving projected greenhouse
+
+    gas emissions that are not lower than the relevant benchmarks4,
+
+    • activities related to waste landfills, incinerators5 and mechanical biological treatment
+
+    plants6 and
+
+    • activities where the long-term disposal of waste may cause harm to the environment.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.6
+  verified: llm_cited
+- id: G6-08
+  gate_family: G6_conditionality
+  requirement: 'Applicants must demonstrate an incentive effect: the project would not have
+    proceeded at all without the aid, or the aid materially increases project size, scope,
+    spend, or speed.'
+  value: Incentive effect demonstration required
+  intake_field: conditionality
+  quote: 'To demonstrate the incentive effect, the company must show in their application
+    that the project would
+
+    not have proceeded at all without the aid and/or the grant aid will result in a material
+    increase in at
+
+    least one or more of the following;'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_rdi_fund_reference_doc.pdf#p.10
+  verified: llm_cited
+obligations:
+- requirement: Companies must complete a claims checklist for each claim and submit it with
+    all required documents; missing documents cause the claim to be returned.
+  quote: 'Companies to complete the claims checklist for each claim and submit with all required
+    documents.
+
+    If any of the required documents are missing, the claim will be returned.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_rdi_fund_reference_doc.pdf#p.11
+  verified: llm_cited
+- requirement: In the event of material breach of the grant agreement, the company must repay
+    all grants received under that agreement.
+  quote: 'In the event of such a breach occurring the company will be required to repay all
+    grants received under
+
+    that particular agreement.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_rdi_fund_reference_doc.pdf#p.11
+  verified: llm_cited
+- requirement: Where a company's own depreciation policy differs from standard accounting
+    practices, it must provide signed written confirmation of that depreciation policy.
+  quote: 'the company has to provide signed written confirmation of the
+
+    deprecation policy of the company if different from standard accounting practices.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.11
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (27/27 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: State funding received by the company in the last seven years is considered as part
+    of the assessment, indicating cumulation tracking across prior awards.
+  quote: The overall amount of State funding received by the company in the last seven years,
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.13
+  verified: llm_cited
+application:
+  channel: Direct application to Enterprise Ireland (or via Údarás na Gaeltachta/Local Enterprise
+    Office) using online application forms and company guidelines.
+  typical_timeline: Applications accepted anytime; approvals under €150,000 via delegated
+    MAC powers, above that via Investment Committee; projects must start within 6 months of
+    approval.
+  quote: 'Applications for funding can be submitted anytime. Application forms and company
+    guidelines are
+
+    available on the Enterprise Ireland website.'
+  source:
+    file: enterprise_ireland_rdi_fund_reference_doc.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.13
+  verified: llm_cited

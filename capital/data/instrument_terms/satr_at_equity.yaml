@@ -1,0 +1,462 @@
+id: satr_at_equity
+name: satr_at_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-seat
+  gate_family: G1_nexus
+  requirement: The applicant company must have its registered seat or a business establishment
+    in Austria, or intend to establish one within 12 months.
+  value: Sitz oder Betriebsstätte in Österreich (bestehend oder binnen 12 Monaten)
+  intake_field: entityCountries
+  quote: Das Unternehmen muss über einen Sitz oder eine Betriebsstätte in Österreich verfügen.
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.6
+  verified: llm_cited
+- id: g1-nexus-founding-intent
+  gate_family: G1_nexus
+  requirement: Eligible undertakings are natural or legal persons or partnerships that operate
+    a business in their own name and for their own account, or intend to do so within a period
+    of 12 months.
+  value: betreiben oder binnen 12 Monaten zu betreiben gedenken
+  intake_field: wouldOpenEntity
+  quote: 'Förderungsfähige Unternehmen können natürliche oder juristische Personen sowie
+
+    Personengesellschaften sein, die ein Unternehmen im eigenen Namen und auf eigene Rechnung
+
+    betreiben oder innerhalb einer Frist von 12 Monaten zu betreiben gedenken.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.6
+  verified: llm_cited
+- id: g1-excluded-sectors
+  gate_family: G1_nexus
+  requirement: Undertakings from specific excluded economic sectors (agriculture/forestry/fisheries,
+    financial services, real estate, public administration, interest associations, private
+    households, extraterritorial bodies) are excluded from eligibility.
+  value: 'Ausgeschlossene ÖNACE-Abschnitte: A, L, M, P, T94, U, V'
+  intake_field: none
+  quote: 'Ausgeschlossen sind Unternehmen aus den folgenden Wirtschaftszweigen (ÖNACE 2025):
+
+    — A – Land- und Forstwirtschaft, Fischerei (01,03)
+
+    — L – Erbringung von Finanz- und Versicherungsdienstleistungen (64-66)'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.6
+  verified: llm_cited
+- id: g2-kmu-definition
+  gate_family: G2_size_ownership
+  requirement: Company size classification for SME status follows the EU state-aid SME definition
+    (Recommendation 2003/361/EC).
+  value: EU KMU-Definition (Empfehlung 2003/361/EG)
+  intake_field: fteBand
+  quote: 'Für die Einstufung der Unternehmensgröße wird die beihilfenrechtliche Definition
+    von kleinen
+
+    und mittleren Unternehmen herangezogen, siehe Empfehlung 2003/361/EG der Kommission
+
+    vom 6. Mai 2003 betreffend die Definition der Kleinstunternehmen sowie der kleinen und
+
+    mittleren Unternehmen, ABl. L 124 vom 20. Mai 2003.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.5
+  verified: llm_cited
+- id: g2-junge-unternehmen
+  gate_family: G2_size_ownership
+  requirement: To qualify for founder/young-company special conditions, the applicant must
+    be an SME founded or taken over no more than six years before the application, with majority
+    ownership having changed in the case of a takeover.
+  value: SME gegründet/übernommen ≤ 6 Jahre vor Antragstellung
+  intake_field: foundedYear
+  quote: 'Gründerinnen und junge Unternehmen im Sinne dieser Bestimmung sind kleine und mittlere
+
+    Unternehmen (gemäß EU-Definition), die längstens sechs Jahre vor Einreichung des Antrags
+    gegründet
+
+    oder übernommen wurden'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.17
+  verified: llm_cited
+- id: g2-cisaf-sme-uplift
+  gate_family: G2_size_ownership
+  requirement: Under the CISAF framework, a higher aid intensity uplift (20 or 10 percentage
+    points) applies depending on whether the project is carried out by a small/medium enterprise.
+  value: KMU-Aufschlag von 20 bzw. 10 Prozentpunkten
+  intake_field: fteBand
+  quote: 'Wird das Vorhaben von einem kleinen oder mittleren Unternehmen durchgeführt, erhöht
+    sich die
+
+    maximale Förderungsintensität um 20 bzw. 10 Prozentpunkte.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.23
+  verified: llm_cited
+- id: g3-credit-amount-range
+  gate_family: G3_financial
+  requirement: The credit amount per project must be between EUR 10,000 and EUR 37.5 million.
+  value: EUR 10.000 – EUR 37,5 Mio. pro Projekt
+  intake_field: ticketBand
+  quote: Die Kredithöhe beträgt zwischen EUR 10.000,00 und EUR 37,5 Mio. pro Projekt.
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.15
+  verified: llm_cited
+- id: g3-min-project-cost-industry
+  gate_family: G3_financial
+  requirement: For projects in the industry/trade/services sector, the sum of eligible project
+    costs must be at least EUR 10,000.
+  value: mindestens EUR 10.000 förderbare Projektkosten
+  intake_field: ticketBand
+  quote: Die Summe der förderbaren Projektkosten muss mindestens EUR 10.000,00 betragen.
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.8
+  verified: llm_cited
+- id: g3-min-credit-agri-forest-transport
+  gate_family: G3_financial
+  requirement: In the agriculture, forestry and transport sectors, the minimum credit amount
+    is generally EUR 300,000.
+  value: Kredituntergrenze i.d.R. EUR 300.000 (Landwirtschaft, Forstwirtschaft, Verkehr)
+  intake_field: ticketBand
+  quote: 'In den Sektoren Landwirtschaft, Forstwirtschaft und Verkehr beträgt die Kredituntergrenze
+    in der Regel
+
+    EUR 300.000.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.15
+  verified: llm_cited
+- id: g3-max-credit-transport
+  gate_family: G3_financial
+  requirement: In the transport sector, the maximum credit amount is EUR 4 million.
+  value: Kreditobergrenze EUR 4 Mio. (Verkehr)
+  intake_field: ticketBand
+  quote: Im Sektor Verkehr beträgt die Kreditobergrenze EUR 4 Mio.
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.15
+  verified: llm_cited
+- id: g3-tourism-equity-over-1m
+  gate_family: G3_financial
+  requirement: For new tourism accommodation/catering builds financed with credits over EUR
+    1 million, the borrower must generally demonstrate own-fund contribution of at least 50%
+    (with at least 25% genuine equity); other projects require at least 30% own-fund contribution;
+    credits under EUR 1 million are exempt from this requirement.
+  value: Eigenaufbringung ≥50% (davon ≥25% Eigenmittel) bei Krediten >1 Mio.; sonst ≥30%
+  intake_field: cofinancingBand
+  quote: 'Der Kreditnehmer hat zu den Gesamtinvestitionskosten bei Neubauten von Verpflegungs-
+    und
+
+    Beherbergungsbetrieben mit Krediten über EUR 1 Mio. in der Regel eine mindestens 50%-ige
+
+    Eigenaufbringung (Eigenmittel, Fremdmittel und/oder sonstige Förderungen) nachzuweisen'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.13
+  verified: llm_cited
+- id: g3-cisaf-intensity
+  gate_family: G3_financial
+  requirement: Under the CISAF clean-industry framework, the maximum aid intensity is 15%
+    of eligible costs for large enterprises, rising to 20% in Article 107(3)(c) assisted areas,
+    with further SME uplifts.
+  value: 15% (Großunternehmen), 20% in Fördergebieten, plus KMU-Aufschlag
+  intake_field: turnoverBand
+  quote: 'Die maximale Förderungsintensität für Großunternehmen beträgt 15% der förderungsfähigen
+    Kosten.
+
+    Wird das Vorhaben in einem Regionalförderungsgebiet nach Art. 107 Absatz 3 Buchstabe c
+
+    durchgeführt, so erhöht sich die maximale Förderungsintensität auf 20%'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.23
+  verified: llm_cited
+- id: g3-cisaf-own-funds
+  gate_family: G3_financial
+  requirement: Under CISAF, at least 25% of eligible project costs must be financed from own
+    funds or unsubsidised external funds.
+  value: mind. 25% Eigenmittel/ungeförderte Fremdmittel
+  intake_field: cofinancingBand
+  quote: 'Mindestens 25% der förderbaren Kosten müssen aus Eigenmitteln oder ungeförderten
+    Fremdmitteln
+
+    finanziert werden.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.23
+  verified: llm_cited
+- id: g3-cumulation-cap
+  gate_family: G3_financial
+  requirement: The cumulated present value of all aid, including De-minimis aid, for a project
+    may not exceed the maximum permissible aid intensities allowed under state aid law.
+  value: kumulierter Förderungsbarwert ≤ maximal zulässige Förderungsintensität
+  intake_field: cofinancingBand
+  quote: 'Der kumulierte Barwert aller Förderungen – einschließlich „De-minimis“-Beihilfen
+    – darf die
+
+    beihilfenrechtlich maximal zulässigen Förderungsintensitäten (Förderungsbarwert im Verhältnis
+    zu
+
+    förderbaren Kosten) nicht überschreiten.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.19
+  verified: llm_cited
+- id: g4-borrower-model-loan
+  gate_family: G4_borrower_model
+  requirement: The instrument is issued as a medium- to long-term investment loan, drawn once
+    or in tranches, not a grant or equity instrument.
+  value: mittel- bis langfristiger Investitionskredit
+  intake_field: borrowerModel
+  quote: 'Jeder aws erp-Kredit wird in Form eines mittel- bis langfristigen, einmalig und
+    gegebenenfalls in
+
+    Tranchen ausnützbaren Investitionskredits ausgereicht.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.16
+  verified: llm_cited
+- id: g4-collateral-required
+  gate_family: G4_borrower_model
+  requirement: Every aws erp loan must be adequately collateralised (e.g. bank guarantee,
+    aws guarantee, ÖHT guarantee).
+  value: ausreichende Besicherung erforderlich
+  intake_field: borrowerModel
+  quote: 'Jeder aws erp-Kredit muss ausreichend besichert sein (z. B. Bankhaftung, aws Garantie,
+    Haftung der
+
+    ÖHT).'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.19
+  verified: llm_cited
+- id: g4-no-legal-entitlement
+  gate_family: G4_borrower_model
+  requirement: There is no legal entitlement to be granted an aws erp loan; approval is discretionary
+    via the ERP credit commission.
+  value: kein Rechtsanspruch auf Kreditgewährung
+  intake_field: borrowerModel
+  quote: 'Es besteht kein
+
+    Rechtsanspruch auf die Einräumung eines aws erp-Kredites.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.20
+  verified: llm_cited
+- id: g5-project-start-before-application
+  gate_family: G5_use_of_funds
+  requirement: Applications for loans must generally be submitted before project start, defined
+    as the first order/commitment or earlier irrevocable commitment or start of construction/project
+    activity; land purchase and preparatory studies do not count as project start.
+  value: 'Antrag vor Projektbeginn (Ausnahmen: beihilfenfreie/De-minimis-Kredite)'
+  intake_field: none
+  quote: 'Anträge für Kredite müssen vor Projektbeginn eingereicht werden4. Als Projektbeginn
+    gilt die
+
+    erste Bestellung/Beauftragung oder eine frühere Verpflichtung, die das Projekt unumkehrbar
+
+    macht bzw. ein früherer Beginn der Bau- oder Projekttätigkeit.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.20
+  verified: llm_cited
+- id: g5-excluded-projects-general
+  gate_family: G5_use_of_funds
+  requirement: Projects with no plausible chance of success, without secured full financing,
+    without a sustainable positive expected business development, involving mere acquisition
+    of company shares without own project character, or unrelated to a business undertaking
+    are excluded in all sectors.
+  value: Ausschluss unplausibler/unfinanzierter/nicht-nachhaltiger Projekte und reiner Anteilsübernahmen
+  intake_field: none
+  quote: 'Projekte, die keine plausiblen Erfolgschancen haben;
+
+    • Projekte, für welche die Ausfinanzierung nicht sichergestellt ist
+
+    • Projekte, die keine nachhaltig positive Unternehmensentwicklung erwarten lassen;'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.15
+  verified: llm_cited
+- id: g5-cisaf-tech-scope
+  gate_family: G5_use_of_funds
+  requirement: Under CISAF, eligible investment projects must create additional manufacturing
+    capacity for specific end products or key components in defined clean technology areas
+    (solar, wind, batteries, heat pumps, hydrogen, grid tech, transport electric/wind propulsion),
+    excluding nuclear technology.
+  value: CISAF-Technologiebereiche (Solar, Wind, Batterien, Wärmepumpen, Wasserstoff, Netztechnik
+    etc.)
+  intake_field: none
+  quote: 'Förderungsfähig sind Investitionsvorhaben, mit denen zusätzliche Herstellungskapazitäten
+    für
+
+    bestimmte Endprodukte und wichtigste spezifische Bauteile in folgenden Technologiebereichen
+
+    geschaffen werden:'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.22
+  verified: llm_cited
+- id: g5-agriculture-primary-excluded
+  gate_family: G5_use_of_funds
+  requirement: Investments in primary agricultural production are not eligible for funding
+    under the agriculture sector rules.
+  value: Investitionen in landwirtschaftliche Urproduktion nicht förderbar
+  intake_field: none
+  quote: Investitionen im Bereich der landwirtschaftlichen Urproduktion sind nicht förderbar.
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.11
+  verified: llm_cited
+- id: g6-companies-in-difficulty-cisaf
+  gate_family: G6_conditionality
+  requirement: Undertakings in difficulty (per CISAF definition) and undertakings subject
+    to an unfulfilled recovery order from an EU Commission decision are not eligible for CISAF-based
+    funding.
+  value: Ausschluss von Unternehmen in Schwierigkeiten und mit offener Rückforderungsanordnung
+  intake_field: none
+  quote: 'Nicht förderungsfähig sind Vorhaben von Unternehmen in Schwierigkeiten (im Sinne
+    der RZ 28 CISAF)
+
+    und von Unternehmen, die einer Rückforderungsanordnung auf Grund einer Kommissionsentscheidung
+
+    zur Feststellung der Rechtswidrigkeit und Unvereinbarkeit einer Beihilfe mit dem Binnenmarkt
+    nicht
+
+    Folge geleistet haben.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.22
+  verified: llm_cited
+- id: g6-cisaf-no-relocation
+  gate_family: G6_conditionality
+  requirement: Under CISAF, the aid beneficiary must confirm no relocation to the supported
+    establishment occurred in the two years before the application and commit not to relocate
+    within two years after completion of the investment.
+  value: Keine Verlagerung 2 Jahre vor/nach Investition (CISAF)
+  intake_field: conditionality
+  quote: 'bestätigen, dass er in den beiden Jahren vor Stellung des Beihilfeantrags keine
+    Verlagerung zu der
+
+    Betriebsstätte vorgenommen hat, in der die geförderte Investition getätigt werden soll,
+    und
+
+    b) zusagen, dies auch in den beiden Jahren nach Abschluss der Investition nicht zu tun.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.24
+  verified: llm_cited
+- id: g6-cisaf-retention-period
+  gate_family: G6_conditionality
+  requirement: Under CISAF, the retention period for subsidised investments is 3 years for
+    SMEs and 5 years for large enterprises.
+  value: Behaltefrist 3 Jahre (KMU) / 5 Jahre (Großunternehmen)
+  intake_field: conditionality
+  quote: 'Die Behaltefrist für die geförderten Investitionen beträgt 3 Jahre (KMU) bzw. 5
+    Jahre
+
+    (Großunternehmen).'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.23
+  verified: llm_cited
+obligations:
+- requirement: Officials of the European Commission or their representatives must be permitted
+    to conduct on-site inspections, receive information and inspect the books as part of state
+    aid control.
+  quote: 'Bediensteten der Europäischen Kommission oder deren Beauftragten sind im Rahmen
+    der
+
+    Beihilfenkontrolle gemäß Verordnung (EU) 2015/1589, ABl. L 248 vom 24.9.2015 in der geltenden
+
+    Fassung, Nachprüfungen vor Ort zu gestatten, Auskünfte zu erteilen und Einsicht in die
+
+    Geschäftsbücher zu gewähren.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.21
+  verified: llm_cited
+- requirement: Undertakings that violate environmental legislation during the investment project
+    or in ongoing business operations cannot be supported, and serious violations may trigger
+    early repayment of the loan.
+  quote: 'Unternehmen, die bei der Durchführung des Investitionsvorhabens bzw. im laufenden
+    Geschäftsbetrieb
+
+    gegen umweltrelevante Rechtsvorschriften verstoßen, können nicht unterstützt werden.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.21
+  verified: llm_cited
+- requirement: The same consequence (possible loan recall) applies for gross violations of
+    labour and social law, including undeclared work or breaches of equal treatment law.
+  quote: 'Dasselbe gilt bei groben Verstößen gegen arbeits- und sozialrechtliche Bestimmungen,
+    insbesondere
+
+    wenn Arbeitskräfte ohne die erforderliche Arbeitsgenehmigung oder Pflichtversicherung
+
+    (»Schwarzarbeit«) beschäftigt werden oder bei Missachtung des Gleichbehandlungsgesetzes'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.21
+  verified: llm_cited
+- requirement: The funded company is obliged to inform and involve its workforce in a suitable
+    manner to secure project success.
+  quote: 'Zur Sicherstellung des Projekterfolges ist das geförderte Unternehmen weiters verpflichtet,
+    die
+
+    Belegschaft in geeigneter Form zu informieren und einzubinden.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.21
+  verified: llm_cited
+- requirement: The borrower must submit proof of proper use of the loan funds after completion
+    of the overall project via the aws form or digitally through the aws Fördermanager, signed
+    by both borrower and trustee bank.
+  quote: 'Der Nachweis der widmungsgemäßen Verwendung der Kreditmittel ist nach Abschluss
+    des
+
+    Gesamtprojekts mittels des von der aws aufgelegten Formblattes oder digital über den aws
+
+    Fördermanager zu übermitteln.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.20
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (24/24 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Where a project is also supported by other funding bodies, the cumulated present value
+    of aid (including De-minimis aid) must be calculated and must not exceed the maximum permissible
+    aid intensity under state aid law.
+  quote: 'Falls ein Projekt auch von anderen Förderungsstellen (Bund, Land, etc.) unterstützt
+    wird, ist der
+
+    kumulierte Förderungsbarwert (Subventionsäquivalent) für das Projekt zu ermitteln.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.19
+  verified: llm_cited
+application:
+  channel: Applications are submitted via authorised trustee credit institutions (aws erp-Treuhandbanken)
+    through the aws-Fördermanager; tourism sector applications go to the Österreichische Hotel-
+    und Tourismusbank (ÖHT).
+  typical_timeline: Applications must be submitted before project start; decisions are made
+    by the erp credit commission (industry/trade/services) or respective sector commissions
+    (tourism, agriculture, forestry, transport); if no decision is possible within the programme
+    period, review continues under next year's guideline.
+  quote: 'aws erp-Kreditanträge sind im Wege der ermächtigten Kreditinstitute (aws erp-Treuhandbanken)
+    über den
+
+    aws-Fördermanager einzubringen. Für den Sektor Tourismus sind die Anträge bei der Österreichischen
+
+    Hotel- und Tourismusbank, einzureichen.'
+  source:
+    file: at_aws_erp_kredit_richtlinie.pdf
+    locator: at_aws_erp_kredit_richtlinie.pdf#p.20
+  verified: llm_cited

@@ -1,0 +1,192 @@
+id: eis_innovatsiooniosak_arendu
+name: eis_innovatsiooniosak_arendu
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_service_providers
+  gate_family: G1_nexus
+  requirement: Services must be procured from an approved list of eligible service providers
+    (Estonian and select foreign providers such as accredited calibration/testing labs, patent
+    agents, technology development centres, R&D institutions, universities, EU-country accredited
+    calibration/testing labs, or engineering service providers).
+  value: Eesti ja välismaised teenuseosutajad (piiratud ring)
+  intake_field: none
+  quote: "Eesti standardiorganisatsioon, Eesti metroloogia keskasutus ja akrediteeritud kalibreerimis-\
+    \ ja katselaborid ,  patendivolinikud \n Tehnoloogia arenduskeskused, positiivselt evalveeritud\
+    \ teadus- ja arendusasutused , kompetentsikeskused"
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_no_contract_before_application
+  gate_family: G6_conditionality
+  requirement: The applicant must not sign a contract with the service provider before submitting
+    the application to EIS.
+  value: Contract prohibited before application submission
+  intake_field: none
+  quote: Oluline on meeles pidada, et enne taotluse esitamist EISile ei tohi lepingut teenuspakkujaga
+    sõlmida!
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_two_quotes_20000
+  gate_family: G6_conditionality
+  requirement: If the purchased service costs EUR 20,000 or more (excl. VAT), two independent
+    price quotes must be submitted, with justification if quotes cannot be obtained or the
+    cheapest offer is not chosen.
+  value: '>=20,000 EUR excl. VAT triggers two independent quotes'
+  intake_field: cofinancingBand
+  quote: NB! Kui ostetava teenuse summa käibemaksuta  20 000 või rohkem eurot, tuleb esitada
+    kaks sõltumatut hinnapakkumist.
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_procurement_register_100000
+  gate_family: G6_conditionality
+  requirement: For purchases of EUR 100,000 or more, the procurement must be conducted through
+    the state public procurement register.
+  value: '>=100,000 EUR requires procurement via riigihangete register'
+  intake_field: none
+  quote: 100 000 eurot ja enam maksvate ostude puhul tuleb ostumenetlus viia läbi riigihangete
+    registris.
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_advance_payment_liability
+  gate_family: G6_conditionality
+  requirement: If the cooperation partner requires an advance payment, the applicant company
+    is obliged to pay it initially itself.
+  value: Applicant bears advance payment obligation
+  intake_field: none
+  quote: Kui koostööpartner nõuab ettemaksu, on ettevõtja kohustatud esialgu selle ise tasuma
+    (nii nagu kõikide teistegi riigi toetuste puhul).
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_publicity_obligation
+  gate_family: G6_conditionality
+  requirement: The recipient must publicly communicate the use of the innovation voucher support
+    (e.g. ERDF logo display).
+  value: Public communication of ERDF-funded support required
+  intake_field: none
+  quote: Innovatsiooniosaku toetuse kasutamisest tuleb avalikkust teavitada.
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_cost_separation
+  gate_family: G6_conditionality
+  requirement: The recipient must keep project-related costs separated from other costs in
+    its accounting.
+  value: Separate project cost accounting required
+  intake_field: none
+  quote: Toetuse saajal on kohustus eristada projektiga seotud kulud teistest kuludest.
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1_group_structure_disclosure
+  gate_family: G1_nexus
+  requirement: If the applicant has subsidiaries or holds majority voting rights in another
+    company by other means, a group/consortium structure chart must be submitted with the
+    application.
+  value: Group structure chart required if subsidiaries/majority ownership exist
+  intake_field: institutionalOwner
+  quote: Kontserni liikmete skeem tuleb esitada, kui taotlejal on tütarettevõtteid või taotleja
+    omab mõnes muus äriühingus muul moel häälteenamust
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5_focus_area_relevance
+  gate_family: G5_use_of_funds
+  requirement: Funded activities must be relevant to the national long-term development strategy's
+    strategic goals, where the project touches at least one of the indicators listed in §
+    3(5), such as accessibility, resource productivity, GDP per capita outside Harju county,
+    or civil society cooperation.
+  value: Optional bonus relevance to TAIE focus-area indicators
+  intake_field: none
+  quote: taotluses kirjeldatud tegevuste asjakohasus riigi pikaajalises arengustrateegias
+    kinnitatud strateegiliste sihtide ja aluspõhimõtete saavutamisele kaasa aitamiseks, juhul,
+    kui projektil on tuvastatud puutumus vähemalt ühe § 3 lõikes 5 toodud näitajaga
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5_accessibility_indicator
+  gate_family: G5_use_of_funds
+  requirement: If the solution developed under the project is intended for the general public,
+    accessibility for people with special needs must be ensured to count toward the accessibility
+    indicator.
+  value: Accessibility requirement for public-facing solutions
+  intake_field: none
+  quote: Kui projekti raames arendatav lahendus on mõeldud kasutamiseks laiemale avalikkusele,
+    siis peab olema tagatud ka ligipääsetavus erivajadusega inimestele ja sellisel juhul projekt
+    panustab ligipääsetavuse mõõdikusse.
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 7
+  verified: llm_cited
+- id: g1_outside_harju_indicator
+  gate_family: G1_nexus
+  requirement: Bonus indicator relevance applies where project activities take place outside
+    Harju county (relative to EU-27 average GDP per capita outside the capital region).
+  value: Activities outside Harju county count toward regional indicator
+  intake_field: activityCountries
+  quote: "väljaspool Harjumaad loodud sisemajanduse koguprodukt elaniku kohta Euroopa Liidu\
+    \ 27 keskmisest; \n Projekti tegevused toimuvad väljaspool Harjumaad"
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 7
+  verified: llm_cited
+obligations:
+- requirement: Applicant must submit a final report and required documents after project completion,
+    including a payment claim, description of activities/technical results, general ledger
+    extract proving cost separation, and proof of fulfilling the notification/publicity obligation.
+  quote: "Põhiprojekti lõppedes tuleb E-toetuse kaudu esitada projekti lõpparuanne koos järgmiste\
+    \ dokumentidega: \n maksetaotlus (kulude loetelu esitatakse E-toetuses); \n projekti jooksul\
+    \ teostatud tegevuste kirjeldus ja/või projekti tulemuse tehniline kirjeldus vabas vormis\
+    \ või valminud tulemus failina; \n pearaamatu väljavõte kulude eristamise tõendamiseks;\
+    \ \n tõendus teavitamiskohustuse täitmise kohta"
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Applicant must submit a price quotation from the service provider as an integral
+    part of the application, describing activities and unit prices clearly.
+  quote: Ühtlasi peab koostööpartner vormistama hinnapakkumise, mis on EIS-i innovatsiooniosaku
+    taotlemisel taotlusvormi lahutamatu osa. Hinnapakkumine peab sisaldama ostetava teenuse
+    tegevuste selget kirjeldust ning ühikuhindasid, et oleks arusaadav, kuidas hinnapakkumise
+    summa kujuneb.
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Applicant must submit balance sheet and income statement as of the latest quarter,
+    and annual report retrievable in time from the register, plus CVs of team members and
+    service provider, and power of attorney if the signatory is not the legal representative.
+  quote: "Bilanss ja kasumiaruanne viimase kvartali seisuga \n Majandusaasta aruanne (peab\
+    \ olema tähtaegselt registrist leitav)"
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Application submitted via the E-toetus online environment to EIS, following partner
+    selection and quote collection; EIS evaluates within 10 working days.
+  typical_timeline: EIS hindab esitatud taotlust kuni 10 tööpäeva.
+  quote: Taotlus tuleb esitada E-toetuse kaudu. EIS hindab esitatud taotlust kuni 10 tööpäeva.
+    Positiivse otsuse korral väljastab innovatsiooniosaku ja projekt võib alata.
+  source:
+    file: eis_innovatsiooniosak_arendu_terms_eis.html
+    locator: chunk 2
+  verified: false

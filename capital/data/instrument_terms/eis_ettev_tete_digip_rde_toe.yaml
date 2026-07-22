@@ -1,0 +1,267 @@
+id: eis_ettev_tete_digip_rde_toe
+name: eis_ettev_tete_digip_rde_toe
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_registration
+  gate_family: G1_nexus
+  requirement: Applicant must be a private legal entity registered in the Estonian Business
+    Register.
+  value: Estonian-registered private legal entity
+  intake_field: entityCountries
+  quote: Eesti äriregistris registreerituderaõiguslik juriidiline isik
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1_min_turnover
+  gate_family: G1_nexus
+  requirement: Applicant's average sales revenue in its main activity area in Estonia over
+    the two financial years preceding the application must be at least €200,000, per the annual
+    reports submitted to the Business Register.
+  value: ≥ €200,000 average annual turnover (2 years preceding)
+  intake_field: turnoverBand
+  quote: taotluse esitamisele eelneva kahe majandusaasta keskmine müügitulu vastavalt äriregistrile
+    esitatud majandusaasta aruannetele peab taotleja põhitegevusalal olema Eestis vähemalt
+    200 000 eurot
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1_two_rounds
+  gate_family: G1_nexus
+  requirement: 'There are two separate application rounds: one for manufacturing/mining sector
+    companies and one for companies in other sectors.'
+  value: 'Two application rounds: manufacturing/mining vs other sectors'
+  intake_field: none
+  quote: 'kaks erinevat taotlusvooru: töötleva tööstuse, mäetööstuse ettevõtetele muudele
+    sektoritele'
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1_excluded_sectors
+  gate_family: G1_nexus
+  requirement: Support is not applied to certain listed sectors, including fossil fuel activities,
+    agriculture/forestry/fishing, tobacco, wholesale/retail trade, real estate, gambling,
+    financial/insurance activities, programming/consultancy, legal/accounting, head office
+    activities, engineering, advertising, rental/leasing, and temporary labour rental.
+  value: Excluded sectors (mining of coal, oil/gas, agriculture, fishing, tobacco, wholesale/retail,
+    real estate, gambling, finance/insurance, programming/consultancy, legal/accounting, head
+    offices, engineering, advertising, rental, temp labour)
+  intake_field: none
+  quote: toetust ei kohaldata järgmistele sektoritele
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2_vta_ceiling
+  gate_family: G2_size_ownership
+  requirement: De minimis (VTA) aid to the applicant must not exceed €300,000.
+  value: VTA cap €300,000
+  intake_field: cofinancingBand
+  quote: vähese tähtsusega abi (VTA) ei ületa 300 000 eurot
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2_size_dependent_rate
+  gate_family: G2_size_ownership
+  requirement: Maximum support percentage depends on enterprise size (micro/small, medium,
+    large) and/or location, differing between de minimis and General Block Exemption (GE)
+    aid.
+  value: Support rate varies by SME size category and region
+  intake_field: fteBand
+  quote: Toetuse maksimaalne % sõltub ettevõtte suurusest ja/või asukohast.
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g6_no_criminal_conviction
+  gate_family: G6_conditionality
+  requirement: Neither the applicant nor its legal representative may have a valid conviction
+    under specified sections of the Penal Code (§209, 209^1, 210, 260^1, 372, 373, 379 or
+    384).
+  value: No valid conviction under listed Penal Code sections
+  intake_field: none
+  quote: temal või tema seaduslikul esindajal ei ole karistusseadustiku § 209, 209 1 , 210,
+    260 1 , 372, 373, 379 või 384 alusel määratud kehtivat karistust
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6_ongoing_activity
+  gate_family: G6_conditionality
+  requirement: The applicant's economic activity must not have ended or been suspended.
+  value: Economic activity ongoing (not ended/suspended)
+  intake_field: none
+  quote: majandustegevus ei ole lõppenud ega peatunud
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6_tax_debt
+  gate_family: G6_conditionality
+  requirement: Tax debt owed to the state, including interest, must not exceed €100, or must
+    be under a payment schedule.
+  value: Tax debt ≤ €100 or rescheduled
+  intake_field: none
+  quote: maksuvõlg riigile koos intressiga ei ole suurem kui 100 eurot või see on ajatatud
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6_filings_submitted
+  gate_family: G6_conditionality
+  requirement: Tax declarations and annual reports must have been submitted.
+  value: Tax declarations and annual reports submitted
+  intake_field: none
+  quote: maksudeklaratsioonid ja majandusaasta aruanded on esitatud
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6_no_bankruptcy
+  gate_family: G6_conditionality
+  requirement: Applicant must not be bankrupt or in compulsory liquidation, and no liquidation
+    decision must have been made against it.
+  value: Not bankrupt/in liquidation
+  intake_field: none
+  quote: ei ole pankrotis ega sundlõpetamisel ja tema suhtes ei ole tehtud lõpetamise otsust
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6_not_in_difficulty
+  gate_family: G6_conditionality
+  requirement: Applicant must not be an undertaking in difficulty, where required under State
+    aid rules.
+  value: Not an undertaking in difficulty (if required by State aid rules)
+  intake_field: lossesOverHalfCapital
+  quote: ei ole raskustes ettevõtja, kui nii on nõutud riigiabi reeglite kohaselt
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6_capacity
+  gate_family: G6_conditionality
+  requirement: Applicant must have the qualifications or experience and the legal, organisational
+    or technical prerequisites necessary to implement and manage the project.
+  value: Required qualification/experience and legal/organisational/technical capacity
+  intake_field: none
+  quote: on projekti elluviimiseks ja haldamiseks vajalik kvalifikatsioon või kogemus ning
+    õiguslik, organisatsiooniline või tehniline eeldus
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4_max_support
+  gate_family: G4_borrower_model
+  requirement: Maximum support per project is €400,000, disbursed as a grant with own co-financing
+    of up to 50%.
+  value: Max grant €400,000; own financing up to 50%
+  intake_field: ticketBand
+  quote: Suurim toetus 400 000
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5_activity_start_date
+  gate_family: G5_use_of_funds
+  requirement: Eligible activities and costs may only start from the eligibility period start
+    date, which cannot be earlier than the date of application submission.
+  value: Costs eligible only from application date onward
+  intake_field: none
+  quote: Tegevused ja kulud tohivad alata abikõlbliku perioodi alguskuupäevast alates, mis
+    ei saa olla varem  kuupäev kui taotluse esitamine.
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g5_ge_art14_condition
+  gate_family: G5_use_of_funds
+  requirement: GE Article 14 aid may only be used if the project increases the production
+    capacity of an existing enterprise, which must be demonstrated.
+  value: GE Art 14 requires proof of production capacity increase
+  intake_field: none
+  quote: GE art 14 saab kasutada ainult siis kui olemasoleva ettevõtte tootmisvõimuse suurendamisega
+    (peab tõendama).
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g5_ineligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Support cannot be used for VAT, depreciation costs, real estate acquisition,
+    bank guarantees, financial and banking costs, state fees, insurance premiums, or holiday
+    pay.
+  value: 'Excluded costs: VAT, depreciation, real estate, bank guarantees, financial/banking
+    costs, state fees, insurance, holiday pay'
+  intake_field: none
+  quote: käibemaksuks amortisatsiooni kuluks kinnisasja omandamise kuluks pangagarantiiks
+    finants- ja pangakuluks riigilõivuks kindlustusmakseks puhkusetasuks
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 5
+  verified: llm_cited
+obligations:
+- requirement: If a cooperation partner requires an advance payment, the enterprise is obligated
+    to pay it itself initially, as with all other state grants.
+  quote: Kui koostööpartner nõuab ettemaksu, on ettevõtja kohustatud esialgu selle ise tasuma
+    (nii nagu kõikide teistegi riigi toetuste puhul).
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Having received support from the EU Recovery and Resilience Facility NextGenerationEU,
+    the beneficiary is obligated to inform the public about the use of the support.
+  quote: Olles saanud toetust Euroopa Liidu taasterahastu NextGenerationEU vahenditest, on
+    ka kohustus avalikkust toetuse kasutamisest teavitada.
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: The beneficiary is obligated to distinguish project-related costs from other
+    costs, e.g. via a separate cost account or accounting tags.
+  quote: Toetuse saajal on kohustus eristada projektiga seotud kulud teistest kuludest.
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Interim and final reports must be submitted for the project by the deadline
+    stated in the funding decision, including proof of completed development, beneficiary's
+    assessment of project effectiveness, and a signed confirmation of data accuracy.
+  quote: Projekti kohta tuleb esitada aruanded taotluse rahuldamise otsuses näidatud tähtajal.
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: The report must be submitted in the e-Support environment together with the
+    payment request.
+  quote: Aruanne tuleb esitada e-Toetuse keskkonnas koos maksetaotlusega.
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/17 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The de minimis aid ceiling for the applicant must not exceed €300,000, indicating
+    a cumulation cap under de minimis rules.
+  quote: vähese tähtsusega abi (VTA) ei ületa 300 000 eurot
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: e-Toetuse keskkond (e-Support environment), applications submitted to EIS
+  typical_timeline: EIS evaluates submitted applications within up to 30 working days; support
+    is paid out within 30 working days after submission of the results report.
+  quote: EIS hindab esitatud taotlust kuni 30 tööpäeva.
+  source:
+    file: eis_ettev_tete_digip_rde_toe_digipoorde_toetus.html
+    locator: chunk 2
+  verified: llm_cited

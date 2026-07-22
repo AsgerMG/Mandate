@@ -1,0 +1,180 @@
+id: eis_ettev_tja_teadus_ja_aren
+name: eis_ettev_tja_teadus_ja_aren
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a company registered in the Estonian Business Register.
+  value: Registered in Estonian Business Register
+  intake_field: entityCountries
+  quote: The grant is intended for companies registered in the Estonian Business Register
+    that have at least one research and development (R&D) employee.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The grant is intended for companies registered
+    in '''
+- id: g2
+  gate_family: G1_nexus
+  requirement: Company must have at least one R&D employee.
+  value: At least one R&D employee
+  intake_field: borrowerModel
+  quote: The grant is intended for companies registered in the Estonian Business Register
+    that have at least one research and development (R&D) employee.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The grant is intended for companies registered
+    in '''
+- id: g3
+  gate_family: G3_financial
+  requirement: Applicant must not have received de minimis aid exceeding EUR 300,000 in the
+    last three years.
+  value: EUR 300,000 de minimis ceiling over 3 years
+  intake_field: cofinancingBand
+  quote: The applicant must not have received de minimis aid (DIA) exceeding EUR 300,000 in
+    the last three years.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Maximum grant is 50% of the income tax paid for the R&D employee.
+  value: 50% of income tax on R&D employee's salary
+  intake_field: turnoverBand
+  quote: Maximum grant 50% of the income tax paid for the TA employee
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: Total grant budget for the measure is EUR 2,500,000.
+  value: EUR 2,500,000 total
+  intake_field: none
+  quote: Total grant amount 2 500 000
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G4_borrower_model
+  requirement: Support amount per R&D employee is capped at 50 percent of the income tax calculated
+    on the salary declared to the Tax and Customs Board for that employee during the supported
+    period.
+  value: 50% of income tax on declared salary
+  intake_field: borrowerModel
+  quote: The amount of support per R&D employee of the recipient is a maximum of 50 percent
+    of the income tax calculated on the salary declared to the Tax and Customs Board for the
+    R&D employee during the supported period
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The amount of support per R&D employee of the
+    reci'''
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: Employment contract between grant applicant and R&D employee must be indefinite
+    or valid for at least 12 months from conclusion date.
+  value: Indefinite or ≥12 months contract
+  intake_field: borrowerModel
+  quote: The employment contract between the grant applicant and the R&D employee must be
+    either for an indefinite period or valid for at least 12 months from the date of the contract's
+    conclusion.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The employment contract between the grant applican'''
+- id: g8
+  gate_family: G2_size_ownership
+  requirement: The R&D employee must have worked for at least three months in the period 01.01.2026-30.06.2026
+    with social tax and income tax declared on the payments.
+  value: Minimum 3 months worked in support period, with declared taxes
+  intake_field: borrowerModel
+  quote: The TA employee has worked for at least three months in the period 01.01.2026-30.06.2026
+    and the company has declared social tax and income tax on the payments made to the Tax
+    and Customs Board
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g9
+  gate_family: G5_use_of_funds
+  requirement: Support covers expenses related to the salary of the company's R&D employee;
+    board member fees are not eligible.
+  value: 'Eligible: R&D employee salary; Ineligible: board member fees'
+  intake_field: none
+  quote: The support is available for expenses related to the salary of the company's R&D
+    employee. The fees of the board member are not eligible
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The support is available for expenses related
+    to t'''
+- id: g10
+  gate_family: G5_use_of_funds
+  requirement: If the R&D employee also performs other tasks, the support is calculated only
+    based on the proportion of tasks related to R&D.
+  value: Pro-rata based on R&D task proportion
+  intake_field: none
+  quote: If the R&D employee also performs other tasks, the support is calculated based only
+    on the proportion of tasks related to R&D
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''If the R&D employee also performs other tasks,
+    the'''
+obligations:
+- requirement: The payment of the support is made based on data from the Tax and Customs Board.
+  quote: The payment of the support is made based on data from the Tax and Customs Board.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: There is no reporting obligation after completing the application.
+  quote: Completing the application takes about 10 minutes and there is no reporting obligation.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: 'The application must include data of the TA employees: name, personal identification
+    code, job title, TA start date and the proportion of TA activities in total working time.'
+  quote: 'The application must include the data of the TA employees: name, personal identification
+    code, job title, TA start date and the proportion of TA activities in total working time.'
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (4/10 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The support is de minimis aid and counts toward the EUR 300,000 de minimis ceiling
+    over a rolling three-year period.
+  quote: The support is de minimis aid. The applicant must not have received de minimis aid
+    (DIA) exceeding EUR 300,000 in the last three years.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: Online E-toetus environment, application only in Estonian
+  typical_timeline: Round-based; fifth round open 11.08.2026 09:00 to 07.09.2026 16:00, for
+    period 01.01.2026-30.06.2026; grant decisions made after the round closes
+  quote: The application can be compiled and submitted in the online E-toetus environment
+    Grant can be applied only in Estonian language. Grant applications can be submitted from
+    11.08.2026 at 9:00 to 07.09.2026 at 16:00.
+  source:
+    file: eis_ettev_tja_teadus_ja_aren_terms_eis_en.html
+    locator: chunk 2
+  verified: llm_cited

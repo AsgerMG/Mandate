@@ -1,0 +1,78 @@
+id: eic_fund
+name: eic_fund
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Companies must be based across the EU and Horizon Europe associated countries
+    to receive support.
+  value: EU and Horizon Europe countries
+  intake_field: entityCountries
+  quote: Across all verticals and across the EU and Horizon Europe countries
+  source:
+    file: eic_fund_eligibility.html
+    locator: eic_fund_about.html#chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G4_borrower_model
+  requirement: The EIC Fund provides the investment (equity) component of the EIC Accelerator
+    and the STEP call, with investments ranging from €0.5M to €30M.
+  value: €0.5M–€30M equity investment
+  intake_field: borrowerModel
+  quote: Funding high-risk deep tech innovators — from startups to mature scale-ups — with
+    investments ranging from €0.5M to €30M
+  source:
+    file: eic_fund_eligibility.html
+    locator: eic_fund_about.html#chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: Investment size is €0.5M–€10M under the EIC Accelerator and €10M–€30M under
+    EIC STEP Scale Up.
+  value: €0.5M–€10M (Accelerator); €10M–€30M (STEP Scale Up)
+  intake_field: ticketBand
+  quote: Investment size €0.5M–€10M under the EIC Accelerator €10M–€30M under EIC STEP Scale
+    Up
+  source:
+    file: eic_fund_eligibility.html
+    locator: eic_fund_about.html#chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: The Fund takes minority equity stakes, typically around 10% but can go up to
+    25%, meaning applicant companies must be willing to cede such equity.
+  value: Minority equity stake, ~10% up to 25%
+  intake_field: ownerOver25
+  quote: Minority equity stakes (typically around 10% but can go up to 25%)
+  source:
+    file: eic_fund_eligibility.html
+    locator: eic_fund_about.html#chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: Support targets game-changing innovators from early-stage startups to scaling
+    deep tech leaders across all verticals.
+  value: Startups to mature scale-ups, all verticals
+  intake_field: developmentStage
+  quote: Game-changing innovators From early-stage startups to scaling deep tech leaders
+  source:
+    file: eic_fund_eligibility.html
+    locator: eic_fund_about.html#chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (5/5 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: EIC Fund investment provided as the investment component of the EIC Accelerator
+    and STEP call, managed by an external Fund Manager with EIB as investment advisor, alongside
+    qualified co-investors.
+  typical_timeline: ''
+  quote: We provide the investment component of the EIC Accelerator and the STEP call
+  source:
+    file: eic_fund_eligibility.html
+    locator: eic_fund_about.html#chunk 1
+  verified: llm_cited

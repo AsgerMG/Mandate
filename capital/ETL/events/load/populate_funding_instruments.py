@@ -6,6 +6,19 @@ usage) before any LLM research spend. See migration 011 and
 project-mgmt/plans/ for the full rationale.
 
 Usage: python3 ETL/events/load/populate_funding_instruments.py
+
+** DANGER — DO NOT RE-RUN once real Phase 5 research exists (2026-07-21+) **
+main() does DELETE FROM funding_instruments (full rebuild) and, crucially,
+DELETE FROM eligibility_gates WHERE instrument_id NOT IN (...is_framework=1
+rows...) — i.e. it wipes every gate on every NON-framework instrument. That
+was safe when this script was the only thing writing funding_instruments
+(early Phase 2, before any llm_cited/llm_2pass research existed). It is now
+destructive: as of 2026-07-21 there are 60+ real, cited, hand-researched
+instruments (ADEME, EIC, CDTI, Innovate UK, Innovasjon Norge, Bpifrance,
+Innovationsfonden, NFR, Altum, EIS, ...) whose eligibility_gates rows would
+be silently deleted by a re-run. To add a new instrument row, INSERT it
+directly and additively (see FRAMEWORK_INSTRUMENTS below for the pattern) —
+do not call main().
 """
 from __future__ import annotations
 

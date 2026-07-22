@@ -3,118 +3,306 @@ name: InvestEU financial-intermediary architecture (Reg. 2021/523)
 administering_body: see source document
 country: EU
 capital_type: counter_guarantee
-borrower_models:
-- operating_company
 status: draft
 gates:
-- id: g1
+- id: g1-nexus-establishment
   gate_family: G1_nexus
-  requirement: The EU guarantee under InvestEU is implemented indirectly through implementing
-    partners, which may act via financial intermediaries, to reach final recipients; the borrower's
-    financing may be direct or intermediated.
-  value: final recipient reached directly by implementing partner or indirectly via financial
-    intermediary
-  intake_field: borrowerModel
-  quote: ‘financing and investment operations’ or ‘financing or investment operations’ means
-    operations to provide finance directly or indirectly to final recipients through financial
-    products, carried out by an implementing partner in its own name
-  source:
-    file: investeu_regulation_2021_523.pdf
-    locator: p.16
-  verified: false
-  verify_note: The quote only defines 'financing and investment operations' as operations
-    carried out by an implementing partner in its own name to provide finance directly or
-    indirectly to final recipients through financial products. It does not mention the EU
-    guarantee, InvestEU, financial intermediaries, or borrowers, so it does not establish
-    the claimed requirement about intermediated financing via financial intermediaries.
-- id: g2
-  gate_family: G1_nexus
-  requirement: The EU guarantee may be used for loans, guarantees, equity or similar financing
-    provided directly or indirectly through financial intermediaries, funds, investment platforms
-    or other vehicles to final recipients, establishing the originator/on-lending intermediary
-    model.
-  value: direct or indirect (originator) financing via intermediaries, funds, investment platforms
-    or vehicles
-  intake_field: borrowerModel
-  quote: loans, guarantees, counter-guarantees, capital market instruments, any other form
-    of funding or credit enhancement, including subordinated debt, or equity or quasi-equity
-    investments, provided directly or indirectly through financial intermediaries, funds,
-    investment platforms or other vehicles to be channelled to final recipients
-  source:
-    file: investeu_regulation_2021_523.pdf
-    locator: p.31
-  verified: llm_2pass
-- id: g3
-  gate_family: G1_nexus
-  requirement: The EU guarantee may also cover funding or guarantees extended by an implementing
-    partner to another financial institution enabling that institution to undertake on-lending
-    financing, i.e. a balance-sheet lender relationship between implementing partner and intermediary.
-  value: funding/guarantees by implementing partner to another financial institution to enable
-    further financing (balance_sheet_lender relationship)
-  intake_field: borrowerModel
-  quote: funding or guarantees by an implementing partner to another financial institution
-    enabling the latter to undertake financing referred to in point (a).
-  source:
-    file: investeu_regulation_2021_523.pdf
-    locator: p.31
-  verified: llm_2pass
-- id: g4
-  gate_family: G1_nexus
-  requirement: Financing and investment operations must be carried out by an implementing
-    partner in its own name and accounted for in its own financial statements, establishing
-    that the implementing partner (not the final recipient) holds the direct contractual/banking
-    relationship under the EU guarantee.
-  value: implementing partner acts in its own name and bears the financing on its balance
-    sheet
-  intake_field: bankRelationship
-  quote: carried out by an implementing partner in its own name, provided by the implementing
-    partner in accordance with its internal rules, policies and procedures and accounted for
-    in the implementing partner’s financial statements or, where applicable, disclosed in
-    the notes to those financial statements
-  source:
-    file: investeu_regulation_2021_523.pdf
-    locator: p.16
-  verified: false
-  verify_note: The quote states that activities are carried out by an implementing partner
-    in its own name, per its internal rules, and accounted for in its financial statements.
-    It does not mention 'financing and investment operations' specifically, does not mention
-    the EU guarantee, and does not establish anything about direct contractual/banking relationships
-    versus final recipients. The claim adds interpretive context (EU guarantee, contractual/banking
-    relationship, final recipient contrast) that is not present in the quote.
-- id: g5
-  gate_family: G1_nexus
-  requirement: For intermediated financing operations, including SME support, the additionality
-    (eligibility) test is applied at the level of the financial intermediary rather than the
-    final recipient, confirming the intermediary/originator model as the relevant nexus point.
-  value: additionality verified at intermediary level, not final recipient level, for intermediated
-    operations
-  intake_field: borrowerModel
-  quote: For intermediated financing and investment operations, in particular for SME support,
-    additionality shall be verified at the level of the intermediary rather than at the level
-    of the final recipient.
-  source:
-    file: investeu_regulation_2021_523.pdf
-    locator: p.58
-  verified: llm_2pass
-- id: g6
-  gate_family: G1_nexus
-  requirement: Final recipients eligible for InvestEU-backed financing must be legal entities
-    established in a Member State, an associated third country, an overseas country/territory
-    linked to a Member State, or other qualifying third countries under specified conditions.
-  value: final recipient must be a legal entity established in an eligible Member State/territory/associated
-    third country
+  requirement: Eligible financial intermediaries must be public or private entities established
+    or operating in EU Member States, Overseas Countries and Territories (OCTs), or other
+    participating countries as specified in the Call documents.
+  value: EU Member States, OCTs, or other participating countries
   intake_field: entityCountries
-  quote: 'The InvestEU Fund may support financing and investment operations that provide finance
-    to final recipients which are legal entities established in any of the following countries
-    or territories:'
+  quote: Eligible financial intermediaries can be public or private entities, that are established
+    or operating in EU Member States, Overseas Countries and Territories (OCTs) or other participating
+    countries as further specified in the Call documents.
   source:
-    file: investeu_regulation_2021_523.pdf
-    locator: p.30
-  verified: false
-  verify_note: The quote is truncated and only introduces a list of countries/territories
-    without actually specifying them. It does not state that eligible locations include Member
-    States, associated third countries, overseas countries/territories linked to a Member
-    State, or other qualifying third countries. The specific categories claimed are not present
-    in the quote itself.
-verify_by: '2026-10-01'
-notes: Extracted 3/6 gates at llm_2pass by ETL/terms/extract_terms.py.
+    file: eif_investeu_guarantee_products.html
+    locator: eif_investeu_guarantee_products.html#chunk 1
+  verified: llm_cited
+- id: g1-nexus-third-countries
+  gate_family: G1_nexus
+  requirement: Third countries may participate in InvestEU only under conditions of specific
+    agreements ensuring fair balance of contributions/benefits, no decision-making power,
+    and protection of Union financial interests.
+  value: Third country participation requires specific agreement
+  intake_field: entityCountries
+  quote: 'other third countries, in accordance with the conditions laid down in a specific
+    agreement covering the participation of
+
+    the third country to any Union programme'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.20
+  verified: llm_cited
+- id: g1-nexus-intermediary-type
+  gate_family: G1_nexus
+  requirement: Applicants must be a type of eligible intermediary entity such as credit or
+    financial institutions, alternative lenders, leasing companies, guarantee schemes/institutions,
+    or national promotional banks/institutions.
+  value: Credit/financial institution, alternative lender, leasing company, guarantee scheme,
+    or NPB/NPI
+  intake_field: borrowerModel
+  quote: 'For guarantees: credit or financial institutions, alternative lenders, leasing companies.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: eif_investeu_guarantee_products.html#chunk 1
+  verified: llm_cited
+- id: g1-nexus-selection-application
+  gate_family: G1_nexus
+  requirement: An applicant becomes a financial intermediary only after complying with the
+    Call's formal criteria, submitting the application per Annex I by the deadline, being
+    selected by the EIF, and entering into a guarantee agreement.
+  value: Must complete formal application and selection process
+  intake_field: none
+  quote: 'An applicant may become a financial intermediary under InvestEU provided that: it
+    complies with formal criteria as described in the Call; it completes and submits its application,
+    as per the Annex I below within the deadline and in accordance with all provisions outlined
+    in the Call; it is selected by the EIF as a potential financial intermediary under InvestEU
+    to implement one or more InvestEU Portfolio Guarantee Products pursuant to the selection
+    process outlined in the Call; it enters into the relevant (counter-) guarantee agreement
+    with the EIF.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: eif_investeu_guarantee_products.html#chunk 1
+  verified: llm_cited
+- id: g1-nexus-deadline
+  gate_family: G1_nexus
+  requirement: Applications for becoming a financial intermediary must be submitted before
+    the stated deadline of 30 June 2027, which may be brought forward.
+  value: 'Deadline: 30 June 2027 (subject to earlier closure)'
+  intake_field: needBy
+  quote: 'Deadline for applications: 30 June 2027'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: eif_investeu_guarantee_products.html#chunk 1
+  verified: llm_cited
+- id: g4-borrower-model-eu-guarantee
+  gate_family: G4_borrower_model
+  requirement: The EU guarantee is granted as an irrevocable, unconditional and on-demand
+    guarantee to implementing partners, implemented in indirect management.
+  value: Irrevocable, unconditional, on-demand guarantee
+  intake_field: borrowerModel
+  quote: 'The EU guarantee shall be granted as an irrevocable, unconditional and on demand
+    guarantee to the implementing
+
+    partners in accordance with Article 219(1) of the Financial Regulation and implemented
+    in indirect management in
+
+    accordance with Title X of that Regulation.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.28
+  verified: llm_cited
+- id: g4-borrower-model-contribution
+  gate_family: G4_borrower_model
+  requirement: Implementing partners other than the EIB Group under the 25% remaining EU compartment
+    guarantee must provide a financial contribution to be determined in the guarantee agreements,
+    similar to the EIB Group's aggregate contribution requirement.
+  value: Financial contribution from implementing partner required
+  intake_field: borrowerModel
+  quote: 'The remaining 25 % of the EU guarantee under the EU compartment shall be granted
+    to other implementing
+
+    partners, which shall also provide a financial contribution to be determined in the guarantee
+    agreements.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.29
+  verified: llm_cited
+- id: g3-financial-signing-deadline
+  gate_family: G3_financial
+  requirement: Contracts between the implementing partner and final recipient or financial
+    intermediary must be signed within one year of operation approval (recovery-related) or
+    by 31 December 2028 in other cases, and the investment period ends 31 December 2027.
+  value: 'Signing deadline: 31 Dec 2028; investment period ends 31 Dec 2027'
+  intake_field: needBy
+  quote: 'In other cases, contracts between the implementing partner and the final recipient
+    or the financial intermediary or other entity
+
+    referred to in point (a) of Article 16(1) shall be signed by 31 December 2028.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.29
+  verified: llm_cited
+- id: g3-financial-sub-project-threshold
+  gate_family: G3_financial
+  requirement: The Investment Committee cannot separately approve sub-projects of a size below
+    EUR 3,000,000, meaning smaller sub-projects are approved as part of the umbrella operation.
+  value: EUR 3,000,000 sub-project threshold
+  intake_field: ticketBand
+  quote: The Investment Committee shall not have the right to separately approve sub-projects
+    of a size below EUR 3 000 000.
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.38
+  verified: llm_cited
+- id: g5-use-of-funds-additionality
+  gate_family: G5_use_of_funds
+  requirement: Supported financing and investment operations must be additional to existing
+    market support and existing public support, demonstrated via features such as subordinated
+    positions, higher risk profile, or crowding-in of private financing.
+  value: Additionality required
+  intake_field: none
+  quote: 'To demonstrate that the financing and investment operations benefitting from the
+    EU guarantee are additional to the
+
+    existing market and to existing other public support, the implementing partners shall
+    provide information that
+
+    demonstrates the presence of at least one of the following features'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.58
+  verified: llm_cited
+- id: g5-use-of-funds-refinancing-exclusion
+  gate_family: G5_use_of_funds
+  requirement: The EU guarantee shall not be granted to support refinancing operations (replacing
+    existing loan agreements or other financial support for already partially or fully materialised
+    projects), except in specific exceptional and well-justified circumstances.
+  value: Refinancing generally excluded
+  intake_field: none
+  quote: 'The EU guarantee shall not be granted for supporting refinancing operations (such
+    as replacing existing loan
+
+    agreements or other forms of financial support for projects which have already partially
+    or fully materialised), except
+
+    in specific exceptional and well justified circumstances'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.58
+  verified: llm_cited
+- id: g5-use-of-funds-excluded-activities
+  gate_family: G5_use_of_funds
+  requirement: The InvestEU Fund shall not support activities which limit individual rights
+    and freedoms or violate human rights.
+  value: 'Excluded: activities violating human rights or limiting individual rights/freedoms'
+  intake_field: none
+  quote: 'The InvestEU Fund shall not support:
+
+    (1) activities which limit individual rights and freedoms or that violate human rights'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.58
+  verified: llm_cited
+- id: g6-conditionality-sustainability-proofing
+  gate_family: G6_conditionality
+  requirement: Financing and investment operations with environmental, climate or social impact
+    must undergo climate, environmental and social sustainability proofing, and projects inconsistent
+    with climate objectives are not eligible.
+  value: Sustainability proofing required; climate-inconsistent projects excluded
+  intake_field: conditionality
+  quote: 'Projects that are inconsistent with the climate objectives shall not be eligible
+    for support
+
+    under this Regulation.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.22
+  verified: llm_cited
+- id: g6-conditionality-financial-regulation-compliance
+  gate_family: G6_conditionality
+  requirement: The InvestEU Fund shall only support financing and investment operations that
+    comply with the conditions set out in Article 209(2)(a)-(e) of the Financial Regulation,
+    in particular regarding market failures, suboptimal investment situations, and additionality.
+  value: Must comply with Financial Regulation Art. 209(2) conditions
+  intake_field: conditionality
+  quote: 'The InvestEU Fund shall only support financing and investment operations that:
+
+    (a) comply with the conditions set out in points (a) to (e) of Article 209(2) of the Financial
+
+    Regulation, in particular
+
+    regarding market failures, suboptimal investment situations and additionality'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.29
+  verified: llm_cited
+obligations:
+- requirement: Implementing partners and advisory partners must acknowledge the origin and
+    ensure visibility of Union funding, providing coherent, effective and proportionate targeted
+    information to the public and media.
+  quote: 'Implementing partners and advisory partners shall acknowledge the origin and ensure
+    the visibility of the Union
+
+    funding, in particular when promoting the actions and their results, by providing coherent,
+    effective and proportionate
+
+    targeted information to multiple audiences, including the media and the public.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.42
+  verified: llm_cited
+- requirement: Implementing partners and advisory partners must inform final recipients, including
+    SMEs, of the existence of InvestEU support by making it clearly visible in the relevant
+    support agreement.
+  quote: 'The implementing partners and advisory partners shall inform the final recipients,
+    including SMEs, of the existence of
+
+    support under the InvestEU Programme, or oblige other financial intermediaries to inform
+    such final recipients of that
+
+    support, by making that information clearly visible in the relevant agreement providing
+    support under the InvestEU
+
+    Programme'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.43
+  verified: llm_cited
+- requirement: Each implementing partner must submit a report to the Commission every six
+    months on financing and investment operations covered by the Regulation, including compliance
+    with EU guarantee requirements and key performance indicators.
+  quote: 'Every six months, each implementing partner shall submit a report to the Commission
+    on the financing and
+
+    investment operations covered by this Regulation, broken down by EU compartment and Member
+    State compartment, as
+
+    appropriate.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.41
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/14 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Financing and investment operations forming part of a blending operation combining
+    InvestEU support with support under other Union programmes or the EU ETS Innovation Fund
+    must comply both with the eligibility criteria of the other Union programme and with the
+    InvestEU Regulation itself.
+  quote: 'Financing and investment operations covered by the EU guarantee which form part
+    of the blending operation
+
+    combining support under this Regulation with support provided under one or more other
+    Union programmes or covered
+
+    by the EU ETS Innovation Fund shall:
+
+    (a) be consistent with the policy objectives and comply with the eligibility criteria
+    set out in the rules of the Union
+
+    programme under which the support is decided;
+
+    (b) comply with this Regulation.'
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: investeu_regulation_2021_523.pdf#p.20
+  verified: llm_cited
+application:
+  channel: Applicants apply to become financial intermediaries by submitting application documents
+    via email to the EIF following the Call for Expression of Interest for each specific InvestEU
+    guarantee product.
+  typical_timeline: Applications processed on an ongoing basis until the deadline of 30 June
+    2027, subject to earlier closure depending on availability of budgetary resources.
+  quote: How to apply? The EIF selects financial intermediaries according to a standard process
+    involving due diligence and proof of compliance with relevant standards. If you are eligible,
+    you can apply by downloading and submitting via email to the EIF the relevant application
+    documents published under each specific product detail page listed above.
+  source:
+    file: eif_investeu_guarantee_products.html
+    locator: eif_investeu_guarantee_products.html#chunk 1
+  verified: llm_cited
+borrower_models:
+- operating_company

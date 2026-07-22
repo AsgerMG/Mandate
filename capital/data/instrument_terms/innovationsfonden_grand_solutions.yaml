@@ -1,0 +1,360 @@
+id: innovationsfonden_grand_solutions
+name: innovationsfonden_grand_solutions
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: The main applicant must be a Danish legal entity, though other legal entities
+    in or outside Denmark directly involved in project activities may participate.
+  value: Main applicant must be a Danish legal entity; other participants may be from any
+    country
+  intake_field: entityCountries
+  quote: Any legal entity (such as an enterprise, a research institution, or a public institution)
+    in or outside Denmark and directly involved in the project activities is eligible to apply,
+    participate, and receive funding from IFD. However, the main applicant in the application
+    must be a Danish legal entity.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.6
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: An application must have at least two project participants, of which at least
+    one is not a public university (with an exception for quantum technology calls).
+  value: Minimum 2 project participants, at least one not a public university
+  intake_field: consortium
+  quote: An application must have at least two project participants of which at least one
+    is not a public university.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.6
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: For quantum technology calls, it is acceptable to have at least two separate
+    departments at the same public Danish university as participants instead of two separate
+    legal entities.
+  value: 'Quantum tech exception: two departments of same public university acceptable'
+  intake_field: consortium
+  quote: For the Grand Solutions call on quantum technologies, it is acceptable with at least
+    two separate departments at the same public university as participants.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.6
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: An 'undertaking in difficulty' as defined under GBER cannot enter into an investment
+    agreement under the programme.
+  value: Undertakings in difficulty are disqualified
+  intake_field: borrowerModel
+  quote: An 'undertaking in difficulty' as defined in article 2, point 18, of the General
+    Block Exemption Regulation (GBER) cannot enter into an investment agreement for the Grand
+    Solutions programme.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: "An ''undertaking in difficulty'' as defined
+    in artic"'
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: An applicant that has previously received aid declared incompatible with the
+    internal market and has not repaid it cannot receive an investment.
+  value: Unpaid incompatible aid recipients are disqualified
+  intake_field: borrowerModel
+  quote: An applicant who previously has received aid that has been declared incompatible
+    with the internal market according to the European Commission, and who has not repaid
+    such aid at the time of submitting the application to IFD, cannot receive an investment
+    from IFD.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.7
+  verified: llm_cited
+- id: G2-03
+  gate_family: G2_size_ownership
+  requirement: An investment must not contravene national or international sanctions, including
+    asset freezes and prohibitions on provision of funds to listed persons/entities.
+  value: Sanctioned entities/persons excluded
+  intake_field: nonEuControl
+  quote: An investment from IFD must not contravene national or international sanctions, including
+    sanctions on the freezing of funds or prohibitions on direct and indirect provision.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.7
+  verified: llm_cited
+- id: G2-04
+  gate_family: G2_size_ownership
+  requirement: The maximum investment rate for each participant depends on whether the participant
+    is a large enterprise or SME, a public sector institute, a Danish national cluster, or
+    a Danish GTS institute, and whether it carries out economic or non-economic activities.
+  value: Investment rate varies by organisation size/type and economic vs non-economic activity
+  intake_field: fteBand
+  quote: The maximum investment rate for each participant depends on whether the project is
+    considered to involve "effective collaboration" (see Chapter 3 and Chapter 7), and whether
+    the participant is a large or a small to medium sized private enterprise (SME)
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The maximum investment rate for each participant
+    d'''
+- id: G3-01
+  gate_family: G3_financial
+  requirement: The IFD investment can contribute a maximum of 75.0% of the total project budget
+    (90.0% for quantum technology calls).
+  value: Max investment rate 75.0% (90.0% for quantum tech)
+  intake_field: cofinancingBand
+  quote: The duration of a Grand Solutions project must be between one and five years, and
+    the IFD investment can contribute with a maximum of 75.0% of the total project budget1.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.6
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: The amount applied for must be within the specific lower and upper IFD investment
+    limits stated in the call text.
+  value: Ticket size bounded by call-specific limits
+  intake_field: ticketBand
+  quote: The amount applied for must be between the lower and upper IFD investment limit constraints
+    as specified in the call texts.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.7
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: Investments up to EUR 300,000 may be granted under the de minimis regulation,
+    subject to the EUR 300,000 cumulative ceiling per undertaking over the relevant period.
+  value: De minimis ceiling EUR 300,000 (lower thresholds for fishery/aquaculture and agriculture
+    sectors)
+  intake_field: ticketBand
+  quote: Investments up to EUR 300,000 under the Grand Solutions programme may be granted
+    pursuant to the conditions for de minimis aid set out in the de minimis regulation26.
+    The total amount of de minimis aid granted to any enterprise, including from other entities
+    than IFD, shall not exceed EUR
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.27
+  verified: llm_cited
+- id: G3-04
+  gate_family: G3_financial
+  requirement: If the GBER effective-collaboration or wide-dissemination conditions are not
+    met, the maximum investment rate is reduced by 15.0 percentage points relative to the
+    standard tables.
+  value: 15.0% rate reduction if no effective collaboration/wide dissemination
+  intake_field: cofinancingBand
+  quote: If none of the above conditions are met, the IFD maximum investment rate for the
+    project participant will be 15.0% lower than the rates in Tables 2 to 4.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.27
+  verified: llm_cited
+- id: G3-05
+  gate_family: G3_financial
+  requirement: A maximum of 10% of IFD's budgeted investment can be left undistributed among
+    individual participants in the full phase 2 budget.
+  value: Max 10% of budget undistributed
+  intake_field: cofinancingBand
+  quote: a maximum of 10.0% of IFD’s budgeted investment can be left undistributed among the
+    individual participants in the full budget for phase 2 of a Grand Solutions call.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.19
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: IFD funding takes the form of a non-repayable investment/grant subject to state
+    aid rules (GBER or de minimis), not a loan.
+  value: Grant/investment mechanism under GBER or de minimis
+  intake_field: borrowerModel
+  quote: Investments made to private enterprises, trade or interest organisations, or other
+    organisation types who carry out economic activities are granted in accordance with the
+    Block Exempted Aid from the EU's rules on state aid, also known as GBER, or in accordance
+    with de minimis aid covered by the de minimis regulation.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.26
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Investments made to private enterprises, trade
+    or '''
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: IFD requires that all project participants co-invest in the project, with financial
+    commitment reflecting each participant's value creation.
+  value: Mandatory co-investment by all participants
+  intake_field: cofinancingBand
+  quote: IFD requires that all project participants invest in the project. The financial commitment
+    from the individual project participants must reflect the value creation of the project
+    for each participant and the project consortium.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.7
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: An IFD investment can only cover costs defrayed after the start of the investment
+    period and before its expiry.
+  value: Eligible costs limited to investment period
+  intake_field: none
+  quote: Please note that an IFD investment can only cover costs defrayed after the start
+    of the investment period and before its expiry.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.8
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: The project duration must be between one and five years.
+  value: Duration 1-5 years
+  intake_field: needBy
+  quote: The duration of the project must be between one and five years.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.12
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: No applicant can receive IFD funding for activities already supported by other
+    public sector subsidisation schemes within the EU or member states, unless explicitly
+    authorised in writing by IFD.
+  value: No stacking with other public subsidisation schemes unless authorised
+  intake_field: institutionalBacking
+  quote: no applicant can receive funding from IFD for activities supported by any other public
+    sector subsidisation schemes within the EU or EU member states, including Denmark, unless
+    this has been explicitly authorised in writing by IFD.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.19
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: If a project has received or will receive funding from a public body for the
+    same activities, the entire project becomes ineligible for IFD investment.
+  value: Entire project ineligible if activities receive other public body funding
+  intake_field: institutionalBacking
+  quote: If activities in a project in IFD’s assessment have received or will receive funding
+    from a public body (local, regional or national authority; public fund; international
+    publicly funded body; or similar), the project will in its entirety not be eligible for
+    investment by IFD.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.24
+  verified: llm_cited
+obligations:
+- requirement: The letter of interest form and all appendices must be written entirely in
+    English.
+  quote: All texts in the letter of interest form and appendix must be written in English.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.12
+  verified: llm_cited
+- requirement: The letter of interest, and later the full application, must be submitted via
+    the e-grant electronic system before the call deadline; late or non-compliant submissions
+    are rejected without substantive consideration.
+  quote: In the event of failure to comply with formal requirements or deadlines, the letter
+    of interest will be rejected without substantive consideration.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.12
+  verified: llm_cited
+- requirement: The budget overview/budget must contain at least two project participants.
+  quote: The budget overview must contain at least two project participants.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.12
+  verified: llm_cited
+- requirement: The main applicant must notify IFD immediately of any material changes affecting
+    information submitted, including changes in funding received from other sources.
+  quote: The main applicant is under an obligation to notify IFD immediately in the event
+    of any subsequent material changes that affect the information submitted in the letter
+    of interest, including changes in the amount of funding for the activities or parts thereof
+    received from other sources.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.24
+  verified: llm_cited
+- requirement: 'Project adjustments between phase 1 and phase 2 are constrained: no change
+    of call, preserved title/acronym, budget/period changes capped at 20%, core participants
+    and key persons largely preserved.'
+  quote: The project described in your application for phase 2 must be the same project that
+    was outlined in your letter of interest for phase 1, but adjustments within the limits
+    described below are allowed.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.23
+  verified: llm_cited
+- requirement: Before signing the investment agreement, enterprises receiving de minimis aid
+    must submit a solemn declaration of any other de minimis aid received.
+  quote: Before the investment agreement with IFD is signed, the enterprise must submit a
+    solemn declaration about any other de minimis aid received to which the de minimis regulation
+    or other de minimis regulations28 apply.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase2.pdf#p.30
+  verified: llm_cited
+- requirement: Project participants must enter into a collaboration agreement regulating collaboration,
+    and confirm its existence to IFD prior to signing of the investment agreement.
+  quote: Prior to IFD signing the investment agreement, the project participants are required
+    to confirm the existence of a collaboration agreement approved by all project participants.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase2.pdf#p.25
+  verified: llm_cited
+- requirement: IFD may terminate the investment and demand reimbursement if conditions are
+    not complied with, progress is insufficient, or goals cannot be met, or if false/misleading
+    information was provided.
+  quote: IFD reserves the right to terminate the investment from IFD and demand reimbursement
+    of the investment or part of the investment and demand repayment of already paid amounts,
+    if the agreed conditions for the investment are not complied with, if the project has
+    made insufficient progress, or if the participants are unable to meet the goals and value
+    creation on which IFD based its investment in the project
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase2.pdf#p.28
+  verified: llm_cited
+- requirement: Published scientific articles resulting from full or partial IFD financing
+    must be made freely available via open access, subject to publisher consent.
+  quote: This means that published scientific articles which are the result of full financing
+    or co-financing from IFD are to be made freely available to the public via open access,
+    if the publisher consents.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.26
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/18 gates, 9/9 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: IFD funding cannot be combined with other public sector subsidisation schemes within
+    the EU/member states for the same activities unless explicitly authorised in writing by
+    IFD, and any project whose activities have received or will receive other public body
+    funding becomes entirely ineligible for IFD investment; de minimis aid is also subject
+    to the standard EUR 300,000 (or sector-specific lower) cumulative ceiling per undertaking
+    over the relevant period, including the full IFD investment amount.
+  quote: no applicant can receive funding from IFD for activities supported by any other public
+    sector subsidisation schemes within the EU or EU member states, including Denmark, unless
+    this has been explicitly authorised in writing by IFD.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.19
+  verified: llm_cited
+application:
+  channel: 'Electronic application system e-grant (www.e-grant.dk), two-phase process: phase
+    1 letter of interest, phase 2 full application'
+  typical_timeline: Phase 1 deadline 3 March 2026; response mid-June 2026; phase 2 deadline
+    10 September 2026; response mid-December 2026; total time from phase 1 deadline to final
+    phase 2 response approximately 8-9 months, with phase 2 evaluation taking approximately
+    12 weeks
+  quote: In total, the total time from the submission deadline for letters of interest in
+    phase 1 of the call and to a final response to the application in phase 2 of the call
+    is expected to be 8-9 months. The evaluation time for phase 2 is expected to be approximately
+    12 weeks.
+  source:
+    file: innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf
+    locator: innovationsfonden_grand_solutions_guidelines_2026_phase2.pdf#p.21
+  verified: llm_cited

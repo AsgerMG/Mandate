@@ -1,0 +1,252 @@
+id: satr_hu_rnd
+name: satr_hu_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a business registered/operating in Hungary, with the development
+    location being the applicant's registered seat, branch, or premises in Hungary.
+  value: Registered Hungarian seat/branch/premises required; whole territory of Hungary eligible
+  intake_field: entityCountries
+  quote: A fejlesztés megvalósulásának helyszíne a támogatást igénylő bejegyzett magyarországi
+    székhelye, telephelye vagy fióktelepe lehet.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.40
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: The implementation site must be registered at least 60 days prior to the submission
+    of the support application.
+  value: 60 days prior registration requirement
+  intake_field: wouldOpenEntity
+  quote: A megvalósítási helyszínnek 60 nappal a támogatási kérelem beadását megelőzően kell
+    bejegyzésre kerülnie.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.40
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: Only micro- and small enterprises may submit a support application under this
+    call.
+  value: Micro- and small enterprises only
+  intake_field: fteBand
+  quote: Mikro-, és kisvállalkozások
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.1
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: Organizational innovation activity is only supportable if the applicant's average
+    annual statistical staff headcount in the last closed full business year prior to submission
+    was at least 20 persons.
+  value: Minimum 20 FTE for organizational innovation activity eligibility
+  intake_field: fteBand
+  quote: amennyiben a támogatást igénylő éves átlagos statisztikai állományi létszáma a támogatási
+    kérelem benyújtását megelőző lezárt, teljes, üzleti évben minimum 20 fő volt
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.10
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: Consortium applications are not permitted under this call; only single applicants
+    may apply.
+  value: No consortium applications allowed
+  intake_field: consortium
+  quote: A támogatási kérelem benyújtására konzorciumi formában nincs lehetőség.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.1
+  verified: llm_cited
+- id: g6
+  gate_family: G3_financial
+  requirement: The requested non-refundable grant amount must be between HUF 20 million and
+    HUF 50 million.
+  value: HUF 20,000,000 - HUF 50,000,000
+  intake_field: ticketBand
+  quote: minimum 20 000 000 Ft - maximum 50 000 000 Ft
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.1
+  verified: llm_cited
+- id: g7
+  gate_family: G3_financial
+  requirement: Total EU-eligible project cost may not exceed HUF 72,000,000.
+  value: Max HUF 72,000,000 eligible cost
+  intake_field: ticketBand
+  quote: A projekt Európai Unióval elszámolható összköltsége24 legfeljebb 72 000 000 Ft lehet.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.34
+  verified: llm_cited
+- id: g8
+  gate_family: G3_financial
+  requirement: Maximum aid intensity is 70% of eligible costs, requiring at least 30% own
+    contribution.
+  value: Max aid intensity 70%; min own contribution 30%
+  intake_field: cofinancingBand
+  quote: A támogatási intenzitás nem haladhatja meg az elszámolható költségek 70%-át.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.34
+  verified: llm_cited
+- id: g9
+  gate_family: G3_financial
+  requirement: Applicant must provide at least 30% own contribution (self-financing) toward
+    project costs.
+  value: Minimum 30% own contribution required
+  intake_field: cofinancingBand
+  quote: Igen minimum 30 % mértékben
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.2
+  verified: llm_cited
+- id: g10
+  gate_family: G4_borrower_model
+  requirement: The support is a non-refundable grant that does not need to be repaid if the
+    project is implemented per contract.
+  value: Non-refundable grant
+  intake_field: borrowerModel
+  quote: Nem, a támogatás vissza nem térítendő támogatásnak minősül, ezért a támogatást –
+    szerződés szerinti projektmegvalósítás esetén – nem kell visszafizetni.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.34
+  verified: llm_cited
+- id: g11
+  gate_family: G6_conditionality
+  requirement: Support cannot be requested for a project that was started prior to submission
+    of the support application; if project start is found to predate submission, the application
+    is rejected or support withdrawn.
+  value: No support for projects begun before application submission
+  intake_field: developmentStage
+  quote: Támogatás a támogatási kérelem benyújtását megelőzően megkezdett projekthez nem igényelhető.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.34
+  verified: llm_cited
+- id: g12
+  gate_family: G5_use_of_funds
+  requirement: Only the business process innovation activities listed in section 2.1 of the
+    call (production, marketing/sales, logistics, organizational innovation, and supporting
+    activities) are eligible; no other activity is supportable.
+  value: Business process innovation activities only (production, marketing/sales, logistics,
+    organizational)
+  intake_field: none
+  quote: A 2.1. pontban meghatározott tevékenységeken kívül más tevékenység nem támogatható.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.40
+  verified: llm_cited
+- id: g13
+  gate_family: G5_use_of_funds
+  requirement: The call explicitly excludes product innovation activities that create new
+    or significantly improved products/services, including entering new activities not previously
+    performed by the applicant.
+  value: Product innovation excluded from eligible use of funds
+  intake_field: none
+  quote: a vállalkozás jelenlegi tevékenységeihez kapcsolódóan új termék, szolgáltatás jön
+    létre, vagyis többféle termék előállítására, szolgáltatás nyújtására lesz képes (termék
+    innováció)
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.85
+  verified: llm_cited
+- id: g14
+  gate_family: G6_conditionality
+  requirement: Project physical completion must occur within 18 months from project start,
+    and no later than 30 June 2027.
+  value: Max 18 months implementation; deadline 30 June 2027
+  intake_field: needBy
+  quote: A projekt fizikai befejezésére a megkezdésétől számított legfeljebb 18 hónap áll
+    rendelkezésre.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''A projekt fizikai befejezésére a megkezdésétől
+    szá'''
+- id: g15
+  gate_family: G1_nexus
+  requirement: Applications may only be submitted within the specified submission windows
+    across three stages in 2024-2025.
+  value: 'Stage 1: 2024.11.04-11.12; Stage 2: 2025.04.08-04.22; Stage 3: 2025.09.09-09.23'
+  intake_field: needBy
+  quote: '1. szakasz: 2024. november 04. – 2024. november 12.'
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.1
+  verified: llm_cited
+obligations:
+- requirement: Beneficiary must comply with statutory communication and publicity obligations
+    regarding the project and the support received.
+  quote: Ön, mint kedvezményezett a projekt megvalósítása során köteles a hatályos jogszabályokban
+    meghatározott tájékoztatási és nyilvánossági kötelezettségeknek eleget tenni, a projektről
+    és a támogatásról az ott meghatározott módon és tartalommal információt nyújtani.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.40
+  verified: llm_cited
+- requirement: Beneficiary is limited to at most 2 modification requests to the Support Contract
+    during the implementation period.
+  quote: A megvalósítási időszakban legfeljebb 2 alkalommal nyújtható be módosítási kérelem.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.40
+  verified: llm_cited
+- requirement: Purchased equipment must be new and acquired from a dealer or manufacturer
+    with credible references, under standard market warranty terms.
+  quote: A beszerezni kívánt eszközöket az érintett eszközök kereskedelmi forgalmával üzletszerűen
+    foglalkozó, az adott területen irányadó körülmények között meggyőző referenciával rendelkező
+    kereskedőnek, vagy gyártónak minősülő szállítótól kell vásárolni, a piacon szokványos
+    jótállási és szavatossági feltételek biztosítása mellett.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.55
+  verified: llm_cited
+- requirement: Beneficiary must justify procurement costs with a market survey demonstrating
+    that the purchase price matches market prices for certain cost items.
+  quote: A támogatást igénylőnek a beszerzés tárgyát képező, 7.3. d) i. pont szerinti költségtételek
+    tekintetében piacfelméréssel kell alátámasztania, hogy a beszerzés ellenértéke a piaci
+    áraknak megfelel.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.51
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/15 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: De minimis aid to a single undertaking may not exceed EUR 300,000 gross grant equivalent
+    over any three-year period and may be cumulated with other de minimis aid up to the highest
+    applicable ceiling under other de minimis regulations, and may also be cumulated with
+    State aid for the same eligible costs if intensity/amount limits under block exemption
+    regulations or Commission decisions are not exceeded.
+  quote: 'A kedvezményezett és a vele egy és ugyanazon vállalkozásnak minősülő vállalkozások
+    részére az (EU) 2023/2831 bizottsági rendelet hatálya alá tartozó, bármely három év során
+    Magyarországon odaítélt csekély összegű támogatás (ezen alcím alkalmazásában a továbbiakban:
+    támogatás) bruttó támogatástartalma nem haladhatja meg a 300 000 eurónak megfelelő forintösszeget'
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_nkfi_alap_380_2014_korm_rendelet.html#chunk 17
+  verified: llm_cited
+application:
+  channel: Electronic submission via the palyazat.gov.hu / FAIR system under standard procedure
+    administered by the Deputy State Secretariat for Economic Development Programs under GINOP
+    Plusz
+  typical_timeline: 'Three submission stages: 2024.11.04-11.12, 2025.04.08-04.22, 2025.09.09-09.23;
+    decisions per standard procedure by the Irányító Hatóság with a Döntés-előkészítő Bizottság;
+    implementation max 18 months from start, no later than 2027.06.30'
+  quote: keretében beérkezett kérelmekről az irányító hatóság standard eljárásrend szerint
+    hoz döntést. A döntés-előkészítés során az irányító hatóság Döntés-előkészítő Bizottságot
+    állít fel.
+  source:
+    file: hu_nkfi_alap_380_2014_korm_rendelet.html
+    locator: hu_ginop_plusz_213_24_felhivas.pdf#p.2
+  verified: llm_cited

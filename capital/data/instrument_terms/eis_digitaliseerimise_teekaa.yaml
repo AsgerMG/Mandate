@@ -1,0 +1,238 @@
+id: eis_digitaliseerimise_teekaa
+name: eis_digitaliseerimise_teekaa
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_excluded_sectors_1
+  gate_family: G1_nexus
+  requirement: Companies operating in certain excluded sectors cannot apply for the digitalisation
+    roadmap support.
+  value: 'Excluded: temporary labour rental, financial/insurance activity, gambling, legal/accounting
+    activities, fish/crustacean/mollusc processing, real estate, head office/management consultancy,
+    agriculture/forestry/fishing, advertising/market research, rental/leasing, tobacco manufacturing'
+  intake_field: activityCountries
+  quote: 'Digitaliseerimise teekaardi toetust ei saa taotleda järgmistes valdkondades tegutsevad
+    ettevõtted: ajutise tööjõu rent finants- ja kindlustustegevus hasartmängude ja kihlvedude
+    korraldamine juriidilised toimingud ja arvepidamine kala, vähilaadsete ja limuste töötlemine
+    ja säilitamine kinnisvara-alane tegevus peakontorite tegevus ja juhtimisalane nõustamine
+    põllumajandus, metsamajandus ja kalapüük reklaamindus ja turu-uuringud rentimine ja kasutusrent
+    tubakatoodete tootmine'
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g1_excluded_sectors_detailed
+  gate_family: G1_nexus
+  requirement: Detailed NACE-coded exclusion list defines ineligible sectors for the digitalisation
+    roadmap support.
+  value: NACE sections A, B(05,06,091), C(19,120), M, S(920), N(69,70,73), O(77,782) excluded
+  intake_field: activityCountries
+  quote: põllumajandus, metsamajandus ja kalapüük (jagu A) ning kala, koorikloomade ja molluskite
+    töötlemine ja säilitamine (jagu C, grupp 102) kivi- ja pruunsöe kaevandamine (jagu B,
+    osa 05), toornafta ja maagaasi tootmine (jagu B, osa 06)
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g2_sme_size
+  gate_family: G2_size_ownership
+  requirement: Support rate differs for small/medium-sized enterprises versus large enterprises,
+    indicating both SME and large enterprise size categories are addressed by the scheme.
+  value: SME and large enterprise categories both eligible under different aid instruments
+  intake_field: fteBand
+  quote: Digitaliseerimise teekaardi koostamine väike ja keskmise suurusega ettevõttele –
+    50% grupi erandi artikkel 18 abil. Digitaliseerimise teekaardi koostamine väike, keskmise
+    suurusega ettevõttele ja suurettevõtetele – 50% vähese tähtsusega abi abil.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 6
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Digitaliseerimise teekaardi koostamine väike
+    ja ke'''
+- id: g3_aid_intensity_gber
+  gate_family: G3_financial
+  requirement: Support for SMEs is provided at 50% intensity under GBER Article 18 (consultancy
+    aid to SMEs).
+  value: 50% aid intensity (GBER Art. 18, SME only)
+  intake_field: none
+  quote: Digitaliseerimise teekaardi koostamine väike ja keskmise suurusega ettevõttele –
+    50% grupi erandi artikkel 18 abil.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 6
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Digitaliseerimise teekaardi koostamine väike
+    ja ke'''
+- id: g3_aid_intensity_deminimis_50
+  gate_family: G3_financial
+  requirement: Support for SMEs and large enterprises is provided at 50% intensity under de
+    minimis aid.
+  value: 50% aid intensity (de minimis, SME and large enterprises)
+  intake_field: none
+  quote: Digitaliseerimise teekaardi koostamine väike, keskmise suurusega ettevõttele ja suurettevõtetele
+    – 50% vähese tähtsusega abi abil.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 6
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Digitaliseerimise teekaardi koostamine väike,
+    kesk'''
+- id: g3_aid_intensity_deminimis_70
+  gate_family: G3_financial
+  requirement: A higher 70% de minimis aid intensity applies for SMEs and large enterprises
+    whose registered address is outside Harju county and Tartu city.
+  value: 70% aid intensity (de minimis) if registered outside Harjumaa/Tartu
+  intake_field: entityCountries
+  quote: Digitaliseerimise teekaardi koostamine väike, keskmise suurusega ettevõttele ja suurettevõtetele
+    – 70% vähese tähtsusega abi abil – ettevõtte registreerimise aadress on väljaspool väljaspool
+    Harjumaad ja Tartu linna.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 6
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Digitaliseerimise teekaardi koostamine väike,
+    kesk'''
+- id: g5_use_of_funds
+  gate_family: G5_use_of_funds
+  requirement: Funding may only be used to procure preparation of the company's digitalisation
+    roadmap (a three-year strategy document) from an external service provider.
+  value: Funds restricted to purchase of digitalisation roadmap preparation service
+  intake_field: none
+  quote: Toetust saad taotleda oma ettevõtte digitaliseerimise teekaardi koostamiseks. Teenust
+    saab osta teenusepakkujalt.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g5_roadmap_content
+  gate_family: G5_use_of_funds
+  requirement: The digitalisation roadmap must be a three-year strategy document containing
+    assessments of digitalisation/automation/cybersecurity level, investment overview, cost-benefit
+    analysis, real-time economy analysis, impact on financial results, a 3-year action plan,
+    and a Do No Significant Harm confirmation.
+  value: Roadmap must include specific mandatory content elements
+  intake_field: none
+  quote: Digitaliseerimise teekaart on ettevõtja kolmeaastane strateegiadokument.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_dnsh
+  gate_family: G6_conditionality
+  requirement: Planned activities and investments in the roadmap must comply with the 'do
+    no significant harm' principle.
+  value: Do No Significant Harm confirmation required
+  intake_field: conditionality
+  quote: kinnitust, et kavandatud tegevused ja investeeringud vastavad põhimõttele „ei kahjusta
+    oluliselt“
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_no_start_before_application
+  gate_family: G6_conditionality
+  requirement: Project activities must not begin before the application is submitted and before
+    the official project start date.
+  value: No activities before application submission / official start date
+  intake_field: none
+  quote: Pane tähele, et projekti tegevustega ei tohi alustada enne taotluse esitamist ning
+    projekti ametlikku alguskuupäeva.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_quote_requirement
+  gate_family: G6_conditionality
+  requirement: Applicant must obtain at least one price quote if the service costs less than
+    EUR 20,000 (excl. VAT), or at least two comparable quotes if it costs EUR 20,000 or more.
+  value: 1 quote if <€20,000; 2 quotes if ≥€20,000
+  intake_field: none
+  quote: Tegevuse elluviimiseks on vajalik vähemalt üks hinnapakkumus, kui teenuse maksumus
+    käibemaksuta on väiksem kui 20 000 eurot Kui teenus maksab 20 000 eurot ja rohkem, siis
+    on vajalik küsida vähemalt kaks võrreldavat hinnapakkumist.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: The digitalisation roadmap must be prepared within six months from the project
+    start date.
+  quote: Digitaliseerimise teekaart tuleb koostada kuni kuue kuu jooksul alates projekti alguskuupäevast.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: A final report including the completed roadmap and the beneficiary's assessment
+    of project performance must be submitted by the deadline stated in the funding decision,
+    together with a payment request.
+  quote: 'Projekti kohta tuleb esitada aruanne taotluse rahuldamise otsuses näidatud tähtajal.
+    Aruandes peab olema: valminud digitaliseerimise teekaart; toetuse saaja hinnang projekti
+    tulemuslikkusele ja elluviimisele'
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: The beneficiary must submit a follow-up report (self-assessment questionnaire)
+    two years after project completion, signed by a board member.
+  quote: Toetuse saaja esitab kaks aastat pärast projekti elluviimist järelaruande. Järelaruanne
+    on ettevõtja enesehindamise küsimustik
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: The support is paid out only after the final report demonstrating achievement
+    of project results has been submitted; if the work does not meet requirements, payment
+    may be withheld.
+  quote: Toetuse summa makstakse välja pärast seda, kui on esitatud aruanne projekti tulemuste
+    saavutamiste kohta. Kui selgub, et töö ei vasta nõutud tingimustele, on meil õigus jätta
+    toetus välja maksmata.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Beneficiary receiving support from EU Cohesion Policy funds must inform the
+    public about receiving and using the support, starting from the funding decision.
+  quote: Toetust rahastatakse Euroopa Liidu Ühtekuuluvuspoliitika fondi vahenditest (rahastusperiood
+    2021-2027) ja seetõttu tekib toetuse saajal kohustus teavitada avalikkust toetuse saamisest
+    ning kasutamisest.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 4
+  verified: llm_cited
+- requirement: Project activities must be completed no later than 31 October 2029, and an
+    extension of the eligibility period may be granted for up to six months beyond the regulation's
+    stipulated period.
+  quote: projekti tegevused viiakse ellu hiljemalt 31. oktoobril 2029 . Abikõlblikkuse perioodi
+    pikendamist võib taotleda kuni projekti lõppemiseni. Pikendamise korral võib abikõlblikkuse
+    periood kesta toetuse määruses sätestatud perioodist kuni kuus kuud kauem .
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (7/11 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The support can be provided as either GBER Article 18 aid (SME only, 50%) or de minimis
+    aid (SME and large enterprises, 50% or 70% depending on location), implying the applicant/authority
+    selects one aid basis per grant, subject to the applicable state aid cumulation rules
+    for each instrument.
+  quote: Toetusese abiliikideks on võimalik kasutada grupi erand abiliike ja vähese tähtsusega
+    abi.
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 6
+  verified: llm_cited
+application:
+  channel: Structural funds e-environment (struktuuritoetuste e-keskkond) / e-Toetuse keskkond
+  typical_timeline: Up to 20 working days for application evaluation; up to 10 working days
+    to remedy deficiencies; roadmap must be prepared within 6 months of project start; final
+    report per grant decision deadline; follow-up report 2 years after project completion.
+  quote: Taotluse saad koostada ja esitada struktuuritoetuste e-keskkonnas. Kuni 20 tööpäeva
+    alates taotluse esitamisest
+  source:
+    file: eis_digitaliseerimise_teekaa_terms_eis.html
+    locator: chunk 2
+  verified: false

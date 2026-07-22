@@ -1,0 +1,210 @@
+id: enterprise_ireland_seed
+name: enterprise_ireland_seed
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a venture fund manager applying for EI to invest into their
+    fund, with strategy demonstrating alignment with strategic objectives.
+  value: Venture fund managers
+  intake_field: borrowerModel
+  quote: EI are now seeking Expressions of Interest (EoI) from venture fund managers that
+    have alignment with both the strategic objectives and the evaluation criteria set out
+    further in this document.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Applicant must indicate whether applying under Seed stage or Series A/+ stage
+    as these are evaluated separately.
+  value: Seed or Series A/+ stage designation required
+  intake_field: developmentStage
+  quote: Applicants must indicate which of (i) or (ii) they are making their application under
+    as these will be evaluated separately.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.3
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: Fund strategy should target investment opportunities in Irish-registered companies
+    subject to Irish taxation with central decision-making locus in Ireland.
+  value: Irish-registered companies, Irish taxation, Ireland decision-making locus
+  intake_field: activityCountries
+  quote: Applicants should set out the geographical focus of the strategy (including the extent
+    to which it targets investment opportunities in Irish-registered companies, subject to
+    Irish Taxation, with the central decision-making locus being in Ireland together with
+    a substantial element of activities).
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.15
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: First Call seeks to invest up to €100m total across the Scheme's first call.
+  value: Up to €100m
+  intake_field: ticketBand
+  quote: EI seeks to invest up to €100m in Seed and Series A/+ stage funds.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.2
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: EI may represent up to 70% of a seed stage fund's total capital.
+  value: Up to 70% of seed stage fund
+  intake_field: cofinancingBand
+  quote: EI may represent up to 70% of a fund, however, EI will aim to favour funds where
+    leverage can be delivered
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.4
+  verified: llm_cited
+- id: g6
+  gate_family: G3_financial
+  requirement: EI may represent up to 50% of a Series A/+ stage fund's total capital.
+  value: Up to 50% of Series A/+ fund
+  intake_field: cofinancingBand
+  quote: EI may represent up to 50% of a fund at this stage, although increased leverage will
+    be an ambition under this call.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.4
+  verified: llm_cited
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: Seed stage funds must have the majority (50%+) of the fund invested in seed
+    stage rounds.
+  value: 50%+ invested at seed stage
+  intake_field: developmentStage
+  quote: Seed stage funds where the majority of the fund (50%+) is to be invested in seed
+    stage rounds.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.4
+  verified: llm_cited
+- id: g8
+  gate_family: G6_conditionality
+  requirement: Applicants must pass a Stage 1 Governance assessment scoring at least 50% or
+    be excluded from the process.
+  value: Minimum 50% governance score
+  intake_field: conditionality
+  quote: where the ET assesses that an application falls below a 50% score, it will not be
+    brought forward in the Process.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.5
+  verified: llm_cited
+- id: g9
+  gate_family: G6_conditionality
+  requirement: Applicants must score at least 50% in each of the four Evaluation Criteria
+    to progress.
+  value: Minimum 50% per evaluation criterion
+  intake_field: conditionality
+  quote: Only EoI that obtain a minimum score of 50% in each Evaluation Criterion will be
+    considered further.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.5
+  verified: llm_cited
+- id: g10
+  gate_family: G4_borrower_model
+  requirement: EI's investment is a fund commitment made pari-passu with private sector investors,
+    not a grant or loan to an operating company.
+  value: Pari-passu equity fund commitment
+  intake_field: borrowerModel
+  quote: EI invests on a pari-passu basis with the private sector equally sharing the risk
+    and reward.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.4
+  verified: llm_cited
+- id: g11
+  gate_family: G5_use_of_funds
+  requirement: As a contract term, the manager must invest an amount equal to twice EI's net
+    commitment into Irish companies.
+  value: 2x EI commitment into Irish companies
+  intake_field: activityCountries
+  quote: The manager will invest an amount equal to twice EI’s net commitment into Irish companies.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.4
+  verified: llm_cited
+- id: g12
+  gate_family: G6_conditionality
+  requirement: Applicant must demonstrate visibility of sufficient other capital commitments
+    from other investors to support a first viable close.
+  value: Evidence of other LP commitments for first close
+  intake_field: cofinancingBand
+  quote: The level of existing commitments or strong indications of commitments from other
+    LPs. EI is seeking to deploy capital into the market without undue delay.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.9
+  verified: llm_cited
+obligations:
+- requirement: EI will expect to be represented on the fund's Advisory Committee as an entitlement
+    of any commitment to a fund.
+  quote: EI will expect to be represented on the fund’s Advisory Committee as an entitlement
+    of any commitment to a fund.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.4
+  verified: llm_cited
+- requirement: Successful completion of a submission is conditional on meeting the timetable
+    for other obligations such as raising private sector investment.
+  quote: Investment proposals will also be expected to provide a timetable for meeting any
+    other obligations, such as the raising of private sector investment, and successful completion
+    of a submission will be conditional on meeting that timetable.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.12
+  verified: llm_cited
+- requirement: Applicant must submit a signed statement on the proposer's letterhead confirming
+    accuracy of the EoI and acceptance of process terms.
+  quote: This Expression of Interest for support under the Seed & Venture Capital Fund Scheme
+    (2025-2029), is submitted on the basis of the enclosed information, which is correct to
+    the best of my knowledge and belief.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.9
+  verified: false
+  verify_note: 'fragment not found verbatim: ''This Expression of Interest for support under
+    the '''
+- requirement: Applicants bear all costs associated with preparation and submission of their
+    EoI, with no liability on EI for such costs.
+  quote: Applicants bear all costs associated with the preparation and submission of their
+    EoI.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.11
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 3/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Not applicable/not addressed in this document as a state-aid cumulation clause; EI's
+    own leverage/co-investment ratio caps (up to 70% seed, up to 50% Series A/+) function
+    as the relevant capital-stacking limits.
+  quote: EI may represent up to 70% of a seed stage fund, and up to 50% of a Series A stage
+    fund, however, EI will aim to favour funds where more leverage can be achieved.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.3
+  verified: llm_cited
+application:
+  channel: Expression of Interest submitted by email to EI's SVC Call mailbox, following the
+    structured format in Appendix 1, plus an Excel financial model and signed statement.
+  typical_timeline: EoI deadline 3pm 28 February 2025 for Call 1; scheme funding to be committed
+    over 4 years to 2028.
+  quote: These documents should be submitted by email to SVCCall2025@enterprise-ireland.com
+    on or before 3pm on 28th February 2025.
+  source:
+    file: enterprise_ireland_seed_vc_scheme_2025_2029.pdf
+    locator: enterprise_ireland_seed_vc_scheme_2025_2029.pdf#p.10
+  verified: llm_cited

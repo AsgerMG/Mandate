@@ -1,0 +1,362 @@
+id: enterprise_ireland_ip
+name: enterprise_ireland_ip
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-company-base
+  gate_family: G1_nexus
+  requirement: The eligible company must be a manufacturing or internationally traded services
+    company with an operating base in the Republic of Ireland.
+  value: Operating base in Republic of Ireland
+  intake_field: entityCountries
+  quote: A manufacturing or internationally traded services company with an operating base
+    in the Republic of Ireland that wishes to collaborate with one or more research institutes,
+    also based in the Republic of Ireland, is eligible to participate.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.3
+  verified: llm_cited
+- id: g1-research-institute-base
+  gate_family: G1_nexus
+  requirement: The collaborating research institute must also be based in the Republic of
+    Ireland.
+  value: Research institute based in Republic of Ireland
+  intake_field: entityCountries
+  quote: Applications for grants will be considered from researchers (or group of researchers)
+    based in research institutes in the Republic of Ireland to collaborate with companies
+    where the lead company is based in the Republic of Ireland.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.3
+  verified: llm_cited
+- id: g1-registered-client
+  gate_family: G1_nexus
+  requirement: The company must be a registered client of one of the listed state development
+    agencies (Enterprise Ireland, IDA Ireland, LEO, Údarás na Gaeltachta).
+  value: Registered client of EI/IDA/LEO/Údarás na Gaeltachta
+  intake_field: institutionalBacking
+  quote: 'The company must be a registered client of one of the following state development
+    agencies: Enterprise Ireland, IDA Ireland, Local Enterprise Office (LEO), Údarás na Gaeltachta.'
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.3
+  verified: llm_cited
+- id: g1-client-adviser-support
+  gate_family: G1_nexus
+  requirement: The company must have the full support of their assigned Client Adviser/Agency
+    Contact confirmed before any application forms are submitted.
+  value: Confirmed Client Adviser support required prior to application
+  intake_field: bankRelationship
+  quote: The company must have the full support of their assigned Client Adviser / Agency
+    Contact to participate in the programme. This support must be confirmed before any application
+    forms are submitted.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.3
+  verified: llm_cited
+- id: g2-company-size-thresholds
+  gate_family: G2_size_ownership
+  requirement: Company size category (Small/Medium/Large) is determined by employee count
+    plus turnover or balance sheet thresholds, which set the applicable funding rate.
+  value: Small 1-49 <€10M; Medium 50-249 <€50M/<€43M; Large >250 >€50M/>€43M
+  intake_field: fteBand
+  quote: 'SMALL 1-49 <€10M <€10M
+
+    MEDIUM 50-249 <€50M <€43M
+
+    LARGE More than 250 >€50M >€43M'
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g2-ownership-control-25pct
+  gate_family: G2_size_ownership
+  requirement: An enterprise cannot qualify as SME if 25% or more of its capital or voting
+    rights are directly or indirectly controlled by one or more public bodies.
+  value: 25% public body control threshold
+  intake_field: ownerOver25
+  quote: an enterprise cannot be considered as meeting either definition if 25% or more of
+    the capital or voting rights are directly or indirectly controlled, jointly or individually,
+    by one or more public bodies
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g2-group-thresholds
+  gate_family: G2_size_ownership
+  requirement: If the company is part of a group, the employee, turnover, balance sheet and
+    ownership limits apply at the group level.
+  value: Group-level size test applies
+  intake_field: ownerOver25
+  quote: If a company is part of a group, the employee, turnover, annual balance sheet and
+    ownership limits apply to the group.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g2-holding-consultation
+  gate_family: G2_size_ownership
+  requirement: If the enterprise is more than 25% owned by, or itself owns more than 25% of,
+    another enterprise, the full EU SME definition (Official Journal L124/36) must be consulted.
+  value: '>25% holding requires full EU SME definition check'
+  intake_field: institutionalOwner
+  quote: If the enterprise is more than 25% owned by one or more enterprises or itself has
+    a holding of more than 25% in any other enterprise, it will be necessary to consult the
+    full definition in the “Official Journal of the European Commission (L 124/36) 20th May
+    2003
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g3-funding-rate-table
+  gate_family: G3_financial
+  requirement: Funding rates range from 40% to 80% depending on company size and type of research,
+    per the state aid table.
+  value: 40%-80% depending on size/research type
+  intake_field: turnoverBand
+  quote: Under the state aid guidelines, funding rates can vary from 40% to 80% depending
+    on the size of company and the type of research.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g3-max-grant-rate-cap
+  gate_family: G3_financial
+  requirement: The grant rate cannot exceed 80% for Industrial Collaborative Research or 60%
+    for Experimental Collaborative Development.
+  value: 80% Industrial Research cap / 60% Experimental Development cap
+  intake_field: cofinancingBand
+  quote: The ‘Full Grant Rate’ CANNOT exceed 80% for Industrial Collaborative Research and
+    60% for Experimental Collaborative Development.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.8
+  verified: llm_cited
+- id: g3-min-company-cash-contribution
+  gate_family: G3_financial
+  requirement: Each company partner must pay a minimum of 20% of the project costs in cash
+    irrespective of company size or research category.
+  value: Minimum 20% cash contribution by company
+  intake_field: cofinancingBand
+  quote: Each company partner will be expected to pay a minimum of 20% of the project costs
+    in cash irrespective of company size or category of research.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g3-feasibility-study-cap
+  gate_family: G3_financial
+  requirement: Maximum funding for an Innovation Partnership Feasibility Study is 100% up
+    to a limit of €9,000.
+  value: Feasibility study max €9,000 at 100%
+  intake_field: ticketBand
+  quote: Maximum funding for an Innovation Partnership Feasibility Study is 100% to a limit
+    of €9,000.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.5
+  verified: llm_cited
+- id: g3-multicompany-cap
+  gate_family: G3_financial
+  requirement: Large multi-company projects with clear positive economic impacts could be
+    funded up to €3m.
+  value: Up to €3m for large multi-company projects
+  intake_field: ticketBand
+  quote: Large Multi-company projects with clear positive economic impacts could be funded
+    up to €3m
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g3-hpsu-cap
+  gate_family: G3_financial
+  requirement: Project funding from EI to early-stage companies including HPSUs is capped
+    at €100,000 unless additional justification is supported by the Commercial Assessor.
+  value: HPSU/early-stage cap €100,000
+  intake_field: ticketBand
+  quote: Project funding from EI to early stage companies including companies classified High
+    Potential Start Ups will be capped at €100,000 unless there’s a clear justification as
+    to why additional funding is needed, and this must be supported by the Commercial Assessor.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g4-grant-payment-structure
+  gate_family: G4_borrower_model
+  requirement: Funding is a non-repayable grant paid directly to the research institute in
+    three instalments tied to reporting milestones.
+  value: Grant paid to research institute in 3 instalments (30% / interim / final)
+  intake_field: borrowerModel
+  quote: 'The grant payment will be in three instalments, the second and third instalment
+    will be based on a review of eligible expenditure:
+
+    1. 30% of the grant upon acceptance and receipt of the project contract.'
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.9
+  verified: llm_cited
+- id: g4-hpsu-ip-condition
+  gate_family: G4_borrower_model
+  requirement: For HPSU-funded projects, the academic partner will own foreground IP and agree
+    an exclusive licensing arrangement with the company partner.
+  value: Academic partner owns foreground IP under exclusive licence to company (HPSU)
+  intake_field: borrowerModel
+  quote: The academic partner will own any foreground IP produced during the project and will
+    agree an exclusive licensing arrangement with the company partner.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.7
+  verified: llm_cited
+- id: g5-eligible-project-type
+  gate_family: G5_use_of_funds
+  requirement: Funded research must fall under Industrial Collaborative Research or Experimental
+    Collaborative Development categories.
+  value: Industrial Collaborative Research or Experimental Collaborative Development only
+  intake_field: developmentStage
+  quote: Project types can be grouped as subsets of either Industrial Research or Experimental
+    Development.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.8
+  verified: llm_cited
+- id: g5-eligible-costs-scope
+  gate_family: G5_use_of_funds
+  requirement: Grant funds may cover stipends/salaries of project staff, equipment, materials/consumables
+    specific to the project, and travel/subsistence, but not permanent academic salaries or
+    normal lab materials.
+  value: Stipends, equipment, materials, travel eligible; permanent academic salaries and
+    normal lab materials not eligible
+  intake_field: none
+  quote: The salaries / wages of permanent academic staff are not eligible for grant support.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.10
+  verified: llm_cited
+- id: g5-travel-cap
+  gate_family: G5_use_of_funds
+  requirement: The travel budget must never exceed 10% of total project cost.
+  value: Travel budget capped at 10% of total project cost
+  intake_field: none
+  quote: The travel budget must never exceed 10% of total project cost and necessity must
+    be justified.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.10
+  verified: llm_cited
+- id: g5-in-company-costs-ineligible
+  gate_family: G5_use_of_funds
+  requirement: In-company costs incurred by the industrial partner are not eligible for grant
+    support; only research institute costs at the appropriate grant level are supported.
+  value: In-company costs not eligible
+  intake_field: none
+  quote: Any in-company costs are not eligible.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.9
+  verified: llm_cited
+- id: g6-project-start-timing
+  gate_family: G6_conditionality
+  requirement: If a project is not commenced within 6 months of notification of approval,
+    the grant may be withdrawn.
+  value: Must commence within 6 months of approval
+  intake_field: needBy
+  quote: If a project is not commenced within 6 months of notification of approval, the grant
+    may be withdrawn.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.11
+  verified: llm_cited
+- id: g6-ip-agreement-required
+  gate_family: G6_conditionality
+  requirement: A signed IPR agreement is required for all approved Innovation Partnership
+    projects and must be in place before the project start date.
+  value: Signed IPR agreement required before project start
+  intake_field: conditionality
+  quote: A signed agreement covering Intellectual Property Rights (IPR) is required for all
+    approved Innovation Partnership projects.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.11
+  verified: llm_cited
+- id: g6-payments-conditional-on-agreements
+  gate_family: G6_conditionality
+  requirement: Payments can only be drawn down when a signed Heads of Agreement or IP Agreement,
+    the Company Agreement, and the Budget Summary Sheet are all in place.
+  value: Payments conditional on signed agreements
+  intake_field: conditionality
+  quote: Payments can only be drawn down when a signed Heads of Agreement or IP Agreement
+    between the college and the company is in place, the Company Agreement is signed, and
+    the Budget Summary Sheet is signed.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.9
+  verified: llm_cited
+obligations:
+- requirement: An Interim Progress Report must be submitted at mid-term for projects over
+    12 months duration.
+  quote: An Interim Progress Report shall be submitted by the research institute at the mid-term
+    stage of projects that are over 12 months duration.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.10
+  verified: llm_cited
+- requirement: A Final Report must be submitted within 2 calendar months of project completion
+    or termination.
+  quote: A Final Report, (including final technical report and final financial accounts),
+    shall be submitted by the research institute within 2 calendar months of the completion
+    or termination of a project.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.10
+  verified: llm_cited
+- requirement: Equipment purchased under the programme must be insured to full replacement
+    value for six years by the research institute.
+  quote: The research institute shall, to their full replacement value, insure items of equipment
+    purchased under the Innovation Partnerships programme for a period of six years from the
+    date of receipt of such equipment.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.10
+  verified: llm_cited
+- requirement: Grant moneys must be applied only in the manner and for the purposes approved;
+    unspent committed funds must be refunded on termination.
+  quote: On termination of a grant contract all unexpended grant moneys, which have not been
+    committed, shall be refunded to Enterprise Ireland.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.9
+  verified: llm_cited
+- requirement: Published papers must acknowledge Enterprise Ireland support under the Innovation
+    Partnership programme.
+  quote: Acknowledgement must be made in published papers to the support received from Enterprise
+    Ireland under the aegis of the Innovation Partnership programme.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.11
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (23/23 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Links to other Enterprise Ireland funding (e.g. R&D Fund, Commercialisation Fund)
+    are assessed as part of the commercial assessment.
+  quote: Are there any links to other EI funding – e.g. R&D Fund, Commercialisation Fund?
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.6
+  verified: llm_cited
+application:
+  channel: Application via Principal Investigator at the research institute, submitted by
+    email to ipp@enterprise-ireland.com, via Outline Proposal, optional Feasibility Study,
+    then Full Proposal, decided by the Industry Research and Commercialisation Committee (IRCC).
+  typical_timeline: 6-8 weeks for a decision after receipt of a full and complete eligible
+    proposal.
+  quote: Upon receipt of a full and complete eligible proposal, Enterprise Ireland will aim
+    to provide the consortium with a decision, from Enterprise Ireland’s Industry Research
+    and Commercialisation Committee, within 6-8 weeks.
+  source:
+    file: enterprise_ireland_ipp_guidelines_2025.pdf
+    locator: enterprise_ireland_ipp_guidelines_2025.pdf#p.5
+  verified: llm_cited

@@ -1,0 +1,311 @@
+id: eurohpc
+name: eurohpc
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_participation_countries
+  gate_family: G1_nexus
+  requirement: Applicants must be legal entities established in EuroHPC JU Member States or
+    Participating States (Norway, Iceland) for the microprocessor technology call; entities
+    established outside this scope are ineligible.
+  value: Legal entities established in EuroHPC Member/Participating States (incl. Norway,
+    Iceland) only
+  intake_field: entityCountries
+  quote: participation is limited to legal entities established in Member States that are
+    members of the EuroHPC Joint Undertaking or Participating States Norway and Iceland. Proposals
+    including entities established in countries outside the scope specified in the call/topic/action
+    will be ineligible.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.16
+  verified: llm_cited
+- id: g1_prize_citizenship
+  gate_family: G1_nexus
+  requirement: Participants in the Quantum Computing Inducement Prize must be citizens of
+    a EuroHPC Participating State and perform their work in a Participating State.
+  value: Citizens of EuroHPC Participating States, work performed in a Participating State
+  intake_field: entityCountries
+  quote: Participants should be citizens of any of the EuroHPC Participating States and perform
+    their work in any of the Participating States.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.17
+  verified: llm_cited
+- id: g1_prize_individuals_only
+  gate_family: G1_nexus
+  requirement: The Quantum Computing prize is awarded to individuals only, not institutions
+    or companies.
+  value: Individuals only, not institutions/companies
+  intake_field: borrowerModel
+  quote: The prize will be granted to individuals, not to institutions or companies, and the
+    results will be made available as open source / public domain.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.17
+  verified: llm_cited
+- id: g1_he_article22_restriction
+  gate_family: G1_nexus
+  requirement: For Horizon Europe-funded EuroHPC activities, the Governing Board may restrict
+    eligibility of participants under Horizon Europe Article 22(5).
+  value: Governing Board may restrict eligibility per HE Article 22(5)
+  intake_field: entityCountries
+  quote: For all activities implemented by the EuroHPC JU that are funded from the Horizon
+    Europe (HE) budget, the Governing Board may decide to limit in the calls for proposals
+    the eligibility of participants according to Horizon Europe Article 22(5).
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.5
+  verified: llm_cited
+- id: g1_dep_restriction
+  gate_family: G1_nexus
+  requirement: For Digital Europe Programme-funded EuroHPC activities, the Governing Board
+    may restrict eligibility according to DEP Articles 12(6) and 18(4).
+  value: Governing Board may restrict eligibility per DEP Articles 12(6) and 18(4)
+  intake_field: entityCountries
+  quote: For all activities implemented by the EuroHPC JU that are funded from the Digital
+    Europe Programme (DEP) budget, the Governing Board may decide to limit in the calls for
+    proposals or procurements the eligibility of participants according to Digital Europe
+    Articles 12(6) and 18(4).
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.5
+  verified: llm_cited
+- id: g1_cef_restriction
+  gate_family: G1_nexus
+  requirement: For Connecting Europe Facility-funded EuroHPC activities, the Governing Board
+    may restrict eligibility according to CEF Article 11(4).
+  value: Governing Board may restrict eligibility per CEF Article 11(4)
+  intake_field: entityCountries
+  quote: For all activities implemented by the EuroHPC JU that are funded from the Connecting
+    Europe Facility (CEF) budget, the Governing Board may decide to limit in the calls for
+    proposals or procurements the eligibility of participants according to Connecting Europe
+    Facility Article 11(4).
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.5
+  verified: llm_cited
+- id: g1_highrisk_supplier_exclusion
+  gate_family: G1_nexus
+  requirement: Entities assessed as high-risk suppliers of mobile network communication equipment
+    (and entities they own or control) are not eligible to participate in any capacity in
+    actions subject to the digital infrastructure protection restrictions.
+  value: High-risk supplier entities excluded from AI Factories/Infrastructure/Connected&Federated
+    pillar actions
+  intake_field: nonEuControl
+  quote: Entities that are assessed as high-risk suppliers of mobile network communication
+    equipment (and any entities they own or control) are not eligible to participate in any
+    capacity, including as beneficiaries, affiliated entities, associated partners, third
+    parties giving in-kind contributions, subcontractors or recipients of financial support
+    to third parties (if any).
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.6
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Entities that are assessed as high-risk suppliers
+    '''
+- id: g2_target_users_smes_startups
+  gate_family: G2_size_ownership
+  requirement: The AI-related mandate includes providing SMEs and start-ups with additional
+    activities necessary to develop and support the AI ecosystem.
+  value: SMEs and start-ups as target beneficiaries of AI ecosystem support
+  intake_field: fteBand
+  quote: provide SMEs and start-ups with the full range of additional activities necessary
+    to develop and support the AI ecosystem
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.5
+  verified: llm_cited
+- id: g3_microprocessor_budget_intensity
+  gate_family: G3_financial
+  requirement: The microprocessor technology call provides an EU contribution of EUR 48.6
+    Million matched 50/50 by a Participating States (PS) contribution of EUR 48.6 Million.
+  value: EU 50% (EUR 48.6M) / PS 50% (EUR 48.6M), total EUR 97.3M
+  intake_field: cofinancingBand
+  quote: An EU contribution of EUR 48.6 Million (50% of total funding) will be matched by
+    a PS contribution of EUR 48.6 Million (50% of total funding).
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.15
+  verified: llm_cited
+- id: g3_prize_budget
+  gate_family: G3_financial
+  requirement: The Quantum Computing and Simulation Applications prize has an indicative budget
+    of EUR 300,000, shared among the first three ranked solutions.
+  value: EUR 300,000 prize pool, top 3 solutions share it
+  intake_field: ticketBand
+  quote: The prize budget is 300 000 EUR (indicative). The first three ranked solutions will
+    share the prize, with amounts depending on the challenge addressed.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.17
+  verified: llm_cited
+- id: g3_peer_review_platform_ceiling
+  gate_family: G3_financial
+  requirement: The maximum contract price payable for the peer-review platform procurement
+    is set at EUR 1.8 Million, with a defined payment schedule per contract year.
+  value: Maximum EUR 1.8 Million total contract price
+  intake_field: ticketBand
+  quote: The maximum price payable under this contract is set at EUR 1.8 Million.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.13
+  verified: llm_cited
+- id: g3_admin_ceiling
+  gate_family: G3_financial
+  requirement: The overall administrative budget for 2026 remains below the EUR 92 Million
+    maximum ceiling foreseen under the EuroHPC JU Regulation for the entire 2021-2027 MFF.
+  value: EUR 92 Million administrative ceiling for 2021-2027 MFF
+  intake_field: ticketBand
+  quote: The overall administrative budget for 2026 remains well below the maximum ceiling
+    foreseen under the EuroHPC JU Regulation of EUR 92 Million for the entire 2021-2027 Multi-Annual
+    Financial Framework.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.26
+  verified: llm_cited
+- id: g4_grant_type_microprocessor
+  gate_family: G4_borrower_model
+  requirement: The microprocessor technology call is funded as a Horizon Europe Grant action.
+  value: Grant, Horizon Europe
+  intake_field: borrowerModel
+  quote: Type of Action Grant, Horizon Europe.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.16
+  verified: llm_cited
+- id: g4_procurement_type_peer_review
+  gate_family: G4_borrower_model
+  requirement: The peer-review platform action is structured as a Procurement, not a grant.
+  value: Procurement (public tender), not grant
+  intake_field: borrowerModel
+  quote: Type of Action Procurement
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.14
+  verified: llm_cited
+- id: g4_prize_mechanism
+  gate_family: G4_borrower_model
+  requirement: The Quantum Computing action is structured as an inducement Prize awarded after
+    a two-stage selection and independent validation process, not as a standard grant.
+  value: Prize mechanism, two-stage selection with independent validation
+  intake_field: borrowerModel
+  quote: 'The call will be implemented in two stages: In a first step, applicants will be
+    selected on the basis of a reference implementation, the anticipated quantum advantage,
+    potential impact and other criteria. Successful applicants will be awarded access to EuroHPC
+    quantum computers to develop and verify the proposed implementation.'
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.17
+  verified: llm_cited
+- id: g5_use_of_funds_microprocessor
+  gate_family: G5_use_of_funds
+  requirement: Funds must be used for design, testing and development of high-end processors
+    and their integration in pilot systems, targeting KPIs superior to non-EU solutions, ensuring
+    IP remains in the EU.
+  value: Design/testing/development of high-end EU processors; IP must remain in EU
+  intake_field: none
+  quote: A key aspect is to ensure that all the IP necessary to produce the solutions remains
+    in the EU, effectively creating an independent European source of critical technology.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.15
+  verified: llm_cited
+- id: g5_use_of_funds_prize
+  gate_family: G5_use_of_funds
+  requirement: Prize funds must be used to develop an application demonstrating a path towards
+    quantum advantage on a EuroHPC quantum computer, addressing a concrete challenge.
+  value: Develop quantum computing application demonstrating quantum advantage
+  intake_field: none
+  quote: With this prize the EU intends to incentivise young researchers, inventors and entrepreneurs
+    to develop an application demonstrating a path towards quantum advantage, addressing a
+    concrete problem.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.16
+  verified: llm_cited
+- id: g6_synergy_no_double_funding
+  gate_family: G6_conditionality
+  requirement: Actions funded below 100% EU contribution are EU Synergy calls; grants/procurements
+    may be linked with other EU funding provided there is no double funding of the same costs.
+  value: No double funding permitted; linked actions managed jointly
+  intake_field: conditionality
+  quote: Grants and procurements can be linked with another grant funded from any other EU
+    funding programme including the Recovery and Resilience Fund, provided that there is no
+    double funding and that such support does not cover the same cost.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.5
+  verified: llm_cited
+- id: g6_equipment_security_requirements
+  gate_family: G6_conditionality
+  requirement: Equipment, goods, works and services related to 5G/6G mobile network communication
+    and related technologies must comply with EU cybersecurity guidance and security requirements
+    throughout their lifecycle.
+  value: Mandatory compliance with EU cybersecurity toolbox guidance for covered equipment/services
+  intake_field: conditionality
+  quote: comply with (cyber-)security guidance issued by the Commission, in particular communications
+    on the 5G toolbox.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''comply with (cyber-)security guidance issued
+    by th'''
+obligations:
+- requirement: Results of the Quantum Computing prize must be made available as open source
+    / public domain.
+  quote: the results will be made available as open source / public domain
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.17
+  verified: llm_cited
+- requirement: Beneficiaries under EuroHPC JU grants funded via H2020/HE are subject to ex-post
+    audits performed by the Common Audit Service; DEP-funded projects are audited centrally
+    by HADEA.
+  quote: For EuroHPC JU projects funded under the H2020 and the HE programmes, ex-post audits
+    are carried out since 2022 by the Common Audit Service of the European Commission, and
+    as such will continue in 2026.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.22
+  verified: llm_cited
+- requirement: The peer-review platform contractor must ensure support and maintenance services
+    based on specific SLAs guaranteeing quick resolution of operational issues, bug fixes,
+    and implementation of new features.
+  quote: Ensure support and maintenance services based on specific SLAs that will ensure quick
+    resolution of operational issues, bug fixes and implementation of new features, following
+    the evolution of the EuroHPC peer-review processes as defined in the current and future
+    versions of the Access Policy.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.13
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/19 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Grants and procurements can be linked with grants from any other EU funding programme,
+    including the Recovery and Resilience Facility, provided there is no double funding covering
+    the same costs; such linked actions are managed jointly.
+  quote: Grants and procurements can be linked with another grant funded from any other EU
+    funding programme including the Recovery and Resilience Fund, provided that there is no
+    double funding and that such support does not cover the same cost. The grants under both
+    calls will be managed as linked actions.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.5
+  verified: llm_cited
+application:
+  channel: Calls for proposals (Horizon Europe grants), calls for tenders/procurements, and
+    inducement prize calls, each adopted by separate Governing Board Decisions
+  typical_timeline: Calls to be launched or evaluated during 2026, as listed per pillar (e.g.,
+    microprocessor call originally WP2024, peer-review procurement contract 36 months + renewals
+    up to 60 months, quantum prize launched 2026 once EuroHPC quantum computers operational)
+  quote: Calls to be launched in 2026 will be prepared by the JU and presented for adoption
+    by the Governing Board by separate Governing Board Decisions.
+  source:
+    file: eurohpc_ju_work_programme_2026.pdf
+    locator: eurohpc_ju_work_programme_2026.pdf#p.5
+  verified: llm_cited

@@ -1,0 +1,303 @@
+id: satr_de_equity
+name: satr_de_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_founded
+  gate_family: G1_nexus
+  requirement: The startup must already be founded at the time of application.
+  value: Startup must be founded
+  intake_field: foundedYear
+  quote: Das Startup muss gegründet sein.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.2
+  verified: llm_cited
+- id: g4_ba_investment_min
+  gate_family: G4_borrower_model
+  requirement: The startup must have concluded a participation agreement for a fresh equity
+    or equity-like investment of at least EUR 50,000 from one or more business angels.
+  value: '>= EUR 50,000 business angel equity investment'
+  intake_field: cofinancingBand
+  quote: Das Startup hat einen Beteiligungsvertrag zur Einlage „frischen“ Eigenkapitals oder
+    eigenkapitalähnlicher Einlagen in Höhe von mindestens 50 000 Euro mit einem oder mehreren
+    Business Angels abgeschlossen
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.2
+  verified: llm_cited
+- id: g4_quasi_equity_conditions
+  gate_family: G4_borrower_model
+  requirement: Equity-like contributions must be provided for at least five years, bear only
+    profit-dependent interest, and rank subordinate to other liabilities in insolvency.
+  value: Min 5-year term, profit-dependent interest, subordinated in insolvency
+  intake_field: borrowerModel
+  quote: werden dem Startup für die Dauer von mindestens fünf Jahren zur Verfügung gestellt,
+    mit Ausnahme der Abtretung der Forderung bei Veräußerung der Anteile am Startup, – haben
+    eine ausschließlich gewinnabhängige Verzinsung, – sind bei Insolvenz gegenüber anderen
+    Verbindlichkeiten des Startups nachrangig.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.2
+  verified: llm_cited
+- id: g4_fresh_capital
+  gate_family: G4_borrower_model
+  requirement: The invested capital must be fresh, i.e. additional to existing capital resources
+    and not a reshuffling of existing funds.
+  value: Fresh capital only, no reallocation of existing funds
+  intake_field: borrowerModel
+  quote: „Frisches“ Eigenkapital und eigenkapitalähnliche Einlagen bedeuten, dass das Kapital
+    dem Startup zusätzlich zur bestehenden Kapitalausstattung zur Verfügung stehen muss (keine
+    Umschichtung von bestehenden Mitteln).
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.2
+  verified: llm_cited
+- id: g2_private_investor_exclusions
+  gate_family: G2_size_ownership
+  requirement: Qualifying private investors exclude majority shareholders/managing directors
+    of the startup, their close relatives, regulated venture capital companies that are not
+    business angel companies, credit institutions, and public-law bodies.
+  value: Excludes majority owners, managers, close relatives, VC firms, banks, public bodies
+    as qualifying investors
+  intake_field: institutionalOwner
+  quote: 'Als private Investoren gelten alle Kapitalgeber mit Ausnahme von: – Mehrheitsgesellschafter
+    und Geschäftsführer des Startups, – deren nahe Angehörige (Ehe- und Lebenspartner-/innen,
+    Geschwister, Eltern, Kinder), – Venture-Capital-Gesellschaften, die der Erlaubnis- oder
+    Registrierungspflicht des Kapitalanlagegesetzbuches unterliegen und keine Business-Angels-Gesellschaft
+    darstellen. – Kreditinstitute – Gebietskörperschaften und juristische Personen des öffentlichen
+    Rechts.'
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.2
+  verified: llm_cited
+- id: g2_investor_entity_form
+  gate_family: G2_size_ownership
+  requirement: Where business angels invest via a participation company, such companies must
+    have a maximum of ten shareholders each (e.g. GbR, GmbH UG, or registered cooperative).
+  value: Max 10 shareholders per participation company
+  intake_field: institutionalOwner
+  quote: über ein oder mehrere Beteiligungsgesellschaften, zum Beispiel in der Rechtsform
+    einer GbR, GmbH UG oder eingetragene Genossenschaft (eG), mit jeweils maximal zehn Gesellschaftern
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.2
+  verified: llm_cited
+- id: g1_innovation_criteria
+  gate_family: G1_nexus
+  requirement: The startup's business model must be innovative, demonstrated either via prior
+    BAFA INVEST certification, receipt of an innovation prize/programme funding, or meeting
+    at least one of the listed innovation criteria (climate-relevant improvement, product/service
+    innovation, new markets, process innovation, or relevant IP/patents).
+  value: Innovative business model required per criteria list
+  intake_field: developmentStage
+  quote: 'In allen anderen Fällen ist ein Startup innovativ, wenn es mindestens eines der
+    nachfolgenden Kriterien erfüllt: – Es liegt eine Innovation vor, die zu klimarelevanten
+    Verbesserungen von Produkten oder Prozessen führt.'
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.2
+  verified: llm_cited
+- id: g1_sustainability_criteria
+  gate_family: G1_nexus
+  requirement: The startup must pursue a sustainability approach, meeting at least one ecological
+    and one social criterion from the specified lists.
+  value: Must meet ecological + social sustainability criteria
+  intake_field: developmentStage
+  quote: 'Diese Voraussetzung ist erfüllt, wenn sowohl eines der nachfolgenden ökologischen
+    als auch sozialen Kriterien zutrifft:'
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.3
+  verified: llm_cited
+- id: g2_sme_small_enterprise
+  gate_family: G2_size_ownership
+  requirement: Aid recipients must qualify as small enterprises under the conditions of Annex
+    I of the GBER (SME definition).
+  value: Recipient must be a small enterprise per GBER Annex I
+  intake_field: fteBand
+  quote: Beihilfeempfänger sind kleine Unternehmen nach den Voraussetzungen des Anhangs I
+    der AGVO.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.5
+  verified: llm_cited
+- id: g2_undertaking_in_difficulty_excluded
+  gate_family: G2_size_ownership
+  requirement: Undertakings in difficulty as defined under Article 2(18)(a-e) GBER are excluded
+    from funding.
+  value: Undertakings in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: Von der Förderung sind Unternehmen in Schwierigkeiten nach Artikel 1 Absatz 4 Buchstabe
+    c AGVO ausgeschlossen. Unternehmen in Schwierigkeiten sind Unternehmen, auf die mindestens
+    ein Umstand nach Artikel 2 Nummer 18 Buchstabe a-e AGVO zutrifft.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.5
+  verified: llm_cited
+- id: g1_sector_exclusion
+  gate_family: G1_nexus
+  requirement: Undertakings or sectors excluded under Article 1(2), (3) and (5) GBER are not
+    eligible for funding.
+  value: Excluded sectors per Art.1(2)(3)(5) GBER
+  intake_field: none
+  quote: Von der Förderung ausgeschlossen sind Unternehmen bzw. Sektoren in den Fällen des
+    Artikel 1 Absatz 2, 3 und 5 AGVO.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.5
+  verified: llm_cited
+- id: g1_deggendorf_clause
+  gate_family: G1_nexus
+  requirement: An undertaking that has not complied with a recovery order following a prior
+    Commission decision declaring aid unlawful and incompatible with the internal market may
+    not receive funding under this directive.
+  value: Deggendorf clause exclusion
+  intake_field: none
+  quote: Einem Unternehmen, das einer Rückforderungsanordnung aufgrund eines früheren Beschlusses
+    der Kommission zur Feststellung der Unzulässigkeit einer von demselben Mitgliedstaat gewährten
+    Beihilfe und ihrer Unvereinbarkeit mit dem Binnenmarkt nicht nachgekommen ist, darf keine
+    Förderung nach dieser Förderrichtlinie gewährt werden.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.5
+  verified: llm_cited
+- id: g6_pre_application_incentive_effect
+  gate_family: G6_conditionality
+  requirement: The aid recipient must have submitted the written funding application before
+    starting work on the project or activity.
+  value: Application must precede start of works
+  intake_field: conditionality
+  quote: Der Beihilfeempfänger muss vor Beginn der Arbeiten für das Vorhaben oder die Tätigkeit
+    den schriftlichen Förderantrag gestellt haben.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.5
+  verified: llm_cited
+- id: g3_grant_amount_intensity
+  gate_family: G3_financial
+  requirement: The grant amounts to 50% of eligible expenditure and at most the amount of
+    the invested equity or equity-like contribution, up to a maximum of EUR 400,000.
+  value: 50% of eligible costs, capped at invested equity and EUR 400,000 max
+  intake_field: ticketBand
+  quote: Die Zuwendung entspricht 50 Prozent der förderfähigen Ausgaben nach Ziffer 5.2.1
+    und maximal der Höhe des eingebrachten Eigenkapitals oder der eigenkapitalähnlichen Einlage
+    bis zu einem Betrag von 400 000 Euro.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.3
+  verified: llm_cited
+- id: g3_aid_intensity_ceilings
+  gate_family: G3_financial
+  requirement: Maximum aid intensities under Article 22 GBER are EUR 0.5 million (0.75 million
+    in c-areas) per undertaking generally, and EUR 1 million (1.5 million in c-areas) under
+    Article 22(5), with possible increases for small and innovative undertakings.
+  value: EUR 0.5-1.5 million ceilings depending on provision and area
+  intake_field: ticketBand
+  quote: 'Artikel 22 Absatz 3 Buchstabe c AGVO 0,5 Million Euro 0,75 Million Euro Artikel
+    22 Absatz 5 AGVO: 1 Million Euro 1,5 Million Euro'
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.5
+  verified: llm_cited
+obligations:
+- requirement: 'Double funding is excluded: combining this grant with other funding programmes
+    for the same eligible expenses is not permitted.'
+  quote: Zum Ausschluss von Doppelförderungen ist eine Kombination dieser Zuwendungen mit
+    Zuwendungen aus anderen Förderprogrammen zur Finanzierung derselben förderfähigen Ausgaben
+    nicht zulässig.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.3
+  verified: llm_cited
+- requirement: Refinancing and debt rescheduling are not eligible uses of the grant.
+  quote: Nicht förderfähig sind Umschuldungen, Nachfinanzierungen.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.3
+  verified: llm_cited
+- requirement: A repayment obligation arises upon the first profitable financial year and
+    continues until the fifth anniversary of approval; repayment applies only to distributed,
+    non-retained profits at 50% of net income, starting once the repayment amount reaches
+    EUR 2,500.
+  quote: Der Rückzahlungsbetrag pro Jahr (Geschäftsjahr) entspricht 50 Prozent des entnommenen
+    handelsrechtlichen Jahresüberschusses. Höhere Rückzahlungen des Startups sind zulässig.
+    Die Rückzahlungspflicht beginnt ab einem Rückzahlungsbetrag von 2 500 Euro.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.3
+  verified: llm_cited
+- requirement: Full repayment obligation arises on an IPO, majority share sale, or majority
+    asset sale, provided the valuation meets the funded investment's valuation.
+  quote: Eine vollständige Rückzahlungsverpflichtung entsteht bei einem Börsengang des Startups
+    (IPO), bei mehrheitlicher Veräußerung der Gesellschaftsanteile (Share-Deal-Exit) oder
+    bei einer mehrheitlichen Veräußerung der Vermögenswerte (Asset-Deal-Exit)
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.4
+  verified: llm_cited
+- requirement: Total repayment obligation is capped at the amount of the grant received.
+  quote: Die Rückzahlungsverpflichtung ist insgesamt mit maximal der Höhe des erhaltenen Zuschussbetrages
+    begrenzt.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.4
+  verified: llm_cited
+- requirement: Objects acquired or produced with the grant are subject to a three-year earmarking
+    (retention) period.
+  quote: Die Zweckbindungsfrist für Gegenstände, die mit der Zuwendung erworben oder hergestellt
+    wurden, beträgt drei Jahre.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.3
+  verified: llm_cited
+- requirement: The startup must submit auditor or tax advisor confirmation of the annual result
+    to the approval authority within eleven months after the balance sheet date.
+  quote: Für die Feststellung eines Rückzahlungsbetrags hat das Startup der Bewilligungsstelle
+    die Bestätigung eines Wirtschaftsprüfers oder Steuerberaters über das Jahresergebnis unaufgefordert
+    bis längstens elf Monate nach dem Bilanzstichtag vorzulegen.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.3
+  verified: llm_cited
+- requirement: Information on individual aid grants exceeding EUR 100,000 will generally be
+    published within six months of the grant date in the Commission's transparency database
+    or a comprehensive national/regional aid website.
+  quote: Informationen über jede Einzelbeihilfe von über 100.000 Euro werden i.d.R binnen
+    sechs Monaten nach dem Tag der Gewährung der Beihilfe in der Beihilfetransparenzdatenbank
+    der Europäischen Kommission oder auf einer umfassenden nationalen oder regionalen Beihilfe-Website
+    veröffentlicht.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.6
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 8/8 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid under this directive may be cumulated with other state aid concerning different
+    identifiable eligible costs; for overlapping eligible costs, cumulation is allowed only
+    if the combined intensity/amount does not exceed the highest applicable ceiling under
+    GBER.
+  quote: Nach dieser Förderrichtlinie gewährte Förderungen können mit anderen staatlichen
+    Beihilfen kumuliert werden, sofern diese Maßnahmen unterschiedliche bestimmbare beihilfefähige
+    Kosten betreffen.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.5
+  verified: llm_cited
+application:
+  channel: Applications submitted to Sächsische Aufbaubank – Förderbank – (SAB) as the competent
+    approval authority
+  typical_timeline: Application must be submitted within two months of signing the participation
+    agreement; approval period ends six months after final disbursement and lasts a maximum
+    of 24 months.
+  quote: Anträge auf Förderung sind vom Startup innerhalb von zwei Monaten nach Unterzeichnung
+    des mit dem Business Angel geschlossenen Beteiligungsvertrags bei der Sächsische Aufbaubank
+    – Förderbank – (SAB) als der zuständigen Bewilligungsstelle einzureichen.
+  source:
+    file: satr_de_equity_sachsen_frl_bab.pdf
+    locator: satr_de_equity_sachsen_frl_bab.pdf#p.4
+  verified: llm_cited

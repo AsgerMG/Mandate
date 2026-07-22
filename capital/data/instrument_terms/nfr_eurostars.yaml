@@ -1,0 +1,282 @@
+id: nfr_eurostars
+name: nfr_eurostars
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_sme_definition
+  gate_family: G2_size_ownership
+  requirement: The applicant company must qualify as a small or medium-sized enterprise (SME)
+    under the EU SME definition.
+  value: SME status required (EU SME definition)
+  intake_field: fteBand
+  quote: Søkerbedriften må falle inn under definisjonen liten eller mellomstor bedrift
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g1_norwegian_sme_required
+  gate_family: G1_nexus
+  requirement: All Norwegian Eurostars applications must include a Norwegian SME; Norwegian
+    universities, institutes and large companies must partner with a Norwegian SME to participate.
+  value: Norwegian SME must be part of consortium
+  intake_field: entityCountries
+  quote: Det er krav om å ha med en norsk SMB i alle Eurostars-søknader med norske deltakere.
+    Dette vil si at norske universiteter, høyskoler, institutter og store bedrifter må ha
+    med en norsk SMB for å kunne delta i Eurostars.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g1_project_led_by_sme
+  gate_family: G4_borrower_model
+  requirement: The project must be led by an SME, although research institutes, universities,
+    colleges and large companies may participate as partners.
+  value: Project must be led by SME
+  intake_field: borrowerModel
+  quote: Forskningsinstitutter, universiteter og høyskoler og store bedrifter kan være partnere,
+    men prosjektet må ledes av en SMB.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g1_one_application_per_round
+  gate_family: G1_nexus
+  requirement: Norwegian SMEs and other Norwegian partners may submit only one project application
+    per call round and participate in a maximum of two ongoing Eurostars projects at any time.
+  value: Max 1 application per round; max 2 ongoing projects
+  intake_field: none
+  quote: Norske SMB-er og andre norske partnere kan kun sende inn én prosjektsøknad per søknadsrunde
+    og til enhver tid delta i maksimalt to løpende Eurostars-prosjekter.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g1_ongoing_projects_limit
+  gate_family: G1_nexus
+  requirement: If an applicant has two ongoing projects, one must be completed (final report
+    submitted) before a new application can be made.
+  value: One of two ongoing projects must be finished before applying
+  intake_field: none
+  quote: Har du to pågående prosjekter, må det ene være avsluttet (dere må ha sendt inn sluttrapport)
+    ved søknadstidspunktet, før du søker.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g2_own_financing
+  gate_family: G3_financial
+  requirement: All partners must be able to finance their own part of the project.
+  value: Self-financing capability required
+  intake_field: cofinancingBand
+  quote: Alle partnere må kunne finansiere egen del av prosjektet.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g2_min_equity
+  gate_family: G3_financial
+  requirement: All Norwegian companies must have at least NOK 500,000 in total equity at the
+    time of application, documented via approved annual accounts or, in case of a capital
+    increase, an auditor/lawyer/accountant declaration with updated balance sheet.
+  value: Minimum NOK 500,000 total equity
+  intake_field: balanceBand
+  quote: 'Alle norske bedrifter må ha minst 500 000 kroner i total egenkapital ved søketidspunktet.
+    (Dokumentasjonskrav: Offentlig godkjent årsregnskap. Alternativt, ved kapitalforhøyelse,
+    må det foreligge erklæring fra revisor, advokat eller regnskapsfører, inkludert en oppdatert
+    balanserapport som tar hensyn til kapitaløkning).'
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g3_no_undertaking_in_difficulty
+  gate_family: G3_financial
+  requirement: Companies applying to Eurostars may not be an 'undertaking in difficulty'.
+  value: Excludes firms in financial difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Bedrifter som søker Eurostars kan ikke være foretak i vanskeligheter
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g1_min_two_independent_partners
+  gate_family: G1_nexus
+  requirement: There must be collaboration between at least two independent partners from
+    at least two Eurostars countries.
+  value: Min. 2 independent partners from 2 Eurostars countries
+  intake_field: consortium
+  quote: Det må være samarbeid mellom minst to uavhengige partnere fra minst to Eurostarsland.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Det må være samarbeid mellom minst to uavhengige
+    p'''
+- id: g5_new_product_goal
+  gate_family: G5_use_of_funds
+  requirement: The project must have a clear goal of a new product, process or service.
+  value: Must target new product/process/service
+  intake_field: developmentStage
+  quote: Prosjektet må ha et tydelig mål om nytt produkt, prosess eller tjeneste.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g3_min_partner_cost_share
+  gate_family: G3_financial
+  requirement: At least 50 percent of total project costs must be covered by the partners
+    in the project; subcontractors cannot exceed 49 percent of total project costs.
+  value: Min. 50% costs by partners; subcontractors max 49%
+  intake_field: cofinancingBand
+  quote: Minst 50 prosent av de totale prosjektkostnadene må dekkes av partnerne i prosjektet.
+    Underleverandører kan derfor ikke overstige de totale prosjektkostnadene med 49 prosent.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g3_max_country_cost_share
+  gate_family: G3_financial
+  requirement: The sum of each country's participants' project costs may be at most 70 percent
+    of total project costs.
+  value: Max 70% of total costs per country
+  intake_field: none
+  quote: Summen av hvert lands deltakeres prosjektkostnader kan være maksimalt 70 prosent
+    av de totale prosjektkostnadene.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g5_fast_commercialisation
+  gate_family: G5_use_of_funds
+  requirement: Market introduction/commercialisation must occur quickly after project completion.
+  value: Rapid market introduction required post-project
+  intake_field: developmentStage
+  quote: Introduksjon i markedet/kommersialisering må skje raskt etter prosjektslutt.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g5_activity_type
+  gate_family: G5_use_of_funds
+  requirement: Activities supported must fall under the definition of industrial research
+    and/or experimental development.
+  value: Only industrial research and/or experimental development activities eligible
+  intake_field: none
+  quote: Aktivitetene som kan støttes må falle inn under definisjonen industriell forskning
+    og/eller eksperimentell utvikling.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Aktivitetene som kan støttes må falle inn under
+    de'''
+- id: g3_funding_rate_sme
+  gate_family: G3_financial
+  requirement: For SMEs, the Research Council's funding cannot exceed 50 percent of approved
+    reported project costs.
+  value: Max 50% funding rate for SMEs
+  intake_field: ticketBand
+  quote: For SMB-er kan ikke Forskningsrådets finansiering overstige 50 prosent av godkjente
+    innrapporterte prosjektkostnader (eksperimentell utvikling og/eller industriell forskning).
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g3_funding_rate_rtos
+  gate_family: G3_financial
+  requirement: For institutes, universities and colleges, the Research Council's funding cannot
+    exceed 70 percent of approved reported project costs.
+  value: Max 70% funding rate for research organisations
+  intake_field: ticketBand
+  quote: For institutter, universiteter og høyskoler kan Forskningsrådets finansiering ikke
+    overstige 70 prosent av godkjente innrapporterte prosjektkostnader.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g3_funding_rate_large
+  gate_family: G3_financial
+  requirement: For large companies, the Research Council's funding cannot exceed 30 percent
+    of approved reported project costs.
+  value: Max 30% funding rate for large companies
+  intake_field: ticketBand
+  quote: For store bedrifter kan Forskningsrådets finansiering ikke overstige 30 prosent av
+    godkjente innrapporterte prosjektkostnader.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- id: g3_max_norwegian_share
+  gate_family: G3_financial
+  requirement: The maximum support amount for the Norwegian share of a Eurostars project is
+    NOK 6 million, assuming project costs of NOK 12 million.
+  value: Max NOK 6 million Norwegian share (on NOK 12 million project costs)
+  intake_field: ticketBand
+  quote: Maksimalt støttebeløp for den norske andelen av et Eurostars-prosjekt er 6 millioner
+    som forutsetter prosjektkostnader på 12 millioner.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Support is granted under the General Block Exemption Regulation (Commission
+    Regulation 651/2014, 17 June 2014) Article 25, and is classified as state aid.
+  quote: Støtten til Eurostars-prosjekter regnes som statsstøtte og tildeles i henhold til
+    den såkalte gruppeunntaksforordningen (Kommisjonsforordning 651/2014 av 17. juni 2014)
+    artikkel 25.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+- requirement: Applicant SMEs must satisfy Eurostars' Legal and Financial Viability Check,
+    and document the NOK 500,000 minimum equity requirement, in order to qualify for PES support
+    (this also applies to start-ups).
+  quote: SMB må oppfylle Eurostars’ “Legal and Financial Viability Check”. Videre må nasjonalt
+    krav om minimum 500 000 kroner i total egenkapital være oppfylt og dokumentert. Dette
+    gjelder også for start-ups.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''SMB må oppfylle Eurostars’ “Legal and Financial
+    Vi'''
+- requirement: To qualify for PES (project establishment) support, the application must achieve
+    an average score of at least 3.6 on each of the three evaluation criteria Quality, Impact
+    and Excellence.
+  quote: Søknaden må oppnå gjennomsnittlig 3,6 eller mer for hvert av de tre kriteriene, Quality,
+    Impact og Excellence, etter ekspertenes vurdering.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Søknaden må oppnå gjennomsnittlig 3,6 eller
+    mer fo'''
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/18 gates, 1/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Eurostars project support cannot be combined with other direct public support from
+    Norway or the EU, though public loans (Innovasjon Norge) are allowed; it can be combined
+    with indirect SkatteFUNN support, which is offset via tax settlement under state aid rules.
+  quote: Det er ikke mulig å kombinere støtten til Eurostars-prosjektet med annen direkte
+    offentlig støtte fra Norge eller EU. Imidlertid er det mulig å ha offentlige lån (Innovasjon
+    Norge).
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Applications must be created via the Eurostars international pages, submitted by
+    the main partner on behalf of all consortium partners, after registering on the Eureka
+    website.
+  typical_timeline: Two application deadlines per year (spring and autumn); the 2026 call
+    opens 9 July with deadline 10 September, and a separate March 2026 call had a deadline
+    of 19 March 2026.
+  quote: Søknader må opprettes via Eurostars internasjonale sider. Det er hovedpartner i prosjektet
+    som sender inn søknaden på vegne av alle prosjektpartnere i konsortiet. For å få tilgang
+    til søknadsskjemaet, må du registrere deg på nettsidene til Eureka.
+  source:
+    file: nfr_eurostars_overview.html
+    locator: nfr_eurostars_overview.html#chunk 1
+  verified: false

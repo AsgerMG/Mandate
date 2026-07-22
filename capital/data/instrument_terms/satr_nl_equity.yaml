@@ -1,0 +1,252 @@
+id: satr_nl_equity
+name: satr_nl_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-nexus-seedcapital
+  gate_family: G1_nexus
+  requirement: Applicant fund must be a Seed capital startersfonds or seed business angel
+    fonds established under the scheme's specific sections (Titel 3.10) targeting technostarters.
+  value: seed capital startersfondsen / seed business angel fondsen
+  intake_field: borrowerModel
+  quote: Seed capital technostarters
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 5#Titel 3.10
+  verified: llm_cited
+- id: G2-technostarter-target
+  gate_family: G2_size_ownership
+  requirement: Support under this title targets 'technostarters' (technology-based starting
+    companies) and deep tech technostarters as defined beneficiaries of the seed capital fund
+    investments.
+  value: technostarter / deep tech technostarter
+  intake_field: developmentStage
+  quote: Deep tech technostarter
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 5#Artikel 3.10.13a Overgangsrecht / 3.10.14 Vervaltermijn heading region
+  verified: llm_cited
+- id: G3-subsidie-amount-2425
+  gate_family: G3_financial
+  requirement: For the kennisoverdracht subsidy under Titel 2.4 §2.4.6, the grant amount must
+    be at least €15,000 and at most €200,000 per project, covering at most 80% of eligible
+    costs.
+  value: min €15.000 - max €200.000 per project; max 80% of costs
+  intake_field: cofinancingBand
+  quote: De subsidie bedraagt ten hoogste 80% van de subsidiabele kosten.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.25 Hoogte subsidie
+  verified: llm_cited
+- id: G3-subsidie-min-max
+  gate_family: G3_financial
+  requirement: Grant amount for the cooperation kennisoverdracht scheme is bounded between
+    €15,000 minimum and €200,000 maximum per project.
+  value: €15.000 – €200.000 per project
+  intake_field: ticketBand
+  quote: De subsidie bedraagt ten minste € 15.000,– en ten hoogste € 200.000,– per project.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.25 Hoogte subsidie
+  verified: llm_cited
+- id: G2-exclusion-landbouw
+  gate_family: G2_size_ownership
+  requirement: The subsidy is not granted to a farming business, a link in the animal agro-chain,
+    an undertaking selling agricultural products/pesticides/feed/mechanisation products/fertilisers,
+    or an undertaking in a group connected to such a seller.
+  value: excludes farming/agro-chain/input-selling undertakings and their group affiliates
+  intake_field: entityCountries
+  quote: a. een landbouwonderneming of een schakel in de dierlijke agroketen;
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.24 lid 4
+  verified: llm_cited
+- id: G5-usefunds-kennisoverdracht
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs are limited to costs of organizing and carrying out trainings,
+    workshops, coaching, information actions and demonstration activities per the agricultural
+    block exemption regulation; costs for developing knowledge-transfer materials are excluded.
+  value: trainings, workshops, coaching, voorlichting, demonstratie; excl. ontwikkeling middelen
+  intake_field: none
+  quote: Voor subsidie komen in aanmerking kosten van de organisatie en uitvoering van trainingen,
+    workshops, coaching, voorlichtingsacties en demonstratieactiviteiten als bedoeld in artikel
+    21, derde lid, onderdeel a, van de groepsvrijstellingsverordening landbouw.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.26 Subsidiabele kosten
+  verified: llm_cited
+- id: G6-consortium-schakels
+  gate_family: G6_conditionality
+  requirement: The cooperation partnership must consist of at least two of the three named
+    links of the animal agro-chain, otherwise the application is rejected.
+  value: at least 2 of 3 agro-chain links required in partnership
+  intake_field: consortium
+  quote: het samenwerkingsverband, bedoeld in artikel 2.4.24, eerste lid, onderdeel b , niet
+    bestaat uit ten minste twee van de drie genoemde schakels van de dierlijke agroketen;
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.29 Afwijzingsgronden
+  verified: llm_cited
+- id: G6-qualified-personnel
+  gate_family: G6_conditionality
+  requirement: Applicant is rejected if it does not have qualified and properly trained personnel
+    for the project as required under the agricultural block exemption regulation.
+  value: requires qualified/trained personnel
+  intake_field: none
+  quote: de aanvrager niet beschikt over voor het project gekwalificeerd en geregeld opgeleid
+    personeel als bedoeld in artikel 21, zesde lid, van de groepsvrijstellingsverordening
+    landbouw;
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.29 Afwijzingsgronden
+  verified: llm_cited
+- id: G6-min-points
+  gate_family: G6_conditionality
+  requirement: Application is rejected if, after applying the ranking criteria, fewer than
+    three points are awarded on any one of the four ranking sub-criteria.
+  value: minimum 3 points per criterion required
+  intake_field: none
+  quote: na toepassing van artikel 2.4.30 op één van de onderdelen a tot en met d van het
+    eerste lid van dat artikel minder dan drie punten zijn toegekend;
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.29 Afwijzingsgronden
+  verified: llm_cited
+- id: G6-membership-condition
+  gate_family: G6_conditionality
+  requirement: Application is rejected if the applicant is a producer group/organisation that
+    requires an agricultural undertaking to be a mandatory member in order to participate
+    in the project.
+  value: no mandatory membership condition allowed
+  intake_field: none
+  quote: de aanvrager een producentengroepering of -organisatie is die een landbouwonderneming
+    verplicht lid te zijn van de groepering of organisatie om deel te kunnen nemen aan het
+    project;
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.29 Afwijzingsgronden
+  verified: llm_cited
+- id: G6-start-realisatie
+  gate_family: G6_conditionality
+  requirement: Implementation of subsidised activities must start within three months of the
+    grant decision, and the realisation term is three years.
+  value: start within 3 months; realisation term 3 years
+  intake_field: needBy
+  quote: Met de uitvoering van de op grond van deze paragraaf gesubsidieerde activiteiten
+    wordt gestart binnen drie maanden na de subsidieverlening.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.28 Start- en realisatietermijn
+  verified: llm_cited
+- id: G6-cumulation-nationalpark
+  gate_family: G6_conditionality
+  requirement: Contributions from municipalities, provinces, water boards, public bodies or
+    other administrative bodies are treated as public co-financing and are disregarded when
+    calculating the maximum grant amount per application under this title.
+  value: public co-financing disregarded in max-amount calculation
+  intake_field: cofinancingBand
+  quote: Bijdragen van gemeenten, provincies, waterschappen, openbare lichamen als bedoeld
+    in artikel 8, eerste lid, van de Wet gemeenschappelijke regelingen , of andere bestuursorganen,
+    worden aangemerkt als publieke cofinanciering, en blijven bij de toepassing van artikel
+    6, eerste lid, van het besluit buiten beschouwing voor zover het de berekening betreft
+    van het maximumbedrag dat krachtens deze titel per aanvraag kan worden verstrekt.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 41#Artikel 2.12.9 Cumulatie
+  verified: llm_cited
+- id: G1-nationalpark-noneconomic
+  gate_family: G1_nexus
+  requirement: Applicant receiving this subsidy that also performs economic activities alongside
+    the non-economic activities must keep separate accounting for financing, costs and income
+    of those economic activities.
+  value: separate accounting required if economic activities also performed
+  intake_field: borrowerModel
+  quote: Indien een subsidieontvanger naast de niet-economische activiteiten, bedoeld in artikel
+    2.12.2, eerste lid , ook economische activiteiten verricht, voert de subsidieontvanger
+    met betrekking tot de financiering van en de kosten en inkomsten uit die economische activiteiten
+    een gescheiden boekhouding.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 41#Artikel 2.12.8 Verplichtingen subsidieontvangers
+  verified: llm_cited
+- id: G4-borgstelling-provisie
+  gate_family: G4_borrower_model
+  requirement: The guarantee mechanism (borgstelling) charges a one-off premium of 3 percent
+    of the guaranteed credit, with reduced rates for starters/successors and shorter-term
+    loans.
+  value: 1% to 3% one-off provisie depending on borrower/term
+  intake_field: borrowerModel
+  quote: van de provisie, bedoeld in artikel 32, derde lid, van het besluit bedraagt eenmalig
+    3 procent.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 34#Artikel 2.5.4
+  verified: llm_cited
+- id: G3-borgstelling-omvang
+  gate_family: G3_financial
+  requirement: The guarantee covers 70% of the credit amount generally, or 90% if the credit
+    finances additional investments, subject to a credit ceiling of €1,200,000 (or €2,500,000
+    for specified investment types).
+  value: 70%/90% guarantee coverage; ceiling €1.2m/€2.5m
+  intake_field: ticketBand
+  quote: a. 70 procent van het kredietbedrag voor zover het krediet niet strekt tot financiering
+    van aanvullende investeringen;
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 34#Artikel 2.5.6 Omvang borgstelling
+  verified: llm_cited
+obligations:
+- requirement: Recipient must submit an application containing at least the data required
+    under article 6, second paragraph, of the general block exemption regulation.
+  quote: Een aanvraag voor subsidie als bedoeld in artikel 2.5.2 bevat ten minste de gegevens,
+    bedoeld in artikel 6, tweede lid, van de algemene groepsvrijstellingsverordening.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 34#Artikel 2.5.8 Informatieverplichtingen
+  verified: llm_cited
+- requirement: Activities funded must not favour individual businesses and results must be
+    made freely and equally accessible to everyone.
+  quote: Alle resultaten van de activiteiten, bedoeld in artikel 2.12.2, eerste lid , worden
+    voor een ieder zonder onderscheid kosteloos toegankelijk gemaakt.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 41#Artikel 2.12.8 Verplichtingen subsidieontvangers
+  verified: llm_cited
+- requirement: Outsourcing to third parties for performance of activities must occur on the
+    basis of transparent criteria and at market-conform rates.
+  quote: Opdrachtverlening aan derden voor het verrichten van de activiteiten, bedoeld in
+    artikel 2.12.2, eerste lid , of een deel van die activiteiten, vindt plaats op basis van
+    transparante criteria en tegen marktconforme tarieven.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 41#Artikel 2.12.8 Verplichtingen subsidieontvangers
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Public contributions from municipalities, provinces, water boards and other public
+    bodies are treated as public co-financing and excluded from the calculation of the per-application
+    maximum subsidy amount under this title.
+  quote: Bijdragen van gemeenten, provincies, waterschappen, openbare lichamen als bedoeld
+    in artikel 8, eerste lid, van de Wet gemeenschappelijke regelingen , of andere bestuursorganen,
+    worden aangemerkt als publieke cofinanciering, en blijven bij de toepassing van artikel
+    6, eerste lid, van het besluit buiten beschouwing voor zover het de berekening betreft
+    van het maximumbedrag dat krachtens deze titel per aanvraag kan worden verstrekt.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 41#Artikel 2.12.9 Cumulatie
+  verified: llm_cited
+application:
+  channel: Application submitted to the Minister (RVO) under the relevant title of the Regeling
+    nationale EZK- en LNV-subsidies
+  typical_timeline: Implementation must start within three months of the grant decision; realisation
+    term of three years applies under several titles.
+  quote: Met de uitvoering van de op grond van deze paragraaf gesubsidieerde activiteiten
+    wordt gestart binnen drie maanden na de subsidieverlening.
+  source:
+    file: nl_rnes_wetten_overheid_2023.html
+    locator: chunk 29#Artikel 2.4.28 Start- en realisatietermijn
+  verified: llm_cited

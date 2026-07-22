@@ -1,0 +1,422 @@
+id: chips_ju_kdt
+name: chips_ju_kdt
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Applicants (beneficiaries and affiliated entities) must be legal entities established
+    in one of the eligible countries (EU Member States including OCTs, listed EEA countries,
+    or countries associated to the Digital Europe Programme).
+  value: Eligible country establishment required
+  intake_field: entityCountries
+  quote: 'be established in one of the eligible countries, i.e.:
+
+    o EU Member States (including overseas countries and territories (OCTs))
+
+    o non-EU countries:
+
+    ▪ listed EEA countries and countries associated to the Digital Europe
+
+    Programme (list of participating countries)'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.9
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Participation in any capacity (beneficiary, affiliated entity, associated partner,
+    subcontractor or recipient of financial support to third parties) is limited to entities
+    established in eligible countries.
+  value: Limited to eligible-country entities
+  intake_field: entityCountries
+  quote: participation in any capacity (as beneficiary, affiliated entity, associated partner,
+    subcontractor or recipient of financial support to third parties) is limited to entities
+    established in eligible countries.
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.10
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Natural persons are not eligible to participate, except self-employed persons/sole
+    traders without separate legal personality.
+  value: Natural persons excluded (except sole traders)
+  intake_field: borrowerModel
+  quote: Natural persons — Natural persons are NOT eligible (with the exception of self-employed
+    persons, i.e. sole traders, where the company does not have legal personality separate
+    from that of the natural person).
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.10
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: International organisations are not eligible unless they are International
+    organisations of European Interest under the Digital Europe Regulation.
+  value: International organisations excluded (with narrow exception)
+  intake_field: borrowerModel
+  quote: International organisations — International organisations are NOT eligible, unless
+    they are International organisations of European Interest within the meaning of Article
+    2 of the Digital Europe Regulation
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.10
+  verified: llm_cited
+- id: G1-05
+  gate_family: G1_nexus
+  requirement: EU bodies (except the Joint Research Centre) cannot be part of the consortium.
+  value: EU bodies excluded (except JRC)
+  intake_field: borrowerModel
+  quote: EU bodies — EU bodies (with the exception of the European Commission Joint Research
+    Centre) can NOT be part of the consortium.
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.10
+  verified: llm_cited
+- id: G1-06
+  gate_family: G1_nexus
+  requirement: Entities subject to EU restrictive measures under Article 29 TEU/Article 215
+    TFEU are not eligible to participate in any capacity.
+  value: Restrictive-measures entities excluded
+  intake_field: nonEuControl
+  quote: Such entities are not eligible to participate in any capacity, including as beneficiaries,
+    affiliated entities, associated partners, subcontractors or recipients of financial support
+    to third parties (if any).
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.11
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Such entities are not eligible to participate
+    in a'''
+- id: G1-07
+  gate_family: G1_nexus
+  requirement: Entities subject to EU conditionality measures under Regulation 2020/2092 (e.g.,
+    certain Hungarian public interest trusts) are not eligible to participate in any funded
+    role.
+  value: Conditionality-measure entities excluded
+  intake_field: nonEuControl
+  quote: Such entities are not eligible to participate in any funded role (beneficiaries,
+    affiliated entities, subcontractors, recipients of financial support to third parties,
+    etc.).
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.11
+  verified: llm_cited
+- id: G1-08
+  gate_family: G1_nexus
+  requirement: For duly justified security reasons, legal entities established in associated
+    countries and legal entities established in the Union but controlled from third countries
+    may only be eligible if they meet specific control-related conditions and provide guarantees.
+  value: Foreign-controlled entity conditions apply
+  intake_field: nonEuControl
+  quote: legal entities established in associated countries and legal entities that are established
+    in the Union but are controlled from third countries may be eligible to participate only
+    if they comply with the requirements/conditions indicated below.
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.17
+  verified: false
+  verify_note: 'fragment not found verbatim: ''legal entities established in associated countries'''
+- id: G1-09
+  gate_family: G1_nexus
+  requirement: Entities established in a Member State, Associated Country or eligible third
+    country that are directly or indirectly controlled by China or a Chinese-established legal
+    entity are not eligible to participate in Innovation Actions (and RIAs where specified)
+    in critical technology areas (advanced semiconductors, AI, quantum, biotech).
+  value: China-controlled entities excluded from IAs in critical tech areas
+  intake_field: nonEuControl
+  quote: entities established in a Member State, Associated Country or in an eligible third
+    country which are directly or indirectly controlled by China or by a legal entity established
+    in China are not eligible to participate in Innovation Actions and also Research and Innovation
+    Actions where stated in the specific call/topic conditions
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.7
+  verified: llm_cited
+- id: G1-10
+  gate_family: G1_nexus
+  requirement: Entities assessed as high-risk suppliers of mobile network communication equipment
+    (and entities they own or control) are not eligible to participate in any capacity in
+    actions subject to restrictions for protection of European digital infrastructures.
+  value: High-risk 5G suppliers excluded
+  intake_field: nonEuControl
+  quote: Entities that are assessed as high-risk suppliers of mobile network communication
+    equipment (and any entities they own or control) are not eligible to participate in any
+    capacity, including as beneficiaries, affiliated entities, associated partners, third
+    parties giving in-kind contributions, subcontractors or recipients of financial support
+    to third parties (if any).
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.20
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: For all research and innovation activities including Chips for Europe Initiative
+    actions, SMEs shall represent at least one third of the total number of participants in
+    indirect actions and at least 20% of public funding should go to them.
+  value: 'SME participation: ≥1/3 of participants, ≥20% of public funding'
+  intake_field: fteBand
+  quote: 'shall represent at least one third of the total number of participants in indirect
+    actions and
+
+    at least 20 % of public funding should go to them'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_2023_2027_main.pdf#p.6
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: Entities without legal personality may exceptionally participate provided their
+    representatives can undertake legal obligations and offer equivalent guarantees for protection
+    of EU financial interests.
+  value: No-legal-personality entities admitted under conditions
+  intake_field: borrowerModel
+  quote: 'Entities which do not have legal personality under their
+
+    national law may exceptionally participate, provided that their representatives have the
+
+    capacity to undertake legal obligations on their behalf, and offer guarantees for the
+    protection
+
+    of the EU financial interests equivalent to that offered by legal persons'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.10
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Financial capacity check is normally waived if the individual requested grant
+    amount is not more than EUR 60,000.
+  value: Financial capacity check waived below EUR 60,000 request
+  intake_field: ticketBand
+  quote: if the individual requested grant amount is not more than EUR 60 000.
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.13
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: Financial capacity check is normally waived for public bodies and international
+    organisations.
+  value: Financial capacity check waived for public bodies/IOs
+  intake_field: institutionalBacking
+  quote: 'public bodies (entities established as public body under national law, including
+    local,
+
+    regional or national authorities) or international organisations'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.13
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: Applicants must have stable and sufficient financial resources to implement
+    the project and contribute their share, including sufficient capacity if participating
+    in several projects simultaneously.
+  value: Financial capacity required
+  intake_field: turnoverBand
+  quote: 'Applicants must have stable and sufficient resources to successfully implement the
+    projects
+
+    and contribute their share. Organisations participating in several projects must have
+    sufficient
+
+    capacity to implement all these projects.'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.12
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: Associations and interest groupings composed of members may participate as
+    'sole beneficiaries' or 'beneficiaries without legal personality'; if the action is implemented
+    by members, those members must also participate as beneficiaries or affiliated entities
+    or their costs will not be eligible.
+  value: Association/consortium member participation rule
+  intake_field: consortium
+  quote: 'Entities composed of members may participate as ‘sole
+
+    beneficiaries’ or ‘beneficiaries without legal personality’8. Please note that if the
+    action will be
+
+    implemented by the members, they should also participate (either as beneficiaries or as
+
+    affiliated entities, otherwise their costs will NOT be eligible).'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.10
+  verified: llm_cited
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: Funding under the Chips for Europe Initiative part covers both grants and procurements
+    funded through Horizon Europe (research and innovation) and DEP (capacity building).
+  value: Mixed grant/procurement funding mechanism
+  intake_field: borrowerModel
+  quote: 'this part of the programme covers both grants and procurements that
+
+    are funded through HE (for research and innovation) and DEP (for capacity
+
+    building).'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_2023_2027_main.pdf#p.8
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: The Electronic Components and Systems part of the programme funds bottom-up
+    and top-down (focus topic) collaborative actions under Horizon Europe Cluster 4, continuing
+    prior JU actions.
+  value: Funds bottom-up/top-down collaborative R&I actions
+  intake_field: developmentStage
+  quote: 'This part of the programme will fund bottom up and top-down calls, the top-down
+
+    calls are the so-called focus topics'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_2023_2027_main.pdf#p.8
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: The Chips for Europe Initiative part covers capacity building and research/innovation
+    actions related to pilot lines, design platform, competence centres, quantum chips technology
+    and skills activities.
+  value: Initiative funds pilot lines, design platform, competence centres, quantum chips,
+    skills
+  intake_field: developmentStage
+  quote: 'the Chips for Europe Initiative part of the programme covers capacity building and
+
+    research and innovation actions related to such Initiative: the pilot lines, the design
+
+    platform, the competence centres, the quantum chips technology and activities
+
+    around skills.'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_2023_2027_main.pdf#p.8
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Applicants subject to an EU exclusion decision or in specified exclusion situations
+    (bankruptcy, tax/social security breach, grave professional misconduct, fraud/corruption,
+    deficiencies in EU contract obligations, irregularities, circumvention of legal obligations)
+    cannot receive EU funding.
+  value: Exclusion grounds bar funding
+  intake_field: conditionality
+  quote: 'Applicants which are subject to an EU exclusion decision or in one of the following
+    exclusion
+
+    situations that bar them from receiving EU funding can NOT participate'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.14
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: Applicants will be rejected if they misrepresented required information during
+    the award procedure or were involved in preparing the call in a way causing an unremediable
+    conflict of interest.
+  value: Misrepresentation/conflict of interest rejection
+  intake_field: conditionality
+  quote: 'during the award procedure they misrepresented information required as a condition
+    for
+
+    participating or failed to supply that information
+
+    − they were previously involved in the preparation of the call and this entails a distortion
+
+    of competition that cannot be remedied otherwise (conflict of interest).'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.15
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: Projects must comply with the highest ethical standards and applicable EU,
+    international and national law, and undergo an ethics review before funding is authorised.
+  value: Ethics review mandatory
+  intake_field: conditionality
+  quote: 'Proposals under this call will have to undergo an ethics review to authorise funding
+    and may
+
+    be made subject to specific ethics rules'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.11
+  verified: llm_cited
+- id: G6-04
+  gate_family: G6_conditionality
+  requirement: Projects involving EU classified information must undergo security scrutiny
+    to authorise funding, and projects involving TRES SECRET UE/EU TOP SECRET information
+    cannot be funded.
+  value: Security scrutiny required; top-secret projects excluded
+  intake_field: conditionality
+  quote: 'projects involving
+
+    information classified TRES SECRET UE/EU TOP SECRET (or equivalent) can NOT be funded'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.11
+  verified: llm_cited
+obligations:
+- requirement: Participants must conclude a consortium agreement in line with the Chips JU
+    Model Grant Agreement.
+  quote: 'participants are required to conclude a
+
+    consortium agreement.'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.16
+  verified: llm_cited
+- requirement: Beneficiaries must ensure their projects are not subject to national/third-country
+    security requirements that could affect implementation, and must notify the granting authority
+    immediately of potential security issues.
+  quote: 'Beneficiaries must ensure that their projects are not subject to national/third-country
+    security
+
+    requirements that could affect implementation or put into question the award of the grant'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.12
+  verified: llm_cited
+- requirement: Each beneficiary and affiliated entity must sign a declaration of honour confirming
+    compliance with EU funding conditions before grant signature.
+  quote: 'Before signing the grant, each beneficiary and affiliated entity will have to confirm
+    this again by signing a
+
+    declaration of honour (DoH).'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.9
+  verified: llm_cited
+- requirement: For foreign-controlled entities, guarantees must demonstrate that results of
+    the action remain within the beneficiary and are not subject to control or restrictions
+    by non-eligible third countries during and after the action for a specified period, and
+    that export restrictions apply for at least 4 years for EU/Associated Country entities
+    controlled from a third country.
+  quote: 'the results of the action shall remain within the beneficiary and shall not be subject
+    to
+
+    control or restrictions by non-eligible third countries or other non-eligible third country
+
+    entities during the action and for a specified period after its completion.'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.18
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/23 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Electronic submission via the Funding & Tenders Portal Electronic Submission System;
+    paper submissions not possible.
+  typical_timeline: Proposals must be submitted before the call deadline.
+  quote: 'Proposals must be submitted electronically via the Funding & Tenders Portal Electronic
+
+    Submission System. Paper submissions are NOT possible.'
+  source:
+    file: chips_ju_mawp_2023_2027_main.pdf
+    locator: chips_ju_mawp_general_annexes.pdf#p.9
+  verified: llm_cited

@@ -1,0 +1,129 @@
+id: eit_climate_kic_clean_cities_spain
+name: eit_climate_kic_clean_cities_spain
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-startup-eligibility
+  gate_family: G1_nexus
+  requirement: Applicant must be a European start-up with a climate-focused, innovative solution
+    for urban/city systems decarbonisation.
+  value: European start-ups with innovative solutions for transforming city systems to become
+    carbon neutral
+  intake_field: entityCountries
+  quote: the Clean Cities Spain ClimAccelerator welcomes 12 new European start-ups with innovative
+    solutions for transforming city systems to become carbon neutral
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_spain_news_article_wayback.html#chunk 1
+  verified: llm_cited
+- id: g1-programme-delivery
+  gate_family: G1_nexus
+  requirement: The programme is delivered by Universidad Politécnica de Madrid with support
+    from EIT Climate-KIC, indicating an association with the Spanish/European accelerator
+    network.
+  value: Delivered by Universidad Politécnica de Madrid, supported by EIT Climate-KIC
+  intake_field: entityCountries
+  quote: The programme is delivered by Universidad Politécnica de Madrid, with support from
+    EIT Climate-KIC.
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_spain_news_article_wayback.html#chunk 1
+  verified: llm_cited
+- id: g1-thematic-scope
+  gate_family: G1_nexus
+  requirement: Applicant's solution must address key urban challenges such as community retrofitting,
+    green spaces, mobility, renewable energy, or data and information systems.
+  value: 'Urban challenges: community retrofitting, green spaces, mobility, renewable energy,
+    data and information systems'
+  intake_field: developmentStage
+  quote: Our accelerator program focuses on key challenges in urban environments, including
+    community retrofitting, green spaces, mobility, renewable energy, and data and information
+    systems.
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_network_wayback2023.html#chunk 1
+  verified: llm_cited
+- id: g2-cohort-size
+  gate_family: G2_size_ownership
+  requirement: The 2024 cohort selected 12 start-ups out of more than 50 applications, implying
+    a competitive selection with limited cohort size.
+  value: 12 start-ups selected out of 50+ applications
+  intake_field: none
+  quote: Out of more than 50 applications, these start-ups stood out for their high technical
+    maturity and their positive and environmental impact on cities
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_spain_news_article_wayback.html#chunk 1
+  verified: llm_cited
+- id: g2-development-stage
+  gate_family: G2_size_ownership
+  requirement: Selected applicants must demonstrate high technical maturity, indicating the
+    programme targets start-ups beyond very early idea stage.
+  value: High technical maturity required
+  intake_field: developmentStage
+  quote: these start-ups stood out for their high technical maturity and their positive and
+    environmental impact on cities
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_spain_news_article_wayback.html#chunk 1
+  verified: llm_cited
+- id: g4-programme-model
+  gate_family: G4_borrower_model
+  requirement: The programme provides an acceleration/support programme (not a direct grant
+    or loan), connecting start-ups to stakeholders, investment opportunities and expansion
+    support rather than disbursing capital directly.
+  value: Accelerator support programme, not direct financing
+  intake_field: borrowerModel
+  quote: The 2024 edition focuses on business expansion and growth of start-ups. The first
+    phase will connect entrepreneurs with key stakeholders in the urban ecosystem while the
+    second phase will analyse impact investment opportunities, scalability and international
+    expansion of start-ups.
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_spain_news_article_wayback.html#chunk 2
+  verified: llm_cited
+- id: g5-use-of-programme
+  gate_family: G5_use_of_funds
+  requirement: Support provided is directed to business development, investment readiness,
+    and climate impact hypothesis development rather than direct funding of specific costs.
+  value: Business development, investment, market knowledge, climate impact hypothesis
+  intake_field: none
+  quote: By the end of the programme, start-ups will have initiated strategic conversations
+    with key institutions and improved their knowledge in critical topics such as investment,
+    business development and potential new markets and completed a climate impact hypothesis
+    detailing the emissions mitigation potential of their product or service.
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_spain_news_article_wayback.html#chunk 2
+  verified: llm_cited
+- id: g6-mission-alignment
+  gate_family: G6_conditionality
+  requirement: Applicants are expected to align with the programme's mission of using entrepreneurship
+    to catalyse and scale climate solutions in collaboration with local governments and industry
+    experts.
+  value: Mission alignment with climate solution scaling via entrepreneurship
+  intake_field: none
+  quote: Our mission is to create a global programme where start-ups, entrepreneurship support
+    organisations, local governments, and industry experts join forces to innovate, catalyse,
+    and scale the power of climate solutions.
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_spain_news_article_wayback.html#chunk 2
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (8/8 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Open call for applications to the Clean Cities Spain ClimAccelerator programme,
+    delivered by Universidad Politécnica de Madrid with EIT Climate-KIC support
+  typical_timeline: Annual cohort-based cycles; 2022 edition applications extended to April
+    19th; 2024 cohort announced with 12 selected from over 50 applications
+  quote: The applications deadline for the 2022 edition of the Clean Cities ClimAccelerator
+    has been extended until April 19th, 12:00 noon.
+  source:
+    file: eit_climate_kic_clean_cities_spain_news_article_wayback.html
+    locator: eit_climate_kic_clean_cities_network_wayback2023.html#chunk 1
+  verified: llm_cited

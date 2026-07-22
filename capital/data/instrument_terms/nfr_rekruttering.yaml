@@ -1,0 +1,11 @@
+id: nfr_rekruttering
+name: nfr_rekruttering
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates: []
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (0/0 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
