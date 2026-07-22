@@ -1,0 +1,445 @@
+id: sudop_rnd_purpose
+name: sudop_rnd_purpose
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_registered_pl
+  gate_family: G1_nexus
+  requirement: The undertaking must be registered and conduct business activity on the territory
+    of the Republic of Poland to receive financial support.
+  value: registered and active in Poland
+  intake_field: entityCountries
+  quote: Pomoc finansowa może zostać udzielona pod warunkiem, że przedsiębiorca jest zarejestrowany
+    i prowadzi działal-ność na terytorium Rzeczypospolitej Polskiej.
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: PL_OPI-PIB_rozporzadzenie_FENG_2021-2027_DzU2023poz2132.pdf#p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Pomoc finansowa może zostać udzielona pod warunkie'''
+- id: g1_applicant_types
+  gate_family: G1_nexus
+  requirement: Financial aid may be granted to an individual undertaking, a group of at least
+    two undertakings, or a group with at least one undertaking and one research organisation,
+    meeting conditions of the call.
+  value: undertaking, or consortium of undertakings/research organisations
+  intake_field: consortium
+  quote: '1) przedsiębiorcy,
+
+    2) grupie podmiotów, w której skład wchodzi co najmniej dwóch przedsiębiorców,
+
+    3) grupie podmiotów, w której skład wchodzi co najmniej jeden przedsiębiorca i co najmniej
+    jedna organizacja badawcza'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.7
+  verified: llm_cited
+- id: g1_sanctions_exclusion
+  gate_family: G1_nexus
+  requirement: Aid cannot be granted to entities subject to EU restrictive measures related
+    to Russia's actions against Ukraine, entities owned by or linked to sanctioned parties,
+    or businesses in sanctioned industry sectors unless they demonstrate no conflict with
+    sanctions.
+  value: excluded if subject to or linked to EU Russia sanctions
+  intake_field: entityCountries
+  quote: '1) podmiotom wymienionym w aktach prawnych nakładających te sankcje;
+
+    2) przedsiębiorcom będącym własnością podmiotów, w które są wymierzone te sankcje, lub
+    powiązanym z takimi
+
+    podmiotami'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.7
+  verified: llm_cited
+- id: g2_sme_advisory
+  gate_family: G2_size_ownership
+  requirement: Advisory services aid is granted only to micro, small or medium-sized enterprises.
+  value: micro/small/medium enterprise
+  intake_field: fteBand
+  quote: Pomoc na usługi doradcze jest udzielana mikro-, małemu lub średniemu przedsiębiorcy.
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: PL_PARP_rozporzadzenie_FENG_2021-2027_DzU2022poz2510.pdf#p.7
+  verified: llm_cited
+- id: g2_startup_conditions
+  gate_family: G2_size_ownership
+  requirement: Aid for start-up undertakings requires the enterprise to be a micro or small
+    enterprise, unlisted, operating no more than 5 years since registration, that has not
+    distributed profits, has not taken over another business, and was not formed through a
+    merger (unless between qualifying micro/small enterprises).
+  value: micro/small, ≤5 years old, no profit distribution, no takeover/merger
+  intake_field: foundedYear
+  quote: '1) nie jest notowany na giełdzie i prowadzi działalność przez okres nie dłuższy
+    niż 5 lat od dnia wpisania do odpowied-niego rejestru lub ewidencji;
+
+    2) nie dokonał podziału zysków;
+
+    3) nie przejął działalności innego przedsiębiorcy;
+
+    4) nie został utworzony w wyniku połączenia'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: PL_PARP_rozporzadzenie_FENG_2021-2027_DzU2022poz2510.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''1) nie jest notowany na giełdzie i prowadzi
+    działa'''
+- id: g2_risk_finance_undertaking
+  gate_family: G2_size_ownership
+  requirement: Risk-finance commercialisation aid targets an unlisted micro, small or medium
+    enterprise that has either not operated in any market, operated less than 7 years since
+    first commercial sale, or needs initial risk-finance investment exceeding 50% of its average
+    annual turnover over the preceding 5 years.
+  value: unlisted SME meeting one of three early-stage/investment-need criteria
+  intake_field: developmentStage
+  quote: 'jest nienotowanym mikro-, małym albo średnim przedsiębiorcą
+
+    w rozumieniu art. 2 pkt 76 rozporządzenia nr 651/2014 i spełnia co najmniej jeden z następujących
+    warunków:
+
+    1) nie prowadzi działalności na żadnym rynku,
+
+    2) prowadzi działalność na dowolnym rynku przez okres krótszy niż 7 lat od pierwszej sprzedaży
+    komercyjnej'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf#p.8
+  verified: llm_cited
+- id: g3_ceiling_industrial_research
+  gate_family: G3_financial
+  requirement: Public aid may not be granted if it exceeds EUR 20,000,000 per undertaking
+    per project where over half of eligible costs are for industrial research.
+  value: EUR 20,000,000 max per project (industrial research)
+  intake_field: ticketBand
+  quote: 'równowartości 20 000 000 euro dla przedsiębiorcy na jeden projekt – jeżeli ponad
+    połowa całkowitych kosztów
+
+    kwalifikowalnych projektu zostanie poniesiona na badania przemysłowe'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.8
+  verified: llm_cited
+- id: g3_ceiling_experimental_dev
+  gate_family: G3_financial
+  requirement: Public aid may not be granted if it exceeds EUR 15,000,000 per undertaking
+    per project where over half of eligible costs are for experimental development.
+  value: EUR 15,000,000 max per project (experimental development)
+  intake_field: ticketBand
+  quote: 'równowartości 15 000 000 euro dla przedsiębiorcy na jeden projekt – jeżeli ponad
+    połowa całkowitych kosztów
+
+    kwalifikowalnych projektu zostanie poniesiona na eksperymentalne prace rozwojowe'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.8
+  verified: llm_cited
+- id: g3_ceiling_feasibility
+  gate_family: G3_financial
+  requirement: Public aid may not exceed EUR 7,500,000 per undertaking for one feasibility
+    study preceding industrial research or experimental development.
+  value: EUR 7,500,000 max per feasibility study
+  intake_field: ticketBand
+  quote: 'równowartości 7 500 000 euro dla przedsiębiorcy na jedno studium wykonalności poprzedzające
+    badania przemysłowe
+
+    lub eksperymentalne prace rozwojowe'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.8
+  verified: llm_cited
+- id: g3_seal_excellence_cap
+  gate_family: G3_financial
+  requirement: Maximum public aid for R&D projects or feasibility studies awarded the Seal
+    of Excellence under Horizon 2020/Horizon Europe does not exceed EUR 2,500,000 per undertaking
+    and per project or study.
+  value: EUR 2,500,000 max (Seal of Excellence projects)
+  intake_field: ticketBand
+  quote: 'nie przekracza równowartości
+
+    2 500 000 euro dla jednego przedsiębiorcy i na jeden projekt badawczo-rozwojowy lub jedno
+    studium wykonalności'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.10
+  verified: llm_cited
+- id: g3_intensity_industrial_research
+  gate_family: G3_financial
+  requirement: Aid intensity for industrial research does not exceed 50% of eligible costs.
+  value: 50% max intensity (industrial research)
+  intake_field: cofinancingBand
+  quote: 50% kosztów kwalifikowalnych – w przypadku badań przemysłowych;
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.9
+  verified: llm_cited
+- id: g3_intensity_experimental_dev
+  gate_family: G3_financial
+  requirement: Aid intensity for experimental development does not exceed 25% of eligible
+    costs.
+  value: 25% max intensity (experimental development)
+  intake_field: cofinancingBand
+  quote: 25% kosztów kwalifikowalnych – w przypadku eksperymentalnych prac rozwojowych;
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.9
+  verified: llm_cited
+- id: g3_intensity_bonus_sme
+  gate_family: G3_financial
+  requirement: Aid intensity for industrial research/experimental development is increased
+    by 10 percentage points for medium enterprises and 20 points for micro/small enterprises.
+  value: +10pp (medium) / +20pp (micro/small)
+  intake_field: cofinancingBand
+  quote: '10 punktów procentowych – dla średnich przedsiębiorców,
+
+    2) 20 punktów procentowych – dla mikro- i małych przedsiębiorców,'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.9
+  verified: llm_cited
+- id: g3_de_minimis_ceiling
+  gate_family: G3_financial
+  requirement: De minimis aid may be granted only if its value, combined with other de minimis
+    aid received in the current and preceding two tax years, does not exceed the thresholds
+    set in EU Regulation 1407/2013.
+  value: cumulative de minimis threshold per Reg. 1407/2013 (generally EUR 200,000/100,000
+    over 3 years)
+  intake_field: turnoverBand
+  quote: 'Pomoc de minimis może zostać udzielona pod warunkiem, że łącznie z inną pomocą de
+    minimis lub pomocą
+
+    de minimis w rolnictwie i rybołówstwie, otrzymaną w danym roku podatkowym oraz w okresie
+    dwóch lat podatkowych
+
+    poprzedzających dany rok podatkowy z różnych źródeł i w różnych formach, jej wielkość
+    nie przekroczy kwot, o których
+
+    mowa w art. 3 ust. 2 rozporządzenia nr 1407/2013.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: PL_OPI-PIB_rozporzadzenie_FENG_2021-2027_DzU2023poz2132.pdf#p.3
+  verified: llm_cited
+- id: g4_forms_of_aid
+  gate_family: G4_borrower_model
+  requirement: Aid for start-up undertakings can be granted as preferential-rate loans, guarantees,
+    grants (including equity/quasi-equity investments, or interest/fee reductions), or a combination
+    of these forms.
+  value: loans, guarantees, grants/equity, or combinations
+  intake_field: borrowerModel
+  quote: '1) w formie pożyczek o stopach procentowych korzystniejszych od rynkowych, które
+    są udzielane na okres:
+
+    ... 3) w formie dotacji, w tym w formie inwestycji kapitałowych w rozumieniu art. 2 pkt
+    74 rozporządzenia nr 651/2014,
+
+    inwestycji quasi-kapitałowych'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.10
+  verified: llm_cited
+- id: g4_loan_amount_cap
+  gate_family: G4_borrower_model
+  requirement: 'Preferential loans for start-ups over 10 years have maximum nominal amounts
+    differentiated by regional aid area status: EUR 2,000,000 (Art.107(3)(a) areas), EUR 1,500,000
+    (Art.107(3)(c) areas), EUR 1,000,000 (other undertakings).'
+  value: EUR 1,000,000-2,000,000 max loan (10-year term)
+  intake_field: ticketBand
+  quote: '2 000 000 euro – dla przedsiębiorców mających siedzibę albo miejsce zamieszkania
+    na obszarach objętych
+
+    pomocą publiczną, które spełniają warunki określone w art. 107 ust. 3 lit. a Traktatu'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.10
+  verified: llm_cited
+- id: g4_guarantee_cap
+  gate_family: G4_borrower_model
+  requirement: Guarantees for start-up aid must not exceed 80% of the loan amount secured,
+    with maximum guaranteed amounts over 10 years differentiated by regional aid area.
+  value: max 80% of loan value guaranteed; caps of EUR 1.5M-3M
+  intake_field: borrowerModel
+  quote: 'w formie gwarancji o prowizjach korzystniejszych od rynkowych i o wartości nieprzekraczającej
+    80% kwoty kredytu
+
+    albo pożyczki, na których zabezpieczenie zostają udzielone'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.11
+  verified: llm_cited
+- id: g4_innovative_enterprise_doubling
+  gate_family: G4_borrower_model
+  requirement: For micro and small enterprises meeting innovative enterprise criteria, the
+    maximum aid amounts for start-up support are doubled.
+  value: 2x aid ceiling for innovative micro/small enterprises
+  intake_field: borrowerModel
+  quote: 'W przypadku mikro- i małych przedsiębiorców spełniających kryteria przedsiębiorstwa
+    innowacyjnego w rozumie-
+
+    niu art. 2 pkt 80 rozporządzenia nr 651/2014 maksymalne wielkości pomocy publicznej, o
+    których mowa w § 22, podwaja się.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.11
+  verified: llm_cited
+- id: g5_eligible_costs_rd
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs for R&D projects include personnel wages and non-wage labour
+    costs, apparatus/equipment costs, real estate costs, contracted research, and additional
+    overheads directly related to project implementation.
+  value: personnel, equipment, real estate, contracted research, overheads
+  intake_field: none
+  quote: '1) wynagrodzeń wraz z pozapłacowymi kosztami pracy, w tym składkami na ubezpieczenia
+    społeczne i ubezpieczenie
+
+    zdrowotne, osób zatrudnionych przy wykonywaniu tego projektu w części, w jakiej wynagrodzenia
+    te są bezpośred-
+
+    nio związane z jego wykonywaniem'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.7
+  verified: llm_cited
+- id: g5_excluded_activities
+  gate_family: G5_use_of_funds
+  requirement: Financial aid may not be granted to businesses in tobacco, alcohol, pornography,
+    weapons/ammunition trade, gambling, or narcotics/psychotropic substance production or
+    distribution.
+  value: 'excluded sectors: tobacco, alcohol, pornography, weapons, gambling, narcotics'
+  intake_field: none
+  quote: '1) wytwarzania, przetwórstwa lub wprowadzania do obrotu tytoniu i wyrobów tytoniowych;
+
+    2) produkcji lub wprowadzania do obrotu napojów alkoholowych;
+
+    3) produkcji lub wprowadzania do obrotu treści pornograficznych;
+
+    4) obrotu materiałami wybuchowymi, bronią i amunicją;
+
+    5) gier losowych, zakładów wzajemnych, gier na automatach i gier na automatach o niskich
+    wygranych;'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: PL_OPI-PIB_rozporzadzenie_FENG_2021-2027_DzU2023poz2132.pdf#p.3
+  verified: llm_cited
+- id: g5_advisory_use_restriction
+  gate_family: G5_use_of_funds
+  requirement: Advisory service aid may not be used for continuous or periodic advisory activities,
+    or activities related to normal operating costs such as routine tax advice, regular legal
+    services, or advertising.
+  value: excludes continuous/periodic advisory and routine operating costs
+  intake_field: none
+  quote: 'Usługi doradcze nie mogą mieć charakteru ciągłego ani okresowego oraz nie mogą być
+    związane z bieżącą dzia-
+
+    łalnością operacyjną mikro-, małego lub średniego przedsiębiorcy, w szczególności w zakresie
+    doradztwa podatkowego,
+
+    stałej obsługi prawnej lub reklamy.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: PL_PARP_rozporzadzenie_FENG_2021-2027_DzU2022poz2510.pdf#p.7
+  verified: llm_cited
+- id: g6_pre_application_condition
+  gate_family: G6_conditionality
+  requirement: Public aid (with specified exceptions) may only be granted if the application
+    for aid was submitted before work on the project began.
+  value: application must precede start of project work (incentive effect)
+  intake_field: conditionality
+  quote: 'Pomoc publiczna, o której mowa w § 2 pkt 1 lit. a, c oraz e–p, może zostać udzielona,
+    jeżeli wniosek o jej
+
+    udzielenie został złożony przed rozpoczęciem prac nad projektem.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.7
+  verified: llm_cited
+- id: g6_repayment_obligation_exclusion
+  gate_family: G6_conditionality
+  requirement: Financial aid may not be granted or paid to an undertaking that is subject
+    to an outstanding recovery order following a European Commission decision declaring aid
+    unlawful and incompatible with the internal market.
+  value: excluded if subject to unfulfilled EU recovery order
+  intake_field: conditionality
+  quote: 'Pomoc finansowa nie może zostać udzielona ani wypłacona przedsiębiorcy, na którym
+    ciąży obowiązek zwrotu pomocy
+
+    publicznej wynikający z decyzji Komisji Europejskiej uznającej taką pomoc za niezgodną
+    z prawem oraz z rynkiem wewnętrznym.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: PL_OPI-PIB_rozporzadzenie_FENG_2021-2027_DzU2023poz2132.pdf#p.3
+  verified: llm_cited
+obligations:
+- requirement: Before aid is granted, the applicant must submit to NCBR information about
+    the undertaking, its business, and information about previously received public aid or
+    a declaration of not having received such aid.
+  quote: 'Przed udzieleniem pomocy finansowej wnioskodawca przedstawia NCBR:
+
+    1) w przypadku pomocy publicznej i pomocy na rzecz IPCEI – informacje dotyczące tego przedsiębiorcy
+    i prowadzonej
+
+    przez niego działalności gospodarczej oraz informacje o otrzymanej pomocy publicznej albo
+    oświadczenie
+
+    o nieotrzymaniu takiej pomocy'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.7
+  verified: llm_cited
+- requirement: For fisheries and aquaculture research aid, the undertaking must publish online,
+    before starting the project, information about the intent, purpose, expected date of results
+    availability, and free access guarantee.
+  quote: '1) zamiarze wykonania tego projektu;
+
+    2) celu tego projektu;
+
+    3) przybliżonym terminie udostępnienia wyników tego projektu i o adresie strony internetowej,
+    na której zostaną one
+
+    udostępnione;
+
+    4) zapewnieniu nieodpłatnej dostępności wyników tego projektu dla wszystkich przedsiębiorców
+    działających w sektorze
+
+    rybołówstwa i akwakultury.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf#p.7
+  verified: llm_cited
+- requirement: Results of fisheries/aquaculture research aid projects must be made publicly
+    available online for at least 5 years from project completion.
+  quote: przez okres co najmniej 5 lat od dnia zakończenia jego wykonywania.
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf#p.8
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/23 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Public aid is subject to cumulation rules under Article 8 of Regulation 651/2014,
+    and de minimis aid under Article 5 of Regulation 1407/2013; aid cannot be combined where
+    it would exceed maximum aid intensity or amount thresholds for the same eligible costs.
+  quote: 'Pomoc publiczna podlega kumulacji na zasadach określonych w art. 8 rozporządzenia
+    nr 651/2014.
+
+    2. Pomoc de minimis podlega kumulacji na zasadach określonych w art. 5 rozporządzenia
+    nr 1407/2013.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.8
+  verified: llm_cited
+application:
+  channel: NCBR (National Centre for Research and Development) call for proposals procedure
+  typical_timeline: Not specified in text; aid granted following a call for proposals under
+    the project selection procedure of Chapter 14 of the Act of 28 April 2022.
+  quote: 'Pomoc finansowa może zostać udzielona w wyniku przeprowadzenia naboru wniosków o
+    dofinansowanie pro-
+
+    jektów w procedurze wyboru projektów, o której mowa w rozdziale 14 ustawy z dnia 28 kwietnia
+    2022 r. o zasadach
+
+    realizacji zadań finansowanych ze środków europejskich w perspektywie finansowej 2021–2027.'
+  source:
+    file: pl_ncbr_rozporzadzenie_mnisw_2020_pomoc_publiczna_poir.pdf
+    locator: pl_ncbr_rozporzadzenie_mfipr_2023_pomoc_finansowa_feng.pdf#p.7
+  verified: llm_cited

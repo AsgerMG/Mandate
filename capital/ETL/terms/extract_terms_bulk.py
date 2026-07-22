@@ -84,6 +84,10 @@ BULK_KEYWORDS = [
     # Slovak / Czech (satr_sk_*, tacr_fw) and Greek (satr_gr_*)
     "oprávnen", "žiadateľ", "podmienky", "maximáln", "žiadosť", "podnik",
     "επιλεξιμ", "δικαιούχος", "προϋποθέσεις", "αίτηση", "επιχείρηση",
+    # Polish (sudop_rnd_purpose's ministerial rozporządzenia are pure-Polish
+    # legal text -- same missing-language-coverage class of bug as SK/GR)
+    "kwalifikowaln", "beneficjent", "wnioskodawca", "przedsiębiorc",
+    "pomoc publiczna", "wymagania", "warunki", "maksymaln", "wniosek",
 ]
 
 # instrument_id -> list of filenames already in data/raw/instrument_docs/
