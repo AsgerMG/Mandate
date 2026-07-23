@@ -100,3 +100,27 @@ CREATE TABLE IF NOT EXISTS eligibility_clauses (
 CREATE INDEX IF NOT EXISTS idx_ec_instrument   ON eligibility_clauses(instrument_id);
 CREATE INDEX IF NOT EXISTS idx_ec_type         ON eligibility_clauses(clause_type);
 CREATE INDEX IF NOT EXISTS idx_ec_verification ON eligibility_clauses(verification_level);
+
+-- Phase 5: embeddings for RAG retrieval over gate/clause text. One row per
+-- (gate or clause) — matches the "one chunk per structural unit already
+-- defined in the schema" design, not arbitrary character-window chunking;
+-- gates/clauses are already short, atomic, well-defined units. Only
+-- meaningfully-cited rows get embedded (embed_eligibility.py filters to
+-- verification_level IN ('llm_cited','llm_2pass','human_verified') --
+-- embedding an llm_classified guess with no real quote isn't worth
+-- retrieving). Requires `CREATE EXTENSION vector;` (pgvector, confirmed
+-- available on Railway's Postgres image, v0.8.5).
+CREATE TABLE IF NOT EXISTS eligibility_embeddings (
+    id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    source_type    TEXT NOT NULL CHECK (source_type IN ('gate', 'clause')),
+    source_id      BIGINT NOT NULL,  -- eligibility_gates.id or eligibility_clauses.id
+    instrument_id  TEXT NOT NULL REFERENCES funding_instruments(id),
+    chunk_text     TEXT NOT NULL,
+    embedding      vector(1024) NOT NULL,  -- voyage-3.5 dimension; see embed_eligibility.py
+    model          TEXT NOT NULL,
+    created_at     TIMESTAMPTZ DEFAULT now(),
+    UNIQUE (source_type, source_id)
+);
+CREATE INDEX IF NOT EXISTS idx_ee_instrument ON eligibility_embeddings(instrument_id);
+CREATE INDEX IF NOT EXISTS idx_ee_embedding_hnsw
+    ON eligibility_embeddings USING hnsw (embedding vector_cosine_ops);
