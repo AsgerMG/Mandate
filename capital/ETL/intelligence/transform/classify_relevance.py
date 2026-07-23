@@ -42,8 +42,6 @@ import json
 import os
 import sqlite3
 
-from classify_llm import load_env  # noqa: E402  (vetted .env loader)
-
 MODEL = "claude-haiku-4-5"
 MAX_TOKENS = 120           # verdict + one short reason
 TEXT_CAP = 4000            # chars of article body the gate sees — enough to judge
@@ -128,7 +126,6 @@ def cmd_status(_args) -> None:
 
 
 def cmd_submit(args) -> None:
-    load_env()
     con = sqlite3.connect(SIGNALS_DB)
     con.row_factory = sqlite3.Row
     rows = _pending(con, args.limit)
@@ -158,7 +155,6 @@ def cmd_submit(args) -> None:
 
 
 def cmd_collect(_args) -> None:
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set")
     import anthropic

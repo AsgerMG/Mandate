@@ -18,9 +18,18 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # This file lives at <repo>/ETL/lib/etl_env.py
 ETL = Path(__file__).resolve().parents[1]          # <repo>/ETL
 ROOT = ETL.parent                                  # <repo> (repo root)
+
+# Load .env.local as an import-time side effect so every script that already
+# does `from etl_env import DB, ROOT` gets ANTHROPIC_API_KEY/OPENAI_API_KEY/
+# DATABASE_URL/etc. for free, instead of each script hand-rolling its own
+# .env.local parser (the pattern this replaced, formerly copy-pasted across
+# ~10 scripts). Doesn't override already-set env vars (e.g. from the shell).
+load_dotenv(ROOT / ".env.local")
 
 # Database + data locations. The DB lives inside data/ alongside its backups.
 DATA = ROOT / "data"

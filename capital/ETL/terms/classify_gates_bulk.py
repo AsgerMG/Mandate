@@ -36,8 +36,6 @@ import os
 import sqlite3
 import time
 
-from classify_llm import load_env  # noqa: E402
-
 GATE_FAMILIES = ["G1_nexus", "G2_size_ownership", "G3_financial",
                   "G4_borrower_model", "G5_use_of_funds", "G6_conditionality"]
 INTAKE_FIELDS = [
@@ -153,7 +151,6 @@ def cmd_plan(args) -> None:
 
 
 def cmd_run(args) -> None:
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     import anthropic

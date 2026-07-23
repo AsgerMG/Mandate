@@ -36,7 +36,6 @@ import os
 import sqlite3
 from datetime import datetime, timezone
 
-from classify_llm import load_env  # noqa: E402
 from matching import CompanyMatcher  # noqa: E402
 
 MODEL = "claude-haiku-4-5"
@@ -130,7 +129,6 @@ def cmd_status(_args) -> None:
 
 
 def cmd_submit(args) -> None:
-    load_env()
     con = sqlite3.connect(SIGNALS_DB)
     con.row_factory = sqlite3.Row
     sql = ("SELECT id, title, raw_text FROM articles "
@@ -164,7 +162,6 @@ def cmd_submit(args) -> None:
 
 
 def cmd_collect(_args) -> None:
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set")
     import anthropic

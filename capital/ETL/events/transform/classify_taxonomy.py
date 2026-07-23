@@ -41,8 +41,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 ROOT = _ETL_ROOT
 DB = _ETL_DB
 
-# Reuse the vetted env loader; sampling is local (we also pull project summaries).
-from classify_llm import load_env  # noqa: E402
 from classify import _classify_by_nace  # noqa: E402
 
 DEFAULT_MODEL = "claude-haiku-4-5"
@@ -562,7 +560,6 @@ def random_sample(conn: sqlite3.Connection, n: int) -> list[dict]:
 
 def cmd_sample(args) -> None:
     """Run the production NACE-first + Haiku-guided pipeline on a random draw."""
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     import anthropic
@@ -736,7 +733,6 @@ def _load_work(con):
 def cmd_run(args) -> None:
     """Split-model batch run: Sonnet (full) on no-NACE residual, Haiku (sub-only) on
     NACE-fixed-sector rows. Submits Message Batches, polls, writes labels back."""
-    load_env()
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
     full, sub = _load_work(con)
@@ -825,7 +821,6 @@ def _state_save(st: dict) -> None:
 def cmd_submit(args) -> None:
     """Fire-and-forget: submit all pending companies as batches, record IDs, and
     return immediately (no polling). Decoupled from the laptop — collect later."""
-    load_env()
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
     full, sub = _load_work(con)
@@ -856,7 +851,6 @@ def cmd_submit(args) -> None:
 def cmd_collect(args) -> None:
     """Retrieve any ended batches recorded by 'submit' and write labels to the DB.
     Safe to re-run: collected batches are skipped, unfinished ones are left."""
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set")
     import anthropic
@@ -913,7 +907,6 @@ def cmd_collect(args) -> None:
 
 def cmd_residual(args) -> None:
     """Demo the NACE-guided LLM on companies with NO official NACE (method pending)."""
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     import anthropic
@@ -952,7 +945,6 @@ def cmd_vocab(_args) -> None:
 
 
 def cmd_bakeoff(args) -> None:
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     import anthropic
@@ -1071,7 +1063,6 @@ def subgold_set(conn: sqlite3.Connection, n: int) -> list[dict]:
 def cmd_subtest(args) -> None:
     """Haiku 'following the NACE scheme': given the confirmed Tier-1, how good is
     its Tier-2? Scored vs the NACE-confirmed sub-sector (NACE withheld)."""
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     import anthropic
@@ -1127,7 +1118,6 @@ def cmd_subtest(args) -> None:
 
 def cmd_test(args) -> None:
     """Score a model's exact Tier-1 against NACE-confirmed badges (NACE withheld)."""
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     import anthropic

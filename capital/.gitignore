@@ -34,3 +34,4 @@ data/processed/
 .env
 .env.local
 .env.*
+!.env.example

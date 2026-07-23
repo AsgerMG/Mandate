@@ -45,7 +45,6 @@ DB = _ETL_DB
 OUT = ROOT / "data" / "processed" / "parent_merge_proposals.csv"
 CKPT = ROOT / "data" / "processed" / "parent_merge_ckpt.jsonl"  # resumable per-cluster results
 pass  # sys.path handled by etl_env bootstrap
-from classify_llm import load_env  # noqa: E402
 
 # generic tokens that must NOT be used for blocking (they connect unrelated firms)
 GENERIC = {
@@ -371,7 +370,6 @@ def _pairs(groups: list[list[int]]) -> set:
 
 
 def eval_merge(models: list[str]) -> None:
-    load_env()
     import os
     if not os.environ.get("OPENAI_API_KEY"):
         sys.exit("OPENAI_API_KEY not set (.env.local)")
@@ -548,7 +546,6 @@ def batch_run(model: str, poll: int = 60) -> None:
     cluster is done — then write the proposals CSV. Resumable: state + checkpoint
     live on disk, so a kill/sleep/restart picks up exactly where it left off."""
     import time, io
-    load_env()
     from openai import OpenAI
     client = OpenAI()
 
@@ -694,7 +691,6 @@ def main() -> None:
     if args.from_csv:
         apply_from_csv(args.from_csv, args.exclude)
         return
-    load_env()
     import os
     if not os.environ.get("OPENAI_API_KEY"):
         sys.exit("OPENAI_API_KEY not set (.env.local)")

@@ -87,17 +87,6 @@ SYSTEM_PROMPT = (
 )
 
 
-def load_env() -> None:
-    env = ROOT / ".env.local"
-    if env.exists():
-        for line in env.read_text().splitlines():
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            k, v = line.split("=", 1)
-            os.environ.setdefault(k.strip(), v.strip())
-
-
 def user_prompt(name: str, country: str, titles: list[str], sources: list[str],
                 nace: list[str] | None = None) -> str:
     parts = [f"Company name: {name}", f"Country: {country or 'unknown'}"]
@@ -268,7 +257,6 @@ def fmt_cost_full(res: dict, total_companies: int) -> str:
 
 
 def bakeoff(args) -> None:
-    load_env()
     conn = sqlite3.connect(DB)
     sample = ground_truth_sample(conn, args.n)
     total = conn.execute("SELECT COUNT(*) FROM companies").fetchone()[0]
@@ -307,7 +295,6 @@ def bakeoff(args) -> None:
 
 def eval_truth(args) -> None:
     """Score rules + each LLM against INTERNET-verified ground truth (TRUTH)."""
-    load_env()
     conn = sqlite3.connect(DB)
     items, rules_correct = [], 0
     for name, truth in TRUTH.items():
@@ -516,7 +503,6 @@ def classify_batch(items, model, conn, run_id, chunk=2500) -> int:
 
 def run(args) -> None:
     from datetime import datetime, timezone
-    load_env()
     if not os.environ.get("OPENAI_API_KEY"):
         sys.exit("OPENAI_API_KEY not set (add to .env.local)")
     conn = sqlite3.connect(DB)

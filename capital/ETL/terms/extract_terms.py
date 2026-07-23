@@ -43,8 +43,6 @@ import argparse
 import json
 import re
 
-from classify_llm import load_env  # noqa: E402
-
 DOCS = ROOT / "data" / "raw" / "instrument_docs"
 TERMS = ROOT / "data" / "instrument_terms"
 MODEL = "claude-sonnet-5"
@@ -352,7 +350,6 @@ def cmd_plan(args) -> None:
 
 
 def cmd_run(args) -> None:
-    load_env()
     import anthropic
     client = anthropic.Anthropic()
     jobs = {args.job: JOBS[args.job]} if args.job else JOBS

@@ -179,9 +179,6 @@ BATCH_STATE = PROC / "er_batch.json"
 
 def _client():
     import os
-    pass  # sys.path handled by etl_env bootstrap
-    from classify_llm import load_env
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("Set ANTHROPIC_API_KEY in .env.local (Haiku) and re-run.")
     import anthropic

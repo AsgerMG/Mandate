@@ -48,7 +48,6 @@ import argparse
 import json
 import sqlite3
 
-from classify_llm import load_env  # noqa: E402
 from extract_terms import (  # noqa: E402
     DOCS, GATE_FAMILIES, INTAKE_FIELDS, MODEL, TERMS,
     _norm, load_doc, target_pages,
@@ -671,7 +670,6 @@ def cmd_plan(_args) -> None:
 
 
 def cmd_run(args) -> None:
-    load_env()
     import anthropic
     client = anthropic.Anthropic()
     targets = {args.instrument: DOC_MAP[args.instrument]} if args.instrument else DOC_MAP

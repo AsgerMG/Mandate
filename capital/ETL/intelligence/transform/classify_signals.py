@@ -48,8 +48,6 @@ import os
 import sqlite3
 from datetime import datetime, timezone
 
-from classify_llm import load_env  # noqa: E402
-
 MODEL = "claude-sonnet-5"
 MAX_TOKENS = 900           # a handful of signal objects with impact text
 TEXT_CAP = 6000
@@ -150,7 +148,6 @@ def cmd_status(_args) -> None:
 
 
 def cmd_submit(args) -> None:
-    load_env()
     con = sqlite3.connect(SIGNALS_DB)
     con.row_factory = sqlite3.Row
     sql = ("SELECT a.id, a.title, a.raw_text, s.name AS source_name "
@@ -186,7 +183,6 @@ def cmd_submit(args) -> None:
 
 
 def cmd_collect(_args) -> None:
-    load_env()
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set")
     import anthropic
