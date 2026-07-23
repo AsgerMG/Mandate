@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { distinctFamilyCount, openFieldsForShortlist } from "@/lib/intelligence/gateReach";
 import { generateGroundedRound, inferProfileSignal } from "@/lib/intelligence/pipeline";
 import {
@@ -37,6 +38,8 @@ export async function POST(request: NextRequest) {
   if (!body.company || !body.company.trim()) {
     return Response.json({ error: "A company name is required." }, { status: 400 });
   }
+
+  await hydrateDbInstruments();
 
   const candidateIds = sanitizeInstrumentIds(body.candidateInstrumentIds) ?? [];
   const eligibility = sanitizeEligibility(body.eligibility);

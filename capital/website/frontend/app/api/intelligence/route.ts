@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
 import { sanitizeEligibility, sanitizeProfileSignal, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest, ProgressEvent } from "@/lib/intelligence/types";
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
         controller.enqueue(encoder.encode(JSON.stringify(event) + "\n"));
       };
       try {
+        await hydrateDbInstruments();
         await runIntelligence(
           {
             company: body.company.trim(),

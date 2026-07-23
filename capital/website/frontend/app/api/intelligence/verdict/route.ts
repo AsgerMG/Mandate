@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { computeVerdict } from "@/lib/intelligence/pipeline";
 import { sanitizeCapitalSought, sanitizeEligibility, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest } from "@/lib/intelligence/types";
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    await hydrateDbInstruments();
     const verdict = computeVerdict(
       body.company.trim(),
       body.country?.trim() || undefined,

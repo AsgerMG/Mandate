@@ -161,18 +161,115 @@ export interface DbInstrument {
 
 let dbInstrumentsCache: DbInstrument[] | null | undefined;
 
-/** The full 320+-row instrument inventory, cached once per warm invocation —
- *  the single canonical loader for public/data/instrument_terms.json.
- *  eligibility.ts reads through this rather than parsing the file a second
- *  time. Returns [] (never throws) if the export hasn't been generated. */
+function loadDbInstrumentsFromJson(): DbInstrument[] | null {
+  try {
+    const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
+    return (JSON.parse(readFileSync(file, "utf8")) as { records: DbInstrument[] }).records;
+  } catch {
+    return null;
+  }
+}
+
+/** Postgres-first hydration of the module-level cache, called once at the
+ *  top of each API route before any pipeline logic runs (see route.ts,
+ *  verdict/route.ts, intake/route.ts) — NOT on every loadDbInstruments()
+ *  call, so the rest of the codebase (eligibility.ts, pipeline.ts,
+ *  gateReach.ts) keeps reading the cache synchronously, unchanged.
+ *
+ *  Tries DATABASE_URL with a short statement_timeout; on any failure
+ *  (unset, unreachable, slow) falls back to the JSON export in the SAME
+ *  call, never a second round-trip later — matches the fast, code-only
+ *  guarantee of /api/intelligence/verdict, which must not become slow just
+ *  because Railway had a blip. A Railway outage degrades to "last-published
+ *  snapshot," never a broken request. No-ops if already hydrated this
+ *  invocation (dbInstrumentsCache !== undefined). */
+export async function hydrateDbInstruments(): Promise<void> {
+  if (dbInstrumentsCache !== undefined) return;
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    dbInstrumentsCache = loadDbInstrumentsFromJson();
+    return;
+  }
+  try {
+    const { Client } = await import("pg");
+    // statement_timeout can't be set at connection time here: neither the
+    // plain Client() constructor key (sent as a raw wire-protocol startup
+    // parameter, rejected outright) nor libpq's `options: "-c ..."` syntax
+    // (also rejected — Railway's Postgres proxy doesn't forward startup
+    // options at all) work through Railway's connection path. A plain `SET`
+    // query immediately after connect() is the one approach that's just a
+    // normal runtime command, not part of the connection handshake, so nothing
+    // in the proxy path has grounds to reject it.
+    const client = new Client({ connectionString: url, connectionTimeoutMillis: 2000 });
+    await client.connect();
+    await client.query("SET statement_timeout = 2000");
+    try {
+      const [instRes, gateRes] = await Promise.all([
+        client.query(
+          `SELECT id, parent_id, name, country, capital_type, is_framework,
+                  event_count, company_count, total_eur, source_family_bucket,
+                  sample_project_titles
+           FROM funding_instruments`,
+        ),
+        client.query(
+          `SELECT instrument_id, gate_key, gate_family, requirement, value,
+                  value_spec, intake_field, quote, source_file, source_locator,
+                  verification_level
+           FROM eligibility_gates`,
+        ),
+      ]);
+      const ASSERTABLE = new Set(["llm_2pass", "human_verified"]);
+      const gatesByInstrument = new Map<string, DbGate[]>();
+      for (const g of gateRes.rows) {
+        const list = gatesByInstrument.get(g.instrument_id) ?? [];
+        list.push({
+          id: g.gate_key,
+          gateFamily: g.gate_family ?? undefined,
+          requirement: g.requirement,
+          value: g.value ?? "",
+          valueSpec: g.value_spec ? JSON.parse(g.value_spec) : null,
+          intakeField: g.intake_field ?? "none",
+          quote: g.quote ?? "",
+          source: { file: g.source_file ?? "", locator: g.source_locator ?? "" },
+          verificationLevel: g.verification_level ?? undefined,
+          verified: ASSERTABLE.has(g.verification_level),
+        });
+        gatesByInstrument.set(g.instrument_id, list);
+      }
+      dbInstrumentsCache = instRes.rows.map((inst): DbInstrument => ({
+        id: inst.id,
+        parentId: inst.parent_id,
+        name: inst.name,
+        country: inst.country ?? "EU",
+        capitalType: inst.capital_type,
+        isFramework: Boolean(inst.is_framework),
+        eventCount: inst.event_count,
+        companyCount: inst.company_count,
+        totalEur: Number(inst.total_eur),
+        sourceFamilyBucket: inst.source_family_bucket,
+        sampleProjectTitles: inst.sample_project_titles ? JSON.parse(inst.sample_project_titles) : null,
+        gates: gatesByInstrument.get(inst.id) ?? [],
+      }));
+    } finally {
+      await client.end();
+    }
+  } catch (err) {
+    console.error("Postgres hydration failed, falling back to instrument_terms.json:", err);
+    dbInstrumentsCache = loadDbInstrumentsFromJson();
+  }
+}
+
+/** The full 320+-row instrument inventory. Reads whatever hydrateDbInstruments()
+ *  already populated (Postgres or the JSON fallback); if that was never
+ *  called (a call site that predates this, or a code path that doesn't need
+ *  live data badly enough to pay for hydration), falls back to a synchronous
+ *  JSON read so this function's original "never throws, always returns an
+ *  array" contract holds regardless. Cached once per warm invocation either
+ *  way. eligibility.ts reads through this rather than parsing the file or
+ *  querying Postgres a second time. */
 export function loadDbInstruments(): DbInstrument[] {
   if (dbInstrumentsCache === undefined) {
-    try {
-      const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
-      dbInstrumentsCache = (JSON.parse(readFileSync(file, "utf8")) as { records: DbInstrument[] }).records;
-    } catch {
-      dbInstrumentsCache = null;
-    }
+    dbInstrumentsCache = loadDbInstrumentsFromJson();
   }
   return dbInstrumentsCache ?? [];
 }
