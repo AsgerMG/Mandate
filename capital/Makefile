@@ -12,7 +12,7 @@ DATE    := $(shell date +%Y%m%d)
 BACKUP  := $(HOME)/EuroInvTracker-backups
 ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/EuroInvTracker-backups
 
-.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest
+.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility
 
 help:
 	@echo "EuroInvTracker make targets:"
@@ -25,6 +25,7 @@ help:
 	@echo "  make analyze     Rebuild corpus KPIs (website/build/synthesis.py)"
 	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
 	@echo "  make data        Rebuild EVERY site JSON from db.sqlite (website/build/build_site_data.py)"
+	@echo "  make eligibility Sync YAML -> DB, export instrument_terms.json, publish to Railway Postgres"
 	@echo "  make signals     Ensure signals.sqlite schema + status + QA (ETL/intelligence/load/load_signals.py)"
 	@echo "  make site-build  Static build of the Next.js site (website/frontend/out/)"
 	@echo "  make site-dev    Run the site dev server at localhost:3000"
@@ -58,6 +59,16 @@ visuals:
 # order, and verifies freshness — use this rather than the partial targets above.
 data:
 	python3 website/build/build_site_data.py
+
+# Eligibility subsystem (funding_instruments/eligibility_gates/eligibility_clauses):
+# sync hand-authored YAML into db.sqlite, export the JSON fallback the
+# frontend reads, then publish to Railway Postgres (the live read path once
+# DATABASE_URL is set — see the Railway migration plan). Not part of `make
+# data` since it has its own DATABASE_URL dependency and publish cadence.
+eligibility:
+	python3 ETL/terms/sync_gates_from_yaml.py
+	python3 website/build/eligibility_export.py
+	python3 ETL/terms/migrate_to_postgres.py
 
 # News/signals layer (data/signals.sqlite): schema install + stage counts + QA.
 # The per-stage transforms (classify_relevance, entity_link_articles,
