@@ -422,7 +422,7 @@ def main() -> None:
     flagged = backfill_ipcei_linked(conn=conn, source_prefixes=("sprind_",))
     print(f"Inserted {inserted} events; flagged {flagged} as ipcei_linked")
     conn.close()
-    print("next: run python3 scripts/classify.py")
+    print("next: run python3 ETL/events/transform/classify_taxonomy.py apply-nace && python3 ETL/events/transform/classify_taxonomy.py run")
 
 
 if __name__ == "__main__":

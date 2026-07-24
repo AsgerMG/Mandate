@@ -136,9 +136,15 @@ def cmd_submit(args) -> None:
     requests = [{"custom_id": f"r{r['id']}",
                  "params": _params(r["title"], r["raw_text"], r["source_name"])}
                 for r in rows]
+    est = len(requests) * 0.0005  # Haiku batch, small classification prompt
     print(f"submitting {len(requests):,} relevance requests ({MODEL}, batched)")
+    print(f"estimated batch cost: ~${est:.0f}")
     if args.dry_run:
         print("dry-run: not submitting.")
+        return
+    if args.max_cost is not None and est > args.max_cost:
+        print(f"SKIPPED: estimated ~${est:.0f} exceeds --max-cost ${args.max_cost:.0f} "
+              f"-- needs manual approval. Not submitting.")
         return
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
@@ -206,6 +212,8 @@ def main() -> None:
     p = sub.add_parser("submit")
     p.add_argument("--limit", type=int)
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--max-cost", type=float, default=None,
+                   help="skip submitting if estimated cost exceeds this (cron use)")
     p.set_defaults(fn=cmd_submit)
     sub.add_parser("collect").set_defaults(fn=cmd_collect)
     args = ap.parse_args()

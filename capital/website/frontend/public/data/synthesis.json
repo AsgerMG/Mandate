@@ -1,11 +1,11 @@
 {
-  "companies": 146911,
-  "events": 290228,
-  "champions": 9158,
-  "stepCompanies": 584,
-  "totalCapitalEur": "€291.5B",
-  "totalCapitalEurRaw": 291530835190.46533,
-  "countries": 22,
+  "companies": 150382,
+  "events": 297933,
+  "champions": 9365,
+  "stepCompanies": 589,
+  "totalCapitalEur": "€352.9B",
+  "totalCapitalEurRaw": 352852279442.4658,
+  "countries": 23,
   "sourceFamilies": 11,
-  "sectors": 11
+  "sectors": 8
 }

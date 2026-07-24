@@ -35,6 +35,8 @@ import sys
 from difflib import SequenceMatcher
 from pathlib import Path
 
+from europe_scope import canonicalise_country
+
 DATA_DIR = _ETL_ROOT / "data" / "raw" / "cordis"
 PROCESSED_DIR = _ETL_ROOT / "data" / "processed"
 DB_PATH = _ETL_DB
@@ -72,13 +74,6 @@ FAMILIES = {
     },
 }
 
-EUR_ISO = {
-    "AT","BE","BG","CH","CY","CZ","DE","DK","EE","EL","ES","FI","FR","GB","GR",
-    "HR","HU","IE","IS","IT","LI","LT","LU","LV","MT","NL","NO","PL","PT","RO",
-    "SE","SI","SK","TR","UA","IL","UK","RS","XK","BA","MD","ME","AL","MK","GE","AM","AZ",
-}
-
-
 def _normalize_name(name: str) -> str:
     n = name.upper()
     for suffix in [" GMBH"," BV"," NV"," AB"," AG"," SA"," SAS"," SRL"," SPA"," AS",
@@ -113,6 +108,7 @@ def discover_family_rows(family_key: str, projects_by_id: dict, orgs_by_pid: dic
     rows: list[dict] = []
     skipped_no_coord = 0
     skipped_pre_2021 = 0
+    skipped_out_of_scope = 0
 
     for pid, topics in topics_by_pid.items():
         match_topic = None
@@ -142,11 +138,10 @@ def discover_family_rows(family_key: str, projects_by_id: dict, orgs_by_pid: dic
             skipped_no_coord += 1
             continue
 
-        country = (coord.get("country") or "").strip().upper()
-        if country == "EL":
-            country = "GR"
-        if country == "UK":
-            country = "GB"
+        country = canonicalise_country(coord.get("country") or "")
+        if country is None:
+            skipped_out_of_scope += 1
+            continue
 
         year = _topic_year(match_topic)
         source = f"{fam['source_prefix']}{year}"
@@ -171,7 +166,7 @@ def discover_family_rows(family_key: str, projects_by_id: dict, orgs_by_pid: dic
             "source": source,
             "call_id": call_id,
             "company_name": coord.get("name", "").strip(),
-            "country": country if country in EUR_ISO else "",
+            "country": country,
             "role": "direct",
             "project_number": pid,
             "project_title": proj.get("title", "").strip(),
@@ -187,7 +182,7 @@ def discover_family_rows(family_key: str, projects_by_id: dict, orgs_by_pid: dic
         })
 
     print(f"  {family_key}: {len(rows)} kept (skipped {skipped_no_coord} no-coord, "
-          f"{skipped_pre_2021} pre-2021)")
+          f"{skipped_pre_2021} pre-2021, {skipped_out_of_scope} out-of-scope country)")
     return rows
 
 

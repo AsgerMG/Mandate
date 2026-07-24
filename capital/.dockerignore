@@ -1,0 +1,11 @@
+# Keep the ETL service's build context small — this image only needs to run
+# Python extractors, not the frontend or local data (data/ lives on a Railway
+# volume, never baked into the image; see Dockerfile).
+.git/
+data/
+website/frontend/node_modules/
+website/frontend/.next/
+website/frontend/out/
+__pycache__/
+*.pyc
+.DS_Store

@@ -196,7 +196,7 @@ def main() -> None:
 
     if args.load_db:
         load_db(rows)
-        print("Reminder: python3 scripts/classify.py")
+        print("Reminder: python3 ETL/events/transform/classify_taxonomy.py apply-nace && python3 ETL/events/transform/classify_taxonomy.py run")
 
 
 if __name__ == "__main__":

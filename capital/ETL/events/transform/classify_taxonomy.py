@@ -132,10 +132,20 @@ OLD_TO_NEW = {
 }
 
 
+ENTITY_TYPES = ["research_org", "company", "other"]
+
+
 def system_prompt() -> str:
     lines = [
         "You classify a company into a TWO-TIER sector taxonomy based on WHAT THE",
         "COMPANY DOES (its core business), not on any single project or grant.",
+        "",
+        "Also classify entity_type: 'research_org' for universities, research",
+        "institutes, hospitals, foundations, academies, and similar non-commercial",
+        "research bodies; 'company' for ordinary commercial entities (startups,",
+        "SMEs, corporates); 'other' for public bodies, ministries, agencies,",
+        "municipalities, NGOs, and industry associations that are neither a",
+        "research organisation nor a commercial company.",
         "",
         "Pick exactly ONE top sector, then ONE sub-sector from THAT sector's list.",
         "Use the sector's '*_general' sub-sector only when the evidence is too thin",
@@ -167,7 +177,7 @@ def system_prompt() -> str:
         "First note the core business in a SHORT phrase (<=8 words), then give a",
         "confidence (low/medium/high), then the labels. Reply with ONLY JSON:",
         '{"reasoning": "...", "confidence": "low|medium|high", '
-        '"sector_top": "...", "subsector": "..."}',
+        '"sector_top": "...", "subsector": "...", "entity_type": "..."}',
         "subsector MUST belong to the chosen sector_top's list above.",
     ]
     return "\n".join(lines)
@@ -183,8 +193,9 @@ SCHEMA = {
         "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
         "sector_top": {"type": "string", "enum": SECTOR_TOPS},
         "subsector": {"type": "string", "enum": ALL_SUBSECTORS},
+        "entity_type": {"type": "string", "enum": ENTITY_TYPES},
     },
-    "required": ["reasoning", "confidence", "sector_top", "subsector"],
+    "required": ["reasoning", "confidence", "sector_top", "subsector", "entity_type"],
 }
 
 
@@ -490,14 +501,51 @@ def _sub_system(top: str) -> str:
     return (f"A company's official NACE activity places it in sector '{top}'. That "
             f"sector is fixed. Choose the single best sub-sector from this list, "
             f"using the project text:\n- " + "\n- ".join(subs) +
-            f"\nUse '{GENERAL[top]}' only if the text is too thin to choose. "
-            'Reply JSON only: {"subsector": "..."}')
+            f"\nUse '{GENERAL[top]}' only if the text is too thin to choose.\n\n"
+            "Also classify entity_type: 'research_org' for universities, research "
+            "institutes, hospitals, foundations, academies, and similar "
+            "non-commercial research bodies; 'company' for ordinary commercial "
+            "entities; 'other' for public bodies, ministries, agencies, "
+            "municipalities, NGOs, and industry associations.\n\n"
+            'Reply JSON only: {"subsector": "...", "entity_type": "..."}')
 
 
 def _sub_schema(top: str) -> dict:
     return {"type": "object", "additionalProperties": False,
-            "properties": {"subsector": {"type": "string", "enum": TAXONOMY[top]}},
-            "required": ["subsector"]}
+            "properties": {
+                "subsector": {"type": "string", "enum": TAXONOMY[top]},
+                "entity_type": {"type": "string", "enum": ENTITY_TYPES},
+            },
+            "required": ["subsector", "entity_type"]}
+
+
+# Companies whose sector is already fully fixed (deterministically or by an
+# earlier LLM pass) but that have never had entity_type classified at all --
+# e.g. every NEW company the deterministic NACE backbone alone resolves,
+# which never touches the Sonnet/Haiku sector paths above. Minimal single-
+# field Haiku call, no sector context needed.
+_ENTITY_SYSTEM = (
+    "Classify this company's entity_type from its name and funded project "
+    "context: 'research_org' for universities, research institutes, "
+    "hospitals, foundations, academies, and similar non-commercial research "
+    "bodies; 'company' for ordinary commercial entities (startups, SMEs, "
+    "corporates); 'other' for public bodies, ministries, agencies, "
+    'municipalities, NGOs, and industry associations. Reply JSON only: '
+    '{"entity_type": "..."}'
+)
+_ENTITY_SCHEMA = {
+    "type": "object", "additionalProperties": False,
+    "properties": {"entity_type": {"type": "string", "enum": ENTITY_TYPES}},
+    "required": ["entity_type"],
+}
+
+
+def _entity_params(item) -> dict:
+    return {"model": HAIKU, "max_tokens": 24,
+            "system": [{"type": "text", "text": _ENTITY_SYSTEM,
+                        "cache_control": {"type": "ephemeral"}}],
+            "output_config": {"format": {"type": "json_schema", "schema": _ENTITY_SCHEMA}},
+            "messages": [{"role": "user", "content": _user(item)}]}
 
 
 def llm_subsector(client, model, item, top):
@@ -707,8 +755,14 @@ def _sub_params(item, top) -> dict:
 
 
 def _load_work(con):
-    """Returns (full_items, sub_items). full = no Tier-1 yet (Sonnet); sub = Tier-1
-    fixed by NACE/programme but Tier-2 missing (Haiku). Resumable: only unfinished."""
+    """Returns (full_items, sub_items, entity_items).
+    full = no Tier-1 yet (Sonnet, sets sector+subsector+entity_type).
+    sub = Tier-1 fixed by NACE/programme but Tier-2 missing (Haiku, sets
+      subsector+entity_type).
+    entity_only = sector fully fixed (any method) but entity_type never
+      classified -- e.g. every company the NACE backbone alone resolves,
+      which never touches the sector paths above (Haiku, entity_type only).
+    Resumable: only unfinished work is returned each time."""
     def rows(where):
         return con.execute(f"""
             SELECT c.id, c.canonical_name, c.country, c.sector_top,
@@ -727,7 +781,9 @@ def _load_work(con):
     full = [pack(r) for r in rows("c.sector_taxonomy_method IS NULL")]
     sub = [pack(r) for r in rows(
         "c.sector_taxonomy_method IN ('nace_top','programme') AND c.subsector IS NULL")]
-    return full, sub
+    entity_only = [pack(r) for r in rows(
+        "c.sector_top IS NOT NULL AND c.entity_type_updated_at IS NULL")]
+    return full, sub, entity_only
 
 
 def cmd_run(args) -> None:
@@ -735,21 +791,30 @@ def cmd_run(args) -> None:
     NACE-fixed-sector rows. Submits Message Batches, polls, writes labels back."""
     con = sqlite3.connect(DB)
     con.row_factory = sqlite3.Row
-    full, sub = _load_work(con)
+    full, sub, entity_only = _load_work(con)
     if args.limit:
-        full, sub = full[:args.limit], sub[:max(0, args.limit // 4)]
+        full = full[:args.limit]
+        sub = sub[:max(0, args.limit // 4)]
+        entity_only = entity_only[:max(0, args.limit // 4)]
 
     # custom_id encodes kind+id; keep an id->top map for sub write-back.
     requests = [{"custom_id": f"f{it['id']}", "params": _full_params(it)} for it in full]
     requests += [{"custom_id": f"s{it['id']}", "params": _sub_params(it, it["top"])} for it in sub]
+    requests += [{"custom_id": f"e{it['id']}", "params": _entity_params(it)} for it in entity_only]
     top_of = {f"s{it['id']}": it["top"] for it in sub}
 
-    est = len(full) * 0.0021 * 0.5 + len(sub) * 0.0004 * 0.5
+    est = (len(full) * 0.0021 + len(sub) * 0.0004 + len(entity_only) * 0.0002) * 0.5
     print(f"work: {len(full):,} full (Sonnet) + {len(sub):,} sub-only (Haiku) "
-          f"= {len(requests):,} requests")
+          f"+ {len(entity_only):,} entity-only (Haiku) = {len(requests):,} requests")
     print(f"estimated batch cost (cached): ~${est:.0f}")
     if args.dry_run:
         print("dry-run: not submitting.")
+        con.close()
+        return
+    if args.max_cost is not None and est > args.max_cost:
+        print(f"SKIPPED: estimated ~${est:.0f} exceeds --max-cost ${args.max_cost:.0f} "
+              f"-- needs manual approval (run without --max-cost, or raise it, "
+              f"once you've reviewed the backlog). Not submitting.")
         con.close()
         return
     if not os.environ.get("ANTHROPIC_API_KEY"):
@@ -771,7 +836,7 @@ def cmd_run(args) -> None:
                 break
             time.sleep(20)
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        updates = []
+        updates = []  # (top, subsec, method, tax_updated_at, entity_type, entity_updated_at, id)
         for res in client.messages.batches.results(batch.id):
             cid = res.custom_id
             cid_num = int(cid[1:])
@@ -781,23 +846,29 @@ def cmd_run(args) -> None:
             text = next((bl.text for bl in res.result.message.content
                          if bl.type == "text"), "{}")
             data = _parse_json(text)
+            entity = data.get("entity_type") if data.get("entity_type") in ENTITY_TYPES else None
             if cid.startswith("f"):
                 top, subsec = validate(data.get("sector_top", "other"),
                                        data.get("subsector", ""))
-                updates.append((top, subsec, "llm", now, cid_num))
-            else:                                   # sub-only; Tier-1 already set
+                updates.append((top, subsec, "llm", now, entity, now, cid_num))
+            elif cid.startswith("s"):                # sub-only; Tier-1 already set
                 top = top_of.get(cid, "other")
                 s = data.get("subsector", "")
                 subsec = s if s in TAXONOMY.get(top, []) else GENERAL.get(top, "other")
-                updates.append((None, subsec, None, now, cid_num))  # keep top+method
+                updates.append((None, subsec, None, now, entity, now, cid_num))  # keep top+method
+            else:                                     # entity-only; sector untouched
+                updates.append((None, None, None, None, entity, now, cid_num))
             written += 1
-        # full rows: set top+sub+method; sub rows: set only subsector (COALESCE keeps rest)
+        # COALESCE per-column so each branch only touches the fields it computed.
         con.executemany(
             "UPDATE companies SET "
             "sector_top = COALESCE(?, sector_top), "
-            "subsector = ?, "
+            "subsector = COALESCE(?, subsector), "
             "sector_taxonomy_method = COALESCE(?, sector_taxonomy_method), "
-            "sector_taxonomy_updated_at = ? WHERE id = ?", updates)
+            "sector_taxonomy_updated_at = COALESCE(?, sector_taxonomy_updated_at), "
+            "entity_type = COALESCE(?, entity_type), "
+            "entity_type_updated_at = COALESCE(?, entity_type_updated_at) "
+            "WHERE id = ?", updates)
         con.commit()
         print(f"    written {len(updates)} (cumulative {written}, errored {errored})")
 
@@ -1202,6 +1273,11 @@ def main() -> None:
     rn.add_argument("--limit", type=int, default=0, help="cap requests (validation)")
     rn.add_argument("--chunk", type=int, default=18000,
                     help="requests per batch (kept under the 256MB batch cap)")
+    rn.add_argument("--max-cost", type=float, default=None,
+                    help="skip submitting (exit 0) if the estimated cost exceeds "
+                         "this many dollars -- for unattended/cron use, so a "
+                         "backlog spike never spends without a human looking "
+                         "first. Omit for interactive use (no cap).")
     rn.set_defaults(fn=cmd_run)
     sb = sub.add_parser("submit", help="fire-and-forget: submit all batches, no poll")
     sb.add_argument("--dry-run", action="store_true")

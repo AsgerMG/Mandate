@@ -122,16 +122,33 @@ RESEARCH_RE = re.compile(
 # Fetch
 # ---------------------------------------------------------------------------
 
-def fetch_page(p: int, force: bool) -> Path:
+class FetchFailed(RuntimeError):
+    """Raised when a page fetch fails (bad HTTP status, curl error, or a
+    suspiciously small response) -- surfaces the failure instead of the old
+    check=False behaviour, which silently kept an unmodified/stale cached
+    file and let the caller believe the fetch had succeeded."""
+
+
+def fetch_page(p: int, force: bool) -> tuple[Path, bool]:
+    """Returns (path, fetched_fresh). fetched_fresh=False means the cached
+    file was reused (not `force`); raises FetchFailed if a fresh fetch fails."""
     out = RAW_DIR / f"page_{p:04d}.html"
     if out.exists() and not force and out.stat().st_size > 50_000:
-        return out
-    subprocess.run(
+        return out, False
+    result = subprocess.run(
         ["/usr/bin/curl", "-sL", "-A", "Mozilla/5.0", "--max-time", "30",
-         "-o", str(out), LIST_URL.format(p=p)],
-        check=False,
+         "-o", str(out), "-w", "%{http_code}", LIST_URL.format(p=p)],
+        capture_output=True, text=True, check=False,
     )
-    return out
+    http_code = (result.stdout or "").strip()
+    ok = (result.returncode == 0 and http_code == "200"
+          and out.exists() and out.stat().st_size > 1_000)
+    if not ok:
+        raise FetchFailed(
+            f"page {p}: curl rc={result.returncode} http={http_code!r} "
+            f"size={out.stat().st_size if out.exists() else 'missing'} "
+            f"-- {result.stderr.strip()[:200]}")
+    return out, True
 
 
 def find_last_page(path: Path) -> int:
@@ -140,19 +157,37 @@ def find_last_page(path: Path) -> int:
     return max(nums) if nums else 0
 
 
+MAX_CONSECUTIVE_FAILURES = 5
+
+
 def fetch_all(force: bool, max_pages: int | None = None) -> list[Path]:
-    p0 = fetch_page(0, force)
+    p0, _ = fetch_page(0, force)
     last = find_last_page(p0)
     if max_pages is not None:
         last = min(last, max_pages)
     print(f"Innovationsfonden: fetching pages 0..{last}")
     paths = [p0]
+    consecutive_failures = 0
     for p in range(1, last + 1):
-        path = fetch_page(p, force)
+        try:
+            path, fetched_fresh = fetch_page(p, force)
+            consecutive_failures = 0
+        except FetchFailed as e:
+            consecutive_failures += 1
+            print(f"  FETCH FAILED: {e}")
+            if consecutive_failures >= MAX_CONSECUTIVE_FAILURES:
+                raise RuntimeError(
+                    f"Innovationsfonden: {consecutive_failures} consecutive page "
+                    f"fetches failed (likely blocked from this network -- see "
+                    f"manifest.py's NETWORK-tier note for this source). Aborting "
+                    f"at page {p}/{last} rather than silently burning hours."
+                ) from e
+            continue
         paths.append(path)
         if (p + 1) % 50 == 0:
             print(f"  fetched page {p+1}/{last+1}")
-        time.sleep(0.05)
+        if fetched_fresh:
+            time.sleep(0.05)
     return paths
 
 

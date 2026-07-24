@@ -43,14 +43,20 @@ SOURCES: list[Source] = [
            "names only; ticket sizes unpublished"),
     Source("innovation_fund", "extract_innovation_fund", "EU Innovation Fund", "AUTO",
            ["--load-db"], "climate.ec.europa.eu", "coordinator-level; some grant ceilings"),
-    Source("ipcei", "extract_ipcei", "IPCEI decisions", "NETWORK",
+    Source("ipcei", "extract_ipcei", "IPCEI decisions", "AUTO",
            ["--load-db"], "ec.europa.eu/competition state-aid PDFs",
-           "per-decision PDFs; redacted amounts backfilled from SATR"),
+           "per-decision PDFs; redacted amounts backfilled from SATR. "
+           "Moved NETWORK->AUTO 2026-07-23 as a Railway test: no confirmed "
+           "cloud/WAF block (unlike tacr/innosuisse/nfr/etc.) -- revert to "
+           "NETWORK if it fails from Railway."),
     Source("eib", "extract_eib", "EIB venture/growth debt", "AUTO",
            ["--load-db"], "eib.org", "SSL curl workaround documented"),
-    Source("edf", "extract_edf", "European Defence Fund", "NETWORK",
+    Source("edf", "extract_edf", "European Defence Fund", "AUTO",
            ["--load-db"], "defence-industry-space.ec.europa.eu",
-           "~50% factsheet coverage (rate-limited)"),
+           "~50% factsheet coverage (rate-limited). Moved NETWORK->AUTO "
+           "2026-07-23 as a Railway test: no confirmed cloud/WAF block "
+           "(unlike tacr/innosuisse/nfr/etc.) -- revert to NETWORK if it "
+           "fails from Railway."),
     Source("eit", "extract_eit", "EIT KICs (all 8)", "AUTO",
            ["--load-db"], "per-KIC newsrooms (composite, largely cached)",
            "many hardcoded source pages; refresh is incremental"),
@@ -65,8 +71,11 @@ SOURCES: list[Source] = [
            "downloads the full HORIZON projects dump"),
     Source("cordis_pillar_ii", "extract_cordis_pillar_ii",
            "Horizon Pillar II CL1/3/4/5/6 + JU families", "AUTO",
-           ["--load-db"], "cordis.europa.eu bulk CSV",
-           "the main HE workhorse; org-level ecContribution"),
+           ["--load-db", "--cluster", "all"], "cordis.europa.eu bulk CSV",
+           "the main HE workhorse; org-level ecContribution. --cluster all covers "
+           "CL4/CL5/CL3/CL1/CL6/MISS/EIE/CBE/ERC_POC; JU families (CHP/IHI/EuroHPC/"
+           "Chips/Clean Aviation/SNS/SESAR/Europe's Rail/EUSPA/GH EDCTP3) need "
+           "separate --cluster invocations, not covered by --auto"),
 
     # ---- National NDB / state-aid registers ----------------------------------
     Source("satr", "extract_satr", "SATR — EU State Aid Transparency Register", "NETWORK",
@@ -86,8 +95,13 @@ SOURCES: list[Source] = [
            ["--load-db"], "lehub.bpifrance.fr", "self-published portfolio"),
     Source("innovate_uk", "extract_innovate_uk", "Innovate UK / UKRI (GB)", "AUTO",
            ["--load-db"], "gtr.ukri.org/gtr/api", "GBP→EUR at ECB averages"),
-    Source("innovationsfonden", "extract_innovationsfonden", "Innovationsfonden (DK)", "AUTO",
-           ["--load-db", "--refresh"], "innovationsfonden.dk", ""),
+    Source("innovationsfonden", "extract_innovationsfonden", "Innovationsfonden (DK)", "NETWORK",
+           ["--load-db", "--refresh"], "innovationsfonden.dk",
+           "Moved AUTO->NETWORK 2026-07-24: every request silently timed out from "
+           "Railway (30s ceiling, curl failures swallowed by check=False) -- same "
+           "class of cloud/WAF block as nfr/innosuisse/tacr/baltic_ndbs. Confirmed "
+           "by frozen file mtimes despite an actively-running fetch loop, burning "
+           "~4-5h doing nothing. Run locally."),
     Source("eifo", "extract_eifo", "EIFO Venturelisten co-invest (DK)", "AUTO",
            ["--load-db", "--refresh"], "Google Sheets export", ""),
     Source("business_finland", "extract_business_finland", "Business Finland (FI)", "AUTO",

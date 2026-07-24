@@ -136,7 +136,7 @@ CREATE INDEX idx_classify_audit_changed_at ON classify_audit(changed_at);
 -- Sprint 14 (2026-05-29): Europe-scope enforcement. The corpus is restricted
 -- to a 40-country EU/Europe scope defined in data/europe_scope.json. These
 -- triggers reject INSERTs and UPDATEs that would put a company outside the
--- scope. Extractors should call scripts/europe_scope.canonicalise_country()
+-- scope. Extractors should call europe_scope.canonicalise_country()
 -- before inserting so aliases (EL->GR, UK->GB, PO->PL, SW->SE, GL->DK) get
 -- normalised and out-of-scope rows get skipped, rather than tripping the
 -- trigger.
@@ -151,7 +151,7 @@ WHEN NEW.country IS NOT NULL
     ''
   )
 BEGIN
-  SELECT RAISE(ABORT, 'Europe-scope violation on companies.country: not in the 40-country EU/Europe scope. Use scripts/europe_scope.canonicalise_country() before insert or skip the row. See docs/europe_scope.md.');
+  SELECT RAISE(ABORT, 'Europe-scope violation on companies.country: not in the 40-country EU/Europe scope. Use europe_scope.canonicalise_country() before insert or skip the row. See docs/europe_scope.md.');
 END;
 
 CREATE TRIGGER trg_companies_country_scope_update

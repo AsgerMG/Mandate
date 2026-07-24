@@ -324,7 +324,7 @@ def main() -> None:
         print(f"  Inserted: {counts['inserted']} "
               f"(grant {counts['grant']} / debt {counts['debt']}), "
               f"skipped dup: {counts['skipped_dup']}, errors: {counts['errors']}")
-        print("  Run python3 scripts/classify.py after loading.")
+        print("  Run python3 ETL/events/transform/classify_taxonomy.py apply-nace && python3 ETL/events/transform/classify_taxonomy.py run after loading.")
 
 
 if __name__ == "__main__":

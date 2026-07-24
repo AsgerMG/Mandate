@@ -9,12 +9,12 @@
       "stageMin": 0.15,
       "stageMax": 0.9,
       "stageLabel": "All stages (national aid)",
-      "companies": 85741,
-      "totalEur": 177626347087.11142,
-      "medianTicket": 288500.0,
+      "companies": 87273,
+      "totalEur": 180252981036.42136,
+      "medianTicket": 287462.0,
       "topSector": {
         "name": "Other",
-        "companies": 18497
+        "companies": 8562
       },
       "topCountry": {
         "iso": "DE",
@@ -30,12 +30,12 @@
       "stageMin": 0.65,
       "stageMax": 0.95,
       "stageLabel": "Commercial demo \u2192 Scale-up",
-      "companies": 300,
-      "totalEur": 56792813155.58,
-      "medianTicket": 60300000.0,
+      "companies": 303,
+      "totalEur": 111615273155.58,
+      "medianTicket": 63000000.0,
       "topSector": {
-        "name": "Energy & cleantech",
-        "companies": 110
+        "name": "Semiconductors & electronics",
+        "companies": 24
       },
       "topCountry": {
         "iso": "DE",
@@ -51,16 +51,16 @@
       "stageMin": 0.25,
       "stageMax": 0.8,
       "stageLabel": "Seed \u2192 Growth",
-      "companies": 51721,
-      "totalEur": 22326589573.529804,
-      "medianTicket": 57484.48,
+      "companies": 52398,
+      "totalEur": 23197869377.669884,
+      "medianTicket": 57641.5,
       "topSector": {
-        "name": "Other",
-        "companies": 11662
+        "name": "Software, data & AI",
+        "companies": 285
       },
       "topCountry": {
         "iso": "FR",
-        "companies": 21291
+        "companies": 21399
       }
     },
     {
@@ -72,12 +72,12 @@
       "stageMin": 0.05,
       "stageMax": 0.55,
       "stageLabel": "Research \u2192 Product dev",
-      "companies": 15789,
-      "totalEur": 21341143381.49995,
-      "medianTicket": 322812.5,
+      "companies": 16153,
+      "totalEur": 21555644517.96995,
+      "medianTicket": 320312.5,
       "topSector": {
-        "name": "Energy & cleantech",
-        "companies": 3587
+        "name": "Semiconductors & electronics",
+        "companies": 546
       },
       "topCountry": {
         "iso": "ES",
@@ -93,37 +93,16 @@
       "stageMin": 0.6,
       "stageMax": 0.9,
       "stageLabel": "Demo \u2192 Commercial scale-up",
-      "companies": 226,
-      "totalEur": 13063882794.0,
-      "medianTicket": 31643527.0,
+      "companies": 227,
+      "totalEur": 13210298784.0,
+      "medianTicket": 31982730.0,
       "topSector": {
         "name": "Energy & cleantech",
-        "companies": 220
+        "companies": 221
       },
       "topCountry": {
         "iso": "FR",
         "companies": 36
-      }
-    },
-    {
-      "id": "edf",
-      "label": "European Defence Fund",
-      "family": "edf",
-      "color": "#78350f",
-      "glyph": "\u271a",
-      "stageMin": 0.35,
-      "stageMax": 0.75,
-      "stageLabel": "Applied research \u2192 Demo",
-      "companies": 178,
-      "totalEur": 4849229211.57,
-      "medianTicket": 9803531.62,
-      "topSector": {
-        "name": "Defence & security",
-        "companies": 164
-      },
-      "topCountry": {
-        "iso": "FR",
-        "companies": 37
       }
     },
     {
@@ -135,16 +114,37 @@
       "stageMin": 0.2,
       "stageMax": 0.6,
       "stageLabel": "Applied research \u2192 Pilot",
-      "companies": 3170,
-      "totalEur": 4245040000.530027,
-      "medianTicket": 360500.0,
+      "companies": 3209,
+      "totalEur": 6036254351.200028,
+      "medianTicket": 375303.75,
       "topSector": {
-        "name": "Health & life sciences",
-        "companies": 762
+        "name": "Semiconductors & electronics",
+        "companies": 207
       },
       "topCountry": {
         "iso": "DE",
         "companies": 434
+      }
+    },
+    {
+      "id": "edf",
+      "label": "European Defence Fund",
+      "family": "edf",
+      "color": "#78350f",
+      "glyph": "\u271a",
+      "stageMin": 0.35,
+      "stageMax": 0.75,
+      "stageLabel": "Applied research \u2192 Demo",
+      "companies": 181,
+      "totalEur": 4872151512.0,
+      "medianTicket": 9800000.0,
+      "topSector": {
+        "name": "Defence & security",
+        "companies": 167
+      },
+      "topCountry": {
+        "iso": "FR",
+        "companies": 37
       }
     },
     {
@@ -161,7 +161,7 @@
       "medianTicket": 20000000.0,
       "topSector": {
         "name": "Health & life sciences",
-        "companies": 55
+        "companies": 6
       },
       "topCountry": {
         "iso": "FR",
@@ -177,12 +177,12 @@
       "stageMin": 0.25,
       "stageMax": 0.65,
       "stageLabel": "Prototype \u2192 Product dev",
-      "companies": 2086,
-      "totalEur": 3324694896.0100017,
-      "medianTicket": 591000.0,
+      "companies": 2094,
+      "totalEur": 3332889894.890002,
+      "medianTicket": 590625.0,
       "topSector": {
-        "name": "Health & life sciences",
-        "companies": 735
+        "name": "Semiconductors & electronics",
+        "companies": 211
       },
       "topCountry": {
         "iso": "DE",
@@ -198,12 +198,12 @@
       "stageMin": 0.45,
       "stageMax": 0.75,
       "stageLabel": "Pilot \u2192 Commercial demo",
-      "companies": 1134,
-      "totalEur": 1942034577.4300122,
-      "medianTicket": 236795.44,
+      "companies": 1154,
+      "totalEur": 2529851996.260017,
+      "medianTicket": 241500.0,
       "topSector": {
         "name": "Semiconductors & electronics",
-        "companies": 961
+        "companies": 980
       },
       "topCountry": {
         "iso": "DE",
@@ -219,12 +219,12 @@
       "stageMin": 0.1,
       "stageMax": 0.5,
       "stageLabel": "Research \u2192 Prototype",
-      "companies": 438,
+      "companies": 445,
       "totalEur": 292500.0,
       "medianTicket": 7500.0,
       "topSector": {
         "name": "Software, data & AI",
-        "companies": 99
+        "companies": 25
       },
       "topCountry": {
         "iso": "DE",

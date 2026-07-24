@@ -4,7 +4,8 @@ The single entry point for "pull fresh data". Reads the source registry in
 `manifest.py` and runs the matching extractor with the arguments that load a fresh
 pull into `db.sqlite`. After any renewal, re-derive and snapshot:
 
-    python3 ETL/events/transform/classify.py
+    python3 ETL/events/transform/classify_taxonomy.py apply-nace
+    python3 ETL/events/transform/classify_taxonomy.py run --max-cost 20
     python3 ETL/events/load/qa/sanity_check.py
     python3 ETL/events/load/backup.py
 
@@ -107,7 +108,8 @@ def main() -> None:
         print("FAILED:", ", ".join(f"{k}(rc={rc})" for k, rc in failures))
         sys.exit(1)
     if not args.dry_run:
-        print("Done. Next: python3 ETL/events/transform/classify.py "
+        print("Done. Next: python3 ETL/events/transform/classify_taxonomy.py apply-nace "
+              "&& python3 ETL/events/transform/classify_taxonomy.py run --max-cost 20 "
               "&& python3 ETL/events/load/qa/sanity_check.py && python3 ETL/events/load/backup.py")
 
 

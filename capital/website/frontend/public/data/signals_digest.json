@@ -1,46 +1,46 @@
 {
- "generatedAt": "2026-07-12T18:19:51+00:00",
+ "generatedAt": "2026-07-24T17:09:02+00:00",
  "corpus": {
-  "articles": 18495,
-  "embeddedArticles": 3626
+  "articles": 19281,
+  "embeddedArticles": 5102
  },
  "topics": {
   "competitiveness_fund": [
    {
-    "title": "DG GROW — European Competitiveness Fund page",
-    "source": "ec_grow_ecf",
-    "tier": "funder_press",
-    "date": "2026-07-09",
-    "url": "https://single-market-economy.ec.europa.eu/access-finance/european-competitiveness-fund_en",
-    "excerpt": "DG GROW — European Competitiveness Fund page Europe is a hub of innovation, science and industry but it faces tough global competition. To stay competitive and lead in technology, the EU needs stronger, more focused public investment to support businesses and attract private funding throughout the entire investment journey. On 16 July 2025, the European Commission proposed the European Competitiveness Fund as part of the EU’s next long-term budget . With a budget of €234 bill",
-    "similarity": 0.834
-   },
-   {
-    "title": "EU budget 2025 – an investment in Europeans - Euractiv",
-    "source": "euractiv",
-    "tier": "trade_press",
-    "date": "2024-11-21",
+    "title": "Can the European Competitiveness Fund deliver? - European Policy Centre (EPC)",
+    "source": "gnews_competitiveness_fund",
+    "tier": "general_news",
+    "date": "2026-03-05",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "EU budget 2025 – an investment in Europeans Euractiv",
-    "similarity": 0.754
+    "excerpt": "Can the European Competitiveness Fund deliver? European Policy Centre (EPC)",
+    "similarity": 0.869
    },
    {
-    "title": "EP Legislative Train — ECF file (MFF 2028-34 spotlight)",
-    "source": "ep_train_ecf",
-    "tier": "funder_press",
-    "date": "2026-07-09",
-    "url": "https://www.europarl.europa.eu/legislative-train/spotlight-MFF%202028-2034/file-european-competitiveness-fund",
-    "excerpt": "I. Hallak, European competitiveness fund , EPRS, European Parliament, 27 November 2025 L. Boehm et al., EU competitiveness: Issues and challenges , EPRS, European Parliament, September 2024 Author: Issam Hallak, Members' Research Service: legislative-train@europarl.europa.eu",
-    "similarity": 0.744
+    "title": "Can the European Competitiveness Fund deliver? - European Parliament",
+    "source": "gnews_competitiveness_fund",
+    "tier": "general_news",
+    "date": "2026-03-05",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Can the European Competitiveness Fund deliver? European Parliament",
+    "similarity": 0.866
    },
    {
-    "title": "Beyond Horizon: Towards a new era of integrated European competitiveness? - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2026-06-02",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "Beyond Horizon: Towards a new era of integrated European competitiveness? Science|Business",
-    "similarity": 0.716
+    "title": "A huge new EU competitiveness fund? - Euractiv",
+    "source": "gnews_competitiveness_fund",
+    "tier": "general_news",
+    "date": "2025-07-16",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "A huge new EU competitiveness fund? Euractiv",
+    "similarity": 0.86
+   },
+   {
+    "title": "BUDGET BRIEF: The European Anti-Competitiveness Fund? - Euractiv",
+    "source": "gnews_competitiveness_fund",
+    "tier": "general_news",
+    "date": "2026-03-03",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "BUDGET BRIEF: The European Anti-Competitiveness Fund? Euractiv",
+    "similarity": 0.85
    }
   ],
   "startup_scaleup": [
@@ -55,15 +55,6 @@
    },
    {
     "title": "Call for Expression of Interest launched for the Fund Manager of the Scaleup Europe Fund",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/call-expression-interest-launched-fund-manager-scaleup-europe-fund-2025-12-08_en",
-    "excerpt": "The new Scaleup Europe Fund brings new momentum to Europe’s scaleup ecosystem, anchored in public-private cooperation : Besides the European Commission, the group of potential founding investors in the Fund include - Novo Holdings, EIFO (Export and Investment Fund of Denmark), CriteriaCaixa, Santander/Mouro Capital, Fondazione Compagnia San Paolo/ Intesa Sanpaolo/Fondazione Cariplo, APG Asset Management, acting on behalf of Dutch pension fund ABP, Wallenberg Investments and B",
-    "similarity": 0.784
-   },
-   {
-    "title": "Call for Expression of Interest launched for the Fund Manager of the Scaleup Europe Fund",
     "source": "ec_digital",
     "tier": "funder_press",
     "date": null,
@@ -72,13 +63,22 @@
     "similarity": 0.784
    },
    {
-    "title": "WIN-Initiative - Gemeinsame Initiative zur Stärkung von Wachstums- und Innovationskapital | KfW",
-    "source": "kfw_presse",
+    "title": "Call for Expression of Interest launched for the Fund Manager of the Scaleup Europe Fund",
+    "source": "eic_news",
     "tier": "funder_press",
     "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/WIN-Initiative.html",
-    "excerpt": "Die WIN-Initiative (Wachstums- und Innovationskapital) wurde ins Leben gerufen, um die jährliche Finanzierungslücke von über 30 Mrd. Euro im Bereich des Wachstumskapitals für Start-ups in Deutschland zu schließen. Ziel ist es sicherzustellen, dass junge Unternehmen in Deutschland Zugang zu ausreichenden Finanzmitteln für erfolgreiches Wachstum haben. Derzeit liegt Deutschland beim Wachstumskapital weit hinter führenden Ländern wie den USA und Großbritannien zurück, was die In",
-    "similarity": 0.731
+    "url": "https://eic.ec.europa.eu/news/call-expression-interest-launched-fund-manager-scaleup-europe-fund-2025-12-08_en",
+    "excerpt": "The new Scaleup Europe Fund brings new momentum to Europe’s scaleup ecosystem, anchored in public-private cooperation : Besides the European Commission, the group of potential founding investors in the Fund include - Novo Holdings, EIFO (Export and Investment Fund of Denmark), CriteriaCaixa, Santander/Mouro Capital, Fondazione Compagnia San Paolo/ Intesa Sanpaolo/Fondazione Cariplo, APG Asset Management, acting on behalf of Dutch pension fund ABP, Wallenberg Investments and B",
+    "similarity": 0.784
+   },
+   {
+    "title": "EU startup and scaleup strategy: Progress made and challenges ahead - Open Access Government",
+    "source": "gnews_startup_scaleup",
+    "tier": "general_news",
+    "date": "2026-01-26",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "EU startup and scaleup strategy: Progress made and challenges ahead - Open Access Government EU startup and scaleup strategy: Progress made and challenges ahead - Open Access Government EU startup and scaleup strategy: Progress made and challenges ahead Open Access Government",
+    "similarity": 0.765
    }
   ],
   "scale_capital": [
@@ -121,6 +121,33 @@
   ],
   "investeu": [
    {
+    "title": "The Next Generation of European Tech Funding: Scale-Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-11-23",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Scale-Ups Financial Times",
+    "similarity": 0.826
+   },
+   {
+    "title": "The Next Generation of European Tech Funding: Start Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-09-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Start Ups Financial Times",
+    "similarity": 0.785
+   },
+   {
+    "title": "Funding Opportunity: U.S.–EU Cooperation on Innovation and Growth (Belgium) - fundsforNGOs",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2026-05-26",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Funding Opportunity: U.S.–EU Cooperation on Innovation and Growth (Belgium) fundsforNGOs",
+    "similarity": 0.735
+   },
+   {
     "title": "Der Deutschlandfonds: Private Investitionen für Deutschlands Zukunft | KfW",
     "source": "kfw_presse",
     "tier": "funder_press",
@@ -128,109 +155,82 @@
     "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/Deutschlandfonds.html",
     "excerpt": "In der Zielgruppe Start-ups und Scale-ups tritt die KfW ab sofort auch als Co-Investor auf, um zusammen mit privaten Kapitalgebern aus dem KfW Capital-Fondsportfolio direkt in Start-ups in Deutschland zu investieren. Hierfür stehen pro Investition maximal 50 Mio. EUR und insgesamt 1 Mrd. EUR bis Ende 2030 zur Verfügung. Weitere 300 Mio. EUR stehen für die Beteiligung an Kreditfonds zur Verfügung, die in den Ausbau neuartiger Industrietechnologien investieren. Zur Stärkung der",
     "similarity": 0.731
-   },
-   {
-    "title": "Call for Expression of Interest launched for the Fund Manager of the Scaleup Europe Fund",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/call-expression-interest-launched-fund-manager-scaleup-europe-fund-2025-12-08_en",
-    "excerpt": "For more information: Scaleup Europe Fund - European Innovation Council - European Commission",
-    "similarity": 0.718
-   },
-   {
-    "title": "Call for Expression of Interest launched for the Fund Manager of the Scaleup Europe Fund",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/commission-welcomes-launch-call-fund-manager-scaleup-europe-fund",
-    "excerpt": "For more information: Scaleup Europe Fund - European Innovation Council - European Commission",
-    "similarity": 0.718
-   },
-   {
-    "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/SVI.html",
-    "excerpt": "Gesamteuropäischer Ansatz zur Förderung von Forschung, Industriekapazitäten und Infrastruktur Die nationalen Förderbanken Frankreichs, Deutschlands, Italiens, Polens und Spaniens sowie die Europäische Investitionsbank (EIB) wollen gemeinsam die europäische Sicherheits- und Verteidigungsindustrie stärken. Die sechs langfristigen Investoren ( Caisse des Depôts , Kreditanstalt für Wiederaufbau (KfW), Cassa Depositi e Prestiti (CDP), Bank Gospodarstwa Krajowego (BGK), Instituto d",
-    "similarity": 0.718
    }
   ],
   "innovation_fund": [
    {
-    "title": "European Innovation Council and Cleantech for Europe sign partnership to accelerate funding for EU clean technologies",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/european-innovation-council-and-cleantech-europe-sign-partnership-accelerate-funding-eu-clean-2023-01-25_en",
-    "excerpt": "European Innovation Council and Cleantech for Europe sign partnership to accelerate funding for EU clean technologies The European Innovation Council (EIC) and Cleantech for Europe signed a letter of intent to collaborate on sharing cleantech deal-flow as well as facilitate dialogue with public and private investors across Europe. In this Letter of Intent, they agree to start a collaboration between public and private investors on clean technologies, by: Sharing relevant deal",
-    "similarity": 0.667
+    "title": "EU Unlocks €5.2B for Clean-Tech Innovation: Hydrogen, Heat, and Net-Zero Projects - CarbonCredits.com",
+    "source": "gnews_innovation_fund",
+    "tier": "general_news",
+    "date": "2025-12-08",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "EU Unlocks €5.2B for Clean-Tech Innovation: Hydrogen, Heat, and Net-Zero Projects CarbonCredits.com",
+    "similarity": 0.733
    },
    {
-    "title": "European Innovation Council and SMEs Executive Agency (EISMEA) and Clean Hydrogen Joint Undertaking start collaboration on hydrogen",
-    "source": "eismea_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eismea.ec.europa.eu/news/european-innovation-council-and-smes-executive-agency-eismea-and-clean-hydrogen-joint-undertaking-2022-11-25_en",
-    "excerpt": "European Innovation Council and SMEs Executive Agency (EISMEA) and Clean Hydrogen Joint Undertaking start collaboration on hydrogen Today the European Innovation Council and SMEs Executive Agency (EISMEA) and the Clean Hydrogen Joint Undertaking (JU) signed a letter of intent to agree on the principles of a future collaboration on clean hydrogen. Its aim is to facilitate the knowledge exchange on grants, projects and companies working on clean hydrogen and to accelerate the m",
-    "similarity": 0.665
+    "title": "Innovation Fund: six additional projects supporting the decarbonisation of European industry - European Climate, Infrastructure and Environment Executive Agency",
+    "source": "gnews_industrial_policy",
+    "tier": "general_news",
+    "date": "2025-07-22",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Innovation Fund: six additional projects supporting the decarbonisation of European industry European Climate, Infrastructure and Environment Executive Agency",
+    "similarity": 0.68
    },
    {
-    "title": "Powering innovation & driving investment: how EU-funded start-ups are shaping Europe’s future",
-    "source": "eismea_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eismea.ec.europa.eu/news/powering-innovation-driving-investment-how-eu-funded-start-ups-are-shaping-europes-future-2025-09-08_en",
-    "excerpt": "Powering innovation & driving investment: how EU-funded start-ups are shaping Europe’s future Europe’s start-up scene is heating up thanks to smart EU backing. From AI-powered waste tech to green farming robots, start-ups supported by the European Innovation Ecosystems (EIE) programme are scaling fast and securing millions in funding. Norway’s Sensorita raised €3 million to revolutionise waste management with radar and machine learning. Projects like X2.0 helped 50 deep tech ",
-    "similarity": 0.657
+    "title": "Making the Clean Industrial Deal bankable: Recommendations to scale sustainability across EU industry - UNEP Finance Initiative",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-07-18",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Making the Clean Industrial Deal bankable: Recommendations to scale sustainability across EU industry UNEP Finance Initiative",
+    "similarity": 0.679
    },
    {
-    "title": "European Innovation Council Accelerator: new group of deep tech start-ups selected to get funding and investments",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/european-innovation-council-accelerator-new-group-deep-tech-start-ups-selected-get-funding-and-2023-06-19_en",
-    "excerpt": "European Innovation Council Accelerator: new group of deep tech start-ups selected to get funding and investments A new set of 51 companies have been selected to receive European Innovation Council (EIC) funding, combining grants and equity, following the second 2023 EIC Accelerator cut-off in March. The companies were selected in a highly competitive process, in which 139 companies were interviewed by juries of experienced investors and entrepreneurs, out of a total of 551 f",
-    "similarity": 0.651
+    "title": "Clean hydrogen producers and users to be eligible for subsidies from proposed €100bn EU Industrial Decarbonisation Bank - Hydrogen Insight",
+    "source": "gnews_industrial_policy",
+    "tier": "general_news",
+    "date": "2026-07-20",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Clean hydrogen producers and users to be eligible for subsidies from proposed €100bn EU Industrial Decarbonisation Bank Hydrogen Insight",
+    "similarity": 0.67
    }
   ],
   "industrial_policy": [
    {
-    "title": "EP Legislative Train — ECF file (MFF 2028-34 spotlight)",
-    "source": "ep_train_ecf",
-    "tier": "funder_press",
-    "date": "2026-07-09",
-    "url": "https://www.europarl.europa.eu/legislative-train/spotlight-MFF%202028-2034/file-european-competitiveness-fund",
-    "excerpt": "Other initiatives underpinning the ECF include the Clean Industrial Deal (presented on 26 February 2025); bolstering the competitiveness and decarbonisation of the EU's industries. In Parliament, ten committees were asked to provide an opinion, namely, Security and Defence (SEDE), Budgetary Control (CONT), Economic and Monetary Affairs (ECON), Employment and Social Affairs (EMPL), Environment, Climate and Food Safety (ENVI), Public Health (SANT), Internal Market and Consumer ",
-    "similarity": 0.643
+    "title": "Clean Industrial Deal - European Commission",
+    "source": "gnews_industrial_policy",
+    "tier": "general_news",
+    "date": "2025-11-13",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Clean Industrial Deal European Commission",
+    "similarity": 0.784
    },
    {
-    "title": "European Innovation Council and Cleantech for Europe sign partnership to accelerate funding for EU clean technologies",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/european-innovation-council-and-cleantech-europe-sign-partnership-accelerate-funding-eu-clean-2023-01-25_en",
-    "excerpt": "“ By scaling its clean technologies, the EU will become the climate and industrial leader of the next decades. But this scale-up requires a once-in-a-generation effort, and new forms of collaboration. This new partnership with the EIC will allow public and private investors to supercharge their support of clean technologies. ” said Jules Besnainou, Executive Director of Cleantech for Europe. Over the last 10 years, Europe has become a powerhouse of cleantech innovation. Innov",
-    "similarity": 0.634
+    "title": "Net-Zero Industry Act - European Commission",
+    "source": "gnews_innovation_fund",
+    "tier": "general_news",
+    "date": "2025-11-13",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Net-Zero Industry Act European Commission",
+    "similarity": 0.776
    },
    {
-    "title": "European Parliament Plenary Session – July 2026",
-    "source": "eprs_blog",
-    "tier": "funder_press",
-    "date": "2026-07-03",
-    "url": "https://epthinktank.eu/2026/07/03/european-parliament-plenary-session-july-2026/",
-    "excerpt": "The EU’s plans to allow companies to register as an ‘EU Inc.’, recognised across all Member States, under a ’28th regime’, are central to its competitiveness agenda, aimed at simplifying rules for companies to scale up in the single market. Complementing the legislative proposal already on the table, Members are expected to vote on an own-initiative report from the Committee on Economic and Monetary Affairs (ECON), on Thursday, on the feasibility of a 28th tax regime and its ",
-    "similarity": 0.617
+    "title": "Europe’s Clean Industrial Deal: four priorities to fulfil its promise - Bruegel",
+    "source": "gnews_industrial_policy",
+    "tier": "general_news",
+    "date": "2025-09-29",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Europe’s Clean Industrial Deal: four priorities to fulfil its promise Bruegel",
+    "similarity": 0.767
    },
    {
-    "title": "The Brief – Polluting industries get more free CO2 permits - Euractiv",
-    "source": "euractiv",
-    "tier": "trade_press",
-    "date": "2026-04-30",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "The Brief – Polluting industries get more free CO2 permits Euractiv",
-    "similarity": 0.617
+    "title": "Making the Clean Industrial Deal bankable: Recommendations to scale sustainability across EU industry - UNEP Finance Initiative",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-07-18",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Making the Clean Industrial Deal bankable: Recommendations to scale sustainability across EU industry UNEP Finance Initiative",
+    "similarity": 0.744
    }
   ],
   "horizon_eic": [
@@ -273,6 +273,24 @@
   ],
   "national_dev_banks": [
    {
+    "title": "Government investment for mentoring, funding access and skills development to spark tech innovation outside capital - GOV.UK",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-07-16",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Government investment for mentoring, funding access and skills development to spark tech innovation outside capital GOV.UK",
+    "similarity": 0.664
+   },
+   {
+    "title": "The Next Generation of European Tech Funding: Scale-Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-11-23",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Scale-Ups Financial Times",
+    "similarity": 0.65
+   },
+   {
     "title": "Bundesforschungsministerin Bär bei der Venture SPRIND 2026: Innovationen brauchen Mut und Kapital - BMFTR",
     "source": "bmbf_presse",
     "tier": "funder_press",
@@ -282,72 +300,72 @@
     "similarity": 0.638
    },
    {
-    "title": "Der Deutschlandfonds: Private Investitionen für Deutschlands Zukunft | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/Deutschlandfonds.html",
-    "excerpt": "Junge Technologie-unternehmen mit hohem Wachstumspotenzial und hohen Investitionsbedarfen – etwa in den Bereichen DeepTech, KI, BioTech, ClimateTech und DefenceTech, sind auf die Bereitstellung von Wachstumskapital durch VC-Fonds angewiesen. Um diesen Bedarf noch besser adressieren zu können, werden verschiedene Zukunftsfonds-Bausteine gebündelt. Der Zukunftsfonds wird aufgestockt. Die neuen, zusätzlichen Mittel aus dem „Wachstums- und Innovationskapital („Zukunftsfonds II\")\"",
-    "similarity": 0.626
-   },
-   {
-    "title": "Bilan d'activité 2025 -  Activité record : 72 milliards d'euros injectés dans l'économie /  Création de valeur : 1,3 milliard d'euros. - Bpifrance | Presse",
-    "source": "bpifrance_presse",
-    "tier": "funder_press",
-    "date": "2026-02-17",
-    "url": "https://presse.bpifrance.fr/bilan-dactivite-2025-activite-record-72-milliards-deuros-injectes-dans-leconomie-creation-de-valeur-13-milliard-deuros/",
-    "excerpt": "En 2025, le financement des projets de création d'entreprise a été renforcé avec l'octroi par Bpifrance de 117M€ de prêts d'honneur distribués en partenariat avec les réseaux d'accompagnement à plus de 20 400 créateurs (+ 14.7% vs 2024). Bpifrance a poursuivi en 2025 la mise en œuvre du programme « Entrepreneuriat Quartiers 2030 », financé par l'Etat et la Caisse des Dépôts, en direction des entrepreneurs des Quartiers Prioritaires de la Ville (QPV). Dans ce cadre, 22 bus de ",
-    "similarity": 0.607
-   },
-   {
-    "title": "WIN-Initiative - Gemeinsame Initiative zur Stärkung von Wachstums- und Innovationskapital | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/WIN-Initiative.html",
-    "excerpt": "Finanzierungslösungen für CleanTech-Scale-ups Für innovative Scale-ups aus dem CleanTech Segment in Deutschland besteht ein Finanzierungsbedarf, insbesondere in der Skalierungsphase, der von bestehenden Finanzierungsangeboten derzeit nicht hinreichend bedient wird. Betroffen sind besonders junge Unternehmen, die im Anschluss an die Produktentwicklung und die Entwicklungen von Pilotfabriken, Fremdkapital (FK) für den Aufbau der industriellen Produktion benötigen. Um diesen Fin",
-    "similarity": 0.582
+    "title": "The Next Generation of European Tech Funding: Start Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-09-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Start Ups Financial Times",
+    "similarity": 0.628
    }
   ],
   "state_aid_reform": [
    {
-    "title": "Bilan d'activité 2025 -  Activité record : 72 milliards d'euros injectés dans l'économie /  Création de valeur : 1,3 milliard d'euros. - Bpifrance | Presse",
-    "source": "bpifrance_presse",
-    "tier": "funder_press",
-    "date": "2026-02-17",
-    "url": "https://presse.bpifrance.fr/bilan-dactivite-2025-activite-record-72-milliards-deuros-injectes-dans-leconomie-creation-de-valeur-13-milliard-deuros/",
-    "excerpt": "En 2025, les Régions et Bpifrance ont renforcé leur soutien financier à destination des entreprises . Avec la mise en œuvre en 2025 de nouveaux instruments financiers dotés par des fonds européens FEDER dont les Régions sont autorités de gestion, les dispositifs partenariaux ont accompagné près de 4 200 entreprises et permis de mobiliser au total plus de 1,5Md€ de financements . Ces interventions se sont principalement appuyées sur les aides à l'innovation , représentant plus",
-    "similarity": 0.662
+    "title": "Fueling The Future: Understanding The EU’s Clean Industrial Deal State Aid Framework (CISAF) - Crowell & Moring LLP",
+    "source": "gnews_industrial_policy",
+    "tier": "general_news",
+    "date": "2025-07-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Fueling The Future: Understanding The EU’s Clean Industrial Deal State Aid Framework (CISAF) Crowell & Moring LLP",
+    "similarity": 0.77
    },
    {
-    "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/SVI.html",
-    "excerpt": "Gesamteuropäischer Ansatz zur Förderung von Forschung, Industriekapazitäten und Infrastruktur Die nationalen Förderbanken Frankreichs, Deutschlands, Italiens, Polens und Spaniens sowie die Europäische Investitionsbank (EIB) wollen gemeinsam die europäische Sicherheits- und Verteidigungsindustrie stärken. Die sechs langfristigen Investoren ( Caisse des Depôts , Kreditanstalt für Wiederaufbau (KfW), Cassa Depositi e Prestiti (CDP), Bank Gospodarstwa Krajowego (BGK), Instituto d",
-    "similarity": 0.644
+    "title": "EU Innovation Fund 2025: Key Updates and Funding | EY - Denmark - EY",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-12-09",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "EU Innovation Fund 2025: Key Updates and Funding | EY - Denmark EY",
+    "similarity": 0.725
    },
    {
-    "title": "Call for CSA (coordination and support action): EIC Scaling Club 2.0",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/call-csa-coordination-and-support-action-eic-scaling-club-20-2026-05-22_en",
-    "excerpt": "The identified companies, ready for series B+ funding rounds, should demonstrate credible high-growth potential and should develop cutting-edge solutions in key technological areas, contributing to Europe’s technological autonomy and supporting EU’s strategic priorities, e.g. AI, advanced materials, quantum, biotech, robotics and space technologies, energy and decarbonisation, as specified in the Competitive Compass for the EU. The cohort of supported companies, active in div",
-    "similarity": 0.636
+    "title": "EU Innovation Fund 2025: Key Updates and Funding - EY",
+    "source": "gnews_innovation_fund",
+    "tier": "general_news",
+    "date": "2025-12-09",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "EU Innovation Fund 2025: Key Updates and Funding EY",
+    "similarity": 0.718
    },
    {
-    "title": "Euroclusters are launching their first cascade funding calls!",
-    "source": "eismea_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eismea.ec.europa.eu/news/euroclusters-are-launching-their-first-cascade-funding-calls-2023-03-29_en",
-    "excerpt": "xBUILD-EU aims to build an EU strategic partnership focused on cross-sectoral collaboration and cross-fertilization across textile, construction and advanced technologies. Its first call for proposals, opening on April 1 st , aims to fund 3 different grants schemes: innovate, global and green and digital grants. The deadline to apply is 7 June 2023. EPICENTRE aims to create new cross-sectoral value chains, from Digital and Fintech to Health and Agri-food. Their dynamic and ch",
-    "similarity": 0.636
+    "title": "EU Innovation Fund 2025: Key Updates and Funding | EY - Sweden - EY",
+    "source": "gnews_innovation_fund",
+    "tier": "general_news",
+    "date": "2025-12-09",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "EU Innovation Fund 2025: Key Updates and Funding | EY - Sweden EY",
+    "similarity": 0.717
    }
   ],
   "ipcei": [
+   {
+    "title": "From mission polity to mission economy: Making the EU a strategic investment power - European Policy Centre (EPC)",
+    "source": "gnews_competitiveness_fund",
+    "tier": "general_news",
+    "date": "2025-07-08",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "From mission polity to mission economy: Making the EU a strategic investment power European Policy Centre (EPC)",
+    "similarity": 0.767
+   },
+   {
+    "title": "A huge new EU competitiveness fund? - Euractiv",
+    "source": "gnews_competitiveness_fund",
+    "tier": "general_news",
+    "date": "2025-07-16",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "A huge new EU competitiveness fund? Euractiv",
+    "similarity": 0.716
+   },
    {
     "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
     "source": "kfw_presse",
@@ -365,27 +383,27 @@
     "url": "https://presse.bpifrance.fr/bpifrance-et-la-banque-europeenne-dinvestissement-bei-signent-deux-contrats-de-refinancement-pour-les-energies-renouvelables-la-securite-et-la-defense/",
     "excerpt": "La Banque européenne d'investissement (BEI) est l'institution de financement à long terme de l'Union européenne. Détenue par les 27 États membres de l'UE, elle finance des investissements qui contribuent à la réalisation des priorités européennes, notamment l'action climatique, l'innovation, les infrastructures durables, la cohésion économique et sociale ainsi que la sécurité et la résilience de l'Europe. Bpifrance finance les entreprises – à chaque étape de leur développemen",
     "similarity": 0.707
-   },
-   {
-    "title": "EU budget 2025 – an investment in Europeans - Euractiv",
-    "source": "euractiv",
-    "tier": "trade_press",
-    "date": "2024-11-21",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "EU budget 2025 – an investment in Europeans Euractiv",
-    "similarity": 0.7
-   },
-   {
-    "title": "Commission increases submarine cable security with €347 million investment and new toolbox",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/commission-increases-submarine-cable-security-eu347-million-investment-and-new-toolbox",
-    "excerpt": "The EU toolbox of risk mitigating measures and list of Cable Projects of European Interest (CPEIs)",
-    "similarity": 0.695
    }
   ],
   "step": [
+   {
+    "title": "Strategic Technologies for Europe Platform (STEP) to boost investments in critical technologies - defence-industry-space.ec.europa.eu",
+    "source": "gnews_step",
+    "tier": "general_news",
+    "date": "2025-12-16",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Strategic Technologies for Europe Platform (STEP) to boost investments in critical technologies defence-industry-space.ec.europa.eu",
+    "similarity": 0.771
+   },
+   {
+    "title": "Scaleup Europe Fund: a new infrastructure for Europe's technological growth - compagniadisanpaolo.it",
+    "source": "gnews_startup_scaleup",
+    "tier": "general_news",
+    "date": "2026-06-05",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Scaleup Europe Fund: a new infrastructure for Europe's technological growth compagniadisanpaolo.it",
+    "similarity": 0.724
+   },
    {
     "title": "Call for Expression of Interest launched for the Fund Manager of the Scaleup Europe Fund",
     "source": "eic_news",
@@ -403,24 +421,6 @@
     "url": "https://digital-strategy.ec.europa.eu/en/news/commission-welcomes-launch-call-fund-manager-scaleup-europe-fund",
     "excerpt": "For more information: Scaleup Europe Fund - European Innovation Council - European Commission",
     "similarity": 0.717
-   },
-   {
-    "title": "Digital Europe Programme fuels digital transformation and skills development across Europe",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/digital-europe-programme-fuels-digital-transformation-and-skills-development-across-europe",
-    "excerpt": "Since 2021, the programme has been accelerating Europe’s digital transition by funding the deployment of critical technologies. While progress continues, some challenges remain, including the need to increase awareness of the Programme in some Member States and manage the complexities of coordinating different funding sources and administrative processes. The Commission is actively working to simplify these areas and improve accessibility. The report evaluates the programme u",
-    "similarity": 0.706
-   },
-   {
-    "title": "Bär: „Der GOVSATCOM-Hub wird ein zentraler Pfeiler der europäischen Sicherheitsarchitektur“ - BMFTR",
-    "source": "bmbf_presse",
-    "tier": "funder_press",
-    "date": "2025-12-16",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Bär: „Der GOVSATCOM-Hub wird ein zentraler Pfeiler der europäischen Sicherheitsarchitektur“ BMFTR",
-    "similarity": 0.69
    }
   ],
   "digital_ai": [
@@ -434,31 +434,31 @@
     "similarity": 0.776
    },
    {
-    "title": "What it actually takes to scale AI in Europe: ‘The best founders aren’t building for the next funding round’ - Sifted",
-    "source": "sifted",
-    "tier": "trade_press",
-    "date": "2026-06-25",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "What it actually takes to scale AI in Europe: ‘The best founders aren’t building for the next funding round’ Sifted",
-    "similarity": 0.724
-   },
-   {
-    "title": "Commission makes €63.2 million available to support AI innovation in health and online safety",
-    "source": "ec_digital",
+    "title": "Özdemir: AI Factory kommt nach Deutschland – Großer Fortschritt für KI-Infrastruktur in Deutschland und Europa - BMFTR",
+    "source": "bmbf_presse",
     "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/commission-makes-eu632-million-available-support-ai-innovation-health-and-online-safety",
-    "excerpt": "Commission makes €63.2 million available to support AI innovation in health and online safety Seven Digital Europe Programme calls worth €63.2 million have opened to support artificial intelligence (AI) in health, digital health, digital skills, and online safety. Part of the funding will also bolster the adoption and deployment of transformative digital technologies across Europe. Of the total amount, €9 million will be made available for AI-powered image screening in medica",
-    "similarity": 0.721
+    "date": "2024-12-10",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Özdemir: AI Factory kommt nach Deutschland – Großer Fortschritt für KI-Infrastruktur in Deutschland und Europa BMFTR",
+    "similarity": 0.76
    },
    {
-    "title": "Data Corner: Horizon Europe’s AI, digital and data call success rate is 5.2% - Science|Business",
-    "source": "science_business",
+    "title": "The EU capitals and companies pitching for billions in AI gigafactory funding - Euractiv",
+    "source": "euractiv",
     "tier": "trade_press",
-    "date": "2026-05-05",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "Data Corner: Horizon Europe’s AI, digital and data call success rate is 5.2% Science|Business",
-    "similarity": 0.711
+    "date": "2025-08-06",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The EU capitals and companies pitching for billions in AI gigafactory funding Euractiv",
+    "similarity": 0.752
+   },
+   {
+    "title": "Comment investir dans l’IA ? Étapes, tendances et écosystème français - Bpifrance",
+    "source": "gnews_fr_funding",
+    "tier": "general_news",
+    "date": "2025-12-11",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Comment investir dans l’IA ? Étapes, tendances et écosystème français Bpifrance",
+    "similarity": 0.73
    }
   ],
   "chips": [
@@ -481,22 +481,22 @@
     "similarity": 0.732
    },
    {
-    "title": "Implementation dialogue on the Chips Act",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/implementation-dialogue-chips-act",
-    "excerpt": "Implementation dialogue on the Chips Act Executive Vice-President Henna Virkkunen chaired an implementation dialogue on the Chips Act that brought together a number of industry leaders and high-level stakeholders from across the semiconductor value chain to discuss the implementation of the Chips Act. Potential improvements, additions and simplification measures that may be considered were also discussed during the meeting. The meeting comes at a pivotal moment, as the Europe",
-    "similarity": 0.686
+    "title": "Could an EU Chips Act 2.0 Bridge the Lab-to-Fab Gap? - EE Times",
+    "source": "gnews_chips",
+    "tier": "general_news",
+    "date": "2025-12-02",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Could an EU Chips Act 2.0 Bridge the Lab-to-Fab Gap? EE Times",
+    "similarity": 0.725
    },
    {
-    "title": "Chips Act 2.0 hits the right notes, but what about the budget? - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2026-07-02",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "Chips Act 2.0 hits the right notes, but what about the budget? Science|Business",
-    "similarity": 0.653
+    "title": "A Brief Overview of the EU Chips Act - embedded.com",
+    "source": "gnews_ipcei",
+    "tier": "general_news",
+    "date": "2025-08-04",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "A Brief Overview of the EU Chips Act embedded.com",
+    "similarity": 0.717
    }
   ],
   "defence": [
@@ -510,6 +510,24 @@
     "similarity": 0.792
    },
    {
+    "title": "From AI to Quantum: How the European Defence Fund shapes the future of EU Defence Technologies - defence-industry-space.ec.europa.eu",
+    "source": "gnews_defence_capital",
+    "tier": "general_news",
+    "date": "2025-12-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "From AI to Quantum: How the European Defence Fund shapes the future of EU Defence Technologies defence-industry-space.ec.europa.eu",
+    "similarity": 0.79
+   },
+   {
+    "title": "European Defence Fund : Assessment after four Calls for Proposals (2021-2024) - Fondation pour la Recherche Stratégique",
+    "source": "gnews_defence_capital",
+    "tier": "general_news",
+    "date": "2025-07-30",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "European Defence Fund : Assessment after four Calls for Proposals (2021-2024) Fondation pour la Recherche Stratégique",
+    "similarity": 0.776
+   },
+   {
     "title": "Defence industry in the dark over how capitals plan to use €150bln EU loans - Euractiv",
     "source": "euractiv",
     "tier": "trade_press",
@@ -517,62 +535,44 @@
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
     "excerpt": "Defence industry in the dark over how capitals plan to use €150bln EU loans Euractiv",
     "similarity": 0.769
-   },
-   {
-    "title": "Bpifrance lance le fonds « Bpifrance Défense », permettant aux particuliers d'investir dans des entreprises principalement non cotées du secteur de la défense et de la souveraineté technologique - Bpifrance | Presse",
-    "source": "bpifrance_presse",
-    "tier": "funder_press",
-    "date": "2025-10-14",
-    "url": "https://presse.bpifrance.fr/bpifrance-lance-le-fonds-bpifrance-defense-permettant-aux-particuliers-dinvestir-dans-des-entreprises-principalement-non-cotees-du-secteur-de-la-defense-et-de-la-souverainete-technologique/",
-    "excerpt": "Un investissement dans le Fonds Innovation Défense lancé en 2021 avec l'Agence de l'Innovation de la Défense [4] dont le portefeuille est déjà composé d'une douzaine de start-up qui développent des technologies stratégiques pour l'armée française ; Des co-investissements avec les équipes de Bpifrance dans des fonds d'investissement partenaires dont certains seront spécialisés dans la Défense. Le fonds Bpifrance Défense est un fonds dit « semi-ouvert » avec une période de sous",
-    "similarity": 0.765
-   },
-   {
-    "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/SVI.html",
-    "excerpt": "Gesamteuropäischer Ansatz zur Förderung von Forschung, Industriekapazitäten und Infrastruktur Die nationalen Förderbanken Frankreichs, Deutschlands, Italiens, Polens und Spaniens sowie die Europäische Investitionsbank (EIB) wollen gemeinsam die europäische Sicherheits- und Verteidigungsindustrie stärken. Die sechs langfristigen Investoren ( Caisse des Depôts , Kreditanstalt für Wiederaufbau (KfW), Cassa Depositi e Prestiti (CDP), Bank Gospodarstwa Krajowego (BGK), Instituto d",
-    "similarity": 0.743
    }
   ],
   "space": [
    {
-    "title": "‘One giant leap’ — investing in space, for the EU’s future - EUobserver",
-    "source": "euobserver",
-    "tier": "trade_press",
-    "date": "2025-01-30",
+    "title": "Grade Band - Esa - European Space Agency - European Space Agency",
+    "source": "gnews_esa_space",
+    "tier": "general_news",
+    "date": "2026-07-23",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "‘One giant leap’ — investing in space, for the EU’s future EUobserver",
-    "similarity": 0.728
+    "excerpt": "Grade Band - Esa - European Space Agency European Space Agency",
+    "similarity": 0.813
    },
    {
-    "title": "European Space Agency to play a greater role in defense - politico.eu",
-    "source": "politico_eu",
-    "tier": "trade_press",
+    "title": "ESA - ESA's highlights for 2026 - European Space Agency",
+    "source": "gnews_esa_space",
+    "tier": "general_news",
+    "date": "2025-12-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "ESA - ESA's highlights for 2026 European Space Agency",
+    "similarity": 0.803
+   },
+   {
+    "title": "The European Space Context after ESA's 2025 Ministerial Council Meeting - Fondation Robert Schuman",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-12-08",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The European Space Context after ESA's 2025 Ministerial Council Meeting Fondation Robert Schuman",
+    "similarity": 0.75
+   },
+   {
+    "title": "Growth and security at the forefront in UK funding boost for European Space Agency - GOV.UK",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
     "date": "2025-11-27",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "European Space Agency to play a greater role in defense politico.eu",
-    "similarity": 0.712
-   },
-   {
-    "title": "International Institute of Space Commerce - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2026-07-01",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "International Institute of Space Commerce Science|Business",
-    "similarity": 0.661
-   },
-   {
-    "title": "Homepage - Deutsch-norwegische Partnerschaft: Ein Schlüssel für mehr Europa in der Raumfahrt - BMFTR",
-    "source": "bmbf_presse",
-    "tier": "funder_press",
-    "date": "2026-03-13",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Homepage - Deutsch-norwegische Partnerschaft: Ein Schlüssel für mehr Europa in der Raumfahrt BMFTR",
-    "similarity": 0.654
+    "excerpt": "Growth and security at the forefront in UK funding boost for European Space Agency GOV.UK",
+    "similarity": 0.733
    }
   ],
   "eit_kics": [
@@ -617,6 +617,15 @@
  "sectors": {
   "software_data_ai": [
    {
+    "title": "The EU capitals and companies pitching for billions in AI gigafactory funding - Euractiv",
+    "source": "euractiv",
+    "tier": "trade_press",
+    "date": "2025-08-06",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The EU capitals and companies pitching for billions in AI gigafactory funding Euractiv",
+    "similarity": 0.75
+   },
+   {
     "title": "Funding radar: €63M Digital Europe grants for AI innovation - Science|Business",
     "source": "science_business",
     "tier": "trade_press",
@@ -626,6 +635,15 @@
     "similarity": 0.735
    },
    {
+    "title": "UK businesses and academia eligible for new EU funding on AI and related technologies - EEAS",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2026-01-28",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "UK businesses and academia eligible for new EU funding on AI and related technologies EEAS",
+    "similarity": 0.729
+   },
+   {
     "title": "How can Europe cope with a flood of AI-assisted research grant proposals? - Science|Business",
     "source": "science_business",
     "tier": "trade_press",
@@ -633,24 +651,6 @@
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
     "excerpt": "How can Europe cope with a flood of AI-assisted research grant proposals? Science|Business",
     "similarity": 0.728
-   },
-   {
-    "title": "Commission makes €63.2 million available to support AI innovation in health and online safety",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/commission-makes-eu632-million-available-support-ai-innovation-health-and-online-safety",
-    "excerpt": "Commission makes €63.2 million available to support AI innovation in health and online safety Seven Digital Europe Programme calls worth €63.2 million have opened to support artificial intelligence (AI) in health, digital health, digital skills, and online safety. Part of the funding will also bolster the adoption and deployment of transformative digital technologies across Europe. Of the total amount, €9 million will be made available for AI-powered image screening in medica",
-    "similarity": 0.685
-   },
-   {
-    "title": "Call for CSA (coordination and support action): EIC Scaling Club 2.0",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/call-csa-coordination-and-support-action-eic-scaling-club-20-2026-05-22_en",
-    "excerpt": "The identified companies, ready for series B+ funding rounds, should demonstrate credible high-growth potential and should develop cutting-edge solutions in key technological areas, contributing to Europe’s technological autonomy and supporting EU’s strategic priorities, e.g. AI, advanced materials, quantum, biotech, robotics and space technologies, energy and decarbonisation, as specified in the Competitive Compass for the EU. The cohort of supported companies, active in div",
-    "similarity": 0.681
    }
   ],
   "health_life_sciences": [
@@ -673,6 +673,15 @@
     "similarity": 0.683
    },
    {
+    "title": "The Next Generation of European Tech Funding: Scale-Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-11-23",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Scale-Ups Financial Times",
+    "similarity": 0.679
+   },
+   {
     "title": "How Europe could back radical new R&D funding, and what it should cut - Science|Business",
     "source": "science_business",
     "tier": "trade_press",
@@ -680,18 +689,36 @@
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
     "excerpt": "How Europe could back radical new R&D funding, and what it should cut Science|Business",
     "similarity": 0.678
-   },
-   {
-    "title": "Viewpoint: a strong EU Biotech Act is vital for Europe’s synthetic biology industry - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2025-10-23",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Viewpoint: a strong EU Biotech Act is vital for Europe’s synthetic biology industry Science|Business",
-    "similarity": 0.664
    }
   ],
   "energy_cleantech": [
+   {
+    "title": "Innovation Fund: six additional projects supporting the decarbonisation of European industry - European Climate, Infrastructure and Environment Executive Agency",
+    "source": "gnews_industrial_policy",
+    "tier": "general_news",
+    "date": "2025-07-22",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Innovation Fund: six additional projects supporting the decarbonisation of European industry European Climate, Infrastructure and Environment Executive Agency",
+    "similarity": 0.739
+   },
+   {
+    "title": "The EU’s innovation fund: Unlocking financing for climate technology - Capgemini",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-12-19",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The EU’s innovation fund: Unlocking financing for climate technology Capgemini",
+    "similarity": 0.712
+   },
+   {
+    "title": "Making the Clean Industrial Deal bankable: Recommendations to scale sustainability across EU industry - UNEP Finance Initiative",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-07-18",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Making the Clean Industrial Deal bankable: Recommendations to scale sustainability across EU industry UNEP Finance Initiative",
+    "similarity": 0.699
+   },
    {
     "title": "Viewpoint: Europe should align research and innovation policy with its energy security goals - Science|Business",
     "source": "science_business",
@@ -700,74 +727,65 @@
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
     "excerpt": "Viewpoint: Europe should align research and innovation policy with its energy security goals Science|Business",
     "similarity": 0.691
-   },
-   {
-    "title": "Der Deutschlandfonds: Private Investitionen für Deutschlands Zukunft | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/Deutschlandfonds.html",
-    "excerpt": "Der Deutschlandfonds wird sukzessive weiterentwickelt. Im Energiebereich ist es angesichts der hohen Investitionsbedarfe notwendig, dass private und kommunale Energieversorgungsunternehmen über die für die Finanzierung erforderliche Eigenkapitalbasis verfügen. Angesichts der hohen Bedeutung von Stadtwerken im Bereich der Stromverteil- und Wärmenetze wird der Bund in den Dialog mit den Ländern treten, um sehr zeitnah geeignete Instrumente für die Eigenkapitalproblematik zu ent",
-    "similarity": 0.687
-   },
-   {
-    "title": "WIN-Initiative - Gemeinsame Initiative zur Stärkung von Wachstums- und Innovationskapital | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/WIN-Initiative.html",
-    "excerpt": "Finanzierungslösungen für CleanTech-Scale-ups Für innovative Scale-ups aus dem CleanTech Segment in Deutschland besteht ein Finanzierungsbedarf, insbesondere in der Skalierungsphase, der von bestehenden Finanzierungsangeboten derzeit nicht hinreichend bedient wird. Betroffen sind besonders junge Unternehmen, die im Anschluss an die Produktentwicklung und die Entwicklungen von Pilotfabriken, Fremdkapital (FK) für den Aufbau der industriellen Produktion benötigen. Um diesen Fin",
-    "similarity": 0.684
-   },
-   {
-    "title": "Powering innovation & driving investment: how EU-funded start-ups are shaping Europe’s future",
-    "source": "eismea_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eismea.ec.europa.eu/news/powering-innovation-driving-investment-how-eu-funded-start-ups-are-shaping-europes-future-2025-09-08_en",
-    "excerpt": "Powering innovation & driving investment: how EU-funded start-ups are shaping Europe’s future Europe’s start-up scene is heating up thanks to smart EU backing. From AI-powered waste tech to green farming robots, start-ups supported by the European Innovation Ecosystems (EIE) programme are scaling fast and securing millions in funding. Norway’s Sensorita raised €3 million to revolutionise waste management with radar and machine learning. Projects like X2.0 helped 50 deep tech ",
-    "similarity": 0.672
    }
   ],
   "industrial_manufacturing": [
    {
-    "title": "Der Deutschlandfonds: Private Investitionen für Deutschlands Zukunft | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/Deutschlandfonds.html",
-    "excerpt": "In der Zielgruppe Industrie und Mittelstand wird über den Deutschlandfonds die Finanzierung von Zukunftsinvestitionen in die Wettbewerbsfähigkeit erleichtert. Dazu zählt das Absicherungsinstrument für Transformationsindustrien, mit dem Großinvestitionen der Industrie, beispielsweise in den Bereichen Stromerzeugung oder Wasserstoff, aber auch in der Automobilindustrie, bei mittelständischen Zulieferern und im Maschinenbau unterstützt werden, indem sich die KfW an Avalfinanzier",
-    "similarity": 0.707
+    "title": "Scaleup Europe Fund: a new infrastructure for Europe's technological growth - compagniadisanpaolo.it",
+    "source": "gnews_startup_scaleup",
+    "tier": "general_news",
+    "date": "2026-06-05",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Scaleup Europe Fund: a new infrastructure for Europe's technological growth compagniadisanpaolo.it",
+    "similarity": 0.737
    },
    {
-    "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/SVI.html",
-    "excerpt": "Gesamteuropäischer Ansatz zur Förderung von Forschung, Industriekapazitäten und Infrastruktur Die nationalen Förderbanken Frankreichs, Deutschlands, Italiens, Polens und Spaniens sowie die Europäische Investitionsbank (EIB) wollen gemeinsam die europäische Sicherheits- und Verteidigungsindustrie stärken. Die sechs langfristigen Investoren ( Caisse des Depôts , Kreditanstalt für Wiederaufbau (KfW), Cassa Depositi e Prestiti (CDP), Bank Gospodarstwa Krajowego (BGK), Instituto d",
-    "similarity": 0.704
+    "title": "Funding Opportunity: U.S.–EU Cooperation on Innovation and Growth (Belgium) - fundsforNGOs",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2026-05-26",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Funding Opportunity: U.S.–EU Cooperation on Innovation and Growth (Belgium) fundsforNGOs",
+    "similarity": 0.733
    },
    {
-    "title": "Call for CSA (coordination and support action): EIC Scaling Club 2.0",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/call-csa-coordination-and-support-action-eic-scaling-club-20-2026-05-22_en",
-    "excerpt": "The identified companies, ready for series B+ funding rounds, should demonstrate credible high-growth potential and should develop cutting-edge solutions in key technological areas, contributing to Europe’s technological autonomy and supporting EU’s strategic priorities, e.g. AI, advanced materials, quantum, biotech, robotics and space technologies, energy and decarbonisation, as specified in the Competitive Compass for the EU. The cohort of supported companies, active in div",
-    "similarity": 0.697
+    "title": "The Next Generation of European Tech Funding: Scale-Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-11-23",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Scale-Ups Financial Times",
+    "similarity": 0.722
    },
    {
-    "title": "Nearly €80bn of public money is flooding into European VCs and startups. Is it what the market needs? - Sifted",
-    "source": "sifted",
-    "tier": "trade_press",
-    "date": "2026-04-17",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "Nearly €80bn of public money is flooding into European VCs and startups. Is it what the market needs? Sifted",
-    "similarity": 0.676
+    "title": "Critical technologies: how the EU supports key industries - European Parliament",
+    "source": "gnews_step",
+    "tier": "general_news",
+    "date": "2025-09-18",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Critical technologies: how the EU supports key industries European Parliament",
+    "similarity": 0.715
    }
   ],
   "semiconductors_electronics": [
+   {
+    "title": "Funding for EU-Japan Semiconductor Innovation Projects (Denmark) - fundsforNGOs",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2026-07-09",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Funding for EU-Japan Semiconductor Innovation Projects (Denmark) fundsforNGOs",
+    "similarity": 0.708
+   },
+   {
+    "title": "The Next Generation of European Tech Funding: Scale-Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-11-23",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Scale-Ups Financial Times",
+    "similarity": 0.681
+   },
    {
     "title": "Implementation dialogue on the Chips Act",
     "source": "ec_digital",
@@ -778,72 +796,72 @@
     "similarity": 0.676
    },
    {
-    "title": "European Forum for Electronic Components and Systems (EFECS) 2025 held in Malta",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/european-forum-electronic-components-and-systems-efecs-2025-held-malta",
-    "excerpt": "This event showcased the strategic importance of semiconductor for Europe and attracted top level stakeholders. The Forum featured high-level ministerial representation, including an opening address by Robert Abela, Prime Minister of Malta, and Silvio Schembri, Minister for the Economy, Enterprise and Strategic Projects of Malta, thereby reflecting Malta’s growing strategic role in Europe’s semiconductor ecosystem and its strong national commitment to advanced manufacturing, ",
-    "similarity": 0.64
-   },
-   {
-    "title": "Open EU Foundry status granted to innovative chiplet facility",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/open-eu-foundry-status-granted-innovative-chiplet-facility",
-    "excerpt": "The project will provide an important base in Europe for developing innovative technologies, products and system solutions for the semiconductors key to powering AI, electric and autonomous vehicles, data centres, as well as supercomputing applications. The plant is expected to reach full capacity in 2033. This OEF status recognition follows four semiconductor projects across the EU which have previously been awarded OEF or IPF (integrated production facility) status in Octob",
-    "similarity": 0.632
-   },
-   {
-    "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/SVI.html",
-    "excerpt": "Gesamteuropäischer Ansatz zur Förderung von Forschung, Industriekapazitäten und Infrastruktur Die nationalen Förderbanken Frankreichs, Deutschlands, Italiens, Polens und Spaniens sowie die Europäische Investitionsbank (EIB) wollen gemeinsam die europäische Sicherheits- und Verteidigungsindustrie stärken. Die sechs langfristigen Investoren ( Caisse des Depôts , Kreditanstalt für Wiederaufbau (KfW), Cassa Depositi e Prestiti (CDP), Bank Gospodarstwa Krajowego (BGK), Instituto d",
-    "similarity": 0.629
+    "title": "The Next Generation of European Tech Funding: Start Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-09-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Start Ups Financial Times",
+    "similarity": 0.664
    }
   ],
   "space": [
    {
-    "title": "European Space Agency to play a greater role in defense - politico.eu",
-    "source": "politico_eu",
-    "tier": "trade_press",
+    "title": "Growth and security at the forefront in UK funding boost for European Space Agency - GOV.UK",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
     "date": "2025-11-27",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "European Space Agency to play a greater role in defense politico.eu",
-    "similarity": 0.683
+    "excerpt": "Growth and security at the forefront in UK funding boost for European Space Agency GOV.UK",
+    "similarity": 0.778
    },
    {
-    "title": "‘One giant leap’ — investing in space, for the EU’s future - EUobserver",
-    "source": "euobserver",
-    "tier": "trade_press",
-    "date": "2025-01-30",
+    "title": "The 30-year journey of European satellite navigation - European Space Agency",
+    "source": "gnews_esa_space",
+    "tier": "general_news",
+    "date": "2025-12-04",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "‘One giant leap’ — investing in space, for the EU’s future EUobserver",
-    "similarity": 0.665
+    "excerpt": "The 30-year journey of European satellite navigation European Space Agency",
+    "similarity": 0.719
    },
    {
-    "title": "Homepage - Deutsch-norwegische Partnerschaft: Ein Schlüssel für mehr Europa in der Raumfahrt - BMFTR",
-    "source": "bmbf_presse",
-    "tier": "funder_press",
-    "date": "2026-03-13",
+    "title": "Grade Band - Esa - European Space Agency - European Space Agency",
+    "source": "gnews_esa_space",
+    "tier": "general_news",
+    "date": "2026-07-23",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Homepage - Deutsch-norwegische Partnerschaft: Ein Schlüssel für mehr Europa in der Raumfahrt BMFTR",
-    "similarity": 0.657
+    "excerpt": "Grade Band - Esa - European Space Agency European Space Agency",
+    "similarity": 0.712
    },
    {
-    "title": "Deutsch-Italienische Regierungskonsultationen: BMFTR vertieft Zusammenarbeit in Forschung und Raumfahrt - BMFTR",
-    "source": "bmbf_presse",
-    "tier": "funder_press",
-    "date": "2026-01-23",
+    "title": "ESA - ESA's highlights for 2026 - European Space Agency",
+    "source": "gnews_esa_space",
+    "tier": "general_news",
+    "date": "2025-12-15",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Deutsch-Italienische Regierungskonsultationen: BMFTR vertieft Zusammenarbeit in Forschung und Raumfahrt BMFTR",
-    "similarity": 0.656
+    "excerpt": "ESA - ESA's highlights for 2026 European Space Agency",
+    "similarity": 0.706
    }
   ],
   "defense_security": [
+   {
+    "title": "European Defence Fund : Assessment after four Calls for Proposals (2021-2024) - Fondation pour la Recherche Stratégique",
+    "source": "gnews_defence_capital",
+    "tier": "general_news",
+    "date": "2025-07-30",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "European Defence Fund : Assessment after four Calls for Proposals (2021-2024) Fondation pour la Recherche Stratégique",
+    "similarity": 0.776
+   },
+   {
+    "title": "From AI to Quantum: How the European Defence Fund shapes the future of EU Defence Technologies - defence-industry-space.ec.europa.eu",
+    "source": "gnews_defence_capital",
+    "tier": "general_news",
+    "date": "2025-12-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "From AI to Quantum: How the European Defence Fund shapes the future of EU Defence Technologies defence-industry-space.ec.europa.eu",
+    "similarity": 0.744
+   },
    {
     "title": "Defence industry in the dark over how capitals plan to use €150bln EU loans - Euractiv",
     "source": "euractiv",
@@ -854,34 +872,34 @@
     "similarity": 0.728
    },
    {
-    "title": "Explained: EU dual-use and defence funding changes - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2025-11-18",
+    "title": "Ukrainian defense companies to get access to EU programs, EUR 300 mln in grant funding, parliamentary ratification of agreements with EC expected - Fedorov - Interfax-Ukraine",
+    "source": "gnews_defence_capital",
+    "tier": "general_news",
+    "date": "2026-07-15",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Explained: EU dual-use and defence funding changes Science|Business",
-    "similarity": 0.719
-   },
-   {
-    "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/SVI.html",
-    "excerpt": "LinkedIn , Facebook , Instagram , Youtube Welche Rolle spielt die KfW bei der Finanzierung der Sicherheits- und Verteidigungsindustrie? Die KfW unterstützt die strategische Autonomie und Resilienz Europas durch die Förderung der Sicherheits- und Verteidigungsindustrie (SVI) in Deutschland und Europa. Sie bietet Finanzierungsangebote für Unternehmen der SVI an und prüft Anfragen ergebnisoffen. Ja. Die KfW schließt die Finanzierung von Produktion und Handel mit sogenannten kont",
-    "similarity": 0.709
-   },
-   {
-    "title": "Agreement on the EU Defence Readiness Omnibus “Manufacturing technologies are essential to European security” - euractiv pr",
-    "source": "euractiv",
-    "tier": "trade_press",
-    "date": "2026-06-10",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "Agreement on the EU Defence Readiness Omnibus “Manufacturing technologies are essential to European security” euractiv pr",
-    "similarity": 0.703
+    "excerpt": "Ukrainian defense companies to get access to EU programs, EUR 300 mln in grant funding, parliamentary ratification of agreements with EC expected - Fedorov Interfax-Ukraine",
+    "similarity": 0.728
    }
   ],
   "mobility_transport": [
+   {
+    "title": "Europe Funding Landscape: 100+ Calls Driving Innovation, Research and Impact - fundsforNGOs",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2026-06-16",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Europe Funding Landscape: 100+ Calls Driving Innovation, Research and Impact fundsforNGOs",
+    "similarity": 0.718
+   },
+   {
+    "title": "Urban Mobility Days 2025: driving forward the urban mobility transformation - European Climate, Infrastructure and Environment Executive Agency",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2025-10-08",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Urban Mobility Days 2025: driving forward the urban mobility transformation European Climate, Infrastructure and Environment Executive Agency",
+    "similarity": 0.706
+   },
    {
     "title": "Autonomous Drive Ambition Cities (ADACities) Initiative to bring autonomous driving technology to cities across the EU",
     "source": "ec_digital",
@@ -892,31 +910,13 @@
     "similarity": 0.7
    },
    {
-    "title": "Viewpoint: Europe should turn researcher mobility into a development strategy - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2026-04-22",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "Viewpoint: Europe should turn researcher mobility into a development strategy Science|Business",
-    "similarity": 0.617
-   },
-   {
-    "title": "5G large-scale pilots: 12 projects funded under the fourth CEF Digital Call",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/5g-large-scale-pilots-12-projects-funded-under-fourth-cef-digital-call",
-    "excerpt": "Coordinator: MOST - Centro Nazionale per la Mobilità Sostenibile",
-    "similarity": 0.607
-   },
-   {
-    "title": "Der Deutschlandfonds: Private Investitionen für Deutschlands Zukunft | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/Deutschlandfonds.html",
-    "excerpt": "In der Zielgruppe Industrie und Mittelstand wird über den Deutschlandfonds die Finanzierung von Zukunftsinvestitionen in die Wettbewerbsfähigkeit erleichtert. Dazu zählt das Absicherungsinstrument für Transformationsindustrien, mit dem Großinvestitionen der Industrie, beispielsweise in den Bereichen Stromerzeugung oder Wasserstoff, aber auch in der Automobilindustrie, bei mittelständischen Zulieferern und im Maschinenbau unterstützt werden, indem sich die KfW an Avalfinanzier",
-    "similarity": 0.59
+    "title": "Transport decarbonisation is a lever for industrial competitiveness but the EU budget fails to capitalise on it - transportenvironment.org",
+    "source": "gnews_competitiveness_fund",
+    "tier": "general_news",
+    "date": "2025-07-16",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Transport decarbonisation is a lever for industrial competitiveness but the EU budget fails to capitalise on it transportenvironment.org",
+    "similarity": 0.623
    }
   ],
   "agrifood": [
@@ -930,6 +930,15 @@
     "similarity": 0.631
    },
    {
+    "title": "EN Annex IX Horizon Europe Work Programme 2026-2027 9. Food, Bioeconomy, Natural Resources, Agriculture and Environment - Science|Business",
+    "source": "science_business",
+    "tier": "trade_press",
+    "date": "2025-07-21",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "EN Annex IX Horizon Europe Work Programme 2026-2027 9. Food, Bioeconomy, Natural Resources, Agriculture and Environment Science|Business",
+    "similarity": 0.623
+   },
+   {
     "title": "Bilan d'activité 2025 -  Activité record : 72 milliards d'euros injectés dans l'économie /  Création de valeur : 1,3 milliard d'euros. - Bpifrance | Presse",
     "source": "bpifrance_presse",
     "tier": "funder_press",
@@ -939,63 +948,72 @@
     "similarity": 0.614
    },
    {
-    "title": "EU-funded Food-scalEUp project to map agri-food digital acceleration ecosystems and needs",
-    "source": "eismea_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eismea.ec.europa.eu/news/eu-funded-food-scaleup-project-map-agri-food-digital-acceleration-ecosystems-and-needs-2023-05-19_en",
-    "excerpt": "The analysis of their agri-food digital acceleration ecosystems will be available soon. Keep an eye on the Food-scalEUp website . Expanding the European agri-food digital innovation ecosystem’s capacity is a priority for 10 organisations that form Food-scalEUp, funded under the European Innovation Ecosystems programme , is focusing on emerging and moderate innovator regions. The Food-scalEUp project aims at fostering collaboration of structures that boost digital agri-food ac",
-    "similarity": 0.592
-   },
-   {
-    "title": "Digitale Pressemappe KfW-Bilanzpressekonferenz 2026 | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Pressetermine/Bilanzpressekonferenz/Bilanzpressekonferenz-2.html",
-    "excerpt": "Der deutsche Mittelstand ist Motor für Innovation, Wachstum und Beschäftigung – und das weit über die Landesgrenzen hinaus. Um mutige Ideen umzusetzen, neue Märkte zu erschließen und nachhaltig zu wachsen, braucht es gezielte Unterstützung. 2024 stellte die KfW 13,4 Milliarden Euro bereit, um Unternehmen bei ihren Zukunftsplänen zu begleiten. Auch die DEG und die KfW IPEX-Bank setzen Impulse, erleichtern Investitionen im Ausland, stärken Exporte und treiben Großprojekte voran",
-    "similarity": 0.574
+    "title": "Agriculture, Climate, Environment, Energy & Food: January 2026 Funding Opportunities (25 new opportunities!) - Substack",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2026-01-07",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Agriculture, Climate, Environment, Energy & Food: January 2026 Funding Opportunities (25 new opportunities!) Substack",
+    "similarity": 0.598
    }
   ],
   "materials_chemicals": [
    {
-    "title": "Five top tech policy ideas for the EU - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2026-05-21",
-    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
-    "excerpt": "Five top tech policy ideas for the EU Science|Business",
-    "similarity": 0.644
-   },
-   {
-    "title": "KfW-Finanzierung für Sicherheits- und Verteidigungsindustrie (SVI) – Verantwortungsvoll und europäisch vernetzt | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/SVI.html",
-    "excerpt": "Gesamteuropäischer Ansatz zur Förderung von Forschung, Industriekapazitäten und Infrastruktur Die nationalen Förderbanken Frankreichs, Deutschlands, Italiens, Polens und Spaniens sowie die Europäische Investitionsbank (EIB) wollen gemeinsam die europäische Sicherheits- und Verteidigungsindustrie stärken. Die sechs langfristigen Investoren ( Caisse des Depôts , Kreditanstalt für Wiederaufbau (KfW), Cassa Depositi e Prestiti (CDP), Bank Gospodarstwa Krajowego (BGK), Instituto d",
-    "similarity": 0.644
-   },
-   {
-    "title": "Explained: EU dual-use and defence funding changes - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2025-11-18",
+    "title": "Funding Opportunity: U.S.–EU Cooperation on Innovation and Growth (Belgium) - fundsforNGOs",
+    "source": "gnews_eu_tech",
+    "tier": "general_news",
+    "date": "2026-05-26",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Explained: EU dual-use and defence funding changes Science|Business",
-    "similarity": 0.633
+    "excerpt": "Funding Opportunity: U.S.–EU Cooperation on Innovation and Growth (Belgium) fundsforNGOs",
+    "similarity": 0.675
    },
    {
-    "title": "Call for Expression of Interest launched for the Fund Manager of the Scaleup Europe Fund",
-    "source": "eic_news",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://eic.ec.europa.eu/news/call-expression-interest-launched-fund-manager-scaleup-europe-fund-2025-12-08_en",
-    "excerpt": "For more information: Scaleup Europe Fund - European Innovation Council - European Commission",
-    "similarity": 0.63
+    "title": "Critical technologies: how the EU supports key industries - European Parliament",
+    "source": "gnews_step",
+    "tier": "general_news",
+    "date": "2025-09-18",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Critical technologies: how the EU supports key industries European Parliament",
+    "similarity": 0.674
+   },
+   {
+    "title": "The Next Generation of European Tech Funding: Scale-Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-11-23",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Scale-Ups Financial Times",
+    "similarity": 0.674
+   },
+   {
+    "title": "Scaleup Europe Fund: a new infrastructure for Europe's technological growth - compagniadisanpaolo.it",
+    "source": "gnews_startup_scaleup",
+    "tier": "general_news",
+    "date": "2026-06-05",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "Scaleup Europe Fund: a new infrastructure for Europe's technological growth compagniadisanpaolo.it",
+    "similarity": 0.658
    }
   ],
   "other": [
+   {
+    "title": "The Next Generation of European Tech Funding: Scale-Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-11-23",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Scale-Ups Financial Times",
+    "similarity": 0.816
+   },
+   {
+    "title": "The Next Generation of European Tech Funding: Start Ups - Financial Times",
+    "source": "gnews_ft_eu_funding",
+    "tier": "general_news",
+    "date": "2025-09-15",
+    "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+    "excerpt": "The Next Generation of European Tech Funding: Start Ups Financial Times",
+    "similarity": 0.788
+   },
    {
     "title": "Five top tech policy ideas for the EU - Science|Business",
     "source": "science_business",
@@ -1006,31 +1024,13 @@
     "similarity": 0.69
    },
    {
-    "title": "Explained: EU dual-use and defence funding changes - Science|Business",
-    "source": "science_business",
-    "tier": "trade_press",
-    "date": "2025-11-18",
+    "title": "The Scaleup Europe Fund from EQT AB - new EU tech capital under Swedish management - Ad-hoc-news.de",
+    "source": "gnews_startup_scaleup",
+    "tier": "general_news",
+    "date": "2026-06-29",
     "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
-    "excerpt": "Explained: EU dual-use and defence funding changes Science|Business",
-    "similarity": 0.684
-   },
-   {
-    "title": "Digital Europe Programme fuels digital transformation and skills development across Europe",
-    "source": "ec_digital",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://digital-strategy.ec.europa.eu/en/news/digital-europe-programme-fuels-digital-transformation-and-skills-development-across-europe",
-    "excerpt": "Since 2021, the programme has been accelerating Europe’s digital transition by funding the deployment of critical technologies. While progress continues, some challenges remain, including the need to increase awareness of the Programme in some Member States and manage the complexities of coordinating different funding sources and administrative processes. The Commission is actively working to simplify these areas and improve accessibility. The report evaluates the programme u",
-    "similarity": 0.668
-   },
-   {
-    "title": "WIN-Initiative - Gemeinsame Initiative zur Stärkung von Wachstums- und Innovationskapital | KfW",
-    "source": "kfw_presse",
-    "tier": "funder_press",
-    "date": null,
-    "url": "https://www.kfw.de/Über-die-KfW/Newsroom/Aktuelles/WIN-Initiative.html",
-    "excerpt": "Finanzierungslösungen für CleanTech-Scale-ups Für innovative Scale-ups aus dem CleanTech Segment in Deutschland besteht ein Finanzierungsbedarf, insbesondere in der Skalierungsphase, der von bestehenden Finanzierungsangeboten derzeit nicht hinreichend bedient wird. Betroffen sind besonders junge Unternehmen, die im Anschluss an die Produktentwicklung und die Entwicklungen von Pilotfabriken, Fremdkapital (FK) für den Aufbau der industriellen Produktion benötigen. Um diesen Fin",
-    "similarity": 0.662
+    "excerpt": "The Scaleup Europe Fund from EQT AB - new EU tech capital under Swedish management Ad-hoc-news.de",
+    "similarity": 0.689
    }
   ]
  }

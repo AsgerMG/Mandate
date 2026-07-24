@@ -12,13 +12,15 @@ DATE    := $(shell date +%Y%m%d)
 BACKUP  := $(HOME)/EuroInvTracker-backups
 ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/EuroInvTracker-backups
 
-.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility
+.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility pull-db push news
 
 help:
 	@echo "EuroInvTracker make targets:"
+	@echo "  make pull-db     Pull the latest db.sqlite from the Railway ETL volume (run before local work)"
+	@echo "  make push        Run cloud-blocked/manual sources locally, then push db.sqlite back to Railway"
 	@echo "  make sources     List every source + how to renew it (ETL/events/extract/renew.py --list)"
 	@echo "  make renew       Pull fresh data for every AUTO source (then run 'make transform backup')"
-	@echo "  make classify    Re-derive sector/entity classification (ETL/events/transform/classify.py)"
+	@echo "  make classify    LLM sector_top/subsector/entity_type classification (cost-gated at \$$20, ETL/events/transform/classify_taxonomy.py)"
 	@echo "  make sanity      Post-load corpus integrity checks (ETL/events/load/qa/sanity_check.py)"
 	@echo "  make transform   classify + sanity (re-derive everything from loaded rows)"
 	@echo "  make backup      Back up db.sqlite + data/ to local + iCloud (ETL/events/load/backup.py)"
@@ -27,6 +29,7 @@ help:
 	@echo "  make data        Rebuild EVERY site JSON from db.sqlite (website/build/build_site_data.py)"
 	@echo "  make eligibility Sync YAML -> DB, export instrument_terms.json, publish to Railway Postgres"
 	@echo "  make signals     Ensure signals.sqlite schema + status + QA (ETL/intelligence/load/load_signals.py)"
+	@echo "  make news        Full news/signals automation cycle (local only, cost-gated at \$$20)"
 	@echo "  make site-build  Static build of the Next.js site (website/frontend/out/)"
 	@echo "  make site-dev    Run the site dev server at localhost:3000"
 
@@ -37,7 +40,8 @@ renew:
 	python3 ETL/events/extract/renew.py --auto
 
 classify:
-	python3 ETL/events/transform/classify.py
+	python3 ETL/events/transform/classify_taxonomy.py apply-nace
+	python3 ETL/events/transform/classify_taxonomy.py run --max-cost 20
 
 sanity:
 	python3 ETL/events/load/qa/sanity_check.py
@@ -83,6 +87,15 @@ signals:
 signals-digest:
 	python3 website/build/signals_digest.py
 
+# Full news/signals automation cycle: sync -> collect last run's batches ->
+# ingest -> hydrate -> submit relevance/entity/signal batches (cost-gated at
+# $20) -> embed -> digest. Runs LOCALLY (fastembed isn't in the Railway
+# image) -- see ETL/intelligence/news_cron.py for why. Run on whatever
+# cadence you like; each run's `collect` picks up the previous run's
+# submitted batches.
+news:
+	python3 ETL/intelligence/news_cron.py
+
 site-build:
 	cd website/frontend && npm run build
 
@@ -91,3 +104,20 @@ site-dev:
 
 backup:
 	python3 ETL/events/load/backup.py
+
+# The broad ETL pipeline (43 funder/registry extractors, classify, sanity)
+# now runs on a weekly Railway cron job against a Railway-resident volume,
+# not locally (see the ETL-to-Railway migration plan) -- this pulls that
+# volume's current db.sqlite down for local interactive work (eligibility
+# research, ad-hoc analysis). Run before any session that needs fresh data;
+# --overwrite replaces the local copy each time, mirroring `git pull`.
+pull-db:
+	python3 ETL/events/extract/pull_db.py
+
+# The other half of the automation split: everything that can't run on
+# Railway (cloud-blocked NETWORK sources + MANUAL sources with a file
+# dropped in data/manual_inbox/). Pulls fresh, runs what it can locally,
+# classifies + sanity-checks, pushes the result back. See
+# ETL/events/extract/push_local.py for exactly what runs and what's excluded.
+push:
+	python3 ETL/events/extract/push_local.py

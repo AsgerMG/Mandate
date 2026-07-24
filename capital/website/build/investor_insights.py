@@ -32,11 +32,16 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
 from web_env import ROOT, DB, SITE_DATA  # noqa: E402
 from synthesis import compute_kpis  # the one canonical corpus-figure definition  # noqa: E402
+from sector_labels import TIER1_LABELS  # noqa: E402
 
 OUT = SITE_DATA / "investor_insights.json"
 
 YEARS = ["2021", "2022", "2023", "2024", "2025"]
-SECTORS = ["cleantech", "deeptech_hardware", "life_sciences", "digital", "defense", "space"]
+# The two-tier LLM taxonomy's 11 Tier-1 sectors (companies.sector_top),
+# replacing the retired deterministic sector_inferred (7-bucket) field --
+# "other" excluded, matching the original list's own exclusion of its
+# catch-all bucket.
+SECTORS = [s for s in TIER1_LABELS if s != "other"]
 
 FAMILY_LABELS = {
     "horizon_eu_pillar_ii": "Horizon Europe Pillar II",
@@ -150,12 +155,12 @@ def build_money_rotation(con):
     where the money actually is."""
     rows = con.execute(f"""
         SELECT substr(COALESCE(v.project_started, v.call_deadline),1,4) AS yr,
-               c.sector_inferred, SUM(v.grant_amount_eur)
+               c.sector_top, SUM(v.grant_amount_eur)
         FROM v_events v JOIN companies c ON c.id = v.company_id
         WHERE v.grant_amount_basis = 'satr_aid_element' AND v.grant_amount_eur > 0
           AND {SATR_OUTLIER_SQL}
           AND yr BETWEEN '2021' AND '2025'
-          AND c.sector_inferred IN ({",".join("?" * len(SECTORS))})
+          AND c.sector_top IN ({",".join("?" * len(SECTORS))})
         GROUP BY 1, 2
     """, SECTORS).fetchall()
     data = {s: {y: 0.0 for y in YEARS} for s in SECTORS}
@@ -306,7 +311,7 @@ def build_stack(con):
 
 def build_champions(con, limit=200):
     rows = con.execute("""
-        SELECT b.id, b.canonical_name, b.country, b.sector_inferred,
+        SELECT b.id, b.canonical_name, b.country, b.sector_top,
                b.n_source_families, b.n_events,
                b.total_grant_eur + b.total_debt_eur AS total_eur
         FROM v_company_breadth_companies b
@@ -346,10 +351,10 @@ def build_rotation(con):
     counts = {s: {y: 0 for y in YEARS} for s in SECTORS}
     year_totals = {y: 0 for y in YEARS}
     rows = con.execute("""
-        SELECT v.event_year, c.sector_inferred, COUNT(*)
+        SELECT v.event_year, c.sector_top, COUNT(*)
         FROM v_events v JOIN companies c ON c.id = v.company_id
         WHERE v.event_year BETWEEN '2021' AND '2025'
-          AND c.sector_inferred IN ({})
+          AND c.sector_top IN ({})
         GROUP BY 1, 2
     """.format(",".join("?" * len(SECTORS))), SECTORS).fetchall()
     for year, sector, n in rows:

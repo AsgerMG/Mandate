@@ -325,7 +325,7 @@ def main() -> None:
 
     if args.load_db:
         load_db(rows)
-        print("Reminder: run python3 scripts/classify.py")
+        print("Reminder: run python3 ETL/events/transform/classify_taxonomy.py apply-nace && python3 ETL/events/transform/classify_taxonomy.py run")
     else:
         print("(CSV only — pass --load-db to load into db.sqlite)")
 

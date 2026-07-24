@@ -139,7 +139,7 @@ WHERE COALESCE(e.is_duplicate, 0) = 0;
 -- One row per company with breadth / depth metrics (all entity types — research orgs,
 -- companies, public bodies). Use this for total-corpus rollups.
 CREATE VIEW v_company_breadth AS
-SELECT c.id, c.canonical_name, c.country, c.sector_inferred, c.entity_type,
+SELECT c.id, c.canonical_name, c.country, c.sector_inferred, c.sector_top, c.entity_type,
        c.step_flagged,
        COUNT(DISTINCT v.source_family) AS n_source_families,
        COUNT(*) AS n_events,

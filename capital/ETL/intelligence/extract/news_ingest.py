@@ -378,8 +378,18 @@ def cmd_hydrate(args) -> None:
     # the vector index is built from full text of EVERYTHING, and relevance is
     # a query-time property of retrieval (plus a cheap cost-filter before the
     # Sonnet signal stage). Funder/trade tiers and newest articles first.
-    sql = """SELECT a.id, a.url FROM articles a JOIN sources s ON s.id = a.source_id
-             WHERE a.full_text_fetched = 0
+    #
+    # --since-days scopes to recent articles only -- without it, ORDER BY
+    # published_at DESC still ends up mixing in old backlog: a stub with a
+    # NULL/malformed published_at sorts however SQLite treats NULL in DESC
+    # (implementation-defined, not reliably "last"), so relying on sort order
+    # alone to keep old backlog out was found to NOT actually work in
+    # practice. An explicit WHERE filter is unambiguous.
+    since_clause = ""
+    if args.since_days:
+        since_clause = f" AND a.published_at >= date('now', '-{int(args.since_days)} days')"
+    sql = f"""SELECT a.id, a.url FROM articles a JOIN sources s ON s.id = a.source_id
+             WHERE a.full_text_fetched = 0{since_clause}
              ORDER BY CASE COALESCE(a.is_relevant, -1) WHEN 1 THEN 0
                            WHEN -1 THEN 1 ELSE 2 END,
                       CASE s.tier WHEN 'funder_press' THEN 0
@@ -597,6 +607,9 @@ def main() -> None:
     p.set_defaults(fn=cmd_backfill)
     p = sub.add_parser("hydrate")
     p.add_argument("--limit", type=int)
+    p.add_argument("--since-days", type=int,
+                   help="only hydrate articles published in the last N days "
+                        "(omit for the full backlog, including old articles)")
     p.set_defaults(fn=cmd_hydrate)
     p = sub.add_parser("harvest")
     p.add_argument("--priority", type=int, default=2)

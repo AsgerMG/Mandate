@@ -17,7 +17,7 @@ Idempotent: org-level call_ids are stable on (source, project, org), so re-runs
 delete the same legacy set (already gone) and skip all inserts as duplicates.
 
 Usage: python3 scripts/reload_ju_org_level.py
-Reminder: run python3 scripts/classify.py afterwards.
+Reminder: run python3 ETL/events/transform/classify_taxonomy.py apply-nace && python3 ETL/events/transform/classify_taxonomy.py run afterwards.
 """
 
 
@@ -112,7 +112,7 @@ def main() -> None:
     counts = p2._load_to_db(rows, CHIPS)
     print(f"  {CHIPS}: match {counts}")
 
-    print("\nDone. Reminder: run python3 scripts/classify.py")
+    print("\nDone. Reminder: run python3 ETL/events/transform/classify_taxonomy.py apply-nace && python3 ETL/events/transform/classify_taxonomy.py run")
 
 
 if __name__ == "__main__":

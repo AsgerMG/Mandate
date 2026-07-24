@@ -85,7 +85,7 @@ def main() -> None:
 
     print(f"\nBatch done: {grand['events']} events inserted, "
           f"{grand['skipped_projects']} cross-tagged projects skipped.")
-    print("Next: python3 scripts/classify.py")
+    print("Next: python3 ETL/events/transform/classify_taxonomy.py apply-nace && python3 ETL/events/transform/classify_taxonomy.py run")
 
 
 if __name__ == "__main__":
