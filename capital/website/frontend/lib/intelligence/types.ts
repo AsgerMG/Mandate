@@ -374,9 +374,21 @@ export const CAPITAL_OPTIONS = [
 
 export type CapitalType = (typeof CAPITAL_OPTIONS)[number]["value"];
 
+/** The pieces of the report that are code-computed and known well before the
+ *  writer model call resolves (self footprint, eligibility screen, the 5
+ *  institution rows minus their model-written whyEligible/nextStep). Streamed
+ *  early so the client can show real content during generation instead of
+ *  narration — see synthesize() in pipeline.ts. */
+export interface PartialReport {
+  self: SelfRecord;
+  eligibilityScreen: EligibilityCheck[];
+  institutions: InstitutionEntry[];
+}
+
 /** Server-sent progress event streamed to the client. */
 export type ProgressEvent =
   | { type: "status"; step: PipelineStep; detail?: string }
+  | { type: "partial"; data: PartialReport }
   | { type: "report"; data: IntelligenceReport }
   | { type: "error"; message: string };
 

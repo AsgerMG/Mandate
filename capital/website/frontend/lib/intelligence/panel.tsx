@@ -9,8 +9,10 @@ import {
   type EligibilityAnswers,
   type EligibilityCheck,
   type GroundedRound,
+  type InstitutionEntry,
   type InstrumentRow,
   type IntelligenceReport,
+  type PartialReport,
   type PipelineStep,
   type ProfileSignal,
   type ProgressEvent,
@@ -333,7 +335,11 @@ const STEPS: { key: PipelineStep; label: string }[] = [
 ];
 
 export function IntelligencePanel() {
-  // ── Screen machine: basics → operate → finances → adaptive[0..n] → running ──
+  // ── Screen machine: intake (form + a live, continuously-updating preview
+  // panel side by side) → adaptive[0..n] → running (with the same preview
+  // panel now fed by the real pipeline) → report. There is no separate
+  // "verdict" screen any more — the instant, code-only read is always
+  // visible next to the form as you fill it in, not a post-submit reveal. ──
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
   const [companyType, setCompanyType] = useState("");
@@ -345,7 +351,7 @@ export function IntelligencePanel() {
   const [elig, setElig] = useState<EligibilityAnswers>({ borrowerModel: "operating" });
   const [targetMarkets, setTargetMarkets] = useState<string[]>([]);
 
-  const [screen, setScreen] = useState<"basics" | "verdict" | "adaptive">("basics");
+  const [screen, setScreen] = useState<"intake" | "adaptive">("intake");
   const [preparing, setPreparing] = useState(false);
   // One grounded round at a time (advisory_pipeline Phase 3C) — the server
   // decides per-call whether another round is worth asking, grounded in the
@@ -357,9 +363,11 @@ export function IntelligencePanel() {
   const [roundCount, setRoundCount] = useState(0);
 
   // The fast path: a deterministic eligibility verdict, computed with zero
-  // model calls, shown right after the finances screen (before the memo's
-  // 2-3 minute AI research runs). Self-only/preliminary — the full memo's
-  // table can only grow from here (more peers), never contradict it.
+  // model calls. Lives in the preview panel next to the form, continuously
+  // refreshed on a debounce as the founder types/picks (see the effect
+  // below) — never gates a screen transition. Self-only/preliminary — the
+  // full memo's table can only grow from here (more peers), never
+  // contradict it.
   const [verdictLoading, setVerdictLoading] = useState(false);
   const [verdict, setVerdict] = useState<{
     eligibilityScreen: EligibilityCheck[];
@@ -370,7 +378,7 @@ export function IntelligencePanel() {
 
   // Phase 4: the model's own read of the free-text description, fetched once
   // (see fetchRound's wantProfileSignal) and passed straight through to the
-  // memo — never re-derived, never touches the verdict screen.
+  // memo — never re-derived.
   const [profileSignal, setProfileSignal] = useState<ProfileSignal | null>(null);
 
   const [running, setRunning] = useState(false);
@@ -378,6 +386,12 @@ export function IntelligencePanel() {
   const [statusDetail, setStatusDetail] = useState<string>("");
   const [elapsed, setElapsed] = useState(0);
   const [chatter, setChatter] = useState(0);
+  // Streamed the moment the pipeline's code-computed facts are known — well
+  // before the writer model call resolves (see the "partial" ProgressEvent,
+  // emitted from synthesize() in pipeline.ts). Lets the running screen show
+  // the founder's REAL institutions table filling in live, instead of
+  // narrating progress while the real content sits unused server-side.
+  const [livePartial, setLivePartial] = useState<PartialReport | null>(null);
   const [report, setReport] = useState<IntelligenceReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -421,9 +435,14 @@ export function IntelligencePanel() {
   // Right after the core screen: compute the fast, model-free eligibility
   // verdict and show it immediately. Falls straight through to the adaptive
   // round on any failure — the verdict screen is a bonus, never a gate.
-  async function fetchVerdict() {
+  // Best-effort live preview: refreshes `verdict` in place, never gates a
+  // screen transition and never falls through to the adaptive round on
+  // failure (a stale or missing preview just means the panel stays quiet —
+  // it's a bonus, not a gate). Returns what it fetched so handleContinue can
+  // get a guaranteed-fresh read at the moment of submission without
+  // duplicating this fetch.
+  async function fetchVerdictLive(): Promise<Verdict | null> {
     setVerdictLoading(true);
-    setError(null);
     try {
       const res = await fetch("/api/intelligence/verdict", {
         method: "POST",
@@ -431,10 +450,6 @@ export function IntelligencePanel() {
         body: JSON.stringify(basePayload()),
       });
       const data = (await res.json().catch(() => ({}))) as Partial<Verdict>;
-      if (!data.eligibilityScreen && !data.instrumentTable) {
-        await fetchRound(elig, [], true);
-        return;
-      }
       const v: Verdict = {
         eligibilityScreen: data.eligibilityScreen ?? [],
         instrumentTable: data.instrumentTable ?? [],
@@ -442,12 +457,37 @@ export function IntelligencePanel() {
         candidateInstrumentIds: data.candidateInstrumentIds ?? [],
       };
       setVerdict(v);
-      setScreen("verdict");
+      return v;
     } catch {
-      await fetchRound(elig, [], true);
+      return null;
     } finally {
       setVerdictLoading(false);
     }
+  }
+
+  // Keep the live preview panel current as the founder fills in the fields
+  // that actually move it (company/country change the DB match; ticket band
+  // and capital type re-rank the instrument shortlist). Debounced so a fast
+  // typer doesn't fire a request per keystroke.
+  useEffect(() => {
+    // No setVerdict(null) here on purpose (setState directly in an effect
+    // body is a lint smell) — the panel's render already treats an empty
+    // company name as "nothing to show yet" regardless of any stale verdict.
+    if (!company.trim()) return;
+    const t = setTimeout(() => { void fetchVerdictLive(); }, 500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [company, country, elig.ticketBand, capitalSought.join(",")]);
+
+  // The form's one primary action: get a guaranteed-fresh verdict (the
+  // debounced background fetch may not have settled yet on a fast submit),
+  // then either the adaptive round or, if nothing's left to ask, straight to
+  // the memo — fetchRound already handles that fallback.
+  async function handleContinue() {
+    if (!company.trim() || preparing || verdictLoading) return;
+    setError(null);
+    const v = await fetchVerdictLive();
+    await fetchRound(elig, v?.candidateInstrumentIds ?? [], true);
   }
 
   // Phase 3C: fetch exactly one grounded adaptive round, scoped to the given
@@ -541,6 +581,7 @@ export function IntelligencePanel() {
     setRunning(true);
     setError(null);
     setReport(null);
+    setLivePartial(null);
     setElapsed(0);
     setChatter(0);
     setStep("discovering");
@@ -574,7 +615,8 @@ export function IntelligencePanel() {
           if (event.type === "status") {
             setStep(event.step);
             if (event.detail) setStatusDetail(event.detail);
-          } else if (event.type === "report") setReport(event.data);
+          } else if (event.type === "partial") setLivePartial(event.data);
+          else if (event.type === "report") setReport(event.data);
           else if (event.type === "error") setError(event.message);
         }
       }
@@ -588,12 +630,8 @@ export function IntelligencePanel() {
 
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
-  const FIXED_SCREENS = ["basics", "verdict"] as const;
-  const screenIdx =
-    screen === "adaptive"
-      ? FIXED_SCREENS.length + roundCount
-      : FIXED_SCREENS.indexOf(screen as (typeof FIXED_SCREENS)[number]);
-  const totalScreens = FIXED_SCREENS.length + MAX_ROUNDS;
+  const screenIdx = screen === "adaptive" ? 1 + roundCount : 0;
+  const totalScreens = 1 + MAX_ROUNDS;
 
   const inputCls =
     "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]";
@@ -635,11 +673,12 @@ export function IntelligencePanel() {
           </div>
         )}
 
-        {/* ── Screen 1: the basics ─────────────────────────────────────── */}
-        {screen === "basics" && !running && (
+        {/* ── Intake: the form and its live preview panel, side by side ── */}
+        {screen === "intake" && !running && (
+          <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_22rem]">
           <form
-            onSubmit={(e) => { e.preventDefault(); if (company.trim()) void fetchVerdict(); }}
-            className="mt-4 space-y-4"
+            onSubmit={(e) => { e.preventDefault(); void handleContinue(); }}
+            className="space-y-4"
           >
             <label className="block text-sm">
               <span className={fieldLabel}>
@@ -780,58 +819,58 @@ export function IntelligencePanel() {
             </div>
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
-              <button type="submit" disabled={verdictLoading || !company.trim()} className={nextBtn}>
-                {verdictLoading ? "Checking…" : "See what you're eligible for"}
+              <button type="submit" disabled={!company.trim() || preparing || verdictLoading} className={nextBtn}>
+                {preparing ? "Checking what's still open…" : "Continue"}
               </button>
-              <span className="text-xs text-[var(--muted-foreground)]">
-                Instant, code-only. Tailored follow-ups and your memo come next.
-              </span>
+              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
+                Skip the questions, write it now
+              </button>
             </div>
           </form>
-        )}
 
-        {/* ── Verdict screen: the fast, model-free eligibility answer ──── */}
-        {screen === "verdict" && verdict && !running && (
-          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
-            <p className="text-xs uppercase tracking-widest text-[#12264f]">Your eligibility, right now</p>
-            <p className="-mt-1 mb-4 text-sm text-[var(--muted-foreground)]">
-              Computed instantly, code-only, no model call. The full memo below
-              adds comparable companies and a funder-by-funder brief, on top of
-              exactly this, never contradicting it.
-            </p>
+          {/* ── Live preview: the fast, model-free eligibility read, updating
+              as the form is filled in — not a separate post-submit screen. ── */}
+          <div className="lg:sticky lg:top-4 lg:self-start">
+            <StepHeader
+              eyebrow="Your eligibility, right now"
+              title="What we know so far"
+              detail="Updates as you type, computed in code with no model call. The finished memo only ever adds to this, never contradicts it."
+            />
             <div className="border border-[var(--border)] bg-white px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
-              <EligibilityTable rows={verdict.eligibilityScreen} />
-              <InstrumentTable rows={verdict.instrumentTable} />
-              {verdict.eligibilityScreen.length === 0 && verdict.instrumentTable.length === 0 && (
+              {!company.trim() ? (
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  Not enough answered yet to compute a verdict — the full memo
-                  below will still gather comparables and a funder brief.
+                  Start with your company name above.
+                </p>
+              ) : verdict ? (
+                <>
+                  <EligibilityTable rows={verdict.eligibilityScreen} />
+                  <InstrumentTable rows={verdict.instrumentTable} />
+                  {verdict.eligibilityScreen.length === 0 && verdict.instrumentTable.length === 0 && (
+                    <p className="text-sm text-[var(--muted-foreground)]">
+                      Not enough answered yet — fill in a few more fields, or
+                      continue and the full memo will still gather comparables
+                      and a funder brief.
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm text-[var(--muted-foreground)]">
+                  {verdictLoading ? "Checking…" : "One moment…"}
                 </p>
               )}
             </div>
-            <div className="mt-5 flex items-center gap-4">
-              <button type="button" disabled={preparing}
-                onClick={() => void fetchRound(elig, verdict.candidateInstrumentIds, true)} className={nextBtn}>
-                {preparing ? "Checking what's still open…" : "See the full memo"}
-              </button>
-              <button type="button" onClick={() => setScreen("basics")} className={backBtn}>Back</button>
-              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
-                Skip straight to the memo
-              </button>
-            </div>
+          </div>
           </div>
         )}
 
         {/* ── Adaptive round: grounded in the founder's real remaining gates ── */}
         {screen === "adaptive" && round && !running && (
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
-            <p className="mb-1 text-xs uppercase tracking-widest text-[#12264f]">
-              {round.theme}
-            </p>
-            <p className="mb-5 text-sm text-[var(--muted-foreground)]">
-              Each question here comes from a real requirement of a fund still on
-              your shortlist. Skip anything you are unsure of.
-            </p>
+            <StepHeader
+              eyebrow={round.theme}
+              title="A few more things"
+              detail="Each question here comes from a real requirement of a fund still on your shortlist. Skip anything you are unsure of."
+            />
             <div className="space-y-5">
               {round.questions.map((q) => {
                 const hint = FIELD_ENUM_HINTS[q.field];
@@ -877,7 +916,7 @@ export function IntelligencePanel() {
                   ? "Checking…"
                   : roundCount + 1 >= MAX_ROUNDS ? "Write my funding memo" : "Continue"}
               </button>
-              <button type="button" onClick={() => setScreen(verdict ? "verdict" : "basics")} className={backBtn}>
+              <button type="button" onClick={() => setScreen("intake")} className={backBtn}>
                 Back
               </button>
               <button type="button" onClick={() => void runMemo([])} className={backBtn}>
@@ -896,11 +935,11 @@ export function IntelligencePanel() {
                 {Math.floor(elapsed / 60) > 0 ? `${Math.floor(elapsed / 60)}m ` : ""}{elapsed % 60}s elapsed
               </p>
             </div>
-            <ol className="mt-4 space-y-2">
+            <ol className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
               {STEPS.map((s, i) => {
                 const state = activeIndex > i ? "done" : activeIndex === i ? "active" : "pending";
                 return (
-                  <li key={s.key} className="flex items-center gap-3 text-sm">
+                  <li key={s.key} className="flex items-center gap-2 text-sm">
                     <span className={
                       "flex h-5 w-5 items-center justify-center rounded-full text-[11px] " +
                       (state === "done" ? "bg-[#2D6A4F] text-[#141414]"
@@ -916,7 +955,7 @@ export function IntelligencePanel() {
                 );
               })}
             </ol>
-            <p className="mt-4 min-h-[1.25rem] text-sm italic text-[var(--muted-foreground)]">
+            <p className="mt-3 min-h-[1.25rem] text-sm italic text-[var(--muted-foreground)]">
               {(() => {
                 const pool = step ? (STEP_CHATTER[step] ?? []) : [];
                 const line = pool.length ? pool[chatter % pool.length] : "";
@@ -927,6 +966,19 @@ export function IntelligencePanel() {
               Typically 2–3 minutes. Every figure is checked against the funding
               record before it reaches the page.
             </p>
+
+            {/* ── The real institutions table, live: populated the moment the
+                pipeline's code-computed facts are known (see the "partial"
+                SSE event), well before the prose below it is finished. This
+                is the actual memo forming, not narration about it. ── */}
+            {livePartial && (
+              <div className="mt-6 border-t border-[var(--border)] pt-6">
+                <div className="border border-[var(--border)] bg-white px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
+                  <EligibilityTable rows={livePartial.eligibilityScreen} />
+                  <InstitutionsTable institutions={livePartial.institutions} pending />
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -937,12 +989,95 @@ export function IntelligencePanel() {
         )}
       </div>
 
-      {report && <Memo report={report} />}
+      {report && <Memo key={report.generatedAt} report={report} />}
     </section>
   );
 }
 
 /** A quiet editorial section title in the house serif — no number, no colour. */
+/** One consistent heading grammar used by every screen of the intake flow
+ *  (the live-preview panel, the adaptive round, the running screen) — a
+ *  small eyebrow, a plain-English title, and a one-line explainer of what
+ *  this screen is and what happens next. Replaces three previously
+ *  different ad hoc heading styles per screen. */
+function StepHeader({ eyebrow, title, detail }: { eyebrow?: string; title: string; detail?: string }) {
+  return (
+    <div className="mb-3">
+      {eyebrow && (
+        <p className="text-xs uppercase tracking-widest text-[#12264f]">{eyebrow}</p>
+      )}
+      <p className="text-sm font-semibold text-[var(--foreground)]" style={serif}>{title}</p>
+      {detail && (
+        <p className="mt-0.5 text-sm text-[var(--muted-foreground)]">{detail}</p>
+      )}
+    </div>
+  );
+}
+
+/** A small shimmering placeholder for a model-written cell that hasn't
+ *  arrived yet (see InstitutionsTable's `pending`) — real layout, honest
+ *  "still writing this" signal, never a spinner standing in for content. */
+function PlaceholderBar({ narrow = false }: { narrow?: boolean }) {
+  return (
+    <span
+      className={"inline-block h-3 animate-pulse rounded bg-[var(--muted)] align-middle " + (narrow ? "w-20" : "w-40")}
+    />
+  );
+}
+
+/**
+ * The brief's centrepiece table: institution / type of support / why you
+ * qualify / comparable firms. Used identically in two moments — live, while
+ * the memo is still generating (whyEligible/nextStep render as
+ * PlaceholderBar until the model has written them, `pending`), and final, in
+ * the finished Memo. Same component, same layout, so the placeholder cells
+ * simply fill in with real text rather than the table re-laying-out.
+ */
+function InstitutionsTable({ institutions, pending = false }: { institutions: InstitutionEntry[]; pending?: boolean }) {
+  if (!institutions || institutions.length === 0) return null;
+  return (
+    <>
+      <SectionTitle>Where to target</SectionTitle>
+      <table className="w-full border-collapse text-[14px]">
+        <thead>
+          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
+            <th className="py-2 pr-3 font-semibold">Institution</th>
+            <th className="py-2 pr-3 font-semibold">Type of support</th>
+            <th className="py-2 pr-3 font-semibold">Why you qualify</th>
+            <th className="py-2 font-semibold">Comparable firms funded</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-[var(--border)] align-top">
+          {institutions.map((r, i) => (
+            <tr key={i}>
+              <td className="py-2.5 pr-3">
+                <span className="font-semibold">{r.institution}</span>
+                <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
+                  {r.ticket}
+                </span>
+              </td>
+              <td className="py-2.5 pr-3">{r.supportType}</td>
+              <td className="py-2.5 pr-3">
+                {pending && !r.whyEligible ? <PlaceholderBar /> : r.whyEligible}
+                <span className="block text-[12px] italic text-[var(--muted-foreground)]">
+                  Move: {pending && !r.nextStep ? <PlaceholderBar narrow /> : r.nextStep}
+                </span>
+              </td>
+              <td className="py-2.5">
+                {r.comparableFirms.length > 0 ? (
+                  r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
+                ) : (
+                  <span className="text-[var(--muted-foreground)]">None traced yet</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <h3 className="mt-10 mb-3 text-[17px] font-bold text-[var(--foreground)] print:mt-8" style={serif}>
@@ -1085,6 +1220,8 @@ function InstrumentTable({ rows }: { rows: InstrumentRow[] }) {
  * hairline rules, one restrained comparables table. No cards, boxes, pills or
  * colour blocks. Reads top to bottom and prints to a clean PDF.
  */
+const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
+
 function Memo({ report }: { report: IntelligenceReport }) {
   const self = report.self;
   const date = new Date(report.generatedAt).toLocaleDateString("en-GB", {
@@ -1097,6 +1234,27 @@ function Memo({ report }: { report: IntelligenceReport }) {
   const selfLine = [self.euCapital, self.channelBreakdown, self.activeYears]
     .filter(Boolean)
     .join(" · ");
+
+  const readMinutes = Math.max(
+    1,
+    Math.round(
+      (report.bottomLine.reduce((n, b) => n + wordCount(b), 0) +
+        wordCount(report.positioning) +
+        wordCount(report.stateOfPlay)) /
+        200,
+    ),
+  );
+
+  // Reveal-first-bullet: the single best line lands immediately, everything
+  // else fades in a beat later — an opened loop reads better than a wall of
+  // text arriving all at once. The parent keys this component by
+  // generatedAt, so this state starts fresh (false) for every new report,
+  // never stuck "revealed" from a prior run.
+  const [revealed, setRevealed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setRevealed(true), 550);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div
@@ -1120,7 +1278,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
           EUROINVTRACKER
         </span>
         <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-          Private funding memorandum
+          Private funding memorandum · ~{readMinutes} min read
         </span>
       </div>
 
@@ -1136,77 +1294,54 @@ function Memo({ report }: { report: IntelligenceReport }) {
 
       <hr className="mt-6 border-[var(--border)]" />
 
-      {/* ── Bottom line: 4-5 sharp bullets, up front ─────────────────── */}
+      {/* ── Bottom line: the single best line lands first, up front ──── */}
       <ul className="mt-6 space-y-3 text-[17px] leading-[1.55]">
-        {report.bottomLine.map((b, i) => (
-          <li key={i} className="flex gap-3">
-            <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
-            <span>{b}</span>
-          </li>
-        ))}
+        <li className="flex gap-3">
+          <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
+          <span>{report.bottomLine[0]}</span>
+        </li>
       </ul>
-      {selfLine && (
-        <p className="mt-3 text-[13px] italic text-[var(--muted-foreground)]">
-          Your traced public funding: {selfLine}.
-        </p>
-      )}
 
-      {/* ── Eligibility screen: deterministic, cited, never model-written ── */}
-      <EligibilityTable rows={report.eligibilityScreen} />
-
-      {/* ── Where to target: the brief's centrepiece table ──────────── */}
-      <SectionTitle>Where to target</SectionTitle>
-      <table className="w-full border-collapse text-[14px]">
-        <thead>
-          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
-            <th className="py-2 pr-3 font-semibold">Institution</th>
-            <th className="py-2 pr-3 font-semibold">Type of support</th>
-            <th className="py-2 pr-3 font-semibold">Why you qualify</th>
-            <th className="py-2 font-semibold">Comparable firms funded</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-[var(--border)] align-top">
-          {report.institutions.map((r, i) => (
-            <tr key={i}>
-              <td className="py-2.5 pr-3">
-                <span className="font-semibold">{r.institution}</span>
-                <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
-                  {r.ticket}
-                </span>
-              </td>
-              <td className="py-2.5 pr-3">{r.supportType}</td>
-              <td className="py-2.5 pr-3">
-                {r.whyEligible}
-                <span className="block text-[12px] italic text-[var(--muted-foreground)]">
-                  Move: {r.nextStep}
-                </span>
-              </td>
-              <td className="py-2.5">
-                {r.comparableFirms.length > 0 ? (
-                  r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
-                ) : (
-                  <span className="text-[var(--muted-foreground)]">None traced yet</span>
-                )}
-              </td>
-            </tr>
+      {/* ── Everything else fades in a beat later ────────────────────── */}
+      <div
+        className={"transition-opacity duration-500 " + (revealed ? "opacity-100" : "opacity-0")}
+        aria-hidden={!revealed}
+      >
+        <ul className="mt-3 space-y-3 text-[17px] leading-[1.55]">
+          {report.bottomLine.slice(1).map((b, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
+              <span>{b}</span>
+            </li>
           ))}
-        </tbody>
-      </table>
+        </ul>
+        {selfLine && (
+          <p className="mt-3 text-[13px] italic text-[var(--muted-foreground)]">
+            Your traced public funding: {selfLine}.
+          </p>
+        )}
 
-      {/* ── Positioning: fitting the current political moment ───────── */}
-      <SectionTitle>Positioning</SectionTitle>
-      <p>{report.positioning}</p>
+        {/* ── Eligibility screen: deterministic, cited, never model-written ── */}
+        <EligibilityTable rows={report.eligibilityScreen} />
 
-      {/* ── State of play: recent news + the closing line ────────────── */}
-      <SectionTitle>State of play</SectionTitle>
-      <p>{report.stateOfPlay}</p>
+        {/* ── Where to target: the brief's centrepiece table ───────────── */}
+        <InstitutionsTable institutions={report.institutions} />
 
-      {/* ── Footer ─────────────────────────────────────────────────── */}
-      <div className="mt-12 border-t border-[var(--border)] pt-4">
-        <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
-        <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-          EuroInvTracker · the public funding record of European companies, 2021–2025
-        </p>
+        {/* ── Positioning: fitting the current political moment ────────── */}
+        <SectionTitle>Positioning</SectionTitle>
+        <p>{report.positioning}</p>
+
+        {/* ── State of play: recent news + the closing line ─────────────── */}
+        <SectionTitle>State of play</SectionTitle>
+        <p>{report.stateOfPlay}</p>
+
+        {/* ── Footer ────────────────────────────────────────────────────── */}
+        <div className="mt-12 border-t border-[var(--border)] pt-4">
+          <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
+          <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+            EuroInvTracker · the public funding record of European companies, 2021–2025
+          </p>
+        </div>
       </div>
     </div>
   );

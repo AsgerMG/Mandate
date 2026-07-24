@@ -738,6 +738,7 @@ async function synthesize(
   instrumentTable: InstrumentRow[],
   instructions: string,
   sectorTop: string,
+  emit: Emit,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt">> {
   const profileBlock = eligibilityContext(req.eligibility, req.targetMarkets);
   // Stage D (v1): the deterministic eligibility screen — computed here, in
@@ -935,6 +936,11 @@ async function synthesize(
   // by `channel` alone: two rows can share a channel, see buildInstitutions).
   const baseRows = instrumentTable.slice(0, BRIEF_INSTITUTION_CAP);
   const institutions = buildInstitutions(baseRows, records, dbPeers);
+  // Stream what's already known, well before the writer model call below
+  // resolves: self footprint, eligibility screen and the institution rows
+  // (whyEligible/nextStep still "" here — the client renders those as
+  // placeholders until the final "report" event replaces this).
+  emit({ type: "partial", data: { self, eligibilityScreen, institutions } });
   const seenRowKeys = new Set<string>();
   const rowKeys = baseRows.map((row) => {
     let key = row.instrumentId ?? row.channel;
@@ -1399,7 +1405,7 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
     records.find((r) => r.matched && r.sectorTop)?.sectorTop ||
     "other";
   const body = await synthesize(
-    req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop);
+    req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit);
 
   emit({
     type: "report",

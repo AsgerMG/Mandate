@@ -33,10 +33,25 @@ const req = {
   },
 };
 
+let partialSeenAt: number | null = null;
+const t0 = Date.now();
+
 const emit = (e: ProgressEvent) => {
   if (e.type === "status") console.error(`[${e.step}] ${e.detail ?? ""}`);
   if (e.type === "error") console.error("ERROR:", e.message);
+  if (e.type === "partial") {
+    partialSeenAt = Date.now() - t0;
+    console.error(
+      `[partial @ ${partialSeenAt}ms] self.matched=${e.data.self.matched} ` +
+        `eligibilityScreen=${e.data.eligibilityScreen.length} rows, ` +
+        `institutions=${e.data.institutions.length} rows ` +
+        `(whyEligible empty on all: ${e.data.institutions.every((i) => !i.whyEligible)})`,
+    );
+    for (const inst of e.data.institutions)
+      console.error(`  - ${inst.institution} [${inst.ticket}] peers: ${inst.comparableFirms.map((f) => f.name).join(", ") || "none"}`);
+  }
   if (e.type === "report") {
+    console.error(`[report @ ${Date.now() - t0}ms]${partialSeenAt !== null ? ` (partial arrived ${Date.now() - t0 - partialSeenAt}ms earlier)` : " (NO partial event was ever seen!)"}`);
     const r = e.data;
     const wc = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
     console.log("\n=== BOTTOM LINE ===");
