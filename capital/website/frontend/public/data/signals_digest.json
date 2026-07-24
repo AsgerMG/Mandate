@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-24T17:09:02+00:00",
+ "generatedAt": "2026-07-24T18:54:24+00:00",
  "corpus": {
   "articles": 19281,
   "embeddedArticles": 5102
@@ -1033,5 +1033,127 @@
     "similarity": 0.689
    }
   ]
- }
+ },
+ "people": [
+  {
+   "title": "Listen: Why Europe’s renovation boom is wasting billions, missing real energy savings",
+   "source": "euobserver",
+   "tier": "trade_press",
+   "date": "2026-07-09",
+   "url": "https://euobserver.com/226686/listen-why-europes-renovation-boom-is-wasting-billions-missing-real-energy-savings/",
+   "person": "Léa Marchal",
+   "signalType": "programme_policy_change",
+   "excerpt": "The European Commission plans to continue funding energy-efficient building renovation under the EU's next multiannual budget covering 2028 to 2034."
+  },
+  {
+   "title": "German politicians duped into thinking a new subsidy scheme only benefits Chinese electric vehicles",
+   "source": "euobserver",
+   "tier": "trade_press",
+   "date": "2026-07-09",
+   "url": "https://euobserver.com/226830/german-politicians-duped-into-thinking-a-new-subsidy-scheme-only-benefits-chinese-electric-vehicles/",
+   "person": "Sara Matthieu",
+   "signalType": "programme_policy_change",
+   "excerpt": "CDU/CSU and SPD politicians are pushing to amend the EV subsidy's eligibility rules to favour European brands only, despite Chinese brands representing under 15 percent of applications."
+  },
+  {
+   "title": "IA souveraine : pourquoi la France doit apprendre à choisir ses dépendances",
+   "source": "maddyness",
+   "tier": "trade_press",
+   "date": "2026-07-08",
+   "url": "https://www.maddyness.com/2026/07/08/ia-souveraine-pourquoi-la-france-doit-apprendre-a-choisir-ses-dependances/",
+   "person": "David Chekroun",
+   "signalType": "programme_policy_change",
+   "excerpt": "Bpifrance has allocated 10 billion euros to the AI sector under the France 2030 programme, taking only minority stakes and not seeking control of the companies it backs."
+  },
+  {
+   "title": "Liz Kendall: ‘I’d love to stay as UK tech secretary’",
+   "source": "sifted",
+   "tier": "trade_press",
+   "date": "2026-07-07",
+   "url": "https://sifted.eu/articles/liz-kendall-podcast",
+   "person": "Liz Kendall",
+   "signalType": "programme_policy_change",
+   "excerpt": "The UK government has unveiled a £1.1bn plan to support startups in AI hardware and novel chip technology."
+  },
+  {
+   "title": "A Station F, Bruno Retailleau présente son plan à 25 milliards d’euros pour l’IA - Maddyness",
+   "source": "maddyness",
+   "tier": "trade_press",
+   "date": "2026-07-07",
+   "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
+   "person": "Bruno Retailleau",
+   "signalType": "programme_policy_change",
+   "excerpt": "Bruno Retailleau presented at Station F a plan worth 25 billion euros for AI, without printed detail on instruments or timeline in the available extract."
+  },
+  {
+   "title": "CNRS appoints Sandrine Sagan as deputy CEO for science - Science|Business",
+   "source": "science_business",
+   "tier": "trade_press",
+   "date": "2026-07-07",
+   "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
+   "person": "Sandrine Sagan",
+   "signalType": "stakeholder_appointment",
+   "excerpt": "CNRS has appointed Sandrine Sagan as deputy CEO for science."
+  },
+  {
+   "title": "Liz Kendall: ‘I’d love to stay as UK tech secretary’ - Sifted",
+   "source": "sifted",
+   "tier": "trade_press",
+   "date": "2026-07-07",
+   "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
+   "person": "Liz Kendall",
+   "signalType": "stakeholder_appointment",
+   "excerpt": "Liz Kendall speaks as UK tech secretary and expresses interest in remaining in the role, without confirming a formal reappointment."
+  },
+  {
+   "title": "FRANCE 2030 REGIONALISÉ : L'ÉTAT ET LES RÉGIONS LANCENT UN NOUVEL AXE POUR ACCÉLÉRER LA MODERNISATION DE L'INDUSTRIE - Bpifrance | Presse",
+   "source": "bpifrance_presse",
+   "tier": "funder_press",
+   "date": "2026-07-06",
+   "url": "https://presse.bpifrance.fr/france-2030-regionalise-letat-et-les-regions-lancent-un-nouvel-axe-pour-accelerer-la-modernisation-de-lindustrie/",
+   "person": "Sébastien Martin",
+   "signalType": "programme_policy_change",
+   "excerpt": "The French State and regions launched a fifth axis of the regionalised France 2030 plan, dedicated to modernisation and adoption of advanced technologies by industrial SMEs and mid-caps, alongside the existing innovation, i-Démo régionalisé, filière and formation axes."
+  },
+  {
+   "title": "Origine Partners et Bpifrance accompagnent Laurent Ducoin et Umberto Najar dans la reprise de la société LJ Trucks - Bpifrance | Presse",
+   "source": "bpifrance_presse",
+   "tier": "funder_press",
+   "date": "2026-07-06",
+   "url": "https://presse.bpifrance.fr/origine-partners-et-bpifrance-accompagnent-laurent-ducoin-et-umberto-najar-dans-la-reprise-de-la-societe-lj-trucks/",
+   "person": "Laurent Ducoin",
+   "signalType": "programme_policy_change",
+   "excerpt": "Bpifrance's Chargé d'Investissement Senior described the LJ Trucks operation as illustrating the Plan Transmission's continued focus on supporting the transformation and continuity of industrial SMEs."
+  },
+  {
+   "title": "EU should open state aid to cleantech manufacturing to meet electrification goals - transportenvironment.org",
+   "source": "gnews_industrial_policy",
+   "tier": "general_news",
+   "date": "2026-07-06",
+   "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F%3Dw16",
+   "person": "transportenvironment.org",
+   "signalType": "programme_policy_change",
+   "excerpt": "Transport & Environment calls on the EU to widen state aid rules to cover cleantech manufacturing as part of electrification goals under the Clean Industrial Deal."
+  },
+  {
+   "title": "How Pedro Lourtie became the EU’s dealmaker in chief - politico.eu",
+   "source": "politico_eu",
+   "tier": "trade_press",
+   "date": "2026-07-06",
+   "url": "https://lh3.googleusercontent.com/-DR60l-K8vnyi99NZovm9HlXyZwQ85GMDxiwJWzoasZYCUrPuUM_P_4Rb7ei03j-0nRs0c4F=w16",
+   "person": "Pedro Lourtie",
+   "signalType": "stakeholder_appointment",
+   "excerpt": "Pedro Lourtie has emerged as a central negotiator within the EU institutions on budget and deal-making matters, according to Politico Europe."
+  },
+  {
+   "title": "Bpifrance, la Banque des Territoires et Icade lancent Urban Ventures, le premier fonds français dédié à la transformation du Built Environment - Bpifrance | Presse",
+   "source": "bpifrance_presse",
+   "tier": "funder_press",
+   "date": "2026-07-06",
+   "url": "https://presse.bpifrance.fr/bpifrance-la-banque-des-territoires-et-icade-lancent-urban-ventures-le-premier-fonds-francais-dedie-a-la-transformation-du-built-environnement/",
+   "person": "Paul-François Fournier",
+   "signalType": "stakeholder_appointment",
+   "excerpt": "Paul-Francois Fournier, executive director for Innovation at Bpifrance, and Francois Wohrer, investment director at the Banque des Territoires, publicly commit their institutions to the Urban Ventures fund strategy."
+  }
+ ]
 }

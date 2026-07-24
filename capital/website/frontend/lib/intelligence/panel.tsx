@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type CSSProperties } from "react";
 import {
-  BORROWER_MODELS,
   CAPITAL_OPTIONS,
   COMPANY_TYPE_OPTIONS,
   FIELD_ENUM_HINTS,
@@ -340,7 +339,10 @@ export function IntelligencePanel() {
   const [companyType, setCompanyType] = useState("");
   const [description, setDescription] = useState("");
   const [capitalSought, setCapitalSought] = useState<string[]>([]);
-  const [elig, setElig] = useState<EligibilityAnswers>({});
+  // borrowerModel defaults to "operating" and is never asked on the first
+  // screen — the lender/intermediary routing it unlocks is out of scope for
+  // this tool's lean-founder persona.
+  const [elig, setElig] = useState<EligibilityAnswers>({ borrowerModel: "operating" });
   const [targetMarkets, setTargetMarkets] = useState<string[]>([]);
 
   const [screen, setScreen] = useState<"basics" | "verdict" | "adaptive">("basics");
@@ -681,31 +683,17 @@ export function IntelligencePanel() {
               </label>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Company type
-                  <InfoDot>
-                    How a funder would classify you. Deep tech opens doors (like the
-                    EIC) that an application layer does not.
-                  </InfoDot>
-                </span>
-                <DropdownSelect options={[...COMPANY_TYPE_OPTIONS]}
-                  value={companyType || undefined} onPick={(v) => setCompanyType(v ?? "")}
-                  placeholder="Select company type" />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Who ends up owing the money?
-                  <InfoDot>
-                    A company financing customers or originating credit belongs in a
-                    completely different funnel than one funding its own operations.
-                  </InfoDot>
-                </span>
-                <DropdownSelect options={[...BORROWER_MODELS]} value={elig.borrowerModel}
-                  onPick={(v) => setElig((p) => ({ ...p, borrowerModel: v as EligibilityAnswers["borrowerModel"] }))}
-                  placeholder="We fund our own operations" />
-              </div>
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Company type
+                <InfoDot>
+                  How a funder would classify you. Deep tech opens doors (like the
+                  EIC) that an application layer does not.
+                </InfoDot>
+              </span>
+              <DropdownSelect options={[...COMPANY_TYPE_OPTIONS]}
+                value={companyType || undefined} onPick={(v) => setCompanyType(v ?? "")}
+                placeholder="Select company type" />
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
@@ -779,11 +767,11 @@ export function IntelligencePanel() {
               </div>
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
-                  Losses over half your share capital?
+                  Currently loss-making beyond half your equity?
                   <InfoDot>
-                    The "undertaking in difficulty" test. If yes, most state aid is
-                    blocked until equity is restored; the memo will say so plainly
-                    and name the cure. Not sure is fine, this is never forced.
+                    If yes, EU rules block most state aid until equity is
+                    restored, we will name the fix. Not sure is fine, this is
+                    never forced.
                   </InfoDot>
                 </span>
                 <Chips options={YES_NO_UNSURE} value={elig.lossesOverHalfCapital}
@@ -1098,15 +1086,12 @@ function InstrumentTable({ rows }: { rows: InstrumentRow[] }) {
  * colour blocks. Reads top to bottom and prints to a clean PDF.
  */
 function Memo({ report }: { report: IntelligenceReport }) {
-  const o = report.overview;
   const self = report.self;
   const date = new Date(report.generatedAt).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
-  const moves = [...report.todos].sort((a, b) => a.priority - b.priority);
-  const pWord = (p: number) => (p === 1 ? "Now" : p === 2 ? "Next" : "Later");
 
   // The founder's own footprint, as a single quiet line of prose.
   const selfLine = [self.euCapital, self.channelBreakdown, self.activeYears]
@@ -1146,19 +1131,22 @@ function Memo({ report }: { report: IntelligenceReport }) {
         <dt className="text-[var(--muted-foreground)]">Date</dt>
         <dd>{date}</dd>
         <dt className="text-[var(--muted-foreground)]">Re</dt>
-        <dd className="font-semibold">{o.headline}</dd>
+        <dd className="font-semibold">Public capital positioning brief</dd>
       </dl>
 
       <hr className="mt-6 border-[var(--border)]" />
 
-      {/* ── Opening: the bottom line as the lead paragraph ─────────── */}
-      <p className="mt-6 text-[19px] leading-[1.6]">{o.bottomLine}</p>
-
-      {/* ── Where you stand ────────────────────────────────────────── */}
-      <SectionTitle>Where you stand</SectionTitle>
-      <p>{o.yourPosition}</p>
+      {/* ── Bottom line: 4-5 sharp bullets, up front ─────────────────── */}
+      <ul className="mt-6 space-y-3 text-[17px] leading-[1.55]">
+        {report.bottomLine.map((b, i) => (
+          <li key={i} className="flex gap-3">
+            <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
       {selfLine && (
-        <p className="mt-2 text-[13px] italic text-[var(--muted-foreground)]">
+        <p className="mt-3 text-[13px] italic text-[var(--muted-foreground)]">
           Your traced public funding: {selfLine}.
         </p>
       )}
@@ -1166,131 +1154,52 @@ function Memo({ report }: { report: IntelligenceReport }) {
       {/* ── Eligibility screen: deterministic, cited, never model-written ── */}
       <EligibilityTable rows={report.eligibilityScreen} />
 
-      {/* ── The comparable field (the one centrepiece table) ───────── */}
-      <SectionTitle>Comparable companies</SectionTitle>
+      {/* ── Where to target: the brief's centrepiece table ──────────── */}
+      <SectionTitle>Where to target</SectionTitle>
       <table className="w-full border-collapse text-[14px]">
         <thead>
           <tr className="border-b border-[var(--foreground)] text-left align-bottom">
-            <th className="py-2 pr-3 font-semibold">Company</th>
-            <th className="py-2 pr-3 font-semibold">Public capital traced</th>
-            <th className="py-2 pr-3 font-semibold">Maturity</th>
-            <th className="py-2 font-semibold">Positioning</th>
+            <th className="py-2 pr-3 font-semibold">Institution</th>
+            <th className="py-2 pr-3 font-semibold">Type of support</th>
+            <th className="py-2 pr-3 font-semibold">Why you qualify</th>
+            <th className="py-2 font-semibold">Comparable firms funded</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-[var(--border)] align-top">
-          {o.competitors.map((c, i) => (
+          {report.institutions.map((r, i) => (
             <tr key={i}>
               <td className="py-2.5 pr-3">
-                <span className="font-semibold">{c.name}</span>
-                {c.country && (
-                  <span className="ml-1 text-[12px] text-[var(--muted-foreground)]">{c.country}</span>
-                )}
-                {c.source === "corpus" && (
-                  <span className="block text-[12px] italic text-[var(--muted-foreground)]">
-                    peer in your sub-sector
-                  </span>
-                )}
+                <span className="font-semibold">{r.institution}</span>
+                <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
+                  {r.ticket}
+                </span>
               </td>
+              <td className="py-2.5 pr-3">{r.supportType}</td>
               <td className="py-2.5 pr-3">
-                {c.channelBreakdown ? (
-                  <>
-                    <span className="tabular-nums">{c.euCapital}</span>
-                    <span className="block text-[12px] text-[var(--muted-foreground)]">
-                      {c.channelBreakdown}
-                      {c.activeYears ? ` · ${c.activeYears}` : ""}
-                    </span>
-                  </>
+                {r.whyEligible}
+                <span className="block text-[12px] italic text-[var(--muted-foreground)]">
+                  Move: {r.nextStep}
+                </span>
+              </td>
+              <td className="py-2.5">
+                {r.comparableFirms.length > 0 ? (
+                  r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
                 ) : (
-                  <span className="text-[var(--muted-foreground)]">{c.euCapital}</span>
+                  <span className="text-[var(--muted-foreground)]">None traced yet</span>
                 )}
               </td>
-              <td className="py-2.5 pr-3">{c.stage}</td>
-              <td className="py-2.5">{c.positioning}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* ── The capital on the table ───────────────────────────────── */}
-      <InstrumentTable rows={report.instrumentTable} />
+      {/* ── Positioning: fitting the current political moment ───────── */}
+      <SectionTitle>Positioning</SectionTitle>
+      <p>{report.positioning}</p>
 
-      {/* ── The road ahead (grounded in the signals digest) ─────────── */}
-      {report.landscape && report.landscape.outlook && (
-        <>
-          <SectionTitle>The road ahead</SectionTitle>
-          <p>{report.landscape.outlook}</p>
-          {report.landscape.watchItems.length > 0 && (
-            <ul className="mt-3 space-y-2.5">
-              {report.landscape.watchItems.map((w, i) => (
-                <li key={i} className="flex gap-2.5">
-                  <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
-                  <span>
-                    <span className="font-semibold">{w.item}</span>
-                    {w.timeframe && (
-                      <span className="text-[13px] text-[var(--muted-foreground)]">
-                        {" "}· {w.timeframe}
-                      </span>
-                    )}
-                    <span className="block text-[14px]">
-                      {w.why}
-                      <span className="text-[13px] italic text-[var(--muted-foreground)]">
-                        {" "}({w.source})
-                      </span>
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </>
-      )}
-
-      {/* ── Funders to engage (prose, no cards) ────────────────────── */}
-      <SectionTitle>Funders to engage</SectionTitle>
-      <div className="space-y-5">
-        {report.funderMap.map((s, i) => (
-          <div key={i}>
-            <p>
-              <span className="font-semibold">{s.funder}</span>
-              {s.nextDeadline && (
-                <span className="text-[13px] text-[var(--muted-foreground)]">
-                  {" "}· next window {s.nextDeadline}
-                </span>
-              )}
-              {s.comparablesUsing.length > 0 && (
-                <span className="text-[13px] italic text-[var(--muted-foreground)]">
-                  {" "}· used by {s.comparablesUsing.join(", ")}
-                </span>
-              )}
-            </p>
-            <p className="mt-1">
-              {s.relevanceToYou}
-              {s.tradeoff ? ` The trade-off is ${s.tradeoff.replace(/\.$/, "")}.` : ""}
-            </p>
-            <p className="mt-1">
-              <span className="font-semibold">Move.</span> {s.nextStep}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* ── Recommended moves (numbered list, no pills) ────────────── */}
-      <SectionTitle>Recommended moves</SectionTitle>
-      <ol className="space-y-4">
-        {moves.map((t, i) => (
-          <li key={i} className="grid grid-cols-[1.4rem_1fr] gap-x-2">
-            <span className="font-semibold tabular-nums">{i + 1}.</span>
-            <div>
-              <p>
-                <span className="font-semibold">{t.action}</span>
-                <span className="text-[13px] italic text-[var(--muted-foreground)]"> · {pWord(t.priority)}</span>
-              </p>
-              <p className="mt-0.5">{t.rationale}</p>
-              <p className="mt-0.5 text-[13px] text-[var(--muted-foreground)]">{t.timeframe}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+      {/* ── State of play: recent news + the closing line ────────────── */}
+      <SectionTitle>State of play</SectionTitle>
+      <p>{report.stateOfPlay}</p>
 
       {/* ── Footer ─────────────────────────────────────────────────── */}
       <div className="mt-12 border-t border-[var(--border)] pt-4">

@@ -58,15 +58,6 @@ export interface CompetitorRow {
   positioning: string; // web colour
 }
 
-export interface OverviewSection {
-  /** The memo subject line — one factual sentence on the founder's position. */
-  headline: string;
-  /** Bottom line up front: the single most important takeaway, 1–2 sentences. */
-  bottomLine: string;
-  competitors: CompetitorRow[];
-  yourPosition: string;
-}
-
 /** The founder's own company as traced in the corpus (drives the BLUF). */
 export interface SelfRecord {
   matched: boolean;
@@ -148,33 +139,22 @@ export interface InstrumentRow {
   profileNote?: string;
 }
 
-export interface FunderEntry {
-  funder: string; // e.g. "EIC Accelerator"
-  comparablesUsing: string[];
-  relevanceToYou: string;
-  /** What this money costs you, named honestly and fund-specifically. */
-  tradeoff: string;
+/** One row of the "5 institutions to target" table — the brief's
+ *  centrepiece. institution/channel/supportType/ticket/comparableFirms are
+ *  finalised in code from the same ranking (buildInstrumentTable) and DB
+ *  evidence (records/dbPeers) the old memo used; only whyEligible and
+ *  nextStep are model-written, keyed back onto these rows by channel. */
+export interface InstitutionEntry {
+  institution: string;   // display name, e.g. "EIC Accelerator"
+  channel: string;       // internal source_family code
+  supportType: string;   // e.g. "Grant", "Loan / guarantee", "Equity stake"
+  ticket: string;        // curated ticket size, from FundSnapshot
+  /** Grounded in the eligibility screen + scoping profile, never invented. */
+  whyEligible: string;
+  /** Real comparable companies that drew on this exact channel, code-built. */
+  comparableFirms: { name: string; amount: string }[];
+  /** One concrete, actionable next step, model-written. */
   nextStep: string;
-  nextDeadline: string | null;
-}
-
-/** "The road ahead" — grounded ONLY in the curated signals digest. */
-export interface LandscapeSection {
-  /** ≤ 60 words tying current developments to this founder's raise. */
-  outlook: string;
-  watchItems: {
-    item: string;              // the development to watch, ≤ 14 words
-    why: string;               // what it changes for the founder, ≤ 25 words
-    source: string;            // outlet/institution name from the digest
-    timeframe: string | null;  // e.g. "H2 2026", null when unknown
-  }[];
-}
-
-export interface TodoEntry {
-  priority: 1 | 2 | 3;
-  action: string;
-  rationale: string;
-  timeframe: string;
 }
 
 /** One row of the deterministic eligibility screen — code-evaluated against
@@ -190,22 +170,34 @@ export interface EligibilityCheck {
   verified: boolean;                   // false → renders as "verify:"
 }
 
+/**
+ * The whole brief. Word budget (house rubric, tested live): bottomLine +
+ * positioning + stateOfPlay together stay at or under ~700 words; the
+ * institutions table is excluded from that count. Replaces the old 9-section
+ * memo shape (overview/instrumentTable/funderMap/landscape/todos) entirely
+ * — see project-mgmt/plans/memo_vision.md for the retired design, and the
+ * 2026-07-24 brief-rebuild plan for why.
+ */
 export interface IntelligenceReport {
   company: string;
   generatedAt: string;
   /** The founder's own funding footprint in the corpus. */
   self: SelfRecord;
-  overview: OverviewSection;
-  /** The capital on the table: instruments relevant to this founder, side by side. */
-  instrumentTable: InstrumentRow[];
-  funderMap: FunderEntry[];
   /** Deterministic eligibility screen: intake answers × verified term records.
    *  Framework-level v1 (EU law); instrument-level rows land as national
    *  documents are verified. Code-built — the writer narrates, never edits. */
   eligibilityScreen: EligibilityCheck[];
-  /** What's moving in public funding that this founder should track. */
-  landscape: LandscapeSection;
-  todos: TodoEntry[];
+  /** 4-5 bullets, ≤25 words each: why this founder should care, which funds
+   *  are the right step, what the commercial payoff looks like. */
+  bottomLine: string[];
+  /** Exactly 5 rows: the institutions/funds to target. */
+  institutions: InstitutionEntry[];
+  /** One paragraph: positioning against the current political moment,
+   *  grounded in the news-derived people/agenda signals. */
+  positioning: string;
+  /** One paragraph: the most relevant recent news/upcoming funds, plus a
+   *  fixed, code-authored EuroInvTracker plug appended (never modeled). */
+  stateOfPlay: string;
   caveats: string;
 }
 

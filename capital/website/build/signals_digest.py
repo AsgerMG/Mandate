@@ -117,6 +117,50 @@ KEEP_PER_QUERY = 4
 MIN_SIMILARITY = 0.30    # MiniLM cosine floor — below this the hit is noise
 EXCERPT_CHARS = 480
 
+# Section 3 of the /for-companies brief (positioning) needs to namedrop who is
+# actually shaping the agenda right now. No embedding search here — this is a
+# plain recency join, not a similarity search: stakeholder_appointment and
+# programme_policy_change signals whose article also names a person.
+PEOPLE_SQL = """
+    SELECT a.id AS article_id, a.title, a.published_at, a.resolved_url, a.url,
+           s.key AS source_key, s.tier, sig.signal_type, sig.summary,
+           e.mention_text AS person
+    FROM articles a
+    JOIN article_signals sig ON sig.article_id = a.id
+    JOIN article_entities e ON e.article_id = a.id AND e.entity_type = 'person'
+    JOIN sources s ON s.id = a.source_id
+    WHERE sig.signal_type IN ('stakeholder_appointment', 'programme_policy_change')
+    ORDER BY a.published_at DESC
+    LIMIT 40
+"""
+PEOPLE_KEEP = 25
+
+
+def _people(con: sqlite3.Connection) -> list[dict]:
+    """Recency-ordered, deduped by article (an article can name >1 person;
+    keep the first mention only, so the digest stays one line per article)."""
+    con.row_factory = sqlite3.Row
+    seen: set[int] = set()
+    out = []
+    for r in con.execute(PEOPLE_SQL):
+        if r["article_id"] in seen:
+            continue
+        seen.add(r["article_id"])
+        out.append({
+            "title": r["title"],
+            "source": r["source_key"],
+            "tier": r["tier"],
+            "date": r["published_at"],
+            "url": r["resolved_url"] or r["url"],
+            "person": r["person"],
+            "signalType": r["signal_type"],
+            "excerpt": " ".join((r["summary"] or "").split())[:EXCERPT_CHARS],
+        })
+        if len(out) >= PEOPLE_KEEP:
+            break
+    con.row_factory = None
+    return out
+
 
 def _items(hits: list[dict]) -> list[dict]:
     """Dedupe by article, floor by similarity, shape for the brief."""
@@ -150,6 +194,7 @@ def main() -> None:
     n_articles = con.execute("SELECT COUNT(*) FROM articles").fetchone()[0]
     n_embedded = con.execute(
         "SELECT COUNT(DISTINCT article_id) FROM article_chunks").fetchone()[0]
+    people = _people(con)
     con.close()
 
     payload = {
@@ -157,12 +202,14 @@ def main() -> None:
         "corpus": {"articles": n_articles, "embeddedArticles": n_embedded},
         "topics": topics,
         "sectors": sectors,
+        "people": people,
     }
     OUT.write_text(json.dumps(payload, indent=1, ensure_ascii=False))
     n_top = sum(len(v) for v in topics.values())
     n_sec = sum(len(v) for v in sectors.values())
     print(f"signals digest → {OUT}")
-    print(f"  {n_top} topic passages, {n_sec} sector passages "
+    print(f"  {n_top} topic passages, {n_sec} sector passages, "
+          f"{len(people)} people/agenda items "
           f"(from {n_embedded:,} embedded articles)")
     for name, items in topics.items():
         flag = "" if items else "   ← EMPTY (brief must say the corpus is thin here)"

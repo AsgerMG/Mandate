@@ -38,24 +38,24 @@ const emit = (e: ProgressEvent) => {
   if (e.type === "error") console.error("ERROR:", e.message);
   if (e.type === "report") {
     const r = e.data;
-    console.log("\n=== HEADLINE ===\n" + r.overview.headline);
-    console.log("\n=== BOTTOM LINE ===\n" + r.overview.bottomLine);
-    console.log("\n=== LANDSCAPE OUTLOOK ===\n" + r.landscape.outlook);
-    console.log("\n=== WATCH ITEMS ===");
-    for (const w of r.landscape.watchItems)
-      console.log(`- ${w.item} [${w.timeframe ?? "no date"}] (${w.source})\n  ${w.why}`);
-    console.log("\n=== COMPARABLES (" + r.overview.competitors.length + ") ===");
-    for (const c of r.overview.competitors.slice(0, 6))
-      console.log(`- ${c.name} (${c.source}): ${c.euCapital}`);
+    const wc = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
+    console.log("\n=== BOTTOM LINE ===");
+    for (const b of r.bottomLine) console.log(`- (${wc(b)}w) ${b}`);
     console.log("\n=== ELIGIBILITY SCREEN ===");
     for (const c of r.eligibilityScreen ?? [])
       console.log(`- [${c.status}] ${c.check}: ${c.finding.slice(0, 90)}${c.cure ? " | PATH: " + c.cure.slice(0, 60) : ""} (${c.source.file} ${c.source.locator})`);
-    console.log("\n=== INSTRUMENT TABLE ===");
-    for (const t of r.instrumentTable)
-      console.log(`- ${t.instrument} [${t.ticket}]${t.usedInField ? " (used in field)" : ""}`);
-    console.log("\n=== FUNDER MAP (" + r.funderMap.length + ") ===");
-    for (const f of r.funderMap)
-      console.log(`- ${f.funder}${f.nextDeadline ? " · " + f.nextDeadline : ""}`);
+    console.log("\n=== WHERE TO TARGET (" + r.institutions.length + ") ===");
+    for (const inst of r.institutions) {
+      console.log(`- ${inst.institution} [${inst.ticket}] (${inst.supportType})`);
+      console.log(`  why: ${inst.whyEligible}`);
+      console.log(`  move: ${inst.nextStep}`);
+      console.log(`  peers: ${inst.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ") || "none traced yet"}`);
+    }
+    console.log(`\n=== POSITIONING (${wc(r.positioning)}w) ===\n` + r.positioning);
+    console.log(`\n=== STATE OF PLAY (${wc(r.stateOfPlay)}w) ===\n` + r.stateOfPlay);
+    const totalWords = r.bottomLine.reduce((n, b) => n + wc(b), 0) + wc(r.positioning) + wc(r.stateOfPlay);
+    console.log(`\n=== TOTAL PROSE WORDS: ${totalWords} ===`);
+    console.log("\n=== CAVEATS ===\n" + r.caveats);
   }
 };
 

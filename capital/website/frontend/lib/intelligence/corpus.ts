@@ -295,10 +295,25 @@ export interface DigestItem {
   similarity: number;
 }
 
+/** A recency-ordered stakeholder_appointment/programme_policy_change hit
+ *  naming a real person, for the brief's positioning section. Plain SQL join
+ *  (no similarity search) — see _people() in signals_digest.py. */
+export interface PersonDigestItem {
+  title: string;
+  source: string;
+  tier: string;
+  date: string | null;
+  url: string;
+  person: string;
+  signalType: string;
+  excerpt: string;
+}
+
 interface SignalsDigest {
   generatedAt: string;
   topics: Record<string, DigestItem[]>;
   sectors: Record<string, DigestItem[]>;
+  people: PersonDigestItem[];
 }
 
 let digestCache: SignalsDigest | null | undefined;
