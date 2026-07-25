@@ -62,14 +62,29 @@ const FAMILY_COLORS: Record<string, string> = {
   chips_ju:        "#374151",
 };
 
+// Sector keys = the two-tier taxonomy's 11 Tier-1 sectors (companies.sector_top,
+// migration 010 — see sector_labels.py). This replaced a stale 8-bucket
+// pre-taxonomy palette (cleantech/life_sciences/deeptech_hardware/digital/
+// defense) whose keys no longer matched any real sector_top value, so every
+// slice of the "By sector" donut was silently falling through to the grey
+// fallback color. Deliberately a SEPARATE palette from FAMILY_COLORS above —
+// the two donuts sit side by side in the same tooltip and must never share a
+// palette. Full pairwise CVD separation isn't achievable at 11 categories
+// (see the dataviz skill's own documented cap), so this is mitigated the
+// skill's sanctioned way: PieBlock always renders a text legend with every
+// entry's name, so identity never depends on color alone.
 const SECTOR_COLORS: Record<string, string> = {
-  cleantech:         "#15803d",
-  life_sciences:     "#be185d",
-  deeptech_hardware: "#1d4ed8",
-  digital:           "#0891b2",
-  space:             "#7c3aed",
-  defense:           "#78350f",
-  other:             "#64748b",
+  software_data_ai:           "#2a78d6", // blue
+  health_life_sciences:       "#e87ba4", // magenta
+  energy_cleantech:           "#008300", // green
+  mobility_transport:         "#eb6834", // orange
+  semiconductors_electronics: "#4a3aa7", // violet
+  space:                      "#1baf7a", // aqua
+  defense_security:           "#e34948", // red
+  agrifood:                   "#eda100", // gold
+  industrial_manufacturing:   "#0d9488", // teal
+  materials_chemicals:        "#a16207", // ochre
+  other:                      "#6b7280", // neutral gray, deliberately low-chroma
 };
 
 const RATING_CONFIG: Record<string, { bg: string; text: string }> = {
@@ -133,7 +148,7 @@ function formatEur(n: number): string {
   return `€${n.toLocaleString()}`;
 }
 
-interface CountryData {
+export interface CountryData {
   name: string;
   // Below the €1B public-support corpus threshold: rendered on the map but
   // outside the study. Stubs carry only `name` + this flag.
@@ -141,6 +156,11 @@ interface CountryData {
   companies?: number;
   totalEur?: number;
   byFamily?: { family: string; label: string; companies: number; eur: number }[];
+  // Real named institutions (a specific NDB, or a SATR row's raw granting
+  // authority when it isn't a known NDB), not just the 10-bucket family —
+  // `family` rides along so each vehicle can still inherit its parent
+  // family's color. This, not byFamily, powers the "By vehicle (€)" pie.
+  byVehicle?: { label: string; family: string; companies: number; eur: number }[];
   bySector?: { sector: string; label: string; companies: number }[];
   narrative?: {
     rankByCompanies: number | null;
@@ -294,14 +314,28 @@ function MapTooltip({
 
   // € — not company count — so the biggest slice is genuinely the biggest
   // vehicle by capital, not just the one with the most (often small) awards.
-  const familyPieEur = [...(data.byFamily ?? [])]
-    .sort((a, b) => b.eur - a.eur)
-    .map((d) => ({
-      name: d.label,
-      value: d.eur,
-      key: d.family,
-      color: FAMILY_COLORS[d.family] ?? "#6b7280",
-    }));
+  // Real institution grain (byVehicle: a specific NDB, or a SATR row's raw
+  // granting authority), not the 10-bucket family — colored by each
+  // vehicle's PARENT family so, e.g., every German state-aid ministry/agency
+  // still reads as "yellow" at a glance while the legend gives the specific
+  // name. Falls back to the coarser byFamily if a country's data predates
+  // byVehicle (shouldn't happen post-rebuild, but keeps this from going
+  // blank on stale data).
+  const vehiclePie = (
+    data.byVehicle?.length
+      ? [...data.byVehicle].sort((a, b) => b.eur - a.eur).map((d, i) => ({
+          name: d.label,
+          value: d.eur,
+          key: `${d.family}:${i}`,
+          color: FAMILY_COLORS[d.family] ?? "#6b7280",
+        }))
+      : [...(data.byFamily ?? [])].sort((a, b) => b.eur - a.eur).map((d) => ({
+          name: d.label,
+          value: d.eur,
+          key: d.family,
+          color: FAMILY_COLORS[d.family] ?? "#6b7280",
+        }))
+  );
 
   const sectorPie = [...(data.bySector ?? [])]
     .sort((a, b) => b.companies - a.companies)
@@ -376,7 +410,7 @@ function MapTooltip({
 
       {/* Charts: vehicle pie (€, biggest first) left, sector pie right */}
       <div className="grid grid-cols-2 gap-2 px-3 pb-2 pt-2">
-        <PieBlock title="By vehicle (€)" entries={familyPieEur} maxRows={5} />
+        <PieBlock title="By vehicle (€)" entries={vehiclePie} maxRows={5} />
         <PieBlock title="By sector" entries={sectorPie} maxRows={5} />
       </div>
 

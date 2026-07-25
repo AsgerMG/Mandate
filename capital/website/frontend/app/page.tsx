@@ -1,4 +1,4 @@
-import { EuropeMap } from "@/components/europe-map";
+import { EuropeMap, type CountryData } from "@/components/europe-map";
 import { ChannelsGraph } from "@/components/channels-graph";
 import { EuroJourney, Chapter } from "@/components/euro-journey";
 import { Reveal, CountUp } from "@/components/immersive";
@@ -49,16 +49,14 @@ const coverageRatings = coverageRatingsRaw as Record<string, { rating: string; n
 // Countries below the €1B corpus threshold arrive as {name, excluded: true}
 // stubs (see website/build/country_map.py) — kept so the map can explain the
 // exclusion on hover instead of rendering a silent gap.
+//
+// Typed against europe-map.tsx's own CountryData (not a re-declared local
+// shape): a second, hand-maintained copy of this type drifted from the real
+// one twice already (missing `eur`, then missing `byVehicle`), silently
+// passing `as` casts each time. One shared type can't drift from itself.
 const countryData = Object.fromEntries(
-  Object.entries(
-    (countryMapRaw as { countries: Record<string, {
-      name: string;
-      excluded?: boolean;
-      companies?: number;
-      totalEur?: number;
-      byFamily?: { family: string; label: string; companies: number; eur: number }[];
-    }> }).countries
-  ).map(([iso2, d]) => [iso2, { ...d, coverageRating: coverageRatings[iso2] }])
+  Object.entries((countryMapRaw as { countries: Record<string, CountryData> }).countries)
+    .map(([iso2, d]) => [iso2, { ...d, coverageRating: coverageRatings[iso2] }])
 );
 
 export default function Home() {

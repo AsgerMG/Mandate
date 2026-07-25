@@ -12,6 +12,11 @@ Schema:
         "byFamily": [
           {"family": "horizon_eu", "label": "Horizon EU", "companies": 1694, "eur": 820000000},
           ...
+        ],
+        "byVehicle": [
+          {"label": "Bpifrance", "family": "ndb", "companies": 812, "eur": 410000000},
+          {"label": "Bundesamt fur Wirtschaft und Ausfuhrkontrolle", "family": "state_aid", "companies": 340, "eur": 210000000},
+          ...
         ]
       },
       ...
@@ -25,8 +30,14 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import DB_PATH, SITE_DATA, DATA  # noqa: E402
+from web_env import DB_PATH, SITE_DATA, DATA, ROOT  # noqa: E402
 from sector_labels import label as sector_label  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from ndb_taxonomy import (  # noqa: E402
+    NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source,
+)
+ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
 OUT_PATH = str(SITE_DATA / "country_map.json")
 SCOPE_PATH = str(DATA / "europe_scope.json")
@@ -123,14 +134,18 @@ def main():
 
     # Per-country + family: distinct companies AND total EUR (grant only,
     # matching the totalEur query above so the vehicle pie's slices sum to
-    # the same headline figure shown in the tooltip).
+    # the same headline figure shown in the tooltip). granting_authority and
+    # ndb_distributor ride along so the same rows can ALSO be regrouped, more
+    # finely, into by_vehicle below (real named institutions, not just the
+    # 10-bucket family) without a second pass over the events table.
     cur.execute("""
-        SELECT c.country, e.source, COUNT(DISTINCT e.company_id) AS companies,
+        SELECT c.country, e.source, e.granting_authority, e.ndb_distributor,
+               COUNT(DISTINCT e.company_id) AS companies,
                COALESCE(SUM(e.grant_amount_eur), 0) AS eur
         FROM public_funding_events e
         JOIN companies c ON c.id = e.company_id
         WHERE c.country IS NOT NULL AND c.country != ''
-        GROUP BY c.country, e.source
+        GROUP BY c.country, e.source, e.granting_authority, e.ndb_distributor
     """)
     source_rows = cur.fetchall()
 
@@ -153,9 +168,20 @@ def main():
         bucket[sector] = bucket.get(sector, 0) + count
 
     # Aggregate source -> family per country (canonicalised + filtered),
-    # tracking both company count and total EUR per family.
+    # tracking both company count and total EUR per family. In parallel,
+    # aggregate the SAME rows into by_country_vehicle at real-institution
+    # grain: a specific NDB (Bpifrance, KfW, Rentenbank...) when the row is
+    # tagged with one — whether via a direct-scraper source prefix or via a
+    # SATR row whose granting_authority matched a known NDB pattern — else
+    # the raw granting_authority text for an untagged SATR row (a named
+    # ministry/agency, never just "State Aid (SATR)": SATR is the register
+    # the data came from, not a fund a founder could apply to — see the
+    # for-companies memo's identical fix), else the coarse family label for
+    # everything else (EIC, Horizon, IPCEI, ...), which are already specific
+    # enough named programmes.
     by_country_family: dict[str, dict[str, dict[str, float]]] = {}
-    for country, source, count, eur in source_rows:
+    by_country_vehicle: dict[str, dict[str, dict]] = {}
+    for country, source, granting_authority, ndb_distributor, count, eur in source_rows:
         canon = canonical(country)
         if canon is None:
             continue
@@ -164,6 +190,18 @@ def main():
             family, {"companies": 0, "eur": 0.0})
         bucket["companies"] += count
         bucket["eur"] += eur or 0
+
+        ndb_id = ndb_distributor or classify_ndb_from_source(source)
+        if ndb_id:
+            vkey, vlabel = f"ndb:{ndb_id}", ALL_NDB_LABELS.get(ndb_id, ndb_id)
+        elif family == "state_aid" and granting_authority:
+            vkey, vlabel = f"authority:{granting_authority[:120]}", granting_authority[:120]
+        else:
+            vkey, vlabel = f"family:{family}", FAMILY_LABELS[family]
+        vbucket = by_country_vehicle.setdefault(canon, {}).setdefault(
+            vkey, {"label": vlabel, "family": family, "companies": 0, "eur": 0.0})
+        vbucket["companies"] += count
+        vbucket["eur"] += eur or 0
 
     # Ranks for narrative copy
     co_sorted = sorted(country_rows, key=lambda r: r[1], reverse=True)
@@ -186,6 +224,18 @@ def main():
                     "companies": f["companies"],
                     "eur": round(f["eur"]),
                 })
+
+        vehicles_raw = by_country_vehicle.get(country, {})
+        by_vehicle = sorted(
+            ({
+                "label": v["label"],
+                "family": v["family"],
+                "companies": v["companies"],
+                "eur": round(v["eur"]),
+            } for v in vehicles_raw.values() if v["eur"] > 0),
+            key=lambda v: v["eur"],
+            reverse=True,
+        )[:20]  # long tail folds into the frontend's own "Other" slice
 
         sectors_raw = by_country_sector.get(country, {})
         by_sector_sorted = sorted(
@@ -217,6 +267,7 @@ def main():
             "companies": companies,
             "totalEur": round(total_eur),
             "byFamily": by_family,
+            "byVehicle": by_vehicle,
             "bySector": by_sector,
             "narrative": narrative,
         }
