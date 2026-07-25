@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { corpusStats } from "@/lib/data";
 
 // The former /for-companies page is now two: the narrative case
 // (/about-public-capital) as a plain text link, and the interactive tool
@@ -25,7 +26,7 @@ export function NavBar() {
 
   return (
     <nav
-      className="sticky top-0 z-40 border-b border-[#12264f] bg-[var(--background)]"
+      className="sticky top-0 z-40 border-b border-[#12264f] bg-[#fffdfb]"
     >
       <div className="mx-auto max-w-6xl px-4 flex items-center justify-between h-[4.5rem]">
         <Link
@@ -85,6 +86,19 @@ export function NavBar() {
             </svg>
           )}
         </button>
+      </div>
+
+      {/* Meta row: scope on the left, register on the right — divided from
+          the brand row by a quiet khaki hairline, matching the reference. */}
+      <div className="border-t border-[#ded7bf]">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
+          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+            Europe · {corpusStats.countries}-country edition
+          </span>
+          <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)] sm:inline">
+            Public awards intelligence
+          </span>
+        </div>
       </div>
 
       {/* Mobile dropdown */}
