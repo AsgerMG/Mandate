@@ -4,26 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// The lookup link sits directly in the header; the for-companies product entry
-// is the pill CTA on the right (Legora pattern). Everything else folds into
-// "More". Mobile keeps a flat list of all four.
-const PRIMARY_LINKS = [
-  { href: "/companies", label: "Company lookup" },
-];
-
+// One product, one entry point: the for-companies CTA pill on the right
+// (Legora pattern). Mobile keeps the same single link as a flat list item.
 const MOBILE_LINKS = [
   { href: "/for-companies", label: "For companies" },
-  { href: "/companies", label: "Company lookup" },
-];
-
-const MORE_LINKS = [
-  { href: "/methodology", label: "Methodology" },
-  { href: "/limitations", label: "Limitations" },
 ];
 
 export function NavBar() {
   const [open, setOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
   const pathname = usePathname();
   // A link is active when the current path is, or sits beneath, its href.
   const isActive = (href: string) =>
@@ -42,10 +30,7 @@ export function NavBar() {
               ? "text-[var(--primary)] underline decoration-2 underline-offset-4"
               : "text-[var(--primary)]"
           }`}
-          onClick={() => {
-            setOpen(false);
-            setMoreOpen(false);
-          }}
+          onClick={() => setOpen(false)}
         >
           EuroInvTracker
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -54,56 +39,6 @@ export function NavBar() {
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-7 text-base">
-          {PRIMARY_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              aria-current={isActive(link.href) ? "page" : undefined}
-              className={`transition-colors ${
-                isActive(link.href)
-                  ? "font-semibold text-[var(--primary)] underline decoration-2 underline-offset-4"
-                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-
-          {/* More dropdown */}
-          <div
-            className="relative"
-            onMouseEnter={() => setMoreOpen(true)}
-            onMouseLeave={() => setMoreOpen(false)}
-          >
-            <button
-              className="flex items-center gap-1 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-              onClick={() => setMoreOpen((v) => !v)}
-              aria-expanded={moreOpen}
-              aria-haspopup="true"
-            >
-              More
-              <svg width="12" height="12" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-              </svg>
-            </button>
-            {moreOpen && (
-              <div className="absolute right-0 top-full pt-2">
-                <div className="min-w-40 rounded-lg border border-[var(--border)] bg-[var(--background)] py-1 shadow-lg">
-                  {MORE_LINKS.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMoreOpen(false)}
-                      className="block px-4 py-2 text-base text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* The product CTA, as an ink pill. */}
           <Link
             href="/for-companies"
@@ -134,7 +69,7 @@ export function NavBar() {
       {/* Mobile dropdown */}
       {open && (
         <div className="md:hidden border-t border-[var(--border)] bg-[var(--background)] px-4 pb-2">
-          {[...MOBILE_LINKS, ...MORE_LINKS].map((link) => (
+          {MOBILE_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}

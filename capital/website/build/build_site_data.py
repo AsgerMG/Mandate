@@ -49,7 +49,6 @@ GENERATED = {
     "instrument_leaderboard.json": "home_visuals.py",
     "synthesis.json":             "synthesis.py",
     "investor_insights.json":     "investor_insights.py",
-    "companies/manifest.json":    "company_search.py",
     "companies_index.json":       "companies_index.py",
 }
 
@@ -62,7 +61,6 @@ STEPS = [
     ("home visuals",       "home_visuals.py"),
     ("synthesis KPIs",     "synthesis.py"),
     ("investor insights",  "investor_insights.py"),
-    ("company lookup",     "company_search.py"),
     ("agent index",        "companies_index.py"),
 ]
 

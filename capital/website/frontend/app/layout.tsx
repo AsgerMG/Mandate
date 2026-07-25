@@ -34,17 +34,11 @@ export default function RootLayout({
         <NavBar />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-black/10 bg-[var(--background)] py-10">
-          <div className="mx-auto max-w-6xl px-4 flex flex-wrap items-baseline justify-between gap-6">
-            <div>
-              <p className="font-serif text-lg font-semibold text-[var(--foreground)]">EuroInvTracker</p>
-              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-                {companyCount} companies · EU instruments · development banks · state aid register
-              </p>
-            </div>
-            <div className="flex gap-6 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-              <a href="/methodology" className="transition-colors hover:text-[var(--foreground)]">Methodology</a>
-              <a href="/limitations" className="transition-colors hover:text-[var(--foreground)]">Limitations</a>
-            </div>
+          <div className="mx-auto max-w-6xl px-4">
+            <p className="font-serif text-lg font-semibold text-[var(--foreground)]">EuroInvTracker</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+              {companyCount} companies · EU instruments · development banks · state aid register
+            </p>
           </div>
         </footer>
       </body>

@@ -93,12 +93,6 @@ export default function Home() {
               >
                 See your comparables
               </Link>
-              <Link
-                href="/companies"
-                className="rounded-full border border-black/15 px-6 py-3 text-[15px] font-medium text-[#141414] transition-colors hover:bg-black/5"
-              >
-                Search the database
-              </Link>
             </div>
           </div>
 
@@ -277,12 +271,6 @@ export default function Home() {
                     className="rounded-full bg-[#0a0a0a] px-6 py-3 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
                   >
                     Map your comparables
-                  </Link>
-                  <Link
-                    href="/companies"
-                    className="rounded-full border border-black/10 px-6 py-3 font-semibold text-[#141414] transition-colors hover:bg-black/5"
-                  >
-                    Search the database
                   </Link>
                 </div>
               </Reveal>

@@ -247,9 +247,7 @@ export default function ForCompaniesPage() {
                     <CountUp value={Number(corpusStats.companies)} className="tabular-nums font-semibold text-[#141414]" />{" "}
                     companies and organisations, 2021 to 2025. It answers four questions in order: what
                     you can get, which door is yours, what the data proves about how winners behave, and
-                    in what sequence to raise. You can check any company&apos;s public funding history,
-                    including any comparable company&apos;s, in the{" "}
-                    <Link href="/companies" className="text-[#12264f] underline">company lookup</Link>.
+                    in what sequence to raise.
                   </p>
                 </Reveal>
               </div>
@@ -408,8 +406,7 @@ export default function ForCompaniesPage() {
                     rest were selected because they sit in a value chain the EU has declared strategic:
                     batteries, hydrogen, semiconductors, cloud, defence, medical supply. If that is you,
                     say so in every application, collect the labels that prove it (STEP seal, Seal of
-                    Excellence, IPCEI participation, all visible per company in our{" "}
-                    <Link href="/companies" className="text-[#12264f] underline">lookup</Link>), and aim
+                    Excellence, IPCEI participation), and aim
                     directly at the conviction tier. If it is not you, do not pretend: the signal floor
                     still doubles your private-round odds<Src n={1} />.
                   </p>
@@ -549,8 +546,7 @@ export default function ForCompaniesPage() {
                       Public money on the cap table can anchor a round, but the UK Future Fund&apos;s
                       record (a third of its unselective portfolio already insolvent) shows public
                       co-investment is not validation unless the institution selects. Choose public
-                      co-investors the way you choose VCs: by what their portfolio says about them, which
-                      you can check in our <Link href="/companies" className="text-[#12264f] underline">lookup</Link>.
+                      co-investors the way you choose VCs: by what their portfolio says about them.
                     </p>
                   </Signal>
                 </R>
@@ -567,9 +563,7 @@ export default function ForCompaniesPage() {
                     specific programmes, not from this corpus; our record shows selection and persistence,
                     which is what you can use for positioning, not a guarantee of outcomes. Award odds,
                     timelines and ticket sizes vary by call and country; medians here are corpus-wide.
-                    Coverage is graded per country on the <Link href="/" className="text-[#12264f] underline">home page</Link>;
-                    full machinery in <Link href="/methodology" className="text-[#12264f] underline">methodology</Link>{" "}
-                    and <Link href="/limitations" className="text-[#12264f] underline">limitations</Link>.
+                    Coverage is graded per country on the <Link href="/" className="text-[#12264f] underline">home page</Link>.
                   </p>
                 </div>
               </R>
