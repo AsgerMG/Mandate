@@ -1,6 +1,6 @@
 "use client";
 
-// The founder's-climb anchor of the /for-companies trip — the mirror image of the
+// The founder's-climb anchor of the /about-public-capital trip — the mirror image of the
 // home page's ChannelsGraph. Where the home graph follows one euro *down* into a
 // company, this one has the reader climb *up* the public funding stack. It stays
 // pinned while the narrative scrolls; the camera (an animated SVG viewBox) pans up

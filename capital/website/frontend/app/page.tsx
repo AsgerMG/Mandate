@@ -9,8 +9,8 @@ import coverageRatingsRaw from "@/public/data/coverage_ratings.json";
 import { corpusStats } from "@/lib/data";
 
 // Headline counts come from the single corpus-wide source (lib/data.corpusStats
-// → synthesis.json), which also drives the layout footer and /for-companies, so
-// every page shows the same number.
+// → synthesis.json), which also drives the layout footer and /about-public-capital,
+// so every page shows the same number.
 const synth = corpusStats;
 
 const serif = { fontFamily: "var(--font-playfair), Georgia, serif" };
@@ -88,7 +88,7 @@ export default function Home() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
-                href="/for-companies"
+                href="/brief"
                 className="rounded-full bg-[#0a0a0a] px-6 py-3 text-[15px] font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
               >
                 See your comparables
@@ -267,7 +267,7 @@ export default function Home() {
               <Reveal delay={220}>
                 <div className="mt-9 flex flex-wrap justify-center gap-3">
                   <Link
-                    href="/for-companies"
+                    href="/brief"
                     className="rounded-full bg-[#0a0a0a] px-6 py-3 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
                   >
                     Map your comparables

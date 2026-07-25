@@ -4,10 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// One product, one entry point: the for-companies CTA pill on the right
-// (Legora pattern). Mobile keeps the same single link as a flat list item.
+// The former /for-companies page is now two: the narrative case
+// (/about-public-capital) as a plain text link, and the interactive tool
+// (/brief) as the CTA pill (Legora pattern). Mobile keeps both as a flat list.
+const PRIMARY_LINKS = [
+  { href: "/about-public-capital", label: "Why public capital" },
+];
+
 const MOBILE_LINKS = [
-  { href: "/for-companies", label: "For companies" },
+  { href: "/about-public-capital", label: "Why public capital" },
+  { href: "/brief", label: "Get your brief" },
 ];
 
 export function NavBar() {
@@ -39,12 +45,27 @@ export function NavBar() {
 
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-7 text-base">
+          {PRIMARY_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActive(link.href) ? "page" : undefined}
+              className={`transition-colors ${
+                isActive(link.href)
+                  ? "font-semibold text-[var(--primary)] underline decoration-2 underline-offset-4"
+                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+
           {/* The product CTA, as an ink pill. */}
           <Link
-            href="/for-companies"
+            href="/brief"
             className="rounded-full bg-[#0a0a0a] px-4 py-1.5 text-sm font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
           >
-            See your comparables
+            Get your brief
           </Link>
         </div>
 

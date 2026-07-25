@@ -20,7 +20,7 @@ import {
 
 const serif = { fontFamily: "var(--font-playfair), Georgia, serif" };
 
-// The intake form rides the dark "Follow the Euro" stage on /for-companies, so
+// The intake form rides the dark "Follow the Euro" stage on /brief, so
 // it re-themes to match by overriding the CSS variables its controls read from.
 // The generated Memo below keeps the site's light theme on purpose: it is a
 // printable white memorandum, not part of the dark trip.
