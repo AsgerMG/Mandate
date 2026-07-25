@@ -56,7 +56,7 @@ const countryData = Object.fromEntries(
       excluded?: boolean;
       companies?: number;
       totalEur?: number;
-      byFamily?: { family: string; label: string; companies: number }[];
+      byFamily?: { family: string; label: string; companies: number; eur: number }[];
     }> }).countries
   ).map(([iso2, d]) => [iso2, { ...d, coverageRating: coverageRatings[iso2] }])
 );

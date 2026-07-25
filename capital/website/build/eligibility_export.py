@@ -36,7 +36,7 @@ def main() -> None:
     instruments = conn.execute("""
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
-               sample_project_titles
+               sample_project_titles, administering_body
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -73,6 +73,11 @@ def main() -> None:
         "totalEur": inst["total_eur"],
         "sourceFamilyBucket": inst["source_family_bucket"],
         "sampleProjectTitles": json.loads(inst["sample_project_titles"]) if inst["sample_project_titles"] else None,
+        # Real per-fund granting authority (majority vote of the raw
+        # granting_authority field across events), e.g. "Bundesamt für
+        # Wirtschaft und Ausfuhrkontrolle" — see populate_funding_instruments.py.
+        # None for buckets with no dominant authority on record.
+        "administeringBody": inst["administering_body"],
         "gates": gates_by_instrument.get(inst["id"], []),
     } for inst in instruments]
 

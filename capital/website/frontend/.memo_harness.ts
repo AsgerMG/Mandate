@@ -62,6 +62,7 @@ const emit = (e: ProgressEvent) => {
     console.log("\n=== WHERE TO TARGET (" + r.institutions.length + ") ===");
     for (const inst of r.institutions) {
       console.log(`- ${inst.institution} [${inst.ticket}] (${inst.supportType})`);
+      console.log(`  where/basis: ${[inst.country, inst.legalBasis].filter(Boolean).join(" · ") || "(none on record)"}`);
       console.log(`  why: ${inst.whyEligible}`);
       console.log(`  move: ${inst.nextStep}`);
       console.log(`  peers: ${inst.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ") || "none traced yet"}`);

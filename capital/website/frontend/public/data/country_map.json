@@ -8,52 +8,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 13791
+          "companies": 13791,
+          "eur": 26823382674
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 3381
+          "companies": 3381,
+          "eur": 2497573413
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 23126
+          "companies": 23126,
+          "eur": 9692383429
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 348
+          "companies": 348,
+          "eur": 477027986
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 55
+          "companies": 55,
+          "eur": 15000
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 51
+          "companies": 51,
+          "eur": 20758335317
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 36
+          "companies": 36,
+          "eur": 1927498656
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 23
+          "companies": 23,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 60
+          "companies": 60,
+          "eur": 1661214599
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 246
+          "companies": 246,
+          "eur": 522035153
         }
       ],
       "bySector": [
@@ -117,52 +127,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 24138
+          "companies": 24138,
+          "eur": 72655202559
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 4189
+          "companies": 4189,
+          "eur": 3545405489
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 1216
+          "companies": 1216,
+          "eur": 618481128
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 386
+          "companies": 386,
+          "eur": 561409609
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 91
+          "companies": 91,
+          "eur": 100000
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 87
+          "companies": 87,
+          "eur": 38842960359
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 19
+          "companies": 19,
+          "eur": 1481794317
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 21
+          "companies": 21,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 22
+          "companies": 22,
+          "eur": 514909258
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 349
+          "companies": 349,
+          "eur": 518095045
         }
       ],
       "bySector": [
@@ -226,52 +246,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 21560
+          "companies": 21560,
+          "eur": 29890960929
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 3971
+          "companies": 3971,
+          "eur": 2462345862
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 462
+          "companies": 462,
+          "eur": 275904083
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 225
+          "companies": 225,
+          "eur": 280692734
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 22
+          "companies": 22,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 48
+          "companies": 48,
+          "eur": 16509760000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 19
+          "companies": 19,
+          "eur": 550343082
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 16
+          "companies": 16,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 29
+          "companies": 29,
+          "eur": 635507576
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 190
+          "companies": 190,
+          "eur": 109511441
         }
       ],
       "bySector": [
@@ -335,52 +365,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 2
+          "companies": 2,
+          "eur": 525000
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 4960
+          "companies": 4960,
+          "eur": 3309662466
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 13130
+          "companies": 13130,
+          "eur": 9415195423
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 310
+          "companies": 310,
+          "eur": 374775987
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 61
+          "companies": 61,
+          "eur": 50000
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 22
+          "companies": 22,
+          "eur": 8517440000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 33
+          "companies": 33,
+          "eur": 1200943822
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 18
+          "companies": 18,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 42
+          "companies": 42,
+          "eur": 759835595
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 122
+          "companies": 122,
+          "eur": 41952265
         }
       ],
       "bySector": [
@@ -429,37 +469,44 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 401
+          "companies": 401,
+          "eur": 555249819
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 1959
+          "companies": 1959,
+          "eur": 515988182
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 12130
+          "companies": 12130,
+          "eur": 6037871292
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 52
+          "companies": 52,
+          "eur": 65196848
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 43
+          "companies": 43,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 4
+          "companies": 4,
+          "eur": 0
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 19
+          "companies": 19,
+          "eur": 6495066
         }
       ],
       "bySector": [
@@ -513,37 +560,44 @@
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 1019
+          "companies": 1019,
+          "eur": 1196143745
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 15177
+          "companies": 15177,
+          "eur": 2048808543
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 49
+          "companies": 49,
+          "eur": 70652383
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 17
+          "companies": 17,
+          "eur": 5000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 20
+          "companies": 20,
+          "eur": 1151657790
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 5
+          "companies": 5,
+          "eur": 79460083
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 21
+          "companies": 21,
+          "eur": 13992533
         }
       ],
       "bySector": [
@@ -587,52 +641,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 5393
+          "companies": 5393,
+          "eur": 6448555753
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 2263
+          "companies": 2263,
+          "eur": 2331127905
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 198
+          "companies": 198,
+          "eur": 130899316
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 227
+          "companies": 227,
+          "eur": 380135105
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 23
+          "companies": 23,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 17
+          "companies": 17,
+          "eur": 7814240000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 14
+          "companies": 14,
+          "eur": 829467705
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 13
+          "companies": 13,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 7
+          "companies": 7,
+          "eur": 84879143
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 188
+          "companies": 188,
+          "eur": 356562732
         }
       ],
       "bySector": [
@@ -696,52 +760,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 2142
+          "companies": 2142,
+          "eur": 2611224298
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 1010
+          "companies": 1010,
+          "eur": 888663111
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 3762
+          "companies": 3762,
+          "eur": 1452709663
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 114
+          "companies": 114,
+          "eur": 196769299
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 20
+          "companies": 20,
+          "eur": 10000
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 4
+          "companies": 4,
+          "eur": 1913468640
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 14
+          "companies": 14,
+          "eur": 1114797509
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 10
+          "companies": 10,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 7
+          "companies": 7,
+          "eur": 107368057
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 75
+          "companies": 75,
+          "eur": 56428841
         }
       ],
       "bySector": [
@@ -805,42 +879,50 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 4301
+          "companies": 4301,
+          "eur": 2682575259
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 425
+          "companies": 425,
+          "eur": 131117210
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 13
+          "companies": 13,
+          "eur": 3709043
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 21
+          "companies": 21,
+          "eur": 14013712
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 5
+          "companies": 5,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 5
+          "companies": 5,
+          "eur": 549400000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 2
+          "companies": 2,
+          "eur": 49993901
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 13
+          "companies": 13,
+          "eur": 3836123
         }
       ],
       "bySector": [
@@ -899,52 +981,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 3620
+          "companies": 3620,
+          "eur": 3359177780
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 2450
+          "companies": 2450,
+          "eur": 1694586553
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 157
+          "companies": 157,
+          "eur": 96567853
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 111
+          "companies": 111,
+          "eur": 162044049
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 11
+          "companies": 11,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 8
+          "companies": 8,
+          "eur": 298714196
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 18
+          "companies": 18,
+          "eur": 1660571907
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 8
+          "companies": 8,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 6
+          "companies": 6,
+          "eur": 108815836
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 58
+          "companies": 58,
+          "eur": 523857202
         }
       ],
       "bySector": [
@@ -1008,52 +1100,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 3674
+          "companies": 3674,
+          "eur": 8514727428
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 511
+          "companies": 511,
+          "eur": 233098122
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 569
+          "companies": 569,
+          "eur": 333958731
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 40
+          "companies": 40,
+          "eur": 27230118
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 6
+          "companies": 6,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 3
+          "companies": 3,
+          "eur": 344800000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 3
+          "companies": 3,
+          "eur": 20321974
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 3
+          "companies": 3,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 1
+          "companies": 1,
+          "eur": 3930825
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 30
+          "companies": 30,
+          "eur": 16646832
         }
       ],
       "bySector": [
@@ -1117,52 +1219,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 4283
+          "companies": 4283,
+          "eur": 3136339747
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 1243
+          "companies": 1243,
+          "eur": 903132876
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 127
+          "companies": 127,
+          "eur": 54047311
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 84
+          "companies": 84,
+          "eur": 98848075
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 18
+          "companies": 18,
+          "eur": 60000
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 11
+          "companies": 11,
+          "eur": 1985200000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 4
+          "companies": 4,
+          "eur": 114660575
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 3
+          "companies": 3,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 5
+          "companies": 5,
+          "eur": 38811047
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 116
+          "companies": 116,
+          "eur": 169610491
         }
       ],
       "bySector": [
@@ -1226,47 +1338,56 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 608
+          "companies": 608,
+          "eur": 428440927
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 204
+          "companies": 204,
+          "eur": 61962049
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 3565
+          "companies": 3565,
+          "eur": 70734855
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 6
+          "companies": 6,
+          "eur": 4214228
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 4
+          "companies": 4,
+          "eur": 0
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 1
+          "companies": 1,
+          "eur": 4416000
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 1
+          "companies": 1,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 3
+          "companies": 3,
+          "eur": 24612795
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 11
+          "companies": 11,
+          "eur": 3573072
         }
       ],
       "bySector": [
@@ -1330,52 +1451,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 2
+          "companies": 2,
+          "eur": 462548
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 886
+          "companies": 886,
+          "eur": 369183904
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 3485
+          "companies": 3485,
+          "eur": 4149623204
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 54
+          "companies": 54,
+          "eur": 49819005
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 15
+          "companies": 15,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 11
+          "companies": 11,
+          "eur": 3159122860
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 11
+          "companies": 11,
+          "eur": 498014986
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 7
+          "companies": 7,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 1
+          "companies": 1,
+          "eur": 3997716
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 16
+          "companies": 16,
+          "eur": 15950267
         }
       ],
       "bySector": [
@@ -1424,52 +1555,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 603
+          "companies": 603,
+          "eur": 746257022
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 322
+          "companies": 322,
+          "eur": 152905250
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 3465
+          "companies": 3465,
+          "eur": 481098041
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 16
+          "companies": 16,
+          "eur": 24104665
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 6
+          "companies": 6,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 3
+          "companies": 3,
+          "eur": 259080000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 2
+          "companies": 2,
+          "eur": 33532000
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 2
+          "companies": 2,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 9
+          "companies": 9,
+          "eur": 236522402
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 4
+          "companies": 4,
+          "eur": 906824
         }
       ],
       "bySector": [
@@ -1533,52 +1674,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 6
+          "companies": 6,
+          "eur": 5515559
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 886
+          "companies": 886,
+          "eur": 742656713
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 3135
+          "companies": 3135,
+          "eur": 984872351
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 72
+          "companies": 72,
+          "eur": 125061312
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 12
+          "companies": 12,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 2
+          "companies": 2,
+          "eur": 512000000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 13
+          "companies": 13,
+          "eur": 795430052
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 8
+          "companies": 8,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 6
+          "companies": 6,
+          "eur": 24636406
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 27
+          "companies": 27,
+          "eur": 44847482
         }
       ],
       "bySector": [
@@ -1627,52 +1778,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 1711
+          "companies": 1711,
+          "eur": 2008961604
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 2223
+          "companies": 2223,
+          "eur": 1473381889
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 145
+          "companies": 145,
+          "eur": 90128407
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 46
+          "companies": 46,
+          "eur": 44073149
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 1
+          "companies": 1,
+          "eur": 7500
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 8
+          "companies": 8,
+          "eur": 3203200000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 8
+          "companies": 8,
+          "eur": 741003327
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 3
+          "companies": 3,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 29
+          "companies": 29,
+          "eur": 305448527
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 48
+          "companies": 48,
+          "eur": 19713945
         }
       ],
       "bySector": [
@@ -1736,52 +1897,62 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 2389
+          "companies": 2389,
+          "eur": 3023315512
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 942
+          "companies": 942,
+          "eur": 878325711
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 326
+          "companies": 326,
+          "eur": 943360265
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 84
+          "companies": 84,
+          "eur": 133465803
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 16
+          "companies": 16,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 12
+          "companies": 12,
+          "eur": 1775158000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 8
+          "companies": 8,
+          "eur": 337507375
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 5
+          "companies": 5,
+          "eur": 0
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 4
+          "companies": 4,
+          "eur": 222781046
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 101
+          "companies": 101,
+          "eur": 61296136
         }
       ],
       "bySector": [
@@ -1845,47 +2016,56 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 790
+          "companies": 790,
+          "eur": 743584675
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 1352
+          "companies": 1352,
+          "eur": 639375589
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 94
+          "companies": 94,
+          "eur": 31886449
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 78
+          "companies": 78,
+          "eur": 97990646
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 7
+          "companies": 7,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 4
+          "companies": 4,
+          "eur": 2446240000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 6
+          "companies": 6,
+          "eur": 478257912
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 3
+          "companies": 3,
+          "eur": 30513892
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 44
+          "companies": 44,
+          "eur": 8023113
         }
       ],
       "bySector": [
@@ -1949,47 +2129,56 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 1366
+          "companies": 1366,
+          "eur": 1345512512
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 782
+          "companies": 782,
+          "eur": 553286801
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 59
+          "companies": 59,
+          "eur": 45511942
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 76
+          "companies": 76,
+          "eur": 110917496
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 17
+          "companies": 17,
+          "eur": 45000
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 1
+          "companies": 1,
+          "eur": 340000000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 1
+          "companies": 1,
+          "eur": 39475000
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 4
+          "companies": 4,
+          "eur": 0
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 21
+          "companies": 21,
+          "eur": 18303734
         }
       ],
       "bySector": [
@@ -2048,47 +2237,56 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 1583
+          "companies": 1583,
+          "eur": 1208168052
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 247
+          "companies": 247,
+          "eur": 84157457
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 10
+          "companies": 10,
+          "eur": 1881110
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 9
+          "companies": 9,
+          "eur": 6940731
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 5
+          "companies": 5,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 14
+          "companies": 14,
+          "eur": 1603753784
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 1
+          "companies": 1,
+          "eur": 21500000
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 1
+          "companies": 1,
+          "eur": 5984408
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 7
+          "companies": 7,
+          "eur": 1616379
         }
       ],
       "bySector": [
@@ -2142,42 +2340,50 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 396
+          "companies": 396,
+          "eur": 1115219744
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 239
+          "companies": 239,
+          "eur": 199280709
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 24
+          "companies": 24,
+          "eur": 8394326
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 11
+          "companies": 11,
+          "eur": 19311957
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 2
+          "companies": 2,
+          "eur": 0
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 1
+          "companies": 1,
+          "eur": 12694904
         },
         {
           "family": "eib",
           "label": "EIB",
-          "companies": 2
+          "companies": 2,
+          "eur": 0
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 1
+          "companies": 1,
+          "eur": 39129
         }
       ],
       "bySector": [
@@ -2226,47 +2432,56 @@
         {
           "family": "state_aid",
           "label": "State Aid (SATR)",
-          "companies": 2
+          "companies": 2,
+          "eur": 1276276
         },
         {
           "family": "horizon_eu",
           "label": "Horizon EU",
-          "companies": 679
+          "companies": 679,
+          "eur": 212034914
         },
         {
           "family": "ndb",
           "label": "National Dev. Banks",
-          "companies": 25
+          "companies": 25,
+          "eur": 11418252
         },
         {
           "family": "eic",
           "label": "EIC",
-          "companies": 11
+          "companies": 11,
+          "eur": 8194999
         },
         {
           "family": "eit",
           "label": "EIT KIC",
-          "companies": 7
+          "companies": 7,
+          "eur": 0
         },
         {
           "family": "ipcei",
           "label": "IPCEI",
-          "companies": 3
+          "companies": 3,
+          "eur": 782400000
         },
         {
           "family": "innovation_fund",
           "label": "Innovation Fund",
-          "companies": 1
+          "companies": 1,
+          "eur": 146415990
         },
         {
           "family": "edf",
           "label": "EDF",
-          "companies": 4
+          "companies": 4,
+          "eur": 22922300
         },
         {
           "family": "chips_ju",
           "label": "Chips JU",
-          "companies": 28
+          "companies": 28,
+          "eur": 16558192
         }
       ],
       "bySector": [

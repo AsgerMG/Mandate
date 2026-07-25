@@ -10,7 +10,7 @@ Schema:
         "companies": 2633,
         "totalEur": 15027519650,
         "byFamily": [
-          {"family": "horizon_eu", "label": "Horizon EU", "companies": 1694},
+          {"family": "horizon_eu", "label": "Horizon EU", "companies": 1694, "eur": 820000000},
           ...
         ]
       },
@@ -121,9 +121,12 @@ def main():
         reverse=True,
     )
 
-    # Per-country + family: distinct companies
+    # Per-country + family: distinct companies AND total EUR (grant only,
+    # matching the totalEur query above so the vehicle pie's slices sum to
+    # the same headline figure shown in the tooltip).
     cur.execute("""
-        SELECT c.country, e.source, COUNT(DISTINCT e.company_id) AS companies
+        SELECT c.country, e.source, COUNT(DISTINCT e.company_id) AS companies,
+               COALESCE(SUM(e.grant_amount_eur), 0) AS eur
         FROM public_funding_events e
         JOIN companies c ON c.id = e.company_id
         WHERE c.country IS NOT NULL AND c.country != ''
@@ -149,16 +152,18 @@ def main():
         bucket = by_country_sector.setdefault(canon, {})
         bucket[sector] = bucket.get(sector, 0) + count
 
-    # Aggregate source -> family per country (canonicalised + filtered)
-    by_country_family: dict[str, dict[str, int]] = {}
-    for country, source, count in source_rows:
+    # Aggregate source -> family per country (canonicalised + filtered),
+    # tracking both company count and total EUR per family.
+    by_country_family: dict[str, dict[str, dict[str, float]]] = {}
+    for country, source, count, eur in source_rows:
         canon = canonical(country)
         if canon is None:
             continue
         family = source_to_family(source)
-        if canon not in by_country_family:
-            by_country_family[canon] = {}
-        by_country_family[canon][family] = by_country_family[canon].get(family, 0) + count
+        bucket = by_country_family.setdefault(canon, {}).setdefault(
+            family, {"companies": 0, "eur": 0.0})
+        bucket["companies"] += count
+        bucket["eur"] += eur or 0
 
     # Ranks for narrative copy
     co_sorted = sorted(country_rows, key=lambda r: r[1], reverse=True)
@@ -173,11 +178,13 @@ def main():
         families_raw = by_country_family.get(country, {})
         by_family = []
         for fam in FAMILY_ORDER:
-            if fam in families_raw and families_raw[fam] > 0:
+            f = families_raw.get(fam)
+            if f and f["companies"] > 0:
                 by_family.append({
                     "family": fam,
                     "label": FAMILY_LABELS[fam],
-                    "companies": families_raw[fam],
+                    "companies": f["companies"],
+                    "eur": round(f["eur"]),
                 })
 
         sectors_raw = by_country_sector.get(country, {})

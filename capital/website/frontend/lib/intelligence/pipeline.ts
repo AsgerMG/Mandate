@@ -373,6 +373,8 @@ function buildInstrumentTable(
         country: leaf.country,
         capitalType: leaf.capitalType,
         eventCount: leaf.eventCount,
+        administeringBody: leaf.administeringBody ?? undefined,
+        legalBasis: legalBasisFor(leaf),
       } as InstrumentRow));
     })
     .sort((a, b) => {
@@ -675,8 +677,62 @@ const CHANNEL_SUPPORT_TYPE: Record<string, string> = {
   ipcei: "Grant (state aid)",
 };
 function supportTypeLabel(row: InstrumentRow): string {
-  if (row.capitalType && CAPITAL_TYPE_LABEL[row.capitalType]) return CAPITAL_TYPE_LABEL[row.capitalType];
-  return CHANNEL_SUPPORT_TYPE[row.channel] ?? "Grant";
+  const base = (row.capitalType && CAPITAL_TYPE_LABEL[row.capitalType])
+    || CHANNEL_SUPPORT_TYPE[row.channel]
+    || "Grant";
+  // state_aid_satr is a REGISTER (the State Aid Transparency Register — where
+  // this data was published), not a fund. Every leaf under it is a specific
+  // national scheme run by a specific government body (see
+  // displayInstitutionName below); the support-type label makes that explicit
+  // rather than reading like a single pan-EU vehicle called "SATR."
+  return row.channel === "state_aid_satr" ? `${base} (national government, state aid)` : base;
+}
+
+/**
+ * SATR-sourced leaf instruments get an auto-generated bucket name like
+ * "SATR De Equity" — SATR is the data source (the EU's State Aid
+ * Transparency Register), never a fund a founder could apply to. Prefer the
+ * real granting authority (administeringBody, majority-voted from the raw
+ * per-event granting_authority field — see populate_funding_instruments.py)
+ * whenever the current name is one of these generic register labels.
+ * Curated/NDB-branded SATR names (e.g. "Spain BDNS (regional agencies)",
+ * deliberately naming a multi-agency rollup) are left alone — only the
+ * literal "SATR ..." auto-prettified pattern gets swapped.
+ */
+function displayInstitutionName(row: InstrumentRow): string {
+  if (row.administeringBody && row.instrument.startsWith("SATR ")) return row.administeringBody;
+  return row.instrument;
+}
+
+// Short, founder-facing labels for the GBER articles a state-aid instrument
+// can be gated on — mirrors GBER_ARTICLE_GATES in
+// populate_funding_instruments.py (that script seeds the
+// "gber_article_inferred" gate this reads; keep both in sync if either
+// changes).
+const GBER_ARTICLE_LABEL: Record<string, string> = {
+  StateAidObjectiveGberArt21: "GBER Art. 21 (risk finance)",
+  StateAidObjectiveGberArt22: "GBER Art. 22 (start-up aid)",
+  StateAidObjectiveGberArt25: "GBER Art. 25 (R&D aid)",
+  StateAidObjectiveGberArt25b: "GBER Art. 25b (feasibility studies)",
+  StateAidObjectiveGberArt25c: "GBER Art. 25c (SME R&D support)",
+  StateAidObjectiveGberArt26: "GBER Art. 26 (research infrastructure)",
+  StateAidObjectiveGberArt27: "GBER Art. 27 (innovation clusters)",
+  StateAidObjectiveGberArt28: "GBER Art. 28 (SME innovation aid)",
+  StateAidObjectiveGberArt29: "GBER Art. 29 (process/organisational innovation)",
+};
+
+/**
+ * "What do we check eligibility against" for this specific leaf instrument —
+ * the GBER article its aid is filed under, when the DB has that gate on
+ * record (seeded deterministically from real per-event aid_objective codes,
+ * never modeled). Undefined when no such gate exists (most non-state-aid
+ * channels — EIC, EIB, Horizon — aren't GBER-gated the same way, so this is
+ * expected to be empty for them).
+ */
+function legalBasisFor(leaf: DbInstrument): string | undefined {
+  const gate = leaf.gates.find((g) => g.id === "gber_article_inferred");
+  if (!gate) return undefined;
+  return GBER_ARTICLE_LABEL[gate.value] ?? gate.requirement.split(" — ")[0];
 }
 
 /**
@@ -695,10 +751,12 @@ function buildInstitutions(
   dbPeers: CompetitorRecord[],
 ): InstitutionEntry[] {
   return rows.map((row) => ({
-    institution: row.instrument,
+    institution: displayInstitutionName(row),
     channel: row.channel,
     supportType: supportTypeLabel(row),
     ticket: row.ticket,
+    country: row.country,
+    legalBasis: row.legalBasis,
     whyEligible: "",
     comparableFirms: comparableFirmsForChannel(row.channel, records, dbPeers),
     nextStep: "",
@@ -959,6 +1017,7 @@ async function synthesize(
         `${row.usedInField ? " [used by peers in your field]" : ""}` +
         `${row.fitFlag ? ` [${row.fitFlag}]` : ""}: ` +
         `support ${r.supportType}; ticket ${r.ticket}; ` +
+        `${r.legalBasis ? `legal basis ${r.legalBasis}; ` : ""}` +
         `comparable firms funded through it: ${firms}`
       );
     })
@@ -1133,7 +1192,10 @@ async function synthesize(
 }
 
 /**
- * Phase 3C: one grounded adaptive round. Unlike the old generateIntakeGroups
+ * Phase 3C: ONE grounded panel of up to 8 questions (not several small
+ * rounds — the user's explicit call: the standard screen asks the fast,
+ * universal questions, then a single tailored panel narrows the rest before
+ * matching, not a drip of mini-screens). Unlike the old generateIntakeGroups
  * (retired — it invented questions from a soft "entropy rule" prompt
  * instruction with zero access to real gate data), this reads the ACTUAL
  * unresolved eligibility_gates for the founder's current candidate-instrument
@@ -1147,7 +1209,7 @@ export async function generateGroundedRound(
   openFields: OpenFieldEvidence[],
 ): Promise<GroundedRound | null> {
   if (!openFields.length) return null;
-  const top = openFields.slice(0, 3);
+  const top = openFields.slice(0, 8);
   const fieldNames = top.map((f) => f.field);
 
   const schema = {
@@ -1184,7 +1246,9 @@ export async function generateGroundedRound(
   try {
     const res = await client.messages.create({
       model: INTAKE_MODEL,
-      max_tokens: 700,
+      // Bumped from 700: up to 8 fields' worth of questions (was 3) needs
+      // more room.
+      max_tokens: 1600,
       thinking: { type: "disabled" },
       system: loadAgentInstructions(),
       output_config: { format: { type: "json_schema", schema } },

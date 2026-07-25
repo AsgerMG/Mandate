@@ -140,7 +140,7 @@ interface CountryData {
   excluded?: boolean;
   companies?: number;
   totalEur?: number;
-  byFamily?: { family: string; label: string; companies: number }[];
+  byFamily?: { family: string; label: string; companies: number; eur: number }[];
   bySector?: { sector: string; label: string; companies: number }[];
   narrative?: {
     rankByCompanies: number | null;
@@ -161,60 +161,6 @@ interface MapTooltipExtraProps {
   familyUniverse: { family: string; label: string; total: number }[];
   pinned: boolean;
   onClose: () => void;
-}
-
-// Horizontal bar chart for investment instrument breakdown.
-function BarBlock({
-  entries,
-}: {
-  entries: { name: string; value: number; key: string; color: string }[];
-}) {
-  if (entries.length === 0) {
-    return (
-      <div className="rounded bg-[var(--muted)]/30 p-2 text-center">
-        <p className="text-[9px] uppercase tracking-widest text-[var(--muted-foreground)]">By instrument</p>
-        <p className="mt-4 text-[10px] text-[var(--muted-foreground)]">No data</p>
-      </div>
-    );
-  }
-  const sorted = [...entries].sort((a, b) => b.value - a.value);
-  const total = sorted.reduce((acc, e) => acc + e.value, 0);
-  return (
-    <div className="rounded bg-[var(--muted)]/30 p-2">
-      <p className="text-[9px] uppercase tracking-widest text-[var(--muted-foreground)] mb-2">By instrument</p>
-      <ul className="space-y-1.5">
-        {sorted.map((e) => {
-          const pct = Math.round((e.value / total) * 100);
-          return (
-            <li key={e.key} className="flex items-center gap-1.5">
-              <span
-                className="inline-block h-2 w-2 rounded-full flex-shrink-0"
-                style={{ background: e.color }}
-              />
-              <span
-                className="text-[9px] text-[var(--muted-foreground)] flex-shrink-0 truncate"
-                style={{ width: 66 }}
-              >
-                {e.name}
-              </span>
-              <div
-                className="flex-1 h-1.5 rounded-sm overflow-hidden"
-                style={{ background: "var(--muted)" }}
-              >
-                <div
-                  className="h-full rounded-sm"
-                  style={{ width: `${pct}%`, background: e.color, opacity: 0.85 }}
-                />
-              </div>
-              <span className="text-[9px] tabular-nums text-[var(--muted-foreground)] w-5 text-right flex-shrink-0">
-                {pct}%
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
 }
 
 // Donut chart with sorted legend. Beyond maxRows items are collapsed to "Other".
@@ -346,11 +292,13 @@ function MapTooltip({
     );
   }
 
-  const familyBars = [...(data.byFamily ?? [])]
-    .sort((a, b) => b.companies - a.companies)
+  // € — not company count — so the biggest slice is genuinely the biggest
+  // vehicle by capital, not just the one with the most (often small) awards.
+  const familyPieEur = [...(data.byFamily ?? [])]
+    .sort((a, b) => b.eur - a.eur)
     .map((d) => ({
       name: d.label,
-      value: d.companies,
+      value: d.eur,
       key: d.family,
       color: FAMILY_COLORS[d.family] ?? "#6b7280",
     }));
@@ -426,9 +374,9 @@ function MapTooltip({
         </p>
       )}
 
-      {/* Charts: bars left, sector pie right */}
+      {/* Charts: vehicle pie (€, biggest first) left, sector pie right */}
       <div className="grid grid-cols-2 gap-2 px-3 pb-2 pt-2">
-        <BarBlock entries={familyBars} />
+        <PieBlock title="By vehicle (€)" entries={familyPieEur} maxRows={5} />
         <PieBlock title="By sector" entries={sectorPie} maxRows={5} />
       </div>
 

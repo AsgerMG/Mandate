@@ -32,9 +32,13 @@ const darkVars = {
   "--primary": "#0a0a0a",
 } as CSSProperties;
 
-// Grounded adaptive rounds (Phase 3C): capped so worst-case added latency/cost
-// stays bounded even when the shortlist never fully collapses.
-const MAX_ROUNDS = 2;
+// Grounded adaptive round (Phase 3C): ONE panel of up to 8 tailored
+// questions, not a drip of several small rounds — the standard screen asks
+// the fast universal questions, then this single panel narrows the rest
+// before matching. (generateGroundedRound's own openFields.slice(0, 8) in
+// pipeline.ts is the other half of this — keep them in sync if either
+// changes.)
+const MAX_ROUNDS = 1;
 
 // COMPANY_TYPE_OPTIONS (types.ts) is the four archetypes, as a one-tap
 // picker — shared with the server-side free-text inference layer (Phase 4)
@@ -302,12 +306,6 @@ function Chips({
   );
 }
 
-const YES_NO_UNSURE = [
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "No" },
-  { value: "unsure", label: "Not sure" },
-];
-
 // Rotating engagement lines per pipeline step — shown with the elapsed timer so
 // a three-minute generation never looks stalled.
 const STEP_CHATTER: Record<string, string[]> = {
@@ -362,20 +360,6 @@ export function IntelligencePanel() {
   const [roundAnswers, setRoundAnswers] = useState<Record<string, string | string[]>>({});
   const [roundCount, setRoundCount] = useState(0);
 
-  // The fast path: a deterministic eligibility verdict, computed with zero
-  // model calls. Lives in the preview panel next to the form, continuously
-  // refreshed on a debounce as the founder types/picks (see the effect
-  // below) — never gates a screen transition. Self-only/preliminary — the
-  // full memo's table can only grow from here (more peers), never
-  // contradict it.
-  const [verdictLoading, setVerdictLoading] = useState(false);
-  const [verdict, setVerdict] = useState<{
-    eligibilityScreen: EligibilityCheck[];
-    instrumentTable: InstrumentRow[];
-    selfMatched: boolean;
-    candidateInstrumentIds: string[];
-  } | null>(null);
-
   // Phase 4: the model's own read of the free-text description, fetched once
   // (see fetchRound's wantProfileSignal) and passed straight through to the
   // memo — never re-derived.
@@ -414,14 +398,18 @@ export function IntelligencePanel() {
   const toggleList = (list: string[], v: string) =>
     list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
 
-  const basePayload = () => ({
+  // `eligOverride` lets callers get a payload reflecting eligibility answers
+  // that haven't made it into `elig` state yet (React state updates aren't
+  // synchronous — see advanceRound, which needs the just-merged answers
+  // immediately, not next render's stale closure).
+  const basePayload = (eligOverride?: EligibilityAnswers) => ({
     company,
     country,
     companyType,
     description,
     capitalSought,
     targetMarkets,
-    eligibility: elig,
+    eligibility: eligOverride ?? elig,
     profileSignal,
   });
 
@@ -432,61 +420,38 @@ export function IntelligencePanel() {
     candidateInstrumentIds: string[];
   };
 
-  // Right after the core screen: compute the fast, model-free eligibility
-  // verdict and show it immediately. Falls straight through to the adaptive
-  // round on any failure — the verdict screen is a bonus, never a gate.
-  // Best-effort live preview: refreshes `verdict` in place, never gates a
-  // screen transition and never falls through to the adaptive round on
-  // failure (a stale or missing preview just means the panel stays quiet —
-  // it's a bonus, not a gate). Returns what it fetched so handleContinue can
-  // get a guaranteed-fresh read at the moment of submission without
-  // duplicating this fetch.
-  async function fetchVerdictLive(): Promise<Verdict | null> {
-    setVerdictLoading(true);
+  // The deterministic, code-only eligibility verdict — never shown on its
+  // own, only used to ground which real fund gates the adaptive round is
+  // allowed to ask about (see handleContinue/advanceRound below).
+  async function fetchVerdict(eligOverride?: EligibilityAnswers): Promise<Verdict | null> {
     try {
       const res = await fetch("/api/intelligence/verdict", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(basePayload()),
+        body: JSON.stringify(basePayload(eligOverride)),
       });
       const data = (await res.json().catch(() => ({}))) as Partial<Verdict>;
-      const v: Verdict = {
+      return {
         eligibilityScreen: data.eligibilityScreen ?? [],
         instrumentTable: data.instrumentTable ?? [],
         selfMatched: Boolean(data.selfMatched),
         candidateInstrumentIds: data.candidateInstrumentIds ?? [],
       };
-      setVerdict(v);
-      return v;
     } catch {
       return null;
-    } finally {
-      setVerdictLoading(false);
     }
   }
 
-  // Keep the live preview panel current as the founder fills in the fields
-  // that actually move it (company/country change the DB match; ticket band
-  // and capital type re-rank the instrument shortlist). Debounced so a fast
-  // typer doesn't fire a request per keystroke.
-  useEffect(() => {
-    // No setVerdict(null) here on purpose (setState directly in an effect
-    // body is a lint smell) — the panel's render already treats an empty
-    // company name as "nothing to show yet" regardless of any stale verdict.
-    if (!company.trim()) return;
-    const t = setTimeout(() => { void fetchVerdictLive(); }, 500);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [company, country, elig.ticketBand, capitalSought.join(",")]);
-
-  // The form's one primary action: get a guaranteed-fresh verdict (the
-  // debounced background fetch may not have settled yet on a fast submit),
-  // then either the adaptive round or, if nothing's left to ask, straight to
-  // the memo — fetchRound already handles that fallback.
+  // The form's one primary action: silently compute the deterministic
+  // verdict (never shown on its own — it only grounds which real fund gates
+  // the adaptive round below is allowed to ask about), then go straight into
+  // that adaptive round. There is no "skip" from here: the tailored
+  // follow-ups are how the right funds get found, not an optional extra.
   async function handleContinue() {
-    if (!company.trim() || preparing || verdictLoading) return;
+    if (!company.trim() || preparing) return;
     setError(null);
-    const v = await fetchVerdictLive();
+    setPreparing(true);
+    const v = await fetchVerdict();
     await fetchRound(elig, v?.candidateInstrumentIds ?? [], true);
   }
 
@@ -554,22 +519,8 @@ export function IntelligencePanel() {
     }
     setPreparing(true);
     try {
-      const res = await fetch("/api/intelligence/verdict", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...basePayload(), eligibility: merged }),
-      });
-      const data = (await res.json().catch(() => ({}))) as Partial<Verdict>;
-      const v: Verdict = {
-        eligibilityScreen: data.eligibilityScreen ?? [],
-        instrumentTable: data.instrumentTable ?? [],
-        selfMatched: Boolean(data.selfMatched),
-        candidateInstrumentIds: data.candidateInstrumentIds ?? [],
-      };
-      setVerdict(v);
-      await fetchRound(merged, v.candidateInstrumentIds, false);
-    } catch {
-      await runMemo([]);
+      const v = await fetchVerdict(merged);
+      await fetchRound(merged, v?.candidateInstrumentIds ?? [], false);
     } finally {
       setPreparing(false);
     }
@@ -675,10 +626,9 @@ export function IntelligencePanel() {
 
         {/* ── Intake: the form and its live preview panel, side by side ── */}
         {screen === "intake" && !running && (
-          <div className="mt-4 grid gap-8 lg:grid-cols-[1fr_22rem]">
           <form
             onSubmit={(e) => { e.preventDefault(); void handleContinue(); }}
-            className="space-y-4"
+            className="mt-4 space-y-4"
           >
             <label className="block text-sm">
               <span className={fieldLabel}>
@@ -763,8 +713,10 @@ export function IntelligencePanel() {
             {/* ── Fit signals: the empirically highest-determining-power
                 questions (ETL/terms/aggregate_intake_usage.py), real reach
                 against the 320-instrument corpus — fteBand 79%, developmentStage
-                65%, lossesOverHalfCapital 57%. Everything else is asked
-                adaptively once the shortlist is known, never blind upfront. ── */}
+                65%. Everything else, including the loss-making/undertaking-
+                in-difficulty test, is asked adaptively once the shortlist is
+                known and only when a specific candidate fund's real gate
+                actually requires it — never blind, for everyone, upfront. ── */}
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
@@ -786,81 +738,33 @@ export function IntelligencePanel() {
                 ]} value={elig.fteBand} onPick={(v) => setElig((p) => ({ ...p, fteBand: v }))} />
               </div>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Where is the product today?
-                  <InfoDot>
-                    Grant lanes gate on development stage: research programmes fund
-                    early work, the EIC wants a working prototype or better, and
-                    industrial instruments want deployment-ready.
-                  </InfoDot>
-                </span>
-                <Chips options={[
-                  { value: "research", label: "Research / concept" },
-                  { value: "prototype", label: "Working prototype" },
-                  { value: "pilot_customers", label: "Pilots with customers" },
-                  { value: "scaling_revenue", label: "Scaling with revenue" },
-                ]} value={elig.developmentStage}
-                  onPick={(v) => setElig((p) => ({ ...p, developmentStage: v }))} />
-              </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Currently loss-making beyond half your equity?
-                  <InfoDot>
-                    If yes, EU rules block most state aid until equity is
-                    restored, we will name the fix. Not sure is fine, this is
-                    never forced.
-                  </InfoDot>
-                </span>
-                <Chips options={YES_NO_UNSURE} value={elig.lossesOverHalfCapital}
-                  onPick={(v) => setElig((p) => ({ ...p, lossesOverHalfCapital: v as EligibilityAnswers["lossesOverHalfCapital"] }))} />
-              </div>
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Where is the product today?
+                <InfoDot>
+                  Grant lanes gate on development stage: research programmes fund
+                  early work, the EIC wants a working prototype or better, and
+                  industrial instruments want deployment-ready.
+                </InfoDot>
+              </span>
+              <Chips options={[
+                { value: "research", label: "Research / concept" },
+                { value: "prototype", label: "Working prototype" },
+                { value: "pilot_customers", label: "Pilots with customers" },
+                { value: "scaling_revenue", label: "Scaling with revenue" },
+              ]} value={elig.developmentStage}
+                onPick={(v) => setElig((p) => ({ ...p, developmentStage: v }))} />
             </div>
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
-              <button type="submit" disabled={!company.trim() || preparing || verdictLoading} className={nextBtn}>
-                {preparing ? "Checking what's still open…" : "Continue"}
+              <button type="submit" disabled={!company.trim() || preparing} className={nextBtn}>
+                {preparing ? "Finding your tailored questions…" : "Continue"}
               </button>
-              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
-                Skip the questions, write it now
-              </button>
+              <span className="text-xs text-[var(--muted-foreground)]">
+                A short, tailored follow-up screen comes next, then your memo.
+              </span>
             </div>
           </form>
-
-          {/* ── Live preview: the fast, model-free eligibility read, updating
-              as the form is filled in — not a separate post-submit screen. ── */}
-          <div className="lg:sticky lg:top-4 lg:self-start">
-            <StepHeader
-              eyebrow="Your eligibility, right now"
-              title="What we know so far"
-              detail="Updates as you type, computed in code with no model call. The finished memo only ever adds to this, never contradicts it."
-            />
-            <div className="border border-[var(--border)] bg-white px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
-              {!company.trim() ? (
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  Start with your company name above.
-                </p>
-              ) : verdict ? (
-                <>
-                  <EligibilityTable rows={verdict.eligibilityScreen} />
-                  <InstrumentTable rows={verdict.instrumentTable} />
-                  {verdict.eligibilityScreen.length === 0 && verdict.instrumentTable.length === 0 && (
-                    <p className="text-sm text-[var(--muted-foreground)]">
-                      Not enough answered yet — fill in a few more fields, or
-                      continue and the full memo will still gather comparables
-                      and a funder brief.
-                    </p>
-                  )}
-                </>
-              ) : (
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  {verdictLoading ? "Checking…" : "One moment…"}
-                </p>
-              )}
-            </div>
-          </div>
-          </div>
         )}
 
         {/* ── Adaptive round: grounded in the founder's real remaining gates ── */}
@@ -868,8 +772,8 @@ export function IntelligencePanel() {
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
             <StepHeader
               eyebrow={round.theme}
-              title="A few more things"
-              detail="Each question here comes from a real requirement of a fund still on your shortlist. Skip anything you are unsure of."
+              title="A few tailored questions"
+              detail="Each one comes from a real requirement of a fund still on your shortlist — answering these is what finds the right funds. Leave any you genuinely don't know unanswered."
             />
             <div className="space-y-5">
               {round.questions.map((q) => {
@@ -918,9 +822,6 @@ export function IntelligencePanel() {
               </button>
               <button type="button" onClick={() => setScreen("intake")} className={backBtn}>
                 Back
-              </button>
-              <button type="button" onClick={() => void runMemo([])} className={backBtn}>
-                Skip the rest and write it now
               </button>
             </div>
           </div>
@@ -974,7 +875,6 @@ export function IntelligencePanel() {
             {livePartial && (
               <div className="mt-6 border-t border-[var(--border)] pt-6">
                 <div className="border border-[var(--border)] bg-white px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
-                  <EligibilityTable rows={livePartial.eligibilityScreen} />
                   <InstitutionsTable institutions={livePartial.institutions} pending />
                 </div>
               </div>
@@ -1052,6 +952,11 @@ function InstitutionsTable({ institutions, pending = false }: { institutions: In
             <tr key={i}>
               <td className="py-2.5 pr-3">
                 <span className="font-semibold">{r.institution}</span>
+                {(r.country || r.legalBasis) && (
+                  <span className="block text-[12px] text-[var(--muted-foreground)]">
+                    {[r.country, r.legalBasis].filter(Boolean).join(" · ")}
+                  </span>
+                )}
                 <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
                   {r.ticket}
                 </span>
@@ -1150,70 +1055,6 @@ function EligibilityTable({ rows }: { rows: EligibilityCheck[] }) {
   );
 }
 
-/** The public instruments that fit the founder's field, side by side. Shared
- *  by the fast verdict screen and the final memo so both render identically. */
-function InstrumentTable({ rows }: { rows: InstrumentRow[] }) {
-  if (!rows || rows.length === 0) return null;
-  const hasProfileNotes = rows.some((r) => r.profileNote);
-  return (
-    <>
-      <SectionTitle>The capital on the table</SectionTitle>
-      <p className="mb-3">
-        The public instruments that fit your field, side by side. Read the
-        trade-off before the ticket: public capital is rarely free of strings.
-        Instruments your peers have already drawn on are marked.
-        {hasProfileNotes && (
-          <> Notes marked &ldquo;your own words suggest&rdquo; are the AI&rsquo;s read of
-            your free-text description, not a verified fact and not what you
-            selected under Company type.</>
-        )}
-      </p>
-      <table className="w-full border-collapse text-[14px]">
-        <thead>
-          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
-            <th className="py-2 pr-3 font-semibold">Instrument</th>
-            <th className="py-2 pr-3 font-semibold">Typical ticket</th>
-            <th className="py-2 pr-3 font-semibold">Speed to cash</th>
-            <th className="py-2 pr-3 font-semibold">What you give up</th>
-            <th className="py-2 font-semibold">Best for</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-[var(--border)] align-top">
-          {rows.map((r, i) => (
-            <tr key={i}>
-              <td className="py-2.5 pr-3">
-                <span className="font-semibold">{r.instrument}</span>
-                {r.usedInField && (
-                  <span className="block text-[12px] italic text-[var(--muted-foreground)]">
-                    in your field
-                  </span>
-                )}
-                {r.fitFlag && (
-                  <span className="mt-1 flex items-start gap-1.5 text-[12px] text-[var(--muted-foreground)]">
-                    <span className="mt-0.5 rounded bg-[var(--muted)] px-1 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--foreground)]">
-                      {r.fit === "consortium_institutional" ? "consortium" : "large-scale"}
-                    </span>
-                    <span className="italic">{r.fitFlag}</span>
-                  </span>
-                )}
-                {r.profileNote && (
-                  <div className="mt-1.5 border-l-2 border-[#6b5b95]/40 pl-2 text-[12px] text-[#6b5b95]">
-                    <span className="font-semibold uppercase tracking-wide text-[10px]">Your own words suggest</span>{" "}
-                    <span className="italic">{r.profileNote}</span>
-                  </div>
-                )}
-              </td>
-              <td className="py-2.5 pr-3 tabular-nums">{r.ticket}</td>
-              <td className="py-2.5 pr-3">{r.speed}</td>
-              <td className="py-2.5 pr-3">{r.giveUp}</td>
-              <td className="py-2.5">{r.bestFor}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
-  );
-}
 
 /**
  * The whole report rendered as a single advisory letter — flowing serif prose,

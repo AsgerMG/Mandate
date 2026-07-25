@@ -129,6 +129,17 @@ export interface InstrumentRow {
   country?: string;
   capitalType?: string;
   eventCount?: number;
+  /** Real granting authority for this leaf instrument (e.g. "Bundesamt für
+   *  Wirtschaft und Ausfuhrkontrolle"), carried through from
+   *  DbInstrument.administeringBody. Set when known — see
+   *  displayInstitutionName() in pipeline.ts, which prefers this over
+   *  `instrument` for generic auto-named buckets (the "SATR De Equity"
+   *  problem: SATR is where the DATA comes from, not who is granting it). */
+  administeringBody?: string;
+  /** Short legal-basis label (e.g. "GBER Art. 25 (R&D aid)"), derived from
+   *  this leaf's gber_article_inferred gate when present — see
+   *  legalBasisFor() in pipeline.ts. */
+  legalBasis?: string;
   /** Set only for a small, hardcoded set of tech-depth-sensitive channels
    *  (DEPTH_SENSITIVE_CHANNELS in pipeline.ts), and only when the model's
    *  read of the founder's own description (ProfileSignal) diverges from
@@ -149,6 +160,15 @@ export interface InstitutionEntry {
   channel: string;       // internal source_family code
   supportType: string;   // e.g. "Grant", "Loan / guarantee", "Equity stake"
   ticket: string;        // curated ticket size, from FundSnapshot
+  /** ISO2, or "EU"/"" — where this specific vehicle operates. Answers
+   *  "where do I go for this," alongside `institution` itself. */
+  country?: string;
+  /** The specific legal basis this vehicle is measured against, e.g. "GBER
+   *  Art. 25 (R&D aid)" — derived from the leaf instrument's
+   *  gber_article_inferred gate (see legalBasisFor() in pipeline.ts). Answers
+   *  "what do we check eligibility against," never invented: absent when no
+   *  such gate is on record for this instrument. */
+  legalBasis?: string;
   /** Grounded in the eligibility screen + scoping profile, never invented. */
   whyEligible: string;
   /** Real comparable companies that drew on this exact channel, code-built. */
@@ -325,6 +345,9 @@ export const FIELD_ENUM_HINTS: Record<string, { multi: boolean; options: { value
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
   nonEuControl: { multi: false, options: [
+    { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
+  ] },
+  lossesOverHalfCapital: { multi: false, options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
   bankRelationship: { multi: false, options: [

@@ -9,9 +9,12 @@ import { FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
 
 // Fields already resolved on the deterministic first page (Phase 3B) — never
 // re-asked adaptively, regardless of how much gate reach they still carry.
+// lossesOverHalfCapital (the undertaking-in-difficulty test) is deliberately
+// NOT here: it's a heavy question for a fast first screen, so it now only
+// ever surfaces adaptively, when a specific candidate fund's real gate
+// actually requires it — never blind, for everyone, upfront.
 const FIRST_PAGE_FIELDS = new Set([
-  "entityCountries", "fteBand", "borrowerModel", "developmentStage",
-  "ticketBand", "lossesOverHalfCapital",
+  "entityCountries", "fteBand", "borrowerModel", "developmentStage", "ticketBand",
 ]);
 
 export interface OpenFieldEvidence {

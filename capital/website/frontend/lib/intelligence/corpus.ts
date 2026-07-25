@@ -156,6 +156,12 @@ export interface DbInstrument {
   totalEur: number;
   sourceFamilyBucket: string | null;
   sampleProjectTitles: string[] | null;
+  /** Real per-fund granting authority (majority vote across events' raw
+   *  granting_authority field), e.g. "Bundesamt für Wirtschaft und
+   *  Ausfuhrkontrolle" — null when no dominant authority is on record.
+   *  Prefer this over `name` for display when `name` is a generic
+   *  auto-prettified bucket label (see pipeline.ts's displayInstitutionName). */
+  administeringBody: string | null;
   gates: DbGate[];
 }
 
@@ -208,7 +214,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         client.query(
           `SELECT id, parent_id, name, country, capital_type, is_framework,
                   event_count, company_count, total_eur, source_family_bucket,
-                  sample_project_titles
+                  sample_project_titles, administering_body
            FROM funding_instruments`,
         ),
         client.query(
@@ -248,6 +254,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         totalEur: Number(inst.total_eur),
         sourceFamilyBucket: inst.source_family_bucket,
         sampleProjectTitles: inst.sample_project_titles ? JSON.parse(inst.sample_project_titles) : null,
+        administeringBody: inst.administering_body ?? null,
         gates: gatesByInstrument.get(inst.id) ?? [],
       }));
     } finally {
