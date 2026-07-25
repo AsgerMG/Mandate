@@ -8,7 +8,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
-const GOLD = "#12264f";
+const ACCENT = "#7f5820";
 type Channel = "aid" | "bank" | "eu" | null;
 
 // ── Camera targets (viewBox: x y w h), base canvas 760 x 620 ──────────────────
@@ -27,12 +27,12 @@ interface Step {
 }
 
 const kicker = (t: string) => (
-  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">{t}</p>
+  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">{t}</p>
 );
 const head = (t: string) => (
   <h3
     className="mb-5 text-3xl font-bold leading-[1.1] text-[#141414] sm:text-4xl"
-    style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+    style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
   >
     {t}
   </h3>
@@ -195,20 +195,20 @@ function Node({
         height={h}
         rx={12}
         fill="url(#nodeFill)"
-        stroke={accent ? GOLD : "rgba(10,10,10,0.22)"}
+        stroke={accent ? ACCENT : "rgba(10,10,10,0.22)"}
         strokeWidth={accent ? 1.5 : 1}
       />
       <text
         x={x + w / 2}
         y={sub ? y + 24 : y + 33}
         textAnchor="middle"
-        fill="#1d1c18"
-        style={{ fontFamily: "var(--font-playfair), Georgia, serif", fontSize: 15, fontWeight: 700 }}
+        fill="#10203f"
+        style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontSize: 15, fontWeight: 700 }}
       >
         {title}
       </text>
       {sub && (
-        <text x={x + w / 2} y={y + 42} textAnchor="middle" fill="#6b6b64" style={{ fontSize: 11 }}>
+        <text x={x + w / 2} y={y + 42} textAnchor="middle" fill="#656d82" style={{ fontSize: 11 }}>
           {sub}
         </text>
       )}
@@ -219,8 +219,8 @@ function Node({
 function SubNode({ x, y, w, label, show, delay }: { x: number; y: number; w: number; label: string; show: boolean; delay: number }) {
   return (
     <g style={{ opacity: show ? 1 : 0, transform: show ? "none" : "translateX(-8px)", transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms` }}>
-      <rect x={x} y={y} width={w} height={42} rx={9} fill="rgba(18,38,79,0.07)" stroke="rgba(18,38,79,0.5)" strokeWidth={1} />
-      <text x={x + w / 2} y={y + 26} textAnchor="middle" fill="#1d1c18" style={{ fontFamily: "var(--font-playfair), Georgia, serif", fontSize: 13, fontWeight: 600 }}>
+      <rect x={x} y={y} width={w} height={42} rx={9} fill="rgba(16,32,63,0.07)" stroke="rgba(16,32,63,0.5)" strokeWidth={1} />
+      <text x={x + w / 2} y={y + 26} textAnchor="middle" fill="#10203f" style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontSize: 13, fontWeight: 600 }}>
         {label}
       </text>
     </g>
@@ -230,7 +230,7 @@ function SubNode({ x, y, w, label, show, delay }: { x: number; y: number; w: num
 // Animated coin flowing along a trail path (money in motion), overview only.
 function Flow({ d, dur, begin }: { d: string; dur: number; begin: number }) {
   return (
-    <circle r={3.5} fill={GOLD}>
+    <circle r={3.5} fill={ACCENT}>
       <animateMotion dur={`${dur}s`} begin={`${begin}s`} repeatCount="indefinite" path={d} />
       <animate attributeName="opacity" values="0;1;1;0" dur={`${dur}s`} begin={`${begin}s`} repeatCount="indefinite" />
     </circle>
@@ -293,22 +293,22 @@ function Graph({ channel }: { channel: Channel }) {
         width={256}
         height={180}
         rx={16}
-        fill="rgba(18,38,79,0.025)"
+        fill="rgba(16,32,63,0.025)"
         stroke="rgba(10,10,10,0.12)"
         style={{ opacity: off, transition: "opacity 0.5s ease" }}
       />
-      <text x={590} y={176} textAnchor="middle" fill="#6b6b64" style={{ fontSize: 10.5, letterSpacing: 2.5, opacity: off }}>
+      <text x={590} y={176} textAnchor="middle" fill="#656d82" style={{ fontSize: 10.5, letterSpacing: 2.5, opacity: off }}>
         THE NATIONAL ROAD
       </text>
 
       {/* money trail + glow underlay */}
       <g fill="none" style={{ opacity: trail, transition: "opacity 0.5s ease" }}>
-        <g stroke={GOLD} strokeWidth="7" strokeLinecap="round" opacity="0.12">
+        <g stroke={ACCENT} strokeWidth="7" strokeLinecap="round" opacity="0.12">
           {TRAILS.map((d, i) => <path key={i} d={d} />)}
           <path d="M590 186 L 590 204" />
           <path d="M590 256 L 590 294" />
         </g>
-        <g stroke={GOLD} strokeWidth="2" strokeLinecap="round">
+        <g stroke={ACCENT} strokeWidth="2" strokeLinecap="round">
           {TRAILS.map((d, i) => <path key={i} d={d} />)}
           <path d="M590 186 L 590 204" />
           <path d="M590 256 L 590 294" />
@@ -318,13 +318,13 @@ function Graph({ channel }: { channel: Channel }) {
       </g>
 
       {/* junction dots */}
-      <g fill={GOLD} style={{ opacity: channel ? 0 : 0.9, transition: "opacity 0.5s ease" }}>
+      <g fill={ACCENT} style={{ opacity: channel ? 0 : 0.9, transition: "opacity 0.5s ease" }}>
         <circle cx="380" cy="76" r="4" />
         <circle cx="380" cy="444" r="4" />
       </g>
 
       {/* short connector from the focused parent down into its unfold */}
-      <g stroke={GOLD} strokeWidth="1.5" fill="none" strokeLinecap="round">
+      <g stroke={ACCENT} strokeWidth="1.5" fill="none" strokeLinecap="round">
         <path d="M170 278 L 170 316" style={{ opacity: channel === "eu" ? 0.55 : 0, transition: "opacity 0.5s ease" }} />
         <path d="M590 256 L 590 298" style={{ opacity: channel === "aid" ? 0.55 : 0, transition: "opacity 0.5s ease" }} />
         <path d="M590 348 L 590 398" style={{ opacity: channel === "bank" ? 0.55 : 0, transition: "opacity 0.5s ease" }} />
@@ -429,7 +429,7 @@ export function ChannelsGraph() {
 
       {/* ── Mobile: graph pinned as a banner, narrative flows beneath it. ── */}
       <div className="lg:hidden">
-        <div className="sticky top-16 z-20 mb-2 border-b border-black/10 bg-[#f3f2ed]/95 py-2 backdrop-blur">
+        <div className="sticky top-16 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
           <div className="h-[40vh]">{svg}</div>
         </div>
         <div className="mx-auto max-w-6xl px-4">

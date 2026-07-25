@@ -13,7 +13,7 @@ import { corpusStats } from "@/lib/data";
 // so every page shows the same number.
 const synth = corpusStats;
 
-const serif = { fontFamily: "var(--font-playfair), Georgia, serif" };
+const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
 // Parse "€296.9B" into a number + suffix so the headline figure can count up.
 const capMatch = synth.totalCapitalEur.match(/([\d.]+)\s*([^\d.\s]*)/);
@@ -24,7 +24,7 @@ const capDecimals = capValue % 1 !== 0 ? 1 : 0;
 /** One cell of a side KPI matrix. */
 function MatrixCell({ value, label }: { value: ReactNode; label: string }) {
   return (
-    <div className="border-black/10 p-5 sm:p-6 [&:nth-child(odd)]:border-r [&:nth-last-child(n+3)]:border-b">
+    <div className="border-[var(--border)] p-5 sm:p-6 [&:nth-child(odd)]:border-r [&:nth-last-child(n+3)]:border-b">
       <div className="text-2xl font-bold tabular-nums text-[#141414] sm:text-3xl" style={serif}>
         {value}
       </div>
@@ -37,7 +37,7 @@ function MatrixCell({ value, label }: { value: ReactNode; label: string }) {
 function StatMatrix({ children }: { children: ReactNode }) {
   return (
     <Reveal delay={120}>
-      <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-black/10 bg-white/70">
+      <div className="grid grid-cols-2 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--paper)]/70">
         {children}
       </div>
     </Reveal>
@@ -63,18 +63,18 @@ export default function Home() {
   return (
     <div>
       {/* ── Cold open: headline left, Brussels right — the editorial split. ── */}
-      <section className="relative overflow-hidden bg-[#f3f2ed] px-4 pt-16 pb-16 sm:px-6 sm:pt-24">
+      <section className="relative overflow-hidden bg-[var(--background)] px-4 pt-16 pb-16 sm:px-6 sm:pt-24">
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 50% at 22% 0%, rgba(18,38,79,0.05), transparent 62%)",
+              "radial-gradient(60% 50% at 22% 0%, rgba(16,32,63,0.05), transparent 62%)",
           }}
           aria-hidden
         />
         <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           <div>
-            <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">
+            <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">
               For companies raising in Europe
             </p>
             <h1 className="text-4xl font-medium leading-[1.08] tracking-tight sm:text-[3.4rem]" style={serif}>
@@ -89,7 +89,7 @@ export default function Home() {
             <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 href="/brief"
-                className="rounded-full bg-[#0a0a0a] px-6 py-3 text-[15px] font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
+                className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 text-[15px] font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
               >
                 See your comparables
               </Link>
@@ -98,7 +98,7 @@ export default function Home() {
 
           {/* Brussels, in a quiet editorial frame. */}
           <figure className="relative">
-            <div className="overflow-hidden rounded-2xl border border-black/10 shadow-[0_2px_32px_rgba(20,18,12,0.10)]">
+            <div className="overflow-hidden rounded-2xl border border-[var(--border)] shadow-[0_2px_32px_rgba(20,18,12,0.10)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/images/eu/berlaymont.jpg"
@@ -115,7 +115,7 @@ export default function Home() {
         {/* Scroll cue into the trip below */}
         <a
           href="#understand"
-          className="relative mx-auto mt-14 flex w-fit flex-col items-center gap-1.5 text-sm font-medium text-[#12264f]/80 transition-opacity hover:opacity-70"
+          className="relative mx-auto mt-14 flex w-fit flex-col items-center gap-1.5 text-sm font-medium text-[#7f5820]/80 transition-opacity hover:opacity-70"
         >
           <span className="font-mono text-[11px] uppercase tracking-[0.18em]">Follow the euro</span>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce" aria-hidden="true">
@@ -125,13 +125,13 @@ export default function Home() {
       </section>
 
       {/* ── The trip: Follow the Euro ───────────────────────────── */}
-      <div className="relative bg-[#f3f2ed] text-[#3f3e37]">
+      <div className="relative bg-[var(--background)] text-[var(--foreground)]">
         {/* Ambient glow: EU-blue at the top, a warm coin-gold lower down. */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(66% 42% at 50% 0%, rgba(18,38,79,0.05), transparent 60%)",
+              "radial-gradient(66% 42% at 50% 0%, rgba(16,32,63,0.05), transparent 60%)",
           }}
           aria-hidden
         />
@@ -140,7 +140,7 @@ export default function Home() {
             {/* Chapter 1 — Launch */}
             <Chapter id="understand" className="flex min-h-[92vh] flex-col justify-center scroll-mt-16 py-24">
               <Reveal>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">
                   A study of European public capital
                 </p>
               </Reveal>
@@ -159,8 +159,8 @@ export default function Home() {
                 </p>
               </Reveal>
               <Reveal delay={420}>
-                <div className="mt-10 flex items-center gap-3 text-sm text-[#12264f]/80">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#12264f] font-serif text-base font-bold text-[#f3f2ed] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
+                <div className="mt-10 flex items-center gap-3 text-sm text-[#7f5820]/80">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#7f5820] font-serif text-base font-bold text-[var(--paper)] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
                     €
                   </span>
                   <span className="uppercase tracking-[0.2em]">Scroll to begin</span>
@@ -176,7 +176,7 @@ export default function Home() {
               <div className="grid gap-12 lg:grid-cols-[1fr_23rem] lg:items-center">
                 <div>
                   <Reveal>
-                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">The record</p>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">The record</p>
                   </Reveal>
                   <Reveal delay={100}>
                     <h3 className="mt-4 text-3xl font-bold text-[#141414] sm:text-4xl" style={serif}>
@@ -208,7 +208,7 @@ export default function Home() {
             {/* Chapter 5 — Where it lands: the map */}
             <Chapter className="py-24 sm:py-32">
               <Reveal>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">Where it lands</p>
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">Where it lands</p>
               </Reveal>
               <Reveal delay={100}>
                 <h3 className="mt-4 max-w-3xl text-3xl font-bold text-[#141414] sm:text-4xl" style={serif}>
@@ -217,7 +217,7 @@ export default function Home() {
               </Reveal>
               <Reveal delay={150}>
                 <figure className="mt-10">
-                  <div className="rounded-2xl border border-black/10 bg-white/70 p-3 sm:p-5">
+                  <div className="rounded-2xl border border-[var(--border)] bg-[var(--paper)]/70 p-3 sm:p-5">
                     <EuropeMap countryData={countryData} />
                   </div>
                   <figcaption className="mt-4 text-sm leading-relaxed text-[#6b6b64]">
@@ -228,8 +228,8 @@ export default function Home() {
                 </figure>
               </Reveal>
               <Reveal>
-                <div className="mt-10 rounded-xl border border-black/10 bg-white/70 p-5">
-                  <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#12264f]">
+                <div className="mt-10 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5">
+                  <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#7f5820]">
                     What the corpus is not
                   </p>
                   <p className="text-sm leading-relaxed text-[#5d5b52]">
@@ -249,7 +249,7 @@ export default function Home() {
             {/* Chapter 6 — The handoff / CTA */}
             <Chapter className="py-28 text-center sm:py-36">
               <Reveal>
-                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#12264f] font-serif text-xl font-bold text-[#f3f2ed] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
+                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#7f5820] font-serif text-xl font-bold text-[var(--paper)] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
                   €
                 </span>
               </Reveal>
@@ -268,7 +268,7 @@ export default function Home() {
                 <div className="mt-9 flex flex-wrap justify-center gap-3">
                   <Link
                     href="/brief"
-                    className="rounded-full bg-[#0a0a0a] px-6 py-3 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
+                    className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
                   >
                     Map your comparables
                   </Link>

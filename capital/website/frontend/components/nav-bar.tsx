@@ -26,13 +26,13 @@ export function NavBar() {
 
   return (
     <nav
-      className="sticky top-0 z-40 border-b border-[#12264f] bg-[#fffdfb]"
+      className="sticky top-0 z-40 border-b-[3px] border-double border-[var(--primary)] bg-[var(--paper)]"
     >
       <div className="mx-auto max-w-6xl px-4 flex items-center justify-between h-[4.5rem]">
         <Link
           href="/"
           aria-current={isActive("/") ? "page" : undefined}
-          className={`flex items-center gap-2 font-semibold text-lg tracking-tight transition-colors ${
+          className={`font-serif flex items-center gap-2 text-lg font-semibold tracking-tight transition-colors ${
             isActive("/")
               ? "text-[var(--primary)] underline decoration-2 underline-offset-4"
               : "text-[var(--primary)]"
@@ -54,17 +54,17 @@ export function NavBar() {
               className={`transition-colors ${
                 isActive(link.href)
                   ? "font-semibold text-[var(--primary)] underline decoration-2 underline-offset-4"
-                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                  : "text-[var(--foreground-soft)] hover:text-[var(--foreground)] hover:underline hover:underline-offset-[3px]"
               }`}
             >
               {link.label}
             </Link>
           ))}
 
-          {/* The product CTA, as an ink pill. */}
+          {/* The product CTA: outlined, fills on hover — no rounded pill. */}
           <Link
             href="/brief"
-            className="rounded-full bg-[#0a0a0a] px-4 py-1.5 text-sm font-medium text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
+            className="rounded-[var(--radius)] border border-[var(--primary)] px-4 py-2 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
           >
             Get your brief
           </Link>
@@ -90,7 +90,7 @@ export function NavBar() {
 
       {/* Meta row: scope on the left, register on the right — divided from
           the brand row by a quiet khaki hairline, matching the reference. */}
-      <div className="border-t border-[#ded7bf]">
+      <div className="border-t border-[var(--border)]">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
             Europe · {corpusStats.countries}-country edition
@@ -103,7 +103,7 @@ export function NavBar() {
 
       {/* Mobile dropdown */}
       {open && (
-        <div className="md:hidden border-t border-[var(--border)] bg-[var(--background)] px-4 pb-2">
+        <div className="md:hidden border-t border-[var(--border)] bg-[var(--paper)] px-4 pb-2">
           {MOBILE_LINKS.map((link) => (
             <Link
               key={link.href}

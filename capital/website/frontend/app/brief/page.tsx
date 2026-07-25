@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 
 export default function BriefPage() {
   return (
-    <section className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden bg-[#f3f2ed] px-4 sm:px-6 pt-5 pb-3">
+    <section className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden bg-[var(--background)] px-4 sm:px-6 pt-5 pb-3">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(70% 55% at 50% 12%, rgba(18,38,79,0.05), transparent 62%)",
+            "radial-gradient(70% 55% at 50% 12%, rgba(16,32,63,0.05), transparent 62%)",
         }}
         aria-hidden
       />
@@ -28,7 +28,7 @@ export default function BriefPage() {
         <Link
           href="/about-public-capital"
           aria-label="Why you should care about raising public European capital"
-          className="group inline-flex items-center gap-2 text-[#12264f]/80 transition-opacity hover:opacity-70"
+          className="group inline-flex items-center gap-2 text-[var(--accent)]/80 transition-opacity hover:opacity-70"
         >
           <span className="font-mono text-[11px] uppercase tracking-[0.16em]">Why this matters</span>
           <svg

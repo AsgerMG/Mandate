@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import {
   CAPITAL_OPTIONS,
   COMPANY_TYPE_OPTIONS,
@@ -18,19 +18,7 @@ import {
   type ProgressEvent,
 } from "@/lib/intelligence/types";
 
-const serif = { fontFamily: "var(--font-playfair), Georgia, serif" };
-
-// The intake form rides the dark "Follow the Euro" stage on /brief, so
-// it re-themes to match by overriding the CSS variables its controls read from.
-// The generated Memo below keeps the site's light theme on purpose: it is a
-// printable white memorandum, not part of the dark trip.
-const darkVars = {
-  "--foreground": "#1d1c18",
-  "--muted-foreground": "#6b6b64",
-  "--border": "rgba(10,10,10,0.14)",
-  "--muted": "rgba(10,10,10,0.06)",
-  "--primary": "#0a0a0a",
-} as CSSProperties;
+const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
 // Grounded adaptive round (Phase 3C): ONE panel of up to 8 tailored
 // questions, not a drip of several small rounds — the standard screen asks
@@ -93,7 +81,7 @@ function CapitalSelect({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]"
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#10203f]"
       >
         <span className={"truncate " + (labels.length || all ? "" : "text-[var(--muted-foreground)]")}>
           {summary}
@@ -103,7 +91,7 @@ function CapitalSelect({
       {open && (
         <div
           role="listbox"
-          className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-black/10 bg-[#ffffff] p-1 shadow-lg"
+          className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg"
         >
           {CAPITAL_OPTIONS.map((o) => {
             const on = value.includes(o.value);
@@ -119,7 +107,7 @@ function CapitalSelect({
                 <span
                   className={
                     "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
-                    (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]" : "border-[var(--border)]")
+                    (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]" : "border-[var(--border)]")
                   }
                 >
                   {on ? "✓" : ""}
@@ -135,7 +123,7 @@ function CapitalSelect({
           <button
             type="button"
             onClick={onToggleAll}
-            className="w-full rounded-md px-2.5 py-2 text-left text-[14px] font-semibold text-[#12264f] transition-colors hover:bg-[var(--muted)]"
+            className="w-full rounded-md px-2.5 py-2 text-left text-[14px] font-semibold text-[#10203f] transition-colors hover:bg-[var(--muted)]"
           >
             {all ? "Clear all" : "Show me everything"}
           </button>
@@ -165,14 +153,14 @@ function DropdownSelect({
           className="fixed inset-0 z-10 cursor-default" />
       )}
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]">
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#10203f]">
         <span className={"truncate " + (picked ? "" : "text-[var(--muted-foreground)]")}>
           {picked?.label ?? placeholder}
         </span>
         <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
       </button>
       {open && (
-        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-black/10 bg-[#ffffff] p-1 shadow-lg">
+        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg">
           {options.map((o) => {
             const on = o.value === value;
             return (
@@ -181,7 +169,7 @@ function DropdownSelect({
                 className="flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]">
                 <span className={
                   "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[10px] " +
-                  (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]" : "border-[var(--border)]")
+                  (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]" : "border-[var(--border)]")
                 }>
                   {on ? "●" : ""}
                 </span>
@@ -216,12 +204,12 @@ function CountrySelect({ value, onToggle }: { value: string[]; onToggle: (c: str
           className="fixed inset-0 z-10 cursor-default" />
       )}
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#12264f]">
+        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#10203f]">
         <span className={"truncate " + (value.length ? "" : "text-[var(--muted-foreground)]")}>{summary}</span>
         <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
       </button>
       {open && (
-        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-black/10 bg-[#ffffff] shadow-lg">
+        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--paper)] shadow-lg">
           <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search countries…"
             className="w-full border-b border-[var(--border)] px-3 py-2 text-[14px] outline-none" />
           <div className="max-h-52 overflow-y-auto p-1">
@@ -232,7 +220,7 @@ function CountrySelect({ value, onToggle }: { value: string[]; onToggle: (c: str
                   className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[14px] transition-colors hover:bg-[var(--muted)]">
                   <span className={
                     "flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
-                    (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]" : "border-[var(--border)]")
+                    (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]" : "border-[var(--border)]")
                   }>
                     {on ? "✓" : ""}
                   </span>
@@ -257,13 +245,13 @@ function InfoDot({ children }: { children: React.ReactNode }) {
       <button
         type="button"
         aria-label="More information"
-        className="flex h-4 w-4 items-center justify-center rounded-full border border-[#12264f] text-[10px] font-bold leading-none text-[#12264f] outline-none transition-colors hover:bg-[#12264f] hover:text-[#f3f2ed] focus-visible:bg-[#12264f] focus-visible:text-[#f3f2ed]"
+        className="flex h-4 w-4 items-center justify-center rounded-full border border-[#10203f] text-[10px] font-bold leading-none text-[#10203f] outline-none transition-colors hover:bg-[#10203f] hover:text-[var(--paper)] focus-visible:bg-[#10203f] focus-visible:text-[var(--paper)]"
       >
         i
       </button>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 w-64 -translate-x-1/2 rounded-lg border border-black/10 bg-[#ffffff] px-3 py-2 text-xs font-normal leading-relaxed text-[#33322c] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 w-64 -translate-x-1/2 rounded-lg border border-[var(--border)] bg-[var(--paper)] px-3 py-2 text-xs font-normal leading-relaxed text-[#33322c] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
       >
         {children}
       </span>
@@ -294,8 +282,8 @@ function Chips({
             className={
               "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
               (on
-                ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
+                ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]"
+                : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[#10203f]")
             }
           >
             {o.label}
@@ -585,16 +573,16 @@ export function IntelligencePanel() {
   const totalScreens = 1 + MAX_ROUNDS;
 
   const inputCls =
-    "w-full rounded-lg border border-[var(--border)] bg-white/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#12264f]";
+    "w-full rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#10203f]";
   const nextBtn =
-    "rounded-full bg-[#0a0a0a] px-6 py-2.5 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f] disabled:cursor-not-allowed disabled:opacity-50";
+    "rounded-[var(--radius)] border border-[var(--primary)] px-6 py-2.5 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)] disabled:cursor-not-allowed disabled:opacity-50";
   const backBtn =
-    "text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#12264f] hover:underline";
+    "text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#10203f] hover:underline";
   const fieldLabel = "mb-1.5 flex items-center font-semibold";
 
   return (
-    <section className="rounded-2xl border border-black/10 bg-white p-5 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
-      <div className="print:hidden text-[var(--foreground)]" style={darkVars}>
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--paper)] p-5 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
+      <div className="print:hidden text-[var(--foreground)]">
         <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
           Free tool · powered by the funding record
         </p>
@@ -616,7 +604,7 @@ export function IntelligencePanel() {
                 key={i}
                 className={
                   "h-1.5 rounded-full transition-all " +
-                  (i === screenIdx ? "w-6 bg-[#12264f]" : i < screenIdx ? "w-3 bg-[#12264f]/50" : "w-3 bg-[var(--muted)]")
+                  (i === screenIdx ? "w-6 bg-[#10203f]" : i < screenIdx ? "w-3 bg-[#10203f]/50" : "w-3 bg-[var(--muted)]")
                 }
               />
             ))}
@@ -664,9 +652,9 @@ export function IntelligencePanel() {
                 </span>
                 <select value={country} onChange={(e) => setCountry(e.target.value)}
                   className={inputCls + (country ? "" : " text-[var(--muted-foreground)]")}>
-                  <option value="" className="bg-[#ffffff] text-[#5d5b52]">Select…</option>
+                  <option value="" className="bg-[var(--paper)] text-[#5d5b52]">Select…</option>
                   {COUNTRIES.map((c) => (
-                    <option key={c} value={c} className="bg-[#ffffff] text-[#141414]">{c}</option>
+                    <option key={c} value={c} className="bg-[var(--paper)] text-[#141414]">{c}</option>
                   ))}
                 </select>
               </label>
@@ -769,7 +757,7 @@ export function IntelligencePanel() {
 
         {/* ── Adaptive round: grounded in the founder's real remaining gates ── */}
         {screen === "adaptive" && round && !running && (
-          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5 sm:p-6">
             <StepHeader
               eyebrow={round.theme}
               title="A few tailored questions"
@@ -802,8 +790,8 @@ export function IntelligencePanel() {
                             })}
                             className={
                               "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
-                              (on ? "border-[#12264f] bg-[#12264f]/20 text-[#141414]"
-                                  : "border-[var(--border)] bg-white/70 text-[var(--foreground)] hover:border-[#12264f]")
+                              (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]"
+                                  : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[#10203f]")
                             }>
                             {o.label}
                           </button>
@@ -829,9 +817,9 @@ export function IntelligencePanel() {
 
         {/* ── Generation: live status + elapsed time ───────────────────── */}
         {running && (
-          <div className="mt-6 rounded-xl border border-[var(--border)] bg-white/70 p-5 sm:p-6">
+          <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5 sm:p-6">
             <div className="flex items-baseline justify-between">
-              <p className="text-xs uppercase tracking-widest text-[#12264f]">Writing your memo</p>
+              <p className="text-xs uppercase tracking-widest text-[#7f5820]">Writing your memo</p>
               <p className="font-mono text-xs tabular-nums text-[var(--muted-foreground)]">
                 {Math.floor(elapsed / 60) > 0 ? `${Math.floor(elapsed / 60)}m ` : ""}{elapsed % 60}s elapsed
               </p>
@@ -844,7 +832,7 @@ export function IntelligencePanel() {
                     <span className={
                       "flex h-5 w-5 items-center justify-center rounded-full text-[11px] " +
                       (state === "done" ? "bg-[#2D6A4F] text-[#141414]"
-                        : state === "active" ? "bg-[#12264f] text-[#f3f2ed] animate-pulse"
+                        : state === "active" ? "bg-[#10203f] text-[var(--paper)] animate-pulse"
                         : "bg-[var(--muted)] text-[var(--muted-foreground)] border border-[var(--border)]")
                     }>
                       {state === "done" ? "✓" : i + 1}
@@ -874,7 +862,7 @@ export function IntelligencePanel() {
                 is the actual memo forming, not narration about it. ── */}
             {livePartial && (
               <div className="mt-6 border-t border-[var(--border)] pt-6">
-                <div className="border border-[var(--border)] bg-white px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
+                <div className="border border-[var(--border)] bg-[var(--paper)] px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
                   <InstitutionsTable institutions={livePartial.institutions} pending />
                 </div>
               </div>
@@ -904,7 +892,7 @@ function StepHeader({ eyebrow, title, detail }: { eyebrow?: string; title: strin
   return (
     <div className="mb-3">
       {eyebrow && (
-        <p className="text-xs uppercase tracking-widest text-[#12264f]">{eyebrow}</p>
+        <p className="text-xs uppercase tracking-widest text-[#7f5820]">{eyebrow}</p>
       )}
       <p className="text-sm font-semibold text-[var(--foreground)]" style={serif}>{title}</p>
       {detail && (
@@ -1101,21 +1089,21 @@ function Memo({ report }: { report: IntelligenceReport }) {
     <div
       id="print-report"
       style={serif}
-      className="mt-8 border border-[var(--border)] bg-white px-7 py-9 sm:px-12 sm:py-12 text-[15px] leading-relaxed text-[var(--foreground)] print:mt-0 print:border-0 print:px-0 print:py-0"
+      className="mt-8 border border-[var(--border)] bg-[var(--paper)] px-7 py-9 sm:px-12 sm:py-12 text-[15px] leading-relaxed text-[var(--foreground)] print:mt-0 print:border-0 print:px-0 print:py-0"
     >
       {/* Export — screen only */}
       <div className="mb-8 flex justify-end print:hidden">
         <button
           onClick={() => window.print()}
-          className="border border-[#12264f] px-4 py-1.5 text-sm font-semibold text-[#12264f] transition-colors hover:bg-[#12264f] hover:text-[#f3f2ed]"
+          className="rounded-[var(--radius)] border border-[var(--primary)] px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
         >
           Export PDF
         </button>
       </div>
 
       {/* ── Letterhead ─────────────────────────────────────────────── */}
-      <div className="flex items-baseline justify-between border-t-2 border-[#12264f] pt-3">
-        <span className="text-sm font-bold tracking-[0.2em] text-[#12264f]">
+      <div className="flex items-baseline justify-between border-t-2 border-[var(--primary)] pt-3">
+        <span className="text-sm font-bold tracking-[0.2em] text-[var(--primary)]">
           EUROINVTRACKER
         </span>
         <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
@@ -1138,7 +1126,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
       {/* ── Bottom line: the single best line lands first, up front ──── */}
       <ul className="mt-6 space-y-3 text-[17px] leading-[1.55]">
         <li className="flex gap-3">
-          <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
+          <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#10203f]" />
           <span>{report.bottomLine[0]}</span>
         </li>
       </ul>
@@ -1151,7 +1139,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
         <ul className="mt-3 space-y-3 text-[17px] leading-[1.55]">
           {report.bottomLine.slice(1).map((b, i) => (
             <li key={i} className="flex gap-3">
-              <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#12264f]" />
+              <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#10203f]" />
               <span>{b}</span>
             </li>
           ))}

@@ -11,7 +11,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { fmtEur } from "@/lib/format";
 
-const GOLD = "#12264f";
+const ACCENT = "#7f5820";
 
 export interface Rung {
   label: string;
@@ -54,12 +54,12 @@ interface Step {
 }
 
 const kicker = (t: string) => (
-  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">{t}</p>
+  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">{t}</p>
 );
 const head = (t: string) => (
   <h3
     className="mb-5 text-3xl font-bold leading-[1.1] text-[#141414] sm:text-4xl"
-    style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}
+    style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
   >
     {t}
   </h3>
@@ -219,7 +219,7 @@ function RungBox({
         height={h}
         rx={12}
         fill="url(#rungFill)"
-        stroke={accent ? GOLD : "rgba(10,10,10,0.22)"}
+        stroke={accent ? ACCENT : "rgba(10,10,10,0.22)"}
         strokeWidth={accent ? 1.5 : 1}
       />
       <text
@@ -227,7 +227,7 @@ function RungBox({
         y={sub ? y + 25 : y + 34}
         textAnchor="middle"
         fill="#1d1c18"
-        style={{ fontFamily: "var(--font-playfair), Georgia, serif", fontSize: 15, fontWeight: 700 }}
+        style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontSize: 15, fontWeight: 700 }}
       >
         {title}
       </text>
@@ -243,9 +243,9 @@ function RungBox({
           x={CX}
           y={y + h + 16}
           textAnchor="middle"
-          fill={GOLD}
+          fill={ACCENT}
           style={{
-            fontFamily: "var(--font-playfair), Georgia, serif",
+            fontFamily: "var(--font-newsreader), Georgia, serif",
             fontSize: 12.5,
             fontWeight: 700,
             opacity: accent ? 1 : 0,
@@ -333,7 +333,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
           y1={Y.gapMid}
           x2={CX + 190}
           y2={Y.gapMid}
-          stroke={GOLD}
+          stroke={ACCENT}
           strokeWidth="1.5"
           strokeDasharray="7 9"
           opacity={0.6}
@@ -451,7 +451,7 @@ export function FundingLadder({ signal, conviction }: { signal: Rung[]; convicti
 
       {/* Mobile: ladder pinned as a banner, narrative flows beneath it. */}
       <div className="lg:hidden">
-        <div className="sticky top-16 z-20 mb-2 border-b border-black/10 bg-[#f3f2ed]/95 py-2 backdrop-blur">
+        <div className="sticky top-16 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
           <div className="h-[42vh]">{svg}</div>
         </div>
         <div className="mx-auto max-w-6xl px-4">

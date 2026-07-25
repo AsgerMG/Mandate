@@ -48,13 +48,13 @@ export function EuroJourney({ children }: { children: ReactNode }) {
         }
         aria-hidden
       >
-        <div className="relative h-full w-px bg-black/15">
+        <div className="relative h-full w-px bg-[var(--border)]">
           <div
-            className="absolute left-0 top-0 w-px bg-gradient-to-b from-[#2f4a7e] via-[#12264f] to-[#8f8b80]"
+            className="absolute left-0 top-0 w-px bg-gradient-to-b from-[#2f4a7e] via-[#10203f] to-[#8f8b80]"
             style={{ height: pct }}
           />
           <div
-            className="absolute -left-[14px] flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-[#12264f] font-serif text-[13px] font-bold text-[#f3f2ed] shadow-[0_1px_3px_rgba(10,10,10,0.2)]"
+            className="absolute -left-[14px] flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-[#7f5820] font-serif text-[13px] font-bold text-[var(--paper)] shadow-[0_1px_3px_rgba(10,10,10,0.2)]"
             style={{ top: pct }}
           >
             €

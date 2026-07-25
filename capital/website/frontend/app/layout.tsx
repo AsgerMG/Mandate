@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Fragment_Mono } from "next/font/google";
+import { Poppins, Newsreader, Fragment_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
 import { corpusStats } from "@/lib/data";
 
-// The Legora-style type system: Inter for UI and body, Playfair Display for the
-// big editorial headlines, Fragment Mono for small data labels and credits.
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
+// Type system mirrored from regina-intel.vercel.app: Poppins for UI and body,
+// Newsreader for the big editorial headlines, Fragment Mono kept for small
+// data labels and credits (Regina has no mono equivalent; this is our own).
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-poppins" });
+const newsreader = Newsreader({ subsets: ["latin"], variable: "--font-newsreader" });
 const fragmentMono = Fragment_Mono({ subsets: ["latin"], weight: "400", variable: "--font-fragment" });
 
 // Single source of truth for the headline company count (lib/data.corpusStats →
@@ -28,12 +29,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`h-full scroll-smooth ${inter.variable} ${playfair.variable} ${fragmentMono.variable}`}
+      className={`h-full scroll-smooth ${poppins.variable} ${newsreader.variable} ${fragmentMono.variable}`}
     >
       <body className="min-h-full flex flex-col">
         <NavBar />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-black/10 bg-[var(--background)] py-10">
+        <footer className="border-t border-[var(--border)] bg-[var(--background)] py-10">
           <div className="mx-auto max-w-6xl px-4">
             <p className="font-serif text-lg font-semibold text-[var(--foreground)]">EuroInvTracker</p>
             <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">

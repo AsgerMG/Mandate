@@ -157,7 +157,7 @@ export function StackFunnel({ stack }: { stack: { families: string; companies: n
             {/* flex-1 container; inner div fills width% of this container, not the page */}
             <div className="relative flex-1 h-7 rounded-r overflow-hidden bg-black/5">
               <div
-                className="absolute inset-y-0 left-0 rounded-r bg-[#12264f]"
+                className="absolute inset-y-0 left-0 rounded-r bg-[#10203f]"
                 style={{ width: `${width}%`, opacity: 0.55 + 0.45 * (width / 100) }}
               />
             </div>
@@ -214,7 +214,7 @@ export function ConcentrationChart({ rows }: { rows: ConcentrationRow[] }) {
             return r ? `${label} · ${fmtEur(r.totalEur)} across ${fmtInt(r.companies)} recipients` : label;
           }}
         />
-        <Bar dataKey="top10Pct" fill="#12264f" radius={[0, 3, 3, 0]} barSize={18}>
+        <Bar dataKey="top10Pct" fill="#10203f" radius={[0, 3, 3, 0]} barSize={18}>
           <LabelList dataKey="top10Pct" position="right" formatter={(v) => `${v}%`} style={{ fontSize: 11, fill: "#3f3e37" }} />
         </Bar>
       </BarChart>
@@ -279,7 +279,7 @@ interface Holder {
 }
 
 const DISCLOSURE_COLORS = {
-  pct: "#12264f",
+  pct: "#10203f",
   amount: "#3f7d5a",
   nameOnly: "#cbd5e1",
 };
@@ -329,7 +329,7 @@ interface CountryMixRow {
   total: number;
 }
 
-const LAYER_COLORS = { euDirect: "#4a6cb3", ndb: "#6f9081", stateAid: "#12264f" };
+const LAYER_COLORS = { euDirect: "#4a6cb3", ndb: "#6f9081", stateAid: "#10203f" };
 const LAYER_LABELS: Record<string, string> = {
   euDirect: "EU instruments",
   ndb: "National development banks",

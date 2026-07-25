@@ -477,7 +477,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
   // hardcoded — so the scale re-ranks itself whenever the corpus changes.
   const scale = useMemo(() => {
     // Pale to deep navy, so more companies = deeper ink on the paper stage.
-    const RAMP = ["#e2e8f2", "#bccbe3", "#8aa3cc", "#51709f", "#12264f"];
+    const RAMP = ["#e2e8f2", "#bccbe3", "#8aa3cc", "#51709f", "#10203f"];
     const counts = Object.values(countryData)
       .filter((c) => !c.excluded)
       .map((c) => c.companies ?? 0)
@@ -615,13 +615,13 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                         },
                         hover: {
                           fill: hasData ? "#dbeafe" : "#1b2740",
-                          stroke: "#12264f",
+                          stroke: "#10203f",
                           strokeWidth: 0.75,
                           outline: "none",
                           cursor: hasData ? "pointer" : "default",
                         },
                         pressed: {
-                          fill: "#12264f",
+                          fill: "#10203f",
                           outline: "none",
                         },
                       }}
@@ -684,8 +684,8 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                 >
                   <circle
                     r={4.5}
-                    fill={data.excluded ? "#c9c6bb" : "#12264f"}
-                    stroke="#f3f2ed"
+                    fill={data.excluded ? "#c9c6bb" : "#10203f"}
+                    stroke="#f6f1e6"
                     strokeWidth={1.2}
                   />
                   <text
@@ -694,8 +694,8 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                     style={{
                       fontSize: 9,
                       fontWeight: 600,
-                      fill: data.excluded ? "#6b6b64" : "#1d1c18",
-                      stroke: "#f3f2ed",
+                      fill: data.excluded ? "#656d82" : "#10203f",
+                      stroke: "#f6f1e6",
                       strokeWidth: 0.6,
                       paintOrder: "stroke",
                     }}
@@ -741,7 +741,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
           </span>
         )}
         <span className="flex items-center gap-1">
-          <span className="inline-block h-3 w-3 rounded-sm bg-[#e7e4da] border border-black/10" />
+          <span className="inline-block h-3 w-3 rounded-sm bg-[var(--muted)] border border-[var(--border)]" />
           Outside the corpus
         </span>
         <span className="text-[#6b6b64]">· Click to pin</span>

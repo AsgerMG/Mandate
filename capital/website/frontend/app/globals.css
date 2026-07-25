@@ -5,17 +5,24 @@
 @custom-variant dark (&:where(.dark-disabled, .dark-disabled *));
 
 :root {
-  /* Legora-style warm paper + ink, with one deep EU-navy accent. */
-  --background: #f3f2ed;
-  --foreground: #1d1c18;
-  --muted: #ecebe4;
-  --muted-foreground: #6b6b64;
-  --border: #dbd8cd;
-  --card: #ffffff;
-  --card-foreground: #1d1c18;
-  --primary: #0a0a0a;
-  --primary-hover: #000000;
-  --accent: #12264f;
+  /* Design system mirrored from regina-intel.vercel.app: warm cream body,
+   * navy ink for structure/primary text, ochre for kickers/labels/links.
+   * Variable NAMES kept stable (dozens of call sites read them) — only the
+   * values changed, plus a few genuinely new roles added below. */
+  --background: #f6f1e6;
+  --paper: #fffdf9;
+  --foreground: #10203f;
+  --foreground-soft: #2b3c5e;
+  --muted: #eee7d5;
+  --muted-foreground: #656d82;
+  --border: #c9bf9c;
+  --card: #fffdf9;
+  --card-foreground: #10203f;
+  --primary: #10203f;
+  --primary-hover: #16294d;
+  --accent: #7f5820;
+  --accent-soft: #f1e3c4;
+  --radius: 2px;
 
   /* Sector colours */
   --color-sector-life-sciences: #7B3F61;
@@ -30,12 +37,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-card: var(--card);
-  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --radius-DEFAULT: var(--radius);
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono: var(--font-fragment), ui-monospace, monospace;
 }
 
@@ -93,11 +105,13 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0.25rem;
 }
 
-/* Small uppercase eyebrow labels — keep crisp sans for these only via wider tracking on serif */
+/* Small uppercase eyebrow/kicker labels, ochre-accented per the Regina mirror. */
 .eyebrow {
   font-family: var(--font-mono);
-  letter-spacing: 0.14em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: var(--accent);
 }
 
 /* ── Print: export only the intelligence report as a clean PDF ──────────────

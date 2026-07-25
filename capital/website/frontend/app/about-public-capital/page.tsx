@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { TicketChart, CountryMixChart } from "@/components/charts";
 import { Finding, Stat, Signal } from "@/components/finding";
@@ -38,18 +38,10 @@ interface Insights {
 }
 
 const insights = insightsRaw as unknown as Insights;
-const serif = { fontFamily: "var(--font-playfair), Georgia, serif" };
+const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
 // Re-theme the study body to the dark "Follow the Euro" stage by overriding the
 // CSS variables every prose element reads from (same trick as the nav bar).
-const darkVars = {
-  "--foreground": "#1d1c18",
-  "--muted-foreground": "#6b6b64",
-  "--border": "rgba(10,10,10,0.12)",
-  "--muted": "rgba(10,10,10,0.06)",
-  "--primary": "#0a0a0a",
-} as CSSProperties;
-
 const SOURCES = [
   {
     id: 1,
@@ -92,7 +84,7 @@ const SOURCES = [
 function Src({ n }: { n: number }) {
   return (
     <sup>
-      <a href={`#src-${n}`} className="text-[#12264f] no-underline hover:underline">
+      <a href={`#src-${n}`} className="text-[var(--accent)] no-underline hover:underline">
         [{n}]
       </a>
     </sup>
@@ -106,7 +98,7 @@ function ChapterHead({ kicker, title, caption }: { kicker: string; title: string
   return (
     <div className="mb-8">
       <Reveal>
-        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">{kicker}</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">{kicker}</p>
       </Reveal>
       <Reveal delay={100}>
         <h2 className="mt-4 max-w-3xl text-3xl font-bold leading-[1.1] text-[#141414] sm:text-4xl" style={serif}>
@@ -157,13 +149,13 @@ export default function AboutPublicCapitalPage() {
   ];
 
   return (
-    <div className="relative bg-[#f3f2ed] text-[#3f3e37]" style={darkVars}>
+    <div className="relative bg-[var(--background)] text-[var(--foreground)]">
       {/* Ambient glow: EU-blue at the top, warm coin-gold lower down. */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(65% 40% at 50% 0%, rgba(18,38,79,0.05), transparent 60%)",
+            "radial-gradient(65% 40% at 50% 0%, rgba(16,32,63,0.05), transparent 60%)",
         }}
         aria-hidden
       />
@@ -174,7 +166,7 @@ export default function AboutPublicCapitalPage() {
             <div className="grid items-start gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
               <div>
                 <Reveal>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[#12264f]">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">
                     The manual · for companies and startups
                   </p>
                 </Reveal>
@@ -212,7 +204,7 @@ export default function AboutPublicCapitalPage() {
               {/* Strasbourg, in a quiet editorial frame. */}
               <Reveal delay={200}>
                 <figure className="hidden lg:block">
-                  <div className="overflow-hidden rounded-2xl border border-black/10 shadow-[0_2px_32px_rgba(20,18,12,0.10)]">
+                  <div className="overflow-hidden rounded-2xl border border-[var(--border)] shadow-[0_2px_32px_rgba(20,18,12,0.10)]">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src="/images/eu/hemicycle.jpg"
@@ -249,7 +241,7 @@ export default function AboutPublicCapitalPage() {
             </R>
 
             <R delay={120}>
-              <div className="mt-6 rounded-xl border border-black/10 bg-white/70 p-5">
+              <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5">
                 <p className="mb-1 text-sm font-semibold">Median award size by channel (log scale)</p>
                 <p className="mb-3 text-xs text-[var(--muted-foreground)]">
                   Hover for the top decile: the realistic best case per channel.
@@ -294,7 +286,7 @@ export default function AboutPublicCapitalPage() {
             </R>
 
             <R delay={120}>
-              <div className="mt-6 rounded-xl border border-black/10 bg-white/70 p-5">
+              <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5">
                 <p className="mb-1 text-sm font-semibold">How each country&apos;s awards split across the three public layers</p>
                 <p className="mb-3 text-xs text-[var(--muted-foreground)]">
                   Top 12 countries by award count, shares of awards.
@@ -519,7 +511,7 @@ export default function AboutPublicCapitalPage() {
                   specific programmes, not from this corpus; our record shows selection and persistence,
                   which is what you can use for positioning, not a guarantee of outcomes. Award odds,
                   timelines and ticket sizes vary by call and country; medians here are corpus-wide.
-                  Coverage is graded per country on the <Link href="/" className="text-[#12264f] underline">home page</Link>.
+                  Coverage is graded per country on the <Link href="/" className="text-[var(--accent)] underline">home page</Link>.
                 </p>
               </div>
             </R>
@@ -527,7 +519,7 @@ export default function AboutPublicCapitalPage() {
               <ol className="mt-6 space-y-2 text-xs leading-relaxed text-[var(--muted-foreground)]">
                 {SOURCES.map((s) => (
                   <li key={s.id} id={`src-${s.id}`} className="flex gap-2">
-                    <span className="font-semibold text-[#12264f]">[{s.id}]</span>
+                    <span className="font-semibold text-[var(--accent)]">[{s.id}]</span>
                     <a href={s.url} className="underline hover:text-[var(--foreground)]" target="_blank" rel="noopener noreferrer">
                       {s.label}
                     </a>
@@ -549,7 +541,7 @@ export default function AboutPublicCapitalPage() {
             <R delay={120}>
               <Link
                 href="/brief"
-                className="mt-6 inline-block rounded-full bg-[#0a0a0a] px-6 py-3 font-semibold text-[#f3f2ed] transition-colors hover:bg-[#26251f]"
+                className="mt-6 inline-block rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
               >
                 Get your investment brief
               </Link>
