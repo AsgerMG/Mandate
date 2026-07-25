@@ -205,14 +205,24 @@ function PieBlock({
   const total = sorted.reduce((acc, e) => acc + e.value, 0);
   const displayed = sorted.slice(0, maxRows);
   const rest = sorted.slice(maxRows);
-  const hasOtherAlready = displayed.some((e) => e.name.toLowerCase() === "other");
+  // A genuine "Other" category (e.g. the sector taxonomy's own catch-all
+  // bucket) can legitimately land inside the top maxRows on its own merits.
+  // When that happens, fold the overflow into THAT row rather than adding a
+  // second, differently-named catch-all ("Remaining") — two vague buckets
+  // in a five-line legend reads as confusing/duplicated, not as two
+  // distinct, nameable things. One honest "Other" that means "this sector
+  // plus everything smaller" beats two ambiguous ones.
+  const otherIdx = displayed.findIndex((e) => e.name.toLowerCase() === "other");
+  const overflow = rest.reduce((s, e) => s + e.value, 0);
   const pieData =
-    rest.length > 0
+    rest.length > 0 && otherIdx !== -1
+      ? displayed.map((e, i) => (i === otherIdx ? { ...e, value: e.value + overflow } : e))
+      : rest.length > 0
       ? [
           ...displayed,
           {
-            name: hasOtherAlready ? "Remaining" : "Other",
-            value: rest.reduce((s, e) => s + e.value, 0),
+            name: "Other",
+            value: overflow,
             key: "__other",
             color: "#6b6b64",
           },
