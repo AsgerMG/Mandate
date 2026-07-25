@@ -25,9 +25,9 @@ export function NavBar() {
 
   return (
     <nav
-      className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/95 backdrop-blur"
+      className="sticky top-0 z-40 border-b border-[#12264f] bg-[var(--background)]"
     >
-      <div className="mx-auto max-w-6xl px-4 flex items-center justify-between h-16">
+      <div className="mx-auto max-w-6xl px-4 flex items-center justify-between h-[4.5rem]">
         <Link
           href="/"
           aria-current={isActive("/") ? "page" : undefined}
