@@ -171,6 +171,11 @@ export interface InstitutionEntry {
   legalBasis?: string;
   /** Grounded in the eligibility screen + scoping profile, never invented. */
   whyEligible: string;
+  /** Code-built, never model-written: why this row ranks where it does on
+   *  ease (brief_funnel_v2 Stage 3). Deliberately phrased as requirements
+   *  ANSWERED, not cleared — see the honesty note in ease.ts. Empty when
+   *  there is nothing honest to claim. */
+  whyEasy?: string;
   /** Real comparable companies that drew on this exact channel, code-built. */
   comparableFirms: { name: string; amount: string }[];
   /** One concrete, actionable next step, model-written. */
@@ -248,6 +253,10 @@ export interface IntelligenceRequest {
    *  verdict computation) — grounds the adaptive round in gates that are
    *  actually still open for THESE instruments, not the whole 320-row corpus. */
   candidateInstrumentIds?: string[];
+  /** Answers to the project questions (brief_funnel_v2 Stage 2b). Grounds the
+   *  writer in what this company actually does, and feeds ease scoring. Never
+   *  read by computeVerdict() — see ProjectAnswer. */
+  projectAnswers?: ProjectAnswer[];
   /** The model's own read of the founder's free-text description (Phase 4),
    *  computed once per session by inferProfileSignal() and passed straight
    *  through — a soft, additive annotation only, never re-derived here. */
@@ -379,11 +388,55 @@ export interface GroundedQuestion {
   question: string;
 }
 
+/**
+ * A question about the founder's actual PROJECT, phrased from one fund's
+ * verbatim requirement text (brief_funnel_v2 Stage 2b).
+ *
+ * Unlike GroundedQuestion above, the model writes the options too — the whole
+ * point is to ask something a fixed twelve-field vocabulary cannot express
+ * ("is your technology at TRL 5-6 at entry?"). That is only safe because the
+ * answer is stored in ProjectAnswer, never in EligibilityAnswers, and
+ * computeVerdict() never reads it: a hallucinated option can degrade memo
+ * prose, but it cannot flip a legal eligibility verdict.
+ */
+export interface ProjectQuestion {
+  /** Stable id, so an answer can be matched back to the question. */
+  id: string;
+  question: string;
+  /** 3-5 model-written options derived from the requirement text. The client
+   *  always appends its own "None of these" and a free-text box. */
+  options: string[];
+  /** Citation anchors, carried through to the writer. */
+  instrumentId: string;
+  instrumentName: string;
+  gateKey: string;
+  /** Verbatim requirement text the question was phrased from. */
+  quote: string;
+  locator?: string;
+}
+
+/** A founder's answer to one ProjectQuestion. Writer context and ease-scoring
+ *  input only — deliberately NOT part of EligibilityAnswers. */
+export interface ProjectAnswer {
+  questionId: string;
+  question: string;
+  answer: string;
+  instrumentId: string;
+  instrumentName: string;
+  gateKey: string;
+  quote: string;
+  locator?: string;
+}
+
 /** One themed adaptive round — Phase 3C generates exactly one at a time,
- *  grounded in the founder's actual candidate-instrument shortlist. */
+ *  grounded in the founder's actual candidate-instrument shortlist. Carries
+ *  both halves of the brief_funnel_v2 panel: `questions` closes generic
+ *  eligibility gates (fixed enums), `projectQuestions` asks about the project
+ *  itself (model-written options). */
 export interface GroundedRound {
   theme: string;
   questions: GroundedQuestion[];
+  projectQuestions?: ProjectQuestion[];
 }
 
 /** The selectable capital types the founder can ask for. Order = display order. */

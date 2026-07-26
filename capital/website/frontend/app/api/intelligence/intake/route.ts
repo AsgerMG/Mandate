@@ -1,7 +1,15 @@
 import { NextRequest } from "next/server";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
-import { distinctFamilyCount, openFieldsForShortlist } from "@/lib/intelligence/gateReach";
-import { generateGroundedRound, inferProfileSignal } from "@/lib/intelligence/pipeline";
+import {
+  distinctFamilyCount,
+  openFieldsForShortlist,
+  openProjectGatesForShortlist,
+} from "@/lib/intelligence/gateReach";
+import {
+  generateGroundedRound,
+  generateProjectQuestions,
+  inferProfileSignal,
+} from "@/lib/intelligence/pipeline";
 import {
   sanitizeCapitalSought,
   sanitizeEligibility,
@@ -26,6 +34,12 @@ export const maxDuration = 60;
 // corpus (see gateReach.ts).
 const MIN_REACH_PCT = 15;
 const MIN_FAMILIES = 3;
+
+// brief_funnel_v2 question budget: 8-10 on one mandatory screen, split roughly
+// half generic gate-closers, half project questions. Was 8 generic and zero
+// project, which is why every memo read the same.
+const GENERIC_QUESTION_CAP = 4;
+const PROJECT_QUESTION_CAP = 5;
 
 export async function POST(request: NextRequest) {
   let body: IntelligenceRequest & { wantProfileSignal?: boolean };
@@ -59,16 +73,41 @@ export async function POST(request: NextRequest) {
     const families = distinctFamilyCount(candidateIds);
     const needsRound = openFields.length > 0 && openFields[0].reachPct >= MIN_REACH_PCT && families > MIN_FAMILIES;
 
+    // brief_funnel_v2: the panel is one screen with two halves. The generic
+    // half closes eligibility gates the verdict engine needs (fixed enums);
+    // the project half asks what this company actually does, phrased from the
+    // shortlist's own requirement text. Budget is 8-10 total, so the generic
+    // side is capped tighter than the old 8 to make room.
+    const genericFields = openFields.slice(0, GENERIC_QUESTION_CAP);
+    const projectGates = openProjectGatesForShortlist(candidateIds, eligibility, {
+      deprioritiseFields: genericFields.map((f) => f.field),
+      limit: PROJECT_QUESTION_CAP,
+    });
+
     // Phase 4 rides alongside the round fetch on the founder's first call
     // only — never re-run on round 2, one read per session is enough.
     // Independent of the stopping rule above: even a founder whose shortlist
     // has nothing more to ask about can still get a sharper table annotation.
-    const [round, profileSignal] = await Promise.all([
-      needsRound ? generateGroundedRound(req, openFields) : Promise.resolve(null),
+    const [round, projectQuestions, profileSignal] = await Promise.all([
+      needsRound ? generateGroundedRound(req, genericFields) : Promise.resolve(null),
+      projectGates.length ? generateProjectQuestions(req, projectGates) : Promise.resolve([]),
       body.wantProfileSignal ? inferProfileSignal(req) : Promise.resolve(null),
     ]);
+
+    // The project half can carry the screen on its own: a founder whose
+    // generic gates are all closed still benefits from project questions, so
+    // the round is synthesised rather than dropped when only that half exists.
+    const merged =
+      round || projectQuestions.length
+        ? {
+            theme: round?.theme || "Your project",
+            questions: round?.questions ?? [],
+            projectQuestions,
+          }
+        : null;
+
     // Never block the memo on intake: null just skips the screen.
-    return Response.json({ round, profileSignal });
+    return Response.json({ round: merged, profileSignal });
   } catch (err) {
     console.error("intake route failed:", err);
     return Response.json({ round: null, profileSignal: null });

@@ -7,7 +7,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
-import { type OpenFieldEvidence } from "./gateReach";
+import { scoreEase, whyEasyLine } from "./ease";
+import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
+import { semanticFundMatch } from "./semantic";
+import { type OpenFieldEvidence, type ProjectGateEvidence } from "./gateReach";
 import {
   findPeersBySubsector,
   isGenericSubsector,
@@ -41,6 +44,7 @@ import {
   type IntelligenceRequest,
   type ProfileSignal,
   type ProgressEvent,
+  type ProjectQuestion,
   type SelfRecord,
 } from "./types";
 
@@ -274,22 +278,55 @@ function selectLeafInstruments(
   founderCountries: string[],
   capitalSought: string[],
   ticketBand?: string,
+  description?: string,
+  semantic?: Map<string, number>,
 ): DbInstrument[] {
   const all = dbInstrumentsByBucket().get(channel) ?? [];
   if (!all.length) return [];
-  let candidates = all.filter(
-    (i) => instrumentServesCountry(i.country, founderCountries) && instrumentServesCapital(i.capitalType, capitalSought),
-  );
-  if (!candidates.length) candidates = all; // don't over-filter into nothing on a data mismatch
+  // Graded fallback. The old single fallback ("if nothing matched, take
+  // everything") relaxed country AND capital type at once, which is how a
+  // German founder asking for grants ended up being offered Latvian Altum
+  // loans: no German NDB in this bucket served grants, so the filter emptied
+  // and every country came back. Relaxing capital type is defensible;
+  // relaxing country is not, so it comes last and only to avoid an empty row.
+  const inCountry = all.filter((i) => instrumentServesCountry(i.country, founderCountries));
+  let candidates = inCountry.filter((i) => instrumentServesCapital(i.capitalType, capitalSought));
+  if (!candidates.length) candidates = inCountry;
+  if (!candidates.length) candidates = all;
   const target = ticketBand ? TICKET_MIDPOINT[ticketBand] : undefined;
   const isExactCountry = (i: DbInstrument) =>
     founderCountries.length > 0 && founderCountries.some((c) => toIso2(c) === i.country);
+
+  // Thematic match on the founder's own description, ahead of every other key.
+  // Buckets like horizon_eu_partnership hold nine thematically unrelated Joint
+  // Undertakings, and ranking those by event_count handed CHP and IHI (both
+  // health) to every founder while EUSPA stayed invisible to satellite
+  // companies. Only applied above RELEVANCE_FLOOR so a description that says
+  // nothing thematic leaves the existing ordering untouched.
+  // Semantic (instrument_profiles) is the primary signal; the lexical index is
+  // the offline fallback when VOYAGE_KEY/Postgres is unavailable.
+  const relevance = semantic?.size
+    ? semantic
+    : themeRelevance(description, candidates.map((i) => i.id));
+  const rel = (i: DbInstrument) => {
+    const r = relevance.get(i.id) ?? 0;
+    return r >= RELEVANCE_FLOOR ? r : 0;
+  };
+
   const sorted = [...candidates].sort((a, b) => {
     // An exact country match always outranks an EU-wide/foreign fallback
     // row, before ticket-size proximity — a founder's own national scheme
     // is more useful than a better-sized but irrelevant one.
+    //
+    // Thematic relevance sits AFTER this, never before: ranking on theme first
+    // handed a German satellite company two Latvian Altum loans (and a question
+    // about COVID-19 working capital) because a spurious lexical hit outranked
+    // country fit. Theme decides between leaves that are equally reachable,
+    // which is exactly the mixed-bucket case it exists for.
     const ea = isExactCountry(a), eb = isExactCountry(b);
     if (ea !== eb) return ea ? -1 : 1;
+    const ra = rel(a), rb = rel(b);
+    if (ra !== rb) return rb - ra;
     if (target !== undefined) {
       const da = typicalAward(a), db = typicalAward(b);
       if (da !== null && db !== null) {
@@ -335,6 +372,10 @@ function buildInstrumentTable(
   consortiumOk?: boolean,
   founderCountries: string[] = [],
   capitalSought: string[] = [],
+  /** Founder's free-text description, for thematic leaf selection. */
+  description?: string,
+  /** Semantic fund-match scores (semantic.ts). Absent/empty = lexical only. */
+  semantic?: Map<string, number>,
 ): InstrumentRow[] {
   const codes = new Set([...fieldChannels].filter((c) => channelServesBand(c, ticketBand)));
   const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;
@@ -347,7 +388,24 @@ function buildInstrumentTable(
     if (fitOf(c) === "consortium_institutional" && !fieldChannels.has(c) && !consortiumOk) continue;
     codes.add(c);
   }
-  return [...codes]
+  // Thematic top-up: pull in a channel nobody's peers used when it holds an
+  // instrument that plainly funds what this company does. Without this the
+  // shortlist is peer-driven plus a fixed default list, so a satellite company
+  // could never reach EUSPA and a rail company could never reach Europe's Rail
+  // — their whole channel was absent, not merely mis-ranked. Consortium-heavy
+  // channels still respect the consortium gate.
+  const thematicFirst: string[] = [];
+  for (const hit of thematicChannelTopUp(description, codes, 2, semantic)) {
+    if (!channelServesBand(hit.channel, ticketBand)) continue;
+    if (fitOf(hit.channel) === "consortium_institutional" && !consortiumOk) continue;
+    thematicFirst.push(hit.channel);
+    codes.add(hit.channel);
+  }
+  // Thematic matches lead the list. Callers slice to DISPLAY_CAP (6) before the
+  // memo ever sees the table, and a top-up appended last was being truncated
+  // away — so the channel was correctly identified and then silently dropped.
+  const ordered = [...thematicFirst, ...[...codes].filter((c) => !thematicFirst.includes(c))];
+  return ordered
     .flatMap((channel) => {
       const snap = loadFundSnapshot(channel);
       if (!snap) return [];
@@ -362,7 +420,7 @@ function buildInstrumentTable(
         fit: snap.fit,
         fitFlag,
       };
-      const leaves = selectLeafInstruments(channel, founderCountries, capitalSought, ticketBand);
+      const leaves = selectLeafInstruments(channel, founderCountries, capitalSought, ticketBand, description, semantic);
       if (!leaves.length) {
         return [{ ...base, instrument: INSTRUMENT_NAME[channel] ?? channelLabel(channel) } as InstrumentRow];
       }
@@ -984,6 +1042,26 @@ async function synthesize(
         `. Use these to read archetype, ticket floor, dilution tolerance and ` +
         `consortium-willingness, and route accordingly.`
       : "",
+    // brief_funnel_v2 Stage 2b. This is the block that makes the brief read
+    // like it was written for THIS company: each line is the founder's own
+    // answer to a question phrased from one fund's verbatim requirement.
+    req.projectAnswers && req.projectAnswers.length > 0
+      ? `## The founder's project, against real fund requirements (AUTHORITATIVE)\n` +
+        req.projectAnswers
+          .map(
+            (p) =>
+              `- ${p.instrumentName} requires: "${p.quote}"\n` +
+              `  Asked: ${p.question}\n` +
+              `  They answered: ${p.answer}`,
+          )
+          .join("\n") +
+        `\nThese are the sharpest facts you have about what this company ` +
+        `actually does. Use them concretely: name the specific requirement and ` +
+        `how this company sits against it, rather than describing the fund in ` +
+        `general terms. Where an answer shows a requirement is not met, say so ` +
+        `plainly and give the cure. Never restate an answer as a fact the ` +
+        `founder did not give.`
+      : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -992,8 +1070,44 @@ async function synthesize(
   // supportType, ticket, comparableFirms) — the model only supplies
   // whyEligible/nextStep per row, keyed positionally by rowKeys below (never
   // by `channel` alone: two rows can share a channel, see buildInstitutions).
-  const baseRows = instrumentTable.slice(0, BRIEF_INSTITUTION_CAP);
-  const institutions = buildInstitutions(baseRows, records, dbPeers);
+  // brief_funnel_v2 Stage 3: re-rank on EASE before cutting to five, so the
+  // brief leads with the doors this company can most plausibly walk through
+  // rather than simply the best-fitting ones. Fit ordering (exact country,
+  // then ticket proximity, then event count) survives as the tie-break: rows
+  // with no ease signal at all keep their original position.
+  const comparableCounts = new Map<string, number>();
+  for (const row of instrumentTable) {
+    if (!row.instrumentId) continue;
+    comparableCounts.set(
+      row.instrumentId,
+      [...records, ...dbPeers].filter((r) => r.matched && r.channels.includes(row.channel)).length,
+    );
+  }
+  const easeById = scoreEase(
+    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    req.eligibility,
+    req.projectAnswers,
+    comparableCounts,
+    eligibilityScreen,
+    // Demote national schemes the founder cannot actually use. A German
+    // company was being handed an Estonian equity scheme at rank 2, which the
+    // writer then had to apologise for in the row itself.
+    new Set(
+      founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries)
+        .map((c) => toIso2(c))
+        .filter(Boolean)
+        .map((c) => c.toUpperCase()),
+    ),
+  );
+  const rankedByEase = instrumentTable
+    .map((row, i) => ({ row, i, ease: row.instrumentId ? easeById.get(row.instrumentId) : undefined }))
+    .sort((a, b) => (b.ease?.score ?? 0) - (a.ease?.score ?? 0) || a.i - b.i);
+
+  const baseRows = rankedByEase.slice(0, BRIEF_INSTITUTION_CAP).map((r) => r.row);
+  const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
+    const id = baseRows[idx].instrumentId;
+    return { ...entry, whyEasy: whyEasyLine(id ? easeById.get(id) : undefined, entry.institution) };
+  });
   // Stream what's already known, well before the writer model call below
   // resolves: self footprint, eligibility screen and the institution rows
   // (whyEligible/nextStep still "" here — the client renders those as
@@ -1128,7 +1242,18 @@ async function synthesize(
           `eligibility screen and scoping profile above, never a generic ` +
           `claim, and must never assert an eligibility a NOT_MET row closes ` +
           `without naming the cure; "nextStep" (AT MOST 15 words) is one ` +
-          `concrete action drawn from the process briefs above.\n` +
+          `concrete action drawn from the process briefs above. Where a ` +
+          `project answer above bears on that institution, whyEligible must ` +
+          `use it, naming the requirement and how this company sits against ` +
+          `it, rather than describing the fund generically.\n` +
+          // brief_funnel_v2 Stage 4: the two grounding rules. Everything the
+          // brief says is either the founder's own answer or a cited fund
+          // requirement; nothing in between.
+          `GROUNDING, applies to every field you write: any claim about THIS ` +
+          `COMPANY'S project must trace to a project answer or their own ` +
+          `description above; any claim about a FUND must trace to its ` +
+          `requirement text or process brief above. If neither supports a ` +
+          `sentence you want to write, cut the sentence.\n` +
           `"positioning": ONE paragraph, AT MOST 130 words, on how this ` +
           `company should frame itself to fit the current political moment: ` +
           `name the real people or institutions actually setting the agenda ` +
@@ -1294,6 +1419,151 @@ export async function generateGroundedRound(
   }
 }
 
+/**
+ * brief_funnel_v2 Stage 2b: turn a fund's verbatim requirement text into a
+ * question about the founder's actual project.
+ *
+ * This is the half of the panel that makes a memo specific. The model writes
+ * the answer options here, which generateGroundedRound() above deliberately
+ * never does — safe only because these answers land in ProjectAnswer and
+ * computeVerdict() never reads them.
+ */
+/** Options that carry no information. The prompt bans these, this catches the
+ *  ones that slip through — a "a mix of the above" answer tells the memo
+ *  writer nothing, and costs the founder one of only ~5 questions. */
+const VAGUE_OPTION =
+  /^(other|none|not sure|unsure|n\/?a|a mix\b|mix of\b|some of\b|several\b|both\b|partly\b|all of\b|combination\b|it depends\b|other sector\b)/i;
+
+export async function generateProjectQuestions(
+  req: IntelligenceRequest,
+  gates: ProjectGateEvidence[],
+): Promise<ProjectQuestion[]> {
+  if (!gates.length) return [];
+  const byKey = new Map(gates.map((g) => [`${g.instrumentId}::${g.gateKey}`, g]));
+  const keys = [...byKey.keys()];
+
+  const schema = {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      questions: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            key: { type: "string", enum: keys },
+            question: { type: "string" },
+            // No minItems/maxItems above 1: the structured-output API rejects
+            // them ("For 'array' type, 'minItems' values other than 0 or 1 are
+            // not supported"). The 3-5 range is enforced by the prompt and by
+            // the post-processing below instead.
+            options: { type: "array", items: { type: "string" } },
+          },
+          required: ["key", "question", "options"],
+        },
+      },
+    },
+    required: ["questions"],
+  } as const;
+
+  const evidence = [...byKey.entries()]
+    .map(([key, g]) =>
+      `key: ${key}\nfund: ${g.instrumentName}\nrequirement (verbatim): "${g.requirement}"`)
+    .join("\n\n");
+
+  const about = [
+    req.company && `Company: ${req.company}`,
+    req.description && `What they do: ${req.description}`,
+    req.companyType && `Self-described type: ${req.companyType}`,
+    req.country && `Incorporated in: ${req.country}`,
+  ].filter(Boolean).join("\n");
+
+  try {
+    const res = await client.messages.create({
+      model: INTAKE_MODEL,
+      max_tokens: 2000,
+      thinking: { type: "disabled" },
+      system: loadAgentInstructions(),
+      output_config: { format: { type: "json_schema", schema } },
+      messages: [
+        {
+          role: "user",
+          content:
+            `${about}\n\nBelow are verbatim eligibility requirements from the specific funds ` +
+            `still on this company's shortlist. For EACH key, write ONE plain-English ` +
+            `question that establishes whether THIS company's project meets THAT ` +
+            `requirement, plus 3-5 short, mutually exclusive answer options drawn from ` +
+            `the requirement's own wording.\n\n` +
+            `Rules:\n` +
+            `- The founder must be able to answer from memory, without opening a document.\n` +
+            `- Ask about their project, technology or plan, never about their legal form, ` +
+            `headcount or country: those are already known.\n` +
+            // Specificity rules. Without these the model produces generically
+            // correct but useless options ("A mix of the above", "Other
+            // sector") that tell the writer nothing about this company.
+            `- Name the company's OWN technology or product in the question, in their ` +
+            `words, so it reads as written for them and not for any applicant.\n` +
+            `- Every option must be a substantive, checkable state of affairs. BANNED ` +
+            `option styles: "a mix of the above", "other", "none", "several of these", ` +
+            `"not sure", "partly" — and any option that merely restates the question.\n` +
+            `- Options must be mutually exclusive and jointly cover the realistic ` +
+            `cases, so exactly one is true for this company.\n` +
+            `- Where the requirement names thresholds, bands or categories (TRL levels, ` +
+            `percentages, activity types), make the options THOSE literal values rather ` +
+            `than paraphrases of them.\n` +
+            `- Never assert or imply a requirement the verbatim text does not support.\n` +
+            `- Options must be concrete and distinguishable (for a TRL requirement, name ` +
+            `the TRL bands; do not offer "yes / no / unsure").\n` +
+            `- Do not add a "none of these" option: the interface appends its own.\n` +
+            // Without this the model obeys "one question per key" over the
+            // content rule above and asks things like "what is your legal
+            // status?", which the first screen already settled.
+            `- OMIT a key entirely if its requirement is only about legal form, ` +
+            `applicant category, headcount or country. Returning four sharp ` +
+            `questions is better than five with a wasted one.\n` +
+            `- At most one question per key.\n\n${evidence}\n\n` +
+            `Return ONLY the JSON object for the schema.`,
+        },
+      ],
+    });
+    const text = res.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+    const parsed = extractJson<{ questions: { key: string; question: string; options: string[] }[] }>(text);
+    const seen = new Set<string>();
+    return (parsed.questions ?? [])
+      .filter((q) => q?.key && byKey.has(q.key) && q.question?.trim() && Array.isArray(q.options))
+      .filter((q) => (seen.has(q.key) ? false : (seen.add(q.key), true)))
+      .map((q) => {
+        const g = byKey.get(q.key)!;
+        // Belt-and-braces on the specificity rules above: strip vague options
+        // even if the model slips one through, so a founder is never asked to
+        // choose "a mix of the above".
+        const options = q.options
+          .map((o) => deDash(String(o).trim()))
+          .filter(Boolean)
+          .filter((o) => !VAGUE_OPTION.test(o))
+          .slice(0, 5);
+        return {
+          id: q.key,
+          question: deDash(q.question.trim()),
+          options,
+          instrumentId: g.instrumentId,
+          instrumentName: g.instrumentName,
+          gateKey: g.gateKey,
+          quote: g.requirement,
+          locator: g.locator,
+        };
+      })
+      .filter((q) => q.options.length >= 2);
+  } catch (err) {
+    console.error("project question generation failed:", err);
+    return [];
+  }
+}
+
 const PROFILE_SIGNAL_SCHEMA = {
   type: "object",
   additionalProperties: false,
@@ -1382,7 +1652,7 @@ export function computeVerdict(
   company: string,
   country: string | undefined,
   eligibility: EligibilityAnswers | undefined,
-  opts: { targetMarkets?: string[]; capitalSought?: string[] } = {},
+  opts: { targetMarkets?: string[]; capitalSought?: string[]; description?: string } = {},
 ): VerdictResult {
   const selfRecord = matchCompany(company, country);
   const targetSub =
@@ -1401,6 +1671,7 @@ export function computeVerdict(
     eligibility?.consortium === "yes",
     founderCountries,
     opts.capitalSought ?? [],
+    opts.description,
   );
   return {
     eligibilityScreen: evaluateEligibility(eligibility),
@@ -1443,6 +1714,13 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
     ? findPeersBySubsector(targetSub, { country: req.country, limit: 4, exclude })
     : [];
 
+  // Semantic fund matching (instrument_profiles via pgvector). One Voyage query
+  // embed plus one HNSW lookup, ~100ms against a pipeline that already runs for
+  // ~100s. Resolves to an empty map on any failure, in which case
+  // buildInstrumentTable silently falls back to the lexical index — the memo
+  // must never fail because a vector query timed out.
+  const semanticScores = await semanticFundMatch(req.description);
+
   // The capital on the table: every channel the founder or a peer has drawn on,
   // topped up to a useful shortlist. Built in code from curated fund snapshots.
   const fieldChannels = new Set<string>([
@@ -1457,6 +1735,8 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
       req.eligibility?.consortium === "yes",
       founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
       req.capitalSought ?? [],
+      req.description,
+      semanticScores,
     ).slice(0, DISPLAY_CAP),
     req.profileSignal,
     req.companyType,

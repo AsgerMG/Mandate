@@ -15,6 +15,7 @@ import {
   type PartialReport,
   type PipelineStep,
   type ProfileSignal,
+  type ProjectAnswer,
   type ProgressEvent,
 } from "@/lib/intelligence/types";
 
@@ -27,6 +28,11 @@ const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 // pipeline.ts is the other half of this — keep them in sync if either
 // changes.)
 const MAX_ROUNDS = 1;
+
+// The escape hatch appended to every project question's model-written options
+// (brief_funnel_v2 Stage 2b). Picking it reveals a free-text box, so a founder
+// is never forced into an option the model invented.
+const NONE_OF_THESE = "None of these";
 
 // COMPANY_TYPE_OPTIONS (types.ts) is the four archetypes, as a one-tap
 // picker — shared with the server-side free-text inference layer (Phase 4)
@@ -350,6 +356,12 @@ export function IntelligencePanel() {
   // holds a string[], everything else a plain string.
   const [round, setRound] = useState<GroundedRound | null>(null);
   const [roundAnswers, setRoundAnswers] = useState<Record<string, string | string[]>>({});
+  // brief_funnel_v2 Stage 2b: project answers are keyed by ProjectQuestion.id
+  // and kept in their OWN store, never merged into `elig` — computeVerdict()
+  // must not see a model-written option. They ride to the memo separately.
+  const [projectPicks, setProjectPicks] = useState<Record<string, string>>({});
+  const [projectFreeText, setProjectFreeText] = useState<Record<string, string>>({});
+  const [projectAnswers, setProjectAnswers] = useState<ProjectAnswer[]>([]);
   const [roundCount, setRoundCount] = useState(0);
 
   // Phase 4: the model's own read of the free-text description, fetched once
@@ -403,6 +415,7 @@ export function IntelligencePanel() {
     targetMarkets,
     eligibility: eligOverride ?? elig,
     profileSignal,
+    projectAnswers,
   });
 
   type Verdict = {
@@ -476,12 +489,18 @@ export function IntelligencePanel() {
         profileSignal?: ProfileSignal | null;
       };
       if (data.profileSignal) setProfileSignal(data.profileSignal);
-      if (!data.round || !Array.isArray(data.round.questions) || data.round.questions.length === 0) {
+      // Either half can carry the screen: a founder with no generic gates left
+      // still gets the project questions, which is the whole point of 2b.
+      const nGeneric = Array.isArray(data.round?.questions) ? data.round.questions.length : 0;
+      const nProject = Array.isArray(data.round?.projectQuestions) ? data.round.projectQuestions.length : 0;
+      if (!data.round || nGeneric + nProject === 0) {
         await runMemo([]);
         return;
       }
       setRound(data.round);
       setRoundAnswers({});
+      setProjectPicks({});
+      setProjectFreeText({});
       setScreen("adaptive");
     } catch {
       await runMemo([]);
@@ -501,12 +520,35 @@ export function IntelligencePanel() {
       if (ans === undefined || ans === "" || (Array.isArray(ans) && ans.length === 0)) continue;
       (merged as Record<string, unknown>)[q.field] = ans;
     }
+    // Project answers are collected in parallel and kept OUT of `merged` by
+    // design: they carry their fund + gate citation to the writer instead.
+    const picked: ProjectAnswer[] = [];
+    for (const q of round?.projectQuestions ?? []) {
+      const choice = projectPicks[q.id];
+      const free = projectFreeText[q.id]?.trim();
+      const answer = choice === NONE_OF_THESE ? (free || NONE_OF_THESE) : (choice || free);
+      if (!answer) continue;
+      picked.push({
+        questionId: q.id,
+        question: q.question,
+        answer,
+        instrumentId: q.instrumentId,
+        instrumentName: q.instrumentName,
+        gateKey: q.gateKey,
+        quote: q.quote,
+        locator: q.locator,
+      });
+    }
+    const allProjectAnswers = [...projectAnswers, ...picked];
+    setProjectAnswers(allProjectAnswers);
+    setProjectPicks({});
+    setProjectFreeText({});
     setElig(merged);
     setRound(null);
     const nextCount = roundCount + 1;
     setRoundCount(nextCount);
     if (nextCount >= MAX_ROUNDS) {
-      await runMemo([]);
+      await runMemo([], allProjectAnswers);
       return;
     }
     setPreparing(true);
@@ -519,7 +561,12 @@ export function IntelligencePanel() {
   }
 
   // Stream the memo, folding in whatever clarifications we have.
-  async function runMemo(clarifications: { question: string; answer: string }[]) {
+  // `projectOverride` exists because advanceRound() calls this in the same
+  // tick as setProjectAnswers(), so the state hasn't flushed yet.
+  async function runMemo(
+    clarifications: { question: string; answer: string }[],
+    projectOverride?: ProjectAnswer[],
+  ) {
     if (running) return;
     setRunning(true);
     setError(null);
@@ -534,7 +581,11 @@ export function IntelligencePanel() {
       const res = await fetch("/api/intelligence", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...basePayload(), clarifications }),
+        body: JSON.stringify({
+          ...basePayload(),
+          clarifications,
+          projectAnswers: projectOverride ?? projectAnswers,
+        }),
       });
 
       if (!res.ok || !res.body) {
@@ -765,7 +816,7 @@ export function IntelligencePanel() {
             <StepHeader
               eyebrow={round.theme}
               title="A few tailored questions"
-              detail="Each one comes from a real requirement of a fund still on your shortlist — answering these is what finds the right funds. Leave any you genuinely don't know unanswered."
+              detail="Each one comes from a real requirement of a fund still on your shortlist: answering these is what finds the right funds. Leave any you genuinely don't know unanswered."
             />
             <div className="space-y-5">
               {round.questions.map((q) => {
@@ -805,6 +856,56 @@ export function IntelligencePanel() {
                   </div>
                 );
               })}
+
+              {/* Project questions: written from one fund's verbatim
+                  requirement, with model-written options. Kept visually
+                  distinct so it reads as "about your project", not more
+                  eligibility admin. */}
+              {(round.projectQuestions ?? []).length > 0 && (
+                <div className="space-y-5 border-t border-[var(--border)] pt-5">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--accent)]">
+                    About your project
+                  </p>
+                  {(round.projectQuestions ?? []).map((q) => {
+                    const picked = projectPicks[q.id];
+                    const opts = [...q.options, NONE_OF_THESE];
+                    return (
+                      <div key={q.id}>
+                        <p className="mb-1 text-sm font-semibold" style={serif}>{q.question}</p>
+                        <p className="mb-2 text-xs text-[var(--muted-foreground)]">
+                          {q.instrumentName} requires: &ldquo;{q.quote}&rdquo;
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {opts.map((o) => {
+                            const on = picked === o;
+                            return (
+                              <button key={o} type="button" aria-pressed={on}
+                                onClick={() => setProjectPicks((prev) => ({
+                                  ...prev, [q.id]: prev[q.id] === o ? "" : o,
+                                }))}
+                                className={
+                                  "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+                                  (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]"
+                                      : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[var(--primary)]")
+                                }>
+                                {o}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {picked === NONE_OF_THESE && (
+                          <input
+                            value={projectFreeText[q.id] ?? ""}
+                            onChange={(e) => setProjectFreeText((prev) => ({ ...prev, [q.id]: e.target.value }))}
+                            placeholder="Then how would you describe it?"
+                            className={inputCls + " mt-2"}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <div className="mt-6 flex items-center gap-4">
               <button type="button" disabled={preparing} onClick={() => void advanceRound()} className={nextBtn}>
@@ -956,6 +1057,13 @@ function InstitutionsTable({ institutions, pending = false }: { institutions: In
               <td className="py-2.5 pr-3">{r.supportType}</td>
               <td className="py-2.5 pr-3">
                 {pending && !r.whyEligible ? <PlaceholderBar /> : r.whyEligible}
+                {/* Code-built, so it is already correct while the model's
+                    prose is still streaming — no placeholder needed. */}
+                {r.whyEasy && (
+                  <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
+                    {r.whyEasy}
+                  </span>
+                )}
                 <span className="block text-[12px] italic text-[var(--muted-foreground)]">
                   Move: {pending && !r.nextStep ? <PlaceholderBar narrow /> : r.nextStep}
                 </span>

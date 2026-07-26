@@ -110,17 +110,58 @@ CREATE INDEX IF NOT EXISTS idx_ec_verification ON eligibility_clauses(verificati
 -- embedding an llm_classified guess with no real quote isn't worth
 -- retrieving). Requires `CREATE EXTENSION vector;` (pgvector, confirmed
 -- available on Railway's Postgres image, v0.8.5).
+-- Keyed on the NATURAL key, and deliberately WITHOUT a foreign key. Both are
+-- corrections to a design that silently destroyed this table (2026-07-26):
+--
+--  * source_id pointed at eligibility_gates.id, which is GENERATED ALWAYS AS
+--    IDENTITY and re-issued on every migrate_to_postgres.py run (it inserts
+--    gates without ids). So a surviving embedding would re-point at a
+--    DIFFERENT gate after any reload — worse than losing it, since retrieval
+--    would confidently return the wrong requirement text. (instrument_id,
+--    gate_key) is stable and verified unique: 4,018/4,018 gates and 893/893
+--    clauses.
+--  * The FK to funding_instruments meant migrate_to_postgres.py's
+--    `TRUNCATE ... funding_instruments CASCADE` cascaded into here and wiped
+--    all 3,327 embeddings, invisibly — the table is not named in that
+--    statement, and TRUNCATE leaves no n_tup_del trace. Postgres also REQUIRES
+--    CASCADE when truncating a referenced table, so the FK made the wipe
+--    unavoidable rather than accidental. This is a derived cache rebuilt from
+--    Voyage; an orphaned row is harmless (never retrieved), a destroyed table
+--    costs a full re-embed. No FK is the right trade.
 CREATE TABLE IF NOT EXISTS eligibility_embeddings (
     id             BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     source_type    TEXT NOT NULL CHECK (source_type IN ('gate', 'clause')),
-    source_id      BIGINT NOT NULL,  -- eligibility_gates.id or eligibility_clauses.id
-    instrument_id  TEXT NOT NULL REFERENCES funding_instruments(id),
+    instrument_id  TEXT NOT NULL,
+    -- gate: eligibility_gates.gate_key. clause: clause_type || '::' || clause_key.
+    source_key     TEXT NOT NULL,
     chunk_text     TEXT NOT NULL,
     embedding      vector(1024) NOT NULL,  -- voyage-3.5 dimension; see embed_eligibility.py
     model          TEXT NOT NULL,
     created_at     TIMESTAMPTZ DEFAULT now(),
-    UNIQUE (source_type, source_id)
+    UNIQUE (source_type, instrument_id, source_key)
 );
+-- One "what this fund actually funds" profile per instrument, embedded for
+-- matching a company description to relevant funds. Distinct from
+-- eligibility_embeddings above, which indexes what a fund DEMANDS: querying
+-- rule text with a company description compares two different semantic spaces
+-- and measurably fails (a rail company retrieved IPCEI's depreciation rules
+-- above Europe's Rail). Built by ETL/terms/build_instrument_profiles.py from
+-- stated scope PLUS the real project titles the instrument has funded — the
+-- strongest available signal and unique to this corpus.
+--
+-- Natural key, no FK, for the same reason as eligibility_embeddings: the four
+-- core tables are truncate-and-reloaded with CASCADE.
+CREATE TABLE IF NOT EXISTS instrument_profiles (
+    instrument_id  TEXT PRIMARY KEY,
+    profile_text   TEXT NOT NULL,
+    embedding      vector(1024) NOT NULL,  -- voyage-3.5
+    model          TEXT NOT NULL,
+    n_titles       INTEGER NOT NULL DEFAULT 0,  -- provenance: funded titles used
+    built_at       TIMESTAMPTZ DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_ip_embedding_hnsw
+    ON instrument_profiles USING hnsw (embedding vector_cosine_ops);
+
 CREATE INDEX IF NOT EXISTS idx_ee_instrument ON eligibility_embeddings(instrument_id);
 CREATE INDEX IF NOT EXISTS idx_ee_embedding_hnsw
     ON eligibility_embeddings USING hnsw (embedding vector_cosine_ops);

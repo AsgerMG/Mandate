@@ -107,6 +107,41 @@ export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
   return out.length ? out : undefined;
 }
 
+/**
+ * Whitelist a raw request body's `projectAnswers` field (brief_funnel_v2
+ * Stage 2b). Every string here reaches a model prompt, and `answer` can be
+ * founder free text, so each field is length-capped and the instrument id is
+ * shape-checked like any other. Count-capped at 12: the panel can only
+ * generate 5 per round.
+ *
+ * These deliberately never become EligibilityAnswers, so nothing here can
+ * reach the deterministic evaluator no matter what a client posts.
+ */
+export function sanitizeProjectAnswers(raw: unknown): import("./types").ProjectAnswer[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const out = raw.flatMap((x) => {
+    if (!x || typeof x !== "object") return [];
+    const b = x as Record<string, unknown>;
+    const questionId = pickString(b.questionId, 140);
+    const question = pickString(b.question, 400);
+    const answer = pickString(b.answer, 400);
+    const instrumentId = pickString(b.instrumentId, 60);
+    if (!questionId || !question || !answer || !instrumentId) return [];
+    if (!INSTRUMENT_ID_RE.test(instrumentId)) return [];
+    return [{
+      questionId,
+      question,
+      answer,
+      instrumentId,
+      instrumentName: pickString(b.instrumentName, 160) ?? instrumentId,
+      gateKey: pickString(b.gateKey, 120) ?? "",
+      quote: pickString(b.quote, 600) ?? "",
+      locator: pickString(b.locator, 160),
+    }];
+  }).slice(0, 12);
+  return out.length ? out : undefined;
+}
+
 /** Whitelist a raw request body's `profileSignal` field (Phase 4) — the
  *  client only ever echoes back what our own /api/intelligence/intake
  *  response gave it, but never trust that round-trip: techDepthRead must be

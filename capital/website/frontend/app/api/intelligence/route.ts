@@ -1,7 +1,12 @@
 import { NextRequest } from "next/server";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
-import { sanitizeEligibility, sanitizeProfileSignal, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
+import {
+  sanitizeEligibility,
+  sanitizeProfileSignal,
+  sanitizeProjectAnswers,
+  sanitizeTargetMarkets,
+} from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest, ProgressEvent } from "@/lib/intelligence/types";
 
 // Needs the Node runtime (filesystem + the Anthropic SDK), and must never be
@@ -92,6 +97,7 @@ export async function POST(request: NextRequest) {
             targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
             eligibility: sanitizeEligibility(body.eligibility),
             profileSignal: sanitizeProfileSignal(body.profileSignal),
+            projectAnswers: sanitizeProjectAnswers(body.projectAnswers),
           },
           send,
         );

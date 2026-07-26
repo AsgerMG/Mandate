@@ -68,7 +68,18 @@ def main() -> None:
     pg = psycopg.connect(url)
     try:
         with pg.cursor() as cur:
-            # Truncate in FK-safe order (children first), CASCADE for safety.
+            # Truncate in FK-safe order (children first). CASCADE is REQUIRED
+            # here (Postgres refuses to truncate a table other tables
+            # reference), but it is not free: until 2026-07-26,
+            # eligibility_embeddings carried an FK to funding_instruments, so
+            # this one statement silently destroyed all 3,327 Voyage embeddings
+            # on every run. The table is not named here, and TRUNCATE leaves no
+            # n_tup_del trace, so nothing showed it. That FK is now gone and
+            # embeddings are keyed on (instrument_id, gate_key) — stable across
+            # reloads — so they survive this. Do NOT reintroduce an FK from any
+            # derived/expensive table to these four.
+            embeddings_before = cur.execute(
+                "SELECT COUNT(*) FROM eligibility_embeddings").fetchone()[0]
             cur.execute("TRUNCATE eligibility_clauses, eligibility_gates, "
                         "funding_instrument_sources, funding_instruments CASCADE")
 
@@ -118,6 +129,25 @@ def main() -> None:
             )
         pg.commit()
         print("Postgres: migration committed.")
+
+        # The embeddings this reload used to destroy. Reported explicitly so a
+        # regression is loud rather than invisible: if this ever prints a drop,
+        # something has reintroduced a cascade path into the derived tables.
+        embeddings_after = pg.execute(
+            "SELECT COUNT(*) FROM eligibility_embeddings").fetchone()[0]
+        if embeddings_after < embeddings_before:
+            _sys.exit(
+                f"EMBEDDINGS LOST: {embeddings_before} before, {embeddings_after} after. "
+                f"Something re-created an FK/cascade from eligibility_embeddings into the "
+                f"truncated tables. Fix that before re-running embed_eligibility.py.")
+        stale = pg.execute(
+            """SELECT COUNT(*) FROM eligibility_embeddings e
+               WHERE e.source_type = 'gate' AND NOT EXISTS (
+                       SELECT 1 FROM eligibility_gates g
+                       WHERE g.instrument_id = e.instrument_id AND g.gate_key = e.source_key)"""
+        ).fetchone()[0]
+        print(f"Embeddings: {embeddings_after} kept ({stale} now stale; "
+              f"run `embed_eligibility.py run` to fill new gates).")
 
         # Post-publish consistency check: Postgres should now match the
         # instrument count in the JSON fallback exactly, since both are

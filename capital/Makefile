@@ -28,6 +28,7 @@ help:
 	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
 	@echo "  make data        Rebuild EVERY site JSON from db.sqlite (website/build/build_site_data.py)"
 	@echo "  make eligibility Sync YAML -> DB, export instrument_terms.json, publish to Railway Postgres"
+	@echo "                   then rebuild both vector indexes (needs VOYAGE_KEY)"
 	@echo "  make signals     Ensure signals.sqlite schema + status + QA (ETL/intelligence/load/load_signals.py)"
 	@echo "  make news        Full news/signals automation cycle (local only, cost-gated at \$$20)"
 	@echo "  make site-build  Static build of the Next.js site (website/frontend/out/)"
@@ -69,10 +70,19 @@ data:
 # frontend reads, then publish to Railway Postgres (the live read path once
 # DATABASE_URL is set — see the Railway migration plan). Not part of `make
 # data` since it has its own DATABASE_URL dependency and publish cadence.
+# The two vector indexes rebuild LAST, after Postgres has the new corpus.
+# They are separate indexes answering different questions and must not be
+# conflated: eligibility_embeddings = what a fund DEMANDS (RAG over
+# requirements); instrument_profiles = what a fund FUNDS (matching a company
+# description to relevant funds). Both are incremental/idempotent, so re-running
+# `make eligibility` only embeds what actually changed. Needs VOYAGE_KEY.
 eligibility:
 	python3 ETL/terms/sync_gates_from_yaml.py
 	python3 website/build/eligibility_export.py
 	python3 ETL/terms/migrate_to_postgres.py
+	python3 ETL/terms/embed_eligibility.py run
+	python3 ETL/terms/build_instrument_profiles.py classify-titles
+	python3 ETL/terms/build_instrument_profiles.py run --rebuild
 
 # News/signals layer (data/signals.sqlite): schema install + stage counts + QA.
 # The per-stage transforms (classify_relevance, entity_link_articles,

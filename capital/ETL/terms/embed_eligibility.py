@@ -85,12 +85,33 @@ def cmd_status(_args) -> None:
     by_model = conn.execute(
         "SELECT model, COUNT(*) FROM eligibility_embeddings GROUP BY model"
     ).fetchall()
+    # There is deliberately no FK from eligibility_embeddings (see
+    # postgres_schema.sql), so drift is possible and must be reported rather
+    # than enforced: orphaned rows point at an instrument that no longer
+    # exists, stale rows at a gate/clause key that no longer exists. Both are
+    # harmless for retrieval (never joined) but signal the corpus moved.
+    orphaned = conn.execute(
+        """SELECT COUNT(*) FROM eligibility_embeddings e
+           WHERE NOT EXISTS (SELECT 1 FROM funding_instruments fi WHERE fi.id = e.instrument_id)"""
+    ).fetchone()[0]
+    stale = conn.execute(
+        """SELECT COUNT(*) FROM eligibility_embeddings e
+           WHERE e.source_type = 'gate' AND NOT EXISTS (
+                   SELECT 1 FROM eligibility_gates g
+                   WHERE g.instrument_id = e.instrument_id AND g.gate_key = e.source_key)
+              OR e.source_type = 'clause' AND NOT EXISTS (
+                   SELECT 1 FROM eligibility_clauses c
+                   WHERE c.instrument_id = e.instrument_id
+                     AND c.clause_type || '::' || c.clause_key = e.source_key)"""
+    ).fetchone()[0]
     print(f"eligible gates (cited+):    {gates_total:,}")
     print(f"eligible clauses (cited+):  {clauses_total:,}")
     print(f"total embeddable:           {gates_total + clauses_total:,}")
     print(f"embedded so far:            {embedded:,}")
     for model, n in by_model:
         print(f"  {model}: {n:,}")
+    print(f"orphaned (no instrument):   {orphaned:,}")
+    print(f"stale (key gone):           {stale:,}")
     conn.close()
 
 
@@ -98,35 +119,43 @@ def cmd_run(args) -> None:
     conn = connect()
     client = voyage_client()
 
-    # Gather everything embeddable, left-joined against what's already done
-    # (anti-join via NOT EXISTS -- resumable).
-    todo: list[tuple[str, int, str, str]] = []  # (source_type, source_id, instrument_id, chunk_text)
+    # Gather everything embeddable, anti-joined against what's already done
+    # (resumable). Anti-join is on the NATURAL key, not the surrogate id: gate
+    # ids are re-issued by every migrate_to_postgres.py run, so an id-based
+    # anti-join silently re-embeds the whole corpus after each reload (and, in
+    # the old FK'd schema, the reload had already deleted it).
+    todo: list[tuple[str, str, str, str]] = []  # (source_type, source_key, instrument_id, chunk_text)
 
     gate_rows = conn.execute(
-        """SELECT g.id, g.instrument_id, g.requirement, g.value
+        """SELECT g.gate_key, g.instrument_id, g.requirement, g.value
            FROM eligibility_gates g
            WHERE g.verification_level = ANY(%s)
              AND NOT EXISTS (
                SELECT 1 FROM eligibility_embeddings e
-               WHERE e.source_type = 'gate' AND e.source_id = g.id)
-           ORDER BY g.id""",
+               WHERE e.source_type = 'gate'
+                 AND e.instrument_id = g.instrument_id
+                 AND e.source_key = g.gate_key)
+           ORDER BY g.instrument_id, g.gate_key""",
         (list(ASSERTABLE_OR_CITED),),
     ).fetchall()
-    for gid, instrument_id, requirement, value in gate_rows:
-        todo.append(("gate", gid, instrument_id, gate_chunk_text(requirement, value)))
+    for gate_key, instrument_id, requirement, value in gate_rows:
+        todo.append(("gate", gate_key, instrument_id, gate_chunk_text(requirement, value)))
 
     clause_rows = conn.execute(
-        """SELECT c.id, c.instrument_id, c.text
+        """SELECT c.clause_type || '::' || c.clause_key AS source_key,
+                  c.instrument_id, c.text
            FROM eligibility_clauses c
            WHERE c.verification_level = ANY(%s)
              AND NOT EXISTS (
                SELECT 1 FROM eligibility_embeddings e
-               WHERE e.source_type = 'clause' AND e.source_id = c.id)
-           ORDER BY c.id""",
+               WHERE e.source_type = 'clause'
+                 AND e.instrument_id = c.instrument_id
+                 AND e.source_key = c.clause_type || '::' || c.clause_key)
+           ORDER BY c.instrument_id, source_key""",
         (list(ASSERTABLE_OR_CITED),),
     ).fetchall()
-    for cid, instrument_id, text in clause_rows:
-        todo.append(("clause", cid, instrument_id, text))
+    for source_key, instrument_id, text in clause_rows:
+        todo.append(("clause", source_key, instrument_id, text))
 
     if args.limit:
         todo = todo[: args.limit]
@@ -138,17 +167,17 @@ def cmd_run(args) -> None:
         texts = [t[3] for t in batch]
         result = client.embed(texts, model=MODEL, input_type="document")
         rows = [
-            (source_type, source_id, instrument_id, chunk_text, vec, MODEL)
-            for (source_type, source_id, instrument_id, chunk_text), vec in zip(
+            (source_type, source_key, instrument_id, chunk_text, vec, MODEL)
+            for (source_type, source_key, instrument_id, chunk_text), vec in zip(
                 batch, result.embeddings
             )
         ]
         with conn.cursor() as cur:
             cur.executemany(
                 """INSERT INTO eligibility_embeddings
-                     (source_type, source_id, instrument_id, chunk_text, embedding, model)
+                     (source_type, source_key, instrument_id, chunk_text, embedding, model)
                    VALUES (%s, %s, %s, %s, %s, %s)
-                   ON CONFLICT (source_type, source_id) DO NOTHING""",
+                   ON CONFLICT (source_type, instrument_id, source_key) DO NOTHING""",
                 rows,
             )
         conn.commit()  # per-batch commit -- kill-safe

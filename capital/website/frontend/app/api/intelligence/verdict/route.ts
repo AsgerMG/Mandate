@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
       {
         targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
         capitalSought: sanitizeCapitalSought(body.capitalSought),
+        // Drives thematic leaf selection (relevance.ts), so the shortlist the
+        // adaptive round is grounded in already reflects what they do.
+        description: body.description?.trim().slice(0, 400) || undefined,
       },
     );
     return Response.json(verdict);
