@@ -274,6 +274,13 @@ function dbInstrumentsByBucket(): Map<string, DbInstrument[]> {
  * founder's country. Returns [] if the family has no DB-native leaves yet
  * (the caller falls back to channel-only display).
  */
+let instByIdCache: Map<string, DbInstrument> | null = null;
+/** id -> instrument, built once per warm invocation. */
+function instById(): Map<string, DbInstrument> {
+  if (!instByIdCache) instByIdCache = new Map(loadDbInstruments().map((i) => [i.id, i]));
+  return instByIdCache;
+}
+
 function selectLeafInstruments(
   channel: string,
   founderCountries: string[],
@@ -453,6 +460,29 @@ function buildInstrumentTable(
       const da = demote(a), db = demote(b);
       if (da !== db) return da ? 1 : -1;
       return INSTRUMENT_PRIORITY.indexOf(a.channel) - INSTRUMENT_PRIORITY.indexOf(b.channel);
+    })
+    // One row per institution NAME. 322 instruments share only 143 display
+    // names, and selectLeafInstruments returns up to two leaves per channel,
+    // so a founder could see "Enterprise Ireland" or "Norges Forskningsrad"
+    // twice in the same table — which reads as a bug even when both rows are
+    // real. Deduped here rather than at the call sites so the preliminary
+    // verdict table and the memo's five institutions can never disagree.
+    // Keep the leaf that can actually say something: the one with the most
+    // ENCODED eligibility rules. First-wins looked right but is not — the sort
+    // above orders by fit and channel priority, which knows nothing about
+    // encoding coverage, so it kept an Enterprise Ireland leaf with zero
+    // encoded rules over a sibling that returned a real "open" verdict.
+    .filter((row, i, all) => {
+      const name = displayInstitutionName(row);
+      const peers = all.filter((o) => displayInstitutionName(o) === name);
+      if (peers.length === 1) return true;
+      const encodedCount = (r: InstrumentRow) => {
+        const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+        return inst ? inst.gates.filter(
+          (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
+      };
+      const best = peers.reduce((a, b) => (encodedCount(b) > encodedCount(a) ? b : a));
+      return all.indexOf(best) === i;
     });
 }
 
@@ -1150,8 +1180,20 @@ async function synthesize(
   // that is conclusively shut is time the founder does not get back. In
   // practice the table stays full: `unknown` counts as accessible, and most
   // instruments carry no encoded filter yet.
+  // One row per institution NAME, not per instrument id. 322 instruments
+  // share only 143 display names, so two leaves of the same body can both
+  // survive ranking and the founder sees "Enterprise Ireland" twice in one
+  // table — once open, once not assessable — which reads as a broken brief.
+  // Ranking already put the better row first, so first-wins is the right rule.
+  const seenNames = new Set<string>();
   const baseRows = rankedByEase
     .filter((r) => r.assessment?.status !== "blocked")
+    .filter((r) => {
+      const name = displayInstitutionName(r.row);
+      if (seenNames.has(name)) return false;
+      seenNames.add(name);
+      return true;
+    })
     .slice(0, BRIEF_INSTITUTION_CAP)
     .map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
