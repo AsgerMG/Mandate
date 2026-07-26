@@ -22,7 +22,7 @@ import {
 import { sectorColors, SECTOR_LABELS, familyTick } from "@/lib/palette";
 import { fmtEur, fmtInt } from "@/lib/format";
 
-const AXIS = { fontSize: 12, fill: "#6b6b64" };
+const AXIS = { fontSize: 12, fill: "#656d82" };
 const GRID = "rgba(10,10,10,0.08)";
 
 function useMobile(): boolean {
@@ -157,7 +157,7 @@ export function StackFunnel({ stack }: { stack: { families: string; companies: n
             {/* flex-1 container; inner div fills width% of this container, not the page */}
             <div className="relative flex-1 h-7 rounded-r overflow-hidden bg-black/5">
               <div
-                className="absolute inset-y-0 left-0 rounded-r bg-[#10203f]"
+                className="absolute inset-y-0 left-0 rounded-r bg-[var(--primary)]"
                 style={{ width: `${width}%`, opacity: 0.55 + 0.45 * (width / 100) }}
               />
             </div>
@@ -167,7 +167,7 @@ export function StackFunnel({ stack }: { stack: { families: string; companies: n
           </div>
         );
       })}
-      <p className="mt-1 pl-[7.5rem] sm:pl-[9.5rem] text-[11px] text-[#5d5b52]">
+      <p className="mt-1 pl-[7.5rem] sm:pl-[9.5rem] text-[11px] text-[var(--foreground-soft)]">
         Square-root scaled so the small buckets stay visible.
       </p>
     </div>
@@ -203,7 +203,7 @@ export function ConcentrationChart({ rows }: { rows: ConcentrationRow[] }) {
           dataKey="label"
           width={yW}
           tickFormatter={(v) => mobile ? familyTick(rows.find(r => r.label === v)?.id ?? v) : v}
-          tick={{ ...AXIS, fill: "#3f3e37" }}
+          tick={{ ...AXIS, fill: "#2b3c5e" }}
           tickLine={false}
           axisLine={false}
         />
@@ -215,7 +215,7 @@ export function ConcentrationChart({ rows }: { rows: ConcentrationRow[] }) {
           }}
         />
         <Bar dataKey="top10Pct" fill="#10203f" radius={[0, 3, 3, 0]} barSize={18}>
-          <LabelList dataKey="top10Pct" position="right" formatter={(v) => `${v}%`} style={{ fontSize: 11, fill: "#3f3e37" }} />
+          <LabelList dataKey="top10Pct" position="right" formatter={(v) => `${v}%`} style={{ fontSize: 11, fill: "#2b3c5e" }} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -245,7 +245,7 @@ export function TicketChart({ rows }: { rows: ConcentrationRow[] }) {
           dataKey="label"
           width={yW}
           tickFormatter={(v) => mobile ? familyTick(rows.find(r => r.label === v)?.id ?? v) : v}
-          tick={{ ...AXIS, fill: "#3f3e37" }}
+          tick={{ ...AXIS, fill: "#2b3c5e" }}
           tickLine={false}
           axisLine={false}
         />
@@ -259,7 +259,7 @@ export function TicketChart({ rows }: { rows: ConcentrationRow[] }) {
           }}
         />
         <Bar dataKey="medianTicket" fill="#4a6cb3" radius={[0, 3, 3, 0]} barSize={18}>
-          <LabelList dataKey="medianTicket" position="right" formatter={(v) => fmtEur(Number(v))} style={{ fontSize: 11, fill: "#3f3e37" }} />
+          <LabelList dataKey="medianTicket" position="right" formatter={(v) => fmtEur(Number(v))} style={{ fontSize: 11, fill: "#2b3c5e" }} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -297,7 +297,7 @@ export function HoldersChart({ holders }: { holders: Holder[] }) {
         <BarChart data={data} layout="vertical" margin={{ top: 0, right: 8, bottom: 4, left: 8 }}>
           <CartesianGrid stroke={GRID} strokeDasharray="3 3" horizontal={false} />
           <XAxis type="number" tick={AXIS} tickLine={false} axisLine={false} />
-          <YAxis type="category" dataKey="name" width={yW} tick={{ ...AXIS, fill: "#3f3e37" }} tickLine={false} axisLine={false} />
+          <YAxis type="category" dataKey="name" width={yW} tick={{ ...AXIS, fill: "#2b3c5e" }} tickLine={false} axisLine={false} />
           <Tooltip
             formatter={(v, name) => [
               fmtInt(v as number),
@@ -309,7 +309,7 @@ export function HoldersChart({ holders }: { holders: Holder[] }) {
           <Bar dataKey="nameOnly" stackId="d" fill={DISCLOSURE_COLORS.nameOnly} barSize={14} radius={[0, 3, 3, 0]} />
         </BarChart>
       </ResponsiveContainer>
-      <div className="mt-1 flex flex-wrap gap-4 pl-2 text-[11px] text-[#5d5b52]">
+      <div className="mt-1 flex flex-wrap gap-4 pl-2 text-[11px] text-[var(--foreground-soft)]">
         <span><span className="mr-1 inline-block h-2.5 w-2.5 rounded-sm" style={{ background: DISCLOSURE_COLORS.pct }} />Ownership percentage disclosed</span>
         <span><span className="mr-1 inline-block h-2.5 w-2.5 rounded-sm" style={{ background: DISCLOSURE_COLORS.amount }} />Euro amount disclosed</span>
         <span><span className="mr-1 inline-block h-2.5 w-2.5 rounded-sm" style={{ background: DISCLOSURE_COLORS.nameOnly }} />Company name only</span>
@@ -351,7 +351,7 @@ export function CountryMixChart({ rows }: { rows: CountryMixRow[] }) {
       <ResponsiveContainer width="100%" height={data.length * 32 + 40}>
         <BarChart data={data} layout="vertical" margin={{ top: 0, right: rMargin, bottom: 4, left: 8 }}>
           <XAxis type="number" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={AXIS} tickLine={false} axisLine={false} unit="%" />
-          <YAxis type="category" dataKey="name" width={yW} tick={{ ...AXIS, fill: "#3f3e37" }} tickLine={false} axisLine={false} />
+          <YAxis type="category" dataKey="name" width={yW} tick={{ ...AXIS, fill: "#2b3c5e" }} tickLine={false} axisLine={false} />
           <Tooltip formatter={(v, name) => [`${v}%`, LAYER_LABELS[name as string] ?? name]} />
           {(["euDirect", "ndb", "stateAid"] as const).map((k, i) => (
             <Bar key={k} dataKey={k} stackId="m" fill={LAYER_COLORS[k]} barSize={16} radius={i === 2 ? [0, 3, 3, 0] : undefined}>
@@ -360,14 +360,14 @@ export function CountryMixChart({ rows }: { rows: CountryMixRow[] }) {
                   dataKey="total"
                   position="right"
                   formatter={(v) => mobile ? fmtInt(Number(v)) : `${fmtInt(Number(v))} awards`}
-                  style={{ fontSize: 10, fill: "#6b6b64" }}
+                  style={{ fontSize: 10, fill: "#656d82" }}
                 />
               )}
             </Bar>
           ))}
         </BarChart>
       </ResponsiveContainer>
-      <div className="mt-1 flex flex-wrap gap-4 pl-2 text-[11px] text-[#5d5b52]">
+      <div className="mt-1 flex flex-wrap gap-4 pl-2 text-[11px] text-[var(--foreground-soft)]">
         {(["euDirect", "ndb", "stateAid"] as const).map((k) => (
           <span key={k}>
             <span className="mr-1 inline-block h-2.5 w-2.5 rounded-sm" style={{ background: LAYER_COLORS[k] }} />

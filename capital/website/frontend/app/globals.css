@@ -24,6 +24,13 @@
   --accent-soft: #f1e3c4;
   --radius: 2px;
 
+  /* Masthead height, pinned exactly: brand row 4.5rem + 1px hairline +
+   * 2rem meta row + 3px double rule = 108px. Anything that has to clear the
+   * masthead (the /brief viewport fill, the euro rail) reads this instead of
+   * hardcoding a guess — the old 4rem/6rem guesses were the source of the
+   * rail and pinned-stage overlaps. Keep in sync with components/nav-bar.tsx. */
+  --nav-h: 6.75rem;
+
   /* Sector colours */
   --color-sector-life-sciences: #7B3F61;
   --color-sector-cleantech: #2D6A4F;
@@ -60,6 +67,22 @@ body {
   font-feature-settings: "lnum" 1, "tnum" 0;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+}
+
+/* The one page container, as on the reference, which runs everything through a
+   single `.container`. Before this the site had six competing variants
+   (max-w-6xl+px-4, max-w-6xl+px-6, max-w-5xl+px-4 …) so the masthead, the home
+   hero and the study chapters each began at a different x — 160, 144 and 208px
+   at 1440. One rule means one gutter on every page and every band. Inner text
+   still sets its own max-w-* for reading measure. */
+.wrap {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+  .wrap { padding-inline: 1.5rem; }
 }
 
 h1, h2 { color: var(--primary); }

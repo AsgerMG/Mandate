@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function BriefPage() {
   return (
-    <section className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden bg-[var(--background)] px-4 sm:px-6 pt-5 pb-3">
+    <section className="relative flex min-h-[calc(100svh-var(--nav-h))] flex-col overflow-hidden bg-[var(--background)] pt-16 pb-6 sm:pt-20">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -19,8 +19,11 @@ export default function BriefPage() {
         }}
         aria-hidden
       />
-      <div className="relative flex flex-1 items-center">
-        <div className="mx-auto w-full max-w-5xl">
+      {/* items-start, not items-center: centring re-floated the panel and its
+          heading landed at a different height than the page heads on / and
+          /about-public-capital. Anchored to the shared offset instead. */}
+      <div className="relative flex flex-1 items-start">
+        <div className="wrap">
           <IntelligencePanel />
         </div>
       </div>

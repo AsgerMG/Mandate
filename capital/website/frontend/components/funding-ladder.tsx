@@ -54,20 +54,20 @@ interface Step {
 }
 
 const kicker = (t: string) => (
-  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">{t}</p>
+  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">{t}</p>
 );
 const head = (t: string) => (
   <h3
-    className="mb-5 text-3xl font-bold leading-[1.1] text-[#141414] sm:text-4xl"
+    className="mb-5 text-3xl font-semibold leading-[1.1] text-[var(--foreground)] sm:text-4xl"
     style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
   >
     {t}
   </h3>
 );
 const P = ({ children }: { children: ReactNode }) => (
-  <p className="mt-4 max-w-xl leading-relaxed text-[#3f3e37] first:mt-0">{children}</p>
+  <p className="mt-4 max-w-xl leading-relaxed text-[var(--foreground-soft)] first:mt-0">{children}</p>
 );
-const b = (t: string) => <span className="text-[#141414]">{t}</span>;
+const b = (t: string) => <span className="text-[var(--foreground)]">{t}</span>;
 
 const STEPS: Step[] = [
   {
@@ -217,7 +217,7 @@ function RungBox({
         y={y}
         width={w}
         height={h}
-        rx={12}
+        rx={2}
         fill="url(#rungFill)"
         stroke={accent ? ACCENT : "rgba(10,10,10,0.22)"}
         strokeWidth={accent ? 1.5 : 1}
@@ -226,13 +226,13 @@ function RungBox({
         x={CX}
         y={sub ? y + 25 : y + 34}
         textAnchor="middle"
-        fill="#1d1c18"
+        fill="#10203f"
         style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontSize: 15, fontWeight: 700 }}
       >
         {title}
       </text>
       {sub && (
-        <text x={CX} y={y + 43} textAnchor="middle" fill="#6b6b64" style={{ fontSize: 11 }}>
+        <text x={CX} y={y + 43} textAnchor="middle" fill="#656d82" style={{ fontSize: 11 }}>
           {sub}
         </text>
       )}
@@ -267,7 +267,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
   const hi = Math.log(Math.max(...medians));
   const width = (m: number) => 150 + (hi > lo ? (Math.log(m) - lo) / (hi - lo) : 0.5) * 290;
 
-  // Dimmed-but-legible on the paper stage; 0.28 vanished against #f3f2ed.
+  // Dimmed-but-legible on the paper stage; 0.28 vanished against #f6f1e6.
   const dimFor = (t: Tier) => (tier === t ? 1 : tier ? 0.45 : 1);
 
   // Conviction: index 0 lower (Innovation Fund), index 1 higher (IPCEI, biggest).
@@ -280,7 +280,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
       <defs>
         <linearGradient id="rungFill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#faf9f5" />
+          <stop offset="100%" stopColor="#fffdf9" />
         </linearGradient>
         <filter id="rungGlow" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="6" result="bl" />
@@ -308,7 +308,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
         x={CX}
         y={Y.convictionTop - 22}
         textAnchor="middle"
-        fill="#6b6b64"
+        fill="#656d82"
         style={{ fontSize: 11, letterSpacing: 2.5, opacity: dimFor("conviction") }}
       >
         THE CONVICTION FLOOR
@@ -338,7 +338,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
           strokeDasharray="7 9"
           opacity={0.6}
         />
-        <text x={CX} y={Y.gapMid - 16} textAnchor="middle" fill="#6b6b64" style={{ fontSize: 11, letterSpacing: 2.5 }}>
+        <text x={CX} y={Y.gapMid - 16} textAnchor="middle" fill="#656d82" style={{ fontSize: 11, letterSpacing: 2.5 }}>
           NO STAIRCASE
         </text>
         <text x={CX} y={Y.gapMid + 30} textAnchor="middle" fill="#64748b" style={{ fontSize: 12, fontStyle: "italic" }}>
@@ -351,7 +351,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
         x={CX}
         y={Y.signalTop - 22}
         textAnchor="middle"
-        fill="#6b6b64"
+        fill="#656d82"
         style={{ fontSize: 11, letterSpacing: 2.5, opacity: dimFor("signal") }}
       >
         THE SIGNAL FLOOR
@@ -425,8 +425,8 @@ export function FundingLadder({ signal, conviction }: { signal: Rung[]; convicti
       {/* Desktop: one sticky stage (text + ladder held together), driven by
           invisible spacers below. */}
       <div className="hidden lg:block">
-        <div className="sticky top-16 h-[calc(100vh-4rem)]">
-          <div className="mx-auto flex h-full max-w-6xl items-center gap-x-12 px-6">
+        <div className="sticky top-0 h-screen">
+          <div className="wrap flex h-full items-center gap-x-12">
             <div className="relative h-full w-1/2">
               {STEPS.map((s, i) => (
                 <div
@@ -451,10 +451,10 @@ export function FundingLadder({ signal, conviction }: { signal: Rung[]; convicti
 
       {/* Mobile: ladder pinned as a banner, narrative flows beneath it. */}
       <div className="lg:hidden">
-        <div className="sticky top-16 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
+        <div className="sticky top-0 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
           <div className="h-[42vh]">{svg}</div>
         </div>
-        <div className="mx-auto max-w-6xl px-4">
+        <div className="wrap">
           {STEPS.map((s, i) => (
             <div key={s.key} data-i={i} className="py-16">
               {s.content(rungs)}

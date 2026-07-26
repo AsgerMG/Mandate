@@ -35,7 +35,7 @@ export default function RootLayout({
         <NavBar />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-[var(--border)] bg-[var(--background)] py-10">
-          <div className="mx-auto max-w-6xl px-4">
+          <div className="wrap">
             <p className="font-serif text-lg font-semibold text-[var(--foreground)]">Wincent</p>
             <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
               {companyCount} companies · grants · guarantees · loans · equity · EU institutions · national development banks · state aid register

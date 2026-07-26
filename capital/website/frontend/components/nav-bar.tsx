@@ -25,10 +25,12 @@ export function NavBar() {
     href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <nav
-      className="sticky top-0 z-40 border-b-[3px] border-double border-[var(--primary)] bg-[var(--paper)]"
-    >
-      <div className="mx-auto max-w-6xl px-4 flex items-center justify-between h-[4.5rem]">
+    // Static, not sticky — the masthead scrolls away, as on the reference.
+    // A sticky masthead is what buried the euro rail and the pinned scrolly
+    // stages underneath it; letting it scroll removes that whole class of
+    // overlap and gives the pinned graphics the full viewport back.
+    <nav className="border-b-[3px] border-double border-[var(--primary)] bg-[var(--paper)]">
+      <div className="wrap flex items-center justify-between h-[4.5rem]">
         <Link
           href="/"
           aria-current={isActive("/") ? "page" : undefined}
@@ -91,7 +93,8 @@ export function NavBar() {
       {/* Meta row: scope on the left, register on the right — divided from
           the brand row by a quiet khaki hairline, matching the reference. */}
       <div className="border-t border-[var(--border)]">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
+        {/* Fixed 2rem height, not padding-derived, so --nav-h stays exact. */}
+        <div className="wrap flex h-8 items-center justify-between">
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
             Europe · {corpusStats.countries}-country edition
           </span>

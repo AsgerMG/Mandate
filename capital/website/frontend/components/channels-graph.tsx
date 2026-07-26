@@ -27,20 +27,20 @@ interface Step {
 }
 
 const kicker = (t: string) => (
-  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[#7f5820]">{t}</p>
+  <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">{t}</p>
 );
 const head = (t: string) => (
   <h3
-    className="mb-5 text-3xl font-bold leading-[1.1] text-[#141414] sm:text-4xl"
+    className="mb-5 text-3xl font-semibold leading-[1.1] text-[var(--foreground)] sm:text-4xl"
     style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
   >
     {t}
   </h3>
 );
 const P = ({ children }: { children: ReactNode }) => (
-  <p className="mt-4 max-w-xl leading-relaxed text-[#3f3e37] first:mt-0">{children}</p>
+  <p className="mt-4 max-w-xl leading-relaxed text-[var(--foreground-soft)] first:mt-0">{children}</p>
 );
-const b = (t: string) => <span className="text-[#141414]">{t}</span>;
+const b = (t: string) => <span className="text-[var(--foreground)]">{t}</span>;
 
 const STEPS: Step[] = [
   {
@@ -193,7 +193,7 @@ function Node({
         y={y}
         width={w}
         height={h}
-        rx={12}
+        rx={2}
         fill="url(#nodeFill)"
         stroke={accent ? ACCENT : "rgba(10,10,10,0.22)"}
         strokeWidth={accent ? 1.5 : 1}
@@ -219,7 +219,7 @@ function Node({
 function SubNode({ x, y, w, label, show, delay }: { x: number; y: number; w: number; label: string; show: boolean; delay: number }) {
   return (
     <g style={{ opacity: show ? 1 : 0, transform: show ? "none" : "translateX(-8px)", transition: `opacity 0.5s ease ${delay}ms, transform 0.5s ease ${delay}ms` }}>
-      <rect x={x} y={y} width={w} height={42} rx={9} fill="rgba(16,32,63,0.07)" stroke="rgba(16,32,63,0.5)" strokeWidth={1} />
+      <rect x={x} y={y} width={w} height={42} rx={2} fill="rgba(16,32,63,0.07)" stroke="rgba(16,32,63,0.5)" strokeWidth={1} />
       <text x={x + w / 2} y={y + 26} textAnchor="middle" fill="#10203f" style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontSize: 13, fontWeight: 600 }}>
         {label}
       </text>
@@ -274,7 +274,7 @@ function Graph({ channel }: { channel: Channel }) {
       <defs>
         <linearGradient id="nodeFill" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#faf9f5" />
+          <stop offset="100%" stopColor="#fffdf9" />
         </linearGradient>
         <filter id="nodeGlow" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="6" result="b" />
@@ -292,7 +292,7 @@ function Graph({ channel }: { channel: Channel }) {
         y={186}
         width={256}
         height={180}
-        rx={16}
+        rx={2}
         fill="rgba(16,32,63,0.025)"
         stroke="rgba(10,10,10,0.12)"
         style={{ opacity: off, transition: "opacity 0.5s ease" }}
@@ -403,8 +403,8 @@ export function ChannelsGraph() {
           invisible spacers below. Each scene holds for a full spacer of scroll,
           then the text crossfades in place — never drifting or blanking. ── */}
       <div className="hidden lg:block">
-        <div className="sticky top-16 h-[calc(100vh-4rem)]">
-          <div className="mx-auto flex h-full max-w-6xl items-center gap-x-12 px-6">
+        <div className="sticky top-0 h-screen">
+          <div className="wrap flex h-full items-center gap-x-12">
             <div className="relative h-full w-1/2">
               {STEPS.map((s, i) => (
                 <div
@@ -429,10 +429,10 @@ export function ChannelsGraph() {
 
       {/* ── Mobile: graph pinned as a banner, narrative flows beneath it. ── */}
       <div className="lg:hidden">
-        <div className="sticky top-16 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
+        <div className="sticky top-0 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
           <div className="h-[40vh]">{svg}</div>
         </div>
-        <div className="mx-auto max-w-6xl px-4">
+        <div className="wrap">
           {STEPS.map((s, i) => (
             <div key={s.key} data-i={i} className="py-16">
               {s.content}

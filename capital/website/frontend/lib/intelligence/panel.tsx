@@ -81,7 +81,7 @@ function CapitalSelect({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#10203f]"
+        className="flex w-full items-center justify-between rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[var(--primary)]"
       >
         <span className={"truncate " + (labels.length || all ? "" : "text-[var(--muted-foreground)]")}>
           {summary}
@@ -91,7 +91,7 @@ function CapitalSelect({
       {open && (
         <div
           role="listbox"
-          className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg"
+          className="absolute z-20 mt-1 w-full overflow-hidden rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg"
         >
           {CAPITAL_OPTIONS.map((o) => {
             const on = value.includes(o.value);
@@ -102,12 +102,12 @@ function CapitalSelect({
                 role="option"
                 aria-selected={on}
                 onClick={() => onToggle(o.value)}
-                className="flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]"
+                className="flex w-full items-start gap-2.5 rounded-[var(--radius)] px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]"
               >
                 <span
                   className={
                     "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
-                    (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]" : "border-[var(--border)]")
+                    (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]" : "border-[var(--border)]")
                   }
                 >
                   {on ? "✓" : ""}
@@ -123,7 +123,7 @@ function CapitalSelect({
           <button
             type="button"
             onClick={onToggleAll}
-            className="w-full rounded-md px-2.5 py-2 text-left text-[14px] font-semibold text-[#10203f] transition-colors hover:bg-[var(--muted)]"
+            className="w-full rounded-[var(--radius)] px-2.5 py-2 text-left text-[14px] font-semibold text-[var(--primary)] transition-colors hover:bg-[var(--muted)]"
           >
             {all ? "Clear all" : "Show me everything"}
           </button>
@@ -153,23 +153,23 @@ function DropdownSelect({
           className="fixed inset-0 z-10 cursor-default" />
       )}
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#10203f]">
+        className="flex w-full items-center justify-between rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[var(--primary)]">
         <span className={"truncate " + (picked ? "" : "text-[var(--muted-foreground)]")}>
           {picked?.label ?? placeholder}
         </span>
         <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
       </button>
       {open && (
-        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg">
+        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg">
           {options.map((o) => {
             const on = o.value === value;
             return (
               <button key={o.value} type="button" role="option" aria-selected={on}
                 onClick={() => { onPick(on ? undefined : o.value); setOpen(false); }}
-                className="flex w-full items-start gap-2.5 rounded-md px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]">
+                className="flex w-full items-start gap-2.5 rounded-[var(--radius)] px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]">
                 <span className={
                   "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[10px] " +
-                  (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]" : "border-[var(--border)]")
+                  (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]" : "border-[var(--border)]")
                 }>
                   {on ? "●" : ""}
                 </span>
@@ -204,12 +204,12 @@ function CountrySelect({ value, onToggle }: { value: string[]; onToggle: (c: str
           className="fixed inset-0 z-10 cursor-default" />
       )}
       <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[#10203f]">
+        className="flex w-full items-center justify-between rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[var(--primary)]">
         <span className={"truncate " + (value.length ? "" : "text-[var(--muted-foreground)]")}>{summary}</span>
         <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
       </button>
       {open && (
-        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--paper)] shadow-lg">
+        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] shadow-lg">
           <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search countries…"
             className="w-full border-b border-[var(--border)] px-3 py-2 text-[14px] outline-none" />
           <div className="max-h-52 overflow-y-auto p-1">
@@ -217,10 +217,10 @@ function CountrySelect({ value, onToggle }: { value: string[]; onToggle: (c: str
               const on = value.includes(c);
               return (
                 <button key={c} type="button" role="option" aria-selected={on} onClick={() => onToggle(c)}
-                  className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-[14px] transition-colors hover:bg-[var(--muted)]">
+                  className="flex w-full items-center gap-2.5 rounded-[var(--radius)] px-2.5 py-2 text-left text-[14px] transition-colors hover:bg-[var(--muted)]">
                   <span className={
                     "flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
-                    (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]" : "border-[var(--border)]")
+                    (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]" : "border-[var(--border)]")
                   }>
                     {on ? "✓" : ""}
                   </span>
@@ -245,13 +245,17 @@ function InfoDot({ children }: { children: React.ReactNode }) {
       <button
         type="button"
         aria-label="More information"
-        className="flex h-4 w-4 items-center justify-center rounded-full border border-[#10203f] text-[10px] font-bold leading-none text-[#10203f] outline-none transition-colors hover:bg-[#10203f] hover:text-[var(--paper)] focus-visible:bg-[#10203f] focus-visible:text-[var(--paper)]"
+        className="flex h-4 w-4 items-center justify-center rounded-full border border-[var(--primary)] text-[10px] font-bold leading-none text-[var(--primary)] outline-none transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)] focus-visible:bg-[var(--primary)] focus-visible:text-[var(--paper)]"
       >
         i
       </button>
       <span
         role="tooltip"
-        className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 w-64 -translate-x-1/2 rounded-lg border border-[var(--border)] bg-[var(--paper)] px-3 py-2 text-xs font-normal leading-relaxed text-[#33322c] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100"
+        // Centring a fixed 16rem box on the trigger pushed it past the right
+        // edge of a 390px viewport (measured 473px on a 390px screen), and
+        // body{overflow-x:clip} silently cut the text off rather than
+        // scrolling. Right-anchored on mobile, centred from sm up.
+        className="pointer-events-none absolute bottom-full right-0 left-auto z-10 mb-1.5 w-[min(16rem,calc(100vw-2rem))] translate-x-0 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] px-3 py-2 text-xs font-normal leading-relaxed text-[var(--foreground)] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 sm:left-1/2 sm:right-auto sm:-translate-x-1/2"
       >
         {children}
       </span>
@@ -282,8 +286,8 @@ function Chips({
             className={
               "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
               (on
-                ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]"
-                : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[#10203f]")
+                ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]"
+                : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[var(--primary)]")
             }
           >
             {o.label}
@@ -573,20 +577,20 @@ export function IntelligencePanel() {
   const totalScreens = 1 + MAX_ROUNDS;
 
   const inputCls =
-    "w-full rounded-lg border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[#10203f]";
+    "w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]";
   const nextBtn =
     "rounded-[var(--radius)] border border-[var(--primary)] px-6 py-2.5 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)] disabled:cursor-not-allowed disabled:opacity-50";
   const backBtn =
-    "text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[#10203f] hover:underline";
+    "text-sm font-medium text-[var(--muted-foreground)] underline-offset-2 hover:text-[var(--primary)] hover:underline";
   const fieldLabel = "mb-1.5 flex items-center font-semibold";
 
   return (
-    <section className="rounded-2xl border border-[var(--border)] bg-[var(--paper)] p-5 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
+    <section className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-5 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
       <div className="print:hidden text-[var(--foreground)]">
         <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
           Free tool · powered by the funding record
         </p>
-        <h2 className="text-xl sm:text-2xl font-bold leading-tight" style={serif}>
+        <h2 className="text-xl sm:text-2xl font-semibold leading-tight" style={serif}>
           Understand how comparable companies raise public capital
         </h2>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
@@ -604,7 +608,7 @@ export function IntelligencePanel() {
                 key={i}
                 className={
                   "h-1.5 rounded-full transition-all " +
-                  (i === screenIdx ? "w-6 bg-[#10203f]" : i < screenIdx ? "w-3 bg-[#10203f]/50" : "w-3 bg-[var(--muted)]")
+                  (i === screenIdx ? "w-6 bg-[var(--primary)]" : i < screenIdx ? "w-3 bg-[var(--primary)]/50" : "w-3 bg-[var(--muted)]")
                 }
               />
             ))}
@@ -652,9 +656,9 @@ export function IntelligencePanel() {
                 </span>
                 <select value={country} onChange={(e) => setCountry(e.target.value)}
                   className={inputCls + (country ? "" : " text-[var(--muted-foreground)]")}>
-                  <option value="" className="bg-[var(--paper)] text-[#5d5b52]">Select…</option>
+                  <option value="" className="bg-[var(--paper)] text-[var(--foreground-soft)]">Select…</option>
                   {COUNTRIES.map((c) => (
-                    <option key={c} value={c} className="bg-[var(--paper)] text-[#141414]">{c}</option>
+                    <option key={c} value={c} className="bg-[var(--paper)] text-[var(--foreground)]">{c}</option>
                   ))}
                 </select>
               </label>
@@ -757,7 +761,7 @@ export function IntelligencePanel() {
 
         {/* ── Adaptive round: grounded in the founder's real remaining gates ── */}
         {screen === "adaptive" && round && !running && (
-          <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5 sm:p-6">
+          <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5 sm:p-6">
             <StepHeader
               eyebrow={round.theme}
               title="A few tailored questions"
@@ -790,8 +794,8 @@ export function IntelligencePanel() {
                             })}
                             className={
                               "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
-                              (on ? "border-[#10203f] bg-[#10203f]/20 text-[#141414]"
-                                  : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[#10203f]")
+                              (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]"
+                                  : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[var(--primary)]")
                             }>
                             {o.label}
                           </button>
@@ -817,9 +821,9 @@ export function IntelligencePanel() {
 
         {/* ── Generation: live status + elapsed time ───────────────────── */}
         {running && (
-          <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5 sm:p-6">
+          <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5 sm:p-6">
             <div className="flex items-baseline justify-between">
-              <p className="text-xs uppercase tracking-widest text-[#7f5820]">Writing your memo</p>
+              <p className="text-xs uppercase tracking-widest text-[var(--accent)]">Writing your memo</p>
               <p className="font-mono text-xs tabular-nums text-[var(--muted-foreground)]">
                 {Math.floor(elapsed / 60) > 0 ? `${Math.floor(elapsed / 60)}m ` : ""}{elapsed % 60}s elapsed
               </p>
@@ -831,8 +835,8 @@ export function IntelligencePanel() {
                   <li key={s.key} className="flex items-center gap-2 text-sm">
                     <span className={
                       "flex h-5 w-5 items-center justify-center rounded-full text-[11px] " +
-                      (state === "done" ? "bg-[#2D6A4F] text-[#141414]"
-                        : state === "active" ? "bg-[#10203f] text-[var(--paper)] animate-pulse"
+                      (state === "done" ? "bg-[#2D6A4F] text-[var(--foreground)]"
+                        : state === "active" ? "bg-[var(--primary)] text-[var(--paper)] animate-pulse"
                         : "bg-[var(--muted)] text-[var(--muted-foreground)] border border-[var(--border)]")
                     }>
                       {state === "done" ? "✓" : i + 1}
@@ -871,7 +875,7 @@ export function IntelligencePanel() {
         )}
 
         {error && (
-          <p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <p className="mt-4 rounded-[var(--radius)] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             {error}
           </p>
         )}
@@ -892,7 +896,7 @@ function StepHeader({ eyebrow, title, detail }: { eyebrow?: string; title: strin
   return (
     <div className="mb-3">
       {eyebrow && (
-        <p className="text-xs uppercase tracking-widest text-[#7f5820]">{eyebrow}</p>
+        <p className="text-xs uppercase tracking-widest text-[var(--accent)]">{eyebrow}</p>
       )}
       <p className="text-sm font-semibold text-[var(--foreground)]" style={serif}>{title}</p>
       {detail && (
@@ -973,7 +977,7 @@ function InstitutionsTable({ institutions, pending = false }: { institutions: In
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="mt-10 mb-3 text-[17px] font-bold text-[var(--foreground)] print:mt-8" style={serif}>
+    <h3 className="mt-10 mb-3 text-[17px] font-semibold text-[var(--foreground)] print:mt-8" style={serif}>
       {children}
     </h3>
   );
@@ -1126,7 +1130,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
       {/* ── Bottom line: the single best line lands first, up front ──── */}
       <ul className="mt-6 space-y-3 text-[17px] leading-[1.55]">
         <li className="flex gap-3">
-          <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#10203f]" />
+          <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
           <span>{report.bottomLine[0]}</span>
         </li>
       </ul>
@@ -1139,7 +1143,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
         <ul className="mt-3 space-y-3 text-[17px] leading-[1.55]">
           {report.bottomLine.slice(1).map((b, i) => (
             <li key={i} className="flex gap-3">
-              <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[#10203f]" />
+              <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
               <span>{b}</span>
             </li>
           ))}

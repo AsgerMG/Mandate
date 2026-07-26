@@ -224,7 +224,7 @@ function PieBlock({
             name: "Other",
             value: overflow,
             key: "__other",
-            color: "#6b6b64",
+            color: "#656d82",
           },
         ]
       : displayed;
@@ -597,7 +597,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                   const datum = iso2 ? countryData[iso2] : undefined;
                   const hasData = Boolean(datum);
                   const fill =
-                    datum && !datum.excluded ? scale.fillFor(datum.companies ?? 0) : "#e7e4da";
+                    datum && !datum.excluded ? scale.fillFor(datum.companies ?? 0) : "#eee7d5";
                   return (
                     <Geography
                       key={geo.rsmKey}
@@ -684,7 +684,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                 >
                   <circle
                     r={4.5}
-                    fill={data.excluded ? "#c9c6bb" : "#10203f"}
+                    fill={data.excluded ? "#e2dbc4" : "#10203f"}
                     stroke="#f6f1e6"
                     strokeWidth={1.2}
                   />
@@ -722,8 +722,8 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
         />
       )}
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#5d5b52]">
-        <span className="font-medium text-[#33322c]">Companies in study</span>
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--foreground-soft)]">
+        <span className="font-medium text-[var(--foreground)]">Companies in study</span>
         <span className="flex items-center gap-0.5">
           {scale.buckets.map((b) => (
             <span
@@ -744,7 +744,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
           <span className="inline-block h-3 w-3 rounded-sm bg-[var(--muted)] border border-[var(--border)]" />
           Outside the corpus
         </span>
-        <span className="text-[#6b6b64]">· Click to pin</span>
+        <span className="text-[var(--muted-foreground)]">· Click to pin</span>
       </div>
     </div>
   );

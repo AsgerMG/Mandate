@@ -6,6 +6,7 @@ import { Finding, Stat, Signal } from "@/components/finding";
 import { EuroJourney, Chapter } from "@/components/euro-journey";
 import { FundingLadder, type Rung } from "@/components/funding-ladder";
 import { Reveal, CountUp } from "@/components/immersive";
+import { ImageSlot } from "@/components/image-slot";
 import { fmtEur } from "@/lib/format";
 import { corpusStats } from "@/lib/data";
 import insightsRaw from "@/public/data/investor_insights.json";
@@ -101,7 +102,7 @@ function ChapterHead({ kicker, title, caption }: { kicker: string; title: string
         <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">{kicker}</p>
       </Reveal>
       <Reveal delay={100}>
-        <h2 className="mt-4 max-w-3xl text-3xl font-bold leading-[1.1] text-[#141414] sm:text-4xl" style={serif}>
+        <h2 className="mt-4 max-w-3xl text-3xl font-semibold leading-[1.1] text-[var(--foreground)] sm:text-4xl" style={serif}>
           {title}
         </h2>
       </Reveal>
@@ -162,7 +163,7 @@ export default function AboutPublicCapitalPage() {
       <div className="relative">
         <EuroJourney>
           {/* ── Masthead: why this matters ─────────────────────────── */}
-          <Chapter className="py-20 sm:py-28">
+          <Chapter className="pt-16 pb-20 sm:pt-20 sm:pb-28">
             <div className="grid items-start gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
               <div>
                 <Reveal>
@@ -171,7 +172,7 @@ export default function AboutPublicCapitalPage() {
                   </p>
                 </Reveal>
                 <Reveal delay={100}>
-                  <h1 className="mt-5 max-w-4xl text-4xl font-medium leading-[1.08] tracking-tight text-[#141414] sm:text-5xl" style={serif}>
+                  <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--foreground)] sm:text-5xl" style={serif}>
                     Why you should care about raising public European capital
                   </h1>
                 </Reveal>
@@ -190,9 +191,9 @@ export default function AboutPublicCapitalPage() {
                   <Reveal delay={240}>
                     <p>
                       This manual is built on the funding record itself:{" "}
-                      <CountUp value={Number(corpusStats.events)} className="tabular-nums font-semibold text-[#141414]" />{" "}
+                      <CountUp value={Number(corpusStats.events)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
                       public awards to{" "}
-                      <CountUp value={Number(corpusStats.companies)} className="tabular-nums font-semibold text-[#141414]" />{" "}
+                      <CountUp value={Number(corpusStats.companies)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
                       companies and organisations, 2021 to 2025. It answers four questions in order: what
                       you can get, which door is yours, what the data proves about how winners behave, and
                       in what sequence to raise.
@@ -201,21 +202,12 @@ export default function AboutPublicCapitalPage() {
                 </div>
               </div>
 
-              {/* Strasbourg, in a quiet editorial frame. */}
+              {/* Artwork slot, in the reference's flat editorial frame. */}
               <Reveal delay={200}>
-                <figure className="hidden lg:block">
-                  <div className="overflow-hidden rounded-2xl border border-[var(--border)] shadow-[0_2px_32px_rgba(20,18,12,0.10)]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/images/eu/hemicycle.jpg"
-                      alt="The hemicycle of the European Parliament in Strasbourg"
-                      className="h-[26rem] w-full object-cover"
-                    />
-                  </div>
-                  <figcaption className="mt-2 text-right font-mono text-[10px] uppercase tracking-[0.12em] text-[#8a887f]">
-                    European Parliament, Strasbourg · Diliff · CC BY-SA 3.0
-                  </figcaption>
-                </figure>
+                <ImageSlot
+                  className="hidden lg:flex"
+                  label="European Parliament hemicycle, Strasbourg"
+                />
               </Reveal>
             </div>
           </Chapter>
@@ -241,7 +233,7 @@ export default function AboutPublicCapitalPage() {
             </R>
 
             <R delay={120}>
-              <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5">
+              <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5">
                 <p className="mb-1 text-sm font-semibold">Median award size by channel (log scale)</p>
                 <p className="mb-3 text-xs text-[var(--muted-foreground)]">
                   Hover for the top decile: the realistic best case per channel.
@@ -286,7 +278,7 @@ export default function AboutPublicCapitalPage() {
             </R>
 
             <R delay={120}>
-              <div className="mt-6 rounded-xl border border-[var(--border)] bg-[var(--paper)]/70 p-5">
+              <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5">
                 <p className="mb-1 text-sm font-semibold">How each country&apos;s awards split across the three public layers</p>
                 <p className="mb-3 text-xs text-[var(--muted-foreground)]">
                   Top 12 countries by award count, shares of awards.
@@ -370,7 +362,7 @@ export default function AboutPublicCapitalPage() {
               caption="Each stage is a move, not a milestone."
             />
             <R delay={120}>
-              <div className="rounded-xl border border-[var(--border)] overflow-hidden">
+              <div className="rounded-[var(--radius)] border border-[var(--border)] overflow-hidden">
                 <table className="block sm:table w-full text-sm">
                   <thead className="hidden sm:table-header-group border-b border-[var(--border)] bg-[var(--muted)] text-left text-xs uppercase tracking-wide text-[var(--muted-foreground)]">
                     <tr>

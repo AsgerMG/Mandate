@@ -43,7 +43,11 @@ export function EuroJourney({ children }: { children: ReactNode }) {
       {/* The euro rail, fixed to the viewport while the journey is on screen. */}
       <div
         className={
-          "pointer-events-none fixed left-5 top-24 bottom-12 z-30 hidden lg:block transition-opacity duration-700 " +
+          // Starts clear of the masthead. On /about-public-capital the journey
+          // is already mid-viewport at scroll 0, so the rail is on screen while
+          // the masthead still is; top-24 (96px) sat inside the 108px masthead
+          // and the coin was clipped by it.
+          "pointer-events-none fixed left-5 top-[calc(var(--nav-h)+1.5rem)] bottom-12 z-30 hidden lg:block transition-opacity duration-700 " +
           (active ? "opacity-100" : "opacity-0")
         }
         aria-hidden
@@ -77,8 +81,8 @@ export function Chapter({
   id?: string;
 }) {
   return (
-    <section id={id} className={"relative px-4 sm:px-6 " + className}>
-      <div className="mx-auto max-w-5xl">{children}</div>
+    <section id={id} className={"relative " + className}>
+      <div className="wrap">{children}</div>
     </section>
   );
 }
