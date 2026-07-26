@@ -3,7 +3,7 @@ import Link from "next/link";
 import { IntelligencePanel } from "@/lib/intelligence/panel";
 
 export const metadata: Metadata = {
-  title: "Get your investment brief | EuroInvTracker",
+  title: "Get your state-backed capital brief | Wincent",
   description:
     "Enter your company and get a one-page brief: which comparable companies have drawn European public capital, through which instruments, and a prioritised to-do list for your own raise.",
 };

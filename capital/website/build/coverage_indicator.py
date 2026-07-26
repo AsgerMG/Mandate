@@ -1,4 +1,4 @@
-"""Generate per-country coverage-completeness indicator for EuroInvTracker.
+"""Generate per-country coverage-completeness indicator for Wincent.
 
 PURPOSE: prevent per-capita analysis from reading coverage gaps as spending
 gaps. The IS/EE/LU per-capita "lead" from Sprint 9 is a known coverage-artifact

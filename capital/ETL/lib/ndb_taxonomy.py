@@ -2,7 +2,7 @@
 
 Maps the free-text strings that SATR exposes in granting_authority,
 entrusted_entity, and financial_intermediaries to canonical NDB identifiers
-that match the EuroInvTracker source-family taxonomy.
+that match the Wincent source-family taxonomy.
 
 The canonical ids are lowercase snake_case and align with the `source` prefixes
 of our direct-NDB scrapers where overlap exists (e.g. `kfw_capital` overlaps

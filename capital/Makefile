@@ -1,4 +1,4 @@
-# EuroInvTracker — common entry points.
+# Wincent — common entry points.
 # Run `make help` for the list. The data pipeline flows:
 #   ETL/extract/* -> data/db.sqlite -> ETL/transform/* -> ETL/load/* (+ QA + backup)
 #                 -> make data -> website/frontend/public/data -> website/frontend
@@ -9,13 +9,13 @@
 # This Makefile covers the regular transform/analysis/backup loop.
 
 DATE    := $(shell date +%Y%m%d)
-BACKUP  := $(HOME)/EuroInvTracker-backups
-ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/EuroInvTracker-backups
+BACKUP  := $(HOME)/Wincent-backups
+ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/Wincent-backups
 
 .PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility pull-db push news
 
 help:
-	@echo "EuroInvTracker make targets:"
+	@echo "Wincent make targets:"
 	@echo "  make pull-db     Pull the latest db.sqlite from the Railway ETL volume (run before local work)"
 	@echo "  make push        Run cloud-blocked/manual sources locally, then push db.sqlite back to Railway"
 	@echo "  make sources     List every source + how to renew it (ETL/events/extract/renew.py --list)"

@@ -1,4 +1,4 @@
-# frontend — the EuroInvTracker website (Next.js)
+# frontend — the Wincent website (Next.js)
 
 The published site. Part of the `website/` block; see [../README.md](../README.md) for how
 `build/` (the Python JSON builders) feeds this app. This app reads **only**

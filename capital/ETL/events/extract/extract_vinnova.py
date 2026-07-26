@@ -78,7 +78,7 @@ def _fetch_projekt(since_date: str = SINCE_DATE) -> list[dict]:
     url = f"{API_BASE}/projekt/{since_date}"
     print(f"  GET {url}")
     result = subprocess.run(
-        ["curl", "-sL", "--max-time", "240", "-H", "User-Agent: EuroInvTracker/1.0",
+        ["curl", "-sL", "--max-time", "240", "-H", "User-Agent: Wincent/1.0",
          "-H", "Accept: application/json", url],
         capture_output=True, timeout=300,
     )

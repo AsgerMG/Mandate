@@ -1,6 +1,6 @@
 # NACE-backed sector taxonomy
 
-How EuroInvTracker assigns every company a **two-tier sector** (broad `sector_top`
+How Wincent assigns every company a **two-tier sector** (broad `sector_top`
 + granular `subsector`), with the official NACE activity code as the authoritative
 backbone and an LLM only for what NACE cannot resolve.
 

@@ -380,7 +380,7 @@ def _extract_lv(cfg: dict) -> list[dict]:
 def _get_json(url: str) -> dict | list | None:
     try:
         req = urllib.request.Request(
-            url, headers={"User-Agent": "EuroInvTracker/1.0", "Accept": "application/json"})
+            url, headers={"User-Agent": "Wincent/1.0", "Accept": "application/json"})
         with urllib.request.urlopen(req, timeout=30) as resp:
             return json.loads(resp.read())
     except Exception:

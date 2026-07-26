@@ -1,4 +1,4 @@
-"""Shared library for EuroInvTracker scrapers and loaders.
+"""Shared library for Wincent scrapers and loaders.
 
 Modules:
     satr_filters       — frozen equity-instrument and R&D-objective bid lists

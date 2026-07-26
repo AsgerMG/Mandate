@@ -1,8 +1,8 @@
-# EuroInvTracker
+# Wincent
 
-A data study of where European public capital actually goes. It assembles a corpus of companies
-that received public funding from the main EU instruments, national development banks, and the EU
-State Aid Transparency Register (2020–2025), then publishes the analysis as a static website.
+Wincent is a data study of where Europe's state-backed capital actually goes — grants,
+guarantees, loans, and equity — across the main EU instruments, national development banks, and
+the EU State Aid Transparency Register (2020–2025), published as a static website.
 
 **Corpus:** ~116,900 companies · ~213,900 funding events · ~€255B committed · 40 countries.
 
@@ -45,7 +45,7 @@ make analyze       # corpus KPIs only (website/build/synthesis.py)
 make visuals       # home-page visuals only (taxonomy, map, coverage)
 make site-build    # static build of the site -> website/frontend/out/
 make site-dev      # run the site locally at localhost:3000
-make backup        # snapshot data/ (db.sqlite + caches) to ~/EuroInvTracker-backups and iCloud
+make backup        # snapshot data/ (db.sqlite + caches) to ~/Wincent-backups and iCloud
 ```
 
 Extractors are per-source and hit external APIs, so run them one at a time, for example
@@ -59,7 +59,7 @@ loader inserts rows, run `make transform` (classify + sanity) — or the steps i
 
 The database and the `data/` caches are **generated build artifacts**, not version-controlled
 (they are large and reproducible). They live on disk and are backed up by `make backup`, which
-writes dated archives to `~/EuroInvTracker-backups/` and copies them to iCloud Drive. The code,
+writes dated archives to `~/Wincent-backups/` and copies them to iCloud Drive. The code,
 the SQL, and the small derived JSON in `website/frontend/public/data/` are the version-controlled record of
 results. To rebuild the database from scratch, re-run the extractors against `data/raw/`.
 

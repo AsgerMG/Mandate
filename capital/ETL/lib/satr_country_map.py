@@ -5,7 +5,7 @@ Our DB and the rest of the corpus use ISO 2-letter codes (DE, FR, etc.),
 normalised by scripts.europe_scope.canonicalise_country.
 
 Greek SATR uses 'GRC' (Country code 'EL' in the EC's own internal nomenclature
-but ISO is GR). Mapping below uses the *ISO 2-letter* on the EuroInvTracker
+but ISO is GR). Mapping below uses the *ISO 2-letter* on the Wincent
 side (GR, not EL), consistent with the rest of the corpus.
 
 The EIB row in SATR (CountryEIB) is included for completeness but should NOT

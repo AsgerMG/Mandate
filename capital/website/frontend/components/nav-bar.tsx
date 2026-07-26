@@ -39,7 +39,7 @@ export function NavBar() {
           }`}
           onClick={() => setOpen(false)}
         >
-          EuroInvTracker
+          Wincent
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/eu-flag.svg" alt="EU flag" width={20} height={20} className="rounded-sm" />
         </Link>
@@ -96,7 +96,7 @@ export function NavBar() {
             Europe · {corpusStats.countries}-country edition
           </span>
           <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)] sm:inline">
-            Public awards intelligence
+            State-backed capital intelligence
           </span>
         </div>
       </div>

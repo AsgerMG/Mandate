@@ -77,7 +77,7 @@ def _fetch_research_fi() -> list[dict]:
     result = subprocess.run(
         ["curl", "-sL", "--max-time", "180", "-X", "POST",
          "-H", "Content-Type: application/json",
-         "-H", "User-Agent: EuroInvTracker/1.0",
+         "-H", "User-Agent: Wincent/1.0",
          "-d", body, RFI_SEARCH],
         capture_output=True, timeout=240,
     )

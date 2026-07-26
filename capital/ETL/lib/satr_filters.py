@@ -2,7 +2,7 @@
 
 The EC State Aid Transparency Register exposes aid instrument and objective
 taxonomies as Spring 'bid' identifiers (e.g. StateAidInstrumentPRC). These
-lists target the EuroInvTracker scope: innovation + strategic industrial
+lists target the Wincent scope: innovation + strategic industrial
 policy + net-zero/decarbonisation public capital deployment.
 
 Sprint 15 scope revision (2026-05-29): the original "equity instruments OR

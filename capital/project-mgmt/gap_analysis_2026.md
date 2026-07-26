@@ -1,4 +1,4 @@
-# EuroInvTracker: Comprehensive Coverage Gap Analysis
+# Wincent: Comprehensive Coverage Gap Analysis
 *Compiled 2026-06-01. Journalism-grade audit of current coverage vs. full universe of EU investment vehicles and national industrial policy tools.*
 *Updated 2026-06-10: Sprint-17 local loads landed — Innovasjon Norge, NFR (NO), Innosuisse (CH), TAČR (CZ), EIS (EE), ALTUM (LV). Country tables below updated accordingly. Coverage ladder now 16 A / 7 B / 5 C / 12 X.*
 

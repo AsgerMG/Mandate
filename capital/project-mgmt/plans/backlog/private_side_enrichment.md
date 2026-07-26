@@ -8,7 +8,7 @@
 
 ---
 
-**Owner of this sprint (when revived)**: Claude Sonnet 4.6, executing against `/Users/asgermollergrimberg/EuroInvTracker/` (now: ETL/ + website/ + data/)`.
+**Owner of this sprint (when revived)**: Claude Sonnet 4.6, executing against `/Users/asgermollergrimberg/Wincent/` (now: ETL/ + website/ + data/)`.
 
 **Hard constraint (set by user 2026-05-22)**: zero budget for paid APIs (Crunchbase / Dealroom / PitchBook / CB Insights / Tracxn / Sifted Pro). This plan uses only **freely-accessible APIs with no commercial license required and no long signup process**. This means we cannot deliver "comprehensive private follow-on rounds with amounts and investors" because that dataset is genuinely a paid product. We instead deliver a **multi-signal proxy** for the same research question.
 
@@ -134,7 +134,7 @@ Cheapest, highest-signal workstream. Pure HTTP probes on `companies.website` for
 
 For each company with non-NULL `website`:
 1. Normalise URL: prepend `https://` if missing scheme; strip path/query so we hit the root.
-2. `HEAD` request with 10 s timeout, `User-Agent: EuroInvTracker/1.0 (+https://github.com/...)` — be a good citizen. Use `requests` with `allow_redirects=True` and inspect final status.
+2. `HEAD` request with 10 s timeout, `User-Agent: Wincent/1.0 (+https://github.com/...)` — be a good citizen. Use `requests` with `allow_redirects=True` and inspect final status.
 3. On non-2xx/3xx, retry once with `GET` (some sites reject HEAD).
 4. Classify:
    - 200 / 3xx → `live`

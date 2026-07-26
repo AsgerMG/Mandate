@@ -44,13 +44,13 @@ DATA_PROCESSED = DATA / "processed"
 SIGNALS_DB = DATA / "signals.sqlite"
 
 # Backup destinations (mirrors the historical Makefile `backup` target).
-BACKUP_LOCAL = Path.home() / "EuroInvTracker-backups"
+BACKUP_LOCAL = Path.home() / "Wincent-backups"
 BACKUP_ICLOUD = (
     Path.home()
     / "Library"
     / "Mobile Documents"
     / "com~apple~CloudDocs"
-    / "EuroInvTracker-backups"
+    / "Wincent-backups"
 )
 
 # Put every stage directory of BOTH tracks on the import path so cross-stage

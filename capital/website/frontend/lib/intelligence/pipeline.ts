@@ -782,7 +782,7 @@ function buildSelf(r: CompetitorRecord): SelfRecord {
 // claim stays controlled and on-register (public-awards-intelligence, never
 // competitive-urgency framing).
 const STATE_OF_PLAY_PLUG =
-  "EuroInvTracker tracks Europe's public funding cycles and political " +
+  "Wincent tracks Europe's state-backed capital cycles and political " +
   "priorities continuously, and helps companies align their narrative with " +
   "what is genuinely being prioritised right now, opening doors to the " +
   "people who decide.";

@@ -11,7 +11,7 @@ import { corpusStats } from "@/lib/data";
 import insightsRaw from "@/public/data/investor_insights.json";
 
 export const metadata: Metadata = {
-  title: "Why raise public European capital | EuroInvTracker",
+  title: "Why raise public European capital | Wincent",
   description:
     "The founder's manual to Europe's public capital stack: what you can raise from grants, state aid and public equity, in what order, and how to convert it into private rounds.",
 };

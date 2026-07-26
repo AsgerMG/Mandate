@@ -6,7 +6,7 @@ export interface ChannelAmount {
   eur: number;
 }
 
-/** A comparable company as matched against the EuroInvTracker corpus. */
+/** A comparable company as matched against the Wincent corpus. */
 export interface CompetitorRecord {
   name: string;
   /** ISO2 country of the richest matched entity, or "" if unknown. */
@@ -216,7 +216,7 @@ export interface IntelligenceReport {
    *  grounded in the news-derived people/agenda signals. */
   positioning: string;
   /** One paragraph: the most relevant recent news/upcoming funds, plus a
-   *  fixed, code-authored EuroInvTracker plug appended (never modeled). */
+   *  fixed, code-authored Wincent plug appended (never modeled). */
   stateOfPlay: string;
   caveats: string;
 }

@@ -17,8 +17,8 @@ const fragmentMono = Fragment_Mono({ subsets: ["latin"], weight: "400", variable
 const companyCount = corpusStats.companies.toLocaleString();
 
 export const metadata: Metadata = {
-  title: "EuroInvTracker",
-  description: `Where Europe's public capital actually goes. A data study of ${companyCount} companies across the main EU funding instruments, the national development banks, and the EU State Aid Transparency Register.`,
+  title: "Wincent",
+  description: `Wincent is an analyst of Europe's state-backed capital — grants, guarantees, loans, and equity — deployed by EU institutions, national development banks, and member states. A data study of ${companyCount} companies across the major public funding instruments and the EU State Aid Transparency Register.`,
 };
 
 export default function RootLayout({
@@ -36,9 +36,9 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <footer className="border-t border-[var(--border)] bg-[var(--background)] py-10">
           <div className="mx-auto max-w-6xl px-4">
-            <p className="font-serif text-lg font-semibold text-[var(--foreground)]">EuroInvTracker</p>
+            <p className="font-serif text-lg font-semibold text-[var(--foreground)]">Wincent</p>
             <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-              {companyCount} companies · EU instruments · development banks · state aid register
+              {companyCount} companies · grants · guarantees · loans · equity · EU institutions · national development banks · state aid register
             </p>
           </div>
         </footer>

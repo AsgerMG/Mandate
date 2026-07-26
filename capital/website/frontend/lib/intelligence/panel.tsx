@@ -1104,7 +1104,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
       {/* ── Letterhead ─────────────────────────────────────────────── */}
       <div className="flex items-baseline justify-between border-t-2 border-[var(--primary)] pt-3">
         <span className="text-sm font-bold tracking-[0.2em] text-[var(--primary)]">
-          EUROINVTRACKER
+          WINCENT
         </span>
         <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
           Private funding memorandum · ~{readMinutes} min read
@@ -1168,7 +1168,7 @@ function Memo({ report }: { report: IntelligenceReport }) {
         <div className="mt-12 border-t border-[var(--border)] pt-4">
           <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
           <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-            EuroInvTracker · the public funding record of European companies, 2021–2025
+            Wincent · the state-backed capital record of European companies, 2021–2025
           </p>
         </div>
       </div>

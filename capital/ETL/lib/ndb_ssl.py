@@ -20,7 +20,7 @@ def open_url(url: str, timeout: int = 60, headers: dict | None = None):
     req = urllib.request.Request(
         url,
         headers={
-            "User-Agent": "EuroInvTracker/1.0",
+            "User-Agent": "Wincent/1.0",
             "Accept": "*/*",
             **(headers or {}),
         },

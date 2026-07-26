@@ -89,7 +89,7 @@ Single script, runs in two modes:
 
 Skeleton:
 ```python
-"""Match EuroInvTracker companies to Dealroom and load private funding events."""
+"""Match Wincent companies to Dealroom and load private funding events."""
 import sqlite3, json, time, sys, csv, os, re
 from pathlib import Path
 from difflib import SequenceMatcher

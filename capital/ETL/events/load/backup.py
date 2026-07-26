@@ -1,7 +1,7 @@
 """Back up the corpus after a load — local + iCloud.
 
 The canonical post-load step: snapshot ``db.sqlite`` and the raw/processed data
-trees to ``~/EuroInvTracker-backups`` and mirror them into iCloud Drive so the
+trees to ``~/Wincent-backups`` and mirror them into iCloud Drive so the
 database is never the single point of failure. Replaces the old Makefile
 ``backup`` recipe (now a thin wrapper around this script).
 
