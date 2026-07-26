@@ -379,6 +379,10 @@ const BRIEF_INSTITUTION_CAP = 5;
 // three-row brief while perfectly good candidates at rank seven were never
 // looked at. Dropping must be able to backfill, not shrink the table.
 const VERDICT_POOL = 14;
+/** How thematically plausible a large-scale channel must be before a big ticket
+ *  alone earns it a place. Deliberately low: it only has to be somewhere in the
+ *  semantic neighbourhood, not a top match. */
+const LARGE_SCALE_RELEVANCE_FLOOR = 0.5;
 
 function buildInstrumentTable(
   fieldChannels: Set<string>,
@@ -394,7 +398,47 @@ function buildInstrumentTable(
   const codes = new Set([...fieldChannels].filter((c) => channelServesBand(c, ticketBand)));
   const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;
   if (idx !== undefined && idx >= 3) {
-    for (const c of LARGE_SCALE_TOPUP) codes.add(c);
+    // A big ticket opens the large-scale lane, but it does not make every
+    // large-scale fund relevant. Unconditionally adding these handed a
+    // consumer neobank IPCEI Tech4cure (health) and IPCEI Cloud, and handed a
+    // robotics maker Innovation Fund PLT (decarbonisation pilots) — funds the
+    // semantic layer had scored so low they were not even in its top 40. The
+    // writer then had to spend rows telling the founder "do not pursue".
+    //
+    // So when we have a semantic read, a large-scale channel must earn its
+    // place: at least one of its leaves has to be thematically plausible.
+    // Without a semantic read (no Voyage key, no description) the old
+    // behaviour stands, since scale alone is still better than nothing.
+    // Score every large-scale leaf in ONE pass so the channels compete with
+    // each other. Scoring per channel is meaningless: themeRelevance
+    // normalises to the best match within the set it is handed, so each
+    // channel's own best leaf always came back as 1.00 and nothing was ever
+    // filtered. Semantic where we have it (the memo path), lexical otherwise —
+    // the instant verdict path is contractually model-free, and without a
+    // fallback the founder's FIRST table still showed a neobank "IPCEI
+    // Med4cure" while only the final memo was clean.
+    const largeScaleLeaves = LARGE_SCALE_TOPUP.flatMap(
+      (c) => (dbInstrumentsByBucket().get(c) ?? []).map((l) => ({ channel: c, id: l.id })),
+    );
+    //
+    // Gated on the SEMANTIC read only. A lexical fallback was tried and
+    // removed: it behaved erratically, cutting BioNTech's table to three rows
+    // while still leaving a neobank its health IPCEI, because lexical overlap
+    // between a company description and a fund's legal text is too sparse to
+    // threshold on. The instant verdict path is model-free by contract, so it
+    // keeps the old scale-only behaviour and the memo corrects it — a rough
+    // preliminary read is honest, an erratic one is not.
+    const largeScaleRel = semantic?.size ? semantic : new Map<string, number>();
+    for (const c of LARGE_SCALE_TOPUP) {
+      if (largeScaleRel.size) {
+        const best = Math.max(
+          0,
+          ...largeScaleLeaves.filter((l) => l.channel === c).map((l) => largeScaleRel.get(l.id) ?? 0),
+        );
+        if (best < LARGE_SCALE_RELEVANCE_FLOOR) continue;
+      }
+      codes.add(c);
+    }
   }
   for (const c of DEFAULT_INSTRUMENTS) {
     if (codes.size >= 4) break;
