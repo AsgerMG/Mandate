@@ -343,12 +343,26 @@ def main() -> None:
             titles = fam_project_titles.get(fam)
             sample_titles = json.dumps([t for t, _ in titles.most_common(5)]) if titles else None
 
-        administering_body = top(fam_authority_votes.get(fam, Counter())) if fam not in dict(FRAMEWORK_INSTRUMENTS) else None
+        authority_votes = fam_authority_votes.get(fam, Counter())
+        administering_body = top(authority_votes) if fam not in dict(FRAMEWORK_INSTRUMENTS) else None
+        # How much of this instrument's history the body we NAME actually
+        # awarded. administering_body is a PLURALITY, and for the SATR
+        # country rollups it can be very thin -- satr_de_rnd's top authority
+        # covers 15.3% of 419 distinct granting bodies. The frontend renders
+        # administering_body instead of the meaningless register name, so
+        # without this share it presented a whole country's R&D aid as one
+        # specific agency to approach. See migration 014.
+        authority_total = sum(authority_votes.values())
+        administering_body_share = (
+            authority_votes.most_common(1)[0][1] / authority_total
+            if administering_body and authority_total else None
+        )
 
         now.append(dict(
             id=fam, parent_id=parent_id, name=name,
             name_source="curated" if (fam in OVERRIDE_NAMES or is_framework) else "deterministic",
-            country=country, administering_body=administering_body, ndb_id=ndb_id,
+            country=country, administering_body=administering_body,
+            administering_body_share=administering_body_share, ndb_id=ndb_id,
             source_family_bucket=source_family_bucket, capital_type=capital_type,
             capital_type_basis=capital_basis, event_count=events, company_count=companies,
             total_eur=total_eur, first_year=first_year, last_year=last_year,
@@ -362,11 +376,13 @@ def main() -> None:
     for r in now:
         conn.execute("""
             INSERT INTO funding_instruments
-              (id, parent_id, name, name_source, country, administering_body, ndb_id,
+              (id, parent_id, name, name_source, country, administering_body,
+               administering_body_share, ndb_id,
                source_family_bucket, capital_type, capital_type_basis, event_count,
                company_count, total_eur, first_year, last_year, is_framework,
                sample_project_titles, updated_at)
-            VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,:ndb_id,
+            VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
+                    :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
                     :sample_project_titles, CURRENT_TIMESTAMP)

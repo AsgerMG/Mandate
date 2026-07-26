@@ -171,6 +171,12 @@ export interface DbInstrument {
    *  Prefer this over `name` for display when `name` is a generic
    *  auto-prettified bucket label (see pipeline.ts's displayInstitutionName). */
   administeringBody: string | null;
+  /** Fraction of this instrument's awards actually made by administeringBody.
+   *  It is a PLURALITY vote, and for the SATR country rollups it can be very
+   *  thin (satr_de_rnd's top body covers 15.3% of 419 authorities), so the
+   *  name is only safe to display above a threshold — see
+   *  displayInstitutionName. Null for instruments with no authority data. */
+  administeringBodyShare: number | null;
   gates: DbGate[];
 }
 
@@ -223,7 +229,8 @@ export async function hydrateDbInstruments(): Promise<void> {
         client.query(
           `SELECT id, parent_id, name, country, capital_type, is_framework,
                   event_count, company_count, total_eur, source_family_bucket,
-                  sample_project_titles, administering_body
+                  sample_project_titles, administering_body,
+                  administering_body_share
            FROM funding_instruments`,
         ),
         client.query(
@@ -266,6 +273,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         sourceFamilyBucket: inst.source_family_bucket,
         sampleProjectTitles: inst.sample_project_titles ? JSON.parse(inst.sample_project_titles) : null,
         administeringBody: inst.administering_body ?? null,
+        administeringBodyShare: inst.administering_body_share ?? null,
         gates: gatesByInstrument.get(inst.id) ?? [],
       }));
     } finally {

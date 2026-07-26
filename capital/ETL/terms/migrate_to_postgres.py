@@ -78,6 +78,13 @@ def main() -> None:
             # embeddings are keyed on (instrument_id, gate_key) — stable across
             # reloads — so they survive this. Do NOT reintroduce an FK from any
             # derived/expensive table to these four.
+            # Self-healing schema: there is no Postgres DDL file in the repo
+            # (the tables were created out of band), so a column added to
+            # SQLite by a migration has to be reconciled here or the publish
+            # fails on the next run with an unhelpful "column does not exist".
+            cur.execute("ALTER TABLE funding_instruments "
+                        "ADD COLUMN IF NOT EXISTS administering_body_share REAL")
+
             embeddings_before = cur.execute(
                 "SELECT COUNT(*) FROM eligibility_embeddings").fetchone()[0]
             cur.execute("TRUNCATE eligibility_clauses, eligibility_gates, "
@@ -87,12 +94,13 @@ def main() -> None:
             cur.executemany(
                 """INSERT INTO funding_instruments
                      (id, parent_id, name, name_source, country, administering_body,
+                      administering_body_share,
                       ndb_id, source_family_bucket, capital_type, capital_type_basis,
                       event_count, company_count, total_eur, first_year, last_year,
                       is_framework, sample_project_titles)
-                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 [(r["id"], r["name"], r["name_source"], r["country"], r["administering_body"],
-                  r["ndb_id"], r["source_family_bucket"], r["capital_type"], r["capital_type_basis"],
+                  r["administering_body_share"], r["ndb_id"], r["source_family_bucket"], r["capital_type"], r["capital_type_basis"],
                   r["event_count"], r["company_count"], r["total_eur"], r["first_year"], r["last_year"],
                   bool(r["is_framework"]), r["sample_project_titles"]) for r in instruments],
             )

@@ -136,6 +136,10 @@ export interface InstrumentRow {
    *  `instrument` for generic auto-named buckets (the "SATR De Equity"
    *  problem: SATR is where the DATA comes from, not who is granting it). */
   administeringBody?: string;
+  /** Fraction of the instrument's awards actually made by administeringBody.
+   *  Below ~0.6 the name is a busy agency inside a country-wide rollup, not
+   *  the fund itself — displayInstitutionName falls back to a generic label. */
+  administeringBodyShare?: number;
   /** Short legal-basis label (e.g. "GBER Art. 25 (R&D aid)"), derived from
    *  this leaf's gber_article_inferred gate when present — see
    *  legalBasisFor() in pipeline.ts. */

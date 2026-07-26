@@ -12,37 +12,34 @@
  * an earlier debugging pass measured the wrong path entirely.
  *
  * Run: npx tsx scripts/trace_pool.ts          # against Postgres (live data)
- *      NO_PG=1 npx tsx scripts/trace_pool.ts  # against the JSON snapshot
+ *      NO_PG=1 npx tsx scripts/trace_pool.ts  # JSON snapshot, no semantic layer
+ *
+ * Semantic matching needs DATABASE_URL + VOYAGE_KEY. Under NO_PG it degrades
+ * to the lexical fallback, which is a DIFFERENT pool -- always confirm a
+ * thematic mismatch against the live path before treating it as a bug.
  */
 import { readFileSync } from "node:fs";
+import { COMPANIES } from "../lib/intelligence/__benchCompanies";
 for (const line of readFileSync(".env.local", "utf8").split("\n")) {
   const m = line.match(/^([A-Z_]+)=(.*)$/);
   if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
 }
 if (process.env.NO_PG) delete process.env.DATABASE_URL;
-const CASES = [
-  { c: "Nebius", country: "Netherlands", sector: "software_digital", tb: "gt50m", fte: "250+",
-    d: "GPU cloud infrastructure and managed services for AI training workloads" },
-  { c: "Corti", country: "Denmark", sector: "health_lifesciences", tb: "b2m5_15m", fte: "50-249",
-    d: "Real-time AI copilot for clinical consultations and emergency triage" },
-  { c: "Nortal", country: "Estonia", sector: "software_digital", tb: "b2m5_15m", fte: "250+",
-    d: "Digital government platforms, e-identity and public sector data services" },
-  { c: "BioNTech", country: "Germany", sector: "health_lifesciences", tb: "gt50m", fte: "250+",
-    d: "mRNA immunotherapies and vaccines, clinical and commercial stage" },
-  { c: "eAgronom", country: "Estonia", sector: "agrifood", tb: "b500k_2m5", fte: "10-49",
-    d: "Farm management software and soil carbon programmes for arable growers" },
-];
+
 async function main() {
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
   const P = await import("../lib/intelligence/pipeline");
   const { assessAll } = await import("../lib/intelligence/verdict");
+  const { semanticFundMatch } = await import("../lib/intelligence/semantic");
   await hydrateDbInstruments();
-  for (const t of CASES) {
+  for (const t of COMPANIES) {
     const el = { sector: t.sector, entityCountries: [t.country], exclusionFlags: ["none"],
-      cofinancingBand: ">50%", consortium: "unsure", borrowerModel: "operating",
-      fteBand: t.fte, ticketBand: t.tb, developmentStage: "scaling_revenue" } as never;
+      cofinancingBand: ">50%", consortium: "unsure",
+      borrowerModel: t.borrowerModel ?? "operating",
+      fteBand: t.fteBand, ticketBand: t.ticketBand,
+      developmentStage: t.developmentStage } as never;
     const table = P.applyProfileSignal(
-      P.buildInstrumentTable(new Set<string>(), t.tb, true, [t.country], ["grant", "loan"], t.d, new Map()).slice(0, 18),
+      P.buildInstrumentTable(new Set<string>(), t.ticketBand, true, [t.country], ["grant", "loan"], t.description, await semanticFundMatch(t.description)).slice(0, 18),
       undefined, undefined);
     const ids = table.map((r) => r.instrumentId).filter(Boolean) as string[];
     const a = assessAll(ids, el);
@@ -52,7 +49,7 @@ async function main() {
       const n = P.displayInstitutionName(r);
       if (seen.has(n)) return false; seen.add(n); return true;
     });
-    console.log(`${t.c.padEnd(10)} pool=${String(table.length).padEnd(3)} alive=${String(alive.length).padEnd(3)} deduped=${String(deduped.length).padEnd(3)} -> writer=${Math.min(deduped.length, 9)}`);
+    console.log(`${t.company.padEnd(16)} pool=${String(table.length).padEnd(3)} alive=${String(alive.length).padEnd(3)} deduped=${String(deduped.length).padEnd(3)} -> writer=${Math.min(deduped.length, 9)}`);
     for (const r of table) {
       const st = r.instrumentId ? a.get(r.instrumentId)?.status : "-";
       console.log(`             ${String(r.channel).padEnd(24)} ${P.displayInstitutionName(r).slice(0,42).padEnd(43)} ${st}`);

@@ -367,6 +367,18 @@ function selectLeafInstruments(
         return da !== null ? -1 : 1; // known scale beats unknown
       }
     }
+    // Last resort before raw volume: the UNFLOORED thematic score. rel()
+    // zeroes anything under RELEVANCE_FLOOR, so when no leaf in a bucket
+    // clears the floor every candidate ties at zero and the biggest
+    // programme wins on event count alone. Germany's SATR bucket is how that
+    // shows up: Landwirtschaftliche Rentenbank, the agricultural bank, was
+    // handed to a robotics company and to an AI lab purely because
+    // agricultural aid is high-volume. Preferring the least-mismatched leaf
+    // is strictly better than preferring the largest one, and the floor still
+    // does its real job above — keeping a weak thematic hit from outranking
+    // country fit or ticket size.
+    const rawA = relevance.get(a.id) ?? 0, rawB = relevance.get(b.id) ?? 0;
+    if (rawA !== rawB) return rawB - rawA;
     return b.eventCount - a.eventCount;
   });
   return sorted.slice(0, 2);
@@ -546,6 +558,7 @@ export function buildInstrumentTable(
         capitalType: leaf.capitalType,
         eventCount: leaf.eventCount,
         administeringBody: leaf.administeringBody ?? undefined,
+        administeringBodyShare: leaf.administeringBodyShare ?? undefined,
         legalBasis: legalBasisFor(leaf),
       } as InstrumentRow));
     })
@@ -897,7 +910,23 @@ function supportTypeLabel(row: InstrumentRow): string {
  * literal "SATR ..." auto-prettified pattern gets swapped.
  */
 export function displayInstitutionName(row: InstrumentRow): string {
-  if (row.administeringBody && row.instrument.startsWith("SATR ")) return row.administeringBody;
+  if (row.administeringBody && row.instrument.startsWith("SATR ")) {
+    // Only when that body really is the instrument. administeringBody is a
+    // PLURALITY of granting authorities, and these SATR rows are whole-country
+    // rollups: satr_de_rnd's top body awarded 15.3% of its line items across
+    // 419 distinct authorities, satr_fr_rnd's 41.5%. Rendering those as the
+    // institution told a robotics founder to approach the German agricultural
+    // bank and a French fintech the ecological transition ministry. The share
+    // distribution is cleanly bimodal — 15 instruments at or below 50.7%, then
+    // a jump to 60.1% — so 0.6 separates "this body IS the fund" from "this is
+    // a country's aid system with one busy agency in it".
+    const share = row.administeringBodyShare;
+    if (share === undefined || share === null || share >= 0.6) return row.administeringBody;
+  }
+  // Honest fallback: name what the row actually is. Mirrors the channel-level
+  // label a founder already sees when their country has no SATR leaf at all.
+  const kind = /\bequity\b/i.test(row.instrument) ? "equity" : "R&D";
+  if (row.instrument.startsWith("SATR ")) return `National state aid (${kind})`;
   return row.instrument;
 }
 

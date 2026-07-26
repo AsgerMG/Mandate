@@ -36,7 +36,7 @@ def main() -> None:
     instruments = conn.execute("""
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
-               sample_project_titles, administering_body
+               sample_project_titles, administering_body, administering_body_share
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -86,6 +86,10 @@ def main() -> None:
         # Wirtschaft und Ausfuhrkontrolle" — see populate_funding_instruments.py.
         # None for buckets with no dominant authority on record.
         "administeringBody": inst["administering_body"],
+        # Share of this instrument's awards actually made by that body. The
+        # frontend only shows the name when the share is high enough to be
+        # honest -- see displayInstitutionName and migration 014.
+        "administeringBodyShare": inst["administering_body_share"],
         "gates": gates_by_instrument.get(inst["id"], []),
     } for inst in instruments]
 

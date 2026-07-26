@@ -310,6 +310,18 @@ def apply_013(conn: sqlite3.Connection) -> None:
     print("  applied 013_gate_role_and_resolved_field.sql")
 
 
+def apply_014(conn: sqlite3.Connection) -> None:
+    """administering_body_share — how much of an instrument's history the body
+    we NAME actually awarded. Without it the frontend rendered a 15%-plurality
+    agency as if it were the fund (see the SQL for the measurements)."""
+    if column_exists(conn, "funding_instruments", "administering_body_share"):
+        print("  skip 014 (already applied — administering_body_share exists)")
+        return
+    sql = (MIG_DIR / "014_administering_body_share.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 014_administering_body_share.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -321,6 +333,7 @@ MIGRATIONS = {
     "011": apply_011,
     "012": apply_012,
     "013": apply_013,
+    "014": apply_014,
 }
 
 
