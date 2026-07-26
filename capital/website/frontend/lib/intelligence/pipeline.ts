@@ -366,6 +366,12 @@ const DISPLAY_CAP = 6;
 // the preliminary verdict's DISPLAY_CAP — a lean founder gets a shortlist,
 // not a menu.
 const BRIEF_INSTITUTION_CAP = 5;
+// The pool synthesize() screens before cutting to the five shown. Deliberately
+// wider than DISPLAY_CAP: funds a founder cannot access are dropped AFTER
+// assessment, so a pool of six meant a founder blocked on three of them got a
+// three-row brief while perfectly good candidates at rank seven were never
+// looked at. Dropping must be able to backfill, not shrink the table.
+const VERDICT_POOL = 14;
 
 function buildInstrumentTable(
   fieldChannels: Set<string>,
@@ -868,7 +874,11 @@ async function synthesize(
   // the rules behind the funds actually on the table.
   const eligibilityScreen = evaluateEligibility(
     req.eligibility,
-    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    // Head of the pool only. The pool is deliberately wide so blocked funds can
+    // be backfilled, but the screen is a founder-facing table — scoping it to
+    // the whole pool is what made it a 35,000-pixel wall in the first place.
+    instrumentTable.slice(0, DISPLAY_CAP)
+      .map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
   );
   const screenBlock = eligibilityScreen.length
     ? "## Eligibility screen (AUTHORITATIVE, code-evaluated against primary law)\n" +
@@ -1173,6 +1183,11 @@ async function synthesize(
         `- key "${rowKeys[i]}" (${r.institution})` +
         `${row.usedInField ? " [used by peers in your field]" : ""}` +
         `${row.fitFlag ? ` [${row.fitFlag}]` : ""}: ` +
+        // The verdict, and the obstacle where there is one. Without this the
+        // writer cannot see which row is blocked, so it left blockerPlain empty
+        // every time and the raw statute rendered in the table instead.
+        `screening says ${r.verdict === "one_blocker" ? "ONE THING IN THE WAY" : r.verdict === "open" ? "OPEN (nothing rules them out)" : "not assessable"}; ` +
+        `${r.blocker ? `the obstacle, verbatim: "${r.blocker}"; ` : ""}` +
         `support ${r.supportType}; ticket ${r.ticket}; ` +
         `${r.legalBasis ? `legal basis ${r.legalBasis}; ` : ""}` +
         `comparable firms funded through it: ${firms}`
@@ -1205,8 +1220,16 @@ async function synthesize(
             channel: { type: "string", enum: channelEnum.length ? channelEnum : [""] },
             whyEligible: { type: "string" },
             nextStep: { type: "string" },
+            // Plain-English restatement of a "one thing in the way" rule.
+            // Rides on the writer call that already runs, so it costs no extra
+            // latency — the alternative was rendering 200+ characters of raw
+            // statute in a table cell.
+            blockerPlain: { type: "string" },  // "" when the row has no blocker
           },
-          required: ["channel", "whyEligible", "nextStep"],
+          // blockerPlain is REQUIRED, not optional: left optional the model
+          // simply omitted it every time and the raw statute rendered instead.
+          // Empty string is the documented answer for rows with no blocker.
+          required: ["channel", "whyEligible", "nextStep", "blockerPlain"],
         },
       },
       positioning: { type: "string" },
@@ -1287,7 +1310,11 @@ async function synthesize(
           `removed — so never write that they fail, or might not qualify, or ` +
           `should check whether they are eligible for a listed fund. Where a ` +
           `row carries "One thing in the way", treat that requirement as the ` +
-          `single obstacle and make nextStep the action that clears it. Never ` +
+          `single obstacle. Set "blockerPlain" to that rule restated in ONE ` +
+          `plain sentence a founder reads once and understands: name the real ` +
+          `threshold, drop the statute language. For every row that has no ` +
+          `obstacle, "blockerPlain" MUST be an empty string. Make nextStep the ` +
+          `action that clears the obstacle, or the best alternative route. Never ` +
           `write "you qualify" as a guarantee: the correct claim is that ` +
           `nothing in the documented rules rules them out.\n` +
           `"institutionNotes": for each of the 5 institutions, "whyEligible" ` +
@@ -1337,7 +1364,7 @@ async function synthesize(
   }
   const narrative = extractJson<{
     bottomLine: string[];
-    institutionNotes: { channel: string; whyEligible: string; nextStep: string }[];
+    institutionNotes: { channel: string; whyEligible: string; nextStep: string; blockerPlain?: string }[];
     positioning: string;
     stateOfPlay: string;
     caveats: string;
@@ -1355,6 +1382,9 @@ async function synthesize(
       ...row,
       whyEligible: deDash(note?.whyEligible ?? "Verify eligibility directly with the fund."),
       nextStep: deDash(note?.nextStep ?? "Review the fund's current call and eligibility criteria."),
+      // Prefer the plain restatement; fall back to the verbatim rule so the
+      // obstacle is never silently dropped just because the writer omitted it.
+      blocker: row.blocker ? deDash(note?.blockerPlain || row.blocker) : undefined,
     };
   });
 
@@ -1793,7 +1823,7 @@ export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Pro
       req.capitalSought ?? [],
       req.description,
       semanticScores,
-    ).slice(0, DISPLAY_CAP),
+    ).slice(0, VERDICT_POOL),
     req.profileSignal,
     req.companyType,
   );

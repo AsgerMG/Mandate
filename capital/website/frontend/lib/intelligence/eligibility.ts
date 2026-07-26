@@ -358,6 +358,7 @@ function evaluateGenericGates(records: TermRecord[], e?: EligibilityAnswers): El
         result === null ? "unknown" : hard ? (result ? "met" : "not_met") : (result ? "likely_met" : "likely_not_met");
       out.push({
         check: `${inst.name} — ${gate.requirement}`,
+        instrumentId: inst.id,
         status,
         finding: gate.requirement,
         source: gate.source,

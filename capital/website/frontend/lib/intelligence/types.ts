@@ -177,8 +177,10 @@ export interface InstitutionEntry {
    *  them is not proof. 'blocked' rows never reach the client — they are
    *  dropped in the pipeline rather than shown. */
   verdict?: "open" | "one_blocker" | "blocked" | "unknown";
-  /** The single requirement standing in the way, verbatim, when verdict is
-   *  'one_blocker'. This is the "here is what I would change" line. */
+  /** The single requirement standing in the way when verdict is
+   *  'one_blocker' — the "here is what I would change" line. Restated in plain
+   *  English by the writer where possible, falling back to the verbatim rule so
+   *  the obstacle is never silently dropped. */
   blocker?: string;
   /** How many encoded filters could actually be evaluated — the honest weight
    *  behind the verdict. */
@@ -200,6 +202,12 @@ export interface InstitutionEntry {
  *  compute a comparator result but must never claim it as asserted fact. */
 export interface EligibilityCheck {
   check: string;                       // e.g. "EU SME status"
+  /** The instrument this row came from, when it is instrument-specific.
+   *  Absent for the framework-level checks. Consumers MUST key on this and
+   *  never on the display name: 322 instruments share only 143 names
+   *  ("Norges Forskningsråd" alone covers 65), so name matching silently
+   *  cross-contaminates siblings. */
+  instrumentId?: string;
   status: "met" | "not_met" | "likely_met" | "likely_not_met" | "unknown" | "info";
   finding: string;                     // one declarative sentence
   cure?: string;                       // when not_met: what would clear it

@@ -4,16 +4,11 @@
 // than by fit alone (which is what selectLeafInstruments does: exact-country
 // match, then ticket proximity, then event count).
 //
-// ── An honesty note about "clearance" ──────────────────────────────────────
-// The plan called for ranking on "fewest unmet or unknown gates". That is not
-// computable today: all 4,018 rows in eligibility_gates have a NULL
-// value_spec, so eligibility.ts's evaluateGenericGates() never fires, and the
-// `value` column is inconsistent free text ("Norway", "SME", "€0.5M–€5M per
-// partner", "StateAidObjectiveGberArt25") that would need a per-field
-// normalisation pass before any comparator could read it.
-//
-// Rather than invent a met/unmet number a founder could check and disprove,
-// this scores what we can honestly compute:
+// ── What this scores, and what it deliberately does not ────────────────────
+// Real qualification now lives in verdict.ts, which the pipeline ranks on
+// BEFORE this. Ease is the tie-break among funds that are equally open, not a
+// judgement about whether a founder qualifies — so it stays deliberately
+// modest about what it claims:
 //
 //   resolved(i)  — the share of instrument i's documented gates we can SPEAK
 //                  TO: the founder answered that gate's intake field, or a
@@ -24,9 +19,12 @@
 //   precedent(i) — comparable companies in the corpus that actually drew from
 //                  this instrument. The empirical "this door opens" signal.
 //
-// Populating value_spec in the ETL is what unlocks true clearance; when it
-// lands, swap resolved() for a real met/total and the rest of this file
-// stands unchanged.
+// `resolved` counts only gates triaged as FILTERS, keyed on the corrected
+// field. Counting every gate on the extractor's own field is what produced the
+// misleading "your answers cover 20 of 30 documented requirements" line: half
+// the corpus is obligations and programme facts a founder could never answer,
+// and the stored intake_field was wrong on roughly half a sample.
+// See ETL/terms/encode_gates.py.
 import { loadDbInstruments } from "./corpus";
 import type { EligibilityAnswers, EligibilityCheck, ProjectAnswer } from "./types";
 
@@ -109,18 +107,25 @@ export function scoreEase(
 
   // Hard blocks: only asserted (verified) not_met rows count. "likely_not_met"
   // is not strong enough to demote a fund on.
-  const blockedNames = new Set(
-    screen.filter((c) => c.status === "not_met" && c.verified).map((c) => c.check),
+  // Key on instrumentId, never the display name. 322 instruments share only
+  // 143 names — "Norges Forskningsrad" alone covers 65 — so matching by name
+  // marked every sibling blocked when one of them failed.
+  const blockedIds = new Set(
+    screen.filter((c) => c.status === "not_met" && c.verified && c.instrumentId)
+          .map((c) => c.instrumentId as string),
   );
 
   const raw = shortlist.map((inst) => {
-    const total = inst.gates.length;
-    const resolvedGates = inst.gates.filter(
-      (g) => isAnswered(answers, g.intakeField) || answeredGateKeys.has(`${inst.id}::${g.id}`),
+    // Filters only, and on the CURATED field — see the note above.
+    const filters = inst.gates.filter((g) => !g.gateRole || g.gateRole === "filter");
+    const total = filters.length;
+    const resolvedGates = filters.filter(
+      (g) => isAnswered(answers, g.intakeFieldResolved || g.intakeField)
+        || answeredGateKeys.has(`${inst.id}::${g.id}`),
     ).length;
     const resolved = total > 0 ? resolvedGates / (total + RESOLVED_SHRINKAGE) : 0;
     const comparableCount = comparableCounts.get(inst.id) ?? 0;
-    const blocked = [...blockedNames].some((n) => n.startsWith(`${inst.name} —`));
+    const blocked = blockedIds.has(inst.id);
     // "" and "EU" are pan-European: never off-country.
     const c = (inst.country ?? "").toUpperCase();
     const offCountry =
@@ -158,7 +163,7 @@ export function whyEasyLine(e: EaseScore | undefined, instrumentName: string): s
   if (!e) return "";
   const parts: string[] = [];
   if (e.totalGates > 0 && e.resolvedGates > 0) {
-    parts.push(`your answers cover ${e.resolvedGates} of ${e.totalGates} documented requirements`);
+    parts.push(`your answers speak to ${e.resolvedGates} of its ${e.totalGates} documented eligibility rules`);
   }
   if (e.comparableCount > 0) {
     parts.push(
