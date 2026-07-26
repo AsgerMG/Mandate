@@ -373,20 +373,30 @@ const DISPLAY_CAP = 6;
 // the preliminary verdict's DISPLAY_CAP — a lean founder gets a shortlist,
 // not a menu.
 const BRIEF_INSTITUTION_CAP = 5;
-/** How many candidates the WRITER is shown. More than the five that ship, so
+/** Below this the brief reads as a non-answer, so the writer may not reject its
+ *  way past it. The corpus itself may still supply fewer — a genuinely excluded
+ *  business (tobacco, gambling, weapons) has fewer real doors, and padding the
+ *  table would mean offering funds it cannot use. */
+const BRIEF_INSTITUTION_MIN = 2;
+/** How many candidates the WRITER is shown. Comfortably more than the five
+ *  that ship, because the brief's shape is FIVE institutions and three
+ *  successive filters thin the pool before the writer sees it: off-theme
+ *  large-scale channels, duplicate institution names, conclusively blocked
+ *  funds. Three of the first six real memos shipped four or three rows. More
+ *  than the five that ship, so
  *  it can discard the ones it can see are hopeless and still leave a full
  *  table. Reading real memos, four of Neura Robotics' five institutions were
  *  "one thing in the way" and three told the founder to skip them — the
  *  verdict engine only counts ENCODED rules, so a fund can be plainly wrong on
  *  stage or theme and still score as one small obstacle away. The writer can
  *  see that; it just had no way to act on it. */
-const WRITER_CANDIDATE_CAP = 7;
+const WRITER_CANDIDATE_CAP = 9;
 // The pool synthesize() screens before cutting to the five shown. Deliberately
 // wider than DISPLAY_CAP: funds a founder cannot access are dropped AFTER
 // assessment, so a pool of six meant a founder blocked on three of them got a
 // three-row brief while perfectly good candidates at rank seven were never
 // looked at. Dropping must be able to backfill, not shrink the table.
-const VERDICT_POOL = 14;
+const VERDICT_POOL = 18;
 /** How thematically plausible a large-scale channel must be before a big ticket
  *  alone earns it a place. Deliberately low: it only has to be somewhere in the
  *  semantic neighbourhood, not a top match. */
@@ -1428,7 +1438,20 @@ async function synthesize(
           `action that clears the obstacle, or the best alternative route. Never ` +
           `write "you qualify" as a guarantee: the correct claim is that ` +
           `nothing in the documented rules rules them out.\n` +
-          `You are shown MORE candidates than will be published. For each, set ` +
+          `The brief publishes UP TO FIVE institutions, and never fewer than ` +
+          `two. You are shown more than five candidates so you can discard the ` +
+          `genuinely unworkable ones and still leave a full table — prefer ` +
+          `five, and only go below it when the remaining options really are ` +
+          `not worth a founder's time.\n` +
+          // Not a hard rule — but a table of five national schemes, or five
+          // Brussels programmes, is a narrower answer than the corpus can
+          // actually give. The two levels have different timelines, ticket
+          // sizes and application burdens.
+          `Where the candidates allow it, prefer a SPREAD across levels: some ` +
+          `national or regional routes, some EU-level ones. This is a ` +
+          `preference, not a rule — never keep a weak fund only to balance the ` +
+          `mix, and never drop a strong one for it.\n` +
+          `For each candidate, set ` +
           `"worthPursuing": false when you can see it is simply not worth this ` +
           `founder's time — wrong theme for what they build, wrong stage, a ` +
           `structure that conflicts with what they asked for, or an obstacle ` +
@@ -1523,12 +1546,15 @@ async function synthesize(
       } as InstitutionEntry,
     };
   });
-  // The writer's rejections drop out; ranking order is preserved. Floor of
-  // three so an over-zealous pass cannot leave the founder with an empty
-  // table — below that we fall back to the best-ranked rows regardless.
+  // Up to five, never fewer than two — except where two genuinely do not
+  // exist. A tobacco or gambling business is excluded from most state aid by
+  // law, and padding its brief back to five would mean inventing options it
+  // cannot use. So the floor applies to the WRITER's judgement (it may not
+  // reject its way down to one), not to the corpus: if screening only ever
+  // produced one accessible fund, one is the honest answer.
   const worthwhile = scored.filter((x) => x.worth).map((x) => x.entry);
   const finalInstitutions: InstitutionEntry[] = (
-    worthwhile.length >= 3 ? worthwhile : scored.map((x) => x.entry)
+    worthwhile.length >= BRIEF_INSTITUTION_MIN ? worthwhile : scored.map((x) => x.entry)
   ).slice(0, BRIEF_INSTITUTION_CAP);
 
   return {

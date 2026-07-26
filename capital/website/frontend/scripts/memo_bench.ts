@@ -71,6 +71,36 @@ const COMPANIES = [
     sector: "agrifood", fteBand: "10-49", ticketBand: "b500k_2m5", developmentStage: "pilot_customers" },
 ];
 
+const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean).length;
+
+/**
+ * The brief's documented shape (types.ts IntelligenceReport): bottomLine
+ * bullets, EXACTLY five institutions, one positioning paragraph, one
+ * stateOfPlay paragraph, caveats — with the three prose parts inside a ~700
+ * word budget. Asserted on every bench run: quality regressions here are
+ * invisible to the deterministic checks and only show up by measuring output.
+ */
+function checkMemoShape(r: Record<string, unknown>): string[] {
+  const out: string[] = [];
+  const bl = (r.bottomLine as string[]) ?? [];
+  if (bl.length < 4 || bl.length > 5) out.push(`bottomLine ${bl.length} bullets (want 4-5)`);
+  const longest = Math.max(0, ...bl.map(words));
+  if (longest > 25) out.push(`longest bullet ${longest}w (want <=25)`);
+  const nInst = ((r.institutions as unknown[]) ?? []).length;
+  // Max 5, min 2. Fewer than 2 is only defensible for a business the law
+  // excludes from most aid, so it is flagged for a human to judge, not failed.
+  if (nInst > 5) out.push(`institutions ${nInst} (max 5)`);
+  else if (nInst < 2) out.push(`institutions ${nInst} (min 2 — check this is a genuinely excluded business)`);
+  const body = words(bl.join(" ")) + words(r.positioning) + words(r.stateOfPlay);
+  if (body > 700) out.push(`body ${body}w (want <=700)`);
+  if (!String(r.caveats ?? "").trim()) out.push("caveats missing");
+  for (const [k, cap] of [["positioning", 130], ["stateOfPlay", 130]] as [string, number][]) {
+    const n = words((r as Record<string, unknown>)[k]);
+    if (n > cap * 1.15) out.push(`${k} ${n}w (want <=${cap})`);
+  }
+  return out;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const onlyArg = args.indexOf("--only");
@@ -132,8 +162,12 @@ async function main() {
         error = String(err);
       }
       const secs = Math.round((Date.now() - t0) / 1000);
-      results.push({ archetype, company, country, secs, error, report });
-      console.log(`  ${archetype.padEnd(28)} ${company.padEnd(18)} ${secs}s ${error ? "ERROR: " + error : "ok"}`);
+      const shape = report ? checkMemoShape(report) : ["no report"];
+      results.push({ archetype, company, country, secs, error, shape, report });
+      console.log(
+        `  ${archetype.padEnd(28)} ${company.padEnd(18)} ${secs}s ` +
+        (error ? "ERROR: " + error : shape.length ? "SHAPE: " + shape.join("; ") : "ok"),
+      );
     }
   });
   await Promise.all(workers);
