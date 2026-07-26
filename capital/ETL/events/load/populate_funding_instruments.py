@@ -33,6 +33,7 @@ from etl_env import DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import json
+import re
 import sqlite3
 from collections import Counter, defaultdict
 
@@ -316,7 +317,19 @@ def main() -> None:
                 capital_type, capital_basis = family_capital_type(fam_capital_votes[fam])
             countries = fam_country_votes.get(fam, Counter())
             country_total = sum(countries.values())
-            if country_total == 0:
+            # A State Aid Transparency Register family belongs to the member
+            # state that granted the aid, and that state is already in the
+            # family id (satr_ee_*, satr_lt_*). Beneficiary nationality is
+            # evidence about recipients, not about whose register this is, so
+            # for SATR the id wins outright. Without this, low-volume families
+            # fell under the 90% threshold and were labelled 'EU' -- which
+            # instrumentServesCountry reads as "serves every founder", and the
+            # Estonian and Lithuanian equity schemes were being offered to
+            # founders in every other country in Europe.
+            satr_cc = re.match(r"^satr_([a-z]{2})_", fam)
+            if satr_cc:
+                country = satr_cc.group(1).upper()
+            elif country_total == 0:
                 country = None
             else:
                 top_country, top_n = countries.most_common(1)[0]

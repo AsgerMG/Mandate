@@ -160,7 +160,17 @@ const INSTRUMENT_PRIORITY = Object.keys(INSTRUMENT_NAME);
 
 // Universal entry points shown even when the field uses nothing, so a founder in
 // an unfunded space still gets a shortlist to act on.
-const DEFAULT_INSTRUMENTS = ["national_dev_banks", "state_aid_satr", "eic"];
+// The universal entry points, tried when the founder's own field history does
+// not supply enough channels. Only three of these existed, which capped the
+// whole brief: three defaults plus at most three large-scale top-ups, times
+// two leaves each, is the ceiling on everything downstream — and Nebius and
+// Corti bottomed out at two published institutions because of it. Horizon
+// Pillar II and the EIT KICs are added because they genuinely serve most
+// sectors; EDF (defence) and Chips JU (semiconductors) are deliberately not,
+// being narrow enough that thematic matching should surface them instead.
+const DEFAULT_INSTRUMENTS = [
+  "national_dev_banks", "state_aid_satr", "eic", "horizon_eu_pillar_ii", "eit",
+];
 
 // Scale routing (advisory_pipeline Stage D.1, first cut): which ticket bands
 // each channel realistically serves, as [min,max] indices into TICKET_BANDS.
@@ -281,6 +291,10 @@ function instById(): Map<string, DbInstrument> {
   return instByIdCache;
 }
 
+/** Channels whose instruments are national by construction: every leaf belongs
+ *  to one country's programme, so an out-of-country leaf is never usable. */
+const NATIONAL_CHANNELS = new Set(["national_dev_banks", "state_aid_satr"]);
+
 function selectLeafInstruments(
   channel: string,
   founderCountries: string[],
@@ -300,7 +314,16 @@ function selectLeafInstruments(
   const inCountry = all.filter((i) => instrumentServesCountry(i.country, founderCountries));
   let candidates = inCountry.filter((i) => instrumentServesCapital(i.capitalType, capitalSought));
   if (!candidates.length) candidates = inCountry;
-  if (!candidates.length) candidates = all;
+  // For channels whose instruments are national by construction, an empty
+  // in-country result means the answer is "nothing here", not "show them
+  // somebody else's". The last-resort fallback handed a Danish founder the
+  // Estonian Enterprise Foundation and a Lithuanian ministry — schemes no
+  // Danish company can draw on — and they survived to the brief looking
+  // plausible, because their country restriction is not encoded as a gate so
+  // the verdict layer returned `unknown` rather than `blocked`. Country here
+  // is a fact about the instrument, so it does not need a gate to be true.
+  if (!candidates.length && !NATIONAL_CHANNELS.has(channel)) candidates = all;
+  if (!candidates.length) return [];
   const target = ticketBand ? TICKET_MIDPOINT[ticketBand] : undefined;
   const isExactCountry = (i: DbInstrument) =>
     founderCountries.length > 0 && founderCountries.some((c) => toIso2(c) === i.country);
@@ -378,6 +401,10 @@ const BRIEF_INSTITUTION_CAP = 5;
  *  business (tobacco, gambling, weapons) has fewer real doors, and padding the
  *  table would mean offering funds it cannot use. */
 const BRIEF_INSTITUTION_MIN = 2;
+/** How many distinct funding channels to put in play before leaf selection.
+ *  Each contributes at most two leaves, and everything downstream only ever
+ *  removes rows. */
+const MIN_CHANNELS_CONSIDERED = 7;
 /** How many candidates the WRITER is shown. Comfortably more than the five
  *  that ship, because the brief's shape is FIVE institutions and three
  *  successive filters thin the pool before the writer sees it: off-theme
@@ -402,7 +429,7 @@ const VERDICT_POOL = 18;
  *  semantic neighbourhood, not a top match. */
 const LARGE_SCALE_RELEVANCE_FLOOR = 0.5;
 
-function buildInstrumentTable(
+export function buildInstrumentTable(
   fieldChannels: Set<string>,
   ticketBand?: string,
   consortiumOk?: boolean,
@@ -459,8 +486,19 @@ function buildInstrumentTable(
     }
   }
   for (const c of DEFAULT_INSTRUMENTS) {
-    if (codes.size >= 4) break;
+    // Raised from 4. This cap, not any of the downstream filters, is what made
+    // briefs thin: at most ~4 channels x 2 leaves is 8 rows BEFORE blocked
+    // funds, duplicate names and the writer's own rejections take their cut,
+    // and Nebius and Corti both bottomed out at two institutions. The brief
+    // publishes up to five, so the pool feeding it has to be comfortably
+    // larger than five.
+    if (codes.size >= MIN_CHANNELS_CONSIDERED) break;
     if (!channelServesBand(c, ticketBand)) continue;
+    // Only an explicit "no" rules out consortium-heavy channels. Treating
+    // "not sure" as a no silently removed Horizon and the EIT KICs for every
+    // undecided founder — the same unsure-means-failure mistake fixed in the
+    // evaluator. Rows still carry a fitFlag so they are never presented as
+    // equivalent to a solo-applicant route.
     if (fitOf(c) === "consortium_institutional" && !fieldChannels.has(c) && !consortiumOk) continue;
     codes.add(c);
   }
@@ -565,7 +603,7 @@ const DEPTH_SENSITIVE_CHANNELS = new Set(["eic", "horizon_eu_pillar_ii", "horizo
  * (nothing new to tell them), and only ever attached to the small
  * DEPTH_SENSITIVE_CHANNELS set.
  */
-function applyProfileSignal(
+export function applyProfileSignal(
   rows: InstrumentRow[],
   signal: ProfileSignal | null | undefined,
   selfReportedType: string | undefined,
@@ -858,7 +896,7 @@ function supportTypeLabel(row: InstrumentRow): string {
  * deliberately naming a multi-agency rollup) are left alone — only the
  * literal "SATR ..." auto-prettified pattern gets swapped.
  */
-function displayInstitutionName(row: InstrumentRow): string {
+export function displayInstitutionName(row: InstrumentRow): string {
   if (row.administeringBody && row.instrument.startsWith("SATR ")) return row.administeringBody;
   return row.instrument;
 }
@@ -1356,12 +1394,18 @@ async function synthesize(
     required: ["bottomLine", "institutionNotes", "positioning", "stateOfPlay", "caveats"],
   } as const;
 
-  const res = await client.messages.create({
+  // STREAMED, not create(). The budget below is large enough that the SDK
+  // refuses a non-streaming request outright ("Streaming is required for
+  // operations that may take longer than 10 minutes"), which killed every memo
+  // the moment the budget was raised. Streaming lifts that ceiling; the awaited
+  // finalMessage() has the same shape as create(), so nothing downstream
+  // changes. Do not convert this back to create() without also lowering
+  // max_tokens below the SDK's threshold.
+  const res = await client.messages.stream({
     model: WRITER_MODEL,
-    // Raised from 16000 when WRITER_CANDIDATE_CAP went to 5 -> 8 candidates:
-    // that is ~60% more structured output on top of adaptive thinking, and a
-    // GovTech run truncated mid-string at ~1.9k chars of JSON, losing a
-    // three-minute memo outright.
+    // Raised from 16000 when the writer went from 5 candidates to 9: that is
+    // far more structured output on top of adaptive thinking, and a GovTech run
+    // truncated mid-string at ~1.9k chars of JSON, losing a three-minute memo.
     max_tokens: 24000,
     // Sonnet 5 rejects fixed thinking budgets (400); adaptive lets the model
     // size the prioritisation judgement itself.
@@ -1451,18 +1495,48 @@ async function synthesize(
           `national or regional routes, some EU-level ones. This is a ` +
           `preference, not a rule — never keep a weak fund only to balance the ` +
           `mix, and never drop a strong one for it.\n` +
-          `For each candidate, set ` +
-          `"worthPursuing": false when you can see it is simply not worth this ` +
-          `founder's time — wrong theme for what they build, wrong stage, a ` +
-          `structure that conflicts with what they asked for, or an obstacle ` +
-          `they realistically cannot clear. The screening upstream only checks ` +
-          `rules we have encoded, so a fund can look one small step away and ` +
-          `still be hopeless; you can see that and it cannot. Rejected rows are ` +
-          `dropped, never shown, so NEVER write "skip this", "deprioritise" or ` +
-          `"do not pursue" in whyEligible or nextStep — set the flag instead. ` +
+          `Return an entry for EVERY candidate below, ORDERED BEST FIRST — ` +
+          `your ordering decides what gets published, because we take the top ` +
+          `five of what you return. Ranking a fund last is how you say it is ` +
+          `the weakest option; that costs the founder nothing.\n` +
+          // worthPursuing was being used as a ranking device rather than a
+          // qualification test: on eAgronom the writer rejected 7 of 9
+          // candidates, among them the Horizon cluster for Food and
+          // Bioeconomy that it had itself called a direct match for the
+          // company's soil-carbon programme on the previous run. Ordering is
+          // now how preference is expressed, and the flag is reserved for
+          // disqualification, so a merely-weaker option can no longer be
+          // deleted from the brief.
+          `"worthPursuing": false is NOT a ranking device and NOT for weak or ` +
+          `long-shot options — it DISQUALIFIES a row, deleting it from the ` +
+          `brief entirely. Set it false only when you can name, in one ` +
+          `specific sentence, why this fund is actively wrong for THIS ` +
+          `company: wrong theme for what they build, wrong stage, wrong ticket ` +
+          `size, a structure that conflicts with what they asked for, or an ` +
+          `obstacle they genuinely cannot clear. If your reason would apply to ` +
+          `most applicants rather than this one, it is not a reason — leave ` +
+          `the row in and rank it last. Expect to disqualify NONE or ONE of ` +
+          `the candidates; disqualifying most of them is always wrong. ` +
+          `Disqualified rows are dropped, never shown, so NEVER write "skip ` +
+          `this", "deprioritise" or "do not pursue" in whyEligible or ` +
+          `nextStep — set the flag instead. ` +
           `Be decisive but not destructive: only the top few are published, so ` +
           `rejecting a merely-imperfect option can leave the founder with less ` +
           `than they deserve. Reject what is wrong, keep what is workable.\n` +
+          // Observed on eAgronom: the writer rejected BOTH EIC routes, the
+          // single best-fitting EU instrument for an Estonian agritech at
+          // pilot stage, and shipped three rows out of seven candidates.
+          // Competitiveness is the most common bad reason to reject — every
+          // instrument worth naming is competitive, and a founder deciding
+          // where to spend the next month already knows that.
+          `A low acceptance rate, heavy paperwork or a long timeline are NOT ` +
+          `reasons to reject: every worthwhile public instrument is ` +
+          `competitive, and the founder is choosing where to spend effort, not ` +
+          `being promised a win. Reject only for a concrete mismatch you can ` +
+          `name in the data: wrong theme, wrong stage, wrong ticket size, a ` +
+          `structure that conflicts with what they asked for, or an obstacle ` +
+          `they genuinely cannot clear. If you cannot name that mismatch in ` +
+          `one specific sentence, keep the row.\n` +
           `"institutionNotes": for EVERY candidate below, "whyEligible" ` +
           `(AT MOST 25 words) is a specific clause grounded in the ` +
           `eligibility screen and scoping profile above, never a generic ` +
@@ -1497,7 +1571,7 @@ async function synthesize(
           `the database is not proof of no funding.`,
       },
     ],
-  });
+  }).finalMessage();
 
   const text = res.content
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
@@ -1530,12 +1604,23 @@ async function synthesize(
   // buildInstitutions), and strip em-dashes from every model-written field
   // (house rule).
   const notesByKey = new Map(narrative.institutionNotes.map((n) => [n.channel, n]));
+  // The writer ranks by the order it returns the notes in; anything it did not
+  // mention sorts last. The CUT to five happens in code, so the model can
+  // express "this is the weakest" without being able to delete a usable row.
+  const rankByKey = new Map(narrative.institutionNotes.map((n, i) => [n.channel, i]));
   const scored = institutions.map((row, i) => {
     const note = notesByKey.get(rowKeys[i]);
     return {
-      // Absent note = keep. A writer that failed to return a row must never
-      // silently delete a fund the founder was entitled to see.
-      worth: note?.worthPursuing !== false,
+      // Absent note = DROP. This inverted when the writer started seeing more
+      // candidates than ship: a row it never wrote about is one it did not
+      // think worth writing about, and keeping it published the fallback
+      // boilerplate instead. Nortal shipped three of five rows reading "Verify
+      // eligibility directly with the fund", two of them thematic mismatches
+      // (a health JU and a semiconductor JU for a govtech company) that
+      // survived purely because the writer had ignored them.
+      // The min-2 floor below still protects against an empty table.
+      worth: Boolean(note) && note?.worthPursuing !== false,
+      key: rowKeys[i],
       entry: {
         ...row,
         whyEligible: deDash(note?.whyEligible ?? "Verify eligibility directly with the fund."),
@@ -1546,16 +1631,36 @@ async function synthesize(
       } as InstitutionEntry,
     };
   });
+  // Always log the funnel: a brief that ships three rows from seven
+  // candidates is not visible in the output itself, and this is the only
+  // place the writer's rejections can be counted.
+  const omitted = rowKeys.filter((k) => !notesByKey.has(k));
+  const rejected = institutions
+    .map((row, i) => ({ row, note: notesByKey.get(rowKeys[i]) }))
+    .filter((x) => x.note?.worthPursuing === false)
+    .map((x) => x.row.institution);
+  console.log("[institutions] candidates=%d kept=%d rejected=%d omitted=%d%s%s",
+    institutions.length, scored.filter((x) => x.worth).length, rejected.length, omitted.length,
+    rejected.length ? " | rejected: " + rejected.join(", ") : "",
+    omitted.length ? " | omitted: " + omitted.join(", ") : "");
+
   // Up to five, never fewer than two — except where two genuinely do not
   // exist. A tobacco or gambling business is excluded from most state aid by
   // law, and padding its brief back to five would mean inventing options it
   // cannot use. So the floor applies to the WRITER's judgement (it may not
   // reject its way down to one), not to the corpus: if screening only ever
   // produced one accessible fund, one is the honest answer.
-  const worthwhile = scored.filter((x) => x.worth).map((x) => x.entry);
+  const worthwhile = scored
+    .filter((x) => x.worth)
+    .sort((a, b) => (rankByKey.get(a.key) ?? Infinity) - (rankByKey.get(b.key) ?? Infinity))
+    .map((x) => x.entry);
   const finalInstitutions: InstitutionEntry[] = (
     worthwhile.length >= BRIEF_INSTITUTION_MIN ? worthwhile : scored.map((x) => x.entry)
   ).slice(0, BRIEF_INSTITUTION_CAP);
+  if (worthwhile.length < BRIEF_INSTITUTION_MIN) {
+    console.error("writer kept too few institutions; falling back to ranked order",
+      { candidates: scored.length, kept: worthwhile.length });
+  }
 
   return {
     self,
@@ -1976,7 +2081,7 @@ export function computeVerdict(
   const candidates = buildInstrumentTable(
     fieldChannels,
     eligibility?.ticketBand,
-    eligibility?.consortium === "yes",
+    eligibility?.consortium !== "no",
     founderCountries,
     opts.capitalSought ?? [],
     opts.description,
@@ -2052,7 +2157,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     buildInstrumentTable(
       fieldChannels,
       req.eligibility?.ticketBand,
-      req.eligibility?.consortium === "yes",
+      req.eligibility?.consortium !== "no",
       founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
       req.capitalSought ?? [],
       req.description,

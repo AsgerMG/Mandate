@@ -35,3 +35,6 @@ data/processed/
 .env.local
 .env.*
 !.env.example
+
+# local debugging scratch
+website/frontend/.scratch/
