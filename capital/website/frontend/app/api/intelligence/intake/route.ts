@@ -13,6 +13,7 @@ import {
 import {
   sanitizeCapitalSought,
   sanitizeEligibility,
+  withIncorporationCountry,
   sanitizeInstrumentIds,
   sanitizeTargetMarkets,
 } from "@/lib/intelligence/sanitize";
@@ -56,7 +57,8 @@ export async function POST(request: NextRequest) {
   await hydrateDbInstruments();
 
   const candidateIds = sanitizeInstrumentIds(body.candidateInstrumentIds) ?? [];
-  const eligibility = sanitizeEligibility(body.eligibility);
+  const eligibility = withIncorporationCountry(
+    sanitizeEligibility(body.eligibility), body.country?.trim());
   const req = {
     company: body.company.trim(),
     sector: body.sector?.trim() || undefined,

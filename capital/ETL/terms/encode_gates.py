@@ -83,7 +83,12 @@ FIELDS = [
     "turnoverBand", "balanceBand", "ownerOver25", "institutionalOwner", "nonEuControl",
     "cofinancingBand", "foundedYear", "lossesOverHalfCapital", "conditionality",
     "developmentStage", "activityCountries", "consortium", "bankRelationship",
-    "institutionalBacking", "needBy", "none",
+    "institutionalBacking", "needBy",
+    # Added 2026-07-26 from propose_intake_fields.py: these two were the
+    # highest-yield questions the intake was missing, measured against the 485
+    # filters nothing we asked could decide.
+    "sector", "exclusionFlags",
+    "none",
 ]
 
 # The ordered bands each banded field uses, so a band_max/band_min spec can be
@@ -100,11 +105,15 @@ BAND_ORDERS = {
 
 # Fields whose EligibilityAnswers value is a list, not a scalar. `equals` is
 # meaningless against these (see the coercion in cmd_encode).
-MULTI_VALUE_FIELDS = {"entityCountries", "activityCountries", "conditionality"}
+MULTI_VALUE_FIELDS = {"entityCountries", "activityCountries", "conditionality", "exclusionFlags"}
 
 ENUM_VALUES = {
     "borrowerModel": ["operating", "balance_sheet_lender", "originator", "fund_manager"],
     "conditionality": ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"],
+    "sector": ["industrial_deeptech", "software_ict", "life_sciences", "energy_cleantech",
+               "agrifood", "restricted"],
+    "exclusionFlags": ["none", "insolvency", "losses_over_half_capital", "recovery_order",
+                       "sanctions", "tax_arrears"],
     "wouldOpenEntity": ["yes", "no", "depends"],
     **{f: ["yes", "no", "unsure"] for f in
        ("ownerOver25", "institutionalOwner", "nonEuControl", "lossesOverHalfCapital",
@@ -217,6 +226,13 @@ Available attributes:
   bankRelationship      a bank that would lend if guaranteed
   institutionalBacking  VC/institutional investors aboard
   needBy                how soon the money is needed
+  sector                main sector: industrial/deep tech, software/ICT, life sciences,
+                        energy/cleantech, agrifood, or a restricted sector
+                        (finance, insurance, gambling, defence, tobacco, alcohol)
+  exclusionFlags        standard exclusion situations, multi-select: none apply /
+                        insolvency / accumulated losses over half share capital /
+                        unpaid state-aid recovery order / EU sanctions or exclusion
+                        decision / overdue tax or social-security debt
 
 Be strict. Most rules that mention money amounts are programme_facts about the fund's
 budget, not filters on the applicant. Return ONLY the JSON object."""
@@ -325,6 +341,15 @@ the programme, skip it.
   * "Applicant must be registered in Spain" IS a restriction. -> in["Spain"]
   * "Legal entities established in Russia and Belarus are not eligible"
     IS a restriction. -> not_in["Russia","Belarus"]
+
+`consortium` means CAN THE APPLICANT FORM ONE, not "will they". A company that
+could run a consortium can obviously also apply alone, so a rule requiring a
+SOLO applicant excludes nobody on this field and must be skipped. Only encode
+the direction that genuinely restricts:
+  * "Consortium of 3+ partners from 3+ countries required" -> in["yes"]
+  * "The project must be submitted by a single applicant, non-collaborative"
+    -> skip. Encoding this as in["no"] wrongly hid the fund from every founder
+    who said they COULD collaborate.
 
 If a rule names an OPEN-ENDED or long membership set you cannot enumerate in full
 ("EU Member States or Associated Countries", "EuroHPC Participating States"),

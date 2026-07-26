@@ -478,7 +478,9 @@ function applyProfileSignal(
   signal: ProfileSignal | null | undefined,
   selfReportedType: string | undefined,
 ): InstrumentRow[] {
-  if (!signal?.note || signal.techDepthRead === selfReportedType) return rows;
+  // No self-reported type means nothing to diverge from — the model's read is
+  // simply the archetype, not a second opinion worth flagging.
+  if (!signal?.note || !selfReportedType || signal.techDepthRead === selfReportedType) return rows;
   return rows.map((r) =>
     DEPTH_SENSITIVE_CHANNELS.has(r.channel) ? { ...r, profileNote: signal.note } : r);
 }
@@ -898,6 +900,10 @@ async function synthesize(
   // may mention it as colour, never as fact, never overriding the founder's
   // own pick or the eligibility screen.
   const softSignalBlock =
+    // Self-guarding: when the type was INFERRED rather than stated,
+    // runIntelligence sets companyType to techDepthRead, so this is false and
+    // no divergence note fires. It only speaks when a founder actually stated
+    // a type that the description contradicts.
     req.profileSignal && req.profileSignal.techDepthRead !== req.companyType
       ? `## Free-text read (SOFT SIGNAL — not authoritative, not verified)\n` +
         `The founder's own description reads more like "${req.profileSignal.techDepthRead}" ` +
@@ -1768,7 +1774,16 @@ export function computeVerdict(
 }
 
 /** Run the full pipeline, emitting progress events as each stage completes. */
-export async function runIntelligence(req: IntelligenceRequest, emit: Emit): Promise<void> {
+export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Promise<void> {
+  // The first screen stopped asking "company type" on 2026-07-26: it gated no
+  // eligibility rule and inferProfileSignal already reads the same 4-point
+  // scale off the founder's own description. So the model's read IS the
+  // archetype now, and everything downstream (STEP topic selection, the
+  // prompt's archetype line, depth-sensitive channel ordering) reads it
+  // through this one resolution rather than an empty string.
+  const req: IntelligenceRequest = req0.companyType
+    ? req0
+    : { ...req0, companyType: req0.profileSignal?.techDepthRead };
   const instructions = loadAgentInstructions();
 
   emit({ type: "status", step: "discovering", detail: "Searching the record and the open web for comparable companies" });

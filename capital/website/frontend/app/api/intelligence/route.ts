@@ -3,6 +3,7 @@ import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
 import {
   sanitizeEligibility,
+  withIncorporationCountry,
   sanitizeProfileSignal,
   sanitizeProjectAnswers,
   sanitizeTargetMarkets,
@@ -95,7 +96,8 @@ export async function POST(request: NextRequest) {
                   .map((c) => ({ question: c.question.trim(), answer: c.answer.trim() }))
               : undefined,
             targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
-            eligibility: sanitizeEligibility(body.eligibility),
+            eligibility: withIncorporationCountry(
+              sanitizeEligibility(body.eligibility), body.country?.trim()),
             profileSignal: sanitizeProfileSignal(body.profileSignal),
             projectAnswers: sanitizeProjectAnswers(body.projectAnswers),
           },

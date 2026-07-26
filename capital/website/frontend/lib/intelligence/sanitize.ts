@@ -27,6 +27,10 @@ const COFINANCING_BAND_VALUES = [">50%", "25-50%", "<25%", "unsure"] as const;
 const DEVELOPMENT_STAGE_VALUES = ["research", "prototype", "pilot_customers", "scaling_revenue"] as const;
 const NEED_BY_VALUES = ["asap_weeks", "months_6", "months_18", "flexible"] as const;
 const CONDITIONALITY_VALUES = ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"] as const;
+const SECTOR_VALUES = ["industrial_deeptech", "software_ict", "life_sciences",
+  "energy_cleantech", "agrifood", "restricted"] as const;
+const EXCLUSION_VALUES = ["none", "insolvency", "losses_over_half_capital",
+  "recovery_order", "sanctions", "tax_arrears"] as const;
 
 function pickEnum<T extends string>(v: unknown, allowed: readonly T[]): T | undefined {
   return typeof v === "string" && (allowed as readonly string[]).includes(v) ? (v as T) : undefined;
@@ -82,9 +86,47 @@ export function sanitizeEligibility(raw: unknown): EligibilityAnswers | undefine
     bankRelationship: pickEnum(b.bankRelationship, YES_NO_UNSURE),
     institutionalBacking: pickEnum(b.institutionalBacking, YES_NO_UNSURE),
     needBy: pickEnum(b.needBy, NEED_BY_VALUES),
+    sector: pickEnum(b.sector, SECTOR_VALUES),
+    exclusionFlags: pickEnumList(b.exclusionFlags, EXCLUSION_VALUES),
   };
+  // The undertaking-in-difficulty test is now one line of the exclusions
+  // checklist rather than its own question, but eligibility.ts's framework
+  // check and 64 encoded gates still read `lossesOverHalfCapital`. Derive it,
+  // or that whole check silently goes dark. Only "none" implies a clean "no" —
+  // an unanswered checklist stays undefined, never a pass.
+  if (!out.lossesOverHalfCapital && out.exclusionFlags?.length) {
+    out.lossesOverHalfCapital = out.exclusionFlags.includes("losses_over_half_capital")
+      ? "yes"
+      : out.exclusionFlags.includes("none")
+        ? "no"
+        : undefined;
+  }
+
   const hasAny = Object.values(out).some((v) => v !== undefined);
   return hasAny ? out : undefined;
+}
+
+/**
+ * Fold the incorporation country into `entityCountries`.
+ *
+ * The first screen asks "Incorporated in" as a top-level `country`, and nothing
+ * ever wrote it into `entityCountries` — so the single most-encoded gate field
+ * in the corpus (185 rules across 105 instruments, "must be established in X")
+ * evaluated as UNANSWERED for every founder who did not separately list an
+ * entity. Every country rule silently returned "unknown".
+ *
+ * Derived server-side rather than in the client payload so all three routes
+ * (verdict, intake, memo) get it from one place and none can drift.
+ */
+export function withIncorporationCountry(
+  elig: EligibilityAnswers | undefined,
+  country: string | undefined,
+): EligibilityAnswers | undefined {
+  const c = country?.trim();
+  if (!c) return elig;
+  const existing = elig?.entityCountries ?? [];
+  if (existing.some((x) => x.trim().toLowerCase() === c.toLowerCase())) return elig;
+  return { ...(elig ?? {}), entityCountries: [c, ...existing] };
 }
 
 /** Whitelist a raw request body's `targetMarkets` field: free-text country names, length- and count-capped. */

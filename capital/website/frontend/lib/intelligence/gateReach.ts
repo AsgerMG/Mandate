@@ -7,14 +7,19 @@
 import { loadDbInstruments } from "./corpus";
 import { FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
 
-// Fields already resolved on the deterministic first page (Phase 3B) — never
-// re-asked adaptively, regardless of how much gate reach they still carry.
-// lossesOverHalfCapital (the undertaking-in-difficulty test) is deliberately
-// NOT here: it's a heavy question for a fast first screen, so it now only
-// ever surfaces adaptively, when a specific candidate fund's real gate
-// actually requires it — never blind, for everyone, upfront.
+// Fields already resolved on the deterministic first page — never re-asked
+// adaptively, regardless of how much gate reach they still carry.
+// lossesOverHalfCapital is listed because it is now answered as one line of
+// the exclusions checklist rather than as its own alarming question, and
+// derived from it server-side (see sanitizeEligibility).
 const FIRST_PAGE_FIELDS = new Set([
-  "entityCountries", "fteBand", "borrowerModel", "developmentStage", "ticketBand",
+  "entityCountries", "fteBand", "developmentStage", "ticketBand",
+  // Promoted to screen 1 on 2026-07-26 because they gate the most instruments
+  // in the triaged corpus: sector 72, consortium 50, exclusionFlags 47 (80
+  // rules), cofinancingBand 36. borrowerModel came OFF (15 instruments) and is
+  // now asked adaptively, only when a candidate fund actually turns on it.
+  "sector", "consortium", "exclusionFlags", "cofinancingBand",
+  "lossesOverHalfCapital",
 ]);
 
 export interface OpenFieldEvidence {

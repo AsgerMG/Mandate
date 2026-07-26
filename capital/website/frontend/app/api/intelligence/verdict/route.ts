@@ -1,7 +1,8 @@
 import { NextRequest } from "next/server";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { computeVerdict } from "@/lib/intelligence/pipeline";
-import { sanitizeCapitalSought, sanitizeEligibility, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
+import { sanitizeCapitalSought, sanitizeEligibility,
+  withIncorporationCountry, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest } from "@/lib/intelligence/types";
 
 // The fast path: a deterministic eligibility verdict, zero model calls (local
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
     const verdict = computeVerdict(
       body.company.trim(),
       body.country?.trim() || undefined,
-      sanitizeEligibility(body.eligibility),
+      withIncorporationCountry(sanitizeEligibility(body.eligibility), body.country?.trim()),
       {
         targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
         capitalSought: sanitizeCapitalSought(body.capitalSought),

@@ -283,6 +283,38 @@ export interface IntelligenceRequest {
   profileSignal?: ProfileSignal;
 }
 
+/** Sector, asked directly rather than inferred. Two reasons: sector carve-outs
+ *  are pervasive in GBER and de minimis (agriculture, fisheries, financial
+ *  services, tobacco, weapons are excluded outright by many schemes), and the
+ *  corpus's own subsector taxonomy is not usable for this — 19 values, present
+ *  on 12% of companies, and it labelled Clean Aviation's top sectors as "heat
+ *  pumps hvac". Measured to decide ~45 otherwise-undecidable eligibility rules. */
+export const SECTOR_OPTIONS = [
+  { value: "industrial_deeptech", label: "Manufacturing, industrial or deep tech" },
+  { value: "software_ict", label: "Software, digital or ICT services" },
+  { value: "life_sciences", label: "Life sciences or health" },
+  { value: "energy_cleantech", label: "Energy, cleantech or environment" },
+  { value: "agrifood", label: "Agriculture, forestry, fisheries or food" },
+  { value: "restricted", label: "Finance, insurance, gambling, defence, tobacco or alcohol" },
+] as const;
+export type SectorValue = (typeof SECTOR_OPTIONS)[number]["value"];
+
+/** The standard EU/national exclusion situations, as one multi-select. These
+ *  are boilerplate across the corpus and gate hard: an outstanding recovery
+ *  order or insolvency closes most state aid outright. Merging them with the
+ *  undertaking-in-difficulty test (accumulated losses) makes ONE question
+ *  decide roughly 104 rules — the single highest-yield question available,
+ *  and far less alarming asked as a checklist than one at a time. */
+export const EXCLUSION_OPTIONS = [
+  { value: "none", label: "None of these apply" },
+  { value: "insolvency", label: "In bankruptcy, insolvency or winding-up" },
+  { value: "losses_over_half_capital", label: "Accumulated losses exceed half our share capital" },
+  { value: "recovery_order", label: "Under an unpaid EU state-aid recovery order" },
+  { value: "sanctions", label: "Subject to EU sanctions or an exclusion decision" },
+  { value: "tax_arrears", label: "Overdue tax or social-security debt" },
+] as const;
+export type ExclusionValue = (typeof EXCLUSION_OPTIONS)[number]["value"];
+
 /** Scale bands: which instrument universe the ask opens (advisory_pipeline §B2). */
 export const TICKET_BANDS = [
   { value: "lt500k", label: "Under €500K", hint: "vouchers, micro-grants, de minimis schemes" },
@@ -333,6 +365,11 @@ export interface EligibilityAnswers {
   bankRelationship?: "yes" | "no" | "unsure"; // a bank that would lend if guaranteed
   institutionalBacking?: "yes" | "no" | "unsure"; // VC/institutional investors aboard or anchoring
   needBy?: string;             // "asap_weeks" | "months_6" | "months_18" | "flexible"
+  /** SECTOR_OPTIONS value. Asked directly — see the constant for why. */
+  sector?: string;
+  /** EXCLUSION_OPTIONS values. "none" is a real answer, not an empty list:
+   *  an empty array means unanswered, which must never read as a pass. */
+  exclusionFlags?: string[];
 }
 
 /** The fixed founder-facing options for every EligibilityAnswers field that's

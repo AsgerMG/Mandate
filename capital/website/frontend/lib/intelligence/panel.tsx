@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import {
   CAPITAL_OPTIONS,
-  COMPANY_TYPE_OPTIONS,
+  EXCLUSION_OPTIONS,
+  SECTOR_OPTIONS,
   FIELD_ENUM_HINTS,
   TICKET_BANDS,
   type EligibilityAnswers,
@@ -139,110 +140,52 @@ function CapitalSelect({
   );
 }
 
-/** A compact single-select dropdown, visually matching CapitalSelect — one
- *  line instead of a grid of description-cards, for fields with a small
- *  fixed option set (company type, borrower model). */
-function DropdownSelect({
-  options, value, onPick, placeholder,
+/** Toggle one exclusion flag. "None of these apply" is mutually exclusive with
+ *  every other option in both directions — a founder who ticks insolvency and
+ *  then "none" means "none", and vice versa. An EMPTY list means unanswered,
+ *  which must never be read as a pass. */
+function toggleExclusion(current: string[], v: string): string[] {
+  if (v === "none") return current.includes("none") ? [] : ["none"];
+  const without = current.filter((x) => x !== "none");
+  return without.includes(v) ? without.filter((x) => x !== v) : [...without, v];
+}
+
+/** Multi-select chips. Used for the exclusion checklist, where seeing every
+ *  option at once matters more than saving space: a founder should be able to
+ *  confirm at a glance that none of them apply. */
+function MultiChips({
+  options, value, onToggle, exclusive,
 }: {
-  options: { value: string; label: string; hint?: string }[];
-  value?: string;
-  onPick: (v: string | undefined) => void;
-  placeholder: string;
+  options: readonly { value: string; label: string }[];
+  value: string[];
+  onToggle: (v: string) => void;
+  exclusive?: string;
 }) {
-  const [open, setOpen] = useState(false);
-  const picked = options.find((o) => o.value === value);
   return (
-    <div className="relative">
-      {open && (
-        <button type="button" aria-hidden tabIndex={-1} onClick={() => setOpen(false)}
-          className="fixed inset-0 z-10 cursor-default" />
-      )}
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[var(--primary)]">
-        <span className={"truncate " + (picked ? "" : "text-[var(--muted-foreground)]")}>
-          {picked?.label ?? placeholder}
-        </span>
-        <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
-      </button>
-      {open && (
-        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg">
-          {options.map((o) => {
-            const on = o.value === value;
-            return (
-              <button key={o.value} type="button" role="option" aria-selected={on}
-                onClick={() => { onPick(on ? undefined : o.value); setOpen(false); }}
-                className="flex w-full items-start gap-2.5 rounded-[var(--radius)] px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]">
-                <span className={
-                  "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[10px] " +
-                  (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]" : "border-[var(--border)]")
-                }>
-                  {on ? "●" : ""}
-                </span>
-                <span>
-                  <span className="block text-[14px] font-medium">{o.label}</span>
-                  {o.hint && <span className="block text-[12px] text-[var(--muted-foreground)]">{o.hint}</span>}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
+    <div className="flex flex-wrap gap-2">
+      {options.map((o) => {
+        const on = value.includes(o.value);
+        const isExclusive = o.value === exclusive;
+        return (
+          <button key={o.value} type="button" aria-pressed={on}
+            onClick={() => onToggle(o.value)}
+            className={
+              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+              (on
+                ? isExclusive
+                  ? "border-[#3d6136] bg-[#3d6136]/15 text-[var(--foreground)]"
+                  : "border-[var(--accent)] bg-[var(--accent)]/15 text-[var(--foreground)]"
+                : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[var(--primary)]")
+            }>
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-/** A searchable multi-select dropdown for the 27-country picker — one line
- *  instead of every country exposed as a button at all times. */
-function CountrySelect({ value, onToggle }: { value: string[]; onToggle: (c: string) => void }) {
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const filtered = COUNTRIES.filter((c) => c.toLowerCase().includes(query.toLowerCase()));
-  const summary = value.length === 0
-    ? "Home market + EU-wide"
-    : value.length <= 2
-      ? value.join(", ")
-      : `${value.slice(0, 2).join(", ")} +${value.length - 2}`;
-  return (
-    <div className="relative">
-      {open && (
-        <button type="button" aria-hidden tabIndex={-1} onClick={() => setOpen(false)}
-          className="fixed inset-0 z-10 cursor-default" />
-      )}
-      <button type="button" onClick={() => setOpen((o) => !o)} aria-haspopup="listbox" aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[var(--primary)]">
-        <span className={"truncate " + (value.length ? "" : "text-[var(--muted-foreground)]")}>{summary}</span>
-        <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
-      </button>
-      {open && (
-        <div role="listbox" className="absolute z-20 mt-1 w-full overflow-hidden rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] shadow-lg">
-          <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search countries…"
-            className="w-full border-b border-[var(--border)] px-3 py-2 text-[14px] outline-none" />
-          <div className="max-h-52 overflow-y-auto p-1">
-            {filtered.map((c) => {
-              const on = value.includes(c);
-              return (
-                <button key={c} type="button" role="option" aria-selected={on} onClick={() => onToggle(c)}
-                  className="flex w-full items-center gap-2.5 rounded-[var(--radius)] px-2.5 py-2 text-left text-[14px] transition-colors hover:bg-[var(--muted)]">
-                  <span className={
-                    "flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
-                    (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]" : "border-[var(--border)]")
-                  }>
-                    {on ? "✓" : ""}
-                  </span>
-                  {c}
-                </button>
-              );
-            })}
-            {filtered.length === 0 && (
-              <p className="px-2.5 py-2 text-[13px] text-[var(--muted-foreground)]">No match</p>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+
 
 /** A small always-present ⓘ that reveals guidance on hover or keyboard focus. */
 function InfoDot({ children }: { children: React.ReactNode }) {
@@ -338,14 +281,16 @@ export function IntelligencePanel() {
   // visible next to the form as you fill it in, not a post-submit reveal. ──
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
-  const [companyType, setCompanyType] = useState("");
+  // companyType is no longer asked — inferProfileSignal reads it from the
+  // description server-side (see runIntelligence). Kept out of state entirely.
   const [description, setDescription] = useState("");
   const [capitalSought, setCapitalSought] = useState<string[]>([]);
   // borrowerModel defaults to "operating" and is never asked on the first
   // screen — the lender/intermediary routing it unlocks is out of scope for
   // this tool's lean-founder persona.
   const [elig, setElig] = useState<EligibilityAnswers>({ borrowerModel: "operating" });
-  const [targetMarkets, setTargetMarkets] = useState<string[]>([]);
+  // targetMarkets left the first screen (34 instruments, heavy multi-select);
+  // founderCountryList falls back to the incorporation country.
 
   const [screen, setScreen] = useState<"intake" | "adaptive">("intake");
   const [preparing, setPreparing] = useState(false);
@@ -399,8 +344,6 @@ export function IntelligencePanel() {
     );
   const toggleAllCapital = () =>
     setCapitalSought(allCapital ? [] : CAPITAL_OPTIONS.map((o) => o.value));
-  const toggleList = (list: string[], v: string) =>
-    list.includes(v) ? list.filter((x) => x !== v) : [...list, v];
 
   // `eligOverride` lets callers get a payload reflecting eligibility answers
   // that haven't made it into `elig` state yet (React state updates aren't
@@ -409,10 +352,8 @@ export function IntelligencePanel() {
   const basePayload = (eligOverride?: EligibilityAnswers) => ({
     company,
     country,
-    companyType,
     description,
     capitalSought,
-    targetMarkets,
     eligibility: eligOverride ?? elig,
     profileSignal,
     projectAnswers,
@@ -715,17 +656,32 @@ export function IntelligencePanel() {
               </label>
             </div>
 
+            {/* ── The eight questions, chosen on evidence, not habit ──────────
+                Ranked by how many instruments each field actually gates in the
+                triaged corpus (ETL/terms/encode_gates.py + propose_intake_fields.py):
+                  sector 72 · developmentStage 53 · consortium 50 · fteBand 46
+                  · exclusionFlags 47 (80 rules) · cofinancingBand 36
+                plus ticket and capital type, which prune the instrument
+                universe hardest even though few gates cite them.
+                DROPPED from this screen: companyType (inferred from the
+                description by inferProfileSignal, and it gates nothing) and
+                targetMarkets (a heavy country multi-select for 34 instruments,
+                already optional — the adaptive round asks when it matters).
+                Hard ceiling of eight: a longer first screen reads as an
+                interrogation and is where founders leave. ── */}
+
             <div className="text-sm">
               <span className="mb-2 flex items-center font-semibold">
-                Company type
+                Your sector
                 <InfoDot>
-                  How a funder would classify you. Deep tech opens doors (like the
-                  EIC) that an application layer does not.
+                  Sector carve-outs are everywhere in EU aid law: agriculture,
+                  fisheries, finance and defence are excluded outright by many
+                  schemes. This one answer settles roughly 99 documented rules
+                  across 72 funds.
                 </InfoDot>
               </span>
-              <DropdownSelect options={[...COMPANY_TYPE_OPTIONS]}
-                value={companyType || undefined} onPick={(v) => setCompanyType(v ?? "")}
-                placeholder="Select company type" />
+              <Chips options={[...SECTOR_OPTIONS]} value={elig.sector}
+                onPick={(v) => setElig((p) => ({ ...p, sector: v }))} />
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
@@ -753,26 +709,7 @@ export function IntelligencePanel() {
               </div>
             </div>
 
-            {/* ── Fit signals: the empirically highest-determining-power
-                questions (ETL/terms/aggregate_intake_usage.py), real reach
-                against the 320-instrument corpus — fteBand 79%, developmentStage
-                65%. Everything else, including the loss-making/undertaking-
-                in-difficulty test, is asked adaptively once the shortlist is
-                known and only when a specific candidate fund's real gate
-                actually requires it — never blind, for everyone, upfront. ── */}
             <div className="grid gap-5 sm:grid-cols-2">
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Where do you want to raise public capital?
-                  <InfoDot>
-                    Target markets can differ from where you are incorporated. Many
-                    national schemes require a domestic entity; we will flag exactly
-                    which ones and what opening one buys you. Leave blank for home
-                    market + EU-wide.
-                  </InfoDot>
-                </span>
-                <CountrySelect value={targetMarkets} onToggle={(c) => setTargetMarkets((p) => toggleList(p, c))} />
-              </div>
               <div className="text-sm">
                 <span className="mb-2 block font-semibold">Team size</span>
                 <Chips options={[
@@ -780,7 +717,23 @@ export function IntelligencePanel() {
                   { value: "50-249", label: "50–249" }, { value: "250+", label: "250+" },
                 ]} value={elig.fteBand} onPick={(v) => setElig((p) => ({ ...p, fteBand: v }))} />
               </div>
+              <div className="text-sm">
+                <span className="mb-2 flex items-center font-semibold">
+                  Share of cost you could self-fund
+                  <InfoDot>
+                    Almost every grant is co-financed: the fund pays a percentage
+                    and you carry the rest. Below 25% closes most of them.
+                  </InfoDot>
+                </span>
+                <Chips options={[
+                  { value: ">50%", label: "More than half" },
+                  { value: "25-50%", label: "25–50%" },
+                  { value: "<25%", label: "Under 25%" },
+                ]} value={elig.cofinancingBand}
+                  onPick={(v) => setElig((p) => ({ ...p, cofinancingBand: v }))} />
+              </div>
             </div>
+
             <div className="text-sm">
               <span className="mb-2 flex items-center font-semibold">
                 Where is the product today?
@@ -797,6 +750,38 @@ export function IntelligencePanel() {
                 { value: "scaling_revenue", label: "Scaling with revenue" },
               ]} value={elig.developmentStage}
                 onPick={(v) => setElig((p) => ({ ...p, developmentStage: v }))} />
+            </div>
+
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Could you run this with partners?
+                <InfoDot>
+                  A large share of EU money is only available to consortia of
+                  three or more organisations from three or more countries. It
+                  gates 50 funds on its own.
+                </InfoDot>
+              </span>
+              <Chips options={[
+                { value: "yes", label: "Yes, we could" },
+                { value: "no", label: "No, single applicant" },
+                { value: "unsure", label: "Not sure" },
+              ]} value={elig.consortium}
+                onPick={(v) => setElig((p) => ({ ...p, consortium: v as EligibilityAnswers["consortium"] }))} />
+            </div>
+
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Do any of these apply?
+                <InfoDot>
+                  Standard EU exclusion situations. Any one of them closes most
+                  state aid outright, so it is better to know now than after an
+                  application. Asked as a checklist because it settles roughly
+                  80 rules across 47 funds in a single answer.
+                </InfoDot>
+              </span>
+              <MultiChips options={[...EXCLUSION_OPTIONS]} value={elig.exclusionFlags ?? []}
+                exclusive="none"
+                onToggle={(v) => setElig((p) => ({ ...p, exclusionFlags: toggleExclusion(p.exclusionFlags ?? [], v) }))} />
             </div>
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
