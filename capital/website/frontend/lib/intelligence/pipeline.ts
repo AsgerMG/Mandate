@@ -8,6 +8,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
+import { assessAll, VERDICT_RANK } from "./verdict";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { semanticFundMatch } from "./semantic";
 import { type OpenFieldEvidence, type ProjectGateEvidence } from "./gateReach";
@@ -860,7 +861,15 @@ async function synthesize(
   // Stage D (v1): the deterministic eligibility screen — computed here, in
   // code, from the verified term records. The writer narrates it; the rows
   // themselves are never model-written.
-  const eligibilityScreen = evaluateEligibility(req.eligibility);
+  // Scoped to the shortlist. Unscoped this returns ~350 rows across all 322
+  // instruments — it rendered as a 35,000-pixel wall below the memo and buried
+  // the thing the founder came for. Per-instrument qualification now lives on
+  // the institution rows (verdict.ts); this screen is the framework checks plus
+  // the rules behind the funds actually on the table.
+  const eligibilityScreen = evaluateEligibility(
+    req.eligibility,
+    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+  );
   const screenBlock = eligibilityScreen.length
     ? "## Eligibility screen (AUTHORITATIVE, code-evaluated against primary law)\n" +
       eligibilityScreen.map((r) =>
@@ -1099,14 +1108,48 @@ async function synthesize(
         .map((c) => c.toUpperCase()),
     ),
   );
+  // Qualification comes before ease. A door that is open, or one thing away
+  // from open, outranks a door that merely scores well — and a door that is
+  // conclusively shut is dropped rather than ranked, because a roster of
+  // rejections is not advice.
+  const assessments = assessAll(
+    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    req.eligibility,
+  );
   const rankedByEase = instrumentTable
-    .map((row, i) => ({ row, i, ease: row.instrumentId ? easeById.get(row.instrumentId) : undefined }))
-    .sort((a, b) => (b.ease?.score ?? 0) - (a.ease?.score ?? 0) || a.i - b.i);
+    .map((row, i) => ({
+      row, i,
+      ease: row.instrumentId ? easeById.get(row.instrumentId) : undefined,
+      assessment: row.instrumentId ? assessments.get(row.instrumentId) : undefined,
+    }))
+    .sort((a, b) => {
+      const ra = VERDICT_RANK[a.assessment?.status ?? "unknown"];
+      const rb = VERDICT_RANK[b.assessment?.status ?? "unknown"];
+      if (ra !== rb) return ra - rb;
+      return (b.ease?.score ?? 0) - (a.ease?.score ?? 0) || a.i - b.i;
+    });
 
-  const baseRows = rankedByEase.slice(0, BRIEF_INSTITUTION_CAP).map((r) => r.row);
+  // Never show a founder a fund they cannot access — no exceptions, no
+  // backfill. A short table of real options beats a padded one, and a fund
+  // that is conclusively shut is time the founder does not get back. In
+  // practice the table stays full: `unknown` counts as accessible, and most
+  // instruments carry no encoded filter yet.
+  const baseRows = rankedByEase
+    .filter((r) => r.assessment?.status !== "blocked")
+    .slice(0, BRIEF_INSTITUTION_CAP)
+    .map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
     const id = baseRows[idx].instrumentId;
-    return { ...entry, whyEasy: whyEasyLine(id ? easeById.get(id) : undefined, entry.institution) };
+    const a = id ? assessments.get(id) : undefined;
+    return {
+      ...entry,
+      whyEasy: whyEasyLine(id ? easeById.get(id) : undefined, entry.institution),
+      verdict: a?.status ?? "unknown",
+      // Only ever one blocker reaches the founder — a row with two or more is
+      // `blocked` and was already dropped above.
+      blocker: a?.blockers[0]?.requirement,
+      gatesChecked: a?.checked ?? 0,
+    };
   });
   // Stream what's already known, well before the writer model call below
   // resolves: self footprint, eligibility screen and the institution rows
@@ -1237,6 +1280,16 @@ async function synthesize(
           `commercial payoff in plain terms, a grant amount, a guarantee ` +
           `that cuts cost of capital, an equity stake from a public investor, ` +
           `a tax credit, never vague "access to funding" language.\n` +
+          // The verdict layer is code-computed and already rendered; the
+          // writer must narrate it, never contradict or restate it.
+          `EVERY institution below has been screened against its own encoded ` +
+          `eligibility rules. Funds this company cannot access were already ` +
+          `removed — so never write that they fail, or might not qualify, or ` +
+          `should check whether they are eligible for a listed fund. Where a ` +
+          `row carries "One thing in the way", treat that requirement as the ` +
+          `single obstacle and make nextStep the action that clears it. Never ` +
+          `write "you qualify" as a guarantee: the correct claim is that ` +
+          `nothing in the documented rules rules them out.\n` +
           `"institutionNotes": for each of the 5 institutions, "whyEligible" ` +
           `(AT MOST 25 words) is a specific clause grounded in the ` +
           `eligibility screen and scoping profile above, never a generic ` +
@@ -1674,7 +1727,10 @@ export function computeVerdict(
     opts.description,
   );
   return {
-    eligibilityScreen: evaluateEligibility(eligibility),
+    eligibilityScreen: evaluateEligibility(
+      eligibility,
+      candidates.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    ),
     instrumentTable: candidates.slice(0, DISPLAY_CAP),
     selfMatched: selfRecord.matched,
     candidateInstrumentIds: candidates.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),

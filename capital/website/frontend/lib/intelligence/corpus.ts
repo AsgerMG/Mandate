@@ -134,6 +134,15 @@ function parseSnapshot(md: string): FundSnapshot | null {
 export interface DbGate {
   id: string;
   gateFamily?: string;
+  /** Curated by ETL/terms/encode_gates.py: filter | obligation |
+   *  programme_fact | vague. Only 'filter' may decide a verdict — the other
+   *  roles are real information but say nothing about who qualifies. Absent
+   *  on gates not yet triaged. */
+  gateRole?: string;
+  /** The intake field whose answer actually decides this gate. Prefer this
+   *  over `intakeField`, which is extractor-owned and was measured wrong on
+   *  roughly half to two-thirds of a sample. */
+  intakeFieldResolved?: string;
   requirement: string;
   value: string;
   valueSpec?: unknown | null;
@@ -219,8 +228,8 @@ export async function hydrateDbInstruments(): Promise<void> {
         ),
         client.query(
           `SELECT instrument_id, gate_key, gate_family, requirement, value,
-                  value_spec, intake_field, quote, source_file, source_locator,
-                  verification_level
+                  value_spec, intake_field, gate_role, intake_field_resolved,
+                  quote, source_file, source_locator, verification_level
            FROM eligibility_gates`,
         ),
       ]);
@@ -231,6 +240,8 @@ export async function hydrateDbInstruments(): Promise<void> {
         list.push({
           id: g.gate_key,
           gateFamily: g.gate_family ?? undefined,
+          gateRole: g.gate_role ?? undefined,
+          intakeFieldResolved: g.intake_field_resolved ?? undefined,
           requirement: g.requirement,
           value: g.value ?? "",
           valueSpec: g.value_spec ? JSON.parse(g.value_spec) : null,

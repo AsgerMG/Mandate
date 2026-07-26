@@ -297,6 +297,19 @@ def apply_012(conn: sqlite3.Connection) -> None:
     print("  applied 012_llm_cited_and_clauses.sql")
 
 
+def apply_013(conn: sqlite3.Connection) -> None:
+    """gate_role + intake_field_resolved + encoding_method — makes the
+    eligibility corpus machine-decidable without mutating extractor-owned
+    columns (see 013_gate_role_and_resolved_field.sql for the measurements
+    that motivated it)."""
+    if column_exists(conn, "eligibility_gates", "gate_role"):
+        print("  skip 013 (already applied — gate_role exists)")
+        return
+    sql = (MIG_DIR / "013_gate_role_and_resolved_field.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 013_gate_role_and_resolved_field.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -307,6 +320,7 @@ MIGRATIONS = {
     "010": apply_010,
     "011": apply_011,
     "012": apply_012,
+    "013": apply_013,
 }
 
 

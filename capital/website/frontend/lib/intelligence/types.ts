@@ -171,6 +171,18 @@ export interface InstitutionEntry {
   legalBasis?: string;
   /** Grounded in the eligibility screen + scoping profile, never invented. */
   whyEligible: string;
+  /** Qualification call from the encoded eligibility rules (verdict.ts).
+   *  'open' = nothing we can check rules you out. Deliberately never "you
+   *  qualify": the median instrument has only two encoded filters, so passing
+   *  them is not proof. 'blocked' rows never reach the client — they are
+   *  dropped in the pipeline rather than shown. */
+  verdict?: "open" | "one_blocker" | "blocked" | "unknown";
+  /** The single requirement standing in the way, verbatim, when verdict is
+   *  'one_blocker'. This is the "here is what I would change" line. */
+  blocker?: string;
+  /** How many encoded filters could actually be evaluated — the honest weight
+   *  behind the verdict. */
+  gatesChecked?: number;
   /** Code-built, never model-written: why this row ranks where it does on
    *  ease (brief_funnel_v2 Stage 3). Deliberately phrased as requirements
    *  ANSWERED, not cleared — see the honesty note in ease.ts. Empty when

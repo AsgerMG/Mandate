@@ -110,11 +110,13 @@ def main() -> None:
             cur.executemany(
                 """INSERT INTO eligibility_gates
                      (instrument_id, gate_key, gate_family, requirement, value, value_spec,
-                      intake_field, quote, source_file, source_locator, verification_level,
+                      intake_field, gate_role, intake_field_resolved, encoding_method,
+                      quote, source_file, source_locator, verification_level,
                       verify_note, verify_by)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 [(r["instrument_id"], r["gate_key"], r["gate_family"], r["requirement"], r["value"],
-                  r["value_spec"], r["intake_field"], r["quote"], r["source_file"], r["source_locator"],
+                  r["value_spec"], r["intake_field"], r["gate_role"], r["intake_field_resolved"],
+                  r["encoding_method"], r["quote"], r["source_file"], r["source_locator"],
                   r["verification_level"], r["verify_note"], r["verify_by"]) for r in gates],
             )
 

@@ -41,8 +41,8 @@ def main() -> None:
     """).fetchall()
     gates = conn.execute("""
         SELECT instrument_id, gate_key, gate_family, requirement, value,
-               value_spec, intake_field, quote, source_file, source_locator,
-               verification_level
+               value_spec, intake_field, gate_role, intake_field_resolved,
+               quote, source_file, source_locator, verification_level
         FROM eligibility_gates
     """).fetchall()
 
@@ -55,6 +55,14 @@ def main() -> None:
             "value": g["value"] or "",
             "valueSpec": json.loads(g["value_spec"]) if g["value_spec"] else None,
             "intakeField": g["intake_field"] or "none",
+            # Curated layer (ETL/terms/encode_gates.py). MUST ship in the JSON
+            # fallback too: without it a Postgres outage would silently
+            # evaluate gates against the extractor's field, which was measured
+            # wrong on roughly half a sample, and with no role filtering — so
+            # obligations and programme facts would be scored as if they were
+            # eligibility tests.
+            "gateRole": g["gate_role"],
+            "intakeFieldResolved": g["intake_field_resolved"],
             "quote": g["quote"] or "",
             "source": {"file": g["source_file"] or "", "locator": g["source_locator"] or ""},
             "verificationLevel": g["verification_level"],

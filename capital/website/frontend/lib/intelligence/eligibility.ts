@@ -22,7 +22,15 @@ import type { EligibilityAnswers, EligibilityCheck } from "./types";
 
 type ValueSpec =
   | { op: "band_max"; field: string; maxAllowed: string; order: string[] }
+  // band_min added 2026-07-26 with ETL/terms/encode_gates.py: floors are as
+  // common as ceilings in real rules ("must already show a prototype",
+  // "minimum TRL 4") and could not be expressed before.
+  | { op: "band_min"; field: string; minAllowed: string; order: string[] }
   | { op: "in"; field: string; allowed: string[] }
+  // not_in: exclusion lists are pervasive in EU rules ("entities established
+  // in Russia, Belarus... are not eligible") and inverting them by hand into
+  // an `in` list of every permitted country is both lossy and unmaintainable.
+  | { op: "not_in"; field: string; allowed: string[] }
   | { op: "equals"; field: string; value: string }
   | { op: "boolean_true" | "boolean_false"; field: string }
   | { op: "numeric_gte" | "numeric_lte"; field: string; threshold: number };
@@ -60,7 +68,19 @@ function cite(
  * primary-text citation. Rows whose citation is unverified render as
  * "verify:" downstream and are never asserted.
  */
-export function evaluateEligibility(e?: EligibilityAnswers): EligibilityCheck[] {
+export function evaluateEligibility(
+  e?: EligibilityAnswers,
+  /** Restrict the per-instrument half of the screen to these instruments.
+   *
+   *  Before value_spec was populated the generic loop produced nothing, so
+   *  scope did not matter. It now produces ~350 rows across all 322
+   *  instruments, which rendered as a 35,000-pixel wall and buried the memo.
+   *  Per-instrument qualification belongs on the institution rows (verdict.ts);
+   *  this screen should show the framework checks plus the rules behind the
+   *  funds actually being recommended. Omit to keep the old whole-corpus
+   *  behaviour. */
+  scopeInstrumentIds?: string[],
+): EligibilityCheck[] {
   const records = loadTerms();
   if (!records || !e) return [];
   const out: EligibilityCheck[] = [];
@@ -220,7 +240,10 @@ export function evaluateEligibility(e?: EligibilityAnswers): EligibilityCheck[] 
     });
   }
 
-  out.push(...evaluateGenericGates(records, e));
+  const scoped = scopeInstrumentIds?.length
+    ? records.filter((r) => scopeInstrumentIds.includes(r.id))
+    : records;
+  out.push(...evaluateGenericGates(scoped, e));
 
   return out;
 }
@@ -233,6 +256,36 @@ function bandAtOrBelow(order: string[], answer: string, maxAllowed: string): boo
   return ai <= mi;
 }
 
+function bandAtOrAbove(order: string[], answer: string, minAllowed: string): boolean | null {
+  const ai = order.indexOf(answer);
+  const mi = order.indexOf(minAllowed);
+  if (ai === -1 || mi === -1) return null;
+  return ai >= mi;
+}
+
+/**
+ * Does the founder's answer hit any of `allowed`? Handles both shapes an
+ * EligibilityAnswers field can take: a single value (developmentStage) and a
+ * list (entityCountries, activityCountries, conditionality). Case-insensitive,
+ * because encoded country lists are written as full English names while intake
+ * values arrive however the picker supplied them.
+ *
+ * Returns null — "unknown", never "fails" — when the founder simply hasn't
+ * answered, so an unanswered question can never read as a disqualification.
+ */
+function matchesAny(answer: unknown, allowed: string[]): boolean | null {
+  const norm = (s: string) => s.trim().toLowerCase();
+  const wanted = new Set(allowed.map(norm));
+  if (typeof answer === "string") {
+    return answer.trim() ? wanted.has(norm(answer)) : null;
+  }
+  if (Array.isArray(answer)) {
+    const vals = answer.filter((a): a is string => typeof a === "string" && Boolean(a.trim()));
+    return vals.length ? vals.some((a) => wanted.has(norm(a))) : null;
+  }
+  return null;
+}
+
 /** Evaluate one gate's valueSpec against the founder's answer. Returns null
  *  when the spec references a field the answer doesn't have a usable form
  *  for (renders as "unknown" upstream, never guessed). */
@@ -240,8 +293,18 @@ function evalComparator(spec: ValueSpec, answer: unknown): boolean | null {
   switch (spec.op) {
     case "band_max":
       return typeof answer === "string" ? bandAtOrBelow(spec.order, answer, spec.maxAllowed) : null;
+    case "band_min":
+      return typeof answer === "string" ? bandAtOrAbove(spec.order, answer, spec.minAllowed) : null;
+    // Several intake fields are multi-value (entityCountries, activityCountries,
+    // conditionality). Treating only strings meant the single most common
+    // encoded gate — "must be established in <country>" — silently returned
+    // "unknown" for every founder, because their answer is an array.
     case "in":
-      return typeof answer === "string" ? spec.allowed.includes(answer) : null;
+      return matchesAny(answer, spec.allowed);
+    case "not_in": {
+      const hit = matchesAny(answer, spec.allowed);
+      return hit === null ? null : !hit;
+    }
     case "equals":
       return typeof answer === "string" ? answer === spec.value : null;
     case "boolean_true":
@@ -274,8 +337,19 @@ function evaluateGenericGates(records: TermRecord[], e?: EligibilityAnswers): El
   const out: EligibilityCheck[] = [];
   for (const inst of records) {
     for (const gate of inst.gates) {
-      if (gate.intakeField === "none" || !gate.valueSpec) continue;
-      const answer = (e as Record<string, unknown>)[gate.intakeField];
+      // Only a triaged FILTER may decide a verdict. Obligations ("works must
+      // not start before the grant decision") and programme facts ("aid
+      // intensity capped at 20%") are real information, but they say nothing
+      // about who qualifies — and roughly half the corpus is one of those two.
+      // Gates not yet triaged (gateRole undefined) still evaluate, so this
+      // degrades safely while encoding is in progress.
+      if (gate.gateRole && gate.gateRole !== "filter") continue;
+      // intakeFieldResolved is the curated field; intakeField is the
+      // extractor's guess and was measured wrong on ~half to two-thirds of a
+      // sample. Prefer the curated one, fall back only when untriaged.
+      const field = gate.intakeFieldResolved || gate.intakeField;
+      if (!field || field === "none" || !gate.valueSpec) continue;
+      const answer = (e as Record<string, unknown>)[field];
       if (answer === undefined || answer === null || answer === "") continue;
       const result = evalComparator(gate.valueSpec as ValueSpec, answer);
       const level = gate.verificationLevel ?? "inventory_inferred";

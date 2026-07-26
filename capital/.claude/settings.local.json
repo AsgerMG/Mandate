@@ -275,7 +275,11 @@
       "Bash(sqlite3 -readonly /Users/asgermollergrimberg/Wincent/data/db.sqlite \"SELECT aid_objective, COUNT\\(*\\) FROM public_funding_events GROUP BY aid_objective ORDER BY COUNT\\(*\\) DESC;\")",
       "Bash(sqlite3 -readonly /Users/asgermollergrimberg/Wincent/data/db.sqlite \".tables\")",
       "Bash(sqlite3 -readonly /Users/asgermollergrimberg/Wincent/data/db.sqlite \"SELECT COUNT\\(DISTINCT project_title\\) FROM public_funding_events WHERE source LIKE 'satr_%';\")",
-      "Bash(sqlite3 -readonly /Users/asgermollergrimberg/Wincent/data/db.sqlite \"SELECT project_title, COUNT\\(*\\) FROM public_funding_events WHERE source LIKE 'satr_%' GROUP BY project_title ORDER BY COUNT\\(*\\) DESC LIMIT 10;\")"
+      "Bash(sqlite3 -readonly /Users/asgermollergrimberg/Wincent/data/db.sqlite \"SELECT project_title, COUNT\\(*\\) FROM public_funding_events WHERE source LIKE 'satr_%' GROUP BY project_title ORDER BY COUNT\\(*\\) DESC LIMIT 10;\")",
+      "Bash(sqlite3 -column data/db.sqlite ' *)",
+      "Bash(perl -pi -e 's|^import \\\\{ scoreEase, whyEasyLine \\\\} from \"\\\\./ease\";$|import { scoreEase, whyEasyLine } from \"./ease\";\\\\nimport { assessAll, VERDICT_RANK, type VerdictStatus } from \"./verdict\";|' lib/intelligence/pipeline.ts)",
+      "Bash(perl -pi -e 's|import \\\\{ assessAll, VERDICT_RANK, type VerdictStatus \\\\} from \"\\\\./verdict\";|import { assessAll, VERDICT_RANK } from \"./verdict\";|' lib/intelligence/pipeline.ts)",
+      "Bash(python3 ETL/terms/audit_encoding_vs_reality.py)"
     ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [

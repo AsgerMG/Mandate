@@ -70,6 +70,11 @@ data:
 # frontend reads, then publish to Railway Postgres (the live read path once
 # DATABASE_URL is set — see the Railway migration plan). Not part of `make
 # data` since it has its own DATABASE_URL dependency and publish cadence.
+# Order matters: triage/encode must run BEFORE eligibility_export.py and
+# migrate_to_postgres.py, or both would publish the corpus without the curated
+# gate_role / intake_field_resolved / value_spec columns. Both encode steps are
+# incremental — a re-run only processes gates that are new or untriaged.
+#
 # The two vector indexes rebuild LAST, after Postgres has the new corpus.
 # They are separate indexes answering different questions and must not be
 # conflated: eligibility_embeddings = what a fund DEMANDS (RAG over
@@ -78,6 +83,9 @@ data:
 # `make eligibility` only embeds what actually changed. Needs VOYAGE_KEY.
 eligibility:
 	python3 ETL/terms/sync_gates_from_yaml.py
+	python3 ETL/terms/encode_gates.py triage
+	python3 ETL/terms/encode_gates.py encode
+	python3 ETL/terms/audit_encoding_vs_reality.py
 	python3 website/build/eligibility_export.py
 	python3 ETL/terms/migrate_to_postgres.py
 	python3 ETL/terms/embed_eligibility.py run

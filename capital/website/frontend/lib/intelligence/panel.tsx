@@ -1056,9 +1056,21 @@ function InstitutionsTable({ institutions, pending = false }: { institutions: In
               </td>
               <td className="py-2.5 pr-3">{r.supportType}</td>
               <td className="py-2.5 pr-3">
+                {/* Qualification comes first and is code-computed, so it is
+                    already correct while the model's prose streams. Funds a
+                    company cannot access were dropped in the pipeline and
+                    never reach this table. */}
+                {r.verdict === "one_blocker" && r.blocker ? (
+                  <span className="mb-1 block">
+                    <span className="font-semibold text-[var(--accent)]">One thing in the way:</span>{" "}
+                    <span className="text-[var(--foreground-soft)]">{r.blocker}</span>
+                  </span>
+                ) : r.verdict === "open" && (r.gatesChecked ?? 0) > 0 ? (
+                  <span className="mb-1 block font-semibold text-[#3d6136]">
+                    Open to you: nothing in its documented rules rules you out
+                  </span>
+                ) : null}
                 {pending && !r.whyEligible ? <PlaceholderBar /> : r.whyEligible}
-                {/* Code-built, so it is already correct while the model's
-                    prose is still streaming — no placeholder needed. */}
                 {r.whyEasy && (
                   <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
                     {r.whyEasy}
@@ -1095,12 +1107,28 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
  *  screen and the final memo so both render identically. */
 function EligibilityTable({ rows }: { rows: EligibilityCheck[] }) {
   if (!rows || rows.length === 0) return null;
+  // Show what the founder can act on. Once the rules corpus became machine-
+  // readable this screen filled with "likely met — verify:" rows that carry no
+  // decision: passing a rule you were always going to pass is not information,
+  // and 20 such rows sit between the reader and the two that matter. Anything
+  // failing, unknown, or asserted (met/not_met on a verified gate) is shown;
+  // the merely-likely-met are counted instead.
+  const ACTIONABLE = new Set(["not_met", "likely_not_met", "unknown", "met", "info"]);
+  const shown = rows.filter((r) => ACTIONABLE.has(r.status));
+  const passedQuietly = rows.length - shown.length;
   return (
     <>
       <SectionTitle>Eligibility screen</SectionTitle>
       <p className="mb-3 text-[13px] text-[var(--muted-foreground)]">
-        Evaluated in code against the primary texts (framework level). Each
-        row cites its legal basis; failed gates name the cure.
+        Evaluated in code against the primary texts. Each row cites its legal
+        basis; failed gates name the cure.
+        {passedQuietly > 0 && (
+          <>
+            {" "}
+            A further {passedQuietly} documented {passedQuietly === 1 ? "rule" : "rules"} on
+            these funds {passedQuietly === 1 ? "was" : "were"} checked and raised nothing.
+          </>
+        )}
       </p>
       <table className="w-full border-collapse text-[14px]">
         <thead>
@@ -1111,7 +1139,7 @@ function EligibilityTable({ rows }: { rows: EligibilityCheck[] }) {
           </tr>
         </thead>
         <tbody className="divide-y divide-[var(--border)] align-top">
-          {rows.map((r, i) => (
+          {shown.map((r, i) => (
             <tr key={i}>
               <td className="py-2.5 pr-3 font-semibold">{r.check}</td>
               <td className="py-2.5 pr-3">
