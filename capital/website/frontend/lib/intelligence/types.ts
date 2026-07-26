@@ -283,19 +283,38 @@ export interface IntelligenceRequest {
   profileSignal?: ProfileSignal;
 }
 
-/** Sector, asked directly rather than inferred. Two reasons: sector carve-outs
- *  are pervasive in GBER and de minimis (agriculture, fisheries, financial
- *  services, tobacco, weapons are excluded outright by many schemes), and the
- *  corpus's own subsector taxonomy is not usable for this — 19 values, present
- *  on 12% of companies, and it labelled Clean Aviation's top sectors as "heat
- *  pumps hvac". Measured to decide ~45 otherwise-undecidable eligibility rules. */
+/**
+ * Sector, asked directly rather than inferred. The corpus's own subsector
+ * taxonomy cannot supply it — 19 values, present on 12% of companies, and it
+ * labelled Clean Aviation's top sectors as "heat pumps hvac".
+ *
+ * The buckets mirror the exclusions aid law actually draws, NOT how founders
+ * describe themselves. Measured across the triaged corpus: 82 instruments carry
+ * rules about financial/insurance activity, 17 about agriculture/fisheries, 12
+ * about tobacco/gambling/weapons, 8 about real estate. An earlier version
+ * collapsed all of those into one "restricted" option, which meant a lending
+ * fintech inherited blocks written for tobacco companies and vice versa —
+ * silently hiding funds it was entitled to.
+ *
+ * `financial_services` is where a company's OWN main activity is finance (a
+ * lender, an insurer, a licensed bank). Software sold TO banks is
+ * `software_digital`: the rules exclude financial activity as a business, not
+ * customers in that industry.
+ *
+ * Deliberately NOT split further by go-to-market or customer type — B2B vs
+ * B2C, govtech vs platform, cloud vs AI all sit in `software_digital` because
+ * no eligibility rule in the corpus distinguishes them. That differentiation
+ * comes from semantic fund matching on the description (semantic.ts) and the
+ * project questions, which is where it belongs.
+ */
 export const SECTOR_OPTIONS = [
-  { value: "industrial_deeptech", label: "Manufacturing, industrial or deep tech" },
-  { value: "software_ict", label: "Software, digital or ICT services" },
-  { value: "life_sciences", label: "Life sciences or health" },
+  { value: "software_digital", label: "Software, AI, platforms or cloud" },
+  { value: "hardware_robotics", label: "Robotics, hardware or manufacturing" },
+  { value: "health_lifesciences", label: "Health, medtech or life sciences" },
   { value: "energy_cleantech", label: "Energy, cleantech or environment" },
-  { value: "agrifood", label: "Agriculture, forestry, fisheries or food" },
-  { value: "restricted", label: "Finance, insurance, gambling, defence, tobacco or alcohol" },
+  { value: "agrifood", label: "Agritech, food, forestry or fisheries" },
+  { value: "financial_services", label: "Banking, lending, insurance or payments" },
+  { value: "excluded_activities", label: "Gambling, tobacco, alcohol, weapons or real estate" },
 ] as const;
 export type SectorValue = (typeof SECTOR_OPTIONS)[number]["value"];
 

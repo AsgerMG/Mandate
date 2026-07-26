@@ -27,8 +27,8 @@ const COFINANCING_BAND_VALUES = [">50%", "25-50%", "<25%", "unsure"] as const;
 const DEVELOPMENT_STAGE_VALUES = ["research", "prototype", "pilot_customers", "scaling_revenue"] as const;
 const NEED_BY_VALUES = ["asap_weeks", "months_6", "months_18", "flexible"] as const;
 const CONDITIONALITY_VALUES = ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"] as const;
-const SECTOR_VALUES = ["industrial_deeptech", "software_ict", "life_sciences",
-  "energy_cleantech", "agrifood", "restricted"] as const;
+const SECTOR_VALUES = ["software_digital", "hardware_robotics", "health_lifesciences",
+  "energy_cleantech", "agrifood", "financial_services", "excluded_activities"] as const;
 const EXCLUSION_VALUES = ["none", "insolvency", "losses_over_half_capital",
   "recovery_order", "sanctions", "tax_arrears"] as const;
 

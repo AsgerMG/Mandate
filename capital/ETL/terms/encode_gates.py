@@ -110,8 +110,8 @@ MULTI_VALUE_FIELDS = {"entityCountries", "activityCountries", "conditionality", 
 ENUM_VALUES = {
     "borrowerModel": ["operating", "balance_sheet_lender", "originator", "fund_manager"],
     "conditionality": ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"],
-    "sector": ["industrial_deeptech", "software_ict", "life_sciences", "energy_cleantech",
-               "agrifood", "restricted"],
+    "sector": ["software_digital", "hardware_robotics", "health_lifesciences",
+               "energy_cleantech", "agrifood", "financial_services", "excluded_activities"],
     "exclusionFlags": ["none", "insolvency", "losses_over_half_capital", "recovery_order",
                        "sanctions", "tax_arrears"],
     "wouldOpenEntity": ["yes", "no", "depends"],
@@ -226,9 +226,15 @@ Available attributes:
   bankRelationship      a bank that would lend if guaranteed
   institutionalBacking  VC/institutional investors aboard
   needBy                how soon the money is needed
-  sector                main sector: industrial/deep tech, software/ICT, life sciences,
-                        energy/cleantech, agrifood, or a restricted sector
-                        (finance, insurance, gambling, defence, tobacco, alcohol)
+  sector                the company's OWN main activity: software_digital (software,
+                        AI, platforms, cloud - including software sold TO banks),
+                        hardware_robotics, health_lifesciences, energy_cleantech,
+                        agrifood, financial_services (the company itself lends,
+                        insures, banks or processes payments), or
+                        excluded_activities (gambling, tobacco, alcohol, weapons,
+                        real estate). Encode each exclusion against the sectors it
+                        NAMES - a rule excluding tobacco must not also exclude
+                        fintech, and vice versa.
   exclusionFlags        standard exclusion situations, multi-select: none apply /
                         insolvency / accumulated losses over half share capital /
                         unpaid state-aid recovery order / EU sanctions or exclusion

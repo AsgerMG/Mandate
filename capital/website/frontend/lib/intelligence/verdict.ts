@@ -63,6 +63,17 @@ type ValueSpec = {
   threshold?: number;
 };
 
+/**
+ * Values that mean "I don't know", not an answer. They MUST evaluate to null.
+ *
+ * Every yes/no intake field offers "Not sure", and comparing it literally
+ * returned false — so hedging on one question read as FAILING it. That single
+ * behaviour produced a false blocker on 12 of 12 test archetypes: the honest
+ * answer was punished, and funds were hidden from founders who simply had not
+ * decided yet.
+ */
+const NON_ANSWERS = new Set(["unsure", "not sure", "unknown", "n/a", "na", "depends"]);
+
 const norm = (s: string) => s.trim().toLowerCase();
 
 /** Mirrors eligibility.ts's evalComparator. Kept here rather than imported so
@@ -71,9 +82,14 @@ const norm = (s: string) => s.trim().toLowerCase();
 function evaluate(spec: ValueSpec, answer: unknown): boolean | null {
   const matchesAny = (allowed: string[]): boolean | null => {
     const wanted = new Set(allowed.map(norm));
-    if (typeof answer === "string") return answer.trim() ? wanted.has(norm(answer)) : null;
+    if (typeof answer === "string") {
+      if (!answer.trim() || NON_ANSWERS.has(norm(answer))) return null;
+      return wanted.has(norm(answer));
+    }
     if (Array.isArray(answer)) {
-      const vals = answer.filter((a): a is string => typeof a === "string" && Boolean(a.trim()));
+      const vals = answer.filter(
+        (a): a is string => typeof a === "string" && Boolean(a.trim()) && !NON_ANSWERS.has(norm(a)),
+      );
       return vals.length ? vals.some((a) => wanted.has(norm(a))) : null;
     }
     return null;
