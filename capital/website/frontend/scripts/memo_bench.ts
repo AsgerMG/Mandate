@@ -12,9 +12,17 @@
  *
  * COSTS REAL MONEY — each company is a full research + synthesis run.
  *
- * Run: npx tsx scripts/memo_bench.ts [--only "Robotics,MedTech"] [--concurrency 3]
+ * Runs a SMALL ROTATING SAMPLE by default (2 companies), not the whole set.
+ * Each run picks the ones least recently tested and records the timestamp in
+ * memo-bench/history.json, so repeated runs cover everything over time while
+ * keeping any single batch cheap. A full 12-company sweep is real money.
+ *
+ * Run: npx tsx scripts/memo_bench.ts                    # 2 least-recently-tested
+ *      npx tsx scripts/memo_bench.ts --sample 4
+ *      npx tsx scripts/memo_bench.ts --only "Robotics,MedTech"
+ *      npx tsx scripts/memo_bench.ts --all              # everything, costs the most
  */
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 for (const line of readFileSync(".env.local", "utf8").split("\n")) {
   const m = line.match(/^([A-Z_]+)=(.*)$/);
   if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
@@ -74,7 +82,23 @@ async function main() {
   const { runIntelligence } = await import("../lib/intelligence/pipeline");
   await hydrateDbInstruments();
 
-  const targets = COMPANIES.filter((c) => !only || only.includes(c.archetype));
+  const sampleArg = args.indexOf("--sample");
+  const sample = sampleArg !== -1 ? Number(args[sampleArg + 1]) : 2;
+  const all = args.includes("--all");
+
+  // Least-recently-tested first, so successive small runs sweep the set.
+  const HISTORY = "memo-bench/history.json";
+  const history: Record<string, number> = existsSync(HISTORY)
+    ? JSON.parse(readFileSync(HISTORY, "utf8"))
+    : {};
+  let targets = COMPANIES.filter((c) => !only || only.includes(c.archetype));
+  if (!only && !all) {
+    targets = [...targets]
+      .sort((a, b) => (history[a.archetype] ?? 0) - (history[b.archetype] ?? 0))
+      .slice(0, sample);
+  }
+  const untested = COMPANIES.filter((c) => !history[c.archetype]).length;
+  console.log(`${untested} of ${COMPANIES.length} archetypes never tested\n`);
   mkdirSync("memo-bench", { recursive: true });
   console.log(`running ${targets.length} companies, concurrency ${concurrency}\n`);
 
@@ -114,8 +138,13 @@ async function main() {
   });
   await Promise.all(workers);
 
-  writeFileSync("memo-bench/results.json", JSON.stringify(results, null, 1));
-  console.log(`\nwrote memo-bench/results.json (${results.length} memos)`);
+  const stamp = Date.now();
+  for (const r of results) if (!r.error) history[r.archetype as string] = stamp;
+  writeFileSync(HISTORY, JSON.stringify(history, null, 1));
+  writeFileSync(`memo-bench/run-${stamp}.json`, JSON.stringify(results, null, 1));
+  const remaining = COMPANIES.filter((c) => !history[c.archetype]).map((c) => c.archetype);
+  console.log(`\nwrote memo-bench/run-${stamp}.json`);
+  console.log(remaining.length ? `still untested: ${remaining.join(", ")}` : "every archetype has been tested");
 }
 
 main();

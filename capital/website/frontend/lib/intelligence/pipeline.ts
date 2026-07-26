@@ -373,6 +373,14 @@ const DISPLAY_CAP = 6;
 // the preliminary verdict's DISPLAY_CAP — a lean founder gets a shortlist,
 // not a menu.
 const BRIEF_INSTITUTION_CAP = 5;
+/** How many candidates the WRITER is shown. More than the five that ship, so
+ *  it can discard the ones it can see are hopeless and still leave a full
+ *  table. Reading real memos, four of Neura Robotics' five institutions were
+ *  "one thing in the way" and three told the founder to skip them — the
+ *  verdict engine only counts ENCODED rules, so a fund can be plainly wrong on
+ *  stage or theme and still score as one small obstacle away. The writer can
+ *  see that; it just had no way to act on it. */
+const WRITER_CANDIDATE_CAP = 7;
 // The pool synthesize() screens before cutting to the five shown. Deliberately
 // wider than DISPLAY_CAP: funds a founder cannot access are dropped AFTER
 // assessment, so a pool of six meant a founder blocked on three of them got a
@@ -1238,7 +1246,7 @@ async function synthesize(
       seenNames.add(name);
       return true;
     })
-    .slice(0, BRIEF_INSTITUTION_CAP)
+    .slice(0, WRITER_CANDIDATE_CAP)
     .map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
     const id = baseRows[idx].instrumentId;
@@ -1257,7 +1265,12 @@ async function synthesize(
   // resolves: self footprint, eligibility screen and the institution rows
   // (whyEligible/nextStep still "" here — the client renders those as
   // placeholders until the final "report" event replaces this).
-  emit({ type: "partial", data: { self, eligibilityScreen, institutions } });
+  // Preview only the rows that could actually ship. The writer is shown more
+  // candidates than are published, and streaming all of them would flash eight
+  // rows that then collapse to five.
+  emit({ type: "partial", data: {
+    self, eligibilityScreen, institutions: institutions.slice(0, BRIEF_INSTITUTION_CAP),
+  } });
   const seenRowKeys = new Set<string>();
   const rowKeys = baseRows.map((row) => {
     let key = row.instrumentId ?? row.channel;
@@ -1317,11 +1330,13 @@ async function synthesize(
             // latency — the alternative was rendering 200+ characters of raw
             // statute in a table cell.
             blockerPlain: { type: "string" },  // "" when the row has no blocker
+            /** false = do not put this in front of the founder at all. */
+            worthPursuing: { type: "boolean" },
           },
           // blockerPlain is REQUIRED, not optional: left optional the model
           // simply omitted it every time and the raw statute rendered instead.
           // Empty string is the documented answer for rows with no blocker.
-          required: ["channel", "whyEligible", "nextStep", "blockerPlain"],
+          required: ["channel", "whyEligible", "nextStep", "blockerPlain", "worthPursuing"],
         },
       },
       positioning: { type: "string" },
@@ -1333,7 +1348,11 @@ async function synthesize(
 
   const res = await client.messages.create({
     model: WRITER_MODEL,
-    max_tokens: 16000,
+    // Raised from 16000 when WRITER_CANDIDATE_CAP went to 5 -> 8 candidates:
+    // that is ~60% more structured output on top of adaptive thinking, and a
+    // GovTech run truncated mid-string at ~1.9k chars of JSON, losing a
+    // three-minute memo outright.
+    max_tokens: 24000,
     // Sonnet 5 rejects fixed thinking budgets (400); adaptive lets the model
     // size the prioritisation judgement itself.
     thinking: { type: "adaptive" },
@@ -1409,7 +1428,19 @@ async function synthesize(
           `action that clears the obstacle, or the best alternative route. Never ` +
           `write "you qualify" as a guarantee: the correct claim is that ` +
           `nothing in the documented rules rules them out.\n` +
-          `"institutionNotes": for each of the 5 institutions, "whyEligible" ` +
+          `You are shown MORE candidates than will be published. For each, set ` +
+          `"worthPursuing": false when you can see it is simply not worth this ` +
+          `founder's time — wrong theme for what they build, wrong stage, a ` +
+          `structure that conflicts with what they asked for, or an obstacle ` +
+          `they realistically cannot clear. The screening upstream only checks ` +
+          `rules we have encoded, so a fund can look one small step away and ` +
+          `still be hopeless; you can see that and it cannot. Rejected rows are ` +
+          `dropped, never shown, so NEVER write "skip this", "deprioritise" or ` +
+          `"do not pursue" in whyEligible or nextStep — set the flag instead. ` +
+          `Be decisive but not destructive: only the top few are published, so ` +
+          `rejecting a merely-imperfect option can leave the founder with less ` +
+          `than they deserve. Reject what is wrong, keep what is workable.\n` +
+          `"institutionNotes": for EVERY candidate below, "whyEligible" ` +
           `(AT MOST 25 words) is a specific clause grounded in the ` +
           `eligibility screen and scoping profile above, never a generic ` +
           `claim, and must never assert an eligibility a NOT_MET row closes ` +
@@ -1454,9 +1485,17 @@ async function synthesize(
     // the stop reason instead of a bare "No JSON found".
     throw new Error(`writer returned no text (stop_reason=${res.stop_reason})`);
   }
+  // A truncated response throws deep inside JSON.parse with no context. Say
+  // what actually happened, so the next occurrence is one log line to diagnose
+  // rather than a mystery SyntaxError.
+  if (res.stop_reason === "max_tokens") {
+    console.error("writer hit max_tokens — output truncated, memo will fail to parse",
+      { candidates: rowKeys.length, chars: text.length });
+  }
   const narrative = extractJson<{
     bottomLine: string[];
-    institutionNotes: { channel: string; whyEligible: string; nextStep: string; blockerPlain?: string }[];
+    institutionNotes: { channel: string; whyEligible: string; nextStep: string;
+                        blockerPlain?: string; worthPursuing?: boolean }[];
     positioning: string;
     stateOfPlay: string;
     caveats: string;
@@ -1468,17 +1507,29 @@ async function synthesize(
   // buildInstitutions), and strip em-dashes from every model-written field
   // (house rule).
   const notesByKey = new Map(narrative.institutionNotes.map((n) => [n.channel, n]));
-  const finalInstitutions: InstitutionEntry[] = institutions.map((row, i) => {
+  const scored = institutions.map((row, i) => {
     const note = notesByKey.get(rowKeys[i]);
     return {
-      ...row,
-      whyEligible: deDash(note?.whyEligible ?? "Verify eligibility directly with the fund."),
-      nextStep: deDash(note?.nextStep ?? "Review the fund's current call and eligibility criteria."),
-      // Prefer the plain restatement; fall back to the verbatim rule so the
-      // obstacle is never silently dropped just because the writer omitted it.
-      blocker: row.blocker ? deDash(note?.blockerPlain || row.blocker) : undefined,
+      // Absent note = keep. A writer that failed to return a row must never
+      // silently delete a fund the founder was entitled to see.
+      worth: note?.worthPursuing !== false,
+      entry: {
+        ...row,
+        whyEligible: deDash(note?.whyEligible ?? "Verify eligibility directly with the fund."),
+        nextStep: deDash(note?.nextStep ?? "Review the fund's current call and eligibility criteria."),
+        // Prefer the plain restatement; fall back to the verbatim rule so the
+        // obstacle is never silently dropped just because the writer omitted it.
+        blocker: row.blocker ? deDash(note?.blockerPlain || row.blocker) : undefined,
+      } as InstitutionEntry,
     };
   });
+  // The writer's rejections drop out; ranking order is preserved. Floor of
+  // three so an over-zealous pass cannot leave the founder with an empty
+  // table — below that we fall back to the best-ranked rows regardless.
+  const worthwhile = scored.filter((x) => x.worth).map((x) => x.entry);
+  const finalInstitutions: InstitutionEntry[] = (
+    worthwhile.length >= 3 ? worthwhile : scored.map((x) => x.entry)
+  ).slice(0, BRIEF_INSTITUTION_CAP);
 
   return {
     self,
