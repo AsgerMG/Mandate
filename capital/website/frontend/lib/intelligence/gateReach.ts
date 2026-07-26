@@ -58,7 +58,14 @@ export function openFieldsForShortlist(
   const byField = new Map<string, { events: number; instruments: Set<string>; examples: { instrument: string; requirement: string }[] }>();
   for (const inst of shortlist) {
     for (const gate of inst.gates) {
-      const field = gate.intakeField;
+      // Only triaged FILTERS, on the CURATED field. This path feeds the
+      // deterministic verdict engine, so grounding it in the extractor's
+      // intake_field (wrong on roughly half a sample) or in obligations and
+      // programme facts (half the corpus) asks founders to resolve things that
+      // could never decide anything. Untriaged gates still pass, so coverage
+      // growth degrades safely.
+      if (gate.gateRole && gate.gateRole !== "filter") continue;
+      const field = gate.intakeFieldResolved || gate.intakeField;
       if (!field || field === "none") continue;
       if (FIRST_PAGE_FIELDS.has(field)) continue;
       if (!FIELD_ENUM_HINTS[field]) continue; // no real fixed answer set for it — out of scope here
@@ -200,11 +207,15 @@ export function openProjectGatesForShortlist(
     for (const gate of inst.gates) {
       const req = gate.requirement?.trim();
       if (!req || req.length < MIN_SUBSTANTIVE_LEN) continue;
-      if (FIRST_PAGE_GEOGRAPHY.has(gate.intakeField)) continue;
+      // Programme facts and vague prose make poor questions about a company's
+      // project; obligations are kept, because "funds must be used for X" is a
+      // legitimate thing to ask a founder about their plan.
+      if (gate.gateRole === "programme_fact" || gate.gateRole === "vague") continue;
+      if (FIRST_PAGE_GEOGRAPHY.has(gate.intakeFieldResolved || gate.intakeField)) continue;
       // A short gate whose field the founder already answered is a pure enum
       // restatement; a long one is genuinely more specific than the checkbox
       // and stays in play (the EIC TRL case).
-      if (isAnswered(answers, gate.intakeField) && req.length < 80) continue;
+      if (isAnswered(answers, gate.intakeFieldResolved || gate.intakeField) && req.length < 80) continue;
 
       const key = normaliseRequirement(req);
       const prev = byText.get(key);
@@ -232,7 +243,7 @@ export function openProjectGatesForShortlist(
         events: inst.eventCount || 1,
         instruments: new Set([inst.id]),
         bestRank: rank,
-        deprioritised: deprioritise.has(gate.intakeField),
+        deprioritised: deprioritise.has(gate.intakeFieldResolved || gate.intakeField),
       });
     }
   }

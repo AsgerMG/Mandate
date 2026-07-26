@@ -1520,6 +1520,30 @@ export async function generateGroundedRound(
 /** Options that carry no information. The prompt bans these, this catches the
  *  ones that slip through — a "a mix of the above" answer tells the memo
  *  writer nothing, and costs the founder one of only ~5 questions. */
+const TOKENS = (s: string) => s.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+
+/**
+ * A question's topic signature: every meaningful token in the question AND its
+ * options, minus anything the founder already said.
+ *
+ * Stripping the founder's own words is what makes this work. Every project
+ * question repeats the company's technology by design ("your insect protein
+ * bioconversion..."), so raw text overlap is near-total between any two of
+ * them. Remove that shared vocabulary and what remains is the actual topic —
+ * "technology readiness level" versus "thematic area".
+ *
+ * Options alone were not enough: the same TRL question phrased once as bands
+ * and once as a yes/no has two different answer spaces but is still the same
+ * question, and a live round shipped both.
+ */
+function topicSignature(q: { question: string; options: string[] }, ownWords: Set<string>): Set<string> {
+  const out = new Set<string>();
+  for (const t of [...TOKENS(q.question), ...q.options.flatMap(TOKENS)]) {
+    if (t.length >= 4 && !ownWords.has(t)) out.add(t);
+  }
+  return out;
+}
+
 const VAGUE_OPTION =
   /^(other|none|not sure|unsure|n\/?a|a mix\b|mix of\b|some of\b|several\b|both\b|partly\b|all of\b|combination\b|it depends\b|other sector\b)/i;
 
@@ -1611,6 +1635,16 @@ export async function generateProjectQuestions(
             `- OMIT a key entirely if its requirement is only about legal form, ` +
             `applicant category, headcount or country. Returning four sharp ` +
             `questions is better than five with a wasted one.\n` +
+            // Different funds phrase the same underlying requirement
+            // differently, so the per-instrument cap upstream cannot catch it:
+            // one live round asked TRL twice (two Horizon clusters) and
+            // "will funds go to R&D costs" twice (two SATR tracks). The model
+            // sees every key at once, so it is the right place to deduplicate.
+            `- You are shown several funds at once. If two keys would produce ` +
+            `the SAME question in substance (both asking technology readiness, ` +
+            `both asking what the money pays for), keep only the one whose ` +
+            `requirement is most specific and OMIT the other. A founder must ` +
+            `never be asked the same thing twice in one screen.\n` +
             `- At most one question per key.\n\n${evidence}\n\n` +
             `Return ONLY the JSON object for the schema.`,
         },
@@ -1622,7 +1656,7 @@ export async function generateProjectQuestions(
       .join("");
     const parsed = extractJson<{ questions: { key: string; question: string; options: string[] }[] }>(text);
     const seen = new Set<string>();
-    return (parsed.questions ?? [])
+    const questions: ProjectQuestion[] = (parsed.questions ?? [])
       .filter((q) => q?.key && byKey.has(q.key) && q.question?.trim() && Array.isArray(q.options))
       .filter((q) => (seen.has(q.key) ? false : (seen.add(q.key), true)))
       .map((q) => {
@@ -1647,6 +1681,28 @@ export async function generateProjectQuestions(
         };
       })
       .filter((q) => q.options.length >= 2);
+
+    // Deterministic backstop on the dedupe instruction above. Asked to drop
+    // near-duplicates the model removes some and misses others — a live round
+    // still asked technology readiness twice, from two Horizon clusters.
+    //
+    // Two questions that ask the same thing share an ANSWER SPACE: both TRL
+    // questions offer the same readiness bands. Comparing options rather than
+    // wording is language-agnostic and needs no keyword list.
+    const ownWords = new Set([
+      ...TOKENS(req.description ?? ""), ...TOKENS(req.company ?? ""),
+    ]);
+    const kept: ProjectQuestion[] = [];
+    for (const q of questions) {
+      const sig = topicSignature(q, ownWords);
+      const dup = kept.some((k) => {
+        const other = topicSignature(k, ownWords);
+        const shared = [...sig].filter((t) => other.has(t)).length;
+        return shared / Math.max(Math.min(sig.size, other.size), 1) > 0.45;
+      });
+      if (!dup) kept.push(q);
+    }
+    return kept;
   } catch (err) {
     console.error("project question generation failed:", err);
     return [];
