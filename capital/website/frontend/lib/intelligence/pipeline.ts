@@ -703,6 +703,13 @@ function extractJson<T>(text: string): T {
 }
 
 /** One non-streaming message turn with the web-search tool available. */
+// Research runs BEFORE the writer inside the same 300s route budget (see
+// app/api/intelligence/route.ts maxDuration). Unbounded, a slow search pass
+// can eat the whole request and leave nothing for the memo itself, so each
+// call is capped and the SDK's retries are off — a retry here doubles the
+// spend on the stage that matters least.
+const SEARCH_TIMEOUT_MS = 60_000;
+
 async function askWithSearch(model: string, system: string, user: string): Promise<string> {
   // Lighter web-search version (no server-side dynamic-filtering code execution)
   // and thinking disabled — both are pure latency on a search-grounded task.
@@ -716,7 +723,7 @@ async function askWithSearch(model: string, system: string, user: string): Promi
     system,
     tools,
     messages: [{ role: "user", content: user }],
-  });
+  }, { timeout: SEARCH_TIMEOUT_MS, maxRetries: 1 });
   // web_search runs a server-side loop; resume once if it paused mid-search.
   let message = res;
   let guard = 0;
@@ -731,7 +738,7 @@ async function askWithSearch(model: string, system: string, user: string): Promi
         { role: "user", content: user },
         { role: "assistant", content: message.content },
       ],
-    });
+    }, { timeout: SEARCH_TIMEOUT_MS, maxRetries: 1 });
   }
   return message.content
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
@@ -2222,7 +2229,16 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   const instructions = loadAgentInstructions();
 
   emit({ type: "status", step: "discovering", detail: "Searching the record and the open web for comparable companies" });
-  const intel = await discoverAndResearch(req, instructions);
+  // Comparables corroborate the brief; they are not the brief. The memo's
+  // substance is the instrument corpus and DB-native peers, both of which are
+  // local and cannot time out. So a failed or slow search degrades to no
+  // comparables rather than taking the whole request down with it.
+  let intel: CompetitorIntel[] = [];
+  try {
+    intel = await discoverAndResearch(req, instructions);
+  } catch (err) {
+    console.error("comparable research failed, continuing without it:", String(err));
+  }
 
   emit({ type: "status", step: "querying_db", detail: `Found ${intel.length} candidates; matching against the funding record` });
   const records = intel.map((i) => matchCompany(i.name, i.country));
