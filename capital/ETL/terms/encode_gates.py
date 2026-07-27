@@ -416,7 +416,12 @@ def cmd_encode(args) -> None:
     # restricts the pass to gates triage has seen but encode never has, which
     # is the only set where new spend can produce new coverage.
     if getattr(args, "fresh", False):
-        extra += " AND (encoding_method IS NULL OR encoding_method <> 'llm_encode')"
+        # 'quarantined' is excluded alongside 'llm_encode': those specs were
+        # cleared by audit_encoding_vs_reality.py because their own recipients
+        # contradicted them, and re-deriving from the same text would just put
+        # the same wrong rule back.
+        extra += (" AND (encoding_method IS NULL OR"
+                  " encoding_method NOT IN ('llm_encode', 'quarantined'))")
     rows = conn.execute(
         f"""SELECT id, intake_field_resolved, requirement, value
             FROM eligibility_gates
