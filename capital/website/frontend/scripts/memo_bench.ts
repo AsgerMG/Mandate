@@ -35,7 +35,7 @@ const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean
 
 /**
  * The brief's documented shape (types.ts IntelligenceReport): bottomLine
- * bullets, EXACTLY five institutions, one positioning paragraph, one
+ * bullets, UP TO five institutions, one positioning paragraph, one
  * stateOfPlay paragraph, caveats — with the three prose parts inside a ~700
  * word budget. Asserted on every bench run: quality regressions here are
  * invisible to the deterministic checks and only show up by measuring output.
@@ -50,7 +50,10 @@ function checkMemoShape(r: Record<string, unknown>): string[] {
   // Max 5, min 2. Fewer than 2 is only defensible for a business the law
   // excludes from most aid, so it is flagged for a human to judge, not failed.
   if (nInst > 5) out.push(`institutions ${nInst} (max 5)`);
-  else if (nInst < 2) out.push(`institutions ${nInst} (min 2 — check this is a genuinely excluded business)`);
+  // Fewer than two is allowed: the brief ships what is real rather than
+  // padding to a minimum with routes the founder cannot act on. Only an empty
+  // table is a failure.
+  else if (nInst === 0) out.push("institutions 0 (empty table)");
   const body = words(bl.join(" ")) + words(r.positioning) + words(r.stateOfPlay);
   if (body > 700) out.push(`body ${body}w (want <=700)`);
   if (!String(r.caveats ?? "").trim()) out.push("caveats missing");

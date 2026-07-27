@@ -113,10 +113,20 @@ function score(r: Row): Scored {
     // ANY watch-only row is a defect: briefs never show a fund that is
     // deprioritised or not relevant, so one is as wrong as three.
     if (watch.length) defects.push(`${watch.length} watch-only`);
-    if (wrongCapital.length === inst.length && inst.length)
+    // Only a defect when something better could have been shown. On a
+    // one-row brief the single route IS the whole answer, and the memo flags
+    // the instrument-type conflict in its own copy.
+    if (wrongCapital.length === inst.length && inst.length > 1)
       defects.push("ALL rows wrong capital type");
-    else if (wrongCapital.length) defects.push(`${wrongCapital.length} wrong capital type`);
-    if (inst.length < 2) defects.push("under 2 rows");
+    else if (wrongCapital.length && inst.length > 1)
+      defects.push(`${wrongCapital.length} wrong capital type`);
+    // NOT a defect (user's call, 2026-07-27): when a company genuinely has
+    // fewer than two live routes, the brief ships what is real rather than
+    // padding back to a minimum. sennder is the case — 250+ staff closes the
+    // SME lanes, consortium routes are watch-only, an equity vehicle is all
+    // that remains. The row count is still visible in the table so a 1-row
+    // brief can be eyeballed; it just is not scored as broken.
+    if (inst.length === 0) defects.push("EMPTY table");
     if (inst.length > 5) defects.push("over 5 rows");
     if (longest > 25) defects.push(`bullet ${longest}w`);
     if (body > 700) defects.push(`body ${body}w`);
