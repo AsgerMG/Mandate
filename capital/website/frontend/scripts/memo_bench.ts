@@ -118,14 +118,17 @@ async function main() {
           },
         );
       } catch (err) {
-        error = String(err);
+        // Keep the stack. bunq failed four times in four different ways and a
+        // bare String(err) sent the last debugging pass after the writer when
+        // the failure had moved to another stage entirely.
+        error = err instanceof Error ? `${err.message}\n${err.stack ?? ""}` : String(err);
       }
       const secs = Math.round((Date.now() - t0) / 1000);
       const shape = report ? checkMemoShape(report) : ["no report"];
       results.push({ archetype, company, country, secs, error, shape, report });
       console.log(
         `  ${archetype.padEnd(28)} ${company.padEnd(18)} ${secs}s ` +
-        (error ? "ERROR: " + error : shape.length ? "SHAPE: " + shape.join("; ") : "ok"),
+        (error ? "ERROR: " + error.split("\n")[0] : shape.length ? "SHAPE: " + shape.join("; ") : "ok"),
       );
     }
   });

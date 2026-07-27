@@ -83,11 +83,19 @@ export async function semanticFundMatch(
       await client.query("SET statement_timeout = 3000");
       // pgvector wants the literal '[a,b,c]' form, not a JS array.
       const literal = `[${vec.join(",")}]`;
+      // Score EVERY profile, not a top-K slice. instrument_profiles holds one
+      // row per instrument (322 of them), so a LIMIT here was truncating a
+      // table small enough to rank whole — and an instrument left out scores
+      // zero, which is indistinguishable from "thematically wrong". That is
+      // how selectLeafInstruments ended up ordering the Horizon partnership
+      // and IPCEI buckets by raw event count: no leaf in them made the global
+      // top 40, so Clean Aviation went to an AI lab and a freight platform,
+      // and the Innovative Health Initiative to a govtech company. Ranking all
+      // 322 is a single scan of a tiny table and costs nothing measurable.
       const res = await client.query(
         `SELECT instrument_id, 1 - (embedding <=> $1::vector) AS similarity
            FROM instrument_profiles
-          ORDER BY embedding <=> $1::vector
-          LIMIT 40`,
+          ORDER BY embedding <=> $1::vector`,
         [literal],
       );
       const rows = res.rows as { instrument_id: string; similarity: string | number }[];

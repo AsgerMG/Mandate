@@ -776,7 +776,21 @@ async function discoverAndResearch(
       `listed), not a financing round. Keep each field to one or two sentences. ` +
       `If something is unknown, say "Unknown".`,
   );
-  const intel = extractJson<CompetitorIntel[]>(text);
+  // A search-grounded model sometimes wraps its JSON in prose, or truncates
+  // mid-array. Unguarded, that SyntaxError propagated all the way out and the
+  // founder got an error page instead of a brief -- even though comparables
+  // are CORROBORATING evidence, not the substance of the memo, which is built
+  // from the instrument corpus and DB-native peers. Losing them costs some
+  // supporting colour; losing the memo costs the whole request.
+  let intel: CompetitorIntel[];
+  try {
+    intel = extractJson<CompetitorIntel[]>(text);
+  } catch (err) {
+    console.error("competitor intel did not parse, continuing without it:",
+      String(err), { chars: text.length });
+    return [];
+  }
+  if (!Array.isArray(intel)) return [];
   return intel
     .slice(0, MAX_COMPETITORS)
     .filter((i) => i && i.name && String(i.name).trim())
@@ -1430,15 +1444,35 @@ async function synthesize(
   // finalMessage() has the same shape as create(), so nothing downstream
   // changes. Do not convert this back to create() without also lowering
   // max_tokens below the SDK's threshold.
-  const res = await client.messages.stream({
+  // A hung stream is worse than a failed one: with no bound, one bunq run sat
+  // on an open connection for 69 minutes before the socket dropped -- for a
+  // founder, an indefinite spinner.
+  //
+  // The SDK's own `timeout` option is not enough here. It did not stop the
+  // stream (no attempt ever logged a completion), and the SDK RETRIES on
+  // timeout, so the ceiling multiplies: the same run still took 42 minutes
+  // before surfacing "Request timed out". So retries are off and the deadline
+  // is enforced here, with an explicit abort, giving a hard worst case of two
+  // attempts rather than an open-ended one.
+  // Both attempts have to fit inside the route's maxDuration (300s, see
+  // app/api/intelligence/route.ts) or the retry is killed by the platform
+  // before it can save the memo -- which would make the fallback useless in
+  // exactly the case it exists for. Research has already run by this point, so
+  // the split is deliberately lopsided: a generous first attempt, then a
+  // shorter one that has no thinking to pay for and needs far less.
+  const WRITER_TIMEOUT_MS = 150_000;
+  const WRITER_RETRY_TIMEOUT_MS = 90_000;
+  const writerCall = (thinking: "adaptive" | "disabled") => client.messages.stream({
     model: WRITER_MODEL,
     // Raised from 16000 when the writer went from 5 candidates to 9: that is
     // far more structured output on top of adaptive thinking, and a GovTech run
     // truncated mid-string at ~1.9k chars of JSON, losing a three-minute memo.
     max_tokens: 24000,
     // Sonnet 5 rejects fixed thinking budgets (400); adaptive lets the model
-    // size the prioritisation judgement itself.
-    thinking: { type: "adaptive" },
+    // size the prioritisation judgement itself — but it can also spend the
+    // entire budget thinking and emit nothing, so the caller retries with it
+    // off rather than losing the memo (see below).
+    thinking: { type: thinking },
     system: instructions,
     output_config: { format: { type: "json_schema", schema } },
     messages: [
@@ -1600,15 +1634,63 @@ async function synthesize(
           `the database is not proof of no funding.`,
       },
     ],
-  }).finalMessage();
+  }, { timeout: WRITER_TIMEOUT_MS, maxRetries: 0 });
 
-  const text = res.content
+  const textOf = (m: Anthropic.Message) => m.content
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
     .map((b) => b.text)
     .join("");
+
+  const timed = async (thinking: "adaptive" | "disabled") => {
+    const budget = thinking === "adaptive" ? WRITER_TIMEOUT_MS : WRITER_RETRY_TIMEOUT_MS;
+    const t0 = Date.now();
+    const stream = writerCall(thinking);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const m = await Promise.race([
+        stream.finalMessage(),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => {
+            stream.abort();
+            reject(new Error(`writer exceeded ${budget}ms`));
+          }, budget);
+        }),
+      ]);
+      console.log("[writer] thinking=%s %ss stop=%s out=%d chars",
+        thinking, Math.round((Date.now() - t0) / 1000), m.stop_reason, textOf(m).length);
+      return m;
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  };
+
+  let res: Anthropic.Message | null = null;
+  try {
+    res = await timed("adaptive");
+  } catch (err) {
+    // A blown deadline is not fatal on its own — the retry below runs without
+    // thinking, which is both faster and unable to fail the same way.
+    console.error("[writer] adaptive attempt failed:", String(err));
+  }
+  let text = res ? textOf(res) : "";
+  // Adaptive thinking can spend almost the whole budget reasoning, leaving too
+  // little for the answer. bunq -- a licensed neobank, so a case with genuinely
+  // tangled sector-exclusion reasoning -- hit this twice: once emitting no text
+  // at all, once emitting 1,273 characters of JSON that stopped mid-string.
+  // Both are equally unusable, so the trigger is stop_reason, NOT whether any
+  // text came back; an earlier version keyed on empty text and simply moved the
+  // failure from "no text" to "unterminated string".
+  //
+  // Retrying once with thinking OFF puts the entire budget into output, which
+  // cannot hit the same wall. A slightly less considered brief beats none, and
+  // this costs a second call only in the rare case it fires.
+  if (!res || res.stop_reason === "max_tokens") {
+    console.error("writer produced nothing usable; retrying with thinking off",
+      { candidates: rowKeys.length, chars: text.length, stop: res?.stop_reason ?? "timeout" });
+    res = await timed("disabled");
+    text = textOf(res);
+  }
   if (!text.trim()) {
-    // Adaptive thinking can consume the whole budget on heavy cases — surface
-    // the stop reason instead of a bare "No JSON found".
     throw new Error(`writer returned no text (stop_reason=${res.stop_reason})`);
   }
   // A truncated response throws deep inside JSON.parse with no context. Say
