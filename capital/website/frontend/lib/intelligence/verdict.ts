@@ -131,7 +131,7 @@ function isFilter(g: DbGate): boolean {
   return (!g.gateRole || g.gateRole === "filter") && Boolean(g.valueSpec);
 }
 
-export function assessInstrument(
+function assessInstrument(
   inst: DbInstrument,
   answers: EligibilityAnswers | undefined,
 ): InstrumentAssessment {
@@ -177,13 +177,3 @@ export const VERDICT_RANK: Record<VerdictStatus, number> = {
   open: 0, one_blocker: 1, unknown: 2, blocked: 3,
 };
 
-/** Founder-facing label. Deliberately never says "you qualify" — see the
- *  asymmetry note at the top of this file. */
-export function verdictLabel(status: VerdictStatus): string {
-  switch (status) {
-    case "open": return "Open to you";
-    case "one_blocker": return "One thing in the way";
-    case "unknown": return "Not yet assessable";
-    case "blocked": return "Ruled out";
-  }
-}

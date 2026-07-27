@@ -45,6 +45,10 @@ const BASE = {
   cofinancingBand: ">50%",
   consortium: "unsure",
   exclusionFlags: ["none"],
+  // What the money buys. Every archetype is an R&D-led company raising to build
+  // the product, which is the common case and the one most rules are written
+  // for; a founder raising purely for working capital is a different profile.
+  useOfFunds: ["experimental_development", "industrial_research"],
 };
 
 export const ARCHETYPES: Archetype[] = [

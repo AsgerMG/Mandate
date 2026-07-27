@@ -14,6 +14,7 @@ import {
   type TicketBand,
   SECTOR_OPTIONS,
   ACTIVITY_OPTIONS,
+  USE_OF_FUNDS_OPTIONS,
   EXCLUSION_OPTIONS,
   TICKET_BANDS,
   FTE_BANDS,
@@ -47,6 +48,7 @@ const NEED_BY_VALUES = NEED_BY_BANDS;
 // while the bench, which calls the pipeline directly, saw nothing wrong.
 const SECTOR_VALUES = SECTOR_OPTIONS.map((o) => o.value);
 const ACTIVITY_VALUES = ACTIVITY_OPTIONS.map((o) => o.value);
+const USE_OF_FUNDS_VALUES = USE_OF_FUNDS_OPTIONS.map((o) => o.value);
 const EXCLUSION_VALUES = EXCLUSION_OPTIONS.map((o) => o.value);
 
 function pickEnum<T extends string>(v: unknown, allowed: readonly T[]): T | undefined {
@@ -107,6 +109,7 @@ export function sanitizeEligibility(raw: unknown): EligibilityAnswers | undefine
     // Was missing entirely, so the whole activities axis was discarded before
     // it could gate anything — the axis that carries most GBER exclusions.
     activities: pickEnumList(b.activities, ACTIVITY_VALUES),
+    useOfFunds: pickEnumList(b.useOfFunds, USE_OF_FUNDS_VALUES),
     exclusionFlags: pickEnumList(b.exclusionFlags, EXCLUSION_VALUES),
   };
   // The undertaking-in-difficulty test is now one line of the exclusions

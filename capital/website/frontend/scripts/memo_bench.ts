@@ -128,6 +128,7 @@ async function main() {
       const rawEligibility = {
         sector: c.sector,
         activities: c.activities ?? ["none"],
+        useOfFunds: ["experimental_development", "industrial_research"],
         entityCountries: [country],
         exclusionFlags: ["none"],
         cofinancingBand: ">50%",

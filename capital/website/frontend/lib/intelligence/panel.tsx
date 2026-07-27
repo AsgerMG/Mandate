@@ -6,6 +6,7 @@ import {
   EXCLUSION_OPTIONS,
   SECTOR_OPTIONS,
   ACTIVITY_OPTIONS,
+  USE_OF_FUNDS_OPTIONS,
   FIELD_ENUM_HINTS,
   TICKET_BANDS,
   type EligibilityAnswers,
@@ -683,6 +684,32 @@ export function IntelligencePanel() {
               </span>
               <Chips options={[...SECTOR_OPTIONS]} value={elig.sector}
                 onPick={(v) => setElig((p) => ({ ...p, sector: v }))} />
+            </div>
+
+            {/* The single most decisive question the intake used to omit: 585
+                gates across 266 instruments turn on eligible costs, 59 of them
+                hard filters. Placed on screen 1 rather than the adaptive round
+                because it was already reaching founders as a BLOCKER we had
+                the means to clear — three briefs told a founder to "reframe
+                the project as applied research" for want of asking. */}
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                What would the money pay for?
+                <InfoDot>
+                  Most public funding is tied to specific cost categories rather
+                  than to the company: aid law separates research from
+                  development from feasibility work, treats production capacity
+                  differently again, and rarely covers general running costs.
+                  Pick everything the project would genuinely include.
+                </InfoDot>
+              </span>
+              <MultiChips options={[...USE_OF_FUNDS_OPTIONS]} value={elig.useOfFunds ?? []}
+                onToggle={(v) => setElig((p) => ({
+                  ...p,
+                  useOfFunds: (p.useOfFunds ?? []).includes(v)
+                    ? (p.useOfFunds ?? []).filter((x) => x !== v)
+                    : [...(p.useOfFunds ?? []), v],
+                }))} />
             </div>
 
             {/* Asked separately from sector on purpose. Aid law restricts

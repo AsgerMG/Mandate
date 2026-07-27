@@ -21,7 +21,7 @@ const FIRST_PAGE_FIELDS = new Set([
   // `activities` joins screen 1 with sector: it is now where most GBER and
   // de minimis exclusion clauses are encoded, so leaving it to the adaptive
   // round would re-ask what the first screen should have settled.
-  "sector", "activities", "consortium", "exclusionFlags", "cofinancingBand",
+  "sector", "activities", "useOfFunds", "consortium", "exclusionFlags", "cofinancingBand",
   "lossesOverHalfCapital",
 ]);
 

@@ -22,6 +22,7 @@
 // than copied into Python.
 import {
   ACTIVITY_OPTIONS,
+  USE_OF_FUNDS_OPTIONS,
   BALANCE_BANDS,
   BORROWER_MODELS,
   COFINANCING_BANDS,
@@ -55,6 +56,7 @@ const YES_NO_UNSURE = ["yes", "no", "unsure"];
 export const VOCABULARY: Record<string, FieldVocabulary> = {
   sector: { values: SECTOR_OPTIONS.map((o) => o.value), ordered: false, multi: false },
   activities: { values: ACTIVITY_OPTIONS.map((o) => o.value), ordered: false, multi: true },
+  useOfFunds: { values: USE_OF_FUNDS_OPTIONS.map((o) => o.value), ordered: false, multi: true },
   exclusionFlags: { values: EXCLUSION_OPTIONS.map((o) => o.value), ordered: false, multi: true },
   borrowerModel: { values: BORROWER_MODELS.map((o) => o.value), ordered: false, multi: false },
   conditionality: { values: [...CONDITIONALITY_VALUES], ordered: false, multi: true },

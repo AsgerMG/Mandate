@@ -339,6 +339,40 @@ export const SECTOR_OPTIONS = [
 export type SectorValue = (typeof SECTOR_OPTIONS)[number]["value"];
 
 /**
+ * What the money would be SPENT ON.
+ *
+ * The most decisive question the intake was not asking. Measured across the
+ * corpus: 585 gates on 266 instruments turn on eligible costs, and 59 of them
+ * are hard filters. With no field to resolve to, they were force-fitted onto
+ * whatever looked closest — 16 onto developmentStage, 10 onto consortium, 9
+ * onto cofinancingBand — and 12 landed on `none`, undecidable purely because
+ * nobody was asked.
+ *
+ * It was already reaching founders as an obstacle we had the means to clear:
+ * eAgronom, Nortal and BioNTech each got a version of "only covers applied
+ * research, product development or feasibility work, not general commercial
+ * costs", with a next step telling them to reframe the project. That is a
+ * question, not a blocker.
+ *
+ * The values track the cost categories aid law itself draws — GBER Art. 25
+ * splits research from development from feasibility, Art. 14/17 covers
+ * investment in capacity, and working capital is largely not aidable at all —
+ * so a clause can be encoded against exactly what it names. Multi-select: real
+ * projects span several.
+ */
+export const USE_OF_FUNDS_OPTIONS = [
+  { value: "industrial_research", label: "Research, before there is a product" },
+  { value: "experimental_development", label: "Developing or prototyping the product" },
+  { value: "feasibility_study", label: "A feasibility or scoping study" },
+  { value: "rd_facilities", label: "R&D facilities, equipment or lab space" },
+  { value: "ip_protection", label: "Patents and IP protection" },
+  { value: "production_capex", label: "Building production or manufacturing capacity" },
+  { value: "market_launch", label: "Launching or scaling commercially" },
+  { value: "working_capital", label: "General operations and working capital" },
+] as const;
+export type UseOfFundsValue = (typeof USE_OF_FUNDS_OPTIONS)[number]["value"];
+
+/**
  * Regulated activities: what aid law RESTRICTS, which is a different question
  * from what a company builds.
  *
@@ -438,6 +472,9 @@ export interface EligibilityAnswers {
   needBy?: string;             // "asap_weeks" | "months_6" | "months_18" | "flexible"
   /** SECTOR_OPTIONS value — what the company builds. Asked directly. */
   sector?: string;
+  /** USE_OF_FUNDS_OPTIONS values — what the money would be spent on. Decides
+   *  59 hard filters that previously had no field to resolve to. */
+  useOfFunds?: string[];
   /** ACTIVITY_OPTIONS values — the regulated categories aid law names. Kept
    *  separate from `sector` so an exclusion written for tobacco cannot land on
    *  a fintech. "none" is a real answer; an empty array means unanswered. */

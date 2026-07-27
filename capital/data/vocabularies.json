@@ -26,6 +26,16 @@
       "alcohol",
       "weapons"
     ],
+    "useOfFunds": [
+      "industrial_research",
+      "experimental_development",
+      "feasibility_study",
+      "rd_facilities",
+      "ip_protection",
+      "production_capex",
+      "market_launch",
+      "working_capital"
+    ],
     "exclusionFlags": [
       "none",
       "insolvency",
@@ -176,6 +186,7 @@
     "activityCountries",
     "conditionality",
     "entityCountries",
-    "exclusionFlags"
+    "exclusionFlags",
+    "useOfFunds"
   ]
 }

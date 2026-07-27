@@ -120,6 +120,11 @@ FIELDS = [
     # RESTRICTS are different questions, and merging them made a lending
     # fintech inherit exclusions written for tobacco.
     "activities",
+    # Added 2026-07-27. 585 gates on 266 instruments turn on eligible costs and
+    # 59 are hard filters, but with no field to resolve to they were forced onto
+    # developmentStage (16), consortium (10) and cofinancingBand (9), and 12
+    # landed on 'none' -- undecidable only because nobody was asked.
+    "useOfFunds",
     "none",
 ]
 
@@ -169,6 +174,30 @@ def cmd_status(args) -> None:
             f"SELECT gate_role, COUNT(*) FROM eligibility_gates WHERE {where} AND gate_role IS NOT NULL "
             f"GROUP BY 1 ORDER BY 2 DESC", params):
             print(f"  {role:16} {n:5,}  {100*n/triaged:5.1f}%")
+
+    # What the founder actually experiences: how many funds we can say anything
+    # verified about. Reported here because the numbers above are gate-level and
+    # look healthy while more than half of instruments carry no machine-readable
+    # rule at all — a gap invisible from "97% triaged".
+    verified = q("SELECT COUNT(DISTINCT instrument_id) FROM eligibility_gates "
+                 "WHERE value_spec IS NOT NULL")
+    instruments = q("SELECT COUNT(*) FROM funding_instruments WHERE is_framework = 0")
+    print(f"\ninstrument coverage:  {verified:,} of {instruments:,} carry at least one "
+          f"encoded rule ({100*verified/max(1,instruments):.0f}%)")
+
+    if not args.include_classified:
+        out_of_scope = q("SELECT COUNT(*) FROM eligibility_gates "
+                         "WHERE verification_level = 'llm_classified'")
+        print(f"\nexcluded from scope:  {out_of_scope:,} llm_classified gates")
+        print("  This exclusion is DELIBERATE and should stay. Those gates are model")
+        print("  inference, not extracted rules -- their own text says so: 'LIKELY")
+        print("  SME-scaled eligibility', 'scheme TYPICALLY targets SMEs', 'grant")
+        print("  LIKELY requires co-financing'. Encoding a guess as a hard filter")
+        print("  would block founders who actually qualify, which is the worst")
+        print("  failure this product has: a thin brief is honest, a false block is")
+        print("  invisible and wrong. They are why 155 instruments show no verified")
+        print("  rule; the brief labels those rows 'not yet verified' rather than")
+        print("  pretending. Closing the gap means better SOURCES, not --include-classified.")
     conn.close()
 
 
@@ -237,6 +266,21 @@ Available attributes:
                         mobility_transport, agrifood, materials_chemicals,
                         space, defense_security, other. Use this only for rules
                         about the FIELD a company works in.
+  useOfFunds            what the money would be SPENT ON, multi-select:
+                        industrial_research (research before there is a
+                        product), experimental_development (building or
+                        prototyping it), feasibility_study, rd_facilities
+                        (R&D equipment or lab space), ip_protection,
+                        production_capex (manufacturing or production
+                        capacity), market_launch (commercialisation, scaling
+                        sales), working_capital (general operations). Use this
+                        for every "eligible costs" clause -- GBER Art. 25
+                        splits research from development from feasibility, and
+                        Art. 14/17 covers investment in capacity. A rule saying
+                        funds may not cover general operating costs is
+                        not_in [working_capital], NOT a developmentStage rule:
+                        what a company IS and what the money BUYS are different
+                        questions.
   activities            the regulated categories aid law names, multi-select:
                         financial_services (the company itself lends, banks,
                         insures or processes payments - NOT software sold to
