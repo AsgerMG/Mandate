@@ -136,6 +136,12 @@ export interface InstrumentRow {
    *  `instrument` for generic auto-named buckets (the "SATR De Equity"
    *  problem: SATR is where the DATA comes from, not who is granting it). */
   administeringBody?: string;
+  /** Last year this vehicle is recorded as having awarded anything, and
+   *  whether that makes it stale. A brief that tells a founder to approach a
+   *  scheme which stopped awarding in 2021 is not thin, it is wrong with
+   *  authority — the most expensive kind of mistake we can make. */
+  lastAwardYear?: number;
+  stale?: boolean;
   /** Fraction of the instrument's awards actually made by administeringBody.
    *  Below ~0.6 the name is a busy agency inside a country-wide rollup, not
    *  the fund itself — displayInstitutionName falls back to a generic label. */

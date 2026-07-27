@@ -582,6 +582,7 @@ export function buildInstrumentTable(
         eventCount: leaf.eventCount,
         administeringBody: leaf.administeringBody ?? undefined,
         administeringBodyShare: leaf.administeringBodyShare ?? undefined,
+        lastAwardYear: leaf.lastYear ?? undefined,
         legalBasis: legalBasisFor(leaf),
       } as InstrumentRow));
     })
@@ -1335,6 +1336,25 @@ async function synthesize(
     instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
     req.eligibility,
   );
+  // A scheme with no award on record for years may be closed, repealed or
+  // simply between programme periods — we cannot tell which, and neither can
+  // the founder. Three years is deliberately generous: EU programme periods
+  // have real gaps and the register lags, so a tighter window would flag live
+  // schemes.
+  //
+  // A MISSING date is explicitly NOT stale, though the first version of this
+  // treated it as such. 51 instruments carry no dated award, and they include
+  // Bpifrance, EIFO, KfW and Almi — loaded as placeholder-level records rather
+  // than per-award rows. That is a gap in our ingestion, not evidence a
+  // national development bank has stopped lending, and demoting them would
+  // have pushed Silvr's single best route down the table. Absence of evidence
+  // is not evidence of absence.
+  const STALE_AFTER_YEARS = 3;
+  const thisYear = new Date().getFullYear();
+  const isStale = (row: InstrumentRow) =>
+    row.lastAwardYear !== undefined &&
+    thisYear - row.lastAwardYear > STALE_AFTER_YEARS;
+
   const capitalMismatch = (row: InstrumentRow) =>
     Boolean(row.capitalType) && (req.capitalSought?.length ?? 0) > 0 &&
     !instrumentServesCapital(row.capitalType as string, req.capitalSought as string[]);
@@ -1356,6 +1376,10 @@ async function synthesize(
       // asks through dev-bank grants instead. Demoted rather than dropped:
       // when a founder genuinely has no matching route, an equity vehicle the
       // memo openly flags as a conflict beats an empty table.
+      // Live before stale: a fund still awarding beats one we cannot show has
+      // awarded anything in years, whatever else is true about it.
+      const sa = isStale(a.row), sb = isStale(b.row);
+      if (sa !== sb) return sa ? 1 : -1;
       const ma = capitalMismatch(a.row), mb = capitalMismatch(b.row);
       if (ma !== mb) return ma ? 1 : -1;
       return (b.ease?.score ?? 0) - (a.ease?.score ?? 0) || a.i - b.i;
@@ -1388,6 +1412,8 @@ async function synthesize(
     return {
       ...entry,
       whyEasy: whyEasyLine(id ? easeById.get(id) : undefined, entry.institution),
+      lastAwardYear: baseRows[idx].lastAwardYear,
+      stale: isStale(baseRows[idx]),
       verdict: a?.status ?? "unknown",
       // Only ever one blocker reaches the founder — a row with two or more is
       // `blocked` and was already dropped above.
@@ -1421,6 +1447,7 @@ async function synthesize(
       return (
         `- key "${rowKeys[i]}" (${r.institution})` +
         `${row.usedInField ? " [used by peers in your field]" : ""}` +
+        `${r.stale ? ` [STALE — no award on record since ${r.lastAwardYear}]` : ""}` +
         `${row.fitFlag ? ` [${row.fitFlag}]` : ""}: ` +
         // The verdict, and the obstacle where there is one. Without this the
         // writer cannot see which row is blocked, so it left blockerPlain empty
@@ -1593,6 +1620,14 @@ async function synthesize(
           `a tax credit, never vague "access to funding" language.\n` +
           // The verdict layer is code-computed and already rendered; the
           // writer must narrate it, never contradict or restate it.
+          // Without this the writer confidently writes "apply to the next
+          // call" for a scheme with no award on record since 2021. It cannot
+          // see the dates unless we hand them over.
+          `A row marked STALE has no award on record for over three years. It ` +
+          `may be closed, repealed or between programme periods — we cannot ` +
+          `tell. NEVER promise an upcoming call or deadline for one. Say ` +
+          `plainly that it has been dormant since the year given and make the ` +
+          `next step confirming it still runs, before any application work.\n` +
           `EVERY institution below has been screened against its own encoded ` +
           `eligibility rules. Funds this company cannot access were already ` +
           `removed — so never write that they fail, or might not qualify, or ` +

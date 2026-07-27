@@ -177,6 +177,10 @@ export interface DbInstrument {
    *  name is only safe to display above a threshold — see
    *  displayInstitutionName. Null for instruments with no authority data. */
   administeringBodyShare: number | null;
+  /** Last year this instrument is recorded as having awarded anything. Null
+   *  when we have no dated award at all — which is itself a staleness signal,
+   *  not a clean slate. See STALE_AFTER_YEARS in pipeline.ts. */
+  lastYear: number | null;
   gates: DbGate[];
 }
 
@@ -230,7 +234,7 @@ export async function hydrateDbInstruments(): Promise<void> {
           `SELECT id, parent_id, name, country, capital_type, is_framework,
                   event_count, company_count, total_eur, source_family_bucket,
                   sample_project_titles, administering_body,
-                  administering_body_share
+                  administering_body_share, last_year
            FROM funding_instruments`,
         ),
         client.query(
@@ -274,6 +278,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         sampleProjectTitles: inst.sample_project_titles ? JSON.parse(inst.sample_project_titles) : null,
         administeringBody: inst.administering_body ?? null,
         administeringBodyShare: inst.administering_body_share ?? null,
+        lastYear: inst.last_year ?? null,
         gates: gatesByInstrument.get(inst.id) ?? [],
       }));
     } finally {

@@ -1061,6 +1061,15 @@ function InstitutionsTable({ institutions, pending = false }: { institutions: In
                 <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
                   {r.ticket}
                 </span>
+                {/* Dormancy, stated rather than hidden. A brief that sends a
+                    founder at a scheme which stopped awarding in 2019 is not
+                    thin, it is wrong with authority — so the date they would
+                    need in order to disbelieve us is on the row itself. */}
+                {r.stale && r.lastAwardYear && (
+                  <span className="mt-1 block text-[12px] text-[var(--accent)]">
+                    No award recorded since {r.lastAwardYear} — confirm it is still running
+                  </span>
+                )}
               </td>
               <td className="py-2.5 pr-3">{r.supportType}</td>
               <td className="py-2.5 pr-3">

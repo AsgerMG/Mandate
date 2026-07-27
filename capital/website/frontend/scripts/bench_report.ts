@@ -23,6 +23,7 @@ import { WATCH_ONLY_COPY } from "../lib/intelligence/watchOnly";
 
 interface Institution {
   institution?: string; country?: string; verdict?: string; supportType?: string;
+  stale?: boolean; lastAwardYear?: number;
   whyEligible?: string; nextStep?: string; blocker?: string; gatesChecked?: number;
 }
 interface Report {
@@ -95,6 +96,9 @@ function score(r: Row): Scored {
   const wrongCapital = equityUnwanted
     ? inst.filter((i) => /equity|stake/i.test(String(i.supportType ?? "")))
     : [];
+  // A dormant scheme presented as live is the most expensive error the brief
+  // can make, so it is counted separately rather than folded into row quality.
+  const staleRows = inst.filter((i) => i.stale);
   const withBlocker = inst.filter((i) => i.verdict === "one_blocker");
   const explained = withBlocker.filter((i) => String(i.blocker ?? "").trim().length > 0);
   const bullets = rep.bottomLine ?? [];
@@ -113,6 +117,7 @@ function score(r: Row): Scored {
     // ANY watch-only row is a defect: briefs never show a fund that is
     // deprioritised or not relevant, so one is as wrong as three.
     if (watch.length) defects.push(`${watch.length} watch-only`);
+    if (staleRows.length) defects.push(`${staleRows.length} stale fund`);
     // Only a defect when something better could have been shown. On a
     // one-row brief the single route IS the whole answer, and the memo flags
     // the instrument-type conflict in its own copy.

@@ -36,7 +36,8 @@ def main() -> None:
     instruments = conn.execute("""
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
-               sample_project_titles, administering_body, administering_body_share
+               sample_project_titles, administering_body, administering_body_share,
+               last_year
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -90,6 +91,12 @@ def main() -> None:
         # frontend only shows the name when the share is high enough to be
         # honest -- see displayInstitutionName and migration 014.
         "administeringBodyShare": inst["administering_body_share"],
+        # The last year this instrument is recorded as having awarded anything.
+        # 102 of 322 instruments have no award since 2022 or none at all, and
+        # nothing used to stop them reaching a brief -- so a founder could be
+        # told to "approach the ministry for the next wave" of a scheme that
+        # closed years ago. Wrong with authority is worse than thin.
+        "lastYear": inst["last_year"],
         "gates": gates_by_instrument.get(inst["id"], []),
     } for inst in instruments]
 
