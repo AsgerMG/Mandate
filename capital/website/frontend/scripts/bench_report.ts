@@ -19,6 +19,7 @@
  *      npx tsx scripts/bench_report.ts --trend    # every run, oldest first
  */
 import { readFileSync, readdirSync } from "node:fs";
+import { WATCH_ONLY_COPY } from "../lib/intelligence/watchOnly";
 
 interface Institution {
   institution?: string; country?: string; verdict?: string;
@@ -37,9 +38,9 @@ interface Row {
 
 const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean).length;
 
-/** Copy that tells the founder to wait rather than move. Each of these was
- *  observed in a shipped brief: sennder's had three of five rows like this. */
-const WATCH_ONLY = /\b(monitor|deprioriti[sz]e|informational|watch|wait for|only pursue if|act if|revisit|keep an eye)\b/i;
+/** Shared with the pipeline that drops these rows, so what we enforce and
+ *  what we measure cannot drift apart. */
+const WATCH_ONLY = WATCH_ONLY_COPY;
 
 /** The template that fills in when the writer never wrote about a row. Three
  *  of Nortal's five rows read exactly this. */
@@ -93,7 +94,9 @@ function score(r: Row): Scored {
     if (noCaveat) defects.push("no caveat");
     if (withBlocker.length > explained.length)
       defects.push(`${withBlocker.length - explained.length} blocker unexplained`);
-    if (watch.length > 1) defects.push(`${watch.length} watch-only`);
+    // ANY watch-only row is a defect: briefs never show a fund that is
+    // deprioritised or not relevant, so one is as wrong as three.
+    if (watch.length) defects.push(`${watch.length} watch-only`);
     if (inst.length < 2) defects.push("under 2 rows");
     if (inst.length > 5) defects.push("over 5 rows");
     if (longest > 25) defects.push(`bullet ${longest}w`);

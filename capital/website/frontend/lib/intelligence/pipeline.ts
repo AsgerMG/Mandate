@@ -10,6 +10,7 @@ import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
 import { assessAll, VERDICT_RANK } from "./verdict";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
+import { isWatchOnly } from "./watchOnly";
 import { semanticFundMatch } from "./semantic";
 import { type OpenFieldEvidence, type ProjectGateEvidence } from "./gateReach";
 import {
@@ -1604,8 +1605,13 @@ async function synthesize(
           `a precondition they do not have (a consortium with no partners ` +
           `identified, an ERC grant they do not hold, a call that is not open). ` +
           `Set it true when they could start this quarter, even if the route is ` +
-          `hard or the odds are long. We publish at most ONE watch-only row, so ` +
-          `a brief is a list of things to do, not a list of things to know.\n` +
+          `hard or the odds are long. Watch-only rows are NOT PUBLISHED AT ALL ` +
+          `— not even one, not even ranked last — so a brief is a list of ` +
+          `things to do, never a list of things to know. Four real routes beat ` +
+          `five with one that wastes a week. And never write "monitor", ` +
+          `"deprioritise", "informational" or "revisit later" into nextStep: ` +
+          `if that is the honest next step, the row does not belong in the ` +
+          `brief, so set the flag instead.\n` +
           `Where the candidates allow it, prefer a SPREAD across levels: some ` +
           `national or regional routes, some EU-level ones. This is a ` +
           `preference, not a rule — never keep a weak fund only to balance the ` +
@@ -1794,9 +1800,11 @@ async function synthesize(
       // survived purely because the writer had ignored them.
       // The min-2 floor below still protects against an empty table.
       worth: Boolean(note) && note?.worthPursuing !== false,
-      // Missing flag counts as actionable: an absent judgement must not
-      // silently demote a row (the same reasoning as blockerPlain's default).
-      actionable: note?.actionableNow !== false,
+      // Not something to act on if the writer SAID so, or if its own copy
+      // says so anyway — it kept rows flagged actionable while writing
+      // "Monitor the next call" and "Deprioritise unless the grant pipeline
+      // falls short" into the next step.
+      actionable: !isWatchOnly(note?.actionableNow, note?.nextStep, note?.whyEligible),
       key: rowKeys[i],
       entry: {
         ...row,
@@ -1830,30 +1838,38 @@ async function synthesize(
   const ranked = scored
     .filter((x) => x.worth)
     .sort((a, b) => (rankByKey.get(a.key) ?? Infinity) - (rankByKey.get(b.key) ?? Infinity));
-  // Actionable routes first, then AT MOST ONE watch-only row. Three of
+  // A brief NEVER shows a fund that is deprioritised or not relevant. Not one
+  // as a tail-ender, not one for balance: a row the founder cannot move on is
+  // a thing to know, and the brief is a list of things to do. Three of
   // sennder's five rows were "deprioritise" / "monitor calls" / "treat as
-  // informational" -- each honest on its own, but together a table padded to
-  // five rather than five things worth doing. Better a short brief that is all
-  // moves than a full one the founder cannot act on.
+  // informational" -- each honest on its own, together a padded table that
+  // costs the reader time and costs us credibility.
+  //
+  // The count is allowed to fall below the usual floor as a result. Four real
+  // routes beat five with one that wastes a week.
   const actionable = ranked.filter((x) => x.actionable);
   const watchOnly = ranked.filter((x) => !x.actionable);
-  const worthwhile = [...actionable, ...watchOnly.slice(0, 1)].map((x) => x.entry);
-  if (watchOnly.length > 1) {
-    console.log("[institutions] dropped %d watch-only rows", watchOnly.length - 1);
+  const worthwhile = actionable.map((x) => x.entry);
+  if (watchOnly.length) {
+    console.log("[institutions] dropped %d watch-only: %s", watchOnly.length,
+      watchOnly.map((x) => x.entry.institution).join(", "));
   }
-  // Degrade one step at a time rather than straight to the raw list: if the
-  // watch-only cap left too few rows, the writer's ranked order still holds
-  // them, and that beats falling all the way back to unsorted candidates
-  // including ones it disqualified.
-  const fallback = ranked.length >= BRIEF_INSTITUTION_MIN
-    ? ranked.map((x) => x.entry)
-    : scored.map((x) => x.entry);
+  // Deliberately NOT topped back up to the minimum from the watch-only pile:
+  // that would reintroduce exactly the rows we just refused to show. A short
+  // brief is the honest answer when a founder genuinely has few live routes.
+  //
+  // The one exception is the pathological case where NOTHING survives -- if
+  // the writer mislabels every row, an empty table serves no one, so the
+  // ranked list stands in and the event is logged loudly rather than hidden.
   const finalInstitutions: InstitutionEntry[] = (
-    worthwhile.length >= BRIEF_INSTITUTION_MIN ? worthwhile : fallback
+    worthwhile.length ? worthwhile : ranked.map((x) => x.entry)
   ).slice(0, BRIEF_INSTITUTION_CAP);
-  if (worthwhile.length < BRIEF_INSTITUTION_MIN) {
-    console.error("writer kept too few institutions; falling back to ranked order",
-      { candidates: scored.length, kept: worthwhile.length });
+  if (!worthwhile.length) {
+    console.error("every institution read as watch-only; showing ranked order instead",
+      { candidates: scored.length });
+  } else if (worthwhile.length < BRIEF_INSTITUTION_MIN) {
+    console.warn("brief below the usual 2-row floor after dropping watch-only rows",
+      { kept: worthwhile.length, dropped: watchOnly.length });
   }
 
   return {
