@@ -41,6 +41,7 @@ import json
 import re
 import sqlite3
 from collections import Counter
+from pathlib import Path as _Path
 
 # Full English name -> ISO2, for the countries our encoded rules actually use.
 # Encoded specs speak full names (the intake picker's vocabulary); the events
@@ -123,6 +124,54 @@ def recipients_sector(conn: sqlite3.Connection, iid: str) -> Counter:
             GROUP BY 1""", (iid,))})
 
 
+# The ticket bands, in order, with their upper bounds in EUR. Mirrors
+# TICKET_BANDS in types.ts via data/vocabularies.json -- the boundaries are
+# read there so this cannot drift from what the intake offers.
+_VOCAB = json.loads((_Path(__file__).resolve().parents[2] / "data" / "vocabularies.json").read_text())
+TICKET_ORDER: list[str] = _VOCAB["bandOrders"]["ticketBand"]
+TICKET_UPPER = {
+    "lt500k": 500_000, "b500k_2m5": 2_500_000, "b2m5_15m": 15_000_000,
+    "b15m_50m": 50_000_000, "gt50m": float("inf"),
+}
+
+
+def band_of_award(eur: float) -> str:
+    for band in TICKET_ORDER:
+        if eur <= TICKET_UPPER[band]:
+            return band
+    return TICKET_ORDER[-1]
+
+
+def recipients_ticket(conn: sqlite3.Connection, iid: str) -> Counter:
+    """What this instrument ACTUALLY funds, bucketed into the intake's bands.
+
+    Counts an event under BOTH its grant amount and its total project cost,
+    because a size rule can mean either and the text rarely disambiguates:
+    "the project must present a total cost of between EUR 1 million and EUR 5
+    million" is a PROJECT COST floor, while "grant support ranges from NOK 4m
+    to NOK 20m" is a GRANT floor. Comparing project-cost rules against grant
+    cheques flagged four correct Bpifrance, NFR and SATR-IT rules as
+    contradicted -- a project costing EUR 1m at 30% aid intensity draws a
+    EUR 300k grant, which is not a contradiction, it is arithmetic.
+
+    Counting both means a spec is only contradicted when NEITHER reading
+    supports it. Deliberately generous: this probe can quarantine a rule, so a
+    false positive here deletes a correct rule and hides a real fund."""
+    out: Counter = Counter()
+    for grant, cost in conn.execute(
+        """SELECT e.grant_amount_eur, e.total_project_cost_eur
+             FROM public_funding_events e
+             JOIN funding_instrument_sources fis ON fis.source = e.source
+            WHERE fis.instrument_id = ? AND e.is_duplicate = 0""", (iid,)):
+        seen = set()
+        for eur in (grant, cost):
+            if eur and eur > 0:
+                seen.add(band_of_award(eur))
+        for band in seen:
+            out[band] += 1
+    return out
+
+
 def recipients_activity(conn: sqlite3.Connection, iid: str) -> Counter:
     descriptors = [r[0] for r in conn.execute(
         """SELECT e.sector_tags_raw
@@ -141,7 +190,14 @@ def recipients_activity(conn: sqlite3.Connection, iid: str) -> Counter:
 PROBES = {
     "entityCountries": (recipients_country,
                         lambda v: NAME_TO_ISO2.get(v.strip().lower()), False),
+    # Where the WORK happens rather than where the entity sits. We hold only
+    # the recipient's country, so this is the same evidence read against a
+    # different claim -- weaker, because a company can legitimately run a
+    # project abroad, but a rule contradicted by every recipient still counts.
+    "activityCountries": (recipients_country,
+                          lambda v: NAME_TO_ISO2.get(v.strip().lower()), True),
     "sector": (recipients_sector, lambda v: v.strip(), False),
+    "ticketBand": (recipients_ticket, lambda v: v.strip(), False),
     "activities": (recipients_activity, lambda v: v.strip(), True),
 }
 
@@ -174,14 +230,26 @@ def main() -> None:
         spec = json.loads(spec_json)
         field = spec.get("field")
         probe = PROBES.get(field)
-        if not probe or spec.get("op") not in ("in", "not_in"):
+        op = spec.get("op")
+        if not probe or op not in ("in", "not_in", "band_max", "band_min"):
             unchecked += 1
             continue
         read, normalise, weak = probe
 
-        wanted = {normalise(v) for v in spec.get("allowed", [])}
-        wanted.discard(None)
-        wanted.discard("")
+        # Banded specs name a CEILING or FLOOR, not a set, so the allowed set is
+        # derived from the band order rather than read off the spec.
+        if op in ("band_max", "band_min"):
+            order = spec.get("order") or []
+            target = spec.get("maxAllowed") if op == "band_max" else spec.get("minAllowed")
+            if target not in order:
+                unchecked += 1
+                continue
+            i = order.index(target)
+            wanted = set(order[: i + 1] if op == "band_max" else order[i:])
+        else:
+            wanted = {normalise(v) for v in spec.get("allowed", [])}
+            wanted.discard(None)
+            wanted.discard("")
         if not wanted:
             unchecked += 1
             continue
@@ -195,10 +263,12 @@ def main() -> None:
             unchecked += 1
             continue
 
-        if spec["op"] == "in":
-            ok = sum(n for v, n in actual.items() if v in wanted)
-        else:
+        # band_max/band_min are inclusive membership of the derived set, so
+        # they compare like `in`; only not_in inverts.
+        if op == "not_in":
             ok = sum(n for v, n in actual.items() if v not in wanted)
+        else:
+            ok = sum(n for v, n in actual.items() if v in wanted)
         share = ok / total
         bucket = ("weak_ok" if (weak and share >= 0.8)
                   else "corroborated" if share >= 0.8 else "contradicted")
