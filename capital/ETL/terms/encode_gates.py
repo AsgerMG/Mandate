@@ -68,7 +68,17 @@ import sqlite3
 
 import anthropic
 
-MODEL = "claude-sonnet-5"
+# Overridable per run: `--model haiku` (or a full model id). Triage and
+# encoding are constrained classification against verbatim gate text with a
+# fixed output schema, not open-ended writing, so the cheaper model is a
+# reasonable default choice for bulk passes -- audit_encoding_vs_reality.py
+# is the quality gate either way, and it checks encodings against who actually
+# received the money rather than trusting the model.
+MODELS = {
+    "haiku": "claude-haiku-4-5-20251001",
+    "sonnet": "claude-sonnet-5",
+}
+MODEL = MODELS["sonnet"]
 TRIAGE_CHUNK = 20
 ENCODE_CHUNK = 15
 CITED_OR_BETTER = ("llm_cited", "llm_2pass", "human_verified")
@@ -379,6 +389,14 @@ def cmd_encode(args) -> None:
         conn.commit()
         print(f"cleared {cleared:,} existing specs (--rebuild)")
     extra = "" if args.rebuild else " AND value_spec IS NULL"
+    # A gate with value_spec NULL is not the same as a gate never tried: most
+    # of them have been through the encoder, which looked at the requirement
+    # and correctly refused ("certain sectors are excluded, including..." names
+    # no comparable set). Re-running those bills for the same refusal. --fresh
+    # restricts the pass to gates triage has seen but encode never has, which
+    # is the only set where new spend can produce new coverage.
+    if getattr(args, "fresh", False):
+        extra += " AND (encoding_method IS NULL OR encoding_method <> 'llm_encode')"
     rows = conn.execute(
         f"""SELECT id, intake_field_resolved, requirement, value
             FROM eligibility_gates
@@ -498,9 +516,15 @@ def main() -> None:
         p = sub.add_parser(name)
         p.add_argument("--limit", type=int, default=0)
         p.add_argument("--rebuild", action="store_true")
+        p.add_argument("--model", default="sonnet",
+                       help="haiku | sonnet | a full model id")
+        p.add_argument("--fresh", action="store_true",
+                       help="only gates the encoder has never seen")
         p.set_defaults(func=fn)
     sub.add_parser("report").set_defaults(func=cmd_report)
     args = ap.parse_args()
+    global MODEL
+    MODEL = MODELS.get(getattr(args, "model", "sonnet"), getattr(args, "model", MODEL))
     args.func(args)
 
 
