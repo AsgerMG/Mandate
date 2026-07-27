@@ -1086,7 +1086,24 @@ function InstitutionsTable({ institutions, pending = false }: { institutions: In
                   <span className="mb-1 block font-semibold text-[#3d6136]">
                     Open to you: nothing in its documented rules rules you out
                   </span>
-                ) : null}
+                ) : (
+                  // Say so when we checked NOTHING. 177 instruments carry no
+                  // machine-readable rule yet, and an unassessed row used to
+                  // render blank here — indistinguishable from one we had
+                  // actually cleared, except for a missing green line nobody
+                  // would notice was absent. Dropping these rows instead was
+                  // considered and rejected: they include the Dutch, Swedish,
+                  // Spanish and Czech national routes, so excluding them would
+                  // leave founders in those countries with no domestic option
+                  // at all. Ranking already sorts them below assessed rows
+                  // (VERDICT_RANK), so they surface only when nothing better
+                  // exists — which is exactly when a founder should see one,
+                  // clearly labelled.
+                  <span className="mb-1 block font-semibold text-[var(--muted-foreground)]">
+                    Not yet verified: we hold no machine-readable rules for this
+                    one, so check its criteria yourself before committing time
+                  </span>
+                )}
                 {pending && !r.whyEligible ? <PlaceholderBar /> : r.whyEligible}
                 {r.whyEasy && (
                   <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
