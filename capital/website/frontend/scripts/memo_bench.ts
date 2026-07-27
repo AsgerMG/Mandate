@@ -8,7 +8,11 @@
  *
  * Calls runIntelligence() directly rather than POSTing to /api/intelligence:
  * the route rate-limits at 5 per hour per IP, which a 12-company sweep would
- * trip immediately. Same pipeline, same prompts, same model calls.
+ * trip immediately. Same pipeline, same prompts, same model calls — and, since
+ * 2026-07-27, the same sanitiser, because skipping it made this harness test a
+ * path no founder can take. sanitize.ts had gone stale after the vocabulary
+ * split and was silently dropping `sector` and every `activities` value on
+ * every live request, while twelve green bench runs reported nothing wrong.
  *
  * COSTS REAL MONEY — each company is a full research + synthesis run.
  *
@@ -25,6 +29,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
+import { sanitizeEligibility } from "../lib/intelligence/sanitize";
 for (const line of readFileSync(".env.local", "utf8").split("\n")) {
   const m = line.match(/^([A-Z_]+)=(.*)$/);
   if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
@@ -120,7 +125,7 @@ async function main() {
       // name, so a rename in __benchCompanies.ts would have produced undefined
       // answers rather than a compile error — the same
       // vocabulary-drift-with-no-alarm fault this refactor exists to remove.
-      const eligibility = {
+      const rawEligibility = {
         sector: c.sector,
         activities: c.activities ?? ["none"],
         entityCountries: [country],
@@ -132,6 +137,19 @@ async function main() {
         ticketBand: c.ticketBand,
         developmentStage: c.developmentStage,
       };
+      // Through the SAME sanitiser the API route uses. Calling runIntelligence
+      // with raw answers made this harness test a path no founder can take:
+      // sanitize.ts silently dropped `sector` (stale vocabulary) and every
+      // `activities` value, and twelve green bench runs said nothing was
+      // wrong. If the sanitiser rejects something the bench sets, that IS the
+      // bug and it should show up here as a worse brief.
+      const eligibility = sanitizeEligibility(rawEligibility);
+      for (const k of Object.keys(rawEligibility)) {
+        if ((eligibility as Record<string, unknown> | undefined)?.[k] === undefined) {
+          console.warn(`  [%s] sanitiser dropped "%s" — the live route would too`,
+            archetype, k);
+        }
+      }
       let report: Record<string, unknown> | null = null;
       let error: string | null = null;
       try {
