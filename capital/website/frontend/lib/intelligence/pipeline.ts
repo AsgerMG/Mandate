@@ -219,10 +219,16 @@ const FIT_FLAG: Record<Exclude<FounderFit, "startup_ready">, string> = {
 
 // Maps the founder-facing CAPITAL_OPTIONS values to the DB's capital_type
 // enum — not 1:1, "Loans & guarantees" spans three DB values.
-const CAPITAL_SOUGHT_TO_DB: Record<string, string[]> = {
+export const CAPITAL_SOUGHT_TO_DB: Record<string, string[]> = {
   grant: ["grant"],
   loan: ["loan", "guarantee", "counter_guarantee"],
-  recoverable_advance: ["recoverable_advance"],
+  // SATR's own code is the combined "loan / repayable advances"
+  // (StateAidInstrumentLradv, 13,729 events) -- the register does not separate
+  // them, so a founder asking for a recoverable advance is pointed at that
+  // same population rather than at nothing. Mapping it to a capital_type no
+  // instrument carried meant the option matched zero funds and the graded
+  // fallback then relaxed capital type entirely, discarding the answer.
+  recoverable_advance: ["loan"],
   equity: ["equity", "blended"],
   tax_credit: ["tax_credit"],
 };

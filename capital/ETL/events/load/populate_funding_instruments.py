@@ -58,8 +58,17 @@ DEBT_BASES = {"eib_debt_commitment"}
 # more authoritative than the basis label when present).
 SATR_INSTRUMENT_MAP = {
     "StateAidInstrumentG": "grant", "StateAidInstrumentDG": "grant",
-    "Tilskudd": "grant", "StateAidInstrumentTaote": "grant",
+    "Tilskudd": "grant",
+    # Taote is "tax advantage or tax exemption" -- a distinct instrument, not a
+    # grant. Collapsing it lost 7,850 events and made the intake's "Tax credits
+    # & reliefs" option unmatchable: it mapped to a capital_type no instrument
+    # carried, so choosing it matched nothing and selectLeafInstruments then
+    # relaxed capital type entirely, silently discarding the answer.
+    "StateAidInstrumentTaote": "tax_credit",
     "Lan": "loan", "Lån": "loan",
+    # Lradv is SATR's combined "loan / repayable advances" code -- the register
+    # itself does not separate them, so neither can we. Kept as loan, and the
+    # intake's recoverable-advance option maps to loan for the same reason.
     "StateAidInstrumentLradv": "loan", "StateAidInstrumentSL": "loan",
     "Garanti": "guarantee", "StateAidInstrumentPRC": "guarantee",
     "StateAidInstrumentPRVRISKFIN": "equity",
