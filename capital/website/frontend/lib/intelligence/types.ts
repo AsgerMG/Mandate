@@ -195,6 +195,13 @@ export interface InstitutionEntry {
   /** How many encoded filters could actually be evaluated — the honest weight
    *  behind the verdict. */
   gatesChecked?: number;
+  /** Last year this vehicle is recorded as having awarded anything, and
+   *  whether that makes it dormant. Stated on the row rather than hidden: a
+   *  brief that sends a founder at a scheme which stopped awarding in 2019 is
+   *  not thin, it is wrong with authority. A MISSING year is never stale — see
+   *  isStale() in pipeline.ts for why (Bpifrance, KfW and EIFO have none). */
+  lastAwardYear?: number;
+  stale?: boolean;
   /** Code-built, never model-written: why this row ranks where it does on
    *  ease (brief_funnel_v2 Stage 3). Deliberately phrased as requirements
    *  ANSWERED, not cleared — see the honesty note in ease.ts. Empty when
