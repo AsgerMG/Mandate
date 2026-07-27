@@ -11,6 +11,7 @@ import { scoreEase, whyEasyLine } from "./ease";
 import { assessAll, VERDICT_RANK } from "./verdict";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { isWatchOnly } from "./watchOnly";
+import { recordBrief } from "./record";
 import { semanticFundMatch } from "./semantic";
 import { type OpenFieldEvidence, type ProjectGateEvidence } from "./gateReach";
 import {
@@ -1068,7 +1069,12 @@ async function synthesize(
   instructions: string,
   sectorTop: string,
   emit: Emit,
-): Promise<Omit<IntelligenceReport, "company" | "generatedAt">> {
+): Promise<Omit<IntelligenceReport, "company" | "generatedAt"> & {
+  /** Pipeline diagnostics, NOT part of the founder-facing report — stripped
+   *  in runIntelligence before the report event is emitted. Recorded on
+   *  brief_records so a short brief can be explained after the fact. */
+  _dropped: { blocked: number; watchOnly: number; candidates: number };
+}> {
   const profileBlock = eligibilityContext(req.eligibility, req.targetMarkets);
   // Stage D (v1): the deterministic eligibility screen — computed here, in
   // code, from the verified term records. The writer narrates it; the rows
@@ -1395,6 +1401,7 @@ async function synthesize(
   // survive ranking and the founder sees "Enterprise Ireland" twice in one
   // table — once open, once not assessable — which reads as a broken brief.
   // Ranking already put the better row first, so first-wins is the right rule.
+  const droppedBlocked = rankedByEase.filter((r) => r.assessment?.status === "blocked").length;
   const seenNames = new Set<string>();
   const baseRows = rankedByEase
     .filter((r) => r.assessment?.status !== "blocked")
@@ -1943,6 +1950,11 @@ async function synthesize(
     // returns it empty (Corti's thinking-off run did). Schema `required` gets
     // the key emitted, not filled.
     caveats: deDash(narrative.caveats)?.trim() || DEFAULT_CAVEAT,
+    // Diagnostics, stripped before the report is emitted (see runIntelligence).
+    // They exist so brief_records can explain a short brief after the fact
+    // rather than leaving it to be guessed at.
+    _dropped: { blocked: droppedBlocked, watchOnly: watchOnly.length,
+                candidates: scored.length },
   };
 }
 
@@ -2372,6 +2384,7 @@ export function computeVerdict(
 
 /** Run the full pipeline, emitting progress events as each stage completes. */
 export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Promise<void> {
+  const startedAt = Date.now();
   // The first screen stopped asking "company type" on 2026-07-26: it gated no
   // eligibility rule and inferProfileSignal already reads the same 4-point
   // scale off the founder's own description. So the model's read IS the
@@ -2466,13 +2479,35 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   const body = await synthesize(
     req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit);
 
+  const { _dropped, ...report } = body;
   emit({
     type: "report",
     data: {
       company: req.company,
       generatedAt: new Date().toISOString(),
-      ...body,
+      ...report,
     },
   });
   emit({ type: "status", step: "done" });
+
+  // Written AFTER the brief has been emitted, and never awaited: recording
+  // what we showed must not be able to slow or break delivering it. See
+  // record.ts for why this exists at all — bench_report can tell whether a
+  // brief is well formed, but nothing could tell whether it was right.
+  recordBrief({
+    company: req.company,
+    country: req.country,
+    description: req.description,
+    eligibility: req.eligibility,
+    capitalSought: req.capitalSought,
+    institutions: report.institutions.map((i) => ({
+      institution: i.institution, channel: i.channel, country: i.country,
+      verdict: i.verdict, blocker: i.blocker, stale: i.stale,
+    })),
+    droppedBlocked: _dropped.blocked,
+    droppedWatchOnly: _dropped.watchOnly,
+    candidateCount: _dropped.candidates,
+    durationMs: Date.now() - startedAt,
+    codeVersion: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7),
+  });
 }
