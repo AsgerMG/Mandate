@@ -17,6 +17,7 @@ import { type OpenFieldEvidence, type ProjectGateEvidence } from "./gateReach";
 import {
   findPeersBySubsector,
   isGenericSubsector,
+  hydrateGateDetail,
   loadAgentInstructions,
   loadDbInstruments,
   loadFundProcess,
@@ -1084,6 +1085,12 @@ async function synthesize(
   // the thing the founder came for. Per-instrument qualification now lives on
   // the institution rows (verdict.ts); this screen is the framework checks plus
   // the rules behind the funds actually on the table.
+  // Phase two of hydration: the source citations this screen renders, and the
+  // verbatim quotes the adaptive round asks from, are fetched only for the
+  // instruments that actually reach the founder. Awaited here because
+  // evaluateEligibility reads gate.source synchronously.
+  await hydrateGateDetail(
+    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)));
   const eligibilityScreen = evaluateEligibility(
     req.eligibility,
     // Head of the pool only. The pool is deliberately wide so blocked funds can

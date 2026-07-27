@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
+import { hydrateDbInstruments, hydrateGateDetail } from "@/lib/intelligence/corpus";
 import {
   distinctFamilyCount,
   openFieldsForShortlist,
@@ -57,6 +57,11 @@ export async function POST(request: NextRequest) {
   await hydrateDbInstruments();
 
   const candidateIds = sanitizeInstrumentIds(body.candidateInstrumentIds) ?? [];
+  // The adaptive round writes its questions from the funds' VERBATIM gate
+  // text, so it needs phase two of hydration. Without this the quotes come
+  // back empty and the questions silently fall back to paraphrase — the
+  // grounding that makes them worth asking, gone with no error.
+  await hydrateGateDetail(candidateIds);
   const eligibility = withIncorporationCountry(
     sanitizeEligibility(body.eligibility), body.country?.trim());
   const req = {

@@ -36,15 +36,27 @@ const FILE = "public/data/instrument_terms.json";
 
 function main() {
   const bytes = statSync(FILE).size;
-  const mb = bytes / 1e6;
   const data = JSON.parse(readFileSync(FILE, "utf8")) as {
-    records: { gates?: unknown[] }[];
+    records: { gates?: { quote?: string; source?: unknown }[] }[];
   };
   const instruments = data.records.length;
   const gates = data.records.reduce((n, r) => n + (r.gates?.length ?? 0), 0);
-  const perInstrument = bytes / Math.max(1, instruments);
 
-  console.log(`corpus payload      ${mb.toFixed(2)} MB`);
+  // What PRODUCTION actually loads per request. hydrateDbInstruments() reads
+  // Postgres without `quote` and the source citation (see corpus.ts phase
+  // one); those come back only for the shortlist. The JSON file still carries
+  // them because it is the offline fallback, so measuring the file overstates
+  // the real cost — and the real cost is what the budget is about.
+  const heavy = data.records.reduce((n, r) =>
+    n + (r.gates ?? []).reduce((m, g) =>
+      m + JSON.stringify(g.quote ?? "").length + JSON.stringify(g.source ?? "").length, 0), 0);
+  const liveBytes = bytes - heavy;
+  const mb = liveBytes / 1e6;
+  const perInstrument = liveBytes / Math.max(1, instruments);
+
+  console.log(`per-request payload ${mb.toFixed(2)} MB   (production, phase one)`);
+  console.log(`full snapshot       ${(bytes / 1e6).toFixed(2)} MB   ` +
+    `(JSON fallback; ${(heavy / 1e6).toFixed(2)} MB of it deferred to the shortlist)`);
   console.log(`instruments         ${instruments.toLocaleString()}`);
   console.log(`gates               ${gates.toLocaleString()}`);
   console.log(`per instrument      ${(perInstrument / 1024).toFixed(1)} KB`);

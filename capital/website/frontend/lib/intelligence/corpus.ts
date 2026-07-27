@@ -237,10 +237,17 @@ export async function hydrateDbInstruments(): Promise<void> {
                   administering_body_share, last_year
            FROM funding_instruments`,
         ),
+        // PHASE ONE: everything needed to RANK and to reach a verdict, and
+        // nothing else. `quote` and `source_*` are 39% of the gate payload and
+        // are read only for the handful of instruments that reach the brief —
+        // gateReach's adaptive questions and the eligibility screen's
+        // citations, both scoped to the shortlist. Loading them for all 327
+        // instruments on every request paid for 320 instruments nobody will
+        // see. Phase two is hydrateGateDetail() below.
         client.query(
           `SELECT instrument_id, gate_key, gate_family, requirement, value,
                   value_spec, intake_field, gate_role, intake_field_resolved,
-                  quote, source_file, source_locator, verification_level
+                  verification_level
            FROM eligibility_gates`,
         ),
       ]);
@@ -257,8 +264,10 @@ export async function hydrateDbInstruments(): Promise<void> {
           value: g.value ?? "",
           valueSpec: g.value_spec ? JSON.parse(g.value_spec) : null,
           intakeField: g.intake_field ?? "none",
-          quote: g.quote ?? "",
-          source: { file: g.source_file ?? "", locator: g.source_locator ?? "" },
+          // Filled by hydrateGateDetail() for the shortlist only. Empty here
+          // is not "no source on record" — it is "not fetched yet".
+          quote: "",
+          source: { file: "", locator: "" },
           verificationLevel: g.verification_level ?? undefined,
           verified: ASSERTABLE.has(g.verification_level),
         });
@@ -287,6 +296,66 @@ export async function hydrateDbInstruments(): Promise<void> {
   } catch (err) {
     console.error("Postgres hydration failed, falling back to instrument_terms.json:", err);
     dbInstrumentsCache = loadDbInstrumentsFromJson();
+  }
+}
+
+/** Instruments whose gate detail has already been fetched, so a second
+ *  shortlist in the same request costs nothing. */
+const detailFetched = new Set<string>();
+
+/**
+ * PHASE TWO of hydration: fetch `quote` and the source citation for a specific
+ * handful of instruments, and merge them into the cached gates.
+ *
+ * Must be awaited before anything that reads those fields — the adaptive
+ * round (gateReach.ts) and the eligibility screen's citations
+ * (eligibility.ts). Both run only over the shortlist, which is why they can be
+ * deferred at all.
+ *
+ * Never throws: on failure the fields stay empty, which degrades a citation to
+ * blank rather than failing a brief that is otherwise complete. The JSON
+ * fallback already carries them, so this is a no-op there.
+ */
+export async function hydrateGateDetail(instrumentIds: string[]): Promise<void> {
+  const want = instrumentIds.filter((id) => id && !detailFetched.has(id));
+  if (!want.length || !dbInstrumentsCache) return;
+  const url = process.env.DATABASE_URL;
+  if (!url) return; // JSON fallback shipped the detail already
+  try {
+    const { Client } = await import("pg");
+    const client = new Client({ connectionString: url, connectionTimeoutMillis: 2000 });
+    await client.connect();
+    try {
+      await client.query("SET statement_timeout = 2000");
+      const res = await client.query(
+        `SELECT instrument_id, gate_key, quote, source_file, source_locator
+           FROM eligibility_gates WHERE instrument_id = ANY($1::text[])`,
+        [want],
+      );
+      const byKey = new Map<string, { quote: string; file: string; locator: string }>();
+      for (const r of res.rows) {
+        byKey.set(`${r.instrument_id}\u0000${r.gate_key}`, {
+          quote: r.quote ?? "",
+          file: r.source_file ?? "",
+          locator: r.source_locator ?? "",
+        });
+      }
+      const wanted = new Set(want);
+      for (const inst of dbInstrumentsCache) {
+        if (!wanted.has(inst.id)) continue;
+        for (const gate of inst.gates) {
+          const d = byKey.get(`${inst.id}\u0000${gate.id}`);
+          if (!d) continue;
+          gate.quote = d.quote;
+          gate.source = { file: d.file, locator: d.locator };
+        }
+        detailFetched.add(inst.id);
+      }
+    } finally {
+      await client.end();
+    }
+  } catch (err) {
+    console.error("gate detail hydration failed, citations will be blank:", String(err));
   }
 }
 
