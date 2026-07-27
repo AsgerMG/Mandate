@@ -32,6 +32,7 @@ for _anc in _Path(__file__).resolve().parents:
 from etl_env import DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
+import argparse
 import json
 import re
 import sqlite3
@@ -56,6 +57,12 @@ DEBT_BASES = {"eib_debt_commitment"}
 
 # (2) SATR's own aid_instrument codes (GBER-derived, government-assigned —
 # more authoritative than the basis label when present).
+# Derived tables keyed on instrument_id, besides eligibility_gates. Every one
+# must be reconciled when instruments change, or its rows outlive the
+# instrument and the next Postgres publish dies on a foreign key. Add new
+# derived tables here when they are created.
+DERIVED_INSTRUMENT_TABLES = ("eligibility_clauses",)
+
 SATR_INSTRUMENT_MAP = {
     "StateAidInstrumentG": "grant", "StateAidInstrumentDG": "grant",
     "Tilskudd": "grant",
@@ -230,6 +237,12 @@ FRAMEWORK_INSTRUMENTS = [
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--force", action="store_true",
+                    help="proceed even if the rebuild would orphan a large share "
+                         "of the curated eligibility layer")
+    args = ap.parse_args()
+
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
 
@@ -378,8 +391,68 @@ def main() -> None:
             is_framework=is_framework, sample_project_titles=sample_titles,
         ))
 
+    # ── Reconcile, do not wipe ───────────────────────────────────────────────
+    # This used to DELETE every non-framework eligibility gate on every run.
+    # Gates are the EXPENSIVE derived layer -- extracted, triaged, encoded and
+    # audited, at real cost -- and instrument rows are cheap facts recomputed
+    # from events. Coupling them meant a routine rebuild destroyed the
+    # eligibility engine, and fixing one derived column (capital_type) needed a
+    # separate script written specifically to avoid running this. The same
+    # coupling once cost 3,327 Voyage embeddings through an FK cascade.
+    #
+    # Instrument ids are source_to_family() outputs, which are stable across
+    # runs, so a wipe was never necessary: gates whose instrument survives are
+    # still correctly attached. Only genuinely orphaned gates -- instrument no
+    # longer produced by this pass -- are removed.
+    surviving = {r["id"] for r in now}
+    # Read gates WITHOUT joining funding_instruments. An inner join only sees
+    # gates whose instrument still exists, so anything orphaned by an earlier
+    # run stays invisible and survives every subsequent reconcile -- which is
+    # exactly what happened: 33 gates for fondo_di_garanzia and
+    # invitalia_smart_start persisted until a Postgres FK violation exposed
+    # them. `surviving` is the full set this pass produces, frameworks
+    # included, so membership in it is the whole test.
+    orphaned = [
+        (gid, iid) for gid, iid in conn.execute(
+            "SELECT id, instrument_id FROM eligibility_gates")
+        if iid not in surviving
+    ]
+    # Every derived table keyed on instrument_id, not just gates. Reconciling
+    # only one left eligibility_clauses orphaned, which surfaced as a second
+    # Postgres FK violation immediately after the first was fixed -- the same
+    # bug twice because the fix was written for one table instead of the class.
+    for table in DERIVED_INSTRUMENT_TABLES:
+        dead = [row[0] for row in
+                conn.execute(f"SELECT id, instrument_id FROM {table}").fetchall()
+                if row[1] not in surviving]
+        if dead:
+            conn.executemany(f"DELETE FROM {table} WHERE id = ?", [(d,) for d in dead])
+            print(f"  reconciled: removed {len(dead):,} orphaned rows from {table}")
+    curated = conn.execute(
+        """SELECT COUNT(*) FROM eligibility_gates
+            WHERE value_spec IS NOT NULL OR gate_role IS NOT NULL""").fetchone()[0]
+    if orphaned:
+        at_risk = conn.execute(
+            f"""SELECT COUNT(*) FROM eligibility_gates
+                 WHERE id IN ({",".join("?" * len(orphaned))})
+                   AND (value_spec IS NOT NULL OR gate_role IS NOT NULL)""",
+            [g for g, _ in orphaned]).fetchone()[0]
+        # A rebuild that would discard a large share of the curated layer is a
+        # bug in this pass, not an instruction. Fail loudly rather than delete.
+        if curated and at_risk / curated > 0.2 and not args.force:
+            raise SystemExit(
+                f"refusing to run: this rebuild would orphan {at_risk:,} of {curated:,} "
+                f"curated gates ({at_risk / curated:.0%}). That means instrument ids "
+                f"moved. Investigate source_to_family() before re-running with --force."
+            )
+        conn.executemany("DELETE FROM eligibility_gates WHERE id = ?",
+                         [(g,) for g, _ in orphaned])
+        print(f"  reconciled: removed {len(orphaned):,} orphaned gates "
+              f"({at_risk:,} of them curated); {curated - at_risk:,} curated gates kept")
+    else:
+        print(f"  reconciled: no orphaned gates; {curated:,} curated gates kept")
+
     conn.execute("DELETE FROM funding_instrument_sources")
-    conn.execute("DELETE FROM eligibility_gates WHERE instrument_id NOT IN (SELECT id FROM funding_instruments WHERE is_framework = 1)")
     conn.execute("DELETE FROM funding_instruments")
 
     for r in now:
