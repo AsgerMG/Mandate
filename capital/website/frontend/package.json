@@ -7,7 +7,12 @@
     "prebuild": "python3 ../build/build_site_data.py --check",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "vocab": "npx tsx scripts/emit_vocabulary.ts",
+    "check": "npx tsc --noEmit && npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_archetypes.ts && npx tsx scripts/check_payload_budget.ts",
+    "trace": "npx tsx scripts/trace_pool.ts",
+    "board": "npx tsx scripts/bench_report.ts",
+    "bench": "npx tsx scripts/memo_bench.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

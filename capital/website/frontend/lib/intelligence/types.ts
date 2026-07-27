@@ -572,6 +572,24 @@ export interface GroundedRound {
 }
 
 /** The selectable capital types the founder can ask for. Order = display order. */
+/**
+ * The ORDERED bands. Order is meaning here, not presentation: band_max and
+ * band_min specs are evaluated by position, so reordering one of these
+ * silently changes what every rule using it decides.
+ *
+ * They used to live as private consts in sanitize.ts and were hand-copied into
+ * ETL/terms/encode_gates.py under a "keep in sync" comment. They are exported
+ * from one place now and projected to the ETL as generated JSON — see
+ * vocabulary.ts.
+ */
+export const FTE_BANDS = ["1-9", "10-49", "50-249", "250+"] as const;
+export const TURNOVER_BANDS = ["<2M", "2-10M", "10-50M", ">50M"] as const;
+export const BALANCE_BANDS = ["<2M", "2-43M", ">43M"] as const;
+export const COFINANCING_BANDS = ["<25%", "25-50%", ">50%"] as const;
+export const DEVELOPMENT_STAGES = ["research", "prototype", "pilot_customers", "scaling_revenue"] as const;
+export const NEED_BY_BANDS = ["asap_weeks", "months_6", "months_18", "flexible"] as const;
+export const CONDITIONALITY_VALUES = ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"] as const;
+
 export const CAPITAL_OPTIONS = [
   { value: "grant", label: "Grants", hint: "non-dilutive, no payback" },
   { value: "loan", label: "Loans & guarantees", hint: "debt, repayable, no equity" },

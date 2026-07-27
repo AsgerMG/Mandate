@@ -42,9 +42,59 @@ async function main() {
   const { hydrateDbInstruments, loadDbInstruments } = await import("../lib/intelligence/corpus");
   const { SECTOR_OPTIONS, CAPITAL_OPTIONS, TICKET_BANDS } =
     await import("../lib/intelligence/types");
+  const { VOCABULARY } = await import("../lib/intelligence/vocabulary");
   await hydrateDbInstruments();
   const instruments = loadDbInstruments();
   const problems: Problem[] = [];
+
+  // ── The ETL's copy must BE this copy ────────────────────────────────────
+  // encode_gates.py reads data/vocabularies.json rather than restating the
+  // vocabulary, so the only way it can drift is if that file goes stale after
+  // a change to types.ts. Regenerating and comparing closes the last gap:
+  // without this the projection is just a fourth place to forget.
+  const { build, OUT } = await import("./emit_vocabulary");
+  const expected = build();
+  let onDisk = "";
+  try { onDisk = readFileSync(OUT, "utf8"); } catch { /* missing */ }
+  if (onDisk !== expected) {
+    problems.push({
+      axis: "etl projection",
+      detail: onDisk
+        ? "data/vocabularies.json is STALE — the ETL encoder is working from an " +
+          "older vocabulary than the product. Run: npx tsx scripts/emit_vocabulary.ts"
+        : "data/vocabularies.json is missing — the ETL encoder cannot start. " +
+          "Run: npx tsx scripts/emit_vocabulary.ts",
+    });
+  }
+
+  // ── The sanitiser must accept exactly what the form offers ──────────────
+  // sanitize.ts is the only thing standing between a real request and the
+  // pipeline, and it silently DROPS any value it does not recognise. It held a
+  // hand-copy of the sector list that went stale on the vocabulary split, so
+  // every live request lost its sector while the bench, which bypasses the
+  // route, saw nothing wrong. Derived now, and checked here so it stays that way.
+  const { sanitizeEligibility } = await import("../lib/intelligence/sanitize");
+  for (const [field, vocab] of Object.entries(VOCABULARY)) {
+    if (!vocab.values.length) continue;
+    for (const value of vocab.values) {
+      const probe = vocab.multi ? { [field]: [value] } : { [field]: value };
+      // sanitizeEligibility returns undefined when NOTHING survives, which is
+      // itself the failure being tested for — so it must be handled, not
+      // dereferenced. A guard that throws instead of reporting is a guard that
+      // gets commented out.
+      const out = (sanitizeEligibility(probe) ?? {}) as Record<string, unknown>;
+      const kept = vocab.multi
+        ? Array.isArray(out[field]) && (out[field] as string[]).includes(value)
+        : out[field] === value;
+      if (!kept) {
+        problems.push({
+          axis: "sanitiser",
+          detail: `"${value}" is offered for ${field} but sanitizeEligibility drops it — ` +
+            `a founder choosing it has their answer discarded before anything can use it`,
+        });
+      }
+    }
+  }
 
   // ── Capital: every option must reach at least one instrument ─────────────
   // Imported, never copied. A local mirror of the mapping was the first thing

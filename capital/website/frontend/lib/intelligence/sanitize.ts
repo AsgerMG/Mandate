@@ -12,25 +12,42 @@ import {
   type EligibilityAnswers,
   type ProfileSignal,
   type TicketBand,
+  SECTOR_OPTIONS,
+  ACTIVITY_OPTIONS,
+  EXCLUSION_OPTIONS,
+  TICKET_BANDS,
+  FTE_BANDS,
+  TURNOVER_BANDS,
+  BALANCE_BANDS,
+  COFINANCING_BANDS,
+  DEVELOPMENT_STAGES,
+  NEED_BY_BANDS,
+  BORROWER_MODELS,
+  CONDITIONALITY_VALUES,
 } from "./types";
 
 const CAPITAL_TYPE_VALUES: readonly CapitalType[] = CAPITAL_OPTIONS.map((o) => o.value);
 const COMPANY_TYPE_VALUES: readonly CompanyTypeValue[] = COMPANY_TYPE_OPTIONS.map((o) => o.value);
-const TICKET_BAND_VALUES: readonly TicketBand[] = ["lt500k", "b500k_2m5", "b2m5_15m", "b15m_50m", "gt50m"];
-const BORROWER_MODEL_VALUES: readonly BorrowerModel[] = ["operating", "balance_sheet_lender", "originator", "fund_manager"];
+const TICKET_BAND_VALUES: readonly TicketBand[] = TICKET_BANDS.map((b) => b.value);
+const BORROWER_MODEL_VALUES: readonly BorrowerModel[] = BORROWER_MODELS.map((o) => o.value);
 const YES_NO_UNSURE = ["yes", "no", "unsure"] as const;
 const YES_NO_DEPENDS = ["yes", "no", "depends"] as const;
-const FTE_BAND_VALUES = ["1-9", "10-49", "50-249", "250+"] as const;
-const TURNOVER_BAND_VALUES = ["<2M", "2-10M", "10-50M", ">50M"] as const;
-const BALANCE_BAND_VALUES = ["<2M", "2-43M", ">43M"] as const;
-const COFINANCING_BAND_VALUES = [">50%", "25-50%", "<25%", "unsure"] as const;
-const DEVELOPMENT_STAGE_VALUES = ["research", "prototype", "pilot_customers", "scaling_revenue"] as const;
-const NEED_BY_VALUES = ["asap_weeks", "months_6", "months_18", "flexible"] as const;
-const CONDITIONALITY_VALUES = ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"] as const;
-const SECTOR_VALUES = ["software_digital", "hardware_robotics", "health_lifesciences",
-  "energy_cleantech", "agrifood", "financial_services", "excluded_activities"] as const;
-const EXCLUSION_VALUES = ["none", "insolvency", "losses_over_half_capital",
-  "recovery_order", "sanctions", "tax_arrears"] as const;
+const FTE_BAND_VALUES = FTE_BANDS;
+const TURNOVER_BAND_VALUES = TURNOVER_BANDS;
+const BALANCE_BAND_VALUES = BALANCE_BANDS;
+// "unsure" is accepted from the form but is not part of the ordered band
+// vocabulary — it means "no answer", which NON_ANSWERS handles downstream.
+const COFINANCING_BAND_VALUES = [...COFINANCING_BANDS, "unsure"] as const;
+const DEVELOPMENT_STAGE_VALUES = DEVELOPMENT_STAGES;
+const NEED_BY_VALUES = NEED_BY_BANDS;
+
+// DERIVED, never re-typed. This list was a hand-copy and went stale the moment
+// SECTOR_OPTIONS changed: it still held the retired 7-bucket vocabulary, so
+// every real request through /api/intelligence had its sector silently dropped
+// while the bench, which calls the pipeline directly, saw nothing wrong.
+const SECTOR_VALUES = SECTOR_OPTIONS.map((o) => o.value);
+const ACTIVITY_VALUES = ACTIVITY_OPTIONS.map((o) => o.value);
+const EXCLUSION_VALUES = EXCLUSION_OPTIONS.map((o) => o.value);
 
 function pickEnum<T extends string>(v: unknown, allowed: readonly T[]): T | undefined {
   return typeof v === "string" && (allowed as readonly string[]).includes(v) ? (v as T) : undefined;
@@ -87,6 +104,9 @@ export function sanitizeEligibility(raw: unknown): EligibilityAnswers | undefine
     institutionalBacking: pickEnum(b.institutionalBacking, YES_NO_UNSURE),
     needBy: pickEnum(b.needBy, NEED_BY_VALUES),
     sector: pickEnum(b.sector, SECTOR_VALUES),
+    // Was missing entirely, so the whole activities axis was discarded before
+    // it could gate anything — the axis that carries most GBER exclusions.
+    activities: pickEnumList(b.activities, ACTIVITY_VALUES),
     exclusionFlags: pickEnumList(b.exclusionFlags, EXCLUSION_VALUES),
   };
   // The undertaking-in-difficulty test is now one line of the exclusions

@@ -82,10 +82,17 @@ data:
 # description to relevant funds). Both are incremental/idempotent, so re-running
 # `make eligibility` only embeds what actually changed. Needs VOYAGE_KEY.
 eligibility:
+	# The encoder reads data/vocabularies.json rather than restating the intake
+	# vocabulary, so it is regenerated first -- an encoder working from a stale
+	# vocabulary emits values the product cannot match, and the rule silently
+	# stops gating rather than failing.
+	cd website/frontend && npx tsx scripts/emit_vocabulary.ts
 	python3 ETL/terms/sync_gates_from_yaml.py
 	python3 ETL/terms/encode_gates.py triage
 	python3 ETL/terms/encode_gates.py encode
-	python3 ETL/terms/audit_encoding_vs_reality.py
+	# Audit BEFORE publishing, and quarantine rules their own recipients
+	# contradict, so a wrong rule cannot reach a founder's brief.
+	python3 ETL/terms/audit_encoding_vs_reality.py --quarantine
 	python3 website/build/eligibility_export.py
 	python3 ETL/terms/migrate_to_postgres.py
 	python3 ETL/terms/embed_eligibility.py run

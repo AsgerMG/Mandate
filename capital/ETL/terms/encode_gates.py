@@ -83,6 +83,24 @@ TRIAGE_CHUNK = 20
 ENCODE_CHUNK = 15
 CITED_OR_BETTER = ("llm_cited", "llm_2pass", "human_verified")
 
+# The intake vocabulary, READ rather than restated. These used to be three
+# hand-copied dicts here carrying a "Mirrors types.ts -- keep in sync" comment.
+# That comment was the bug: a vocabulary kept in sync by hand drifts, and when
+# it drifts nothing fails -- the encoder just emits values the product cannot
+# match, so the rule silently stops gating. Regenerate with
+# `npx tsx scripts/emit_vocabulary.ts`; check_vocabularies.ts fails if stale.
+_VOCAB_PATH = _Path(__file__).resolve().parents[2] / "data" / "vocabularies.json"
+try:
+    _VOCAB = json.loads(_VOCAB_PATH.read_text())
+except FileNotFoundError:  # pragma: no cover
+    raise SystemExit(
+        f"missing {_VOCAB_PATH}. Generate it with:\n"
+        f"  cd website/frontend && npx tsx scripts/emit_vocabulary.ts")
+
+ENUM_VALUES: dict[str, list[str]] = _VOCAB["enumValues"]
+BAND_ORDERS: dict[str, list[str]] = _VOCAB["bandOrders"]
+MULTI_VALUE_FIELDS = set(_VOCAB["multiValueFields"])
+
 ROLES = ["filter", "obligation", "programme_fact", "vague"]
 
 # The founder attributes we actually collect (EligibilityAnswers in types.ts).
@@ -105,43 +123,7 @@ FIELDS = [
     "none",
 ]
 
-# The ordered bands each banded field uses, so a band_max/band_min spec can be
-# evaluated by position. Mirrors types.ts — keep in sync.
-BAND_ORDERS = {
-    "ticketBand": ["lt500k", "b500k_2m5", "b2m5_15m", "b15m_50m", "gt50m"],
-    "fteBand": ["1-9", "10-49", "50-249", "250+"],
-    "turnoverBand": ["<2M", "2-10M", "10-50M", ">50M"],
-    "balanceBand": ["<2M", "2-43M", ">43M"],
-    "cofinancingBand": ["<25%", "25-50%", ">50%"],
-    "developmentStage": ["research", "prototype", "pilot_customers", "scaling_revenue"],
-    "needBy": ["asap_weeks", "months_6", "months_18", "flexible"],
-}
 
-# Fields whose EligibilityAnswers value is a list, not a scalar. `equals` is
-# meaningless against these (see the coercion in cmd_encode).
-MULTI_VALUE_FIELDS = {"entityCountries", "activityCountries", "conditionality",
-                      "exclusionFlags", "activities"}
-
-ENUM_VALUES = {
-    "borrowerModel": ["operating", "balance_sheet_lender", "originator", "fund_manager"],
-    "conditionality": ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"],
-    # The corpus's own NACE-backed Tier-1 vocabulary (companies.sector_top),
-    # shared with the intake so a founder's answer and the funding record can
-    # actually be compared. Mirrors SECTOR_OPTIONS in types.ts.
-    "sector": ["software_data_ai", "health_life_sciences", "energy_cleantech",
-               "industrial_manufacturing", "semiconductors_electronics",
-               "mobility_transport", "agrifood", "materials_chemicals",
-               "space", "defense_security", "other"],
-    "activities": ["none", "financial_services", "primary_agriculture",
-                   "fisheries_aquaculture", "road_freight", "real_estate",
-                   "gambling_betting", "tobacco", "alcohol", "weapons"],
-    "exclusionFlags": ["none", "insolvency", "losses_over_half_capital", "recovery_order",
-                       "sanctions", "tax_arrears"],
-    "wouldOpenEntity": ["yes", "no", "depends"],
-    **{f: ["yes", "no", "unsure"] for f in
-       ("ownerOver25", "institutionalOwner", "nonEuControl", "lossesOverHalfCapital",
-        "consortium", "bankRelationship", "institutionalBacking")},
-}
 
 
 def connect() -> sqlite3.Connection:
