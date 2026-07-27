@@ -138,7 +138,8 @@ async function main() {
       }
       const secs = Math.round((Date.now() - t0) / 1000);
       const shape = report ? checkMemoShape(report) : ["no report"];
-      results.push({ archetype, company, country, secs, error, shape, report, code });
+      results.push({ archetype, company, country, secs, error, shape, report, code,
+        capitalSought: ["grant", "loan"] });
       console.log(
         `  ${archetype.padEnd(28)} ${company.padEnd(18)} ${secs}s ` +
         (error ? "ERROR: " + error.split("\n")[0] : shape.length ? "SHAPE: " + shape.join("; ") : "ok"),

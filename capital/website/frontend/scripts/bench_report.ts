@@ -22,7 +22,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { WATCH_ONLY_COPY } from "../lib/intelligence/watchOnly";
 
 interface Institution {
-  institution?: string; country?: string; verdict?: string;
+  institution?: string; country?: string; verdict?: string; supportType?: string;
   whyEligible?: string; nextStep?: string; blocker?: string; gatesChecked?: number;
 }
 interface Report {
@@ -34,6 +34,9 @@ interface Row {
   error?: string | null; shape?: string[]; report?: Report | null;
   /** git SHA the run was produced by — absent on runs made before stamping. */
   code?: string;
+  /** What the founder actually asked for, so we can tell when the table
+   *  answers a different question. */
+  capitalSought?: string[];
 }
 
 const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean).length;
@@ -79,6 +82,19 @@ function score(r: Row): Scored {
     BOILERPLATE.test(String(i.whyEligible ?? "")) || BOILERPLATE.test(String(i.nextStep ?? "")));
   const contra = inst.filter((i) =>
     i.verdict !== "one_blocker" && MISMATCH_PHRASE.test(String(i.whyEligible ?? "")));
+  // A table that answers a different question than the one asked. sennder
+  // wanted grants and loans and got HTGF and Coparion -- two equity stakes --
+  // while its own bullet said "route non-dilutive asks through dev-bank grants
+  // and loans instead". selectLeafInstruments relaxes capital type when a
+  // country has no leaf serving what was asked for, which is defensible for
+  // one row and indefensible for a whole brief.
+  // memo_bench always asks for grant + loan, so runs made before the field was
+  // recorded can still be scored against that.
+  const sought = r.capitalSought ?? ["grant", "loan"];
+  const equityUnwanted = sought.length > 0 && !sought.includes("equity");
+  const wrongCapital = equityUnwanted
+    ? inst.filter((i) => /equity|stake/i.test(String(i.supportType ?? "")))
+    : [];
   const withBlocker = inst.filter((i) => i.verdict === "one_blocker");
   const explained = withBlocker.filter((i) => String(i.blocker ?? "").trim().length > 0);
   const bullets = rep.bottomLine ?? [];
@@ -97,6 +113,9 @@ function score(r: Row): Scored {
     // ANY watch-only row is a defect: briefs never show a fund that is
     // deprioritised or not relevant, so one is as wrong as three.
     if (watch.length) defects.push(`${watch.length} watch-only`);
+    if (wrongCapital.length === inst.length && inst.length)
+      defects.push("ALL rows wrong capital type");
+    else if (wrongCapital.length) defects.push(`${wrongCapital.length} wrong capital type`);
     if (inst.length < 2) defects.push("under 2 rows");
     if (inst.length > 5) defects.push("over 5 rows");
     if (longest > 25) defects.push(`bullet ${longest}w`);

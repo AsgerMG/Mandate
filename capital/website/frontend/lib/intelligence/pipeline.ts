@@ -1329,6 +1329,9 @@ async function synthesize(
     instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
     req.eligibility,
   );
+  const capitalMismatch = (row: InstrumentRow) =>
+    Boolean(row.capitalType) && (req.capitalSought?.length ?? 0) > 0 &&
+    !instrumentServesCapital(row.capitalType as string, req.capitalSought as string[]);
   const rankedByEase = instrumentTable
     .map((row, i) => ({
       row, i,
@@ -1339,6 +1342,16 @@ async function synthesize(
       const ra = VERDICT_RANK[a.assessment?.status ?? "unknown"];
       const rb = VERDICT_RANK[b.assessment?.status ?? "unknown"];
       if (ra !== rb) return ra - rb;
+      // Then: does this row answer the question the founder actually asked?
+      // selectLeafInstruments relaxes capital type when a country has no leaf
+      // serving what was requested — defensible for one row, indefensible for
+      // a table. sennder asked for grants and loans and got HTGF and Coparion,
+      // two equity stakes, while its own bullet said to route non-dilutive
+      // asks through dev-bank grants instead. Demoted rather than dropped:
+      // when a founder genuinely has no matching route, an equity vehicle the
+      // memo openly flags as a conflict beats an empty table.
+      const ma = capitalMismatch(a.row), mb = capitalMismatch(b.row);
+      if (ma !== mb) return ma ? 1 : -1;
       return (b.ease?.score ?? 0) - (a.ease?.score ?? 0) || a.i - b.i;
     });
 
