@@ -23,6 +23,7 @@
  *      npx tsx scripts/memo_bench.ts --all              # everything, costs the most
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { execSync } from "node:child_process";
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
 for (const line of readFileSync(".env.local", "utf8").split("\n")) {
   const m = line.match(/^([A-Z_]+)=(.*)$/);
@@ -91,6 +92,18 @@ async function main() {
   mkdirSync("memo-bench", { recursive: true });
   console.log(`running ${targets.length} companies, concurrency ${concurrency}\n`);
 
+  // Stamp every result with the code that produced it. Without this the
+  // scoreboard silently mixes versions: three defects sat on the board that
+  // had all been fixed, they were just measured on older runs, which reads as
+  // "still broken" and sends you fixing it twice.
+  let code = "unknown";
+  try {
+    const sha = execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim();
+    const dirty = execSync("git status --porcelain -- ../../website ../../ETL", { encoding: "utf8" }).trim();
+    code = dirty ? `${sha}+dirty` : sha;
+  } catch { /* not a git checkout — leave it unknown */ }
+  console.log(`code ${code}\n`);
+
   const results: Record<string, unknown>[] = [];
   const queue = [...targets];
   const workers = Array.from({ length: concurrency }, async () => {
@@ -125,7 +138,7 @@ async function main() {
       }
       const secs = Math.round((Date.now() - t0) / 1000);
       const shape = report ? checkMemoShape(report) : ["no report"];
-      results.push({ archetype, company, country, secs, error, shape, report });
+      results.push({ archetype, company, country, secs, error, shape, report, code });
       console.log(
         `  ${archetype.padEnd(28)} ${company.padEnd(18)} ${secs}s ` +
         (error ? "ERROR: " + error.split("\n")[0] : shape.length ? "SHAPE: " + shape.join("; ") : "ok"),

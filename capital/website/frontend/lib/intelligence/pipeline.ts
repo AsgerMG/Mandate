@@ -438,6 +438,13 @@ const MIN_CHANNELS_CONSIDERED = 7;
 // Only 5 are ever published and ranking upstream already put the best first,
 // so 7 is ample headroom for a disqualification or two while staying inside
 // what the writer reliably covers.
+/** Used when the writer returns an empty caveat. Mirrors the wording the
+ *  prompt asks for: committed amounts, uneven coverage, absence is not proof. */
+const DEFAULT_CAVEAT =
+  "Figures are committed amounts recorded in public registers, not disbursed " +
+  "cash; coverage varies by country and instrument, and absence from the " +
+  "database is not proof that no funding was received.";
+
 const WRITER_CANDIDATE_CAP = 7;
 // The pool synthesize() screens before cutting to the five shown. Deliberately
 // wider than DISPLAY_CAP: funds a founder cannot access are dropped AFTER
@@ -1439,11 +1446,13 @@ async function synthesize(
             blockerPlain: { type: "string" },  // "" when the row has no blocker
             /** false = do not put this in front of the founder at all. */
             worthPursuing: { type: "boolean" },
+            /** false = real, but nothing to do about it yet (see prompt). */
+            actionableNow: { type: "boolean" },
           },
           // blockerPlain is REQUIRED, not optional: left optional the model
           // simply omitted it every time and the raw statute rendered instead.
           // Empty string is the documented answer for rows with no blocker.
-          required: ["channel", "whyEligible", "nextStep", "blockerPlain", "worthPursuing"],
+          required: ["channel", "whyEligible", "nextStep", "blockerPlain", "worthPursuing", "actionableNow"],
         },
       },
       positioning: { type: "string" },
@@ -1548,7 +1557,12 @@ async function synthesize(
           `recency-sorted — the ONLY basis for "stateOfPlay")\n` +
           `${recentEvidence || "(the intelligence corpus has nothing recent for this sector, say so plainly)"}\n\n` +
           `Now write:\n` +
-          `"bottomLine": 4 to 5 bullets, each AT MOST 25 words, plain ` +
+          // Measured: the thinking-off fallback path overran this on both runs
+          // where it fired (28 and 33 words), so the limit is restated as a
+          // count to check rather than a style note.
+          `"bottomLine": 4 to 5 bullets. HARD LIMIT 25 words per bullet — ` +
+          `count the words; a 26-word bullet is wrong and must be cut, not ` +
+          `reworded. Plain ` +
           `sentences with no bullet marker in the text itself (the interface ` +
           `renders them as a list). First bullet: why this founder should ` +
           `care, opening from their own footprint above against the ` +
@@ -1580,6 +1594,18 @@ async function synthesize(
           // Brussels programmes, is a narrower answer than the corpus can
           // actually give. The two levels have different timelines, ticket
           // sizes and application burdens.
+          // sennder's brief published five rows of which three said
+          // "deprioritise", "monitor calls" and "treat as informational" --
+          // honest about each row, but as a whole it padded to five instead of
+          // finding five relevant. Rank tells us which row is better; this
+          // tells us whether there is anything to DO about it this quarter.
+          `Set "actionableNow": false when the founder cannot take a real step ` +
+          `on this route now — the next move is to monitor calls, or it needs ` +
+          `a precondition they do not have (a consortium with no partners ` +
+          `identified, an ERC grant they do not hold, a call that is not open). ` +
+          `Set it true when they could start this quarter, even if the route is ` +
+          `hard or the odds are long. We publish at most ONE watch-only row, so ` +
+          `a brief is a list of things to do, not a list of things to know.\n` +
           `Where the candidates allow it, prefer a SPREAD across levels: some ` +
           `national or regional routes, some EU-level ones. This is a ` +
           `preference, not a rule — never keep a weak fund only to balance the ` +
@@ -1606,6 +1632,16 @@ async function synthesize(
           `most applicants rather than this one, it is not a reason — leave ` +
           `the row in and rank it last. Expect to disqualify NONE or ONE of ` +
           `the candidates; disqualifying most of them is always wrong. ` +
+          // Nebius published a row reading "IPCEI Micro targets semiconductor
+          // value chains, not cloud infrastructure operators like Nebius" --
+          // the writer had spent its one disqualification elsewhere and kept a
+          // fund it was simultaneously arguing against. A cap meant to stop
+          // over-rejecting must not read as a budget to spend.
+          `That cap is a guard against over-rejecting, NOT a budget: if your ` +
+          `own whyEligible would have to say the fund targets something this ` +
+          `company is not, that IS the concrete mismatch — disqualify it no ` +
+          `matter how many you have already rejected. Never publish a row ` +
+          `whose own explanation argues against it. ` +
           `Disqualified rows are dropped, never shown, so NEVER write "skip ` +
           `this", "deprioritise" or "do not pursue" in whyEligible or ` +
           `nextStep — set the flag instead. ` +
@@ -1729,7 +1765,8 @@ async function synthesize(
   const narrative = extractJson<{
     bottomLine: string[];
     institutionNotes: { channel: string; whyEligible: string; nextStep: string;
-                        blockerPlain?: string; worthPursuing?: boolean }[];
+                        blockerPlain?: string; worthPursuing?: boolean;
+                        actionableNow?: boolean }[];
     positioning: string;
     stateOfPlay: string;
     caveats: string;
@@ -1757,6 +1794,9 @@ async function synthesize(
       // survived purely because the writer had ignored them.
       // The min-2 floor below still protects against an empty table.
       worth: Boolean(note) && note?.worthPursuing !== false,
+      // Missing flag counts as actionable: an absent judgement must not
+      // silently demote a row (the same reasoning as blockerPlain's default).
+      actionable: note?.actionableNow !== false,
       key: rowKeys[i],
       entry: {
         ...row,
@@ -1787,12 +1827,29 @@ async function synthesize(
   // cannot use. So the floor applies to the WRITER's judgement (it may not
   // reject its way down to one), not to the corpus: if screening only ever
   // produced one accessible fund, one is the honest answer.
-  const worthwhile = scored
+  const ranked = scored
     .filter((x) => x.worth)
-    .sort((a, b) => (rankByKey.get(a.key) ?? Infinity) - (rankByKey.get(b.key) ?? Infinity))
-    .map((x) => x.entry);
+    .sort((a, b) => (rankByKey.get(a.key) ?? Infinity) - (rankByKey.get(b.key) ?? Infinity));
+  // Actionable routes first, then AT MOST ONE watch-only row. Three of
+  // sennder's five rows were "deprioritise" / "monitor calls" / "treat as
+  // informational" -- each honest on its own, but together a table padded to
+  // five rather than five things worth doing. Better a short brief that is all
+  // moves than a full one the founder cannot act on.
+  const actionable = ranked.filter((x) => x.actionable);
+  const watchOnly = ranked.filter((x) => !x.actionable);
+  const worthwhile = [...actionable, ...watchOnly.slice(0, 1)].map((x) => x.entry);
+  if (watchOnly.length > 1) {
+    console.log("[institutions] dropped %d watch-only rows", watchOnly.length - 1);
+  }
+  // Degrade one step at a time rather than straight to the raw list: if the
+  // watch-only cap left too few rows, the writer's ranked order still holds
+  // them, and that beats falling all the way back to unsorted candidates
+  // including ones it disqualified.
+  const fallback = ranked.length >= BRIEF_INSTITUTION_MIN
+    ? ranked.map((x) => x.entry)
+    : scored.map((x) => x.entry);
   const finalInstitutions: InstitutionEntry[] = (
-    worthwhile.length >= BRIEF_INSTITUTION_MIN ? worthwhile : scored.map((x) => x.entry)
+    worthwhile.length >= BRIEF_INSTITUTION_MIN ? worthwhile : fallback
   ).slice(0, BRIEF_INSTITUTION_CAP);
   if (worthwhile.length < BRIEF_INSTITUTION_MIN) {
     console.error("writer kept too few institutions; falling back to ranked order",
@@ -1806,7 +1863,11 @@ async function synthesize(
     institutions: finalInstitutions,
     positioning: deDash(narrative.positioning),
     stateOfPlay: `${deDash(narrative.stateOfPlay)} ${STATE_OF_PLAY_PLUG}`.trim(),
-    caveats: deDash(narrative.caveats),
+    // The caveat is what stops committed-amount figures reading as a promise
+    // of disbursed cash, so it is not optional even though the model sometimes
+    // returns it empty (Corti's thinking-off run did). Schema `required` gets
+    // the key emitted, not filled.
+    caveats: deDash(narrative.caveats)?.trim() || DEFAULT_CAVEAT,
   };
 }
 
