@@ -26,6 +26,7 @@ from etl.intelligence.briefing import (
     SYSTEM_PROMPT,
     _canon_issues,
     _cap_per_document,
+    _cap_per_source,
     _competitive_query,
     _merge_passages,
     _select_breadth_first,
@@ -624,6 +625,28 @@ def test_cap_per_document_restores_breadth():
     assert len(swd_kept) == 3  # best three kept, order preserved
     assert [p["char_start"] for p in swd_kept] == [0, 1, 2]
     assert gdpr in capped and untitled in capped  # other docs untouched
+
+
+def test_cap_per_source_restores_breadth():
+    # Mirrors _cap_per_document's own test, one level up: a single
+    # high-volume source (gnews_eu_tech's near-duplicate AI Act explainers,
+    # found live 2026-07-23) can still sweep every slot even after MMR
+    # reranking if a new glut-prone source appears later — this is the
+    # backstop, not the primary fix.
+    glut = [{"source_key": "glut", "url": f"u{i}", "text": "x"} for i in range(5)]
+    diverse = {"source_key": "diverse", "url": "u-d", "text": "y"}
+    capped = _cap_per_source([*glut[:2], diverse, *glut[2:]], max_per_source=2)
+    glut_kept = [p for p in capped if p["source_key"] == "glut"]
+    assert len(glut_kept) == 2
+    assert diverse in capped
+
+
+def test_cap_per_source_passes_through_passages_with_no_source_key():
+    # semantic_search()/canon_passages() results never set source_key —
+    # only press_passages() does. Those must never be capped away just for
+    # lacking the field.
+    passages = [{"url": f"u{i}", "text": "x"} for i in range(5)]
+    assert _cap_per_source(passages, max_per_source=2) == passages
 
 
 def test_select_breadth_first_survives_a_flat_slice_would_not():

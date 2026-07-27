@@ -22,6 +22,8 @@ from data.models import (
 )
 from etl.enrichment.embeddings import (
     VoyageEmbedder,
+    _cosine_sim,
+    _mmr_select,
     canon_passages,
     embed_pending,
     get_embedder,
@@ -566,3 +568,112 @@ def test_get_embedder_defaults_to_local():
 
     settings = Settings(embedding_model="BAAI/bge-small-en-v1.5", embedding_dim=384)
     assert isinstance(get_embedder(settings), LocalEmbedder)
+
+
+# --- _cosine_sim / _mmr_select -------------------------------------------
+
+
+def test_cosine_sim_identical_vectors_is_one():
+    v = [1.0, 2.0, 3.0]
+    assert round(_cosine_sim(v, v), 6) == 1.0
+
+
+def test_cosine_sim_orthogonal_vectors_is_zero():
+    assert round(_cosine_sim([1.0, 0.0], [0.0, 1.0]), 6) == 0.0
+
+
+def test_cosine_sim_zero_vector_does_not_crash():
+    assert _cosine_sim([0.0, 0.0], [1.0, 1.0]) == 0.0
+
+
+def test_mmr_select_passes_through_when_pool_not_larger_than_k():
+    candidates = [{"score": 0.9, "_vec": [1.0, 0.0]}, {"score": 0.5, "_vec": [0.0, 1.0]}]
+    assert _mmr_select(candidates, k=5) == candidates
+
+
+def test_mmr_select_prefers_diversity_over_a_marginal_score_gain():
+    # Three near-identical high-scoring candidates (same source, redundant
+    # content) plus one slightly-lower-scoring but genuinely different one —
+    # mirrors the real failure: a high-volume source's near-duplicates
+    # outscoring a single genuinely distinct passage by a small margin. A
+    # plain top-2-by-score would pick two of the redundant three and drop
+    # the different one entirely.
+    redundant = [{"score": 0.83, "_vec": [5.0, 0.0, 1.0]} for _ in range(3)]
+    diverse = {"score": 0.81, "_vec": [1.0, 1.0, 1.0]}
+    selected = _mmr_select([*redundant, diverse], k=2)
+    assert diverse in selected
+    assert len(selected) == 2
+
+
+def test_mmr_select_still_picks_highest_score_first():
+    candidates = [{"score": 0.9, "_vec": [1.0, 0.0]}, {"score": 0.1, "_vec": [0.0, 1.0]}]
+    selected = _mmr_select(candidates, k=1)
+    assert selected == [candidates[0]]
+
+
+# --- press_passages: MMR diversification + source_key --------------------
+
+
+def _seed_glut_docs(session) -> dict[str, int]:
+    """Five near-duplicate high-scoring docs from one source ('glut_source')
+    plus one genuinely different, slightly-lower-scoring doc from another
+    ('diverse_source') — under FakeEmbedder's ai/fish counting scheme,
+    'ai ai ai ai ai' always embeds identically regardless of which of the
+    five documents it's in, so the five are perfectly redundant with each
+    other, exactly like near-identical explainer articles in production."""
+    glut_id = _source_with_key(session, "glut_source")
+    diverse_id = _source_with_key(session, "diverse_source")
+    today = dt.date.today()
+    for i in range(5):
+        _press_doc(
+            session,
+            external_id=f"GLUT_{i}",
+            source_id=glut_id,
+            date_document=today - dt.timedelta(days=1),
+            text="ai ai ai ai ai",
+        )
+    _press_doc(
+        session,
+        external_id="DIVERSE",
+        source_id=diverse_id,
+        date_document=today - dt.timedelta(days=1),
+        text="ai fish",
+    )
+    return {"glut_source": glut_id, "diverse_source": diverse_id}
+
+
+def test_press_passages_surfaces_diverse_source_despite_lower_raw_score(db_session):
+    _seed_glut_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(
+        db_session,
+        FakeEmbedder(),
+        "ai",
+        {"glut_source", "diverse_source"},
+        days=90,
+        k=3,
+        min_score=0.5,
+    )
+    titles = {h["title"] for h in hits}
+    # A plain top-3-by-similarity would be all five GLUT_* docs tied at the
+    # same top score, with DIVERSE (scoring slightly lower) never making
+    # the cut — MMR's redundancy penalty against the already-picked
+    # near-duplicates is what gets it in.
+    assert "DIVERSE" in titles
+    assert len(hits) == 3
+
+
+def test_press_passages_results_carry_source_key(db_session):
+    _seed_press_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    assert all(h["source_key"] == "good_source" for h in hits)
+
+
+def test_press_passages_results_never_leak_the_internal_vector(db_session):
+    _seed_glut_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(
+        db_session, FakeEmbedder(), "ai", {"glut_source", "diverse_source"}, days=90, k=3
+    )
+    assert all("_vec" not in h for h in hits)

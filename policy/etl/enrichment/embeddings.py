@@ -11,6 +11,7 @@ run offline; populate vectors afterwards with ``regina embed``.
 from __future__ import annotations
 
 import datetime as dt
+import math
 import os
 from typing import Protocol
 
@@ -288,6 +289,56 @@ def canon_passages(
     return results
 
 
+def _cosine_sim(a, b) -> float:
+    """Plain cosine similarity between two equal-length vectors — written
+    with zip/sum rather than numpy so it works whether the driver hands back
+    a list or a numpy array, without adding a direct numpy dependency for
+    what's a handful of ~1000-dim comparisons per call."""
+    dot = sum(x * y for x, y in zip(a, b, strict=True))
+    norm_a = math.sqrt(sum(x * x for x in a))
+    norm_b = math.sqrt(sum(y * y for y in b))
+    if norm_a == 0 or norm_b == 0:
+        return 0.0
+    return dot / (norm_a * norm_b)
+
+
+def _mmr_select(candidates: list[dict], *, k: int, lambda_mult: float = 0.6) -> list[dict]:
+    """Maximal Marginal Relevance: greedily pick the candidate that
+    maximizes ``lambda_mult * relevance - (1 - lambda_mult) * redundancy``,
+    where redundancy is similarity to whatever's already been picked.
+
+    Standard IR technique (Carbonell & Goldstein, SIGIR 1998) for exactly
+    the failure mode found live 2026-07-22: a high-volume source (a Google
+    News keyword feed with dozens of near-identical "what is the AI Act"
+    explainer articles) swept every slot in a plain top-k-by-similarity
+    ranking, crowding out genuinely current newsletter content that ranked
+    only slightly lower. MMR fixes this by making near-duplicates of an
+    already-picked passage actively unattractive, so diversity falls out of
+    passages actually differing from each other — not a per-source quota
+    that has to be hand-maintained as sources are added or removed.
+    ``lambda_mult`` favors relevance over diversity (0.6, not the more even
+    0.5 default some libraries use) since this must never surface something
+    irrelevant just because it's different — every candidate here has
+    already cleared ``min_score`` before this runs. Each candidate dict
+    must carry ``score`` (query relevance) and ``_vec`` (embedding); both
+    are consumed here, ``_vec`` is stripped by the caller before returning."""
+    if len(candidates) <= k:
+        return candidates
+    pool = list(candidates)
+    selected: list[dict] = []
+    while pool and len(selected) < k:
+        best_idx, best_mmr = 0, None
+        for i, cand in enumerate(pool):
+            redundancy = (
+                max(_cosine_sim(cand["_vec"], s["_vec"]) for s in selected) if selected else 0.0
+            )
+            mmr_score = lambda_mult * cand["score"] - (1 - lambda_mult) * redundancy
+            if best_mmr is None or mmr_score > best_mmr:
+                best_idx, best_mmr = i, mmr_score
+        selected.append(pool.pop(best_idx))
+    return selected
+
+
 def press_passages(
     session: Session,
     embedder: Embedder,
@@ -318,26 +369,45 @@ def press_passages(
     press match becomes weak, generic-sounding narrative color in the
     brief, not just a slightly-off citation — see semantic_search()'s
     docstring for the general floor semantics (drops results below the
-    floor rather than backfilling; None preserves no-floor behavior)."""
+    floor rather than backfilling; None preserves no-floor behavior). The
+    floor is applied BEFORE the MMR diversification below, not after — MMR
+    only reorders among candidates already judged relevant enough, it never
+    pulls in something that wouldn't have qualified on its own.
+
+    Over-fetches well past ``k`` and reranks with MMR (see _mmr_select)
+    rather than a flat top-k-by-similarity slice — found live 2026-07-22
+    that a plain slice let one high-volume source's near-duplicate content
+    sweep every slot for topically narrow queries, even after fixing a
+    separate ef_search under-provisioning bug. The over-fetch pool is capped
+    at 100 candidates: MMR is O(pool * k), and 100 already comfortably
+    exceeds pgvector's own practical ANN yield for a narrow filter."""
     cutoff = dt.date.today() - dt.timedelta(days=days)
     qvec = embedder.embed([query])[0]
+    pool_size = min(max(k * 8, 40), 100)
     # pgvector's HNSW index approximates nearest neighbors by exploring a
     # bounded region of the graph (hnsw.ef_search, default 40). That's fine
     # for semantic_search()'s near-unfiltered scan of the whole corpus, but
     # this query's Source.key + date filter narrows the eligible pool to a
-    # sparse subset (~1,600 of 58,000+ passages) — when the query is
-    # topically far from that subset, the default exploration budget can
-    # fail to find ANY of them and silently return zero rows, not just
-    # weaker ones. Found live 2026-07-22: 3 of 5 eval-panel profiles got 0
-    # press passages despite thousands of eligible rows existing; ef_search
-    # >=100 reliably found the true nearest matches in every case tested.
+    # sparse subset — when the query is topically far from that subset, the
+    # exploration budget can fail to find ANY of them and silently return
+    # zero (or far too few) rows, not just weaker ones. First found live
+    # 2026-07-22 with ~1,600 eligible rows (ef_search=100 fixed it then);
+    # re-confirmed the same day after the press-source allowlist grew to
+    # ~28 keys / ~10,400 eligible rows — ef_search=100 was AGAIN
+    # insufficient for some queries (one panel profile's eligible pool
+    # explored down to a single row at ef_search=100 vs. a full, differently
+    # -ranked top-10 at ef_search=1000, pgvector's own hard ceiling). This
+    # threshold scales with how large and topically diverse the filtered
+    # pool is, not a fixed constant — as the press-source list keeps
+    # growing, re-verify this is still enough rather than assuming it holds.
     # SET LOCAL scopes this to the current transaction only.
-    session.execute(text("SET LOCAL hnsw.ef_search = 100"))
+    session.execute(text("SET LOCAL hnsw.ef_search = 1000"))
     stmt = (
         select(
             Passage.text,
             Passage.char_start,
             Passage.char_end,
+            Passage.embedding,
             Document.title,
             Document.celex,
             Document.url,
@@ -346,6 +416,7 @@ def press_passages(
             Document.jurisdiction,
             Document.document_type,
             Document.extra,
+            Source.key.label("source_key"),
             Passage.embedding.cosine_distance(qvec).label("distance"),
         )
         .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
@@ -359,9 +430,17 @@ def press_passages(
             Document.date_document >= cutoff,
         )
         .order_by("distance")
-        .limit(k)
+        .limit(pool_size)
     )
-    results = [_row_to_passage(row) for row in session.execute(stmt).all()]
-    if min_score is not None:
-        return [r for r in results if r["score"] >= min_score]
-    return results
+    rows = session.execute(stmt).all()
+    candidates = []
+    for row in rows:
+        passage = _row_to_passage(row)
+        passage["source_key"] = row.source_key
+        if min_score is not None and passage["score"] < min_score:
+            continue
+        candidates.append({**passage, "_vec": row.embedding})
+    selected = _mmr_select(candidates, k=k)
+    for s in selected:
+        s.pop("_vec", None)
+    return selected

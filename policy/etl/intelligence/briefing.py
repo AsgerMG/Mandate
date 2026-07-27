@@ -46,7 +46,20 @@ _PRESS_SOURCE_KEYS = {
     "netzpolitik", "sifted", "next_ink", "heise_news",
     "golem_news", "irights_info", "01net", "numerama", "lemonde_pixels",
     "siecledigital", "contexte_articles", "latribune", "euobserver",
-    "gnews_eu_tech", "gnews_de_tech", "gnews_fr_tech", "verfassungsblog",
+    "verfassungsblog",
+    # "gnews_eu_tech"/"gnews_de_tech"/"gnews_fr_tech" removed 2026-07-23 —
+    # these Google News keyword feeds were a workaround for outlets that
+    # were bot-blocked/paywalled at the time (Euractiv, Politico, MLex);
+    # curated Politico + EU DG newsletter access now covers much of that
+    # ground with real institutional voice instead of SEO-explainer
+    # framing. Found live: gnews_eu_tech's dozens of near-identical "what
+    # is the AI Act" explainer articles swept every press slot for any
+    # AI-flavored company profile on raw similarity, crowding out
+    # genuinely current newsletter content that ranked only slightly
+    # lower — see press_passages()'s MMR reranking for the general-purpose
+    # fix, this removal is the surgical one for the specific known cause.
+    # Still registered as FeedSpec entries in feeds.py and still
+    # ingested — just no longer fed into brief generation.
     "eu_law_live", "eu_law_analysis", "stiftung_datenschutz",
     # "techcrunch_eu" excluded 2026-07-21 — verified live: the feed's own
     # <lastBuildDate> is frozen at 17 Feb 2026 (an external, server-side
@@ -923,6 +936,30 @@ def _cap_per_document(passages: list[dict], *, max_per_doc: int = 3) -> list[dic
     return kept
 
 
+def _cap_per_source(passages: list[dict], *, max_per_source: int = 2) -> list[dict]:
+    """Keep at most ``max_per_source`` passages per Source.key, preserving
+    order — a backstop alongside press_passages()'s own MMR reranking, not
+    a replacement for it: MMR already discourages near-duplicate content
+    from monopolizing the result, but nothing guarantees it in the way a
+    hard cap does, and this is cheap insurance against whatever source
+    someday accumulates the same kind of volume glut gnews_eu_tech did
+    (removed 2026-07-23, see _PRESS_SOURCE_KEYS) — a new Google News query
+    feed, an unusually productive RSS source, anything. Passages with no
+    ``source_key`` (semantic_search/canon_passages results, which don't set
+    it) pass through uncapped."""
+    counts: dict[str, int] = {}
+    kept = []
+    for p in passages:
+        key = p.get("source_key")
+        if key is None:
+            kept.append(p)
+            continue
+        counts[key] = counts.get(key, 0) + 1
+        if counts[key] <= max_per_source:
+            kept.append(p)
+    return kept
+
+
 def _select_breadth_first(passages: list[dict], k: int) -> list[dict]:
     """Select up to k passages, round-robin across documents rather than a
     flat best-score truncation.
@@ -1080,17 +1117,20 @@ def generate_briefing(
     # competitively against formal legal-text queries regardless of how
     # recent they are. This is a separate, capped pass so it can't crowd out
     # the legal grounding the rest of the brief depends on.
-    press = _cap_per_document(
-        press_passages(
-            session,
-            embedder,
-            query,
-            _PRESS_SOURCE_KEYS,
-            days=_PRESS_RECENCY_DAYS,
-            k=5,
-            min_score=_PRESS_MIN_SCORE,
+    press = _cap_per_source(
+        _cap_per_document(
+            press_passages(
+                session,
+                embedder,
+                query,
+                _PRESS_SOURCE_KEYS,
+                days=_PRESS_RECENCY_DAYS,
+                k=5,
+                min_score=_PRESS_MIN_SCORE,
+            ),
+            max_per_doc=2,
         ),
-        max_per_doc=2,
+        max_per_source=2,
     )
     passages = _merge_passages(passages, press)
     request = build_request(profile, passages)

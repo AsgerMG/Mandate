@@ -4,6 +4,100 @@ Chronological record of `regina brief-improve` runs — newest at the top. Each 
 
 ---
 
+## 2026-07-22 13:41 UTC — no candidate accepted
+
+Spent **$2.17** of a no cap across 11 calls. Stopped: `completed_all_rounds`.
+
+| Phase | Calls | $ | Input tok | Output tok | Cache read | Cache write |
+|---|---|---|---|---|---|---|
+| generation | 10 | 2.10 | 322663 | 69426 | 76048 | 19012 |
+| judge | 1 | 0.07 | 16720 | 1375 | 0 | 0 |
+
+### Round-by-round
+
+| Round | Aggregate | Δ vs. prior best | Accepted | Elapsed | Note |
+|---|---|---|---|---|---|
+| 0 (baseline) | 2.387 | — | yes | 774.5s | — |
+
+### Outcome
+
+No candidate beat the baseline (aggregate 2.387/5) by enough to accept. No change proposed.
+
+### Dimension breakdown
+
+| Dimension | Baseline |
+|---|---|
+| relevance | 4.2 |
+| citation_quality | 4.0 |
+| scope_matching | 3.4 |
+| prioritization | 3.8 |
+| political_currency | 3.0 |
+| stakeholder_specificity | 3.2 |
+| tone_and_structure | 4.0 |
+| canon_issues | 25.4 |
+
+_No candidate was accepted this run — nothing to compare the baseline against._
+
+### Output diff
+
+Every round that actually generated a candidate's output, accepted or not — the automated accept/reject bar below is a heuristic, not a verdict; read the actual text and judge for yourself.
+
+No candidate produced output this run (rejected before generating, or budget ran out before any round completed).
+### Recency coverage
+
+Of documents ingested in the last 30 days, how many showed up in the panel's retrieved passages at any point:
+
+- Round 0: 0/8 (0.0%)
+
+Full raw output: `brief-improve-report-2026-07-22T13-41-12Z.json`
+
+## 2026-07-22 13:11 UTC — no candidate accepted
+
+Spent **$2.26** of a no cap across 11 calls. Stopped: `completed_all_rounds`.
+
+| Phase | Calls | $ | Input tok | Output tok | Cache read | Cache write |
+|---|---|---|---|---|---|---|
+| generation | 10 | 2.19 | 317787 | 76109 | 76048 | 19012 |
+| judge | 1 | 0.07 | 18602 | 777 | 0 | 0 |
+
+### Round-by-round
+
+| Round | Aggregate | Δ vs. prior best | Accepted | Elapsed | Note |
+|---|---|---|---|---|---|
+| 0 (baseline) | 2.469 | — | yes | 810.9s | — |
+
+### Outcome
+
+No candidate beat the baseline (aggregate 2.469/5) by enough to accept. No change proposed.
+
+### Dimension breakdown
+
+| Dimension | Baseline |
+|---|---|
+| relevance | 4.2 |
+| citation_quality | 3.6 |
+| scope_matching | 3.6 |
+| prioritization | 3.6 |
+| political_currency | 2.8 |
+| stakeholder_specificity | 2.4 |
+| tone_and_structure | 3.8 |
+| canon_issues | 19.2 |
+
+_No candidate was accepted this run — nothing to compare the baseline against._
+
+### Output diff
+
+Every round that actually generated a candidate's output, accepted or not — the automated accept/reject bar below is a heuristic, not a verdict; read the actual text and judge for yourself.
+
+No candidate produced output this run (rejected before generating, or budget ran out before any round completed).
+### Recency coverage
+
+Of documents ingested in the last 30 days, how many showed up in the panel's retrieved passages at any point:
+
+- Round 0: 0/8 (0.0%)
+
+Full raw output: `brief-improve-report-2026-07-22T13-11-08Z.json`
+
 ## 2026-07-21 19:45 UTC — hand-authored prompt review fixes, CONFIRMED (+0.4)
 
 Spent **$5.91** of a no cap across 29 calls. Stopped: `completed_all_rounds`.
