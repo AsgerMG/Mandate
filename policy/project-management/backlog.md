@@ -20,7 +20,61 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       10 docs / 10 versions / 175 passages from live EUR-Lex + Have Your Say
 - ✅ Zero-infra local runner (`scripts/run_local_refresh.py`) + pgvector integration tests
 - 🔄 Run against managed Postgres (Neon) for the persistent/shared corpus
+- ✅ `--full` re-discovery flag + the starved-source bug it fixes (2026-07-27).
+      `pipeline._since()` returns `last_run_at` once a source has run, so only a
+      source's FIRST run ever sees the whole `backfill_days` window. A first run
+      that was truncated (`--limit`), crashed partway, or ran while discovery was
+      misconfigured leaves its missed history permanently unreachable — every
+      later run asks only for what is newer than that partial run. The source
+      then looks healthy: runs daily, no errors, returns almost nothing.
+      Reproduced deliberately — `regina run eurlex_case_law --limit 200` ingested
+      200 and set the cursor, and the next *unlimited* run discovered 0. Same
+      mechanism as the `eurlex` incident recorded further down this file, which
+      was fixed then by manually nulling `last_run_at`; a manual DB edit is why
+      it recurred. `--full` on `run` and `refresh` now ignores the cursor and
+      re-discovers the window. Idempotent (dedupe on source+external_id, new
+      version only on content change), so recovery is a supported operation
+- ✅ EU case law adapter (`eurlex_case_law`, 2026-07-27) — the corpus held ZERO
+      judgments because `_build_discovery_query` admitted only CELEX sectors 3
+      and 5; sector 6 is case law. A live count found 721 sector-6 works matching
+      just three tech terms since 2020, so this was never data availability, only
+      a filter. Implemented by parameterising `sectors` on the existing adapter,
+      so discovery/fetch/parse are inherited wholesale. Two findings from live
+      verification: (1) Cellar carries each ruling twice, a full-text descriptor
+      (CJ/TJ) and an OJ-notice descriptor (CA/TA) — CA alone was 83 of 400 works,
+      so mapping only full-text forms left a third of all case law typed OTHER,
+      i.e. in the commentary tier; (2) `NOISE_EXCLUDE_TERMS` was audited against
+      legislative titles and terms like "merger notice" would silently drop
+      relevant competition judgments, so `exclude_noise = False` here pending a
+      re-audit against real judgment titles. 400-work sample classified as 368
+      judgments / 20 AG opinions / 12 pending cases (correctly not citable)
+- ✅ Document-type vocabulary + CELEX classifier rewrite (2026-07-27) — 459 real
+      EU legal acts were typed OTHER, which `briefing._DEEPEN_QUOTAS` sorts into
+      the *commentary* tier, so the retrieval depth budget was spending on them
+      as if they were newsletters. Root cause: CELEX descriptors are one letter
+      in sector 3 but TWO in sectors 5 and 6, and the classifier read only one —
+      so SC (staff working doc), AP/AE/IP (institutional opinions), CJ (judgment)
+      all fell through. `DocumentType` grew from 9 members to 17 (JUDGMENT,
+      ENFORCEMENT_DECISION, STANDARD, OPINION, STAFF_WORKING_DOC, NEWSLETTER,
+      VERBATIM_DEBATE, BUDGET). Judgment order: budget-discharge decisions (92
+      docs, CELEX B*) are binding but deliberately kept OUT of the binding tier —
+      promoting them would let discharge decisions compete for depth slots with
+      regulation the company is actually subject to. Applied corpus-wide via the
+      new `regina reclassify`: **OTHER 2,774 → 104** (449 CELEX + 2,221
+      source-based, the latter reusing the existing `extra["kind"]` markers and
+      `_PRESS_SOURCE_KEYS` allowlist rather than adding a fourth hand-kept list)
+- ✅ Alembic introduced (2026-07-27) — `init_db()`'s `create_all` cannot alter an
+      existing database, and the first real change had to hit a live 4,781-row
+      corpus. `init_db()` stays the fresh-install path (it also creates the
+      pgvector extension and HNSW index); Alembic owns changes from here. Note
+      for future migrations: SQLAlchemy's `Enum(PyEnum)` persists a member's
+      **name**, not its value, so enum labels in this database are UPPERCASE.
+      The first attempt added lower-case labels and failed immediately with
+      `InvalidTextRepresentation`; corrected in a follow-up revision rather than
+      by rewriting applied history
 - ⬜ PDF-text fallback for acts with no HTML/XHTML manifestation (pypdf) —
+      now also blocks a small number of case-law orders (2 of the first 200
+      judgments ingested had no HTML/XHTML manifestation)
       now has a concrete blocked customer: the CSAM Regulation proposal
       (52022PC0209) is PDF-only in Cellar and is commented out of
       `eurlex_key_acts.py` until this lands
@@ -43,6 +97,88 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       fetch, multilingual tech filter, off-topic cursor cache)
 - ✅ Implement Have Your Say adapter (brpapi JSON; 234 tech initiatives, verified)
 - ⬜ Have Your Say: fetch per-initiative detail for fuller body (search payload is title-thin)
+- ✅ Cellar date/lifecycle enrichment (`etl/enrichment/lifecycle.py`, 2026-07-27)
+      — `date_in_force` was NULL for all 4,781 documents and `lifecycle_stage`
+      UNKNOWN for 3,893 (81%), so every "applies from X" claim and every
+      Watchlist deadline was inferred by the model from prose. Three source
+      quirks, each of which would have produced quietly wrong output and none
+      discoverable without querying: (1) **Virtuoso requires typed literals** —
+      Cellar does not match plain `"32024R1689"` against the stored
+      `"..."^^xsd:string`, and the untyped form returns ZERO ROWS rather than an
+      error. That was already an unnoticed live bug in
+      `eurlex_key_acts._lookup_dates()`, which is why all 55 foundational acts
+      (GDPR, AI Act, DMA, DSA) had `date_document` NULL; fixed there too.
+      (2) `resource_legal_date_entry-into-force` is **multi-valued** — the AI Act
+      returns 2024-08-01, 2025-02-02, 2025-08-02, 2026-08-02 …, i.e. entry into
+      force then each tranche of obligations; collapsing it to one date discards
+      the staged compliance picture. (3) `end-of-validity` uses **9999-12-31 as a
+      sentinel** for "no end", which stored naively makes every act in force look
+      like it expires in the year 9999. Also added `documents.date_application`,
+      because *in force* and *applicable* are different dates and the gap is
+      where deadlines live (GDPR: in force 2016-05-24, applies 2018-05-25).
+      Result over 396 acts: 233 IN_FORCE, **53 REPEALED** (acts a brief must not
+      cite as live), 4 ADOPTED-not-yet-applicable. Regulations 96/98 dated,
+      directives 34/37. Runs as part of `refresh`, or `regina lifecycle`
+- ✅ OEIL widened (2026-07-27) — held 3 documents. NOT the cursor bug: of 101
+      procedures the API listed for 2026, exactly 3 were COD, which is all
+      `TRACKED_TYPES` admitted. `YEARS_BACK` 2 → 5 (an ordinary legislative
+      procedure runs 2-4 years, so a 2-year window sees the middle of a file's
+      life and misses both ends) and `TRACKED_TYPES` widened to include DEA, RSP,
+      INI. **DEA is delegated/implementing acts — 16 of those same 101
+      procedures, all discarded** — which is where most operative detail under
+      the AI Act, CRA and DORA arrives, so this partially delivers the
+      "delegated acts" gap from a source already built. The tech-relevance title
+      filter still applies on top, so this widens what is eligible, not how
+      topical the corpus is
+- ⬜ Sector classification "gap" — **WITHDRAWN, was a misdiagnosis.** The claim
+      that 3,059 documents were missing sector tags was wrong: the classifier's
+      tool schema declares sectors as 0-3 and its system prompt says horizontal
+      law "applies broadly and should get zero sectors, not one for every
+      plausible use case". Those documents are correctly classified. Genuinely
+      unclassified: 198 documents with no policy area, all newly-ingested case law
+- ✅ Per-document enrichment built and run (`etl/enrichment/summarize.py`,
+      2026-07-27). The `enrichments` table had existed since the original schema
+      with **zero rows** — nothing in `etl/` ever wrote to it. Generates
+      `summary` / `plain_language` / `what_changes` per instrument, each carrying
+      the passage ids it was generated from so the fields stay auditable back to
+      stored text. Haiku, following classification.py's precedent: this is close
+      reading of a document already in front of the model, not the legal
+      reasoning that happens later in briefing.py with Sonnet. Scoped to
+      instruments a brief reasons *about* (binding law, case law, soft law,
+      proposals) and NOT to press/newsletters — a Politico item already has a
+      journalist's headline, so paying to summarise 3,100 of them buys nothing a
+      brief would cite. **First run: 874/874, 0 errors, ~$5.** Available as
+      `regina enrich` (always `--dry-run` first — this is the one enrichment
+      whose cost scales with corpus size).
+      Consumed, not just generated: `_attach_summaries()` + `build_documents()`
+      put a one-line "what this instrument does" header above a retrieved act's
+      passage, emitted only on a document's FIRST block since the depth pass puts
+      4-6 passages of the same act in context. Retrieval sees ~1,500-char
+      fragments; without this the brief could quote Article 12 accurately while
+      having no idea what instrument it was a fragment of.
+- ⬜ **1,195 documents still have no enrichment card** — mostly the ~1,050
+      judgments (and ~145 proposals) that arrived in the case-law `--full`
+      backfill *after* the enrichment run had already computed its candidate set.
+      A sequencing mistake, not a code defect: ingest → embed → enrich is the
+      correct order, and the enrichment run was started while backfills were
+      still in flight. Binding legislation is unaffected and at 100%
+      (regulation 98/98, directive 37/37, decision 175/175, guideline 145/145);
+      the gap is almost entirely case law.
+      Worth doing — a card on a ruling states *what the court held*, which is
+      exactly the line a brief needs and the hardest thing to recover from a
+      fragment. ~$7 and ~75 minutes at the observed rate. Just
+      `uv run regina enrich` (idempotent; only picks documents with no card, so
+      it never re-pays for the 874 already done).
+- ⬜ **Decide whether `enrich` joins `refresh`.** The other two metadata passes
+      (`reclassify`, `enrich_lifecycle`) run as part of `regina refresh` and so
+      re-derive themselves on the Railway cron; `enrich` is a standalone command
+      only. Consequence: every newly ingested law from here on silently has no
+      card, and the 1,195-document drift above recurs on every ingestion pass.
+      Deliberately not wired in without a decision, because `refresh` runs daily
+      on Railway and this would add recurring paid LLM calls to production.
+      Steady-state cost is small — after a backfill it only touches newly
+      ingested documents, so cents per day — and a per-run cap (~100 documents)
+      would bound a bad day. Recommendation: wire it in with the cap
 - ✅ Commission press adapter — superseded by the generic feed framework
 - ✅ Generic RSS/Atom feed adapter (`feeds.py`) + 20 live-verified channels
       across EU/FR/DE incl. Google News query monitors (paywalled-outlet
@@ -172,7 +308,14 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       real disagreement between sources
 - ✅ Pipeline: adapters may return None from parse() to drop off-topic docs
       after deep fetch (counted as `skipped`)
-- ⬜ Lifecycle enrichment from Cellar in-force/repeal metadata
+- ⬜ Lifecycle enrichment from Cellar in-force/repeal metadata — now specified as
+      Phase 1.2 of [brief-quality-plan.md](brief-quality-plan.md), including the
+      `date_application` addition (in EU law *in force ≠ applicable*; the AI Act
+      entered into force 2024-08-01 and applies in stages through 2027, so
+      treating entry-into-force as "binds you now" is wrong about the corpus's
+      most important instrument) and a deterministic stage derivation. Measured
+      2026-07-27: `date_in_force` is NULL for all 4,781 documents and
+      `lifecycle_stage` is UNKNOWN for 3,893 of them (81%)
 - ⬜ Alembic migrations once schema stabilizes
 - 🔄 Tests: ✅ chunker offsets, ✅ type/stage classification; ⬜ version-dedup (needs DB)
 - ✅ Cellar 300 manifestation-picking fallback + 5 new curated acts (2026-07-13),
@@ -380,9 +523,13 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       on live corpus: "AI obligations" → AI files; "cybersecurity" → Digital Networks Act)
 - ⬜ Optional hosted embedder (Voyage/OpenAI) behind the same interface
 - ⬜ Auto-embed as part of `refresh` (currently a separate step)
-- ⬜ LLM enrichment: summary, plain-language "what to expect", what-changes
+- ✅ LLM enrichment: summary, plain-language "what to expect", what-changes —
+      built and run 2026-07-27 (874/874). See the full entry under Milestone 1,
+      plus the two open follow-ups there: 1,195 documents added after the run
+      still have no card, and `enrich` is not yet part of `refresh`
 - ⬜ Citation capture linking each enrichment field to backing passage ids
-- ⬜ Auto-classify policy areas + sectors per document
+- ⬜ Auto-classify policy areas + sectors per document — policy areas cover all
+      4,781 docs, sectors only 1,721 (36%); Phase 2.3 of the plan above
 
 ## Milestone 3 — Intelligence (RAG)
 
@@ -898,6 +1045,68 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       weighted profile to confirm `an_verbatim`/`de_verbatim` content gets
       used the same way, since this run only exercised `ep_verbatim`.
 - ⬜ Jurisdiction/lifecycle/sector metadata filters on retrieval
+- ✅ Breadth/depth retrieval split for briefs (2026-07-27) — fixes briefs that
+      read as surface-level. Diagnosis first, since the suspicion was that the
+      brief path wasn't using pgvector at all: it is, and correctly (Railway
+      `regina` has voyage-4-large/1024 + VOYAGE_API_KEY, the column really is
+      `vector(1024)`, and 76,478 of 76,478 current-version passages are
+      embedded). The real cause was retrieval SHAPE. Measured live on a
+      fintech/AI profile: 66 passages across 65 distinct documents — one
+      ~1,300-char window of each of 65 laws, so no instrument was represented
+      deeply enough to say anything concrete about. 55 of the 66 were the
+      `_CANON_CELEX` sweep, i.e. 83% of context went to breadth nothing chose.
+      Four changes: (1) query decomposition — `CompanyProfile.
+      retrieval_queries()` splits the profile into obligation facets (AI,
+      data-protection, sensitive-data, per-sector, consumer, platform,
+      national) and retrieves each separately, because one concatenated
+      profile string embeds to the *centroid* of a company and matches
+      everything weakly (median cosine 0.53); deterministic, no LLM call.
+      (2) A depth pass — `document_passages()` re-retrieves *within* the
+      instruments breadth nominated, so an act contributes 4-6 of its own
+      operative provisions instead of one arbitrary window. (3) Canon stubs —
+      acts not retrieved on merit enter as 350-char scope-check excerpts
+      instead of full passages, since an Out-of-Scope verdict needs the act
+      identified, not quoted at length; acts breadth/depth found keep full
+      text. (4) Voyage `rerank-2.5` cross-encoder over an over-fetched pool
+      per facet, plus a 0.40 cosine floor on the legal path (`semantic_search`
+      had a `min_score` parameter that no brief caller ever passed). Result on
+      the same profile: 23 distinct substantive documents with 5-6 passages
+      each for DORA/AI Act/GDPR/EUDPR, depth ratio 0.98 → 0.64.
+- ✅ Authority quota on the depth pass (2026-07-27) — found by measuring the
+      change above rather than predicted. With relevance alone deciding what
+      to deepen, the first depth run spent 37 of 64 substantive passages on
+      Commission staff working documents, impact assessments and
+      communications, and gave the AI Act and GDPR one passage each. Not a
+      ranking bug: an impact assessment about AI in consumer credit genuinely
+      IS closer to a company profile than the AI Act's terse operative
+      articles, and both the embedder and the cross-encoder are right to say
+      so — reranking cannot fix it, because the commentary really is more
+      query-similar prose. `_DEEPEN_QUOTAS` states the split explicitly
+      (60% binding regulation/directive/decision, 20% proposals for the
+      "what's changing" half of the promise, 20% commentary for the
+      Commission's own reasoning and quantified thresholds), with unused
+      quota spilling to the best remaining candidates. Binding-law passages
+      9 → 21 on the test profile.
+- ✅ Retrieval telemetry + depth-collapse guard (2026-07-27) — the collapse
+      above was invisible for as long as it was because nothing reported
+      retrieval shape; the brief reads fine while every document in context
+      contributes one passage. `_retrieval_stats()` now returns passage/
+      document counts, `documents_per_passage` (1.0 = collapsed), canon-stub
+      vs substantive split, context chars, and the score distribution;
+      logged on every brief and returned to the website in the `/api/brief`
+      payload. A regression test fails if no instrument gets more than one
+      passage.
+- ✅ `regina brief-check` (2026-07-27) — spend-bounded rotating smoke test of
+      the real (billed) brief path, user-requested. Spend control is the
+      rotation, not a smaller test: one `EVAL_PANEL` profile per run by
+      default, advancing a persisted cursor so consecutive checks cover the
+      whole verdict space instead of re-testing one company; `--all` runs the
+      full panel when a batch of fixes is ready to be judged together.
+      Reuses `EVAL_PANEL` (a second profile list would drift from it) and the
+      brief-improve `BudgetGuard`/`MeteredClient`, defaults to a $3 cap, and
+      always writes a raw JSON report — an unpersisted paid result is money
+      spent for nothing. Cursor advances only for profiles that actually ran,
+      so a budget-stopped profile doesn't rotate out of coverage.
 - ✅ Run a real briefing once ANTHROPIC_API_KEY is provided — done 2026-07-09
       (see entry above); ANTHROPIC_API_KEY was already configured
 - ⬜ Optional hosted embedder (Voyage) for higher retrieval quality
@@ -1283,11 +1492,114 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ⬜ Scheduled refresh (cron) for hands-off freshness
 - ⬜ Run observability: per-source stats, failure alerts
 
+## Loose ends from the 2026-07-27 session (found by auditing, not by planning)
+
+Each of these is a change that was made in code but not carried through to data,
+or a source named in a plan phase that was never actually run. Listed because
+"the fix is committed" and "the corpus reflects the fix" are different claims and
+this session conflated them more than once.
+
+- ⬜ **`eurlex_key_acts` date_document is still 0 of 55 — the fix is UNVERIFIED.**
+      The Virtuoso typed-literal bug was fixed in
+      `_build_date_lookup_query()` (plain `"32024R1689"` matches nothing; it needs
+      `^^xsd:string`), but the adapter was never re-run, so all 55 foundational
+      acts — GDPR, AI Act, DMA, DSA — still have NULL `date_document`. Worse, the
+      corrected query has therefore never been exercised through the adapter
+      itself, only in an ad-hoc script. An unverified fix is a liability, not a
+      fix. `uv run regina run eurlex_key_acts --full` closes both gaps at once
+      (free, just time)
+- ⬜ **`eurlex_oj_l` is still 11 documents.** Named in Phase 1.3 of
+      [brief-quality-plan.md](brief-quality-plan.md) alongside `oeil`. The
+      starved-source *mechanism* was diagnosed and `--full` was built to fix it,
+      then run for `eurlex_case_law` and `oeil` — and never for this one. The
+      Official Journal L-series is the authoritative feed of newly adopted law, so
+      11 documents is a real hole. Try `uv run regina run eurlex_oj_l --full`
+      first; if it stays thin the cause is its own filter, not the cursor
+- ⬜ **1,586 documents have no policy-area or sector tags.** Was 198 before the
+      case-law and OEIL backfills; the 1,585 documents those added arrived
+      unclassified because `classify_pending` only runs as part of `refresh`, and
+      the backfills were run as targeted `regina run` commands. Same
+      ingest-then-enrich ordering trap as the enrichment gap above. Billed (Haiku,
+      roughly $2-3). Blocks nothing today, but sector-filtered retrieval — an open
+      item — depends on it
+- ⬜ **`adlc_avis` has never run** (`last_run_at` NULL, 1 document). Registered but
+      apparently never exercised; unclear whether it is broken or simply
+      low-volume. Worth 10 minutes to find out, given `adlc_decisions` (its
+      sibling) turned out to be one of the more valuable sources in the corpus
+- ⬜ **Delete the `t` source.** A test fixture leaked into the production database
+      (0 documents, never run)
+- ⬜ **`summarize._candidates()` does one query per document.** Over the Railway
+      proxy that is ~90 seconds of latency before the first API call on an
+      874-document run. Harmless (one-time per run, and the run is far slower than
+      the setup) but it should be a single join
+
+## Enforcement-data sourcing (researched 2026-07-27, nothing built)
+
+User question: can DMA and German/French competition enforcement be reached
+programmatically, on Railway? Findings, in order of usefulness:
+
+- ✅ **France is already ingested and nobody realised.** `adlc_decisions` pulls
+      Autorité de la concurrence decisions since 1988 from the data.gouv.fr
+      open-data CSV — including the **sanction amount** field, which is exactly
+      the "how big is the exposure" signal a brief needs. 30 documents, running
+      daily. No work required; it may be worth widening its relevance filter
+- ⬜ **Germany — `bkarta_news` has 0 documents and the feed is fine.** Probed
+      live: the configured URL returns 200 with 30 items. **0 of 30 pass
+      `is_tech_relevant()`.** This is not the cursor bug and not a broken feed —
+      it is a filter-design mismatch, and an instructive one. Keyword filtering
+      works on legislative titles because a title names its subject matter; it
+      fails on enforcement items because those name *parties*. The feed's own
+      item "Übernahmen von Dremio und Prior Labs durch SAP genehmigt" (SAP
+      acquiring a data-lakehouse company and an AI lab) is squarely
+      digital-market relevant and contains no policy keyword at all.
+      **Fix direction:** enforcement sources need entity/party-based relevance
+      (a watchlist of digital-economy firms) rather than subject keywords. Same
+      shape as the case-law lesson — a ruling doesn't read like a company
+      profile, and a merger clearance doesn't read like a regulation
+- ⬜ **DMA + EC competition case registers are SPA-only, which rules them out
+      for Railway.** `digital-markets-act-cases.ec.europa.eu` and
+      `competition-cases.ec.europa.eu` return the *same* 56,823-byte Angular
+      shell for every path probed (`/`, `/api/...`, `/search`); the JS bundle
+      references no API host and only one relative route (`/search`, a client
+      route). A browser-driven adapter is not an option: Chromium is
+      deliberately excluded from the Docker image (see Dockerfile — `ep_verbatim`
+      is local-only by design), so anything needing a real browser cannot run on
+      the deployed service. **Next thing to try:** whether Commission
+      competition/DMA decisions carry CELEX ids in Cellar, which would reuse the
+      SPARQL+Cellar path already working for `eurlex_case_law` and need no new
+      infrastructure. Attempted 2026-07-27 and abandoned — an unbounded
+      `CONTAINS(LCASE(title))` scan over sector 3 times out on Virtuoso, so this
+      needs a narrower query (EuroVoc concept, or descriptor + date window)
+      rather than a title grep
+- ⬜ **DPA enforcement decisions** — demand unclear, deliberately not built. The
+      `ENFORCEMENT_DECISION` document type and its retrieval tier both exist and
+      are unpopulated, so a source can be added later with no schema or
+      retrieval work. Where it would actually matter: profiles doing automated
+      decision-making or profiling (a credit-scoring brief lives or dies on
+      Art. 22 practice), consent/cookies (CNIL is the most active fining
+      authority), special-category or biometric data, adtech, and international
+      transfers. Where it would not: B2B industrial profiles with no personal
+      data — the panel's Industrial IoT and logistics profiles would get nothing
+      from it. The concrete value is *quantum*: without fines a brief can only
+      cite the statutory maximum ("up to 4% of turnover"), which is true of
+      everyone and therefore tells a reader nothing about their own exposure
+
 ## Jurisdiction depth (monitors live; law-text adapters pending)
 
 - ✅ France — CNIL, ANSSI, Sénat bill feed integrated
 - ✅ Germany — BfDI, Bundestag agendas, netzpolitik integrated
-- ⬜ France — Légifrance adapter (needs PISTE/DILA API key)
+- 🔝 **TOP PRIORITY (user, 2026-07-27)** France — Légifrance adapter. Blocked on
+      credentials only; the access route is now confirmed rather than assumed.
+      PISTE uses OAuth2 `client_credentials` at
+      `https://oauth.piste.gouv.fr/api/oauth/token` — probed live, both
+      production and sandbox return `401 invalid_client` without a registered
+      application, so there is no anonymous programmatic access. The
+      `piste.gouv.fr` API-tester page works in a browser only because of a
+      logged-in session; it is not a machine route.
+      **What unblocks this:** register an application on PISTE, subscribe it to
+      the Légifrance API (v2.4.2, REST), then set `LEGIFRANCE_CLIENT_ID` and
+      `LEGIFRANCE_CLIENT_SECRET`. The adapter should read those two env vars so
+      it works on Railway with no interactive step.
 - ⬜ Germany — Bundestag DIP procedure API for `bundestag_hib`-quality
       structured procedure data (replacing RSS-agenda filtering). No longer
       actually blocked as of 2026-07-09 — see `de_verbatim` below, which

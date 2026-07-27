@@ -24,6 +24,11 @@ exports/
 project-management/brief-eval-post-voyage.md
 project-management/brief-eval-post-voyage.md.json
 
+# `regina brief-check` rotation cursor + spend trail. Machine-local scratch:
+# two people running the check shouldn't fight over whose turn it is, and the
+# per-run JSON reports (under exports/, also ignored) hold the real record.
+/.brief-check-state.json
+
 # Node / website
 node_modules/
 .next/

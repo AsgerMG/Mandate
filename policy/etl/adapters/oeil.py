@@ -7,11 +7,17 @@ data is served by the European Parliament's Open Data API (verified live):
     GET data.europarl.europa.eu/api/v2/procedures/{id}        (detail)
 
 This is the EU "pipeline" layer: which files are moving, and where they sit.
-Strategy: list current + previous year, fetch detail per new procedure, keep
-ordinary legislative procedures (COD/CNS) whose multilingual title matches the
-tech vocabulary; everything else is dropped at parse (returns None) and its id
-cached in the cursor so it is never re-fetched. Tech-relevant procedures are
-re-fetched every run so stage changes keep the Document row current.
+Strategy: list the last YEARS_BACK years, fetch detail per new procedure, keep
+the procedure types in TRACKED_TYPES whose multilingual title matches the tech
+vocabulary; everything else is dropped at parse (returns None) and its id cached
+in the cursor so it is never re-fetched. Tracked procedures are re-fetched every
+run so stage changes keep the Document row current.
+
+Both the year window and the type list were widened on 2026-07-27 after this
+source was found holding 3 documents — see YEARS_BACK and TRACKED_TYPES for the
+measurements. Note that recovering the history needs `regina run oeil --full`:
+the incremental cursor means a normal run only asks for what is newer than the
+last run, so widening the filters alone changes nothing for past years.
 """
 
 from __future__ import annotations
@@ -33,8 +39,33 @@ API = "https://data.europarl.europa.eu/api/v2/procedures"
 PUBLIC_URL = "https://oeil.secure.europarl.europa.eu/oeil/en/procedure-file?reference={label}"
 PAGE_SIZE = 100
 MAX_PAGES = 20  # per year, safety cap
-# Procedure types worth tracking: ordinary legislative procedure + consultation.
-TRACKED_TYPES = ("COD", "CNS")
+
+# How many years of procedures to list. Two years (the original) is too narrow
+# for the job this source does: an ordinary legislative procedure routinely runs
+# 2-4 years from proposal to adoption, so a 2-year window sees the middle of a
+# file's life and misses both ends. This is the "what's moving right now" layer
+# of the corpus, and a file that entered trilogue three years ago is very much
+# still moving.
+YEARS_BACK = 5
+
+# Procedure types worth tracking.
+#
+# Was ("COD", "CNS") — ordinary legislative procedure plus consultation. Measured
+# live 2026-07-27: of 101 procedures the API listed for 2026, only 3 were COD,
+# which is exactly how many documents this source had in the corpus. The filter
+# wasn't broken, it was just extremely narrow.
+#
+# DEA is the important addition. Delegated and implementing acts are where most
+# of the operative detail under the AI Act, CRA and DORA actually arrives — 16 of
+# those same 101 procedures were DEA, all discarded. A brief that stops at "the
+# Commission will specify further" is stopping exactly where this data begins.
+# RSP/INI are non-legislative but are how Parliament signals a position before a
+# proposal exists, which is early-warning signal for the political landscape.
+#
+# The tech-relevance title filter still applies on top of all of these, so
+# widening the type list changes what is *eligible*, not how topical the corpus
+# is.
+TRACKED_TYPES = ("COD", "CNS", "DEA", "RSP", "INI")
 
 # Publications Office procedure-phase URIs → our lifecycle stages. Anything
 # unmapped stays PROPOSED (it is in procedure, by definition).
@@ -75,7 +106,7 @@ class OeilAdapter(SourceAdapter):
     def discover(self, since: dt.date | None, cursor: dict | None) -> Iterable[DocRef]:
         known_offtopic = set((cursor or {}).get("offtopic", []))
         year = dt.date.today().year
-        for y in (year, year - 1):
+        for y in range(year, year - YEARS_BACK, -1):
             for page in range(MAX_PAGES):
                 resp = self.http.get(
                     API,

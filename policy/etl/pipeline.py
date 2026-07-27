@@ -55,10 +55,21 @@ def ensure_source(session: Session, adapter: SourceAdapter) -> Source:
     return source
 
 
-def run_adapter(session: Session, adapter: SourceAdapter, *, limit: int | None = None) -> dict:
-    """Run one adapter end-to-end. Returns a small run summary."""
+def run_adapter(
+    session: Session,
+    adapter: SourceAdapter,
+    *,
+    limit: int | None = None,
+    full: bool = False,
+) -> dict:
+    """Run one adapter end-to-end. Returns a small run summary.
+
+    ``full`` ignores the incremental cursor and re-discovers over the whole
+    ``backfill_days`` window — see _since() for why that has to be an explicit,
+    supported operation rather than a manual database edit.
+    """
     source = ensure_source(session, adapter)
-    since = _since(adapter, source)
+    since = _since(adapter, source, full=full)
 
     stats = {
         "discovered": 0,
@@ -96,9 +107,32 @@ def run_adapter(session: Session, adapter: SourceAdapter, *, limit: int | None =
     return stats
 
 
-def _since(adapter: SourceAdapter, source: Source) -> dt.date:
+def _since(adapter: SourceAdapter, source: Source, *, full: bool = False) -> dt.date:
+    """The discovery window's start date.
+
+    Normally incremental: after a source's first run, ``last_run_at`` becomes the
+    floor, so each run only asks its upstream for what appeared since.
+
+    That has a sharp edge worth naming, because it has bitten this project
+    repeatedly. The first run is the *only* one that sees the full
+    ``backfill_days`` window, so if it was truncated (``--limit``), crashed
+    partway, or ran while discovery was misconfigured, the history it missed
+    becomes permanently unreachable: every later run asks only for documents
+    newer than that first partial run. The source then looks healthy — it runs
+    daily, reports no errors, and returns almost nothing.
+
+    Confirmed live 2026-07-27 by reproducing it: `regina run eurlex_case_law
+    --limit 200` ingested 200 judgments and set the cursor; the very next
+    unlimited run discovered 0. The same mechanism explains `oeil` (3 documents)
+    and `eurlex_oj_l` (11), and the `eurlex` incident the backlog records, which
+    was fixed at the time by manually nulling `last_run_at`.
+
+    ``full=True`` is the supported recovery: ignore the cursor and re-discover
+    the whole window. Idempotent, because the pipeline dedupes on
+    (source, external_id) and only writes a new version when content changed.
+    """
     days = adapter.settings.backfill_days
-    if source.last_run_at:  # incremental after the first full backfill
+    if source.last_run_at and not full:
         return source.last_run_at.date()
     return dt.date.today() - dt.timedelta(days=days)
 

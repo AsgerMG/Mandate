@@ -139,10 +139,20 @@ def _build_date_lookup_query(celex_codes: list[str]) -> str:
     these decades-old foundational acts in the first place (see module
     docstring), so it can't be reused as-is; this is the minimal query that
     reuses the same ``work_date_document`` predicate for a fixed CELEX list.
+
+    The ``^^xsd:string`` datatype on each VALUES literal is load-bearing, not
+    decoration. Cellar runs Virtuoso, which does not treat a plain literal
+    ``"32024R1689"`` as equal to ``"32024R1689"^^xsd:string`` — so the
+    untyped form this query used until 2026-07-27 matched **nothing** and the
+    lookup silently returned an empty dict on every run. It failed invisibly
+    because a missing date is indistinguishable from a date the endpoint didn't
+    have: all 55 foundational acts (GDPR, AI Act, DMA, DSA) sat in the corpus
+    with date_document NULL. Verified live: untyped 0 rows, typed 1 row.
     """
-    values = " ".join(f'"{c}"' for c in celex_codes)
+    values = " ".join(f'"{c}"^^xsd:string' for c in celex_codes)
     return f"""
     PREFIX cdm: <http://publications.europa.eu/ontology/cdm#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?celex ?date WHERE {{
       VALUES ?celex {{ {values} }}
       ?work cdm:resource_legal_id_celex ?celex .

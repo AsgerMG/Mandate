@@ -42,13 +42,43 @@ uv run regina embed                    # vectorize passages (local model, no key
 uv run regina search "AI obligations"  # meaning-search the corpus, citation-ready
 uv run regina sources                  # inspect per-source run state
 
+uv run regina lifecycle                # dates + lifecycle from Cellar metadata
+uv run regina reclassify --dry-run     # re-derive document_type over the corpus
+uv run regina enrich --dry-run         # per-document synthesis (Haiku); count first
+uv run regina run <key> --full         # recover a starved source (see below)
+
 # A grounded, citation-backed briefing for a company (--dry-run needs no key):
 uv run regina brief --name "FinScore" --sector fintech --ai --personal-data --dry-run
+
+# Spend-bounded check of the real brief path — one rotating panel profile per
+# run, so successive checks cover different company types for one brief's cost:
+uv run regina brief-check                  # next profile in the rotation
+uv run regina brief-check --all            # whole panel, for a batch of fixes
 ```
 
 Set `ANTHROPIC_API_KEY` (in `.env`) to drop `--dry-run` and get a full briefing:
 Claude writes it grounded in the retrieved passages via the native **Citations**
 feature, so every claim links back to a specific official source.
+
+**A source that looks healthy but returns almost nothing** is usually the
+incremental cursor, not a broken adapter: after a source's first run, discovery
+only asks its upstream for what is newer than that run, so a first run that was
+truncated (`--limit`) or crashed partway leaves the missed history permanently
+unreachable. `regina run <key> --full` (or `regina refresh --full`) re-discovers
+the whole backfill window. It's idempotent. See `pipeline._since` for the full
+writeup.
+
+Schema changes go through Alembic (`uv run alembic upgrade head`); `regina init`
+remains the fresh-install path. Note that SQLAlchemy persists enum *member
+names*, so `document_type` labels in Postgres are UPPERCASE.
+
+Retrieval is a deliberate breadth/depth split: the profile is decomposed into
+obligation facets (AI, data protection, sector, consumer…) and each is retrieved
+and cross-encoder reranked separately, then the instruments that matter get
+re-retrieved *within* themselves so the brief sees several of an act's operative
+provisions rather than one window of each of sixty laws. Every brief reports its
+own retrieval shape (`retrieval_stats`) — watch `documents_per_passage`, since
+1.0 means every document contributed exactly one passage.
 
 ### The web app
 

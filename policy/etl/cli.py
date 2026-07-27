@@ -12,10 +12,13 @@ else here is setup/inspection around that single trigger.
 
 from __future__ import annotations
 
+import json
+
 import structlog
 import typer
 
 from data import get_settings, init_db, session_scope
+from data.config import Settings
 from data.seeds import seed_vocabularies
 
 from .adapters import ADAPTERS, ADAPTERS_BY_KEY
@@ -64,6 +67,15 @@ def sources() -> None:
 def refresh(
     limit: int = typer.Option(None, help="Max documents per source (debugging)."),
     only: str = typer.Option(None, help="Comma-separated source keys to restrict to."),
+    full: bool = typer.Option(
+        False,
+        "--full",
+        help=(
+            "Re-discover each source's whole backfill window instead of only "
+            "what is new since its last run. See pipeline._since for why a "
+            "starved source needs this to recover."
+        ),
+    ),
     embed: bool = typer.Option(
         True, "--embed/--no-embed", help="Embed new passages after collection."
     ),
@@ -83,7 +95,7 @@ def refresh(
                 continue
             typer.echo(f"→ {adapter.key} …")
             try:
-                totals[adapter.key] = run_adapter(session, adapter, limit=limit)
+                totals[adapter.key] = run_adapter(session, adapter, limit=limit, full=full)
                 # Commit per source: a later source's total failure (network
                 # down, DNS blip) must not roll back every source already
                 # ingested in this run — same "one bad thing doesn't abort
@@ -97,6 +109,30 @@ def refresh(
     typer.echo("\nRefresh complete:")
     for key, stats in totals.items():
         typer.echo(f"  {key:16} {stats}")
+
+    # Metadata enrichment runs on every refresh, not as a one-off backfill:
+    # classification improves as descriptors are added, and Cellar amends
+    # end-of-validity when an act is repealed — so both have to be re-derived
+    # for the corpus to stay honest about what is currently in force. Both are
+    # idempotent and cheap (pure function; one SPARQL batch per 150 acts).
+    with session_scope() as session:
+        from etl.enrichment.reclassify import reclassify_by_source, reclassify_celex_documents
+
+        celex_result = reclassify_celex_documents(session)
+        source_result = reclassify_by_source(session)
+    typer.echo(
+        f"Reclassified {celex_result['types_changed'] + source_result['types_changed']} "
+        f"document types."
+    )
+
+    with HttpClient(settings) as http, session_scope() as session:
+        from etl.enrichment.lifecycle import enrich_lifecycle
+
+        life = enrich_lifecycle(session, http)
+    typer.echo(
+        f"Dated {life['updated']} legal acts (entry into force, applicability, "
+        f"end of validity) — stages: {life['stages']}"
+    )
 
     if embed:
         from etl.enrichment import embed_pending, get_embedder
@@ -173,6 +209,104 @@ def export(
             path.write_text(f"---\n{front}\n---\n\n{ver.text}\n", encoding="utf-8")
             n += 1
     typer.echo(f"Exported {n} documents to {root}/<jurisdiction>/<source_key>/ folders.")
+
+
+@app.command()
+def lifecycle(
+    limit: int = typer.Option(None, help="Max acts to process (debugging)."),
+    timeout: float = typer.Option(
+        300.0, help="HTTP timeout in seconds; a 150-CELEX SPARQL batch needs more than the default."
+    ),
+) -> None:
+    """Fetch entry-into-force / applicability / end-of-validity dates from Cellar
+    and re-derive lifecycle_stage.
+
+    Runs automatically as part of `refresh`; use this to backfill or re-derive
+    on demand without a full collection pass. See etl/enrichment/lifecycle.py
+    for why in-force and applicable are separate dates.
+    """
+    from etl.enrichment.lifecycle import enrich_lifecycle
+
+    base = get_settings()
+    settings = Settings(**{**base.model_dump(), "http_timeout_seconds": timeout})
+    with HttpClient(settings) as http, session_scope() as session:
+        result = enrich_lifecycle(session, http, limit=limit)
+    typer.echo(
+        f"Dated {result['updated']} of {result['candidates']} candidate acts.\n"
+        f"Stages: {result['stages']}"
+    )
+
+
+@app.command()
+def enrich(
+    limit: int = typer.Option(None, help="Max documents this run (cost control)."),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Report the candidate count without making any API call."
+    ),
+) -> None:
+    """Generate per-document summary / plain-language / what-changes into the
+    `enrichments` table.
+
+    Scoped to instruments a brief reasons about — binding law, case law,
+    authoritative soft law, proposals — not press or newsletters, which already
+    have human-written headlines. Uses Haiku. Run with --dry-run first: this is
+    the one enrichment whose cost scales with corpus size.
+    """
+    from etl.enrichment.summarize import enrich_pending
+    from etl.intelligence.llm import get_client, has_api_key
+
+    if dry_run:
+        with session_scope() as session:
+            result = enrich_pending(session, None, limit=limit, dry_run=True)
+        typer.echo(f"{result['candidates']} documents would be enriched (no API call made).")
+        return
+
+    if not has_api_key():
+        typer.echo("No ANTHROPIC_API_KEY set — cannot enrich.")
+        raise typer.Exit(1)
+
+    client = get_client()
+    with session_scope() as session:
+        result = enrich_pending(session, client, limit=limit)
+    typer.echo(
+        f"Enriched {result['written']} of {result['candidates']} documents "
+        f"({result['errors']} errors)."
+    )
+
+
+@app.command()
+def reclassify(
+    dry_run: bool = typer.Option(False, "--dry-run", help="Report changes without writing."),
+) -> None:
+    """Re-derive document_type over the existing corpus from the current
+    classifier, and fill any lifecycle_stage still UNKNOWN.
+
+    Adapters classify at ingestion time, so a classifier improvement otherwise
+    only reaches documents fetched afterwards. Runs automatically as part of
+    `refresh`.
+    """
+    from etl.enrichment.reclassify import (
+        reclassify_by_source,
+        reclassify_celex_documents,
+        type_histogram,
+    )
+
+    with session_scope() as session:
+        celex_result = reclassify_celex_documents(session, dry_run=dry_run)
+        source_result = reclassify_by_source(session, dry_run=dry_run)
+        histogram = type_histogram(session)
+
+    label = "would change" if dry_run else "changed"
+    typer.echo(f"CELEX classifier: {label} {celex_result['types_changed']} types")
+    for transition, count in celex_result["type_transitions"].items():
+        typer.echo(f"    {transition:44} {count}")
+    typer.echo(f"  stages filled: {celex_result['stage_fills']}")
+    typer.echo(f"Source classifier: {label} {source_result['types_changed']} types")
+    for transition, count in source_result["type_transitions"].items():
+        typer.echo(f"    {transition:44} {count}")
+    typer.echo("\nCurrent document_type distribution:")
+    for dtype, count in histogram.items():
+        typer.echo(f"  {dtype:22} {count}")
 
 
 @app.command()
@@ -324,6 +458,145 @@ def _prepend_brief_log_entry(entry_markdown: str) -> None:
         fh.write(header + sep + entry_markdown.rstrip() + "\n\n" + rest)
 
 
+@app.command(name="brief-check")
+def brief_check(
+    count: int = typer.Option(1, help="How many panel profiles to run this time."),
+    all_profiles: bool = typer.Option(
+        False, "--all", help="Run the whole panel — use when testing a batch of fixes together."
+    ),
+    budget: float = typer.Option(
+        0.0,
+        help=(
+            "Optional hard $ cap; 0 (the default) means uncapped. A brief-check "
+            "run is already bounded by the panel slice, so a cap mostly just "
+            "kills a run mid-flight and wastes what it already paid for."
+        ),
+    ),
+    k: int = typer.Option(12, help="Passages to retrieve."),
+    sharpen: bool = typer.Option(
+        True,
+        "--sharpen/--no-sharpen",
+        help="Second self-critique pass, as production runs it (~2x cost).",
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Retrieval + stats only, no billed calls."
+    ),
+) -> None:
+    """Run the real brief pipeline over a rotating slice of the eval panel.
+
+    Spend control is the rotation, not a cap: one profile per run by default,
+    advancing through the panel so consecutive checks cover the whole verdict
+    space instead of re-testing one company. Use --all when a batch of changes
+    is ready to be judged against the full panel at once. Every run reports
+    retrieval shape per profile and writes a raw JSON report, so a paid run is
+    never a result you can't go back to.
+
+    Deliberately uncapped by default — see BudgetGuard's docstring: on an
+    already-bounded run a cap either doesn't bind or binds mid-flight and
+    discards work already paid for, which is worse than no cap. Pass --budget
+    only if you want a genuine stop-loss.
+    """
+    from etl.brief_eval.cost import BudgetGuard, MeteredClient
+    from etl.brief_eval.panel import EVAL_PANEL
+    from etl.brief_eval.rotation import (
+        cumulative_spend,
+        record_run,
+        report_path,
+        select_profiles,
+    )
+    from etl.enrichment import get_embedder
+    from etl.intelligence import generate_briefing
+    from etl.intelligence.llm import get_client, has_api_key
+
+    effective_dry = dry_run or not has_api_key()
+    profiles, next_cursor = select_profiles(count=count, all_profiles=all_profiles)
+    guard = BudgetGuard(None if effective_dry or budget <= 0 else budget)
+    client = None if effective_dry else MeteredClient(get_client(), guard)
+    if effective_dry and not dry_run:
+        typer.echo("(No ANTHROPIC_API_KEY — retrieval and stats only.)\n")
+
+    scope = "whole panel" if all_profiles else f"{len(profiles)} of {len(EVAL_PANEL)} profiles"
+    cap = "none" if guard.max_usd is None else f"${guard.max_usd:.2f}"
+    typer.echo(f"brief-check: {scope}, budget {cap}\n")
+
+    embedder = get_embedder(get_settings())
+    results: list[dict] = []
+    completed = 0
+    for profile in profiles:
+        typer.echo(f"— {profile.name}")
+        guard.set_context(profile.name)
+        try:
+            with session_scope() as session:
+                result = generate_briefing(
+                    session,
+                    embedder,
+                    profile,
+                    k=k,
+                    client=client,
+                    dry_run=effective_dry,
+                    sharpen=sharpen,
+                )
+        except Exception as exc:  # includes the budget guard tripping
+            typer.echo(f"  stopped: {exc}")
+            results.append({"profile": profile.name, "error": str(exc)})
+            break
+        stats = result.get("retrieval_stats", {})
+        typer.echo(
+            f"  {stats.get('passages')} passages / {stats.get('documents')} docs"
+            f" · depth ratio {stats.get('documents_per_passage')}"
+            f" · {stats.get('canon_stubs')} canon stubs"
+            f" · {stats.get('context_chars')} chars"
+        )
+        typer.echo(f"  facets: {', '.join(stats.get('facets', []))}")
+        if result.get("canon_notes"):
+            for note in result["canon_notes"]:
+                typer.echo(f"  ⚠ {note}")
+        results.append(
+            {
+                "profile": profile.name,
+                "query": result.get("query"),
+                "retrieval_stats": stats,
+                "briefing": result.get("briefing"),
+                "citations": result.get("citations", []),
+                "canon_notes": result.get("canon_notes", []),
+            }
+        )
+        completed += 1
+
+    path = report_path()
+    path.write_text(
+        json.dumps(
+            {
+                "spent_usd": round(guard.spent_usd, 4),
+                "calls": guard.calls,
+                "breakdown": guard.breakdown,
+                "dry_run": effective_dry,
+                "sharpen": sharpen,
+                "results": results,
+            },
+            indent=2,
+            default=str,
+        )
+    )
+    if not effective_dry:
+        # Advance only past profiles that actually finished. A budget stop or a
+        # crash mid-rotation must leave the unchecked profile next in line —
+        # otherwise the one profile that fails quietly rotates out of coverage.
+        # --all covers everything, so it leaves the single-profile turn alone.
+        start = (next_cursor - len(profiles)) % len(EVAL_PANEL)
+        cursor = next_cursor if all_profiles else (start + completed) % len(EVAL_PANEL)
+        record_run(
+            cursor=cursor,
+            profiles=[p.name for p in profiles[:completed]],
+            spent_usd=guard.spent_usd,
+        )
+        typer.echo(
+            f"\nSpent ${guard.spent_usd:.4f} over {guard.calls} calls "
+            f"(all brief-checks to date: ${cumulative_spend():.2f})"
+        )
+    typer.echo(f"Raw report: {path}")
+
+
 @app.command(name="brief-improve")
 def brief_improve(
     rounds: int = typer.Option(3, help="Max candidate-search rounds after the baseline."),
@@ -412,14 +685,28 @@ def serve(
 
 
 @app.command()
-def run(key: str, limit: int = typer.Option(None)) -> None:
+def run(
+    key: str,
+    limit: int = typer.Option(None),
+    full: bool = typer.Option(
+        False,
+        "--full",
+        help=(
+            "Ignore the incremental cursor and re-discover the whole backfill "
+            "window. Use when a source looks starved: after its first run a "
+            "source only asks for what is newer than that run, so a first run "
+            "that was truncated or partly failed leaves history permanently "
+            "unreachable. Idempotent."
+        ),
+    ),
+) -> None:
     """Run a single adapter by key (debugging)."""
     cls = ADAPTERS_BY_KEY.get(key)
     if cls is None:
         raise typer.BadParameter(f"Unknown source '{key}'. Known: {', '.join(ADAPTERS_BY_KEY)}")
     settings = get_settings()
     with HttpClient(settings) as http, session_scope() as session:
-        stats = run_adapter(session, cls(http, settings), limit=limit)
+        stats = run_adapter(session, cls(http, settings), limit=limit, full=full)
     typer.echo(f"{key}: {stats}")
 
 

@@ -17,7 +17,7 @@ from typing import Protocol
 
 import httpx
 import structlog
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
@@ -179,6 +179,12 @@ def _row_to_passage(row) -> dict:
         "title": row.title,
         "celex": row.celex,
         "url": row.url,
+        # The document this passage belongs to. Needed to go from "these are
+        # the instruments that matter for this profile" to "now give me more
+        # passages from those same instruments" — see document_passages().
+        # A stable integer key, unlike the celex-or-url-or-title string the
+        # per-document caps in briefing.py fall back to for grouping.
+        "document_id": getattr(row, "document_id", None),
         "stage": row.lifecycle_stage.value,
         "jurisdiction": row.jurisdiction.value,
         "document_type": row.document_type.value,
@@ -220,6 +226,7 @@ def semantic_search(
             Passage.text,
             Passage.char_start,
             Passage.char_end,
+            DocumentVersion.document_id.label("document_id"),
             Document.title,
             Document.celex,
             Document.url,
@@ -265,6 +272,7 @@ def canon_passages(
             Passage.text,
             Passage.char_start,
             Passage.char_end,
+            DocumentVersion.document_id.label("document_id"),
             Document.title,
             Document.celex,
             Document.url,
@@ -287,6 +295,188 @@ def canon_passages(
     results = [_row_to_passage(row) for row in session.execute(stmt).all()]
     results.sort(key=lambda r: r["score"], reverse=True)
     return results
+
+
+def document_passages(
+    session: Session,
+    embedder: Embedder,
+    query: str,
+    document_ids: list[int],
+    *,
+    k_per_doc: int = 4,
+) -> list[dict]:
+    """The ``k_per_doc`` passages closest in meaning to ``query`` from EACH of
+    ``document_ids`` — the "go deeper" half of retrieval.
+
+    semantic_search() answers "which passages in the corpus match", and every
+    per-document cap in briefing.py then deliberately flattens the result
+    toward one passage per instrument so no single document monopolizes
+    context. That is the right shape for deciding WHICH instruments matter,
+    and the wrong shape for saying anything specific about them: a single
+    ~1,500-char window of a regulation is enough to name it and nothing more,
+    which is exactly how a brief ends up naming 60 instruments and explaining
+    none. This is the second pass — once breadth has picked the instruments,
+    re-retrieve within only those, so the model sees several of an act's
+    actual operative provisions instead of one arbitrary window of each.
+
+    Uses an exact scan (row_number over the query-distance) rather than the
+    HNSW index: the ``document_id`` filter narrows the candidate set to a few
+    thousand rows at most, where exact distances are both cheap and immune to
+    the ANN-recall trap press_passages() documents at length — a narrow filter
+    plus an approximate index is how you silently get zero rows back."""
+    if not document_ids:
+        return []
+    qvec = embedder.embed([query])[0]
+    distance = Passage.embedding.cosine_distance(qvec).label("distance")
+    ranked = (
+        select(
+            Passage.text,
+            Passage.char_start,
+            Passage.char_end,
+            DocumentVersion.document_id.label("document_id"),
+            Document.title,
+            Document.celex,
+            Document.url,
+            Document.lifecycle_stage,
+            Document.jurisdiction,
+            Document.document_type,
+            Document.extra,
+            distance,
+            func.row_number()
+            .over(partition_by=DocumentVersion.document_id, order_by=distance)
+            .label("rank_in_doc"),
+        )
+        .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
+        .join(Document, DocumentVersion.document_id == Document.id)
+        .where(
+            Passage.embedding.is_not(None),
+            DocumentVersion.is_current.is_(True),
+            DocumentVersion.document_id.in_(document_ids),
+        )
+        .subquery()
+    )
+    stmt = (
+        select(ranked)
+        .where(ranked.c.rank_in_doc <= k_per_doc)
+        .order_by(ranked.c.distance)
+    )
+    return [_row_to_passage(row) for row in session.execute(stmt).all()]
+
+
+class Reranker(Protocol):
+    def rerank(self, query: str, texts: list[str]) -> list[float]: ...
+
+
+class VoyageReranker:
+    """Voyage cross-encoder reranker — scores each passage against the query
+    jointly, rather than comparing two independently-produced vectors.
+
+    Why this matters for this corpus specifically: a bi-encoder embedding
+    match rewards documents whose overall prose *resembles* the query, and a
+    company profile reads like discursive prose. Measured live 2026-07-27 on
+    a fintech profile, the top six embedding hits were Commission staff
+    working documents and impact assessments — long, discursive, topically
+    adjacent — while DORA's actual operative text ranked seventh. Impact
+    assessments are commentary about law; a compliance brief needs the law.
+    A cross-encoder judges "does this passage answer this query" instead of
+    "is this passage's prose shaped like this query", which is what separates
+    those two cases.
+
+    Returns scores in input order (not a sorted ranking) so callers keep
+    control of ordering and can attach the score to their own dicts.
+    """
+
+    _ENDPOINT = "https://api.voyageai.com/v1/rerank"
+    # Voyage's documented per-request ceiling is 1,000 documents; callers here
+    # pass ~100 (see briefing.py's over-fetch pools), so this is a guard
+    # against a future caller, not a limit anything currently approaches.
+    _MAX_DOCUMENTS = 1000
+
+    def __init__(
+        self, model_name: str, api_key: str, *, client: httpx.Client | None = None
+    ):
+        self._model = model_name
+        self._client = client or httpx.Client(timeout=60.0)
+        self._headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+
+    @retry(
+        retry=retry_if_exception(_is_retryable_voyage),
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=1, max=10),
+        reraise=True,
+    )
+    def rerank(self, query: str, texts: list[str]) -> list[float]:
+        if not texts:
+            return []
+        batch = texts[: self._MAX_DOCUMENTS]
+        resp = self._client.post(
+            self._ENDPOINT,
+            headers=self._headers,
+            json={"query": query, "documents": batch, "model": self._model},
+        )
+        resp.raise_for_status()
+        scores = [0.0] * len(texts)
+        for row in resp.json()["data"]:
+            scores[row["index"]] = float(row["relevance_score"])
+        return scores
+
+
+def get_reranker(settings: Settings) -> Reranker | None:
+    """The configured reranker, or None when reranking is unavailable.
+
+    None is a supported mode, not a failure: callers fall back to pure
+    embedding order, which is what every run did before reranking existed.
+    That keeps local/offline runs (LocalEmbedder, no VOYAGE_API_KEY) working
+    with no configuration, and makes an unset key a graceful downgrade rather
+    than a broken brief."""
+    if not settings.rerank_model:
+        return None
+    api_key = os.environ.get("VOYAGE_API_KEY")
+    if not api_key:
+        return None
+    return VoyageReranker(settings.rerank_model, api_key)
+
+
+def rerank_passages(
+    reranker: Reranker | None,
+    query: str,
+    passages: list[dict],
+    *,
+    top_k: int | None = None,
+    min_score: float | None = None,
+) -> list[dict]:
+    """Reorder ``passages`` by cross-encoder relevance, annotating each with
+    ``rerank_score``, and keep the best ``top_k``.
+
+    A network or API failure downgrades to embedding order rather than
+    propagating: reranking improves which passages get used, but a brief
+    built on embedding order alone is still a valid brief, and losing the
+    whole report to a transient rerank 503 would be a bad trade. The
+    downgrade is logged so it shows up as a quality regression rather than
+    passing silently.
+
+    ``min_score`` is left None by every current caller deliberately — the
+    cross-encoder's score distribution over this corpus hasn't been measured
+    yet, and a guessed floor would silently drop good passages. Reordering is
+    the established win; floors wait for data."""
+    if not passages:
+        return []
+    if reranker is None:
+        ordered = passages
+    else:
+        try:
+            scores = reranker.rerank(query, [p["text"] for p in passages])
+            scored = [
+                {**p, "rerank_score": round(s, 4)}
+                for p, s in zip(passages, scores, strict=True)
+            ]
+            if min_score is not None:
+                scored = [p for p in scored if p["rerank_score"] >= min_score]
+            ordered = sorted(scored, key=lambda p: p["rerank_score"], reverse=True)
+        except Exception as exc:
+            log.warning("rerank_failed_using_embedding_order", error=str(exc))
+            ordered = passages
+    return ordered[:top_k] if top_k is not None else ordered
 
 
 def _cosine_sim(a, b) -> float:
@@ -408,6 +598,7 @@ def press_passages(
             Passage.char_start,
             Passage.char_end,
             Passage.embedding,
+            DocumentVersion.document_id.label("document_id"),
             Document.title,
             Document.celex,
             Document.url,

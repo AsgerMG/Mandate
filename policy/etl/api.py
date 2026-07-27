@@ -312,6 +312,7 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
                 elapsed_seconds=elapsed,
                 passages=len(result["passages"]),
                 dry_run=dry,
+                **result.get("retrieval_stats", {}),
             )
             # Optional, off by default (Settings.brief_eval_enabled) — logs
             # which retrieved passages actually got cited, so it's possible
@@ -343,6 +344,12 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
                     # resolve — the site can surface these so an unresolved
                     # identity/coverage problem is never invisible.
                     "canon_notes": result.get("canon_notes", []),
+                    # Retrieval shape (see briefing._retrieval_stats). Surfaced
+                    # rather than only logged because the depth collapse it
+                    # measures was invisible from the brief's own text — the
+                    # report reads fine while every instrument in context
+                    # contributes a single passage.
+                    "retrieval_stats": result.get("retrieval_stats", {}),
                     "dry_run": dry,
                     "elapsed_seconds": elapsed,
                 }

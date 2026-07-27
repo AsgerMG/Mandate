@@ -44,6 +44,16 @@ class Settings(BaseSettings):
     embedding_dim: int = 384
     embedding_model: str = "BAAI/bge-small-en-v1.5"
 
+    # --- Reranking ----------------------------------------------------------
+    # A cross-encoder second pass over the passages a bi-encoder embedding
+    # search returned. Unlike the embedder this is NOT a stored-data decision
+    # — nothing is persisted, so it can be switched on and off freely without
+    # re-embedding anything. Voyage-hosted (reuses VOYAGE_API_KEY); empty
+    # disables reranking and falls back to pure embedding order, which is also
+    # what happens automatically when no key is set, so local/offline runs
+    # need no configuration.
+    rerank_model: str = "rerank-2.5"
+
     # --- LLM (briefing generation) ------------------------------------------
     # ANTHROPIC_API_KEY is read from the environment by the Anthropic SDK.
     # Sonnet 5 over Opus: faster and sufficient for this task, which matters

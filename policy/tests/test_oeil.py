@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from etl.adapters.oeil import OeilAdapter
+from etl.adapters.oeil import YEARS_BACK, OeilAdapter
 
 LIST_PAGE = {
     "data": [
@@ -71,10 +71,48 @@ def _adapter(payload):
 def test_discover_tracks_cod_and_skips_known_offtopic():
     a = _adapter(LIST_PAGE)
     refs = list(a.discover(None, None))
-    assert [r.external_id for r in refs] == ["2026-0042", "2026-0042"]  # 2 years probed
+    # FakeHttp returns the same page for every year probed, so the tracked
+    # procedure appears once per year in the window. Asserted against
+    # YEARS_BACK rather than a literal, so widening the window (2 -> 5 on
+    # 2026-07-27, see the adapter) doesn't break a test that isn't about the
+    # window size.
+    assert [r.external_id for r in refs] == ["2026-0042"] * YEARS_BACK
     # cursor suppression
     refs = list(a.discover(None, {"offtopic": ["2026-0042"]}))
     assert refs == []
+
+
+def test_discover_tracks_delegated_acts():
+    """DEA (delegated and implementing acts) is where most operative detail
+    under the AI Act, CRA and DORA actually arrives. It was excluded until
+    2026-07-27, when 16 of the 101 procedures the API listed for 2026 turned out
+    to be DEA — all discarded."""
+    page = {
+        "data": [
+            {
+                "process_id": "2026-0099",
+                "process_type": "def/ep-procedure-types/DEA",
+                "label": "2026/0099(DEA)",
+            }
+        ]
+    }
+    refs = list(_adapter(page).discover(None, None))
+    assert [r.external_id for r in refs] == ["2026-0099"] * YEARS_BACK
+
+
+def test_discover_still_drops_untracked_procedure_types():
+    """Widening TRACKED_TYPES must not turn the filter off — an immunity
+    procedure is not regulatory intelligence however its title reads."""
+    page = {
+        "data": [
+            {
+                "process_id": "2026-0077",
+                "process_type": "def/ep-procedure-types/IMM",
+                "label": "2026/0077(IMM)",
+            }
+        ]
+    }
+    assert list(_adapter(page).discover(None, None)) == []
 
 
 def test_parse_tech_procedure_maps_stage():

@@ -16,22 +16,115 @@ from __future__ import annotations
 
 import datetime as dt
 import re
+from collections import Counter
 from collections.abc import Callable
 from typing import Any
 
+import structlog
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from data.config import get_settings
+from data.models import Enrichment
 from etl.adapters.eurlex_key_acts import KEY_ACTS
-from etl.enrichment import Embedder, canon_passages, press_passages, semantic_search
+from etl.enrichment import (
+    Embedder,
+    Reranker,
+    canon_passages,
+    document_passages,
+    get_reranker,
+    press_passages,
+    rerank_passages,
+    semantic_search,
+)
 
 from .profile import CompanyProfile
+
+log = structlog.get_logger(__name__)
 
 # The foundational-act canon (GDPR, DMA, DSA, AI Act, CRA, NIS2...) — every
 # brief gets one guaranteed passage per act so the Compliance exposure table
 # can render an explicit, grounded verdict for each, not just whichever acts
 # happen to win open semantic search against the company's own language.
 _CANON_CELEX = list(KEY_ACTS)
+
+# --- Retrieval shape ------------------------------------------------------
+# These four constants together decide whether a brief can be specific.
+#
+# The failure they exist to prevent, measured live 2026-07-27 on a fintech/AI
+# profile: 66 passages retrieved across 65 distinct documents — one window of
+# each of 65 laws, 82k chars of context, and no instrument represented deeply
+# enough to say anything concrete about. 55 of those 66 were the canon sweep,
+# i.e. 83% of context was spent on breadth nobody chose. A brief built on that
+# can name instruments and little else, which is exactly the "surface level"
+# complaint. The fix is a budget split explicitly between breadth and depth
+# instead of one that only ever bought breadth.
+
+# Per-facet breadth pass: how many passages each facet query contributes, and
+# how many documents any one facet may speak through. Small on purpose —
+# breadth's job here is only to nominate the instruments worth deepening.
+_FACET_K = 5
+_FACET_MAX_PER_DOC = 2
+# _FACET_MAX_PER_DOC bounds one facet's contribution, but nothing bounds the
+# union: a document matching every facet can reach facets x _FACET_MAX_PER_DOC
+# passages before the depth pass runs at all. Untriggered on the profiles
+# measured so far (breadth's own worst case was 3), so this is a bound on a
+# structural possibility rather than a fix for an observed regression — it
+# keeps breadth in its lane (nominating instruments) and leaves deliberately
+# accumulating passages to the depth pass, which does it only for documents
+# that earned a slot.
+_BREADTH_MAX_PER_DOC = 3
+
+# Depth pass: the top instruments from breadth get re-retrieved within
+# themselves (see document_passages). This is where the context budget freed
+# by _CANON_STUB_CHARS goes.
+_DEEPEN_DOCUMENTS = 10
+_DEEPEN_PER_DOCUMENT = 4
+
+# Cosine floor on the legal path. press_passages has had a floor since it was
+# written; semantic_search's brief-path callers never passed one, so a brief
+# always got k passages whether or not anything relevant existed. 0.40 sits
+# below the observed live median (0.53) and just under the observed weakest
+# match (0.345) — it removes clear noise without pretending to know where
+# "relevant" starts. Tighten it against real output, not intuition.
+_LEGAL_MIN_SCORE = 0.40
+
+# Per-facet overrides of (min_score, k). A facet whose corpus is large and whose
+# usefulness is conditional needs a higher bar than the general legal path.
+#
+# `enforcement` is exactly that. Case law went from 197 to 1,440 documents in one
+# backfill, and unlike a regulation — which either applies to a company or does
+# not — a ruling is only worth context if it bears on a provision the brief is
+# actually giving a verdict on. A judgment about telecoms interconnection fees is
+# a perfectly good semantic match for "Court of Justice ruling on obligations"
+# and completely useless in a fintech brief. At the general 0.40 floor the facet
+# would reliably find *something* for every profile, which is the failure mode:
+# case law that is present but not pertinent, competing for the depth budget
+# against binding text the company genuinely is subject to.
+#
+# 0.55 is deliberately above the observed corpus median (~0.53): the facet
+# should return nothing at all for a profile with no relevant precedent rather
+# than return its best weak match. k=3 caps the ceiling for the same reason.
+# Controlling this at nomination also controls the depth pass, since only
+# nominated documents get deepened.
+_FACET_OVERRIDES: dict[str, dict[str, float | int]] = {
+    "enforcement": {"min_score": 0.55, "k": 3},
+}
+
+# The over-fetch pool handed to the reranker per facet. A cross-encoder can
+# only promote what the bi-encoder already retrieved, so the pool has to be
+# wider than the facet's own k for reranking to change anything at all.
+_RERANK_POOL = 40
+
+# A canon passage's job is to let the Compliance table state a grounded
+# verdict — including "Out of Scope" — for every foundational act. That needs
+# the act identified and its subject matter visible; it does not need a full
+# ~1,500-char window, which is what made the canon sweep consume most of the
+# context budget. Trimming to a leading excerpt keeps the guarantee (the act
+# is still in context, still citable, still seen by _canon_issues) at roughly
+# a quarter of the cost. Acts that breadth or depth retrieved on their own
+# merit are never stubbed — they keep their full passages.
+_CANON_STUB_CHARS = 350
 
 # Curated allowlist for press_passages() — document_type doesn't reliably
 # separate press/political-narrative sources from other "other"-typed feeds
@@ -461,7 +554,28 @@ SYSTEM_PROMPT = (
     "different enforcement figures, or a pre- and post-amendment version of the same "
     "legal text: prefer whichever source is more recent by its own stated or evident "
     "date, and say so explicitly rather than silently picking one or blending both as "
-    "if they agreed."
+    "if they agreed.\n\n"
+    "ENFORCEMENT PRECEDENT. '[EU · Judgment]' sources are Court of Justice or General "
+    "Court rulings, and '[.. · Enforcement decision]' sources are supervisory-authority "
+    "decisions and fines. These outrank every other source on the one question they "
+    "answer: what a provision actually REQUIRES in practice. A regulation's text states "
+    "the duty; a ruling states how that duty has been read when someone contested it, "
+    "which is what a verdict in your table is really predicting.\n"
+    "The bar for using one is HIGH, and deliberately so. Cite a judgment only when it "
+    "construes a provision of an instrument you have already given a verdict on, AND "
+    "that construction changes what this company must do or how exposed it is. A ruling "
+    "that is merely on a related topic, in the same policy area, or about the same "
+    "instrument on a point that does not touch this company's activity is NOT relevant "
+    "— leave it out entirely. Most briefs should cite no case law at all; a brief that "
+    "reaches for a tangential ruling to look rigorous is worse than one that cites "
+    "none, because it spends the reader's attention on a holding that does not move "
+    "their decision. When you do use one, name what the court held and which provision "
+    "it turned on, in that instrument's Why/Trigger cell or in the prose.\n"
+    "Where a judgment and a Communication or Staff working document both construe the "
+    "same provision, the judgment governs and the commentary is at most context. Never "
+    "manufacture this: the INSTRUMENT IDENTITY rule above applies to cases exactly as "
+    "it does to legislation, so never name a case that is not among your sources, and a "
+    "misattributed holding is worse than no holding."
 )
 
 
@@ -502,17 +616,36 @@ def _source_label(
 
 def build_documents(passages: list[dict]) -> list[dict]:
     """One Citations-enabled ``document`` block per retrieved passage. The block
-    order defines the ``document_index`` Claude cites back."""
+    order defines the ``document_index`` Claude cites back.
+
+    A passage carrying ``summary`` (from the ``enrichments`` table, attached by
+    ``_attach_summaries``) gets a one-line whole-instrument header above its own
+    text. Retrieval hands the model a ~1,500-char window of an act; that window
+    is enough to quote a provision and not enough to know what the instrument
+    *is*, which is how a brief ends up quoting Article 12 of something it can't
+    characterise. The header closes that gap for a few hundred characters.
+
+    Deliberately emitted only on a document's FIRST block: the depth pass puts
+    4-6 passages of the same act in context, and repeating one summary five
+    times would spend the context this is meant to use well.
+    """
     docs = []
+    summarised: set[str] = set()
     for p in passages:
         label = p.get("celex") or p.get("title") or "source"
         prefix = _source_label(p.get("jurisdiction"), p.get("document_type"), p.get("kind"))
         title = f"{prefix} {label}" if prefix else str(label)
+        body = p["text"]
+        summary = p.get("summary")
+        doc_key = _doc_key(p)
+        if summary and doc_key not in summarised:
+            summarised.add(doc_key)
+            body = f"[What this instrument does: {summary}]\n\n{body}"
         docs.append(
             {
                 "type": "document",
                 "title": title,
-                "source": {"type": "text", "media_type": "text/plain", "data": p["text"]},
+                "source": {"type": "text", "media_type": "text/plain", "data": body},
                 "citations": {"enabled": True},
             }
         )
@@ -998,6 +1131,277 @@ def _select_breadth_first(passages: list[dict], k: int) -> list[dict]:
     return selected
 
 
+# Precedent document types, and the hardest ceiling on how much of a brief's
+# context they may occupy.
+#
+# Neither the facet floor nor the depth quota can guarantee this, which is why it
+# exists. Raising the `enforcement` facet's floor to 0.55 and giving precedent its
+# own small depth share both helped and neither bound: measured 2026-07-27, a
+# fintech profile still reached 21 judgment passages (32% of substantive context)
+# because the *other* facets surface rulings too — "personal data processing
+# obligations" is a genuinely good match for a data-protection judgment, at any
+# floor. Case law arriving through five different doors cannot be limited at any
+# one of them, so the cap is applied once, globally, to the assembled set.
+_PRECEDENT_TYPES = frozenset({"judgment", "enforcement_decision"})
+_MAX_PRECEDENT_PASSAGES = 6
+
+
+def _cap_precedent(passages: list[dict], *, limit: int = _MAX_PRECEDENT_PASSAGES) -> list[dict]:
+    """Keep at most ``limit`` precedent passages, the best-scoring ones, and all
+    non-precedent passages untouched.
+
+    A ruling earns context by construing a provision the brief is already ruling
+    on — so a handful of strong ones is the whole value, and the eleventh adds
+    reading cost rather than insight. Preserves input order so the caller's own
+    ordering (and the citation indices built from it) is unaffected.
+    """
+    ranked = sorted(
+        (p for p in passages if p.get("document_type") in _PRECEDENT_TYPES),
+        key=lambda p: p.get("rerank_score", p.get("score", 0.0)) or 0.0,
+        reverse=True,
+    )
+    keep = {id(p) for p in ranked[:limit]}
+    return [
+        p for p in passages if p.get("document_type") not in _PRECEDENT_TYPES or id(p) in keep
+    ]
+
+
+def _doc_key(passage: dict) -> str:
+    """The grouping key every per-document cap here already used, extracted so
+    the depth pass groups passages exactly the way the caps do."""
+    return str(passage.get("celex") or passage.get("url") or passage.get("title"))
+
+
+# How the depth budget is split across kinds of document, as fractions of
+# _DEEPEN_DOCUMENTS. Relevance alone picks the wrong documents to go deep on,
+# and the measurement is unambiguous — first run of the depth pass
+# (2026-07-27, fintech/AI profile) spent 37 of 64 substantive passages on
+# Commission staff working documents, impact assessments and communications,
+# and gave the AI Act and the GDPR exactly one passage each.
+#
+# That is not a ranking bug: an impact assessment about AI in consumer credit
+# genuinely is topically closer to a company profile than the AI Act's own
+# terse operative articles are, and both the embedder and the cross-encoder
+# are right to say so. It is a mismatch between what "relevant" means to a
+# retriever and what a compliance brief needs, and no amount of reranking
+# fixes it, because the commentary really is more query-similar prose. The
+# instrument that binds the company has to be prioritized over documents
+# discussing it, so the split is stated explicitly instead of being an
+# accident of what the corpus happens to contain.
+#
+# Commentary keeps a share rather than being excluded: impact assessments are
+# where the Commission's own reasoning and quantified thresholds live, which
+# is real brief material — it just cannot be most of the budget. Proposals
+# get their own share because "what's changing" is half the product promise.
+# Tiers use data/models.py's DocumentType values. Judgments sit in the binding
+# tier: a ruling on what a provision requires is as decisive for a compliance
+# verdict as the provision's own text, and often more so. Standards sit there
+# too — they confer presumption of conformity, which is the practical test a
+# manufacturer is actually measured against. Budget instruments are binding but
+# deliberately excluded: discharge decisions would compete for depth slots
+# against regulation the company is genuinely subject to.
+_DEEPEN_QUOTAS: tuple[tuple[str, frozenset[str], float], ...] = (
+    (
+        "binding",
+        frozenset({"regulation", "directive", "decision", "standard"}),
+        0.55,
+    ),
+    # Case law gets its own small share rather than sitting in the binding tier.
+    # Judgments were originally put in `binding` on the reasoning that a ruling
+    # on what a provision requires is as decisive as the provision's text — true,
+    # but it conflates authority with relevance. A regulation either applies to a
+    # company or does not; a ruling only matters if it construes a provision the
+    # brief is already giving a verdict on. Sharing the binding quota let the
+    # depth pass amplify 5 nominated rulings into 20 passages — 31% of a
+    # fintech profile's substantive context, measured 2026-07-27. A small
+    # dedicated share keeps precedent available where it is genuinely on point
+    # (a no-AI, no-personal-data logistics profile correctly retrieves none)
+    # without letting it crowd out the binding text the company is subject to.
+    ("precedent", frozenset({"judgment", "enforcement_decision"}), 0.1),
+    ("pipeline", frozenset({"proposal", "consultation", "opinion"}), 0.2),
+    (
+        "commentary",
+        frozenset(
+            {
+                "communication",
+                "guideline",
+                "staff_working_doc",
+                "press",
+                "newsletter",
+                "verbatim_debate",
+                "budget",
+                "other",
+            }
+        ),
+        0.2,
+    ),
+)
+
+
+def _top_document_ids(passages: list[dict], *, limit: int) -> list[int]:
+    """The ``limit`` documents worth deepening, quota-split by authority (see
+    _DEEPEN_QUOTAS) and ranked within each tier by that document's own best
+    passage.
+
+    Ranks documents, not passages: a document represented by one strong
+    passage should outrank one represented by three mediocre ones, since the
+    question being answered is "which instruments matter to this company",
+    not "where is the densest cluster of text". A tier that can't fill its
+    quota spills its unused slots to the best remaining candidates of any
+    tier, so a thin corpus for one tier costs nothing rather than shrinking
+    the depth pass."""
+    best: dict[int, tuple[float, str]] = {}
+    for p in passages:
+        doc_id = p.get("document_id")
+        if doc_id is None:
+            continue
+        score = p.get("rerank_score", p.get("score", 0.0)) or 0.0
+        dtype = (p.get("document_type") or "other").lower()
+        if doc_id not in best or score > best[doc_id][0]:
+            best[doc_id] = (score, dtype)
+
+    tiers: dict[str, list[tuple[float, int]]] = {name: [] for name, _, _ in _DEEPEN_QUOTAS}
+    for doc_id, (score, dtype) in best.items():
+        tier = next((name for name, types, _ in _DEEPEN_QUOTAS if dtype in types), "commentary")
+        tiers[tier].append((score, doc_id))
+    for candidates in tiers.values():
+        candidates.sort(reverse=True)
+
+    selected: list[int] = []
+    for name, _, share in _DEEPEN_QUOTAS:
+        quota = max(1, round(limit * share))
+        selected.extend(doc_id for _, doc_id in tiers[name][:quota])
+    # Spill: fill any slots the quotas left unused with the best remaining
+    # candidates regardless of tier, best-scoring first.
+    if len(selected) < limit:
+        taken = set(selected)
+        spare = sorted(
+            (entry for candidates in tiers.values() for entry in candidates), reverse=True
+        )
+        for _, doc_id in spare:
+            if len(selected) >= limit:
+                break
+            if doc_id not in taken:
+                selected.append(doc_id)
+                taken.add(doc_id)
+    return selected[:limit]
+
+
+def _stub_canon_passages(canon: list[dict], substantive: list[dict]) -> list[dict]:
+    """Trim canon passages to a short excerpt, dropping any whose instrument is
+    already substantively in context.
+
+    Two distinct jobs were being paid for with the same expensive unit. An act
+    the company is genuinely exposed to needs its operative provisions quoted
+    at length; an act it merely needs to be told it is OUT of scope of needs
+    only to be identified and grounded. Charging both the same ~1,500 chars is
+    what let 55 canon acts crowd out the depth the exposed ones needed.
+
+    An act that breadth/depth retrieved on merit is skipped entirely here: it
+    is already in context with full text, so re-adding a stub of it would
+    duplicate the instrument without adding anything, while still counting
+    against the budget. _canon_issues reads the CELEX off whichever passage
+    carries it, so the table-completeness guarantee is unaffected either way.
+    """
+    present = {p.get("celex") for p in substantive if p.get("celex")}
+    stubs: list[dict] = []
+    for p in canon:
+        if p.get("celex") in present:
+            continue
+        stubs.append({**p, "text": _excerpt(p["text"], _CANON_STUB_CHARS), "canon_stub": True})
+    return stubs
+
+
+def _excerpt(text: str, limit: int) -> str:
+    """Leading ``limit`` chars, cut back to the last sentence boundary so the
+    excerpt ends as a sentence rather than mid-clause. Citations quote spans of
+    what we send, so a stub truncated mid-word invites a mangled quote."""
+    if len(text) <= limit:
+        return text
+    head = text[:limit]
+    cut = max(head.rfind(". "), head.rfind(".\n"), head.rfind("; "))
+    # Only honor the boundary if it isn't so early that we'd throw away most
+    # of the excerpt (common in legal text, where the first "." is an article
+    # number like "Article 5." a handful of chars in).
+    return head[: cut + 1] if cut >= limit // 2 else head.rstrip() + "…"
+
+
+def _attach_summaries(session: Session, passages: list[dict]) -> list[dict]:
+    """Attach each passage's document-level ``summary`` from the ``enrichments``
+    table, where one exists.
+
+    One query for the whole passage set, keyed on ``document_id``. Passages whose
+    document has no enrichment are returned untouched, so this is a no-op on a
+    corpus where the enrichment pass hasn't run — the brief degrades to exactly
+    its previous behaviour rather than failing.
+    """
+    doc_ids = {p["document_id"] for p in passages if p.get("document_id") is not None}
+    if not doc_ids:
+        return passages
+    rows = session.execute(
+        select(Enrichment.document_id, Enrichment.summary).where(
+            Enrichment.document_id.in_(doc_ids), Enrichment.summary.is_not(None)
+        )
+    ).all()
+    by_doc = {doc_id: summary for doc_id, summary in rows}
+    if not by_doc:
+        return passages
+    return [
+        {**p, "summary": by_doc[p["document_id"]]}
+        if p.get("document_id") in by_doc
+        else p
+        for p in passages
+    ]
+
+
+def _retrieval_stats(passages: list[dict], facets: list[str]) -> dict[str, Any]:
+    """Shape metrics for the passage set a brief was built on.
+
+    This exists because the depth collapse above went unnoticed for as long as
+    it did: nothing in the brief output or the logs said how many distinct
+    documents context covered, or how much of it was canon filler versus
+    passages something actually chose. ``documents_per_passage`` is the number
+    to watch — as it approaches 1.0, every document is contributing exactly one
+    passage and the brief cannot be anything but a list of names."""
+    if not passages:
+        return {"passages": 0, "documents": 0, "facets": facets}
+    scores = [p["score"] for p in passages if p.get("score") is not None]
+    reranked = [p["rerank_score"] for p in passages if p.get("rerank_score") is not None]
+    stubs = sum(1 for p in passages if p.get("canon_stub"))
+    docs = {_doc_key(p) for p in passages}
+    ordered = sorted(scores)
+    # Depth has to be measured over the substantive set only. Canon stubs are
+    # ~50 single-passage documents included deliberately as a scope check, so
+    # they drag the all-passage ratio toward 0.5 no matter how deep retrieval
+    # actually is — which makes it useless as the collapse signal it was
+    # introduced to be. Measured 2026-07-27: an all-passage ratio of 0.78 on a
+    # profile whose substantive ratio was 0.54 with up to 5 passages per act.
+    substantive = [p for p in passages if not p.get("canon_stub")]
+    substantive_docs = {_doc_key(p) for p in substantive}
+    return {
+        "passages": len(passages),
+        "documents": len(docs),
+        # Kept for continuity, but read substantive_documents_per_passage.
+        "documents_per_passage": round(len(docs) / len(passages), 3),
+        # THE depth signal: 1.0 means every instrument the brief actually
+        # reasons over contributed exactly one passage.
+        "substantive_documents_per_passage": (
+            round(len(substantive_docs) / len(substantive), 3) if substantive else None
+        ),
+        "max_passages_per_document": (
+            max(Counter(_doc_key(p) for p in substantive).values()) if substantive else 0
+        ),
+        "canon_stubs": stubs,
+        "substantive_passages": len(passages) - stubs,
+        "context_chars": sum(len(p["text"]) for p in passages),
+        "score_max": round(max(ordered), 3) if ordered else None,
+        "score_median": round(ordered[len(ordered) // 2], 3) if ordered else None,
+        "score_min": round(min(ordered), 3) if ordered else None,
+        "reranked_passages": len(reranked),
+        "facets": facets,
+    }
+
+
 def _attr(obj: Any, key: str, default=None):
     """Read a field whether obj is an SDK model or a plain dict (for tests)."""
     if isinstance(obj, dict):
@@ -1058,6 +1462,7 @@ def generate_briefing(
     dry_run: bool = False,
     sharpen: bool = True,
     on_stage: Callable[[str, str], None] | None = None,
+    reranker: Reranker | None = None,
 ) -> dict[str, Any]:
     """Retrieve relevant passages, then (unless dry_run) ask Claude for a grounded
     briefing. Returns the briefing, its citations, and the supporting passages.
@@ -1077,7 +1482,14 @@ def generate_briefing(
     progress (retrieval, each LLM call). It fires only for work that actually
     happens — the citation-retry and canon-fix stages are conditional and are
     only announced when that call is genuinely about to be made, so a
-    progress UI built on this never claims a step that didn't occur."""
+    progress UI built on this never claims a step that didn't occur.
+
+    ``reranker`` defaults to the configured one (see get_reranker, which
+    returns None when unavailable — reranking then degrades to embedding
+    order). Pass one explicitly to pin behavior in tests.
+
+    Retrieval shape metrics for the returned passage set are included as
+    ``retrieval_stats`` — see _retrieval_stats for what to watch."""
 
     def _emit(stage: str, label: str) -> None:
         if on_stage is not None:
@@ -1085,16 +1497,31 @@ def generate_briefing(
 
     _emit("retrieving", "Retrieving the sources that apply to your profile")
     query = profile.to_query()
-    # Over-fetch then cap per document: without the cap, one big fresh
-    # document can win most of the top-k on raw similarity (see
-    # _cap_per_document); the over-fetch backfills the capped slots with the
-    # next-best passages from OTHER documents instead of just shrinking k.
-    # _select_breadth_first (not a flat [:k] slice) is what makes that
-    # restored breadth actually survive to the final passage set — see its
-    # own docstring for why a plain score-sorted slice would undo the cap.
-    passages = _select_breadth_first(
-        _cap_per_document(semantic_search(session, embedder, query, k=k * 2)), k
-    )
+    if reranker is None:
+        reranker = get_reranker(get_settings())
+
+    # --- Breadth: one small, sharply-queried pass per obligation facet ------
+    # Each facet is retrieved separately and unioned rather than blended into
+    # one query — see CompanyProfile.retrieval_queries() for why a single
+    # concatenated profile string retrieves the centroid of a company instead
+    # of any of its actual exposures. Per facet: over-fetch a rerank pool,
+    # let the cross-encoder reorder it, then apply the existing per-document
+    # cap and breadth-first selection to the reranked order.
+    facets = profile.retrieval_queries()
+    breadth: list[dict] = []
+    for facet, facet_query in facets:
+        override = _FACET_OVERRIDES.get(facet, {})
+        min_score = float(override.get("min_score", _LEGAL_MIN_SCORE))
+        facet_k = int(override.get("k", _FACET_K))
+        pool = semantic_search(session, embedder, facet_query, k=_RERANK_POOL, min_score=min_score)
+        # An overridden facet can legitimately return nothing — that is the
+        # point of its higher floor, not a failure to route around.
+        pool = rerank_passages(reranker, facet_query, pool, top_k=facet_k * 2)
+        selected = _select_breadth_first(
+            _cap_per_document(pool, max_per_doc=_FACET_MAX_PER_DOC), facet_k
+        )
+        breadth = _merge_passages(breadth, [{**p, "facet": facet} for p in selected])
+    breadth = _cap_per_document(breadth, max_per_doc=_BREADTH_MAX_PER_DOC)
     # The competitive angle gets its own retrieval pass: blended into the main
     # query it reliably loses to the profile's compliance signal (an AI-using
     # company's query retrieves AI Act content, and a named rival's antitrust
@@ -1104,12 +1531,28 @@ def generate_briefing(
     competitive_query = _competitive_query(profile)
     if competitive_query:
         extra = semantic_search(session, embedder, competitive_query, k=max(4, k // 3))
-        passages = _merge_passages(passages, extra)
+        breadth = _merge_passages(breadth, extra)
+
+    # --- Depth: re-retrieve inside the instruments breadth nominated -------
+    # The whole point of the split. Breadth deliberately flattens to ~1-2
+    # passages per document so it can survey; that same flattening is what
+    # makes a brief generic. Here the top instruments get several of their own
+    # operative provisions into context instead of one arbitrary window.
+    _emit("retrieving", "Reading the instruments that apply to you in depth")
+    deepen_ids = _top_document_ids(breadth, limit=_DEEPEN_DOCUMENTS)
+    deep = document_passages(
+        session, embedder, query, deepen_ids, k_per_doc=_DEEPEN_PER_DOCUMENT
+    )
+    passages = _merge_passages(breadth, deep)
+
     # Guarantee every foundational act a seat in context (see canon_passages'
     # docstring) — this is what lets the Compliance table state "CRA — Out of
-    # Scope" with a real citation instead of silently dropping the row.
+    # Scope" with a real citation instead of silently dropping the row. Acts
+    # already retrieved on merit above keep their full text; the rest enter as
+    # short scope-check stubs (see _stub_canon_passages) so the guarantee stops
+    # consuming the budget depth needs.
     canon = canon_passages(session, embedder, query, _CANON_CELEX)
-    passages = _merge_passages(passages, canon)
+    passages = _merge_passages(passages, _stub_canon_passages(canon, passages))
     # Political landscape needs current context, which the retrieval above
     # can't supply — semantic_search/canon_passages are deliberately
     # recency-agnostic (legal text doesn't go stale) and never touch
@@ -1133,10 +1576,24 @@ def generate_briefing(
         max_per_source=2,
     )
     passages = _merge_passages(passages, press)
+    # Hard ceiling on case law, applied once to the assembled set — see
+    # _cap_precedent for why no per-facet or per-tier limit can guarantee it.
+    passages = _cap_precedent(passages)
+    # Whole-instrument context for each retrieved act (see _attach_summaries).
+    # After all retrieval, so one query covers the final passage set.
+    passages = _attach_summaries(session, passages)
     request = build_request(profile, passages)
+    stats = _retrieval_stats(passages, [facet for facet, _ in facets])
+    log.info("brief_retrieval", company=profile.name, **stats)
 
     if dry_run or not passages:
-        return {"query": query, "passages": passages, "request": request, "briefing": None}
+        return {
+            "query": query,
+            "passages": passages,
+            "request": request,
+            "briefing": None,
+            "retrieval_stats": stats,
+        }
 
     if client is None:
         from .llm import get_client
@@ -1219,4 +1676,10 @@ def generate_briefing(
             if len(remaining) < len(issues):
                 parsed, issues = fixed, remaining
     parsed["briefing"] = _sort_compliance_table(parsed["briefing"])
-    return {"query": query, "passages": passages, "canon_notes": issues, **parsed}
+    return {
+        "query": query,
+        "passages": passages,
+        "canon_notes": issues,
+        "retrieval_stats": stats,
+        **parsed,
+    }

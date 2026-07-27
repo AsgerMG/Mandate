@@ -45,14 +45,71 @@ class Jurisdiction(enum.StrEnum):
 
 
 class DocumentType(enum.StrEnum):
+    """What kind of document this is — and, by extension, how much authority it
+    carries.
+
+    The brief's whole reasoning depends on this distinction: a regulation binds,
+    a judgment settles what a provision means, a recommendation guides, a staff
+    working document is the Commission's reasoning about a law, and a newsletter
+    is somebody's opinion about all of it. ``_DEEPEN_QUOTAS`` in
+    etl/intelligence/briefing.py splits the retrieval depth budget by exactly
+    these tiers, so a document collapsed into OTHER is a document the brief
+    cannot weigh correctly.
+
+    Measured 2026-07-27: 2,774 of 4,781 documents were OTHER, including 459 real
+    EU legal acts, because the vocabulary below stopped at REGULATION/DIRECTIVE/
+    DECISION and everything else fell through. Anything genuinely unclassifiable
+    still lands in OTHER — the point is that it should be rare and honest, not
+    the default.
+    """
+
+    # --- Binding law ------------------------------------------------------
     REGULATION = "regulation"
     DIRECTIVE = "directive"
     DECISION = "decision"
+    # A court ruling: not "law" in the legislative sense, but authoritative on
+    # what an existing provision actually requires — which is precisely what a
+    # compliance verdict turns on.
+    JUDGMENT = "judgment"
+    # A supervisory authority's binding enforcement act (DPA fine, DMA
+    # non-compliance decision). Distinct from DECISION, which is the EU
+    # legislative instrument type, and from JUDGMENT, which is a court.
+    ENFORCEMENT_DECISION = "enforcement_decision"
+
+    # --- Soft law / authoritative guidance --------------------------------
+    GUIDELINE = "guideline"
+    # A harmonised standard. Separate because conformity assessment legally
+    # turns on these: they confer presumption of conformity, which no other
+    # non-binding document does.
+    STANDARD = "standard"
+
+    # --- The legislative pipeline -----------------------------------------
     PROPOSAL = "proposal"
     CONSULTATION = "consultation"
+    # An institution's formal position in a procedure — EP legislative
+    # positions/amendments (CELEX AP), EP resolutions (IP), EESC/CoR/ECB
+    # opinions (AE/IE/IR/AR/AB). Shapes where a file lands without binding.
+    OPINION = "opinion"
+
+    # --- Commentary and context -------------------------------------------
     COMMUNICATION = "communication"
+    # Impact assessments and accompanying analysis (CELEX SC). Where the
+    # Commission's own reasoning and quantified thresholds live — genuine
+    # brief material, but commentary about law, not law.
+    STAFF_WORKING_DOC = "staff_working_doc"
     PRESS = "press"
-    GUIDELINE = "guideline"
+    # A subscription newsletter (Politico playbooks, techpolicy.press). Was
+    # indistinguishable from a verbatim debate transcript under OTHER.
+    NEWSLETTER = "newsletter"
+    # A plenary debate transcript with named speakers and their actual stated
+    # positions — a primary source for the political-landscape section, and
+    # nothing like a press summary of the same debate.
+    VERBATIM_DEBATE = "verbatim_debate"
+    # Budgetary instruments (CELEX B*). Binding, and deliberately NOT in the
+    # binding tier: discharge decisions would compete for depth slots against
+    # regulation the company is actually subject to.
+    BUDGET = "budget"
+
     OTHER = "other"
 
 
@@ -134,6 +191,14 @@ class Document(Base, TimestampMixin):
 
     date_document: Mapped[dt.date | None] = mapped_column(Date)  # date of the act/publication
     date_in_force: Mapped[dt.date | None] = mapped_column(Date)
+    # When the act's obligations actually start to bite, which in EU law is
+    # routinely NOT date_in_force: an act enters into force ~20 days after
+    # publication and often applies months or years later (the AI Act entered
+    # into force 2024-08-01 and applies in stages through 2027). This is the
+    # date a compliance verdict and every Watchlist deadline turn on, so it is
+    # tracked separately rather than conflated with entry into force. Staged,
+    # per-provision application dates live in ``extra["application_stages"]``.
+    date_application: Mapped[dt.date | None] = mapped_column(Date)
     date_end_validity: Mapped[dt.date | None] = mapped_column(Date)
 
     url: Mapped[str | None] = mapped_column(String(1024))

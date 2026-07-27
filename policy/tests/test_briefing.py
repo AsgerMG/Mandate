@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import datetime as dt
 
+from sqlalchemy import select
+
 from data.config import get_settings
 from data.models import (
     Document,
@@ -22,15 +24,22 @@ from data.models import (
 from etl.enrichment import embed_pending
 from etl.intelligence import CompanyProfile, build_documents, build_request, generate_briefing
 from etl.intelligence.briefing import (
+    _CANON_STUB_CHARS,
     _PRESS_SOURCE_KEYS,
     SYSTEM_PROMPT,
+    _attach_summaries,
     _canon_issues,
     _cap_per_document,
     _cap_per_source,
+    _cap_precedent,
     _competitive_query,
+    _excerpt,
     _merge_passages,
+    _retrieval_stats,
     _select_breadth_first,
     _sort_compliance_table,
+    _stub_canon_passages,
+    _top_document_ids,
     parse_response,
 )
 
@@ -1019,3 +1028,422 @@ def test_generate_briefing_includes_recent_press_passages(db_session):
 
     urls = {p.get("url") for p in result["passages"]}
     assert "http://netzpolitik.example/ai-act-debate" in urls
+
+
+# --- Retrieval shape: breadth vs depth ------------------------------------
+
+
+def test_stub_canon_passages_trims_text_and_marks_the_stub():
+    canon = [{"celex": "32024R1689", "text": "A" * 2000}]
+    out = _stub_canon_passages(canon, substantive=[])
+    assert len(out) == 1
+    assert len(out[0]["text"]) <= _CANON_STUB_CHARS + 1  # +1 for the ellipsis
+    assert out[0]["canon_stub"] is True
+
+
+def test_stub_canon_passages_skips_acts_already_retrieved_on_merit():
+    canon = [
+        {"celex": "32024R1689", "text": "A" * 2000},
+        {"celex": "32016R0679", "text": "B" * 2000},
+    ]
+    substantive = [{"celex": "32024R1689", "text": "full AI Act passage"}]
+    out = _stub_canon_passages(canon, substantive)
+    # The AI Act is already in context with full text; re-adding a stub of it
+    # would spend budget duplicating an instrument instead of covering one.
+    assert [p["celex"] for p in out] == ["32016R0679"]
+
+
+def test_stub_canon_passages_leaves_short_text_alone():
+    canon = [{"celex": "X", "text": "Short subject matter."}]
+    assert _stub_canon_passages(canon, [])[0]["text"] == "Short subject matter."
+
+
+def test_excerpt_ends_on_a_sentence_boundary():
+    # The boundary has to land in the latter half of the budget to be worth
+    # honoring — see the early-boundary test below for the other branch.
+    first = "This Regulation lays down harmonised rules on artificial intelligence systems."
+    text = first + " " + "B" * 400
+    out = _excerpt(text, 100)
+    assert out == first
+
+
+def test_excerpt_falls_back_to_ellipsis_when_the_boundary_is_too_early():
+    # "Article 5." at position 9 would throw away 90% of the excerpt, so the
+    # hard cut with an ellipsis is preferred over an almost-empty stub.
+    text = "Article 5. " + "B" * 400
+    out = _excerpt(text, 100)
+    assert out.endswith("…")
+    assert len(out) > 50
+
+
+def test_top_document_ids_reserves_most_slots_for_binding_law():
+    # Commentary scores higher than every binding instrument here, which is
+    # the real observed situation (impact assessments out-score the acts they
+    # assess). A pure relevance ranking would fill all 5 slots with it.
+    passages = [
+        {"document_id": i, "document_type": "other", "score": 0.90 - i * 0.01} for i in range(10)
+    ] + [
+        {"document_id": 100 + i, "document_type": "regulation", "score": 0.50 - i * 0.01}
+        for i in range(10)
+    ]
+    picked = _top_document_ids(passages, limit=5)
+    binding = [d for d in picked if d >= 100]
+    assert len(binding) >= 3  # 0.6 of 5, rounded
+    assert len(picked) == 5
+
+
+def test_top_document_ids_ranks_within_a_tier_by_best_passage():
+    passages = [
+        {"document_id": 1, "document_type": "regulation", "score": 0.4},
+        {"document_id": 2, "document_type": "regulation", "score": 0.9},
+        {"document_id": 2, "document_type": "regulation", "score": 0.1},
+    ]
+    assert _top_document_ids(passages, limit=1) == [2]
+
+
+def test_top_document_ids_prefers_rerank_score_over_embedding_score():
+    passages = [
+        {"document_id": 1, "document_type": "regulation", "score": 0.9, "rerank_score": 0.1},
+        {"document_id": 2, "document_type": "regulation", "score": 0.2, "rerank_score": 0.9},
+    ]
+    assert _top_document_ids(passages, limit=1) == [2]
+
+
+def test_top_document_ids_spills_unused_quota_instead_of_shrinking():
+    # Only commentary exists. The binding and pipeline quotas cannot be
+    # filled, and those slots must go to the best remaining candidates rather
+    # than silently shrinking the depth pass.
+    passages = [
+        {"document_id": i, "document_type": "other", "score": 0.9 - i * 0.01} for i in range(10)
+    ]
+    assert len(_top_document_ids(passages, limit=6)) == 6
+
+
+def test_top_document_ids_ignores_passages_without_a_document_id():
+    passages = [{"document_type": "regulation", "score": 0.9}]
+    assert _top_document_ids(passages, limit=3) == []
+
+
+def test_top_document_ids_treats_unknown_document_type_as_commentary():
+    passages = [{"document_id": 1, "document_type": "brand-new-type", "score": 0.9}]
+    assert _top_document_ids(passages, limit=3) == [1]
+
+
+def test_retrieval_stats_flags_depth_collapse():
+    """documents_per_passage == 1.0 is the shape that made briefs generic:
+    every document contributing exactly one passage. This is the number the
+    regression guard below watches."""
+    one_each = [
+        {"text": "x" * 100, "score": 0.5, "celex": f"C{i}", "document_id": i} for i in range(10)
+    ]
+    assert _retrieval_stats(one_each, ["profile"])["documents_per_passage"] == 1.0
+
+    deep = [
+        {"text": "x" * 100, "score": 0.5, "celex": f"C{i // 5}", "document_id": i // 5}
+        for i in range(10)
+    ]
+    assert _retrieval_stats(deep, ["profile"])["documents_per_passage"] == 0.2
+
+
+def test_retrieval_stats_separates_canon_stubs_from_substantive_passages():
+    passages = [
+        {"text": "x" * 100, "score": 0.5, "celex": "A", "document_id": 1},
+        {"text": "y" * 50, "score": 0.4, "celex": "B", "document_id": 2, "canon_stub": True},
+    ]
+    stats = _retrieval_stats(passages, ["profile"])
+    assert stats["canon_stubs"] == 1
+    assert stats["substantive_passages"] == 1
+    assert stats["context_chars"] == 150
+
+
+def test_retrieval_stats_handles_an_empty_passage_set():
+    assert _retrieval_stats([], ["profile"])["passages"] == 0
+
+
+def _seed_deep_doc(session, *, celex: str, key: str, passages: list[str]) -> None:
+    """One document with several passages, so a depth pass has something to
+    retrieve more than one of."""
+    src = Source(key=key, name=key, jurisdiction=Jurisdiction.EU)
+    session.add(src)
+    session.flush()
+    doc = Document(
+        source_id=src.id,
+        external_id=celex,
+        title=f"Act {celex}",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.REGULATION,
+        lifecycle_stage=LifecycleStage.IN_FORCE,
+        url=f"http://x/{celex}",
+        celex=celex,
+    )
+    session.add(doc)
+    session.flush()
+    ver = DocumentVersion(
+        document_id=doc.id,
+        content_hash=f"h-{celex}",
+        text="t",
+        char_count=1,
+        fetched_at=dt.datetime.now(dt.UTC),
+    )
+    session.add(ver)
+    session.flush()
+    for ordinal, text in enumerate(passages):
+        session.add(
+            Passage(
+                version_id=ver.id,
+                ordinal=ordinal,
+                text=text,
+                char_start=ordinal * 100,
+                char_end=ordinal * 100 + len(text),
+            )
+        )
+    session.commit()
+
+
+def test_generate_briefing_retrieves_several_passages_per_instrument(db_session):
+    """The regression guard for the failure this retrieval shape exists to fix.
+
+    Before the breadth/depth split, every document in context contributed
+    exactly one passage (measured live: 65 documents, 66 passages), so the
+    brief could name instruments and explain none. A single passage per
+    document must never again be the shape of a brief's context."""
+    _seed_deep_doc(
+        db_session,
+        celex="32024R1689",
+        key="deep1",
+        passages=[
+            "ai obligations and intelligence",
+            "ai risk management system requirements",
+            "ai conformity assessment duties",
+            "ai transparency obligations for providers",
+        ],
+    )
+    embed_pending(db_session, FakeEmbedder())
+
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    result = generate_briefing(db_session, FakeEmbedder(), profile, k=5, dry_run=True)
+
+    stats = result["retrieval_stats"]
+    counts: dict[int, int] = {}
+    for p in result["passages"]:
+        if not p.get("canon_stub") and p.get("document_id") is not None:
+            counts[p["document_id"]] = counts.get(p["document_id"], 0) + 1
+    assert max(counts.values()) > 1, "depth collapse: no instrument got more than one passage"
+    # Asserted on the SUBSTANTIVE ratio, not the all-passage one. The
+    # all-passage ratio includes ~50 single-passage canon stubs, so it sits near
+    # 0.5 whatever retrieval does and would pass this guard even under a total
+    # depth collapse — see _retrieval_stats.
+    assert stats["substantive_documents_per_passage"] < 1.0
+    assert stats["max_passages_per_document"] > 1
+
+
+def test_generate_briefing_reports_retrieval_stats_on_dry_run(db_session):
+    _seed(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    result = generate_briefing(db_session, FakeEmbedder(), profile, k=5, dry_run=True)
+    stats = result["retrieval_stats"]
+    assert stats["passages"] == len(result["passages"])
+    # Facets are unioned, not blended: an AI-using company retrieves for its
+    # profile AND its AI exposure separately.
+    assert "profile" in stats["facets"]
+    assert "ai" in stats["facets"]
+
+
+def test_generate_briefing_uses_the_reranked_order(db_session):
+    """A reranker that inverts the embedding order must actually change which
+    passages reach the brief — otherwise reranking is wired up but inert."""
+    _seed_deep_doc(
+        db_session,
+        celex="32024R1689",
+        key="deep2",
+        passages=["ai duties", "ai fish fish fish rules"],
+    )
+    embed_pending(db_session, FakeEmbedder())
+
+    class FishFirst:
+        def rerank(self, query: str, texts: list[str]) -> list[float]:
+            return [float(t.lower().count("fish")) for t in texts]
+
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    result = generate_briefing(
+        db_session, FakeEmbedder(), profile, k=5, dry_run=True, reranker=FishFirst()
+    )
+    breadth = [p for p in result["passages"] if p.get("facet")]
+    assert breadth, "no passage carried a facet tag"
+    assert "fish" in breadth[0]["text"]
+
+
+# --- enrichment summaries in context --------------------------------------
+
+
+def test_build_documents_prepends_the_instrument_summary_once_per_document():
+    """The depth pass puts several passages of one act in context; repeating its
+    summary on each would spend the context this is meant to use well."""
+    passages = [
+        {"text": "Article 6 text", "celex": "32024R1689", "summary": "Binds AI providers."},
+        {"text": "Article 7 text", "celex": "32024R1689", "summary": "Binds AI providers."},
+        {"text": "Article 1 text", "celex": "32016R0679", "summary": "Binds data controllers."},
+    ]
+    blocks = build_documents(passages)
+    bodies = [b["source"]["data"] for b in blocks]
+    assert bodies[0].startswith("[What this instrument does: Binds AI providers.]")
+    assert bodies[1] == "Article 7 text"  # same act, no repeat
+    assert bodies[2].startswith("[What this instrument does: Binds data controllers.]")
+
+
+def test_build_documents_unchanged_for_passages_without_a_summary():
+    """A corpus where the enrichment pass hasn't run must behave exactly as
+    before, not produce empty headers."""
+    blocks = build_documents([{"text": "raw text", "celex": "X"}])
+    assert blocks[0]["source"]["data"] == "raw text"
+
+
+def test_attach_summaries_is_a_noop_without_enrichments(db_session):
+    passages = [{"text": "t", "document_id": 12345}]
+    assert _attach_summaries(db_session, passages) == passages
+
+
+def test_attach_summaries_ignores_passages_with_no_document_id(db_session):
+    passages = [{"text": "t"}]
+    assert _attach_summaries(db_session, passages) == passages
+
+
+def test_attach_summaries_populates_from_the_enrichments_table(db_session):
+    from data.models import Enrichment
+
+    _seed(db_session)
+    doc_id = db_session.scalars(select(Document.id)).first()
+    db_session.add(
+        Enrichment(document_id=doc_id, summary="What this act does.", model="test-model")
+    )
+    db_session.commit()
+    out = _attach_summaries(db_session, [{"text": "t", "document_id": doc_id}])
+    assert out[0]["summary"] == "What this act does."
+
+
+def test_system_prompt_tells_the_brief_to_use_enforcement_precedent():
+    """Measured 2026-07-27: after case law was ingested, embedded AND surfaced by
+    the enforcement facet, only 2 of 5 panel briefs cited a judgment — and they
+    did so incidentally. The prompt had no instruction about case law at all
+    (grep for 'court of justice', 'judgment', 'ruling' all missed), so the model
+    had no reason to prefer a ruling over the commentary discussing the same
+    provision. Locks in the fix so a future prompt edit can't silently drop it
+    and quietly strand the whole case-law layer again."""
+    lowered = SYSTEM_PROMPT.lower()
+    assert "enforcement precedent" in lowered
+    assert "judgment" in lowered
+    assert "court of justice" in lowered
+    # The ordering rule is the operative part: a ruling governs over commentary
+    # on the same provision.
+    assert "the judgment governs" in lowered
+    # ...and the fabrication guard, since inventing a holding is worse than none.
+    assert "a misattributed holding is worse than no holding" in lowered
+
+
+def test_system_prompt_sets_a_high_bar_for_citing_case_law():
+    """A ruling is only worth a reader's attention if it changes what THIS
+    company must do. With 1,440 judgments in the corpus, "cite case law" without
+    a relevance bar would let a tangential ruling into every brief — which reads
+    as rigour and is actually noise."""
+    lowered = SYSTEM_PROMPT.lower()
+    assert "the bar for using one is high" in lowered
+    assert "most briefs should cite no case law at all" in lowered
+    # Explicitly rules out the three near-miss cases that would otherwise pass.
+    assert "merely on a related topic" in lowered
+    assert "leave it out entirely" in lowered
+
+
+def test_enforcement_facet_has_a_higher_relevance_floor_than_the_legal_path():
+    """Retrieval has to enforce the same discipline as the prompt: an
+    unconditional facet at the general floor would find *something* for every
+    profile, which is precisely case law that is present but not pertinent."""
+    from etl.intelligence.briefing import _FACET_OVERRIDES, _LEGAL_MIN_SCORE
+
+    override = _FACET_OVERRIDES["enforcement"]
+    assert override["min_score"] > _LEGAL_MIN_SCORE
+    assert override["k"] < 5
+
+
+def test_system_prompt_still_bans_naming_unretrieved_cases():
+    """The instrument-identity rule has to extend to case law, or 'cite a
+    judgment' becomes an invitation to recall one from training."""
+    assert "applies to cases exactly as it does to legislation" in SYSTEM_PROMPT
+
+
+def test_cap_precedent_keeps_only_the_strongest_rulings():
+    """The hard ceiling. Neither the facet floor nor the depth quota can bound
+    case law, because rulings arrive through every facet — "personal data
+    processing obligations" matches a data-protection judgment well at any
+    floor. Measured 2026-07-27: a fintech profile reached 21 judgment passages
+    (32% of substantive context) with both of those in place."""
+    passages = [
+        {"text": "law", "document_type": "regulation", "score": 0.4},
+        *[
+            {"text": f"ruling {i}", "document_type": "judgment", "score": 0.9 - i * 0.05}
+            for i in range(10)
+        ],
+    ]
+    out = _cap_precedent(passages, limit=3)
+    kept = [p for p in out if p["document_type"] == "judgment"]
+    assert len(kept) == 3
+    assert [p["text"] for p in kept] == ["ruling 0", "ruling 1", "ruling 2"]
+    # Non-precedent passages must pass through untouched.
+    assert any(p["document_type"] == "regulation" for p in out)
+
+
+def test_cap_precedent_preserves_input_order():
+    """Citation indices are built from this ordering, so the cap must filter,
+    never reorder."""
+    passages = [
+        {"text": "a", "document_type": "judgment", "score": 0.1},
+        {"text": "b", "document_type": "regulation", "score": 0.9},
+        {"text": "c", "document_type": "judgment", "score": 0.9},
+    ]
+    out = _cap_precedent(passages, limit=1)
+    assert [p["text"] for p in out] == ["b", "c"]
+
+
+def test_cap_precedent_is_a_noop_without_case_law():
+    passages = [{"text": "law", "document_type": "regulation", "score": 0.5}]
+    assert _cap_precedent(passages) == passages
+
+
+def test_cap_precedent_also_bounds_enforcement_decisions():
+    passages = [
+        {"text": f"fine {i}", "document_type": "enforcement_decision", "score": 0.9}
+        for i in range(10)
+    ]
+    assert len(_cap_precedent(passages, limit=2)) == 2
+
+
+def test_retrieval_stats_depth_signal_ignores_canon_stubs():
+    """The all-passage ratio is floored near 0.5 by ~50 single-passage canon
+    stubs, so it cannot detect a depth collapse it was introduced to detect.
+    The substantive ratio can: here every real instrument contributes exactly
+    one passage — total collapse — while the all-passage number looks fine."""
+    collapsed = [
+        {"text": "x" * 100, "score": 0.5, "celex": f"C{i}", "document_id": i} for i in range(10)
+    ] + [
+        {
+            "text": "y" * 50,
+            "score": 0.4,
+            "celex": f"S{i}",
+            "document_id": 100 + i,
+            "canon_stub": True,
+        }
+        for i in range(50)
+    ]
+    stats = _retrieval_stats(collapsed, ["profile"])
+    assert stats["substantive_documents_per_passage"] == 1.0  # collapse, correctly flagged
+    assert stats["max_passages_per_document"] == 1
+
+
+def test_retrieval_stats_reports_real_depth_when_it_exists():
+    deep = [
+        {"text": "x" * 100, "score": 0.5, "celex": f"C{i // 5}", "document_id": i // 5}
+        for i in range(20)
+    ]
+    stats = _retrieval_stats(deep, ["profile"])
+    assert stats["substantive_documents_per_passage"] == 0.2
+    assert stats["max_passages_per_document"] == 5

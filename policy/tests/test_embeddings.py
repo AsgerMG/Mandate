@@ -10,6 +10,7 @@ from __future__ import annotations
 import datetime as dt
 
 import httpx
+from sqlalchemy import select
 
 from data.config import Settings, get_settings
 from data.models import (
@@ -22,12 +23,16 @@ from data.models import (
 )
 from etl.enrichment.embeddings import (
     VoyageEmbedder,
+    VoyageReranker,
     _cosine_sim,
     _mmr_select,
     canon_passages,
+    document_passages,
     embed_pending,
     get_embedder,
+    get_reranker,
     press_passages,
+    rerank_passages,
     semantic_search,
 )
 
@@ -677,3 +682,212 @@ def test_press_passages_results_never_leak_the_internal_vector(db_session):
         db_session, FakeEmbedder(), "ai", {"glut_source", "diverse_source"}, days=90, k=3
     )
     assert all("_vec" not in h for h in hits)
+
+
+# --- document_passages: the depth half of retrieval -----------------------
+
+
+def _seed_multi_passage_docs(session) -> dict[str, int]:
+    """Two documents, four passages each, with differing 'ai' density so the
+    within-document ranking has something to order by."""
+    source_id = _source(session)
+    ids: dict[str, int] = {}
+    for celex, texts in (
+        ("DEEP-A", ["ai ai ai ai", "ai ai ai", "ai ai", "fish only"]),
+        ("DEEP-B", ["ai ai ai ai ai", "ai ai", "fish", "fish fish"]),
+    ):
+        doc = Document(
+            source_id=source_id,
+            external_id=celex,
+            title=f"Act {celex}",
+            jurisdiction=Jurisdiction.EU,
+            document_type=DocumentType.REGULATION,
+            lifecycle_stage=LifecycleStage.IN_FORCE,
+            url=f"http://example/{celex}",
+            celex=celex,
+        )
+        session.add(doc)
+        session.flush()
+        ver = DocumentVersion(
+            document_id=doc.id,
+            content_hash=celex,
+            text="x",
+            char_count=1,
+            fetched_at=dt.datetime.now(dt.UTC),
+        )
+        session.add(ver)
+        session.flush()
+        for ordinal, text in enumerate(texts):
+            session.add(
+                Passage(
+                    version_id=ver.id,
+                    ordinal=ordinal,
+                    text=text,
+                    char_start=ordinal * 100,
+                    char_end=ordinal * 100 + len(text),
+                )
+            )
+        ids[celex] = doc.id
+    session.commit()
+    return ids
+
+
+def test_document_passages_returns_k_per_document_not_k_overall(db_session):
+    ids = _seed_multi_passage_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = document_passages(
+        db_session, FakeEmbedder(), "ai", [ids["DEEP-A"], ids["DEEP-B"]], k_per_doc=2
+    )
+    per_doc: dict[int, int] = {}
+    for h in hits:
+        per_doc[h["document_id"]] = per_doc.get(h["document_id"], 0) + 1
+    # The whole point of the depth pass: EACH nominated document contributes
+    # k_per_doc passages. A global top-k would let the higher-scoring
+    # document take all four slots and leave the other with none.
+    assert per_doc == {ids["DEEP-A"]: 2, ids["DEEP-B"]: 2}
+
+
+def test_document_passages_picks_the_best_passages_within_each_document(db_session):
+    ids = _seed_multi_passage_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = document_passages(db_session, FakeEmbedder(), "ai", [ids["DEEP-A"]], k_per_doc=2)
+    # Cosine normalizes magnitude away, so under FakeEmbedder the passage
+    # closest to the one-'ai' query is the one whose 'ai' density is nearest
+    # to it, not the one with the most 'ai's — hence "ai ai" ahead of
+    # "ai ai ai ai". What matters here is that the ordering is by real
+    # query distance within the document and that the off-topic passage
+    # loses, both of which this asserts.
+    assert [h["text"] for h in hits] == ["ai ai", "ai ai ai"]
+    assert all("fish" not in h["text"] for h in hits)
+
+
+def test_document_passages_ignores_documents_not_asked_for(db_session):
+    ids = _seed_multi_passage_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = document_passages(db_session, FakeEmbedder(), "ai", [ids["DEEP-A"]], k_per_doc=4)
+    assert {h["celex"] for h in hits} == {"DEEP-A"}
+
+
+def test_document_passages_empty_id_list_makes_no_query(db_session):
+    assert document_passages(None, FakeEmbedder(), "ai", [], k_per_doc=4) == []
+
+
+def test_document_passages_never_returns_superseded_version_passages(db_session):
+    _seed_superseded_version(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    from data.models import Document as D
+
+    doc_id = db_session.scalars(select(D.id).where(D.external_id == "DOC-VERSIONED")).one()
+    hits = document_passages(db_session, FakeEmbedder(), "ai", [doc_id], k_per_doc=10)
+    # Same is_current guarantee semantic_search has: the depth pass must not
+    # resurrect a superseded version's text just because it scores well.
+    assert all("superseded" not in h["text"] for h in hits)
+
+
+def test_semantic_search_results_carry_document_id(db_session):
+    _seed(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = semantic_search(db_session, FakeEmbedder(), "ai", k=1)
+    assert hits[0]["document_id"] is not None
+
+
+# --- reranking ------------------------------------------------------------
+
+
+class FakeReranker:
+    """Scores by 'fish' count — deliberately the opposite of FakeEmbedder's
+    'ai' ordering, so a test can prove the rerank order actually won."""
+
+    def rerank(self, query: str, texts: list[str]) -> list[float]:
+        return [float(t.lower().count("fish")) for t in texts]
+
+
+class BrokenReranker:
+    def rerank(self, query: str, texts: list[str]) -> list[float]:
+        raise httpx.ConnectError("rerank unreachable")
+
+
+def test_rerank_passages_reorders_by_cross_encoder_score():
+    passages = [{"text": "ai ai ai"}, {"text": "fish fish"}, {"text": "fish"}]
+    out = rerank_passages(FakeReranker(), "q", passages)
+    assert [p["text"] for p in out] == ["fish fish", "fish", "ai ai ai"]
+    assert out[0]["rerank_score"] == 2.0
+
+
+def test_rerank_passages_applies_top_k_after_reordering():
+    passages = [{"text": "ai ai ai"}, {"text": "fish fish"}]
+    out = rerank_passages(FakeReranker(), "q", passages, top_k=1)
+    assert [p["text"] for p in out] == ["fish fish"]
+
+
+def test_rerank_passages_without_reranker_preserves_embedding_order():
+    passages = [{"text": "a"}, {"text": "b"}]
+    out = rerank_passages(None, "q", passages)
+    assert [p["text"] for p in out] == ["a", "b"]
+    assert all("rerank_score" not in p for p in out)
+
+
+def test_rerank_passages_degrades_to_embedding_order_when_the_api_fails():
+    passages = [{"text": "ai ai ai"}, {"text": "fish fish"}]
+    out = rerank_passages(BrokenReranker(), "q", passages, top_k=2)
+    # A transient rerank failure must cost ranking quality, not the brief.
+    assert [p["text"] for p in out] == ["ai ai ai", "fish fish"]
+
+
+def test_rerank_passages_min_score_drops_weak_matches():
+    passages = [{"text": "fish fish"}, {"text": "ai only"}]
+    out = rerank_passages(FakeReranker(), "q", passages, min_score=1.0)
+    assert [p["text"] for p in out] == ["fish fish"]
+
+
+def test_rerank_passages_empty_input_makes_no_request():
+    assert rerank_passages(BrokenReranker(), "q", []) == []
+
+
+def test_get_reranker_is_none_without_an_api_key(monkeypatch):
+    monkeypatch.delenv("VOYAGE_API_KEY", raising=False)
+    assert get_reranker(Settings(rerank_model="rerank-2.5")) is None
+
+
+def test_get_reranker_is_none_when_disabled(monkeypatch):
+    monkeypatch.setenv("VOYAGE_API_KEY", "k")
+    assert get_reranker(Settings(rerank_model="")) is None
+
+
+def test_get_reranker_returns_voyage_reranker_when_configured(monkeypatch):
+    monkeypatch.setenv("VOYAGE_API_KEY", "k")
+    assert isinstance(get_reranker(Settings(rerank_model="rerank-2.5")), VoyageReranker)
+
+
+def test_voyage_reranker_maps_scores_back_to_input_order():
+    captured = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        import json
+
+        captured.update(json.loads(request.content))
+        # Deliberately out of order, and omitting nothing: the caller must
+        # reassemble by the API's own index field, not by response order.
+        return httpx.Response(
+            200,
+            json={
+                "data": [
+                    {"index": 1, "relevance_score": 0.9},
+                    {"index": 0, "relevance_score": 0.1},
+                ]
+            },
+        )
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    scores = VoyageReranker("rerank-2.5", "key", client=client).rerank("q", ["first", "second"])
+    assert scores == [0.1, 0.9]
+    assert captured["model"] == "rerank-2.5"
+    assert captured["documents"] == ["first", "second"]
+
+
+def test_voyage_reranker_empty_input_makes_no_request():
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise AssertionError("should not be called")
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    assert VoyageReranker("rerank-2.5", "key", client=client).rerank("q", []) == []

@@ -12,7 +12,7 @@ from .base import DocRef, ParsedDocument, RawDocument, SourceAdapter
 from .de_verbatim import DeVerbatimAdapter
 from .ec_newsroom_newsletters import EC_NEWSROOM_NEWSLETTER_ADAPTERS
 from .ep_verbatim import EpVerbatimAdapter
-from .eurlex import EurLexAdapter
+from .eurlex import EurLexAdapter, EurLexCaseLawAdapter
 from .eurlex_key_acts import EurLexKeyActsAdapter
 from .feeds import FEED_ADAPTERS
 from .have_your_say import HaveYourSayAdapter
@@ -23,6 +23,7 @@ from .senat_dossiers import SenatDossiersAdapter
 
 ADAPTERS: list[type[SourceAdapter]] = [
     EurLexAdapter,
+    EurLexCaseLawAdapter,
     EurLexKeyActsAdapter,
     LawTrackerAdapter,
     OeilAdapter,
