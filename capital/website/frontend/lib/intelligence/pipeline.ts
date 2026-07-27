@@ -1614,9 +1614,14 @@ async function synthesize(
           // finding five relevant. Rank tells us which row is better; this
           // tells us whether there is anything to DO about it this quarter.
           `Set "actionableNow": false when the founder cannot take a real step ` +
-          `on this route now — the next move is to monitor calls, or it needs ` +
-          `a precondition they do not have (a consortium with no partners ` +
-          `identified, an ERC grant they do not hold, a call that is not open). ` +
+          `on this route now — the next move is only to monitor calls, or it ` +
+          `needs something they cannot go and get (an ERC grant they do not ` +
+          `hold, a size or status they cannot change). Work they can START, ` +
+          `however slow, is ACTIONABLE: recruiting consortium partners, ` +
+          `scoping a project, approaching a ministry for sponsorship all ` +
+          `count. Needing a consortium is not a disqualification — most ` +
+          `Horizon and partnership funding works that way, and cutting those ` +
+          `rows would strip the EU grant routes out of the brief entirely. ` +
           `Set it true when they could start this quarter, even if the route is ` +
           `hard or the odds are long. Watch-only rows are NOT PUBLISHED AT ALL ` +
           `— not even one, not even ranked last — so a brief is a list of ` +
