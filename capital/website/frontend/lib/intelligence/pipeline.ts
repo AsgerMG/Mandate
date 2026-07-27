@@ -429,7 +429,16 @@ const MIN_CHANNELS_CONSIDERED = 7;
  *  verdict engine only counts ENCODED rules, so a fund can be plainly wrong on
  *  stage or theme and still score as one small obstacle away. The writer can
  *  see that; it just had no way to act on it. */
-const WRITER_CANDIDATE_CAP = 9;
+// Lowered from 9. The writer must return a note per candidate, and a
+// candidate it never mentions is dropped silently — it cannot be published
+// without model-written copy, and filling that in from a template is what put
+// three "Verify eligibility directly with the fund" rows in Nortal's brief.
+// At 9 it started omitting: Aleph Alpha came back covering 5 of 9, losing two
+// Horizon clusters and two Innovation Fund routes with no judgement attached.
+// Only 5 are ever published and ranking upstream already put the best first,
+// so 7 is ample headroom for a disqualification or two while staying inside
+// what the writer reliably covers.
+const WRITER_CANDIDATE_CAP = 7;
 // The pool synthesize() screens before cutting to the five shown. Deliberately
 // wider than DISPLAY_CAP: funds a founder cannot access are dropped AFTER
 // assessment, so a pool of six meant a founder blocked on three of them got a
@@ -1467,6 +1476,16 @@ async function synthesize(
   // exactly the case it exists for. Research has already run by this point, so
   // the split is deliberately lopsided: a generous first attempt, then a
   // shorter one that has no thinking to pay for and needs far less.
+  // Measured healthy adaptive writer runs vary far more than one sample
+  // suggests: 24s (Aleph Alpha) to 136s (Photoroom). A 90s budget looked
+  // generous against the first number and would have aborted the second, so
+  // the ceiling is set from the SLOWEST healthy run seen, not the typical one.
+  //
+  // Getting this wrong is not fatal, which is why 150s rather than 200s: an
+  // aborted healthy run still produces a memo through the thinking-off retry,
+  // so a tight deadline trades quality for latency, never success. It is the
+  // pathological case (bunq) that pays, burning the full budget before the
+  // retry can start.
   const WRITER_TIMEOUT_MS = 150_000;
   const WRITER_RETRY_TIMEOUT_MS = 90_000;
   const writerCall = (thinking: "adaptive" | "disabled") => client.messages.stream({
