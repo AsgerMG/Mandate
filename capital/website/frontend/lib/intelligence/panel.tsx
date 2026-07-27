@@ -5,6 +5,7 @@ import {
   CAPITAL_OPTIONS,
   EXCLUSION_OPTIONS,
   SECTOR_OPTIONS,
+  ACTIVITY_OPTIONS,
   FIELD_ENUM_HINTS,
   TICKET_BANDS,
   type EligibilityAnswers,
@@ -672,16 +673,38 @@ export function IntelligencePanel() {
 
             <div className="text-sm">
               <span className="mb-2 flex items-center font-semibold">
-                Your sector
+                What do you build?
                 <InfoDot>
-                  Sector carve-outs are everywhere in EU aid law: agriculture,
-                  fisheries, finance and defence are excluded outright by many
-                  schemes. This one answer settles roughly 99 documented rules
-                  across 72 funds.
+                  Programmes are organised around fields of work, and this is
+                  also how every company in our record is classified — so
+                  answering it lets us compare you against companies that have
+                  actually been funded, not just against the rulebook.
                 </InfoDot>
               </span>
               <Chips options={[...SECTOR_OPTIONS]} value={elig.sector}
                 onPick={(v) => setElig((p) => ({ ...p, sector: v }))} />
+            </div>
+
+            {/* Asked separately from sector on purpose. Aid law restricts
+                ACTIVITIES, not fields of work, and merging the two meant a
+                lending fintech had to choose "financial services" instead of
+                naming what it builds — and then inherited exclusions written
+                for tobacco companies. 82 instruments carry rules about
+                financial activity, 12 about tobacco/gambling/weapons. */}
+            <div className="text-sm">
+              <span className="mb-2 flex items-center font-semibold">
+                Do you do any of these?
+                <InfoDot>
+                  Aid law singles these activities out by name — agriculture,
+                  fisheries, finance, road freight, gambling, tobacco, alcohol,
+                  weapons and real estate each carry their own carve-outs. It
+                  matters whether you ARE a lender, not whether you sell
+                  software to one, so answer for your own activity.
+                </InfoDot>
+              </span>
+              <MultiChips options={[...ACTIVITY_OPTIONS]} value={elig.activities ?? []}
+                exclusive="none"
+                onToggle={(v) => setElig((p) => ({ ...p, activities: toggleExclusion(p.activities ?? [], v) }))} />
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">

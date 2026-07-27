@@ -21,6 +21,11 @@ export interface Archetype {
   sector: string;
   /** Set where the archetype's own activity implies it. */
   borrowerModel?: string;
+  /** ACTIVITY_OPTIONS values — the regulated categories, separate from sector.
+   *  The two fintechs carry `financial_services` here while their sector says
+   *  what they actually build, which is the distinction the old single-field
+   *  taxonomy could not express. */
+  activities?: string[];
   /** What we expect to be true. Kept loose on purpose: these assert the system
    *  behaves sanely, not that a specific fund appears. */
   expect: {
@@ -44,58 +49,58 @@ const BASE = {
 
 export const ARCHETYPES: Archetype[] = [
   {
-    label: "Robotics", country: "Germany", sector: "hardware_robotics",
+    label: "Robotics", country: "Germany", sector: "industrial_manufacturing",
     description: "Autonomous mobile robots for warehouse order picking",
     expect: { minAccessible: 3 },
   },
   {
-    label: "Hardware", country: "Netherlands", sector: "hardware_robotics",
+    label: "Hardware", country: "Netherlands", sector: "semiconductors_electronics",
     description: "Photonic chips for optical networking equipment",
     expect: { minAccessible: 3 },
   },
   {
-    label: "FinTech (business lending)", country: "Sweden", sector: "financial_services",
-    borrowerModel: "balance_sheet_lender",
+    label: "FinTech (business lending)", country: "Sweden", sector: "software_data_ai",
+    borrowerModel: "balance_sheet_lender", activities: ["financial_services"],
     description: "Working-capital lending to small businesses, underwritten from our own balance sheet",
     expect: { minAccessible: 3, someExclusionsExpected: true },
   },
   {
-    label: "FinTech (consumer banking)", country: "Lithuania", sector: "financial_services",
+    label: "FinTech (consumer banking)", country: "Lithuania", sector: "software_data_ai", activities: ["financial_services"],
     description: "Licensed consumer neobank with current accounts and cards",
     expect: { minAccessible: 3, someExclusionsExpected: true },
   },
   {
-    label: "AI B2C software", country: "Spain", sector: "software_digital",
+    label: "AI B2C software", country: "Spain", sector: "software_data_ai",
     description: "Consumer mobile app using generative AI for language learning",
     expect: { minAccessible: 3 },
   },
   {
-    label: "AI B2B software", country: "France", sector: "software_digital",
+    label: "AI B2B software", country: "France", sector: "software_data_ai",
     description: "AI document automation for legal and insurance back offices",
     expect: { minAccessible: 3 },
   },
   {
-    label: "GovTech", country: "Estonia", sector: "software_digital",
+    label: "GovTech", country: "Estonia", sector: "software_data_ai",
     description: "Digital identity and permitting software for municipal government",
     expect: { minAccessible: 3 },
   },
   {
-    label: "Platform", country: "Poland", sector: "software_digital",
+    label: "Platform", country: "Poland", sector: "mobility_transport",
     description: "Marketplace platform connecting freight shippers and carriers",
     expect: { minAccessible: 3 },
   },
   {
-    label: "Cloud / NeoCloud", country: "Finland", sector: "software_digital",
+    label: "Cloud / NeoCloud", country: "Finland", sector: "software_data_ai",
     description: "GPU cloud infrastructure for AI training workloads",
     expect: { minAccessible: 3 },
   },
   {
-    label: "MedTech", country: "Denmark", sector: "health_lifesciences",
+    label: "MedTech", country: "Denmark", sector: "health_life_sciences",
     description: "Wearable cardiac monitoring device with regulatory clearance pending",
     expect: { minAccessible: 3 },
   },
   {
-    label: "Life sciences", country: "Belgium", sector: "health_lifesciences",
+    label: "Life sciences", country: "Belgium", sector: "health_life_sciences",
     description: "Immunotherapy platform for solid tumours, preclinical stage",
     expect: { minAccessible: 3 },
   },
@@ -111,6 +116,7 @@ export function archetypeAnswers(a: Archetype): Record<string, unknown> {
   return {
     ...BASE,
     sector: a.sector,
+    activities: a.activities ?? ["none"],
     entityCountries: [a.country],
     borrowerModel: a.borrowerModel ?? "operating",
   };

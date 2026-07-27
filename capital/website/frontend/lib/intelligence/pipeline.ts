@@ -2415,10 +2415,18 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   );
 
   emit({ type: "status", step: "generating", detail: "Assembling evidence: institutions, comparables, current agenda" });
+  // The founder's own answer now sits in this chain, because intake and the
+  // corpus finally share one vocabulary. Before the split it could not: intake
+  // said `health_lifesciences` where the corpus said `health_life_sciences`,
+  // and six corpus sectors had no intake option at all, so an unmatched
+  // company fell through to "other" and got generic topic routing — which is
+  // most startups, the exact users this is for. A company IN the record still
+  // wins, since its classification is NACE-derived rather than self-reported.
   const sectorTop =
     (selfRecord.matched && selfRecord.sectorTop) ||
     dbPeers.find((p) => p.sectorTop)?.sectorTop ||
     records.find((r) => r.matched && r.sectorTop)?.sectorTop ||
+    req.eligibility?.sector ||
     "other";
   const body = await synthesize(
     req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit);

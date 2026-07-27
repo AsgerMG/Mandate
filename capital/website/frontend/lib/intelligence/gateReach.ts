@@ -18,7 +18,10 @@ const FIRST_PAGE_FIELDS = new Set([
   // in the triaged corpus: sector 72, consortium 50, exclusionFlags 47 (80
   // rules), cofinancingBand 36. borrowerModel came OFF (15 instruments) and is
   // now asked adaptively, only when a candidate fund actually turns on it.
-  "sector", "consortium", "exclusionFlags", "cofinancingBand",
+  // `activities` joins screen 1 with sector: it is now where most GBER and
+  // de minimis exclusion clauses are encoded, so leaving it to the adaptive
+  // round would re-ask what the first screen should have settled.
+  "sector", "activities", "consortium", "exclusionFlags", "cofinancingBand",
   "lossesOverHalfCapital",
 ]);
 

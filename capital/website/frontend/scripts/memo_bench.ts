@@ -114,14 +114,23 @@ async function main() {
       const c = queue.shift();
       if (!c) return;
       const t0 = Date.now();
-      const { archetype, company, country, description, sector, ...rest } = c;
+      const { archetype, company, country, description } = c;
+      // Read straight off the typed BenchCompany. The previous
+      // `rest as Record<string, string>` casts silently accepted any field
+      // name, so a rename in __benchCompanies.ts would have produced undefined
+      // answers rather than a compile error — the same
+      // vocabulary-drift-with-no-alarm fault this refactor exists to remove.
       const eligibility = {
-        sector, entityCountries: [country], exclusionFlags: ["none"],
-        cofinancingBand: ">50%", consortium: "unsure",
-        borrowerModel: (rest as Record<string, string>).borrowerModel ?? "operating",
-        fteBand: (rest as Record<string, string>).fteBand,
-        ticketBand: (rest as Record<string, string>).ticketBand,
-        developmentStage: (rest as Record<string, string>).developmentStage,
+        sector: c.sector,
+        activities: c.activities ?? ["none"],
+        entityCountries: [country],
+        exclusionFlags: ["none"],
+        cofinancingBand: ">50%",
+        consortium: "unsure",
+        borrowerModel: c.borrowerModel ?? "operating",
+        fteBand: c.fteBand,
+        ticketBand: c.ticketBand,
+        developmentStage: c.developmentStage,
       };
       let report: Record<string, unknown> | null = null;
       let error: string | null = null;

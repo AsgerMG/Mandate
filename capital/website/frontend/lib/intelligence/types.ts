@@ -291,39 +291,71 @@ export interface IntelligenceRequest {
 }
 
 /**
- * Sector, asked directly rather than inferred. The corpus's own subsector
- * taxonomy cannot supply it — 19 values, present on 12% of companies, and it
- * labelled Clean Aviation's top sectors as "heat pumps hvac".
+ * Sector: what the company BUILDS.
  *
- * The buckets mirror the exclusions aid law actually draws, NOT how founders
- * describe themselves. Measured across the triaged corpus: 82 instruments carry
- * rules about financial/insurance activity, 17 about agriculture/fisheries, 12
- * about tobacco/gambling/weapons, 8 about real estate. An earlier version
- * collapsed all of those into one "restricted" option, which meant a lending
- * fintech inherited blocks written for tobacco companies and vice versa —
- * silently hiding funds it was entitled to.
+ * These are the corpus's own Tier-1 values, not a parallel list. They used to
+ * be a separate 7-bucket vocabulary invented for the intake form, which meant
+ * a founder's answer and the funding record could never be compared: intake
+ * said `health_lifesciences`, the corpus said `health_life_sciences`, and six
+ * corpus sectors (industrial manufacturing, semiconductors, mobility, space,
+ * defence, materials) could not be selected at all. See
+ * scripts/check_vocabularies.ts, which now fails if the two drift again.
  *
- * `financial_services` is where a company's OWN main activity is finance (a
- * lender, an insurer, a licensed bank). Software sold TO banks is
- * `software_digital`: the rules exclude financial activity as a business, not
- * customers in that industry.
+ * The vocabulary is NACE-backed: `companies.sector_top` is resolved
+ * deterministically from the NACE descriptor state-aid registers publish, and
+ * an LLM only fills what NACE cannot (see project-mgmt/nace_taxonomy.md).
+ * Sharing it means the founder's own answer can drive sector routing even when
+ * their company is not in the record — which is most startups.
  *
- * Deliberately NOT split further by go-to-market or customer type — B2B vs
- * B2C, govtech vs platform, cloud vs AI all sit in `software_digital` because
- * no eligibility rule in the corpus distinguishes them. That differentiation
- * comes from semantic fund matching on the description (semantic.ts) and the
- * project questions, which is where it belongs.
+ * What a company BUILDS and what aid law RESTRICTS are different questions:
+ * see ACTIVITY_OPTIONS.
  */
 export const SECTOR_OPTIONS = [
-  { value: "software_digital", label: "Software, AI, platforms or cloud" },
-  { value: "hardware_robotics", label: "Robotics, hardware or manufacturing" },
-  { value: "health_lifesciences", label: "Health, medtech or life sciences" },
+  { value: "software_data_ai", label: "Software, AI, data or cloud" },
+  { value: "health_life_sciences", label: "Health, medtech, pharma or biotech" },
   { value: "energy_cleantech", label: "Energy, cleantech or environment" },
-  { value: "agrifood", label: "Agritech, food, forestry or fisheries" },
-  { value: "financial_services", label: "Banking, lending, insurance or payments" },
-  { value: "excluded_activities", label: "Gambling, tobacco, alcohol, weapons or real estate" },
+  { value: "industrial_manufacturing", label: "Industrial manufacturing, robotics or machinery" },
+  { value: "semiconductors_electronics", label: "Semiconductors, electronics or photonics" },
+  { value: "mobility_transport", label: "Mobility, transport or logistics" },
+  { value: "agrifood", label: "Agritech, food or forestry" },
+  { value: "materials_chemicals", label: "Materials or chemicals" },
+  { value: "space", label: "Space" },
+  { value: "defense_security", label: "Defence or security" },
+  { value: "other", label: "Something else" },
 ] as const;
 export type SectorValue = (typeof SECTOR_OPTIONS)[number]["value"];
+
+/**
+ * Regulated activities: what aid law RESTRICTS, which is a different question
+ * from what a company builds.
+ *
+ * These were previously smuggled into the sector list as `financial_services`
+ * and `excluded_activities`, which forced two errors at once. A lending
+ * fintech had to pick "financial services" INSTEAD of naming what it builds,
+ * and a single `excluded_activities` bucket lumped gambling, tobacco, weapons
+ * and real estate together — so a fintech inherited blocks written for tobacco
+ * companies. Measured across the triaged corpus: 82 instruments carry rules
+ * about financial/insurance activity, 17 about agriculture and fisheries, 12
+ * about tobacco/gambling/weapons. They are not one category.
+ *
+ * The values mirror the categories GBER and the de minimis regulation name, so
+ * an exclusion clause can be encoded against exactly what it says. Multi-select,
+ * and "none" is a real answer: an empty array means unanswered, which must
+ * never read as a pass.
+ */
+export const ACTIVITY_OPTIONS = [
+  { value: "none", label: "None of these" },
+  { value: "financial_services", label: "Lending, banking, insurance or payments (as the provider)" },
+  { value: "primary_agriculture", label: "Primary agricultural production" },
+  { value: "fisheries_aquaculture", label: "Fisheries or aquaculture" },
+  { value: "road_freight", label: "Road freight transport for hire or reward" },
+  { value: "real_estate", label: "Real estate" },
+  { value: "gambling_betting", label: "Gambling or betting" },
+  { value: "tobacco", label: "Tobacco" },
+  { value: "alcohol", label: "Alcohol" },
+  { value: "weapons", label: "Weapons or munitions" },
+] as const;
+export type ActivityValue = (typeof ACTIVITY_OPTIONS)[number]["value"];
 
 /** The standard EU/national exclusion situations, as one multi-select. These
  *  are boilerplate across the corpus and gate hard: an outstanding recovery
@@ -391,8 +423,12 @@ export interface EligibilityAnswers {
   bankRelationship?: "yes" | "no" | "unsure"; // a bank that would lend if guaranteed
   institutionalBacking?: "yes" | "no" | "unsure"; // VC/institutional investors aboard or anchoring
   needBy?: string;             // "asap_weeks" | "months_6" | "months_18" | "flexible"
-  /** SECTOR_OPTIONS value. Asked directly — see the constant for why. */
+  /** SECTOR_OPTIONS value — what the company builds. Asked directly. */
   sector?: string;
+  /** ACTIVITY_OPTIONS values — the regulated categories aid law names. Kept
+   *  separate from `sector` so an exclusion written for tobacco cannot land on
+   *  a fintech. "none" is a real answer; an empty array means unanswered. */
+  activities?: string[];
   /** EXCLUSION_OPTIONS values. "none" is a real answer, not an empty list:
    *  an empty array means unanswered, which must never read as a pass. */
   exclusionFlags?: string[];

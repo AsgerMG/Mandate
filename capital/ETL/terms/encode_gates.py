@@ -98,6 +98,10 @@ FIELDS = [
     # highest-yield questions the intake was missing, measured against the 485
     # filters nothing we asked could decide.
     "sector", "exclusionFlags",
+    # Split out of `sector` 2026-07-27: what a company BUILDS and what aid law
+    # RESTRICTS are different questions, and merging them made a lending
+    # fintech inherit exclusions written for tobacco.
+    "activities",
     "none",
 ]
 
@@ -115,13 +119,22 @@ BAND_ORDERS = {
 
 # Fields whose EligibilityAnswers value is a list, not a scalar. `equals` is
 # meaningless against these (see the coercion in cmd_encode).
-MULTI_VALUE_FIELDS = {"entityCountries", "activityCountries", "conditionality", "exclusionFlags"}
+MULTI_VALUE_FIELDS = {"entityCountries", "activityCountries", "conditionality",
+                      "exclusionFlags", "activities"}
 
 ENUM_VALUES = {
     "borrowerModel": ["operating", "balance_sheet_lender", "originator", "fund_manager"],
     "conditionality": ["local_entity", "geo_commitments", "state_shareholder", "job_commitments"],
-    "sector": ["software_digital", "hardware_robotics", "health_lifesciences",
-               "energy_cleantech", "agrifood", "financial_services", "excluded_activities"],
+    # The corpus's own NACE-backed Tier-1 vocabulary (companies.sector_top),
+    # shared with the intake so a founder's answer and the funding record can
+    # actually be compared. Mirrors SECTOR_OPTIONS in types.ts.
+    "sector": ["software_data_ai", "health_life_sciences", "energy_cleantech",
+               "industrial_manufacturing", "semiconductors_electronics",
+               "mobility_transport", "agrifood", "materials_chemicals",
+               "space", "defense_security", "other"],
+    "activities": ["none", "financial_services", "primary_agriculture",
+                   "fisheries_aquaculture", "road_freight", "real_estate",
+                   "gambling_betting", "tobacco", "alcohol", "weapons"],
     "exclusionFlags": ["none", "insolvency", "losses_over_half_capital", "recovery_order",
                        "sanctions", "tax_arrears"],
     "wouldOpenEntity": ["yes", "no", "depends"],
@@ -236,15 +249,22 @@ Available attributes:
   bankRelationship      a bank that would lend if guaranteed
   institutionalBacking  VC/institutional investors aboard
   needBy                how soon the money is needed
-  sector                the company's OWN main activity: software_digital (software,
-                        AI, platforms, cloud - including software sold TO banks),
-                        hardware_robotics, health_lifesciences, energy_cleantech,
-                        agrifood, financial_services (the company itself lends,
-                        insures, banks or processes payments), or
-                        excluded_activities (gambling, tobacco, alcohol, weapons,
-                        real estate). Encode each exclusion against the sectors it
-                        NAMES - a rule excluding tobacco must not also exclude
-                        fintech, and vice versa.
+  sector                what the company BUILDS: software_data_ai,
+                        health_life_sciences, energy_cleantech,
+                        industrial_manufacturing, semiconductors_electronics,
+                        mobility_transport, agrifood, materials_chemicals,
+                        space, defense_security, other. Use this only for rules
+                        about the FIELD a company works in.
+  activities            the regulated categories aid law names, multi-select:
+                        financial_services (the company itself lends, banks,
+                        insures or processes payments - NOT software sold to
+                        banks), primary_agriculture, fisheries_aquaculture,
+                        road_freight, real_estate, gambling_betting, tobacco,
+                        alcohol, weapons, or none. Most GBER and de minimis
+                        exclusion lists are written in exactly these terms, so
+                        encode them here, not against sector. Encode each
+                        exclusion against ONLY what it NAMES - a rule excluding
+                        tobacco must not also exclude fintech, and vice versa.
   exclusionFlags        standard exclusion situations, multi-select: none apply /
                         insolvency / accumulated losses over half share capital /
                         unpaid state-aid recovery order / EU sanctions or exclusion
@@ -473,6 +493,29 @@ def cmd_encode(args) -> None:
                     skipped += 1
                     continue
                 spec["allowed"] = r["values"]
+            # Every emitted value must exist in the field's vocabulary. The
+            # prompt states the allowed set, but stating is not enforcing: a
+            # re-encode produced `activities not_in ['agrifood']`, borrowing a
+            # SECTOR value for the activities field. Nothing downstream would
+            # have noticed -- eligibility.ts compares strings, so the rule
+            # simply never matches any founder and the gate silently stops
+            # gating. Drop values the vocabulary does not contain, and drop the
+            # whole spec if that empties it.
+            vocab = ENUM_VALUES.get(field)
+            if vocab and op in ("in", "not_in", "equals"):
+                key = "allowed" if op in ("in", "not_in") else "value"
+                vals = spec[key] if key == "allowed" else [spec[key]]
+                good = [v for v in vals if v in vocab]
+                if len(good) != len(vals):
+                    bad = sorted(set(vals) - set(good))
+                    print(f"    dropped out-of-vocabulary {field} values {bad} on gate {gid}")
+                if not good:
+                    skipped += 1
+                    continue
+                if key == "allowed":
+                    spec["allowed"] = good
+                else:
+                    spec["value"] = good[0]
             conn.execute(
                 "UPDATE eligibility_gates SET value_spec=?, encoding_method='llm_encode' WHERE id=?",
                 (json.dumps(spec, ensure_ascii=False), gid))
