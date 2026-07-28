@@ -25,6 +25,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
+from europe_scope import COUNTRY_NAME_TO_ISO2, name_to_iso2, name_to_iso2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
@@ -98,17 +99,11 @@ CREATE INDEX IF NOT EXISTS idx_satr_staging_apply ON satr_staging(apply_status);
 """
 
 # Country name → ISO 2-letter (matches the SATR portal's English country names)
-COUNTRY_TO_ISO2 = {
-    "Austria": "AT", "Belgium": "BE", "Bulgaria": "BG", "Croatia": "HR",
-    "Cyprus": "CY", "Czechia": "CZ", "Czech Republic": "CZ", "Denmark": "DK",
-    "Estonia": "EE", "Finland": "FI", "France": "FR", "Germany": "DE",
-    "Greece": "GR", "Hungary": "HU", "Iceland": "IS", "Ireland": "IE",
-    "Italy": "IT", "Latvia": "LV", "Lithuania": "LT", "Luxembourg": "LU",
-    "Malta": "MT", "Netherlands": "NL", "Poland": "PL", "Portugal": "PT",
-    "Romania": "RO", "Slovakia": "SK", "Slovenia": "SI", "Spain": "ES",
-    "Sweden": "SE", "United Kingdom": "GB", "Norway": "NO", "Switzerland": "CH",
-    "Liechtenstein": "LI",
-}
+# COUNTRY_TO_ISO2 moved to ETL/lib/europe_scope.py. Four extractors each carried
+# their own copy of this dict and they had drifted in coverage -- eight
+# names were missing from at least one, and an unresolvable name writes a
+# NULL country rather than raising. One copy now, imported.
+COUNTRY_TO_ISO2 = COUNTRY_NAME_TO_ISO2
 
 # Currency code → ISO 4217 (most SATR rows use the granting country's currency)
 COUNTRY_CURRENCY = {
@@ -342,8 +337,8 @@ def load_staging(conn: sqlite3.Connection) -> dict:
                     skipped_tctf += 1
                     continue
 
-                gc_iso = COUNTRY_TO_ISO2.get((row.get("country") or "").strip())
-                bc_iso = COUNTRY_TO_ISO2.get((row.get("beneficiary_ms") or "").strip())
+                gc_iso = name_to_iso2(row.get("country"))
+                bc_iso = name_to_iso2(row.get("beneficiary_ms"))
                 year = parse_date_to_year(row.get("date_granted") or "")
 
                 # Amount: aid_element preferred, else nominal

@@ -67,7 +67,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 pass  # sys.path handled by etl_env bootstrap
-from europe_scope import canonicalise_country  # noqa: E402
+from europe_scope import COUNTRY_NAME_TO_ISO2, name_to_iso2, canonicalise_country  # noqa: E402
 from ndb_helpers import backfill_ipcei_linked  # noqa: E402
 
 BASE_DIR = _ETL_ROOT
@@ -89,16 +89,12 @@ SPRIND_SOURCE_SECTOR: dict[str, str] = {"sprind_project": "deeptech_hardware"}
 # ── Country full-name → ISO-2 (SPRIND emits uppercase English names) ─────────
 # Canonicalisation + europe-scope filtering still goes through
 # europe_scope.canonicalise_country(); this only resolves names to codes first.
-COUNTRY_NAME_TO_ISO2: dict[str, str] = {
-    "GERMANY": "DE", "SWITZERLAND": "CH", "UNITED KINGDOM": "GB",
-    "NETHERLANDS": "NL", "NORWAY": "NO", "FRANCE": "FR", "ESTONIA": "EE",
-    "PORTUGAL": "PT", "DENMARK": "DK", "ITALY": "IT", "FINLAND": "FI",
-    "SLOVENIA": "SI", "AUSTRIA": "AT", "SPAIN": "ES", "SWEDEN": "SE",
-    "LATVIA": "LV", "SLOVAKIA": "SK", "BELGIUM": "BE", "POLAND": "PL",
-    "IRELAND": "IE", "CZECHIA": "CZ", "CZECH REPUBLIC": "CZ", "USA": "US",
-    "UNITED STATES": "US",
-}
-
+# Moved to ETL/lib/europe_scope.py. Eight modules each carried a version of
+# this map in a different casing, so a case-sensitive lookup silently failed
+# depending on which copy a feed hit, and an unresolvable name writes a NULL
+# country rather than raising. The canonical map is casefolded and is the
+# union of every alias any source needed (72 names, incl. native forms).
+COUNTRY_NAME_TO_ISO2 = COUNTRY_NAME_TO_ISO2
 
 # ── Sector label → v1 bucket (covers all 10 SPRIND labels; first-match primary)
 SECTOR_TO_V1: dict[str, str] = {
@@ -229,7 +225,7 @@ def parse_projects(html: str) -> list[dict]:
         seen_slugs.add(slug)
 
         raw_country = _str_ref(data, n.get("country_en")) or ""
-        iso2 = COUNTRY_NAME_TO_ISO2.get(raw_country.strip().upper())
+        iso2 = name_to_iso2(raw_country)
         country = canonicalise_country(iso2)  # None → out of europe scope
 
         sector_en = _str_ref(data, n.get("sector_en")) or ""

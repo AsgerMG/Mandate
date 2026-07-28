@@ -23,6 +23,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
+from europe_scope import COUNTRY_NAME_TO_ISO2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
@@ -41,17 +42,12 @@ OUT_DIR = BASE_DIR / "data" / "processed"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 CSV_PATH = OUT_DIR / "ipcei_partners.csv"
 
-COUNTRY_TO_ISO: dict[str, str] = {
-    "Austria": "AT", "Belgium": "BE", "Bulgaria": "BG", "Croatia": "HR",
-    "Cyprus": "CY", "Czechia": "CZ", "Czech Republic": "CZ", "Denmark": "DK",
-    "Estonia": "EE", "Finland": "FI", "France": "FR", "Germany": "DE",
-    "Greece": "GR", "Hungary": "HU", "Ireland": "IE", "Italy": "IT",
-    "Latvia": "LV", "Lithuania": "LT", "Luxembourg": "LU", "Malta": "MT",
-    "Netherlands": "NL", "The Netherlands": "NL", "Poland": "PL",
-    "Portugal": "PT", "Romania": "RO", "Slovakia": "SK", "Slovenia": "SI",
-    "Spain": "ES", "Sweden": "SE", "Norway": "NO",
-    "United Kingdom": "GB", "UK": "GB",
-}
+# COUNTRY_TO_ISO moved to ETL/lib/europe_scope.py. Four extractors each carried
+# their own copy of this dict and they had drifted in coverage -- eight
+# names were missing from at least one, and an unresolvable name writes a
+# NULL country rather than raising. One copy now, imported.
+COUNTRY_TO_ISO = COUNTRY_NAME_TO_ISO2
+
 ISO_SET = set(COUNTRY_TO_ISO.values())
 
 # Canonical source codes — methodology.md must match this table.

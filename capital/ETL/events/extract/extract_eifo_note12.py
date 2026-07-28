@@ -29,6 +29,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
+from europe_scope import COUNTRY_NAME_TO_ISO2, name_to_iso2, name_to_iso2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
@@ -49,8 +50,13 @@ AS_OF = "2025-12-31"  # FY2025 balance-sheet date
 SOURCE = "eifo_aarsrapport_2025_note12"
 URL = "https://www.eifo.dk/media/o3wp0lqs/eifo-aarsrapport-2025.pdf"
 
-DOMICILE = {"Denmark": "DK", "Luxembourg": "LU", "Netherlands": "NL",
-            "USA": "", "Cayman": ""}
+# Moved to ETL/lib/europe_scope.py. Eight modules each carried a version of
+# this map in a different casing, so a case-sensitive lookup silently failed
+# depending on which copy a feed hit, and an unresolvable name writes a NULL
+# country rather than raising. The canonical map is casefolded and is the
+# union of every alias any source needed (72 names, incl. native forms).
+DOMICILE = COUNTRY_NAME_TO_ISO2
+
 LINE_RE = re.compile(
     r"^(?P<name>.+?)\s+(?:DKK|EUR|USD)\s+.*?(?P<pct>\d+)%\s+(?P<dom>\w+)\s*$")
 
@@ -86,13 +92,13 @@ def main() -> None:
     stakes = parse_note12(text)
     print(f"parsed {len(stakes)} fund stakes (expect 43)")
     for n, p, d in stakes:
-        print(f"  {p:3d}%  {DOMICILE.get(d, d):2s}  {n}")
+        print(f"  {p:3d}%  {(name_to_iso2(d) or d):2s}  {n}")
 
     con = sqlite3.connect(DB_PATH)
     try:
         inserted = 0
         for name, pct, dom in stakes:
-            country = DOMICILE.get(dom, "")
+            country = name_to_iso2(dom) or ""
             row = con.execute(
                 "SELECT id FROM companies WHERE UPPER(canonical_name)=UPPER(?)",
                 (name,),

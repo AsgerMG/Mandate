@@ -26,6 +26,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
+from europe_scope import COUNTRY_NAME_TO_ISO2, name_to_iso2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
@@ -77,27 +78,12 @@ def normalize_name(s: str) -> str:
 
 # Commission country full-name → ISO2 (Eurostat EL for Greece; map UK to itself
 # and add GB alias at match time since the DB uses both).
-COUNTRY_TO_ISO = {
-    "spain": "ES", "germany": "DE", "france": "FR", "italy": "IT",
-    "netherlands": "NL", "belgium": "BE", "greece": "EL", "sweden": "SE",
-    "poland": "PL", "portugal": "PT", "finland": "FI",
-    "norge": "NO", "norway": "NO",
-    "denmark": "DK", "austria": "AT", "united kingdom": "GB",
-    "ireland": "IE", "switzerland": "CH", "israel": "IL",
-    "czechia": "CZ", "czech republic": "CZ", "hungary": "HU",
-    "romania": "RO", "bulgaria": "BG", "slovakia": "SK", "slovenia": "SI",
-    "lithuania": "LT", "latvia": "LV", "estonia": "EE", "luxembourg": "LU",
-    "iceland": "IS", "cyprus": "CY", "malta": "MT", "croatia": "HR",
-    "ukraine": "UA", "turkey": "TR", "türkiye": "TR", "turkiye": "TR",
-    "serbia": "RS", "republic of serbia": "RS",
-    "north macedonia": "MK", "macedonia": "MK",
-    "albania": "AL", "bosnia and herzegovina": "BA",
-    "montenegro": "ME", "republic of montenegro": "ME",
-    "moldova": "MD", "georgia": "GE", "armenia": "AM",
-    "canada": "CA", "united states": "US", "usa": "US",
-    "tunisia": "TN", "morocco": "MA", "kosovo": "XK", "faroe islands": "FO",
-    # Non-mappable multi-country consortia entries return None below
-}
+# Moved to ETL/lib/europe_scope.py. Eight modules each carried a version of
+# this map in a different casing, so a case-sensitive lookup silently failed
+# depending on which copy a feed hit, and an unresolvable name writes a NULL
+# country rather than raising. The canonical map is casefolded and is the
+# union of every alias any source needed (72 names, incl. native forms).
+COUNTRY_TO_ISO = COUNTRY_NAME_TO_ISO2
 
 # Country-equivalence sets — DB has both members of each set in use.
 COUNTRY_ALIASES = [{"EL", "GR"}, {"UK", "GB"}]
@@ -113,7 +99,7 @@ def parse_country(field: str) -> str | None:
     # Skip multi-country consortium entries like "Denmark,France,Germany"
     if "," in key:
         return None
-    return COUNTRY_TO_ISO.get(key)
+    return name_to_iso2(key)
 
 
 def aliases_for(country: str | None) -> list[str | None]:

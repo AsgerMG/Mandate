@@ -79,6 +79,15 @@ jobs:
       - name: Postgres schema is committed
         run: test -f ETL/schema/postgres_schema.sql
 
+      # Country name resolution lives in exactly one place. Copies drift in
+      # coverage and an unresolvable name writes a NULL country rather than
+      # raising, so the drift is silent.
+      - name: One country map
+        run: python3 ETL/schema/check_single_country_map.py
+
+      - name: Country resolution
+        run: python3 ETL/lib/test_europe_scope.py
+
   security:
     name: dependency audit
     runs-on: ubuntu-latest

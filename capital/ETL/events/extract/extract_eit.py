@@ -30,6 +30,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
+from europe_scope import COUNTRY_NAME_TO_ISO2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 from europe_scope import canonicalise_country  # noqa: E402
 # --- end ETL path bootstrap ---
@@ -142,18 +143,11 @@ EIT_KIC_SOURCE_SECTOR: dict[str, str] = {
     "eit_food_rfs_2025":               "other",
 }
 
-COUNTRY_NAME_TO_ISO: dict[str, str] = {
-    "Austria": "AT", "Belgium": "BE", "Bulgaria": "BG", "Croatia": "HR",
-    "Cyprus": "CY", "Czechia": "CZ", "Czech Republic": "CZ", "Denmark": "DK",
-    "Estonia": "EE", "Finland": "FI", "France": "FR", "Germany": "DE",
-    "Greece": "GR", "Hungary": "HU", "Iceland": "IS", "Ireland": "IE",
-    "Italy": "IT", "Latvia": "LV", "Lithuania": "LT", "Luxembourg": "LU",
-    "Malta": "MT", "Netherlands": "NL", "Norway": "NO", "Poland": "PL",
-    "Portugal": "PT", "Romania": "RO", "Slovakia": "SK", "Slovenia": "SI",
-    "Spain": "ES", "Sweden": "SE", "Switzerland": "CH",
-    "United Kingdom": "GB", "UK": "GB",
-    "Israel": "IL", "Turkey": "TR", "Ukraine": "UA",
-}
+# COUNTRY_NAME_TO_ISO moved to ETL/lib/europe_scope.py. Four extractors each carried
+# their own copy of this dict and they had drifted in coverage -- eight
+# names were missing from at least one, and an unresolvable name writes a
+# NULL country rather than raising. One copy now, imported.
+COUNTRY_NAME_TO_ISO = COUNTRY_NAME_TO_ISO2
 
 # ---------------------------------------------------------------------------
 # Hardcoded company data

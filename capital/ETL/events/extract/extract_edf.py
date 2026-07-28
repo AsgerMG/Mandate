@@ -48,6 +48,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
+from europe_scope import COUNTRY_NAME_TO_ISO2, name_to_iso2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
@@ -843,39 +844,12 @@ def parse_factsheet_pdf(pdf_path: Path) -> dict | None:
 # Country name → ISO2
 # ---------------------------------------------------------------------------
 
-_COUNTRY_NAME_TO_ISO2: dict[str, str] = {
-    "germany": "DE", "deutschland": "DE",
-    "france": "FR", "frankreich": "FR",
-    "italy": "IT", "italia": "IT",
-    "spain": "ES", "españa": "ES", "espana": "ES",
-    "netherlands": "NL", "nederland": "NL",
-    "belgium": "BE", "belgique": "BE", "belgie": "BE",
-    "sweden": "SE", "sverige": "SE",
-    "norway": "NO", "norge": "NO",
-    "denmark": "DK", "danmark": "DK",
-    "finland": "FI", "suomi": "FI",
-    "poland": "PL", "polska": "PL",
-    "portugal": "PT",
-    "greece": "GR", "hellas": "GR",
-    "ireland": "IE",
-    "austria": "AT", "österreich": "AT", "oesterreich": "AT",
-    "czech republic": "CZ", "czechia": "CZ",
-    "romania": "RO",
-    "hungary": "HU", "magyarország": "HU",
-    "slovakia": "SK",
-    "slovenia": "SI",
-    "croatia": "HR",
-    "bulgaria": "BG",
-    "estonia": "EE",
-    "latvia": "LV",
-    "lithuania": "LT",
-    "luxembourg": "LU",
-    "malta": "MT",
-    "cyprus": "CY",
-    "switzerland": "CH", "schweiz": "CH",
-    "united kingdom": "GB", "uk": "GB",
-}
-
+# Moved to ETL/lib/europe_scope.py. Eight modules each carried a version of
+# this map in a different casing, so a case-sensitive lookup silently failed
+# depending on which copy a feed hit, and an unresolvable name writes a NULL
+# country rather than raising. The canonical map is casefolded and is the
+# union of every alias any source needed (72 names, incl. native forms).
+_COUNTRY_NAME_TO_ISO2 = COUNTRY_NAME_TO_ISO2
 
 def _country_to_iso2(raw: str) -> str:
     """Convert country name string to ISO2 code."""
@@ -884,7 +858,7 @@ def _country_to_iso2(raw: str) -> str:
     stripped = raw.strip().rstrip(".")
     if len(stripped) == 2 and stripped.isalpha():
         return stripped.upper()
-    return _COUNTRY_NAME_TO_ISO2.get(stripped.lower(), stripped[:2].upper() if len(stripped) >= 2 else "")
+    return name_to_iso2(stripped) or (stripped[:2].upper() if len(stripped) >= 2 else "")
 
 
 # ---------------------------------------------------------------------------

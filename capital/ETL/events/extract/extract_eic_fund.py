@@ -40,7 +40,7 @@ from pathlib import Path
 
 pass  # sys.path handled by etl_env bootstrap
 from ndb_ssl import fetch_text  # noqa: E402
-from europe_scope import canonicalise_country  # noqa: E402
+from europe_scope import COUNTRY_NAME_TO_ISO2, name_to_iso2, canonicalise_country  # noqa: E402
 from matching import CompanyMatcher, normalize_name  # noqa: E402
 
 RAW_DIR = _ETL_ROOT / "data" / "raw" / "eic_fund"
@@ -50,18 +50,12 @@ DB_PATH = _ETL_DB
 BASE = "https://eic.ec.europa.eu/eic-fund/eic-fund-invested-companies_en"
 MAX_PAGES = 40  # safety cap; probe showed ~15
 
-COUNTRY_ISO = {
-    "austria": "AT", "belgium": "BE", "bulgaria": "BG", "croatia": "HR",
-    "cyprus": "CY", "czechia": "CZ", "czech republic": "CZ", "denmark": "DK",
-    "estonia": "EE", "finland": "FI", "france": "FR", "germany": "DE",
-    "greece": "GR", "hungary": "HU", "iceland": "IS", "ireland": "IE",
-    "italy": "IT", "latvia": "LV", "lithuania": "LT", "luxembourg": "LU",
-    "malta": "MT", "netherlands": "NL", "the netherlands": "NL", "norway": "NO",
-    "poland": "PL", "portugal": "PT", "romania": "RO", "slovakia": "SK",
-    "slovenia": "SI", "spain": "ES", "sweden": "SE", "switzerland": "CH",
-    "united kingdom": "GB", "ukraine": "UA", "serbia": "RS", "israel": "IL",
-    "turkey": "TR", "türkiye": "TR", "moldova": "MD",
-}
+# Moved to ETL/lib/europe_scope.py. Eight modules each carried a version of
+# this map in a different casing, so a case-sensitive lookup silently failed
+# depending on which copy a feed hit, and an unresolvable name writes a NULL
+# country rather than raising. The canonical map is casefolded and is the
+# union of every alias any source needed (72 names, incl. native forms).
+COUNTRY_ISO = COUNTRY_NAME_TO_ISO2
 
 # Final-fallback sector for classify.py. Portfolio sector labels reuse the EIC
 # Data Hub vocabulary, so the tag classifier resolves most rows; description
@@ -101,8 +95,7 @@ def fetch_rows() -> list[dict]:
                 continue
             seen_slugs.add(slug)
             new += 1
-            country_iso = COUNTRY_ISO.get(
-                htmllib.unescape(country).strip().lower(), "")
+            country_iso = name_to_iso2(htmllib.unescape(country)) or ""
             rows.append({
                 "source": "eic_fund",
                 "call_id": f"eic_fund_{slug}",

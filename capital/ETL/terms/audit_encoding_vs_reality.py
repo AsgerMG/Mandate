@@ -46,17 +46,12 @@ from pathlib import Path as _Path
 # Full English name -> ISO2, for the countries our encoded rules actually use.
 # Encoded specs speak full names (the intake picker's vocabulary); the events
 # corpus speaks ISO2.
-NAME_TO_ISO2 = {
-    "austria": "AT", "belgium": "BE", "bulgaria": "BG", "croatia": "HR", "cyprus": "CY",
-    "czechia": "CZ", "czech republic": "CZ", "denmark": "DK", "estonia": "EE",
-    "finland": "FI", "france": "FR", "germany": "DE", "greece": "GR", "hungary": "HU",
-    "iceland": "IS", "ireland": "IE", "italy": "IT", "latvia": "LV",
-    "liechtenstein": "LI", "lithuania": "LT", "luxembourg": "LU", "malta": "MT",
-    "netherlands": "NL", "norway": "NO", "poland": "PL", "portugal": "PT",
-    "romania": "RO", "serbia": "RS", "slovakia": "SK", "slovenia": "SI",
-    "spain": "ES", "sweden": "SE", "switzerland": "CH", "turkey": "TR",
-    "ukraine": "UA", "united kingdom": "GB",
-}
+# Resolved by the canonical map rather than a fifth copy. Encoded specs speak
+# full names (the intake picker's vocabulary); the events corpus speaks ISO2.
+_ETL_LIB = _Path(__file__).resolve().parents[1] / "lib"
+if str(_ETL_LIB) not in _sys.path:
+    _sys.path.insert(0, str(_ETL_LIB))
+from europe_scope import name_to_iso2  # noqa: E402
 
 # NACE descriptor -> ACTIVITY_OPTIONS value. The register publishes each
 # recipient's activity as free text on the event (sector_tags_raw, 276k rows),
@@ -189,13 +184,13 @@ def recipients_activity(conn: sqlite3.Connection, iid: str) -> Counter:
 # so they cannot inflate the headline rate.
 PROBES = {
     "entityCountries": (recipients_country,
-                        lambda v: NAME_TO_ISO2.get(v.strip().lower()), False),
+                        lambda v: name_to_iso2(v), False),
     # Where the WORK happens rather than where the entity sits. We hold only
     # the recipient's country, so this is the same evidence read against a
     # different claim -- weaker, because a company can legitimately run a
     # project abroad, but a rule contradicted by every recipient still counts.
     "activityCountries": (recipients_country,
-                          lambda v: NAME_TO_ISO2.get(v.strip().lower()), True),
+                          lambda v: name_to_iso2(v), True),
     "sector": (recipients_sector, lambda v: v.strip(), False),
     "ticketBand": (recipients_ticket, lambda v: v.strip(), False),
     "activities": (recipients_activity, lambda v: v.strip(), True),
