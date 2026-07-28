@@ -1,8 +1,9 @@
 import { NextRequest } from "next/server";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { computeVerdict } from "@/lib/intelligence/pipeline";
-import { sanitizeCapitalSought, sanitizeEligibility,
-  withIncorporationCountry, sanitizeTargetMarkets } from "@/lib/intelligence/sanitize";
+import { sanitizeCapitalSought, sanitizeEligibility, sanitizeFreeText,
+  withIncorporationCountry, sanitizeTargetMarkets,
+} from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest } from "@/lib/intelligence/types";
 
 // The fast path: a deterministic eligibility verdict, zero model calls (local
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
         capitalSought: sanitizeCapitalSought(body.capitalSought),
         // Drives thematic leaf selection (relevance.ts), so the shortlist the
         // adaptive round is grounded in already reflects what they do.
-        description: body.description?.trim().slice(0, 400) || undefined,
+        description: sanitizeFreeText(body.description),
       },
     );
     return Response.json(verdict);

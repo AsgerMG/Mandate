@@ -16,6 +16,7 @@ import {
   withIncorporationCountry,
   sanitizeInstrumentIds,
   sanitizeTargetMarkets,
+  sanitizeFreeText,
 } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest } from "@/lib/intelligence/types";
 
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
     company: body.company.trim(),
     sector: body.sector?.trim() || undefined,
     country: body.country?.trim() || undefined,
-    description: body.description?.trim() || undefined,
+    description: sanitizeFreeText(body.description),
     companyType: body.companyType?.trim() || undefined,
     capitalSought: sanitizeCapitalSought(body.capitalSought),
     targetMarkets: sanitizeTargetMarkets(body.targetMarkets),

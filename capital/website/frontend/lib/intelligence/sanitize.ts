@@ -74,6 +74,25 @@ function pickYear(v: unknown): number | undefined {
   return y >= 1900 && y <= 2100 ? y : undefined;
 }
 
+/**
+ * Free text a founder typed, bounded before it reaches a model prompt.
+ *
+ * The description is interpolated into eight prompt sites and is the only
+ * unbounded, unauthenticated input the pipeline has. /verdict capped it at
+ * 400 characters; the two PAID routes capped it at nothing, so an anonymous
+ * request could inflate every prompt in the run — and each run is six model
+ * calls plus web search. Cost amplification first, prompt injection second.
+ *
+ * 1,200 characters is roughly a generous paragraph: past that a founder is
+ * pasting a deck, not describing a company, and nothing downstream reads more
+ * closely than the first few sentences anyway.
+ */
+export const MAX_DESCRIPTION_CHARS = 1200;
+
+export function sanitizeFreeText(v: unknown, maxLen = MAX_DESCRIPTION_CHARS): string | undefined {
+  return pickString(v, maxLen);
+}
+
 function pickString(v: unknown, maxLen: number): string | undefined {
   if (typeof v !== "string") return undefined;
   const s = v.trim();
