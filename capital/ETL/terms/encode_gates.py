@@ -532,6 +532,22 @@ def cmd_encode(args) -> None:
             # simply never matches any founder and the gate silently stops
             # gating. Drop values the vocabulary does not contain, and drop the
             # whole spec if that empties it.
+            # 'none' is the "nothing is wrong with me" sentinel on the
+            # multi-select axes. Two shapes involving it are always mistakes,
+            # and both were produced by a corrective re-encode pass:
+            #   not_in ['none']  blocks exactly the founders for whom nothing
+            #                    is wrong — an inversion, not a rule
+            #   in ['none']      demands a clean sheet on EVERY flag, so an
+            #                    unrelated tax arrear blocks an insolvency rule
+            # A rule about insolvency must name insolvency.
+            if field in ("exclusionFlags", "activities"):
+                vals_now = r["values"]
+                if (op == "not_in" and "none" in vals_now) or (op == "in" and vals_now == ["none"]):
+                    print(f"    refused {op} {vals_now} on {field} for gate {gid}: "
+                          f"name the specific flag, not the sentinel")
+                    skipped += 1
+                    continue
+
             vocab = ENUM_VALUES.get(field)
             if vocab and op in ("in", "not_in", "equals"):
                 key = "allowed" if op in ("in", "not_in") else "value"

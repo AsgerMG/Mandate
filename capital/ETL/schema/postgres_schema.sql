@@ -109,6 +109,8 @@ CREATE TABLE IF NOT EXISTS event_log (
   detail                     TEXT,
   meta                       JSONB
 );
+CREATE INDEX IF NOT EXISTS event_log_created_idx ON public.event_log USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS event_log_kind_idx ON public.event_log USING btree (kind, created_at DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS event_log_pkey ON public.event_log USING btree (id);
 
 -- ─── funding_instrument_sources ────────────────────────────────

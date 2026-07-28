@@ -88,6 +88,11 @@ jobs:
       - name: Country resolution
         run: python3 ETL/lib/test_europe_scope.py
 
+      # A spec can be syntactically valid, pass the vocabulary check, and still
+      # mean the opposite of its source document.
+      - name: Encoded rule sanity
+        run: python3 ETL/schema/check_spec_sanity.py
+
   security:
     name: dependency audit
     runs-on: ubuntu-latest
