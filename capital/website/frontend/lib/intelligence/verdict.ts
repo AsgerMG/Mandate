@@ -23,6 +23,7 @@
 // disqualifies you), never that you are approved. Overclaiming here is the one
 // failure that would cost a founder months.
 import { loadDbInstruments, type DbGate, type DbInstrument } from "./corpus";
+import { evaluateSpec, type ValueSpec } from "./comparator";
 import type { EligibilityAnswers } from "./types";
 
 export type VerdictStatus =
@@ -52,79 +53,6 @@ export interface InstrumentAssessment {
   blockers: Blocker[];
 }
 
-type ValueSpec = {
-  op: string;
-  field: string;
-  allowed?: string[];
-  value?: string;
-  maxAllowed?: string;
-  minAllowed?: string;
-  order?: string[];
-  threshold?: number;
-};
-
-/**
- * Values that mean "I don't know", not an answer. They MUST evaluate to null.
- *
- * Every yes/no intake field offers "Not sure", and comparing it literally
- * returned false — so hedging on one question read as FAILING it. That single
- * behaviour produced a false blocker on 12 of 12 test archetypes: the honest
- * answer was punished, and funds were hidden from founders who simply had not
- * decided yet.
- */
-const NON_ANSWERS = new Set(["unsure", "not sure", "unknown", "n/a", "na", "depends"]);
-
-const norm = (s: string) => s.trim().toLowerCase();
-
-/** Mirrors eligibility.ts's evalComparator. Kept here rather than imported so
- *  the verdict layer has no dependency on the framework-check module; the two
- *  must stay in step — if an operator is added there, add it here. */
-function evaluate(spec: ValueSpec, answer: unknown): boolean | null {
-  const matchesAny = (allowed: string[]): boolean | null => {
-    const wanted = new Set(allowed.map(norm));
-    if (typeof answer === "string") {
-      if (!answer.trim() || NON_ANSWERS.has(norm(answer))) return null;
-      return wanted.has(norm(answer));
-    }
-    if (Array.isArray(answer)) {
-      const vals = answer.filter(
-        (a): a is string => typeof a === "string" && Boolean(a.trim()) && !NON_ANSWERS.has(norm(a)),
-      );
-      return vals.length ? vals.some((a) => wanted.has(norm(a))) : null;
-    }
-    return null;
-  };
-  const band = (target: string | undefined, dir: "max" | "min"): boolean | null => {
-    if (typeof answer !== "string" || !target || !spec.order?.length) return null;
-    const ai = spec.order.indexOf(answer);
-    const ti = spec.order.indexOf(target);
-    if (ai === -1 || ti === -1) return null;
-    return dir === "max" ? ai <= ti : ai >= ti;
-  };
-  switch (spec.op) {
-    case "band_max": return band(spec.maxAllowed, "max");
-    case "band_min": return band(spec.minAllowed, "min");
-    case "in": return spec.allowed ? matchesAny(spec.allowed) : null;
-    case "not_in": {
-      if (!spec.allowed) return null;
-      const hit = matchesAny(spec.allowed);
-      return hit === null ? null : !hit;
-    }
-    case "equals":
-      return typeof answer === "string" && spec.value !== undefined
-        ? norm(answer) === norm(spec.value) : null;
-    case "boolean_true": return answer === "yes" ? true : answer === "no" ? false : null;
-    case "boolean_false": return answer === "no" ? true : answer === "yes" ? false : null;
-    case "numeric_gte":
-      return typeof answer === "number" && spec.threshold !== undefined
-        ? answer >= spec.threshold : null;
-    case "numeric_lte":
-      return typeof answer === "number" && spec.threshold !== undefined
-        ? answer <= spec.threshold : null;
-    default: return null;
-  }
-}
-
 function isFilter(g: DbGate): boolean {
   // Untriaged gates (gateRole undefined) are still honoured, so the system
   // degrades safely while encoding coverage grows.
@@ -147,7 +75,7 @@ export function assessInstrument(
     const spec = gate.valueSpec as ValueSpec | null;
     if (!spec?.field) continue;
     const answer = (answers as Record<string, unknown>)[spec.field];
-    const result = evaluate(spec, answer);
+    const result = evaluateSpec(spec, answer);
     if (result === null) continue; // unanswered or unevaluable — never a failure
     base.checked += 1;
     if (result) base.passed += 1;

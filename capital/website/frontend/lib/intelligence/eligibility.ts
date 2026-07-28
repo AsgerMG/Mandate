@@ -17,23 +17,10 @@
 //     Tier 1 (llm_classified) and Tier 2 (llm_2pass) research populates
 //     valueSpec. A gate below llm_2pass/human_verified can only ever produce
 //     "likely_met"/"likely_not_met", never an asserted "met"/"not_met".
+import { evaluateSpec, type ValueSpec } from "./comparator";
 import { loadDbInstruments, type DbInstrument } from "./corpus";
 import type { EligibilityAnswers, EligibilityCheck } from "./types";
 
-type ValueSpec =
-  | { op: "band_max"; field: string; maxAllowed: string; order: string[] }
-  // band_min added 2026-07-26 with ETL/terms/encode_gates.py: floors are as
-  // common as ceilings in real rules ("must already show a prototype",
-  // "minimum TRL 4") and could not be expressed before.
-  | { op: "band_min"; field: string; minAllowed: string; order: string[] }
-  | { op: "in"; field: string; allowed: string[] }
-  // not_in: exclusion lists are pervasive in EU rules ("entities established
-  // in Russia, Belarus... are not eligible") and inverting them by hand into
-  // an `in` list of every permitted country is both lossy and unmaintainable.
-  | { op: "not_in"; field: string; allowed: string[] }
-  | { op: "equals"; field: string; value: string }
-  | { op: "boolean_true" | "boolean_false"; field: string }
-  | { op: "numeric_gte" | "numeric_lte"; field: string; threshold: number };
 
 // TermGate/TermRecord are gone — this file now reads DbInstrument/DbGate
 // straight from corpus.ts's shared loader (one parse of instrument_terms.json
@@ -249,20 +236,6 @@ export function evaluateEligibility(
 }
 
 /** Ordinal comparison helper for band_max: is `answer` at or below `maxAllowed` in `order`? */
-function bandAtOrBelow(order: string[], answer: string, maxAllowed: string): boolean | null {
-  const ai = order.indexOf(answer);
-  const mi = order.indexOf(maxAllowed);
-  if (ai === -1 || mi === -1) return null;
-  return ai <= mi;
-}
-
-function bandAtOrAbove(order: string[], answer: string, minAllowed: string): boolean | null {
-  const ai = order.indexOf(answer);
-  const mi = order.indexOf(minAllowed);
-  if (ai === -1 || mi === -1) return null;
-  return ai >= mi;
-}
-
 /**
  * Does the founder's answer hit any of `allowed`? Handles both shapes an
  * EligibilityAnswers field can take: a single value (developmentStage) and a
@@ -273,67 +246,6 @@ function bandAtOrAbove(order: string[], answer: string, minAllowed: string): boo
  * Returns null — "unknown", never "fails" — when the founder simply hasn't
  * answered, so an unanswered question can never read as a disqualification.
  */
-/**
- * Values that mean "I don't know", not an answer. They MUST evaluate to null.
- *
- * Every yes/no intake field offers "Not sure", and comparing it literally
- * returned false — so hedging on one question read as FAILING it. That single
- * behaviour produced a false blocker on 12 of 12 test archetypes: the honest
- * answer was punished, and funds were hidden from founders who simply had not
- * decided yet.
- */
-const NON_ANSWERS = new Set(["unsure", "not sure", "unknown", "n/a", "na", "depends"]);
-
-function matchesAny(answer: unknown, allowed: string[]): boolean | null {
-  const norm = (s: string) => s.trim().toLowerCase();
-  const wanted = new Set(allowed.map(norm));
-  if (typeof answer === "string") {
-    if (!answer.trim() || NON_ANSWERS.has(norm(answer))) return null;
-    return wanted.has(norm(answer));
-  }
-  if (Array.isArray(answer)) {
-    const vals = answer.filter(
-      (a): a is string => typeof a === "string" && Boolean(a.trim()) && !NON_ANSWERS.has(norm(a)),
-    );
-    return vals.length ? vals.some((a) => wanted.has(norm(a))) : null;
-  }
-  return null;
-}
-
-/** Evaluate one gate's valueSpec against the founder's answer. Returns null
- *  when the spec references a field the answer doesn't have a usable form
- *  for (renders as "unknown" upstream, never guessed). */
-function evalComparator(spec: ValueSpec, answer: unknown): boolean | null {
-  switch (spec.op) {
-    case "band_max":
-      return typeof answer === "string" ? bandAtOrBelow(spec.order, answer, spec.maxAllowed) : null;
-    case "band_min":
-      return typeof answer === "string" ? bandAtOrAbove(spec.order, answer, spec.minAllowed) : null;
-    // Several intake fields are multi-value (entityCountries, activityCountries,
-    // conditionality). Treating only strings meant the single most common
-    // encoded gate — "must be established in <country>" — silently returned
-    // "unknown" for every founder, because their answer is an array.
-    case "in":
-      return matchesAny(answer, spec.allowed);
-    case "not_in": {
-      const hit = matchesAny(answer, spec.allowed);
-      return hit === null ? null : !hit;
-    }
-    case "equals":
-      return typeof answer === "string" ? answer === spec.value : null;
-    case "boolean_true":
-      return answer === "yes" ? true : answer === "no" ? false : null;
-    case "boolean_false":
-      return answer === "no" ? true : answer === "yes" ? false : null;
-    case "numeric_gte":
-      return typeof answer === "number" ? answer >= spec.threshold : null;
-    case "numeric_lte":
-      return typeof answer === "number" ? answer <= spec.threshold : null;
-    default:
-      return null;
-  }
-}
-
 /**
  * The generic loop: scales the evaluator past the ~10 hand-written framework
  * checks above to every instrument in the DB-native inventory (320+ and
@@ -365,7 +277,7 @@ function evaluateGenericGates(records: TermRecord[], e?: EligibilityAnswers): El
       if (!field || field === "none" || !gate.valueSpec) continue;
       const answer = (e as Record<string, unknown>)[field];
       if (answer === undefined || answer === null || answer === "") continue;
-      const result = evalComparator(gate.valueSpec as ValueSpec, answer);
+      const result = evaluateSpec(gate.valueSpec as ValueSpec, answer);
       const level = gate.verificationLevel ?? "inventory_inferred";
       const hard = level === "llm_2pass" || level === "human_verified";
       const status: EligibilityCheck["status"] =

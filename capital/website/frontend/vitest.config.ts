@@ -18,6 +18,7 @@ export default defineConfig({
         "lib/intelligence/cost.ts",
         "lib/intelligence/vocabulary.ts",
         "lib/intelligence/untrusted.ts",
+        "lib/intelligence/comparator.ts",
       ],
       reporter: ["text-summary"],
       // A floor, not a target. Set just under what the suite currently
