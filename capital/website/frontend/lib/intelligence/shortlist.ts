@@ -16,7 +16,7 @@
 import { loadDbInstruments, loadFundSnapshot, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { TICKET_BANDS } from "./types";
-import type { FounderFit, FundSnapshot, InstrumentRow, ProfileSignal } from "./types";
+import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 
 // Short, human display labels for the channel codes, for the funding breakdown.
 const CHANNEL_LABEL: Record<string, string> = {

@@ -9,7 +9,6 @@ import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
 import { assessAll, VERDICT_RANK } from "./verdict";
-import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
 import { recordUsage } from "./cost";
@@ -34,13 +33,10 @@ import {
   isGenericSubsector,
   hydrateGateDetail,
   loadAgentInstructions,
-  loadDbInstruments,
   loadFundProcess,
-  loadFundSnapshot,
   loadSignalsDigest,
   matchCompany,
   toIso2,
-  type DbInstrument,
   type DigestItem,
 } from "./corpus";
 import {
@@ -48,13 +44,10 @@ import {
   BAND_INDEX,
   channelLabel,
   buildInstrumentTable,
-  CAPITAL_SOUGHT_TO_DB,
   DISPLAY_CAP,
   displayInstitutionName,
   founderCountryList,
-  GBER_ARTICLE_LABEL,
   instrumentServesCapital,
-  legalBasisFor,
   VERDICT_POOL,
 } from "./shortlist";
 import {
@@ -66,7 +59,6 @@ import {
   type ChannelAmount,
   type EligibilityAnswers,
   type EligibilityCheck,
-  type FounderFit,
   type GroundedRound,
   type CompetitorIntel,
   type CompetitorRecord,
