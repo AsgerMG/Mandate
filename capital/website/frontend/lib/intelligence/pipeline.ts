@@ -2353,12 +2353,12 @@ export interface VerdictResult {
  * the full memo gathers, but always with the same ticketBand/consortium
  * rules, so the fast verdict is only ever extended, never contradicted.
  */
-export function computeVerdict(
+export async function computeVerdict(
   company: string,
   country: string | undefined,
   eligibility: EligibilityAnswers | undefined,
   opts: { targetMarkets?: string[]; capitalSought?: string[]; description?: string } = {},
-): VerdictResult {
+): Promise<VerdictResult> {
   const selfRecord = matchCompany(company, country);
   const targetSub =
     selfRecord.matched && !isGenericSubsector(selfRecord.subsector) ? selfRecord.subsector : "";
@@ -2378,14 +2378,20 @@ export function computeVerdict(
     opts.capitalSought ?? [],
     opts.description,
   );
+  // Phase two of hydration, on the FAST path too. computeVerdict is
+  // model-free, not IO-free: its eligibility screen renders the source
+  // citation for each rule, and without this every row came back with a blank
+  // one — 0 of 25 on a live call. "Instant" means no model round-trip; one
+  // scoped query for the seven instruments on the table is not what makes this
+  // path slow, and a rule shown without its source is not evidence.
+  const candidateIds = candidates
+    .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
+  await hydrateGateDetail(candidateIds);
   return {
-    eligibilityScreen: evaluateEligibility(
-      eligibility,
-      candidates.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
-    ),
+    eligibilityScreen: evaluateEligibility(eligibility, candidateIds),
     instrumentTable: candidates.slice(0, DISPLAY_CAP),
     selfMatched: selfRecord.matched,
-    candidateInstrumentIds: candidates.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    candidateInstrumentIds: candidateIds,
   };
 }
 

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   try {
     await hydrateDbInstruments();
-    const verdict = computeVerdict(
+    const verdict = await computeVerdict(
       body.company.trim(),
       body.country?.trim() || undefined,
       withIncorporationCountry(sanitizeEligibility(body.eligibility), body.country?.trim()),
