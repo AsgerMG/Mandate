@@ -106,7 +106,7 @@ async function main() {
   // this script got wrong: it went stale the moment the real one was fixed and
   // reported two failures that no longer existed. Duplicating a vocabulary to
   // check a vocabulary is the exact fault being checked for.
-  const { CAPITAL_SOUGHT_TO_DB: CAPITAL_MAP } = await import("../lib/intelligence/pipeline");
+  const { CAPITAL_SOUGHT_TO_DB: CAPITAL_MAP } = await import("../lib/intelligence/shortlist");
   const dbCapital = new Set(instruments.map((i) => i.capitalType).filter(Boolean));
   for (const opt of CAPITAL_OPTIONS as readonly { value: string; label: string }[]) {
     const targets = CAPITAL_MAP[opt.value];

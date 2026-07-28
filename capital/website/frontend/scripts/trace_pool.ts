@@ -33,7 +33,7 @@ if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
 async function main() {
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
-  const P = await import("../lib/intelligence/pipeline");
+  const P = await import("../lib/intelligence/shortlist");
   const { assessAll } = await import("../lib/intelligence/verdict");
   const { semanticFundMatch } = await import("../lib/intelligence/semantic");
   await hydrateDbInstruments();
