@@ -27,10 +27,15 @@
  * check_archetypes.ts and is meant to stay at zero.
  */
 import { readFileSync } from "node:fs";
-for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-  const m = line.match(/^([A-Z_]+)=(.*)$/);
-  if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-}
+// Local secrets when present. CI has no .env.local and must not need one:
+// the checks below run against the committed JSON snapshot, so a missing file
+// is a normal condition, not an error.
+try {
+  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
+    const m = line.match(/^([A-Z_]+)=(.*)$/);
+    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+} catch { /* no local env — rely on the process environment */ }
 // NO_PG=1 scores the local JSON snapshot instead of live Postgres. Without it
 // this check reads production, which lags the local DB until a publish — and
 // then reports fixes as still broken.

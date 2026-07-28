@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "vocab": "npx tsx scripts/emit_vocabulary.ts",
-    "check": "npx tsc --noEmit && npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_archetypes.ts && npx tsx scripts/check_payload_budget.ts",
+    "check": "npx tsc --noEmit && npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_archetypes.ts && npx tsx scripts/check_payload_budget.ts && npx tsx scripts/check_dependencies.ts",
     "trace": "npx tsx scripts/trace_pool.ts",
     "board": "npx tsx scripts/bench_report.ts",
     "bench": "npx tsx scripts/memo_bench.ts"
@@ -21,7 +21,7 @@
     "@types/topojson-client": "^3.1.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "next": "16.2.6",
+    "next": "^16.2.12",
     "next-themes": "^0.4.6",
     "pg": "^8.22.0",
     "react": "19.2.4",
@@ -43,5 +43,11 @@
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "d3-color": "^3.1.0",
+    "d3-interpolate": "^3.0.1",
+    "d3-transition": "^3.0.1",
+    "d3-zoom": "^3.0.0"
   }
 }

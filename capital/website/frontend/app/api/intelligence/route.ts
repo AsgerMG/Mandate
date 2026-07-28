@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
+import { checkQuota } from "@/lib/intelligence/quota";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
 import {
   sanitizeFreeText,
@@ -18,24 +19,11 @@ export const dynamic = "force-dynamic";
 // The pipeline makes three model calls plus web search; give it headroom.
 export const maxDuration = 300;
 
-// Best-effort, in-memory IP rate limit. Resets on cold start — enough to deter
-// abuse of a paid API, not a billing-accurate quota. Swap for Vercel KV if you
-// need persistence across instances.
-const WINDOW_MS = 60 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-const hits = new Map<string, number[]>();
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_WINDOW) {
-    hits.set(ip, recent);
-    return true;
-  }
-  recent.push(now);
-  hits.set(ip, recent);
-  return false;
-}
+// Rate limiting and the global spend ceiling now live in lib/intelligence/quota.ts,
+// backed by Postgres. The in-memory counter that used to sit here reset on cold
+// start — which on a serverless platform means a new instance starts every
+// counter at zero, and instances are cheap to provoke. It was a suggestion, not
+// a limit, on the one endpoint that costs six model calls per request.
 
 export async function POST(request: NextRequest) {
   const ip =
@@ -43,11 +31,15 @@ export async function POST(request: NextRequest) {
     request.headers.get("x-real-ip") ||
     "unknown";
 
-  if (rateLimited(ip)) {
-    return new Response(
-      JSON.stringify({ error: "Rate limit reached. Try again in an hour." }),
-      { status: 429, headers: { "content-type": "application/json" } },
-    );
+  const quota = await checkQuota(ip, "intelligence");
+  if (!quota.allowed) {
+    return new Response(JSON.stringify({ error: quota.message }), {
+      // 503 for the global ceiling: the service is temporarily unavailable to
+      // everyone, which is a different thing from this caller being throttled,
+      // and clients should not retry it as if it were.
+      status: quota.reason === "global" ? 503 : 429,
+      headers: { "content-type": "application/json" },
+    });
   }
 
   let body: IntelligenceRequest;

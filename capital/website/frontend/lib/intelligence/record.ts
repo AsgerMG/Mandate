@@ -74,6 +74,49 @@ async function ensureTable(client: import("pg").Client): Promise<void> {
   ensured = true;
 }
 
+/**
+ * How long a submission is kept. A founder's description of an unlaunched
+ * company is commercially sensitive, and keeping it forever with no stated
+ * purpose is indefensible whether or not it counts as personal data.
+ *
+ * 400 days is chosen to be long enough for the thing the table exists for —
+ * comparing a brief against what actually happened, which for public funding
+ * runs on a 6-to-12-month application cycle — and no longer.
+ */
+export const RETENTION_DAYS = 400;
+
+/**
+ * Delete submissions past the retention window.
+ *
+ * Runs opportunistically after a write rather than on a scheduler, because a
+ * cron that nobody notices has stopped is worse than one bounded by traffic:
+ * if briefs are being written, the purge is running. At most once an hour per
+ * warm instance.
+ *
+ * Rows with an outcome recorded are KEPT: those are the ones that took a human
+ * to produce and are the entire point of the table. They are pseudonymised
+ * instead — the free text a founder typed is dropped, the structured decision
+ * is not.
+ */
+let lastPurge = 0;
+async function purgeExpired(client: import("pg").Client): Promise<void> {
+  if (Date.now() - lastPurge < 60 * 60 * 1000) return;
+  lastPurge = Date.now();
+  const cutoff = `${RETENTION_DAYS} days`;
+  const deleted = await client.query(
+    `DELETE FROM brief_records
+      WHERE created_at < now() - $1::interval AND outcome IS NULL`, [cutoff]);
+  const scrubbed = await client.query(
+    `UPDATE brief_records
+        SET description = NULL, company = 'retained-outcome'
+      WHERE created_at < now() - $1::interval
+        AND outcome IS NOT NULL AND description IS NOT NULL`, [cutoff]);
+  if (deleted.rowCount || scrubbed.rowCount) {
+    console.log("[brief_records] retention: deleted %d, pseudonymised %d",
+      deleted.rowCount ?? 0, scrubbed.rowCount ?? 0);
+  }
+}
+
 /** Fire-and-forget. Never throws, never awaited by the request path. */
 export function recordBrief(rec: BriefRecord): void {
   void (async () => {
@@ -97,6 +140,7 @@ export function recordBrief(rec: BriefRecord): void {
          rec.droppedBlocked, rec.droppedWatchOnly, rec.candidateCount,
          rec.durationMs, rec.codeVersion ?? null],
       );
+      await purgeExpired(client);
     } catch (err) {
       // A brief that was already delivered must never fail because we could
       // not write a note about it.

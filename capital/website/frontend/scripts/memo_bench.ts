@@ -30,10 +30,15 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
-for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-  const m = line.match(/^([A-Z_]+)=(.*)$/);
-  if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-}
+// Local secrets when present. CI has no .env.local and must not need one:
+// the checks below run against the committed JSON snapshot, so a missing file
+// is a normal condition, not an error.
+try {
+  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
+    const m = line.match(/^([A-Z_]+)=(.*)$/);
+    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+} catch { /* no local env — rely on the process environment */ }
 
 
 const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean).length;

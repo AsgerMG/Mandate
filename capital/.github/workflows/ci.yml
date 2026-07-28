@@ -1,0 +1,91 @@
+# The gate that was missing. Every check here already existed and was run by
+# hand; during the audit a broken build reached main because a commit ran on a
+# separate line from a failing typecheck. Verification nobody is forced to run
+# is verification that eventually does not happen.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: types, contracts, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: website/frontend/package-lock.json
+      - run: npm ci
+
+      # No DATABASE_URL in CI by design: every check runs against the committed
+      # instrument_terms.json snapshot, so CI stays hermetic and cannot be
+      # broken by the state of a live database.
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Vocabulary contract
+        run: npx tsx scripts/check_vocabularies.ts
+        env: { NO_PG: '1' }
+
+      - name: Archetype regression
+        run: npx tsx scripts/check_archetypes.ts
+        env: { NO_PG: '1' }
+
+      - name: Per-request payload budget
+        run: npx tsx scripts/check_payload_budget.ts
+
+      - name: Lint
+        run: npx eslint .
+
+      - name: Build
+        run: npx next build
+        env: { NEXT_TELEMETRY_DISABLED: '1' }
+
+  etl:
+    name: python syntax + schema drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Compile-checks every ETL module. Cheap, and it catches the class of
+      # error that otherwise only surfaces mid-pipeline on a long run.
+      - name: Byte-compile the ETL
+        run: python3 -m compileall -q ETL website/build
+
+      # The SQL schema must match what the code expects. A drifted schema file
+      # is worse than none: it reads as authoritative while being wrong.
+      - name: Postgres schema is committed
+        run: test -f ETL/schema/postgres_schema.sql
+
+  security:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm, cache-dependency-path: website/frontend/package-lock.json }
+      - run: npm ci
+      # Wraps npm audit with a reviewed exceptions register: fails on anything
+      # high or critical that is NOT documented, and fails when an exception
+      # passes its review date. A check that cannot pass is a check people
+      # learn to skip.
+      - name: Dependency audit
+        run: npx tsx scripts/check_dependencies.ts
