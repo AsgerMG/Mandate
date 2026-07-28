@@ -494,6 +494,17 @@ export interface EligibilityAnswers {
  *  value. Shared between the server (prompt/schema construction) and the
  *  client (rendering the picked answer). */
 export const FIELD_ENUM_HINTS: Record<string, { multi: boolean; options: { value: string; label: string }[] }> = {
+  // These three moved off the first screen on 2026-07-29 when it shrank from
+  // eleven questions to five. Without a hint entry the adaptive round SKIPS a
+  // field entirely (see gateReach: `if (!FIELD_ENUM_HINTS[field]) continue`),
+  // so demoting them without adding hints would have meant they were never
+  // asked anywhere — silently discarding the three axes that carry most GBER
+  // and de minimis exclusions. Options are derived from the same option lists
+  // the form used, so the two can never disagree.
+  activities: { multi: true, options: ACTIVITY_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  useOfFunds: { multi: true, options: USE_OF_FUNDS_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  exclusionFlags: { multi: true, options: EXCLUSION_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  sector: { multi: false, options: SECTOR_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
   consortium: { multi: false, options: [
     { value: "yes", label: "Yes, we could run a 3+ partner consortium" },
     { value: "no", label: "No, single applicant only" },

@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   CAPITAL_OPTIONS,
-  EXCLUSION_OPTIONS,
   SECTOR_OPTIONS,
-  ACTIVITY_OPTIONS,
   USE_OF_FUNDS_OPTIONS,
   FIELD_ENUM_HINTS,
   TICKET_BANDS,
@@ -140,16 +138,6 @@ function CapitalSelect({
       )}
     </div>
   );
-}
-
-/** Toggle one exclusion flag. "None of these apply" is mutually exclusive with
- *  every other option in both directions — a founder who ticks insolvency and
- *  then "none" means "none", and vice versa. An EMPTY list means unanswered,
- *  which must never be read as a pass. */
-function toggleExclusion(current: string[], v: string): string[] {
-  if (v === "none") return current.includes("none") ? [] : ["none"];
-  const without = current.filter((x) => x !== "none");
-  return without.includes(v) ? without.filter((x) => x !== v) : [...without, v];
 }
 
 /** Multi-select chips. Used for the exclusion checklist, where seeing every
@@ -712,27 +700,13 @@ export function IntelligencePanel() {
                 }))} />
             </div>
 
-            {/* Asked separately from sector on purpose. Aid law restricts
-                ACTIVITIES, not fields of work, and merging the two meant a
-                lending fintech had to choose "financial services" instead of
-                naming what it builds — and then inherited exclusions written
-                for tobacco companies. 82 instruments carry rules about
-                financial activity, 12 about tobacco/gambling/weapons. */}
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Do you do any of these?
-                <InfoDot>
-                  Aid law singles these activities out by name — agriculture,
-                  fisheries, finance, road freight, gambling, tobacco, alcohol,
-                  weapons and real estate each carry their own carve-outs. It
-                  matters whether you ARE a lender, not whether you sell
-                  software to one, so answer for your own activity.
-                </InfoDot>
-              </span>
-              <MultiChips options={[...ACTIVITY_OPTIONS]} value={elig.activities ?? []}
-                exclusive="none"
-                onToggle={(v) => setElig((p) => ({ ...p, activities: toggleExclusion(p.activities ?? [], v) }))} />
-            </div>
+            {/* The single most decisive question the intake used to omit: 585
+                gates across 266 instruments turn on eligible costs, 59 of them
+                hard filters. Placed on screen 1 rather than the adaptive round
+                because it was already reaching founders as a BLOCKER we had
+                the means to clear — three briefs told a founder to "reframe
+                the project as applied research" for want of asking. */}
+            
 
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="text-sm">
@@ -767,21 +741,7 @@ export function IntelligencePanel() {
                   { value: "50-249", label: "50–249" }, { value: "250+", label: "250+" },
                 ]} value={elig.fteBand} onPick={(v) => setElig((p) => ({ ...p, fteBand: v }))} />
               </div>
-              <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  Share of cost you could self-fund
-                  <InfoDot>
-                    Almost every grant is co-financed: the fund pays a percentage
-                    and you carry the rest. Below 25% closes most of them.
-                  </InfoDot>
-                </span>
-                <Chips options={[
-                  { value: ">50%", label: "More than half" },
-                  { value: "25-50%", label: "25–50%" },
-                  { value: "<25%", label: "Under 25%" },
-                ]} value={elig.cofinancingBand}
-                  onPick={(v) => setElig((p) => ({ ...p, cofinancingBand: v }))} />
-              </div>
+              
             </div>
 
             <div className="text-sm">
@@ -802,37 +762,9 @@ export function IntelligencePanel() {
                 onPick={(v) => setElig((p) => ({ ...p, developmentStage: v }))} />
             </div>
 
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Could you run this with partners?
-                <InfoDot>
-                  A large share of EU money is only available to consortia of
-                  three or more organisations from three or more countries. It
-                  gates 50 funds on its own.
-                </InfoDot>
-              </span>
-              <Chips options={[
-                { value: "yes", label: "Yes, we could" },
-                { value: "no", label: "No, single applicant" },
-                { value: "unsure", label: "Not sure" },
-              ]} value={elig.consortium}
-                onPick={(v) => setElig((p) => ({ ...p, consortium: v as EligibilityAnswers["consortium"] }))} />
-            </div>
+            
 
-            <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Do any of these apply?
-                <InfoDot>
-                  Standard EU exclusion situations. Any one of them closes most
-                  state aid outright, so it is better to know now than after an
-                  application. Asked as a checklist because it settles roughly
-                  80 rules across 47 funds in a single answer.
-                </InfoDot>
-              </span>
-              <MultiChips options={[...EXCLUSION_OPTIONS]} value={elig.exclusionFlags ?? []}
-                exclusive="none"
-                onToggle={(v) => setElig((p) => ({ ...p, exclusionFlags: toggleExclusion(p.exclusionFlags ?? [], v) }))} />
-            </div>
+            
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
               <button type="submit" disabled={!company.trim() || preparing} className={nextBtn}>

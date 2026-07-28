@@ -40,8 +40,15 @@ const MIN_FAMILIES = 3;
 // brief_funnel_v2 question budget: 8-10 on one mandatory screen, split roughly
 // half generic gate-closers, half project questions. Was 8 generic and zero
 // project, which is why every memo read the same.
-const GENERIC_QUESTION_CAP = 4;
-const PROJECT_QUESTION_CAP = 5;
+// Raised from 4 with the first screen shrunk from 11 questions to 5: six
+// fields moved into this round, and a cap that did not move would have
+// silently dropped them. Still fewer questions in total than before, because
+// these are chosen against the founder's own shortlist rather than asked of
+// everyone.
+const GENERIC_QUESTION_CAP = 6;
+// Trimmed from 5 to keep the single panel at ten questions. Total journey is
+// now 5 + 10 = 15, down from 20.
+const PROJECT_QUESTION_CAP = 4;
 
 export async function POST(request: NextRequest) {
   let body: IntelligenceRequest & { wantProfileSignal?: boolean };

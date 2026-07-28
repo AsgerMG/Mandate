@@ -13,16 +13,24 @@ import { FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
 // the exclusions checklist rather than as its own alarming question, and
 // derived from it server-side (see sanitizeEligibility).
 const FIRST_PAGE_FIELDS = new Set([
-  "entityCountries", "fteBand", "developmentStage", "ticketBand",
-  // Promoted to screen 1 on 2026-07-26 because they gate the most instruments
-  // in the triaged corpus: sector 72, consortium 50, exclusionFlags 47 (80
-  // rules), cofinancingBand 36. borrowerModel came OFF (15 instruments) and is
-  // now asked adaptively, only when a candidate fund actually turns on it.
-  // `activities` joins screen 1 with sector: it is now where most GBER and
-  // de minimis exclusion clauses are encoded, so leaving it to the adaptive
-  // round would re-ask what the first screen should have settled.
-  "sector", "activities", "useOfFunds", "consortium", "exclusionFlags", "cofinancingBand",
-  "lossesOverHalfCapital",
+  // Shrunk from 11 to 5 on 2026-07-29. The first screen now asks only what is
+  // needed to BUILD a shortlist at all — where you are, what you build, how
+  // big you are, how much you want, how far along you are. Everything else
+  // moved into the adaptive round, where it is asked only when a fund on THIS
+  // founder's shortlist actually turns on it.
+  //
+  // The trade is deliberate: an eleven-question opener asks every founder about
+  // co-financing, consortia and exclusion flags whether or not a single fund in
+  // front of them cares. Four of those questions gate fewer than 50 instruments
+  // each, so most people were answering them for nothing. A shorter opener that
+  // earns its follow-ups is a funnel; a long one is an interrogation.
+  // useOfFunds stays on the first screen despite the shrink: it decides 58
+  // filters, more than any other single field, and "what would the money pay
+  // for" is a leading question about the project rather than a follow-up.
+  // Demoted, it was reaching only 2 founders in 12 because it competes for six
+  // adaptive slots against fields that gate far less.
+  "entityCountries", "sector", "useOfFunds", "fteBand", "ticketBand",
+  "developmentStage",
 ]);
 
 export interface OpenFieldEvidence {
