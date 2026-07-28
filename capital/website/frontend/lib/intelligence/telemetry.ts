@@ -31,7 +31,9 @@ export type EventKind =
   /** Brief shipped fewer than two institutions. */
   | "thin_brief"
   /** Daily euro ceiling refused a request. */
-  | "quota_exhausted";
+  | "quota_exhausted"
+  /** Prompt-control sequences were stripped from founder-supplied text. */
+  | "prompt_injection_blocked";
 
 /** Degradations are expected occasionally; errors are not. Kept apart so a
  *  digest can distinguish "the system absorbed a problem" from "it failed". */

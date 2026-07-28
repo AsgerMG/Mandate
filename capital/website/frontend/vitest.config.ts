@@ -17,6 +17,7 @@ export default defineConfig({
         "lib/intelligence/watchOnly.ts",
         "lib/intelligence/cost.ts",
         "lib/intelligence/vocabulary.ts",
+        "lib/intelligence/untrusted.ts",
       ],
       reporter: ["text-summary"],
       // A floor, not a target. Set just under what the suite currently

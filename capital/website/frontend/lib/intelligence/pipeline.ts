@@ -14,6 +14,7 @@ import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
 import { recordUsage } from "./cost";
 import { recordEvent } from "./telemetry";
+import { declaw, fence } from "./untrusted";
 
 /**
  * Every model response passes through here so its cost is counted.
@@ -322,7 +323,7 @@ async function discoverAndResearch(
     req.sector ? `Sector: ${req.sector}` : "",
     req.country ? `Country: ${req.country}` : "",
     req.companyType ? `Company type: ${req.companyType}` : "",
-    req.description ? `What they do: ${req.description}` : "",
+    req.description ? fence("company description", req.description) : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -745,7 +746,7 @@ async function synthesize(
     req.sector ? `Sector: ${req.sector}` : "",
     req.country ? `Country: ${req.country}` : "",
     req.companyType ? `Company type (founder's own words): ${req.companyType}` : "",
-    req.description ? `What they do: ${req.description}` : "",
+    req.description ? fence("company description", req.description) : "",
     capitalPref
       ? `Capital sought (founder's preference): ${capitalPref}. Respect this as a ` +
         `filter and a ranking signal: lead with these capital types, demote and ` +
@@ -1625,7 +1626,7 @@ export async function generateProjectQuestions(
 
   const about = [
     req.company && `Company: ${req.company}`,
-    req.description && `What they do: ${req.description}`,
+    req.description && fence("company description", req.description),
     req.companyType && `Self-described type: ${req.companyType}`,
     req.country && `Incorporated in: ${req.country}`,
   ].filter(Boolean).join("\n");
@@ -1773,6 +1774,15 @@ const PROFILE_SIGNAL_SCHEMA = {
 export async function inferProfileSignal(req: IntelligenceRequest): Promise<ProfileSignal | null> {
   const desc = req.description?.trim();
   if (!desc || desc.length < 25) return null; // too thin to ground anything — no signal beats a fabricated one
+  // Counting attempts even when neutralised: this is the site where an
+  // injection could actually change an outcome, because the signal it produces
+  // feeds channel ordering downstream.
+  const { removed } = declaw(desc);
+  if (removed) {
+    recordEvent("prompt_injection_blocked",
+      `stripped ${removed} control sequence(s) from a company description`,
+      { chars: desc.length });
+  }
   try {
     const res = billed(await client.messages.create({
       model: WRITER_MODEL,
@@ -1789,7 +1799,7 @@ export async function inferProfileSignal(req: IntelligenceRequest): Promise<Prof
             `support. Classify how the description ITSELF reads on this scale ` +
             `(not what the founder later self-selected): ` +
             `${COMPANY_TYPE_OPTIONS.map((o) => o.value).join(" / ")}.\n\n` +
-            `Description: "${desc}"\n\n` +
+            `${fence("company description", desc)}\n\n` +
             `"note" must be one short sentence, in your own words, that a ` +
             `founder could immediately verify against their own description — ` +
             `quote or closely paraphrase specific language from it. Never ` +
