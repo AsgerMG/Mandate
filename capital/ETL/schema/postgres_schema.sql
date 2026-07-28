@@ -99,6 +99,18 @@ CREATE INDEX IF NOT EXISTS idx_eg_intake_field ON public.eligibility_gates USING
 CREATE INDEX IF NOT EXISTS idx_eg_verification ON public.eligibility_gates USING btree (verification_level);
 CREATE INDEX IF NOT EXISTS idx_gates_role ON public.eligibility_gates USING btree (gate_role);
 
+-- ─── event_log ─────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS event_log (
+  id                         BIGSERIAL NOT NULL,
+  created_at                 TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  kind                       TEXT NOT NULL,
+  severity                   TEXT NOT NULL,
+  route                      TEXT,
+  detail                     TEXT,
+  meta                       JSONB
+);
+CREATE UNIQUE INDEX IF NOT EXISTS event_log_pkey ON public.event_log USING btree (id);
+
 -- ─── funding_instrument_sources ────────────────────────────────
 CREATE TABLE IF NOT EXISTS funding_instrument_sources (
   instrument_id              TEXT NOT NULL,

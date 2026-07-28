@@ -13,6 +13,7 @@ import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevan
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
 import { recordUsage } from "./cost";
+import { recordEvent } from "./telemetry";
 
 /**
  * Every model response passes through here so its cost is counted.
@@ -832,8 +833,8 @@ async function discoverAndResearch(
   try {
     intel = extractJson<CompetitorIntel[]>(text);
   } catch (err) {
-    console.error("competitor intel did not parse, continuing without it:",
-      String(err), { chars: text.length });
+    recordEvent("research_degraded", `competitor intel did not parse: ${String(err)}`,
+      { chars: text.length });
     return [];
   }
   if (!Array.isArray(intel)) return [];
@@ -1824,7 +1825,7 @@ async function synthesize(
   } catch (err) {
     // A blown deadline is not fatal on its own — the retry below runs without
     // thinking, which is both faster and unable to fail the same way.
-    console.error("[writer] adaptive attempt failed:", String(err));
+    recordEvent("writer_timeout", String(err), { candidates: rowKeys.length });
   }
   let text = res ? textOf(res) : "";
   // Adaptive thinking can spend almost the whole budget reasoning, leaving too
@@ -1839,7 +1840,7 @@ async function synthesize(
   // cannot hit the same wall. A slightly less considered brief beats none, and
   // this costs a second call only in the rare case it fires.
   if (!res || res.stop_reason === "max_tokens") {
-    console.error("writer produced nothing usable; retrying with thinking off",
+    recordEvent("writer_truncated", "writer produced nothing usable; retrying with thinking off",
       { candidates: rowKeys.length, chars: text.length, stop: res?.stop_reason ?? "timeout" });
     res = await timed("disabled");
     text = textOf(res);
@@ -1954,8 +1955,11 @@ async function synthesize(
     console.error("every institution read as watch-only; showing ranked order instead",
       { candidates: scored.length });
   } else if (worthwhile.length < BRIEF_INSTITUTION_MIN) {
-    console.warn("brief below the usual 2-row floor after dropping watch-only rows",
-      { kept: worthwhile.length, dropped: watchOnly.length });
+    // Not necessarily wrong — the user's call is to ship what is real rather
+    // than pad — but it is the signal worth watching, because a RISE in these
+    // means the pool or the rules changed, not that founders got unluckier.
+    recordEvent("thin_brief", "brief below the usual 2-row floor after dropping watch-only rows",
+      { kept: worthwhile.length, droppedWatchOnly: watchOnly.length, candidates: scored.length });
   }
 
   return {
@@ -2431,7 +2435,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   try {
     intel = await discoverAndResearch(req, instructions);
   } catch (err) {
-    console.error("comparable research failed, continuing without it:", String(err));
+    recordEvent("research_degraded", `comparable research failed: ${String(err)}`);
   }
 
   emit({ type: "status", step: "querying_db", detail: `Found ${intel.length} candidates; matching against the funding record` });

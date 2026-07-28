@@ -14,7 +14,8 @@
     "board": "npx tsx scripts/bench_report.ts",
     "bench": "npx tsx scripts/memo_bench.ts",
     "test": "npx vitest run",
-    "test:cov": "npx vitest run --coverage"
+    "test:cov": "npx vitest run --coverage",
+    "health": "npx tsx scripts/health_report.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

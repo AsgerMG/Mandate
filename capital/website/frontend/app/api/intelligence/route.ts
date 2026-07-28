@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { checkQuota, recordCost } from "@/lib/intelligence/quota";
+import { recordEvent } from "@/lib/intelligence/telemetry";
 import { withCostTracking } from "@/lib/intelligence/cost";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
 import {
@@ -34,6 +35,9 @@ export async function POST(request: NextRequest) {
 
   const quota = await checkQuota(ip, "intelligence");
   if (!quota.allowed) {
+    if (quota.reason === "global") {
+      recordEvent("quota_exhausted", "daily euro ceiling refused a request");
+    }
     return new Response(JSON.stringify({ error: quota.message }), {
       // 503 for the global ceiling: the service is temporarily unavailable to
       // everyone, which is a different thing from this caller being throttled,
@@ -102,7 +106,8 @@ export async function POST(request: NextRequest) {
         console.log("[cost] brief cost EUR %s across %d model calls", eur.toFixed(3), calls);
         recordCost(quota.requestId, eur);
       } catch (err) {
-        console.error("intelligence pipeline failed:", err);
+        recordEvent("request_failed", String(err),
+          { company: body.company?.slice(0, 60) });
         send({
           type: "error",
           message:

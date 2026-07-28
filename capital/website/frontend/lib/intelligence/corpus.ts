@@ -355,7 +355,10 @@ export async function hydrateGateDetail(instrumentIds: string[]): Promise<void> 
       await client.end();
     }
   } catch (err) {
-    console.error("gate detail hydration failed, citations will be blank:", String(err));
+    const { recordEvent } = await import("./telemetry");
+    recordEvent("hydration_degraded",
+      `gate detail hydration failed, citations will be blank: ${String(err)}`,
+      { instruments: want.length });
   }
 }
 
