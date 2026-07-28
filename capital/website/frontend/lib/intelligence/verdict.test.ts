@@ -1,0 +1,123 @@
+import { describe, expect, it } from "vitest";
+import { assessInstrument, VERDICT_RANK, type VerdictStatus } from "./verdict";
+import type { DbGate, DbInstrument } from "./corpus";
+
+/**
+ * Each block names the production bug it would have caught. Fixtures are built
+ * by hand rather than loaded from the corpus, so these cannot start failing
+ * because the data changed — a test that breaks on a data refresh teaches
+ * people to ignore it.
+ */
+const gate = (valueSpec: unknown, id = "g1"): DbGate => ({
+  id, gateFamily: "G1", gateRole: "filter", intakeFieldResolved: undefined,
+  requirement: "A documented requirement", value: "", valueSpec: valueSpec as never,
+  intakeField: "none", quote: "", source: { file: "", locator: "" },
+  verificationLevel: "llm_cited", verified: false,
+} as DbGate);
+
+const instrument = (gates: DbGate[]): DbInstrument => ({
+  id: "test", parentId: null, name: "Test", country: "EU", capitalType: "grant",
+  isFramework: false, eventCount: 10, companyCount: 5, totalEur: 1e6,
+  sourceFamilyBucket: "eic", sampleProjectTitles: null, administeringBody: null,
+  administeringBodyShare: null, lastYear: 2026, gates,
+} as DbInstrument);
+
+describe("non-answers", () => {
+  // THE BUG: every yes/no field offers "Not sure", and the comparator matched
+  // it literally — so hedging on a question read as FAILING it. False blocker
+  // on 12 of 12 archetypes, hiding funds from founders who had not decided.
+  it.each(["unsure", "not sure", "unknown", "n/a", "depends", ""])(
+    '"%s" never produces a blocker', (answer) => {
+      const inst = instrument([gate({ op: "in", field: "sector", allowed: ["agrifood"] })]);
+      const a = assessInstrument(inst, { sector: answer } as never);
+      expect(a.blockers).toHaveLength(0);
+      expect(a.status).toBe("unknown"); // nothing evaluable, not a pass
+    });
+
+  it("a real answer that fails IS a blocker", () => {
+    const inst = instrument([gate({ op: "in", field: "sector", allowed: ["agrifood"] })]);
+    const a = assessInstrument(inst, { sector: "software_data_ai" } as never);
+    expect(a.status).toBe("one_blocker");
+    expect(a.blockers[0].requirement).toContain("documented requirement");
+  });
+});
+
+describe("list-valued answers", () => {
+  // THE BUG: `equals` against a multi-value field compares a string to an
+  // array and silently reads "unknown" for everyone, so the rule stops gating.
+  it("matches when any selected value is allowed", () => {
+    const inst = instrument([gate({ op: "in", field: "activities", allowed: ["tobacco"] })]);
+    expect(assessInstrument(inst, { activities: ["tobacco", "none"] } as never).passed).toBe(1);
+  });
+
+  it("not_in fails only when a listed value is present", () => {
+    const inst = instrument([gate({ op: "not_in", field: "activities", allowed: ["tobacco"] })]);
+    expect(assessInstrument(inst, { activities: ["financial_services"] } as never).status).toBe("open");
+    expect(assessInstrument(inst, { activities: ["tobacco"] } as never).status).toBe("one_blocker");
+  });
+
+  it("an empty list is unanswered, not a pass", () => {
+    const inst = instrument([gate({ op: "not_in", field: "activities", allowed: ["tobacco"] })]);
+    expect(assessInstrument(inst, { activities: [] } as never).status).toBe("unknown");
+  });
+});
+
+describe("banded comparators", () => {
+  const order = ["1-9", "10-49", "50-249", "250+"];
+  const spec = (op: string, bound: string) => ({
+    op, field: "fteBand", order,
+    ...(op === "band_max" ? { maxAllowed: bound } : { minAllowed: bound }),
+  });
+
+  it("band_max passes at or below the ceiling", () => {
+    const inst = instrument([gate(spec("band_max", "50-249"))]);
+    expect(assessInstrument(inst, { fteBand: "10-49" } as never).status).toBe("open");
+    expect(assessInstrument(inst, { fteBand: "50-249" } as never).status).toBe("open");
+    expect(assessInstrument(inst, { fteBand: "250+" } as never).status).toBe("one_blocker");
+  });
+
+  it("band_min passes at or above the floor", () => {
+    const inst = instrument([gate(spec("band_min", "50-249"))]);
+    expect(assessInstrument(inst, { fteBand: "250+" } as never).status).toBe("open");
+    expect(assessInstrument(inst, { fteBand: "1-9" } as never).status).toBe("one_blocker");
+  });
+
+  it("a value outside the band order is unanswerable, not a failure", () => {
+    const inst = instrument([gate(spec("band_max", "50-249"))]);
+    expect(assessInstrument(inst, { fteBand: "not-a-band" } as never).status).toBe("unknown");
+  });
+});
+
+describe("what counts as a filter", () => {
+  it("ignores obligations and programme facts", () => {
+    // Half the corpus is obligations ("works must not start before the grant
+    // decision") and programme facts ("aid intensity capped at 20%"). Neither
+    // says anything about who qualifies, and gating on them would invent
+    // blockers.
+    const g = { ...gate({ op: "in", field: "sector", allowed: ["agrifood"] }), gateRole: "obligation" } as DbGate;
+    expect(assessInstrument(instrument([g]), { sector: "software_data_ai" } as never).checked).toBe(0);
+  });
+
+  it("honours untriaged gates, so coverage can grow safely", () => {
+    const g = { ...gate({ op: "in", field: "sector", allowed: ["agrifood"] }), gateRole: undefined } as DbGate;
+    expect(assessInstrument(instrument([g]), { sector: "software_data_ai" } as never).checked).toBe(1);
+  });
+});
+
+describe("status thresholds", () => {
+  it("two or more failures is blocked, and blocked never reaches a founder", () => {
+    const inst = instrument([
+      gate({ op: "in", field: "sector", allowed: ["agrifood"] }, "a"),
+      gate({ op: "not_in", field: "activities", allowed: ["tobacco"] }, "b"),
+    ]);
+    const a = assessInstrument(inst, { sector: "software_data_ai", activities: ["tobacco"] } as never);
+    expect(a.status).toBe("blocked");
+    expect(VERDICT_RANK.blocked).toBeGreaterThan(VERDICT_RANK.unknown);
+  });
+
+  it("ranks open, one_blocker, unknown, blocked in that order", () => {
+    const order: VerdictStatus[] = ["open", "one_blocker", "unknown", "blocked"];
+    const ranks = order.map((s) => VERDICT_RANK[s]);
+    expect(ranks).toEqual([...ranks].sort((x, y) => x - y));
+  });
+});

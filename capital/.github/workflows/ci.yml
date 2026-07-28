@@ -35,6 +35,13 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
+      # Unit tests over the modules where production bugs actually lived:
+      # the eligibility evaluator, the request sanitiser, watch-only detection
+      # and cost accounting. Coverage has a floor so tests cannot be deleted
+      # to make a build pass.
+      - name: Unit tests
+        run: npx vitest run --coverage
+
       - name: Vocabulary contract
         run: npx tsx scripts/check_vocabularies.ts
         env: { NO_PG: '1' }

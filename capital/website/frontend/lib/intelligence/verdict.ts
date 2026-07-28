@@ -131,7 +131,9 @@ function isFilter(g: DbGate): boolean {
   return (!g.gateRole || g.gateRole === "filter") && Boolean(g.valueSpec);
 }
 
-function assessInstrument(
+/** Exported for unit tests: this is the real decision boundary, and testing
+ *  it through assessAll would require loading the whole corpus. */
+export function assessInstrument(
   inst: DbInstrument,
   answers: EligibilityAnswers | undefined,
 ): InstrumentAssessment {

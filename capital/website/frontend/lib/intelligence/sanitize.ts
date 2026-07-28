@@ -90,7 +90,17 @@ function pickYear(v: unknown): number | undefined {
 export const MAX_DESCRIPTION_CHARS = 1200;
 
 export function sanitizeFreeText(v: unknown, maxLen = MAX_DESCRIPTION_CHARS): string | undefined {
-  return pickString(v, maxLen);
+  // TRUNCATE, never reject. The first version of this delegated to pickString,
+  // which returns undefined for anything over the limit — so a founder who
+  // wrote 1,300 characters would have had their entire description silently
+  // discarded. That is the same silent-drop failure this bound was added to
+  // prevent, just moved somewhere new; a unit test caught it on the first run.
+  //
+  // Over-length input is someone being thorough, not an attack. Cutting it
+  // bounds the prompt cost while keeping the answer they gave.
+  if (typeof v !== "string") return undefined;
+  const s = v.trim();
+  return s.length ? s.slice(0, maxLen) : undefined;
 }
 
 function pickString(v: unknown, maxLen: number): string | undefined {
