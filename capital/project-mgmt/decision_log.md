@@ -185,3 +185,40 @@ no em-dashes anywhere, conclusions in prose rather than chart captions.
 
 **D-01. Tesla's EuBatIn NULL is a known gap, not missing data** (application withdrawn Nov
 2021); recorded in the backfill script's KNOWN_GAPS so no one "fixes" it later.
+
+## 2026-07-28 — Source licensing review deferred until revenue-relevant
+
+**Decision (user):** do not commission a legal review of register terms of use
+now. Revisit before any data-licensing revenue line, or a raise where the corpus
+is positioned as the defensible asset.
+
+**Context:** the July 2026 technical due diligence found 999 distinct source
+identifiers across EU and national registers with no record anywhere of which
+permit commercial redistribution, which require attribution, and which prohibit
+bulk extraction. It is the one finding in that review that code cannot close.
+
+**Risk accepted:** the product is pre-revenue and the corpus currently powers a
+free tool, which is the weakest case for a rights-holder to act on and the
+cheapest time to be wrong. The exposure grows the moment the corpus is sold,
+licensed, or used as the basis of a valuation.
+
+**Trigger to revisit:** first paid tier, first data-licensing conversation, or
+diligence on a raise. At that point the recommended path is the cheap one:
+draft a source-by-source register from published terms first, and put only the
+genuinely ambiguous rows in front of counsel — 999 sources is an expensive thing
+to hand a lawyer cold.
+
+## 2026-07-28 — Submission retention shortened to 90 days
+
+**Decision (user):** 90 days, down from the 400 originally shipped.
+
+**Implementation (mine):** a flat 90-day delete would have destroyed the
+evidence before a funding outcome exists — public funding decisions run 6-12
+months — quietly killing the backlogged outcome loop. So the two things being
+conflated were separated: the IDENTIFYING fields (company name, country, free
+text) are deleted at 90 days from every row unconditionally; the STRUCTURED
+record (shortlist, verdicts, drop reasons) is kept, because once the name is
+gone it describes our software's behaviour rather than anyone's company.
+
+Standard data minimisation: shorten retention of what identifies, not of what
+is anonymous.

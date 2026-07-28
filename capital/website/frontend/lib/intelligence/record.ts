@@ -75,45 +75,56 @@ async function ensureTable(client: import("pg").Client): Promise<void> {
 }
 
 /**
- * How long a submission is kept. A founder's description of an unlaunched
- * company is commercially sensitive, and keeping it forever with no stated
- * purpose is indefensible whether or not it counts as personal data.
+ * How long the IDENTIFYING free text is kept. Set to 90 days by the user
+ * 2026-07-28, down from 400.
  *
- * 400 days is chosen to be long enough for the thing the table exists for —
- * comparing a brief against what actually happened, which for public funding
- * runs on a 6-to-12-month application cycle — and no longer.
+ * That shorter window creates a real tension, so the design changed with it.
+ * 400 days was chosen to outlast a public-funding application cycle (6-12
+ * months), which is the only way the outcome of a brief becomes knowable. At
+ * 90 days the evidence would expire before the outcome exists, which would
+ * quietly kill the backlogged outcome loop.
+ *
+ * Resolved by separating the two things that were being conflated. What is
+ * SENSITIVE is the founder's own prose and their company name — those go at 90
+ * days, no exceptions. What is USEFUL is the structured record: which
+ * instruments we shortlisted, what verdict the engine reached, what was
+ * dropped and why. None of that identifies anyone once the name and
+ * description are gone, so it is kept.
+ *
+ * Standard data minimisation: shorten the retention of what is identifying,
+ * not of what is anonymous.
  */
-export const RETENTION_DAYS = 400;
+export const RETENTION_DAYS = 90;
 
 /**
- * Delete submissions past the retention window.
+ * Anonymise submissions past the retention window.
  *
  * Runs opportunistically after a write rather than on a scheduler, because a
  * cron that nobody notices has stopped is worse than one bounded by traffic:
  * if briefs are being written, the purge is running. At most once an hour per
  * warm instance.
  *
- * Rows with an outcome recorded are KEPT: those are the ones that took a human
- * to produce and are the entire point of the table. They are pseudonymised
- * instead — the free text a founder typed is dropped, the structured decision
- * is not.
+ * At 90 days EVERY row loses its company name, country and description — the
+ * three fields that could identify a business — whether or not an outcome was
+ * ever recorded. What remains is the shortlist, the verdicts and the drop
+ * counts, which describe our own behaviour rather than anyone's company.
+ *
+ * Deliberately an UPDATE, not a DELETE. Deleting would also destroy the record
+ * of what the product recommended, which is the evidence the outcome loop
+ * needs and which stops being personal data the moment the name is gone.
  */
 let lastPurge = 0;
 async function purgeExpired(client: import("pg").Client): Promise<void> {
   if (Date.now() - lastPurge < 60 * 60 * 1000) return;
   lastPurge = Date.now();
-  const cutoff = `${RETENTION_DAYS} days`;
-  const deleted = await client.query(
-    `DELETE FROM brief_records
-      WHERE created_at < now() - $1::interval AND outcome IS NULL`, [cutoff]);
   const scrubbed = await client.query(
     `UPDATE brief_records
-        SET description = NULL, company = 'retained-outcome'
-      WHERE created_at < now() - $1::interval
-        AND outcome IS NOT NULL AND description IS NOT NULL`, [cutoff]);
-  if (deleted.rowCount || scrubbed.rowCount) {
-    console.log("[brief_records] retention: deleted %d, pseudonymised %d",
-      deleted.rowCount ?? 0, scrubbed.rowCount ?? 0);
+        SET company = 'anonymised', country = NULL, description = NULL
+      WHERE created_at < now() - $1::interval AND company <> 'anonymised'`,
+    [`${RETENTION_DAYS} days`]);
+  if (scrubbed.rowCount) {
+    console.log("[brief_records] retention: anonymised %d rows older than %d days",
+      scrubbed.rowCount, RETENTION_DAYS);
   }
 }
 

@@ -29,11 +29,22 @@ published shortlist with each row's code-computed verdict, why rows were dropped
 
 Two columns sit deliberately empty: **`outcome`** and **`outcome_note`**.
 
-Retention is 400 days, chosen to outlast a public-funding application cycle
-(6–12 months) so the outcome is knowable before the row expires. Rows that DO
-carry an outcome are kept past that window and pseudonymised instead — the free
-text is dropped, the structured decision survives, because those rows are the
-entire point.
+Retention was **shortened to 90 days on 2026-07-28** (user's call), which
+changed the design in a way that matters for this plan. The identifying fields
+— company name, country, description — are deleted at 90 days from every row,
+unconditionally. The **structured record is kept indefinitely**: the shortlist,
+the verdicts, what was dropped and why.
+
+That resolves what would otherwise have killed this plan. A flat 90-day delete
+would destroy the evidence before a funding outcome exists (decisions run 6–12
+months). Separating the two — short retention for what identifies, indefinite
+for what is anonymous — keeps the dataset usable while shrinking the sensitive
+surface.
+
+**Consequence for revival:** outcomes can no longer be matched back to a
+company name from our own records after 90 days. Any follow-up mechanism must
+either capture the outcome INSIDE the window, or match on the corpus itself
+(a company reappearing in a later funding event), which needs no stored name.
 
 ## Why it was built before it was needed
 

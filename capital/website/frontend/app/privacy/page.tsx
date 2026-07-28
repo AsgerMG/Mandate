@@ -59,16 +59,17 @@ export default function PrivacyPage() {
 
         <Section title="How long">
           <p>
-            Submissions are deleted after{" "}
-            <strong>{RETENTION_DAYS} days</strong>. That window is set by the
-            application cycle this tool exists to support: public funding decisions
-            typically take six to twelve months, so a shorter window would delete the
-            evidence before the outcome is known.
+            After <strong>{RETENTION_DAYS} days</strong> we permanently delete the
+            three things that could identify you — your company name, your country
+            and the description you wrote. This happens to every submission,
+            automatically, whether or not anything came of it.
           </p>
           <p>
-            Where we have recorded what actually happened to an application, the
-            structured decision is kept and the free text you wrote is deleted, so
-            what remains cannot be traced back to a specific company.
+            What we keep past that point is the record of our own work: which
+            institutions we shortlisted, what our eligibility engine concluded, and
+            what we ruled out. Once the name and description are gone, that describes
+            what our software did, not who asked. We use it to check whether the tool
+            gives good advice.
           </p>
         </Section>
 
@@ -88,9 +89,10 @@ export default function PrivacyPage() {
             <a className="underline" href="mailto:asger@grimberg.dk">
               asger@grimberg.dk
             </a>{" "}
-            with your company name and we will delete every submission matching it.
-            No verification hoops — the data is not sensitive enough to justify
-            making deletion harder than submission.
+            with your company name and we will delete every submission matching it,
+            immediately and in full, rather than waiting for the {RETENTION_DAYS}-day
+            window. No verification hoops — making deletion harder than submission
+            would be the wrong way round.
           </p>
         </Section>
 
