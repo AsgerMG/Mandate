@@ -10,6 +10,21 @@ the methodology + limitations pages).
 ```bash
 npm run dev        # dev server at http://localhost:3000
 npm run build      # static build → out/  (prebuild runs ../build/build_site_data.py --check)
+
+npm run check      # EVERYTHING free: types, unit tests + coverage, vocabulary
+                   # contract, 12-archetype regression, payload budget,
+                   # dependency audit. This is what CI runs — if it passes
+                   # here it passes there. No API calls, no spend.
+npm run test       # just the unit tests
+npm run health     # operational digest from Postgres: errors, degradations,
+                   # spend against the daily ceiling. Exits non-zero when
+                   # something needs attention, so it can be a cron.
+npm run vocab      # regenerate data/vocabularies.json after changing any
+                   # option list in types.ts — the Python ETL reads that file,
+                   # and check_vocabularies fails if it is stale.
+npm run trace      # free: which instruments reach the writer, per archetype
+npm run board      # free: score every brief ever generated against known defects
+npm run bench      # COSTS MONEY: real companies through the full pipeline
 ```
 
 `npm run build`'s `prebuild` hook fails if the JSON in `public/data/` is stale versus
