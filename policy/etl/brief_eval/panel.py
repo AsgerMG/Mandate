@@ -93,4 +93,94 @@ EVAL_PANEL: list[CompanyProfile] = [
         customer_type="b2c",
         data_categories=["health"],
     ),
+    # --- Added 2026-07-28 (Phase 5.0) -----------------------------------
+    # Widened 5 -> 10 because at n=5 the judge's noise floor (~±0.3 on a 1-5
+    # scale) cannot resolve the gains Phase 5 is designed to produce — we would
+    # pay for a lever and be unable to tell whether it worked. Judge cost is
+    # flat in panel size (scores batch into one call); only generation scales,
+    # so this roughly doubles generation cost per round and leaves judging
+    # unchanged.
+    #
+    # These five were chosen to exercise retrieval paths the original panel
+    # never triggered: no profile had `monthly_eu_users` (so the `platform`
+    # facet never fired), none was b2c outside health (so `consumer` rarely
+    # fired), and fintech/adtech/telecom/public-sector had no representation at
+    # all despite each having its own mapped sector facet. A panel that never
+    # exercises half the facets cannot detect a regression in them.
+    #
+    # NOTE: this resets the baseline. The 3.80 -> 4.11 Phase 1-4 comparison
+    # cannot be extended across a panel change — the widened panel needs its own
+    # baseline run before any Phase 5 lever lands.
+    CompanyProfile(
+        name="Panel: Large consumer marketplace platform",
+        description=(
+            "Consumer marketplace connecting independent sellers with buyers "
+            "across the EU, with an advertising business funded by on-platform "
+            "behavioural targeting and an in-house recommender feed."
+        ),
+        sectors=["ecommerce", "adtech"],
+        markets=[Jurisdiction.EU, Jurisdiction.DE, Jurisdiction.FR],
+        uses_ai=True,
+        handles_personal_data=True,
+        company_size="large",
+        ai_role="deployer",
+        monthly_eu_users="over 45 million",
+        customer_type="both",
+    ),
+    CompanyProfile(
+        name="Panel: Payments and credit-scoring fintech",
+        description=(
+            "Licensed payment institution providing account-to-account payments "
+            "plus an AI credit-scoring API sold to consumer lenders."
+        ),
+        sectors=["fintech"],
+        markets=[Jurisdiction.EU, Jurisdiction.DE],
+        uses_ai=True,
+        handles_personal_data=True,
+        company_size="medium",
+        ai_role="provider",
+        customer_type="b2b",
+        data_categories=["financial"],
+    ),
+    CompanyProfile(
+        name="Panel: Adtech targeting and measurement vendor",
+        description=(
+            "Programmatic advertising vendor providing audience segmentation, "
+            "cross-site measurement and consent management to publishers."
+        ),
+        sectors=["adtech"],
+        markets=[Jurisdiction.EU, Jurisdiction.FR],
+        uses_ai=True,
+        handles_personal_data=True,
+        company_size="medium",
+        ai_role="deployer",
+        customer_type="b2b",
+        data_categories=["behavioural", "special-category"],
+    ),
+    CompanyProfile(
+        name="Panel: Regional telecoms operator",
+        description=(
+            "Fixed and mobile electronic communications provider serving "
+            "residential and business subscribers in two member states."
+        ),
+        sectors=["telecom"],
+        markets=[Jurisdiction.EU, Jurisdiction.DE],
+        uses_ai=False,
+        handles_personal_data=True,
+        company_size="large",
+        customer_type="both",
+    ),
+    CompanyProfile(
+        name="Panel: Public-sector digital services supplier",
+        description=(
+            "Builds and operates citizen-facing web and mobile services under "
+            "contract to municipal and national public authorities."
+        ),
+        sectors=["public-sector", "software-saas"],
+        markets=[Jurisdiction.EU, Jurisdiction.FR],
+        uses_ai=False,
+        handles_personal_data=True,
+        company_size="medium",
+        customer_type="b2b",
+    ),
 ]

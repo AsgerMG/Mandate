@@ -469,3 +469,252 @@ instrument.**
 | Case law | 0 | 1,440 |
 | Enrichments | 0 | 874 (in progress) |
 | Tests | 263 | 322 |
+
+---
+
+# Phase 5 — lifting the ceiling (planned 2026-07-27, nothing started)
+
+The Phase 1-4 work moved the panel **3.80 → 4.11** overall. This phase is derived
+from the judge's own critiques of the *after* briefs, not from intuition, so each
+item below names the dimension it targets and the score it has to move.
+
+**Judged state after Phase 1-4** (5 matched profiles, 1-5 per dimension):
+
+| Dimension | Score | Read |
+|---|---|---|
+| relevance | 4.80 | ceiling |
+| tone_and_structure | 4.80 | ceiling |
+| citation_quality | 4.40 | near ceiling |
+| scope_matching | 4.40 | near ceiling |
+| prioritization | 4.00 | capped by unresolved hinges |
+| political_currency | 3.60 | second-lowest |
+| **stakeholder_specificity** | **2.80** | **binding constraint** |
+
+Three dimensions are effectively done. Further prompt work on style or grounding
+is diminishing-returns territory — the remaining headroom is concentrated in two
+places, and only one of them is a prompt problem.
+
+## 5.0 Widen the measurement before spending on the levers
+
+Do this first, because right now the instrument cannot detect the effects the rest
+of this phase is designed to produce.
+
+A 5-profile panel scored 1-5 has a noise floor around ±0.3. Several plausible
+real gains (+0.2 on prioritization, say) are therefore unmeasurable — we would
+spend on a lever and not be able to tell whether it worked. `EVAL_PANEL`'s own
+docstring notes that judge cost does **not** scale with panel size (scores are
+batched into one call); only generation does. So widening the panel from 5 to
+~10 profiles roughly doubles generation cost per round (≈$3 → ≈$6) while leaving
+judge cost flat, and meaningfully tightens the floor.
+
+Caveat to state plainly: widening the panel **resets the baseline**. The 3.80 →
+4.11 comparison cannot be extended across a panel change, so the wider panel needs
+its own baseline run before any Phase 5 lever lands.
+
+Also worth adding while here: a **second judged run of the same unchanged corpus**,
+to measure the judge's own run-to-run variance. We currently assume ±0.3 is noise;
+that number is an estimate, not a measurement.
+
+## 5.1 Actor table — the binding constraint (targets stakeholder_specificity 2.80)
+
+Four of five critiques said the same thing in different words: *"stakeholders
+remain institutional (AI Office, committees) without named individuals"*,
+*"generic (CNIL, AI Office) without named contacts or rapporteurs"*, *"named
+contacts (DG CONNECT, ENISA) are still institution-level rather than
+individual"*.
+
+This is a data gap wearing a prompt's clothes. SYSTEM_PROMPT already demands the
+who-runs-what map and the brief visibly attempts it — it reaches institutions
+because that is all the corpus contains.
+
+**Source material, ranked by how much already exists:**
+
+1. **`ep_verbatim` speakers — already parsed and thrown away.** The adapter
+   extracts `(speaker, role)` at `ep_verbatim.py:98` and flattens it into passage
+   text. Persisting what is already being parsed is the cheapest possible start
+   and needs no new upstream.
+2. **OEIL rapporteurs, shadow rapporteurs, committee.** 148 procedures now
+   ingested. **Needs verification:** the list endpoint returns only
+   `id/type/process_id/label`; whether the *detail* response carries rapporteur
+   fields has not been checked. Do that before designing around it.
+3. **Roll-call votes** (`howtheyvote.eu`, MIT, no auth, already in the backlog).
+   Turns positions from rhetoric into a record — "this rapporteur voted against
+   this three times" is unbrowsable by any agent.
+4. **Commissioners in press releases** — needs entity extraction over text, so
+   last and least certain.
+
+**Schema:** `actors` (name, role, institution, political group, external ids) +
+`document_actor` (many-to-many with a relation kind: speaker, rapporteur,
+shadow, addressee).
+
+**Retrieval:** actors are not passages and should not compete for passage slots.
+Attach them as a distinct **stakeholder block** in the brief context, resolved
+from the instruments already in scope — so the political-landscape section gets
+names for the files it is already discussing, rather than a separate retrieval
+pass that could drag in irrelevant people.
+
+**Prompt:** once names exist, tighten the who-runs-what instruction from "name
+the institutions" to "name the individuals where the sources carry them" — with
+the same fabrication guard used for case law, because a misattributed rapporteur
+is exactly as damaging as a misattributed holding.
+
+**Test:** stakeholder_specificity 2.80 → 4.0+. If it does not move, the
+hypothesis (that names were the constraint) was wrong and this needs re-thinking
+rather than more sources.
+
+**Secondary hypothesis to check while here:** stakeholder_specificity *declined*
+−0.20 in this phase. Press/newsletter share fell 77% → 47% and case law was
+capped; press is where named individuals live, so adding binding law may have
+diluted the signal. The actor table would settle it either way.
+
+## 5.2 Hinge audit → targeted questions (targets prioritization 4.00, scope_matching)
+
+Critiques: *"Prio 1 given to a 'Monitor' verdict with no confirmed high-risk
+trigger"*, *"NIS2/Machinery classification honestly flagged as unconfirmed"*.
+
+The brief is behaving **correctly** here — the hinge rule deliberately produces
+Monitor when a threshold fact is unanswered, which is the right answer and was
+itself a deliberate fix. But every unresolved hinge is a verdict that cannot be
+decisive, so this caps the score no matter how good the retrieval is.
+
+The leverage is *not* "add more questions". It is knowing **which hinges actually
+recur**, and today there is no data on that: the hinge is named in prose only.
+
+**Sequence:**
+1. Make unresolved hinges machine-readable — the brief already names the hinge, so
+   emit it as a structured field alongside `canon_notes` rather than parsing prose
+   back out.
+2. Run the (widened) panel and count which hinges recur.
+3. Add follow-up questions in `etl/intelligence/questions.py` for exactly those,
+   and only those. A question that resolves "are you a provider of a high-risk AI
+   system under Annex III" converts a Monitor into an In Scope with an action.
+
+**Test:** count of Monitor-with-unresolved-hinge verdicts should fall;
+prioritization and scope_matching should rise. Note the trade-off honestly — some
+Monitors are *correct* and should survive, so "fewer Monitors" is not by itself a
+win. The metric is fewer Monitors caused by facts we could have asked for.
+
+**Note on the intake form:** it collects *company* facts and is not the constraint
+here — the gap is a handful of specific scoping hinges, which the follow-up
+questions already have the right shape to capture. Widening the intake form is not
+part of this.
+
+## 5.3 Prio/Verdict consistency rule (targets prioritization, small)
+
+One concrete defect: Prio 1 assigned to a Monitor row with no confirmed trigger.
+Prio and Verdict are *deliberately* independent — a file can be verdict-Monitor
+yet Prio 1, like a live enforcement risk — so the rule must be narrow: **Monitor
++ no confirmed trigger + Prio 1** is the combination that cannot occur.
+
+Add to SYSTEM_PROMPT and REVISE_INSTRUCTION, and lock it with a test, following
+the established pattern in `tests/test_briefing.py` where every prompt rule earned
+from a real failure has a test so a future edit cannot silently drop it.
+
+## 5.4 Council layer (targets political_currency 3.60)
+
+Two critiques call the political section *"fairly thin/generic"*. Case law and OEIL
+lifted this +0.60; the remaining gap is the actor gap above plus the Council, which
+is entirely unsourced — trilogue mandates, presidency compromise texts, progress
+reports. That is where "what will actually happen" lives.
+
+Blocked on the same question as the DMA register: whether there is a
+Railway-compatible programmatic route (no Chromium in the image). Research before
+design.
+
+## Sequencing
+
+| Order | Work | Why here |
+|---|---|---|
+| 1 | 5.0 widen panel + measure judge variance | Without it, later results are unreadable |
+| 2 | 5.3 Prio/Verdict rule | Hours, not days; independent of everything else |
+| 3 | 5.1 actor table, starting with `ep_verbatim` speakers | Biggest gap; the cheapest slice needs no new upstream |
+| 4 | 5.2 hinge instrumentation → questions | Needs the wider panel to identify recurring hinges |
+| 5 | 5.1 continued (OEIL rapporteurs → roll-call votes) | After the schema proves itself on speakers |
+| 6 | 5.4 Council layer | Research-gated |
+
+**Cost per measured round:** ≈$6 generation + ≈$0.30 judging on a 10-profile panel.
+Test one lever at a time against a settled corpus — `brief-compare` will warn if
+ingestion had not settled, which is now enforced rather than remembered.
+
+---
+
+## Phase 5 — build status (2026-07-28)
+
+Anthropic credits were exhausted, so everything below was built and verified
+**without** generation or judging. That splits cleanly: all the machinery exists
+and is unit-tested; nothing has been *measured* against briefs yet. The first run
+next week is a baseline on the widened panel, not a comparison — see 5.0.
+
+| Item | State |
+|---|---|
+| 5.0 Panel 5 → 10 profiles | ✅ built. All 16 facets now exercised |
+| 5.3 Prio/Verdict rule | ✅ prompt + revise-pass + deterministic check |
+| 5.1 Actor schema + migration | ✅ applied to live DB |
+| 5.1 Actor extraction | ✅ 510 actors, 999 links |
+| 5.1 Stakeholder block + prompt | ✅ wired, tested — **but see the coverage gap** |
+| 5.2 Machine-readable hinges | ✅ `extract_hinges()`, validated on real briefs |
+| 5.2 Question audit | ⬜ needs a panel run to count recurring hinges |
+| 5.4 Council layer | ⬜ research-gated, untouched |
+
+**5.0.** Panel is 10. The five additions were chosen to exercise paths the
+original never touched: no profile had `monthly_eu_users` (so the `platform`
+facet never fired), none was b2c outside health, and fintech/adtech/telecom/
+public-sector had mapped facets but no representation. A panel that never
+exercises half the facets cannot detect a regression in them. **This resets the
+baseline** — the 3.80 → 4.11 comparison cannot be extended across a panel change.
+
+**5.3.** Rule added to SYSTEM_PROMPT and as check (10) in REVISE_INSTRUCTION,
+plus `prio_verdict_issues()`, a deterministic check that joins the existing
+canon-fix pass so the model gets told to fix it. Validated against yesterday's
+briefs: it independently reproduces the judge's finding — 1 violation, on the AI
+SaaS profile, exactly the row the judge flagged.
+
+**5.1 — built, populated, and NOT yet reaching briefs.** 510 actors including the
+real rapporteurs on the real files (Brando Benifei on the AI Act, Christel
+Schaldemose on the DSA, René Repasi), 16 Commissioners correctly attributed to the
+Commission rather than to the chamber they spoke in. Extraction re-derives
+structure from text `ep_verbatim` already wrote, so it needed no re-ingestion, no
+network and no adapter change.
+
+**The gap, stated plainly: the stakeholder block resolved 0 stakeholders on all
+10 panel profiles.** `document_actor` links actors to the debate *transcript*,
+and a brief's context holds instruments — the AI Act, GDPR, DORA — not
+transcripts. Linking through the debates' own procedure references
+(`link_actors_to_procedures`) reaches 55 OEIL procedure documents, but those are
+title-thin and rarely win retrieval. So the layer is real and unreachable, which
+is the same lesson case law taught: **a source is not integrated when it is
+ingested, only when something retrieves it.**
+
+What closes it, in order of directness:
+1. **A procedure → CELEX mapping.** Nothing today connects "2024/0047(COD)" to
+   the act it became, so actors cannot reach legislation. This is the blocker.
+2. **OEIL rapporteur fields** — still the unverified item from the original plan.
+   If the detail endpoint carries rapporteur/shadow/committee, actors attach
+   directly to procedures at ingestion, and any procedure→act link then
+   propagates them.
+3. Deliberately **not** doing: a topical fallback that names actors sharing a
+   policy area with in-scope instruments. That would fire, and it would name
+   people not linked to the file — exactly the fabrication the prompt forbids and
+   the judge would rightly punish. A stakeholder block that is sometimes empty is
+   correct; one that is sometimes wrong is not.
+
+**5.2.** `extract_hinges()` parses the phrasing the prompt already mandates
+("hinges on whether X — confirm"), so no second model call. Validated on
+yesterday's five briefs: 6 hinges extracted, and **NIS2 appears as an unresolved
+hinge in 2 of 5 profiles** — the first evidence of a *recurring* hinge, which is
+exactly the input the question audit needs. Briefs now return
+`unresolved_hinges`, so a panel run accumulates this automatically.
+
+### First actions next week, in order
+
+1. `regina brief-check --all` on the 10-profile panel → **new baseline** (~$6).
+   Not a comparison; the panel changed.
+2. Read `unresolved_hinges` across the 10 and count recurrences. NIS2 headcount
+   is already a candidate from n=5.
+3. Add follow-up questions in `questions.py` for the hinges that actually recur,
+   then `brief-compare` against the new baseline.
+4. Verify OEIL's detail endpoint for rapporteur fields — that is the cheapest
+   route to making the actor layer reachable.
+
+**Still blocked on credits, unchanged:** 1,195 documents (mostly judgments) have
+no enrichment card, and the decision on whether `enrich` joins `refresh`.

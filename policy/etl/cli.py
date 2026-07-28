@@ -13,6 +13,7 @@ else here is setup/inspection around that single trigger.
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import structlog
 import typer
@@ -120,9 +121,21 @@ def refresh(
 
         celex_result = reclassify_celex_documents(session)
         source_result = reclassify_by_source(session)
+
+    # Actor extraction is API-free (it re-derives structure from stored verbatim
+    # text), so it rides along with the other idempotent metadata passes rather
+    # than needing its own trigger.
+    with session_scope() as session:
+        from etl.enrichment.actors import extract_actors
+
+        actor_result = extract_actors(session)
     typer.echo(
         f"Reclassified {celex_result['types_changed'] + source_result['types_changed']} "
         f"document types."
+    )
+    typer.echo(
+        f"Extracted {actor_result['actors_created']} new named actors "
+        f"({actor_result['links_created']} document links)."
     )
 
     with HttpClient(settings) as http, session_scope() as session:
@@ -272,6 +285,32 @@ def enrich(
         f"Enriched {result['written']} of {result['candidates']} documents "
         f"({result['errors']} errors)."
     )
+
+
+@app.command()
+def actors(
+    dry_run: bool = typer.Option(False, "--dry-run", help="Report counts without writing."),
+) -> None:
+    """Extract named actors (speakers, rapporteurs) from verbatim debate passages.
+
+    No API calls — it re-derives structure from text the verbatim adapters
+    already wrote. Runs as part of `refresh`; use this to backfill on demand.
+    """
+    from etl.enrichment.actors import extract_actors
+
+    with session_scope() as session:
+        result = extract_actors(session, dry_run=dry_run)
+    typer.echo(
+        f"{result['attributed']} of {result['passages']} verbatim passages carried an "
+        f"attribution; {result['actors_created']} actors and {result['links_created']} "
+        f"document links created."
+    )
+    typer.echo(f"Roles: {result['roles']}")
+    if result.get("procedure_links") is not None:
+        typer.echo(
+            f"Linked actors to {result['procedure_links']} legislative-procedure documents "
+            "via the debates' own procedure references."
+        )
 
 
 @app.command()
@@ -499,6 +538,7 @@ def brief_check(
     from etl.brief_eval.cost import BudgetGuard, MeteredClient
     from etl.brief_eval.panel import EVAL_PANEL
     from etl.brief_eval.rotation import (
+        corpus_fingerprint,
         cumulative_spend,
         record_run,
         report_path,
@@ -563,10 +603,22 @@ def brief_check(
         )
         completed += 1
 
+    # Fingerprint the corpus this run actually saw, so a later comparison can
+    # tell whether the two runs are comparable at all (see corpus_fingerprint).
+    with session_scope() as session:
+        fingerprint = corpus_fingerprint(session)
+    if fingerprint["unembedded_passages"]:
+        typer.echo(
+            f"\n⚠ {fingerprint['unembedded_passages']} passages are unembedded — "
+            "ingestion has not settled, so this run measures a moving target. "
+            "Run `regina embed` before treating these numbers as a baseline."
+        )
+
     path = report_path()
     path.write_text(
         json.dumps(
             {
+                "corpus": fingerprint,
                 "spent_usd": round(guard.spent_usd, 4),
                 "calls": guard.calls,
                 "breakdown": guard.breakdown,
@@ -595,6 +647,46 @@ def brief_check(
             f"(all brief-checks to date: ${cumulative_spend():.2f})"
         )
     typer.echo(f"Raw report: {path}")
+
+
+@app.command(name="brief-compare")
+def brief_compare(
+    before: str = typer.Argument(..., help="Path to the earlier brief-check report JSON."),
+    after: str = typer.Argument(..., help="Path to the later brief-check report JSON."),
+    out: str = typer.Option(None, "--out", help="Also write the full result JSON here."),
+) -> None:
+    """Judge two `brief-check` runs against each other and print per-dimension deltas.
+
+    Answers "did that change make briefs better?" with the existing 7-dimension
+    judge instead of an impression. Matched profiles only — a profile in one run
+    and not the other is excluded and reported. One judge call per side, so cost
+    is two calls regardless of panel size.
+
+    Checks corpus fingerprints first: a run against a half-ingested corpus
+    produces plausible, worthless numbers, and that has already happened once.
+    """
+    from etl.brief_eval.compare import compare_runs, load_report, render
+    from etl.brief_eval.rotation import report_path
+    from etl.intelligence.llm import get_client, has_api_key
+
+    if not has_api_key():
+        typer.echo("No ANTHROPIC_API_KEY set — the judge needs one.")
+        raise typer.Exit(1)
+
+    result = compare_runs(get_client(), load_report(before), load_report(after))
+    typer.echo(render(result))
+    # Always persist: a judged comparison is two paid calls, and an unpersisted
+    # paid result is money spent on a number you cannot revisit.
+    default_path = report_path()
+    target = (
+        Path(out)
+        if out
+        else default_path.with_name(
+            default_path.name.replace("brief-check-", "brief-compare-")
+        )
+    )
+    target.write_text(json.dumps(result, indent=2, default=str))
+    typer.echo(f"\nFull result: {target}")
 
 
 @app.command(name="brief-improve")

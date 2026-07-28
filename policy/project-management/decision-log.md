@@ -5,6 +5,88 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-27 — Retrieval depth split, corpus legibility, case law, Alembic
+**Decision:** Six structural changes, in the order they were forced.
+
+1. **Breadth/depth retrieval split** (`etl/intelligence/briefing.py`,
+`etl/intelligence/profile.py`). `CompanyProfile.retrieval_queries()` decomposes a
+profile into obligation facets (AI, data-protection, sensitive-data, per-sector,
+consumer, platform, national, enforcement) retrieved separately; a depth pass
+(`document_passages()`) then re-retrieves *within* the instruments breadth
+nominated; canon acts not retrieved on merit enter as 350-char scope-check stubs;
+Voyage `rerank-2.5` cross-encoder over an over-fetched pool per facet; a 0.40
+cosine floor on the legal path.
+2. **`DocumentType` 9 → 17 members** and a rewritten CELEX classifier.
+3. **`documents.date_application`** plus Cellar date/lifecycle enrichment.
+4. **EU case law** (`eurlex_case_law`, CELEX sector 6) — 1,440 documents.
+5. **Alembic** owns schema changes; `init_db()` stays the fresh-install path.
+6. **Per-document enrichment** (`etl/enrichment/summarize.py`) — 874 instruments.
+
+**Why:** Briefs read as surface-level and the suspicion was that the brief path
+wasn't using pgvector. It was, correctly (76,478/76,478 passages embedded on
+voyage-4-large). The cause was retrieval *shape*: 66 passages across 65 distinct
+documents — one ~1,300-char window of each of 65 laws — with 55 of the 66 forced
+by the canon sweep, so 83% of context went to breadth nothing chose. A brief built
+on that can name instruments and explain none.
+
+**Options considered and rejected:**
+- *A legal-domain embedder (`voyage-law-2`).* Tested on a real 3-law/3-commentary
+  mix: it ranked commentary first exactly as `voyage-4-large` did, with less than
+  half the score separation (0.047 vs 0.105). The skew is a query-document
+  mismatch, not an embedder weakness. No re-embed.
+- *Replacing the EUR-Lex adapter with `eurlex-builder`* (MIT, v0.1.1). It owns its
+  own DuckDB/Parquet store, does corpus-by-date-range rather than topical
+  discovery, is days old with one author, and adopting it would discard earned
+  fixes (Cellar-over-WAF, `cellar_content_url()` percent-encoding, manifestation
+  negotiation). Kept as an offline structure supplier for Phase 4 instead.
+- *presscorner-builder's 130k press documents.* Reversed an earlier
+  recommendation once the corpus was measured at 77% press. Only the institutional
+  slice (Council/CJEU/Eurostat) has value; the volume does not.
+
+**What the work itself surfaced** (none of it predicted):
+- **`pipeline._since()` traps a bad first run.** Only a source's first run sees the
+  full `backfill_days` window; a truncated or crashed first run leaves the missed
+  history permanently unreachable while the source still looks healthy. Reproduced
+  deliberately: `--limit 200` then an unlimited run discovering 0. Fixed with
+  `--full` on `run`/`refresh` — recovery is now a supported operation rather than a
+  manual `last_run_at` edit, which is why it had recurred.
+- **Virtuoso requires typed literals.** Cellar does not match plain
+  `"32024R1689"` against the stored `"..."^^xsd:string`, and returns zero rows
+  rather than an error. `eurlex_key_acts._lookup_dates()` had this bug, so all 55
+  foundational acts sat undated. Fixed in code; **the re-run is still pending**.
+- **In force ≠ applicable.** `entry-into-force` is multi-valued (the AI Act carries
+  8 staged dates) and `end-of-validity` uses 9999-12-31 as a "no end" sentinel.
+  Hence `date_application` and `extra.application_stages`.
+- **CELEX descriptors are two characters in sectors 5 and 6.** Reading one left
+  staff working documents, institutional opinions and judgments all in `OTHER` —
+  which the depth quota sorts as *commentary*.
+- **Ingesting a source does not integrate it.** Case law changed retrieval by
+  nothing until an `enforcement` facet phrased the way rulings are phrased was
+  added: a ruling reads "Case C-123/24, X v Y" and has no resemblance to a company
+  profile.
+- **Authority ≠ relevance.** Judgments were first put in the binding depth tier,
+  then moved to their own small tier, then hard-capped at 6 passages — because
+  neither of the first two bound (a fintech profile still reached 32% case law,
+  since rulings arrive through every facet). User steer: only if super relevant.
+- **The depth metric couldn't detect depth collapse.** `documents_per_passage`
+  counts ~50 single-passage canon stubs, flooring it near 0.5 whatever retrieval
+  does. Replaced by `substantive_documents_per_passage` +
+  `max_passages_per_document`.
+
+**Measured result:** documents 4,781 → 6,366; passages embedded 76,478 → 108,885
+(100%); binding law + case law 135 (2.8%) → 1,548 (24%); press/newsletter share
+77% → 47%; `OTHER` 2,774 → 141; `date_in_force` 0 → 294 (regulations 96/98);
+REPEALED 1 → 55; `oeil` 3 → 148; substantive depth ratio 0.34-0.54 with up to 5-6
+passages per instrument; tests 263 → 322.
+
+**Also corrected, three claims of mine that were wrong:** the sector-tag "gap"
+(the classifier deliberately assigns zero sectors to horizontal law), the
+enrichment scope ("populate" implied a command existed; there was no generator),
+and a breadth-cap rationale citing a measurement that was a title-prefix
+collapse in a diagnostic script, not real.
+
+---
+
 ## 2026-07-22 — 21 new press/newsletter sources for political-currency coverage
 **Decision:** Added 7 plain RSS `FeedSpec` entries and two new custom
 `SourceAdapter`s (14 concrete sources total) targeting the low

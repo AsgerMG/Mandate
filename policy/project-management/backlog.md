@@ -1,6 +1,75 @@
 # Backlog
 
-Status legend: ✅ done · 🔄 in progress · ⬜ todo
+Status legend: ✅ done · 🔄 in progress · ⬜ todo · ❌ withdrawn · 🔝 top priority
+
+**How to read this file.** It is 1,600 lines and ~80% of it is ✅ — because the
+house style is to record *why* a thing was done, what was measured, and what went
+wrong, not just that it shipped. That history is the point and is deliberately not
+pruned. The cost is that the actual to-do list gets buried, so the open items are
+indexed here. Add new entries in the relevant milestone section, and update this
+index when an item opens or closes.
+
+## Open items index
+
+**Top priority**
+- 🔝 France — Légifrance adapter (blocked on PISTE OAuth credentials only)
+- 🔝 Actor table — judged evidence says stakeholder_specificity (2.80) is the
+  binding constraint on brief quality. Planned as **Phase 5.1** of
+  [brief-quality-plan.md](brief-quality-plan.md); start with `ep_verbatim`
+  speakers, which are already parsed and discarded
+- 🔝 Widen the eval panel 5 → ~10 profiles **before** any Phase 5 lever
+  (Phase 5.0) — at n=5 the ±0.3 noise floor cannot detect the gains Phase 5 is
+  designed to produce. Judge cost is flat in panel size; generation is not.
+  Resets the baseline, so it has to come first
+
+**Phase 5 — built 2026-07-28, awaiting Anthropic credits to measure**
+- Widened panel (10 profiles), Prio/Verdict rule, actor table (510 actors),
+  machine-readable hinges: all built and unit-tested, none measured against briefs
+- 🔝 **Actor layer is populated but unreachable** — the stakeholder block resolved
+  0 stakeholders on all 10 profiles, because `document_actor` links to debate
+  transcripts and briefs retrieve instruments. Needs a procedure→CELEX mapping,
+  or OEIL rapporteur fields. See Phase 5 build status in the plan
+- First action next week: new baseline on the widened panel (the panel change
+  resets the old 3.80 → 4.11 comparison), then count recurring hinges
+
+**Loose ends from 2026-07-27** — code changed but the corpus didn't follow
+- `eurlex_oj_l` is RSS-retention-bound, not cursor-bound — decide whether to
+  replace it with SPARQL-based OJ-L discovery or accept it as a what's-new tap
+- 1,586 documents have no policy-area/sector tags (arrived via targeted backfills)
+- 1,195 documents have no enrichment card (mostly judgments from the backfill)
+- Decide whether `enrich` joins `refresh` (else the card gap recurs every ingest)
+- `adlc_avis` has never run; delete the leaked `t` test-fixture source
+- `summarize._candidates()` does one query per document
+
+**Sources not yet built**
+- Germany — `bkarta_news` returns 0 of 30 items: needs entity-based relevance,
+  not subject keywords (an SAP/AI acquisition contains no policy keyword)
+- DMA + EC competition registers are SPA-only → unusable on Railway (no Chromium
+  in the image); try whether those decisions carry CELEX ids in Cellar instead
+- DPA enforcement decisions — demand unclear, type + retrieval tier already exist
+- Germany — Bundestag DIP procedure API; Council of Europe PACE verbatim
+- Roll-call votes (`howtheyvote.eu`, MIT, no auth)
+- Newsletter ingestion (user-requested 2026-07-13)
+- EU Agency for Fundamental Rights + remaining needs-verification sources
+
+**Corpus quality**
+- PDF-text fallback for acts with no HTML/XHTML manifestation (also blocks ~50
+  case-law orders)
+- EUR-Lex discovery: title-match → EuroVoc concept URIs for precision
+- Have Your Say: per-initiative detail fetch (search payload is title-thin)
+- Auto-embed as part of `refresh` (currently a separate step)
+
+**Retrieval + brief**
+- Jurisdiction/lifecycle/sector metadata filters on retrieval
+- Narrow exception to the "never hedge" briefing instruction
+- Article-level citation anchors, amendment relation graph, actor table,
+  structured commercial-model profile fields — see
+  [brief-quality-plan.md](brief-quality-plan.md) Phase 4
+
+**Website / ops**
+- Briefing as a conversational UI (currently single-shot)
+- Render inline citation markers within the briefing text
+- Run observability: per-source stats, failure alerts
 
 ## Milestone 1 — ETL + DB foundation (current)
 
@@ -130,7 +199,7 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       "delegated acts" gap from a source already built. The tech-relevance title
       filter still applies on top, so this widens what is eligible, not how
       topical the corpus is
-- ⬜ Sector classification "gap" — **WITHDRAWN, was a misdiagnosis.** The claim
+- ❌ Sector classification "gap" — **WITHDRAWN 2026-07-27, was a misdiagnosis.** The claim
       that 3,059 documents were missing sector tags was wrong: the classifier's
       tool schema declares sectors as 0-3 and its system prompt says horizontal
       law "applies broadly and should get zero sectors, not one for every
@@ -308,7 +377,8 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       real disagreement between sources
 - ✅ Pipeline: adapters may return None from parse() to drop off-topic docs
       after deep fetch (counted as `skipped`)
-- ⬜ Lifecycle enrichment from Cellar in-force/repeal metadata — now specified as
+- ✅ Lifecycle enrichment from Cellar in-force/repeal metadata — DONE 2026-07-27
+      (`etl/enrichment/lifecycle.py`; full entry under Milestone 1). Was
       Phase 1.2 of [brief-quality-plan.md](brief-quality-plan.md), including the
       `date_application` addition (in EU law *in force ≠ applicable*; the AI Act
       entered into force 2024-08-01 and applies in stages through 2027, so
@@ -316,7 +386,9 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       most important instrument) and a deterministic stage derivation. Measured
       2026-07-27: `date_in_force` is NULL for all 4,781 documents and
       `lifecycle_stage` is UNKNOWN for 3,893 of them (81%)
-- ⬜ Alembic migrations once schema stabilizes
+- ✅ Alembic migrations once schema stabilizes — DONE 2026-07-27. `alembic.ini` +
+      `data/migrations/`, three revisions applied to the live Railway DB.
+      `init_db()` remains the fresh-install path
 - 🔄 Tests: ✅ chunker offsets, ✅ type/stage classification; ⬜ version-dedup (needs DB)
 - ✅ Cellar 300 manifestation-picking fallback + 5 new curated acts (2026-07-13),
       from direct user feedback naming specific instruments the corpus was
@@ -521,13 +593,15 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
 - ✅ HNSW cosine index on `passages.embedding`
 - ✅ `regina search` — semantic search returning citation-ready passages (verified
       on live corpus: "AI obligations" → AI files; "cybersecurity" → Digital Networks Act)
-- ⬜ Optional hosted embedder (Voyage/OpenAI) behind the same interface
+- ✅ Optional hosted embedder (Voyage/OpenAI) behind the same interface — DONE
+      2026-07-21; production runs voyage-4-large/1024
 - ⬜ Auto-embed as part of `refresh` (currently a separate step)
 - ✅ LLM enrichment: summary, plain-language "what to expect", what-changes —
       built and run 2026-07-27 (874/874). See the full entry under Milestone 1,
       plus the two open follow-ups there: 1,195 documents added after the run
       still have no card, and `enrich` is not yet part of `refresh`
-- ⬜ Citation capture linking each enrichment field to backing passage ids
+- ✅ Citation capture linking each enrichment field to backing passage ids — DONE
+      2026-07-27; every `enrichments` row stores `citations.passage_ids`
 - ⬜ Auto-classify policy areas + sectors per document — policy areas cover all
       4,781 docs, sectors only 1,721 (36%); Phase 2.3 of the plan above
 
@@ -1109,7 +1183,8 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       so a budget-stopped profile doesn't rotate out of coverage.
 - ✅ Run a real briefing once ANTHROPIC_API_KEY is provided — done 2026-07-09
       (see entry above); ANTHROPIC_API_KEY was already configured
-- ⬜ Optional hosted embedder (Voyage) for higher retrieval quality
+- ✅ Optional hosted embedder (Voyage) for higher retrieval quality — DONE
+      2026-07-21 (duplicate of the Milestone 2 entry above)
 - ⬜ PDF-text / manifestation-choice fallback for Cellar 300/no-HTML acts —
       now has two blocked documents: CSAM proposal (52022PC0209, PDF-only)
       and the GDPR/ePrivacy Digital Omnibus proposal (52025PC0837, ambiguous
@@ -1489,8 +1564,61 @@ Status legend: ✅ done · 🔄 in progress · ⬜ todo
       lock-guarded; GET /api/refresh for status) — augmentation is triggerable
 - ✅ Auto-embed as part of `refresh` (CLI and API) — corpus is retrieval-ready
       after every trigger
-- ⬜ Scheduled refresh (cron) for hands-off freshness
+- ✅ Scheduled refresh (cron) for hands-off freshness — the Railway project runs a
+      live `refresh-cron` service
 - ⬜ Run observability: per-source stats, failure alerts
+
+## What is limiting brief quality now (judged evidence, 2026-07-27)
+
+First judged before/after comparison (`regina brief-compare`, 5 matched profiles):
+overall **3.80 → 4.11**, with real gains on citation_quality (+0.60),
+scope_matching (+0.60) and political_currency (+0.60), all five profiles up
+individually, on **less** context (82,422 → 75,450 chars). Everything below comes
+from the judge's own per-profile critiques, not from intuition.
+
+**Ceiling reached on three dimensions.** relevance 4.80, tone_and_structure 4.80,
+citation_quality 4.40. Further prompt work on style or grounding is
+diminishing-returns territory.
+
+- 🔝 **stakeholder_specificity is the binding constraint — 2.80, by far the
+      lowest, and the only dimension that went DOWN (−0.20).** Four of five
+      critiques say the identical thing: *"stakeholders remain institutional
+      (AI Office, committees) without named individuals"*, *"generic (CNIL, AI
+      Office) without named contacts or rapporteurs"*, *"named contacts
+      (DG CONNECT, ENISA) are still institution-level rather than individual"*.
+      This is a **data** gap, not a prompt gap — SYSTEM_PROMPT already asks for
+      the who-runs-what map and the brief visibly tries, but can only name
+      institutions because the corpus holds no actors. Fixed by **Phase 4.4, the
+      actor table** (OEIL rapporteurs + shadow rapporteurs, `ep_verbatim`
+      speakers — the adapter already extracts name and role at
+      `ep_verbatim.py:98` and discards the structure into free text —
+      Commissioners in press releases), then roll-call votes to make positions
+      quantitative. Same pattern as the whole session: the prompt is ahead of
+      the data.
+      Plausible reason it *declined*: press/newsletter share fell 77% → 47% and
+      case law was capped, and press is where named individuals live. Adding
+      binding law may have diluted the stakeholder signal. Falsifiable — the
+      actor table would settle it.
+- ⬜ **Unresolved scoping hinges cap prioritization and scope_matching.**
+      Critiques: *"Prio 1 given to a 'Monitor' verdict with no confirmed
+      high-risk trigger"*, *"NIS2/Machinery classification honestly flagged as
+      unconfirmed"*. The brief is behaving correctly — the hinge rule makes it
+      say Monitor when a threshold fact is unanswered — but every unresolved
+      hinge is a verdict that cannot be decisive. This is where the **intake form
+      and the follow-up questions** (`etl/intelligence/questions.py`) have real
+      leverage: a question that resolves "are you a high-risk AI provider under
+      Annex III" converts a Monitor into an In Scope with a concrete action.
+      Worth auditing which hinges actually recur across panel runs and adding
+      questions for exactly those, rather than adding questions generally
+- ⬜ **One prompt-level bug, small but real:** Prio 1 was assigned to a
+      Monitor-verdict row with no confirmed trigger. Prio and Verdict are
+      deliberately independent (a file can be verdict-Monitor yet Prio 1, like a
+      live enforcement risk), but "Monitor + no confirmed trigger + Prio 1" is
+      the combination that should not occur. A targeted rule, not a rewrite
+- ⬜ **political_currency 3.60 is second-lowest.** Two critiques call the
+      political section *"fairly thin/generic"*. Case law and OEIL helped
+      (+0.60), and the remaining gap is the same actor gap above plus the Council
+      layer, which is still unsourced
 
 ## Loose ends from the 2026-07-27 session (found by auditing, not by planning)
 
@@ -1499,7 +1627,9 @@ or a source named in a plan phase that was never actually run. Listed because
 "the fix is committed" and "the corpus reflects the fix" are different claims and
 this session conflated them more than once.
 
-- ⬜ **`eurlex_key_acts` date_document is still 0 of 55 — the fix is UNVERIFIED.**
+- ✅ **`eurlex_key_acts` dates — fix verified 2026-07-27, 0/55 → 55/55 dated.**
+      Re-ran the adapter after correcting the query, so the typed-literal fix is now
+      exercised through the adapter and not just an ad-hoc script.
       The Virtuoso typed-literal bug was fixed in
       `_build_date_lookup_query()` (plain `"32024R1689"` matches nothing; it needs
       `^^xsd:string`), but the adapter was never re-run, so all 55 foundational
@@ -1508,7 +1638,15 @@ this session conflated them more than once.
       itself, only in an ad-hoc script. An unverified fix is a liability, not a
       fix. `uv run regina run eurlex_key_acts --full` closes both gaps at once
       (free, just time)
-- ⬜ **`eurlex_oj_l` is still 11 documents.** Named in Phase 1.3 of
+- ❌ **`eurlex_oj_l` thinness is NOT fixable by `--full` — diagnosed 2026-07-27.**
+      Ran `--full`: discovered **3** items. This source is an RSS feed, and RSS
+      retention (typically the last 10-50 items) bounds it regardless of the
+      backfill window — the same property `backfill_days` is documented as being
+      irrelevant for. So the cursor was never the cause here, unlike `oeil`. The
+      real options are to accept it as a "what's new" tap, or replace it with
+      SPARQL-based OJ-L discovery, which `eurlex` already partly covers. Not a
+      loose end; a mis-diagnosis on my part, corrected.
+      Original entry: named in Phase 1.3 of
       [brief-quality-plan.md](brief-quality-plan.md) alongside `oeil`. The
       starved-source *mechanism* was diagnosed and `--full` was built to fix it,
       then run for `eurlex_case_law` and `oeil` — and never for this one. The

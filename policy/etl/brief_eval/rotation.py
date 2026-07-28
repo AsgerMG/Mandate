@@ -103,6 +103,71 @@ def cumulative_spend(state_path: Path | None = None) -> float:
     return round(sum(float(r.get("spent_usd", 0.0)) for r in state.get("runs", [])), 4)
 
 
+def corpus_fingerprint(session) -> dict:
+    """A snapshot of what the corpus looked like for this run.
+
+    Recorded so a later comparison can tell whether two runs are actually
+    comparable. This exists because of a specific mistake on 2026-07-27: an
+    "after" panel was generated while 1,243 newly-backfilled judgments were
+    still unembedded, so it measured a corpus state that will never exist again
+    — the retrieval changes were live but two thirds of the case-law layer was
+    invisible. The numbers looked plausible and were worthless, and nothing in
+    the report said so.
+
+    ``unembedded`` is the one to watch: anything above zero means ingestion had
+    not settled and the run is measuring a moving target.
+    """
+    from sqlalchemy import text as _text
+
+    def scalar(sql: str) -> int:
+        return int(session.execute(_text(sql)).all()[0][0])
+
+    return {
+        "documents": scalar("select count(*) from documents"),
+        "embedded_passages": scalar(
+            "select count(*) from passages p join document_versions v "
+            "on p.version_id=v.id where v.is_current and p.embedding is not null"
+        ),
+        "unembedded_passages": scalar(
+            "select count(*) from passages p join document_versions v "
+            "on p.version_id=v.id where v.is_current and p.embedding is null"
+        ),
+        "enrichments": scalar("select count(*) from enrichments"),
+    }
+
+
+def compare_fingerprints(before: dict | None, after: dict | None) -> list[str]:
+    """Warnings about whether two runs are comparable. Empty list = comparable.
+
+    Returns human-readable strings rather than raising: a mismatched comparison
+    is often still worth looking at, it just must not be read as clean.
+    """
+    warnings: list[str] = []
+    if not before or not after:
+        warnings.append(
+            "One run has no corpus fingerprint (recorded from 2026-07-27 onward) — "
+            "corpus drift between the two runs cannot be ruled out."
+        )
+        return warnings
+    for label, run in (("before", before), ("after", after)):
+        if run.get("unembedded_passages"):
+            warnings.append(
+                f"The {label} run had {run['unembedded_passages']} unembedded passages — "
+                "ingestion had not settled, so part of the corpus was invisible to retrieval."
+            )
+    d_docs = after.get("documents", 0) - before.get("documents", 0)
+    if d_docs:
+        warnings.append(
+            f"The corpus grew by {d_docs} documents between the runs. Score differences "
+            "reflect the data change as well as any code change — which is usually the "
+            "point, but it means this is not a controlled test of the code alone."
+        )
+    d_enrich = after.get("enrichments", 0) - before.get("enrichments", 0)
+    if d_enrich:
+        warnings.append(f"Enrichment cards changed by {d_enrich} between the runs.")
+    return warnings
+
+
 def report_path(stamp: str | None = None) -> Path:
     """Where a run's raw JSON goes. Always written, even on a failed run —
     an unpersisted paid API result is money spent for nothing."""

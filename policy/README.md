@@ -16,14 +16,17 @@ live and the other EU sources are scaffolded. See
 ## Architecture
 
 ```
-etl/          → Python backend: ingestion + enrichment + embeddings (adapters,
-                pipeline, chunking), the RAG intelligence layer (etl/intelligence:
-                profile → retrieval → grounded cited briefing), and the HTTP API
-                the website calls (etl/api.py)
-data/         → structured corpus: Postgres + pgvector, canonical schema, config
+etl/          → Python backend: ingestion (adapters, pipeline, chunking),
+                enrichment (etl/enrichment: embeddings, reranking, document-type
+                reclassification, Cellar dates/lifecycle, per-document synthesis),
+                the RAG intelligence layer (etl/intelligence: profile → retrieval
+                → grounded cited briefing), and the HTTP API the website calls
+                (etl/api.py)
+data/         → structured corpus: Postgres + pgvector, canonical schema, config,
+                Alembic migrations (data/migrations/)
 website/      → Next.js front-end (dashboard, profile intake, briefing UI) —
                 a pure client of the API over HTTP
-project-management/ → decision log, methodology, backlog
+project-management/ → decision log, methodology, backlog, brief-quality-plan
 ```
 
 Designed around one promise: **fully automated collection** — one trigger

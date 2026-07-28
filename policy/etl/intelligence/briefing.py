@@ -21,11 +21,11 @@ from collections.abc import Callable
 from typing import Any
 
 import structlog
-from sqlalchemy import select
+from sqlalchemy import case, func, select
 from sqlalchemy.orm import Session
 
 from data.config import get_settings
-from data.models import Enrichment
+from data.models import Actor, ActorRole, DocumentActor, Enrichment
 from etl.adapters.eurlex_key_acts import KEY_ACTS
 from etl.enrichment import (
     Embedder,
@@ -401,6 +401,18 @@ SYSTEM_PROMPT = (
     "work with no existential enforcement risk and no major commercial upside.\n"
     "**Prio 3** — peripheral, conditional, or long-dated: monitoring only, nothing to "
     "resource this year.\n"
+    "PRIO/VERDICT CONSISTENCY. Prio and Verdict answer different questions and are "
+    "deliberately independent — a file can be verdict-**Monitor** yet Prio 1, as in "
+    "(b) above where a rival's compliance dynamic is the opportunity. But ONE "
+    "combination cannot occur: a **Monitor** row whose hinge is still unresolved (you "
+    "wrote 'if', 'unconfirmed', or named a threshold fact the profile does not answer) "
+    "must NOT be Prio 1. Prio 1 means resource it now, and you cannot ask a reader to "
+    "resource work whose applicability you have just said is unknown — that is how a "
+    "brief tells someone to spend money on a maybe. Such a row is Prio 2 with the "
+    "unresolved fact named as what would promote it, and if resolving that fact is "
+    "genuinely urgent, the ACTION bullet is 'establish whether X', not the compliance "
+    "work itself. A Prio 1 Monitor row is only correct when the trigger is CONFIRMED "
+    "and sits outside this company (criterion (b) or (c)).\n"
     "Order rows by Prio ascending (all 1s first); within the same Prio, In Scope "
     "before Monitor. Always bold the Verdict cell's value itself ('**In Scope**', "
     "'**Monitor**') — not just in the rule text above, in every row you write. If "
@@ -430,7 +442,22 @@ SYSTEM_PROMPT = (
     "supply them. Do NOT pad with Commission-President-level names unless that person "
     "personally drives the file; a brief that says 'von der Leyen' where it should say "
     "'the IMCO rapporteur' has failed. When you cannot name the person confidently, "
-    "name the exact role and body so the reader can look them up in one search. The "
+    "name the exact role and body so the reader can look them up in one search.\n"
+    "NAMED STAKEHOLDERS BLOCK. When a block headed 'NAMED STAKEHOLDERS' appears after "
+    "the source documents, it is this corpus's own record of who spoke on or holds the "
+    "retrieved files, with institution, political group and role. USE IT — it exists "
+    "because briefs kept naming only institutions ('the AI Office', 'the responsible "
+    "committee') where a reader needs a person. Anyone listed as rapporteur holds that "
+    "file and should be named as such. Prefer these names over a role description "
+    "whenever one covers the file you are discussing. Two hard limits: (1) never name a "
+    "person from that block on a file they are not listed against — the block records "
+    "who engaged with WHICH documents, and moving a name onto a different instrument is "
+    "a fabrication of exactly the kind the INSTRUMENT IDENTITY rule forbids; (2) do not "
+    "list stakeholders who add nothing — someone who spoke once in a debate is not "
+    "automatically a lever, and a paragraph of names with no stated relevance is "
+    "padding. Three well-chosen named people beat eight listed ones. If no such block "
+    "appears, fall back to naming roles and bodies exactly as above.\n"
+    "The "
     "same hedge applies to a track-record or enforcement-posture claim, not just a "
     "name: 'known for aggressive enforcement' or 'has signaled a lighter touch' goes "
     "stale the same way an officeholder's name does — ground it in a specific past "
@@ -658,8 +685,17 @@ def build_documents(passages: list[dict]) -> list[dict]:
     return docs
 
 
-def build_request(profile: CompanyProfile, passages: list[dict]) -> dict[str, Any]:
-    """Assemble the full messages.create(**kwargs) payload (no API call)."""
+def build_request(
+    profile: CompanyProfile, passages: list[dict], stakeholder_block: str | None = None
+) -> dict[str, Any]:
+    """Assemble the full messages.create(**kwargs) payload (no API call).
+
+    ``stakeholder_block`` (see build_stakeholder_block) is appended as plain text
+    after the Citations documents, not as a document block: it is a roster
+    assembled from the corpus, not a quotable source span, and giving it a
+    document block would invite citation markers pointing at something that has
+    no char offsets to cite.
+    """
     settings = get_settings()
     scoping = "\n".join(f"- {line}" for line in profile.scoping_lines())
     instruction = (
@@ -679,7 +715,10 @@ def build_request(profile: CompanyProfile, passages: list[dict]) -> dict[str, An
         "verdict on every instrument judged against these scoping facts, expert "
         "political context, and concrete owned actions. Cite sources throughout."
     )
-    content = build_documents(passages) + [{"type": "text", "text": instruction}]
+    content = build_documents(passages)
+    if stakeholder_block:
+        content = content + [{"type": "text", "text": stakeholder_block}]
+    content = content + [{"type": "text", "text": instruction}]
     return {
         "model": settings.llm_model,
         "max_tokens": settings.llm_max_tokens,
@@ -745,10 +784,19 @@ REVISE_INSTRUCTION = (
     "verdict in the first place. Only fall back to downgrading the table verdict "
     "to Monitor with the hinge named if re-reading shows the hinge genuinely was "
     "never established anywhere in the brief; do not use a Monitor downgrade as "
-    "a shortcut to avoid reconciling prose you can otherwise just fix. Do not "
+    "a shortcut to avoid reconciling prose you can otherwise just fix. "
+    "(10) PRIO/VERDICT CHECK — find every Prio 1 row whose Verdict is "
+    "**Monitor**, and for each ask whether its trigger is CONFIRMED or still "
+    "hinges on a fact the profile does not answer. If the hinge is unresolved, "
+    "demote it to Prio 2 and name the unresolved fact as what would promote it; "
+    "if an ACTION bullet was written for that row, rewrite the bullet as "
+    "establishing the fact rather than doing the compliance work. Prio 1 tells "
+    "the reader to spend now, so it cannot rest on a maybe — a confirmed "
+    "external trigger (a rival's enforcement dynamic, a looming tax change) is "
+    "the only case where Prio 1 Monitor is right. Do not "
     "change facts, citations, or verdicts for instruments you keep unchanged, "
     "and do not restructure sections — but table rows ARE subject to checks "
-    "(7), (8), and (9): remove any row naming an unretrieved instrument, add a "
+    "(7), (8), (9) and (10): remove any row naming an unretrieved instrument, add a "
     "row for any retrieved foundational instrument your draft skipped entirely, "
     "correct any flat verdict standing on an unestablished hinge, and edit "
     "contradicting prose outside the tables to match a committed verdict — none "
@@ -976,6 +1024,99 @@ def _canon_issues(briefing: str, passages: list[dict]) -> list[str]:
                 "in neither the Compliance exposure table nor the Out of Scope "
                 "appendix — add it to whichever table its verdict warrants."
             )
+    return issues
+
+
+# Compliance-table rows are "| Instrument | Prio | Verdict | Why / Trigger |".
+_TABLE_ROW = re.compile(r"^\s*\|(?P<cells>.+)\|\s*$")
+# The prompt mandates this phrasing for an unresolved hinge ("hinges on whether
+# turnover exceeds €450M — confirm"), which is what makes hinges machine-readable
+# without asking the model for a second structured output.
+_HINGE = re.compile(
+    r"hinges?\s+on\s+(?:whether\s+)?(?P<hinge>[^|]{4,200}?)(?:\s*—\s*confirm|$)",
+    re.IGNORECASE,
+)
+
+
+def _table_rows(briefing: str) -> list[list[str]]:
+    """Compliance-table rows as cell lists, skipping the header and separator."""
+    rows: list[list[str]] = []
+    for line in (briefing or "").splitlines():
+        match = _TABLE_ROW.match(line)
+        if not match:
+            continue
+        cells = [c.strip() for c in match.group("cells").split("|")]
+        if len(cells) < 4:
+            continue
+        joined = " ".join(cells).lower()
+        if set(joined) <= set("-: ") or joined.startswith("instrument"):
+            continue
+        rows.append(cells)
+    return rows
+
+
+def extract_hinges(briefing: str) -> list[dict[str, str]]:
+    """Unresolved scoping hinges the brief itself named, as structured records.
+
+    Why this exists: the judge's critiques identified unresolved hinges as what
+    caps `prioritization` and `scope_matching` — every hinge is a verdict that
+    cannot be decisive. But the leverage is not "add more questions", it is
+    knowing which hinges *recur*, and that was unknowable because the hinge
+    existed only in prose. Emitting them structurally makes the follow-up
+    question set (questions.py) targetable at the hinges that actually show up
+    rather than at hinges we imagine.
+
+    Parses the phrasing the prompt already mandates rather than asking the model
+    for a second structured output — no extra call, and it degrades to an empty
+    list if a brief phrases things differently.
+    """
+    found: list[dict[str, str]] = []
+    for cells in _table_rows(briefing):
+        instrument, verdict, why = cells[0], cells[2], " ".join(cells[3:])
+        match = _HINGE.search(why)
+        if not match:
+            continue
+        found.append(
+            {
+                "instrument": instrument,
+                "verdict": re.sub(r"\*+", "", verdict).strip(),
+                "prio": cells[1],
+                "hinge": " ".join(match.group("hinge").split()).rstrip(" .,"),
+            }
+        )
+    return found
+
+
+def prio_verdict_issues(briefing: str) -> list[str]:
+    """Rows that violate the PRIO/VERDICT CONSISTENCY rule.
+
+    A deterministic check on the rule added 2026-07-28 after the judge flagged
+    "Prio 1 given to a 'Monitor' verdict with no confirmed high-risk trigger".
+    Prio and Verdict stay independent — a Monitor row CAN be Prio 1 on a
+    confirmed external trigger — so this only fires on the one combination that
+    cannot be right: Prio 1 + Monitor + a hinge the brief itself says is
+    unresolved.
+
+    Returned rather than fixed, in the same spirit as _canon_issues: the check
+    finds, the model fixes.
+    """
+    issues: list[str] = []
+    for cells in _table_rows(briefing):
+        instrument, prio, verdict, why = cells[0], cells[1], cells[2], " ".join(cells[3:])
+        if "1" not in prio:
+            continue
+        if "monitor" not in verdict.lower():
+            continue
+        if not _HINGE.search(why):
+            continue
+        issues.append(
+            f"'{instrument}' is Prio 1 with verdict Monitor while its own Why/Trigger "
+            "still names an unresolved hinge. Prio 1 tells the reader to resource it "
+            "now, which cannot rest on applicability you have just called unknown. "
+            "Demote it to Prio 2 naming the unresolved fact as what would promote it, "
+            "and if an ACTION bullet exists for this row, rewrite it as establishing "
+            "that fact rather than doing the compliance work."
+        )
     return issues
 
 
@@ -1354,6 +1495,85 @@ def _attach_summaries(session: Session, passages: list[dict]) -> list[dict]:
     ]
 
 
+# How many named stakeholders reach the brief. Small on purpose: the failure this
+# fixes is "no names at all", and the opposite failure — a wall of 40 MEPs who
+# each spoke once — would be just as unusable and would spend context that binding
+# text needs. Ranked by how much they engaged with the instruments already in
+# scope, so the cut keeps the people most involved with this company's files.
+_MAX_STAKEHOLDERS = 8
+
+
+def _stakeholders(session: Session, passages: list[dict]) -> list[dict]:
+    """Named actors linked to the documents already in context.
+
+    Resolved from the passage set rather than retrieved independently: the
+    question a brief needs answered is "who runs the files I am already
+    discussing", and a separate retrieval pass would drag in people attached to
+    instruments the company has nothing to do with.
+
+    Actors are not passages and deliberately do not compete for passage slots —
+    they are assembled into one short text block (see build_request), so adding
+    them cannot displace binding law.
+    """
+    doc_ids = {p["document_id"] for p in passages if p.get("document_id") is not None}
+    if not doc_ids:
+        return []
+    rows = session.execute(
+        select(
+            Actor.name,
+            Actor.institution,
+            Actor.political_group,
+            DocumentActor.role,
+            func.count(func.distinct(DocumentActor.document_id)).label("documents"),
+        )
+        .join(DocumentActor, DocumentActor.actor_id == Actor.id)
+        .where(DocumentActor.document_id.in_(doc_ids))
+        .group_by(Actor.name, Actor.institution, Actor.political_group, DocumentActor.role)
+        # Rapporteurs first regardless of volume: holding the file is a stronger
+        # claim to relevance than having spoken about it often.
+        .order_by(
+            case((DocumentActor.role == ActorRole.RAPPORTEUR, 0), else_=1),
+            func.count(func.distinct(DocumentActor.document_id)).desc(),
+        )
+        .limit(_MAX_STAKEHOLDERS)
+    ).all()
+    return [
+        {
+            "name": name,
+            "institution": institution,
+            "political_group": group,
+            "role": role.value if isinstance(role, ActorRole) else str(role),
+            "documents": documents,
+        }
+        for name, institution, group, role, documents in rows
+    ]
+
+
+def build_stakeholder_block(stakeholders: list[dict]) -> str | None:
+    """One compact text block naming the actors, or None when there are none.
+
+    None matters: on a corpus with no actor data this returns nothing and the
+    request is byte-identical to before, so the brief degrades to its previous
+    behaviour rather than gaining an empty "Stakeholders:" heading that would
+    invite the model to fill it from memory.
+    """
+    if not stakeholders:
+        return None
+    lines = [
+        "NAMED STAKEHOLDERS on the instruments retrieved above, from this corpus's "
+        "own record of who spoke on or holds these files:"
+    ]
+    for s in stakeholders:
+        bits = [s["name"]]
+        if s["institution"]:
+            bits.append(s["institution"])
+        if s["political_group"]:
+            bits.append(s["political_group"])
+        role = "rapporteur" if s["role"] == "rapporteur" else "spoke on the file"
+        lines.append(f"- {' · '.join(bits)} — {role}, {s['documents']} document(s) in context")
+    return "\n".join(lines)
+
+
 def _retrieval_stats(passages: list[dict], facets: list[str]) -> dict[str, Any]:
     """Shape metrics for the passage set a brief was built on.
 
@@ -1582,7 +1802,8 @@ def generate_briefing(
     # Whole-instrument context for each retrieved act (see _attach_summaries).
     # After all retrieval, so one query covers the final passage set.
     passages = _attach_summaries(session, passages)
-    request = build_request(profile, passages)
+    stakeholders = _stakeholders(session, passages)
+    request = build_request(profile, passages, build_stakeholder_block(stakeholders))
     stats = _retrieval_stats(passages, [facet for facet, _ in facets])
     log.info("brief_retrieval", company=profile.name, **stats)
 
@@ -1625,7 +1846,9 @@ def generate_briefing(
         # along in the same mandatory revise call instead of paying for a
         # dedicated correction call afterward (see build_revise_request).
         draft_text = _raw_text(draft_resp.content)
-        pre_issues = _canon_issues(draft_parsed["briefing"], passages)
+        pre_issues = _canon_issues(draft_parsed["briefing"], passages) + prio_verdict_issues(
+            draft_parsed["briefing"]
+        )
         _emit("sharpening", "Sharpening the analysis against our style and accuracy checklist")
         revise_request = build_revise_request(passages, draft_text, pre_issues or None)
         revise_resp = client.messages.create(**revise_request)
@@ -1665,7 +1888,9 @@ def generate_briefing(
     # rows or missing canon acts get one targeted correction call — the check
     # finds, the model fixes. Anything still unresolved is surfaced as
     # canon_notes instead of silently shipped.
-    issues = _canon_issues(parsed["briefing"], passages)
+    issues = _canon_issues(parsed["briefing"], passages) + prio_verdict_issues(
+        parsed["briefing"]
+    )
     if issues:
         _emit("cross-checking", "Cross-checking the regulatory register for consistency")
         draft = _MARKER_RE.sub("", parsed["briefing"])
@@ -1681,5 +1906,8 @@ def generate_briefing(
         "passages": passages,
         "canon_notes": issues,
         "retrieval_stats": stats,
+        # Structured record of the hinges this brief could not resolve — the
+        # input to the follow-up-question audit (see extract_hinges).
+        "unresolved_hinges": extract_hinges(parsed["briefing"]),
         **parsed,
     }

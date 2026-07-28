@@ -40,7 +40,10 @@ from etl.intelligence.briefing import (
     _sort_compliance_table,
     _stub_canon_passages,
     _top_document_ids,
+    build_stakeholder_block,
+    extract_hinges,
     parse_response,
+    prio_verdict_issues,
 )
 
 DIM = get_settings().embedding_dim
@@ -193,7 +196,12 @@ def test_system_prompt_hinge_rule_covers_activity_hinges():
     from etl.intelligence.briefing import REVISE_INSTRUCTION
 
     assert "VERDICT HINGE CHECK" in REVISE_INSTRUCTION
-    assert "checks (7), (8), and (9)" in REVISE_INSTRUCTION
+    # The point is that table rows are subject to the hinge check, not the exact
+    # phrasing of the list — which grows every time a check is added (it broke on
+    # the Prio/Verdict check becoming (10)). Assert membership, not the sentence.
+    subject_clause = REVISE_INSTRUCTION.split("table rows ARE subject to")[1][:60]
+    for check in ("(7)", "(8)", "(9)"):
+        assert check in subject_clause, f"{check} dropped from the table-row checks"
 
 
 def test_system_prompt_forbids_verdict_contradicting_prose():
@@ -1447,3 +1455,218 @@ def test_retrieval_stats_reports_real_depth_when_it_exists():
     stats = _retrieval_stats(deep, ["profile"])
     assert stats["substantive_documents_per_passage"] == 0.2
     assert stats["max_passages_per_document"] == 5
+
+
+def test_system_prompt_forbids_prio_1_on_an_unresolved_monitor():
+    """Found by the judge on the first measured panel (2026-07-28): "Prio 1 given
+    to a 'Monitor' verdict with no confirmed high-risk trigger". Prio and Verdict
+    are deliberately independent — a Monitor row CAN be Prio 1 when a rival's
+    enforcement dynamic is the opportunity — so the rule has to be narrow:
+    Monitor + unresolved hinge + Prio 1 is the combination that cannot occur.
+    Telling a reader to resource work whose applicability you just called unknown
+    is telling them to spend money on a maybe."""
+    lowered = SYSTEM_PROMPT.lower()
+    assert "prio/verdict consistency" in lowered
+    assert "must not be prio 1" in lowered
+    # The independence must survive — this rule must not collapse Prio into Verdict.
+    assert "deliberately independent" in lowered
+    # And the escape hatch: a confirmed external trigger is still legitimately Prio 1.
+    assert "only correct when the trigger is confirmed" in lowered
+
+
+def test_revise_pass_rechecks_prio_against_verdict():
+    """Every prompt rule earned from a real failure gets a revise-pass check too,
+    so one generation slipping past the draft instruction still gets caught."""
+    from etl.intelligence.briefing import REVISE_INSTRUCTION
+
+    assert "PRIO/VERDICT CHECK" in REVISE_INSTRUCTION
+    assert "demote it to Prio 2" in REVISE_INSTRUCTION
+    # The action bullet has to change with the demotion, or the brief still tells
+    # the reader to do the compliance work.
+    assert "rewrite the bullet as" in REVISE_INSTRUCTION
+
+
+def test_revise_pass_numbered_checks_stay_in_sync():
+    """The revise instruction enumerates its checks; adding one without updating
+    the 'table rows ARE subject to' list silently exempts table rows from it —
+    which is where the Prio defect lives."""
+    from etl.intelligence.briefing import REVISE_INSTRUCTION
+
+    assert "(10) PRIO/VERDICT CHECK" in REVISE_INSTRUCTION
+    assert "(7), (8), (9) and (10)" in REVISE_INSTRUCTION
+
+
+# --- named stakeholders (Phase 5.1) ---------------------------------------
+
+
+def test_stakeholder_block_is_none_without_actors():
+    """A corpus with no actor data must produce a byte-identical request to
+    before, not an empty 'Stakeholders:' heading that invites the model to fill
+    it from memory."""
+    assert build_stakeholder_block([]) is None
+
+
+def test_stakeholder_block_names_people_with_institution_and_group():
+    block = build_stakeholder_block(
+        [
+            {
+                "name": "Brando Benifei",
+                "institution": "European Parliament",
+                "political_group": "S&D",
+                "role": "rapporteur",
+                "documents": 3,
+            }
+        ]
+    )
+    assert "Brando Benifei" in block
+    assert "European Parliament" in block
+    assert "S&D" in block
+    assert "rapporteur" in block
+
+
+def test_stakeholder_block_distinguishes_rapporteurs_from_mere_speakers():
+    """Holding the file is a stronger claim than having spoken about it, and the
+    brief has to be able to tell the reader which is which."""
+    block = build_stakeholder_block(
+        [
+            {"name": "A", "institution": None, "political_group": None,
+             "role": "rapporteur", "documents": 1},
+            {"name": "B", "institution": None, "political_group": None,
+             "role": "speaker", "documents": 1},
+        ]
+    )
+    lines = [line for line in block.splitlines() if line.startswith("-")]
+    assert "rapporteur" in lines[0]
+    assert "spoke on the file" in lines[1]
+
+
+def test_build_request_appends_the_stakeholder_block_as_text_not_a_document():
+    """It is a roster assembled from the corpus, not a quotable source span —
+    giving it a document block would invite citation markers pointing at
+    something with no char offsets to cite."""
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    passages = [{"text": "law text", "celex": "X"}]
+    req = build_request(profile, passages, "NAMED STAKEHOLDERS on the instruments...")
+    blocks = req["messages"][0]["content"]
+    doc_blocks = [b for b in blocks if b.get("type") == "document"]
+    text_blocks = [b for b in blocks if b.get("type") == "text"]
+    assert len(doc_blocks) == 1
+    assert any("NAMED STAKEHOLDERS" in b["text"] for b in text_blocks)
+
+
+def test_build_request_omits_the_block_entirely_when_there_is_none():
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    req_without = build_request(profile, [{"text": "t", "celex": "X"}], None)
+    req_default = build_request(profile, [{"text": "t", "celex": "X"}])
+    assert req_without == req_default
+
+
+def test_stakeholders_resolve_from_documents_actually_in_context(db_session):
+    """The lookup joins on the documents already retrieved, so a person attached
+    to an unrelated instrument can never be named — which is what stops the
+    stakeholder block becoming a fabrication surface."""
+    from data.models import Actor, ActorRole, DocumentActor
+    from etl.intelligence.briefing import _stakeholders
+
+    _seed(db_session)
+    doc_id = db_session.scalars(select(Document.id)).first()
+    actor = Actor(name="Brando Benifei", institution="European Parliament")
+    db_session.add(actor)
+    db_session.flush()
+    db_session.add(
+        DocumentActor(document_id=doc_id, actor_id=actor.id, role=ActorRole.RAPPORTEUR)
+    )
+    db_session.commit()
+
+    found = _stakeholders(db_session, [{"document_id": doc_id, "text": "t"}])
+    assert [s["name"] for s in found] == ["Brando Benifei"]
+    assert found[0]["role"] == "rapporteur"
+
+    # A passage set that does not include that document yields nothing.
+    assert _stakeholders(db_session, [{"document_id": doc_id + 9999, "text": "t"}]) == []
+
+
+def test_system_prompt_tells_the_brief_to_use_named_stakeholders():
+    """Measured 2026-07-28: stakeholder_specificity 2.80, four of five critiques
+    saying stakeholders stay institutional. The prompt has to actually consume
+    the block, and must forbid transplanting a name onto a file the person is not
+    listed against."""
+    assert "NAMED STAKEHOLDERS BLOCK" in SYSTEM_PROMPT
+    lowered = SYSTEM_PROMPT.lower()
+    assert "never name a person from that block on a file they are not listed against" in lowered
+    # Guard against the opposite failure: a wall of names with no relevance.
+    assert "three well-chosen named people beat eight listed ones" in lowered
+
+
+# --- unresolved hinges + Prio/Verdict check (Phase 5.2/5.3) ---------------
+
+_PRIO_TABLE = """
+| Instrument | Prio | Verdict | Why / Trigger |
+|---|---|---|---|
+| AI Act | 1 | **In Scope** | Annex III high-risk credit scoring confirmed. |
+| NIS2 Directive | 1 | **Monitor** | hinges on whether headcount exceeds 50 — confirm |
+| CRA | 2 | **Monitor** | hinges on whether the product carries digital elements — confirm |
+"""
+
+
+def test_extract_hinges_reads_the_phrasing_the_prompt_mandates():
+    """Hinges existed only in prose, so which ones RECUR was unknowable — and the
+    recurrence is the whole input to the follow-up-question audit. Parses the
+    phrasing the prompt already requires rather than paying for a second
+    structured output."""
+    hinges = extract_hinges(_PRIO_TABLE)
+    assert [h["instrument"] for h in hinges] == ["NIS2 Directive", "CRA"]
+    assert hinges[0]["hinge"] == "headcount exceeds 50"
+    assert hinges[0]["verdict"] == "Monitor"
+
+
+def test_extract_hinges_ignores_committed_verdicts():
+    """An In Scope row with a confirmed fact is not an unresolved hinge."""
+    assert all(h["instrument"] != "AI Act" for h in extract_hinges(_PRIO_TABLE))
+
+
+def test_extract_hinges_degrades_to_empty_on_unfamiliar_phrasing():
+    """A brief that phrases things differently must yield nothing rather than
+    garbage — this is a convenience reader, not a contract."""
+    assert extract_hinges("Some prose with no table at all.") == []
+    assert extract_hinges("") == []
+
+
+def test_prio_verdict_issues_fires_only_on_the_impossible_combination():
+    """Prio and Verdict are deliberately independent — a Monitor row CAN be
+    Prio 1 on a confirmed external trigger. Only Prio 1 + Monitor + an
+    unresolved hinge is wrong."""
+    issues = prio_verdict_issues(_PRIO_TABLE)
+    assert len(issues) == 1
+    assert "NIS2 Directive" in issues[0]
+
+
+def test_prio_verdict_issues_allows_prio_1_monitor_with_a_confirmed_trigger():
+    """The criterion-(b) case the prompt explicitly protects: a rival's
+    enforcement dynamic is a confirmed external trigger, so Prio 1 is right."""
+    table = (
+        "| Instrument | Prio | Verdict | Why / Trigger |\n"
+        "|---|---|---|---|\n"
+        "| DMA | 1 | **Monitor** | Google is under a confirmed Art. 6(5) "
+        "non-compliance decision, creating direct upside. |\n"
+    )
+    assert prio_verdict_issues(table) == []
+
+
+def test_prio_verdict_issues_ignores_prio_2_monitors_with_hinges():
+    """A hedged Monitor at Prio 2 is correct behaviour, not a defect."""
+    table = (
+        "| Instrument | Prio | Verdict | Why / Trigger |\n"
+        "|---|---|---|---|\n"
+        "| CRA | 2 | **Monitor** | hinges on whether the product carries digital "
+        "elements — confirm |\n"
+    )
+    assert prio_verdict_issues(table) == []
+
+
+def test_table_parsing_skips_headers_and_separators():
+    from etl.intelligence.briefing import _table_rows
+
+    rows = _table_rows(_PRIO_TABLE)
+    assert len(rows) == 3
+    assert rows[0][0] == "AI Act"

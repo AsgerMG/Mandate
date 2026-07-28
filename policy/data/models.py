@@ -264,6 +264,95 @@ class Passage(Base):
     version: Mapped[DocumentVersion] = relationship(back_populates="passages")
 
 
+class ActorRole(enum.StrEnum):
+    """How an actor relates to a document. Not the actor's job title — the same
+    MEP is a RAPPORTEUR on one file and a SPEAKER on another."""
+
+    SPEAKER = "speaker"  # spoke on it in a plenary debate (ep/an/de_verbatim)
+    RAPPORTEUR = "rapporteur"  # holds the file in committee
+    SHADOW_RAPPORTEUR = "shadow_rapporteur"  # opposite-group counterpart
+    COMMITTEE = "committee"  # the responsible committee, not an individual
+    AUTHOR = "author"  # tabled/authored it
+    ADDRESSEE = "addressee"  # a decision's named addressee
+    OTHER = "other"
+
+
+class Actor(Base, TimestampMixin):
+    """A named person or body that acts on regulatory files.
+
+    Added 2026-07-28. The gap this closes was measured, not assumed: the first
+    judged panel put ``stakeholder_specificity`` at 2.80 — by far the lowest
+    dimension and the only one that went *down* — and four of five judge
+    critiques said the same thing in different words, that stakeholders "remain
+    institutional (AI Office, committees) without named individuals".
+
+    The brief's prompt already demands a who-runs-what map and visibly tries; it
+    reaches institutions because that is all the corpus held. Actors were present
+    only as strings inside passage text, so "who holds this file, and what have
+    they actually said" was unanswerable as a query.
+
+    ``name`` is deliberately not unique on its own — two people can share a name,
+    and the same person appears with different spellings across sources. The
+    unique key is (name, institution), which is imperfect but stable enough to
+    aggregate on; a proper identity resolution pass (MEP ids from EP Open Data)
+    is a later refinement, and matters most once roll-call votes land.
+    """
+
+    __tablename__ = "actors"
+    __table_args__ = (UniqueConstraint("name", "institution", name="uq_actor_name_institution"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(255), index=True)
+    # Free text rather than an enum: it arrives as whatever the source calls it
+    # ("European Parliament", "Bundestag", "European Commission"), and forcing a
+    # vocabulary here would mean dropping actors we cannot classify yet.
+    institution: Mapped[str | None] = mapped_column(String(255))
+    # The role/party cue as the source stated it, verbatim — e.g. "on behalf of
+    # the EPP Group", "Rapporteur", "Member of the Commission". Kept raw because
+    # it is evidence, and normalizing it early would discard the qualifier that
+    # makes it citable.
+    role_text: Mapped[str | None] = mapped_column(Text)
+    political_group: Mapped[str | None] = mapped_column(String(128))
+    # Stable upstream identifier when one exists (EP Open Data person id), so
+    # identity resolution can improve later without re-deriving everything.
+    external_id: Mapped[str | None] = mapped_column(String(128), index=True)
+
+    documents: Mapped[list[DocumentActor]] = relationship(
+        back_populates="actor", cascade="all, delete-orphan"
+    )
+
+
+class DocumentActor(Base):
+    """An actor's link to one document, with the role they played on it.
+
+    An association *object* rather than a plain many-to-many table because the
+    role is a property of the relationship, not of either side, and because a
+    quote needs to hang off the link: what this person said about this file is
+    the whole point of having actors at all.
+    """
+
+    __tablename__ = "document_actor"
+    __table_args__ = (
+        UniqueConstraint("document_id", "actor_id", "role", name="uq_document_actor_role"),
+    )
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    document_id: Mapped[int] = mapped_column(
+        ForeignKey("documents.id", ondelete="CASCADE"), index=True
+    )
+    actor_id: Mapped[int] = mapped_column(ForeignKey("actors.id", ondelete="CASCADE"), index=True)
+    role: Mapped[ActorRole] = mapped_column(
+        Enum(ActorRole, name="actor_role"), default=ActorRole.OTHER
+    )
+    # The passage this link was derived from, so a named stakeholder in a brief
+    # traces to stored text exactly like every other generated claim.
+    passage_id: Mapped[int | None] = mapped_column(
+        ForeignKey("passages.id", ondelete="SET NULL"), index=True
+    )
+
+    actor: Mapped[Actor] = relationship(back_populates="documents")
+
+
 class Enrichment(Base, TimestampMixin):
     """LLM-derived, citation-linked synthesis for a document."""
 

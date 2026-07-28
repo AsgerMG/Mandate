@@ -71,9 +71,20 @@ def session_scope() -> Iterator[Session]:
 def init_db() -> None:
     """Create the pgvector extension and all tables.
 
-    Convenience bootstrap for early development. Once the schema stabilizes we
-    switch to Alembic migrations (the constraint naming convention is already
-    set up for clean autogenerate).
+    The **fresh-install** path, and only that. It also creates the pgvector
+    extension and the HNSW index, which is why it still exists after Alembic
+    landed (2026-07-27) rather than being replaced by it.
+
+    ``create_all`` cannot alter an existing schema — it will not add a column or
+    extend an enum — so any change to a database that already holds data goes
+    through Alembic (``alembic.ini`` + ``data/migrations/``). A brand-new
+    database is created here and then stamped at the baseline revision.
+
+    One trap worth knowing before writing a migration: SQLAlchemy's
+    ``Enum(PyEnum)`` persists a member's **name**, not its value, so enum labels
+    in Postgres are UPPERCASE (``REGULATION``, not ``regulation``). The first
+    migration got this wrong and failed immediately with
+    InvalidTextRepresentation.
     """
     engine = get_engine()
     with engine.begin() as conn:
