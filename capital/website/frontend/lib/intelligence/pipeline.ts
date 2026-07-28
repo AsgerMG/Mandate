@@ -12,6 +12,19 @@ import { assessAll, VERDICT_RANK } from "./verdict";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
+import { recordUsage } from "./cost";
+
+/**
+ * Every model response passes through here so its cost is counted.
+ *
+ * The spend ceiling is enforced in euros (see quota.ts), which only works if
+ * nothing bills untracked. Wrapping at one point means a new call site has an
+ * obvious thing to do, rather than silently raising the real ceiling.
+ */
+function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackModel: string): T {
+  recordUsage(res.model ?? fallbackModel, res.usage as never);
+  return res;
+}
 import { semanticFundMatch } from "./semantic";
 import { type OpenFieldEvidence, type ProjectGateEvidence } from "./gateReach";
 import {
@@ -742,19 +755,19 @@ async function askWithSearch(model: string, system: string, user: string): Promi
   const tools = [
     { type: "web_search_20250305" as const, name: "web_search" as const, max_uses: 4 },
   ];
-  const res = await client.messages.create({
+  const res = billed(await client.messages.create({
     model,
     max_tokens: 8000,
     thinking: { type: "disabled" },
     system,
     tools,
     messages: [{ role: "user", content: user }],
-  }, { timeout: SEARCH_TIMEOUT_MS, maxRetries: 1 });
+  }, { timeout: SEARCH_TIMEOUT_MS, maxRetries: 1 }), model);
   // web_search runs a server-side loop; resume once if it paused mid-search.
   let message = res;
   let guard = 0;
   while (message.stop_reason === "pause_turn" && guard++ < 1) {
-    message = await client.messages.create({
+    message = billed(await client.messages.create({
       model,
       max_tokens: 8000,
       thinking: { type: "disabled" },
@@ -764,7 +777,7 @@ async function askWithSearch(model: string, system: string, user: string): Promi
         { role: "user", content: user },
         { role: "assistant", content: message.content },
       ],
-    }, { timeout: SEARCH_TIMEOUT_MS, maxRetries: 1 });
+    }, { timeout: SEARCH_TIMEOUT_MS, maxRetries: 1 }), model);
   }
   return message.content
     .filter((b): b is Anthropic.TextBlock => b.type === "text")
@@ -1788,7 +1801,7 @@ async function synthesize(
     const stream = writerCall(thinking);
     let timer: ReturnType<typeof setTimeout> | undefined;
     try {
-      const m = await Promise.race([
+      const m = billed(await Promise.race([
         stream.finalMessage(),
         new Promise<never>((_, reject) => {
           timer = setTimeout(() => {
@@ -1796,7 +1809,7 @@ async function synthesize(
             reject(new Error(`writer exceeded ${budget}ms`));
           }, budget);
         }),
-      ]);
+      ]), WRITER_MODEL);
       console.log("[writer] thinking=%s %ss stop=%s out=%d chars",
         thinking, Math.round((Date.now() - t0) / 1000), m.stop_reason, textOf(m).length);
       return m;
@@ -2018,7 +2031,7 @@ export async function generateGroundedRound(
     .join("\n\n");
 
   try {
-    const res = await client.messages.create({
+    const res = billed(await client.messages.create({
       model: INTAKE_MODEL,
       // Bumped from 700: up to 8 fields' worth of questions (was 3) needs
       // more room.
@@ -2045,7 +2058,7 @@ export async function generateGroundedRound(
             `Return ONLY the JSON object for the schema.`,
         },
       ],
-    });
+    }), INTAKE_MODEL);
     const text = res.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
@@ -2153,7 +2166,7 @@ export async function generateProjectQuestions(
   ].filter(Boolean).join("\n");
 
   try {
-    const res = await client.messages.create({
+    const res = billed(await client.messages.create({
       model: INTAKE_MODEL,
       max_tokens: 2000,
       thinking: { type: "disabled" },
@@ -2209,7 +2222,7 @@ export async function generateProjectQuestions(
             `Return ONLY the JSON object for the schema.`,
         },
       ],
-    });
+    }), INTAKE_MODEL);
     const text = res.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)
@@ -2296,7 +2309,7 @@ export async function inferProfileSignal(req: IntelligenceRequest): Promise<Prof
   const desc = req.description?.trim();
   if (!desc || desc.length < 25) return null; // too thin to ground anything — no signal beats a fabricated one
   try {
-    const res = await client.messages.create({
+    const res = billed(await client.messages.create({
       model: WRITER_MODEL,
       max_tokens: 400,
       thinking: { type: "disabled" },
@@ -2320,7 +2333,7 @@ export async function inferProfileSignal(req: IntelligenceRequest): Promise<Prof
             `reviewer.\n\nReturn ONLY the JSON object for the schema.`,
         },
       ],
-    });
+    }), INTAKE_MODEL);
     const text = res.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text)

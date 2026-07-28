@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
-import { checkQuota } from "@/lib/intelligence/quota";
+import { checkQuota, recordCost } from "@/lib/intelligence/quota";
+import { withCostTracking } from "@/lib/intelligence/cost";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
 import {
   sanitizeFreeText,
@@ -67,7 +68,7 @@ export async function POST(request: NextRequest) {
       };
       try {
         await hydrateDbInstruments();
-        await runIntelligence(
+        const { eur, calls } = await withCostTracking(async () => runIntelligence(
           {
             company: body.company.trim(),
             sector: body.sector?.trim() || undefined,
@@ -95,7 +96,11 @@ export async function POST(request: NextRequest) {
             projectAnswers: sanitizeProjectAnswers(body.projectAnswers),
           },
           send,
-        );
+        ));
+        // What the request actually cost, measured off each API response and
+        // reported so the euro ceiling reflects reality rather than an average.
+        console.log("[cost] brief cost EUR %s across %d model calls", eur.toFixed(3), calls);
+        recordCost(quota.requestId, eur);
       } catch (err) {
         console.error("intelligence pipeline failed:", err);
         send({

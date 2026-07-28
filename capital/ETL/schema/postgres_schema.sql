@@ -147,3 +147,15 @@ CREATE TABLE IF NOT EXISTS instrument_profiles (
 );
 CREATE INDEX IF NOT EXISTS idx_ip_embedding_hnsw ON public.instrument_profiles USING hnsw (embedding vector_cosine_ops);
 CREATE UNIQUE INDEX IF NOT EXISTS instrument_profiles_pkey ON public.instrument_profiles USING btree (instrument_id);
+
+-- ─── request_log ───────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS request_log (
+  id                         BIGSERIAL NOT NULL,
+  created_at                 TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  ip_hash                    TEXT NOT NULL,
+  route                      TEXT NOT NULL,
+  cost_eur                   DOUBLE PRECISION
+);
+CREATE INDEX IF NOT EXISTS request_log_created_idx ON public.request_log USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS request_log_ip_idx ON public.request_log USING btree (ip_hash, created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS request_log_pkey ON public.request_log USING btree (id);
