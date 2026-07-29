@@ -6,10 +6,12 @@ import {
   openProjectGatesForShortlist,
 } from "@/lib/intelligence/gateReach";
 import {
+} from "@/lib/intelligence/pipeline";
+import {
   generateGroundedRound,
   generateProjectQuestions,
   inferProfileSignal,
-} from "@/lib/intelligence/pipeline";
+} from "@/lib/intelligence/adaptiveRound";
 import {
   sanitizeCapitalSought,
   sanitizeEligibility,
