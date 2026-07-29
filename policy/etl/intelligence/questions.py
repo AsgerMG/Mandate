@@ -298,7 +298,8 @@ def build_extras_request(
         f"Sectors: {', '.join(profile.sectors) or '(unspecified)'}\n"
         f"Uses AI: {profile.uses_ai} | Personal data: {profile.handles_personal_data}\n"
         + (f"Already-known scoping facts:\n{scoping}\n" if scoping else "")
-        + f"Being asked this round (do not duplicate): {', '.join(already_asked) or '(nothing)'}\n\n"
+        + "Being asked this round (do not duplicate): "
+        + f"{', '.join(already_asked) or '(nothing)'}\n\n"
         f"Retrieved policy passages:\n{corpus}"
     )
     return {
@@ -320,7 +321,9 @@ def parse_extras_response(content_blocks: list[Any], already_asked: set[str]) ->
             continue
         payload = block.get("input") if isinstance(block, dict) else getattr(block, "input", {})
         for q in (payload or {}).get("questions", []):
-            if isinstance(q, dict) and q.get("id") and q.get("question") and q["id"] not in already_asked:
+            if not isinstance(q, dict) or not q.get("id") or not q.get("question"):
+                continue
+            if q["id"] not in already_asked:
                 q.setdefault("kind", "text")
                 q.setdefault("options", [])
                 q.setdefault("suggested_answers", [])

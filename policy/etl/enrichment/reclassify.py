@@ -79,6 +79,36 @@ def reclassify_celex_documents(session: Session, *, dry_run: bool = False) -> di
 # the adapter instead of needing a per-feed list that drifts as feeds are added.
 _NEWSLETTER_KEY_PREFIXES = ("politico_", "ec_newsroom_")
 
+# Journalism and institutional-press source keys, used ONLY to type documents an
+# adapter left as OTHER. It lives here, in the classification layer, because
+# classifying is its whole job — it previously sat in intelligence/briefing.py and
+# was imported back up into this module, an inversion (enrichment depending on
+# intelligence) that had to be papered over with a function-level import to dodge
+# the resulting cycle.
+#
+# Retrieval no longer consults it at all: press_passages() filters on
+# document_type plus a small editorial blocklist, so a source added here is
+# automatically eligible and cannot drift out of a second hand-kept list.
+_PRESS_SOURCE_KEYS = frozenset(
+    {
+        "01net", "amf_presse", "an_verbatim", "anssi_news", "arcep_presse", "berec_news",
+        "bfdi_news", "bitkom_presse", "bmwe_presse", "bsi_presse", "bundesrat_neueingaenge",
+        "bundestag_hib", "cnil_news", "contexte_articles", "de_verbatim",
+        "defenseurdesdroits_actu", "dg_comp_news", "dg_grow_news", "eba_news", "ec_digital",
+        "ec_newsroom_comp", "ec_newsroom_dae", "ec_newsroom_growth", "ec_newsroom_just",
+        "ec_newsroom_trade", "ec_press", "ecb_press", "edpb_news", "eiopa_news", "ep_press",
+        "ep_verbatim", "ep_written_questions", "eu_law_analysis", "eu_law_live", "eu_ombudsman",
+        "euobserver", "golem_news", "handelsblatt_politik", "heise_news", "hmbbfdi_news",
+        "irights_info", "laquadrature", "latribune", "lemonde_europe", "lemonde_pixels",
+        "lemonde_politique", "netzpolitik", "next_ink", "numerama",
+        "politico_berlin_playbook", "politico_brussels_playbook", "politico_digital_bridge",
+        "politico_eu", "politico_eu_influence", "politico_forecast", "politico_london_influence",
+        "politico_london_playbook", "politico_playbook_paris", "politico_sunday_crunch",
+        "siecledigital", "sifted", "stiftung_datenschutz", "techpolicy_press",
+        "verfassungsblog",
+    }
+)
+
 
 def _classify_by_source(source_key: str, extra: dict | None) -> DocumentType | None:
     """Type for a document with no CELEX to read, or None to leave it alone.
@@ -86,19 +116,14 @@ def _classify_by_source(source_key: str, extra: dict | None) -> DocumentType | N
     Deliberately reuses signals that already exist rather than introducing a
     fourth hand-maintained list: the adapters' own ``extra["kind"]`` marker for
     verbatim debates, adapter-family key prefixes for newsletters, and
-    briefing.py's curated ``_PRESS_SOURCE_KEYS`` allowlist for journalism. That
-    allowlist exists *because* document_type couldn't express "this is press";
-    consuming it here is the first step toward the type system carrying that
-    knowledge instead.
+    this module's own ``_PRESS_SOURCE_KEYS`` for journalism — which used to live in
+    briefing.py and be imported back up into here. Retrieval now filters on
+    document_type instead, so this list has exactly one job: typing stragglers.
     """
     if (extra or {}).get("kind") == "verbatim_debate":
         return DocumentType.VERBATIM_DEBATE
     if source_key.startswith(_NEWSLETTER_KEY_PREFIXES):
         return DocumentType.NEWSLETTER
-    # Imported lazily: etl.intelligence imports the enrichment package, so a
-    # module-level import here would close a cycle.
-    from etl.intelligence.briefing import _PRESS_SOURCE_KEYS
-
     if source_key in _PRESS_SOURCE_KEYS:
         return DocumentType.PRESS
     return None

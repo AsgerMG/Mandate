@@ -11,12 +11,15 @@ from __future__ import annotations
 from collections.abc import Iterator
 from contextlib import contextmanager
 
+import structlog
 from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from . import models  # noqa: F401  (ensure models register on Base.metadata)
 from .base import Base
 from .config import get_settings
+
+log = structlog.get_logger(__name__)
 
 _engine: Engine | None = None
 _session_factory: sessionmaker[Session] | None = None
@@ -77,8 +80,16 @@ def init_db() -> None:
 
     ``create_all`` cannot alter an existing schema — it will not add a column or
     extend an enum — so any change to a database that already holds data goes
-    through Alembic (``alembic.ini`` + ``data/migrations/``). A brand-new
-    database is created here and then stamped at the baseline revision.
+    through Alembic (``alembic.ini`` + ``data/migrations/``).
+
+    ``create_all`` builds the CURRENT models, i.e. the schema as of the latest
+    revision, so this then stamps Alembic at **head**. Without that stamp a fresh
+    install is left with no ``alembic_version`` row, and the next
+    ``alembic upgrade head`` replays every migration against a schema that
+    already has everything — verified to fail with
+    ``DuplicateColumn: column "date_application" of relation "documents" already
+    exists``. This docstring previously claimed the stamping happened when
+    nothing did it; ``_stamp_alembic_head`` is that claim made real.
 
     One trap worth knowing before writing a migration: SQLAlchemy's
     ``Enum(PyEnum)`` persists a member's **name**, not its value, so enum labels
@@ -97,4 +108,35 @@ def init_db() -> None:
                 "CREATE INDEX IF NOT EXISTS ix_passages_embedding_hnsw "
                 "ON passages USING hnsw (embedding vector_cosine_ops)"
             )
+        )
+    _stamp_alembic_head(engine)
+
+
+def _stamp_alembic_head(engine) -> None:
+    """Record the current schema as being at Alembic head, unless it already is.
+
+    Idempotent and deliberately non-fatal. ``init_db`` is also the "make sure the
+    schema exists" call on an established database, where an ``alembic_version``
+    row is already present and must not be overwritten — so this only stamps when
+    the table is absent. And a missing/misconfigured Alembic setup should not
+    stop a database from being usable, so failure is logged rather than raised.
+    """
+    from sqlalchemy import inspect as sa_inspect
+
+    if sa_inspect(engine).has_table("alembic_version"):
+        return
+    try:
+        from alembic import command
+        from alembic.config import Config
+
+        config = Config("alembic.ini")
+        # env.py resolves the URL from Settings, and this is the same engine that
+        # was just created from it, so no URL needs passing here.
+        command.stamp(config, "head")
+        log.info("alembic_stamped_head")
+    except Exception:
+        log.warning(
+            "alembic_stamp_failed",
+            hint="run `alembic stamp head` manually before the next `alembic upgrade`",
+            exc_info=True,
         )

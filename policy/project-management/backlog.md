@@ -1620,6 +1620,173 @@ diminishing-returns territory.
       (+0.60), and the remaining gap is the same actor gap above plus the Council
       layer, which is still unsourced
 
+## Refactor pass, 2026-07-28
+
+Triggered by a "do we have technical debt brewing" review. Diagnosis first —
+measured, not assumed — then only the changes that serve brief quality or fix a
+real defect. Two verified bugs, both introduced the previous day.
+
+- ✅ **Fresh install was broken.** `regina init`'s `create_all` builds the schema
+      as of the latest revision, but nothing recorded that, so a new database had
+      no `alembic_version` row and the next `alembic upgrade head` replayed every
+      migration against a schema that already had everything. Verified against a
+      scratch Postgres: `DuplicateColumn: column "date_application" of relation
+      "documents" already exists`. `init_db` now stamps head
+      (`_stamp_alembic_head`, idempotent — it will not overwrite an existing
+      version pointer, which would silently skip real pending migrations).
+      `session.py`'s docstring had *claimed* this stamping happened
+- ✅ **`env.py` silently ignored explicit URL overrides — a safety bug.** It
+      always used `Settings.database_url`, so `alembic -x db_url=…` and any
+      programmatic `set_main_option` were discarded and Alembic could not be
+      pointed at another database at all. Found the hard way: the first
+      fresh-install test reported SUCCESS because it had quietly migrated the
+      **live Railway corpus** instead of the scratch database. Precedence is now
+      x-argument → configured ini value → app setting
+- ✅ **Press allowlist retired — but not the way first proposed.** The initial
+      read was "the 64-key `_PRESS_SOURCE_KEYS` is 96.2% redundant with
+      `document_type in (PRESS, NEWSLETTER, VERBATIM_DEBATE)`, delete it". That
+      measurement was right and the conclusion was wrong: checking what would
+      change showed the switch would re-admit **`gnews_eu_tech` (142 docs)**,
+      deliberately removed 2026-07-23 for sweeping every press slot with
+      near-identical SEO explainers. The list encoded *two* questions — "is this
+      press?" (now the type system's job) and "is this source admissible?"
+      (earned curation). Split accordingly: inclusion by `document_type`,
+      exclusion via a 4-key `_PRESS_EXCLUDED_SOURCES` blocklist carrying the
+      reasons. Better than either: a new press source is eligible automatically,
+      and an exclusion is now a positive statement with a cause rather than
+      absence from a list, which is indistinguishable from "nobody added it yet"
+- ✅ **Layer inversion removed.** `enrichment/reclassify.py` imported
+      `_PRESS_SOURCE_KEYS` from `intelligence/briefing.py` — a lower layer
+      depending on a higher one, papered over with a function-level import to
+      dodge the cycle. The list's real job is classification, so it now lives in
+      the classification layer and retrieval no longer consults it
+- ✅ **`extra["kind"]` retired.** 100% redundant: all 129 verbatim documents
+      carried both it and `DocumentType.VERBATIM_DEBATE`. `_source_label`'s
+      special case is gone, and `_DOCTYPE_LABELS` now covers every DocumentType
+      member with a test that fails if a new one is added without a label
+- ✅ **`briefing.py` split: 1,913 → 1,109 lines.** Two extractions, both
+      verified by the full suite plus an end-to-end retrieval check:
+      `prompts.py` (514 lines — the three instruction blocks, 37% of the original
+      module, so a prompt edit no longer scrolls past code and a retrieval change
+      no longer scrolls past 400 lines of English) and `parsing.py` (340 lines —
+      citation resolution, the deterministic canon/Prio checks, hinge
+      extraction; everything that reads generated text *back*, the opposite
+      direction from the rest of the pipeline). `build_fix_request` was swept
+      into parsing by the extraction and moved back: it builds an API request,
+      so it belongs with the other builders
+- ⬜ **Remaining split, boundary already identified.** `briefing.py` still mixes
+      retrieval orchestration (facet loop, depth pass, the per-document/per-source
+      caps, stakeholder resolution, telemetry) with request building and the
+      pipeline itself — a `retrieval.py` would take it to roughly 700 lines.
+      Deliberately not done in the same pass: unlike the prompts and the parsing
+      layer, those helpers are interleaved with constants rather than contiguous,
+      so a scripted extraction risks subtle breakage for a smaller gain than the
+      one already banked. Worth doing by hand next time that area is being
+      edited anyway
+- ✅ **Repo is lint-clean for the first time.** Three pre-existing `ruff` errors
+      in `questions.py`/`test_questions.py` (long lines predating this work) fixed
+- ⬜ **Still open: `cli.py` (806 lines, 33 function-level imports)** and the
+      13-key passage dict used as an informal type across four modules. The dict
+      is how the `document_type` name-vs-value casing bug got through; a
+      TypedDict would have caught it. Both are hygiene, neither blocks quality
+
+## Architecture review: over-complication found by measuring (2026-07-28)
+
+Asked whether anything is over-engineered. Instrumented the retrieval path rather
+than opining — counted how many passages each guard actually removes across the
+panel. It had accumulated ~14 stages, several added the day before in sequence
+because earlier ones didn't bind, which is the classic shape of accidental
+complexity.
+
+| Guard | Passages removed (5 profiles) |
+|---|---|
+| `_select_breadth_first` | 79 |
+| `_cap_precedent` | 40 |
+| per-facet `_cap_per_document` | 24 |
+| press per-source cap | 2 |
+| global breadth cap | **0** |
+| press per-document cap | **0** |
+
+- ✅ **Removed the two guards that never fire.** Both were mine; the breadth cap
+      was even documented as "untriggered … a bound on a structural possibility".
+      `_select_breadth_first` already spreads breadth across documents, and
+      press_passages' own MMR already makes near-duplicates unattractive before a
+      cap over 5 results could matter. General rule adopted: **prefer measuring to
+      guarding** — `retrieval_stats` reports `max_passages_per_document`, so if the
+      structural case ever materialises it shows as a number, whereas a guard that
+      never fires is indistinguishable from one that is broken.
+- ✅ **press_passages now scans exactly instead of tuning HNSW.** Chasing the
+      guard question surfaced something better: retrieval is *non-deterministic*
+      (87/88/85 passages for the identical profile and corpus). `semantic_search`
+      turned out stable at the default; the fragile one was `press_passages`,
+      whose type+date filter narrows the pool to 10,615 of 108,939 passages
+      (9.7%) — exactly where an approximate index can explore a sparse subset and
+      find none of it, returning **zero** rows. That had already bitten twice and
+      been patched twice by raising `hnsw.ef_search`, the second time to
+      pgvector's hard ceiling, each fix leaving a standing "re-verify as the pool
+      grows" instruction. The pool grew again the same day. So the tuning was
+      compensating for the wrong access method: an exact scan over 10,600 vectors
+      is deterministic by construction, cannot silently return zero, needs no
+      threshold, and measured **faster** (0.71s vs 1.01s) with identical results —
+      exploring an HNSW graph at ef_search=1,000 costs more than 10,600 honest
+      distance computations. `document_passages` already used this pattern; the
+      codebase now uses it consistently wherever a filter is narrow.
+- ⬜ **Retrieval variance is still partly unexplained, and it affects every
+      measurement.** Exact press retrieval is deterministic, but I have not proven
+      press was the whole source of the ±3-passage run-to-run variance. This
+      matters for `brief-compare`: its stated ±0.3 noise floor accounted for judge
+      variance and n=5, **not** for two runs of identical code and corpus seeing
+      different context. Worth measuring directly (repeat a dry-run panel N times
+      and report the spread) before trusting small deltas next week.
+
+## Flow simplification, 2026-07-28
+
+Goal stated as "the simpler the flows, the fewer steps, the better". Two changes,
+both reducing steps a human or a scheduler has to think about.
+
+- ✅ **Four commands collapsed into one, and `refresh` lost ~30 lines of inline
+      sequencing.** `regina lifecycle`, `regina actors`, `regina reclassify` and
+      the old `regina enrich` were four entry points into one ordered pass, which
+      meant four chances to run the steps in the wrong order — and the order is a
+      *correctness constraint*: `enrich_lifecycle` only looks at legal
+      document_types and `extract_actors` only at VERBATIM_DEBATE, so both skip
+      documents whose type hasn't been derived yet. Running them before
+      reclassification produces a quietly incomplete corpus rather than an error,
+      which is exactly how 1,585 backfilled documents ended up unclassified and
+      1,195 without summaries. Now one `enrich_corpus()` in
+      `etl/enrichment/corpus.py`, one `regina enrich [--only …]`, and `refresh`
+      calls it once. CLI surface 16 → 13 commands.
+- ✅ **Missing inputs are reported, not silently skipped.** A step whose
+      requirement is absent returns `{"skipped": "no ANTHROPIC_API_KEY"}` and says
+      so — a quietly incomplete corpus is how the ordering bugs went unnoticed.
+      One failing step no longer abandons the rest, matching how `refresh` already
+      treats a failing source.
+- ✅ **The paid step is opt-in by construction.** `summaries` carries `paid=True`
+      and is excluded from the default pass, so cost that scales with corpus size
+      can never become a side effect of a routine refresh. That also resolves the
+      open "should enrich join refresh?" question: it joins as a declared,
+      non-default step rather than as a decision to remember.
+- ⬜ **Measured but left alone:** the per-facet `_cap_per_document` changes the
+      result in only 1 of 24 facets, so it is nearly redundant with
+      `_select_breadth_first`. Kept because it does still bind — removing real
+      behaviour for a cosmetic step reduction is the wrong trade. Noted so nobody
+      re-measures it from scratch.
+
+## Actor reachability: what has been ruled out (2026-07-28)
+
+The stakeholder block resolves 0 stakeholders because `document_actor` links
+actors to debate *transcripts* while briefs retrieve *instruments*. The missing
+link is procedure → CELEX. Ruled out so far:
+
+- **Cellar does not carry it on the act.** Queried the AI Act (32024R1689) for
+      every predicate matching "procedure"/"interinstitution": **zero results**.
+      So the adopted act does not point back at its own legislative procedure by
+      that route
+- Not yet tried: OEIL/EP Open Data *procedure detail* (whether it names the
+      adopted act and/or the rapporteur — the same unverified endpoint the actor
+      plan already flags), or matching on the `COM(YYYY) NNN` proposal reference
+      that appears in both OEIL procedure records and EUR-Lex proposal titles
+
 ## Loose ends from the 2026-07-27 session (found by auditing, not by planning)
 
 Each of these is a change that was made in code but not carried through to data,

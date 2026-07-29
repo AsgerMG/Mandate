@@ -34,6 +34,13 @@ Designed around one promise: **fully automated collection** — one trigger
 **citation-grounded intelligence** — every generated claim traces back to a
 specific passage of a specific document version.
 
+`refresh` is collection followed by exactly one enrichment pass
+(`etl/enrichment/corpus.py`), whose step order is a correctness constraint rather
+than a preference: dating and actor extraction both filter on `document_type`, so
+they must run after reclassification or they silently skip documents whose type
+hasn't been derived yet. Every step is idempotent, so re-running is always safe
+and only touches what is still missing.
+
 ## Quickstart
 
 ```bash
@@ -41,13 +48,12 @@ uv sync --extra dev                 # install (Python 3.12 via uv)
 uv run playwright install chromium  # one-time: browser for ep_verbatim (see below)
 uv run regina init                     # schema + pgvector + HNSW + seed + sources
 uv run regina refresh --limit 25       # THE TRIGGER — collect/update the corpus
-uv run regina embed                    # vectorize passages (local model, no key)
 uv run regina search "AI obligations"  # meaning-search the corpus, citation-ready
 uv run regina sources                  # inspect per-source run state
 
-uv run regina lifecycle                # dates + lifecycle from Cellar metadata
-uv run regina reclassify --dry-run     # re-derive document_type over the corpus
-uv run regina enrich --dry-run         # per-document synthesis (Haiku); count first
+uv run regina enrich                   # ONE ordered pass: types, actors, dates,
+                                       # embeddings, tags (runs inside refresh too)
+uv run regina enrich --only summaries  # opt in to the paid per-document step
 uv run regina run <key> --full         # recover a starved source (see below)
 
 # A grounded, citation-backed briefing for a company (--dry-run needs no key):
@@ -80,8 +86,11 @@ obligation facets (AI, data protection, sector, consumer…) and each is retriev
 and cross-encoder reranked separately, then the instruments that matter get
 re-retrieved *within* themselves so the brief sees several of an act's operative
 provisions rather than one window of each of sixty laws. Every brief reports its
-own retrieval shape (`retrieval_stats`) — watch `documents_per_passage`, since
-1.0 means every document contributed exactly one passage.
+own retrieval shape (`retrieval_stats`) — watch
+`substantive_documents_per_passage`, where 1.0 means every instrument the brief
+actually reasons over contributed exactly one passage. (The all-passage
+`documents_per_passage` is also reported but is floored near 0.5 by the ~50
+single-passage canon stubs, so it cannot detect a collapse.)
 
 ### The web app
 

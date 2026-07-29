@@ -111,60 +111,28 @@ def refresh(
     for key, stats in totals.items():
         typer.echo(f"  {key:16} {stats}")
 
-    # Metadata enrichment runs on every refresh, not as a one-off backfill:
-    # classification improves as descriptors are added, and Cellar amends
-    # end-of-validity when an act is repealed — so both have to be re-derived
-    # for the corpus to stay honest about what is currently in force. Both are
-    # idempotent and cheap (pure function; one SPARQL batch per 150 acts).
-    with session_scope() as session:
-        from etl.enrichment.reclassify import reclassify_by_source, reclassify_celex_documents
+    # One ordered enrichment pass. The order is a correctness constraint, not a
+    # preference — lifecycle and actors both filter on document_type, so they must
+    # run after reclassification or they silently skip documents whose type has
+    # not been derived yet. It lives in etl/enrichment/corpus.py so `refresh` and
+    # `regina enrich` cannot drift apart on it.
+    from etl.enrichment import get_embedder
+    from etl.enrichment.corpus import enrich_corpus
+    from etl.intelligence.llm import get_client, has_api_key
 
-        celex_result = reclassify_celex_documents(session)
-        source_result = reclassify_by_source(session)
+    if not embed:
+        typer.echo("\n(--no-embed: skipping the enrichment pass entirely.)")
+        return
 
-    # Actor extraction is API-free (it re-derives structure from stored verbatim
-    # text), so it rides along with the other idempotent metadata passes rather
-    # than needing its own trigger.
-    with session_scope() as session:
-        from etl.enrichment.actors import extract_actors
-
-        actor_result = extract_actors(session)
-    typer.echo(
-        f"Reclassified {celex_result['types_changed'] + source_result['types_changed']} "
-        f"document types."
-    )
-    typer.echo(
-        f"Extracted {actor_result['actors_created']} new named actors "
-        f"({actor_result['links_created']} document links)."
-    )
-
-    with HttpClient(settings) as http, session_scope() as session:
-        from etl.enrichment.lifecycle import enrich_lifecycle
-
-        life = enrich_lifecycle(session, http)
-    typer.echo(
-        f"Dated {life['updated']} legal acts (entry into force, applicability, "
-        f"end of validity) — stages: {life['stages']}"
-    )
-
-    if embed:
-        from etl.enrichment import embed_pending, get_embedder
-
-        with session_scope() as session:
-            n = embed_pending(session, get_embedder(settings))
-        typer.echo(f"\nEmbedded {n} new passages — corpus is retrieval-ready.")
-
-        from etl.intelligence.llm import has_api_key
-
-        if has_api_key():
-            from etl.enrichment import classify_pending
-            from etl.intelligence.llm import get_client
-
-            with session_scope() as session:
-                n = classify_pending(session, get_client())
-            typer.echo(f"Classified {n} new documents by policy area/sector.")
-        else:
-            typer.echo("No ANTHROPIC_API_KEY set — skipping sector/policy-area classification.")
+    typer.echo("\nEnriching:")
+    with HttpClient(settings) as http:
+        enrich_corpus(
+            session_scope,
+            http=http,
+            embedder=get_embedder(settings),
+            client=get_client() if has_api_key() else None,
+            on_progress=typer.echo,
+        )
 
 
 @app.command()
@@ -225,139 +193,51 @@ def export(
 
 
 @app.command()
-def lifecycle(
-    limit: int = typer.Option(None, help="Max acts to process (debugging)."),
-    timeout: float = typer.Option(
-        300.0, help="HTTP timeout in seconds; a 150-CELEX SPARQL batch needs more than the default."
-    ),
-) -> None:
-    """Fetch entry-into-force / applicability / end-of-validity dates from Cellar
-    and re-derive lifecycle_stage.
-
-    Runs automatically as part of `refresh`; use this to backfill or re-derive
-    on demand without a full collection pass. See etl/enrichment/lifecycle.py
-    for why in-force and applicable are separate dates.
-    """
-    from etl.enrichment.lifecycle import enrich_lifecycle
-
-    base = get_settings()
-    settings = Settings(**{**base.model_dump(), "http_timeout_seconds": timeout})
-    with HttpClient(settings) as http, session_scope() as session:
-        result = enrich_lifecycle(session, http, limit=limit)
-    typer.echo(
-        f"Dated {result['updated']} of {result['candidates']} candidate acts.\n"
-        f"Stages: {result['stages']}"
-    )
-
-
-@app.command()
 def enrich(
-    limit: int = typer.Option(None, help="Max documents this run (cost control)."),
-    dry_run: bool = typer.Option(
-        False, "--dry-run", help="Report the candidate count without making any API call."
+    only: str = typer.Option(
+        None,
+        help=(
+            "Comma-separated steps to run instead of the default pass: "
+            "types, actors, lifecycle, embeddings, tags, summaries. "
+            "`summaries` is paid per document and never runs by default."
+        ),
+    ),
+    timeout: float = typer.Option(
+        300.0, help="HTTP timeout; a 150-CELEX Cellar batch needs more than the default."
     ),
 ) -> None:
-    """Generate per-document summary / plain-language / what-changes into the
-    `enrichments` table.
+    """Re-derive everything downstream of ingestion: types, actors, dates and
+    lifecycle, embeddings, tags, and (opt-in) per-document summaries.
 
-    Scoped to instruments a brief reasons about — binding law, case law,
-    authoritative soft law, proposals — not press or newsletters, which already
-    have human-written headlines. Uses Haiku. Run with --dry-run first: this is
-    the one enrichment whose cost scales with corpus size.
+    Runs automatically as part of `refresh`. Every step is idempotent, so this is
+    safe to re-run and only touches rows still missing what it produces — which is
+    also why it is one command rather than the four it replaced (`lifecycle`,
+    `actors`, `reclassify`, `enrich`): the steps share an order that matters, and
+    four entry points meant four chances to run them in the wrong one.
     """
-    from etl.enrichment.summarize import enrich_pending
+    from etl.enrichment import get_embedder
+    from etl.enrichment.corpus import STEPS, enrich_corpus
     from etl.intelligence.llm import get_client, has_api_key
 
-    if dry_run:
-        with session_scope() as session:
-            result = enrich_pending(session, None, limit=limit, dry_run=True)
-        typer.echo(f"{result['candidates']} documents would be enriched (no API call made).")
-        return
+    steps = tuple(x.strip() for x in only.split(",")) if only else None
+    base = get_settings()
+    settings = Settings(**{**base.model_dump(), "http_timeout_seconds": timeout})
+    paid = [s.name for s in STEPS if s.paid and (not steps or s.name in steps)]
+    if paid:
+        typer.echo(f"Note: {', '.join(paid)} makes billed API calls per document.")
 
-    if not has_api_key():
-        typer.echo("No ANTHROPIC_API_KEY set — cannot enrich.")
-        raise typer.Exit(1)
-
-    client = get_client()
-    with session_scope() as session:
-        result = enrich_pending(session, client, limit=limit)
-    typer.echo(
-        f"Enriched {result['written']} of {result['candidates']} documents "
-        f"({result['errors']} errors)."
-    )
-
-
-@app.command()
-def actors(
-    dry_run: bool = typer.Option(False, "--dry-run", help="Report counts without writing."),
-) -> None:
-    """Extract named actors (speakers, rapporteurs) from verbatim debate passages.
-
-    No API calls — it re-derives structure from text the verbatim adapters
-    already wrote. Runs as part of `refresh`; use this to backfill on demand.
-    """
-    from etl.enrichment.actors import extract_actors
-
-    with session_scope() as session:
-        result = extract_actors(session, dry_run=dry_run)
-    typer.echo(
-        f"{result['attributed']} of {result['passages']} verbatim passages carried an "
-        f"attribution; {result['actors_created']} actors and {result['links_created']} "
-        f"document links created."
-    )
-    typer.echo(f"Roles: {result['roles']}")
-    if result.get("procedure_links") is not None:
-        typer.echo(
-            f"Linked actors to {result['procedure_links']} legislative-procedure documents "
-            "via the debates' own procedure references."
+    with HttpClient(settings) as http:
+        results = enrich_corpus(
+            session_scope,
+            http=http,
+            embedder=get_embedder(settings),
+            client=get_client() if has_api_key() else None,
+            only=steps,
+            on_progress=typer.echo,
         )
-
-
-@app.command()
-def reclassify(
-    dry_run: bool = typer.Option(False, "--dry-run", help="Report changes without writing."),
-) -> None:
-    """Re-derive document_type over the existing corpus from the current
-    classifier, and fill any lifecycle_stage still UNKNOWN.
-
-    Adapters classify at ingestion time, so a classifier improvement otherwise
-    only reaches documents fetched afterwards. Runs automatically as part of
-    `refresh`.
-    """
-    from etl.enrichment.reclassify import (
-        reclassify_by_source,
-        reclassify_celex_documents,
-        type_histogram,
-    )
-
-    with session_scope() as session:
-        celex_result = reclassify_celex_documents(session, dry_run=dry_run)
-        source_result = reclassify_by_source(session, dry_run=dry_run)
-        histogram = type_histogram(session)
-
-    label = "would change" if dry_run else "changed"
-    typer.echo(f"CELEX classifier: {label} {celex_result['types_changed']} types")
-    for transition, count in celex_result["type_transitions"].items():
-        typer.echo(f"    {transition:44} {count}")
-    typer.echo(f"  stages filled: {celex_result['stage_fills']}")
-    typer.echo(f"Source classifier: {label} {source_result['types_changed']} types")
-    for transition, count in source_result["type_transitions"].items():
-        typer.echo(f"    {transition:44} {count}")
-    typer.echo("\nCurrent document_type distribution:")
-    for dtype, count in histogram.items():
-        typer.echo(f"  {dtype:22} {count}")
-
-
-@app.command()
-def embed(batch: int = typer.Option(128, help="Passages per embedding batch.")) -> None:
-    """Generate vector embeddings for any passages that don't have one yet."""
-    from etl.enrichment import embed_pending, get_embedder
-
-    settings = get_settings()
-    embedder = get_embedder(settings)
-    with session_scope() as session:
-        n = embed_pending(session, embedder, batch_size=batch)
-    typer.echo(f"Embedded {n} passages with {settings.embedding_model}.")
+    skipped = {k: v["skipped"] for k, v in results.items() if "skipped" in v}
+    for name, reason in skipped.items():
+        typer.echo(f"  {name:11} skipped — {reason}")
 
 
 @app.command()
@@ -370,7 +250,7 @@ def search(query: str, k: int = typer.Option(5, help="Number of results.")) -> N
     with session_scope() as session:
         hits = semantic_search(session, embedder, query, k=k)
     if not hits:
-        typer.echo("No embedded passages yet — run `regina embed` first.")
+        typer.echo("No embedded passages yet — run `regina enrich` first.")
         return
     for h in hits:
         cite = h["celex"] or h["title"][:40]
@@ -431,7 +311,10 @@ def brief(
         )
 
     if not result["passages"]:
-        typer.echo("No embedded passages found. Run `regina refresh` then `regina embed` first.")
+        typer.echo(
+            "No embedded passages found. Run `regina refresh` "
+            "(or `regina enrich`) first."
+        )
         return
 
     if result.get("briefing"):

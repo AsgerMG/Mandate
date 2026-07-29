@@ -275,13 +275,25 @@ def _source_with_key(session, key: str) -> int:
     return s.id
 
 
-def _press_doc(session, *, external_id, source_id, date_document, text) -> None:
+def _press_doc(
+    session,
+    *,
+    external_id,
+    source_id,
+    date_document,
+    text,
+    document_type=DocumentType.PRESS,
+) -> None:
+    """Press documents are typed PRESS, which is what press_passages now filters
+    on. They used to be seeded as OTHER because the production filter was a
+    64-key source allowlist — document_type could not express "this is press"
+    until the type vocabulary landed 2026-07-27."""
     doc = Document(
         source_id=source_id,
         external_id=external_id,
         title=external_id,
         jurisdiction=Jurisdiction.EU,
-        document_type=DocumentType.OTHER,
+        document_type=document_type,
         lifecycle_stage=LifecycleStage.UNKNOWN,
         date_document=date_document,
         url=f"http://example/{external_id}",
@@ -323,8 +335,8 @@ def _seed_press_docs(session) -> None:
         date_document=today - dt.timedelta(days=200),
         text="ai ai ai ai",
     )
-    # In the window, scores best of all, but from a source NOT in the
-    # allowlist — must be excluded regardless of recency or score.
+    # In the window, scores best of all, but from a source on the editorial
+    # blocklist — must be excluded regardless of recency or score.
     _press_doc(
         session,
         external_id="WRONG_SOURCE",
@@ -346,7 +358,8 @@ def _seed_press_docs(session) -> None:
 def test_press_passages_includes_recent_allowlisted_doc(db_session):
     _seed_press_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
-    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    hits = press_passages(
+        db_session, FakeEmbedder(), "ai", days=90, k=5)
     titles = {h["title"] for h in hits}
     assert "GOOD" in titles
 
@@ -354,23 +367,63 @@ def test_press_passages_includes_recent_allowlisted_doc(db_session):
 def test_press_passages_excludes_stale_doc_despite_higher_score(db_session):
     _seed_press_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
-    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    hits = press_passages(
+        db_session, FakeEmbedder(), "ai", days=90, k=5)
     titles = {h["title"] for h in hits}
     assert "STALE" not in titles
 
 
-def test_press_passages_excludes_source_not_in_allowlist(db_session):
+def test_press_passages_excludes_blocklisted_sources(db_session):
+    """The allowlist this replaced conflated "is press" with "is admissible".
+    Inclusion is now by document_type; exclusion stays explicit, because a source
+    can be press-typed and still barred on quality grounds — the gnews_* feeds
+    were removed for sweeping every slot with near-identical explainers."""
     _seed_press_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
-    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    hits = press_passages(
+        db_session,
+        FakeEmbedder(),
+        "ai",
+        exclude_source_keys=frozenset({"other_source"}),
+        days=90,
+        k=5,
+    )
     titles = {h["title"] for h in hits}
-    assert "WRONG_SOURCE" not in titles
+    assert "WRONG_SOURCE" not in titles, "a blocklisted source must never appear"
+    assert "GOOD" in titles
+
+
+def test_press_passages_excludes_non_press_document_types(db_session):
+    """Inclusion is by type, so a legal act from a press source's feed is not
+    political-narrative content and must not enter the press pass — it is already
+    reachable through the legal path."""
+    today = dt.date.today()
+    source_id = _source_with_key(db_session, "mixed_source")
+    _press_doc(
+        db_session,
+        external_id="PRESS_ITEM",
+        source_id=source_id,
+        date_document=today - dt.timedelta(days=5),
+        text="ai ai",
+    )
+    _press_doc(
+        db_session,
+        external_id="LEGAL_ACT",
+        source_id=source_id,
+        date_document=today - dt.timedelta(days=5),
+        text="ai ai ai",
+        document_type=DocumentType.REGULATION,
+    )
+    embed_pending(db_session, FakeEmbedder())
+    titles = {h["title"] for h in press_passages(db_session, FakeEmbedder(), "ai", days=90, k=5)}
+    assert titles == {"PRESS_ITEM"}
 
 
 def test_press_passages_excludes_missing_date_document(db_session):
     _seed_press_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
-    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    hits = press_passages(
+        db_session, FakeEmbedder(), "ai", days=90, k=5)
     titles = {h["title"] for h in hits}
     assert "NO_DATE" not in titles
 
@@ -378,7 +431,14 @@ def test_press_passages_excludes_missing_date_document(db_session):
 def test_press_passages_only_the_good_doc_survives_all_filters(db_session):
     _seed_press_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
-    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
+    hits = press_passages(
+        db_session,
+        FakeEmbedder(),
+        "ai",
+        exclude_source_keys=frozenset({"other_source"}),
+        days=90,
+        k=5,
+    )
     assert [h["title"] for h in hits] == ["GOOD"]
 
 
@@ -427,12 +487,12 @@ def test_press_passages_min_score_drops_weak_matches(db_session):
     _seed_min_score_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
     no_floor = press_passages(
-        db_session, FakeEmbedder(), "ai", {"min_score_source"}, days=90, k=5
+        db_session, FakeEmbedder(), "ai", days=90, k=5
     )
     assert {h["title"] for h in no_floor} == {"ON_TOPIC", "OFF_TOPIC"}
 
     floored = press_passages(
-        db_session, FakeEmbedder(), "ai", {"min_score_source"}, days=90, k=5, min_score=0.5
+        db_session, FakeEmbedder(), "ai", days=90, k=5, min_score=0.5
     )
     titles = {h["title"] for h in floored}
     assert "ON_TOPIC" in titles
@@ -651,10 +711,7 @@ def test_press_passages_surfaces_diverse_source_despite_lower_raw_score(db_sessi
     _seed_glut_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
     hits = press_passages(
-        db_session,
-        FakeEmbedder(),
-        "ai",
-        {"glut_source", "diverse_source"},
+        db_session, FakeEmbedder(), "ai",
         days=90,
         k=3,
         min_score=0.5,
@@ -669,17 +726,21 @@ def test_press_passages_surfaces_diverse_source_despite_lower_raw_score(db_sessi
 
 
 def test_press_passages_results_carry_source_key(db_session):
+    """source_key is what _cap_per_source works on downstream, so every press
+    result has to carry one."""
     _seed_press_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
-    hits = press_passages(db_session, FakeEmbedder(), "ai", {"good_source"}, days=90, k=5)
-    assert all(h["source_key"] == "good_source" for h in hits)
+    hits = press_passages(db_session, FakeEmbedder(), "ai", days=90, k=5)
+    assert hits
+    assert all(h["source_key"] for h in hits)
+    assert {h["source_key"] for h in hits} <= {"good_source", "other_source"}
 
 
 def test_press_passages_results_never_leak_the_internal_vector(db_session):
     _seed_glut_docs(db_session)
     embed_pending(db_session, FakeEmbedder())
     hits = press_passages(
-        db_session, FakeEmbedder(), "ai", {"glut_source", "diverse_source"}, days=90, k=3
+        db_session, FakeEmbedder(), "ai", days=90, k=3
     )
     assert all("_vec" not in h for h in hits)
 
@@ -891,3 +952,23 @@ def test_voyage_reranker_empty_input_makes_no_request():
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
     assert VoyageReranker("rerank-2.5", "key", client=client).rerank("q", []) == []
+
+
+def test_press_passages_does_not_depend_on_ann_recall(db_session):
+    """Press retrieval scans exactly rather than using the HNSW index.
+
+    The type + date filter narrows the eligible pool to ~10% of the corpus, which
+    is where an approximate index can explore a sparse subset and find *none* of
+    it — returning zero rows rather than weaker ones. That happened twice in
+    production and was patched twice by raising hnsw.ef_search, the second time to
+    pgvector's hard ceiling, leaving no headroom. Asserting a full result set here
+    guards the property that matters: a narrow filter must still return its best
+    matches, with no threshold to keep tuning.
+    """
+    _seed_press_docs(db_session)
+    embed_pending(db_session, FakeEmbedder())
+    hits = press_passages(db_session, FakeEmbedder(), "ai", days=90, k=5)
+    assert hits, "a narrowly-filtered press query must not come back empty"
+    # Deterministic: the same query twice returns the same rows in the same order.
+    again = press_passages(db_session, FakeEmbedder(), "ai", days=90, k=5)
+    assert [h["title"] for h in hits] == [h["title"] for h in again]

@@ -25,7 +25,7 @@ from etl.enrichment import embed_pending
 from etl.intelligence import CompanyProfile, build_documents, build_request, generate_briefing
 from etl.intelligence.briefing import (
     _CANON_STUB_CHARS,
-    _PRESS_SOURCE_KEYS,
+    _PRESS_EXCLUDED_SOURCES,
     SYSTEM_PROMPT,
     _attach_summaries,
     _canon_issues,
@@ -485,17 +485,17 @@ def test_build_documents_prefix_jurisdiction_and_type():
     assert docs[1]["title"] == "[DE · Press] Bitkom press release"
 
 
-def test_build_documents_verbatim_debate_overrides_generic_other_label():
-    # document_type is "other" for ep_verbatim/an_verbatim/de_verbatim (same
-    # generic bucket as a press summary) — kind="verbatim_debate" is what
-    # actually distinguishes a named speaker's real floor remarks.
+def test_build_documents_labels_a_verbatim_debate_as_such():
+    # These used to be document_type "other" — the same bucket as a press
+    # summary — and were distinguished only by extra["kind"]. DocumentType
+    # .VERBATIM_DEBATE now carries the fact, so the label comes from the type
+    # like every other source and the redundant marker is gone.
     passages = [
         {
             "text": "Henna Virkkunen (Executive Vice-President) — ...",
             "title": "Presentation of the Cybersecurity Act (debate)",
             "jurisdiction": "EU",
-            "document_type": "other",
-            "kind": "verbatim_debate",
+            "document_type": "verbatim_debate",
         }
     ]
     docs = build_documents(passages)
@@ -710,9 +710,14 @@ def test_press_source_keys_are_all_registered_adapters():
     # removed from this list — this test guards against silent drift going
     # forward, in either direction.
     from etl.adapters import ADAPTERS_BY_KEY
+    from etl.enrichment.reclassify import _PRESS_SOURCE_KEYS as CLASSIFY_KEYS
 
-    missing = _PRESS_SOURCE_KEYS - set(ADAPTERS_BY_KEY)
+    missing = CLASSIFY_KEYS - set(ADAPTERS_BY_KEY)
     assert not missing, f"_PRESS_SOURCE_KEYS references unregistered adapter keys: {missing}"
+    # The editorial blocklist must also name real adapters, or an exclusion
+    # silently stops excluding anything when a key is renamed.
+    stale = _PRESS_EXCLUDED_SOURCES - set(ADAPTERS_BY_KEY)
+    assert not stale, f"_PRESS_EXCLUDED_SOURCES references unregistered keys: {stale}"
 
 
 # --- full orchestration with fakes ------------------------------------------
@@ -1665,8 +1670,29 @@ def test_prio_verdict_issues_ignores_prio_2_monitors_with_hinges():
 
 
 def test_table_parsing_skips_headers_and_separators():
-    from etl.intelligence.briefing import _table_rows
+    from etl.intelligence.parsing import _table_rows
 
     rows = _table_rows(_PRIO_TABLE)
     assert len(rows) == 3
     assert rows[0][0] == "AI Act"
+
+
+def test_every_document_type_has_a_source_label():
+    """The '[EU · Regulation]' prefix is how the model weighs authority, so a
+    type with no label degrades to a raw slug like 'staff_working_doc'. Adding a
+    DocumentType without a label is easy to miss; this makes it impossible."""
+    from data.models import DocumentType
+    from etl.intelligence.briefing import _DOCTYPE_LABELS
+
+    missing = [t.value for t in DocumentType if t.value not in _DOCTYPE_LABELS]
+    assert not missing, f"DocumentType members with no display label: {missing}"
+
+
+def test_verbatim_debates_are_labelled_from_their_type_not_from_extra():
+    """A named politician's floor remarks must never read as a press summary.
+    That used to need a special case keyed on extra["kind"]; the type now says
+    it, and all 129 verbatim documents carried both facts redundantly."""
+    from etl.intelligence.briefing import _source_label
+
+    assert _source_label("EU", "verbatim_debate") == "[EU · Verbatim debate]"
+    assert _source_label("EU", "press") == "[EU · Press]"

@@ -18,11 +18,12 @@ from typing import Protocol
 import httpx
 import structlog
 from sqlalchemy import func, select, text
+from sqlalchemy import true as sa_true
 from sqlalchemy.orm import Session
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
 from data.config import Settings
-from data.models import Document, DocumentVersion, Passage, Source
+from data.models import Document, DocumentType, DocumentVersion, Passage, Source
 
 log = structlog.get_logger(__name__)
 
@@ -529,12 +530,23 @@ def _mmr_select(candidates: list[dict], *, k: int, lambda_mult: float = 0.6) -> 
     return selected
 
 
+#: Document types that make up the political-narrative layer. Inclusion is by
+#: type rather than by a source allowlist because adapters set the type at
+#: ingestion and `reclassify` fills in stragglers — so a newly added press source
+#: is eligible immediately and cannot drift out of a hand-kept list.
+PRESS_DOCUMENT_TYPES = (
+    DocumentType.PRESS,
+    DocumentType.NEWSLETTER,
+    DocumentType.VERBATIM_DEBATE,
+)
+
+
 def press_passages(
     session: Session,
     embedder: Embedder,
     query: str,
-    source_keys: set[str],
     *,
+    exclude_source_keys: frozenset[str] | set[str] = frozenset(),
     days: int = 90,
     k: int = 5,
     min_score: float | None = None,
@@ -574,24 +586,32 @@ def press_passages(
     cutoff = dt.date.today() - dt.timedelta(days=days)
     qvec = embedder.embed([query])[0]
     pool_size = min(max(k * 8, 40), 100)
-    # pgvector's HNSW index approximates nearest neighbors by exploring a
-    # bounded region of the graph (hnsw.ef_search, default 40). That's fine
-    # for semantic_search()'s near-unfiltered scan of the whole corpus, but
-    # this query's Source.key + date filter narrows the eligible pool to a
-    # sparse subset — when the query is topically far from that subset, the
-    # exploration budget can fail to find ANY of them and silently return
-    # zero (or far too few) rows, not just weaker ones. First found live
-    # 2026-07-22 with ~1,600 eligible rows (ef_search=100 fixed it then);
-    # re-confirmed the same day after the press-source allowlist grew to
-    # ~28 keys / ~10,400 eligible rows — ef_search=100 was AGAIN
-    # insufficient for some queries (one panel profile's eligible pool
-    # explored down to a single row at ef_search=100 vs. a full, differently
-    # -ranked top-10 at ef_search=1000, pgvector's own hard ceiling). This
-    # threshold scales with how large and topically diverse the filtered
-    # pool is, not a fixed constant — as the press-source list keeps
-    # growing, re-verify this is still enough rather than assuming it holds.
-    # SET LOCAL scopes this to the current transaction only.
-    session.execute(text("SET LOCAL hnsw.ef_search = 1000"))
+    # Exact scan, not the HNSW index — the same choice document_passages()
+    # makes, and for the same reason.
+    #
+    # This query's type + date filter narrows the eligible pool to ~10,600 of
+    # 108,900 passages (9.7%), which is precisely where an approximate index
+    # misbehaves: HNSW explores a bounded region of the graph, and when the query
+    # is topically far from a sparse eligible subset the exploration can fail to
+    # find ANY of it and return zero rows rather than weaker ones. That bit twice
+    # — first with ~1,600 eligible rows (ef_search 40 → 100), then again at
+    # ~10,400 (100 → 1,000, pgvector's own hard ceiling) — and each fix left a
+    # standing instruction to re-verify as the pool grew. The pool grew again on
+    # 2026-07-28 when press inclusion became type-based, and there was no headroom
+    # left to raise.
+    #
+    # So the ef_search tuning was compensating for the wrong access method. An
+    # exact scan over 10,600 vectors is deterministic by construction, cannot
+    # silently return zero, needs no threshold to maintain, and measured *faster*
+    # than the ANN path it replaces (0.71s vs 1.01s) — because exploring an HNSW
+    # graph at ef_search=1,000 costs more than 10,600 honest distance
+    # computations. Same results on the profiles compared.
+    #
+    # Revisit only if this pool grows by an order of magnitude: the cost is
+    # linear in eligible rows, so ~100k would be the point to reconsider.
+    # SET LOCAL scopes both to the current transaction.
+    session.execute(text("SET LOCAL enable_indexscan = off"))
+    session.execute(text("SET LOCAL enable_bitmapscan = off"))
     stmt = (
         select(
             Passage.text,
@@ -616,7 +636,8 @@ def press_passages(
         .where(
             Passage.embedding.is_not(None),
             DocumentVersion.is_current.is_(True),
-            Source.key.in_(source_keys),
+            Document.document_type.in_(PRESS_DOCUMENT_TYPES),
+            Source.key.notin_(exclude_source_keys) if exclude_source_keys else sa_true(),
             Document.date_document.is_not(None),
             Document.date_document >= cutoff,
         )

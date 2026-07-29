@@ -132,7 +132,8 @@ def test_build_extras_request_shape():
     passages = [{"text": "high-risk AI", "celex": "C1", "title": "T"}]
     req = build_extras_request(p, passages, ["ai_role"])
     assert req["tool_choice"] == {"type": "tool", "name": "propose_scoping_questions"}
-    assert "being asked this round (do not duplicate): ai_role" in req["messages"][0]["content"].lower()
+    content = req["messages"][0]["content"].lower()
+    assert "being asked this round (do not duplicate): ai_role" in content
 
 
 def test_build_extras_request_surfaces_already_known_scoping_facts():

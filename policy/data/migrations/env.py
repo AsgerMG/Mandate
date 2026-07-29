@@ -32,15 +32,33 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 
-def _database_url() -> str:
-    """The app's own resolved database URL.
+#: The placeholder alembic.ini ships with. Any other value was set deliberately.
+_INI_PLACEHOLDER = "driver://user:pass@localhost/dbname"
 
-    Reuses ``data.session._resolve_url`` rather than re-reading the setting:
-    that function handles the ``local`` sentinel (embedded Postgres under
-    .localdb/) *and* carries a trailing-whitespace guard earned live on Railway
-    (see its docstring). A second implementation here would be one more place
-    for those two behaviours to drift apart.
+
+def _database_url() -> str:
+    """The database to migrate: an explicitly supplied URL if there is one,
+    otherwise the app's own resolved URL.
+
+    The precedence matters for safety, and the earlier version got it wrong by
+    *always* using the app's setting. That silently discarded
+    ``alembic -x db_url=…`` and any programmatic ``set_main_option``, so Alembic
+    could not be pointed at another database at all — and an attempt to migrate a
+    scratch or staging database ran against production instead. Found exactly
+    that way: a fresh-install test reported success because it had quietly
+    migrated the live Railway corpus.
+
+    Falling back to ``data.session._resolve_url`` (rather than re-reading the
+    setting here) keeps the ``local`` sentinel and the trailing-whitespace guard
+    earned live on Railway in one place.
     """
+    explicit = context.get_x_argument(as_dictionary=True).get("db_url")
+    if explicit:
+        return explicit
+    configured = config.get_main_option("sqlalchemy.url", None)
+    if configured and configured != _INI_PLACEHOLDER:
+        return configured
+
     from data.session import _resolve_url
 
     return _resolve_url()
