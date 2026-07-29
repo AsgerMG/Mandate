@@ -34,7 +34,7 @@ Five top-level folders, each owning one concern:
 | `ETL/` | The data pipeline. `extract/` (one `extract_*.py` per source), `transform/` (`classify.py`, `merge_companies.py`, the `build_*_groups.py` parent-group rollups, dedup, backfills, entity resolution), `load/` (`load_*.py`, `schema.sql`, `migrations/`, `backup.py`, and `load/qa/` post-load checks), and `lib/` (shared modules + `etl_env.py`, the single source of truth for paths). See [ETL/README.md](ETL/README.md). |
 | `website/` | The publish layer. `build/` (the Python builders that turn `data/db.sqlite` into the site JSON, + `lib/web_env.py` path bootstrap) and `frontend/` (the Next.js app). See [website/README.md](website/README.md). |
 | `data/` | The database (`db.sqlite` + `backups/`, both under data/), the read-side SQL (`views.sql`, `queries/`), the source caches (`raw/`, `processed/`), and `europe_scope.json`. See [data/README.md](data/README.md). |
-| `project-mgmt/` | `methodology.md` (canonical, rendered by the site), `decision_log.md`, `design-guidelines.md`, `europe_scope.md`, the dev journal (`notes.md`), `plans/` (active plans + `backlog/`), and `findings/` (analysis write-ups). |
+| `project-mgmt/` | `methodology.md` (canonical, rendered by the site), `decision_log.md`, `technical_dd_2026-07.md` (the engineering audit and its remediation record), `design-guidelines.md`, `europe_scope.md`, the dev journal (`notes.md`), `plans/` (active plans + `backlog/`), and `findings/` (analysis write-ups). |
 | `.claude/` | Harness config: `settings.json` and `hooks/` (the stop-gate + generated-edit guards). |
 
 ## Common commands
@@ -54,6 +54,31 @@ are safe to re-run (see the re-runnability registry in [ETL/README.md](ETL/READM
 loader inserts rows, run `make transform` (classify + sanity) — or the steps individually,
 `python3 ETL/transform/classify.py` then `python3 ETL/load/qa/sanity_check.py` — and
 `python3 ETL/load/backup.py` to snapshot the DB to local + iCloud.
+
+## Verification
+
+Every push runs [.github/workflows/ci.yml](.github/workflows/ci.yml) — three jobs: the frontend
+(types, tests with a coverage floor, the contract checks below, lint, build), the ETL (byte-compile,
+schema file present, one country map, country resolution, encoded-spec sanity, cross-language
+constants), and a security pass. **No CI step may depend on data that is not committed** — the
+checks read `website/frontend/public/data/*.json`, never `data/db.sqlite`, which is gitignored. Test
+that property by moving the database aside and re-running.
+
+```bash
+cd website/frontend
+npm run check       # types + 96 tests + vocabulary, archetype, payload and dependency contracts
+npm run vocab       # regenerate data/vocabularies.json — run after editing intake options
+npm run trace       # print the real candidate pool for a profile (free, no model calls)
+npm run board       # scoreboard over the 12 archetypes
+npm run health      # recent errors, spend and quota from event_log
+```
+
+Two of these are contracts rather than tests, and matter most when changing intake:
+`check_vocabularies.ts` fails if the intake options drift from the corpus, and `npm run vocab` is
+what keeps the Python encoder reading the same vocabulary rather than a second copy of it. The
+duplication rule behind both is in [project-mgmt/decision_log.md](project-mgmt/decision_log.md).
+
+Model-calling scripts (`npm run bench`) cost real money — run them on a batch of changes, not per fix.
 
 ## Data and backups
 

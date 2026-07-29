@@ -222,3 +222,65 @@ gone it describes our software's behaviour rather than anyone's company.
 
 Standard data minimisation: shorten retention of what identifies, not of what
 is anonymous.
+
+## 2026-07-29 — Duplicated definitions are removed at the root, not documented
+
+**Decision (mine, technical):** where the same fact is stated in two places, the
+default is to delete one of them, in this order of preference — generate one
+side from the other; failing that import rather than copy; and only where
+neither is possible, add a check that fails the build on divergence.
+
+**Context:** three separate production defects in one week turned out to be the
+same defect. A retired sector list in `sanitize.ts` silently dropped every live
+request's sector for a day. A country map kept in eight files resolved the same
+name differently depending on which extractor read it. An `equals` comparator
+kept in two files was case-sensitive on one code path and case-insensitive on
+the other, so an identical rule passed one screen and failed the next.
+
+Each copy was individually correct and individually tested. What they shared was
+a comment asking a human to keep them in step. **That comment is now treated as
+the smell** — it marks a duplicate that has not drifted *yet*.
+
+**Applied:** the intake vocabulary is generated into `data/vocabularies.json`
+for the Python encoder, so no second copy exists; the country map is one module
+all extractors import; the comparator is one pure, exhaustively tested file.
+`check_cross_language_constants.py` covers the residue that genuinely cannot be
+generated.
+
+## 2026-07-29 — CI checks must run on what is committed
+
+**Decision (mine, technical):** no CI step may depend on data that is not in the
+repository.
+
+**Context:** the first real CI failure was self-inflicted — `check_spec_sanity.py`
+read `data/db.sqlite`, which is gitignored, and the job died on a missing file in
+eight seconds. It now reads the committed `instrument_terms.json` snapshot, which
+is strictly better: that snapshot is what ships, so the check validates the
+artefact a founder's brief is actually built from.
+
+**Rationale:** a check that cannot pass in CI is not a check, it is a permanent
+red light, and a permanent red light trains everyone to scroll past the one that
+matters. Test the property by hiding `data/db.sqlite` and running the job.
+
+## 2026-07-29 — Phase 3 measured and deliberately not built
+
+**Decision (mine, technical):** payload and latency work is deferred with the
+measurements recorded, not carried as open debt.
+
+Per-request payload is 2.34 MB against a build check that fails at 8 MB — roughly
+700 instruments of headroom. The 191-second median brief is dominated by model
+time that cannot be optimised away, and the streaming partial view already
+absorbs the wait. Both are instrumented, so the trigger to act will announce
+itself rather than needing to be remembered.
+
+## 2026-07-29 — Screen one shortened; the adaptive round carries the difference
+
+**Decision (user):** cut the fixed intake from 11 questions to 6.
+
+The questions removed were not deleted, they were **demoted**: each is now asked
+adaptively only when a real fund's requirement text needs it. A question every
+founder answers to satisfy a rule that applies to a minority is a tax on the
+majority, and the adaptive round already grounds every question in a specific
+gate. Verified by checking each demoted field still has enum hints — a demoted
+field with no hints would have been askable nowhere at all, which is how this
+change could have quietly reduced accuracy instead of intake length.
