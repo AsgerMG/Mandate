@@ -161,8 +161,7 @@ def export(
             .join(Document, Document.source_id == Source.id)
             .join(
                 DocumentVersion,
-                (DocumentVersion.document_id == Document.id)
-                & (DocumentVersion.is_current == True),  # noqa: E712
+                (DocumentVersion.document_id == Document.id) & (DocumentVersion.is_current == True),  # noqa: E712
             )
         )
         if source:
@@ -311,10 +310,7 @@ def brief(
         )
 
     if not result["passages"]:
-        typer.echo(
-            "No embedded passages found. Run `regina refresh` "
-            "(or `regina enrich`) first."
-        )
+        typer.echo("No embedded passages found. Run `regina refresh` (or `regina enrich`) first.")
         return
 
     if result.get("briefing"):
@@ -400,6 +396,36 @@ def brief_check(
         "--sharpen/--no-sharpen",
         help="Second self-critique pass, as production runs it (~2x cost).",
     ),
+    model: str = typer.Option(
+        None,
+        "--model",
+        help=(
+            "Override the brief model for this run only (e.g. claude-haiku-4-5). "
+            "Recorded in the report so a later brief-compare can label the sides."
+        ),
+    ),
+    repeat: int = typer.Option(
+        1,
+        "--repeat",
+        help=(
+            "Re-run retrieval N times per profile to measure its run-to-run "
+            "variance. --dry-run only, so it costs nothing."
+        ),
+    ),
+    judge: bool = typer.Option(
+        True,
+        "--judge/--no-judge",
+        help=(
+            "Score this run with the 7-dimension judge and store it in the report "
+            "(one extra batched call), so quality joins cost and latency in "
+            "`--history`. Ignored on a dry run."
+        ),
+    ),
+    history: bool = typer.Option(
+        False,
+        "--history",
+        help="Print the dated ledger of every past brief-check and exit. Runs nothing.",
+    ),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Retrieval + stats only, no billed calls."
     ),
@@ -417,7 +443,24 @@ def brief_check(
     already-bounded run a cap either doesn't bind or binds mid-flight and
     discards work already paid for, which is worse than no cap. Pass --budget
     only if you want a genuine stop-loss.
+
+    `--model` runs the panel on a different brief model; `--repeat` (dry-run
+    only) measures how much retrieval moves between identical runs, which is the
+    noise floor any brief-compare delta has to clear to mean anything.
     """
+    import os
+    import time
+
+    if history:
+        # Before anything else: reads report files, touches no database, spends
+        # nothing. A flag rather than a command so seeing the trend doesn't
+        # require running a check.
+        from etl.brief_eval.history import render, run_rows
+
+        typer.echo(render(run_rows()))
+        return
+
+    from etl.brief_eval.compare import retrieval_spread
     from etl.brief_eval.cost import BudgetGuard, MeteredClient
     from etl.brief_eval.panel import EVAL_PANEL
     from etl.brief_eval.rotation import (
@@ -432,6 +475,25 @@ def brief_check(
     from etl.intelligence.llm import get_client, has_api_key
 
     effective_dry = dry_run or not has_api_key()
+    if repeat > 1 and not effective_dry:
+        # A paid --repeat would produce several briefs per profile, which the
+        # report shape (one entry per profile) can't hold and brief-compare
+        # can't read. Variance in *retrieval* is what a repeat measures anyway,
+        # and that needs no API call.
+        typer.echo("--repeat measures retrieval variance and needs --dry-run (it's free).")
+        raise typer.Exit(1)
+    if model:
+        # get_settings() is lru_cached and read lazily by every request builder,
+        # so the override has to land in the environment *before* the first read
+        # — setting it afterwards would silently run the old model.
+        os.environ["LLM_MODEL"] = model
+        get_settings.cache_clear()
+        if get_settings().llm_model != model:
+            typer.echo(
+                f"Could not apply --model {model} (settings still say {get_settings().llm_model})."
+            )
+            raise typer.Exit(1)
+
     profiles, next_cursor = select_profiles(count=count, all_profiles=all_profiles)
     guard = BudgetGuard(None if effective_dry or budget <= 0 else budget)
     client = None if effective_dry else MeteredClient(get_client(), guard)
@@ -440,7 +502,11 @@ def brief_check(
 
     scope = "whole panel" if all_profiles else f"{len(profiles)} of {len(EVAL_PANEL)} profiles"
     cap = "none" if guard.max_usd is None else f"${guard.max_usd:.2f}"
-    typer.echo(f"brief-check: {scope}, budget {cap}\n")
+    # Shown even on a dry run: it makes `--model` verifiable without a key, and
+    # a dry run that silently ignored the flag would be a confusing way to find
+    # out the override didn't take.
+    run_model = get_settings().llm_model + (" (not called: dry run)" if effective_dry else "")
+    typer.echo(f"brief-check: {scope}, model {run_model}, budget {cap}\n")
 
     embedder = get_embedder(get_settings())
     results: list[dict] = []
@@ -448,42 +514,72 @@ def brief_check(
     for profile in profiles:
         typer.echo(f"— {profile.name}")
         guard.set_context(profile.name)
+        started = time.perf_counter()
         try:
-            with session_scope() as session:
-                result = generate_briefing(
-                    session,
-                    embedder,
-                    profile,
-                    k=k,
-                    client=client,
-                    dry_run=effective_dry,
-                    sharpen=sharpen,
-                )
+            runs = []
+            for _ in range(repeat):
+                # A fresh transaction per run, because that is what production
+                # does (one session per /api/brief request) and because sharing
+                # one across repeats measured the wrong thing: press_passages
+                # left the planner in exact-scan mode for the rest of the
+                # transaction, so run 1 used the HNSW index and runs 2+ did not.
+                # The "variance" that produced was a leak, not retrieval noise.
+                started = time.perf_counter()
+                with session_scope() as session:
+                    runs.append(
+                        generate_briefing(
+                            session,
+                            embedder,
+                            profile,
+                            k=k,
+                            client=client,
+                            dry_run=effective_dry,
+                            sharpen=sharpen,
+                        )
+                    )
+                # Per run, not per profile: with --repeat, one timer around the
+                # whole loop would report three briefs' latency as one brief's.
+                runs[-1]["seconds"] = round(time.perf_counter() - started, 2)
+            result = runs[0]
         except Exception as exc:  # includes the budget guard tripping
             typer.echo(f"  stopped: {exc}")
             results.append({"profile": profile.name, "error": str(exc)})
             break
+        # End-to-end, not just model time: retrieval, reranking and both model
+        # calls are all latency the user sits through.
+        elapsed = result["seconds"]
         stats = result.get("retrieval_stats", {})
         typer.echo(
             f"  {stats.get('passages')} passages / {stats.get('documents')} docs"
             f" · depth ratio {stats.get('documents_per_passage')}"
             f" · {stats.get('canon_stubs')} canon stubs"
             f" · {stats.get('context_chars')} chars"
+            f" · {elapsed}s"
         )
         typer.echo(f"  facets: {', '.join(stats.get('facets', []))}")
         if result.get("canon_notes"):
             for note in result["canon_notes"]:
                 typer.echo(f"  ⚠ {note}")
-        results.append(
-            {
-                "profile": profile.name,
-                "query": result.get("query"),
-                "retrieval_stats": stats,
-                "briefing": result.get("briefing"),
-                "citations": result.get("citations", []),
-                "canon_notes": result.get("canon_notes", []),
-            }
-        )
+        entry = {
+            "profile": profile.name,
+            "query": result.get("query"),
+            "retrieval_stats": stats,
+            "seconds": elapsed,
+            "briefing": result.get("briefing"),
+            "citations": result.get("citations", []),
+            "canon_notes": result.get("canon_notes", []),
+        }
+        if repeat > 1:
+            spread = retrieval_spread(
+                [{**r.get("retrieval_stats", {}), "seconds": r["seconds"]} for r in runs]
+            )
+            entry["retrieval_variance"] = spread
+            for key, v in spread.items():
+                typer.echo(
+                    f"  variance {key:34} {v['min']} – {v['max']}"
+                    f"  (spread {v['spread']}, mean {v['mean']})"
+                )
+        results.append(entry)
         completed += 1
 
     # Fingerprint the corpus this run actually saw, so a later comparison can
@@ -494,25 +590,51 @@ def brief_check(
         typer.echo(
             f"\n⚠ {fingerprint['unembedded_passages']} passages are unembedded — "
             "ingestion has not settled, so this run measures a moving target. "
-            "Run `regina embed` before treating these numbers as a baseline."
+            "Run `regina enrich --only embeddings` before treating these numbers "
+            "as a baseline."
         )
 
+    payload = {
+        "corpus": fingerprint,
+        # The model that actually served the calls, from the responses rather than
+        # from config — a fallback or a stale settings cache would otherwise be
+        # invisible in a comparison of two models.
+        "model": ", ".join(sorted(guard.models)) or None,
+        "spent_usd": round(guard.spent_usd, 4),
+        "seconds": round(guard.seconds, 2),
+        "calls": guard.calls,
+        "breakdown": guard.breakdown,
+        "dry_run": effective_dry,
+        "sharpen": sharpen,
+        "results": results,
+    }
+
+    # Score the run on its own terms, so quality is part of the record rather than
+    # only ever a pairwise comparison. One batched call for the whole panel — a
+    # rounding error against a 10-profile generation run — and without it there is
+    # no way to see quality over time, only between two chosen runs.
+    if judge and not effective_dry and completed:
+        from etl.brief_eval.compare import judge_report
+
+        guard.set_context("judge")
+        try:
+            payload["judged"] = judge_report(client, payload)
+            means = payload["judged"].get("means", {})
+            if means:
+                typer.echo(
+                    f"\nJudged {means.get('score')}/5 "
+                    + " · ".join(
+                        f"{k.replace('_', ' ')} {v}" for k, v in means.items() if k != "score"
+                    )
+                )
+        except Exception as exc:  # a failed judge must not cost us the briefs
+            typer.echo(f"\n(judging failed: {exc} — the briefs above are still saved)")
+            payload["judged"] = {"error": str(exc)}
+        payload["spent_usd"] = round(guard.spent_usd, 4)
+        payload["calls"] = guard.calls
+
     path = report_path()
-    path.write_text(
-        json.dumps(
-            {
-                "corpus": fingerprint,
-                "spent_usd": round(guard.spent_usd, 4),
-                "calls": guard.calls,
-                "breakdown": guard.breakdown,
-                "dry_run": effective_dry,
-                "sharpen": sharpen,
-                "results": results,
-            },
-            indent=2,
-            default=str,
-        )
-    )
+    path.write_text(json.dumps(payload, indent=2, default=str))
     if not effective_dry:
         # Advance only past profiles that actually finished. A budget stop or a
         # crash mid-rotation must leave the unchecked profile next in line —
@@ -564,9 +686,7 @@ def brief_compare(
     target = (
         Path(out)
         if out
-        else default_path.with_name(
-            default_path.name.replace("brief-check-", "brief-compare-")
-        )
+        else default_path.with_name(default_path.name.replace("brief-check-", "brief-compare-"))
     )
     target.write_text(json.dumps(result, indent=2, default=str))
     typer.echo(f"\nFull result: {target}")

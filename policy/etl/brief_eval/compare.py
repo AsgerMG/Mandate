@@ -22,9 +22,15 @@ by identically-prompted runs.
 against a half-ingested corpus produces plausible, worthless numbers, and that
 has already happened once.
 
-A 5-profile panel scored 1-5 across 7 dimensions is a small sample. Differences
-below ~0.3 on the average should be read as noise, which is why per-dimension
-deltas are printed rather than a single headline number.
+A small panel scored 1-5 across 7 dimensions is a small sample. Differences below
+~0.3 on the average should be read as noise, which is why per-dimension deltas are
+printed rather than a single headline number. That floor is not only judge
+variance: retrieval itself returns a different passage set on every run (see
+retrieval_spread), so the two sides were built from measurably different context.
+
+Cost and latency are reported alongside the scores, because a model swap is judged
+on three axes at once and a quality delta read without the other two is a
+decision made on a third of the evidence.
 """
 
 from __future__ import annotations
@@ -47,6 +53,44 @@ def load_report(path: str | Path) -> dict:
     return json.loads(Path(path).read_text())
 
 
+#: Retrieval metrics whose run-to-run movement decides whether a judged delta is
+#: readable at all. Retrieval is not deterministic — HNSW is approximate and the
+#: reranker breaks ties — so two identical runs return slightly different
+#: passages, and a quality difference smaller than that drift is unattributable.
+#: `seconds` rides along because latency is the other thing a repeat measures for
+#: free, and a latency delta needs a noise floor exactly as much as a score does.
+_VARIANCE_KEYS = (
+    "passages",
+    "documents",
+    "substantive_documents_per_passage",
+    "context_chars",
+    "score_median",
+    "seconds",
+)
+
+
+def retrieval_spread(runs: list[dict]) -> dict[str, dict[str, float]]:
+    """min/max/spread/mean per retrieval metric across repeated identical runs.
+
+    Measured rather than assumed, because the alternative is what we were doing:
+    treating |delta| < 0.3 as noise on a threshold nobody had ever checked. Cheap
+    to run — retrieval needs no API call — so there is no reason to keep guessing.
+    """
+    out: dict[str, dict[str, float]] = {}
+    for key in _VARIANCE_KEYS:
+        values = [r[key] for r in runs if isinstance(r.get(key), (int, float))]
+        if len(values) < 2:
+            continue
+        out[key] = {
+            "min": round(min(values), 3),
+            "max": round(max(values), 3),
+            "spread": round(max(values) - min(values), 3),
+            "mean": round(sum(values) / len(values), 3),
+            "runs": len(values),
+        }
+    return out
+
+
 def _panel_items(report: dict, names: list[str]) -> list[tuple[CompanyProfile, dict]]:
     """Rebuild ``judge_panel``'s (profile, result) input from a stored report.
 
@@ -64,6 +108,74 @@ def _panel_items(report: dict, names: list[str]) -> list[tuple[CompanyProfile, d
         profile = by_name.get(name) or CompanyProfile(name=name)
         items.append((profile, by_profile[name]))
     return items
+
+
+def judge_report(client: Any, report: dict) -> dict[str, Any]:
+    """Absolute 7-dimension scores for the briefs in ONE stored run.
+
+    `brief-compare` judges two runs against each other, which answers "did that
+    change help?" but leaves no score attached to a run — so there was no way to
+    see quality over time, only pairwise. This scores a run on its own terms and
+    is cheap enough to do on every billed check: `judge_panel` batches the whole
+    panel into a single call, so it costs one call whether the panel is 5 or 10.
+
+    Comparable across runs only because `eval_model` is pinned (see data/config.py)
+    — the instrument has to be the same instrument. Two caveats that belong next to
+    any trend read from these: an LLM judge is not perfectly repeatable, and that
+    self-variance has not been measured here; and the deterministic `canon_issues`
+    count is the one quality signal in the report that needs no model at all.
+    """
+    names = sorted(r["profile"] for r in report.get("results", []) if r.get("briefing"))
+    if not names:
+        return {}
+    scores = judge_panel(client, _panel_items(report, names))
+    dims = [*_SCORE_DIMENSIONS, "score", "canon_issues"]
+    means = {
+        dim: round(
+            sum(s[dim] for s in scores if isinstance(s.get(dim), (int, float))) / len(scores), 3
+        )
+        for dim in dims
+        if any(isinstance(s.get(dim), (int, float)) for s in scores)
+    }
+    return {
+        "means": means,
+        "per_profile": {name: scores[i] for i, name in enumerate(names)},
+    }
+
+
+def _per_brief(report: dict, matched: list[str], key: str) -> float | None:
+    """Mean of ``breakdown[profile][key]`` over the matched profiles only.
+
+    Matched-only so cost and latency are computed over exactly the briefs the
+    scores are computed over — a run with three extra profiles must not look
+    more expensive per brief than it was.
+    """
+    breakdown = report.get("breakdown") or {}
+    values = [
+        breakdown[name][key]
+        for name in matched
+        if isinstance(breakdown.get(name, {}).get(key), (int, float)) and breakdown[name][key]
+    ]
+    return round(sum(values) / len(values), 3) if values else None
+
+
+def _run_comparison(before: dict, after: dict, matched: list[str]) -> dict[str, Any]:
+    """Model, $ per brief and seconds per brief for each side.
+
+    A model swap is judged on three axes at once — quality, cost, latency — and
+    only the first was ever reported here. Reading a -0.1 quality delta is a very
+    different decision if it came with a 3x cost cut and half the wall clock.
+    Any of these is None on a report written before the field existed, which the
+    renderer prints as "not recorded" rather than as a zero.
+    """
+    out: dict[str, Any] = {}
+    for side, report in (("before", before), ("after", after)):
+        out[side] = {
+            "model": report.get("model"),
+            "usd_per_brief": _per_brief(report, matched, "usd"),
+            "seconds_per_brief": _per_brief(report, matched, "seconds"),
+        }
+    return out
 
 
 def compare_runs(client: Any, before: dict, after: dict) -> dict[str, Any]:
@@ -134,6 +246,7 @@ def compare_runs(client: Any, before: dict, after: dict) -> dict[str, Any]:
         "warnings": warnings,
         "dimensions": dimensions,
         "retrieval": retrieval,
+        "run": _run_comparison(before, after, matched),
         "per_profile": {
             name: {
                 "before": before_scores[i].get("score"),
@@ -144,6 +257,32 @@ def compare_runs(client: Any, before: dict, after: dict) -> dict[str, Any]:
         "before_scores": before_scores,
         "after_scores": after_scores,
     }
+
+
+def _render_run(run: dict[str, Any]) -> list[str]:
+    """Model / cost / latency block, or nothing if neither side recorded any."""
+    before, after = run.get("before") or {}, run.get("after") or {}
+    if not any(
+        before.get(k) or after.get(k) for k in ("model", "usd_per_brief", "seconds_per_brief")
+    ):
+        return []
+
+    def fmt(value: Any, unit: str = "") -> str:
+        return "not recorded" if value is None else f"{value}{unit}"
+
+    lines = ["Model, cost and latency (per brief, matched profiles):"]
+    lines.append(f"  {'model':22} {fmt(before.get('model')):>16} → {fmt(after.get('model')):>16}")
+    for label, key, unit in (
+        ("$ per brief", "usd_per_brief", ""),
+        ("seconds per brief", "seconds_per_brief", "s"),
+    ):
+        b, a = before.get(key), after.get(key)
+        line = f"  {label:22} {fmt(b, unit):>16} → {fmt(a, unit):>16}"
+        if isinstance(b, (int, float)) and isinstance(a, (int, float)) and b:
+            line += f"   ({(a - b) / b:+.0%})"
+        lines.append(line)
+    lines.append("")
+    return lines
 
 
 def render(result: dict[str, Any]) -> str:
@@ -164,9 +303,7 @@ def render(result: dict[str, Any]) -> str:
     for dim, v in result["dimensions"].items():
         mark = "" if abs(v["delta"]) >= 0.3 else "  (noise)"
         label = "OVERALL" if dim == "score" else dim
-        lines.append(
-            f"{label:32} {v['before']:7.2f} {v['after']:7.2f} {v['delta']:+7.2f}{mark}"
-        )
+        lines.append(f"{label:32} {v['before']:7.2f} {v['after']:7.2f} {v['delta']:+7.2f}{mark}")
     lines.append("")
     lines.append("Retrieval shape (means over matched profiles):")
     for key, v in result["retrieval"].items():
@@ -181,6 +318,7 @@ def render(result: dict[str, Any]) -> str:
                 f"  {key:38} {v['before']:12.2f} → {v['after']:12.2f}  ({v['delta']:+.2f})"
             )
     lines.append("")
+    lines += _render_run(result.get("run") or {})
     lines.append("Per profile (overall 1-5):")
     for name, v in result["per_profile"].items():
         b, a = v["before"], v["after"]
@@ -188,7 +326,11 @@ def render(result: dict[str, Any]) -> str:
             lines.append(f"  {name[:44]:44} {b:.2f} → {a:.2f}  ({a - b:+.2f})")
     lines.append("")
     lines.append(
-        "A 5-profile panel scored 1-5 is a small sample: treat |delta| < 0.3 as noise, "
-        "and read the per-dimension rows rather than the overall figure."
+        "A small panel scored 1-5 is a small sample: treat |delta| < 0.3 as noise, and "
+        "read the per-dimension rows rather than the overall figure. Retrieval itself "
+        "differs between identical runs (measured 2026-07-29: ±5 passages, ±5.5K context "
+        "chars, though score_median only ±0.007), so a retrieval delta under ~0.03 on "
+        "substantive_documents_per_passage or ~6K chars is noise too. `brief-check "
+        "--dry-run --repeat N` re-measures this for free."
     )
     return "\n".join(lines)

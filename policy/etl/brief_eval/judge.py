@@ -19,6 +19,7 @@ from typing import Any
 
 from data.config import get_settings
 from etl.intelligence.briefing import _canon_issues
+from etl.intelligence.llm import reasoning_params
 from etl.intelligence.profile import CompanyProfile
 
 BATCH_JUDGE_SCHEMA = {
@@ -148,6 +149,22 @@ _SCORE_DIMENSIONS = [
 ]
 
 
+def _judge_max_tokens(profiles: int) -> int:
+    """Output budget for one batched judge call, scaled by panel size.
+
+    A fixed 4,096 was sized for a 5-profile panel and silently became too small
+    when the panel doubled — the judge truncated mid-JSON and the run died with an
+    "Unterminated string" decode error that pointed nowhere near the cause. Scaling
+    it removes the whole class of failure: a panel change should not require
+    remembering to revisit a constant three modules away.
+
+    ~1,200 output tokens per profile (seven integer scores plus a one-to-two
+    sentence critique, with headroom), on top of a fixed allowance because
+    adaptive thinking draws from this same budget before any answer is written.
+    """
+    return max(8_192, 4_096 + 1_200 * profiles)
+
+
 def _score_from_llm(raw: dict[str, Any], canon_issue_count: int) -> dict[str, Any]:
     scores = dict(raw)
     scores["canon_issues"] = canon_issue_count
@@ -202,20 +219,29 @@ def judge_panel(
         "anchor your score for another. Be critical: 3 is average, reserve 5 for genuinely "
         "excellent, specific work.\n\n" + "\n\n---\n\n".join(briefs_text)
     )
-    settings = get_settings()
     response = client.messages.create(
-        model=settings.llm_model,
-        # Bumped from 2048: seven scored dimensions plus a critique per
-        # profile, across a 5-profile panel, needs more room than the
-        # original three-dimension schema did.
-        max_tokens=4096,
-        thinking={"type": "adaptive"},
-        output_config={
-            "effort": "low",
-            "format": {"type": "json_schema", "schema": BATCH_JUDGE_SCHEMA},
-        },
+        # eval_model, not llm_model: the judge is the instrument and must stay
+        # fixed when the model under test changes, or a model A/B silently
+        # compares two briefs scored by two different judges.
+        **reasoning_params(
+            "low",
+            model=get_settings().eval_model,
+            max_tokens=_judge_max_tokens(len(items)),
+            output_format={"type": "json_schema", "schema": BATCH_JUDGE_SCHEMA},
+        ),
         messages=[{"role": "user", "content": prompt}],
     )
+    # A truncated structured output is still valid-looking JSON right up to where
+    # it stops, so json.loads fails with "Unterminated string" 200 frames deep and
+    # says nothing about the actual cause. Check the stop reason first and name it.
+    # This is not hypothetical: it happened on 2026-07-29, the first time the judge
+    # ran against the widened 10-profile panel with a max_tokens sized for 5.
+    if response.stop_reason == "max_tokens":
+        raise RuntimeError(
+            f"Judge output hit max_tokens ({_judge_max_tokens(len(items))}) scoring "
+            f"{len(items)} profiles, so its JSON is truncated. Raise the budget in "
+            "_judge_max_tokens — thinking tokens share it with the answer."
+        )
     text = next(b.text for b in response.content if b.type == "text")
     raw_scores = json.loads(text)["scores"]
 

@@ -38,6 +38,7 @@ from etl.enrichment import (
     semantic_search,
 )
 
+from .llm import reasoning_params
 from .parsing import (
     _MARKER_RE,
     _canon_issues,
@@ -187,7 +188,6 @@ _PRESS_RECENCY_DAYS = 90
 _PRESS_MIN_SCORE = 0.3
 
 
-
 # Human-readable label per document_type, used in the '[EU · Regulation]' prefix
 # on every source block. Must stay in step with data.models.DocumentType — an
 # unmapped type falls back to its raw slug, which is honest but ugly.
@@ -287,7 +287,6 @@ def build_request(
     document block would invite citation markers pointing at something that has
     no char offsets to cite.
     """
-    settings = get_settings()
     scoping = "\n".join(f"- {line}" for line in profile.scoping_lines())
     instruction = (
         # Without this, TRANSITIONAL APPLICABILITY's whole "has the
@@ -311,20 +310,16 @@ def build_request(
         content = content + [{"type": "text", "text": stakeholder_block}]
     content = content + [{"type": "text", "text": instruction}]
     return {
-        "model": settings.llm_model,
-        "max_tokens": settings.llm_max_tokens,
-        "thinking": {"type": "adaptive"},
-        # Sonnet 5 defaults effort to "high" when unset — the same latency
-        # trap as the Sonnet 4.5->4.6 migration. This is content generation
-        # against retrieved sources, not open-ended agentic reasoning;
-        # "medium" is the documented sweet spot and cuts wall-clock sharply
-        # with no observed quality loss on this task.
-        "output_config": {"effort": "medium"},
+        # "medium", not the effort default: Sonnet 5 defaults to "high" when
+        # unset — the same latency trap as the Sonnet 4.5->4.6 migration. This
+        # is content generation against retrieved sources, not open-ended
+        # agentic reasoning; "medium" cuts wall-clock sharply with no observed
+        # quality loss on this task. See reasoning_params for what the level
+        # translates into on a model that has no effort parameter.
+        **reasoning_params("medium"),
         "system": SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": content}],
     }
-
-
 
 
 def build_revise_request(
@@ -341,7 +336,6 @@ def build_revise_request(
     this same mandatory revise call instead of paying for a dedicated fix
     call afterward — generate_briefing still re-checks and falls back to a
     dedicated call if problems remain, but that becomes the rare case."""
-    settings = get_settings()
     content = build_documents(passages) + [
         {"type": "text", "text": f"YOUR DRAFT:\n\n{draft}"},
         {"type": "text", "text": REVISE_INSTRUCTION},
@@ -363,14 +357,11 @@ def build_revise_request(
             }
         )
     return {
-        "model": settings.llm_model,
-        "max_tokens": settings.llm_max_tokens,
-        "thinking": {"type": "adaptive"},
         # Lower than the draft pass: this is a checklist self-edit over text
         # the model already wrote, not fresh synthesis — "low" is enough
         # thinking depth to catch the sharpness/citation-hygiene violations
         # and meaningfully cuts the second call's latency.
-        "output_config": {"effort": "low"},
+        **reasoning_params("low"),
         "system": SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": content}],
     }
@@ -388,7 +379,6 @@ def build_revise_request(
 # canon act in context appear in one of the two tables?), and hands any
 # violations back to the MODEL to correct — verdicts, priorities and substance
 # are never touched by code.
-
 
 
 # Answers the competitive-context question invites when there is nothing to
@@ -857,21 +847,16 @@ def _retrieval_stats(passages: list[dict], facets: list[str]) -> dict[str, Any]:
 def build_fix_request(passages: list[dict], draft: str, issues: list[str]) -> dict[str, Any]:
     """Targeted correction pass: same documents, the current report, and the
     deterministic check's findings. The check finds; the model fixes."""
-    settings = get_settings()
     numbered = "\n".join(f"{i + 1}. {issue}" for i, issue in enumerate(issues))
     content = build_documents(passages) + [
         {"type": "text", "text": f"YOUR REPORT:\n\n{draft}"},
         {"type": "text", "text": FIX_INSTRUCTION.format(issues=numbered)},
     ]
     return {
-        "model": settings.llm_model,
-        "max_tokens": settings.llm_max_tokens,
-        "thinking": {"type": "adaptive"},
-        "output_config": {"effort": "low"},
+        **reasoning_params("low"),
         "system": SYSTEM_PROMPT,
         "messages": [{"role": "user", "content": content}],
     }
-
 
 
 def generate_briefing(

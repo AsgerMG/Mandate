@@ -63,7 +63,19 @@ uv run regina brief --name "FinScore" --sector fintech --ai --personal-data --dr
 # run, so successive checks cover different company types for one brief's cost:
 uv run regina brief-check                  # next profile in the rotation
 uv run regina brief-check --all            # whole panel, for a batch of fixes
+uv run regina brief-check --dry-run --repeat 3   # retrieval's noise floor, free
+uv run regina brief-check --all --model claude-haiku-4-5   # try another model
+uv run regina brief-compare before.json after.json         # judged, 3 axes
 ```
+
+Which model writes the brief is a parameter (`LLM_MODEL`, or `--model` for one
+run): `reasoning_params()` translates the effort levels each call site asks for
+into whatever that model accepts, so pointing it at an older, cheaper model is a
+config change rather than three 400s. Which model *judges* a brief is separate and
+pinned (`EVAL_MODEL`) — the instrument must not move when the subject does.
+`brief-compare` reports quality, cost, and latency per side; see
+[brief-quality-plan.md](project-management/brief-quality-plan.md) → Phase 6 for
+the A/B runbook and how to read the result.
 
 Set `ANTHROPIC_API_KEY` (in `.env`) to drop `--dry-run` and get a full briefing:
 Claude writes it grounded in the retrieved passages via the native **Citations**
@@ -119,3 +131,8 @@ built in), or local Docker via `docker compose up -d`.
 - [Design & UX guidelines](project-management/design-ux-guidelines.md) — the
   responsiveness/cross-device rules for `website/`, each tied to a real bug it
   prevents.
+- [Brief quality plan](project-management/brief-quality-plan.md) — what makes a
+  brief good, how it's measured, and the model A/B that settled Sonnet vs Haiku.
+- [Brief UX plan](project-management/brief-ux-plan.md) — a brief takes ~3 minutes
+  and that is now a fixed constraint; this is the plan for the wait, built on
+  measured latency (93.6±2.1 tok/s) rather than preset animation.

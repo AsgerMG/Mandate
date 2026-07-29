@@ -32,6 +32,54 @@ index when an item opens or closes.
 - First action next week: new baseline on the widened panel (the panel change
   resets the old 3.80 → 4.11 comparison), then count recurring hinges
 
+**🔝 Phase 7 — the three-minute brief is a UX problem now (planned 2026-07-29)**
+- The model A/B settled it: ~3 min/brief is a fixed constraint, so the work moves
+  to the wait. Full plan: [brief-ux-plan.md](brief-ux-plan.md)
+- Measured basis: latency ↔ output tokens r=+1.00 at 93.6±2.1 tok/s, so an honest
+  self-correcting ETA is arithmetic. **Nothing at retrieval time predicts run size**
+  (|r| ≤ 0.39), so adaptivity is real only once tokens flow — claiming it earlier
+  would be theatre
+- Ordered: (0) make the rail adaptive rather than a preset 9-step backbone —
+  revises the deliberate decision in `ProgressRail.tsx`, argued in the plan;
+  (A) measured 2–4 min expectation + token-based ETA; (B) stream the first-reading
+  draft and name the instruments being read; (C) title + favicon progress ring +
+  opt-in completion notification; (D) `BriefJob` persistence so "you can leave" is
+  true and an abandoned brief stops costing $0.72; (E) per-stage line-art motion
+- Phase D also fixes a real leak: the rate limiter counts requests, not work, so a
+  reload today costs a second brief and is charged one hit
+
+**Phase 6 — model A/B: RUN 2026-07-29, verdict keep Sonnet**
+- Haiku 4.5 is 70% cheaper but −0.50 judged quality, 30 unresolved canon acts vs 0,
+  and **slower** (245s vs 184s median; 86.9 vs 93.7 tok/s). See decision-log
+- Fixed while running: judge `max_tokens` didn't scale with panel size (truncated
+  JSON on the first 10-profile run); judge `canon_issues` was structurally always 0
+  because reports don't store `passages`
+- Built: `brief-check --history` (dated ledger from the reports themselves),
+  per-run `judge_report` scoring, `--model`, `--repeat`, `--judge/--no-judge`
+- ⬜ Still unmeasured: the LLM judge's own self-variance. Absolute scores are
+  comparable across runs only because `eval_model` is pinned — but read a trend,
+  not a 0.05 difference, until a same-input repeat quantifies it
+
+**Phase 6 — model A/B harness built 2026-07-29 (superseded by the run above)**
+- Haiku 4.5 vs Sonnet 5 for the brief: a third of the list price, fastest model,
+  and the brief is output-bound (2–3 sequential calls, 12–21K output tokens) so
+  latency is the real prize. Runbook and how to read the result:
+  [brief-quality-plan.md](brief-quality-plan.md) → Phase 6. ~$10–12 total
+- Prerequisite, not optional: `enrich --only summaries` (1,195 docs) **before**
+  the baseline, or the A/B attributes a data gap to the model
+- ✅ Not a gap after all: the 2,302 "unembedded" passages all belong to superseded
+  document versions, which `embed_pending` skips by design and retrieval filters
+  out via `is_current`. Everything retrievable is embedded (108,906, zero
+  pending). `corpus_fingerprint` was already correct; the ad-hoc query used to
+  check it omitted the `is_current` join — verifying a tool with a hand-written
+  query only works if the query encodes the same definition
+- Four things had to exist first, two of which would have failed silently:
+  `reasoning_params()` (the brief sent two parameters Haiku rejects — three 400s),
+  a per-model price table (Haiku would have been billed at 3× its real cost),
+  wall-clock recording (nothing measured latency, the whole point), and
+  `eval_model` split from `llm_model` (the judge followed the model under test,
+  so a swap would have changed the instrument mid-experiment)
+
 **Loose ends from 2026-07-27** — code changed but the corpus didn't follow
 - `eurlex_oj_l` is RSS-retention-bound, not cursor-bound — decide whether to
   replace it with SPARQL-based OJ-L discovery or accept it as a what's-new tap
@@ -1731,13 +1779,24 @@ complexity.
       exploring an HNSW graph at ef_search=1,000 costs more than 10,600 honest
       distance computations. `document_passages` already used this pattern; the
       codebase now uses it consistently wherever a filter is narrow.
-- ⬜ **Retrieval variance is still partly unexplained, and it affects every
-      measurement.** Exact press retrieval is deterministic, but I have not proven
-      press was the whole source of the ±3-passage run-to-run variance. This
-      matters for `brief-compare`: its stated ±0.3 noise floor accounted for judge
-      variance and n=5, **not** for two runs of identical code and corpus seeing
-      different context. Worth measuring directly (repeat a dry-run panel N times
-      and report the spread) before trusting small deltas next week.
+- ✅ **Retrieval variance measured, 2026-07-29** (`brief-check --dry-run
+      --repeat N`, free — retrieval needs no API call). Three identical runs:
+      `passages` ±5 of ~110, `context_chars` ±5,521 (~6.7%), but `score_median`
+      only ±0.007. **Relevance is stable; composition is not** — the brief sees
+      ~5 different passages and ~5.5K different characters each run, so
+      `brief-compare`'s ±0.3 floor is not a judge-variance artifact alone. Concrete
+      thresholds now: `substantive_documents_per_passage` deltas under ~0.03 and
+      `context_chars` deltas under ~6K are noise.
+    - ⬜ Still unmeasured: the *judged* consequence of that input drift. Needs one
+      paid same-model repeat (~$1.30) — until then the ±0.3 score floor remains a
+      reasonable guess rather than a measurement.
+    - The measurement found a real bug first: `press_passages`' `SET LOCAL
+      enable_indexscan = off` leaked to the whole transaction, so repeats sharing
+      a session had run 1 on HNSW and runs 2+ on full exact scans (1.03s vs 0.43s
+      per query). Harmless in production only because that call happens to run
+      last — call ordering, not a guarantee. Now restored in a `finally`, and
+      `--repeat` uses one transaction per run as production does. A variance tool
+      has to be checked for its own harness's artifacts before its number is used.
 
 ## Flow simplification, 2026-07-28
 

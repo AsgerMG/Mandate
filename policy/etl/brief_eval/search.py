@@ -26,7 +26,7 @@ import structlog
 from data import get_settings, session_scope
 from etl.enrichment import get_embedder
 from etl.intelligence import briefing as briefing_module
-from etl.intelligence.llm import get_client, has_api_key
+from etl.intelligence.llm import get_client, has_api_key, reasoning_params
 
 from .cost import BudgetExceeded, BudgetGuard, MeteredClient
 from .judge import _SCORE_DIMENSIONS, judge_panel
@@ -176,15 +176,14 @@ def _propose_candidate(client, current_prompt: str, worst_round: dict, budget) -
         f"=== CURRENT SYSTEM PROMPT ===\n{current_prompt}\n\n"
         f"=== EVALUATION RESULTS ===\n{context}"
     )
-    settings = get_settings()
     response = client.messages.create(
-        model=settings.llm_model,
-        max_tokens=8000,
-        thinking={"type": "adaptive"},
-        output_config={
-            "effort": "medium",
-            "format": {"type": "json_schema", "schema": CANDIDATE_SCHEMA},
-        },
+        # Part of the harness, not the product — same reasoning as the judge.
+        **reasoning_params(
+            "medium",
+            model=get_settings().eval_model,
+            max_tokens=8000,
+            output_format={"type": "json_schema", "schema": CANDIDATE_SCHEMA},
+        ),
         messages=[{"role": "user", "content": prompt}],
     )
     import json

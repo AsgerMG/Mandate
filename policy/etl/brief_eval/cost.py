@@ -21,18 +21,39 @@ untouched by this.
 
 from __future__ import annotations
 
+import time
 from typing import Any
 
 import anthropic
+import structlog
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
-# $ per million tokens. This project only ever runs generation/judge/
-# candidate calls on claude-sonnet-5 (data/config.py's llm_model default) —
-# a single price table is enough; revisit if that changes.
-_INPUT_PER_M = 3.00
-_OUTPUT_PER_M = 15.00
-_CACHE_READ_PER_M = _INPUT_PER_M * 0.1
-_CACHE_WRITE_PER_M = _INPUT_PER_M * 1.25  # 5-minute TTL — the only TTL used here
+log = structlog.get_logger(__name__)
+
+# $ per million tokens (input, output), by model family. Prefix-matched, so a
+# dated ID like claude-haiku-4-5-20251001 resolves to the same entry.
+#
+# This was a single hardcoded Sonnet pair until 2026-07-29, with a comment saying
+# to revisit if the model ever changed. It was about to: a Haiku-vs-Sonnet A/B
+# would have reported every Haiku call at 3x its real price — corrupting exactly
+# the cost comparison the A/B exists to make. A price table keyed on the model is
+# the only shape that can't silently lie about a model swap.
+#
+# List prices. Sonnet 5 is on introductory pricing ($2/$10) through 2026-08-31,
+# so a Sonnet run's real invoice is lower than reported until then; erring high is
+# the safe direction for a stop-loss, and the Haiku/Sonnet ratio reported here is
+# the steady-state one that holds from September.
+_PRICES: dict[str, tuple[float, float]] = {
+    "claude-opus-5": (5.00, 25.00),
+    "claude-sonnet-5": (3.00, 15.00),
+    "claude-haiku-4-5": (1.00, 5.00),
+}
+_FALLBACK_PRICE = (3.00, 15.00)
+
+# Cache pricing is a fixed multiple of a model's own input price, so it derives
+# from the table rather than being listed per model.
+_CACHE_READ_MULTIPLIER = 0.1
+_CACHE_WRITE_MULTIPLIER = 1.25  # 5-minute TTL — the only TTL used here
 
 # Minimum system-prompt length worth wrapping in cache_control. Below this
 # it's unlikely to hit the model's minimum cacheable-prefix floor, so wrapping
@@ -40,16 +61,32 @@ _CACHE_WRITE_PER_M = _INPUT_PER_M * 1.25  # 5-minute TTL — the only TTL used h
 _MIN_CACHEABLE_CHARS = 2000
 
 
-def call_cost_usd(usage: Any) -> float:
+def _price_per_m(model: str | None) -> tuple[float, float]:
+    """(input, output) $/M for ``model``, falling back to Sonnet's list price.
+
+    An unknown model is priced rather than raising: a mispriced report is
+    recoverable, a crashed paid run is not. It is logged so the fallback is never
+    mistaken for a real measurement.
+    """
+    if model:
+        for prefix, price in _PRICES.items():
+            if model.startswith(prefix):
+                return price
+        log.warning("unpriced_model", model=model, using=_FALLBACK_PRICE)
+    return _FALLBACK_PRICE
+
+
+def call_cost_usd(usage: Any, model: str | None = None) -> float:
+    input_per_m, output_per_m = _price_per_m(model)
     input_tokens = getattr(usage, "input_tokens", 0) or 0
     output_tokens = getattr(usage, "output_tokens", 0) or 0
     cache_read = getattr(usage, "cache_read_input_tokens", 0) or 0
     cache_write = getattr(usage, "cache_creation_input_tokens", 0) or 0
     return (
-        input_tokens * _INPUT_PER_M
-        + output_tokens * _OUTPUT_PER_M
-        + cache_read * _CACHE_READ_PER_M
-        + cache_write * _CACHE_WRITE_PER_M
+        input_tokens * input_per_m
+        + output_tokens * output_per_m
+        + cache_read * input_per_m * _CACHE_READ_MULTIPLIER
+        + cache_write * input_per_m * _CACHE_WRITE_MULTIPLIER
     ) / 1_000_000
 
 
@@ -63,6 +100,7 @@ def _empty_bucket() -> dict[str, float]:
     return {
         "calls": 0,
         "usd": 0.0,
+        "seconds": 0.0,
         "input_tokens": 0,
         "output_tokens": 0,
         "cache_read_tokens": 0,
@@ -89,20 +127,29 @@ class BudgetGuard:
     def __init__(self, max_usd: float | None) -> None:
         self.max_usd = max_usd
         self.spent_usd = 0.0
+        self.seconds = 0.0
         self.calls = 0
         self.current_context = "unlabeled"
         self.breakdown: dict[str, dict[str, float]] = {}
+        #: Every model that actually served a call this run. A set rather than a
+        #: single value because nothing stops a run from mixing models, and a
+        #: report that claims one model for a mixed run is worse than no claim.
+        self.models: set[str] = set()
 
     def set_context(self, context: str) -> None:
         self.current_context = context
 
-    def record(self, usage: Any) -> None:
-        cost = call_cost_usd(usage)
+    def record(self, usage: Any, model: str | None = None, seconds: float = 0.0) -> None:
+        cost = call_cost_usd(usage, model)
         self.spent_usd += cost
+        self.seconds += seconds
         self.calls += 1
+        if model:
+            self.models.add(model)
         bucket = self.breakdown.setdefault(self.current_context, _empty_bucket())
         bucket["calls"] += 1
         bucket["usd"] += cost
+        bucket["seconds"] += seconds
         bucket["input_tokens"] += getattr(usage, "input_tokens", 0) or 0
         bucket["output_tokens"] += getattr(usage, "output_tokens", 0) or 0
         bucket["cache_read_tokens"] += getattr(usage, "cache_read_input_tokens", 0) or 0
@@ -158,8 +205,18 @@ class _MeteredMessages:
         messages = kwargs.get("messages")
         if isinstance(messages, list):
             kwargs = {**kwargs, "messages": _strip_message_cache_control(messages)}
+        # Wall clock per call, because "would a cheaper model be fast enough?" is
+        # a question about seconds and nothing here was measuring any. Timed
+        # around the retrying call deliberately: a 529 and its backoff is latency
+        # the user really waits through, so hiding it would flatter the model.
+        started = time.perf_counter()
         response = self._create_with_retry(**kwargs)
-        self._budget.record(response.usage)
+        elapsed = time.perf_counter() - started
+        self._budget.record(
+            response.usage,
+            model=getattr(response, "model", None) or kwargs.get("model"),
+            seconds=elapsed,
+        )
         return response
 
     # A run can be several dollars deep by the time a single transient 529

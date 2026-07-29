@@ -5,6 +5,112 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-29 — Haiku vs Sonnet, measured: keep Sonnet, and treat 3 minutes as a fixed constraint
+
+**Decision:** The brief stays on `claude-sonnet-5`. The ~3-minute generation time
+is now accepted as a property of the product, and the effort moves to the UX of
+waiting — see [brief-ux-plan.md](brief-ux-plan.md).
+
+**The measurement** (10 profiles, same frozen corpus, judged by the pinned Sonnet
+judge; `exports/ab-baseline-sonnet.json`, `exports/ab-challenger-haiku.json`):
+
+| | Sonnet 5 | Haiku 4.5 |
+|---|---|---|
+| Cost / brief | $0.720 | **$0.218 (−70%)** |
+| Latency median | **184s** | 245s (+33%) |
+| Latency mean / worst | 228s / 558s | 242s / **284s** |
+| Judged overall | **3.93** | 3.43 (−0.50) |
+| Unresolved canon acts | **0** | **30**, in 6 of 10 profiles |
+
+Every judged dimension fell; the two worst were `citation_quality` (−0.90) and
+`stakeholder_specificity` (−0.80) — precisely the two the product sells. Nine of
+ten profiles scored lower.
+
+**Why the premise failed.** The test was motivated by latency, and Haiku is
+*slower* here: 86.9 tok/s versus Sonnet's 93.7, while also generating more tokens.
+A double penalty, which also disposes of the obvious confound — the slowdown is not
+an artifact of the `budget_tokens: 4000` I chose as the pre-4.6 translation of
+`effort: "medium"`, because the per-token rate is worse independent of volume.
+Haiku's one real advantage is a shorter tail (284s worst vs 558s), because Sonnet's
+tail comes from correction rounds Haiku happened to trigger less often on that
+profile.
+
+**The strongest evidence needed no judge.** 30 foundational acts left in neither
+the compliance table nor the out-of-scope appendix, *after* the correction loop had
+run, versus zero for Sonnet. That is the deterministic canon check — no model
+opinion involved — and it is the finding I would keep if I could keep only one.
+
+**Where the latency lever actually is.** 96% of a brief is model time, and the tail
+is entirely the correction loop: eight profiles ran two calls in 138–234s; one ran
+five calls, 53,901 output tokens, 558s, $1.57. Reducing how often the canon check
+fires would cut cost *and* worst-case latency without touching the model — a better
+lever than the swap was.
+
+**Two measurement bugs this surfaced**, both of the "silently wrong" kind:
+1. The judge's `max_tokens` was sized for a 5-profile panel. On the first
+   10-profile run its structured output truncated mid-string and surfaced as
+   `JSONDecodeError: Unterminated string` far from the cause. Now scales with panel
+   size and checks `stop_reason` to name the real problem.
+2. The judge's `canon_issues` dimension was **structurally always 0**: it
+   recomputes from `result["passages"]`, which reports don't store, so it read
+   "clean" because the evidence was absent rather than because the briefs were.
+   The history table showed 0.0 for a run with 30 failures recorded three fields
+   away. It now reads generation-time `canon_notes`.
+
+**Also built:** `regina brief-check --history`, a dated ledger derived from the
+report files themselves (not a second store that could disagree with them), and
+per-run absolute scoring via `judge_report` — one batched call, so quality can be
+a trend and not only a pairwise delta.
+
+## 2026-07-29 — The model choice becomes a parameter, and the judge stops being one
+
+**Decision:** Which model writes a brief is now a config value that can be
+swapped safely (`llm_model`, or `brief-check --model` for one run), and which
+model *judges* one is a separate, pinned value (`eval_model`). Cost, latency, and
+the served model are recorded per brief and reported per side by `brief-compare`.
+
+**Why:** Haiku 4.5 is a third of Sonnet 5's list price and the fastest model
+available, and a brief is output-bound (2–3 sequential calls, 12–21K output
+tokens), so it is exactly the workload a faster model improves. Deciding whether
+it is good enough needs a measurement, and the harness could not produce a
+trustworthy one.
+
+**Four things were wrong, two of them silently:**
+
+1. All three brief call sites sent `thinking: {"type": "adaptive"}` and
+   `output_config.effort` — 4.6-generation parameters that Haiku 4.5 rejects. A
+   model swap was three 400s. `reasoning_params(effort)` now owns the translation,
+   so call sites keep saying "medium" and "low" and the shape follows the model.
+2. `cost.py` priced everything at Sonnet's rates behind a comment saying to
+   revisit if the model changed. It was about to: every Haiku call would have been
+   reported at 3× its real cost, corrupting exactly the comparison being run.
+3. Nothing measured wall clock — the primary reason to want a faster model.
+4. **The judge read `llm_model`.** Testing a cheaper model would have swapped the
+   measuring instrument along with the subject, making the result incomparable
+   with every score recorded before. Split to `eval_model`, default
+   `claude-sonnet-5`.
+
+**Rejected:** tuning the prompt for Haiku in the same run. The prompt was tuned on
+Sonnet and an older model generally needs more prescriptive instruction, but
+changing prompt and model together attributes the result to neither. That is a
+second round, and `brief-improve` already searches for prompt candidates.
+
+**Measured while building, at no cost:** `brief-check --dry-run --repeat 3`
+reports retrieval's run-to-run spread. Relevance is stable (`score_median`
+±0.007); composition is not (`passages` ±5 of ~110, `context_chars` ±5,521). So
+`brief-compare`'s ±0.3 noise floor was never just judge variance — the input
+itself differs between identical runs.
+
+**A bug the measurement found, and the lesson:** the first variance numbers showed
+run 1 consistently higher, monotonically — not noise's shape. `press_passages` sets
+`enable_indexscan = off` with `SET LOCAL`, which lasts for the **transaction**, so
+repeats sharing a session ran run 1 on HNSW and runs 2+ on full exact scans (1.03s
+vs 0.43s per query). Production is unaffected today only because that call happens
+to run last in `generate_briefing` — call ordering, not a guarantee. Both fixed:
+settings restored in a `finally`, one transaction per repeat. The lesson worth
+keeping: a measurement tool must be checked for its own harness's artifacts before
+its number is trusted, because this one erred toward "trust smaller deltas".
+
 ## 2026-07-27 — Retrieval depth split, corpus legibility, case law, Alembic
 **Decision:** Six structural changes, in the order they were forced.
 

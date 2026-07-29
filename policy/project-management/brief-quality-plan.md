@@ -718,3 +718,138 @@ exactly the input the question audit needs. Briefs now return
 
 **Still blocked on credits, unchanged:** 1,195 documents (mostly judgments) have
 no enrichment card, and the decision on whether `enrich` joins `refresh`.
+
+---
+
+# Phase 6 — the model A/B (harness built 2026-07-29, run blocked on credits)
+
+The question: Haiku 4.5 writes briefs at a third of Sonnet 5's list price and is
+the fastest model available. Is it good enough here? Latency is the real prize —
+a brief is 2–3 sequential calls emitting 12–21K output tokens, so it is
+output-bound, which is exactly the shape a faster model improves.
+
+## What the run needs, and why none of it existed
+
+Four things had to be true before the A/B could produce a trustworthy answer.
+None were, and two would have failed silently.
+
+1. **The request had to be legal on both models.** All three brief call sites sent
+   `thinking: {"type": "adaptive"}` and `output_config.effort` — both
+   4.6-generation features that Haiku 4.5 rejects. A model swap was three 400s.
+   Now every call site goes through `reasoning_params(effort)`
+   ([etl/intelligence/llm.py](../etl/intelligence/llm.py)), which keeps `effort`
+   as the vocabulary and translates it per model — an explicit thinking budget
+   (`low` 2,000 / `medium` 4,000 / `high` 8,000 tokens) on the older generation.
+2. **The cost had to be counted per model.** `cost.py` hardcoded one Sonnet price
+   pair, so every Haiku call would have been reported at 3× its real price —
+   corrupting exactly the comparison being run. Now a prefix-matched price table.
+3. **Latency had to be measured at all.** Nothing recorded wall clock. Now: per
+   call in `BudgetGuard`, per brief in `brief-check`, and both surfaced by
+   `brief-compare` next to the quality deltas.
+4. **The judge had to stop following the subject.** `judge.py` and `search.py`
+   read `llm_model` — so testing a cheaper model would also have swapped the
+   judge, making the scores incomparable with every score recorded before, and
+   would have 400'd on the same two parameters. Split out as `eval_model`
+   (default `claude-sonnet-5`), which is now the instrument.
+
+## The noise floor, measured (free, 2026-07-29)
+
+`brief-check --dry-run --repeat 3` runs retrieval N times and reports the spread.
+Retrieval needs no API call, so this cost nothing. Three identical runs, AI SaaS
+profile:
+
+| metric | spread across 3 identical runs |
+|---|---|
+| `passages` | 107 – 112 (±5, ~4.5%) |
+| `documents` | 83 – 85 |
+| `substantive_documents_per_passage` | 0.525 – 0.556 (±0.031) |
+| `context_chars` | 79,229 – 84,750 (±5,521, ~6.7%) |
+| `score_median` | 0.552 – 0.559 (±0.007) |
+| retrieval seconds | 6.85 – 7.85 |
+
+**Read this as: relevance is stable, composition is not.** The scores barely move
+(±0.007), but the brief is handed ~5 different passages and ~5.5K different
+characters of context each time. So `brief-compare`'s ±0.3 noise floor is not a
+judge-variance artifact alone — the *input* genuinely differs run to run. Two
+concrete consequences: a `substantive_documents_per_passage` delta under ~0.03 or
+a `context_chars` delta under ~6K is noise, and the judged consequence of that
+input drift is still unmeasured (it needs one paid same-model repeat, ~$1.30).
+
+Retrieval is ~7s of the wall clock. Whatever a brief takes end to end, roughly
+7s of it is not the model — so a model swap addresses the rest, not all of it.
+
+## A bug this measurement found
+
+The first attempt showed run 1 consistently returning more passages than runs 2
+and 3, monotonically — not the shape of random noise. Cause:
+`press_passages` sets `enable_indexscan = off` / `enable_bitmapscan = off` via
+`SET LOCAL`, which lasts **for the whole transaction**, not the query. Sharing one
+transaction across repeats meant run 1 used the HNSW index and runs 2+ silently
+ran full exact scans. Measured cost of that difference: **1.03s vs 0.43s per
+query.**
+
+In production it costs nothing today *only* because `press_passages` happens to
+run last in `generate_briefing` — call ordering, not a guarantee. Both are fixed:
+the planner settings are restored in a `finally`, and `--repeat` opens a fresh
+transaction per run, matching production's one-session-per-request.
+
+The general lesson, and the reason this is written down: the measurement tool
+would have reported a confidently wrong noise floor, in the direction of "trust
+smaller deltas". A variance measurement has to be checked for the artifacts of
+its own harness before its number is used.
+
+## The run, in order
+
+Each step is one command. Step 1 is a prerequisite, not optional: an A/B over a
+corpus whose summary layer is two-thirds empty attributes a data gap to the model.
+
+**Correction, 2026-07-29.** A first pass at this runbook listed "2,302 unembedded
+passages" as a second prerequisite. That was wrong, and the way it was wrong is
+worth keeping. `select count(*) from passages where embedding is null` returns
+2,302 — but **all 2,302 belong to superseded document versions** (418 documents
+that have since been re-fetched). `embed_pending` deliberately skips those and
+retrieval filters on `is_current`, so they are not retrievable, never were, and
+should not be embedded. Everything retrievable **is** embedded: 108,906 passages,
+zero pending. `corpus_fingerprint` had this right all along — it joins on
+`is_current`; the ad-hoc query used to "verify" it did not. Checking a tool's
+number with a hand-written query only works if the query encodes the same
+definition.
+
+```bash
+# 1. Close the data gap. Embeddings need nothing: everything retrievable is
+#    already embedded (see the correction below). Summaries are the real gap.
+uv run regina enrich --only summaries         # 1,195 enrichable docs have no card
+
+# 2. Fresh Sonnet baseline on the widened panel (~$6). Resets 3.80 → 4.11, which
+#    the panel change already invalidated.
+uv run regina brief-check --all
+cp exports/brief-checks/<newest>.json exports/baseline-sonnet.json
+
+# 3. The challenger, same profiles, same corpus (~$2)
+uv run regina brief-check --all --model claude-haiku-4-5
+cp exports/brief-checks/<newest>.json exports/challenger-haiku.json
+
+# 4. One judged comparison, on all three axes (2 calls, judged by Sonnet either way)
+uv run regina brief-compare exports/baseline-sonnet.json exports/challenger-haiku.json
+```
+
+Total ~$10–12 for a decisive answer.
+
+## How to read the result
+
+The two lowest dimensions — `stakeholder_specificity` (2.80) and
+`political_currency` (3.60) — are **data**-limited, not model-limited, so Haiku
+cannot make them worse and a gain there would be suspicious. The dimension
+genuinely at risk is `citation_quality`, which gained +0.60 from the retrieval
+work: Citations is model-agnostic as an API feature, but "accepts the parameter"
+and "cites with discipline" are different claims, and the judge measures the
+second. Watch `canon_notes` too — the deterministic canon check is a
+model-independent correctness probe, so a rise in canon issues under Haiku is
+hard evidence rather than a judged opinion.
+
+**Deliberately not doing:** tuning the prompt for Haiku in the same run. The
+system prompt was tuned on Sonnet, and an older-generation model generally needs
+more prescriptive instruction — but changing the prompt and the model together
+produces a result that attributes to neither. If Haiku loses on quality, a
+Haiku-tuned prompt is the second round, and `regina brief-improve` already exists
+to search for one.

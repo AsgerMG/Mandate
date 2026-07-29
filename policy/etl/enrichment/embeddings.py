@@ -468,8 +468,7 @@ def rerank_passages(
         try:
             scores = reranker.rerank(query, [p["text"] for p in passages])
             scored = [
-                {**p, "rerank_score": round(s, 4)}
-                for p, s in zip(passages, scores, strict=True)
+                {**p, "rerank_score": round(s, 4)} for p, s in zip(passages, scores, strict=True)
             ]
             if min_score is not None:
                 scored = [p for p in scored if p["rerank_score"] >= min_score]
@@ -609,9 +608,42 @@ def press_passages(
     #
     # Revisit only if this pool grows by an order of magnitude: the cost is
     # linear in eligible rows, so ~100k would be the point to reconsider.
-    # SET LOCAL scopes both to the current transaction.
+    #
+    # Scoped to THIS query, not to the transaction. SET LOCAL lasts until the
+    # transaction ends, and a brief runs every one of its retrieval queries in a
+    # single transaction — so leaving these off leaked the exact-scan choice onto
+    # every later vector query, forcing the HNSW-backed legal searches into full
+    # scans of all 111k passages at 1.03s each instead of 0.43s (measured
+    # 2026-07-29). It happens to cost nothing today only because this call runs
+    # last in generate_briefing; that is call ordering, not a guarantee, and it
+    # already invalidated a retrieval-variance measurement that shared one
+    # transaction across repeats. Restore in a finally so the guarantee is local.
+    previous = {
+        name: session.execute(text(f"SHOW {name}")).scalar()
+        for name in ("enable_indexscan", "enable_bitmapscan")
+    }
     session.execute(text("SET LOCAL enable_indexscan = off"))
     session.execute(text("SET LOCAL enable_bitmapscan = off"))
+    try:
+        return _press_candidates(
+            session, qvec, cutoff, exclude_source_keys, pool_size, min_score, k
+        )
+    finally:
+        for name, value in previous.items():
+            session.execute(text(f"SET LOCAL {name} = {'on' if value == 'on' else 'off'}"))
+
+
+def _press_candidates(
+    session: Session,
+    qvec: list[float],
+    cutoff: dt.date,
+    exclude_source_keys: frozenset[str] | set[str],
+    pool_size: int,
+    min_score: float | None,
+    k: int,
+) -> list[dict]:
+    """The press query itself. Split out only so the planner settings above can be
+    restored in a ``finally`` without wrapping the whole function body."""
     stmt = (
         select(
             Passage.text,

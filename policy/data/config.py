@@ -65,6 +65,14 @@ class Settings(BaseSettings):
     # was observed truncating mid-sentence on a real report.
     llm_max_tokens: int = 16000
 
+    # The model that JUDGES briefs (brief-check/brief-compare/brief-improve), as
+    # opposed to the one that writes them. Deliberately separate from llm_model:
+    # the judge is the measuring instrument, so it must not move when the subject
+    # does. Pointing llm_model at a cheaper model to test it would otherwise also
+    # swap the judge, making the resulting scores incomparable with every score
+    # recorded before — and a cheaper judge is a worse instrument regardless.
+    eval_model: str = "claude-sonnet-5"
+
     # --- API / CORS -----------------------------------------------------------
     # Comma-separated origins the browser is allowed to call the API from.
     # localhost is always included (dev never breaks); add the deployed
