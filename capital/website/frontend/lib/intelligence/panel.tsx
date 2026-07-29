@@ -10,7 +10,6 @@ import {
   type EligibilityAnswers,
   type EligibilityCheck,
   type GroundedRound,
-  type InstitutionEntry,
   type InstrumentRow,
   type IntelligenceReport,
   type PartialReport,
@@ -20,190 +19,11 @@ import {
   type ProgressEvent,
 } from "@/lib/intelligence/types";
 
-const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
-
-// Grounded adaptive round (Phase 3C): ONE panel of up to 8 tailored
-// questions, not a drip of several small rounds — the standard screen asks
-// the fast universal questions, then this single panel narrows the rest
-// before matching. (generateGroundedRound's own openFields.slice(0, 8) in
-// pipeline.ts is the other half of this — keep them in sync if either
-// changes.)
-const MAX_ROUNDS = 1;
-
-// The escape hatch appended to every project question's model-written options
-// (brief_funnel_v2 Stage 2b). Picking it reveals a free-text box, so a founder
-// is never forced into an option the model invented.
-const NONE_OF_THESE = "None of these";
-
-// COMPANY_TYPE_OPTIONS (types.ts) is the four archetypes, as a one-tap
-// picker — shared with the server-side free-text inference layer (Phase 4)
-// so the two can never drift onto different literal strings.
-
-// European scope, full English names, for the country picker.
-const COUNTRIES = [
-  "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark",
-  "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland",
-  "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg",
-  "Malta", "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Serbia",
-  "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland", "Turkey", "Ukraine",
-  "United Kingdom",
-];
-
-/** A clean multi-select dropdown for the capital types: a single field that opens
- *  a checklist, with a summary of the picks and a "show me everything" shortcut. */
-function CapitalSelect({
-  value,
-  onToggle,
-  onToggleAll,
-  all,
-}: {
-  value: string[];
-  onToggle: (v: string) => void;
-  onToggleAll: () => void;
-  all: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const labels = CAPITAL_OPTIONS.filter((o) => value.includes(o.value)).map((o) => o.label);
-  const summary = all
-    ? "Anything, show me everything"
-    : labels.length === 0
-      ? "Select capital types"
-      : labels.length <= 2
-        ? labels.join(", ")
-        : `${labels.slice(0, 2).join(", ")} +${labels.length - 2}`;
-
-  return (
-    <div className="relative">
-      {open && (
-        <button
-          type="button"
-          aria-hidden
-          tabIndex={-1}
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 z-10 cursor-default"
-        />
-      )}
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        className="flex w-full items-center justify-between rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[var(--primary)]"
-      >
-        <span className={"truncate " + (labels.length || all ? "" : "text-[var(--muted-foreground)]")}>
-          {summary}
-        </span>
-        <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
-      </button>
-      {open && (
-        <div
-          role="listbox"
-          className="absolute z-20 mt-1 w-full overflow-hidden rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg"
-        >
-          {CAPITAL_OPTIONS.map((o) => {
-            const on = value.includes(o.value);
-            return (
-              <button
-                key={o.value}
-                type="button"
-                role="option"
-                aria-selected={on}
-                onClick={() => onToggle(o.value)}
-                className="flex w-full items-start gap-2.5 rounded-[var(--radius)] px-2.5 py-2 text-left transition-colors hover:bg-[var(--muted)]"
-              >
-                <span
-                  className={
-                    "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
-                    (on ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]" : "border-[var(--border)]")
-                  }
-                >
-                  {on ? "✓" : ""}
-                </span>
-                <span>
-                  <span className="block text-[14px] font-medium">{o.label}</span>
-                  <span className="block text-[12px] text-[var(--muted-foreground)]">{o.hint}</span>
-                </span>
-              </button>
-            );
-          })}
-          <div className="my-1 border-t border-[var(--border)]" />
-          <button
-            type="button"
-            onClick={onToggleAll}
-            className="w-full rounded-[var(--radius)] px-2.5 py-2 text-left text-[14px] font-semibold text-[var(--primary)] transition-colors hover:bg-[var(--muted)]"
-          >
-            {all ? "Clear all" : "Show me everything"}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/** Multi-select chips. Used for the exclusion checklist, where seeing every
- *  option at once matters more than saving space: a founder should be able to
- *  confirm at a glance that none of them apply. */
-function MultiChips({
-  options, value, onToggle, exclusive,
-}: {
-  options: readonly { value: string; label: string }[];
-  value: string[];
-  onToggle: (v: string) => void;
-  exclusive?: string;
-}) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((o) => {
-        const on = value.includes(o.value);
-        const isExclusive = o.value === exclusive;
-        return (
-          <button key={o.value} type="button" aria-pressed={on}
-            onClick={() => onToggle(o.value)}
-            className={
-              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
-              (on
-                ? isExclusive
-                  ? "border-[#3d6136] bg-[#3d6136]/15 text-[var(--foreground)]"
-                  : "border-[var(--accent)] bg-[var(--accent)]/15 text-[var(--foreground)]"
-                : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[var(--primary)]")
-            }>
-            {o.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-
-
-/** A small always-present ⓘ that reveals guidance on hover or keyboard focus. */
-function InfoDot({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="group relative ml-1 inline-flex align-middle">
-      <button
-        type="button"
-        aria-label="More information"
-        className="flex h-4 w-4 items-center justify-center rounded-full border border-[var(--primary)] text-[10px] font-bold leading-none text-[var(--primary)] outline-none transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)] focus-visible:bg-[var(--primary)] focus-visible:text-[var(--paper)]"
-      >
-        i
-      </button>
-      <span
-        role="tooltip"
-        // Centring a fixed 16rem box on the trigger pushed it past the right
-        // edge of a 390px viewport (measured 473px on a 390px screen), and
-        // body{overflow-x:clip} silently cut the text off rather than
-        // scrolling. Right-anchored on mobile, centred from sm up.
-        className="pointer-events-none absolute bottom-full right-0 left-auto z-10 mb-1.5 w-[min(16rem,calc(100vw-2rem))] translate-x-0 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] px-3 py-2 text-xs font-normal leading-relaxed text-[var(--foreground)] opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 sm:left-1/2 sm:right-auto sm:-translate-x-1/2"
-      >
-        {children}
-      </span>
-    </span>
-  );
-}
+import { CapitalSelect, InfoDot, MultiChips } from "./panelControls";
+import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
 
 /** A chip-row single select for band/enum answers. */
-function Chips({
+export function Chips({
   options, value, onPick, allowUnset = true,
 }: {
   options: { value: string; label: string; hint?: string }[];
@@ -261,6 +81,35 @@ const STEPS: { key: PipelineStep; label: string }[] = [
   { key: "discovering", label: "Finding & researching comparable companies" },
   { key: "querying_db", label: "Querying EU funding database" },
   { key: "generating", label: "Writing your memo" },
+];
+
+const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
+
+// Grounded adaptive round (Phase 3C): ONE panel of up to 8 tailored
+// questions, not a drip of several small rounds — the standard screen asks
+// the fast universal questions, then this single panel narrows the rest
+// before matching. (generateGroundedRound's own openFields.slice(0, 8) in
+// pipeline.ts is the other half of this — keep them in sync if either
+// changes.)
+const MAX_ROUNDS = 1;
+
+// The escape hatch appended to every project question's model-written options
+// (brief_funnel_v2 Stage 2b). Picking it reveals a free-text box, so a founder
+// is never forced into an option the model invented.
+const NONE_OF_THESE = "None of these";
+
+// COMPANY_TYPE_OPTIONS (types.ts) is the four archetypes, as a one-tap
+// picker — shared with the server-side free-text inference layer (Phase 4)
+// so the two can never drift onto different literal strings.
+
+// European scope, full English names, for the country picker.
+const COUNTRIES = [
+  "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark",
+  "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Iceland",
+  "Ireland", "Italy", "Latvia", "Liechtenstein", "Lithuania", "Luxembourg",
+  "Malta", "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Serbia",
+  "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland", "Turkey", "Ukraine",
+  "United Kingdom",
 ];
 
 export function IntelligencePanel() {
@@ -951,360 +800,5 @@ export function IntelligencePanel() {
 
       {report && <Memo key={report.generatedAt} report={report} />}
     </section>
-  );
-}
-
-/** A quiet editorial section title in the house serif — no number, no colour. */
-/** One consistent heading grammar used by every screen of the intake flow
- *  (the live-preview panel, the adaptive round, the running screen) — a
- *  small eyebrow, a plain-English title, and a one-line explainer of what
- *  this screen is and what happens next. Replaces three previously
- *  different ad hoc heading styles per screen. */
-function StepHeader({ eyebrow, title, detail }: { eyebrow?: string; title: string; detail?: string }) {
-  return (
-    <div className="mb-3">
-      {eyebrow && (
-        <p className="text-xs uppercase tracking-widest text-[var(--accent)]">{eyebrow}</p>
-      )}
-      <p className="text-sm font-semibold text-[var(--foreground)]" style={serif}>{title}</p>
-      {detail && (
-        <p className="mt-0.5 text-sm text-[var(--muted-foreground)]">{detail}</p>
-      )}
-    </div>
-  );
-}
-
-/** A small shimmering placeholder for a model-written cell that hasn't
- *  arrived yet (see InstitutionsTable's `pending`) — real layout, honest
- *  "still writing this" signal, never a spinner standing in for content. */
-function PlaceholderBar({ narrow = false }: { narrow?: boolean }) {
-  return (
-    <span
-      className={"inline-block h-3 animate-pulse rounded bg-[var(--muted)] align-middle " + (narrow ? "w-20" : "w-40")}
-    />
-  );
-}
-
-/**
- * The brief's centrepiece table: institution / type of support / why you
- * qualify / comparable firms. Used identically in two moments — live, while
- * the memo is still generating (whyEligible/nextStep render as
- * PlaceholderBar until the model has written them, `pending`), and final, in
- * the finished Memo. Same component, same layout, so the placeholder cells
- * simply fill in with real text rather than the table re-laying-out.
- */
-function InstitutionsTable({ institutions, pending = false }: { institutions: InstitutionEntry[]; pending?: boolean }) {
-  if (!institutions || institutions.length === 0) return null;
-  return (
-    <>
-      <SectionTitle>Where to target</SectionTitle>
-      <table className="w-full border-collapse text-[14px]">
-        <thead>
-          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
-            <th className="py-2 pr-3 font-semibold">Institution</th>
-            <th className="py-2 pr-3 font-semibold">Type of support</th>
-            <th className="py-2 pr-3 font-semibold">Why you qualify</th>
-            <th className="py-2 font-semibold">Comparable firms funded</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-[var(--border)] align-top">
-          {institutions.map((r, i) => (
-            <tr key={i}>
-              <td className="py-2.5 pr-3">
-                <span className="font-semibold">{r.institution}</span>
-                {(r.country || r.legalBasis) && (
-                  <span className="block text-[12px] text-[var(--muted-foreground)]">
-                    {[r.country, r.legalBasis].filter(Boolean).join(" · ")}
-                  </span>
-                )}
-                <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
-                  {r.ticket}
-                </span>
-                {/* Dormancy, stated rather than hidden. A brief that sends a
-                    founder at a scheme which stopped awarding in 2019 is not
-                    thin, it is wrong with authority — so the date they would
-                    need in order to disbelieve us is on the row itself. */}
-                {r.stale && r.lastAwardYear && (
-                  <span className="mt-1 block text-[12px] text-[var(--accent)]">
-                    No award recorded since {r.lastAwardYear} — confirm it is still running
-                  </span>
-                )}
-              </td>
-              <td className="py-2.5 pr-3">{r.supportType}</td>
-              <td className="py-2.5 pr-3">
-                {/* Qualification comes first and is code-computed, so it is
-                    already correct while the model's prose streams. Funds a
-                    company cannot access were dropped in the pipeline and
-                    never reach this table. */}
-                {r.verdict === "one_blocker" && r.blocker ? (
-                  <span className="mb-1 block">
-                    <span className="font-semibold text-[var(--accent)]">One thing in the way:</span>{" "}
-                    <span className="text-[var(--foreground-soft)]">{r.blocker}</span>
-                  </span>
-                ) : r.verdict === "open" && (r.gatesChecked ?? 0) > 0 ? (
-                  <span className="mb-1 block font-semibold text-[#3d6136]">
-                    Open to you: nothing in its documented rules rules you out
-                  </span>
-                ) : (
-                  // Say so when we checked NOTHING. 177 instruments carry no
-                  // machine-readable rule yet, and an unassessed row used to
-                  // render blank here — indistinguishable from one we had
-                  // actually cleared, except for a missing green line nobody
-                  // would notice was absent. Dropping these rows instead was
-                  // considered and rejected: they include the Dutch, Swedish,
-                  // Spanish and Czech national routes, so excluding them would
-                  // leave founders in those countries with no domestic option
-                  // at all. Ranking already sorts them below assessed rows
-                  // (VERDICT_RANK), so they surface only when nothing better
-                  // exists — which is exactly when a founder should see one,
-                  // clearly labelled.
-                  <span className="mb-1 block font-semibold text-[var(--muted-foreground)]">
-                    Not yet verified: we hold no machine-readable rules for this
-                    one, so check its criteria yourself before committing time
-                  </span>
-                )}
-                {pending && !r.whyEligible ? <PlaceholderBar /> : r.whyEligible}
-                {r.whyEasy && (
-                  <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
-                    {r.whyEasy}
-                  </span>
-                )}
-                <span className="block text-[12px] italic text-[var(--muted-foreground)]">
-                  Move: {pending && !r.nextStep ? <PlaceholderBar narrow /> : r.nextStep}
-                </span>
-              </td>
-              <td className="py-2.5">
-                {r.comparableFirms.length > 0 ? (
-                  r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
-                ) : (
-                  <span className="text-[var(--muted-foreground)]">None traced yet</span>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
-  );
-}
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h3 className="mt-10 mb-3 text-[17px] font-semibold text-[var(--foreground)] print:mt-8" style={serif}>
-      {children}
-    </h3>
-  );
-}
-
-/** Deterministic, cited, never model-written — shared by the fast verdict
- *  screen and the final memo so both render identically. */
-function EligibilityTable({ rows }: { rows: EligibilityCheck[] }) {
-  if (!rows || rows.length === 0) return null;
-  // Show what the founder can act on. Once the rules corpus became machine-
-  // readable this screen filled with "likely met — verify:" rows that carry no
-  // decision: passing a rule you were always going to pass is not information,
-  // and 20 such rows sit between the reader and the two that matter. Anything
-  // failing, unknown, or asserted (met/not_met on a verified gate) is shown;
-  // the merely-likely-met are counted instead.
-  const ACTIONABLE = new Set(["not_met", "likely_not_met", "unknown", "met", "info"]);
-  const shown = rows.filter((r) => ACTIONABLE.has(r.status));
-  const passedQuietly = rows.length - shown.length;
-  return (
-    <>
-      <SectionTitle>Eligibility screen</SectionTitle>
-      <p className="mb-3 text-[13px] text-[var(--muted-foreground)]">
-        Evaluated in code against the primary texts. Each row cites its legal
-        basis; failed gates name the cure.
-        {passedQuietly > 0 && (
-          <>
-            {" "}
-            A further {passedQuietly} documented {passedQuietly === 1 ? "rule" : "rules"} on
-            these funds {passedQuietly === 1 ? "was" : "were"} checked and raised nothing.
-          </>
-        )}
-      </p>
-      <table className="w-full border-collapse text-[14px]">
-        <thead>
-          <tr className="border-b border-[var(--foreground)] text-left align-bottom">
-            <th className="py-2 pr-3 font-semibold">Check</th>
-            <th className="py-2 pr-3 font-semibold">Status</th>
-            <th className="py-2 font-semibold">Finding</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-[var(--border)] align-top">
-          {shown.map((r, i) => (
-            <tr key={i}>
-              <td className="py-2.5 pr-3 font-semibold">{r.check}</td>
-              <td className="py-2.5 pr-3">
-                <span
-                  className={
-                    "rounded px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-wide " +
-                    (r.status === "met"
-                      ? "bg-[#2D6A4F]/15 text-[#1f4d3a]"
-                      : r.status === "not_met"
-                        ? "bg-[#9b2c2c]/10 text-[#9b2c2c]"
-                        : r.status === "likely_met"
-                          ? "bg-[#2D6A4F]/10 text-[#1f4d3a]/70"
-                          : r.status === "likely_not_met"
-                            ? "bg-[#9b2c2c]/5 text-[#9b2c2c]/70"
-                            : "bg-[var(--muted)] text-[var(--muted-foreground)]")
-                  }
-                >
-                  {r.status === "not_met" ? "not met"
-                    : r.status === "likely_met" ? "likely met"
-                    : r.status === "likely_not_met" ? "likely not met"
-                    : r.status === "info" ? "note" : r.status}
-                </span>
-              </td>
-              <td className="py-2.5">
-                {r.verified ? r.finding : `Verify: ${r.finding}`}
-                {r.cure && (
-                  <span className="block text-[13px]">
-                    <span className="font-semibold">Path.</span> {r.cure}
-                  </span>
-                )}
-                <span className="block text-[11px] text-[var(--muted-foreground)]">
-                  {r.source.file}
-                  {r.source.locator ? ` · ${r.source.locator}` : ""}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
-  );
-}
-
-
-/**
- * The whole report rendered as a single advisory letter — flowing serif prose,
- * hairline rules, one restrained comparables table. No cards, boxes, pills or
- * colour blocks. Reads top to bottom and prints to a clean PDF.
- */
-const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
-
-function Memo({ report }: { report: IntelligenceReport }) {
-  const self = report.self;
-  const date = new Date(report.generatedAt).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  // The founder's own footprint, as a single quiet line of prose.
-  const selfLine = [self.euCapital, self.channelBreakdown, self.activeYears]
-    .filter(Boolean)
-    .join(" · ");
-
-  const readMinutes = Math.max(
-    1,
-    Math.round(
-      (report.bottomLine.reduce((n, b) => n + wordCount(b), 0) +
-        wordCount(report.positioning) +
-        wordCount(report.stateOfPlay)) /
-        200,
-    ),
-  );
-
-  // Reveal-first-bullet: the single best line lands immediately, everything
-  // else fades in a beat later — an opened loop reads better than a wall of
-  // text arriving all at once. The parent keys this component by
-  // generatedAt, so this state starts fresh (false) for every new report,
-  // never stuck "revealed" from a prior run.
-  const [revealed, setRevealed] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setRevealed(true), 550);
-    return () => clearTimeout(t);
-  }, []);
-
-  return (
-    <div
-      id="print-report"
-      style={serif}
-      className="mt-8 border border-[var(--border)] bg-[var(--paper)] px-7 py-9 sm:px-12 sm:py-12 text-[15px] leading-relaxed text-[var(--foreground)] print:mt-0 print:border-0 print:px-0 print:py-0"
-    >
-      {/* Export — screen only */}
-      <div className="mb-8 flex justify-end print:hidden">
-        <button
-          onClick={() => window.print()}
-          className="rounded-[var(--radius)] border border-[var(--primary)] px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-        >
-          Export PDF
-        </button>
-      </div>
-
-      {/* ── Letterhead ─────────────────────────────────────────────── */}
-      <div className="flex items-baseline justify-between border-t-2 border-[var(--primary)] pt-3">
-        <span className="text-sm font-bold tracking-[0.2em] text-[var(--primary)]">
-          WINCENT
-        </span>
-        <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-          Private funding memorandum · ~{readMinutes} min read
-        </span>
-      </div>
-
-      {/* ── Salutation block ───────────────────────────────────────── */}
-      <dl className="mt-6 grid grid-cols-[4.5rem_1fr] gap-x-4 gap-y-1 text-[14px]">
-        <dt className="text-[var(--muted-foreground)]">To</dt>
-        <dd>The leadership of {report.company}</dd>
-        <dt className="text-[var(--muted-foreground)]">Date</dt>
-        <dd>{date}</dd>
-        <dt className="text-[var(--muted-foreground)]">Re</dt>
-        <dd className="font-semibold">Public capital positioning brief</dd>
-      </dl>
-
-      <hr className="mt-6 border-[var(--border)]" />
-
-      {/* ── Bottom line: the single best line lands first, up front ──── */}
-      <ul className="mt-6 space-y-3 text-[17px] leading-[1.55]">
-        <li className="flex gap-3">
-          <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
-          <span>{report.bottomLine[0]}</span>
-        </li>
-      </ul>
-
-      {/* ── Everything else fades in a beat later ────────────────────── */}
-      <div
-        className={"transition-opacity duration-500 " + (revealed ? "opacity-100" : "opacity-0")}
-        aria-hidden={!revealed}
-      >
-        <ul className="mt-3 space-y-3 text-[17px] leading-[1.55]">
-          {report.bottomLine.slice(1).map((b, i) => (
-            <li key={i} className="flex gap-3">
-              <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
-        {selfLine && (
-          <p className="mt-3 text-[13px] italic text-[var(--muted-foreground)]">
-            Your traced public funding: {selfLine}.
-          </p>
-        )}
-
-        {/* ── Eligibility screen: deterministic, cited, never model-written ── */}
-        <EligibilityTable rows={report.eligibilityScreen} />
-
-        {/* ── Where to target: the brief's centrepiece table ───────────── */}
-        <InstitutionsTable institutions={report.institutions} />
-
-        {/* ── Positioning: fitting the current political moment ────────── */}
-        <SectionTitle>Positioning</SectionTitle>
-        <p>{report.positioning}</p>
-
-        {/* ── State of play: recent news + the closing line ─────────────── */}
-        <SectionTitle>State of play</SectionTitle>
-        <p>{report.stateOfPlay}</p>
-
-        {/* ── Footer ────────────────────────────────────────────────────── */}
-        <div className="mt-12 border-t border-[var(--border)] pt-4">
-          <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
-          <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-            Wincent · the state-backed capital record of European companies, 2021–2025
-          </p>
-        </div>
-      </div>
-    </div>
   );
 }

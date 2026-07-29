@@ -14,50 +14,61 @@ Its sibling, `in ['none']`, is not inverted but is over-strict: it demands a
 clean sheet on every flag, so an unrelated tax arrear blocks a rule that was
 only ever about insolvency. A rule about insolvency must name insolvency.
 
-Run in CI. Cheap, deterministic, no API.
+Reads the COMMITTED snapshot (website/frontend/public/data/instrument_terms.json)
+rather than data/db.sqlite. Two reasons, and the first only became obvious when
+CI went red: the database is gitignored, so a check that needs it cannot run in
+CI at all — it fails on a missing file and teaches everyone to ignore the job.
+The second is better: the snapshot is what actually ships to production, so
+checking it verifies the artefact a founder's brief is built from, not a local
+working copy that may be ahead of or behind it.
+
+Run in CI. Cheap, deterministic, no API, no database.
 
 Usage: python3 ETL/schema/check_spec_sanity.py
 """
 from __future__ import annotations
 
 import json
-import sqlite3
 import sys
 from pathlib import Path
 
-for _anc in Path(__file__).resolve().parents:
-    if (_anc / "lib" / "etl_env.py").exists():
-        sys.path.insert(0, str(_anc / "lib"))
-        break
-from etl_env import DB  # noqa: E402
+ROOT = Path(__file__).resolve().parents[2]
+SNAPSHOT = ROOT / "website" / "frontend" / "public" / "data" / "instrument_terms.json"
 
 SENTINEL_AXES = ("exclusionFlags", "activities")
 
 
 def main() -> None:
-    conn = sqlite3.connect(DB)
+    if not SNAPSHOT.exists():
+        sys.exit(f"missing {SNAPSHOT} — run website/build/eligibility_export.py")
+    data = json.loads(SNAPSHOT.read_text())
     problems: list[str] = []
-    for gid, vs, req in conn.execute(
-        "SELECT id, value_spec, requirement FROM eligibility_gates WHERE value_spec IS NOT NULL"
-    ):
-        spec = json.loads(vs)
-        field, op = spec.get("field"), spec.get("op")
-        allowed = spec.get("allowed") or []
-        if field not in SENTINEL_AXES:
-            continue
-        if op == "not_in" and "none" in allowed:
-            problems.append(f"  gate {gid}: not_in {allowed} on {field} — blocks the compliant "
-                            f"answer\n      {' '.join((req or '').split())[:88]}")
-        elif op == "in" and allowed == ["none"]:
-            problems.append(f"  gate {gid}: in ['none'] on {field} — demands a clean sheet on every "
-                            f"flag\n      {' '.join((req or '').split())[:88]}")
+    checked = 0
+    for record in data["records"]:
+        for gate in record.get("gates", []):
+            spec = gate.get("valueSpec")
+            if not spec:
+                continue
+            checked += 1
+            gid = f"{record['id']}/{gate['id']}"
+            req = gate.get("requirement", "")
+            field, op = spec.get("field"), spec.get("op")
+            allowed = spec.get("allowed") or []
+            if field not in SENTINEL_AXES:
+                continue
+            if op == "not_in" and "none" in allowed:
+                problems.append(f"  {gid}: not_in {allowed} on {field} — blocks the compliant "
+                                f"answer\n      {' '.join((req or '').split())[:88]}")
+            elif op == "in" and allowed == ["none"]:
+                problems.append(f"  {gid}: in ['none'] on {field} — demands a clean sheet on "
+                                f"every flag\n      {' '.join((req or '').split())[:88]}")
 
     if problems:
         print(f"{len(problems)} semantically inverted spec(s):\n")
         print("\n".join(problems))
         print("\nName the specific flag the requirement is about.")
         sys.exit(1)
-    print("no inverted exclusion specs")
+    print(f"no inverted exclusion specs ({checked} encoded rules checked)")
 
 
 if __name__ == "__main__":
