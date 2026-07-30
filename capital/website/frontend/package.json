@@ -17,7 +17,9 @@
     "test:cov": "npx vitest run --coverage",
     "health": "npx tsx scripts/health_report.ts",
     "shadow": "npx tsx scripts/shadow_fit.ts",
-    "funnel": "npx tsx scripts/funnel_bench.ts"
+    "funnel": "npx tsx scripts/funnel_bench.ts",
+    "preview:pdf": "bash scripts/preview_pdf.sh",
+    "shot": "bash scripts/shot.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

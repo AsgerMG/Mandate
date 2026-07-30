@@ -150,19 +150,34 @@ h1, h2, h3, h4, h5, h6 {
      ancestor of the report removes the boxes outright, so the report can lay
      out in normal flow with no absolute positioning at all.
 
-     .printing is set on <html> by printReport() just before window.print()
-     and removed after, so this only applies to a real export. */
-  html.printing body > *:not(:has(#print-report)) { display: none !important; }
-  html.printing :has(> #print-report) > *:not(#print-report) { display: none !important; }
+     Gated on the PAGE containing a report, not on a class the export button
+     sets. It was gated on `html.printing` — which only printReport() applies —
+     so anyone who hit Cmd+P instead of the button printed the entire marketing
+     page, nav and footer included. Found by rendering the page with headless
+     Chrome, which prints exactly the way a keyboard shortcut does.
+     `body:has(#print-report)` keeps every other page untouched. */
+  body:has(#print-report) > *:not(:has(#print-report)) { display: none !important; }
+  :has(> #print-report) > *:not(#print-report) { display: none !important; }
+
+  /* The brief fades its body in ~550ms after mount. On paper that transition
+     is either mid-flight or irrelevant, and a half-faded export is a document
+     with two blank pages in it — which is exactly what the first headless
+     render produced. */
+  #print-report [data-reveal] { opacity: 1 !important; transition: none !important; }
   #print-report { width: 100%; padding: 0; }
   @page { margin: 0.6in; }
 
   /* ── Page furniture ───────────────────────────────────────────────────
-     Room at the head and foot for the running header/footer, which are fixed
-     elements repeated on every page. Without the padding the first lines of
-     body text print underneath them. */
-  @page { margin: 0.75in 0.7in; }
-  #print-report { padding-top: 0.28in; padding-bottom: 0.28in; }
+     No running header or footer. Chromium repeats a position:fixed element on
+     every printed page, which looks like the mechanism for one, but it
+     positions that element against the page viewport while normal-flow content
+     runs through the same box — so no space is reserved for it and it prints
+     ON TOP of whatever falls there. Measured: at a 0.75in margin it landed
+     across the repeated table header on page 2; pushed up into a deeper
+     margin, it landed across the middle of the table instead.
+     A header that collides is worse than no header. The masthead identifies
+     page one and the table header repeats itself, which is enough. */
+  @page { margin: 0.7in; }
 
   /* ── Type ─────────────────────────────────────────────────────────────
      Screen sizes are set for a single scrolling column; on paper the same
@@ -191,11 +206,16 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600; padding: 0 8px 5px 0; vertical-align: bottom;
   }
   #print-report tbody td { padding: 7px 8px 7px 0; line-height: 1.4; vertical-align: top; }
+  /* The institution cell carries sub-labels set at a fixed 12px for screen,
+     which printed LARGER than the 9.5px table body and made column one look
+     like the headline. Everything in the table scales together. */
+  #print-report table span { font-size: 9px; line-height: 1.35; }
+  #print-report table td > span:first-child { font-size: 9.5px; }
   /* Institution / support / why you qualify / comparables. The third column
      carries all the prose, so it takes the slack. */
-  #print-report table th:nth-child(1), #print-report table td:nth-child(1) { width: 22%; }
+  #print-report table th:nth-child(1), #print-report table td:nth-child(1) { width: 24%; }
   #print-report table th:nth-child(2), #print-report table td:nth-child(2) { width: 12%; }
-  #print-report table th:nth-child(3), #print-report table td:nth-child(3) { width: 48%; }
+  #print-report table th:nth-child(3), #print-report table td:nth-child(3) { width: 46%; }
   #print-report table th:nth-child(4), #print-report table td:nth-child(4) { width: 18%; }
   /* Long scheme names and URLs wrap rather than widening their column. */
   #print-report td { overflow-wrap: anywhere; }

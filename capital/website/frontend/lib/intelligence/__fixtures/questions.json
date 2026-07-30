@@ -1,0 +1,150 @@
+[
+ {
+  "question": "What type of costs will the funding support for your sovereign large language models and AI infrastructure project?",
+  "options": [
+   "Eligible R&D costs directly tied to developing or improving the LLM and AI infrastructure",
+   "Energy or resource efficiency improvements in your infrastructure operations",
+   "Innovation project costs for bringing the LLM platform to market",
+   "General business overhead or sales and marketing expenses"
+  ],
+  "answer": "Eligible R&D costs directly tied to developing or improving the LLM and AI infrastructure",
+  "archetype": "AI B2B software"
+ },
+ {
+  "question": "At what technology readiness level is your sovereign LLM platform currently, and what collaborative R&D activities will EU funding support?",
+  "options": [
+   "TRL 3-4: early-stage research with proof-of-concept work in collaboration with research partners",
+   "TRL 5-6: prototype development and validation with cross-border consortium partners",
+   "TRL 7-8: demonstration and deployment-ready activities with industrial partners",
+   "TRL 1-2: fundamental research without collaborative partners"
+  ],
+  "answer": "TRL 5-6: prototype development and validation with cross-border consortium partners",
+  "archetype": "AI B2B software"
+ },
+ {
+  "question": "Which eligible cost category under GBER does the equity funding target for your AI infrastructure and LLM development?",
+  "options": [
+   "R&D and innovation costs for advancing the sovereign LLM technology",
+   "Growth financing for scaling the AI infrastructure business",
+   "Sustainability investment in energy-efficient infrastructure operations"
+  ],
+  "answer": "R&D and innovation costs for advancing the sovereign LLM technology",
+  "archetype": "AI B2B software"
+ },
+ {
+  "question": "Which technology domain best describes your sovereign large language models and AI infrastructure business?",
+  "options": [
+   "Digital tech",
+   "Industrial tech",
+   "Life sciences",
+   "Chemistry"
+  ],
+  "answer": "Digital tech",
+  "archetype": "AI B2B software"
+ },
+ {
+  "question": "How do your customers pay for your sovereign LLM and AI infrastructure?",
+  "options": [
+   "Per-token or per-API-call pricing, like a cloud service",
+   "Fixed annual or monthly subscription for access to your models and infrastructure",
+   "License fees for on-premises or air-gapped deployment of your models",
+   "Custom project contracts or managed-services fees for government and enterprise builds"
+  ],
+  "answer": "Custom project contracts or managed-services fees for government and enterprise builds",
+  "archetype": "AI B2B software"
+ },
+ {
+  "question": "Who is your primary customer today, or where are you focused first?",
+  "options": [
+   "Large enterprises buying cloud-based AI services directly",
+   "Government agencies or defence departments",
+   "System integrators, consulting firms or resellers who embed your tech into their own offerings",
+   "Infrastructure providers or other AI companies who use your models as a component"
+  ],
+  "answer": "Government agencies or defence departments",
+  "archetype": "AI B2B software"
+ },
+ {
+  "question": "What does public funding unlock for you that you cannot fund from revenue or traditional venture?",
+  "options": [
+   "Deep research and model training that has long development cycles and uncertain commercial returns",
+   "Infrastructure capex, compute, data centres, or specialised hardware",
+   "Sales, marketing and go-to-market in new geographic or customer segments",
+   "Compliance, security certifications or regulatory approval work needed to sell into government"
+  ],
+  "answer": "Deep research and model training that has long development cycles and uncertain commercial returns",
+  "archetype": "AI B2B software"
+ },
+ {
+  "question": "What stage is your core AI/imaging technology at? Are you building novel models or methods, or applying existing techniques to product photography?",
+  "options": [
+   "Building novel generative models or methods with technical risk and IP",
+   "Applying established generative AI to a new product use case",
+   "Optimizing and scaling an existing product with proven technology"
+  ],
+  "answer": "Applying established generative AI to a new product use case",
+  "archetype": "AI B2C software"
+ },
+ {
+  "question": "Would your R&D roadmap fit within a specific EU priority, such as trustworthy AI, digital sovereignty, or sustainable computing, or is it purely product-driven?",
+  "options": [
+   "Yes, aligned to a named EU strategic priority",
+   "Primarily product innovation without a policy alignment"
+  ],
+  "answer": "Primarily product innovation without a policy alignment",
+  "archetype": "AI B2C software"
+ },
+ {
+  "question": "How do users pay today, and what would scale that?",
+  "options": [
+   "Subscription or SaaS model",
+   "Per-image or transaction fees",
+   "Freemium with premium upsell",
+   "Licensing to enterprises or platforms"
+  ],
+  "answer": "Freemium with premium upsell",
+  "archetype": "AI B2C software"
+ },
+ {
+  "question": "What would €2.5–15M unlock that you cannot fund from revenue today?",
+  "options": [
+   "Breakthrough in model accuracy or speed that demands R&D investment",
+   "Faster time to market in a competitive window",
+   "Expansion into new geographies or verticals",
+   "Reduction of compute costs or infrastructure spend"
+  ],
+  "answer": "Faster time to market in a competitive window",
+  "archetype": "AI B2C software"
+ },
+ {
+  "question": "Does your project involve joint research or innovation work across multiple organisations, aligned to a specific Horizon Europe call topic?",
+  "options": [
+   "Yes, we have identified a matching call and can coordinate with partners",
+   "Yes, but we are still mapping which calls fit our work",
+   "No, this is a standalone product development effort"
+  ],
+  "answer": "Yes, but we are still mapping which calls fit our work",
+  "archetype": "GovTech"
+ },
+ {
+  "question": "What stage is your core innovation at: is it a proven concept ready to scale, or are you still validating the underlying technology?",
+  "options": [
+   "Proven and ready to scale to market (TRL 6-8)",
+   "Still in active validation phase",
+   "Depends on which component of the project"
+  ],
+  "answer": "Proven and ready to scale to market (TRL 6-8)",
+  "archetype": "GovTech"
+ },
+ {
+  "question": "What would this €2.5M–€15M specifically unlock for Nortal that you cannot fund from operations?",
+  "options": [
+   "Acceleration of R&D on a new product or capability",
+   "Entry into a new market or public sector vertical",
+   "Hiring specialised technical talent at scale",
+   "Capital-intensive infrastructure or platform development"
+  ],
+  "answer": "Acceleration of R&D on a new product or capability",
+  "archetype": "GovTech"
+ }
+]

@@ -1,0 +1,395 @@
+{
+ "company": "sennder",
+ "generatedAt": "2026-07-30T16:44:36.812Z",
+ "self": {
+  "matched": false,
+  "euCapital": "No public funding traced",
+  "channelBreakdown": "",
+  "channels": [],
+  "activeYears": ""
+ },
+ "eligibilityScreen": [
+  {
+   "check": "EU SME status",
+   "status": "not_met",
+   "finding": "At 250+ staff the company exceeds the EU SME headcount ceiling; SME-only lanes (EIC, SME windows, SME aid bonuses) are closed.",
+   "cure": "Mid-cap and large-company lanes remain (EIB growth, Innovation Fund, IPCEI); no realistic cure to SME status itself.",
+   "source": {
+    "file": "",
+    "locator": ""
+   },
+   "verified": true
+  },
+  {
+   "check": "Undertaking-in-difficulty exclusion",
+   "status": "met",
+   "finding": "Not in difficulty on the share-capital limb; the GBER exclusion does not bite.",
+   "source": {
+    "file": "",
+    "locator": ""
+   },
+   "verified": true
+  },
+  {
+   "check": "Grant co-financing capacity",
+   "status": "met",
+   "finding": "Stated co-financing capacity covers the own-share that R&D aid-intensity ceilings leave with the company.",
+   "source": {
+    "file": "",
+    "locator": ""
+   },
+   "verified": true
+  },
+  {
+   "check": "IPCEI-class projects",
+   "status": "not_met",
+   "finding": "The stated ticket sits below IPCEI scale; the instrument is not a realistic lane for this raise.",
+   "source": {
+    "file": "",
+    "locator": ""
+   },
+   "verified": true
+  },
+  {
+   "check": "De minimis headroom",
+   "status": "info",
+   "finding": "Small national schemes typically run under the de minimis ceiling of EUR 300,000 over three years, counted across the whole group; prior aid in our register counts toward it.",
+   "source": {
+    "file": "",
+    "locator": ""
+   },
+   "verified": true
+  },
+  {
+   "check": "HTGF — The startup must be headquartered in Germany, or if from another country, have a German base of operations.",
+   "instrumentId": "htgf_equity",
+   "status": "met",
+   "finding": "The startup must be headquartered in Germany, or if from another country, have a German base of operations.",
+   "source": {
+    "file": "htgf_investment_criteria.html",
+    "locator": "chunk 2"
+   },
+   "verified": true
+  },
+  {
+   "check": "HTGF — The startup should be active in digital tech, industrial tech, life sciences, chemistry or related business areas.",
+   "instrumentId": "htgf_equity",
+   "status": "not_met",
+   "finding": "The startup should be active in digital tech, industrial tech, life sciences, chemistry or related business areas.",
+   "source": {
+    "file": "htgf_investment_criteria.html",
+    "locator": "chunk 2"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Equity — The startup must have concluded a participation agreement for a fresh equity or equity-like investment of at least EUR 50,000 from one or more business angels.",
+   "instrumentId": "satr_de_equity",
+   "status": "met",
+   "finding": "The startup must have concluded a participation agreement for a fresh equity or equity-like investment of at least EUR 50,000 from one or more business angels.",
+   "source": {
+    "file": "satr_de_equity_sachsen_frl_bab.pdf",
+    "locator": "satr_de_equity_sachsen_frl_bab.pdf#p.2"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Equity — Aid recipients must qualify as small enterprises under the conditions of Annex I of the GBER (SME definition).",
+   "instrumentId": "satr_de_equity",
+   "status": "not_met",
+   "finding": "Aid recipients must qualify as small enterprises under the conditions of Annex I of the GBER (SME definition).",
+   "source": {
+    "file": "satr_de_equity_sachsen_frl_bab.pdf",
+    "locator": "satr_de_equity_sachsen_frl_bab.pdf#p.5"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Equity — Undertakings in difficulty as defined under Article 2(18)(a-e) GBER are excluded from funding.",
+   "instrumentId": "satr_de_equity",
+   "status": "met",
+   "finding": "Undertakings in difficulty as defined under Article 2(18)(a-e) GBER are excluded from funding.",
+   "source": {
+    "file": "satr_de_equity_sachsen_frl_bab.pdf",
+    "locator": "satr_de_equity_sachsen_frl_bab.pdf#p.5"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Equity — An undertaking that has not complied with a recovery order following a prior Commission decision declaring aid unlawful and incompatible with the internal market may not receive funding under this directive.",
+   "instrumentId": "satr_de_equity",
+   "status": "met",
+   "finding": "An undertaking that has not complied with a recovery order following a prior Commission decision declaring aid unlawful and incompatible with the internal market may not receive funding under this directive.",
+   "source": {
+    "file": "satr_de_equity_sachsen_frl_bab.pdf",
+    "locator": "satr_de_equity_sachsen_frl_bab.pdf#p.5"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Rnd — Applicant must have or plan to have a business establishment, branch, or non-economic facility in Germany at the time the grant is paid out.",
+   "instrumentId": "satr_de_rnd",
+   "status": "met",
+   "finding": "Applicant must have or plan to have a business establishment, branch, or non-economic facility in Germany at the time the grant is paid out.",
+   "source": {
+    "file": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf",
+    "locator": "satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.3"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Rnd — Eligible applicants for the security research programme include civil society organisations and private security industry companies, among others, with an establishment/facility in Germany required at payout.",
+   "instrumentId": "satr_de_rnd",
+   "status": "met",
+   "finding": "Eligible applicants for the security research programme include civil society organisations and private security industry companies, among others, with an establishment/facility in Germany required at payout.",
+   "source": {
+    "file": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf",
+    "locator": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Rnd — SMEs (KMU) for purposes of this funding directive are enterprises meeting the EU SME definition; applicant must self-declare classification per Annex I AGVO.",
+   "instrumentId": "satr_de_rnd",
+   "status": "not_met",
+   "finding": "SMEs (KMU) for purposes of this funding directive are enterprises meeting the EU SME definition; applicant must self-declare classification per Annex I AGVO.",
+   "source": {
+    "file": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf",
+    "locator": "satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.3"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Rnd — Aid is not granted to undertakings in difficulty as defined by Article 2(18) AGVO, with a limited exception for firms that became distressed only between 1 Jan 2020 and 31 Dec 2021.",
+   "instrumentId": "satr_de_rnd",
+   "status": "met",
+   "finding": "Aid is not granted to undertakings in difficulty as defined by Article 2(18) AGVO, with a limited exception for firms that became distressed only between 1 Jan 2020 and 31 Dec 2021.",
+   "source": {
+    "file": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf",
+    "locator": "satr_de_rnd_bmbf_richtlinie_energieforschung_nuklear_2024.pdf#p.8"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Rnd — Companies that have failed to comply with a prior Commission recovery order are excluded from applying, as are companies in insolvency proceedings.",
+   "instrumentId": "satr_de_rnd",
+   "status": "met",
+   "finding": "Companies that have failed to comply with a prior Commission recovery order are excluded from applying, as are companies in insolvency proceedings.",
+   "source": {
+    "file": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf",
+    "locator": "satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.3"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Rnd — An appropriate own contribution to eligible costs is required, generally at least 75% of eligible costs for commercial enterprises and economically-active research bodies.",
+   "instrumentId": "satr_de_rnd",
+   "status": "met",
+   "finding": "An appropriate own contribution to eligible costs is required, generally at least 75% of eligible costs for commercial enterprises and economically-active research bodies.",
+   "source": {
+    "file": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf",
+    "locator": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4"
+   },
+   "verified": true
+  },
+  {
+   "check": "SATR De Rnd — Funded project parts must fall entirely within industrial research, experimental development, or feasibility studies as defined by AGVO.",
+   "instrumentId": "satr_de_rnd",
+   "status": "met",
+   "finding": "Funded project parts must fall entirely within industrial research, experimental development, or feasibility studies as defined by AGVO.",
+   "source": {
+    "file": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf",
+    "locator": "satr_de_rnd_bmwk_richtlinie_dns_mobilitaet_2024.pdf#p.4"
+   },
+   "verified": true
+  },
+  {
+   "check": "Horizon EU CBE — Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+   "instrumentId": "horizon_eu_cbe",
+   "status": "met",
+   "finding": "Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+   "source": {
+    "file": "horizon_eu_general_annexes_2026_2027.pdf",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11"
+   },
+   "verified": true
+  },
+  {
+   "check": "Horizon EU CBE — Legal entities established in China are not eligible to participate in any capacity in IA and RIA actions covered by the restriction, absent case-by-case exceptions.",
+   "instrumentId": "horizon_eu_cbe",
+   "status": "met",
+   "finding": "Legal entities established in China are not eligible to participate in any capacity in IA and RIA actions covered by the restriction, absent case-by-case exceptions.",
+   "source": {
+    "file": "horizon_eu_general_annexes_2026_2027.pdf",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.8"
+   },
+   "verified": true
+  },
+  {
+   "check": "Horizon EU CBE — Unless otherwise provided, a consortium must include, as beneficiaries, three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries.",
+   "instrumentId": "horizon_eu_cbe",
+   "status": "unknown",
+   "finding": "Unless otherwise provided, a consortium must include, as beneficiaries, three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries.",
+   "source": {
+    "file": "horizon_eu_general_annexes_2026_2027.pdf",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.14"
+   },
+   "verified": false
+  },
+  {
+   "check": "Horizon EU CBE — Applicants subject to EU administrative sanctions or in exclusion situations such as bankruptcy, winding up, or arrangement with creditors cannot participate.",
+   "instrumentId": "horizon_eu_cbe",
+   "status": "met",
+   "finding": "Applicants subject to EU administrative sanctions or in exclusion situations such as bankruptcy, winding up, or arrangement with creditors cannot participate.",
+   "source": {
+    "file": "horizon_eu_general_annexes_2026_2027.pdf",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.22"
+   },
+   "verified": true
+  },
+  {
+   "check": "Horizon EU CL5 — Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+   "instrumentId": "horizon_eu_cl5",
+   "status": "met",
+   "finding": "Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+   "source": {
+    "file": "horizon_eu_general_annexes_2026_2027.pdf",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11"
+   },
+   "verified": true
+  },
+  {
+   "check": "Horizon EU CL5 — For IA and RIA actions covered by the restriction, legal entities established in China are excluded from participation in any capacity.",
+   "instrumentId": "horizon_eu_cl5",
+   "status": "met",
+   "finding": "For IA and RIA actions covered by the restriction, legal entities established in China are excluded from participation in any capacity.",
+   "source": {
+    "file": "horizon_eu_general_annexes_2026_2027.pdf",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.8"
+   },
+   "verified": true
+  },
+  {
+   "check": "Horizon EU CL5 — Applicants subject to EU administrative sanctions or exclusion situations (e.g. bankruptcy, winding up) cannot participate.",
+   "instrumentId": "horizon_eu_cl5",
+   "status": "met",
+   "finding": "Applicants subject to EU administrative sanctions or exclusion situations (e.g. bankruptcy, winding up) cannot participate.",
+   "source": {
+    "file": "horizon_eu_general_annexes_2026_2027.pdf",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.22"
+   },
+   "verified": true
+  }
+ ],
+ "bottomLine": [
+  "No public funding is traced for sennder, while peers TIMOCOM (€1.0M state aid, 2025) and Transporeon (Horizon grant, 2023) drew on German and EU schemes at the same digital-logistics layer.",
+  "At 250+ staff you exceed the EU SME ceiling, closing SME-only lanes like EIC Accelerator and HTGF outright; your realistic doors are the national state-aid schemes and Horizon's collaborative Clusters.",
+  "Start with SATR De Rnd: TIMOCOM drew €1.0M from the same instrument, and your co-financing capacity clears its 75% own-contribution bar.",
+  "Horizon EU CL5 fits your mobility-tech profile and pays up to 100% of costs on research actions, but only inside a three-country consortium.",
+  "A first SATR De Rnd award is a grant, not a loan or equity stake, and sits on the same GBER Art. 25 basis that delivered TIMOCOM's €1.0M."
+ ],
+ "institutions": [
+  {
+   "institution": "National state aid (R&D)",
+   "channel": "state_aid_satr",
+   "supportType": "Grant (national government, state aid)",
+   "ticket": "Wide, scheme-dependent: from €100k to tens of €M under GBER",
+   "country": "DE",
+   "legalBasis": "GBER Art. 25 (R&D aid)",
+   "whyEligible": "Your German establishment and 75%+ own-contribution capacity meet this scheme's core tests; TIMOCOM drew €1.0M from the same instrument.",
+   "comparableFirms": [
+    {
+     "name": "TIMOCOM GmbH",
+     "amount": "€1.0M"
+    }
+   ],
+   "nextStep": "Contact the relevant German ministry or Länder agency administering the R&D scheme to scope a dossier.",
+   "whyEasy": "Your answers speak to 11 of its 17 documented eligibility rules; 1 comparable company has drawn from National state aid (R&D).",
+   "lastAwardYear": 2026,
+   "stale": false,
+   "verdict": "one_blocker",
+   "blocker": "The scheme is written for companies under the EU SME headcount and turnover ceiling, which your 250+ staff exceeds.",
+   "gatesChecked": 7
+  },
+  {
+   "institution": "National state aid (equity)",
+   "channel": "state_aid_satr",
+   "supportType": "Loan (national government, state aid)",
+   "ticket": "Wide, scheme-dependent: from €100k to tens of €M under GBER",
+   "country": "DE",
+   "whyEligible": "Your German base and clean standing on the undertaking-in-difficulty and recovery-order tests meet two of this scheme's conditions; TIMOCOM drew €1.0M through the same channel.",
+   "comparableFirms": [
+    {
+     "name": "TIMOCOM GmbH",
+     "amount": "€1.0M"
+    }
+   ],
+   "nextStep": "Approach the Sachsen granting authority to confirm which non-SME state-aid lines under the same GBER basis remain open.",
+   "whyEasy": "Your answers speak to 10 of its 15 documented eligibility rules; 1 comparable company has drawn from National state aid (equity).",
+   "lastAwardYear": 2026,
+   "stale": false,
+   "verdict": "one_blocker",
+   "blocker": "The scheme's aid recipients must qualify as a small enterprise under the EU SME definition, which your headcount exceeds.",
+   "gatesChecked": 4
+  },
+  {
+   "institution": "Horizon EU CL5",
+   "channel": "horizon_eu_pillar_ii",
+   "supportType": "Grant",
+   "ticket": "Typically €0.5M–€5M per partner inside a multi-partner consortium",
+   "country": "EU",
+   "whyEligible": "Nothing in the sanctions, exclusion or country-restriction rules rules you out, and Transporeon was funded through this cluster at the same digital-logistics layer.",
+   "comparableFirms": [
+    {
+     "name": "TRANSPOREON",
+     "amount": "amount not disclosed"
+    }
+   ],
+   "nextStep": "Search the Horizon Europe Funding & Tenders Portal for an open CL5 mobility call matching your platform.",
+   "whyEasy": "Your answers speak to 13 of its 18 documented eligibility rules; 1 comparable company has drawn from Horizon EU CL5.",
+   "lastAwardYear": 2026,
+   "stale": false,
+   "verdict": "open",
+   "gatesChecked": 3
+  },
+  {
+   "institution": "Horizon EU CBE",
+   "channel": "horizon_eu_pillar_ii",
+   "supportType": "Grant",
+   "ticket": "Typically €0.5M–€5M per partner inside a multi-partner consortium",
+   "country": "EU",
+   "whyEligible": "Nothing in the sanctions or exclusion rules rules you out, and Transporeon secured funding through this same collaborative programme.",
+   "comparableFirms": [
+    {
+     "name": "TRANSPOREON",
+     "amount": "amount not disclosed"
+    }
+   ],
+   "nextStep": "Search the Funding & Tenders Portal for an open CBE topic and identify potential consortium partners.",
+   "whyEasy": "Your answers speak to 14 of its 18 documented eligibility rules; 1 comparable company has drawn from Horizon EU CBE.",
+   "lastAwardYear": 2026,
+   "stale": false,
+   "verdict": "open",
+   "gatesChecked": 3
+  },
+  {
+   "institution": "EIC Pathfinder",
+   "channel": "eic",
+   "supportType": "Grant",
+   "ticket": "Grant up to €2.5M; equity €0.5M–€10M via the EIC Fund",
+   "country": "EU",
+   "whyEligible": "Verify eligibility directly with the fund.",
+   "comparableFirms": [],
+   "nextStep": "Review the fund's current call and eligibility criteria.",
+   "whyEasy": "Your answers speak to 3 of its 8 documented eligibility rules.",
+   "lastAwardYear": 2026,
+   "stale": false,
+   "verdict": "one_blocker",
+   "blocker": "Applicants must form a consortium of at least three different independent legal entities established in different countries, with at least one in a Member State and at least two others each in different Member States or Associated Countries.",
+   "gatesChecked": 1
+  }
+ ],
+ "positioning": "Position sennder as digital-logistics infrastructure rather than a transport operator when you approach German and EU programmes: the schemes that funded TIMOCOM and Transporeon reward platforms that digitise and coordinate freight flows, not asset-heavy carriers. The Commission's own digital and AI funding lines, including the €63M Digital Europe AI grants reported by Science|Business, signal that evaluators are weighting data and matching infrastructure highly right now. At national level, Bpifrance's Sébastien Martin has flagged a new France 2030 axis for industrial modernisation and technology adoption by mid-caps, a signal that German equivalents administering your SATR De Rnd route will likely value the same argument: that your platform helps established shippers and carriers adopt digital coordination rather than replace them. Frame your Horizon CL5 case around the same industrial-modernisation logic rather than a pure R&D pitch, since CL5's mobility strand rewards deployment-ready digital infrastructure at your maturity, not early-stage research.",
+ "stateOfPlay": "The Commission's new European Competitiveness Fund is being negotiated now, with the European Parliament and the European Policy Centre both questioning its design in March 2026; if it consolidates existing Horizon and industrial instruments, the CL5 and CBE calls you would target could shift ticket size, consortium rules or thematic priorities before your next application cycle. Separately, Digital Europe's €63M AI innovation grants reported in April 2026 mark a live emphasis on AI-enabled infrastructure, which strengthens the case for framing your platform's data-matching layer as AI infrastructure when you approach national R&D schemes like SATR De Rnd. Neither development changes your eligibility today, but both point to where the argument that wins CL5 and national grant reviewers is heading over the next year.",
+ "caveats": "Figures shown are committed amounts as reported in public registers on each instrument's own basis, coverage varies by country, and absence from the database is not proof that no funding was received."
+}

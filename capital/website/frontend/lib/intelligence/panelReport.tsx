@@ -454,23 +454,6 @@ export function Memo({ report }: { report: IntelligenceReport }) {
       style={serif}
       className="mt-8 border border-[var(--border)] bg-[var(--paper)] px-7 py-9 sm:px-12 sm:py-12 text-[15px] leading-relaxed text-[var(--foreground)] print:mt-0 print:border-0 print:px-0 print:py-0"
     >
-      {/* Running header and footer. Screen-hidden; in print Chromium repeats a
-          fixed element on every page, so a three-page memo carries its own
-          identity on page three instead of trailing off. Chromium does not
-          support @page margin boxes, so this is the mechanism available. */}
-      <div className="hidden print:block print:fixed print:top-0 print:left-0 print:right-0 print:text-[8px] print:uppercase print:tracking-[0.18em] print:text-[var(--muted-foreground)]">
-        <div className="flex justify-between border-b border-[var(--border)] pb-1">
-          <span>Wincent · Public capital positioning brief</span>
-          <span>{report.company}</span>
-        </div>
-      </div>
-      <div className="hidden print:block print:fixed print:bottom-0 print:left-0 print:right-0 print:text-[8px] print:uppercase print:tracking-[0.18em] print:text-[var(--muted-foreground)]">
-        <div className="flex justify-between border-t border-[var(--border)] pt-1">
-          <span>Private and confidential</span>
-          <span>{date}</span>
-        </div>
-      </div>
-
       {/* Export — screen only */}
       <div className="mb-8 flex justify-end print:hidden">
         <button
@@ -513,6 +496,7 @@ export function Memo({ report }: { report: IntelligenceReport }) {
 
       {/* ── Everything else fades in a beat later ────────────────────── */}
       <div
+        data-reveal
         className={"transition-opacity duration-500 " + (revealed ? "opacity-100" : "opacity-0")}
         aria-hidden={!revealed}
       >
