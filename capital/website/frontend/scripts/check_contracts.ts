@@ -21,6 +21,7 @@
  */
 import { loadContracts, briefContracts } from "../lib/intelligence/contracts";
 import { CHECK_RULE_IDS } from "../lib/intelligence/briefChecks";
+import { QUESTION_RULE_IDS } from "../lib/intelligence/questionChecks";
 import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types";
 
 interface Problem { axis: string; detail: string; }
@@ -75,7 +76,7 @@ function main() {
 
   // No orphan checks: a check enforcing a rule no contract declares is
   // enforcing something nobody agreed to.
-  for (const id of CHECK_RULE_IDS) {
+  for (const id of [...CHECK_RULE_IDS, ...QUESTION_RULE_IDS]) {
     if (!declaredRules.has(id)) {
       problems.push({ axis: "orphan-check", detail: `briefChecks enforces ${id}, which no contract declares` });
     }
@@ -83,7 +84,7 @@ function main() {
 
   // No dead spec: a hard rule with no enforcing check is a rule that will
   // rot, which is how the previous instructions file died.
-  const enforced = new Set<string>(CHECK_RULE_IDS);
+  const enforced = new Set<string>([...CHECK_RULE_IDS, ...QUESTION_RULE_IDS]);
   for (const c of contracts) {
     for (const line of c.body.split("\n")) {
       const m = line.match(/^-\s+([A-Z]+-\d+)\s+\(hard\)/);
@@ -114,7 +115,7 @@ function main() {
   }
   console.log(
     `check_contracts: ok — ${contracts.length} contracts, ${declaredRules.size} rules, ` +
-    `${CHECK_RULE_IDS.length} enforced, ${REPORT_SCHEMA_FIELDS.length} report fields governed`);
+    `${CHECK_RULE_IDS.length + QUESTION_RULE_IDS.length} enforced, ${REPORT_SCHEMA_FIELDS.length} report fields governed`);
 }
 
 main();

@@ -84,12 +84,17 @@ export function loadContracts(): Contract[] {
       .filter((f) => f.endsWith(".md"))
       .sort()
       .map((f) => parseContract(path.join(dir, f), readFileSync(path.join(root, dir, f), "utf8")));
-  cache = [...read("_shared"), ...read("brief")];
+  cache = [...read("_shared"), ...read("brief"), ...read("round2")];
   return cache;
 }
 
 export function briefContracts(): Contract[] {
   return loadContracts().filter((c) => c.stage.startsWith("brief."));
+}
+
+/** The round-2 contracts, for the question generators and their checks. */
+export function roundContracts(): Contract[] {
+  return loadContracts().filter((c) => c.stage.startsWith("round2."));
 }
 
 /**
@@ -100,7 +105,10 @@ export function briefContracts(): Contract[] {
  * would let the two drift — which is the exact failure this replaced.
  */
 export function assembleWriterInstructions(): string {
-  const contracts = loadContracts();
+  // Shared rules plus the brief sections only. The round-2 contracts govern a
+  // different stage; handing them to the writer would be noise it has to read
+  // past on every request.
+  const contracts = loadContracts().filter((c) => !c.stage.startsWith("round2."));
   const header =
     `You are an analyst inside Wincent, writing a short public-capital brief ` +
     `for the founder of a European company. You are given the company, the ` +

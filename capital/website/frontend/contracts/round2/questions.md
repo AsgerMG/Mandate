@@ -1,0 +1,76 @@
+---
+id: Q
+stage: round2.questions
+schema_fields: []
+evidence: [eligibilityScreen, projectAnswers, commercialAnswers]
+---
+
+## Purpose
+
+Screen 1 scopes. Round 2 does two jobs, and may not compromise on either.
+
+**Job 1: narrow the funnel to the funds that actually publish.** This is where
+a wide candidate pool becomes the handful the founder sees. A question earns
+its place by changing which funds come out on top, not by resolving a gate on
+a fund nobody will read about.
+
+**Job 2: understand the commercial model.** Distinct from job 1 and not
+subordinate to it. These answers need not touch eligibility at all; they exist
+so the brief can position the company correctly, and they are the only source
+for anything the brief says about who the company sells to.
+
+## Two halves, two disciplines
+
+The **gate half** is written from a fund's own requirement text and asks
+nothing a real rule does not support. That discipline is right for
+eligibility, because an invented requirement is a lie about the law.
+
+The **commercial half** is deliberately not gate-grounded. No fund encodes
+"who is your customer" as an eligibility rule, so under the gate discipline
+the brief could never learn it, and positioning was being written from a
+sector label.
+
+  **evidence:** a company selling a subscription product directly to
+  individuals was advised to position on institutional deployment and outcomes
+  for a buyer it does not sell to.
+
+The commercial answers are firewalled: they may shape positioning and the
+payoff bullet, and the eligibility verdict never reads them. A wrong answer
+must be able to weaken prose and never to move a legal conclusion.
+
+## Rules
+
+- Q-1 (hard) Answer options are written in the founder's own commercial
+  vocabulary, translated out of the requirement rather than quoted from it. An
+  option carrying a verbatim run of words from the fund's text has been
+  lifted, not translated.
+
+  **evidence:** an option read as a phrase from a state-aid regime document
+  rather than anything a founder would say about their business. It was
+  selected, and it reached the brief as a claim about what their financing
+  covered.
+
+- Q-2 (hard) No two questions ask the same thing in different words. Funds
+  phrase shared requirements differently, so the same question can arrive
+  twice from two instruments.
+- Q-3 (hard) Every question offers at least two substantive, mutually
+  exclusive options. Nothing that restates the question, and no catch-all: the
+  interface appends its own "none of these".
+- Q-4 (hard) At most one question per gate. A founder is never asked twice for
+  one rule.
+- Q-5 (hard) The commercial half runs whenever the founder has described their
+  company, regardless of whether any eligibility gate is still open.
+- Q-6 (judged) A founder can answer from memory, without opening a document.
+- Q-7 (judged) Questions name what this company actually does, in the
+  founder's own words, so the screen reads as written for them.
+- Q-8 (judged) Ask about the project and the business, never about legal form,
+  headcount or country: screen 1 settled those.
+- Q-9 (soft) Fewer, sharper questions beat more. A question whose answer would
+  not change which funds publish, or how the company is positioned, is a
+  question not worth asking.
+
+## Banned
+
+- Q-B1 Inventing a requirement the fund's text does not support.
+- Q-B2 Asking the founder to interpret statute language on the product's
+  behalf.
