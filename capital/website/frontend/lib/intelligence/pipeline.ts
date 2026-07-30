@@ -8,6 +8,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
+import { scoreFit } from "./fit";
 import { assessAll, VERDICT_RANK } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
@@ -45,6 +46,8 @@ import {
 import {
   applyProfileSignal,
   BAND_INDEX,
+  CAPITAL_SOUGHT_TO_DB,
+  instById,
   channelLabel,
   buildInstrumentTable,
   DISPLAY_CAP,
@@ -415,6 +418,10 @@ async function synthesize(
   sectorTop: string,
   emit: Emit,
   log: ExclusionLog,
+  /** Semantic fund-match scores, computed once by the caller. Passed rather
+   *  than recomputed: it is a network round trip, and the shortlist already
+   *  ranked on the same numbers. */
+  semanticScores: Map<string, number>,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt"> & {
   /** Pipeline diagnostics, NOT part of the founder-facing report — stripped
    *  in runIntelligence before the report event is emitted. Recorded on
@@ -736,31 +743,56 @@ async function synthesize(
   const capitalMismatch = (row: InstrumentRow) =>
     Boolean(row.capitalType) && (req.capitalSought?.length ?? 0) > 0 &&
     !instrumentServesCapital(row.capitalType as string, req.capitalSought as string[]);
+  // ── Ranked by fit ────────────────────────────────────────────────────────
+  // One continuous score, every component recorded (fit.ts). This replaces a
+  // sort over verdict rank, staleness, capital mismatch and an ease score,
+  // each of which was a separate rule expressing part of the same judgement.
+  //
+  // The two hard exclusions still live in the score itself and are the only
+  // things that remove a fund outright: a conclusively failed encoded gate,
+  // and a national scheme in a country the founder cannot draw on. Everything
+  // else moves a row down the list, which is the whole point: a fund now fails
+  // to make the cut instead of being vetoed.
+  const capitalWanted = new Set(
+    (req.capitalSought ?? []).flatMap((c) => CAPITAL_SOUGHT_TO_DB[c] ?? []));
+  const founderIso = new Set(
+    founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries)
+      .map((c) => toIso2(c).toUpperCase()).filter(Boolean));
+  const maxComparable = Math.max(0, ...comparableCounts.values());
+  const fitById = new Map<string, ReturnType<typeof scoreFit>>();
+  for (const row of instrumentTable) {
+    const inst = row.instrumentId ? instById().get(row.instrumentId) : undefined;
+    if (!inst) continue;
+    fitById.set(inst.id, scoreFit({
+      instrument: inst,
+      assessment: assessments.get(inst.id),
+      theme: semanticScores.get(inst.id),
+      ticketBand: req.eligibility?.ticketBand,
+      capitalWanted,
+      comparableCount: comparableCounts.get(inst.id) ?? 0,
+      maxComparable,
+      founderCountries: founderIso,
+      requiresConsortium: inst.gates.some(
+        (g: { requirement: string }) => /consorti|at least three|3\+ partners|multi-partner/i.test(g.requirement)),
+      consortiumOk: req.eligibility?.consortium === "yes" ? true
+        : req.eligibility?.consortium === "no" ? false : undefined,
+      founderSector: req.eligibility?.sector,
+      year: new Date().getFullYear(),
+    }));
+  }
   const rankedByEase = instrumentTable
     .map((row, i) => ({
       row, i,
       ease: row.instrumentId ? easeById.get(row.instrumentId) : undefined,
+      fit: row.instrumentId ? fitById.get(row.instrumentId) : undefined,
       assessment: row.instrumentId ? assessments.get(row.instrumentId) : undefined,
     }))
     .sort((a, b) => {
-      const ra = VERDICT_RANK[a.assessment?.status ?? "unknown"];
-      const rb = VERDICT_RANK[b.assessment?.status ?? "unknown"];
-      if (ra !== rb) return ra - rb;
-      // Then: does this row answer the question the founder actually asked?
-      // selectLeafInstruments relaxes capital type when a country has no leaf
-      // serving what was requested — defensible for one row, indefensible for
-      // a table. sennder asked for grants and loans and got HTGF and Coparion,
-      // two equity stakes, while its own bullet said to route non-dilutive
-      // asks through dev-bank grants instead. Demoted rather than dropped:
-      // when a founder genuinely has no matching route, an equity vehicle the
-      // memo openly flags as a conflict beats an empty table.
-      // Live before stale: a fund still awarding beats one we cannot show has
-      // awarded anything in years, whatever else is true about it.
-      const sa = isStale(a.row), sb = isStale(b.row);
-      if (sa !== sb) return sa ? 1 : -1;
-      const ma = capitalMismatch(a.row), mb = capitalMismatch(b.row);
-      if (ma !== mb) return ma ? 1 : -1;
-      return (b.ease?.score ?? 0) - (a.ease?.score ?? 0) || a.i - b.i;
+      // Rows with no score at all (no DB-native instrument behind them) keep
+      // their incoming order at the back rather than tying at zero.
+      const fa = a.fit?.score ?? -1, fb = b.fit?.score ?? -1;
+      if (fa !== fb) return fb - fa;
+      return a.i - b.i;
     });
 
   // Never show a founder a fund they cannot access — no exceptions, no
@@ -882,15 +914,11 @@ async function synthesize(
             // latency — the alternative was rendering 200+ characters of raw
             // statute in a table cell.
             blockerPlain: { type: "string" },  // "" when the row has no blocker
-            /** false = do not put this in front of the founder at all. */
-            worthPursuing: { type: "boolean" },
-            /** false = real, but nothing to do about it yet (see prompt). */
-            actionableNow: { type: "boolean" },
           },
           // blockerPlain is REQUIRED, not optional: left optional the model
           // simply omitted it every time and the raw statute rendered instead.
           // Empty string is the documented answer for rows with no blocker.
-          required: ["channel", "whyEligible", "nextStep", "blockerPlain", "worthPursuing", "actionableNow"],
+          required: ["channel", "whyEligible", "nextStep", "blockerPlain"],
         },
       },
       positioning: { type: "string" },
@@ -979,9 +1007,9 @@ async function synthesize(
           `A row marked STALE has no award on record for over three years.\n` +
           `Every row has been screened against its own encoded eligibility ` +
           `rules; funds this company cannot access were already removed.\n` +
-          `Order your entries BEST FIRST. We publish the top rows of what you ` +
-          `return, so ranking a fund last is how you say it is the weakest ` +
-          `option, and that costs the founder nothing.\n` +
+          `These rows are already ranked and already cut. Write one note per ` +
+          `row, in the order given. Do not reorder them, do not omit one, and ` +
+          `do not describe them as better or worse than each other.\n` +
           `${institutionsEvidence || "(none)"}\n\n` +
           `## Funding-process briefs (use to make nextStep concrete)\n` +
           `${processes || "(none)"}\n\n` +
@@ -1062,8 +1090,7 @@ async function synthesize(
   const narrative = extractJson<{
     bottomLine: string[];
     institutionNotes: { channel: string; whyEligible: string; nextStep: string;
-                        blockerPlain?: string; worthPursuing?: boolean;
-                        actionableNow?: boolean }[];
+                        blockerPlain?: string }[];
     positioning: string;
     stateOfPlay: string;
     caveats: string;
@@ -1082,20 +1109,17 @@ async function synthesize(
   const scored = institutions.map((row, i) => {
     const note = notesByKey.get(rowKeys[i]);
     return {
-      // Absent note = DROP. This inverted when the writer started seeing more
-      // candidates than ship: a row it never wrote about is one it did not
-      // think worth writing about, and keeping it published the fallback
-      // boilerplate instead. Nortal shipped three of five rows reading "Verify
-      // eligibility directly with the fund", two of them thematic mismatches
-      // (a health JU and a semiconductor JU for a govtech company) that
-      // survived purely because the writer had ignored them.
-      // The min-2 floor below still protects against an empty table.
-      worth: Boolean(note) && note?.worthPursuing !== false,
-      // Not something to act on if the writer SAID so, or if its own copy
-      // says so anyway — it kept rows flagged actionable while writing
-      // "Monitor the next call" and "Deprioritise unless the grant pipeline
-      // falls short" into the next step.
-      actionable: !isWatchOnly(note?.actionableNow, note?.nextStep, note?.whyEligible),
+      // A row the writer never wrote about is still dropped: publishing the
+      // fallback boilerplate in its place says nothing and reads as an
+      // assessment. That is the writer failing to do its job, not the writer
+      // exercising judgement about which fund belongs.
+      worth: Boolean(note),
+      // Watch-only rows are DEMOTED, not deleted. The rule was right — a brief
+      // is a list of things to do — but a regex over natural language should
+      // not be able to delete a well-ranked fund because a valid next step
+      // happened to contain "revisit" or "act if". It sorts to the back and
+      // falls off the cut on its own if better rows exist.
+      actionable: !isWatchOnly(undefined, note?.nextStep, note?.whyEligible),
       key: rowKeys[i],
       entry: {
         ...row,
@@ -1111,10 +1135,7 @@ async function synthesize(
   // candidates is not visible in the output itself, and this is the only
   // place the writer's rejections can be counted.
   const omitted = rowKeys.filter((k) => !notesByKey.has(k));
-  const rejected = institutions
-    .map((row, i) => ({ row, note: notesByKey.get(rowKeys[i]) }))
-    .filter((x) => x.note?.worthPursuing === false)
-    .map((x) => x.row.institution);
+  const rejected: string[] = [];
   console.log("[institutions] candidates=%d kept=%d rejected=%d omitted=%d%s%s",
     institutions.length, scored.filter((x) => x.worth).length, rejected.length, omitted.length,
     rejected.length ? " | rejected: " + rejected.join(", ") : "",
@@ -1126,39 +1147,8 @@ async function synthesize(
   // cannot use. So the floor applies to the WRITER's judgement (it may not
   // reject its way down to one), not to the corpus: if screening only ever
   // produced one accessible fund, one is the honest answer.
-  // The writer may disqualify at most one candidate, and code enforces it.
-  //
-  // The contract asks for "none or one", and asking is not enough: a live run
-  // rejected five of seven candidates, among them the two best-known EU
-  // instruments for that company, and shipped a two-row brief. The previous
-  // prompt fought this with roughly forty lines of guardrail, which is the
-  // tell that prose cannot hold the line.
-  //
-  // Rejections are honoured from the BOTTOM of the writer's own ordering: if
-  // it wants several gone, the one it ranked last is the one that goes. That
-  // keeps the flag meaningful without letting it empty the table, and it is
-  // the same division as everywhere else — the writer ranks, code cuts.
-  const MAX_WRITER_REJECTIONS = 1;
-  const rejectedByRank = scored
-    .filter((x) => !x.worth)
-    .sort((a, b) => (rankByKey.get(b.key) ?? Infinity) - (rankByKey.get(a.key) ?? Infinity));
-  const honoured = new Set(rejectedByRank.slice(0, MAX_WRITER_REJECTIONS).map((x) => x.key));
-  for (const x of rejectedByRank.slice(MAX_WRITER_REJECTIONS)) {
-    x.worth = true;
-    recordEvent("writer_over_rejected",
-      "writer disqualified more candidates than the cap allows; row reinstated",
-      { channel: x.entry.channel, rejected: rejectedByRank.length });
-  }
   for (const x of scored) {
-    if (x.worth || !honoured.has(x.key)) continue;
-    // Two different failures wear the same result. Separating them matters:
-    // one is the writer actively rejecting a fund, the other is the writer
-    // never mentioning it, and only the first is a judgement we could argue
-    // with.
-    const note = notesByKey.get(x.key);
-    log.record(note ? "WRT-NOT-WORTH" : "WRT-NO-NOTE",
-      x.entry.channel,
-      note ? "writer set the disqualification flag" : "writer returned no note for this candidate");
+    if (!x.worth) log.record("WRT-NO-NOTE", x.entry.channel, "writer returned no note for this candidate");
   }
   const ranked = scored
     .filter((x) => x.worth)
@@ -1172,9 +1162,13 @@ async function synthesize(
   //
   // The count is allowed to fall below the usual floor as a result. Four real
   // routes beat five with one that wastes a week.
+  // Demotion, not deletion: actionable rows first, the rest behind them in
+  // rank order. If five actionable routes exist a watch-only row never
+  // reaches the cut anyway; if they do not, a real fund the founder can only
+  // monitor beats a shorter table with nothing in its place.
   const actionable = ranked.filter((x) => x.actionable);
   const watchOnly = ranked.filter((x) => !x.actionable);
-  const worthwhile = actionable.map((x) => x.entry);
+  const worthwhile = [...actionable, ...watchOnly].map((x) => x.entry);
   if (watchOnly.length) {
     console.log("[institutions] dropped %d watch-only: %s", watchOnly.length,
       watchOnly.map((x) => x.entry.institution).join(", "));
@@ -1393,7 +1387,8 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     req.eligibility?.sector ||
     "other";
   const body = await synthesize(
-    req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit, log);
+    req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit, log,
+    semanticScores);
 
   const { _dropped, ...report } = body;
   emit({

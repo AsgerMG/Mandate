@@ -11,27 +11,21 @@ The five doors worth walking through, and the first step at each. This section
 IS the eligibility statement: a fund appears here because the founder can go
 after it, so nothing else in the brief needs to argue that case separately.
 
-## What this section decides, for now
+## What this section does not decide
 
-Candidates are ranked upstream and handed over. The writer still holds one
-disqualification, and it is deliberately narrow: a fund may be dropped only
-when a concrete, nameable mismatch makes it actively wrong for THIS company —
-wrong theme for what they build, wrong stage, wrong ticket size, a structure
-that conflicts with what they asked for, or an obstacle they cannot clear.
+**Which funds appear is not the writer's decision.** They are selected by a
+deterministic fit score, ranked upstream, and handed over already cut. Write
+about the rows given: do not add one, do not argue against one, and do not
+describe them as ranked relative to each other.
 
-A reason that would apply to most applicants is not a reason. Competitiveness,
-paperwork and long timelines are never reasons: every worthwhile public
-instrument is competitive, and the reader is choosing where to spend effort,
-not being promised a win. Expect to disqualify none or one. If the honest
-explanation would say the fund targets something this company is not, that IS
-the concrete mismatch, however many have already been dropped.
+  **evidence:** while the writer held a disqualification flag, a fund whose own
+  eligibility screen showed its gates as met was deleted from a brief, and the
+  reader saw both facts on one page. A later run rejected five of seven
+  candidates and shipped a two-row brief. The flag needed roughly forty lines
+  of prompt guardrail, which is what a wrong mechanism looks like.
 
-  **note:** this judgement is intended to move to a deterministic fit score, so
-  that a fund fails to make the cut rather than being vetoed. A shadow
-  comparison across the regression archetypes currently shows the score
-  promoting broad multi-theme programmes over well-matched national schemes,
-  so the writer keeps the call until that clears. See
-  project-mgmt/plans/brief_output_architecture.md.
+If a row is genuinely wrong for this company, that is a scoring failure worth
+reporting, not prose to publish. Say what the row is and let it stand.
 
 ## Rules
 

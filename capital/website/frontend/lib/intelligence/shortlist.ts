@@ -122,12 +122,21 @@ export const CHANNEL_BANDS: Record<string, [number, number]> = {
   ipcei: [3, 4],
 };
 
-export function channelServesBand(channel: string, band?: string): boolean {
-  if (!band || !(band in BAND_INDEX)) return true;
-  const range = CHANNEL_BANDS[channel];
-  if (!range) return true;
-  const i = BAND_INDEX[band];
-  return i >= range[0] && i <= range[1];
+/**
+ * RETIRED as a filter. Ticket size is now a continuous component of the fit
+ * score (scaleFit), measured against each instrument's own average award
+ * rather than a hand-set band per channel.
+ *
+ * The old rule removed a whole channel when the founder's ask fell outside a
+ * range someone typed once: a large ask deleted the startup-scaled routes
+ * outright, a small one deleted the large-scale lane, and neither left a
+ * trace. Its own comment described it as a stopgap pending real ticket gates.
+ *
+ * Always true now. Kept as a function so the call sites read honestly rather
+ * than being deleted in a way that hides that this check ever existed.
+ */
+export function channelServesBand(_channel: string, _band?: string): boolean {
+  return true;
 }
 
 // Large-scale channels surfaced when the ask is €15M+ even if absent from the
@@ -469,11 +478,10 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
     // undecided founder — the same unsure-means-failure mistake fixed in the
     // evaluator. Rows still carry a fitFlag so they are never presented as
     // equivalent to a solo-applicant route.
-    if (fitOf(c) === "consortium_institutional" && !fieldChannels.has(c) && !consortiumOk) {
-      log?.record("SEL-FIT-CONSORTIUM", c,
-        "channel declared consortium-requiring and the founder has not confirmed consortium capacity");
-      continue;
-    }
+    // Consortium requirement is a scored component now (structureFit), read
+    // from each instrument's own encoded gates rather than declared once per
+    // channel in a curated brief. Nine differently-structured programmes in
+    // one bucket used to inherit a single verdict.
     codes.add(c);
   }
   // Thematic top-up: pull in a channel nobody's peers used when it holds an
@@ -489,11 +497,7 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         `thematic match ${hit.score.toFixed(2)} discarded: ticket band ${ticketBand} outside the hardcoded range`);
       continue;
     }
-    if (fitOf(hit.channel) === "consortium_institutional" && !consortiumOk) {
-      log?.record("SEL-FIT-CONSORTIUM", hit.channel,
-        `thematic match ${hit.score.toFixed(2)} discarded: channel declared consortium-requiring`);
-      continue;
-    }
+
     thematicFirst.push(hit.channel);
     codes.add(hit.channel);
   }

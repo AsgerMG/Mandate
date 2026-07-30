@@ -468,7 +468,23 @@ disqualification, and `contracts/brief/02-funds.md` documents the writer's
 judgement as current behaviour rather than describing an end state that does
 not exist.
 
-### Phase 4 — remove the vetoes (BLOCKED)
+### Phase 4 — remove the vetoes (DONE, 2026-07-30)
+
+Unblocked by finding that the thematic signal was being normalised away rather
+than missing (see the shadow result above), plus a sector-affinity component
+built from what each instrument has actually funded.
+
+Removed: the per-channel ticket-band filter, the per-channel consortium
+declaration, the writer's `worthPursuing` disqualification and its
+`actionableNow` flag. Watch-only rows are demoted rather than deleted. The
+writer no longer selects at all: rows arrive ranked and cut, and it writes one
+note per row in the order given.
+
+Verified live: `candidates=7 kept=7 rejected=0 omitted=0`, and EIC Accelerator
+ranks third for a French AI company on merit rather than being restored by a
+cap.
+
+### Phase 4 (original text, for the record)
 
 Only once Phase 3 has met its exit condition, and in one change so the effect
 is attributable:
