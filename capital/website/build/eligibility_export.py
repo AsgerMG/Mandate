@@ -37,7 +37,7 @@ def main() -> None:
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
-               last_year, scheme_code, application_url, sector_mix
+               last_year, scheme_code, application_url, sector_mix, scheme_operators
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -119,6 +119,11 @@ def main() -> None:
         # embeddings match on vocabulary and vocabulary travels between
         # domains; funding history does not.
         "sectorMix": json.loads(inst["sector_mix"]) if inst["sector_mix"] else None,
+        # Who actually disburses under this scheme. A department notifies a
+        # regime; regional agencies and promotional banks run it. Empty when
+        # only departments ever awarded, which is itself worth knowing: the row
+        # then has no front door we can name.
+        "schemeOperators": json.loads(inst["scheme_operators"]) if inst["scheme_operators"] else None,
         "applicationUrl": inst["application_url"],
         # ── Inherited gates ──────────────────────────────────────────────────
         # A child carries no gates of its own by design: the curated

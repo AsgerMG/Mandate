@@ -50,7 +50,7 @@ const SELF_CONTRADICTION = /\b(targets|aimed at|reserved for|designed for|focus(
  *  department administers schemes; it is not itself a door to knock on, and
  *  naming one as the institution sends the reader nowhere. */
 export const NOT_AN_APPLYABLE_BODY =
-  /^(ministry|minist[eè]re|ministerium|ministero|ministerie|department|direction g[eé]n[eé]rale)\b/i;
+  /^(minist\w*|department|departement|dipartimento|direction g[eé]n[eé]rale)\b/i;
 
 export interface BriefLimits {
   bulletMin: number; bulletMax: number; bulletWords: number;

@@ -150,6 +150,8 @@ export interface InstrumentRow {
   administeringBodyShare?: number;
   /** Notified aid scheme code, when the row is a per-authority child. */
   schemeCode?: string;
+  /** Bodies that actually disburse under this scheme. */
+  schemeOperators?: string[];
   /** Where to apply, when we hold a verified one. */
   applicationUrl?: string;
   /** Curated application route: how you apply, and when. */
@@ -191,6 +193,8 @@ export interface InstitutionEntry {
   /** The notified aid scheme behind this row, e.g. "SA.111723". Traceability:
    *  it is the identifier a founder or their adviser can look up. */
   schemeCode?: string;
+  /** Bodies a founder can actually approach under this scheme. */
+  schemeOperators?: string[];
   /** How to apply, curated from the scheme's own document, and where. Absent
    *  when we hold nothing verified — a route we cannot cite is worse than no
    *  route, because a row reads as instruction. */

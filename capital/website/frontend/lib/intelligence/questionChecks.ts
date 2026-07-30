@@ -70,6 +70,34 @@ export function topicSignature(
 
 export const TOPIC_OVERLAP_LIMIT = 0.45;
 
+/**
+ * The measurement a question's options are expressed in.
+ *
+ * Two questions can score far apart on topic overlap and still ask the same
+ * thing, because one of them wraps the measurement in extra words. A live
+ * screen asked "at what technology readiness level is X operating?" and then
+ * "does X have a credible path to commercial deployment, and is the core
+ * technology at TRL 5-6 or higher?" — the second carries enough distinct
+ * vocabulary to clear the topic threshold, and the founder answered TRL 6 to
+ * one and TRL 7-8 to the other. The brief then published both, stating two
+ * different readiness levels for the same product.
+ *
+ * Options that quantify share their scale tokens: the TRL bands, the
+ * percentage bands, the headcount bands. Comparing those catches the
+ * duplicate whatever prose surrounds it, and stays general — it knows nothing
+ * about readiness levels specifically, only that two questions are measuring
+ * on one axis.
+ */
+export function measurementSignature(options: string[]): Set<string> {
+  const out = new Set<string>();
+  for (const o of options) {
+    for (const t of o.toLowerCase().match(/[a-z]*\d+[a-z]*/g) ?? []) out.add(t);
+    // The unit itself, where the options name one ("TRL 5-6", "50-249 FTE").
+    for (const t of o.toLowerCase().match(/\b[a-z]{2,5}(?=\s*\d)/g) ?? []) out.add(t);
+  }
+  return out;
+}
+
 export interface QuestionCheckInput {
   questions: ProjectQuestion[];
   /** The founder's own description, so their vocabulary is not counted as
@@ -114,6 +142,15 @@ export function checkQuestions(input: QuestionCheckInput): QuestionViolation[] {
       if (ratio > TOPIC_OVERLAP_LIMIT) {
         v.push({ ruleId: "Q-2", detail: `duplicate topic: "${q.question.slice(0, 45)}…" vs "${k.q.question.slice(0, 45)}…"` });
         break;
+      }
+      // Same measurement, different wrapping.
+      const ma = measurementSignature(q.options), mb = measurementSignature(k.q.options);
+      if (ma.size >= 2 && mb.size >= 2) {
+        const shared2 = [...ma].filter((t) => mb.has(t)).length;
+        if (shared2 / Math.min(ma.size, mb.size) > 0.5) {
+          v.push({ ruleId: "Q-2", detail: `same measurement asked twice: "${q.question.slice(0, 45)}…" vs "${k.q.question.slice(0, 45)}…"` });
+          break;
+        }
       }
     }
     kept.push({ q, sig });

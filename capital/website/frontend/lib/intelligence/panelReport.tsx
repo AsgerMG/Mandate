@@ -83,7 +83,17 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     clicking. Rows we hold nothing for stay plain text: a wrong
                     application link is worse than none, because a founder
                     acts on it. */}
-                {r.link ? (
+                {/* While the brief is still being written the row is not yet
+                    a recommendation: the shortlist can still change as the
+                    writer resolves it. Showing a fund name during that window
+                    presents an unfinished candidate as an answer, and a
+                    thematically odd one reads as a mistake we then correct in
+                    front of the reader. The row keeps its shape and fills in.
+                    Only the name is held back — the table below still shows
+                    real progress rather than a spinner. */}
+                {pending ? (
+                  <PlaceholderBar />
+                ) : r.link ? (
                   <a
                     href={r.link.url}
                     target="_blank"
@@ -95,30 +105,44 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                 ) : (
                   <span className="font-semibold">{r.institution}</span>
                 )}
-                {r.link && r.link.kind !== "apply" && (
+                {!pending && r.link && r.link.kind !== "apply" && (
                   <span className="ml-1.5 align-[1px] text-[10px] uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
                     {r.link.label}
                   </span>
                 )}
-                {(r.country || r.legalBasis) && (
+                {/* Everything that identifies the fund is held with the name:
+                    a country and a legal basis name it just as clearly. */}
+                {/* Who actually takes an application under this scheme. The
+                    name above is the scheme; a department notifies it, these
+                    bodies run it, and without them the row names something
+                    real that a founder still cannot approach. */}
+                {!pending && r.schemeOperators && r.schemeOperators.length > 0 && (
+                  <span className="block text-[12px] text-[var(--muted-foreground)]">
+                    Operated by {r.schemeOperators.slice(0, 2).join(", ")}
+                    {r.schemeOperators.length > 2 && ` and ${r.schemeOperators.length - 2} others`}
+                  </span>
+                )}
+                {!pending && (r.country || r.legalBasis) && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
                     {[r.country, r.legalBasis].filter(Boolean).join(" · ")}
                   </span>
                 )}
-                <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
-                  {r.ticket}
-                </span>
+                {!pending && (
+                  <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
+                    {r.ticket}
+                  </span>
+                )}
                 {/* Dormancy, stated rather than hidden. A brief that sends a
                     founder at a scheme which stopped awarding in 2019 is not
                     thin, it is wrong with authority — so the date they would
                     need in order to disbelieve us is on the row itself. */}
-                {r.stale && r.lastAwardYear && (
+                {!pending && r.stale && r.lastAwardYear && (
                   <span className="mt-1 block text-[12px] text-[var(--accent)]">
                     No award recorded since {r.lastAwardYear} — confirm it is still running
                   </span>
                 )}
               </td>
-              <td className="py-2.5 pr-3">{r.supportType}</td>
+              <td className="py-2.5 pr-3">{pending ? <PlaceholderBar narrow /> : r.supportType}</td>
               <td className="py-2.5 pr-3">
                 {/* Qualification comes first and is code-computed, so it is
                     already correct while the model's prose streams. Funds a

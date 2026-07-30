@@ -8,9 +8,7 @@ import {
 import {
 } from "@/lib/intelligence/pipeline";
 import {
-  generateCommercialQuestions,
-  generateGroundedRound,
-  generateProjectQuestions,
+  planAdaptiveScreen,
   inferProfileSignal,
 } from "@/lib/intelligence/adaptiveRound";
 import {
@@ -102,34 +100,27 @@ export async function POST(request: NextRequest) {
       limit: PROJECT_QUESTION_CAP,
     });
 
-    // Phase 4 rides alongside the round fetch on the founder's first call
-    // only — never re-run on round 2, one read per session is enough.
+    // Phase 4 rides alongside the planner on the founder's first call only.
     // Independent of the stopping rule above: even a founder whose shortlist
-    // has nothing more to ask about can still get a sharper table annotation.
-    // The commercial half runs unconditionally and in parallel: unlike the two
-    // gate-driven halves it does not depend on an open gate existing, and a
-    // founder whose eligibility is fully resolved still needs positioning.
-    const [round, projectQuestions, commercialQuestions, profileSignal] = await Promise.all([
-      needsRound ? generateGroundedRound(req, genericFields) : Promise.resolve(null),
-      projectGates.length ? generateProjectQuestions(req, projectGates) : Promise.resolve([]),
-      generateCommercialQuestions(req),
+    // has nothing left to ask about can still get a sharper table annotation.
+    //
+    // ONE planner, not three generators. Three ran here in parallel and could
+    // not see each other, so a duplicate could only be caught after the fact
+    // by comparing finished questions — which is how a screen asked for
+    // technology readiness twice and the brief published both answers. See
+    // planAdaptiveScreen.
+    const [screen, profileSignal] = await Promise.all([
+      planAdaptiveScreen(req, needsRound ? genericFields : [], projectGates),
       body.wantProfileSignal ? inferProfileSignal(req) : Promise.resolve(null),
     ]);
 
-    // The project half can carry the screen on its own: a founder whose
-    // generic gates are all closed still benefits from project questions, so
-    // the round is synthesised rather than dropped when only that half exists.
-    const merged =
-      round || projectQuestions.length || commercialQuestions.length
-        ? {
-            theme: round?.theme || "Your project",
-            questions: round?.questions ?? [],
-            // One panel, two jobs: narrow the funnel, and understand the
-            // business well enough to position it. Rendered together so the
-            // founder answers once.
-            projectQuestions: [...projectQuestions, ...commercialQuestions],
-          }
-        : null;
+    const merged = screen
+      ? {
+          theme: screen.theme,
+          questions: screen.questions,
+          projectQuestions: screen.projectQuestions,
+        }
+      : null;
 
     // Never block the memo on intake: null just skips the screen.
     return Response.json({ round: merged, profileSignal });

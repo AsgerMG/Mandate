@@ -137,8 +137,7 @@ async function main() {
 
   const client = new Anthropic();
   const { computeVerdict, runIntelligence } = await import("../lib/intelligence/pipeline");
-  const { generateGroundedRound, generateProjectQuestions, generateCommercialQuestions } =
-    await import("../lib/intelligence/adaptiveRound");
+  const { planAdaptiveScreen } = await import("../lib/intelligence/adaptiveRound");
   const { openFieldsForShortlist, openProjectGatesForShortlist } =
     await import("../lib/intelligence/gateReach");
 
@@ -178,12 +177,10 @@ async function main() {
       const projectGates = openProjectGatesForShortlist(verdict.candidateInstrumentIds, eligibility, {
         deprioritiseFields: openFields.map((f) => f.field), limit: 5,
       });
-      const [round, projectQs, commercialQs] = await Promise.all([
-        generateGroundedRound(req, openFields.slice(0, 4)),
-        projectGates.length ? generateProjectQuestions(req, projectGates) : Promise.resolve([]),
-        generateCommercialQuestions(req),
-      ]);
-      const asked: ProjectQuestion[] = [...projectQs, ...commercialQs];
+      const screen = await planAdaptiveScreen(req, openFields.slice(0, 6), projectGates);
+      const round = screen ? { questions: screen.questions } : null;
+      const asked: ProjectQuestion[] = screen?.projectQuestions ?? [];
+      const commercialQs = asked.filter((q) => q.id.startsWith("commercial::"));
 
       // 3. the founder answers their own screen
       const answers = await personaAnswers(client, c.company, c.description, asked);

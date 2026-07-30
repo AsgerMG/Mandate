@@ -19,6 +19,22 @@ subordinate to it. These answers need not touch eligibility at all; they exist
 so the brief can position the company correctly, and they are the only source
 for anything the brief says about who the company sells to.
 
+## One screen, planned as a whole
+
+The screen is planned in a single pass that sees every candidate question at
+once, plus everything the founder has already told us. It is not three
+generators whose output is deduplicated afterwards.
+
+  **evidence:** three generators previously ran in parallel and could not see
+  each other, and none of them received the founder's screen-1 answers. A
+  screen asked for technology readiness twice in two framings, the founder
+  answered differently to each, and the brief published both numbers about one
+  product. Four separate downstream dedupe rules had been added over time and
+  none of them caught it.
+
+**At most six questions.** The cap is enforced in code after planning, not
+requested in the prompt.
+
 ## Two halves, two disciplines
 
 The **gate half** is written from a fund's own requirement text and asks
@@ -52,7 +68,13 @@ must be able to weaken prose and never to move a legal conclusion.
 
 - Q-2 (hard) No two questions ask the same thing in different words. Funds
   phrase shared requirements differently, so the same question can arrive
-  twice from two instruments.
+  twice from two instruments. Two questions measuring on one scale (readiness
+  levels, percentage bands, headcount) are one question however framed. This
+  is a backstop: the planner sees every candidate at once and is the thing
+  that should prevent it.
+- Q-11 (judged) Never ask what the founder has already answered. The known
+  facts are supplied with the candidate pool; a question they settle is a
+  question already asked.
 - Q-3 (hard) Every question offers at least two substantive, mutually
   exclusive options. Nothing that restates the question, and no catch-all: the
   interface appends its own "none of these".

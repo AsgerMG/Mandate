@@ -90,7 +90,8 @@ def main() -> None:
             # the columns missing, and the fit score's sector component
             # silently returns its neutral value for every fund — a ranking
             # that differs from the measured one with nothing to show for it.
-            for ddl in ("scheme_code TEXT", "application_url TEXT", "sector_mix TEXT"):
+            for ddl in ("scheme_code TEXT", "application_url TEXT", "sector_mix TEXT",
+                        "scheme_operators TEXT"):
                 cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
             # Curated application routes live in their own table because
             # funding_instruments is truncated on every publish.
@@ -119,13 +120,14 @@ def main() -> None:
                       ndb_id, source_family_bucket, capital_type, capital_type_basis,
                       event_count, company_count, total_eur, first_year, last_year,
                       is_framework, sample_project_titles,
-                      scheme_code, application_url, sector_mix)
-                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                      scheme_code, application_url, sector_mix, scheme_operators)
+                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 [(r["id"], r["name"], r["name_source"], r["country"], r["administering_body"],
                   r["administering_body_share"], r["ndb_id"], r["source_family_bucket"], r["capital_type"], r["capital_type_basis"],
                   r["event_count"], r["company_count"], r["total_eur"], r["first_year"], r["last_year"],
                   bool(r["is_framework"]), r["sample_project_titles"],
-                  r["scheme_code"], r["application_url"], r["sector_mix"]) for r in instruments],
+                  r["scheme_code"], r["application_url"], r["sector_mix"],
+                  r["scheme_operators"]) for r in instruments],
             )
             # Pass 2: fill in parent_id now that every row exists.
             cur.executemany(

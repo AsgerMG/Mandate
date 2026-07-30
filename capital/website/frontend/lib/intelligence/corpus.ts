@@ -204,6 +204,9 @@ export interface DbInstrument {
    *  What this instrument has ACTUALLY funded, as opposed to what its prose
    *  sounds like. */
   sectorMix?: Record<string, number> | null;
+  /** Bodies that actually disburse under this instrument's scheme, by volume.
+   *  A department notifies a regime; agencies run it. */
+  schemeOperators?: string[] | null;
   gates: DbGate[];
 }
 
@@ -258,7 +261,7 @@ export async function hydrateDbInstruments(): Promise<void> {
                   event_count, company_count, total_eur, source_family_bucket,
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
-                  scheme_code, application_url, sector_mix
+                  scheme_code, application_url, sector_mix, scheme_operators
            FROM funding_instruments`,
         ),
         // PHASE ONE: everything needed to RANK and to reach a verdict, and
@@ -323,6 +326,11 @@ export async function hydrateDbInstruments(): Promise<void> {
         administeringBodyShare: inst.administering_body_share ?? null,
         lastYear: inst.last_year ?? null,
         schemeCode: inst.scheme_code ?? null,
+        schemeOperators: (() => {
+          const raw = inst.scheme_operators;
+          if (!raw) return null;
+          try { return typeof raw === "string" ? JSON.parse(raw) : raw; } catch { return null; }
+        })(),
         applicationUrl: inst.application_url ?? null,
         // Stored as JSON text in both stores. Parsed here rather than at every
         // read site so the shape is identical on the Postgres and JSON paths;

@@ -16,6 +16,7 @@ import { recordUsage } from "./cost";
 import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
 import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS } from "./types";
+import { knownFacts } from "./knownFacts";
 import type {
   EligibilityCheck, GroundedRound, InstrumentRow,
   IntelligenceRequest, ProfileSignal, ProjectQuestion,
@@ -105,13 +106,55 @@ const INTAKE_MODEL = "claude-haiku-4-5";
  * question phrasing — never to invent the answer options, which always come
  * from FIELD_ENUM_HINTS. Returns null when there's nothing worth asking.
  */
-export async function generateGroundedRound(
+/**
+ * Plan the whole round-2 screen in one call.
+ *
+ * ── Why one call ───────────────────────────────────────────────────────────
+ * This replaces three generators that ran in parallel and could not see each
+ * other: one for enum-answered gates, one for gate text with written options,
+ * one for the commercial model. Overlap between them could only ever be caught
+ * after the fact, by comparing finished questions, which is why this file
+ * accumulated a topic signature, a per-key cap, a vague-option filter and a
+ * measurement signature and STILL shipped a screen that asked for technology
+ * readiness twice and got two different answers.
+ *
+ * None of the three saw the founder's screen-1 answers either. The founder had
+ * said their product was at scaling-revenue stage, which largely settles
+ * readiness, and was asked for it twice anyway.
+ *
+ * Seeing all the material at once makes "do not ask the same thing twice" and
+ * "do not ask what they already told us" instructions a model can follow,
+ * rather than properties we detect downstream. The old checks remain as a
+ * backstop and a scoreboard signal; they are no longer the mechanism.
+ *
+ * Grounding is unchanged: every question keeps the instrument, gate key and
+ * verbatim quote of the requirement it came from, so citations and
+ * ProjectAnswer provenance still hold. Commercial questions carry no
+ * instrument by design and stay behind COMMERCIAL_ANSWER_PREFIX, which is what
+ * keeps them out of the eligibility verdict.
+ */
+export const SCREEN_QUESTION_CAP = 6;
+
+export interface PlannedScreen {
+  theme: string;
+  /** Enum-answered questions: the interface renders FIELD_ENUM_HINTS options. */
+  questions: { field: string; question: string }[];
+  /** Written-option questions, gate-grounded or commercial. */
+  projectQuestions: ProjectQuestion[];
+}
+
+export async function planAdaptiveScreen(
   req: IntelligenceRequest,
   openFields: OpenFieldEvidence[],
-): Promise<GroundedRound | null> {
-  if (!openFields.length) return null;
-  const top = openFields.slice(0, 8);
-  const fieldNames = top.map((f) => f.field);
+  projectGates: ProjectGateEvidence[],
+): Promise<PlannedScreen | null> {
+  const facts = knownFacts(req, req.eligibility,
+    "## What the founder has ALREADY told us. Never ask any of this again.");
+  const enumFields = openFields.filter((f) => FIELD_ENUM_HINTS[f.field]);
+  if (!enumFields.length && !projectGates.length && !req.description) return null;
+
+  const gateKeys = projectGates.map((g) => `${g.instrumentId}::${g.gateKey}`);
+  const fieldNames = enumFields.map((f) => f.field);
 
   const schema = {
     type: "object",
@@ -124,372 +167,146 @@ export async function generateGroundedRound(
           type: "object",
           additionalProperties: false,
           properties: {
-            field: { type: "string", enum: fieldNames },
+            // Which pool this question came from, so the caller can rebuild it
+            // with the right grounding without guessing.
+            source: { type: "string", enum: ["field", "gate", "commercial"] },
+            /** field name, gate key, or commercial topic */
+            ref: { type: "string" },
             question: { type: "string" },
+            /** Written only for gate and commercial questions. */
+            options: { type: "array", items: { type: "string" } },
           },
-          required: ["field", "question"],
+          required: ["source", "ref", "question", "options"],
         },
       },
     },
     required: ["theme", "questions"],
   } as const;
 
-  const evidence = top
-    .map((f) => {
-      const hint = FIELD_ENUM_HINTS[f.field];
-      const examples = f.examples.map((e) => `  - ${e.instrument}: "${e.requirement}"`).join("\n");
-      // The stem travels WITH the options, and the model may only tailor its
-      // wording. Given the options alone it invented question stems the
-      // options did not answer — a multi-select of commitments a founder
-      // might accept was published under a yes/no about board seats.
-      const stemLine = hint ? `  QUESTION TO ASK (tailor the wording, never the meaning): "${hint.stem}"` : "";
-      const optionsLine = hint
-        ? `  The founder will choose from EXACTLY these${hint.multi ? " (multi-select)" : ""}: ` +
-          `${hint.options.map((o) => o.label).join(" / ")}`
-        : "";
-      return `Field "${f.field}" — still open on ${f.nInstruments} of the founder's candidate ` +
-        `instruments (${f.reachPct}% of shortlist weight). Real requirement text:\n${examples}\n` +
-        `${stemLine}\n${optionsLine}`;
-    })
-    .join("\n\n");
+  const fieldBlock = enumFields.map((f) => {
+    const hint = FIELD_ENUM_HINTS[f.field];
+    return `  ref "${f.field}" (reach ${f.reachPct}% of the shortlist)\n` +
+      `    ASK: "${hint.stem}" (tailor the wording, never the meaning)\n` +
+      `    Fixed options the interface will render${hint.multi ? " (multi-select)" : ""}: ` +
+      `${hint.options.map((o) => o.label).join(" / ")}\n` +
+      `    Real requirement: ${f.examples[0]?.requirement ?? "(none quoted)"}`;
+  }).join("\n\n");
+
+  const gateBlock = projectGates.map((g) =>
+    `  ref "${g.instrumentId}::${g.gateKey}" (reach ${g.reachPct}%, ${g.instrumentName})\n` +
+    `    Requirement, verbatim: "${g.requirement}"`).join("\n\n");
+
+  const commercialBlock = COMMERCIAL_TOPICS.map((t) => `  ref "${t}"`).join("\n");
 
   try {
     const res = billed(await client.messages.create({
       model: INTAKE_MODEL,
-      // Bumped from 700: up to 8 fields' worth of questions (was 3) needs
-      // more room.
-      max_tokens: 1600,
+      max_tokens: 2400,
       thinking: { type: "disabled" },
       system: loadAgentInstructions(),
       output_config: { format: { type: "json_schema", schema } },
-      messages: [
-        {
-          role: "user",
-          content:
-            `A founder is mid-qualification for European public capital. Below are ` +
-            `REAL, DOCUMENTED requirements from the specific funds still on their ` +
-            `shortlist that we cannot yet resolve. Write ONE themed screen (2-4 ` +
-            `word theme) with EXACTLY ONE plain-English question per field below ` +
-            `(never two questions tagged with the same field).\n\n` +
-            `Each field below carries a QUESTION TO ASK and the exact options ` +
-            `the founder will be shown. Your job is to tailor that question's ` +
-            `WORDING to this company, naming what they actually build, while ` +
-            `keeping its meaning identical. The options are rendered by the ` +
-            `interface and you cannot change them, so a question the listed ` +
-            `options do not answer is WRONG no matter how well it reads: a ` +
-            `founder offered a list of commitments must be asked which ` +
-            `commitments they would make, not whether they are prepared for ` +
-            `something.\n\n` +
-            `Use the requirement text only to make the wording concrete, never ` +
-            `to invent a requirement it does not support. Omit a field whose ` +
-            `evidence is too thin to ask fairly.\n\n${evidence}\n\n` +
-            `Return ONLY the JSON object for the schema.`,
-        },
-      ],
+      messages: [{
+        role: "user",
+        content:
+          `Plan ONE screen of at most ${SCREEN_QUESTION_CAP} questions for a founder ` +
+          `applying for European public funding. You are choosing from three ` +
+          `pools and you can see all of them, so the screen must read as one ` +
+          `coherent set rather than three lists stapled together.\n\n` +
+          `${facts}\n\n` +
+          `${req.description ? fence("company description", declaw(req.description).text) + "\n\n" : ""}` +
+          `## Pool A: eligibility fields with FIXED options (source "field")\n` +
+          `${fieldBlock || "  (none open)"}\n\n` +
+          `## Pool B: fund requirements needing a project answer (source "gate")\n` +
+          `You write 3-5 options for these, in the founder's own commercial ` +
+          `vocabulary, translated OUT of the requirement rather than quoted ` +
+          `from it. A phrase lifted verbatim from a legal text is wrong even ` +
+          `when accurate.\n${gateBlock || "  (none open)"}\n\n` +
+          `## Pool C: commercial model (source "commercial")\n` +
+          `Not grounded in any fund. These exist so the brief can position the ` +
+          `company: who pays, how they charge, how they reach market, what an ` +
+          `award would buy. You write both question and options. Ask about ` +
+          `THIS company in the founder's words, never about the category in ` +
+          `general.\n${commercialBlock}\n\n` +
+          `## How to choose\n` +
+          `- NEVER ask anything already answered above. If the stage, sector, ` +
+          `ticket or use of funds settles a question, it is settled.\n` +
+          `- NEVER ask the same thing twice in different words. Two questions ` +
+          `measuring on one scale (readiness levels, percentage bands, ` +
+          `headcount) are one question, however differently they are framed.\n` +
+          `- Prefer what most changes WHICH FUNDS this founder sees, or what ` +
+          `positioning cannot be written without. A requirement carried by a ` +
+          `small share of the shortlist does not earn a slot.\n` +
+          `- Include at least one and at most two from Pool C when a ` +
+          `description exists: positioning has no other source.\n` +
+          `- The founder answers from memory, without opening a document.\n` +
+          `- Every option must be a substantive, checkable state of affairs. ` +
+          `No "a mix of the above", "other", "none", "not sure": the ` +
+          `interface appends its own.\n` +
+          `- For source "field", copy the ref exactly and leave options empty; ` +
+          `the interface renders the fixed set.\n\n` +
+          `Return ONLY the JSON object for the schema.`,
+      }],
     }), INTAKE_MODEL);
+
     const text = res.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
-      .map((b) => b.text)
-      .join("");
-    const parsed = extractJson<{ theme: string; questions: { field: string; question: string }[] }>(text);
-    const seen = new Set<string>();
-    const questions = (parsed.questions ?? [])
-      .filter((q) => q && fieldNames.includes(q.field) && q.question?.trim())
-      // Never trust the model alone to keep one question per field (seen it
-      // ask 3 differently-worded questions all tagged the same field, which
-      // would render as duplicate checkbox groups with wrong-looking options)
-      // — first occurrence per field wins, mechanically enforced.
-      .filter((q) => (seen.has(q.field) ? false : (seen.add(q.field), true)))
-      .map((q) => ({ field: q.field, question: deDash(q.question.trim()) }));
-    if (!questions.length) return null;
-    return { theme: deDash(String(parsed.theme ?? "").trim()) || "A few more things", questions };
+      .map((b) => b.text).join("");
+    const parsed = extractJson<{
+      theme: string;
+      questions: { source: string; ref: string; question: string; options: string[] }[];
+    }>(text);
+
+    const gateByKey = new Map(projectGates.map((g) => [`${g.instrumentId}::${g.gateKey}`, g]));
+    const seenRefs = new Set<string>();
+    const fields: { field: string; question: string }[] = [];
+    const written: ProjectQuestion[] = [];
+
+    for (const q of parsed.questions ?? []) {
+      if (!q?.question?.trim() || seenRefs.has(q.ref)) continue;
+      // The cap is enforced HERE, not asked for in the prompt: a budget a
+      // model may round up is not a budget.
+      if (fields.length + written.length >= SCREEN_QUESTION_CAP) break;
+      const options = (q.options ?? [])
+        .map((o) => deDash(String(o).trim()))
+        .filter(Boolean)
+        .filter((o) => !VAGUE_OPTION.test(o))
+        .slice(0, 5);
+
+      if (q.source === "field" && fieldNames.includes(q.ref)) {
+        seenRefs.add(q.ref);
+        fields.push({ field: q.ref, question: deDash(q.question.trim()) });
+      } else if (q.source === "gate" && gateByKey.has(q.ref) && options.length >= 2) {
+        const g = gateByKey.get(q.ref)!;
+        seenRefs.add(q.ref);
+        written.push({
+          id: q.ref, question: deDash(q.question.trim()), options,
+          instrumentId: g.instrumentId, instrumentName: g.instrumentName,
+          gateKey: g.gateKey, quote: g.requirement, locator: g.locator,
+        });
+      } else if (q.source === "commercial" && options.length >= 2) {
+        seenRefs.add(q.ref);
+        written.push({
+          id: `${COMMERCIAL_ANSWER_PREFIX}${q.ref}`,
+          question: deDash(q.question.trim()), options,
+          instrumentId: "", instrumentName: "", gateKey: `commercial_${q.ref}`,
+          quote: "", locator: "",
+        });
+      }
+    }
+    if (!fields.length && !written.length) return null;
+    return {
+      theme: deDash(String(parsed.theme ?? "").trim()) || "A few more things",
+      questions: fields,
+      projectQuestions: written,
+    };
   } catch (err) {
-    console.error("grounded round generation failed:", err);
+    console.error("adaptive screen planning failed:", err);
     return null;
   }
 }
 
-export async function generateProjectQuestions(
-  req: IntelligenceRequest,
-  gates: ProjectGateEvidence[],
-): Promise<ProjectQuestion[]> {
-  if (!gates.length) return [];
-  const byKey = new Map(gates.map((g) => [`${g.instrumentId}::${g.gateKey}`, g]));
-  const keys = [...byKey.keys()];
 
-  const schema = {
-    type: "object",
-    additionalProperties: false,
-    properties: {
-      questions: {
-        type: "array",
-        items: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            key: { type: "string", enum: keys },
-            question: { type: "string" },
-            // No minItems/maxItems above 1: the structured-output API rejects
-            // them ("For 'array' type, 'minItems' values other than 0 or 1 are
-            // not supported"). The 3-5 range is enforced by the prompt and by
-            // the post-processing below instead.
-            options: { type: "array", items: { type: "string" } },
-          },
-          required: ["key", "question", "options"],
-        },
-      },
-    },
-    required: ["questions"],
-  } as const;
 
-  const evidence = [...byKey.entries()]
-    .map(([key, g]) =>
-      `key: ${key}\nfund: ${g.instrumentName}\nrequirement (verbatim): "${g.requirement}"`)
-    .join("\n\n");
-
-  const about = [
-    req.company && `Company: ${req.company}`,
-    req.description && fence("company description", req.description),
-    req.companyType && `Self-described type: ${req.companyType}`,
-    req.country && `Incorporated in: ${req.country}`,
-  ].filter(Boolean).join("\n");
-
-  try {
-    const res = billed(await client.messages.create({
-      model: INTAKE_MODEL,
-      max_tokens: 2000,
-      thinking: { type: "disabled" },
-      system: loadAgentInstructions(),
-      output_config: { format: { type: "json_schema", schema } },
-      messages: [
-        {
-          role: "user",
-          content:
-            `${about}\n\nBelow are verbatim eligibility requirements from the specific funds ` +
-            `still on this company's shortlist. For EACH key, write ONE plain-English ` +
-            `question that establishes whether THIS company's project meets THAT ` +
-            `requirement, plus 3-5 short, mutually exclusive answer options drawn from ` +
-            `the requirement's own wording.\n\n` +
-            `Rules:\n` +
-            `- The founder must be able to answer from memory, without opening a document.\n` +
-            `- Ask about their project, technology or plan, never about their legal form, ` +
-            `headcount or country: those are already known.\n` +
-            // Specificity rules. Without these the model produces generically
-            // correct but useless options ("A mix of the above", "Other
-            // sector") that tell the writer nothing about this company.
-            `- Name the company's OWN technology or product in the question, in their ` +
-            `words, so it reads as written for them and not for any applicant.\n` +
-            `- Every option must be a substantive, checkable state of affairs. BANNED ` +
-            `option styles: "a mix of the above", "other", "none", "several of these", ` +
-            `"not sure", "partly" — and any option that merely restates the question.\n` +
-            `- Options must be mutually exclusive and jointly cover the realistic ` +
-            `cases, so exactly one is true for this company.\n` +
-            `- Where the requirement names thresholds, bands or categories (TRL levels, ` +
-            `percentages, activity types), make the options THOSE literal values rather ` +
-            `than paraphrases of them.\n` +
-            `- Never assert or imply a requirement the verbatim text does not support.\n` +
-            `- Options must be concrete and distinguishable (for a TRL requirement, name ` +
-            `the TRL bands; do not offer "yes / no / unsure").\n` +
-            `- Do not add a "none of these" option: the interface appends its own.\n` +
-            // Without this the model obeys "one question per key" over the
-            // content rule above and asks things like "what is your legal
-            // status?", which the first screen already settled.
-            `- OMIT a key entirely if its requirement is only about legal form, ` +
-            `applicant category, headcount or country. Returning four sharp ` +
-            `questions is better than five with a wasted one.\n` +
-            // Different funds phrase the same underlying requirement
-            // differently, so the per-instrument cap upstream cannot catch it:
-            // one live round asked TRL twice (two Horizon clusters) and
-            // "will funds go to R&D costs" twice (two SATR tracks). The model
-            // sees every key at once, so it is the right place to deduplicate.
-            `- You are shown several funds at once. If two keys would produce ` +
-            `the SAME question in substance (both asking technology readiness, ` +
-            `both asking what the money pays for), keep only the one whose ` +
-            `requirement is most specific and OMIT the other. A founder must ` +
-            `never be asked the same thing twice in one screen.\n` +
-            `- At most one question per key.\n\n${evidence}\n\n` +
-            `Return ONLY the JSON object for the schema.`,
-        },
-      ],
-    }), INTAKE_MODEL);
-    const text = res.content
-      .filter((b): b is Anthropic.TextBlock => b.type === "text")
-      .map((b) => b.text)
-      .join("");
-    const parsed = extractJson<{ questions: { key: string; question: string; options: string[] }[] }>(text);
-    const seen = new Set<string>();
-    const questions: ProjectQuestion[] = (parsed.questions ?? [])
-      .filter((q) => q?.key && byKey.has(q.key) && q.question?.trim() && Array.isArray(q.options))
-      .filter((q) => (seen.has(q.key) ? false : (seen.add(q.key), true)))
-      .map((q) => {
-        const g = byKey.get(q.key)!;
-        // Belt-and-braces on the specificity rules above: strip vague options
-        // even if the model slips one through, so a founder is never asked to
-        // choose "a mix of the above".
-        const options = q.options
-          .map((o) => deDash(String(o).trim()))
-          .filter(Boolean)
-          .filter((o) => !VAGUE_OPTION.test(o))
-          .slice(0, 5);
-        return {
-          id: q.key,
-          question: deDash(q.question.trim()),
-          options,
-          instrumentId: g.instrumentId,
-          instrumentName: g.instrumentName,
-          gateKey: g.gateKey,
-          quote: g.requirement,
-          locator: g.locator,
-        };
-      })
-      .filter((q) => q.options.length >= 2);
-
-    // Deterministic backstop on the dedupe instruction above. Asked to drop
-    // near-duplicates the model removes some and misses others — a live round
-    // still asked technology readiness twice, from two Horizon clusters.
-    //
-    // Two questions that ask the same thing share an ANSWER SPACE: both TRL
-    // questions offer the same readiness bands. Comparing options rather than
-    // wording is language-agnostic and needs no keyword list.
-    const ownWords = new Set([
-      ...TOKENS(req.description ?? ""), ...TOKENS(req.company ?? ""),
-    ]);
-    const kept: ProjectQuestion[] = [];
-    for (const q of questions) {
-      const sig = topicSignature(q, ownWords);
-      const dup = kept.some((k) => {
-        const other = topicSignature(k, ownWords);
-        const shared = [...sig].filter((t) => other.has(t)).length;
-        return shared / Math.max(Math.min(sig.size, other.size), 1) > 0.45;
-      });
-      if (!dup) kept.push(q);
-    }
-    return kept;
-  } catch (err) {
-    console.error("project question generation failed:", err);
-    return [];
-  }
-}
-
-/**
- * The commercial half of round 2: how this company actually makes money.
- *
- * ── Why this one is not gate-grounded ──────────────────────────────────────
- * Every other question in this file is written from a fund's own requirement
- * text, and refuses to ask anything a real rule does not support. That
- * discipline is right for eligibility and wrong here, because no fund encodes
- * "who is your customer" as a gate — so under the old rule the brief could
- * never learn it, and positioning was written from a sector label.
- *
- * The failure that forced this: a company selling a subscription product
- * directly to individuals was advised to position on institutional deployment
- * and outcomes for a buyer it does not sell to. Every sentence was sourced on
- * the policy side and wrong about the company.
- *
- * ── The firewall ───────────────────────────────────────────────────────────
- * These answers land in `commercialAnswers` and are read ONLY by the writer,
- * for positioning and the commercial-payoff bullet. computeVerdict() never
- * sees them. Same guarantee as ProjectAnswer, for the same reason: a
- * hallucinated option can weaken prose, but it must never move a legal
- * eligibility verdict.
- */
-export async function generateCommercialQuestions(
-  req: IntelligenceRequest,
-): Promise<ProjectQuestion[]> {
-  const desc = req.description?.trim();
-  if (!desc || desc.length < 20) return [];
-
-  const schema = {
-    type: "object",
-    additionalProperties: false,
-    properties: {
-      questions: {
-        type: "array",
-        items: {
-          type: "object",
-          additionalProperties: false,
-          properties: {
-            topic: { type: "string", enum: COMMERCIAL_TOPICS },
-            question: { type: "string" },
-            options: { type: "array", items: { type: "string" } },
-          },
-          required: ["topic", "question", "options"],
-        },
-      },
-    },
-    required: ["questions"],
-  } as const;
-
-  try {
-    const res = billed(await client.messages.create({
-      model: INTAKE_MODEL,
-      max_tokens: 1400,
-      thinking: { type: "disabled" },
-      system: loadAgentInstructions(),
-      output_config: { format: { type: "json_schema", schema } },
-      messages: [
-        {
-          role: "user",
-          content:
-            `A founder is applying for European public funding. We already know ` +
-            `their eligibility position. What we do NOT know is how the ` +
-            `business actually works commercially, and without it we cannot ` +
-            `tell them how to position themselves to a funder.\n\n` +
-            `${fence("company description", declaw(desc).text)}\n` +
-            `${req.country ? `Incorporated in: ${req.country}\n` : ""}` +
-            `\nWrite ONE question for each topic below that is still genuinely ` +
-            `unclear from the description, at most one per topic, at most four ` +
-            `in total. Topics: ${COMMERCIAL_TOPICS.join(", ")}.\n\n` +
-            `Rules:\n` +
-            `- Ask about the BUSINESS, never about eligibility, legal form, ` +
-            `headcount or country: those are already settled.\n` +
-            `- Name what this company actually does, in their own words, so ` +
-            `the question reads as written for them.\n` +
-            `- Give 3-5 options that are concrete, mutually exclusive, and ` +
-            `jointly cover the realistic cases, so exactly one is true.\n` +
-            `- Options are in a founder's own commercial vocabulary. Never ` +
-            `legal, regulatory or programme language.\n` +
-            `- BANNED option styles: "a mix of the above", "other", "none", ` +
-            `"not sure", "several of these", or anything restating the ` +
-            `question. Do not add a "none of these" option: the interface ` +
-            `appends its own.\n` +
-            `- SKIP a topic entirely when the description already answers it. ` +
-            `Three sharp questions beat four with a wasted one.\n\n` +
-            `Return ONLY the JSON object for the schema.`,
-        },
-      ],
-    }), INTAKE_MODEL);
-    const text = res.content
-      .filter((b): b is Anthropic.TextBlock => b.type === "text")
-      .map((b) => b.text)
-      .join("");
-    const parsed = extractJson<{ questions: { topic: string; question: string; options: string[] }[] }>(text);
-    const seen = new Set<string>();
-    return (parsed.questions ?? [])
-      .filter((q) => q?.question?.trim() && Array.isArray(q.options))
-      .filter((q) => (seen.has(q.topic) ? false : (seen.add(q.topic), true)))
-      .slice(0, 4)
-      .map((q) => ({
-        id: `${COMMERCIAL_ANSWER_PREFIX}${q.topic}`,
-        question: deDash(q.question.trim()),
-        options: q.options
-          .map((o) => deDash(String(o).trim()))
-          .filter(Boolean)
-          .filter((o) => !VAGUE_OPTION.test(o))
-          .slice(0, 5),
-        // Not tied to any instrument: that is the whole point of this half.
-        instrumentId: "",
-        instrumentName: "",
-        gateKey: `commercial_${q.topic}`,
-        quote: "",
-        locator: "",
-      }))
-      .filter((q) => q.options.length >= 2);
-  } catch (err) {
-    console.error("commercial question generation failed:", err);
-    return [];
-  }
-}
 
 /** The axes that change how a company should be positioned to a public
  *  funder. Deliberately about the business model rather than the product:

@@ -707,9 +707,15 @@ export function IntelligencePanel() {
                     return (
                       <div key={q.id}>
                         <p className="mb-1 text-sm font-semibold" style={serif}>{q.question}</p>
+                        {/* Only questions written FROM a fund's requirement
+                            carry a citation. The commercial half has no
+                            instrument and no quote, and was rendering a bare
+                            `requires: ""` under every question. */}
+                        {q.quote && q.instrumentName && (
                         <p className="mb-2 text-xs text-[var(--muted-foreground)]">
                           {q.instrumentName} requires: &ldquo;{q.quote}&rdquo;
                         </p>
+                        )}
                         <div className="flex flex-wrap gap-2">
                           {opts.map((o) => {
                             const on = picked === o;

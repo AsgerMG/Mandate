@@ -380,6 +380,7 @@ function buildInstitutions(
     country: row.country,
     legalBasis: row.legalBasis,
     schemeCode: row.schemeCode,
+    schemeOperators: row.schemeOperators,
     applicationUrl: row.applicationUrl,
     applicationChannel: row.applicationChannel,
     // Resolved in code so the row carries a link the writer cannot invent.

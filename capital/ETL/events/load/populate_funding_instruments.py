@@ -226,6 +226,16 @@ def split_families(conn) -> set[str]:
 MIN_CHILD_EVENTS = 40
 
 
+# A government department NOTIFIES an aid regime; regional agencies and
+# promotional banks disburse under it. Both appear as granting authorities on
+# the same scheme, so the operators of a scheme are simply the authorities on
+# it that are not departments. Same test the frontend uses to refuse to publish
+# a department as an institution, kept in one shape in both languages.
+NOT_AN_APPLYABLE_BODY = re.compile(
+    r"^(minist\w*|department|departement|dipartimento|direction g[e\u00e9]n[e\u00e9]rale)\b",
+    re.I)
+
+
 def child_slug(text: str) -> str:
     """Stable, readable id fragment. Ids must not move between runs: the
     reconcile step deletes gates whose instrument disappeared, so an id that
@@ -323,6 +333,8 @@ def main() -> None:
     # ranks highly for any software company. What it has actually funded does
     # not travel. See sectorFit in the frontend's fit score.
     fam_sector_votes: dict[str, Counter] = defaultdict(Counter)
+    # scheme code -> who actually disburses under it, by award volume.
+    scheme_operators: dict[str, Counter] = defaultdict(Counter)
     # Per-authority, per-scheme detail under the state-aid rollups. See
     # child_key() for why this exists and what it is allowed to do.
     child_rows: dict[tuple[str, str, str], dict] = {}
@@ -360,6 +372,9 @@ def main() -> None:
             fam_aid_objective_votes[fam][r["aid_objective"]] += 1
         if r["sector_top"]:
             fam_sector_votes[fam][r["sector_top"]] += 1
+        if r["call_id"] and r["granting_authority"] \
+                and not NOT_AN_APPLYABLE_BODY.match(r["granting_authority"]):
+            scheme_operators[r["call_id"]][r["granting_authority"][:200]] += 1
 
         # ── the split ────────────────────────────────────────────────────────
         # A state-aid rollup is a whole country's aid regime in one row. It is
@@ -520,6 +535,12 @@ def main() -> None:
             scheme_code=scheme,
             application_url=None,
             sector_mix=parent.get("sector_mix"),
+            # Who a founder can actually approach under this scheme. Empty when
+            # only departments ever awarded on it, which is itself worth
+            # knowing: it means the row has no front door we can name.
+            scheme_operators=json.dumps(
+                [a for a, _ in scheme_operators.get(scheme, Counter()).most_common(6)])
+                if scheme_operators.get(scheme) else None,
         ))
         kept_children += 1
     if kept_children:
@@ -530,6 +551,7 @@ def main() -> None:
         row.setdefault("scheme_code", None)
         row.setdefault("application_url", None)
         row.setdefault("sector_mix", None)
+        row.setdefault("scheme_operators", None)
 
     # ── Reconcile, do not wipe ───────────────────────────────────────────────
     # This used to DELETE every non-framework eligibility gate on every run.
@@ -602,12 +624,12 @@ def main() -> None:
                administering_body_share, ndb_id,
                source_family_bucket, capital_type, capital_type_basis, event_count,
                company_count, total_eur, first_year, last_year, is_framework,
-               sample_project_titles, scheme_code, application_url, sector_mix, updated_at)
+               sample_project_titles, scheme_code, application_url, sector_mix, scheme_operators, updated_at)
             VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
                     :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
-                    :sample_project_titles,:scheme_code,:application_url,:sector_mix, CURRENT_TIMESTAMP)
+                    :sample_project_titles,:scheme_code,:application_url,:sector_mix,:scheme_operators, CURRENT_TIMESTAMP)
         """, r)
 
     for fam, srcs in fam_sources.items():

@@ -156,6 +156,29 @@ h1, h2, h3, h4, h5, h6 {
   html.printing :has(> #print-report) > *:not(#print-report) { display: none !important; }
   #print-report { width: 100%; padding: 0; }
   @page { margin: 0.6in; }
+
+  /* ── Tables in print ──────────────────────────────────────────────────
+     The export was correctly scoped but had no table rules at all, so the
+     browser sized columns from content: the institution column crushed to a
+     word per line, "Comparable firms funded" split across two lines, and rows
+     broke across a page boundary with the header left behind on the previous
+     one. Fixed widths plus a repeating header make a five-row table read the
+     same on paper as on screen. */
+  #print-report table { table-layout: fixed; width: 100%; font-size: 10.5px; }
+  #print-report thead { display: table-header-group; }
+  #print-report tr { break-inside: avoid; page-break-inside: avoid; }
+  #print-report th, #print-report td { padding: 6px 8px 6px 0; line-height: 1.35; }
+  /* Institution / support / why you qualify / comparables. The middle column
+     carries the prose, so it takes the slack. */
+  #print-report table th:nth-child(1), #print-report table td:nth-child(1) { width: 23%; }
+  #print-report table th:nth-child(2), #print-report table td:nth-child(2) { width: 13%; }
+  #print-report table th:nth-child(3), #print-report table td:nth-child(3) { width: 46%; }
+  #print-report table th:nth-child(4), #print-report table td:nth-child(4) { width: 18%; }
+  /* Long scheme names and URLs must wrap rather than force the column wider. */
+  #print-report td { overflow-wrap: anywhere; }
+  /* Keep a heading with the paragraph it introduces. */
+  #print-report h3 { break-after: avoid; page-break-after: avoid; }
+  #print-report p { orphans: 2; widows: 2; }
   /* Force backgrounds/colours to render in the PDF. */
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }

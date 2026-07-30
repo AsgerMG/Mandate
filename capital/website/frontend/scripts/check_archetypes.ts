@@ -20,6 +20,7 @@ try {
 
 async function main() {
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
+  const { displayInstitutionName } = await import("../lib/intelligence/shortlist");
   const { computeVerdict } = await import("../lib/intelligence/pipeline");
   const { assessAll } = await import("../lib/intelligence/verdict");
   const { ARCHETYPES, archetypeAnswers } = await import("../lib/intelligence/__archetypes");
@@ -44,7 +45,12 @@ async function main() {
     const reachable = [...assessed.values()].filter((x) => x.status !== "blocked").length;
     const verdicted = [...assessed.values()].filter((x) => x.checked > 0).length;
 
-    const names = v.instrumentTable.map((r) => r.instrument);
+    // Compare what a FOUNDER sees, not the raw corpus name. Two children of
+    // one granting body under two different notified schemes share a raw name
+    // and are genuinely different instruments; what would be a defect is the
+    // same ROW appearing twice, and the row is rendered by
+    // displayInstitutionName.
+    const names = v.instrumentTable.map((r) => displayInstitutionName(r));
     const dups = [...new Set(names.filter((n, i) => names.indexOf(n) !== i))];
 
     const problems: string[] = [];

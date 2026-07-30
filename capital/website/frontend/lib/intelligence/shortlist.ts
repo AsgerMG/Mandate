@@ -538,6 +538,7 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         lastAwardYear: leaf.lastYear ?? undefined,
         legalBasis: legalBasisFor(leaf),
         schemeCode: leaf.schemeCode ?? undefined,
+        schemeOperators: leaf.schemeOperators ?? undefined,
         applicationUrl: leaf.application?.url ?? undefined,
         applicationChannel: leaf.application?.channel ?? undefined,
         applicationTimeline: leaf.application?.timeline ?? undefined,
@@ -627,8 +628,15 @@ export function displayInstitutionName(row: InstrumentRow): string {
   // notified it. Same definition the brief check uses, so a row can never
   // pass one and fail the other.
   if (row.administeringBody && NOT_AN_APPLYABLE_BODY.test(row.administeringBody)) {
+    // Name the SCHEME, not the category. "National state aid (R&D)" told a
+    // founder nothing they could act on and did not match the link beside it,
+    // which points at one specific notified scheme. The row now says which
+    // scheme that is; the operators who run it render underneath.
     const kind = /\bequity\b/i.test(row.instrument) ? "equity" : "R&D";
-    return `National state aid (${kind})`;
+    const country = row.country && row.country !== "EU" ? `${row.country} ` : "";
+    return row.schemeCode
+      ? `${country}${kind} state aid scheme ${row.schemeCode}`
+      : `National state aid (${kind})`;
   }
   if (row.administeringBody && row.instrument.startsWith("SATR ")) {
     // Only when that body really is the instrument. administeringBody is a
