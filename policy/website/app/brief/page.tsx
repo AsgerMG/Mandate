@@ -108,6 +108,9 @@ export default function BriefPage() {
   const [streamStartedAt, setStreamStartedAt] = useState<number | null>(null);
   const [genStartedAt, setGenStartedAt] = useState<number | null>(null);
   const [sources, setSources] = useState<BriefSources | null>(null);
+  // The model's summarised reasoning. Only the tail is kept: this is a live
+  // "working" signal, not a transcript to scroll back through.
+  const [thinking, setThinking] = useState("");
   const [notifyOnDone, setNotifyOnDone] = useState(false);
 
   useEffect(() => {
@@ -274,6 +277,7 @@ export default function BriefPage() {
     setDraftChars(0);
     setStreamStartedAt(null);
     setSources(null);
+    setThinking("");
     setGenStartedAt(Date.now());
     try {
       const r = await postBrief(
@@ -284,14 +288,18 @@ export default function BriefPage() {
           // resets at the start of one while `draftChars` keeps accumulating — the
           // ETA needs a monotonic total, the reader needs one coherent document.
           // This is the First reading → Committee markup handover made literal.
-          if (s.stage === "drafting" || s.stage === "sharpening") setLiveText("");
+          if (s.stage === "drafting" || s.stage === "sharpening") {
+            setLiveText("");
+            setThinking("");
+          }
         },
         (text) => {
           setStreamStartedAt((prev) => prev ?? Date.now());
           setDraftChars((prev) => prev + text.length);
           setLiveText((prev) => prev + text);
         },
-        (found) => setSources(found)
+        (found) => setSources(found),
+        (text) => setThinking((prev) => (prev + text).slice(-1200))
       );
       setResult(r);
     } catch {
@@ -559,6 +567,7 @@ export default function BriefPage() {
                   (s) => s.stage === "verifying" || s.stage === "cross-checking"
                 )}
                 writing={draftChars > 0}
+                thinking={thinking}
                 notifyOnDone={notifyOnDone}
                 onAskToNotify={askToNotify}
               />

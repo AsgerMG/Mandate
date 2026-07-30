@@ -637,26 +637,61 @@ holding port 8000, so local testing had been hitting the old backend; and
 `restoreFavicon()` left `href=""` (a visibly broken icon) when the page had no
 icon link of its own.
 
-### One measured thing the design should still answer
+### The dead zone, and how it was actually closed
 
-**Text doesn't start appearing until ~90–100s of a ~180s brief**, because adaptive
-thinking runs before generation. That is half the wait with an indeterminate bar.
-Phase B1 was sold on "watch it being written", and it only delivers that for the
-second half. The honest response shipped here is to *name* the phase — "Reading the
-retrieved provisions and working out which of them actually bind you" — rather than
-add motion to disguise it. A better answer would be a genuine `thinking` stage
-emitted by the backend, with its own rail step; that is a real change to
-`generate_briefing`'s event contract and is not done.
+First pass at this shipped a *label* for the ~90–100s before any report text
+exists ("Reading the retrieved provisions…") and recorded the real fix as not
+done. That was settling too early, and the user pushed back correctly: **this is
+precisely the window where someone decides whether the thing is working.**
+
+The API already had the answer. Adaptive thinking defaults to
+`display: "omitted"`, which streams thinking blocks with empty text — the
+documented consequence being that it "looks like a long pause before output."
+Setting `thinking: {type: "adaptive", display: "summarized"}` returns the model's
+**own summarised reasoning**, streamable, billed identically (display controls
+visibility only, not whether thinking happens).
+
+So the pre-writing stretch is now filled with real reasoning rather than a label.
+Measured on a live brief:
+
+| | before | after |
+|---|---|---|
+| First content on screen | ~90–100s (report text) | **~20s** (reasoning) |
+| Dead zone | ~100s | **~20s**, itself covered by the reading list (~7s) |
+
+And the content earns its place. Verbatim from the run:
+
+> *"I'm noticing a contradiction in the profile data — it claims the company
+> doesn't handle personal data, but automated credit scoring inherently requires
+> processing personal data. The activity description makes it clear that personal
+> data is being handled…"*
+
+The user watches the model catch a real inconsistency in their own input. That is
+a trust-building moment, and it cost nothing but a parameter and an event type.
+
+**Why this and not invented narration.** Streaming the model's actual reasoning is
+honest; generating plausible-sounding progress commentary would be the same
+fabrication the brief's own prompt forbids about stakeholders. The distinction is
+the whole design: real signal or none.
+
+Implementation notes: `_generate` iterates raw stream events rather than
+`stream.text_stream` (which yields answer text only), forwarding `thinking_delta`
+and `text_delta` separately; the client keeps only the last 1,200 characters,
+because this is a live "working" signal and not a transcript to scroll; the pane is
+bottom-anchored so new reasoning appears at a stable position; and it clears at
+each stage change so one call's tail never sits under the next call's output.
 
 ### Verified live
 
 ```
-t=  0s hint=True   fav=3634B  eta=about 3 minutes left
-t= 80s hint=True   fav=3602B  eta=about 90 seconds left
-t=100s hint=False  fav=3434B  eta=about a minute left     <- text starts
-t=160s hint=False  fav=3862B  eta=under a minute left
-t=180s FINISHED — 'Done in 2m 57s · 64 instruments read · 8 claims cited · no consistency issues'
-       title='✓ Your brief is ready · Regina'
+t=  0s  reasoning=0     draft=0       eta=about 3 minutes left
+t= 20s  reasoning=789   draft=0       eta=about 3 minutes left   <- reasoning starts
+t= 90s  reasoning=1198  draft=0       eta=about 90 seconds left
+t=110s  reasoning=0     draft=3242    eta=under a minute left    <- text starts
+t=150s  reasoning=0     draft=0       eta=under a minute left    <- second reading
+t=190s  reasoning=0     draft=11775   eta=almost there
+t=200s  FINISHED — 'Done in 3m 14s · 64 instruments read · 15 claims cited · no consistency issues'
+        title='✓ Your brief is ready · Regina'
 ```
 
 No horizontal overflow at 320/375/768/1280/1920/2560px with the panel live.

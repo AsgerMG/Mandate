@@ -50,10 +50,16 @@ Backgrounding a tab is already safe; only closing it loses work, so the copy say
 because without it "revisit if abandonment is a problem" is a condition we are
 structurally blind to.
 
-**Still open, and honest about it:** text does not appear until ~90–100s of a
-~180s brief, because thinking precedes generation. Half the wait is still an
-indeterminate bar. Naming that phase is what shipped; a real backend `thinking`
-stage is the better answer and is not built.
+**The dead zone, closed properly on the second attempt.** The first pass shipped a
+*label* for the ~90–100s before any report text exists and recorded the real fix as
+not done. That was settling too early. Adaptive thinking defaults to
+`display: "omitted"` — empty thinking blocks, and the documented consequence is
+that it "looks like a long pause before output". Setting `display: "summarized"`
+streams the model's own reasoning, at identical cost (display controls visibility,
+not whether thinking happens). First content on screen moved from **~90–100s to
+~20s**, and the remaining 20s is covered by the reading list. Streaming real
+reasoning rather than invented progress narration is the same line the brief prompt
+already draws about stakeholders: real signal or none.
 
 ## 2026-07-29 — Haiku vs Sonnet, measured: keep Sonnet, and treat 3 minutes as a fixed constraint
 

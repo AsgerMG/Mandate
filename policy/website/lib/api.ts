@@ -191,7 +191,10 @@ export async function postBrief(
    *  ~entirely a function of output tokens (r=+1.00 at 93.6 tok/s, measured
    *  2026-07-29), so counting streamed characters beats any upfront guess. */
   onDelta?: (text: string) => void,
-  onSources?: (sources: BriefSources) => void
+  onSources?: (sources: BriefSources) => void,
+  /** The model's summarised reasoning, streamed while it thinks — the first
+   *  ~90-100s of a ~180s brief, previously an empty bar. */
+  onThinking?: (text: string) => void
 ): Promise<BriefResult> {
   const res = await fetch(`${BASE}/api/brief`, {
     method: "POST",
@@ -216,6 +219,7 @@ export async function postBrief(
       if (event.type === "status") onStage?.({ stage: event.stage, label: event.label });
       else if (event.type === "delta") onDelta?.(event.text as string);
       else if (event.type === "sources") onSources?.(event as BriefSources);
+      else if (event.type === "thinking") onThinking?.(event.text as string);
       else if (event.type === "error") throw new Error(event.message);
       else if (event.type === "result") return event as BriefResult;
     }

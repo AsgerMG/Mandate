@@ -366,6 +366,13 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
     def on_sources(digest: dict) -> None:
         events.put({"type": "sources", **digest})
 
+    def on_thinking(text: str) -> None:
+        # The model's own summarised reasoning, streamed while it thinks. This is
+        # the first ~90-100s of a ~180s brief — previously a bar with nothing
+        # behind it, which is precisely the stretch where a user decides whether
+        # the thing is working.
+        events.put({"type": "thinking", "text": text})
+
     def run() -> None:
         started = time.monotonic()
         try:
@@ -379,6 +386,7 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
                     on_stage=on_stage,
                     on_delta=on_delta,
                     on_sources=on_sources,
+                    on_thinking=on_thinking,
                 )
             elapsed = round(time.monotonic() - started, 1)
             # Real wall-clock, not a guess — the two-pass sharpen plus

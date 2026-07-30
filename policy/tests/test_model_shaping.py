@@ -43,8 +43,16 @@ class _Usage:
 def test_modern_model_gets_adaptive_thinking_and_effort(as_model):
     as_model("claude-sonnet-5")
     req = reasoning_params("medium")
-    assert req["thinking"] == {"type": "adaptive"}
+    assert req["thinking"]["type"] == "adaptive"
     assert req["output_config"] == {"effort": "medium"}
+
+
+def test_thinking_is_summarised_so_the_wait_has_something_in_it(as_model):
+    """The default is display="omitted", which returns empty thinking blocks. Since
+    thinking precedes any answer text and measured ~90-100s of a ~180s brief, that
+    default is what made the first half of the wait a bar with nothing behind it."""
+    as_model("claude-sonnet-5")
+    assert reasoning_params("medium")["thinking"]["display"] == "summarized"
 
 
 def test_haiku_gets_neither_adaptive_thinking_nor_effort(as_model):
@@ -95,7 +103,7 @@ def test_an_unrecognised_model_is_treated_as_modern(as_model):
     produces one clear 400 on the first call instead."""
     assert supports_adaptive_thinking("claude-sonnet-6")
     as_model("claude-sonnet-6")
-    assert reasoning_params("low")["thinking"] == {"type": "adaptive"}
+    assert reasoning_params("low")["thinking"]["type"] == "adaptive"
 
 
 def test_dated_model_ids_are_recognised():

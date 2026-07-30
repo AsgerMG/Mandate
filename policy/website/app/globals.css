@@ -742,3 +742,27 @@ footer { background: var(--paper); color: var(--muted); font-size: clamp(12.5px,
   font-size: clamp(12.5px, 11.4px + 0.086vw, 13.5px); margin: 0 0 14px;
   font-variant-numeric: tabular-nums;
 }
+
+/* The model's summarised reasoning during the pre-writing stretch (~90-100s of a
+   ~180s brief). Set below the draft's weight and above the hint's: it is real
+   content, but it is thinking rather than the report. Bottom-anchored and clipped
+   so new reasoning appears at a stable position instead of pushing the panel
+   around, and fades at the top edge where it is cut. */
+.deliberation {
+  position: relative; border-left: 2px solid var(--line-soft); padding: 2px 0 2px 14px;
+  margin: 0 0 16px; max-height: 92px; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.deliberation-label {
+  font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+}
+.deliberation-body {
+  font-family: var(--font-sans); font-size: clamp(12.5px, 11.4px + 0.086vw, 13.5px);
+  line-height: 1.55; color: var(--muted); margin: 0; max-width: 760px;
+}
+.deliberation::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 26px;
+  background: linear-gradient(to bottom, var(--surface), transparent); pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) { .deliberation { max-height: 92px; } }

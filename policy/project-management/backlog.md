@@ -46,9 +46,10 @@ index when an item opens or closes.
   `/api/brief` had been failing for **every** real brief (`passages` kwarg collision,
   pre-existing); the ETA was calibrated 5x too high; the ETA rose; a transient 529
   lost a brief because production streamed without the retry the eval path had
-- ⬜ Remaining: text doesn't appear until ~90-100s of a ~180s brief (thinking precedes
-  generation), so half the wait is still an indeterminate bar. Shipped fix names the
-  phase; the real fix is a backend `thinking` stage with its own rail step
+- ✅ Dead zone closed: `thinking.display="summarized"` streams the model's own
+  reasoning, so first content on screen moved from ~90-100s to **~20s** (and that
+  window is covered by the reading list). Costs nothing — display controls
+  visibility, not whether thinking happens
 - Original order: (0) make the rail adaptive rather than a preset 9-step backbone —
   revises the deliberate decision in `ProgressRail.tsx`, argued in the plan;
   (A) measured 2–4 min expectation + token-based ETA; (B) stream the first-reading

@@ -99,7 +99,15 @@ def reasoning_params(
         return {
             "model": model,
             "max_tokens": max_tokens,
-            "thinking": {"type": "adaptive"},
+            # display="summarized" returns a readable summary of the model's own
+            # reasoning instead of empty thinking blocks (the default is
+            # "omitted"). Not a nicety: thinking runs BEFORE any answer text, and
+            # on a real brief that measured ~90-100s of a ~180s wait with nothing
+            # to show. Streaming the summary turns the longest, least legible
+            # stretch of the wait into the model visibly working — with its actual
+            # reasoning, not narration we invented. Thinking is billed the same
+            # under every display setting, so this costs nothing.
+            "thinking": {"type": "adaptive", "display": "summarized"},
             "output_config": {**output_config, "effort": effort},
         }
 

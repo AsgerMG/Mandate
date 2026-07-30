@@ -27,6 +27,8 @@ type Props = {
    *  reading and reasoning, which took ~90s of a 180s run when measured — so the
    *  distinction is most of the wait, not a detail. */
   writing: boolean;
+  /** The model's summarised reasoning so far (tail only). */
+  thinking: string;
   notifyOnDone: boolean;
   onAskToNotify: () => void;
 };
@@ -43,6 +45,7 @@ export default function LiveProgress({
   stage,
   correcting,
   writing,
+  thinking,
   notifyOnDone,
   onAskToNotify,
 }: Props) {
@@ -87,9 +90,21 @@ export default function LiveProgress({
           is the honest fix; more animation would not be. */}
       {!writing && !correcting && (
         <p className="muted stage-hint">
-          Reading the retrieved provisions and working out which of them actually bind you. Text
-          starts appearing once it begins drafting.
+          Reading the retrieved provisions and working out which of them actually bind you.
         </p>
+      )}
+
+      {/* The model's OWN summarised reasoning, streamed while it thinks. Thinking
+          runs before any answer text and measured ~90-100s of a ~180s brief — the
+          stretch where a user decides whether the thing is working at all. Showing
+          real reasoning is the honest way to fill it; inventing plausible-sounding
+          narration would be the same fabrication the brief prompt forbids
+          elsewhere. Yields to the draft the moment writing starts. */}
+      {!writing && thinking && (
+        <div className="deliberation" aria-live="polite">
+          <span className="deliberation-label">In deliberation</span>
+          <p className="deliberation-body">{thinking}</p>
+        </div>
       )}
 
       {correcting && (

@@ -1034,6 +1034,7 @@ def generate_briefing(
     on_stage: Callable[[str, str], None] | None = None,
     on_delta: Callable[[str], None] | None = None,
     on_sources: Callable[[dict], None] | None = None,
+    on_thinking: Callable[[str], None] | None = None,
     reranker: Reranker | None = None,
 ) -> dict[str, Any]:
     """Retrieve relevant passages, then (unless dry_run) ask Claude for a grounded
@@ -1061,6 +1062,12 @@ def generate_briefing(
     output-token progress observable, and latency is ~entirely a function of output
     tokens (r=+1.00 at 93.6 tok/s, measured 2026-07-29), so it is also what makes an
     honest ETA possible. See project-management/brief-ux-plan.md.
+
+    ``on_thinking(text)`` receives the model's summarised reasoning as it thinks.
+    Thinking precedes any answer text and measured ~90-100s of a ~180s brief, so
+    this is what fills the longest stretch of the wait — with the model's own
+    reasoning rather than invented narration. Requires
+    ``thinking.display="summarized"`` (see reasoning_params).
 
     ``on_sources(digest)`` fires once, after retrieval, with what this run is about
     to reason over (see sources_digest) — named instruments and press outlets, for
@@ -1099,10 +1106,22 @@ def generate_briefing(
             forwarded = False
             try:
                 with client.messages.stream(**request) as stream:
-                    if live and on_delta is not None:
-                        for chunk in stream.text_stream:
-                            forwarded = True
-                            on_delta(chunk)
+                    if live and (on_delta is not None or on_thinking is not None):
+                        # Raw events rather than `stream.text_stream`, which yields
+                        # only answer text. Thinking comes first and dominates the
+                        # wait (~90-100s of a ~180s brief), so the reasoning
+                        # summary is the difference between a visibly working
+                        # machine and a stalled page.
+                        for event in stream:
+                            if getattr(event, "type", None) != "content_block_delta":
+                                continue
+                            delta = event.delta
+                            kind = getattr(delta, "type", None)
+                            if kind == "thinking_delta" and on_thinking is not None:
+                                on_thinking(getattr(delta, "thinking", "") or "")
+                            elif kind == "text_delta" and on_delta is not None:
+                                forwarded = True
+                                on_delta(getattr(delta, "text", "") or "")
                     return stream.get_final_message()
             except Exception as exc:  # noqa: BLE001 - re-raised below when unsafe
                 if forwarded or not _is_transient(exc) or attempt == 2:
