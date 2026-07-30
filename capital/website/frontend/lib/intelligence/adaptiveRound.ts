@@ -228,8 +228,25 @@ export async function planAdaptiveScreen(
           `THIS company in the founder's words, never about the category in ` +
           `general.\n${commercialBlock}\n\n` +
           `## How to choose\n` +
-          `- NEVER ask anything already answered above. If the stage, sector, ` +
-          `ticket or use of funds settles a question, it is settled.\n` +
+          `- FOUR questions is the target. Six is a ceiling, not a budget. A ` +
+          `screen of four sharp questions beats one padded to six.\n` +
+          `- Ask in the FOUNDER'S world, never the programme's. The ` +
+          `requirement tells you WHY a question matters; it never gives you ` +
+          `the words. Test every word you use: could this founder have used ` +
+          `it themselves, about their own business, before they had ever ` +
+          `heard of this fund? If a word exists only because the fund's ` +
+          `document uses it, it does not belong in the question or its ` +
+          `options. And if answering at all would require having read a call ` +
+          `text or a regulation, do not ask it, however important the gate. ` +
+          `Where a technical scale genuinely is clearest, describe the rungs ` +
+          `in plain words and put the term in brackets, never the reverse.\n` +
+          `- NEVER ask anything already answered above, including anything the ` +
+          `founder's own description settles. If the stage, sector, ticket or ` +
+          `use of funds settles a question, it is settled.\n` +
+          `- Where their description is CLOSE but genuinely ambiguous, quote ` +
+          `their own words back and ask only for the distinction still open ` +
+          `("You describe X. Is that A or B?"). A cold question about ` +
+          `something they just told you reads as not having read it.\n` +
           `- NEVER ask the same thing twice in different words. Two questions ` +
           `measuring on one scale (readiness levels, percentage bands, ` +
           `headcount) are one question, however differently they are framed.\n` +

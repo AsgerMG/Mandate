@@ -94,6 +94,35 @@ function main() {
     }
   }
 
+  // ── A rule states a property; it does not enumerate cases ──────────────
+  // A register of banned phrases is the failure this whole architecture
+  // exists to stop, and it is seductive because each entry is individually
+  // correct. It does not scale: it only ever covers the cases someone has
+  // already seen, and the next fund, language or phrasing walks straight past
+  // it.
+  //
+  // Detected by shape rather than by meaning. A rule that quotes three or more
+  // literals in a row is almost always listing instances instead of naming the
+  // property they share. The fix is always the same: replace the list with a
+  // TEST the reader can apply to a word or case nobody has seen yet.
+  for (const c of contracts) {
+    for (const block of c.body.split(/\n(?=- [A-Z]+-)/)) {
+      const m = block.match(/^-\s+([A-Z]+-B?\d+)/);
+      if (!m) continue;
+      // Ignore the evidence note: quoting the run that revealed a rule is
+      // exactly what evidence is for.
+      const ruleText = block.split(/\*\*evidence:/)[0];
+      const quoted = ruleText.match(/"[^"]{2,40}"/g) ?? [];
+      if (quoted.length >= 3) {
+        problems.push({
+          axis: "enumeration",
+          detail: `${c.file}: ${m[1]} lists ${quoted.length} quoted cases (${quoted.slice(0, 3).join(", ")}…). ` +
+            `State the property and give a test that works on cases not yet seen.`,
+        });
+      }
+    }
+  }
+
   // House rule: a rule names a property, never an instance. Company names are
   // not detectable generically, but the shape that caused the problem is —
   // rule text citing a specific run belongs in an evidence note beside the

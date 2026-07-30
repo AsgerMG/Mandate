@@ -30,11 +30,25 @@ export default function QuestionsPreviewPage() {
       <p className="mb-1 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--accent)]">
         Round 2 · generated questions
       </p>
-      <h1 className="mb-8 text-2xl font-semibold">What a founder is actually asked</h1>
+      <h1 className="mb-2 text-2xl font-semibold">What a founder is actually asked</h1>
+      {/* One screen per founder, framed as one screen. Stacked continuously
+          this page read as a single 70-question interrogation, which is not a
+          flow any founder sees and made the set look far worse than it is. */}
+      <p className="mb-8 max-w-2xl text-[15px] text-[var(--muted-foreground)]">
+        Each block below is one founder&rsquo;s entire round-2 screen. They are
+        different companies, not a sequence: nobody is asked more than what is
+        inside a single block.
+      </p>
       {[...byArchetype.entries()].map(([archetype, qs]) => (
-        <section key={archetype} className="mb-10 border-t border-[var(--border)] pt-5">
-          <p className="mb-4 text-sm font-semibold text-[var(--muted-foreground)]">
-            {archetype} · {qs.length} questions
+        <section
+          key={archetype}
+          className="mb-8 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-6"
+        >
+          <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent)]">
+            One founder · one screen
+          </p>
+          <p className="mb-5 text-sm font-semibold">
+            {archetype} · {qs.length} question{qs.length === 1 ? "" : "s"}
           </p>
           <div className="space-y-6">
             {qs.map((q, i) => (

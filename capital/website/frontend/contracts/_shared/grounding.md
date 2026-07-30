@@ -40,9 +40,13 @@ merely badly written.
 
 - GND-8 (judged) Register: this is public-awards intelligence. The reader learns
   where and for what comparable entities received public funding, and what that
-  implies for their own raise. Comparable companies are never rivals and never
-  a race. Forbidden: urgency framing about other companies, and the word
-  "competitor" — write "comparable company" or "peer".
+  implies for their own raise.
+
+  The test: **does the sentence describe evidence, or create pressure?** Any
+  framing that casts another company as a rival, or urges the reader to act
+  because of what someone else did, fails whatever words it uses. Comparable
+  companies are proof that public capital flows into this space, never a race
+  the reader is losing.
 
 ## Banned
 

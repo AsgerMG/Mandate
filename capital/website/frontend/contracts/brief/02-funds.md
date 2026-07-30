@@ -34,9 +34,12 @@ reporting, not prose to publish. Say what the row is and let it stand.
 - FUND-2 (hard) At most five rows.
 - FUND-3 (hard) No two rows resolve to the same institution under the same
   legal basis. One route shown twice spends a scarce row on nothing.
-- FUND-4 (hard) `nextStep` is an action the founder can start. Never
-  "monitor", "revisit", "deprioritise", "treat as informational" or any other
-  instruction to wait.
+- FUND-4 (hard) `nextStep` is an action the founder can start.
+
+  The test: **could they begin it this week, and would they know they had
+  begun?** Anything resolving to waiting, watching or deciding later fails,
+  whatever it is called. A row whose honest next step is to wait does not
+  belong in the brief at all.
 - FUND-5 (hard) `whyEligible` and `nextStep` are always written. The fallback
   text the pipeline substitutes when they are missing is a defect, not a
   default.

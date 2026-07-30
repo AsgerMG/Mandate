@@ -32,8 +32,11 @@ generators whose output is deduplicated afterwards.
   product. Four separate downstream dedupe rules had been added over time and
   none of them caught it.
 
-**At most six questions.** The cap is enforced in code after planning, not
-requested in the prompt.
+**Four questions is the target. Six is the ceiling, not the budget.** The cap is
+enforced in code; the target is a judgement the planner makes. A screen that
+asks four sharp questions is better than one that fills six, and questions
+exist to change which funds publish or to make positioning writable — not to
+demonstrate thoroughness.
 
 ## Two halves, two disciplines
 
@@ -92,6 +95,31 @@ must be able to weaken prose and never to move a legal conclusion.
   seat. Neither half was wrong alone, which is why nothing caught it.
 
 - Q-6 (judged) A founder can answer from memory, without opening a document.
+  If answering would require having read a work programme, a call text or a
+  regulation, the question does not belong on the screen whatever gate it came
+  from.
+- Q-12 (judged) Ask in the founder's world, never the programme's. The
+  requirement is WHY a question matters; it never supplies the words.
+
+  The test, applied per word rather than against a list: **could this founder
+  have used this word themselves, about their own business, before they had
+  ever heard of this fund?** If a word exists only because a programme
+  document uses it, it does not belong in the question or its options. This
+  holds for vocabulary from funds we have never encountered, in any language,
+  which a list of banned phrases would not.
+
+  Where a technical scale genuinely is the clearest way to ask, describe the
+  rungs in plain words and put the term in brackets, never the reverse.
+
+  **evidence:** a screen opened with whether the company's work was "aligned to
+  a specific Horizon Europe call topic" and asked "which eligible cost category
+  under GBER" the funding targeted. Both are answerable by a grants consultant
+  and by nobody else, and they make an intelligence product read as paperwork.
+
+- Q-13 (judged) Do not ask what the founder's own description already answers.
+  Where the description is close but genuinely ambiguous, quote their words in
+  the question and ask for the specific distinction that is still open. A
+  cold question about something they just told us reads as not having read it.
 - Q-7 (judged) Questions name what this company actually does, in the
   founder's own words, so the screen reads as written for them.
 - Q-8 (judged) Ask about the project and the business, never about legal form,
