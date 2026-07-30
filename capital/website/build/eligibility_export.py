@@ -136,8 +136,17 @@ def main() -> None:
         # curated.
         "application": apply_by_instrument.get(inst["id"])
                        or apply_by_instrument.get(inst["parent_id"]),
-        "gates": gates_by_instrument.get(inst["id"])
-                 or gates_by_instrument.get(inst["parent_id"], []),
+        # ── Gates are NOT copied into children ───────────────────────────────
+        # A child carries no gates of its own by design; it inherits the parent
+        # regime's, and that inheritance is resolved at READ time (corpus.ts)
+        # rather than by duplicating the array into every child.
+        #
+        # Copying looked harmless and was the largest single cost in the
+        # payload: one country's 78 children duplicated roughly 2,300 gate
+        # objects, and the same shape across 22 countries puts the per-request
+        # payload several times over budget. The arrays are identical by
+        # construction, so shipping them once costs nothing in fidelity.
+        "gates": gates_by_instrument.get(inst["id"], []),
     } for inst in instruments]
 
     OUT.write_text(json.dumps(

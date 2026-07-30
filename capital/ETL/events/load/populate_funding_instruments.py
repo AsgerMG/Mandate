@@ -197,20 +197,33 @@ GBER_ARTICLE_GATES = {
 
 
 # ── Which rollups get split into per-authority, per-scheme children ─────────
-# France first, deliberately. The split is a real change to how the corpus is
-# shaped, and one country is enough to measure whether it helps: 318
-# authority x scheme combinations sit under these two rows, 77 of them with
-# twenty or more awards, covering 94% of French award volume.
+# Every state-aid register rollup, all 22 countries. Each one is a whole
+# country's aid regime in a single row: the right unit for the curated
+# eligibility layer, which is written against the regime's framework document,
+# and the wrong unit for a founder, who cannot apply to "French R&D state aid".
+# Underneath sit real granting bodies running real notified schemes.
 #
-# Rolling it across all 22 countries at once would also breach the
-# per-request payload budget (headroom is roughly 700 instruments; 22
-# countries at this rate is several times that), so a wider rollout needs the
-# shortlist to query rather than ship the corpus. That is a separate change.
-SPLIT_FAMILIES = {"satr_fr_rnd", "satr_fr_equity"}
+# France ran first as a proving ground and the split held: no curated gate was
+# orphaned, and the ranking went from two rollups to Bpifrance, Caisse des
+# Depots and the defence innovation agency.
+#
+# The constraint on going wider was never the split, it was that the exporter
+# COPIED each parent's gate array into every child, which put the per-request
+# payload several times over budget. Gates are now stored once and inherited
+# at read time, so the corpus can carry the detail.
+def split_families(conn) -> set[str]:
+    """Every SATR rollup in the corpus, read rather than listed.
 
-# Below this an instrument is not a programme, it is a handful of awards that
-# happen to share a code. They stay counted in the parent.
-MIN_CHILD_EVENTS = 20
+    A hardcoded list would go stale the moment a country is added, and it
+    would go stale silently: the new country would simply never get the
+    granularity, which looks exactly like a country we have thin data for.
+    """
+    return {r[0] for r in conn.execute(
+        "SELECT DISTINCT source_family_bucket FROM funding_instruments "
+        "WHERE id LIKE 'satr\\_%' ESCAPE '\\' AND source_family_bucket IS NOT NULL")}
+
+
+MIN_CHILD_EVENTS = 40
 
 
 def child_slug(text: str) -> str:
@@ -273,6 +286,9 @@ def main() -> None:
 
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
+    split_targets = {f for f in (
+        r[0] for r in conn.execute(
+            "SELECT DISTINCT id FROM funding_instruments WHERE id LIKE 'satr%'")) if f}
 
     rows = conn.execute("""
         SELECT e.source, e.company_id, c.country, c.parent_group, c.sector_top,
@@ -357,7 +373,7 @@ def main() -> None:
         # CHILDREN. Nothing is moved, so nothing is orphaned: the reconcile
         # above only deletes gates whose instrument disappeared, and no
         # instrument disappears here.
-        if fam in SPLIT_FAMILIES and r["granting_authority"] and r["call_id"]:
+        if fam in split_targets and r["granting_authority"] and r["call_id"]:
             key = (fam, r["granting_authority"][:200], r["call_id"])
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
@@ -508,7 +524,7 @@ def main() -> None:
         kept_children += 1
     if kept_children:
         print(f"  split: {kept_children} per-authority/scheme children under "
-              f"{len(SPLIT_FAMILIES)} rollups")
+              f"{len(split_targets)} rollups")
     # Every row must carry the new columns, children and parents alike.
     for row in now:
         row.setdefault("scheme_code", None)

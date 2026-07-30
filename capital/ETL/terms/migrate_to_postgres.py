@@ -45,8 +45,9 @@ def fetch_sqlite():
     sources = conn.execute("SELECT * FROM funding_instrument_sources").fetchall()
     gates = conn.execute("SELECT * FROM eligibility_gates").fetchall()
     clauses = conn.execute("SELECT * FROM eligibility_clauses").fetchall()
+    applications = conn.execute("SELECT * FROM instrument_application").fetchall()
     conn.close()
-    return instruments, sources, gates, clauses
+    return instruments, sources, gates, clauses, applications
 
 
 def main() -> None:
@@ -58,7 +59,7 @@ def main() -> None:
     if not url:
         _sys.exit("DATABASE_URL not set (add to .env.local)")
 
-    instruments, sources, gates, clauses = fetch_sqlite()
+    instruments, sources, gates, clauses, applications = fetch_sqlite()
     print(f"SQLite: {len(instruments)} instruments, {len(sources)} sources, "
           f"{len(gates)} gates, {len(clauses)} clauses")
     if args.dry_run:
@@ -84,6 +85,26 @@ def main() -> None:
             # fails on the next run with an unhelpful "column does not exist".
             cur.execute("ALTER TABLE funding_instruments "
                         "ADD COLUMN IF NOT EXISTS administering_body_share REAL")
+            # Added with the per-authority/scheme split and the sector-affinity
+            # signal. Without these the live product hydrates instruments with
+            # the columns missing, and the fit score's sector component
+            # silently returns its neutral value for every fund — a ranking
+            # that differs from the measured one with nothing to show for it.
+            for ddl in ("scheme_code TEXT", "application_url TEXT", "sector_mix TEXT"):
+                cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
+            # Curated application routes live in their own table because
+            # funding_instruments is truncated on every publish.
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS instrument_application (
+                  id            TEXT PRIMARY KEY,
+                  instrument_id TEXT NOT NULL,
+                  channel       TEXT,
+                  timeline      TEXT,
+                  url           TEXT,
+                  quote         TEXT,
+                  source_file   TEXT,
+                  updated_at    TIMESTAMPTZ DEFAULT now()
+                )""")
 
             embeddings_before = cur.execute(
                 "SELECT COUNT(*) FROM eligibility_embeddings").fetchone()[0]
@@ -97,12 +118,14 @@ def main() -> None:
                       administering_body_share,
                       ndb_id, source_family_bucket, capital_type, capital_type_basis,
                       event_count, company_count, total_eur, first_year, last_year,
-                      is_framework, sample_project_titles)
-                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                      is_framework, sample_project_titles,
+                      scheme_code, application_url, sector_mix)
+                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                 [(r["id"], r["name"], r["name_source"], r["country"], r["administering_body"],
                   r["administering_body_share"], r["ndb_id"], r["source_family_bucket"], r["capital_type"], r["capital_type_basis"],
                   r["event_count"], r["company_count"], r["total_eur"], r["first_year"], r["last_year"],
-                  bool(r["is_framework"]), r["sample_project_titles"]) for r in instruments],
+                  bool(r["is_framework"]), r["sample_project_titles"],
+                  r["scheme_code"], r["application_url"], r["sector_mix"]) for r in instruments],
             )
             # Pass 2: fill in parent_id now that every row exists.
             cur.executemany(
@@ -110,6 +133,14 @@ def main() -> None:
                 [(r["parent_id"], r["id"]) for r in instruments if r["parent_id"]],
             )
 
+            cur.execute("TRUNCATE instrument_application")
+            cur.executemany(
+                """INSERT INTO instrument_application
+                     (id, instrument_id, channel, timeline, url, quote, source_file)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+                [(r["id"], r["instrument_id"], r["channel"], r["timeline"],
+                  r["url"], r["quote"], r["source_file"]) for r in applications],
+            )
             cur.executemany(
                 "INSERT INTO funding_instrument_sources (instrument_id, source) VALUES (%s, %s)",
                 [(r["instrument_id"], r["source"]) for r in sources],

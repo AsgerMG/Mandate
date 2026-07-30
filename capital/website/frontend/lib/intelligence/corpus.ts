@@ -230,7 +230,7 @@ export async function hydrateDbInstruments(): Promise<void> {
   if (dbInstrumentsCache !== undefined) return;
   const url = process.env.DATABASE_URL;
   if (!url) {
-    dbInstrumentsCache = loadDbInstrumentsFromJson();
+    dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
     return;
   }
   try {
@@ -247,12 +247,13 @@ export async function hydrateDbInstruments(): Promise<void> {
     await client.connect();
     await client.query("SET statement_timeout = 2000");
     try {
-      const [instRes, gateRes] = await Promise.all([
+      const [instRes, gateRes, appRes] = await Promise.all([
         client.query(
           `SELECT id, parent_id, name, country, capital_type, is_framework,
                   event_count, company_count, total_eur, source_family_bucket,
                   sample_project_titles, administering_body,
-                  administering_body_share, last_year
+                  administering_body_share, last_year,
+                  scheme_code, application_url, sector_mix
            FROM funding_instruments`,
         ),
         // PHASE ONE: everything needed to RANK and to reach a verdict, and
@@ -268,6 +269,13 @@ export async function hydrateDbInstruments(): Promise<void> {
                   verification_level
            FROM eligibility_gates`,
         ),
+        // Curated application routes. Its own table because
+        // funding_instruments is truncated on every publish; joining here
+        // keeps the Postgres path carrying the same fields as the JSON
+        // fallback, which is the only way the two can be trusted to rank
+        // identically.
+        client.query(
+          `SELECT instrument_id, channel, timeline, url FROM instrument_application`),
       ]);
       const ASSERTABLE = new Set(["llm_2pass", "human_verified"]);
       const gatesByInstrument = new Map<string, DbGate[]>();
@@ -291,7 +299,10 @@ export async function hydrateDbInstruments(): Promise<void> {
         });
         gatesByInstrument.set(g.instrument_id, list);
       }
-      dbInstrumentsCache = instRes.rows.map((inst): DbInstrument => ({
+      const appByInstrument = new Map<string, { channel: string | null; timeline: string | null; url: string | null }>(
+        (appRes.rows as { instrument_id: string; channel: string | null; timeline: string | null; url: string | null }[])
+          .map((r) => [r.instrument_id, { channel: r.channel, timeline: r.timeline, url: r.url }]));
+      dbInstrumentsCache = resolveInheritedGates(instRes.rows.map((inst): DbInstrument => ({
         id: inst.id,
         parentId: inst.parent_id,
         name: inst.name,
@@ -306,14 +317,27 @@ export async function hydrateDbInstruments(): Promise<void> {
         administeringBody: inst.administering_body ?? null,
         administeringBodyShare: inst.administering_body_share ?? null,
         lastYear: inst.last_year ?? null,
+        schemeCode: inst.scheme_code ?? null,
+        applicationUrl: inst.application_url ?? null,
+        // Stored as JSON text in both stores. Parsed here rather than at every
+        // read site so the shape is identical on the Postgres and JSON paths;
+        // the two diverging silently is how a scored component ends up neutral
+        // in production and correct on a laptop.
+        // Inherited from the parent regime, same rule as the JSON export.
+        application: appByInstrument.get(inst.id) ?? (inst.parent_id ? appByInstrument.get(inst.parent_id) : undefined) ?? null,
+        sectorMix: (() => {
+          const raw = inst.sector_mix;
+          if (!raw) return null;
+          try { return typeof raw === "string" ? JSON.parse(raw) : raw; } catch { return null; }
+        })(),
         gates: gatesByInstrument.get(inst.id) ?? [],
-      }));
+      })));
     } finally {
       await client.end();
     }
   } catch (err) {
     console.error("Postgres hydration failed, falling back to instrument_terms.json:", err);
-    dbInstrumentsCache = loadDbInstrumentsFromJson();
+    dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
   }
 }
 
@@ -390,7 +414,7 @@ export async function hydrateGateDetail(instrumentIds: string[]): Promise<void> 
  *  querying Postgres a second time. */
 export function loadDbInstruments(): DbInstrument[] {
   if (dbInstrumentsCache === undefined) {
-    dbInstrumentsCache = loadDbInstrumentsFromJson();
+    dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
   }
   return dbInstrumentsCache ?? [];
 }
@@ -467,6 +491,27 @@ export function loadSignalsDigest(): SignalsDigest | null {
  * the shortlist path each need it and the two disagreeing would be invisible:
  * one would publish a container, the other its children, for the same founder.
  */
+/**
+ * Give every child its parent regime's gates.
+ *
+ * A child of a state-aid rollup is a granting body operating under that
+ * regime, so the regime's encoded rules are its rules. They are stored once
+ * against the parent and resolved here rather than copied into each child by
+ * the exporter: copying was the largest single cost in the per-request
+ * payload, and duplicating an audited layer hundreds of times is how it
+ * eventually drifts apart.
+ *
+ * Applied to whichever source loaded the corpus, so the Postgres and JSON
+ * paths cannot disagree about which rules a fund has.
+ */
+function resolveInheritedGates(all: DbInstrument[]): DbInstrument[] {
+  const byId = new Map(all.map((i) => [i.id, i]));
+  return all.map((i) =>
+    i.gates.length === 0 && i.parentId && byId.get(i.parentId)?.gates.length
+      ? { ...i, gates: byId.get(i.parentId)!.gates }
+      : i);
+}
+
 export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const hasChildren = new Set(

@@ -961,7 +961,25 @@ async function synthesize(
   // so a tight deadline trades quality for latency, never success. It is the
   // pathological case (bunq) that pays, burning the full budget before the
   // retry can start.
-  const WRITER_TIMEOUT_MS = 150_000;
+  // Adaptive thinking existed for a judgement the writer no longer makes.
+  //
+  // It was introduced to let the model size its own prioritisation effort:
+  // which candidates to disqualify, how to order them, which to drop. Phase 4
+  // moved all of that to a deterministic score. What remains is writing a note
+  // per row for rows it is handed, in the order given, which is not a task
+  // that needs extended reasoning.
+  //
+  // Meanwhile the failure mode the original comment warned about had become
+  // the common case, not the pathological one: adaptive spent the entire
+  // budget thinking and emitted NOTHING on three of four measured runs
+  // (chars: 0, stop: timeout at 150s), then the thinking-off retry produced a
+  // complete brief in 24-27s. Most briefs were being written by the fallback
+  // path, which is also the path that overruns the word caps.
+  //
+  // So thinking-off is the primary path now and the budget shrinks to match
+  // what that path actually takes, with headroom. The retry is kept for
+  // genuine failures rather than for a self-inflicted timeout.
+  const WRITER_TIMEOUT_MS = 90_000;
   const WRITER_RETRY_TIMEOUT_MS = 90_000;
   const writerCall = (thinking: "adaptive" | "disabled") => client.messages.stream({
     model: WRITER_MODEL,
