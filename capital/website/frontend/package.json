@@ -19,7 +19,8 @@
     "shadow": "npx tsx scripts/shadow_fit.ts",
     "funnel": "npx tsx scripts/funnel_bench.ts",
     "preview:pdf": "bash scripts/preview_pdf.sh",
-    "shot": "bash scripts/shot.sh"
+    "shot": "bash scripts/shot.sh",
+    "drive": "node scripts/drive.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",
