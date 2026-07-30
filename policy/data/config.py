@@ -77,7 +77,8 @@ class Settings(BaseSettings):
     # Comma-separated origins the browser is allowed to call the API from.
     # localhost is always included (dev never breaks); add the deployed
     # front-end's real origin(s) here in production — e.g.
-    # "https://regina-intel.vercel.app".
+    # "https://regina-ai.eu,https://www.regina-ai.eu" — apex and www are separate
+    # origins to a browser, so list both if both resolve.
     cors_allow_origins: str = ""
 
     # Guards POST /api/refresh once the API is reachable from the public

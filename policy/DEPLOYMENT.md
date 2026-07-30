@@ -10,7 +10,7 @@ existed precisely because none of this was written down.
 |---|---|---|---|
 | Postgres + pgvector (the corpus) | Railway | project `regina`, service `pgvector` | n/a — managed; data flows in via `regina refresh`/`regina embed` from anywhere that has `DATABASE_URL` |
 | FastAPI backend (`etl/api.py`) | Railway | same project, service `Regina` → https://regina-production.up.railway.app | **Auto-deploys on push to `main`** (git-connected to `AsgerMG/Regina`, builds via the root `Dockerfile`, config in `railway.json`) |
-| Next.js site (`website/`) | Vercel | project `regina` (team `asgermgs-projects`) → https://regina-intel.vercel.app | Push to `main` (git-connected) or `vercel redeploy <latest-deployment-url> --target production` from `website/` |
+| Next.js site (`website/`) | Vercel | project `regina` (team `asgermgs-projects`) → **https://regina-ai.eu** (custom domain; `regina-intel.vercel.app` is the Vercel-assigned one behind it) | Push to `main` (git-connected) or `vercel redeploy <latest-deployment-url> --target production` from `website/` |
 
 There is exactly ONE database. Local runs, the deployed API, and `regina
 refresh` from any machine all read/write the same Railway Postgres via
@@ -68,7 +68,7 @@ curl https://regina-production.up.railway.app/api/refresh   # status
 
 # --- sanity-check prod end to end ---
 curl https://regina-production.up.railway.app/api/stats
-# then open https://regina-intel.vercel.app/documents and confirm the
+# then open https://regina-ai.eu/documents and confirm the
 # register shows real counts, NOT "Corpus is empty" (that message = the site
 # can't reach the API: check NEXT_PUBLIC_API_URL and CORS_ALLOW_ORIGINS)
 ```
@@ -92,8 +92,10 @@ curl https://regina-production.up.railway.app/api/stats
   (`europoltracker-production.up.railway.app` →
   `regina-production.up.railway.app` — old domain is DEAD), Vercel project
   (`euro-pol-tracker` → `regina`). `regina.vercel.app` was taken by another
-  Vercel user, so the site's domain is **`regina-intel.vercel.app`**;
-  `euro-pol-tracker.vercel.app` remains attached as a 308 redirect to it.
+  Vercel user, so the Vercel-assigned domain is `regina-intel.vercel.app`;
+  `euro-pol-tracker.vercel.app` remains attached as a 308 redirect to it. The
+  **custom domain `regina-ai.eu` was added 2026-07-30** and is now the canonical
+  public address.
   `NEXT_PUBLIC_API_URL` (Vercel) and `CORS_ALLOW_ORIGINS`/`HTTP_USER_AGENT`
   (Railway) were updated in the same cutover, followed by a Vercel rebuild
   (build-time baking) and a Railway redeploy (var changes need one).
@@ -105,3 +107,57 @@ curl https://regina-production.up.railway.app/api/stats
   `BACKFILL_DAYS` found stale at 730 vs the intended 7300.
 - Deployment knowledge lived nowhere before this file; backlog.md Milestone 4
   still said "⬜ Deploy" while prod had in fact been serving for days.
+
+
+## Changing the site's domain
+
+The functional surface is small — the site has no `metadataBase`, no sitemap or
+robots route, no absolute URLs in its components, and the PDF export embeds none.
+So a domain change is four things, and only the first can break the product:
+
+1. **`CORS_ALLOW_ORIGINS` on Railway** (comma-separated, no trailing slash):
+   `https://regina-ai.eu,https://www.regina-ai.eu`. **Apex and `www` are different
+   origins to a browser**, so list every one that resolves. This is the item that
+   fails *quietly*: the page loads fine and every `/api/*` fetch is blocked, so it
+   looks like the API is down rather than like a config problem. Restart the
+   service after setting it — the value is read once at import (`data/config.py`).
+2. **Vercel domain + DNS**: add the domain to the Vercel project, then the records
+   Vercel prints (A/ALIAS for the apex, CNAME for `www`). Keep
+   `regina-intel.vercel.app` attached; it costs nothing and stays a working
+   fallback while DNS propagates.
+3. **`NEXT_PUBLIC_API_URL` on Vercel** — only if the API *also* moves (e.g. to
+   `api.regina-ai.eu`). If the backend stays on
+   `regina-production.up.railway.app`, leave it alone. It is baked in at build
+   time, so changing it needs a rebuild, not just a redeploy.
+4. **Docs**: `.env.example`, the `cors_allow_origins` comment in `data/config.py`,
+   and this file.
+
+### Verifying it — and two ways to get this wrong
+
+**`curl` cannot answer this question.** It ignores CORS entirely, so a blocked
+origin still returns a clean 200 from the command line. Worse, the obvious curl
+probe is actively misleading: `curl -sI` sends a **HEAD** request, `/api/stats`
+only allows GET, and the header is not reliably attached to the resulting 405 — so
+you get "NO HEADER" for an origin that is perfectly well configured. That happened
+here on 2026-07-30 and produced a confident, wrong "still blocked" report.
+
+If you must use curl, send the request the browser actually sends — a GET with an
+Origin, reading response headers:
+
+```bash
+curl -s -D - -o /dev/null -H "Origin: https://regina-ai.eu" \
+  https://regina-production.up.railway.app/api/stats | grep -i access-control-allow-origin
+```
+
+**The only check that settles it is a browser.** Load
+`https://regina-ai.eu/documents`, confirm rows actually render, and confirm the
+console is clean — a CORS failure shows up as an empty page with `net::ERR_FAILED`
+per request, never as a non-200. Automating it takes about a minute:
+
+```python
+# playwright: fails loudly on the thing curl cannot see
+page.on("console", lambda m: m.type == "error" and errors.append(m.text))
+page.on("requestfailed", lambda r: failed.append(r.url))
+page.goto("https://regina-ai.eu/documents", wait_until="networkidle")
+rows = page.evaluate("document.querySelectorAll('a[href^=\"/documents/\"]').length")
+```

@@ -10,25 +10,32 @@
 // fall back to "press" (see `categoryFor`) rather than silently disappearing
 // from the About page.
 
-export type SourceCategory = "law" | "regulator" | "press" | "consultation";
+export type SourceCategory = "law" | "regulator" | "press";
 
 export const CATEGORY_LABELS: Record<SourceCategory, string> = {
   law: "Law & legislative pipeline",
   regulator: "Regulators & courts",
   press: "Press & specialist media",
-  consultation: "Consultations",
 };
 
 export const CATEGORY_NOTES: Record<SourceCategory, string> = {
-  law: "Official legal texts, legislative procedure trackers, consolidated statutes, and verbatim parliamentary proceedings.",
+  law: "Open consultations, official legal texts, legislative procedure trackers, consolidated statutes, and verbatim parliamentary proceedings.",
   regulator: "Press releases and decisions straight from the regulators, data-protection authorities, and courts themselves.",
   press: "Specialist tech and policy journalism, analysis, and cross-outlet news monitors.",
-  consultation: "Public consultation platforms — where a proposal is open for input before it's law.",
 };
 
 // Legislative/legal-text pipeline, plus verbatim parliamentary proceedings
-// (the record of what was actually said while a text moved through it).
+// (the record of what was actually said while a text moved through it) and the
+// consultation platforms that sit at the front of the same pipeline.
+//
+// Consultations used to be their own category, which the Coverage grid then
+// explicitly filtered out — so `have_your_say` and its 365 documents were
+// invisible on the site despite being the most forward-looking signal in the
+// corpus (a proposal open for input before it is law). Folded in here 2026-07-30
+// rather than given a fourth card: it *is* the same pipeline, just its earliest
+// stage.
 const LAW_KEYS = new Set([
+  "have_your_say",
   "eurlex",
   "eurlex_com_proposals",
   "eurlex_ep_council_legislation",
@@ -88,9 +95,6 @@ const REGULATOR_KEYS = new Set([
   "eprs_blog",
 ]);
 
-// Public consultation platforms.
-const CONSULTATION_KEYS = new Set(["have_your_say"]);
-
 // Everything else — independent/specialist press, industry-association
 // comms, research-institute news, cross-outlet monitors — falls through to
 // "press" via categoryFor's default.
@@ -98,8 +102,7 @@ const CONSULTATION_KEYS = new Set(["have_your_say"]);
 export function categoryFor(sourceKey: string): SourceCategory {
   if (LAW_KEYS.has(sourceKey)) return "law";
   if (REGULATOR_KEYS.has(sourceKey)) return "regulator";
-  if (CONSULTATION_KEYS.has(sourceKey)) return "consultation";
   return "press";
 }
 
-export const CATEGORY_ORDER: SourceCategory[] = ["law", "regulator", "press", "consultation"];
+export const CATEGORY_ORDER: SourceCategory[] = ["law", "regulator", "press"];

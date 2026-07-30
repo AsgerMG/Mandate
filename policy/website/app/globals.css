@@ -274,43 +274,13 @@ main.container { flex: 1 0 auto; width: 100%; }
    inconsistently depending on how long that particular category's name was. */
 .coverage-badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 2px; }
 
-/* Register: per-stage "show more" toggle instead of dumping every row */
-.show-more {
-  display: inline-block; margin-top: 10px; background: none; border: none; cursor: pointer;
-  padding: 0; font-family: var(--font-sans); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); font-weight: 600; color: var(--ink-soft);
-  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rule);
-}
-.show-more:hover { color: var(--accent-deep); text-decoration-color: currentColor; }
-
-/* Document filters row */
-.filters { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin: 34px 0 8px; }
-.filters input[type="text"] { max-width: 320px; }
-
-/* Register (document list) */
-.register { border-top: 1px solid var(--ink); }
-.register-row {
-  display: flex; align-items: center; gap: 16px; padding: 13px 0;
-  border-bottom: 1px solid var(--line-soft); color: inherit;
-}
-.register-row:hover { text-decoration: none; background: rgba(16, 32, 63, 0.025); }
-.register-row:hover .register-title { text-decoration: underline; text-decoration-color: var(--rule); }
-.register-title {
-  flex: 1; font-family: var(--font-serif); font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); color: var(--ink); line-height: 1.4;
-  min-width: 200px; overflow-wrap: break-word;
-}
-.register-meta {
-  display: flex; gap: 12px; align-items: center; font-size: clamp(12px, 9.36px + 0.2063vw, 14.64px); color: var(--muted);
-  flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end;
-}
-@media (max-width: 640px) {
-  /* register-title's 200px min-width plus a non-shrinking register-meta was
-     wider than the viewport, forcing the whole page to scroll horizontally
-     and everything else to render squeezed. Let each row wrap onto two lines
-     instead. */
-  .register-row { flex-wrap: wrap; row-gap: 6px; }
-  .register-title { flex-basis: 100%; min-width: 0; }
-  .register-meta { justify-content: flex-start; }
-}
+/* The document search box, jurisdiction filter chips and the paginated register
+   of rows were removed from /documents on 2026-07-30 (the page is now Coverage +
+   Hot right now only), and their styles went with them: .filters, .register,
+   .register-row/-title/-meta, .show-more and the 640px row-wrapping override
+   that existed to stop .register-row overflowing on phones. `.chip` stays — the
+   brief wizard still uses it. Nothing else referenced any of them; checked
+   across every component including /documents/[id]. */
 
 /* Closing CTA band */
 .cta-band {
