@@ -62,7 +62,7 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
   if (!institutions || institutions.length === 0) return null;
   return (
     <>
-      <SectionTitle>Where to target</SectionTitle>
+      <SectionTitle n="02">Where to target</SectionTitle>
       <table className="w-full border-collapse text-[14px]">
         <thead>
           <tr className="border-b border-[var(--foreground)] text-left align-bottom">
@@ -245,9 +245,17 @@ function printReport(company: string): void {
   setTimeout(restore, 1000);
 }
 
-export function SectionTitle({ children }: { children: React.ReactNode }) {
+export function SectionTitle({ children, n }: { children: React.ReactNode; n?: string }) {
   return (
-    <h3 className="mt-10 mb-3 text-[17px] font-semibold text-[var(--foreground)] print:mt-8" style={serif}>
+    <h3
+      className="mt-10 mb-3 flex items-baseline gap-3 text-[17px] font-semibold text-[var(--foreground)] print:mt-7 print:text-[13px]"
+      style={serif}
+    >
+      {n && (
+        <span className="font-mono text-[11px] font-normal tracking-[0.18em] text-[var(--accent)] print:text-[9px]">
+          {n}
+        </span>
+      )}
       {children}
     </h3>
   );
@@ -446,6 +454,23 @@ export function Memo({ report }: { report: IntelligenceReport }) {
       style={serif}
       className="mt-8 border border-[var(--border)] bg-[var(--paper)] px-7 py-9 sm:px-12 sm:py-12 text-[15px] leading-relaxed text-[var(--foreground)] print:mt-0 print:border-0 print:px-0 print:py-0"
     >
+      {/* Running header and footer. Screen-hidden; in print Chromium repeats a
+          fixed element on every page, so a three-page memo carries its own
+          identity on page three instead of trailing off. Chromium does not
+          support @page margin boxes, so this is the mechanism available. */}
+      <div className="hidden print:block print:fixed print:top-0 print:left-0 print:right-0 print:text-[8px] print:uppercase print:tracking-[0.18em] print:text-[var(--muted-foreground)]">
+        <div className="flex justify-between border-b border-[var(--border)] pb-1">
+          <span>Wincent · Public capital positioning brief</span>
+          <span>{report.company}</span>
+        </div>
+      </div>
+      <div className="hidden print:block print:fixed print:bottom-0 print:left-0 print:right-0 print:text-[8px] print:uppercase print:tracking-[0.18em] print:text-[var(--muted-foreground)]">
+        <div className="flex justify-between border-t border-[var(--border)] pt-1">
+          <span>Private and confidential</span>
+          <span>{date}</span>
+        </div>
+      </div>
+
       {/* Export — screen only */}
       <div className="mb-8 flex justify-end print:hidden">
         <button
@@ -457,17 +482,17 @@ export function Memo({ report }: { report: IntelligenceReport }) {
       </div>
 
       {/* ── Letterhead ─────────────────────────────────────────────── */}
-      <div className="flex items-baseline justify-between border-t-2 border-[var(--primary)] pt-3">
-        <span className="text-sm font-bold tracking-[0.2em] text-[var(--primary)]">
+      <div className="flex items-baseline justify-between border-t-2 border-[var(--primary)] pt-3 print:pt-2">
+        <span className="text-sm font-bold tracking-[0.2em] text-[var(--primary)] print:text-[11px]">
           WINCENT
         </span>
-        <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] print:text-[8px]">
           Private funding memorandum · ~{readMinutes} min read
         </span>
       </div>
 
       {/* ── Salutation block ───────────────────────────────────────── */}
-      <dl className="mt-6 grid grid-cols-[4.5rem_1fr] gap-x-4 gap-y-1 text-[14px]">
+      <dl className="mt-6 grid grid-cols-[4.5rem_1fr] gap-x-4 gap-y-1 text-[14px] print:mt-3 print:gap-y-0.5 print:text-[10px]">
         <dt className="text-[var(--muted-foreground)]">To</dt>
         <dd>The leadership of {report.company}</dd>
         <dt className="text-[var(--muted-foreground)]">Date</dt>
@@ -476,10 +501,10 @@ export function Memo({ report }: { report: IntelligenceReport }) {
         <dd className="font-semibold">Public capital positioning brief</dd>
       </dl>
 
-      <hr className="mt-6 border-[var(--border)]" />
+      <hr className="mt-6 border-[var(--border)] print:mt-3" />
 
       {/* ── Bottom line: the single best line lands first, up front ──── */}
-      <ul className="mt-6 space-y-3 text-[17px] leading-[1.55]">
+      <ul className="mt-6 space-y-3 text-[17px] leading-[1.55] print:mt-4 print:space-y-2 print:text-[11px] print:leading-[1.5]">
         <li className="flex gap-3">
           <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
           <span>{report.bottomLine[0]}</span>
@@ -491,7 +516,7 @@ export function Memo({ report }: { report: IntelligenceReport }) {
         className={"transition-opacity duration-500 " + (revealed ? "opacity-100" : "opacity-0")}
         aria-hidden={!revealed}
       >
-        <ul className="mt-3 space-y-3 text-[17px] leading-[1.55]">
+        <ul className="mt-3 space-y-3 text-[17px] leading-[1.55] print:space-y-2 print:text-[11px] print:leading-[1.5]">
           {report.bottomLine.slice(1).map((b, i) => (
             <li key={i} className="flex gap-3">
               <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
@@ -519,25 +544,25 @@ export function Memo({ report }: { report: IntelligenceReport }) {
         <InstitutionsTable institutions={report.institutions} />
 
         {/* ── 3. Positioning: fitting the current political moment ─────── */}
-        <SectionTitle>Positioning</SectionTitle>
+        <SectionTitle n="03">Positioning</SectionTitle>
         <p>{report.positioning}</p>
 
         {/* ── 4. State of play, then the standing offer as its own block ── */}
-        <SectionTitle>State of play</SectionTitle>
+        <SectionTitle n="04">State of play</SectionTitle>
         <p>{report.stateOfPlay}</p>
         {/* Rendered separately, never concatenated into the paragraph above:
             welded on, the analysis ended mid-thought in a sales line
             (contract rule SOP-2). */}
-        <p className="mt-4 border-l-2 border-[var(--primary)] pl-4 text-[var(--foreground-soft)]">
+        <p className="mt-4 border-l-2 border-[var(--primary)] pl-4 text-[var(--foreground-soft)] print:mt-3 print:border-l print:pl-3 print:text-[10px] print:italic">
           {STATE_OF_PLAY_OFFER}
         </p>
 
         {trace && <TracePanel report={report} />}
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
-        <div className="mt-12 border-t border-[var(--border)] pt-4">
-          <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)]">{report.caveats}</p>
-          <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+        <div className="mt-12 border-t border-[var(--border)] pt-4 print:mt-6 print:pt-2">
+          <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)] print:text-[8px]">{report.caveats}</p>
+          <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] print:hidden">
             Wincent · the state-backed capital record of European companies, 2021–2025
           </p>
         </div>

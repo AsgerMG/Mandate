@@ -157,28 +157,57 @@ h1, h2, h3, h4, h5, h6 {
   #print-report { width: 100%; padding: 0; }
   @page { margin: 0.6in; }
 
-  /* ── Tables in print ──────────────────────────────────────────────────
-     The export was correctly scoped but had no table rules at all, so the
-     browser sized columns from content: the institution column crushed to a
-     word per line, "Comparable firms funded" split across two lines, and rows
-     broke across a page boundary with the header left behind on the previous
-     one. Fixed widths plus a repeating header make a five-row table read the
-     same on paper as on screen. */
-  #print-report table { table-layout: fixed; width: 100%; font-size: 10.5px; }
+  /* ── Page furniture ───────────────────────────────────────────────────
+     Room at the head and foot for the running header/footer, which are fixed
+     elements repeated on every page. Without the padding the first lines of
+     body text print underneath them. */
+  @page { margin: 0.75in 0.7in; }
+  #print-report { padding-top: 0.28in; padding-bottom: 0.28in; }
+
+  /* ── Type ─────────────────────────────────────────────────────────────
+     Screen sizes are set for a single scrolling column; on paper the same
+     values run oversized and burn pages. One scale down, tighter leading,
+     serif throughout for the body. */
+  #print-report { font-size: 11px; line-height: 1.5; }
+  #print-report p { margin: 0 0 7px; orphans: 3; widows: 3; }
+  #print-report h3 { break-after: avoid; page-break-after: avoid; }
+
+  /* Keep a section heading with the content it introduces, and never leave a
+     table header stranded at the foot of a page. */
+  #print-report h3 + table, #print-report h3 + p { break-before: avoid; }
+
+  /* ── Tables ───────────────────────────────────────────────────────────
+     The export had no table rules at all, so the browser sized columns from
+     content: the institution column crushed to a word per line, the
+     comparables header split across two lines, and rows broke across a page
+     with the header left behind. Fixed widths, a repeating header and
+     unbreakable rows make a five-row table read the same on paper as on
+     screen. */
+  #print-report table { table-layout: fixed; width: 100%; font-size: 9.5px; border-collapse: collapse; }
   #print-report thead { display: table-header-group; }
   #print-report tr { break-inside: avoid; page-break-inside: avoid; }
-  #print-report th, #print-report td { padding: 6px 8px 6px 0; line-height: 1.35; }
-  /* Institution / support / why you qualify / comparables. The middle column
-     carries the prose, so it takes the slack. */
-  #print-report table th:nth-child(1), #print-report table td:nth-child(1) { width: 23%; }
-  #print-report table th:nth-child(2), #print-report table td:nth-child(2) { width: 13%; }
-  #print-report table th:nth-child(3), #print-report table td:nth-child(3) { width: 46%; }
+  #print-report thead th {
+    font-size: 8px; text-transform: uppercase; letter-spacing: 0.12em;
+    font-weight: 600; padding: 0 8px 5px 0; vertical-align: bottom;
+  }
+  #print-report tbody td { padding: 7px 8px 7px 0; line-height: 1.4; vertical-align: top; }
+  /* Institution / support / why you qualify / comparables. The third column
+     carries all the prose, so it takes the slack. */
+  #print-report table th:nth-child(1), #print-report table td:nth-child(1) { width: 22%; }
+  #print-report table th:nth-child(2), #print-report table td:nth-child(2) { width: 12%; }
+  #print-report table th:nth-child(3), #print-report table td:nth-child(3) { width: 48%; }
   #print-report table th:nth-child(4), #print-report table td:nth-child(4) { width: 18%; }
-  /* Long scheme names and URLs must wrap rather than force the column wider. */
+  /* Long scheme names and URLs wrap rather than widening their column. */
   #print-report td { overflow-wrap: anywhere; }
-  /* Keep a heading with the paragraph it introduces. */
-  #print-report h3 { break-after: avoid; page-break-after: avoid; }
-  #print-report p { orphans: 2; widows: 2; }
+
+  /* ── Links ────────────────────────────────────────────────────────────
+     A link is still a link on paper; underlining every institution name turns
+     the first column into a ruled block. The colour carries it instead. */
+  #print-report a { text-decoration: none; color: var(--primary); font-weight: 600; }
+
+  /* The trace panel and the export button never print. */
+  #print-report .print\:hidden { display: none !important; }
+
   /* Force backgrounds/colours to render in the PDF. */
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
