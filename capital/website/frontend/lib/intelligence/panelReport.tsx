@@ -76,7 +76,30 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
           {institutions.map((r, i) => (
             <tr key={i}>
               <td className="py-2.5 pr-3">
-                <span className="font-semibold">{r.institution}</span>
+                {/* The name IS the link. What it opens differs by row - an
+                    application portal, the scheme's entry in the EU state-aid
+                    register, or the programme's front door - so the kind is
+                    labelled rather than left for the reader to discover after
+                    clicking. Rows we hold nothing for stay plain text: a wrong
+                    application link is worse than none, because a founder
+                    acts on it. */}
+                {r.link ? (
+                  <a
+                    href={r.link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-semibold underline decoration-[var(--border)] underline-offset-2 hover:decoration-[var(--primary)] hover:text-[var(--primary)]"
+                  >
+                    {r.institution}
+                  </a>
+                ) : (
+                  <span className="font-semibold">{r.institution}</span>
+                )}
+                {r.link && r.link.kind !== "apply" && (
+                  <span className="ml-1.5 align-[1px] text-[10px] uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
+                    {r.link.label}
+                  </span>
+                )}
                 {(r.country || r.legalBasis) && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
                     {[r.country, r.legalBasis].filter(Boolean).join(" · ")}
@@ -147,19 +170,6 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                 {r.applicationChannel && (
                   <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
                     How to apply: {r.applicationChannel}
-                    {r.applicationUrl && (
-                      <>
-                        {" "}
-                        <a
-                          href={r.applicationUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="underline underline-offset-2 hover:text-[var(--primary)]"
-                        >
-                          Apply
-                        </a>
-                      </>
-                    )}
                   </span>
                 )}
               </td>

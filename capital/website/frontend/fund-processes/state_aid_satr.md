@@ -54,3 +54,4 @@ absence of public support — only of *disclosed state aid*.
 - You give up: Non-dilutive, but country-specific and bound to national priorities and strict eligible-cost rules
 - Best for: Repeatable, fast, local co-funding of R&D and investment in your home country
 - Fit: Startup-ready (single applicant, SME-scaled)
+- Apply: https://competition-cases.ec.europa.eu/search

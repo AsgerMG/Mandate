@@ -9,6 +9,7 @@ import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
 import { scoreFit } from "./fit";
+import { instrumentLink } from "./instrumentLink";
 import { assessAll, VERDICT_RANK } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
@@ -381,6 +382,8 @@ function buildInstitutions(
     schemeCode: row.schemeCode,
     applicationUrl: row.applicationUrl,
     applicationChannel: row.applicationChannel,
+    // Resolved in code so the row carries a link the writer cannot invent.
+    link: instrumentLink(row),
     whyEligible: "",
     comparableFirms: comparableFirmsForChannel(row.channel, records, dbPeers),
     nextStep: "",

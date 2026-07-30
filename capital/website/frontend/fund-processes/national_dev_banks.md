@@ -55,3 +55,39 @@ co-investor syndicate.
 - You give up: National-priority alignment; loans are repayable; non-dilutive grants are common
 - Best for: The everyday workhorse layer: national grants, soft loans and guarantees in your home market
 - Fit: Startup-ready (single applicant, SME-scaled)
+- Apply: (no single portal; the operator differs by country)
+
+## Bodies
+
+The channel has no single portal: the operator differs by country, so each
+body's own front door is curated here. Twenty-four bodies cover the whole of
+this channel's award volume, which is why this is a list rather than a rule.
+
+These are official institution pages, not deep links to one scheme. That is
+what a founder needs first from a national agency, whose schemes open and
+close on their own cycles.
+
+| Body | URL |
+| --- | --- |
+| ADEME (France) | https://www.ademe.fr/entreprises-monde-agricole/financer-projet/ |
+| Innovate Uk | https://www.ukri.org/councils/innovate-uk/ |
+| Innovasjon Norge | https://www.innovasjonnorge.no/ |
+| Vinnova | https://www.vinnova.se/en/ |
+| Altum (Latvia) | https://www.altum.lv/en/ |
+| EIS (KredEx + Enterprise Estonia) | https://eis.ee/en/ |
+| Innovationsfonden | https://innovationsfonden.dk/en |
+| Fr Relance Industrie | https://www.economie.gouv.fr/plan-de-relance |
+| CDTI (Spain) | https://www.cdti.es/ |
+| Norges Forskningsrad | https://www.forskningsradet.no/en/ |
+| Business Finland | https://www.businessfinland.fi/en/ |
+| Bpifrance | https://www.bpifrance.fr/ |
+| HTGF | https://www.htgf.de/en/ |
+| TACR (Czech Republic) | https://www.tacr.cz/en/ |
+| Almi Invest | https://www.almi.se/ |
+| SPRIND | https://www.sprind.org/en/ |
+| EIFO | https://www.eifo.dk/en |
+| Tesi (Finnish Industry Investment) | https://www.tesi.fi/en/ |
+| CDP Venture Capital | https://www.cdpventurecapital.it/ |
+| Coparion | https://www.coparion.vc/en/ |
+| Invest-NL | https://www.invest-nl.nl/en |
+| Enterprise Ireland | https://www.enterprise-ireland.com/en/funding-supports/ |

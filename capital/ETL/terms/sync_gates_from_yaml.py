@@ -24,6 +24,7 @@ for _anc in _Path(__file__).resolve().parents:
 from etl_env import DB, ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
+import re
 import sqlite3
 
 import yaml  # noqa: E402
@@ -37,6 +38,33 @@ LEVEL_RANK = {
     "inventory_inferred": 0, "llm_classified": 1, "llm_cited": 2,
     "llm_2pass": 3, "human_verified": 4,
 }
+
+
+# A portal named inside curated application prose. The extractors were asked
+# for how you apply, and several answers name the platform outright
+# ("submission via leaderpia.iledefrance.fr", "mans.altum.lv"). That is a
+# cited URL sitting unused in a quote, not a guess.
+URL_IN_TEXT = re.compile(
+    r"https?://[^\s,;)\]]+"
+    r"|(?:[a-z0-9][a-z0-9-]*\.)+(?:eu|fr|de|ee|dk|fi|se|it|es|nl|be|pt|pl|cz|lt|lv|at|ie|gr|hu|ro|si|sk|bg|hr|no)\b",
+    re.I)
+
+
+def url_from_text(*fields: str | None) -> str | None:
+    """First portal named in the curated text, normalised to an absolute URL.
+
+    Never invented: if the reviewer did not write one down, this returns None
+    and the row simply carries no link. A wrong application link is worse than
+    no link, because a founder acts on it.
+    """
+    for f in fields:
+        if not f:
+            continue
+        m = URL_IN_TEXT.search(f)
+        if m:
+            u = m.group(0).rstrip(".")
+            return u if u.lower().startswith("http") else f"https://{u}"
+    return None
 
 
 def verification_level(verified) -> str | None:
@@ -155,7 +183,8 @@ def main() -> None:
                       url=excluded.url, quote=excluded.quote,
                       source_file=excluded.source_file, updated_at=CURRENT_TIMESTAMP
                 """, (rec_id, rec_id, app.get("channel"), app.get("typical_timeline"),
-                      app.get("url"), app.get("quote"),
+                      app.get("url") or url_from_text(app.get("channel"), app.get("quote")),
+                      app.get("quote"),
                       src.get("file") if isinstance(src, dict) else None))
                 n_app_synced += 1
 

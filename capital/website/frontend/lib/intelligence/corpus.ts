@@ -125,6 +125,11 @@ function parseSnapshot(md: string): FundSnapshot | null {
     speed: field("Speed"),
     giveUp: field("You give up"),
     bestFor: field("Best for"),
+    // The channel's own official page, curated beside the other At-a-glance
+    // facts. Used only when an instrument has nothing more specific: a
+    // programme's front door beats no link, and is never presented as the
+    // scheme's own application form.
+    applyUrl: /^https?:\/\//.test(field("Apply")) ? field("Apply") : "",
     fit,
   };
 }
@@ -517,6 +522,39 @@ export function publishableInstruments(): DbInstrument[] {
   const hasChildren = new Set(
     all.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
   return all.filter((i) => !i.isFramework && !hasChildren.has(i.id));
+}
+
+const bodyUrlCache = new Map<string, Map<string, string>>();
+
+/**
+ * Per-body application URLs from a channel brief's `## Bodies` table.
+ *
+ * Exists for channels that have no single portal — the national development
+ * banks are twenty-four different national institutions, and pointing all of
+ * them at one page would be wrong for twenty-three of them. Curated beside
+ * the rest of that channel's brief so it is editable without touching code.
+ */
+export function loadBodyUrls(channel: string): Map<string, string> {
+  const cached = bodyUrlCache.get(channel);
+  if (cached) return cached;
+  const out = new Map<string, string>();
+  try {
+    const md = loadFundProcess(channel);
+    const idx = md.indexOf("## Bodies");
+    if (idx !== -1) {
+      const block = md.slice(idx, md.indexOf("\n## ", idx + 1) === -1
+        ? undefined : md.indexOf("\n## ", idx + 1));
+      for (const line of block.split("\n")) {
+        const m = line.match(/^\|\s*(.+?)\s*\|\s*(https?:\/\/\S+?)\s*\|$/);
+        if (m) {
+          out.set(m[1].normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase().replace(/[^a-z0-9]/g, ""), m[2]);
+        }
+      }
+    }
+  } catch { /* no brief for this channel — no per-body table */ }
+  bodyUrlCache.set(channel, out);
+  return out;
 }
 
 export function loadAgentInstructions(): string {

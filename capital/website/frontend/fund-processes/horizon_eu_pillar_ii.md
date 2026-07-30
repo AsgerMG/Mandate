@@ -59,3 +59,4 @@ II appearance means the company was in a funded EU collaborative project.
 - You give up: Non-dilutive, but you must build or join a 3+ country consortium and carry shared IP and coordination overhead
 - Best for: Collaborative R&D you can run with cross-border partners at TRL 3–6
 - Fit: Consortium/institutional (3+ partners required; not a default for solo founders)
+- Apply: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home

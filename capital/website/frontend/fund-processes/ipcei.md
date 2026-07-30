@@ -58,3 +58,4 @@ art; cross-border spillovers; the company's own co-investment and capability.
 - You give up: Requires a national government to sponsor and co-fund you; a long political process; first-of-a-kind and spillover obligations that reduce flexibility
 - Best for: Strategic value-chain projects (batteries, hydrogen, microelectronics, cloud) with a member state behind you
 - Fit: Large-scale industrial (capital-intensive, mid-cap+ tickets)
+- Apply: https://competition-policy.ec.europa.eu/state-aid/ipcei_en

@@ -59,3 +59,4 @@ out directly — worth chasing as a fallback.
 - You give up: Optional equity dilution and a cap-table investor; heavy reporting; single-digit interview success
 - Best for: Deep-tech SMEs at TRL 5–6 commercialising a genuine breakthrough
 - Fit: Startup-ready (single applicant, SME-scaled)
+- Apply: https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en

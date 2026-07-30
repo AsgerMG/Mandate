@@ -53,3 +53,4 @@ targets).
 - You give up: Non-dilutive, but you align to the partnership's strategic agenda and run a consortium
 - Best for: R&D that fits a thematic partnership (clean energy, health, key digital tech)
 - Fit: Consortium/institutional (partnership-routed; not a default for solo founders)
+- Apply: https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home

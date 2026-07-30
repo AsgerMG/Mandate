@@ -53,3 +53,4 @@ EIT and EIC populations overlap (~12% in our corpus); a company can sit in both.
 - You give up: Community membership and alignment; co-investment expectations; equity in some KIC instruments
 - Best for: Startups wanting market access plus grants inside a sector community (climate, health, energy, digital)
 - Fit: Consortium/institutional (community membership expected; not a default for solo founders)
+- Apply: https://eit.europa.eu/our-activities/opportunities

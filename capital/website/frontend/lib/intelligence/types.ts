@@ -100,6 +100,8 @@ export interface ProfileSignal {
 /** Curated trade-off snapshot parsed from a fund brief's "At a glance" block. */
 export interface FundSnapshot {
   ticket: string;
+  /** The channel's official application page, "" when it has no single one. */
+  applyUrl?: string;
   speed: string;
   giveUp: string;
   bestFor: string;
@@ -194,6 +196,10 @@ export interface InstitutionEntry {
    *  route, because a row reads as instruction. */
   applicationChannel?: string;
   applicationUrl?: string;
+  /** Where this row points, and what that link actually is. Resolved in code
+   *  (instrumentLink.ts): an application portal, a state-aid scheme record, or
+   *  the channel's programme page, in that order of usefulness. */
+  link?: { url: string; kind: "apply" | "scheme" | "programme"; label: string };
   /** Grounded in the eligibility screen + scoping profile, never invented. */
   whyEligible: string;
   /** Qualification call from the encoded eligibility rules (verdict.ts).

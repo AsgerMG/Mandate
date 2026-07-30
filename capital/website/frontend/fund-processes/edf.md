@@ -54,3 +54,4 @@ supercycle.
 - You give up: A cross-border defence consortium (3 entities across 3 states), security constraints, and a dual-use or defence remit
 - Best for: Dual-use and defence technology developers
 - Fit: Consortium/institutional (3+ partners across 3+ states required; not a default for solo founders)
+- Apply: https://defence-industry-space.ec.europa.eu/eu-defence-industry/european-defence-fund-edf_en
