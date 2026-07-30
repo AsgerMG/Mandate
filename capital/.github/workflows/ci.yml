@@ -42,6 +42,13 @@ jobs:
       - name: Unit tests
         run: npx vitest run --coverage
 
+      # The output contracts must still describe the report we actually build.
+      # The job is already named "contracts" for the vocabulary one; this is
+      # the other half, and without it a contract can name a dead schema field
+      # or leave a hard rule unenforced with nothing to notice.
+      - name: Output contracts
+        run: npx tsx scripts/check_contracts.ts
+
       - name: Vocabulary contract
         run: npx tsx scripts/check_vocabularies.ts
         env: { NO_PG: '1' }
