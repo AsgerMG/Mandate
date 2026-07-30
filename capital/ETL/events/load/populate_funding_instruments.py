@@ -62,7 +62,7 @@ DEBT_BASES = {"eib_debt_commitment"}
 # must be reconciled when instruments change, or its rows outlive the
 # instrument and the next Postgres publish dies on a foreign key. Add new
 # derived tables here when they are created.
-DERIVED_INSTRUMENT_TABLES = ("eligibility_clauses",)
+DERIVED_INSTRUMENT_TABLES = ("eligibility_clauses", "instrument_application",)
 
 SATR_INSTRUMENT_MAP = {
     "StateAidInstrumentG": "grant", "StateAidInstrumentDG": "grant",

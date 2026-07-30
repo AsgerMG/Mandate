@@ -533,6 +533,10 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         administeringBodyShare: leaf.administeringBodyShare ?? undefined,
         lastAwardYear: leaf.lastYear ?? undefined,
         legalBasis: legalBasisFor(leaf),
+        schemeCode: leaf.schemeCode ?? undefined,
+        applicationUrl: leaf.application?.url ?? undefined,
+        applicationChannel: leaf.application?.channel ?? undefined,
+        applicationTimeline: leaf.application?.timeline ?? undefined,
       } as InstrumentRow));
     })
     .sort((a, b) => {

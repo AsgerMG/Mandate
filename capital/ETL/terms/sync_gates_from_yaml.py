@@ -31,6 +31,14 @@ import yaml  # noqa: E402
 TERMS = ROOT / "data" / "instrument_terms"
 
 
+# Confidence tiers, weakest to strongest. Ordered so a sync can compare what
+# the authoring file claims against what the database already holds.
+LEVEL_RANK = {
+    "inventory_inferred": 0, "llm_classified": 1, "llm_cited": 2,
+    "llm_2pass": 3, "human_verified": 4,
+}
+
+
 def verification_level(verified) -> str | None:
     if verified is True:
         return "human_verified"
@@ -112,6 +120,7 @@ def main() -> None:
 
     n_synced, n_skipped, n_no_instrument = 0, 0, 0
     n_clauses_synced = n_clauses_skipped = 0
+    n_app_synced = n_app_skipped = 0
     for f in sorted(TERMS.glob("*.yaml")):
         rec = yaml.safe_load(f.read_text())
         rec_id = rec["id"]
@@ -121,6 +130,34 @@ def main() -> None:
                   f"FRAMEWORK_INSTRUMENTS if this is a new framework record)")
             n_no_instrument += len(rec.get("gates", []))
             continue
+
+        # ── how a founder actually applies ───────────────────────────────
+        # Already extracted from each scheme's own document, quoted and
+        # reviewed, and until now never used by anything. It is the one thing
+        # on a published row a founder can act on directly, and it was sitting
+        # in the authoring files unread.
+        #
+        # Same verification discipline as gates: an unquoted application block
+        # is a draft, and a draft route is worse than no route because it
+        # reads as instruction.
+        app = rec.get("application")
+        if isinstance(app, dict) and (app.get("channel") or app.get("url")):
+            if not app.get("quote"):
+                n_app_skipped += 1
+            else:
+                src = app.get("source") or {}
+                conn.execute("""
+                    INSERT INTO instrument_application
+                      (id, instrument_id, channel, timeline, url, quote, source_file, updated_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    ON CONFLICT (id) DO UPDATE SET
+                      channel=excluded.channel, timeline=excluded.timeline,
+                      url=excluded.url, quote=excluded.quote,
+                      source_file=excluded.source_file, updated_at=CURRENT_TIMESTAMP
+                """, (rec_id, rec_id, app.get("channel"), app.get("typical_timeline"),
+                      app.get("url"), app.get("quote"),
+                      src.get("file") if isinstance(src, dict) else None))
+                n_app_synced += 1
 
         for g in rec.get("gates", []):
             level = verification_level(g.get("verified"))
@@ -139,7 +176,24 @@ def main() -> None:
                   value=excluded.value, intake_field=excluded.intake_field,
                   quote=excluded.quote, source_file=excluded.source_file,
                   source_locator=excluded.source_locator,
-                  verification_level=excluded.verification_level,
+                  -- NEVER DOWNGRADE. YAML is the authoring surface, but it is not the
+                  -- only writer: a later, more expensive verification pass
+                  -- promotes gates in the DB and does not write back here. An
+                  -- unguarded upsert silently demoted 471 gates from llm_2pass
+                  -- to llm_cited, which is the difference between a rule the
+                  -- brief may assert as fact and one it may not.
+                  verification_level=CASE WHEN
+                      (CASE excluded.verification_level
+                         WHEN 'human_verified' THEN 4 WHEN 'llm_2pass' THEN 3
+                         WHEN 'llm_cited' THEN 2 WHEN 'llm_classified' THEN 1
+                         ELSE 0 END)
+                      >
+                      (CASE eligibility_gates.verification_level
+                         WHEN 'human_verified' THEN 4 WHEN 'llm_2pass' THEN 3
+                         WHEN 'llm_cited' THEN 2 WHEN 'llm_classified' THEN 1
+                         ELSE 0 END)
+                    THEN excluded.verification_level
+                    ELSE eligibility_gates.verification_level END,
                   verify_note=excluded.verify_note, verify_by=excluded.verify_by,
                   updated_at=CURRENT_TIMESTAMP
             """, (
@@ -159,6 +213,7 @@ def main() -> None:
     print(f"synced {n_synced} gates ({n_skipped} draft/unverified gates skipped, "
           f"{n_no_instrument} gates orphaned — no matching instrument row)")
     print(f"synced {n_clauses_synced} clauses ({n_clauses_skipped} draft/unverified skipped)")
+    print(f"synced {n_app_synced} application routes ({n_app_skipped} unquoted, skipped)")
     conn.close()
 
 

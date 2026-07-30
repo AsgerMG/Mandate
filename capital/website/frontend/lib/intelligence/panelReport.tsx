@@ -140,6 +140,28 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                 <span className="block text-[12px] italic text-[var(--muted-foreground)]">
                   Move: {pending && !r.nextStep ? <PlaceholderBar narrow /> : r.nextStep}
                 </span>
+                {/* Curated from the scheme's own document, never model-written.
+                    It is the only line on the row that is an instruction rather
+                    than an assessment, so it renders even when the writer's
+                    prose is still streaming. */}
+                {r.applicationChannel && (
+                  <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
+                    How to apply: {r.applicationChannel}
+                    {r.applicationUrl && (
+                      <>
+                        {" "}
+                        <a
+                          href={r.applicationUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="underline underline-offset-2 hover:text-[var(--primary)]"
+                        >
+                          Apply
+                        </a>
+                      </>
+                    )}
+                  </span>
+                )}
               </td>
               <td className="py-2.5">
                 {r.comparableFirms.length > 0 ? (

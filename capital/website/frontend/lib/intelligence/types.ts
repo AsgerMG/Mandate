@@ -150,6 +150,9 @@ export interface InstrumentRow {
   schemeCode?: string;
   /** Where to apply, when we hold a verified one. */
   applicationUrl?: string;
+  /** Curated application route: how you apply, and when. */
+  applicationChannel?: string;
+  applicationTimeline?: string;
   /** Short legal-basis label (e.g. "GBER Art. 25 (R&D aid)"), derived from
    *  this leaf's gber_article_inferred gate when present — see
    *  legalBasisFor() in pipeline.ts. */
@@ -183,6 +186,14 @@ export interface InstitutionEntry {
    *  "what do we check eligibility against," never invented: absent when no
    *  such gate is on record for this instrument. */
   legalBasis?: string;
+  /** The notified aid scheme behind this row, e.g. "SA.111723". Traceability:
+   *  it is the identifier a founder or their adviser can look up. */
+  schemeCode?: string;
+  /** How to apply, curated from the scheme's own document, and where. Absent
+   *  when we hold nothing verified — a route we cannot cite is worse than no
+   *  route, because a row reads as instruction. */
+  applicationChannel?: string;
+  applicationUrl?: string;
   /** Grounded in the eligibility screen + scoping profile, never invented. */
   whyEligible: string;
   /** Qualification call from the encoded eligibility rules (verdict.ts).

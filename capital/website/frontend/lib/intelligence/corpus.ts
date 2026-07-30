@@ -191,6 +191,10 @@ export interface DbInstrument {
    *  records that a scheme exists and says nothing about how to approach it. A
    *  register link published as an application link is worse than none. */
   applicationUrl?: string | null;
+  /** How a founder applies, curated from the scheme's own document and
+   *  inherited from the parent regime when a child has none of its own. The
+   *  one thing on a published row that is an instruction rather than a fact. */
+  application?: { channel: string | null; timeline: string | null; url: string | null } | null;
   gates: DbGate[];
 }
 

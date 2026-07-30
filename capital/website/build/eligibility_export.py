@@ -47,6 +47,18 @@ def main() -> None:
         FROM eligibility_gates
     """).fetchall()
 
+    # Curated "how you apply", from each scheme's own document (see
+    # sync_gates_from_yaml.py). Kept in its own table because
+    # funding_instruments is rebuilt from scratch on every ETL run and this is
+    # expensive, reviewed data.
+    apply_by_instrument = {
+        r["instrument_id"]: {
+            "channel": r["channel"], "timeline": r["timeline"], "url": r["url"],
+        }
+        for r in conn.execute(
+            "SELECT instrument_id, channel, timeline, url FROM instrument_application")
+    }
+
     gates_by_instrument: dict[str, list[dict]] = {}
     for g in gates:
         gates_by_instrument.setdefault(g["instrument_id"], []).append({
@@ -114,6 +126,12 @@ def main() -> None:
         # every child evaluates as "no encoded rule", which reads as
         # unverified, ranks below everything assessed, and would have made a
         # more granular corpus produce visibly worse briefs.
+        # Inherited the same way as gates, and for the same reason: a child is
+        # a granting body operating under the parent's regime, so the regime's
+        # application route is the child's route until a more specific one is
+        # curated.
+        "application": apply_by_instrument.get(inst["id"])
+                       or apply_by_instrument.get(inst["parent_id"]),
         "gates": gates_by_instrument.get(inst["id"])
                  or gates_by_instrument.get(inst["parent_id"], []),
     } for inst in instruments]
