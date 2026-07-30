@@ -18,7 +18,21 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
+# python-dotenv is a convenience for local development, not a requirement for
+# importing this module. CI installs no Python dependencies and needs none: the
+# schema-drift and syntax checks read committed files only, and there is no
+# .env.local to load there in the first place.
+#
+# Hard-importing it made every check that touches ETL/lib fail on the runner
+# with ModuleNotFoundError while passing on any machine that happened to have
+# the package. Mirrors the pattern the TypeScript checks already use for the
+# same file ("CI has no .env.local and must not need one").
+try:
+    from dotenv import load_dotenv
+except ModuleNotFoundError:  # pragma: no cover - exercised only where deps are absent
+    def load_dotenv(_path=None, **_kwargs):  # type: ignore[misc]
+        """No-op stand-in. Real secrets come from the environment in CI."""
+        return False
 
 # This file lives at <repo>/ETL/lib/etl_env.py
 ETL = Path(__file__).resolve().parents[1]          # <repo>/ETL
