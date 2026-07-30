@@ -18,6 +18,7 @@ import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevan
 import { TICKET_BANDS } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
+import { accessMode, passesCapitalPreference } from "./accessMode";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 
 /** How many instruments each channel may contribute. Named because it is one
@@ -248,8 +249,16 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
   // loans: no German NDB in this bucket served grants, so the filter emptied
   // and every country came back. Relaxing capital type is defensible;
   // relaxing country is not, so it comes last and only to avoid an empty row.
-  const inCountry = all.filter((i) => instrumentServesCountry(i.country, founderCountries));
-  for (const i of all) {
+  // Silence is not consent to dilution: an investment vehicle only appears
+  // when the founder actively asked for equity. See accessMode.ts.
+  const offered = all.filter((i) => {
+    if (passesCapitalPreference(i, capitalSought)) return true;
+    log?.record("SEL-CAPITAL", i.id,
+      "an investor rather than a grantor, and the founder did not ask for equity");
+    return false;
+  });
+  const inCountry = offered.filter((i) => instrumentServesCountry(i.country, founderCountries));
+  for (const i of offered) {
     if (!inCountry.includes(i)) {
       log?.record("SEL-COUNTRY", i.id, `national to ${i.country}, outside the founder's usable countries`);
     }
@@ -274,7 +283,7 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
   // plausible, because their country restriction is not encoded as a gate so
   // the verdict layer returned `unknown` rather than `blocked`. Country here
   // is a fact about the instrument, so it does not need a gate to be true.
-  if (!candidates.length && !NATIONAL_CHANNELS.has(channel)) candidates = all;
+  if (!candidates.length && !NATIONAL_CHANNELS.has(channel)) candidates = offered;
   if (!candidates.length) {
     log?.record("SEL-NATIONAL-EMPTY", channel,
       "channel is national by construction and holds no instrument in the founder's countries");
@@ -539,6 +548,10 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         legalBasis: legalBasisFor(leaf),
         schemeCode: leaf.schemeCode ?? undefined,
         schemeOperators: leaf.schemeOperators ?? undefined,
+        // Only reaches a founder who asked for equity. Said plainly, because
+        // "an investor who will take a seat" is a different commitment from
+        // "a grant you apply for", and the row should not blur them.
+        accessMode: accessMode(leaf),
         applicationUrl: leaf.application?.url ?? undefined,
         applicationChannel: leaf.application?.channel ?? undefined,
         applicationTimeline: leaf.application?.timeline ?? undefined,

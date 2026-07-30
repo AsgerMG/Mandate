@@ -2,6 +2,7 @@
 // and the fund-process briefs from disk, caches them across warm invocations,
 // and fuzzy-matches competitor names against the corpus.
 import { readFileSync } from "fs";
+import { meetsDataFloor } from "./accessMode";
 import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
 
@@ -529,7 +530,12 @@ export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const hasChildren = new Set(
     all.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
-  return all.filter((i) => !i.isFramework && !hasChildren.has(i.id));
+  return all.filter((i) =>
+    !i.isFramework && !hasChildren.has(i.id) &&
+    // No amounts and no dates means every scale and liveness judgement about
+    // it is a guess, and a guess scored at its midpoint was outranking funds
+    // we had actually measured. See meetsDataFloor.
+    meetsDataFloor(i));
 }
 
 const bodyUrlCache = new Map<string, Map<string, string>>();

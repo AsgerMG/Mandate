@@ -116,6 +116,11 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     name above is the scheme; a department notifies it, these
                     bodies run it, and without them the row names something
                     real that a founder still cannot approach. */}
+                {!pending && r.accessMode === "invest" && (
+                  <span className="block text-[12px] text-[var(--accent)]">
+                    An investor, not a grant: expect a cap-table seat and, usually, a lead investor first
+                  </span>
+                )}
                 {!pending && r.schemeOperators && r.schemeOperators.length > 0 && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
                     Operated by {r.schemeOperators.slice(0, 2).join(", ")}

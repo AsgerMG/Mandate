@@ -381,6 +381,7 @@ function buildInstitutions(
     legalBasis: row.legalBasis,
     schemeCode: row.schemeCode,
     schemeOperators: row.schemeOperators,
+    accessMode: row.accessMode,
     applicationUrl: row.applicationUrl,
     applicationChannel: row.applicationChannel,
     // Resolved in code so the row carries a link the writer cannot invent.

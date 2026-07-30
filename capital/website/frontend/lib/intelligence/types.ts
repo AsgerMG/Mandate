@@ -152,6 +152,9 @@ export interface InstrumentRow {
   schemeCode?: string;
   /** Bodies that actually disburse under this scheme. */
   schemeOperators?: string[];
+  /** "invest" = a vehicle that negotiates and takes equity, not a fund you
+   *  apply to. Only ever shown to a founder who asked for equity. */
+  accessMode?: "apply" | "invest";
   /** Where to apply, when we hold a verified one. */
   applicationUrl?: string;
   /** Curated application route: how you apply, and when. */
@@ -195,6 +198,8 @@ export interface InstitutionEntry {
   schemeCode?: string;
   /** Bodies a founder can actually approach under this scheme. */
   schemeOperators?: string[];
+  /** "invest" rows are pitched, not applied to. */
+  accessMode?: "apply" | "invest";
   /** How to apply, curated from the scheme's own document, and where. Absent
    *  when we hold nothing verified — a route we cannot cite is worse than no
    *  route, because a row reads as instruction. */
