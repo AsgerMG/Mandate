@@ -29,14 +29,15 @@ import type { InstrumentAssessment } from "./verdict";
 
 /** Each component scores 0-1. Weights sum to 1. */
 export const FIT_WEIGHTS = {
-  eligibility: 0.26,
-  theme: 0.20,
-  proximity: 0.14,
-  scale: 0.13,
-  structure: 0.09,
-  capital: 0.09,
-  precedent: 0.05,
-  liveness: 0.04,
+  eligibility: 0.24,
+  theme: 0.16,
+  sector: 0.12,
+  proximity: 0.13,
+  scale: 0.12,
+  structure: 0.08,
+  capital: 0.08,
+  precedent: 0.04,
+  liveness: 0.03,
 } as const;
 
 export type FitComponent = keyof typeof FIT_WEIGHTS;
@@ -52,6 +53,19 @@ export const UNMATCHED_THEME = 0.15;
  *  nothing about fit; a scheme in the founder's own country is a door on
  *  their doorstep. Without this the two are indistinguishable, and the
  *  large pan-European programmes outrank every national route for everyone. */
+/**
+ * Share of an instrument's funded companies that must sit in the founder's
+ * sector before it counts as a full thematic match.
+ *
+ * Deliberately low. A broad instrument that funds many sectors is not thereby
+ * a bad fit — the EIC Accelerator's largest sector is a third of its awards
+ * and it is genuinely open to everyone. The signal being caught is the
+ * opposite case: an instrument whose funding history is overwhelmingly one
+ * domain, ranking highly for a company in another purely because its funded
+ * project titles share generic technology vocabulary.
+ */
+export const SECTOR_FULL_MATCH_SHARE = 0.25;
+
 export const HOME_COUNTRY_BONUS = 1;
 export const EU_WIDE_PROXIMITY = 0.45;
 
@@ -83,6 +97,8 @@ export interface FitInput {
   requiresConsortium?: boolean;
   /** Founder's answer: can they field one? Undefined means unknown. */
   consortiumOk?: boolean;
+  /** The founder's own sector (SECTOR_OPTIONS value), when known. */
+  founderSector?: string;
   /** Current year, for liveness. Injected so scoring stays deterministic. */
   year: number;
 }
@@ -138,6 +154,25 @@ export function structureFit(requiresConsortium?: boolean, consortiumOk?: boolea
   return 0.25;
 }
 
+/**
+ * How much of this instrument's funding history sits in the founder's sector.
+ *
+ * Scores 0.5 when we cannot tell — no mix on record, or no sector from the
+ * founder. Neutral rather than zero: an unknown history is not evidence of a
+ * bad match, and zeroing it would bury every instrument whose recipients we
+ * have not classified.
+ */
+export function sectorFit(
+  mix: Record<string, number> | null | undefined,
+  founderSector?: string,
+): number {
+  if (!mix || !founderSector) return 0.5;
+  const total = Object.values(mix).reduce((a, b) => a + b, 0);
+  if (total <= 0) return 0.5;
+  const share = (mix[founderSector] ?? 0) / total;
+  return Math.min(1, share / SECTOR_FULL_MATCH_SHARE);
+}
+
 export function eligibilityFit(a?: InstrumentAssessment): number {
   if (!a) return 0.4;
   switch (a.status) {
@@ -170,6 +205,7 @@ export function scoreFit(input: FitInput): FitScore {
     // score for every archetype — identical numbers for a fintech, a govtech
     // and a consumer app — and outranked the founder's own national schemes.
     theme: input.theme ?? UNMATCHED_THEME,
+    sector: sectorFit(inst.sectorMix, input.founderSector),
     proximity: country === "" ? EU_WIDE_PROXIMITY
       : country === "EU" ? EU_WIDE_PROXIMITY
       : input.founderCountries?.has(country) ? HOME_COUNTRY_BONUS

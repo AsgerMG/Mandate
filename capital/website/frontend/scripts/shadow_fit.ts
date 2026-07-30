@@ -99,6 +99,7 @@ async function main() {
       founderCountries: iso,
       requiresConsortium: inst.gates.some((g) => /consorti|at least three|3\+ partners|multi-partner/i.test(g.requirement)),
       consortiumOk: undefined,
+      founderSector: a.sector,
       year,
     }));
     const ranked = rankByFit(scored, (id) => instById().get(id)?.name ?? id).slice(0, PUBLISHED);

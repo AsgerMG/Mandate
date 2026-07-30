@@ -275,7 +275,7 @@ def main() -> None:
     conn.row_factory = sqlite3.Row
 
     rows = conn.execute("""
-        SELECT e.source, e.company_id, c.country, c.parent_group,
+        SELECT e.source, e.company_id, c.country, c.parent_group, c.sector_top,
                e.grant_amount_eur, e.equity_amount_eur, e.debt_amount_eur,
                e.grant_amount_basis, e.aid_instrument, e.aid_objective, e.ndb_distributor,
                e.granting_authority, e.granting_authority_country, e.call_id,
@@ -301,6 +301,12 @@ def main() -> None:
     fam_source_family_votes: dict[str, Counter] = defaultdict(Counter)
     fam_project_titles: dict[str, Counter] = defaultdict(Counter)
     fam_aid_objective_votes: dict[str, Counter] = defaultdict(Counter)
+    # What KIND of company each instrument actually funds. Thematic embeddings
+    # match on vocabulary, and vocabulary travels across domains: a health
+    # partnership whose funded projects are full of "AI", "platform" and "data"
+    # ranks highly for any software company. What it has actually funded does
+    # not travel. See sectorFit in the frontend's fit score.
+    fam_sector_votes: dict[str, Counter] = defaultdict(Counter)
     # Per-authority, per-scheme detail under the state-aid rollups. See
     # child_key() for why this exists and what it is allowed to do.
     child_rows: dict[tuple[str, str, str], dict] = {}
@@ -336,6 +342,8 @@ def main() -> None:
             fam_project_titles[fam][r["project_title"]] += 1
         if r["aid_objective"]:
             fam_aid_objective_votes[fam][r["aid_objective"]] += 1
+        if r["sector_top"]:
+            fam_sector_votes[fam][r["sector_top"]] += 1
 
         # ── the split ────────────────────────────────────────────────────────
         # A state-aid rollup is a whole country's aid regime in one row. It is
@@ -449,6 +457,8 @@ def main() -> None:
             capital_type_basis=capital_basis, event_count=events, company_count=companies,
             total_eur=total_eur, first_year=first_year, last_year=last_year,
             is_framework=is_framework, sample_project_titles=sample_titles,
+            sector_mix=json.dumps(dict(fam_sector_votes.get(fam, Counter()).most_common(8)))
+                       if fam_sector_votes.get(fam) else None,
         ))
 
     # ── Children of the state-aid rollups ────────────────────────────────────
@@ -493,6 +503,7 @@ def main() -> None:
             sample_project_titles=json.dumps([t for t, _ in titles.most_common(5)]) if titles else None,
             scheme_code=scheme,
             application_url=None,
+            sector_mix=parent.get("sector_mix"),
         ))
         kept_children += 1
     if kept_children:
@@ -502,6 +513,7 @@ def main() -> None:
     for row in now:
         row.setdefault("scheme_code", None)
         row.setdefault("application_url", None)
+        row.setdefault("sector_mix", None)
 
     # ── Reconcile, do not wipe ───────────────────────────────────────────────
     # This used to DELETE every non-framework eligibility gate on every run.
@@ -574,12 +586,12 @@ def main() -> None:
                administering_body_share, ndb_id,
                source_family_bucket, capital_type, capital_type_basis, event_count,
                company_count, total_eur, first_year, last_year, is_framework,
-               sample_project_titles, scheme_code, application_url, updated_at)
+               sample_project_titles, scheme_code, application_url, sector_mix, updated_at)
             VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
                     :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
-                    :sample_project_titles,:scheme_code,:application_url, CURRENT_TIMESTAMP)
+                    :sample_project_titles,:scheme_code,:application_url,:sector_mix, CURRENT_TIMESTAMP)
         """, r)
 
     for fam, srcs in fam_sources.items():

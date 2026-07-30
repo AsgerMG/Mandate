@@ -37,7 +37,7 @@ def main() -> None:
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
-               last_year, scheme_code, application_url
+               last_year, scheme_code, application_url, sector_mix
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -115,6 +115,10 @@ def main() -> None:
         # document, and the URL is the only thing on the row a founder can act
         # on directly.
         "schemeCode": inst["scheme_code"],
+        # What kind of company this instrument has actually funded. Thematic
+        # embeddings match on vocabulary and vocabulary travels between
+        # domains; funding history does not.
+        "sectorMix": json.loads(inst["sector_mix"]) if inst["sector_mix"] else None,
         "applicationUrl": inst["application_url"],
         # ── Inherited gates ──────────────────────────────────────────────────
         # A child carries no gates of its own by design: the curated

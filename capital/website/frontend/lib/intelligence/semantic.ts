@@ -100,11 +100,31 @@ export async function semanticFundMatch(
       );
       const rows = res.rows as { instrument_id: string; similarity: string | number }[];
       const scores = rows.map((r) => ({ id: r.instrument_id, s: Number(r.similarity) }));
-      const best = Math.max(...scores.map((r) => r.s), 0);
-      // Normalise to the best match, like relevance.ts, so the two signals are
-      // interchangeable to callers. Absolute cosine values sit in a narrow band
-      // (~0.39-0.62 across tested domains) and are not meaningful on their own.
-      for (const { id, s } of scores) out.set(id, best > 0 ? s / best : 0);
+      // ── Normalise by RANK, not by the best score ─────────────────────────
+      // Cosine similarities here occupy a very narrow band: measured across
+      // the whole corpus for one query, 0.275 to 0.466, mean 0.365, sd 0.034.
+      // Dividing by the best match maps that band onto 0.59-1.00, so the
+      // WORST-matching instrument in Europe still scored 0.59 and a fund
+      // ranked 273rd of 327 scored 0.71 — nearly indistinguishable from the
+      // 150th at 0.79. Against a 0.20 weight in the fit score, the difference
+      // between the best thematic match and an irrelevant one came to about
+      // 0.06 of the final number, which is why structural components decided
+      // the ranking and thematically wrong funds kept reaching the table.
+      //
+      // Percentile rank uses the full 0-1 range by construction and does not
+      // care how narrow the band is. It is also distribution-free, so it
+      // cannot be broken by a query whose similarities happen to cluster
+      // differently — which best-normalisation silently was.
+      //
+      // The rows arrive ordered by distance, so the index IS the rank.
+      const n = scores.length;
+      if (n === 1) {
+        out.set(scores[0].id, 1);
+      } else {
+        for (let i = 0; i < n; i += 1) {
+          out.set(scores[i].id, (n - 1 - i) / (n - 1));
+        }
+      }
     } finally {
       await client.end();
     }
