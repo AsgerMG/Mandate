@@ -619,3 +619,126 @@ textarea.detail { min-height: 56px; }
 footer { background: var(--paper); color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin-top: 70px; border-top: 3px double var(--ink); }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; flex-wrap: wrap; }
 .footer-mark { font-family: var(--font-serif); font-weight: 600; color: var(--ink); font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); flex-shrink: 0; }
+
+/* --- The wait (see project-management/brief-ux-plan.md) -------------------
+   A brief takes ~3 minutes (median 184s, measured 2026-07-29) and that is a
+   property of the product, not a bug. Everything below exists to make those
+   minutes legible rather than to decorate them, so each rule is tied to a
+   measurement or to an honesty constraint. */
+
+/* The estimate. Tabular numerals so a changing figure doesn't jitter the
+   layout. Dimmer until it is a real measurement of THIS run — before text
+   starts streaming we only have the population median, and the styling should
+   not present a fallback with the same confidence as a measurement. */
+/* flex-wrap is not optional here: design-ux-guidelines.md records unwrapped flex
+   rows as the #1 cause of mobile horizontal-scroll bugs in this codebase, and a
+   serif h2 beside an ETA is exactly the pair that overflows at 320px. */
+.generating-head {
+  display: flex; align-items: baseline; gap: 12px; justify-content: space-between;
+  flex-wrap: wrap;
+}
+.eta {
+  font-family: var(--font-sans); font-size: clamp(12.5px, 11.3px + 0.09vw, 13.5px);
+  font-variant-numeric: tabular-nums; color: var(--muted); opacity: 0.75; flex-shrink: 0;
+}
+.eta-measured { color: var(--accent-deep); opacity: 1; }
+
+/* Progress. Determinate ONLY while text is streaming: latency is ~entirely a
+   function of output tokens (r=+1.00), so streamed characters are a real
+   fraction of the work. Nothing available during retrieval predicts a run's
+   size (|r| <= 0.39, measured), so that phase travels instead of filling —
+   the two states must be visually distinguishable or we'd be presenting a
+   guess with the authority of a measurement. */
+.progress-track {
+  position: relative; height: 2px; background: var(--line); margin: 14px 0 16px; overflow: hidden;
+}
+.progress-fill { height: 100%; background: var(--accent); }
+.progress-track.determinate .progress-fill { transition: width 0.6s ease-out; }
+.progress-track.indeterminate .progress-fill {
+  width: 28%; animation: rail-sweep 1.9s ease-in-out infinite;
+}
+@keyframes rail-sweep {
+  0% { transform: translateX(-100%); } 100% { transform: translateX(460%); }
+}
+
+.notice-inline { margin: 0 0 14px; font-size: clamp(13px, 11.5px + 0.11vw, 14px); }
+
+/* What is actually being read. Naming real instruments is the clearest signal
+   that this isn't a chatbot guessing — and it uses data retrieval already had
+   and previously discarded at the UI layer. */
+.reading-list { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 5px; }
+.reading-list li {
+  font-family: var(--font-sans); font-size: clamp(13px, 11.9px + 0.086vw, 14px);
+  color: var(--ink-soft); animation: reading-in 0.35s ease-out both;
+}
+.reading-verb { color: var(--muted); }
+@keyframes reading-in { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; } }
+
+/* The first-reading text, appearing as it is written. Marked provisional
+   because the sharpen pass will amend it — and export stays disabled until
+   then, so the marker is a promise rather than a hedge. Capped at the site's
+   reading measure like all body copy. */
+.live-draft {
+  border-left: 2px solid var(--line); padding: 2px 0 2px 14px; margin-top: 4px;
+  max-height: 240px; overflow: hidden; position: relative;
+}
+.live-draft.provisional { border-left-color: var(--accent-soft); }
+.live-draft-label {
+  display: block; font-family: var(--font-sans); font-size: 11.5px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--accent-deep); margin-bottom: 6px;
+}
+.live-draft-body {
+  font-family: var(--font-serif); font-size: clamp(13.5px, 12.4px + 0.086vw, 14.5px);
+  line-height: 1.62; color: var(--ink-soft); white-space: pre-wrap; max-width: 760px;
+  opacity: 0.9;
+}
+/* Fade the bottom edge rather than clipping mid-line: the text is still being
+   written, and a hard cut reads as a rendering fault. */
+.live-draft::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 54px;
+  background: linear-gradient(to bottom, transparent, var(--surface)); pointer-events: none;
+}
+
+.ghost-button {
+  background: none; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 7px 12px; font-family: var(--font-sans); font-size: 13px; color: var(--ink-soft);
+  cursor: pointer; margin-top: 14px;
+}
+.ghost-button:hover { border-color: var(--rule); color: var(--ink); }
+
+/* Stage motion (Phase E). Each animation depicts the actual work rather than
+   signalling "busy": pages flex while reading, the nib traces its own stroke
+   while writing, the loop turns once per revision. Motion appears ONLY on the
+   step currently running, and only in the AI phase — during the wizard the user
+   is the slow part, and animating then would imply we're busy when we're idle. */
+.rail-step.current .rail-icon svg { animation: none; }
+.rail-step.current.stage-retrieving .rail-icon svg { animation: page-flex 2s ease-in-out infinite; }
+.rail-step.current.stage-drafting .rail-icon svg { animation: nib-trace 1.5s ease-in-out infinite; }
+.rail-step.current.stage-sharpening .rail-icon svg { animation: loop-turn 2.4s linear infinite; }
+@keyframes page-flex {
+  0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.92); }
+}
+@keyframes nib-trace {
+  0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-1.2px, 1.2px); }
+}
+@keyframes loop-turn { to { transform: rotate(360deg); } }
+
+/* Anyone who has asked not to see motion gets the static current state — the
+   step is still identifiable by colour and weight, so no information is lost. */
+@media (prefers-reduced-motion: reduce) {
+  .rail-step.current .rail-icon svg,
+  .progress-track.indeterminate .progress-fill,
+  .reading-list li { animation: none; }
+  .progress-track.indeterminate .progress-fill { width: 100%; opacity: 0.35; }
+}
+
+/* Names the pre-writing stretch. Measured: ~90s of a 180s brief produces no text
+   at all (adaptive thinking runs first), and labelling that "drafting" beside a
+   travelling bar is the one genuinely misleading moment in the flow. */
+.stage-hint { font-size: clamp(12.5px, 11.4px + 0.086vw, 13.5px); margin: 0 0 14px; }
+
+/* Closes the loop on the wait, from values already computed. */
+.completion-summary {
+  font-size: clamp(12.5px, 11.4px + 0.086vw, 13.5px); margin: 0 0 14px;
+  font-variant-numeric: tabular-nums;
+}

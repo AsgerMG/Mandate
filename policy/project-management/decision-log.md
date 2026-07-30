@@ -5,6 +5,56 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-07-30 — The wait becomes a designed surface, and `/api/brief` turns out to have been broken
+
+**Decision:** With ~3 minutes accepted as fixed, the brief now streams its text,
+names the instruments it is reading, estimates its own remaining time from
+measured output rate, and carries progress in the tab title and favicon. Full
+design and rationale: [brief-ux-plan.md](brief-ux-plan.md).
+
+**The governing constraint, stated by the user:** *adaptive, not preset.* Applied
+literally, which required measuring where adaptivity is even possible. Nothing
+available at retrieval time predicts a run's size (facets +0.15, passages −0.25,
+context chars −0.19), so the estimate deliberately does **not** "refine" when
+retrieval completes — the obvious place to show intelligence, and it would be
+theatre. Adaptation begins with the first streamed characters, where latency
+correlates with output at r=+1.00.
+
+**It also reversed an earlier decision.** `ProgressRail.tsx` rendered a preset
+9-step backbone including scoping groups a given company would never be asked.
+The original argument was stability over per-run precision; the conclusion was
+wrong, because a step shown, never done, then silently marked complete teaches the
+user the rail is decorative — and the ETA borrows its credibility. The list is now
+computed from real per-run data, which was available before the wizard rendered
+all along.
+
+**What building it found — none of it by review:**
+
+1. **`/api/brief` had been failing for every real brief.** `passages=len(...)`
+   collided with the same key inside `**retrieval_stats`, raising *after* the full
+   generation was paid for. Pre-existing at `HEAD`. Invisible to the test suite and
+   to `brief-check`, because neither imports `api.py` — the CLI looked healthy
+   while the product was broken. The lesson is the one this project keeps
+   relearning: a path that is never exercised end to end is not tested.
+2. **My ETA was calibrated 5× too high** — visible text is only ~19% of
+   `output_tokens × 4`, since tokens include thinking and both passes.
+3. **The ETA rose**, breaking the plan's own rule, until clamped monotonically.
+4. **A transient 529 lost a whole brief.** The retry policy for exactly that
+   failure existed only on the eval path (`cost.py`); production streamed with
+   none. Now retried, but only while no text has been forwarded — after that a
+   retry would contradict what the user already read.
+
+**Deferred, with a trip-wire:** `BriefJob` persistence (see the plan's Phase D).
+Backgrounding a tab is already safe; only closing it loses work, so the copy says
+"switch tabs", not "leave". A ~5-line `brief_abandoned` counter ships instead,
+because without it "revisit if abandonment is a problem" is a condition we are
+structurally blind to.
+
+**Still open, and honest about it:** text does not appear until ~90–100s of a
+~180s brief, because thinking precedes generation. Half the wait is still an
+indeterminate bar. Naming that phase is what shipped; a real backend `thinking`
+stage is the better answer and is not built.
+
 ## 2026-07-29 — Haiku vs Sonnet, measured: keep Sonnet, and treat 3 minutes as a fixed constraint
 
 **Decision:** The brief stays on `claude-sonnet-5`. The ~3-minute generation time

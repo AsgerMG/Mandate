@@ -1,16 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  BriefExpectation,
   BriefInput,
   BriefResult,
+  BriefSources,
   Meta,
   ScopingQuestion,
   downloadPdf,
+  getBriefExpectation,
   getMeta,
   postBrief,
   postQuestions,
 } from "@/lib/api";
+import {
+  Eta,
+  FALLBACK_EXPECTATION,
+  computeEta,
+  formatExpectation,
+  formatRemaining,
+} from "@/lib/eta";
+import LiveProgress from "./LiveProgress";
+import { drawFaviconDone, drawFaviconProgress, restoreFavicon } from "@/lib/favicon";
 import { Fragment } from "react";
 import ProgressRail, { TimedSubStage } from "./ProgressRail";
 import { ReportCoverage, ReportMarkdown, splitAppendix } from "./Report";
@@ -38,6 +50,11 @@ const GROUP_LABELS: Record<string, string> = {
   context: "Market context",
   more: "A few more, specific to you",
 };
+
+function formatElapsed(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  return `${Math.floor(seconds / 60)}m ${String(seconds % 60).padStart(2, "0")}s`;
+}
 
 export default function BriefPage() {
   const [step, goToStep] = useState<Step>("profile");
@@ -80,6 +97,19 @@ export default function BriefPage() {
   const [generating, setGenerating] = useState(false);
   const [subStages, setSubStages] = useState<TimedSubStage[]>([]);
 
+  // --- the wait (see project-management/brief-ux-plan.md) ------------------
+  // Streamed report text, what this run is reading, and the measured latency the
+  // opening promise is made from. `draftChars` rather than the text length is
+  // tracked separately because the ETA needs a monotonic count even across the
+  // draft→revision handover, where the text itself restarts.
+  const [expectation, setExpectation] = useState<BriefExpectation | null>(null);
+  const [liveText, setLiveText] = useState("");
+  const [draftChars, setDraftChars] = useState(0);
+  const [streamStartedAt, setStreamStartedAt] = useState<number | null>(null);
+  const [genStartedAt, setGenStartedAt] = useState<number | null>(null);
+  const [sources, setSources] = useState<BriefSources | null>(null);
+  const [notifyOnDone, setNotifyOnDone] = useState(false);
+
   useEffect(() => {
     getMeta().then(setMeta).catch(() => setError("The report tool is temporarily unavailable — please try again shortly."));
   }, []);
@@ -95,6 +125,85 @@ export default function BriefPage() {
     const t = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(t);
   }, [finished]);
+
+  // Measured, not hardcoded: the promise on screen must move when the pipeline
+  // does. Falls back to the panel baseline if the API is unreachable.
+  useEffect(() => {
+    getBriefExpectation().then((e) => e && setExpectation(e));
+  }, []);
+
+  // Held in a ref so each estimate can be clamped against the last one shown —
+  // an ETA that rises reads as a broken promise (observed live 2026-07-30).
+  const lastRemaining = useRef<number | null>(null);
+  if (!generating) lastRemaining.current = null;
+  const eta: Eta | null = generating
+    ? computeEta({
+        expectation: expectation ?? FALLBACK_EXPECTATION,
+        previousRemaining: lastRemaining.current,
+        charsSoFar: draftChars,
+        streamingSeconds: streamStartedAt ? (now - streamStartedAt) / 1000 : 0,
+        elapsedSeconds: genStartedAt ? (now - genStartedAt) / 1000 : 0,
+        correcting: subStages.some(
+          (s) => s.stage === "verifying" || s.stage === "cross-checking"
+        ),
+      })
+    : null;
+  if (eta?.remainingSeconds != null) lastRemaining.current = eta.remainingSeconds;
+
+  // Ambient tab-away signal. The cheapest one that exists, needs no permission,
+  // and is the test of whether the rail has to be watched at all: the tab alone
+  // should tell you enough. (brief-ux-plan.md Phase C1)
+  useEffect(() => {
+    const base = "Regina";
+    if (generating) {
+      const left = formatRemaining(eta?.remainingSeconds ?? null);
+      document.title = `${left ? `(${left}) ` : ""}Drafting your brief · ${base}`;
+    } else if (result) {
+      document.title = `✓ Your brief is ready · ${base}`;
+    } else {
+      document.title = base;
+    }
+    return () => {
+      document.title = base;
+    };
+  }, [generating, result, eta?.remainingSeconds]);
+
+  // The ambient layer: the tab carries progress so the page doesn't have to be
+  // watched. Same ring geometry as the rail, drawn at 32px. (Phase C1)
+  useEffect(() => {
+    if (generating) {
+      drawFaviconProgress(eta?.progress ?? null, Math.floor(now / 1000));
+    } else if (result) {
+      drawFaviconDone();
+    } else {
+      restoreFavicon();
+    }
+    return () => {
+      if (!generating && !result) restoreFavicon();
+    };
+  }, [generating, result, eta?.progress, now]);
+
+  // One notification, on completion, only if the user asked for it. Progress
+  // milestones deliberately fire none — the interrupt budget is finite and there
+  // are no mid-run decisions to make.
+  useEffect(() => {
+    if (!result || generating || !notifyOnDone) return;
+    if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+    new Notification("Your brief is ready", {
+      body: `${name || "Your company"} — regulatory brief complete.`,
+      tag: "regina-brief",
+    });
+  }, [result, generating, notifyOnDone, name]);
+
+  async function askToNotify() {
+    if (typeof Notification === "undefined") return;
+    // Requested only on an explicit click, never on page load.
+    const permission =
+      Notification.permission === "granted"
+        ? "granted"
+        : await Notification.requestPermission();
+    setNotifyOnDone(permission === "granted");
+  }
 
   const toggle = (arr: string[], v: string, set: (x: string[]) => void) =>
     set(arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v]);
@@ -161,9 +270,28 @@ export default function BriefPage() {
     setError(null);
     setSubStages([]);
     setReportEndedAt(null);
+    setLiveText("");
+    setDraftChars(0);
+    setStreamStartedAt(null);
+    setSources(null);
+    setGenStartedAt(Date.now());
     try {
-      const r = await postBrief(scopedInput(), (s) =>
-        setSubStages((prev) => [...prev, { ...s, at: Date.now() }])
+      const r = await postBrief(
+        scopedInput(),
+        (s) => {
+          setSubStages((prev) => [...prev, { ...s, at: Date.now() }]);
+          // Each generation call writes a WHOLE new document, so the visible text
+          // resets at the start of one while `draftChars` keeps accumulating — the
+          // ETA needs a monotonic total, the reader needs one coherent document.
+          // This is the First reading → Committee markup handover made literal.
+          if (s.stage === "drafting" || s.stage === "sharpening") setLiveText("");
+        },
+        (text) => {
+          setStreamStartedAt((prev) => prev ?? Date.now());
+          setDraftChars((prev) => prev + text.length);
+          setLiveText((prev) => prev + text);
+        },
+        (found) => setSources(found)
       );
       setResult(r);
     } catch {
@@ -421,16 +549,19 @@ export default function BriefPage() {
             )}
 
             {step === "report" && (generating || !result) && (
-              <div className="form generating-panel">
-                <div className="generating-head">
-                  <h2>Generating your report</h2>
-                </div>
-                <p className="muted generating-note">
-                  This typically takes 1–3 minutes. The analyst reads the full text of every applicable
-                  law rather than summarizing from memory, then rereads its own draft against our
-                  accuracy checklist before handing it back.
-                </p>
-              </div>
+              <LiveProgress
+                eta={eta}
+                expectation={expectation}
+                sources={sources}
+                liveText={liveText}
+                stage={subStages.length ? subStages[subStages.length - 1].stage : null}
+                correcting={subStages.some(
+                  (s) => s.stage === "verifying" || s.stage === "cross-checking"
+                )}
+                writing={draftChars > 0}
+                notifyOnDone={notifyOnDone}
+                onAskToNotify={askToNotify}
+              />
             )}
           </div>
           <ProgressRail
@@ -459,6 +590,23 @@ export default function BriefPage() {
 
           {result.briefing ? (
             <>
+              {/* Closes the loop on why the wait was worth it, from values the
+                  API already returned and the UI previously discarded. Includes
+                  the consistency-issue count even when it isn't zero — a summary
+                  that only ever reports good news isn't a measurement.
+                  (brief-ux-plan.md Phase E) */}
+              <p className="muted completion-summary">
+                {genStartedAt && reportEndedAt && (
+                  <>Done in {formatElapsed(Math.round((reportEndedAt - genStartedAt) / 1000))} · </>
+                )}
+                {result.retrieval_stats?.documents ?? result.passages.length} instruments read ·{" "}
+                {result.citations.length} claims cited ·{" "}
+                {(result.canon_notes?.length ?? 0) === 0
+                  ? "no consistency issues"
+                  : `${result.canon_notes?.length} consistency issue${
+                      result.canon_notes?.length === 1 ? "" : "s"
+                    } flagged`}
+              </p>
               <div className="wizard-actions">
                 <button className="btn" onClick={onDownload} disabled={downloading}>
                   {downloading ? "Preparing PDF…" : "Download PDF"}

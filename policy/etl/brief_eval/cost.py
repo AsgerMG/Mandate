@@ -22,6 +22,7 @@ untouched by this.
 from __future__ import annotations
 
 import time
+from contextlib import contextmanager
 from typing import Any
 
 import anthropic
@@ -185,6 +186,23 @@ class _MeteredMessages:
                 f"after {self._budget.calls} calls (${self._budget.spent_usd:.2f} spent) "
                 "— stopping before another API call."
             )
+        kwargs = self._prepare(**kwargs)
+        # Wall clock per call, because "would a cheaper model be fast enough?" is
+        # a question about seconds and nothing here was measuring any. Timed
+        # around the retrying call deliberately: a 529 and its backoff is latency
+        # the user really waits through, so hiding it would flatter the model.
+        started = time.perf_counter()
+        response = self._create_with_retry(**kwargs)
+        elapsed = time.perf_counter() - started
+        self._budget.record(
+            response.usage,
+            model=getattr(response, "model", None) or kwargs.get("model"),
+            seconds=elapsed,
+        )
+        return response
+
+    def _prepare(self, **kwargs: Any) -> dict[str, Any]:
+        """Cache-control adjustments shared by create() and stream()."""
         system = kwargs.get("system")
         if isinstance(system, str) and len(system) >= _MIN_CACHEABLE_CHARS:
             kwargs = {
@@ -205,19 +223,7 @@ class _MeteredMessages:
         messages = kwargs.get("messages")
         if isinstance(messages, list):
             kwargs = {**kwargs, "messages": _strip_message_cache_control(messages)}
-        # Wall clock per call, because "would a cheaper model be fast enough?" is
-        # a question about seconds and nothing here was measuring any. Timed
-        # around the retrying call deliberately: a 529 and its backoff is latency
-        # the user really waits through, so hiding it would flatter the model.
-        started = time.perf_counter()
-        response = self._create_with_retry(**kwargs)
-        elapsed = time.perf_counter() - started
-        self._budget.record(
-            response.usage,
-            model=getattr(response, "model", None) or kwargs.get("model"),
-            seconds=elapsed,
-        )
-        return response
+        return kwargs
 
     # A run can be several dollars deep by the time a single transient 529
     # lands — retrying here (rather than letting it propagate and crash the
@@ -232,6 +238,35 @@ class _MeteredMessages:
     )
     def _create_with_retry(self, **kwargs: Any) -> Any:
         return self._real.create(**kwargs)
+
+    @contextmanager
+    def stream(self, **kwargs: Any):
+        """Metered `messages.stream()`.
+
+        Deliberately NOT retried, unlike create(): a stream that fails partway has
+        already emitted text to the caller (and, in production, to the user's
+        screen), so silently restarting it would duplicate or contradict what was
+        already shown. The caller decides what to do with a broken stream; here we
+        only guarantee it is still measured.
+        """
+        if self._budget.exhausted():
+            raise BudgetExceeded(
+                f"weekly brief-eval budget (${self._budget.max_usd:.2f}) exhausted "
+                f"after {self._budget.calls} calls (${self._budget.spent_usd:.2f} spent) "
+                "— stopping before another API call."
+            )
+        kwargs = self._prepare(**kwargs)
+        started = time.perf_counter()
+        with self._real.stream(**kwargs) as stream:
+            yield stream
+            # Inside the `with`, so usage is read only once the caller has finished
+            # consuming: get_final_message() needs the stream fully drained.
+            final = stream.get_final_message()
+        self._budget.record(
+            final.usage,
+            model=getattr(final, "model", None) or kwargs.get("model"),
+            seconds=time.perf_counter() - started,
+        )
 
 
 def _strip_message_cache_control(messages: list[Any]) -> list[Any]:
@@ -252,9 +287,16 @@ def _strip_message_cache_control(messages: list[Any]) -> list[Any]:
 
 
 class MeteredClient:
-    """Drop-in replacement for an Anthropic client — only .messages.create()
-    is used anywhere in this codebase's generation/judge/candidate paths, so
-    only that surface needs wrapping."""
+    """Drop-in replacement for an Anthropic client.
+
+    Wraps both `.messages.create()` and `.messages.stream()`. The stream half
+    exists because the brief switched to streaming so the front-end can show text
+    as it is written (see project-management/brief-ux-plan.md) — and a streaming
+    call that bypassed this proxy would silently stop being metered. Cost and
+    latency would quietly read zero for every real brief while still looking
+    correct in the eval harness: exactly the class of silent measurement failure
+    this file's price table and the judge's canon check were both fixed for.
+    """
 
     def __init__(self, real_client: Any, budget: BudgetGuard) -> None:
         self.messages = _MeteredMessages(real_client.messages, budget)

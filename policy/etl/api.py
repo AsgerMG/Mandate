@@ -277,6 +277,63 @@ def questions(req: BriefRequest, request: Request) -> dict:
     return result
 
 
+#: Measured on the 10-profile panel, 2026-07-29 (see brief-quality-plan.md Phase 6
+#: and exports/ab-baseline-sonnet.json). p10/p50/p90 of end-to-end brief wall clock,
+#: plus the output-token rate the ETA extrapolates from.
+#:
+#: These are the fallback for a deployment with no local run reports — NOT
+#: hand-invented numbers. `/api/brief/expected` prefers real reports when present,
+#: and says which source it used so a stale constant can never masquerade as a live
+#: measurement (the same rule design-ux-guidelines.md imposes on corpus counts).
+_MEASURED_LATENCY = {
+    "p10_seconds": 138,
+    "p50_seconds": 184,
+    "p90_seconds": 267,
+    "tokens_per_second": 93.7,
+    # Characters of report text the client will actually see streamed. Both the
+    # draft and its revision stream a full document, so ~2x the final text length
+    # (median final text 13,237 chars over the 10-profile panel).
+    "typical_streamed_chars": 26500,
+    "sample_size": 10,
+    "measured_at": "2026-07-29",
+}
+
+
+@app.get("/api/brief/expected")
+def brief_expected() -> dict:
+    """How long a brief takes, for the front-end to promise before it starts.
+
+    Served rather than hardcoded in the UI because it describes measured reality,
+    which drifts: a prompt change, a model change or a retrieval change moves it,
+    and a stale "2 to 4 minutes" in JSX would never be revisited.
+    """
+    from etl.brief_eval.history import run_rows
+
+    try:
+        billed = [
+            r for r in run_rows() if not r["dry_run"] and r["seconds_per_brief"] and r["model"]
+        ]
+    except Exception:  # a missing/unreadable exports dir must not break the page
+        billed = []
+
+    if len(billed) >= 3:
+        secs = sorted(r["seconds_per_brief"] for r in billed)
+
+        def pct(p: float) -> int:
+            return int(round(secs[min(len(secs) - 1, int(p * (len(secs) - 1)))]))
+
+        return {
+            **_MEASURED_LATENCY,
+            "p10_seconds": pct(0.1),
+            "p50_seconds": pct(0.5),
+            "p90_seconds": pct(0.9),
+            "sample_size": len(billed),
+            "measured_at": billed[-1]["when"],
+            "source": "run reports",
+        }
+    return {**_MEASURED_LATENCY, "source": "measured panel baseline"}
+
+
 @app.post("/api/brief")
 def brief(req: BriefRequest, request: Request) -> StreamingResponse:
     """Streams newline-delimited JSON: one `{"type": "status", ...}` line per
@@ -291,15 +348,37 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
     dry = not has_api_key()
     events: queue.Queue = queue.Queue()
 
+    # Progress the front-end turns into a rail, an ETA and a streaming draft.
+    # See project-management/brief-ux-plan.md for what each is used for.
+    last_stage = {"stage": "starting"}
+
     def on_stage(stage: str, label: str) -> None:
+        last_stage["stage"] = stage
         events.put({"type": "status", "stage": stage, "label": label})
+
+    def on_delta(text: str) -> None:
+        # Text as the model writes it. Also the ETA's only real input: latency is
+        # ~entirely a function of output tokens (r=+1.00, 93.6 tok/s measured
+        # 2026-07-29), so counting characters client-side beats any guess we could
+        # make from the profile or the corpus.
+        events.put({"type": "delta", "text": text})
+
+    def on_sources(digest: dict) -> None:
+        events.put({"type": "sources", **digest})
 
     def run() -> None:
         started = time.monotonic()
         try:
             with session_scope() as s:
                 result = generate_briefing(
-                    s, _embedder(), _profile(req), k=req.k, dry_run=dry, on_stage=on_stage
+                    s,
+                    _embedder(),
+                    _profile(req),
+                    k=req.k,
+                    dry_run=dry,
+                    on_stage=on_stage,
+                    on_delta=on_delta,
+                    on_sources=on_sources,
                 )
             elapsed = round(time.monotonic() - started, 1)
             # Real wall-clock, not a guess — the two-pass sharpen plus
@@ -310,8 +389,13 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
                 "brief_generated",
                 company=req.name,
                 elapsed_seconds=elapsed,
-                passages=len(result["passages"]),
                 dry_run=dry,
+                # NOT passages=len(...): retrieval_stats already carries a
+                # "passages" key, and passing both raised "got multiple values for
+                # keyword argument 'passages'" *after* the model work was paid for
+                # — so every real brief through this endpoint failed at the finish
+                # line while the CLI path (which doesn't go through here) looked
+                # healthy. Found 2026-07-30 by running one real brief end to end.
                 **result.get("retrieval_stats", {}),
             )
             # Optional, off by default (Settings.brief_eval_enabled) — logs
@@ -364,11 +448,28 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
 
     async def event_stream():
         loop = asyncio.get_event_loop()
-        while True:
-            item = await loop.run_in_executor(None, events.get)
-            if item is None:
-                break
-            yield json.dumps(item) + "\n"
+        stream_started = time.monotonic()
+        try:
+            while True:
+                item = await loop.run_in_executor(None, events.get)
+                if item is None:
+                    break
+                yield json.dumps(item) + "\n"
+        except asyncio.CancelledError:
+            # The client closed the tab or dropped. The worker thread finishes and
+            # its result is discarded, so this is the ONLY record that a paid brief
+            # was abandoned — and the number that decides whether BriefJob
+            # persistence is worth building (deferred 2026-07-30; see
+            # brief-ux-plan.md Phase D). Without it, a completed brief nobody
+            # fetched is indistinguishable from an abandoned one.
+            log.warning(
+                "brief_abandoned",
+                company=req.name,
+                stage=last_stage["stage"],
+                elapsed_seconds=round(time.monotonic() - stream_started, 1),
+                dry_run=dry,
+            )
+            raise
 
     return StreamingResponse(event_stream(), media_type="application/x-ndjson")
 

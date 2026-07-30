@@ -1,21 +1,32 @@
-// Vertical, end-to-end progress rail for the brief wizard. Direct user
-// requirement: every step is visible from the very start — idle until
-// entered, current while active, greyed out once done — not a list that
-// grows as the user progresses. That means the exact shape (which scoping
-// groups this specific company will see, whether a rare AI retry fires) is
-// necessarily a preview/best guess at t=0, not a strict "only show what we
-// know will happen" state machine — a deliberate trade favoring a stable,
-// predictable rail over per-run precision. The canonical 9-step backbone
-// below (profile → 5 scoping groups → 3 AI calls) always renders; a scoping
-// group this company's questions end up skipping just never goes "current"
-// and gets swept to "done" once the wizard moves past scoping, and a rare
-// AI retry stage (verifying/cross-checking) — genuinely conditional, not
-// part of the guaranteed path — is inserted dynamically if it actually
-// fires rather than reserving it a permanent slot. Every name is a wordplay
-// on the real EU legislative process, deliberately non-repeating end to
-// end: the informal intake (your own input) reads as preliminary process —
-// filing, review, consultation — and the AI's actual writing reads as the
-// formal readings that follow it — first/second reading, committee markup.
+// Vertical, end-to-end progress rail for the brief wizard. Every step is
+// visible from the moment the run's shape is known — idle until entered,
+// current while active, checked once done — not a list that grows as the
+// user progresses.
+//
+// ADAPTIVE, NOT PRESET (revised 2026-07-30). This file used to render a
+// fixed 9-step backbone: all five scoping groups always, even the ones this
+// company would never be asked. The argument was stability over per-run
+// precision. That was the right concern and the wrong conclusion — a step
+// the user is shown, never does, and then gets credit for teaches them the
+// rail is decorative, which costs us the credibility the ETA and the
+// streaming draft both borrow from it.
+//
+// The fix keeps what the original decision actually cared about: the step
+// list is computed ONCE, from real per-run data, at the moment that data
+// exists — `scopingGroups` is known before the first question is rendered,
+// so nothing is ever removed or reordered under the user. Stability was
+// never in conflict with accuracy here; it was in conflict with *late*
+// knowledge, and we have it early.
+//
+// Genuinely unknowable steps stay conditional: a rare AI retry
+// (verifying/cross-checking) has no reserved slot and is appended only if it
+// actually fires — that is information, not instability.
+//
+// Every name is a wordplay on the real EU legislative process, deliberately
+// non-repeating end to end: the informal intake (your own input) reads as
+// preliminary process — filing, review, consultation — and the AI's actual
+// writing reads as the formal readings that follow it — first/second
+// reading, committee markup. See project-management/brief-ux-plan.md.
 
 import type { ReactNode } from "react";
 
@@ -35,15 +46,20 @@ type FlatStep = {
   icon: ReactNode;
   status: FlatStatus;
   elapsedSec?: number; // undefined = never show a timer for this step
+  /** Stage id, so CSS can give the running step motion that depicts its actual
+   *  work (pages flexing while reading, a nib tracing while writing). Only set
+   *  for AI stages: during the wizard the user is the slow part, and animating
+   *  then would imply we're busy when we're idle. */
+  stage?: string;
 };
 
 const PROFILE_STEP = { label: "Filing the dossier", icon: <BriefcaseIcon /> };
 
 // Scoping groups are keyed the same way questions.py/page.tsx group them
-// (business/users_data/ai/context/more) — see GROUP_ORDER in page.tsx. Order
-// here must match GROUP_ORDER there — it's the canonical backbone, always
-// shown regardless of whether this specific company's questions include it.
-const CANONICAL_SCOPING_ORDER = ["business", "users_data", "ai", "context", "more"];
+// (business/users_data/ai/context/more) — see GROUP_ORDER in page.tsx. This
+// list fixes the *order* steps appear in; which of them appear at all comes
+// from the `scopingGroups` prop, i.e. from this run.
+const SCOPING_ORDER = ["business", "users_data", "ai", "context", "more"];
 const SCOPING_STEPS: Record<string, { label: string; icon: ReactNode }> = {
   business: { label: "Preliminary review", icon: <ClipboardIcon /> },
   users_data: { label: "Impact assessment", icon: <ScaleIcon /> },
@@ -52,8 +68,12 @@ const SCOPING_STEPS: Record<string, { label: string; icon: ReactNode }> = {
   more: { label: "Committee referral", icon: <ForwardIcon /> },
 };
 
-// The 3 AI calls every run makes, always shown. "retrieving" isn't an LLM
-// call (a vector-search DB query) so it never carries a timer.
+// These three are UNCONDITIONAL — every run retrieves, drafts and sharpens —
+// so showing them from the start is a fact about the pipeline, not a preset
+// guess about this run. That's the line: fixed where the work is fixed,
+// per-run where it varies (see the scoping groups above, and the conditional
+// retries below). "retrieving" isn't an LLM call (a vector-search DB query)
+// so it never carries a timer.
 const CANONICAL_AI_ORDER = ["retrieving", "drafting", "sharpening"];
 const AI_STAGES: Record<string, { label: string; icon: ReactNode; timed: boolean }> = {
   retrieving: { label: "First reading", icon: <BookIcon />, timed: false },
@@ -104,12 +124,17 @@ export default function ProgressRail({
     status: phase === "profile" ? "current" : "done",
   });
 
-  // 2. Scoping — the fixed canonical 5 groups, always visible regardless of
-  // whether this specific company's questions end up including all of them.
-  // A group this run skips (e.g. no "ai" group because the company doesn't
-  // use AI) simply never goes "current" and is swept to "done" once the
-  // wizard moves past scoping — never left stuck idle after the fact.
-  CANONICAL_SCOPING_ORDER.forEach((key) => {
+  // 2. Scoping — only the groups THIS run will actually ask about, in the
+  // canonical order. Before the profile is submitted we don't know the list
+  // yet, so the full set is shown as a preview of the shape; from the moment
+  // `scopingGroups` arrives it is the truth and nothing is added after.
+  // A company that doesn't use AI never sees a "Technical consultation" step
+  // it will not be asked to complete.
+  const knownGroups = scopingGroups.length > 0;
+  const groupKeys = knownGroups
+    ? SCOPING_ORDER.filter((key) => scopingGroups.some((g) => g.key === key))
+    : SCOPING_ORDER;
+  groupKeys.forEach((key) => {
     const meta = SCOPING_STEPS[key];
     const realIdx = scopingGroups.findIndex((g) => g.key === key);
     let status: FlatStatus;
@@ -137,7 +162,7 @@ export default function ProgressRail({
   CANONICAL_AI_ORDER.forEach((key) => {
     const meta = AI_STAGES[key];
     const { status, elapsedSec } = aiStatusAndElapsed(key);
-    steps.push({ key: `ai-${key}`, label: meta.label, icon: meta.icon, status, elapsedSec });
+    steps.push({ key: `ai-${key}`, label: meta.label, icon: meta.icon, status, elapsedSec, stage: key });
   });
   if (phase === "report") {
     subStages
@@ -145,7 +170,14 @@ export default function ProgressRail({
       .forEach((s) => {
         const meta = AI_STAGES[s.stage] ?? { label: s.label, icon: <DotIcon />, timed: false };
         const { status, elapsedSec } = aiStatusAndElapsed(s.stage);
-        steps.push({ key: `ai-${s.stage}`, label: meta.label, icon: meta.icon, status, elapsedSec });
+        steps.push({
+          key: `ai-${s.stage}`,
+          label: meta.label,
+          icon: meta.icon,
+          status,
+          elapsedSec,
+          stage: s.stage,
+        });
       });
   }
 
@@ -153,7 +185,7 @@ export default function ProgressRail({
     <aside className="rail" aria-label="Progress">
       <ul className="rail-steps">
         {steps.map((s) => (
-          <li className={`rail-step ${s.status}`} key={s.key}>
+          <li className={`rail-step ${s.status}${s.stage ? ` stage-${s.stage}` : ""}`} key={s.key}>
             <span className="rail-icon">{s.status === "done" ? <CheckIcon /> : s.icon}</span>
             <span className="rail-step-label">{s.label}</span>
             {s.elapsedSec !== undefined && (

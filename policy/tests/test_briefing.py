@@ -66,6 +66,7 @@ class FakeEmbedder:
 
 # --- pure tests -------------------------------------------------------------
 
+
 def test_profile_to_query_includes_signals():
     p = CompanyProfile(name="Acme", description="credit scoring", sectors=["fintech"], uses_ai=True)
     q = p.to_query()
@@ -537,9 +538,16 @@ def test_parse_response_resolves_citations_to_sources():
         },
     ]
     blocks = [
-        {"type": "text", "text": "You must do a DPIA.", "citations": [
-            {"cited_text": "carry out a data protection impact assessment", "document_index": 0},
-        ]},
+        {
+            "type": "text",
+            "text": "You must do a DPIA.",
+            "citations": [
+                {
+                    "cited_text": "carry out a data protection impact assessment",
+                    "document_index": 0,
+                },
+            ],
+        },
     ]
     out = parse_response(blocks, passages)
     # cited spans get a footnote marker; each distinct source gets a stable number
@@ -565,9 +573,13 @@ def test_parse_response_carries_verbatim_debate_kind_to_citations():
         },
     ]
     blocks = [
-        {"type": "text", "text": "The Commission adopted a package.", "citations": [
-            {"cited_text": "we adopted a new cybersecurity package", "document_index": 0},
-        ]},
+        {
+            "type": "text",
+            "text": "The Commission adopted a package.",
+            "citations": [
+                {"cited_text": "we adopted a new cybersecurity package", "document_index": 0},
+            ],
+        },
     ]
     out = parse_response(blocks, passages)
     assert out["citations"][0]["kind"] == "verbatim_debate"
@@ -611,8 +623,11 @@ def test_sort_compliance_table_enforces_prio_then_verdict_order():
     rows = [
         line.strip().strip("|").split("|")[0].strip()
         for line in sorted_briefing.splitlines()
-        if line.strip().startswith("|") and "Prio" not in line and "---" not in line
-        and "Out of Scope Register" not in line and "Why Out of Scope" not in line
+        if line.strip().startswith("|")
+        and "Prio" not in line
+        and "---" not in line
+        and "Out of Scope Register" not in line
+        and "Why Out of Scope" not in line
     ]
     compliance_rows = rows[: rows.index("ZZZ Act")] if "ZZZ Act" in rows else rows
     # Prio 1 first; within Prio 2, In Scope (GDPR, ePrivacy) before Monitor (P2B);
@@ -684,12 +699,16 @@ def test_select_breadth_first_survives_a_flat_slice_would_not():
 
     # Already best-first overall, exactly as semantic_search would return —
     # A's block first (highest scores), then B's, then the four singles.
-    passages = doc("A", 5, 0.95) + doc("B", 5, 0.85) + [
-        {"celex": "C", "url": "u-C", "char_start": 0, "score": 0.70},
-        {"celex": "D", "url": "u-D", "char_start": 0, "score": 0.65},
-        {"celex": "E", "url": "u-E", "char_start": 0, "score": 0.60},
-        {"celex": "F", "url": "u-F", "char_start": 0, "score": 0.55},
-    ]
+    passages = (
+        doc("A", 5, 0.95)
+        + doc("B", 5, 0.85)
+        + [
+            {"celex": "C", "url": "u-C", "char_start": 0, "score": 0.70},
+            {"celex": "D", "url": "u-D", "char_start": 0, "score": 0.65},
+            {"celex": "E", "url": "u-E", "char_start": 0, "score": 0.60},
+            {"celex": "F", "url": "u-F", "char_start": 0, "score": 0.55},
+        ]
+    )
     capped = _cap_per_document(passages, max_per_doc=3)
 
     # Prove the flat-slice failure mode this replaces actually would occur:
@@ -722,6 +741,39 @@ def test_press_source_keys_are_all_registered_adapters():
 
 # --- full orchestration with fakes ------------------------------------------
 
+
+class _FakeStream:
+    """Minimal stand-in for the SDK's MessageStream.
+
+    generate_briefing streams every generation call (so the front-end can show
+    text as it is written — see brief-ux-plan.md), which means the fakes have to
+    stream too: a double that only implements create() would let the tests pass
+    while production took an untested path. `text_stream` yields the response's
+    text in two chunks so delta-forwarding is genuinely exercised rather than
+    trivially satisfied by a single chunk.
+    """
+
+    def __init__(self, response):
+        self._response = response
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    @property
+    def text_stream(self):
+        text = "".join(getattr(b, "text", "") or "" for b in getattr(self._response, "content", []))
+        mid = len(text) // 2
+        for chunk in (text[:mid], text[mid:]):
+            if chunk:
+                yield chunk
+
+    def get_final_message(self):
+        return self._response
+
+
 class _FakeMessages:
     def __init__(self, response):
         self._response = response
@@ -732,6 +784,9 @@ class _FakeMessages:
         self.kwargs = kwargs
         self.call_count += 1
         return self._response
+
+    def stream(self, **kwargs):
+        return _FakeStream(self.create(**kwargs))
 
 
 class _SequenceFakeMessages:
@@ -747,6 +802,9 @@ class _SequenceFakeMessages:
         self.calls.append(kwargs)
         idx = min(len(self.calls) - 1, len(self._responses) - 1)
         return self._responses[idx]
+
+    def stream(self, **kwargs):
+        return _FakeStream(self.create(**kwargs))
 
 
 class _FakeClient:
@@ -1534,10 +1592,20 @@ def test_stakeholder_block_distinguishes_rapporteurs_from_mere_speakers():
     brief has to be able to tell the reader which is which."""
     block = build_stakeholder_block(
         [
-            {"name": "A", "institution": None, "political_group": None,
-             "role": "rapporteur", "documents": 1},
-            {"name": "B", "institution": None, "political_group": None,
-             "role": "speaker", "documents": 1},
+            {
+                "name": "A",
+                "institution": None,
+                "political_group": None,
+                "role": "rapporteur",
+                "documents": 1,
+            },
+            {
+                "name": "B",
+                "institution": None,
+                "political_group": None,
+                "role": "speaker",
+                "documents": 1,
+            },
         ]
     )
     lines = [line for line in block.splitlines() if line.startswith("-")]
@@ -1578,9 +1646,7 @@ def test_stakeholders_resolve_from_documents_actually_in_context(db_session):
     actor = Actor(name="Brando Benifei", institution="European Parliament")
     db_session.add(actor)
     db_session.flush()
-    db_session.add(
-        DocumentActor(document_id=doc_id, actor_id=actor.id, role=ActorRole.RAPPORTEUR)
-    )
+    db_session.add(DocumentActor(document_id=doc_id, actor_id=actor.id, role=ActorRole.RAPPORTEUR))
     db_session.commit()
 
     found = _stakeholders(db_session, [{"document_id": doc_id, "text": "t"}])

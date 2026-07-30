@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import datetime as dt
 import re
+import time
 from collections import Counter
 from collections.abc import Callable
 from typing import Any
@@ -25,7 +26,7 @@ from sqlalchemy import case, func, select
 from sqlalchemy.orm import Session
 
 from data.config import get_settings
-from data.models import Actor, ActorRole, DocumentActor, Enrichment
+from data.models import Actor, ActorRole, DocumentActor, Enrichment, Source
 from etl.adapters.eurlex_key_acts import KEY_ACTS
 from etl.enrichment import (
     Embedder,
@@ -524,9 +525,7 @@ def _cap_precedent(passages: list[dict], *, limit: int = _MAX_PRECEDENT_PASSAGES
         reverse=True,
     )
     keep = {id(p) for p in ranked[:limit]}
-    return [
-        p for p in passages if p.get("document_type") not in _PRECEDENT_TYPES or id(p) in keep
-    ]
+    return [p for p in passages if p.get("document_type") not in _PRECEDENT_TYPES or id(p) in keep]
 
 
 def _doc_key(passage: dict) -> str:
@@ -710,9 +709,7 @@ def _attach_summaries(session: Session, passages: list[dict]) -> list[dict]:
     if not by_doc:
         return passages
     return [
-        {**p, "summary": by_doc[p["document_id"]]}
-        if p.get("document_id") in by_doc
-        else p
+        {**p, "summary": by_doc[p["document_id"]]} if p.get("document_id") in by_doc else p
         for p in passages
     ]
 
@@ -844,6 +841,172 @@ def _retrieval_stats(passages: list[dict], facets: list[str]) -> dict[str, Any]:
     }
 
 
+#: Types whose individual titles are not what a reader wants to see. A press
+#: headline is long, often in another language, and says nothing about *why* it
+#: was retrieved; the outlet is the meaningful signal ("ARCEP", "Euractiv").
+#: Instruments are the opposite — "AI Act · Art. 6" is exactly the useful unit.
+_OUTLET_TYPES = frozenset({"press", "newsletter", "verbatim_debate"})
+
+
+def _is_transient(exc: Exception) -> bool:
+    """Whether a failed generation call is worth retrying.
+
+    Overload (529) and rate-limit (429) are the ones that matter here: they arrive
+    as an event inside the stream rather than as an HTTP error, so the SDK's own
+    request-level retry never sees them. A 400 is permanent and must surface
+    immediately rather than being retried three times at full cost.
+    """
+    text = str(exc).lower()
+    if "overloaded" in text or "rate_limit" in text:
+        return True
+    status = getattr(getattr(exc, "response", None), "status_code", None) or getattr(
+        exc, "status_code", None
+    )
+    return status in (429, 500, 502, 503, 504, 529)
+
+
+def source_display_name(name: str) -> str:
+    """A short, customer-facing outlet name from a Source.name.
+
+    Source names are written for operators and carry a gloss: "ARCEP —
+    communiqués de presse (telecoms/postal regulator)". On screen we want
+    "ARCEP".
+
+    The gloss is kept only for very short acronyms (≤3 characters), which are
+    genuinely opaque — "AMF" tells a non-specialist nothing. Five-letter names
+    like ARCEP or BEREC read fine inside a list already framed as regulatory
+    coverage, and appending "(telecoms/postal regulator)" to every row would turn
+    a glanceable list into prose.
+    """
+    base = re.sub(r"\s*\([^)]*\)\s*$", "", name).strip()
+    gloss_match = re.search(r"\(([^)]*)\)\s*$", name)
+    head = re.split(r"\s+[—–-]\s+", base)[0].strip() or base
+    if len(head) <= 3 and gloss_match:
+        return f"{head} ({gloss_match.group(1)})"
+    return head
+
+
+#: EU official titles are boilerplate-first: the instrument type and the issuing
+#: institutions come before the subject, in caps, often 200+ characters. Shown raw
+#: they read as noise ("COMMISSION STAFF WORKING DOCUMENT IMPACT ASSESSMENT
+#: Accompanying the document…") and bury the one thing a reader wants. Observed
+#: live 2026-07-30 in the customer-facing reading list.
+_TITLE_BOILERPLATE = (
+    (
+        re.compile(r"^commission staff working document.*?impact assessment", re.I),
+        "Commission impact assessment",
+    ),
+    (re.compile(r"^commission staff working document", re.I), "Commission staff analysis"),
+    (re.compile(r"^report from the commission", re.I), "Commission report"),
+    (re.compile(r"^communication from the commission", re.I), "Commission communication"),
+    (
+        re.compile(r"^opinion of the european (economic and social committee|committee)", re.I),
+        "Committee opinion",
+    ),
+)
+
+#: Strips the institutional preamble so "…OF THE EUROPEAN PARLIAMENT AND OF THE
+#: COUNCIL on artificial intelligence" becomes "Regulation on artificial intelligence".
+_PREAMBLE = re.compile(
+    r"^(?:proposal for a\s+)?"
+    r"(regulation|directive|decision|recommendation)\b"
+    # The preamble parts appear in varying orders — "(EU) 2022/2555 of the European
+    # Parliament and of the Council", "of the Council (EU) No 1234/2013" — so this
+    # is a repeated alternation rather than a fixed sequence. A number left behind
+    # ("Directive 2022/2555 of the European Parliament…") is what happens when one
+    # of these is missing.
+    r"(?:\s+of the european parliament(?:\s+and of the council)?"
+    r"|\s+of the council"
+    r"|\s+\(eu(?:ratom)?\)"
+    r"|\s+no\.?"
+    r"|\s+\d{4}/\d+"
+    r"|\s+\d+/\d{4})*",
+    re.I,
+)
+
+
+def readable_instrument_label(title: str, doc_type: str = "") -> str:
+    """A short, human label for an instrument with no canonical short name.
+
+    KEY_ACTS covers the famous ones ("AI Act"); everything else arrives with its
+    full official title, which is written for a legal citation rather than for a
+    person reading a progress list.
+    """
+    text = " ".join((title or "").split())
+    if not text:
+        return ""
+    for pattern, replacement in _TITLE_BOILERPLATE:
+        if pattern.search(text):
+            return replacement
+    # De-shout: official titles are frequently all-caps, which reads as an error.
+    if sum(c.isupper() for c in text if c.isalpha()) > 0.7 * sum(c.isalpha() for c in text):
+        text = text.capitalize()
+    match = _PREAMBLE.match(text)
+    if match:
+        kind = match.group(1).capitalize()
+        rest = text[match.end() :].lstrip(" ,–—-")
+        # Keep only up to the first clause: EU titles chain "on X, amending Y,
+        # repealing Z", and only the first names the subject.
+        # ", amending X" and " and amending X" both occur. "establishing" is
+        # deliberately absent: it usually introduces the subject itself
+        # ("Regulation establishing a framework for…"), not a trailing clause.
+        rest = re.split(r"(?:,\s*|\s+and\s+)(?:amending|repealing)\b", rest, maxsplit=1)[0]
+        text = f"{kind} {rest}".strip() if rest else kind
+    return text
+
+
+def sources_digest(
+    session: Session, passages: list[dict], *, instruments: int = 5, outlets: int = 3
+) -> dict[str, Any]:
+    """What this run is reading, shaped for display rather than for logs.
+
+    Exists because retrieval already knows precisely which instruments came back
+    and we throw that away at the UI layer, leaving the user to watch a named
+    stage do nothing for 90 seconds. Naming real law is also the clearest possible
+    signal that this isn't a chatbot guessing — see brief-ux-plan.md Phase B2.
+    """
+    named: list[dict[str, str]] = []
+    outlet_names: list[str] = []
+    outlet_items = 0
+    seen_docs: set[str] = set()
+    source_keys: set[str] = set()
+
+    for p in passages:
+        dtype = str(p.get("document_type") or "").lower()
+        if dtype in _OUTLET_TYPES:
+            outlet_items += 1
+            if p.get("source_key"):
+                source_keys.add(p["source_key"])
+            continue
+        key = _doc_key(p)
+        if key in seen_docs:
+            continue
+        seen_docs.add(key)
+        label = KEY_ACTS.get(p.get("celex") or "") or readable_instrument_label(
+            p.get("title") or "", str(p.get("document_type") or "")
+        )
+        if not label:
+            continue
+        # Truncate on a word boundary: a mid-word cut reads as a rendering bug.
+        if len(label) > 60:
+            label = label[:57].rsplit(" ", 1)[0] + "…"
+        named.append({"label": label, "detail": (p.get("heading") or "").strip()[:60]})
+
+    if source_keys:
+        rows = session.execute(
+            select(Source.name).where(Source.key.in_(source_keys)).order_by(Source.name)
+        ).all()
+        outlet_names = sorted({source_display_name(r[0]) for r in rows})
+
+    return {
+        "instruments": named[:instruments],
+        "instruments_total": len(seen_docs),
+        "outlets": outlet_names[:outlets],
+        "outlets_total": len(outlet_names),
+        "outlet_items": outlet_items,
+    }
+
+
 def build_fix_request(passages: list[dict], draft: str, issues: list[str]) -> dict[str, Any]:
     """Targeted correction pass: same documents, the current report, and the
     deterministic check's findings. The check finds; the model fixes."""
@@ -869,6 +1032,8 @@ def generate_briefing(
     dry_run: bool = False,
     sharpen: bool = True,
     on_stage: Callable[[str, str], None] | None = None,
+    on_delta: Callable[[str], None] | None = None,
+    on_sources: Callable[[dict], None] | None = None,
     reranker: Reranker | None = None,
 ) -> dict[str, Any]:
     """Retrieve relevant passages, then (unless dry_run) ask Claude for a grounded
@@ -891,6 +1056,16 @@ def generate_briefing(
     only announced when that call is genuinely about to be made, so a
     progress UI built on this never claims a step that didn't occur.
 
+    ``on_delta(text)`` receives the report's text as the model writes it. The
+    generation calls stream regardless of whether this is set — that is what makes
+    output-token progress observable, and latency is ~entirely a function of output
+    tokens (r=+1.00 at 93.6 tok/s, measured 2026-07-29), so it is also what makes an
+    honest ETA possible. See project-management/brief-ux-plan.md.
+
+    ``on_sources(digest)`` fires once, after retrieval, with what this run is about
+    to reason over (see sources_digest) — named instruments and press outlets, for
+    display rather than for logs.
+
     ``reranker`` defaults to the configured one (see get_reranker, which
     returns None when unavailable — reranking then degrades to embedding
     order). Pass one explicitly to pin behavior in tests.
@@ -901,6 +1076,41 @@ def generate_briefing(
     def _emit(stage: str, label: str) -> None:
         if on_stage is not None:
             on_stage(stage, label)
+
+    def _generate(request: dict[str, Any], *, live: bool = False) -> Any:
+        """One generation call, streamed, returning the final Message.
+
+        Always streams, so there is one code path rather than a production path and
+        an eval path that could drift — the eval harness has to exercise what
+        production runs. ``live`` marks the calls whose text the user should watch
+        appear (the draft and its revision); internal retries stream too but are not
+        forwarded, because showing a discarded draft being rewritten would be
+        confusing rather than transparent.
+        """
+        # Retried ONLY while nothing has been forwarded to the caller yet. A
+        # transient 529 "Overloaded" arrives as an event inside the stream, which
+        # the SDK's request-level retry does not cover — and it killed a real brief
+        # on 2026-07-30 after ~40s. Once text has been shown, a retry would
+        # duplicate or contradict what the user already read, so the error
+        # surfaces instead. Same policy as etl/brief_eval/cost.py, which was
+        # written for exactly this failure on the eval path.
+        last_error: Exception | None = None
+        for attempt in range(3):
+            forwarded = False
+            try:
+                with client.messages.stream(**request) as stream:
+                    if live and on_delta is not None:
+                        for chunk in stream.text_stream:
+                            forwarded = True
+                            on_delta(chunk)
+                    return stream.get_final_message()
+            except Exception as exc:  # noqa: BLE001 - re-raised below when unsafe
+                if forwarded or not _is_transient(exc) or attempt == 2:
+                    raise
+                last_error = exc
+                log.warning("brief_stream_retry", attempt=attempt + 1, error=str(exc)[:200])
+                time.sleep(2 * (attempt + 1))
+        raise last_error  # unreachable; keeps the type checker honest
 
     _emit("retrieving", "Retrieving the sources that apply to your profile")
     query = profile.to_query()
@@ -946,9 +1156,7 @@ def generate_briefing(
     # operative provisions into context instead of one arbitrary window.
     _emit("retrieving", "Reading the instruments that apply to you in depth")
     deepen_ids = _top_document_ids(breadth, limit=_DEEPEN_DOCUMENTS)
-    deep = document_passages(
-        session, embedder, query, deepen_ids, k_per_doc=_DEEPEN_PER_DOCUMENT
-    )
+    deep = document_passages(session, embedder, query, deepen_ids, k_per_doc=_DEEPEN_PER_DOCUMENT)
     passages = _merge_passages(breadth, deep)
 
     # Guarantee every foundational act a seat in context (see canon_passages'
@@ -989,6 +1197,8 @@ def generate_briefing(
     request = build_request(profile, passages, build_stakeholder_block(stakeholders))
     stats = _retrieval_stats(passages, [facet for facet, _ in facets])
     log.info("brief_retrieval", company=profile.name, **stats)
+    if on_sources is not None and passages:
+        on_sources(sources_digest(session, passages))
 
     if dry_run or not passages:
         return {
@@ -1006,7 +1216,7 @@ def generate_briefing(
 
     def _one_pass() -> dict[str, Any]:
         _emit("drafting", "Drafting the report")
-        draft_resp = client.messages.create(**request)
+        draft_resp = _generate(request, live=True)
         if not sharpen:
             return parse_response(draft_resp.content, passages)
 
@@ -1020,7 +1230,7 @@ def generate_briefing(
         # that were present in the draft.
         if not draft_parsed["citations"] and passages:
             _emit("verifying", "First pass came back without traceable citations — retrying")
-            retry_resp = client.messages.create(**request)
+            retry_resp = _generate(request)
             retry_parsed = parse_response(retry_resp.content, passages)
             if retry_parsed["citations"]:
                 draft_resp, draft_parsed = retry_resp, retry_parsed
@@ -1034,7 +1244,7 @@ def generate_briefing(
         )
         _emit("sharpening", "Sharpening the analysis against our style and accuracy checklist")
         revise_request = build_revise_request(passages, draft_text, pre_issues or None)
-        revise_resp = client.messages.create(**revise_request)
+        revise_resp = _generate(revise_request, live=True)
         revised = parse_response(revise_resp.content, passages)
 
         # Measured on real runs: the draft having citations is no guarantee
@@ -1047,7 +1257,7 @@ def generate_briefing(
         # the right escalation only when the draft itself lacked citations.
         if not revised["citations"] and draft_parsed["citations"]:
             _emit("verifying", "The revised draft lost its citation links — reattaching them")
-            retry_revise_resp = client.messages.create(**revise_request)
+            retry_revise_resp = _generate(revise_request)
             retry_revised = parse_response(retry_revise_resp.content, passages)
             if retry_revised["citations"]:
                 revised = retry_revised
@@ -1071,13 +1281,11 @@ def generate_briefing(
     # rows or missing canon acts get one targeted correction call — the check
     # finds, the model fixes. Anything still unresolved is surfaced as
     # canon_notes instead of silently shipped.
-    issues = _canon_issues(parsed["briefing"], passages) + prio_verdict_issues(
-        parsed["briefing"]
-    )
+    issues = _canon_issues(parsed["briefing"], passages) + prio_verdict_issues(parsed["briefing"])
     if issues:
         _emit("cross-checking", "Cross-checking the regulatory register for consistency")
         draft = _MARKER_RE.sub("", parsed["briefing"])
-        fixed_resp = client.messages.create(**build_fix_request(passages, draft, issues))
+        fixed_resp = _generate(build_fix_request(passages, draft, issues), live=True)
         fixed = parse_response(fixed_resp.content, passages)
         if fixed["citations"]:
             remaining = _canon_issues(fixed["briefing"], passages)

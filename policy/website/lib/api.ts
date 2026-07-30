@@ -87,8 +87,49 @@ export type BriefResult = {
   briefing: string | null;
   citations: Citation[];
   canon_notes?: string[];
+  /** Retrieval shape for this run — already sent by the API, previously unused by
+   *  the UI. Powers the completion summary (see brief-ux-plan.md Phase E). */
+  retrieval_stats?: {
+    passages?: number;
+    documents?: number;
+    substantive_passages?: number;
+    context_chars?: number;
+  };
   dry_run: boolean;
 };
+
+/** What this run is reading, for display during the wait — instruments by act
+ *  name, news by outlet rather than by headline (a press headline is long, often
+ *  in another language, and says nothing about why it was retrieved). */
+export type BriefSources = {
+  instruments: { label: string; detail: string }[];
+  instruments_total: number;
+  outlets: string[];
+  outlets_total: number;
+  outlet_items: number;
+};
+
+/** Measured brief latency, served rather than hardcoded because it describes
+ *  reality that drifts when the prompt, model or retrieval changes. */
+export type BriefExpectation = {
+  p10_seconds: number;
+  p50_seconds: number;
+  p90_seconds: number;
+  tokens_per_second: number;
+  typical_streamed_chars: number;
+  sample_size: number;
+  measured_at: string;
+  source: string;
+};
+
+export async function getBriefExpectation(): Promise<BriefExpectation | null> {
+  try {
+    const res = await fetch(`${BASE}/api/brief/expected`);
+    return res.ok ? ((await res.json()) as BriefExpectation) : null;
+  } catch {
+    return null; // the page must still work without it; the copy just goes vaguer
+  }
+}
 
 export type BriefStage = {
   stage: string;
@@ -145,7 +186,12 @@ async function post<T>(path: string, body: unknown): Promise<T> {
  */
 export async function postBrief(
   body: BriefInput,
-  onStage?: (stage: BriefStage) => void
+  onStage?: (stage: BriefStage) => void,
+  /** Text as the model writes it. Also the ETA's only real input: latency is
+   *  ~entirely a function of output tokens (r=+1.00 at 93.6 tok/s, measured
+   *  2026-07-29), so counting streamed characters beats any upfront guess. */
+  onDelta?: (text: string) => void,
+  onSources?: (sources: BriefSources) => void
 ): Promise<BriefResult> {
   const res = await fetch(`${BASE}/api/brief`, {
     method: "POST",
@@ -168,6 +214,8 @@ export async function postBrief(
       if (!line.trim()) continue;
       const event = JSON.parse(line);
       if (event.type === "status") onStage?.({ stage: event.stage, label: event.label });
+      else if (event.type === "delta") onDelta?.(event.text as string);
+      else if (event.type === "sources") onSources?.(event as BriefSources);
       else if (event.type === "error") throw new Error(event.message);
       else if (event.type === "result") return event as BriefResult;
     }

@@ -32,21 +32,38 @@ index when an item opens or closes.
 - First action next week: new baseline on the widened panel (the panel change
   resets the old 3.80 → 4.11 comparison), then count recurring hinges
 
-**🔝 Phase 7 — the three-minute brief is a UX problem now (planned 2026-07-29)**
+**Phase 7 — the three-minute brief: IMPLEMENTED 2026-07-30**
 - The model A/B settled it: ~3 min/brief is a fixed constraint, so the work moves
   to the wait. Full plan: [brief-ux-plan.md](brief-ux-plan.md)
 - Measured basis: latency ↔ output tokens r=+1.00 at 93.6±2.1 tok/s, so an honest
   self-correcting ETA is arithmetic. **Nothing at retrieval time predicts run size**
   (|r| ≤ 0.39), so adaptivity is real only once tokens flow — claiming it earlier
   would be theatre
-- Ordered: (0) make the rail adaptive rather than a preset 9-step backbone —
+- ✅ Shipped: adaptive rail, streamed first-reading draft, named instruments/outlets,
+  measured monotonic ETA, tab title + favicon progress ring, opt-in completion
+  notification, per-stage line-art motion, completion summary, abandonment counter
+- ✅ Four bugs found by running it for real, two invisible to the test suite:
+  `/api/brief` had been failing for **every** real brief (`passages` kwarg collision,
+  pre-existing); the ETA was calibrated 5x too high; the ETA rose; a transient 529
+  lost a brief because production streamed without the retry the eval path had
+- ⬜ Remaining: text doesn't appear until ~90-100s of a ~180s brief (thinking precedes
+  generation), so half the wait is still an indeterminate bar. Shipped fix names the
+  phase; the real fix is a backend `thinking` stage with its own rail step
+- Original order: (0) make the rail adaptive rather than a preset 9-step backbone —
   revises the deliberate decision in `ProgressRail.tsx`, argued in the plan;
   (A) measured 2–4 min expectation + token-based ETA; (B) stream the first-reading
   draft and name the instruments being read; (C) title + favicon progress ring +
-  opt-in completion notification; (D) `BriefJob` persistence so "you can leave" is
-  true and an abandoned brief stops costing $0.72; (E) per-stage line-art motion
-- Phase D also fixes a real leak: the rate limiter counts requests, not work, so a
-  reload today costs a second brief and is charged one hit
+  opt-in completion notification; (D′) a ~5-line abandonment counter;
+  (E) per-stage line-art motion
+- ⬜ **`BriefJob` persistence deferred 2026-07-30** — revisit only if abandonment
+  proves to be a real problem in practice. Backgrounding a tab is already safe (the
+  stream stays open); only *closing* it loses the work, so Phase C's copy says
+  "switch tabs", not "leave". Deferring also leaves the rate limiter counting
+  requests rather than work — a reload costs a second brief and is charged one hit,
+  bounded for now by the per-IP hourly cap
+- Which is exactly why D′ ships anyway: without a client-disconnect counter we can
+  never settle whether D is needed, because a completed brief nobody fetched is
+  indistinguishable from an abandoned one
 
 **Phase 6 — model A/B: RUN 2026-07-29, verdict keep Sonnet**
 - Haiku 4.5 is 70% cheaper but −0.50 judged quality, 30 unresolved canon acts vs 0,

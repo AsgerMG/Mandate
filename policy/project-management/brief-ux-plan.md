@@ -1,5 +1,11 @@
 # The three-minute brief: a UX plan for the wait
 
+> **Status: implemented 2026-07-30**, except the deferred `BriefJob` persistence
+> (Phase D). Verified against four real briefs at 320/375/768/1280/1920/2560px.
+> What the live runs found is recorded in §8 — including a fatal pre-existing bug
+> in `/api/brief` that meant **every real brief had been failing at the finish
+> line**, and an ETA of mine that was calibrated 5x too high.
+
 Written 2026-07-29, immediately after the Haiku/Sonnet A/B settled the model
 question. The verdict there was "keep Sonnet", which means **~3 minutes per brief
 is now a fixed constraint of the product, not a bug to optimise away**. This plan
@@ -238,7 +244,14 @@ form:
 
 > **Drafting your brief — usually 2 to 4 minutes.**
 > It reads the actual instruments and cites every claim, which is why it isn't
-> instant. You can leave this tab; we'll keep working and notify you.
+> instant. Feel free to switch tabs — we'll keep working and can notify you when
+> it's ready.
+
+**Say "switch tabs", not "leave".** With Phase D deferred, backgrounding a tab is
+safe but *closing* it loses the work. The copy has to match what the system can
+actually keep — this is the one place the deferral is user-visible, and a promise
+we can't honour would undermine every other honest number on the screen. Once D
+ships, the wording can widen.
 
 `2 to 4 minutes` is p10–p90 (138–267s) rounded outward, not an average. Sourced
 from `brief-check --history`, not hand-written — the same rule the design
@@ -353,12 +366,52 @@ for our ETA (it self-corrects on the next event) but can stall a `fetch` reader
 on some browsers. Use the **Page Visibility API** to detect return and immediately
 reconcile state from the server rather than trusting accumulated client timers.
 
-### Phase D — Survive the connection (the one real backend change)
+### Phase D — Survive the connection — **DEFERRED 2026-07-30**
 
-Today the brief lives inside a single streaming HTTP response, on a worker thread,
-with no record. **Close the tab and three minutes of paid work evaporates** — and
-the user has no way to get it back. Every "you can leave" promise in Phase C is
-only half-true until this is fixed.
+**Decision: not building this now.** Revisit only if abandonment turns out to be a
+real problem in practice. Recorded here with its trigger so the deferral is a
+decision rather than a gap someone rediscovers later.
+
+**What deferring actually costs.** Two things, and the first is smaller than it
+first appears:
+
+1. *Backgrounding a tab is already safe.* The stream is a normal HTTP response;
+   switching tabs keeps the connection open, the reader keeps draining it, and the
+   brief arrives. Only **closing** the tab (or a network drop) loses the work — the
+   worker thread finishes, writes to a queue nobody is reading, and the result is
+   discarded. So Phase C keeps almost all of its value; what changes is the wording
+   (see below), not the mechanism.
+2. *An abandoned brief costs $0.72 and we cannot currently count them.* That is the
+   real gap — not the loss itself, but that we're blind to its frequency.
+
+**So the one thing to build now is the counter, not the persistence.** Starlette
+cancels the streaming generator when the client goes away, which is a detectable
+event:
+
+```python
+# in event_stream(), around the drain loop
+except asyncio.CancelledError:
+    log.warning("brief_abandoned", company=req.name,
+                stage=last_stage, elapsed_s=round(time.monotonic() - started, 1))
+    raise
+```
+
+~5 lines, no schema, no retention question. It gives us the number that decides
+this phase: **how often does a user close the tab mid-brief, and at which stage?**
+Without it, deferring D is a guess we can never settle, because a completed brief
+nobody fetched looks identical to an abandoned one.
+
+**Revisit D when** the abandonment rate is high enough that the wasted spend or the
+lost user work justifies the schema — or when a paying customer asks for a brief
+they can come back to, which is a product requirement rather than a UX one.
+
+**Related leak, worth noting even while deferred:** the rate limiter counts
+*requests*, not *work*, so a user who reloads three times costs three briefs and is
+charged one hit. Persistence would fix that as a side effect. Until then it is
+bounded by the per-IP hourly cap, which is why this is tolerable rather than urgent.
+
+<details>
+<summary>The design, for when we do build it</summary>
 
 Minimal honest design:
 
@@ -377,11 +430,10 @@ Minimal honest design:
    prune on the same schedule as `RetrievalEvent`
    (`brief_eval_retention_days`, default 14) rather than accumulating.
 
-This also makes the rate limiter honest: it currently counts *requests*, not
-*work*, so a user who reloads three times costs us three briefs and is charged
-one hit. With jobs, a reload re-attaches instead of re-spending. **This phase pays
-for itself in wasted API spend**, independent of the UX gain: one abandoned brief
-is $0.72.
+This also makes the rate limiter honest, and a reload re-attaches instead of
+re-spending.
+
+</details>
 
 ### Phase E — Polish that earns its keep
 
@@ -497,11 +549,13 @@ unmistakably provisional without being unreadable:
 | B2 — name the sources | S | ✅ | Uses data already retrieved and thrown away |
 | C1 — title + favicon ring | S | ✅ | Cheapest tab-away support that exists |
 | C2 — completion notification | S | ✅ | Opt-in only |
-| D — job persistence | **L** | ✅ | Makes "you can leave" true; recovers wasted spend |
+| D′ — abandonment counter | XS | ✅ | ~5 lines; the number that decides whether D is ever needed |
+| ~~D — job persistence~~ | **L** | — | **Deferred 2026-07-30** until abandonment proves to be a real problem |
 | E — polish | M | ✅ | Only after the substance is right |
 
-A, B2 and C1 together are a day's work and change the experience most. D is the
-one that needs real thought about schema, retention and the rate limiter.
+A, B2 and C1 together are a day's work and change the experience most. With D
+deferred, the whole plan is now frontend plus two small backend touches: streaming
+the draft (B1) and the abandonment counter (D′).
 
 **Do A before B1.** B1 is more exciting, but if the ETA is wrong the streaming
 text just makes a broken promise more visible.
@@ -512,9 +566,11 @@ text just makes a broken promise more visible.
 
 The A/B taught us to define the measurement before running the change:
 
-- **Abandonment rate** — briefs started vs briefs whose result was actually
-  fetched. Phase D makes this measurable for the first time (today an abandoned
-  brief is indistinguishable from a completed one nobody looked at).
+- **Abandonment rate** — from the Phase D′ counter: how often the client
+  disconnects mid-brief, and at which stage. This is the trigger for reopening
+  Phase D, so it has to exist even though D doesn't. Note the asymmetry it
+  resolves: without it, a completed brief nobody fetched is indistinguishable
+  from an abandoned one.
 - **ETA honesty** — |predicted − actual| / actual per run, logged. Target: within
   25% on the clean path. We have the data to backtest this offline against the 20
   briefs already generated *before writing any UI*, which is the cheapest possible
@@ -540,3 +596,67 @@ The A/B taught us to define the measurement before running the change:
 - [Handling Long-Running Operations with Background Responses — Microsoft Agent Framework](https://devblogs.microsoft.com/agent-framework/handling-long-running-operations-with-background-responses/)
 - Our own measurements: `exports/ab-baseline-sonnet.json`,
   `exports/ab-challenger-haiku.json`, `regina brief-check --history`
+
+
+---
+
+## 8. What building it actually found
+
+Four real briefs were run end to end through a browser. Every item below was found
+by that, not by review — and the first two were invisible to the existing test
+suite and to `brief-check`, because neither goes through `etl/api.py`.
+
+**1. `/api/brief` was broken for every real brief — pre-existing, fatal.**
+`log.info("brief_generated", …, passages=len(...), **retrieval_stats)` passed
+`passages` twice, since `retrieval_stats` carries its own `passages` key. It raised
+*after* the full ~3 minutes of generation was paid for, so a user saw "Report
+generation failed" having cost us $0.72. Confirmed pre-existing at `HEAD` with
+`git show`. The CLI path (`brief-check`) doesn't import `api.py`, which is exactly
+why every panel run looked healthy while the product was broken.
+
+**2. The ETA was calibrated 5x too high.** It assumed streamed characters ≈
+`output_tokens x 4`. Measured against the stored briefs: visible text is only
+**~19%** of that, because output tokens include thinking *and* both passes while
+`text_stream` yields text only. Recalibrated on measured final-text length
+(~26,500 chars across the two streaming passes).
+
+**3. The ETA rose, breaking this plan's own rule.** Observed live: "about a minute
+left" jumped back to "about 3 minutes left" the moment the token-based estimate
+took over from the median fallback. Now clamped monotonically; it may only rise
+when a correction pass fires, which is announced with a reason.
+
+**4. A transient 529 lost a whole brief.** Anthropic returned
+`overloaded_error` ~40s in and the brief died. The retry policy for exactly this
+failure existed only in `etl/brief_eval/cost.py` — the eval path — while production
+streamed with none. Now retried up to 3 times, but **only while no text has been
+forwarded**: once the user has read something, a retry would duplicate or
+contradict it, so the error surfaces instead.
+
+Also: a stale `ept serve` from the pre-rebrand `EuroPolTracker` checkout was
+holding port 8000, so local testing had been hitting the old backend; and
+`restoreFavicon()` left `href=""` (a visibly broken icon) when the page had no
+icon link of its own.
+
+### One measured thing the design should still answer
+
+**Text doesn't start appearing until ~90–100s of a ~180s brief**, because adaptive
+thinking runs before generation. That is half the wait with an indeterminate bar.
+Phase B1 was sold on "watch it being written", and it only delivers that for the
+second half. The honest response shipped here is to *name* the phase — "Reading the
+retrieved provisions and working out which of them actually bind you" — rather than
+add motion to disguise it. A better answer would be a genuine `thinking` stage
+emitted by the backend, with its own rail step; that is a real change to
+`generate_briefing`'s event contract and is not done.
+
+### Verified live
+
+```
+t=  0s hint=True   fav=3634B  eta=about 3 minutes left
+t= 80s hint=True   fav=3602B  eta=about 90 seconds left
+t=100s hint=False  fav=3434B  eta=about a minute left     <- text starts
+t=160s hint=False  fav=3862B  eta=under a minute left
+t=180s FINISHED — 'Done in 2m 57s · 64 instruments read · 8 claims cited · no consistency issues'
+       title='✓ Your brief is ready · Regina'
+```
+
+No horizontal overflow at 320/375/768/1280/1920/2560px with the panel live.
