@@ -30,6 +30,7 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
 import { semanticFundMatch } from "./semantic";
 import { ExclusionLog } from "./exclusions";
 import { assembleWriterInstructions } from "./contracts";
+import { buildProvenance } from "./provenance";
 import {
   findPeersBySubsector,
   isGenericSubsector,
@@ -1398,6 +1399,11 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
       company: req.company,
       generatedAt: new Date().toISOString(),
       ...report,
+      // Where each part came from, plus what was removed on the way. Always
+      // emitted, rendered only under ?trace=1 — the cost is a few hundred
+      // bytes and it is the difference between "why is this fund missing"
+      // being answerable and not.
+      provenance: buildProvenance(log.countsByRule()),
     },
   });
   emit({ type: "status", step: "done" });

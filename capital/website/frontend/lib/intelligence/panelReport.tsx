@@ -285,8 +285,73 @@ export function EligibilityTable({ rows }: { rows: EligibilityCheck[] }) {
  */
 const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 
+/**
+ * The trace panel: where every part of this brief came from, and what was
+ * removed on the way here.
+ *
+ * Shown only when the URL carries ?trace=1. Never part of the founder's brief,
+ * and deliberately rendered INSIDE the report component rather than as a
+ * separate debug page, so what it describes is the brief actually on screen
+ * rather than a re-run that might differ.
+ *
+ * The exclusion counts are the half that cannot be answered any other way: a
+ * published fund carries its whole justification, while a fund that never
+ * appeared leaves no trace in the output at all.
+ */
+function TracePanel({ report }: { report: IntelligenceReport }) {
+  const p = report.provenance;
+  if (!p) return null;
+  const badge = (o: string) =>
+    o === "code" ? "bg-[#e8efe6] text-[#3d6136]"
+      : o === "fixed" ? "bg-[#f0ece2] text-[#6b5f45]"
+      : "bg-[#e6ecf4] text-[#2f4d73]";
+  const exclusions = Object.entries(p.exclusions).sort((a, b) => b[1] - a[1]);
+  return (
+    <div className="mt-12 border-t-2 border-dashed border-[var(--border)] pt-6 print:hidden">
+      <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+        Trace · not part of the brief
+      </p>
+      <table className="mb-6 w-full border-collapse text-[12px]">
+        <tbody className="divide-y divide-[var(--border)] align-top">
+          {Object.entries(p.fields).map(([field, meta]) => (
+            <tr key={field}>
+              <td className="py-1.5 pr-3 font-mono">{field}</td>
+              <td className="py-1.5 pr-3">
+                <span className={`rounded px-1.5 py-0.5 font-semibold ${badge(meta.origin)}`}>
+                  {meta.origin}
+                </span>
+                {meta.contract && (
+                  <span className="ml-2 text-[var(--muted-foreground)]">{meta.contract}</span>
+                )}
+              </td>
+              <td className="py-1.5 text-[var(--muted-foreground)]">{(meta.evidence ?? []).join(", ")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+        Funds removed on the way here
+      </p>
+      {exclusions.length === 0 ? (
+        <p className="text-[12px] text-[var(--muted-foreground)]">nothing recorded</p>
+      ) : (
+        <ul className="text-[12px] text-[var(--muted-foreground)]">
+          {exclusions.map(([rule, n]) => (
+            <li key={rule} className="font-mono">{rule}: {n}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function Memo({ report }: { report: IntelligenceReport }) {
   const self = report.self;
+  // Debug view, opt-in per request. Read from the URL rather than held in
+  // state: it must survive a reload and never leak into a normal session.
+  const trace =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("trace") === "1";
   const date = new Date(report.generatedAt).toLocaleDateString("en-GB", {
     day: "numeric",
     month: "long",
@@ -410,6 +475,8 @@ export function Memo({ report }: { report: IntelligenceReport }) {
         <p className="mt-4 border-l-2 border-[var(--primary)] pl-4 text-[var(--foreground-soft)]">
           {STATE_OF_PLAY_OFFER}
         </p>
+
+        {trace && <TracePanel report={report} />}
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
         <div className="mt-12 border-t border-[var(--border)] pt-4">

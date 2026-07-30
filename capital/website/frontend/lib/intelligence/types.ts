@@ -264,6 +264,12 @@ export interface IntelligenceReport {
    *  fixed, code-authored Wincent plug appended (never modeled). */
   stateOfPlay: string;
   caveats: string;
+  /** Origin of each part of the brief, plus the exclusion counts for this
+   *  request. Rendered only under ?trace=1; see provenance.ts. */
+  provenance?: {
+    fields: Record<string, { origin: "code" | "model" | "fixed"; contract?: string; evidence?: string[] }>;
+    exclusions: Record<string, number>;
+  };
 }
 
 /**
