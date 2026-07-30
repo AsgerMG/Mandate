@@ -37,7 +37,7 @@ def main() -> None:
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
-               last_year
+               last_year, scheme_code, application_url
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -97,7 +97,25 @@ def main() -> None:
         # told to "approach the ministry for the next wave" of a scheme that
         # closed years ago. Wrong with authority is worse than thin.
         "lastYear": inst["last_year"],
-        "gates": gates_by_instrument.get(inst["id"], []),
+        # The notified aid scheme this instrument sits under, and where to
+        # apply. A child of a state-aid rollup is a real granting body running
+        # a real scheme; the code is what makes the row traceable to a primary
+        # document, and the URL is the only thing on the row a founder can act
+        # on directly.
+        "schemeCode": inst["scheme_code"],
+        "applicationUrl": inst["application_url"],
+        # ── Inherited gates ──────────────────────────────────────────────────
+        # A child carries no gates of its own by design: the curated
+        # eligibility layer is written against the parent regime's framework
+        # document, and copying it down would fork an expensive, audited layer
+        # into hundreds of duplicates that then drift apart.
+        #
+        # Inheriting at export time is what makes the split safe. Without it
+        # every child evaluates as "no encoded rule", which reads as
+        # unverified, ranks below everything assessed, and would have made a
+        # more granular corpus produce visibly worse briefs.
+        "gates": gates_by_instrument.get(inst["id"])
+                 or gates_by_instrument.get(inst["parent_id"], []),
     } for inst in instruments]
 
     OUT.write_text(json.dumps(

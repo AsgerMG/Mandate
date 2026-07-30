@@ -49,7 +49,8 @@ const SELF_CONTRADICTION = /\b(targets|aimed at|reserved for|designed for|focus(
 /** An institution a founder cannot approach as a funder. A government
  *  department administers schemes; it is not itself a door to knock on, and
  *  naming one as the institution sends the reader nowhere. */
-const NOT_AN_APPLYABLE_BODY = /^(ministry|minist[eè]re|ministerium|ministero|ministerie|department) /i;
+export const NOT_AN_APPLYABLE_BODY =
+  /^(ministry|minist[eè]re|ministerium|ministero|ministerie|department|direction g[eé]n[eé]rale)\b/i;
 
 export interface BriefLimits {
   bulletMin: number; bulletMax: number; bulletWords: number;

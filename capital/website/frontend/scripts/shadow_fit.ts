@@ -72,8 +72,8 @@ async function main() {
     // ── what the score would ship ─────────────────────────────────────────
     // Scored over the WHOLE corpus, not the pre-filtered table: the point is
     // that funds the channel rules never surfaced get a chance to rank.
-    const { loadDbInstruments, toIso2 } = await import("../lib/intelligence/corpus");
-    const all = loadDbInstruments().filter((i) => !i.isFramework && i.sourceFamilyBucket);
+    const { publishableInstruments, toIso2 } = await import("../lib/intelligence/corpus");
+    const all = publishableInstruments().filter((i) => i.sourceFamilyBucket);
     const assessments = assessAll(all.map((i) => i.id), eligibility);
     // Production ranks on the semantic index (instrument_profiles); the
     // lexical one is the offline fallback. Scoring the fallback and calling it

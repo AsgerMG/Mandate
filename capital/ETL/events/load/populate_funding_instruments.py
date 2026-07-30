@@ -35,6 +35,7 @@ from etl_env import DB  # noqa: E402
 import argparse
 import json
 import re
+import unicodedata
 import sqlite3
 from collections import Counter, defaultdict
 
@@ -195,6 +196,33 @@ GBER_ARTICLE_GATES = {
 }
 
 
+# ── Which rollups get split into per-authority, per-scheme children ─────────
+# France first, deliberately. The split is a real change to how the corpus is
+# shaped, and one country is enough to measure whether it helps: 318
+# authority x scheme combinations sit under these two rows, 77 of them with
+# twenty or more awards, covering 94% of French award volume.
+#
+# Rolling it across all 22 countries at once would also breach the
+# per-request payload budget (headroom is roughly 700 instruments; 22
+# countries at this rate is several times that), so a wider rollout needs the
+# shortlist to query rather than ship the corpus. That is a separate change.
+SPLIT_FAMILIES = {"satr_fr_rnd", "satr_fr_equity"}
+
+# Below this an instrument is not a programme, it is a handful of awards that
+# happen to share a code. They stay counted in the parent.
+MIN_CHILD_EVENTS = 20
+
+
+def child_slug(text: str) -> str:
+    """Stable, readable id fragment. Ids must not move between runs: the
+    reconcile step deletes gates whose instrument disappeared, so an id that
+    changes shape is indistinguishable from an instrument that vanished."""
+    out = unicodedata.normalize("NFKD", text.lower())
+    out = "".join(ch for ch in out if not unicodedata.combining(ch))
+    out = re.sub(r"[^a-z0-9]+", "_", out).strip("_")
+    return out[:48] or "unknown"
+
+
 def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict[str, Counter]) -> int:
     """Tier 0.5: seed eligibility_gates rows purely from GBER article codes
     already loaded per-event (aid_objective) — zero API cost. Only fires for
@@ -250,7 +278,8 @@ def main() -> None:
         SELECT e.source, e.company_id, c.country, c.parent_group,
                e.grant_amount_eur, e.equity_amount_eur, e.debt_amount_eur,
                e.grant_amount_basis, e.aid_instrument, e.aid_objective, e.ndb_distributor,
-               e.granting_authority, e.project_title,
+               e.granting_authority, e.granting_authority_country, e.call_id,
+               e.project_title,
                e.project_started, e.call_deadline,
                v.source_family
         FROM public_funding_events e
@@ -272,6 +301,9 @@ def main() -> None:
     fam_source_family_votes: dict[str, Counter] = defaultdict(Counter)
     fam_project_titles: dict[str, Counter] = defaultdict(Counter)
     fam_aid_objective_votes: dict[str, Counter] = defaultdict(Counter)
+    # Per-authority, per-scheme detail under the state-aid rollups. See
+    # child_key() for why this exists and what it is allowed to do.
+    child_rows: dict[tuple[str, str, str], dict] = {}
 
     for r in rows:
         fam = source_to_family(r["source"])
@@ -304,6 +336,34 @@ def main() -> None:
             fam_project_titles[fam][r["project_title"]] += 1
         if r["aid_objective"]:
             fam_aid_objective_votes[fam][r["aid_objective"]] += 1
+
+        # ── the split ────────────────────────────────────────────────────────
+        # A state-aid rollup is a whole country's aid regime in one row. It is
+        # the right unit for the CURATED eligibility layer, which is written
+        # against the regime's own framework document, and the wrong unit for a
+        # founder, who cannot apply to "French R&D state aid". Underneath it sit
+        # real granting bodies running real notified schemes.
+        #
+        # So the rollup stays exactly where it is, keeps its id and therefore
+        # keeps every curated gate attached to it, and the detail arrives as
+        # CHILDREN. Nothing is moved, so nothing is orphaned: the reconcile
+        # above only deletes gates whose instrument disappeared, and no
+        # instrument disappears here.
+        if fam in SPLIT_FAMILIES and r["granting_authority"] and r["call_id"]:
+            key = (fam, r["granting_authority"][:200], r["call_id"])
+            c = child_rows.setdefault(key, dict(
+                events=0, eur=0.0, companies=set(), years=[],
+                capital=Counter(), objectives=Counter(), titles=Counter()))
+            c["events"] += 1
+            c["eur"] += (r["grant_amount_eur"] or 0) + (r["equity_amount_eur"] or 0) + (r["debt_amount_eur"] or 0)
+            c["companies"].add(r["parent_group"] or r["company_id"])
+            if year:
+                c["years"].append(year)
+            c["capital"][ct] += 1
+            if r["aid_objective"]:
+                c["objectives"][r["aid_objective"]] += 1
+            if r["project_title"]:
+                c["titles"][r["project_title"]] += 1
 
     families = set(fam_events)
     all_ids = families | SYNTHETIC_PARENTS | {fid for fid, _ in FRAMEWORK_INSTRUMENTS}
@@ -391,6 +451,58 @@ def main() -> None:
             is_framework=is_framework, sample_project_titles=sample_titles,
         ))
 
+    # ── Children of the state-aid rollups ────────────────────────────────────
+    # One row per (granting body, notified scheme). The body is who a founder
+    # approaches; the scheme is the legal identity of the money and what makes
+    # the row traceable to a primary document.
+    #
+    # These carry NO gates of their own. The curated eligibility layer is
+    # written against the parent regime's framework document and stays there;
+    # a child inherits it at read time (see eligibility_export.py). Copying
+    # gates down would fork the expensive layer into hundreds of duplicates
+    # that then drift.
+    kept_children = 0
+    for (fam, authority, scheme), c in sorted(child_rows.items()):
+        if c["events"] < MIN_CHILD_EVENTS:
+            continue
+        parent = next((row for row in now if row["id"] == fam), None)
+        if parent is None:
+            continue
+        years = c["years"]
+        capital_type, capital_basis = family_capital_type(c["capital"])
+        titles = c["titles"]
+        now.append(dict(
+            id=f"{fam}__{child_slug(scheme)}__{child_slug(authority)}",
+            parent_id=fam,
+            name=authority,
+            name_source="deterministic",
+            country=parent["country"],
+            administering_body=authority,
+            # The body IS the instrument here, not a plurality vote across a
+            # whole country's register, so the share that made the parent's
+            # name unsafe to display is 1.0 by construction.
+            administering_body_share=1.0,
+            ndb_id=parent["ndb_id"],
+            source_family_bucket=parent["source_family_bucket"],
+            capital_type=capital_type, capital_type_basis=capital_basis,
+            event_count=c["events"], company_count=len(c["companies"]),
+            total_eur=round(c["eur"], 2),
+            first_year=min(years) if years else None,
+            last_year=max(years) if years else None,
+            is_framework=0,
+            sample_project_titles=json.dumps([t for t, _ in titles.most_common(5)]) if titles else None,
+            scheme_code=scheme,
+            application_url=None,
+        ))
+        kept_children += 1
+    if kept_children:
+        print(f"  split: {kept_children} per-authority/scheme children under "
+              f"{len(SPLIT_FAMILIES)} rollups")
+    # Every row must carry the new columns, children and parents alike.
+    for row in now:
+        row.setdefault("scheme_code", None)
+        row.setdefault("application_url", None)
+
     # ── Reconcile, do not wipe ───────────────────────────────────────────────
     # This used to DELETE every non-framework eligibility gate on every run.
     # Gates are the EXPENSIVE derived layer -- extracted, triaged, encoded and
@@ -462,12 +574,12 @@ def main() -> None:
                administering_body_share, ndb_id,
                source_family_bucket, capital_type, capital_type_basis, event_count,
                company_count, total_eur, first_year, last_year, is_framework,
-               sample_project_titles, updated_at)
+               sample_project_titles, scheme_code, application_url, updated_at)
             VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
                     :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
-                    :sample_project_titles, CURRENT_TIMESTAMP)
+                    :sample_project_titles,:scheme_code,:application_url, CURRENT_TIMESTAMP)
         """, r)
 
     for fam, srcs in fam_sources.items():

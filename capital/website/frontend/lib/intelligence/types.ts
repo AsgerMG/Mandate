@@ -146,6 +146,10 @@ export interface InstrumentRow {
    *  Below ~0.6 the name is a busy agency inside a country-wide rollup, not
    *  the fund itself — displayInstitutionName falls back to a generic label. */
   administeringBodyShare?: number;
+  /** Notified aid scheme code, when the row is a per-authority child. */
+  schemeCode?: string;
+  /** Where to apply, when we hold a verified one. */
+  applicationUrl?: string;
   /** Short legal-basis label (e.g. "GBER Art. 25 (R&D aid)"), derived from
    *  this leaf's gber_article_inferred gate when present — see
    *  legalBasisFor() in pipeline.ts. */

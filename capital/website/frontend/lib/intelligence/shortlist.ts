@@ -13,11 +13,12 @@
 //
 // The boundary is deliberate — WHICH FUNDS QUALIFY lives here; HOW THE MEMO IS
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
-import { loadDbInstruments, loadFundSnapshot, toIso2, type DbInstrument } from "./corpus";
+import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { TICKET_BANDS } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
+import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 
 /** How many instruments each channel may contribute. Named because it is one
  *  link in the chain that decides how many rows a brief can hold at all
@@ -187,8 +188,8 @@ let dbInstrumentsByBucketCache: Map<string, DbInstrument[]> | null = null;
 export function dbInstrumentsByBucket(): Map<string, DbInstrument[]> {
   if (!dbInstrumentsByBucketCache) {
     dbInstrumentsByBucketCache = new Map();
-    for (const inst of loadDbInstruments()) {
-      if (inst.isFramework || !inst.sourceFamilyBucket) continue;
+    for (const inst of publishableInstruments()) {
+      if (!inst.sourceFamilyBucket) continue;
       const list = dbInstrumentsByBucketCache.get(inst.sourceFamilyBucket) ?? [];
       list.push(inst);
       dbInstrumentsByBucketCache.set(inst.sourceFamilyBucket, list);
@@ -610,6 +611,17 @@ export function applyProfileSignal(
  * literal "SATR ..." auto-prettified pattern gets swapped.
  */
 export function displayInstitutionName(row: InstrumentRow): string {
+  // A government department notifies a state-aid regime; it does not take
+  // applications. Splitting the rollups surfaced these as instrument names,
+  // which reads as "go and ask the Ministry of Finance for a grant" — a
+  // dead end dressed as a lead. The scheme is still real money and still
+  // worth publishing, so it renders by what it IS rather than by who
+  // notified it. Same definition the brief check uses, so a row can never
+  // pass one and fail the other.
+  if (row.administeringBody && NOT_AN_APPLYABLE_BODY.test(row.administeringBody)) {
+    const kind = /\bequity\b/i.test(row.instrument) ? "equity" : "R&D";
+    return `National state aid (${kind})`;
+  }
   if (row.administeringBody && row.instrument.startsWith("SATR ")) {
     // Only when that body really is the instrument. administeringBody is a
     // PLURALITY of granting authorities, and these SATR rows are whole-country

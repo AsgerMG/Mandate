@@ -181,6 +181,16 @@ export interface DbInstrument {
    *  when we have no dated award at all — which is itself a staleness signal,
    *  not a clean slate. See STALE_AFTER_YEARS in pipeline.ts. */
   lastYear: number | null;
+  /** The notified aid scheme this instrument sits under (e.g. "SA.111723").
+   *  Present on the per-authority children of a state-aid rollup: it is the
+   *  legal identity of the money and what makes a row traceable back to a
+   *  primary document. */
+  schemeCode?: string | null;
+  /** Where a founder actually applies. Deliberately NOT the source URL on the
+   *  underlying events: those point at the EU competition-case register, which
+   *  records that a scheme exists and says nothing about how to approach it. A
+   *  register link published as an application link is worse than none. */
+  applicationUrl?: string | null;
   gates: DbGate[];
 }
 
@@ -434,6 +444,26 @@ export function loadSignalsDigest(): SignalsDigest | null {
     }
   }
   return digestCache;
+}
+
+/**
+ * Instruments a founder could actually be shown.
+ *
+ * Excludes frameworks, and excludes any instrument that has been split into
+ * children. A rollup with children is a container: it is the SUM of them, so
+ * leaving it in the pool lets a parent and its own children compete as if they
+ * were different money, and the parent wins on volume every time. The split
+ * would then surface nothing while doubling the row count.
+ *
+ * Shared rather than reimplemented per call site, because the ranking path and
+ * the shortlist path each need it and the two disagreeing would be invisible:
+ * one would publish a container, the other its children, for the same founder.
+ */
+export function publishableInstruments(): DbInstrument[] {
+  const all = loadDbInstruments();
+  const hasChildren = new Set(
+    all.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
+  return all.filter((i) => !i.isFramework && !hasChildren.has(i.id));
 }
 
 export function loadAgentInstructions(): string {
