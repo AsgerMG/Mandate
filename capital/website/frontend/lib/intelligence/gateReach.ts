@@ -80,6 +80,13 @@ export function openFieldsForShortlist(
       if (!field || field === "none") continue;
       if (FIRST_PAGE_FIELDS.has(field)) continue;
       if (!FIELD_ENUM_HINTS[field]) continue; // no real fixed answer set for it — out of scope here
+      // A field whose fact is already an option on another field's question
+      // does not earn a second slot. A live screen asked whether accumulated
+      // losses exceeded half of share capital as its own question while the
+      // exclusions question above it already offered exactly that as an
+      // option, so the founder answered the same thing twice.
+      const covered = FIELD_ENUM_HINTS[field].coveredBy;
+      if (covered && !isAnswered(answers, covered)) continue;
       if (isAnswered(answers, field)) continue;
       const entry = byField.get(field) ?? { events: 0, instruments: new Set<string>(), examples: [] };
       if (!entry.instruments.has(inst.id)) {

@@ -538,7 +538,31 @@ export interface EligibilityAnswers {
  *  come from here, so an answer is always a real, valid EligibilityAnswers
  *  value. Shared between the server (prompt/schema construction) and the
  *  client (rendering the picked answer). */
-export const FIELD_ENUM_HINTS: Record<string, { multi: boolean; options: { value: string; label: string }[] }> = {
+/**
+ * A fixed answer set, and the question it actually answers.
+ *
+ * `stem` is not optional decoration. The adaptive round previously let the
+ * model write the question while this table supplied the options, and nothing
+ * checked the two agreed. A multi-select of things a founder might ACCEPT
+ * (a local entity, the state on the cap table, job commitments) was published
+ * under a yes/no question about whether they were prepared for a public
+ * investor to take a board seat: the reader was asked one thing and offered
+ * the answers to another.
+ *
+ * The stem now travels with the options, so both come from one place. The
+ * model may tailor its wording to the company; it may not invent a different
+ * question.
+ *
+ * `coveredBy` names a field whose own option set already captures this one.
+ * Asking both spends two of a founder's few questions on one fact, which is
+ * how a screen came to ask about accumulated losses twice.
+ */
+export const FIELD_ENUM_HINTS: Record<string, {
+  multi: boolean;
+  stem: string;
+  coveredBy?: string;
+  options: { value: string; label: string }[];
+}> = {
   // These three moved off the first screen on 2026-07-29 when it shrank from
   // eleven questions to five. Without a hint entry the adaptive round SKIPS a
   // field entirely (see gateReach: `if (!FIELD_ENUM_HINTS[field]) continue`),
@@ -546,61 +570,79 @@ export const FIELD_ENUM_HINTS: Record<string, { multi: boolean; options: { value
   // asked anywhere — silently discarding the three axes that carry most GBER
   // and de minimis exclusions. Options are derived from the same option lists
   // the form used, so the two can never disagree.
-  activities: { multi: true, options: ACTIVITY_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
-  useOfFunds: { multi: true, options: USE_OF_FUNDS_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
-  exclusionFlags: { multi: true, options: EXCLUSION_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
-  sector: { multi: false, options: SECTOR_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
-  consortium: { multi: false, options: [
+  activities: { multi: true,
+    stem: "Which of these regulated activities does your company carry out?", options: ACTIVITY_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  useOfFunds: { multi: true,
+    stem: "What would this funding actually pay for?", options: USE_OF_FUNDS_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  exclusionFlags: { multi: true,
+    stem: "Do any of these apply to your company right now?", options: EXCLUSION_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  sector: { multi: false,
+    stem: "Which of these best describes what your company builds?", options: SECTOR_OPTIONS.map((o) => ({ value: o.value, label: o.label })) },
+  consortium: { multi: false,
+    stem: "Could you run this project with three or more partners, or only on your own?", options: [
     { value: "yes", label: "Yes, we could run a 3+ partner consortium" },
     { value: "no", label: "No, single applicant only" },
     { value: "unsure", label: "Not sure" },
   ] },
-  cofinancingBand: { multi: false, options: [
+  cofinancingBand: { multi: false,
+    stem: "How much of the project cost could you cover from your own resources?", options: [
     { value: ">50%", label: "Yes, more than half" },
     { value: "25-50%", label: "Yes, 25–50%" },
     { value: "<25%", label: "Below 25%" },
     { value: "unsure", label: "Not sure" },
   ] },
-  conditionality: { multi: true, options: [
+  conditionality: { multi: true,
+    stem: "Which of these commitments would you be willing to make in exchange for funding?", options: [
     { value: "local_entity", label: "Opening a local entity" },
     { value: "geo_commitments", label: "Committing investment to a specific country" },
     { value: "state_shareholder", label: "The state on the cap table" },
     { value: "job_commitments", label: "Job-creation commitments" },
   ] },
-  wouldOpenEntity: { multi: false, options: [
+  wouldOpenEntity: { multi: false,
+    stem: "Would you open a legal entity in another country if it unlocked the right capital?", options: [
     { value: "yes", label: "Yes, if it unlocks the right capital" },
     { value: "depends", label: "Depends on the terms" },
     { value: "no", label: "No" },
   ] },
-  ownerOver25: { multi: false, options: [
+  ownerOver25: { multi: false,
+    stem: "Does any single shareholder own more than 25% of your company?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
-  institutionalOwner: { multi: false, options: [
+  institutionalOwner: { multi: false,
+    stem: "Is an institutional investor or corporate on your cap table?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
-  nonEuControl: { multi: false, options: [
+  nonEuControl: { multi: false,
+    stem: "Is your company majority-owned or controlled from outside the EU?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
-  lossesOverHalfCapital: { multi: false, options: [
+  lossesOverHalfCapital: { multi: false,
+    stem: "Have your accumulated losses exceeded half of your share capital?",
+    coveredBy: "exclusionFlags", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
-  bankRelationship: { multi: false, options: [
+  bankRelationship: { multi: false,
+    stem: "Do you have a bank that would lend to you if the loan were guaranteed?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
-  institutionalBacking: { multi: false, options: [
+  institutionalBacking: { multi: false,
+    stem: "Do you have VC or institutional investors backing you?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
-  needBy: { multi: false, options: [
+  needBy: { multi: false,
+    stem: "When do you need the money?", options: [
     { value: "asap_weeks", label: "Weeks" },
     { value: "months_6", label: "Within 6 months" },
     { value: "months_18", label: "6–18 months" },
     { value: "flexible", label: "Flexible" },
   ] },
-  turnoverBand: { multi: false, options: [
+  turnoverBand: { multi: false,
+    stem: "What is your annual turnover?", options: [
     { value: "<2M", label: "Under €2M" }, { value: "2-10M", label: "€2–10M" },
     { value: "10-50M", label: "€10–50M" }, { value: ">50M", label: "Over €50M" },
   ] },
-  balanceBand: { multi: false, options: [
+  balanceBand: { multi: false,
+    stem: "What is your balance-sheet total?", options: [
     { value: "<2M", label: "Under €2M" }, { value: "2-43M", label: "€2–43M" }, { value: ">43M", label: "Over €43M" },
   ] },
 };

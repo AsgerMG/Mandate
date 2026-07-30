@@ -31,7 +31,8 @@ import { execSync } from "node:child_process";
 import Anthropic from "@anthropic-ai/sdk";
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
-import { checkQuestions } from "../lib/intelligence/questionChecks";
+import { checkQuestions, checkGroundedQuestions } from "../lib/intelligence/questionChecks";
+import { FIELD_ENUM_HINTS } from "../lib/intelligence/types";
 import { checkBrief } from "../lib/intelligence/briefChecks";
 import type { ProjectAnswer, ProjectQuestion } from "../lib/intelligence/types";
 
@@ -205,9 +206,19 @@ async function main() {
       row.questionCount = asked.length + (round?.questions.length ?? 0);
       row.commercialCount = commercialQs.length;
       row.unanswered = unanswered;
-      row.questionDefects = checkQuestions({
-        questions: asked, description: c.description, expectCommercial: true,
-      }).map((v) => v.ruleId);
+      // BOTH halves. The enum-answered questions were bypassing every check:
+      // the harness only scored the ones the model wrote options for, which
+      // is precisely where the worst live defect was (a question and its
+      // options answering different things).
+      const groundedForCheck = (round?.questions ?? []).map((q) => ({
+        question: q.question,
+        options: (FIELD_ENUM_HINTS[q.field]?.options ?? []).map((o) => o.label),
+        field: q.field,
+      }));
+      row.questionDefects = [
+        ...checkQuestions({ questions: asked, description: c.description, expectCommercial: true }),
+        ...checkGroundedQuestions(groundedForCheck),
+      ].map((v) => v.ruleId);
       row.briefDefects = report ? checkBrief(report as never).map((v) => v.ruleId) : ["no report"];
       row.questions = asked.map((q) => ({
         question: q.question, options: q.options, answer: answers.get(q.id) ?? SKIP,

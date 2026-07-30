@@ -139,4 +139,41 @@ export function checkQuestions(input: QuestionCheckInput): QuestionViolation[] {
   return v;
 }
 
-export const QUESTION_RULE_IDS = ["Q-1", "Q-2", "Q-3", "Q-4", "Q-5"] as const;
+/**
+ * A yes/no question published over an option set that is a list of things
+ * rather than yes and no.
+ *
+ * The failure this catches: a multi-select of commitments a founder might
+ * make (a local entity, the state on the cap table, job-creation targets) was
+ * rendered under "are you prepared for a public investor to take a seat on
+ * your cap table?" — the reader was asked one question and offered the
+ * answers to a different one. Neither the question nor the options were wrong
+ * on their own, which is why nothing caught it.
+ */
+const YES_NO_STEM = /^(are|is|do|does|did|have|has|can|could|would|will|was|were)\b/i;
+const YES_NO_OPTION = /^(yes|no|not sure|unsure)\b/i;
+
+export function checkGroundedQuestions(
+  questions: { question: string; options: string[]; field?: string }[],
+): QuestionViolation[] {
+  const v: QuestionViolation[] = [];
+  for (const q of questions) {
+    const optionsAreYesNo = q.options.every((o) => YES_NO_OPTION.test(o));
+    const stemIsYesNo = YES_NO_STEM.test(q.question.trim());
+    if (stemIsYesNo && !optionsAreYesNo && q.options.length > 2) {
+      v.push({
+        ruleId: "Q-10",
+        detail: `yes/no question over a list of choices: "${q.question.slice(0, 70)}…" → ${q.options.slice(0, 3).join(" / ")}`,
+      });
+    }
+    if (!stemIsYesNo && optionsAreYesNo) {
+      v.push({
+        ruleId: "Q-10",
+        detail: `open question answered only yes/no: "${q.question.slice(0, 70)}…"`,
+      });
+    }
+  }
+  return v;
+}
+
+export const QUESTION_RULE_IDS = ["Q-1", "Q-2", "Q-3", "Q-4", "Q-5", "Q-10"] as const;

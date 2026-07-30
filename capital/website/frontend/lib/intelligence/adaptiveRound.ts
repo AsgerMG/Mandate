@@ -138,9 +138,18 @@ export async function generateGroundedRound(
     .map((f) => {
       const hint = FIELD_ENUM_HINTS[f.field];
       const examples = f.examples.map((e) => `  - ${e.instrument}: "${e.requirement}"`).join("\n");
-      const optionsLine = hint ? `  Must resolve to one of: ${hint.options.map((o) => o.label).join(" / ")}` : "";
+      // The stem travels WITH the options, and the model may only tailor its
+      // wording. Given the options alone it invented question stems the
+      // options did not answer — a multi-select of commitments a founder
+      // might accept was published under a yes/no about board seats.
+      const stemLine = hint ? `  QUESTION TO ASK (tailor the wording, never the meaning): "${hint.stem}"` : "";
+      const optionsLine = hint
+        ? `  The founder will choose from EXACTLY these${hint.multi ? " (multi-select)" : ""}: ` +
+          `${hint.options.map((o) => o.label).join(" / ")}`
+        : "";
       return `Field "${f.field}" — still open on ${f.nInstruments} of the founder's candidate ` +
-        `instruments (${f.reachPct}% of shortlist weight). Real requirement text:\n${examples}\n${optionsLine}`;
+        `instruments (${f.reachPct}% of shortlist weight). Real requirement text:\n${examples}\n` +
+        `${stemLine}\n${optionsLine}`;
     })
     .join("\n\n");
 
@@ -161,14 +170,19 @@ export async function generateGroundedRound(
             `REAL, DOCUMENTED requirements from the specific funds still on their ` +
             `shortlist that we cannot yet resolve. Write ONE themed screen (2-4 ` +
             `word theme) with EXACTLY ONE plain-English question per field below ` +
-            `(never two questions tagged with the same field — if a field has ` +
-            `several unrelated pieces of evidence, pick the single most decisive ` +
-            `one and phrase ONE question from it) — phrase each question from ` +
-            `the real requirement text given, never inventing a requirement the ` +
-            `text doesn't support. Include every field below that has usable ` +
-            `evidence; omit a field only if its evidence is too thin to phrase a ` +
-            `fair question. Do not invent answer options — the interface renders ` +
-            `the real fixed options itself.\n\n${evidence}\n\n` +
+            `(never two questions tagged with the same field).\n\n` +
+            `Each field below carries a QUESTION TO ASK and the exact options ` +
+            `the founder will be shown. Your job is to tailor that question's ` +
+            `WORDING to this company, naming what they actually build, while ` +
+            `keeping its meaning identical. The options are rendered by the ` +
+            `interface and you cannot change them, so a question the listed ` +
+            `options do not answer is WRONG no matter how well it reads: a ` +
+            `founder offered a list of commitments must be asked which ` +
+            `commitments they would make, not whether they are prepared for ` +
+            `something.\n\n` +
+            `Use the requirement text only to make the wording concrete, never ` +
+            `to invent a requirement it does not support. Omit a field whose ` +
+            `evidence is too thin to ask fairly.\n\n${evidence}\n\n` +
             `Return ONLY the JSON object for the schema.`,
         },
       ],

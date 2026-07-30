@@ -60,6 +60,15 @@ must be able to weaken prose and never to move a legal conclusion.
   one rule.
 - Q-5 (hard) The commercial half runs whenever the founder has described their
   company, regardless of whether any eligibility gate is still open.
+- Q-10 (hard) A question and the options beneath it must answer the same
+  thing. A question whose answer is yes or no may not be published over a list
+  of choices, and a question asking which of several things applies may not be
+  answered only yes or no.
+
+  **evidence:** a multi-select of commitments a founder might make was
+  rendered under a yes/no question about a public investor taking a board
+  seat. Neither half was wrong alone, which is why nothing caught it.
+
 - Q-6 (judged) A founder can answer from memory, without opening a document.
 - Q-7 (judged) Questions name what this company actually does, in the
   founder's own words, so the screen reads as written for them.

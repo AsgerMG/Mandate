@@ -23,6 +23,19 @@ import { CapitalSelect, InfoDot, MultiChips } from "./panelControls";
 import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
 
 /** A chip-row single select for band/enum answers. */
+/** The only moving thing on screen while the shortlist and the tailored
+ *  questions are built. A changed button label alone reads as a dead control
+ *  on a wait this long. */
+function Spinner() {
+  return (
+    <span
+      aria-hidden
+      className="mr-2 inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-r-transparent align-[-2px]"
+    />
+  );
+}
+
+
 export function Chips({
   options, value, onPick, allowUnset = true,
 }: {
@@ -617,6 +630,12 @@ export function IntelligencePanel() {
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
               <button type="submit" disabled={!company.trim() || preparing} className={nextBtn}>
+                {/* A label change alone reads as a dead button on a wait this
+                    long: the screen sits still for several seconds with no
+                    sign anything is happening. The spinner is the only moving
+                    thing on the page while the shortlist and the questions
+                    are being built. */}
+                {preparing && <Spinner />}
                 {preparing ? "Finding your tailored questions…" : "Continue"}
               </button>
               <span className="text-xs text-[var(--muted-foreground)]">
@@ -725,6 +744,7 @@ export function IntelligencePanel() {
             </div>
             <div className="mt-6 flex items-center gap-4">
               <button type="button" disabled={preparing} onClick={() => void advanceRound()} className={nextBtn}>
+                {preparing && <Spinner />}
                 {preparing
                   ? "Checking…"
                   : roundCount + 1 >= MAX_ROUNDS ? "Write my funding memo" : "Continue"}
