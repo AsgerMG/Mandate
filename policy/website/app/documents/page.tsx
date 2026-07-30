@@ -96,7 +96,7 @@ export default function RegisterPage() {
   }, [sources]);
 
   return (
-    <>
+    <div className="register-page">
       <section className="hero" style={{ paddingBottom: 8 }}>
         <div className="eyebrow">
           <span className="live-dot" />
@@ -163,6 +163,6 @@ export default function RegisterPage() {
           })}
         </div>
       </section>
-    </>
+    </div>
   );
 }

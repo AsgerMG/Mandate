@@ -59,7 +59,14 @@ main.container { flex: 1 0 auto; width: 100%; }
    to read — it just stops the page reading as a narrow island in a mostly
    empty canvas on an ultrawide/4K display. */
 @media (min-width: 1600px) {
-  .container { max-width: 1320px; }
+  /* Raised from a flat 1320px on 2026-07-30: at 2560px that still left ~620px of
+     dead margin each side, and once /documents lost its register list the card
+     grids were the whole page — a narrow strip of cards in a wide empty canvas is
+     exactly what this rule exists to prevent. Scales with the viewport now
+     instead of stopping at one fixed step, capped at 1600px because past that
+     the grids stretch further than the eye tracks comfortably. Prose is
+     unaffected: every paragraph keeps its own max-width reading measure. */
+  .container { max-width: min(1600px, 82vw); }
 }
 /* The four headings below manage their own mobile-shrink via clamp(min,
    Nvw, max) — necessary so long titles don't overflow a phone — but that
@@ -805,4 +812,38 @@ main.container:has(> .about-page) { display: flex; flex-direction: column; }
      scrolls. */
   .about-page { min-height: 0; gap: 26px; justify-content: flex-start; }
   .about-page .hero-image img { max-height: none; }
+}
+
+/* /documents: same short-page problem, same fix -------------------------------
+   Reducing this page to Coverage + Hot right now (2026-07-30) made it short, and
+   a short page on a tall monitor pools ALL its leftover height into one dead gap
+   above the footer — the exact failure design-ux-guidelines.md documents and that
+   .viewport-intro exists to prevent. Removing the register list reintroduced it
+   and I didn't notice until it was pointed out on a 2560px screen.
+
+   Distributed the same way as /about: the page owns the space between its blocks
+   and centres itself in whatever main gives it, so slack is shared instead of
+   dumped at the bottom. */
+main.container:has(> .register-page) { display: flex; flex-direction: column; }
+.register-page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(16px, 2.6vh, 46px);
+}
+.register-page > * { margin: 0; }
+
+/* The cards are equal height (grid 1fr stretches them) but their CONTENTS were
+   not: "Show sources" sat immediately after each description, so a shorter
+   description left the link floating mid-card while its neighbours' sat lower.
+   Pinning it to the bottom aligns the three links across the row. */
+.source-disclosure { margin-top: auto; }
+/* Same for the topic tiles: a two-line title pushed its count badge down while
+   one-line neighbours kept theirs high. */
+.topic-grid .coverage-badges { margin-top: auto; }
+.topic-grid .card h3 { text-wrap: balance; }
+
+@media (max-width: 900px) {
+  .register-page { justify-content: flex-start; gap: 26px; }
 }
