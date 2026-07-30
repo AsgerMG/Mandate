@@ -60,10 +60,20 @@ export interface BriefLimits {
   bodyWords: number;
 }
 
-/** The numeric limits, in one place so the contracts, the prompt and the
- *  checks cannot disagree about them. */
+/**
+ * The numeric limits, in one place so the contracts, the prompt and the checks
+ * cannot disagree about them.
+ *
+ * `bulletWords` was 25 and fired on four of five bullets in a measured run.
+ * That is not a writer missing a target, it is a target set below the job: a
+ * bullet has to say which fund, why that one, and what the money actually
+ * buys. Squeezing that into 25 words produced stacked clauses rather than
+ * shorter thoughts. Raised to 40, with the contract asking for plain prose and
+ * one idea per bullet — the 700-word body budget still bounds the section, so
+ * this cannot quietly become a wall.
+ */
 export const BRIEF_LIMITS: BriefLimits = {
-  bulletMin: 4, bulletMax: 5, bulletWords: 25,
+  bulletMin: 4, bulletMax: 5, bulletWords: 40,
   institutionsMax: 5,
   positioningWords: 200,
   stateOfPlayWords: 200,

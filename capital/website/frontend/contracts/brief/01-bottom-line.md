@@ -14,10 +14,16 @@ worth to them. This is the section that decides whether the rest gets read.
 ## Rules
 
 - BL-1 (hard) Four to five bullets. Not three, not six.
-- BL-2 (hard) At most 25 words per bullet. Count them; a 26-word bullet is
-  wrong and must be cut rather than reworded.
-- BL-3 (judged) Plain sentences with no bullet marker in the text — the
-  interface renders the list.
+- BL-2 (hard) At most 40 words per bullet.
+- BL-3 (judged) Simple prose. One idea per bullet, said in ordinary sentences.
+  No stacked clauses, no semicolons, no parenthetical asides. If a bullet needs
+  two sentences to be clear, use two sentences. Plain text with no bullet
+  marker: the interface renders the list.
+
+  **evidence:** a 25-word cap was in force and fired on four of five bullets in
+  a measured run. The bullets were not too ambitious, the limit was too tight
+  for what a bullet has to carry, and the writer met it by compressing clauses
+  together rather than by saying less.
 - BL-4 (judged) The first bullet opens from the founder's own traced footprint
   set against the comparable evidence. Where nothing is traced, that absence
   is the opening fact, stated plainly, not a footnote.

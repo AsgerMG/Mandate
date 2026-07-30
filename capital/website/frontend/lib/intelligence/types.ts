@@ -274,7 +274,8 @@ export interface IntelligenceReport {
    *  Framework-level v1 (EU law); instrument-level rows land as national
    *  documents are verified. Code-built — the writer narrates, never edits. */
   eligibilityScreen: EligibilityCheck[];
-  /** 4-5 bullets, ≤25 words each: why this founder should care, which funds
+  /** 4-5 bullets in plain prose (see BRIEF_LIMITS.bulletWords): why this
+   *  founder should care, which funds
    *  are the right step, what the commercial payoff looks like. */
   bottomLine: string[];
   /** Up to 5 rows: the institutions/funds to target, best first. Never fewer
