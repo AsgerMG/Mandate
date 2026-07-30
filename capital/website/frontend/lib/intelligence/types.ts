@@ -266,6 +266,45 @@ export interface IntelligenceReport {
   caveats: string;
 }
 
+/**
+ * The second movement of the state-of-play section: the standing offer.
+ *
+ * Fixed copy, never model-written, so the claim stays controlled and on
+ * register. Rendered as its own block beneath the analysis rather than
+ * appended to it — concatenated into the same field, a paragraph of analysis
+ * ended mid-thought in a sales line (contract rule SOP-2).
+ */
+export const STATE_OF_PLAY_OFFER =
+  "Wincent reads these signals continuously, anticipates where the money and " +
+  "the priorities move next, and opens the right doors. Partner with us to " +
+  "play the political momentum to your advantage.";
+
+/**
+ * The report fields the WRITER produces, and therefore the fields a brief
+ * contract can govern. `self`, `eligibilityScreen` and `institutions` are
+ * built in code and only annotated by the model, so they are not listed here;
+ * `institutionNotes` is the writer's contribution to the institutions table.
+ *
+ * Exported so scripts/check_contracts.ts can fail the build when a contract
+ * governs a field the schema does not have — the drift that let the writer's
+ * instructions describe a retired report shape for weeks without anything
+ * noticing.
+ */
+export const REPORT_SCHEMA_FIELDS: string[] = [
+  "bottomLine", "institutionNotes", "positioning", "stateOfPlay", "caveats",
+];
+
+/**
+ * The named evidence blocks the pipeline assembles for the writer. A contract
+ * may only claim evidence that appears here, so a section cannot promise the
+ * model context it will never be given.
+ */
+export const EVIDENCE_BLOCKS: string[] = [
+  "selfLine", "comparables", "institutions", "processes", "eligibilityScreen",
+  "agendaEvidence", "peopleEvidence", "recentEvidence", "projectAnswers",
+  "commercialAnswers", "profileBlock", "screenBlock",
+];
+
 /** Request body posted to /api/intelligence. */
 export interface IntelligenceRequest {
   company: string;
@@ -597,6 +636,11 @@ export interface ProjectQuestion {
 
 /** A founder's answer to one ProjectQuestion. Writer context and ease-scoring
  *  input only — deliberately NOT part of EligibilityAnswers. */
+/** questionId prefix marking an answer as coming from the commercial half of
+ *  round 2 rather than from a fund's requirement text. The split matters at
+ *  read time: these answers may shape positioning and never eligibility. */
+export const COMMERCIAL_ANSWER_PREFIX = "commercial::";
+
 export interface ProjectAnswer {
   questionId: string;
   question: string;

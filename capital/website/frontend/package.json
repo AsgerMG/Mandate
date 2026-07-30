@@ -9,13 +9,14 @@
     "start": "next start",
     "lint": "eslint",
     "vocab": "npx tsx scripts/emit_vocabulary.ts",
-    "check": "npx tsc --noEmit && npx vitest run && npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_archetypes.ts && npx tsx scripts/check_payload_budget.ts && npx tsx scripts/check_dependencies.ts",
+    "check": "npx tsc --noEmit && npx vitest run && npx tsx scripts/check_contracts.ts && npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_archetypes.ts && npx tsx scripts/check_payload_budget.ts && npx tsx scripts/check_dependencies.ts",
     "trace": "npx tsx scripts/trace_pool.ts",
     "board": "npx tsx scripts/bench_report.ts",
     "bench": "npx tsx scripts/memo_bench.ts",
     "test": "npx vitest run",
     "test:cov": "npx vitest run --coverage",
-    "health": "npx tsx scripts/health_report.ts"
+    "health": "npx tsx scripts/health_report.ts",
+    "shadow": "npx tsx scripts/shadow_fit.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

@@ -8,6 +8,7 @@ import {
 import {
 } from "@/lib/intelligence/pipeline";
 import {
+  generateCommercialQuestions,
   generateGroundedRound,
   generateProjectQuestions,
   inferProfileSignal,
@@ -105,9 +106,13 @@ export async function POST(request: NextRequest) {
     // only — never re-run on round 2, one read per session is enough.
     // Independent of the stopping rule above: even a founder whose shortlist
     // has nothing more to ask about can still get a sharper table annotation.
-    const [round, projectQuestions, profileSignal] = await Promise.all([
+    // The commercial half runs unconditionally and in parallel: unlike the two
+    // gate-driven halves it does not depend on an open gate existing, and a
+    // founder whose eligibility is fully resolved still needs positioning.
+    const [round, projectQuestions, commercialQuestions, profileSignal] = await Promise.all([
       needsRound ? generateGroundedRound(req, genericFields) : Promise.resolve(null),
       projectGates.length ? generateProjectQuestions(req, projectGates) : Promise.resolve([]),
+      generateCommercialQuestions(req),
       body.wantProfileSignal ? inferProfileSignal(req) : Promise.resolve(null),
     ]);
 
@@ -115,11 +120,14 @@ export async function POST(request: NextRequest) {
     // generic gates are all closed still benefits from project questions, so
     // the round is synthesised rather than dropped when only that half exists.
     const merged =
-      round || projectQuestions.length
+      round || projectQuestions.length || commercialQuestions.length
         ? {
             theme: round?.theme || "Your project",
             questions: round?.questions ?? [],
-            projectQuestions,
+            // One panel, two jobs: narrow the funnel, and understand the
+            // business well enough to position it. Rendered together so the
+            // founder answers once.
+            projectQuestions: [...projectQuestions, ...commercialQuestions],
           }
         : null;
 

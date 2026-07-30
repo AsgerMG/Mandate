@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 /** Shared with panel.tsx: the serif face the brief is set in. */
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
+import { STATE_OF_PLAY_OFFER } from "./types";
 import type { EligibilityCheck, InstitutionEntry, IntelligenceReport } from "./types";
 
 /** A quiet editorial section title in the house serif — no number, no colour. */
@@ -106,9 +107,11 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     <span className="text-[var(--foreground-soft)]">{r.blocker}</span>
                   </span>
                 ) : r.verdict === "open" && (r.gatesChecked ?? 0) > 0 ? (
-                  <span className="mb-1 block font-semibold text-[#3d6136]">
-                    Open to you: nothing in its documented rules rules you out
-                  </span>
+                  // Nothing rendered. A published row already MEANS the door is
+                  // open; announcing it in every row spent a line on the
+                  // product's own reasoning rather than on the fund, and the
+                  // phrasing read as a shrug (contract rule BRIEF-4).
+                  null
                 ) : (
                   // Say so when we checked NOTHING. 177 instruments carry no
                   // machine-readable rule yet, and an unassessed row used to
@@ -128,11 +131,12 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                   </span>
                 )}
                 {pending && !r.whyEligible ? <PlaceholderBar /> : r.whyEligible}
-                {r.whyEasy && (
-                  <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
-                    {r.whyEasy}
-                  </span>
-                )}
+                {/* `whyEasy` used to render here: "your answers speak to N of
+                    its M documented eligibility rules". That is a ranking
+                    confidence metric about our own gate coverage, not an
+                    observation about the founder's company (contract rule
+                    BRIEF-4). It still computes and still drives ranking; it is
+                    no longer printed. */}
                 <span className="block text-[12px] italic text-[var(--muted-foreground)]">
                   Move: {pending && !r.nextStep ? <PlaceholderBar narrow /> : r.nextStep}
                 </span>
@@ -150,6 +154,39 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
       </table>
     </>
   );
+}
+
+/**
+ * Export the brief as a PDF.
+ *
+ * Two things the bare `window.print()` got wrong. The browser names the file
+ * from `document.title`, so every export was called after the marketing page
+ * ("Get your state-backed capital brief | Wincent") rather than after the
+ * company. And the print stylesheet hid the page with `visibility: hidden`,
+ * which blanks pixels but keeps layout — so the nav, hero and footer still
+ * occupied their full height around the report.
+ *
+ * Both are fixed here rather than in CSS alone: the title has to be swapped
+ * around the print call and restored after, and the `printing` class lets the
+ * stylesheet use `display: none`, which removes the boxes entirely.
+ */
+function printReport(company: string): void {
+  const slug = (company || "brief").normalize("NFKD")
+    .replace(/[^\w\s-]/g, "").trim().replace(/\s+/g, "-").slice(0, 60);
+  const stamp = new Date().toISOString().slice(0, 10);
+  const previous = document.title;
+  document.title = `Wincent-brief-${slug}-${stamp}`;
+  document.documentElement.classList.add("printing");
+  const restore = () => {
+    document.title = previous;
+    document.documentElement.classList.remove("printing");
+    window.removeEventListener("afterprint", restore);
+  };
+  window.addEventListener("afterprint", restore);
+  window.print();
+  // Safari never fires afterprint in some versions; the timer is the backstop
+  // so the tab is not left renamed and unstyled.
+  setTimeout(restore, 1000);
 }
 
 export function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -291,7 +328,7 @@ export function Memo({ report }: { report: IntelligenceReport }) {
       {/* Export — screen only */}
       <div className="mb-8 flex justify-end print:hidden">
         <button
-          onClick={() => window.print()}
+          onClick={() => printReport(report.company)}
           className="rounded-[var(--radius)] border border-[var(--primary)] px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
         >
           Export PDF
@@ -347,19 +384,32 @@ export function Memo({ report }: { report: IntelligenceReport }) {
           </p>
         )}
 
-        {/* ── Eligibility screen: deterministic, cited, never model-written ── */}
-        <EligibilityTable rows={report.eligibilityScreen} />
+        {/* The brief is exactly four sections (contract BRIEF): bottom line,
+            funds, positioning, state of play. The eligibility screen used to
+            render here as a fifth block — every documented rule behind every
+            candidate, with its source document and page. It is an internal
+            artifact, it sat between the reader and what they came for, and
+            the funds table below already IS the eligibility statement: a row
+            appears because the founder can go after it. The screen still
+            computes, and still decides the shortlist; it is no longer
+            printed. */}
 
-        {/* ── Where to target: the brief's centrepiece table ───────────── */}
+        {/* ── 2. Where to target ───────────────────────────────────────── */}
         <InstitutionsTable institutions={report.institutions} />
 
-        {/* ── Positioning: fitting the current political moment ────────── */}
+        {/* ── 3. Positioning: fitting the current political moment ─────── */}
         <SectionTitle>Positioning</SectionTitle>
         <p>{report.positioning}</p>
 
-        {/* ── State of play: recent news + the closing line ─────────────── */}
+        {/* ── 4. State of play, then the standing offer as its own block ── */}
         <SectionTitle>State of play</SectionTitle>
         <p>{report.stateOfPlay}</p>
+        {/* Rendered separately, never concatenated into the paragraph above:
+            welded on, the analysis ended mid-thought in a sales line
+            (contract rule SOP-2). */}
+        <p className="mt-4 border-l-2 border-[var(--primary)] pl-4 text-[var(--foreground-soft)]">
+          {STATE_OF_PLAY_OFFER}
+        </p>
 
         {/* ── Footer ────────────────────────────────────────────────────── */}
         <div className="mt-12 border-t border-[var(--border)] pt-4">

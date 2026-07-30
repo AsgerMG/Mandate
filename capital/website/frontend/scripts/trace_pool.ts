@@ -44,7 +44,15 @@ async function main() {
       fteBand: t.fteBand, ticketBand: t.ticketBand,
       developmentStage: t.developmentStage } as never;
     const table = P.applyProfileSignal(
-      P.buildInstrumentTable(new Set<string>(), t.ticketBand, true, [t.country], ["grant", "loan"], t.description, await semanticFundMatch(t.description)).slice(0, 18),
+      P.buildInstrumentTable({
+        fieldChannels: new Set<string>(),
+        ticketBand: t.ticketBand,
+        consortiumOk: true,
+        founderCountries: [t.country],
+        capitalSought: ["grant", "loan"],
+        description: t.description,
+        semantic: await semanticFundMatch(t.description),
+      }).slice(0, 18),
       undefined, undefined);
     const ids = table.map((r) => r.instrumentId).filter(Boolean) as string[];
     const a = assessAll(ids, el);

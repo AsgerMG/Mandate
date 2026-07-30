@@ -143,15 +143,18 @@ h1, h2, h3, h4, h5, h6 {
    at the top of the page. The visibility trick preserves the report's internal
    layout while blanking everything else (nav, form, the manual below it). */
 @media print {
-  body * { visibility: hidden; }
-  #print-report, #print-report * { visibility: visible; }
-  #print-report {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 0 0.25in;
-  }
+  /* `visibility: hidden` blanks pixels but keeps layout, so the nav, hero and
+     footer still reserved their full height and pushed the absolutely
+     positioned report around — which is how an export ended up carrying the
+     whole marketing page. `display: none` on everything that is not an
+     ancestor of the report removes the boxes outright, so the report can lay
+     out in normal flow with no absolute positioning at all.
+
+     .printing is set on <html> by printReport() just before window.print()
+     and removed after, so this only applies to a real export. */
+  html.printing body > *:not(:has(#print-report)) { display: none !important; }
+  html.printing :has(> #print-report) > *:not(#print-report) { display: none !important; }
+  #print-report { width: 100%; padding: 0; }
   @page { margin: 0.6in; }
   /* Force backgrounds/colours to render in the PDF. */
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }

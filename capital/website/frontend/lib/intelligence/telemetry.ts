@@ -33,13 +33,17 @@ export type EventKind =
   /** Daily euro ceiling refused a request. */
   | "quota_exhausted"
   /** Prompt-control sequences were stripped from founder-supplied text. */
-  | "prompt_injection_blocked";
+  | "prompt_injection_blocked"
+  /** Writer disqualified more candidates than the cap allows; rows reinstated.
+   *  A degradation rather than an error: the brief is still correct, but the
+   *  writer's judgement was overruled and that is worth watching. */
+  | "writer_over_rejected";
 
 /** Degradations are expected occasionally; errors are not. Kept apart so a
  *  digest can distinguish "the system absorbed a problem" from "it failed". */
 const DEGRADATIONS: ReadonlySet<EventKind> = new Set<EventKind>([
   "writer_timeout", "writer_truncated", "research_degraded",
-  "hydration_degraded", "thin_brief",
+  "hydration_degraded", "thin_brief", "writer_over_rejected",
 ]);
 
 let ensured = false;

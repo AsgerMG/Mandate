@@ -30,6 +30,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
+import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
 // Local secrets when present. CI has no .env.local and must not need one:
 // the checks below run against the committed JSON snapshot, so a missing file
 // is a normal condition, not an error.
@@ -53,9 +54,11 @@ const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean
 function checkMemoShape(r: Record<string, unknown>): string[] {
   const out: string[] = [];
   const bl = (r.bottomLine as string[]) ?? [];
-  if (bl.length < 4 || bl.length > 5) out.push(`bottomLine ${bl.length} bullets (want 4-5)`);
+  if (bl.length < BRIEF_LIMITS.bulletMin || bl.length > BRIEF_LIMITS.bulletMax) {
+    out.push(`bottomLine ${bl.length} bullets (want ${BRIEF_LIMITS.bulletMin}-${BRIEF_LIMITS.bulletMax})`);
+  }
   const longest = Math.max(0, ...bl.map(words));
-  if (longest > 25) out.push(`longest bullet ${longest}w (want <=25)`);
+  if (longest > BRIEF_LIMITS.bulletWords) out.push(`longest bullet ${longest}w (want <=${BRIEF_LIMITS.bulletWords})`);
   const nInst = ((r.institutions as unknown[]) ?? []).length;
   // Max 5, min 2. Fewer than 2 is only defensible for a business the law
   // excludes from most aid, so it is flagged for a human to judge, not failed.
@@ -67,9 +70,14 @@ function checkMemoShape(r: Record<string, unknown>): string[] {
   const body = words(bl.join(" ")) + words(r.positioning) + words(r.stateOfPlay);
   if (body > 700) out.push(`body ${body}w (want <=700)`);
   if (!String(r.caveats ?? "").trim()) out.push("caveats missing");
-  for (const [k, cap] of [["positioning", 130], ["stateOfPlay", 130]] as [string, number][]) {
+  // Caps come from BRIEF_LIMITS, which the contracts and the live checks also
+  // read. Hardcoded here they went stale the moment a contract changed one:
+  // this check was still asserting a 130-word positioning limit after the
+  // contract raised it to 200, and reported healthy briefs as defective.
+  for (const k of ["positioning", "stateOfPlay"] as const) {
+    const cap = k === "positioning" ? BRIEF_LIMITS.positioningWords : BRIEF_LIMITS.stateOfPlayWords;
     const n = words((r as Record<string, unknown>)[k]);
-    if (n > cap * 1.15) out.push(`${k} ${n}w (want <=${cap})`);
+    if (n > cap) out.push(`${k} ${n}w (want <=${cap})`);
   }
   return out;
 }

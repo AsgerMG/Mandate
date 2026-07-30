@@ -34,6 +34,11 @@ export interface BriefRecord {
   droppedBlocked: number;
   droppedWatchOnly: number;
   candidateCount: number;
+  /** Every exclusion rule that fired, and how many funds it removed
+   *  (exclusions.ts). The two counters above are a two-rule summary of what
+   *  is really a fourteen-rule funnel; this is the whole of it, and it is the
+   *  before-state the fit score has to be measured against. */
+  exclusions?: Record<string, number>;
   durationMs: number;
   /** Which build produced it — the same reason bench runs carry a git SHA:
    *  without it, records from different pipeline versions get compared as
@@ -63,6 +68,7 @@ async function ensureTable(client: import("pg").Client): Promise<void> {
       candidate_count    INTEGER,
       duration_ms   INTEGER,
       code_version  TEXT,
+      exclusions    JSONB,
       -- Filled in later, by hand or by a follow-up, when we learn what
       -- happened. The whole point of the table: without an outcome column
       -- there is nothing to measure precision against.
@@ -71,6 +77,12 @@ async function ensureTable(client: import("pg").Client): Promise<void> {
     )`);
   await client.query(
     "CREATE INDEX IF NOT EXISTS brief_records_created_idx ON brief_records (created_at DESC)");
+  // Self-healing column add. CREATE TABLE IF NOT EXISTS is a no-op against the
+  // table that already exists in production, so a column added to the DDL
+  // above would never appear there and every insert naming it would fail.
+  // Same approach as migrate_to_postgres.py, for the same reason: this table
+  // belongs to the app and there is no migration runner in the repo.
+  await client.query("ALTER TABLE brief_records ADD COLUMN IF NOT EXISTS exclusions JSONB");
   ensured = true;
 }
 
@@ -143,13 +155,15 @@ export function recordBrief(rec: BriefRecord): void {
       await client.query(
         `INSERT INTO brief_records
            (company, country, description, eligibility, capital_sought, institutions,
-            dropped_blocked, dropped_watch_only, candidate_count, duration_ms, code_version)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
+            dropped_blocked, dropped_watch_only, candidate_count, duration_ms, code_version,
+            exclusions)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
         [rec.company, rec.country ?? null, rec.description ?? null,
          rec.eligibility ? JSON.stringify(rec.eligibility) : null,
          rec.capitalSought ?? null, JSON.stringify(rec.institutions),
          rec.droppedBlocked, rec.droppedWatchOnly, rec.candidateCount,
-         rec.durationMs, rec.codeVersion ?? null],
+         rec.durationMs, rec.codeVersion ?? null,
+         rec.exclusions ? JSON.stringify(rec.exclusions) : null],
       );
       await purgeExpired(client);
     } catch (err) {

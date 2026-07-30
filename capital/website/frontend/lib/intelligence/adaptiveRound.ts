@@ -15,7 +15,7 @@ import { loadAgentInstructions } from "./corpus";
 import { recordUsage } from "./cost";
 import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
-import { COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS } from "./types";
+import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS } from "./types";
 import type {
   EligibilityCheck, GroundedRound, InstrumentRow,
   IntelligenceRequest, ProfileSignal, ProjectQuestion,
@@ -356,6 +356,137 @@ export async function generateProjectQuestions(
     return [];
   }
 }
+
+/**
+ * The commercial half of round 2: how this company actually makes money.
+ *
+ * ── Why this one is not gate-grounded ──────────────────────────────────────
+ * Every other question in this file is written from a fund's own requirement
+ * text, and refuses to ask anything a real rule does not support. That
+ * discipline is right for eligibility and wrong here, because no fund encodes
+ * "who is your customer" as a gate — so under the old rule the brief could
+ * never learn it, and positioning was written from a sector label.
+ *
+ * The failure that forced this: a company selling a subscription product
+ * directly to individuals was advised to position on institutional deployment
+ * and outcomes for a buyer it does not sell to. Every sentence was sourced on
+ * the policy side and wrong about the company.
+ *
+ * ── The firewall ───────────────────────────────────────────────────────────
+ * These answers land in `commercialAnswers` and are read ONLY by the writer,
+ * for positioning and the commercial-payoff bullet. computeVerdict() never
+ * sees them. Same guarantee as ProjectAnswer, for the same reason: a
+ * hallucinated option can weaken prose, but it must never move a legal
+ * eligibility verdict.
+ */
+export async function generateCommercialQuestions(
+  req: IntelligenceRequest,
+): Promise<ProjectQuestion[]> {
+  const desc = req.description?.trim();
+  if (!desc || desc.length < 20) return [];
+
+  const schema = {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      questions: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            topic: { type: "string", enum: COMMERCIAL_TOPICS },
+            question: { type: "string" },
+            options: { type: "array", items: { type: "string" } },
+          },
+          required: ["topic", "question", "options"],
+        },
+      },
+    },
+    required: ["questions"],
+  } as const;
+
+  try {
+    const res = billed(await client.messages.create({
+      model: INTAKE_MODEL,
+      max_tokens: 1400,
+      thinking: { type: "disabled" },
+      system: loadAgentInstructions(),
+      output_config: { format: { type: "json_schema", schema } },
+      messages: [
+        {
+          role: "user",
+          content:
+            `A founder is applying for European public funding. We already know ` +
+            `their eligibility position. What we do NOT know is how the ` +
+            `business actually works commercially, and without it we cannot ` +
+            `tell them how to position themselves to a funder.\n\n` +
+            `${fence("company description", declaw(desc).text)}\n` +
+            `${req.country ? `Incorporated in: ${req.country}\n` : ""}` +
+            `\nWrite ONE question for each topic below that is still genuinely ` +
+            `unclear from the description, at most one per topic, at most four ` +
+            `in total. Topics: ${COMMERCIAL_TOPICS.join(", ")}.\n\n` +
+            `Rules:\n` +
+            `- Ask about the BUSINESS, never about eligibility, legal form, ` +
+            `headcount or country: those are already settled.\n` +
+            `- Name what this company actually does, in their own words, so ` +
+            `the question reads as written for them.\n` +
+            `- Give 3-5 options that are concrete, mutually exclusive, and ` +
+            `jointly cover the realistic cases, so exactly one is true.\n` +
+            `- Options are in a founder's own commercial vocabulary. Never ` +
+            `legal, regulatory or programme language.\n` +
+            `- BANNED option styles: "a mix of the above", "other", "none", ` +
+            `"not sure", "several of these", or anything restating the ` +
+            `question. Do not add a "none of these" option: the interface ` +
+            `appends its own.\n` +
+            `- SKIP a topic entirely when the description already answers it. ` +
+            `Three sharp questions beat four with a wasted one.\n\n` +
+            `Return ONLY the JSON object for the schema.`,
+        },
+      ],
+    }), INTAKE_MODEL);
+    const text = res.content
+      .filter((b): b is Anthropic.TextBlock => b.type === "text")
+      .map((b) => b.text)
+      .join("");
+    const parsed = extractJson<{ questions: { topic: string; question: string; options: string[] }[] }>(text);
+    const seen = new Set<string>();
+    return (parsed.questions ?? [])
+      .filter((q) => q?.question?.trim() && Array.isArray(q.options))
+      .filter((q) => (seen.has(q.topic) ? false : (seen.add(q.topic), true)))
+      .slice(0, 4)
+      .map((q) => ({
+        id: `${COMMERCIAL_ANSWER_PREFIX}${q.topic}`,
+        question: deDash(q.question.trim()),
+        options: q.options
+          .map((o) => deDash(String(o).trim()))
+          .filter(Boolean)
+          .filter((o) => !VAGUE_OPTION.test(o))
+          .slice(0, 5),
+        // Not tied to any instrument: that is the whole point of this half.
+        instrumentId: "",
+        instrumentName: "",
+        gateKey: `commercial_${q.topic}`,
+        quote: "",
+        locator: "",
+      }))
+      .filter((q) => q.options.length >= 2);
+  } catch (err) {
+    console.error("commercial question generation failed:", err);
+    return [];
+  }
+}
+
+/** The axes that change how a company should be positioned to a public
+ *  funder. Deliberately about the business model rather than the product:
+ *  what a fund wants to hear turns on who pays and how, not on the
+ *  technology, which the description already covers. */
+const COMMERCIAL_TOPICS = [
+  "who_pays",          // B2B, B2C, B2G, marketplace, licensing
+  "revenue_model",     // subscription, transaction fee, one-off, usage
+  "route_to_market",   // direct, channel, procurement, platform
+  "award_unlocks",     // what a public award would actually buy commercially
+] as const;
 
 const PROFILE_SIGNAL_SCHEMA = {
   type: "object",

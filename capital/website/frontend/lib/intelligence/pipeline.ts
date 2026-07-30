@@ -28,6 +28,8 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
   return res;
 }
 import { semanticFundMatch } from "./semantic";
+import { ExclusionLog } from "./exclusions";
+import { assembleWriterInstructions } from "./contracts";
 import {
   findPeersBySubsector,
   isGenericSubsector,
@@ -52,6 +54,7 @@ import {
 } from "./shortlist";
 import {
   BORROWER_MODELS,
+  COMMERCIAL_ANSWER_PREFIX,
   CAPITAL_OPTIONS,
   TICKET_BANDS,
   type ChannelAmount,
@@ -392,14 +395,10 @@ function buildSelf(r: CompetitorRecord): SelfRecord {
   };
 }
 
-// Fixed, code-authored close for stateOfPlay — never model-written, so the
-// claim stays controlled and on-register (public-awards-intelligence, never
-// competitive-urgency framing).
-const STATE_OF_PLAY_PLUG =
-  "Wincent tracks Europe's state-backed capital cycles and political " +
-  "priorities continuously, and helps companies align their narrative with " +
-  "what is genuinely being prioritised right now, opening doors to the " +
-  "people who decide.";
+// The standing offer closing the state-of-play section lives in types.ts as
+// STATE_OF_PLAY_OFFER and is RENDERED as its own block by the report
+// component. It used to be string-concatenated onto this field, which put a
+// sales line inside a paragraph of analysis (contract rule SOP-2).
 
 async function synthesize(
   req: IntelligenceRequest,
@@ -411,6 +410,7 @@ async function synthesize(
   instructions: string,
   sectorTop: string,
   emit: Emit,
+  log: ExclusionLog,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt"> & {
   /** Pipeline diagnostics, NOT part of the founder-facing report — stripped
    *  in runIntelligence before the report event is emitted. Recorded on
@@ -628,9 +628,15 @@ async function synthesize(
     // brief_funnel_v2 Stage 2b. This is the block that makes the brief read
     // like it was written for THIS company: each line is the founder's own
     // answer to a question phrased from one fund's verbatim requirement.
-    req.projectAnswers && req.projectAnswers.length > 0
+    // Split by origin. The gate-grounded answers describe the project against
+    // a fund's rules; the commercial ones describe how the business makes
+    // money and carry no instrument. Merged into one list they read as though
+    // a fund had asked about the business model, which is exactly the
+    // confusion that put statute vocabulary into a sentence about a company.
+    (req.projectAnswers ?? []).filter((p) => !p.questionId?.startsWith(COMMERCIAL_ANSWER_PREFIX)).length > 0
       ? `## The founder's project, against real fund requirements (AUTHORITATIVE)\n` +
-        req.projectAnswers
+        (req.projectAnswers ?? [])
+          .filter((p) => !p.questionId?.startsWith(COMMERCIAL_ANSWER_PREFIX))
           .map(
             (p) =>
               `- ${p.instrumentName} requires: "${p.quote}"\n` +
@@ -644,6 +650,20 @@ async function synthesize(
         `general terms. Where an answer shows a requirement is not met, say so ` +
         `plainly and give the cure. Never restate an answer as a fact the ` +
         `founder did not give.`
+      : "",
+    // The commercial half of round 2. Its only consumers are positioning and
+    // the payoff bullet — it never touches eligibility, and it is labelled so
+    // the writer cannot mistake it for a fund requirement.
+    (req.projectAnswers ?? []).filter((p) => p.questionId?.startsWith(COMMERCIAL_ANSWER_PREFIX)).length > 0
+      ? `## How this business actually works (AUTHORITATIVE, the founder's own answers)\n` +
+        (req.projectAnswers ?? [])
+          .filter((p) => p.questionId?.startsWith(COMMERCIAL_ANSWER_PREFIX))
+          .map((p) => `- ${p.question}\n  They answered: ${p.answer}`)
+          .join("\n") +
+        `\nThis is the ONLY basis for anything you say about who this company ` +
+        `sells to, how it reaches them, or what an award would buy. Positioning ` +
+        `advice must fit this commercial model. Where it is silent, write about ` +
+        `the technology and the policy priority, never about a customer.`
       : "",
   ]
     .filter(Boolean)
@@ -751,16 +771,28 @@ async function synthesize(
   // Ranking already put the better row first, so first-wins is the right rule.
   const droppedBlocked = rankedByEase.filter((r) => r.assessment?.status === "blocked").length;
   const seenNames = new Set<string>();
-  const baseRows = rankedByEase
-    .filter((r) => r.assessment?.status !== "blocked")
+  const beforeWriterCap = rankedByEase
+    .filter((r) => {
+      if (r.assessment?.status !== "blocked") return true;
+      log.record("VER-BLOCKED", r.row.instrumentId ?? r.row.channel,
+        `${r.assessment.blockers.length} encoded eligibility filters conclusively fail`);
+      return false;
+    })
     .filter((r) => {
       const name = displayInstitutionName(r.row);
-      if (seenNames.has(name)) return false;
+      if (seenNames.has(name)) {
+        log.record("SEL-DUPE-NAME", r.row.instrumentId ?? r.row.channel,
+          "a higher-ranked instrument already renders under this institution name");
+        return false;
+      }
       seenNames.add(name);
       return true;
-    })
-    .slice(0, WRITER_CANDIDATE_CAP)
-    .map((r) => r.row);
+    });
+  for (const r of beforeWriterCap.slice(WRITER_CANDIDATE_CAP)) {
+    log.record("SEL-LEAF-CAP", r.row.instrumentId ?? r.row.channel,
+      `ranked below the ${WRITER_CANDIDATE_CAP}-candidate cap shown to the writer`);
+  }
+  const baseRows = beforeWriterCap.slice(0, WRITER_CANDIDATE_CAP).map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
     const id = baseRows[idx].instrumentId;
     const a = id ? assessments.get(id) : undefined;
@@ -910,210 +942,51 @@ async function synthesize(
     // entire budget thinking and emit nothing, so the caller retries with it
     // off rather than losing the memo (see below).
     thinking: { type: thinking },
-    system: instructions,
+    system: assembleWriterInstructions(),
     output_config: { format: { type: "json_schema", schema } },
     messages: [
       {
         role: "user",
         content:
-          `Write the founder's public-capital brief. The reader is a lean, ` +
-          `early-stage founder or operator with no time for institutional-` +
-          `affairs overhead: every sentence must earn its place. Total prose ` +
-          `across bottomLine + positioning + stateOfPlay must land at or ` +
-          `under ~700 words; the institutions table is separate and not ` +
-          `counted toward that budget.\n\n${ctx}\n\n` +
+          // The per-section rules used to live here, ~200 lines of prose
+          // interleaved with evidence assembly. They now live in contracts/,
+          // which the system prompt carries in full, so this message is only
+          // the task and the evidence. Changing what a section says is a
+          // markdown edit; changing what evidence it gets is a change here.
+          `Write the founder's public-capital brief, obeying every contract in ` +
+          `your instructions.\n\n${ctx}\n\n` +
           `${profileBlock ? profileBlock + "\n\n" : ""}` +
           `${screenBlock ? screenBlock + "\n\n" : ""}` +
           `${softSignalBlock ? softSignalBlock + "\n\n" : ""}` +
           `## The founder's own footprint (AUTHORITATIVE)\n${selfLine}\n\n` +
-          `## Comparable-company evidence (AUTHORITATIVE — already finalised)\n` +
+          `## Comparable-company evidence (AUTHORITATIVE, already finalised)\n` +
           `Every company listed here has traced public funding; the figures ` +
           `are committed amounts from our database. Use them EXACTLY as ` +
-          `given, never introduce a private round, a funding figure or a ` +
-          `funder not listed here. Never frame them as a race or a threat, ` +
-          `only as proof that public capital actually flows into this space.\n` +
+          `given, and never introduce a round, a figure or a funder not ` +
+          `listed here.\n` +
           `${evidence || "(no comparable companies gathered)"}\n\n` +
-          `## The 5 institutions to target (AUTHORITATIVE — already finalised)\n` +
-          `These are the ONLY institutions you may write about. institutionNotes ` +
-          `must cover exactly these rows, one entry each, keyed by the exact ` +
-          `"channel" field value shown after "key" below (note: two rows can ` +
-          `share the same underlying fund family with different keys, they ` +
-          `are still separate institutions and each needs its own note). ` +
+          `## The candidate institutions (AUTHORITATIVE, already finalised)\n` +
+          `These are the ONLY institutions you may write about. Return one ` +
+          `institutionNotes entry per row, keyed by the exact "channel" value ` +
+          `shown after "key" (two rows can share a fund family under different ` +
+          `keys; they are separate institutions and each needs its own note). ` +
           `Support type, ticket and comparable firms already render in the ` +
-          `table, do not restate them, write only whyEligible and nextStep.\n` +
+          `table: write only whyEligible, nextStep and blockerPlain.\n` +
+          `A row marked STALE has no award on record for over three years.\n` +
+          `Every row has been screened against its own encoded eligibility ` +
+          `rules; funds this company cannot access were already removed.\n` +
+          `Order your entries BEST FIRST. We publish the top rows of what you ` +
+          `return, so ranking a fund last is how you say it is the weakest ` +
+          `option, and that costs the founder nothing.\n` +
           `${institutionsEvidence || "(none)"}\n\n` +
-          `## Relevant funding-process briefs (use to make nextStep concrete)\n` +
+          `## Funding-process briefs (use to make nextStep concrete)\n` +
           `${processes || "(none)"}\n\n` +
-          `## What's on the policy agenda right now (curated intelligence ` +
-          `corpus — ground "positioning" in these lines, never invent a ` +
-          `development)\n` +
-          `${agendaEvidence || "(the intelligence corpus has nothing usable for this sector right now)"}\n\n` +
-          `## Who is shaping that agenda (news-derived, most recent first — ` +
-          `the ONLY basis for naming a person in "positioning")\n` +
-          `Only name a specific person when the excerpt clearly shows them ` +
-          `holding a relevant role or making a relevant decision; when the ` +
-          `evidence is too thin to be sure, refer to the role or institution ` +
-          `only (e.g. "the EIC Fund's leadership"), never guess a name.\n` +
-          `${peopleEvidence || "(no person-level signal available right now, refer to institutions and roles only)"}\n\n` +
-          `## Most recent developments (curated intelligence corpus, ` +
-          `recency-sorted — the ONLY basis for "stateOfPlay")\n` +
-          `${recentEvidence || "(the intelligence corpus has nothing recent for this sector, say so plainly)"}\n\n` +
-          `Now write:\n` +
-          // Measured: the thinking-off fallback path overran this on both runs
-          // where it fired (28 and 33 words), so the limit is restated as a
-          // count to check rather than a style note.
-          `"bottomLine": 4 to 5 bullets. HARD LIMIT 25 words per bullet — ` +
-          `count the words; a 26-word bullet is wrong and must be cut, not ` +
-          `reworded. Plain ` +
-          `sentences with no bullet marker in the text itself (the interface ` +
-          `renders them as a list). First bullet: why this founder should ` +
-          `care, opening from their own footprint above against the ` +
-          `comparable evidence. Middle bullets: which of the 5 institutions ` +
-          `below is the right first step and why. Final bullet: the concrete ` +
-          `commercial payoff in plain terms, a grant amount, a guarantee ` +
-          `that cuts cost of capital, an equity stake from a public investor, ` +
-          `a tax credit, never vague "access to funding" language.\n` +
-          // The verdict layer is code-computed and already rendered; the
-          // writer must narrate it, never contradict or restate it.
-          // Without this the writer confidently writes "apply to the next
-          // call" for a scheme with no award on record since 2021. It cannot
-          // see the dates unless we hand them over.
-          `A row marked STALE has no award on record for over three years. It ` +
-          `may be closed, repealed or between programme periods — we cannot ` +
-          `tell. NEVER promise an upcoming call or deadline for one. Say ` +
-          `plainly that it has been dormant since the year given and make the ` +
-          `next step confirming it still runs, before any application work.\n` +
-          `EVERY institution below has been screened against its own encoded ` +
-          `eligibility rules. Funds this company cannot access were already ` +
-          `removed — so never write that they fail, or might not qualify, or ` +
-          `should check whether they are eligible for a listed fund. Where a ` +
-          `row carries "One thing in the way", treat that requirement as the ` +
-          `single obstacle. Set "blockerPlain" to that rule restated in ONE ` +
-          `plain sentence a founder reads once and understands: name the real ` +
-          `threshold, drop the statute language. For every row that has no ` +
-          `obstacle, "blockerPlain" MUST be an empty string. Make nextStep the ` +
-          `action that clears the obstacle, or the best alternative route. Never ` +
-          `write "you qualify" as a guarantee: the correct claim is that ` +
-          `nothing in the documented rules rules them out.\n` +
-          `The brief publishes UP TO FIVE institutions, and never fewer than ` +
-          `two. You are shown more than five candidates so you can discard the ` +
-          `genuinely unworkable ones and still leave a full table — prefer ` +
-          `five, and only go below it when the remaining options really are ` +
-          `not worth a founder's time.\n` +
-          // Not a hard rule — but a table of five national schemes, or five
-          // Brussels programmes, is a narrower answer than the corpus can
-          // actually give. The two levels have different timelines, ticket
-          // sizes and application burdens.
-          // sennder's brief published five rows of which three said
-          // "deprioritise", "monitor calls" and "treat as informational" --
-          // honest about each row, but as a whole it padded to five instead of
-          // finding five relevant. Rank tells us which row is better; this
-          // tells us whether there is anything to DO about it this quarter.
-          `Set "actionableNow": false when the founder cannot take a real step ` +
-          `on this route now — the next move is only to monitor calls, or it ` +
-          `needs something they cannot go and get (an ERC grant they do not ` +
-          `hold, a size or status they cannot change). Work they can START, ` +
-          `however slow, is ACTIONABLE: recruiting consortium partners, ` +
-          `scoping a project, approaching a ministry for sponsorship all ` +
-          `count. Needing a consortium is not a disqualification — most ` +
-          `Horizon and partnership funding works that way, and cutting those ` +
-          `rows would strip the EU grant routes out of the brief entirely. ` +
-          `Set it true when they could start this quarter, even if the route is ` +
-          `hard or the odds are long. Watch-only rows are NOT PUBLISHED AT ALL ` +
-          `— not even one, not even ranked last — so a brief is a list of ` +
-          `things to do, never a list of things to know. Four real routes beat ` +
-          `five with one that wastes a week. And never write "monitor", ` +
-          `"deprioritise", "informational" or "revisit later" into nextStep: ` +
-          `if that is the honest next step, the row does not belong in the ` +
-          `brief, so set the flag instead.\n` +
-          `Where the candidates allow it, prefer a SPREAD across levels: some ` +
-          `national or regional routes, some EU-level ones. This is a ` +
-          `preference, not a rule — never keep a weak fund only to balance the ` +
-          `mix, and never drop a strong one for it.\n` +
-          `Return an entry for EVERY candidate below, ORDERED BEST FIRST — ` +
-          `your ordering decides what gets published, because we take the top ` +
-          `five of what you return. Ranking a fund last is how you say it is ` +
-          `the weakest option; that costs the founder nothing.\n` +
-          // worthPursuing was being used as a ranking device rather than a
-          // qualification test: on eAgronom the writer rejected 7 of 9
-          // candidates, among them the Horizon cluster for Food and
-          // Bioeconomy that it had itself called a direct match for the
-          // company's soil-carbon programme on the previous run. Ordering is
-          // now how preference is expressed, and the flag is reserved for
-          // disqualification, so a merely-weaker option can no longer be
-          // deleted from the brief.
-          `"worthPursuing": false is NOT a ranking device and NOT for weak or ` +
-          `long-shot options — it DISQUALIFIES a row, deleting it from the ` +
-          `brief entirely. Set it false only when you can name, in one ` +
-          `specific sentence, why this fund is actively wrong for THIS ` +
-          `company: wrong theme for what they build, wrong stage, wrong ticket ` +
-          `size, a structure that conflicts with what they asked for, or an ` +
-          `obstacle they genuinely cannot clear. If your reason would apply to ` +
-          `most applicants rather than this one, it is not a reason — leave ` +
-          `the row in and rank it last. Expect to disqualify NONE or ONE of ` +
-          `the candidates; disqualifying most of them is always wrong. ` +
-          // Nebius published a row reading "IPCEI Micro targets semiconductor
-          // value chains, not cloud infrastructure operators like Nebius" --
-          // the writer had spent its one disqualification elsewhere and kept a
-          // fund it was simultaneously arguing against. A cap meant to stop
-          // over-rejecting must not read as a budget to spend.
-          `That cap is a guard against over-rejecting, NOT a budget: if your ` +
-          `own whyEligible would have to say the fund targets something this ` +
-          `company is not, that IS the concrete mismatch — disqualify it no ` +
-          `matter how many you have already rejected. Never publish a row ` +
-          `whose own explanation argues against it. ` +
-          `Disqualified rows are dropped, never shown, so NEVER write "skip ` +
-          `this", "deprioritise" or "do not pursue" in whyEligible or ` +
-          `nextStep — set the flag instead. ` +
-          `Be decisive but not destructive: only the top few are published, so ` +
-          `rejecting a merely-imperfect option can leave the founder with less ` +
-          `than they deserve. Reject what is wrong, keep what is workable.\n` +
-          // Observed on eAgronom: the writer rejected BOTH EIC routes, the
-          // single best-fitting EU instrument for an Estonian agritech at
-          // pilot stage, and shipped three rows out of seven candidates.
-          // Competitiveness is the most common bad reason to reject — every
-          // instrument worth naming is competitive, and a founder deciding
-          // where to spend the next month already knows that.
-          `A low acceptance rate, heavy paperwork or a long timeline are NOT ` +
-          `reasons to reject: every worthwhile public instrument is ` +
-          `competitive, and the founder is choosing where to spend effort, not ` +
-          `being promised a win. Reject only for a concrete mismatch you can ` +
-          `name in the data: wrong theme, wrong stage, wrong ticket size, a ` +
-          `structure that conflicts with what they asked for, or an obstacle ` +
-          `they genuinely cannot clear. If you cannot name that mismatch in ` +
-          `one specific sentence, keep the row.\n` +
-          `"institutionNotes": for EVERY candidate below, "whyEligible" ` +
-          `(AT MOST 25 words) is a specific clause grounded in the ` +
-          `eligibility screen and scoping profile above, never a generic ` +
-          `claim, and must never assert an eligibility a NOT_MET row closes ` +
-          `without naming the cure; "nextStep" (AT MOST 15 words) is one ` +
-          `concrete action drawn from the process briefs above. Where a ` +
-          `project answer above bears on that institution, whyEligible must ` +
-          `use it, naming the requirement and how this company sits against ` +
-          `it, rather than describing the fund generically.\n` +
-          // brief_funnel_v2 Stage 4: the two grounding rules. Everything the
-          // brief says is either the founder's own answer or a cited fund
-          // requirement; nothing in between.
-          `GROUNDING, applies to every field you write: any claim about THIS ` +
-          `COMPANY'S project must trace to a project answer or their own ` +
-          `description above; any claim about a FUND must trace to its ` +
-          `requirement text or process brief above. If neither supports a ` +
-          `sentence you want to write, cut the sentence.\n` +
-          `"positioning": ONE paragraph, AT MOST 130 words, on how this ` +
-          `company should frame itself to fit the current political moment: ` +
-          `name the real people or institutions actually setting the agenda ` +
-          `(from the evidence above, never invented) and what specifically ` +
-          `in their stated priorities this founder's work maps onto. ` +
-          `Advisory register, never sycophantic, never inventing a meeting ` +
-          `or a relationship that doesn't exist.\n` +
-          `"stateOfPlay": ONE paragraph, AT MOST 130 words, the most ` +
-          `relevant recent developments and anything upcoming (a fund ` +
-          `opening, a programme redesign) worth watching, grounded only in ` +
-          `the recency-sorted evidence above. Do not add a sales pitch or a ` +
-          `sign-off, a closing line is appended separately.\n` +
-          `"caveats": ONE sentence noting figures are committed amounts from ` +
-          `public registers, coverage varies by country, and absence from ` +
-          `the database is not proof of no funding.`,
+          `## What is on the policy agenda now (grounds "positioning")\n` +
+          `${agendaEvidence || "(nothing usable for this sector right now)"}\n\n` +
+          `## Who is shaping that agenda (the ONLY basis for naming a person)\n` +
+          `${peopleEvidence || "(no person-level signal; refer to roles and institutions only)"}\n\n` +
+          `## Most recent developments (recency-sorted, grounds "stateOfPlay")\n` +
+          `${recentEvidence || "(nothing recent for this sector, say so plainly)"}`,
       },
     ],
   }, { timeout: WRITER_TIMEOUT_MS, maxRetries: 0 });
@@ -1249,6 +1122,40 @@ async function synthesize(
   // cannot use. So the floor applies to the WRITER's judgement (it may not
   // reject its way down to one), not to the corpus: if screening only ever
   // produced one accessible fund, one is the honest answer.
+  // The writer may disqualify at most one candidate, and code enforces it.
+  //
+  // The contract asks for "none or one", and asking is not enough: a live run
+  // rejected five of seven candidates, among them the two best-known EU
+  // instruments for that company, and shipped a two-row brief. The previous
+  // prompt fought this with roughly forty lines of guardrail, which is the
+  // tell that prose cannot hold the line.
+  //
+  // Rejections are honoured from the BOTTOM of the writer's own ordering: if
+  // it wants several gone, the one it ranked last is the one that goes. That
+  // keeps the flag meaningful without letting it empty the table, and it is
+  // the same division as everywhere else — the writer ranks, code cuts.
+  const MAX_WRITER_REJECTIONS = 1;
+  const rejectedByRank = scored
+    .filter((x) => !x.worth)
+    .sort((a, b) => (rankByKey.get(b.key) ?? Infinity) - (rankByKey.get(a.key) ?? Infinity));
+  const honoured = new Set(rejectedByRank.slice(0, MAX_WRITER_REJECTIONS).map((x) => x.key));
+  for (const x of rejectedByRank.slice(MAX_WRITER_REJECTIONS)) {
+    x.worth = true;
+    recordEvent("writer_over_rejected",
+      "writer disqualified more candidates than the cap allows; row reinstated",
+      { channel: x.entry.channel, rejected: rejectedByRank.length });
+  }
+  for (const x of scored) {
+    if (x.worth || !honoured.has(x.key)) continue;
+    // Two different failures wear the same result. Separating them matters:
+    // one is the writer actively rejecting a fund, the other is the writer
+    // never mentioning it, and only the first is a judgement we could argue
+    // with.
+    const note = notesByKey.get(x.key);
+    log.record(note ? "WRT-NOT-WORTH" : "WRT-NO-NOTE",
+      x.entry.channel,
+      note ? "writer set the disqualification flag" : "writer returned no note for this candidate");
+  }
   const ranked = scored
     .filter((x) => x.worth)
     .sort((a, b) => (rankByKey.get(a.key) ?? Infinity) - (rankByKey.get(b.key) ?? Infinity));
@@ -1267,6 +1174,10 @@ async function synthesize(
   if (watchOnly.length) {
     console.log("[institutions] dropped %d watch-only: %s", watchOnly.length,
       watchOnly.map((x) => x.entry.institution).join(", "));
+    for (const x of watchOnly) {
+      log.record("WRT-WATCH-ONLY", x.entry.channel,
+        "flagged not-actionable, or its own next step matched the watch-only vocabulary");
+    }
   }
   // Deliberately NOT topped back up to the minimum from the watch-only pile:
   // that would reintroduce exactly the rows we just refused to show. A short
@@ -1275,9 +1186,11 @@ async function synthesize(
   // The one exception is the pathological case where NOTHING survives -- if
   // the writer mislabels every row, an empty table serves no one, so the
   // ranked list stands in and the event is logged loudly rather than hidden.
-  const finalInstitutions: InstitutionEntry[] = (
-    worthwhile.length ? worthwhile : ranked.map((x) => x.entry)
-  ).slice(0, BRIEF_INSTITUTION_CAP);
+  const survivors = worthwhile.length ? worthwhile : ranked.map((x) => x.entry);
+  for (const e of survivors.slice(BRIEF_INSTITUTION_CAP)) {
+    log.record("CUT-CAP", e.channel, `ranked below the published cap of ${BRIEF_INSTITUTION_CAP}`);
+  }
+  const finalInstitutions: InstitutionEntry[] = survivors.slice(0, BRIEF_INSTITUTION_CAP);
   if (!worthwhile.length) {
     console.error("every institution read as watch-only; showing ranked order instead",
       { candidates: scored.length });
@@ -1295,7 +1208,7 @@ async function synthesize(
     bottomLine: narrative.bottomLine.slice(0, 5).map((b) => deDash(b)),
     institutions: finalInstitutions,
     positioning: deDash(narrative.positioning),
-    stateOfPlay: `${deDash(narrative.stateOfPlay)} ${STATE_OF_PLAY_PLUG}`.trim(),
+    stateOfPlay: deDash(narrative.stateOfPlay),
     // The caveat is what stops committed-amount figures reading as a promise
     // of disbursed cash, so it is not optional even though the model sometimes
     // returns it empty (Corti's thinking-off run did). Schema `required` gets
@@ -1331,7 +1244,12 @@ export async function computeVerdict(
   company: string,
   country: string | undefined,
   eligibility: EligibilityAnswers | undefined,
-  opts: { targetMarkets?: string[]; capitalSought?: string[]; description?: string } = {},
+  opts: {
+    targetMarkets?: string[]; capitalSought?: string[]; description?: string;
+    /** Optional funnel recorder. The fast path is model-free but not
+     *  exclusion-free: most of what never reaches a founder is removed here. */
+    log?: ExclusionLog;
+  } = {},
 ): Promise<VerdictResult> {
   const selfRecord = matchCompany(company, country);
   const targetSub =
@@ -1344,14 +1262,15 @@ export async function computeVerdict(
     ...dbPeers.flatMap((r) => r.channels),
   ]);
   const founderCountries = founderCountryList(country, opts.targetMarkets, eligibility?.entityCountries);
-  const candidates = buildInstrumentTable(
+  const candidates = buildInstrumentTable({
     fieldChannels,
-    eligibility?.ticketBand,
-    eligibility?.consortium !== "no",
+    ticketBand: eligibility?.ticketBand,
+    consortiumOk: eligibility?.consortium !== "no",
     founderCountries,
-    opts.capitalSought ?? [],
-    opts.description,
-  );
+    capitalSought: opts.capitalSought ?? [],
+    description: opts.description,
+    log: opts.log,
+  });
   // Phase two of hydration, on the FAST path too. computeVerdict is
   // model-free, not IO-free: its eligibility screen renders the source
   // citation for each rule, and without this every row came back with a blank
@@ -1372,6 +1291,11 @@ export async function computeVerdict(
 /** Run the full pipeline, emitting progress events as each stage completes. */
 export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Promise<void> {
   const startedAt = Date.now();
+  // One recorder for the whole request. Every fund removed between here and
+  // the published table reports to it, so a brief that ships three rows can
+  // be explained rather than guessed at. Purely observational — see
+  // exclusions.ts.
+  const log = new ExclusionLog();
   // The first screen stopped asking "company type" on 2026-07-26: it gated no
   // eligibility rule and inferProfileSignal already reads the same 4-point
   // scale off the founder's own description. So the model's read IS the
@@ -1436,15 +1360,16 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     ...dbPeers.flatMap((r) => r.channels),
   ]);
   const instrumentTable = applyProfileSignal(
-    buildInstrumentTable(
+    buildInstrumentTable({
       fieldChannels,
-      req.eligibility?.ticketBand,
-      req.eligibility?.consortium !== "no",
-      founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
-      req.capitalSought ?? [],
-      req.description,
-      semanticScores,
-    ).slice(0, VERDICT_POOL),
+      ticketBand: req.eligibility?.ticketBand,
+      consortiumOk: req.eligibility?.consortium !== "no",
+      founderCountries: founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
+      capitalSought: req.capitalSought ?? [],
+      description: req.description,
+      semantic: semanticScores,
+      log,
+    }).slice(0, VERDICT_POOL),
     req.profileSignal,
     req.companyType,
   );
@@ -1464,7 +1389,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     req.eligibility?.sector ||
     "other";
   const body = await synthesize(
-    req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit);
+    req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit, log);
 
   const { _dropped, ...report } = body;
   emit({
@@ -1494,6 +1419,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     droppedBlocked: _dropped.blocked,
     droppedWatchOnly: _dropped.watchOnly,
     candidateCount: _dropped.candidates,
+    exclusions: log.countsByRule(),
     durationMs: Date.now() - startedAt,
     codeVersion: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7),
   });

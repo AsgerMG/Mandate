@@ -20,6 +20,10 @@
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { WATCH_ONLY_COPY } from "../lib/intelligence/watchOnly";
+// The contract checks, shared with the live pipeline so what we enforce and
+// what we measure are one artifact. Each violation carries the rule id
+// declared in contracts/, so a regression is named rather than described.
+import { checkBrief } from "../lib/intelligence/briefChecks";
 
 interface Institution {
   institution?: string; country?: string; verdict?: string; supportType?: string;
@@ -105,6 +109,10 @@ function score(r: Row): Scored {
   const longest = Math.max(0, ...bullets.map(words));
   const body = words(bullets.join(" ")) + words(rep.positioning) + words(rep.stateOfPlay);
   const noCaveat = !String(rep.caveats ?? "").trim();
+
+  // Contract violations first, by rule id: these are the ones a PM can look
+  // up in contracts/ and change without touching TypeScript.
+  for (const cv of checkBrief(rep as never)) defects.push(cv.ruleId);
 
   // Ordered by how badly each one hurts a founder reading the brief.
   if (r.error) defects.push("FAILED");

@@ -17,6 +17,13 @@ import { loadDbInstruments, loadFundSnapshot, toIso2, type DbInstrument } from "
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { TICKET_BANDS } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
+import type { ExclusionLog } from "./exclusions";
+
+/** How many instruments each channel may contribute. Named because it is one
+ *  link in the chain that decides how many rows a brief can hold at all
+ *  (channels considered x leaves per channel -> pool -> published), and a bare
+ *  `slice(0, 2)` mid-function hid it from that arithmetic. */
+export const LEAVES_PER_CHANNEL = 2;
 
 // Short, human display labels for the channel codes, for the funding breakdown.
 const CHANNEL_LABEL: Record<string, string> = {
@@ -207,14 +214,22 @@ let instByIdCache: Map<string, DbInstrument> | null = null;
  *  to one country's programme, so an out-of-country leaf is never usable. */
 export const NATIONAL_CHANNELS = new Set(["national_dev_banks", "state_aid_satr"]);
 
-export function selectLeafInstruments(
-  channel: string,
-  founderCountries: string[],
-  capitalSought: string[],
-  ticketBand?: string,
-  description?: string,
-  semantic?: Map<string, number>,
-): DbInstrument[] {
+/** Inputs to leaf selection. An object rather than six positional arguments:
+ *  the old signature was `(channel, countries, capital, band, description,
+ *  semantic)`, which at the call site read as an unlabelled list where a
+ *  transposed pair would still compile. */
+export interface LeafSelectionInput {
+  channel: string;
+  founderCountries: string[];
+  capitalSought: string[];
+  ticketBand?: string;
+  description?: string;
+  semantic?: Map<string, number>;
+  log?: ExclusionLog;
+}
+
+export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[] {
+  const { channel, founderCountries, capitalSought, ticketBand, description, semantic, log } = input;
   const all = dbInstrumentsByBucket().get(channel) ?? [];
   if (!all.length) return [];
   // Graded fallback. The old single fallback ("if nothing matched, take
@@ -224,8 +239,23 @@ export function selectLeafInstruments(
   // and every country came back. Relaxing capital type is defensible;
   // relaxing country is not, so it comes last and only to avoid an empty row.
   const inCountry = all.filter((i) => instrumentServesCountry(i.country, founderCountries));
+  for (const i of all) {
+    if (!inCountry.includes(i)) {
+      log?.record("SEL-COUNTRY", i.id, `national to ${i.country}, outside the founder's usable countries`);
+    }
+  }
   let candidates = inCountry.filter((i) => instrumentServesCapital(i.capitalType, capitalSought));
-  if (!candidates.length) candidates = inCountry;
+  if (!candidates.length) {
+    // The relaxation is recorded, not just the removal: a table built after
+    // capital type was abandoned answers a different question than the one
+    // the founder asked, and that is invisible in the output.
+    for (const i of inCountry) log?.record("SEL-CAPITAL", i.id, `capital type ${i.capitalType} not among those sought (filter relaxed to avoid an empty channel)`);
+    candidates = inCountry;
+  } else {
+    for (const i of inCountry) {
+      if (!candidates.includes(i)) log?.record("SEL-CAPITAL", i.id, `capital type ${i.capitalType} not among those sought`);
+    }
+  }
   // For channels whose instruments are national by construction, an empty
   // in-country result means the answer is "nothing here", not "show them
   // somebody else's". The last-resort fallback handed a Danish founder the
@@ -235,7 +265,11 @@ export function selectLeafInstruments(
   // the verdict layer returned `unknown` rather than `blocked`. Country here
   // is a fact about the instrument, so it does not need a gate to be true.
   if (!candidates.length && !NATIONAL_CHANNELS.has(channel)) candidates = all;
-  if (!candidates.length) return [];
+  if (!candidates.length) {
+    log?.record("SEL-NATIONAL-EMPTY", channel,
+      "channel is national by construction and holds no instrument in the founder's countries");
+    return [];
+  }
   const target = ticketBand ? TICKET_MIDPOINT[ticketBand] : undefined;
   const isExactCountry = (i: DbInstrument) =>
     founderCountries.length > 0 && founderCountries.some((c) => toIso2(c) === i.country);
@@ -293,7 +327,10 @@ export function selectLeafInstruments(
     if (rawA !== rawB) return rawB - rawA;
     return b.eventCount - a.eventCount;
   });
-  return sorted.slice(0, 2);
+  for (const i of sorted.slice(LEAVES_PER_CHANNEL)) {
+    log?.record("SEL-LEAF-CAP", i.id, `ranked below the ${LEAVES_PER_CHANNEL}-instrument limit for its channel`);
+  }
+  return sorted.slice(0, LEAVES_PER_CHANNEL);
 }
 
 /**
@@ -334,18 +371,35 @@ export const VERDICT_POOL = 18;
  *  semantic neighbourhood, not a top match. */
 export const LARGE_SCALE_RELEVANCE_FLOOR = 0.5;
 
-export function buildInstrumentTable(
-  fieldChannels: Set<string>,
-  ticketBand?: string,
-  consortiumOk?: boolean,
-  founderCountries: string[] = [],
-  capitalSought: string[] = [],
+/** Inputs to the instrument table. Was seven positional parameters, which one
+ *  call site rendered as a single unreadable line of bare values; the object
+ *  also gives the exclusion log somewhere to live without an eighth. */
+export interface InstrumentTableInput {
+  fieldChannels: Set<string>;
+  ticketBand?: string;
+  consortiumOk?: boolean;
+  founderCountries?: string[];
+  capitalSought?: string[];
   /** Founder's free-text description, for thematic leaf selection. */
-  description?: string,
+  description?: string;
   /** Semantic fund-match scores (semantic.ts). Absent/empty = lexical only. */
-  semantic?: Map<string, number>,
-): InstrumentRow[] {
+  semantic?: Map<string, number>;
+  /** Records every fund this function removes. Optional: callers that do not
+   *  care about the funnel need not thread one through. */
+  log?: ExclusionLog;
+}
+
+export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow[] {
+  const {
+    fieldChannels, ticketBand, consortiumOk, description, semantic, log,
+    founderCountries = [], capitalSought = [],
+  } = input;
   const codes = new Set([...fieldChannels].filter((c) => channelServesBand(c, ticketBand)));
+  for (const c of fieldChannels) {
+    if (!channelServesBand(c, ticketBand)) {
+      log?.record("SEL-BAND", c, `ticket band ${ticketBand} outside the hardcoded range for this channel`);
+    }
+  }
   const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;
   if (idx !== undefined && idx >= 3) {
     // A big ticket opens the large-scale lane, but it does not make every
@@ -385,7 +439,11 @@ export function buildInstrumentTable(
           0,
           ...largeScaleLeaves.filter((l) => l.channel === c).map((l) => largeScaleRel.get(l.id) ?? 0),
         );
-        if (best < LARGE_SCALE_RELEVANCE_FLOOR) continue;
+        if (best < LARGE_SCALE_RELEVANCE_FLOOR) {
+          log?.record("SEL-LARGE-SCALE", c,
+            `best thematic score ${best.toFixed(2)} below the ${LARGE_SCALE_RELEVANCE_FLOOR} floor for large-ticket channels`);
+          continue;
+        }
       }
       codes.add(c);
     }
@@ -397,14 +455,24 @@ export function buildInstrumentTable(
     // and Nebius and Corti both bottomed out at two institutions. The brief
     // publishes up to five, so the pool feeding it has to be comfortably
     // larger than five.
-    if (codes.size >= MIN_CHANNELS_CONSIDERED) break;
-    if (!channelServesBand(c, ticketBand)) continue;
+    if (codes.size >= MIN_CHANNELS_CONSIDERED) {
+      if (!codes.has(c)) log?.record("SEL-CHANNEL-CAP", c, `channel pool already at its cap of ${MIN_CHANNELS_CONSIDERED}`);
+      continue;
+    }
+    if (!channelServesBand(c, ticketBand)) {
+      log?.record("SEL-BAND", c, `ticket band ${ticketBand} outside the hardcoded range for this channel`);
+      continue;
+    }
     // Only an explicit "no" rules out consortium-heavy channels. Treating
     // "not sure" as a no silently removed Horizon and the EIT KICs for every
     // undecided founder — the same unsure-means-failure mistake fixed in the
     // evaluator. Rows still carry a fitFlag so they are never presented as
     // equivalent to a solo-applicant route.
-    if (fitOf(c) === "consortium_institutional" && !fieldChannels.has(c) && !consortiumOk) continue;
+    if (fitOf(c) === "consortium_institutional" && !fieldChannels.has(c) && !consortiumOk) {
+      log?.record("SEL-FIT-CONSORTIUM", c,
+        "channel declared consortium-requiring and the founder has not confirmed consortium capacity");
+      continue;
+    }
     codes.add(c);
   }
   // Thematic top-up: pull in a channel nobody's peers used when it holds an
@@ -415,8 +483,16 @@ export function buildInstrumentTable(
   // channels still respect the consortium gate.
   const thematicFirst: string[] = [];
   for (const hit of thematicChannelTopUp(description, codes, 2, semantic)) {
-    if (!channelServesBand(hit.channel, ticketBand)) continue;
-    if (fitOf(hit.channel) === "consortium_institutional" && !consortiumOk) continue;
+    if (!channelServesBand(hit.channel, ticketBand)) {
+      log?.record("SEL-BAND", hit.channel,
+        `thematic match ${hit.score.toFixed(2)} discarded: ticket band ${ticketBand} outside the hardcoded range`);
+      continue;
+    }
+    if (fitOf(hit.channel) === "consortium_institutional" && !consortiumOk) {
+      log?.record("SEL-FIT-CONSORTIUM", hit.channel,
+        `thematic match ${hit.score.toFixed(2)} discarded: channel declared consortium-requiring`);
+      continue;
+    }
     thematicFirst.push(hit.channel);
     codes.add(hit.channel);
   }
@@ -439,7 +515,9 @@ export function buildInstrumentTable(
         fit: snap.fit,
         fitFlag,
       };
-      const leaves = selectLeafInstruments(channel, founderCountries, capitalSought, ticketBand, description, semantic);
+      const leaves = selectLeafInstruments({
+        channel, founderCountries, capitalSought, ticketBand, description, semantic, log,
+      });
       if (!leaves.length) {
         return [{ ...base, instrument: INSTRUMENT_NAME[channel] ?? channelLabel(channel) } as InstrumentRow];
       }
@@ -489,7 +567,12 @@ export function buildInstrumentTable(
           (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
       };
       const best = peers.reduce((a, b) => (encodedCount(b) > encodedCount(a) ? b : a));
-      return all.indexOf(best) === i;
+      const keep = all.indexOf(best) === i;
+      if (!keep) {
+        log?.record("SEL-DUPE-NAME", row.instrumentId ?? row.channel,
+          `another instrument renders under the same institution name with more encoded rules`);
+      }
+      return keep;
     });
 }
 

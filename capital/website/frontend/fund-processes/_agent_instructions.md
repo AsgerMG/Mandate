@@ -124,65 +124,14 @@ description and the peers, and state the read plainly rather than hedging.
    actually performed). One concrete framing instruction in a to-do beats a generic
    "prepare an application".
 
-## Field-by-field rubric (synthesis stage)
+## Output rubric
 
-Fill every field of the output schema to these standards.
+The brief's per-section rules live in `contracts/` and are assembled into the
+writer's own instructions at request time. They are deliberately NOT duplicated
+here: this file was for months describing a nine-section memo that had been
+retired, specifying fields the schema no longer had, and nothing broke because
+the schema and the task message silently overrode it.
 
-- **overview.headline** — the memo's subject line (the "Re:"). One sentence,
-  ≤ 18 words, stating the founder's public-funding position as a fact.
-  - Good: "Your three closest peers have each raised EIC grants you have not yet pursued."
-  - Weak: "There are exciting funding opportunities in your space."
-- **overview.bottomLine** — the single most important takeaway, stated up front
-  in 1–2 sentences (≤ 45 words). This is the one thing the founder must grasp if
-  they read nothing else: the decisive gap or opening, and the implied action.
-  Concrete, not generic. Name the figure or the peer that makes the point.
-- **overview.competitors[]** — NOTE: you do NOT write this array; the comparable-company
-  table (peer, capital, channel breakdown, years, round, positioning) is filled
-  in code from the database and web research. Do not restate it line by line in
-  prose — refer to it, draw the conclusion from it.
-- **overview.yourPosition** — 2–3 sentences, **≤ 65 words**. Where the founder
-  sits versus the peers on public capital specifically, using their own traced
-  footprint (given to you) as the anchor. Name the gap and the nearest comparable
-  peer by name. If the founder has no traced funding, say so plainly and treat it
-  as the headline gap, not a footnote.
-- **stakeholderMap[]** — **3 to 4 funders, no more.** Pick the ones that change
-  what the founder does, not every instrument in the field. For each: who used it
-  (`comparablesUsing`), why it fits (`relevanceToYou`, **≤ 30 words**), the
-  `tradeoff`, the single `nextStep` (**≤ 28 words**), and `nextDeadline` (real
-  date/window from the channel brief, or null, never a guess).
-- **stakeholderMap[].tradeoff** — **one clause, ≤ 25 words**, naming what this
-  capital actually costs the founder, fund-specifically and honestly. Public money
-  is rarely free of strings: name the real one. Examples: equity dilution and a
-  cap-table investor (EIC equity); repayment and covenants (EIB venture debt);
-  member-state sponsorship plus a multi-year political process that cuts
-  flexibility (IPCEI); a cross-border consortium and shared IP (Horizon); heavy
-  reporting and slow money (most EU grants). Never write that an instrument has no
-  trade-off. Draw it from the instrument table and briefs.
-- **todos[]** — **3 to 5 items**, `priority` 1/2/3 (1 = next 30 days). Each
-  `action` is a concrete verb (**≤ 22 words**, "Submit an EIC short proposal", not
-  "Explore EU funding"), each `rationale` ties to evidence (a peer's funding or a
-  stack gap, **≤ 30 words**), each `timeframe` is specific.
-- **caveats** — 1 sentence, **≤ 35 words**: figures are committed amounts from
-  public registers, coverage varies by country, and absence from the database is
-  not proof of no funding.
-
-**Hard budget: the fields above sum to ≤ 700 words.** If you are over, cut the
-weakest funder and tighten clauses; do not shave the bottom line or the
-trade-offs. A memo that runs long has failed even if every sentence is true.
-
-## Output discipline
-
-The finished memo runs on two to three pages: bottom line, where you stand, the
-comparable field (a table you do not narrate), the capital on the table (an
-instrument-comparison table, also code-built and not narrated), funders to engage,
-and the recommended moves. A founder reads it in five minutes and acts on it.
-
-Two tables are finalised in code and given to you as authoritative context: the
-comparable-companies table and the instrument-comparison table (ticket, speed, what you
-give up, best for). Do not restate either row by row and do not alter a figure in
-them. Draw conclusions from them; let your `tradeoff` clauses and to-dos stay
-consistent with the instrument table.
-
-If you cannot ground a claim in the database evidence or a process brief, shorten
-the memo rather than padding it. Never fabricate a deadline, a funder, or a figure
-to fill a field. An honest gap reads as rigour.
+What remains in this file is what every stage shares — grounding, voice, the
+funding stack, and how to read a founder. `scripts/check_contracts.ts` keeps
+the contracts married to the schema.
