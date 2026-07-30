@@ -737,45 +737,72 @@ footer { background: var(--paper); color: var(--muted); font-size: clamp(12.5px,
 }
 @media (prefers-reduced-motion: reduce) { .deliberation { max-height: 92px; } }
 
-/* /about is meant to fit one screen — the whole page, no scrolling, on a normal
-   desktop viewport. Two things get it there without shrinking any type:
-   the hero doesn't claim a full viewport (see the note in about/page.tsx on why
-   .viewport-intro is deliberately absent), and the vertical rhythm tightens.
-   Scoped to this page so the looser spacing everywhere else is untouched. */
-.about-top { padding-top: 4px; }
-.about-top .hero { padding: 4px 0 0; }
-.about-top .hero-row { gap: 36px; }
-/* Give the copy more of the row than the default 480/420 split: the intro is the
-   longest single block on the page, and a wider column means fewer lines, which
-   buys more vertical space than shrinking anything. */
-.about-top .hero-row .hero-text { flex: 1 1 620px; }
-.about-top .hero-image { flex: 0 1 320px; }
-/* The illustration is decorative here and yields vertical space first. `max-width`
-   is NOT optional alongside `width: auto`: with only a max-height set, the image
-   computes its width from the aspect ratio and can exceed its flex container,
-   which is how a horizontal scrollbar appeared at 1280/1366 on the first attempt. */
-.about-top .hero-image img {
-  max-height: 240px; width: auto; max-width: 100%; margin-left: auto; display: block;
+/* /about: one screen, composed rather than squeezed ----------------------
+   First attempt at this got the page-height number down and wrecked the
+   composition, which is worth recording because the mistake was in the method.
+   It widened .hero-text to "get fewer lines" — but `.hero p` is capped at a
+   640px reading measure, so the extra width became 116px of dead space that
+   shoved the illustration into the far corner as a 320px thumbnail floating in
+   an empty column. And removing the slack-distributing wrapper left a large void
+   under the CTA on tall screens. Page height fell; the page looked broken.
+
+   The rebuild works the other way round: fix the columns to the content's real
+   dimensions, and make the VERTICAL RHYTHM scale with viewport height so the
+   page composes itself instead of being compressed by hand. */
+
+/* The page is a vertical flex container that owns the space between its three
+   blocks. Slack is distributed by `justify-content` (which is what
+   .viewport-intro used to do for the hero alone) so a tall screen centres the
+   content rather than pooling a void above the footer, and the gaps breathe with
+   the viewport instead of being pinned to pixels I picked by trial. */
+/* `main.container` is already the flex item that absorbs leftover page height
+   (flex: 1 0 auto, with the sticky footer below it), so the page fills exactly
+   the space available rather than guessing at it. An earlier attempt used
+   `min-height: calc(100vh - 190px)` with the chrome measured by hand — that
+   ADDS to the chrome instead of fitting inside it, so every viewport got taller
+   and 2560x1440 went from fitting to scrolling. */
+main.container:has(> .about-page) { display: flex; flex-direction: column; }
+.about-page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(14px, 2.4vh, 44px);
 }
-.about-compact { margin: 10px 0; }
-.about-compact .flow-step { padding-top: 6px; padding-bottom: 6px; }
-.about-compact .flow-step p { margin-bottom: 0; }
-/* The CTA was 286px with its margins — 23% of the page for one button. It keeps
-   its emphasis at half the height. */
-.about-page .cta-band { margin: 14px 0 4px; padding: 13px 22px; gap: 16px; }
-/* Section rules are set for a scrolling page; on a one-screen page the gaps
-   between three blocks are pure cost. */
-.about-page .section h2 { margin-bottom: 10px; padding-bottom: 6px; }
-/* Last of the vertical savings, all spacing rather than type size — an about page
-   exists to be read, so the copy keeps its measure and its scale. */
-.about-page .hero h1 { margin-bottom: 10px; }
-.about-compact .flow-step h3 { margin-bottom: 4px; }
-.about-compact .flow-step p { line-height: 1.5; }
+.about-page > * { margin: 0; }
+
+.about-page .hero { padding: 0; }
+.about-page .hero-row { gap: clamp(24px, 3vw, 56px); align-items: center; }
+/* Basis equals the paragraph's own max-width, so the column is exactly as wide
+   as the text can be — no dead space to push the image away. */
+.about-page .hero-row .hero-text { flex: 0 1 640px; }
+/* The illustration takes whatever is left and actually fills it, scaling with
+   the viewport instead of sitting at a fixed 320px. `max-width: 100%` alongside
+   the height cap is not optional: with only max-height set, the image computes
+   its width from the aspect ratio and can exceed the flex container — that is
+   how a horizontal scrollbar appeared at 1280/1366 mid-way through this work. */
+.about-page .hero-image { flex: 1 1 380px; min-width: 0; }
+.about-page .hero-image img {
+  width: 100%; height: auto; max-width: 100%;
+  max-height: clamp(190px, 30vh, 330px); object-fit: contain; display: block;
+}
+
+.about-page .section h2 { margin-bottom: 12px; padding-bottom: 6px; }
+.about-page .flow-step { padding-top: 8px; padding-bottom: 8px; }
+.about-page .flow-step p { margin-bottom: 0; line-height: 1.55; }
+/* Two of the four titles wrap to a second line, which left the bodies on ragged
+   baselines. Balancing splits them evenly instead of leaving one orphan word. */
+.about-page .flow-step h3 { margin-bottom: 5px; text-wrap: balance; }
+
+/* 520px forced "report" onto a line of its own, which read as a broken headline
+   rather than a deliberate break. */
+.about-page .cta-band { padding: clamp(14px, 2vh, 26px) 26px; }
+.about-page .cta-band h2 { max-width: 46ch; text-wrap: balance; }
 
 @media (max-width: 900px) {
-  /* Below this the four principles stack and one screen stops being achievable —
-     don't fight it: restore comfortable spacing rather than ship a cramped page
-     that still scrolls. */
-  .about-top .hero-image img { max-height: none; width: 100%; }
-  .about-compact { margin: 34px 0; }
+  /* Below this the principles stack and one screen stops being reachable. Don't
+     fight it — restore normal rhythm rather than ship a cramped page that still
+     scrolls. */
+  .about-page { min-height: 0; gap: 26px; justify-content: flex-start; }
+  .about-page .hero-image img { max-height: none; }
 }
