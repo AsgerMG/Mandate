@@ -30,16 +30,28 @@ const PRINCIPLES = [
 
 export default function AboutPage() {
   return (
-    <>
-      <div className="viewport-intro">
+    <div className="about-page">
+      {/* No .viewport-intro wrapper here, deliberately — and that reverses the
+          rule in design-ux-guidelines.md for this one page. That wrapper gives a
+          short page's first section `min-height: calc(100vh - 100px)` so leftover
+          height is distributed rather than pooling above the footer. This page is
+          no longer short: with the intro carrying the full "why this exists" copy,
+          claiming a whole viewport for the hero alone would push "How it's built"
+          below the fold by construction — the opposite of what it should do here,
+          which is fit on one screen. */}
+      <div className="about-top">
         <div className="hero-row">
           <section className="hero hero-text">
             <div className="eyebrow">About Regina</div>
             <h1>An analyst desk, run as software</h1>
             <p>
-              Regina — a regulatory intelligence analyst — exists so a compliance or public-affairs team can answer &quot;what
-              applies to us, and what&apos;s about to change&quot; without waiting on a manual
-              policy scan — and without trusting a summary they can&apos;t verify.
+              EU tech policy moves fast and across many registers at once — consultations,
+              proposals, adopted law, amendments. Tracking it by hand doesn&apos;t scale, and
+              generic AI summaries invite a specific failure: confident, plausible, unverifiable
+              claims about legal obligations. We built this the other way around — collect the
+              official record first, structure it into a queryable corpus, and only then let a
+              model write anything, with every sentence tied to a retrieved passage it can point
+              back to.
             </p>
           </section>
 
@@ -55,7 +67,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <section className="section">
+      <section className="section about-compact">
         <h2>How it&apos;s built</h2>
         <div className="flow">
           {PRINCIPLES.map((p) => (
@@ -68,19 +80,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="section">
-        <h2>Why this exists</h2>
-        <p style={{ maxWidth: 720, color: "var(--ink-soft)", lineHeight: 1.75 }}>
-          EU tech policy moves fast and across many registers at once — consultations,
-          proposals, adopted law, amendments. Tracking it by hand doesn&apos;t scale, and
-          generic AI summaries invite a specific failure: confident, plausible, unverifiable
-          claims about legal obligations. We built this the other way around — collect the
-          official record first, structure it into a queryable corpus, and only then let a
-          model write anything, with every sentence tied to a retrieved passage it can point
-          back to.
-        </p>
-      </section>
-
       <section className="cta-band">
         <div>
           <div className="eyebrow">See it work</div>
@@ -90,6 +89,6 @@ export default function AboutPage() {
           Get your report →
         </Link>
       </section>
-    </>
+    </div>
   );
 }

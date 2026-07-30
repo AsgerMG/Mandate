@@ -736,3 +736,46 @@ footer { background: var(--paper); color: var(--muted); font-size: clamp(12.5px,
   background: linear-gradient(to bottom, var(--surface), transparent); pointer-events: none;
 }
 @media (prefers-reduced-motion: reduce) { .deliberation { max-height: 92px; } }
+
+/* /about is meant to fit one screen — the whole page, no scrolling, on a normal
+   desktop viewport. Two things get it there without shrinking any type:
+   the hero doesn't claim a full viewport (see the note in about/page.tsx on why
+   .viewport-intro is deliberately absent), and the vertical rhythm tightens.
+   Scoped to this page so the looser spacing everywhere else is untouched. */
+.about-top { padding-top: 4px; }
+.about-top .hero { padding: 4px 0 0; }
+.about-top .hero-row { gap: 36px; }
+/* Give the copy more of the row than the default 480/420 split: the intro is the
+   longest single block on the page, and a wider column means fewer lines, which
+   buys more vertical space than shrinking anything. */
+.about-top .hero-row .hero-text { flex: 1 1 620px; }
+.about-top .hero-image { flex: 0 1 320px; }
+/* The illustration is decorative here and yields vertical space first. `max-width`
+   is NOT optional alongside `width: auto`: with only a max-height set, the image
+   computes its width from the aspect ratio and can exceed its flex container,
+   which is how a horizontal scrollbar appeared at 1280/1366 on the first attempt. */
+.about-top .hero-image img {
+  max-height: 240px; width: auto; max-width: 100%; margin-left: auto; display: block;
+}
+.about-compact { margin: 10px 0; }
+.about-compact .flow-step { padding-top: 6px; padding-bottom: 6px; }
+.about-compact .flow-step p { margin-bottom: 0; }
+/* The CTA was 286px with its margins — 23% of the page for one button. It keeps
+   its emphasis at half the height. */
+.about-page .cta-band { margin: 14px 0 4px; padding: 13px 22px; gap: 16px; }
+/* Section rules are set for a scrolling page; on a one-screen page the gaps
+   between three blocks are pure cost. */
+.about-page .section h2 { margin-bottom: 10px; padding-bottom: 6px; }
+/* Last of the vertical savings, all spacing rather than type size — an about page
+   exists to be read, so the copy keeps its measure and its scale. */
+.about-page .hero h1 { margin-bottom: 10px; }
+.about-compact .flow-step h3 { margin-bottom: 4px; }
+.about-compact .flow-step p { line-height: 1.5; }
+
+@media (max-width: 900px) {
+  /* Below this the four principles stack and one screen stops being achievable —
+     don't fight it: restore comfortable spacing rather than ship a cramped page
+     that still scrolls. */
+  .about-top .hero-image img { max-height: none; width: 100%; }
+  .about-compact { margin: 34px 0; }
+}
