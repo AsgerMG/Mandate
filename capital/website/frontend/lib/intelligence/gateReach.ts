@@ -80,6 +80,11 @@ export function openFieldsForShortlist(
       if (!field || field === "none") continue;
       if (FIRST_PAGE_FIELDS.has(field)) continue;
       if (!FIELD_ENUM_HINTS[field]) continue; // no real fixed answer set for it — out of scope here
+      // A field whose options are derived (region) is only askable once we can
+      // actually derive them. With no country on record there is nothing to
+      // offer, and an empty question is worse than none.
+      const hintFor = FIELD_ENUM_HINTS[field];
+      if (hintFor.optionsFor && hintFor.optionsFor(answers ?? {}).length === 0) continue;
       // A field whose fact is already an option on another field's question
       // does not earn a second slot. A live screen asked whether accumulated
       // losses exceeded half of share capital as its own question while the

@@ -1,4 +1,5 @@
 // Shared types for the competitive EU-funding intelligence agent.
+import { regionOptions } from "./regions.generated";
 
 /** Committed EUR on one funding channel, from the corpus. */
 export interface ChannelAmount {
@@ -558,6 +559,11 @@ export interface EligibilityAnswers {
   /** EXCLUSION_OPTIONS values. "none" is a real answer, not an empty list:
    *  an empty array means unanswered, which must never read as a pass. */
   exclusionFlags?: string[];
+  /** NUTS region id (see regions.generated.ts). Asked adaptively, and only
+   *  when a regional scheme is actually in play: it is meaningless to most of
+   *  the corpus and decisive for the part of it that is regional. Matching is
+   *  hierarchical, so answering at either NUTS level works. */
+  region?: string;
 }
 
 /**
@@ -600,6 +606,7 @@ export const FIELD_SEVERITY: Record<keyof EligibilityAnswers, FieldSeverity> = {
   institutionalOwner: "structural",
   nonEuControl: "structural",
   sector: "structural",
+  region: "structural",
   foundedYear: "structural",
   developmentStage: "structural",
   borrowerModel: "structural",
@@ -655,7 +662,21 @@ export const FIELD_ENUM_HINTS: Record<string, {
   stem: string;
   coveredBy?: string;
   options: { value: string; label: string }[];
+  /** Options that depend on what the founder already told us. Region is the
+   *  only field where a fixed list is wrong: offering all 449 European regions
+   *  to a French company is not a question anyone answers. Consumers must
+   *  prefer this over `options` when present. */
+  optionsFor?: (answers: EligibilityAnswers) => { value: string; label: string }[];
 }> = {
+  region: {
+    multi: false,
+    stem: "Which region is your company established in?",
+    // Empty by design: a fixed list cannot be right here, and leaving it empty
+    // means a consumer that has not been taught about optionsFor asks nothing
+    // rather than asking something wrong.
+    options: [],
+    optionsFor: (a) => regionOptions(a.entityCountries ?? []),
+  },
   // These three moved off the first screen on 2026-07-29 when it shrank from
   // eleven questions to five. Without a hint entry the adaptive round SKIPS a
   // field entirely (see gateReach: `if (!FIELD_ENUM_HINTS[field]) continue`),

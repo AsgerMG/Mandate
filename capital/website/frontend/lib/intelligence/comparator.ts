@@ -23,11 +23,18 @@
 
 /** Every op the encoder may emit. Adding one here is the ONLY place it needs
  *  adding — that is the point of this file existing. */
+import { regionsOverlap } from "./regions.generated";
+
 export type ValueSpec =
   | { op: "band_max"; field: string; maxAllowed: string; order: string[] }
   | { op: "band_min"; field: string; minAllowed: string; order: string[] }
   | { op: "in"; field: string; allowed: string[] }
   | { op: "not_in"; field: string; allowed: string[] }
+  /** Region containment. NUTS ids are hierarchical, so a rule naming Normandie
+   *  (FRD) is satisfied by a company in Basse-Normandie (FRD1). Never encode a
+   *  sub-national rule as `in entityCountries`: that passes everyone in the
+   *  country, which is the opposite of what the rule says. */
+  | { op: "region_within"; field: string; allowed: string[] }
   | { op: "equals"; field: string; value: string }
   | { op: "boolean_true" | "boolean_false"; field: string }
   | { op: "numeric_gte" | "numeric_lte"; field: string; threshold: number };
@@ -103,6 +110,13 @@ export function evaluateSpec(spec: ValueSpec, answer: unknown): boolean | null {
     }
     case "in":
       return spec.allowed ? matchesAny(answer, spec.allowed) : null;
+    case "region_within": {
+      if (!spec.allowed?.length) return null;
+      const vals = (Array.isArray(answer) ? answer : [answer])
+        .filter((v): v is string => typeof v === "string" && v.trim() !== "");
+      if (!vals.length) return null;
+      return vals.some((v) => spec.allowed!.some((a) => regionsOverlap(v, a)));
+    }
     case "not_in": {
       if (!spec.allowed) return null;
       const hit = matchesAny(answer, spec.allowed);

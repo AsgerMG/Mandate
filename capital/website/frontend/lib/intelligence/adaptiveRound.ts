@@ -15,7 +15,7 @@ import { loadAgentInstructions } from "./corpus";
 import { recordUsage } from "./cost";
 import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
-import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS } from "./types";
+import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
 import { knownFacts } from "./knownFacts";
 import type {
   EligibilityCheck, GroundedRound, InstrumentRow,
@@ -133,6 +133,25 @@ const INTAKE_MODEL = "claude-haiku-4-5";
  * instrument by design and stay behind COMMERCIAL_ANSWER_PREFIX, which is what
  * keeps them out of the eligibility verdict.
  */
+/**
+ * The answer set for a field, given what the founder has already told us.
+ *
+ * Most fields have a fixed list. Region cannot: offering all 449 European
+ * regions to a French company is not a question anyone answers, so its options
+ * are derived from the countries already on record. Read through one helper so
+ * the prompt and the option-validation below cannot disagree about what the
+ * founder was offered — they did once, and every gate question was silently
+ * dropped.
+ */
+function fieldOptions(
+  field: string,
+  answers: EligibilityAnswers | undefined,
+): { value: string; label: string }[] {
+  const hint = FIELD_ENUM_HINTS[field];
+  if (!hint) return [];
+  return hint.optionsFor ? hint.optionsFor(answers ?? {}) : hint.options;
+}
+
 export const SCREEN_QUESTION_CAP = 6;
 
 export interface PlannedScreen {
@@ -217,10 +236,11 @@ export async function planAdaptiveScreen(
 
   const fieldBlock = enumFields.map((f) => {
     const hint = FIELD_ENUM_HINTS[f.field];
+    const opts = fieldOptions(f.field, req.eligibility);
     return `  ref "${f.field}" (reach ${f.reachPct}% of the shortlist)\n` +
       `    ASK: "${hint.stem}" (tailor the wording, never the meaning)\n` +
       `    Fixed options the interface will render${hint.multi ? " (multi-select)" : ""}: ` +
-      `${hint.options.map((o) => o.label).join(" / ")}\n` +
+      `${opts.map((o) => o.label).join(" / ")}\n` +
       `    Real requirement: ${f.examples[0]?.requirement ?? "(none quoted)"}`;
   }).join("\n\n");
 
@@ -386,11 +406,12 @@ export async function planAdaptiveScreen(
         // impossible, because whoever writes the question also writes what
         // sits under it.
         const hint = FIELD_ENUM_HINTS[q.ref];
-        const valid = new Set(hint.options.map((o) => o.value));
+        const hintOptions = fieldOptions(q.ref, req.eligibility);
+        const valid = new Set(hintOptions.map((o) => o.value));
         const labelled = (q.options ?? [])
           .filter((o) => o && valid.has(o.value) && o.label?.trim())
           .map((o) => ({ value: o.value, label: deDash(o.label.trim()) }));
-        const coversAll = labelled.length === hint.options.length &&
+        const coversAll = labelled.length === hintOptions.length &&
           new Set(labelled.map((o) => o.value)).size === valid.size;
         seenRefs.add(q.ref);
         // A question and its options are ONE artifact. Falling back on the

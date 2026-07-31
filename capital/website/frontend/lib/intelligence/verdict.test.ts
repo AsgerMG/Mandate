@@ -176,3 +176,37 @@ describe("citation: narrow, but do not condemn", () => {
       .toBe("blocked");
   });
 });
+
+describe("region: hierarchical, and never flattened to the country", () => {
+  // THE BUG: a rule reading "the applicant must be located in Ile-de-France"
+  // was encoded as `in entityCountries ["FR"]`, because entityCountries was
+  // the only field that existed for it. That is not a weaker version of the
+  // rule, it is the opposite: it PASSES every company the rule excludes, with
+  // the confidence of an encoded filter behind it.
+  const idf = { op: "region_within", field: "region", allowed: ["FR1"] };
+
+  it("a company in the named region passes", () => {
+    const inst = instrument([gate(idf)]);
+    expect(assessInstrument(inst, { region: "FR10" } as never).status).toBe("open");
+  });
+
+  it("a company elsewhere in the same country is blocked, not passed", () => {
+    const inst = instrument([gate(idf)]);
+    // Provence-Alpes-Cote d'Azur. Same country, wrong region.
+    expect(assessInstrument(inst, { region: "FRL0" } as never).status).toBe("blocked");
+  });
+
+  it("answering at a different NUTS level still matches", () => {
+    // Normandie is NUTS-1 (FRD); its sub-regions are FRD1/FRD2. A rule written
+    // at either level must be satisfied by an answer at the other.
+    const inst = instrument([gate({ op: "region_within", field: "region", allowed: ["FRD"] })]);
+    expect(assessInstrument(inst, { region: "FRD1" } as never).status).toBe("open");
+    const inst2 = instrument([gate({ op: "region_within", field: "region", allowed: ["FRD1"] })]);
+    expect(assessInstrument(inst2, { region: "FRD" } as never).status).toBe("open");
+  });
+
+  it("no region on record is unknown, never a pass", () => {
+    const inst = instrument([gate(idf)]);
+    expect(assessInstrument(inst, {} as never).status).toBe("unknown");
+  });
+});

@@ -87,9 +87,17 @@ eligibility:
 	# vocabulary emits values the product cannot match, and the rule silently
 	# stops gating rather than failing.
 	cd website/frontend && npx tsx scripts/emit_vocabulary.ts
+	# Region vocabulary comes from the NUTS reference data for the same reason:
+	# a hand-copied list drifts silently and the rule stops gating.
+	python3 ETL/terms/emit_regions.py
 	python3 ETL/terms/sync_gates_from_yaml.py
 	python3 ETL/terms/encode_gates.py triage
 	python3 ETL/terms/encode_gates.py encode
+	# Sub-national rules get their own pass: encode_gates maps onto a fixed
+	# enum, and region is 449 values of which only the founder's country
+	# matters. Encoding one as `in entityCountries` PASSES everyone the rule
+	# excludes, so this must run before anything publishes.
+	python3 ETL/terms/encode_regions.py run
 	# Audit BEFORE publishing, and quarantine rules their own recipients
 	# contradict, so a wrong rule cannot reach a founder's brief.
 	python3 ETL/terms/audit_encoding_vs_reality.py --quarantine

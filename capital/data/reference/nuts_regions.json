@@ -1,0 +1,2329 @@
+{
+ "source": "Eurostat GISCO, NUTS 2024 (NUTS_AT_2024.csv)",
+ "levels": "NUTS-1 and NUTS-2. Both are kept because national regions sit at different levels: France's Normandie is NUTS-1 (FRD) while Ile-de-France is NUTS-2 (FR10). Matching is by ID PREFIX, so a rule naming FRD is satisfied by a founder in FRD1 or FRD2.",
+ "regions": {
+  "AL": [
+   {
+    "id": "AL0",
+    "level": 1,
+    "name": "Shqipëria"
+   },
+   {
+    "id": "AL01",
+    "level": 2,
+    "name": "Veri"
+   },
+   {
+    "id": "AL02",
+    "level": 2,
+    "name": "Qender"
+   },
+   {
+    "id": "AL03",
+    "level": 2,
+    "name": "Jug"
+   }
+  ],
+  "AT": [
+   {
+    "id": "AT1",
+    "level": 1,
+    "name": "Ostösterreich"
+   },
+   {
+    "id": "AT11",
+    "level": 2,
+    "name": "Burgenland"
+   },
+   {
+    "id": "AT12",
+    "level": 2,
+    "name": "Niederösterreich"
+   },
+   {
+    "id": "AT13",
+    "level": 2,
+    "name": "Wien"
+   },
+   {
+    "id": "AT2",
+    "level": 1,
+    "name": "Südösterreich"
+   },
+   {
+    "id": "AT21",
+    "level": 2,
+    "name": "Kärnten"
+   },
+   {
+    "id": "AT22",
+    "level": 2,
+    "name": "Steiermark"
+   },
+   {
+    "id": "AT3",
+    "level": 1,
+    "name": "Westösterreich"
+   },
+   {
+    "id": "AT31",
+    "level": 2,
+    "name": "Oberösterreich"
+   },
+   {
+    "id": "AT32",
+    "level": 2,
+    "name": "Salzburg"
+   },
+   {
+    "id": "AT33",
+    "level": 2,
+    "name": "Tirol"
+   },
+   {
+    "id": "AT34",
+    "level": 2,
+    "name": "Vorarlberg"
+   }
+  ],
+  "BA": [
+   {
+    "id": "BA0",
+    "level": 1,
+    "name": "Bosna I Hercegovina"
+   },
+   {
+    "id": "BA01",
+    "level": 2,
+    "name": "Federacija Bosne i Hercegovine"
+   },
+   {
+    "id": "BA02",
+    "level": 2,
+    "name": "Republika Srpska"
+   },
+   {
+    "id": "BA03",
+    "level": 2,
+    "name": "Brčko District BiH"
+   }
+  ],
+  "BE": [
+   {
+    "id": "BE1",
+    "level": 1,
+    "name": "Région de Bruxelles-Capitale/Brussels Hoofdstedelijk Gewest"
+   },
+   {
+    "id": "BE10",
+    "level": 2,
+    "name": "Région de Bruxelles-Capitale/ Brussels Hoofdstedelijk Gewest"
+   },
+   {
+    "id": "BE2",
+    "level": 1,
+    "name": "Vlaams Gewest"
+   },
+   {
+    "id": "BE21",
+    "level": 2,
+    "name": "Prov. Antwerpen"
+   },
+   {
+    "id": "BE22",
+    "level": 2,
+    "name": "Prov. Limburg (BE)"
+   },
+   {
+    "id": "BE23",
+    "level": 2,
+    "name": "Prov. Oost-Vlaanderen"
+   },
+   {
+    "id": "BE24",
+    "level": 2,
+    "name": "Prov. Vlaams-Brabant"
+   },
+   {
+    "id": "BE25",
+    "level": 2,
+    "name": "Prov. West-Vlaanderen"
+   },
+   {
+    "id": "BE3",
+    "level": 1,
+    "name": "Région wallonne"
+   },
+   {
+    "id": "BE31",
+    "level": 2,
+    "name": "Prov. Brabant wallon"
+   },
+   {
+    "id": "BE32",
+    "level": 2,
+    "name": "Prov. Hainaut"
+   },
+   {
+    "id": "BE33",
+    "level": 2,
+    "name": "Prov. Liège"
+   },
+   {
+    "id": "BE34",
+    "level": 2,
+    "name": "Prov. Luxembourg (BE)"
+   },
+   {
+    "id": "BE35",
+    "level": 2,
+    "name": "Prov. Namur"
+   }
+  ],
+  "BG": [
+   {
+    "id": "BG3",
+    "level": 1,
+    "name": "Severna i Yugoiztochna Bulgaria"
+   },
+   {
+    "id": "BG31",
+    "level": 2,
+    "name": "Severozapaden"
+   },
+   {
+    "id": "BG32",
+    "level": 2,
+    "name": "Severen tsentralen"
+   },
+   {
+    "id": "BG33",
+    "level": 2,
+    "name": "Severoiztochen"
+   },
+   {
+    "id": "BG34",
+    "level": 2,
+    "name": "Yugoiztochen"
+   },
+   {
+    "id": "BG4",
+    "level": 1,
+    "name": "Yugozapadna i Yuzhna tsentralna Bulgaria"
+   },
+   {
+    "id": "BG41",
+    "level": 2,
+    "name": "Yugozapaden"
+   },
+   {
+    "id": "BG42",
+    "level": 2,
+    "name": "Yuzhen tsentralen"
+   }
+  ],
+  "CH": [
+   {
+    "id": "CH0",
+    "level": 1,
+    "name": "Schweiz/Suisse/Svizzera"
+   },
+   {
+    "id": "CH01",
+    "level": 2,
+    "name": "Région lémanique"
+   },
+   {
+    "id": "CH02",
+    "level": 2,
+    "name": "Espace Mittelland"
+   },
+   {
+    "id": "CH03",
+    "level": 2,
+    "name": "Nordwestschweiz"
+   },
+   {
+    "id": "CH04",
+    "level": 2,
+    "name": "Zürich"
+   },
+   {
+    "id": "CH05",
+    "level": 2,
+    "name": "Ostschweiz"
+   },
+   {
+    "id": "CH06",
+    "level": 2,
+    "name": "Zentralschweiz"
+   },
+   {
+    "id": "CH07",
+    "level": 2,
+    "name": "Ticino"
+   }
+  ],
+  "CY": [
+   {
+    "id": "CY0",
+    "level": 1,
+    "name": "Kýpros"
+   },
+   {
+    "id": "CY00",
+    "level": 2,
+    "name": "Kýpros"
+   }
+  ],
+  "CZ": [
+   {
+    "id": "CZ0",
+    "level": 1,
+    "name": "Česko"
+   },
+   {
+    "id": "CZ01",
+    "level": 2,
+    "name": "Praha"
+   },
+   {
+    "id": "CZ02",
+    "level": 2,
+    "name": "Střední Čechy"
+   },
+   {
+    "id": "CZ03",
+    "level": 2,
+    "name": "Jihozápad"
+   },
+   {
+    "id": "CZ04",
+    "level": 2,
+    "name": "Severozápad"
+   },
+   {
+    "id": "CZ05",
+    "level": 2,
+    "name": "Severovýchod"
+   },
+   {
+    "id": "CZ06",
+    "level": 2,
+    "name": "Jihovýchod"
+   },
+   {
+    "id": "CZ07",
+    "level": 2,
+    "name": "Střední Morava"
+   },
+   {
+    "id": "CZ08",
+    "level": 2,
+    "name": "Moravskoslezsko"
+   }
+  ],
+  "DE": [
+   {
+    "id": "DE1",
+    "level": 1,
+    "name": "Baden-Württemberg"
+   },
+   {
+    "id": "DE11",
+    "level": 2,
+    "name": "Stuttgart"
+   },
+   {
+    "id": "DE12",
+    "level": 2,
+    "name": "Karlsruhe"
+   },
+   {
+    "id": "DE13",
+    "level": 2,
+    "name": "Freiburg"
+   },
+   {
+    "id": "DE14",
+    "level": 2,
+    "name": "Tübingen"
+   },
+   {
+    "id": "DE2",
+    "level": 1,
+    "name": "Bayern"
+   },
+   {
+    "id": "DE21",
+    "level": 2,
+    "name": "Oberbayern"
+   },
+   {
+    "id": "DE22",
+    "level": 2,
+    "name": "Niederbayern"
+   },
+   {
+    "id": "DE23",
+    "level": 2,
+    "name": "Oberpfalz"
+   },
+   {
+    "id": "DE24",
+    "level": 2,
+    "name": "Oberfranken"
+   },
+   {
+    "id": "DE25",
+    "level": 2,
+    "name": "Mittelfranken"
+   },
+   {
+    "id": "DE26",
+    "level": 2,
+    "name": "Unterfranken"
+   },
+   {
+    "id": "DE27",
+    "level": 2,
+    "name": "Schwaben"
+   },
+   {
+    "id": "DE3",
+    "level": 1,
+    "name": "Berlin"
+   },
+   {
+    "id": "DE30",
+    "level": 2,
+    "name": "Berlin"
+   },
+   {
+    "id": "DE4",
+    "level": 1,
+    "name": "Brandenburg"
+   },
+   {
+    "id": "DE40",
+    "level": 2,
+    "name": "Brandenburg"
+   },
+   {
+    "id": "DE5",
+    "level": 1,
+    "name": "Bremen"
+   },
+   {
+    "id": "DE50",
+    "level": 2,
+    "name": "Bremen"
+   },
+   {
+    "id": "DE6",
+    "level": 1,
+    "name": "Hamburg"
+   },
+   {
+    "id": "DE60",
+    "level": 2,
+    "name": "Hamburg"
+   },
+   {
+    "id": "DE7",
+    "level": 1,
+    "name": "Hessen"
+   },
+   {
+    "id": "DE71",
+    "level": 2,
+    "name": "Darmstadt"
+   },
+   {
+    "id": "DE72",
+    "level": 2,
+    "name": "Gießen"
+   },
+   {
+    "id": "DE73",
+    "level": 2,
+    "name": "Kassel"
+   },
+   {
+    "id": "DE8",
+    "level": 1,
+    "name": "Mecklenburg-Vorpommern"
+   },
+   {
+    "id": "DE80",
+    "level": 2,
+    "name": "Mecklenburg-Vorpommern"
+   },
+   {
+    "id": "DE9",
+    "level": 1,
+    "name": "Niedersachsen"
+   },
+   {
+    "id": "DE91",
+    "level": 2,
+    "name": "Braunschweig"
+   },
+   {
+    "id": "DE92",
+    "level": 2,
+    "name": "Hannover"
+   },
+   {
+    "id": "DE93",
+    "level": 2,
+    "name": "Lüneburg"
+   },
+   {
+    "id": "DE94",
+    "level": 2,
+    "name": "Weser-Ems"
+   },
+   {
+    "id": "DEA",
+    "level": 1,
+    "name": "Nordrhein-Westfalen"
+   },
+   {
+    "id": "DEA1",
+    "level": 2,
+    "name": "Düsseldorf"
+   },
+   {
+    "id": "DEA2",
+    "level": 2,
+    "name": "Köln"
+   },
+   {
+    "id": "DEA3",
+    "level": 2,
+    "name": "Münster"
+   },
+   {
+    "id": "DEA4",
+    "level": 2,
+    "name": "Detmold"
+   },
+   {
+    "id": "DEA5",
+    "level": 2,
+    "name": "Arnsberg"
+   },
+   {
+    "id": "DEB",
+    "level": 1,
+    "name": "Rheinland-Pfalz"
+   },
+   {
+    "id": "DEB1",
+    "level": 2,
+    "name": "Koblenz"
+   },
+   {
+    "id": "DEB2",
+    "level": 2,
+    "name": "Trier"
+   },
+   {
+    "id": "DEB3",
+    "level": 2,
+    "name": "Rheinhessen-Pfalz"
+   },
+   {
+    "id": "DEC",
+    "level": 1,
+    "name": "Saarland"
+   },
+   {
+    "id": "DEC0",
+    "level": 2,
+    "name": "Saarland"
+   },
+   {
+    "id": "DED",
+    "level": 1,
+    "name": "Sachsen"
+   },
+   {
+    "id": "DED2",
+    "level": 2,
+    "name": "Dresden"
+   },
+   {
+    "id": "DED4",
+    "level": 2,
+    "name": "Chemnitz"
+   },
+   {
+    "id": "DED5",
+    "level": 2,
+    "name": "Leipzig"
+   },
+   {
+    "id": "DEE",
+    "level": 1,
+    "name": "Sachsen-Anhalt"
+   },
+   {
+    "id": "DEE0",
+    "level": 2,
+    "name": "Sachsen-Anhalt"
+   },
+   {
+    "id": "DEF",
+    "level": 1,
+    "name": "Schleswig-Holstein"
+   },
+   {
+    "id": "DEF0",
+    "level": 2,
+    "name": "Schleswig-Holstein"
+   },
+   {
+    "id": "DEG",
+    "level": 1,
+    "name": "Thüringen"
+   },
+   {
+    "id": "DEG0",
+    "level": 2,
+    "name": "Thüringen"
+   }
+  ],
+  "DK": [
+   {
+    "id": "DK0",
+    "level": 1,
+    "name": "Danmark"
+   },
+   {
+    "id": "DK01",
+    "level": 2,
+    "name": "Hovedstaden"
+   },
+   {
+    "id": "DK02",
+    "level": 2,
+    "name": "Sjælland"
+   },
+   {
+    "id": "DK03",
+    "level": 2,
+    "name": "Syddanmark"
+   },
+   {
+    "id": "DK04",
+    "level": 2,
+    "name": "Midtjylland"
+   },
+   {
+    "id": "DK05",
+    "level": 2,
+    "name": "Nordjylland"
+   }
+  ],
+  "EE": [
+   {
+    "id": "EE0",
+    "level": 1,
+    "name": "Eesti"
+   },
+   {
+    "id": "EE00",
+    "level": 2,
+    "name": "Eesti"
+   }
+  ],
+  "EL": [
+   {
+    "id": "EL3",
+    "level": 1,
+    "name": "Attiki"
+   },
+   {
+    "id": "EL30",
+    "level": 2,
+    "name": "Attiki"
+   },
+   {
+    "id": "EL4",
+    "level": 1,
+    "name": "Nisia Aigaiou, Kriti"
+   },
+   {
+    "id": "EL41",
+    "level": 2,
+    "name": "Voreio Aigaio"
+   },
+   {
+    "id": "EL42",
+    "level": 2,
+    "name": "Notio Aigaio"
+   },
+   {
+    "id": "EL43",
+    "level": 2,
+    "name": "Kriti"
+   },
+   {
+    "id": "EL5",
+    "level": 1,
+    "name": "Voreia Elláda"
+   },
+   {
+    "id": "EL51",
+    "level": 2,
+    "name": "Anatoliki Makedonia, Thraki"
+   },
+   {
+    "id": "EL52",
+    "level": 2,
+    "name": "Kentriki Makedonia"
+   },
+   {
+    "id": "EL53",
+    "level": 2,
+    "name": "Dytiki Makedonia"
+   },
+   {
+    "id": "EL54",
+    "level": 2,
+    "name": "Ipeiros"
+   },
+   {
+    "id": "EL6",
+    "level": 1,
+    "name": "Kentriki Elláda"
+   },
+   {
+    "id": "EL61",
+    "level": 2,
+    "name": "Thessalia"
+   },
+   {
+    "id": "EL62",
+    "level": 2,
+    "name": "Ionia Nisia"
+   },
+   {
+    "id": "EL63",
+    "level": 2,
+    "name": "Dytiki Elláda"
+   },
+   {
+    "id": "EL64",
+    "level": 2,
+    "name": "Sterea Elláda"
+   },
+   {
+    "id": "EL65",
+    "level": 2,
+    "name": "Peloponnisos"
+   }
+  ],
+  "ES": [
+   {
+    "id": "ES1",
+    "level": 1,
+    "name": "Noroeste"
+   },
+   {
+    "id": "ES11",
+    "level": 2,
+    "name": "Galicia"
+   },
+   {
+    "id": "ES12",
+    "level": 2,
+    "name": "Principado de Asturias"
+   },
+   {
+    "id": "ES13",
+    "level": 2,
+    "name": "Cantabria"
+   },
+   {
+    "id": "ES2",
+    "level": 1,
+    "name": "Noreste"
+   },
+   {
+    "id": "ES21",
+    "level": 2,
+    "name": "País Vasco"
+   },
+   {
+    "id": "ES22",
+    "level": 2,
+    "name": "Comunidad Foral de Navarra"
+   },
+   {
+    "id": "ES23",
+    "level": 2,
+    "name": "La Rioja"
+   },
+   {
+    "id": "ES24",
+    "level": 2,
+    "name": "Aragón"
+   },
+   {
+    "id": "ES3",
+    "level": 1,
+    "name": "Comunidad de Madrid"
+   },
+   {
+    "id": "ES30",
+    "level": 2,
+    "name": "Comunidad de Madrid"
+   },
+   {
+    "id": "ES4",
+    "level": 1,
+    "name": "Centro (ES)"
+   },
+   {
+    "id": "ES41",
+    "level": 2,
+    "name": "Castilla y León"
+   },
+   {
+    "id": "ES42",
+    "level": 2,
+    "name": "Castilla-La Mancha"
+   },
+   {
+    "id": "ES43",
+    "level": 2,
+    "name": "Extremadura"
+   },
+   {
+    "id": "ES5",
+    "level": 1,
+    "name": "Este"
+   },
+   {
+    "id": "ES51",
+    "level": 2,
+    "name": "Cataluña"
+   },
+   {
+    "id": "ES52",
+    "level": 2,
+    "name": "Comunitat Valenciana"
+   },
+   {
+    "id": "ES53",
+    "level": 2,
+    "name": "Illes Balears"
+   },
+   {
+    "id": "ES6",
+    "level": 1,
+    "name": "Sur"
+   },
+   {
+    "id": "ES61",
+    "level": 2,
+    "name": "Andalucía"
+   },
+   {
+    "id": "ES62",
+    "level": 2,
+    "name": "Región de Murcia"
+   },
+   {
+    "id": "ES63",
+    "level": 2,
+    "name": "Ciudad de Ceuta"
+   },
+   {
+    "id": "ES64",
+    "level": 2,
+    "name": "Ciudad de Melilla"
+   },
+   {
+    "id": "ES7",
+    "level": 1,
+    "name": "Canarias"
+   },
+   {
+    "id": "ES70",
+    "level": 2,
+    "name": "Canarias"
+   }
+  ],
+  "FI": [
+   {
+    "id": "FI1",
+    "level": 1,
+    "name": "Manner-Suomi"
+   },
+   {
+    "id": "FI19",
+    "level": 2,
+    "name": "Länsi-Suomi"
+   },
+   {
+    "id": "FI1B",
+    "level": 2,
+    "name": "Helsinki-Uusimaa"
+   },
+   {
+    "id": "FI1C",
+    "level": 2,
+    "name": "Etelä-Suomi"
+   },
+   {
+    "id": "FI1D",
+    "level": 2,
+    "name": "Pohjois- ja Itä-Suomi"
+   },
+   {
+    "id": "FI2",
+    "level": 1,
+    "name": "Åland"
+   },
+   {
+    "id": "FI20",
+    "level": 2,
+    "name": "Åland"
+   }
+  ],
+  "FR": [
+   {
+    "id": "FR1",
+    "level": 1,
+    "name": "Ile-de-France"
+   },
+   {
+    "id": "FR10",
+    "level": 2,
+    "name": "Ile-de-France"
+   },
+   {
+    "id": "FRB",
+    "level": 1,
+    "name": "Centre — Val de Loire"
+   },
+   {
+    "id": "FRB0",
+    "level": 2,
+    "name": "Centre — Val de Loire"
+   },
+   {
+    "id": "FRC",
+    "level": 1,
+    "name": "Bourgogne-Franche-Comté"
+   },
+   {
+    "id": "FRC1",
+    "level": 2,
+    "name": "Bourgogne"
+   },
+   {
+    "id": "FRC2",
+    "level": 2,
+    "name": "Franche-Comté"
+   },
+   {
+    "id": "FRD",
+    "level": 1,
+    "name": "Normandie"
+   },
+   {
+    "id": "FRD1",
+    "level": 2,
+    "name": "Basse-Normandie"
+   },
+   {
+    "id": "FRD2",
+    "level": 2,
+    "name": "Haute-Normandie"
+   },
+   {
+    "id": "FRE",
+    "level": 1,
+    "name": "Hauts-de-France"
+   },
+   {
+    "id": "FRE1",
+    "level": 2,
+    "name": "Nord-Pas de Calais"
+   },
+   {
+    "id": "FRE2",
+    "level": 2,
+    "name": "Picardie"
+   },
+   {
+    "id": "FRF",
+    "level": 1,
+    "name": "Grand Est"
+   },
+   {
+    "id": "FRF1",
+    "level": 2,
+    "name": "Alsace"
+   },
+   {
+    "id": "FRF2",
+    "level": 2,
+    "name": "Champagne-Ardenne"
+   },
+   {
+    "id": "FRF3",
+    "level": 2,
+    "name": "Lorraine"
+   },
+   {
+    "id": "FRG",
+    "level": 1,
+    "name": "Pays de la Loire"
+   },
+   {
+    "id": "FRG0",
+    "level": 2,
+    "name": "Pays de la Loire"
+   },
+   {
+    "id": "FRH",
+    "level": 1,
+    "name": "Bretagne"
+   },
+   {
+    "id": "FRH0",
+    "level": 2,
+    "name": "Bretagne"
+   },
+   {
+    "id": "FRI",
+    "level": 1,
+    "name": "Nouvelle-Aquitaine"
+   },
+   {
+    "id": "FRI1",
+    "level": 2,
+    "name": "Aquitaine"
+   },
+   {
+    "id": "FRI2",
+    "level": 2,
+    "name": "Limousin"
+   },
+   {
+    "id": "FRI3",
+    "level": 2,
+    "name": "Poitou-Charentes"
+   },
+   {
+    "id": "FRJ",
+    "level": 1,
+    "name": "Occitanie"
+   },
+   {
+    "id": "FRJ1",
+    "level": 2,
+    "name": "Languedoc-Roussillon"
+   },
+   {
+    "id": "FRJ2",
+    "level": 2,
+    "name": "Midi-Pyrénées"
+   },
+   {
+    "id": "FRK",
+    "level": 1,
+    "name": "Auvergne-Rhône-Alpes"
+   },
+   {
+    "id": "FRK1",
+    "level": 2,
+    "name": "Auvergne"
+   },
+   {
+    "id": "FRK2",
+    "level": 2,
+    "name": "Rhône-Alpes"
+   },
+   {
+    "id": "FRL",
+    "level": 1,
+    "name": "Provence-Alpes-Côte d’Azur"
+   },
+   {
+    "id": "FRL0",
+    "level": 2,
+    "name": "Provence-Alpes-Côte d’Azur"
+   },
+   {
+    "id": "FRM",
+    "level": 1,
+    "name": "Corse"
+   },
+   {
+    "id": "FRM0",
+    "level": 2,
+    "name": "Corse"
+   },
+   {
+    "id": "FRY",
+    "level": 1,
+    "name": "RUP FR — Régions Ultrapériphériques Françaises"
+   },
+   {
+    "id": "FRY1",
+    "level": 2,
+    "name": "Guadeloupe"
+   },
+   {
+    "id": "FRY2",
+    "level": 2,
+    "name": "Martinique"
+   },
+   {
+    "id": "FRY3",
+    "level": 2,
+    "name": "Guyane"
+   },
+   {
+    "id": "FRY4",
+    "level": 2,
+    "name": "La Réunion"
+   },
+   {
+    "id": "FRY5",
+    "level": 2,
+    "name": "Mayotte"
+   }
+  ],
+  "HR": [
+   {
+    "id": "HR0",
+    "level": 1,
+    "name": "Hrvatska"
+   },
+   {
+    "id": "HR02",
+    "level": 2,
+    "name": "Panonska Hrvatska"
+   },
+   {
+    "id": "HR03",
+    "level": 2,
+    "name": "Jadranska Hrvatska"
+   },
+   {
+    "id": "HR05",
+    "level": 2,
+    "name": "Grad Zagreb"
+   },
+   {
+    "id": "HR06",
+    "level": 2,
+    "name": "Sjeverna Hrvatska"
+   }
+  ],
+  "HU": [
+   {
+    "id": "HU1",
+    "level": 1,
+    "name": "Közép-Magyarország"
+   },
+   {
+    "id": "HU11",
+    "level": 2,
+    "name": "Budapest"
+   },
+   {
+    "id": "HU12",
+    "level": 2,
+    "name": "Pest"
+   },
+   {
+    "id": "HU2",
+    "level": 1,
+    "name": "Dunántúl"
+   },
+   {
+    "id": "HU21",
+    "level": 2,
+    "name": "Közép-Dunántúl"
+   },
+   {
+    "id": "HU22",
+    "level": 2,
+    "name": "Nyugat-Dunántúl"
+   },
+   {
+    "id": "HU23",
+    "level": 2,
+    "name": "Dél-Dunántúl"
+   },
+   {
+    "id": "HU3",
+    "level": 1,
+    "name": "Alföld és Észak"
+   },
+   {
+    "id": "HU31",
+    "level": 2,
+    "name": "Észak-Magyarország"
+   },
+   {
+    "id": "HU32",
+    "level": 2,
+    "name": "Észak-Alföld"
+   },
+   {
+    "id": "HU33",
+    "level": 2,
+    "name": "Dél-Alföld"
+   }
+  ],
+  "IE": [
+   {
+    "id": "IE0",
+    "level": 1,
+    "name": "Ireland"
+   },
+   {
+    "id": "IE04",
+    "level": 2,
+    "name": "Northern and Western"
+   },
+   {
+    "id": "IE05",
+    "level": 2,
+    "name": "Southern"
+   },
+   {
+    "id": "IE06",
+    "level": 2,
+    "name": "Eastern and Midland"
+   }
+  ],
+  "IS": [
+   {
+    "id": "IS0",
+    "level": 1,
+    "name": "Ísland"
+   },
+   {
+    "id": "IS00",
+    "level": 2,
+    "name": "Ísland"
+   }
+  ],
+  "IT": [
+   {
+    "id": "ITC",
+    "level": 1,
+    "name": "Nord-Ovest"
+   },
+   {
+    "id": "ITC1",
+    "level": 2,
+    "name": "Piemonte"
+   },
+   {
+    "id": "ITC2",
+    "level": 2,
+    "name": "Valle d’Aosta/Vallée d’Aoste"
+   },
+   {
+    "id": "ITC3",
+    "level": 2,
+    "name": "Liguria"
+   },
+   {
+    "id": "ITC4",
+    "level": 2,
+    "name": "Lombardia"
+   },
+   {
+    "id": "ITF",
+    "level": 1,
+    "name": "Sud"
+   },
+   {
+    "id": "ITF1",
+    "level": 2,
+    "name": "Abruzzo"
+   },
+   {
+    "id": "ITF2",
+    "level": 2,
+    "name": "Molise"
+   },
+   {
+    "id": "ITF3",
+    "level": 2,
+    "name": "Campania"
+   },
+   {
+    "id": "ITF4",
+    "level": 2,
+    "name": "Puglia"
+   },
+   {
+    "id": "ITF5",
+    "level": 2,
+    "name": "Basilicata"
+   },
+   {
+    "id": "ITF6",
+    "level": 2,
+    "name": "Calabria"
+   },
+   {
+    "id": "ITG",
+    "level": 1,
+    "name": "Isole"
+   },
+   {
+    "id": "ITG1",
+    "level": 2,
+    "name": "Sicilia"
+   },
+   {
+    "id": "ITG2",
+    "level": 2,
+    "name": "Sardegna"
+   },
+   {
+    "id": "ITH",
+    "level": 1,
+    "name": "Nord-Est"
+   },
+   {
+    "id": "ITH1",
+    "level": 2,
+    "name": "Provincia Autonoma di Bolzano/Bozen"
+   },
+   {
+    "id": "ITH2",
+    "level": 2,
+    "name": "Provincia Autonoma di Trento"
+   },
+   {
+    "id": "ITH3",
+    "level": 2,
+    "name": "Veneto"
+   },
+   {
+    "id": "ITH4",
+    "level": 2,
+    "name": "Friuli-Venezia Giulia"
+   },
+   {
+    "id": "ITH5",
+    "level": 2,
+    "name": "Emilia-Romagna"
+   },
+   {
+    "id": "ITI",
+    "level": 1,
+    "name": "Centro (IT)"
+   },
+   {
+    "id": "ITI1",
+    "level": 2,
+    "name": "Toscana"
+   },
+   {
+    "id": "ITI2",
+    "level": 2,
+    "name": "Umbria"
+   },
+   {
+    "id": "ITI3",
+    "level": 2,
+    "name": "Marche"
+   },
+   {
+    "id": "ITI4",
+    "level": 2,
+    "name": "Lazio"
+   }
+  ],
+  "LI": [
+   {
+    "id": "LI0",
+    "level": 1,
+    "name": "Liechtenstein"
+   },
+   {
+    "id": "LI00",
+    "level": 2,
+    "name": "Liechtenstein"
+   }
+  ],
+  "LT": [
+   {
+    "id": "LT0",
+    "level": 1,
+    "name": "Lietuva"
+   },
+   {
+    "id": "LT01",
+    "level": 2,
+    "name": "Sostinės regionas"
+   },
+   {
+    "id": "LT02",
+    "level": 2,
+    "name": "Vidurio ir vakarų Lietuvos regionas"
+   }
+  ],
+  "LU": [
+   {
+    "id": "LU0",
+    "level": 1,
+    "name": "Luxembourg"
+   },
+   {
+    "id": "LU00",
+    "level": 2,
+    "name": "Luxembourg"
+   }
+  ],
+  "LV": [
+   {
+    "id": "LV0",
+    "level": 1,
+    "name": "Latvija"
+   },
+   {
+    "id": "LV00",
+    "level": 2,
+    "name": "Latvija"
+   }
+  ],
+  "ME": [
+   {
+    "id": "ME0",
+    "level": 1,
+    "name": "Crna Gora"
+   },
+   {
+    "id": "ME00",
+    "level": 2,
+    "name": "Crna Gora"
+   }
+  ],
+  "MK": [
+   {
+    "id": "MK0",
+    "level": 1,
+    "name": "Severna Makedonija"
+   },
+   {
+    "id": "MK00",
+    "level": 2,
+    "name": "Severna Makedonija"
+   }
+  ],
+  "MT": [
+   {
+    "id": "MT0",
+    "level": 1,
+    "name": "Malta"
+   },
+   {
+    "id": "MT00",
+    "level": 2,
+    "name": "Malta"
+   }
+  ],
+  "NL": [
+   {
+    "id": "NL1",
+    "level": 1,
+    "name": "Noord-Nederland"
+   },
+   {
+    "id": "NL11",
+    "level": 2,
+    "name": "Groningen"
+   },
+   {
+    "id": "NL12",
+    "level": 2,
+    "name": "Friesland (NL)"
+   },
+   {
+    "id": "NL13",
+    "level": 2,
+    "name": "Drenthe"
+   },
+   {
+    "id": "NL2",
+    "level": 1,
+    "name": "Oost-Nederland"
+   },
+   {
+    "id": "NL21",
+    "level": 2,
+    "name": "Overijssel"
+   },
+   {
+    "id": "NL22",
+    "level": 2,
+    "name": "Gelderland"
+   },
+   {
+    "id": "NL23",
+    "level": 2,
+    "name": "Flevoland"
+   },
+   {
+    "id": "NL3",
+    "level": 1,
+    "name": "West-Nederland"
+   },
+   {
+    "id": "NL32",
+    "level": 2,
+    "name": "Noord-Holland"
+   },
+   {
+    "id": "NL34",
+    "level": 2,
+    "name": "Zeeland"
+   },
+   {
+    "id": "NL35",
+    "level": 2,
+    "name": "Utrecht"
+   },
+   {
+    "id": "NL36",
+    "level": 2,
+    "name": "Zuid-Holland"
+   },
+   {
+    "id": "NL4",
+    "level": 1,
+    "name": "Zuid-Nederland"
+   },
+   {
+    "id": "NL41",
+    "level": 2,
+    "name": "Noord-Brabant"
+   },
+   {
+    "id": "NL42",
+    "level": 2,
+    "name": "Limburg (NL)"
+   }
+  ],
+  "NO": [
+   {
+    "id": "NO0",
+    "level": 1,
+    "name": "Norge"
+   },
+   {
+    "id": "NO02",
+    "level": 2,
+    "name": "Innlandet"
+   },
+   {
+    "id": "NO06",
+    "level": 2,
+    "name": "Trøndelag/Trööndelage"
+   },
+   {
+    "id": "NO07",
+    "level": 2,
+    "name": "Nord-Norge"
+   },
+   {
+    "id": "NO08",
+    "level": 2,
+    "name": "Oslo og Viken"
+   },
+   {
+    "id": "NO09",
+    "level": 2,
+    "name": "Agder og Sør-Østlandet"
+   },
+   {
+    "id": "NO0A",
+    "level": 2,
+    "name": "Vestlandet"
+   },
+   {
+    "id": "NO0B",
+    "level": 2,
+    "name": "Svalbard og Jan Mayen"
+   }
+  ],
+  "PL": [
+   {
+    "id": "PL2",
+    "level": 1,
+    "name": "Makroregion południowy"
+   },
+   {
+    "id": "PL21",
+    "level": 2,
+    "name": "Małopolskie"
+   },
+   {
+    "id": "PL22",
+    "level": 2,
+    "name": "Śląskie"
+   },
+   {
+    "id": "PL4",
+    "level": 1,
+    "name": "Makroregion północno-zachodni"
+   },
+   {
+    "id": "PL41",
+    "level": 2,
+    "name": "Wielkopolskie"
+   },
+   {
+    "id": "PL42",
+    "level": 2,
+    "name": "Zachodniopomorskie"
+   },
+   {
+    "id": "PL43",
+    "level": 2,
+    "name": "Lubuskie"
+   },
+   {
+    "id": "PL5",
+    "level": 1,
+    "name": "Makroregion południowo-zachodni"
+   },
+   {
+    "id": "PL51",
+    "level": 2,
+    "name": "Dolnośląskie"
+   },
+   {
+    "id": "PL52",
+    "level": 2,
+    "name": "Opolskie"
+   },
+   {
+    "id": "PL6",
+    "level": 1,
+    "name": "Makroregion północny"
+   },
+   {
+    "id": "PL61",
+    "level": 2,
+    "name": "Kujawsko-pomorskie"
+   },
+   {
+    "id": "PL62",
+    "level": 2,
+    "name": "Warmińsko-mazurskie"
+   },
+   {
+    "id": "PL63",
+    "level": 2,
+    "name": "Pomorskie"
+   },
+   {
+    "id": "PL7",
+    "level": 1,
+    "name": "Makroregion centralny"
+   },
+   {
+    "id": "PL71",
+    "level": 2,
+    "name": "Łódzkie"
+   },
+   {
+    "id": "PL72",
+    "level": 2,
+    "name": "Świętokrzyskie"
+   },
+   {
+    "id": "PL8",
+    "level": 1,
+    "name": "Makroregion wschodni"
+   },
+   {
+    "id": "PL81",
+    "level": 2,
+    "name": "Lubelskie"
+   },
+   {
+    "id": "PL82",
+    "level": 2,
+    "name": "Podkarpackie"
+   },
+   {
+    "id": "PL84",
+    "level": 2,
+    "name": "Podlaskie"
+   },
+   {
+    "id": "PL9",
+    "level": 1,
+    "name": "Makroregion województwo mazowieckie"
+   },
+   {
+    "id": "PL91",
+    "level": 2,
+    "name": "Warszawski stołeczny"
+   },
+   {
+    "id": "PL92",
+    "level": 2,
+    "name": "Mazowiecki regionalny"
+   }
+  ],
+  "PT": [
+   {
+    "id": "PT1",
+    "level": 1,
+    "name": "Continente"
+   },
+   {
+    "id": "PT11",
+    "level": 2,
+    "name": "Norte"
+   },
+   {
+    "id": "PT15",
+    "level": 2,
+    "name": "Algarve"
+   },
+   {
+    "id": "PT19",
+    "level": 2,
+    "name": "Centro (PT)"
+   },
+   {
+    "id": "PT1A",
+    "level": 2,
+    "name": "Grande Lisboa"
+   },
+   {
+    "id": "PT1B",
+    "level": 2,
+    "name": "Península de Setúbal"
+   },
+   {
+    "id": "PT1C",
+    "level": 2,
+    "name": "Alentejo"
+   },
+   {
+    "id": "PT1D",
+    "level": 2,
+    "name": "Oeste e Vale do Tejo"
+   },
+   {
+    "id": "PT2",
+    "level": 1,
+    "name": "Região Autónoma dos Açores"
+   },
+   {
+    "id": "PT20",
+    "level": 2,
+    "name": "Região Autónoma dos Açores"
+   },
+   {
+    "id": "PT3",
+    "level": 1,
+    "name": "Região Autónoma da Madeira"
+   },
+   {
+    "id": "PT30",
+    "level": 2,
+    "name": "Região Autónoma da Madeira"
+   }
+  ],
+  "RO": [
+   {
+    "id": "RO1",
+    "level": 1,
+    "name": "Macroregiunea Unu"
+   },
+   {
+    "id": "RO11",
+    "level": 2,
+    "name": "Nord-Vest"
+   },
+   {
+    "id": "RO12",
+    "level": 2,
+    "name": "Centru"
+   },
+   {
+    "id": "RO2",
+    "level": 1,
+    "name": "Macroregiunea Doi"
+   },
+   {
+    "id": "RO21",
+    "level": 2,
+    "name": "Nord-Est"
+   },
+   {
+    "id": "RO22",
+    "level": 2,
+    "name": "Sud-Est"
+   },
+   {
+    "id": "RO3",
+    "level": 1,
+    "name": "Macroregiunea Trei"
+   },
+   {
+    "id": "RO31",
+    "level": 2,
+    "name": "Sud-Muntenia"
+   },
+   {
+    "id": "RO32",
+    "level": 2,
+    "name": "Bucureşti-Ilfov"
+   },
+   {
+    "id": "RO4",
+    "level": 1,
+    "name": "Macroregiunea Patru"
+   },
+   {
+    "id": "RO41",
+    "level": 2,
+    "name": "Sud-Vest Oltenia"
+   },
+   {
+    "id": "RO42",
+    "level": 2,
+    "name": "Vest"
+   }
+  ],
+  "RS": [
+   {
+    "id": "RS1",
+    "level": 1,
+    "name": "Serbia - sever"
+   },
+   {
+    "id": "RS11",
+    "level": 2,
+    "name": "City of Belgrade"
+   },
+   {
+    "id": "RS12",
+    "level": 2,
+    "name": "Autonomous Province of Vojvodina"
+   },
+   {
+    "id": "RS2",
+    "level": 1,
+    "name": "Serbia - jug"
+   },
+   {
+    "id": "RS21",
+    "level": 2,
+    "name": "Region Šumadije i Zapadne Srbije"
+   },
+   {
+    "id": "RS22",
+    "level": 2,
+    "name": "Region Južne i Istočne Srbije"
+   }
+  ],
+  "SE": [
+   {
+    "id": "SE1",
+    "level": 1,
+    "name": "Östra Sverige"
+   },
+   {
+    "id": "SE11",
+    "level": 2,
+    "name": "Stockholm"
+   },
+   {
+    "id": "SE12",
+    "level": 2,
+    "name": "Östra Mellansverige"
+   },
+   {
+    "id": "SE2",
+    "level": 1,
+    "name": "Södra Sverige"
+   },
+   {
+    "id": "SE21",
+    "level": 2,
+    "name": "Småland med öarna"
+   },
+   {
+    "id": "SE22",
+    "level": 2,
+    "name": "Sydsverige"
+   },
+   {
+    "id": "SE23",
+    "level": 2,
+    "name": "Västsverige"
+   },
+   {
+    "id": "SE3",
+    "level": 1,
+    "name": "Norra Sverige"
+   },
+   {
+    "id": "SE31",
+    "level": 2,
+    "name": "Norra Mellansverige"
+   },
+   {
+    "id": "SE32",
+    "level": 2,
+    "name": "Mellersta Norrland"
+   },
+   {
+    "id": "SE33",
+    "level": 2,
+    "name": "Övre Norrland"
+   }
+  ],
+  "SI": [
+   {
+    "id": "SI0",
+    "level": 1,
+    "name": "Slovenija"
+   },
+   {
+    "id": "SI03",
+    "level": 2,
+    "name": "Vzhodna Slovenija"
+   },
+   {
+    "id": "SI04",
+    "level": 2,
+    "name": "Zahodna Slovenija"
+   }
+  ],
+  "SK": [
+   {
+    "id": "SK0",
+    "level": 1,
+    "name": "Slovensko"
+   },
+   {
+    "id": "SK01",
+    "level": 2,
+    "name": "Bratislavský kraj"
+   },
+   {
+    "id": "SK02",
+    "level": 2,
+    "name": "Západné Slovensko"
+   },
+   {
+    "id": "SK03",
+    "level": 2,
+    "name": "Stredné Slovensko"
+   },
+   {
+    "id": "SK04",
+    "level": 2,
+    "name": "Východné Slovensko"
+   }
+  ],
+  "TR": [
+   {
+    "id": "TR1",
+    "level": 1,
+    "name": "İstanbul"
+   },
+   {
+    "id": "TR10",
+    "level": 2,
+    "name": "İstanbul"
+   },
+   {
+    "id": "TR2",
+    "level": 1,
+    "name": "Batı Marmara"
+   },
+   {
+    "id": "TR21",
+    "level": 2,
+    "name": "Tekirdağ, Edirne, Kırklareli"
+   },
+   {
+    "id": "TR22",
+    "level": 2,
+    "name": "Balıkesir, Çanakkale"
+   },
+   {
+    "id": "TR3",
+    "level": 1,
+    "name": "Ege"
+   },
+   {
+    "id": "TR31",
+    "level": 2,
+    "name": "İzmir"
+   },
+   {
+    "id": "TR32",
+    "level": 2,
+    "name": "Aydın, Denizli, Muğla"
+   },
+   {
+    "id": "TR33",
+    "level": 2,
+    "name": "Manisa, Afyonkarahisar, Kütahya, Uşak"
+   },
+   {
+    "id": "TR4",
+    "level": 1,
+    "name": "Doğu Marmara"
+   },
+   {
+    "id": "TR41",
+    "level": 2,
+    "name": "Bursa, Eskişehir, Bilecik"
+   },
+   {
+    "id": "TR42",
+    "level": 2,
+    "name": "Kocaeli, Sakarya, Düzce, Bolu, Yalova"
+   },
+   {
+    "id": "TR5",
+    "level": 1,
+    "name": "Batı Anadolu"
+   },
+   {
+    "id": "TR51",
+    "level": 2,
+    "name": "Ankara"
+   },
+   {
+    "id": "TR52",
+    "level": 2,
+    "name": "Konya, Karaman"
+   },
+   {
+    "id": "TR6",
+    "level": 1,
+    "name": "Akdeniz"
+   },
+   {
+    "id": "TR61",
+    "level": 2,
+    "name": "Antalya, Isparta, Burdur"
+   },
+   {
+    "id": "TR62",
+    "level": 2,
+    "name": "Adana, Mersin"
+   },
+   {
+    "id": "TR63",
+    "level": 2,
+    "name": "Hatay, Kahramanmaraş, Osmaniye"
+   },
+   {
+    "id": "TR7",
+    "level": 1,
+    "name": "Orta Anadolu"
+   },
+   {
+    "id": "TR71",
+    "level": 2,
+    "name": "Kırıkkale, Aksaray, Niğde, Nevşehir, Kırşehir"
+   },
+   {
+    "id": "TR72",
+    "level": 2,
+    "name": "Kayseri, Sivas, Yozgat"
+   },
+   {
+    "id": "TR8",
+    "level": 1,
+    "name": "Batı Karadeniz"
+   },
+   {
+    "id": "TR81",
+    "level": 2,
+    "name": "Zonguldak, Karabük, Bartın"
+   },
+   {
+    "id": "TR82",
+    "level": 2,
+    "name": "Kastamonu, Çankırı, Sinop"
+   },
+   {
+    "id": "TR83",
+    "level": 2,
+    "name": "Samsun, Tokat, Çorum, Amasya"
+   },
+   {
+    "id": "TR9",
+    "level": 1,
+    "name": "Doğu Karadeniz"
+   },
+   {
+    "id": "TR90",
+    "level": 2,
+    "name": "Trabzon, Ordu, Giresun, Rize, Artvin, Gümüşhane"
+   },
+   {
+    "id": "TRA",
+    "level": 1,
+    "name": "Kuzeydoğu Anadolu"
+   },
+   {
+    "id": "TRA1",
+    "level": 2,
+    "name": "Erzurum, Erzincan, Bayburt"
+   },
+   {
+    "id": "TRA2",
+    "level": 2,
+    "name": "Ağrı, Kars, Iğdır, Ardahan"
+   },
+   {
+    "id": "TRB",
+    "level": 1,
+    "name": "Ortadoğu Anadolu"
+   },
+   {
+    "id": "TRB1",
+    "level": 2,
+    "name": "Malatya, Elazığ, Bingöl, Tunceli"
+   },
+   {
+    "id": "TRB2",
+    "level": 2,
+    "name": "Van, Muş, Bitlis, Hakkari"
+   },
+   {
+    "id": "TRC",
+    "level": 1,
+    "name": "Güneydoğu Anadolu"
+   },
+   {
+    "id": "TRC1",
+    "level": 2,
+    "name": "Gaziantep, Adıyaman, Kilis"
+   },
+   {
+    "id": "TRC2",
+    "level": 2,
+    "name": "Şanlıurfa, Diyarbakır"
+   },
+   {
+    "id": "TRC3",
+    "level": 2,
+    "name": "Mardin, Batman, Şırnak, Siirt"
+   }
+  ],
+  "UA": [
+   {
+    "id": "UA1",
+    "level": 1,
+    "name": "Macroregion_01"
+   },
+   {
+    "id": "UA11",
+    "level": 2,
+    "name": "Poltavska Oblast"
+   },
+   {
+    "id": "UA12",
+    "level": 2,
+    "name": "Sumska Oblast"
+   },
+   {
+    "id": "UA13",
+    "level": 2,
+    "name": "Kharkivska Oblast"
+   },
+   {
+    "id": "UA14",
+    "level": 2,
+    "name": "Chernihivska Oblast"
+   },
+   {
+    "id": "UA2",
+    "level": 1,
+    "name": "Macroregion_02"
+   },
+   {
+    "id": "UA21",
+    "level": 2,
+    "name": "Donetska Oblast"
+   },
+   {
+    "id": "UA22",
+    "level": 2,
+    "name": "Luhanska Oblast"
+   },
+   {
+    "id": "UA3",
+    "level": 1,
+    "name": "Macroregion_03"
+   },
+   {
+    "id": "UA31",
+    "level": 2,
+    "name": "Dnipropetrovska Oblast"
+   },
+   {
+    "id": "UA32",
+    "level": 2,
+    "name": "Zaporizka Oblast"
+   },
+   {
+    "id": "UA33",
+    "level": 2,
+    "name": "Kirovohradska Oblast"
+   },
+   {
+    "id": "UA4",
+    "level": 1,
+    "name": "Macroregion_04"
+   },
+   {
+    "id": "UA41",
+    "level": 2,
+    "name": "Mykolaivska Oblast"
+   },
+   {
+    "id": "UA42",
+    "level": 2,
+    "name": "Odeska Oblast"
+   },
+   {
+    "id": "UA43",
+    "level": 2,
+    "name": "Khersonska Oblast"
+   },
+   {
+    "id": "UA44",
+    "level": 2,
+    "name": "Avtonomna Respublika Krym"
+   },
+   {
+    "id": "UA45",
+    "level": 2,
+    "name": "M. Sevastopol"
+   },
+   {
+    "id": "UA5",
+    "level": 1,
+    "name": "Macroregion_05"
+   },
+   {
+    "id": "UA51",
+    "level": 2,
+    "name": "Vinnytska Oblast"
+   },
+   {
+    "id": "UA52",
+    "level": 2,
+    "name": "Ternopilska Oblast"
+   },
+   {
+    "id": "UA53",
+    "level": 2,
+    "name": "Khmelnytska Oblast"
+   },
+   {
+    "id": "UA6",
+    "level": 1,
+    "name": "Macroregion_06"
+   },
+   {
+    "id": "UA61",
+    "level": 2,
+    "name": "Kyivska Oblast"
+   },
+   {
+    "id": "UA62",
+    "level": 2,
+    "name": "Cherkaska Oblast"
+   },
+   {
+    "id": "UA63",
+    "level": 2,
+    "name": "M. Kyiv"
+   },
+   {
+    "id": "UA7",
+    "level": 1,
+    "name": "Macroregion_07"
+   },
+   {
+    "id": "UA71",
+    "level": 2,
+    "name": "Zakarpatska Oblast"
+   },
+   {
+    "id": "UA72",
+    "level": 2,
+    "name": "Ivano-Frankivska Oblast"
+   },
+   {
+    "id": "UA73",
+    "level": 2,
+    "name": "Lvivska Oblast"
+   },
+   {
+    "id": "UA74",
+    "level": 2,
+    "name": "Chernivetska Oblast"
+   },
+   {
+    "id": "UA8",
+    "level": 1,
+    "name": "Macroregion_08"
+   },
+   {
+    "id": "UA81",
+    "level": 2,
+    "name": "Volynska Oblast"
+   },
+   {
+    "id": "UA82",
+    "level": 2,
+    "name": "Zhytomyrska Oblast"
+   },
+   {
+    "id": "UA83",
+    "level": 2,
+    "name": "Rivnenska Oblast"
+   }
+  ],
+  "XK": [
+   {
+    "id": "XK0",
+    "level": 1,
+    "name": "Kosovo"
+   },
+   {
+    "id": "XK00",
+    "level": 2,
+    "name": "Kosovo"
+   }
+  ]
+ }
+}
