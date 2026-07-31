@@ -120,6 +120,18 @@ export function checkBrief(
     }
     seen.add(key);
   }
+  // Two rows whose reasoning is word-for-word identical are one row shown
+  // twice, whatever their names. A brief published Horizon CL5 and CL6 with
+  // the same sentence and the same next step, spending two of five slots to
+  // say one thing.
+  const reasoning = new Set<string>();
+  for (const r of institutions) {
+    const key = `${(r.whyEligible ?? "").trim().toLowerCase()}|${(r.nextStep ?? "").trim().toLowerCase()}`;
+    if (key.length > 8 && reasoning.has(key)) {
+      v.push({ ruleId: "FUND-3", detail: `identical reasoning to another row: ${r.institution}` });
+    }
+    reasoning.add(key);
+  }
   for (const r of institutions) {
     if (WATCH_ONLY_COPY.test(String(r.nextStep ?? ""))) {
       v.push({ ruleId: "FUND-4", detail: `next step is a thing to watch, not do: ${r.institution}` });

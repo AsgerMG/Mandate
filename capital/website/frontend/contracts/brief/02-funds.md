@@ -32,8 +32,14 @@ reporting, not prose to publish. Say what the row is and let it stand.
 - FUND-1 (hard) At least one row publishes. An empty table is never the answer
   while any door is open.
 - FUND-2 (hard) At most five rows.
-- FUND-3 (hard) No two rows resolve to the same institution under the same
-  legal basis. One route shown twice spends a scarce row on nothing.
+- FUND-3 (hard) No two rows say the same thing. The test: **would the reader
+  learn anything from the second one they did not learn from the first?** Two
+  rows resolving to one institution under one legal basis fail it, and so do
+  two differently-named rows carrying word-for-word identical reasoning and
+  the same next step.
+
+  **evidence:** a brief published two Horizon clusters whose whyEligible and
+  Move were identical sentences, spending two of five slots to say one thing.
 - FUND-4 (hard) `nextStep` is an action the founder can start.
 
   The test: **could they begin it this week, and would they know they had

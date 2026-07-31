@@ -51,14 +51,19 @@ await send("Page.navigate", { url: `${base}/brief` });
 await sleep(3500);
 
 // ── Kestrel: solo founder, Berlin, scheduling software for physio clinics ──
-process.stdout.write(`company: ${await fillByPlaceholder("Vyoma", "Kestrel")}\n`);
+const P = {
+  company: process.env.CO || "Kestrel",
+  what: process.env.WHAT || "Scheduling and no-show prediction software for independent physiotherapy clinics",
+  country: process.env.COUNTRY || "Germany",
+  picks: (process.env.PICKS || "Software, AI, data or cloud|Developing or prototyping the product|€500K – €2.5M|1–9|Pilots with customers").split("|"),
+};
+process.stdout.write(`company: ${await fillByPlaceholder("Vyoma", P.company)}\n`);
 await sleep(300);
-process.stdout.write(`what: ${await fillByPlaceholder("collision-avoidance", "Scheduling and no-show prediction software for independent physiotherapy clinics")}\n`);
+process.stdout.write(`what: ${await fillByPlaceholder("collision-avoidance", P.what)}\n`);
 await sleep(300);
-process.stdout.write(`country: ${await selectCountry("Germany")}\n`);
+process.stdout.write(`country: ${await selectCountry(P.country)}\n`);
 await sleep(300);
-for (const t of ["Software, AI, data or cloud", "Developing or prototyping the product",
-                 "€500K – €2.5M", "1–9", "Pilots with customers"]) {
+for (const t of P.picks) {
   process.stdout.write(`  pick ${t}: ${await pick(t)}\n`);
   await sleep(250);
 }

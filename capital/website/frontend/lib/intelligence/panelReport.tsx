@@ -121,10 +121,17 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     An investor, not a grant: expect a cap-table seat and, usually, a lead investor first
                   </span>
                 )}
-                {!pending && r.schemeOperators && r.schemeOperators.length > 0 && (
+                {/* Only where the row's own name does not already answer
+                    "who do I approach?". These exist for schemes rendered by
+                    their code because a department notified them; on a row
+                    that IS a granting body, listing the other bodies on the
+                    same regime reads as nonsense — a Normandy row citing
+                    Nouvelle-Aquitaine and Grand Est as its operators. */}
+                {!pending && r.schemeCode && r.institution.includes(r.schemeCode)
+                  && operatorsOtherThan(r).length > 0 && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
-                    Operated by {r.schemeOperators.slice(0, 2).join(", ")}
-                    {r.schemeOperators.length > 2 && ` and ${r.schemeOperators.length - 2} others`}
+                    Operated by {operatorsOtherThan(r).slice(0, 2).join(", ")}
+                    {operatorsOtherThan(r).length > 2 && ` and ${operatorsOtherThan(r).length - 2} others`}
                   </span>
                 )}
                 {!pending && (r.country || r.legalBasis) && (
@@ -248,6 +255,13 @@ function printReport(company: string): void {
   // Safari never fires afterprint in some versions; the timer is the backstop
   // so the tab is not left renamed and unstyled.
   setTimeout(restore, 1000);
+}
+
+/** The scheme's operators, minus the row's own body. A row never lists itself
+ *  as somebody else you could go to. */
+function operatorsOtherThan(r: InstitutionEntry): string[] {
+  const self = r.institution.trim().toLowerCase();
+  return (r.schemeOperators ?? []).filter((o) => o.trim().toLowerCase() !== self);
 }
 
 export function SectionTitle({ children, n }: { children: React.ReactNode; n?: string }) {
