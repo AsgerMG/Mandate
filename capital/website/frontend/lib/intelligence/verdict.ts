@@ -58,6 +58,36 @@ export function isStructural(field: string): boolean {
   return fieldSeverity(field) === "structural";
 }
 
+/**
+ * Rules traceable to the fund's own text.
+ *
+ * ── Why disqualification needs this second test ───────────────────────────
+ * Severity says whether a founder COULD answer differently. It says nothing
+ * about whether we are right that the rule exists.
+ *
+ * Most of the corpus outside state aid carries `llm_classified` gates: a
+ * generic five-rule stub per instrument, inferred rather than read off a
+ * document. The content is usually sound — ADEME's says "must be registered
+ * or operating in France", which is certainly true — but it is not quotable,
+ * and it was never encoded, so the largest French development bank has never
+ * once been filtered by country.
+ *
+ * Refusing to encode uncited rules leaves those instruments permanently
+ * unknown, which is its own failure: the brief publishes them without any idea
+ * whether the founder qualifies. Encoding them and letting them disqualify is
+ * worse — it would close a fund to a founder on the strength of a sentence we
+ * cannot show them.
+ *
+ * So uncited rules NARROW but never CONDEMN. A failing uncited rule is a named
+ * obstacle with its source stated; only a rule we can point at in the fund's
+ * own text can end the conversation.
+ */
+const CITED = new Set(["llm_cited", "llm_2pass", "human_verified"]);
+
+export function isCited(gate: Pick<DbGate, "verificationLevel">): boolean {
+  return CITED.has(gate.verificationLevel ?? "");
+}
+
 export type VerdictStatus =
   /** Nothing we can check rules this founder out. */
   | "open"
@@ -74,6 +104,8 @@ export interface Blocker {
   field: string;
   /** True only for llm_2pass/human_verified gates: assertable as fact. */
   verified: boolean;
+  /** Traceable to the fund's own text. Only a cited rule may disqualify. */
+  cited: boolean;
 }
 
 export interface InstrumentAssessment {
@@ -111,11 +143,14 @@ export function assessInstrument(
     if (result === null) continue; // unanswered or unevaluable — never a failure
     base.checked += 1;
     if (result) base.passed += 1;
-    else base.blockers.push({ requirement: gate.requirement, field: spec.field, verified: gate.verified });
+    else base.blockers.push({
+      requirement: gate.requirement, field: spec.field,
+      verified: gate.verified, cited: isCited(gate),
+    });
   }
 
   // One structural failure is conclusive. Two curable ones are a conversation.
-  const structural = base.blockers.filter((b) => isStructural(b.field));
+  const structural = base.blockers.filter((b) => isStructural(b.field) && b.cited);
   if (base.checked === 0) base.status = "unknown";
   else if (base.blockers.length === 0) base.status = "open";
   else if (structural.length > 0) base.status = "blocked";

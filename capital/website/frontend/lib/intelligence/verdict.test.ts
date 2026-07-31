@@ -152,3 +152,27 @@ describe("severity: what failed, not how many", () => {
       .toBe("one_blocker");
   });
 });
+
+describe("citation: narrow, but do not condemn", () => {
+  // THE RISK this guards: most instruments outside state aid carry a generic
+  // five-rule stub inferred rather than read off a document. Encoding those
+  // stubs is what made 130 development banks assessable at all — ADEME's
+  // "must be registered or operating in France" had never once filtered
+  // anyone. But closing a fund on a sentence we cannot show the founder is a
+  // worse failure than leaving it open, so an uncited rule may only narrow.
+  const uncited = (valueSpec: unknown): DbGate =>
+    ({ ...gate(valueSpec), verificationLevel: "llm_classified" }) as DbGate;
+
+  it("an uncited structural failure is an obstacle, not a disqualification", () => {
+    const inst = instrument([uncited({ op: "in", field: "sector", allowed: ["agrifood"] })]);
+    const a = assessInstrument(inst, { sector: "software_data_ai" } as never);
+    expect(a.status).toBe("one_blocker");
+    expect(a.blockers[0].cited).toBe(false);
+  });
+
+  it("the same rule, cited, does disqualify", () => {
+    const inst = instrument([gate({ op: "in", field: "sector", allowed: ["agrifood"] })]);
+    expect(assessInstrument(inst, { sector: "software_data_ai" } as never).status)
+      .toBe("blocked");
+  });
+});

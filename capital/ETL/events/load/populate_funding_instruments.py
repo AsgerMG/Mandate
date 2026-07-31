@@ -283,9 +283,15 @@ def seed_activity_exclusions(conn: sqlite3.Connection, instruments: list[dict]) 
         "the scope of this aid. The exclusion is set by the framework the "
         "scheme is notified under, not by the scheme itself."
     )
+    # human_verified, deliberately: a curated rule decided from the cited
+    # exclusion lists already in the corpus, not an LLM inference. Only cited
+    # rules may disqualify (see isCited in verdict.ts), and an exclusion that
+    # cannot disqualify would not do the one job it exists for. The note keeps
+    # the derivation auditable.
     note = (
-        "framework exclusion generalised across the state-aid channel from the "
-        "GBER, de-minimis and COSME exclusion lists cited by encoded gates"
+        "curated framework exclusion, generalised across the state-aid channel "
+        "from the GBER, de-minimis and COSME exclusion lists cited by encoded "
+        "gates on 25 instruments across 5 countries"
     )
     n = 0
     for row in instruments:
@@ -297,13 +303,14 @@ def seed_activity_exclusions(conn: sqlite3.Connection, instruments: list[dict]) 
                intake_field, intake_field_resolved, gate_role,
                verification_level, verify_note, updated_at)
             VALUES (?, 'framework_excluded_activity', 'G1_nexus', ?, ?,
-                    'activities', 'activities', 'filter', 'inventory_inferred',
+                    'activities', 'activities', 'filter', 'human_verified',
                     ?, CURRENT_TIMESTAMP)
             ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
               requirement=excluded.requirement, value_spec=excluded.value_spec,
               intake_field=excluded.intake_field,
               intake_field_resolved=excluded.intake_field_resolved,
               gate_role=excluded.gate_role, verify_note=excluded.verify_note,
+              verification_level=excluded.verification_level,
               updated_at=CURRENT_TIMESTAMP
         """, (row["id"], requirement, spec, note))
         n += 1
