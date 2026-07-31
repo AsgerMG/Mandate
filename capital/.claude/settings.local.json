@@ -283,7 +283,13 @@
       "Bash(NO_PG=1 npm run shadow)",
       "Bash(NO_PG=1 npx tsx scripts/check_contracts.ts)",
       "Bash(NO_PG=1 npx tsx -e ' *)",
-      "Bash(python3 ETL/terms/audit_grounding.py)"
+      "Bash(python3 ETL/terms/audit_grounding.py)",
+      "Bash(python3 ETL/terms/coverage_report.py --json /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/coverage.json --md project-mgmt/coverage.md)",
+      "Bash(awk '{print $5}')",
+      "Bash(python3 /Users/asgermollergrimberg/Wincent/ETL/terms/coverage_dashboard.py --out /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/coverage.html)",
+      "Bash(bash scripts/shot.sh \"file:///private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/coverage.html\" /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/cov.png)",
+      "Bash(bash scripts/shot.sh \"http://localhost:8899/coverage.html\" /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/cov2.png)",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --window-size=1440,2000 --screenshot=/private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/cov3.png \"http://localhost:8899/coverage.html\")"
     ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [
