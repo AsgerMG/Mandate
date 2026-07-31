@@ -506,7 +506,7 @@ export function loadSignalsDigest(): SignalsDigest | null {
  * one would publish a container, the other its children, for the same founder.
  */
 /**
- * Give every child its parent regime's gates.
+ * Give every child its parent regime's gates, LAYERED under its own.
  *
  * A child of a state-aid rollup is a granting body operating under that
  * regime, so the regime's encoded rules are its rules. They are stored once
@@ -515,15 +515,31 @@ export function loadSignalsDigest(): SignalsDigest | null {
  * payload, and duplicating an audited layer hundreds of times is how it
  * eventually drifts apart.
  *
- * Applied to whichever source loaded the corpus, so the Postgres and JSON
- * paths cannot disagree about which rules a fund has.
+ * ── Inherit-or-replace was the wrong shape ────────────────────────────────
+ * This used to hand down the parent's gates only to children that had NONE of
+ * their own. That reads as a reasonable default and is a trapdoor: a child
+ * that gains a single rule silently loses its whole regime. The eligibility a
+ * fund is judged on then depends on an accident of how much we happened to
+ * encode against that specific body.
+ *
+ * It fired the moment one framework-level exclusion was seeded across the
+ * state-aid channel. Every one of 453 split children went from inheriting its
+ * regime — 1,302 encoded rules for the French R&D regime alone — to holding
+ * exactly that one gate, and the whole channel became unassessable at once.
+ *
+ * A child's own gates now OVERRIDE the parent's by key and add to the rest,
+ * which is what "operating under a regime" actually means: specific rules
+ * refine the general ones, they do not repeal them.
  */
 function resolveInheritedGates(all: DbInstrument[]): DbInstrument[] {
   const byId = new Map(all.map((i) => [i.id, i]));
-  return all.map((i) =>
-    i.gates.length === 0 && i.parentId && byId.get(i.parentId)?.gates.length
-      ? { ...i, gates: byId.get(i.parentId)!.gates }
-      : i);
+  return all.map((i) => {
+    const inherited = i.parentId ? byId.get(i.parentId)?.gates : undefined;
+    if (!inherited?.length) return i;
+    if (!i.gates.length) return { ...i, gates: inherited };
+    const own = new Set(i.gates.map((g) => g.id));
+    return { ...i, gates: [...i.gates, ...inherited.filter((g) => !own.has(g.id))] };
+  });
 }
 
 export function publishableInstruments(): DbInstrument[] {

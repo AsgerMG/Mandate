@@ -560,6 +560,68 @@ export interface EligibilityAnswers {
   exclusionFlags?: string[];
 }
 
+/**
+ * Whether failing a rule on this field is something the founder could change.
+ *
+ * ── The judgement, not the answer ─────────────────────────────────────────
+ * One test, applied per field: **could this founder answer differently before
+ * the deadline, if they decided to?**
+ *
+ *  - `structural` — no. It is what the company IS: where it is established,
+ *    how many people it employs, what it sells, its filed accounts. Failing
+ *    one of these disqualifies on its own; there is nothing to advise.
+ *  - `choice` — yes. A stance, a preference, or a commitment they have not
+ *    made yet. Failing one is an obstacle with a cure, and the cure is the
+ *    useful thing to publish.
+ *
+ * ── Why it lives here ─────────────────────────────────────────────────────
+ * This was first written as a set of field names inside the verdict engine.
+ * That is a register: a field added to the intake later would default to
+ * `choice` without anyone deciding, and it would default in the permissive
+ * direction — a new structural disqualifier silently downgraded to advice.
+ *
+ * Keyed on `keyof EligibilityAnswers`, so the compiler refuses a new intake
+ * field until someone has answered the question above for it. The enforcement
+ * is the point; the current values are just this session's answers to it.
+ */
+export type FieldSeverity = "structural" | "choice";
+
+export const FIELD_SEVERITY: Record<keyof EligibilityAnswers, FieldSeverity> = {
+  // What the company is — none of it changes on the timescale of an application.
+  entityCountries: "structural",
+  activityCountries: "structural",
+  activities: "structural",
+  exclusionFlags: "structural",
+  lossesOverHalfCapital: "structural",
+  fteBand: "structural",
+  turnoverBand: "structural",
+  balanceBand: "structural",
+  ownerOver25: "structural",
+  institutionalOwner: "structural",
+  nonEuControl: "structural",
+  sector: "structural",
+  foundedYear: "structural",
+  developmentStage: "structural",
+  borrowerModel: "structural",
+
+  // Positions a founder can still take, or has simply not taken yet.
+  wouldOpenEntity: "choice",
+  consortium: "choice",
+  cofinancingBand: "choice",
+  conditionality: "choice",
+  useOfFunds: "choice",
+  needBy: "choice",
+  bankRelationship: "choice",
+  institutionalBacking: "choice",
+  ticketBand: "choice",
+};
+
+/** Unknown fields are treated as choices: a rule we cannot classify should
+ *  narrow the brief with an explanation, never disqualify silently. */
+export function fieldSeverity(field: string): FieldSeverity {
+  return FIELD_SEVERITY[field as keyof EligibilityAnswers] ?? "choice";
+}
+
 /** The fixed founder-facing options for every EligibilityAnswers field that's
  *  deferred off the first page (Phase 3B) and eligible for the grounded
  *  adaptive round (Phase 3C) — excludes free-text/numeric fields

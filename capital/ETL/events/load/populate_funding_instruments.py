@@ -246,6 +246,70 @@ def child_slug(text: str) -> str:
     return out[:48] or "unknown"
 
 
+# Activities that no scheme in this corpus funds, expressed once.
+#
+# ── Why these three, and not the longer list ──────────────────────────────
+# Read off the corpus's own gate text rather than recalled from regulation.
+# 32 activity gates across 25 instruments already carry an exclusion list, and
+# they cite their sources: "Article 1(2), (3) and (5) GBER", "Article 1(1) of
+# the De-minimis Regulation", "COSME-excluded sectors". Tobacco, gambling and
+# weapons recur across unrelated countries, regimes and languages (EE, SK, HU,
+# LV, PT), and nothing in the corpus positively funds them.
+#
+# Agriculture, fisheries and financial services appear in those same lists just
+# as often, and are deliberately NOT generalised here: they are excluded from
+# GENERAL schemes because dedicated ones exist for them, so a blanket rule
+# would deny a farm the instruments built for it. The test is not "how often
+# is it excluded" but "is there anywhere in this corpus it could still apply".
+#
+# Encoding this per instrument would mean ~500 near-identical rows free to
+# drift. The exclusion belongs to the framework, not to any one scheme.
+#
+# Measured cause: with only 25 instruments carrying it, a tobacco manufacturer
+# received six confident rows and nothing evaluated as blocked.
+FRAMEWORK_EXCLUDED_ACTIVITIES = ("tobacco", "gambling_betting", "weapons")
+
+STATE_AID_BUCKET = "state_aid_satr"
+
+
+def seed_activity_exclusions(conn: sqlite3.Connection, instruments: list[dict]) -> int:
+    """One framework-level activity exclusion per state-aid instrument."""
+    spec = json.dumps({
+        "op": "not_in", "field": "activities",
+        "allowed": list(FRAMEWORK_EXCLUDED_ACTIVITIES),
+    })
+    requirement = (
+        "Tobacco, gambling and betting, and weapons and munitions are outside "
+        "the scope of this aid. The exclusion is set by the framework the "
+        "scheme is notified under, not by the scheme itself."
+    )
+    note = (
+        "framework exclusion generalised across the state-aid channel from the "
+        "GBER, de-minimis and COSME exclusion lists cited by encoded gates"
+    )
+    n = 0
+    for row in instruments:
+        if row.get("source_family_bucket") != STATE_AID_BUCKET:
+            continue
+        conn.execute("""
+            INSERT INTO eligibility_gates
+              (instrument_id, gate_key, gate_family, requirement, value_spec,
+               intake_field, intake_field_resolved, gate_role,
+               verification_level, verify_note, updated_at)
+            VALUES (?, 'framework_excluded_activity', 'G1_nexus', ?, ?,
+                    'activities', 'activities', 'filter', 'inventory_inferred',
+                    ?, CURRENT_TIMESTAMP)
+            ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
+              requirement=excluded.requirement, value_spec=excluded.value_spec,
+              intake_field=excluded.intake_field,
+              intake_field_resolved=excluded.intake_field_resolved,
+              gate_role=excluded.gate_role, verify_note=excluded.verify_note,
+              updated_at=CURRENT_TIMESTAMP
+        """, (row["id"], requirement, spec, note))
+        n += 1
+    return n
+
+
 def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict[str, Counter]) -> int:
     """Tier 0.5: seed eligibility_gates rows purely from GBER article codes
     already loaded per-event (aid_objective) — zero API cost. Only fires for
@@ -652,10 +716,12 @@ def main() -> None:
             )
 
     n_gates = seed_inventory_gates(conn, fam_aid_objective_votes)
+    n_excl = seed_activity_exclusions(conn, now)
     conn.commit()
     print(f"funding_instruments: {len(now)} rows")
     print(f"funding_instrument_sources: {sum(len(s) for s in fam_sources.values())} rows")
     print(f"eligibility_gates (Tier 0.5, inventory_inferred): {n_gates} rows")
+    print(f"eligibility_gates (framework activity exclusion): {n_excl} rows")
     conn.close()
 
 

@@ -37,7 +37,9 @@ describe("non-answers", () => {
   it("a real answer that fails IS a blocker", () => {
     const inst = instrument([gate({ op: "in", field: "sector", allowed: ["agrifood"] })]);
     const a = assessInstrument(inst, { sector: "software_data_ai" } as never);
-    expect(a.status).toBe("one_blocker");
+    // sector is structural: a software company cannot become an agritech one
+    // before the deadline, so one failure is conclusive.
+    expect(a.status).toBe("blocked");
     expect(a.blockers[0].requirement).toContain("documented requirement");
   });
 });
@@ -53,7 +55,7 @@ describe("list-valued answers", () => {
   it("not_in fails only when a listed value is present", () => {
     const inst = instrument([gate({ op: "not_in", field: "activities", allowed: ["tobacco"] })]);
     expect(assessInstrument(inst, { activities: ["financial_services"] } as never).status).toBe("open");
-    expect(assessInstrument(inst, { activities: ["tobacco"] } as never).status).toBe("one_blocker");
+    expect(assessInstrument(inst, { activities: ["tobacco"] } as never).status).toBe("blocked");
   });
 
   it("an empty list is unanswered, not a pass", () => {
@@ -73,13 +75,13 @@ describe("banded comparators", () => {
     const inst = instrument([gate(spec("band_max", "50-249"))]);
     expect(assessInstrument(inst, { fteBand: "10-49" } as never).status).toBe("open");
     expect(assessInstrument(inst, { fteBand: "50-249" } as never).status).toBe("open");
-    expect(assessInstrument(inst, { fteBand: "250+" } as never).status).toBe("one_blocker");
+    expect(assessInstrument(inst, { fteBand: "250+" } as never).status).toBe("blocked");
   });
 
   it("band_min passes at or above the floor", () => {
     const inst = instrument([gate(spec("band_min", "50-249"))]);
     expect(assessInstrument(inst, { fteBand: "250+" } as never).status).toBe("open");
-    expect(assessInstrument(inst, { fteBand: "1-9" } as never).status).toBe("one_blocker");
+    expect(assessInstrument(inst, { fteBand: "1-9" } as never).status).toBe("blocked");
   });
 
   it("a value outside the band order is unanswerable, not a failure", () => {
@@ -119,5 +121,34 @@ describe("status thresholds", () => {
     const order: VerdictStatus[] = ["open", "one_blocker", "unknown", "blocked"];
     const ranks = order.map((s) => VERDICT_RANK[s]);
     expect(ranks).toEqual([...ranks].sort((x, y) => x - y));
+  });
+});
+
+describe("severity: what failed, not how many", () => {
+  // THE BUG: `blocked` required two failing filters, while the median
+  // instrument carries about two filters in total. A company failing "must be
+  // established in a member state" — the most disqualifying rule there is —
+  // scored one_blocker and published with a footnote. All six out-of-scope
+  // red-team companies were shown six confident rows each.
+  it("one structural failure disqualifies on its own", () => {
+    const inst = instrument([gate({ op: "in", field: "fteBand", allowed: ["1-9"] })]);
+    expect(assessInstrument(inst, { fteBand: "250+" } as never).status).toBe("blocked");
+  });
+
+  it("one failure the founder could still change stays a named obstacle", () => {
+    const inst = instrument([gate({ op: "in", field: "consortium", allowed: ["yes"] })]);
+    const a = assessInstrument(inst, { consortium: "no" } as never);
+    expect(a.status).toBe("one_blocker");
+    expect(a.blockers).toHaveLength(1);
+  });
+
+  // The register this replaced lived in the verdict engine, so a field added
+  // to the intake later would default to "choice" without anyone deciding —
+  // and default in the permissive direction. Severity now sits with the field
+  // definition, where the compiler demands it.
+  it("classifies by the field, so an unknown field cannot disqualify", () => {
+    const inst = instrument([gate({ op: "in", field: "fieldWeHaveNotDefined", allowed: ["x"] })]);
+    expect(assessInstrument(inst, { fieldWeHaveNotDefined: "y" } as never).status)
+      .toBe("one_blocker");
   });
 });

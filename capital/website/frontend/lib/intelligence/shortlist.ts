@@ -413,6 +413,22 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
     fieldChannels, ticketBand, consortiumOk, description, semantic, log,
     founderCountries = [], capitalSought = [],
   } = input;
+  // Establishment is the first condition of every instrument in this corpus:
+  // it is all EU and EEA public money, and none of it is open to a company
+  // with no entity in a covered country. Stated once here rather than encoded
+  // on 706 instruments, because it is a property of the corpus rather than of
+  // any fund.
+  //
+  // A country we cannot resolve is not missing information, it is a company
+  // outside our scope. Reading it as "no info, do not over-filter" is how a
+  // San Francisco business with no European entity was shown German state aid
+  // and five EU programmes.
+  if (founderCountries.length > 0 &&
+      !founderCountries.some((c) => toIso2(c))) {
+    log?.record("SEL-COUNTRY", "*",
+      `no establishment in a covered country (${founderCountries.join(", ")})`);
+    return [];
+  }
   const codes = new Set([...fieldChannels].filter((c) => channelServesBand(c, ticketBand)));
   for (const c of fieldChannels) {
     if (!channelServesBand(c, ticketBand)) {
@@ -533,6 +549,17 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         channel, founderCountries, capitalSought, ticketBand, description, semantic, log,
       });
       if (!leaves.length) {
+        // A channel-level row is an honest stand-in when we simply hold no
+        // leaf detail. It is NOT honest when the reason there are no leaves is
+        // that this founder's country is not served: selectLeafInstruments
+        // returns nothing for a national channel precisely so we say "nothing
+        // here", and publishing "National development banks" instead told a
+        // San Francisco company with no European entity to go and find one.
+        if (NATIONAL_CHANNELS.has(channel) && founderCountries.length > 0) {
+          log?.record("SEL-NATIONAL-EMPTY", channel,
+            "national channel with no instrument in the founder's countries");
+          return [];
+        }
         return [{ ...base, instrument: INSTRUMENT_NAME[channel] ?? channelLabel(channel) } as InstrumentRow];
       }
       return leaves.map((leaf) => ({

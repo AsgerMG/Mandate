@@ -24,7 +24,39 @@
 // failure that would cost a founder months.
 import { loadDbInstruments, type DbGate, type DbInstrument } from "./corpus";
 import { evaluateSpec, type ValueSpec } from "./comparator";
-import type { EligibilityAnswers } from "./types";
+import { fieldSeverity, type EligibilityAnswers } from "./types";
+
+/**
+ * Can this founder do anything about a failed rule?
+ *
+ * ── Why severity, not arithmetic ───────────────────────────────────────────
+ * `blocked` used to mean "two or more filters failed". The median publishable
+ * instrument carries TWO filters in total, so failing the single most
+ * disqualifying rule it has — establishment, headcount, an excluded activity —
+ * left the fund published with a polite note. Every out-of-scope company in
+ * the red-team set got a full table that way: a US business with no European
+ * entity was offered German state aid, and a 40,000-person corporate was
+ * offered SME-only lanes.
+ *
+ * What makes a failure fatal is not how many friends it has. It is whether the
+ * founder could turn up differently. Where they are established, how many
+ * people they employ, what they sell, who owns them: not this quarter. Whether
+ * they will run a consortium, co-finance a quarter of the cost, or open a
+ * local entity: a decision, and the brief exists to put that decision in front
+ * of them.
+ *
+ * Read off the intake field the gate is encoded against, so it holds for
+ * instruments and countries nobody has looked at yet.
+ *
+ * The classification itself lives with the fields in types.ts, keyed so the
+ * compiler demands it for every intake field. Keeping it here made it a list
+ * this engine happened to hold, which a new field could quietly miss.
+ */
+
+/** True when failing this rule is a fact about the company, not a choice. */
+export function isStructural(field: string): boolean {
+  return fieldSeverity(field) === "structural";
+}
 
 export type VerdictStatus =
   /** Nothing we can check rules this founder out. */
@@ -82,8 +114,11 @@ export function assessInstrument(
     else base.blockers.push({ requirement: gate.requirement, field: spec.field, verified: gate.verified });
   }
 
+  // One structural failure is conclusive. Two curable ones are a conversation.
+  const structural = base.blockers.filter((b) => isStructural(b.field));
   if (base.checked === 0) base.status = "unknown";
   else if (base.blockers.length === 0) base.status = "open";
+  else if (structural.length > 0) base.status = "blocked";
   else if (base.blockers.length === 1) base.status = "one_blocker";
   else base.status = "blocked";
   return base;
