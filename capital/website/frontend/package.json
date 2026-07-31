@@ -20,6 +20,7 @@
     "funnel": "npx tsx scripts/funnel_bench.ts",
     "preview:pdf": "bash scripts/preview_pdf.sh",
     "shot": "bash scripts/shot.sh",
+    "redteam": "NO_PG=1 npx tsx scripts/red_team.ts",
     "drive": "node scripts/drive.mjs"
   },
   "dependencies": {

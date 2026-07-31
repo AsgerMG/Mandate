@@ -178,11 +178,15 @@ export async function planAdaptiveScreen(
             source: { type: "string", enum: ["field", "gate", "commercial"] },
             /** field name, gate key, or commercial topic */
             ref: { type: "string" },
+            /** For source "gate" and "commercial" only: the whole question. */
             question: { type: "string" },
+            /** For source "field" ONLY: a short clause naming this company's
+             *  situation, which the interface puts BEFORE the fixed stem. */
+            leadIn: { type: "string" },
             /** Written only for gate and commercial questions. */
             options: { type: "array", items: { type: "string" } },
           },
-          required: ["source", "ref", "question", "options"],
+          required: ["source", "ref", "question", "leadIn", "options"],
         },
       },
     },
@@ -285,8 +289,16 @@ export async function planAdaptiveScreen(
           `- Every option must be a substantive, checkable state of affairs. ` +
           `No "a mix of the above", "other", "none", "not sure": the ` +
           `interface appends its own.\n` +
-          `- For source "field", copy the ref exactly and leave options empty; ` +
-          `the interface renders the fixed set.\n\n` +
+          `- For source "field": copy the ref exactly, leave options empty, ` +
+          `and leave "question" empty too. The stem shown to the founder is ` +
+          `fixed and the interface renders it verbatim. Your only contribution ` +
+          `is "leadIn": at most 12 words naming this company's situation, ` +
+          `which is placed BEFORE the stem (e.g. "You sell to clinics."). ` +
+          `Leave leadIn empty when nothing useful can be said. You cannot ` +
+          `reword these questions, because a reworded stem stops matching the ` +
+          `options underneath it.\n` +
+          `- For source "gate" and "commercial": write the whole question and ` +
+          `leave leadIn empty.\n\n` +
           `Return ONLY the JSON object for the schema.`,
       }],
     }), INTAKE_MODEL);
@@ -296,7 +308,7 @@ export async function planAdaptiveScreen(
       .map((b) => b.text).join("");
     const parsed = extractJson<{
       theme: string;
-      questions: { source: string; ref: string; question: string; options: string[] }[];
+      questions: { source: string; ref: string; question: string; leadIn?: string; options: string[] }[];
     }>(text);
 
     const gateByKey = new Map(projectGates.map((g) => [`${g.instrumentId}::${g.gateKey}`, g]));
@@ -305,7 +317,9 @@ export async function planAdaptiveScreen(
     const written: ProjectQuestion[] = [];
 
     for (const q of parsed.questions ?? []) {
-      if (!q?.question?.trim() || seenRefs.has(q.ref)) continue;
+      // A field question needs no `question` of its own: its stem is fixed.
+      const hasBody = q.source === "field" ? Boolean(q.ref) : Boolean(q.question?.trim());
+      if (!hasBody || seenRefs.has(q.ref)) continue;
       // The cap is enforced HERE, not asked for in the prompt: a budget a
       // model may round up is not a budget.
       if (fields.length + written.length >= SCREEN_QUESTION_CAP) break;
@@ -316,8 +330,19 @@ export async function planAdaptiveScreen(
         .slice(0, 5);
 
       if (q.source === "field" && fieldNames.includes(q.ref)) {
+        // The stem is rendered VERBATIM from FIELD_ENUM_HINTS and the model
+        // contributes only a lead-in. Letting it tailor the wording put a
+        // polar question over a multi-select twice — "are you prepared for a
+        // board seat?" above a list of commitments — because a reworded stem
+        // can stop matching options it does not control. Composed this way the
+        // mismatch cannot occur, so nothing downstream has to detect it.
+        const stem = FIELD_ENUM_HINTS[q.ref].stem;
+        const lead = deDash((q.leadIn ?? "").trim()).replace(/\s*$/, "");
         seenRefs.add(q.ref);
-        fields.push({ field: q.ref, question: deDash(q.question.trim()) });
+        fields.push({
+          field: q.ref,
+          question: lead ? `${lead.replace(/[.\s]*$/, "")}. ${stem}` : stem,
+        });
       } else if (q.source === "gate" && gateByKey.has(q.ref) && options.length >= 2) {
         const g = gateByKey.get(q.ref)!;
         seenRefs.add(q.ref);
