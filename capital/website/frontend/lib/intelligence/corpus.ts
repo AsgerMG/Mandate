@@ -18,6 +18,15 @@ const COUNTRY_ISO: Record<string, string> = {
   norway: "NO", poland: "PL", portugal: "PT", romania: "RO", slovakia: "SK",
   slovenia: "SI", spain: "ES", sweden: "SE", switzerland: "CH",
   "united kingdom": "GB", uk: "GB", "great britain": "GB", britain: "GB",
+  // Enlargement and neighbourhood countries. Present in the NUTS
+  // classification and in the corpus, and absent here until check_regions
+  // started asserting that every country the corpus holds can actually be
+  // resolved. Each missing name failed the same silent way: the region
+  // question simply stopped being asked, for that country only.
+  liechtenstein: "LI", turkey: "TR", "türkiye": "TR", serbia: "RS",
+  "north macedonia": "MK", albania: "AL", montenegro: "ME",
+  "bosnia and herzegovina": "BA", moldova: "MD", ukraine: "UA",
+  kosovo: "XK",
 };
 
 export function toIso2(country?: string): string {

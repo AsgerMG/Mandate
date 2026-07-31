@@ -76,8 +76,18 @@ export function regionOptions(countryCodes: string[]): { value: string; label: s
 '''
 
 
+# Eurostat does not use ISO country codes for two members: NUTS writes EL for
+# Greece and UK for the United Kingdom, where ISO writes GR and GB. Everything
+# else in this product is keyed by ISO2, so the mismatch is resolved once,
+# here, rather than left for each caller to trip over. It is exactly the kind
+# of difference that fails silently: the lookup simply returns nothing and the
+# region question stops being asked for that country alone.
+NUTS_TO_ISO2 = {"EL": "GR", "UK": "GB"}
+
+
 def build() -> str:
     regions = json.loads(SRC.read_text())["regions"]
+    regions = {NUTS_TO_ISO2.get(cc, cc): rs for cc, rs in regions.items()}
     lines = []
     for cc, rs in sorted(regions.items()):
         # Names repeat across levels (Ile-de-France is both FR1 and FR10). Keep

@@ -1,5 +1,6 @@
 // Shared types for the competitive EU-funding intelligence agent.
 import { regionOptions } from "./regions.generated";
+import { toIso2 } from "./corpus";
 
 /** Committed EUR on one funding channel, from the corpus. */
 export interface ChannelAmount {
@@ -675,7 +676,12 @@ export const FIELD_ENUM_HINTS: Record<string, {
     // means a consumer that has not been taught about optionsFor asks nothing
     // rather than asking something wrong.
     options: [],
-    optionsFor: (a) => regionOptions(a.entityCountries ?? []),
+    // entityCountries holds full English names ("France"), not ISO2 — the
+    // region table is keyed by code, so the two must be reconciled here.
+    // Without it regionOptions returned nothing and the question was never
+    // asked, which is the silent kind of failure: no error, just a field that
+    // quietly stops existing.
+    optionsFor: (a) => regionOptions((a.entityCountries ?? []).map(toIso2).filter(Boolean)),
   },
   // These three moved off the first screen on 2026-07-29 when it shrank from
   // eleven questions to five. Without a hint entry the adaptive round SKIPS a
