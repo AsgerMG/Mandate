@@ -392,7 +392,8 @@ def main() -> None:
             key = (fam, r["granting_authority"][:200], r["call_id"])
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
-                capital=Counter(), objectives=Counter(), titles=Counter()))
+                capital=Counter(), objectives=Counter(), titles=Counter(),
+                sectors=Counter()))
             c["events"] += 1
             c["eur"] += (r["grant_amount_eur"] or 0) + (r["equity_amount_eur"] or 0) + (r["debt_amount_eur"] or 0)
             c["companies"].add(r["parent_group"] or r["company_id"])
@@ -403,6 +404,8 @@ def main() -> None:
                 c["objectives"][r["aid_objective"]] += 1
             if r["project_title"]:
                 c["titles"][r["project_title"]] += 1
+            if r["sector_top"]:
+                c["sectors"][r["sector_top"]] += 1
 
     families = set(fam_events)
     all_ids = families | SYNTHETIC_PARENTS | {fid for fid, _ in FRAMEWORK_INSTRUMENTS}
@@ -534,7 +537,16 @@ def main() -> None:
             sample_project_titles=json.dumps([t for t, _ in titles.most_common(5)]) if titles else None,
             scheme_code=scheme,
             application_url=None,
-            sector_mix=parent.get("sector_mix"),
+            # A child's OWN funding history, not its parent's.
+            #
+            # Inheriting the parent's mix made every child of one regime
+            # identical on the sector signal: a film agency, a water agency and
+            # the whole national R&D framework all read as
+            # 28% energy / 23% other / 21% software, so nothing could tell them
+            # apart and a Paris software company was offered a cinema fund.
+            # Each child awards to its own recipients; that is the signal.
+            sector_mix=json.dumps(dict(c["sectors"].most_common(8)))
+                       if c["sectors"] else parent.get("sector_mix"),
             # Who a founder can actually approach under this scheme. Empty when
             # only departments ever awarded on it, which is itself worth
             # knowing: it means the row has no front door we can name.
