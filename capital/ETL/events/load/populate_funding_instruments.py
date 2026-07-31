@@ -225,6 +225,36 @@ def split_families(conn) -> set[str]:
 
 MIN_CHILD_EVENTS = 40
 
+# Below this many priced awards a "typical" award is one or two events wearing
+# a statistic's clothing, and a founder would plan around it. Publish nothing
+# rather than a number we cannot stand behind.
+MIN_AWARDS_FOR_TYPICAL = 5
+
+
+def award_percentiles(awards: list[float]) -> tuple[float | None, float | None, float | None, int]:
+    """What this instrument typically gives: p25 / p50 / p75, and the n behind them.
+
+    Percentiles rather than a mean, because public funding is heavily skewed:
+    one IPCEI tranche or a single large loan drags an average to a number no
+    applicant has ever received. The median is what a company like this one
+    actually got.
+
+    Returned with its own n so the caller can refuse to publish a statistic
+    computed from too little, and so the brief can say how many awards it rests
+    on rather than implying certainty.
+    """
+    if len(awards) < MIN_AWARDS_FOR_TYPICAL:
+        return None, None, None, len(awards)
+    xs = sorted(awards)
+
+    def pct(p: float) -> float:
+        # Nearest-rank. No interpolation: these are real awards actually made,
+        # and a blended value between two of them is not one of them.
+        i = min(len(xs) - 1, max(0, int(round(p * (len(xs) - 1)))))
+        return round(xs[i], 2)
+
+    return pct(0.25), pct(0.50), pct(0.75), len(xs)
+
 
 # A government department NOTIFIES an aid regime; regional agencies and
 # promotional banks disburse under it. Both appear as granting authorities on
@@ -425,6 +455,11 @@ def main() -> None:
     fam_companies: dict[str, set] = defaultdict(set)
     fam_events: Counter = Counter()
     fam_eur: dict[str, float] = defaultdict(float)
+    # Every individual award, kept so we can say what this instrument typically
+    # GIVES. total_eur says how big the scheme is; a founder needs to know what
+    # a company like theirs would receive, and across the corpus that ranges
+    # from EUR 16k at p10 to EUR 1.1M at p90.
+    fam_awards: dict[str, list[float]] = defaultdict(list)
     fam_years: dict[str, list[int]] = defaultdict(list)
     fam_capital_votes: dict[str, Counter] = defaultdict(Counter)
     fam_ndb_votes: dict[str, Counter] = defaultdict(Counter)
@@ -450,7 +485,10 @@ def main() -> None:
         fam_sources[fam].add(r["source"])
         fam_companies[fam].add(r["parent_group"] or r["company_id"])
         fam_events[fam] += 1
-        fam_eur[fam] += (r["grant_amount_eur"] or 0) + (r["equity_amount_eur"] or 0) + (r["debt_amount_eur"] or 0)
+        award = (r["grant_amount_eur"] or 0) + (r["equity_amount_eur"] or 0) + (r["debt_amount_eur"] or 0)
+        fam_eur[fam] += award
+        if award > 0:
+            fam_awards[fam].append(award)
 
         year = None
         for d in (r["project_started"], r["call_deadline"]):
@@ -499,9 +537,11 @@ def main() -> None:
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
                 capital=Counter(), objectives=Counter(), titles=Counter(),
-                sectors=Counter()))
+                sectors=Counter(), awards=[]))
             c["events"] += 1
-            c["eur"] += (r["grant_amount_eur"] or 0) + (r["equity_amount_eur"] or 0) + (r["debt_amount_eur"] or 0)
+            c["eur"] += award
+            if award > 0:
+                c["awards"].append(award)
             c["companies"].add(r["parent_group"] or r["company_id"])
             if year:
                 c["years"].append(year)
@@ -527,6 +567,7 @@ def main() -> None:
         events = fam_events.get(fam, 0)
         companies = len(fam_companies.get(fam, ()))
         total_eur = round(fam_eur.get(fam, 0.0), 2)
+        a25, a50, a75, an = award_percentiles(fam_awards.get(fam, []))
         years = fam_years.get(fam, [])
         first_year, last_year = (min(years), max(years)) if years else (None, None)
 
@@ -595,7 +636,8 @@ def main() -> None:
             administering_body_share=administering_body_share, ndb_id=ndb_id,
             source_family_bucket=source_family_bucket, capital_type=capital_type,
             capital_type_basis=capital_basis, event_count=events, company_count=companies,
-            total_eur=total_eur, first_year=first_year, last_year=last_year,
+            total_eur=total_eur,
+            award_p25=a25, award_p50=a50, award_p75=a75, award_n=an, first_year=first_year, last_year=last_year,
             is_framework=is_framework, sample_project_titles=sample_titles,
             sector_mix=json.dumps(dict(fam_sector_votes.get(fam, Counter()).most_common(8)))
                        if fam_sector_votes.get(fam) else None,
@@ -621,6 +663,9 @@ def main() -> None:
         years = c["years"]
         capital_type, capital_basis = family_capital_type(c["capital"])
         titles = c["titles"]
+        # A child's OWN awards, for the same reason its sector mix is its own:
+        # the regime's median says nothing about what THIS body hands out.
+        c25, c50, c75, cn = award_percentiles(c["awards"])
         now.append(dict(
             id=f"{fam}__{child_slug(scheme)}__{child_slug(authority)}",
             parent_id=fam,
@@ -637,6 +682,7 @@ def main() -> None:
             capital_type=capital_type, capital_type_basis=capital_basis,
             event_count=c["events"], company_count=len(c["companies"]),
             total_eur=round(c["eur"], 2),
+            award_p25=c25, award_p50=c50, award_p75=c75, award_n=cn,
             first_year=min(years) if years else None,
             last_year=max(years) if years else None,
             is_framework=0,
@@ -670,6 +716,9 @@ def main() -> None:
         row.setdefault("application_url", None)
         row.setdefault("sector_mix", None)
         row.setdefault("scheme_operators", None)
+        for k in ("award_p25", "award_p50", "award_p75"):
+            row.setdefault(k, None)
+        row.setdefault("award_n", 0)
 
     # ── Reconcile, do not wipe ───────────────────────────────────────────────
     # This used to DELETE every non-framework eligibility gate on every run.
@@ -742,12 +791,14 @@ def main() -> None:
                administering_body_share, ndb_id,
                source_family_bucket, capital_type, capital_type_basis, event_count,
                company_count, total_eur, first_year, last_year, is_framework,
-               sample_project_titles, scheme_code, application_url, sector_mix, scheme_operators, updated_at)
+               sample_project_titles, scheme_code, application_url, sector_mix, scheme_operators,
+               award_p25, award_p50, award_p75, award_n, updated_at)
             VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
                     :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
-                    :sample_project_titles,:scheme_code,:application_url,:sector_mix,:scheme_operators, CURRENT_TIMESTAMP)
+                    :sample_project_titles,:scheme_code,:application_url,:sector_mix,:scheme_operators,
+                    :award_p25,:award_p50,:award_p75,:award_n, CURRENT_TIMESTAMP)
         """, r)
 
     for fam, srcs in fam_sources.items():

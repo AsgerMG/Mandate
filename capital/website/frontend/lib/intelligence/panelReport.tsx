@@ -12,6 +12,7 @@
 // rather than rendering blank, which was a real defect: an unassessed fund
 // looked identical to a cleared one except for a missing green line.
 import { useEffect, useState } from "react";
+import { fmtEur } from "../format";
 
 /** Shared with panel.tsx: the serif face the brief is set in. */
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
@@ -145,6 +146,17 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                 {!pending && (
                   <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
                     {r.ticket}
+                  </span>
+                )}
+                {/* What this instrument has actually paid, where enough real
+                    awards stand behind it to say. The curated ticket above is
+                    the whole channel's range; this is the leaf's own median,
+                    and the two are routinely an order of magnitude apart. The
+                    count travels with it so the founder can weigh it. */}
+                {!pending && r.typicalAward != null && (
+                  <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
+                    {`Typical award ${fmtEur(r.typicalAward)}`}
+                    {r.typicalAwardN ? ` · ${r.typicalAwardN.toLocaleString()} awards` : ""}
                   </span>
                 )}
                 {/* Dormancy, stated rather than hidden. A brief that sends a

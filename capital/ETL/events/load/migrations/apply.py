@@ -322,6 +322,20 @@ def apply_014(conn: sqlite3.Connection) -> None:
     print("  applied 014_administering_body_share.sql")
 
 
+def apply_015(conn: sqlite3.Connection) -> None:
+    """award_p25/p50/p75 + award_n — what an instrument typically GIVES.
+
+    total_eur is the size of the scheme, not of an award, and the corpus spans
+    EUR 16k at p10 to EUR 1.1M at p90 (see the SQL). 92% of events already
+    carry an amount; this records what was always derivable."""
+    if column_exists(conn, "funding_instruments", "award_p50"):
+        print("  skip 015 (already applied — award_p50 exists)")
+        return
+    sql = (MIG_DIR / "015_award_percentiles.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 015_award_percentiles.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -334,6 +348,7 @@ MIGRATIONS = {
     "012": apply_012,
     "013": apply_013,
     "014": apply_014,
+    "015": apply_015,
 }
 
 

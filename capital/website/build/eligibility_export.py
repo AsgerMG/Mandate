@@ -37,7 +37,8 @@ def main() -> None:
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
-               last_year, scheme_code, application_url, sector_mix, scheme_operators
+               last_year, scheme_code, application_url, sector_mix, scheme_operators,
+               award_p25, award_p50, award_p75, award_n
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -119,6 +120,13 @@ def main() -> None:
         # embeddings match on vocabulary and vocabulary travels between
         # domains; funding history does not.
         "sectorMix": json.loads(inst["sector_mix"]) if inst["sector_mix"] else None,
+        # What this instrument typically AWARDS, as opposed to how big it is.
+        # Carried with its n so nothing can quote a median without knowing how
+        # many real awards stand behind it.
+        "awardP25": inst["award_p25"],
+        "awardP50": inst["award_p50"],
+        "awardP75": inst["award_p75"],
+        "awardN": inst["award_n"] or 0,
         # Who actually disburses under this scheme. A department notifies a
         # regime; regional agencies and promotional banks run it. Empty when
         # only departments ever awarded, which is itself worth knowing: the row

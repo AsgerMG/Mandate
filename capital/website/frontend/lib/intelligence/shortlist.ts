@@ -189,7 +189,21 @@ export function instrumentServesCapital(instrumentCapitalType: string, capitalSo
   return allowed.size === 0 || allowed.has(instrumentCapitalType);
 }
 
+/**
+ * What a company like this one would actually receive.
+ *
+ * The median of the instrument's own awards, where we hold enough of them.
+ * This used to be totalEur / eventCount — a MEAN, and public funding is
+ * heavily skewed: one IPCEI tranche or a single large loan drags an average to
+ * a figure no applicant has ever been paid. The median is an amount somebody
+ * really got.
+ *
+ * Falls back to the mean where fewer than five priced awards exist, because a
+ * rough number beats none for ranking, and scaleFit already treats an unknown
+ * scale as neutral rather than low.
+ */
 export function typicalAward(inst: DbInstrument): number | null {
+  if (inst.awardP50 != null && inst.awardP50 > 0) return inst.awardP50;
   return inst.eventCount > 0 ? inst.totalEur / inst.eventCount : null;
 }
 
@@ -582,6 +596,14 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         applicationUrl: leaf.application?.url ?? undefined,
         applicationChannel: leaf.application?.channel ?? undefined,
         applicationTimeline: leaf.application?.timeline ?? undefined,
+        // The channel's curated ticket line describes a whole programme
+        // family. This leaf's own median describes what it has really paid,
+        // and the two can be an order of magnitude apart: ADEME's curated
+        // range sat against a measured median of EUR 20,000. Shown WITH its n,
+        // because a median over 12 awards and one over 12,000 are different
+        // claims and the row should not present them identically.
+        typicalAward: leaf.awardP50 ?? undefined,
+        typicalAwardN: leaf.awardN ?? undefined,
       } as InstrumentRow));
     })
     .sort((a, b) => {

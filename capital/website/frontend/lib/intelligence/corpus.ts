@@ -217,6 +217,16 @@ export interface DbInstrument {
   /** Bodies that actually disburse under this instrument's scheme, by volume.
    *  A department notifies a regime; agencies run it. */
   schemeOperators?: string[] | null;
+  /** What this instrument typically AWARDS — p25/p50/p75 of its own real
+   *  awards, with the n behind them. Distinct from totalEur, which is the size
+   *  of the SCHEME: IPCEI Hy2infra has a median award of EUR 127.5M and OKTE
+   *  EUR 275, and before this they were indistinguishable rows. Null below
+   *  five priced awards, where a "typical" award is one or two events wearing
+   *  a statistic's clothing. */
+  awardP25?: number | null;
+  awardP50?: number | null;
+  awardP75?: number | null;
+  awardN?: number;
   gates: DbGate[];
 }
 
@@ -271,7 +281,8 @@ export async function hydrateDbInstruments(): Promise<void> {
                   event_count, company_count, total_eur, source_family_bucket,
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
-                  scheme_code, application_url, sector_mix, scheme_operators
+                  scheme_code, application_url, sector_mix, scheme_operators,
+                  award_p25, award_p50, award_p75, award_n
            FROM funding_instruments`,
         ),
         // PHASE ONE: everything needed to RANK and to reach a verdict, and
@@ -353,6 +364,10 @@ export async function hydrateDbInstruments(): Promise<void> {
           if (!raw) return null;
           try { return typeof raw === "string" ? JSON.parse(raw) : raw; } catch { return null; }
         })(),
+        awardP25: inst.award_p25 ?? null,
+        awardP50: inst.award_p50 ?? null,
+        awardP75: inst.award_p75 ?? null,
+        awardN: inst.award_n ?? 0,
         gates: gatesByInstrument.get(inst.id) ?? [],
       })));
     } finally {

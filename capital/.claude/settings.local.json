@@ -279,7 +279,11 @@
       "Bash(sqlite3 -column data/db.sqlite ' *)",
       "Bash(perl -pi -e 's|^import \\\\{ scoreEase, whyEasyLine \\\\} from \"\\\\./ease\";$|import { scoreEase, whyEasyLine } from \"./ease\";\\\\nimport { assessAll, VERDICT_RANK, type VerdictStatus } from \"./verdict\";|' lib/intelligence/pipeline.ts)",
       "Bash(perl -pi -e 's|import \\\\{ assessAll, VERDICT_RANK, type VerdictStatus \\\\} from \"\\\\./verdict\";|import { assessAll, VERDICT_RANK } from \"./verdict\";|' lib/intelligence/pipeline.ts)",
-      "Bash(python3 ETL/terms/audit_encoding_vs_reality.py)"
+      "Bash(python3 ETL/terms/audit_encoding_vs_reality.py)",
+      "Bash(NO_PG=1 npm run shadow)",
+      "Bash(NO_PG=1 npx tsx scripts/check_contracts.ts)",
+      "Bash(NO_PG=1 npx tsx -e ' *)",
+      "Bash(python3 ETL/terms/audit_grounding.py)"
     ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [

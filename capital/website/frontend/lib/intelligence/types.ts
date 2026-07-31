@@ -157,6 +157,12 @@ export interface InstrumentRow {
   /** "invest" = a vehicle that negotiates and takes equity, not a fund you
    *  apply to. Only ever shown to a founder who asked for equity. */
   accessMode?: "apply" | "invest";
+  /** Median of this instrument's OWN awards, and how many stand behind it.
+   *  Distinct from `ticket`, which is the curated range for the whole channel:
+   *  a family-level range cannot separate an instrument with a EUR 20k median
+   *  from one with a EUR 127M median, and both sit under the same channel. */
+  typicalAward?: number;
+  typicalAwardN?: number;
   /** Where to apply, when we hold a verified one. */
   applicationUrl?: string;
   /** Curated application route: how you apply, and when. */
@@ -200,6 +206,13 @@ export interface InstitutionEntry {
   schemeCode?: string;
   /** Bodies a founder can actually approach under this scheme. */
   schemeOperators?: string[];
+  /** Median of this vehicle's OWN awards, with the number behind it.
+   *  `ticket` above is the curated range for the whole channel and cannot
+   *  separate a EUR 20k scheme from a EUR 127M one sitting in the same family.
+   *  This is measured from real awards, so it is the honest answer to the
+   *  question a founder asks first: how much would I actually get? */
+  typicalAward?: number;
+  typicalAwardN?: number;
   /** "invest" rows are pitched, not applied to. */
   accessMode?: "apply" | "invest";
   /** How to apply, curated from the scheme's own document, and where. Absent

@@ -75,7 +75,23 @@ def main() -> None:
                is_framework
         FROM funding_instruments
     """))
-    latest = conn.execute("SELECT MAX(last_year) FROM funding_instruments").fetchone()[0] or 0
+    # The reference year for staleness, chosen robustly.
+    #
+    # MAX(last_year) is 2027 on exactly ONE instrument, and measuring against
+    # it made everything from 2024 back read as stale: 297 instruments, versus
+    # roughly 189 against a sane reference. A metric inflated by ~100 by a
+    # single outlier is worse than no metric, because it looks authoritative.
+    #
+    # The most recent year the corpus is actually ACTIVE in — the newest year
+    # shared by a meaningful number of instruments — cannot be moved by one
+    # row, and needs no hand-set constant.
+    _row = conn.execute("""
+        SELECT last_year FROM funding_instruments
+         WHERE last_year IS NOT NULL
+         GROUP BY last_year HAVING COUNT(*) >= 10
+         ORDER BY last_year DESC LIMIT 1
+    """).fetchone()
+    latest = _row[0] if _row else 0
 
     # ── gate evidence, per instrument ──────────────────────────────────────
     n_eval: Counter[str] = Counter()

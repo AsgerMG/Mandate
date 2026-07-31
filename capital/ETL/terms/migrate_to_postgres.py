@@ -91,7 +91,10 @@ def main() -> None:
             # silently returns its neutral value for every fund — a ranking
             # that differs from the measured one with nothing to show for it.
             for ddl in ("scheme_code TEXT", "application_url TEXT", "sector_mix TEXT",
-                        "scheme_operators TEXT"):
+                        "scheme_operators TEXT",
+                        # What the instrument typically awards (migration 015).
+                        "award_p25 DOUBLE PRECISION", "award_p50 DOUBLE PRECISION",
+                        "award_p75 DOUBLE PRECISION", "award_n INTEGER"):
                 cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
             # Curated application routes live in their own table because
             # funding_instruments is truncated on every publish.
