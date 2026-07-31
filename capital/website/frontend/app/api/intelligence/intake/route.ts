@@ -7,6 +7,7 @@ import {
 } from "@/lib/intelligence/gateReach";
 import {
 } from "@/lib/intelligence/pipeline";
+import { instById } from "@/lib/intelligence/shortlist";
 import {
   planAdaptiveScreen,
   inferProfileSignal,
@@ -110,7 +111,16 @@ export async function POST(request: NextRequest) {
     // technology readiness twice and the brief published both answers. See
     // planAdaptiveScreen.
     const [screen, profileSignal] = await Promise.all([
-      planAdaptiveScreen(req, needsRound ? genericFields : [], projectGates),
+      // The shortlist the screen exists to sharpen. Passing it is what lets
+      // the planner ask questions that decide between real candidates rather
+      // than questions about gates in the abstract.
+      planAdaptiveScreen(req, needsRound ? genericFields : [], projectGates,
+        (body.candidateInstrumentIds ?? []).slice(0, 8).map((id) => {
+          const inst = instById().get(id);
+          return inst
+            ? { name: inst.name, country: inst.country, supportType: inst.capitalType }
+            : null;
+        }).filter((c): c is { name: string; country: string; supportType: string } => Boolean(c))),
       body.wantProfileSignal ? inferProfileSignal(req) : Promise.resolve(null),
     ]);
 

@@ -48,6 +48,12 @@ reporting, not prose to publish. Say what the row is and let it stand.
   is not, that is a scoring failure to report, not prose to publish.
 - FUND-7 (hard) The institution named must be a body a founder can approach. A
   government department administers schemes; it is not itself a door.
+
+  The test: **could they contact this body about this money and get a reply?**
+  It holds wherever the name appears, prose included. A bullet telling a solo
+  founder to "start with the federal ministry" fails it exactly as a table row
+  would, and the ministry-run schemes carry the operators who actually
+  disburse for precisely this reason.
 - FUND-8 (judged) `whyEligible`, at most 25 words, is specific to this company
   and grounded in the eligibility screen and its answers. Where a project
   answer bears on this fund, use it: name the requirement and how this company

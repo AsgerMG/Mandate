@@ -147,12 +147,18 @@ export async function planAdaptiveScreen(
   req: IntelligenceRequest,
   openFields: OpenFieldEvidence[],
   projectGates: ProjectGateEvidence[],
+  /** The funds currently in front of this founder, best first. The screen
+   *  exists to sharpen THIS list, and a planner that cannot see it is
+   *  choosing questions blind. */
+  candidates: { name: string; country: string; supportType: string }[] = [],
 ): Promise<PlannedScreen | null> {
   const facts = knownFacts(req, req.eligibility,
     "## What the founder has ALREADY told us. Never ask any of this again.");
   const enumFields = openFields.filter((f) => FIELD_ENUM_HINTS[f.field]);
   if (!enumFields.length && !projectGates.length && !req.description) return null;
 
+  const candidateBlock = candidates.slice(0, 8)
+    .map((c) => `  - ${c.name} (${c.country}, ${c.supportType})`).join("\n");
   const gateKeys = projectGates.map((g) => `${g.instrumentId}::${g.gateKey}`);
   const fieldNames = enumFields.map((f) => f.field);
 
@@ -212,6 +218,22 @@ export async function planAdaptiveScreen(
           `applying for European public funding. You are choosing from three ` +
           `pools and you can see all of them, so the screen must read as one ` +
           `coherent set rather than three lists stapled together.\n\n` +
+          `## Who you are writing for\n` +
+          `A founder or operator running a company: commercial, numerate, ` +
+          `short on time, fluent about their own customers and revenue and ` +
+          `completely new to public funding. Write the way a sharp investor ` +
+          `asks questions in a first meeting: direct, concrete, one thing per ` +
+          `question, no throat-clearing and no deference. They will answer in ` +
+          `seconds if the question is about their business, and abandon the ` +
+          `screen if it reads like a compliance form.\n\n` +
+          `## What this screen is FOR\n` +
+          `These funds are currently in front of them, best first:\n` +
+          `${candidateBlock || "  (shortlist not available)"}\n` +
+          `The screen exists to sharpen that list — to confirm which of these ` +
+          `they can really go after and to drop the ones they cannot. Judge ` +
+          `every candidate question by that: if the answer would not change ` +
+          `which of these funds they end up with, or could not be used to ` +
+          `argue their case to one of them, it does not earn a slot.\n\n` +
           `${facts}\n\n` +
           `${req.description ? fence("company description", declaw(req.description).text) + "\n\n" : ""}` +
           `## Pool A: eligibility fields with FIXED options (source "field")\n` +
@@ -256,6 +278,10 @@ export async function planAdaptiveScreen(
           `- Include at least one and at most two from Pool C when a ` +
           `description exists: positioning has no other source.\n` +
           `- The founder answers from memory, without opening a document.\n` +
+          `- A question about legal or financial STATUS (solvency, ownership, ` +
+          `debts, sanctions) reads as suspicion unless you say why it is being ` +
+          `asked. Where you ask one, put the reason in the question itself, in ` +
+          `one clause, in terms of what it unlocks or blocks for them.\n` +
           `- Every option must be a substantive, checkable state of affairs. ` +
           `No "a mix of the above", "other", "none", "not sure": the ` +
           `interface appends its own.\n` +

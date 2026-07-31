@@ -55,7 +55,12 @@ async function main() {
     const projectGates = openProjectGatesForShortlist(verdict.candidateInstrumentIds, eligibility, {
       deprioritiseFields: openFields.map((f) => f.field), limit: 6,
     });
-    const screen = await planAdaptiveScreen(req, openFields.slice(0, 6), projectGates);
+    const { instById } = await import("../lib/intelligence/shortlist");
+    const candidates = verdict.candidateInstrumentIds.slice(0, 8).map((id) => {
+      const i = instById().get(id);
+      return i ? { name: i.name, country: i.country, supportType: i.capitalType } : null;
+    }).filter((c): c is { name: string; country: string; supportType: string } => Boolean(c));
+    const screen = await planAdaptiveScreen(req, openFields.slice(0, 6), projectGates, candidates);
 
     const enumQs = (screen?.questions ?? []).map((q) => ({
       question: q.question,

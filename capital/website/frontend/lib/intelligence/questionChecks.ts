@@ -187,7 +187,22 @@ export function checkQuestions(input: QuestionCheckInput): QuestionViolation[] {
  * answers to a different one. Neither the question nor the options were wrong
  * on their own, which is why nothing caught it.
  */
-const YES_NO_STEM = /^(are|is|do|does|did|have|has|can|could|would|will|was|were)\b/i;
+/**
+ * Does the question ask WHICH, or does it ask WHETHER?
+ *
+ * A question offering a list of things to choose between must ask which of
+ * them applies. A question answerable yes or no must offer yes and no. Pairing
+ * one with the other asks the reader something and then offers the answers to
+ * something else.
+ *
+ * Keying on the first word was too narrow and let the defect through twice:
+ * "Would you accept X?" was caught, "If a funder required X, would that be
+ * acceptable?" was not, though both are polar questions over a list of
+ * commitments. A question is treated as SELECTIVE when it contains an
+ * interrogative that picks among alternatives, and as POLAR otherwise —
+ * which does not care where in the sentence the verb falls.
+ */
+const SELECTIVE = /\b(which|what|who|where|when|how)\b/i;
 const YES_NO_OPTION = /^(yes|no|not sure|unsure)\b/i;
 
 export function checkGroundedQuestions(
@@ -195,18 +210,18 @@ export function checkGroundedQuestions(
 ): QuestionViolation[] {
   const v: QuestionViolation[] = [];
   for (const q of questions) {
-    const optionsAreYesNo = q.options.every((o) => YES_NO_OPTION.test(o));
-    const stemIsYesNo = YES_NO_STEM.test(q.question.trim());
-    if (stemIsYesNo && !optionsAreYesNo && q.options.length > 2) {
+    const optionsAreYesNo = q.options.length > 0 && q.options.every((o) => YES_NO_OPTION.test(o));
+    const asksWhich = SELECTIVE.test(q.question);
+    if (!asksWhich && !optionsAreYesNo && q.options.length > 2) {
       v.push({
         ruleId: "Q-10",
-        detail: `yes/no question over a list of choices: "${q.question.slice(0, 70)}…" → ${q.options.slice(0, 3).join(" / ")}`,
+        detail: `asks whether, offers which: "${q.question.slice(0, 70)}…" → ${q.options.slice(0, 3).join(" / ")}`,
       });
     }
-    if (!stemIsYesNo && optionsAreYesNo) {
+    if (asksWhich && optionsAreYesNo) {
       v.push({
         ruleId: "Q-10",
-        detail: `open question answered only yes/no: "${q.question.slice(0, 70)}…"`,
+        detail: `asks which, offers only yes/no: "${q.question.slice(0, 70)}…"`,
       });
     }
   }

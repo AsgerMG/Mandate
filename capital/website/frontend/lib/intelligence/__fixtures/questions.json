@@ -3,7 +3,7 @@
   "archetype": "Robotics",
   "company": "Neura Robotics",
   "answer": "",
-  "question": "Could you develop this product with three or more partners, such as research institutions, component suppliers, or system integrators, or does the core work need to stay in-house?",
+  "question": "Could you deliver this project with three or more external partners, universities, research institutes, or other companies, or would you need to run it independently?",
   "options": [
    "Yes, we could run a 3+ partner consortium",
    "No, single applicant only",
@@ -15,12 +15,11 @@
   "archetype": "Robotics",
   "company": "Neura Robotics",
   "answer": "",
-  "question": "When do you need the funding to start work?",
+  "question": "Do you have VC or other institutional equity investors on your cap table?",
   "options": [
-   "Weeks",
-   "Within 6 months",
-   "6–18 months",
-   "Flexible"
+   "Yes",
+   "No",
+   "Not sure"
   ],
   "source": "field"
  },
@@ -28,12 +27,11 @@
   "archetype": "Robotics",
   "company": "Neura Robotics",
   "answer": "",
-  "question": "Where are you in product development right now?",
+  "question": "Where does your core cognitive humanoid technology sit right now? You describe it as in development and prototyping, is the underlying system architecture proven in the lab but not yet integrated into a working product, or is there already a functional prototype running autonomously on customer sites?",
   "options": [
-   "Validating the core technology in the lab",
-   "Building a prototype or demonstrator with real industrial use",
-   "Piloting with lead customers before scaling production",
-   "In production scaling"
+   "Lab-proven architecture, not yet integrated into a full working system",
+   "Functional prototype tested internally or with early access partners",
+   "Deployed and running with customers in limited deployment"
   ],
   "source": "gate"
  },
@@ -41,11 +39,11 @@
   "archetype": "Robotics",
   "company": "Neura Robotics",
   "answer": "",
-  "question": "Does your humanoid or cobot system depend on custom semiconductors, advanced processor design, or specialized chip integration?",
+  "question": "What does this funding round need to achieve, moving from prototype toward a market-ready product, or fundamental R&D on the cognitive or manipulation algorithms themselves?",
   "options": [
-   "Yes, we are developing or integrating custom silicon",
-   "No, we use standard commercial processors and components",
-   "We use standard processors but need optimized hardware packaging or thermal solutions"
+   "Move a working prototype toward production and market launch",
+   "Advance core research in perception, reasoning, or motor control",
+   "Scale manufacturing capacity or supply chain for a proven design"
   ],
   "source": "gate"
  },
@@ -53,12 +51,24 @@
   "archetype": "Robotics",
   "company": "Neura Robotics",
   "answer": "",
-  "question": "How do industrial customers pay for your cobots, capex purchase, lease, pay-per-use, or a mix?",
+  "question": "Who is your customer and who writes the cheque, the factory operator, the industrial integrator, or the OEM selling into the end user?",
   "options": [
-   "Upfront capital purchase",
-   "Lease or rental model",
-   "Usage-based or outcome-based fees",
-   "Mixed model across customer segments"
+   "End factory or production facility",
+   "Systems integrator or robotics reseller",
+   "Original equipment manufacturer (OEM)"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "Robotics",
+  "company": "Neura Robotics",
+  "answer": "",
+  "question": "What would €15–50M of non-dilutive capital let you do that equity capital would not, capacity you cannot or do not want to fund from venture rounds?",
+  "options": [
+   "Accelerate product development without giving up additional equity",
+   "Build out European manufacturing or supply chain presence",
+   "Invest in long-cycle customer validation or pilot deployments",
+   "Fund R&D in parallel tracks without pulling from venture runway"
   ],
   "source": "commercial"
  },
@@ -66,7 +76,7 @@
   "archetype": "Hardware",
   "company": "SMART Photonics",
   "answer": "",
-  "question": "Could you run this project as part of a consortium with three or more partners, such as design houses, materials suppliers, or test facilities, or would you need to pursue it as a single applicant?",
+  "question": "Could you run this project with three or more partners, or only on your own?",
   "options": [
    "Yes, we could run a 3+ partner consortium",
    "No, single applicant only",
@@ -78,7 +88,7 @@
   "archetype": "Hardware",
   "company": "SMART Photonics",
   "answer": "",
-  "question": "Is your company majority-owned or controlled from outside the EU?",
+  "question": "Do you have VC or institutional investors backing you?",
   "options": [
    "Yes",
    "No",
@@ -90,12 +100,11 @@
   "archetype": "Hardware",
   "company": "SMART Photonics",
   "answer": "",
-  "question": "Your foundry work spans design, pilot production, packaging and materials. Which of these is the core R&D focus for the capital you are raising?",
+  "question": "Your foundry develops integrated photonic circuits. At what stage is your core technology today: early prototypes you are still validating in the lab, working prototypes you have tested with customers, or production-ready circuits you are manufacturing at scale?",
   "options": [
-   "Photonic chip design and architecture",
-   "Pilot manufacturing and process scaling",
-   "Advanced materials or optical components for indium phosphide circuits",
-   "End-to-end value chain (multiple areas above)"
+   "Early prototypes in validation",
+   "Working prototypes with customer testing",
+   "Production-ready circuits at scale"
   ],
   "source": "gate"
  },
@@ -103,12 +112,12 @@
   "archetype": "Hardware",
   "company": "SMART Photonics",
   "answer": "",
-  "question": "At what stage is your photonic IC product development? Are you validating proof-of-concept in the lab, moving toward prototype demonstration, or preparing for pilot-scale manufacturing?",
+  "question": "Which part of the photonic supply chain does your foundry serve: circuit design tools and IP, the foundry process itself, packaging and assembly, or materials and substrates?",
   "options": [
-   "Lab validation of core photonic functions",
-   "Prototype demonstration with customer or partner integration",
-   "Pilot manufacturing run or process scale-up",
-   "Market-ready product with early revenue"
+   "Design tools and circuit IP",
+   "Foundry process and fabrication",
+   "Packaging and assembly",
+   "Materials and substrates"
   ],
   "source": "gate"
  },
@@ -116,24 +125,12 @@
   "archetype": "Hardware",
   "company": "SMART Photonics",
   "answer": "",
-  "question": "Who are your customers for indium phosphide photonic circuits, direct semiconductor buyers, system integrators, or infrastructure operators, and do they fund your R&D or pay for finished product?",
+  "question": "What would €15–50M of public funding unlock for you that you cannot fund from your own cashflow: new fabrication equipment, hiring to ramp manufacturing, building a second facility, or R&D into next-generation processes?",
   "options": [
-   "Direct customers fund co-development or R&D partnerships",
-   "Customers purchase finished photonic chips or integrated modules",
-   "Business model still being validated"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "Hardware",
-  "company": "SMART Photonics",
-  "answer": "",
-  "question": "What does a €15–50M capital round unlock for you that you cannot achieve with current resources? New production capacity, accelerated product roadmap, or entry into a new market segment?",
-  "options": [
-   "Scale pilot line to commercial manufacturing volume",
-   "Accelerate time-to-market for next-generation photonic products",
-   "Expand into new application markets (datacentre, sensing, telecom)",
-   "Fund fundamental R&D on materials or design tooling before revenue scales"
+   "New fabrication equipment",
+   "Hiring and manufacturing ramp",
+   "Second facility or location",
+   "R&D into next-generation processes"
   ],
   "source": "commercial"
  },
@@ -141,22 +138,10 @@
   "archetype": "FinTech (business lending)",
   "company": "Silvr",
   "answer": "",
-  "question": "Could you run this project with three or more research or technology partners, or does it need to stay within Silvr?",
+  "question": "Could you run this project with two or more external partners, technology providers, research institutions, other fintech platforms, or would you prefer to keep it in-house?",
   "options": [
    "Yes, we could run a 3+ partner consortium",
    "No, single applicant only",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "FinTech (business lending)",
-  "company": "Silvr",
-  "answer": "",
-  "question": "Is Silvr majority-owned or controlled from outside the EU?",
-  "options": [
-   "Yes",
-   "No",
    "Not sure"
   ],
   "source": "field"
@@ -165,11 +150,11 @@
   "archetype": "FinTech (business lending)",
   "company": "Silvr",
   "answer": "",
-  "question": "What stage is your core technology at today? Are you building new models or algorithms, or applying existing ones to your lending workflow?",
+  "question": "Your product finances customer purchases from your balance sheet. At what stage is that lending engine right now: still being built and tested with early customers, functioning with real volume and proven unit economics, or scaled to multiple segments?",
   "options": [
-   "Building novel AI models or algorithms with market-disruption potential",
-   "Applying existing AI or data techniques to improve our lending decisions",
-   "Early-stage research with uncertain technical feasibility"
+   "Still under development with early-customer pilots",
+   "Functioning with real volume and proven unit economics",
+   "Scaled across multiple customer segments or geographies"
   ],
   "source": "gate"
  },
@@ -177,10 +162,21 @@
   "archetype": "FinTech (business lending)",
   "company": "Silvr",
   "answer": "",
-  "question": "Who bears the cost of your product, your SME customers, their end-buyers, or both?",
+  "question": "You say the money goes to product development and research. Is that research fundamental to how your lending engine works, like the algorithms or risk models you have built, or is it product iteration and feature work on top of an engine that already exists?",
   "options": [
-   "Our SME customers pay us directly for access or per-transaction",
-   "We finance our customers' purchases; they repay us over time"
+   "Research on the core lending engine itself (algorithms, underwriting models, decisioning logic)",
+   "Product development and feature work on an engine already in use"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "FinTech (business lending)",
+  "company": "Silvr",
+  "answer": "",
+  "question": "Who pays you for this lending service: the SMEs and e-commerce businesses you lend to, the platforms you integrate with, or both?",
+  "options": [
+   "The SMEs and e-commerce businesses we lend to",
+   "The platforms we integrate with"
   ],
   "source": "commercial"
  },
@@ -188,12 +184,12 @@
   "archetype": "FinTech (business lending)",
   "company": "Silvr",
   "answer": "",
-  "question": "If you had €2.5M–€15M in non-dilutive public funding, what would change first, your product roadmap, your hiring, or your geographic expansion?",
+  "question": "If you raised €2.5M to €15M in public funding, what would move fastest: launching in new countries, building new risk models or underwriting capabilities, or scaling your team?",
   "options": [
-   "Accelerate product development and release new features faster",
-   "Expand the team, especially in R&D and lending analytics",
-   "Enter new markets or geographies where we do not yet operate",
-   "Build out infrastructure to increase lending volume"
+   "Launching operations in new geographies",
+   "Building new risk models or underwriting capabilities",
+   "Scaling sales, product, or operations team",
+   "A combination across these areas"
   ],
   "source": "commercial"
  },
@@ -201,7 +197,20 @@
   "archetype": "FinTech (consumer banking)",
   "company": "bunq",
   "answer": "",
-  "question": "Is your company majority-owned or controlled from outside the EU?",
+  "question": "What is your annual turnover?",
+  "options": [
+   "Under €2M",
+   "€2–10M",
+   "€10–50M",
+   "Over €50M"
+  ],
+  "source": "field"
+ },
+ {
+  "archetype": "FinTech (consumer banking)",
+  "company": "bunq",
+  "answer": "",
+  "question": "Do you have VC or institutional investors backing you?",
   "options": [
    "Yes",
    "No",
@@ -213,7 +222,7 @@
   "archetype": "FinTech (consumer banking)",
   "company": "bunq",
   "answer": "",
-  "question": "Could you run this project with three or more partners, or would you need to apply alone?",
+  "question": "Could you run a funded project with three or more partner organisations, or would you need to do this on your own?",
   "options": [
    "Yes, we could run a 3+ partner consortium",
    "No, single applicant only",
@@ -224,315 +233,6 @@
  {
   "archetype": "FinTech (consumer banking)",
   "company": "bunq",
-  "answer": "",
-  "question": "Do you have VC or institutional investors on your cap table?",
-  "options": [
-   "Yes",
-   "No",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "FinTech (consumer banking)",
-  "company": "bunq",
-  "answer": "",
-  "question": "What stage is your core innovation at? Are you building new financial infrastructure or product capabilities that could reshape how neobanks operate, or are you refining existing banking features?",
-  "options": [
-   "Building new infrastructure or capabilities with significant market-reshaping potential",
-   "Enhancing or optimizing existing banking product and service capabilities"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "FinTech (consumer banking)",
-  "company": "bunq",
-  "answer": "",
-  "question": "Today, who pays bunq, consumers via subscription or transaction fees, or institutional partners?",
-  "options": [
-   "Consumers pay subscription or per-transaction fees directly",
-   "Institutional or B2B partners pay for our services"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "FinTech (consumer banking)",
-  "company": "bunq",
-  "answer": "",
-  "question": "Of the €15–50M you're seeking, what would move fastest: new product lines, geographic expansion, deeper AI capabilities, or something else?",
-  "options": [
-   "New product lines or service offerings",
-   "Geographic expansion or market entry",
-   "AI, data science or technology infrastructure",
-   "Acquisition or major partnership"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "AI B2C software",
-  "company": "Photoroom",
-  "answer": "",
-  "question": "Could you run this project as part of a three-plus-partner consortium, or would you need to apply alone?",
-  "options": [
-   "Yes, we could run a 3+ partner consortium",
-   "No, single applicant only",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "AI B2C software",
-  "company": "Photoroom",
-  "answer": "",
-  "question": "Your product is in market now. Are you looking to fund work on a next-generation capability or feature, something that could open new use cases or markets, or optimising and scaling what already exists?",
-  "options": [
-   "Fund a new capability or feature with real market disruption potential",
-   "Optimise, scale and improve the current product"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "AI B2C software",
-  "company": "Photoroom",
-  "answer": "",
-  "question": "Which of these areas best describes the core value Photoroom delivers?",
-  "options": [
-   "Digital tools and workflows",
-   "Sustainable practices or environmental benefits"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "AI B2C software",
-  "company": "Photoroom",
-  "answer": "",
-  "question": "Who pays for Photoroom today?",
-  "options": [
-   "Individual users (B2C subscription or purchase)",
-   "Businesses and teams (B2B subscription or API)"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "AI B2C software",
-  "company": "Photoroom",
-  "answer": "",
-  "question": "If you had €2.5M–€15M to spend on product development and R&D over the next two years, what would be your first priority?",
-  "options": [
-   "Build new product capabilities or features",
-   "Expand into new markets or customer segments",
-   "Deepen AI or technical moats in your core product",
-   "Scale operations and go-to-market infrastructure"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "AI B2B software",
-  "company": "Aleph Alpha",
-  "answer": "",
-  "question": "Could you structure this project with three or more partners, such as research institutions, cloud providers, or government agencies, or would you need to pursue it as a single applicant?",
-  "options": [
-   "Yes, we could run a 3+ partner consortium",
-   "No, single applicant only",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "AI B2B software",
-  "company": "Aleph Alpha",
-  "answer": "",
-  "question": "Which of these commitments would you be willing to make in exchange for public funding?",
-  "options": [
-   "Opening a local entity",
-   "Committing investment to a specific country",
-   "The state on the cap table",
-   "Job-creation commitments"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "AI B2B software",
-  "company": "Aleph Alpha",
-  "answer": "",
-  "question": "Where are you in bringing your sovereign LLM to market? Are you at the stage of proving it works at scale in production, moving toward commercial deployment, or already selling to early customers?",
-  "options": [
-   "Proven in production environments, ready to scale to market",
-   "Building toward production-grade systems with clear deployment pathway",
-   "Early customer pilots or pre-revenue validation"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "AI B2B software",
-  "company": "Aleph Alpha",
-  "answer": "",
-  "question": "What portion of the €15–50M would fund your own R&D, building model capability, infrastructure, or safety systems, versus integration, deployment, or go-to-market activities?",
-  "options": [
-   "Majority R&D and technical innovation",
-   "Mixed: roughly half R&D, half commercialisation",
-   "Majority commercialisation and customer deployment"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "AI B2B software",
-  "company": "Aleph Alpha",
-  "answer": "",
-  "question": "Who buys your sovereign LLM? Are your customers primarily governments and public institutions, enterprises managing sensitive data, or a mix of both?",
-  "options": [
-   "Governments and public-sector bodies",
-   "Enterprise customers managing classified or regulated data"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "AI B2B software",
-  "company": "Aleph Alpha",
-  "answer": "",
-  "question": "What does this €15–50M unlock that you cannot fund yourselves? New model architectures, European infrastructure capacity, hiring a team, or something else?",
-  "options": [
-   "Developing new model capabilities or architectures",
-   "Building sovereign compute infrastructure in Europe",
-   "Expanding team and go-to-market",
-   "Acquiring or integrating complementary technology"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "GovTech",
-  "company": "Nortal",
-  "answer": "",
-  "question": "Could you run this project with three or more partners from across Europe, or would you need to deliver it as a single applicant?",
-  "options": [
-   "Yes, we could run a 3+ partner consortium",
-   "No, single applicant only",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "GovTech",
-  "company": "Nortal",
-  "answer": "",
-  "question": "Is your company majority-owned or controlled from outside the EU?",
-  "options": [
-   "Yes",
-   "No",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "GovTech",
-  "company": "Nortal",
-  "answer": "",
-  "question": "Would your project fit within a structured collaboration, say, with public-sector partners, research institutes, or other software vendors tackling the same technical challenge, or is it self-contained to Nortal?",
-  "options": [
-   "Yes, we would join a cross-border consortium around a shared R&D challenge",
-   "No, this is a Nortal-led product development we need to own end-to-end",
-   "Open to consortium if the right partners existed, but none are obvious"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "GovTech",
-  "company": "Nortal",
-  "answer": "",
-  "question": "Today, who funds your digital government work: public-sector agencies buying from you, or budget you retain to fund product development?",
-  "options": [
-   "Public-sector clients purchase our services or platform; they fund the work",
-   "We fund development ourselves from operational revenue and reinvest profits",
-   "Mix: some clients co-invest, some we fund ourselves"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "GovTech",
-  "company": "Nortal",
-  "answer": "",
-  "question": "If you secured €2.5M–€15M in non-dilutive public funding, what would that unlock? Faster hiring and engineering velocity, or a technical capability you cannot fund from operations?",
-  "options": [
-   "Acceleration of hiring and product roadmap we are already committed to",
-   "A new technical capability or market that our own cashflow cannot justify investing in"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "GovTech",
-  "company": "Nortal",
-  "answer": "",
-  "question": "How do government buyers currently purchase from you: subscription licences to a platform, delivery of custom services, or per-user/per-transaction fees?",
-  "options": [
-   "Subscription or platform licence model with recurring revenue",
-   "Custom services and integration projects on a project basis",
-   "Per-transaction, per-user or consumption-based pricing"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "Platform",
-  "company": "sennder",
-  "answer": "",
-  "question": "Could you deliver this project with three or more partner organisations, or would you need to run it solo?",
-  "options": [
-   "Yes, we could run a 3+ partner consortium",
-   "No, single applicant only",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "Platform",
-  "company": "sennder",
-  "answer": "",
-  "question": "Is your company majority-owned or controlled from outside the EU?",
-  "options": [
-   "Yes",
-   "No",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "Platform",
-  "company": "sennder",
-  "answer": "",
-  "question": "Your project brief mentions developing or prototyping the product. At what stage is your core technology or capability today?",
-  "options": [
-   "Early stage, we're still validating the concept and how to build it",
-   "Prototype exists, we've built a working version but need to scale it or harden it for production",
-   "Live and scaling, we have a working system in market and are improving it"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "Platform",
-  "company": "sennder",
-  "answer": "",
-  "question": "Who pays sennder for the matching service, the shippers, the carriers, or both?",
-  "options": [
-   "Shippers pay us (commission or fixed fee per shipment)",
-   "Carriers pay us (subscription or commission on jobs they win)"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "Platform",
-  "company": "sennder",
-  "answer": "",
-  "question": "What would a €2.5M–€15M public grant or loan specifically unlock for sennder that you cannot fund from operations today?",
-  "options": [
-   "Faster product development, building features we have on the roadmap sooner",
-   "R&D into a new technical capability or service line we haven't yet attempted",
-   "Expansion into new geographies or customer segments",
-   "Building out data science, matching algorithms, or platform intelligence"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "Cloud / NeoCloud",
-  "company": "Nebius",
   "answer": "",
   "question": "Which of these commitments would you be willing to make in exchange for funding?",
   "options": [
@@ -544,10 +244,273 @@
   "source": "field"
  },
  {
+  "archetype": "FinTech (consumer banking)",
+  "company": "bunq",
+  "answer": "",
+  "question": "Your neobank is live and generating revenue. Is the funding here to build new product features or services, or to fund research into new technology you do not yet have a product for?",
+  "options": [
+   "New features and services for the live product",
+   "Research into technology not yet in market"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "FinTech (consumer banking)",
+  "company": "bunq",
+  "answer": "",
+  "question": "If you won €15M–€50M in public funding, what would you prioritize: accelerating R&D on technology that does not yet exist, scaling the current product faster, or entering new markets with the existing platform?",
+  "options": [
+   "R&D on new technology or capability",
+   "Scaling and expanding the current product",
+   "Market expansion or new business lines"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "AI B2C software",
+  "company": "Photoroom",
+  "answer": "",
+  "question": "Could you run this project with three or more external partners, or would you need to do it alone?",
+  "options": [
+   "Yes, we could run a 3+ partner consortium",
+   "No, single applicant only",
+   "Not sure"
+  ],
+  "source": "field"
+ },
+ {
+  "archetype": "AI B2C software",
+  "company": "Photoroom",
+  "answer": "",
+  "question": "Does any single shareholder own more than 25% of your company, or are you below that threshold?",
+  "options": [
+   "Yes",
+   "No",
+   "Not sure"
+  ],
+  "source": "field"
+ },
+ {
+  "archetype": "AI B2C software",
+  "company": "Photoroom",
+  "answer": "",
+  "question": "You've built a consumer generative AI app for product photography. Who pays for it today, and how, subscription, one-off purchase, licensing to brands, or something else?",
+  "options": [
+   "Direct consumer subscription",
+   "One-time purchase or credits",
+   "Licensing to brands or agencies",
+   "B2B SaaS to photography/design studios",
+   "Not yet generating revenue"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "AI B2C software",
+  "company": "Photoroom",
+  "answer": "",
+  "question": "Where is your core technology right now, is it a research prototype you're proving can work in real conditions, or a working product you're scaling into new markets or capabilities?",
+  "options": [
+   "Research prototype: we're validating the core concept works at all",
+   "Working prototype: core tech proven, now building the production version",
+   "Live product in market: we're adding major new capabilities or use cases",
+   "Production-grade: scaling existing product to new customer segments"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "AI B2C software",
+  "company": "Photoroom",
+  "answer": "",
+  "question": "If you raised €2.5M to €15M in non-dilutive or low-dilutive funding, what would that let you do that you can't do now, hire a specific team, build new product capability, run a market trial, or something else?",
+  "options": [
+   "Hire engineering or research talent we can't afford today",
+   "Build a new product capability or product line",
+   "Expand to a new customer segment or geography",
+   "Fund infrastructure, compute or data licensing costs",
+   "Fund a significant market or technical validation trial"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "AI B2B software",
+  "company": "Aleph Alpha",
+  "answer": "",
+  "question": "Do you have VC or institutional investors backing you?",
+  "options": [
+   "Yes",
+   "No",
+   "Not sure"
+  ],
+  "source": "field"
+ },
+ {
+  "archetype": "AI B2B software",
+  "company": "Aleph Alpha",
+  "answer": "",
+  "question": "What is your annual turnover?",
+  "options": [
+   "Under €2M",
+   "€2–10M",
+   "€10–50M",
+   "Over €50M"
+  ],
+  "source": "field"
+ },
+ {
+  "archetype": "AI B2B software",
+  "company": "Aleph Alpha",
+  "answer": "",
+  "question": "Where are you in building this to market? Are you still proving the core technology works at scale, moving it toward a product customers will use, or already shipping to early customers?",
+  "options": [
+   "Still validating that the core LLM architecture delivers the performance we need",
+   "Building toward a product; we have the technology but need to shape it for enterprise deployment",
+   "Early revenue or pilots with customers"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "AI B2B software",
+  "company": "Aleph Alpha",
+  "answer": "",
+  "question": "Would you be open to running this as a collaborative R&D project with research or industry partners, or do you need to own and control the entire development?",
+  "options": [
+   "We'd work with partners if the right ones existed",
+   "We need to control this ourselves"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "AI B2B software",
+  "company": "Aleph Alpha",
+  "answer": "",
+  "question": "In your sovereign LLM offering, who is the customer paying for access, enterprises building on your models, governments contracting for deployment, or both?",
+  "options": [
+   "Enterprises licensing or running our models",
+   "Government or public-sector buyers"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "AI B2B software",
+  "company": "Aleph Alpha",
+  "answer": "",
+  "question": "If you had €15–50M in non-dilutive public funding, what would shift in your development roadmap that cannot happen now?",
+  "options": [
+   "Hiring and scaling engineering to add capabilities faster",
+   "Funding infrastructure or data costs without stretching runway",
+   "Building compliance, security or certification for regulated sectors"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "GovTech",
+  "company": "Nortal",
+  "answer": "",
+  "question": "Could you run this project with three or more partners across different organisations, or would it need to be just Nortal?",
+  "options": [
+   "Yes, we could run a 3+ partner consortium",
+   "No, single applicant only",
+   "Not sure"
+  ],
+  "source": "field"
+ },
+ {
+  "archetype": "GovTech",
+  "company": "Nortal",
+  "answer": "",
+  "question": "Where is your core product or service right now, still being researched and proven in the lab, ready to test with real customers, or already in the market and scaling?",
+  "options": [
+   "Still being researched and proven technically",
+   "Ready to test with real customers or early buyers",
+   "Already in the market and scaling"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "GovTech",
+  "company": "Nortal",
+  "answer": "",
+  "question": "Is the R&D you need to do aimed at a specific problem in government, or is it broader platform-level research that would serve multiple use cases?",
+  "options": [
+   "Solving a specific problem a government agency has asked us to address",
+   "Broader platform research that would unlock multiple government use cases"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "GovTech",
+  "company": "Nortal",
+  "answer": "",
+  "question": "Who pays for your services today, governments directly, citizens and businesses through government portals, or a mix?",
+  "options": [
+   "Governments directly contract and pay Nortal",
+   "Citizens and businesses pay through government digital services"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "GovTech",
+  "company": "Nortal",
+  "answer": "",
+  "question": "If you won €2.5M–€15M in development funding, what would it buy you that you cannot fund from revenue right now?",
+  "options": [
+   "Speed up a product already in development",
+   "Explore and prototype a new capability we know is needed but haven't started",
+   "Hire a team to tackle a technical problem we've identified but don't have capacity for"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "Platform",
+  "company": "sennder",
+  "answer": "",
+  "question": "Could you run this project with three or more partners, or only on your own?",
+  "options": [
+   "Yes, we could run a 3+ partner consortium",
+   "No, single applicant only",
+   "Not sure"
+  ],
+  "source": "field"
+ },
+ {
+  "archetype": "Platform",
+  "company": "sennder",
+  "answer": "",
+  "question": "Where is your product in development? Are you still building the core matching and routing logic, or is the product live and you are scaling it to new markets?",
+  "options": [
+   "Still building core product capabilities",
+   "Live product, scaling to new markets or customer segments"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "Platform",
+  "company": "sennder",
+  "answer": "",
+  "question": "Would the funding go towards collaborative R&D with research partners, or purely internal product development?",
+  "options": [
+   "Collaborative R&D with research institutions or industry partners",
+   "Internal product development only"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "Platform",
+  "company": "sennder",
+  "answer": "",
+  "question": "How do shippers and carriers pay you? Commission on transaction value, subscription, managed service fee, or something else?",
+  "options": [
+   "Commission on freight transactions",
+   "Subscription or platform fees",
+   "Managed freight service with your margin on the move"
+  ],
+  "source": "commercial"
+ },
+ {
   "archetype": "Cloud / NeoCloud",
   "company": "Nebius",
   "answer": "",
-  "question": "Does any single shareholder own more than 25% of your company?",
+  "question": "Do you have VC or institutional investors already backing your company?",
   "options": [
    "Yes",
    "No",
@@ -559,62 +522,62 @@
   "archetype": "Cloud / NeoCloud",
   "company": "Nebius",
   "answer": "",
-  "question": "Who are your paying customers today, and what problem of theirs does your GPU cloud infrastructure solve?",
+  "question": "Does any single shareholder own more than 25% of Nebius?",
   "options": [
-   "AI research teams and labs building their own models",
-   "Commercial enterprises training models for production use",
-   "We're pre-revenue and building the product for anticipated customer segments"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "Cloud / NeoCloud",
-  "company": "Nebius",
-  "answer": "",
-  "question": "What would this funding specifically let you build or prove that you cannot fund from operations today?",
-  "options": [
-   "Scale infrastructure capacity to handle larger training workloads",
-   "Develop proprietary software or orchestration layer on top of commodity hardware",
-   "Enter a new geographic market or launch managed services for a specific AI use case",
-   "Prove technical performance or cost advantage against existing cloud providers before scaling sales"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "Cloud / NeoCloud",
-  "company": "Nebius",
-  "answer": "",
-  "question": "Your product is GPU cloud infrastructure. Is the IP, architecture or cost model genuinely novel enough that it could disrupt the AI training market, or are you building a more efficient version of services that already exist at scale?",
-  "options": [
-   "We have proprietary technology or a fundamentally different approach that could reshape how AI teams access compute",
-   "We're optimizing cost, performance or user experience within the existing cloud infrastructure model",
-   "Uncertain how to frame this distinction for your business"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "Cloud / NeoCloud",
-  "company": "Nebius",
-  "answer": "",
-  "question": "Would any part of this funding go toward collaborative research with academic partners, national labs, or other companies, or is this purely a product development and scaling effort?",
-  "options": [
-   "Yes, we'd partner with research teams on novel infrastructure or software",
-   "No, this is our own product build and go-to-market",
-   "Possibly, depending on the right partners and terms"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "MedTech",
-  "company": "Corti",
-  "answer": "",
-  "question": "Could you run this project with three or more partners, for example, hospital networks, research institutions, or health-tech vendors, or would you need to stay a solo applicant?",
-  "options": [
-   "Yes, we could run a 3+ partner consortium",
-   "No, single applicant only",
+   "Yes",
+   "No",
    "Not sure"
   ],
   "source": "field"
+ },
+ {
+  "archetype": "Cloud / NeoCloud",
+  "company": "Nebius",
+  "answer": "",
+  "question": "Is the core technology or capability you want to fund already deployed in production with customers, or still being built and tested before release?",
+  "options": [
+   "Already deployed with customer workloads in production",
+   "Built and tested but not yet in production release",
+   "Still in development and testing phase"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "Cloud / NeoCloud",
+  "company": "Nebius",
+  "answer": "",
+  "question": "Could you structure this project as a collaboration with at least two other research organisations or technology partners, or must Nebius develop it alone?",
+  "options": [
+   "We could bring in research partners or tech collaborators",
+   "This must be Nebius-led development only"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "Cloud / NeoCloud",
+  "company": "Nebius",
+  "answer": "",
+  "question": "How do customers pay you: per unit of compute consumed, subscription for reserved capacity, or something else?",
+  "options": [
+   "Pay-as-you-go based on GPU hours or compute used",
+   "Subscription or committed capacity contracts",
+   "Hybrid model with both consumption and subscription elements",
+   "Enterprise licensing or custom pricing"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "Cloud / NeoCloud",
+  "company": "Nebius",
+  "answer": "",
+  "question": "What would €50M+ unlock that you cannot do now: new geographic regions, different GPU types or hardware, acceleration of existing product plans, or a technical capability you cannot build solo?",
+  "options": [
+   "Expansion to new geographies or markets",
+   "New hardware types or infrastructure capacity",
+   "Faster delivery of a product roadmap already planned",
+   "A technical capability or research direction we cannot pursue alone"
+  ],
+  "source": "commercial"
  },
  {
   "archetype": "MedTech",
@@ -632,35 +595,23 @@
   "archetype": "MedTech",
   "company": "Corti",
   "answer": "",
-  "question": "In your model, who pays for access to Corti, hospitals and clinics directly, insurance systems, or another party?",
+  "question": "Could you run this project with three or more partners, or do you need to stay as a single applicant?",
   "options": [
-   "Hospitals and health systems purchase directly",
-   "Software licensing to hospital IT/EHR vendors",
-   "A combination of direct hospital and insurance revenue"
+   "Yes, we could run a 3+ partner consortium",
+   "No, single applicant only",
+   "Not sure"
   ],
-  "source": "commercial"
+  "source": "field"
  },
  {
   "archetype": "MedTech",
   "company": "Corti",
   "answer": "",
-  "question": "What would €2.5M–€15M of public funding specifically let you do that you cannot do today?",
+  "question": "Your product is an AI copilot for clinical use. At what stage is the underlying technology, still in the lab, working with pilot customers, or ready to scale to production?",
   "options": [
-   "Accelerate clinical validation and evidence collection at multiple sites",
-   "Build regulatory submissions and certification pathways",
-   "Expand the product from pilot to scalable platform",
-   "Fund full-time R&D on core AI/clinical algorithms"
-  ],
-  "source": "commercial"
- },
- {
-  "archetype": "MedTech",
-  "company": "Corti",
-  "answer": "",
-  "question": "Your product is in pilot with customers now. Are you planning to use funding primarily for research on the core technology, or to scale and validate the product with more hospitals?",
-  "options": [
-   "Research and development of the AI algorithms and clinical reasoning engine",
-   "Product scaling and clinical validation across hospital sites"
+   "Still being developed in the lab or early validation",
+   "Working in pilot settings with real clinical users",
+   "Ready for production deployment and commercial scaling"
   ],
   "source": "gate"
  },
@@ -668,12 +619,37 @@
   "archetype": "MedTech",
   "company": "Corti",
   "answer": "",
-  "question": "Once deployed, how do you intend to sustain the product, through licensing fees per hospital, per-use charges, a subscription model, or another mechanism?",
+  "question": "When you say 'before there is a product', do you mean the core AI model itself needs substantial further development, or is the model largely built and you're building the clinical application around it?",
   "options": [
-   "Subscription or annual licensing to hospitals",
-   "Per-consultation or per-patient fees",
-   "Licensing to EHR and hospital IT vendors who integrate it",
-   "A freemium or outcome-based model (e.g. payment linked to triage accuracy or cost savings)"
+   "The core AI model needs substantial research and development work",
+   "The model is largely built; we're developing the clinical product and workflow",
+   "Unclear, we're developing both in parallel"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "MedTech",
+  "company": "Corti",
+  "answer": "",
+  "question": "In your vision of the product at scale, who pays for Corti, hospitals and clinics buying it directly, healthcare systems integrating it into their platform, or another buyer?",
+  "options": [
+   "Healthcare institutions and clinical systems buy the software directly",
+   "A healthcare platform or intermediary licenses and resells it",
+   "Multiple buyer types (direct sales and channel partners)",
+   "Unclear, we're still validating the buyer"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "MedTech",
+  "company": "Corti",
+  "answer": "",
+  "question": "What would a €2.5M–€15M award specifically unlock that you can't fund yourself right now, is it the research to prove clinical efficacy, the product build-out, regulatory approval work, or the team and infrastructure to reach pilot scale?",
+  "options": [
+   "Proving clinical efficacy and generating the evidence base",
+   "Building the product and platform to production quality",
+   "Regulatory approvals and clinical validation studies",
+   "Scaling the team and infrastructure to support pilot deployments"
   ],
   "source": "commercial"
  },
@@ -681,7 +657,7 @@
   "archetype": "Life sciences",
   "company": "BioNTech",
   "answer": "",
-  "question": "Could you run a clinical or commercial development project with three or more partners, such as clinical sites, manufacturing partners, or research institutions, or would this need to stay under your control alone?",
+  "question": "Could you run a 3+ partner project across multiple countries, or would this need to be your own work?",
   "options": [
    "Yes, we could run a 3+ partner consortium",
    "No, single applicant only",
@@ -693,24 +669,11 @@
   "archetype": "Life sciences",
   "company": "BioNTech",
   "answer": "",
-  "question": "Which of these commitments would fit your funding strategy?",
+  "question": "You're developing mRNA immunotherapies. Are you funding early-stage exploratory science to prove a new mechanism works, or are you at the stage of engineering a therapy toward a clinical endpoint?",
   "options": [
-   "Opening a local entity",
-   "Committing investment to a specific country",
-   "The state on the cap table",
-   "Job-creation commitments"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "Life sciences",
-  "company": "BioNTech",
-  "answer": "",
-  "question": "Your immunotherapy programme, is it designed around a specific published EU call topic, or are you looking for funding that supports your own R&D roadmap without reference to a predefined agenda?",
-  "options": [
-   "Built to match a specific Horizon call topic we've identified",
-   "Follows our internal R&D roadmap; we'd adapt it to fit a call if needed",
-   "Not yet aligned to a published call"
+   "Exploring new mechanisms or therapeutic concepts not yet proven in the lab",
+   "Engineering or optimizing a therapy we've already shown works in principle",
+   "Moving a therapy through IND-enabling studies and toward first-in-human"
   ],
   "source": "gate"
  },
@@ -718,11 +681,10 @@
   "archetype": "Life sciences",
   "company": "BioNTech",
   "answer": "",
-  "question": "At what stage are your mRNA immunotherapies? Are you still exploring platform science and early prototypes, or are you in preclinical/clinical validation of a specific candidate?",
+  "question": "Do you have earlier ERC-funded research (yours or a co-investigator's) whose commercial potential you want to explore, or is the R&D you're seeking to fund entirely self-originated?",
   "options": [
-   "Platform exploration and early-stage proof of concept",
-   "Preclinical or early clinical validation of specific candidates",
-   "Late clinical or commercial manufacturing"
+   "Yes, building on published ERC results",
+   "No, this is our own discovery track"
   ],
   "source": "gate"
  },
@@ -730,12 +692,22 @@
   "archetype": "Life sciences",
   "company": "BioNTech",
   "answer": "",
-  "question": "Who is your primary customer or revenue source once a product is approved or deployed?",
+  "question": "What portion of the €50M+ you're seeking would go directly to R&D headcount, lab and manufacturing process development, versus commercial build-out (sales, regulatory affairs, market access)?",
   "options": [
-   "Healthcare systems or national vaccination/immunotherapy programmes",
-   "Hospitals and clinical centres",
-   "Pharmaceutical or biotech partners licensing our platform",
-   "Direct patient or provider fees"
+   "Majority to R&D and process development",
+   "Mixed R&D and commercial",
+   "Majority to commercial scaling"
+  ],
+  "source": "gate"
+ },
+ {
+  "archetype": "Life sciences",
+  "company": "BioNTech",
+  "answer": "",
+  "question": "Who buys your mRNA vaccines or immunotherapies, pharma companies licensing the platform, governments and health systems buying finished doses, or both?",
+  "options": [
+   "Pharma partnerships and licensing deals",
+   "Direct sales to governments and health systems"
   ],
   "source": "commercial"
  },
@@ -743,12 +715,12 @@
   "archetype": "Life sciences",
   "company": "BioNTech",
   "answer": "",
-  "question": "What would a large grant or loan specifically unlock in your next 18–24 months, manufacturing scale-up, additional clinical trials, platform expansion, or something else?",
+  "question": "What does a large grant actually unlock for you that you cannot fund from operations or existing investor capital, a facility, a clinical trial, a manufacturing scale-up, or something else?",
   "options": [
-   "Manufacturing capacity or supply-chain investment",
-   "Clinical trial costs or regulatory preparation",
-   "Platform or pipeline expansion into new indications",
-   "Commercial preparation and market entry costs"
+   "Acceleration of a clinical development timeline",
+   "Building or upgrading manufacturing capacity",
+   "Funding R&D that investors see as too early-stage or too risky",
+   "Establishing a geographic foothold or regulatory pathway outside Germany"
   ],
   "source": "commercial"
  },
@@ -756,61 +728,38 @@
   "archetype": "AgriTech",
   "company": "eAgronom",
   "answer": "",
-  "question": "Could you run this project with three or more partners across different countries, or would you need to develop it independently?",
+  "question": "Who pays for your farm management and carbon software today, the growers themselves, or intermediaries like carbon brokers, commodity traders, or advisers?",
   "options": [
-   "Yes, we could run a 3+ partner consortium",
-   "No, single applicant only",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "AgriTech",
-  "company": "eAgronom",
-  "answer": "",
-  "question": "Does any single shareholder own more than 25% of eAgronom?",
-  "options": [
-   "Yes",
-   "No",
-   "Not sure"
-  ],
-  "source": "field"
- },
- {
-  "archetype": "AgriTech",
-  "company": "eAgronom",
-  "answer": "",
-  "question": "Your product sits at the intersection of farm management and soil carbon. Are you targeting a specific research question, such as soil carbon measurement methods, crop optimisation under climate constraints, or sustainable arable practices, that would be part of an EU-funded research collaboration?",
-  "options": [
-   "Yes, we have a specific research focus tied to climate adaptation or soil science",
-   "We are primarily focused on building a commercial product, not research validation",
-   "We could frame our work either way depending on the funding route"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "AgriTech",
-  "company": "eAgronom",
-  "answer": "",
-  "question": "How mature is your underlying technology? You mention pilot customers, are you at the stage of proving the core soil-carbon measurement or farm-optimisation algorithm works reliably, or are you already validating market fit with paying users?",
-  "options": [
-   "Core technology is proven and reliable; we are now validating commercial traction",
-   "Core technology works in lab or controlled pilots; we are still reducing technical risk",
-   "We are testing market fit but the underlying science or algorithm still has significant development ahead"
-  ],
-  "source": "gate"
- },
- {
-  "archetype": "AgriTech",
-  "company": "eAgronom",
-  "answer": "",
-  "question": "How do farmers pay for eAgronom? Are you charging per hectare, per subscription, per carbon credit realised, or through a different model?",
-  "options": [
-   "Subscription or per-hectare recurring fee",
-   "Commissions or revenue share from carbon credits or environmental outcomes we help them realise",
-   "Freemium or data-licence model where the product is free and we monetise anonymised soil or yield data",
-   "Still testing; revenue model not yet locked"
+   "Arable growers pay us directly",
+   "Carbon credit buyers or aggregators pay us or the farmer",
+   "Agricultural advisers or input suppliers integrate our tools and pass the cost through",
+   "We are not yet capturing revenue; growers use it free or in pilots"
   ],
   "source": "commercial"
+ },
+ {
+  "archetype": "AgriTech",
+  "company": "eAgronom",
+  "answer": "",
+  "question": "What would €500k–€2.5M let you do that you cannot do now?",
+  "options": [
+   "Finish the product to production-ready state and get it into paying farms at scale",
+   "Validate the soil carbon measurement and crediting model with real field data before building the full platform",
+   "Move from pilot customers to a repeatable go-to-market engine",
+   "Hire the technical or commercial team to handle growth"
+  ],
+  "source": "commercial"
+ },
+ {
+  "archetype": "AgriTech",
+  "company": "eAgronom",
+  "answer": "",
+  "question": "Is your soil carbon measurement and pricing engine a novel technical approach, something you have built or discovered that your competitors do not yet have, or are you building a better interface and workflow on top of existing carbon accounting methods?",
+  "options": [
+   "We have developed a proprietary measurement, modelling or crediting method that is genuinely new to the market",
+   "We are solving a customer problem more elegantly or cheaply than existing solutions, but using established approaches",
+   "We are not sure yet; we are still testing how our method compares to what others do"
+  ],
+  "source": "gate"
  }
 ]

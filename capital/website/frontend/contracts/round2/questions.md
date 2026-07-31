@@ -86,9 +86,9 @@ must be able to weaken prose and never to move a legal conclusion.
 - Q-5 (hard) The commercial half runs whenever the founder has described their
   company, regardless of whether any eligibility gate is still open.
 - Q-10 (hard) A question and the options beneath it must answer the same
-  thing. A question whose answer is yes or no may not be published over a list
-  of choices, and a question asking which of several things applies may not be
-  answered only yes or no.
+  thing. The test: **does it ask WHICH, or does it ask WHETHER?** A list of
+  things to choose between needs a question asking which of them applies; a
+  question answerable yes or no needs yes and no beneath it.
 
   **evidence:** a multi-select of commitments a founder might make was
   rendered under a yes/no question about a public investor taking a board

@@ -651,7 +651,7 @@ export function IntelligencePanel() {
             <StepHeader
               eyebrow={round.theme}
               title="A few tailored questions"
-              detail="Each one comes from a real requirement of a fund still on your shortlist: answering these is what finds the right funds. Leave any you genuinely don't know unanswered."
+              detail="These narrow the shortlist to the funds you can actually go after, and tell us how to argue your case to them. Leave anything you genuinely don't know unanswered."
             />
             <div className="space-y-5">
               {round.questions.map((q) => {
