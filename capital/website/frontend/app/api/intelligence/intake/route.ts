@@ -3,6 +3,7 @@ import { hydrateDbInstruments, hydrateGateDetail } from "@/lib/intelligence/corp
 import {
   distinctFamilyCount,
   openFieldsForShortlist,
+  stakesByFund,
   openProjectGatesForShortlist,
 } from "@/lib/intelligence/gateReach";
 import {
@@ -120,7 +121,11 @@ export async function POST(request: NextRequest) {
           return inst
             ? { name: inst.name, country: inst.country, supportType: inst.capitalType }
             : null;
-        }).filter((c): c is { name: string; country: string; supportType: string } => Boolean(c))),
+        }).filter((c): c is { name: string; country: string; supportType: string } => Boolean(c)),
+        // What each of those funds still turns on, so a question can be chosen
+        // because it decides between them rather than because a field has
+        // high coverage.
+        stakesByFund(candidateIds, eligibility)),
       body.wantProfileSignal ? inferProfileSignal(req) : Promise.resolve(null),
     ]);
 

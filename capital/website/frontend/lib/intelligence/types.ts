@@ -684,6 +684,14 @@ export const FIELD_ENUM_HINTS: Record<string, {
 export interface GroundedQuestion {
   field: string;
   question: string;
+  /** What this answer decides, in fund terms. Shown under the question so six
+   *  questions read as a diagnosis rather than a form. */
+  stake?: string;
+  /** Option labels written for THIS company, each mapped back to a real value
+   *  from the field's enum. The words are tailored; the answer space is not.
+   *  Absent when the model gave nothing usable, in which case the interface
+   *  falls back to FIELD_ENUM_HINTS. */
+  options?: { value: string; label: string }[];
 }
 
 /**
@@ -701,6 +709,8 @@ export interface ProjectQuestion {
   /** Stable id, so an answer can be matched back to the question. */
   id: string;
   question: string;
+  /** What this answer decides, in fund terms. */
+  stake?: string;
   /** 3-5 model-written options derived from the requirement text. The client
    *  always appends its own "None of these" and a free-text box. */
   options: string[];

@@ -21,7 +21,7 @@ import type {
   EligibilityCheck, GroundedRound, InstrumentRow,
   IntelligenceRequest, ProfileSignal, ProjectQuestion,
 } from "./types";
-import type { OpenFieldEvidence, ProjectGateEvidence } from "./gateReach";
+import type { FundStake, OpenFieldEvidence, ProjectGateEvidence } from "./gateReach";
 
 const client = new Anthropic();
 
@@ -137,8 +137,10 @@ export const SCREEN_QUESTION_CAP = 6;
 
 export interface PlannedScreen {
   theme: string;
-  /** Enum-answered questions: the interface renders FIELD_ENUM_HINTS options. */
-  questions: { field: string; question: string }[];
+  /** Fixed-answer-space questions. Both the question and the option LABELS are
+   *  written for this company; every label carries a real enum value, so the
+   *  answer space is unchanged. */
+  questions: { field: string; question: string; stake?: string; options?: { value: string; label: string }[] }[];
   /** Written-option questions, gate-grounded or commercial. */
   projectQuestions: ProjectQuestion[];
 }
@@ -151,6 +153,10 @@ export async function planAdaptiveScreen(
    *  exists to sharpen THIS list, and a planner that cannot see it is
    *  choosing questions blind. */
   candidates: { name: string; country: string; supportType: string }[] = [],
+  /** What is still unresolved about each candidate, fund by fund. This is what
+   *  lets a question be chosen the way an analyst chooses one: because its
+   *  answer sends this founder to a different fund. */
+  stakes: FundStake[] = [],
 ): Promise<PlannedScreen | null> {
   const facts = knownFacts(req, req.eligibility,
     "## What the founder has ALREADY told us. Never ask any of this again.");
@@ -159,6 +165,10 @@ export async function planAdaptiveScreen(
 
   const candidateBlock = candidates.slice(0, 8)
     .map((c) => `  - ${c.name} (${c.country}, ${c.supportType})`).join("\n");
+  const stakeBlock = stakes
+    .map((s2) => `  ${s2.name} (${s2.country}) still turns on:\n` +
+      s2.open.map((o) => `    - ${o.requirement}`).join("\n"))
+    .join("\n");
   const gateKeys = projectGates.map((g) => `${g.instrumentId}::${g.gateKey}`);
   const fieldNames = enumFields.map((f) => f.field);
 
@@ -180,13 +190,25 @@ export async function planAdaptiveScreen(
             ref: { type: "string" },
             /** For source "gate" and "commercial" only: the whole question. */
             question: { type: "string" },
-            /** For source "field" ONLY: a short clause naming this company's
-             *  situation, which the interface puts BEFORE the fixed stem. */
-            leadIn: { type: "string" },
-            /** Written only for gate and commercial questions. */
-            options: { type: "array", items: { type: "string" } },
+            /** One clause, at most 14 words, naming what this answer decides —
+             *  in terms of the FUNDS above, not of gates or rules. */
+            stake: { type: "string" },
+            /** The answers, for every source. `label` is what the founder
+             *  reads. `value` matters only for source "field", where it must
+             *  be one of that field's offered values; leave it empty
+             *  otherwise. One array rather than two, because two let the
+             *  model fill the wrong one and silently lose the question. */
+            options: {
+              type: "array",
+              items: {
+                type: "object",
+                additionalProperties: false,
+                properties: { value: { type: "string" }, label: { type: "string" } },
+                required: ["value", "label"],
+              },
+            },
           },
-          required: ["source", "ref", "question", "leadIn", "options"],
+          required: ["source", "ref", "question", "stake", "options"],
         },
       },
     },
@@ -234,10 +256,21 @@ export async function planAdaptiveScreen(
           `These funds are currently in front of them, best first:\n` +
           `${candidateBlock || "  (shortlist not available)"}\n` +
           `The screen exists to sharpen that list — to confirm which of these ` +
-          `they can really go after and to drop the ones they cannot. Judge ` +
-          `every candidate question by that: if the answer would not change ` +
-          `which of these funds they end up with, or could not be used to ` +
-          `argue their case to one of them, it does not earn a slot.\n\n` +
+          `they can really go after and to drop the ones they cannot.\n\n` +
+          `## What each fund still turns on\n` +
+          `${stakeBlock || "  (no per-fund detail available)"}\n\n` +
+          `THINK like an analyst, SPEAK like the founder. The analysis is ` +
+          `yours; the vocabulary is theirs. Naming a programme's own machinery ` +
+          `back at them — its work programme, its call topics, its cost ` +
+          `categories — is not expertise, it is the jargon test failing while ` +
+          `sounding expert.\n\n` +
+          `THE BAR: would an analyst ask this to decide which fund to pursue, ` +
+          `or is it a box being ticked? A question earns its slot when a ` +
+          `different answer sends this founder to a different fund, or changes ` +
+          `what they would say to one. Ask the question that decides the ` +
+          `biggest fork first. If two funds hang on the same thing, that is ` +
+          `the most valuable question on the screen; if a requirement belongs ` +
+          `to one fund nobody would pursue anyway, it is worth nothing.\n\n` +
           `${facts}\n\n` +
           `${req.description ? fence("company description", declaw(req.description).text) + "\n\n" : ""}` +
           `## Pool A: eligibility fields with FIXED options (source "field")\n` +
@@ -254,8 +287,11 @@ export async function planAdaptiveScreen(
           `THIS company in the founder's words, never about the category in ` +
           `general.\n${commercialBlock}\n\n` +
           `## How to choose\n` +
-          `- FOUR questions is the target. Six is a ceiling, not a budget. A ` +
-          `screen of four sharp questions beats one padded to six.\n` +
+          `- Aim to USE the full six when six sharp questions exist, and stop ` +
+          `early only when they genuinely do not. Cutting to two is not ` +
+          `selectivity, it is leaving the founder under-served and the ` +
+          `shortlist unresolved: every slot you decline to fill is a fund that ` +
+          `stays uncertain. Sharpen the questions, do not delete them.\n` +
           `- Ask in the FOUNDER'S world, never the programme's. The ` +
           `requirement tells you WHY a question matters; it never gives you ` +
           `the words. Test every word you use: could this founder have used ` +
@@ -281,6 +317,11 @@ export async function planAdaptiveScreen(
           `small share of the shortlist does not earn a slot.\n` +
           `- Include at least one and at most two from Pool C when a ` +
           `description exists: positioning has no other source.\n` +
+          `- Every question carries a "stake": one clause, at most 14 words, ` +
+          `saying what the answer decides, named in terms of the funds above. ` +
+          `"Decides whether the Bpifrance route is open to you" is a stake. ` +
+          `"Checks your eligibility" is not — it says nothing a founder could ` +
+          `not have guessed.\n` +
           `- The founder answers from memory, without opening a document.\n` +
           `- A question about legal or financial STATUS (solvency, ownership, ` +
           `debts, sanctions) reads as suspicion unless you say why it is being ` +
@@ -289,16 +330,18 @@ export async function planAdaptiveScreen(
           `- Every option must be a substantive, checkable state of affairs. ` +
           `No "a mix of the above", "other", "none", "not sure": the ` +
           `interface appends its own.\n` +
-          `- For source "field": copy the ref exactly, leave options empty, ` +
-          `and leave "question" empty too. The stem shown to the founder is ` +
-          `fixed and the interface renders it verbatim. Your only contribution ` +
-          `is "leadIn": at most 12 words naming this company's situation, ` +
-          `which is placed BEFORE the stem (e.g. "You sell to clinics."). ` +
-          `Leave leadIn empty when nothing useful can be said. You cannot ` +
-          `reword these questions, because a reworded stem stops matching the ` +
-          `options underneath it.\n` +
+          `- For source "field": copy the ref exactly and write BOTH the ` +
+          `question and the option labels for this company. The answer SPACE ` +
+          `is fixed and shown with each field: every option you write must ` +
+          `carry one of those exact values, you must cover all of them, and ` +
+          `you must not invent a new one. Rewrite the LABELS into this ` +
+          `founder's terms and make the question specific to them. A question ` +
+          `and its options are written together, so they must answer the same ` +
+          `thing: if the options are a list of things to choose between, ask ` +
+          `which of them applies; if they are yes and no, ask something ` +
+          `answerable yes or no.\n` +
           `- For source "gate" and "commercial": write the whole question and ` +
-          `leave leadIn empty.\n\n` +
+          `3-5 options, leaving each option's "value" empty.\n\n` +
           `Return ONLY the JSON object for the schema.`,
       }],
     }), INTAKE_MODEL);
@@ -308,12 +351,15 @@ export async function planAdaptiveScreen(
       .map((b) => b.text).join("");
     const parsed = extractJson<{
       theme: string;
-      questions: { source: string; ref: string; question: string; leadIn?: string; options: string[] }[];
+      questions: {
+        source: string; ref: string; question: string;
+        stake?: string; options: { value: string; label: string }[];
+      }[];
     }>(text);
 
     const gateByKey = new Map(projectGates.map((g) => [`${g.instrumentId}::${g.gateKey}`, g]));
     const seenRefs = new Set<string>();
-    const fields: { field: string; question: string }[] = [];
+    const fields: { field: string; question: string; stake?: string; options?: { value: string; label: string }[] }[] = [];
     const written: ProjectQuestion[] = [];
 
     for (const q of parsed.questions ?? []) {
@@ -324,30 +370,50 @@ export async function planAdaptiveScreen(
       // model may round up is not a budget.
       if (fields.length + written.length >= SCREEN_QUESTION_CAP) break;
       const options = (q.options ?? [])
-        .map((o) => deDash(String(o).trim()))
+        .map((o) => deDash(String(o?.label ?? "").trim()))
         .filter(Boolean)
         .filter((o) => !VAGUE_OPTION.test(o))
         .slice(0, 5);
 
       if (q.source === "field" && fieldNames.includes(q.ref)) {
-        // The stem is rendered VERBATIM from FIELD_ENUM_HINTS and the model
-        // contributes only a lead-in. Letting it tailor the wording put a
-        // polar question over a multi-select twice — "are you prepared for a
-        // board seat?" above a list of commitments — because a reworded stem
-        // can stop matching options it does not control. Composed this way the
-        // mismatch cannot occur, so nothing downstream has to detect it.
-        const stem = FIELD_ENUM_HINTS[q.ref].stem;
-        const lead = deDash((q.leadIn ?? "").trim()).replace(/\s*$/, "");
+        // Words tailored, answer space fixed.
+        //
+        // Freezing the stem removed a real defect — a polar question rendered
+        // over a multi-select twice — and replaced it with a worse one: every
+        // founder got the same canned sentence. Letting the model write the
+        // question AND the labels, while every label must carry one of the
+        // field's own values, keeps the tailoring and makes the mismatch
+        // impossible, because whoever writes the question also writes what
+        // sits under it.
+        const hint = FIELD_ENUM_HINTS[q.ref];
+        const valid = new Set(hint.options.map((o) => o.value));
+        const labelled = (q.options ?? [])
+          .filter((o) => o && valid.has(o.value) && o.label?.trim())
+          .map((o) => ({ value: o.value, label: deDash(o.label.trim()) }));
+        const coversAll = labelled.length === hint.options.length &&
+          new Set(labelled.map((o) => o.value)).size === valid.size;
         seenRefs.add(q.ref);
+        // A question and its options are ONE artifact. Falling back on the
+        // options while keeping the rewritten question is what produced the
+        // mismatch twice: a tailored sentence about accepting a board seat
+        // sitting above the curated list of commitments, because the model
+        // rewrote one half and we supplied the other. So the fallback is
+        // all-or-nothing — either both come from the model, or both come from
+        // the curated pair.
         fields.push({
           field: q.ref,
-          question: lead ? `${lead.replace(/[.\s]*$/, "")}. ${stem}` : stem,
+          question: coversAll
+            ? (deDash((q.question ?? "").trim()) || hint.stem)
+            : hint.stem,
+          stake: deDash((q.stake ?? "").trim()) || undefined,
+          options: coversAll ? labelled : undefined,
         });
       } else if (q.source === "gate" && gateByKey.has(q.ref) && options.length >= 2) {
         const g = gateByKey.get(q.ref)!;
         seenRefs.add(q.ref);
         written.push({
-          id: q.ref, question: deDash(q.question.trim()), options,
+          id: q.ref, question: deDash(q.question.trim()),
+          stake: deDash((q.stake ?? "").trim()) || undefined, options,
           instrumentId: g.instrumentId, instrumentName: g.instrumentName,
           gateKey: g.gateKey, quote: g.requirement, locator: g.locator,
         });
@@ -355,7 +421,8 @@ export async function planAdaptiveScreen(
         seenRefs.add(q.ref);
         written.push({
           id: `${COMMERCIAL_ANSWER_PREFIX}${q.ref}`,
-          question: deDash(q.question.trim()), options,
+          question: deDash(q.question.trim()),
+          stake: deDash((q.stake ?? "").trim()) || undefined, options,
           instrumentId: "", instrumentName: "", gateKey: `commercial_${q.ref}`,
           quote: "", locator: "",
         });

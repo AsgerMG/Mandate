@@ -23,6 +23,11 @@ import { CapitalSelect, InfoDot, MultiChips } from "./panelControls";
 import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
 
 /** A chip-row single select for band/enum answers. */
+/** Who the handover on screen 2 comes from. One string, because "who is
+ *  speaking to the founder" is a product decision that should not be hunted
+ *  through JSX to change. */
+const ANALYST_SIGNOFF = "Wincent";
+
 /** The only moving thing on screen while the shortlist and the tailored
  *  questions are built. A changed button label alone reads as a dead control
  *  on a wait this long. */
@@ -177,6 +182,9 @@ export function IntelligencePanel() {
   // the founder's REAL institutions table filling in live, instead of
   // narrating progress while the real content sits unused server-side.
   const [livePartial, setLivePartial] = useState<PartialReport | null>(null);
+  // How many routes the deterministic pass already put in play. Held so the
+  // handover can say something true rather than something encouraging.
+  const [routesInPlay, setRoutesInPlay] = useState(0);
   const [report, setReport] = useState<IntelligenceReport | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -250,6 +258,7 @@ export function IntelligencePanel() {
     setError(null);
     setPreparing(true);
     const v = await fetchVerdict();
+    setRoutesInPlay(v?.instrumentTable?.length ?? 0);
     await fetchRound(elig, v?.candidateInstrumentIds ?? [], true);
   }
 
@@ -347,6 +356,7 @@ export function IntelligencePanel() {
     setPreparing(true);
     try {
       const v = await fetchVerdict(merged);
+      setRoutesInPlay(v?.instrumentTable?.length ?? 0);
       await fetchRound(merged, v?.candidateInstrumentIds ?? [], false);
     } finally {
       setPreparing(false);
@@ -434,15 +444,23 @@ export function IntelligencePanel() {
         <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
           Free tool · powered by the funding record
         </p>
-        <h2 className="text-xl sm:text-2xl font-semibold leading-tight" style={serif}>
-          Understand how comparable companies raise public capital
-        </h2>
-        <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
-          One short screen, an instant eligibility read, then a few follow-ups
-          tailored to your specific case, then one executive memo: what you can
-          qualify for, what each option requires, and what to watch. Export it
-          as a PDF.
-        </p>
+        {/* The pitch belongs on the way in, not in the middle. Past screen 1
+            the founder has already bought the premise; repeating the headline
+            and the "one short screen, then a memo" explainer above their
+            questions is the product selling to someone already in the room. */}
+        {screen === "intake" && !running && !report && (
+          <>
+            <h2 className="text-xl sm:text-2xl font-semibold leading-tight" style={serif}>
+              Understand how comparable companies raise public capital
+            </h2>
+            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
+              One short screen, an instant eligibility read, then a few follow-ups
+              tailored to your specific case, then one executive memo: what you can
+              qualify for, what each option requires, and what to watch. Export it
+              as a PDF.
+            </p>
+          </>
+        )}
 
         {/* Wizard progress dots */}
         {!running && !report && (
@@ -648,11 +666,38 @@ export function IntelligencePanel() {
         {/* ── Adaptive round: grounded in the founder's real remaining gates ── */}
         {screen === "adaptive" && round && !running && (
           <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5 sm:p-6">
-            <StepHeader
-              eyebrow={round.theme}
-              title="A few tailored questions"
-              detail="These narrow the shortlist to the funds you can actually go after, and tell us how to argue your case to them. Leave anything you genuinely don't know unanswered."
-            />
+            {/* A handover, not a form header.
+                Screen 2 used to open with the same marketing headline and
+                product blurb as screen 1, then go straight into questions —
+                the product re-pitching itself in the middle of a conversation.
+                What a specialist does instead is tell you what your answers
+                already bought, what they are doing with them, and what is
+                still open. The counts come from the verdict the client is
+                already holding at this moment; before this it was fetched,
+                used silently to pick questions, and never shown, so we took
+                before we gave. */}
+            <div className="mb-6 border-l-2 border-[var(--primary)] pl-4">
+              <p className="text-[15px] leading-relaxed text-[var(--foreground)]">
+                Thanks, that is the scoping done. Those first answers are the
+                ones that decide which funds are even relevant, and we have
+                run them against the register
+                {routesInPlay > 0 ? (
+                  <>
+                    {" "}— <strong>{routesInPlay} route{routesInPlay === 1 ? "" : "s"}</strong>{" "}
+                    are in play for a company like yours
+                  </>
+                ) : null}
+                .
+              </p>
+              <p className="mt-2 text-[15px] leading-relaxed text-[var(--foreground)]">
+                What follows are the questions we cannot answer for you, and
+                each one moves you further down the funnel. Leave anything you
+                genuinely do not know unanswered, that is useful too.
+              </p>
+              <p className="mt-3 text-[13px] text-[var(--muted-foreground)]">
+                — {ANALYST_SIGNOFF}
+              </p>
+            </div>
             <div className="space-y-5">
               {round.questions.map((q) => {
                 const hint = FIELD_ENUM_HINTS[q.field];
@@ -660,9 +705,12 @@ export function IntelligencePanel() {
                 const current = roundAnswers[q.field];
                 return (
                   <div key={q.field}>
-                    <p className="mb-2 text-sm font-semibold" style={serif}>{q.question}</p>
+                    <p className="mb-1 text-sm font-semibold" style={serif}>{q.question}</p>
+                    {q.stake && (
+                      <p className="mb-2 text-xs text-[var(--accent)]">{q.stake}</p>
+                    )}
                     <div className="flex flex-wrap gap-2">
-                      {hint.options.map((o) => {
+                      {(q.options?.length ? q.options : hint.options).map((o) => {
                         const on = hint.multi
                           ? Array.isArray(current) && current.includes(o.value)
                           : current === o.value;
@@ -711,6 +759,9 @@ export function IntelligencePanel() {
                             carry a citation. The commercial half has no
                             instrument and no quote, and was rendering a bare
                             `requires: ""` under every question. */}
+                        {q.stake && (
+                          <p className="mb-2 text-xs text-[var(--accent)]">{q.stake}</p>
+                        )}
                         {q.quote && q.instrumentName && (
                         <p className="mb-2 text-xs text-[var(--muted-foreground)]">
                           {q.instrumentName} requires: &ldquo;{q.quote}&rdquo;

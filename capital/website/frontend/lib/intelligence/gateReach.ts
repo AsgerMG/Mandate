@@ -332,3 +332,51 @@ export function distinctFamilyCount(instrumentIds: string[]): number {
   );
   return buckets.size;
 }
+
+/** What is still unresolved about ONE candidate fund. */
+export interface FundStake {
+  instrumentId: string;
+  name: string;
+  country: string;
+  /** Plain field names and verbatim requirements still open on THIS fund. */
+  open: { field?: string; requirement: string }[];
+}
+
+/**
+ * Regroup the open evidence by FUND rather than by field.
+ *
+ * Both existing builders answer "which fields are still open across the
+ * shortlist", which is the right question for coverage and the wrong one for
+ * choosing what to ask. An analyst does not ask about a field with high reach;
+ * they ask the question that decides between the two funds actually in front
+ * of the founder. That requires knowing which fund each open question belongs
+ * to, which neither builder returns.
+ *
+ * Nothing new is extracted: this is the same evidence, pivoted.
+ */
+export function stakesByFund(
+  instrumentIds: string[],
+  answers: EligibilityAnswers | undefined,
+  limit = 8,
+): FundStake[] {
+  const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
+  const out: FundStake[] = [];
+  for (const id of instrumentIds.slice(0, limit)) {
+    const inst = byId.get(id);
+    if (!inst) continue;
+    const open: { field?: string; requirement: string }[] = [];
+    for (const gate of inst.gates) {
+      if (gate.gateRole && gate.gateRole !== "filter") continue;
+      const field = gate.intakeFieldResolved || gate.intakeField;
+      // Already answered, or not something an intake answer can settle.
+      if (field && field !== "none" && isAnswered(answers, field)) continue;
+      if (!gate.requirement) continue;
+      open.push({ field: field && field !== "none" ? field : undefined, requirement: gate.requirement });
+      if (open.length >= 4) break;
+    }
+    if (open.length) {
+      out.push({ instrumentId: inst.id, name: inst.name, country: inst.country, open });
+    }
+  }
+  return out;
+}

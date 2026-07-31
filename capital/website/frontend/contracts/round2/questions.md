@@ -124,6 +124,18 @@ must be able to weaken prose and never to move a legal conclusion.
   founder's own words, so the screen reads as written for them.
 - Q-8 (judged) Ask about the project and the business, never about legal form,
   headcount or country: screen 1 settled those.
+- Q-14 (judged) The bar for a question is an analyst's, not a form's: **would
+  an analyst ask this to decide which fund to pursue, or is it a box being
+  ticked?** A question earns its slot when a different answer sends this
+  founder to a different fund, or changes what they would say to one. Where
+  two funds hang on the same thing, that is the most valuable question on the
+  screen; a requirement belonging to a fund nobody would pursue is worth
+  nothing however open it is.
+- Q-15 (judged) Every question carries what it decides, in one clause, named
+  in terms of the funds in front of this founder. "Decides whether the
+  regional route is open to you" is a stake. "Checks your eligibility" is not:
+  it tells them nothing they could not have guessed, and a screen of those
+  reads as a form however sharp the questions are.
 - Q-9 (soft) Fewer, sharper questions beat more. A question whose answer would
   not change which funds publish, or how the company is positioned, is a
   question not worth asking.

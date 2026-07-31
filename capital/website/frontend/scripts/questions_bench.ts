@@ -26,7 +26,7 @@ async function main() {
   const { sanitizeEligibility } = await import("../lib/intelligence/sanitize");
   const { computeVerdict } = await import("../lib/intelligence/pipeline");
   const { planAdaptiveScreen } = await import("../lib/intelligence/adaptiveRound");
-  const { openFieldsForShortlist, openProjectGatesForShortlist } =
+  const { openFieldsForShortlist, openProjectGatesForShortlist, stakesByFund } =
     await import("../lib/intelligence/gateReach");
   const { FIELD_ENUM_HINTS } = await import("../lib/intelligence/types");
   const { checkQuestions, checkGroundedQuestions } =
@@ -60,7 +60,8 @@ async function main() {
       const i = instById().get(id);
       return i ? { name: i.name, country: i.country, supportType: i.capitalType } : null;
     }).filter((c): c is { name: string; country: string; supportType: string } => Boolean(c));
-    const screen = await planAdaptiveScreen(req, openFields.slice(0, 6), projectGates, candidates);
+    const screen = await planAdaptiveScreen(req, openFields.slice(0, 6), projectGates, candidates,
+      stakesByFund(verdict.candidateInstrumentIds, eligibility));
 
     const enumQs = (screen?.questions ?? []).map((q) => ({
       question: q.question,
