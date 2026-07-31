@@ -156,8 +156,31 @@ h1, h2, h3, h4, h5, h6 {
      page, nav and footer included. Found by rendering the page with headless
      Chrome, which prints exactly the way a keyboard shortcut does.
      `body:has(#print-report)` keeps every other page untouched. */
-  body:has(#print-report) > *:not(:has(#print-report)) { display: none !important; }
-  :has(> #print-report) > *:not(#print-report) { display: none !important; }
+  /* Hide everything that is not the report, an ancestor of it, or inside it —
+     at ANY depth. Scoping to direct siblings only left anything nested deeper
+     untouched, which is how a "why this matters" call-to-action from the page
+     below printed on page two of a private memorandum. */
+  body:has(#print-report) *:not(:has(#print-report)):not(#print-report):not(#print-report *) {
+    display: none !important;
+  }
+
+  /* Ink on white paper. The site's cream background and inset panel printed as
+     a tinted band with the document floating inside it, which reads as a
+     screenshot of a web page rather than as a document. */
+  html, body { background: #fff !important; }
+  #print-report {
+    background: #fff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  /* Every tinted panel, cell and callout inside the report goes flat. The
+     site's cream surfaces are what made an export read as a screenshot of a
+     web page rather than as a document; colour still carries meaning through
+     text and rules, which print fine.
+     Deliberately plain selectors: a descendant :has() here was silently
+     dropped by the stylesheet compiler, so the rule was in the source, absent
+     from the served CSS, and the background survived every re-render. */
+  #print-report * { background-color: transparent !important; }
 
   /* The brief fades its body in ~550ms after mount. On paper that transition
      is either mid-flight or irrelevant, and a half-faded export is a document
@@ -224,6 +247,11 @@ h1, h2, h3, h4, h5, h6 {
      A link is still a link on paper; underlining every institution name turns
      the first column into a ruled block. The colour carries it instead. */
   #print-report a { text-decoration: none; color: var(--primary); font-weight: 600; }
+  /* The link-kind chips ("SCHEME RECORD", "PROGRAMME PAGE") earn their place on
+     screen, where the reader is deciding whether to click. On paper they break
+     the fund name across two lines and add a second voice to the column. The
+     link still works in the PDF; the label does not need to shout. */
+  #print-report [data-linkkind] { display: none !important; }
 
   /* The trace panel and the export button never print. */
   #print-report .print\:hidden { display: none !important; }

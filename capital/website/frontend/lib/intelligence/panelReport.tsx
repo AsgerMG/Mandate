@@ -106,7 +106,10 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                   <span className="font-semibold">{r.institution}</span>
                 )}
                 {!pending && r.link && r.link.kind !== "apply" && (
-                  <span className="ml-1.5 align-[1px] text-[10px] uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
+                  <span
+                    data-linkkind
+                    className="ml-1.5 align-[1px] text-[10px] uppercase tracking-[0.08em] text-[var(--muted-foreground)]"
+                  >
                     {r.link.label}
                   </span>
                 )}
@@ -196,8 +199,9 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     observation about the founder's company (contract rule
                     BRIEF-4). It still computes and still drives ranking; it is
                     no longer printed. */}
-                <span className="block text-[12px] italic text-[var(--muted-foreground)]">
-                  Move: {pending && !r.nextStep ? <PlaceholderBar narrow /> : r.nextStep}
+                <span className="mt-1.5 block text-[12px] italic text-[var(--foreground-soft)]">
+                  <strong className="not-italic font-semibold">Move.</strong>{" "}
+                  {pending && !r.nextStep ? <PlaceholderBar narrow /> : r.nextStep}
                 </span>
                 {/* Curated from the scheme's own document, never model-written.
                     It is the only line on the row that is an instruction rather
@@ -205,7 +209,8 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     prose is still streaming. */}
                 {r.applicationChannel && (
                   <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
-                    How to apply: {r.applicationChannel}
+                    <strong className="font-semibold">How to apply.</strong>{" "}
+                    {r.applicationChannel}
                   </span>
                 )}
               </td>
