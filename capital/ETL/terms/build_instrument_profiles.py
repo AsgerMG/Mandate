@@ -57,6 +57,7 @@ from etl_env import DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
+import json
 import os
 import re
 import sqlite3
@@ -319,7 +320,24 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     # (see the 94-subsector plan in project-mgmt/nace_taxonomy.md).
 
     out: list[tuple[str, str, int]] = []
-    for iid, name, body, country, capital, bucket, _samples in instruments:
+    for iid, name, body, country, capital, bucket, samples in instruments:
+        # The event join above keys on `source`, which cannot express the SATR
+        # split: a child is one granting authority WITHIN a source, so all 453
+        # of them matched nothing and were profiled on their regime's
+        # boilerplate alone. Every scheme in a country then read alike to the
+        # embedding, which is how a Paris EdTech was matched to a Normandy
+        # scheme and the national cinema fund.
+        #
+        # The per-child titles already exist, computed against each child's own
+        # award history in populate_funding_instruments.py, and were being
+        # selected here and dropped. Preferred where the join found nothing.
+        if not titles.get(iid) and samples and kinds.get(iid) != "scheme":
+            try:
+                parsed = [norm_title(t) for t in json.loads(samples) if t and len(t.strip()) > 8]
+            except (ValueError, TypeError):
+                parsed = []
+            if parsed:
+                titles[iid] = parsed[:MAX_TITLES]
         parts: list[str] = []
         ident = name or iid
         if body and body != name:
@@ -379,6 +397,21 @@ def cmd_run(args) -> None:
             cur.execute("DELETE FROM instrument_profiles")
         pg.commit()
         print("cleared existing profiles (--rebuild)")
+    else:
+        # An incremental run must still converge on the corpus as it is now.
+        # Instruments are re-derived on every load and some ids legitimately
+        # disappear; their vectors otherwise stay behind and keep matching
+        # companies to a fund that no longer exists in the corpus.
+        with pg.cursor() as cur:
+            cur.execute("""
+                DELETE FROM instrument_profiles p
+                 WHERE NOT EXISTS (SELECT 1 FROM funding_instruments fi
+                                    WHERE fi.id = p.instrument_id)
+            """)
+            dropped = cur.rowcount or 0
+        pg.commit()
+        if dropped:
+            print(f"pruned {dropped:,} profiles whose instrument is gone")
 
     done_ids = {
         r[0] for r in pg.execute("SELECT instrument_id FROM instrument_profiles").fetchall()

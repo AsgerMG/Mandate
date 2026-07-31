@@ -115,9 +115,39 @@ def cmd_status(_args) -> None:
     conn.close()
 
 
+def prune_orphans(conn) -> int:
+    """Drop embeddings whose gate or clause no longer exists.
+
+    Re-running the pipeline must converge on the corpus as it is now. Without
+    this, a gate that was retired, re-keyed or quarantined leaves its vector
+    behind, and retrieval keeps surfacing a rule no fund has any more — the
+    failure is invisible, because the answer still looks well-sourced.
+
+    Part of the normal run rather than a command to remember: a reconcile step
+    that has to be invoked by hand is one that stops being invoked.
+    """
+    with conn.cursor() as cur:
+        cur.execute("""
+            DELETE FROM eligibility_embeddings e
+             WHERE (e.source_type = 'gate'
+                    AND NOT EXISTS (SELECT 1 FROM eligibility_gates g
+                                     WHERE g.instrument_id = e.instrument_id
+                                       AND g.gate_key = e.source_key))
+                OR NOT EXISTS (SELECT 1 FROM funding_instruments fi
+                                WHERE fi.id = e.instrument_id)
+        """)
+        n = cur.rowcount or 0
+    conn.commit()
+    return n
+
+
 def cmd_run(args) -> None:
     conn = connect()
     client = voyage_client()
+
+    dropped = prune_orphans(conn)
+    if dropped:
+        print(f"pruned {dropped:,} embeddings whose gate or instrument is gone")
 
     # Gather everything embeddable, anti-joined against what's already done
     # (resumable). Anti-join is on the NATURAL key, not the surrogate id: gate
