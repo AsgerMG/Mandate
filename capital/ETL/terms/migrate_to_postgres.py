@@ -126,21 +126,28 @@ def main() -> None:
                         "funding_instrument_sources, funding_instruments CASCADE")
 
             # Pass 1: instruments with parent_id NULLed out.
+            #
+            # The column list is READ FROM SQLITE, not written out here. It was
+            # written out here, and it silently stopped at scheme_operators: the
+            # award medians, the realised intensities and the hierarchy columns
+            # were all computed, exported to JSON, and never reached Postgres.
+            # Nothing failed, because corpus.ts SELECTs them and Postgres had the
+            # columns (added by the self-healing DDL above) -- they were simply
+            # always NULL. Production therefore ranked on typicalAward's mean
+            # fallback, the statistic the median was introduced to replace after
+            # it was found overstating by up to 450x.
+            #
+            # A hand-maintained list beside a table that gains a column every
+            # few days is a "keep in sync" comment in disguise. Deriving it means
+            # the next column is carried without anyone remembering to.
+            cols = list(instruments[0].keys()) if instruments else []
+            insert_cols = [c for c in cols if c != "parent_id"]
+            placeholders = ", ".join(["%s"] * len(insert_cols))
             cur.executemany(
-                """INSERT INTO funding_instruments
-                     (id, parent_id, name, name_source, country, administering_body,
-                      administering_body_share,
-                      ndb_id, source_family_bucket, capital_type, capital_type_basis,
-                      event_count, company_count, total_eur, first_year, last_year,
-                      is_framework, sample_project_titles,
-                      scheme_code, application_url, sector_mix, scheme_operators)
-                   VALUES (%s, NULL, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                [(r["id"], r["name"], r["name_source"], r["country"], r["administering_body"],
-                  r["administering_body_share"], r["ndb_id"], r["source_family_bucket"], r["capital_type"], r["capital_type_basis"],
-                  r["event_count"], r["company_count"], r["total_eur"], r["first_year"], r["last_year"],
-                  bool(r["is_framework"]), r["sample_project_titles"],
-                  r["scheme_code"], r["application_url"], r["sector_mix"],
-                  r["scheme_operators"]) for r in instruments],
+                f"""INSERT INTO funding_instruments ({", ".join(insert_cols)})
+                    VALUES ({placeholders})""",
+                [tuple(bool(r[c]) if c == "is_framework" else r[c] for c in insert_cols)
+                 for r in instruments],
             )
             # Pass 2: fill in parent_id now that every row exists.
             cur.executemany(
