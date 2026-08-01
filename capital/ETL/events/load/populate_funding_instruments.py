@@ -29,7 +29,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
+from etl_env import DB, ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -812,6 +812,35 @@ def main() -> None:
     if kept_children:
         print(f"  split: {kept_children} per-authority/scheme children under "
               f"{len(split_targets)} rollups")
+    # ── Real programme names, where an agency publishes one ───────────────
+    # `name` is otherwise the granting BODY, so 39 of these rows read "TACR
+    # (Czech Republic)" or "EIS (KredEx + Enterprise Estonia)" and a founder
+    # cannot tell which product is theirs. The names come from each agency's own
+    # register or catalogue and are recorded with their source in
+    # data/reference/programme_names.json; anything the agency itself never
+    # named, or that could not be resolved confidently, is deliberately absent
+    # and keeps the measured descriptor instead.
+    #
+    # Applied here rather than in the extractors so one curated file covers
+    # agencies whose feeds have no name field at all.
+    _names_path = ROOT / "data" / "reference" / "programme_names.json"
+    programme_names = {
+        k: v["name"] for k, v in json.loads(_names_path.read_text()).items()
+        if not k.startswith("_")
+    }
+    renamed = 0
+    for row in now:
+        real = programme_names.get(row["id"])
+        if real and row.get("name") != real:
+            row["name"] = real
+            # "curated" is the schema's word for a name we chose rather than
+            # derived; these are curated FROM an agency register, with the
+            # source recorded per name in programme_names.json.
+            row["name_source"] = "curated"
+            renamed += 1
+    if renamed:
+        print(f"  named {renamed} instruments from their agency's own register")
+
     # Every row must carry the new columns, children and parents alike.
     for row in now:
         row.setdefault("scheme_code", None)
