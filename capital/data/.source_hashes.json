@@ -3,6 +3,10 @@
   "files": 1,
   "hash": "6f1a6c363325894f"
  },
+ "agency_catalogues": {
+  "files": 100,
+  "hash": "3ca8d17a306a1902"
+ },
  "almi_invest": {
   "files": 21,
   "hash": "28a7b05110f5947a"

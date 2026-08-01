@@ -400,6 +400,17 @@ def apply_020(conn: sqlite3.Connection) -> None:
     print("  applied 020_register_derived_tier.sql")
 
 
+def apply_021(conn: sqlite3.Connection) -> None:
+    """programme_feed name_source — names the feed itself carries."""
+    row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE name = 'funding_instruments'").fetchone()
+    if row and "programme_feed" in row[0]:
+        print("  skip 021 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "021_programme_feed_name_source.sql").read_text())
+    print("  applied 021_programme_feed_name_source.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -418,6 +429,7 @@ MIGRATIONS = {
     "018": apply_018,
     "019": apply_019,
     "020": apply_020,
+    "021": apply_021,
 }
 
 

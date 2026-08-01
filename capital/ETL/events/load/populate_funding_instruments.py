@@ -166,6 +166,11 @@ OVERRIDE_NAMES = {
 # This is settled, stable EU state-aid law structure (Reg. 651/2014), not an
 # inference — safe to assert as inventory_inferred (free, no LLM call), but
 # still not a cited primary-text quote, so it stays below llm_2pass.
+# A family's events must overwhelmingly agree on one programme name before it
+# becomes the family's name. Below this the family is a rollup of several
+# programmes and naming it after the biggest is a false label.
+FEED_NAME_DOMINANCE = 0.8
+
 GBER_ARTICLE_GATES = {
     "StateAidObjectiveGberArt21": (
         "Risk-finance aid (GBER Art. 21) — targets equity/quasi-equity gaps for SMEs.",
@@ -869,6 +874,46 @@ def main() -> None:
     #
     # Applied here rather than in the extractors so one curated file covers
     # agencies whose feeds have no name field at all.
+    # ── First, the names the feed already carries ────────────────────────
+    # Before curating a name by hand, and long before fetching an agency's
+    # catalogue to read one off a web page, ask whether the events already say
+    # it. They do, for a lot of the corpus: `programme_name` is populated on
+    # 47,979 events, including 2,142 of NFR's 2,143. Norges Forskningsrad had 65
+    # families all displaying "Norges Forskningsradet"; its own events name every
+    # one of them (INNO-NAERING, ENERGIFORSKNING, GRONNFORM, EUROSTARS).
+    #
+    # This is the same lesson as the recovered sector labels: check what the
+    # corpus already derives from a source before going back out to the source.
+    # Measured before applying -- 71 families gain a real name and NOT ONE
+    # unambiguous family changes, so this cannot churn names that already work.
+    #
+    # The floor is dominance, not presence. A family whose events name three
+    # different programmes is a rollup, and calling it after the largest would
+    # be wrong in a way nobody could see from the row.
+    feed_named = 0
+    for row in now:
+        if row.get("parent_id"):
+            continue                      # children are named by their own split
+        votes = conn.execute("""
+            SELECT e.programme_name p, COUNT(*) n
+            FROM public_funding_events e
+            JOIN funding_instrument_sources s ON s.source = e.source
+            WHERE s.instrument_id = ? AND e.programme_name IS NOT NULL
+              AND TRIM(e.programme_name) <> ''
+            GROUP BY 1 ORDER BY n DESC""", (row["id"],)).fetchall()
+        total = sum(v[1] for v in votes)
+        if not votes or not total or votes[0][1] / total < FEED_NAME_DOMINANCE:
+            continue
+        real = (votes[0][0] or "").strip()
+        if real and real.lower() != (row.get("name") or "").strip().lower():
+            row["name"] = real
+            # Its own word for itself, carried by the feed -- neither our
+            # deterministic descriptor nor a hand-curated choice.
+            row["name_source"] = "programme_feed"
+            feed_named += 1
+    if feed_named:
+        print(f"  named {feed_named} instruments from the programme name their own events carry")
+
     _names_path = ROOT / "data" / "reference" / "programme_names.json"
     programme_names = {
         k: v["name"] for k, v in json.loads(_names_path.read_text()).items()
