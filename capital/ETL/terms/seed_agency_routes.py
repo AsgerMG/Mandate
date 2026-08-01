@@ -89,6 +89,43 @@ AGENCIES: list[dict] = [
         "timeline": "Most products accept applications continuously, until the "
                     "programme's funding is committed.",
     },
+    # Added 2026-08-01 while resolving same-named development-bank families.
+    # Three more agencies were researched and are deliberately ABSENT: Innovasjon
+    # Norge and Bpifrance return HTTP 403 bot blocks, and CDP Venture Capital
+    # serves a Radware CAPTCHA. Getting past any of them means impersonating a
+    # browser, which is the line already drawn in verify() below. They are
+    # recorded here as refusing automated access, so nobody re-researches them
+    # and quietly crosses it. Their 14 funds keep the measured descriptor.
+    {
+        "match": "enterprise_ireland_%",
+        "agency": "Enterprise Ireland",
+        "calls": "https://www.enterprise-ireland.com/en/funding-supports",
+        "portal": "https://www.enterprise-ireland.com/en/funding-supports",
+        "channel": "Apply through the support's own page in the Enterprise "
+                   "Ireland funding catalogue; most routes start with the "
+                   "company's Development Adviser.",
+        "timeline": "Most supports are open on a rolling basis; competitive funds "
+                    "run as dated calls.",
+    },
+    {
+        "match": "invest_nl_%",
+        "agency": "Invest-NL",
+        "calls": "https://www.invest-nl.nl/financiering",
+        "portal": "https://www.invest-nl.nl/financiering",
+        "channel": "Approach Invest-NL directly through the financing page; it "
+                   "invests and co-invests rather than running open calls.",
+        "timeline": "Rolling. There are no application windows.",
+    },
+    {
+        "match": "sprind_%",
+        "agency": "SPRIND (Bundesagentur fur Sprunginnovationen)",
+        "calls": "https://www.sprind.org/de/projekte/",
+        "portal": "https://www.sprind.org/de/projekte/",
+        "channel": "Entry is by SPRIND Challenge or by direct approach to a "
+                   "project lead; SPRIND selects rather than awarding on "
+                   "open call.",
+        "timeline": "Challenges run as dated rounds; other engagement is rolling.",
+    },
     {
         "match": "cdti_%",
         "agency": "CDTI",
