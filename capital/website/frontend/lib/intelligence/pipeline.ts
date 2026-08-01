@@ -51,6 +51,7 @@ import {
   instById,
   channelLabel,
   buildInstrumentTable,
+  buildInstrumentTableHydrated,
   DISPLAY_CAP,
   displayInstitutionName,
   founderCountryList,
@@ -1283,7 +1284,7 @@ export async function computeVerdict(
     ...dbPeers.flatMap((r) => r.channels),
   ]);
   const founderCountries = founderCountryList(country, opts.targetMarkets, eligibility?.entityCountries);
-  const candidates = buildInstrumentTable({
+  const candidates = await buildInstrumentTableHydrated({
     fieldChannels,
     ticketBand: eligibility?.ticketBand,
     consortiumOk: eligibility?.consortium !== "no",
@@ -1298,9 +1299,10 @@ export async function computeVerdict(
   // one — 0 of 25 on a live call. "Instant" means no model round-trip; one
   // scoped query for the seven instruments on the table is not what makes this
   // path slow, and a rule shown without its source is not evidence.
+  // Gates are already in memory: buildInstrumentTableHydrated fetched them for
+  // exactly these instruments between selecting and materialising them.
   const candidateIds = candidates
     .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
-  await hydrateGatesFor(candidateIds);
   return {
     eligibilityScreen: evaluateEligibility(eligibility, candidateIds),
     instrumentTable: candidates.slice(0, DISPLAY_CAP),
@@ -1380,17 +1382,18 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     ...records.flatMap((r) => (r.matched ? r.channels : [])),
     ...dbPeers.flatMap((r) => r.channels),
   ]);
-  const instrumentTable = applyProfileSignal(
-    buildInstrumentTable({
+  const hydratedTable = await buildInstrumentTableHydrated({
       fieldChannels,
       ticketBand: req.eligibility?.ticketBand,
       consortiumOk: req.eligibility?.consortium !== "no",
       founderCountries: founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
       capitalSought: req.capitalSought ?? [],
       description: req.description,
-      semantic: semanticScores,
-      log,
-    }).slice(0, VERDICT_POOL),
+    semantic: semanticScores,
+    log,
+  });
+  const instrumentTable = applyProfileSignal(
+    hydratedTable.slice(0, VERDICT_POOL),
     req.profileSignal,
     req.companyType,
   );

@@ -14,6 +14,7 @@
 // The boundary is deliberate — WHICH FUNDS QUALIFY lives here; HOW THE MEMO IS
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
 import { regionNameFor } from "./regions.generated";
+import { hydrateGatesFor } from "./corpus";
 import { isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
@@ -596,7 +597,23 @@ export interface InstrumentTableInput {
   log?: ExclusionLog;
 }
 
-export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow[] {
+/** One chosen row before its gates are known: the channel-level facts, plus
+ *  the instrument it resolved to (null when only a channel-level row is
+ *  honest). Deliberately gate-free, so selection cannot depend on them. */
+export interface RowSelection {
+  base: Omit<InstrumentRow, "instrument">;
+  leaf: DbInstrument | null;
+}
+
+/**
+ * Choose what the table will contain, WITHOUT reading a single gate.
+ *
+ * The whole two-phase design rests on this staying true: gates are fetched for
+ * the instruments this returns, so anything here that read a gate would be
+ * reading one that has not been loaded yet — and on the Postgres path that is
+ * an empty array, not an error.
+ */
+export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[] {
   const {
     fieldChannels, ticketBand, consortiumOk, description, semantic, log,
     founderCountries = [], capitalSought = [],
@@ -719,7 +736,7 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
   // away — so the channel was correctly identified and then silently dropped.
   const ordered = [...thematicFirst, ...[...codes].filter((c) => !thematicFirst.includes(c))];
   return ordered
-    .flatMap((channel) => {
+    .flatMap((channel): RowSelection[] => {
       const snap = loadFundSnapshot(channel);
       if (!snap) return [];
       const fitFlag = snap.fit && snap.fit !== "startup_ready" ? FIT_FLAG[snap.fit] : undefined;
@@ -748,9 +765,32 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
             "national channel with no instrument in the founder's countries");
           return [];
         }
-        return [{ ...base, instrument: INSTRUMENT_NAME[channel] ?? channelLabel(channel) } as InstrumentRow];
+        return [{ base, leaf: null }];
       }
-      return leaves.map((leaf) => ({
+      return leaves.map((leaf) => ({ base, leaf }));
+    });
+}
+
+/**
+ * Turn selected instruments into published rows.
+ *
+ * Everything here reads GATES — legalBasisFor, accessMode, judgementCriteria,
+ * structuringNotes and the dedupe's encodedCount — which is exactly why it is
+ * separated from selection above. Selection traffics in DbInstrumentLite and
+ * cannot touch gates; by the time this runs, hydrateGatesFor has fetched them
+ * for the handful of instruments that got this far.
+ */
+export function materialiseInstrumentTable(
+  selections: RowSelection[],
+  input: InstrumentTableInput,
+): InstrumentRow[] {
+  const { consortiumOk, log } = input;
+  return selections
+    .map(({ base, leaf }): InstrumentRow => {
+      if (!leaf) {
+        return { ...base, instrument: INSTRUMENT_NAME[base.channel] ?? channelLabel(base.channel) } as InstrumentRow;
+      }
+      return {
         ...base,
         instrument: leaf.name,
         instrumentId: leaf.id,
@@ -783,7 +823,7 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         descriptor: fundDescriptor(leaf),
         judgementCriteria: judgementCriteria(leaf),
         structuringNotes: structuringNotes(leaf),
-      } as InstrumentRow));
+      } as InstrumentRow;
     })
     .sort((a, b) => {
       // Proven-in-field first.
@@ -928,4 +968,22 @@ export function legalBasisFor(leaf: DbInstrument): string | undefined {
   const gate = leaf.gates.find((g) => g.id === "gber_article_inferred");
   if (!gate) return undefined;
   return GBER_ARTICLE_LABEL[gate.value] ?? gate.requirement.split(" — ")[0];
+}
+
+/** Synchronous entry, for the JSON path and the offline scripts: gates are
+ *  already in memory there, so selection and materialisation can run back to
+ *  back. */
+export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow[] {
+  return materialiseInstrumentTable(selectInstrumentRows(input), input);
+}
+
+/** The production entry. Selects gate-free, fetches gates for exactly the
+ *  instruments selected, then materialises. */
+export async function buildInstrumentTableHydrated(
+  input: InstrumentTableInput,
+): Promise<InstrumentRow[]> {
+  const selections = selectInstrumentRows(input);
+  await hydrateGatesFor(
+    selections.map((s) => s.leaf?.id).filter((id): id is string => Boolean(id)));
+  return materialiseInstrumentTable(selections, input);
 }
