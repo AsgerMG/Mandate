@@ -336,6 +336,20 @@ def apply_015(conn: sqlite3.Connection) -> None:
     print("  applied 015_award_percentiles.sql")
 
 
+def apply_016(conn: sqlite3.Connection) -> None:
+    """programme_ref / programme_name — the substream level.
+
+    The raw registers name their programmes and the loaders dropped it: 473
+    ADEME programmes became one row. See the SQL for why the name is never
+    synthesised."""
+    if column_exists(conn, "public_funding_events", "programme_name"):
+        print("  skip 016 (already applied — programme_name exists)")
+        return
+    sql = (MIG_DIR / "016_programme_identity.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 016_programme_identity.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -349,6 +363,7 @@ MIGRATIONS = {
     "013": apply_013,
     "014": apply_014,
     "015": apply_015,
+    "016": apply_016,
 }
 
 

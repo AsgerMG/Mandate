@@ -33,6 +33,7 @@ from etl_env import DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
+import hashlib
 import json
 import re
 import unicodedata
@@ -266,6 +267,11 @@ NOT_AN_APPLYABLE_BODY = re.compile(
     re.I)
 
 
+def _name_digest(text: str) -> str:
+    """Six stable hex characters of a name, to keep long slugs unique."""
+    return hashlib.sha1(text.encode("utf-8")).hexdigest()[:6]
+
+
 def child_slug(text: str) -> str:
     """Stable, readable id fragment. Ids must not move between runs: the
     reconcile step deletes gates whose instrument disappeared, so an id that
@@ -436,8 +442,27 @@ def main() -> None:
         r[0] for r in conn.execute(
             "SELECT DISTINCT id FROM funding_instruments WHERE id LIKE 'satr%'")) if f}
 
+    # ── The second split dimension: the PROGRAMME ──────────────────────────
+    # A state-aid rollup splits by (granting body, notified scheme), because
+    # that is what identifies the money there. Everywhere else the unit a
+    # founder actually applies to is the programme, and the registers name it:
+    # ADEME publishes 458 of them, and all of them were collapsing into one row
+    # with a single EUR 20,000 median.
+    #
+    # Read from the data rather than listed, for the same reason split_families
+    # is: a source that starts publishing programme names should get the
+    # granularity automatically, not when somebody remembers to add it.
+    programme_split = {r[0] for r in conn.execute("""
+        SELECT source FROM public_funding_events
+         WHERE programme_name IS NOT NULL AND programme_name != ''
+         GROUP BY source HAVING COUNT(*) >= ?
+    """, (MIN_CHILD_EVENTS,))}
+    if programme_split:
+        print(f"  programme-level split available for {len(programme_split)} sources")
+
     rows = conn.execute("""
         SELECT e.source, e.company_id, c.country, c.parent_group, c.sector_top,
+               e.programme_name,
                e.grant_amount_eur, e.equity_amount_eur, e.debt_amount_eur,
                e.grant_amount_basis, e.aid_instrument, e.aid_objective, e.ndb_distributor,
                e.granting_authority, e.granting_authority_country, e.call_id,
@@ -545,8 +570,17 @@ def main() -> None:
         # CHILDREN. Nothing is moved, so nothing is orphaned: the reconcile
         # above only deletes gates whose instrument disappeared, and no
         # instrument disappears here.
-        if fam in split_targets and r["granting_authority"] and r["call_id"]:
+        # A programme child is keyed on the programme's own NAME, which is
+        # also what it will be called. Nothing is synthesised: where a source
+        # publishes no name, it simply does not split.
+        prog = (r["programme_name"] or "").strip() if r["programme_name"] else ""
+        if prog and r["source"] in programme_split:
+            key = (fam, prog[:200], "")
+        elif fam in split_targets and r["granting_authority"] and r["call_id"]:
             key = (fam, r["granting_authority"][:200], r["call_id"])
+        else:
+            key = None
+        if key:
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
                 capital=Counter(), objectives=Counter(), titles=Counter(),
@@ -679,8 +713,21 @@ def main() -> None:
         # A child's OWN awards, for the same reason its sector mix is its own:
         # the regime's median says nothing about what THIS body hands out.
         c25, c50, c75, cn = award_percentiles(c["awards"])
+        # `scheme` is empty for a programme child: there is no notified scheme
+        # code, the programme name IS the identity, and it becomes the row's
+        # name. That is the whole point — "Tremplin pour la transition
+        # ecologique des PME" is what a founder applies to, not "ADEME".
+        is_programme = not scheme
         now.append(dict(
-            id=f"{fam}__{child_slug(scheme)}__{child_slug(authority)}",
+            # child_slug truncates to 48 characters, and programme names are
+            # long and share prefixes ("Aides aux actions en faveur de la
+            # transition ecologique ..."), so the slug alone collides. A short
+            # digest of the FULL name keeps ids unique and, more importantly,
+            # stable: ids must not move between runs, because the reconcile
+            # step cannot tell a renamed instrument from a vanished one.
+            id=(f"{fam}__{child_slug(authority)}_{_name_digest(authority)}"
+                if is_programme
+                else f"{fam}__{child_slug(scheme)}__{child_slug(authority)}"),
             parent_id=fam,
             name=authority,
             name_source="deterministic",

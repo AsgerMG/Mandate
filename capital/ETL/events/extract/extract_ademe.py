@@ -166,6 +166,11 @@ def parse() -> list[dict]:
                 "project_title": obj[:240] if obj else None,
                 "project_summary": (disp + (" | " + obj if obj else ""))[:1500] or None,
                 "sector_tags_raw": f"ADEME | {disp}",
+                # ADEME's own name for the programme the award was made under.
+                # 473 distinct ones, and the thing a founder actually applies
+                # to: "Tremplin pour la transition ecologique des PME", not
+                # "ADEME". It was already read here and buried in free text.
+                "programme_name": disp or None,
                 "sector_v1": "cleantech",
                 "grant_amount_eur": amount,
                 "call_deadline": date,
@@ -247,13 +252,14 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
                (company_id, source, role, call_id, project_title, project_summary,
                 grant_amount_eur, sector_tags_raw,
                 raw_source_url, coordinator_only, grant_amount_basis,
-                call_deadline, deployment_country, eif_lp_backed, ndb_distributor)
+                call_deadline, deployment_country, eif_lp_backed, ndb_distributor,
+                programme_name)
                VALUES (?, ?, 'direct', ?, ?, ?, ?, ?, ?, 0, 'ademe_grant',
-                       ?, ?, 0, 'ademe')""",
+                       ?, ?, 0, 'ademe', ?)""",
             (r["company_id"], r["source"], r["call_id"],
              r["project_title"], r["project_summary"],
              r["grant_amount_eur"], r["sector_tags_raw"], r["doc_url"],
-             r["call_deadline"], DEPLOYMENT_COUNTRY),
+             r["call_deadline"], DEPLOYMENT_COUNTRY, r.get("programme_name")),
         )
         inserted += 1
     conn.commit()
