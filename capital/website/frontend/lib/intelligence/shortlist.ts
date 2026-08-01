@@ -13,6 +13,7 @@
 //
 // The boundary is deliberate — WHICH FUNDS QUALIFY lives here; HOW THE MEMO IS
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
+import { isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { TICKET_BANDS } from "./types";
@@ -202,6 +203,48 @@ export function instrumentServesCapital(instrumentCapitalType: string, capitalSo
  * rough number beats none for ranking, and scaleFit already treats an unknown
  * scale as neutral rather than low.
  */
+/**
+ * Cited requirements we cannot mechanically decide — the judgement criteria.
+ *
+ * ── Why these matter ──────────────────────────────────────────────────────
+ * 564 filter gates across the corpus are traceable to a fund's own text and
+ * carry no value_spec, because what they ask is not a threshold: "the applicant
+ * must genuinely aim for significant international growth", "must have a
+ * credible overall financing plan". The encoder is right to refuse them — no
+ * comparator decides that, and a human assessor could not either.
+ *
+ * But refusing to ENCODE them turned into refusing to SHOW them. A published
+ * row carried its one failing evaluated rule and nothing else, so a founder
+ * looking at Vinnova was never told that international ambition and a credible
+ * financing plan are what the assessor actually weighs — criteria we hold,
+ * cited, from Vinnova's own document. 149 instruments have no evaluable cited
+ * rule at all; for those, this is everything the fund has told us about who it
+ * says yes to.
+ *
+ * Uncited requirements are excluded deliberately. The same rule governs the
+ * whole product: only text traceable to the fund may be stated as the fund's
+ * own, and an inferred stub presented as an assessment criterion would be us
+ * putting words in their mouth.
+ */
+const JUDGEMENT_CAP = 3;
+
+export function judgementCriteria(inst: DbInstrument): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const g of inst.gates) {
+    if (g.gateRole && g.gateRole !== "filter") continue;
+    if (g.valueSpec) continue;                       // decided by the engine
+    if (!isCited(g)) continue;                       // not the fund's own words
+    const text = (g.requirement ?? "").trim();
+    const key = text.toLowerCase();
+    if (!text || seen.has(key)) continue;
+    seen.add(key);
+    out.push(text);
+    if (out.length >= JUDGEMENT_CAP) break;
+  }
+  return out;
+}
+
 export function typicalAward(inst: DbInstrument): number | null {
   if (inst.awardP50 != null && inst.awardP50 > 0) return inst.awardP50;
   return inst.eventCount > 0 ? inst.totalEur / inst.eventCount : null;
@@ -604,6 +647,7 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         // claims and the row should not present them identically.
         typicalAward: leaf.awardP50 ?? undefined,
         typicalAwardN: leaf.awardN ?? undefined,
+        judgementCriteria: judgementCriteria(leaf),
       } as InstrumentRow));
     })
     .sort((a, b) => {

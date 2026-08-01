@@ -153,6 +153,16 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     the whole channel's range; this is the leaf's own median,
                     and the two are routinely an order of magnitude apart. The
                     count travels with it so the founder can weigh it. */}
+                {/* What the assessor weighs but no comparator can settle.
+                    Cited, in the fund's own words. For instruments with no
+                    evaluable cited rule at all, this is the only thing the
+                    fund has told us about who it says yes to, and it used to
+                    reach nobody. */}
+                {!pending && !!r.judgementCriteria?.length && (
+                  <ul className="mt-1 list-disc pl-4 text-[12px] text-[var(--muted-foreground)]">
+                    {r.judgementCriteria.map((c) => <li key={c}>{c}</li>)}
+                  </ul>
+                )}
                 {!pending && r.typicalAward != null && (
                   <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
                     {`Typical award ${fmtEur(r.typicalAward)}`}

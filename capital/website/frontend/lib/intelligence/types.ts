@@ -163,6 +163,10 @@ export interface InstrumentRow {
    *  from one with a EUR 127M median, and both sit under the same channel. */
   typicalAward?: number;
   typicalAwardN?: number;
+  /** Cited requirements no comparator can decide — what the assessor weighs.
+   *  For the 149 instruments with no evaluable cited rule, this is everything
+   *  the fund has told us about who it says yes to. */
+  judgementCriteria?: string[];
   /** Where to apply, when we hold a verified one. */
   applicationUrl?: string;
   /** Curated application route: how you apply, and when. */
@@ -213,6 +217,10 @@ export interface InstitutionEntry {
    *  question a founder asks first: how much would I actually get? */
   typicalAward?: number;
   typicalAwardN?: number;
+  /** Cited requirements no comparator can decide — what the assessor weighs,
+   *  in the fund's own words. Never inferred text: stating an inferred stub as
+   *  an assessment criterion would be putting words in the fund's mouth. */
+  judgementCriteria?: string[];
   /** "invest" rows are pitched, not applied to. */
   accessMode?: "apply" | "invest";
   /** How to apply, curated from the scheme's own document, and where. Absent

@@ -340,6 +340,71 @@ def cmd_triage(args) -> None:
     print("triage done.")
 
 
+def cmd_retriage(args) -> None:
+    """Re-judge filter gates the encoder could not turn into a comparator.
+
+    A gate triaged `filter` and left without a value_spec is in limbo: the
+    engine cannot decide it, and it counts against the instrument as an
+    unevaluable rule. Two very different things end up there.
+
+    Some are real conditions no comparator can settle -- "the applicant must
+    genuinely aim for significant international growth". Those belong to the
+    founder: they are what the assessor actually weighs, and the brief now
+    shows them (judgementCriteria in shortlist.ts).
+
+    The rest are programme facts wearing a filter's clothes -- "aid intensity
+    depends on the size of the organisation", "state aid rules apply only to
+    organisations carrying out economic activities". True, cited, and nothing
+    a founder is assessed on. Surfacing those as assessment criteria is how a
+    Swedish founder's Vinnova row led with two sentences about how state aid
+    works instead of the one that mattered, its co-financing expectation.
+
+    The triage prompt already draws this line correctly and names aid intensity
+    as a programme_fact; these predate it or were simply judged wrong. Same
+    prompt, run again on the gates that landed in limbo.
+    """
+    conn = connect()
+    rows = conn.execute(
+        """SELECT id, gate_family, intake_field, requirement, value
+             FROM eligibility_gates
+            WHERE gate_role = 'filter'
+              AND (value_spec IS NULL OR value_spec = '')
+            ORDER BY instrument_id, gate_key""").fetchall()
+    if args.limit:
+        rows = rows[: args.limit]
+    print(f"re-triaging {len(rows):,} unencodable filter gates ({MODEL})")
+    if not rows:
+        return
+
+    cl = client()
+    done = 0
+    moved: dict[str, int] = {}
+    for i in range(0, len(rows), TRIAGE_CHUNK):
+        chunk = rows[i : i + TRIAGE_CHUNK]
+        listing = "\n\n".join(
+            f"id: {r[0]}\nfamily: {r[1]}\nrequirement: {r[3][:400]}\n"
+            f"extracted_value: {r[4] or '(none)'}" for r in chunk)
+        res = cl.messages.create(
+            model=MODEL, max_tokens=4000, thinking={"type": "disabled"},
+            output_config={"format": {"type": "json_schema", "schema": TRIAGE_SCHEMA}},
+            messages=[{"role": "user", "content": TRIAGE_PROMPT + "\n\n" + listing}])
+        text = "".join(b.text for b in res.content if b.type == "text")
+        for r in extract_json(text)["results"]:
+            role = r["role"]
+            moved[role] = moved.get(role, 0) + 1
+            field = r["field"] if role == "filter" else "none"
+            conn.execute(
+                """UPDATE eligibility_gates
+                      SET gate_role=?, intake_field_resolved=?,
+                          encoding_method='llm_retriage'
+                    WHERE id=?""", (role, field, r["id"]))
+        conn.commit()
+        done += len(chunk)
+        print(f"  {done:,}/{len(rows):,}")
+    conn.close()
+    print("retriage done: " + ", ".join(f"{k}={v}" for k, v in sorted(moved.items(), key=lambda kv: -kv[1])))
+
+
 # ── encode ──────────────────────────────────────────────────────────────────
 ENCODE_SCHEMA = {
     "type": "object", "additionalProperties": False,
@@ -602,7 +667,8 @@ def main() -> None:
                     help="also process the llm_classified tier (no quotes; off by default)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status").set_defaults(func=cmd_status)
-    for name, fn in (("triage", cmd_triage), ("encode", cmd_encode)):
+    for name, fn in (("triage", cmd_triage), ("encode", cmd_encode),
+                     ("retriage", cmd_retriage)):
         p = sub.add_parser(name)
         p.add_argument("--limit", type=int, default=0)
         p.add_argument("--rebuild", action="store_true")
