@@ -180,6 +180,12 @@ def fetch_rows() -> list[dict]:
                     "grant_amount_eur": round(grant_gbp / rate, 2),
                     "total_project_cost_eur": round(cost_gbp / rate, 2) if cost_gbp else None,
                     "sector_tags_raw": (proj.get("grantCategory") or "").strip(),
+                    # Innovate UK's own scheme name for the award -- Knowledge
+                    # Transfer Partnership, Feasibility Studies, SBRI. It was
+                    # already read here and kept only as a free-text tag, so
+                    # 17,012 awards sat in one row whose medians differ tenfold
+                    # (SBRI EUR 292,668 against Responsive Strategy EUR 29,083).
+                    "programme_name": (proj.get("grantCategory") or "").strip() or None,
                     "grant_amount_basis": "iuk_grant_offer_gbp_converted",
                     "raw_source_url": f"https://gtr.ukri.org/projects?ref={pid}",
                 })
@@ -285,13 +291,15 @@ def load_db(rows: list[dict]) -> None:
                 project_number, project_title, project_summary,
                 project_started, project_ended,
                 grant_amount_eur, total_project_cost_eur,
-                sector_tags_raw, grant_amount_basis, raw_source_url)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                sector_tags_raw, grant_amount_basis, raw_source_url,
+                programme_name)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (cid, r["source"], r["call_id"], r["role"], r["coordinator_only"],
              r["project_number"], r["project_title"], r["project_summary"],
              r["project_started"], r["project_ended"],
              r["grant_amount_eur"], r["total_project_cost_eur"],
-             r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"]),
+             r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"],
+             r.get("programme_name")),
         )
         counts["inserted_events"] += 1
 
