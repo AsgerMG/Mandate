@@ -40,6 +40,15 @@ STEPS: list[tuple[str, list[str], bool]] = [
     ("export snapshot", ["python3", "website/build/eligibility_export.py"], False),
     ("companies index", ["python3", "website/build/companies_index.py"], False),
     ("publish to Postgres", ["python3", "ETL/terms/migrate_to_postgres.py"], False),
+    # Immediately after the publish and BEFORE anything expensive: it is the
+    # only check that can see the Postgres path (every other one runs NO_PG=1
+    # against the JSON fallback), and it needs both stores in step, which is
+    # exactly true here. It found four real defects the day it was written,
+    # one of which -- award medians never reaching Postgres, so production
+    # ranked on the mean -- had been wrong in production for days while every
+    # test passed. Skips cleanly without DATABASE_URL.
+    ("check both stores agree",
+     ["npx", "tsx", "scripts/check_hydration_parity.ts"], False),
     ("embed instrument profiles", ["python3", "ETL/terms/build_instrument_profiles.py", "run"], True),
     ("embed eligibility", ["python3", "ETL/terms/embed_eligibility.py", "run"], True),
     ("persist sector labels", ["python3", "ETL/events/transform/classify_taxonomy.py", "persist"], False),
@@ -82,7 +91,10 @@ def main() -> None:
             print(f"\n-- skipping {label} (--skip-paid)")
             continue
         print(f"\n-- {label}")
-        r = subprocess.run(argv, cwd=ROOT)
+        # The Node checks resolve their corpus path from cwd (corpus.ts reads
+        # process.cwd()/public/data), so they run from the frontend.
+        cwd = ROOT / "website" / "frontend" if argv[0] == "npx" else ROOT
+        r = subprocess.run(argv, cwd=cwd)
         if r.returncode != 0:
             # The coverage gate failing is the designed stop, not a crash.
             print(f"\nSTOPPED at '{label}' (exit {r.returncode}). "
