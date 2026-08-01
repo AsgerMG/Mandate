@@ -244,6 +244,7 @@ TEMPLATE = r"""<title>Fund intelligence coverage</title>
     <div class="controls">
       <input type="search" id="q" placeholder="Search name, sector, country, scheme&hellip;" aria-label="Search instruments">
       <select id="ch" aria-label="Filter by channel"><option value="">All channels</option></select>
+      <select id="fam" aria-label="Filter by family"><option value="">All families</option></select>
       <label class="chk"><input type="checkbox" id="gaps"> Only instruments with gaps</label>
       <span class="count" id="count"></span>
     </div>
@@ -253,6 +254,7 @@ TEMPLATE = r"""<title>Fund intelligence coverage</title>
           <th class="sortable" data-k="label">Instrument</th>
           <th class="sortable" data-k="country">Ctry</th>
           <th class="sortable" data-k="channel">Channel</th>
+          <th class="sortable" data-k="rootId">Family</th>
           <th class="sortable" data-k="focus">What it funds</th>
           <th class="sortable" data-k="score">Coverage</th>
           <th class="sortable num" data-k="gates">Rules</th>
@@ -314,6 +316,8 @@ document.getElementById("depth").innerHTML = [
    `of ${D.instruments} publishable rows sit under a parent regime`],
   ["Hold no rule of their own", D.noOwnRules,
    "their eligibility is entirely their regime's, replicated"],
+  ["Families", D.families,
+   `groupings that hold rules; the rest are programmes, nested up to ${D.maxDepth} deep`],
   ["Distinct regimes behind them", D.regimes,
    "the number of rulebooks actually researched"],
   ["Cannot disqualify anyone", D.noCited,
@@ -341,6 +345,26 @@ DATA.summary.byChannel.forEach((c) => {
   sel.appendChild(o);
 });
 
+// Families, from the hierarchy the corpus now records. Filtering on `path`
+// rather than parentId means selecting EIT catches its KICs and their
+// programmes too, at any depth -- which is the point of the materialised path.
+const famSel = document.getElementById("fam");
+const famNames = new Map();
+for (const r of DATA.rows) if (r.tier === "family") famNames.set(r.id, r.name);
+const famCounts = new Map();
+for (const r of DATA.rows) {
+  if (!r.publishable || !r.rootId || r.rootId === r.id) continue;
+  famCounts.set(r.rootId, (famCounts.get(r.rootId) || 0) + 1);
+}
+[...famCounts.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .forEach(([id, n]) => {
+    const o = document.createElement("option");
+    o.value = id;
+    o.textContent = `${famNames.get(id) || id} (${n})`;
+    famSel.appendChild(o);
+  });
+
 let sortKey = "score", sortDir = 1;
 const strip = (r) => `<span class="strip" title="${AXES.filter((a) => r.axes[a]).length} of 6">` +
   AXES.map((a) => `<span class="seg${r.axes[a] ? " on" : ""}"></span>`).join("") + "</span>";
@@ -348,6 +372,7 @@ const strip = (r) => `<span class="strip" title="${AXES.filter((a) => r.axes[a])
 function render() {
   const q = document.getElementById("q").value.trim().toLowerCase();
   const ch = sel.value;
+  const fam = famSel.value;
   const gapsOnly = document.getElementById("gaps").checked;
   let rows = DATA.rows.filter((r) =>
     // Framework placeholders and rollup parents never reach a founder, and
@@ -355,6 +380,7 @@ function render() {
     // read about seven points worse than it is.
     r.publishable &&
     (!ch || r.channel === ch) &&
+    (!fam || r.rootId === fam) &&
     (!gapsOnly || r.score < AXES.length) &&
     (!q || r.name.toLowerCase().includes(q) || r.country.toLowerCase().includes(q) ||
       (r.scheme || "").toLowerCase().includes(q) || r.id.toLowerCase().includes(q)));
@@ -374,6 +400,7 @@ function render() {
     <td class="name-cell" title="${esc(r.id)}">${esc(r.label || r.name)}</td>
     <td class="mono">${esc(r.country || "\u2014")}</td>
     <td class="dim">${esc(r.channel || "\u2014")}</td>
+    <td class="${r.rootId && r.rootId !== r.id ? "dim" : "dim"}">${esc(r.rootId && r.rootId !== r.id ? (famNames.get(r.rootId) || r.rootId) : "\u2014")}</td>
     <td class="${r.focus ? "" : "dim"}">${esc(r.focus || "\u2014")}</td>
     <td>${strip(r)}</td>
     <td class="num">${r.gates}</td>
@@ -403,7 +430,7 @@ document.querySelectorAll("th.sortable").forEach((th) => {
   th.addEventListener("click", go);
   th.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
 });
-["q", "ch", "gaps"].forEach((id) =>
+["q", "ch", "fam", "gaps"].forEach((id) =>
   document.getElementById(id).addEventListener("input", render));
 
 // Open on the thinnest instruments. This document exists to find gaps, so the

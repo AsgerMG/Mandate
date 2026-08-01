@@ -41,6 +41,7 @@ def build(conn: sqlite3.Connection) -> dict:
 
     insts = list(conn.execute("""
         SELECT id, parent_id, name, country, source_family_bucket, capital_type,
+               tier, root_id, depth, path,
                event_count, company_count, total_eur, first_year, last_year,
                sample_project_titles, sector_mix, scheme_code,
                award_p25, award_p50, award_p75, award_n
@@ -169,6 +170,10 @@ def build(conn: sqlite3.Connection) -> dict:
         rows.append({
             "id": iid,
             "publishable": iid not in has_children and iid not in frameworks,
+            "tier": i["tier"],
+            "rootId": i["root_id"],
+            "depth": i["depth"],
+            "path": i["path"],
             "name": i["name"] or iid,
             "country": i["country"] or "",
             "channel": i["source_family_bucket"] or "",
@@ -275,6 +280,8 @@ def build(conn: sqlite3.Connection) -> dict:
         "noOwnRules": sum(1 for r in pub if r["ownRules"] == 0),
         "noCited": sum(1 for r in pub if r["cited"] == 0),
         "regimes": len({r["parentId"] for r in pub if r["parentId"]}),
+        "maxDepth": max((r["depth"] or 0) for r in rows) if rows else 0,
+        "families": sum(1 for r in rows if r["tier"] == "family"),
         "byChannel": [],
     }
     per_ch: dict[str, list] = defaultdict(list)

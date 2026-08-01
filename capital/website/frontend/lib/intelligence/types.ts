@@ -170,6 +170,8 @@ export interface InstrumentRow {
   aidIntensityN?: number;
   /** One measured line describing what this fund is. */
   descriptor?: string;
+  /** The agency or regime above this programme, when there is one. */
+  familyName?: string;
   /** Cited requirements no comparator can decide — what the assessor weighs.
    *  For the 149 instruments with no evaluable cited rule, this is everything
    *  the fund has told us about who it says yes to. */
@@ -236,6 +238,10 @@ export interface InstitutionEntry {
    *  product names live in fund documents and mostly are not in the corpus, and
    *  "Bpifrance" three times tells a founder nothing. */
   descriptor?: string;
+  /** The family this programme belongs to, when it has one: the agency or
+   *  notified regime above it. A breadcrumb, not a name — it says who runs
+   *  this and implies there are siblings. */
+  familyName?: string;
   /** Cited requirements no comparator can decide — what the assessor weighs,
    *  in the fund's own words. Never inferred text: stating an inferred stub as
    *  an assessment criterion would be putting words in the fund's mouth. */

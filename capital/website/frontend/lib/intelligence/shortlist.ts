@@ -421,6 +421,30 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
   }
 }
 
+/**
+ * The family above a programme, as a founder would recognise it.
+ *
+ * Agencies name themselves — "ADEME (France)", "Vinnova" — and those pass
+ * through. State-aid regimes do not: their id-derived name is "SATR FR RND",
+ * which is an internal identifier and tells a founder nothing. They are
+ * rendered as the regime they are, using the same country-and-kind derivation
+ * displayInstitutionName already applies to scheme rows, so the breadcrumb and
+ * the row agree about what the regime is called.
+ *
+ * Returns undefined rather than a family that merely repeats the row: a
+ * breadcrumb that says the same thing twice is noise.
+ */
+function familyLabel(leaf: DbInstrument): string | undefined {
+  const parent = leaf.parentId ? instById().get(leaf.parentId) : undefined;
+  if (!parent?.name || parent.name === leaf.name) return undefined;
+  const m = /^satr_([a-z]{2})_(rnd|equity)$/.exec(parent.id);
+  if (m) {
+    const kind = m[2] === "equity" ? "equity" : "R&D";
+    return `${m[1].toUpperCase()} ${kind} state aid regime`;
+  }
+  return parent.name;
+}
+
 export function typicalAward(inst: DbInstrument): number | null {
   if (inst.awardP50 != null && inst.awardP50 > 0) return inst.awardP50;
   return inst.eventCount > 0 ? inst.totalEur / inst.eventCount : null;
@@ -865,6 +889,11 @@ export function materialiseInstrumentTable(
         aidIntensity: leaf.intensityP50 ?? undefined,
         aidIntensityN: leaf.intensityN ?? undefined,
         descriptor: fundDescriptor(leaf),
+        // Where this sits in its agency's structure. A programme means more
+        // read against its parent -- "Tremplin" alone is opaque, "ADEME >
+        // Tremplin" says who runs it and that ADEME has others. Only shown
+        // when the parent is a real family, never when it repeats the row.
+        familyName: familyLabel(leaf),
         judgementCriteria: judgementCriteria(leaf),
         structuringNotes: structuringNotes(leaf),
       } as InstrumentRow;

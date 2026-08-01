@@ -142,6 +142,14 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     body and 535 of 861 rows share one with a sibling, so
                     without this a founder reads "Bpifrance" three times and
                     cannot tell which one is theirs. */}
+                {/* Breadcrumb: the agency above this programme. A founder who
+                    sees "Tremplin pour la transition ecologique des PME" needs
+                    to know ADEME runs it, and that ADEME runs others. */}
+                {!pending && r.familyName && (
+                  <span className="block text-[11px] uppercase tracking-wide text-[var(--muted-foreground)]">
+                    {r.familyName}
+                  </span>
+                )}
                 {!pending && r.descriptor && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
                     {r.descriptor}
