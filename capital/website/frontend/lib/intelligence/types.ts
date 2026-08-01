@@ -1,6 +1,8 @@
 // Shared types for the competitive EU-funding intelligence agent.
 import { regionOptions } from "./regions.generated";
-import { toIso2 } from "./corpus";
+// From the leaf, NOT from corpus: this module is reachable from a client
+// component, so it must not pull in fs or pg. See countryCodes.ts.
+import { toIso2 } from "./countryCodes";
 
 /** Committed EUR on one funding channel, from the corpus. */
 export interface ChannelAmount {
