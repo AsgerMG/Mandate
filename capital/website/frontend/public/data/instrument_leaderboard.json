@@ -14,7 +14,7 @@
       "medianTicket": 287462.0,
       "topSector": {
         "name": "Other",
-        "companies": 8562
+        "companies": 18248
       },
       "topCountry": {
         "iso": "DE",
@@ -34,8 +34,8 @@
       "totalEur": 111615273155.58,
       "medianTicket": 63000000.0,
       "topSector": {
-        "name": "Semiconductors & electronics",
-        "companies": 24
+        "name": "Energy & cleantech",
+        "companies": 99
       },
       "topCountry": {
         "iso": "DE",
@@ -55,8 +55,8 @@
       "totalEur": 23197869377.669884,
       "medianTicket": 57641.5,
       "topSector": {
-        "name": "Software, data & AI",
-        "companies": 285
+        "name": "Other",
+        "companies": 11436
       },
       "topCountry": {
         "iso": "FR",
@@ -76,8 +76,8 @@
       "totalEur": 21555644517.96995,
       "medianTicket": 320312.5,
       "topSector": {
-        "name": "Semiconductors & electronics",
-        "companies": 546
+        "name": "Energy & cleantech",
+        "companies": 3360
       },
       "topCountry": {
         "iso": "ES",
@@ -118,8 +118,8 @@
       "totalEur": 6036254351.200028,
       "medianTicket": 375303.75,
       "topSector": {
-        "name": "Semiconductors & electronics",
-        "companies": 207
+        "name": "Health & life sciences",
+        "companies": 703
       },
       "topCountry": {
         "iso": "DE",
@@ -161,7 +161,7 @@
       "medianTicket": 20000000.0,
       "topSector": {
         "name": "Health & life sciences",
-        "companies": 6
+        "companies": 55
       },
       "topCountry": {
         "iso": "FR",
@@ -181,8 +181,8 @@
       "totalEur": 3332889894.890002,
       "medianTicket": 590625.0,
       "topSector": {
-        "name": "Semiconductors & electronics",
-        "companies": 211
+        "name": "Health & life sciences",
+        "companies": 720
       },
       "topCountry": {
         "iso": "DE",
@@ -224,7 +224,7 @@
       "medianTicket": 7500.0,
       "topSector": {
         "name": "Software, data & AI",
-        "companies": 25
+        "companies": 94
       },
       "topCountry": {
         "iso": "DE",

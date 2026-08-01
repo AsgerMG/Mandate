@@ -190,44 +190,59 @@
       ],
       "bySector": [
         {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 1433
+          "sector": "other",
+          "label": "Other",
+          "companies": 7796
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 856
+          "companies": 7708
         },
         {
-          "sector": "other",
-          "label": "Other",
-          "companies": 816
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 377
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 246
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 119
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 3076
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 91
+          "companies": 2996
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 2823
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 1610
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 1320
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 798
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 695
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 32
+          "companies": 117
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 69
         }
       ],
       "narrative": {
@@ -236,7 +251,7 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Software, data & AI",
+          "Other",
           "Energy & cleantech"
         ]
       }
@@ -433,42 +448,57 @@
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 2617
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 2207
-        },
-        {
-          "sector": "other",
-          "label": "Other",
-          "companies": 1344
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 624
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 598
+          "companies": 4346
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 473
+          "companies": 4240
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 3837
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 2720
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 1533
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 1531
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 1262
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 914
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 195
+          "companies": 893
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 21
+          "companies": 134
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 89
         }
       ],
       "narrative": {
@@ -478,7 +508,7 @@
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
           "Software, data & AI",
-          "Energy & cleantech"
+          "Industrial & manufacturing"
         ]
       }
     },
@@ -674,42 +704,57 @@
         {
           "sector": "other",
           "label": "Other",
-          "companies": 3083
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 1306
-        },
-        {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 900
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 593
+          "companies": 7125
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 515
+          "companies": 4195
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 2203
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 1882
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 1563
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 394
+          "companies": 962
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 925
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 781
         },
         {
           "sector": "semiconductors_electronics",
           "label": "Semiconductors & electronics",
-          "companies": 239
+          "companies": 504
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 18
+          "companies": 74
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 70
         }
       ],
       "narrative": {
@@ -719,7 +764,7 @@
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
           "Other",
-          "Energy & cleantech"
+          "Industrial & manufacturing"
         ]
       }
     },
@@ -913,29 +958,59 @@
       ],
       "bySector": [
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 88
-        },
-        {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 31
-        },
-        {
-          "sector": "defense_security",
-          "label": "Defence & security",
-          "companies": 30
-        },
-        {
-          "sector": "other",
-          "label": "Other",
-          "companies": 2
+          "companies": 2364
         },
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 1
+          "companies": 1507
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1296
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 1179
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 1074
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 894
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 719
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 413
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 311
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 88
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 69
         }
       ],
       "narrative": {
@@ -944,8 +1019,8 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Semiconductors & electronics",
-          "Energy & cleantech"
+          "Energy & cleantech",
+          "Software, data & AI"
         ]
       }
     },
@@ -1097,34 +1172,59 @@
       ],
       "bySector": [
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 14
-        },
-        {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 10
+          "companies": 2506
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 9
+          "companies": 1805
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 6
-        },
-        {
-          "sector": "other",
-          "label": "Other",
-          "companies": 5
+          "companies": 1647
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 1
+          "companies": 848
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 542
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 535
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 525
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 415
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 373
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 65
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 55
         }
       ],
       "narrative": {
@@ -1133,8 +1233,8 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Semiconductors & electronics",
-          "Software, data & AI"
+          "Software, data & AI",
+          "Health & life sciences"
         ]
       }
     },
@@ -1244,24 +1344,59 @@
       ],
       "bySector": [
         {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 19
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 17
-        },
-        {
-          "sector": "defense_security",
-          "label": "Defence & security",
-          "companies": 3
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 2298
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 3
+          "companies": 1841
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 1204
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 1007
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 856
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 524
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 443
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 225
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 221
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 94
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 29
         }
       ],
       "narrative": {
@@ -1270,8 +1405,8 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Energy & cleantech",
-          "Semiconductors & electronics"
+          "Software, data & AI",
+          "Other"
         ]
       }
     },
@@ -1465,44 +1600,59 @@
       ],
       "bySector": [
         {
-          "sector": "other",
-          "label": "Other",
-          "companies": 579
-        },
-        {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 265
-        },
-        {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 259
+          "companies": 1211
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 967
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 675
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 163
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 131
+          "companies": 627
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 124
+          "companies": 608
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 568
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 64
+          "companies": 417
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 245
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 127
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 29
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 4
+          "companies": 25
         }
       ],
       "narrative": {
@@ -1511,8 +1661,8 @@
         "totalCountries": 23,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
-          "Other",
-          "Software, data & AI"
+          "Energy & cleantech",
+          "Other"
         ]
       }
     },
@@ -1706,44 +1856,59 @@
       ],
       "bySector": [
         {
-          "sector": "other",
-          "label": "Other",
-          "companies": 238
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 209
-        },
-        {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 126
+          "companies": 866
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 122
+          "companies": 800
         },
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 62
+          "sector": "other",
+          "label": "Other",
+          "companies": 659
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 27
+          "companies": 601
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 496
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 327
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 6
+          "companies": 258
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 216
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 180
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 3
+          "companies": 52
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 47
         }
       ],
       "narrative": {
@@ -1752,8 +1917,8 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Other",
-          "Agrifood"
+          "Software, data & AI",
+          "Energy & cleantech"
         ]
       }
     },
@@ -1937,37 +2102,57 @@
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 1012
+          "companies": 1580
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 662
-        },
-        {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 82
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 68
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 40
+          "companies": 1244
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 28
+          "companies": 498
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 276
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 212
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 158
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 145
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 73
         },
         {
           "sector": "semiconductors_electronics",
           "label": "Semiconductors & electronics",
-          "companies": 21
+          "companies": 44
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 12
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 4
         }
       ],
       "narrative": {
@@ -2171,44 +2356,59 @@
       ],
       "bySector": [
         {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 355
-        },
-        {
           "sector": "other",
           "label": "Other",
-          "companies": 347
+          "companies": 798
         },
         {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 184
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 115
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 720
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 87
+          "companies": 481
         },
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 62
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 451
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 380
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 38
+          "companies": 352
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 164
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 158
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 131
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 5
+          "companies": 29
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 26
         }
       ],
       "narrative": {
@@ -2217,8 +2417,8 @@
         "totalCountries": 23,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
-          "Software, data & AI",
-          "Other"
+          "Other",
+          "Software, data & AI"
         ]
       }
     },
@@ -2412,44 +2612,59 @@
       ],
       "bySector": [
         {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 749
+        },
+        {
           "sector": "other",
           "label": "Other",
-          "companies": 375
+          "companies": 600
         },
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 313
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 245
+          "companies": 597
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 67
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 66
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 53
+          "companies": 520
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 50
+          "companies": 433
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 185
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 143
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 131
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 127
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 1
+          "companies": 41
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 19
         }
       ],
       "narrative": {
@@ -2458,8 +2673,8 @@
         "totalCountries": 23,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
-          "Other",
-          "Software, data & AI"
+          "Energy & cleantech",
+          "Other"
         ]
       }
     },
@@ -2655,42 +2870,57 @@
         {
           "sector": "other",
           "label": "Other",
-          "companies": 381
+          "companies": 864
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 366
+          "companies": 727
         },
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 276
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 91
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 77
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 75
+          "companies": 425
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 37
+          "companies": 419
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 233
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 205
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 193
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 140
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 103
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 16
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 5
+          "companies": 13
         }
       ],
       "narrative": {
@@ -2834,44 +3064,59 @@
       ],
       "bySector": [
         {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 71
-        },
-        {
           "sector": "other",
           "label": "Other",
-          "companies": 31
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 21
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 17
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 16
+          "companies": 1475
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 14
+          "companies": 421
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 404
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 5
+          "companies": 397
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 202
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 154
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 121
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 57
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 49
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 3
+          "companies": 18
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 6
         }
       ],
       "narrative": {
@@ -2880,8 +3125,8 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Software, data & AI",
-          "Other"
+          "Other",
+          "Industrial & manufacturing"
         ]
       }
     },
@@ -3039,29 +3284,59 @@
       ],
       "bySector": [
         {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 11
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 9
-        },
-        {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 2
+          "companies": 380
         },
         {
-          "sector": "defense_security",
-          "label": "Defence & security",
-          "companies": 1
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 349
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 290
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 165
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 1
+          "companies": 165
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 156
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 143
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 113
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 99
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 18
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 16
         }
       ],
       "narrative": {
@@ -3070,8 +3345,8 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Energy & cleantech",
-          "Semiconductors & electronics"
+          "Software, data & AI",
+          "Industrial & manufacturing"
         ]
       }
     },
@@ -3255,42 +3530,57 @@
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 81
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 68
+          "companies": 890
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 20
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 17
+          "companies": 748
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 10
+          "companies": 412
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 251
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 208
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 9
+          "companies": 186
         },
         {
-          "sector": "defense_security",
-          "label": "Defence & security",
-          "companies": 7
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 160
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 77
         },
         {
           "sector": "semiconductors_electronics",
           "label": "Semiconductors & electronics",
-          "companies": 5
+          "companies": 70
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 43
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 8
         }
       ],
       "narrative": {
@@ -3300,7 +3590,7 @@
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
           "Software, data & AI",
-          "Energy & cleantech"
+          "Other"
         ]
       }
     },
@@ -3440,29 +3730,59 @@
       ],
       "bySector": [
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 19
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 11
-        },
-        {
-          "sector": "defense_security",
-          "label": "Defence & security",
-          "companies": 5
-        },
-        {
-          "sector": "other",
-          "label": "Other",
-          "companies": 4
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 876
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 1
+          "companies": 596
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 389
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 273
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 264
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 147
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 144
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 88
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 78
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 27
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 15
         }
       ],
       "narrative": {
@@ -3471,8 +3791,8 @@
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
-          "Semiconductors & electronics",
-          "Energy & cleantech"
+          "Software, data & AI",
+          "Health & life sciences"
         ]
       }
     },
@@ -3668,42 +3988,57 @@
         {
           "sector": "other",
           "label": "Other",
-          "companies": 411
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 208
+          "companies": 751
         },
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 192
+          "companies": 446
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 418
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 112
+          "companies": 354
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 71
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 30
-        },
-        {
-          "sector": "defense_security",
-          "label": "Defence & security",
-          "companies": 20
+          "companies": 182
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 1
+          "companies": 125
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 92
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 72
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 53
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 45
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 10
         }
       ],
       "narrative": {
@@ -3713,7 +4048,7 @@
         "dominantFamily": "Horizon EU",
         "dominantSectors": [
           "Other",
-          "Agrifood"
+          "Software, data & AI"
         ]
       }
     },
@@ -3909,42 +4244,57 @@
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 406
+          "companies": 636
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 122
+          "companies": 325
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 105
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 99
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 43
+          "companies": 307
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 32
+          "companies": 246
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 152
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 149
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 8
+          "companies": 122
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 75
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 63
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 3
+          "companies": 20
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 11
         }
       ],
       "narrative": {
@@ -4142,44 +4492,59 @@
       ],
       "bySector": [
         {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 105
-        },
-        {
           "sector": "other",
           "label": "Other",
-          "companies": 50
+          "companies": 245
         },
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 43
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 40
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 236
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 20
+          "companies": 218
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 19
+          "companies": 166
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 164
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 5
+          "companies": 162
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 80
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 63
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 45
         },
         {
           "sector": "defense_security",
           "label": "Defence & security",
-          "companies": 3
+          "companies": 14
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 9
         }
       ],
       "narrative": {
@@ -4188,8 +4553,8 @@
         "totalCountries": 23,
         "dominantFamily": "Horizon EU",
         "dominantSectors": [
-          "Software, data & AI",
-          "Other"
+          "Other",
+          "Software, data & AI"
         ]
       }
     },
@@ -4355,37 +4720,57 @@
         {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 261
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 102
+          "companies": 496
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 54
+          "companies": 276
         },
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 25
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 20
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 227
         },
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 17
+          "companies": 167
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 164
         },
         {
           "sector": "industrial_manufacturing",
           "label": "Industrial & manufacturing",
-          "companies": 11
+          "companies": 104
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 56
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 27
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 25
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 10
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 3
         }
       ],
       "narrative": {
@@ -4395,7 +4780,7 @@
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
           "Software, data & AI",
-          "Health & life sciences"
+          "Other"
         ]
       }
     },
@@ -4585,32 +4970,57 @@
         {
           "sector": "energy_cleantech",
           "label": "Energy & cleantech",
-          "companies": 363
-        },
-        {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 72
+          "companies": 678
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 31
+          "companies": 265
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 232
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 100
         },
         {
           "sector": "agrifood",
           "label": "Agrifood",
-          "companies": 22
+          "companies": 67
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 7
+          "companies": 58
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 33
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 30
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 29
         },
         {
           "sector": "semiconductors_electronics",
           "label": "Semiconductors & electronics",
-          "companies": 4
+          "companies": 23
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 3
         }
       ],
       "narrative": {
@@ -4620,7 +5030,7 @@
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
           "Energy & cleantech",
-          "Software, data & AI"
+          "Other"
         ]
       }
     },
@@ -4742,29 +5152,59 @@
       ],
       "bySector": [
         {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 82
-        },
-        {
           "sector": "software_data_ai",
           "label": "Software, data & AI",
-          "companies": 67
+          "companies": 119
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 112
         },
         {
           "sector": "other",
           "label": "Other",
-          "companies": 40
+          "companies": 78
         },
         {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 4
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 37
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 16
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 13
         },
         {
           "sector": "health_life_sciences",
           "label": "Health & life sciences",
-          "companies": 2
+          "companies": 12
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 12
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 10
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 9
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 3
         }
       ],
       "narrative": {
@@ -4773,8 +5213,8 @@
         "totalCountries": 23,
         "dominantFamily": "State Aid (SATR)",
         "dominantSectors": [
-          "Energy & cleantech",
-          "Software, data & AI"
+          "Software, data & AI",
+          "Energy & cleantech"
         ]
       }
     },

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26",
+  "generatedAt": "2026-08-01",
   "kpis": {
     "companies": 150382,
     "events": 297933,
@@ -40,13 +40,13 @@
     "eicAvgDaysToStart": 313,
     "conviction": {
       "companies": 529,
-      "withPriorAward": 177,
-      "pct": 33.5
+      "withPriorAward": 179,
+      "pct": 33.8
     },
     "eicCohort": {
       "companies": 656,
-      "wonLater": 455,
-      "pct": 69.4
+      "wonLater": 460,
+      "pct": 70.1
     },
     "aidConcentration": {
       "recipients": 73772,
@@ -89,101 +89,101 @@
       {
         "id": "health_life_sciences",
         "eurBn": [
-          0.92,
-          1.26,
-          0.8,
-          0.87,
-          0.64
+          1.37,
+          1.66,
+          1.21,
+          1.32,
+          1.24
         ]
       },
       {
         "id": "energy_cleantech",
         "eurBn": [
-          6.53,
-          3.45,
-          7.59,
-          10.18,
-          6.35
+          8.07,
+          5.92,
+          10.14,
+          13.77,
+          8.22
         ]
       },
       {
         "id": "mobility_transport",
         "eurBn": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          2.47,
+          0.96,
+          1.28,
+          1.73,
+          0.83
         ]
       },
       {
         "id": "industrial_manufacturing",
         "eurBn": [
-          0.63,
-          0.12,
-          0.28,
-          0.24,
-          0.17
+          4.36,
+          0.75,
+          1.91,
+          1.91,
+          1.41
         ]
       },
       {
         "id": "semiconductors_electronics",
         "eurBn": [
-          0.84,
-          0.55,
-          2.35,
-          1.51,
-          0.56
+          1.18,
+          0.79,
+          3.49,
+          1.98,
+          0.89
         ]
       },
       {
         "id": "software_data_ai",
         "eurBn": [
-          0.94,
-          0.74,
-          2.13,
-          1.46,
-          1.2
+          1.9,
+          1.06,
+          2.67,
+          2.21,
+          1.79
         ]
       },
       {
         "id": "space",
         "eurBn": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          0.05,
+          0.07,
+          0.07,
+          0.11,
+          0.12
         ]
       },
       {
         "id": "defense_security",
         "eurBn": [
-          0.12,
-          0.13,
+          0.16,
+          0.15,
+          0.15,
           0.11,
-          0.06,
-          0.07
+          0.12
         ]
       },
       {
         "id": "agrifood",
         "eurBn": [
-          0.48,
-          0.2,
-          0.16,
-          0.21,
-          0.11
+          1.43,
+          0.55,
+          0.59,
+          0.75,
+          0.51
         ]
       },
       {
         "id": "materials_chemicals",
         "eurBn": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          1.13,
+          0.31,
+          0.66,
+          0.96,
+          0.42
         ]
       }
     ]
@@ -594,7 +594,7 @@
     {
       "name": "Aledia",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 5,
       "families": [
         "horizon_eu_pillar_ii",
@@ -1308,7 +1308,7 @@
     {
       "name": "Fabentech SA",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 5,
       "families": [
         "horizon_eu_pillar_ii",
@@ -1434,7 +1434,7 @@
     {
       "name": "Sipearl",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 5,
       "families": [
         "horizon_eu_pillar_ii",
@@ -1980,7 +1980,7 @@
     {
       "name": "Plexigrid Sociedad Limitada",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 5,
       "families": [
         "horizon_eu_pillar_ii",
@@ -2022,7 +2022,7 @@
     {
       "name": "Acorai AB",
       "country": "SE",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 5,
       "families": [
         "horizon_eu_partnership",
@@ -2190,7 +2190,7 @@
     {
       "name": "Symbio",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -2298,7 +2298,7 @@
     {
       "name": "Repsol SA",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -2334,7 +2334,7 @@
     {
       "name": "Solar Foods Oyj",
       "country": "FI",
-      "sector": "unclassified",
+      "sector": "agrifood",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -2370,7 +2370,7 @@
     {
       "name": "Safran Aircraft Engines",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "mobility_transport",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -2514,7 +2514,7 @@
     {
       "name": "Corwave",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 4,
       "families": [
         "eic",
@@ -2550,7 +2550,7 @@
     {
       "name": "SNAM S.p.A.",
       "country": "IT",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -3162,7 +3162,7 @@
     {
       "name": "Rhodia Operations",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "materials_chemicals",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -3234,7 +3234,7 @@
     {
       "name": "Societe Nationale Sncf",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "mobility_transport",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -3306,7 +3306,7 @@
     {
       "name": "Treefrog Therapeutics",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 4,
       "families": [
         "eic",
@@ -3414,7 +3414,7 @@
     {
       "name": "Isfm Intelligent Systems For Mobility",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "mobility_transport",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -3738,7 +3738,7 @@
     {
       "name": "Quandela",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -3846,7 +3846,7 @@
     {
       "name": "Telefonica Innovacion Digital SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "software_data_ai",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -3990,7 +3990,7 @@
     {
       "name": "Absolut System",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "space",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -4134,7 +4134,7 @@
     {
       "name": "Bedimensional SpA",
       "country": "IT",
-      "sector": "unclassified",
+      "sector": "materials_chemicals",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -4422,7 +4422,7 @@
     {
       "name": "Greenov-Ites",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -4530,7 +4530,7 @@
     {
       "name": "Faiveley Transport Tours",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "mobility_transport",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -4566,7 +4566,7 @@
     {
       "name": "Greenbone Ortho SpA",
       "country": "IT",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 4,
       "families": [
         "eic",
@@ -4746,7 +4746,7 @@
     {
       "name": "Orixha",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 4,
       "families": [
         "eic",
@@ -4962,7 +4962,7 @@
     {
       "name": "Kiutra GmbH",
       "country": "DE",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -5034,7 +5034,7 @@
     {
       "name": "Hydrogen Onsite, SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -5466,7 +5466,7 @@
     {
       "name": "Pal Robotics Slu",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "industrial_manufacturing",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -5538,7 +5538,7 @@
     {
       "name": "Dynelectro ApS",
       "country": "DK",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_partnership",
@@ -5898,7 +5898,7 @@
     {
       "name": "Specialty Operations France",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "materials_chemicals",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6078,7 +6078,7 @@
     {
       "name": "Aeroports De Paris",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6330,7 +6330,7 @@
     {
       "name": "Qurv Technologies SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6366,7 +6366,7 @@
     {
       "name": "Qilimanjaro Quantum Tech SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6402,7 +6402,7 @@
     {
       "name": "Horiba France",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6438,7 +6438,7 @@
     {
       "name": "Orange Quantum Systems Operational BV",
       "country": "NL",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6510,7 +6510,7 @@
     {
       "name": "Build To Zero SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6546,7 +6546,7 @@
     {
       "name": "Pixel Photonics GmbH",
       "country": "DE",
-      "sector": "unclassified",
+      "sector": "semiconductors_electronics",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6654,7 +6654,7 @@
     {
       "name": "Eden Tech",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6726,7 +6726,7 @@
     {
       "name": "Carmat",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 4,
       "families": [
         "horizon_eu_partnership",
@@ -6834,7 +6834,7 @@
     {
       "name": "Nevomo Poland Spolka Z Ograniczona Odpowiedzialnoscia",
       "country": "PL",
-      "sector": "unclassified",
+      "sector": "mobility_transport",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6942,7 +6942,7 @@
     {
       "name": "Elem Biotech SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -6978,7 +6978,7 @@
     {
       "name": "Basquevolt SA",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_partnership",
@@ -7014,7 +7014,7 @@
     {
       "name": "Moa Biotech SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "agrifood",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -7086,7 +7086,7 @@
     {
       "name": "Kaffe Bueno ApS",
       "country": "DK",
-      "sector": "unclassified",
+      "sector": "agrifood",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -7122,7 +7122,7 @@
     {
       "name": "Time Is Brain SL",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "health_life_sciences",
       "nFamilies": 4,
       "families": [
         "eic",
@@ -7158,7 +7158,7 @@
     {
       "name": "Vortex.Io",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "other",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -7230,7 +7230,7 @@
     {
       "name": "Connecting Food",
       "country": "FR",
-      "sector": "unclassified",
+      "sector": "agrifood",
       "nFamilies": 4,
       "families": [
         "eic",
@@ -7338,7 +7338,7 @@
     {
       "name": "Nano4Energy Slne",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "energy_cleantech",
       "nFamilies": 4,
       "families": [
         "horizon_eu_partnership",
@@ -7374,7 +7374,7 @@
     {
       "name": "Computomics GmbH",
       "country": "DE",
-      "sector": "unclassified",
+      "sector": "agrifood",
       "nFamilies": 4,
       "families": [
         "eic",
@@ -7518,7 +7518,7 @@
     {
       "name": "5G Communications For Future Industry Verticals",
       "country": "ES",
-      "sector": "unclassified",
+      "sector": "software_data_ai",
       "nFamilies": 4,
       "families": [
         "horizon_eu_pillar_ii",
@@ -7744,171 +7744,171 @@
       {
         "id": "health_life_sciences",
         "counts": [
-          827,
-          701,
-          1081,
-          1554,
-          1052
+          2789,
+          4449,
+          5940,
+          6190,
+          5181
         ],
         "shares": [
-          0.1207,
-          0.0933,
-          0.0849,
-          0.1022,
-          0.0944
+          0.0844,
+          0.1312,
+          0.1286,
+          0.1109,
+          0.1146
         ]
       },
       {
         "id": "energy_cleantech",
         "counts": [
-          1775,
-          1085,
-          2832,
-          3333,
-          2179
+          6815,
+          7502,
+          10386,
+          13139,
+          9278
         ],
         "shares": [
-          0.259,
-          0.1444,
-          0.2224,
-          0.2192,
-          0.1955
+          0.2061,
+          0.2212,
+          0.2248,
+          0.2353,
+          0.2052
         ]
       },
       {
         "id": "mobility_transport",
         "counts": [
-          0,
-          0,
-          0,
-          0,
-          0
+          2545,
+          2246,
+          3422,
+          3826,
+          3149
         ],
         "shares": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          0.077,
+          0.0662,
+          0.0741,
+          0.0685,
+          0.0696
         ]
       },
       {
         "id": "industrial_manufacturing",
         "counts": [
-          705,
-          180,
-          532,
-          617,
-          571
+          7572,
+          3320,
+          4861,
+          6877,
+          6271
         ],
         "shares": [
-          0.1029,
-          0.024,
-          0.0418,
-          0.0406,
-          0.0512
+          0.229,
+          0.0979,
+          0.1052,
+          0.1232,
+          0.1387
         ]
       },
       {
         "id": "semiconductors_electronics",
         "counts": [
-          838,
-          2894,
-          4324,
-          4109,
-          2891
+          1887,
+          4092,
+          6076,
+          5984,
+          4584
         ],
         "shares": [
-          0.1223,
-          0.3853,
-          0.3395,
-          0.2703,
-          0.2594
+          0.0571,
+          0.1207,
+          0.1315,
+          0.1072,
+          0.1014
         ]
       },
       {
         "id": "software_data_ai",
         "counts": [
-          1381,
-          1262,
-          2577,
-          4236,
-          3547
+          5150,
+          5692,
+          7953,
+          10354,
+          9362
         ],
         "shares": [
-          0.2015,
-          0.168,
-          0.2023,
-          0.2786,
-          0.3182
+          0.1558,
+          0.1678,
+          0.1721,
+          0.1854,
+          0.207
         ]
       },
       {
         "id": "space",
         "counts": [
-          0,
-          0,
-          0,
-          0,
-          0
+          99,
+          408,
+          563,
+          602,
+          376
         ],
         "shares": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          0.003,
+          0.012,
+          0.0122,
+          0.0108,
+          0.0083
         ]
       },
       {
         "id": "defense_security",
         "counts": [
-          57,
-          659,
-          959,
-          820,
-          510
+          192,
+          923,
+          1315,
+          1174,
+          932
         ],
         "shares": [
-          0.0083,
-          0.0877,
-          0.0753,
-          0.0539,
-          0.0458
+          0.0058,
+          0.0272,
+          0.0285,
+          0.021,
+          0.0206
         ]
       },
       {
         "id": "agrifood",
         "counts": [
-          1270,
-          731,
-          431,
-          535,
-          397
+          4259,
+          3894,
+          3804,
+          5175,
+          4117
         ],
         "shares": [
-          0.1853,
-          0.0973,
-          0.0338,
-          0.0352,
-          0.0356
+          0.1288,
+          0.1148,
+          0.0823,
+          0.0927,
+          0.091
         ]
       },
       {
         "id": "materials_chemicals",
         "counts": [
-          0,
-          0,
-          0,
-          0,
-          0
+          1753,
+          1388,
+          1885,
+          2515,
+          1968
         ],
         "shares": [
-          0.0,
-          0.0,
-          0.0,
-          0.0,
-          0.0
+          0.053,
+          0.0409,
+          0.0408,
+          0.045,
+          0.0435
         ]
       }
     ]
