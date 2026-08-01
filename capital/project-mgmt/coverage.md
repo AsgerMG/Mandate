@@ -1,25 +1,25 @@
 # Fund intelligence coverage
 
-Generated from the live corpus: **798 instruments**, latest active award year 2026. Regenerate with `python3 ETL/terms/coverage_report.py --md project-mgmt/coverage.md`.
+Generated from the live corpus: **846 instruments**, latest active award year 2026. Regenerate with `python3 ETL/terms/coverage_report.py --md project-mgmt/coverage.md`.
 
 Six things an analyst needs before advising on a fund. Each is present or it is not — "partly" is what hides gaps.
 
 | What we know | Instruments | Share |
 |---|---:|---:|
-| Eligibility we can evaluate (2+ filters) | 763 | 96% |
-| What it has actually funded | 724 | 91% |
-| Where it applies | 798 | 100% |
-| What it typically awards | 716 | 90% |
-| How to approach it | 648 | 81% |
-| Award recency on record | 771 | 97% |
-| **All six** | **583** | **73%** |
+| Eligibility we can evaluate (2+ filters) | 811 | 96% |
+| What it has actually funded | 772 | 91% |
+| Where it applies | 846 | 100% |
+| What it typically awards | 764 | 90% |
+| How to approach it | 696 | 82% |
+| Award recency on record | 819 | 97% |
+| **All six** | **631** | **75%** |
 
 ## By channel
 
 | Channel | n | All six | Mean score | Eligibility | Funds | Amount | Route | Live |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | state_aid_satr | 465 | 451 | 5.96 | 465 | 465 | 462 | 451 | 465 |
-| national_dev_banks | 275 | 97 | 4.81 | 248 | 202 | 211 | 139 | 249 |
+| national_dev_banks | 323 | 145 | 4.99 | 296 | 250 | 259 | 187 | 297 |
 | eit | 12 | 1 | 5.08 | 12 | 12 | 1 | 12 | 12 |
 | ipcei | 11 | 7 | 5.64 | 10 | 10 | 9 | 11 | 11 |
 | horizon_eu_pillar_ii | 9 | 9 | 6.0 | 9 | 9 | 9 | 9 | 9 |

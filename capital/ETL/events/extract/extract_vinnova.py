@@ -64,6 +64,40 @@ PAGE_SIZE = 500
 # project whose record was modified on/after {date}; we then filter by start year.
 # Granted amounts (BeviljatBidrag) are in SEK and converted to EUR via ECB rates.
 API_BASE = "https://data.vinnova.se/api"
+
+# Vinnova names its programmes in a separate register, keyed by the same
+# diarienummer the award records carry in DiarienummerProgram. Without it the
+# awards only carry "2016-04663", and a fund row called that is worse than no
+# row -- so the corpus held 6,345 Vinnova awards as ONE instrument rather than
+# risk naming them badly.
+#
+# 159 of 159 programme ids in our data resolve against this register, which is
+# what makes the split safe: "Innovativa startups", "EUREKA Eurostars",
+# "Fordonsstrategisk forskning och innovation - FFI".
+PROGRAMME_API = f"{API_BASE}/program/2000-01-01"
+PROGRAMME_CACHE = _ETL_ROOT / "data" / "reference" / "vinnova_programmes.json"
+
+
+def programme_names() -> dict[str, str]:
+    """diarienummer -> programme title, from Vinnova's own register.
+
+    Falls back to the cached copy when offline: a refresh that cannot reach the
+    register must not silently produce unnamed programmes, which would split
+    the corpus into rows called "2016-04663".
+    """
+    try:
+        import urllib.request
+        with urllib.request.urlopen(PROGRAMME_API, timeout=60) as fh:
+            rows = json.load(fh)
+        PROGRAMME_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        PROGRAMME_CACHE.write_text(json.dumps(rows, ensure_ascii=False))
+    except Exception as exc:  # pragma: no cover - network
+        print(f"  programme register unreachable ({exc}); using cache")
+        rows = json.loads(PROGRAMME_CACHE.read_text())
+    if isinstance(rows, dict):
+        rows = rows.get("data") or next(iter(rows.values()))
+    return {(r.get("Diarienummer") or "").strip(): (r.get("Titel") or "").strip()
+            for r in rows if (r.get("Titel") or "").strip()}
 # Early enough to capture every project with a 2021+ start (records are touched
 # around award time, well after this date). One bulk pull; no paging on this API.
 SINCE_DATE = "2018-01-01"
