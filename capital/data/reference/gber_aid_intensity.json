@@ -1,12 +1,12 @@
 {
   "_comment": "Statutory aid-intensity ceilings per GBER article. This is REFERENCE DATA, not an inference: the numbers are set by Commission Regulation (EU) No 651/2014 as amended by Regulation (EU) 2023/1315, and they are identical for every scheme granting under the article. That is what makes them safe to state where the scheme's own documents are silent — we are not guessing what this fund does, we are stating what the law caps it at. Each entry carries the paragraph it comes from. `verified` marks whether a human has checked the figure against the regulation text; unverified figures are still published as a CEILING (an upper bound is the safe direction to be wrong in) but never as an expected award. Cross-checked empirically on every load by ETL/terms/encode_article_intensity.py, which drops an article inference whose scheme has demonstrably paid ABOVE the ceiling.",
   "_source": "Commission Regulation (EU) No 651/2014 (GBER), consolidated to 2023-07-01 by Regulation (EU) 2023/1315.",
-  "_verified_against": "https://www.forskningsradet.no/en/state-aid/articles-state-aid/ and https://cms.law/en/int/expert-guides/expert-guide-for-state-aid/state-aid-for-research-and-development-and-innovation (2026-08-01). EUR-Lex consolidated HTML truncates before Art. 25 on fetch; a human should confirm against the Official Journal before `verified` is set true.",
+  "_verified_against": "Art. 25(5) and 25(6)(a)-(b) confirmed VERBATIM on 2026-08-01 against two independent reproductions of the article text: legislation.gov.uk/eur/2014/651/article/25 (the retained-EU-law reproduction of the 2014 original) and forskningsradet.no/en/state-aid/articles-state-aid. Both give 100/50/25/50 for fundamental research / industrial research / experimental development / feasibility studies, +10pp medium and +20pp small, +15pp for effective collaboration or wide dissemination, and an 80% cap on industrial research and experimental development. EUR-Lex consolidated HTML and the OJ PDF both truncate or fail to render before Art. 25 on fetch, so those two stand in for the OJ itself.",
   "StateAidObjectiveGberArt25": {
     "article": "Art. 25",
     "label": "R&D project aid",
     "legal_basis": "GBER Art. 25(5)-(6)",
-    "verified": false,
+    "verified": true,
     "base_by_category": {
       "fundamental_research": 100,
       "industrial_research": 50,
@@ -43,13 +43,30 @@
     "excluded_from_band": {
       "fundamental_research": "100% is available only for fundamental research, which companies do not typically undertake; stating it as the top of a company-facing band is misleading.",
       "feasibility_study": "50% applies to feasibility studies, a distinct award type rather than the project aid a founder is scoping."
-    }
+    },
+    "uplifts_not_encoded": {
+      "_why": "Real uplifts added to Art. 25(6) by Regulation (EU) 2021/1237, deliberately NOT encoded. Omitting an uplift understates the ceiling, and understating is the safe direction: a founder who plans against less public money over-raises privately, which is recoverable. Overstating sends them into a round short. They are recorded here so that a later reader knows they were considered and excluded, not missed.",
+      "assisted_region_107_3_c": {
+        "pp": 5,
+        "confidence": "high — both sources agree"
+      },
+      "multi_member_state_project": {
+        "pp": 25,
+        "condition": "selected by a Member State after an open call to form part of a project jointly designed by at least three Member States or EEA contracting parties",
+        "confidence": "high — both sources agree"
+      },
+      "assisted_region_107_3_a": {
+        "pp": null,
+        "confidence": "CONFLICTING — one source says 25pp, another says 15pp. Not encoded at any value until the Official Journal settles it. This is exactly the figure that must not be guessed: it is the largest of the three."
+      }
+    },
+    "cap_note": "The 80% cap bounds every uplift, encoded or not, so a founder reading the encoded ceiling can never be told a number the article would not permit."
   },
   "StateAidObjectiveGberArt25b": {
     "article": "Art. 25(2)(d)",
     "label": "R&D project aid, feasibility-study variant",
     "legal_basis": "GBER Art. 25(5)(d)",
-    "verified": false,
+    "verified": true,
     "base_by_category": {
       "feasibility_study": 50
     },
@@ -75,7 +92,7 @@
     "article": "Art. 25",
     "label": "R&D project aid, SME-support variant",
     "legal_basis": "GBER Art. 25(5)-(6)",
-    "verified": false,
+    "verified": true,
     "base_by_category": {
       "industrial_research": 50,
       "experimental_development": 25
