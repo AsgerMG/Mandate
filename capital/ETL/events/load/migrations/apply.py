@@ -389,6 +389,17 @@ def apply_019(conn: sqlite3.Connection) -> None:
     print("  applied 019_instrument_hierarchy.sql")
 
 
+def apply_020(conn: sqlite3.Connection) -> None:
+    """register_derived — a third evidence tier for register-filed facts."""
+    row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE name = 'eligibility_gates'").fetchone()
+    if row and "register_derived" in row[0]:
+        print("  skip 020 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "020_register_derived_tier.sql").read_text())
+    print("  applied 020_register_derived_tier.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -406,6 +417,7 @@ MIGRATIONS = {
     "017": apply_017,
     "018": apply_018,
     "019": apply_019,
+    "020": apply_020,
 }
 
 

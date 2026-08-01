@@ -36,9 +36,23 @@ import source_state  # noqa: E402
 STEPS: list[tuple[str, list[str], bool]] = [
     ("rebuild instruments", ["python3", "ETL/events/load/populate_funding_instruments.py"], False),
     ("restore sector labels", ["python3", "ETL/events/transform/classify_taxonomy.py", "restore"], False),
+    # Must follow "rebuild instruments", not precede it: seed_inventory_gates
+    # rewrites `requirement` on every run via ON CONFLICT DO UPDATE, so an
+    # encoder that ran first would have its statutory sentence replaced by the
+    # bare article label and nobody would see a failure.
+    ("encode article ceilings",
+     ["python3", "ETL/terms/encode_article_intensity.py", "run"], False),
     ("coverage gate", ["python3", "ETL/terms/coverage_gate.py"], False),
     ("export snapshot", ["python3", "website/build/eligibility_export.py"], False),
     ("companies index", ["python3", "website/build/companies_index.py"], False),
+    # The theme index is a committed artifact derived from the exported
+    # snapshot, and gate text is part of what it tokenises -- so any run that
+    # changes a requirement leaves it stale, and a stale index makes an
+    # instrument thematically invisible to the lexical ranker. `make refresh`
+    # was regenerating it only via the Makefile's `eligibility` target, so a
+    # refresh that touched gates published a corpus the ranker could not see.
+    # check_theme_index.ts catches it, but only if someone runs `npm run check`.
+    ("rebuild theme index", ["npx", "tsx", "scripts/emit_theme_index.ts"], False),
     ("publish to Postgres", ["python3", "ETL/terms/migrate_to_postgres.py"], False),
     # Immediately after the publish and BEFORE anything expensive: it is the
     # only check that can see the Postgres path (every other one runs NO_PG=1

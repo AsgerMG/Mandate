@@ -31,11 +31,36 @@ from etl_env import DB, ROOT  # noqa: E402
 import argparse
 import json
 import os
+import re
 import sqlite3
 
 import psycopg
 
 INSTRUMENT_TERMS_JSON = ROOT / "website" / "frontend" / "public" / "data" / "instrument_terms.json"
+
+
+def verification_levels() -> list[str]:
+    """The allowed evidence tiers, read out of SQLite's own CHECK constraint.
+
+    Parsed rather than restated so Postgres cannot fall behind a migration that
+    adds a tier. If the DDL ever stops carrying the constraint this raises,
+    which is the right failure: publishing with no constraint at all would let a
+    typo'd tier reach the read path, where an unrecognised level silently means
+    "not cited" and the gate disappears from every surface.
+    """
+    conn = sqlite3.connect(DB)
+    ddl = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE name = 'eligibility_gates'").fetchone()[0]
+    conn.close()
+    m = re.search(r"verification_level\s+TEXT[^,]*?CHECK\s*\(\s*verification_level\s+IN\s*\(([^)]*)\)",
+                  ddl, re.S | re.I)
+    if not m:
+        raise SystemExit("eligibility_gates has no verification_level CHECK constraint; "
+                         "Postgres's constraint is derived from it and cannot be built.")
+    levels = re.findall(r"'([^']+)'", m.group(1))
+    if not levels:
+        raise SystemExit("verification_level CHECK constraint parsed to zero tiers.")
+    return levels
 
 
 def fetch_sqlite():
@@ -59,9 +84,12 @@ def main() -> None:
     if not url:
         _sys.exit("DATABASE_URL not set (add to .env.local)")
 
+    levels = verification_levels()
+    verification_levels_sql = ", ".join(f"'{lv}'" for lv in levels)
     instruments, sources, gates, clauses, applications = fetch_sqlite()
     print(f"SQLite: {len(instruments)} instruments, {len(sources)} sources, "
           f"{len(gates)} gates, {len(clauses)} clauses")
+    print(f"evidence tiers (from SQLite's CHECK): {', '.join(levels)}")
     if args.dry_run:
         print("[dry-run] nothing written to Postgres.")
         return
@@ -106,6 +134,24 @@ def main() -> None:
                         # parent_id on every load.
                         "tier TEXT", "root_id TEXT", "depth INTEGER", "path TEXT"):
                 cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
+            # Self-healing CONSTRAINTS, for the same reason as the columns
+            # above. Adding an evidence tier in SQLite (migration 020 added
+            # `register_derived`) leaves Postgres rejecting every row at that
+            # tier with a CheckViolation, days after the tier looked like it
+            # worked locally. The allowed list is PARSED OUT OF THE SQLITE DDL
+            # rather than restated here: SQLite is the authoring source of
+            # truth for this subsystem, and a second hand-written enumeration
+            # of the same six values is the "keep in sync" comment that this
+            # repo has now been bitten by three times.
+            for table in ("eligibility_gates", "eligibility_clauses"):
+                cur.execute(
+                    f"ALTER TABLE {table} DROP CONSTRAINT IF EXISTS "
+                    f"{table}_verification_level_check")
+                cur.execute(
+                    f"ALTER TABLE {table} ADD CONSTRAINT "
+                    f"{table}_verification_level_check "
+                    f"CHECK (verification_level IN ({verification_levels_sql}))")
+
             # Curated application routes live in their own table because
             # funding_instruments is truncated on every publish.
             cur.execute("""

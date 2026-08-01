@@ -170,6 +170,10 @@ export interface DbGate {
   source: { file: string; locator: string };
   verificationLevel?: string;
   verified: boolean;
+  /** Set only on gates merged down from a parent, so a consumer can prefer an
+   *  instrument's OWN evidence. Absent means the gate belongs to the
+   *  instrument itself. */
+  inherited?: boolean;
 }
 
 export interface DbInstrument {
@@ -653,9 +657,14 @@ export function loadSignalsDigest(): SignalsDigest | null {
  *  A child's own gates override the parent's by key and add to the rest. */
 export function mergeInheritedGates(own: DbGate[], inherited: DbGate[] | undefined): DbGate[] {
   if (!inherited?.length) return own;
-  if (!own.length) return inherited;
+  // Marked, not shared: the parent's gate objects are referenced by the parent
+  // itself and by every other child, so the flag has to go on a copy. Callers
+  // that read a handful of fields per gate pay a shallow clone for the ability
+  // to tell "this scheme says so" from "its regime says so".
+  const mark = (g: DbGate): DbGate => (g.inherited ? g : { ...g, inherited: true });
+  if (!own.length) return inherited.map(mark);
   const keys = new Set(own.map((g) => g.id));
-  return [...own, ...inherited.filter((g) => !keys.has(g.id))];
+  return [...own, ...inherited.filter((g) => !keys.has(g.id)).map(mark)];
 }
 
 function resolveInheritedGates(all: DbInstrument[]): DbInstrument[] {

@@ -22,6 +22,7 @@
 // So the vocabulary is deliberately asymmetric: we say a door is OPEN (nothing
 // disqualifies you), never that you are approved. Overclaiming here is the one
 // failure that would cost a founder months.
+import EVIDENCE_TIERS from "./evidenceTiers.json";
 import { loadDbInstruments, type DbGate, type DbInstrument } from "./corpus";
 import { evaluateSpec, type ValueSpec } from "./comparator";
 import { fieldSeverity, type EligibilityAnswers } from "./types";
@@ -82,10 +83,46 @@ export function isStructural(field: string): boolean {
  * obstacle with its source stated; only a rule we can point at in the fund's
  * own text can end the conversation.
  */
-const CITED = new Set(["llm_cited", "llm_2pass", "human_verified"]);
+// Read from evidenceTiers.json, not written out here. The same policy used to
+// live as this Set and as a Python tuple in embed_eligibility.py, and they
+// diverged the day `register_derived` was added: the row showed those gates
+// while the embedder refused to embed them, so the advisor could display a fact
+// it could not retrieve. One file, both languages.
+const CITED = new Set(EVIDENCE_TIERS.cited.tiers);
 
 export function isCited(gate: Pick<DbGate, "verificationLevel">): boolean {
   return CITED.has(gate.verificationLevel ?? "");
+}
+
+/**
+ * `register_derived` is a third thing, and the reason it exists is that neither
+ * existing tier describes it honestly.
+ *
+ * It is not cited: a GBER article inferred from a scheme's award history is a
+ * majority vote (the floor is 50%, and a typical carrier is 43 of 64 awards),
+ * so it describes what the scheme HAS funded, never what it requires. Calling
+ * it cited would let it read as the fund's own eligibility rule.
+ *
+ * But it is not a model inference either, which is what `inventory_inferred`
+ * connotes and what the narrowing rules above are calibrated for. The
+ * aid_objective code is filed per award by the granting authority itself in the
+ * SATR transparency register. That provenance is stronger than an extraction.
+ *
+ * So it is attributable-but-not-cited: good enough to state as a fact about how
+ * the instrument is structured, not good enough to judge a founder by. It is
+ * read by structuringNotes and by nothing else.
+ *
+ * These gates DO carry a valueSpec — the statutory aid-intensity ceiling the
+ * article implies — so what keeps them out of verdicts is gateRole, not the
+ * absence of a spec. `aid_intensity` describes the money, never the applicant,
+ * and isFilter() admits only gateRole='filter'. evidenceTier.test.ts pins that,
+ * because the day an aid_intensity spec becomes a filter is the day a founder
+ * is disqualified by a majority vote.
+ */
+const ATTRIBUTABLE = new Set(EVIDENCE_TIERS.attributable.tiers);
+
+export function isAttributable(gate: Pick<DbGate, "verificationLevel">): boolean {
+  return ATTRIBUTABLE.has(gate.verificationLevel ?? "");
 }
 
 export type VerdictStatus =

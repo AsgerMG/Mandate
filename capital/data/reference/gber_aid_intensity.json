@@ -1,0 +1,198 @@
+{
+  "_comment": "Statutory aid-intensity ceilings per GBER article. This is REFERENCE DATA, not an inference: the numbers are set by Commission Regulation (EU) No 651/2014 as amended by Regulation (EU) 2023/1315, and they are identical for every scheme granting under the article. That is what makes them safe to state where the scheme's own documents are silent — we are not guessing what this fund does, we are stating what the law caps it at. Each entry carries the paragraph it comes from. `verified` marks whether a human has checked the figure against the regulation text; unverified figures are still published as a CEILING (an upper bound is the safe direction to be wrong in) but never as an expected award. Cross-checked empirically on every load by ETL/terms/encode_article_intensity.py, which drops an article inference whose scheme has demonstrably paid ABOVE the ceiling.",
+  "_source": "Commission Regulation (EU) No 651/2014 (GBER), consolidated to 2023-07-01 by Regulation (EU) 2023/1315.",
+  "_verified_against": "https://www.forskningsradet.no/en/state-aid/articles-state-aid/ and https://cms.law/en/int/expert-guides/expert-guide-for-state-aid/state-aid-for-research-and-development-and-innovation (2026-08-01). EUR-Lex consolidated HTML truncates before Art. 25 on fetch; a human should confirm against the Official Journal before `verified` is set true.",
+  "StateAidObjectiveGberArt25": {
+    "article": "Art. 25",
+    "label": "R&D project aid",
+    "legal_basis": "GBER Art. 25(5)-(6)",
+    "verified": false,
+    "base_by_category": {
+      "fundamental_research": 100,
+      "industrial_research": 50,
+      "experimental_development": 25,
+      "feasibility_study": 50
+    },
+    "uplifts": [
+      {
+        "pp": 20,
+        "when": "small enterprise",
+        "basis": "Art. 25(6)(a)"
+      },
+      {
+        "pp": 10,
+        "when": "medium-sized enterprise",
+        "basis": "Art. 25(6)(a)"
+      },
+      {
+        "pp": 15,
+        "when": "effective collaboration, or results widely disseminated",
+        "basis": "Art. 25(6)(b)"
+      }
+    ],
+    "cap": 80,
+    "cap_applies_to": [
+      "industrial_research",
+      "experimental_development"
+    ],
+    "note": "The category is a property of the PROJECT, not the scheme, so the honest instrument-level statement is the band across categories the scheme plausibly funds.",
+    "company_categories": [
+      "industrial_research",
+      "experimental_development"
+    ],
+    "excluded_from_band": {
+      "fundamental_research": "100% is available only for fundamental research, which companies do not typically undertake; stating it as the top of a company-facing band is misleading.",
+      "feasibility_study": "50% applies to feasibility studies, a distinct award type rather than the project aid a founder is scoping."
+    }
+  },
+  "StateAidObjectiveGberArt25b": {
+    "article": "Art. 25(2)(d)",
+    "label": "R&D project aid, feasibility-study variant",
+    "legal_basis": "GBER Art. 25(5)(d)",
+    "verified": false,
+    "base_by_category": {
+      "feasibility_study": 50
+    },
+    "uplifts": [
+      {
+        "pp": 20,
+        "when": "small enterprise",
+        "basis": "Art. 25(6)(a)"
+      },
+      {
+        "pp": 10,
+        "when": "medium-sized enterprise",
+        "basis": "Art. 25(6)(a)"
+      }
+    ],
+    "cap": 70,
+    "cap_applies_to": [
+      "feasibility_study"
+    ],
+    "note": "The Art. 25(6)(b) collaboration uplift is NOT recorded here: it is not confirmed to extend to feasibility studies, and inventing an uplift raises the stated ceiling, which is the unsafe direction."
+  },
+  "StateAidObjectiveGberArt25c": {
+    "article": "Art. 25",
+    "label": "R&D project aid, SME-support variant",
+    "legal_basis": "GBER Art. 25(5)-(6)",
+    "verified": false,
+    "base_by_category": {
+      "industrial_research": 50,
+      "experimental_development": 25
+    },
+    "uplifts": [
+      {
+        "pp": 20,
+        "when": "small enterprise",
+        "basis": "Art. 25(6)(a)"
+      },
+      {
+        "pp": 10,
+        "when": "medium-sized enterprise",
+        "basis": "Art. 25(6)(a)"
+      }
+    ],
+    "cap": 80,
+    "cap_applies_to": [
+      "industrial_research",
+      "experimental_development"
+    ],
+    "beneficiary_test": "SME only",
+    "company_categories": [
+      "industrial_research",
+      "experimental_development"
+    ]
+  },
+  "StateAidObjectiveGberArt26": {
+    "article": "Art. 26",
+    "label": "Investment aid for research infrastructures",
+    "legal_basis": "GBER Art. 26(6)",
+    "verified": false,
+    "base_by_category": {
+      "research_infrastructure": 50
+    },
+    "uplifts": [],
+    "cap": 50,
+    "cap_applies_to": [
+      "research_infrastructure"
+    ],
+    "note": "No SME uplift: the aid attaches to the infrastructure, not to an enterprise's size."
+  },
+  "StateAidObjectiveGberArt28": {
+    "article": "Art. 28",
+    "label": "Innovation aid for SMEs",
+    "legal_basis": "GBER Art. 28(3)-(4)",
+    "verified": false,
+    "base_by_category": {
+      "innovation": 50
+    },
+    "uplifts": [],
+    "cap": 50,
+    "cap_applies_to": [
+      "innovation"
+    ],
+    "note": "Art. 28(4) permits up to 100% for innovation advisory and support services where the total does not exceed EUR 200,000 per undertaking over any three years. Not encoded as a ceiling: it is conditional on a cumulation test we cannot evaluate per founder, and encoding it would raise the stated ceiling on every Art. 28 scheme.",
+    "beneficiary_test": "SME only (Art. 28 applies to SMEs)"
+  },
+  "StateAidObjectiveGberArt29": {
+    "article": "Art. 29",
+    "label": "Aid for process and organisational innovation",
+    "legal_basis": "GBER Art. 29(4)",
+    "verified": false,
+    "base_by_category": {
+      "process_innovation": 15,
+      "process_innovation_sme": 50
+    },
+    "uplifts": [],
+    "cap": 50,
+    "cap_applies_to": [
+      "process_innovation_sme"
+    ],
+    "note": "15% for large undertakings, 50% for SMEs — a size split rather than an uplift, which is why it is two base categories.",
+    "company_categories": [
+      "process_innovation",
+      "process_innovation_sme"
+    ]
+  },
+  "StateAidObjectiveGberArt27": {
+    "article": "Art. 27",
+    "label": "Aid for innovation clusters",
+    "legal_basis": "GBER Art. 27(6)-(8)",
+    "verified": false,
+    "base_by_category": {
+      "cluster_investment": 50
+    },
+    "uplifts": [],
+    "cap": 50,
+    "cap_applies_to": [
+      "cluster_investment"
+    ],
+    "note": "Assisted-area uplifts under Art. 27(7) are deliberately omitted: they depend on the cluster's NUTS location against the national regional aid map, which we hold for the instrument but not reliably for the cluster."
+  },
+  "StateAidObjectiveGberArt21": {
+    "article": "Art. 21",
+    "label": "Risk finance aid",
+    "legal_basis": "GBER Art. 21",
+    "verified": true,
+    "base_by_category": {},
+    "uplifts": [],
+    "cap": null,
+    "note": "NO intensity ceiling exists, deliberately recorded rather than omitted. Risk finance is governed by private-participation rates and per-undertaking totals, not by a share of eligible costs. An encoder that treated a missing entry as 'unknown' would be free to invent one later; an explicit null says the concept does not apply."
+  },
+  "StateAidObjectiveGberArt22": {
+    "article": "Art. 22",
+    "label": "Start-up aid",
+    "legal_basis": "GBER Art. 22(3)",
+    "verified": false,
+    "base_by_category": {},
+    "uplifts": [],
+    "cap": null,
+    "note": "NO intensity ceiling. Art. 22 caps ABSOLUTE amounts (grants, loans, guarantees) by enterprise age and location, not a share of project cost. Recorded explicitly for the same reason as Art. 21.",
+    "absolute_cap_eur": 400000,
+    "absolute_cap_note": "Art. 22(3): grants capped at EUR 0.4M, rising to EUR 0.6M in Art. 107(3)(a) assisted areas and EUR 0.45M in Art. 107(3)(c) areas; small and innovative enterprises may receive double. The refutation test therefore uses the most PERMISSIVE reading (0.6M doubled = 1.2M) so that only a scheme paying far beyond any lawful Art. 22 grant is refuted.",
+    "absolute_cap_test_eur": 1200000,
+    "beneficiary_test": "unlisted small enterprise under 5 years old"
+  },
+  "_corroboration": "Realised aid INTENSITY cannot corroborate a SATR article: the transparency register publishes no project cost (0 of 122,814 SATR events), so a share of eligible costs is not computable there. It is available only on Horizon and Innovate UK, which do not carry inferred articles. The corroboration that IS available on SATR is the award AMOUNT against an article's absolute cap, and the recipient mix against an article's beneficiary restriction. Those are encoded below as `absolute_cap_eur` and `beneficiary_test`.",
+  "_band_policy": "The published band is built from `company_categories`, NOT from every category the article covers. Art. 25 permits 100% for fundamental research, so the full span reads '25-100% of eligible costs' -- true, and useless: a company applying to a national R&D scheme is doing industrial research or experimental development, essentially never fundamental research, and a ceiling that opens at 100% invites a founder to plan against a number no company will see. Where the key is absent the band is the full span."
+}

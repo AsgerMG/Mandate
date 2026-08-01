@@ -15,7 +15,7 @@
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
 import { regionNameFor } from "./regions.generated";
 import { hydrateGatesFor } from "./corpus";
-import { isCited } from "./verdict";
+import { isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { TICKET_BANDS } from "./types";
@@ -283,19 +283,32 @@ const STRUCTURING_CAP = 3;
 export function structuringNotes(inst: DbInstrument): string[] {
   const seen = new Set<string>();
   const picked: string[] = [];
-  // Financial shape first: a rate or a ceiling is more decisive than a
-  // commitment, and only three notes reach the row.
-  for (const family of STRUCTURING_FAMILIES) {
-    for (const g of inst.gates) {
-      if (g.gateFamily !== family) continue;
-      if (!g.gateRole || g.gateRole === "filter") continue;  // eligibility, not structure
-      if (!isCited(g)) continue;                             // never our own words
-      const text = (g.requirement ?? "").trim();
-      const key = text.toLowerCase();
-      if (!text || seen.has(key)) continue;
-      seen.add(key);
-      picked.push(text);
-      if (picked.length >= STRUCTURING_CAP) return picked;
+  // OWN evidence before inherited, then financial shape before conditionality.
+  //
+  // The order used to be family-only, and with a cap of three that quietly
+  // meant "whatever the regime says", forever: a scheme child inherits its
+  // regime's whole gate set, so three cited regime facts filled the row before
+  // anything the scheme said about itself was ever considered. Measured on the
+  // per-scheme GBER article rules: 458 instruments carried one and it reached
+  // exactly 0 rows. A fact about THIS scheme beats a fact about the regime it
+  // sits under — that is the entire reason for distinguishing them.
+  for (const ownFirst of [true, false]) {
+    for (const family of STRUCTURING_FAMILIES) {
+      for (const g of inst.gates) {
+        if (Boolean(g.inherited) !== !ownFirst) continue;
+        if (g.gateFamily !== family) continue;
+        if (!g.gateRole || g.gateRole === "filter") continue;  // eligibility, not structure
+        // Attributable, not merely cited: a register-derived article statement
+        // is a fact about how the instrument is structured, filed by the
+        // granting authority. Admissible HERE only (see isAttributable).
+        if (!isAttributable(g)) continue;
+        const text = (g.requirement ?? "").trim();
+        const key = text.toLowerCase();
+        if (!text || seen.has(key)) continue;
+        seen.add(key);
+        picked.push(text);
+        if (picked.length >= STRUCTURING_CAP) return picked;
+      }
     }
   }
   return picked;

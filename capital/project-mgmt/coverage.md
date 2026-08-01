@@ -6,13 +6,13 @@ Six things an analyst needs before advising on a fund. Each is present or it is 
 
 | What we know | Instruments | Share |
 |---|---:|---:|
-| Eligibility we can evaluate (2+ filters) | 826 | 96% |
+| Eligibility we can evaluate (2+ filters) | 824 | 96% |
 | What it has actually funded | 858 | 100% |
 | Where it applies | 861 | 100% |
 | What it typically awards | 779 | 90% |
 | How to approach it | 838 | 97% |
 | Award recency on record | 841 | 98% |
-| **All six** | **743** | **86%** |
+| **All six** | **742** | **86%** |
 
 ## By channel
 
@@ -20,7 +20,7 @@ Six things an analyst needs before advising on a fund. Each is present or it is 
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | state_aid_satr | 465 | 451 | 5.96 | 465 | 465 | 462 | 451 | 465 |
 | national_dev_banks | 338 | 256 | 5.64 | 311 | 335 | 274 | 329 | 319 |
-| eit | 12 | 1 | 5.08 | 12 | 12 | 1 | 12 | 12 |
+| eit | 12 | 0 | 4.92 | 10 | 12 | 1 | 12 | 12 |
 | ipcei | 11 | 8 | 5.73 | 10 | 11 | 9 | 11 | 11 |
 | horizon_eu_pillar_ii | 9 | 9 | 6.0 | 9 | 9 | 9 | 9 | 9 |
 | horizon_eu_partnership | 9 | 4 | 5.44 | 4 | 9 | 9 | 9 | 9 |

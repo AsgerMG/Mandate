@@ -42,6 +42,7 @@ from etl_env import ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
+import json
 import os
 
 import psycopg
@@ -50,7 +51,15 @@ import voyageai
 MODEL = "voyage-3.5"
 DIM = 1024
 BATCH = 128
-ASSERTABLE_OR_CITED = ("llm_cited", "llm_2pass", "human_verified")
+# Read, not restated. This used to be a hand-written tuple beside a TypeScript
+# Set holding the same policy, and they diverged the day `register_derived` was
+# added: the read path showed those gates on the row while this list silently
+# refused to embed them, so the advisor could display a fact it could not
+# retrieve. contracts/evidence_tiers.json is the one definition; verdict.ts
+# imports the same file.
+ASSERTABLE_OR_CITED = tuple(json.loads(
+    (ROOT / "website" / "frontend" / "lib" / "intelligence" /
+     "evidenceTiers.json").read_text())["attributable"]["tiers"])
 
 
 def connect():

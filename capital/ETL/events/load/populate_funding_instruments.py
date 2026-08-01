@@ -415,7 +415,22 @@ def seed_framework_gates(conn: sqlite3.Connection, instruments: list[dict]) -> i
 def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict[str, Counter]) -> int:
     """Tier 0.5: seed eligibility_gates rows purely from GBER article codes
     already loaded per-event (aid_objective) — zero API cost. Only fires for
-    a family whose dominant aid_objective maps to a known GBER article."""
+    an instrument whose dominant aid_objective maps to a known GBER article.
+
+    Applied at BOTH levels. It used to run over families only, so every scheme
+    under a regime carried the regime's article even where its own events said
+    otherwise -- and 86% of publishable programmes held no rule of their own at
+    all. The dominance floor is what keeps this honest: a scheme whose events
+    split evenly across three articles is not an Article 25 scheme and must not
+    be labelled one.
+
+    Level is `register_derived`, which is its own tier and deliberately not
+    `inventory_inferred`: the aid_objective code is filed per award by the
+    granting authority in the SATR transparency register, so it is not a model
+    inference. It still is not the scheme's own words -- a 67% majority across
+    a scheme's awards describes what it has funded, not what it requires -- so
+    the tier is readable as a STRUCTURING NOTE and nowhere else. It never
+    carries a value_spec, so it can never disqualify anyone."""
     n = 0
     for fam, votes in fam_aid_objective_votes.items():
         if not votes:
@@ -424,14 +439,33 @@ def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict
         if top_code not in GBER_ARTICLE_GATES or top_n / sum(votes.values()) < 0.5:
             continue
         requirement, gate_family, intake_field = GBER_ARTICLE_GATES[top_code]
+        # gate_role and intake_field_resolved are set HERE rather than left for
+        # the triage pass. Triage is a paid step that has only ever run over
+        # instruments that existed when it ran, so a freshly seeded gate arrives
+        # with gate_role NULL -- and NULL is not neutral: structuringNotes skips
+        # `!gateRole` as untriaged, so 233 correctly-seeded article rules reached
+        # no row at all. The role is not a judgement call anyway: an article
+        # inferred from award history states what the instrument DOES, never who
+        # qualifies, which is exactly `programme_fact`. Declaring it also keeps
+        # the gate out of the adaptive round and the eligibility engine, both of
+        # which exclude programme facts by design.
         conn.execute("""
             INSERT INTO eligibility_gates
               (instrument_id, gate_key, gate_family, requirement, value,
-               intake_field, verification_level, verify_note, updated_at)
-            VALUES (?, 'gber_article_inferred', ?, ?, ?, ?, 'inventory_inferred', ?, CURRENT_TIMESTAMP)
+               intake_field, gate_role, intake_field_resolved,
+               verification_level, verify_note, updated_at)
+            VALUES (?, 'gber_article_inferred', ?, ?, ?, ?, 'programme_fact', 'none',
+                    'register_derived', ?, CURRENT_TIMESTAMP)
             ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
               gate_family=excluded.gate_family, requirement=excluded.requirement,
               value=excluded.value, intake_field=excluded.intake_field,
+              gate_role=excluded.gate_role,
+              intake_field_resolved=excluded.intake_field_resolved,
+              -- verification_level was NOT in this list, so every gate seeded
+              -- before a tier change kept the old tier forever: the row was
+              -- updated on each run, silently except for the one column that
+              -- decides whether the read path may show it at all.
+              verification_level=excluded.verification_level,
               verify_note=excluded.verify_note, updated_at=CURRENT_TIMESTAMP
         """, (fam, gate_family, requirement, top_code, intake_field,
               f"{top_n}/{sum(votes.values())} events carry this aid_objective code"))
@@ -510,6 +544,7 @@ def main() -> None:
     # a company like theirs would receive, and across the corpus that ranges
     # from EUR 16k at p10 to EUR 1.1M at p90.
     fam_awards: dict[str, list[float]] = defaultdict(list)
+    child_aid_objective_votes: dict[str, Counter] = {}
     # Realised aid intensity: grant divided by the project it paid for. The
     # structuring question -- what share of this can be public money -- answered
     # from what recipients were actually paid rather than from prose.
@@ -759,16 +794,27 @@ def main() -> None:
         # name. That is the whole point — "Tremplin pour la transition
         # ecologique des PME" is what a founder applies to, not "ADEME".
         is_programme = not scheme
+        # child_slug truncates to 48 characters, and programme names are long
+        # and share prefixes ("Aides aux actions en faveur de la transition
+        # ecologique ..."), so the slug alone collides. A short digest of the
+        # FULL name keeps ids unique and, more importantly, stable: ids must not
+        # move between runs, because the reconcile step cannot tell a renamed
+        # instrument from a vanished one.
+        child_id = (f"{fam}__{child_slug(authority)}_{_name_digest(authority)}"
+                    if is_programme
+                    else f"{fam}__{child_slug(scheme)}__{child_slug(authority)}")
+        # A scheme's OWN aid objective, not its regime's. Schemes under one
+        # regime run under different GBER articles -- 9 distinct objectives
+        # across satr_fr_rnd's 61 schemes -- and those articles carry different
+        # eligibility: Art 25 is R&D project aid, Art 22 is start-up aid with
+        # company-age and unlisted-SME conditions, Art 21 is risk finance.
+        # Telling a founder what the REGIME funds, when the scheme they would
+        # actually apply to runs under a different article, is false about the
+        # thing in front of them.
+        if c["objectives"]:
+            child_aid_objective_votes[child_id] = c["objectives"]
         now.append(dict(
-            # child_slug truncates to 48 characters, and programme names are
-            # long and share prefixes ("Aides aux actions en faveur de la
-            # transition ecologique ..."), so the slug alone collides. A short
-            # digest of the FULL name keeps ids unique and, more importantly,
-            # stable: ids must not move between runs, because the reconcile
-            # step cannot tell a renamed instrument from a vanished one.
-            id=(f"{fam}__{child_slug(authority)}_{_name_digest(authority)}"
-                if is_programme
-                else f"{fam}__{child_slug(scheme)}__{child_slug(authority)}"),
+            id=child_id,
             parent_id=fam,
             name=authority,
             name_source="deterministic",
@@ -981,7 +1027,10 @@ def main() -> None:
                 (fam, src),
             )
 
-    n_gates = seed_inventory_gates(conn, fam_aid_objective_votes)
+    # Families AND their scheme children. The child's own votes win where an id
+    # appears in both, because a scheme's article is the more specific claim.
+    n_gates = seed_inventory_gates(
+        conn, {**fam_aid_objective_votes, **child_aid_objective_votes})
     n_excl = seed_framework_gates(conn, now)
     conn.commit()
     print(f"funding_instruments: {len(now)} rows")
