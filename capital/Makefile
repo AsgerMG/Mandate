@@ -101,6 +101,11 @@ eligibility:
 	# Audit BEFORE publishing, and quarantine rules their own recipients
 	# contradict, so a wrong rule cannot reach a founder's brief.
 	python3 ETL/terms/audit_encoding_vs_reality.py --quarantine
+	# Refuse to publish a corpus that got worse. Every serious defect this
+	# week was silent -- a thinner corpus still produces a confident brief --
+	# so the coverage measurement is made load-bearing here, BEFORE the export
+	# and the publish that follow it.
+	python3 ETL/terms/coverage_gate.py
 	python3 website/build/eligibility_export.py
 	python3 ETL/terms/migrate_to_postgres.py
 	python3 ETL/terms/embed_eligibility.py run
