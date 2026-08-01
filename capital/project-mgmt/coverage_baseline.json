@@ -1,13 +1,13 @@
 {
  "takenAt": "2026-08-01",
  "instruments": 861,
- "complete": 676,
+ "complete": 743,
  "shares": {
   "eligibility": 95.93,
   "funds": 99.65,
   "where": 100.0,
   "amount": 90.48,
-  "route": 82.58,
+  "route": 97.33,
   "live": 97.68
  },
  "counts": {
@@ -15,7 +15,7 @@
   "funds": 858,
   "where": 861,
   "amount": 779,
-  "route": 711,
+  "route": 838,
   "live": 841
  }
 }
