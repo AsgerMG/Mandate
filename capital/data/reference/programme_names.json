@@ -155,5 +155,53 @@
   "enterprise_ireland_ip": {
     "name": "Innovation Partnership Programme",
     "source": "https://www.enterprise-ireland.com/en/funding-supports (EI funding catalogue; exact name match, id `ip`)"
+  },
+  "eis_rakendusuuringute_toetus": {
+    "name": "Rakendusuuringute programm",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_leeuroopalist_huvi_pakk": {
+    "name": "IPCEI - uleeuroopalise tahtsusega projektid",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_rahvusvaheliste_konveren": {
+    "name": "Rahvusvaheliste konverentside toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_rahvusvaheliste_spordi_j": {
+    "name": "Rahvusvaheliste spordi- ja kultuurisundmuste toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_v_ikese_ja_keskmise_suur": {
+    "name": "Vaikese ja keskmise suurusega ettevotja arenguprogramm",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_turismisektori_tarkvarad": {
+    "name": "Turismisektori tarkvarade liitumis- ja liidestamistoetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_innovatsiooniosak_arendu": {
+    "name": "Innovatsiooniosak ja arendusosak",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_digitaliseerimise_teekaa": {
+    "name": "Digitaliseerimise teekaardi toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_suuremahuliste_investeer": {
+    "name": "Suuremahuliste investeeringute toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01) - NOTE: shares its name with eis_suuremahuliste_investee, which is the same measure truncated differently by another feed; naming both correctly does not separate them, and merging them is a dedupe question, not a naming one"
+  },
+  "altum_la_ar_ka": {
+    "name": "Lielo investiciju aizdevums ar kapitala atlaidi",
+    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01); id decodes LA=lielo aizdevums, KA=kapitala atlaide, and 20 awards averaging EUR 5.8M match a large-investment loan"
+  },
+  "altum_anm_digi": {
+    "name": "Aizdevums digitalizacijai ar kapitala atlaidi",
+    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01); ANM is Latvia's RRF programme code, digi = digitalisation"
+  },
+  "altum_biomet_na_aizdevumi": {
+    "name": "Biometana razosanai",
+    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01)"
   }
 }
