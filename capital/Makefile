@@ -40,6 +40,18 @@ sources:
 renew:
 	python3 ETL/events/extract/renew.py --auto
 
+# Keep the corpus current without being asked, and without paying to reproduce
+# numbers that were already right. Runs the downstream chain only for sources
+# whose raw files actually changed, and stops at the coverage gate rather than
+# publishing a corpus that got worse.
+#   make refresh-check   what changed, and what would run
+#   make refresh         run it
+refresh-check:
+	python3 ETL/refresh.py --check
+
+refresh:
+	python3 ETL/refresh.py
+
 classify:
 	# Re-apply labels the last reload wiped BEFORE spending anything. companies
 	# is destructively reloaded and its surrogate id re-issued, and an entire

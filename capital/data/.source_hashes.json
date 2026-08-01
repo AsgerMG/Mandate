@@ -1,0 +1,158 @@
+{
+ "ademe": {
+  "files": 1,
+  "hash": "6f1a6c363325894f"
+ },
+ "almi_invest": {
+  "files": 21,
+  "hash": "28a7b05110f5947a"
+ },
+ "baltic_ndbs": {
+  "files": 2,
+  "hash": "f9ea13737d0aa1cf"
+ },
+ "bdns": {
+  "files": 1,
+  "hash": "80eea60210aa9c25"
+ },
+ "business_finland": {
+  "files": 0,
+  "hash": "e3b0c44298fc1c14"
+ },
+ "cdp_vc": {
+  "files": 1,
+  "hash": "24c1b5a4837a8d6a"
+ },
+ "cdti": {
+  "files": 50,
+  "hash": "02e2a8afc3550853"
+ },
+ "chips_ju": {
+  "files": 1,
+  "hash": "d8335bcd28bcceef"
+ },
+ "coparion": {
+  "files": 1,
+  "hash": "8b26c109ea10137c"
+ },
+ "cordis": {
+  "files": 9,
+  "hash": "37af1a2dc2c24afc"
+ },
+ "edf": {
+  "files": 287,
+  "hash": "f0f811fef9b0e1cc"
+ },
+ "ee_register": {
+  "files": 1,
+  "hash": "73dfdbae29482bd8"
+ },
+ "eib": {
+  "files": 3,
+  "hash": "0a64c65b76022a52"
+ },
+ "eic_fund": {
+  "files": 17,
+  "hash": "0f1d12d16f804670"
+ },
+ "eifo": {
+  "files": 2,
+  "hash": "ad5d73db7ec53415"
+ },
+ "fr_innov_grants": {
+  "files": 4,
+  "hash": "c4d40b8ae5bbee64"
+ },
+ "fr_regions": {
+  "files": 0,
+  "hash": "e3b0c44298fc1c14"
+ },
+ "future_fund": {
+  "files": 2,
+  "hash": "64159f04358dea04"
+ },
+ "htgf": {
+  "files": 12,
+  "hash": "a65e1f775e03ff6c"
+ },
+ "innosuisse": {
+  "files": 1,
+  "hash": "561d8a031c97d436"
+ },
+ "innovasjon_norge": {
+  "files": 1,
+  "hash": "5da024d960f236a1"
+ },
+ "innovate_uk": {
+  "files": 330,
+  "hash": "81a27f0ee7cb0d26"
+ },
+ "innovation_fund": {
+  "files": 246,
+  "hash": "d833b8ad951a306f"
+ },
+ "innovationsfonden": {
+  "files": 566,
+  "hash": "1a5698e18b3083e3"
+ },
+ "instrument_docs": {
+  "files": 279,
+  "hash": "a7b921439c32d728"
+ },
+ "invest_nl": {
+  "files": 1,
+  "hash": "267d0aee3cdf280f"
+ },
+ "investinor": {
+  "files": 2,
+  "hash": "c02e85baf838d384"
+ },
+ "ipcei": {
+  "files": 11,
+  "hash": "127924d1e24ed7dc"
+ },
+ "isif": {
+  "files": 1,
+  "hash": "7bb7a1568b328278"
+ },
+ "lv_register": {
+  "files": 1,
+  "hash": "f91450ad94d33291"
+ },
+ "nfr": {
+  "files": 1,
+  "hash": "7ef02db462c75ecc"
+ },
+ "pfr": {
+  "files": 1,
+  "hash": "2974fa020e919f75"
+ },
+ "rrf_it": {
+  "files": 3,
+  "hash": "5e3184f8cc1a8f3a"
+ },
+ "sprind": {
+  "files": 3,
+  "hash": "8f5eac74f2b16d16"
+ },
+ "step": {
+  "files": 1,
+  "hash": "731930d5e92aceae"
+ },
+ "sudop": {
+  "files": 11,
+  "hash": "dc10911d070684c0"
+ },
+ "tacr": {
+  "files": 4,
+  "hash": "fc64e68e2623a887"
+ },
+ "tesi": {
+  "files": 2,
+  "hash": "0d3fceb7fa30fd0c"
+ },
+ "vinnova": {
+  "files": 1,
+  "hash": "55079b90478d8733"
+ }
+}
