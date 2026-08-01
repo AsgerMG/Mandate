@@ -20,6 +20,7 @@
 // Deterministic and model-free by design: it runs inside computeVerdict(),
 // which must stay instant and zero-cost.
 import { loadDbInstruments, type DbInstrument } from "./corpus";
+import { THEME_TOKENS } from "./themeIndex.generated";
 
 /** Gate families that describe WHAT is funded, rather than who may apply.
  *  G1_nexus is deliberately EXCLUDED despite sounding thematic: in practice it
@@ -94,6 +95,22 @@ function themeText(inst: DbInstrument): string {
   return `${inst.name} ${gateText}`;
 }
 
+/**
+ * The tokens this instrument contributes to the lexical index.
+ *
+ * Exported ONLY for scripts/emit_theme_index.ts and its drift check. The four
+ * things it composes -- THEMATIC_FAMILIES, ADMIN_NOISE, STOP and tokens() --
+ * stay module-private on purpose: exporting the FUNCTION means a change to any
+ * of them changes the emitted bytes and the byte-exact check fails, whereas
+ * exporting the constants would let someone reassemble them differently
+ * somewhere else, which is precisely the drift this exists to prevent.
+ *
+ * Sorted and deduplicated so the artifact is a pure function of the corpus.
+ */
+export function themeTokensFor(inst: DbInstrument): string[] {
+  return [...new Set(tokens(themeText(inst)))].sort();
+}
+
 interface Index {
   /** instrumentId -> its own token set. */
   byInstrument: Map<string, Set<string>>;
@@ -110,16 +127,36 @@ let indexCache: Index | null = null;
 
 function buildIndex(): Index {
   if (indexCache) return indexCache;
+  // Read the generated token index, never the gates — on BOTH the Postgres and
+  // the JSON path. Computing from gates when they happen to be present would
+  // make NO_PG=1 (every check we run) exercise a different index from
+  // production, which is the divergence class this codebase keeps getting bitten
+  // by. The tokens are identical either way: emit_theme_index.ts produces them
+  // with themeTokensFor(), the same function buildIndex used to call inline.
   const instruments = loadDbInstruments();
   const byInstrument = new Map<string, Set<string>>();
   const df = new Map<string, number>();
+  let stale = 0;
   for (const inst of instruments) {
-    const set = new Set(tokens(themeText(inst)));
+    const packed = THEME_TOKENS[inst.id];
+    // An instrument published since the artifact was generated indexes on its
+    // name alone: weak but visible, rather than invisible at the MIN_RAW_HIT
+    // floor below. check_theme_index.ts is what stops this being the norm.
+    const set = packed !== undefined
+      ? new Set(packed.split(" ").filter(Boolean))
+      : (stale++, new Set(tokens(inst.name)));
     byInstrument.set(inst.id, set);
     for (const t of set) df.set(t, (df.get(t) ?? 0) + 1);
   }
+  if (stale) {
+    console.warn(
+      `theme_index_stale: ${stale} instrument(s) missing from ` +
+      `themeIndex.generated.ts — run \`npx tsx scripts/emit_theme_index.ts\``);
+  }
   const n = Math.max(instruments.length, 1);
   const idf = new Map<string, number>();
+  // Derived here, not emitted: the formula must live in one place, and
+  // shipping idf would put it in two.
   for (const [t, d] of df) idf.set(t, Math.log(n / d));
   indexCache = { byInstrument, idf };
   return indexCache;

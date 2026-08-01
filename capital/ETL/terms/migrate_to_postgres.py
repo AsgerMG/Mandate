@@ -94,7 +94,14 @@ def main() -> None:
                         "scheme_operators TEXT",
                         # What the instrument typically awards (migration 015).
                         "award_p25 DOUBLE PRECISION", "award_p50 DOUBLE PRECISION",
-                        "award_p75 DOUBLE PRECISION", "award_n INTEGER"):
+                        "award_p75 DOUBLE PRECISION", "award_n INTEGER",
+                        # Realised aid intensity (migration 018). Adding a
+                        # column to the corpus.ts phase-one SELECT without
+                        # adding it here does not fail loudly: hydration throws,
+                        # corpus.ts catches, and every request silently serves
+                        # the JSON fallback instead of Postgres. That is exactly
+                        # what happened between 018 landing and this line.
+                        "intensity_p50 DOUBLE PRECISION", "intensity_n INTEGER"):
                 cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
             # Curated application routes live in their own table because
             # funding_instruments is truncated on every publish.

@@ -128,6 +128,12 @@ eligibility:
 	# and the publish that follow it.
 	python3 ETL/terms/coverage_gate.py
 	python3 website/build/eligibility_export.py
+	# The lexical theme index is DERIVED from the export above, so it is
+	# regenerated here rather than beside emit_vocabulary at the top: that one
+	# feeds the encoder and must run first, this one consumes the encoder's
+	# output. It is what lets relevance.ts stop loading the whole corpus's
+	# gates on every request; check_theme_index.ts fails the build if stale.
+	cd website/frontend && npx tsx scripts/emit_theme_index.ts
 	python3 ETL/terms/migrate_to_postgres.py
 	python3 ETL/terms/embed_eligibility.py run
 	python3 ETL/terms/build_instrument_profiles.py classify-titles
