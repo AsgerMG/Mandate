@@ -294,7 +294,12 @@ export async function hydrateDbInstruments(): Promise<void> {
                   scheme_code, application_url, sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
                   intensity_p50, intensity_n
-           FROM funding_instruments`,
+           FROM funding_instruments
+           -- Ordered for the same reason the gates are: selection breaks ties
+           -- on array order, so two stores returning the same instruments in a
+           -- different order publish different rows. COLLATE "C" to match the
+           -- export's byte-order sort rather than a locale's.
+           ORDER BY id COLLATE "C"`,
         ),
         // PHASE ONE: everything needed to RANK and to reach a verdict, and
         // nothing else. `quote` and `source_*` are 39% of the gate payload and
@@ -309,11 +314,27 @@ export async function hydrateDbInstruments(): Promise<void> {
           // cite() takes the first match; with no ordering the row a founder
           // reads depends on whatever order the store happened to return,
           // which differs between Postgres and the SQLite-derived JSON.
-          `SELECT instrument_id, gate_key, gate_family, requirement, value,
-                  value_spec, intake_field, gate_role, intake_field_resolved,
-                  verification_level
-           FROM eligibility_gates
-           ORDER BY instrument_id, gate_key`,
+          // FRAMEWORK GATES ONLY. Everything else arrives in phase two, for
+          // the handful of instruments that reach a brief.
+          //
+          // Framework records are the exception because they are the one thing
+          // lazy hydration can never reach: eligibility.ts's cite() reads
+          // gates on eu_sme_definition, eu_de_minimis and four siblings, and
+          // publishableInstruments() excludes them, so they never appear in a
+          // shortlist and would never be fetched. 56 gates, 46 KB, and without
+          // them every framework citation silently loses its source and drops
+          // to "verify:".
+          // WITH quote and source: these records are never in a shortlist, so
+          // phase two would never fetch their citation, and cite() would render
+          // every framework check sourceless.
+          `SELECT g.instrument_id, g.gate_key, g.gate_family, g.requirement,
+                  g.value, g.value_spec, g.intake_field, g.gate_role,
+                  g.intake_field_resolved, g.verification_level,
+                  g.quote, g.source_file, g.source_locator
+             FROM eligibility_gates g
+             JOIN funding_instruments i ON i.id = g.instrument_id
+            WHERE i.is_framework
+            ORDER BY g.instrument_id, g.gate_key COLLATE "C"`,
         ),
         // Curated application routes. Its own table because
         // funding_instruments is truncated on every publish; joining here
@@ -335,10 +356,11 @@ export async function hydrateDbInstruments(): Promise<void> {
           value: g.value ?? "",
           valueSpec: g.value_spec ? JSON.parse(g.value_spec) : null,
           intakeField: g.intake_field ?? "none",
-          // Filled by hydrateGatesFor() for the shortlist only. Empty here
-          // is not "no source on record" — it is "not fetched yet".
-          quote: "",
-          source: { file: "", locator: "" },
+          // Framework records carry theirs from phase one (they are never in a
+          // shortlist, so nothing would fetch it later); everything else gets
+          // it with its gates in phase two.
+          quote: g.quote ?? "",
+          source: { file: g.source_file ?? "", locator: g.source_locator ?? "" },
           verificationLevel: g.verification_level ?? undefined,
           verified: ASSERTABLE_LEVELS.has(g.verification_level),
         });
@@ -463,7 +485,10 @@ export async function hydrateGatesFor(instrumentIds: string[]): Promise<void> {
                   value_spec, intake_field, gate_role, intake_field_resolved,
                   verification_level, quote, source_file, source_locator
              FROM eligibility_gates WHERE instrument_id = ANY($1::text[])
-             ORDER BY instrument_id, gate_key`,
+             -- COLLATE "C" is byte order, matching Python's sort in the export.
+             -- Locale collation puts "framework_..." before "G1-...", so the
+             -- two stores disagreed about which three criteria a row publishes.
+             ORDER BY instrument_id, gate_key COLLATE "C"`,
           [toFetch],
         );
         const own = new Map<string, DbGate[]>();

@@ -41,6 +41,9 @@ def main() -> None:
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n
         FROM funding_instruments
+        -- Deterministic, and byte-ordered to match the Postgres path: row
+        -- selection breaks ties on array order.
+        ORDER BY id
     """).fetchall()
     gates = conn.execute("""
         SELECT instrument_id, gate_key, gate_family, requirement, value,

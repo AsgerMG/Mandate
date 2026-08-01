@@ -289,7 +289,9 @@
       "Bash(python3 /Users/asgermollergrimberg/Wincent/ETL/terms/coverage_dashboard.py --out /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/coverage.html)",
       "Bash(bash scripts/shot.sh \"file:///private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/coverage.html\" /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/cov.png)",
       "Bash(bash scripts/shot.sh \"http://localhost:8899/coverage.html\" /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/cov2.png)",
-      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --window-size=1440,2000 --screenshot=/private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/cov3.png \"http://localhost:8899/coverage.html\")"
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --window-size=1440,2000 --screenshot=/private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/cov3.png \"http://localhost:8899/coverage.html\")",
+      "Bash(curl -s -m 120 -L \"https://nasdaqbaltic.com/market/upload/reports/altm/2023_q4_lv_eur_00_ias.pdf\")",
+      "Bash(pdftotext -q - -)"
     ],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [

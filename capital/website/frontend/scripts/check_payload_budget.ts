@@ -42,14 +42,25 @@ function main() {
   const instruments = data.records.length;
   const gates = data.records.reduce((n, r) => n + (r.gates?.length ?? 0), 0);
 
-  // What PRODUCTION actually loads per request. hydrateDbInstruments() reads
-  // Postgres without `quote` and the source citation (see corpus.ts phase
-  // one); those come back only for the shortlist. The JSON file still carries
-  // them because it is the offline fallback, so measuring the file overstates
-  // the real cost — and the real cost is what the budget is about.
-  const heavy = data.records.reduce((n, r) =>
-    n + (r.gates ?? []).reduce((m, g) =>
-      m + JSON.stringify(g.quote ?? "").length + JSON.stringify(g.source ?? "").length, 0), 0);
+  // What PRODUCTION actually loads per request. Phase one now carries
+  // instruments plus FRAMEWORK gates only (corpus.ts); every other gate
+  // arrives in phase two for the handful of instruments that reach a brief.
+  // The JSON file still carries everything because it is the offline fallback,
+  // so measuring the file overstates the real cost — and the real cost is what
+  // the budget is about.
+  const records = data.records as {
+    isFramework?: boolean;
+    gates?: { quote?: string; source?: unknown }[];
+  }[];
+  const heavy = records.reduce((n, r) => {
+    if (r.isFramework) {
+      // Framework gates ship in phase one, minus nothing: they carry their
+      // citation because no shortlist ever fetches it for them.
+      return n;
+    }
+    return n + (r.gates ?? []).reduce((m, g) => m + JSON.stringify(g).length + 1, 0);
+  }, 0);
+
   const liveBytes = bytes - heavy;
   const mb = liveBytes / 1e6;
   const perInstrument = liveBytes / Math.max(1, instruments);
