@@ -153,3 +153,76 @@ regression gate are.
   instruments with too few priced awards are real, but they are gaps in rows
   that may not survive Phase 2 in their current form. Reshaping the hierarchy
   before polishing it avoids doing the work twice.
+
+
+---
+
+# Augmentation, 2026-08-01: the desired state, and what splitting actually costs
+
+## Desired state, so enrichment has a stopping condition
+
+"Enrich until the DBs are right" needs a number, or it never ends. The target,
+per publishable instrument:
+
+| | Target | Now |
+|---|---|---|
+| Who it is for | 100% with 2+ evaluable rules | 96% |
+| What it funds | 100% with its own titles or sector history | 91% |
+| Where it applies | 100% country, region where a rule needs one | 100% |
+| What it awards | 100% where 5+ priced awards exist | 90% |
+| How to approach it | 100% with a cited route | 81% |
+| Recency known | 100% | 97% |
+| **Named as a founder would recognise it** | **100%** | see below |
+
+Two of these are bounded by the world, not by effort, and the target is
+"correctly labelled" rather than 100%: an instrument with four lifetime awards
+cannot have a median, and a register that publishes no project titles cannot be
+made to. Those are counted as done when the row says so.
+
+**Complete on all six: 583 of 798.** The honest target is ~95%, with the
+residue being instruments the sources genuinely under-publish.
+
+## The naming rule earned its keep twice in one hour
+
+The plan said: never synthesise a programme name, and do not split a source
+that has no real name. Both halves fired immediately.
+
+**Vinnova cannot be split yet.** 42 programmes clear the 40-award threshold,
+and every identifier is opaque — `DiarienummerProgram = 2009-02199`. Splitting
+would produce 42 rows called "2009-02199". Blocked on resolving names from
+Vinnova's own programme registry, NOT on payload, which is what I assumed
+before measuring.
+
+**CDTI was split and reverted inside ten minutes.** `convocatoria` looked like a
+programme name in the raw feed, but the value the loader stores is the legal act
+that opened the call: "Resolución de 4 de abril de 2025 de la Presidencia del
+CDTI". 17 children were created, all named after dated resolutions, and reverted
+on sight. A founder does not apply to a resolution. The clean name exists in the
+raw feed and needs re-extraction, which is a fetch job, not a split job.
+
+The lesson is narrower than "be careful": **a field that identifies a call is
+not automatically a field that names a programme**, and the difference is only
+visible by looking at rendered values. Check the names before splitting, every
+time, and revert without hesitation.
+
+## Payload: measured, and less urgent than claimed
+
+I said two-phase hydration blocked the next split. Measured, that was wrong:
+ADEME's 75 children cost ~0.5 MB and the corpus sits at 4.24 MB against an 8 MB
+limit, with roughly 615 instruments of headroom. Vinnova and CDTI together would
+add well under a hundred rows.
+
+Hydration is still the right next structural piece, and the budget check's own
+note says why it must not be rushed: four modules assume gates are already in
+memory, and bolting it on beside other structural changes is how debt is made.
+It is scheduled, not blocking.
+
+## Revised order
+
+1. **Names, before any further split.** Vinnova's programme registry and CDTI's
+   raw convocatoria. Both are fetch-and-map, no judgement.
+2. **Two-phase hydration**, in a session of its own.
+3. Remaining splits, once named.
+4. Structuring Phase B (intensity as a rate) — see
+   structuring_backend_plan.md, which is where the analyst-facing value now is.
+5. Refresh trigger and the coverage regression gate.

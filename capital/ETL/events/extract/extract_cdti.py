@@ -358,8 +358,8 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
                 project_summary, project_started,
                 grant_amount_eur, sector_tags_raw, raw_source_url,
                 coordinator_only, grant_amount_basis,
-                deployment_country, eif_lp_backed)
-               VALUES (?, ?, 'direct', ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, 0)""",
+                deployment_country, eif_lp_backed, programme_name)
+               VALUES (?, ?, 'direct', ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, 0, ?)""",
             (
                 r["company_id"], r["source"], r["call_id"],
                 r["convocatoria"][:200], r["instrumento"],
@@ -369,7 +369,15 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
                 r["doc_url"],
                 r["grant_amount_basis"],
                 DEPLOYMENT_COUNTRY,
-            ),
+                            # NOT split on yet. `convocatoria` here is the legal act that
+                # opened the call -- "Resolucion de 4 de abril de 2025 de la
+                # Presidencia del CDTI" -- and a child named after a dated
+                # resolution is worse than no child: it is not a thing a
+                # founder recognises or applies to. Carried so the identity is
+                # not lost; the split needs the programme NAME, which lives in
+                # the raw feed's own convocatoria field and needs re-extraction.
+                r["convocatoria"][:200] or None,
+),
         )
         inserted += 1
     conn.commit()
