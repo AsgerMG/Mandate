@@ -146,6 +146,10 @@ function parseSnapshot(md: string): FundSnapshot | null {
 
 // ── DB-native instrument inventory (funding_instruments/eligibility_gates,
 // exported by website/build/eligibility_export.py) ─────────────────────────
+/** Levels we may assert as fact. Shared by both hydration phases so they
+ *  cannot disagree about which gates are quotable. */
+const ASSERTABLE_LEVELS = new Set(["llm_2pass", "human_verified"]);
+
 export interface DbGate {
   id: string;
   gateFamily?: string;
@@ -298,7 +302,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         // gateReach's adaptive questions and the eligibility screen's
         // citations, both scoped to the shortlist. Loading them for all 327
         // instruments on every request paid for 320 instruments nobody will
-        // see. Phase two is hydrateGateDetail() below.
+        // see. Phase two is hydrateGatesFor() below.
         client.query(
           // ORDER BY is load-bearing, not tidiness. judgementCriteria and
           // structuringNotes publish the FIRST THREE gates they match, and
@@ -319,7 +323,6 @@ export async function hydrateDbInstruments(): Promise<void> {
         client.query(
           `SELECT instrument_id, channel, timeline, url FROM instrument_application`),
       ]);
-      const ASSERTABLE = new Set(["llm_2pass", "human_verified"]);
       const gatesByInstrument = new Map<string, DbGate[]>();
       for (const g of gateRes.rows) {
         const list = gatesByInstrument.get(g.instrument_id) ?? [];
@@ -332,12 +335,12 @@ export async function hydrateDbInstruments(): Promise<void> {
           value: g.value ?? "",
           valueSpec: g.value_spec ? JSON.parse(g.value_spec) : null,
           intakeField: g.intake_field ?? "none",
-          // Filled by hydrateGateDetail() for the shortlist only. Empty here
+          // Filled by hydrateGatesFor() for the shortlist only. Empty here
           // is not "no source on record" — it is "not fetched yet".
           quote: "",
           source: { file: "", locator: "" },
           verificationLevel: g.verification_level ?? undefined,
-          verified: ASSERTABLE.has(g.verification_level),
+          verified: ASSERTABLE_LEVELS.has(g.verification_level),
         });
         gatesByInstrument.set(g.instrument_id, list);
       }
@@ -394,67 +397,117 @@ export async function hydrateDbInstruments(): Promise<void> {
   }
 }
 
-/** Instruments whose gate detail has already been fetched, so a second
- *  shortlist in the same request costs nothing. */
-const detailFetched = new Set<string>();
+/** Instruments whose OWN gate rows have been fetched. A parent is fetched to
+ *  serve a child and lands here without ever being "resolved". */
+const gatesFetched = new Set<string>();
+/** Instruments whose parent's gates have been merged in. Separate from
+ *  gatesFetched so a second shortlist containing a sibling cannot merge a
+ *  parent's rules into the same child twice — which would duplicate gates and
+ *  inflate the encodedCount that decides the name-dedupe. */
+const gatesResolved = new Set<string>();
 
 /**
- * PHASE TWO of hydration: fetch `quote` and the source citation for a specific
- * handful of instruments, and merge them into the cached gates.
+ * PHASE TWO of hydration: fetch the full gate rows for a handful of
+ * instruments and merge them into the cached corpus.
  *
- * Must be awaited before anything that reads those fields — the adaptive
- * round (gateReach.ts) and the eligibility screen's citations
- * (eligibility.ts). Both run only over the shortlist, which is why they can be
- * deferred at all.
+ * Must be awaited before anything that reads gates — the verdict engine, the
+ * adaptive round (gateReach.ts), the eligibility screen's citations, and the
+ * per-row criteria in shortlist.ts. All of them run only over the shortlist,
+ * which is why this can be deferred at all.
  *
- * Never throws: on failure the fields stay empty, which degrades a citation to
- * blank rather than failing a brief that is otherwise complete. The JSON
- * fallback already carries them, so this is a no-op there.
+ * ── The parent expansion is the whole point ───────────────────────────────
+ * A child of a state-aid rollup is judged on its REGIME's rules, not on the
+ * two of its own. Fetching only the ids asked for would give
+ * satr_ie_rnd__sa_111046__enterprise_ireland its 2 gates instead of the
+ * regime's 34, and would give the 146 children that hold no gates at all
+ * nothing whatsoever. assessInstrument returns `unknown` when it can evaluate
+ * nothing, so the failure is a fund that quietly stops being assessable — no
+ * exception, no log, exactly the shape of the inheritance bug this codebase
+ * already paid for once.
+ *
+ * Mutates the cached objects in place rather than returning copies: instById(),
+ * dbInstrumentsByBucket() and the built rows all hold references to them, so a
+ * copy would hydrate a snapshot nobody reads.
+ *
+ * Never throws: on failure gates stay as they were, which degrades a verdict to
+ * `unknown` rather than failing a brief outright. A no-op on the JSON path,
+ * which ships every gate already.
  */
-export async function hydrateGateDetail(instrumentIds: string[]): Promise<void> {
-  const want = instrumentIds.filter((id) => id && !detailFetched.has(id));
-  if (!want.length || !dbInstrumentsCache) return;
+export async function hydrateGatesFor(instrumentIds: string[]): Promise<void> {
+  if (!dbInstrumentsCache) return;
   const url = process.env.DATABASE_URL;
-  if (!url) return; // JSON fallback shipped the detail already
+  if (!url) return; // JSON fallback shipped the gates already
+
+  const byId = new Map(dbInstrumentsCache.map((i) => [i.id, i]));
+  const requested = instrumentIds.filter((id) => id && byId.has(id));
+  // Every requested id, plus the regime each one inherits from.
+  const wanted = new Set<string>();
+  for (const id of requested) {
+    wanted.add(id);
+    const parent = byId.get(id)?.parentId;
+    if (parent && byId.has(parent)) wanted.add(parent);
+  }
+  const toFetch = [...wanted].filter((id) => !gatesFetched.has(id));
+  const toResolve = requested.filter((id) => !gatesResolved.has(id));
+  if (!toFetch.length && !toResolve.length) return;
+
   try {
-    const { Client } = await import("pg");
-    const client = new Client({ connectionString: url, connectionTimeoutMillis: 2000 });
-    await client.connect();
-    try {
-      await client.query("SET statement_timeout = 2000");
-      const res = await client.query(
-        `SELECT instrument_id, gate_key, quote, source_file, source_locator
-           FROM eligibility_gates WHERE instrument_id = ANY($1::text[])
-           ORDER BY instrument_id, gate_key`,
-        [want],
-      );
-      const byKey = new Map<string, { quote: string; file: string; locator: string }>();
-      for (const r of res.rows) {
-        byKey.set(`${r.instrument_id}\u0000${r.gate_key}`, {
-          quote: r.quote ?? "",
-          file: r.source_file ?? "",
-          locator: r.source_locator ?? "",
-        });
-      }
-      const wanted = new Set(want);
-      for (const inst of dbInstrumentsCache) {
-        if (!wanted.has(inst.id)) continue;
-        for (const gate of inst.gates) {
-          const d = byKey.get(`${inst.id}\u0000${gate.id}`);
-          if (!d) continue;
-          gate.quote = d.quote;
-          gate.source = { file: d.file, locator: d.locator };
+    if (toFetch.length) {
+      const { Client } = await import("pg");
+      const client = new Client({ connectionString: url, connectionTimeoutMillis: 2000 });
+      await client.connect();
+      try {
+        await client.query("SET statement_timeout = 2000");
+        const res = await client.query(
+          `SELECT instrument_id, gate_key, gate_family, requirement, value,
+                  value_spec, intake_field, gate_role, intake_field_resolved,
+                  verification_level, quote, source_file, source_locator
+             FROM eligibility_gates WHERE instrument_id = ANY($1::text[])
+             ORDER BY instrument_id, gate_key`,
+          [toFetch],
+        );
+        const own = new Map<string, DbGate[]>();
+        for (const r of res.rows) {
+          const list = own.get(r.instrument_id) ?? [];
+          list.push({
+            id: r.gate_key,
+            gateFamily: r.gate_family ?? undefined,
+            gateRole: r.gate_role ?? undefined,
+            intakeFieldResolved: r.intake_field_resolved ?? undefined,
+            requirement: r.requirement,
+            value: r.value ?? "",
+            valueSpec: r.value_spec ? JSON.parse(r.value_spec) : null,
+            intakeField: r.intake_field ?? "none",
+            quote: r.quote ?? "",
+            source: { file: r.source_file ?? "", locator: r.source_locator ?? "" },
+            verificationLevel: r.verification_level ?? undefined,
+            verified: ASSERTABLE_LEVELS.has(r.verification_level),
+          });
+          own.set(r.instrument_id, list);
         }
-        detailFetched.add(inst.id);
+        for (const id of toFetch) {
+          const inst = byId.get(id);
+          if (!inst) continue;
+          inst.gates = own.get(id) ?? [];
+          gatesFetched.add(id);
+        }
+      } finally {
+        await client.end();
       }
-    } finally {
-      await client.end();
+    }
+
+    for (const id of toResolve) {
+      const inst = byId.get(id);
+      if (!inst) continue;
+      const parent = inst.parentId ? byId.get(inst.parentId) : undefined;
+      inst.gates = mergeInheritedGates(inst.gates, parent?.gates);
+      gatesResolved.add(id);
     }
   } catch (err) {
     const { recordEvent } = await import("./telemetry");
     recordEvent("hydration_degraded",
-      `gate detail hydration failed, citations will be blank: ${String(err)}`,
-      { instruments: want.length });
+      "gate hydration failed; verdicts degrade to unknown rather than failing",
+      { stage: "gates", error: err instanceof Error ? err.message : String(err) });
   }
 }
 
@@ -571,14 +624,21 @@ export function loadSignalsDigest(): SignalsDigest | null {
  * which is what "operating under a regime" actually means: specific rules
  * refine the general ones, they do not repeal them.
  */
+/** The merge rule itself, so the eager and lazy paths cannot diverge on it.
+ *  A child's own gates override the parent's by key and add to the rest. */
+export function mergeInheritedGates(own: DbGate[], inherited: DbGate[] | undefined): DbGate[] {
+  if (!inherited?.length) return own;
+  if (!own.length) return inherited;
+  const keys = new Set(own.map((g) => g.id));
+  return [...own, ...inherited.filter((g) => !keys.has(g.id))];
+}
+
 function resolveInheritedGates(all: DbInstrument[]): DbInstrument[] {
   const byId = new Map(all.map((i) => [i.id, i]));
   return all.map((i) => {
     const inherited = i.parentId ? byId.get(i.parentId)?.gates : undefined;
     if (!inherited?.length) return i;
-    if (!i.gates.length) return { ...i, gates: inherited };
-    const own = new Set(i.gates.map((g) => g.id));
-    return { ...i, gates: [...i.gates, ...inherited.filter((g) => !own.has(g.id))] };
+    return { ...i, gates: mergeInheritedGates(i.gates, inherited) };
   });
 }
 

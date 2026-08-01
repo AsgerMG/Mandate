@@ -36,7 +36,7 @@ import { buildProvenance } from "./provenance";
 import {
   findPeersBySubsector,
   isGenericSubsector,
-  hydrateGateDetail,
+  hydrateGatesFor,
   loadAgentInstructions,
   loadFundProcess,
   loadSignalsDigest,
@@ -446,7 +446,7 @@ async function synthesize(
   // verbatim quotes the adaptive round asks from, are fetched only for the
   // instruments that actually reach the founder. Awaited here because
   // evaluateEligibility reads gate.source synchronously.
-  await hydrateGateDetail(
+  await hydrateGatesFor(
     instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)));
   const eligibilityScreen = evaluateEligibility(
     req.eligibility,
@@ -1300,7 +1300,7 @@ export async function computeVerdict(
   // path slow, and a rule shown without its source is not evidence.
   const candidateIds = candidates
     .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
-  await hydrateGateDetail(candidateIds);
+  await hydrateGatesFor(candidateIds);
   return {
     eligibilityScreen: evaluateEligibility(eligibility, candidateIds),
     instrumentTable: candidates.slice(0, DISPLAY_CAP),
