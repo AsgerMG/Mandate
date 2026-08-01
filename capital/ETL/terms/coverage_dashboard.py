@@ -242,7 +242,7 @@ TEMPLATE = r"""<title>Fund intelligence coverage</title>
       which of the six are known, in the order above.
     </p>
     <div class="controls">
-      <input type="search" id="q" placeholder="Search name, country, scheme&hellip;" aria-label="Search instruments">
+      <input type="search" id="q" placeholder="Search name, sector, country, scheme&hellip;" aria-label="Search instruments">
       <select id="ch" aria-label="Filter by channel"><option value="">All channels</option></select>
       <label class="chk"><input type="checkbox" id="gaps"> Only instruments with gaps</label>
       <span class="count" id="count"></span>
@@ -250,9 +250,10 @@ TEMPLATE = r"""<title>Fund intelligence coverage</title>
     <div class="scroll">
       <table id="tbl">
         <thead><tr>
-          <th class="sortable" data-k="name">Instrument</th>
+          <th class="sortable" data-k="label">Instrument</th>
           <th class="sortable" data-k="country">Ctry</th>
           <th class="sortable" data-k="channel">Channel</th>
+          <th class="sortable" data-k="focus">What it funds</th>
           <th class="sortable" data-k="score">Coverage</th>
           <th class="sortable num" data-k="gates">Rules</th>
           <th class="sortable num" data-k="cited">Cited</th>
@@ -370,9 +371,10 @@ function render() {
   document.getElementById("count").textContent =
     `${rows.length.toLocaleString()} of ${N.toLocaleString()} instruments`;
   document.querySelector("#tbl tbody").innerHTML = rows.map((r) => `<tr>
-    <td class="name-cell" title="${esc(r.id)}">${esc(r.name)}</td>
+    <td class="name-cell" title="${esc(r.id)}">${esc(r.label || r.name)}</td>
     <td class="mono">${esc(r.country || "\u2014")}</td>
     <td class="dim">${esc(r.channel || "\u2014")}</td>
+    <td class="${r.focus ? "" : "dim"}">${esc(r.focus || "\u2014")}</td>
     <td>${strip(r)}</td>
     <td class="num">${r.gates}</td>
     <td class="num">${r.cited || '<span class="dim">0</span>'}</td>
@@ -393,7 +395,7 @@ document.querySelectorAll("th.sortable").forEach((th) => {
     // Text sorts A-Z first; numbers sort biggest-first, which is what you want
     // from a column of money or counts.
     if (sortKey === k) sortDir = -sortDir;
-    else { sortKey = k; sortDir = (k === "name" || k === "country" || k === "channel") ? 1 : -1; }
+    else { sortKey = k; sortDir = (k === "label" || k === "country" || k === "channel") ? 1 : -1; }
     document.querySelectorAll("th").forEach((o) => o.removeAttribute("aria-sort"));
     th.setAttribute("aria-sort", sortDir === 1 ? "ascending" : "descending");
     render();

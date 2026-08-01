@@ -19,6 +19,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parents[1] / "lib"))
 
 import argparse  # noqa: E402
 import json  # noqa: E402
+import os  # noqa: E402
 import sqlite3  # noqa: E402
 from collections import defaultdict  # noqa: E402
 
@@ -112,6 +113,32 @@ def build(conn: sqlite3.Connection) -> dict:
         "SELECT DISTINCT instrument_id FROM instrument_application "
         "WHERE url IS NOT NULL AND url != ''")}
 
+    # What an instrument actually funds, from its own award history.
+    #
+    # Deliberately NOT part of the name. The label must stay the fund's own
+    # identifier — inventing "Altum Energy Programme" from the sectors its
+    # recipients happen to sit in would fabricate a programme that does not
+    # exist, and someone would eventually quote it back to a founder. Sector
+    # mix is a measurement, so it is shown as one, in its own column.
+    #
+    # It also answers the thing the identifier cannot: a row reading
+    # "Altum (Latvia) - aui" tells a reader nothing, while "energy 62%,
+    # industrial 21%" tells them whether to keep looking.
+    def focus_of(mix_json: str | None) -> str:
+        if not mix_json:
+            return ""
+        try:
+            mix = json.loads(mix_json)
+        except (ValueError, TypeError):
+            return ""
+        total = sum(mix.values())
+        if not total:
+            return ""
+        top = sorted(mix.items(), key=lambda kv: -kv[1])[:2]
+        # Below a fifth of an instrument's awards a "focus" is noise.
+        return ", ".join(f"{k.replace('_', ' ')} {round(100 * v / total)}%"
+                         for k, v in top if v / total >= 0.2)
+
     rows = []
     for i in insts:
         iid = i["id"]
@@ -159,6 +186,7 @@ def build(conn: sqlite3.Connection) -> dict:
             "fields": len(fields[iid]),
             "titles": len(titles),
             "sectorMix": bool(i["sector_mix"]),
+            "focus": focus_of(i["sector_mix"]),
             "regionEval": iid in region_eval,
             "awardP25": i["award_p25"],
             "awardP50": i["award_p50"],
@@ -170,6 +198,66 @@ def build(conn: sqlite3.Connection) -> dict:
             "axes": axes,
             "score": sum(axes.values()),
         })
+
+    # ── A row must be distinguishable from every other row ────────────────
+    # 542 of 724 publishable instruments share their display name with another,
+    # because `name` is the granting BODY and one body runs many programmes:
+    # "Norges Forskningsradet" appears 65 times, once per programme (ENERGIX,
+    # BIA, FORNY20 ...). The product already qualifies state-aid rows by scheme
+    # code; nothing qualified the rest, so the dashboard read as duplicates and
+    # the shortlist logged SEL-DUPE-NAME and dropped rows outright.
+    #
+    # The qualifier is never invented. A notified scheme has a code, and every
+    # other instrument's id was built from the source's own programme
+    # identifier — so the distinguishing fragment is recovered by stripping the
+    # prefix a name's siblings share, rather than by naming the fund ourselves.
+    # Real programme names arrive with Phase 1 of the substream plan; until
+    # then this is the fund's identifier, shown honestly as one.
+    by_name: dict[str, list[dict]] = defaultdict(list)
+    for r in rows:
+        if r["publishable"]:
+            by_name[r["name"]].append(r)
+    for name, group in by_name.items():
+        if len(group) < 2:
+            for r in group:
+                r["label"] = name
+            continue
+        prefix = os.path.commonprefix([r["id"] for r in group])
+        for r in group:
+            token = r["scheme"] or r["id"][len(prefix):].strip("_") or r["id"]
+            r["label"] = f"{name} \u00b7 {token.replace('_', ' ')}"
+        # One body can run the same notified scheme under two regimes — the
+        # R&D one and the equity one — so the scheme code alone still collides.
+        # What separates them is what the money IS, which the row already
+        # knows, and which is the more useful distinction to a founder anyway.
+        seen: dict[str, list[dict]] = defaultdict(list)
+        for r in group:
+            seen[r["label"]].append(r)
+        for label, tied in seen.items():
+            if len(tied) < 2:
+                continue
+            for r in tied:
+                if r["capital"]:
+                    r["label"] = f"{label} ({r['capital']})"
+        # Last tier: the notified regime itself. Two rows can share a body, a
+        # scheme code AND a capital type while sitting under different regimes
+        # (Austria's FFG runs SA.101861 under both the R&D and equity ones).
+        # Qualifying by the regime is the end of the chain because there is
+        # nothing left that distinguishes them — if this ever collides, the two
+        # rows really are the same instrument and the corpus has a duplicate.
+        seen2: dict[str, list[dict]] = defaultdict(list)
+        for r in group:
+            seen2[r["label"]].append(r)
+        for label, tied in seen2.items():
+            if len(tied) < 2:
+                continue
+            common = os.path.commonprefix([r["parentId"] or "" for r in tied])
+            for r in tied:
+                regime = (r["parentId"] or "")[len(common):].strip("_")
+                if regime:
+                    r["label"] = f"{label} [{regime}]"
+    for r in rows:
+        r.setdefault("label", r["name"])
 
     rows.sort(key=lambda r: (-r["score"], -r["totalEur"]))
     # Coverage is measured on what a founder can actually be shown.
