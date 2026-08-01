@@ -28,7 +28,7 @@ AXIS_LABEL = {
     "where": "Where it applies",
     "amount": "What it awards",
     "route": "How to approach it",
-    "live": "Still awarding",
+    "live": "When it last awarded",
 }
 AXIS_NOTE = {
     "eligibility": "Two or more rules we can actually evaluate against an answer",
@@ -36,7 +36,7 @@ AXIS_NOTE = {
     "where": "A country on record, and a region where a rule needs one",
     "amount": "A median award from five or more real awards",
     "route": "A cited application procedure, its own or its regime's",
-    "live": "Awarded something within the last three active years",
+    "live": "A last-award year on record; dormancy is a fact we state, not a gap",
 }
 
 TEMPLATE = r"""<title>Fund intelligence coverage</title>
@@ -216,7 +216,7 @@ TEMPLATE = r"""<title>Fund intelligence coverage</title>
         <thead><tr>
           <th>Channel</th><th class="num">n</th><th class="num">All six</th>
           <th class="num">Mean</th><th class="num">Who for</th><th class="num">Funds</th>
-          <th class="num">Awards</th><th class="num">Route</th><th class="num">Live</th>
+          <th class="num">Awards</th><th class="num">Route</th><th class="num">Recency</th>
         </tr></thead>
         <tbody></tbody>
       </table>

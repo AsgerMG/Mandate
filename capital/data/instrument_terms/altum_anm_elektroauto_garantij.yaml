@@ -7,9 +7,9 @@ status: draft
 gates:
 - id: g1
   gate_family: G1_nexus
-  requirement: The support is administered by AS 'Attīstības finanšu institūcija Altum' as
-    part of Latvia's Ministry of Economics energy efficiency and electric vehicle guarantee
-    programme.
+  requirement: The support is administered by AS 'Attīstības finanšu institūcija Altum'
+    as part of Latvia's Ministry of Economics energy efficiency and electric vehicle
+    guarantee programme.
   value: Altum / Latvia
   intake_field: none
   quote: AS “Attīstības finanšu institūcija Altum”
@@ -19,5 +19,19 @@ gates:
   verified: llm_cited
 obligations: []
 verify_by: '2027-07-21'
-notes: Extracted by ETL/terms/extract_terms_bulk.py (1/1 gates, 0/0 obligations passed mechanical
-  check -> llm_cited).
+notes: Extracted by ETL/terms/extract_terms_bulk.py (1/1 gates, 0/0 obligations passed
+  mechanical check -> llm_cited).
+application:
+  channel: This closed call was for financial intermediary selection (already concluded
+    - Altum was approved as the fund recipient); end beneficiaries (businesses) must
+    now apply directly to Attīstības finanšu institūcija Altum for the energy efficiency
+    loan with capital rebate or the electric vehicle purchase guarantee with capital
+    rebate.
+  typical_timeline: 'Iesniegšanas termiņš: 04.10.2022.-18.10.2022.'
+  url: https://www.altum.lv/pakalpojumi/biznesam/energoefektivitates-aizdevums-ar-kapitala-atlaidi/
+  quote: 'Atbalsts gala labuma guvējiem pieejams pie Attīstības finanšu institūcijas
+    “Altum . Papildus informācija:  https://www.altum.lv/pakalpojumi/biznesam/energoefektivitates-aizdevums-ar-kapitala-atlaidi/
+    un https://www.altum.lv/pakalpojumi/biznesam/elektroauto-iegades-garantija-ar-kapitala-atlaidi/'
+  source:
+    file: altum_anm_elektroauto_garantij_em_gov_lv.html
+    locator: chunk 6

@@ -115,7 +115,19 @@ def build(conn: sqlite3.Connection) -> dict:
             "where": bool(i["country"]),
             "amount": i["award_p50"] is not None,
             "route": has_route,
-            "live": not stale and bool(i["last_year"]),
+            # Whether we KNOW its recency, not whether it happens to be busy.
+            #
+            # This axis used to require the instrument to be non-stale, which
+            # made 30% of the corpus a permanent coverage failure over a fact
+            # about the world rather than a gap in our knowledge. A scheme that
+            # stopped awarding in 2022 is not a hole — it is fully known, and
+            # the honest thing is to say so and demote it, which livenessFit
+            # already does. Chasing that axis to 100% would have meant chasing
+            # something unreachable and meaningless.
+            #
+            # Dormancy is still tracked, as `stale`, and shown as a quality of
+            # the row rather than as missing evidence.
+            "live": bool(i["last_year"]),
         }
         rows.append({
             "id": iid,
@@ -193,7 +205,7 @@ def to_markdown(data: dict) -> str:
         f"| Where it applies | {s['axes']['where']} | {pct(s['axes']['where'])} |",
         f"| What it typically awards | {s['axes']['amount']} | {pct(s['axes']['amount'])} |",
         f"| How to approach it | {s['axes']['route']} | {pct(s['axes']['route'])} |",
-        f"| Still awarding | {s['axes']['live']} | {pct(s['axes']['live'])} |",
+        f"| Award recency on record | {s['axes']['live']} | {pct(s['axes']['live'])} |",
         f"| **All six** | **{s['complete']}** | **{pct(s['complete'])}** |",
         "",
         "## By channel",

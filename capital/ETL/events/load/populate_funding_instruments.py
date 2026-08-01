@@ -510,7 +510,20 @@ def main() -> None:
         if r["granting_authority"]:
             fam_authority_votes[fam][r["granting_authority"][:200]] += 1
         fam_source_family_votes[fam][r["source_family"]] += 1
-        if r["source_family"] == "state_aid_satr" and r["project_title"]:
+        # Every channel contributes its funded-project titles, not just state
+        # aid. The gate here used to be `source_family == "state_aid_satr"`,
+        # which silently discarded 62,517 titled development-bank events and
+        # left all 201 NDB instruments with no record of what they fund — the
+        # single largest hole in the coverage table, on the channel founders
+        # actually recognise.
+        #
+        # The irony is that SATR titles are the WEAK ones: they are regime
+        # names ("Regime cadre exempte relatif aux aides...") while a
+        # development bank's are real projects ("Edge Computing for Web Browser
+        # Applications"). build_instrument_profiles classifies scheme-like
+        # title sets and drops them, so the distinction is handled where it
+        # belongs rather than by refusing to collect.
+        if r["project_title"]:
             fam_project_titles[fam][r["project_title"]] += 1
         if r["aid_objective"]:
             fam_aid_objective_votes[fam][r["aid_objective"]] += 1
