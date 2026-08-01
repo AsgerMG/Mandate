@@ -919,6 +919,65 @@ def cmd_submit(args) -> None:
     print("Cloud processes them (usually <1h, max 24h). Run 'collect' when ready.")
 
 
+def _name_key(name: str, country: str | None) -> str:
+    return f"{(name or '').strip().lower()}|{(country or '').strip().upper()}"
+
+
+def cmd_persist(_args) -> None:
+    """Copy today's sector labels into company_sector_labels.
+
+    companies is destructively reloaded and its surrogate id re-issued, so a
+    label written only there is temporary. An entire paid LLM pass was lost
+    that way: 8 batches submitted, 8 recorded collected, and no row carries
+    sector_taxonomy_method='llm' today. The results expired before anyone
+    noticed, because nothing measured the loss.
+
+    Run after any labelling; restore runs after any load.
+    """
+    con = sqlite3.connect(DB)
+    rows = con.execute(
+        "SELECT canonical_name, country, sector_top, subsector, sector_taxonomy_method "
+        "FROM companies WHERE sector_top IS NOT NULL AND sector_top != ''").fetchall()
+    con.executemany(
+        "INSERT INTO company_sector_labels (name_key, sector_top, subsector, method) "
+        "VALUES (?,?,?,?) ON CONFLICT(name_key) DO UPDATE SET "
+        "sector_top=excluded.sector_top, subsector=excluded.subsector, "
+        "method=excluded.method, labelled_at=CURRENT_TIMESTAMP",
+        [(_name_key(r[0], r[1]), r[2], r[3], r[4]) for r in rows])
+    con.commit()
+    n = con.execute("SELECT COUNT(*) FROM company_sector_labels").fetchone()[0]
+    con.close()
+    print(f"persisted {len(rows):,} labels; store now holds {n:,}")
+
+
+def cmd_restore(_args) -> None:
+    """Re-apply persisted labels to companies after a reload.
+
+    Only fills rows that have no label, so a fresh classification is never
+    overwritten by an older one.
+    """
+    con = sqlite3.connect(DB)
+    con.execute("CREATE INDEX IF NOT EXISTS idx_companies_namekey "
+                "ON companies (canonical_name, country)")
+    labels = {r[0]: r for r in con.execute(
+        "SELECT name_key, sector_top, subsector, method FROM company_sector_labels")}
+    todo = con.execute(
+        "SELECT id, canonical_name, country FROM companies "
+        "WHERE sector_top IS NULL OR sector_top = ''").fetchall()
+    updates = []
+    for cid, name, country in todo:
+        lab = labels.get(_name_key(name, country))
+        if lab:
+            updates.append((lab[1], lab[2], lab[3], cid))
+    con.executemany(
+        "UPDATE companies SET sector_top=?, subsector=?, sector_taxonomy_method=?, "
+        "sector_taxonomy_updated_at=CURRENT_TIMESTAMP WHERE id=?", updates)
+    con.commit()
+    con.close()
+    print(f"restored {len(updates):,} labels onto reloaded companies "
+          f"({len(todo):,} were unlabelled, {len(labels):,} in the store)")
+
+
 def cmd_collect(args) -> None:
     """Retrieve any ended batches recorded by 'submit' and write labels to the DB.
     Safe to re-run: collected batches are skipped, unfinished ones are left."""
@@ -1262,6 +1321,10 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Two-tier taxonomy classifier")
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("vocab").set_defaults(fn=cmd_vocab)
+    sub.add_parser("persist", help="save sector labels so a reload cannot wipe them")\
+        .set_defaults(fn=cmd_persist)
+    sub.add_parser("restore", help="re-apply saved labels after a company reload")\
+        .set_defaults(fn=cmd_restore)
     sub.add_parser("apply-nace", help="write deterministic NACE labels to the DB")\
         .set_defaults(fn=cmd_apply_nace)
     rd = sub.add_parser("residual", help="demo NACE-guided LLM on no-NACE companies")

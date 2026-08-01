@@ -37,6 +37,12 @@ def already_applied(conn: sqlite3.Connection, mig_id: str) -> bool:
     return row is not None
 
 
+def table_exists(conn: sqlite3.Connection, table: str) -> bool:
+    return conn.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
+    ).fetchone() is not None
+
+
 def column_exists(conn: sqlite3.Connection, table: str, column: str) -> bool:
     cols = [r[1] for r in conn.execute(f"PRAGMA table_info({table})")]
     return column in cols
@@ -350,6 +356,19 @@ def apply_016(conn: sqlite3.Connection) -> None:
     print("  applied 016_programme_identity.sql")
 
 
+def apply_017(conn: sqlite3.Connection) -> None:
+    """company_sector_labels -- sector labels that survive a company reload.
+
+    An entire paid classification pass was destroyed by the next destructive
+    reload of companies; see the SQL."""
+    if table_exists(conn, "company_sector_labels"):
+        print("  skip 017 (already applied)")
+        return
+    sql = (MIG_DIR / "017_company_sector_labels.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 017_company_sector_labels.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -364,6 +383,7 @@ MIGRATIONS = {
     "014": apply_014,
     "015": apply_015,
     "016": apply_016,
+    "017": apply_017,
 }
 
 

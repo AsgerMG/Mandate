@@ -41,8 +41,17 @@ renew:
 	python3 ETL/events/extract/renew.py --auto
 
 classify:
+	# Re-apply labels the last reload wiped BEFORE spending anything. companies
+	# is destructively reloaded and its surrogate id re-issued, and an entire
+	# paid LLM pass was lost that way -- 8 batches submitted, 8 collected, no
+	# row carrying sector_taxonomy_method='llm' today, results expired before
+	# anyone noticed. Restoring first also means the run below only pays for
+	# companies genuinely never classified.
+	python3 ETL/events/transform/classify_taxonomy.py restore
 	python3 ETL/events/transform/classify_taxonomy.py apply-nace
 	python3 ETL/events/transform/classify_taxonomy.py run --max-cost 20
+	# Persist immediately, so the next reload cannot undo what was just paid for.
+	python3 ETL/events/transform/classify_taxonomy.py persist
 
 sanity:
 	python3 ETL/events/load/qa/sanity_check.py
