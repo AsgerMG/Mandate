@@ -101,7 +101,10 @@ def main() -> None:
                         # corpus.ts catches, and every request silently serves
                         # the JSON fallback instead of Postgres. That is exactly
                         # what happened between 018 landing and this line.
-                        "intensity_p50 DOUBLE PRECISION", "intensity_n INTEGER"):
+                        "intensity_p50 DOUBLE PRECISION", "intensity_n INTEGER",
+                        # Hierarchy projections (migration 019), derived from
+                        # parent_id on every load.
+                        "tier TEXT", "root_id TEXT", "depth INTEGER", "path TEXT"):
                 cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
             # Curated application routes live in their own table because
             # funding_instruments is truncated on every publish.

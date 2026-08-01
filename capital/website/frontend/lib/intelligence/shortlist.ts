@@ -377,6 +377,50 @@ export function fundDescriptor(inst: DbInstrument): string {
   return bits.join(" \u00b7 ");
 }
 
+/**
+ * Make every published row nameable on its own.
+ *
+ * ── Why this is not cosmetic ──────────────────────────────────────────────
+ * 392 publishable instruments across 76 names render under a name they share
+ * with a sibling, because the name is the granting BODY and a body runs many
+ * programmes: "Norges Forskningsradet" 59 times, "Altum (Latvia)" 25. The
+ * dedupe below then DROPS the losers, so a founder does not merely see an
+ * ambiguous row, they never see the programme at all.
+ *
+ * Where a real programme name exists it is already the row's name (see
+ * data/reference/programme_names.json). Where an agency publishes none, the
+ * distinguishing identifier the corpus does hold is used, in descending order
+ * of how much it tells a reader: the notified scheme code, then the fragment
+ * of the instrument's own id that its same-named siblings do not share, then
+ * the capital type. Nothing is invented — every one of those is the fund's own
+ * identifier, and where none separates them the dedupe still runs.
+ */
+function distinguishRowNames(rows: InstrumentRow[]): void {
+  const byName = new Map<string, InstrumentRow[]>();
+  for (const r of rows) {
+    const n = displayInstitutionName(r);
+    byName.set(n, [...(byName.get(n) ?? []), r]);
+  }
+  for (const [name, peers] of byName) {
+    if (peers.length < 2) continue;
+    const ids = peers.map((p) => p.instrumentId ?? "");
+    // The shared prefix is the agency; what follows identifies the programme.
+    let prefix = ids[0] ?? "";
+    for (const id of ids) {
+      let i = 0;
+      while (i < prefix.length && i < id.length && prefix[i] === id[i]) i++;
+      prefix = prefix.slice(0, i);
+    }
+    for (const r of peers) {
+      const token = r.schemeCode
+        || (r.instrumentId ?? "").slice(prefix.length).replace(/^_+/, "").replace(/_/g, " ")
+        || r.capitalType
+        || "";
+      if (token) r.instrument = `${name} \u00b7 ${token}`;
+    }
+  }
+}
+
 export function typicalAward(inst: DbInstrument): number | null {
   if (inst.awardP50 != null && inst.awardP50 > 0) return inst.awardP50;
   return inst.eventCount > 0 ? inst.totalEur / inst.eventCount : null;
@@ -849,6 +893,9 @@ export function materialiseInstrumentTable(
     // encoding coverage, so it kept an Enterprise Ireland leaf with zero
     // encoded rules over a sibling that returned a real "open" verdict.
     .filter((row, i, all) => {
+      // Names are disambiguated first, so this only drops rows that genuinely
+      // cannot be told apart rather than rows that merely share a body.
+      if (i === 0) distinguishRowNames(all);
       const name = displayInstitutionName(row);
       const peers = all.filter((o) => displayInstitutionName(o) === name);
       if (peers.length === 1) return true;

@@ -380,6 +380,15 @@ def apply_018(conn: sqlite3.Connection) -> None:
     print("  applied 018_realised_intensity.sql")
 
 
+def apply_019(conn: sqlite3.Connection) -> None:
+    """tier / root_id / depth — the hierarchy, made explicit and filterable."""
+    if column_exists(conn, "funding_instruments", "tier"):
+        print("  skip 019 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "019_instrument_hierarchy.sql").read_text())
+    print("  applied 019_instrument_hierarchy.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -396,6 +405,7 @@ MIGRATIONS = {
     "016": apply_016,
     "017": apply_017,
     "018": apply_018,
+    "019": apply_019,
 }
 
 

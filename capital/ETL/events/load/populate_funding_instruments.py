@@ -841,6 +841,40 @@ def main() -> None:
     if renamed:
         print(f"  named {renamed} instruments from their agency's own register")
 
+    # ── The hierarchy, derived from parent_id and never hand-set ──────────
+    # parent_id is the source of truth; tier, root_id, depth and path are its
+    # projections, recomputed here so they cannot describe a structure that no
+    # longer exists. Depth is unbounded on purpose: EIT already nests three
+    # (EIT -> Climate-KIC -> Clean Cities Spain) and a source that starts
+    # publishing a fourth level should not need a schema change.
+    by_id = {r["id"]: r for r in now}
+    has_children = {r["parent_id"] for r in now if r.get("parent_id")}
+
+    def lineage(row: dict) -> list[str]:
+        """Root-first chain of ids. Defends against a cycle rather than hanging:
+        a self-referential parent would otherwise spin here forever, and bad
+        parent data is exactly the kind of thing a source can hand us."""
+        chain, seen, cur = [], set(), row
+        while cur is not None:
+            if cur["id"] in seen:
+                print(f"  WARNING: parent cycle at {cur['id']}, truncating lineage")
+                break
+            chain.append(cur["id"])
+            seen.add(cur["id"])
+            cur = by_id.get(cur.get("parent_id")) if cur.get("parent_id") else None
+        chain.reverse()
+        return chain
+
+    for row in now:
+        chain = lineage(row)
+        row["path"] = "/".join(chain)
+        row["root_id"] = chain[0]
+        row["depth"] = len(chain) - 1
+        # A node with children groups other things; a leaf is what a founder
+        # applies to. That is the same test publishableInstruments() applies,
+        # named once here instead of re-derived by every consumer.
+        row["tier"] = "family" if row["id"] in has_children else "programme"
+
     # Every row must carry the new columns, children and parents alike.
     for row in now:
         row.setdefault("scheme_code", None)
@@ -852,6 +886,9 @@ def main() -> None:
         row.setdefault("award_n", 0)
         row.setdefault("intensity_p50", None)
         row.setdefault("intensity_n", 0)
+        for k in ("tier", "root_id", "path"):
+            row.setdefault(k, None)
+        row.setdefault("depth", 0)
 
     # ── Reconcile, do not wipe ───────────────────────────────────────────────
     # This used to DELETE every non-framework eligibility gate on every run.
@@ -926,14 +963,15 @@ def main() -> None:
                company_count, total_eur, first_year, last_year, is_framework,
                sample_project_titles, scheme_code, application_url, sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
-               intensity_p50, intensity_n, updated_at)
+               intensity_p50, intensity_n, tier, root_id, depth, path, updated_at)
             VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
                     :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
                     :sample_project_titles,:scheme_code,:application_url,:sector_mix,:scheme_operators,
                     :award_p25,:award_p50,:award_p75,:award_n,
-                    :intensity_p50,:intensity_n, CURRENT_TIMESTAMP)
+                    :intensity_p50,:intensity_n,:tier,:root_id,:depth,:path,
+                    CURRENT_TIMESTAMP)
         """, r)
 
     for fam, srcs in fam_sources.items():
