@@ -7,21 +7,21 @@ Six things an analyst needs before advising on a fund. Each is present or it is 
 | What we know | Instruments | Share |
 |---|---:|---:|
 | Eligibility we can evaluate (2+ filters) | 811 | 96% |
-| What it has actually funded | 772 | 91% |
+| What it has actually funded | 843 | 100% |
 | Where it applies | 846 | 100% |
 | What it typically awards | 764 | 90% |
 | How to approach it | 696 | 82% |
 | Award recency on record | 826 | 98% |
-| **All six** | **637** | **75%** |
+| **All six** | **661** | **78%** |
 
 ## By channel
 
 | Channel | n | All six | Mean score | Eligibility | Funds | Amount | Route | Live |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | state_aid_satr | 465 | 451 | 5.96 | 465 | 465 | 462 | 451 | 465 |
-| national_dev_banks | 323 | 151 | 5.01 | 296 | 250 | 259 | 187 | 304 |
+| national_dev_banks | 323 | 174 | 5.23 | 296 | 320 | 259 | 187 | 304 |
 | eit | 12 | 1 | 5.08 | 12 | 12 | 1 | 12 | 12 |
-| ipcei | 11 | 7 | 5.64 | 10 | 10 | 9 | 11 | 11 |
+| ipcei | 11 | 8 | 5.73 | 10 | 11 | 9 | 11 | 11 |
 | horizon_eu_pillar_ii | 9 | 9 | 6.0 | 9 | 9 | 9 | 9 | 9 |
 | horizon_eu_partnership | 9 | 4 | 5.44 | 4 | 9 | 9 | 9 | 9 |
 | innovation_fund | 8 | 7 | 5.88 | 8 | 8 | 7 | 8 | 8 |
