@@ -13,6 +13,7 @@
 //
 // The boundary is deliberate — WHICH FUNDS QUALIFY lives here; HOW THE MEMO IS
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
+import { regionNameFor } from "./regions.generated";
 import { isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
@@ -297,6 +298,82 @@ export function structuringNotes(inst: DbInstrument): string[] {
     }
   }
   return picked;
+}
+
+/**
+ * What this fund IS, in one line, from what we have measured about it.
+ *
+ * ── The problem it solves ─────────────────────────────────────────────────
+ * 535 of 861 publishable rows share their display name with a sibling, because
+ * `name` is the granting BODY and a body runs many products. A founder sees
+ * "Bpifrance" three times and learns nothing: they cannot apply to Bpifrance,
+ * they apply to one of its products.
+ *
+ * The products themselves are correctly separated — Bpifrance is three
+ * instruments with medians of EUR 449k, EUR 386k and EUR 500k — but their real
+ * names exist nowhere in the data. They live in each fund's own documents, and
+ * only 51 of the 535 have one on disk. The id slug is no substitute:
+ * prettified it reads "Anm Kepa" and "Aizdevumi Produktivit Te", which is
+ * worse than the institution alone.
+ *
+ * So this describes rather than names. Every part is measured — capital type,
+ * the region a rule restricts it to, what its recipients actually do, what it
+ * actually pays — and nothing is invented. "Bpifrance · Grants ·
+ * Ile-de-France · median EUR 385,500" tells a founder whether to keep reading.
+ *
+ * Replaced wholesale, not extended, when real product names arrive.
+ */
+// Short forms of the sector vocabulary, for a one-line descriptor. Keyed off
+// SECTOR_OPTIONS so a sector added to the intake cannot silently go unnamed
+// here; anything without a short form is simply omitted rather than guessed.
+const SECTOR_WORD: Record<string, string> = {
+  software_data_ai: "software & AI",
+  health_life_sciences: "health & life sciences",
+  energy_cleantech: "energy & cleantech",
+  industrial_manufacturing: "industrial manufacturing",
+  semiconductors_electronics: "semiconductors & electronics",
+  mobility_transport: "mobility & transport",
+  agrifood: "agrifood",
+  materials_chemicals: "materials & chemicals",
+  space: "space",
+  defense_security: "defence & security",
+};
+
+const CAPITAL_WORD: Record<string, string> = {
+  grant: "Grants", loan: "Loans", guarantee: "Guarantees",
+  equity: "Equity", blended: "Blended finance",
+};
+
+/** Below this share of an instrument's awards, a "focus" is noise. */
+const FOCUS_SHARE = 0.25;
+
+function regionOfInstrument(inst: DbInstrument): string | null {
+  for (const g of inst.gates) {
+    const spec = g.valueSpec as { op?: string; allowed?: string[] } | null;
+    if (spec?.op !== "region_within" || !spec.allowed?.length) continue;
+    const names = spec.allowed.map(regionNameFor).filter(Boolean) as string[];
+    if (!names.length) continue;
+    return names.length === 1 ? names[0] : `${names.length} regions`;
+  }
+  return null;
+}
+
+export function fundDescriptor(inst: DbInstrument): string {
+  const bits: string[] = [CAPITAL_WORD[inst.capitalType] ?? "Funding"];
+
+  const region = regionOfInstrument(inst);
+  if (region) bits.push(region);
+
+  const mix = inst.sectorMix;
+  if (mix) {
+    const total = Object.values(mix).reduce((a, b) => a + b, 0);
+    const top = Object.entries(mix).sort((a, b) => b[1] - a[1])[0];
+    if (total && top && top[1] / total >= FOCUS_SHARE) {
+      const label = SECTOR_WORD[top[0]];
+      if (label) bits.push(`mostly ${label}`);
+    }
+  }
+  return bits.join(" \u00b7 ");
 }
 
 export function typicalAward(inst: DbInstrument): number | null {
@@ -703,6 +780,7 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         typicalAwardN: leaf.awardN ?? undefined,
         aidIntensity: leaf.intensityP50 ?? undefined,
         aidIntensityN: leaf.intensityN ?? undefined,
+        descriptor: fundDescriptor(leaf),
         judgementCriteria: judgementCriteria(leaf),
         structuringNotes: structuringNotes(leaf),
       } as InstrumentRow));

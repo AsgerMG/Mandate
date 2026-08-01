@@ -60,6 +60,15 @@ export function regionsOverlap(a: string, b: string): boolean {
   return x.startsWith(y) || y.startsWith(x);
 }
 
+/** The official name behind a NUTS id, for describing a fund's reach. */
+export function regionNameFor(id: string): string | null {
+  const want = (id || "").toUpperCase();
+  for (const list of Object.values(REGIONS_BY_COUNTRY)) {
+    for (const r of list) if (r.id === want) return r.name;
+  }
+  return null;
+}
+
 /** Options for the founder's countries, deduplicated across them. */
 export function regionOptions(countryCodes: string[]): { value: string; label: string }[] {
   const seen = new Set<string>();

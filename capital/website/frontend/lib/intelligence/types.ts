@@ -168,6 +168,8 @@ export interface InstrumentRow {
    *  themselves, which is the other side of this number. */
   aidIntensity?: number;
   aidIntensityN?: number;
+  /** One measured line describing what this fund is. */
+  descriptor?: string;
   /** Cited requirements no comparator can decide — what the assessor weighs.
    *  For the 149 instruments with no evaluable cited rule, this is everything
    *  the fund has told us about who it says yes to. */
@@ -229,6 +231,11 @@ export interface InstitutionEntry {
   /** Measured share of project cost covered, and the awards behind it. */
   aidIntensity?: number;
   aidIntensityN?: number;
+  /** What this fund IS, in one line, from measured facts — capital type, the
+   *  region a rule restricts it to, what its recipients do. Not a name: real
+   *  product names live in fund documents and mostly are not in the corpus, and
+   *  "Bpifrance" three times tells a founder nothing. */
+  descriptor?: string;
   /** Cited requirements no comparator can decide — what the assessor weighs,
    *  in the fund's own words. Never inferred text: stating an inferred stub as
    *  an assessment criterion would be putting words in the fund's mouth. */

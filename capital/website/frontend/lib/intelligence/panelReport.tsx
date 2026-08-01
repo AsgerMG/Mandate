@@ -138,6 +138,15 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     {operatorsOtherThan(r).length > 2 && ` and ${operatorsOtherThan(r).length - 2} others`}
                   </span>
                 )}
+                {/* What this fund is, measured. The name above is the granting
+                    body and 535 of 861 rows share one with a sibling, so
+                    without this a founder reads "Bpifrance" three times and
+                    cannot tell which one is theirs. */}
+                {!pending && r.descriptor && (
+                  <span className="block text-[12px] text-[var(--muted-foreground)]">
+                    {r.descriptor}
+                  </span>
+                )}
                 {!pending && (r.country || r.legalBasis) && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
                     {[r.country, r.legalBasis].filter(Boolean).join(" · ")}
