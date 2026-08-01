@@ -86,6 +86,48 @@ NOK_PER_EUR = {
 NOK_PER_EUR_FALLBACK = 11.5
 
 
+# NFR writes the activity as "<CODE>-<NAME>", and the CODE ITSELF CONTAINS
+# HYPHENS: "PES-HORISONT-EU-PES Horisont Europa", "INNO-NAERING-Inno-naering
+# brukerstyrte prosj". Splitting on the first hyphen therefore produced the
+# wrong programme, silently:
+#
+#   nfr_pes   was really PES-HORISONT-EU  (PES Horisont Europa)
+#   nfr_div   was really DIV-AKT          (Planlegging, utredning og evaluering)
+#   nfr_ffl   was really FFL-JA           (Forskningsmidlene for jordbruk...)
+#   nfr_inno  MERGED INNO-NAERING (277 awards) and INNO-OFF (91) into one row
+#
+# No cleverer split fixes this, because "PES-EU" and "PESORDNING" are both
+# valid codes and nothing in the string says where the code ends. So we resolve
+# against NFR's own published register (data/reference/nfr_activities.json,
+# from their open CC-BY dataset), longest code first, which is the only
+# non-guessing rule available.
+_ACTIVITIES: dict[str, str] = json.loads(
+    (_ETL_ROOT / "data" / "reference" / "nfr_activities.json").read_text())
+_ACTIVITY_CODES = sorted(_ACTIVITIES, key=len, reverse=True)
+
+
+def _resolve_activity(activity: str) -> tuple[str, str | None]:
+    """(code, programme name) for an NFR activity string.
+
+    Falls back to the leading segment when the register does not know the code,
+    which keeps a never-before-seen activity flowing through as its own
+    instrument rather than vanishing — but it will carry no name, and that is
+    the honest state rather than an invented one.
+    """
+    up = activity.upper()
+    for code in _ACTIVITY_CODES:
+        cu = code.upper()
+        if up == cu or up.startswith(cu + "-"):
+            # NFR stores name == code for grant lines it never named. The code
+            # is still THEIR label, published in their own register, so it is
+            # used as the identifier rather than dropped: "INNO-NAERING" reads
+            # poorly, but it separates 277 awards from the 91 under INNO-OFF,
+            # which sharing one unnamed row does not. Nothing is invented.
+            name = _ACTIVITIES.get(code) or ""
+            return code, (name or code)
+    return activity.split("-")[0], None
+
+
 def _normalise_name(name: str) -> str:
     n = (name or "").upper()
     for suffix in [" AS", " ASA", " ANS", " DA", " SA", " BA", " A/S"]:
@@ -151,7 +193,8 @@ def _parse_record(rec: dict) -> dict | None:
     amount_eur = amount_nok / NOK_PER_EUR.get(year, NOK_PER_EUR_FALLBACK)
 
     activity = ((rec.get("currentActivity") or {}).get("activity") or "other")
-    slug = re.sub(r"[^a-z0-9]+", "_", activity.split("-")[0].lower()).strip("_")[:30] or "other"
+    code, programme = _resolve_activity(activity)
+    slug = re.sub(r"[^a-z0-9]+", "_", code.lower()).strip("_")[:30] or "other"
 
     project_id = str(rec.get("id") or "")
     geo = rec.get("geographies") or []
@@ -159,6 +202,7 @@ def _parse_record(rec: dict) -> dict | None:
 
     return {
         "source": f"nfr_{slug}_{year}",
+        "programme_name": programme,
         "call_id": f"nfr_{project_id}",
         "company_name": org_name,
         "company_name_norm": _normalise_name(org_name),
@@ -208,11 +252,12 @@ def _load_to_db(rows: list[dict]) -> dict:
                    (company_id, source, call_id, role, coordinator_only,
                     project_number, project_title, project_started,
                     grant_amount_eur, grant_amount_basis, deployment_country,
-                    ndb_distributor)
-                   VALUES (?, ?, ?, 'direct', 0, ?, ?, ?, ?, 'ndb_grant_total_award', ?, ?)""",
+                    ndb_distributor, programme_name)
+                   VALUES (?, ?, ?, 'direct', 0, ?, ?, ?, ?, 'ndb_grant_total_award', ?, ?, ?)""",
                 (cid, r["source"], r["call_id"], r["project_id"] or None,
                  r["project_title"] or None, f"{r['year']}-01-01",
-                 r["grant_amount_eur"], r["deployment_country"], r["ndb_distributor"]))
+                 r["grant_amount_eur"], r["deployment_country"], r["ndb_distributor"],
+                 r.get("programme_name")))
             counts["inserted"] += 1
         except Exception as e:
             counts["errors"] += 1
