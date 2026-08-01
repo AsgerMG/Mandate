@@ -56,6 +56,14 @@ def build(conn: sqlite3.Connection) -> dict:
     # resolves them. Counting only directly-attached rows measures a corpus the
     # product never sees.
     own_keys: dict[str, set[str]] = defaultdict(set)
+    # Rules the instrument holds ITSELF, excluding the framework rules seeded
+    # across a channel and the generic five-rule stub. This is the difference
+    # between a fund we have researched and a fund that merely sits under a
+    # regime we have researched.
+    FRAMEWORK_KEYS = {"framework_excluded_activity",
+                      "framework_undertaking_in_difficulty",
+                      "gber_article_inferred"}
+    own_rules: dict[str, int] = defaultdict(int)
     n_eval: dict[str, int] = defaultdict(int)
     n_cited: dict[str, int] = defaultdict(int)
     fields: dict[str, set[str]] = defaultdict(set)
@@ -69,6 +77,8 @@ def build(conn: sqlite3.Connection) -> dict:
     """):
         iid = r["instrument_id"]
         own_keys[iid].add(r["gate_key"])
+        if r["gate_key"] not in FRAMEWORK_KEYS and not r["gate_key"].startswith("llm_classified_"):
+            own_rules[iid] += 1
         if r["ev"]:
             n_eval[iid] += 1
             if r["f"] and r["f"] != "none":
@@ -142,6 +152,8 @@ def build(conn: sqlite3.Connection) -> dict:
             "totalEur": i["total_eur"] or 0,
             "firstYear": i["first_year"],
             "lastYear": i["last_year"],
+            "parentId": parent_of[iid],
+            "ownRules": own_rules[iid],
             "gates": n_eval[iid],
             "cited": n_cited[iid],
             "fields": len(fields[iid]),
@@ -169,6 +181,12 @@ def build(conn: sqlite3.Connection) -> dict:
         "latestYear": latest,
         "axes": {a: sum(1 for r in pub if r["axes"][a]) for a in AXES},
         "complete": sum(1 for r in pub if r["score"] == len(AXES)),
+        # Depth, as distinct from coverage. An instrument can be complete on
+        # all six axes and still hold no rule of its own.
+        "subInstruments": sum(1 for r in pub if r["parentId"]),
+        "noOwnRules": sum(1 for r in pub if r["ownRules"] == 0),
+        "noCited": sum(1 for r in pub if r["cited"] == 0),
+        "regimes": len({r["parentId"] for r in pub if r["parentId"]}),
         "byChannel": [],
     }
     per_ch: dict[str, list] = defaultdict(list)

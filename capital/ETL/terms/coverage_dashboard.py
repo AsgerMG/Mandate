@@ -206,6 +206,18 @@ TEMPLATE = r"""<title>Fund intelligence coverage</title>
   </section>
 
   <section>
+    <h2>Depth, which coverage does not measure</h2>
+    <p class="sub">
+      An instrument can be complete on all six axes and still hold no rule of
+      its own. Most publishable rows are sub-instruments hanging off a regime,
+      and inherit that regime&rsquo;s eligibility wholesale &mdash; correct as
+      far as it goes, since a notified scheme really is governed by its regime,
+      but it is not research into the fund itself.
+    </p>
+    <div class="axes" id="depth"></div>
+  </section>
+
+  <section>
     <h2>By channel</h2>
     <p class="sub">
       Coverage is not evenly distributed, and the shape of the fix differs by
@@ -244,6 +256,7 @@ TEMPLATE = r"""<title>Fund intelligence coverage</title>
           <th class="sortable" data-k="score">Coverage</th>
           <th class="sortable num" data-k="gates">Rules</th>
           <th class="sortable num" data-k="cited">Cited</th>
+          <th class="sortable num" data-k="ownRules">Own</th>
           <th class="sortable num" data-k="fields">Fields</th>
           <th class="sortable num" data-k="awardP50">Median award</th>
           <th class="sortable num" data-k="awardN">n</th>
@@ -291,6 +304,25 @@ document.getElementById("axes").innerHTML = AXES.map((a) => {
     <div class="track"><div class="fill${cls}" style="width:${p}%"></div></div>
   </div>`;
 }).join("");
+
+// Depth cards. Counts, not shares: the denominators differ and a percentage
+// here would invite comparison between things that are not comparable.
+const D = DATA.summary;
+document.getElementById("depth").innerHTML = [
+  ["Sub-instruments", D.subInstruments,
+   `of ${D.instruments} publishable rows sit under a parent regime`],
+  ["Hold no rule of their own", D.noOwnRules,
+   "their eligibility is entirely their regime's, replicated"],
+  ["Distinct regimes behind them", D.regimes,
+   "the number of rulebooks actually researched"],
+  ["Cannot disqualify anyone", D.noCited,
+   "no cited rule the engine can evaluate; these narrow, never condemn"],
+].map(([name, value, note]) =>
+  `<div class="axis">
+     <div class="top"><span class="name">${esc(name)}</span>
+       <span class="pct mono">${Number(value).toLocaleString()}</span></div>
+     <div class="note">${esc(note)}</div>
+   </div>`).join("");
 
 // Channel table
 document.querySelector("#chTable tbody").innerHTML = DATA.summary.byChannel.map((c) =>
@@ -344,6 +376,7 @@ function render() {
     <td>${strip(r)}</td>
     <td class="num">${r.gates}</td>
     <td class="num">${r.cited || '<span class="dim">0</span>'}</td>
+    <td class="num">${r.ownRules || '<span class="dim">0</span>'}</td>
     <td class="num">${r.fields}</td>
     <td class="num">${r.awardP50 != null ? eur(r.awardP50) : '<span class="dim">\u2014</span>'}</td>
     <td class="num dim">${r.awardN || ""}</td>
