@@ -47,6 +47,9 @@ def main() -> None:
                value_spec, intake_field, gate_role, intake_field_resolved,
                quote, source_file, source_locator, verification_level
         FROM eligibility_gates
+        -- Deterministic, because the consumers take the FIRST N: a row's
+        -- published criteria must not depend on storage order.
+        ORDER BY instrument_id, gate_key
     """).fetchall()
 
     # Curated "how you apply", from each scheme's own document (see

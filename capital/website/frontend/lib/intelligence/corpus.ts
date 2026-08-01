@@ -300,10 +300,16 @@ export async function hydrateDbInstruments(): Promise<void> {
         // instruments on every request paid for 320 instruments nobody will
         // see. Phase two is hydrateGateDetail() below.
         client.query(
+          // ORDER BY is load-bearing, not tidiness. judgementCriteria and
+          // structuringNotes publish the FIRST THREE gates they match, and
+          // cite() takes the first match; with no ordering the row a founder
+          // reads depends on whatever order the store happened to return,
+          // which differs between Postgres and the SQLite-derived JSON.
           `SELECT instrument_id, gate_key, gate_family, requirement, value,
                   value_spec, intake_field, gate_role, intake_field_resolved,
                   verification_level
-           FROM eligibility_gates`,
+           FROM eligibility_gates
+           ORDER BY instrument_id, gate_key`,
         ),
         // Curated application routes. Its own table because
         // funding_instruments is truncated on every publish; joining here
@@ -418,7 +424,8 @@ export async function hydrateGateDetail(instrumentIds: string[]): Promise<void> 
       await client.query("SET statement_timeout = 2000");
       const res = await client.query(
         `SELECT instrument_id, gate_key, quote, source_file, source_locator
-           FROM eligibility_gates WHERE instrument_id = ANY($1::text[])`,
+           FROM eligibility_gates WHERE instrument_id = ANY($1::text[])
+           ORDER BY instrument_id, gate_key`,
         [want],
       );
       const byKey = new Map<string, { quote: string; file: string; locator: string }>();
