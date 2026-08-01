@@ -11,15 +11,15 @@ Six things an analyst needs before advising on a fund. Each is present or it is 
 | Where it applies | 846 | 100% |
 | What it typically awards | 764 | 90% |
 | How to approach it | 696 | 82% |
-| Award recency on record | 819 | 97% |
-| **All six** | **631** | **75%** |
+| Award recency on record | 826 | 98% |
+| **All six** | **637** | **75%** |
 
 ## By channel
 
 | Channel | n | All six | Mean score | Eligibility | Funds | Amount | Route | Live |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | state_aid_satr | 465 | 451 | 5.96 | 465 | 465 | 462 | 451 | 465 |
-| national_dev_banks | 323 | 145 | 4.99 | 296 | 250 | 259 | 187 | 297 |
+| national_dev_banks | 323 | 151 | 5.01 | 296 | 250 | 259 | 187 | 304 |
 | eit | 12 | 1 | 5.08 | 12 | 12 | 1 | 12 | 12 |
 | ipcei | 11 | 7 | 5.64 | 10 | 10 | 9 | 11 | 11 |
 | horizon_eu_pillar_ii | 9 | 9 | 6.0 | 9 | 9 | 9 | 9 | 9 |
