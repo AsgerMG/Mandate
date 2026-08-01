@@ -163,6 +163,18 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     {r.judgementCriteria.map((c) => <li key={c}>{c}</li>)}
                   </ul>
                 )}
+                {/* How the money is shaped. Labelled, and kept apart from the
+                    criteria above: "you fund half of it" and "you must be an
+                    SME" are both true and constrain different things, and a
+                    founder who runs them together plans the wrong project. */}
+                {!pending && !!r.structuringNotes?.length && (
+                  <div className="mt-1 text-[12px] text-[var(--muted-foreground)]">
+                    <span className="uppercase tracking-wide text-[10px]">How the money works</span>
+                    <ul className="list-disc pl-4">
+                      {r.structuringNotes.map((c) => <li key={c}>{c}</li>)}
+                    </ul>
+                  </div>
+                )}
                 {!pending && r.typicalAward != null && (
                   <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
                     {`Typical award ${fmtEur(r.typicalAward)}`}

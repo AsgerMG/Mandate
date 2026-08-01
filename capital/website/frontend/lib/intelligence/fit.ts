@@ -24,6 +24,7 @@
 // they are right but that every component is recorded per instrument per run,
 // so a bad ranking can be attributed to a component rather than argued about.
 import { BAND_INDEX, TICKET_MIDPOINT, typicalAward } from "./shortlist";
+import { hasThinEvidence } from "./accessMode";
 import type { DbInstrument } from "./corpus";
 import type { InstrumentAssessment } from "./verdict";
 
@@ -221,10 +222,17 @@ export function scoreFit(input: FitInput): FitScore {
     liveness: livenessFit(inst, year),
   };
 
+  // Thin evidence demotes rather than excludes: every component above is a
+  // weaker claim when it rests on a handful of awards, so the score should be
+  // too. Applied after the components so each stays readable on its own in the
+  // recorded breakdown -- the whole point of recording them.
+  const evidencePenalty = hasThinEvidence(inst) ? 0.75 : 1;
+
   let score = 0;
   for (const k of Object.keys(FIT_WEIGHTS) as FitComponent[]) {
     score += FIT_WEIGHTS[k] * components[k];
   }
+  score *= evidencePenalty;
 
   const excluded: FitScore["excluded"] =
     assessment?.status === "blocked" ? "blocked" : offCountry ? "off-country" : undefined;

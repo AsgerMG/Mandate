@@ -167,6 +167,10 @@ export interface InstrumentRow {
    *  For the 149 instruments with no evaluable cited rule, this is everything
    *  the fund has told us about who it says yes to. */
   judgementCriteria?: string[];
+  /** How the money is shaped: aid intensity, ceilings, co-financing, what a
+   *  recipient commits to. Cited. Distinct from judgementCriteria, which is
+   *  about who qualifies — these constrain the STRUCTURE of the deal. */
+  structuringNotes?: string[];
   /** Where to apply, when we hold a verified one. */
   applicationUrl?: string;
   /** Curated application route: how you apply, and when. */
@@ -221,6 +225,10 @@ export interface InstitutionEntry {
    *  in the fund's own words. Never inferred text: stating an inferred stub as
    *  an assessment criterion would be putting words in the fund's mouth. */
   judgementCriteria?: string[];
+  /** How the money is shaped: rates, ceilings, co-financing, commitments.
+   *  What fraction of a project can be public money is the structuring
+   *  question, and it is not the eligibility question. */
+  structuringNotes?: string[];
   /** "invest" rows are pitched, not applied to. */
   accessMode?: "apply" | "invest";
   /** How to apply, curated from the scheme's own document, and where. Absent

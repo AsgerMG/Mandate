@@ -93,3 +93,24 @@ export function meetsDataFloor(inst: DbInstrument): boolean {
   const hasDate = Boolean(inst.lastYear);
   return hasAmounts || hasDate;
 }
+
+/**
+ * Instruments we hold too little about to say much, without holding nothing.
+ *
+ * 56 publishable instruments have fewer than five tracked awards, 52 of them
+ * national development banks. There is no median award to quote, the sector
+ * history is a handful of companies, and precedent is close to noise — so
+ * every judgement about them is thinner than it looks beside a fund measured
+ * across thousands of awards.
+ *
+ * DEMOTED, never deleted, and the row says why. A fund we have barely observed
+ * is not the same as a fund that does not fit, and dropping it silently is how
+ * a genuine route disappears with nobody noticing — the failure this product
+ * is least able to detect in itself. meetsDataFloor already handles the case
+ * where we hold nothing at all; this is the weaker one.
+ */
+export const THIN_EVIDENCE_AWARDS = 5;
+
+export function hasThinEvidence(inst: DbInstrument): boolean {
+  return (inst.eventCount ?? 0) < THIN_EVIDENCE_AWARDS;
+}

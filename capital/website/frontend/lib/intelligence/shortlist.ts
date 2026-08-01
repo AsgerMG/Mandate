@@ -245,6 +245,60 @@ export function judgementCriteria(inst: DbInstrument): string[] {
   return out;
 }
 
+/**
+ * How the money is shaped — the structuring layer, as opposed to eligibility.
+ *
+ * ── Why this was invisible ────────────────────────────────────────────────
+ * The verdict engine admits only `filter` gates, because only a filter says
+ * who qualifies. Correct for a verdict, and it meant 1,523 gates triaged
+ * `programme_fact` or `obligation` reached nobody:
+ *
+ *   "Grant rate is 50% of eligible costs for SME research projects, rising to
+ *    60% when the project content is ..."
+ *   "De minimis aid must not be cumulated with other State aid for the same
+ *    eligible costs"
+ *   "Loan can cover up to 50% of total project costs, or up to 70% for a
+ *    justified reason"
+ *
+ * That is the whole question a capital structuring analyst is paid to answer —
+ * what fraction of this project can be public money, what stacks on what, and
+ * what the company has to put in itself. We were holding it and discarding it.
+ *
+ * ── Selected by family, not by phrasing ───────────────────────────────────
+ * G3_financial is the corpus's own name for rules about the SHAPE of the money
+ * (rates, ceilings, co-financing), and G6_conditionality for what a recipient
+ * commits to. Reading the taxonomy generalises to funds and languages nobody
+ * has looked at; matching on words like "intensity" or "cumulation" would only
+ * find the ones already written in English the way we expected.
+ *
+ * Kept separate from judgementCriteria on purpose. "You fund 50%" and "you
+ * must be an SME" are both true and constrain completely different things, and
+ * a founder who confuses them plans the wrong project.
+ */
+const STRUCTURING_FAMILIES = ["G3_financial", "G6_conditionality"];
+const STRUCTURING_CAP = 3;
+
+export function structuringNotes(inst: DbInstrument): string[] {
+  const seen = new Set<string>();
+  const picked: string[] = [];
+  // Financial shape first: a rate or a ceiling is more decisive than a
+  // commitment, and only three notes reach the row.
+  for (const family of STRUCTURING_FAMILIES) {
+    for (const g of inst.gates) {
+      if (g.gateFamily !== family) continue;
+      if (!g.gateRole || g.gateRole === "filter") continue;  // eligibility, not structure
+      if (!isCited(g)) continue;                             // never our own words
+      const text = (g.requirement ?? "").trim();
+      const key = text.toLowerCase();
+      if (!text || seen.has(key)) continue;
+      seen.add(key);
+      picked.push(text);
+      if (picked.length >= STRUCTURING_CAP) return picked;
+    }
+  }
+  return picked;
+}
+
 export function typicalAward(inst: DbInstrument): number | null {
   if (inst.awardP50 != null && inst.awardP50 > 0) return inst.awardP50;
   return inst.eventCount > 0 ? inst.totalEur / inst.eventCount : null;
@@ -648,6 +702,7 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         typicalAward: leaf.awardP50 ?? undefined,
         typicalAwardN: leaf.awardN ?? undefined,
         judgementCriteria: judgementCriteria(leaf),
+        structuringNotes: structuringNotes(leaf),
       } as InstrumentRow));
     })
     .sort((a, b) => {
