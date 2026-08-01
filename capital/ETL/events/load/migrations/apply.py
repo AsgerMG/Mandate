@@ -369,6 +369,17 @@ def apply_017(conn: sqlite3.Connection) -> None:
     print("  applied 017_company_sector_labels.sql")
 
 
+def apply_018(conn: sqlite3.Connection) -> None:
+    """intensity_p50 / intensity_n -- realised aid intensity, measured from
+    events that carry both a grant and a total project cost."""
+    if column_exists(conn, "funding_instruments", "intensity_p50"):
+        print("  skip 018 (already applied)")
+        return
+    sql = (MIG_DIR / "018_realised_intensity.sql").read_text()
+    conn.executescript(sql)
+    print("  applied 018_realised_intensity.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -384,6 +395,7 @@ MIGRATIONS = {
     "015": apply_015,
     "016": apply_016,
     "017": apply_017,
+    "018": apply_018,
 }
 
 

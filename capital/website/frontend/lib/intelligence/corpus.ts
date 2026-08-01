@@ -227,6 +227,12 @@ export interface DbInstrument {
   awardP50?: number | null;
   awardP75?: number | null;
   awardN?: number;
+  /** Median share of project cost this instrument actually covered, over
+   *  single-beneficiary awards. Null where the ratio is not meaningful —
+   *  consortium programmes pay one partner against the whole project's cost,
+   *  which measures their share of the work, not the funder's rate. */
+  intensityP50?: number | null;
+  intensityN?: number;
   gates: DbGate[];
 }
 
@@ -282,7 +288,8 @@ export async function hydrateDbInstruments(): Promise<void> {
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
                   scheme_code, application_url, sector_mix, scheme_operators,
-                  award_p25, award_p50, award_p75, award_n
+                  award_p25, award_p50, award_p75, award_n,
+                  intensity_p50, intensity_n
            FROM funding_instruments`,
         ),
         // PHASE ONE: everything needed to RANK and to reach a verdict, and
@@ -368,6 +375,8 @@ export async function hydrateDbInstruments(): Promise<void> {
         awardP50: inst.award_p50 ?? null,
         awardP75: inst.award_p75 ?? null,
         awardN: inst.award_n ?? 0,
+        intensityP50: inst.intensity_p50 ?? null,
+        intensityN: inst.intensity_n ?? 0,
         gates: gatesByInstrument.get(inst.id) ?? [],
       })));
     } finally {

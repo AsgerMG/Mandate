@@ -163,6 +163,11 @@ export interface InstrumentRow {
    *  from one with a EUR 127M median, and both sit under the same channel. */
   typicalAward?: number;
   typicalAwardN?: number;
+  /** Share of project cost this instrument actually covered, measured. The
+   *  structuring answer: a founder plans around what they must fund
+   *  themselves, which is the other side of this number. */
+  aidIntensity?: number;
+  aidIntensityN?: number;
   /** Cited requirements no comparator can decide — what the assessor weighs.
    *  For the 149 instruments with no evaluable cited rule, this is everything
    *  the fund has told us about who it says yes to. */
@@ -221,6 +226,9 @@ export interface InstitutionEntry {
    *  question a founder asks first: how much would I actually get? */
   typicalAward?: number;
   typicalAwardN?: number;
+  /** Measured share of project cost covered, and the awards behind it. */
+  aidIntensity?: number;
+  aidIntensityN?: number;
   /** Cited requirements no comparator can decide — what the assessor weighs,
    *  in the fund's own words. Never inferred text: stating an inferred stub as
    *  an assessment criterion would be putting words in the fund's mouth. */

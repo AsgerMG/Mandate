@@ -175,6 +175,16 @@ export function InstitutionsTable({ institutions, pending = false }: { instituti
                     </ul>
                   </div>
                 )}
+                {/* The structuring number, stated from both sides: a founder
+                    plans around what they must fund themselves at least as
+                    much as around what the fund covers. */}
+                {!pending && r.aidIntensity != null && (
+                  <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
+                    {`Covered ${Math.round(r.aidIntensity * 100)}% of project cost`}
+                    {`, you fund ${Math.round((1 - r.aidIntensity) * 100)}%`}
+                    {r.aidIntensityN ? ` · ${r.aidIntensityN.toLocaleString()} awards` : ""}
+                  </span>
+                )}
                 {!pending && r.typicalAward != null && (
                   <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
                     {`Typical award ${fmtEur(r.typicalAward)}`}

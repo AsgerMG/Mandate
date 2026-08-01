@@ -38,7 +38,8 @@ def main() -> None:
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
                last_year, scheme_code, application_url, sector_mix, scheme_operators,
-               award_p25, award_p50, award_p75, award_n
+               award_p25, award_p50, award_p75, award_n,
+               intensity_p50, intensity_n
         FROM funding_instruments
     """).fetchall()
     gates = conn.execute("""
@@ -127,6 +128,10 @@ def main() -> None:
         "awardP50": inst["award_p50"],
         "awardP75": inst["award_p75"],
         "awardN": inst["award_n"] or 0,
+        # What share of a project this instrument actually covered, measured
+        # over single-beneficiary awards only. The structuring question.
+        "intensityP50": inst["intensity_p50"],
+        "intensityN": inst["intensity_n"] or 0,
         # Who actually disburses under this scheme. A department notifies a
         # regime; regional agencies and promotional banks run it. Empty when
         # only departments ever awarded, which is itself worth knowing: the row

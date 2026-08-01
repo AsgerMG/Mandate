@@ -701,6 +701,8 @@ export function buildInstrumentTable(input: InstrumentTableInput): InstrumentRow
         // claims and the row should not present them identically.
         typicalAward: leaf.awardP50 ?? undefined,
         typicalAwardN: leaf.awardN ?? undefined,
+        aidIntensity: leaf.intensityP50 ?? undefined,
+        aidIntensityN: leaf.intensityN ?? undefined,
         judgementCriteria: judgementCriteria(leaf),
         structuringNotes: structuringNotes(leaf),
       } as InstrumentRow));

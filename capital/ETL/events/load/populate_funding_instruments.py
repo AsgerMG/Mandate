@@ -232,6 +232,30 @@ MIN_CHILD_EVENTS = 40
 MIN_AWARDS_FOR_TYPICAL = 5
 
 
+MIN_INTENSITY_PROJECTS = 5
+
+# Grant divided by project cost is an aid intensity only when both describe the
+# SAME beneficiary. In a consortium they do not: one partner's grant sits
+# against the whole project's cost, so the ratio measures their share of the
+# work rather than the funder's rate. EIC Pathfinder computes to 15% that way
+# while actually funding 100% of eligible costs, and Horizon clusters near 5%.
+#
+# `role` is the corpus's own marker for this and needs no threshold: 'direct'
+# is a single-beneficiary award, 'coordinator' and 'participant' are consortium
+# rows. Two weaker tests were tried first and both let real errors through -- a
+# plausibility floor passed Pathfinder's 15%, and awards-per-call passed Horizon
+# because its call_id is unique per AWARD rather than per project.
+SINGLE_BENEFICIARY_ROLE = "direct"
+
+
+def realised_intensity(shares: list[float]) -> tuple[float | None, int]:
+    """Median share of project cost covered, over single-beneficiary awards."""
+    if len(shares) < MIN_INTENSITY_PROJECTS:
+        return None, len(shares)
+    xs = sorted(shares)
+    return round(xs[len(xs) // 2], 4), len(xs)
+
+
 def award_percentiles(awards: list[float]) -> tuple[float | None, float | None, float | None, int]:
     """What this instrument typically gives: p25 / p50 / p75, and the n behind them.
 
@@ -464,6 +488,7 @@ def main() -> None:
         SELECT e.source, e.company_id, c.country, c.parent_group, c.sector_top,
                e.programme_name,
                e.grant_amount_eur, e.equity_amount_eur, e.debt_amount_eur,
+               e.total_project_cost_eur, e.role,
                e.grant_amount_basis, e.aid_instrument, e.aid_objective, e.ndb_distributor,
                e.granting_authority, e.granting_authority_country, e.call_id,
                e.project_title,
@@ -485,6 +510,10 @@ def main() -> None:
     # a company like theirs would receive, and across the corpus that ranges
     # from EUR 16k at p10 to EUR 1.1M at p90.
     fam_awards: dict[str, list[float]] = defaultdict(list)
+    # Realised aid intensity: grant divided by the project it paid for. The
+    # structuring question -- what share of this can be public money -- answered
+    # from what recipients were actually paid rather than from prose.
+    fam_intensity: dict[str, list[float]] = defaultdict(list)
     fam_years: dict[str, list[int]] = defaultdict(list)
     fam_capital_votes: dict[str, Counter] = defaultdict(Counter)
     fam_ndb_votes: dict[str, Counter] = defaultdict(Counter)
@@ -514,6 +543,12 @@ def main() -> None:
         fam_eur[fam] += award
         if award > 0:
             fam_awards[fam].append(award)
+        cost = r["total_project_cost_eur"] or 0
+        if award > 0 and cost > 0:
+            share = award / cost
+            # Above 1 is a data error, not a 150% grant.
+            if 0 < share <= 1 and r["role"] == SINGLE_BENEFICIARY_ROLE:
+                fam_intensity[fam].append(share)
 
         year = None
         for d in (r["project_started"], r["call_deadline"]):
@@ -584,11 +619,14 @@ def main() -> None:
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
                 capital=Counter(), objectives=Counter(), titles=Counter(),
-                sectors=Counter(), awards=[]))
+                sectors=Counter(), awards=[], intensity=[]))
             c["events"] += 1
             c["eur"] += award
             if award > 0:
                 c["awards"].append(award)
+            if (award > 0 and cost > 0 and 0 < award / cost <= 1
+                    and r["role"] == SINGLE_BENEFICIARY_ROLE):
+                c["intensity"].append(award / cost)
             c["companies"].add(r["parent_group"] or r["company_id"])
             if year:
                 c["years"].append(year)
@@ -615,6 +653,7 @@ def main() -> None:
         companies = len(fam_companies.get(fam, ()))
         total_eur = round(fam_eur.get(fam, 0.0), 2)
         a25, a50, a75, an = award_percentiles(fam_awards.get(fam, []))
+        i50, i_n = realised_intensity(fam_intensity.get(fam, []))
         years = fam_years.get(fam, [])
         first_year, last_year = (min(years), max(years)) if years else (None, None)
 
@@ -684,7 +723,8 @@ def main() -> None:
             source_family_bucket=source_family_bucket, capital_type=capital_type,
             capital_type_basis=capital_basis, event_count=events, company_count=companies,
             total_eur=total_eur,
-            award_p25=a25, award_p50=a50, award_p75=a75, award_n=an, first_year=first_year, last_year=last_year,
+            award_p25=a25, award_p50=a50, award_p75=a75, award_n=an,
+            intensity_p50=i50, intensity_n=i_n, first_year=first_year, last_year=last_year,
             is_framework=is_framework, sample_project_titles=sample_titles,
             sector_mix=json.dumps(dict(fam_sector_votes.get(fam, Counter()).most_common(8)))
                        if fam_sector_votes.get(fam) else None,
@@ -713,6 +753,7 @@ def main() -> None:
         # A child's OWN awards, for the same reason its sector mix is its own:
         # the regime's median says nothing about what THIS body hands out.
         c25, c50, c75, cn = award_percentiles(c["awards"])
+        ci50, ci_n = realised_intensity(c["intensity"])
         # `scheme` is empty for a programme child: there is no notified scheme
         # code, the programme name IS the identity, and it becomes the row's
         # name. That is the whole point — "Tremplin pour la transition
@@ -743,6 +784,7 @@ def main() -> None:
             event_count=c["events"], company_count=len(c["companies"]),
             total_eur=round(c["eur"], 2),
             award_p25=c25, award_p50=c50, award_p75=c75, award_n=cn,
+            intensity_p50=ci50, intensity_n=ci_n,
             first_year=min(years) if years else None,
             last_year=max(years) if years else None,
             is_framework=0,
@@ -779,6 +821,8 @@ def main() -> None:
         for k in ("award_p25", "award_p50", "award_p75"):
             row.setdefault(k, None)
         row.setdefault("award_n", 0)
+        row.setdefault("intensity_p50", None)
+        row.setdefault("intensity_n", 0)
 
     # ── Reconcile, do not wipe ───────────────────────────────────────────────
     # This used to DELETE every non-framework eligibility gate on every run.
@@ -852,13 +896,15 @@ def main() -> None:
                source_family_bucket, capital_type, capital_type_basis, event_count,
                company_count, total_eur, first_year, last_year, is_framework,
                sample_project_titles, scheme_code, application_url, sector_mix, scheme_operators,
-               award_p25, award_p50, award_p75, award_n, updated_at)
+               award_p25, award_p50, award_p75, award_n,
+               intensity_p50, intensity_n, updated_at)
             VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
                     :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
                     :sample_project_titles,:scheme_code,:application_url,:sector_mix,:scheme_operators,
-                    :award_p25,:award_p50,:award_p75,:award_n, CURRENT_TIMESTAMP)
+                    :award_p25,:award_p50,:award_p75,:award_n,
+                    :intensity_p50,:intensity_n, CURRENT_TIMESTAMP)
         """, r)
 
     for fam, srcs in fam_sources.items():
