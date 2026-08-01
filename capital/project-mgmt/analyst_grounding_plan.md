@@ -171,3 +171,37 @@ state_aid_satr         31 of 497 direct (most inherit a parent regime route)
 4. **Uncited evidence narrows, it never condemns.**
 5. **A reconcile step invoked by hand stops being invoked.** Pruning and
    regeneration belong in the normal run, with a build check behind them.
+
+
+---
+
+## Addendum, 2026-08-01: what the award median actually changed
+
+Phase 1 replaced `typicalAward()`'s mean with a measured median, on the grounds
+that the mean overstated by 3x or more on 11% of instruments and by up to 450x.
+That was argued from the distribution, not from the product's behaviour.
+
+It has now been measured on the product. Running the 12 archetypes twice — once
+with the medians present, once with `awardP50` nulled so `typicalAward()` falls
+back to the mean, which is exactly what production was doing until the Postgres
+column gap was fixed:
+
+**10 of 12 archetypes rank differently. 15 published rows change.**
+
+    MedTech          median -> clean_aviation      mean showed eurohpc
+    Life sciences    median -> clean_aviation      mean showed eurohpc
+    Cloud/NeoCloud   median -> Business Finland SA.61856   mean showed SA.112229
+    AgriTech         two of six Italian rows swap
+
+So the statistic is not a refinement at the margin: it decides which funds a
+founder is shown in most cases. Two consequences worth holding on to.
+
+**Every ranking result reported before 2026-08-01 was measured on the offline
+JSON path**, which always had the medians. The production path did not, so the
+two had been diverging silently since the medians were introduced. The parity
+check is what surfaced it, and it is the only test that can.
+
+**A derived column is not shipped until it is in both stores.** The gap was not
+a missing computation but a hand-written INSERT column list in
+migrate_to_postgres.py that stopped at `scheme_operators`. That list is now read
+from the SQLite table.
