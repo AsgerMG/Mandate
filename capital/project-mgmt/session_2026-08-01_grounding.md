@@ -262,3 +262,84 @@ verified until a real brief has been generated and read. `rowToEntry.test.ts`
 and `check_client_boundary.ts` catch the next instance of each class, but they
 exist because a human looked at the output first. The tests are downstream of
 the reading, not a substitute for it.
+
+---
+
+## Addendum: the later half of the session
+
+Written after the sections above, which stopped at the region filters. Numbers
+re-measured, not carried forward.
+
+### The Commission's case register
+
+Every SATR scheme child carries an SA number (453 of 453, 376 distinct) and the
+Commission publishes a case record per number. All 376 resolved, a 100% hit rate.
+`ETL/terms/fetch_state_aid_cases.py`, cached to `data/raw/state_aid_cases/cases.json`.
+
+**It must be a POST.** The identical URL as a GET returns HTTP 500, and
+competition-cases.ec.europa.eu is a client-rendered app with a catch-all route,
+so the case URL and every guessed API path return the same empty shell. The real
+endpoint was found by opening a case in Chrome over CDP and reading what the app
+itself calls. Match `reference` exactly: a text search for an SA number also
+returns cases that merely cite it.
+
+What it unlocked, in order of value:
+
+| | |
+|---|---|
+| Instruments renamed from the register | 430 |
+| Sharing a display name | 505 -> 209 |
+| Article ceilings grounded in registration | 234 of 270 |
+| Funds no longer proposable (scheme closed) | 220, EUR 49.7B |
+| Regional eligibility filters | 10 -> 104 |
+
+### Three findings worth keeping
+
+**The register knows the research category.** `gber_aid_intensity.json` asserted
+that the Art. 25 category is "a property of the PROJECT, not the scheme", so the
+ceiling had to be published as a band. That was wrong: a notified scheme is
+registered under specific sub-paragraphs, and 252a-252d ARE the categories.
+Compared against the inference on 274 children, they agree on 44, the register is
+MORE SPECIFIC on 161 (Art. 25 -> Art. 25(2)(b)), and 23 were genuine corrections.
+
+**Award recency cannot tell you if a fund is open.** Payments run for years after
+a scheme closes to new applicants: 220 of 453 sit under a closed scheme and 130
+still looked current on a 2024 or 2025 award. "Italy - Support to electricity
+from renewable sources" ended 2021-12-30. They stay in the corpus for history and
+are removed from proposal only. 40 have a successor still running, recorded on
+the instrument.
+
+**Region gates are the one filter class with no empirical audit.** They can
+disqualify, and a region failure is structural, so a mismatch removes the fund
+silently. `audit_encoding_vs_reality.py` cannot check them: `companies` carries
+city and postal_code but no NUTS region. Deriving recipient regions from postal
+codes is the open fix.
+
+### What did not land, and why
+
+**EIS naming.** The Estonian feed carries the programme name in the rendered
+row's 6th cell, and the extractor discards it. Altum's equivalent fix worked
+(22 collisions -> 0, 3,921 events backfilled). EIS did not: loading the file
+offline dispatches to `_parse_record`, not `_extract_ee`, and that path derives
+an instrument's identity from a truncation of the `programme` field. Loading it
+merged distinct measures into shared instruments, taking unnamed EIS funds from
+22 to 86; widening the truncation made it 118, because the identity is the wrong
+FIELD rather than the wrong width. 4,506 events were reverted rather than ship a
+regression. The capture is in place for whenever `source_to_family` is fixed.
+
+Cell 5 is the programme; cell 6 is the funding source ("Riigieelarve (RE)"). An
+agent proposed cell 6. Taking it would have named every Estonian fund "state
+budget".
+
+### Open, in rough order of value
+
+1. **Regime rules attribution.** 453 children still inherit criteria extracted
+   from ONE document per regime, currently labelled "State aid regime:" as a
+   holding fix. The register gives each scheme its own objectives, regions and
+   aid instruments, which is the material for real per-scheme criteria.
+2. **Postal-code to NUTS**, so region claims get the audit every other filter has.
+3. **EIS identity**, per above. 22 funds, and the name is already in the feed.
+4. **Art. 107(3)(a) uplift** deliberately unencoded: two sources conflict
+   (25pp vs 15pp). Needs the Official Journal.
+5. Innovasjon Norge, Bpifrance and CDP Venture Capital refuse automated access
+   (403 / Radware CAPTCHA) and are deliberately left alone.

@@ -480,7 +480,7 @@ def main() -> None:
             too_small += 1
             continue
         checked.append((counts["inside"] / decidable, decidable, counts,
-                        outside_regions, iid, name, country, allowed))
+                        outside_regions, iid, name, country, allowed, scheme))
 
     print(f"registered_region filters:        {len(gates)}")
     print(f"  checked against recipients:     {len(checked)}")
@@ -512,15 +512,15 @@ def main() -> None:
     if bad:
         print(f"\n=== filters their own recipients contradict "
               f"(below {args.threshold:.0%} inside) ===")
-        for share, decidable, counts, outside, iid, name, country, allowed in bad:
+        for (share, decidable, counts, outside, iid, name, country,
+             allowed, scheme) in bad:
             top = ", ".join(f"{r} x{n}" for r, n in outside.most_common(4))
             print(f"  [{share:5.0%} inside] {country} - {' '.join(name.split())[:70]}")
             print(f"      {iid}")
             print(f"      registered for: {', '.join(allowed[:8])}"
                   + ("..." if len(allowed) > 8 else ""))
             print(f"      recipients sat in: {top}  (n={decidable})")
-            dropped = regions_dropped_by_the_encoder(
-                iid.rsplit("__", 2)[1].upper().replace("_", "."), allowed)
+            dropped = regions_dropped_by_the_encoder(scheme, allowed)
             if dropped:
                 print(f"      the case ALSO names {len(dropped)} region(s) the "
                       f"filter does not cover: {', '.join(dropped[:10])}"
