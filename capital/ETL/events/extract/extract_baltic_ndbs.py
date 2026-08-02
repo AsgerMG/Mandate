@@ -185,6 +185,15 @@ def _extract_ee(cfg: dict) -> list[dict]:
         cells = _eis_html_cells(rec)
         name = cells[0] if cells else name_lc.upper()
         fund = cells[6] if len(cells) >= 8 else ""
+        # The programme's own name, which the feed has carried all along and
+        # this extractor threw away: 22 EIS instruments were left displaying
+        # "EIS (KredEx + Enterprise Estonia)" and told apart only by an id slug.
+        #
+        # Index 5, NOT 6. Verified against data/raw/baltic_ndbs/eis_supported_projects.json:
+        #   [5] "Suuremahuliste investeeringute toetus"   <- the programme
+        #   [6] "Riigieelarve (RE)"                       <- the funding source
+        # Taking 6 would have named every Estonian fund "state budget".
+        programme_name = cells[5] if len(cells) >= 7 else ""
         prog_slug = re.sub(r"[^a-z0-9]+", "_", (rec.get("program") or "grant"))[:24].strip("_")
         source = f"{cfg['source_prefix']}_{prog_slug}_{year}"
         digest = hashlib.sha1(
@@ -201,6 +210,7 @@ def _extract_ee(cfg: dict) -> list[dict]:
             "project_title": (rec.get("projectName") or "")[:200],
             "programme": (rec.get("program") or "")[:60],
             "fund": fund,
+            "programme_name": programme_name,
             "grant_amount_eur": round(float(amount), 2),
             "ndb_distributor": cfg["ndb"],
             "deployment_country": "EE",
@@ -302,6 +312,24 @@ def _extract_lv(cfg: dict) -> list[dict]:
             continue
 
         slug = re.sub(r"[^a-z0-9]+", "_", sn.lower()).strip("_")[:24]
+        # Row 0 of every Altum sheet is a title row naming the programme, and
+        # the id was being built from the SHEET NAME instead ("AUI", "ANM_KEPA",
+        # "UA"). 22 instruments displayed as "Altum (Latvia)", told apart only
+        # by that slug. The name was in the file the whole time.
+        #
+        # These titles are list headings, so most end "atbalsta saņēmēji"
+        # ("recipients of ...") or "... saņēmēju saraksts" ("list of
+        # recipients of ..."). That tail is trimmed: it describes the
+        # SPREADSHEET, not the programme, and leaving it turns every fund name
+        # into "<programme> recipients". Trimmed by suffix rather than by
+        # matching programme words, so a title without the tail is untouched.
+        _title = ""
+        for _c in (all_rows[0] if all_rows else []):
+            if _c and str(_c).strip():
+                _title = str(_c).strip()
+                break
+        _title = re.sub(r"\s*atbalsta\s+saņēmēj\w*(\s+saraksts)?\s*$", "", _title, flags=re.I)
+        _title = re.sub(r"\s*saņēmēj\w*\s+saraksts\s*$", "", _title, flags=re.I).strip(" ,;:-")
         sheet_l = sn.lower()
         for row in all_rows[hdr_i + 1:]:
             def cell(j):
@@ -311,6 +339,7 @@ def _extract_lv(cfg: dict) -> list[dict]:
             name = cell(c_name)
             if not name or name.lower().startswith("kopā"):
                 continue
+            programme_name = _title
             date_s = cell(c_date)
             ym = re.search(r"(20\d{2})", date_s)
             if not ym:
@@ -366,6 +395,7 @@ def _extract_lv(cfg: dict) -> list[dict]:
                 "project_id": None,
                 "project_title": None,
                 "programme": sn.strip()[:60],
+                "programme_name": programme_name,
                 "grant_amount_eur": round(grant, 2) or None,
                 "debt_amount_eur": round(debt, 2) or None,
                 "equity_amount_eur": round(equity, 2) or None,
@@ -431,11 +461,30 @@ def _parse_record(rec: dict, cfg: dict) -> dict | None:
 
     programme = _f("programme", "program", "instrument", "measure", "type")
     proj_id = _f("id", "projectId", "applicationId", "regNr")
-    slug = re.sub(r"[^a-z0-9]+", "_", programme.lower())[:20] or "grant"
+    # An instrument's identity comes from the programme NAME where the feed
+    # gives one, not from a 20-character truncation of the `programme` code.
+    #
+    # The truncation merged distinct Estonian measures into one instrument --
+    # 4,349 events collapsed into shared rows whose events spanned several
+    # programmes, so the naming vote could never reach a majority and 86 funds
+    # displayed as "EIS (KredEx + Enterprise Estonia)". Truncating an identifier
+    # to a fixed width is only safe when the width is known to be discriminating,
+    # and here it was not.
+    #
+    # 60 characters, and off the full name: long enough that two real programmes
+    # do not collide, short enough to keep ids readable.
+    _cells_id = _eis_html_cells(rec) if isinstance(rec, dict) else []
+    _ident = (_cells_id[5] if len(_cells_id) >= 7 else "") or programme
+    slug = re.sub(r"[^a-z0-9]+", "_", _ident.lower()).strip("_")[:60] or "grant"
 
     source = f"{cfg['source_prefix']}_{slug}_{year}"
     call_id = f"{source}_{proj_id or name[:20]}"
 
+    # Same capture as _extract_ee, and it has to be repeated here because
+    # --local dispatches to THIS function, not that one. That split is why the
+    # first fix looked like it worked (the run reported inserts) and changed
+    # nothing: the offline path never saw it.
+    _cells = _eis_html_cells(rec) if isinstance(rec, dict) else []
     return {
         "source": source,
         "call_id": call_id,
@@ -445,6 +494,9 @@ def _parse_record(rec: dict, cfg: dict) -> dict | None:
         "year": year,
         "project_id": proj_id,
         "programme": programme,
+        # Index 5 is the programme; index 6 is the funding source
+        # ("Riigieelarve (RE)"). Verified against the live file.
+        "programme_name": _cells[5] if len(_cells) >= 7 else "",
         "grant_amount_eur": round(amount_eur, 2),
         "ndb_distributor": cfg["ndb"],
         "deployment_country": cfg["deployment_country"],
@@ -497,6 +549,19 @@ def _load_to_db(rows: list[dict], country: str, ndb: str) -> dict:
                 "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
                 (r["source"], r["call_id"]))
             if cur.fetchone():
+                # The row is already loaded, so the INSERT below never runs --
+                # which means a field ADDED to this extractor would never reach
+                # the events already in the corpus, and re-running would look
+                # like a no-op while fixing nothing. programme_name is exactly
+                # that case: the feed always carried it, this extractor always
+                # discarded it, and 33,000 Baltic events predate the fix.
+                if r.get("programme_name"):
+                    cur.execute(
+                        """UPDATE public_funding_events SET programme_name = ?
+                           WHERE source = ? AND call_id = ?
+                             AND COALESCE(programme_name, '') = ''""",
+                        (r["programme_name"], r["source"], r["call_id"]))
+                    counts["backfilled"] = counts.get("backfilled", 0) + cur.rowcount
                 counts["skipped_dup"] += 1
                 continue
             cur.execute(
@@ -504,14 +569,16 @@ def _load_to_db(rows: list[dict], country: str, ndb: str) -> dict:
                    (company_id, source, call_id, role, coordinator_only,
                     project_number, project_title, project_started,
                     grant_amount_eur, debt_amount_eur, equity_amount_eur,
-                    grant_amount_basis, deployment_country, ndb_distributor)
-                   VALUES (?, ?, ?, 'direct', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                    grant_amount_basis, deployment_country, ndb_distributor,
+                    programme_name)
+                   VALUES (?, ?, ?, 'direct', 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 (cid, r["source"], r["call_id"], r.get("project_id") or None,
                  r.get("project_title") or None, f"{r['year']}-01-01",
                  r.get("grant_amount_eur"), r.get("debt_amount_eur"),
                  r.get("equity_amount_eur"),
                  r.get("grant_amount_basis") or "ndb_grant",
-                 r["deployment_country"], r["ndb_distributor"]))
+                 r["deployment_country"], r["ndb_distributor"],
+                 r.get("programme_name") or None))
             counts["inserted"] += 1
         except Exception as e:
             counts["errors"] += 1

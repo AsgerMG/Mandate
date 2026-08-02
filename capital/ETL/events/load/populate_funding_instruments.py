@@ -896,7 +896,7 @@ def main() -> None:
         if row.get("parent_id"):
             continue                      # children are named by their own split
         votes = conn.execute("""
-            SELECT e.programme_name p, COUNT(*) n
+            SELECT TRIM(e.programme_name) p, COUNT(*) n
             FROM public_funding_events e
             JOIN funding_instrument_sources s ON s.source = e.source
             WHERE s.instrument_id = ? AND e.programme_name IS NOT NULL
@@ -905,7 +905,13 @@ def main() -> None:
         total = sum(v[1] for v in votes)
         if not votes or not total or votes[0][1] / total < FEED_NAME_DOMINANCE:
             continue
-        real = (votes[0][0] or "").strip()
+        # Feeds label a programme per EDITION ("... toetus 2025", "... toetus
+        # 2024"), which splits the dominance vote between names that are the
+        # same programme. The trailing year is stripped before voting: it dates
+        # the round, not the fund, and a founder does not need last year's
+        # edition number in the fund's name.
+        real = re.sub(r"\s*[-/(]?\s*20\d{2}\s*(?:[-/]\s*20\d{2}\s*)?\)?$", "",
+                      (votes[0][0] or "").strip()).strip(" -/(,")
         if real and real.lower() != (row.get("name") or "").strip().lower():
             row["name"] = real
             # Its own word for itself, carried by the feed -- neither our

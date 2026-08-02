@@ -2166,6 +2166,250 @@
         ]
       }
     },
+    "EE": {
+      "name": "Estonia",
+      "companies": 4155,
+      "totalEur": 1934406203,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 618,
+          "eur": 746257022
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 322,
+          "eur": 152905250
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3465,
+          "eur": 481098041
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 16,
+          "eur": 24104665
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 6,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3,
+          "eur": 259080000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 2,
+          "eur": 33532000
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 2,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 9,
+          "eur": 236522402
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 4,
+          "eur": 906824
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "EIS (KredEx + Enterprise Estonia)",
+          "family": "ndb",
+          "companies": 3880,
+          "eur": 715648726
+        },
+        {
+          "label": "Elering AS",
+          "family": "state_aid",
+          "companies": 23,
+          "eur": 325650048
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 3,
+          "eur": 259080000
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 9,
+          "eur": 236522402
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 322,
+          "eur": 152905250
+        },
+        {
+          "label": "KIK (Estonian Environmental Investment Centre)",
+          "family": "state_aid",
+          "companies": 78,
+          "eur": 145530453
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 2,
+          "eur": 33532000
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 16,
+          "eur": 24104665
+        },
+        {
+          "label": "P\u00f5llumajanduse Registrite ja Informatsiooni Amet",
+          "family": "state_aid",
+          "companies": 33,
+          "eur": 22019796
+        },
+        {
+          "label": "Riigi Tugiteenuste Keskus",
+          "family": "state_aid",
+          "companies": 7,
+          "eur": 4143975
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 16,
+          "eur": 4039080
+        },
+        {
+          "label": "Altum (Latvia)",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 2369321
+        },
+        {
+          "label": "Business Finland Venture Capital",
+          "family": "state_aid",
+          "companies": 5,
+          "eur": 2060005
+        },
+        {
+          "label": "ILTE (Lithuania)",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 1989956
+        },
+        {
+          "label": "Kaitseministeerium",
+          "family": "state_aid",
+          "companies": 13,
+          "eur": 1989332
+        },
+        {
+          "label": "Lithuanian Ministry of Economy and Innovation",
+          "family": "state_aid",
+          "companies": 6,
+          "eur": 1069288
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 4,
+          "eur": 906824
+        },
+        {
+          "label": "Sihtasutus Eesti Teadusagentuur",
+          "family": "state_aid",
+          "companies": 4,
+          "eur": 845083
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 890
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 748
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 412
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 251
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 208
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 186
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 160
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 77
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 70
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 43
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 8
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 10,
+        "rankByEur": 20,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Other"
+        ]
+      }
+    },
     "BE": {
       "name": "Belgium",
       "companies": 3803,
@@ -2412,7 +2656,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 10,
+        "rankByCompanies": 11,
         "rankByEur": 9,
         "totalCountries": 23,
         "dominantFamily": "State Aid (SATR)",
@@ -2668,7 +2912,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 11,
+        "rankByCompanies": 12,
         "rankByEur": 6,
         "totalCountries": 23,
         "dominantFamily": "State Aid (SATR)",
@@ -2924,7 +3168,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 12,
+        "rankByCompanies": 13,
         "rankByEur": 13,
         "totalCountries": 23,
         "dominantFamily": "State Aid (SATR)",
@@ -3120,7 +3364,7 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 13,
+        "rankByCompanies": 14,
         "rankByEur": 23,
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
@@ -3340,257 +3584,13 @@
         }
       ],
       "narrative": {
-        "rankByCompanies": 14,
+        "rankByCompanies": 15,
         "rankByEur": 8,
         "totalCountries": 23,
         "dominantFamily": "National Dev. Banks",
         "dominantSectors": [
           "Software, data & AI",
           "Industrial & manufacturing"
-        ]
-      }
-    },
-    "EE": {
-      "name": "Estonia",
-      "companies": 3111,
-      "totalEur": 1934406203,
-      "byFamily": [
-        {
-          "family": "state_aid",
-          "label": "State Aid (SATR)",
-          "companies": 618,
-          "eur": 746257022
-        },
-        {
-          "family": "horizon_eu",
-          "label": "Horizon EU",
-          "companies": 322,
-          "eur": 152905250
-        },
-        {
-          "family": "ndb",
-          "label": "National Dev. Banks",
-          "companies": 3465,
-          "eur": 481098041
-        },
-        {
-          "family": "eic",
-          "label": "EIC",
-          "companies": 16,
-          "eur": 24104665
-        },
-        {
-          "family": "eit",
-          "label": "EIT KIC",
-          "companies": 6,
-          "eur": 0
-        },
-        {
-          "family": "ipcei",
-          "label": "IPCEI",
-          "companies": 3,
-          "eur": 259080000
-        },
-        {
-          "family": "innovation_fund",
-          "label": "Innovation Fund",
-          "companies": 2,
-          "eur": 33532000
-        },
-        {
-          "family": "eib",
-          "label": "EIB",
-          "companies": 2,
-          "eur": 0
-        },
-        {
-          "family": "edf",
-          "label": "EDF",
-          "companies": 9,
-          "eur": 236522402
-        },
-        {
-          "family": "chips_ju",
-          "label": "Chips JU",
-          "companies": 4,
-          "eur": 906824
-        }
-      ],
-      "byVehicle": [
-        {
-          "label": "EIS (KredEx + Enterprise Estonia)",
-          "family": "ndb",
-          "companies": 3880,
-          "eur": 715648726
-        },
-        {
-          "label": "Elering AS",
-          "family": "state_aid",
-          "companies": 23,
-          "eur": 325650048
-        },
-        {
-          "label": "IPCEI",
-          "family": "ipcei",
-          "companies": 3,
-          "eur": 259080000
-        },
-        {
-          "label": "EDF",
-          "family": "edf",
-          "companies": 9,
-          "eur": 236522402
-        },
-        {
-          "label": "Horizon EU",
-          "family": "horizon_eu",
-          "companies": 322,
-          "eur": 152905250
-        },
-        {
-          "label": "KIK (Estonian Environmental Investment Centre)",
-          "family": "state_aid",
-          "companies": 78,
-          "eur": 145530453
-        },
-        {
-          "label": "Innovation Fund",
-          "family": "innovation_fund",
-          "companies": 2,
-          "eur": 33532000
-        },
-        {
-          "label": "EIC",
-          "family": "eic",
-          "companies": 16,
-          "eur": 24104665
-        },
-        {
-          "label": "P\u00f5llumajanduse Registrite ja Informatsiooni Amet",
-          "family": "state_aid",
-          "companies": 33,
-          "eur": 22019796
-        },
-        {
-          "label": "Riigi Tugiteenuste Keskus",
-          "family": "state_aid",
-          "companies": 7,
-          "eur": 4143975
-        },
-        {
-          "label": "National Dev. Banks",
-          "family": "ndb",
-          "companies": 16,
-          "eur": 4039080
-        },
-        {
-          "label": "Altum (Latvia)",
-          "family": "state_aid",
-          "companies": 8,
-          "eur": 2369321
-        },
-        {
-          "label": "Business Finland Venture Capital",
-          "family": "state_aid",
-          "companies": 5,
-          "eur": 2060005
-        },
-        {
-          "label": "ILTE (Lithuania)",
-          "family": "state_aid",
-          "companies": 8,
-          "eur": 1989956
-        },
-        {
-          "label": "Kaitseministeerium",
-          "family": "state_aid",
-          "companies": 13,
-          "eur": 1989332
-        },
-        {
-          "label": "Lithuanian Ministry of Economy and Innovation",
-          "family": "state_aid",
-          "companies": 6,
-          "eur": 1069288
-        },
-        {
-          "label": "Chips JU",
-          "family": "chips_ju",
-          "companies": 4,
-          "eur": 906824
-        },
-        {
-          "label": "Sihtasutus Eesti Teadusagentuur",
-          "family": "state_aid",
-          "companies": 4,
-          "eur": 845083
-        }
-      ],
-      "bySector": [
-        {
-          "sector": "software_data_ai",
-          "label": "Software, data & AI",
-          "companies": 890
-        },
-        {
-          "sector": "other",
-          "label": "Other",
-          "companies": 748
-        },
-        {
-          "sector": "industrial_manufacturing",
-          "label": "Industrial & manufacturing",
-          "companies": 412
-        },
-        {
-          "sector": "energy_cleantech",
-          "label": "Energy & cleantech",
-          "companies": 251
-        },
-        {
-          "sector": "mobility_transport",
-          "label": "Mobility & transport",
-          "companies": 208
-        },
-        {
-          "sector": "agrifood",
-          "label": "Agrifood",
-          "companies": 186
-        },
-        {
-          "sector": "health_life_sciences",
-          "label": "Health & life sciences",
-          "companies": 160
-        },
-        {
-          "sector": "materials_chemicals",
-          "label": "Materials & chemicals",
-          "companies": 77
-        },
-        {
-          "sector": "semiconductors_electronics",
-          "label": "Semiconductors & electronics",
-          "companies": 70
-        },
-        {
-          "sector": "defense_security",
-          "label": "Defence & security",
-          "companies": 43
-        },
-        {
-          "sector": "space",
-          "label": "Space",
-          "companies": 8
-        }
-      ],
-      "narrative": {
-        "rankByCompanies": 15,
-        "rankByEur": 20,
-        "totalCountries": 23,
-        "dominantFamily": "National Dev. Banks",
-        "dominantSectors": [
-          "Software, data & AI",
-          "Other"
         ]
       }
     },

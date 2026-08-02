@@ -75,6 +75,14 @@
   "files": 2,
   "hash": "64159f04358dea04"
  },
+ "gisco_nuts": {
+  "files": 5,
+  "hash": "b1436a511523905b"
+ },
+ "gisco_postcode_nuts": {
+  "files": 2,
+  "hash": "9d684428b435e8ed"
+ },
  "htgf": {
   "files": 12,
   "hash": "a65e1f775e03ff6c"
