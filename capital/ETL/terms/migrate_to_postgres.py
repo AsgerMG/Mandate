@@ -173,7 +173,14 @@ def main() -> None:
                         "intensity_p50 DOUBLE PRECISION", "intensity_n INTEGER",
                         # Hierarchy projections (migration 019), derived from
                         # parent_id on every load.
-                        "tier TEXT", "root_id TEXT", "depth INTEGER", "path TEXT"):
+                        "tier TEXT", "root_id TEXT", "depth INTEGER", "path TEXT",
+                        # What the Commission's register says about a notified
+                        # scheme's lifetime (migration 023). publishableInstruments
+                        # filters on scheme_end_date, so a missing column here
+                        # does not merely lose data -- it makes every closed
+                        # scheme publishable again on the Postgres path only.
+                        "scheme_end_date TEXT", "successor_scheme TEXT",
+                        "successor_title TEXT"):
                 cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
             # Self-healing CONSTRAINTS, for the same reason as the columns
             # above. Adding an evidence tier in SQLite (migration 020 added

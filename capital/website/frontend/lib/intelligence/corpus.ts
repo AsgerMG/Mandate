@@ -182,6 +182,14 @@ export interface DbInstrument {
    *  legal identity of the money and what makes a row traceable back to a
    *  primary document. */
   schemeCode?: string | null;
+  /** The registered date this scheme closed to new applications, per the
+   *  Commission's case register. Award recency cannot see it: payments run for
+   *  years after a scheme shuts. */
+  schemeEndDate?: string | null;
+  /** A linked scheme that is still running, where the closed one was prolonged
+   *  under a new SA number rather than simply ending. */
+  successorScheme?: string | null;
+  successorTitle?: string | null;
   /** Where a founder actually applies. Deliberately NOT the source URL on the
    *  underlying events: those point at the EU competition-case register, which
    *  records that a scheme exists and says nothing about how to approach it. A
@@ -268,7 +276,8 @@ export async function hydrateDbInstruments(): Promise<void> {
                   event_count, company_count, total_eur, source_family_bucket,
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
-                  scheme_code, application_url, sector_mix, scheme_operators,
+                  scheme_code, scheme_end_date, successor_scheme, successor_title,
+                  application_url, sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
                   intensity_p50, intensity_n
            FROM funding_instruments
@@ -362,6 +371,9 @@ export async function hydrateDbInstruments(): Promise<void> {
         administeringBodyShare: inst.administering_body_share ?? null,
         lastYear: inst.last_year ?? null,
         schemeCode: inst.scheme_code ?? null,
+        schemeEndDate: inst.scheme_end_date ?? null,
+        successorScheme: inst.successor_scheme ?? null,
+        successorTitle: inst.successor_title ?? null,
         schemeOperators: (() => {
           const raw = inst.scheme_operators;
           if (!raw) return null;
@@ -653,8 +665,20 @@ export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const hasChildren = new Set(
     all.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
+  const today = new Date().toISOString().slice(0, 10);
   return all.filter((i) =>
     !i.isFramework && !hasChildren.has(i.id) &&
+    // A scheme the Commission's register says has closed to new applications
+    // cannot be PROPOSED, however recently it paid. Measured: 220 of 453 state
+    // aid children sit under a closed scheme and 130 still looked current,
+    // because payments run for years past closure -- 'Italy - Support to
+    // electricity from renewable sources' ended 2021-12-30 and shows 2024
+    // awards. Sending a founder there costs them real time.
+    //
+    // They stay in the corpus deliberately: a closed scheme is still evidence
+    // of what a country funded and who received it, which is what the peer
+    // tracing reads. This filter governs what may be PROPOSED, nothing else.
+    !(i.schemeEndDate && i.schemeEndDate < today) &&
     // No amounts and no dates means every scale and liveness judgement about
     // it is a guess, and a guess scored at its midpoint was outranking funds
     // we had actually measured. See meetsDataFloor.

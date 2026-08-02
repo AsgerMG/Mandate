@@ -37,7 +37,8 @@ def main() -> None:
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
-               last_year, scheme_code, application_url, sector_mix, scheme_operators,
+               last_year, scheme_code, scheme_end_date, successor_scheme,
+               successor_title, application_url, sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n
         FROM funding_instruments
@@ -123,6 +124,11 @@ def main() -> None:
         # document, and the URL is the only thing on the row a founder can act
         # on directly.
         "schemeCode": inst["scheme_code"],
+        # The register's word on whether this scheme still takes applications,
+        # and what replaced it. Award recency cannot see either.
+        "schemeEndDate": inst["scheme_end_date"],
+        "successorScheme": inst["successor_scheme"],
+        "successorTitle": inst["successor_title"],
         # What kind of company this instrument has actually funded. Thematic
         # embeddings match on vocabulary and vocabulary travels between
         # domains; funding history does not.

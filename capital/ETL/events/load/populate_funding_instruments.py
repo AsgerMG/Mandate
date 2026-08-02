@@ -38,6 +38,7 @@ import json
 import re
 import unicodedata
 import sqlite3
+from datetime import date
 from collections import Counter, defaultdict
 
 from instrument_family import PARENT_MAP, SYNTHETIC_PARENTS, source_to_family  # noqa: E402
@@ -934,8 +935,45 @@ def main() -> None:
     # evaluating something.
     CASE_TITLE_NOT_A_SCHEME = {"SA.59366", "SA.40391", "SA.56245", "SA.49781"}
     case_named = 0
+    closed = 0
     if _cases_path.exists():
         cases = json.loads(_cases_path.read_text())
+
+        def _one(rec, key):
+            v = rec.get(key)
+            return (v[0] if isinstance(v, list) and v else v) or ""
+
+        def _links(rec):
+            v = rec.get("caseLinks") or []
+            return v if isinstance(v, list) else [v]
+
+        # The register's word on a scheme's LIFETIME. Award recency cannot see
+        # this: payments run for years after a scheme shuts to new applicants,
+        # so 130 closed schemes looked current on a 2024 award alone.
+        _today = date.today().isoformat()
+        for row in now:
+            sa = (row.get("scheme_code") or "").strip()
+            rec = cases.get(sa) or {}
+            end = _one(rec, "caseMeasureEndDate")[:10]
+            if not end:
+                continue
+            row["scheme_end_date"] = end
+            if end >= _today:
+                continue
+            closed += 1
+            # A prolonged scheme gets a new SA number, so "ended" often means
+            # "superseded". Naming the successor turns a dead end into a
+            # redirection; only a successor still running counts.
+            for link in _links(rec):
+                other = cases.get(str(link).strip()) or {}
+                oend = _one(other, "caseMeasureEndDate")[:10]
+                if oend and oend >= _today:
+                    row["successor_scheme"] = str(link).strip()
+                    row["successor_title"] = _one(other, "caseTitle")
+                    break
+        if closed:
+            print(f"  {closed} instruments sit under a scheme the register says has "
+                  f"closed to new applications")
         for row in now:
             sa = (row.get("scheme_code") or "").strip()
             if not sa or sa in CASE_TITLE_NOT_A_SCHEME:
@@ -1082,6 +1120,15 @@ def main() -> None:
     conn.execute("DELETE FROM funding_instrument_sources")
     conn.execute("DELETE FROM funding_instruments")
 
+    # Defaulted here rather than at each construction site: `now` is built in
+    # three places (families, children, frameworks), so a key added to one is
+    # silently missing from the others -- which is exactly the binding error
+    # this replaces.
+    for _row in now:
+        _row.setdefault("scheme_end_date", None)
+        _row.setdefault("successor_scheme", None)
+        _row.setdefault("successor_title", None)
+
     for r in now:
         conn.execute("""
             INSERT INTO funding_instruments
@@ -1091,14 +1138,18 @@ def main() -> None:
                company_count, total_eur, first_year, last_year, is_framework,
                sample_project_titles, scheme_code, application_url, sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
-               intensity_p50, intensity_n, tier, root_id, depth, path, updated_at)
+               intensity_p50, intensity_n,
+               scheme_end_date, successor_scheme, successor_title,
+               tier, root_id, depth, path, updated_at)
             VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
                     :administering_body_share,:ndb_id,
                     :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
                     :company_count,:total_eur,:first_year,:last_year,:is_framework,
                     :sample_project_titles,:scheme_code,:application_url,:sector_mix,:scheme_operators,
                     :award_p25,:award_p50,:award_p75,:award_n,
-                    :intensity_p50,:intensity_n,:tier,:root_id,:depth,:path,
+                    :intensity_p50,:intensity_n,
+                    :scheme_end_date,:successor_scheme,:successor_title,
+                    :tier,:root_id,:depth,:path,
                     CURRENT_TIMESTAMP)
         """, r)
 

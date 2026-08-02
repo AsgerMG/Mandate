@@ -422,6 +422,15 @@ def apply_022(conn: sqlite3.Connection) -> None:
     print("  applied 022_case_register_name_source.sql")
 
 
+def apply_023(conn: sqlite3.Connection) -> None:
+    """scheme_end_date / successor — the register's word on a scheme's lifetime."""
+    if column_exists(conn, "funding_instruments", "scheme_end_date"):
+        print("  skip 023 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "023_scheme_lifetime.sql").read_text())
+    print("  applied 023_scheme_lifetime.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -442,6 +451,7 @@ MIGRATIONS = {
     "020": apply_020,
     "021": apply_021,
     "022": apply_022,
+    "023": apply_023,
 }
 
 
