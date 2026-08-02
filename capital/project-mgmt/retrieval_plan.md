@@ -61,6 +61,53 @@ shapes the founder's first impression.
 26 instruments have no profile (new since the last build); 141 attributable
 gates are unembedded for the same reason. Both are one paid run.
 
+## What "suited for RAG" means here, in plain terms
+
+The advisor is not doing retrieval today. It is a WRITER handed a fixed briefing
+pack: a shortlist already cut to six or nine rows, an eligibility screen, the
+founder's own funding footprint, comparable companies. There is no tool use
+anywhere in the pipeline. It cannot go and look anything up, and it cannot ask a
+follow-up question of the corpus.
+
+**That is mostly a strength and should not be thrown away.** The shortlist is
+built by code, the verdicts by a rule engine, the exclusions logged. Every figure
+in a memo traces to a row. The common "RAG" shape -- embed the question, pull the
+twenty most similar chunks, let the model reason over them -- would lose all of
+that: no verdict, no exclusion log, no guarantee that a cited rule belongs to the
+fund it is printed under. For a product whose failure mode is sending a founder
+to a fund they cannot get, that trade is bad.
+
+So the goal is not "make it RAG". It is three properties:
+
+**1. Every retrievable unit carries its scope and its source.** A chunk that says
+"applicants must be SMEs" is useless unless it also says WHICH fund, on what
+authority, and whether that fund is still open. This is largely done: gates carry
+`verification_level`, `source_file`, and now a registered scope (region, article,
+end date). The evidence tiers decide what may be shown versus merely known.
+
+**2. The advisor can ask narrow questions instead of receiving a fixed pack.**
+This does not exist. Concretely it means giving the writer a small set of tools --
+"what does fund X require", "which of these funds allow a sole applicant", "show
+me the clause behind this blocker" -- backed by the indexes we already hold,
+rather than pre-deciding everything it might need. This is the real gap, and it
+is a product change, not a data change.
+
+**3. What is retrievable and what is showable are the same set.** They are not.
+`eligibility_embeddings` covers 634 instruments; 141 attributable gates and 26
+instrument profiles are unembedded after today's corpus changes. Anything the
+advisor may state should be findable, and anything findable should be safe to
+state.
+
+### What is concretely missing
+
+| | State | Cost to close |
+|---|---|---|
+| Semantic ranking on the first screen | not wired; lexical fallback runs by default | one line, but must be measured first |
+| A reason to keep `eligibility_embeddings` | 4,579 chunks, queried by nothing | decide its job, or stop maintaining it |
+| Tools so the advisor can look things up | does not exist | the real work; a product change |
+| Index freshness after a corpus change | 141 gates + 26 profiles stale | one paid run, and a pipeline step so it cannot drift |
+| An honest "nothing fits" answer | thin briefs publish on hope | the corpus can now support it |
+
 ## The questions this work has to answer
 
 Not a plan yet -- these are the things to establish before committing to one.
