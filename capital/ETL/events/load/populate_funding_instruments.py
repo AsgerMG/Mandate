@@ -914,6 +914,43 @@ def main() -> None:
     if feed_named:
         print(f"  named {feed_named} instruments from the programme name their own events carry")
 
+    # ── The Commission's own title for a notified scheme ─────────────────
+    # A SATR child is named after the granting BODY, so 351 of 453 shared a name
+    # with a sibling: nine rows reading "Bundesamt fuer Wirtschaft und
+    # Ausfuhrkontrolle". Every one carries an SA number and the Commission
+    # publishes a title per number, fetched by fetch_state_aid_cases.py.
+    #
+    # Applied before the curated file, so a hand-curated name still wins: the
+    # register is authoritative about a scheme's registered identity, a human is
+    # authoritative about what to call it.
+    _cases_path = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
+    # Four cases whose registered title describes an EVALUATION PLAN rather than
+    # an aid scheme ("Germany - Evaluation plan for the block exempted R&D...").
+    # The SATR filing points at the evaluation-plan case, so the scheme's own
+    # number is a different one we do not hold; naming the fund after the plan
+    # would be precise about the wrong thing. Listed by SA number rather than
+    # matched on words, because four known cases are curation, not a rule --
+    # a word-matching rule would silently catch schemes legitimately named for
+    # evaluating something.
+    CASE_TITLE_NOT_A_SCHEME = {"SA.59366", "SA.40391", "SA.56245", "SA.49781"}
+    case_named = 0
+    if _cases_path.exists():
+        cases = json.loads(_cases_path.read_text())
+        for row in now:
+            sa = (row.get("scheme_code") or "").strip()
+            if not sa or sa in CASE_TITLE_NOT_A_SCHEME:
+                continue
+            rec = cases.get(sa) or {}
+            t = rec.get("caseTitle") or rec.get("caseOriginalTitle") or ""
+            title = (t[0] if isinstance(t, list) and t else t or "").strip()
+            if title and title != row.get("name"):
+                row["name"] = title
+                row["name_source"] = "case_register"
+                case_named += 1
+        if case_named:
+            print(f"  named {case_named} instruments from the Commission's state-aid "
+                  f"case register")
+
     _names_path = ROOT / "data" / "reference" / "programme_names.json"
     programme_names = {
         k: v["name"] for k, v in json.loads(_names_path.read_text()).items()

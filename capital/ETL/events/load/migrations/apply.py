@@ -411,6 +411,17 @@ def apply_021(conn: sqlite3.Connection) -> None:
     print("  applied 021_programme_feed_name_source.sql")
 
 
+def apply_022(conn: sqlite3.Connection) -> None:
+    """case_register name_source — the Commission's title for a notified scheme."""
+    row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE name = 'funding_instruments'").fetchone()
+    if row and "case_register" in row[0]:
+        print("  skip 022 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "022_case_register_name_source.sql").read_text())
+    print("  applied 022_case_register_name_source.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -430,6 +441,7 @@ MIGRATIONS = {
     "019": apply_019,
     "020": apply_020,
     "021": apply_021,
+    "022": apply_022,
 }
 
 
