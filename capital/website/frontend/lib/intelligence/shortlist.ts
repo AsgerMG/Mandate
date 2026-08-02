@@ -233,16 +233,52 @@ const JUDGEMENT_CAP = 3;
 export function judgementCriteria(inst: DbInstrument): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
-  for (const g of inst.gates) {
-    if (g.gateRole && g.gateRole !== "filter") continue;
-    if (g.valueSpec) continue;                       // decided by the engine
-    if (!isCited(g)) continue;                       // not the fund's own words
-    const text = (g.requirement ?? "").trim();
-    const key = text.toLowerCase();
-    if (!text || seen.has(key)) continue;
-    seen.add(key);
-    out.push(text);
-    if (out.length >= JUDGEMENT_CAP) break;
+  // OWN criteria before inherited ones, for the same reason structuringNotes
+  // does it -- and here it is a correctness problem, not a presentation one.
+  //
+  // A scheme child inherits its whole regime's gates, and a regime covers
+  // hundreds of unrelated schemes. Taking the first three matching gates showed
+  // a hydrogen company applying to one German scheme these three rules, each
+  // cited and each belonging to a DIFFERENT sibling scheme:
+  //
+  //   "...public-law bodies with automotive-industry competence"
+  //   "...universities, regional/local authorities, commercial enterprises"
+  //   "For Modules 1-8, cooperation with a partner institution from at least
+  //    one of the specified Eastern Partnership countries is required"
+  //
+  // A founder reads that and concludes they need automotive credentials and a
+  // Georgian partner. Neither rule governs the fund in front of them. Every
+  // line is true of something; none is true of this.
+  //
+  // ORDERING ALONE DOES NOT FIX THAT CASE, and the ordering is kept anyway
+  // because it is right on its own terms: 54 of 615 children now lead with a
+  // criterion that is genuinely theirs. But BAFA has NO cited criteria of its
+  // own, so all three of its lines are inherited whatever the order.
+  //
+  // The real defect is upstream and larger: rules extracted from an individual
+  // scheme's document were attached to the REGIME, so satr_de_rnd's gate set is
+  // a mixture of rules belonging to hundreds of unrelated schemes, and every
+  // child inherits all of them undifferentiated. Fixing it means attributing an
+  // extracted rule to the scheme whose document it came from -- source_file is
+  // recorded, so the information exists -- rather than to the regime it was
+  // harvested under. Not attempted here; it changes what every SATR child
+  // claims about itself and deserves its own measured pass.
+  //
+  // Inherited criteria still show, because a regime's rules DO bind its
+  // schemes -- they just must not outrank what the scheme says about itself.
+  for (const ownFirst of [true, false]) {
+    for (const g of inst.gates) {
+      if (Boolean(g.inherited) !== !ownFirst) continue;
+      if (g.gateRole && g.gateRole !== "filter") continue;
+      if (g.valueSpec) continue;                       // decided by the engine
+      if (!isCited(g)) continue;                       // not the fund's own words
+      const text = (g.requirement ?? "").trim();
+      const key = text.toLowerCase();
+      if (!text || seen.has(key)) continue;
+      seen.add(key);
+      out.push(text);
+      if (out.length >= JUDGEMENT_CAP) return out;
+    }
   }
   return out;
 }
