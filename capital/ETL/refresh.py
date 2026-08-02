@@ -48,6 +48,11 @@ STEPS: list[tuple[str, list[str], bool]] = [
     # run like any other.
     ("encode registered regions",
      ["python3", "ETL/terms/encode_registered_regions.py", "run"], False),
+    # Reports only, never quarantines. Region evidence is about the PROJECT's
+    # location while the gate asks where the COMPANY is, so a handful of
+    # outsiders is expected and deleting a correct filter would put a Paris
+    # company back in front of a Normandy-only scheme.
+    ("audit region claims", ["python3", "ETL/terms/audit_region_claims.py"], False),
     ("coverage gate", ["python3", "ETL/terms/coverage_gate.py"], False),
     ("export snapshot", ["python3", "website/build/eligibility_export.py"], False),
     ("companies index", ["python3", "website/build/companies_index.py"], False),

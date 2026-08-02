@@ -53,16 +53,84 @@ import sqlite3
 CASES = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
 GATE_KEY = "registered_region"
 
-# RegionNuts2021.CZ03 -> CZ03. Only this form is a real regional restriction;
-# CountryDEU and NutsRegionDE mean "the whole country", which is not a filter.
-NUTS = re.compile(r"^RegionNuts\d*\.([A-Z]{2}[A-Z0-9]+)$")
+# The register writes a region in TWO syntaxes, and reading only one was a real
+# defect: `RegionNuts2021.PT111` and `NutsRegionPT117` both name a sub-national
+# region, while `NutsRegionDE` and `CountryDEU` name a whole country. The first
+# version matched only the dotted form, so `NutsRegionPT117` read as "all of
+# Portugal" and was discarded.
+#
+# SA.41942 lists 31 region tags, 28 of them bare. Keeping 3 of 31 turned four
+# Portuguese R&D programmes into filters excluding 85-100% of their OWN
+# recipients -- Centro 2030 admitted none of its 153 awards. An over-narrow
+# region filter is the worst failure this file can produce: a blocked fund
+# vanishes from the brief with nothing shown to the founder.
+#
+# So the discriminator is not which prefix was used, it is what follows the
+# country code: two characters is a country, more is a region.
+REGION_TAG = re.compile(r"^(?:RegionNuts\d*\.|NutsRegion)([A-Z]{2}[A-Z0-9]+)$")
+
+# The EMITTED artifact, not the source JSON it is built from. emit_regions.py
+# filters on its way out -- the United Kingdom is in nuts_regions.json but has no
+# NUTS 2024 successor, so it never reaches the intake -- and reading the source
+# instead left a UK scheme demanding UKC..UKK that no founder can ever select.
+# The authority for "can a founder answer this" is what the founder is shown.
+REGIONS_TS = (ROOT / "website" / "frontend" / "lib" / "intelligence"
+              / "regions.generated.ts")
+
+
+def offered_codes() -> set[str]:
+    """Every NUTS code the intake can actually express -- the authority here.
+
+    Not "is this a valid NUTS code somewhere". The register tags a vintage and
+    the intake offers NUTS 2024, so a code from an older vintage is not a
+    stricter rule, it is an unsatisfiable one. Measured: four gates demanded
+    codes no founder can select, including the Province of Zuid-Holland's own
+    scheme demanding NL33 when Zuid-Holland is NL36 in 2024 -- its own
+    applicants were structurally rejected.
+    """
+    return set(re.findall(r'id:\s*"([A-Z]{2}[A-Z0-9]*)"', REGIONS_TS.read_text()))
+
+
+def usable(codes: list[str], offered: set[str]) -> list[str]:
+    """Each registered code, expressed in something a founder can actually pick.
+
+    A code the intake still offers is kept as it is. A retired one is
+    GENERALISED to its nearest current ancestor -- PT117 to PT11, NL33 to NL3 --
+    and a code with no current ancestor at all is dropped.
+
+    Generalising is safe in a way translating is not. Saying "somewhere in
+    Norte" about a scheme registered for a district of Norte is true, and it can
+    only make the gate more permissive; mapping PT17 onto a specific successor
+    would be a guess, because it became both PT1A and PT1B. Widening never hides
+    a fund from someone entitled to it, which is the failure that matters here.
+
+    Both defects this replaces were live: NL33 was kept because its parent NL3
+    exists, yet a Zuid-Holland founder answers NL36 and was rejected by the
+    Province of Zuid-Holland's own scheme; and the United Kingdom has no NUTS
+    2024 successor at all, so a UK scheme demanded UKC..UKK that nobody is ever
+    shown.
+    """
+    out: list[str] = []
+    for c in codes:
+        if c in offered:
+            out.append(c)
+            continue
+        # Longest offered prefix: the smallest current region containing it.
+        anc = max((o for o in offered if c.startswith(o)), key=len, default=None)
+        if anc:
+            out.append(anc)
+    return sorted(set(out))
 
 
 def regions_for(rec: dict) -> list[str]:
     raw = rec.get("caseRegions") or []
     if not isinstance(raw, list):
         raw = [raw]
-    out = {m.group(1) for x in raw if (m := NUTS.match(str(x)))}
+    out = set()
+    for x in raw:
+        m = REGION_TAG.match(str(x).strip())
+        if m and len(m.group(1)) > 2:
+            out.add(m.group(1))
     return sorted(out)
 
 
@@ -73,6 +141,7 @@ def main() -> None:
     args = ap.parse_args()
 
     cases = json.loads(CASES.read_text()) if CASES.exists() else {}
+    offered = offered_codes()
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("""
@@ -85,9 +154,21 @@ def main() -> None:
 
     encoded = skipped = 0
     for r in rows:
-        regions = regions_for(cases.get((r["scheme_code"] or "").strip()) or {})
+        regions = usable(
+            regions_for(cases.get((r["scheme_code"] or "").strip()) or {}), offered)
         if not regions:
             skipped += 1
+            # DELETE, not skip. eligibility_gates survives the instrument
+            # reload, so a gate this script wrote on an earlier run stays in the
+            # corpus after the rule that produced it stops holding. That left a
+            # UK scheme demanding UKC..UKK -- codes with no NUTS 2024 successor,
+            # so no founder can ever be shown as eligible -- long after the
+            # vintage check started rejecting them. A rule that no longer holds
+            # has to be removed, not merely not rewritten.
+            if args.cmd == "run" and not args.dry_run:
+                conn.execute(
+                    "DELETE FROM eligibility_gates WHERE instrument_id=? AND gate_key=?",
+                    (r["id"], GATE_KEY))
             continue
         encoded += 1
         if args.cmd != "run" or args.dry_run:
