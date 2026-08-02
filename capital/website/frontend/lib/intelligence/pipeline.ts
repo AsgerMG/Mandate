@@ -387,6 +387,36 @@ function buildInstitutions(
     applicationChannel: row.applicationChannel,
     // Resolved in code so the row carries a link the writer cannot invent.
     link: instrumentLink(row),
+    // Carried through, and they were NOT. InstrumentRow has computed both since
+    // the shortlist was written, InstitutionEntry declares both, and
+    // InstitutionsTable renders both ("What we can check" / "How the money
+    // works") -- but this mapping never copied them, so neither block has ever
+    // appeared in a memo. Found by generating a real brief on the live site and
+    // looking at it: every automated check passed, because nothing asserts that
+    // a field survives the row -> entry hop.
+    //
+    // These are the only two things on the row that are the FUND's own words
+    // rather than the writer's, which is exactly why they belong in front of a
+    // founder.
+    // Every one of these was declared on InstitutionEntry, computed on
+    // InstrumentRow, and rendered by InstitutionsTable -- and none was carried
+    // across. The memo has therefore never shown what a fund typically awards,
+    // what share of a project it actually covered, or the fund's own words
+    // about who it is for. `typicalAward` is the same median whose absence from
+    // Postgres was found this morning to be mis-ranking production; it was
+    // fixed in the store and still could not reach the page.
+    //
+    // Optional fields plus a hand-written mapping is the shape of this bug:
+    // omitting one is legal TypeScript, so nothing objected. rowToEntry.test.ts
+    // now asserts the hop for every field the table reads.
+    typicalAward: row.typicalAward,
+    typicalAwardN: row.typicalAwardN,
+    aidIntensity: row.aidIntensity,
+    aidIntensityN: row.aidIntensityN,
+    descriptor: row.descriptor,
+    familyName: row.familyName,
+    judgementCriteria: row.judgementCriteria,
+    structuringNotes: row.structuringNotes,
     whyEligible: "",
     comparableFirms: comparableFirmsForChannel(row.channel, records, dbPeers),
     nextStep: "",
