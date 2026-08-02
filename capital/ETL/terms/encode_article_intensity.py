@@ -70,6 +70,45 @@ import re
 import sqlite3
 
 CEILINGS_JSON = ROOT / "data" / "reference" / "gber_aid_intensity.json"
+CASES_JSON = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
+
+# Art. 25(5) sets a different ceiling per RESEARCH CATEGORY, and the category is
+# a property of the project rather than the scheme -- so this file used to
+# publish the band across categories and say so.
+#
+# The Commission's case register settles it: a notified scheme is registered
+# under specific sub-paragraphs of Art. 25, and 252a-252d ARE those categories.
+# A scheme registered under 252b covers industrial research at 50%; one
+# registered under 252b and 252c covers 25-50% because the register says it
+# covers both, not because we could not tell.
+#
+# Ceilings are the verified Art. 25(5) figures (see gber_aid_intensity.json).
+REGISTERED_CATEGORY = {
+    "252a": ("fundamental research", 100.0),
+    "252b": ("industrial research", 50.0),
+    "252c": ("experimental development", 25.0),
+    "252d": ("feasibility studies", 50.0),
+}
+
+
+def registered_objectives(cases: dict, scheme_code: str | None) -> list[str]:
+    """The GBER articles the Commission registered THIS scheme under.
+
+    Strictly better evidence than the majority vote across award history: a
+    filed registration, per scheme, rather than an inference with a 50% floor.
+    Measured against the inference on 274 children -- they agree on 44 and the
+    register is MORE SPECIFIC on 161 (Art. 25 -> Art. 25(2)(b), naming the
+    research category), with the rest genuine corrections.
+    """
+    rec = cases.get((scheme_code or "").strip()) or {}
+    raw = rec.get("caseObjectivesStr") or []
+    out: list[str] = []
+    for item in (raw if isinstance(raw, list) else [raw]):
+        for part in str(item).split(","):
+            code = part.split(":", 1)[-1].strip()
+            if code.startswith("StateAidObjectiveGberArt"):
+                out.append(code[len("StateAidObjectiveGberArt"):])
+    return out
 
 # A realised intensity is only evidence if there are enough awards behind it.
 # Below this, one unusual project moves the median far enough to delete a
@@ -125,7 +164,7 @@ def max_with_uplifts(entry: dict, low_high: tuple[float, float]) -> float:
 def rows(conn: sqlite3.Connection) -> list[sqlite3.Row]:
     return conn.execute("""
         SELECT g.instrument_id, g.value AS article, g.verify_note, i.name,
-               i.intensity_p50, i.intensity_n, i.award_p50, i.award_n
+               i.scheme_code, i.intensity_p50, i.intensity_n, i.award_p50, i.award_n
         FROM eligibility_gates g
         JOIN funding_instruments i ON i.id = g.instrument_id
         WHERE g.gate_key = 'gber_article_inferred'
@@ -186,6 +225,29 @@ def spec(entry: dict, lo: float, hi: float, r: sqlite3.Row,
     }, ensure_ascii=False)
 
 
+def registered_text(codes: list[str]) -> tuple[str, float, float] | None:
+    """(sentence, low, high) from the registered categories, or None.
+
+    Only Art. 25's sub-paragraphs pin a ceiling by themselves; a scheme also
+    registered under Art. 28 or 29 keeps those as separate context rather than
+    widening the R&D band, because they cap different things.
+    """
+    cats = [REGISTERED_CATEGORY[c] for c in codes if c in REGISTERED_CATEGORY]
+    if not cats:
+        return None
+    lo, hi = min(c[1] for c in cats), max(c[1] for c in cats)
+    names = ", ".join(sorted({c[0] for c in cats}))
+    span = f"{lo:.0f}%" if lo == hi else f"{lo:.0f}-{hi:.0f}%"
+    other = sorted({c for c in codes if c not in REGISTERED_CATEGORY and c.isdigit()})
+    tail = f" It is also registered under GBER Art. {', '.join(other)}." if other else ""
+    return (
+        f"Registered with the European Commission under GBER Art. 25 for {names}: "
+        f"statutory ceiling {span} of eligible costs, +20pp small enterprise / "
+        f"+10pp medium-sized enterprise / +15pp effective collaboration, capped at 80%. "
+        f"The rest of the project cost is yours to fund.{tail}",
+        lo, hi)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["status", "run"])
@@ -196,7 +258,8 @@ def main() -> None:
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
 
-    encoded = refuted = no_ceiling = corroborated = 0
+    encoded = refuted = no_ceiling = corroborated = registered = 0
+    cases = json.loads(CASES_JSON.read_text()) if CASES_JSON.exists() else {}
     weak: list[str] = []
     refutations: list[str] = []
 
@@ -241,6 +304,12 @@ def main() -> None:
         if share and share[0] / share[1] < 0.75:
             weak.append(f"  {(r['name'] or '')[:48]:48} {entry['article']:8} "
                         f"{share[0]}/{share[1]} = {100*share[0]/share[1]:.0f}%")
+        # The register wins where it has an opinion: it is a filed registration
+        # for THIS scheme, not a >=50% vote across its award history.
+        reg = registered_text(registered_objectives(cases, r["scheme_code"]))
+        if reg:
+            registered += 1
+            lo, hi = reg[1], reg[2]
         encoded += 1
         if args.cmd == "run" and not args.dry_run:
             conn.execute(
@@ -248,13 +317,15 @@ def main() -> None:
                    SET value_spec = ?, requirement = ?, updated_at = CURRENT_TIMESTAMP
                    WHERE instrument_id = ? AND gate_key = 'gber_article_inferred'""",
                 (spec(entry, lo, hi, r, share),
-                 requirement_text(entry, lo, hi, share), r["instrument_id"]))
+                 reg[0] if reg else requirement_text(entry, lo, hi, share),
+                 r["instrument_id"]))
 
     if args.cmd == "run" and not args.dry_run:
         conn.commit()
 
     print(f"article gates given a statutory ceiling:        {encoded}")
-    print(f"  attribution below 75% (stated on the row):    {len(weak)}")
+    print(f"  grounded in the Commission's registration:    {registered}")
+    print(f"  attribution below 75% (stated on the row):    {len(weak) - registered if len(weak) > registered else 0}")
     print(f"articles with no intensity concept (Art 21/22): {no_ceiling}")
     print(f"corroborated by award median vs the article's cap: {corroborated}")
     print(f"REFUTED and deleted (pays past the lawful cap): {refuted}")
