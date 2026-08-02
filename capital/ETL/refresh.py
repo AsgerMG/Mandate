@@ -42,6 +42,12 @@ STEPS: list[tuple[str, list[str], bool]] = [
     # bare article label and nobody would see a failure.
     ("encode article ceilings",
      ["python3", "ETL/terms/encode_article_intensity.py", "run"], False),
+    # Where a notified scheme actually applies, from its registration. Must
+    # follow "rebuild instruments" (which truncates and reloads the table) and
+    # precede the coverage gate, so a regression in regional coverage stops the
+    # run like any other.
+    ("encode registered regions",
+     ["python3", "ETL/terms/encode_registered_regions.py", "run"], False),
     ("coverage gate", ["python3", "ETL/terms/coverage_gate.py"], False),
     ("export snapshot", ["python3", "website/build/eligibility_export.py"], False),
     ("companies index", ["python3", "website/build/companies_index.py"], False),
