@@ -276,11 +276,39 @@ export function judgementCriteria(inst: DbInstrument): string[] {
       const key = text.toLowerCase();
       if (!text || seen.has(key)) continue;
       seen.add(key);
-      out.push(text);
+      // Inherited criteria are LABELLED, not presented as this fund's own.
+      //
+      // Measured: 453 SATR scheme children hold zero cited criteria of their
+      // own, and each regime's rules were extracted from exactly ONE document —
+      // all 81 German R&D schemes are characterised by a single BMFTR
+      // security-research Richtlinie. Unlabelled, a hydrogen founder reads
+      // "public-law bodies with automotive-industry competence" as a condition
+      // on the fund in front of them. Labelled, they read it as what the
+      // framework document says, and can weigh it accordingly.
+      //
+      // The label names the framework rather than saying "regime-wide", because
+      // "regime-wide" would itself be an unverified claim: we know which
+      // document the rule came from, not that it binds every scheme under it.
+      out.push(ownFirst ? text : `${frameworkLabel(inst)}: ${text}`);
       if (out.length >= JUDGEMENT_CAP) return out;
     }
   }
   return out;
+}
+
+/** Whose framework an inherited rule came from, for labelling. Falls back to a
+ *  scope-only label when the parent cannot be resolved — never to silence,
+ *  because an unlabelled inherited rule reads as the fund's own. */
+function frameworkLabel(inst: DbInstrument): string {
+  if (!inst.parentId) return "Framework rule";
+  const parent = loadDbInstruments().find((i) => i.id === inst.parentId);
+  if (!parent) return "Framework rule";
+  // A SATR regime's name is a machine descriptor ("SATR De Rnd") that means
+  // nothing to a founder, and putting it in front of a rule reads like a typo
+  // rather than a scope. Say what the framework IS; the row already carries the
+  // country and the legal basis beside it.
+  if (parent.sourceFamilyBucket === "state_aid_satr") return "State aid regime";
+  return parent.name ? `${parent.name} framework` : "Framework rule";
 }
 
 /**
