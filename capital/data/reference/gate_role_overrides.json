@@ -1,0 +1,50 @@
+{
+  "_comment": "Hand corrections to gate_role, applied after the LLM triage that sets it. A gate here was triaged as a `filter` with a machine-readable value_spec, which means it can DISQUALIFY a founder and remove the fund from their brief silently -- but its own wording does not state a requirement. Found by looking for rules whose text hedges about whether they apply at all ('typically', 'predominantly', 'may also'), then reading each one. The hedging was a way to FIND these; it is deliberately NOT a rule in the pipeline, because a word-matching filter would be exactly the enumerated register this repo forbids and would catch rules that hedge a threshold while stating a real requirement.",
+  "_why_a_file": "encode_gates.py writes gate_role directly from a paid triage pass, so a manual UPDATE would be silently reverted the next time triage runs. This is reapplied after it.",
+  "_roles": "programme_fact = true of the instrument, says nothing about who qualifies. vague = a real condition we cannot turn into a test. Neither can decide a verdict; both still show on the row.",
+
+  "overrides": [
+    {
+      "instrument_id": "eic_fund",
+      "gate_key": "g4",
+      "role": "programme_fact",
+      "was": "filter on conditionality",
+      "requirement": "The Fund takes minority equity stakes, typically around 10% but can go higher.",
+      "why": "Describes what the instrument does with its money, not a test the founder passes or fails. As a filter it could exclude a founder for the Fund's own investment policy."
+    },
+    {
+      "instrument_id": "tesi_equity",
+      "gate_key": "g2-growth-revenue",
+      "role": "programme_fact",
+      "was": "filter on turnoverBand",
+      "requirement": "Growth equity target companies typically already have significant, often international revenue.",
+      "why": "A description of who the fund has tended to back, not a stated threshold. Blocking a company for being below a 'typical' revenue nobody published is the overclaim this corpus exists to avoid."
+    },
+    {
+      "instrument_id": "tesi_equity",
+      "gate_key": "g2-venture-stage",
+      "role": "vague",
+      "was": "filter on developmentStage",
+      "requirement": "Venture capital investments require companies with strong potential for growth.",
+      "why": "A real intention, but 'strong potential' is not checkable against any intake answer. Kept as information; it must not decide a verdict."
+    },
+    {
+      "instrument_id": "eu_investeu_intermediary",
+      "gate_key": "g3",
+      "role": "programme_fact",
+      "was": "filter on borrowerModel",
+      "requirement": "The EU guarantee may also cover funding or guarantees extended by an implementing partner.",
+      "why": "'May also cover' widens the guarantee's scope. It is a permission, and encoding a permission as a filter inverts it into a restriction."
+    },
+    {
+      "instrument_id": "satr_fr_equity",
+      "gate_key": "g2_undertaking_in_difficulty_excluded",
+      "role": "vague",
+      "was": "filter on lossesOverHalfCapital",
+      "requirement": "Undertakings in difficulty are excluded from the scheme, except young companies within their first years.",
+      "why": "THE WORST OF THE SEVEN. The rule carries an exception for young companies and the value_spec does not encode it, so as a filter it blocks precisely the founders the exception protects -- an early-stage company with accumulated losses, which is most of them. Downgraded until the exception can be encoded rather than dropped."
+    }
+  ],
+
+  "_kept_as_filters": "satr_de_rnd/g1_nexus_works_in_germany_dns (work must generally be carried out in Germany) and satr_de_rnd/g3_own_contribution_sicherheit (an appropriate own contribution is required) hedge a THRESHOLD, not whether the rule applies. Both are real conditions of the scheme and continue to filter. Note both are regime-level rules extracted from one scheme's document, which is the separate open item."
+}

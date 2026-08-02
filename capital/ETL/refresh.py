@@ -53,6 +53,10 @@ STEPS: list[tuple[str, list[str], bool]] = [
     # outsiders is expected and deleting a correct filter would put a Paris
     # company back in front of a Normandy-only scheme.
     ("audit region claims", ["python3", "ETL/terms/audit_region_claims.py"], False),
+    # After any triage, before the gate: a filter that should never have been
+    # one can disqualify a founder silently.
+    ("apply gate_role overrides",
+     ["python3", "ETL/terms/apply_gate_role_overrides.py"], False),
     ("coverage gate", ["python3", "ETL/terms/coverage_gate.py"], False),
     ("export snapshot", ["python3", "website/build/eligibility_export.py"], False),
     ("companies index", ["python3", "website/build/companies_index.py"], False),
