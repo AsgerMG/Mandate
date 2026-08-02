@@ -126,10 +126,30 @@ useful types dominate:
 (EUR 22B) and the Innovation Fund (EUR 13B). Policy news covers EU-level
 programmes, which is where the large money is.
 
-**The honest limit:** a founder whose shortlist is entirely national state aid
-or development-bank lending will have few or no signals. Section 3 must degrade
-to the web-search fallback for them rather than inventing relevance, and Step 3's
-contract has to say so explicitly.
+### Does it reach a real founder? Yes -- 12 of 12
+
+The concern above was that 83 of 958 instruments sounds thin. Measured against
+what founders are actually shown, it is not:
+
+- **69 of 626 publishable instruments carry a signal -- but 72% of publishable
+  euros.**
+- Run across the 12 archetypes, **every one has signal-carrying funds in its
+  pool**, typically 5 to 8 of 7 to 12:
+
+```
+Robotics      7/7     GovTech        8/12    Life sciences  8/11
+Hardware      7/9     Platform       7/9     MedTech        6/9
+FinTech (b)   5/9     Cloud          7/10    AgriTech       5/7
+FinTech (c)   5/5     AI B2C         5/8     AI B2B         5/9
+```
+
+The reason is structural rather than lucky: policy news covers the large EU
+programmes, and those are what rank into a shortlist. The long tail of small
+national schemes carries no signals and also rarely reaches a founder.
+
+**The residual limit still holds and the contract must state it:** a founder
+whose shortlist happens to be entirely national state aid will have no signals,
+and section 3 must fall back to web search rather than invent relevance.
 
 ## Step 2 -- Make a signal relevant to a founder, in code
 
