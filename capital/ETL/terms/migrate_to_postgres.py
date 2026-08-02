@@ -72,6 +72,32 @@ def check_values(table: str, column: str) -> list[str]:
     return values
 
 
+def copy_rows(cur, table: str, rows, skip: set[str] = frozenset()) -> int:
+    """Publish every column SQLite holds, minus `skip`.
+
+    The column list is DERIVED, for the reason recorded on funding_instruments
+    below: a hand-maintained list beside a table that gains a column every few
+    days is a "keep in sync" comment in disguise, and this repo has now been bitten
+    by exactly that twice in one day -- once here (award medians, realised
+    intensities and the hierarchy silently never reached Postgres, so production
+    ranked on a statistic the tests never used) and once in the read path, where
+    eight fields the memo renders were dropped by a hand-written object mapping.
+
+    `skip` is for columns Postgres owns or that need a second pass -- SQLite's
+    autoincrement id, the timestamps Postgres defaults, and parent_id, which is
+    a self-reference and cannot be set until every row exists.
+    """
+    if not rows:
+        return 0
+    cols = [c for c in rows[0].keys() if c not in skip]
+    placeholders = ", ".join(["%s"] * len(cols))
+    cur.executemany(
+        f'INSERT INTO {table} ({", ".join(cols)}) VALUES ({placeholders})',
+        [tuple(bool(r[c]) if c == "is_framework" else r[c] for c in cols) for r in rows],
+    )
+    return len(cols)
+
+
 def fetch_sqlite():
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
@@ -216,40 +242,21 @@ def main() -> None:
             )
 
             cur.execute("TRUNCATE instrument_application")
-            cur.executemany(
-                """INSERT INTO instrument_application
-                     (id, instrument_id, channel, timeline, url, quote, source_file)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-                [(r["id"], r["instrument_id"], r["channel"], r["timeline"],
-                  r["url"], r["quote"], r["source_file"]) for r in applications],
-            )
+            n_app = copy_rows(cur, "instrument_application", applications,
+                              skip={"updated_at"})
+
             cur.executemany(
                 "INSERT INTO funding_instrument_sources (instrument_id, source) VALUES (%s, %s)",
                 [(r["instrument_id"], r["source"]) for r in sources],
             )
 
-            cur.executemany(
-                """INSERT INTO eligibility_gates
-                     (instrument_id, gate_key, gate_family, requirement, value, value_spec,
-                      intake_field, gate_role, intake_field_resolved, encoding_method,
-                      quote, source_file, source_locator, verification_level,
-                      verify_note, verify_by)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                [(r["instrument_id"], r["gate_key"], r["gate_family"], r["requirement"], r["value"],
-                  r["value_spec"], r["intake_field"], r["gate_role"], r["intake_field_resolved"],
-                  r["encoding_method"], r["quote"], r["source_file"], r["source_locator"],
-                  r["verification_level"], r["verify_note"], r["verify_by"]) for r in gates],
-            )
+            n_gate = copy_rows(cur, "eligibility_gates", gates,
+                               skip={"id", "created_at", "updated_at"})
 
-            cur.executemany(
-                """INSERT INTO eligibility_clauses
-                     (instrument_id, clause_type, clause_key, text, quote, source_file,
-                      source_locator, verification_level, verify_note, verify_by)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                [(r["instrument_id"], r["clause_type"], r["clause_key"], r["text"], r["quote"],
-                  r["source_file"], r["source_locator"], r["verification_level"],
-                  r["verify_note"], r["verify_by"]) for r in clauses],
-            )
+            n_clause = copy_rows(cur, "eligibility_clauses", clauses,
+                                 skip={"id", "created_at", "updated_at"})
+            print(f"columns published: instruments {len(insert_cols)}, "
+                  f"gates {n_gate}, clauses {n_clause}, applications {n_app}")
         pg.commit()
         print("Postgres: migration committed.")
 
