@@ -1344,6 +1344,21 @@ export async function computeVerdict(
     ...dbPeers.flatMap((r) => r.channels),
   ]);
   const founderCountries = founderCountryList(country, opts.targetMarkets, eligibility?.entityCountries);
+  // Semantic ranking on the FAST path, not just in the memo.
+  //
+  // This screen decides which funds a founder sees first, and it was ranking on
+  // lexical keyword overlap while the memo ranked on embeddings. Measured across
+  // the 12 archetypes: the two disagree on the top five for ALL TWELVE, mean
+  // overlap 1.2 of 5. A founder's instant read and their memo were built from
+  // different orderings of the same pool, and the instant one used the signal
+  // documented as "measurably worse".
+  //
+  // Awaited alongside nothing else because it is one Voyage call with a 6s
+  // timeout and a per-invocation memo; on failure or without VOYAGE_KEY it
+  // returns an empty map and selectInstrumentRows falls back to the lexical
+  // index exactly as before. The screen must never fail because a vector query
+  // timed out.
+  const semantic = await semanticFundMatch(opts.description ?? "");
   const candidates = await buildInstrumentTableHydrated({
     fieldChannels,
     ticketBand: eligibility?.ticketBand,
@@ -1351,6 +1366,7 @@ export async function computeVerdict(
     founderCountries,
     capitalSought: opts.capitalSought ?? [],
     description: opts.description,
+    semantic,
     log: opts.log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is
