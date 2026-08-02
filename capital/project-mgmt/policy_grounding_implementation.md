@@ -64,7 +64,7 @@ channel vocabulary:
 
 ---
 
-## Step 1 -- Link programme mentions to instruments
+## Step 1 -- Link programme mentions to instruments  (DONE, gate passed)
 
 **Build:** `ETL/intelligence/transform/link_programme_mentions.py`
 **Writes:** a new table `article_instrument_links` in `signals.sqlite`
@@ -92,6 +92,44 @@ because it will be quoted as a reason to act.
 **Done when:** the script reports coverage per match method, and a hand-read
 sample of 20 links is right. Target is not 100%; the head of the distribution
 carries most of the value.
+
+### Result
+
+`ETL/intelligence/transform/link_programme_mentions.py`, writing
+`article_instrument_links` in signals.sqlite. **8,690 links across 656
+articles.**
+
+    mentions resolved   851 of 3,547  (24%)
+      channel           657    "Horizon Europe", "EIC Accelerator"
+      body_abbrev       174    BMFTR/BMBF/BMWK -> Bundesministerium instruments
+      name               20    exact instrument name
+
+**24% is the right number, not a shortfall.** The unresolved head is programmes
+we do not hold and should not pretend to: Scaleup Europe Fund (28), Single
+Market Programme (28), Women TechEU (23), Hightech Agenda Deutschland (23),
+France 2030 (18), COSME (17). ERC (22) is deliberately unresolved -- it is
+Horizon Pillar I and this corpus holds Pillar II, so mapping it would attach
+basic-research policy to applied-research funds.
+
+### What it actually reaches
+
+**1,134 of 4,366 signals are now addressable to a founder's shortlist**, and the
+useful types dominate:
+
+    programme_policy_change   443 signals across 82 instruments
+    funding_pipeline_signal   334               83
+    funding_award             184               67
+    regulatory_development     48               37
+
+83 of 958 instruments carry a signal -- but those 83 hold **EUR 173B of EUR
+458B, 38% of corpus euros**, concentrated in IPCEI (EUR 112B), Horizon
+(EUR 22B) and the Innovation Fund (EUR 13B). Policy news covers EU-level
+programmes, which is where the large money is.
+
+**The honest limit:** a founder whose shortlist is entirely national state aid
+or development-bank lending will have few or no signals. Section 3 must degrade
+to the web-search fallback for them rather than inventing relevance, and Step 3's
+contract has to say so explicitly.
 
 ## Step 2 -- Make a signal relevant to a founder, in code
 
