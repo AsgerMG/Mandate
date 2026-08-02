@@ -37,6 +37,13 @@ the model. It renders as its own block.
 
 ## Rules
 
+- SOP-0 (judged) Lead with movement on the founder's OWN funds where the
+  evidence has it, dated, before any landscape-level development. The section
+  exists to say the doors are not fixed; a door they are actually standing at
+  moving is worth more than a door elsewhere moving. Where no fund-level
+  movement is supplied, say the landscape is moving without implying their
+  specific funds are.
+
 - SOP-1 (hard) One paragraph, at most 200 words.
 - SOP-2 (hard) The closing offer is appended separately and must never appear
   inside the analytical paragraph.

@@ -594,6 +594,27 @@ async function synthesize(
       ]
     : [];
   const agendaEvidence = agendaItems.map(formatDigestItem).join("\n");
+  // Fund-level movement, for the funds actually on this founder's table.
+  //
+  // The agenda above is topic-level: what is happening to the Competitiveness
+  // Fund, what is moving in energy. Useful, and it was the only landscape
+  // grounding the brief had. This is one level down and it is what makes the
+  // back half specific: "the fund in your row 2 opens a EUR 380M call", dated,
+  // sourced, and tied to an instrument the founder can actually apply to.
+  //
+  // Scoped to the table on purpose. A policy development about a fund the
+  // founder cannot get is noise dressed as insight.
+  const instrumentSignals = (digest?.instruments ?? {});
+  const fundMovesEvidence = instrumentTable
+    .flatMap((row) => {
+      const sigs = row.instrumentId ? instrumentSignals[row.instrumentId] ?? [] : [];
+      return sigs.map((s) =>
+        `- ${row.instrument} — ${s.date} (${s.type}): ${s.summary}` +
+        (s.impact ? ` What it means: ${s.impact}` : "") +
+        ` [${s.title} ${s.url}]`);
+    })
+    .slice(0, 12)
+    .join("\n");
   // "positioning" namedrop grounding: who is actually shaping that agenda
   // right now, most recent first. Plain recency join (not a similarity
   // search) — see _people() in signals_digest.py.
@@ -1069,6 +1090,15 @@ async function synthesize(
           `${processes || "(none)"}\n\n` +
           `## What is on the policy agenda now (grounds "positioning")\n` +
           `${agendaEvidence || "(nothing usable for this sector right now)"}\n\n` +
+          `## Movement on the FUNDS IN THE TABLE ABOVE (AUTHORITATIVE, dated)\n` +
+          `Each line is a policy development on a specific fund the founder can ` +
+          `apply to, from our own corpus, with its date and source. Prefer these ` +
+          `over the topic-level agenda when both would serve: a founder acts on ` +
+          `"the fund in your row 2 opens a call in Q4", not on "the Commission ` +
+          `is consolidating programmes". Cite the date. If this block is empty, ` +
+          `their funds are national schemes the policy corpus does not track — ` +
+          `fall back to the agenda above and do NOT imply fund-level movement.\n` +
+          `${fundMovesEvidence || "(no fund-level movement on this founder's table)"}\n\n` +
           `## Who is shaping that agenda (the ONLY basis for naming a person)\n` +
           `${peopleEvidence || "(no person-level signal; refer to roles and institutions only)"}\n\n` +
           `## Most recent developments (recency-sorted, grounds "stateOfPlay")\n` +

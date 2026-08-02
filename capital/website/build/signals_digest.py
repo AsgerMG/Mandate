@@ -184,6 +184,70 @@ def _items(hits: list[dict]) -> list[dict]:
     return out
 
 
+# How many signals per fund reach the brief. Three is enough to say "this fund
+# is moving and here is how"; more and the writer has to prioritise inside a
+# block it did not choose, which is what the topic slices are for.
+SIGNALS_PER_INSTRUMENT = 3
+
+# Types that say something about a FUND's direction. stakeholder_appointment
+# averages 0.55 confidence and is about people, not money; partnership_
+# collaboration is usually about two funders, not about a founder's access.
+DIRECTIONAL_TYPES = (
+    "programme_policy_change", "funding_pipeline_signal", "regulatory_development")
+
+
+def _instrument_signals(con: sqlite3.Connection) -> dict[str, list[dict]]:
+    """Signals attached to a SPECIFIC fund, via article_instrument_links.
+
+    The topic and sector slices above answer "what is moving in this part of the
+    landscape". This answers "what is moving about the fund on your table",
+    which the digest could not say before because nothing connected a signal to
+    an instrument. 12 of 12 archetypes have at least one fund with a signal, and
+    those funds carry 72% of publishable euros.
+
+    Dated and sourced per item: a policy claim without a date is unusable, and
+    freshness is this corpus's whole value.
+    """
+    if not con.execute(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='article_instrument_links'"
+    ).fetchone():
+        return {}
+    rows = con.execute(f"""
+        SELECT l.instrument_id, s.signal_type, s.summary, s.anticipated_impact,
+               s.confidence, a.published_at, a.title,
+               COALESCE(NULLIF(a.resolved_url,''), a.url) AS url
+        FROM article_instrument_links l
+        JOIN article_signals s ON s.article_id = l.article_id
+        JOIN articles a ON a.id = l.article_id
+        WHERE s.signal_type IN ({",".join("?" * len(DIRECTIONAL_TYPES))})
+          AND a.published_at IS NOT NULL
+        ORDER BY l.instrument_id, a.published_at DESC
+    """, DIRECTIONAL_TYPES).fetchall()
+
+    out: dict[str, list[dict]] = {}
+    seen: set[tuple[str, str]] = set()
+    for iid, stype, summary, impact, conf, pub, title, url in rows:
+        bucket = out.setdefault(iid, [])
+        if len(bucket) >= SIGNALS_PER_INSTRUMENT:
+            continue
+        # One article can mention a fund several times; the same summary twice
+        # in a row reads as two separate developments.
+        key = (iid, (summary or "")[:80])
+        if key in seen:
+            continue
+        seen.add(key)
+        bucket.append({
+            "type": stype,
+            "date": (pub or "")[:10],
+            "summary": " ".join((summary or "").split()),
+            "impact": " ".join((impact or "").split()) or None,
+            "confidence": round(float(conf or 0), 2),
+            "title": title,
+            "url": url,
+        })
+    return out
+
+
 def main() -> None:
     r = SignalsRetriever()
 
@@ -195,6 +259,7 @@ def main() -> None:
     n_embedded = con.execute(
         "SELECT COUNT(DISTINCT article_id) FROM article_chunks").fetchone()[0]
     people = _people(con)
+    instruments = _instrument_signals(con)
     con.close()
 
     payload = {
@@ -203,10 +268,15 @@ def main() -> None:
         "topics": topics,
         "sectors": sectors,
         "people": people,
+        # Keyed by instrument_id, so pipeline.ts can pick the funds actually on
+        # this founder's table rather than tailoring by topic alone.
+        "instruments": instruments,
     }
     OUT.write_text(json.dumps(payload, indent=1, ensure_ascii=False))
     n_top = sum(len(v) for v in topics.values())
     n_sec = sum(len(v) for v in sectors.values())
+    n_inst = sum(len(v) for v in instruments.values())
+    print(f"  per-instrument signals: {n_inst} across {len(instruments)} funds")
     print(f"signals digest → {OUT}")
     print(f"  {n_top} topic passages, {n_sec} sector passages, "
           f"{len(people)} people/agenda items "

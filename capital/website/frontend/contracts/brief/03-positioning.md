@@ -27,6 +27,18 @@ founder can actually make when they walk through one.
   was being described or why it mattered. The 130-word cap in force at the
   time made attribution the first thing compressed out.
 
+- POS-6 (judged) Where the evidence carries dated movement on a fund in the
+  founder's own table, prefer it to the topic-level agenda and carry the date.
+  A founder acts on "the fund in your row 2 opens a EUR 380M call in Q4", not
+  on "the Commission is consolidating programmes". Where the fund-movement
+  block is empty, their funds are national schemes the policy corpus does not
+  track: use the agenda and do NOT imply movement on their specific funds.
+
+  **evidence:** until 2026-08-02 the corpus could only be queried by topic and
+  sector, so this section could only ever describe the landscape. Signals are
+  now attached to specific instruments, and 12 of 12 test archetypes have at
+  least one fund on the table carrying dated movement.
+
 - POS-4 (judged) The framing advice must fit how this company actually reaches
   its market. Use the founder's stated commercial model: who pays, who buys,
   through what channel. Where that is unknown, write about the technology and

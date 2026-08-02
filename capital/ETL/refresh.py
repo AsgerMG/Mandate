@@ -93,6 +93,13 @@ STEPS: list[tuple[str, list[str], bool]] = [
     # nothing here noticed. `npm run build` catches it via its prebuild check --
     # but only locally, because db.sqlite is gitignored and the check skips
     # itself on Vercel, so a stale file deploys silently.
+    # Policy signals -> the funds they bear on, then the digest that exports
+    # them. Both read signals.sqlite (news cadence) but depend on instrument ids
+    # from db.sqlite, so they run after the corpus is rebuilt and before the
+    # site data that ships them.
+    ("link policy signals to funds",
+     ["python3", "ETL/intelligence/transform/link_programme_mentions.py", "--write"], False),
+    ("rebuild signals digest", ["python3", "website/build/signals_digest.py"], False),
     ("rebuild site data", ["python3", "website/build/build_site_data.py"], False),
     ("coverage report", ["python3", "ETL/terms/coverage_report.py", "--md", "project-mgmt/coverage.md"], False),
     ("coverage dashboard", ["python3", "ETL/terms/coverage_dashboard.py", "--out", "project-mgmt/coverage.html"], False),

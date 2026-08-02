@@ -575,11 +575,27 @@ export interface PersonDigestItem {
   excerpt: string;
 }
 
+/** A dated policy development attached to ONE fund, not to a topic. */
+export interface InstrumentSignal {
+  type: string;
+  date: string;
+  summary: string;
+  impact: string | null;
+  confidence: number;
+  title: string;
+  url: string;
+}
+
 interface SignalsDigest {
   generatedAt: string;
   topics: Record<string, DigestItem[]>;
   sectors: Record<string, DigestItem[]>;
   people: PersonDigestItem[];
+  /** Keyed by instrument_id. The topic and sector slices say what is moving in
+   *  a part of the landscape; this says what is moving about the fund on the
+   *  founder's own table, which the digest could not express until
+   *  article_instrument_links existed. Optional: an older digest has none. */
+  instruments?: Record<string, InstrumentSignal[]>;
 }
 
 let digestCache: SignalsDigest | null | undefined;
