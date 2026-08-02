@@ -23,13 +23,28 @@ assembles:
 |---|---|---|---|
 | 1. Bottom line | where you stand, which door first, what the money is worth | our instrument DB | **good** -- and directly improved by the ceilings, closed schemes and award medians |
 | 2. Funds | the five doors, the first step, and the eligibility case | our instrument DB | **good** -- this is where the whole corpus effort landed |
-| 3. Positioning | how to frame the company for the political moment its funders operate in | **web search** | **not our DB** |
-| 4. State of play | that the doors move with policy cycles, and tracking that is what we do | **web search** | **not our DB** |
+| 3. Positioning | how to frame the company for the political moment its funders operate in | **our signals corpus, by TOPIC** | partial |
+| 4. State of play | that the doors move with policy cycles, and tracking that is what we do | **our signals corpus, by TOPIC** | partial |
 
-**Half the memo is not tailored against the proprietary DB.** Sections 3 and 4
-are the ones that turn a list of funds into an argument a founder can make, and
-they are currently written from four web searches (`research.ts`,
-`max_uses: 4`) -- the same source anyone with a browser has.
+**CORRECTION, 2026-08-02.** An earlier version of this document claimed sections
+3 and 4 were written from web search and grounded in nothing we own. That was
+wrong, and the error would have sent us rebuilding something that exists.
+
+`website/build/signals_digest.py` already runs semantic retrieval over
+signals.sqlite at build time and exports `signals_digest.json` (16 topics, 11
+sectors, 12 people). `pipeline.ts` loads it, tailors it by capital sought and
+sector, and the contract is explicit: *"positioning and stateOfPlay may ONLY be
+grounded in these lines -- no invention."* Web search (`research.ts`) does
+competitor intel, not positioning.
+
+So the back half IS grounded in our corpus. What it is grounded in is TOPIC and
+SECTOR level -- "what is happening to the Competitiveness Fund", "what is moving
+in energy" -- and that is genuinely useful.
+
+**The real gap is one level down: per-INSTRUMENT.** The digest cannot say "the
+specific fund on your table changed its terms last month", because nothing
+connected a signal to an instrument. That is exactly what Step 1 built, and it
+is a smaller, sharper claim than the one this document opened with.
 
 ### And we already own the corpus that should ground them
 

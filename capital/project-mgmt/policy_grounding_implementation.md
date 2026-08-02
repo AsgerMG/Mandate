@@ -151,6 +151,40 @@ national schemes carries no signals and also rarely reaches a founder.
 whose shortlist happens to be entirely national state aid will have no signals,
 and section 3 must fall back to web search rather than invent relevance.
 
+## The other half of retrieval: what we ask
+
+Tracked here because it is the same question, not a separate project.
+
+**The intake IS the query.** The founder's free-text description is what gets
+embedded against `instrument_profiles`; the six screen-one answers are what cut
+the pool before any ranking runs. A better index cannot compensate for a query
+that never asked the discriminating thing.
+
+Two distinct asks, and they fail differently:
+
+- **Screen one** decides which funds are even considered. Its questions are
+  fixed, and a missing one silently removes funds from the pool -- invisible,
+  because nobody sees what was never a candidate.
+- **The adaptive round** already generates questions from the verbatim gate text
+  of shortlisted funds (`gateReach.ts`), so it self-corrects as the corpus
+  improves. That half is in good shape and got better with every rule added this
+  session.
+
+**What is worth measuring, cheaply, and is NOT worth redesigning blind:** which
+screen-one fields actually change the shortlist. Run the 12 archetypes, vary one
+intake field at a time, and count how many published rows move. A question that
+moves nothing is costing a founder attention for no retrieval gain; a question
+that moves everything deserves to be asked better.
+
+Precedent for doing this as a measurement rather than a redesign: the award
+median looked like a refinement until it was run and changed 10 of 12
+archetypes. Intake changes are more expensive to get wrong -- they are the one
+part of this product a founder actually experiences as work.
+
+Not sequenced into the steps below. It runs in parallel and gates nothing,
+because policy signals are scoped by the shortlist the current intake already
+produces.
+
 ## Step 2 -- Make a signal relevant to a founder, in code
 
 **Build:** `signalsFor(instrumentIds, sectorTop, country)` in
