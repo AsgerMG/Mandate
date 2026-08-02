@@ -35,11 +35,15 @@ they are currently written from four web searches (`research.ts`,
 
 `data/signals.sqlite`, built by `ETL/intelligence/extract/news_ingest.py`:
 
-    articles            19,281
+    articles            19,281  -- but is_relevant=1 on only 3,752
     article_chunks      11,184     <- chunked FOR retrieval
-    article_entities     6,755
+    article_entities     6,755     <- of which 3,547 are programme mentions
     article_signals      4,366     <- typed, with confidence and anticipated impact
     sources                 64
+
+The usable corpus is **3,752 articles**, not 19,281; the rest were fetched and
+judged irrelevant. Build plan with the full measurement:
+`policy_grounding_implementation.md`.
 
 Nothing in `website/frontend/` reads any of it. It was chunked for retrieval and
 never wired to anything. That is the same "built, correct, unreachable" shape as
