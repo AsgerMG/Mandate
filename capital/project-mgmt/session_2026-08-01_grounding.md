@@ -218,9 +218,12 @@ real fix is attributing each rule to the scheme whose document it came from;
 `data/raw/state_aid_cases/cases.json` carries a per-scheme objective, member
 state, regions, aid instruments and decision dates, and is the likely route.
 
-**Altum (22) and EIS (22) still share display names.** Their feeds carry no
-scheme identity at all, and their closed EU structural-fund measures are named
-in national regulation rather than any agency catalogue. EIS has a working
+**CLOSED for Altum, open for EIS (22).** The premise here was wrong: the feeds
+DO carry scheme names and the extractor discarded them. Row 0 of every sheet in
+Altum's recipient spreadsheet is a title row naming the programme, and the id was
+built from the sheet name instead. 3,921 events backfilled, Altum collisions
+22 -> 0. EIS has the same fix available (the rendered row's 6th cell) but is
+blocked on identity, not data: see the addendum. EIS has a working
 WordPress REST API at `https://eis.ee/wp-json/wp/v2/teenus` returning 108
 service titles. Roughly twenty EIS ids have a plausible match there that needs a
 leap the truncated id does not support, and those keep the measured descriptor.
@@ -331,15 +334,59 @@ Cell 5 is the programme; cell 6 is the funding source ("Riigieelarve (RE)"). An
 agent proposed cell 6. Taking it would have named every Estonian fund "state
 budget".
 
+### The region guard, and the three defects it found
+
+CLOSED, and not the way it was specified. Postcode coverage on the region-gated
+events is 1.5%, so a postcode guard would have checked 1% of the evidence. It was
+unnecessary: `satr_staging.region` carries the beneficiary's NUTS region on all
+122,814 rows, published under the same transparency obligation as the amount, so
+`ETL/terms/audit_region_claims.py` resolves 100% of events against Eurostat's own
+name register rather than a heuristic. It runs in the pipeline and REPORTS ONLY:
+region evidence describes the project's location while the gate asks where the
+company sits, so deleting a contradicted filter would put a Paris company back in
+front of a Normandy scheme.
+
+Building it found three defects in the filters shipped hours earlier:
+
+| | before | after |
+|---|---|---|
+| gates checked against recipients | 93 | 134 |
+| corroborated (>=80% inside) | 88/93 (95%) | 131/134 (98%) |
+| awards inside registered regions | 92.6% | 98.8% |
+| gates written in a retired vintage | 13 | 0 |
+
+1. **Two syntaxes, one read.** `NutsRegionPT117` is a region, `NutsRegionDE` a
+   country; the regex matched only `RegionNuts2021.X`. SA.41942 lists 31 tags, 28
+   bare, and 3 survived: four Portuguese programmes excluded 85-100% of their own
+   recipients and Centro 2030 admitted none of its 153 awards. The discriminator
+   is what follows the country code, not which prefix was used.
+2. **Retired vintages nobody can satisfy.** Zuid-Holland's own scheme demanded
+   NL33 when Zuid-Holland is NL36 in 2024. Retired codes now generalise to their
+   nearest current ancestor and are dropped where none exists. Generalising can
+   only widen a gate; translating would be a guess, since PT17 became both PT1A
+   and PT1B.
+3. **Stale gates were never deleted.** `eligibility_gates` survives the
+   instrument reload, so a UK scheme kept demanding UKC..UKK after the vintage
+   check began rejecting them. A rule that stops holding is now removed.
+
+One scheme needs a human: `satr_de_rnd__sa_110716__bezirksregierung_arnsberg`,
+registered for DEA but paying into Hamburg, Rheinland-Pfalz and Hessen at 59%
+inside. Not a parsing artefact; someone must read the decision text.
+
 ### Open, in rough order of value
 
 1. **Regime rules attribution.** 453 children still inherit criteria extracted
    from ONE document per regime, currently labelled "State aid regime:" as a
    holding fix. The register gives each scheme its own objectives, regions and
    aid instruments, which is the material for real per-scheme criteria.
-2. **Postal-code to NUTS**, so region claims get the audit every other filter has.
-3. **EIS identity**, per above. 22 funds, and the name is already in the feed.
-4. **Art. 107(3)(a) uplift** deliberately unencoded: two sources conflict
+2. **EIS identity.** 22 funds, and the name is already in the feed. Blocked on
+   `source_to_family`, not on data: loading the Estonian file offline dispatches
+   to `_parse_record`, which derives an instrument's identity from a truncation
+   of the `programme` field, merging distinct measures. Widening the truncation
+   made it worse (86 then 118 unnamed) because the identity is the wrong FIELD.
+3. **Art. 107(3)(a) uplift** deliberately unencoded: two sources conflict
    (25pp vs 15pp). Needs the Official Journal.
+4. **One region outlier**, Arnsberg above.
 5. Innovasjon Norge, Bpifrance and CDP Venture Capital refuse automated access
-   (403 / Radware CAPTCHA) and are deliberately left alone.
+   (403 / Radware CAPTCHA) and are deliberately left alone. 14 ambiguous
+   families sit behind these blocks.
