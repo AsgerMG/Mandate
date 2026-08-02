@@ -373,9 +373,53 @@ One scheme needs a human: `satr_de_rnd__sa_110716__bezirksregierung_arnsberg`,
 registered for DEA but paying into Hamburg, Rheinland-Pfalz and Hessen at 59%
 inside. Not a parsing artefact; someone must read the decision text.
 
+### Regime rules attribution: as closed as the data allows
+
+The register does NOT carry eligibility criteria. It carries scheme SCOPE --
+objective, regions, aid instrument, measure dates -- all four of which are now
+encoded. There is no per-scheme source of "who qualifies" short of per-scheme
+documents, which do not exist for these regimes.
+
+What that leaves is bounded and measured. Of the 222 borrowed rules that can
+disqualify:
+
+- **74 are audited.** `activities` and sector rules go through
+  `audit_encoding_vs_reality.py`; the 22 region rules through the new
+  `audit_region_claims.py`.
+- **148 are universal GBER conditions** and legitimately bind every scheme under
+  a regime: "must not be in financial difficulty" (Art. 1(4)(c)) and the SME
+  definition (Annex I). Borrowing those is correct, not a defect.
+
+So the borrowed-rule risk is not the 222; it is the small set whose text hedges.
+
+**47 filters hedge in their own wording** ("predominantly targets SMEs", "many
+schemes restrict", "typically"). 40 are `llm_classified`, which already narrows
+rather than condemns, so they cannot block. **7 sit at a cited tier and CAN
+block**, and reviewing them, five are mis-encoded rather than merely soft:
+
+    eic_fund            "takes minority equity stakes, typically around 10%"
+                        -- a fact about the instrument, not a test of the founder
+    tesi_equity         "typically already have significant [turnover]"  -- ditto
+    tesi_equity         "require companies with strong potential"  -- not checkable
+    eu_investeu         "the guarantee MAY ALSO cover ..."  -- scope, not a limit
+    satr_fr_equity      excludes undertakings in difficulty "except young
+                        companies" -- an exception the spec does not encode, so it
+                        blocks exactly the founders the exception protects
+
+The remaining two (a German programme's territoriality, an own-contribution
+requirement) are real rules with soft thresholds and should stay.
+
+The fix is per-rule triage via `gate_role`, not a linguistic rule: hedging is
+detected here to FIND the cases, and a word-matching rule promoted into the
+pipeline would be the enumerated register this repo forbids. Seven gates is
+hand-reviewable, and the change belongs in the curated layer so a reload cannot
+undo it.
+
 ### Open, in rough order of value
 
-1. **Regime rules attribution.** 453 children still inherit criteria extracted
+1. **Retriage the seven hedged cited filters** above, five of which block on
+   text that does not state a requirement.
+2. **Regime rules attribution, residual.** 453 children still inherit criteria extracted
    from ONE document per regime, currently labelled "State aid regime:" as a
    holding fix. The register gives each scheme its own objectives, regions and
    aid instruments, which is the material for real per-scheme criteria.
