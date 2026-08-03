@@ -257,7 +257,8 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     """Assemble (instrument_id, profile_text, n_titles) for every instrument."""
     instruments = sq.execute(
         """SELECT id, name, administering_body, country, capital_type,
-                  source_family_bucket, sample_project_titles
+                  source_family_bucket, sample_project_titles, sector_mix,
+                  award_p50, award_n
            FROM funding_instruments ORDER BY id"""
     ).fetchall()
 
@@ -320,7 +321,8 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     # (see the 94-subsector plan in project-mgmt/nace_taxonomy.md).
 
     out: list[tuple[str, str, int]] = []
-    for iid, name, body, country, capital, bucket, samples in instruments:
+    for (iid, name, body, country, capital, bucket, samples,
+         sector_mix, award_p50, award_n) in instruments:
         # The event join above keys on `source`, which cannot express the SATR
         # split: a child is one granting authority WITHIN a source, so all 453
         # of them matched nothing and were profiled on their regime's
@@ -349,6 +351,36 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
             parts.append("What it funds: " + " ".join(scope[iid][:6]))
         if titles.get(iid):
             parts.append("Projects it has actually funded: " + "; ".join(titles[iid]) + ".")
+        # WHO IT HAS ACTUALLY FUNDED, in words.
+        #
+        # State-aid schemes and development-bank lines carry no per-project
+        # titles at all -- measured, zero distinct titles per leaf against
+        # Horizon's 534 -- so their profiles came out at a mean of 240 characters
+        # against Horizon's 4,058, and semantic matching could not separate them.
+        # A founder describing themselves by sector then had nothing to match
+        # against, and national schemes were retrieved at 47% regime recall
+        # versus 75% for EU programmes.
+        #
+        # The sector mix is measured from the instrument's own award history and
+        # was already in the corpus, used for scoring but never for retrieval.
+        # Written out as words so it is in the same space as the founder's
+        # description, rather than a number the embedding never sees.
+        if sector_mix:
+            try:
+                mix = json.loads(sector_mix)
+            except (ValueError, TypeError):
+                mix = {}
+            total = sum(mix.values()) or 0
+            if total:
+                top = sorted(mix.items(), key=lambda kv: -kv[1])[:4]
+                named = [f"{readable(k)} ({100 * v / total:.0f}%)"
+                         for k, v in top if v / total >= 0.05]
+                if named:
+                    parts.append("Sectors it has actually funded: " + ", ".join(named) + ".")
+        # Scale, so a EUR 40k voucher and a EUR 5M grant stop reading alike.
+        if award_p50 and (award_n or 0) >= 5:
+            parts.append(f"Typical award: around EUR {award_p50:,.0f} "
+                         f"across {award_n} recorded awards.")
         text = "\n".join(parts)[:MAX_PROFILE_CHARS]
         out.append((iid, text, len(titles.get(iid, []))))
     return out

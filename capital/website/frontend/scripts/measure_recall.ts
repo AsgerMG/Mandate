@@ -58,9 +58,12 @@ async function main() {
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
     } as never, {
       targetMarkets: [t.country], capitalSought: ["grant", "loan"],
-      // A `profile` pair has no description: that is the honest input for a
-      // national-scheme applicant, not an omission.
-      description: t.description || undefined,
+      // A `profile` pair has no PROJECT text -- national schemes carry none --
+      // but a real founder still describes themselves on screen one. Passing
+      // nothing modelled a founder who typed nothing, which no founder does,
+      // and made the mode untestable: semantic matching never ran, so profile
+      // richness could not affect it either way.
+      description: t.description || t.selfDescription || undefined,
     } as never);
     const pool: string[] = v.candidateInstrumentIds ?? [];
     const top5 = (v.instrumentTable ?? []).slice(0, 5)
