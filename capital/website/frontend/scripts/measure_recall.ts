@@ -1,47 +1,65 @@
 // Does retrieval return the fund a company ACTUALLY won?
 //
-// The only ground truth we own: 150k companies with traced awards. Replay a
-// real recipient -- their country and the project they were funded for -- and
-// check whether the instrument that actually paid them comes back in the pool
-// and in the published rows. Row count is not correctness; this is.
+// Ground truth is the only kind we own that cannot be argued with: real
+// companies, real awards, replayed as if they were founders filling in the
+// intake. Row count is not correctness; this is.
+//
+// SPLIT ON PURPOSE. `tune` is what a change may be measured against while it is
+// being made; `holdout` is never looked at until the change is finished. Fitting
+// a ranking to the set you keep checking is how you get a number that only
+// works on this database. Split by a hash of the COMPANY, so the same company
+// can never appear on both sides.
+//
+// The set is capped at 12 pairs per instrument and includes national schemes
+// recovered via scheme_code -> call_id, which funding_instrument_sources cannot
+// express. Without that half, the measure would only cover EU programmes and
+// would quietly push the product toward them.
+//
+//   npx tsx scripts/measure_recall.ts                 # holdout (the real number)
+//   SPLIT=tune npx tsx scripts/measure_recall.ts      # while iterating
+//   SPLIT=all N=400 npx tsx scripts/measure_recall.ts
 import { readFileSync } from "fs";
+import path from "path";
 import { hydrateDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 
 async function main() {
   await hydrateDbInstruments();
-  const truth = JSON.parse(readFileSync("/tmp/ground_truth.json", "utf8")) as any[];
-  const N = Number(process.env.N ?? 40);
-  let inPool = 0, inRows = 0, done = 0;
+  const all = JSON.parse(readFileSync(
+    path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
+  const want = process.env.SPLIT ?? "holdout";
+  const set = want === "all" ? all : all.filter((r) => r.split === want);
+  const N = Math.min(Number(process.env.N ?? 250), set.length);
+
   const ranks: number[] = [];
-  const misses: string[] = [];
-  for (const t of truth.slice(0, N)) {
+  const missByChannel = new Map<string, number>();
+  let done = 0;
+  for (const t of set.slice(0, N)) {
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
     } as never, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"],
-      description: t.description,
+      targetMarkets: [t.country], capitalSought: ["grant", "loan"], description: t.description,
     } as never);
     const pool: string[] = v.candidateInstrumentIds ?? [];
-    const rows: string[] = (v.instrumentTable ?? []).map((r: any) => r.instrumentId).filter(Boolean);
     done++;
-    if (pool.includes(t.instrument)) inPool++;
-    else misses.push(`${t.country} ${t.instrumentName} <- ${t.description.slice(0, 46)}`);
-    if (rows.includes(t.instrument)) inRows++;
-    const rank = pool.indexOf(t.instrument);
-    if (rank >= 0) ranks.push(rank + 1);
+    const r = pool.indexOf(t.instrument);
+    if (r >= 0) ranks.push(r + 1);
+    else {
+      const ch = t.instrument.split("__")[0];
+      missByChannel.set(ch, (missByChannel.get(ch) ?? 0) + 1);
+    }
   }
-  console.log(`replayed ${done} real recipients`);
-  console.log(`  actual fund in the candidate pool: ${inPool}/${done}  (${(100*inPool/done).toFixed(0)}%)`);
-  console.log(`  actual fund in published rows:     ${inRows}/${done}  (${(100*inRows/done).toFixed(0)}%)`);
+  const at = (k: number) => ranks.filter((x) => x <= k).length;
+  const p = (n: number) => `${n}/${done} (${(100 * n / done).toFixed(0)}%)`;
   ranks.sort((a, b) => a - b);
-  const pct = (p: number) => ranks[Math.floor(ranks.length * p)] ?? 0;
-  const bucket = (lo: number, hi: number) => ranks.filter((r) => r >= lo && r <= hi).length;
-  console.log(`\nwhere the right fund ranks IN THE POOL (n=${ranks.length}):`);
-  console.log(`  median ${pct(0.5)}   75th ${pct(0.75)}   90th ${pct(0.9)}   worst ${ranks[ranks.length-1]}`);
-  console.log(`  rank 1-6: ${bucket(1,6)}   7-10: ${bucket(7,10)}   11-15: ${bucket(11,15)}   16+: ${ranks.filter((r)=>r>15).length}`);
-  console.log(`\nmisses (fund never even considered):`);
-  for (const m of misses.slice(0, 10)) console.log("   " + m);
+  console.log(`split=${want}  replayed ${done} real recipients`);
+  console.log(`  in pool     ${p(ranks.length)}`);
+  console.log(`  recall@3    ${p(at(3))}`);
+  console.log(`  recall@5    ${p(at(5))}`);
+  console.log(`  recall@10   ${p(at(10))}`);
+  console.log(`  median rank ${ranks[Math.floor(ranks.length / 2)] ?? "-"}`);
+  const worst = [...missByChannel].sort((a, b) => b[1] - a[1]).slice(0, 6);
+  if (worst.length) console.log(`  never considered, by fund: ${worst.map(([k, n]) => `${k}:${n}`).join("  ")}`);
 }
 main();

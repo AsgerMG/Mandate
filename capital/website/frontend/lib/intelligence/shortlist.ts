@@ -34,6 +34,19 @@ export const LEAVES_PER_CHANNEL = 2;
  *  near-duplicates. Four, not seven: the table has six rows in total, and one
  *  channel taking more than four of them stops being a shortlist. */
 export const MAX_LEAVES_PER_CHANNEL = 4;
+/** How many leaves a channel may put into the POOL, as opposed to the table.
+ *
+ *  The cap above exists so one channel cannot dominate the six rows a founder
+ *  reads. It was also, accidentally, deciding what the ranker was allowed to
+ *  CONSIDER -- and `state_aid_satr` holds 453 leaves, `national_dev_banks` 178.
+ *  A French founder has 50 national R&D schemes and four could reach the pool,
+ *  so the scheme they actually won was usually eliminated before anything
+ *  ranked it. Measured on real recipients: pool recall 27%, and the misses were
+ *  almost entirely SATR children.
+ *
+ *  Consideration and display are now separate concerns. The pool is wide, the
+ *  global row sort decides, and DISPLAY_CAP still governs what is shown. */
+export const POOL_LEAVES_PER_CHANNEL = 14;
 /** How close to the channel's best a leaf must score to earn an extra slot. */
 export const NEAR_TIE_RATIO = 0.9;
 /** Share of the ranking score from thematic match; the rest is sector intake. */
@@ -761,7 +774,10 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
   const keep = sorted.filter((i, idx) =>
     idx < LEAVES_PER_CHANNEL ||
     (idx < MAX_LEAVES_PER_CHANNEL && bestRel > 0 &&
-     (relevance.get(i.id) ?? 0) >= bestRel * NEAR_TIE_RATIO));
+     (relevance.get(i.id) ?? 0) >= bestRel * NEAR_TIE_RATIO) ||
+    // Beyond the display-shaped cap, keep ranked candidates so the pool the
+    // writer sees is wide even though the table stays short.
+    idx < POOL_LEAVES_PER_CHANNEL);
   for (const i of sorted.filter((x) => !keep.includes(x))) {
     log?.record("SEL-LEAF-CAP", i.id,
       `ranked below its channel's limit (${LEAVES_PER_CHANNEL} by default, up to ` +
