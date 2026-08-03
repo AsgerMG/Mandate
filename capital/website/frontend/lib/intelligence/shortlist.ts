@@ -138,6 +138,42 @@ function objectives(): Objectives {
  *  objective: b^m * q^k = 1. Rows without one are untouched at 1, and the
  *  objective-carrying group as a whole neither rises nor falls -- it is only
  *  reordered internally, which is all the register entitles us to do. */
+// Geometric midpoint of each ticket band, in euros. Bands span an order of
+// magnitude, so the geometric centre is the honest representative.
+const BAND_MID: Record<string, number> = {
+  lt500k: 250_000, b500k_2m5: 1_118_000, b2m5_15m: 6_124_000,
+  b15m_50m: 27_386_000, gt50m: 100_000_000,
+};
+const AWARD_N_FLOOR = 5;
+const AWARD_MATCH = 1.35;
+
+/** Does this scheme write cheques the size the founder is asking for?
+ *
+ *  `awardP50` is the median of what a fund has really paid over `awardN`
+ *  awards, and it ranked nothing before this. 852 of 950 leaves carry one.
+ *  Scored on ORDER OF MAGNITUDE: a scheme with a EUR 20,000 median is not a
+ *  route to EUR 1M however well it matches thematically, while EUR 800k against
+ *  EUR 1.1M is the same cheque. Within one decade is a match. */
+function awardScorer(
+  leaves: DbInstrument[], ticketBand?: string,
+): (i: DbInstrument) => number {
+  const neutral = () => 1;
+  const want = ticketBand ? BAND_MID[ticketBand] : undefined;
+  if (!want) return neutral;
+  const fits = (i: DbInstrument) =>
+    i.awardP50 == null || i.awardP50 <= 0 || (i.awardN ?? 0) < AWARD_N_FLOOR
+      ? undefined
+      : Math.abs(Math.log10(i.awardP50 / want)) <= 1;
+  let m = 0, k = 0;
+  for (const i of leaves) { const f = fits(i); if (f === undefined) continue; f ? m++ : k++; }
+  if (!m || !k) return neutral;
+  const penalty = Math.pow(AWARD_MATCH, -m / k);
+  return (i: DbInstrument) => {
+    const f = fits(i);
+    return f === undefined ? 1 : f ? AWARD_MATCH : penalty;
+  };
+}
+
 /** "industrial research, experimental development (Art. 25(2)(b), 25(2)(c))" */
 export function registeredPurpose(id?: string): string | undefined {
   const rec = id ? objectives()[id] : undefined;
@@ -1274,7 +1310,7 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, founderSector, founderCountries, log } = input;
+  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = semantic?.size
@@ -1323,6 +1359,61 @@ export function materialiseInstrumentTable(
   // overrides that order completely -- so applying the prior upstream alone
   // changed nothing (73% -> 73%).
   const prior = channelPrior(founderCountries?.[0], founderSector);
+  const baseRelevance = (id: string) => {
+    const inst = instById().get(id);
+    const theme = rel.get(id) ?? 0;
+    return wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
+  };
+  // Re-rank SIBLINGS on registered purpose and award scale.
+  //
+  // Diagnosed rather than guessed: with the pool cap fixed, 57 of 67 ranking
+  // misses had a sibling from the SAME channel shown instead. The regime is
+  // right; the scheme is not. Both signals are per-scheme facts that siblings
+  // do not share -- the GBER article a scheme was notified under, and the
+  // median it has actually paid.
+  //
+  // Scoped per channel and normalised to a geometric mean of 1 within each, so
+  // a leaf can gain only on its siblings and never on another channel. That
+  // constraint is the whole design: applied globally these become channel
+  // priors (objective coverage IS state aid) and cost 21 points when tried.
+  const byChannel = new Map<string, RowSelection[]>();
+  for (const sel of selections) {
+    const list = byChannel.get(sel.base.channel) ?? [];
+    list.push(sel);
+    byChannel.set(sel.base.channel, list);
+  }
+  // Rank-PRESERVING, which is the part that took three attempts to get right.
+  //
+  // A multiplier -- even one normalised to a geometric mean of 1 within its
+  // group -- still widens that group's spread, and a wider spread pushes the
+  // group's best member up across channels. Measured: profile-mode regime
+  // recall 78% -> 88% while project-mode fell 81% -> 62%, which is the same
+  // population trade that sank the channel prior.
+  //
+  // So the scores a channel occupies are held fixed and only their ASSIGNMENT
+  // changes. Each channel keeps its exact multiset of row scores; the siblings
+  // are sorted by registered purpose and award scale, and handed those same
+  // scores in order. Regime-level composition is therefore unchanged by
+  // construction -- the table shows the same channels in the same places -- and
+  // the only thing that can move is WHICH sibling is the one shown.
+  //
+  // That is exactly the diagnosed failure: 57 of 67 ranking misses had a
+  // sibling of the won fund shown instead of it.
+  const reassigned = new Map<string, number>();
+  for (const [, group] of byChannel) {
+    const leaves = group.map((g) => g.leaf).filter((l): l is DbInstrument => Boolean(l));
+    if (leaves.length < 2) continue;
+    const obj = objectiveScorer(leaves.map((l) => l.id), useOfFunds);
+    const awd = awardScorer(leaves, input.ticketBand);
+    const pref = (l: DbInstrument) => obj(l.id) * awd(l);
+    // Nothing to say about these siblings: leave the channel untouched.
+    if (leaves.every((l) => pref(l) === pref(leaves[0]))) continue;
+    const slots = leaves.map((l) => baseRelevance(l.id)).sort((a, b) => b - a);
+    const order = [...leaves].sort((a, b) =>
+      (pref(b) - pref(a)) || (baseRelevance(b.id) - baseRelevance(a.id))
+      || a.id.localeCompare(b.id));
+    order.forEach((l, i) => reassigned.set(l.id, slots[i]));
+  }
   const rowRelevance = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
     const theme = r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
@@ -1341,7 +1432,7 @@ export function materialiseInstrumentTable(
     // missing is a discriminator that says whether THIS founder's description
     // separates the funds. Neither "did it produce scores" nor "is the score
     // distribution peaked" does -- both are true for a generic self-description.
-    return fit;
+    return r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
   };
   return selections
     .map(({ base, leaf }): InstrumentRow => {
