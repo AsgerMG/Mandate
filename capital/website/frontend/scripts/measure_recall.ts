@@ -1,65 +1,94 @@
 // Does retrieval return the fund a company ACTUALLY won?
 //
-// Ground truth is the only kind we own that cannot be argued with: real
-// companies, real awards, replayed as if they were founders filling in the
-// intake. Row count is not correctness; this is.
+// Ground truth we own: real companies, real awards, replayed as if the company
+// were a founder filling in the intake. Row count is not correctness; this is.
+//
+// TWO MODES, because the corpus supports two different questions and mixing them
+// hid both. Measured: state_aid_satr and national_dev_banks have ZERO distinct
+// per-project titles per leaf, while horizon_eu_pillar_ii has 534 and eic 438.
+//
+//   project  a real per-project title as the founder's description. Only EU
+//            programmes can be tested this way. Pairs whose title is one of the
+//            instrument's own sample_project_titles are excluded at build time:
+//            for SATR the "title" IS the scheme's description repeated on every
+//            award, which makes the replay circular, and that circularity was
+//            reading as 90% recall until it was checked.
+//   profile  no project text at all, which is what a national-scheme applicant
+//            actually has. Retrieval must work from country and sector alone.
 //
 // SPLIT ON PURPOSE. `tune` is what a change may be measured against while it is
-// being made; `holdout` is never looked at until the change is finished. Fitting
-// a ranking to the set you keep checking is how you get a number that only
-// works on this database. Split by a hash of the COMPANY, so the same company
-// can never appear on both sides.
+// being made; `holdout` is not looked at until it is finished. Split by a hash
+// of the COMPANY so one company can never appear on both sides.
 //
-// The set is capped at 12 pairs per instrument and includes national schemes
-// recovered via scheme_code -> call_id, which funding_instrument_sources cannot
-// express. Without that half, the measure would only cover EU programmes and
-// would quietly push the product toward them.
-//
-//   npx tsx scripts/measure_recall.ts                 # holdout (the real number)
-//   SPLIT=tune npx tsx scripts/measure_recall.ts      # while iterating
-//   SPLIT=all N=400 npx tsx scripts/measure_recall.ts
+//   npx tsx scripts/measure_recall.ts                       # holdout, both modes
+//   SPLIT=tune MODE=profile npx tsx scripts/measure_recall.ts
 import { readFileSync } from "fs";
 import path from "path";
-import { hydrateDbInstruments } from "../lib/intelligence/corpus";
+
+// Same loader as trace_pool.ts. Without it an unexported shell measures the
+// LEXICAL fallback while production ranks on embeddings -- the harness would be
+// grading a different system from the one that ships.
+try {
+  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
+    const m = line.match(/^([A-Z_]+)=(.*)$/);
+    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+} catch { /* rely on the process environment */ }
+if (process.env.NO_PG) delete process.env.DATABASE_URL;
+
+import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 
 async function main() {
   await hydrateDbInstruments();
+  const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   const all = JSON.parse(readFileSync(
     path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
-  const want = process.env.SPLIT ?? "holdout";
-  const set = want === "all" ? all : all.filter((r) => r.split === want);
+  const split = process.env.SPLIT ?? "holdout";
+  const mode = process.env.MODE;
+  const set = all.filter((r) => (split === "all" || r.split === split)
+                             && (!mode || r.mode === mode));
   const N = Math.min(Number(process.env.N ?? 250), set.length);
 
-  const ranks: number[] = [];
-  const missByChannel = new Map<string, number>();
-  let done = 0;
+  const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
+  const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
   for (const t of set.slice(0, N)) {
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
     } as never, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"], description: t.description,
+      targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+      // A `profile` pair has no description: that is the honest input for a
+      // national-scheme applicant, not an omission.
+      description: t.description || undefined,
     } as never);
     const pool: string[] = v.candidateInstrumentIds ?? [];
-    done++;
-    const r = pool.indexOf(t.instrument);
-    if (r >= 0) ranks.push(r + 1);
-    else {
-      const ch = t.instrument.split("__")[0];
-      missByChannel.set(ch, (missByChannel.get(ch) ?? 0) + 1);
-    }
+    const top5 = (v.instrumentTable ?? []).slice(0, 5)
+      .map((r: any) => r.instrumentId).filter(Boolean) as string[];
+    const want = byId.get(t.instrument);
+    const wantRegime = want?.parentId ?? t.instrument;
+    const inPool = pool.includes(t.instrument);
+    const e5 = top5.includes(t.instrument);
+    const r5 = top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime);
+    const c5 = top5.some((id) => byId.get(id)?.sourceFamilyBucket === want?.sourceFamilyBucket);
+
+    stat.done++;
+    if (inPool) stat.pool++;
+    if (e5) stat.exact5++;
+    if (r5) stat.regime5++;
+    if (c5) stat.chan5++;
+    const m = byMode.get(t.mode) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    m.n++; if (inPool) m.pool++; if (e5) m.e5++; if (r5) m.r5++;
+    byMode.set(t.mode, m);
   }
-  const at = (k: number) => ranks.filter((x) => x <= k).length;
-  const p = (n: number) => `${n}/${done} (${(100 * n / done).toFixed(0)}%)`;
-  ranks.sort((a, b) => a - b);
-  console.log(`split=${want}  replayed ${done} real recipients`);
-  console.log(`  in pool     ${p(ranks.length)}`);
-  console.log(`  recall@3    ${p(at(3))}`);
-  console.log(`  recall@5    ${p(at(5))}`);
-  console.log(`  recall@10   ${p(at(10))}`);
-  console.log(`  median rank ${ranks[Math.floor(ranks.length / 2)] ?? "-"}`);
-  const worst = [...missByChannel].sort((a, b) => b[1] - a[1]).slice(0, 6);
-  if (worst.length) console.log(`  never considered, by fund: ${worst.map(([k, n]) => `${k}:${n}`).join("  ")}`);
+  const pc = (n: number, d = stat.done) => `${n}/${d} (${(100 * n / d).toFixed(0)}%)`;
+  console.log(`split=${split}${mode ? ` mode=${mode}` : ""}  replayed ${stat.done}`);
+  console.log(`  in pool                  ${pc(stat.pool)}`);
+  console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
+  console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);
+  console.log(`  same CHANNEL in top 5    ${pc(stat.chan5)}`);
+  for (const [k, m] of byMode) {
+    console.log(`    mode=${k.padEnd(8)} n=${String(m.n).padStart(4)}  pool ${(100*m.pool/m.n).toFixed(0)}%  exact5 ${(100*m.e5/m.n).toFixed(0)}%  regime5 ${(100*m.r5/m.n).toFixed(0)}%`);
+  }
 }
 main();
