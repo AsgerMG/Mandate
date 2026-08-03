@@ -118,6 +118,16 @@ function objectives(): Objectives {
  *  objective: b^m * q^k = 1. Rows without one are untouched at 1, and the
  *  objective-carrying group as a whole neither rises nor falls -- it is only
  *  reordered internally, which is all the register entitles us to do. */
+/** "industrial research, experimental development (Art. 25(2)(b), 25(2)(c))" */
+export function registeredPurpose(id?: string): string | undefined {
+  const rec = id ? objectives()[id] : undefined;
+  if (!rec?.useOfFunds?.length) return undefined;
+  const what = rec.useOfFunds.map((u) => u.replace(/_/g, " ")).join(", ");
+  return rec.articles?.length
+    ? `${what} (Art. ${rec.articles.join(", Art. ")})`
+    : what;
+}
+
 function objectiveScorer(
   ids: (string | undefined)[], useOfFunds?: string[],
 ): (id?: string) => number {
@@ -1354,12 +1364,25 @@ export function materialiseInstrumentTable(
         // Tremplin" says who runs it and that ADEME has others. Only shown
         // when the parent is a real family, never when it repeats the row.
         familyName: familyLabel(leaf),
+        // What the scheme is REGISTERED to fund, verbatim from its GBER
+        // article. Does not rank -- measured at zero -- but it is the sharpest
+        // citable fact we hold about a national scheme: "notified under Art.
+        // 25(2)(b) for industrial research" is structuring detail a founder can
+        // act on, where "German R&D aid" is a label any model could produce.
+        registeredPurpose: registeredPurpose(leaf.id),
         judgementCriteria: judgementCriteria(leaf),
         structuringNotes: structuringNotes(leaf),
       } as InstrumentRow;
     })
     .sort((a, b) => {
       // Proven-in-field first.
+      //
+      // Measured cost of these two tiers, tune split: EXACT@5 51% -> 49%,
+      // REGIME@5 76% -> 73%. Kept, because they encode a product judgement the
+      // recall number cannot see -- a fund proven in the founder's field, and
+      // capital a startup can actually take, belong above a marginally better
+      // thematic match they cannot use. Three points is the price and it is
+      // recorded here so it is a choice rather than an oversight.
       if (a.usedInField !== b.usedInField) return a.usedInField ? -1 : 1;
       // Startup-ready capital next, unless the founder is consortium-ready
       // (then consortium/institutional rows aren't artificially demoted).

@@ -77,6 +77,16 @@ reporting, not prose to publish. Say what the row is and let it stand.
 - FUND-12 (soft) Rows are not ranked in the brief and must not be described as
   first, best or strongest relative to each other. The bottom line names the
   first move; the table presents five open doors.
+- FUND-13 (soft) When a row carries `registeredPurpose`, say what the scheme is
+  registered to fund in its own statutory terms rather than in a general
+  description of the body that runs it. "Notified under Art. 25(2)(b), so it
+  funds industrial research and not the plant you build afterwards" is a fact
+  the founder can structure against; "German R&D support" is a label any model
+  could produce without our corpus.
+
+  The field is present for 421 schemes and absent for the rest -- EU programmes
+  are not in the transparency register. Absent means say nothing, never infer
+  an article.
 
 ## Banned
 

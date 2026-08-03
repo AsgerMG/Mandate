@@ -177,6 +177,11 @@ export interface InstrumentRow {
   /** Cited requirements no comparator can decide — what the assessor weighs.
    *  For the 149 instruments with no evaluable cited rule, this is everything
    *  the fund has told us about who it says yes to. */
+  /** What the scheme is REGISTERED to fund, from the GBER article it was
+   *  notified under -- "industrial research (Art. 25(2)(b))". Statutory, so it
+   *  is the same claim for any scheme citing that article. Present only for
+   *  schemes in the transparency register. */
+  registeredPurpose?: string;
   judgementCriteria?: string[];
   /** How the money is shaped: aid intensity, ceilings, co-financing, what a
    *  recipient commits to. Cited. Distinct from judgementCriteria, which is
@@ -247,6 +252,11 @@ export interface InstitutionEntry {
   /** Cited requirements no comparator can decide — what the assessor weighs,
    *  in the fund's own words. Never inferred text: stating an inferred stub as
    *  an assessment criterion would be putting words in the fund's mouth. */
+  /** What the scheme is REGISTERED to fund, from the GBER article it was
+   *  notified under -- "industrial research (Art. 25(2)(b))". Statutory, so it
+   *  is the same claim for any scheme citing that article. Present only for
+   *  schemes in the transparency register. */
+  registeredPurpose?: string;
   judgementCriteria?: string[];
   /** How the money is shaped: rates, ceilings, co-financing, commitments.
    *  What fraction of a project can be public money is the structuring
