@@ -1367,6 +1367,7 @@ export async function computeVerdict(
     capitalSought: opts.capitalSought ?? [],
     description: opts.description,
     semantic,
+    founderSector: (eligibility as { sector?: string } | undefined)?.sector,
     log: opts.log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is

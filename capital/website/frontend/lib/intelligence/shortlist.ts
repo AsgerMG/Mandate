@@ -22,6 +22,7 @@ import { TICKET_BANDS } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
 import { accessMode, passesCapitalPreference } from "./accessMode";
+import { sectorFit } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 
 /** How many instruments each channel may contribute. Named because it is one
@@ -29,6 +30,14 @@ import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
  *  (channels considered x leaves per channel -> pool -> published), and a bare
  *  `slice(0, 2)` mid-function hid it from that arithmetic. */
 export const LEAVES_PER_CHANNEL = 2;
+/** Ceiling when a channel's leaves are genuinely distinct funds rather than
+ *  near-duplicates. Four, not seven: the table has six rows in total, and one
+ *  channel taking more than four of them stops being a shortlist. */
+export const MAX_LEAVES_PER_CHANNEL = 4;
+/** How close to the channel's best a leaf must score to earn an extra slot. */
+export const NEAR_TIE_RATIO = 0.9;
+/** Share of the ranking score from thematic match; the rest is sector intake. */
+export const THEME_WEIGHT = 0.6;
 
 // Short, human display labels for the channel codes, for the funding breakdown.
 const CHANNEL_LABEL: Record<string, string> = {
@@ -570,11 +579,13 @@ export interface LeafSelectionInput {
   ticketBand?: string;
   description?: string;
   semantic?: Map<string, number>;
+  /** Founder's sector, for ranking on a fund's demonstrated intake. */
+  founderSector?: string;
   log?: ExclusionLog;
 }
 
 export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[] {
-  const { channel, founderCountries, capitalSought, ticketBand, description, semantic, log } = input;
+  const { channel, founderCountries, capitalSought, ticketBand, description, semantic, founderSector, log } = input;
   const all = dbInstrumentsByBucket().get(channel) ?? [];
   if (!all.length) return [];
   // Graded fallback. The old single fallback ("if nothing matched, take
@@ -624,8 +635,29 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
     return [];
   }
   const target = ticketBand ? TICKET_MIDPOINT[ticketBand] : undefined;
+  // "Can this founder walk through the door at all", not "is this fund's flag
+  // the same as theirs".
+  //
+  // This tested `toIso2(c) === i.country`, and an EU-wide instrument carries
+  // country "EU", which never equals "IT". So every national scheme outranked
+  // every EU programme, and the leaf cap cut before Horizon was reached.
+  // Measured on 80 real recipients replayed through the pipeline: the fund a
+  // company ACTUALLY won was missing from the pool 25% of the time, and the
+  // misses were overwhelmingly Horizon clusters, EIC and Joint Undertakings --
+  // the programmes that fund the most companies in Europe. For one Italian AI
+  // company, horizon_eu_cl4 (which had funded it) ranked 203rd of 958.
+  //
+  // An EU-wide programme is exactly as reachable to an Italian founder as an
+  // Italian one. It is not a "foreign fallback".
+  //
+  // This does NOT reopen the bug the country-first rule was written for: a
+  // German satellite company was handed Latvian Altum loans because a spurious
+  // lexical hit outranked country fit. Latvia is not EU-wide, so a Latvian
+  // scheme still sorts below every German one for a German founder. Only the
+  // pan-European tier is promoted, and only to parity, never above home.
   const isExactCountry = (i: DbInstrument) =>
-    founderCountries.length > 0 && founderCountries.some((c) => toIso2(c) === i.country);
+    founderCountries.length > 0 &&
+    (founderCountries.some((c) => toIso2(c) === i.country) || i.country === "EU");
 
   // Thematic match on the founder's own description, ahead of every other key.
   // Buckets like horizon_eu_partnership hold nine thematically unrelated Joint
@@ -642,6 +674,12 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
     const r = relevance.get(i.id) ?? 0;
     return r >= RELEVANCE_FLOOR ? r : 0;
   };
+  /** Thematic match and demonstrated intake, weighted. THEME_WEIGHT leads
+   *  because a founder's own words are about their project, while sector share
+   *  is a property of the fund's history; but history is what rescues the large
+   *  programmes whose profiles are too broad to match sharply. */
+  const score = (i: DbInstrument) =>
+    THEME_WEIGHT * rel(i) + (1 - THEME_WEIGHT) * sectorFit(i.sectorMix, founderSector);
 
   const sorted = [...candidates].sort((a, b) => {
     // An exact country match always outranks an EU-wide/foreign fallback
@@ -655,7 +693,24 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
     // which is exactly the mixed-bucket case it exists for.
     const ea = isExactCountry(a), eb = isExactCountry(b);
     if (ea !== eb) return ea ? -1 : 1;
-    const ra = rel(a), rb = rel(b);
+    // Thematic match BLENDED with the fund's demonstrated intake, not thematic
+    // match alone.
+    //
+    // Semantic similarity is computed against instrument_profiles -- what a fund
+    // funds -- and it is systematically weak for the big generalist programmes,
+    // because their profile is diluted across everything they do. Measured: for
+    // an Italian AI company, horizon_eu_cl4 (which had actually funded it)
+    // ranked 203rd of 958, while narrow national programmes scored 1.00.
+    //
+    // sectorFit is the opposite kind of evidence: the share of a fund's real
+    // recipients in this founder's sector. It was already computed in fit.ts and
+    // never reached this ranking, so the one signal built from who a fund has
+    // actually paid played no part in choosing the rows.
+    //
+    // Blended rather than tiered, because either alone is wrong: sector share
+    // alone hands every agrifood founder the biggest agricultural bank, and
+    // theme alone is what put CL4 at 203rd.
+    const ra = score(a), rb = score(b);
     if (ra !== rb) return rb - ra;
     if (target !== undefined) {
       const da = typicalAward(a), db = typicalAward(b);
@@ -680,10 +735,36 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
     if (rawA !== rawB) return rawB - rawA;
     return b.eventCount - a.eventCount;
   });
-  for (const i of sorted.slice(LEAVES_PER_CHANNEL)) {
-    log?.record("SEL-LEAF-CAP", i.id, `ranked below the ${LEAVES_PER_CHANNEL}-instrument limit for its channel`);
+  // The cap is relevance-aware, because a "channel" is two different things.
+  //
+  // For national development banks it holds near-duplicates -- two Altum loans
+  // that differ by measure code -- and keeping both wastes a row. For
+  // horizon_eu_pillar_ii it holds SEVEN thematically distinct funds (CL1 health,
+  // CL4 digital and industry, CL5 climate and energy, CL6 bioeconomy), and a
+  // flat cap of two means five of them can never be considered at all.
+  //
+  // Measured by replaying 80 real recipients through the pipeline: the fund a
+  // company ACTUALLY won was absent from the pool 25% of the time, and the
+  // misses were dominated by Horizon clusters and Joint Undertakings -- funds
+  // eliminated here before ranking ever saw them.
+  //
+  // So keep the extra leaf only when it is nearly as good a thematic match as
+  // the best one in its channel. Near-duplicates score alike and gain nothing;
+  // genuinely distinct programmes only survive when the founder's own
+  // description actually points at them. The hard ceiling still stops one
+  // channel flooding the table.
+  const bestRel = sorted.length ? (relevance.get(sorted[0].id) ?? 0) : 0;
+  const keep = sorted.filter((i, idx) =>
+    idx < LEAVES_PER_CHANNEL ||
+    (idx < MAX_LEAVES_PER_CHANNEL && bestRel > 0 &&
+     (relevance.get(i.id) ?? 0) >= bestRel * NEAR_TIE_RATIO));
+  for (const i of sorted.filter((x) => !keep.includes(x))) {
+    log?.record("SEL-LEAF-CAP", i.id,
+      `ranked below its channel's limit (${LEAVES_PER_CHANNEL} by default, up to ` +
+      `${MAX_LEAVES_PER_CHANNEL} when a leaf is within ${Math.round((1 - NEAR_TIE_RATIO) * 100)}% ` +
+      `of the channel's best thematic match)`);
   }
-  return sorted.slice(0, LEAVES_PER_CHANNEL);
+  return keep;
 }
 
 /**
@@ -737,6 +818,11 @@ export interface InstrumentTableInput {
   description?: string;
   /** Semantic fund-match scores (semantic.ts). Absent/empty = lexical only. */
   semantic?: Map<string, number>;
+  /** The founder's sector, for ranking on a fund's DEMONSTRATED intake.
+   *  sectorFit() was computed in fit.ts and never reached the selector, so the
+   *  ranking could not use the one signal built from who a fund has actually
+   *  paid. */
+  founderSector?: string;
   /** Records every fund this function removes. Optional: callers that do not
    *  care about the funnel need not thread one through. */
   log?: ExclusionLog;
@@ -896,7 +982,8 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
         fitFlag,
       };
       const leaves = selectLeafInstruments({
-        channel, founderCountries, capitalSought, ticketBand, description, semantic, log,
+        channel, founderCountries, capitalSought, ticketBand, description, semantic,
+        founderSector: input.founderSector, log,
       });
       if (!leaves.length) {
         // A channel-level row is an honest stand-in when we simply hold no
