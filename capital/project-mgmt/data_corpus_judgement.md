@@ -122,3 +122,49 @@ cost more than they returned.
 The product now has more grounding underneath it than it surfaces. The next
 question is retrieval and use -- whether the advisor can reach what is there --
 which is where the leverage has moved.
+
+---
+
+## What never makes it into the corpus (measured 2026-08-03)
+
+Asked directly, because the win immediately before this was a field that had
+been *staged and never propagated* (`aid_measure_title`). If that happened once
+it could happen at the row level too.
+
+**Column level: nothing dead.** Every populated, multi-valued column in the
+instrument store is read by some code path.
+
+**Row level: 2,865 of 3,241 notified SA numbers never become an instrument.**
+Only 376 do. On its face that is 88% of the register discarded, EUR 88.3B of
+aid. It is the right 88%, and the shape of the residue says so:
+
+```
+unmatched schemes with 1 recipient      1,318 of 2,865   (46%)
+unmatched schemes with >=20 recipients    209 of 2,865   ( 7%)
+
+awards per scheme   matched 868      unmatched 7
+```
+
+The head by euros is one-off rescue aid to a single named company -- Uniper
+recapitalisation (EUR 34.5B, one award), SEFE (EUR 6.3B, one award) -- and
+IPCEIs, which we hold through their own channel rather than a scheme code.
+**None of those is a door a founder can walk through.** A register of aid
+GRANTED is not a register of schemes OPEN, and the load filter is what
+separates them.
+
+### The residue worth a second look
+
+209 schemes have >=20 distinct recipients, which is what a real recurring
+scheme looks like. They are concentrated **outside the six target markets** --
+Bulgaria, Croatia, Iceland, Cyprus, Finland dominate the top of the list. Two
+in-scope exceptions:
+
+```
+SA.100189  France   Regime cadre exempte ... 102 recipients  EUR 120M
+SA.51198   Germany  Bayerisches Programm     91 recipients   EUR 101M
+```
+
+**Verdict: not a corpus gap, and not scheduled.** Two schemes in the markets we
+serve is not what stands between a founder and the right fund. Recorded so the
+question is not re-opened from scratch, and so that if the market scope ever
+widens to the CEE countries, the 209 are the first place to look.
