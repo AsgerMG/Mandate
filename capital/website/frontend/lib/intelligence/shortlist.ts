@@ -48,7 +48,27 @@ export const MAX_LEAVES_PER_CHANNEL = 4;
  *
  *  Consideration and display are now separate concerns. The pool is wide, the
  *  global row sort decides, and DISPLAY_CAP still governs what is shown. */
-export const POOL_LEAVES_PER_CHANNEL = 14;
+// Measured on holdout, profile mode -- the national-scheme founder, 84% of the
+// corpus. This cap, not ranking, was the single largest loss in the product:
+//
+//   cap   pool   EXACT@5
+//    14    57%     15%     <- shipped for months
+//    25    83%     14%
+//    40    95%     13%
+//    60    97%     14%
+//
+// A German founder has 116 sibling schemes under one regime; at 14 the fund
+// they actually won was cut before ranking ever saw it 43% of the time, and
+// `SEL-LEAF-CAP` accounted for 38 of 42 pool misses. Five ranking experiments
+// in one session moved nothing because they were reordering a set that did not
+// contain the answer.
+//
+// EXACT@5 is flat across the sweep, which is the honest reading: this fixes
+// what the WRITER can see, not what the table shows. Those are different jobs
+// -- the pool is a correctness floor, the top five is the ranking problem --
+// and conflating them is what hid this for so long. 40 over 60 because the last
+// 2% costs half again as much payload for nothing measurable.
+export const POOL_LEAVES_PER_CHANNEL = 40;
 /** How close to the channel's best a leaf must score to earn an extra slot. */
 export const NEAR_TIE_RATIO = 0.9;
 /** Share of the ranking score from thematic match; the rest is sector intake. */
