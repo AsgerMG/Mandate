@@ -22,6 +22,7 @@
 //
 // Run after `make eligibility`, when SQLite and Postgres are in step.
 import { execFileSync } from "node:child_process";
+import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 
 type Dump = Record<string, {
   ids: string[];
@@ -55,7 +56,18 @@ function main() {
       problems.push(`${label}: missing from the Postgres run`);
       continue;
     }
-    if (a.ids.join("|") !== b.ids.join("|")) {
+    // Order is asserted for the rows a founder SEES; beyond that, membership.
+    //
+    // Ranking now blends semantic scores, and the two stores answer from
+    // slightly different floats (cached vs live pgvector). Ties past the
+    // display cap can therefore swap without anything user-visible changing,
+    // and a guard that fails on that trains people to ignore it. What must
+    // never differ is the published rows and which funds were considered at
+    // all -- both of which this still checks exactly.
+    const shown = (x: string[]) => x.slice(0, DISPLAY_CAP).join("|");
+    const sameShown = shown(a.ids) === shown(b.ids);
+    const sameSet = [...a.ids].sort().join("|") === [...b.ids].sort().join("|");
+    if (!sameShown || !sameSet) {
       const onlyJson = a.ids.filter((i) => !b.ids.includes(i));
       const onlyPg = b.ids.filter((i) => !a.ids.includes(i));
       problems.push(

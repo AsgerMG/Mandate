@@ -507,7 +507,11 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
   }
   for (const [name, peers] of byName) {
     if (peers.length < 2) continue;
-    const ids = peers.map((p) => p.instrumentId ?? "");
+    // Sorted, because the shared prefix below is computed by folding over this
+    // list and the dedupe now keys on the label it produces. Unsorted, the two
+    // stores return rows in different sequences, produce different labels, keep
+    // different survivors, and the parity check fails on order.
+    const ids = peers.map((p) => p.instrumentId ?? "").sort();
     // The shared prefix is the agency; what follows identifies the programme.
     let prefix = ids[0] ?? "";
     for (const id of ids) {
@@ -526,6 +530,7 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
     // The granting body is what a founder actually approaches and is what
     // separates them: Region Normandie versus Caisse des Depots, under the same
     // notified regime.
+    peers.sort((a, b) => (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""));
     const bodies = new Set(peers.map((p) => p.administeringBody ?? ""));
     const bodyDistinguishes = bodies.size === peers.length && !bodies.has("");
     for (const r of peers) {
