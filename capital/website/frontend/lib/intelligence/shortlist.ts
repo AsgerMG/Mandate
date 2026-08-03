@@ -81,6 +81,65 @@ let priorCache: ChannelPrior | undefined;
 /** P(channel | country, sector), backing off to country then global. Thin cells
  *  are absent from the artifact by construction, so the back-off is what keeps
  *  the prior from memorising noise. */
+// How far a matching objective may lift a row, in the multiplicative blend.
+// The counter-weight is NOT a second constant: it is solved per founder so the
+// signal is neutral across the group that carries objectives at all (below).
+const OBJECTIVE_MATCH = 1.35;
+
+type Objectives = Record<string, { useOfFunds: string[]; articles: string[] }>;
+let objectiveCache: Objectives | undefined;
+
+function objectives(): Objectives {
+  if (objectiveCache === undefined) {
+    try {
+      objectiveCache = JSON.parse(readFileSync(
+        path.join(process.cwd(), "lib", "intelligence", "__objectives.json"),
+        "utf8")) as Objectives;
+    } catch {
+      objectiveCache = {};
+    }
+  }
+  return objectiveCache;
+}
+
+/** Re-rank on registered purpose WITHOUT moving the group that has one.
+ *
+ *  The first cut of this multiplied matches by 1.35 and misses by 0.7, and cost
+ *  21 points of exact recall. The reason is that objective coverage is not
+ *  random: all 421 instruments carrying one are state-aid schemes, because the
+ *  objective comes from the transparency register and EU programmes are not in
+ *  it. So "has a matching objective" was read as "is a national scheme", and the
+ *  boost quietly became a channel prior -- the same population trade, and the
+ *  same failure, as the prior itself.
+ *
+ *  The signal is real but it is only meaningful BETWEEN schemes that both
+ *  declared a purpose. So the penalty is solved, per founder, to make the
+ *  geometric mean of the multiplier exactly 1 over the rows that carry an
+ *  objective: b^m * q^k = 1. Rows without one are untouched at 1, and the
+ *  objective-carrying group as a whole neither rises nor falls -- it is only
+ *  reordered internally, which is all the register entitles us to do. */
+function objectiveScorer(
+  ids: (string | undefined)[], useOfFunds?: string[],
+): (id?: string) => number {
+  const neutral = () => 1;
+  if (!useOfFunds?.length) return neutral;
+  const obj = objectives();
+  let m = 0, k = 0;
+  for (const id of ids) {
+    const reg = id ? obj[id]?.useOfFunds : undefined;
+    if (!reg?.length) continue;
+    if (reg.some((u) => useOfFunds.includes(u))) m++; else k++;
+  }
+  // All matched or all missed: the signal separates nothing here.
+  if (!m || !k) return neutral;
+  const penalty = Math.pow(OBJECTIVE_MATCH, -m / k);
+  return (id?: string) => {
+    const reg = id ? obj[id]?.useOfFunds : undefined;
+    if (!reg?.length) return 1;
+    return reg.some((u) => useOfFunds.includes(u)) ? OBJECTIVE_MATCH : penalty;
+  };
+}
+
 function channelPrior(country?: string, sector?: string): Record<string, number> {
   if (priorCache === undefined) {
     try {
@@ -658,11 +717,13 @@ export interface LeafSelectionInput {
   semantic?: Map<string, number>;
   /** Founder's sector, for ranking on a fund's demonstrated intake. */
   founderSector?: string;
+  /** What the money is for, matched against each scheme's registered objective. */
+  useOfFunds?: string[];
   log?: ExclusionLog;
 }
 
 export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[] {
-  const { channel, founderCountries, capitalSought, ticketBand, description, semantic, founderSector, log } = input;
+  const { channel, founderCountries, capitalSought, ticketBand, description, semantic, founderSector, useOfFunds, log } = input;
   const all = dbInstrumentsByBucket().get(channel) ?? [];
   if (!all.length) return [];
   // Graded fallback. The old single fallback ("if nothing matched, take
@@ -755,8 +816,24 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
    *  because a founder's own words are about their project, while sector share
    *  is a property of the fund's history; but history is what rescues the large
    *  programmes whose profiles are too broad to match sharply. */
+  // Registered purpose, applied HERE and deliberately not in the row sort.
+  //
+  // Tried there first and it cost 21 points of exact recall, because objective
+  // coverage is not random -- all 421 instruments carrying one are state-aid
+  // schemes, since the objective comes from the transparency register and EU
+  // programmes are not in it. Across channels the signal therefore reads as "is
+  // a national scheme" and silently becomes a channel prior. Normalising it to
+  // be mean-neutral was not enough: raising the variance inside one group still
+  // pushes that group's winners into the visible five.
+  //
+  // Within a channel there is no such trade. Every candidate here is a sibling
+  // competing for the same slot, they carry objectives or not as a group, and
+  // reordering them cannot change how many rows the channel gets. That is also
+  // exactly where the exact-scheme question lives: which of these 50 siblings.
+  const objectiveFor = objectiveScorer(candidates.map((i) => i.id), useOfFunds);
   const score = (i: DbInstrument) =>
-    THEME_WEIGHT * rel(i) + (1 - THEME_WEIGHT) * sectorFit(i.sectorMix, founderSector);
+    (THEME_WEIGHT * rel(i) + (1 - THEME_WEIGHT) * sectorFit(i.sectorMix, founderSector))
+    * objectiveFor(i.id);
 
   const sorted = [...candidates].sort((a, b) => {
     // An exact country match always outranks an EU-wide/foreign fallback
@@ -907,6 +984,9 @@ export interface InstrumentTableInput {
    *  ranking could not use the one signal built from who a fund has actually
    *  paid. */
   founderSector?: string;
+  /** What the founder says the money is FOR. Collected on screen one since the
+   *  beginning and, until now, matched against nothing. */
+  useOfFunds?: string[];
   /** Records every fund this function removes. Optional: callers that do not
    *  care about the funnel need not thread one through. */
   log?: ExclusionLog;
@@ -1131,7 +1211,7 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
       };
       const leaves = selectLeafInstruments({
         channel, founderCountries, capitalSought, ticketBand, description, semantic,
-        founderSector: input.founderSector, log,
+        founderSector: input.founderSector, useOfFunds: input.useOfFunds, log,
       });
       if (!leaves.length) {
         // A channel-level row is an honest stand-in when we simply hold no

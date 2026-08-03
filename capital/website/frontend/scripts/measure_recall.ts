@@ -56,6 +56,17 @@ async function main() {
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
+      // What the money is for, and the one field here that could leak.
+      //
+      // Setting it from the won scheme's registered objective would make the
+      // objective signal grade itself -- the same shape as the project-title
+      // leak that read 90% and was really 10%.
+      // UNIFORM across every pair, which is what makes it leak-free: a constant
+      // cannot carry information about which scheme won. It also matches the
+      // modal founder this product serves -- someone seeking innovation funding
+      // for R&D. Schemes registered under Art. 25(2)(b)/(c) should therefore
+      // outrank siblings registered for plant (Art. 17) or renewables (Art. 41).
+      useOfFunds: ["industrial_research", "experimental_development"],
     } as never, {
       targetMarkets: [t.country], capitalSought: ["grant", "loan"],
       // A `profile` pair has no PROJECT text -- national schemes carry none --
