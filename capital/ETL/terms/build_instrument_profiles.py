@@ -321,6 +321,17 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     # (see the 94-subsector plan in project-mgmt/nace_taxonomy.md).
 
     out: list[tuple[str, str, int]] = []
+    # Joined on the SA number the instrument carries. One row per scheme: the
+    # title repeats across a scheme's awards, so any is representative.
+    satr: dict[str, tuple[str, str]] = {}
+    for r in sq.execute("""
+            SELECT i.id, MAX(s.aid_measure_title), MAX(s.objectives_text)
+              FROM funding_instruments i
+              JOIN satr_staging s ON s.sa_number = i.scheme_code
+             WHERE i.scheme_code IS NOT NULL AND TRIM(i.scheme_code) <> ''
+             GROUP BY i.id"""):
+        satr[r[0]] = (r[1] or "", r[2] or "")
+
     for (iid, name, body, country, capital, bucket, samples,
          sector_mix, award_p50, award_n) in instruments:
         # The event join above keys on `source`, which cannot express the SATR
@@ -365,6 +376,22 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
         # was already in the corpus, used for scoring but never for retrieval.
         # Written out as words so it is in the same space as the founder's
         # description, rather than a number the embedding never sees.
+        # The scheme's OWN title and objective, from the transparency register.
+        #
+        # This was the missing text. State-aid children were profiled on their
+        # body and family alone -- 240 characters, every scheme in a country
+        # reading alike to the embedding -- and the conclusion drawn was that
+        # national schemes simply have no text. They do: satr_staging carries
+        # `aid_measure_title` on all 3,241 SA numbers with 3,039 DISTINCT values
+        # ("KMU-innovativ: Materialforschung", "KI-Anwendungshub
+        # Kunststoffverpackungen"), and `objectives_text` in words. It had never
+        # been propagated from the staging table to the instrument.
+        if satr.get(iid):
+            title, obj = satr[iid]
+            if title:
+                parts.append(f"Notified scheme: {title}.")
+            if obj:
+                parts.append(f"Registered aid objective: {obj}.")
         if sector_mix:
             try:
                 mix = json.loads(sector_mix)
