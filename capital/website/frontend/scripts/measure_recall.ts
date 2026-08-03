@@ -49,10 +49,19 @@ async function main() {
   const set = all.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode));
   const N = Math.min(Number(process.env.N ?? 250), set.length);
+  // Stride, not the head of the list.
+  //
+  // The set is grouped by mode and `project` comes first, so slicing took ALL
+  // 131 project pairs and only 69 profile ones -- 66% project against a true
+  // population of 16%. Every figure measured this way was the easy third of the
+  // corpus: pool read 92% where it is really 74%, EXACT@5 read 49% where it is
+  // 35%. Deterministic, so runs stay comparable.
+  const step = Math.max(1, Math.floor(set.length / N));
+  const sample = set.filter((_, i) => i % step === 0).slice(0, N);
 
   const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
-  for (const t of set.slice(0, N)) {
+  for (const t of sample) {
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
