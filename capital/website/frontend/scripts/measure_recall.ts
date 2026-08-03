@@ -13,6 +13,7 @@ async function main() {
   const truth = JSON.parse(readFileSync("/tmp/ground_truth.json", "utf8")) as any[];
   const N = Number(process.env.N ?? 40);
   let inPool = 0, inRows = 0, done = 0;
+  const ranks: number[] = [];
   const misses: string[] = [];
   for (const t of truth.slice(0, N)) {
     const v = await computeVerdict("TestCo", t.country, {
@@ -28,10 +29,18 @@ async function main() {
     if (pool.includes(t.instrument)) inPool++;
     else misses.push(`${t.country} ${t.instrumentName} <- ${t.description.slice(0, 46)}`);
     if (rows.includes(t.instrument)) inRows++;
+    const rank = pool.indexOf(t.instrument);
+    if (rank >= 0) ranks.push(rank + 1);
   }
   console.log(`replayed ${done} real recipients`);
   console.log(`  actual fund in the candidate pool: ${inPool}/${done}  (${(100*inPool/done).toFixed(0)}%)`);
   console.log(`  actual fund in published rows:     ${inRows}/${done}  (${(100*inRows/done).toFixed(0)}%)`);
+  ranks.sort((a, b) => a - b);
+  const pct = (p: number) => ranks[Math.floor(ranks.length * p)] ?? 0;
+  const bucket = (lo: number, hi: number) => ranks.filter((r) => r >= lo && r <= hi).length;
+  console.log(`\nwhere the right fund ranks IN THE POOL (n=${ranks.length}):`);
+  console.log(`  median ${pct(0.5)}   75th ${pct(0.75)}   90th ${pct(0.9)}   worst ${ranks[ranks.length-1]}`);
+  console.log(`  rank 1-6: ${bucket(1,6)}   7-10: ${bucket(7,10)}   11-15: ${bucket(11,15)}   16+: ${ranks.filter((r)=>r>15).length}`);
   console.log(`\nmisses (fund never even considered):`);
   for (const m of misses.slice(0, 10)) console.log("   " + m);
 }
