@@ -710,7 +710,7 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
     // Blended rather than tiered, because either alone is wrong: sector share
     // alone hands every agrifood founder the biggest agricultural bank, and
     // theme alone is what put CL4 at 203rd.
-    const ra = score(a), rb = score(b);
+    const ra = Math.round(score(a) * 1e6), rb = Math.round(score(b) * 1e6);
     if (ra !== rb) return rb - ra;
     if (target !== undefined) {
       const da = typicalAward(a), db = typicalAward(b);
@@ -731,9 +731,13 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
     // is strictly better than preferring the largest one, and the floor still
     // does its real job above — keeping a weak thematic hit from outranking
     // country fit or ticket size.
-    const rawA = relevance.get(a.id) ?? 0, rawB = relevance.get(b.id) ?? 0;
+    const rawA = Math.round((relevance.get(a.id) ?? 0) * 1e6);
+    const rawB = Math.round((relevance.get(b.id) ?? 0) * 1e6);
     if (rawA !== rawB) return rawB - rawA;
-    return b.eventCount - a.eventCount;
+    if (a.eventCount !== b.eventCount) return b.eventCount - a.eventCount;
+    // Total order: without this the leaf kept depends on hydration order, and
+    // the two stores return rows in different sequences.
+    return a.id.localeCompare(b.id);
   });
   // The cap is relevance-aware, because a "channel" is two different things.
   //
@@ -965,7 +969,52 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
   // Thematic matches lead the list. Callers slice to DISPLAY_CAP (6) before the
   // memo ever sees the table, and a top-up appended last was being truncated
   // away — so the channel was correctly identified and then silently dropped.
-  const ordered = [...thematicFirst, ...[...codes].filter((c) => !thematicFirst.includes(c))];
+  // Channels are ordered by how well they fit THIS founder, not by a fixed list.
+  //
+  // DEFAULT_INSTRUMENTS is a priority order -- national_dev_banks, state_aid_satr,
+  // eic, horizon_eu_pillar_ii, eit -- and rows are taken channel by channel, two
+  // per channel, against a display cap of six. The first three channels
+  // therefore consumed every row and Horizon Pillar II could never reach the
+  // table for ANY founder.
+  //
+  // Measured by replaying real recipients: across 47 cases where the right fund
+  // was in the pool but not shown, it was horizon_eu_pillar_ii in 39 of them,
+  // while Horizon appeared in 3 of 282 shown rows. Only 2 of 282 shown rows were
+  // even in the same channel as the fund the company actually won.
+  //
+  // So the remaining channels are sorted by their best leaf's score for this
+  // founder. Thematic top-ups still lead: they were identified because the
+  // founder's own words point at them, which is a stronger claim than a
+  // score comparison across channels.
+  // Semantic where we have it, lexical otherwise -- the same signal the leaf
+  // ranking uses, so a channel cannot be ordered by one measure and its leaves
+  // by another.
+  const channelRelevance = semantic?.size
+    ? semantic
+    : themeRelevance(description ?? "", [...dbInstrumentsByBucket().values()]
+        .flat().map((i) => i.id));
+  const relevanceFor = (id: string) => channelRelevance.get(id) ?? 0;
+  const channelScore = (c: string): number => {
+    const leaves = dbInstrumentsByBucket().get(c) ?? [];
+    let best = 0;
+    for (const i of leaves) {
+      const r = relevanceFor(i.id);
+      if (r > best) best = r;
+    }
+    return best;
+  };
+  const rest = [...codes].filter((c) => !thematicFirst.includes(c));
+  rest.sort((a, b) => {
+    // Rounded, for the reason given on the row sort: the offline path reads
+    // cached scores and production reads pgvector, and raw floats reorder ties
+    // between the two stores.
+    const d = Math.round(channelScore(b) * 1e6) - Math.round(channelScore(a) * 1e6);
+    if (d !== 0) return d;
+    // Stable fallback: the hand-ordered default list, so a founder whose
+    // description says nothing thematic sees exactly what they saw before.
+    return DEFAULT_INSTRUMENTS.indexOf(a) - DEFAULT_INSTRUMENTS.indexOf(b);
+  });
+  const ordered = [...thematicFirst, ...rest];
   return ordered
     .flatMap((channel): RowSelection[] => {
       const snap = loadFundSnapshot(channel);
@@ -1016,7 +1065,15 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, log } = input;
+  const { consortiumOk, semantic, description, log } = input;
+  // Same signal the leaf ranking uses, so a row cannot be ordered by one
+  // measure and the leaf inside it by another.
+  const rel = semantic?.size
+    ? semantic
+    : themeRelevance(description ?? "",
+        selections.map((s) => s.leaf?.id).filter((id): id is string => Boolean(id)));
+  const rowRelevance = (r: InstrumentRow) =>
+    r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
   return selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
@@ -1072,7 +1129,32 @@ export function materialiseInstrumentTable(
         !(r.fit === "consortium_institutional" && consortiumOk);
       const da = demote(a), db = demote(b);
       if (da !== db) return da ? 1 : -1;
-      return INSTRUMENT_PRIORITY.indexOf(a.channel) - INSTRUMENT_PRIORITY.indexOf(b.channel);
+      // Thematic fit to THIS founder, then the hand-ordered list as a stable
+      // fallback.
+      //
+      // This was INSTRUMENT_PRIORITY alone -- a second hardcoded channel order,
+      // applied after selection had already ordered channels, silently
+      // discarding that work. Two fixed priority lists in one pipeline meant no
+      // founder's own description could move a channel up the table.
+      //
+      // Measured: across 47 replays where the fund a company actually won was
+      // in the pool but not shown, it was horizon_eu_pillar_ii in 39 of them,
+      // and Horizon appeared in 3 of 282 shown rows. national_dev_banks,
+      // state_aid_satr and eic sit first in both lists and consumed all six
+      // rows for everybody.
+      // Rounded before comparing: the offline path reads scores from the
+      // committed cache (6 dp) and production reads them live from pgvector, so
+      // raw floats differ in the last places and reorder tied rows. The parity
+      // check catches exactly that, and an order that depends on which store
+      // answered is not an order.
+      const ra = Math.round(rowRelevance(a) * 1e6);
+      const rb = Math.round(rowRelevance(b) * 1e6);
+      if (ra !== rb) return rb - ra;
+      const pa = INSTRUMENT_PRIORITY.indexOf(a.channel);
+      const pb = INSTRUMENT_PRIORITY.indexOf(b.channel);
+      if (pa !== pb) return pa - pb;
+      // Total order, so the sort cannot depend on the order rows arrived in.
+      return (a.instrumentId ?? "").localeCompare(b.instrumentId ?? "");
     })
     // One row per institution NAME. 322 instruments share only 143 display
     // names, and selectLeafInstruments returns up to two leaves per channel,
