@@ -1,0 +1,1547 @@
+{
+ "_comment": "P(channel | country, sector), from distinct funded companies. Emitted by ETL/terms/emit_channel_prior.py. Cells with fewer than 40 observations are omitted; the reader backs off to country, then global.",
+ "minObservations": 40,
+ "global": {
+  "eic": 0.024,
+  "eit": 0.0049,
+  "horizon_eu_pillar_ii": 0.1781,
+  "state_aid_satr": 0.7361,
+  "chips_ju": 0.0145,
+  "edf": 0.0022,
+  "horizon_eu_partnership": 0.0344,
+  "innovation_fund": 0.0028,
+  "ipcei": 0.0031
+ },
+ "byCountry": {
+  "AT": {
+   "eic": 0.0256,
+   "eit": 0.0056,
+   "horizon_eu_pillar_ii": 0.1927,
+   "state_aid_satr": 0.7048,
+   "chips_ju": 0.0225,
+   "edf": 0.0018,
+   "horizon_eu_partnership": 0.0432,
+   "innovation_fund": 0.0014,
+   "ipcei": 0.0025
+  },
+  "BE": {
+   "eic": 0.0238,
+   "eit": 0.0029,
+   "horizon_eu_partnership": 0.0458,
+   "horizon_eu_pillar_ii": 0.2517,
+   "state_aid_satr": 0.6581,
+   "edf": 0.0013,
+   "innovation_fund": 0.0045,
+   "ipcei": 0.0013,
+   "chips_ju": 0.0106
+  },
+  "CH": {
+   "horizon_eu_partnership": 0.1316,
+   "horizon_eu_pillar_ii": 0.2719,
+   "chips_ju": 0.5439,
+   "eic": 0.0439,
+   "eit": 0.0088
+  },
+  "CZ": {
+   "horizon_eu_partnership": 0.0136,
+   "horizon_eu_pillar_ii": 0.0822,
+   "state_aid_satr": 0.8806,
+   "edf": 0.0004,
+   "eic": 0.0129,
+   "innovation_fund": 0.0011,
+   "ipcei": 0.0008,
+   "eit": 0.0023,
+   "chips_ju": 0.0061
+  },
+  "DE": {
+   "eic": 0.0168,
+   "eit": 0.0041,
+   "horizon_eu_partnership": 0.0202,
+   "horizon_eu_pillar_ii": 0.0958,
+   "state_aid_satr": 0.8445,
+   "chips_ju": 0.0126,
+   "edf": 0.0011,
+   "innovation_fund": 0.001,
+   "ipcei": 0.0039
+  },
+  "DK": {
+   "eic": 0.1039,
+   "eit": 0.0176,
+   "horizon_eu_pillar_ii": 0.6866,
+   "state_aid_satr": 0.0088,
+   "chips_ju": 0.0387,
+   "edf": 0.0088,
+   "horizon_eu_partnership": 0.1144,
+   "innovation_fund": 0.0194,
+   "ipcei": 0.0018
+  },
+  "EE": {
+   "horizon_eu_pillar_ii": 0.4873,
+   "state_aid_satr": 0.3273,
+   "edf": 0.0182,
+   "eic": 0.0473,
+   "horizon_eu_partnership": 0.0764,
+   "innovation_fund": 0.0073,
+   "ipcei": 0.0073,
+   "eit": 0.0218,
+   "chips_ju": 0.0073
+  },
+  "ES": {
+   "eic": 0.0897,
+   "eit": 0.0203,
+   "horizon_eu_partnership": 0.1249,
+   "horizon_eu_pillar_ii": 0.7026,
+   "ipcei": 0.0073,
+   "chips_ju": 0.0341,
+   "edf": 0.0102,
+   "innovation_fund": 0.0109
+  },
+  "FI": {
+   "eic": 0.0299,
+   "eit": 0.0074,
+   "horizon_eu_pillar_ii": 0.1963,
+   "ipcei": 0.0039,
+   "state_aid_satr": 0.6923,
+   "chips_ju": 0.0383,
+   "edf": 0.0015,
+   "horizon_eu_partnership": 0.027,
+   "innovation_fund": 0.0034
+  },
+  "FR": {
+   "eic": 0.0234,
+   "eit": 0.0043,
+   "horizon_eu_partnership": 0.0311,
+   "horizon_eu_pillar_ii": 0.1287,
+   "state_aid_satr": 0.7908,
+   "chips_ju": 0.012,
+   "edf": 0.0032,
+   "ipcei": 0.0034,
+   "innovation_fund": 0.0031
+  },
+  "GB": {
+   "eit": 0.0284,
+   "horizon_eu_partnership": 0.1313,
+   "horizon_eu_pillar_ii": 0.56,
+   "state_aid_satr": 0.2349,
+   "eic": 0.0334,
+   "chips_ju": 0.0092,
+   "ipcei": 0.0028
+  },
+  "GR": {
+   "eic": 0.035,
+   "horizon_eu_partnership": 0.1152,
+   "horizon_eu_pillar_ii": 0.7261,
+   "state_aid_satr": 0.0691,
+   "chips_ju": 0.0247,
+   "edf": 0.0179,
+   "innovation_fund": 0.0068,
+   "ipcei": 0.0043,
+   "eit": 0.0009
+  },
+  "HU": {
+   "horizon_eu_pillar_ii": 0.0694,
+   "state_aid_satr": 0.9116,
+   "eit": 0.0016,
+   "horizon_eu_partnership": 0.0066,
+   "innovation_fund": 0.0006,
+   "eic": 0.0059,
+   "ipcei": 0.0016,
+   "chips_ju": 0.0028
+  },
+  "IE": {
+   "eic": 0.0436,
+   "eit": 0.0114,
+   "horizon_eu_partnership": 0.0362,
+   "horizon_eu_pillar_ii": 0.2128,
+   "state_aid_satr": 0.6846,
+   "innovation_fund": 0.0007,
+   "chips_ju": 0.0101,
+   "ipcei": 0.0007
+  },
+  "IT": {
+   "eic": 0.0097,
+   "eit": 0.001,
+   "horizon_eu_partnership": 0.0166,
+   "horizon_eu_pillar_ii": 0.0847,
+   "state_aid_satr": 0.8779,
+   "chips_ju": 0.0059,
+   "edf": 0.001,
+   "ipcei": 0.0021,
+   "innovation_fund": 0.0009
+  },
+  "LU": {
+   "horizon_eu_pillar_ii": 0.199,
+   "state_aid_satr": 0.6723,
+   "eic": 0.0267,
+   "horizon_eu_partnership": 0.0947,
+   "innovation_fund": 0.0024,
+   "eit": 0.0024,
+   "chips_ju": 0.0024
+  },
+  "LV": {
+   "horizon_eu_partnership": 0.0206,
+   "horizon_eu_pillar_ii": 0.1914,
+   "state_aid_satr": 0.7469,
+   "edf": 0.0062,
+   "eit": 0.0082,
+   "eic": 0.0123,
+   "innovation_fund": 0.0021,
+   "chips_ju": 0.0123
+  },
+  "NL": {
+   "eic": 0.0411,
+   "eit": 0.0049,
+   "horizon_eu_partnership": 0.0445,
+   "horizon_eu_pillar_ii": 0.2328,
+   "state_aid_satr": 0.6422,
+   "chips_ju": 0.0276,
+   "edf": 0.0011,
+   "innovation_fund": 0.0031,
+   "ipcei": 0.0027
+  },
+  "NO": {
+   "eic": 0.0607,
+   "eit": 0.0213,
+   "horizon_eu_pillar_ii": 0.7607,
+   "edf": 0.0066,
+   "horizon_eu_partnership": 0.0902,
+   "innovation_fund": 0.0311,
+   "chips_ju": 0.0295
+  },
+  "PL": {
+   "eic": 0.0916,
+   "horizon_eu_pillar_ii": 0.6941,
+   "edf": 0.0018,
+   "eit": 0.022,
+   "horizon_eu_partnership": 0.1337,
+   "innovation_fund": 0.0201,
+   "ipcei": 0.0165,
+   "chips_ju": 0.0183,
+   "state_aid_satr": 0.0018
+  },
+  "PT": {
+   "eic": 0.0574,
+   "eit": 0.0056,
+   "horizon_eu_pillar_ii": 0.4741,
+   "state_aid_satr": 0.3602,
+   "edf": 0.0024,
+   "horizon_eu_partnership": 0.0653,
+   "innovation_fund": 0.0048,
+   "ipcei": 0.0032,
+   "chips_ju": 0.0271
+  },
+  "SE": {
+   "eic": 0.0452,
+   "eit": 0.0083,
+   "horizon_eu_pillar_ii": 0.1869,
+   "state_aid_satr": 0.6779,
+   "chips_ju": 0.0263,
+   "edf": 0.0018,
+   "horizon_eu_partnership": 0.0452,
+   "innovation_fund": 0.0065,
+   "ipcei": 0.0018
+  },
+  "SK": {
+   "horizon_eu_pillar_ii": 0.0914,
+   "state_aid_satr": 0.8641,
+   "eit": 0.0032,
+   "horizon_eu_partnership": 0.0183,
+   "eic": 0.0072,
+   "innovation_fund": 0.0008,
+   "ipcei": 0.0111,
+   "chips_ju": 0.0032,
+   "edf": 0.0008
+  }
+ },
+ "byCountrySector": {
+  "AT|agrifood": {
+   "eic": 0.0242,
+   "eit": 0.0061,
+   "horizon_eu_pillar_ii": 0.3333,
+   "state_aid_satr": 0.6364
+  },
+  "AT|energy_cleantech": {
+   "eic": 0.0135,
+   "eit": 0.0017,
+   "horizon_eu_partnership": 0.0456,
+   "horizon_eu_pillar_ii": 0.2314,
+   "innovation_fund": 0.0068,
+   "state_aid_satr": 0.701
+  },
+  "AT|health_life_sciences": {
+   "chips_ju": 0.0047,
+   "eic": 0.0884,
+   "eit": 0.0279,
+   "horizon_eu_partnership": 0.0651,
+   "horizon_eu_pillar_ii": 0.2512,
+   "state_aid_satr": 0.5628
+  },
+  "AT|industrial_manufacturing": {
+   "chips_ju": 0.0097,
+   "eic": 0.0032,
+   "eit": 0.0032,
+   "horizon_eu_partnership": 0.0065,
+   "horizon_eu_pillar_ii": 0.1136,
+   "ipcei": 0.0065,
+   "state_aid_satr": 0.8571
+  },
+  "AT|materials_chemicals": {
+   "eic": 0.0319,
+   "horizon_eu_partnership": 0.0426,
+   "horizon_eu_pillar_ii": 0.3085,
+   "state_aid_satr": 0.617
+  },
+  "AT|mobility_transport": {
+   "eic": 0.0047,
+   "eit": 0.0047,
+   "horizon_eu_partnership": 0.1226,
+   "horizon_eu_pillar_ii": 0.1651,
+   "ipcei": 0.0047,
+   "state_aid_satr": 0.6981
+  },
+  "AT|other": {
+   "chips_ju": 0.0047,
+   "eic": 0.0205,
+   "horizon_eu_partnership": 0.0174,
+   "horizon_eu_pillar_ii": 0.1025,
+   "ipcei": 0.0032,
+   "state_aid_satr": 0.8517
+  },
+  "AT|semiconductors_electronics": {
+   "chips_ju": 0.2421,
+   "eic": 0.0684,
+   "horizon_eu_partnership": 0.0789,
+   "horizon_eu_pillar_ii": 0.2474,
+   "ipcei": 0.0105,
+   "state_aid_satr": 0.3526
+  },
+  "AT|software_data_ai": {
+   "chips_ju": 0.0226,
+   "eic": 0.0201,
+   "eit": 0.015,
+   "horizon_eu_partnership": 0.0426,
+   "horizon_eu_pillar_ii": 0.188,
+   "state_aid_satr": 0.7118
+  },
+  "BE|agrifood": {
+   "eic": 0.0082,
+   "eit": 0.0109,
+   "horizon_eu_partnership": 0.0054,
+   "horizon_eu_pillar_ii": 0.3043,
+   "state_aid_satr": 0.6712
+  },
+  "BE|energy_cleantech": {
+   "eic": 0.0163,
+   "horizon_eu_partnership": 0.0447,
+   "horizon_eu_pillar_ii": 0.4776,
+   "innovation_fund": 0.0346,
+   "ipcei": 0.0041,
+   "state_aid_satr": 0.4228
+  },
+  "BE|health_life_sciences": {
+   "chips_ju": 0.002,
+   "eic": 0.066,
+   "eit": 0.002,
+   "horizon_eu_partnership": 0.138,
+   "horizon_eu_pillar_ii": 0.292,
+   "ipcei": 0.002,
+   "state_aid_satr": 0.498
+  },
+  "BE|industrial_manufacturing": {
+   "eic": 0.0059,
+   "eit": 0.0059,
+   "horizon_eu_partnership": 0.0088,
+   "horizon_eu_pillar_ii": 0.1173,
+   "state_aid_satr": 0.8622
+  },
+  "BE|materials_chemicals": {
+   "eic": 0.0245,
+   "horizon_eu_partnership": 0.0245,
+   "horizon_eu_pillar_ii": 0.3313,
+   "ipcei": 0.0123,
+   "state_aid_satr": 0.6074
+  },
+  "BE|mobility_transport": {
+   "eic": 0.0056,
+   "eit": 0.0111,
+   "horizon_eu_partnership": 0.1389,
+   "horizon_eu_pillar_ii": 0.35,
+   "state_aid_satr": 0.4944
+  },
+  "BE|other": {
+   "chips_ju": 0.0039,
+   "eic": 0.0157,
+   "horizon_eu_partnership": 0.0131,
+   "horizon_eu_pillar_ii": 0.1549,
+   "state_aid_satr": 0.8123
+  },
+  "BE|semiconductors_electronics": {
+   "chips_ju": 0.1899,
+   "eic": 0.067,
+   "horizon_eu_partnership": 0.0335,
+   "horizon_eu_pillar_ii": 0.1676,
+   "state_aid_satr": 0.5419
+  },
+  "BE|software_data_ai": {
+   "chips_ju": 0.0028,
+   "eic": 0.0138,
+   "eit": 0.0028,
+   "horizon_eu_partnership": 0.0317,
+   "horizon_eu_pillar_ii": 0.1515,
+   "state_aid_satr": 0.7975
+  },
+  "CH|semiconductors_electronics": {
+   "chips_ju": 0.5586,
+   "eic": 0.045,
+   "eit": 0.009,
+   "horizon_eu_partnership": 0.1261,
+   "horizon_eu_pillar_ii": 0.2613
+  },
+  "CZ|agrifood": {
+   "horizon_eu_partnership": 0.003,
+   "horizon_eu_pillar_ii": 0.0851,
+   "state_aid_satr": 0.9119
+  },
+  "CZ|energy_cleantech": {
+   "eic": 0.009,
+   "horizon_eu_partnership": 0.0108,
+   "horizon_eu_pillar_ii": 0.056,
+   "innovation_fund": 0.0054,
+   "ipcei": 0.0018,
+   "state_aid_satr": 0.917
+  },
+  "CZ|health_life_sciences": {
+   "eic": 0.0526,
+   "horizon_eu_partnership": 0.0226,
+   "horizon_eu_pillar_ii": 0.2481,
+   "state_aid_satr": 0.6767
+  },
+  "CZ|industrial_manufacturing": {
+   "eic": 0.006,
+   "eit": 0.003,
+   "horizon_eu_partnership": 0.006,
+   "horizon_eu_pillar_ii": 0.0209,
+   "state_aid_satr": 0.9642
+  },
+  "CZ|materials_chemicals": {
+   "eic": 0.0135,
+   "horizon_eu_partnership": 0.0135,
+   "horizon_eu_pillar_ii": 0.0811,
+   "state_aid_satr": 0.8919
+  },
+  "CZ|mobility_transport": {
+   "eic": 0.0101,
+   "eit": 0.0101,
+   "horizon_eu_partnership": 0.0909,
+   "horizon_eu_pillar_ii": 0.1515,
+   "state_aid_satr": 0.7374
+  },
+  "CZ|other": {
+   "eic": 0.0089,
+   "horizon_eu_partnership": 0.0067,
+   "horizon_eu_pillar_ii": 0.0761,
+   "state_aid_satr": 0.9083
+  },
+  "CZ|semiconductors_electronics": {
+   "chips_ju": 0.125,
+   "eic": 0.0781,
+   "horizon_eu_partnership": 0.0547,
+   "horizon_eu_pillar_ii": 0.125,
+   "ipcei": 0.0078,
+   "state_aid_satr": 0.6094
+  },
+  "CZ|software_data_ai": {
+   "eic": 0.002,
+   "eit": 0.0081,
+   "horizon_eu_partnership": 0.002,
+   "horizon_eu_pillar_ii": 0.0486,
+   "state_aid_satr": 0.9393
+  },
+  "DE|agrifood": {
+   "eic": 0.0082,
+   "eit": 0.0082,
+   "horizon_eu_partnership": 0.0041,
+   "horizon_eu_pillar_ii": 0.2326,
+   "state_aid_satr": 0.7469
+  },
+  "DE|defense_security": {
+   "chips_ju": 0.0093,
+   "edf": 0.1963,
+   "eic": 0.0187,
+   "eit": 0.0093,
+   "horizon_eu_partnership": 0.0654,
+   "horizon_eu_pillar_ii": 0.3738,
+   "state_aid_satr": 0.3271
+  },
+  "DE|energy_cleantech": {
+   "chips_ju": 0.0009,
+   "eic": 0.0104,
+   "eit": 0.0029,
+   "horizon_eu_partnership": 0.021,
+   "horizon_eu_pillar_ii": 0.1226,
+   "innovation_fund": 0.0049,
+   "ipcei": 0.0101,
+   "state_aid_satr": 0.8273
+  },
+  "DE|health_life_sciences": {
+   "eic": 0.0737,
+   "eit": 0.0102,
+   "horizon_eu_partnership": 0.0766,
+   "horizon_eu_pillar_ii": 0.1642,
+   "ipcei": 0.0007,
+   "state_aid_satr": 0.6745
+  },
+  "DE|industrial_manufacturing": {
+   "chips_ju": 0.0008,
+   "eic": 0.0021,
+   "eit": 0.0013,
+   "horizon_eu_partnership": 0.0018,
+   "horizon_eu_pillar_ii": 0.0328,
+   "innovation_fund": 0.0005,
+   "ipcei": 0.0008,
+   "state_aid_satr": 0.96
+  },
+  "DE|materials_chemicals": {
+   "eic": 0.019,
+   "eit": 0.0047,
+   "horizon_eu_partnership": 0.0036,
+   "horizon_eu_pillar_ii": 0.1234,
+   "ipcei": 0.0024,
+   "state_aid_satr": 0.847
+  },
+  "DE|mobility_transport": {
+   "eic": 0.002,
+   "eit": 0.0198,
+   "horizon_eu_partnership": 0.0516,
+   "horizon_eu_pillar_ii": 0.1071,
+   "ipcei": 0.004,
+   "state_aid_satr": 0.8155
+  },
+  "DE|other": {
+   "chips_ju": 0.0018,
+   "eic": 0.009,
+   "eit": 0.0005,
+   "horizon_eu_partnership": 0.0104,
+   "horizon_eu_pillar_ii": 0.0646,
+   "state_aid_satr": 0.9138
+  },
+  "DE|semiconductors_electronics": {
+   "chips_ju": 0.1257,
+   "eic": 0.0542,
+   "eit": 0.0018,
+   "horizon_eu_partnership": 0.031,
+   "horizon_eu_pillar_ii": 0.1222,
+   "ipcei": 0.0155,
+   "state_aid_satr": 0.6496
+  },
+  "DE|software_data_ai": {
+   "chips_ju": 0.0049,
+   "eic": 0.008,
+   "eit": 0.0041,
+   "horizon_eu_partnership": 0.0115,
+   "horizon_eu_pillar_ii": 0.067,
+   "ipcei": 0.0008,
+   "state_aid_satr": 0.9036
+  },
+  "DE|space": {
+   "eic": 0.1,
+   "horizon_eu_partnership": 0.2,
+   "horizon_eu_pillar_ii": 0.3556,
+   "state_aid_satr": 0.3444
+  },
+  "DK|agrifood": {
+   "eic": 0.0278,
+   "eit": 0.0556,
+   "horizon_eu_pillar_ii": 0.9028,
+   "state_aid_satr": 0.0139
+  },
+  "DK|energy_cleantech": {
+   "eic": 0.0741,
+   "horizon_eu_partnership": 0.1111,
+   "horizon_eu_pillar_ii": 0.7284,
+   "innovation_fund": 0.0679,
+   "ipcei": 0.0062,
+   "state_aid_satr": 0.0123
+  },
+  "DK|health_life_sciences": {
+   "eic": 0.2283,
+   "horizon_eu_partnership": 0.2935,
+   "horizon_eu_pillar_ii": 0.4674,
+   "state_aid_satr": 0.0109
+  },
+  "DK|other": {
+   "chips_ju": 0.0196,
+   "eic": 0.098,
+   "horizon_eu_partnership": 0.0392,
+   "horizon_eu_pillar_ii": 0.8235,
+   "state_aid_satr": 0.0196
+  },
+  "DK|semiconductors_electronics": {
+   "chips_ju": 0.3167,
+   "eic": 0.1833,
+   "eit": 0.0167,
+   "horizon_eu_partnership": 0.0667,
+   "horizon_eu_pillar_ii": 0.4167
+  },
+  "DK|software_data_ai": {
+   "eic": 0.102,
+   "eit": 0.0816,
+   "horizon_eu_partnership": 0.0408,
+   "horizon_eu_pillar_ii": 0.7755
+  },
+  "EE|energy_cleantech": {
+   "eic": 0.0556,
+   "horizon_eu_partnership": 0.1111,
+   "horizon_eu_pillar_ii": 0.3519,
+   "innovation_fund": 0.037,
+   "ipcei": 0.0185,
+   "state_aid_satr": 0.4259
+  },
+  "EE|health_life_sciences": {
+   "eic": 0.0889,
+   "eit": 0.0667,
+   "horizon_eu_pillar_ii": 0.4667,
+   "state_aid_satr": 0.3778
+  },
+  "EE|other": {
+   "eic": 0.025,
+   "horizon_eu_partnership": 0.075,
+   "horizon_eu_pillar_ii": 0.725,
+   "state_aid_satr": 0.175
+  },
+  "EE|software_data_ai": {
+   "edf": 0.0217,
+   "eic": 0.0652,
+   "eit": 0.0217,
+   "horizon_eu_partnership": 0.1304,
+   "horizon_eu_pillar_ii": 0.4565,
+   "state_aid_satr": 0.3043
+  },
+  "ES|agrifood": {
+   "eic": 0.0251,
+   "eit": 0.0157,
+   "horizon_eu_partnership": 0.0094,
+   "horizon_eu_pillar_ii": 0.9467,
+   "ipcei": 0.0031
+  },
+  "ES|defense_security": {
+   "chips_ju": 0.0556,
+   "edf": 0.3111,
+   "eic": 0.0556,
+   "eit": 0.0111,
+   "horizon_eu_partnership": 0.1,
+   "horizon_eu_pillar_ii": 0.4667
+  },
+  "ES|energy_cleantech": {
+   "eic": 0.068,
+   "eit": 0.0158,
+   "horizon_eu_partnership": 0.0997,
+   "horizon_eu_pillar_ii": 0.7547,
+   "innovation_fund": 0.0475,
+   "ipcei": 0.0142
+  },
+  "ES|health_life_sciences": {
+   "eic": 0.2047,
+   "eit": 0.0353,
+   "horizon_eu_partnership": 0.2,
+   "horizon_eu_pillar_ii": 0.56
+  },
+  "ES|industrial_manufacturing": {
+   "eic": 0.0405,
+   "horizon_eu_partnership": 0.0946,
+   "horizon_eu_pillar_ii": 0.8649
+  },
+  "ES|materials_chemicals": {
+   "eic": 0.1608,
+   "eit": 0.007,
+   "horizon_eu_partnership": 0.0769,
+   "horizon_eu_pillar_ii": 0.7483,
+   "ipcei": 0.007
+  },
+  "ES|mobility_transport": {
+   "eic": 0.0058,
+   "eit": 0.0819,
+   "horizon_eu_partnership": 0.3684,
+   "horizon_eu_pillar_ii": 0.5439
+  },
+  "ES|other": {
+   "chips_ju": 0.0042,
+   "eic": 0.0675,
+   "horizon_eu_partnership": 0.0549,
+   "horizon_eu_pillar_ii": 0.8734
+  },
+  "ES|semiconductors_electronics": {
+   "chips_ju": 0.3667,
+   "eic": 0.15,
+   "eit": 0.0042,
+   "horizon_eu_partnership": 0.1208,
+   "horizon_eu_pillar_ii": 0.3375,
+   "ipcei": 0.0208
+  },
+  "ES|software_data_ai": {
+   "eic": 0.0542,
+   "eit": 0.0305,
+   "horizon_eu_partnership": 0.1254,
+   "horizon_eu_pillar_ii": 0.7797,
+   "ipcei": 0.0102
+  },
+  "ES|space": {
+   "eic": 0.1111,
+   "horizon_eu_partnership": 0.3148,
+   "horizon_eu_pillar_ii": 0.5556,
+   "ipcei": 0.0185
+  },
+  "FI|agrifood": {
+   "eic": 0.0227,
+   "eit": 0.0227,
+   "horizon_eu_pillar_ii": 0.4432,
+   "ipcei": 0.0114,
+   "state_aid_satr": 0.5
+  },
+  "FI|energy_cleantech": {
+   "eic": 0.0213,
+   "eit": 0.0085,
+   "horizon_eu_partnership": 0.0426,
+   "horizon_eu_pillar_ii": 0.2638,
+   "innovation_fund": 0.0255,
+   "ipcei": 0.0213,
+   "state_aid_satr": 0.617
+  },
+  "FI|health_life_sciences": {
+   "eic": 0.1132,
+   "eit": 0.0189,
+   "horizon_eu_partnership": 0.0692,
+   "horizon_eu_pillar_ii": 0.1698,
+   "state_aid_satr": 0.6289
+  },
+  "FI|industrial_manufacturing": {
+   "chips_ju": 0.0044,
+   "eic": 0.0175,
+   "eit": 0.0044,
+   "horizon_eu_partnership": 0.0131,
+   "horizon_eu_pillar_ii": 0.1921,
+   "ipcei": 0.0044,
+   "state_aid_satr": 0.7642
+  },
+  "FI|materials_chemicals": {
+   "eic": 0.0449,
+   "horizon_eu_partnership": 0.0225,
+   "horizon_eu_pillar_ii": 0.2472,
+   "ipcei": 0.0112,
+   "state_aid_satr": 0.6742
+  },
+  "FI|mobility_transport": {
+   "eit": 0.0172,
+   "horizon_eu_partnership": 0.069,
+   "horizon_eu_pillar_ii": 0.4483,
+   "state_aid_satr": 0.4655
+  },
+  "FI|other": {
+   "chips_ju": 0.0039,
+   "eic": 0.0116,
+   "eit": 0.0039,
+   "horizon_eu_partnership": 0.0077,
+   "horizon_eu_pillar_ii": 0.278,
+   "innovation_fund": 0.0039,
+   "state_aid_satr": 0.6911
+  },
+  "FI|semiconductors_electronics": {
+   "chips_ju": 0.2385,
+   "eic": 0.0628,
+   "eit": 0.0084,
+   "horizon_eu_partnership": 0.0335,
+   "horizon_eu_pillar_ii": 0.1423,
+   "state_aid_satr": 0.5146
+  },
+  "FI|software_data_ai": {
+   "chips_ju": 0.0281,
+   "eic": 0.0125,
+   "eit": 0.0047,
+   "horizon_eu_partnership": 0.0187,
+   "horizon_eu_pillar_ii": 0.0889,
+   "state_aid_satr": 0.8471
+  },
+  "FR|agrifood": {
+   "eic": 0.014,
+   "eit": 0.007,
+   "horizon_eu_partnership": 0.007,
+   "horizon_eu_pillar_ii": 0.2825,
+   "state_aid_satr": 0.6895
+  },
+  "FR|defense_security": {
+   "chips_ju": 0.0065,
+   "edf": 0.2078,
+   "eic": 0.039,
+   "horizon_eu_partnership": 0.0714,
+   "horizon_eu_pillar_ii": 0.2987,
+   "ipcei": 0.0065,
+   "state_aid_satr": 0.3701
+  },
+  "FR|energy_cleantech": {
+   "chips_ju": 0.0004,
+   "eic": 0.0099,
+   "eit": 0.0041,
+   "horizon_eu_partnership": 0.0329,
+   "horizon_eu_pillar_ii": 0.1254,
+   "innovation_fund": 0.0144,
+   "ipcei": 0.0037,
+   "state_aid_satr": 0.8093
+  },
+  "FR|health_life_sciences": {
+   "eic": 0.0856,
+   "eit": 0.0095,
+   "horizon_eu_partnership": 0.0606,
+   "horizon_eu_pillar_ii": 0.1773,
+   "ipcei": 0.0052,
+   "state_aid_satr": 0.6618
+  },
+  "FR|industrial_manufacturing": {
+   "chips_ju": 0.001,
+   "eic": 0.0078,
+   "eit": 0.002,
+   "horizon_eu_partnership": 0.0098,
+   "horizon_eu_pillar_ii": 0.0519,
+   "ipcei": 0.002,
+   "state_aid_satr": 0.9256
+  },
+  "FR|materials_chemicals": {
+   "eic": 0.0386,
+   "horizon_eu_partnership": 0.0193,
+   "horizon_eu_pillar_ii": 0.157,
+   "ipcei": 0.0048,
+   "state_aid_satr": 0.7802
+  },
+  "FR|mobility_transport": {
+   "eic": 0.0042,
+   "eit": 0.0083,
+   "horizon_eu_partnership": 0.0846,
+   "horizon_eu_pillar_ii": 0.1221,
+   "ipcei": 0.0028,
+   "state_aid_satr": 0.7781
+  },
+  "FR|other": {
+   "chips_ju": 0.0052,
+   "edf": 0.0006,
+   "eic": 0.013,
+   "eit": 0.0019,
+   "horizon_eu_partnership": 0.0208,
+   "horizon_eu_pillar_ii": 0.109,
+   "state_aid_satr": 0.8494
+  },
+  "FR|semiconductors_electronics": {
+   "chips_ju": 0.1602,
+   "edf": 0.0013,
+   "eic": 0.0748,
+   "eit": 0.004,
+   "horizon_eu_partnership": 0.0427,
+   "horizon_eu_pillar_ii": 0.1963,
+   "innovation_fund": 0.0013,
+   "ipcei": 0.0214,
+   "state_aid_satr": 0.498
+  },
+  "FR|software_data_ai": {
+   "chips_ju": 0.0037,
+   "edf": 0.0011,
+   "eic": 0.0092,
+   "eit": 0.0037,
+   "horizon_eu_partnership": 0.0165,
+   "horizon_eu_pillar_ii": 0.0727,
+   "ipcei": 0.0007,
+   "state_aid_satr": 0.8924
+  },
+  "FR|space": {
+   "eic": 0.0854,
+   "horizon_eu_partnership": 0.122,
+   "horizon_eu_pillar_ii": 0.3659,
+   "state_aid_satr": 0.4268
+  },
+  "GB|agrifood": {
+   "eit": 0.0625,
+   "horizon_eu_partnership": 0.0089,
+   "horizon_eu_pillar_ii": 0.8125,
+   "state_aid_satr": 0.1161
+  },
+  "GB|energy_cleantech": {
+   "eic": 0.0245,
+   "eit": 0.0327,
+   "horizon_eu_partnership": 0.1347,
+   "horizon_eu_pillar_ii": 0.7184,
+   "state_aid_satr": 0.0898
+  },
+  "GB|health_life_sciences": {
+   "eic": 0.0557,
+   "eit": 0.0209,
+   "horizon_eu_partnership": 0.2334,
+   "horizon_eu_pillar_ii": 0.4948,
+   "state_aid_satr": 0.1951
+  },
+  "GB|industrial_manufacturing": {
+   "eic": 0.0303,
+   "eit": 0.0152,
+   "horizon_eu_partnership": 0.1212,
+   "horizon_eu_pillar_ii": 0.6667,
+   "state_aid_satr": 0.1667
+  },
+  "GB|materials_chemicals": {
+   "eic": 0.0566,
+   "eit": 0.0755,
+   "horizon_eu_partnership": 0.0377,
+   "horizon_eu_pillar_ii": 0.7547,
+   "state_aid_satr": 0.0755
+  },
+  "GB|mobility_transport": {
+   "eic": 0.0106,
+   "eit": 0.0532,
+   "horizon_eu_partnership": 0.2553,
+   "horizon_eu_pillar_ii": 0.5957,
+   "state_aid_satr": 0.0851
+  },
+  "GB|other": {
+   "eic": 0.0307,
+   "eit": 0.0061,
+   "horizon_eu_partnership": 0.1104,
+   "horizon_eu_pillar_ii": 0.5399,
+   "state_aid_satr": 0.3129
+  },
+  "GB|semiconductors_electronics": {
+   "chips_ju": 0.1398,
+   "eic": 0.1183,
+   "horizon_eu_partnership": 0.1505,
+   "horizon_eu_pillar_ii": 0.4301,
+   "ipcei": 0.043,
+   "state_aid_satr": 0.1183
+  },
+  "GB|software_data_ai": {
+   "eic": 0.0039,
+   "eit": 0.0309,
+   "horizon_eu_partnership": 0.0618,
+   "horizon_eu_pillar_ii": 0.3205,
+   "state_aid_satr": 0.583
+  },
+  "GR|agrifood": {
+   "eic": 0.0092,
+   "horizon_eu_partnership": 0.0183,
+   "horizon_eu_pillar_ii": 0.945,
+   "state_aid_satr": 0.0275
+  },
+  "GR|defense_security": {
+   "chips_ju": 0.0469,
+   "edf": 0.3125,
+   "eic": 0.0312,
+   "horizon_eu_partnership": 0.1094,
+   "horizon_eu_pillar_ii": 0.5
+  },
+  "GR|energy_cleantech": {
+   "eic": 0.026,
+   "horizon_eu_partnership": 0.1126,
+   "horizon_eu_pillar_ii": 0.7965,
+   "innovation_fund": 0.0346,
+   "ipcei": 0.0087,
+   "state_aid_satr": 0.0216
+  },
+  "GR|health_life_sciences": {
+   "eic": 0.0741,
+   "horizon_eu_partnership": 0.1296,
+   "horizon_eu_pillar_ii": 0.7037,
+   "state_aid_satr": 0.0926
+  },
+  "GR|industrial_manufacturing": {
+   "eic": 0.0196,
+   "horizon_eu_partnership": 0.0392,
+   "horizon_eu_pillar_ii": 0.8824,
+   "state_aid_satr": 0.0588
+  },
+  "GR|mobility_transport": {
+   "horizon_eu_partnership": 0.1625,
+   "horizon_eu_pillar_ii": 0.8125,
+   "state_aid_satr": 0.025
+  },
+  "GR|other": {
+   "chips_ju": 0.0141,
+   "eic": 0.0211,
+   "horizon_eu_partnership": 0.1056,
+   "horizon_eu_pillar_ii": 0.7113,
+   "state_aid_satr": 0.1479
+  },
+  "GR|semiconductors_electronics": {
+   "chips_ju": 0.2824,
+   "edf": 0.0118,
+   "eic": 0.1882,
+   "horizon_eu_partnership": 0.1647,
+   "horizon_eu_pillar_ii": 0.3412,
+   "state_aid_satr": 0.0118
+  },
+  "GR|software_data_ai": {
+   "eic": 0.0039,
+   "horizon_eu_partnership": 0.1523,
+   "horizon_eu_pillar_ii": 0.7031,
+   "ipcei": 0.0039,
+   "state_aid_satr": 0.1367
+  },
+  "HU|agrifood": {
+   "horizon_eu_pillar_ii": 0.0313,
+   "state_aid_satr": 0.9687
+  },
+  "HU|energy_cleantech": {
+   "eit": 0.0046,
+   "horizon_eu_partnership": 0.0138,
+   "horizon_eu_pillar_ii": 0.2156,
+   "innovation_fund": 0.0092,
+   "state_aid_satr": 0.7569
+  },
+  "HU|health_life_sciences": {
+   "eic": 0.0616,
+   "horizon_eu_partnership": 0.0548,
+   "horizon_eu_pillar_ii": 0.1986,
+   "ipcei": 0.0205,
+   "state_aid_satr": 0.6644
+  },
+  "HU|industrial_manufacturing": {
+   "eic": 0.003,
+   "horizon_eu_partnership": 0.003,
+   "horizon_eu_pillar_ii": 0.0268,
+   "state_aid_satr": 0.9673
+  },
+  "HU|materials_chemicals": {
+   "horizon_eu_pillar_ii": 0.0377,
+   "state_aid_satr": 0.9623
+  },
+  "HU|mobility_transport": {
+   "horizon_eu_partnership": 0.0472,
+   "horizon_eu_pillar_ii": 0.1792,
+   "state_aid_satr": 0.7736
+  },
+  "HU|other": {
+   "eic": 0.0037,
+   "horizon_eu_partnership": 0.0025,
+   "horizon_eu_pillar_ii": 0.0446,
+   "state_aid_satr": 0.9493
+  },
+  "HU|semiconductors_electronics": {
+   "chips_ju": 0.1509,
+   "eic": 0.1132,
+   "horizon_eu_partnership": 0.0189,
+   "horizon_eu_pillar_ii": 0.2075,
+   "ipcei": 0.0189,
+   "state_aid_satr": 0.4906
+  },
+  "HU|software_data_ai": {
+   "chips_ju": 0.0064,
+   "eit": 0.0256,
+   "horizon_eu_partnership": 0.0064,
+   "horizon_eu_pillar_ii": 0.1474,
+   "ipcei": 0.0064,
+   "state_aid_satr": 0.8077
+  },
+  "IE|agrifood": {
+   "eic": 0.0076,
+   "eit": 0.0076,
+   "horizon_eu_partnership": 0.0076,
+   "horizon_eu_pillar_ii": 0.4351,
+   "state_aid_satr": 0.542
+  },
+  "IE|energy_cleantech": {
+   "eic": 0.0519,
+   "eit": 0.0074,
+   "horizon_eu_partnership": 0.0741,
+   "horizon_eu_pillar_ii": 0.3778,
+   "innovation_fund": 0.0074,
+   "state_aid_satr": 0.4815
+  },
+  "IE|health_life_sciences": {
+   "chips_ju": 0.0079,
+   "eic": 0.1304,
+   "eit": 0.0356,
+   "horizon_eu_partnership": 0.0672,
+   "horizon_eu_pillar_ii": 0.2095,
+   "state_aid_satr": 0.5494
+  },
+  "IE|industrial_manufacturing": {
+   "eit": 0.0103,
+   "horizon_eu_pillar_ii": 0.1237,
+   "state_aid_satr": 0.866
+  },
+  "IE|other": {
+   "eic": 0.0132,
+   "eit": 0.0044,
+   "horizon_eu_partnership": 0.0132,
+   "horizon_eu_pillar_ii": 0.1982,
+   "state_aid_satr": 0.7709
+  },
+  "IE|semiconductors_electronics": {
+   "chips_ju": 0.1481,
+   "eic": 0.1481,
+   "horizon_eu_partnership": 0.0864,
+   "horizon_eu_pillar_ii": 0.2593,
+   "ipcei": 0.0123,
+   "state_aid_satr": 0.3457
+  },
+  "IE|software_data_ai": {
+   "chips_ju": 0.002,
+   "eic": 0.008,
+   "eit": 0.006,
+   "horizon_eu_partnership": 0.0219,
+   "horizon_eu_pillar_ii": 0.1074,
+   "state_aid_satr": 0.8549
+  },
+  "IT|agrifood": {
+   "eic": 0.0027,
+   "eit": 0.0007,
+   "horizon_eu_partnership": 0.0007,
+   "horizon_eu_pillar_ii": 0.1485,
+   "state_aid_satr": 0.8475
+  },
+  "IT|defense_security": {
+   "chips_ju": 0.019,
+   "edf": 0.1714,
+   "eic": 0.019,
+   "horizon_eu_partnership": 0.0952,
+   "horizon_eu_pillar_ii": 0.2952,
+   "ipcei": 0.0095,
+   "state_aid_satr": 0.3905
+  },
+  "IT|energy_cleantech": {
+   "eic": 0.0113,
+   "eit": 0.0009,
+   "horizon_eu_partnership": 0.0263,
+   "horizon_eu_pillar_ii": 0.1572,
+   "innovation_fund": 0.0082,
+   "ipcei": 0.0059,
+   "state_aid_satr": 0.7903
+  },
+  "IT|health_life_sciences": {
+   "chips_ju": 0.002,
+   "eic": 0.0695,
+   "eit": 0.003,
+   "horizon_eu_partnership": 0.0634,
+   "horizon_eu_pillar_ii": 0.2014,
+   "ipcei": 0.007,
+   "state_aid_satr": 0.6536
+  },
+  "IT|industrial_manufacturing": {
+   "chips_ju": 0.0002,
+   "eic": 0.001,
+   "eit": 0.0005,
+   "horizon_eu_partnership": 0.0025,
+   "horizon_eu_pillar_ii": 0.0313,
+   "ipcei": 0.0007,
+   "state_aid_satr": 0.9637
+  },
+  "IT|materials_chemicals": {
+   "eic": 0.0153,
+   "horizon_eu_partnership": 0.0051,
+   "horizon_eu_pillar_ii": 0.1107,
+   "ipcei": 0.0038,
+   "state_aid_satr": 0.8651
+  },
+  "IT|mobility_transport": {
+   "eic": 0.0011,
+   "eit": 0.0023,
+   "horizon_eu_partnership": 0.0698,
+   "horizon_eu_pillar_ii": 0.1171,
+   "ipcei": 0.0023,
+   "state_aid_satr": 0.8074
+  },
+  "IT|other": {
+   "chips_ju": 0.0004,
+   "eic": 0.0026,
+   "eit": 0.0001,
+   "horizon_eu_partnership": 0.0036,
+   "horizon_eu_pillar_ii": 0.0283,
+   "state_aid_satr": 0.9649
+  },
+  "IT|semiconductors_electronics": {
+   "chips_ju": 0.146,
+   "edf": 0.0015,
+   "eic": 0.0723,
+   "eit": 0.0015,
+   "horizon_eu_partnership": 0.059,
+   "horizon_eu_pillar_ii": 0.1534,
+   "ipcei": 0.0103,
+   "state_aid_satr": 0.556
+  },
+  "IT|software_data_ai": {
+   "chips_ju": 0.0067,
+   "edf": 0.0011,
+   "eic": 0.0039,
+   "eit": 0.005,
+   "horizon_eu_partnership": 0.0269,
+   "horizon_eu_pillar_ii": 0.1413,
+   "ipcei": 0.0034,
+   "state_aid_satr": 0.8117
+  },
+  "IT|space": {
+   "eic": 0.046,
+   "horizon_eu_partnership": 0.1379,
+   "horizon_eu_pillar_ii": 0.2874,
+   "state_aid_satr": 0.5287
+  },
+  "LU|energy_cleantech": {
+   "eic": 0.0096,
+   "horizon_eu_partnership": 0.0577,
+   "horizon_eu_pillar_ii": 0.1538,
+   "innovation_fund": 0.0096,
+   "state_aid_satr": 0.7692
+  },
+  "LU|other": {
+   "eic": 0.0606,
+   "horizon_eu_partnership": 0.0909,
+   "horizon_eu_pillar_ii": 0.1818,
+   "state_aid_satr": 0.6667
+  },
+  "LU|software_data_ai": {
+   "horizon_eu_partnership": 0.1102,
+   "horizon_eu_pillar_ii": 0.2047,
+   "state_aid_satr": 0.685
+  },
+  "LV|agrifood": {
+   "horizon_eu_partnership": 0.025,
+   "horizon_eu_pillar_ii": 0.45,
+   "state_aid_satr": 0.525
+  },
+  "LV|energy_cleantech": {
+   "eit": 0.0345,
+   "horizon_eu_partnership": 0.0345,
+   "horizon_eu_pillar_ii": 0.2414,
+   "state_aid_satr": 0.6897
+  },
+  "LV|health_life_sciences": {
+   "eic": 0.0698,
+   "horizon_eu_pillar_ii": 0.186,
+   "state_aid_satr": 0.7442
+  },
+  "LV|industrial_manufacturing": {
+   "horizon_eu_pillar_ii": 0.0548,
+   "innovation_fund": 0.0137,
+   "state_aid_satr": 0.9315
+  },
+  "LV|other": {
+   "eic": 0.0149,
+   "horizon_eu_partnership": 0.0149,
+   "horizon_eu_pillar_ii": 0.2985,
+   "state_aid_satr": 0.6716
+  },
+  "LV|software_data_ai": {
+   "chips_ju": 0.0079,
+   "horizon_eu_partnership": 0.0079,
+   "horizon_eu_pillar_ii": 0.1024,
+   "state_aid_satr": 0.8819
+  },
+  "NL|agrifood": {
+   "eic": 0.0152,
+   "eit": 0.0087,
+   "horizon_eu_partnership": 0.0087,
+   "horizon_eu_pillar_ii": 0.2538,
+   "state_aid_satr": 0.7137
+  },
+  "NL|energy_cleantech": {
+   "eic": 0.0276,
+   "eit": 0.0051,
+   "horizon_eu_partnership": 0.0429,
+   "horizon_eu_pillar_ii": 0.2853,
+   "innovation_fund": 0.0133,
+   "ipcei": 0.0072,
+   "state_aid_satr": 0.6186
+  },
+  "NL|health_life_sciences": {
+   "chips_ju": 0.0067,
+   "eic": 0.1366,
+   "eit": 0.0084,
+   "horizon_eu_partnership": 0.1383,
+   "horizon_eu_pillar_ii": 0.2934,
+   "ipcei": 0.0017,
+   "state_aid_satr": 0.4148
+  },
+  "NL|industrial_manufacturing": {
+   "chips_ju": 0.0175,
+   "eic": 0.014,
+   "horizon_eu_pillar_ii": 0.1783,
+   "ipcei": 0.0035,
+   "state_aid_satr": 0.7867
+  },
+  "NL|materials_chemicals": {
+   "eic": 0.0485,
+   "horizon_eu_partnership": 0.0097,
+   "horizon_eu_pillar_ii": 0.3981,
+   "state_aid_satr": 0.5437
+  },
+  "NL|mobility_transport": {
+   "eic": 0.0032,
+   "eit": 0.0032,
+   "horizon_eu_partnership": 0.0396,
+   "horizon_eu_pillar_ii": 0.0902,
+   "state_aid_satr": 0.8639
+  },
+  "NL|other": {
+   "chips_ju": 0.0091,
+   "eic": 0.0144,
+   "eit": 0.0013,
+   "horizon_eu_partnership": 0.0131,
+   "horizon_eu_pillar_ii": 0.1319,
+   "innovation_fund": 0.0013,
+   "state_aid_satr": 0.829
+  },
+  "NL|semiconductors_electronics": {
+   "chips_ju": 0.3277,
+   "edf": 0.0034,
+   "eic": 0.1318,
+   "eit": 0.0034,
+   "horizon_eu_partnership": 0.0709,
+   "horizon_eu_pillar_ii": 0.2196,
+   "ipcei": 0.0068,
+   "state_aid_satr": 0.2365
+  },
+  "NL|software_data_ai": {
+   "chips_ju": 0.0276,
+   "eic": 0.0184,
+   "eit": 0.0123,
+   "horizon_eu_partnership": 0.0276,
+   "horizon_eu_pillar_ii": 0.3926,
+   "ipcei": 0.0031,
+   "state_aid_satr": 0.5184
+  },
+  "NO|agrifood": {
+   "eic": 0.0469,
+   "eit": 0.0156,
+   "horizon_eu_pillar_ii": 0.9375
+  },
+  "NO|energy_cleantech": {
+   "eic": 0.022,
+   "eit": 0.0165,
+   "horizon_eu_partnership": 0.0934,
+   "horizon_eu_pillar_ii": 0.7637,
+   "innovation_fund": 0.1044
+  },
+  "NO|health_life_sciences": {
+   "eic": 0.1795,
+   "horizon_eu_partnership": 0.141,
+   "horizon_eu_pillar_ii": 0.6795
+  },
+  "NO|mobility_transport": {
+   "eic": 0.0182,
+   "eit": 0.0364,
+   "horizon_eu_partnership": 0.1636,
+   "horizon_eu_pillar_ii": 0.7818
+  },
+  "NO|other": {
+   "chips_ju": 0.0132,
+   "edf": 0.0132,
+   "eic": 0.0526,
+   "eit": 0.0132,
+   "horizon_eu_partnership": 0.0263,
+   "horizon_eu_pillar_ii": 0.8816
+  },
+  "NO|software_data_ai": {
+   "eic": 0.0444,
+   "eit": 0.0667,
+   "horizon_eu_partnership": 0.1333,
+   "horizon_eu_pillar_ii": 0.7556
+  },
+  "PL|agrifood": {
+   "eic": 0.0441,
+   "horizon_eu_pillar_ii": 0.9559
+  },
+  "PL|energy_cleantech": {
+   "eic": 0.0818,
+   "eit": 0.0182,
+   "horizon_eu_partnership": 0.1364,
+   "horizon_eu_pillar_ii": 0.6364,
+   "innovation_fund": 0.1,
+   "ipcei": 0.0273
+  },
+  "PL|health_life_sciences": {
+   "eic": 0.1786,
+   "eit": 0.0595,
+   "horizon_eu_partnership": 0.131,
+   "horizon_eu_pillar_ii": 0.631
+  },
+  "PL|other": {
+   "chips_ju": 0.0147,
+   "eic": 0.0441,
+   "horizon_eu_partnership": 0.0735,
+   "horizon_eu_pillar_ii": 0.8676
+  },
+  "PL|semiconductors_electronics": {
+   "chips_ju": 0.1636,
+   "eic": 0.2182,
+   "horizon_eu_partnership": 0.1818,
+   "horizon_eu_pillar_ii": 0.4182,
+   "ipcei": 0.0182
+  },
+  "PL|software_data_ai": {
+   "eic": 0.0217,
+   "eit": 0.0217,
+   "horizon_eu_partnership": 0.1304,
+   "horizon_eu_pillar_ii": 0.7391,
+   "ipcei": 0.0652,
+   "state_aid_satr": 0.0217
+  },
+  "PT|agrifood": {
+   "eic": 0.028,
+   "eit": 0.007,
+   "horizon_eu_pillar_ii": 0.6923,
+   "state_aid_satr": 0.2727
+  },
+  "PT|energy_cleantech": {
+   "eic": 0.0261,
+   "horizon_eu_partnership": 0.098,
+   "horizon_eu_pillar_ii": 0.732,
+   "innovation_fund": 0.0392,
+   "ipcei": 0.0131,
+   "state_aid_satr": 0.0915
+  },
+  "PT|health_life_sciences": {
+   "eic": 0.2184,
+   "eit": 0.0115,
+   "horizon_eu_partnership": 0.0862,
+   "horizon_eu_pillar_ii": 0.4483,
+   "state_aid_satr": 0.2356
+  },
+  "PT|industrial_manufacturing": {
+   "eic": 0.0155,
+   "horizon_eu_partnership": 0.0078,
+   "horizon_eu_pillar_ii": 0.2713,
+   "state_aid_satr": 0.7054
+  },
+  "PT|materials_chemicals": {
+   "eic": 0.0303,
+   "horizon_eu_partnership": 0.0455,
+   "horizon_eu_pillar_ii": 0.4394,
+   "ipcei": 0.0152,
+   "state_aid_satr": 0.4697
+  },
+  "PT|mobility_transport": {
+   "eic": 0.0192,
+   "eit": 0.0192,
+   "horizon_eu_partnership": 0.1731,
+   "horizon_eu_pillar_ii": 0.5769,
+   "ipcei": 0.0192,
+   "state_aid_satr": 0.1923
+  },
+  "PT|other": {
+   "eic": 0.0296,
+   "horizon_eu_partnership": 0.0591,
+   "horizon_eu_pillar_ii": 0.5468,
+   "state_aid_satr": 0.3645
+  },
+  "PT|semiconductors_electronics": {
+   "chips_ju": 0.3367,
+   "eic": 0.1327,
+   "horizon_eu_partnership": 0.1122,
+   "horizon_eu_pillar_ii": 0.2347,
+   "state_aid_satr": 0.1837
+  },
+  "PT|software_data_ai": {
+   "chips_ju": 0.0048,
+   "eic": 0.0048,
+   "eit": 0.0143,
+   "horizon_eu_partnership": 0.0619,
+   "horizon_eu_pillar_ii": 0.2857,
+   "state_aid_satr": 0.6286
+  },
+  "SE|agrifood": {
+   "eic": 0.009,
+   "eit": 0.003,
+   "horizon_eu_pillar_ii": 0.1355,
+   "state_aid_satr": 0.8524
+  },
+  "SE|energy_cleantech": {
+   "eic": 0.0238,
+   "eit": 0.0092,
+   "horizon_eu_partnership": 0.0531,
+   "horizon_eu_pillar_ii": 0.1612,
+   "innovation_fund": 0.0256,
+   "ipcei": 0.0037,
+   "state_aid_satr": 0.7234
+  },
+  "SE|health_life_sciences": {
+   "chips_ju": 0.0051,
+   "eic": 0.1888,
+   "eit": 0.0051,
+   "horizon_eu_partnership": 0.1378,
+   "horizon_eu_pillar_ii": 0.3776,
+   "state_aid_satr": 0.2857
+  },
+  "SE|industrial_manufacturing": {
+   "eic": 0.0341,
+   "eit": 0.0227,
+   "horizon_eu_pillar_ii": 0.2045,
+   "state_aid_satr": 0.7386
+  },
+  "SE|materials_chemicals": {
+   "eic": 0.0938,
+   "eit": 0.0156,
+   "horizon_eu_partnership": 0.0312,
+   "horizon_eu_pillar_ii": 0.3906,
+   "state_aid_satr": 0.4688
+  },
+  "SE|mobility_transport": {
+   "eic": 0.0223,
+   "eit": 0.0168,
+   "horizon_eu_partnership": 0.0503,
+   "horizon_eu_pillar_ii": 0.1061,
+   "state_aid_satr": 0.8045
+  },
+  "SE|other": {
+   "chips_ju": 0.0065,
+   "edf": 0.0033,
+   "eic": 0.013,
+   "horizon_eu_partnership": 0.0358,
+   "horizon_eu_pillar_ii": 0.1596,
+   "state_aid_satr": 0.7818
+  },
+  "SE|semiconductors_electronics": {
+   "chips_ju": 0.2784,
+   "eic": 0.1023,
+   "horizon_eu_partnership": 0.0682,
+   "horizon_eu_pillar_ii": 0.2216,
+   "ipcei": 0.0114,
+   "state_aid_satr": 0.3182
+  },
+  "SE|software_data_ai": {
+   "chips_ju": 0.0175,
+   "eic": 0.0307,
+   "eit": 0.0219,
+   "horizon_eu_partnership": 0.0219,
+   "horizon_eu_pillar_ii": 0.1579,
+   "state_aid_satr": 0.75
+  },
+  "SK|agrifood": {
+   "horizon_eu_pillar_ii": 0.2364,
+   "state_aid_satr": 0.7636
+  },
+  "SK|energy_cleantech": {
+   "eic": 0.0034,
+   "eit": 0.0034,
+   "horizon_eu_partnership": 0.0185,
+   "horizon_eu_pillar_ii": 0.0455,
+   "innovation_fund": 0.0017,
+   "ipcei": 0.0101,
+   "state_aid_satr": 0.9174
+  },
+  "SK|health_life_sciences": {
+   "eic": 0.0714,
+   "horizon_eu_partnership": 0.0238,
+   "horizon_eu_pillar_ii": 0.2619,
+   "ipcei": 0.0714,
+   "state_aid_satr": 0.5714
+  },
+  "SK|industrial_manufacturing": {
+   "horizon_eu_pillar_ii": 0.0588,
+   "ipcei": 0.0294,
+   "state_aid_satr": 0.9118
+  },
+  "SK|other": {
+   "eic": 0.0124,
+   "horizon_eu_partnership": 0.0207,
+   "horizon_eu_pillar_ii": 0.1322,
+   "state_aid_satr": 0.8347
+  },
+  "SK|software_data_ai": {
+   "edf": 0.0057,
+   "horizon_eu_pillar_ii": 0.0857,
+   "ipcei": 0.0057,
+   "state_aid_satr": 0.9029
+  }
+ }
+}

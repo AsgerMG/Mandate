@@ -13,6 +13,8 @@
 //
 // The boundary is deliberate — WHICH FUNDS QUALIFY lives here; HOW THE MEMO IS
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
+import { readFileSync } from "fs";
+import path from "path";
 import { regionNameFor } from "./regions.generated";
 import { hydrateGatesFor } from "./corpus";
 import { isAttributable, isCited } from "./verdict";
@@ -56,6 +58,44 @@ export const THEME_WEIGHT = 0.6;
  *  already applied sector fit within each channel; sector's job here is to break
  *  ties, not to compete with a description the founder actually wrote. */
 export const THEME_DOMINANT_WEIGHT = 0.85;
+/** Share of channel ordering taken from the empirical prior rather than from
+ *  thematic fit. Half: the prior says where money is won, fit says what this
+ *  founder builds, and a table that ignores either is wrong in a different way. */
+export const PRIOR_WEIGHT = 0.5;
+/** Prior weight in the ROW sort when the founder's description separates funds. */
+export const PRIOR_WEIGHT_WITH_TEXT = 0.15;
+/** How peaked the thematic scores must be before they are treated as separating
+ *  the funds. Below it the description scores everything alike and carries no
+ *  ordering information, whatever its length. */
+export const THEME_SPREAD_FLOOR = 0.35;
+/** And when it does not -- a national-scheme applicant has no project text, so
+ *  where money is actually won is the best available guide. */
+export const PRIOR_WEIGHT_WITHOUT_TEXT = 0.6;
+
+interface ChannelPrior {
+  global: Record<string, number>;
+  byCountry: Record<string, Record<string, number>>;
+  byCountrySector: Record<string, Record<string, number>>;
+}
+let priorCache: ChannelPrior | undefined;
+/** P(channel | country, sector), backing off to country then global. Thin cells
+ *  are absent from the artifact by construction, so the back-off is what keeps
+ *  the prior from memorising noise. */
+function channelPrior(country?: string, sector?: string): Record<string, number> {
+  if (priorCache === undefined) {
+    try {
+      priorCache = JSON.parse(readFileSync(
+        path.join(process.cwd(), "lib", "intelligence", "channelPrior.generated.json"),
+        "utf8")) as ChannelPrior;
+    } catch {
+      priorCache = { global: {}, byCountry: {}, byCountrySector: {} };
+    }
+  }
+  const cc = toIso2(country ?? "");
+  return (sector ? priorCache.byCountrySector[`${cc}|${sector}`] : undefined)
+    ?? priorCache.byCountry[cc]
+    ?? priorCache.global;
+}
 
 // Short, human display labels for the channel codes, for the funding breakdown.
 const CHANNEL_LABEL: Record<string, string> = {
@@ -890,7 +930,7 @@ export interface RowSelection {
  */
 export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[] {
   const {
-    fieldChannels, ticketBand, consortiumOk, description, semantic, log,
+    fieldChannels, ticketBand, consortiumOk, description, semantic, founderSector, log,
     founderCountries = [], capitalSought = [],
   } = input;
   // Establishment is the first condition of every instrument in this corpus:
@@ -1043,12 +1083,31 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
     }
     return best;
   };
+  // Where funding of this kind is ACTUALLY won, from the corpus.
+  //
+  // Channel order was decided by text richness: EU programmes carry ~534 project
+  // titles per leaf and national schemes carry zero, so every semantic signal
+  // favours the EU side. Measured against real awards in the six main markets,
+  // 77.8% of funded companies won national state aid and 14.5% Horizon Pillar
+  // II -- and the published table was close to the inverse. The product showed
+  // the 22% and under-showed the 78%.
+  //
+  // A prior, not a rule: it names no channel, it is re-estimated from the corpus
+  // on every ETL run, and a country whose funding really does come from EU
+  // programmes still gets EU rows because that is what its own data says.
+  const prior = channelPrior(founderCountries[0], founderSector);
   const rest = [...codes].filter((c) => !thematicFirst.includes(c));
   rest.sort((a, b) => {
     // Rounded, for the reason given on the row sort: the offline path reads
     // cached scores and production reads pgvector, and raw floats reorder ties
     // between the two stores.
-    const d = Math.round(channelScore(b) * 1e6) - Math.round(channelScore(a) * 1e6);
+    // Thematic fit BLENDED with the prior. Neither alone: fit alone is what
+    // inverted the table, and the prior alone would hand every founder the same
+    // channels regardless of what they build.
+    const sc = (x: string) =>
+      Math.round(((1 - PRIOR_WEIGHT) * channelScore(x)
+                  + PRIOR_WEIGHT * (prior[x] ?? 0)) * 1e6);
+    const d = sc(b) - sc(a);
     if (d !== 0) return d;
     // Stable fallback: the hand-ordered default list, so a founder whose
     // description says nothing thematic sees exactly what they saw before.
@@ -1105,7 +1164,7 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, founderSector, log } = input;
+  const { consortiumOk, semantic, description, founderSector, founderCountries, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = semantic?.size
@@ -1133,12 +1192,46 @@ export function materialiseInstrumentTable(
   // to 61% and simultaneously dropped EU exact recall from 69% to 52%, because
   // sector diluted a text signal that was already working. Deciding the weight
   // from signal availability keeps both.
-  const themeInformative = [...rel.values()].some((v) => v > 0);
+  // How much the founder's description actually SEPARATES the funds, not merely
+  // whether it produced scores.
+  //
+  // "Informative" was true for every founder, because a generic self-description
+  // still returns similarity for everything -- so a specific EU project and a
+  // one-line company summary were treated alike, and the prior tuned for one
+  // wrecked the other. Spread is the honest test: a description that names a
+  // technology peaks sharply on a few funds, one that says "we build software"
+  // scores everything the same.
+  const vals = [...rel.values()].filter((v) => v > 0);
+  const mean = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+  const spread = vals.length && mean > 0
+    ? Math.max(...vals) / mean - 1
+    : 0;
+  const themeInformative = spread >= THEME_SPREAD_FLOOR;
   const wTheme = themeInformative ? THEME_DOMINANT_WEIGHT : 0;
+  // The prior belongs HERE, not only in channel ordering. Ordering decides
+  // which channels are considered; this sort decides the five rows, and it
+  // overrides that order completely -- so applying the prior upstream alone
+  // changed nothing (73% -> 73%).
+  const prior = channelPrior(founderCountries?.[0], founderSector);
   const rowRelevance = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
     const theme = r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
-    return wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
+    const fit = wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
+    // The channel prior is deliberately NOT applied here yet. Measured, at
+    // three weightings, on the recall set:
+    //
+    //   flat 0.5              national regime 64% -> 100%, EU 77% -> 15%
+    //   0.15 with text        national 87%, EU 63%          net 73% -> 72%
+    //   gated on score spread identical to the above
+    //
+    // It trades one population for the other every time, because the prior is a
+    // population statistic and the row sort is the one place a specific founder's
+    // evidence should win. The artifact and the finding are kept
+    // (channelPrior.generated.json, project-mgmt/recall_95_next.md); what is
+    // missing is a discriminator that says whether THIS founder's description
+    // separates the funds. Neither "did it produce scores" nor "is the score
+    // distribution peaked" does -- both are true for a generic self-description.
+    return fit;
   };
   return selections
     .map(({ base, leaf }): InstrumentRow => {
