@@ -51,6 +51,11 @@ export const POOL_LEAVES_PER_CHANNEL = 14;
 export const NEAR_TIE_RATIO = 0.9;
 /** Share of the ranking score from thematic match; the rest is sector intake. */
 export const THEME_WEIGHT = 0.6;
+/** Weight on thematic match in the ROW sort when a thematic signal exists at
+ *  all. Higher than THEME_WEIGHT because by this point the leaf ranking has
+ *  already applied sector fit within each channel; sector's job here is to break
+ *  ties, not to compete with a description the founder actually wrote. */
+export const THEME_DOMINANT_WEIGHT = 0.85;
 
 // Short, human display labels for the channel codes, for the funding breakdown.
 const CHANNEL_LABEL: Record<string, string> = {
@@ -510,9 +515,23 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
       while (i < prefix.length && i < id.length && prefix[i] === id[i]) i++;
       prefix = prefix.slice(0, i);
     }
+    // The token must be the field that actually DIFFERS among these peers.
+    //
+    // It preferred `schemeCode`, and peers collide precisely because they share
+    // one: nine French children under SA.111723 all rendered
+    // "FR R&D state aid scheme SA.111723", were declared indistinguishable, and
+    // eight were dropped. Measured on 60 real recipients, this dedupe was 50%
+    // of all misses -- larger than the ranking and the leaf cap combined.
+    //
+    // The granting body is what a founder actually approaches and is what
+    // separates them: Region Normandie versus Caisse des Depots, under the same
+    // notified regime.
+    const bodies = new Set(peers.map((p) => p.administeringBody ?? ""));
+    const bodyDistinguishes = bodies.size === peers.length && !bodies.has("");
     for (const r of peers) {
-      const token = r.schemeCode
+      const token = (bodyDistinguishes ? r.administeringBody : "")
         || (r.instrumentId ?? "").slice(prefix.length).replace(/^_+/, "").replace(/_/g, " ")
+        || r.schemeCode
         || r.capitalType
         || "";
       if (token) r.instrument = `${name} \u00b7 ${token}`;
@@ -1081,15 +1100,41 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, log } = input;
+  const { consortiumOk, semantic, description, founderSector, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = semantic?.size
     ? semantic
     : themeRelevance(description ?? "",
         selections.map((s) => s.leaf?.id).filter((id): id is string => Boolean(id)));
-  const rowRelevance = (r: InstrumentRow) =>
-    r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
+  // The same blend the leaf ranking uses, not thematic relevance alone.
+  //
+  // A founder applying to a national scheme has no project text -- SATR and the
+  // development banks carry no per-project titles at all -- so `rel` is 0 for
+  // every row and this sort fell straight through to a hardcoded channel order.
+  // sectorFit, the share of a fund's real recipients in the founder's sector,
+  // is the strongest signal available in that case (41% top-5 on its own
+  // against a 6% baseline) and it was reaching the leaf ranking but never the
+  // row ranking.
+  // Weighted by which signals EXIST for this founder, not by a fixed constant.
+  //
+  // Two populations, and one weighting cannot serve both. A founder describing
+  // an EU project has real text and the thematic score separates funds well; a
+  // founder applying to a national scheme has no project text at all -- SATR and
+  // the development banks carry no per-project titles -- so the thematic score
+  // is zero everywhere and sector share is the only signal left.
+  //
+  // Measured: a flat 0.6/0.4 blend lifted national-scheme regime recall from 17%
+  // to 61% and simultaneously dropped EU exact recall from 69% to 52%, because
+  // sector diluted a text signal that was already working. Deciding the weight
+  // from signal availability keeps both.
+  const themeInformative = [...rel.values()].some((v) => v > 0);
+  const wTheme = themeInformative ? THEME_DOMINANT_WEIGHT : 0;
+  const rowRelevance = (r: InstrumentRow) => {
+    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+    const theme = r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
+    return wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
+  };
   return selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
@@ -1187,15 +1232,32 @@ export function materialiseInstrumentTable(
       // Names are disambiguated first, so this only drops rows that genuinely
       // cannot be told apart rather than rows that merely share a body.
       if (i === 0) distinguishRowNames(all);
-      const name = displayInstitutionName(row);
-      const peers = all.filter((o) => displayInstitutionName(o) === name);
+      // Key on the DISTINGUISHED label, not on a freshly recomputed one.
+      // displayInstitutionName rebuilds the name from country + kind + scheme
+      // code and never reads `row.instrument`, so distinguishRowNames' work was
+      // invisible here: rows it had just told apart were still collapsed.
+      const name = row.instrument || displayInstitutionName(row);
+      const peers = all.filter((o) => (o.instrument || displayInstitutionName(o)) === name);
       if (peers.length === 1) return true;
       const encodedCount = (r: InstrumentRow) => {
         const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
         return inst ? inst.gates.filter(
           (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
       };
-      const best = peers.reduce((a, b) => (encodedCount(b) > encodedCount(a) ? b : a));
+      // Rows that genuinely cannot be told apart still collapse, but the
+      // survivor is no longer decided by array position. encodedCount ties in
+      // 70% of SATR cases -- siblings inherit their regime's gates, so the
+      // counts are identical -- and the old reduce kept whichever came first.
+      // Prefer the leaf carrying evidence of its OWN, then the richer one, then
+      // a total order on id so the result cannot depend on hydration sequence.
+      const ownCount = (r: InstrumentRow) => {
+        const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+        return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
+      };
+      const best = [...peers].sort((a, b) =>
+        (ownCount(b) - ownCount(a))
+        || (encodedCount(b) - encodedCount(a))
+        || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""))[0];
       const keep = all.indexOf(best) === i;
       if (!keep) {
         log?.record("SEL-DUPE-NAME", row.instrumentId ?? row.channel,
