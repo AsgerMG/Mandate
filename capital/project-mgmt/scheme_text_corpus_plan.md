@@ -94,3 +94,61 @@ Target lists: `data/raw/scheme_enrichment/targets_<CC>.json`, each row carrying
 adaptive questions -> five rows, and the adaptive round asks from verbatim gate
 text. While 453 children share one document that round cannot discriminate,
 which is why the corpus work comes first and the funnel harness second.
+
+---
+
+## First run: stopped by the spend limit, but it answered the question
+
+2026-08-04. All six agents terminated on the account's monthly spend limit. 274
+of 496 schemes touched, **56 carrying real text**. Raw output lives in
+`data/raw/scheme_enrichment/found_<CC>.json` (gitignored, like every raw cache).
+
+Quality where it landed is good -- verbatim text, a real source URL, a
+confidence grade:
+
+```
+SA.101250  incentivi.gov.it    "Imprese di qualsiasi dimensione che intendono
+                                realizzare investimenti di grandi dimensioni..."
+SA.112229  businessfinland.fi  "Rahoitus on tarkoitettu Suomessa toimiville
+                                yrityksille..."
+```
+
+### The finding that matters, and it splits by country
+
+```
+IT   25 records -> 15 distinct texts over 20 SA numbers
+FI    6 records ->  3 distinct texts
+FR   25 records ->  4 distinct texts over  4 SA numbers
+```
+
+**France reproduces the exact problem the fetch was meant to solve.** Its
+schemes are *régimes cadres exemptés de notification* -- umbrella frameworks
+that many instruments genuinely share -- so there is no per-scheme document to
+find. That is a fact about how French state aid is published, not a fetch
+failure, and no amount of scraping changes it. Italy has real per-scheme pages
+and the text discriminates.
+
+So: **the corpus fix works where a scheme has its own document, and cannot work
+where the state publishes one document for many.** That distinction should drive
+the rest of this plan rather than country size.
+
+- **Document-per-scheme countries** (IT confirmed; DE and NL expected, both
+  wrote structure before dying): finish the fetch. This is the work that pays.
+- **Framework countries** (FR confirmed): stop looking for a scheme document.
+  The discriminator has to come from elsewhere -- the award history we already
+  hold (`sector_mix`, `award_p50`, region) or from the intake asking something
+  sharper. Scraping harder is money spent on a document that does not exist.
+
+### State of the fetch
+
+```
+DE  118 structure, 0 text     CZ 38  not started
+IT   87 structure, 25 text    AT 29  not started
+FR   52 structure, 25 text    SK 13  not started
+NL    2 structure, 0 text     SE/LV/EE  not started
+FI   15 structure, 6 text
+```
+
+Targets are unchanged and re-runnable. Resume with DE and IT first: DE is the
+largest market and its Förderdatenbank is a genuine per-scheme register, so it
+is the highest expected yield per euro.
