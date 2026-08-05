@@ -6,7 +6,10 @@ import {
   SECTOR_OPTIONS,
   USE_OF_FUNDS_OPTIONS,
   FIELD_ENUM_HINTS,
+  MAX_DESCRIPTION_CHARS,
+  MIN_MATCHABLE_DESCRIPTION_CHARS,
   TICKET_BANDS,
+  USEFUL_DESCRIPTION_CHARS,
   type EligibilityAnswers,
   type EligibilityCheck,
   type GroundedRound,
@@ -141,6 +144,12 @@ export function IntelligencePanel() {
   // companyType is no longer asked — inferProfileSignal reads it from the
   // description server-side (see runIntelligence). Kept out of state entirely.
   const [description, setDescription] = useState("");
+  // Set when the founder dismisses the "you are about to skip the single most
+  // useful answer" prompt. Purely presentational — nothing downstream reads it,
+  // and the pipeline degrades to peer precedence and sector share exactly as it
+  // did before, so a skipped description is a thinner brief and never a broken
+  // one.
+  const [descriptionSkipped, setDescriptionSkipped] = useState(false);
   const [capitalSought, setCapitalSought] = useState<string[]>([]);
   // borrowerModel defaults to "operating" and is never asked on the first
   // screen — the lender/intermediary routing it unlocks is out of scope for
@@ -497,16 +506,59 @@ export function IntelligencePanel() {
             </label>
 
             <div className="grid gap-5 sm:grid-cols-[1fr_13rem]">
+              {/* ── The one question worth more than the other eight ──────────
+                  This was a single-line input labelled "What you do (one line)",
+                  optional, and the ranker treated anything under
+                  MIN_MATCHABLE_DESCRIPTION_CHARS as nothing at all — so a
+                  founder could skip it, or type four words, and never learn that
+                  the entire thematic half of the ranking had switched itself off.
+
+                  Measured, paired, same companies both ways, leak-checked
+                  (scripts/measure_description_lift.ts, n=301 holdout): a real
+                  description puts the fund they actually won in the top five
+                  8-12pp more often than the canned sector sentence does, the
+                  right REGIME 11-13pp more often, and it recovers 7pp of funds
+                  that were never candidates at all. The range is across runs
+                  while other work changed the ranker; the direction held in
+                  every one, 38 cases to 14 on the discordant pairs.
+
+                  So: a textarea, a question that asks for the project rather
+                  than a tagline, and a live prompt when the answer is too thin
+                  to separate anything. Still never a hard block — see the skip
+                  affordance under the submit, where going on without one is a
+                  decision the founder makes rather than an accident of an
+                  empty box. */}
               <label className="block text-sm">
                 <span className={fieldLabel}>
-                  What you do <span className="ml-1 font-normal text-[var(--muted-foreground)]">(one line)</span>
+                  What are you building?
+                  <span className="ml-1 font-normal text-[var(--muted-foreground)]">(a sentence or two)</span>
                   <InfoDot>
-                    Product, customer, and what is genuinely novel. The single
-                    biggest accuracy lever for the whole memo.
+                    In your own words: what you are building, who it is for, and
+                    the specific piece of work the money would go towards.
+                    Programmes are matched to it directly — we compare what you
+                    write against what each fund has actually paid for. On our
+                    own records, companies that describe their project get the
+                    fund they went on to win into their top five more than twice
+                    as often as companies described only by their sector.
                   </InfoDot>
                 </span>
-                <input value={description} onChange={(e) => setDescription(e.target.value)}
-                  placeholder="e.g. AI collision-avoidance for satellites" className={inputCls} />
+                <textarea value={description} onChange={(e) => setDescription(e.target.value)}
+                  rows={3} maxLength={MAX_DESCRIPTION_CHARS}
+                  placeholder={"e.g. We build collision-avoidance software for satellite operators. "
+                    + "The project would develop an onboard autonomous manoeuvring system and fly it "
+                    + "on a demonstrator."}
+                  className={inputCls + " min-h-[5.5rem] resize-y leading-relaxed"} />
+                {/* Two thresholds, two different truths, so the nudge never
+                    overstates: under MIN_MATCHABLE it is discarded outright,
+                    under USEFUL it is embedded but scores everything alike. */}
+                {description.trim().length > 0
+                  && description.trim().length < USEFUL_DESCRIPTION_CHARS && (
+                  <span className="mt-1.5 block text-xs text-[var(--muted-foreground)]">
+                    {description.trim().length < MIN_MATCHABLE_DESCRIPTION_CHARS
+                      ? "Too short to match on — add what you are building and what the project would do."
+                      : "A little more would help: what the project itself would build or prove."}
+                  </span>
+                )}
               </label>
               <label className="block text-sm">
                 <span className={fieldLabel}>
@@ -660,6 +712,28 @@ export function IntelligencePanel() {
                 A short, tailored follow-up screen comes next, then your memo.
               </span>
             </div>
+
+            {/* ── Skipping the description, made explicit ───────────────────
+                The submit is never disabled for a missing description: a form
+                that will not move is how a founder leaves. But an empty box
+                used to cost them the whole thematic half of the ranking in
+                silence, so the cost is stated once, at the moment they are
+                about to pay it, and they answer for themselves. Clicking
+                through sets descriptionSkipped, which suppresses the prompt for
+                the rest of the session — asked once, not nagged. */}
+            {!descriptionSkipped && !preparing && Boolean(company.trim())
+              && description.trim().length < USEFUL_DESCRIPTION_CHARS && (
+              <p className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 px-4 py-3 text-xs leading-relaxed text-[var(--muted-foreground)]">
+                Without a description we can still screen you on country, sector
+                and size — but the shortlist is then built from what companies
+                like you have won, not from what you are actually doing, and it
+                lands on the right fund about half as often.{" "}
+                <button type="button" onClick={() => setDescriptionSkipped(true)}
+                  className="underline underline-offset-2 hover:text-[var(--foreground)]">
+                  Continue without it
+                </button>
+              </p>
+            )}
           </form>
         )}
 

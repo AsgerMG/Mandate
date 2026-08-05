@@ -162,3 +162,120 @@ what ANY method can score on this test set at ~64%. This does not mean the
 product cannot reach 95% — it means the test set must gain real descriptions
 alongside change (E), or it will keep reporting the intake's emptiness as a
 ranking failure.
+
+---
+
+## Update 2026-08-06 — (E) done, and the harness was worse than we thought
+
+### The intake DID ask. It asked badly.
+
+`panel.tsx` had a free-text field all along: a one-line `<input>` labelled
+"What you do (one line)", optional, no minimum. It reaches the ranker intact
+(panel → `/api/intelligence/verdict` → `computeVerdict` →
+`semanticFundMatch` + `themeRelevance`), and both matchers discard anything
+under 12 characters and return an empty map. So a founder could type four words
+and silently switch off the entire thematic half of the ranking with no
+indication that they had. Nothing in production substitutes a sector template —
+that substitution is the TEST HARNESS's, at `measure_recall.ts:86`.
+
+Now: a three-row textarea, "What are you building? (a sentence or two)", a live
+prompt when the answer is too thin to separate anything, and — when they are
+about to continue without one — the cost stated once and a "Continue without
+it" they click themselves. Never a hard block. The three character bounds are
+one set of constants in `types.ts`, read by the form and by both matchers; they
+used to be a bare `12` written out twice with the form knowing neither.
+
+### The paired number: what the description is actually worth
+
+`scripts/measure_description_lift.ts` — the same companies, the same won fund,
+the same intake answers, ranked twice. Nothing differs but the description.
+n=301 holdout companies, leak-free rows only, both arms in one process.
+
+| | in pool | EXACT@1 | **EXACT@5** | REGIME@5 |
+|---|--:|--:|--:|--:|
+| real description | 93.0% | 11.3% | **33.9%** | 78.1% |
+| canned sector sentence | 85.7% | 8.6% | **21.6%** | 65.4% |
+
+**+12.3pp EXACT@5, +12.7pp REGIME@5**, discordant 54 for / 17 against. It also
+recovers 7pp of *pool* misses — funds that were never candidates at all.
+
+A second identical run, taken an hour later, read +8.0pp (30.9% vs 22.9%).
+Nothing in this workstream changed between them; `shortlist.ts`, `corpus.ts`
+and `peerPrior.generated.json` did, from parallel work on the same tree. **The
+lift is +8 to +12pp and the absolute levels are not comparable across runs.**
+The paired design is what survives that: both arms always see the same ranker,
+so the direction and the discordant counts held in every run even as the levels
+moved. Anyone quoting a level from this document must re-measure.
+
+The earlier "79.4% vs 17.2%" compared two different populations (EU programme
+winners against national-scheme winners), not one population two ways. It is
+not this number and should not be used as a target.
+
+### Where the lift is — and where it is not
+
+Broken out by where the description came from (EXACT@5, n as shown):
+
+| population | n | real | template | lift |
+|---|--:|--:|--:|--:|
+| EU programme, own project text | 102 | 43.1% | 18.6% | **+24.5pp** |
+| national scheme, recovered text | 196 | 24.5% | 25.0% | **−0.5pp** |
+
+**A description does not help a national-scheme applicant pick the leaf.** That
+is not a failure of the description; it is finding (F) restated from the other
+side. The 119 same-name SATR leaves sit at 0.947 mean cosine — one notified
+scheme delivered by fourteen regional bodies — and no amount of describing your
+project tells anyone which branch office you apply to. Confirmed by the
+described-only recall run: national rows reach **96% REGIME@5 on 29% EXACT@5**.
+The regime is found almost every time; the leaf is a coin toss among siblings.
+
+So (E) and (F) are not independent. (E) buys the EU population 24pp and buys
+the national population the right regime; only (F) — making the granting
+authority a routing attribute resolved by region — converts that into the leaf.
+
+### The test set was leaking, and not where the guard was looking
+
+`__recallSet.json` excluded pairs whose description appears in the won fund's
+`sample_project_titles` — a SQLite column. Retrieval scores against
+`instrument_profiles.profile_text`, a Postgres column built separately, capped
+at 40 titles of its own choosing, rebuilt since. Checked against the real
+target: **86 of the 188 holdout `project` rows (46%) have their description
+sitting verbatim inside the profile of the fund they are supposed to find.**
+Those rows were grading retrieval on a query copied out of the answer. Of the
+319 described pairs in the shipped set, only 168 are honest.
+
+### `__recallSetEnriched.json` — built, verified, not a replacement
+
+`ETL/terms/enrich_recall_set.py`. Recovers a real description for a pair from
+that company's funding record **under a different regime** — a Horizon project
+summary for a company that won a German regional scheme. Six guards plus the
+profile-text check; the whole file re-verified afterwards against Postgres at
+exact, sibling and 8-gram containment: **0 leaks of any kind**.
+
+| | shipped set | enriched |
+|---|--:|--:|
+| pairs | 1,988 | 1,988 |
+| leak-free real descriptions | **168** | **524** |
+| distinct queries | 313 | 531 |
+
+`__recallSet.json` is untouched. Measured on the holdout, same day:
+
+| run | n | in pool | EXACT@5 | REGIME@5 |
+|---|--:|--:|--:|--:|
+| shipped set, described only (46% leaky) | 188 | 91% | **44%** | 57% |
+| enriched, leak-free described only | 301 | 93% | **34%** | 75% |
+| enriched, full holdout | 250 | 88% | 32% | 83% |
+
+The shipped set's 44% is the leak. On the same EU population de-leaked it is
+38%, and the enriched set adds 145 national rows that are genuinely harder.
+
+```
+SET=__recallSetEnriched.json npx tsx scripts/measure_recall.ts
+SET=__recallSetEnriched.json DESCRIBED=1 npx tsx scripts/measure_recall.ts
+```
+
+The ceiling is raised, not removed: 1,405 rows still have no recoverable text,
+because the company appears in the record exactly once. Only ~20% of
+national-scheme winners have a second, cross-regime award to borrow from. The
+remaining path to an honest full-set number is production intake, which is now
+asking properly — every real founder who fills the box is a test case the
+corpus cannot supply.

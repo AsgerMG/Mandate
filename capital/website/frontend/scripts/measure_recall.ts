@@ -22,6 +22,16 @@
 //
 //   npx tsx scripts/measure_recall.ts                       # holdout, both modes
 //   SPLIT=tune MODE=profile npx tsx scripts/measure_recall.ts
+//   SET=__recallSetEnriched.json npx tsx scripts/measure_recall.ts
+//   SET=__recallSetEnriched.json DESCRIBED=1 npx tsx scripts/measure_recall.ts
+//
+// SET and DESCRIBED exist because the harness has a second, separate defect from
+// the one the modes describe. `__recallSetEnriched.json`
+// (ETL/terms/enrich_recall_set.py) recovers a real, leak-checked description for
+// rows that had none, and marks the pre-existing ones whose description sits
+// verbatim inside the won fund's own profile text -- 46% of the holdout `project`
+// rows. DESCRIBED=1 keeps only rows carrying a leak-free real description, which
+// is the population the product is actually trying to serve.
 import { readFileSync } from "fs";
 import path from "path";
 
@@ -42,12 +52,19 @@ import { computeVerdict } from "../lib/intelligence/pipeline";
 async function main() {
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
+  const setFile = process.env.SET ?? "__recallSet.json";
   const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
+    path.join(process.cwd(), "lib", "intelligence", setFile), "utf8")) as any[];
   const split = process.env.SPLIT ?? "holdout";
   const mode = process.env.MODE;
+  // A row whose description leaks into the won fund's profile is excluded from
+  // the DESCRIBED population rather than counted as described: it would grade
+  // retrieval on a query copied out of the answer.
+  const described = (r: any) => Boolean((r.description ?? "").trim())
+    && r.descriptionSource !== "own_project_title_leaks";
   const set = all.filter((r) => (split === "all" || r.split === split)
-                             && (!mode || r.mode === mode));
+                             && (!mode || r.mode === mode)
+                             && (!process.env.DESCRIBED || described(r)));
   const N = Math.min(Number(process.env.N ?? 250), set.length);
   // Stride, not the head of the list.
   //
@@ -105,7 +122,8 @@ async function main() {
     byMode.set(t.mode, m);
   }
   const pc = (n: number, d = stat.done) => `${n}/${d} (${(100 * n / d).toFixed(0)}%)`;
-  console.log(`split=${split}${mode ? ` mode=${mode}` : ""}  replayed ${stat.done}`);
+  console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
+              `${process.env.DESCRIBED ? " described-only" : ""}  replayed ${stat.done}`);
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);

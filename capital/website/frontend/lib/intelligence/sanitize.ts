@@ -25,6 +25,7 @@ import {
   NEED_BY_BANDS,
   BORROWER_MODELS,
   CONDITIONALITY_VALUES,
+  MAX_DESCRIPTION_CHARS,
 } from "./types";
 
 const CAPITAL_TYPE_VALUES: readonly CapitalType[] = CAPITAL_OPTIONS.map((o) => o.value);
@@ -74,20 +75,11 @@ function pickYear(v: unknown): number | undefined {
   return y >= 1900 && y <= 2100 ? y : undefined;
 }
 
-/**
- * Free text a founder typed, bounded before it reaches a model prompt.
- *
- * The description is interpolated into eight prompt sites and is the only
- * unbounded, unauthenticated input the pipeline has. /verdict capped it at
- * 400 characters; the two PAID routes capped it at nothing, so an anonymous
- * request could inflate every prompt in the run — and each run is six model
- * calls plus web search. Cost amplification first, prompt injection second.
- *
- * 1,200 characters is roughly a generous paragraph: past that a founder is
- * pasting a deck, not describing a company, and nothing downstream reads more
- * closely than the first few sentences anyway.
- */
-export const MAX_DESCRIPTION_CHARS = 1200;
+// MAX_DESCRIPTION_CHARS lives with the other two description bounds in
+// types.ts, and is re-exported here because this is where callers have always
+// imported it from. Three numbers describing one field belong together: the
+// form has to know all three to say anything true about what it is asking for.
+export { MAX_DESCRIPTION_CHARS } from "./types";
 
 export function sanitizeFreeText(v: unknown, maxLen = MAX_DESCRIPTION_CHARS): string | undefined {
   // TRUNCATE, never reject. The first version of this delegated to pickString,

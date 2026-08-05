@@ -40,7 +40,7 @@ def main() -> None:
                last_year, scheme_code, scheme_end_date, successor_scheme,
                successor_title, application_url, sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
-               intensity_p50, intensity_n
+               intensity_p50, intensity_n, delivery_region, delivery_region_share
         FROM funding_instruments
         -- Deterministic, and byte-ordered to match the Postgres path: row
         -- selection breaks ties on array order.
@@ -144,6 +144,16 @@ def main() -> None:
         # over single-beneficiary awards only. The structuring question.
         "intensityP50": inst["intensity_p50"],
         "intensityN": inst["intensity_n"] or 0,
+        # WHERE THE MONEY ACTUALLY LANDS -- the routing attribute for the 119
+        # leaves that share a scheme name with a sibling. They are one notified
+        # regime delivered by many bodies, and no amount of scheme text can tell
+        # them apart because the text is genuinely the same; what separates them
+        # is which region the delivering body pays into. Measured from the
+        # register's own per-award beneficiary region, NULL for a body that
+        # delivers nationally. A programme fact, never a filter: it says where
+        # money has gone, not who is barred.
+        "deliveryRegion": inst["delivery_region"],
+        "deliveryRegionShare": inst["delivery_region_share"],
         # Who actually disburses under this scheme. A department notifies a
         # regime; regional agencies and promotional banks run it. Empty when
         # only departments ever awarded, which is itself worth knowing: the row

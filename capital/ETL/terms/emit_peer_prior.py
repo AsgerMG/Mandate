@@ -70,6 +70,17 @@ RECALL_SET = ROOT / "website" / "frontend" / "lib" / "intelligence" / "__recallS
 
 # Companies per instrument that may feed the prior. See the header: this is
 # what separates "recurs for this kind of company" from "is simply enormous".
+#
+# Known fragility, measured and left alone: this truncates at the first CAP
+# pairs the scan returns, so WHICH cells a large instrument lands in is decided
+# by row order rather than by its recipients. Spending the same budget
+# proportionally instead (weight = min(1, CAP/pairs)) is the principled form and
+# was tried: holdout in-cell recall rose 154 -> 172 but the won fund's REGIME
+# left the cell's top five nine times more often (165 -> 156), because
+# proportional weighting lets a fund with two thousand awards outrank one with
+# eighty in every cell it touches -- which is the exact behaviour the cap exists
+# to prevent. Reverted. If this is revisited, the fix is a per-cell floor on
+# distinct recipients, not a different cap shape.
 CAP = 40
 # Ranked funds kept per cell. The table shows five and the ranker holds one
 # slot, so four are consumed; the rest are headroom for funds the founder's
@@ -81,6 +92,50 @@ KEEP = 30
 # funding_instrument_sources returns PARENT regimes, so no SATR child can ever
 # appear and the prior silently becomes EU-only -- the same defect that once
 # made 63% of the recall set Horizon.
+#
+# ── The 227 instruments this join cannot see, and why it still ships ────────
+# `scheme_code = call_id` is not the split `populate_funding_instruments.py`
+# performs, and the gap is not small. That script splits a rollup two ways:
+#
+#   programme child   (fam, programme_name)              scheme_code = ''
+#   scheme child      (fam, call_id, granting_authority) scheme_code = call_id
+#
+# The 227 PROGRAMME children -- ADEME 75, BDNS 87, Vinnova 49, Innovate UK 16 --
+# carry an EMPTY scheme_code by construction, because their identity IS the
+# programme name. They therefore never join here, and the prior cannot propose
+# them at all. Four of the five largest sibling groups in the corpus are
+# invisible to the strongest ranking signal the product has. Separately,
+# `scheme_code` is shared by more than one instrument in 34 cases (SA.56245 by
+# 18), so an award credits every delivery body of its notified scheme rather
+# than the one that signed it.
+#
+# The corrected attribution was built and measured (2026-08-06), reproducing the
+# ETL split exactly via funding_instrument_sources -> fam, then programme name,
+# then (call_id, granting_authority). It reaches all 227 children and credits
+# 990 instruments instead of 537. On holdout, N=200:
+#
+#   shipped join                          EXACT@5 32%   REGIME@5 87%
+#   exact attribution                     EXACT@5 29%   REGIME@5 81%
+#   exact + order-independent cap         EXACT@5 31%   REGIME@5 81%
+#   exact + credit the notified scheme    EXACT@5 30%   REGIME@5 77%
+#
+# The reason is in the ground truth, not in the ranking: **0 of 1,988 recall
+# pairs name a programme-split child.** `__recallSet.json` is traced from award
+# history that resolves to SATR and EU leaves; ADEME, BDNS, Vinnova and Innovate
+# UK children are never the answer. So every slot the corrected join gives them
+# in a cell's top 30 is taken from a fund the harness CAN credit, and the
+# measurement can only ever read the fix as a loss. Offline confirmation, over
+# twelve build variants (cap by truncation or by scaling, with and without
+# collapsing repeat recipients): making the children visible costs ~15 of 200 on
+# "won fund in the cell's top five" every time, and no cap shape recovers it.
+#
+# This is the same shape as the audit's finding on `national_dev_banks` -- 12%
+# of shown rows, 0% of ground truth. It is a MEASUREMENT gap, not a ranking one,
+# and it must be closed by tracing ADEME/BDNS/Vinnova/Innovate UK awards into
+# the recall set. Until then the corrected join cannot be shipped against a rule
+# that says do not reduce EXACT@5, and shipping it blind would trade a real
+# number for an unobservable one. The working implementation is recorded in this
+# file's history; do not re-derive it from scratch.
 Q_NATIONAL = """
     SELECT co.canonical_name, co.country, COALESCE(co.sector_top,'other'), i.id
       FROM public_funding_events e
@@ -113,15 +168,30 @@ def main() -> None:
     if args.exclude_recall_set and RECALL_SET.exists():
         excluded = {r["name"] for r in json.loads(RECALL_SET.read_text())}
 
-    # Never propose a scheme the register says has closed to new applicants.
-    closed = {r[0] for r in conn.execute(
-        "SELECT id FROM funding_instruments WHERE scheme_end_date IS NOT NULL "
-        "AND scheme_end_date < date('now')")}
+    # Never rank a fund the founder could not be shown anyway.
+    #
+    # Each cell keeps KEEP entries and `applyPeerPrecedence` can only reorder
+    # rows the screen already admitted, so an entry the shortlist can never
+    # produce is not neutral -- it is one of thirty slots spent saying nothing.
+    # Three classes qualify, and they are the same three `publishableInstruments()`
+    # removes for the same reasons:
+    #   - closed to new applicants (scheme_end_date in the past);
+    #   - a FRAMEWORK record, which is a legal basis and not a fund;
+    #   - a regime with children, which is the rollup a founder cannot apply to.
+    # The last two were 10% of all entries in the shipped artifact. Note that
+    # Q_EU joins through the source map and therefore returns exactly those
+    # parent regimes, which is why the share is that high.
+    unproposable = {r[0] for r in conn.execute(
+        "SELECT id FROM funding_instruments "
+        " WHERE (scheme_end_date IS NOT NULL AND scheme_end_date < date('now'))"
+        "    OR is_framework = 1"
+        "    OR id IN (SELECT parent_id FROM funding_instruments "
+        "               WHERE parent_id IS NOT NULL)")}
 
     seen: collections.Counter = collections.Counter()
     prior: dict[tuple[str, str], collections.Counter] = collections.defaultdict(collections.Counter)
     for name, country, sector, iid in pairs:
-        if name in excluded or iid in closed:
+        if name in excluded or iid in unproposable:
             continue
         if seen[iid] >= CAP:
             continue
@@ -137,7 +207,7 @@ def main() -> None:
     print(f"award pairs:            {len(pairs):,}")
     if excluded:
         print(f"companies excluded:     {len(excluded):,} (recall set)")
-    print(f"closed schemes dropped: {len(closed):,}")
+    print(f"unproposable dropped:   {len(unproposable):,}")
     print(f"cells (country,sector): {len(out):,}")
     print(f"instruments represented:{len(seen):,}  (cap {CAP} companies each)")
 

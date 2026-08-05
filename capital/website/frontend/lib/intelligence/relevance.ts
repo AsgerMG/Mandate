@@ -21,6 +21,7 @@
 // which must stay instant and zero-cost.
 import { loadDbInstruments, type DbInstrument } from "./corpus";
 import { THEME_TOKENS } from "./themeIndex.generated";
+import { MIN_MATCHABLE_DESCRIPTION_CHARS } from "./types";
 
 /** Gate families that describe WHAT is funded, rather than who may apply.
  *  G1_nexus is deliberately EXCLUDED despite sounding thematic: in practice it
@@ -176,7 +177,7 @@ export function themeRelevance(
 ): Map<string, number> {
   const out = new Map<string, number>();
   const desc = description?.trim();
-  if (!desc || desc.length < 12) return out;
+  if (!desc || desc.length < MIN_MATCHABLE_DESCRIPTION_CHARS) return out;
 
   const { byInstrument, idf } = buildIndex();
   const queryTokens = new Set(tokens(desc));
@@ -248,7 +249,7 @@ export function thematicChannelTopUp(
   semantic?: Map<string, number>,
 ): { channel: string; instrumentId: string; score: number }[] {
   const desc = description?.trim();
-  if (!desc || desc.length < 12) return [];
+  if (!desc || desc.length < MIN_MATCHABLE_DESCRIPTION_CHARS) return [];
   const instruments = loadDbInstruments().filter(
     (i) => i.sourceFamilyBucket && !alreadySelected.has(i.sourceFamilyBucket) && i.eventCount > 0,
   );

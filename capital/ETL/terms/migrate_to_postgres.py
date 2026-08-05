@@ -180,7 +180,24 @@ def main() -> None:
                         # does not merely lose data -- it makes every closed
                         # scheme publishable again on the Postgres path only.
                         "scheme_end_date TEXT", "successor_scheme TEXT",
-                        "successor_title TEXT"):
+                        "successor_title TEXT",
+                        # Where a fund's money actually lands (migration 024).
+                        # The routing attribute that separates the 119 leaves
+                        # sharing a scheme name: one notified regime, many
+                        # delivering bodies, and the region is what decides
+                        # which of them a given founder can apply to.
+                        "delivery_region TEXT", "delivery_region_share DOUBLE PRECISION",
+                        "recipient_region_mix TEXT",
+                        # The scheme's own published page (load_scheme_text.py,
+                        # 285 descriptions and 241 eligibility texts across all
+                        # 20 in-corpus countries). It reached the embeddings,
+                        # which are built from SQLite, and had never reached
+                        # Postgres at all -- so the one text that separates
+                        # siblings under a shared regime document was invisible
+                        # to everything that reads the published corpus.
+                        "description TEXT", "eligibility_text TEXT",
+                        "eligibility_source_url TEXT", "eligibility_confidence TEXT",
+                        "eligibility_fetched_at TEXT"):
                 cur.execute(f"ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS {ddl}")
             # Self-healing CONSTRAINTS, for the same reason as the columns
             # above. Adding an evidence tier in SQLite (migration 020 added

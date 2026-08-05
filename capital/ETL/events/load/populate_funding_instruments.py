@@ -43,6 +43,7 @@ from collections import Counter, defaultdict
 
 from instrument_family import PARENT_MAP, SYNTHETIC_PARENTS, source_to_family  # noqa: E402
 from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source  # noqa: E402
+from nuts_regions import ISO2_TO_NUTS, delivery_region, load_reference, resolve  # noqa: E402
 
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
@@ -230,6 +231,24 @@ def split_families(conn) -> set[str]:
         "WHERE id LIKE 'satr\\_%' ESCAPE '\\' AND source_family_bucket IS NOT NULL")}
 
 
+# Every column this pass DERIVES from the events corpus, in insert order. Named
+# once because two things read the list: the INSERT, and the snapshot that
+# protects everything NOT on it (see main()). Two copies of it would mean a new
+# column is either not written or not protected, and neither failure is visible.
+BUILT_COLUMNS = (
+    "parent_id", "name", "name_source", "country", "administering_body",
+    "administering_body_share", "ndb_id",
+    "source_family_bucket", "capital_type", "capital_type_basis", "event_count",
+    "company_count", "total_eur", "first_year", "last_year", "is_framework",
+    "sample_project_titles", "scheme_code", "application_url", "sector_mix",
+    "scheme_operators",
+    "award_p25", "award_p50", "award_p75", "award_n",
+    "intensity_p50", "intensity_n",
+    "scheme_end_date", "successor_scheme", "successor_title",
+    "delivery_region", "delivery_region_share", "recipient_region_mix",
+    "tier", "root_id", "depth", "path",
+)
+
 MIN_CHILD_EVENTS = 40
 
 # Below this many priced awards a "typical" award is one or two events wearing
@@ -295,6 +314,44 @@ def award_percentiles(awards: list[float]) -> tuple[float | None, float | None, 
 NOT_AN_APPLYABLE_BODY = re.compile(
     r"^(minist\w*|department|departement|dipartimento|direction g[e\u00e9]n[e\u00e9]rale)\b",
     re.I)
+
+
+# A programme child's `name` is the programme -- "Tremplin pour la transition
+# ecologique des PME" -- and that is right: it is what a founder applies to.
+# `administering_body` is a different question, and for the 234 programme
+# children it was being answered with the same string, so the column held a CALL
+# NAME where every reader expects an INSTITUTION. Three separate pieces of logic
+# reason about it as one (distinguishRowNames, the 0.6 administeringBodyShare
+# threshold, and NOT_AN_APPLYABLE_BODY), so a third of the sibling corpus was
+# being reasoned about as an agency when it was a budget line.
+#
+# The institution is taken from the award records, which is the only place it is
+# evidence rather than assumption, and NULL is a permitted answer: where nothing
+# on record names a granting institution we say so, because a call name is not
+# an answer to "who do I approach".
+MIN_BODY_DOMINANCE = 0.5
+
+
+def dominant_body(authorities: Counter, distributors: Counter, total: int
+                  ) -> tuple[str, float] | None:
+    """Who granted this money, from what the awards themselves record.
+
+    `granting_authority` first -- it is the register's own free-text name for
+    the body -- then the canonical distributor label, which the NDB extractors
+    assign per award. Deliberately NOT the distributor derived from the source
+    slug: that is a restatement of the instrument's own id, so it would always
+    "agree" and could never fail to name a body.
+    """
+    if not total:
+        return None
+    for votes, label in ((authorities, lambda k: k),
+                         (distributors, lambda k: ALL_NDB_LABELS.get(k, k))):
+        if not votes:
+            continue
+        top, n = votes.most_common(1)[0]
+        if n / total >= MIN_BODY_DOMINANCE:
+            return label(top), n / total
+    return None
 
 
 def _name_digest(text: str) -> str:
@@ -570,6 +627,10 @@ def main() -> None:
     fam_years: dict[str, list[int]] = defaultdict(list)
     fam_capital_votes: dict[str, Counter] = defaultdict(Counter)
     fam_ndb_votes: dict[str, Counter] = defaultdict(Counter)
+    # Distributors the AWARDS record, as opposed to fam_ndb_votes, which falls
+    # back to the source slug. Only the recorded ones are evidence about who
+    # granted the money -- see dominant_body().
+    fam_distributor_votes: dict[str, Counter] = defaultdict(Counter)
     fam_country_votes: dict[str, Counter] = defaultdict(Counter)
     fam_authority_votes: dict[str, Counter] = defaultdict(Counter)
     fam_source_family_votes: dict[str, Counter] = defaultdict(Counter)
@@ -615,6 +676,8 @@ def main() -> None:
                                r["grant_amount_eur"], r["equity_amount_eur"], r["debt_amount_eur"])
         fam_capital_votes[fam][ct] += 1
 
+        if r["ndb_distributor"]:
+            fam_distributor_votes[fam][r["ndb_distributor"]] += 1
         ndb = r["ndb_distributor"] or classify_ndb_from_source(r["source"])
         if ndb:
             fam_ndb_votes[fam][ndb] += 1
@@ -672,8 +735,13 @@ def main() -> None:
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
                 capital=Counter(), objectives=Counter(), titles=Counter(),
-                sectors=Counter(), awards=[], intensity=[]))
+                sectors=Counter(), awards=[], intensity=[],
+                authorities=Counter(), distributors=Counter()))
             c["events"] += 1
+            if r["granting_authority"]:
+                c["authorities"][r["granting_authority"][:200]] += 1
+            if r["ndb_distributor"]:
+                c["distributors"][r["ndb_distributor"]] += 1
             c["eur"] += award
             if award > 0:
                 c["awards"].append(award)
@@ -831,17 +899,27 @@ def main() -> None:
         # thing in front of them.
         if c["objectives"]:
             child_aid_objective_votes[child_id] = c["objectives"]
+        # For a SCHEME child the key IS the granting body, so it is the body,
+        # with a share of 1.0 by construction. For a PROGRAMME child the key is
+        # the call, and the body has to be found: from the child's own awards
+        # first, then from its parent's, and NULL where nothing on record names
+        # an institution.
+        if is_programme:
+            found = (dominant_body(c["authorities"], c["distributors"], c["events"])
+                     or dominant_body(fam_authority_votes.get(fam, Counter()),
+                                      fam_distributor_votes.get(fam, Counter()),
+                                      fam_events.get(fam, 0)))
+            child_body, child_body_share = found if found else (None, None)
+        else:
+            child_body, child_body_share = authority, 1.0
         now.append(dict(
             id=child_id,
             parent_id=fam,
             name=authority,
             name_source="deterministic",
             country=parent["country"],
-            administering_body=authority,
-            # The body IS the instrument here, not a plurality vote across a
-            # whole country's register, so the share that made the parent's
-            # name unsafe to display is 1.0 by construction.
-            administering_body_share=1.0,
+            administering_body=child_body,
+            administering_body_share=child_body_share,
             ndb_id=parent["ndb_id"],
             source_family_bucket=parent["source_family_bucket"],
             capital_type=capital_type, capital_type_basis=capital_basis,
@@ -876,6 +954,56 @@ def main() -> None:
     if kept_children:
         print(f"  split: {kept_children} per-authority/scheme children under "
               f"{len(split_targets)} rollups")
+
+    # ── Where the money actually lands ───────────────────────────────────────
+    # 123 publishable leaves share a scheme NAME with a sibling, at mean cosine
+    # 0.947 between their profiles. They are one notified scheme delivered by
+    # many bodies -- SA.111723 alone is fourteen of them -- and what separates
+    # them is the applicant's REGION, which no amount of scheme text can supply.
+    #
+    # The register supplies it. satr_staging carries the beneficiary's NUTS
+    # region on all 122,814 rows, and a scheme child is exactly one
+    # (sa_number, granting_authority) pair in that table, so the region
+    # distribution is MEASURED per leaf rather than guessed from the body's
+    # name. Name-guessing was tried and is worse in both directions:
+    # "Bayerisches Staatsministerium" never contains "Bayern", and "Finanzamt
+    # Darmstadt" is a tax office administering a NATIONAL scheme.
+    #
+    # See nuts_regions.delivery_region for what the resulting id means, and why
+    # a national body resolves to NULL rather than to its country.
+    ref = load_reference()
+    nuts_index = ref["index"]
+    staged: dict[tuple[str, str], Counter] = defaultdict(Counter)
+    for sa, ga, cc, region, n in conn.execute("""
+            SELECT sa_number, granting_authority, granting_country_iso2, region, COUNT(*)
+              FROM satr_staging
+             WHERE sa_number IS NOT NULL AND TRIM(sa_number) <> ''
+             GROUP BY 1, 2, 3, 4"""):
+        hit = resolve(region or "", ISO2_TO_NUTS.get(cc or "", cc or ""), nuts_index)
+        # Unresolvable names and whole-country labels both count toward the
+        # denominator without supporting any region. That is the honest
+        # treatment: a body half of whose awards are filed as "Germany" has not
+        # demonstrated a regional focus, and dropping those rows would claim it
+        # had.
+        staged[(sa.strip(), (ga or "")[:200])][hit[0] if hit else ""] += n
+    regional = 0
+    for row in now:
+        sa = (row.get("scheme_code") or "").strip()
+        body = row.get("administering_body")
+        if not sa or not body:
+            continue
+        mix = staged.get((sa, body[:200]))
+        if not mix:
+            continue
+        row["recipient_region_mix"] = json.dumps(
+            {k: v for k, v in mix.most_common() if k})
+        hit = delivery_region(mix)
+        if hit:
+            row["delivery_region"], row["delivery_region_share"] = hit
+            regional += 1
+    if regional:
+        print(f"  delivery region resolved for {regional} instruments "
+              f"(the rest deliver nationally or have no registered recipients)")
     # ── Real programme names, where an agency publishes one ───────────────
     # `name` is otherwise the granting BODY, so 39 of these rows read "TACR
     # (Czech Republic)" or "EIS (KredEx + Enterprise Estonia)" and a founder
@@ -1135,6 +1263,29 @@ def main() -> None:
     else:
         print(f"  reconciled: no orphaned gates; {curated:,} curated gates kept")
 
+    # ── Columns this pass does not compute belong to somebody else ───────────
+    # The rebuild below deletes every row, and the INSERT names only the columns
+    # derived from events. Anything else on the table is written by another step
+    # -- `description`, `eligibility_text` and `eligibility_source_url` are the
+    # fetched per-scheme pages that load_scheme_text.py puts there, 285 and 241
+    # rows of the single most discriminating text the SATR channel has -- and a
+    # routine instrument rebuild was silently erasing all of it.
+    #
+    # Snapshotted by DIFFERENCE rather than by name: whatever this pass does not
+    # write, it does not own. A column added later by a new enrichment step is
+    # then protected the day it appears, instead of on the day somebody notices
+    # it went missing.
+    table_columns = [r[1] for r in conn.execute("PRAGMA table_info(funding_instruments)")]
+    foreign = [c for c in table_columns
+               if c not in BUILT_COLUMNS and c not in ("id", "created_at", "updated_at")]
+    preserved: dict[str, tuple] = {}
+    if foreign:
+        preserved = {
+            r[0]: r[1:] for r in conn.execute(
+                f"SELECT id, {', '.join(foreign)} FROM funding_instruments")
+            if any(v is not None for v in r[1:])
+        }
+
     conn.execute("DELETE FROM funding_instrument_sources")
     conn.execute("DELETE FROM funding_instruments")
 
@@ -1146,30 +1297,26 @@ def main() -> None:
         _row.setdefault("scheme_end_date", None)
         _row.setdefault("successor_scheme", None)
         _row.setdefault("successor_title", None)
+        _row.setdefault("delivery_region", None)
+        _row.setdefault("delivery_region_share", None)
+        _row.setdefault("recipient_region_mix", None)
 
+    insert_sql = (
+        f"INSERT INTO funding_instruments "
+        f"({', '.join(('id',) + BUILT_COLUMNS)}, updated_at) VALUES "
+        f"({', '.join(':' + c for c in ('id',) + BUILT_COLUMNS)}, CURRENT_TIMESTAMP)"
+    )
     for r in now:
-        conn.execute("""
-            INSERT INTO funding_instruments
-              (id, parent_id, name, name_source, country, administering_body,
-               administering_body_share, ndb_id,
-               source_family_bucket, capital_type, capital_type_basis, event_count,
-               company_count, total_eur, first_year, last_year, is_framework,
-               sample_project_titles, scheme_code, application_url, sector_mix, scheme_operators,
-               award_p25, award_p50, award_p75, award_n,
-               intensity_p50, intensity_n,
-               scheme_end_date, successor_scheme, successor_title,
-               tier, root_id, depth, path, updated_at)
-            VALUES (:id,:parent_id,:name,:name_source,:country,:administering_body,
-                    :administering_body_share,:ndb_id,
-                    :source_family_bucket,:capital_type,:capital_type_basis,:event_count,
-                    :company_count,:total_eur,:first_year,:last_year,:is_framework,
-                    :sample_project_titles,:scheme_code,:application_url,:sector_mix,:scheme_operators,
-                    :award_p25,:award_p50,:award_p75,:award_n,
-                    :intensity_p50,:intensity_n,
-                    :scheme_end_date,:successor_scheme,:successor_title,
-                    :tier,:root_id,:depth,:path,
-                    CURRENT_TIMESTAMP)
-        """, r)
+        conn.execute(insert_sql, r)
+
+    if preserved:
+        assignment = ", ".join(f"{c} = ?" for c in foreign)
+        restored = conn.executemany(
+            f"UPDATE funding_instruments SET {assignment} WHERE id = ?",
+            [(*vals, iid) for iid, vals in preserved.items() if iid in surviving],
+        ).rowcount
+        print(f"  preserved {restored:,} rows of text this pass does not own "
+              f"({', '.join(foreign)})")
 
     for fam, srcs in fam_sources.items():
         for src in srcs:

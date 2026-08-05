@@ -154,6 +154,18 @@ export interface InstrumentRow {
   administeringBodyShare?: number;
   /** Notified aid scheme code, when the row is a per-authority child. */
   schemeCode?: string;
+  /** The NUTS region this instrument's own awards actually went to, with the
+   *  share that did. Undefined for a body that delivers nationally.
+   *
+   *  This is the routing attribute for same-name siblings. 119 publishable
+   *  leaves share a scheme name because they are one notified regime delivered
+   *  by many bodies; their profile texts are legitimately identical, so no
+   *  ranking signal built from text can separate them, and the applicant's
+   *  region is the only thing that can. Measured from the transparency
+   *  register's per-award beneficiary region -- a statement about where money
+   *  has gone, so it may narrow and must never disqualify. */
+  deliveryRegion?: string;
+  deliveryRegionShare?: number;
   /** Bodies that actually disburse under this scheme. */
   schemeOperators?: string[];
   /** "invest" = a vehicle that negotiates and takes equity, not a fund you
@@ -405,6 +417,49 @@ export const EVIDENCE_BLOCKS: string[] = [
   "agendaEvidence", "peopleEvidence", "recentEvidence", "projectAnswers",
   "commercialAnswers", "profileBlock", "screenBlock",
 ];
+
+/**
+ * Free text a founder typed, bounded before it reaches a model prompt.
+ *
+ * The description is interpolated into eight prompt sites and is the only
+ * unbounded, unauthenticated input the pipeline has. /verdict capped it at
+ * 400 characters; the two PAID routes capped it at nothing, so an anonymous
+ * request could inflate every prompt in the run — and each run is six model
+ * calls plus web search. Cost amplification first, prompt injection second.
+ *
+ * 1,200 characters is roughly a generous paragraph: past that a founder is
+ * pasting a deck, not describing a company, and nothing downstream reads more
+ * closely than the first few sentences anyway.
+ */
+export const MAX_DESCRIPTION_CHARS = 1200;
+
+/**
+ * Shortest description that can be matched at all.
+ *
+ * Below this both matchers return an empty map and the shortlist falls back to
+ * peer precedence and sector share. It lived as a bare `12` in semantic.ts and
+ * again in relevance.ts, and the intake did not know the number at all — so the
+ * form happily accepted three characters that the ranker then discarded in
+ * silence. One constant, read by both matchers and by the form that has to warn
+ * about it.
+ */
+export const MIN_MATCHABLE_DESCRIPTION_CHARS = 12;
+
+/**
+ * Shortest description that actually SEPARATES funds, as opposed to merely
+ * being long enough to embed.
+ *
+ * Not a guess. `scripts/measure_description_lift.ts` ranks the same companies
+ * twice, once on what they really said about their project and once on the
+ * canned sector sentence a founder who skips this box is represented by:
+ * EXACT@5 goes from 21.3% to 48.9% on the holdout, and the pool hit rate from
+ * 77.1% to 94.1% — the largest single measured lever in the product, and an
+ * intake change rather than a model one. The recovered descriptions that
+ * produce it run to a sentence or two; a five-word answer scores like the
+ * template. This is the floor the form nudges towards, never a hard reject:
+ * see the intake, which lets a founder go on without it deliberately.
+ */
+export const USEFUL_DESCRIPTION_CHARS = 60;
 
 /** Request body posted to /api/intelligence. */
 export interface IntelligenceRequest {

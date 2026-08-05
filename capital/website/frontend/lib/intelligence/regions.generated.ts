@@ -70,9 +70,19 @@ export function regionsOverlap(a: string, b: string): boolean {
 
 /** The official name behind a NUTS id, for describing a fund's reach. */
 export function regionNameFor(id: string): string | null {
-  const want = (id || "").toUpperCase();
-  for (const list of Object.values(REGIONS_BY_COUNTRY)) {
-    for (const r of list) if (r.id === want) return r.name;
+  // Falls back to the nearest ANCESTOR, because this module deliberately keeps
+  // only the broader id where one name exists at two levels (DE3 Berlin, not
+  // DE30). An id measured elsewhere at the narrower level -- an instrument's
+  // delivery region, for instance -- would otherwise resolve to null and the
+  // region would silently stop being describable. Ancestry is a NUTS prefix, so
+  // walking the id back one character at a time cannot name a different place;
+  // it can only name a broader one, which is the honest answer.
+  let want = (id || "").toUpperCase();
+  while (want.length >= 2) {
+    for (const list of Object.values(REGIONS_BY_COUNTRY)) {
+      for (const r of list) if (r.id === want) return r.name;
+    }
+    want = want.slice(0, -1);
   }
   return null;
 }

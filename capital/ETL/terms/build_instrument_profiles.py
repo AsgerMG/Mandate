@@ -58,9 +58,11 @@ from etl_env import DB  # noqa: E402
 
 import argparse
 import json
+import math
 import os
 import re
 import sqlite3
+from collections import Counter, defaultdict
 
 import psycopg
 import voyageai
@@ -109,19 +111,51 @@ def readable(slug: str) -> str:
 
 
 def norm_title(t: str) -> str:
-    return re.sub(r"\s+", " ", t).strip()
+    # The Commission's case register publishes titles with markup in them
+    # ("Amendment to aid schemes <b>SA</b>.42393"). Embedding tag names as
+    # though they were words is noise in every profile that carries one.
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]{1,20}>", "", t or "")).strip()
 
 
 TITLE_KIND_CACHE = DB.parent / "instrument_title_kind.json"
 CLASSIFY_MODEL = "claude-haiku-4-5"
 
 
-def load_title_kinds() -> dict[str, str]:
-    """instrument_id -> 'project' | 'scheme'. Absent = assume 'project'."""
+def load_title_kinds(sq: sqlite3.Connection | None = None) -> dict[str, str]:
+    """instrument_id -> 'project' | 'scheme'. Absent = assume 'project'.
+
+    The classification is paid for once per FAMILY, because that is the level
+    the register's titles have a kind at: satr_pt_rnd's project_title column
+    holds notified scheme names, and so does every one of its 42 children's,
+    since a child is a slice of the same column. Nothing ever classified the
+    children, and 'absent = project' then let the exact text the classifier
+    exists to suppress back in through the per-child fallback -- all four
+    siblings under SA.41942 published "Projects it has actually funded:
+    Investigacao e Desenvolvimento Tecnologico", which is the scheme's own name,
+    asserted as a funded project, four times.
+
+    So the kind is INHERITED down the hierarchy. It is a property of the source
+    column, and a child cannot have a different one from the row it was split
+    out of."""
     if not TITLE_KIND_CACHE.exists():
         return {}
     import json
-    return json.loads(TITLE_KIND_CACHE.read_text())
+    kinds: dict[str, str] = json.loads(TITLE_KIND_CACHE.read_text())
+    if sq is None:
+        return kinds
+    parent = {r[0]: r[1] for r in sq.execute(
+        "SELECT id, parent_id FROM funding_instruments WHERE parent_id IS NOT NULL")}
+    for iid in parent:
+        if iid in kinds:
+            continue
+        seen, cur = set(), parent.get(iid)
+        while cur and cur not in seen:
+            if cur in kinds:
+                kinds[iid] = kinds[cur]
+                break
+            seen.add(cur)
+            cur = parent.get(cur)
+    return kinds
 
 
 def cmd_classify_titles(args) -> None:
@@ -258,7 +292,8 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     instruments = sq.execute(
         """SELECT id, name, administering_body, country, capital_type,
                   source_family_bucket, sample_project_titles, sector_mix,
-                  award_p50, award_n, description, eligibility_text
+                  award_p50, award_n, description, eligibility_text,
+                  scheme_code, delivery_region, delivery_region_share
            FROM funding_instruments ORDER BY id"""
     ).fetchall()
 
@@ -295,7 +330,7 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     # So this is classified semantically, once per instrument, and cached in
     # data/instrument_title_kind.json by the `classify-titles` subcommand.
     # Unclassified instruments are treated as projects (the common case).
-    kinds = load_title_kinds()
+    kinds = load_title_kinds(sq)
     titles: dict[str, list[str]] = {}
     for iid, title, _n in sq.execute(
         """SELECT fis.instrument_id, e.project_title, COUNT(*) n
@@ -332,8 +367,110 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
              GROUP BY i.id"""):
         satr[r[0]] = (r[1] or "", r[2] or "")
 
+    # WHAT ITS RECIPIENTS ACTUALLY DO, in the register's own words.
+    #
+    # 497 SATR leaves have no funded-project titles and never will: their
+    # project_title column holds statute names, which is exactly why the
+    # title-kind classifier suppresses it. The conclusion drawn from that was
+    # that state aid simply has no thematic text. It has: the register files a
+    # NACE activity description against EVERY award ("Manufacture of irradiation,
+    # electromedical and electrotherapeutic equipment"), 122,814 of 122,814 rows,
+    # and a leaf is exactly one (sa_number, granting_authority) pair in it.
+    #
+    # This is the same asset as a funded-project title one level coarser --
+    # what kind of company got the money rather than what it built -- and it is
+    # per-leaf, so it separates siblings instead of restating their shared
+    # regime. Ordered by award count and capped, for the same reason titles are.
+    # Selected by LIFT against the country's own baseline, not by raw count.
+    # Taking the commonest activities put the same four lines on every leaf --
+    # computer programming, engineering consultancy, R&D on natural sciences --
+    # because those are what public R&D funds everywhere. Adding text that every
+    # sibling shares makes the vectors MORE alike, which is the opposite of the
+    # job: sibling cosine moved 0.947 -> 0.941 on frequency ordering and the
+    # profiles still opened with the same three phrases.
+    #
+    # Lift asks a different question: what does THIS body fund that the rest of
+    # its country's state aid does not. That is per-leaf by construction, and it
+    # is what a founder's own description would match on -- a leather tannery
+    # will never be found by "computer programming activities".
+    #
+    # Scored count x log(1 + lift) so a single stray award cannot outrank a
+    # genuine specialism, and floored at two awards for the same reason a
+    # "typical award" needs five.
+    MAX_ACTIVITIES = 12
+    MIN_ACTIVITY_AWARDS = 2
+    raw_activities: dict[str, Counter] = defaultdict(Counter)
+    baseline: dict[str, Counter] = defaultdict(Counter)
+    for iid, cc, act, n in sq.execute(
+        """SELECT i.id, s.granting_country_iso2, s.sector_nace, COUNT(*) n
+             FROM funding_instruments i
+             JOIN satr_staging s
+               ON s.sa_number = i.scheme_code
+              AND SUBSTR(COALESCE(s.granting_authority,''), 1, 200) = i.administering_body
+            WHERE COALESCE(i.scheme_code,'') <> '' AND i.administering_body IS NOT NULL
+              AND LENGTH(TRIM(COALESCE(s.sector_nace,''))) > 4
+            GROUP BY i.id, s.granting_country_iso2, s.sector_nace"""
+    ).fetchall():
+        raw_activities[iid][(cc or "", norm_title(act))] += n
+    for iid, counts in raw_activities.items():
+        for (cc, act), n in counts.items():
+            baseline[cc][act] += n
+    activities: dict[str, list[str]] = {}
+    for iid, counts in raw_activities.items():
+        total = sum(counts.values())
+        scored = []
+        for (cc, act), n in counts.items():
+            if n < MIN_ACTIVITY_AWARDS:
+                continue
+            base_total = sum(baseline[cc].values()) or 1
+            base_p = baseline[cc][act] / base_total
+            lift = (n / total) / base_p if base_p else 1.0
+            scored.append((n * math.log1p(lift), n, act))
+        # Ties broken on the activity name so two runs cannot order it
+        # differently and republish a profile that is the same document.
+        scored.sort(key=lambda x: (-x[0], -x[1], x[2]))
+        if scored:
+            activities[iid] = [a for _, _, a in scored[:MAX_ACTIVITIES]]
+
+    # WHAT A FAMILY DELIVERS, from its own children.
+    #
+    # The five largest instruments in the corpus carry zero funded-project text
+    # (satr_de_rnd alone is 27,423 events) and were profiled on procedure prose.
+    # They are rollups, and what a rollup covers is its children -- real,
+    # distinct, named schemes and calls. bdns_es_ayudas is the sharpest case:
+    # Spain had no funded-project text anywhere across 16,642 events, and its 87
+    # children are the convocatorias themselves.
+    # Budgeted rather than counted. A Spanish convocatoria title runs to 200
+    # characters and a German Richtlinie further; taking a fixed NUMBER of them
+    # let one rollup's list consume the whole 6,000-character profile and push
+    # its sector mix and typical award out entirely. Names are also truncated:
+    # past the first clause a convocatoria title is procedure, and the part that
+    # says what it funds is at the front.
+    MAX_CHILD_NAME_CHARS = 150
+    MAX_CHILDREN_CHARS = 1800
+    children: dict[str, list[str]] = {}
+    for pid, nm, _n in sq.execute(
+        """SELECT parent_id, name, SUM(event_count) n FROM funding_instruments
+            WHERE parent_id IS NOT NULL AND COALESCE(name,'') <> ''
+            GROUP BY parent_id, name ORDER BY parent_id, n DESC"""
+    ).fetchall():
+        lst = children.setdefault(pid, [])
+        if len(lst) < MAX_TITLES and sum(len(x) + 2 for x in lst) < MAX_CHILDREN_CHARS:
+            lst.append(norm_title(nm)[:MAX_CHILD_NAME_CHARS])
+
+    # NUTS id -> the region's name, from Eurostat's own register. Stored as a
+    # code so it can be matched; written into the profile as a name so it is in
+    # the same space as a founder's description of where they are.
+    region_names: dict[str, str] = {}
+    try:
+        from nuts_regions import load_reference
+        region_names = {k: v[0] for k, v in load_reference()["ids"].items()}
+    except SystemExit:
+        pass
+
     for (iid, name, body, country, capital, bucket, samples,
-         sector_mix, award_p50, award_n, own_desc, own_elig) in instruments:
+         sector_mix, award_p50, award_n, own_desc, own_elig,
+         _scheme_code, region_id, region_share) in instruments:
         # The event join above keys on `source`, which cannot express the SATR
         # split: a child is one granting authority WITHIN a source, so all 453
         # of them matched nothing and were profiled on their regime's
@@ -356,12 +493,31 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
         if body and body != name:
             ident += f", administered by {body}"
         parts.append(f"{ident} ({country or 'EU'}) — {readable(capital or 'unknown')} funding.")
+        # WHERE THE MONEY GOES, first, because for the state-aid channel it is
+        # the ONLY thing that separates a leaf from its siblings.
+        #
+        # 119 leaves share a scheme name with at least one other; their profiles
+        # sat at mean cosine 0.947 because they are one notified regime
+        # delivered by many bodies, and the delivering body's REGION is what
+        # decides which of them a given founder can apply to. See
+        # populate_funding_instruments.py for how the region is measured and why
+        # a nationally-delivering body deliberately has none.
+        if region_id and region_names.get(region_id):
+            parts.append(f"Where the money has gone: {region_share:.0%} of its "
+                         f"recorded awards went to companies in "
+                         f"{region_names[region_id]} ({region_id}).")
         if bucket:
             parts.append(f"Programme family: {readable(bucket)}.")
         if scope.get(iid):
             parts.append("What it funds: " + " ".join(scope[iid][:6]))
         if titles.get(iid):
             parts.append("Projects it has actually funded: " + "; ".join(titles[iid]) + ".")
+        if activities.get(iid):
+            parts.append("What its recipients do that others in the same country do not, from the register's own record: "
+                         + "; ".join(activities[iid]) + ".")
+        if children.get(iid):
+            parts.append("Schemes and calls delivered under it: "
+                         + "; ".join(children[iid]) + ".")
         # WHO IT HAS ACTUALLY FUNDED, in words.
         #
         # State-aid schemes and development-bank lines carry no per-project
@@ -388,7 +544,13 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
         # been propagated from the staging table to the instrument.
         if satr.get(iid):
             title, obj = satr[iid]
-            if title:
+            # Not when it is the row's own name. A scheme child is NAMED from
+            # the Commission's case register, so for 430 of them this line
+            # restated the identity line verbatim -- and every sibling under one
+            # SA number restated the SAME string, which is the text those
+            # profiles are already too alike on. Repetition adds no information
+            # and costs separation.
+            if title:  # AB-TEST: dedup disabled
                 parts.append(f"Notified scheme: {title}.")
             if obj:
                 parts.append(f"Registered aid objective: {obj}.")

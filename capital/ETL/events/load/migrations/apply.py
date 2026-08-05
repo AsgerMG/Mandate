@@ -431,6 +431,15 @@ def apply_023(conn: sqlite3.Connection) -> None:
     print("  applied 023_scheme_lifetime.sql")
 
 
+def apply_024(conn: sqlite3.Connection) -> None:
+    """delivery_region — where a fund's money actually lands, as routing."""
+    if column_exists(conn, "funding_instruments", "delivery_region"):
+        print("  skip 024 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "024_delivery_region.sql").read_text())
+    print("  applied 024_delivery_region.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -452,6 +461,7 @@ MIGRATIONS = {
     "021": apply_021,
     "022": apply_022,
     "023": apply_023,
+    "024": apply_024,
 }
 
 

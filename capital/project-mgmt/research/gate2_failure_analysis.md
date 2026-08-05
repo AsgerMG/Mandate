@@ -374,3 +374,91 @@ where the information is. Three conclusions, in order of confidence:
 Fix §0.1 and §0.2 regardless — they are cheap, and until they are fixed every
 gate-2 number in the history file is measured through a parser that returns
 three or four funds 40% of the time.
+
+---
+
+# The rebuild, and what it measured (2026-08-06)
+
+Everything §6 recommends against was built anyway, deliberately, because the
+diagnosis "it is choosing blind" implied that showing it the discriminating
+fields would fix it. It does not. Recording that here so the next attempt does
+not spend the same week.
+
+All numbers: `N=40 G2=<variant> npx tsx scripts/measure_pipeline.ts`,
+`claude-haiku-4-5`, fixture `gate1_holdout.json` @ `gate1@32f28f2`, the same
+strided 40 cases throughout, both gates in the same run.
+
+| variant | exact | regime | short shortlists | malformed replies |
+|---|---:|---:|---:|---:|
+| *gate 1's own deterministic five* | *20/40 (50%)* | *38/40 (95%)* | — | — |
+| `legacy` — as shipped | 14/40 (35%) | 37/40 | ~40% (unmeasurable through the old parser) | — |
+| `parser` — JSON output, id-paired Q/A, nothing else | 13/40 (33%) | 31/40 | **0** | **0** |
+| `axes` — pinning fields, family-grouped menu, axis-driven questions | 12/40 (30%) | 35/40 | **0** | **0** |
+| `swap` — same, answer confined to gate 1's families and slot counts | 15/40 (38%) | 38/40 | 2 | 7 |
+| **`veto` — gate 1's order stands, model may only strike out, enforced in code** | **20/40 (50%)** | **38/40 (95%)** | **0** | **0** |
+
+## What was built
+
+`lib/intelligence/shortlistAxes.ts` computes, per shortlist and before any
+prompt: the axes the candidates actually split on, scored by coverage x how
+much of the list a perfect answer removes; and `familySectorShare`, the
+P(fund | sector) posterior scoped inside each programme family.
+`lib/intelligence/fundSelection.ts` is gate 2 itself — four selection shapes,
+all JSON in and out. `build_gate1_fixture.ts` now carries `award_p25/p50/p75`,
+`award_n`, `capital_type`, `sector_mix`, `event_count`, `company_count`,
+`last_year` and per-field gate demands on every candidate row.
+
+## The four results worth keeping
+
+**1. The information hypothesis is wrong.** Giving the model `award_p50` with
+its n, capital type, delivery body, liveness, the within-family sector share
+and a menu where siblings sit adjacent measured **12/40 — below the 14/40 it
+managed knowing none of it.** More to read does not make it choose better.
+
+**2. No deterministic use of the sector posterior beats gate 1 either.**
+Swapping gate 1's pick for a sibling whenever that sibling holds >=20/30/40/50%
+of the family's sector awards and >=2/3/5x the chosen fund's share: every one
+of the sixteen threshold combinations scored 19 or 20 of 40. Gate 1 already
+reads `sector_mix`. The +26pp within-sibling-group result in
+`corpus_signal_map.md` is real and is already spent.
+
+**3. The family is not the problem; the leaf is, and nothing available fixes
+it.** Gate 1 puts the right FAMILY in its top five in 38 of the 38 cases where
+the fund is reachable at all (95%) and the right LEAF in 20 (50%); in 18 cases
+it surfaces a sibling of the won fund instead of the won fund. Confining gate 2
+to exactly those families and slot counts therefore costs nothing and hands it
+only the leaf choice — and it still scored 15/40. Regime accuracy returns to
+38/40 under that constraint, which is the constraint working; the leaf does not
+follow.
+
+**4. Only removing the choice reaches gate 1.** `veto` ties it exactly, 20/40
+and 38/40, with zero short shortlists and zero malformed replies. It issued
+real vetoes on 16 of the 40 cases and rescued zero while breaking zero — net
+neutral. On a fixture where 33 of 40 companies carry no description and the
+founder simulator answers "not sure", there is nothing for a veto to bite on,
+so this measures **the floor holding, not the mechanism working**. Its upside
+is untested, not disproven.
+
+## The two bugs are fixed and that part is unambiguous
+
+Every reply is JSON, parsed with a fenced/prefaced/unbalanced-brace-tolerant
+extractor and one retry; every answer carries the id of the question it
+answers, so a dropped line cannot shift the pairing. Across the three
+rebuilt-path runs above: **0 shortlists shorter than five, 0 malformed
+replies.** The old parser shipped three or four funds in 40% of runs.
+
+## What this leaves
+
+The headroom on this sample is real — duplicate-query collisions cap it at
+38/40, not at the ~64% feared — so the test set is not the wall. The wall is
+that the fields which separate leaves are the ones the intake does not collect:
+sub-national region (+13.9pp, asked in 6% of questions and answered "not sure"
+13 times in 18), sub-sector (+18.5pp, no `subsector_mix` column exists), GBER
+objective (+18.2pp on 17.5% coverage). And on the 20 cases gate 1 misses, the
+won fund sits at rank 40+ or is absent in ten of them — beyond any selector.
+
+So the ranked next moves are unchanged and they are all upstream of gate 2:
+give the founder somewhere to describe what they build (change E — embedding
+retrieval alone reaches 79.4% top-5 with a real description against 17.2% with
+the canned template), collect region, and build `subsector_mix`. Gate 2 should
+stay in `veto` until one of those lands.

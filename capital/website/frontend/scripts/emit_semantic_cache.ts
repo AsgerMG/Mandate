@@ -8,7 +8,7 @@
 // Run with DATABASE_URL and VOYAGE_KEY set, commit the result.
 import { writeFileSync } from "fs";
 import path from "path";
-import { semanticFundMatch } from "../lib/intelligence/semantic";
+import { semanticFundMatch, semanticSeparation } from "../lib/intelligence/semantic";
 
 export const OUT = path.join(process.cwd(), "lib", "intelligence", "semanticCache.generated.json");
 
@@ -20,10 +20,19 @@ export async function build(): Promise<string> {
     ...(RED_TEAM ?? []).map((r: any) => r.description),
   ].filter((d): d is string => typeof d === "string" && d.trim().length >= 12);
 
-  const out: Record<string, Record<string, number>> = {};
+  // `separation` travels with the scores because it cannot be recovered from
+  // them: the scores are percentile ranks, which are uniform for every query.
+  // Without it every offline check would take the opposite ranking branch from
+  // production, which is the failure this artifact exists to prevent.
+  const out: Record<string, { scores: Record<string, number>; separation?: number }> = {};
   for (const d of [...new Set(descriptions)]) {
     const m = await semanticFundMatch(d);
-    if (m.size) out[d] = Object.fromEntries([...m].map(([k, v]) => [k, Number(v.toFixed(6))]));
+    if (!m.size) continue;
+    const sep = semanticSeparation(d);
+    out[d] = {
+      scores: Object.fromEntries([...m].map(([k, v]) => [k, Number(v.toFixed(6))])),
+      ...(sep === undefined ? {} : { separation: Number(sep.toFixed(6)) }),
+    };
   }
   return JSON.stringify(out, null, 1) + "\n";
 }

@@ -20,6 +20,7 @@ import { hydrateGatesFor } from "./corpus";
 import { isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
+import { semanticSeparation } from "./semantic";
 import { TICKET_BANDS } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
@@ -27,15 +28,6 @@ import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 
-/** How many instruments each channel may contribute. Named because it is one
- *  link in the chain that decides how many rows a brief can hold at all
- *  (channels considered x leaves per channel -> pool -> published), and a bare
- *  `slice(0, 2)` mid-function hid it from that arithmetic. */
-export const LEAVES_PER_CHANNEL = 2;
-/** Ceiling when a channel's leaves are genuinely distinct funds rather than
- *  near-duplicates. Four, not seven: the table has six rows in total, and one
- *  channel taking more than four of them stops being a shortlist. */
-export const MAX_LEAVES_PER_CHANNEL = 4;
 /** How many leaves a channel may put into the POOL, as opposed to the table.
  *
  *  The cap above exists so one channel cannot dominate the six rows a founder
@@ -69,8 +61,6 @@ export const MAX_LEAVES_PER_CHANNEL = 4;
 // and conflating them is what hid this for so long. 40 over 60 because the last
 // 2% costs half again as much payload for nothing measurable.
 export const POOL_LEAVES_PER_CHANNEL = 40;
-/** How close to the channel's best a leaf must score to earn an extra slot. */
-export const NEAR_TIE_RATIO = 0.9;
 /** Share of the ranking score from thematic match; the rest is sector intake. */
 export const THEME_WEIGHT = 0.6;
 /** Weight on thematic match in the ROW sort when a thematic signal exists at
@@ -82,15 +72,29 @@ export const THEME_DOMINANT_WEIGHT = 0.85;
  *  thematic fit. Half: the prior says where money is won, fit says what this
  *  founder builds, and a table that ignores either is wrong in a different way. */
 export const PRIOR_WEIGHT = 0.5;
-/** Prior weight in the ROW sort when the founder's description separates funds. */
-export const PRIOR_WEIGHT_WITH_TEXT = 0.15;
-/** How peaked the thematic scores must be before they are treated as separating
- *  the funds. Below it the description scores everything alike and carries no
- *  ordering information, whatever its length. */
+/** How peaked the RAW similarities must be before the description is treated as
+ *  separating the funds. Below it the text scores everything alike and carries
+ *  no ordering information, whatever its length.
+ *
+ *  Read by `semanticSeparation`, which is `max/mean - 1` over the cosine
+ *  similarities before percentile normalisation. It used to be read against the
+ *  normalised scores, where it could never fire (semantic.ts).
+ *
+ *  Left at 0.35 on purpose. Re-measured against the live index over 11 canned
+ *  sector templates and 55 real project descriptions: the two populations
+ *  separate at t = 8.6, the best single threshold is 0.366 for 89% accuracy, and
+ *  the error-cost minimum -- weighting a real description misread as canned at
+ *  the -15 points the audit measures for that founder, against -6 the other way,
+ *  at the true 16/84 population split -- is flat from 0.35 to 0.38. Moving it to
+ *  the empirical optimum would buy nothing measurable and would fit the constant
+ *  to the test set. */
 export const THEME_SPREAD_FLOOR = 0.35;
-/** And when it does not -- a national-scheme applicant has no project text, so
- *  where money is actually won is the best available guide. */
-export const PRIOR_WEIGHT_WITHOUT_TEXT = 0.6;
+// PRIOR_WEIGHT_WITH_TEXT (0.15) and PRIOR_WEIGHT_WITHOUT_TEXT (0.6) stood here,
+// documented, exported and never read by anything. The weighting they describe
+// was tried and rejected -- the measurement survives in the comment inside
+// `rowRelevance`, which is where a future attempt would start. A constant no
+// code reads is not a record of a decision; it is a claim that the code behaves
+// in a way it does not.
 
 interface ChannelPrior {
   global: Record<string, number>;
@@ -248,11 +252,6 @@ const CHANNEL_LABEL: Record<string, string> = {
 export const BAND_INDEX: Record<string, number> = Object.fromEntries(
   TICKET_BANDS.map((b, i) => [b.value, i]));
 
-/** The Fit line from a channel's curated brief, "" if not yet declared. */
-export function fitOf(channel: string): FounderFit | "" {
-  return loadFundSnapshot(channel)?.fit ?? "";
-}
-
 const FIT_FLAG: Record<Exclude<FounderFit, "startup_ready">, string> = {
   consortium_institutional:
     "Consortium required — informational for most solo-founder raises, not a target.",
@@ -308,23 +307,13 @@ export const DEFAULT_INSTRUMENTS = [
   "national_dev_banks", "state_aid_satr", "eic", "horizon_eu_pillar_ii", "eit",
 ];
 
-// Scale routing (advisory_pipeline Stage D.1, first cut): which ticket bands
-// each channel realistically serves, as [min,max] indices into TICKET_BANDS.
-// A €20M+ ask must never get EIC Accelerator as its headline. Coarse by
-// design — the terms engine (W1) replaces this with verified ticket gates.
-export const CHANNEL_BANDS: Record<string, [number, number]> = {
-  national_dev_banks: [0, 4],
-  state_aid_satr: [0, 3],
-  eic: [0, 2],
-  eit: [0, 1],
-  horizon_eu_pillar_ii: [1, 3],
-  horizon_eu_partnership: [1, 3],
-  eib: [2, 4],
-  innovation_fund: [2, 4],
-  edf: [1, 3],
-  chips_ju: [2, 4],
-  ipcei: [3, 4],
-};
+// CHANNEL_BANDS -- the [min,max] ticket band each channel was said to serve --
+// was deleted here. It had zero references: the only thing that ever read it was
+// `channelServesBand`, which was retired to `return true` below, and the table
+// then sat exported for a year describing routing the code does not do. The
+// judgement it encoded (a EUR 20M ask should not be answered with EIC
+// Accelerator) is live, in `awardScorer` against each instrument's own award
+// median, which is the measured version of the same idea.
 
 /**
  * RETIRED as a filter. Ticket size is now a continuous component of the fit
@@ -706,8 +695,17 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
     peers.sort((a, b) => (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""));
     const bodies = new Set(peers.map((p) => p.administeringBody ?? ""));
     const bodyDistinguishes = bodies.size === peers.length && !bodies.has("");
+    // Where the body does not separate them, WHERE THE MONEY GOES often does,
+    // and it is the thing a founder can act on: fourteen leaves share the
+    // French RDI regime's name, and the ones a given founder can actually apply
+    // to are the ones delivering into their region. Preferred over the id
+    // fragment, which is an internal slug and tells a reader nothing.
+    const regions = new Set(peers.map((p) => p.deliveryRegion ?? ""));
+    const regionDistinguishes = regions.size === peers.length && !regions.has("");
     for (const r of peers) {
       const token = (bodyDistinguishes ? r.administeringBody : "")
+        || (regionDistinguishes && r.deliveryRegion
+             ? regionNameFor(r.deliveryRegion) ?? r.deliveryRegion : "")
         || (r.instrumentId ?? "").slice(prefix.length).replace(/^_+/, "").replace(/_/g, " ")
         || r.schemeCode
         || r.capitalType
@@ -967,37 +965,29 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
     // the two stores return rows in different sequences.
     return a.id.localeCompare(b.id);
   });
-  // The cap is relevance-aware, because a "channel" is two different things.
+  // A flat cap on how many leaves a channel may put into the POOL.
   //
-  // For national development banks it holds near-duplicates -- two Altum loans
-  // that differ by measure code -- and keeping both wastes a row. For
-  // horizon_eu_pillar_ii it holds SEVEN thematically distinct funds (CL1 health,
-  // CL4 digital and industry, CL5 climate and energy, CL6 bioeconomy), and a
-  // flat cap of two means five of them can never be considered at all.
+  // This was a three-clause, relevance-aware cap:
   //
-  // Measured by replaying 80 real recipients through the pipeline: the fund a
-  // company ACTUALLY won was absent from the pool 25% of the time, and the
-  // misses were dominated by Horizon clusters and Joint Undertakings -- funds
-  // eliminated here before ranking ever saw them.
+  //     idx < LEAVES_PER_CHANNEL(2)
+  //       || (idx < MAX_LEAVES_PER_CHANNEL(4) && within NEAR_TIE_RATIO(0.9))
+  //       || idx < POOL_LEAVES_PER_CHANNEL(40)
   //
-  // So keep the extra leaf only when it is nearly as good a thematic match as
-  // the best one in its channel. Near-duplicates score alike and gain nothing;
-  // genuinely distinct programmes only survive when the founder's own
-  // description actually points at them. The hard ceiling still stops one
-  // channel flooding the table.
-  const bestRel = sorted.length ? (relevance.get(sorted[0].id) ?? 0) : 0;
-  const keep = sorted.filter((i, idx) =>
-    idx < LEAVES_PER_CHANNEL ||
-    (idx < MAX_LEAVES_PER_CHANNEL && bestRel > 0 &&
-     (relevance.get(i.id) ?? 0) >= bestRel * NEAR_TIE_RATIO) ||
-    // Beyond the display-shaped cap, keep ranked candidates so the pool the
-    // writer sees is wide even though the table stays short.
-    idx < POOL_LEAVES_PER_CHANNEL);
-  for (const i of sorted.filter((x) => !keep.includes(x))) {
+  // Three constants, sixty lines of measured justification, and no effect on
+  // the returned set: it is a disjunction, 2 < 40 and 4 < 40, so the third
+  // clause admits everything the first two do and the near-tie test can never
+  // change an outcome. The relevance-awareness was real when the cap was 2 and
+  // display and consideration were the same number; separating the pool from
+  // the table (POOL_LEAVES_PER_CHANNEL, above) subsumed it and nothing removed
+  // the remains. The SEL-LEAF-CAP reason string described the dead branches, so
+  // the exclusion log was reporting a rule the code had stopped applying.
+  //
+  // Deleting the two clauses is a no-op by construction, and the holdout
+  // measurement agrees: EXACT@5 and REGIME@5 both unchanged.
+  const keep = sorted.filter((_i, idx) => idx < POOL_LEAVES_PER_CHANNEL);
+  for (const i of sorted.slice(POOL_LEAVES_PER_CHANNEL)) {
     log?.record("SEL-LEAF-CAP", i.id,
-      `ranked below its channel's limit (${LEAVES_PER_CHANNEL} by default, up to ` +
-      `${MAX_LEAVES_PER_CHANNEL} when a leaf is within ${Math.round((1 - NEAR_TIE_RATIO) * 100)}% ` +
-      `of the channel's best thematic match)`);
+      `ranked below its channel's limit of ${POOL_LEAVES_PER_CHANNEL} candidates`);
   }
   return keep;
 }
@@ -1433,18 +1423,31 @@ export function materialiseInstrumentTable(
   // is the strongest signal available in that case (41% top-5 on its own
   // against a 6% baseline) and it was reaching the leaf ranking but never the
   // row ranking.
-  // Weighted by which signals EXIST for this founder, not by a fixed constant.
+  // The blend weight is FIXED, and the population split is handled one layer
+  // down instead. This is a correction, not a simplification.
   //
-  // Two populations, and one weighting cannot serve both. A founder describing
-  // an EU project has real text and the thematic score separates funds well; a
-  // founder applying to a national scheme has no project text at all -- SATR and
-  // the development banks carry no per-project titles -- so the thematic score
-  // is zero everywhere and sector share is the only signal left.
+  // The intent recorded here was that `wTheme` should fall to 0 for a founder
+  // with no project text, so sector share could carry the ranking. That branch
+  // had never executed (see below), and when the switch was repaired and it
+  // finally did, it measured as damage: holdout EXACT@5 32% -> 33% but REGIME@5
+  // 87% -> 86%, with project-mode recall falling 47% -> 37% exact and 76% -> 66%
+  // regime. Dropping the thematic weight to zero throws away a real description
+  // whenever the discriminator is wrong about it, and the discriminator is wrong
+  // about 13% of them.
   //
-  // Measured: a flat 0.6/0.4 blend lifted national-scheme regime recall from 17%
-  // to 61% and simultaneously dropped EU exact recall from 69% to 52%, because
-  // sector diluted a text signal that was already working. Deciding the weight
-  // from signal availability keeps both.
+  // Routing ONLY the peer-precedence branch on the same signal, and leaving
+  // `wTheme` alone, gains on both metrics at once:
+  //
+  //     shipped (switch stuck on)     EXACT@5 32%   REGIME@5 87%
+  //     switch repaired, wTheme too   EXACT@5 33%   REGIME@5 86%
+  //     switch repaired, wTheme fixed EXACT@5 36%   REGIME@5 89%
+  //
+  // The reason the two behave differently is that they fail differently. Peer
+  // precedence is ORTHOGONAL to fit -- being wrong about the population costs a
+  // few positions in the tail. `wTheme` is the fit signal itself; being wrong
+  // there deletes it. So the uncertain switch is allowed to steer the cheap
+  // decision and not the expensive one.
+  const wTheme = THEME_DOMINANT_WEIGHT;
   // How much the founder's description actually SEPARATES the funds, not merely
   // whether it produced scores.
   //
@@ -1454,13 +1457,30 @@ export function materialiseInstrumentTable(
   // wrecked the other. Spread is the honest test: a description that names a
   // technology peaks sharply on a few funds, one that says "we build software"
   // scores everything the same.
-  const vals = [...rel.values()].filter((v) => v > 0);
-  const mean = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
-  const spread = vals.length && mean > 0
-    ? Math.max(...vals) / mean - 1
-    : 0;
-  const themeInformative = spread >= THEME_SPREAD_FLOOR;
-  const wTheme = themeInformative ? THEME_DOMINANT_WEIGHT : 0;
+  //
+  // The test was right and its input was wrong. This read `rel`, and `rel` holds
+  // PERCENTILE RANKS (semantic.ts) -- a distribution that is uniform on [0,1] by
+  // construction, so `max/mean - 1` came out 0.998 for every query ever made and
+  // `themeInformative` was a true constant. The whole second branch below, and
+  // the flat branch of applyPeerPrecedence, were unreachable code with measured
+  // justifications attached to them.
+  //
+  // `semanticSeparation` is the same statistic computed where the information
+  // still exists: on the raw cosines, before the rank normalisation. Measured
+  // against the live index over the 11 canned sector templates and 19 real
+  // project descriptions in the recall set, it splits the two populations at
+  // 87%, and THEME_SPREAD_FLOOR sits inside the separating interval -- the
+  // threshold never needed changing either.
+  //
+  // Deliberately not keyed on anything the harness supplies and production does
+  // not. There is no `mode` field on a real request; a founder either wrote
+  // something that discriminates funds or did not, and this asks the index that
+  // question directly. A description too short to embed, a cold fallback with no
+  // vector store, and a lexical-only path all return `undefined` -- which must
+  // read as "assume the description carries the ranking", the behaviour that
+  // shipped, rather than as zero.
+  const spread = semanticSeparation(description);
+  const themeInformative = spread === undefined || spread >= THEME_SPREAD_FLOOR;
   // The prior belongs HERE, not only in channel ordering. Ordering decides
   // which channels are considered; this sort decides the five rows, and it
   // overrides that order completely -- so applying the prior upstream alone
@@ -1580,6 +1600,8 @@ export function materialiseInstrumentTable(
         eventCount: leaf.eventCount,
         administeringBody: leaf.administeringBody ?? undefined,
         administeringBodyShare: leaf.administeringBodyShare ?? undefined,
+        deliveryRegion: leaf.deliveryRegion ?? undefined,
+        deliveryRegionShare: leaf.deliveryRegionShare ?? undefined,
         lastAwardYear: leaf.lastYear ?? undefined,
         legalBasis: legalBasisFor(leaf),
         schemeCode: leaf.schemeCode ?? undefined,

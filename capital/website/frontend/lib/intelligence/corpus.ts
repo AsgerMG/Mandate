@@ -222,6 +222,23 @@ export interface DbInstrument {
    *  which measures their share of the work, not the funder's rate. */
   intensityP50?: number | null;
   intensityN?: number;
+  /** The NUTS region this instrument's own awards actually went to, and the
+   *  share of them that did. Null for a body that delivers nationally, which
+   *  is a different statement from "unknown" and must not be read as one.
+   *
+   *  Why it exists: 119 publishable leaves share a scheme NAME with a sibling,
+   *  at mean cosine 0.947 between their profiles, because they are ONE notified
+   *  regime (SA.111723 alone is fourteen of them) delivered by many granting
+   *  bodies. No text can separate them — the text is legitimately identical.
+   *  The applicant's region can, and it is the one thing a founder can answer
+   *  without looking anything up.
+   *
+   *  Measured from the transparency register's per-award beneficiary region,
+   *  so it is a PROGRAMME FACT: it says where money has gone, never who is
+   *  barred. The legal restriction, where one exists, is the `region_within`
+   *  filter gate the Commission's own registration produces. */
+  deliveryRegion?: string | null;
+  deliveryRegionShare?: number | null;
   gates: DbGate[];
 }
 
@@ -279,7 +296,7 @@ export async function hydrateDbInstruments(): Promise<void> {
                   scheme_code, scheme_end_date, successor_scheme, successor_title,
                   application_url, sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
-                  intensity_p50, intensity_n
+                  intensity_p50, intensity_n, delivery_region, delivery_region_share
            FROM funding_instruments
            -- Ordered for the same reason the gates are: selection breaks ties
            -- on array order, so two stores returning the same instruments in a
@@ -397,6 +414,8 @@ export async function hydrateDbInstruments(): Promise<void> {
         awardN: inst.award_n ?? 0,
         intensityP50: inst.intensity_p50 ?? null,
         intensityN: inst.intensity_n ?? 0,
+        deliveryRegion: inst.delivery_region ?? null,
+        deliveryRegionShare: inst.delivery_region_share ?? null,
         gates: gatesByInstrument.get(inst.id) ?? [],
       })));
     } finally {
@@ -682,6 +701,42 @@ export function publishableInstruments(): DbInstrument[] {
   const hasChildren = new Set(
     all.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
   const today = new Date().toISOString().slice(0, 10);
+  const closed = (i: DbInstrument) => Boolean(i.schemeEndDate && i.schemeEndDate < today);
+  // Scheme codes an OPEN leaf already offers. A closed scheme whose successor is
+  // one of these needs no redirect: the successor is already its own row, and
+  // reviving the predecessor under the same code would just duplicate it.
+  const liveCodes = new Set(all
+    .filter((i) => !i.isFramework && !hasChildren.has(i.id) && !closed(i) && i.schemeCode)
+    .map((i) => i.schemeCode as string));
+  // ── The successor redirect ────────────────────────────────────────────────
+  // `successor_scheme` / `successor_title` are populated by the register itself
+  // and, until now, read by nothing at all: a designed data field with no
+  // consumer, sitting on the largest single filter in the funnel.
+  //
+  // 40 closed instruments carry one. 29 of them name a successor we ALREADY
+  // hold as an open leaf -- for those, dropping the predecessor is right and
+  // nothing changes. The other 11 name a successor that is not in the corpus at
+  // all: the register says the fund continues under a new SA number, we hold its
+  // whole award history and its administering body, and the row is deleted, so
+  // a founder is never shown a fund that is open today. Austria's aws ERP
+  // Kredite, Bavaria's BayVFP Digitalisierung and BayTP+, Baden-Wurttemberg's
+  // Start-up BW Pre-Seed are among them.
+  //
+  // Those 11 are republished under the SUCCESSOR's identity -- its scheme code
+  // and its registered title -- because that is the registration a founder would
+  // actually apply under, and presenting the expired number would be wrong in a
+  // way a founder could act on. The award history stays attached to the row
+  // because it is the same fund; only the legal identity moved.
+  const redirect = (i: DbInstrument): DbInstrument =>
+    (closed(i) && i.successorScheme && !liveCodes.has(i.successorScheme)
+      ? { ...i,
+          schemeCode: i.successorScheme,
+          name: i.successorTitle?.trim() || i.name,
+          // Cleared, not carried forward: the end date belonged to the
+          // registration that expired. We do not know the successor's, and a
+          // stale one here would delete the row again on the next run.
+          schemeEndDate: null }
+      : i);
   return all.filter((i) =>
     !i.isFramework && !hasChildren.has(i.id) &&
     // A scheme the Commission's register says has closed to new applications
@@ -694,11 +749,12 @@ export function publishableInstruments(): DbInstrument[] {
     // They stay in the corpus deliberately: a closed scheme is still evidence
     // of what a country funded and who received it, which is what the peer
     // tracing reads. This filter governs what may be PROPOSED, nothing else.
-    !(i.schemeEndDate && i.schemeEndDate < today) &&
+    (!closed(i) || (Boolean(i.successorScheme) && !liveCodes.has(i.successorScheme as string))) &&
     // No amounts and no dates means every scale and liveness judgement about
     // it is a guess, and a guess scored at its midpoint was outranking funds
     // we had actually measured. See meetsDataFloor.
-    meetsDataFloor(i));
+    meetsDataFloor(i))
+    .map(redirect);
 }
 
 const bodyUrlCache = new Map<string, Map<string, string>>();

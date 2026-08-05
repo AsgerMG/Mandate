@@ -4,7 +4,6 @@
 "satr_at_rnd__sa_110295__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_115611__amt_der_niederosterreichischen_landesregierung_a",
 "satr_at_rnd__sa_108465__osterreichische_forschungsforderungsgesellschaft",
-"satr_at_equity",
 "satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf",
 "satr_at_equity__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112285__osterreichische_forschungsforderungsgesellschaft",
@@ -27,7 +26,6 @@
 "AT|energy_cleantech": [
 "satr_at_rnd__sa_110103__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_110295__kommunalkredit_public_consulting_gmbh_kpc",
-"satr_at_rnd",
 "satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_110108__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_108465__osterreichische_forschungsforderungsgesellschaft",
@@ -36,7 +34,6 @@
 "satr_at_rnd__sa_111051__wirtschaftsagentur_wien",
 "satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf",
 "eit_climate_kic_cdr",
-"satr_at_equity",
 "innovation_fund_mfg",
 "innovation_fund_lsp",
 "innovation_fund_plt",
@@ -49,8 +46,6 @@
 "satr_at_rnd__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_114191__austria_wirtschaftsservice_gmbh_aws",
 "satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft",
-"satr_at_rnd",
-"satr_at_equity",
 "eic_transition",
 "satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112286__osterreichische_forschungsforderungsgesellschaft",
@@ -64,11 +59,9 @@
 "satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112286__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_115611__amt_der_niederosterreichischen_landesregierung_a",
-"satr_at_equity",
 "satr_at_rnd__sa_110108__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_114191__austria_wirtschaftsservice_gmbh_aws",
-"satr_at_rnd",
 "satr_at_equity__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf",
@@ -91,13 +84,11 @@
 "satr_at_rnd__sa_111051__wirtschaftsagentur_wien",
 "satr_at_rnd__sa_110103__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_110295__kommunalkredit_public_consulting_gmbh_kpc",
-"eic_pathfinder",
-"satr_at_equity"
+"eic_pathfinder"
 ],
 "AT|mobility_transport": [
 "satr_at_rnd__sa_108465__osterreichische_forschungsforderungsgesellschaft",
 "europes_rail",
-"satr_at_rnd",
 "satr_at_rnd__sa_114191__austria_wirtschaftsservice_gmbh_aws",
 "satr_at_rnd__sa_110295__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_115611__amt_der_niederosterreichischen_landesregierung_a",
@@ -111,7 +102,6 @@
 "satr_at_rnd__sa_110108__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_110103__kommunalkredit_public_consulting_gmbh_kpc",
 "satr_at_rnd__sa_110295__kommunalkredit_public_consulting_gmbh_kpc",
-"satr_at_equity",
 "satr_at_equity__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_114191__austria_wirtschaftsservice_gmbh_aws",
@@ -124,17 +114,14 @@
 "sns_ju",
 "ipcei_hy2tech",
 "horizon_eu_cl6",
-"satr_at_rnd",
 "erc_poc",
 "chips_ju_kdt_unknown"
 ],
 "AT|semiconductors_electronics": [
-"satr_at_rnd",
 "satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112286__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf",
-"satr_at_equity",
 "satr_at_equity__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112285__osterreichische_forschungsforderungsgesellschaft",
 "chips_ju_kdt",
@@ -156,8 +143,6 @@
 "satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft",
 "satr_at_rnd__sa_112286__osterreichische_forschungsforderungsgesellschaft",
-"satr_at_equity",
-"satr_at_rnd",
 "satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf",
 "horizon_eu_cl6",
 "eit_manufacturing_boostup",
@@ -174,7 +159,6 @@
 ],
 "BE|agrifood": [
 "satr_be_rnd__sa_114749__vlaio",
-"satr_be_rnd",
 "satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche",
 "satr_be_rnd__sa_108206__vlaio",
 "satr_be_rnd__sa_108203__vlaio",
@@ -209,7 +193,6 @@
 "horizon_eu_cl5",
 "ipcei_eubatin",
 "ipcei_hy2tech",
-"satr_be_rnd",
 "horizon_eu_eie",
 "horizon_eu_cbe"
 ],
@@ -218,8 +201,6 @@
 "satr_be_rnd__sa_108203__vlaio",
 "ipcei_med4cure",
 "eib_venture",
-"satr_be_equity",
-"satr_be_rnd",
 "ihi",
 "satr_be_rnd__sa_108206__vlaio",
 "satr_be_rnd__sa_108201__vlaio",
@@ -235,7 +216,6 @@
 "BE|industrial_manufacturing": [
 "satr_be_rnd__sa_114749__vlaio",
 "satr_be_rnd__sa_108207__vlaio",
-"satr_be_rnd",
 "satr_be_rnd__sa_108206__vlaio",
 "satr_be_rnd__sa_108201__vlaio",
 "satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche",
@@ -251,7 +231,6 @@
 "satr_be_rnd__sa_108203__vlaio",
 "satr_be_rnd__sa_108207__vlaio",
 "ipcei_batteries",
-"satr_be_rnd",
 "satr_be_rnd__sa_108206__vlaio",
 "satr_be_rnd__sa_108433__vlaio",
 "eic_accelerator",
@@ -265,7 +244,6 @@
 "eit_urban_mobility_portfolio",
 "horizon_eu_cl5",
 "satr_be_rnd__sa_108196__vlaio",
-"satr_be_rnd",
 "clean_aviation",
 "europes_rail"
 ],
@@ -273,11 +251,9 @@
 "satr_be_rnd__sa_108433__vlaio",
 "satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche",
 "satr_be_equity__sa_108205__vlaio",
-"satr_be_rnd",
 "satr_be_rnd__sa_108196__vlaio",
 "satr_be_rnd__sa_108201__vlaio",
 "satr_be_rnd__sa_108206__vlaio",
-"satr_be_equity",
 "satr_be_rnd__sa_108203__vlaio",
 "satr_be_rnd__sa_114749__vlaio",
 "satr_be_rnd__sa_108207__vlaio",
@@ -293,12 +269,10 @@
 "chp"
 ],
 "BE|semiconductors_electronics": [
-"satr_be_rnd",
 "satr_be_rnd__sa_108203__vlaio",
 "satr_be_rnd__sa_108207__vlaio",
 "satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche",
 "erc_poc",
-"satr_be_equity",
 "ihi",
 "chips_ju_kdt",
 "chips_ju_kdt_unknown",
@@ -306,7 +280,6 @@
 ],
 "BE|software_data_ai": [
 "satr_be_equity__sa_108205__vlaio",
-"satr_be_equity",
 "satr_be_rnd__sa_108206__vlaio",
 "satr_be_rnd__sa_108203__vlaio",
 "satr_be_rnd__sa_108196__vlaio",
@@ -380,7 +353,6 @@
 "satr_cz_rnd__sa_118285__statni_zemedelsky_intervencni_fond",
 "satr_cz_rnd__sa_112630__statni_zemedelsky_intervencni_fond",
 "satr_cz_rnd__sa_109956__ministerstvo_zemedelstvi",
-"satr_cz_equity",
 "satr_cz_rnd__sa_112295__ministerstvo_zivotniho_prostredi",
 "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi",
 "tacr_tq",
@@ -397,7 +369,6 @@
 "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_119259__technologicka_agentura_cr",
 "satr_cz_rnd__sa_118043__ministerstvo_prumyslu_a_obchodu",
-"satr_cz_rnd",
 "tacr_sq",
 "tacr_fw",
 "tacr_tp"
@@ -428,11 +399,9 @@
 "satr_cz_rnd__sa_63670__ministerstvo_zivotniho_prostredi_cr_odbor_podpor",
 "satr_cz_rnd__sa_109051__ministerstvo_zivotniho_prostredi_odbor_fondu_eu",
 "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu",
-"satr_cz_rnd",
 "satr_cz_rnd__sa_119259__technologicka_agentura_cr",
 "tacr_fw",
 "satr_cz_rnd__sa_112630__statni_zemedelsky_intervencni_fond",
-"satr_cz_equity",
 "tacr_tq",
 "tacr_ts",
 "tacr_ss",
@@ -441,7 +410,9 @@
 "satr_cz_rnd__sa_113941__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu",
 "tacr_ck",
-"tacr_tm"
+"tacr_tm",
+"satr_cz_rnd__sa_118838__ministerstvo_prumyslu_a_obchodu",
+"innovation_fund_ssp"
 ],
 "CZ|health_life_sciences": [
 "tacr_tm",
@@ -458,7 +429,6 @@
 "satr_cz_rnd__sa_103288__technologicka_agentura_cr",
 "satr_cz_rnd__sa_54297__technologicka_agentura_cr",
 "satr_cz_rnd__sa_109786__ministerstvo_prumyslu_a_obchodu",
-"satr_cz_rnd",
 "horizon_eu_miss",
 "satr_cz_rnd__sa_109051__ministerstvo_zivotniho_prostredi_odbor_fondu_eu",
 "satr_cz_rnd__sa_118043__ministerstvo_prumyslu_a_obchodu",
@@ -478,7 +448,6 @@
 "satr_cz_rnd__sa_109785__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi",
 "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu",
-"satr_cz_rnd",
 "tacr_tm",
 "satr_cz_rnd__sa_109050__ministerstvo_zivotniho_prostredi_odbor_fondu_eu",
 "satr_cz_rnd__sa_113941__ministerstvo_prumyslu_a_obchodu",
@@ -488,7 +457,6 @@
 "satr_cz_rnd__sa_55058__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy",
 "satr_cz_rnd__sa_103288__technologicka_agentura_cr",
 "satr_cz_rnd__sa_104437__technologicka_agentura_cr",
-"satr_cz_equity",
 "tacr_ts",
 "tacr_tq",
 "tacr_ss",
@@ -496,7 +464,9 @@
 "tacr_ti",
 "satr_cz_rnd__sa_112295__ministerstvo_zivotniho_prostredi",
 "satr_cz_rnd__sa_114605__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy",
-"eit_manufacturing_investments"
+"eit_manufacturing_investments",
+"tacr_cl",
+"tacr_tn"
 ],
 "CZ|materials_chemicals": [
 "tacr_tq",
@@ -504,7 +474,6 @@
 "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu",
 "tacr_ck",
 "satr_cz_rnd__sa_119259__technologicka_agentura_cr",
-"satr_cz_rnd",
 "tacr_tk",
 "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu",
 "tacr_sq",
@@ -536,8 +505,6 @@
 "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi",
 "satr_cz_rnd__sa_113941__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_114605__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy",
-"satr_cz_equity",
-"satr_cz_rnd",
 "tacr_cl",
 "tacr_tm",
 "tacr_ti",
@@ -563,10 +530,8 @@
 "satr_cz_rnd__sa_112295__ministerstvo_zivotniho_prostredi",
 "satr_cz_rnd__sa_103288__technologicka_agentura_cr",
 "satr_cz_rnd__sa_63671__ministerstvo_zivotniho_prostredi_cr_odbor_podpor",
-"satr_cz_equity",
 "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi",
 "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu",
-"satr_cz_rnd",
 "satr_cz_rnd__sa_104221__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_107607__technologicka_agentura_cr",
 "tacr_ti",
@@ -581,7 +546,9 @@
 "satr_cz_rnd__sa_54297__technologicka_agentura_cr",
 "satr_cz_rnd__sa_118838__ministerstvo_prumyslu_a_obchodu",
 "tacr_cl",
-"tacr_fw"
+"tacr_fw",
+"satr_cz_rnd__sa_109785__ministerstvo_prumyslu_a_obchodu",
+"satr_cz_rnd__sa_104437__technologicka_agentura_cr"
 ],
 "CZ|semiconductors_electronics": [
 "satr_cz_rnd__sa_54297__technologicka_agentura_cr",
@@ -591,7 +558,6 @@
 "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_104222__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi",
-"satr_cz_rnd",
 "tacr_fw",
 "tacr_tk",
 "tacr_tm",
@@ -622,7 +588,6 @@
 "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu",
 "tacr_tq",
 "satr_cz_rnd__sa_107607__technologicka_agentura_cr",
-"satr_cz_rnd",
 "tacr_tk",
 "satr_cz_rnd__sa_119259__technologicka_agentura_cr",
 "tacr_ck",
@@ -631,14 +596,15 @@
 "tacr_tl",
 "tacr_fw",
 "eit_digital_champions",
-"satr_cz_equity",
 "satr_ee_equity",
 "satr_cz_rnd__sa_104221__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu",
 "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi",
 "tacr_cl",
 "tacr_sq",
-"tacr_ss"
+"tacr_ss",
+"tacr_to",
+"tacr_th"
 ],
 "CZ|space": [
 "horizon_eu_cl6",
@@ -654,7 +620,6 @@
 "satr_de_equity__sa_108142__landwirtschaftliche_rentenbank",
 "eit_food_rfs",
 "satr_de_rnd__sa_113239__sachsen_sab",
-"satr_de_equity",
 "satr_de_rnd__sa_103196__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
 "satr_de_rnd__sa_112558__technologie_beratungs_institut_gmbh",
 "satr_de_rnd__sa_112005__wibank",
@@ -676,7 +641,8 @@
 "satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung",
 "satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung",
 "satr_de_rnd__sa_55785__bundesministerium_fur_bildung_und_forschung",
-"satr_de_rnd__sa_114724__fa_fur_korperschaften_iv"
+"satr_de_rnd__sa_114724__fa_fur_korperschaften_iv",
+"satr_de_rnd__sa_114724__finanzamt_munchen_abt_3"
 ],
 "DE|defense_security": [
 "edf_ra",
@@ -695,7 +661,6 @@
 "satr_de_rnd__sa_102084__unb_amprion",
 "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
 "satr_de_rnd__sa_111857__bundesministerium_fur_wirtschaft_und_energie",
-"satr_de_rnd",
 "satr_de_rnd__sa_110716__bezirksregierung_arnsberg",
 "satr_de_rnd__sa_115248__projekttrager_julich",
 "satr_de_rnd__sa_111712__projekttrager_julich",
@@ -719,7 +684,8 @@
 "satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung",
 "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
 "satr_de_rnd__sa_112392__nbank",
-"ipcei_hy2move"
+"ipcei_hy2move",
+"eit_innoenergy_highway"
 ],
 "DE|health_life_sciences": [
 "satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung",
@@ -832,8 +798,6 @@
 "satr_de_equity__sa_110928__burgschaftsbank_baden_wurttemberg_gmbh",
 "satr_de_equity__sa_111002__kreditanstalt_fur_wiederaufbau",
 "satr_de_rnd__sa_118705__tuv_rheinland_forschungs_und_innovationsmanageme",
-"eit_urban_mobility",
-"satr_de_rnd",
 "satr_de_rnd__sa_110716__bezirksregierung_arnsberg",
 "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
 "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
@@ -847,7 +811,9 @@
 "satr_de_rnd__sa_103582__nbank",
 "satr_de_equity__sa_111217__l_bank_baden_wurttemberg",
 "satr_de_rnd__sa_64558__investitionsbank_berlin",
-"satr_de_rnd__sa_112558__technologie_beratungs_institut_gmbh"
+"satr_de_rnd__sa_112558__technologie_beratungs_institut_gmbh",
+"satr_de_rnd__sa_111857__bundesministerium_fur_wirtschaft_und_energie",
+"satr_de_rnd__sa_112005__wibank"
 ],
 "DE|other": [
 "satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank",
@@ -862,7 +828,6 @@
 "satr_de_rnd__sa_110716__bezirksregierung_arnsberg",
 "satr_de_rnd__sa_113753__bundesministerium_fur_wirtschaft_und_klimaschutz",
 "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan",
-"satr_de_equity",
 "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
 "satr_de_equity__sa_111217__l_bank_baden_wurttemberg",
 "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
@@ -879,7 +844,8 @@
 "clean_aviation",
 "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan",
 "satr_de_rnd__sa_101541__investitionsbank_berlin",
-"satr_de_rnd__sa_103582__nbank"
+"satr_de_rnd__sa_103582__nbank",
+"satr_de_rnd__sa_113242__investitionsbank_des_landes_brandenburg"
 ],
 "DE|semiconductors_electronics": [
 "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
@@ -909,9 +875,9 @@
 "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
 "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
 "satr_de_rnd__sa_55785__bundesministerium_fur_bildung_und_forschung",
-"satr_de_rnd",
 "sns_ju",
-"satr_de_rnd__sa_64558__investitionsbank_berlin"
+"satr_de_rnd__sa_64558__investitionsbank_berlin",
+"satr_de_rnd__sa_113000__projekttrager_julich"
 ],
 "DE|software_data_ai": [
 "satr_de_rnd__sa_114510__nrw_bank",
@@ -926,7 +892,6 @@
 "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
 "htgf_equity",
 "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
-"satr_de_equity",
 "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
 "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
 "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
@@ -943,7 +908,8 @@
 "satr_de_rnd__sa_111712__projekttrager_julich",
 "satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung",
 "satr_de_rnd__sa_55785__bundesministerium_fur_bildung_und_forschung",
-"satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung"
+"satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+"satr_de_rnd__sa_115248__projekttrager_julich"
 ],
 "DE|space": [
 "satr_de_rnd__sa_106102__dlr_raumfahrtagentur",
@@ -957,9 +923,7 @@
 "innovationsfonden_grand_solutions",
 "eifo_coinvest",
 "eit_food_rfs",
-"innovationsfonden_innobooster",
 "innovationsfonden_other",
-"innovationsfonden_innofounder",
 "horizon_eu_cbe",
 "eic_accelerator"
 ],
@@ -967,14 +931,11 @@
 "eic_pathfinder",
 "edf_ra",
 "edf_da",
-"innovationsfonden_innofounder",
 "horizon_eu_cbe"
 ],
 "DK|energy_cleantech": [
 "innovationsfonden_global_research",
 "innovationsfonden_grand_solutions",
-"innovationsfonden_innofounder",
-"innovationsfonden_innoexplorer",
 "innovation_fund_lsp",
 "innovation_fund_mfg",
 "innovationsfonden_other",
@@ -983,16 +944,12 @@
 "ipcei_hy2use",
 "innovation_fund_msp",
 "innovation_fund_plt",
-"innovationsfonden_innobooster",
 "innovationsfonden_erhvervsforsker",
 "innovation_fund_ssp",
 "horizon_eu_cbe",
 "chp"
 ],
 "DK|health_life_sciences": [
-"innovationsfonden_innoexplorer",
-"innovationsfonden_innobooster",
-"innovationsfonden_innofounder",
 "innovationsfonden_other",
 "eifo_coinvest",
 "innovationsfonden_erhvervsforsker",
@@ -1007,20 +964,15 @@
 "DK|industrial_manufacturing": [
 "innovationsfonden_erhvervsforsker",
 "innovationsfonden_grand_solutions",
-"innovationsfonden_innobooster",
-"innovationsfonden_innofounder",
 "innovationsfonden_global_research"
 ],
 "DK|materials_chemicals": [
 "innovationsfonden_global_research",
-"innovationsfonden_innobooster",
 "innovationsfonden_erhvervsforsker",
 "innovationsfonden_other",
 "horizon_eu_cbe"
 ],
 "DK|mobility_transport": [
-"innovationsfonden_innofounder",
-"innovationsfonden_innobooster",
 "innovationsfonden_erhvervsforsker",
 "eifo_coinvest",
 "horizon_eu_eie"
@@ -1028,24 +980,20 @@
 "DK|other": [
 "innovationsfonden_other",
 "innovationsfonden_erhvervsforsker",
-"innovationsfonden_innoexplorer",
 "eit_climate_kic_cdr",
 "innovationsfonden_grand_solutions",
 "eifo_coinvest",
 "eic_pathfinder",
 "ipcei_hy2tech",
-"satr_fi_equity",
 "ihi",
 "clean_aviation",
 "gh_edctp3",
 "innovationsfonden_global_research"
 ],
 "DK|semiconductors_electronics": [
-"innovationsfonden_innoexplorer",
 "innovationsfonden_grand_solutions",
 "eic_pathfinder",
 "innovationsfonden_erhvervsforsker",
-"innovationsfonden_innobooster",
 "eifo_coinvest",
 "eit_digital_vap",
 "innovationsfonden_other",
@@ -1056,21 +1004,16 @@
 ],
 "DK|software_data_ai": [
 "eifo_coinvest",
-"innovationsfonden_innofounder",
-"innovationsfonden_innobooster",
 "innovationsfonden_erhvervsforsker",
-"innovationsfonden_innoexplorer",
 "innovationsfonden_grand_solutions",
 "eic_accelerator",
 "eit_digital_vap",
 "eit_food_rfs",
-"eit_urban_mobility",
 "horizon_eu_cl6",
 "innovationsfonden_other",
 "eic_fund"
 ],
 "DK|space": [
-"innovationsfonden_innobooster",
 "innovationsfonden_grand_solutions",
 "eifo_coinvest"
 ],
@@ -1080,7 +1023,6 @@
 "eis_rakendusuuringute_toetus",
 "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
-"satr_ee_rnd",
 "eis_turismisektori_tarkvarad",
 "eis_ettev_tja_varustuskindlu",
 "eis_ettev_tte_arenguprogramm",
@@ -1088,12 +1030,10 @@
 "eis_ida_viru_ettev_tluse_inv",
 "eis_e_veoselehe_liidestamise",
 "eis_innovatsiooniosak_arendu",
-"eis_digitaliseerimise_teekaa",
 "eis_toetus_ettev_tjate_toote",
 "eis_ettev_tete_tootearendust",
 "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
 "eis_ettev_tete_digip_rde_toe",
-"eis_ettev_tja_teadus_ja_aren",
 "eis_tarkvara_kasutusele_v_tm",
 "eis_loomeettev_tjate_ekspord",
 "eis_turismiettev_tete_rimude",
@@ -1116,18 +1056,14 @@
 "eis_rohetoetus_arendustegevu"
 ],
 "EE|energy_cleantech": [
-"satr_ee_rnd",
 "eis_eesti_norra_koost_progra",
 "eis_ettev_tja_varustuskindlu",
 "eis_rakendusuuringute_toetus",
-"eis_digitaliseerimise_teekaa",
 "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
 "eis_ida_viru_v_ike_ja_keskmi",
-"eis_ettev_tja_teadus_ja_aren",
 "eis_ettev_tete_tootearendust",
-"eis_ettev_tjate_k_berturvali",
 "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
 "eis_e_veoselehe_liidestamise",
@@ -1145,7 +1081,10 @@
 "eis_turismisektori_tootearen",
 "eis_loomeettev_tjate_ekspord",
 "eis_rohetoetus_roheauditi_l",
-"eis_suuremahuliste_investeer"
+"eis_suuremahuliste_investeer",
+"eis_leeuroopalist_huvi_pakk",
+"eis_v_ikese_ja_keskmise_suur",
+"eis_s_vatehnoloogia_iduettev"
 ],
 "EE|health_life_sciences": [
 "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
@@ -1153,7 +1092,6 @@
 "eis_turismisektori_tarkvarad",
 "eis_rakendusuuringute_toetus",
 "eis_ida_viru_v_ike_ja_keskmi",
-"eis_ettev_tjate_k_berturvali",
 "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
@@ -1161,7 +1099,6 @@
 "eis_ettev_tete_tootearendust",
 "eis_starditoetus",
 "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum",
-"satr_ee_rnd",
 "eis_ettev_tete_digip_rde_toe",
 "eis_toetus_ettev_tjate_toote",
 "eis_ettev_tte_arenguprogramm",
@@ -1185,16 +1122,12 @@
 "eis_ettev_tja_varustuskindlu",
 "eis_rohetoetus_arendustegevu",
 "eis_innovatsiooniosak_arendu",
-"eis_digitaliseerimise_teekaa",
-"eis_ettev_tja_teadus_ja_aren",
 "eis_rohetoetus_roheauditi_l",
 "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
 "eis_ida_viru_ettev_tluse_inv",
 "eis_e_veoselehe_liidestamise",
-"eis_ettev_tjate_k_berturvali",
 "eis_loomeettev_tjate_arengup",
 "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
-"satr_ee_rnd",
 "eis_loomeettev_tjate_ekspord",
 "eis_ettev_tete_tootearendust",
 "eis_v_ikese_ja_keskmise_suur",
@@ -1211,13 +1144,11 @@
 ],
 "EE|materials_chemicals": [
 "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
-"eis_ettev_tja_teadus_ja_aren",
 "eis_rohetoetus_arendustegevu",
 "eis_ida_viru_ettev_tluse_inv",
 "eis_rakendusuuringute_toetus",
 "eis_ettev_tja_varustuskindlu",
 "eis_rohetoetus_roheauditi_l",
-"eis_ettev_tjate_k_berturvali",
 "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
 "eis_eesti_norra_koost_progra",
 "eis_ettev_tete_digip_rde_toe",
@@ -1232,11 +1163,8 @@
 "eis_ettev_tete_digip_rde_toe",
 "eis_ettev_tete_tootearendust",
 "eis_turismisektori_tootearen",
-"satr_ee_rnd",
-"eis_digitaliseerimise_teekaa",
 "eis_ettev_tte_arenguprogramm",
 "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
-"eis_ettev_tjate_k_berturvali",
 "eis_starditoetus",
 "eis_e_veoselehe_teenusearend",
 "eis_rakendusuuringute_toetus",
@@ -1251,8 +1179,6 @@
 "eis_turismisektori_tootearen",
 "eis_loomeettev_tjate_ekspord",
 "eis_e_veoselehe_liidestamise",
-"eis_digitaliseerimise_teekaa",
-"eis_ettev_tjate_k_berturvali",
 "eis_ettev_tja_varustuskindlu",
 "eis_loomeettev_tjate_arengup",
 "eis_starditoetus",
@@ -1266,7 +1192,6 @@
 "eis_suurkontsertide_sihtfina",
 "eis_v_ikese_ja_keskmise_suur",
 "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
-"eis_ettev_tja_teadus_ja_aren",
 "eis_ettev_tete_digip_rde_toe",
 "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
 "eis_rahvusvaheliste_spordi_j",
@@ -1276,11 +1201,12 @@
 "eis_innovatsiooniosak_arendu",
 "eis_tarkvara_kasutusele_v_tm",
 "eis_ettev_tte_arenguprogramm",
-"eis_rahvusvaheliste_suurs_nd"
+"eis_rahvusvaheliste_suurs_nd",
+"eis_reaalajamajanduse_ritark",
+"eis_s_vatehnoloogia_iduettev",
+"satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus"
 ],
 "EE|semiconductors_electronics": [
-"satr_ee_rnd",
-"eis_ettev_tja_teadus_ja_aren",
 "eis_loomeettev_tjate_ekspord",
 "eis_eesti_norra_koost_progra",
 "eis_ettev_tte_arenguprogramm",
@@ -1291,10 +1217,8 @@
 "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
 "ipcei_hy2tech",
-"eis_digitaliseerimise_teekaa",
 "eis_ettev_tja_varustuskindlu",
 "eis_rohetoetus_arendustegevu",
-"eis_ettev_tjate_k_berturvali",
 "eis_loomeettev_tjatele_tugit",
 "eis_ettev_tte_investeeringu",
 "eis_ida_viru_v_ike_ja_keskmi"
@@ -1305,13 +1229,10 @@
 "eis_rahvusvaheliste_konveren",
 "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
 "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
-"eis_ettev_tja_teadus_ja_aren",
 "eis_innovatsiooniosak_arendu",
 "eis_ettev_tete_tootearendust",
 "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
-"eis_ettev_tjate_k_berturvali",
 "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
-"satr_ee_rnd",
 "eis_ettev_tte_arenguprogramm",
 "eis_loomeettev_tjate_ekspord",
 "eis_loomeettev_tjate_arengup",
@@ -1325,11 +1246,14 @@
 "eis_rakendusuuringute_toetus",
 "eis_s_vatehnoloogia_iduettev",
 "eis_reaalajamajanduse_andmep",
-"eis_digitaliseerimise_teekaa",
 "eis_rohetoetus_roheauditi_l",
 "eis_turismisektori_tootearen",
 "eis_e_veoselehe_liidestamise",
-"eis_rohetoetus_arendustegevu"
+"eis_rohetoetus_arendustegevu",
+"eis_e_veoselehe_teenusearend",
+"satr_lt_equity",
+"eis_turismisektori_kesksete",
+"eis_v_ikese_ja_keskmise_suur"
 ],
 "EE|space": [
 "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
@@ -1341,7 +1265,6 @@
 "cdti_lic",
 "horizon_eu_cbe",
 "cdti_cervera",
-"bdns_es_ayudas",
 "eit_food_rfs",
 "eit_climate_kic_clean_cities_spain",
 "euspa",
@@ -1369,7 +1292,6 @@
 "cdti_misiones",
 "innovation_fund_hbank",
 "cdti_neotec",
-"bdns_es_ayudas",
 "cdti_cervera",
 "eic_transition",
 "ipcei_hy2tech",
@@ -1392,7 +1314,6 @@
 "eit_health_catapult",
 "cdti_neotec",
 "eic_transition",
-"bdns_es_ayudas",
 "eic_fund",
 "eic_accelerator",
 "cdti_cervera",
@@ -1409,7 +1330,6 @@
 "cdti_cervera",
 "cdti_lic",
 "cdti_idi",
-"bdns_es_ayudas",
 "horizon_eu_cl4",
 "cdti_perte_aerosalud",
 "horizon_eu_cbe"
@@ -1421,14 +1341,11 @@
 "cdti_neotec",
 "horizon_eu_cbe",
 "ipcei_eubatin",
-"bdns_es_ayudas",
 "eurohpc"
 ],
 "ES|mobility_transport": [
 "cdti_perte_aerosalud",
-"eit_urban_mobility",
 "cdti_misiones",
-"bdns_es_ayudas",
 "sesar_ju",
 "horizon_eu_cl5",
 "cdti_idi",
@@ -1440,7 +1357,6 @@
 "eic_fund"
 ],
 "ES|other": [
-"bdns_es_ayudas",
 "cdti_idi",
 "cdti_perte_aerosalud",
 "cdti_misiones",
@@ -1450,7 +1366,6 @@
 "ipcei_hy2move",
 "horizon_eu_cl4",
 "eit_innoenergy_highway",
-"eit_urban_mobility",
 "horizon_eu_cl6",
 "eic_fund",
 "ipcei_hy2tech",
@@ -1470,7 +1385,6 @@
 "eic_transition",
 "cdti_misiones",
 "cdti_neotec",
-"bdns_es_ayudas",
 "chips_ju_kdt",
 "eic_accelerator",
 "eit_manufacturing_boostup",
@@ -1485,7 +1399,6 @@
 "cdti_misiones",
 "sns_ju",
 "ipcei_cloud",
-"bdns_es_ayudas",
 "cdti_idi",
 "eit_digital_champions",
 "horizon_eu_cl4",
@@ -1498,7 +1411,6 @@
 "eit_innoenergy_highway",
 "eit_urban_mobility_portfolio",
 "eit_climate_kic_clean_cities_spain",
-"eit_urban_mobility",
 "cdti_perte_aerosalud",
 "horizon_eu_miss",
 "horizon_eu_eie",
@@ -1510,15 +1422,12 @@
 "cdti_misiones",
 "ipcei_hy2tech",
 "cdti_cervera",
-"cdti_neotec",
-"bdns_es_ayudas"
+"cdti_neotec"
 ],
 "FI|agrifood": [
 "satr_fi_rnd__sa_101228__tyo_ja_elinkeinoministerio",
-"satr_fi_rnd",
 "ipcei_hy2use",
 "tesi_equity",
-"satr_fi_equity",
 "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland",
 "satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland",
 "eit_food_rfs",
@@ -1536,7 +1445,6 @@
 "tesi_equity",
 "satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland",
 "ipcei_batteries",
-"satr_fi_rnd",
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus",
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
 "satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland",
@@ -1549,9 +1457,7 @@
 "ipcei_hy2tech",
 "innovation_fund_mfg",
 "innovation_fund_plt",
-"innovation_fund_lsp",
-"eit_urban_mobility",
-"satr_fi_equity"
+"innovation_fund_lsp"
 ],
 "FI|health_life_sciences": [
 "satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland",
@@ -1565,8 +1471,6 @@
 "eit_health_catapult",
 "eit_food_rfs",
 "horizon_eu_cl4",
-"satr_fi_equity",
-"satr_fi_rnd",
 "horizon_eu_miss",
 "erc_poc",
 "ihi",
@@ -1576,7 +1480,6 @@
 "FI|industrial_manufacturing": [
 "satr_fi_rnd__sa_101228__tyo_ja_elinkeinoministerio",
 "business_finland",
-"satr_fi_rnd",
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus",
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
 "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland",
@@ -1596,13 +1499,10 @@
 "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland",
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus",
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
-"tesi_equity",
-"satr_fi_equity",
-"satr_fi_rnd"
+"tesi_equity"
 ],
 "FI|mobility_transport": [
 "tesi_equity",
-"satr_fi_rnd",
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus",
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
 "eib_venture",
@@ -1615,7 +1515,6 @@
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
 "eic_pathfinder",
 "tesi_equity",
-"satr_fi_rnd",
 "satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland",
 "eic_transition",
 "ipcei_batteries",
@@ -1625,7 +1524,6 @@
 "ipcei_mect",
 "innovation_fund_lsp",
 "eit_manufacturing_investments",
-"satr_fi_equity",
 "horizon_eu_eie"
 ],
 "FI|semiconductors_electronics": [
@@ -1633,7 +1531,6 @@
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
 "chips_ju_kdt_unknown",
 "satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland",
-"satr_fi_rnd",
 "satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland",
 "satr_fi_rnd__sa_112229__innovaatiorahoituskeskus_business_finland",
 "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland",
@@ -1645,15 +1542,12 @@
 "eit_digital_champions",
 "eit_health_catapult",
 "horizon_eu_cl1",
-"satr_fi_equity",
 "sns_ju"
 ],
 "FI|software_data_ai": [
-"satr_fi_equity",
 "satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland",
 "satr_fi_rnd__sa_112229__innovaatiorahoituskeskus_business_finland",
 "satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland",
-"satr_fi_rnd",
 "tesi_equity",
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus",
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
@@ -1668,8 +1562,6 @@
 "FI|space": [
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus",
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus",
-"satr_fi_equity",
-"satr_fi_rnd",
 "satr_lt_equity",
 "eic_fund"
 ],
@@ -1679,7 +1571,6 @@
 "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances",
 "eit_food_rfs",
 "bpifrance_pmup_idf",
-"ademe_aid",
 "eit_climate_kic_cdr",
 "eic_fund",
 "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances",
@@ -1694,7 +1585,6 @@
 "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai",
 "eit_digital_champions",
 "horizon_eu_cl6",
-"satr_fr_rnd",
 "euspa"
 ],
 "FR|defense_security": [
@@ -1714,9 +1604,7 @@
 "satr_fr_rnd__sa_111723__region_grand_est",
 "satr_fr_rnd__sa_111723__region_normandie",
 "satr_fr_rnd__sa_111723__region_pays_de_la_loire",
-"satr_fr_rnd",
 "bpifrance_innovup_leader_idf",
-"satr_fr_equity",
 "clean_aviation",
 "sesar_ju"
 ],
@@ -1728,14 +1616,11 @@
 "satr_fr_rnd__sa_111726__conseil_regional_nouvelle_aquitaine",
 "satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_",
 "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai",
-"ademe_aid",
-"satr_fr_rnd",
 "innovation_fund_ssp",
 "bpifrance_inov",
 "ipcei_hy2move",
 "innovation_fund_lsp",
 "ipcei_hy2tech",
-"satr_fr_equity",
 "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances",
 "satr_fr_rnd__sa_111728__conseil_regional",
 "satr_fr_rnd__sa_111728__conseil_regional_d_ile_de_france",
@@ -1750,12 +1635,14 @@
 "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances",
 "ipcei_hy2use",
 "ipcei_hy2infra",
-"innovation_fund_msp"
+"innovation_fund_msp",
+"innovation_fund_battery",
+"eit_innoenergy_highway",
+"eit_climate_kic_clean_cities_spain"
 ],
 "FR|health_life_sciences": [
 "ipcei_med4cure",
 "bpifrance_innovup_leader_idf",
-"satr_fr_equity",
 "ipcei_tech4cure",
 "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances",
 "bpifrance_pmup_idf",
@@ -1782,7 +1669,8 @@
 "satr_fr_rnd__sa_111723__conseil_regional_hauts_de_france",
 "satr_fr_rnd__sa_111723__conseil_regional_nouvelle_aquitaine",
 "satr_fr_rnd__sa_111723__conseil_regional_occitanie",
-"satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances"
+"satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances",
+"satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai"
 ],
 "FR|industrial_manufacturing": [
 "bpifrance_pmup_idf",
@@ -1810,11 +1698,11 @@
 "satr_fr_rnd__sa_111938__cnc",
 "ipcei_hy2move",
 "bpifrance_inov",
-"ademe_aid",
 "bpifrance_innovup_leader_idf",
 "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances",
 "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
-"satr_fr_rnd__sa_111726__agence_seine_normandie"
+"satr_fr_rnd__sa_111726__agence_seine_normandie",
+"satr_fr_rnd__sa_111726__conseil_regional_nouvelle_aquitaine"
 ],
 "FR|materials_chemicals": [
 "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances",
@@ -1869,11 +1757,10 @@
 "satr_fr_rnd__sa_111728__region_grand_est",
 "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances",
 "horizon_eu_cl5",
-"satr_fr_equity"
+"bpifrance_pmup_idf"
 ],
 "FR|other": [
 "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
-"satr_fr_rnd",
 "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances",
 "satr_fr_rnd__sa_111728__conseil_regional",
 "satr_fr_rnd__sa_111728__conseil_regional_d_ile_de_france",
@@ -1895,13 +1782,14 @@
 "satr_fr_rnd__sa_111723__region_grand_est",
 "satr_fr_rnd__sa_111723__region_normandie",
 "satr_fr_rnd__sa_111723__region_pays_de_la_loire",
-"ademe_aid",
 "ipcei_batteries",
-"satr_fr_equity",
 "fr_relance_industrie",
 "chp",
 "clean_aviation",
-"satr_fr_rnd__sa_111726__agence_seine_normandie"
+"satr_fr_rnd__sa_111726__agence_seine_normandie",
+"satr_fr_rnd__sa_111726__conseil_regional_nouvelle_aquitaine",
+"satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_",
+"satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
 ],
 "FR|semiconductors_electronics": [
 "fr_relance_industrie",
@@ -1925,7 +1813,6 @@
 "ipcei_tech4cure",
 "eurohpc",
 "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
-"satr_fr_equity",
 "bpifrance_inov",
 "bpifrance_pmup_idf",
 "bpifrance_innovup_leader_idf",
@@ -1933,7 +1820,8 @@
 "ipcei_eubatin",
 "eib_venture",
 "chips_ju_kdt",
-"horizon_eu_cl4"
+"horizon_eu_cl4",
+"satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances"
 ],
 "FR|software_data_ai": [
 "satr_fr_rnd__sa_111938__cnc",
@@ -1953,7 +1841,6 @@
 "satr_fr_rnd__sa_111723__region_grand_est",
 "satr_fr_rnd__sa_111723__region_normandie",
 "satr_fr_rnd__sa_111723__region_pays_de_la_loire",
-"satr_fr_equity",
 "bpifrance_inov",
 "ipcei_cloud",
 "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances",
@@ -1965,7 +1852,8 @@
 "sns_ju",
 "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
 "eit_digital_champions",
-"eit_urban_mobility"
+"eib_venture",
+"horizon_eu_cl5"
 ],
 "FR|space": [
 "bpifrance_inov",
@@ -1993,29 +1881,20 @@
 "euspa"
 ],
 "GB|agrifood": [
-"satr_gb_rnd",
 "eit_food_rfs",
-"eit_climate_kic_asa",
-"satr_gb_equity",
-"innovate_uk"
+"eit_climate_kic_asa"
 ],
 "GB|defense_security": [
 "horizon_eu_cl3"
 ],
 "GB|energy_cleantech": [
-"innovate_uk",
-"satr_gb_rnd",
 "eit_climate_kic_cdr",
-"satr_gb_equity",
 "eit_climate_kic_asa",
 "chp",
 "eit_food_rfs",
 "gh_edctp3"
 ],
 "GB|health_life_sciences": [
-"satr_gb_equity",
-"satr_gb_rnd",
-"innovate_uk",
 "gh_edctp3",
 "eit_health_catapult",
 "horizon_eu_cl1",
@@ -2028,35 +1907,22 @@
 "GB|industrial_manufacturing": [
 "eic_transition",
 "eit_climate_kic_clean_cities_spain",
-"satr_gb_rnd",
-"satr_gb_equity",
-"chp",
-"innovate_uk"
+"chp"
 ],
 "GB|materials_chemicals": [
 "eit_climate_kic_asa",
 "eit_food_rfs",
 "horizon_eu_cl4",
-"satr_gb_rnd",
-"satr_gb_equity",
-"horizon_eu_cbe",
-"innovate_uk"
+"horizon_eu_cbe"
 ],
 "GB|mobility_transport": [
-"satr_gb_rnd",
-"satr_gb_equity",
-"innovate_uk",
 "clean_aviation",
 "sesar_ju",
 "eit_urban_mobility_portfolio",
 "eit_climate_kic_asa",
-"eit_urban_mobility",
 "sns_ju"
 ],
 "GB|other": [
-"satr_gb_rnd",
-"innovate_uk",
-"satr_gb_equity",
 "chp",
 "horizon_eu_cl6",
 "erc_poc",
@@ -2072,35 +1938,23 @@
 ],
 "GB|semiconductors_electronics": [
 "ipcei_micro",
-"satr_gb_rnd",
-"innovate_uk",
 "horizon_eu_cl1",
-"satr_gb_equity",
 "clean_aviation",
 "gh_edctp3"
 ],
 "GB|software_data_ai": [
-"satr_gb_equity",
-"satr_gb_rnd",
-"innovate_uk",
 "eit_digital_champions",
-"eit_urban_mobility",
 "horizon_eu_cl6",
-"satr_fi_equity",
 "ihi"
 ],
 "GB|space": [
-"satr_gb_equity",
 "eurohpc",
-"innovate_uk",
 "euspa"
 ],
 "GR|agrifood": [
-"satr_gr_rnd",
 "satr_gr_rnd__sa_52413__ministry_of_environment_energy",
 "satr_gr_equity__sa_114445__unknown",
-"euspa",
-"satr_gr_equity"
+"euspa"
 ],
 "GR|defense_security": [
 "edf_ra",
@@ -2113,7 +1967,6 @@
 ],
 "GR|energy_cleantech": [
 "satr_gr_rnd__sa_52413__ministry_of_environment_energy",
-"satr_gr_rnd",
 "satr_gr_equity__sa_114445__unknown",
 "innovation_fund_lsp",
 "innovation_fund_msp",
@@ -2122,18 +1975,14 @@
 "ipcei_mect",
 "innovation_fund_mfg",
 "innovation_fund_ssp",
-"satr_gr_equity",
 "chp"
 ],
 "GR|health_life_sciences": [
-"satr_gr_equity",
 "satr_gr_equity__sa_114445__unknown",
-"satr_gr_rnd",
 "satr_gr_rnd__sa_114852__unknown",
 "horizon_eu_miss"
 ],
 "GR|industrial_manufacturing": [
-"satr_gr_rnd",
 "satr_gr_rnd__sa_52413__ministry_of_environment_energy",
 "satr_gr_rnd__sa_114852__unknown",
 "satr_gr_equity__sa_114445__unknown"
@@ -2144,17 +1993,14 @@
 "satr_gr_rnd__sa_114852__unknown",
 "ipcei_hy2tech",
 "eit_manufacturing_boostup",
-"satr_gr_equity",
 "horizon_eu_cbe"
 ],
 "GR|mobility_transport": [
 "horizon_eu_cl5",
-"satr_gr_equity",
 "satr_gr_rnd__sa_52413__ministry_of_environment_energy"
 ],
 "GR|other": [
 "satr_gr_equity__sa_114445__unknown",
-"satr_gr_equity",
 "satr_gr_rnd__sa_114852__unknown",
 "satr_gr_rnd__sa_52413__ministry_of_environment_energy",
 "ipcei_eubatin",
@@ -2176,8 +2022,6 @@
 ],
 "GR|software_data_ai": [
 "satr_gr_rnd__sa_114852__unknown",
-"satr_gr_equity",
-"satr_gr_rnd",
 "satr_gr_equity__sa_114445__unknown",
 "horizon_eu_eie",
 "euspa",
@@ -2197,36 +2041,21 @@
 "ipcei_eubatin"
 ],
 "HU|agrifood": [
-"satr_hu_equity",
-"satr_hu_rnd__sa_119085__nkfih",
-"satr_hu_rnd"
+"satr_hu_rnd__sa_119085__nkfih"
 ],
 "HU|energy_cleantech": [
-"satr_hu_rnd",
 "innovation_fund_msp",
 "innovation_fund_ssp"
 ],
 "HU|health_life_sciences": [
 "satr_hu_rnd__sa_119085__nkfih",
 "ipcei_med4cure",
-"ipcei_tech4cure",
-"satr_hu_rnd"
+"ipcei_tech4cure"
 ],
 "HU|industrial_manufacturing": [
-"satr_hu_rnd",
-"satr_hu_rnd__sa_119085__nkfih",
-"satr_hu_equity"
-],
-"HU|materials_chemicals": [
-"satr_hu_rnd"
-],
-"HU|mobility_transport": [
-"satr_hu_equity",
-"satr_hu_rnd"
+"satr_hu_rnd__sa_119085__nkfih"
 ],
 "HU|other": [
-"satr_hu_rnd",
-"satr_hu_equity",
 "satr_hu_rnd__sa_119085__nkfih"
 ],
 "HU|semiconductors_electronics": [
@@ -2236,13 +2065,10 @@
 "HU|software_data_ai": [
 "satr_hu_rnd__sa_119085__nkfih",
 "ipcei_cloud",
-"eit_urban_mobility",
 "horizon_eu_eie"
 ],
 "IE|agrifood": [
-"satr_ie_equity",
 "satr_ie_rnd__sa_111046__enterprise_ireland",
-"satr_ie_rnd",
 "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland",
 "satr_ie_rnd__sa_111052__enterprise_ireland",
 "satr_ie_rnd__sa_111052__ida_ireland",
@@ -2257,46 +2083,38 @@
 "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland",
 "satr_ie_rnd__sa_111046__enterprise_ireland",
 "eit_manufacturing_boostup",
-"satr_ie_rnd",
 "horizon_eu_cbe"
 ],
 "IE|health_life_sciences": [
 "satr_ie_rnd__sa_111052__enterprise_ireland",
 "satr_ie_rnd__sa_111052__ida_ireland",
-"satr_ie_rnd",
 "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland",
 "satr_ie_rnd__sa_111046__enterprise_ireland",
 "ihi",
 "eic_accelerator",
 "eit_health_catapult",
 "eic_fund",
-"eib_venture",
-"satr_ie_equity"
+"eib_venture"
 ],
 "IE|industrial_manufacturing": [
 "satr_ie_rnd__sa_111052__enterprise_ireland",
 "satr_ie_rnd__sa_111052__ida_ireland",
-"satr_ie_rnd",
 "satr_ie_rnd__sa_111046__enterprise_ireland",
-"eit_manufacturing_boostup",
-"satr_ie_equity"
+"eit_manufacturing_boostup"
 ],
 "IE|materials_chemicals": [
 "satr_ie_rnd__sa_111052__enterprise_ireland",
-"satr_ie_rnd__sa_111052__ida_ireland",
-"satr_ie_rnd"
+"satr_ie_rnd__sa_111052__ida_ireland"
 ],
 "IE|mobility_transport": [
 "sesar_ju",
 "satr_ie_rnd__sa_111052__enterprise_ireland",
 "satr_ie_rnd__sa_111052__ida_ireland",
 "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland",
-"eit_urban_mobility",
 "clean_aviation"
 ],
 "IE|other": [
 "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland",
-"satr_ie_equity",
 "satr_ie_rnd__sa_111046__enterprise_ireland",
 "enterprise_ireland_hpsu",
 "enterprise_ireland_seed",
@@ -2310,16 +2128,12 @@
 "satr_ie_rnd__sa_111052__enterprise_ireland",
 "satr_ie_rnd__sa_111052__ida_ireland",
 "erc_poc",
-"satr_ie_rnd",
-"satr_ie_equity",
 "sns_ju"
 ],
 "IE|software_data_ai": [
 "satr_ie_rnd__sa_111046__enterprise_ireland",
-"satr_ie_rnd",
 "satr_ie_rnd__sa_111052__enterprise_ireland",
 "satr_ie_rnd__sa_111052__ida_ireland",
-"satr_ie_equity",
 "eit_manufacturing_boostup",
 "eit_digital_champions",
 "horizon_eu_cl4",
@@ -2343,7 +2157,6 @@
 "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
 "satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg",
 "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
-"satr_it_equity",
 "satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_",
 "satr_it_rnd__sa_107368__bi_rex_big_data_innovation_research_excellence",
 "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0",
@@ -2356,8 +2169,7 @@
 "satr_it_rnd__sa_112939__regione_autonoma_friuli_venezia_giulia_direzione",
 "eic_accelerator",
 "eit_food_rfs",
-"cdp_vc_equity",
-"satr_it_rnd"
+"cdp_vc_equity"
 ],
 "IT|defense_security": [
 "satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_",
@@ -2374,7 +2186,6 @@
 "satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_",
 "satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_",
 "satr_it_rnd__sa_119109__ministero_della_transizione_ecologica_direzione_",
-"satr_it_rnd",
 "satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_",
 "satr_it_rnd__sa_108155__gestore_dei_servizi_energetici_gse_s_p_a",
 "satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg",
@@ -2391,7 +2202,6 @@
 "ipcei_hy2use",
 "ipcei_hy2infra",
 "innovation_fund_ssp",
-"satr_it_equity",
 "satr_it_equity__sa_111746__puglia_sviluppo_s_p_a",
 "satr_it_rnd__sa_111746__puglia_sviluppo_s_p_a",
 "satr_it_rnd__sa_108948__finpiemonte_s_p_a",
@@ -2400,7 +2210,9 @@
 "satr_it_rnd__sa_115378__finpiemonte_s_p_a",
 "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
 "ipcei_eubatin",
-"innovation_fund_msp"
+"innovation_fund_msp",
+"cdp_vc_equity",
+"satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg"
 ],
 "IT|health_life_sciences": [
 "ipcei_med4cure",
@@ -2430,7 +2242,6 @@
 "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
 "eic_transition",
 "horizon_eu_cl1",
-"satr_it_rnd",
 "ihi",
 "eic_fund"
 ],
@@ -2443,7 +2254,6 @@
 "satr_it_rnd__sa_108948__finpiemonte_s_p_a",
 "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
 "satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori",
-"satr_it_equity",
 "satr_it_rnd__sa_115378__finpiemonte_s_p_a",
 "satr_it_rnd__sa_112939__regione_autonoma_friuli_venezia_giulia_direzione",
 "satr_it_rnd__sa_118708__regione_autonoma_friuli_venezia_giulia_direzione",
@@ -2452,7 +2262,6 @@
 "satr_it_rnd__sa_107368__bi_rex_big_data_innovation_research_excellence",
 "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0",
 "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi",
-"satr_it_rnd",
 "satr_it_rnd__sa_114209__regione_lombardia_dg_ricerca_innovazione_univers",
 "satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire",
 "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
@@ -2464,7 +2273,9 @@
 "satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi",
 "satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc",
 "satr_it_rnd__sa_111590__ministero_dell_universita_e_della_ricerca_direzi",
-"ipcei_batteries"
+"ipcei_batteries",
+"ipcei_eubatin",
+"cdp_vc_equity"
 ],
 "IT|materials_chemicals": [
 "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi",
@@ -2472,12 +2283,10 @@
 "satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_",
 "satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori",
 "satr_it_rnd__sa_112453__asa_societa_di_consulenza_e_assistenza_alle_impr",
-"satr_it_equity",
 "satr_it_rnd__sa_112939__regione_autonoma_friuli_venezia_giulia_direzione",
 "satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi",
 "satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc",
 "satr_it_rnd__sa_120000__asa_societa_di_consulenza_e_assistenza_alle_impr",
-"satr_it_rnd",
 "satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg",
 "satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire",
 "satr_it_rnd__sa_110598__politecnico_di_milano",
@@ -2514,8 +2323,7 @@
 "satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg",
 "ipcei_eubatin",
 "ipcei_hy2tech",
-"horizon_eu_cl5",
-"satr_it_rnd"
+"horizon_eu_cl5"
 ],
 "IT|other": [
 "satr_it_equity__sa_111746__puglia_sviluppo_s_p_a",
@@ -2546,8 +2354,8 @@
 "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
 "ipcei_batteries",
 "ipcei_eubatin",
-"satr_it_rnd",
-"satr_it_rnd__sa_108948__finpiemonte_s_p_a"
+"satr_it_rnd__sa_108948__finpiemonte_s_p_a",
+"satr_it_rnd__sa_119109__ministero_della_transizione_ecologica_direzione_"
 ],
 "IT|semiconductors_electronics": [
 "satr_it_rnd__sa_112452__asa_societa_di_consulenza_e_assistenza_alle_impr",
@@ -2559,7 +2367,6 @@
 "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0",
 "satr_it_rnd__sa_108948__finpiemonte_s_p_a",
 "ipcei_hy2move",
-"satr_it_equity",
 "eurohpc",
 "chips_ju_kdt_unknown",
 "satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg",
@@ -2567,7 +2374,6 @@
 "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi",
 "satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_",
 "ipcei_batteries",
-"satr_it_rnd",
 "erc_poc",
 "satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire",
 "satr_it_rnd__sa_112453__asa_societa_di_consulenza_e_assistenza_alle_impr",
@@ -2579,7 +2385,8 @@
 "eit_digital_champions",
 "horizon_eu_cl4",
 "horizon_eu_miss",
-"sesar_ju"
+"sesar_ju",
+"euspa"
 ],
 "IT|software_data_ai": [
 "satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_",
@@ -2599,10 +2406,8 @@
 "satr_it_rnd__sa_118708__regione_autonoma_friuli_venezia_giulia_direzione",
 "ipcei_cloud",
 "ipcei_tech4cure",
-"satr_it_equity",
 "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi",
 "satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_",
-"satr_it_rnd",
 "satr_it_rnd__sa_112452__asa_societa_di_consulenza_e_assistenza_alle_impr",
 "satr_it_rnd__sa_119109__ministero_della_transizione_ecologica_direzione_",
 "satr_it_equity__sa_111746__puglia_sviluppo_s_p_a",
@@ -2611,7 +2416,9 @@
 "satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg",
 "satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi",
 "satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc",
-"eib_venture"
+"eib_venture",
+"eit_digital_champions",
+"eurohpc"
 ],
 "IT|space": [
 "satr_it_rnd__sa_111590__ministero_dell_universita_e_della_ricerca_direzi",
@@ -2642,38 +2449,24 @@
 "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum"
 ],
 "LU|energy_cleantech": [
-"satr_lu_rnd",
 "chp",
 "innovation_fund_plt",
 "eit_urban_mobility_portfolio"
 ],
 "LU|industrial_manufacturing": [
-"satr_lu_rnd",
 "eit_rawmaterials_portfolio"
 ],
-"LU|materials_chemicals": [
-"satr_lu_rnd"
-],
 "LU|mobility_transport": [
-"satr_lu_rnd",
 "chp"
 ],
-"LU|other": [
-"satr_lu_rnd"
-],
 "LU|semiconductors_electronics": [
-"satr_lu_rnd",
 "horizon_eu_cl5",
 "horizon_eu_cl3"
-],
-"LU|software_data_ai": [
-"satr_lu_rnd"
 ],
 "LV|agrifood": [
 "altum_mvu_izaugsmes_aizdevumi",
 "altum_ua",
 "altum_aue",
-"satr_lv_rnd",
 "altum_aui",
 "altum_mvu_ia_3_1_1_7_un_13_1_1",
 "altum_mikro_aizdevumi_3_1_1_4_",
@@ -2690,7 +2483,6 @@
 "satr_lv_rnd__sa_112274__centrala_finansu_un_ligumu_agentura",
 "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura",
 "altum_garantijas_pilna_cikla_u",
-"satr_lv_equity",
 "altum_garantijas_3_1_1_1_pas_k"
 ],
 "LV|defense_security": [
@@ -2700,7 +2492,6 @@
 "altum_aui",
 "altum_aue",
 "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura",
-"satr_lv_rnd",
 "satr_lv_rnd__sa_112274__centrala_finansu_un_ligumu_agentura",
 "satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura",
 "satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura",
@@ -2709,7 +2500,6 @@
 "altum_garantijas_pilna_cikla_u",
 "altum_aizdevumi_produktivit_te",
 "altum_garantijas_3_1_1_1_pas_k",
-"satr_lv_equity",
 "altum_starta_izaugsmes_aizdevu",
 "altum_mvu_izaugsmes_aizdevumi",
 "eit_urban_mobility_portfolio",
@@ -2724,13 +2514,11 @@
 ],
 "LV|health_life_sciences": [
 "satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura",
-"satr_lv_equity",
 "altum_starta_aizdevumi_3_1_1_4",
 "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura",
 "altum_garantijas_3_1_1_1_pas_k",
 "satr_lv_rnd__sa_112274__centrala_finansu_un_ligumu_agentura",
 "altum_anm_digi",
-"satr_lv_rnd",
 "altum_mikro_aizdevumi_3_1_1_4_",
 "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum",
 "altum_anm_kepa",
@@ -2746,7 +2534,6 @@
 "altum_anm_digi",
 "altum_garantijas_pilna_cikla_u",
 "altum_mvu_ia_3_1_1_7_un_13_1_1",
-"satr_lv_rnd",
 "altum_garantijas_3_1_1_1_pas_k",
 "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura",
 "altum_anm_kepa",
@@ -2759,7 +2546,6 @@
 "altum_mikro_aizdevumi_3_1_1_4_",
 "satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura",
 "altum_anm_elektroauto_garantij",
-"satr_lv_equity",
 "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum",
 "satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura",
 "altum_covid_19_kr_zes_aizdevum",
@@ -2787,7 +2573,6 @@
 "LV|mobility_transport": [
 "altum_anm_elektroauto_garantij",
 "altum_covid_19_kr_zes_garantij",
-"satr_lv_equity",
 "altum_aui",
 "altum_ua",
 "altum_mikro_aizdevumi_3_1_1_4_",
@@ -2821,14 +2606,12 @@
 "altum_starta_izaugsmes_aizdevu",
 "altum_anm_elektroauto_garantij",
 "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum",
-"satr_lv_equity",
 "altum_aue",
 "altum_aui",
 "altum_mvu_izaugsmes_aizdevumi",
 "satr_lv_rnd__sa_112274__centrala_finansu_un_ligumu_agentura",
 "altum_stermi_a_eksporta_kred_t",
 "satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura",
-"satr_lv_rnd",
 "altum_la_ar_ka",
 "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura",
 "satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura",
@@ -2839,7 +2622,6 @@
 "LV|semiconductors_electronics": [
 "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura",
 "satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura",
-"satr_lv_rnd",
 "altum_anm_elektroauto_garantij",
 "chips_ju_kdt",
 "eit_rawmaterials_portfolio",
@@ -2853,9 +2635,7 @@
 "satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura",
 "satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura",
 "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum",
-"satr_lv_equity",
 "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura",
-"satr_lv_rnd",
 "altum_starta_izaugsmes_aizdevu",
 "altum_anm_elektroauto_garantij",
 "altum_iesp_jkapit_la_ieguld_ju",
@@ -2890,14 +2670,12 @@
 "satr_nl_rnd__sa_111231__provincie_noord_brabant",
 "satr_nl_rnd__sa_117203__ministerie_van_economische_zaken_en_klimaat",
 "eit_food_rfs",
-"satr_nl_rnd",
 "satr_nl_rnd__sa_108830__provincie_noord_brabant",
 "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_106413__kansen_voor_west",
 "satr_nl_rnd__sa_117531__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_117204__ministerie_van_economische_zaken_en_klimaat",
-"eic_transition",
-"satr_nl_equity"
+"eic_transition"
 ],
 "NL|defense_security": [
 "horizon_eu_cl3",
@@ -2910,12 +2688,10 @@
 "satr_nl_rnd__sa_117203__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_106413__kansen_voor_west",
 "satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat",
-"satr_nl_rnd",
 "satr_nl_rnd__sa_117204__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
 "ipcei_hy2use",
 "invest_nl_equity",
-"satr_nl_equity",
 "satr_nl_rnd__sa_116945__provincie_gelderland",
 "ipcei_hy2move",
 "innovation_fund_lsp",
@@ -2936,11 +2712,12 @@
 "innovation_fund_msp",
 "innovation_fund_mfg",
 "eit_climate_kic_asa",
-"eit_urban_mobility"
+"invest_nl_fof",
+"horizon_eu_eie",
+"horizon_eu_cbe"
 ],
 "NL|health_life_sciences": [
 "satr_nl_rnd__sa_114170__ministerie_van_volksgezondheid_welzijn_sport",
-"satr_nl_equity",
 "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_108830__provincie_noord_brabant",
 "satr_nl_rnd__sa_111231__provincie_noord_brabant",
@@ -2950,7 +2727,6 @@
 "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland",
 "eic_transition",
 "satr_nl_rnd__sa_106413__kansen_voor_west",
-"satr_nl_rnd",
 "ihi",
 "gh_edctp3",
 "eic_accelerator",
@@ -2972,8 +2748,6 @@
 "satr_nl_rnd__sa_108830__provincie_noord_brabant",
 "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_106413__kansen_voor_west",
-"satr_nl_equity",
-"satr_nl_rnd",
 "satr_nl_rnd__sa_111231__provincie_noord_brabant",
 "chips_ju_kdt",
 "satr_nl_rnd__sa_103112__ministerie_van_economische_zaken_en_klimaat",
@@ -2988,8 +2762,6 @@
 "satr_nl_rnd__sa_108830__provincie_noord_brabant",
 "satr_nl_rnd__sa_116945__provincie_gelderland",
 "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland",
-"satr_nl_rnd",
-"satr_nl_equity",
 "horizon_eu_cbe"
 ],
 "NL|mobility_transport": [
@@ -3002,7 +2774,6 @@
 "satr_nl_rnd__sa_106413__kansen_voor_west",
 "satr_nl_rnd__sa_117203__ministerie_van_economische_zaken_en_klimaat",
 "horizon_eu_cl5",
-"satr_nl_rnd",
 "satr_nl_rnd__sa_116945__provincie_gelderland",
 "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland",
 "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
@@ -3018,9 +2789,7 @@
 "satr_nl_rnd__sa_116945__provincie_gelderland",
 "satr_nl_rnd__sa_117531__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_108830__provincie_noord_brabant",
-"satr_nl_rnd",
 "satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat",
-"satr_nl_equity",
 "satr_nl_rnd__sa_109861__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_111231__provincie_noord_brabant",
 "satr_nl_rnd__sa_106413__kansen_voor_west",
@@ -3045,7 +2814,6 @@
 "satr_nl_rnd__sa_111231__provincie_noord_brabant",
 "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
 "invest_nl_equity",
-"satr_nl_equity",
 "satr_nl_rnd__sa_106413__kansen_voor_west",
 "eic_transition",
 "eit_digital_champions",
@@ -3058,12 +2826,10 @@
 "satr_nl_rnd__sa_111231__provincie_noord_brabant",
 "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland",
-"satr_nl_equity",
 "satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat",
 "satr_nl_rnd__sa_116945__provincie_gelderland",
 "satr_nl_rnd__sa_106413__kansen_voor_west",
 "satr_nl_rnd__sa_108830__provincie_noord_brabant",
-"satr_nl_rnd",
 "ipcei_cloud",
 "horizon_eu_cl6",
 "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
@@ -3072,7 +2838,6 @@
 "eit_digital_champions",
 "eit_manufacturing_investments",
 "eit_climate_kic_clean_cities_spain",
-"eit_urban_mobility",
 "horizon_eu_cl3",
 "horizon_eu_cl1",
 "invest_nl_fof",
@@ -3083,7 +2848,6 @@
 "NL|space": [
 "satr_nl_rnd__sa_108830__provincie_noord_brabant",
 "horizon_eu_cl6",
-"satr_nl_rnd",
 "euspa"
 ],
 "NO|agrifood": [
@@ -3223,9 +2987,9 @@
 "nfr_forny20",
 "nfr_naeringsph",
 "nfr_maroff",
-"eit_urban_mobility",
 "nfr_iktforskning",
-"nfr_transportforsk"
+"nfr_transportforsk",
+"nfr_helseforskning"
 ],
 "NO|materials_chemicals": [
 "nfr_inno",
@@ -3270,7 +3034,6 @@
 "nfr_petroleum",
 "nfr_globalb_rekraft",
 "nfr_energix",
-"eit_urban_mobility",
 "innovasjon_norge_loan_risk",
 "innovasjon_norge_grant_international",
 "nfr_havbasert",
@@ -3412,7 +3175,6 @@
 "innovation_fund_battery",
 "innovation_fund_msp",
 "eit_climate_kic_clean_cities_spain",
-"eit_urban_mobility",
 "chp",
 "clean_aviation"
 ],
@@ -3430,7 +3192,6 @@
 "sudop_ncbr_aid",
 "sudop_regional_inv",
 "eib_venture",
-"eit_urban_mobility",
 "euspa",
 "sudop_bgk_kit_v3"
 ],
@@ -3486,7 +3247,6 @@
 "sns_ju"
 ],
 "PT|agrifood": [
-"satr_pt_rnd",
 "satr_pt_rnd__sa_110394__tamprcentro"
 ],
 "PT|defense_security": [
@@ -3504,25 +3264,21 @@
 "innovation_fund_lsp",
 "innovation_fund_ssp",
 "satr_pt_equity",
-"satr_pt_rnd",
 "chp"
 ],
 "PT|health_life_sciences": [
 "satr_pt_rnd__sa_110394__tamprcentro",
 "eit_health_catapult",
 "horizon_eu_cl1",
-"satr_pt_rnd",
 "satr_pt_equity",
 "eic_accelerator",
 "horizon_eu_miss"
 ],
 "PT|industrial_manufacturing": [
 "satr_pt_rnd__sa_110394__tamprcentro",
-"satr_pt_equity",
-"satr_pt_rnd"
+"satr_pt_equity"
 ],
 "PT|materials_chemicals": [
-"satr_pt_rnd",
 "satr_pt_equity",
 "satr_pt_rnd__sa_110394__tamprcentro",
 "ipcei_hy2use"
@@ -3535,7 +3291,6 @@
 "PT|other": [
 "satr_pt_equity",
 "satr_pt_rnd__sa_110394__tamprcentro",
-"satr_pt_rnd",
 "erc_poc",
 "horizon_eu_cl4",
 "horizon_eu_cl5",
@@ -3545,22 +3300,18 @@
 "PT|semiconductors_electronics": [
 "satr_pt_equity",
 "horizon_eu_cl4",
-"satr_pt_rnd",
 "eurohpc"
 ],
 "PT|software_data_ai": [
-"satr_pt_rnd",
 "satr_pt_equity",
 "satr_pt_rnd__sa_110394__tamprcentro",
-"eit_urban_mobility_portfolio",
-"eit_urban_mobility"
+"eit_urban_mobility_portfolio"
 ],
 "RO|energy_cleantech": [
 "innovation_fund_lsp"
 ],
 "RO|other": [
 "horizon_eu_miss",
-"eit_urban_mobility",
 "horizon_eu_cl3",
 "horizon_eu_cl6",
 "sns_ju",
@@ -3577,7 +3328,6 @@
 "RS|other": [
 "sns_ju",
 "euspa",
-"eit_urban_mobility",
 "horizon_eu_cl3",
 "horizon_eu_eie",
 "sesar_ju"
@@ -3590,8 +3340,7 @@
 "satr_se_rnd__sa_116003__energimyndigheten",
 "satr_se_rnd__sa_119375__rymdstyrelsen",
 "eit_food_rfs",
-"almi_invest_equity",
-"satr_se_rnd"
+"almi_invest_equity"
 ],
 "SE|defense_security": [
 "satr_se_rnd__sa_111803__naturvardsverket",
@@ -3599,7 +3348,6 @@
 "horizon_eu_cl3"
 ],
 "SE|energy_cleantech": [
-"satr_se_rnd",
 "satr_se_rnd__sa_111803__naturvardsverket",
 "satr_se_rnd__sa_116003__energimyndigheten",
 "satr_se_rnd__sa_112283__tillvaxtverket",
@@ -3613,13 +3361,11 @@
 "innovation_fund_plt",
 "innovation_fund_lsp",
 "eit_manufacturing_boostup",
-"almi_invest_equity",
-"vinnova_grant"
+"almi_invest_equity"
 ],
 "SE|health_life_sciences": [
 "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
 "almi_invest_equity",
-"vinnova_grant",
 "satr_se_rnd__sa_112283__tillvaxtverket",
 "eic_accelerator",
 "erc_poc",
@@ -3635,7 +3381,6 @@
 "satr_se_rnd__sa_112283__tillvaxtverket",
 "satr_se_rnd__sa_116003__energimyndigheten",
 "almi_invest_equity",
-"vinnova_grant",
 "satr_se_rnd__sa_111803__naturvardsverket",
 "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
 "satr_se_rnd__sa_119375__rymdstyrelsen",
@@ -3646,28 +3391,23 @@
 ],
 "SE|materials_chemicals": [
 "almi_invest_equity",
-"satr_se_rnd",
 "satr_se_rnd__sa_116003__energimyndigheten",
 "eit_innoenergy_highway"
 ],
 "SE|mobility_transport": [
 "satr_se_rnd__sa_112771__energimyndigheten",
-"satr_se_rnd",
 "satr_se_rnd__sa_116003__energimyndigheten",
 "europes_rail",
 "satr_se_rnd__sa_119375__rymdstyrelsen",
 "satr_se_rnd__sa_111803__naturvardsverket",
 "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
-"eit_urban_mobility",
 "sesar_ju"
 ],
 "SE|other": [
-"vinnova_grant",
 "satr_se_rnd__sa_111803__naturvardsverket",
 "satr_se_rnd__sa_116003__energimyndigheten",
 "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
 "satr_se_rnd__sa_112283__tillvaxtverket",
-"satr_se_rnd",
 "satr_se_rnd__sa_119375__rymdstyrelsen",
 "satr_se_rnd__sa_112771__energimyndigheten",
 "edf_da",
@@ -3685,18 +3425,15 @@
 "ipcei_eubatin",
 "ipcei_hy2use",
 "horizon_eu_cl4",
-"satr_se_rnd",
 "chips_ju_kdt_unknown",
 "europes_rail",
-"gh_edctp3",
-"vinnova_grant"
+"gh_edctp3"
 ],
 "SE|software_data_ai": [
 "almi_invest_equity",
 "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
 "satr_se_rnd__sa_112283__tillvaxtverket",
 "satr_se_rnd__sa_116003__energimyndigheten",
-"vinnova_grant",
 "satr_se_rnd__sa_112771__energimyndigheten",
 "satr_se_rnd__sa_119375__rymdstyrelsen",
 "eib_venture",
@@ -3727,18 +3464,15 @@
 "horizon_eu_cl5"
 ],
 "SK|agrifood": [
-"satr_sk_equity",
 "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr",
 "satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura"
 ],
 "SK|defense_security": [
-"satr_sk_rnd",
 "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr",
 "eit_digital_champions"
 ],
 "SK|energy_cleantech": [
 "satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura",
-"satr_sk_rnd",
 "ipcei_eubatin",
 "ipcei_hy2move",
 "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr",
@@ -3746,8 +3480,7 @@
 "ipcei_hy2use",
 "innovation_fund_plt",
 "eit_digital_vap",
-"eit_urban_mobility_portfolio",
-"satr_sk_equity"
+"eit_urban_mobility_portfolio"
 ],
 "SK|health_life_sciences": [
 "ipcei_med4cure",
@@ -3759,34 +3492,25 @@
 "SK|industrial_manufacturing": [
 "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr",
 "satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura",
-"satr_sk_rnd",
-"satr_sk_equity",
 "ipcei_eubatin",
 "horizon_eu_miss"
 ],
 "SK|materials_chemicals": [
 "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr",
-"satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura",
-"satr_sk_rnd"
+"satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura"
 ],
 "SK|mobility_transport": [
-"satr_sk_rnd",
-"satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura",
-"eit_urban_mobility"
+"satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura"
 ],
 "SK|other": [
-"satr_sk_equity",
 "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr",
-"satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura",
-"satr_sk_rnd"
+"satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura"
 ],
 "SK|semiconductors_electronics": [
 "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr"
 ],
 "SK|software_data_ai": [
-"satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr",
-"satr_sk_equity",
-"satr_sk_rnd"
+"satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr"
 ],
 "UA|other": [
 "eit_manufacturing_boostup",

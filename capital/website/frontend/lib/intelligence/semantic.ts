@@ -15,6 +15,8 @@
 // lexical and rule-embedding retrieval on every domain tested.
 // Built by ETL/terms/build_instrument_profiles.py.
 
+import { MIN_MATCHABLE_DESCRIPTION_CHARS } from "./types";
+
 const VOYAGE_URL = "https://api.voyageai.com/v1/embeddings";
 const MODEL = "voyage-3.5";
 /** Keep the whole path bounded: this runs inside the memo pipeline, which is
@@ -25,18 +27,79 @@ const TIMEOUT_MS = 6000;
  *  not once per pipeline stage that asks. */
 const cache = new Map<string, Map<string, number>>();
 
+/** How sharply this description peaks on the corpus, on the RAW similarities.
+ *
+ *  Kept beside the scores rather than derived from them, because it CANNOT be
+ *  derived from them: the returned map is percentile-normalised, and a
+ *  percentile distribution is uniform on [0,1] by construction. Every
+ *  dispersion statistic computed on it is the same number for every query --
+ *  measured at 0.998 for a canned self-description and 0.998 for a real project
+ *  title, which is why `themeInformative` in shortlist.ts was structurally
+ *  always true and the entire "how much do we trust this founder's words"
+ *  branch never ran.
+ *
+ *  Raw cosines do carry it. Measured over the 11 canned sector templates and 19
+ *  real project descriptions in the recall set, against the live index:
+ *
+ *      statistic          canned    real    best single split
+ *      max/mean - 1        0.281   0.454    87%
+ *      (max-mean)/sd       3.35    4.07     77%
+ *      max                 0.572   0.496    63%   (inverted, useless)
+ *
+ *  `max/mean - 1` is the statistic `THEME_SPREAD_FLOOR` was written against and
+ *  it is the one that works; only the input was wrong. Note `max` alone runs
+ *  BACKWARDS -- a generic sentence matches everything moderately well and scores
+ *  a HIGHER top similarity than a specific one -- so any "is the best match good
+ *  enough" test is worse than useless here. It has to be about the shape of the
+ *  distribution, not its height. */
+const separation = new Map<string, number>();
+
+/** Dispersion of the raw similarities for `description`, or `undefined` when
+ *  the index was never consulted for it (no key, no Postgres, no cache entry).
+ *  Callers must treat `undefined` as "no opinion", never as zero. */
+export function semanticSeparation(description: string | undefined): number | undefined {
+  const desc = description?.trim();
+  return desc ? separation.get(desc) : undefined;
+}
+
+/** `max / mean - 1` over the raw similarities. Exported for the cache emitter
+ *  so the committed artifact and production can never compute it differently. */
+export function separationOf(similarities: number[]): number | undefined {
+  const vals = similarities.filter((v) => Number.isFinite(v) && v > 0);
+  if (vals.length < 2) return undefined;
+  const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+  if (mean <= 0) return undefined;
+  return Math.max(...vals) / mean - 1;
+}
+
+interface CachedMatch { scores: Record<string, number>; separation?: number }
+
 /** Committed scores for the fixed descriptions our checks use. Read lazily so a
- *  production request never pays for a file that only tests need. */
-let scoreCache: Record<string, Record<string, number>> | undefined;
-function loadSemanticCache(): Record<string, Record<string, number>> {
+ *  production request never pays for a file that only tests need.
+ *
+ *  Carries `separation` alongside `scores` because the offline checks have to
+ *  exercise the SAME branch production takes. The statistic is unrecoverable
+ *  from the percentile scores, so a cache holding scores alone would send every
+ *  archetype and every red-team case down whichever branch the fallback picked
+ *  -- which is the award-median defect again: a check validating a path that
+ *  does not ship. The older shape (description -> scores) is still read, and
+ *  simply yields no separation. */
+let scoreCache: Record<string, CachedMatch> | undefined;
+function loadSemanticCache(): Record<string, CachedMatch> {
   if (scoreCache === undefined) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { readFileSync } = require("fs") as typeof import("fs");
       const path = require("path") as typeof import("path");
-      scoreCache = JSON.parse(readFileSync(
+      const raw = JSON.parse(readFileSync(
         path.join(process.cwd(), "lib", "intelligence", "semanticCache.generated.json"),
-        "utf8"));
+        "utf8")) as Record<string, CachedMatch | Record<string, number>>;
+      scoreCache = Object.fromEntries(Object.entries(raw).map(([d, v]) => [
+        d,
+        "scores" in v && typeof v.scores === "object"
+          ? (v as CachedMatch)
+          : { scores: v as Record<string, number> },
+      ]));
     } catch {
       scoreCache = {};
     }
@@ -84,7 +147,7 @@ export async function semanticFundMatch(
   description: string | undefined,
 ): Promise<Map<string, number>> {
   const desc = description?.trim();
-  if (!desc || desc.length < 12) return new Map();
+  if (!desc || desc.length < MIN_MATCHABLE_DESCRIPTION_CHARS) return new Map();
   const cached = cache.get(desc);
   if (cached) return cached;
 
@@ -104,7 +167,9 @@ export async function semanticFundMatch(
     // still returns empty and falls through to the lexical index, which is the
     // honest degradation for a real founder on a cold fallback.
     const hit = loadSemanticCache()[desc];
-    return hit ? new Map(Object.entries(hit)) : new Map();
+    if (!hit) return new Map();
+    if (hit.separation !== undefined) separation.set(desc, hit.separation);
+    return new Map(Object.entries(hit.scores));
   }
 
   const out = new Map<string, number>();
@@ -150,6 +215,13 @@ export async function semanticFundMatch(
       // care how narrow the band is. It is also distribution-free, so it
       // cannot be broken by a query whose similarities happen to cluster
       // differently — which best-normalisation silently was.
+      //
+      // What it DOES destroy is how peaked this particular query was, and that
+      // is a signal the ranker needs: it is the difference between a founder
+      // who described a project and one we have only a sector template for.
+      // Captured here, before the shape is thrown away. See `separation`.
+      const sep = separationOf(scores.map((s) => s.s));
+      if (sep !== undefined) separation.set(desc, sep);
       //
       // The rows arrive ordered by distance, so the index IS the rank.
       const n = scores.length;

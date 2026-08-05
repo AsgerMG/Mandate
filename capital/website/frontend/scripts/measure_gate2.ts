@@ -80,8 +80,9 @@ async function main() {
       });
       const text = (resp.content ?? []).filter((b: any) => b?.type === "text")
         .map((b: any) => b.text).join("\n");
-      const picks = (text.match(/\d+/g) ?? []).slice(0, 5).map(Number)
-        .filter((i) => i >= 0 && i < c.subset.length).map((i) => c.subset[i]);
+      const picks = (text.match(/\d+/g) ?? [] as string[]).slice(0, 5).map(Number)
+        .filter((i: number) => i >= 0 && i < c.subset.length)
+        .map((i: number) => c.subset[i]);
       if (!picks.length) bad++;
       if (picks.some((s: any) => s.id === c.want)) exact++;
       if (picks.some((s: any) => s.regime === c.wantRegime)) regime++;

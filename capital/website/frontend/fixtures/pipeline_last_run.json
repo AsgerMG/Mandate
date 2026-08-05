@@ -7,10 +7,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": false,
-  "g2_regime": false,
-  "questions": 8,
-  "failed": false
+  "g2_exact": true,
+  "g2_regime": true,
+  "questions": 6,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "horizon_eu_cl4",
+   "cdti_misiones",
+   "cdti_neotec",
+   "cdti_idi",
+   "cdti_cervera"
+  ]
  },
  {
   "name": "FUNDACION PARA EL DESARROLLO DE LAS NUEVAS TECNOLOGIAS DEL HIDROGENO EN ARAGON",
@@ -22,8 +31,17 @@
   "g1_top5_regime": true,
   "g2_exact": true,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 6,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "chp",
+   "horizon_eu_cl5",
+   "horizon_eu_cl6",
+   "cdti_idi",
+   "cdti_cervera"
+  ]
  },
  {
   "name": "INSERM TRANSFERT",
@@ -33,10 +51,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": false,
-  "g2_regime": false,
-  "questions": 8,
-  "failed": false
+  "g2_exact": true,
+  "g2_regime": true,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "horizon_eu_cl1",
+   "ihi",
+   "bpifrance_innovup_leader_idf",
+   "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances",
+   "eic_pathfinder"
+  ]
  },
  {
   "name": "UNIVERSITA CAMPUS BIO MEDICO DI ROMA",
@@ -46,10 +73,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": false,
+  "g2_exact": true,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 6,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "gh_edctp3",
+   "eic_accelerator",
+   "eic_pathfinder",
+   "ipcei_med4cure",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi"
+  ]
  },
  {
   "name": "OHB System AG",
@@ -61,8 +97,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "edf_ra",
+   "horizon_eu_cl3",
+   "horizon_eu_cl4",
+   "satr_de_rnd__sa_106102__dlr_raumfahrtagentur",
+   "satr_de_rnd__sa_113753__bundesministerium_fur_wirtschaft_und_klimaschutz"
+  ]
  },
  {
   "name": "RATIER-FIGEAC",
@@ -72,10 +117,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": false,
-  "g2_regime": false,
-  "questions": 8,
-  "failed": false
+  "g2_exact": true,
+  "g2_regime": true,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "clean_aviation",
+   "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai",
+   "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances",
+   "ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f",
+   "ademe_aid__contrat_chaleur_renouvelable_9b8378"
+  ]
  },
  {
   "name": "INDRA SISTEMAS, S.A.",
@@ -85,10 +139,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": true,
+  "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 6,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "edf_ra",
+   "cdti_cervera",
+   "horizon_eu_cl4",
+   "horizon_eu_cl5",
+   "horizon_eu_cl3"
+  ]
  },
  {
   "name": "C12 QUANTUM ELECTRONICS",
@@ -100,8 +163,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "eic_pathfinder",
+   "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances",
+   "horizon_eu_cl4",
+   "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances",
+   "bpifrance_inov"
+  ]
  },
  {
   "name": "Mitsubishi HiTec Paper Europe GmbH",
@@ -113,8 +185,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 7,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
+   "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan"
+  ]
  },
  {
   "name": "FSD CNC-Drehtechnik OHG",
@@ -124,10 +205,19 @@
   "g1_reachable": true,
   "g1_top5": false,
   "g1_top5_regime": true,
-  "g2_exact": false,
+  "g2_exact": true,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 5,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan",
+   "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan",
+   "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan"
+  ]
  },
  {
   "name": "OCCICAL THERAPEUTICS",
@@ -138,9 +228,18 @@
   "g1_top5": false,
   "g1_top5_regime": false,
   "g2_exact": false,
-  "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "g2_regime": false,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "bpifrance_inov",
+   "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances",
+   "horizon_eu_cl1",
+   "eic_pathfinder",
+   "bpifrance_pmup_idf"
+  ]
  },
  {
   "name": "LES TRIPES PAILLARD",
@@ -151,9 +250,18 @@
   "g1_top5": false,
   "g1_top5_regime": false,
   "g2_exact": false,
-  "g2_regime": false,
-  "questions": 8,
-  "failed": false
+  "g2_regime": true,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "ademe_aid__aap_decarb_ind_pdr_fdi_43019f",
+   "ademe_aid__tremplin_pour_la_transition_ecologique_des_pme_30a2b3",
+   "bpifrance_inov",
+   "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances",
+   "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+  ]
  },
  {
   "name": "Vier-Tore-Stadt Neubrandenburg",
@@ -165,8 +273,17 @@
   "g1_top5_regime": true,
   "g2_exact": true,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_63177__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_102084__unb_amprion",
+   "satr_de_rnd__sa_109088__projekttrager_julich"
+  ]
  },
  {
   "name": "CAB 39",
@@ -177,9 +294,18 @@
   "g1_top5": false,
   "g1_top5_regime": true,
   "g2_exact": false,
-  "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "g2_regime": false,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "ademe_aid__aap_pna_f5fd48",
+   "ademe_aid__developper_le_velotourisme_64b22e",
+   "ademe_aid__tremplin_pour_la_transition_ecologique_des_pme_30a2b3",
+   "ademe_aid__renouvellement_forestier_523b42",
+   "ademe_aid__aides_aux_actions_ponctuelles_141351"
+  ]
  },
  {
   "name": "BIOSYNTHIS",
@@ -190,9 +316,18 @@
   "g1_top5": false,
   "g1_top5_regime": true,
   "g2_exact": false,
-  "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "g2_regime": false,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "ademe_aid__aap_pna_f5fd48",
+   "ademe_aid__tremplin_pour_la_transition_ecologique_des_pme_30a2b3",
+   "ademe_aid__renouvellement_forestier_523b42",
+   "ademe_aid__aides_aux_actions_ponctuelles_141351",
+   "ademe_aid__developper_le_velotourisme_64b22e"
+  ]
  },
  {
   "name": "Protyon B.V.",
@@ -204,8 +339,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 6,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+   "satr_nl_rnd__sa_116945__provincie_gelderland",
+   "satr_nl_rnd__sa_106413__kansen_voor_west",
+   "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+   "horizon_eu_cl6"
+  ]
  },
  {
   "name": "smk systeme metall kunststoff gmbh & co. kg",
@@ -215,10 +359,19 @@
   "g1_reachable": true,
   "g1_top5": false,
   "g1_top5_regime": true,
-  "g2_exact": false,
+  "g2_exact": true,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_63177__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_102084__unb_amprion",
+   "satr_de_rnd__sa_109088__projekttrager_julich"
+  ]
  },
  {
   "name": "ff fluid forming GmbH",
@@ -230,8 +383,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
+   "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan",
+   "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan"
+  ]
  },
  {
   "name": "CS BASE 112 - BOA0032570",
@@ -241,10 +403,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": true,
+  "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "ademe_aid__aap_decarb_ind_pdr_fdi_43019f",
+   "ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03",
+   "ademe_aid__industrie_zero_fossile_volet_3_decarb_flash_96ff6f",
+   "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai",
+   "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances"
+  ]
  },
  {
   "name": "Bor Transporten B.V.",
@@ -256,8 +427,17 @@
   "g1_top5_regime": true,
   "g2_exact": true,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 6,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_nl_rnd__sa_109861__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_117531__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+   "horizon_eu_cl5"
+  ]
  },
  {
   "name": "MICROCERTEC",
@@ -268,9 +448,18 @@
   "g1_top5": false,
   "g1_top5_regime": true,
   "g2_exact": false,
-  "g2_regime": true,
-  "questions": 7,
-  "failed": false
+  "g2_regime": false,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "ademe_aid__aap_decarb_ind_pdr_fdi_43019f",
+   "ademe_aid__pacte_industrie_parcours_accompagnement_et_compe_91b526",
+   "ademe_aid__tremplin_pour_la_transition_ecologique_des_pme_30a2b3",
+   "ademe_aid__etudes_d_ecoconception_des_produits_et_des_servi_51c964",
+   "ademe_aid__etudes_de_faisabilite_de_performance_energetique_a0bb01"
+  ]
  },
  {
   "name": "ELISA INDUSTRIQ ITALY S.P.A.",
@@ -280,10 +469,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": true,
+  "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_112452__asa_societa_di_consulenza_e_assistenza_alle_impr",
+   "satr_it_rnd__sa_115378__finpiemonte_s_p_a",
+   "satr_it_rnd__sa_114209__regione_lombardia_dg_ricerca_innovazione_univers",
+   "satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire"
+  ]
  },
  {
   "name": "f-tronic GmbH",
@@ -295,8 +493,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_115248__projekttrager_julich"
+  ]
  },
  {
   "name": "Hotel-Pension Bergruh, Klaus Stöger, Inh. Christian Stöger e.K.",
@@ -306,10 +513,19 @@
   "g1_reachable": true,
   "g1_top5": false,
   "g1_top5_regime": true,
-  "g2_exact": false,
+  "g2_exact": true,
   "g2_regime": true,
-  "questions": 7,
-  "failed": false
+  "questions": 5,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_111957__l_bank_baden_wurttemberg",
+   "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan",
+   "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan"
+  ]
  },
  {
   "name": "I.S.V.E. S.P.A.",
@@ -321,8 +537,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0",
+   "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi"
+  ]
  },
  {
   "name": "DUMAREY AUTOMOTIVE ITALIA",
@@ -334,8 +559,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi"
+  ]
  },
  {
   "name": "DECOIT GmbH & Co. KG",
@@ -347,8 +581,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_113000__projekttrager_julich",
+   "satr_de_rnd__sa_115248__projekttrager_julich",
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie"
+  ]
  },
  {
   "name": "OFFICINA MECCANICA TAU - S.R.L.",
@@ -360,8 +603,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0",
+   "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_115378__finpiemonte_s_p_a",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg"
+  ]
  },
  {
   "name": "VFS Nordic AB",
@@ -371,10 +623,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": true,
-  "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "g2_exact": false,
+  "g2_regime": false,
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "vinnova_grant__fordonsstrategisk_forskning_och_innovation_ffi_adeec0",
+   "vinnova_grant__innovationer_for_ett_hallbart_mobilitetssystem_5bf35a",
+   "vinnova_grant__avancerad_digitalisering_eb7eab",
+   "vinnova_grant__sip_drive_sweden_1c1174",
+   "vinnova_grant__sip_infrasweden_8d7a71"
+  ]
  },
  {
   "name": "ZURICH INSTRUMENTS GERMANY",
@@ -386,8 +647,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_115248__projekttrager_julich",
+   "satr_de_rnd__sa_113000__projekttrager_julich"
+  ]
  },
  {
   "name": "ZF FRIEDRICHSHAFEN",
@@ -399,8 +669,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie",
+   "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan"
+  ]
  },
  {
   "name": "GVT Transport & Logistics B.V.",
@@ -412,8 +691,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 6,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_nl_rnd__sa_117531__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_109861__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+   "horizon_eu_cl1"
+  ]
  },
  {
   "name": "R2M SOLUTION SRL",
@@ -425,8 +713,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_",
+   "satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_",
+   "satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg"
+  ]
  },
  {
   "name": "DECOIT GmbH & Co. KG",
@@ -436,10 +733,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": false,
+  "g2_exact": true,
   "g2_regime": true,
-  "questions": 7,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_115248__projekttrager_julich",
+   "satr_de_rnd__sa_113000__projekttrager_julich",
+   "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie"
+  ]
  },
  {
   "name": "Research Institutes of Sweden AB",
@@ -451,8 +757,17 @@
   "g1_top5_regime": true,
   "g2_exact": true,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_se_rnd__sa_119375__rymdstyrelsen",
+   "vinnova_grant__nationella_flygtekniska_forskningsprogrammet_nff_974d86",
+   "vinnova_grant__ep_eureka_eurostars_362d22",
+   "horizon_eu_cl6",
+   "eic_pathfinder"
+  ]
  },
  {
   "name": "CASATI FLOCK S.R.L.",
@@ -464,8 +779,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_108948__finpiemonte_s_p_a"
+  ]
  },
  {
   "name": "SAIPEM S.P.A.",
@@ -477,8 +801,17 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0",
+   "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire"
+  ]
  },
  {
   "name": "Baugenossenschaft  Finkenwärder Hoffnung eG",
@@ -488,10 +821,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": true,
+  "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 5,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_55785__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_110630__bundesanstalt_fur_landwirtschaft_und_ernahrung"
+  ]
  },
  {
   "name": "GAS AND HEAT S.P.A.",
@@ -501,10 +843,19 @@
   "g1_reachable": true,
   "g1_top5": true,
   "g1_top5_regime": true,
-  "g2_exact": true,
+  "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 4,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_",
+   "satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_",
+   "satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_",
+   "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi",
+   "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg"
+  ]
  },
  {
   "name": "Technische Universität Chemnitz",
@@ -516,7 +867,16 @@
   "g1_top5_regime": true,
   "g2_exact": false,
   "g2_regime": true,
-  "questions": 8,
-  "failed": false
+  "questions": 5,
+  "refilled": 0,
+  "retries": 0,
+  "failed": false,
+  "picks": [
+   "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_112200__ministerium_fur_wirtschaft_arbeit_energie_und_ve",
+   "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan",
+   "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan"
+  ]
  }
 ]

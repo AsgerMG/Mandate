@@ -80,6 +80,7 @@ async function main() {
       poolSize: pool.length,
       subset: subset.map((id) => {
         const inst: any = byId.get(id);
+        const filters = (inst?.gates ?? []).filter((g: any) => !g.gateRole || g.gateRole === "filter");
         return {
           id,
           name: inst?.name ?? id,
@@ -88,9 +89,43 @@ async function main() {
           country: inst?.country ?? "",
           regime: inst?.parentId ?? id,
           profile: (profiles.get(id) ?? "").slice(0, 500),
-          gates: (inst?.gates ?? [])
-            .filter((g: any) => !g.gateRole || g.gateRole === "filter")
-            .slice(0, 4).map((g: any) => g.requirement).filter(Boolean),
+          gates: filters.slice(0, 4).map((g: any) => g.requirement).filter(Boolean),
+          // ── The pinning fields ────────────────────────────────────────────
+          // Everything below exists so gate 2 can tell SIBLINGS apart. Name,
+          // body, channel and country cannot: across 35 sibling groups of >=3,
+          // country differs in 0.4% of pairs and capital_type in 6.2%, while
+          // award_p50 fully separates 25 of the 35 groups on its own and
+          // sector_mix read as a posterior across the candidate set ranks the
+          // right sibling first 43.6% of the time. Carrying them costs a few
+          // hundred KB of fixture and is the difference between gate 2
+          // choosing and gate 2 guessing.
+          capitalType: inst?.capitalType ?? null,
+          awardP25: inst?.awardP25 ?? null,
+          awardP50: inst?.awardP50 ?? null,
+          awardP75: inst?.awardP75 ?? null,
+          awardN: inst?.awardN ?? 0,
+          eventCount: inst?.eventCount ?? 0,
+          companyCount: inst?.companyCount ?? 0,
+          lastYear: inst?.lastYear ?? null,
+          sectorMix: inst?.sectorMix ?? null,
+          // What this fund's own FILTER gates DEMAND, per intake field. The
+          // field name alone is not enough: `exclusionFlags` sits on 85% of
+          // siblings and demands the identical thing on all of them, so a
+          // question about it separates nobody. Carrying the demand lets the
+          // axis builder measure distinctness (how many DIFFERENT things the
+          // shortlist asks for) the same way openFieldsForShortlist does.
+          gateSpecs: (() => {
+            const by = new Map<string, Set<string>>();
+            for (const g of filters) {
+              const f = g.intakeFieldResolved || g.intakeField;
+              if (!f || f === "none") continue;
+              const spec = String(
+                (g.valueSpec ? JSON.stringify(g.valueSpec) : "") || g.value || g.requirement || "",
+              ).replace(/\s+/g, " ").trim().slice(0, 90);
+              (by.get(f) ?? by.set(f, new Set()).get(f)!).add(spec);
+            }
+            return Object.fromEntries([...by].map(([k, v]) => [k, [...v].sort().join(" ; ").slice(0, 160)]));
+          })(),
         };
       }),
     });

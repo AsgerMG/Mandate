@@ -79,10 +79,13 @@ import unicodedata  # noqa: E402
 from collections import Counter, defaultdict  # noqa: E402
 from datetime import date  # noqa: E402
 
-from europe_scope import name_to_iso2  # noqa: E402
 from instrument_family import source_to_family  # noqa: E402
-
-NAMES_FILE = ROOT / "data" / "reference" / "nuts_names.json"
+# One definition of the NUTS name lookup, shared with
+# populate_funding_instruments.py. A second copy here is exactly how an audit
+# ends up checking a corpus the product does not have.
+from nuts_regions import (  # noqa: E402
+    ISO2_TO_NUTS, NAMES_FILE, NUTS_TO_ISO2, load_reference, norm, resolve,
+)
 CASES_FILE = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
 GISCO_NUTS_DIR = ROOT / "data" / "raw" / "gisco_nuts"
 POSTCODE_FILE = (ROOT / "data" / "raw" / "gisco_postcode_nuts"
@@ -95,28 +98,6 @@ POSTCODE_FILE = (ROOT / "data" / "raw" / "gisco_postcode_nuts"
 VINTAGES = (2024, 2021, 2016, 2013)
 CURRENT_VINTAGE = VINTAGES[0]
 GISCO_URL = "https://gisco-services.ec.europa.eu/distribution/v2/nuts/csv/NUTS_AT_%d.csv"
-
-# Eurostat writes EL for Greece and UK for the United Kingdom; everything else
-# in this product is keyed by ISO2. Resolved here exactly as emit_regions.py
-# resolves it, and in the same direction, so the two cannot drift apart.
-NUTS_TO_ISO2 = {"EL": "GR", "UK": "GB"}
-ISO2_TO_NUTS = {v: k for k, v in NUTS_TO_ISO2.items()}
-
-
-def norm(s: str) -> str:
-    """Fold a region name to a comparison key.
-
-    The register publishes the same region in several typographies -- 'Region
-    wallonne' and 'REGION WALLONNE' are both in the corpus, as are curly and
-    straight apostrophes in "Valle d'Aosta/Vallee d'Aoste". Case, accents and
-    punctuation are therefore all folded away. What is NOT folded is word
-    content: two regions with different words stay different keys, so this
-    cannot merge neighbours."""
-    s = unicodedata.normalize("NFKD", s or "")
-    s = "".join(ch for ch in s if not unicodedata.combining(ch))
-    s = s.replace("’", "'").replace("‘", "'")
-    return re.sub(r"[^0-9a-z]+", " ", s.lower()).strip()
-
 
 # ── the reference file ───────────────────────────────────────────────────────
 def build_reference() -> dict:
@@ -181,32 +162,6 @@ def build_reference() -> dict:
         "index": index,
         "ids": ids,
     }
-
-
-def load_reference() -> dict:
-    if not NAMES_FILE.exists():
-        raise SystemExit(f"missing {NAMES_FILE.relative_to(ROOT)} -- build it with\n"
-                         f"  python3 ETL/terms/audit_region_claims.py --refresh-reference")
-    return json.loads(NAMES_FILE.read_text())
-
-
-def resolve(region: str, iso2: str, index: dict) -> tuple[str, int] | None:
-    """A published region name -> (NUTS id, the vintage that recognised it).
-
-    Country-scoped, because region names repeat across Europe and the award
-    already tells us the country. Whole-country labels ("Estonia", "Czechia")
-    are resolved through the canonical country map rather than a second list of
-    country names."""
-    key = norm(region)
-    if not key:
-        return None
-    hit = index.get(f"{iso2}|{key}")
-    if hit:
-        return hit[0], hit[1]
-    iso = name_to_iso2(region)
-    if iso:
-        return ISO2_TO_NUTS.get(iso, iso), 0     # vintage 0 == NUTS-0, a country
-    return None
 
 
 # ── the evidence ─────────────────────────────────────────────────────────────
