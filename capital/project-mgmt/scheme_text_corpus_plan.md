@@ -74,6 +74,21 @@ Target lists: `data/raw/scheme_enrichment/targets_<CC>.json`, each row carrying
   Same rule here: a source that does not want to be read is skipped and reported.
 - **Nothing is written to `intake_field`** -- the bulk extractor overwrites it
   ([[project_gate_encoding]]).
+- **Prioritise recent sources.** Prefer the current version of an eligibility
+  page over an archived or superseded one -- a scheme's terms change (ticket
+  size, GBER article, region) and last year's page can misstate what a
+  founder can actually apply for today. Where a page is dated, take the newest;
+  where two vintages of the same scheme exist (the Austrian FFG 2022 vs
+  2024-2026 pattern), fetch the current vintage, not the historical one.
+- **Only fetch for ACTIVE funds.** A closed scheme's eligibility text is not
+  worth the fetch -- 220 closed schemes were already removed from the
+  publishable set once, and re-fetching their old rules risks them creeping
+  back into ranking or the memo. Check `status`/`deadline` first; if a scheme
+  reads closed, record that and move on rather than spending a fetch on its
+  eligibility text. Don't discard prior work here -- schemes already fetched
+  before this note, closed or not, stay as recorded (useful for the
+  document-per-scheme vs framework-country diagnosis either way), but this
+  governs everything fetched from now on.
 
 ## Sequence
 
