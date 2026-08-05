@@ -167,3 +167,84 @@ FI   15 structure, 6 text
 Targets are unchanged and re-runnable. Resume with DE and IT first: DE is the
 largest market and its Förderdatenbank is a genuine per-scheme register, so it
 is the highest expected yield per euro.
+
+---
+
+## Wrap-up, 2026-08-05 -- session ending on low usage
+
+**Fetched:** 266 of 588 targets (588 = 496 original + 93 rebuilt for Spain
+after the BDNS fix below). **Loaded into the live DB: 222 instruments**, via
+`load_scheme_text.py`, which is idempotent and safe to re-run any time more
+`found_<CC>.json` files land.
+
+```
+DE 64/118   ES  6/93    IT 81/87   FR 43/52   CZ  5/38
+NL 27/30    AT 21/29    FI  6/15   SE  6/12   LV  7/9
+```
+
+**Priority order set by the user was FR / DE / ES.** FR and DE both moved
+substantially (FR 25->43, DE up ~15); ES only just started (rebuilt as 93 real
+targets after the fix below, agent had barely begun before session end).
+BE/GR/SK/IE/PT/HU/PL/EE/LU/GB were explicitly deprioritised and are untouched
+(0 fetched) -- pick those up after FR/DE/ES finish, per the user's instruction.
+
+## The Spain fix, separate from and bigger than the fetch
+
+Prompted by "what about Spain?" -- found a genuine bug, not a missing source.
+`extract_bdns.py` checked for a column `satr_sa_number` that does not exist;
+the real column is `satr_tm_id`. The SA number the API returns on every award
+was fetched correctly and silently discarded on load, every time, since this
+extractor was written. `convocatoria` (Spain's per-scheme title) was written
+only to `project_title`, never to `programme_name`, so the general instrument
+split never saw it either.
+
+Fixed both, backfilled the 14,146 already-loaded rows via the same API (pure
+HTTP, matched by `call_id`, no re-scrape), rebuilt instruments:
+
+**Spain: 7 -> 94 instruments** (88 state-aid + 6 dev-bank). Pushed and live.
+The 93-row `targets_ES.json` was then built fresh from these real instrument
+names -- e.g. "Ayudas Tecniospring Industry", "Misiones Ciencia e Innovacion"
+-- since `sa_number` and `body` are mostly null on this new split (the names
+themselves carry the scheme identity BDNS never gave us a clean ID for).
+
+## Rules added mid-session, applied to everything fetched after they landed
+
+- **Recent sources only.** Current version of a page, not an archived one;
+  current vintage where a scheme has successors (AT's FFG 2022 vs 2024-2026
+  pattern).
+- **Active schemes only.** Check status before spending a fetch on eligibility
+  text; closed schemes get a status recorded and nothing more.
+- Applied retroactively at LOAD time too: `load_scheme_text.py` filters out
+  anything marked closed regardless of when it was fetched, which is why 257
+  "fetched" became 222 "loaded" -- Italy alone dropped 81->35 loadable because
+  46 of its captured schemes were closed.
+
+## What is NOT done, on purpose
+
+- **No `eligibility_gates` written yet.** Loaded text feeds `description` /
+  `eligibility_text` on `funding_instruments` only, which already reaches
+  `build_instrument_profiles.py`. Turning prose into a formal GATE means
+  assigning `gate_role` and `verification_level` -- a real design decision the
+  standing rule treats as high-stakes, not a load-script default.
+- **No re-embed yet.** `instrument_profiles` has not been rebuilt against the
+  222 newly-loaded descriptions. That's the next step once fetching settles,
+  same recipe as the SATR objectives work: rebuild profiles, re-embed, measure
+  with `SPLIT=tune npx tsx scripts/measure_recall.ts`.
+- **No hand-read-20-per-country pass yet.** The plan's original gate. Skipped
+  under explicit instruction ("keep writing to the DB so nothing is lost if
+  cut off") in favour of the automated filters above. Do this before cutting
+  any eligibility_gates from the loaded text -- the automated filters catch
+  garbage and closed schemes, not a wrong SA-number match.
+- **BE/GR/SK/IE/PT/HU/PL/EE/LU/GB fetch** -- deprioritised, untouched.
+
+## Resume checklist
+
+1. Re-run `python3 ETL/terms/load_scheme_text.py --write` first -- catches
+   anything fetched since this note was written, at zero cost.
+2. Finish FR (9 SA numbers still lack a regional doc), DE (54 schemes left),
+   ES (87 of 93 unfetched -- this one barely started).
+3. Hand-read a sample per country before cutting gates from the text.
+4. Re-embed `instrument_profiles`, run `check_index_freshness.py`.
+5. Then, and only then, the deprioritised countries.
+6. `NO_PG=1 npm run check` and `check_recall_floor.ts` before calling any of
+   this shipped.
