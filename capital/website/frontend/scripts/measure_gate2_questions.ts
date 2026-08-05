@@ -24,6 +24,7 @@
 //   N=20 MODEL=claude-haiku-4-5 npx tsx scripts/measure_gate2_questions.ts
 import { readFileSync, appendFileSync } from "fs";
 import Anthropic from "@anthropic-ai/sdk";
+import { Client } from "pg";
 
 try {
   for (const line of readFileSync(".env.local", "utf8").split("\n")) {
@@ -39,11 +40,52 @@ const LOG = "fixtures/gate2_history.jsonl";
 const text = (r: any) => (r.content ?? []).filter((b: any) => b?.type === "text")
   .map((b: any) => b.text).join("\n");
 
+/** Retrieve the eligibility passages that actually bear on what the founder
+ *  said, out of the 4,720-chunk index.
+ *
+ *  This is the point of having embedded the corpus. Without it the model reads
+ *  a truncated four-gate summary per fund and has to guess; with it, it gets
+ *  the specific clauses that match or contradict the founder's own answers,
+ *  attributed to the fund they came from. Scoped to the candidate instruments,
+ *  so retrieval can never introduce a fund the screen already excluded. */
+async function retrieveEvidence(
+  pg: any, instrumentIds: string[], query: string, perFund = 1, total = 25,
+): Promise<Map<string, string[]>> {
+  const key = process.env.VOYAGE_KEY;
+  const out = new Map<string, string[]>();
+  if (!key || !instrumentIds.length) return out;
+  const res = await fetch("https://api.voyageai.com/v1/embeddings", {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
+    body: JSON.stringify({ model: "voyage-3.5", input: [query.slice(0, 6000)], input_type: "query" }),
+  });
+  if (!res.ok) return out;
+  const emb = ((await res.json()) as any)?.data?.[0]?.embedding;
+  if (!emb) return out;
+  const rows = (await pg.query(
+    `SELECT instrument_id, chunk_text
+       FROM eligibility_embeddings
+      WHERE instrument_id = ANY($1)
+      ORDER BY embedding <=> $2::vector
+      LIMIT $3`,
+    [instrumentIds, JSON.stringify(emb), total],
+  )).rows as any[];
+  for (const r of rows) {
+    const cur = out.get(r.instrument_id) ?? [];
+    if (cur.length >= perFund) continue;
+    cur.push(String(r.chunk_text).slice(0, 240));
+    out.set(r.instrument_id, cur);
+  }
+  return out;
+}
+
 async function main() {
   const fx = JSON.parse(readFileSync(`fixtures/gate1_${SPLIT}.json`, "utf8"));
   const N = Math.min(Number(process.env.N ?? 20), fx.cases.length);
   const cases = fx.cases.slice(0, N);
   const client = new Anthropic();
+  const pg = new Client({ connectionString: process.env.DATABASE_URL });
+  await pg.connect();
 
   let exact = 0, regime = 0, reach = 0, baseline = 0, qTotal = 0, failed = 0;
 
@@ -51,6 +93,13 @@ async function main() {
     if (c.baselineTop5.includes(c.want)) baseline++;
     if (c.subset.some((s: any) => s.id === c.want)) reach++;
 
+    // Candidates are presented IN GATE 1'S ORDER, and that order is stated as
+    // what it is: an empirical prior over what companies like this one have
+    // actually won, built from 627,957 award pairs. Re-picking from scratch
+    // threw that away and scored 13% against an 80% baseline -- the model was
+    // reasoning from eligibility text alone, which cannot separate siblings.
+    // Gate 2's job is to REFINE this order with what the founder tells us, not
+    // to replace it.
     const menu = c.subset.map((s: any, i: number) => [
       `[${i}] ${s.name} — ${s.body || "n/a"} (${s.channel || "n/a"}, ${s.country || "n/a"})`,
       s.gates?.length ? `     requires: ${s.gates.join(" / ").slice(0, 260)}` : "",
@@ -70,8 +119,8 @@ ${menu}
 
 Reply with ONLY the questions, one per line, no numbering, no preamble.` }],
       });
-      const questions = text(qResp).split("\n").map((s) => s.trim())
-        .filter((s) => s.length > 12).slice(0, 8);
+      const questions = text(qResp).split("\n").map((x: string) => x.trim())
+        .filter((x: string) => x.length > 12).slice(0, 8);
       qTotal += questions.length;
       if (!questions.length) { failed++; continue; }
 
@@ -91,7 +140,12 @@ ${questions.join("\n")}
 
 Reply with one answer per line, in order, no numbering.` }],
       });
-      const answers = text(aResp).split("\n").map((s) => s.trim()).filter(Boolean);
+      const answers = text(aResp).split("\n").map((x: string) => x.trim()).filter(Boolean);
+
+      // ── 2b'. Retrieve the eligibility clauses that bear on those answers ──
+      const evidence = await retrieveEvidence(
+        pg, c.subset.map((s: any) => s.id),
+        `${c.description ?? ""}\n${answers.join("\n")}`);
 
       // ── 2c. Narrow to five, using those answers. ────────────────────────
       const sResp: any = await client.messages.create({
@@ -105,17 +159,30 @@ COMPANY
   what they do: ${c.description || "(no description)"}
 
 WHAT THEY TOLD US
-${questions.map((q, i) => `Q: ${q}\nA: ${answers[i] ?? "not sure"}`).join("\n")}
+${questions.map((q: string, i: number) => `Q: ${q}\nA: ${answers[i] ?? "not sure"}`).join("\n")}
 
 SCHEMES
-${menu}
+${c.subset.map((s: any, i: number) => {
+  const ev = evidence.get(s.id);
+  return [
+    `[${i}] ${s.name} — ${s.body || "n/a"} (${s.channel || "n/a"}, ${s.country || "n/a"})`,
+    s.gates?.length ? `     requires: ${s.gates.join(" / ").slice(0, 200)}` : "",
+    ev?.length ? `     RELEVANT TO THEIR ANSWERS: ${ev.join(" | ")}` : "",
+  ].filter(Boolean).join("\n");
+}).join("\n")}
 
-Use their answers to rule schemes in and out. A scheme whose stated requirement they clearly fail is not a candidate however well it otherwise fits. Where two schemes are equally good, prefer spread across EU / national / regional so they have real alternatives.
+The list is ALREADY ORDERED by how often companies like this one — same country, same sector — have actually won each scheme. That ordering is empirical and it is strong: treat it as the starting point.
 
-Reply with ONLY the five index numbers, comma-separated, best first.` }],
+Your job is to REFINE it with what the founder just told you, not to rebuild it:
+- Move a scheme DOWN when their answers show they clearly fail its stated requirement.
+- Move a scheme UP when their answers speak directly to what it demands.
+- Leave the rest alone. If their answers say nothing about a scheme, its position stands.
+- Where two are equally good, prefer spread across EU / national / regional.
+
+Start from the top of the list and adjust. Reply with ONLY the five index numbers, comma-separated, best first.` }],
       });
-      const picks = (text(sResp).match(/\d+/g) ?? []).slice(0, 5).map(Number)
-        .filter((i) => i >= 0 && i < c.subset.length).map((i) => c.subset[i]);
+      const picks = (text(sResp).match(/\d+/g) ?? []).slice(0, 5).map((x: string) => Number(x))
+        .filter((i: number) => i >= 0 && i < c.subset.length).map((i: number) => c.subset[i]);
       if (!picks.length) failed++;
       if (picks.some((s: any) => s.id === c.want)) exact++;
       if (picks.some((s: any) => s.regime === c.wantRegime)) regime++;
@@ -136,6 +203,7 @@ Reply with ONLY the five index numbers, comma-separated, best first.` }],
   console.log(`    regime  ${pc(regime)}   of reachable: ${reach ? (100 * regime / reach).toFixed(0) : 0}%`);
   if (failed) console.log(`    failed/unparseable: ${failed}`);
 
+  await pg.end();
   appendFileSync(LOG, JSON.stringify({
     at: new Date().toISOString(), harness: "gate2_questions", model: MODEL,
     split: SPLIT, gate1Sha: fx.gate1Sha, n, reach, baseline, exact, regime, failed,
