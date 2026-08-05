@@ -1,0 +1,109 @@
+# Start here tomorrow
+
+Written 2026-08-06, end of session. **Four workstream agents were still running
+when this was written** — expect uncommitted changes in the tree from them.
+Check `git status` and `git log` first; some of what is described below may
+already have landed.
+
+## North star
+
+Name the **five specific funds** a founder should apply to, in the memo, with
+the next step. Not the agency, not the regime — the fund. Everything below
+serves that.
+
+## Where the numbers actually stand
+
+Measure with these two, never anything else:
+
+```
+cd website/frontend
+SPLIT=holdout N=200 npx tsx scripts/measure_recall.ts      # gate 1
+N=40 G2=<variant> npx tsx scripts/measure_pipeline.ts      # both gates, one table
+```
+
+**Gate 1 (holdout, n=200):** EXACT@5 **32%**, REGIME@5 **87%**, pool **93%**.
+
+**Gate 2 (holdout, n=40, gate1@32f28f2, haiku-4-5)** — gate 1's own top-5 on the
+same cases is **20/40**:
+
+| variant | exact | regime |
+|---|--:|--:|
+| `axes` | 12/40 | 35/40 |
+| `parser` | 13/40 | 31/40 |
+| **`swap`** | **15/40** | **38/40 (95%)** |
+
+No gate-2 variant beats gate 1's own five yet. `swap` — where the model may
+only choose the LEAF within families gate 1 already picked — is closest and has
+the best regime number. `veto` and `noq` were still running.
+
+Gate 2 has **±7pp run-to-run variance at n=40**. Do not chase a 2pp move.
+
+## The four things that are actually wrong
+
+All measured, all in `project-mgmt/research/`:
+
+1. **The query is empty.** Real founder description → **79.4%** top-5 of 58.
+   Canned sector template → **17.2%**. 982 of 1,988 holdout rows carry
+   `description:""`; one string is the query for 179 rows with 87 different
+   correct answers. Biggest single lever, and it is an intake change.
+2. **Gate 2 chooses blind.** Keeps the winning fund 55%, a wrong one 42%. It is
+   handed name/body/channel/country and four truncated gates — none of which
+   separates siblings. `award_p50` **fully separates 25 of 35 sibling groups**
+   and was not in the prompt.
+3. **`sectorFit` inverts its own question.** Computes P(sector|fund) clipped at
+   0.25; ties on top in 58.7% of sibling comparisons and scores *below* the
+   popularity baseline. The posterior form scores 43.6% vs 17.6% within sibling
+   groups — but see the reverted-experiments list below.
+4. **`eligibility_embeddings` is unfit for matching.** Two boilerplate strings
+   are 21% of the index, each on 497 instruments; 284 of 497 SATR leaves have
+   zero unique chunks. Keep it for citation, not selection.
+
+## Do not re-try these — measured and reverted
+
+- **`sectorFit` → posterior in gate 1's global sort.** 30% vs 32%. The +26pp is
+  real *within a known sibling group*, not across a 58-fund pool where it
+  competes with peer precedence. It belongs in gate 2.
+- **The corrected peer-prior join.** Reaching all 227 programme-split children
+  measures as a LOSS (29% vs 32%) for a reason that is not about ranking:
+  **0 of 1,988 recall pairs name a programme-split child.** ADEME, BDNS,
+  Vinnova and Innovate UK children are never the answer in the ground truth, so
+  every slot they gain is taken from a fund the harness can credit. This is a
+  MEASUREMENT gap — fix it by tracing those awards into the recall set, then
+  ship the corrected join. The working implementation is in
+  `emit_peer_prior.py`'s history; do not re-derive it.
+- **Region as the sibling discriminator.** Only 148/958 instruments carry a
+  `region_within` gate and the big groups have none (ademe 0/75, vinnova 0/49).
+- Corpus scheme-text enrichment (23%→23%), the old adaptive round (0 promoted),
+  gate-fit ranking on uniform intake answers (62% vs 63%).
+
+## The ceiling problem, stated honestly
+
+Two independent bounds agree that the CURRENT HARNESS caps at ~64%: 982 profile
+cases collapse to 51 distinct queries with a median of 7 different correct
+answers each, and sibling ambiguity bounds exact-in-5 at 33.6% (median 26
+siblings in pool). Observed 32.1% is **96% of that bound**.
+
+This does not mean the product cannot reach 95%. It means **the test set must
+gain real per-company descriptions** (workstream D) or it will keep reporting
+the intake's emptiness as a ranking failure. Fixing the harness is a
+prerequisite for measuring any further ranking work honestly.
+
+## Tomorrow, in order
+
+1. **Check the four agents' output** — `git status`, `git log`, and
+   `fixtures/pipeline_history.jsonl` for any variant that beat 20/40.
+2. **Land whatever beat the baseline**; revert what did not, and record it above.
+3. **Workstream D is the priority** — a real description is worth more than
+   everything else combined, and it also unblocks honest measurement.
+4. **Then gate 2 `swap` + the pinning fields**, since 95% regime with leaf
+   choice inside it is the shape that gets to five correct funds.
+
+## Rules that must not be broken
+
+- Every peer-prior rebuild uses `--exclude-recall-set`. The shipped artifact was
+  once built without it and the evaluation read its own answer key.
+- Never compare a gate-2 number to a gate-1 number from a different script or a
+  different N. That produced a phantom "80% baseline" that was really 49%.
+- No hardcoded fund names, country lists or scheme codes. State a property and
+  a test.
+- Revert anything that measures worse, and say so.
