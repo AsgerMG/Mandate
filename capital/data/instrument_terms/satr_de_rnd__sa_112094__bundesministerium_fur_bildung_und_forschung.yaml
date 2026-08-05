@@ -1,0 +1,84 @@
+id: satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung
+name: 'Richtlinie zur Fördermaßnahme: "KMU-innovativ: Informations- und
+  Kommunikationstechnologie (IKT)" [BMBF]'
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-primary
+  gate_family: G1_nexus
+  requirement: Eligible applicants are small and medium-sized commercial enterprises; at the
+    time of disbursement, an establishment or branch in Germany is required.
+  value: SME with a German establishment/branch at disbursement
+  intake_field: entityCountries
+  quote: Antragsberechtigt sind kleine und mittlere Unternehmen der gewerblichen Wirtschaft.
+    Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung wird das Vorhandensein einer
+    Betriebsstätte oder Niederlassung in Deutschland verlangt.
+  source:
+    file: https://www.foerderinfo.bund.de/foerderinfo/de/foerderung/bund/kmu/kmu-innovativ/kmu-innovativ_node.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-partners
+  gate_family: G1_nexus
+  requirement: In joint (Verbund) projects, non-SME companies as well as universities,
+    university and non-university research institutions, associations and other
+    R&D-interested organisations may additionally apply.
+  value: Non-SME companies and research/education institutions eligible in joint projects
+  intake_field: consortium
+  quote: Im Rahmen von Verbundprojekten sind zusätzlich auch Unternehmen, die die
+    KMU-Kriterien nicht erfüllen, sowie Hochschulen, universitäre- wie auch
+    außeruniversitäre Forschungseinrichtungen, Verbände, Vereine sowie sonstige
+    Organisationen mit FuE-Interesse antragsberechtigt.
+  source:
+    file: https://www.foerderinfo.bund.de/foerderinfo/de/foerderung/bund/kmu/kmu-innovativ/kmu-innovativ_node.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-foreign-partners
+  gate_family: G1_nexus
+  requirement: Foreign partners may participate in a consortium, but their project-related
+    expenses are not eligible for funding under this measure.
+  value: Foreign consortium partners allowed but their costs are not fundable
+  intake_field: entityCountries
+  quote: Eine Beteiligung von Partnern aus dem Ausland im Verbund ist grundsätzlich möglich;
+    deren projektbedingte Ausgaben sind durch diese Maßnahme nicht förderfähig.
+  source:
+    file: https://www.foerderinfo.bund.de/foerderinfo/de/foerderung/bund/kmu/kmu-innovativ/kmu-innovativ_node.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-sme-led-coordination
+  gate_family: G6_conditionality
+  requirement: Projects must be predominantly initiated and coordinated by a
+    research-performing SME.
+  value: Project must be SME-initiated and SME-coordinated
+  intake_field: consortium
+  quote: Die Vorhaben sollen maßgeblich von einem forschenden KMU initiiert und koordiniert
+    werden.
+  source:
+    file: https://www.foerderinfo.bund.de/foerderinfo/de/foerderung/bund/kmu/kmu-innovativ/kmu-innovativ_node.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-sme-research-share
+  gate_family: G6_conditionality
+  requirement: In joint projects, a significant share of the research work must be carried
+    out by the participating SMEs and the benefit of the project must primarily accrue to
+    them; projects where SMEs conduct only experimental development are not eligible.
+  value: SMEs must perform a significant share of research; SME-only-experimental-dev
+    projects excluded
+  intake_field: developmentStage
+  quote: In Verbundvorhaben muss ein signifikanter Anteil der Forschungsleistung durch die
+    beteiligten KMU (Hersteller/Anwender) erbracht und der Nutzen des Vorhabens in erster
+    Linie diesen zugutekommen. Projekte, in denen KMU ausschließlich experimentelle
+    Entwicklung betreiben, sind nicht förderwürdig.
+  source:
+    file: https://www.foerderinfo.bund.de/foerderinfo/de/foerderung/bund/kmu/kmu-innovativ/kmu-innovativ_node.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

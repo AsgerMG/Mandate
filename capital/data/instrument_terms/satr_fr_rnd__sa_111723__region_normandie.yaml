@@ -1,0 +1,78 @@
+id: satr_fr_rnd__sa_111723__region_normandie
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-entities
+  gate_family: G1_nexus
+  requirement: Eligible organisations are private-law or public-law legal persons established in Normandy
+    operating in the field of innovation.
+  value: Legal persons (private/public) based in Normandy, innovation field
+  intake_field: activityCountries
+  quote: 'Organismes éligibles : personnes morales de droit privé ou public implantées en Normandie exerçant
+    dans le champs de l''innovation.'
+  source:
+    file: https://les-aides.fr/aide/ZxZf3w/region-normandie/soutien-a-l-innovation-en-collaboration.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-sme
+  gate_family: G1_nexus
+  requirement: At least one SME must be among the partner enterprises, together with one or more research
+    and knowledge-dissemination organisations.
+  value: Min 1 SME + 1 research/knowledge org among partners
+  intake_field: consortium
+  quote: Au moins une PME parmi les entreprises partenaires, avec un ou plusieurs organismes de recherche
+    et de diffusion des connaissances.
+  source:
+    file: https://les-aides.fr/aide/ZxZf3w/region-normandie/soutien-a-l-innovation-en-collaboration.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-cost-share-cap
+  gate_family: G6_conditionality
+  requirement: No single enterprise may bear more than 70% of the costs alone.
+  value: Max 70% of costs per enterprise
+  intake_field: consortium
+  quote: Aucune entreprise ne devant supporter seule plus de 70% des coûts.
+  source:
+    file: https://les-aides.fr/aide/ZxZf3w/region-normandie/soutien-a-l-innovation-en-collaboration.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-research-org-cost-share
+  gate_family: G6_conditionality
+  requirement: Research organisations must bear between 10% and 50% of eligible costs.
+  value: 'Research orgs: 10-50% of eligible costs'
+  intake_field: consortium
+  quote: Organismes de recherche doivent supporter entre 10 et 50% des coûts éligibles.
+  source:
+    file: https://les-aides.fr/aide/ZxZf3w/region-normandie/soutien-a-l-innovation-en-collaboration.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-financial-health
+  gate_family: G1_nexus
+  requirement: Applicants must present a sound financial situation.
+  value: Sound financial situation required
+  intake_field: conditionality
+  quote: Présenter une situation financière saine.
+  source:
+    file: https://les-aides.fr/aide/ZxZf3w/region-normandie/soutien-a-l-innovation-en-collaboration.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-tax-social-compliance
+  gate_family: G1_nexus
+  requirement: Applicants must be up to date with their social security and tax obligations.
+  value: Up to date on social/tax obligations
+  intake_field: conditionality
+  quote: À jour de ses obligations sociales et fiscales.
+  source:
+    file: https://les-aides.fr/aide/ZxZf3w/region-normandie/soutien-a-l-innovation-en-collaboration.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

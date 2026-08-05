@@ -1,0 +1,49 @@
+id: satr_de_equity__sa_61341__kreditanstalt_fur_wiederaufbau
+name: KfW-Umweltprogramm [KfW]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Eligible applicants are domestic and foreign commercial enterprises with
+    majority private-law ownership, as well as freelancers.
+  value: Domestic/foreign commercial enterprise, majority private-law owned, or freelancer
+  intake_field: institutionalOwner
+  quote: Antragsberechtigt sind in- und ausländische Unternehmen der gewerblichen Wirtschaft
+    mit mehrheitlich privatrechtlicher Beteiligung sowie freiberuflich Tätige.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%C3%B6rderprodukte/Umweltprogramm-(240-241)/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-foreign-project-condition
+  gate_family: G1_nexus
+  requirement: For projects abroad, only subsidiaries of German companies and joint
+    ventures with at least 25% German capital participation are eligible.
+  value: 'Foreign projects: German subsidiary or JV with >=25% German capital'
+  intake_field: entityCountries
+  quote: 'Bei Vorhaben im Ausland: Tochtergesellschaften deutscher Unternehmen sowie
+    Gemeinschaftsunternehmen mit mindestens 25 % deutscher Kapitalbeteiligung.'
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%C3%B6rderprodukte/Umweltprogramm-(240-241)/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-public-body-exclusion
+  gate_family: G1_nexus
+  requirement: The Federal Government, the Länder and their institutions, as well as
+    municipalities and municipal associations, are not eligible to apply.
+  value: Excludes Bund, Länder, municipalities and municipal associations
+  intake_field: none
+  quote: Nicht antragsberechtigt sind der Bund, die Länder und ihre Einrichtungen sowie
+    Gemeinden und Gemeindeverbände.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-und-Umwelt/F%C3%B6rderprodukte/Umweltprogramm-(240-241)/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

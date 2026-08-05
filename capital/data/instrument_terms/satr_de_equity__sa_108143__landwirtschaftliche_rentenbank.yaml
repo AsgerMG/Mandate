@@ -1,0 +1,44 @@
+id: satr_de_equity__sa_108143__landwirtschaftliche_rentenbank
+name: LR-Wachstum
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-sector
+  gate_family: G1_nexus
+  requirement: Eligible applicants include farmers, foresters, horticulturists and winegrowers.
+  value: 'Eligible: farmers, foresters, horticulturists, winegrowers'
+  intake_field: borrowerModel
+  quote: Land- und Forstwirte, Gärtner und Winzer.
+  source:
+    file: https://www.rentenbank.de/programmkredite/landwirtschaft/wachstum/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-threshold
+  gate_family: G2_size_ownership
+  requirement: 'Borrowers must be SMEs per the EU Commission definition: at most 250 employees, and at
+    most EUR 50m annual turnover or at most EUR 43m annual balance sheet total.'
+  value: 'SME: max 250 employees, max EUR50m turnover or EUR43m balance sheet'
+  intake_field: fteBand
+  quote: Die Kreditnehmer müssen „kleine und mittlere Unternehmen“ (KMU) im Sinne der Definition der EU-Kommission
+    sein. Dabei handelt es sich um Unternehmen mit höchstens 250 Beschäftigten, höchstens 50 Mio. Euro
+    Jahresumsatz oder höchstens 43 Mio. Euro Jahresbilanzsumme.
+  source:
+    file: https://www.rentenbank.de/programmkredite/landwirtschaft/wachstum/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-non-sme-aid-free-terms
+  gate_family: G3_financial
+  requirement: Companies that do not meet the SME criteria may still apply, but only at aid-free (market)
+    conditions.
+  value: Non-SMEs eligible only at aid-free market terms
+  intake_field: none
+  quote: Unternehmen, die die KMU-Kriterien nicht erfüllen, sind zu beihilfefreien Konditionen antragsberechtigt.
+  source:
+    file: https://www.rentenbank.de/programmkredite/landwirtschaft/wachstum/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

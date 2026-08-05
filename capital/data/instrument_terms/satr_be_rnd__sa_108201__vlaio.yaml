@@ -1,0 +1,65 @@
+id: satr_be_rnd__sa_108201__vlaio
+name: Ecologiepremie-Plus
+administering_body: see source document
+country: BE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-flemish-establishment
+  gate_family: G1_nexus
+  requirement: The applicant company must have an operating establishment in the Flemish Region; if it
+    does not yet have one at the time of application, it must acquire one by the time the eco-investment
+    is carried out.
+  value: Operating site in Flemish Region required (may open by execution)
+  intake_field: wouldOpenEntity
+  quote: Een onderneming die een exploitatiezetel heeft in het Vlaamse Gewest kan in aanmerking komen
+    voor de ecologiepremie+. Als een onderneming nog geen vestiging in het Vlaamse Gewest heeft bij steunaanvraag,
+    moet ze deze hebben tijdens het uitvoeren van de ecologie-investeringen.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-operate-investment-5-years
+  gate_family: G6_conditionality
+  requirement: The applicant must operate the ecology investment for at least five years after the investment
+    is completed.
+  value: Operate investment >=5 years post-completion
+  intake_field: conditionality
+  quote: De steunaanvragende onderneming dient de ecologie-investering te exploiteren tot minstens vijf
+    jaar na beeindiging van de investering.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: An SME (KMO) is defined as an independent company with fewer than 250 employees and either
+    annual turnover below EUR 50 million or a balance sheet total below EUR 43 million.
+  value: <250 FTE and (<EUR50m turnover or <EUR43m balance)
+  intake_field: fteBand
+  quote: Een KMO is een zelfstandige onderneming met minder dan 250 werknemers en met een jaaromzet van
+    minder dan EUR 50 miljoen of een balanstotaal van minder dan EUR 43 miljoen
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-legal-form-exclusion
+  gate_family: G1_nexus
+  requirement: Non-profit associations (VZW) are not an acceptable legal form for this aid, though associations
+    that carry out an economic activity are eligible.
+  value: VZW excluded; economically-active associations eligible
+  intake_field: borrowerModel
+  quote: VZW's zijn geen aanvaardbare rechtsvorm, verenigingen met economische activiteit komen wel in
+    aanmerking.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (4/4 gates passed mechanical verbatim
+  check -> llm_cited).

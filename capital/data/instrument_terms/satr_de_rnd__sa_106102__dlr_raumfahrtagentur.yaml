@@ -1,0 +1,40 @@
+id: satr_de_rnd__sa_106102__dlr_raumfahrtagentur
+name: Beihilferegelung zur Vergabe von Beihilfen (Zuwendungen an Unternehmen der
+  gewerblichen Wirtschaft) aus dem „Nationalen Programm für Weltraum und Innovation –
+  Forschungs- und Entwicklungsvorhaben“ [BMWK IVD4]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Aid recipients are companies carrying out an economic activity, regardless of
+    legal form, with an establishment in the Federal Republic of Germany.
+  value: Economic-activity company, any legal form, with German establishment
+  intake_field: entityCountries
+  quote: Beihilfeempfänger sind Unternehmen, die eine wirtschaftliche Tätigkeit ausüben,
+    unabhängig von ihrer Rechtsform mit einer Niederlassung in der Bundesrepublik
+    Deutschland.
+  source:
+    file: https://www.dlr.de/de/das-dlr/deutsche-raumfahrtagentur
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-encouraged
+  gate_family: G2_size_ownership
+  requirement: Participation of micro, small and medium-sized enterprises (SMEs) is
+    explicitly desired and supported.
+  value: Micro/small/medium enterprise participation explicitly encouraged
+  intake_field: turnoverBand
+  quote: Die Beteiligung von Kleinstunternehmen, kleinen und mittleren Unternehmen (KMU) ist
+    ausdrücklich erwünscht und wird unterstützt.
+  source:
+    file: https://www.dlr.de/de/das-dlr/deutsche-raumfahrtagentur
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text. Only 2 gates - source text is
+  short and does not support more without fabrication.

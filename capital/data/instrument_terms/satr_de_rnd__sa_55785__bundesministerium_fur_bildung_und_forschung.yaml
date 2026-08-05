@@ -1,0 +1,53 @@
+id: satr_de_rnd__sa_55785__bundesministerium_fur_bildung_und_forschung
+name: WIR! – Wandel durch Innovation in der Region – Zweite Auswahlrunde [BMBF]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-alliance-membership
+  gate_family: G1_nexus
+  requirement: A precondition for funding is participation in a "WIR!" alliance that has been selected
+    for the concept or implementation phase.
+  value: Must belong to a selected "WIR!"-Bündnis
+  intake_field: consortium
+  quote: Voraussetzung für eine Zuwendung ist dabei die Mitwirkung in einem "WIR!"-Bündnis, das für die
+    Konzept- bzw. Umsetzungsphase ausgewählt wurde.
+  source:
+    file: https://www.innovation-strukturwandel.de/strukturwandel/de/programm/wir_/wir_.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Eligible applicants are universities and non-university education/research institutions,
+    commercial enterprises, non-profit organisations, local authorities, and other bodies such as foundations,
+    associations and federations.
+  value: University, non-profit, local authority, or commercial enterprise
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind folglich Hochschulen und außeruniversitäre Bildungs- und Forschungseinrichtungen,
+    Unternehmen der gewerblichen Wirtschaft, gemeinnützige Organisationen, Gebietskörperschaften sowie
+    sonstige Einrichtungen wie z. B. Stiftungen, Vereine und Verbände.
+  source:
+    file: https://www.innovation-strukturwandel.de/strukturwandel/de/programm/wir_/wir_.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-establishment-germany
+  gate_family: G1_nexus
+  requirement: At the time of payout, a business establishment/branch (for companies) or equivalent institution
+    serving the recipient's activity (e.g. for universities, research institutions) must exist in Germany.
+  value: DE establishment/branch required at payout
+  intake_field: entityCountries
+  quote: Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung wird das Vorhandensein einer Betriebsstätte
+    oder Niederlassung (bei Unternehmen) bzw. einer sonstigen Einrichtung, die der Tätigkeit des Zuwendungsempfängers
+    dient
+  source:
+    file: https://www.innovation-strukturwandel.de/strukturwandel/de/programm/wir_/wir_.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

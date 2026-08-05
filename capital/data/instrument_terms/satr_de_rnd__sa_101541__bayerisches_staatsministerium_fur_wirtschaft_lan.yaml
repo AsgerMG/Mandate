@@ -1,0 +1,51 @@
+id: satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan
+name: Bund-Länder-Gemeinschaftsaufgabe "Verbesserung der regionalen Wirtschaftsstruktur" –
+  gewerbliche Wirtschaft [BMWi]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-activity
+  gate_family: G1_nexus
+  requirement: The applicant must be the party making the business investment and carrying
+    out an activity eligible under No. 4 of the guideline.
+  value: Applicant must make the investment and run an eligible activity
+  intake_field: none
+  quote: Antragsberechtigt ist, wer die betrieblichen Investitionen vornimmt und eine gem.
+    Nr. 4 förderfähige Tätigkeit ausübt.
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/regionalfoerderung/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-primary
+  gate_family: G2_size_ownership
+  requirement: Investment projects are funded primarily for small and medium-sized
+    enterprises (SMEs) as defined in Annex I of the GBER, under Articles 17, 36, 38 and 41
+    GBER.
+  value: SME investment projects funded under GBER Art. 17/36/38/41
+  intake_field: turnoverBand
+  quote: Im Rahmen dieser Richtlinie können auf der Grundlage der Art. 17, 36, 38 und 41 der
+    Allgemeinen Gruppenfreistellungsverordnung (AGVO) Investitionsvorhaben kleiner und
+    mittlerer Unternehmen (KMU) im Sinn des Anhangs I zur AGVO gefördert werden.
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/regionalfoerderung/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g2-large-enterprise-condition
+  gate_family: G2_size_ownership
+  requirement: Large enterprises are only additionally eligible within GRW's C-designated
+    development areas.
+  value: Large enterprises eligible only in GRW C-areas
+  intake_field: turnoverBand
+  quote: Große Unternehmen sind in den C-Fördergebieten der GRW zusätzlich förderfähig.
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/regionalfoerderung/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

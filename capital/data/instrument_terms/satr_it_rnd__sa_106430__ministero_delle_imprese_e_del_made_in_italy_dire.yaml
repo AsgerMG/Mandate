@@ -1,0 +1,21 @@
+id: satr_it_rnd__sa_106430__ministero_delle_imprese_e_del_made_in_italy_dire
+name: Sostegno ai progetti di ricerca industriale e sviluppo sperimentale delle imprese italiane, selezionati
+  nei bandi emanati dalle istituzioni UE - Partenariati Horizon Europe - Modifica del regime <b>SA</b>.103171
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eu-call-admission
+  gate_family: G1_nexus
+  requirement: Only enterprises and research bodies that applied to the transnational call and were admitted
+    to European funding may benefit from the aid.
+  value: Must have applied to and been admitted to the EU transnational call
+  intake_field: none
+  quote: Possono beneficiare delle agevolazioni le imprese e gli organismi di ricerca che hanno presentato
+    domanda al bando transnazionale e ottenuto l'ammissione al finanziamento europeo.
+  source:
+    file: https://www.mimit.gov.it/it/pnrr/progetti-pnrr/pnrr-partenariati-per-la-ricerca-e-linnovazione-horizon-europe
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

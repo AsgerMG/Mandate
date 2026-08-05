@@ -1,0 +1,60 @@
+id: satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung
+name: Bekanntmachung der Richtlinie zur Förderung der Mikroelektronik-Forschung von
+  Verbundpartnern im Rahmen des Gemeinsamen Unternehmens Chips [BMBF]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises as well as universities and
+    research institutions; at the time of disbursement, an establishment/branch (for
+    companies) or an equivalent non-economic-activity institution (for universities/
+    research institutions) is required in Germany.
+  value: Enterprise or university/research institution with a German establishment
+  intake_field: entityCountries
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Hochschulen
+    und Forschungseinrichtungen. Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung
+    wird das Vorhandensein einer Betriebsstätte oder Niederlassung (Unternehmen)
+    beziehungsweise einer sonstigen Einrichtung, die der nichtwirtschaftlichen Tätigkeit
+    des Zuwendungsempfängers dient (Hochschule, Forschungseinrichtung), in Deutschland
+    verlangt.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2024/03/2024-03-19-Bekanntmachung-Chips.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-basic-funded-institutions
+  gate_family: G1_nexus
+  requirement: Research institutions that receive basic funding from the Federal Government
+    and/or the Länder may only receive project funding for their additional
+    project-related expenses under certain conditions, alongside their institutional
+    funding.
+  value: Basic-funded research institutions face conditional project-funding eligibility
+  intake_field: institutionalBacking
+  quote: Forschungseinrichtungen, die von Bund und/oder Ländern grundfinanziert werden,
+    können neben ihrer institutionellen Förderung nur unter bestimmten Voraussetzungen
+    eine Projektförderung für ihre zusätzlichen projektbedingten Ausgaben beziehungsweise
+    Kosten bewilligt bekommen.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2024/03/2024-03-19-Bekanntmachung-Chips.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: SMEs under this guideline are defined per the EU SME definition.
+  value: SME status follows the EU SME definition
+  intake_field: turnoverBand
+  quote: Kleine und mittlere Unternehmen (KMU) im Sinne dieser Förderrichtlinie sind
+    Unternehmen, die die Voraussetzungen der KMU-Definition der Europäischen Union
+    erfüllen.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2024/03/2024-03-19-Bekanntmachung-Chips.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

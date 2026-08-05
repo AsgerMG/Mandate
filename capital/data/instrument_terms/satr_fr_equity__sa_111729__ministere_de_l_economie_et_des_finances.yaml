@@ -1,0 +1,32 @@
+id: satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances
+name: Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement
+  pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-only-prospection
+  gate_family: G2_size_ownership
+  requirement: Eligible final beneficiaries of aid covering prospecting costs are SMEs as defined in Annex
+    III of the scheme.
+  value: SME-only, per Annex III definition
+  intake_field: turnoverBand
+  quote: Les PME au sens de l’annexe III du présent régime sont éligibles en tant que bénéficiaires finals
+    aux aides couvrant les coûts de prospection
+  source:
+    file: https://www.europe-en-france.gouv.fr/en/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndegsa111729-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-national-scope
+  gate_family: G1_nexus
+  requirement: The scheme applies across the entire national territory.
+  value: 'Scope: entire national territory'
+  intake_field: entityCountries
+  quote: Le présent régime a vocation à s’appliquer à l’ensemble du territoire national.
+  source:
+    file: https://www.europe-en-france.gouv.fr/en/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndegsa111729-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

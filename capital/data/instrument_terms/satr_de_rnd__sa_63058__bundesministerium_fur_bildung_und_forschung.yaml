@@ -1,0 +1,73 @@
+id: satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung
+name: Quantencomputer-Demonstrationsaufbauten
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises as well as universities and non-university
+    research institutions.
+  value: Commercial enterprises, universities, non-university research institutions
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Hochschulen und außeruniversitäre
+    Forschungseinrichtungen.
+  source:
+    file: https://www.quantentechnologien.de/forschung/foerderung/quantencomputer-demonstrationsaufbauten
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-germany-establishment
+  gate_family: G1_nexus
+  requirement: At the time the grant is paid, the recipient must have an establishment or branch (for
+    enterprises) or another facility serving the recipient's activity (for universities/research institutions)
+    in Germany.
+  value: Establishment/facility in Germany required at payout
+  intake_field: entityCountries
+  quote: Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung wird das Vorhandensein einer Betriebsstätte
+    oder Niederlassung (Unternehmen) bzw. einer sonstigen Einrichtung, die der Tätigkeit des Zuwendungsempfängers
+    dient (Hochschule, Forschungseinrichtung) in Deutschland verlangt.
+  source:
+    file: https://www.quantentechnologien.de/forschung/foerderung/quantencomputer-demonstrationsaufbauten
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-basic-funded-institutions
+  gate_family: G1_nexus
+  requirement: Research institutions that receive core funding from the Federal Government and/or the
+    Länder can only be granted project funding for their additional project-related expenses under certain
+    conditions.
+  value: 'Core-funded research institutions: conditional add-on project funding only'
+  intake_field: institutionalBacking
+  quote: Forschungseinrichtungen, die von Bund und/oder Ländern grundfinanziert werden, können neben ihrer
+    institutionellen Förderung nur unter bestimmten Voraussetzungen eine Projektförderung für ihre zusätzlichen
+    projektbedingten Ausgaben beziehungsweise Kosten bewilligt bekommen.
+  source:
+    file: https://www.quantentechnologien.de/forschung/foerderung/quantencomputer-demonstrationsaufbauten
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-risk-profile
+  gate_family: G5_use_of_funds
+  requirement: Funded are pre-competitive R&D projects characterised by high scientific-technical risk.
+  value: Pre-competitive R&D, high scientific-technical risk
+  intake_field: developmentStage
+  quote: Gefördert werden vorwettbewerbliche Forschungs- und Entwicklungsvorhaben, die gekennzeichnet
+    sind durch ein hohes wissenschaftlich-technisches Risiko.
+  source:
+    file: https://www.quantentechnologien.de/forschung/foerderung/quantencomputer-demonstrationsaufbauten
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-form
+  gate_family: G1_nexus
+  requirement: Projects should be carried out as joint (consortium) projects.
+  value: Projects should be consortium (joint) projects
+  intake_field: consortium
+  quote: Die Vorhaben sollen als Verbundprojekte durchgeführt werden.
+  source:
+    file: https://www.quantentechnologien.de/forschung/foerderung/quantencomputer-demonstrationsaufbauten
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

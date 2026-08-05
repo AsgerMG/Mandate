@@ -1,0 +1,41 @@
+id: satr_it_rnd__sa_60793__invitalia_agenzia_nazionale_per_l_attrazione_deg
+name: Riordino degli interventi di sostegno alla nascita e allo sviluppo di start-up innovative in tutto
+  il territorio nazionale (proroga)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-innovative-startup-age-cap
+  gate_family: G1_nexus
+  requirement: The measure is reserved for innovative start-ups located anywhere in the national territory,
+    registered in the dedicated special section of the business register, and formed no more than 60 months
+    prior.
+  value: Innovative start-up, registered, <=60 months old
+  intake_field: foundedYear
+  quote: La misura agevolativa e' riservata alle startup innovative, localizzate su tutto il territorio
+    nazionale, iscritte nell'apposita sezione speciale del registro imprese, costituite da non piu' di
+    60 mesi.
+  source:
+    file: https://www.incentivi.gov.it/it/catalogo/smartstart-italia-sostegno-alle-startup-innovative
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-preincorporation-and-foreign-teams
+  gate_family: G1_nexus
+  requirement: Applications may also be submitted by teams of individuals intending to form an innovative
+    start-up in Italy, and by foreign companies that commit to establishing at least one operational site
+    in Italy.
+  value: Pre-incorporation teams and foreign companies (committing to an Italian site) also eligible
+  intake_field: wouldOpenEntity
+  quote: Possono presentare domanda anche team di persone fisiche che vogliono costituire una startup
+    innovativa in Italia e societa' estere che si impegnano a istituire almeno una sede operativa in Italia.
+  source:
+    file: https://www.incentivi.gov.it/it/catalogo/smartstart-italia-sostegno-alle-startup-innovative
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (2/2 gates passed mechanical verbatim
+  check -> llm_cited).

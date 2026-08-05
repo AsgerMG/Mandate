@@ -1,0 +1,42 @@
+id: satr_it_equity__sa_60791__banca_del_mezzogiorno_mediocredito_centrale_s_p_
+name: Fondo di garanzia per le piccole e medie imprese (proroga)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-pmi
+  gate_family: G2_size_ownership
+  requirement: The Fund is aimed at micro, small and medium-sized enterprises (SMEs) registered in the
+    Register of Enterprises.
+  value: Micro/small/medium enterprise registered in Registro Imprese
+  intake_field: turnoverBand
+  quote: micro, piccole e medie imprese (PMI) iscritte al Registro delle Imprese
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-professionals
+  gate_family: G1_nexus
+  requirement: Professionals holding a VAT number are also eligible.
+  value: VAT-registered professionals eligible
+  intake_field: borrowerModel
+  quote: professionisti titolari di partita IVA
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-sector-exclusion
+  gate_family: G1_nexus
+  requirement: Eligible subjects span all economic sectors, with limited exceptions such as financial
+    and insurance activities.
+  value: Financial and insurance activities excluded
+  intake_field: none
+  quote: con limitate eccezioni quali le attivita' finanziarie e assicurative
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

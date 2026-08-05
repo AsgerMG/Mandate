@@ -1,0 +1,61 @@
+id: satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung
+name: Änderung der Bekanntmachung der Richtlinie zur Förderung der Mikroelektronik-Forschung
+  von Verbundpartnern im Rahmen des Gemeinsamen Unternehmens KDT vom 20. Januar 2022;
+  Änderung vom 16. Januar 2024 [BMBF]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises as well as universities and
+    research institutions; at the time of disbursement, an establishment/branch (for
+    companies) or an equivalent non-economic-activity institution (for universities/
+    research institutions) is required in Germany.
+  value: Enterprise or university/research institution with a German establishment
+  intake_field: entityCountries
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Hochschulen
+    und Forschungseinrichtungen. Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung
+    wird das Vorhandensein einer Betriebsstätte oder Niederlassung (Unternehmen) bzw. einer
+    sonstigen Einrichtung, die der nichtwirtschaftlichen Tätigkeit des
+    Zuwendungsempfängers dient (Hochschule, Forschungseinrichtung), in Deutschland
+    verlangt.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2022/01/2022-01-26-Bekanntmachung-Mikroelektronik.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-basic-funded-institutions
+  gate_family: G1_nexus
+  requirement: Research institutions that receive basic funding from the Federal Government
+    and/or the Länder may only receive project funding for their additional
+    project-related expenses under certain conditions, alongside their institutional
+    funding.
+  value: Basic-funded research institutions face conditional project-funding eligibility
+  intake_field: institutionalBacking
+  quote: Forschungseinrichtungen, die von Bund und/oder Ländern grundfinanziert werden,
+    können neben ihrer institutionellen Förderung nur unter bestimmten Voraussetzungen
+    eine Projektförderung für ihre zusätzlichen projektbedingten Ausgaben beziehungsweise
+    Kosten bewilligt bekommen.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2022/01/2022-01-26-Bekanntmachung-Mikroelektronik.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-size-self-declaration
+  gate_family: G6_conditionality
+  requirement: The applicant must declare its size classification under Annex I of the GBER
+    to the granting authority as part of the written application.
+  value: Applicant must self-declare GBER Annex I size classification in the application
+  intake_field: none
+  quote: Der Antragsteller erklärt gegenüber der Bewilligungsbehörde seine Einstufung
+    gemäß Anhang I der AGVO im Rahmen des schriftlichen Antrags.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2022/01/2022-01-26-Bekanntmachung-Mikroelektronik.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

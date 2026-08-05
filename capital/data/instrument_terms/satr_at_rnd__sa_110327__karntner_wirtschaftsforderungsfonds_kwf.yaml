@@ -1,0 +1,51 @@
+id: satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf
+name: KWF-Rahmenrichtlinie
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Applicants (natural or legal persons) are eligible where the funded measure or project
+    is expected to yield economic benefits for Carinthia (Kärnten).
+  value: Measure must yield economic benefit for Kärnten
+  intake_field: activityCountries
+  quote: Natürliche oder nicht natürliche Personen, wenn die zu fördernde Maßnahme oder das zu fördernde
+    Vorhaben wirtschaftliche Vorteile für Kärnten erwarten lässt.
+  source:
+    file: https://kwf.at/wp-content/uploads/2026/08/Rahmenrichtlinie-06.00-26-18.06.2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-difficulty-exclusion
+  gate_family: G1_nexus
+  requirement: Where the GBER (AGVO) is the legal basis, undertakings in difficulty per Art. 1(4)(c) in
+    conjunction with Art. 2(18) AGVO are not eligible.
+  value: Undertakings in difficulty excluded (GBER basis)
+  intake_field: none
+  quote: sind Unternehmen in Schwierigkeiten gemäß Artikel 1 Absatz 4 lit. c iVm Artikel 2 Z. 18 AGVO
+    nicht förderungsfähig
+  source:
+    file: https://kwf.at/wp-content/uploads/2026/08/Rahmenrichtlinie-06.00-26-18.06.2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-exclusion
+  gate_family: G1_nexus
+  requirement: Companies that have not complied with a recovery order following a prior Commission decision
+    finding aid unlawful and incompatible with the common market are excluded.
+  value: No outstanding EU State-aid recovery order
+  intake_field: none
+  quote: Unternehmen, die einer Rückforderungsanordnung aufgrund einer früheren Kommissionsentscheidung
+    zur Feststellung der Rechtswidrigkeit und Unvereinbarkeit einer Beihilfe mit dem Gemeinsamen Markt
+    nicht Folge geleistet haben.
+  source:
+    file: https://kwf.at/wp-content/uploads/2026/08/Rahmenrichtlinie-06.00-26-18.06.2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

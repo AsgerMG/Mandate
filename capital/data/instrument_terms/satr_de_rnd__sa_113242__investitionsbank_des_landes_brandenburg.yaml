@@ -1,0 +1,45 @@
+id: satr_de_rnd__sa_113242__investitionsbank_des_landes_brandenburg
+name: Richtlinie des Ministeriums für Wirtschaft, Arbeit und Energie des Landes Brandenburg für das Programm
+  „Brandenburgischer Innovationsgutschein zur Förderung von Digitalisierungsvorhaben kleiner und mittlerer
+  Unternehmen inklusive Handwerksbetriebe“ (BIG-Digital) [BB]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-location
+  gate_family: G2_size_ownership
+  requirement: Eligible are micro, small and medium commercial enterprises that, at the time the grant
+    is approved, have their registered office, or at least an establishment, in the State of Brandenburg.
+  value: Micro/small/medium enterprise with office/establishment in Brandenburg
+  intake_field: fteBand
+  quote: Kleinstunternehmen, kleine und mittlere Unternehmen der gewerblichen Wirtschaft, die zum Zeitpunkt
+    der Bewilligung der Zuwendung ihren Sitz, mindestens jedoch eine Betriebsstätte im Land Brandenburg
+    haben.
+  source:
+    file: https://bravors.brandenburg.de/verwaltungsvorschriften/big_digital_2024
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-recovery-order-exclusion
+  gate_family: G6_conditionality
+  requirement: Excluded are companies that have not complied with recovery orders.
+  value: Non-compliance with recovery orders excludes applicant
+  intake_field: conditionality
+  quote: Ausgenommen sind Unternehmen, die Rückforderungsanordnungen nicht erfüllt haben
+  source:
+    file: https://bravors.brandenburg.de/verwaltungsvorschriften/big_digital_2024
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-difficulty-exclusion
+  gate_family: G2_size_ownership
+  requirement: Undertakings in difficulty under GBER are excluded.
+  value: Undertaking in difficulty (GBER) excluded
+  intake_field: lossesOverHalfCapital
+  quote: sowie Unternehmen in Schwierigkeiten nach der AGVO.
+  source:
+    file: https://bravors.brandenburg.de/verwaltungsvorschriften/big_digital_2024
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

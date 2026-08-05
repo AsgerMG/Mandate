@@ -1,0 +1,48 @@
+id: satr_de_rnd__sa_115170__sachsen_sab
+name: EFRE/JTF-Technologieförderung 2021 bis 2027 [SN]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-fue-sme-only
+  gate_family: G2_size_ownership
+  requirement: R&D project funding is exclusively for SMEs of the commercial economy with an establishment
+    in the Free State of Saxony; in collaborative projects, SMEs, large enterprises and research institutions
+    based in Saxony may also participate.
+  value: SME only (or SME+large+research org in consortium) with establishment in Saxony
+  intake_field: entityCountries
+  quote: 'FuE-Projektförderung: ausschließlich KMU der gewerblichen Wirtschaft mit einer Betriebsstätte
+    im Freistaat Sachsen; bei Verbundprojekten können auch KMU, große Unternehmen und Forschungseinrichtungen
+    mit Sitz in Sachsen teilnehmen.'
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19834-FRL-EFRE-JTF-Technologiefoerderung-2021-bis-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-transfer-sme-only
+  gate_family: G2_size_ownership
+  requirement: Technology transfer funding is exclusively for SMEs of the commercial economy with an establishment
+    in the Free State of Saxony.
+  value: SME only, establishment in Saxony
+  intake_field: entityCountries
+  quote: 'Technologietransferförderung: ausschließlich KMU der gewerblichen Wirtschaft mit einer Betriebsstätte
+    im Freistaat Sachsen.'
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19834-FRL-EFRE-JTF-Technologiefoerderung-2021-bis-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-exclusions
+  gate_family: G3_financial
+  requirement: Undertakings in difficulty and undertakings that have not complied with an EU recovery
+    order are excluded.
+  value: Undertakings in difficulty / non-compliant with EU recovery order excluded
+  intake_field: lossesOverHalfCapital
+  quote: Ausgeschlossen sind Unternehmen in Schwierigkeiten und Unternehmen, die einer Rückforderungsanordnung
+    der EU nicht nachgekommen sind.
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19834-FRL-EFRE-JTF-Technologiefoerderung-2021-bis-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

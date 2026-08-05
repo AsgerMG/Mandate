@@ -1,0 +1,48 @@
+id: satr_de_rnd__sa_56245__finanzverwaltung_niedersachsen
+name: Finanzverwaltung Niedersachsen
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-taxpayer-status
+  gate_family: G1_nexus
+  requirement: Eligible claimants are taxpayers under German income or corporate tax law who earn income
+    in the specified categories, are not exempt from taxation, and meet the statutory requirements.
+  value: Must be an income/corporate taxpayer, not tax-exempt, meeting statutory conditions
+  intake_field: borrowerModel
+  quote: Anspruchsberechtigt sind Steuerpflichtige im Sinne des Einkommensteuer- und des Körperschaftsteuergesetzes,
+    soweit sie Einkünfte nach § 2 Absatz 1 Satz 1 Nummer 1 bis 3 des Einkommensteuergesetzes erzielen,
+    nicht von der Besteuerung befreit sind und die in diesem Gesetz aufgeführten Voraussetzungen erfüllen.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-co-entrepreneurship
+  gate_family: G1_nexus
+  requirement: For co-entrepreneurships (Mitunternehmerschaften), the partnership itself, not the individual
+    taxpayer, is the claimant.
+  value: Co-entrepreneurships claim as the partnership entity
+  intake_field: borrowerModel
+  quote: Bei Mitunternehmerschaften nach § 15 Absatz 1 Satz 1 Nummer 2 des Einkommensteuergesetzes tritt
+    an die Stelle des Steuerpflichtigen die Mitunternehmerschaft als Anspruchsberechtigter.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-work-start-date
+  gate_family: G6_conditionality
+  requirement: The R&D tax allowance can only be claimed for R&D projects where work began, or the order
+    was placed, after 1 January 2020.
+  value: R&D work/order must start after 1 Jan 2020
+  intake_field: needBy
+  quote: Die Forschungszulage kann nur für Forschungs- und Entwicklungsvorhaben im Sinne des § 2 beansprucht
+    werden, mit deren Arbeiten nach dem 1. Januar 2020 begonnen wird oder für die der Auftrag nach dem
+    1. Januar 2020 erteilt wird.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

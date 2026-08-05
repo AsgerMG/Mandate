@@ -1,0 +1,47 @@
+id: satr_it_rnd__sa_53666__gse_gestore_servizi_energetici_s_p_a
+name: Incentivazione dell'energia prodotta da impianti a biogas da reflui e materie derivanti dalle aziendeagricole
+  realizzatrici
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g5-power-cap
+  gate_family: G5_use_of_funds
+  requirement: The incentive is granted to biogas electricity production plants with electric power not
+    exceeding 300 kW.
+  value: 'Max plant power: 300 kW'
+  intake_field: none
+  quote: L'incentivo e' riconosciuto agli impianti di produzione di energia elettrica a biogas di potenza
+    elettrica non superiore a 300 kW
+  source:
+    file: https://www.gse.it/servizi-per-te/fonti-rinnovabili/fer-elettriche
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-farm-enterprise
+  gate_family: G1_nexus
+  requirement: Plants must be part of the production cycle of a farming or livestock enterprise, built
+    by agricultural entrepreneurs, including in consortium form.
+  value: Plant must belong to a farming/livestock enterprise's production cycle
+  intake_field: borrowerModel
+  quote: facenti parte del ciclo produttivo di una impresa agricola o zootecnica, realizzati da imprenditori
+    agricoli anche in forma consortile
+  source:
+    file: https://www.gse.it/servizi-per-te/fonti-rinnovabili/fer-elettriche
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-feedstock-composition
+  gate_family: G5_use_of_funds
+  requirement: At least 80% of feedstock must derive from effluents and materials of the producing farms,
+    with the remaining 20% from their own second-harvest crops.
+  value: 'Feedstock: >=80% own-farm effluent/materials, <=20% second-harvest crops'
+  intake_field: none
+  quote: la cui alimentazione deriva per almeno l'80% da reflui e materie derivanti dalle aziende agricole
+    realizzatrici e per il restante 20% da loro coltivazioni di secondo raccolto
+  source:
+    file: https://www.gse.it/servizi-per-te/fonti-rinnovabili/fer-elettriche
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

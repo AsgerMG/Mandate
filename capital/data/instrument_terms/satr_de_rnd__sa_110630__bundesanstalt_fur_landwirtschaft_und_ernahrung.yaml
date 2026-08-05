@@ -1,0 +1,55 @@
+id: satr_de_rnd__sa_110630__bundesanstalt_fur_landwirtschaft_und_ernahrung
+name: 'Bund: Programm zur Innovationsförderung'
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-germany-seat
+  gate_family: G1_nexus
+  requirement: Applicants must be enterprises (in particular SMEs) with a registered seat or establishment
+    in Germany; universities and non-university R&D institutions with a German seat are also eligible
+    provided substantial economic participation is ensured.
+  value: German-seated enterprise (esp. SME), or university/research institution with substantial economic
+    participation
+  intake_field: entityCountries
+  quote: Antragsberechtigt sind Unternehmen, insbesondere kleine und mittlere Unternehmen, mit Sitz oder
+    Niederlassung in Deutschland. Ebenfalls antragsberechtigt sind Hochschulen und außeruniversitäre Forschungs-
+    und Entwicklungseinrichtungen mit Sitz in Deutschland, soweit eine substanzielle Wirtschaftsbeteiligung
+    sichergestellt wird.
+  source:
+    file: https://www.innovationsfoerderung-bmel.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-startup-definition
+  gate_family: G2_size_ownership
+  requirement: A start-up under this scheme is defined as a company less than five years old with innovative
+    technology or a business model and significant staff or revenue growth achieved or targeted.
+  value: Start-up = <5 years old, innovative, growth-oriented
+  intake_field: foundedYear
+  quote: Start-ups im Sinne dieser Förderrichtlinie sind Unternehmen, die weniger als fünf Jahre am Markt
+    sind, über innovative Technologien beziehungsweise Geschäftsmodelle verfügen und ein signifikantes
+    Mitarbeiter- beziehungsweise Umsatzwachstum haben oder anstreben.
+  source:
+    file: https://www.innovationsfoerderung-bmel.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g6-willingness-to-cooperate
+  gate_family: G6_conditionality
+  requirement: Funding requires the applicant's fundamental willingness to cooperate with a possibly planned
+    networking and transfer project.
+  value: Must be willing to cooperate with networking/transfer project
+  intake_field: conditionality
+  quote: Die Förderung setzt die grundsätzliche Bereitschaft der Teilnehmerinnen und Teilnehmer zur Zusammenarbeit
+    mit einem eventuell geplanten Vernetzungs- und Transfervorhaben voraus.
+  source:
+    file: https://www.innovationsfoerderung-bmel.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

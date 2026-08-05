@@ -1,0 +1,81 @@
+id: satr_gb_rnd__sa_49923__hmrc
+name: Amendments to the existing aid scheme "Enterprise Investment Scheme" and "Venture Capital Trust
+  scheme"
+administering_body: see source document
+country: GB
+capital_type: unknown
+status: draft
+gates:
+- id: g2-fte-limit
+  gate_family: G2_size_ownership
+  requirement: The company must have fewer than 250 full-time equivalent employees at the time the shares
+    are issued.
+  value: Max 250 FTE employees
+  intake_field: fteBand
+  quote: have less than 250 full-time equivalent employees at the time the shares are issued
+  source:
+    file: https://www.gov.uk/guidance/venture-capital-schemes-apply-for-the-enterprise-investment-scheme
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-gross-assets
+  gate_family: G3_financial
+  requirement: Gross assets must not exceed £30 million before any shares are issued, and not more than
+    £35 million immediately afterwards (£15m/£16m for specified companies).
+  value: Max £30m gross assets before issue, £35m after
+  intake_field: balanceBand
+  quote: not have gross assets worth more than £30 million before any shares are issued, and not more
+    than £35 million immediately afterwards
+  source:
+    file: https://www.gov.uk/guidance/venture-capital-schemes-apply-for-the-enterprise-investment-scheme
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g4-first-commercial-sale
+  gate_family: G4_borrower_model
+  requirement: The company must be within 7 years of its first commercial sale.
+  value: Within 7 years of first commercial sale
+  intake_field: foundedYear
+  quote: be within 7 years of your company's first commercial sale
+  source:
+    file: https://www.gov.uk/guidance/venture-capital-schemes-apply-for-the-enterprise-investment-scheme
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-not-listed
+  gate_family: G1_nexus
+  requirement: The company must not be trading on a recognised stock exchange, or planning to do so, at
+    the time of the share issue.
+  value: Not listed / not planning to list
+  intake_field: wouldOpenEntity
+  quote: not be trading on a recognised stock exchange, or planning to do so, at the time of the share
+    issue
+  source:
+    file: https://www.gov.uk/guidance/venture-capital-schemes-apply-for-the-enterprise-investment-scheme
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-raise-caps
+  gate_family: G3_financial
+  requirement: Most companies can raise up to £10 million in total in any 12-month period, and up to £24
+    million in the company's lifetime from these sources.
+  value: Max £10m/12mo, £24m lifetime (lower caps for specified companies)
+  intake_field: ticketBand
+  quote: Most companies can raise up to £10 million in total in any 12 month period, and up to £24 million
+    from these sources in the company's lifetime
+  source:
+    file: https://www.gov.uk/guidance/venture-capital-schemes-apply-for-the-enterprise-investment-scheme
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-no-acquisition
+  gate_family: G5_use_of_funds
+  requirement: The money raised must not be used to buy all or part of another business.
+  value: Funds cannot be used to acquire another business
+  intake_field: none
+  quote: The money raised must not be used to buy all or part of another business.
+  source:
+    file: https://www.gov.uk/guidance/venture-capital-schemes-apply-for-the-enterprise-investment-scheme
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

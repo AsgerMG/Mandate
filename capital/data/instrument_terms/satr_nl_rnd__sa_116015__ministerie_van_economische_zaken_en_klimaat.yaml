@@ -1,0 +1,51 @@
+id: satr_nl_rnd__sa_116015__ministerie_van_economische_zaken_en_klimaat
+name: NL_EZK_K&E_ Regeling nationale EZK- en LNV-subsidies ende Regeling openstelling EZK- en LNV-subsidies
+  2024, titel 4.6. Versnelde klimaatinvesteringen in de industrie (Wijziging 2024)
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-enterprise-applicant
+  gate_family: G1_nexus
+  requirement: Subsidy is granted, on application, to an enterprise (onderneming) investing in a qualifying
+    project.
+  value: Applicant must be an "onderneming" (enterprise)
+  intake_field: borrowerModel
+  quote: De minister verstrekt op aanvraag subsidie aan een onderneming voor investeringen in een project
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/veki
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-theme-scope
+  gate_family: G5_use_of_funds
+  requirement: The project must fall within one or more listed themes in Annex 4.6.2, mapped to specific
+    GBER articles (environmental protection art. 36, energy efficiency art. 38, renewable energy art.
+    41, district heating/cooling art. 46, circular economy art. 47, local infrastructure art. 56).
+  value: Project must match a GBER-mapped theme in bijlage 4.6.2
+  intake_field: none
+  quote: 'een project dat past binnen één of meer thema''s in bijlage 4.6.2 en dat betrekking heeft op:
+    a. milieubescherming in overeenstemming met artikel 36 van de algemene groepsvrijstellingsverordening'
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/veki
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-renewable-hydrogen-electricity-excluded
+  gate_family: G5_use_of_funds
+  requirement: Promotion of renewable energy or renewable hydrogen is eligible, except for electricity
+    produced from renewable hydrogen.
+  value: Electricity produced from renewable hydrogen excluded
+  intake_field: none
+  quote: de bevordering van energie uit hernieuwbare bronnen of uit hernieuwbare waterstof, met uitzondering
+    van uit hernieuwbare waterstof geproduceerde elektriciteit
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/veki
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

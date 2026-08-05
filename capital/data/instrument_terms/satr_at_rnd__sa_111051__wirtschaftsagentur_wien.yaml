@@ -1,0 +1,81 @@
+id: satr_at_rnd__sa_111051__wirtschaftsagentur_wien
+name: Rahmenrichtlinie 24+ der Wirtschaftsagentur Wien zu monetären Wirtschaftsförderungen
+administering_body: see source document
+country: 'AT'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-entity-types
+  gate_family: G1_nexus
+  requirement: Eligible are entrepreneurs, business founders, associations, and research or
+    education institutions that have an active establishment in Vienna or plan to
+    establish one.
+  value: Entrepreneur/founder/association/research org with (planned) Vienna establishment
+  intake_field: entityCountries
+  quote: Förderbar sind Unternehmer*innen, Unternehmensgründer*innen, Vereine sowie
+    Forschungs- und Bildungseinrichtungen, die a) über eine (aktive) Betriebsstätte in Wien
+    verfügen oder die Errichtung einer Betriebsstätte in Wien planen (vorbehaltlich anders
+    lautender Bestimmungen in den Förderprogrammen);
+  source:
+    file: https://cockpit.wirtschaftsagentur.at/Kontext/Webservice/SecureFileAccess.aspx?fileguid=%7Bc61e17cd-c4c3-40a1-9a30-9506b988b838%7D
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-no-city-debt
+  gate_family: G1_nexus
+  requirement: Applicants must not have a negative balance with the City of Vienna treasury
+    (Stadtkasse).
+  value: No outstanding debt to City of Vienna treasury
+  intake_field: none
+  quote: keinen negativen Saldo bei der Stadtkasse der Stadt Wien aufweisen.
+  source:
+    file: https://cockpit.wirtschaftsagentur.at/Kontext/Webservice/SecureFileAccess.aspx?fileguid=%7Bc61e17cd-c4c3-40a1-9a30-9506b988b838%7D
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-gesbr-exclusion
+  gate_family: G1_nexus
+  requirement: Civil-law partnerships (GesbR) are not eligible due to lack of legal
+    capacity, even if they operate a business.
+  value: Excludes GesbR civil-law partnerships
+  intake_field: none
+  quote: Gesellschaften bürgerlichen Rechts (GesbR) aufgrund mangelnder Rechtsfähigkeit
+    (selbst dann, wenn sie ein Unternehmen betreiben),
+  source:
+    file: https://cockpit.wirtschaftsagentur.at/Kontext/Webservice/SecureFileAccess.aspx?fileguid=%7Bc61e17cd-c4c3-40a1-9a30-9506b988b838%7D
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-insolvency-exclusion
+  gate_family: G1_nexus
+  requirement: Applicants that are insolvent or over-indebted (per Sections 66-67 IO) or
+    subject to opened insolvency proceedings (Section 1 IO) are not eligible.
+  value: Excludes insolvent/over-indebted applicants
+  intake_field: lossesOverHalfCapital
+  quote: Förderwerber*innen, die zahlungsunfähig oder überschuldet (§§ 66 und 67 IO) sind
+    oder gegen die ein Insolvenzverfahren (§ 1 IO) eröffnet wurde,
+  source:
+    file: https://cockpit.wirtschaftsagentur.at/Kontext/Webservice/SecureFileAccess.aspx?fileguid=%7Bc61e17cd-c4c3-40a1-9a30-9506b988b838%7D
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-undertaking-in-difficulty
+  gate_family: G1_nexus
+  requirement: If aid is granted under the GBER, applicants that have not complied with a
+    recovery order under a prior Commission decision, or that are undertakings in
+    difficulty per Article 2(18) GBER, are not eligible.
+  value: Excludes GBER recovery-order non-compliers and undertakings in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Förderwerber*innen, die einer Rückforderungsanordnung aufgrund eines früheren
+    Beschlusses der Kommission zur Feststellung der Unzulässigkeit einer von demselben
+    Mitgliedstaat gewährten Beihilfe und ihrer Unvereinbarkeit mit dem Binnenmarkt nicht
+    nachgekommen sind (Art. 1 Abs. 4 lit. a AGVO), sowie Förderwerber*innen, bei denen es
+    sich um Unternehmen in Schwierigkeiten (Art. 2 Abs. 18 AGVO) handelt.
+  source:
+    file: https://cockpit.wirtschaftsagentur.at/Kontext/Webservice/SecureFileAccess.aspx?fileguid=%7Bc61e17cd-c4c3-40a1-9a30-9506b988b838%7D
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

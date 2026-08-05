@@ -1,0 +1,51 @@
+id: satr_de_rnd__sa_113239__sachsen_sab
+name: Förderrichtlinie Business-Angel-Bonus JTF 2021–2027 [SN]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Recipients are small, innovative start-up companies in the legal form of a
+    registered partnership, corporation, or cooperative.
+  value: Small innovative start-up, registered partnership/corporation/cooperative
+  intake_field: turnoverBand
+  quote: Zuwendungsempfänger sind kleine, innovative Unternehmen (Startups) in der
+    Rechtsform einer eingetragenen Personen- oder Kapitalgesellschaft oder Genossenschaft,
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19952-Foerderrichtlinie-Business-Angel-Bonus-JTF-2021-2027
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-age-limit
+  gate_family: G2_size_ownership
+  requirement: The company's registration in the commercial register must not be older than
+    five years.
+  value: Max 5 years since commercial register entry
+  intake_field: foundedYear
+  quote: deren Eintragung in das Handelsregister nicht länger als fünf Jahre zurückliegt
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19952-Foerderrichtlinie-Business-Angel-Bonus-JTF-2021-2027
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-jtf-region
+  gate_family: G1_nexus
+  requirement: The company must have its seat or an establishment in the Saxon JTF funding
+    areas - Bautzen and Görlitz districts in the Lausitz region, or Nordsachsen and Leipzig
+    districts, the city of Leipzig and the city of Chemnitz in the Central German region.
+  value: Seat/establishment required in Saxon JTF funding areas
+  intake_field: entityCountries
+  quote: die ihren Sitz oder eine Betriebsstätte in den sächsischen JTF-Fördergebieten
+    haben. Das JTF-Fördergebiet umfasst im Lausitzer Revier die Landkreise Bautzen und
+    Görlitz, im Mitteldeutschen Revier die Landkreise Nordsachsen, Leipzig und die Stadt
+    Leipzig sowie die Stadt Chemnitz.
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19952-Foerderrichtlinie-Business-Angel-Bonus-JTF-2021-2027
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

@@ -1,0 +1,35 @@
+id: satr_nl_rnd__sa_117203__ministerie_van_economische_zaken_en_klimaat
+name: NL/IenW/_Tijdelijke subsidieregeling zero-emissie mobiliteit - Paragraaf 2.2 Publieke laadinfrastructuur
+  zwaar vervoer
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-entrepreneur-only
+  gate_family: G1_nexus
+  requirement: The applicant must be an entrepreneur (business), not a private individual.
+  value: Applicant must be an entrepreneur
+  intake_field: borrowerModel
+  quote: Bent u ondernemer
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/laadinfrastructuur/spula
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-public-location-heavy-vehicles
+  gate_family: G5_use_of_funds
+  requirement: Charging infrastructure must be built at a publicly accessible location, for heavy electric
+    vehicles.
+  value: Public charging infra for heavy electric vehicles
+  intake_field: none
+  quote: op een publiek toegankelijke locatie laadinfrastructuur aanleggen voor zware elektrische voertuigen
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/laadinfrastructuur/spula
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (2/2 gates passed mechanical verbatim-substring
+  check -> llm_cited).

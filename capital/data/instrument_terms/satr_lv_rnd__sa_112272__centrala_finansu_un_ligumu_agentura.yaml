@@ -1,0 +1,80 @@
+id: satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura
+name: Latvijas Atveseļošanas un noturības mehānisma plāna 2.2. reformu un investīciju virziena "Uzņēmumu
+  digitālā transformācija un inovācijas" 2.2.1.3.i. investīcijas "Atbalsts jaunu produktu un pakalpojumu
+  ieviešanai uzņēmējdarbībā" īstenošanas noteikumi
+administering_body: see source document
+country: LV
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-group
+  gate_family: G1_nexus
+  requirement: The target group is micro, small, medium and large enterprises, including state capital
+    companies and research/knowledge-dissemination organisations, developing products, services and technologies
+    in smart-specialisation areas.
+  value: Micro/small/medium/large enterprises and R&D orgs in smart-specialisation areas
+  intake_field: borrowerModel
+  quote: Investīcijas mērķa grupa ir sīkie (mikro), mazie, vidējie un lielie komersanti, tai skaitā valsts
+    kapitālsabiedrības un pētniecības un zināšanu izplatīšanas organizācijas, kas attīsta produktus, pakalpojumus
+    un tehnoloģijas viedās specializācijas jomās.
+  source:
+    file: https://likumi.lv/ta/id/349112
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-legal-entity
+  gate_family: G1_nexus
+  requirement: The applicant must be a legal entity registered in the Latvian Commercial Register, or
+    an association registered in the Register of Associations and Foundations.
+  value: Must be registered LV legal entity or association
+  intake_field: entityCountries
+  quote: tas ir juridiska persona, kas reģistrēta Latvijas Republikas Komercreģistrā, vai biedrība, kas
+    reģistrēta Biedrību un nodibinājumu reģistrā;
+  source:
+    file: https://likumi.lv/ta/id/349112
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-turnover-threshold
+  gate_family: G2_size_ownership
+  requirement: The applicant's members must include at least one sectoral association, or at least five
+    mutually unrelated sectoral enterprises or recognised agricultural service cooperatives, with combined
+    turnover of at least EUR 150 million in the last reporting year (or a support letter from a qualifying
+    association).
+  value: Members' combined turnover >= EUR 150 million
+  intake_field: turnoverBand
+  quote: tā dalībnieki vai biedri ir vismaz viena nozares asociācija vai vismaz pieci savstarpēji nesaistīti
+    nozares komersanti vai atzītas lauksaimniecības pakalpojumu kooperatīvās sabiedrības, kuru kopējais
+    apgrozījums pēdējā noslēgtajā pārskata gadā ir vismaz 150 milj. euro
+  source:
+    file: https://likumi.lv/ta/id/349112
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-export-threshold
+  gate_family: G2_size_ownership
+  requirement: Alternatively, the applicant's members must have combined export volume of at least EUR
+    75 million in the last reporting year.
+  value: Members' combined export volume >= EUR 75 million
+  intake_field: turnoverBand
+  quote: kuru kopējais eksporta apjoms pēdējā noslēgtajā pārskata gadā ir vismaz 75 milj. euro
+  source:
+    file: https://likumi.lv/ta/id/349112
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-majority-ownership
+  gate_family: G2_size_ownership
+  requirement: More than 51% of the applicant's share capital or voting rights must be held by sectoral
+    enterprises, recognised agricultural service cooperatives, or associations and their members that
+    unite such entities.
+  value: 51%+ ownership by sectoral enterprises/cooperatives/associations
+  intake_field: institutionalOwner
+  quote: vairāk nekā 51 procents no tā pamatkapitāla vai balsstiesībām pieder nozares komersantiem vai
+    atzītām lauksaimniecības pakalpojumu kooperatīvajām sabiedrībām vai biedrībām un to biedriem, kas
+    apvieno nozares komersantus vai atzītas lauksaimniecības pakalpojumu kooperatīvās sabiedrības;
+  source:
+    file: https://likumi.lv/ta/id/349112
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

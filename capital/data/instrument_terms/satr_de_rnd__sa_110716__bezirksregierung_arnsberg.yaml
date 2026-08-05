@@ -1,0 +1,36 @@
+id: satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+name: Änderung der Richtlinie über die Gewährung von Zuwendungen zum Ausbau von Lade- und Wasserstofftankinfrastruktur
+  sowie für den Erwerb von sauberen oder emissionsfreien Fahrzeugen in Nordrhein-Westfalen [NW]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Natural and legal persons are generally entitled to apply for a grant.
+  value: Natural or legal person
+  intake_field: borrowerModel
+  quote: Natürliche und juristische Personen sind grundsätzlich berechtigt, eine Zuwendung zu beantragen.
+  source:
+    file: https://recht.nrw.de/lmi/owa/br_bes_text?anw_nr=1&gld_nr=7&ugl_nr=75&bes_id=52211&val=52211&ver=7&sg=1&aufgehoben=N&menu=0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-excluded-entities
+  gate_family: G1_nexus
+  requirement: Private individuals, the federal government, and the federal states are excluded, except
+    for municipalities and municipal associations.
+  value: Private individuals, Bund, Länder excluded (municipalities exempted)
+  intake_field: none
+  quote: Davon ausgenommen sind Privatpersonen, der Bund und die Bundesländer mit Ausnahme der Gemeinden
+    und Gemeindeverbände.
+  source:
+    file: https://recht.nrw.de/lmi/owa/br_bes_text?anw_nr=1&gld_nr=7&ugl_nr=75&bes_id=52211&val=52211&ver=7&sg=1&aufgehoben=N&menu=0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (2/2 gates passed mechanical verbatim-substring
+  check -> llm_cited).

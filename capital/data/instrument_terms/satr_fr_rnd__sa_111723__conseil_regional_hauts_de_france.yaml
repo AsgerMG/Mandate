@@ -1,0 +1,85 @@
+id: satr_fr_rnd__sa_111723__conseil_regional_hauts_de_france
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-entities
+  gate_family: G1_nexus
+  requirement: Eligible applicants are industrial enterprises and industry service providers of any size
+    located in Hauts-de-France, technical/technology-transfer centres, and higher-education and research
+    institutions in the region.
+  value: Industrial enterprise/service provider or research/education body in Hauts-de-France
+  intake_field: activityCountries
+  quote: Entreprises industrielles et prestataires de services à l'industrie de toutes tailles situées
+    en Hauts-de-France
+  source:
+    file: https://guide-aides.hautsdefrance.fr/dispositif918
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-collaboration-required
+  gate_family: G1_nexus
+  requirement: Effective collaboration between several entities is required.
+  value: Effective multi-entity collaboration required
+  intake_field: consortium
+  quote: Collaboration effective requise entre plusieurs entités
+  source:
+    file: https://guide-aides.hautsdefrance.fr/dispositif918
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-consortium-composition
+  gate_family: G2_size_ownership
+  requirement: When the collaboration is between several enterprises, at least one must be an SME, and
+    no single entity may cover more than 70% of eligible costs.
+  value: '>=1 SME in consortium; no entity >70% of eligible costs'
+  intake_field: consortium
+  quote: soit plusieurs entreprises (au moins une PME, aucune entité ne couvrant plus de 70% des coûts
+    éligibles)
+  source:
+    file: https://guide-aides.hautsdefrance.fr/dispositif918
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-research-partner-share
+  gate_family: G5_use_of_funds
+  requirement: Alternatively, an enterprise may partner with research organisations, which must together
+    cover at least 10% of eligible costs and retain publication rights.
+  value: 'Research-organisation partner: >=10% of eligible costs, publication rights'
+  intake_field: consortium
+  quote: soit une entreprise partenaire d'organismes de recherche (couvrant au moins 10% des coûts éligibles
+    avec droits de publication)
+  source:
+    file: https://guide-aides.hautsdefrance.fr/dispositif918
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-project-leader-location
+  gate_family: G1_nexus
+  requirement: The project leader must be an enterprise based in Hauts-de-France.
+  value: Project leader = enterprise based in Hauts-de-France
+  intake_field: activityCountries
+  quote: Le porteur de projet doit être une entreprise basée en Hauts-de-France.
+  source:
+    file: https://guide-aides.hautsdefrance.fr/dispositif918
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-collaboration-agreement
+  gate_family: G6_conditionality
+  requirement: A collaboration agreement is required before the funds are disbursed.
+  value: Collaboration agreement required before disbursement
+  intake_field: none
+  quote: Un accord de collaboration est requis avant le versement des fonds.
+  source:
+    file: https://guide-aides.hautsdefrance.fr/dispositif918
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (6/6 gates passed mechanical verbatim-substring
+  check -> llm_cited).

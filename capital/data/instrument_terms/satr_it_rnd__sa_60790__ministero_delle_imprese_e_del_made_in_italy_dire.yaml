@@ -1,0 +1,45 @@
+id: satr_it_rnd__sa_60790__ministero_delle_imprese_e_del_made_in_italy_dire
+name: Intervento a favore di progetti di ricerca e sviluppo realizzati nell'ambito di accordi sottoscritti
+  dal Ministero dello sviluppo economico con le regioni e le province autonome sottoscrittrici del Protocollo
+  d'intesa per l'attuazione del Programma "Mirror GovSatCom" (proroga)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-enterprise-applicants
+  gate_family: G1_nexus
+  requirement: Beneficiaries include enterprises carrying out industrial or commercial activity, including
+    craft enterprises.
+  value: Industrial/commercial enterprises incl. craft enterprises
+  intake_field: borrowerModel
+  quote: le imprese che esercitano attivita' industriale o commerciale, comprese le imprese artigiane
+  source:
+    file: https://www.mimit.gov.it/it/impresa/competitivita-e-nuove-imprese/space-economy/telecomunicazioni-satellitari
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-centre-applicants
+  gate_family: G1_nexus
+  requirement: Beneficiaries also include research centres.
+  value: Research centres also eligible
+  intake_field: borrowerModel
+  quote: e i centri di ricerca
+  source:
+    file: https://www.mimit.gov.it/it/impresa/competitivita-e-nuove-imprese/space-economy/telecomunicazioni-satellitari
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-agreement-scope
+  gate_family: G1_nexus
+  requirement: Aid applies only within the agreements signed by the Ministry with the regions and autonomous
+    provinces that are signatories to the Memorandum of Understanding for the Mirror GovSatCom Programme.
+  value: Limited to Mirror GovSatCom MoU signatory regions/provinces
+  intake_field: activityCountries
+  quote: nell'ambito degli accordi sottoscritti dal Ministero con le regioni e le province autonome sottoscrittrici
+    del Protocollo d'intesa per l'attuazione del Programma 'Mirror GovSatCom'
+  source:
+    file: https://www.mimit.gov.it/it/impresa/competitivita-e-nuove-imprese/space-economy/telecomunicazioni-satellitari
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

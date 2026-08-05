@@ -1,0 +1,76 @@
+id: satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz
+name: EXIST Forschungstransfer (Förderphase II) [BMWK VIIC4]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-legal-form-seat
+  gate_family: G1_nexus
+  requirement: Applicants must be small technology-oriented commercial enterprises in the
+    legal form of a Kapitalgesellschaft (corporation), with registered seat, branch or
+    permanent establishment in Germany.
+  value: Small tech company, Kapitalgesellschaft, seat/branch in Germany
+  intake_field: entityCountries
+  quote: kleine technologieorientierte Unternehmen der gewerblichen Wirtschaft in der Rechtsform
+    einer Kapitalgesellschaft mit Unternehmenssitz, Niederlassung oder Betriebsstätte in
+    Deutschland
+  source:
+    file: https://exist.de/wp-content/uploads/2025/02/Richtlinie-EFT-03-07-2024.pdf
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-origin-phase1
+  gate_family: G1_nexus
+  requirement: The company must have been founded during or as a result of EXIST-Forschungstransfer
+    Phase I or the EXIST start-up scholarship (EXIST-Gründungsstipendium).
+  value: Founded via EXIST Phase I or EXIST-Gründungsstipendium
+  intake_field: none
+  quote: die im Verlauf oder als Ergebnis der Förderphase I bzw. des EXIST-Gründungsstipendiums
+    gegründet wurden
+  source:
+    file: https://exist.de/wp-content/uploads/2025/02/Richtlinie-EFT-03-07-2024.pdf
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-micro-enterprise
+  gate_family: G2_size_ownership
+  requirement: The company must qualify as a micro-enterprise (Kleinstunternehmen) at the
+    time the grant is approved.
+  value: Must be a micro-enterprise at approval
+  intake_field: fteBand
+  quote: welche zum Zeitpunkt der Bewilligung als Kleinstunternehmen gelten
+  source:
+    file: https://exist.de/wp-content/uploads/2025/02/Richtlinie-EFT-03-07-2024.pdf
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-founder-ownership
+  gate_family: G2_size_ownership
+  requirement: Significantly more than 50 percent of the company's shares must be owned by
+    the founders who are active in the company.
+  value: Founders active in company must own well over 50% of shares
+  intake_field: ownerOver25
+  quote: Deutlich mehr als 50 Prozent der Geschäftsanteile müssen sich im Eigentum der im
+    Unternehmen tätigen Gründerinnen und Gründer befinden.
+  source:
+    file: https://exist.de/wp-content/uploads/2025/02/Richtlinie-EFT-03-07-2024.pdf
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-founder-management
+  gate_family: G1_nexus
+  requirement: At least one member of the funded founding team must be part of the
+    management and work exclusively for the company.
+  value: At least one founder must be in management, working exclusively for the company
+  intake_field: none
+  quote: Zumindest ein Mitglied des geförderten Gründungsteams muss in die Geschäftsführung
+    eingebunden und ausschließlich im Unternehmen tätig sein.
+  source:
+    file: https://exist.de/wp-content/uploads/2025/02/Richtlinie-EFT-03-07-2024.pdf
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

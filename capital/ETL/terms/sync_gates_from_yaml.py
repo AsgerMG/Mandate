@@ -194,17 +194,29 @@ def main() -> None:
                 n_skipped += 1
                 continue
             source = g.get("source") or {}
+            # gate_role is not optional metadata: a NULL here reads through
+            # the app as "unclassified" and is NOT neutral (a seeded gate MUST
+            # declare gate_role) -- yet this INSERT never wrote the column at
+            # all, for as long as this script has existed. Every gate synced
+            # from YAML landed NULL regardless of what the author put there,
+            # silently discarding it. Found 2026-08-05: a six-agent extraction
+            # batch each correctly assigned filter/programme_fact/obligation
+            # per gate, and 790 of those calls were thrown away on sync.
+            # COALESCE on conflict, matching the never-downgrade spirit below:
+            # a value here should never be blanked by a YAML that lacks one,
+            # but a real value should always be written.
             conn.execute("""
                 INSERT INTO eligibility_gates
                   (instrument_id, gate_key, gate_family, requirement, value,
                    intake_field, quote, source_file, source_locator,
-                   verification_level, verify_note, verify_by, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                   verification_level, verify_note, verify_by, gate_role, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
                   gate_family=excluded.gate_family, requirement=excluded.requirement,
                   value=excluded.value, intake_field=excluded.intake_field,
                   quote=excluded.quote, source_file=excluded.source_file,
                   source_locator=excluded.source_locator,
+                  gate_role=COALESCE(excluded.gate_role, eligibility_gates.gate_role),
                   -- NEVER DOWNGRADE. YAML is the authoring surface, but it is not the
                   -- only writer: a later, more expensive verification pass
                   -- promotes gates in the DB and does not write back here. An
@@ -230,7 +242,7 @@ def main() -> None:
                 g.get("value") or None, g.get("intake_field") or "none",
                 g.get("quote") or None, source.get("file") or None,
                 source.get("locator") or None, level, g.get("verify_note"),
-                rec.get("verify_by"),
+                rec.get("verify_by"), g.get("gate_role") or None,
             ))
             n_synced += 1
 

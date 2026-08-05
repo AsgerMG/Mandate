@@ -1,0 +1,61 @@
+id: satr_lu_rnd__sa_48601__ministere_de_l_energie_et_de_l_amenagement_du_te
+name: RES support scheme in Luxembourg (amending decision SA.37232)
+administering_body: see source document
+country: 'LU'
+capital_type: unknown
+status: draft
+gates:
+- id: g3-pv-capacity-threshold
+  gate_family: G3_financial
+  requirement: Photovoltaic installations with a nominal capacity of more than 200 kW can
+    benefit from a market premium via calls for tender.
+  value: 'PV market-premium route: capacity > 200 kW'
+  intake_field: ticketBand
+  quote: 'Photovoltaics: installations with a nominal capacity of more than 200 kW can
+    benefit from a market premium in the context of calls for tender.'
+  source:
+    file: https://www.klima-agence.lu/en/renewable-energies-compensations
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g3-wind-capacity-threshold
+  gate_family: G3_financial
+  requirement: Wind installations with a nominal electrical capacity of 400 kW or more
+    receive remuneration under the market premium scheme.
+  value: 'Wind market-premium route: capacity >= 400 kW'
+  intake_field: ticketBand
+  quote: 'Wind: remuneration under the market premium scheme applies to installations with
+    a nominal electrical capacity of 400 kW or more.'
+  source:
+    file: https://www.klima-agence.lu/en/renewable-energies-compensations
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g3-biogas-power-classes
+  gate_family: G3_financial
+  requirement: Biogas installations are compensated according to defined power classes -
+    up to 100 kW, over 100 up to 200 kW, over 200 up to 500 kW, and over 500 up to 2500 kW.
+  value: 'Biogas compensation bands: <=100/200/500/2500 kW'
+  intake_field: none
+  quote: 'Biogas: power classes <=100kW, >100kW to <=200kW, >200kW to <=500kW, >500kW to
+    <=2500kW.'
+  source:
+    file: https://www.klima-agence.lu/en/renewable-energies-compensations
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g6-15-year-validity
+  gate_family: G6_conditionality
+  requirement: The new compensation for photovoltaics is valid for 15 years from the
+    initial feed-in.
+  value: PV compensation validity 15 years from feed-in
+  intake_field: none
+  quote: The new compensation is valid for 15 years from the initial feed-in (photovoltaics).
+  source:
+    file: https://www.klima-agence.lu/en/renewable-energies-compensations
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

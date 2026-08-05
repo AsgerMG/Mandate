@@ -1,0 +1,46 @@
+id: satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus
+name: Yrityksen kehittämisavustus ja Toimintaympäristön kehittämisavustus
+administering_body: see source document
+country: 'FI'
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-only
+  gate_family: G2_size_ownership
+  requirement: Development aid is, as a rule, granted only to SMEs.
+  value: Restricted to SMEs (as a rule)
+  intake_field: turnoverBand
+  quote: Kehittämisavustusta voidaan myöntää pääsääntöisesti vain pk-yrityksille.
+  source:
+    file: https://elinvoimakeskus.fi/yrityksen-kehittamisavustus
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-primary-production-exclusion
+  gate_family: G1_nexus
+  requirement: Aid is not granted for primary production activities in fishing, agriculture
+    or forestry.
+  value: Excludes fishing/agriculture/forestry primary production
+  intake_field: none
+  quote: Avustusta ei myönnetä kala-, maa- eikä metsätalouden alkutuotannon harjoittamiseen.
+  source:
+    file: https://elinvoimakeskus.fi/yrityksen-kehittamisavustus
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-agri-processing-exclusion
+  gate_family: G1_nexus
+  requirement: Aid is also not granted for the processing and marketing of agricultural
+    products.
+  value: Excludes processing/marketing of agricultural products
+  intake_field: none
+  quote: Avustusta ei myönnetä myöskään maataloustuotteiden jalostukseen ja
+    maataloustuotteiden kaupan pitämiseen.
+  source:
+    file: https://elinvoimakeskus.fi/yrityksen-kehittamisavustus
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

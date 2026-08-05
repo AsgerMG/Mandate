@@ -1,0 +1,74 @@
+id: satr_at_rnd__sa_114191__austria_wirtschaftsservice_gmbh_aws
+name: Richtlinie für die Austria Wirtschaftsservice Gesellschaft mbH zur Förderung von Technologie und
+  Innovation (AWS T&I Richtlinie 2024-2026)
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicant
+  gate_family: G1_nexus
+  requirement: Applicants must be natural or legal persons/partnerships standing outside the Austrian
+    federal administration; civil-law associations (GesbR) and registered associations (Vereine) are not
+    entitled to apply.
+  value: GesbR and Vereine excluded
+  intake_field: borrowerModel
+  quote: Förderungswerbende können nur außerhalb der österreichischen Bundesverwaltung stehende natürliche
+    oder juristische Personen bzw. Personengesellschaften sein. Nicht antragslegitimiert sind Gesellschaften
+    bürgerlichen Rechts (GesbR) sowie Vereine.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-insolvency-exclusion
+  gate_family: G1_nexus
+  requirement: Companies subject to insolvency proceedings, or that meet the domestic-law criteria for
+    creditors to open insolvency proceedings against them, are excluded from funding.
+  value: Insolvent/near-insolvent companies excluded
+  intake_field: none
+  quote: Unternehmen, die Gegenstand eines Insolvenzverfahrens sind oder bei denen die im innerstaatlichen
+    Recht vorgesehenen Voraussetzungen für die Eröffnung eines Insolvenzverfahrens auf Antrag ihrer oder
+    seiner Gläubigerinnen und Gläubiger vorliegen, sind von einer Förderung ausgeschlossen.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-exclusion
+  gate_family: G1_nexus
+  requirement: A company that has not complied with a recovery order following an earlier European Commission
+    decision declaring aid illegal and incompatible is excluded from participation until repayment is
+    completed.
+  value: Outstanding EU recovery order = excluded
+  intake_field: none
+  quote: Gemäß Art. 1 Abs. 4 lit. a AGVO ist ein Unternehmen, das einer Rückforderungsanordnung aufgrund
+    eines früheren Beschlusses der Europäischen Kommission zur Feststellung der Unzulässigkeit einer Förderung
+    und ihrer Unvereinbarkeit nicht nachgekommen ist, solange von der Teilnahme ausgeschlossen, bis das
+    Unternehmen die Rückabwicklung der inkompatiblen Förderung vollzogen hat.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-establishment-in-austria
+  gate_family: G1_nexus
+  requirement: At the time the aid is paid out, recipients must have an establishment or branch in Austria
+    and generate the majority of their value added there; for consortium projects, applicants based outside
+    Austria may be funded if at least one consortium partner has an Austrian establishment.
+  value: Establishment in Austria required at payout (consortium exception)
+  intake_field: wouldOpenEntity
+  quote: ist die Gewährung einer Beihilfe davon abhängig zu machen, dass die Förderungsnehmenden zum Zeitpunkt
+    der Auszahlung der Beihilfe eine Betriebsstätte oder Niederlassung in Österreich haben und den überwiegenden
+    Anteil ihrer Wertschöpfung in Österreich erwirtschaften. Bei Konsortialvorhaben gemäß 4.1.4 können
+    auch Förderungswerbende mit Sitz außerhalb Österreichs gefördert werden, insofern zumindest ein Konsortialpartner
+    eine Betriebsstätte oder Niederlassung in Österreich hat.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (4/4 gates passed mechanical verbatim
+  check -> llm_cited).

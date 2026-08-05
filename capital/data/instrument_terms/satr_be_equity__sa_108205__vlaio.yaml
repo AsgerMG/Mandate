@@ -1,0 +1,80 @@
+id: satr_be_equity__sa_108205__vlaio
+name: Screen Flanders
+administering_body: see source document
+country: BE
+capital_type: unknown
+status: draft
+gates:
+- id: g3-max-support
+  gate_family: G3_financial
+  requirement: Maximum support granted via Screen Flanders is EUR 400,000.
+  value: Max EUR 400,000
+  intake_field: ticketBand
+  quote: maximum EUR 400.000 steun
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/screen-flanders/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Support is for production houses making feature fiction, documentary or animation films
+    and animation series.
+  value: 'Production houses: fiction/documentary/animation film or series'
+  intake_field: borrowerModel
+  quote: Screen Flanders is een subsidie voor productiehuizen die lange fictie-, documentaire- of animatiefilms
+    en animatiereeksen maken.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/screen-flanders/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-financing-availability
+  gate_family: G3_financial
+  requirement: At the time of application, 50% of the project financing must be demonstrably available.
+  value: 50% of project financing must be available at application
+  intake_field: cofinancingBand
+  quote: op het moment van de aanvraag kan worden aangetoond dat 50% van de financiering voor het project
+    beschikbaar is
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/screen-flanders/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-min-spend-flanders
+  gate_family: G5_use_of_funds
+  requirement: At least EUR 250,000 (excl. VAT) of eligible expenditure must be realised in the Flemish
+    Region.
+  value: Min EUR 250,000 eligible spend in Flemish Region
+  intake_field: ticketBand
+  quote: er worden minimaal EUR 250.000 (exclusief btw) aan in aanmerking komende uitgaven gerealiseerd
+    in het Vlaamse Gewest
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/screen-flanders/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-application-timing
+  gate_family: G6_conditionality
+  requirement: The application must be submitted before the first day of shooting or the first day of
+    animation.
+  value: Apply before first shooting/animation day
+  intake_field: needBy
+  quote: de aanvraag is ingediend voor de eerste opnamedag / eerste animatiedag
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/screen-flanders/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-resubmission-limit
+  gate_family: G6_conditionality
+  requirement: The project may have been submitted at most once before, without having received support
+    on that earlier submission.
+  value: Max 1 prior submission, must not have been funded then
+  intake_field: none
+  quote: het is al maximaal een keer ingediend en kreeg bij de vorige indiening geen steun
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/screen-flanders/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

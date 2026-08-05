@@ -1,0 +1,45 @@
+id: satr_fr_rnd__sa_111938__cnc
+name: Soutien à la modernisation des industries techniques et à l'innovation technologique
+administering_body: see source document
+country: 'FR'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-french-establishment
+  gate_family: G1_nexus
+  requirement: Eligible companies must have a stable establishment in France.
+  value: Stable establishment in France required
+  intake_field: entityCountries
+  quote: Les entreprises éligibles justifient d'un établissement stable en France
+  source:
+    file: https://www.cnc.fr/professionnels/aides-et-financements/multi-sectoriel/aides-aux-moyens-techniques-de-production-et-de-diffusion_1938392
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-non-eu-control-exclusion
+  gate_family: G1_nexus
+  requirement: Companies controlled, within the meaning of Article L. 233-3 of the
+    Commercial Code, by non-European capital are not eligible.
+  value: Excludes companies controlled by non-European capital
+  intake_field: nonEuControl
+  quote: et ne sont pas contrôlées, au sens de l'article L. 233-3 du code du commerce, par
+    des capitaux extra-européens.
+  source:
+    file: https://www.cnc.fr/professionnels/aides-et-financements/multi-sectoriel/aides-aux-moyens-techniques-de-production-et-de-diffusion_1938392
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-legal-form
+  gate_family: G1_nexus
+  requirement: Eligible legal forms are association or société (company).
+  value: 'Legal form: association or société'
+  intake_field: none
+  quote: 'Formes juridiques éligibles : association, société.'
+  source:
+    file: https://www.cnc.fr/professionnels/aides-et-financements/multi-sectoriel/aides-aux-moyens-techniques-de-production-et-de-diffusion_1938392
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

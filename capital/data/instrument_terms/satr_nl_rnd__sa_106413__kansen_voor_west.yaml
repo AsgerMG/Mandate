@@ -1,0 +1,23 @@
+id: satr_nl_rnd__sa_106413__kansen_voor_west
+name: NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-jtf-region-restriction
+  gate_family: G1_nexus
+  requirement: The subsidised project must be carried out in the JTF region Groot-Rijnmond and must fit
+    within one of the descriptions set out in Annex 3 to the scheme.
+  value: Project must be executed in JTF region Groot-Rijnmond
+  intake_field: activityCountries
+  quote: b. wordt uitgevoerd in de JTF-regio Groot-Rijnmond;
+  source:
+    file: https://jtf-rijnmond.kansenvoorwest.nl/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (1/1 gates passed mechanical verbatim
+  check -> llm_cited).

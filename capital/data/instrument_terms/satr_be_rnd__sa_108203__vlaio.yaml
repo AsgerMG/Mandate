@@ -1,0 +1,46 @@
+id: satr_be_rnd__sa_108203__vlaio
+name: Besluit Talent
+administering_body: see source document
+country: BE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-legal-entity-flanders
+  gate_family: G1_nexus
+  requirement: All companies with legal personality and an operating establishment in the Flemish Region
+    can apply for a Baekeland mandate.
+  value: Legal entity with operating establishment in Flanders
+  intake_field: entityCountries
+  quote: Alle bedrijven met rechtspersoonlijkheid en met een exploitatievestiging in het Vlaamse Gewest
+    kunnen een Baekeland-mandaat aanvragen.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/baekeland-mandaten/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-knowledge-in-flanders
+  gate_family: G6_conditionality
+  requirement: It is a condition that knowledge is built up in Flanders during project execution and that
+    results are valorised in Flanders after project execution.
+  value: Knowledge build-up and valorisation must occur in Flanders
+  intake_field: none
+  quote: Het is een voorwaarde dat er bij de projectuitvoering kennis opgebouwd wordt in Vlaanderen en
+    dat er na de projectuitvoering resultaten gevaloriseerd worden in Vlaanderen.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/baekeland-mandaten/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g1-mentor-employee
+  gate_family: G1_nexus
+  requirement: The company must have at least one employee with the competence to act as industrial mentor/promoter
+    for the doctoral student.
+  value: Must have an employee able to act as industrial mentor
+  intake_field: none
+  quote: De onderneming moet tenminste een medewerker hebben die de competentie bezit om als industriele
+    mentor/promotor voor de doctoraatsstudent op te treden.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/baekeland-mandaten/voorwaarden
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

@@ -1,0 +1,74 @@
+id: satr_cz_rnd__sa_119259__technologicka_agentura_cr
+name: Program na podporu průmyslového výzkumu a experimentálního vývoje TREND
+administering_body: see source document
+country: CZ
+capital_type: unknown
+status: draft
+gates:
+- id: g1-subprogram1-applicant
+  gate_family: G1_nexus
+  requirement: Under Sub-programme 1, applicants must be enterprises (legal or natural persons) carrying
+    out economic activity per the Commission Regulation's Annex 1; other participants may be further enterprises
+    or research organisations.
+  value: 'Sub-programme 1: enterprise applicant, per Annex 1'
+  intake_field: borrowerModel
+  quote: Uchazeči o podporu na projekt podle Zákona mohou být podniky – právnické i fyzické osoby, které
+    podle Přílohy 1 Nařízení Komise vykonávají hospodářskou činnost.
+  source:
+    file: https://tacr.gov.cz/program/program-trend/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-subprogram1-track-record
+  gate_family: G3_financial
+  requirement: Under Sub-programme 1, the applicant must document at least two years of economic/accounting
+    history at the time of application.
+  value: 'Sub-programme 1: >=2 years accounting history required'
+  intake_field: foundedYear
+  quote: Podmínkou bude doložení dvouleté ekonomické (/účetní) historie uchazeče při podání žádosti o
+    poskytnutí účelové podpory.
+  source:
+    file: https://tacr.gov.cz/program/program-trend/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-subprogram2-newcomer-cap
+  gate_family: G3_financial
+  requirement: Under Sub-programme 2 („Nováčci“, newcomers), the applicant must prove that in the previous
+    five years it did not receive public R&D support exceeding CZK 1 million in total for its own or purchased
+    R&D activities, and the two-year accounting-history requirement does not apply.
+  value: 'Sub-programme 2: <=CZK 1m public R&D support in last 5 years; no 2yr history requirement'
+  intake_field: cofinancingBand
+  quote: 'Uchazeči o podporu na projekt podle Zákona mohou být podniky – právnické i fyzické osoby, které
+    podle Přílohy 1 Nařízení Komise vykonávají hospodářskou činnost. Dalšími účastníky projektu mohou
+    být:
+
+    − podniky (viz definice uvedená výše),
+
+    − výzkumné organizace – organizační složky státu nebo organizační jednotky ministerstev zabývající
+    se výzkumnou činností nebo právnické osoby, které splňují definici organizace pro výzkum a šíření
+    znalostí podle Nařízení Komise a podle Rámce.
+
+    Příjemcem podpory může být podnik, který řeší projekt samostatně, anebo řeší projekt ve spolupráci
+    s dalšími podniky a/nebo ve spolupráci s VO (formou kolaborativního výzkumu v souladu s Rámcem). Podmínkou
+    bude doložení dvouleté ekonomické (/účetní) historie uchazeče při podání žádosti o poskytnutí účelové
+    podpory.
+
+
+    Podprogram 2 „Nováčci“:
+
+    Uchazeči o podporu na projekt podle Zákona mohou být podniky – právnické i fyzické osoby, které podle
+    Přílohy 1 Nařízení Komise vykonávají hospodářskou činnost. Příjemcem podpory může být podnik, který
+    řeší projekt ve spolupráci s VO (musí jít o kolaborativní, nikoliv smluvní výzkum). Přitom musí prokázat,
+    že v posledních pěti letech nebyl příjemcem podpory ze státního nebo jiných veřejných rozpočtů na
+    své či nakupované činnosti výzkumu a vývoje v objemu, který by v úhrnu přesáhl 1 mil. Kč. Doložení
+    dvouleté ekonomické (/účetní) historie uchazeče nebude vyžadováno.'
+  source:
+    file: https://tacr.gov.cz/program/program-trend/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

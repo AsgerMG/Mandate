@@ -1,0 +1,21 @@
+id: satr_it_equity__sa_103469__invitalia_agenzia_nazionale_per_l_attrazione_deg
+name: Interventi di riqualificazione destinati alle aree di crisi industriale ai sensi della Legge 181/89
+  (nuovo regime)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-legal-form
+  gate_family: G1_nexus
+  requirement: Eligible beneficiaries are enterprises established as capital companies, cooperative companies,
+    and consortium companies; business networks (reti di imprese) are also admitted.
+  value: Capital/cooperative/consortium companies or business networks
+  intake_field: borrowerModel
+  quote: Sono ammissibili alle agevolazioni le imprese costituite in forma di societa' di capitali, le
+    societa' cooperative e le societa' consortili, sono altresi' ammesse le reti di imprese.
+  source:
+    file: https://www.invitalia.it/cosa-facciamo/rilanciamo-le-aree-di-crisi-industriale/rilancio-aree-industriali-l181-89
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

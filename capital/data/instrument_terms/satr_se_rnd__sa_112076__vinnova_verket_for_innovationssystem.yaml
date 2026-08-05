@@ -1,0 +1,55 @@
+id: satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem
+name: Förordning (2015:208) om statligt stöd till forskning och utveckling samt innovation
+administering_body: see source document
+country: SE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-excl-private-individuals
+  gate_family: G1_nexus
+  requirement: Grants may not be given to private individuals.
+  value: 'Excluded: private individuals'
+  intake_field: borrowerModel
+  quote: Stöd i form av bidrag får inte lämnas till privatpersoner.
+  source:
+    file: https://www.vinnova.se/sok-finansiering/regler-for-finansiering/statligt-stod
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-consulting-cap
+  gate_family: G3_financial
+  requirement: Aid for consultancy services to SMEs may not exceed SEK 1,800,000.
+  value: Max SEK 1,800,000 for SME consultancy aid
+  intake_field: none
+  quote: Stödet får inte överstiga 1 800 000 kronor.
+  source:
+    file: https://www.vinnova.se/sok-finansiering/regler-for-finansiering/statligt-stod
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g6-apply-before-starting
+  gate_family: G6_conditionality
+  requirement: The application for aid must have been submitted before the investment for which the aid
+    is sought begins.
+  value: Application must precede start of investment
+  intake_field: needBy
+  quote: Som förutsättning för att få stöd enligt 6 och 8-15 §§ gäller att ansökan om stöd ska ha lämnats
+    in innan den investering som stödet söks för inleds.
+  source:
+    file: https://www.vinnova.se/sok-finansiering/regler-for-finansiering/statligt-stod
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-recovery-order
+  gate_family: G3_financial
+  requirement: Aid under this regulation may not be paid to a company subject to a repayment claim arising
+    from a European Commission decision.
+  value: 'Excluded: companies subject to an EC repayment claim'
+  intake_field: none
+  quote: Ett stöd enligt denna förordning får inte betalas ut till ett företag som är föremål för betalningskrav
+    på grund av ett beslut av Europeiska kommissionen.
+  source:
+    file: https://www.vinnova.se/sok-finansiering/regler-for-finansiering/statligt-stod
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

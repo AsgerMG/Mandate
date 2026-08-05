@@ -1,0 +1,43 @@
+id: satr_it_equity__sa_60795__ministero_delle_imprese_e_del_made_in_italy_dire
+name: Intervento del fondo per la crescita sostenibile a favore di progetti di ricerca e sviluppo realizzati
+  nell'ambito di accordi sottoscritti dal Ministero dello sviluppo economico con le regioni e le altre
+  amministrazioni pubbliche.
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g3-two-financial-statements
+  gate_family: G3_financial
+  requirement: Enterprises of any size may benefit provided they have at least two approved financial
+    statements at the time of application.
+  value: Any size, but >=2 approved financial statements required
+  intake_field: foundedYear
+  quote: Possono beneficiare delle agevolazioni le imprese di qualsiasi dimensione con almeno due bilanci
+    approvati al momento della presentazione della domanda.
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-eligible-activity-codes
+  gate_family: G1_nexus
+  requirement: Eligible enterprises are those carrying out the activities under numbers 1 and 3 of Article
+    2195 of the Civil Code (including artisan production businesses under Law 443/1985), agro-industrial
+    enterprises primarily engaged in industrial activity, and enterprises carrying out auxiliary activities.
+  value: Activities under Civil Code art. 2195(1)(3), agro-industrial (primarily industrial), or auxiliary
+    activities
+  intake_field: none
+  quote: le imprese che esercitano le attivita' di cui all'articolo 2195 del codice civile, numeri 1 e
+    3, ivi comprese le imprese artigiane di produzione di beni di cui alla legge 8 agosto 1985, n. 443;
+    b) le imprese agro-industriali che svolgono prevalentemente attivita' industriale; c) le imprese che
+    esercitano le attivita' ausiliarie.
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (2/2 gates passed mechanical verbatim
+  check -> llm_cited).

@@ -1,0 +1,41 @@
+id: satr_nl_rnd__sa_108830__provincie_noord_brabant
+name: NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-lead-applicant-partnership
+  gate_family: G1_nexus
+  requirement: Subsidy under this scheme can only be requested by a lead applicant (penvoerder) on behalf
+    of a partnership (samenwerkingsverband).
+  value: Must apply via a lead applicant on behalf of a partnership
+  intake_field: consortium
+  quote: Subsidie op grond van deze paragraaf kan worden aangevraagd door een penvoerder namens een samenwerkingsverband.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680175
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-south-netherlands-benefit
+  gate_family: G1_nexus
+  requirement: The project must be carried out in South Netherlands or benefit South Netherlands.
+  value: Project must be carried out in/benefit South Netherlands
+  intake_field: activityCountries
+  quote: het project wordt uitgevoerd in Zuid-Nederland of komt ten goede aan Zuid-Nederland
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680175
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-must-benefit-sme
+  gate_family: G2_size_ownership
+  requirement: The project must benefit SMEs.
+  value: Project must benefit the SME sector
+  intake_field: turnoverBand
+  quote: het project komt ten goede aan het mkb
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680175
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

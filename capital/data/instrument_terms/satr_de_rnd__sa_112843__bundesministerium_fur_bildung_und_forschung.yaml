@@ -1,0 +1,40 @@
+id: satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung
+name: 'Richtlinie zur Förderung von regionalen Innovationsnetzwerken: „Zukunftscluster-Initiative“ [BMBF]'
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-concept-phase-noncommercial-only
+  gate_family: G1_nexus
+  requirement: In the concept phase, only state and non-state universities, non-university research institutions,
+    associations, clubs, and other organisations with R&D competence in the non-economic sphere are entitled
+    to apply; companies of the commercial economy are not eligible until the implementation phases.
+  value: 'Concept phase: research/non-profit orgs only, no companies'
+  intake_field: borrowerModel
+  quote: Für die Konzeptionsphase sind staatliche und nicht staatliche Hochschulen, außeruniversitäre
+    Forschungseinrichtungen, Verbände, Vereine und sonstige Organisationen mit FuE-Kompetenz im nichtwirtschaftlichen
+    Bereich antragsberechtigt.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2020/11/3229_bekanntmachung.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-implementation-phase-opens-to-companies
+  gate_family: G1_nexus
+  requirement: In the implementation phases, commercial enterprises become eligible to apply alongside
+    universities, non-university research institutions, associations, clubs, and other R&D-competent organisations.
+  value: 'Implementation phases: companies become eligible'
+  intake_field: borrowerModel
+  quote: Für die Umsetzungsphasen sind staatliche und nicht staatliche Hochschulen, außeruniversitäre
+    Forschungseinrichtungen, Verbände, Vereine und sonstige Organisationen mit FuE-Kompetenz sowie Unternehmen
+    der gewerblichen Wirtschaft antragsberechtigt.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2020/11/3229_bekanntmachung.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (2/2 gates passed mechanical verbatim
+  check -> llm_cited).

@@ -1,0 +1,44 @@
+id: satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire
+name: Intervento del fondo per la crescita sostenibile a favore di progetti di ricerca e
+  sviluppo realizzati nell'ambito di accordi sottoscritti dal Ministero dello sviluppo
+  economico con le regioni e le altre amministrazioni pubbliche - Proroga 2026
+administering_body: see source document
+country: 'IT'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-track-record
+  gate_family: G1_nexus
+  requirement: Beneficiaries must be enterprises of any size with at least two approved
+    financial statements at the time of application.
+  value: At least 2 approved financial statements required
+  intake_field: foundedYear
+  quote: Possono beneficiare delle agevolazioni le imprese di qualsiasi dimensione con almeno
+    due bilanci approvati al momento della presentazione della domanda.
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-activity-type
+  gate_family: G1_nexus
+  requirement: Eligible are enterprises carrying out the activities under Article 2195 nos.
+    1 and 3 of the Civil Code (including artisan production enterprises under Law
+    443/1985), agro-industrial enterprises primarily engaged in industrial activity, and
+    enterprises carrying out ancillary activities.
+  value: Restricted to enterprise activity categories per Art. 2195 Civil Code / DM
+    31.12.2021
+  intake_field: none
+  quote: le imprese che esercitano le attivita' di cui all'articolo 2195 del codice civile,
+    numeri 1 e 3, ivi comprese le imprese artigiane di produzione di beni di cui alla legge
+    8 agosto 1985, n. 443; b) le imprese agro-industriali che svolgono prevalentemente
+    attivita' industriale; c) le imprese che esercitano le attivita' ausiliarie.
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text. Only 2 gates - source text is
+  short and does not support more without fabrication.

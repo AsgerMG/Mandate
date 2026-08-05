@@ -1,0 +1,56 @@
+id: satr_de_rnd__sa_56245__fa_fur_korperschaften_ii
+name: FA für Körperschaften II
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-taxpayer-eligibility
+  gate_family: G1_nexus
+  requirement: Eligible claimants are taxpayers under German income-tax or corporation-tax law who generate
+    income under section 2(1) sentence 1 numbers 1 to 3 of the Income Tax Act (EStG), are not exempt from
+    taxation, and meet the other conditions set out in the Research Allowance Act.
+  value: Income/corporation taxpayer, EStG §2(1)(1-3) income, not tax-exempt
+  intake_field: borrowerModel
+  quote: Anspruchsberechtigt sind Steuerpflichtige im Sinne des Einkommensteuer- und des Körperschaftsteuergesetzes,
+    soweit sie Einkünfte nach § 2 Absatz 1 Satz 1 Nummer 1 bis 3 des Einkommensteuergesetzes erzielen,
+    nicht von der Besteuerung befreit sind und die in diesem Gesetz aufgeführten Voraussetzungen erfüllen.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-partnership-as-claimant
+  gate_family: G1_nexus
+  requirement: For partnerships (Mitunternehmerschaften) under section 15(1) sentence 1 number 2 EStG,
+    the partnership itself — not the individual partner — is treated as the claimant; corporations that
+    opt to be taxed as such under section 1a KStG are likewise treated as taxpayers eligible to claim.
+  value: Partnership entity, or KStG §1a opting corporation, is the claimant
+  intake_field: borrowerModel
+  quote: Bei Mitunternehmerschaften nach § 15 Absatz 1 Satz 1 Nummer 2 des Einkommensteuergesetzes tritt
+    an die Stelle des Steuerpflichtigen die Mitunternehmerschaft als Anspruchsberechtigter. Nach § 1a
+    des Körperschaftsteuergesetzes optierende Gesellschaften sind als Steuerpflichtige im Sinne des Körperschaftsteuergesetzes
+    anspruchsberechtigt.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-work-start-date-cutoff
+  gate_family: G6_conditionality
+  requirement: The research allowance can only be claimed for R&D work that began, or was commissioned,
+    after 1 January 2020.
+  value: R&D work must start / be commissioned after 1 Jan 2020
+  intake_field: none
+  quote: Die Forschungszulage kann nur für Forschungs- und Entwicklungsvorhaben im Sinne des § 2 beansprucht
+    werden, mit deren Arbeiten nach dem 1. Januar 2020 begonnen wird oder für die der Auftrag nach dem
+    1. Januar 2020 erteilt wird.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

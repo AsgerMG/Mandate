@@ -1,0 +1,51 @@
+id: satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung
+name: Digitalisierung der Materialforschung in Deutschland „MaterialDigital 3“ 1. Änd. [BMBF]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises and universities/non-university research
+    and science institutions.
+  value: Commercial enterprise or university/research institution
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Hochschulen und außeruniversitäre
+    Forschungs- und Wissenschaftseinrichtungen.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2023/05/2023-05-24-Bekanntmachung-MaterialDigital3.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-establishment-germany
+  gate_family: G1_nexus
+  requirement: At the time of payout, a business establishment/branch (for companies) or equivalent institution
+    must exist in Germany.
+  value: DE establishment/branch required at payout
+  intake_field: entityCountries
+  quote: Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung wird das Vorhandensein einer Betriebsstätte
+    oder Niederlassung (Unternehmen) beziehungsweise einer sonstigen Einrichtung in Deutschland verlangt.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2023/05/2023-05-24-Bekanntmachung-MaterialDigital3.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-data-sharing-obligation
+  gate_family: G6_conditionality
+  requirement: Recipients are obliged to make their findings and results from MaterialDigital innovation-platform
+    projects available in an appropriate manner, and to cooperate with the platform's operator.
+  value: Must share findings and cooperate with platform operator
+  intake_field: none
+  quote: Die Zuwendungsempfänger sind verpflichtet, ihre Erkenntnisse und Ergebnisse aus den Projekten
+    der Innovationsplattform MaterialDigital in geeigneter Weise zur Verfügung zu stellen und mit dem
+    Träger der Innovationsplattform zusammenzuarbeiten.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2023/05/2023-05-24-Bekanntmachung-MaterialDigital3.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

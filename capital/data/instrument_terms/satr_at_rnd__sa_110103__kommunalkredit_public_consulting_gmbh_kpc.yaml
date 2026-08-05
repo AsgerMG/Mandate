@@ -1,0 +1,20 @@
+id: satr_at_rnd__sa_110103__kommunalkredit_public_consulting_gmbh_kpc
+name: Umweltförderung im Inland regulär
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-types
+  gate_family: G1_nexus
+  requirement: Applications for domestic environmental support may be submitted by natural or legal persons,
+    or partnerships, for measures under section 4.
+  value: Natural/legal persons or partnerships, for section-4 measures
+  intake_field: borrowerModel
+  quote: Ansuchen im Bereich der Umweltförderung im Inland können von natürlichen oder juristischen Personen
+    sowie Personengesellschaften für das Setzen von Maßnahmen gemäß § 4 gestellt werden.
+  source:
+    file: https://www.umweltfoerderung.at/fileadmin/user_upload/umweltfoerderung/uebergeordnete_dokumente/IFRL_UFI.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

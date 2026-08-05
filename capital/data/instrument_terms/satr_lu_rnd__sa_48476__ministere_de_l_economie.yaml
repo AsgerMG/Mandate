@@ -1,0 +1,57 @@
+id: satr_lu_rnd__sa_48476__ministere_de_l_economie
+name: Loi du 17 mai 2017 ayant pour objet 1. le renouvellement des régimes d''aides à la recherche, au
+  développement et à l''innovation; 2. les missions de l''Agence nationale pour la promotion de l''innovation
+  et de la recherche et modifiant la loi mo
+administering_body: see source document
+country: LU
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Applicants must be Luxembourg private companies meeting all the eligibility criteria.
+  value: Luxembourg private company, all eligibility criteria met
+  intake_field: entityCountries
+  quote: Luxembourg private companies that meet all the eligibility criteria
+  source:
+    file: https://luxinnovation.lu/find-funding/knowledge-and-technologies/industrial-research-projects
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-size-classification
+  gate_family: G2_size_ownership
+  requirement: Company size is classified as small, medium or large per SME classification.
+  value: 'Size class: small/medium/large per SME definition'
+  intake_field: fteBand
+  quote: Company size definitions per SME classification (small, medium or large company).
+  source:
+    file: https://luxinnovation.lu/find-funding/knowledge-and-technologies/industrial-research-projects
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g5-project-scope
+  gate_family: G5_use_of_funds
+  requirement: Eligible projects relate to industrial research (acquisition of new knowledge or development
+    of new technological building blocks) or experimental development (combining existing knowledge or
+    technological building blocks).
+  value: Industrial research or experimental development projects only
+  intake_field: developmentStage
+  quote: 'Projects relating to: industrial research, aimed at the acquisition of new knowledge or the
+    development of new technological building blocks; experimental development, aimed at combining existing
+    knowledge or technological building blocks.'
+  source:
+    file: https://luxinnovation.lu/find-funding/knowledge-and-technologies/industrial-research-projects
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-application-channel
+  gate_family: G6_conditionality
+  requirement: Applications must be submitted via MyGuichet.lu.
+  value: Apply via MyGuichet.lu
+  intake_field: none
+  quote: Applications must be submitted via MyGuichet.lu.
+  source:
+    file: https://luxinnovation.lu/find-funding/knowledge-and-technologies/industrial-research-projects
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

@@ -1,0 +1,48 @@
+id: satr_lu_rnd__sa_61332__ministere_de_l_economie
+name: SA.48476 Loi du 17 mai 2017 ayant pour objet 1. le renouvellement des régimes d'aides à la recherche,
+  au développement et à l'innovation; 2. les missions de l'Agence nationale pour la promotion de l'innovation
+  et de la recherche
+administering_body: see source document
+country: LU
+capital_type: unknown
+status: draft
+gates:
+- id: g1-scope
+  gate_family: G1_nexus
+  requirement: The aid targets research infrastructures — Luxembourg-based facilities, resources, and
+    related services used by the scientific community to conduct research and which engage in economic
+    activities.
+  value: Luxembourg-based research infrastructure with economic activity
+  intake_field: entityCountries
+  quote: The aid is intended for research infrastructures, i.e. Luxembourg-based facilities, resources
+    and related services used by the scientific community to conduct research, and which engage in economic
+    activities.
+  source:
+    file: https://luxinnovation.lu/find-funding/knowledge-and-technologies/research-infrastructure
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-open-access
+  gate_family: G6_conditionality
+  requirement: Access to the infrastructure must be open to multiple users on a transparent and non-discriminatory
+    basis.
+  value: Open, transparent, non-discriminatory multi-user access required
+  intake_field: conditionality
+  quote: Access to the infrastructure must be open to multiple users on a transparent and non-discriminatory
+    basis.
+  source:
+    file: https://luxinnovation.lu/find-funding/knowledge-and-technologies/research-infrastructure
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g6-application-channel
+  gate_family: G6_conditionality
+  requirement: Applications must fulfil all eligibility criteria available on MyGuichet.lu.
+  value: Apply via MyGuichet.lu, meeting listed criteria
+  intake_field: none
+  quote: Applications need to fulfil all eligibility criteria available on MyGuichet.lu.
+  source:
+    file: https://luxinnovation.lu/find-funding/knowledge-and-technologies/research-infrastructure
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

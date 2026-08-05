@@ -1,0 +1,57 @@
+id: satr_it_equity__sa_102955__ministero_delle_imprese_e_del_made_in_italy_dire
+name: Intervento del fondo per la crescita sostenibile a favore di progetti di ricerca e sviluppo realizzati
+  nell'ambito di accordi sottoscritti dal Ministero dello sviluppo economico con le regioni e le altre
+  amministrazioni pubbliche
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-two-approved-balance-sheets
+  gate_family: G2_size_ownership
+  requirement: Companies of any size may benefit, provided they have at least two approved balance sheets
+    at the time of application.
+  value: Any size, min. 2 approved annual balance sheets
+  intake_field: foundedYear
+  quote: Possono beneficiare delle agevolazioni le imprese di qualsiasi dimensione con almeno due bilanci
+    approvati al momento della presentazione della domanda.
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-civil-code-activities
+  gate_family: G1_nexus
+  requirement: Eligible enterprises include those carrying out activities under Article 2195 of the Civil
+    Code, numbers 1 and 3, including artisan production businesses under Law 443/1985.
+  value: 'Eligible: Art. 2195 civil code activities (nos. 1, 3), incl. artisan producers'
+  intake_field: borrowerModel
+  quote: le imprese che esercitano le attivita' di cui all'articolo 2195 del codice civile, numeri 1 e
+    3, ivi comprese le imprese artigiane di produzione di beni di cui alla legge 8 agosto 1985, n. 443
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-agro-industrial
+  gate_family: G1_nexus
+  requirement: Agro-industrial enterprises are eligible if they mainly carry out industrial activity.
+  value: 'Eligible: agro-industrial firms, mainly industrial activity'
+  intake_field: borrowerModel
+  quote: le imprese agro-industriali che svolgono prevalentemente attivita' industriale
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-auxiliary-activities
+  gate_family: G1_nexus
+  requirement: Enterprises carrying out auxiliary activities are also eligible.
+  value: 'Eligible: enterprises carrying out auxiliary activities'
+  intake_field: borrowerModel
+  quote: le imprese che esercitano le attivita' ausiliarie
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/accordi-per-linnovazione-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

@@ -1,0 +1,61 @@
+id: satr_de_rnd__sa_113709__thuringer_aufbaubank
+name: Förderprogramm des Freistaats Thüringen zur Förderung von Forschung, Technologie und Innovation
+  (FTI) Richtlinie FTI-Thüringen TECHNOLOGIE [TH]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-base
+  gate_family: G2_size_ownership
+  requirement: SMEs are eligible applicants across all funding categories.
+  value: SME eligible in all funding categories
+  intake_field: turnoverBand
+  quote: Zuwendungsberechtigt sind in allen Fördergegenständen KMU, sowie
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-verbund-consortium
+  gate_family: G1_nexus
+  requirement: In the Thüringen Verbund and Thüringen Verbund Dynamik funding categories, large enterprises
+    and science institutions may only participate in consortium with an SME (except for projects supporting
+    critical technologies under the STEP Regulation).
+  value: Large enterprises/science institutions must consortium with an SME
+  intake_field: consortium
+  quote: In den Fördergegenständen Thüringen Verbund (Nr. 3.1.2) und Thüringen Verbund Dynamik (Nr. 3.1.3)
+    große Unternehmen und Wissenschaftseinrichtungen ausschließlich im Verbund mit KMU.
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-thuringen-location
+  gate_family: G1_nexus
+  requirement: The project must be carried out in Thuringia.
+  value: Project must be carried out in Thuringia
+  intake_field: activityCountries
+  quote: Das Vorhaben ist in Thüringen durchzuführen.
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-specialization-fields
+  gate_family: G5_use_of_funds
+  requirement: All projects must be assignable to at least one of the five RIS Thuringia specialisation
+    fields (industrial production and systems; sustainable and intelligent mobility and logistics; healthy
+    living and health economy; sustainable energy and resource use; information and communication technologies;
+    innovative production-related services).
+  value: Project must fit one of five RIS Thuringia specialisation fields
+  intake_field: developmentStage
+  quote: müssen alle Vorhaben nach Nr. 3 wenigstens einem der fünf Spezialisierungsfelder der RIS Thüringen
+    (Industrielle Produktion und Systeme, Nachhaltige und intelligente Mobilität und Logistik, Gesundes
+    Leben und Gesundheitswirtschaft, Nachhaltige Energie und Ressourcenverwendung, Informations- und Kommunikationstechnologien,
+    Innovative und produktionsnahe Dienstleistungen) zugeordnet werden können.
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

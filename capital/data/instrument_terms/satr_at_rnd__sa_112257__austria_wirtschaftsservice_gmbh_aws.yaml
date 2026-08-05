@@ -1,0 +1,69 @@
+id: satr_at_rnd__sa_112257__austria_wirtschaftsservice_gmbh_aws
+name: Richtlinie für aws erp-Kredite 2024
+administering_body: see source document
+country: 'AT'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-seat-austria
+  gate_family: G1_nexus
+  requirement: The applicant company must have a registered seat or a permanent
+    establishment in Austria.
+  value: Registered seat or permanent establishment required in Austria
+  intake_field: entityCountries
+  quote: |-
+    Das Unternehmen muss
+    über einen Sitz oder eine Betriebsstätte in Österreich verfügen.
+  source:
+    file: https://www.aws.at/richtlinien/erp-fonds-richtlinen/richtlinie-aws-erp-kredit/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-excluded-sectors
+  gate_family: G1_nexus
+  requirement: Companies in certain ÖNACE 2025 sectors are excluded from funding, including
+    agriculture/forestry/fishing, financial and insurance services, real estate, public
+    administration, interest representation and religious associations, private households,
+    and extraterritorial organisations.
+  value: Excludes agriculture, financial/insurance, real estate, public admin, and related
+    ÖNACE sectors
+  intake_field: none
+  quote: 'Ausgeschlossen sind Unternehmen aus den folgenden Wirtschaftszweigen (ÖNACE 2025):'
+  source:
+    file: https://www.aws.at/richtlinien/erp-fonds-richtlinen/richtlinie-aws-erp-kredit/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-public-ownership-exclusion
+  gate_family: G2_size_ownership
+  requirement: Public-law bodies and legal entities in which public-law bodies hold more
+    than 50 percent direct or indirect ownership, as well as foundations, are not eligible
+    - except entities majority-owned by public bodies that carry out market-determined
+    activities.
+  value: Excludes entities >50% publicly owned, except market-activity entities
+  intake_field: institutionalOwner
+  quote: |-
+    Körperschaften des öffentlichen Rechts sowie juristische Personen, an denen Körperschaften des
+    öffentlichen Rechts zu mehr als 50% direkt oder indirekt beteiligt sind, und Stiftungen sind nicht
+    förderungsfähig.
+  source:
+    file: https://www.aws.at/richtlinien/erp-fonds-richtlinen/richtlinie-aws-erp-kredit/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-undertaking-in-difficulty
+  gate_family: G1_nexus
+  requirement: Companies meeting the criteria of an "undertaking in difficulty" under
+    Article 2(18) of the GBER are excluded from GBER-based funding.
+  value: Excludes "undertakings in difficulty" per GBER Art. 2(18)
+  intake_field: lossesOverHalfCapital
+  quote: „Unternehmens in Schwierigkeiten“ gemäß Artikel 2 Ziffer 18 AGVO
+  source:
+    file: https://www.aws.at/richtlinien/erp-fonds-richtlinen/richtlinie-aws-erp-kredit/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text. Same underlying scheme text as
+  satr_at_equity__sa_117759__austria_wirtschaftsservice_gmbh_aws (2025 vintage).

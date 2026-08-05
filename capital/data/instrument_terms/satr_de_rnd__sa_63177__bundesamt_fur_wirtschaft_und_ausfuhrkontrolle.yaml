@@ -1,0 +1,46 @@
+id: satr_de_rnd__sa_63177__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle
+name: Federal support for efficient heat networks
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicant-types
+  gate_family: G1_nexus
+  requirement: Eligible applicants are companies under section 14 BGB, municipalities (if economically
+    active), municipal own-operations, municipal companies, municipal special-purpose associations, registered
+    associations, and registered cooperatives.
+  value: Companies (§14 BGB), municipalities (if economically active), municipal bodies, registered associations/cooperatives
+  intake_field: borrowerModel
+  quote: 'Antragsberechtigt: Unternehmen iSd. § 14 BGB, Kommunen (soweit wirtschaftlich tätig), kommunale
+    Eigenbetriebe, kommunale Unternehmen, kommunale Zweckverbände, eingetragene Vereine, eingetragene
+    Genossenschaften.'
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Waermenetze/Effiziente_Waermenetze/effiziente_waermenetze_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-municipalities-condition
+  gate_family: G1_nexus
+  requirement: Municipalities are eligible applicants only insofar as they are economically active.
+  value: Municipalities eligible only if economically active
+  intake_field: none
+  quote: Kommunen (soweit wirtschaftlich tätig)
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Waermenetze/Effiziente_Waermenetze/effiziente_waermenetze_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-contractors-condition
+  gate_family: G1_nexus
+  requirement: Contractors are eligible applicants only if they meet the requirements and obligations
+    of the funding guideline, in particular Annex 2.
+  value: Contractors eligible only if meeting guideline conditions (Annex 2)
+  intake_field: none
+  quote: Contractoren sind antragsberechtigt, sofern sie die Voraussetzungen und Pflichten dieser Richtlinie
+    (insbesondere Anlage 2) erfüllen.
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Waermenetze/Effiziente_Waermenetze/effiziente_waermenetze_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

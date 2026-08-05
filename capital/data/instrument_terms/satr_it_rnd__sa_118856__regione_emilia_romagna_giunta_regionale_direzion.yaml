@@ -1,0 +1,34 @@
+id: satr_it_rnd__sa_118856__regione_emilia_romagna_giunta_regionale_direzion
+name: BANDO PER INVESTIMENTI PRODUTTIVI E PROGETTI DI RICERCA E SVILUPPO DELLE IMPRESE NELL’AMBITO DELLA
+  PIATTAFORMA PER LE TECNOLOGIE STRATEGICHE (STEP)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: The call is open to single enterprises (both SMEs and large enterprises) incorporated as
+    capital companies.
+  value: Single enterprises (SME or large), capital company form
+  intake_field: borrowerModel
+  quote: Il bando si rivolge a imprese singole (sia PMI sia grandi imprese) nella forma giuridica di societa'
+    di capitali.
+  source:
+    file: https://fesr.regione.emilia-romagna.it/opportunita/opportunita-di-finanziamento/2025/investimenti-produttivi-progetti-di-ricerca-e-sviluppo-delle-imprese-nellambito-della-piattaforma-per-le-tecnologie-strategiche
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-sector-exclusions
+  gate_family: G1_nexus
+  requirement: Enterprises operating in primary agricultural production, fishing and aquaculture, credit
+    institutions, and other financial institutions may not participate.
+  value: Agri production, fishing/aquaculture, credit/financial institutions excluded
+  intake_field: none
+  quote: Non possono partecipare le imprese operanti nella produzione agricola primaria, nella pesca e
+    acquacoltura, gli istituti di credito e gli altri istituti finanziari.
+  source:
+    file: https://fesr.regione.emilia-romagna.it/opportunita/opportunita-di-finanziamento/2025/investimenti-produttivi-progetti-di-ricerca-e-sviluppo-delle-imprese-nellambito-della-piattaforma-per-le-tecnologie-strategiche
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

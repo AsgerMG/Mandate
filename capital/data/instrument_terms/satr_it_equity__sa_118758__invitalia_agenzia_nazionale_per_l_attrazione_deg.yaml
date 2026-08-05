@@ -1,0 +1,29 @@
+id: satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg
+name: Investimenti sostenibili 4.0 (PN RIC 2021-2027) - Bando 2025
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-less-developed-regions
+  gate_family: G1_nexus
+  requirement: Eligible applicants are SMEs located in less-developed regions.
+  value: SMEs located in less-developed regions
+  intake_field: activityCountries
+  quote: Pmi situate nelle regioni meno sviluppate.
+  source:
+    file: https://www.invitalia.it/incentivi-e-strumenti/investimenti-sostenibili-40-bando-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-reserved-share-micro-small
+  gate_family: G3_financial
+  requirement: 25% of the resources are reserved for programmes proposed by micro and small enterprises.
+  value: 25% of budget reserved for micro/small enterprise programmes
+  intake_field: none
+  quote: Il 25% delle risorse e' destinato ai programmi proposti dalle micro e piccole imprese.
+  source:
+    file: https://www.invitalia.it/incentivi-e-strumenti/investimenti-sostenibili-40-bando-2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

@@ -1,0 +1,29 @@
+id: satr_it_rnd__sa_112939__regione_autonoma_friuli_venezia_giulia_direzione
+name: Regione FVG - Regolamento concernente i criteri e le modalità per la concessione e l’erogazione
+  di contributi in conto capitale a parziale copertura degli interventi di cui all’articolo 6, comma 2,
+  della legge regionale 20 febbraio 2015, n. 3 (Rilancimpresa FVG-Riforma delle politiche industriali)
+  e di cui agli articoli 60, comma 1, e 83, comma 3, lettera b), della legge regionale 22 febbraio 2021,
+  n. 3, (Disposizioni per la modernizzazione, la crescita e lo sviluppo sostenibile verso una nuova economia
+  del
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g3-capital-grant-all-sizes
+  gate_family: G3_financial
+  requirement: Aid is granted as capital contributions, in compliance with EU State aid rules, to micro
+    and small, medium, and large enterprises.
+  value: Capital grant, open to all enterprise sizes
+  intake_field: none
+  quote: Gli incentivi sono concessi in conto capitale, nel rispetto della normativa europea in materia
+    di aiuti di Stato, a favore di micro e piccole imprese, medie imprese e grandi imprese.
+  source:
+    file: https://www.regione.fvg.it/rafvg/cms/RAFVG/economia-imprese/rilancimpresa/FOGLIA48/articolo.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (1/1 gates passed mechanical verbatim-substring
+  check -> llm_cited).

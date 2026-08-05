@@ -1,0 +1,69 @@
+id: satr_fr_rnd__sa_111728__region_grand_est
+name: Régime cadre exempté de notification relatif aux aides en faveur des PME pour la
+  période 2024-2026
+administering_body: see source document
+country: 'FR'
+capital_type: unknown
+status: draft
+gates:
+- id: g2-size-band
+  gate_family: G2_size_ownership
+  requirement: Eligible are micro-enterprises, SMEs and mid-sized enterprises (TPE, PME,
+    ETI).
+  value: TPE / PME / ETI size band required
+  intake_field: turnoverBand
+  quote: TPE, PME et ETI
+  source:
+    file: https://les-aides.fr/aide/dJQf3w/region-grand-est/aide-aux-investissements-productifs-durables.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-location-grand-est
+  gate_family: G1_nexus
+  requirement: Companies must be located in the Grand Est region.
+  value: Must be located in Grand Est
+  intake_field: entityCountries
+  quote: implantées dans le Grand Est.
+  source:
+    file: https://les-aides.fr/aide/dJQf3w/region-grand-est/aide-aux-investissements-productifs-durables.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-sector-restriction
+  gate_family: G1_nexus
+  requirement: Eligible are companies in the industry, industry-services, and craft/artisan
+    sectors.
+  value: 'Sectors: industry, services to industry, artisanat'
+  intake_field: none
+  quote: "Entreprises des secteurs de : l'industrie, des services à l'industrie, de
+    l'artisanat."
+  source:
+    file: https://les-aides.fr/aide/dJQf3w/region-grand-est/aide-aux-investissements-productifs-durables.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-environmental-transition
+  gate_family: G6_conditionality
+  requirement: Applicants must be engaged in an environmental transition process.
+  value: Must be engaged in environmental transition
+  intake_field: none
+  quote: Être engagé dans une démarche de transition environnementale.
+  source:
+    file: https://les-aides.fr/aide/dJQf3w/region-grand-est/aide-aux-investissements-productifs-durables.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-min-age
+  gate_family: G2_size_ownership
+  requirement: The company must have been created more than one year ago.
+  value: Company must be over 1 year old
+  intake_field: foundedYear
+  quote: Être créé depuis plus d'un an.
+  source:
+    file: https://les-aides.fr/aide/dJQf3w/region-grand-est/aide-aux-investissements-productifs-durables.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

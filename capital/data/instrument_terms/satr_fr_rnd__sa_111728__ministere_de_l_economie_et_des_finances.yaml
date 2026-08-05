@@ -1,0 +1,105 @@
+id: satr_fr_rnd__sa_111728__ministere_de_l_economie_et_des_finances
+name: Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-only
+  gate_family: G2_size_ownership
+  requirement: Only SMEs (as defined in Annex I of the scheme) may benefit from investment aid, regardless
+    of whether their activities take place inside or outside the EU.
+  value: SME only (EU or non-EU activity)
+  intake_field: turnoverBand
+  quote: Les PME, au sens de l'annexe I du présent régime, exerçant leurs activités à l'intérieur ou à
+    l'extérieur du territoire de l'Union, peuvent bénéficier d’aides à l’investissement
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndeg-sa111728-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-export-aid-excluded
+  gate_family: G5_use_of_funds
+  requirement: Aid for export-related activities to third countries or other member states is excluded,
+    including aid tied directly to exported quantities or to financing a distribution network.
+  value: Export-related aid excluded
+  intake_field: none
+  quote: aux aides en faveur d'activités liées à l'exportation vers des pays tiers ou des États membres,
+    c'est-à-dire aux aides directement liées aux quantités exportées et aux aides servant à financer la
+    mise en place et le fonctionnement d'un réseau de distribution
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndeg-sa111728-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-domestic-preference-excluded
+  gate_family: G1_nexus
+  requirement: Aid conditional on using domestic products in preference to imported products is excluded.
+  value: Domestic-product-preference conditionality excluded
+  intake_field: none
+  quote: aux aides subordonnées à l’utilisation de produits nationaux de préférence aux produits importés
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndeg-sa111728-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-difficulty-exclusion
+  gate_family: G1_nexus
+  requirement: Aid to undertakings in difficulty (per Annex II of the scheme) is excluded, except for
+    start-up aid and limited-amount aid to SMEs participating in DLAL local-development projects.
+  value: Undertakings in difficulty excluded (narrow exceptions)
+  intake_field: none
+  quote: aux aides aux entreprises en difficulté selon la définition retenue en annexe II du présent régime,
+    à l’exception des aides aux jeunes pousses et des aides de montants limités en faveur des PME bénéficiant
+    de projets de DLAL
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndeg-sa111728-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-young-company-carveout
+  gate_family: G5_use_of_funds
+  requirement: An SME incorporated for less than three years is not considered to be in difficulty for
+    this scheme's purposes during that period, unless it meets the conditions in point (c) of the Annex
+    II definition.
+  value: SMEs <3 years old presumed not "in difficulty" (with exception)
+  intake_field: foundedYear
+  quote: Une PME constituée en société depuis moins de trois ans n'est pas considérée, aux fins du présent
+    régime, comme étant en difficulté en ce qui concerne cette période, à moins qu'elle ne remplisse les
+    conditions énoncées au point c) de la définition donnée en annexe II.
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndeg-sa111728-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-exclusion
+  gate_family: G1_nexus
+  requirement: Aid to an undertaking subject to an outstanding recovery order following a prior Commission
+    decision finding French aid unlawful and incompatible with the internal market is excluded.
+  value: No outstanding EU State-aid recovery order
+  intake_field: none
+  quote: aux aides en faveur d’une entreprise faisant l’objet d’une injonction de récupération non exécutée,
+    émise dans une décision antérieure de la Commission déclarant une aide octroyée par les autorités
+    françaises illégale et incompatible avec le marché intérieur
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndeg-sa111728-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-agri-fisheries-sector-exclusion
+  gate_family: G5_use_of_funds
+  requirement: Aid is excluded, in specified cases, in the agricultural product processing/marketing sector,
+    and in fisheries and aquaculture covered by Regulation 1379/2013 (with exceptions e.g. for SME innovation
+    aid and start-up aid).
+  value: Agri processing/marketing and fisheries/aquaculture sectors excluded (cases)
+  intake_field: none
+  quote: transformation et commercialisation de produits agricoles
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/regime-cadre-exempte-de-notification-ndeg-sa111728-relatif-aux-aides-en
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (7/7 gates passed mechanical verbatim-substring
+  check -> llm_cited).

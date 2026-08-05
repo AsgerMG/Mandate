@@ -1,0 +1,58 @@
+id: satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft
+name: FFG-Offensiv-Richtlinie 2024-2026
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Applicants must be natural or legal persons or partnerships standing outside the Austrian
+    federal administration.
+  value: Natural/legal person or partnership outside federal administration
+  intake_field: borrowerModel
+  quote: Förderungswerbende sind außerhalb der österreichischen Bundesverwaltung stehende natürliche oder
+    juristische Personen bzw. Personengesellschaften.
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-Offensiv-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-exclusion
+  gate_family: G1_nexus
+  requirement: An undertaking that has not complied with a recovery order under a prior European Commission
+    decision finding aid unlawful and incompatible is excluded from participation until it has repaid
+    the incompatible aid.
+  value: No outstanding EU State-aid recovery order
+  intake_field: none
+  quote: ist ein Unternehmen, das einer Rückforderungsanordnung aufgrund eines früheren Beschlusses der
+    Europäischen Kommission zur Feststellung der Unzulässigkeit einer Förderung und ihrer Unvereinbarkeit
+    nicht nachgekommen ist, solange von der Teilnahme ausgeschlossen, bis das Unternehmen die Rückabwicklung
+    der inkompatiblen Förderung vollzogen hat.
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-Offensiv-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-difficulty-exclusion
+  gate_family: G1_nexus
+  requirement: Aid may not be granted to undertakings in difficulty, except under specified exemption
+    categories (natural-disaster relief schemes, start-up aid schemes, regional operating-aid schemes,
+    Art. 19b AGVO schemes, and certain SME aid under Art. 56f / Chapter III Section 16 AGVO where those
+    schemes do not favour firms in difficulty over others).
+  value: Undertakings in difficulty excluded (with listed exceptions)
+  intake_field: none
+  quote: dürfen keine Beihilfen an Unternehmen in Schwierigkeiten, ausgenommen Beihilferegelungen zur
+    Bewältigung der Folgen bestimmter Naturkatastrophen, Beihilferegelungen für Unternehmensneugründungen
+    und regionale Betriebsbeihilferegelungen, Beihilferegelungen, die unter Artikel 19b AGVO fallen, Beihilfen
+    für KMU nach Art. 56f sowie nach Kapitel III Abschnitt 16 AGVO, sofern diese Regelungen Unternehmen
+    in Schwierigkeiten nicht gegenüber anderen Unternehmen begünstigen, vergeben werden.
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-Offensiv-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

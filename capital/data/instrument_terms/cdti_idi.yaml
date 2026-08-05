@@ -1,160 +1,57 @@
 id: cdti_idi
-name: cdti_idi
+name: CDTI (Spain)
 administering_body: see source document
-country: ''
+country: ES
 capital_type: unknown
 status: draft
 gates:
-- id: g1
+- id: g1-consortium-structure
   gate_family: G1_nexus
-  requirement: Applicant must be a legally established entity carrying out R&D&I activity,
-    applying via the CDTI procedure under this order.
-  value: Entities undertaking R&D&I projects
+  requirement: Projects may be individual (a single company) or national cooperation projects (consortia
+    of 2 to 6 mutually autonomous companies), or international technological cooperation projects.
+  value: Individual, or consortium of 2-6 autonomous companies, or international cooperation
+  intake_field: consortium
+  quote: Proyectos individuales presentados por una única empresa; también admite proyectos en cooperación
+    nacional (consorcios de 2 a 6 empresas autónomas entre sí) y proyectos de cooperación tecnológica
+    internacional.
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-firm-in-crisis
+  gate_family: G3_financial
+  requirement: Companies in crisis, as defined in applicable regulation, cannot be beneficiaries.
+  value: 'Excluded: undertaking in crisis'
+  intake_field: lossesOverHalfCapital
+  quote: No podrán ser beneficiarias las empresas en crisis, con arreglo a la definición establecida en
+    la normativa
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-recovery-order
+  gate_family: G3_financial
+  requirement: Companies subject to a pending recovery order following a prior European Commission decision
+    declaring aid illegal and incompatible with the common market cannot be beneficiaries.
+  value: 'Excluded: pending EC recovery order'
   intake_field: none
-  quote: En la instrucción del procedimiento de concesión se podrán llevar a cabo
-    las siguientes actividades
+  quote: ni aquellas empresas que estén sujetas a una orden de recuperación pendiente tras una decisión
+    previa de la Comisión Europea que haya declarado una ayuda ilegal e incompatible con el mercado común
   source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
   verified: llm_cited
-- id: g2
-  gate_family: G6_conditionality
-  requirement: The instructing body will verify during pre-evaluation that applicants
-    meet the conditions to acquire beneficiary status, based solely on information
-    submitted during the application and correction phases.
-  value: Verification limited to submitted documentation
-  intake_field: none
-  quote: En esta fase el órgano instructor verificará el cumplimiento de las condiciones
-    impuestas para adquirir la condición de beneficiario. Esta verificación se realizará
-    exclusivamente sobre la información y documentación aportada en la fase de admisión
-    de solicitudes o la que hubiera podido requerirse en fase de subsanación.
+  gate_role: filter
+- id: g3-min-own-contribution
+  gate_family: G3_financial
+  requirement: The company must contribute at least 15% of the project budget from its own resources.
+  value: Min. 15% of project budget from own resources
+  intake_field: cofinancingBand
+  quote: La empresa deberá aportar, al menos, el 15% del presupuesto del proyecto con recursos propios.
   source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
   verified: llm_cited
-- id: g3
-  gate_family: G6_conditionality
-  requirement: Verification during pre-evaluation may only affect requirements whose
-    fulfillment does not require scientific or technical assessment.
-  value: Only non-technical requirements checked pre-evaluation
-  intake_field: none
-  quote: En todo caso, sólo podrá afectar a aquellos requisitos cuya concurrencia
-    no requiera de ninguna valoración científica o técnica.
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-- id: g4
-  gate_family: G6_conditionality
-  requirement: Where scoring thresholds are established in the call, applicants must
-    reach them to be eligible for the aid.
-  value: Minimum scoring threshold required
-  intake_field: none
-  quote: En los casos en los que se establezcan umbrales de puntuación, será necesario
-    alcanzarlos para poder optar a la ayuda.
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-- id: g5
-  gate_family: G6_conditionality
-  requirement: No voluntary changes or improvements to the application are permitted
-    after submission, as these are competitive-concurrence procedures initiated ex
-    officio.
-  value: No amendments/improvements allowed post-submission
-  intake_field: none
-  quote: Por tratarse de procedimientos de concesión en concurrencia competitiva y,
-    como tales iniciados de oficio, no se admitirán cambios ni mejoras voluntarias
-    de la solicitud.
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-- id: g6
-  gate_family: G6_conditionality
-  requirement: If the application does not meet the requirements set out in the call,
-    the applicant must correct deficiencies within ten working days or be deemed to
-    have withdrawn the application.
-  value: 10 working days to correct deficiencies
-  intake_field: none
-  quote: el órgano instructor requerirá al interesado para que subsane en el plazo
-    de diez días hábiles la falta o acompañe los documentos preceptivos, con advertencia
-    de que, si no lo hiciese, se le tendrá por desistido de la solicitud
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-- id: g7
-  gate_family: G6_conditionality
-  requirement: False declarations or non-compliance with declared conditions can result
-    in rejection or revocation of the aid, and may trigger criminal, civil or administrative
-    liability.
-  value: Rejection/revocation for false declarations
-  intake_field: none
-  quote: cumplimiento de lo declarado, determinará la imposibilidad de continuar con
-    el procedimiento dando lugar a la desestimación de la ayuda o en su caso su revocación,
-    sin perjuicio de las responsabilidades penales, civiles o administrativas a que
-    hubiera lugar.
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-- id: g8
-  gate_family: G6_conditionality
-  requirement: Competent bodies may carry out checks before or after the grant of
-    aid, and if non-compliance with any condition is detected, the aid will be rejected
-    or full/partial repayment will be required.
-  value: Pre/post-grant checks with repayment risk
-  intake_field: none
-  quote: Los órganos competentes podrán realizar las comprobaciones oportunas con
-    anterioridad o posterioridad a la concesión de la ayuda y en caso de detectarse
-    el incumplimiento de alguna condición procederá la desestimación de la ayuda o
-    la exigencia de reintegro total o parcial.
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-obligations:
-- requirement: Beneficiaries must comply with declared conditions; failure to do so
-    may lead to rejection, revocation, or repayment demands and possible legal liability.
-  quote: cumplimiento de lo declarado, determinará la imposibilidad de continuar con
-    el procedimiento dando lugar a la desestimación de la ayuda o en su caso su revocación,
-    sin perjuicio de las responsabilidades penales, civiles o administrativas a que
-    hubiera lugar.
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-- requirement: Applicants must correct any deficiencies in their application within
-    ten working days when required to do so by the instructing body.
-  quote: el órgano instructor requerirá al interesado para que subsane en el plazo
-    de diez días hábiles la falta o acompañe los documentos preceptivos
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
-  verified: llm_cited
-verify_by: '2027-07-21'
-notes: Extracted by ETL/terms/extract_terms_bulk.py (8/8 gates, 2/2 obligations passed
-  mechanical check -> llm_cited).
-application:
-  channel: The applicant must submit the application electronically through the online
-    form available on the granting body's (CDTI) electronic headquarters (sede electrónica),
-    together with all documentation specified in the specific call for proposals (convocatoria).
-  typical_timeline: Applications are submitted within the form and deadline set by
-    each call; if requirements are missing, the applicant has 10 working days to correct
-    (subsanar); the resolution of the procedure is issued and notified within a maximum
-    of six months from the day following publication of the extract of the call in
-    the BOE, after which lack of express resolution means the request is deemed rejected
-    by administrative silence.
-  url: ''
-  quote: 'Las solicitudes se presentarán mediante el formulario electrónico
-
-    correspondiente, disponible en la sede electrónica del órgano convocante, junto
-    con la
-
-    documentación que se especifique en la convocatoria como parte integrante de la
-
-    solicitud.'
-  source:
-    file: cdti_bases_reguladoras_orden_cnu_161_2025.pdf
-    locator: p.15
+  gate_role: filter

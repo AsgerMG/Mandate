@@ -1,0 +1,54 @@
+id: satr_de_rnd__sa_118481__l_bank_baden_wurttemberg
+name: Ministerium für Verkehr Baden-Württemberg, Förderung umweltfreundlicher emissionsarmer ÖPNV-Linienbusse
+  und Bürgerbusse zur Ergänzung des öffentlichen Personennahverkehrs (Richtlinie Busförderung) - 3. Änd.
+  [BW/VM]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-linienbus-eligible
+  gate_family: G1_nexus
+  requirement: Funding for scheduled buses may be granted to local transport companies operating scheduled
+    services in Baden-Württemberg under specified sections of the Passenger Transport Act (PBefG), or
+    holding a corresponding route licence.
+  value: DE transport company with PBefG route service/licence
+  intake_field: borrowerModel
+  quote: Zuwendungen für Linienbusse können grundsätzlich Nahverkehrsunternehmen gewährt werden, die in
+    Baden-Württemberg Linienverkehre nach § 42, § 43 Satz 1 Nr. 2 oder § 44 PBefG betreiben oder im Besitz
+    einer entsprechenden Liniengenehmigung sind.
+  source:
+    file: https://vm.baden-wuerttemberg.de/de/service/foerderprogramme-und-aufrufe/linienbusse
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-burgerbus-eligible
+  gate_family: G1_nexus
+  requirement: For citizen buses (Bürgerbusse), eligible applicants are citizen-bus associations, transport
+    companies, municipalities, or districts.
+  value: Bürgerbus association, transport company, municipality, or district
+  intake_field: borrowerModel
+  quote: Antragsberechtigt für Bürgerbusse sind (Bürgerbus-)Vereine, Verkehrsunternehmen, Kommunen oder
+    Landkreise
+  source:
+    file: https://vm.baden-wuerttemberg.de/de/service/foerderprogramme-und-aufrufe/linienbusse
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-proof-of-voluntary-need
+  gate_family: G6_conditionality
+  requirement: For citizen-bus applications, the applicant must demonstrate the voluntary/non-commercial
+    character of the service and the necessary need.
+  value: Must prove voluntary character + need (Bürgerbus)
+  intake_field: none
+  quote: der Antragsteller hat den ehrenamtlichen Charakter des Verkehrs sowie den erforderlichen Bedarf
+    nachzuweisen
+  source:
+    file: https://vm.baden-wuerttemberg.de/de/service/foerderprogramme-und-aufrufe/linienbusse
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

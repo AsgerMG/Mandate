@@ -1,0 +1,50 @@
+id: satr_de_rnd__sa_106076__sachsen_sab
+name: FRL MINT-Fachkräfteprogramm ESF Plus 2021–2027 [SN]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-innovationassistent
+  gate_family: G2_size_ownership
+  requirement: Recipients for the Innovationsassistent/InnoManager funding line must be SMEs of the commercial,
+    cultural/creative, or social/health economy with a registered seat or establishment in the Free State
+    of Saxony.
+  value: SME with seat/establishment in Saxony (commercial/creative/social-health economy)
+  intake_field: entityCountries
+  quote: Zuwendungsempfänger für die Förderung von Innovationsassistentinnen und Innovationsassistenten
+    sowie InnoManagerinnen und InnoManagern können KMU der gewerblichen Wirtschaft, der Kultur- und Kreativwirtschaft
+    sowie der Sozial- und Gesundheitswirtschaft mit Sitz oder Betriebsstätte im Freistaat Sachsen sein.
+  source:
+    file: https://www.sab.sachsen.de/en/innoteam-2021-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-transferassistent
+  gate_family: G1_nexus
+  requirement: Recipients for the Transferassistent funding line can be universities, research institutions,
+    the Berufsakademie Sachsen, chambers, associations, or other technology intermediaries with a seat
+    or establishment in Saxony.
+  value: Universities/research institutions/technology intermediaries with seat in Saxony
+  intake_field: borrowerModel
+  quote: Zuwendungsempfänger für die Förderung von Transferassistenten können Hochschulen, Forschungseinrichtungen,
+    die Berufsakademie Sachsen, Kammern, Verbände, sonstige Technologiemittler mit Sitz oder Betriebsstätte
+    im Freistaat Sachsen sein.
+  source:
+    file: https://www.sab.sachsen.de/en/innoteam-2021-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-innoteam
+  gate_family: G2_size_ownership
+  requirement: Recipients for the InnoTeam funding line can be SMEs of the commercial or cultural/creative
+    economy with a seat or establishment in Saxony.
+  value: SME with seat/establishment in Saxony (commercial/creative economy)
+  intake_field: entityCountries
+  quote: Zuwendungsempfänger [für InnoTeam] können KMU der gewerblichen Wirtschaft sowie der Kultur- und
+    Kreativwirtschaft mit Sitz oder Betriebsstätte im Freistaat Sachsen sein.
+  source:
+    file: https://www.sab.sachsen.de/en/innoteam-2021-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

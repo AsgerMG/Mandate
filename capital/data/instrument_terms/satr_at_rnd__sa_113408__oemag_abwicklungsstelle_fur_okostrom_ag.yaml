@@ -1,0 +1,102 @@
+id: satr_at_rnd__sa_113408__oemag_abwicklungsstelle_fur_okostrom_ag
+name: Verordnung der Bundesministerin für Klimaschutz, Umwelt, Energie, Mobilität, Innovation und Technologie,
+  mit der die EAG-Investitionszuschüsseverordnung-Strom geändert wird (EAG-Investitionszuschüsseverordnung-Strom-Novelle
+  2024)
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Applications for the investment grant may be submitted by natural or legal persons undertaking
+    the measures specified in § 3(1).
+  value: Natural or legal person undertaking a qualifying measure
+  intake_field: borrowerModel
+  quote: 'Anträge auf Förderung durch Investitionszuschuss können von natürlichen oder juristischen
+
+    Personen gestellt werden, die Maßnahmen gemäß § 3 Abs. 1 setzen.'
+  source:
+    file: https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20012195
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-permits-in-place
+  gate_family: G6_conditionality
+  requirement: At the time the application is submitted, all first-instance permits or required notifications
+    for construction, expansion or revitalisation of the plant must be in place.
+  value: Required permits/notifications must be in place at application
+  intake_field: none
+  quote: "zum Zeitpunkt der Einbringung des Förderantrages alle für die Errichtung, Erweiterung oder\n\
+    \        Revitalisierung der Anlage erforderlichen Genehmigungen in erster Instanz oder erforderlichen\n\
+    \        Anzeigen vorliegen"
+  source:
+    file: https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20012195
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-not-yet-commissioned
+  gate_family: G6_conditionality
+  requirement: At first application, the funded measure must not yet be commissioned, and work on it must
+    not have started before 21 April 2022.
+  value: Not yet commissioned at application; work not started before 21 Apr 2022
+  intake_field: needBy
+  quote: "zum Zeitpunkt der erstmaligen Einbringung des Förderantrages die Inbetriebnahme der zu\n   \
+    \     fördernden Maßnahme noch nicht erfolgt ist; der Beginn der Arbeiten der zu fördernden\n    \
+    \    Maßnahme darf zudem nicht vor dem 21. April 2022 liegen"
+  source:
+    file: https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20012195
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-and-difficulty-exclusion
+  gate_family: G1_nexus
+  requirement: Investment grants may not be awarded to an undertaking that has not complied with a prior
+    European Commission recovery order, nor to undertakings in difficulty per Art. 2(18) AGVO.
+  value: No outstanding recovery order; not an undertaking in difficulty
+  intake_field: none
+  quote: 'Investitionszuschüsse dürfen nicht an ein Unternehmen vergeben werden, das einer
+
+    Rückforderungsanordnung aufgrund eines früheren Beschlusses der Europäischen Kommission zur
+
+    Feststellung der Unzulässigkeit einer Beihilfe und ihrer Unvereinbarkeit mit dem Binnenmarkt nicht
+
+    nachgekommen ist, sowie an Unternehmen in Schwierigkeiten im Sinne des Art. 2 Z 18 AGVO.'
+  source:
+    file: https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20012195
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-state-of-the-art-standard
+  gate_family: G6_conditionality
+  requirement: The installation must conform to the state of the art and comply with all safety requirements.
+  value: Must meet state-of-the-art and safety standards
+  intake_field: none
+  quote: "die Anlage dem Stand der Technik entspricht und sämtliche Sicherheitsanforderungen\n       \
+    \ eingehalten werden"
+  source:
+    file: https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20012195
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-individual-notification-for-large-projects
+  gate_family: G6_conditionality
+  requirement: Where EU State-aid rules require individual notification for a project, funding may only
+    be granted after European Commission approval.
+  value: Individually-notified projects need EC approval first
+  intake_field: none
+  quote: 'Ist aufgrund von unionsrechtlichen Beihilferegelungen für die Förderung von Einzelprojekten
+    ein
+
+    gesondertes Notifikationsverfahren durchzuführen, so ist eine Förderung nur nach Genehmigung durch
+
+    die Europäische Kommission zu gewähren.'
+  source:
+    file: https://www.ris.bka.gv.at/GeltendeFassung.wxe?Abfrage=Bundesnormen&Gesetzesnummer=20012195
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (6/6 gates passed mechanical verbatim-substring
+  check -> llm_cited).

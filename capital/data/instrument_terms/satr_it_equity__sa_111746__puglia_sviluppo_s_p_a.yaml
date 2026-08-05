@@ -1,0 +1,48 @@
+id: satr_it_equity__sa_111746__puglia_sviluppo_s_p_a
+name: Avviso Nuove Iniziative d'Impresa (NIDI)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-population
+  gate_family: G1_nexus
+  requirement: Support targets self-employment of people with difficulty accessing the labour market,
+    such as young people, women, unemployed persons, workers at risk of job loss, precarious workers,
+    and self-employed persons with a VAT number.
+  value: Self-employment for labour-market-disadvantaged applicants
+  intake_field: borrowerModel
+  quote: Sostiene l'autoimpiego di persone che hanno difficolta' ad accedere al mondo del lavoro, come
+    giovani, donne, disoccupati, lavoratori in procinto di perdere il posto, precari e autonomi con partita
+    Iva.
+  source:
+    file: https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-pubblico-nidi-nuove-iniziative-d-impresa
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-ownership-threshold
+  gate_family: G2_size_ownership
+  requirement: The company must be at least 50% owned by persons with difficulty accessing the labour
+    market.
+  value: Min 50% ownership by labour-market-disadvantaged persons
+  intake_field: none
+  quote: Le compagini devono essere partecipate per almeno il 50% da soggetti con difficolta' di accesso
+    al mondo del lavoro.
+  source:
+    file: https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-pubblico-nidi-nuove-iniziative-d-impresa
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-priority-categories
+  gate_family: G1_nexus
+  requirement: The instrument particularly favours youth ventures, women-led enterprises, new businesses,
+    and tourism enterprises.
+  value: 'Priority: youth/women-led/new/tourism enterprises'
+  intake_field: none
+  quote: Lo strumento favorisce in particolare compagini giovanili, imprese femminili, nuove aziende e
+    imprese turistiche.
+  source:
+    file: https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-pubblico-nidi-nuove-iniziative-d-impresa
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

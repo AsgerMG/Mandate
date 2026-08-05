@@ -1,0 +1,34 @@
+id: satr_de_equity__sa_118637__lfa_forderbank_bayern
+name: Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten
+  (Förderrichtlinien) Verlängerung 2025 [BY]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: In principle, all natural and legal persons as well as partnerships are eligible to apply,
+    regardless of registered office or establishment.
+  value: Any natural/legal person or partnership may apply
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind grundsätzlich alle natürlichen und juristischen Personen sowie Personengesellschaften,
+    unabhängig von ihrem Sitz oder ihrer Niederlassung.
+  source:
+    file: https://www.fff-bayern.de/imgs/FFF-Bayern_-Richtlinien_2026.pdf?original=true
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-broadcaster-exclusion
+  gate_family: G1_nexus
+  requirement: Public-law broadcasting corporations and private broadcasting providers or operators are
+    not eligible to apply.
+  value: Public/private broadcasters excluded
+  intake_field: borrowerModel
+  quote: Nicht antragsberechtigt nach diesen Richtlinien sind öffentlich-rechtliche Rundfunkanstalten
+    und private Rundfunkanbieter oder -veranstalter.
+  source:
+    file: https://www.fff-bayern.de/imgs/FFF-Bayern_-Richtlinien_2026.pdf?original=true
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

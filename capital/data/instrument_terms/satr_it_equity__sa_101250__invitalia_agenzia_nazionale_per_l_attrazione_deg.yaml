@@ -1,0 +1,21 @@
+id: satr_it_equity__sa_101250__invitalia_agenzia_nazionale_per_l_attrazione_deg
+name: Contratti di sviluppo di cui all'articolo 43 del decreto-legge 25 giugno2008, n.112, convertito
+  dalla legge 6 agosto 2008, n. 133 (proroga 2023)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-scope
+  gate_family: G1_nexus
+  requirement: Eligible are enterprises of any size intending to carry out large-scale investments in
+    the industrial, agro-industrial, or environmental protection sectors.
+  value: Any size; large-scale investment in industrial/agro-industrial/environment sector
+  intake_field: ticketBand
+  quote: Imprese di qualsiasi dimensione che intendono realizzare investimenti di grandi dimensioni nel
+    settore industriale, agroindustriale e di tutela ambientale.
+  source:
+    file: https://www.incentivi.gov.it/it/catalogo/contratti-di-sviluppo-programmi-di-sviluppo-industriale-e-programmi-di-sviluppo-la-tutela
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

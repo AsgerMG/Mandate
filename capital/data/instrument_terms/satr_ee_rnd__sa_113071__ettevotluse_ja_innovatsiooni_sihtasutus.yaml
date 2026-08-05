@@ -1,0 +1,72 @@
+id: satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus
+name: Ettevõtte arenguprogrammi toetus 2024-2027
+administering_body: see source document
+country: 'EE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sme-registered
+  gate_family: G1_nexus
+  requirement: Applicants must be small and medium-sized companies registered in the
+    Estonian Commercial Register.
+  value: SME registered in the Estonian Commercial Register
+  intake_field: turnoverBand
+  quote: Small and medium-sized companies registered in the Estonian Commercial Register.
+  source:
+    file: https://eis.ee/en/services/sme-development-programme/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-region-exclusion
+  gate_family: G1_nexus
+  requirement: The target region for support is the whole territory of Estonia, except
+    Harju County and the City of Tartu.
+  value: Excludes Harju County and City of Tartu
+  intake_field: activityCountries
+  quote: The target region for the support is the whole territory of Estonia, except Harju
+    County and the City of Tartu.
+  source:
+    file: https://eis.ee/en/services/sme-development-programme/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g3-min-turnover
+  gate_family: G3_financial
+  requirement: The average sales revenue of the applicant in the last two financial years
+    must be at least EUR 200,000.
+  value: 'Min avg turnover (last 2 years): EUR 200,000'
+  intake_field: turnoverBand
+  quote: The average sales revenue of the applicant in the last two financial years is at
+    least 200,000 euros.
+  source:
+    file: https://eis.ee/en/services/sme-development-programme/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-min-fte
+  gate_family: G2_size_ownership
+  requirement: At least 2 people must work full-time for the applicant.
+  value: 'Min headcount: 2 full-time employees'
+  intake_field: fteBand
+  quote: At least 2 people work full-time for the applicant.
+  source:
+    file: https://eis.ee/en/services/sme-development-programme/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-preliminary-consultation
+  gate_family: G6_conditionality
+  requirement: Enterprises must attend a preliminary consultation before submitting an
+    application.
+  value: Preliminary consultation required before applying
+  intake_field: none
+  quote: Enterprises must attend a preliminary consultation before submitting an
+    application.
+  source:
+    file: https://eis.ee/en/services/sme-development-programme/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

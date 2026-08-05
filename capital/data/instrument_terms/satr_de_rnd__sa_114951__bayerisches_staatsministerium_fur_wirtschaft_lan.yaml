@@ -1,0 +1,50 @@
+id: satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan
+name: Richtlinien zur Durchführung des bayerischen regionalen Förderprogramms für die gewerbliche Wirtschaft
+  2024-2027 [BY]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-investor
+  gate_family: G1_nexus
+  requirement: The applicant must be the party making the business investment and carrying out an eligible
+    activity per No. 4 of the guideline.
+  value: Applicant must be the investing party with an eligible activity
+  intake_field: borrowerModel
+  quote: Antragsberechtigt ist, wer die betrieblichen Investitionen vornimmt und eine gem. Nr. 4 förderfähige
+    Tätigkeit ausübt.
+  source:
+    file: https://www.stmwi.bayern.de/fileadmin/user_upload/stmwi/Foerderungen/Regionalfoerderung/BRF/2024-07-01_Richtlinien_zur_Durchf%C3%BChrung_des_bayerischen_regionalen_F%C3%B6rderprogramms_f%C3%BCr_die_gewerbliche_Wirtschaft_baymbl-2024-213.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-investment
+  gate_family: G2_size_ownership
+  requirement: Investment projects of small and medium-sized enterprises (SMEs) per Annex I of the GBER
+    may be funded under Articles 17, 36, 38 and 41 GBER.
+  value: SME investment projects under GBER Art. 17/36/38/41
+  intake_field: turnoverBand
+  quote: Investitionsvorhaben kleiner und mittlerer Unternehmen (KMU) im Sinn des Anhangs I zur AGVO gefördert
+    werden
+  source:
+    file: https://www.stmwi.bayern.de/fileadmin/user_upload/stmwi/Foerderungen/Regionalfoerderung/BRF/2024-07-01_Richtlinien_zur_Durchf%C3%BChrung_des_bayerischen_regionalen_F%C3%B6rderprogramms_f%C3%BCr_die_gewerbliche_Wirtschaft_baymbl-2024-213.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-investor-user-constellation
+  gate_family: G1_nexus
+  requirement: If the investor and user of a planned investment are not identical, funding is only possible
+    if a recognised split-enterprise arrangement, a joint venture under Section 15 EStG, a lease/rental
+    agreement, or a tax-group arrangement under Section 2(2) GewStG exists between them.
+  value: Investor/user split requires recognised legal/tax arrangement
+  intake_field: none
+  quote: Sind Investor und Nutzer einer geplanten Investition nicht identisch, kann eine Förderung nur
+    erfolgen, wenn zwischen Investor und Nutzer eine steuerlich anerkannte Betriebsaufspaltung, eine Mitunternehmerschaft
+    im Sinn des § 15 EStG, ein Leasing-, Miet- bzw. Pachtverhältnis, oder eine Organschaft i.S.d. § 2
+    Abs. 2 GewStG vorliegt.
+  source:
+    file: https://www.stmwi.bayern.de/fileadmin/user_upload/stmwi/Foerderungen/Regionalfoerderung/BRF/2024-07-01_Richtlinien_zur_Durchf%C3%BChrung_des_bayerischen_regionalen_F%C3%B6rderprogramms_f%C3%BCr_die_gewerbliche_Wirtschaft_baymbl-2024-213.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

@@ -1,0 +1,68 @@
+id: satr_de_rnd__sa_114975__bayerisches_staatsministerium_fur_wirtschaft_lan
+name: Bayerisches Technologieförderungsprogramm plus (BayTP+) 2024-Änderung [BY]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-headcount-location
+  gate_family: G2_size_ownership
+  requirement: Applicants must be commercial enterprises with fewer than 400 employees and a registered
+    office or establishment in Bavaria.
+  value: <400 employees, office/establishment in Bavaria
+  intake_field: fteBand
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft, die weniger als 400 Beschäftigte
+    und ihren Sitz oder eine Betriebsstätte in Bayern haben.
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/technologiefoerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-larger-companies-exception
+  gate_family: G2_size_ownership
+  requirement: Larger companies can be funded if the R&D project is of exceptional strategic importance
+    for Bavaria as a research and technology location.
+  value: Larger companies eligible if strategically important to Bavaria
+  intake_field: fteBand
+  quote: Größere Unternehmen können gefördert werden, wenn das F&E-Vorhaben von außergewöhnlicher strategischer
+    Bedeutung für den Forschungs- und Technologiestandort Bayern ist.
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/technologiefoerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-not-yet-started
+  gate_family: G6_conditionality
+  requirement: Work on the project must not have started yet.
+  value: Project must not have started
+  intake_field: needBy
+  quote: Mit dem Vorhaben darf noch nicht begonnen worden sein
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/technologiefoerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-risk-innovation
+  gate_family: G5_use_of_funds
+  requirement: The project must be characterised by significant technical and economic risk of failure
+    as well as a high degree of innovation.
+  value: High technical/economic risk and high innovation content required
+  intake_field: developmentStage
+  quote: das Vorhaben muss sich durch ein erhebliches technisches und wirtschaftliches Erfolgsrisiko sowie
+    einen hohen Innovationsgehalt auszeichnen
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/technologiefoerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-implementation-location
+  gate_family: G5_use_of_funds
+  requirement: The project must be carried out and exploited in the Free State of Bavaria.
+  value: Project execution/exploitation must be in Bavaria
+  intake_field: activityCountries
+  quote: das Vorhaben muss im Freistaat Bayern durchgeführt und verwertet werden
+  source:
+    file: https://www.stmwi.bayern.de/foerderungen/technologiefoerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

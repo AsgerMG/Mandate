@@ -1,0 +1,53 @@
+id: satr_de_rnd__sa_112392__nbank
+name: Richtlinie über die Gewährung von Zuwendungen zur Förderung einzelbetrieblicher Investitionen und
+  ergänzender CO2-Einsparmaßnahmen („Niedersachsen Invest EFRE“), Nds. MBl. Nr. 33/2024 [NI]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sme-status
+  gate_family: G2_size_ownership
+  requirement: Applicants must be SMEs of the commercial economy operating as their main occupation.
+  value: SME, gewerbliche Wirtschaft, Haupterwerb
+  intake_field: fteBand
+  quote: KMU der gewerblichen Wirtschaft im Haupterwerb
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Niedersachsen-Invest-EFRE.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-market-activity
+  gate_family: G1_nexus
+  requirement: Applicants must be economically and durably active on the market as an enterprise.
+  value: Established, ongoing market activity required
+  intake_field: none
+  quote: wirtschaftlich und dauerhaft am Markt als Unternehmen tätig sind
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Niedersachsen-Invest-EFRE.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-investment-location
+  gate_family: G5_use_of_funds
+  requirement: Applicants must plan to realise an investment project in Lower Saxony.
+  value: Investment project must be in Niedersachsen
+  intake_field: activityCountries
+  quote: die Realisierung eines Investitionsvorhabens in Niedersachsen planen
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Niedersachsen-Invest-EFRE.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-eligible-sector
+  gate_family: G1_nexus
+  requirement: The applicant's main activity must fall within the eligible sectors listed in Annex 2.
+  value: Main activity in Annex 2 eligible sectors
+  intake_field: none
+  quote: eine Haupttätigkeit ausüben, die einem Eintrag der in Anlage 2 dargestellten zuwendungsfähigen
+    Bereiche zugeordnet werden kann
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Niedersachsen-Invest-EFRE.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

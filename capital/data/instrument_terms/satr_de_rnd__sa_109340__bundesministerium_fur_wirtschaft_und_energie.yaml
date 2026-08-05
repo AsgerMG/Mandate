@@ -1,0 +1,53 @@
+id: satr_de_rnd__sa_109340__bundesministerium_fur_wirtschaft_und_energie
+name: Maritimes Forschungsprogramm [BMWK IVD1]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants-enterprises
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises with an establishment or branch in Germany.
+  value: Commercial enterprise with DE establishment/branch
+  intake_field: entityCountries
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft mit einer Betriebsstätte oder
+    Niederlassung in Deutschland.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2025/04/2025-04-08-Bekanntmachung-Maritime-Sicherheit.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-eligible-applicants-public-bodies
+  gate_family: G1_nexus
+  requirement: Also eligible are institutions of municipalities, federal states and the federal government,
+    universities, non-university research institutions, and non-profit organisations.
+  value: Municipality/Land/Bund institution, university, research body, or non-profit
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind auch Einrichtungen der Kommunen und Länder sowie des Bundes, Hochschulen,
+    außeruniversitäre Forschungseinrichtungen und gemeinnützige Organisationen.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2025/04/2025-04-08-Bekanntmachung-Maritime-Sicherheit.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-exclusions
+  gate_family: G1_nexus
+  requirement: Excluded are applicants that have not complied with a prior EU Commission recovery order,
+    that are undertakings in difficulty per Art. 1(4)(c)/Art. 2(18) AGVO, or that are subject to insolvency
+    or comparable proceedings.
+  value: No recovery order, undertaking-in-difficulty status, or insolvency
+  intake_field: none
+  quote: Von der Förderung ausgeschlossen sind Antragsteller, die einer Rückforderungsanordnung aufgrund
+    einer früheren Kommissionsentscheidung zur Feststellung der Rechtswidrigkeit und Unvereinbarkeit einer
+    Beihilfe mit dem Binnenmarkt nicht nachgekommen sind, die als Unternehmen in Schwierigkeiten entsprechend
+    Artikel 1 Absatz 4 Buchstabe c in Verbindung mit Artikel 2 Nummer 18 AGVO anzusehen sind, oder über
+    deren Vermögen ein Insolvenz- oder ein vergleichbares Verfahren beantragt oder eröffnet worden ist.
+  source:
+    file: https://www.bmftr.bund.de/SharedDocs/Bekanntmachungen/DE/2025/04/2025-04-08-Bekanntmachung-Maritime-Sicherheit.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

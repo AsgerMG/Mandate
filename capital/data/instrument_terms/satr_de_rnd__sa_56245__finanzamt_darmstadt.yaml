@@ -1,0 +1,61 @@
+id: satr_de_rnd__sa_56245__finanzamt_darmstadt
+name: Finanzamt Darmstadt
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-taxpayer-eligibility
+  gate_family: G1_nexus
+  requirement: Eligible claimants are taxpayers under the Income Tax Act or Corporate Tax Act who earn
+    income under section 2(1) sentence 1 nos. 1-3 EStG, are not tax-exempt, and meet the law's requirements.
+  value: Taxpayer under EStG/KStG, non-exempt, meets Act requirements
+  intake_field: borrowerModel
+  quote: Anspruchsberechtigt sind Steuerpflichtige im Sinne des Einkommensteuer- und des Körperschaftsteuergesetzes,
+    soweit sie Einkünfte nach § 2 Absatz 1 Satz 1 Nummer 1 bis 3 des Einkommensteuergesetzes erzielen,
+    nicht von der Besteuerung befreit sind und die in diesem Gesetz aufgeführten Voraussetzungen erfüllen.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-partnership-substitution
+  gate_family: G1_nexus
+  requirement: For co-entrepreneurships under section 15(1) sentence 1 no. 2 EStG, the partnership itself,
+    not the individual taxpayer, is the eligible claimant.
+  value: Mitunternehmerschaft is the claimant, not the individual
+  intake_field: borrowerModel
+  quote: Bei Mitunternehmerschaften nach § 15 Absatz 1 Satz 1 Nummer 2 des Einkommensteuergesetzes tritt
+    an die Stelle des Steuerpflichtigen die Mitunternehmerschaft als Anspruchsberechtigter.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-opting-companies
+  gate_family: G1_nexus
+  requirement: Companies opting for corporate taxation under section 1a KStG are eligible claimants as
+    taxpayers under the Corporate Tax Act.
+  value: Section 1a KStG opting companies are eligible
+  intake_field: borrowerModel
+  quote: Nach § 1a des Körperschaftsteuergesetzes optierende Gesellschaften sind als Steuerpflichtige
+    im Sinne des Körperschaftsteuergesetzes anspruchsberechtigt.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-work-start-date
+  gate_family: G6_conditionality
+  requirement: The research allowance can only be claimed for R&D projects where work began, or the contract
+    was awarded, after 1 January 2020.
+  value: R&D work/contract must start after 1 Jan 2020
+  intake_field: none
+  quote: Die Forschungszulage kann nur für Forschungs- und Entwicklungsvorhaben im Sinne des § 2 beansprucht
+    werden, mit deren Arbeiten nach dem 1. Januar 2020 begonnen wird oder für die der Auftrag nach dem
+    1. Januar 2020 erteilt wird.
+  source:
+    file: https://www.bundesfinanzministerium.de/Web/DE/Themen/Steuern/Steuerliche_Themengebiete/Forschungszulage/forschungszulage.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

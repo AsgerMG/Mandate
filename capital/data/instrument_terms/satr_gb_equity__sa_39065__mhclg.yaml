@@ -1,0 +1,77 @@
+id: satr_gb_equity__sa_39065__mhclg
+name: The English Aid for access to finance for SMEs State Aid scheme
+administering_body: see source document
+country: GB
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-regions
+  gate_family: G1_nexus
+  requirement: 'The scheme covers only these English regions: East Midlands, Eastern, London, North East,
+    North West, South East, South West, West Midlands, and Yorkshire and the Humber.'
+  value: England, specific regions only (excl. e.g. South East... see full list)
+  intake_field: activityCountries
+  quote: '3. Regions: East Midlands; Eastern; London; North East; North West; South East; South West;
+    West Midlands; and Yorkshire and the Humber.'
+  source:
+    file: https://assets.publishing.service.gov.uk/media/5a757faded915d731495a705/English_Aid_for_Access_to_Finance_for_SMEs_State_Aid_Scheme.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-startup-aid-eligibility
+  gate_family: G2_size_ownership
+  requirement: For start-up aid, eligible undertakings must be unlisted enterprises within five years
+    of registration, must not have distributed profits, and must not have been formed through a merger;
+    for undertakings not subject to registration, the five-year period runs from the start of economic
+    activity or from becoming liable to tax.
+  value: Unlisted, <=5 years since registration, no distributed profits, not formed by merger
+  intake_field: foundedYear
+  quote: Eligible undertakings shall be unlisted enterprises up to five years following their registration,
+    which have not yet distributed profits and have not been formed through a merger. For eligible undertakings
+    that are not subject to registration the five years eligibility period may be considered to start
+    from the moment when the enterprise either starts its economic activity or is liable to tax for its
+    economic activity.
+  source:
+    file: https://assets.publishing.service.gov.uk/media/5a757faded915d731495a705/English_Aid_for_Access_to_Finance_for_SMEs_State_Aid_Scheme.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-risk-finance-followon-conditions
+  gate_family: G3_financial
+  requirement: Follow-on risk-finance investments beyond the initial 7-year period are only permitted
+    if the total risk finance ceiling is not exceeded, the possibility was foreseen in the original business
+    plan, and the recipient has not become linked with another undertaking other than the financial intermediary
+    or independent private investor (unless the new entity still meets the SME definition).
+  value: 'Follow-on investment: 3 cumulative conditions must hold'
+  intake_field: cofinancingBand
+  quote: The risk finance aid may also cover follow-on investments made in eligible undertakings, including
+    after the 7 year period mentioned in point 5(b), if the following cumulative conditions are fulfilled:-
+    (a) The total amount of risk finance mentioned in point 9 is not exceeded; (b) The possibility of
+    follow-on investments was foreseen in the original business plan; (c) The undertaking receiving follow-on
+    investments has not become linked, within the meaning of Article 3(3) of Annex I with another undertaking
+    other than the financial intermediary or the independent private investor providing risk finance under
+    the measure, unless the new entity fulfils the conditions of the SME definition.
+  source:
+    file: https://assets.publishing.service.gov.uk/media/5a757faded915d731495a705/English_Aid_for_Access_to_Finance_for_SMEs_State_Aid_Scheme.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-notification-thresholds
+  gate_family: G3_financial
+  requirement: Notification thresholds under start-up aid are loans up to EUR 1m (EUR 1.5m in Article
+    107(3)(c) areas, EUR 2m in Article 107(3)(a) areas), guarantees up to EUR 1.5m (EUR 2.25m/EUR 3m),
+    and grants up to EUR 0.4m (EUR 0.6m/EUR 0.8m); these thresholds double for small and innovative enterprises.
+  value: Start-up aid notification thresholds, doubled for small/innovative enterprises
+  intake_field: ticketBand
+  quote: 'Notification thresholds: loans up to EUR 1m (EUR 1.5m in Art 107(3)(c) areas or EUR 2m in Art
+    107(3)(a) areas); guarantees up to EUR 1.5m (EUR 2.25m/EUR 3m); grants up to EUR 0.4m (EUR 0.6m/EUR
+    0.8m); doubled for small and innovative enterprises.'
+  source:
+    file: https://assets.publishing.service.gov.uk/media/5a757faded915d731495a705/English_Aid_for_Access_to_Finance_for_SMEs_State_Aid_Scheme.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (4/4 gates passed mechanical verbatim
+  check -> llm_cited).

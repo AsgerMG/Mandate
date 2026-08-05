@@ -1,0 +1,73 @@
+id: satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche
+name: Incitants en faveur des PME
+administering_body: see source document
+country: BE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-entity-type
+  gate_family: G1_nexus
+  requirement: The applicant must be a company (natural or legal person, including an ASBL/non-profit
+    with an economic purpose).
+  value: Natural or legal person, incl. economic-purpose ASBL
+  intake_field: borrowerModel
+  quote: Vous etes une entreprise (personne physique ou personne morale, y compris les ASBL a vocation
+    economique).
+  source:
+    file: https://economie.wallonie.be/fr/demandes/1904_demander-une-prime-a-l-investissement-pme-ou-ge.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-establishment-wallonia
+  gate_family: G1_nexus
+  requirement: The applicant must own or create an establishment unit (operating seat, activity seat,
+    branch, etc.) in Wallonia.
+  value: Must hold/create an establishment unit in Wallonia
+  intake_field: entityCountries
+  quote: Posseder ou creer une unite d'etablissement (siege d'exploitation, siege d'activite, succursale,
+    etc.) en Wallonie.
+  source:
+    file: https://economie.wallonie.be/fr/demandes/1904_demander-une-prime-a-l-investissement-pme-ou-ge.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-pre-approval-required
+  gate_family: G6_conditionality
+  requirement: The applicant must submit an authorisation request to begin an investment programme before
+    starting the first commitments.
+  value: Must file authorisation request before starting investments
+  intake_field: needBy
+  quote: Vous devez introduire un formulaire de demande d'autorisation de debuter un programme d'investissement
+    avant de commencer les premiers engagements.
+  source:
+    file: https://economie.wallonie.be/fr/demandes/1904_demander-une-prime-a-l-investissement-pme-ou-ge.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-excl-public-law-nonprofit
+  gate_family: G1_nexus
+  requirement: Public-law legal persons and non-profit associations without an economic purpose are excluded
+    from the incentive.
+  value: 'Excluded: public-law bodies and non-economic-purpose non-profits'
+  intake_field: none
+  quote: Les personnes morales de droit public et les associations sans but lucratif (sans vocation economique)
+    sont exclues du benefice des incitants.
+  source:
+    file: https://economie.wallonie.be/fr/demandes/1904_demander-une-prime-a-l-investissement-pme-ou-ge.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-min-own-financing
+  gate_family: G3_financial
+  requirement: At least 25% of the investment programme's financing must come from own resources or external
+    financing not itself publicly supported, and the company must not be a company in financial difficulty.
+  value: Min. 25% own/private financing; excludes firms in financial difficulty
+  intake_field: cofinancingBand
+  quote: Un minimum de 25% du financement du programme d'investissement doit etre assure au moyen de ressources
+    propres ou d'un financement exterieur, sous une forme qui ne fait pas l'objet d'un soutien public,
+    et l'entreprise ne doit pas etre une entreprise en difficulte financiere.
+  source:
+    file: https://economie.wallonie.be/fr/demandes/1904_demander-une-prime-a-l-investissement-pme-ou-ge.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

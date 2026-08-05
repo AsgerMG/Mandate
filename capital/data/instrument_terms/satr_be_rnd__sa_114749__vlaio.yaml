@@ -1,0 +1,71 @@
+id: satr_be_rnd__sa_114749__vlaio
+name: Besluit van de Vlaamse Regering tot toekenning van steun aan ondernemingen voor ecologie-uitgaven
+administering_body: see source document
+country: BE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-location
+  gate_family: G1_nexus
+  requirement: An enterprise with an operating establishment in the Flemish Region can qualify for ecologiepremie+.
+  value: Operating establishment in Flemish Region required
+  intake_field: activityCountries
+  quote: Een onderneming die een exploitatiezetel heeft in het Vlaamse Gewest kan in aanmerking komen
+    voor de ecologiepremie+.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-establishment-timing
+  gate_family: G1_nexus
+  requirement: If the enterprise does not yet have an establishment in the Flemish Region at the time
+    of application, it must have one while carrying out the ecology investments.
+  value: Establishment must exist by time of investment execution if not at application
+  intake_field: activityCountries
+  quote: Als een onderneming nog geen vestiging in het Vlaamse Gewest heeft bij steunaanvraag, moet ze
+    deze hebben tijdens het uitvoeren van de ecologie-investeringen.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-holding-period
+  gate_family: G6_conditionality
+  requirement: The applicant must operate the ecology investment for at least five years after completion
+    of the investment.
+  value: 5-year minimum holding/operation period
+  intake_field: none
+  quote: De steunaanvragende onderneming dient de ecologie-investering te exploiteren tot minstens vijf
+    jaar na beeindiging van de investering.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: An SME is defined as an independent enterprise with fewer than 250 employees and annual
+    turnover under EUR 50 million or balance sheet total under EUR 43 million.
+  value: 'SME: <250 FTE, <EUR50m turnover or <EUR43m balance sheet'
+  intake_field: fteBand
+  quote: Een KMO is een zelfstandige onderneming met minder dan 250 werknemers en met een jaaromzet van
+    minder dan EUR 50 miljoen of een balanstotaal van minder dan EUR 43 miljoen
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-legal-form
+  gate_family: G1_nexus
+  requirement: Non-profit associations (VZW) are not an acceptable legal form, though associations with
+    economic activity are eligible.
+  value: VZW not acceptable; associations w/ economic activity OK
+  intake_field: borrowerModel
+  quote: VZW's zijn geen aanvaardbare rechtsvorm, verenigingen met economische activiteit komen wel in
+    aanmerking.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/ecologiepremie/welke-ondernemingen-en-welke-investeringen-komen-aanmerking-voor-de-ecologiepremie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

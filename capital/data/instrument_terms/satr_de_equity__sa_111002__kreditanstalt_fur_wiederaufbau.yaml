@@ -1,0 +1,71 @@
+id: satr_de_equity__sa_111002__kreditanstalt_fur_wiederaufbau
+name: ERP-Digitalisierungs- und Innovationskredit (380) [BMWK VIIC1]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-majority-private-ownership
+  gate_family: G2_size_ownership
+  requirement: Applicants must be commercial enterprises that are majority privately owned, headquartered
+    in Germany, or headquartered abroad applying for subsidiaries, branches, or establishments in Germany.
+  value: Majority privately owned; HQ in Germany or foreign HQ w/ German entity
+  intake_field: institutionalOwner
+  quote: Unternehmen der gewerblichen Wirtschaft, die sich mehrheitlich in Privatbesitz befinden, mit
+    Sitz in Deutschland oder mit Sitz im Ausland für Tochtergesellschaften, Niederlassungen, Betriebsstätten
+    oder Filialen in Deutschland.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Innovation/F%C3%B6rderprodukte/ERP-Digitalisierungs-und-Innovationskredit-(380-390-391)/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-sole-proprietors
+  gate_family: G1_nexus
+  requirement: Sole proprietors or freelancers in Germany are also eligible applicants.
+  value: Sole proprietors/freelancers in Germany eligible
+  intake_field: borrowerModel
+  quote: Einzelunternehmer oder Freiberufler in Deutschland.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Innovation/F%C3%B6rderprodukte/ERP-Digitalisierungs-und-Innovationskredit-(380-390-391)/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-thresholds
+  gate_family: G2_size_ownership
+  requirement: Funded are small and medium-sized enterprises per the European Commission definition, with
+    fewer than 250 employees and annual turnover of at most EUR 50 million or annual balance sheet total
+    of at most EUR 43 million.
+  value: 'SME: <250 FTE, <=EUR50m turnover or <=EUR43m balance sheet'
+  intake_field: fteBand
+  quote: Gefördert werden kleine und mittlere Unternehmen im Sinne der Definition der Europäischen Kommission
+    mit weniger als 250 Mitarbeitern und einem Jahresumsatz von höchstens 50 Millionen Euro oder einer
+    Jahresbilanzsumme von höchstens 43 Millionen Euro.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Innovation/F%C3%B6rderprodukte/ERP-Digitalisierungs-und-Innovationskredit-(380-390-391)/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-mid-cap-threshold
+  gate_family: G2_size_ownership
+  requirement: Larger mid-sized companies (Mittelstand) are also funded, provided their group turnover
+    does not exceed EUR 500 million.
+  value: Mid-cap eligible if group turnover <=EUR500m
+  intake_field: turnoverBand
+  quote: Gefördert werden größere mittelständische Unternehmen, deren Gruppenumsatz 500 Millionen Euro
+    nicht überschreitet.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Innovation/F%C3%B6rderprodukte/ERP-Digitalisierungs-und-Innovationskredit-(380-390-391)/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-social-enterprises
+  gate_family: G1_nexus
+  requirement: Commercial social enterprises with a profit motive are also funded.
+  value: For-profit social enterprises also eligible
+  intake_field: borrowerModel
+  quote: Gefördert werden auch gewerbliche Sozialunternehmen mit Gewinnerzielungsabsicht.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Innovation/F%C3%B6rderprodukte/ERP-Digitalisierungs-und-Innovationskredit-(380-390-391)/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

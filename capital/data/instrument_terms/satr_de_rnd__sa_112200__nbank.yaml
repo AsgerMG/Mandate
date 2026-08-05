@@ -1,0 +1,48 @@
+id: satr_de_rnd__sa_112200__nbank
+name: Bund-Länder-Gemeinschaftsaufgabe "Verbesserung der regionalen Wirtschaftsstruktur" (GRW) - gewerbliche
+  Wirtschaft [BMWK - ID1]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-enterprise-size
+  gate_family: G2_size_ownership
+  requirement: Applicants must be small, medium (SME) or large enterprises of the commercial economy,
+    including the hospitality trade.
+  value: SME or large enterprise, incl. hospitality trade
+  intake_field: turnoverBand
+  quote: Als kleines, mittleres (KMU) oder großes Unternehmen der gewerblichen Wirtschaft inklusive des
+    Beherbergungsgewerbes
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Niedersachsen-Invest-GRW.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-project-requirements
+  gate_family: G5_use_of_funds
+  requirement: The project must create permanent jobs subject to social insurance contributions, increase
+    the viability of the business model, meet low-threshold innovation/digitalisation requirements, and
+    make a sustainable contribution to environmental protection.
+  value: Must create permanent insured jobs, improve viability, meet innovation/digitalisation and environmental
+    thresholds
+  intake_field: developmentStage
+  quote: sozialversicherungspflichtige Dauerarbeitsplätze schaffen, die Zukunftsfähigkeit Ihres Geschäftsmodells
+    erhöhen und die niedrigschwelligen Anforderungen an den Innovations- oder Digitalisierungsgrad einhalten
+    und einen nachhaltigen Beitrag zum Umweltschutz leisten
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Niedersachsen-Invest-GRW.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-applicant-investor
+  gate_family: G1_nexus
+  requirement: The funding application must be submitted by the person making the business investment.
+  value: Applicant must be the party making the investment
+  intake_field: borrowerModel
+  quote: Der Förderantrag ist durch die Person einzureichen, welche die betriebliche Investition vornimmt.
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Niedersachsen-Invest-GRW.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

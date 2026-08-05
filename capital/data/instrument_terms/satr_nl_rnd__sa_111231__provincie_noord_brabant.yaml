@@ -1,0 +1,49 @@
+id: satr_nl_rnd__sa_111231__provincie_noord_brabant
+name: NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma’s 2021-2027 Noord-Brabant, verlenging
+  onderdeel OPZuid
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-lead-applicant-only
+  gate_family: G1_nexus
+  requirement: Only the lead applicant (penvoerder), applying on behalf of a partnership under the OPZuid
+    subsidy scheme, may request the subsidy.
+  value: Only the consortium's lead applicant (penvoerder) may apply
+  intake_field: consortium
+  quote: Subsidie kan worden aangevraagd door de penvoerder die namens een samenwerkingsverband subsidie
+    heeft aangevraagd op grond van de Subsidieregeling OPZuid.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680132
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-noord-brabant-cost-majority
+  gate_family: G1_nexus
+  requirement: A project counts as benefiting Noord-Brabant only if more than half of the eligible costs
+    are incurred by participants established in the province of Noord-Brabant.
+  value: '>50% eligible costs by Noord-Brabant-based participants'
+  intake_field: activityCountries
+  quote: a. meer dan de helft van de subsidiabele kosten wordt gemaakt door deelnemers aan het project
+    die zijn gevestigd in de provincie Noord-Brabant; en
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680132
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-noord-brabant-result-focus
+  gate_family: G1_nexus
+  requirement: The project's results must be predominantly focused on the province of Noord-Brabant.
+  value: Results must be predominantly focused on Noord-Brabant
+  intake_field: activityCountries
+  quote: b. de resultaten van het project overwegend zijn gericht op de provincie Noord-Brabant.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680132
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

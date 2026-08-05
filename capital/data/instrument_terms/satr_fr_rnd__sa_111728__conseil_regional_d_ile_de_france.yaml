@@ -1,0 +1,68 @@
+id: satr_fr_rnd__sa_111728__conseil_regional_d_ile_de_france
+name: Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-thresholds
+  gate_family: G2_size_ownership
+  requirement: Beneficiaries must be SMEs employing between 5 and 250 people, with turnover not exceeding
+    EUR 50m or a balance-sheet total not exceeding EUR 43m.
+  value: 'SME: 5-250 employees, <=EUR50m turnover or <=EUR43m balance'
+  intake_field: fteBand
+  quote: les petites et moyennes entreprises (PME), employant entre 5 et 250 salariés, dont le chiffre
+    d'affaires n'excède pas 50 M€ ou dont le bilan total n'excède pas 43 M€,
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/pmup
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-ile-de-france-establishment
+  gate_family: G1_nexus
+  requirement: The applicant must have at least one establishment in Île-de-France, whatever its legal
+    form, including associations carrying out an economic activity.
+  value: Île-de-France establishment required, any legal form incl. associations
+  intake_field: entityCountries
+  quote: ayant au moins 1 établissement en Île-de-France, quelle que soit leur forme juridique, y compris
+    les associations ayant une activité économique.
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/pmup
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-ecological-transition-axis-required
+  gate_family: G5_use_of_funds
+  requirement: Projects must include a development axis specifically dedicated to the ecological and energy
+    transition.
+  value: Project must include an ecological/energy-transition development axis
+  intake_field: developmentStage
+  quote: Les projets doivent comporter un axe de développement dédié à la transition écologique et énergétique.
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/pmup
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-excluded-sectors
+  gate_family: G5_use_of_funds
+  requirement: Excluded activities include trading/reselling, business consultancy, regulated professions,
+    finance/insurance/real estate, hospitality and catering, training organisations, road freight transport,
+    logistics, digital services, personal services, media/communication, and primary agriculture, fishing
+    and forestry.
+  value: 'Excluded sectors: trading, consulting, regulated professions, finance/insurance/real estate,
+    hospitality, training, road freight, logistics, digital services, personal services, media, primary
+    agri/fishing/forestry'
+  intake_field: none
+  quote: 'Sont exclues les activités suivantes : le négoce, le conseil aux entreprises, les professions
+    réglementées, la finance/assurance/immobilier, l''hôtellerie-restauration, les organismes de formation,
+    le transport routier de marchandises, la logistique, les services numériques, les services à la personne,
+    les médias/communication, et l''agriculture/pêche/sylvorestation primaires.'
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/pmup
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (4/4 gates passed mechanical verbatim
+  check -> llm_cited).
