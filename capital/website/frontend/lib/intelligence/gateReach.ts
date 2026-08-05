@@ -37,6 +37,13 @@ export interface OpenFieldEvidence {
   field: string;
   /** Share of the shortlist's event_count still gated on this field, 0-100. */
   reachPct: number;
+  /** Share of the gates on this field that demand something DIFFERENT, 0-1.
+   *  1.0 = every fund wants something else; near 0 = they all want the same
+   *  thing, so the answer separates nobody. */
+  distinctness: number;
+  /** reachPct * distinctness — how much a founder's answer can actually
+   *  narrow THIS shortlist. The ranking key; see the note at the sort. */
+  infoScore: number;
   nInstruments: number;
   /** Up to 3 real (instrument name, requirement text) pairs for prompt grounding. */
   examples: { instrument: string; requirement: string }[];
@@ -66,7 +73,15 @@ export function openFieldsForShortlist(
   if (!shortlist.length) return [];
   const totalEvents = shortlist.reduce((s, i) => s + i.eventCount, 0) || shortlist.length;
 
-  const byField = new Map<string, { events: number; instruments: Set<string>; examples: { instrument: string; requirement: string }[] }>();
+  const byField = new Map<string, {
+    events: number;
+    instruments: Set<string>;
+    examples: { instrument: string; requirement: string }[];
+    /** Distinct demands made on this field across the shortlist. */
+    specs: Set<string>;
+    /** Gates asking about this field, the denominator for distinctness. */
+    gateCount: number;
+  }>();
   for (const inst of shortlist) {
     for (const gate of inst.gates) {
       // Only triaged FILTERS, on the CURATED field. This path feeds the
@@ -93,7 +108,13 @@ export function openFieldsForShortlist(
       const covered = FIELD_ENUM_HINTS[field].coveredBy;
       if (covered && !isAnswered(answers, covered)) continue;
       if (isAnswered(answers, field)) continue;
-      const entry = byField.get(field) ?? { events: 0, instruments: new Set<string>(), examples: [] };
+      const entry = byField.get(field)
+        ?? { events: 0, instruments: new Set<string>(), examples: [], specs: new Set<string>(), gateCount: 0 };
+      // Every gate on this field contributes its demand, even a second one on
+      // an instrument already counted: distinctness is about how many
+      // DIFFERENT things the shortlist asks for, not how many funds ask.
+      entry.gateCount += 1;
+      entry.specs.add(JSON.stringify(gate.valueSpec ?? gate.value ?? gate.requirement ?? ""));
       if (!entry.instruments.has(inst.id)) {
         entry.events += inst.eventCount || 1;
         entry.instruments.add(inst.id);
@@ -106,13 +127,48 @@ export function openFieldsForShortlist(
   }
 
   return [...byField.entries()]
-    .map(([field, v]) => ({
-      field,
-      reachPct: Math.round((1000 * v.events) / totalEvents) / 10,
-      nInstruments: v.instruments.size,
-      examples: v.examples,
-    }))
-    .sort((a, b) => b.reachPct - a.reachPct);
+    .map(([field, v]) => {
+      const reachPct = Math.round((1000 * v.events) / totalEvents) / 10;
+      // How many DIFFERENT demands the shortlist makes on this field, as a
+      // share of the gates asking about it. 1.0 means every fund wants
+      // something different; near 0 means they all want the same thing.
+      const distinctness = v.gateCount ? v.specs.size / v.gateCount : 0;
+      return {
+        field,
+        reachPct,
+        distinctness: Math.round(distinctness * 100) / 100,
+        // ── Rank on INFORMATION, not coverage ──────────────────────────────
+        // This used to sort on reachPct alone, and that is why the adaptive
+        // round could not separate siblings. Measured across 25 holdout
+        // replays, reach and discrimination are INVERSELY correlated:
+        //
+        //   field            reach%   distinct-spec ratio
+        //   exclusionFlags    82.8         0.11
+        //   nonEuControl      55.1         0.18
+        //   ownerOver25       30.9         0.55
+        //   needBy            12.6         1.00
+        //   region             2.9         0.57
+        //   turnoverBand       1.1         1.00
+        //
+        // The six fields that won every slot reach almost the whole shortlist
+        // and demand the SAME thing of nearly all of it -- every fund wants a
+        // founder not in crisis and not under a recovery order. Asking
+        // eliminates nobody. Meanwhile the fields where every fund differs
+        // (needBy, turnoverBand, and region, which is the one input that
+        // genuinely splits siblings sharing a notified framework) ranked 7th
+        // and below against a 6-slot cap, so they were never asked.
+        //
+        // A question everyone answers identically carries no information. So
+        // the score is reach WEIGHTED BY how much the answer can actually
+        // split the shortlist. Reach still matters -- a discriminating
+        // question about one tiny fund is not worth a founder's attention --
+        // which is why this is a product, not a replacement.
+        infoScore: Math.round(reachPct * distinctness * 10) / 10,
+        nInstruments: v.instruments.size,
+        examples: v.examples,
+      };
+    })
+    .sort((a, b) => b.infoScore - a.infoScore || b.reachPct - a.reachPct);
 }
 
 // ── Project-level gate text (brief_funnel_v2 Stage 2b) ──────────────────────
