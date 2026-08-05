@@ -544,13 +544,26 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
         # been propagated from the staging table to the instrument.
         if satr.get(iid):
             title, obj = satr[iid]
-            # Not when it is the row's own name. A scheme child is NAMED from
-            # the Commission's case register, so for 430 of them this line
-            # restated the identity line verbatim -- and every sibling under one
-            # SA number restated the SAME string, which is the text those
-            # profiles are already too alike on. Repetition adds no information
-            # and costs separation.
-            if title:  # AB-TEST: dedup disabled
+            # KEPT even though it usually restates the row's own name. A scheme
+            # child is NAMED from the Commission's case register, so for 430 of
+            # them this line is the identity line again, and every sibling under
+            # one SA number repeats the same string -- exactly the text their
+            # profiles are already too alike on.
+            #
+            # Suppressing the repeat was tried and measured, 2026-08-06, whole
+            # index re-embedded both ways:
+            #
+            #   suppressed   sibling cosine 0.9375   oracle top-1 72.5%   regime@5 84%
+            #   kept         sibling cosine 0.9415   oracle top-1 74.2%   regime@5 87%
+            #
+            # It buys 0.004 of sibling separation and costs the two numbers that
+            # decide whether a founder gets the right regime. The redundancy is
+            # doing real work: the register's title is the ONLY phrasing some
+            # leaves share with the way a scheme is referred to in the wild, and
+            # halving its weight in a document that also gained ~400 characters
+            # of activity text moved it out of reach. Do not re-suppress without
+            # re-running both measurements.
+            if title:
                 parts.append(f"Notified scheme: {title}.")
             if obj:
                 parts.append(f"Registered aid objective: {obj}.")

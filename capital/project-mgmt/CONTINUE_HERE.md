@@ -26,15 +26,28 @@ N=40 G2=<variant> npx tsx scripts/measure_pipeline.ts      # both gates, one tab
 **Gate 2 (holdout, n=40, gate1@32f28f2, haiku-4-5)** — gate 1's own top-5 on the
 same cases is **20/40**:
 
-| variant | exact | regime |
-|---|--:|--:|
-| `axes` | 12/40 | 35/40 |
-| `parser` | 13/40 | 31/40 |
-| **`swap`** | **15/40** | **38/40 (95%)** |
+| variant | exact | regime | short lists | malformed |
+|---|--:|--:|--:|--:|
+| *gate 1's own five* | *20/40* | *38/40* | — | — |
+| `legacy` | 14/40 | 37/40 | ~40% | — |
+| `parser` | 13/40 | 31/40 | 0 | 0 |
+| `axes` | 12/40 | 35/40 | 0 | 0 |
+| `swap` | 15/40 | 38/40 | 2 | 7 |
+| **`veto`** (default) | **20/40** | **38/40 (95%)** | **0** | **0** |
 
-No gate-2 variant beats gate 1's own five yet. `swap` — where the model may
-only choose the LEAF within families gate 1 already picked — is closest and has
-the best regime number. `veto` and `noq` were still running.
+`veto` — gate 1's order stands, the model may only strike a fund out on a
+requirement the founder plainly fails, enforced in code — **ties gate 1 exactly**
+and is the first gate-2 shape in this project that does not destroy value. It
+does not yet BEAT gate 1.
+
+Caveat, stated by the workstream itself: veto issued 16 real vetoes, rescued 0
+and broke 0. On a fixture where 33 of 40 companies have no description the
+interview returns "not sure" and there is nothing for a veto to bite on. That
+measures **the floor holding, not the mechanism working**.
+
+**Both parser bugs are fixed** — 0 short shortlists and 0 malformed replies
+across every rebuilt run, against ~40% of runs previously shipping three or four
+funds. A real correctness fix the accuracy number barely shows.
 
 Gate 2 has **±7pp run-to-run variance at n=40**. Do not chase a 2pp move.
 
@@ -46,10 +59,14 @@ All measured, all in `project-mgmt/research/`:
    Canned sector template → **17.2%**. 982 of 1,988 holdout rows carry
    `description:""`; one string is the query for 179 rows with 87 different
    correct answers. Biggest single lever, and it is an intake change.
-2. **Gate 2 chooses blind.** Keeps the winning fund 55%, a wrong one 42%. It is
-   handed name/body/channel/country and four truncated gates — none of which
-   separates siblings. `award_p50` **fully separates 25 of 35 sibling groups**
-   and was not in the prompt.
+2. ~~**Gate 2 chooses blind.**~~ **DISPROVEN 2026-08-06.** The information
+   hypothesis was mine and it is wrong. Giving the model `award_p50` with its n,
+   capital type, delivery body, within-family sector share, and a menu with
+   siblings adjacent scored **12/40 — BELOW the 14/40 it managed knowing none of
+   it.** Sixteen deterministic threshold rules on the sector posterior all landed
+   at 19-20/40, i.e. no better than gate 1. Gate 1 already reads `sector_mix`;
+   the +26pp within-group result is already spent. Do not re-try "give gate 2
+   more fields about the funds".
 3. **`sectorFit` inverts its own question.** Computes P(sector|fund) clipped at
    0.25; ties on top in 58.7% of sibling comparisons and scores *below* the
    popularity baseline. The posterior form scores 43.6% vs 17.6% within sibling
@@ -95,8 +112,20 @@ prerequisite for measuring any further ranking work honestly.
 2. **Land whatever beat the baseline**; revert what did not, and record it above.
 3. **Workstream D is the priority** — a real description is worth more than
    everything else combined, and it also unblocks honest measurement.
-4. **Then gate 2 `swap` + the pinning fields**, since 95% regime with leaf
-   choice inside it is the shape that gets to five correct funds.
+4. **Gate 2 is at its floor, not its ceiling — leave it on `veto` until the
+   intake improves.** The workstream proved the constraint is upstream: gate 1
+   has the right FAMILY in 38 of 38 reachable cases and the right LEAF in 20, so
+   the whole remaining problem is choosing between siblings — and the fields that
+   separate them (sub-national region, sub-sector, GBER objective) are exactly
+   what the intake does not collect. More prompt work cannot reach them.
+
+## Fixture warning
+
+The gate-2 numbers above are pinned at `gate1@32f28f2`. Another workstream
+changed gate 1 mid-session (`peerPrior.generated.json`, `semantic.ts`,
+`relevance.ts`). **Re-running `build_gate1_fixture.ts` invalidates the
+comparison rather than refreshing it** — rebuild the fixture AND re-run every
+gate-2 variant together, or not at all.
 
 ## Rules that must not be broken
 
