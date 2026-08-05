@@ -248,3 +248,25 @@ themselves carry the scheme identity BDNS never gave us a clean ID for).
 5. Then, and only then, the deprioritised countries.
 6. `NO_PG=1 npm run check` and `check_recall_floor.ts` before calling any of
    this shipped.
+
+## Spain: fetch complete, structural ceiling found (2026-08-05)
+
+93 of 93 targets resolved -- 90 checked and triaged, 3 abstained as too generic
+to attribute confidently. Only **6 carry eligibility text**, all CDTI national
+lines (`cdti_idi`, `cdti_neotec`, `cdti_misiones`, `cdti_cervera`,
+`cdti_perte_aerosalud`, `cdti_lic`), of which 3 are still open.
+
+**Not a fetch-effort gap.** BDNS logs each year's grant call as its own scheme
+name -- "convocatoria del año 2024", "convocatoria del año 2025" -- so the
+other 87 targets were single-year vintages, already closed, with no standing
+page to fetch. Verified systematically against BOE, planderecuperacion.gob.es,
+and the relevant ministry/agency site per name, not inferred from title dates.
+
+**Do not re-attempt fetching the remaining 87.** The ceiling here is structural,
+the same shape as France's régime-cadre problem but a different cause: France
+had one document shared by many; Spain has one scheme identity per YEAR that
+never repeats. The 7->94 instrument split from the BDNS bug fix still stands
+and is the real win -- siblings are no longer collapsed into one bucket. What
+won't happen is rich eligibility prose for most of them; `awardP50`/`sector_mix`
+and the scheme's own name (already loaded as `description`) are what Spain's
+corpus will offer beyond this.
