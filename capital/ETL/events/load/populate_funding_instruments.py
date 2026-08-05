@@ -516,10 +516,22 @@ def main() -> None:
     # Read from the data rather than listed, for the same reason split_families
     # is: a source that starts publishing programme names should get the
     # granularity automatically, not when somebody remembers to add it.
+    #
+    # Requires MORE THAN ONE distinct programme_name, not just enough rows.
+    # Its absence was a real bug, found 2026-08-05 checking Denmark: several
+    # extractors (Denmark's Innovationsfonden, Latvia's ALTUM, Estonia's EIS,
+    # Norway's NFR) already write one `source` slug per programme, so
+    # `programme_name` is CONSTANT within that source. Splitting on a constant
+    # still ran -- it produced exactly one child, given the same name as its
+    # own parent, and silently divided that programme's real event count and
+    # award history in two (Innobooster: 1533 parent-side events, 1467 more
+    # under a same-named "child"). 61 sources had this shape. A split that
+    # cannot discriminate anything is not a split; it is a duplicate.
     programme_split = {r[0] for r in conn.execute("""
         SELECT source FROM public_funding_events
          WHERE programme_name IS NOT NULL AND programme_name != ''
-         GROUP BY source HAVING COUNT(*) >= ?
+         GROUP BY source
+        HAVING COUNT(*) >= ? AND COUNT(DISTINCT programme_name) > 1
     """, (MIN_CHILD_EVENTS,))}
     if programme_split:
         print(f"  programme-level split available for {len(programme_split)} sources")
