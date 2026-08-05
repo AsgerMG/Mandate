@@ -1,0 +1,127 @@
+id: sudop_ncbr_aid
+name: sudop_ncbr_aid
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Applicants must be enterprises (SMEs or large companies, including small mid-caps
+    and mid-caps) forming a consortium with other enterprises, research organisations, or
+    non-governmental organisations.
+  value: Enterprise (SME or large, incl. small mid-caps/mid-caps) in consortium with enterprises/research
+    organisations/NGOs
+  intake_field: borrowerModel
+  quote: Przedsiębiorstwa (MŚP lub duże, w tym te o statusie small mid-caps i mid-caps) w
+    konsorcjum z innymi przedsiębiorstwami, organizacjami badawczymi lub organizacjami pozarządowymi.
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: Who may apply
+  verified: llm_cited
+- id: g1-consortium-leader
+  gate_family: G1_nexus
+  requirement: The consortium leader may only be an enterprise; research organisations and
+    NGOs may only be consortium partners, not leaders.
+  value: Leader must be an enterprise
+  intake_field: consortium
+  quote: Liderem konsorcjum może być wyłącznie przedsiębiorstwo. Organizacja badawcza i organizacja
+    pozarządowa mogą być wyłącznie konsorcjantami.
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: Who may apply
+  verified: llm_cited
+- id: g1-consortium-size
+  gate_family: G1_nexus
+  requirement: The consortium may have a maximum of 3 members.
+  value: Max 3 consortium members
+  intake_field: consortium
+  quote: Maksymalnie 3 członków konsorcjum.
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: Who may apply
+  verified: llm_cited
+- id: g2-large-enterprise-sme-cooperation
+  gate_family: G2_size_ownership
+  requirement: Large enterprises (except small mid-caps) must plan cooperation with an SME
+    linked to R&D tasks in the project, or include an SME-status enterprise in the consortium.
+  value: Large enterprises must cooperate with or include an SME in the consortium
+  intake_field: turnoverBand
+  quote: Duże przedsiębiorstwa (za wyjątkiem small mid-caps) muszą zaplanować współpracę z
+    MŚP powiązaną z zadaniami badawczo-rozwojowymi w projekcie lub przewidzieć w składzie
+    konsorcjum przedsiębiorstwo o statusie MŚP.
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: Who may apply
+  verified: llm_cited
+- id: g5-rd-scope
+  gate_family: G5_use_of_funds
+  requirement: Projects must include R&D work (industrial research and experimental development,
+    or experimental development only) leading to product or business-process innovation.
+  value: 'R&D work required: industrial research + experimental development, or experimental
+    development only, leading to product/process innovation'
+  intake_field: developmentStage
+  quote: Projekty muszą obejmować prace B+R (badania przemysłowe i eksperymentalne prace rozwojowe,
+    albo tylko prace rozwojowe) prowadzące do innowacji produktowej lub w procesach biznesowych
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: What it funds
+  verified: llm_cited
+- id: g5-optional-scope
+  gate_family: G5_use_of_funds
+  requirement: Optionally, the project may also cover internationalisation, industrial property
+    protection, and development of employee and management competences.
+  value: 'Optional: internationalisation, IP protection, competence development'
+  intake_field: none
+  quote: 'opcjonalnie: umiędzynarodowienie, ochrona własności przemysłowej, rozwój kompetencji
+    pracowników i kadry zarządzającej'
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: What it funds
+  verified: llm_cited
+- id: g3-min-eligible-costs
+  gate_family: G3_financial
+  requirement: Minimum eligible expenditure per project is 3 million PLN.
+  value: 'Min eligible costs: 3,000,000 PLN'
+  intake_field: ticketBand
+  quote: 'Minimalne wydatki kwalifikowane: 3 mln PLN.'
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: What it funds
+  verified: llm_cited
+- id: g3-max-funding
+  gate_family: G3_financial
+  requirement: Maximum grant funding per project is 140 million PLN.
+  value: 'Max funding: 140,000,000 PLN per project'
+  intake_field: ticketBand
+  quote: 'Maksymalne dofinansowanie: 140 mln PLN na projekt.'
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: What it funds
+  verified: llm_cited
+- id: g3-competition-budget
+  gate_family: G3_financial
+  requirement: The competition budget is 350 million PLN.
+  value: 'Competition budget: 350,000,000 PLN'
+  intake_field: none
+  quote: 'Budżet konkursu: 350 mln PLN.'
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: What it funds
+  verified: llm_cited
+- id: g6-consortium-task-responsibility
+  gate_family: G6_conditionality
+  requirement: Each consortium member must be responsible for carrying out at least one task
+    within the R&D work.
+  value: Each consortium member responsible for at least 1 R&D task
+  intake_field: consortium
+  quote: każdy z członków konsorcjum musi być odpowiedzialny za realizację przynajmniej jednego
+    zadania w ramach prac B+R
+  source:
+    file: FETCHED_PL_sudop_ncbr_aid.txt
+    locator: Who may apply
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (10/10 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).

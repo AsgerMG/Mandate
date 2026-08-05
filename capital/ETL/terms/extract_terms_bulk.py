@@ -93,6 +93,30 @@ BULK_KEYWORDS = [
 # The only per-instrument human curation this script needs. Extend as more
 # documents are fetched (see MANIFEST.md's Tier A/B/C/D acquisition log).
 DOC_MAP: dict[str, list[str]] = {
+    # ── Staged from the 2026-08-05 fetched scheme text ──────────────────
+    # Written by stage_fetched_text_as_docs.py. These are the schemes'
+    # OWN pages, so gates cut from them are per-scheme rather than the
+    # inherited regime rules that are identical across siblings.
+    "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances": ["FETCHED_FR_satr_fr_equity_sa_111723_ministere_de_l_economie_et_des_fina.txt"],
+    "satr_de_rnd__sa_63177__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": ["FETCHED_DE_satr_de_rnd_sa_63177_bundesamt_fur_wirtschaft_und_ausfuhrkon.txt"],
+    "sudop_rnd_purpose": ["FETCHED_PL_sudop_rnd_purpose.txt"],
+    "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances": ["FETCHED_FR_satr_fr_rnd_sa_111723_ministere_de_l_economie_et_des_finance.txt"],
+    "sudop_ncbr_aid": ["FETCHED_PL_sudop_ncbr_aid.txt"],
+    "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai": ["FETCHED_FR_satr_fr_rnd_sa_111726_ministere_de_la_transition_ecologique_.txt"],
+    "satr_it_rnd__sa_102955__ministero_delle_imprese_e_del_made_in_italy_dire": ["FETCHED_IT_satr_it_rnd_sa_102955_ministero_delle_imprese_e_del_made_in_.txt"],
+    "satr_hu_rnd__sa_117786__nemzetgazdasagi_miniszterium": ["FETCHED_HU_satr_hu_rnd_sa_117786_nemzetgazdasagi_miniszterium.txt"],
+    "cdti_idi": ["FETCHED_ES_cdti_idi.txt"],
+    "satr_se_rnd__sa_112771__energimyndigheten": ["FETCHED_SE_satr_se_rnd_sa_112771_energimyndigheten.txt"],
+    "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie": ["FETCHED_DE_satr_de_rnd_sa_114563_bundesministerium_fur_wirtschaft_und_e.txt"],
+    "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": ["FETCHED_DE_satr_de_rnd_sa_112919_bundesamt_fur_wirtschaft_und_ausfuhrko.txt"],
+    "satr_de_equity__sa_108143__landwirtschaftliche_rentenbank": ["FETCHED_DE_satr_de_equity_sa_108143_landwirtschaftliche_rentenbank.txt"],
+    "satr_fi_rnd__sa_112229__innovaatiorahoituskeskus_business_finland": ["FETCHED_FI_satr_fi_rnd_sa_112229_innovaatiorahoituskeskus_business_finl.txt"],
+    "satr_se_rnd__sa_111803__naturvardsverket": ["FETCHED_SE_satr_se_rnd_sa_111803_naturvardsverket.txt"],
+    "satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche": ["FETCHED_BE_satr_be_rnd_sa_112959_spw_dgo_economie_emploi_et_recherche.txt"],
+    "satr_be_rnd__sa_108206__vlaio": ["FETCHED_BE_satr_be_rnd_sa_108206_vlaio.txt"],
+    "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai": ["FETCHED_FR_satr_fr_rnd_sa_111723_ministere_de_la_transition_ecologique_.txt"],
+    "satr_de_rnd__sa_56245__finanzamt_munchen_abt_3": ["FETCHED_DE_satr_de_rnd_sa_56245_finanzamt_munchen_abt_3.txt"],
+    "satr_de_rnd__sa_109088__projekttrager_julich": ["FETCHED_DE_satr_de_rnd_sa_109088_projekttrager_julich.txt"],
     "innovate_uk": ["innovate_uk_smart_grants_apr2024.html"],
     "vinnova_grant": ["vinnova_state_aid_rules.html"],
     "business_finland": ["business_finland_rd_funding.html"],
