@@ -258,7 +258,7 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     instruments = sq.execute(
         """SELECT id, name, administering_body, country, capital_type,
                   source_family_bucket, sample_project_titles, sector_mix,
-                  award_p50, award_n
+                  award_p50, award_n, description, eligibility_text
            FROM funding_instruments ORDER BY id"""
     ).fetchall()
 
@@ -333,7 +333,7 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
         satr[r[0]] = (r[1] or "", r[2] or "")
 
     for (iid, name, body, country, capital, bucket, samples,
-         sector_mix, award_p50, award_n) in instruments:
+         sector_mix, award_p50, award_n, own_desc, own_elig) in instruments:
         # The event join above keys on `source`, which cannot express the SATR
         # split: a child is one granting authority WITHIN a source, so all 453
         # of them matched nothing and were profiled on their regime's
@@ -392,6 +392,23 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
                 parts.append(f"Notified scheme: {title}.")
             if obj:
                 parts.append(f"Registered aid objective: {obj}.")
+        # The scheme's OWN page, fetched per-scheme from the national register
+        # (2026-08-05, 241 instruments across all 20 in-corpus countries).
+        #
+        # This is the text the whole corpus-enrichment run existed to get. The
+        # SATR fields above give a scheme its notified TITLE and objective; this
+        # gives what its own granting body publishes about who may apply and
+        # what it funds, which is the only thing that separates siblings sharing
+        # one regime document. Truncated because an eligibility page can run to
+        # thousands of words and the profile is a retrieval surface, not an
+        # archive -- the full verbatim text stays in `eligibility_text` on the
+        # instrument for citation.
+        if own_desc:
+            parts.append(f"What it funds, from the scheme's own page: "
+                         f"{own_desc.strip()[:600]}")
+        if own_elig:
+            parts.append(f"Who may apply, from the scheme's own page: "
+                         f"{own_elig.strip()[:900]}")
         if sector_mix:
             try:
                 mix = json.loads(sector_mix)
