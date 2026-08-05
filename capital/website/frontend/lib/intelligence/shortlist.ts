@@ -1362,9 +1362,26 @@ function peerPrior(country?: string, sector?: string): string[] {
  *  a fund the founder's own screen excluded can never re-enter here. */
 function applyPeerPrecedence(
   rows: InstrumentRow[], country?: string, sector?: string,
+  /** How much the founder's own words already tell us. Peer precedence answers
+   *  "what do companies like this win", which is the best available signal when
+   *  we know little about THIS project -- and the worst thing to lean on when
+   *  the founder has described a specific one. Measured: applying it flat took
+   *  the national-scheme founder from 76% to 94% regime recall and took the
+   *  EU-project founder from 81% down to 47%, because peers skew national.
+   *  So it steps aside where the description already discriminates. */
+  descriptionIsSpecific = false,
 ): InstrumentRow[] {
   const ranked = peerPrior(country, sector);
   if (rows.length < 3 || !ranked.length) return rows;
+  // A founder with a real project keeps the ranker's order for the top rows;
+  // peer precedence only fills behind them.
+  if (descriptionIsSpecific) {
+    const rankOfP = new Map(ranked.map((id, i) => [id, i]));
+    const head = rows.slice(0, 3);
+    const tail = rows.slice(3).sort((a, b) =>
+      (rankOfP.get(a.instrumentId ?? "") ?? 1e9) - (rankOfP.get(b.instrumentId ?? "") ?? 1e9));
+    return [...head, ...tail];
+  }
   const rankOf = new Map(ranked.map((id, i) => [id, i]));
   const [lead, ...rest] = rows;
   const known = rest.filter((r) => r.instrumentId && rankOf.has(r.instrumentId))
@@ -1696,7 +1713,10 @@ export function materialiseInstrumentTable(
   // Applied here rather than inside rowRelevance so it can never resurrect a
   // row the screen excluded or a duplicate the dedupe removed -- it only
   // reorders what already qualified.
-  return applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector);
+  // `themeInformative` is already computed above: it is true when the founder's
+  // description peaks sharply on a few funds rather than scoring everything
+  // alike, which is exactly the "we know what this project is" condition.
+  return applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative);
 }
 
 /**
