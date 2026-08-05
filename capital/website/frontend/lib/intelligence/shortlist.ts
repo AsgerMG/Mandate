@@ -149,28 +149,36 @@ const AWARD_MATCH = 1.35;
 
 /** Does this scheme write cheques the size the founder is asking for?
  *
- *  `awardP50` is the median of what a fund has really paid over `awardN`
- *  awards, and it ranked nothing before this. 852 of 950 leaves carry one.
- *  Scored on ORDER OF MAGNITUDE: a scheme with a EUR 20,000 median is not a
- *  route to EUR 1M however well it matches thematically, while EUR 800k against
- *  EUR 1.1M is the same cheque. Within one decade is a match. */
+ *  `awardP50` is the median a fund has really paid over `awardN` awards; 852 of
+ *  950 leaves carry one. Scored on ORDER OF MAGNITUDE, because that is how
+ *  ticket size actually works: a EUR 20k median is not a route to EUR 1M
+ *  however well it matches thematically, while EUR 800k against EUR 1.1M is the
+ *  same cheque.
+ *
+ *  GRADED, not binary, and this matters. The first version scored fit/miss and
+ *  went neutral unless the shortlist contained BOTH -- which disabled it in the
+ *  exact case that matters most: a founder asking for >EUR 50M whose whole
+ *  table writes EUR 219k cheques has zero "fits", so the scorer switched itself
+ *  off and showed them the same five rows as a founder asking for <EUR 500k.
+ *  When everything on the table is the wrong size, the right answer is to lead
+ *  with the closest, not to give up.
+ *
+ *  Returns 1.0 for a fund with no usable award history, so the 98 instruments
+ *  without one are neither rewarded nor punished for a gap in our data. */
 function awardScorer(
-  leaves: DbInstrument[], ticketBand?: string,
+  _leaves: DbInstrument[], ticketBand?: string,
 ): (i: DbInstrument) => number {
-  const neutral = () => 1;
   const want = ticketBand ? BAND_MID[ticketBand] : undefined;
-  if (!want) return neutral;
-  const fits = (i: DbInstrument) =>
-    i.awardP50 == null || i.awardP50 <= 0 || (i.awardN ?? 0) < AWARD_N_FLOOR
-      ? undefined
-      : Math.abs(Math.log10(i.awardP50 / want)) <= 1;
-  let m = 0, k = 0;
-  for (const i of leaves) { const f = fits(i); if (f === undefined) continue; f ? m++ : k++; }
-  if (!m || !k) return neutral;
-  const penalty = Math.pow(AWARD_MATCH, -m / k);
+  if (!want) return () => 1;
   return (i: DbInstrument) => {
-    const f = fits(i);
-    return f === undefined ? 1 : f ? AWARD_MATCH : penalty;
+    if (i.awardP50 == null || i.awardP50 <= 0 || (i.awardN ?? 0) < AWARD_N_FLOOR) return 1;
+    // Decades away from the ask. 0 = same size, 1 = an order of magnitude out.
+    const decades = Math.abs(Math.log10(i.awardP50 / want));
+    // Within a decade is treated as a match and scores at or above 1; beyond
+    // that the multiplier decays but never reaches 0, because a fund that is
+    // the wrong size is a weaker route, not a disqualified one -- our award
+    // medians are a summary of history, not a published minimum.
+    return AWARD_MATCH / (1 + Math.max(0, decades - 1));
   };
 }
 
@@ -1310,7 +1318,7 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, log } = input;
+  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = semantic?.size
@@ -1414,10 +1422,35 @@ export function materialiseInstrumentTable(
       || a.id.localeCompare(b.id));
     order.forEach((l, i) => reassigned.set(l.id, slots[i]));
   }
+  // Does this fund write cheques the size the founder asked for?
+  //
+  // `ticketBand` sits on the FIRST SCREEN -- one of only six questions a
+  // founder answers before seeing anything -- and until now it never reached
+  // the row sort. Measured before fixing: a founder asking for >EUR 50M and one
+  // asking for <EUR 500k were shown the IDENTICAL five rows, mean award median
+  // EUR 219,274. We were showing someone seeking EUR 50M a set of funds that
+  // write EUR 219k cheques, having just asked them how much they needed.
+  //
+  // Ticket fit did exist, but only in `selectLeafInstruments`, which is close
+  // to inert: POOL_LEAVES_PER_CHANNEL keeps 40 leaves per channel, so nearly
+  // every candidate survives leaf ranking and this sort re-orders them on
+  // theme and sector alone.
+  //
+  // Scored on ORDER OF MAGNITUDE, reusing the same rule as the leaf scorer: a
+  // EUR 20k median is not a route to EUR 1M however well it matches
+  // thematically, while EUR 800k against EUR 1.1M is the same cheque. Applied
+  // as a multiplier and normalised within the rows that HAVE an award median,
+  // so funds with no recorded awards (98 of 950) are neither rewarded nor
+  // punished for a gap in our data.
+  const ticketFit = awardScorer(
+    selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
+    ticketBand,
+  );
   const rowRelevance = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
     const theme = r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
     const fit = wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
+    const ticket = inst ? ticketFit(inst) : 1;
     // The channel prior is deliberately NOT applied here yet. Measured, at
     // three weightings, on the recall set:
     //

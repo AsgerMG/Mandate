@@ -215,3 +215,81 @@ the scheme not the recipient); company size/financial fields do not exist.
   Measured as noise, twice.
 - **Exact-scheme 95% has no demonstrated route.** Regime-level (73-77%) is what
   the current inputs support. Four levers measured flat; see the companion doc.
+
+---
+
+## 7. What actually drives fund selection (measured 2026-08-05)
+
+The question worth asking before adding any intake field: which of the six we
+already ask actually changes what a founder sees? Varied one field at a time
+from a fixed German software baseline and counted how many of the five rows
+differ.
+
+| field changed | rows differing |
+|---|---:|
+| country -> FR | **4/5** |
+| useOfFunds -> production_capex | **4/5** |
+| sector -> health | 3/5 |
+| sector -> energy | 2/5 |
+| ticketBand -> lt500k | 0/5 |
+| ticketBand -> b15m_50m | 0/5 |
+| fteBand -> 250+ | 0/5 |
+| developmentStage -> research | 0/5 |
+| developmentStage -> scaling_revenue | 0/5 |
+| region -> DE2 (Bayern) | 0/5 |
+
+**Three of the six screen-one fields moved nothing.** `ticketBand`, `fteBand`
+and `developmentStage` occupy prime first-screen slots -- among only six
+questions asked before a founder sees anything -- and changed zero rows.
+`region` was inert even when answered.
+
+### The ticketBand defect, and the fix
+
+Measured directly:
+
+```
+ticket=lt500k     mean awardP50 of the five rows shown: EUR 219,274
+ticket=gt50m      mean awardP50 of the five rows shown: EUR 219,274
+```
+
+A founder asking for over EUR 50M and one asking for under EUR 500k were shown
+the IDENTICAL five rows, made up of funds that write EUR 219k cheques -- having
+just been asked how much they needed.
+
+Ticket fit did exist, but only in `selectLeafInstruments`, which is close to
+inert: `POOL_LEAVES_PER_CHANNEL` keeps 40 leaves per channel, so nearly every
+candidate survives leaf ranking and the row sort then re-orders on theme and
+sector alone.
+
+Fixed by applying a graded ticket-fit multiplier in `rowRelevance`. The first
+attempt scored binary fit/miss and went neutral unless the shortlist held BOTH
+-- which disabled it in precisely the case that matters most, where every row
+is the wrong size and there are no "fits" to normalise against. Graded on
+decades of distance instead, so when the whole table is the wrong size the
+closest funds lead rather than the scorer switching itself off.
+
+```
+after: ticket=gt50m  mean awardP50 of shown rows: EUR 640,865  (2.9x)
+```
+
+Funds with no usable award history score 1.0 -- neither rewarded nor punished
+for a gap in our data (98 of 950 instruments).
+
+### Why this does not show up in `measure_recall.ts`
+
+The harness feeds every replay the same `ticketBand: "b500k_2m5"`, because the
+recall set carries no per-company intake attributes. A fix that discriminates
+BY ticket is therefore invisible to it -- recall stays 23%/77% before and
+after. This is the same measurement blind spot recorded in
+`screen_one_discrimination_plan.md`: correctness here was established by direct
+observation, not by the recall number.
+
+### On adding an address field
+
+Considered and rejected for now. Every region gate resolves to NUTS-1 (171
+codes) or NUTS-2 (346 codes) -- **zero NUTS-3** -- across 71 distinct region
+codes. `regions.generated.ts` already carries NUTS-1 and NUTS-2 for 39
+countries and `FIELD_ENUM_HINTS.region.optionsFor` already renders them as a
+dropdown once the country is known. An address would derive precision no gate
+asks for, at the cost of a geocoding dependency and a personal-data surface.
+Revisit if NUTS-3 gates ever appear.
