@@ -1314,6 +1314,88 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
  * cannot touch gates; by the time this runs, hydrateGatesFor has fetched them
  * for the handful of instruments that got this far.
  */
+
+// ── Peer precedent: what funds do companies LIKE THIS one actually win? ────
+//
+// Built by ETL/terms/emit_peer_prior.py from 627,957 traced (company ->
+// instrument) award pairs, capped at 40 companies per instrument so the prior
+// says "recurs for this kind of company" rather than "is enormous".
+//
+// This is the signal that broke a long plateau. Four previous attempts at
+// exact-scheme recall -- corpus enrichment, the adaptive round, gate-fit
+// ranking, region -- all measured flat at ~23%, because each tried to improve
+// how well a founder's ATTRIBUTES match a fund's DESCRIPTION. This asks a
+// different question: what happened to companies like them.
+//
+// Measured on a 150-company holdout sample, every test company excluded from
+// the prior:
+//
+//     ranker alone              24%
+//     peer precedent alone      27%
+//     both right, same case     10 cases
+//     UNION                     45%      <- almost orthogonal
+//     1 ranker slot + peer fill 43%
+//
+// The ranker keeps the top slot because it catches 26 cases peer misses; peer
+// fills the rest because it catches 32 the ranker misses. Neither dominates.
+let peerPriorCache: Record<string, string[]> | undefined;
+
+function peerPrior(country?: string, sector?: string): string[] {
+  if (!country || !sector) return [];
+  if (peerPriorCache === undefined) {
+    try {
+      peerPriorCache = JSON.parse(readFileSync(
+        path.join(process.cwd(), "lib", "intelligence", "peerPrior.generated.json"),
+        "utf8")) as Record<string, string[]>;
+    } catch {
+      peerPriorCache = {};
+    }
+  }
+  return peerPriorCache[`${toIso2(country)}|${sector}`] ?? [];
+}
+
+/** Reorder a ranked table so peer precedent fills the visible slots.
+ *
+ *  Order-preserving where it can be: the ranker's single best row stays first,
+ *  every row the peer prior knows about follows in peer order, and anything
+ *  left keeps its original relative position. Nothing is added or removed --
+ *  a fund the founder's own screen excluded can never re-enter here. */
+function applyPeerPrecedence(
+  rows: InstrumentRow[], country?: string, sector?: string,
+): InstrumentRow[] {
+  const ranked = peerPrior(country, sector);
+  if (rows.length < 3 || !ranked.length) return rows;
+  const rankOf = new Map(ranked.map((id, i) => [id, i]));
+  const [lead, ...rest] = rows;
+  const known = rest.filter((r) => r.instrumentId && rankOf.has(r.instrumentId))
+    .sort((a, b) => (rankOf.get(a.instrumentId!) ?? 1e9) - (rankOf.get(b.instrumentId!) ?? 1e9));
+  const unknown = rest.filter((r) => !r.instrumentId || !rankOf.has(r.instrumentId));
+  // One row per NOTIFIED SCHEME in the visible order.
+  //
+  // The dedupe above keys on display NAME, which is enough while ranking is
+  // fit-driven. Peer precedence breaks that assumption: it can pull the equity
+  // and the R&D child of ONE notified scheme (SA.111723) into the five at
+  // once, because both are genuinely funds that companies like this won. They
+  // are one door, and showing a founder the same SA number twice spends two of
+  // five slots saying one thing.
+  // DEMOTED, never dropped. This function returns the array the caller also
+  // derives `candidateInstrumentIds` from, so filtering here would remove funds
+  // from the WRITER's pool and not merely from the visible five -- measured
+  // immediately: pool recall fell 97% -> 83% when this was a filter. Repeats go
+  // to the back instead, so the table shows one row per scheme while the pool
+  // keeps every fund the founder actually qualifies for.
+  const seenScheme = new Set<string>();
+  const firsts: InstrumentRow[] = [];
+  const repeats: InstrumentRow[] = [];
+  for (const r of [lead, ...known, ...unknown]) {
+    const code = (r.schemeCode ?? "").trim();
+    if (code && seenScheme.has(code)) { repeats.push(r); continue; }
+    if (code) seenScheme.add(code);
+    firsts.push(r);
+  }
+  return [...firsts, ...repeats];
+}
+
 export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
@@ -1467,7 +1549,7 @@ export function materialiseInstrumentTable(
     // distribution peaked" does -- both are true for a generic self-description.
     return r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
   };
-  return selections
+  const rowsOut = selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
         return { ...base, instrument: INSTRUMENT_NAME[base.channel] ?? channelLabel(base.channel) } as InstrumentRow;
@@ -1610,6 +1692,11 @@ export function materialiseInstrumentTable(
       }
       return keep;
     });
+  // Peer precedent decides the visible order, last, on the surviving rows.
+  // Applied here rather than inside rowRelevance so it can never resurrect a
+  // row the screen excluded or a duplicate the dedupe removed -- it only
+  // reorders what already qualified.
+  return applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector);
 }
 
 /**

@@ -34,7 +34,7 @@ import { computeVerdict } from "../lib/intelligence/pipeline";
  *  figure here that is a correctness floor rather than a ranking score: a fund
  *  the writer never sees cannot be advised on at all. EXACT@5 and REGIME@5 sit
  *  further below their measurements because both carry real sampling noise. */
-const FLOOR = { pool: 90, exact5: 30, regime5: 70 };
+const FLOOR = { pool: 90, exact5: 30, regime5: 85 };
 // FIXED, and deliberately not configurable. At n=120 this same build measures
 // 97/31/68 and at n=150 it measures 97/37/75 -- six points of binomial noise on
 // the same code. A gate whose verdict depends on how many pairs you happened to
