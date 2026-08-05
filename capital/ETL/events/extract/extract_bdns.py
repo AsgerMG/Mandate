@@ -271,6 +271,22 @@ def _parse_record(rec: dict, article: str, sector: str) -> dict | None:
         "country": DEPLOYMENT_COUNTRY,
         "year": year,
         "project_title": convocatoria[:240] or None,
+        # The actual scheme identity, so downstream splitting can see it. Two
+        # bugs used to hide this and collapsed all 23k Spanish awards into one
+        # instrument, "Spain BDNS (regional agencies)":
+        #
+        #  1. This dict used the key "satr_sa_number", but the real column in
+        #     public_funding_events is `satr_tm_id` (see below) -- the presence
+        #     check silently found nothing and the SA number was dropped on
+        #     every load, though it was fetched correctly from the API.
+        #  2. `convocatoria` was stored only as `project_title`. The general
+        #     instrument split in populate_funding_instruments.py looks for
+        #     `programme_name` specifically (>=40 events/source), the same
+        #     field every other register uses -- SATR gets its split from
+        #     scheme_code, ADEME's 458 programmes came from this exact column.
+        #     Spain's convocatoria is that same signal and was never written
+        #     to the column the split logic reads.
+        "programme_name": convocatoria[:240] or None,
         "sector_tags_raw": f"{objetivo}||{sector}",
         "grant_amount_eur": grant_eur,
         "debt_amount_eur": debt_eur,
@@ -278,7 +294,9 @@ def _parse_record(rec: dict, article: str, sector: str) -> dict | None:
         "grant_amount_basis": basis,
         "ndb_distributor": ndb,
         "deployment_country": DEPLOYMENT_COUNTRY,
-        "satr_sa_number": sa_number,
+        # Matches the real column name (see note above).
+        "satr_tm_id": sa_number,
+        "region": region,
         "instrumento": instrumento,
         "objetivo": objetivo,
     }
@@ -328,7 +346,11 @@ def _load_to_db(rows: list[dict]) -> dict:
     has_natid = "national_id" in cols
     cur.execute("PRAGMA table_info(public_funding_events)")
     pfe_cols = {r[1] for r in cur.fetchall()}
-    has_sa = "satr_sa_number" in pfe_cols
+    # The real column is `satr_tm_id` (see the note in _parse_record). This used
+    # to check for a column named "satr_sa_number", which does not exist, so
+    # the SA number was silently discarded on every load.
+    has_sa = "satr_tm_id" in pfe_cols
+    has_prog = "programme_name" in pfe_cols
 
     counts = {"inserted": 0, "skipped_dup": 0, "errors": 0,
               "grant": 0, "debt": 0, "equity": 0}
@@ -377,8 +399,11 @@ def _load_to_db(rows: list[dict]) -> dict:
                     r.get("equity_amount_eur"), r.get("sector_tags_raw"),
                     r["grant_amount_basis"], r["deployment_country"], r.get("ndb_distributor")]
             if has_sa:
-                cols_sql.append("satr_sa_number")
-                vals.append(r.get("satr_sa_number"))
+                cols_sql.append("satr_tm_id")
+                vals.append(r.get("satr_tm_id"))
+            if has_prog:
+                cols_sql.append("programme_name")
+                vals.append(r.get("programme_name"))
             placeholders = ", ".join("?" * len(cols_sql))
             cur.execute(f"INSERT INTO public_funding_events ({', '.join(cols_sql)}) "
                         f"VALUES ({placeholders})", vals)
