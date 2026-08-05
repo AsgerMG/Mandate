@@ -1,1 +1,2 @@
 {"at":"2026-08-05T21:44:18.581Z","model":"claude-haiku-4-5","variant":"default","split":"holdout","gate1Sha":"c37046c","n":20,"reach":15,"baseline":12,"exact":9,"regime":17,"bad":0}
+{"at":"2026-08-05T22:12:45.993Z","model":"claude-haiku-4-5","variant":"default","split":"holdout","gate1Sha":"32f28f2","n":20,"reach":19,"baseline":12,"exact":8,"regime":16,"bad":0}
