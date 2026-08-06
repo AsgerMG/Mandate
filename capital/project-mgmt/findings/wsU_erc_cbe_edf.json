@@ -1,0 +1,249 @@
+[
+  {
+    "instrument_id": "erc_poc",
+    "found": true,
+    "eligibility_text": "ERC Proof of Concept is gated on an ERC grant the applicant already holds, which no other instrument in this programme requires. \"The ERC Proof of Concept Grant is open to Principal Investigators whose ERC main frontier research grant is ongoing, or Principal Investigators whose ERC main frontier research grant ends on or after 1 January 2025, subject to restrictions provided in Annex 3 below.\" There is no route in for a company or a researcher without an ERC main grant.\n\nThe idea must also derive from that grant. \"These grants are available only to Principal Investigators, whose proposals draw substantially on their ERC-funded research; therefore, applicants need to demonstrate the relation between the idea to be taken to proof of concept and their main grant.\" The same test is the award criterion: \"The activities of the Proof of Concept Grant shall draw substantially on the research carried out as part of the main ERC frontier research grant.\"\n\nThe award and its duration are fixed rather than proposed. It is awarded as a single lump sum contribution of EUR 150 000 \"for a period of eighteen months\". Extensions may be granted when duly justified. The lump sum covers direct and indirect eligible costs and is paid regardless of costs actually incurred. Indicative call budget EUR 60 000 000.\n\nA quota applies per parent grant. \"A maximum of three Proof of Concept Grants may be awarded for a Starting, Consolidator, or Advanced Grant project, and a maximum of six Proof of Concept Grants - for a Synergy Grant project.\" Grants may run in parallel. A Synergy Principal Investigator may apply \"only with the written consent of all Principal Investigators of the same Synergy Grant project\", and each may submit one application. A Principal Investigator may submit only one proposal to this call under this Work Programme; two cut-off rounds run in the year and only the first admissible and eligible proposal is evaluated.\n\nThe applicant is a single Principal Investigator, not a consortium. \"Proposals for the Proof of Concept Grant call are submitted by the Principal Investigator on behalf of the Host Institution\", and a binding Host Institution Support Letter must be supplied at the time of application or the proposal may be declared inadmissible. Consortium agreements are not required, and \"Excellence is the sole criterion of evaluation.\" A Principal Investigator rejected for a breach of research integrity under Work Programme 2024 or Work Programme 2025 may not apply.",
+    "description": "A EUR 150 000, 18-month lump sum that lets a current or recent ERC frontier-research grant holder test whether one specific result from that grant can become a product, a spin-out or a licence - you cannot apply unless you already hold, or recently held, the ERC grant it derives from.",
+    "administering_body": "European Research Council Executive Agency",
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026/wp_horizon-erc-2026_en.pdf",
+    "confidence": "high",
+    "source_file": "erc_poc_wp_horizon_erc_2026.pdf",
+    "quotes": [
+      {
+        "quote": "The ERC Proof of Concept Grant is open to Principal Investigators80 whose ERC main frontier research grant is ongoing, or Principal Investigators whose ERC main frontier research grant ends81 on or after 1 January 2025, subject to restrictions provided in Annex 3 below.",
+        "page": 40,
+        "why_discriminating": "The prior-ERC-grant gate plus its timing window. No other instrument in the horizon_eu_pillar_ii regime conditions entry on already holding a grant from the same programme. Note: '80' and '81' are footnote markers glued to the words by pdftotext; they are part of the verbatim string."
+      },
+      {
+        "quote": "These grants are available only to Principal Investigators, whose proposals draw substantially on their ERC-funded research; therefore, applicants need to demonstrate the relation between the idea to be taken to proof of concept and their main grant.",
+        "page": 38,
+        "why_discriminating": "The derivation gate: the PoC idea must come out of the parent ERC project, not merely be held by an ERC grantee."
+      },
+      {
+        "quote": "The activities of the Proof of Concept Grant shall draw substantially on the research carried out as part of the main ERC frontier research grant.",
+        "page": 42,
+        "why_discriminating": "The same gate restated as the evaluation criterion, so it bites at scoring as well as at eligibility."
+      },
+      {
+        "quote": "The Proof of Concept grant is awarded as a single lump sum contribution of EUR 150 00077 for a period of eighteen months.",
+        "page": 38,
+        "why_discriminating": "Fixed lump sum and fixed 18-month duration; no cluster sibling has a fixed per-project amount of this shape. '77' is a footnote marker glued by pdftotext."
+      },
+      {
+        "quote": "A maximum of three Proof of Concept Grants may be awarded for a Starting, Consolidator, or Advanced Grant project, and a maximum of six Proof of Concept Grants – for a Synergy Grant project.",
+        "page": 40,
+        "why_discriminating": "A per-parent-grant quota - an eligibility ceiling that only exists because entry is tied to a parent grant."
+      },
+      {
+        "quote": "Synergy Grant Principal Investigators are eligible to apply to the Proof of Concept call only with the written consent of all Principal Investigators of the same Synergy Grant project.",
+        "page": 40,
+        "why_discriminating": "Consent of co-PIs on the parent grant is an admissibility precondition; unique to the parent-grant structure."
+      },
+      {
+        "quote": "Proposals for the Proof of Concept Grant call are submitted by the Principal Investigator on behalf of the Host Institution",
+        "page": 41,
+        "why_discriminating": "Single-PI, single-beneficiary shape - the opposite of the three-entities-from-three-countries consortium rule that defines the cluster siblings."
+      },
+      {
+        "quote": "Excellence is the sole criterion of evaluation.",
+        "page": 43,
+        "why_discriminating": "One award criterion, not the Excellence/Impact/Implementation triad used across the rest of the regime."
+      },
+      {
+        "quote": "Authority is the European Research Council Executive Agency (ERCEA).",
+        "page": 6,
+        "why_discriminating": "Administering-body attestation."
+      }
+    ],
+    "body_evidence": {
+      "name": "European Research Council Executive Agency",
+      "distinct_pages": 3,
+      "pages": [
+        6,
+        10,
+        37
+      ]
+    },
+    "notes": "Fetched 2026-08-07 from the ERC 'Key documents' link on erc.europa.eu/funding/proof-concept. Document is 'ANNEX - European Commission Decision C(2026) 62 amending Decision C(2025) 5000 - ERC Work Programme 2026', 73 PDF pages. Page numbers in quotes are physical PDF pages, which equal the printed page numbers in this document. The abbreviation 'ERCEA' additionally reaches 15 distinct pages; the full spelled-out name reaches 3 (pp. 6, 10, 37), which is what is reported. Amount/duration confirmed independently by Table 2 on p13 (150 000 / 18 months / Lump Sum). Deliberately excluded as Horizon-regime boilerplate: Host Institution establishment in a Member State or Associated Country, third-country participation, Gender Equality Plan, ethics and security, page limits, admissibility mechanics. | COORDINATOR REWRITE: the extractor's framing was written at the extraction task, not at a founder -- shouty headers, 'its only sibling', and meta blocks ('DELIBERATELY OMITTED as boilerplate', 'IMPORTANT NEGATIVE FINDING') that are notes to the coordinator rather than eligibility text. Reframed to the register used elsewhere in this column; every attested quote preserved verbatim and re-verified. The omission/negative-finding commentary is kept HERE, in notes, which is where it belongs."
+  },
+  {
+    "instrument_id": "horizon_eu_cbe",
+    "found": true,
+    "eligibility_text": "These are Joint Undertaking conditions, and they do not appear in a Commission-run Horizon cluster.\n\nIn-kind contribution is scored, not merely recorded. Under Impact, proposals are assessed on their ability to reach the level of in-kind contribution to operational activities set for the topic, expressed as a percentage of total eligible project costs: 5% for research and innovation actions, 15% for innovation actions and 20% for Flagship innovation actions. IKOP means \"Contributions by private members, constituent entities or the affiliated entities of either, by international organisations and by contributing partners, consisting of the eligible costs incurred by them in implementing indirect actions less the contribution of that joint undertaking and of the participating states of that joint undertaking to those costs.\" A consortium carrying no private-member industry cannot generate IKOP and scores badly on Impact.\n\nPrivate membership must be evidenced in the proposal itself: \"Innovation Actions, including Flagships, and Research and Innovation Actions: For all legal entities that are members of the BIC consortium, a certification from BIC attesting to this fact should be included in the proposal\". BIC is the Bio-based Industries Consortium, the private member of the Joint Undertaking.\n\nFlagship topics are a separate track with heavier requirements. They require, in a dedicated annex, \"a detailed business plan, which should include an estimate of appropriate economic indicators, including Net Present Value (NPV), with all critical underlying assumptions clearly defined and appropriately justified\", and \"Only for Flagship topics: As part of the panel review, the CBE JU will organise hearings with applicants of all Flagships proposals.\" Research and innovation actions need only a qualitative business case, and non-Flagship innovation actions a quantified business case and business model.\n\nFeedstock is constrained by origin and by principle. Every research and innovation action, innovation action and Flagship must describe bio-based feedstock within the scope of the Joint Undertaking's strategic research agenda and \"use bio-based feedstock that is both produced (or generated) and processed in EU Member States and/or countries associated to Horizon Europe\", with evidence on climate, biodiversity, pollution and water. Subject to the food-first and cascading-use principles, \"agricultural biomass can be used as feedstock for CBE JU projects\". Innovation actions and Flagships must forecast agricultural-biomass volumes and assess interference with the food supply chain.\n\nLife-cycle sustainability assessment is mandatory: an ex-ante environmental assessment for every action type, plus an ex-post dedicated task for research and innovation actions or a work package for innovation actions and Flagships. A multi-actor approach is required for all types of action.\n\nMaturity is set high for deployment. \"IAs projects are demonstration activities in relevant and operational environments and expected to deliver TRL 6-8 at the end of the projects. In particular, Flagship projects will need to deliver TRL 8 at the end of the projects.\" Research and innovation actions deliver TRL 3-5.\n\nEvery 2026 grant topic carries an intellectual-property derogation: \"The granting authority may, up to 4 years after the end of the action, object to a transfer of ownership or to the exclusive licensing of results\", as set out in the specific provision of Annex 5.",
+    "description": "Grants of roughly EUR 1.2m to EUR 20m per project to take bio-based feedstock - agricultural and forestry residues, bio-waste, side streams - through biorefining into chemicals, materials, fibres, packaging, food ingredients or crop inputs, from lab proof (TRL 3-5) all the way to a first full industrial-scale biorefinery (TRL 8), with the industry consortium expected to put in its own money as in-kind contribution.",
+    "administering_body": "Circular Bio-based Europe Joint Undertaking",
+    "scheme_url": "https://www.cbe.europa.eu/system/files/2026-05/1st%20AMD%20CBE%20JU%20AWP%202026%20_Adopted%20(1).pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_cbe_awp_2026_amd1.pdf",
+    "quotes": [
+      {
+        "quote": "Contributions by private members, constituent entities or the affiliated entities of either, by international organisations and by contributing partners, consisting of the eligible costs incurred by them in implementing indirect actions less the contribution of that joint undertaking and of the participating states of that joint undertaking to those costs.",
+        "page": 63,
+        "why_discriminating": "Defines IKOP, the in-kind contribution to operational activities. IKOP is scored under Impact at 5% of eligible costs for RIAs, 15% for IAs and 20% for IA-Flagships - a private-member co-funding expectation that has no equivalent in a Commission-run Horizon cluster."
+      },
+      {
+        "quote": "Innovation Actions, including Flagships, and Research and Innovation Actions: For all legal entities that are members of the BIC consortium, a certification from BIC attesting to this fact should be included in the proposal 32.",
+        "page": 64,
+        "why_discriminating": "A required proposal annex tied to membership of the Joint Undertaking's private member (Bio-based Industries Consortium). No cluster call asks for a membership certificate."
+      },
+      {
+        "quote": "Only for Flagship topics: a detailed business plan.",
+        "page": 64,
+        "why_discriminating": "Flagship-vs-RIA/IA fork in the required documents themselves."
+      },
+      {
+        "quote": "in a separate Annex, a detailed business plan, which should include an estimate of appropriate economic indicators, including Net Present Value (NPV), with all critical underlying assumptions clearly defined and appropriately justified",
+        "page": 27,
+        "why_discriminating": "Flagship applicants must submit an investable business plan with an NPV - an industrial-deployment condition, not a research condition."
+      },
+      {
+        "quote": "Only for Flagship topics: As part of the panel review, the CBE JU will organise hearings with applicants of all Flagships proposals.",
+        "page": 64,
+        "why_discriminating": "A mandatory hearing on the business plan for Flagships only - an extra evaluation stage that exists in no cluster sibling."
+      },
+      {
+        "quote": "use bio-based feedstock that is both produced (or generated) and processed in EU Member States and/or countries associated to Horizon Europe",
+        "page": 23,
+        "why_discriminating": "A geographic constraint on the physical input material, not on the applicant. Nothing analogous exists in the cluster work programmes."
+      },
+      {
+        "quote": "Under the condition of respecting the “food first” and “cascading use” principles, agricultural biomass can be used as feedstock for CBE JU projects.",
+        "page": 24,
+        "why_discriminating": "Feedstock-competition condition specific to a bio-based JU; IAs and Flagships must forecast volumes and assess interference with the food supply chain."
+      },
+      {
+        "quote": "IAs projects are demonstration activities in relevant and operational environments and expected to deliver TRL 6-8 at the end of the projects. In particular, Flagship projects will need to deliver TRL 8 at the end of the projects.",
+        "page": 12,
+        "why_discriminating": "A hard end-TRL obligation per action type, with Flagships forced to full industrial scale."
+      },
+      {
+        "quote": "The granting authority may, up to 4 years after the end of the action, object to a transfer of ownership or to the exclusive licensing of results, as set out in the specific provision of Annex 5.",
+        "page": 30,
+        "why_discriminating": "An explicit derogation from Horizon General Annex G that appears in the specific conditions table of every 2026 CBE grant topic (pp. 30, 33, 36, 38, 40, 43, 46, 48, 50, 53, 55, 57)."
+      },
+      {
+        "quote": "Advancing a competitive bioeconomy for a sustainable future is the primary mission of the Circular Bio-based Europe Joint Undertaking (CBE JU).",
+        "page": 8,
+        "why_discriminating": "Administering-body attestation (full name spelled out)."
+      }
+    ],
+    "body_evidence": {
+      "name": "Circular Bio-based Europe Joint Undertaking",
+      "distinct_pages": 2,
+      "pages": [
+        5,
+        8
+      ]
+    },
+    "notes": "Fetched 2026-08-07 from the CBE JU reference-documents page. Document is 'AMENDMENT 1 WORK PROGRAMME 2026', Annex to Governing Board decision No. 4/2026; the WP was adopted 9 December 2025 by GB Decision 12/25 and amended by CBE-GB-4/26. 131 PDF pages; physical page numbers equal printed page numbers. Body evidence: the spelled-out name 'Circular Bio-based Europe Joint Undertaking' reaches 2 distinct pages (p5 acronym list, p8 mission statement, where it is line-wrapped after 'Circular'); the abbreviation 'CBE JU' reaches 76 distinct pages. The IKOP percentages (RIAs 5%, IAs 15%, IA-Flagship 20%) sit inside a multi-column award-criteria table on p63 and cannot be extracted as one contiguous verbatim string, so the quote used is the full-width footnote 30 that defines IKOP; the percentages themselves are stated in eligibility_text as prose. Call HORIZON-JU-CBE-2026, 13 topics, EUR 170.7m: 4 IAFlag (EUR 20m each, TRL 8), 5 IA (EUR 14m, TRL 6-7), 3 RIA (EUR 6.5m, TRL 3-5), 1 CSA (EUR 1.2m). Deliberately excluded: everything deferred to Horizon General Annexes A-F mutatis mutandis (country eligibility, minimum consortium, funding rates, financial capacity, evaluation procedure) and the page limits. | COORDINATOR REWRITE: the extractor's framing was written at the extraction task, not at a founder -- shouty headers, 'its only sibling', and meta blocks ('DELIBERATELY OMITTED as boilerplate', 'IMPORTANT NEGATIVE FINDING') that are notes to the coordinator rather than eligibility text. Reframed to the register used elsewhere in this column; every attested quote preserved verbatim and re-verified. The omission/negative-finding commentary is kept HERE, in notes, which is where it belongs."
+  },
+  {
+    "instrument_id": "edf_ra",
+    "found": true,
+    "eligibility_text": "Research actions are funded at 100% of eligible costs for every activity type open to them, with no bonus machinery and no cap below 100%. In the baseline and maximum rate tables the research-action column is 100% throughout, while the development-action column is capped: \"Studies such as feasibility studies to explore 100% Up to 90%\" and design at \"100% Up to 65%\". The bonus table is headed \"Table 2. Increase of funding rates (bonus) for development actions\", so the PESCO, SME and mid-cap bonuses do not reach a research action, which is already at 100%.\n\nWhich activities a research action may cover is fixed. \"The table below indicates which activities are eligible for research actions and which for development actions.\" Generating knowledge is eligible for research actions and not for development actions, and it is the only activity exclusive to research. System prototyping, testing, qualification, certification and increasing efficiency are not eligible under a research action at all, so a research proposal may cover only generating knowledge, integrating knowledge, studies and design.\n\nThe no-profit derogation does not apply here. It is written to \"ensure the continuity of the development actions\" only, and revenue treatment for a research action is unchanged.\n\nTwo 2026 topics add conditions beyond those, and they do not apply to research actions generally. Under EDF-2026-LS-RA-SI, \"The proposals must build upon or integrate results that have been achieved within one or several projects that were funded under an EU programme call with a focus on civil applications\", and applicants must confirm they hold or will hold the rights to use and commercialise those prior results. This spin-in requirement has no development-action equivalent. Under EDF-2026-LS-DIS-RA-SMERO-NT, \"Members of the consortium need to be SMEs (as defined in Commission Recommendation 2003/361/EC) or research organisations. The coordinator of the consortium needs to be an SME. The budget allocated to research organisations cannot exceed 40% of the total requested grant amount.\"",
+    "description": "Fully EU-funded collaborative defence R&D that stops before anything is built: knowledge generation, feasibility studies and design for defence products and technologies, delivered by a cross-border consortium of EU/associated-country entities.",
+    "administering_body": "European Commission",
+    "scheme_url": "https://defence-industry-space.ec.europa.eu/system/files/2025-12/EDF%20Work%20Programme%202026.pdf",
+    "confidence": "high",
+    "source_file": "edf_work_programme_2026.pdf",
+    "quotes": [
+      {
+        "quote": "The table below indicates which activities are eligible for research actions and which for development actions.",
+        "page": 10,
+        "why_discriminating": "Points at the coverage table that makes 'generating knowledge' RA-only and prototyping/testing/qualification/certification/increasing-efficiency DA-only."
+      },
+      {
+        "quote": "Studies such as feasibility studies to explore                       100%        Up to 90%",
+        "page": 43,
+        "why_discriminating": "Table 1 row: the research-action column is 100% of eligible costs where the development-action column is capped at 90%. This is the funding-rate split between the two leaves, in the document's own layout."
+      },
+      {
+        "quote": "The proposals must build upon or integrate results that have been achieved within one or several projects that were funded under an EU programme call with a focus on civil applications.",
+        "page": 12,
+        "why_discriminating": "TOPIC-LEVEL, EDF-2026-LS-RA-SI only (2 of 14 research topics): a spin-in-from-civil-research precondition with no development-action equivalent. Not an instrument-wide rule."
+      },
+      {
+        "quote": "Members of the consortium need to be SMEs (as defined in Commission Recommendation 2003/361/EC) or research organisations. The coordinator of the consortium needs to be an SME. The budget allocated to research organisations cannot exceed 40% of the total requested grant amount.",
+        "page": 12,
+        "why_discriminating": "TOPIC-LEVEL, EDF-2026-LS-DIS-RA-SMERO-NT only (1 research topic, EUR 35m): the only EDF consortium in 2026 that must be SME/research-organisation-only with an SME coordinator. Not an instrument-wide rule."
+      },
+      {
+        "quote": "Targeted type of actions: Research actions addressing disruptive technologies",
+        "page": 12,
+        "why_discriminating": "Attests that the disruptive-technologies stream is split into a research leaf and a development leaf, and that the WP labels the two separately."
+      },
+      {
+        "quote": "the actions set out in this work programme are to be implemented in direct management by the Commission",
+        "page": 11,
+        "why_discriminating": "Administering-body attestation: EDF is run by the Commission in direct management, not by an executive agency or a joint undertaking."
+      }
+    ],
+    "body_evidence": {
+      "name": "European Commission",
+      "distinct_pages": 2,
+      "pages": [
+        2,
+        36
+      ],
+      "supporting": "The contiguous string 'European Commission' appears on 2 distinct pages (p2 'THE EUROPEAN COMMISSION' in the decision preamble, p36 'The European Commission also provides non-dilutive seed vouchers'). On p1 it is the cover logo, split across two lines as 'EUROPEAN' / 'COMMISSION'. The shorter form 'the Commission' reaches 10 distinct pages (4, 11, 31, 32, 33, 35, 36, 37, 39, 40), including the operative management-mode statement on p11. No executive agency and no joint undertaking is named anywhere in the document ('Executive Agency': 0 pages, 'DEFIS': 0 pages). 'European Defence Agency' reaches only 1 page (p37) and is a consulted party, not the administering body."
+    },
+    "notes": "Read from disk: /Users/asgermollergrimberg/Wincent/data/raw/instrument_docs/edf_work_programme_2026.pdf, Commission Implementing Decision C(2025) 8719 of 17.12.2025 as amended. 50 PDF pages. PAGE NUMBERING: quote page numbers are PHYSICAL PDF pages; the printed page number in the footer is physical minus 5 (physical p43 = printed p38). No source URL - the file was supplied on disk and I did not observe a URL for it, so scheme_url is null rather than invented. 2026 budget: EUR 329.9m research vs EUR 676.1m development, 14 research call topics vs 16 development call topics. The identical Table 1/Table 3 rates appear in the 2025 Part 2 WP (physical pp. 43 and 45), so the RA/DA rate split is stable across both years. | scheme_url supplied by the coordinator, not the extractor: fetched from defence-industry-space.ec.europa.eu and verified BYTE-IDENTICAL (801169 bytes) to the on-disk edf_work_programme_2026.pdf the quotes were read from. | COORDINATOR REWRITE: the extractor's framing was written at the extraction task, not at a founder -- shouty headers, 'its only sibling', and meta blocks ('DELIBERATELY OMITTED as boilerplate', 'IMPORTANT NEGATIVE FINDING') that are notes to the coordinator rather than eligibility text. Reframed to the register used elsewhere in this column; every attested quote preserved verbatim and re-verified. The omission/negative-finding commentary is kept HERE, in notes, which is where it belongs."
+  },
+  {
+    "instrument_id": "edf_da",
+    "found": true,
+    "eligibility_text": "A development action is the only European Defence Fund route where the EU pays a fraction of eligible costs, and the fraction depends on the activity. Baseline rates run to 65% for integrating knowledge, 90% for studies, 65% for design, \"The system prototyping of a defence Up to 20%\", 45% for testing, \"The qualification of a defence product, Up to 70%\", 70% for certification and 65% for increasing efficiency. After bonuses the maxima are 55% for prototyping, 80% for testing, qualification and certification, and 100% for integrating knowledge, studies, design and increasing efficiency. The closer the work sits to a fieldable product, the less the EU pays, and prototyping at a 20% baseline is the sharpest number in the programme.\n\nThe bonus machinery exists only for development actions. \"Table 2. Increase of funding rates (bonus) for development actions\" sets a PESCO bonus of 10%, an SME bonus based on the proportion of eligible costs going to EU SMEs, up to 5% for non-cross-border SMEs plus twice the proportion for cross-border SMEs, and a mid-cap bonus of 10%. The overall increase may not exceed 35% of the total eligible costs of the activity and may not push a rate above the stated maxima. One derogation applies: \"the activities carried out under the specific actions that target disruptive technologies under the EDF-2026-LS-DIS call and aim to develop technologies or assets that increase efficiency across the life cycle of defence products and technologies (Article 10.3(i) of the EDF Regulation) will be funded at 100%.\"\n\nActivity type is the maturity gate. System prototyping, testing, qualification, certification and increasing efficiency are eligible only for development actions. Generating knowledge is not eligible for a development action at all, so a proposal cannot be framed as new knowledge creation.\n\nThe no-profit rule is specific to this route: \"No profit rule: To ensure the continuity of the development actions after the period of EU financing provided for in the grant, potential revenue to be generated by these actions will not be taken into consideration in accordance with point (a) of Article 195(3) of the Financial Regulation.\"\n\nSome 2026 calls add conditions that do not apply to development actions generally. Under EDF-2026-DA-EXP, \"Proposals should be submitted within a shorter timeframe than for EDF-2026-DA, and the evaluation process should be faster\", and EDF-2026-DA-ACC keeps the standard submission window with a faster evaluation. EDF-2026-LS-DA-DIS lowers the consortium floor to at least two legal entities established in at least two different Member States or associated countries, at least two of which are neither controlled by the same legal entity nor control each other.",
+    "description": "Part-funded collaborative defence development that turns an existing design into hardware - prototyping, testing, qualification and certification of a defence product - where the EU pays only a slice of the cost and the consortium and its Member States carry the rest.",
+    "administering_body": "European Commission",
+    "scheme_url": "https://defence-industry-space.ec.europa.eu/system/files/2025-12/EDF%20Work%20Programme%202026.pdf",
+    "confidence": "high",
+    "source_file": "edf_work_programme_2026.pdf",
+    "quotes": [
+      {
+        "quote": "Table 2. Increase of funding rates (bonus) for development actions",
+        "page": 44,
+        "why_discriminating": "The PESCO / SME / mid-cap bonus machinery exists for development actions only. Its very heading is the discriminator."
+      },
+      {
+        "quote": "The system prototyping of a defence                                              Up to 20%",
+        "page": 43,
+        "why_discriminating": "Table 1 baseline: prototyping is funded at up to 20% of eligible costs and is not applicable to research actions at all. The sharpest number in the regime - a development action must self-fund at least 80% of its prototyping before any bonus."
+      },
+      {
+        "quote": "The qualification of a defence product,                                          Up to 70%",
+        "page": 43,
+        "why_discriminating": "Table 1 baseline for qualification, a DA-only activity (research-action column reads 'Not applicable')."
+      },
+      {
+        "quote": "No profit rule: To ensure the continuity of the development actions after the period of EU financing provided for in the grant, potential revenue to be generated by these actions will not be taken into consideration in accordance with point (a) of Article 195(3) of the Financial Regulation.",
+        "page": 40,
+        "why_discriminating": "The no-profit derogation is written for development actions specifically, because a DA is expected to produce revenue-generating output."
+      },
+      {
+        "quote": "By a way of derogation from the baseline funding rate set out in Table 1, the activities carried out under the specific actions that target disruptive technologies under the EDF-2026-LS-DIS call and aim to develop technologies or assets that increase efficiency across the life cycle of defence products and technologies (Article 10.3(i) of the EDF Regulation) will be funded at 100%.",
+        "page": 39,
+        "why_discriminating": "The one route by which a development-side activity reaches 100%; it applies to activity (i), which is not eligible for research actions."
+      },
+      {
+        "quote": "Specific call conditions: Proposals should be submitted within a shorter timeframe than for EDF-2026-DA, and the evaluation process should be faster.",
+        "page": 13,
+        "why_discriminating": "CALL-LEVEL, EDF-2026-DA-EXP only: the expedited and accelerated call variants exist only on the development side in 2026. Not an instrument-wide rule."
+      },
+      {
+        "quote": "the actions set out in this work programme are to be implemented in direct management by the Commission",
+        "page": 11,
+        "why_discriminating": "Administering-body attestation: EDF is run by the Commission in direct management."
+      }
+    ],
+    "body_evidence": {
+      "name": "European Commission",
+      "distinct_pages": 2,
+      "pages": [
+        2,
+        36
+      ],
+      "supporting": "Same evidence as edf_ra: contiguous 'European Commission' on pp. 2 and 36; 'the Commission' on 10 distinct pages (4, 11, 31, 32, 33, 35, 36, 37, 39, 40) including the direct-management statement on p11. No executive agency or joint undertaking is named in the document."
+    },
+    "notes": "Read from disk: /Users/asgermollergrimberg/Wincent/data/raw/instrument_docs/edf_work_programme_2026.pdf. 50 PDF pages. PAGE NUMBERING: physical PDF pages; printed footer number is physical minus 5. scheme_url is null because the file was supplied on disk with no observed source URL. KEY NEGATIVE FINDING, please do not seed it from this source: the prior Member State commitment to procure / joint procurement - the strongest DA discriminator in the EDF Regulation - is NOT stated in the 2026 work programme, nor in the 2025 Part 2 work programme. Both delegate to 'Articles 9 and 10(4) of the EDF Regulation' and use that identical phrase for the research-action calls as well. The closest WP text is a rights-to-use clause on p40 which is written for 'EDF actions' generally, so it belongs to neither leaf. Likewise the non-EU ownership/effective-control conditions and the TRL floors are not differentiated between RA and DA in this document (TRL 4 is required of both the RA and the DA non-thematic SME topics), so both are left out of both leaves as regime boilerplate. | scheme_url supplied by the coordinator, not the extractor: fetched from defence-industry-space.ec.europa.eu and verified BYTE-IDENTICAL (801169 bytes) to the on-disk edf_work_programme_2026.pdf the quotes were read from. | COORDINATOR REWRITE: the extractor's framing was written at the extraction task, not at a founder -- shouty headers, 'its only sibling', and meta blocks ('DELIBERATELY OMITTED as boilerplate', 'IMPORTANT NEGATIVE FINDING') that are notes to the coordinator rather than eligibility text. Reframed to the register used elsewhere in this column; every attested quote preserved verbatim and re-verified. The omission/negative-finding commentary is kept HERE, in notes, which is where it belongs."
+  }
+]

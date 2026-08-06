@@ -61,8 +61,14 @@ FORMS = r"(?:Joint Undertaking|Executive Agency)"
 NAME_WORD = r"(?:[A-Z0-9][\w'’.&-]*|and|of|for|the|in)"
 MAX_NAME_WORDS = 7
 BODY_RE = re.compile(rf"((?:{NAME_WORD}\s+){{1,{MAX_NAME_WORDS}}})({FORMS})")
-# The one EU legal form that leads with its type rather than trailing it.
-OPENER_RE = re.compile(r"European Union Agency for (?:[A-Z][\w'’-]*\s*){1,5}")
+# The one EU legal form that LEADS with its type rather than trailing it. It has
+# to allow the same lowercase connectors NAME_WORD already allows, because the
+# registered names actually take them -- "European Union Agency for *the* Space
+# Programme". Requiring capitals throughout stopped this pattern at "for ", so
+# the agency shape was effectively unmatchable whenever a name contained an
+# article, which is most of them.
+OPENER_RE = re.compile(rf"European Union Agency for (?:{NAME_WORD}\s+){{0,4}}"
+                       rf"[A-Z][\w'’-]*")
 
 # Shapes a registered name never takes. A match can only run PROSE into its left
 # edge, never its right, so these reject the prefix, never the name: a name does
@@ -150,10 +156,33 @@ def candidates(text: str) -> dict[str, set[int]]:
                 name = normalise(" ".join(words[k:]) + " " + m.group(2))
                 if _ok(name):
                     pages[name].add(pi)
+        # The leading-form shape needs the mirror image of the suffix trick.
+        # Prose can only run off a trailing-form name's LEFT edge, so suffixes
+        # are scored above; it can only run off a leading-form name's RIGHT edge
+        # ("European Union Agency for the Space Programme *Regulation*"), so
+        # here the PREFIXES are scored, which makes reach monotone in the same
+        # direction and lets the same knee rule find where the name ends.
+        # A prefix must stop on a capitalised word: "... Agency for the" is a
+        # sentence fragment, never a registered name.
+        # A leading-form name identifies nobody until it reaches its DOMAIN --
+        # "European Union Agency" is a legal form, not an agency -- so prefixes
+        # shorter than one word past "for" are not names and are not scored.
         for m in OPENER_RE.finditer(page):
-            name = normalise(m.group(0))
-            if _ok(name):
-                pages[name].add(pi)
+            words = m.group(0).split()
+            head = words.index("for") + 1
+            for k in range(len(words), head, -1):
+                if not words[k - 1][:1].isupper():
+                    continue
+                # A leading-form name ends where prose begins, so its last word
+                # is the one that gets INFLECTED -- "the Space Programme's
+                # mission". Left as-is that page scores a different name, and
+                # the true name silently loses reach to its own possessive.
+                # A trailing-form name never has this problem: its right edge is
+                # the fixed legal form. Strip the possessive, nothing else.
+                tail = re.sub(r"[’']s$", "", words[k - 1])
+                name = normalise(" ".join(words[:k - 1] + [tail]))
+                if _ok(name):
+                    pages[name].add(pi)
     return pages
 
 
@@ -164,19 +193,72 @@ def derive(text: str):
         return None, 0, 0, []
     reach = {n: len(p) for n, p in pages.items()}
     best = max(reach.values())
-    # The knee: longest name still within TOLERANCE of the maximum reach.
-    top = max((n for n in pages if reach[n] >= best - TOLERANCE),
+    # The knee: longest name still within TOLERANCE of the maximum reach -- but
+    # never below MIN_PAGES while a name at or above it exists.
+    #
+    # Without that floor the knee can hand the answer to a name that could not
+    # have been the answer. In `ihi_guide_for_applicants.pdf` the best reach is
+    # 2, held by "Innovative Health Initiative Joint Undertaking"; TOLERANCE
+    # then admitted "Introduction The Innovative Health Initiative Joint
+    # Undertaking" at reach 1 purely for being longer, and that winner promptly
+    # failed the MIN_PAGES test and abstained. The correct name lost to a
+    # sentence that happened to wrap it. This fires whenever a body's reach sits
+    # at or just above the floor, which is the normal case in a short document.
+    floor = max(best - TOLERANCE, MIN_PAGES) if best >= MIN_PAGES else best - TOLERANCE
+    top = max((n for n in pages if reach[n] >= floor),
               key=lambda n: (len(n.split()), reach[n]))
-    # The strongest name that is NOT a rendering of the winner. Suffix or
-    # extension of the winner means the same body; anything else is a rival.
+    # The strongest name that is NOT a rendering of the winner. A trailing-form
+    # name grows leftwards and a leading-form name grows rightwards, so BOTH
+    # containments mean "the same body under a longer or shorter rendering";
+    # only a name sharing neither edge is a genuinely different body.
     lo = top.lower()
-    rival = max((reach[n] for n in pages
-                 if not (lo.endswith(" " + n.lower()) or n.lower().endswith(" " + lo)
-                         or n == top)), default=0)
+
+    def same_body(n: str) -> bool:
+        x = n.lower()
+        return (n == top
+                or lo.endswith(" " + x) or x.endswith(" " + lo)     # suffix form
+                or lo.startswith(x + " ") or x.startswith(lo + " "))  # opener form
+
+    rival = max((reach[n] for n in pages if not same_body(n)), default=0)
     board = sorted(reach.items(), key=lambda kv: -kv[1])[:4]
     if reach[top] < MIN_PAGES or reach[top] < MARGIN * rival:
         return None, reach[top], rival, board
     return top, reach[top], rival, board
+
+
+def docs_named_for(ids: list[str]) -> dict[str, list[str]]:
+    """Documents the corpus filed under an instrument's own name.
+
+    Citation tables were the only notion of "this instrument's document", and
+    they are a PROXY: a file is visible here only if some gate or clause happened
+    to be cut from it. That misses the case this exists for. `sesar_ju`'s
+    Governing-Board-adopted work programme has been in the corpus since July;
+    the grounding pass cut its gates from the call Q&A instead (correctly -- the
+    work programme carries almost no eligibility text), so nothing cited the work
+    programme and nothing could read the JU's own name off it. The Q&A writes
+    "SESAR 3 JU" throughout and never spells the legal form out, so the instrument
+    abstained while the answer sat on disk.
+
+    The corpus already names its documents `<instrument_id>_<descriptor>.<ext>`.
+    That convention is evidence on the filesystem, not a curated map: it cannot
+    rot out of sync with a register nobody maintains, and it works for a regime
+    no one has touched.
+
+    The LONGEST matching id wins, so `eit_urban_mobility_portfolio_page.html`
+    belongs to `eit_urban_mobility_portfolio` and not to its parent
+    `eit_urban_mobility`. Most specific wins, as everywhere else here.
+    """
+    out: dict[str, list[str]] = {i: [] for i in ids}
+    if not DOCS.exists():
+        return out
+    for p in sorted(DOCS.iterdir()):
+        if p.is_dir() or p.suffix.lower() not in (".pdf", ".html", ".htm", ".txt"):
+            continue
+        owner = max((i for i in ids if p.name.startswith(i + "_")),
+                    key=len, default=None)
+        if owner:
+            out[owner].append(p.name)
+    return out
 
 
 def sources_for(pg, ids: list[str]) -> dict[str, list[str]]:
@@ -215,7 +297,9 @@ def main() -> None:
         print("no leaves for that regime")
         return
 
-    srcs = sources_for(pg, list(leaves))
+    cited = sources_for(pg, list(leaves))
+    named = docs_named_for(list(leaves))
+    srcs = {i: cited[i] + [d for d in named[i] if d not in cited[i]] for i in leaves}
     resolved: list[tuple[str, str]] = []
     for iid in sorted(leaves):
         if leaves[iid]["body"] and not args.overwrite:
