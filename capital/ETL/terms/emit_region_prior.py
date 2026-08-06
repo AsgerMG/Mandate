@@ -51,9 +51,23 @@ therefore never leak across channels the way it can in a global prior. Measured
 anyway, on the same-name holdout: uncapped @1 24.9%, cap-40 24.0% -- capping is
 not free and buys nothing here.
 
+── The leak this file shipped with ────────────────────────────────────────
+This named its recall sets in a tuple literal -- `__recallSet.json` and
+`__recallSetEnriched.json`. Three more sets were written afterwards, including
+`__recallSetComposed.json`, the one every harness now grades against, and
+nothing pointed at them. So 2,390 of the active set's 4,266 companies -- 56% --
+were inside the artifact that ranks their own siblings, and the flag said
+"exclude recall set" while doing it.
+
+emit_peer_prior.py had the same idea written as a glob and was covered. The
+difference between the two copies was the whole defect, which is why the rule
+now lives once, in `ETL/lib/recall_holdout.py`, is DISCOVERED by glob rather
+than listed, and is applied by default rather than behind a flag.
+
 Usage:
   python3 ETL/terms/emit_region_prior.py                          # report
-  python3 ETL/terms/emit_region_prior.py --write --exclude-recall-set
+  python3 ETL/terms/emit_region_prior.py --write                  # leak-free
+  python3 ETL/terms/emit_region_prior.py --write --include-recall-set
 """
 from __future__ import annotations
 
@@ -65,6 +79,7 @@ for _anc in _Path(__file__).resolve().parents:
         break
 from etl_env import DB, ROOT  # noqa: E402
 from nuts_regions import staged_region_mix  # noqa: E402
+from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
@@ -72,8 +87,6 @@ import json  # noqa: E402
 import sqlite3  # noqa: E402
 
 OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "regionPrior.generated.json"
-INTEL = ROOT / "website" / "frontend" / "lib" / "intelligence"
-RECALL_SETS = ("__recallSet.json", "__recallSetEnriched.json")
 
 # A leaf whose whole footprint is a handful of awards describes nothing. Below
 # this the entry is dropped rather than shipped weak: the scorer treats an
@@ -82,32 +95,16 @@ RECALL_SETS = ("__recallSet.json", "__recallSetEnriched.json")
 MIN_RESOLVED = 5
 
 
-def recall_companies() -> set[str]:
-    names: set[str] = set()
-    for f in RECALL_SETS:
-        p = INTEL / f
-        if p.exists():
-            names |= {r["name"] for r in json.loads(p.read_text())}
-    return names
-
-
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
-    ap.add_argument("--exclude-recall-set", action="store_true",
-                    help="drop every company in the recall sets before counting, "
-                         "so a measured number is out-of-sample")
+    add_holdout_flags(ap)
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
-    skip: set[int] = set()
-    if args.exclude_recall_set:
-        names = recall_companies()
-        skip = {r[0] for r in conn.execute(
-            "SELECT id FROM companies WHERE canonical_name IN (%s)"
-            % ",".join("?" * len(names)), tuple(names))} if names else set()
+    holdout = resolve_holdout(args, conn)
 
-    staged = staged_region_mix(conn, skip)
+    staged = staged_region_mix(conn, holdout.ids)
 
     # Only rows a founder can actually be shown. A framework is a legal basis,
     # a regime with children is a rollup nobody applies to, and a closed scheme
@@ -140,8 +137,7 @@ def main() -> None:
 
     sizes = collections.Counter(len(v["mix"]) for v in out.values())
     print(f"staged (scheme, body) pairs: {len(staged):,}")
-    if skip:
-        print(f"companies excluded:          {len(skip):,} (recall sets)")
+    holdout.report()
     print(f"instruments with a footprint:{len(out):,}"
           f"   (dropped below {MIN_RESOLVED} resolved awards: {thin})")
     print(f"regions per instrument:      median "
