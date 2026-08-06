@@ -57,7 +57,20 @@ when this was written** — expect uncommitted changes in the tree from them.
 Check `git status` and `git log` first; some of what is described below may
 already have landed.
 
-## FIRST: two workstreams died mid-edit
+## FIRST: end-to-end numbers from this session are VOID
+
+Two workstreams wrote the tree concurrently. `peerPrior.generated.json` was
+rebuilt, `THEME_SPREAD_FLOOR` moved 0.35 -> 0.20 and `semanticSeparation` was
+rewritten mid-session, so single-run `measure_recall` numbers swung between
+35%/87% and 31%/74% **for reasons unrelated to the change being measured**.
+Only within-group results (which touch neither artifact) and explicitly PAIRED
+runs survive. Re-establish the baseline before trusting anything.
+
+Commits `5e24f70` and `ed20cd3` used `git add -A` and therefore carry another
+workstream's files. Not unpicked — that would risk their work — but do not read
+the history as one workstream's authorship.
+
+## EARLIER: two workstreams died mid-edit (since re-run)
 
 **A (gate 1 signals) stalled** and **C (corpus data model) lost its connection**,
 both partway through. Neither reported. The tree is SAFE — `NO_PG=1 npm run
@@ -76,6 +89,65 @@ it had got somewhere on the peer-prior join before stalling.
 
 Re-run both from `project-mgmt/rebuild_to_95.md` rather than trying to salvage
 the fragments.
+
+## THE PATTERN OF THIS WHOLE SESSION: the ground truth was the bottleneck
+
+Three independent measurement defects found today, each of which had been read
+as a ranking failure:
+
+1. **46% of holdout `project` rows leak** — their description sits verbatim
+   inside the profile of the fund they are meant to find. The guard checked
+   `sample_project_titles` (SQLite) while retrieval scores against
+   `instrument_profiles.profile_text` (Postgres). Fixed:
+   `__recallSetEnriched.json`, 524 leak-free descriptions vs 168.
+2. **0 of 1,988 pairs name a programme-split child** — ADEME, BDNS, Vinnova and
+   Innovate UK can never be credited, so fixing the peer-prior join to reach
+   them measured as a LOSS.
+3. **The answer key is near-random for same-name sibling groups.** `__recallSet`
+   traces awards by `scheme_code = call_id`, which is NOT unique — one notified
+   scheme delivered by fourteen bodies is one SA number and fourteen
+   instruments. Against the transparency register's own attribution:
+
+   | | register confirms the exact labelled leaf |
+   |---|--:|
+   | won fund NOT in a same-name group | **91.7%** |
+   | won fund IN a same-name group | **32.2%** |
+   | …same rows, confirming SOME sibling | 96.1% |
+
+   For the 24% of holdout pairs whose answer sits in such a group the label is
+   close to a uniform draw. **No method can beat chance on a population whose
+   key is chance.** Same rows, same scorer: **24.9% @1 against the shipped key,
+   66.2% against the repaired one.** This is why region measured flat every
+   previous time. Repaired: `__recallSetRepaired.json`, 260/1,988 relabelled.
+
+**Read every historical number in this repo with that in mind.**
+
+## Region routing: shipped, and it works within-group
+
+`emit_region_prior.py` -> `regionPrior.generated.json` (395 leaves), a
+`regionScorer` inside the existing rank-preserving sibling reassignment, and —
+the part without which it would be inert — `gateReach.ts` now offers the region
+question from **measured recipient footprints instead of gates**, because the
+sibling groups carry no `region_within` gates at all.
+
+| population | n | @1 | @3 | popularity |
+|---|--:|--:|--:|--:|
+| all same-name | 269 | **44.2%** | 91.1% | 28.3% |
+| leak-free region | 87 | **49.4%** | 94.3% | 32.2% |
+| groups of 3-5 | 58 | **65.5%** | 98.3% | 29.3% |
+| groups of 6+ | 139 | 24.5% | 83.5% | 12.9% |
+
+112 of 141 previously-indistinguishable leaves now carry a routing attribute.
+Region is a fact about the COMPANY after all — the brief's 56% self-agreement
+was computed on raw strings ("München, Kreisfreie Stadt" vs "Bayern"); resolved
+to NUTS it is 79.0% exact, 94.4% at NUTS-1.
+
+**It does not move the headline and that is not being claimed.** Paired, 120
+same-name holdout cases: EXACT@5 7.5% -> 9.2%, 3 rescued, 1 broken. The
+reassignment is rank-preserving, so region gives the right door the best slot
+THE GROUP holds — and 61.7% of the time the group holds no slot in the top five.
+**The remaining loss is pool-to-table, not within-group. That is the next thing
+to attack.**
 
 ## North star
 
