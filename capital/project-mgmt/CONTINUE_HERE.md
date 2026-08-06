@@ -1,5 +1,72 @@
 # Start here tomorrow
 
+## THE GROUND TRUTH IS ONE FILE NOW (2026-08-06, workstream F)
+
+**`__recallSetComposed.json` — 4,796 pairs, 406 instruments nameable, 1,155
+leak-free descriptions.** It is the composition of all three fixes, which were
+orthogonal: Enriched fixed the DESCRIPTIONS, Repaired fixed WHICH LEAF a pair
+names, Plus ADDED the 299 programme-split children. Do not quote a number from
+any other set.
+
+The other four stay on disk so published figures remain reproducible, and they
+are no longer quotable by accident: **every harness loads through
+`scripts/recallSet.ts` and prints the file, the pair count, what it can name
+and how many leak-free descriptions it holds, on every run** — and prints a
+RETIRED warning naming the defect if you point it at one of the old ones with
+`SET=`. `build_gate1_fixture.ts` records the set in the fixture and
+`measure_pipeline.ts` prints it, because a gate-2 number is comparable only if
+the ranker AND the answer key match.
+
+**The honest headline, holdout n=200, at `f71f3f6`:**
+
+```
+pool 97%   EXACT@5 36%   REGIME@5 89%
+  mode=project   n= 39   pool 92%  exact5 51%  regime5 82%
+  mode=profile   n=161   pool 98%  exact5 32%  regime5 91%
+  original join  n= 84   pool 94%  exact5 48%  regime5 79%
+  traced         n=116   pool 99%  exact5 27%  regime5 97%
+```
+
+**The composed set does NOT move the headline against Plus** — paired, same
+tree, same run: 97/35/89 against 98/36/89, a one-case difference on 200. That
+is the finding, not a disappointment, and the reason is measurable: **all 260
+relabels are sibling-to-sibling inside one regime** (120/120 of the sampled
+holdout relabels), so REGIME@5 cannot move by construction, and on that
+population EXACT@5 is 3% against 2% — the ranker misses the leaf under either
+label. What the repair buys is a key that is CORRECT, which is what makes
+within-group measurement possible at all (region @1 24.9% → 66.2%). Do not
+expect the aggregate to reward it. It is also the same population workstream E
+measured from the other side: 85% of pool-and-below-the-cut cases need a
+REORDER inside the regime, not lift.
+
+**A leak regression test is now in `npm run check`**
+(`scripts/check_recall_leaks.ts`). It reads a committed artifact,
+`lib/intelligence/profileLeakIndex.generated.json`
+(`ETL/terms/emit_profile_leak_index.py`), so it needs no database — a guard
+that needs credentials most machines lack is a guard that reports green. It
+fails on exact, 8-gram or sibling containment against
+`instrument_profiles.profile_text`, and it catches what was there:
+`__recallSet.json` 151 of 319 described rows, Plus 2 of 1,157, Enriched and
+Repaired 1 of 524 each; composed 0 of 1,155. Squashing happens in Python on the
+profile side and TypeScript on the description side, so the artifact carries a
+probe for **every distinct non-ASCII character in the corpus** and the check
+fails on any drift between the two. Eleven unit tests poison the real set with
+text lifted from the real profile and require the detector to catch it.
+
+**Composing a repaired set re-opens every leak question.** A description is
+cleared against the leaf the pair pointed at; a relabel points it somewhere
+else. `extend_recall_set.py` now re-tests every base row against the label it
+NOW carries — one row cleared today (NAVAL GROUP, whose recovered text contains
+the French RDI scheme's own name). Sibling containment was TIGHTENED to 8-grams
+at the same time, which is the class that leak belongs to.
+
+**The floors moved to the composed set and now floor each population
+separately** (`check_recall_floor.ts`, n=150 tune): pool 95 / EXACT@5 25 /
+REGIME@5 91, with REGIME@5 84 on the original join (n=63) and 95 on the traced
+rows (n=87). The old two-file design existed to stop programme children being
+bought with SATR leaves; that trade is now inside one sample and fails the
+build instead of netting out to a flat headline.
+
 ## LATEST (2026-08-06, workstream E): the pool-to-table gap is a LEAF problem
 
 Full write-up: `project-mgmt/research/pool_to_table.md`. This **corrects the
