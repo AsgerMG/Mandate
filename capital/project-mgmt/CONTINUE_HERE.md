@@ -90,6 +90,69 @@ it had got somewhere on the peer-prior join before stalling.
 Re-run both from `project-mgmt/rebuild_to_95.md` rather than trying to salvage
 the fragments.
 
+## THE HONEST HEADLINE NUMBER IS 22%, NOT 35%
+
+Workstream A built `__recallSetPlus.json` (4,796 pairs, instruments nameable
+**173 -> 407**) by tracing the **299 programme-split children** that no join in
+the original set could reach — their identity IS the programme name, so they
+carry an empty `scheme_code` by construction. Same ranker, no change:
+
+```
+__recallSet.json   EXACT@5 35%   REGIME@5 87%
+__recallSetPlus    EXACT@5 22%   REGIME@5 74%
+```
+
+**The product was worse than we could see.** 13 points of the headline were a
+test set that could not name a third of the corpus.
+
+On that fixed ground truth the corrected peer-prior join is a clear GAIN:
+
+| population | n | EXACT@5 | REGIME@5 |
+|---|--:|--:|--:|
+| traced (was unnameable) | 116 | **7% -> 25%** | **61% -> 97%** |
+| original join | 84 | 42% -> 40% | 90% -> 79% |
+| ALL | 200 | **22% -> 32%** | **74% -> 89%** |
+
+The cost on the original population is real, not an artifact — verified with an
+`--add-only` control that replays the old crediting in the old order. Those 11
+regime points are programme children genuinely displacing SATR siblings. A
+kept it because that population is precisely the blind spot; weighted at the
+registers' true 21% share of awards rather than the test set's 59%, the trade is
+about +2pp EXACT / -1pp REGIME. **Reverting is one artifact rebuild** if you
+weigh the SATR regime number higher — that judgement is yours.
+
+### Two more leaks, and the guard that now refuses
+
+ADEME summaries are literally `"<programme name> | <project title>"` — **the
+answer prefixed to the query** — and the old guard missed it because it ignored
+tokens under 5 characters. 904 rejected. A sibling's profile text would have
+handed REGIME@5 for free: 7 rejected.
+
+I tried composing the two ground-truth fixes tonight
+(`extend_recall_set.py --base __recallSetRepaired.json`). **The guard refused to
+write** over 1 row sharing an 8-gram with the won fund's profile. That refusal
+is correct and is the behaviour that was missing all session. Compose the sets
+tomorrow by resolving that row, not by loosening the guard.
+
+### themeInformative: fixed, and it is worth half a point
+
+Skewness of the similarity distribution (AUC **0.773**, routing 52% of real
+descriptions and only 4% of canned templates) beats `max/mean-1` (AUC 0.610,
+43% / 28%). Property: a specific description makes a few funds match far better
+than the bulk — a right tail — and `max/mean-1` is dominated by the bulk.
+**But the ceiling is small:** perfect routing scores 26.3% EXACT at the true
+16/84 mix against **25.8% for always taking the flat branch.** The audit's
+"40% vs 32%" does NOT reproduce on the fixed ground truth. Do not spend more
+here.
+
+### Two silent defects found on the way
+
+- `emit_semantic_cache.ts` never loaded `.env.local`; without `DATABASE_URL` it
+  read **its own artifact** and wrote it back reporting success. Now throws.
+- `check_recall_floor.ts` graded a founder who typed nothing — a path the intake
+  no longer permits — reading six points below the measurement it floors. It now
+  guards both sets.
+
 ## THE PATTERN OF THIS WHOLE SESSION: the ground truth was the bottleneck
 
 Three independent measurement defects found today, each of which had been read
