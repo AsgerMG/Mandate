@@ -62,14 +62,44 @@ export function semanticSeparation(description: string | undefined): number | un
   return desc ? separation.get(desc) : undefined;
 }
 
-/** `max / mean - 1` over the raw similarities. Exported for the cache emitter
- *  so the committed artifact and production can never compute it differently. */
+/** SKEWNESS of the raw similarities. Exported for the cache emitter so the
+ *  committed artifact and production can never compute it differently.
+ *
+ *  THE PROPERTY: a description that names something specific makes a FEW funds
+ *  match much better than the bulk, which is a right tail. A canned sector
+ *  sentence matches everything moderately, which is symmetric. So the question
+ *  "does this text separate the funds" is a question about the SHAPE of the
+ *  similarity distribution, and skewness is the statistic for a tail.
+ *
+ *  This replaced `max / mean - 1`, which was the right instinct read off the
+ *  wrong input (percentile ranks, uniform by construction) and then, once fixed
+ *  to read raw cosines, still barely discriminated. Measured over 296 holdout
+ *  rows -- 61 with a real description, 235 on a canned sector template --
+ *  against the live index:
+ *
+ *      statistic        AUC    real routed "specific"   canned routed "specific"
+ *      max/mean - 1    0.610          43%                       28%
+ *      SKEWNESS        0.773          52%                        4%
+ *
+ *  `max / mean - 1` is dominated by the corpus bulk that sets the mean, and the
+ *  bulk is the same for every query. The remaining error under skewness is
+ *  one-directional and it is the cheap one: half of real descriptions are
+ *  treated as generic, which costs a project founder a few positions, while a
+ *  canned template is almost never mistaken for a specific one, which is the
+ *  error that damages the 84% of founders who have no project text.
+ *
+ *  Note that `max` alone runs BACKWARDS -- a generic sentence matches everything
+ *  moderately well and scores a HIGHER top similarity than a specific one -- so
+ *  no "is the best match good enough" test can work here. It has to be shape. */
 export function separationOf(similarities: number[]): number | undefined {
   const vals = similarities.filter((v) => Number.isFinite(v) && v > 0);
   if (vals.length < 2) return undefined;
-  const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const n = vals.length;
+  const mean = vals.reduce((a, b) => a + b, 0) / n;
   if (mean <= 0) return undefined;
-  return Math.max(...vals) / mean - 1;
+  const sd = Math.sqrt(vals.reduce((a, b) => a + (b - mean) ** 2, 0) / n);
+  if (sd <= 0) return undefined;
+  return vals.reduce((a, b) => a + ((b - mean) / sd) ** 3, 0) / n;
 }
 
 interface CachedMatch { scores: Record<string, number>; separation?: number }

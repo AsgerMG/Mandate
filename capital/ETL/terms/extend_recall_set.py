@@ -81,9 +81,8 @@ from recall_guards import LeakIndex, squash  # noqa: E402
 
 FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
 # The enriched set, not the shipped one: it carries the same 1,988 pairs plus
-# the leak-free descriptions and the `own_project_title_leaks` marks, and
-# rebuilding on the shipped file would throw that work away.
-BASE = FRONTEND / "__recallSetEnriched.json"
+# the leak-free descriptions and the `own_project_title_leaks` marks.
+DEFAULT_BASE = "__recallSetEnriched.json"
 OUT = FRONTEND / "__recallSetPlus.json"
 
 # The base set's own cap: no single fund may dominate the measure. Matched
@@ -94,9 +93,15 @@ PAIRS_PER_INSTRUMENT = 12
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--base", default=DEFAULT_BASE,
+                    help="the pair file to extend. This ADDS pairs and never "
+                         "alters one, so it composes with any other fix to the "
+                         "same 1,988 -- notably __recallSetRepaired.json, which "
+                         "corrects WHICH leaf a pair names. Rebuild on that and "
+                         "the output carries both.")
     args = ap.parse_args()
 
-    base = json.loads(BASE.read_text())
+    base = json.loads((FRONTEND / args.base).read_text())
     nameable = {p["instrument"] for p in base}
     split_of = {p["name"]: p["split"] for p in base}
     already = {(p["name"], p["instrument"]) for p in base}

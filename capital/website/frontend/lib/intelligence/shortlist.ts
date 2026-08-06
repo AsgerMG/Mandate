@@ -77,19 +77,20 @@ export const PRIOR_WEIGHT = 0.5;
  *  separating the funds. Below it the text scores everything alike and carries
  *  no ordering information, whatever its length.
  *
- *  Read by `semanticSeparation`, which is `max/mean - 1` over the cosine
- *  similarities before percentile normalisation. It used to be read against the
- *  normalised scores, where it could never fire (semantic.ts).
+ *  Read by `semanticSeparation`, which is the SKEWNESS of the cosine
+ *  similarities before percentile normalisation (semantic.ts). It used to be
+ *  `max/mean - 1` read against the NORMALISED scores, where it could never fire.
  *
- *  Left at 0.35 on purpose. Re-measured against the live index over 11 canned
- *  sector templates and 55 real project descriptions: the two populations
- *  separate at t = 8.6, the best single threshold is 0.366 for 89% accuracy, and
- *  the error-cost minimum -- weighting a real description misread as canned at
- *  the -15 points the audit measures for that founder, against -6 the other way,
- *  at the true 16/84 population split -- is flat from 0.35 to 0.38. Moving it to
- *  the empirical optimum would buy nothing measurable and would fit the constant
- *  to the test set. */
-export const THEME_SPREAD_FLOOR = 0.35;
+ *  0.20, and the honest reason it is not the empirical optimum: measured over
+ *  296 holdout rows the canned population has a maximum skewness of 0.213 and
+ *  putting the threshold at 0.25 classifies all of them correctly -- but that
+ *  population contains only ELEVEN distinct strings, one per sector, so a
+ *  threshold tuned to sit just above their maximum is fitted to eleven points.
+ *  0.20 sits inside the interval where the trade is flat (real 52% / canned 4%
+ *  at 0.20, 51% / 0% at 0.25, 64% / 19% at 0.15) and does not pretend to a
+ *  precision eleven negatives cannot support. The measurement that decides this
+ *  is EXACT@5 and REGIME@5, not the label accuracy. */
+export const THEME_SPREAD_FLOOR = 0.20;
 // PRIOR_WEIGHT_WITH_TEXT (0.15) and PRIOR_WEIGHT_WITHOUT_TEXT (0.6) stood here,
 // documented, exported and never read by anything. The weighting they describe
 // was tried and rejected -- the measurement survives in the comment inside
@@ -1591,6 +1592,28 @@ export function materialiseInstrumentTable(
   // vector store, and a lexical-only path all return `undefined` -- which must
   // read as "assume the description carries the ranking", the behaviour that
   // shipped, rather than as zero.
+  //
+  // ── What this switch is actually worth, measured both ways ────────────────
+  // The branch was forced on and off in turn, per population, on the fixed
+  // ground truth (`__recallSetPlus.json`, holdout, n=120 each):
+  //
+  //                       real description      canned template
+  //     forced "specific"   33% / 79%             18% / 95%
+  //     forced flat         30% / 73%             25% / 95%
+  //
+  // So each population does prefer its own branch, and at the true 16/84 mix
+  // perfect routing scores EXACT@5 26.3% against 20.4% for the stuck-on
+  // behaviour that shipped before the statistic was fixed.
+  //
+  // But it also scores 25.8% for simply ALWAYS taking the flat branch. The
+  // switch is worth about half a point over having no switch at all, because
+  // the population that needs the "specific" branch is 16% of founders and
+  // loses only 3 points by being routed flat. The audit's reconstruction --
+  // "routing correctly is worth 40% against 32%" -- was measured against the
+  // old ground truth and the old stuck-on code; it does not reproduce here.
+  // Keep the switch (it is right on both populations and costs nothing), but
+  // do not spend further effort on the discriminator: the headroom above it
+  // is under a point.
   const spread = semanticSeparation(description);
   const themeInformative = spread === undefined || spread >= THEME_SPREAD_FLOOR;
   // The prior belongs HERE, not only in channel ordering. Ordering decides
