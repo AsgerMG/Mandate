@@ -4,6 +4,38 @@
 below. Everything further down is older and partly superseded — if any section
 says "EXACT@5 36%" or "95% is unreachable", both are corrected here.**
 
+## RULE ZERO, ADDED 2026-08-07 AFTER GETTING IT WRONG
+
+**A decision about what a funding instrument IS — whether it exists, whether it
+is open, who may apply, how you apply — must be grounded in the OFFICIAL SOURCE.
+Corpus-internal inference is evidence, never a verdict.** Put this in every
+agent brief that touches corpus truth.
+
+The cost of learning it: IPCEI was reported closed and eleven leaves were
+unpublished, on reasoning that was entirely internal — `application_url` was
+NULL, median awards were €14–127M, and the harvested text named a closed
+beneficiary list. Three plausible signals, all pointing the wrong way. The
+Commission's own page
+(`competition-policy.ec.europa.eu/state-aid/ipcei_en`) describes candidates
+"currently in the IPCEI design phase" and a forum that exists to identify new
+ones. One fetch would have settled it.
+
+**Missing metadata is a gap in our collection, not a fact about the world.**
+
+The same error occurred twice more the same night, which is why it is Rule Zero:
+GB's 16 "funds" were GtR `grantCategory` labels, and Spain's rows are named
+after legal citations. In all three the corpus manufactured or mis-described an
+object and we reasoned from the corpus about itself.
+
+**Separate the register artefact from the thing a founder applies to.** A
+Commission approval decision, a `grantCategory` label and a legal citation are
+artefacts. The applicable object has an application route, a deadline and a body
+that accepts applications — and it is often one level away. For IPCEI it is the
+national call for expression of interest run by each Member State.
+
+If you can express that as a test — *this row represents something a founder can
+apply to* — it would have caught all three. Proposing it is open work.
+
 ## WHERE THIS LANDED
 
 The night's question was whether the product can name the five specific funds a
