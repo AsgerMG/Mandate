@@ -55,12 +55,12 @@ export interface ExclusionRule {
 
 export const EXCLUSION_RULES = {
   // ── channel stage ────────────────────────────────────────────────────────
-  "SEL-BAND": {
-    stage: "channel", kind: "opinion", recoverable: false,
-    what: "Channel removed because the founder's stated ticket size falls outside a hardcoded band range for that channel.",
-    disposition: "fit-score",
-    evidence: "The range is a hand-set constant, not an encoded ticket gate; its own comment describes it as a stopgap pending real gates.",
-  },
+  // "SEL-BAND" stood here, with disposition "fit-score". The disposition was
+  // carried out -- ticket size is scored continuously by `awardScorer` against
+  // each instrument's own award median -- but the entry outlived the rule, so
+  // this register, whose whole job is to state what the funnel may remove a
+  // fund for, advertised a channel-level ticket filter the code had stopped
+  // applying. A rule nothing can emit is a false claim about the product.
   "SEL-FIT-CONSORTIUM": {
     stage: "channel", kind: "opinion", recoverable: false,
     what: "Channel removed because it is declared consortium-requiring at channel level and the founder has not confirmed consortium capacity.",
