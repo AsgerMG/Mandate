@@ -99,15 +99,49 @@ async function main() {
                              && (!process.env.DESCRIBED || described(r))
                              && (regionMode !== "strict" || Boolean(regionOf(r))));
   const N = Math.min(Number(process.env.N ?? 250), set.length);
-  // Stride, not the head of the list.
+  // A harness that reports 0/0 instead of failing is how a defect survives: an
+  // unparseable N produced NaN, an empty sample and a clean-looking "0/0 (NaN%)"
+  // rather than an error.
+  if (!Number.isFinite(N) || N <= 0) {
+    throw new Error(`N must be a positive number, got ${JSON.stringify(process.env.N)}`);
+  }
+  if (!set.length) throw new Error(`no rows match split=${split} mode=${mode ?? "any"}`);
+  // Seeded shuffle, because BOTH of the obvious samplers are biased here.
   //
-  // The set is grouped by mode and `project` comes first, so slicing took ALL
-  // 131 project pairs and only 69 profile ones -- 66% project against a true
-  // population of 16%. Every figure measured this way was the easy third of the
-  // corpus: pool read 92% where it is really 74%, EXACT@5 read 49% where it is
-  // 35%. Deterministic, so runs stay comparable.
-  const step = Math.max(1, Math.floor(set.length / N));
-  const sample = set.filter((_, i) => i % step === 0).slice(0, N);
+  // Slicing took the head of a mode-grouped list: 66% `project` against a true
+  // population of 16%, which read pool 92% where it was 74% and EXACT@5 49%
+  // where it was 35%. Stride fixed that and introduced a subtler version of the
+  // same fault. The set is strongly ordered -- by mode, by whether the pair was
+  // traced, and by instrument within that -- so `i % step` ALIASES against the
+  // ordering, and the sample you get depends on the step you happened to pick:
+  //
+  //   N=200 (step 14)  EXACT@5 36%   186 distinct instruments
+  //   N=250 (step 11)  EXACT@5 25%   220 distinct instruments
+  //   the two samples share 119 of 200 rows
+  //
+  // Same ranker, same split, same answer key, eleven points apart. Every
+  // cross-run comparison at different N was meaningless, and the published 36%
+  // was a property of step 14 rather than of the product.
+  //
+  // A seeded shuffle is deterministic -- runs stay comparable, which is the
+  // whole reason stride was chosen -- but it cannot align with the file's order
+  // because it does not consult it. SEED= varies it on purpose: if a result
+  // does not survive a change of seed, it was never there. See the CI printed
+  // below; a move smaller than it is noise, not a win.
+  const seed = Number(process.env.SEED ?? 20260806);
+  let s0 = seed >>> 0;
+  const rnd = () => {
+    s0 = (s0 + 0x6D2B79F5) >>> 0;
+    let t = Math.imul(s0 ^ (s0 >>> 15), 1 | s0);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const shuffled = set.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const sample = shuffled.slice(0, N);
 
   const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
@@ -190,7 +224,17 @@ async function main() {
     g.n++; if (inPool) g.pool++; if (e5) g.e5++; if (r5) g.r5++;
     byRegime.set(rk, g);
   }
-  const pc = (n: number, d = stat.done) => `${n}/${d} (${(100 * n / d).toFixed(0)}%)`;
+  // The 95% binomial half-width, printed next to every headline figure so a
+  // change smaller than it cannot be reported as a win. At n=200 and p~0.3 this
+  // is about 6 points: several "improvements" accepted in this project were
+  // inside it, and the seeded shuffle above is what makes the interval mean
+  // anything at all.
+  const ci = (n: number, d: number) => {
+    const p = n / d;
+    return 100 * 1.96 * Math.sqrt((p * (1 - p)) / d);
+  };
+  const pc = (n: number, d = stat.done) =>
+    `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${ci(n, d).toFixed(1)})`;
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
               `${regionMode ? ` region=${regionMode}` : ""}  replayed ${stat.done}`);
