@@ -3,6 +3,7 @@ import { SCHEME_END_BASIS, closedSql, isClosed } from "./liveness";
 
 const N = SCHEME_END_BASIS.notifiedDuration;
 const C = SCHEME_END_BASIS.callDeadline;
+const B = SCHEME_END_BASIS.closedBeneficiaryList;
 const AS_OF = "2026-08-06";
 
 describe("liveness", () => {
@@ -57,6 +58,31 @@ describe("liveness", () => {
       { schemeEndDate: "2021-01-01", schemeEndBasis: "", lastYear: 2026 }, AS_OF)).toBe(true);
   });
 
+  // ── The third basis: closed by the decision, with no date to read ───────
+  it("closes a fixed beneficiary list even with no end date at all", () => {
+    // The IPCEI waves. Every date field is empty because the row never had a
+    // window: the Commission approved aid for companies it names. Tested with
+    // a recent award year too, because these decisions keep disbursing for
+    // years and the money moving is not a door opening.
+    expect(isClosed({ schemeEndBasis: B }, AS_OF)).toBe(true);
+    expect(isClosed(
+      { schemeEndDate: null, schemeEndBasis: B, lastYear: 2025 }, AS_OF)).toBe(true);
+  });
+
+  it("closes a fixed beneficiary list even when the date is in the FUTURE", () => {
+    // The ordering test. `isClosed` returns early on a future date, so a basis
+    // checked after that guard would silently do nothing on any row that also
+    // carries a notified duration. The list being closed outranks the window.
+    expect(isClosed(
+      { schemeEndDate: "2030-01-01", schemeEndBasis: B, lastYear: 2026 }, AS_OF)).toBe(true);
+  });
+
+  it("does not close an ordinary row that merely has no basis", () => {
+    // Guards the blast radius: the new basis must close exactly the rows that
+    // declare it, and nothing else. 512 rows carry no basis at all.
+    expect(isClosed({ schemeEndDate: null, schemeEndBasis: null }, AS_OF)).toBe(false);
+  });
+
   it("emits SQL that agrees with the TypeScript on every case above", () => {
     // Both dialects are generated from one function, so this guards the shape
     // rather than re-testing the logic: a column renamed in one and not the
@@ -66,6 +92,7 @@ describe("liveness", () => {
       expect(sql).toContain("scheme_end_date_basis");
       expect(sql).toContain("last_year");
       expect(sql).toContain(N);
+      expect(sql).toContain(B);
     }
     expect(closedSql({ col: "f" })).toContain("f.scheme_end_date_basis");
     expect(closedSql()).toContain("current_date");

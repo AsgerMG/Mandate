@@ -50,6 +50,12 @@ NOTIFIED_DURATION: str = _S["basis"]["notifiedDuration"]
 #: ``date_cloture``). Past means closed, permanently.
 CALL_DEADLINE: str = _S["basis"]["callDeadline"]
 
+#: The participants were fixed by the decision that created the row -- aid
+#: approved for a named beneficiary list, with no route in for anyone not
+#: already on it. Closes the row with NO date, because the row never had a
+#: window. See the constant in liveness.ts for the evidence.
+CLOSED_BENEFICIARY_LIST: str = _S["basis"]["closedBeneficiaryList"]
+
 
 def closed_sql(dialect: str = "sqlite", col: str | None = None) -> str:
     """SQL for 'this row is closed', generated from the same function the
