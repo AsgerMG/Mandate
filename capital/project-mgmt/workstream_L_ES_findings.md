@@ -203,3 +203,72 @@ order — the gate cannot judge a row until the facts it judges on exist — and
 forgotten once. Report-only runs overlay the pending dates so they judge on the
 same facts a `--write` run would, and the Postgres mirror carries the lifetime
 rows alongside the prose.
+
+---
+
+# L-ES2 (2026-08-06, second agent) — none of the above had reached Postgres
+
+## The first thing measured, and it invalidates the previous section's headline
+
+`load_scheme_text.py` writes SQLite. `measure_sibling_coverage.ts`, the product,
+and every read path use Postgres. Nothing keeps them in sync, and the L-ES run
+above was never mirrored. Counted on both stores, same moment, same ids:
+
+```
+                      SQLite    Postgres
+ES eligibility_text      29           3
+ES administering_body    85          24
+ES scheme_end_date       66           0
+```
+
+So the claim "the register answers 87/87 and its text cuts the class 88.0 -> 1.9"
+was true about the fetch and about SQLite, and **false about the product**, which
+still had Spain at 3/94 and — the part that matters — still believed all 88
+expired convocatorias were live. Reproduced against Postgres, not restated:
+
+```
+$ npx tsx website/frontend/scripts/measure_sibling_coverage.ts
+  ES     3/  94  3%
+```
+
+**Rule for anyone following: a `--write` run is not a shipped run.** The only
+number worth reporting is one read back out of Postgres.
+
+## Why re-publishing was safe here, checked rather than assumed
+
+The scoped publisher does a blind `UPDATE ... SET col = %s`, not COALESCE, so it
+can overwrite a Postgres value with a SQLite NULL. Diffed all 94 ES rows across
+both stores before running it:
+
+```
+                       would-CLOBBER   would-GAIN
+eligibility_text                   0           26
+administering_body                 0           61
+scheme_end_date                    0           66
+delivery_region                    0            0
+```
+
+Zero clobber on every column: for ES, SQLite is a strict superset. That is a
+property of this country at this moment, not of the publisher, and the next
+person should re-run the diff rather than trust this line.
+
+## The defect that would have shipped half the fix
+
+`publish_scheme_text_scoped.py` is the ONLY path that reaches rows a previous
+load already wrote (the `--postgres` mirror in `load_scheme_text.py` only carries
+ids that the same invocation just changed, so a re-run that finds everything
+already loaded mirrors nothing). Its `COLUMNS` tuple listed the prose and
+provenance columns, `administering_body` and `delivery_region` — and **not
+`scheme_end_date`**.
+
+For Spain that is not a rounding error, it is the entire result. 64 of the 87
+BDNS leaves are convocatorias whose application window has closed; the column
+that removes them from what a brief may propose is `scheme_end_date`, and it was
+the one column the publisher could not carry. Running it as it stood would have
+published the text and left all 64 dead calls proposable — the same failure the
+`lifetime_facts()` pass was written to prevent, one layer further out.
+
+Fixed by adding `scheme_end_date` to `COLUMNS`. The tuple's comment says it is
+"deliberately short" because a wide UPDATE republishes a neighbour's work; that
+reasoning is right and is why the column belongs there specifically — this
+workstream writes it, in `lifetime_facts()`, so it is ours to publish.
