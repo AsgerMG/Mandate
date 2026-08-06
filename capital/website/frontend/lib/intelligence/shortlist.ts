@@ -276,7 +276,11 @@ const AWARD_MATCH = 1.35;
  *
  *  Returns 1.0 for a fund with no usable award history, so the 98 instruments
  *  without one are neither rewarded nor punished for a gap in our data. */
-function awardScorer(
+// Exported for `scripts/diagnose_ordering.ts`, which reconstructs the row sort
+// component by component. A copy of this arithmetic in the diagnostic would let
+// the score being explained and the score being shipped drift apart, which is
+// the one thing a diagnostic may not do.
+export function awardScorer(
   _leaves: DbInstrument[], ticketBand?: string,
 ): (i: DbInstrument) => number {
   const want = ticketBand ? BAND_MID[ticketBand] : undefined;
@@ -303,7 +307,8 @@ export function registeredPurpose(id?: string): string | undefined {
     : what;
 }
 
-function objectiveScorer(
+/** Exported for the ordering diagnostic; see `awardScorer` above. */
+export function objectiveScorer(
   ids: (string | undefined)[], useOfFunds?: string[],
 ): (id?: string) => number {
   const neutral = () => 1;
@@ -1443,7 +1448,8 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
 // fills the rest because it catches 32 the ranker misses. Neither dominates.
 let peerPriorCache: Record<string, string[]> | undefined;
 
-function peerPrior(country?: string, sector?: string): string[] {
+/** Exported for the ordering diagnostic; see `awardScorer`. */
+export function peerPrior(country?: string, sector?: string): string[] {
   if (!country || !sector) return [];
   if (peerPriorCache === undefined) {
     try {
