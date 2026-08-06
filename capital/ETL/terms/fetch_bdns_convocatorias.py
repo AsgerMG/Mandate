@@ -297,8 +297,25 @@ def main() -> None:
                 # text; keep the record, so the abstention is visible and
                 # counted rather than looking like a fetch that never happened.
                 withheld = st == "closed" and not end
+                # ── The join key the corpus was declared to be missing ───────
+                # `sa_number` was in this record's schema from the start and
+                # never filled, and the workstream concluded from our OWN data
+                # that no join to the Commission's register existed: every
+                # bdns_es_ayudas leaf has scheme_code = ''. It does not exist in
+                # our data. It exists in Spain's, and the register hands it over
+                # in the same detail payload the text is composed from --
+                # `ayudaEstado` is the notified aid measure the call is made
+                # under, on 85 of 87 leaves.
+                #
+                # That matters most for the calls whose text is withheld above:
+                # the register gives them no closing date, so nothing could tell
+                # the corpus they are over. Their SCHEME has a registered end
+                # date, and it bounds the call -- a call cannot outlive the
+                # measure authorising it.
+                sa = (d.get("ayudaEstado") or "").strip() or None
                 rec.update(
                     found=True, status=st, confidence=None if withheld else conf,
+                    sa_number=sa,
                     eligibility_text=None if withheld else text,
                     scheme_end_date=end,
                     description=(d.get("descripcion") or r["name"]),
