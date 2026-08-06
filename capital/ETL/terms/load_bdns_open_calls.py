@@ -178,16 +178,20 @@ def compose(d: dict) -> tuple[str, str]:
     return " ".join(parts), ("high" if n >= 4 else "medium" if n >= 2 else "low")
 
 
-def build_rows(asof: str, floor: float) -> tuple[list[dict], dict]:
-    """Every admitted call as a row, minus anything the overlap gate claims."""
+def build_rows(asof: str, floor: float) -> tuple[list[dict], dict[str, list[dict]], dict]:
+    """Every admitted call, split into the two things it can be.
+
+    Returns (new rows, revivals, stats). A call under a scheme the corpus
+    already holds is NOT a new row -- it is that scheme's current call, and it
+    revives the existing, fully-evidenced leaf instead.
+    """
     policies = admissible_policies()
     existing = load_existing()
     held_codes = {e["codigo"] for e in existing if e.get("codigo")}
-    held_sa = {e["sa_number"] for e in existing if e.get("sa_number")}
-    held_basis = {norm_basis(e["bases"]) for e in existing if e.get("bases")}
 
     stats = {"cached": 0, "admitted": 0, "dup_call": 0, "same_scheme": 0, "new": 0}
     rows: list[dict] = []
+    revivals: dict[str, list[dict]] = {}
     for rec in load_details().values():
         if rec.get("error"):
             continue
@@ -207,8 +211,14 @@ def build_rows(asof: str, floor: float) -> tuple[list[dict], dict]:
         # put two rows for one fund in front of a founder. It is recorded for
         # the revival pass instead, which moves the existing, fully-evidenced
         # row's window forward rather than creating an evidence-free twin.
-        if (sa and sa in held_sa) or norm_basis(d.get("descripcionBasesReguladoras")) in held_basis:
+        hit = [e["instrument_id"] for e in existing
+               if (sa and e.get("sa_number") == sa)
+               or (e.get("bases") and norm_basis(e["bases"])
+                   == norm_basis(d.get("descripcionBasesReguladoras")))]
+        if hit:
             stats["same_scheme"] += 1
+            for iid in hit:
+                revivals.setdefault(iid, []).append(d)
             continue
         stats["new"] += 1
         text, conf = compose(d)
@@ -237,7 +247,7 @@ def build_rows(asof: str, floor: float) -> tuple[list[dict], dict]:
             "eligibility_confidence": conf,
             "eligibility_fetched_at": dt.datetime.now().isoformat(timespec="seconds"),
         })
-    return rows, stats
+    return rows, revivals, stats
 
 
 COLUMNS = ("id", "parent_id", "name", "name_source", "country", "administering_body",
@@ -275,6 +285,48 @@ def write(rows: list[dict]) -> None:
     conn.close()
 
 
+def write_revivals(revivals: dict[str, list[dict]]) -> None:
+    """Point a closed leaf at the call that is open under its own scheme.
+
+    The corpus already has this mechanism and it was built for exactly this
+    claim: `successor_scheme` / `successor_title` mean "the register says this
+    fund continues under a new identity", and `publishableInstruments()`
+    republishes such a row under the successor's identity with the award
+    history still attached, because that is the registration a founder would
+    actually apply under.
+
+    So no new row is created. The leaf keeps its 59 awards, its administering
+    body, its sector mix and its award percentiles -- everything a founder is
+    ranked on -- and starts presenting itself as the call that is open now.
+
+    Its OWN `scheme_end_date` is left alone, past and closed, because that is
+    the true fact about the call the row was built from. The redirect is what
+    carries the new window, and re-running this pass clears a successor whose
+    call has since shut, so a leaf cannot silently outlive its revival.
+    """
+    conn = sqlite3.connect(DB)
+    n = 0
+    for iid, calls in revivals.items():
+        best = max(calls, key=lambda d: (d.get("fechaFinSolicitud") or ""))
+        conn.execute(
+            "UPDATE funding_instruments SET successor_scheme=?, successor_title=?, "
+            "updated_at=CURRENT_TIMESTAMP WHERE id=?",
+            (str(best.get("codigoBDNS")), (best.get("descripcion") or "").strip()[:400], iid))
+        n += 1
+    # Retract a revival whose call has since closed and that this run did not
+    # re-find. Without this the corpus would keep a dead call in front of a
+    # founder under a successor title, which is the failure the whole workstream
+    # exists to undo, wearing the fix's clothes.
+    conn.execute(
+        "UPDATE funding_instruments SET successor_scheme=NULL, successor_title=NULL "
+        "WHERE country=? AND successor_scheme IS NOT NULL AND id NOT IN (%s)"
+        % (",".join("?" * len(revivals)) or "''"),
+        (COUNTRY, *revivals.keys()))
+    conn.commit()
+    conn.close()
+    print(f"SQLite: {n} leaves revived through the successor redirect")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--report", action="store_true")
@@ -286,7 +338,7 @@ def main() -> None:
     floor = budget_floor(conn)
     conn.close()
     print(f"budget floor, derived from the corpus's own ES inventory: EUR {floor:,.0f}\n")
-    rows, stats = build_rows(a.asof, floor)
+    rows, revivals, stats = build_rows(a.asof, floor)
     for k in ("cached", "admitted", "dup_call", "same_scheme", "new"):
         print(f"  {k:14} {stats[k]}")
     from collections import Counter
@@ -298,8 +350,13 @@ def main() -> None:
     texts = Counter(_norm(r["eligibility_text"])[:400] for r in rows)
     print(f"  distinct eligibility texts   : {len(texts)} over {len(rows)} rows"
           f"   mean class {sum(texts[_norm(r['eligibility_text'])[:400]] for r in rows)/max(len(rows),1):.1f}")
+    print(f"\n  revivals: {len(revivals)} existing leaves have an open call under their own scheme")
+    for iid, calls in sorted(revivals.items(), key=lambda kv: -len(kv[1])):
+        best = max(calls, key=lambda d: (d.get("fechaFinSolicitud") or ""))
+        print(f"    {iid[:56]:56} -> BDNS {best.get('codigoBDNS')} closes {best.get('fechaFinSolicitud')}")
     if a.write:
         write(rows)
+        write_revivals(revivals)
     else:
         print("\n[report only] --write to load")
 
