@@ -1,5 +1,157 @@
 {
   "_comment": "Real programme names for instruments whose corpus name is only the granting body. Curated 2026-08-01 from each agency's own register or catalogue; `source` records where. ONLY sourced names appear here - codes the agency itself never expanded, and slugs that could not be resolved confidently, are deliberately absent and keep the measured descriptor instead. Applied by ETL/events/load/populate_funding_instruments.py.",
+  "altum_anm_digi": {
+    "name": "Aizdevums digitalizacijai ar kapitala atlaidi",
+    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01); ANM is Latvia's RRF programme code, digi = digitalisation"
+  },
+  "altum_biomet_na_aizdevumi": {
+    "name": "Biometana razosanai",
+    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01)"
+  },
+  "altum_la_ar_ka": {
+    "name": "Lielo investiciju aizdevums ar kapitala atlaidi",
+    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01); id decodes LA=lielo aizdevums, KA=kapitala atlaide, and 20 awards averaging EUR 5.8M match a large-investment loan"
+  },
+  "cdti_cervera": {
+    "name": "Cervera - Proyectos de I+D de Transferencia Tecnologica",
+    "source": "https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0"
+  },
+  "cdti_lic": {
+    "name": "Linea Directa de Expansion",
+    "source": "https://www.cdti.es/ayudas/linea-directa-de-expansion"
+  },
+  "cdti_misiones": {
+    "name": "Misiones Ciencia e Innovacion",
+    "source": "https://www.cdti.es/ayudas/misiones-ciencia-e-innovacion"
+  },
+  "cdti_perte_aerosalud": {
+    "name": "PERTE Aeroespacial y Salud de Vanguardia",
+    "source": "https://www.cdti.es/ayudas/proyectos-de-id-aeroespacial-y-salud"
+  },
+  "eis_digitaliseerimise_teekaa": {
+    "name": "Digitaliseerimise teekaardi toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_e_veoselehe_liidestamise": {
+    "name": "E-veoselehe liidestamise toetus (e-waybill integration)",
+    "source": "https://www.riigiteataja.ee/akt/116042025004"
+  },
+  "eis_e_veoselehe_teenusearend": {
+    "name": "E-veoselehe teenusearenduse toetus (e-waybill service dev)",
+    "source": "https://www.riigiteataja.ee/akt/106052022019"
+  },
+  "eis_eesti_norra_koost_progra": {
+    "name": "Eesti-Norra koostooprogramm (Green ICT)",
+    "source": "archived eas.ee/toetused/norratoetus/"
+  },
+  "eis_elamufondi_arendamise_in": {
+    "name": "Elamufondi arendamise investeeringutoetus (housing stock)",
+    "source": "https://eis.ee/teenused/elamufondi-arendamise-investeeringutoetus-kohalikele-omavalitsustele/"
+  },
+  "eis_ettev_tete_digip_rde_toe": {
+    "name": "Ettevotete digipoorde toetus (digital transformation)",
+    "source": "https://eis.ee/teenused/digipoorde-toetus/"
+  },
+  "eis_ettev_tja_tootearenduse": {
+    "name": "Ettevotja tootearenduse toetus (product development)",
+    "source": "https://www.riigiteataja.ee/akt/108032023014"
+  },
+  "eis_ettev_tja_varustuskindlu": {
+    "name": "Ettevotja varustuskindluse toetus (security of supply)",
+    "source": "archived eis.ee/toetused/varustuskindlus/ - closed 12.05.2025"
+  },
+  "eis_ettev_tte_arenguprogramm": {
+    "name": "Ettevotte arenguprogramm (enterprise development)",
+    "source": "https://eis.ee/teenused/ettevotte-arenguprogramm/"
+  },
+  "eis_ettev_tte_investeeringu": {
+    "name": "Ettevotte investeeringu toetus (enterprise investment)",
+    "source": "https://eis.ee/teenused/ettevotte-investeeringu-toetus/"
+  },
+  "eis_ida_viru_ettev_tjate_tea": {
+    "name": "Ida-Viru teadmusmahukate tegevuste toetus",
+    "source": "https://eis.ee/teenused/ida-viru-teadmusmahukate-tegevuste-toetus/"
+  },
+  "eis_ida_viru_ettev_tluse_inv": {
+    "name": "Ida-Viru ettevotluse investeeringute toetus",
+    "source": "https://eis.ee/teenused/ida-viru-ettevotluse-investeeringute-toetus/"
+  },
+  "eis_ida_viru_v_ike_ja_keskmi": {
+    "name": "Ida-Viru VKE investeeringute toetus (SME investment)",
+    "source": "https://eis.ee/teenused/ida-viru-vke-toetus/"
+  },
+  "eis_innovatsiooniosak_arendu": {
+    "name": "Innovatsiooniosak ja arendusosak",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_k_berturvalisuse_innovat": {
+    "name": "Kuberturvalisuse innovatsiooni toetus (cybersecurity)",
+    "source": "https://eis.ee/teenused/kyber-inno-toetus/"
+  },
+  "eis_leeuroopalist_huvi_pakk": {
+    "name": "IPCEI - uleeuroopalise tahtsusega projektid",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_loomeettev_tjate_arengup": {
+    "name": "Loomeettevotjate arenguplaani toetus (creative sector)",
+    "source": "https://eis.ee/teenused/loomeettevotete-arenguplaani-elluviimise-toetus/"
+  },
+  "eis_loomeettev_tjate_ekspord": {
+    "name": "Loomeettevotjate ekspordivoimekuse toetus (creative export)",
+    "source": "https://eis.ee/teenused/loomeettevotjate-eksporditoetus/"
+  },
+  "eis_loomeettev_tjatele_tugit": {
+    "name": "Loomeettevotjatele tugiteenuste toetus (creative support)",
+    "source": "https://eis.ee/teenused/loome-tugiteenuste-toetus/"
+  },
+  "eis_loomemajanduse_taristu_j": {
+    "name": "Loomemajanduse taristu ja tehnoloogilise voimekuse arendamine",
+    "source": "archived eas.ee/toetused/loomemajanduse-taristu-ja-tehnoloogilise-voimekuse-arendamine/"
+  },
+  "eis_rahvusvaheliste_konveren": {
+    "name": "Rahvusvaheliste konverentside toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_rahvusvaheliste_spordi_j": {
+    "name": "Rahvusvaheliste spordi- ja kultuurisundmuste toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_rakendusuuringute_toetus": {
+    "name": "Rakendusuuringute programm",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_starditoetus": {
+    "name": "Starditoetus (start-up grant)",
+    "source": "https://eis.ee/teenused/starditoetus/"
+  },
+  "eis_suuremahuliste_investee": {
+    "name": "Suuremahuliste investeeringute toetus (large-scale investment)",
+    "source": "https://eis.ee/teenused/suurinvesteeringute-toetus/"
+  },
+  "eis_suuremahuliste_investeer": {
+    "name": "Suuremahuliste investeeringute toetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01) - NOTE: shares its name with eis_suuremahuliste_investee, which is the same measure truncated differently by another feed; naming both correctly does not separate them, and merging them is a dedupe question, not a naming one"
+  },
+  "eis_turismisektori_tarkvarad": {
+    "name": "Turismisektori tarkvarade liitumis- ja liidestamistoetus",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "eis_v_ikese_ja_keskmise_suur": {
+    "name": "Vaikese ja keskmise suurusega ettevotja arenguprogramm",
+    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
+  },
+  "enterprise_ireland_cf": {
+    "name": "Commercialisation Fund",
+    "source": "https://www.enterprise-ireland.com/en/funding-supports (EI funding catalogue; exact name match, id `cf`)"
+  },
+  "enterprise_ireland_ip": {
+    "name": "Innovation Partnership Programme",
+    "source": "https://www.enterprise-ireland.com/en/funding-supports (EI funding catalogue; exact name match, id `ip`)"
+  },
+  "innovate_uk": {
+    "name": "Innovate UK",
+    "source": "https://www.ukri.org/councils/innovate-uk/ (the agency's own name; the derived name title-cased the source slug to \"Innovate Uk\")"
+  },
   "tacr_ck": {
     "name": "DOPRAVA 2020+",
     "source": "https://www.isvavai.cz/cea (CEA programme register, code CK)"
@@ -55,153 +207,5 @@
   "tacr_ts": {
     "name": "THETA 2",
     "source": "https://www.isvavai.cz/cea (code TS)"
-  },
-  "cdti_cervera": {
-    "name": "Cervera - Proyectos de I+D de Transferencia Tecnologica",
-    "source": "https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0"
-  },
-  "cdti_lic": {
-    "name": "Linea Directa de Expansion",
-    "source": "https://www.cdti.es/ayudas/linea-directa-de-expansion"
-  },
-  "cdti_misiones": {
-    "name": "Misiones Ciencia e Innovacion",
-    "source": "https://www.cdti.es/ayudas/misiones-ciencia-e-innovacion"
-  },
-  "cdti_perte_aerosalud": {
-    "name": "PERTE Aeroespacial y Salud de Vanguardia",
-    "source": "https://www.cdti.es/ayudas/proyectos-de-id-aeroespacial-y-salud"
-  },
-  "eis_starditoetus": {
-    "name": "Starditoetus (start-up grant)",
-    "source": "https://eis.ee/teenused/starditoetus/"
-  },
-  "eis_ettev_tte_arenguprogramm": {
-    "name": "Ettevotte arenguprogramm (enterprise development)",
-    "source": "https://eis.ee/teenused/ettevotte-arenguprogramm/"
-  },
-  "eis_ettev_tte_investeeringu": {
-    "name": "Ettevotte investeeringu toetus (enterprise investment)",
-    "source": "https://eis.ee/teenused/ettevotte-investeeringu-toetus/"
-  },
-  "eis_ettev_tete_digip_rde_toe": {
-    "name": "Ettevotete digipoorde toetus (digital transformation)",
-    "source": "https://eis.ee/teenused/digipoorde-toetus/"
-  },
-  "eis_suuremahuliste_investee": {
-    "name": "Suuremahuliste investeeringute toetus (large-scale investment)",
-    "source": "https://eis.ee/teenused/suurinvesteeringute-toetus/"
-  },
-  "eis_elamufondi_arendamise_in": {
-    "name": "Elamufondi arendamise investeeringutoetus (housing stock)",
-    "source": "https://eis.ee/teenused/elamufondi-arendamise-investeeringutoetus-kohalikele-omavalitsustele/"
-  },
-  "eis_ida_viru_ettev_tjate_tea": {
-    "name": "Ida-Viru teadmusmahukate tegevuste toetus",
-    "source": "https://eis.ee/teenused/ida-viru-teadmusmahukate-tegevuste-toetus/"
-  },
-  "eis_ida_viru_ettev_tluse_inv": {
-    "name": "Ida-Viru ettevotluse investeeringute toetus",
-    "source": "https://eis.ee/teenused/ida-viru-ettevotluse-investeeringute-toetus/"
-  },
-  "eis_ida_viru_v_ike_ja_keskmi": {
-    "name": "Ida-Viru VKE investeeringute toetus (SME investment)",
-    "source": "https://eis.ee/teenused/ida-viru-vke-toetus/"
-  },
-  "eis_k_berturvalisuse_innovat": {
-    "name": "Kuberturvalisuse innovatsiooni toetus (cybersecurity)",
-    "source": "https://eis.ee/teenused/kyber-inno-toetus/"
-  },
-  "eis_loomeettev_tjate_arengup": {
-    "name": "Loomeettevotjate arenguplaani toetus (creative sector)",
-    "source": "https://eis.ee/teenused/loomeettevotete-arenguplaani-elluviimise-toetus/"
-  },
-  "eis_loomeettev_tjate_ekspord": {
-    "name": "Loomeettevotjate ekspordivoimekuse toetus (creative export)",
-    "source": "https://eis.ee/teenused/loomeettevotjate-eksporditoetus/"
-  },
-  "eis_loomeettev_tjatele_tugit": {
-    "name": "Loomeettevotjatele tugiteenuste toetus (creative support)",
-    "source": "https://eis.ee/teenused/loome-tugiteenuste-toetus/"
-  },
-  "eis_ettev_tja_varustuskindlu": {
-    "name": "Ettevotja varustuskindluse toetus (security of supply)",
-    "source": "archived eis.ee/toetused/varustuskindlus/ - closed 12.05.2025"
-  },
-  "eis_eesti_norra_koost_progra": {
-    "name": "Eesti-Norra koostooprogramm (Green ICT)",
-    "source": "archived eas.ee/toetused/norratoetus/"
-  },
-  "eis_loomemajanduse_taristu_j": {
-    "name": "Loomemajanduse taristu ja tehnoloogilise voimekuse arendamine",
-    "source": "archived eas.ee/toetused/loomemajanduse-taristu-ja-tehnoloogilise-voimekuse-arendamine/"
-  },
-  "eis_e_veoselehe_liidestamise": {
-    "name": "E-veoselehe liidestamise toetus (e-waybill integration)",
-    "source": "https://www.riigiteataja.ee/akt/116042025004"
-  },
-  "eis_e_veoselehe_teenusearend": {
-    "name": "E-veoselehe teenusearenduse toetus (e-waybill service dev)",
-    "source": "https://www.riigiteataja.ee/akt/106052022019"
-  },
-  "eis_ettev_tja_tootearenduse": {
-    "name": "Ettevotja tootearenduse toetus (product development)",
-    "source": "https://www.riigiteataja.ee/akt/108032023014"
-  },
-  "enterprise_ireland_cf": {
-    "name": "Commercialisation Fund",
-    "source": "https://www.enterprise-ireland.com/en/funding-supports (EI funding catalogue; exact name match, id `cf`)"
-  },
-  "enterprise_ireland_ip": {
-    "name": "Innovation Partnership Programme",
-    "source": "https://www.enterprise-ireland.com/en/funding-supports (EI funding catalogue; exact name match, id `ip`)"
-  },
-  "eis_rakendusuuringute_toetus": {
-    "name": "Rakendusuuringute programm",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_leeuroopalist_huvi_pakk": {
-    "name": "IPCEI - uleeuroopalise tahtsusega projektid",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_rahvusvaheliste_konveren": {
-    "name": "Rahvusvaheliste konverentside toetus",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_rahvusvaheliste_spordi_j": {
-    "name": "Rahvusvaheliste spordi- ja kultuurisundmuste toetus",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_v_ikese_ja_keskmise_suur": {
-    "name": "Vaikese ja keskmise suurusega ettevotja arenguprogramm",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_turismisektori_tarkvarad": {
-    "name": "Turismisektori tarkvarade liitumis- ja liidestamistoetus",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_innovatsiooniosak_arendu": {
-    "name": "Innovatsiooniosak ja arendusosak",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_digitaliseerimise_teekaa": {
-    "name": "Digitaliseerimise teekaardi toetus",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01)"
-  },
-  "eis_suuremahuliste_investeer": {
-    "name": "Suuremahuliste investeeringute toetus",
-    "source": "https://eis.ee/wp-json/wp/v2/teenus (EIS service register, read 2026-08-01) - NOTE: shares its name with eis_suuremahuliste_investee, which is the same measure truncated differently by another feed; naming both correctly does not separate them, and merging them is a dedupe question, not a naming one"
-  },
-  "altum_la_ar_ka": {
-    "name": "Lielo investiciju aizdevums ar kapitala atlaidi",
-    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01); id decodes LA=lielo aizdevums, KA=kapitala atlaide, and 20 awards averaging EUR 5.8M match a large-investment loan"
-  },
-  "altum_anm_digi": {
-    "name": "Aizdevums digitalizacijai ar kapitala atlaidi",
-    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01); ANM is Latvia's RRF programme code, digi = digitalisation"
-  },
-  "altum_biomet_na_aizdevumi": {
-    "name": "Biometana razosanai",
-    "source": "https://www.altum.lv/pakalpojumi/biznesam/ (Altum business product catalogue, read 2026-08-01)"
   }
 }

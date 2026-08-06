@@ -607,6 +607,28 @@ def main() -> None:
     # is: a source that starts publishing programme names should get the
     # granularity automatically, not when somebody remembers to add it.
     #
+    # ── The contract that buys, and the one extractor that broke it ───────
+    # Reading from the data means this split is only ever as good as the
+    # column's contract, and the contract is narrow: `programme_name` must
+    # name an OFFER -- a thing a founder can apply to. It is not "whatever
+    # label the feed attaches to an award".
+    #
+    # extract_innovate_uk.py mapped GtR's `grantCategory` here, and
+    # grantCategory classifies awards: its 35 values mix competition formats,
+    # phases of one retired programme, government departments and one value
+    # called "Unknown". The split did exactly what it is written to do and
+    # manufactured sixteen rows no founder can apply to, which then sat at
+    # mean sibling class 16.0 with nothing recorded on any facet -- the worst
+    # country in the corpus, and not fixable by fetching text, because the
+    # rows were never funds. See that extractor and
+    # project-mgmt/findings/workstream_t_gb.md.
+    #
+    # The detector already exists and is the one to re-run after adding a
+    # programme split to any source: scripts/measure_sibling_by_country.ts. A
+    # legitimate split makes siblings DISTINGUISHABLE; a classification
+    # dressed as a split leaves every child identical to every other, which is
+    # what a mean class equal to the child count means.
+    #
     # Requires MORE THAN ONE distinct programme_name, not just enough rows.
     # Its absence was a real bug, found 2026-08-05 checking Denmark: several
     # extractors (Denmark's Innovationsfonden, Latvia's ALTUM, Estonia's EIS,
