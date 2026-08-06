@@ -25,7 +25,11 @@ is a genuine, independent statement of what that company builds — written for
 somebody else, about the same work. It cannot name the German scheme, because it
 predates or ignores it.
 
-Six guards, each of which alone has caught a real leak in development:
+Most of the guards live in `recall_guards.py`, because `extend_recall_set.py`
+needs the identical predicates and two copies of a leak guard is the worst
+duplication there is: the copy that drifts is the one that silently stops
+catching leaks. Read that module for the property each enforces. TWO guards are
+specific to recovering text from ANOTHER award and stay here:
 
   1. cross-regime      the text's own instrument, and every instrument its
                        source maps to, must have a different root_id from the
@@ -36,42 +40,14 @@ Six guards, each of which alone has caught a real leak in development:
                        classifier already knows `satr_de_rnd`'s titles are
                        statute names. `project_summary` is exempt: no scheme
                        publishes a per-award summary.
-  3. not a sample      the normalised text must not appear in ANY instrument's
-                       `sample_project_titles` — not just the won fund's. A
-                       scheme name that slipped past guard 2 is in some
-                       instrument's profile, and profiles are what we retrieve
-                       against.
-  3b. not in the       the text must not appear inside the won fund's
-      profile text     `instrument_profiles.profile_text` — the string retrieval
-                       is actually scored against.
 
-                       Guard 3 is not enough, and this is the finding that made
-                       3b necessary. `sample_project_titles` lives in SQLite;
-                       `profile_text` is built separately in Postgres, caps at
-                       40 titles of its own choosing, and has been rebuilt since
-                       the recall set was made. Checked against the real target,
-                       **86 of the 188 existing holdout `project` rows (46%) have
-                       their description sitting verbatim in the profile of the
-                       fund they are supposed to find.** Those rows are grading
-                       retrieval on a query copied out of the answer. They are
-                       not deleted — they are marked `own_project_title_leaks`,
-                       so a measurement can exclude them and say so.
-  4. not a funding     the text must not cover more than a tenth of any one
-     line              instrument's recipient companies. THE PROPERTY: a
-                       description is specific to a piece of WORK; a funding
-                       line's name is carried by everyone it funds. Counting
-                       companies alone is wrong — a Horizon consortium title is
-                       shared by up to 198 partners and is still a real project.
-                       The share is what separates them, and the measured gap is
-                       wide: 'Partnership for the Assessment of Risks from
-                       Chemicals' 0.07, 'European Rare Diseases Research
-                       Alliance' 0.06, a single-company project 0.004 — against
-                       'Fondo di garanzia per le PMI' and 'Zentrales
-                       Innovationsprogramm Mittelstand' at 1.000.
-  5. no fund name      the text must not contain the won fund's scheme code, nor
-                       a distinctive word from its name or its parent's name.
-  6. length + shape    long enough to embed (semantic.ts ignores under 12
-                       chars) and not pure punctuation/numerals.
+The shared guard that made this script possible is the profile-text one:
+`sample_project_titles` lives in SQLite while `profile_text` is built
+separately in Postgres, and checked against the real target **86 of the 188
+existing holdout `project` rows (46%) have their description sitting verbatim
+in the profile of the fund they are supposed to find.** Those rows are not
+deleted — they are marked `own_project_title_leaks`, so a measurement can
+exclude them and say so.
 
 And one guard that is not about leakage but about the harness's own disease: no
 recovered description may serve more than one pair. The failure being fixed is
@@ -101,59 +77,14 @@ from etl_env import DATA, DB, ROOT  # noqa: E402
 import argparse  # noqa: E402
 import collections  # noqa: E402
 import json  # noqa: E402
-import os  # noqa: E402
-import re  # noqa: E402
 import sqlite3  # noqa: E402
-import unicodedata  # noqa: E402
+
+from recall_guards import LeakIndex, squash  # noqa: E402
 
 FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
 RECALL_SET = FRONTEND / "__recallSet.json"
 OUT = FRONTEND / "__recallSetEnriched.json"
 TITLE_KINDS = DATA / "instrument_title_kind.json"
-
-# Below this a summary is a stub, not a description. 80 chars is roughly one
-# full sentence; semantic.ts refuses to embed under 12 in any case.
-MIN_SUMMARY = 80
-# Titles are terser than summaries by nature — a Horizon project title is a
-# single descriptive clause — so they get their own, lower bar.
-MIN_TITLE = 25
-# Guard 4. Above this share of an instrument's recipient companies, a string is
-# describing the funding line rather than anybody's work. The observed
-# separation is 0.07 (largest genuine consortium project) against 1.000 (scheme
-# names), so anywhere in between is safe; a tenth sits in the middle of that gap.
-MAX_INSTRUMENT_SHARE = 0.10
-
-
-def strip_accents(s: str) -> str:
-    return "".join(c for c in unicodedata.normalize("NFKD", s)
-                   if not unicodedata.combining(c))
-
-
-def norm(s: str) -> str:
-    """Comparison form: accent-free, punctuation-free, single-spaced lowercase."""
-    return re.sub(r"[^a-z0-9 ]+", " ", strip_accents(s).lower()).strip()
-
-
-def squash(s: str) -> str:
-    return re.sub(r"\s+", " ", norm(s))
-
-
-# Words too common across fund names to count as a leak on their own. Derived,
-# not enumerated by hand: any token appearing in more than 2% of instrument
-# names is structural vocabulary ("aid", "programme", "regional", "de", "fur"),
-# and a description sharing one of those with the won fund tells us nothing.
-def distinctive_tokens(names: list[str], corpus_freq: dict[str, int],
-                       total: int) -> set[str]:
-    out: set[str] = set()
-    for n in names:
-        for tok in squash(n).split():
-            if len(tok) < 5:
-                continue
-            if corpus_freq.get(tok, 0) / max(total, 1) > 0.02:
-                continue
-            out.add(tok)
-    return out
-
 
 def main() -> None:
     ap = argparse.ArgumentParser()
@@ -165,61 +96,11 @@ def main() -> None:
 
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
-
-    inst = {r["id"]: dict(r) for r in conn.execute(
-        "SELECT id, name, parent_id, root_id, scheme_code, sample_project_titles "
-        "FROM funding_instruments")}
-
-    def root_of(iid: str) -> str:
-        i = inst.get(iid)
-        if not i:
-            return iid
-        return i["root_id"] or i["parent_id"] or iid
-
-    # ── Guard 3's index: every string that is part of some fund's PROFILE ─────
-    # instrument_profiles embeds these titles verbatim, so a description equal
-    # to one of them is retrieving itself.
-    sample_titles: set[str] = set()
-    for i in inst.values():
-        raw = i["sample_project_titles"]
-        if not raw:
-            continue
-        try:
-            for t in json.loads(raw):
-                if isinstance(t, str) and t.strip():
-                    sample_titles.add(squash(t))
-        except (ValueError, TypeError):
-            continue
-
-    # ── Guard 3b's index: what retrieval is ACTUALLY scored against ──────────
-    # Lives in Postgres, not in this SQLite file, which is precisely why guard 3
-    # missed 46% of the existing project rows. Optional so the script still runs
-    # (and says so) without a database; the guard is then skipped, never faked.
-    profile_text: dict[str, str] = {}
-    dsn = os.environ.get("DATABASE_URL")
-    if dsn:
-        try:
-            import psycopg2
-            pg = psycopg2.connect(dsn)
-            with pg.cursor() as cur:
-                cur.execute("SELECT instrument_id, profile_text FROM instrument_profiles")
-                profile_text = {i: squash(t or "") for i, t in cur.fetchall()}
-            pg.close()
-        except Exception as err:  # noqa: BLE001 - any failure means "no guard", loudly
-            print(f"WARNING: guard 3b disabled, could not read instrument_profiles: {err}")
-    else:
-        print("WARNING: guard 3b disabled, DATABASE_URL is not set")
-
-    def in_profile(text: str, won: str) -> bool:
-        p = profile_text.get(won)
-        n = squash(text)
-        return bool(p and n and n in p)
-
-    # Fund-name vocabulary, for guard 5.
-    name_freq: collections.Counter = collections.Counter()
-    for i in inst.values():
-        name_freq.update(set(squash(i["name"] or "").split()))
-    n_inst = len(inst)
+    # Every shared guard and every index it consults, built once.
+    guards = LeakIndex(conn)
+    inst = guards.inst
+    root_of = guards.root_of
+    in_profile = guards.in_profile
 
     # ── Event -> instrument, both joins ──────────────────────────────────────
     # Exactly the pair emit_peer_prior.py uses. Joining only through
@@ -244,14 +125,10 @@ def main() -> None:
     for p in pairs:
         wanted_cids.update(cid_by_name.get((p["name"], p["country"]), []))
 
-    # ── Guard 4's index ──────────────────────────────────────────────────────
-    # Per instrument: how many distinct companies it funded, and how many of
-    # them carry each exact string. Counted over the WHOLE events table, not
-    # just the recall companies — a scheme name is a scheme name regardless of
-    # who happens to be in the test set.
-    inst_firms: dict[str, set[int]] = collections.defaultdict(set)
-    text_inst_firms: dict[str, dict[str, set[int]]] = collections.defaultdict(
-        lambda: collections.defaultdict(set))
+    # ── The funding-line index ───────────────────────────────────────────────
+    # Counted over the WHOLE events table, not just the recall companies — a
+    # scheme name is a scheme name regardless of who happens to be in the test
+    # set.
     candidates: dict[int, list[dict]] = collections.defaultdict(list)
     for e in conn.execute(
             "SELECT company_id, source, call_id, project_title, project_summary "
@@ -260,71 +137,33 @@ def main() -> None:
         title = (e["project_title"] or "").strip()
         iids = list(code2inst.get((e["call_id"] or "").strip(), [])) + \
             list(src2inst.get(e["source"], []))
-        for iid in iids:
-            inst_firms[iid].add(e["company_id"])
-            for text in (summary, title):
-                if text:
-                    text_inst_firms[squash(text)][iid].add(e["company_id"])
+        guards.note_event(e["company_id"], iids, [summary, title])
         if e["company_id"] not in wanted_cids or not iids:
             continue
         candidates[e["company_id"]].append(
             {"iids": iids, "summary": summary, "title": title, "source": e["source"]})
     conn.close()
 
-    def instrument_share(n: str) -> float:
-        """Largest share of any one instrument's companies carrying this string."""
-        return max((len(firms) / max(len(inst_firms[iid]), 1)
-                    for iid, firms in text_inst_firms.get(n, {}).items()), default=0.0)
-
     rejected: collections.Counter = collections.Counter()
 
     def usable(text: str, kind: str, iids: list[str], won: str) -> bool:
-        """Every guard, in the order that rejects most cheaply."""
+        """The two guards specific to borrowing text, then the shared ones."""
         if not text:
             return False
-        n = squash(text)
-        if kind == "summary" and len(text) < MIN_SUMMARY:
-            rejected["too short"] += 1
-            return False
-        if kind == "title" and len(text) < MIN_TITLE:
-            rejected["too short"] += 1
-            return False
-        if len(n.split()) < 3:
-            rejected["not prose"] += 1
-            return False
-        # 1 — cross-regime
+        # 1 — cross-regime. Only this script needs it: the text comes from
+        # ANOTHER of the company's awards, and a sibling shares the scheme name
+        # that leaked last time.
         won_root = root_of(won)
         if any(i == won or root_of(i) == won_root for i in iids):
             rejected["same regime as the won fund"] += 1
             return False
-        # 2 — the corpus's own title-kind judgement
+        # 2 — the corpus's own title-kind judgement about the SOURCE instrument
         if kind == "title" and not any(kinds.get(i, "project") == "project" for i in iids):
             rejected["source titles are scheme names"] += 1
             return False
-        # 3 — never a string some fund's profile is built from
-        if n in sample_titles:
-            rejected["is a fund's own sample title"] += 1
-            return False
-        # 3b — never a string inside the won fund's own profile text
-        if in_profile(text, won):
-            rejected["appears in the won fund's profile text"] += 1
-            return False
-        # 4 — a description, not a funding line
-        if instrument_share(n) > MAX_INSTRUMENT_SHARE:
-            rejected["names a funding line, not a project"] += 1
-            return False
-        # 5 — never names the fund it is supposed to help us find
-        won_inst = inst.get(won, {})
-        code = (won_inst.get("scheme_code") or "").strip()
-        if code and squash(code) and squash(code) in n:
-            rejected["contains the won scheme code"] += 1
-            return False
-        parent = inst.get(won_inst.get("parent_id") or "", {})
-        toks = distinctive_tokens(
-            [won_inst.get("name") or "", parent.get("name") or ""], name_freq, n_inst)
-        words = set(n.split())
-        if toks & words:
-            rejected["contains a distinctive word from the fund's name"] += 1
+        reason = guards.reject_reason(text, kind, won)
+        if reason:
+            rejected[reason] += 1
             return False
         return True
 

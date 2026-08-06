@@ -30,7 +30,8 @@ async function main() {
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
+    path.join(process.cwd(), "lib", "intelligence",
+              process.env.SET ?? "__recallSet.json"), "utf8")) as any[];
   const mode = process.env.MODE ?? "profile";
   const set = all.filter((r) => r.split === "holdout" && r.mode === mode);
   const N = Math.min(Number(process.env.N ?? 120), set.length);
