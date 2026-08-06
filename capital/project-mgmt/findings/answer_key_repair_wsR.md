@@ -213,6 +213,28 @@ own commit `58c7a6a` — *"A harness that loses Postgres mid-run still prints a
 headline"* — describes the mechanism, and its findings file quotes
 `publishable = 721`, which is the JSON number rather than Postgres's 752.
 
+**K2's two documents disagree with each other, and the split tells you which is
+which.** Its `CONTINUE_HERE.md` headline reports holdout n=600 at pool **75 / 76
+/ 75** on the three seeds. Its `check_recall_floor.ts` header reports tune n=600
+at pool **96 / 94 / 95**. Those cannot both be true of one corpus: the ungraded
+share is 22.2% of holdout and 20.5% of tune, so the two splits have almost the
+same ceiling and cannot sit twenty points apart. The 75s are the Postgres
+figures; the 96/94/95 are the fallback's.
+
+### This closes K2's largest open item
+
+K2 records pool as **UNRESOLVED** and warns: *"Settle that before planning
+against 75% — it may be a live regression rather than a level."*
+
+It is neither. It is the stale answer key, and K2's own control experiment says
+so without having been read that way: *"an index rebuilt with and without the
+holdout at the same moment reads pool 78% both ways."* **78% is the ceiling.**
+K2 rebuilt the index twice and measured the answer key both times, which is
+exactly why the two arms agreed and why no index change could move the number.
+
+Pool was never a regression. Against the funds the product may actually offer it
+measures 96-98% (below), which is where it has always been.
+
 Consequences:
 
 - **K2's `FLOOR = { pool: 90, exact5: 12, regime5: 74 }` must be re-derived**,
