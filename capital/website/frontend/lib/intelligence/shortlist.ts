@@ -1733,7 +1733,37 @@ export function materialiseInstrumentTable(
     // missing is a discriminator that says whether THIS founder's description
     // separates the funds. Neither "did it produce scores" nor "is the score
     // distribution peaked" does -- both are true for a generic self-description.
-    return r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
+    // Ticket fit multiplies the row's score. It was computed here and DROPPED:
+    // the returned expression named only `fit` and `reassigned`, so from the
+    // commit that added it ("Make ticketBand actually affect what a founder is
+    // shown") to today, `ticket` was assigned and never read. The comment above
+    // described a term that had never executed.
+    //
+    // What kept it hidden is that `measure_recall.ts` feeds every replay the
+    // same ticketBand, so a signal that discriminates BY ticket cannot move that
+    // number either way -- which is exactly what the original commit said about
+    // its own change, and then the number stayed flat for the other reason too.
+    //
+    // Observed directly instead (`scripts/check_ticket_effect.ts`, 12 profiles,
+    // mean awardP50 of the five shown rows):
+    //
+    //                    b2m5_15m   b15m_50m      gt50m
+    //   dropped           510,143  1,118,196  1,118,196
+    //   multiplied in     553,849  1,261,472  1,389,064
+    //
+    // The two largest bands were returning the IDENTICAL table: the only live
+    // ticket signal was the sibling reassignment, whose permutation saturates
+    // once the ask is above every fund's median, so "EUR 15-50M" and "over EUR
+    // 50M" ranked the corpus the same way. They now separate.
+    //
+    // Applied on top of `reassigned` rather than inside it, because the
+    // reassignment is rank-preserving BY DESIGN -- it may only change which
+    // sibling holds a slot, never which channel does -- and ticket size is a
+    // property the founder stated about themselves, so it is allowed to move a
+    // row across channels. Recall, both sets, holdout n=200: EXACT@5 35% -> 36%
+    // with REGIME@5 unchanged at 89%.
+    const base = r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
+    return base * ticket;
   };
   const rowsOut = selections
     .map(({ base, leaf }): InstrumentRow => {
