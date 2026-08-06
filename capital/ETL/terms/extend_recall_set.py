@@ -56,9 +56,19 @@ a company could be tuned on under one award and held out under another, which
 is the exact leak the split exists to prevent. New companies are assigned by a
 deterministic hash at the base set's own holdout ratio.
 
+── Composing with a set whose LABELS were repaired ─────────────────────────
+`--base` may be a set that changed WHICH leaf a pair names
+(`repair_recall_attribution.py`). A leak guard that ran against the old answer
+has not run against the new one: the description was cleared for the leaf the
+pair used to point at. So every base row is re-tested against the label it now
+carries, and one that fails falls back to its sector template -- the same
+policy an added row gets when its own text fails, not a special case.
+
 Usage:
   python3 ETL/terms/extend_recall_set.py                 # report only
   python3 ETL/terms/extend_recall_set.py --write
+  python3 ETL/terms/extend_recall_set.py --base __recallSetRepaired.json \\
+      --out __recallSetComposed.json --write
 """
 from __future__ import annotations
 
@@ -83,16 +93,59 @@ FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
 # The enriched set, not the shipped one: it carries the same 1,988 pairs plus
 # the leak-free descriptions and the `own_project_title_leaks` marks.
 DEFAULT_BASE = "__recallSetEnriched.json"
-OUT = FRONTEND / "__recallSetPlus.json"
+DEFAULT_OUT = "__recallSetPlus.json"
 
 # The base set's own cap: no single fund may dominate the measure. Matched
 # exactly so an added row weighs the same as an existing one.
 PAIRS_PER_INSTRUMENT = 12
 
 
+def grams(s: str, k: int = 8) -> set[str]:
+    w = s.split()
+    return {" ".join(w[i:i + k]) for i in range(max(len(w) - k + 1, 1))} if w else set()
+
+
+def leak_reason(guards: LeakIndex, text: str, won: str) -> str | None:
+    """The strictest leak test in the file, defined ONCE.
+
+    Three strictnesses against `instrument_profiles.profile_text` in POSTGRES --
+    the string retrieval is actually scored on, not the SQLite sample titles
+    whose 46% gap is what let the last leak run for weeks.
+
+    Sibling containment is included because a sibling shares the scheme name: a
+    description inside a sibling's profile describes the FAMILY, not the
+    company, and it would hand REGIME@5 for free.
+
+    Two callers -- the base-row re-verification and the whole-file check -- and
+    they must never drift apart, because the copy that drifts is the one that
+    stops catching leaks and a leak announces itself as a good score.
+    """
+    n = squash(text)
+    if not n:
+        return None
+    p = guards.profile_text.get(won, "")
+    if p and n in p:
+        return "verbatim in the won fund's profile"
+    if p and grams(n) & grams(p):
+        return "8-gram shared with the won fund's profile"
+    for s in guards.siblings_of(won):
+        ps = guards.profile_text.get(s, "")
+        if not ps:
+            continue
+        if n in ps:
+            return "verbatim in a SIBLING's profile"
+        if grams(n) & grams(ps):
+            return "8-gram shared with a SIBLING's profile"
+    return None
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--out", default=DEFAULT_OUT,
+                    help="the file to write. NEVER an existing recall set: a "
+                         "ground truth that is overwritten cannot be compared "
+                         "with the numbers already quoted from it.")
     ap.add_argument("--base", default=DEFAULT_BASE,
                     help="the pair file to extend. This ADDS pairs and never "
                          "alters one, so it composes with any other fix to the "
@@ -115,6 +168,32 @@ def main() -> None:
         print("REFUSING to write: the profile-text guard is the one that caught "
               "46% of the existing project rows. Set DATABASE_URL.")
         args.write = False
+
+    # ── Re-test the BASE rows against the label they now carry ───────────────
+    # The base set may have had its ANSWERS repaired: 260 of the 1,988 pairs
+    # point at a different leaf than the one their description was cleared
+    # against. A guard that ran against the old answer has not run against the
+    # new one. Change the answer and the question has to be asked again --
+    # which is how a French RDI pair, relabelled from one delivering body to
+    # another, ended up carrying a description containing the scheme's own name.
+    #
+    # A row that fails loses its description and falls back to its sector
+    # template, exactly as an added row does when its text fails a guard.
+    relabel_cleared: collections.Counter = collections.Counter()
+    for r in base:
+        text = (r.get("description") or "").strip()
+        if not text or r.get("descriptionSource") == "own_project_title_leaks":
+            continue
+        why = leak_reason(guards, text, r["instrument"])
+        if not why:
+            continue
+        relabel_cleared[why] += 1
+        print(f"  base row cleared ({why}): {r['name']} -> {r['instrument']}")
+        r["description"] = ""
+        r["mode"] = "profile"
+        r["descriptionSource"] = "cleared_leaks_under_current_label"
+    print(f"base rows re-tested against their current label: "
+          f"{sum(relabel_cleared.values()):,} description(s) cleared")
 
     split = Split(conn)
 
@@ -196,7 +275,12 @@ def main() -> None:
             if sector not in template:
                 stats["dropped: sector has no profile template"] += 1
                 continue
-            reason = guards.reject_reason(c["text"], c["kind"], leaf)
+            # `reject_reason` is the shared guard set; `leak_reason` is this
+            # file's strictest profile test, and it is applied to candidates as
+            # well as to the finished file so the script converges instead of
+            # building rows the final check will refuse.
+            reason = (guards.reject_reason(c["text"], c["kind"], leaf)
+                      or leak_reason(guards, c["text"], leaf))
             desc = ""
             if reason:
                 rejected[reason] += 1
@@ -259,10 +343,6 @@ def main() -> None:
     # Sibling containment is included because a sibling shares the scheme name:
     # a description inside a sibling's profile is a description of the family,
     # not of the company, and it would hand REGIME@5 for free.
-    def grams(s: str, k: int = 8) -> set[str]:
-        w = s.split()
-        return {" ".join(w[i:i + k]) for i in range(max(len(w) - k + 1, 1))} if w else set()
-
     leaks: collections.Counter = collections.Counter()
     checked = 0
     for r in out:
@@ -270,17 +350,10 @@ def main() -> None:
         if not text or r.get("descriptionSource") == "own_project_title_leaks":
             continue
         checked += 1
-        won = r["instrument"]
-        n = squash(text)
-        p = guards.profile_text.get(won, "")
-        if p and n and n in p:
-            leaks["verbatim in the won fund's profile"] += 1
-            continue
-        if p and n and grams(n) & grams(p):
-            leaks["8-gram shared with the won fund's profile"] += 1
-            continue
-        if guards.in_sibling_profile(text, won):
-            leaks["verbatim in a SIBLING's profile"] += 1
+        why = leak_reason(guards, text, r["instrument"])
+        if why:
+            leaks[why] += 1
+            print(f"  LEAK ({why}): {r['name']} -> {r['instrument']}")
     print(f"\nleak check over {checked:,} described rows, against "
           f"instrument_profiles.profile_text:")
     if leaks:
@@ -289,7 +362,8 @@ def main() -> None:
         print("  REFUSING to write: a leaking test set overstates every number.")
         args.write = False
     else:
-        print("  0 leaks at exact, 8-gram or sibling containment")
+        print("  0 leaks at exact, 8-gram or sibling containment, "
+              "won fund AND siblings")
 
     # A company on both sides is the one failure that invalidates every number
     # the file will ever produce, so it is asserted rather than hoped for.
@@ -305,9 +379,15 @@ def main() -> None:
         print(f"  {r['country']} {r['name'][:34]:34s} -> {r['instrumentName'][:44]}")
         print(f"      {r['description'][:130]}")
 
+    out_path = FRONTEND / args.out
     if args.write:
-        OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n")
-        print(f"\nwrote {OUT}")
+        if out_path.exists() and args.out != DEFAULT_OUT:
+            print(f"\nREFUSING to write: {args.out} already exists. A ground "
+                  "truth that is overwritten cannot be compared with the "
+                  "numbers already quoted from it. Choose a new name.")
+            return
+        out_path.write_text(json.dumps(out, ensure_ascii=False, indent=1) + "\n")
+        print(f"\nwrote {out_path}")
     else:
         print("\n(dry run -- pass --write)")
 
