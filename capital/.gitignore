@@ -44,3 +44,7 @@ website/frontend/.scratch/
 publishable_ids.json
 harvest_candidates.json
 boilerplate_verdict.json
+
+# wsN2 worktree: gitignored shared state, symlinked to the main checkout
+data
+.env.local
