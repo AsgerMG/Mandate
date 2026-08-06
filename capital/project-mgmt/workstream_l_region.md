@@ -187,3 +187,68 @@ reader could take apart:
 The brief assumed `delivery_region` was the declared catchment. **It is not**: every one
 of its 232 values comes from `staged_region_mix()` and is a measured footprint. That is
 recorded here rather than silently reconciled.
+
+---
+
+## Batch 3 — shipped: the declared catchment, on 427 instruments
+
+`ETL/terms/encode_declared_catchment.py`, migration `025_declared_catchment.sql`,
+Postgres column DDL added to `migrate_to_postgres.py` so the product path cannot
+silently lack it (the failure that hid `eligibility_text` from Postgres for weeks).
+Written to **both** stores, in batches of 200 with a commit per batch.
+
+```
+leaves with a scheme_code            453
+  sub-national catchment declared    122
+  country-wide declared              296
+  partial (some codes pre-2013)        9
+  case names no region                 4
+  no code translatable                22
+                            written  427
+```
+
+### The `CountryDEU` syntax, which `encode_registered_regions.py` is right to drop
+
+286 of the 296 country-wide rows come from a third syntax in `caseRegions` —
+`CountryDEU` — that the existing gate encoder skips, correctly: a gate covering a whole
+country restricts nobody and would always pass. This column is not a gate, and for it
+that value is one of the most useful things in the file. It converts a NULL that meant
+"either national or unexamined" into a filed "registered for the whole member state".
+The ISO-3 inside it is deliberately not decoded; the instrument row already knows its
+own country and a second country map would be a second thing to keep in step with
+`europe_scope`.
+
+### The validation, which came out clean
+
+On the 117 leaves that have both a declared sub-national catchment and a measured
+footprint: **117 consistent, 0 contradictions.** Before vintage translation the same
+comparison showed 25. So the translation is right, and — more useful — the measured
+column and the Commission's registration independently agree everywhere they can be
+compared. Two different methods over two different sources, no disagreement.
+
+Where translation is only partial (9 rows), the surviving codes are kept in
+`catchment_regions` but `catchment_region` is left NULL and the source is tagged
+`ec_case_register:partial_vintage`. Rolling up an incomplete set would name a catchment
+nobody filed.
+
+### Scoreboard
+
+```
+                               mean class   uniq   present
+administering_body                   19.6    15%      82%
+delivery_region (measured)           30.5     6%      29%
+catchment_region (declared)          36.2     6%      52%
+catchment_regions (full set)         34.1     8%      54%
+
+admin_body + delivery_region         19.3    19%      82%   <- geography before
+BOTH GEOGRAPHIES                     18.8    25%      82%   <- geography after
+ALL THREE J OMITTED                  17.9    38%
+GEOGRAPHY + eligibility_text         17.6    43%            <- everything
+```
+
+Geography alone moves uniquely-identified **19% → 25%**. Combined with the text the
+other five agents are collecting, **38% → 43%**, and the two are additive rather than
+overlapping — which was the reason for splitting this workstream off in the first place.
+
+Note `eligibility_text` present has moved 29% → 33% during this batch; that is the other
+agents' work landing, not mine. I have not written to it.

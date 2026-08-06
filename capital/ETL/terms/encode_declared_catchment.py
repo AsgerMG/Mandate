@@ -86,20 +86,38 @@ SOURCE_TAG = "ec_case_register"
 # purpose -- one register field must not be parsed two ways in one repo.
 DOTTED = re.compile(r"^RegionNuts(\d{4})\.([A-Z]{2}[A-Z0-9]*)$")
 BARE = re.compile(r"^NutsRegion([A-Z]{2}[A-Z0-9]*)$")
+# The register's third syntax, and the one that carries the largest single answer
+# here. `CountryDEU` means the scheme is registered for the whole member state --
+# 182 leaves say only this. encode_registered_regions.py correctly SKIPS these,
+# because a gate that covers a whole country restricts nobody and would always
+# pass. This column is not a gate: "registered country-wide" is exactly the fact a
+# founder needs to stop wondering whether a regional restriction is lurking, and
+# it is the fact a NULL cannot express.
+COUNTRY = re.compile(r"^Country[A-Z]{3}$")
 
 
-def parse_regions(rec: dict) -> list[str]:
-    """Every NUTS id a case registers, in whatever vintage it was filed."""
-    out: list[str] = []
+def parse_regions(rec: dict) -> tuple[list[str], bool]:
+    """(sub-national NUTS ids as filed, whether a whole-country scope was filed).
+
+    The ISO-3 inside `CountryDEU` is deliberately NOT decoded. The instrument row
+    already carries its own country, and a case's member state is that country by
+    construction, so decoding would mean a second country map to keep in step with
+    `europe_scope` for no new information.
+    """
+    subnational: list[str] = []
+    country_wide = False
     for raw in rec.get("caseRegions") or []:
-        m = DOTTED.match(raw)
+        m = DOTTED.match(raw) or BARE.match(raw)
         if m:
-            out.append(m.group(2))
+            code = m.group(2) if m.re is DOTTED else m.group(1)
+            if len(code) > 2:
+                subnational.append(code)
+            else:
+                country_wide = True          # `NutsRegionDE` is NUTS-0, a country
             continue
-        m = BARE.match(raw)
-        if m:
-            out.append(m.group(1))
-    return sorted(set(out))
+        if COUNTRY.match(raw):
+            country_wide = True
+    return sorted(set(subnational)), country_wide
 
 
 class VintageMap:
@@ -184,20 +202,41 @@ def build(conn: sqlite3.Connection) -> tuple[list[tuple], dict]:
         if not in_scope(iso2):
             stats["out_of_scope"] += 1
             continue
-        declared = parse_regions(rec)
+        declared, country_wide = parse_regions(rec)
+        nuts_cc = ISO2_TO_NUTS.get(iso2, iso2)
+
         if not declared:
-            stats["case_names_no_region"] += 1
+            if country_wide:
+                # A filed statement that the scheme covers the whole member state.
+                stats["country_wide"] += 1
+                updates.append((nuts_cc, json.dumps([nuts_cc]), SOURCE_TAG, iid))
+            else:
+                stats["case_names_no_region"] += 1
             continue
+
         current = [c for c in (vm.to_current(d) for d in declared) if c]
         if not current:
             stats["untranslatable_vintage"] += 1
             continue
         current = sorted(set(current))
+
+        if len(current) < len(declared):
+            # Some codes are older than the reference (NUTS 2006/2010 Italian and
+            # Portuguese renumberings). The surviving subset is real and is kept,
+            # but it must NOT be rolled up: a prefix over an incomplete set claims
+            # a catchment nobody filed, and rolling a set that lost its outliers
+            # would quietly narrow the scheme. So the summary id is left NULL and
+            # the row says which source it came from and that it is partial.
+            stats["partial_vintage"] += 1
+            updates.append((None, json.dumps(current),
+                            SOURCE_TAG + ":partial_vintage", iid))
+            continue
+
         roll = common_prefix(current)
         if not roll:
             stats["spans_countries"] += 1
             continue
-        stats["subnational" if len(roll) > 2 else "country_wide"] += 1
+        stats["subnational" if len(roll) > 2 else "country_wide_by_span"] += 1
         updates.append((roll, json.dumps(current), SOURCE_TAG, iid))
     return updates, {"stats": stats, "unknown": vm.unknown}
 
@@ -260,7 +299,8 @@ def main() -> None:
     st, unknown = diag["stats"], diag["unknown"]
 
     print(f"leaves with a scheme_code:            {sum(st.values()) + 0:,}")
-    for k in ("subnational", "country_wide", "case_names_no_region",
+    for k in ("subnational", "country_wide", "country_wide_by_span",
+              "partial_vintage", "case_names_no_region",
               "untranslatable_vintage", "spans_countries", "no_case",
               "out_of_scope"):
         if st[k]:
