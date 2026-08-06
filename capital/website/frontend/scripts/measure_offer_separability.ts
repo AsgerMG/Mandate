@@ -255,6 +255,30 @@ async function main() {
   console.log(`  cases where the offer isolates the won leaf ALONE: ${alone1}`
     + ` (${(100 * alone1 / cases.length).toFixed(1)}%)   <- the only cases a perfect offer chooser gets right for certain`);
 
+  // ── Is this chooser temporally stable? Answered by construction ───────────
+  // The sector posterior collapsed 34.5% -> 10.9% across a cut year because it
+  // is FITTED to who a fund has paid, and last cohort's mix is not next
+  // cohort's. The right question for these facets is not "does it survive a
+  // refit" but "is there anything here to refit at all", and for five of the
+  // six there is not: capital type, GBER article, registered purpose, encoded
+  // gates and the closing date are all properties of the REGISTRATION. They are
+  // recorded when the scheme is notified, they are true of a scheme that has
+  // never paid anyone, and no cut year changes them.
+  //
+  // Exactly one facet is derived from award history — `magnitude`, the median
+  // cheque — so the whole temporal exposure of the chooser is the gap between
+  // these two lines. If it is small, there is nothing here for a cut year to
+  // break, and no refit experiment is needed to say so.
+  const registrationOnly = FACETS.filter(([n]) => n !== "magnitude");
+  header("temporal exposure: what rests on award history");
+  console.log(`  ${"registration facts only".padEnd(26)} ${String(cases.length).padStart(5)} `
+    + `${uniform(cases).toFixed(1).padStart(7)}% ${meanClass(registrationOnly).toFixed(1).padStart(7)} `
+    + `${oracle(registrationOnly).toFixed(1).padStart(8)}%`);
+  console.log(`  ${"+ award magnitude".padEnd(26)} ${String(cases.length).padStart(5)} `
+    + `${uniform(cases).toFixed(1).padStart(7)}% ${meanClass(FACETS).toFixed(1).padStart(7)} `
+    + `${oracle(FACETS).toFixed(1).padStart(8)}%`);
+  console.log(`  the second line is the ONLY part a cut year can move.`);
+
   // ── What the missing 2/3 of the register would buy ────────────────────────
   // `article` and `purpose` are the two facets that separate anything, and both
   // are on record for only a third of the leaves. That is a COVERAGE fact, not
