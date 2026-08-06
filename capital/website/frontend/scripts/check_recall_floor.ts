@@ -94,28 +94,41 @@ import { loadRecallSet } from "./recallSet";
  *  the same sample, so those floors are raised, not relaxed. The gate is
  *  strictly harder to pass on both ranking numbers than it was an hour ago.
  *
- *  ██ POOL IS A REGRESSION FLOOR, NOT A LEVEL. READ THIS BEFORE TRUSTING 72. ██
+ *  ██ THE POOL FLOOR STAYS AT 90 AND THE BUILD STAYS RED. ██
  *
  *  Pool measured 94-96 at dac300a and measures 78 on the identical pinned
- *  sample now. Lowering this floor from 90 to 72 ENSHRINES a 16-point fall
- *  whose cause is NOT established, which is the opposite of what a floor is
- *  for. It is lowered only because leaving it at 90 fails every build for a
- *  defect this branch did not cause and may not fix — `shortlist.ts` and
- *  `corpus.ts` are where it lives and both are owned by other workstreams
- *  tonight.
+ *  sample now. Workstream K lowered this floor 90 -> 72 to get CI green, said
+ *  in as many words that doing so enshrines a 16-point fall whose cause is not
+ *  established, and asked for the decision to be reviewed. It was, and it is
+ *  reversed.
  *
- *  What is ruled out: the recall holdout added to the semantic index. An index
- *  built --include-recall-set and one built holdout-clean, at the same moment
- *  on the same corpus, both read pool 78 on this sample.
+ *  A floor that moves to accommodate an unexplained regression is not a floor.
+ *  This one is doing exactly the job it exists for: something took a fifth of
+ *  the candidate pool away tonight, nobody can yet say what, and EXACT@5 cannot
+ *  exceed P(in pool) however perfect the ranking. A red build that says so is
+ *  worth more than a green one that does not.
  *
- *  What is not: a stale-index effect and a wholesale gate-layer rewrite, which
- *  could not be separated because the previous index was overwritten.
+ *  The argument for lowering it was real — leaving it at 90 fails every build
+ *  for a defect the branch did not cause and could not fix, since it lives in
+ *  `shortlist.ts` / `corpus.ts`. That is a cost worth paying for the few hours
+ *  it takes to find the cause. It is not worth paying by forgetting.
  *
- *  RAISE THIS BACK the moment the cause is found. The diagnosis, the evidence
- *  and the settling experiment are in
- *  project-mgmt/findings/leak_audit_wsK.md. Do not quietly accept 72 as the
- *  number this product achieves. */
-const FLOOR = { pool: 72, exact5: 15, regime5: 80 };
+ *  What is RULED OUT: the recall holdout in the semantic index. An index built
+ *  --include-recall-set and one built holdout-clean, at the same moment on the
+ *  same corpus, both read pool 78 on this sample.
+ *
+ *  What is NOT ruled out: a stale-index effect, and a wholesale gate-layer
+ *  rewrite that wrote all 6,368 gate rows in the 18:00 UTC hour. They could not
+ *  be separated because the previous index was overwritten and is
+ *  unrecoverable. Note the same signature was seen from the other side: an
+ *  identical tree, rule and seed read pool 97% at 21:09Z and 77% at 21:16Z with
+ *  `funding_instruments` byte-identical across both.
+ *
+ *  Evidence and the settling experiment: project-mgmt/findings/leak_audit_wsK.md.
+ *  EXACT@5 and REGIME@5 floors ROSE (15 -> from 20-ish, 80) on the same sample
+ *  once the index was leak-free, so removing the leak improved ranking; only
+ *  pool fell. */
+const FLOOR = { pool: 90, exact5: 15, regime5: 80 };
 /** REGIME@5 per population — the operational number, the one a founder feels.
  *  Wider margins than the headline, and deliberately: these are subsamples of
  *  the 300, so at n~130 one standard error is already 4 points of the spread a
