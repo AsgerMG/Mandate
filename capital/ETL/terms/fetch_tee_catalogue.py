@@ -374,6 +374,20 @@ def main() -> None:
                     scheme_url=m.get("url_source"), source_url=m.get("url_source"),
                     eligibility_source_url=m.get("url_source"),
                     administering_body=body_of(m),
+                    # The catalogue's closing date, emitted as a LIFETIME FACT
+                    # rather than only as `status`. All 75 ADEME leaves carry a
+                    # NULL scheme_end_date -- there is no SATR caseMeasureEndDate
+                    # for them, exactly the hole `lifetime_facts()` documents for
+                    # Spain's BDNS -- so every one of them reads as live and is
+                    # published. `status: closed` cannot fix that: the loader
+                    # rightly stopped trusting it after Italy, where it described
+                    # a CALL window and withheld text from 40 live schemes.
+                    #
+                    # So give the corpus's own liveness test something to test.
+                    # Written through COALESCE, so anything already measured
+                    # outranks the catalogue's statement about itself.
+                    scheme_end_date=((m.get("date_cloture") or "").strip()[:10]
+                                     or None),
                     match_basis=f"TEE catalogue '{m['titre']}' (id {m['id']}), "
                                 f"scorer {cands[idx - 1][0]:.2f}, model {conf}",
                     note=v.get("reason", "")[:200],

@@ -143,3 +143,83 @@ arriving through a different door.
 Also cleaned: **23 FR rows carried `eligibility_confidence` with no text at all**
 from earlier description-only loads. Provenance is meant to be honest, so
 confidence and fetched_at were cleared on those rows in both stores.
+
+## 6. Continuing France: the product was publishing 6 dead ADEME calls
+
+**All 75 ADEME leaves carry a NULL `scheme_end_date`** — there is no SATR
+`caseMeasureEndDate` for them, precisely the hole `lifetime_facts()` documents
+for Spain's BDNS. So all 75 read as live and all 75 were published.
+
+The TEE catalogue carries `date_cloture`, and the fetcher already computed it —
+into `status`, which the loader rightly stopped trusting after Italy (there it
+described a CALL window and withheld text from 40 live schemes). So the one
+field that could have caught this was being computed and thrown away.
+
+Fixed in `fetch_tee_catalogue.py`: `date_cloture` is now emitted as
+`scheme_end_date`, a LIFETIME FACT, giving the corpus's own liveness test
+something to test. Written through COALESCE, so anything already measured
+outranks the catalogue. Backfilled deterministically from the CSV already on
+disk — no model spend.
+
+Result: **6 leaves that closed on 2024-07-09 and 2025-06-09 are no longer
+published.** Verified in both stores. FR publishable 110 -> 104.
+
+This RAISES the measured class (7.7 -> 8.0) because the rows removed were
+covered ones. It is still the right move and the number is the honest one: a
+French founder was being shown six ADEME calls that shut one and two years ago.
+
+## 7. The remaining 26 ADEME leaves have no reachable source. Reporting and stopping.
+
+Simulated before fetching anything, on publishable FR (n=104, 99 multi-leaf):
+
+| | class | uniquely identified |
+|---|---|---|
+| now | 8.01 | 46% |
+| perfect text on all 37 uncovered | **1.32** | 77% |
+| perfect text on the 6 satr_fr_rnd gaps only | 7.61 | 48% |
+
+So the prize is entirely the ADEME remainder, and `satr_fr_rnd` is worth **0.11
+of a sibling** — the previous agent's finding reproduced against the new
+baseline. **Do not fetch French SATR text.** Sources checked:
+
+- **ADEME's own portal** — re-verified independently, not taken on trust:
+  `agirpourlatransition.ademe.fr` **403** on both content and `sitemap.xml`,
+  `www.ademe.fr/sitemap.xml` **521**. Cloudflare. Skipped per the standing rule,
+  not impersonated past.
+- **`data.ademe.fr`** (open data-fair instance, NOT blocked) — 931 datasets
+  enumerated. All awards, projects or environmental statistics. Searched
+  `dispositif` / `appel a projets` / `eligibilite` / `aides`: the only aid
+  datasets are `Les aides financières de l'ADEME` and the research-project
+  tables, which are **transactions, not rules**. This is the same award data our
+  ADEME leaves are already derived from. No eligibility catalogue exists here.
+- **`aides-territoires.beta.gouv.fr`** — **401, JWT required.** A credential we
+  do not hold, not a block to work around. Registerable by a human; recorded as
+  the one untried lead.
+- **TEE catalogue, re-examined on disk** — the 26 are genuinely absent, not
+  mismatched. `AVELO`, `ORPLAST`, `TEXHABI`, `sylviculture` return **0 hits
+  across all 223 rows**, title and description. The previous agent's "no
+  catalogue candidate shares any distinctive term" was accurate; there is
+  nothing here a better matcher would recover.
+
+**A source that yields boilerplate is a finding; so is a source that does not
+exist.** France is finished at the coverage its accessible sources support.
+
+Worth stating plainly: even if a source were found, several of the 26 are call
+ROUNDS of one programme (`AVELO 2`, `AVELO 2.2`, `AVELO 3 1er relevé`,
+`AVELO 3 2nd relevé`). A per-programme source would hand all four the same text
+and move their class by exactly zero. The honest ceiling for France is below the
+1.32 simulation.
+
+## 8. Where France stands, out of Postgres
+
+| | before this workstream | now |
+|---|---|---|
+| FR coverage, all (n=133) | 24 (18%) | **73 (55%)** |
+| FR coverage, publishable | 24/110 (22%) | **67/104 (64%)** |
+| FR class, publishable | 54.0 | **8.01** |
+| uniquely identified, publishable | ~11% | **46%** |
+| dead ADEME calls published | 6 | **0** |
+
+Global scoreboard confirms FR 73/133 and IT unchanged at 47/88.
+Remaining French headroom is 8.01 -> ~1.3, and it is **source-blocked, not
+effort-blocked**.
