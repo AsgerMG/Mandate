@@ -54,11 +54,21 @@ The rule is not restated here; it is imported. See that file's header for why
 exclusion is the default and why the set is discovered by glob rather than
 listed.
 
-What the holdout removes is the VOTE, never the row — the same reading
-populate_funding_instruments.py takes. A title funded by a held-out company AND
-by others keeps its place with a smaller count; a title only that company ever
-carried drops out. Instrument identity, stated scope, family and region text
-are untouched, because none of them is a count over companies.
+The unit of exclusion differs by section, and getting that wrong is a leak:
+
+  activities   the VOTE is removed, never the row — the same reading
+               populate_funding_instruments.py takes of the same rule. A NACE
+               activity is a COUNT, so a held-out company simply stops voting.
+  titles       the TITLE is removed entirely if any held-out company is on it.
+               A title is a STRING, and the string is the answer. Consortium
+               programmes share one title across every partner, so removing
+               only the replayed company's vote leaves its own project title
+               standing in the profile, contributed by a partner. That is a
+               description copied out of the answer, and check_recall_leaks.ts
+               caught exactly three such rows on the first rebuild.
+
+Instrument identity, stated scope, family and region text are untouched,
+because none of them is a count over companies.
 
 Usage:
   python3 ETL/terms/build_instrument_profiles.py status
@@ -371,6 +381,28 @@ def build_profiles(sq: sqlite3.Connection,
     # over the retained companies only.
     title_votes: dict[str, Counter] = defaultdict(Counter)
     title_form: dict[tuple[str, str], str] = {}
+    # A TITLE a held-out company is on is dropped ENTIRELY, not merely deprived
+    # of that company's vote. This is stronger than the reading
+    # populate_funding_instruments.py takes of the same rule, and it has to be,
+    # because a title is not a count -- it is a STRING, and the string is the
+    # answer.
+    #
+    # Found by check_recall_leaks.ts on the first rebuild, which is the whole
+    # reason that guard is in `npm run check`. Vote-removal alone left three
+    # rows whose description sat verbatim in the won fund's profile:
+    #
+    #   LINKOPINGS UNIVERSITET   -> sns_ju
+    #   GOETHE-UNIVERSITAET      -> eic_transition
+    #   SERMA Technologies       -> chips_ju_kdt
+    #
+    # All three are CONSORTIUM programmes, and a consortium shares one project
+    # title across every partner. Dropping the replayed company's own event
+    # therefore removes one vote and leaves the title standing, contributed by
+    # a partner -- so the description was still copied out of the answer. Per-
+    # company exclusion is the right unit for a mix or a median; for a title it
+    # is not, and nothing would have revealed that but the guard.
+    leaked_titles: set[tuple[str, str]] = set()
+    rows_by_title: list[tuple[str, str, str]] = []
     for iid, title, cid in sq.execute(
         """SELECT fis.instrument_id, e.project_title, e.company_id
            FROM public_funding_events e
@@ -380,9 +412,14 @@ def build_profiles(sq: sqlite3.Connection,
     ).fetchall():
         if kinds.get(iid) == "scheme":
             continue
-        if cid in holdout.ids:
-            continue
         key = (title or "").lower().strip()
+        if cid in holdout.ids:
+            leaked_titles.add((iid, key))
+        else:
+            rows_by_title.append((iid, key, title))
+    for iid, key, title in rows_by_title:
+        if (iid, key) in leaked_titles:
+            continue
         title_votes[iid][key] += 1
         title_form.setdefault((iid, key), title)
     for iid, votes in title_votes.items():
