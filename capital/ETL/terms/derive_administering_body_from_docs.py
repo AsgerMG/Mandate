@@ -173,7 +173,14 @@ def candidates(text: str) -> dict[str, set[int]]:
             for k in range(len(words), head, -1):
                 if not words[k - 1][:1].isupper():
                     continue
-                name = normalise(" ".join(words[:k]))
+                # A leading-form name ends where prose begins, so its last word
+                # is the one that gets INFLECTED -- "the Space Programme's
+                # mission". Left as-is that page scores a different name, and
+                # the true name silently loses reach to its own possessive.
+                # A trailing-form name never has this problem: its right edge is
+                # the fixed legal form. Strip the possessive, nothing else.
+                tail = re.sub(r"[’']s$", "", words[k - 1])
+                name = normalise(" ".join(words[:k - 1] + [tail]))
                 if _ok(name):
                     pages[name].add(pi)
     return pages
