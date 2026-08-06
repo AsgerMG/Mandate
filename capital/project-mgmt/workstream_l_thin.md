@@ -99,3 +99,58 @@ LV (34): HAS 7 | abstained 2 | never targeted 25 (ALL singletons)
 So the sibling-relevant work not yet attempted anywhere in my three countries is
 **7 Estonian multi-leaf leaves plus 1 unloaded Czech record**. Everything else is
 either done, closed, abstained, or a singleton.
+
+## Finding 6 — STOP. EE, CZ and LV are already the best-separated countries in the corpus
+
+This is the finding the brief asked me to surface early if true. It is true.
+
+Per-country mean sibling class **today**, over leaves in multi-leaf regimes:
+
+```
+LV   9 leaves   mean class  1.2        FR  128 leaves  mean class 45.4
+EE  14 leaves   mean class  1.6        ES   88 leaves  mean class 48.3
+CZ  38 leaves   mean class  5.6        SE   62 leaves  mean class 39.1
+```
+
+The brief's ordering (DE 72% … CZ 9% EE 7%) is a **coverage** ranking measured
+over all instruments including singletons. It is not a **separation** ranking.
+EE/CZ/LV score badly on coverage and well on separation, because
+`administering_body` + `delivery_region` are already populated for them
+(CZ 38/53 and 35/53) and already do the job. Collecting eligibility text buys
+almost nothing on top.
+
+Simulating **perfect** eligibility_text per country, baseline mean 17.98:
+
+```
+FR -> 10.85  delta 7.12       CZ -> 17.76  delta 0.22
+ES -> 12.76  delta 5.22       EE -> 17.97  delta 0.01
+SE -> 15.02  delta 2.96       LV -> 17.97  delta 0.01
+EU -> 17.45  delta 0.53
+GB -> 17.64  delta 0.34
+```
+
+Share of total sibling mass: **FR 40.5% + ES 29.6% + SE 16.9% = 87%.**
+EE + CZ + LV together = **1.8%**.
+
+**Perfect execution of this workstream as briefed moves the headline number from
+18.0 to 17.7.** EE and LV are worth 0.01 each — below the rounding of the
+reported figure. The job as scoped cannot pay, so per the brief I am not
+completing it, and am redirecting to the audit plus the largest *unowned*
+prize.
+
+### What this implies for the programme
+The binding constraint is three countries, and two of them (FR, ES) are single
+enormous containers: `ADEME (France)` 76 leaves, `Spain BDNS (regional
+agencies)` 88 leaves, `Vinnova` 50 leaves. Those three containers hold 214 of
+797 leaves and ~87% of the mass. Any agent-hours not spent there are close to
+free of effect on the published number.
+
+Note also that ES has **delivery_region populated for 0 of 94** and NO/EU/DK/PL
+for 0 as well — for ES that single column is likely cheaper than eligibility
+prose and is the reason its class is 48.
+
+### Caveat on the metric
+`measure_sibling_coverage.ts` keys on the *string* of eligibility_text, so any
+two distinct strings count as separated. It measures whether we wrote something
+different down, not whether a founder can choose. Treat "perfect coverage"
+deltas above as an upper bound.
