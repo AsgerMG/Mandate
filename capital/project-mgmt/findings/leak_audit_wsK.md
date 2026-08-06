@@ -145,6 +145,65 @@ shipped semantic index still carries the leaky values. Fixing the SQLite
 columns and the committed JSON without re-embedding left the largest consumer
 on the old numbers.
 
+## THE OPEN ITEM: pool fell from ~95% to ~78% and I could not fully isolate why
+
+This is the largest number that moved tonight and the one to read first. It is
+recorded unresolved rather than explained away.
+
+**What is certain.** Pool on the tune split measured 94-96% at `dac300a`
+(18:53 UTC, predecessor's own calibration at n=600 across three seeds). It
+measures 78% now, at the same split, same sampler, same pinned seed. On
+holdout at n=600 it reads 78-79% across three seeds. The fall is real and it
+is not sampling noise — the three seeds agree to a point.
+
+**What it is NOT.** The title/activity holdout added by this branch costs
+nothing. Measured by rebuilding the index both ways at the same moment, on the
+same corpus, and running the same pinned n=300 tune sample:
+
+```
+index built --include-recall-set    pool 78%   exact5 23%   regime5 87%
+index built holdout-clean (ships)   pool 78%   exact5 24%   regime5 88%
+```
+
+Identical on pool, and the clean build is marginally *better* on both ranking
+numbers. So the leak this workstream closed was not paying for the pool.
+
+**What remains as candidates**, neither of which I could separate, because
+the pre-existing index was overwritten by the rebuild and is unrecoverable:
+
+1. *The staleness fix.* The live index was embedded 2026-08-05 23:53 UTC from
+   the pre-`bc7ca0e` `sector_mix` and region columns — the LEAKY ones. Profile
+   text carries the sector mix in words, and profile-mode queries are generic
+   sector templates (2,272 of 2,817 holdout rows carry one), so that line is
+   exactly what they match on. Mechanism evidence, measured: of the 319 pairs
+   whose won fund showed the founder's sector under the leaky mix, the sector
+   **disappears for 1.9%** and its **share shrinks by >10% relative for 18.2%**
+   once the recall companies stop voting — 20.1% materially degraded. That is
+   a real mechanism but it is a small base, and I did not demonstrate it
+   accounts for 16 points.
+2. *Corpus movement.* All 6,368 `eligibility_gates` rows carry `created_at`
+   inside the 18:00-19:00 UTC hour, i.e. the gate layer was rewritten wholesale
+   while the predecessor was calibrating. Instrument count did not change
+   (1,014 before and after) and no instruments were created today, so this is
+   a gate-content change, not new leaves.
+
+**What the misses look like now** (`diagnose_pool_miss.ts`, profile mode,
+n=120): 40 misses, of which **35 are UNRECORDED** — in the corpus, channel
+survived, nothing logged removing them. By channel: 32 `state_aid_satr`, 3
+`national_dev_banks`. Every named example is FR `ademe_aid` or ES
+`bdns_es_ayudas`. `check_leaf_cap` passes with cap 90 against a widest group of
+87 (`state_aid_satr` ES) — **three instruments of headroom**, so the cap is not
+cutting them yet but is one load away from doing so.
+
+**Why I did not chase it further.** Resolving it means changing `shortlist.ts`
+or `corpus.ts`, both of which this branch is forbidden to touch and both of
+which other workstreams are live in. The settling experiment, for whoever
+picks it up: rebuild `sector_mix` with `populate_funding_instruments.py
+--signals-only --include-recall-set`, re-embed, measure, then restore. I did
+not run it because it writes leaky values into a SQLite corpus that three other
+agents are reading tonight, and a contaminated shared corpus is a worse outcome
+than an unresolved attribution.
+
 ## A third way a harness can grade something production never has
 
 Found while re-baselining, and it is the same family as `dac300a`.
