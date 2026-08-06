@@ -196,8 +196,33 @@ baseline was taken:
 | 21:32:40Z | identical | identical | identical |
 | 21:38:34Z | identical | identical | identical |
 
-Stable across seven minutes. Every measurement in this file was taken inside
-that window or later, with Postgres held.
+Stable across seven minutes, which is what licensed the baseline below.
+
+**Then it moved again, mid-baseline.** A fourth read:
+
+| read | funding_instruments | instrument_profiles | eligibility_embeddings |
+|---|---|---|---|
+| 21:46:18Z | **998 / 0906e9b5b6d9ebf7** | **998 / 9e009803aeb67898** | 4720 / cc063c7ffb5df6c7 (unchanged) |
+
+Sixteen instruments disappeared from `funding_instruments` between 21:38:34Z and
+21:46:18Z, and `instrument_profiles` followed them. Another workstream is
+truncating and reloading the corpus. This is the hazard the brief warned about,
+and it is worth being precise about what it does and does not invalidate:
+
+- `eligibility_embeddings` never moved, across all four reads;
+- the first baseline pass straddled the change. Seed 20260806 completed before
+  it; seeds 7 and 99 ran across it, and both read pool 96 where the first read
+  98. Two points is inside the interval, so the change is not visibly large —
+  but "inside the interval" is not the same as "measured on one corpus", and a
+  floor derived from a straddling run is not derived from anything.
+
+So the baseline and the floors below were re-taken after the corpus was
+re-confirmed stable, and the straddling numbers are reported only as the
+evidence that it moved.
+
+**The standing lesson: fingerprint before AND after, not just before.** A
+stability check taken only at the start would have passed here and produced a
+calibration nobody could reproduce tomorrow.
 
 ## Coordination with workstream K2 — K2's re-derived floors are not valid
 
