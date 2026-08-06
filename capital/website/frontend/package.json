@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "vocab": "npx tsx scripts/emit_vocabulary.ts",
-    "check": "npx tsc --noEmit && npx vitest run && npx tsx scripts/check_contracts.ts && npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_regions.ts && npx tsx scripts/check_theme_index.ts && npx tsx scripts/check_archetypes.ts && npx tsx scripts/check_leaf_cap.ts && npx tsx scripts/check_payload_budget.ts && npx tsx scripts/check_client_boundary.ts && npx tsx scripts/check_dependencies.ts && npx tsx scripts/check_recall_leaks.ts && npx tsx scripts/check_recall_floor.ts",
+    "check": "npx tsc --noEmit && npx vitest run && npx tsx scripts/check_contracts.ts && npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_liveness.ts && npx tsx scripts/check_regions.ts && npx tsx scripts/check_theme_index.ts && npx tsx scripts/check_archetypes.ts && npx tsx scripts/check_leaf_cap.ts && npx tsx scripts/check_payload_budget.ts && npx tsx scripts/check_client_boundary.ts && npx tsx scripts/check_dependencies.ts && npx tsx scripts/check_recall_leaks.ts && npx tsx scripts/check_recall_floor.ts",
     "trace": "npx tsx scripts/trace_pool.ts",
     "board": "npx tsx scripts/bench_report.ts",
     "bench": "npx tsx scripts/memo_bench.ts",
@@ -21,7 +21,8 @@
     "preview:pdf": "bash scripts/preview_pdf.sh",
     "shot": "bash scripts/shot.sh",
     "redteam": "NO_PG=1 npx tsx scripts/red_team.ts",
-    "drive": "node scripts/drive.mjs"
+    "drive": "node scripts/drive.mjs",
+    "liveness": "npx tsx scripts/emit_liveness.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",

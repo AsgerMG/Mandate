@@ -21,6 +21,7 @@
 //   npx tsx website/frontend/scripts/measure_country_class.ts FR
 import { readFileSync } from "fs";
 import { Client } from "pg";
+import { isClosed, today } from "../lib/intelligence/liveness";
 for (const line of readFileSync(
   new URL("../../../.env.local", import.meta.url), "utf8").split("\n")) {
   const m = line.match(/^([A-Z_]+)=(.*)$/);
@@ -33,18 +34,26 @@ type Row = {
   id: string; parent_id: string | null; country: string | null;
   administering_body: string | null; delivery_region: string | null;
   eligibility_text: string | null; is_framework: boolean | null;
-  scheme_end_date: string | null; scheme_code: string | null;
+  scheme_end_date: string | null; scheme_end_date_basis: string | null;
+  last_year: number | null; scheme_code: string | null;
   successor_scheme: string | null;
 };
 
-/** Mirrors publishableInstruments() in lib/intelligence/corpus.ts: not a
- *  framework, has no children, and not closed -- where a closed row naming a
- *  successor we do not already hold as an open leaf is republished under the
- *  successor's identity rather than dropped. */
+/** Not a framework, has no children, and not closed -- where a closed row naming
+ *  a successor we do not already hold as an open leaf is republished under the
+ *  successor's identity rather than dropped.
+ *
+ *  Liveness itself is IMPORTED, not mirrored. The hand-copy that used to sit
+ *  here read a SATR notification expiry as a closure, so this script reported
+ *  119 live leaves as unpublishable and steered coverage work by that number. */
 function publishable(all: Row[]): Set<string> {
   const hasChildren = new Set(all.map((r) => r.parent_id).filter(Boolean) as string[]);
-  const today = new Date().toISOString().slice(0, 10);
-  const closed = (r: Row) => Boolean(r.scheme_end_date && String(r.scheme_end_date).slice(0, 10) < today);
+  const asOf = today();
+  const closed = (r: Row) => isClosed({
+    schemeEndDate: r.scheme_end_date,
+    schemeEndBasis: r.scheme_end_date_basis,
+    lastYear: r.last_year,
+  }, asOf);
   const liveCodes = new Set(all
     .filter((r) => !r.is_framework && !hasChildren.has(r.id) && !closed(r) && r.scheme_code)
     .map((r) => r.scheme_code as string));
@@ -96,7 +105,8 @@ async function main() {
   await db.connect();
   const { rows } = await db.query<Row>(`
     SELECT id, parent_id, country, administering_body, delivery_region,
-           eligibility_text, is_framework, scheme_end_date, scheme_code,
+           eligibility_text, is_framework, scheme_end_date,
+           scheme_end_date_basis, last_year, scheme_code,
            successor_scheme
       FROM funding_instruments`);
   await db.end();

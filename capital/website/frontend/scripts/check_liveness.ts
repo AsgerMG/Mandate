@@ -47,6 +47,17 @@ const HAND_ROLLED = [
   /scheme_end_date\s*<\s*date\('now'\)/,
 ];
 
+/** Comments are where this rule gets EXPLAINED, and an explanation quoting the
+ *  old broken comparison is not a second implementation of it. Strip them, or
+ *  the check fires on the very notes that document why it exists. */
+function code(src: string): string {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, "")   // block comments
+    .replace(/^[ \t]*\/\/.*$/gm, "")    // whole-line // comments
+    .replace(/^[ \t]*#.*$/gm, "")       // whole-line Python comments
+    .replace(/"""[\s\S]*?"""/g, "");    // docstrings
+}
+
 function walk(dir: string, out: string[] = []): string[] {
   for (const e of readdirSync(dir)) {
     if (e === "node_modules" || e === ".next" || e === "scratch" || e.startsWith(".")) continue;
@@ -90,7 +101,7 @@ async function main() {
     for (const f of files) {
       const rel = relative(process.cwd(), f).replace(/^\.\.\/\.\.\//, "");
       if (OWNERS.has(relative(process.cwd(), f))) continue;
-      const src = readFileSync(f, "utf8");
+      const src = code(readFileSync(f, "utf8"));
       for (const re of HAND_ROLLED) {
         if (re.test(src)) {
           problems.push({

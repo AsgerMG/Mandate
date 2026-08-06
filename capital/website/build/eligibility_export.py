@@ -37,7 +37,8 @@ def main() -> None:
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
-               last_year, scheme_code, scheme_end_date, successor_scheme,
+               last_year, scheme_code, scheme_end_date,
+               scheme_end_date_basis, successor_scheme,
                successor_title, application_url, sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n, delivery_region, delivery_region_share
@@ -124,9 +125,12 @@ def main() -> None:
         # document, and the URL is the only thing on the row a founder can act
         # on directly.
         "schemeCode": inst["scheme_code"],
-        # The register's word on whether this scheme still takes applications,
-        # and what replaced it. Award recency cannot see either.
+        # A declared end date, and WHICH register declared it. Without the
+        # basis the two paths disagree about liveness: Postgres would see a
+        # renewed SATR notification and the JSON snapshot would see an
+        # unlabelled date, which the liveness test closes.
         "schemeEndDate": inst["scheme_end_date"],
+        "schemeEndBasis": inst["scheme_end_date_basis"],
         "successorScheme": inst["successor_scheme"],
         "successorTitle": inst["successor_title"],
         # What kind of company this instrument has actually funded. Thematic
