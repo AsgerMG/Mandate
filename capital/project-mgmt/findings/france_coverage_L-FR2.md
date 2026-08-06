@@ -81,3 +81,65 @@ moves. Stated beside every number rather than pinned.
 France is programme-fragmented exactly as briefed: `administering_body` alone
 leaves a publishable French founder choosing between **54.3** siblings. Text is
 the only lever, and it took the class to 7.7.
+
+## 4. The fix: reconciliation, not a better-defaulted flag
+
+Asked to either write both stores or fail loudly. I did both, because the flag
+alone would not have prevented this incident.
+
+**Publishing is now the default.** `--postgres` is accepted and ignored;
+staging needs `--sqlite-only`, which ends by saying in as many words that
+nothing a founder can see has changed. A missing `DATABASE_URL` was a printed
+shrug that let the run exit 0; it is now a hard exit.
+
+**But a defaulted flag still would not have saved France.** `mirror_to_postgres`
+only pushes rows THIS RUN wrote. France's 49 leaves were already in SQLite, so
+every later run — flag or no flag — classified them as "already loaded", mirrored
+nothing, and exited 0. Three ways text ends up SQLite-only survive a defaulted
+flag: an earlier sqlite-only run, a column written by a different script, and a
+half-failed mirror.
+
+So every `--write` run now ends by **reconciling the countries in scope**: any
+row with `eligibility_text` in SQLite and not in Postgres fails the run, exit 1,
+printing the exact fix. The question asked is not "did I remember to publish"
+but "do the two stores now agree" — which has the same answer however the
+divergence arose, and is asked against the live databases rather than against
+the process's memory of what it did.
+
+Tested by injecting the exact France failure — three FR rows blanked in Postgres
+only, then a load that had nothing to write:
+
+```
+loaded 0 rows
+!! OUT OF SYNC: 3 of 73 rows in FR carry eligibility_text in SQLite but NOT in Postgres.
+   Fix: python3 ETL/terms/publish_scheme_text_scoped.py --country FR
+EXIT=1
+```
+
+Running the advertised fix restored sync and the loader returned to exit 0.
+**This is deliberately not a CI check** — it reads `data/db.sqlite` and a
+DATABASE_URL secret, and no CI step may depend on gitignored data.
+
+## 5. Second silent-loss bug, same family, found while testing the first
+
+`has_text()` accepted a record whose prose sat in `description` when
+`eligibility_text` was empty — but only `eligibility_text` is ever written to
+the coverage column. Such a record passed the gate, was counted in "loaded N
+rows", and left the coverage column NULL.
+
+**86 records corpus-wide do this: FR 24, ES 17, IT 13, DE 12, BE 13**, plus
+PL/HU/IE/SK. Every one was a load that reported work it had not done. I hit it
+directly: my first `--write` said "loaded 4 rows" and FR coverage did not move,
+because all four had prose only in `description`.
+
+The gate now matches the write, and description-only records are counted and
+reported under their own heading. **They are not promoted into
+`eligibility_text`** — they are one-line statements of what a scheme IS
+("Complément de rémunération pour l'éolien terrestre"), not of who may apply,
+and filling the coverage column with them would manufacture coverage a founder
+cannot use. That is the same boilerplate failure this workstream exists to avoid,
+arriving through a different door.
+
+Also cleaned: **23 FR rows carried `eligibility_confidence` with no text at all**
+from earlier description-only loads. Provenance is meant to be honest, so
+confidence and fetched_at were cleared on those rows in both stores.
