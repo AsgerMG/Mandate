@@ -89,8 +89,41 @@ def has_text(rec: dict) -> bool:
     return len(text.strip()) >= MIN_TEXT_LEN
 
 
-def live_ids(conn: sqlite3.Connection) -> set[str]:
+def lifetime_facts(rec: dict) -> tuple[str | None, str | None]:
+    """(administering_body, scheme_end_date) this record states about its scheme.
+
+    Deliberately NOT gated on liveness, and that inversion is the whole point.
+    The active-only rule says a closed scheme's RULES must not be shown to
+    someone applying now. It does not say we must stay ignorant that the scheme
+    closed -- `scheme_end_date` is the very column `live_ids()` below, plus
+    `emit_peer_prior.py` and `extend_recall_set.py`, filter on to REMOVE a dead
+    scheme from what a brief may propose. Refusing to record it because the
+    record is closed is what KEEPS the dead scheme in front of the founder.
+
+    Spain is where this bit. `scheme_end_date` is otherwise derived from SATR's
+    caseMeasureEndDate keyed on `scheme_code`, and every `bdns_es_ayudas` leaf
+    has `scheme_code = ''`. So all 88 were NULL, all 88 read as live, and 82 of
+    them are convocatorias whose application window shut -- some in 2021. The
+    liveness gate below cannot catch them until this pass has run, which is why
+    this runs FIRST and in the same invocation rather than as its own script.
+
+    Both values are written through COALESCE, so anything already measured in
+    the column outranks a register's statement about itself.
+    """
+    if rec.get("found") is False:
+        return None, None
+    body = (rec.get("administering_body") or "").strip() or None
+    end = (rec.get("scheme_end_date") or "").strip()[:10] or None
+    return body, end
+
+
+def live_ids(conn: sqlite3.Connection,
+             pending_end: dict[str, str] | None = None) -> set[str]:
     """Instrument ids the product would publish, by its own liveness test.
+
+    `pending_end` overlays end dates gathered but not yet committed, so a
+    report-only run judges liveness against the same facts a `--write` run
+    would, instead of against the NULLs those facts are about to replace.
 
     Mirrors `publishableInstruments()` in website/frontend/lib/intelligence/
     corpus.ts on the clauses that decide liveness: a scheme whose registered
@@ -107,7 +140,9 @@ def live_ids(conn: sqlite3.Connection) -> set[str]:
         SELECT id, parent_id, is_framework, scheme_code, scheme_end_date, successor_scheme
           FROM funding_instruments""").fetchall()
     parents = {r[1] for r in rows if r[1]}
-    closed = {r[0]: bool(r[4] and r[4] < today) for r in rows}
+    pending_end = pending_end or {}
+    closed = {r[0]: bool((r[4] or pending_end.get(r[0])) and
+                         (r[4] or pending_end.get(r[0])) < today) for r in rows}
     live_codes = {r[3] for r in rows
                   if not r[2] and r[0] not in parents and not closed[r[0]] and r[3]}
     out = set()
@@ -120,7 +155,7 @@ def live_ids(conn: sqlite3.Connection) -> set[str]:
     return out
 
 
-def mirror_to_postgres(updates: list[tuple]) -> None:
+def mirror_to_postgres(updates: list[tuple], life: list[tuple]) -> None:
     """Push exactly the rows just written to Railway Postgres.
 
     `migrate_to_postgres.py` is the normal publish and is a full truncate +
@@ -148,8 +183,17 @@ def mirror_to_postgres(updates: list[tuple]) -> None:
                    eligibility_fetched_at = CURRENT_TIMESTAMP
              WHERE id = %s
         """, updates)
+        # The lifetime facts travel with the prose, or the live read path keeps
+        # proposing the closed rows this run just identified as closed.
+        if life:
+            cur.executemany("""
+                UPDATE funding_instruments
+                   SET administering_body = COALESCE(administering_body, %s),
+                       scheme_end_date = COALESCE(scheme_end_date, %s)
+                 WHERE id = %s
+            """, life)
     conn.close()
-    print(f"mirrored {len(updates)} rows to Postgres")
+    print(f"mirrored {len(updates)} text rows and {len(life)} lifetime rows to Postgres")
 
 
 def main() -> None:
@@ -172,23 +216,64 @@ def main() -> None:
     conn = sqlite3.connect(DB)
     have_desc = {r[0] for r in conn.execute(
         "SELECT id FROM funding_instruments WHERE COALESCE(eligibility_text,'') <> ''")}
-    publishable = live_ids(conn)
+
+    only = {c.strip().upper() for c in (args.country or [])} or None
+
+    def source_files():
+        for f in sorted(SRC_DIR.glob("found_*.json")):
+            cc = f.stem.split("_")[1]
+            if only and cc.upper() not in only:
+                continue
+            try:
+                yield cc, json.loads(f.read_text())
+            except Exception:
+                continue
+
+    # ── Pass 1: lifetime facts, before the liveness gate reads them ──────────
+    # See lifetime_facts(). This must precede pass 2: the gate below asks the
+    # corpus whether a row is still live, and for a register whose end dates we
+    # have never written that question answers "yes" for every dead call.
+    have_body = {r[0] for r in conn.execute(
+        "SELECT id FROM funding_instruments WHERE administering_body IS NOT NULL")}
+    have_end = {r[0] for r in conn.execute(
+        "SELECT id FROM funding_instruments WHERE scheme_end_date IS NOT NULL")}
+    life: list[tuple] = []
+    pending_end: dict[str, str] = {}
+    new_body = new_end = 0
+    for cc, recs in source_files():
+        for rec in recs:
+            iid = rec.get("instrument_id")
+            if not iid:
+                continue
+            body, end = lifetime_facts(rec)
+            if not body and not end:
+                continue
+            if end and iid not in have_end:
+                pending_end[iid] = end
+                new_end += 1
+            if body and iid not in have_body:
+                new_body += 1
+            life.append((body, end, iid))
+    print(f"lifetime facts: {new_end} scheme_end_date and {new_body} "
+          f"administering_body values for rows that had none")
+    if args.write and life:
+        conn.executemany("""
+            UPDATE funding_instruments
+               SET administering_body = COALESCE(administering_body, ?),
+                   scheme_end_date = COALESCE(scheme_end_date, ?)
+             WHERE id = ?
+        """, life)
+        conn.commit()
+
+    # ── Pass 2: the prose, gated on the liveness pass 1 just made answerable ─
+    publishable = live_ids(conn, pending_end)
 
     per_country = collections.Counter()
     over_status = collections.Counter()
     updates: list[tuple] = []
     skipped_no_id = skipped_bad = skipped_dup = skipped_closed = 0
 
-    only = {c.strip().upper() for c in (args.country or [])} or None
-
-    for f in sorted(SRC_DIR.glob("found_*.json")):
-        cc = f.stem.split("_")[1]
-        if only and cc.upper() not in only:
-            continue
-        try:
-            recs = json.loads(f.read_text())
-        except Exception:
-            continue
+    for cc, recs in source_files():
         for rec in recs:
             iid = rec.get("instrument_id")
             if not iid:
@@ -237,8 +322,8 @@ def main() -> None:
     """, updates)
     conn.commit()
     print(f"\nloaded {len(updates)} rows")
-    if args.postgres and updates:
-        mirror_to_postgres(updates)
+    if args.postgres and (updates or life):
+        mirror_to_postgres(updates, life)
 
 
 if __name__ == "__main__":
