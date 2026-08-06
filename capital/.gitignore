@@ -38,3 +38,9 @@ data/processed/
 
 # local debugging scratch
 website/frontend/.scratch/
+
+# wsN2: cached CC0 open-data pulls and derived id lists, reproducible in minutes
+.cache/
+publishable_ids.json
+harvest_candidates.json
+boilerplate_verdict.json
