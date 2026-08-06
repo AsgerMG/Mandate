@@ -370,3 +370,23 @@ gives NULL, and NULL reads as live.
   exactly the claim `regiones` makes. That is the right home for it and it is
   the obvious next Spanish move; it belongs to whoever owns the region
   workstream, not to this one.
+
+## The consequence the PM has to decide on: Spain's proposable inventory is 13
+
+Removing the 80 expired calls is correct and it leaves Spain with **13 rows a
+brief may propose** (7 BDNS convocatorias plus 6 CDTI), down from 93. Nothing
+was lost — those 80 were never really offerable — but the corpus now shows how
+thin real Spanish coverage is, where before it looked like 93.
+
+The cause is structural and worth stating plainly: Spain's rows are built from
+BDNS *award* records, so `bdns_es_ayudas` can only ever contain calls that have
+already paid out. A corpus assembled from awards is a corpus of past calls.
+
+Probed the obvious remedy so the next agent does not have to. BDNS's search
+endpoint serves the whole national register — 647,047 convocatorias, including
+every municipal grant — and **it ignores `abierto=true`**: the filtered and
+unfiltered queries return identical totals. So harvesting Spain's currently open
+calls is a real project (find the parameter that actually filters, then filter
+647k rows down to business R&D), not an afternoon. Not started, deliberately:
+this workstream owns coverage of the rows that exist, and a half-built ingester
+is worse than a clearly stated gap.
