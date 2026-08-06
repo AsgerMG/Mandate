@@ -1,7 +1,159 @@
 # Start here
 
-Rewritten 2026-08-06 after six workstreams. Everything above the line below is
-current; older sections are history and are marked as such.
+**Updated 2026-08-06 EVENING. This section corrects two numbers and three
+conclusions that the rest of this file still states in their old form. An agent
+overwrote this once already — if the next section down says "EXACT@5 36%", that
+is the artifact described immediately below, not a result.**
+
+## 1. THE 36% NEVER EXISTED
+
+`measure_recall.ts` sampled every Nth row and the recall set is strongly
+ordered, so the stride ALIASED against that ordering. Same code, same split,
+same answer key: **N=200 (step 14) gave 36%; N=250 (step 11) gave 25%**, sharing
+119 of 200 rows. Fixed in `95f5fce` with a seeded shuffle. Across six
+configurations: **EXACT@5 ~28% +/-6, REGIME@5 ~87%, pool ~97%.** The harness now
+prints the 95% binomial half-width beside every figure. **No number written
+before `95f5fce` is comparable to one after it.** Use three seeds
+(`SEED=20260806`, `7`, `99`) or n>=600 before believing any move.
+
+## 2. THE 95% EXACT TARGET IS RETIRED AS UNREACHABLE
+
+`project-mgmt/research/target_arithmetic.md`. The won fund sits in a regime of
+**median 76 siblings**; 95% needs the leaf factor at **99%**. Measured ceiling
+for a perfect chooser reading everything recorded: **27% @1**, 38.8% with the
+best posterior breaking ties. Short by 2.5x — a bound over the corpus, not a
+property of an implementation. **Regime recall near 95% IS reachable.**
+
+## 3. THE CONSTRAINT IS COVERAGE, AND IT IS CONCENTRATED
+
+`scripts/measure_sibling_coverage.ts` (`d9fed89`). Countries split into two
+kinds and this decides everything:
+
+- **body-fragmented** (IT, DE, AT, BE) — one regime, many delivery bodies.
+  `administering_body` alone collapses the class (DE 91.8 -> 4.2, IT 57.3 ->
+  4.4) before a character of text is read. **Coverage work here cannot pay:**
+  Italy gained 54pp of text coverage and moved its class by 0.1.
+- **programme-fragmented** (FR, ES, SE) — one body, many programmes. The body
+  column cuts almost nothing (FR 60.2 -> 46.3). Per-programme text is the only
+  lever.
+
+**FR + ES + SE own 87% of all sibling mass.** EE/CZ/LV are already the
+best-separated countries in the corpus (class 1.2 / 1.6 / 5.6) and Norway has 73
+of 74 instruments in singleton regimes. **My country priority list was a
+COVERAGE ranking, not a SEPARATION ranking — that was a briefing error and it
+sent three agents at populations that could not pay.** Prioritise by sibling
+mass.
+
+Also: the scoreboard counts 1,014 instruments but **the product publishes 721**.
+Publishable-only mean class is **25.5, not 18.0**. State the population next to
+every number.
+
+## 4. THE ONE-ROW COLLAPSE PREMISE IS CONTRADICTED — DECIDE BEFORE BUILDING
+
+The PM approved collapsing indistinguishable siblings into one row on the
+premise that they are one programme behind several doors. **Workstream M
+measured that they are not.** Across 60 holdout replays every sibling group in
+the visible five has distinct names, and in 65% the SAME body delivers all of
+them. One class of 53 is 53 separately-named Spanish convocatorias; another is
+50 ADEME calls spanning bicycle tourism to biomass heat. **Merging those hides
+real options**, which is what G was right to refuse.
+
+M left three policies in place (`strict`, `sector`, `name`) precisely because
+choosing between them is a measurement, not an argument. **Run that measurement
+first.** M reached no treatment number — the baseline table in its report is the
+"before" column only.
+
+## 5. WHAT SHIPPED TONIGHT
+
+- Seeded sampler + CI + loud failure on unparseable N (`95f5fce`).
+- Per-stratum reporting by regime size (`197e534`) — it split one problem into
+  two: big regimes are always found and the leaf never picked; small regimes are
+  picked correctly and not found.
+- Leaf-cap structural guard (`check_leaf_cap.ts`). **LIVE RISK: at 90 the widest
+  group is Spanish SATR at 87. Three instruments of headroom.**
+- `channelServesBand` deleted — its body was `return true`, four never-taken
+  branches, while the exclusion register advertised a filter the code had
+  stopped applying.
+- `catchment_region` / `catchment_regions` / `catchment_source` on 427
+  instruments, kept separate from the MEASURED `delivery_region`. Geography
+  alone moved uniquely-identified 19% -> 25%; with text, 38% -> 43%.
+- Italy: 40 of 58 gaps were text already on disk, refused by
+  `load_scheme_text.py` over a fetch record saying `status: closed` — a CALL
+  window, not the scheme. Loader now uses the corpus's own liveness test. IT
+  publishable coverage 34% -> 88%. **`--country` was declared but never applied
+  in that loader, so agents were writing each other's rows.** Both fixed on
+  `workstream-l-it-se`.
+- EU: 11 of 67 covered; `eic` and `innovation_fund` fully resolved to class 1.00.
+
+## 6. UNMERGED BRANCHES HOLDING MEASURED WORK — CHECK BEFORE STARTING
+
+`wsG-region`, `wsG-scorer-width` (its `regionPrior.test.ts` is RED),
+`wsJ-representative-chooser`, `wsM-sibling-collapse`, `workstream-l-it-se`,
+`workstream-l-thin`, `workstream-l-no-eu`, `workstream-l-region`. Findings files
+are under `project-mgmt/`.
+
+## 7. FREE WIN, NOT YET TAKEN
+
+Verbatim source-attributed prose already sits in `eligibility_gates.quote` /
+`eligibility_clauses.quote` for **163 instruments whose `eligibility_text` is
+empty** (90 on the scoreboard) — worth 0.76 of the mean class with **zero
+fetches and zero spend**. Nobody harvested it because an empty column was read
+as missing text.
+
+~~Trap: `load_scheme_text.py` writes SQLite, the scoreboard reads Postgres.~~
+**That trap fired, on France, and is now closed** (`workstream-l-fr2`). It cost
+a whole night: `f4d840f` loaded 49 ADEME leaves, reported success, and Postgres
+still read 0 a day later. Publishing is now the DEFAULT in `load_scheme_text.py`
+(`--sqlite-only` to opt out, loudly), and **every `--write` run ends by
+reconciling the two stores for the countries in scope and exits 1 if they
+disagree**, printing the fix. A defaulted flag alone would NOT have saved
+France — the rows were already in SQLite, so every later run skipped them as
+"already loaded" and mirrored nothing. See
+`project-mgmt/findings/france_coverage_L-FR2.md`.
+
+Found while testing that: **`has_text()` accepted records whose prose sat in
+`description`, then wrote NULL into `eligibility_text`** — 86 records corpus-wide
+(FR 24, ES 17, BE 13, IT 13, DE 12) counted as "loaded" while adding zero
+coverage. Fixed; they are now reported under their own heading and NOT promoted
+into the coverage column, because they state what a scheme IS, not who may apply.
+**If your country's load ever said "loaded N rows" and coverage did not move,
+this is why — re-check it.**
+
+**France is DONE and does not need another agent.** Publishable coverage 22% ->
+64%, class **54.0 -> 8.01**, and 6 dead ADEME calls unpublished. The remaining
+26 leaves are **source-blocked, not effort-blocked**: ADEME's portal is 403
+Cloudflare (re-verified), `data.ademe.fr`'s 931 datasets hold awards but no
+eligibility catalogue, and the TEE catalogue genuinely lacks them (AVELO,
+ORPLAST, TEXHABI: 0 hits in 223 rows). One untried lead needing a human:
+`aides-territoires.beta.gouv.fr` returns 401, JWT required. **French SATR text
+is worth 0.11 of a sibling — do not fetch it.**
+
+Also unfinished: **Sweden**. Source found and verified but nothing written —
+`data.vinnova.se/api/ansokningsomgangar/`, CC0, `WebTextLista` TextID 2 =
+"Vem kan söka?", 662 rounds over 40 chars, per-round with open/close dates.
+**Check the SIP family for shared wording before loading** — shared wording
+would move the class by zero.
+
+## 8. MEASURED DEAD ENDS FROM TONIGHT — do not retry
+
+- **Region as a ranking signal.** At regime width 13.7% @1 against popularity's
+  13.7%. Its 44% reputation was a property of 7.4-member same-name groups.
+  Region as a FACT (which body serves which territory) is still wanted.
+- **Any posterior fitted on award history.** Sector mix fitted to a cut year:
+  **34.5% @1 in-sample, 10.9% out-of-sample**, floor 6.7%.
+- **`sectorScorer` wired into `pref`** — four forms, all at or below baseline.
+- **Naive `parent_id` collapse** — REGIME@5 89->95% but EXACT@5 to 14%; 72% of
+  multi-member regimes are heterogeneous.
+- **EU eligibility text** — easy to fetch, nearly useless: every EU leaf
+  publishes the same rules. The discriminator is one level down in per-topic
+  threshold tables.
+- **`sector_mix` CONTAINS THE ANSWER KEY** (built over awards including the
+  replayed companies'; 1.7-2.8pp). Closing it was still in flight — **assume
+  unfinished and verify.**
+
+---
+
+## HISTORY BELOW — THE 36% IN THE NEXT SECTION IS THE ARTIFACT DESCRIBED ABOVE
 
 ## THE HONEST HEADLINE
 

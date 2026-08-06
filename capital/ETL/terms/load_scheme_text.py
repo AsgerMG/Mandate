@@ -55,10 +55,28 @@ before; a scheme the register says is in force is now described.
 `status` is not discarded: it is reported, so a run says how many rows were
 loaded over an agent's "closed" and on what grounds.
 
+── Both stores, or a loud failure ──────────────────────────────────────────
+This script writes SQLite. Every consumer -- the product, the scoreboard,
+`measure_sibling_coverage.ts` -- reads Postgres. For one night that gap was
+bridged by an opt-in `--postgres` flag, which is to say it was not bridged:
+France's 49 ADEME leaves were loaded, reported as loaded, and were still
+invisible to the product a day later, while the same run for Italy and the EU
+happened to pass the flag and landed.
+
+Two changes, because the flag alone was never the whole hole:
+  - Publishing is the DEFAULT. Staging without it needs `--sqlite-only`, which
+    says at the end, in as many words, that nothing a founder can see changed.
+    A missing DATABASE_URL is now a hard exit, not a printed shrug.
+  - Every `--write` run ends by RECONCILING the countries in scope: any row
+    with `eligibility_text` in SQLite and not in Postgres fails the run with
+    the exact command that fixes it. This catches what a defaulted flag cannot
+    -- rows an EARLIER sqlite-only run left behind, which are "already loaded"
+    and so are never in any later run's mirror set. See reconcile().
+
 Usage:
   python3 load_scheme_text.py                       # report what would load
-  python3 load_scheme_text.py --write
-  python3 load_scheme_text.py --country IT --write --postgres
+  python3 load_scheme_text.py --country IT --write  # loads AND publishes
+  python3 load_scheme_text.py --country IT --write --sqlite-only
 """
 from __future__ import annotations
 
@@ -82,11 +100,32 @@ MIN_TEXT_LEN = 40
 
 
 def has_text(rec: dict) -> bool:
-    """Does the record carry usable prose at all? Liveness is asked separately."""
+    """Does the record carry usable ELIGIBILITY prose? Liveness is asked separately.
+
+    This used to accept `description` as a stand-in when `eligibility_text` was
+    empty -- but only `eligibility_text` is ever written to the coverage column,
+    so such a record passed the gate, was counted in "loaded N rows", and left
+    the column NULL. 86 records corpus-wide do this (FR 24, ES 17, IT 13, DE 12,
+    BE 13); every one of them was a load that reported work it had not done.
+
+    They are not discarded: `description` is still written, and they are now
+    counted and reported as description-only so a run's own output says how much
+    of it bought coverage and how much did not. Promoting a description into
+    `eligibility_text` would be worse than leaving it empty -- these are
+    one-line statements of what a scheme IS ("Complément de rémunération pour
+    l'éolien terrestre"), not statements of who may apply, and filling the
+    coverage column with them would report coverage that a founder cannot use.
+    """
     if rec.get("found") is False:
         return False
-    text = rec.get("eligibility_text") or rec.get("description") or ""
-    return len(text.strip()) >= MIN_TEXT_LEN
+    return len((rec.get("eligibility_text") or "").strip()) >= MIN_TEXT_LEN
+
+
+def has_description_only(rec: dict) -> bool:
+    """Prose, but in `description` -- contributes no eligibility coverage."""
+    if rec.get("found") is False or has_text(rec):
+        return False
+    return len((rec.get("description") or "").strip()) >= MIN_TEXT_LEN
 
 
 def lifetime_facts(rec: dict) -> tuple[str | None, str | None]:
@@ -170,8 +209,14 @@ def mirror_to_postgres(updates: list[tuple], life: list[tuple]) -> None:
 
     dsn = os.environ.get("DATABASE_URL")
     if not dsn:
-        print("no DATABASE_URL in the environment; skipped the Postgres mirror")
-        return
+        # NOT a warning. A load that reaches only SQLite has not reached the
+        # product, and saying so in passing is what let France sit unread for a
+        # night (see reconcile() below).
+        raise SystemExit(
+            "DATABASE_URL is not set, so this load would reach SQLite only -- "
+            "which no consumer reads.\n"
+            "Put it in the repo-root .env.local, or pass --sqlite-only if you "
+            "genuinely mean to stage without publishing.")
     conn = psycopg2.connect(dsn)
     with conn, conn.cursor() as cur:
         cur.executemany("""
@@ -196,6 +241,75 @@ def mirror_to_postgres(updates: list[tuple], life: list[tuple]) -> None:
     print(f"mirrored {len(updates)} text rows and {len(life)} lifetime rows to Postgres")
 
 
+def reconcile(conn: sqlite3.Connection, countries: set[str] | None) -> int:
+    """Assert the two stores agree about the countries this run touched.
+
+    ── Why a flag was never going to be enough ─────────────────────────────
+    `--postgres` mirrors the rows THIS RUN wrote. That leaves three ways for
+    text to exist in SQLite and not in the store the product reads, none of
+    which a defaulted flag closes:
+
+      1. An earlier run wrote SQLite only. The rows are now "already loaded",
+         so the next run -- flag or no flag -- skips them and mirrors nothing.
+         This is exactly what happened to France: 49 ADEME leaves sat in
+         SQLite while Postgres read 0, and every subsequent run reported
+         success while changing nothing.
+      2. A column was filled in by a different script (administering_body,
+         delivery_region) and never travelled.
+      3. The mirror half-failed and the run carried on.
+
+    So the end-of-run check is not "did I remember to publish", it is "do the
+    two stores now agree". That question has the same answer however the
+    divergence arose, and it is asked against the live database rather than
+    against this process's memory of what it did.
+
+    Returns the number of diverged rows; 0 means in sync.
+
+    This is deliberately NOT a CI check. It reads `data/db.sqlite` and a
+    DATABASE_URL secret, and no CI step may depend on gitignored data.
+    """
+    dsn = os.environ.get("DATABASE_URL")
+    if not dsn:
+        return 0
+    import psycopg2
+
+    where, params = "", []
+    if countries:
+        where = " WHERE country IN (%s)" % ",".join("?" * len(countries))
+        params = sorted(countries)
+    local = {r[0] for r in conn.execute(
+        "SELECT id FROM funding_instruments"
+        f"{where}{' AND' if where else ' WHERE'} "
+        "COALESCE(TRIM(eligibility_text),'') <> ''", params)}
+    if not local:
+        return 0
+
+    pg = psycopg2.connect(dsn)
+    with pg, pg.cursor() as cur:
+        cur.execute(
+            "SELECT id FROM funding_instruments "
+            "WHERE COALESCE(TRIM(eligibility_text),'') <> '' AND id = ANY(%s)",
+            (list(local),))
+        remote = {r[0] for r in cur.fetchall()}
+    pg.close()
+
+    missing = local - remote
+    scope = "/".join(sorted(countries)) if countries else "all countries"
+    if missing:
+        print(f"\n!! OUT OF SYNC: {len(missing)} of {len(local)} rows in {scope} "
+              f"carry eligibility_text in SQLite but NOT in Postgres.")
+        print("   The product reads Postgres. Those rows are invisible to it.")
+        print("   Fix (scoped, idempotent, never deletes):")
+        print(f"     python3 ETL/terms/publish_scheme_text_scoped.py "
+              f"{' '.join('--country ' + c for c in sorted(countries)) if countries else '--country XX'}")
+        for i in sorted(missing)[:5]:
+            print(f"     e.g. {i}")
+        return len(missing)
+    print(f"in sync: {len(local)} rows with eligibility_text in {scope} "
+          f"are present in both stores")
+    return 0
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
@@ -208,9 +322,16 @@ def main() -> None:
     ap.add_argument("--country", action="append", metavar="CC",
                     help="only load found_<CC>.json for these countries "
                          "(repeatable). Default: every file present.")
+    # Publishing is the DEFAULT, and staging is the flag you have to ask for.
+    # It used to be the other way round. `--postgres` was opt-in, so the
+    # cheapest command to type wrote the one store nothing reads, and a run
+    # that had done nothing useful still exited 0 saying "loaded 49 rows".
     ap.add_argument("--postgres", action="store_true",
-                    help="mirror the rows just written to DATABASE_URL. Scoped to "
-                         "those ids; NOT the full migrate_to_postgres publish.")
+                    help="accepted for compatibility; publishing is now the default")
+    ap.add_argument("--sqlite-only", action="store_true",
+                    help="stage in SQLite WITHOUT publishing to Postgres. The "
+                         "product will not see these rows until someone runs "
+                         "publish_scheme_text_scoped.py. Prints a loud warning.")
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
@@ -270,6 +391,7 @@ def main() -> None:
 
     per_country = collections.Counter()
     over_status = collections.Counter()
+    desc_only = collections.Counter()
     updates: list[tuple] = []
     skipped_no_id = skipped_bad = skipped_dup = skipped_closed = 0
 
@@ -280,7 +402,10 @@ def main() -> None:
                 skipped_no_id += 1
                 continue
             if not has_text(rec):
-                skipped_bad += 1
+                if has_description_only(rec):
+                    desc_only[cc] += 1
+                else:
+                    skipped_bad += 1
                 continue
             if iid in have_desc:
                 skipped_dup += 1
@@ -306,6 +431,12 @@ def main() -> None:
     print(f"skipped: {skipped_bad} not-usable (abstained/too short), "
           f"{skipped_closed} closed or not publishable per the register, "
           f"{skipped_dup} already loaded, {skipped_no_id} missing instrument_id")
+    if desc_only:
+        print(f"description-only: {sum(desc_only.values())} records carry prose in "
+              f"`description` but no eligibility_text "
+              f"({', '.join(f'{c} {n}' for c, n in desc_only.most_common())}).")
+        print("   These add NO eligibility coverage. They used to be counted as "
+              "loaded. See has_text().")
 
     if not args.write:
         print("\n[report only] --write to apply")
@@ -322,8 +453,23 @@ def main() -> None:
     """, updates)
     conn.commit()
     print(f"\nloaded {len(updates)} rows")
-    if args.postgres and (updates or life):
+
+    if args.sqlite_only:
+        print("\n!! --sqlite-only: these rows are STAGED, NOT PUBLISHED.")
+        print("   Nothing the product serves reads SQLite. Until you run")
+        print("     python3 ETL/terms/publish_scheme_text_scoped.py "
+              f"{' '.join('--country ' + c for c in sorted(only)) if only else '--country XX'}")
+        print("   this load has changed nothing a founder can see.")
+        return
+
+    if updates or life:
         mirror_to_postgres(updates, life)
+
+    # Whether or not this run wrote anything. A no-op load over a country an
+    # earlier SQLite-only run half-finished is precisely the case that has to
+    # fail loudly, and it is the case where `updates` is empty.
+    if reconcile(conn, only):
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
