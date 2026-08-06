@@ -5,6 +5,37 @@ conclusions that the rest of this file still states in their old form. An agent
 overwrote this once already — if the next section down says "EXACT@5 36%", that
 is the artifact described immediately below, not a result.**
 
+## 0. THE POOL QUESTION IS CLOSED — it was the answer key, not the ranker
+
+Full write-up: `project-mgmt/findings/answer_key_repair_wsR.md`.
+
+`pool 75%` was widely recorded tonight as an unexplained collapse and a possible
+live regression. It is neither. Tonight's corpus work correctly withdrew 86
+closed schemes (80 Spanish, 6 French) from what the product may offer, and
+`__recallSetComposed.json` still graded retrieval on returning them: **1,032 of
+4,796 pairs named an answer that is correctly unpublishable, putting pool's
+ceiling at 78.5% against a floor of 90.** Retrieval was finding 75/78.5 = 95.5%
+of everything it was permitted to find. It had not regressed at all.
+
+The key now grades only funds the product may actually offer — a property
+computed from `publishableInstruments()`, not a baked-in list — and excluded
+pairs are retained and reported rather than deleted. **Against the repaired key,
+pool is back at 96-98%.**
+
+**Two traps this leaves for anyone reading a pool figure taken tonight:**
+
+1. **Check the run held Postgres.** `hydrateDbInstruments()` falls back to
+   `public/data/instrument_terms.json` silently, and that file carries ZERO
+   Spanish scheme end dates where Postgres carries 80. A run that loses the
+   connection grades a corpus in which nothing is closed and reads pool ~95-97%;
+   a run that holds it read ~75%. That is the 97%-then-77% swing, not the
+   retrieval index. Any pool figure at or above ~90% against the UNREPAIRED key
+   came through the fallback, because the true ceiling was 78.5%.
+2. **Fingerprint the corpus before AND after a baseline.** `funding_instruments`
+   went 1,014 -> 998 rows mid-measurement while another workstream reloaded it.
+   A stability check taken only at the start passes and still yields a number
+   nobody can reproduce.
+
 ## 1. THE 36% NEVER EXISTED
 
 `measure_recall.ts` sampled every Nth row and the recall set is strongly
