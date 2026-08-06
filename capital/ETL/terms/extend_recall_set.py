@@ -79,6 +79,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB, ROOT  # noqa: E402
+from liveness import closed_sql  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
@@ -201,9 +202,12 @@ def main() -> None:
     # closed, a legal framework, a regime whose children are the real funds, or
     # below the corpus data floor. Same three classes `publishableInstruments()`
     # removes, for the same reasons.
+    # `closed_sql()` rather than a fourth hand-written copy of the date
+    # comparison: the copy here read a SATR notification expiry as a closure and
+    # would have made 220 live schemes unproposable answers.
     unproposable = {r[0] for r in conn.execute(
         "SELECT id FROM funding_instruments "
-        " WHERE (scheme_end_date IS NOT NULL AND scheme_end_date < date('now'))"
+        f" WHERE {closed_sql()}"
         "    OR is_framework = 1"
         "    OR (total_eur IS NULL AND last_year IS NULL)"
         "    OR id IN (SELECT parent_id FROM funding_instruments "

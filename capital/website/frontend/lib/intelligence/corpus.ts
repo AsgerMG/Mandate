@@ -3,6 +3,7 @@
 // and fuzzy-matches competitor names against the corpus.
 import { readFileSync } from "fs";
 import { meetsDataFloor } from "./accessMode";
+import { isClosed, today } from "./liveness";
 import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
 // Re-exported so existing callers (shortlist, pipeline, scripts) are unchanged.
@@ -200,10 +201,14 @@ export interface DbInstrument {
    *  legal identity of the money and what makes a row traceable back to a
    *  primary document. */
   schemeCode?: string | null;
-  /** The registered date this scheme closed to new applications, per the
-   *  Commission's case register. Award recency cannot see it: payments run for
-   *  years after a scheme shuts. */
+  /** A declared end date for this instrument. What it MEANS depends on
+   *  `schemeEndBasis`, and that is not a detail: read without it, a routinely
+   *  renewed State-aid notification looks identical to a call that has shut.
+   *  Never compare it to today directly — use `isClosed()` in ./liveness. */
   schemeEndDate?: string | null;
+  /** Which register supplied `schemeEndDate`, hence whether its expiry closes
+   *  anything: "notified_duration" (renewable) or "call_deadline" (final). */
+  schemeEndBasis?: string | null;
   /** A linked scheme that is still running, where the closed one was prolonged
    *  under a new SA number rather than simply ending. */
   successorScheme?: string | null;
@@ -311,7 +316,8 @@ export async function hydrateDbInstruments(): Promise<void> {
                   event_count, company_count, total_eur, source_family_bucket,
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
-                  scheme_code, scheme_end_date, successor_scheme, successor_title,
+                  scheme_code, scheme_end_date, scheme_end_date_basis,
+                  successor_scheme, successor_title,
                   application_url, sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
                   intensity_p50, intensity_n, delivery_region, delivery_region_share
@@ -407,6 +413,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         lastYear: inst.last_year ?? null,
         schemeCode: inst.scheme_code ?? null,
         schemeEndDate: inst.scheme_end_date ?? null,
+        schemeEndBasis: inst.scheme_end_date_basis ?? null,
         successorScheme: inst.successor_scheme ?? null,
         successorTitle: inst.successor_title ?? null,
         schemeOperators: (() => {
@@ -718,8 +725,12 @@ export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const hasChildren = new Set(
     all.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
-  const today = new Date().toISOString().slice(0, 10);
-  const closed = (i: DbInstrument) => Boolean(i.schemeEndDate && i.schemeEndDate < today);
+  // ONE liveness test, imported. This used to be an inline
+  // `schemeEndDate < today`, which read a SATR NOTIFICATION expiry as a scheme
+  // closure and hid 306 leaves — `Fondo di garanzia per le PMI` among them.
+  // See lib/intelligence/liveness.ts for the property and its evidence.
+  const asOf = today();
+  const closed = (i: DbInstrument) => isClosed(i, asOf);
   // Scheme codes an OPEN leaf already offers. A closed scheme whose successor is
   // one of these needs no redirect: the successor is already its own row, and
   // reviving the predecessor under the same code would just duplicate it.

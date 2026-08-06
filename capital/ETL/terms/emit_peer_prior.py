@@ -61,6 +61,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB, ROOT  # noqa: E402
+from liveness import closed_sql  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
@@ -210,7 +211,10 @@ def main() -> None:
     # produce is not neutral -- it is one of thirty slots spent saying nothing.
     # Three classes qualify, and they are the same three `publishableInstruments()`
     # removes for the same reasons:
-    #   - closed to new applicants (scheme_end_date in the past);
+    #   - closed to new applicants, by the ONE liveness test in
+    #     ETL/lib/liveness.py -- a past end date closes a row only
+    #     according to what that date is (a call deadline, or a notified
+    #     duration that award activity has not overruled);
     #   - a FRAMEWORK record, which is a legal basis and not a fund;
     #   - a regime with children, which is the rollup a founder cannot apply to.
     # The last two were 10% of all entries when the join was the source map,
@@ -218,7 +222,7 @@ def main() -> None:
     # attribution they are only what the split could not place.
     unproposable = {r[0] for r in conn.execute(
         "SELECT id FROM funding_instruments "
-        " WHERE (scheme_end_date IS NOT NULL AND scheme_end_date < date('now'))"
+        f" WHERE {closed_sql()}"
         "    OR is_framework = 1"
         "    OR id IN (SELECT parent_id FROM funding_instruments "
         "               WHERE parent_id IS NOT NULL)")}

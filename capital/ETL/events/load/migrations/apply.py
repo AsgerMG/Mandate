@@ -431,6 +431,16 @@ def apply_023(conn: sqlite3.Connection) -> None:
     print("  applied 023_scheme_lifetime.sql")
 
 
+def apply_025(conn: sqlite3.Connection) -> None:
+    """scheme_end_date_basis -- WHICH register supplied the end date, hence
+    whether its expiry closes anything. See the migration's own header."""
+    if column_exists(conn, "funding_instruments", "scheme_end_date_basis"):
+        print("  skip 025 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "025_scheme_end_date_basis.sql").read_text())
+    print("  applied 025_scheme_end_date_basis.sql")
+
+
 def apply_024(conn: sqlite3.Connection) -> None:
     """delivery_region — where a fund's money actually lands, as routing."""
     if column_exists(conn, "funding_instruments", "delivery_region"):

@@ -181,6 +181,13 @@ def main() -> None:
                         # scheme publishable again on the Postgres path only.
                         "scheme_end_date TEXT", "successor_scheme TEXT",
                         "successor_title TEXT",
+                        # WHICH register supplied scheme_end_date (migration
+                        # 025), and therefore whether its expiry closes the row.
+                        # Missing here is worse than missing data: every
+                        # notified duration reads as an unlabelled date, which
+                        # the liveness test treats as a call deadline, and 220
+                        # live SATR leaves go dark on the Postgres path only.
+                        "scheme_end_date_basis TEXT",
                         # Where a fund's money actually lands (migration 024).
                         # The routing attribute that separates the 119 leaves
                         # sharing a scheme name: one notified regime, many

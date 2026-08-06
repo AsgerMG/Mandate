@@ -41,6 +41,7 @@ import sqlite3
 from datetime import date
 from collections import Counter, defaultdict
 
+from liveness import NOTIFIED_DURATION  # noqa: E402
 from instrument_family import PARENT_MAP, SYNTHETIC_PARENTS, source_to_family  # noqa: E402
 from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source  # noqa: E402
 from nuts_regions import delivery_region, staged_region_mix  # noqa: E402
@@ -244,7 +245,8 @@ BUILT_COLUMNS = (
     "scheme_operators",
     "award_p25", "award_p50", "award_p75", "award_n",
     "intensity_p50", "intensity_n",
-    "scheme_end_date", "successor_scheme", "successor_title",
+    "scheme_end_date", "scheme_end_date_basis",
+    "successor_scheme", "successor_title",
     "delivery_region", "delivery_region_share", "recipient_region_mix",
     "tier", "root_id", "depth", "path",
 )
@@ -1083,9 +1085,19 @@ def main() -> None:
             v = rec.get("caseLinks") or []
             return v if isinstance(v, list) else [v]
 
-        # The register's word on a scheme's LIFETIME. Award recency cannot see
-        # this: payments run for years after a scheme shuts to new applicants,
-        # so 130 closed schemes looked current on a 2024 award alone.
+        # The register's word on a scheme's NOTIFIED DURATION -- which is not
+        # the same thing as its closure, and reading it as one hid 306 leaves on
+        # 2026-08-06 including `Fondo di garanzia per le PMI`. A GBER measure is
+        # routinely prolonged and our snapshot of the register lags it, so
+        # `caseMeasureEndDate` in the past means "the notification we last saw
+        # has run out", not "the scheme stopped". 94% of these dates fall on
+        # 12-30 or 06-29, the statutory boundary days: a real closure date would
+        # be spread across the calendar.
+        #
+        # So the date is written WITH its basis, and the single liveness test in
+        # ETL/lib/liveness.py decides what to do with it -- for a notified
+        # duration, an award granted after expiry is evidence of prolongation,
+        # because aid may not lawfully be granted under an expired measure.
         _today = date.today().isoformat()
         for row in now:
             sa = (row.get("scheme_code") or "").strip()
@@ -1094,6 +1106,7 @@ def main() -> None:
             if not end:
                 continue
             row["scheme_end_date"] = end
+            row["scheme_end_date_basis"] = NOTIFIED_DURATION
             if end >= _today:
                 continue
             closed += 1
@@ -1285,6 +1298,7 @@ def main() -> None:
     # this replaces.
     for _row in now:
         _row.setdefault("scheme_end_date", None)
+        _row.setdefault("scheme_end_date_basis", None)
         _row.setdefault("successor_scheme", None)
         _row.setdefault("successor_title", None)
         _row.setdefault("delivery_region", None)

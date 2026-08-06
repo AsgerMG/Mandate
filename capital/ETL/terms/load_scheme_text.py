@@ -87,6 +87,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB, ROOT as REPO_ROOT  # noqa: E402
+from liveness import CALL_DEADLINE, is_closed  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
@@ -164,29 +165,50 @@ def live_ids(conn: sqlite3.Connection,
     report-only run judges liveness against the same facts a `--write` run
     would, instead of against the NULLs those facts are about to replace.
 
-    Mirrors `publishableInstruments()` in website/frontend/lib/intelligence/
-    corpus.ts on the clauses that decide liveness: a scheme whose registered
-    end date has passed is closed, UNLESS the register names a successor we do
-    not already hold as a live scheme code -- in which case that row is
-    republished under the successor's identity and is live.
+    Liveness itself comes from `is_closed()` in ETL/lib/liveness.py, which is
+    the projection of the product's own definition. It is NOT restated here.
+    This function used to mirror `publishableInstruments()` by hand, and that
+    hand-copy is precisely how a SATR notification expiry came to be read as a
+    scheme closure in two places on the same night: a copy gets fixed in one of
+    them. What remains local is the successor redirect -- a closed row naming a
+    successor we do not already hold as a live scheme code is republished under
+    the successor's identity and is live.
 
     Frameworks and parents are excluded there too, for a different reason
     (they are containers, not offers). They are excluded here as well, so this
     set means exactly "rows a founder can be shown".
     """
-    today = datetime.date.today().isoformat()
-    rows = conn.execute("""
-        SELECT id, parent_id, is_framework, scheme_code, scheme_end_date, successor_scheme
-          FROM funding_instruments""").fetchall()
-    parents = {r[1] for r in rows if r[1]}
+    # Read as dicts regardless of the caller's row_factory: `is_closed` looks
+    # columns up by name, and a tuple row would silently index by position.
+    cur = conn.execute("""
+        SELECT id, parent_id, is_framework, scheme_code, scheme_end_date,
+               scheme_end_date_basis, last_year, successor_scheme
+          FROM funding_instruments""")
+    cols = [d[0] for d in cur.description]
+    rows = [dict(zip(cols, r)) for r in cur.fetchall()]
+    parents = {r["parent_id"] for r in rows if r["parent_id"]}
     pending_end = pending_end or {}
-    closed = {r[0]: bool((r[4] or pending_end.get(r[0])) and
-                         (r[4] or pending_end.get(r[0])) < today) for r in rows}
-    live_codes = {r[3] for r in rows
-                  if not r[2] and r[0] not in parents and not closed[r[0]] and r[3]}
+
+    def judge(r) -> bool:
+        # A pending end date is a CALL DEADLINE: it comes from a fetch record
+        # about a call's own window, never from the case register. Labelling it
+        # so is what lets `is_closed` keep it closed while a renewed SATR
+        # notification stays open.
+        pend = pending_end.get(r["id"])
+        if pend and not r["scheme_end_date"]:
+            return is_closed({"scheme_end_date": pend,
+                              "scheme_end_date_basis": CALL_DEADLINE,
+                              "last_year": r["last_year"]})
+        return is_closed(r)
+
+    closed = {r["id"]: judge(r) for r in rows}
+    live_codes = {r["scheme_code"] for r in rows
+                  if not r["is_framework"] and r["id"] not in parents
+                  and not closed[r["id"]] and r["scheme_code"]}
     out = set()
-    for iid, _parent, is_framework, _code, _end, successor in rows:
-        if is_framework or iid in parents:
+    for r in rows:
+        iid, successor = r["id"], r["successor_scheme"]
+        if r["is_framework"] or iid in parents:
             continue
         if closed[iid] and not (successor and successor not in live_codes):
             continue
@@ -234,7 +256,10 @@ def mirror_to_postgres(updates: list[tuple], life: list[tuple]) -> None:
             cur.executemany("""
                 UPDATE funding_instruments
                    SET administering_body = COALESCE(administering_body, %s),
-                       scheme_end_date = COALESCE(scheme_end_date, %s)
+                       scheme_end_date = COALESCE(scheme_end_date, %s),
+                       scheme_end_date_basis = CASE
+                           WHEN scheme_end_date IS NULL AND %s IS NOT NULL
+                           THEN %s ELSE scheme_end_date_basis END
                  WHERE id = %s
             """, life)
     conn.close()
@@ -374,14 +399,26 @@ def main() -> None:
                 new_end += 1
             if body and iid not in have_body:
                 new_body += 1
-            life.append((body, end, iid))
+            # (body, end, basis, basis, id) -- the basis appears twice because
+            # the CASE tests it and then writes it.
+            basis = CALL_DEADLINE if end else None
+            life.append((body, end, basis, basis, iid))
     print(f"lifetime facts: {new_end} scheme_end_date and {new_body} "
           f"administering_body values for rows that had none")
     if args.write and life:
         conn.executemany("""
             UPDATE funding_instruments
                SET administering_body = COALESCE(administering_body, ?),
-                   scheme_end_date = COALESCE(scheme_end_date, ?)
+                   scheme_end_date = COALESCE(scheme_end_date, ?),
+                   -- The basis travels with the date, always. A date whose
+                   -- basis is unknown is read as a call deadline and closes its
+                   -- row, so writing one without the other silently unpublishes
+                   -- whatever it touches. These dates ARE call deadlines: they
+                   -- come from a fetch record about one call's own window, not
+                   -- from the Commission's case register.
+                   scheme_end_date_basis = CASE
+                       WHEN scheme_end_date IS NULL AND ? IS NOT NULL
+                       THEN ? ELSE scheme_end_date_basis END
              WHERE id = ?
         """, life)
         conn.commit()
