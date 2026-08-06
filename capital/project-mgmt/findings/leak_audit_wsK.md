@@ -59,14 +59,26 @@ Neither number is wrong; a number quoted without its population is.
 
 Named so the next person does not have to rediscover that they were skipped.
 
-1. **`instrument_title_kind.json`** (`data/`, gitignored cache). A per-instrument
-   semantic classification of whether `project_title` holds projects or aid
-   scheme names. It is fitted over the same titles and it *gates which
-   instruments get a demonstrated-scope section at all*. Not audited: if the
-   classification itself was influenced by recall companies' titles, the
-   exclusion below is applied downstream of a decision that already saw them.
-   Judged second-order — it changes a boolean per instrument, not a score —
-   but it is unexamined.
+1. **`instrument_title_kind.json`** (`data/`, gitignored cache, 208 entries:
+   165 `project`, 43 `scheme`). A per-instrument classification of whether
+   `project_title` holds projects or aid scheme names, fitted over the same
+   titles, and it *gates which instruments get a demonstrated-scope section at
+   all* — so the exclusion now applied to titles sits downstream of a decision
+   that already saw the recall companies.
+
+   Partly turned. The classifier is shown eight titles per instrument, four
+   from each end of the "shared by most distinct companies" ordering. Measured
+   2026-08-06 23:0x CEST: **61 of 208 instruments (29.3%) would be shown a
+   DIFFERENT sample under the holdout.** That is not negligible and it is more
+   than "second-order" deserved.
+
+   What remains untested is whether any changed sample changes the VERDICT —
+   the model judges which kind dominates, and a reshuffled sample of the same
+   kind classifies the same. Closing it costs ~208 Haiku calls (cents) plus a
+   rebuild of the cache, and it was not run here because it would rewrite an
+   artifact this branch is not otherwise touching, on the same night three
+   other agents are writing to the corpus. **This is the single highest-value
+   unturned stone.**
 2. **`company_sector_labels` / `company_sector_llm`.** The founder's sector on
    the query side is taken from the recall row, not from these, so they do not
    appear to enter the graded path. Not traced end to end.
