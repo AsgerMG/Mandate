@@ -54,6 +54,10 @@ export type RecallRow = {
   mode: string; split: string;
   descriptionSource?: string; traced?: string;
   region?: string; regionSource?: string;
+  /** Set by `reattributeMissingAnswers` when the recorded answer named an
+   *  instrument the corpus no longer holds. Provenance, so a re-attributed hit
+   *  is never mistaken for one the key got right on its own. */
+  reattributedFrom?: string;
 };
 
 /** A row whose description may be used as a test query.
@@ -105,6 +109,87 @@ export function partitionByOfferable(
   const graded: RecallRow[] = [], ungraded: RecallRow[] = [];
   for (const r of rows) (isOfferable(r.instrument) ? graded : ungraded).push(r);
   return { graded, ungraded };
+}
+
+/** ── The SECOND kind of stale answer, and why it is repaired not excluded ──
+ *
+ *  Two different defects put a pair beyond grading, and they are not the same
+ *  thing:
+ *
+ *    CLOSED   the fund was real, was offerable, and the register says its window
+ *             has shut. The award is sound; the fund is simply past. Excluding
+ *             it is right — see the property above.
+ *    NEVER A  the fund never existed. Workstream T established that all 16 of
+ *    FUND     GB's leaves were values of GtR's `grantCategory` — competition
+ *             FORMATS (Collaborative R&D, Feasibility Studies), PHASES of a
+ *             retired programme, government DEPARTMENTS, and one literally
+ *             called `Unknown` — mapped into `programme_name`, the column the
+ *             instrument split runs on. The corpus manufactured 16 non-funds and
+ *             the key recorded companies as having "won Collaborative R&D".
+ *
+ *  For the second kind, exclusion would be the wrong repair and would quietly
+ *  cost real coverage. The AWARD happened; our object model invented the thing
+ *  it was attributed to. The money came from the rollup those non-funds were
+ *  split out of, that rollup is a real fund with a real quoted application
+ *  route, and it is exactly what a founder should be shown. So the honest repair
+ *  is RE-ATTRIBUTION, and retrieval returning the rollup is a genuine hit.
+ *
+ *  ── Derived, not hardcoded ────────────────────────────────────────────────
+ *  The ancestor is read out of the id. The programme split names a child
+ *  `<parent>__<slug>_<hash>`, so the parent is a property of the id itself.
+ *  Verified against the live corpus rather than assumed: of 671 ids containing
+ *  `__`, the prefix equals `parentId` for 671 and names an existing row for 671.
+ *  `assertAncestorConvention` re-checks that at runtime, because a derivation
+ *  this repair depends on must fail loudly if the naming ever changes.
+ *
+ *  No country, scheme code or instrument id appears here. A different programme
+ *  split that loses its children tomorrow is repaired by the same rule. */
+export const namedAncestor = (id: string): string | undefined =>
+  id.includes("__") ? id.slice(0, id.indexOf("__")) : undefined;
+
+/** Fails if the id convention `reattributeMissingAnswers` relies on has changed.
+ *  Cheap, and it turns a silent mis-repair into a build failure. */
+export function assertAncestorConvention(
+  corpus: { id: string; parentId?: string | null }[],
+): void {
+  const ids = new Set(corpus.map((i) => i.id));
+  const broken = corpus.filter((i) => {
+    const a = namedAncestor(i.id);
+    return a !== undefined && (a !== (i.parentId ?? undefined) || !ids.has(a));
+  });
+  if (broken.length) {
+    console.error(
+      `\nrecall set: the id convention <parent>__<child> no longer holds for ` +
+      `${broken.length} of ${corpus.length} rows,\ne.g. ${broken[0].id} ` +
+      `(parentId=${broken[0].parentId}). Re-attribution of answers whose\n` +
+      "instrument was deleted derives the parent from the id, so it cannot be\n" +
+      "trusted until this is resolved.");
+    process.exit(1);
+  }
+}
+
+export type Reattribution = { rows: RecallRow[]; reattributed: RecallRow[] };
+
+/** Re-point answers whose instrument no longer exists at the surviving ancestor.
+ *
+ *  Only when the ancestor both EXISTS and is OFFERABLE — otherwise the row is
+ *  left alone and falls through to the exclusion above, because re-pointing an
+ *  answer at something the founder still cannot be shown repairs nothing. */
+export function reattributeMissingAnswers(
+  rows: RecallRow[],
+  exists: (instrumentId: string) => boolean,
+  isOfferable: (instrumentId: string) => boolean,
+): Reattribution {
+  const out: RecallRow[] = [], moved: RecallRow[] = [];
+  for (const r of rows) {
+    if (exists(r.instrument)) { out.push(r); continue; }
+    const a = namedAncestor(r.instrument);
+    if (a && exists(a) && isOfferable(a)) {
+      const next = { ...r, instrument: a, reattributedFrom: r.instrument };
+      out.push(next); moved.push(next);
+    } else out.push(r);
+  }
+  return { rows: out, reattributed: moved };
 }
 
 /** The share of pairs whose answer the product may no longer offer.
@@ -179,6 +264,7 @@ export const MIN_PAIRS = 4700;
  *  Returns the share so a caller can print it. */
 export function assertGradablePopulation(
   p: GradedPopulation, inCorpus?: (instrumentId: string) => boolean,
+  reattributed = 0,
 ): number {
   const total = p.graded.length + p.ungraded.length;
   const share = total === 0 ? 0 : (100 * p.ungraded.length) / total;
@@ -186,19 +272,35 @@ export function assertGradablePopulation(
     ? p.ungraded.filter((r) => !inCorpus(r.instrument)).length : 0;
   const absentShare = total === 0 ? 0 : (100 * absent) / total;
   const bad = share > UNGRADED_SHARE.max;
+  const pct = (n: number) => `${((100 * n) / total).toFixed(1)}%`;
+  // Every population on its own line. Two different repairs happened here and
+  // netting them into one number is how the second one goes unnoticed.
+  console.log(`  answer key, ${total.toLocaleString()} pairs:`);
   console.log(
-    `  gradable population: ${p.graded.length.toLocaleString()} of ` +
-    `${total.toLocaleString()} pairs; ${p.ungraded.length.toLocaleString()} ` +
-    `(${share.toFixed(1)}%) name a fund the product may not offer` +
-    `${inCorpus ? ` — ${(p.ungraded.length - absent).toLocaleString()} withheld, ` +
-      `${absent.toLocaleString()} absent from the corpus` : ""}` +
-    `${bad ? "  <-- OUT OF BAND" : ""}`);
+    `    GRADED         ${String(p.graded.length).padStart(5)} (${pct(p.graded.length)})` +
+    `  answer is a fund the product may offer`);
+  if (reattributed) {
+    console.log(
+      `      of which RE-ATTRIBUTED ${String(reattributed).padStart(4)} ` +
+      `(${pct(reattributed)})  named an instrument that was never a fund;\n` +
+      "        scored against the rollup the award actually belongs to");
+  }
+  console.log(
+    `    WITHHELD       ${String(p.ungraded.length - absent).padStart(5)} ` +
+    `(${pct(p.ungraded.length - absent)})  closed with no successor — correctly ` +
+    "unofferable");
+  if (inCorpus) {
+    console.log(
+      `    ABSENT         ${String(absent).padStart(5)} (${pct(absent)})  names an ` +
+      "instrument the corpus no longer holds\n                            and whose " +
+      "ancestor is not offerable either");
+  }
+  if (bad) console.log("    <-- UNGRADED SHARE OUT OF BAND");
   if (inCorpus && absent > 0) {
     console.log(
-      `    (${absentShare.toFixed(1)}% absent — the answer key names instruments ` +
-      "the corpus no longer holds.\n     If a reload is in flight, a baseline taken " +
-      "now is not reproducible: fingerprint\n     the corpus before and after, and " +
-      "discard the run if it moved.)");
+      `    (${absentShare.toFixed(1)}% absent. If a corpus reload is in flight a ` +
+      "baseline taken now is not\n     reproducible: fingerprint the corpus before " +
+      "and after, and discard the run\n     if it moved.)");
   }
   if (total < MIN_PAIRS) {
     console.error(
@@ -219,35 +321,6 @@ export function assertGradablePopulation(
     process.exit(1);
   }
   return share;
-}
-
-/** The default seed. Shared so the gate and the harness draw the SAME sample:
- *  a floor calibrated on one draw and verified on another is not a floor. */
-export const DEFAULT_SEED = 20260806;
-
-/** Deterministic seeded sample — the draw, in one place.
- *
- *  Lifted out of `measure_recall.ts` unchanged (mulberry32 + Fisher-Yates) so
- *  the gate can share it. BOTH obvious samplers are biased on this file: the
- *  set is strongly ordered by mode, by whether the pair was traced, and by
- *  instrument, so slicing takes the head of one mode and `i % step` ALIASES
- *  against that ordering — same ranker and same key measured eleven points
- *  apart at two values of N. A shuffle cannot align with an order it never
- *  consults. Vary SEED to find out whether a result is real. */
-export function sampleRecall<T>(rows: T[], n: number, seed = DEFAULT_SEED): T[] {
-  let s0 = seed >>> 0;
-  const rnd = () => {
-    s0 = (s0 + 0x6D2B79F5) >>> 0;
-    let t = Math.imul(s0 ^ (s0 >>> 15), 1 | s0);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-  const shuffled = rows.slice();
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(rnd() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled.slice(0, Math.min(n, shuffled.length));
 }
 
 /**

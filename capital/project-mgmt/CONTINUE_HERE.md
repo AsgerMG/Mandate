@@ -331,16 +331,50 @@ fire at both 40 and 14, so it will catch the third — but it will fire, and soo
 
 ## THE HONEST HEADLINE (SUPERSEDED — the 36% below is the artifact described above)
 
-`SPLIT=holdout N=200 npx tsx scripts/measure_recall.ts` on the composed set
-(the default; every harness now prints which set it used):
+`SPLIT=holdout N=600 SEED=20260806 npx tsx scripts/measure_recall.ts` on the
+composed set (the default; every harness prints which set it used):
 
 ```
-pool 97%   EXACT@5 36%   REGIME@5 89%
-  project  n= 39   pool 92%  exact 51%  regime 82%
-  profile  n=161   pool 98%  exact 32%  regime 91%
+pool 75%   EXACT@5 24%   REGIME@5 87%      (+/- ~3.5 at n=600)
+  project  n=118   pool 93%  exact5 39%  regime5 79%
+  profile  n=482   pool 70%  exact5 20%  regime5 89%
+  regime 51+  n=359   pool 60%  exact5 15%  regime5 94%   <- most of the corpus
 ```
 
-**Regime is 6 points from target. Exact is the open problem.**
+Three seeds, n=600 each, taken 2026-08-06 21:09-21:24 UTC — close together on
+purpose, because coverage agents were writing eligibility text to FR/ES/SE
+throughout and the corpus moves under a long measurement:
+
+| seed | pool | EXACT@5 | REGIME@5 |
+|---|--:|--:|--:|
+| 20260806 | 75% | 24% | 87% |
+| 7 | 76% | 22% | 87% |
+| 99 | 75% | 23% | 87% |
+
+REGIME@5 is identical on all three and pool varies by one point, so the draw is
+no longer doing the talking — which is the entire point of `95f5fce` and
+`dac300a`.
+
+**The previous headline in this position read `pool 97% / EXACT@5 36% /
+REGIME@5 89%` at n=200.** It is retired, not merely superseded: it was measured
+with the STRIDE sampler, which aliases against this set's ordering (N=200 gave
+36%, N=250 gave 25%, on identical code — `95f5fce`), on a harness that decayed
+along its own run (`dac300a`), against a semantic index that was both leaking
+and 19 hours stale (`workstream K`). No unbiased draw reproduces it.
+
+**REGIME@5 is the number that held.** 89% -> 87% is inside the interval, and it
+is the operational one — the founder is shown their regime. EXACT@5 fell 36% ->
+24%, and most of that fall is measurement, not product.
+
+**POOL is the open problem, and it is new.** It was believed closed
+(`diagnose_rank.ts`: "the pool question is closed"). At 75% — 60% on the
+crowded national regimes that are most of the corpus — a quarter of won funds
+never become candidates, and no ranking change can reach them. The cause is
+**recorded as unresolved** in `project-mgmt/findings/leak_audit_wsK.md`: it is
+measurably NOT the leak workstream K closed (an index rebuilt with and without
+the holdout at the same moment reads pool 78% both ways), and the two remaining
+candidates could not be separated. **Settle that before planning against 75% —
+it may be a live regression rather than a level.**
 
 ## THE MEASUREMENT IS NOW TRUSTWORTHY — this was the session's real work
 
@@ -363,9 +397,25 @@ ranking failure. All four are fixed and guarded:
   so it needs no database — a guard requiring credentials most machines lack is
   a guard that reports green. 212 cross-language probes; poison confirmed to
   exit 1 on both the unit and CI paths.
-- **Floors re-baselined and split by population** (original join 84%/floor 74,
-  traced 95%/floor 88), so a change that buys programme children with SATR
-  leaves now FAILS instead of netting out to a flat headline.
+- **Floors re-baselined and split by population**, so a change that buys
+  programme children with SATR leaves now FAILS instead of netting out to a
+  flat headline. Re-derived again 2026-08-06 21:24 UTC (workstream K) against
+  the rebuilt leak-free index, same pinned sample (tune, n=300, SEED=20260806):
+
+  | | measured | floor |
+  |---|--:|--:|
+  | pool | 78% | **72%** — a REGRESSION floor, see below |
+  | EXACT@5 | 24% | 15% (raised from 12) |
+  | REGIME@5 | 88% | 80% (raised from 74) |
+  | original join, n=131 | 80% | 68% (raised from 65) |
+  | traced, n=169 | 94% | 82% (raised from 76) |
+
+  **Four of the five floors went UP** — the ranking numbers improved on the
+  identical sample once the index was rebuilt clean. The pool floor went DOWN
+  from 90 to 72 and that is not a re-measurement, it is an unexplained
+  16-point fall being tolerated so the build can run. Raise it back when the
+  cause is found; the header of `check_recall_floor.ts` says what is ruled out
+  and what is not.
 
 ## THE REMAINING LOSS, diagnosed from two directions
 
@@ -452,10 +502,13 @@ RETIRED warning naming the defect if you point it at one of the old ones with
 `measure_pipeline.ts` prints it, because a gate-2 number is comparable only if
 the ranker AND the answer key match.
 
-**The honest headline, holdout n=200, at `f71f3f6`:**
+**The honest headline, holdout n=200, at `f71f3f6`** — *RETIRED 2026-08-06 by
+workstream K; kept because it is quoted in four other places and someone will
+come looking for it. Not reproducible: stride sampler, decaying harness,
+leaking and stale index. The live figures are at the top of this file.*
 
 ```
-pool 97%   EXACT@5 36%   REGIME@5 89%
+pool 97%   EXACT@5 36%   REGIME@5 89%      <- RETIRED, do not quote
   mode=project   n= 39   pool 92%  exact5 51%  regime5 82%
   mode=profile   n=161   pool 98%  exact5 32%  regime5 91%
   original join  n= 84   pool 94%  exact5 48%  regime5 79%

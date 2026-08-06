@@ -461,6 +461,55 @@ const gatesFetched = new Set<string>();
  *  inflate the encodedCount that decides the name-dedupe. */
 const gatesResolved = new Set<string>();
 
+/** The gates each instrument held after PHASE ONE, kept so a harness can put
+ *  the module back the way a fresh request finds it. See resetGateHydration. */
+let phaseOneGates: Map<string, DbGate[]> | undefined;
+
+/** Return the module to its post-phase-one state: the state EVERY production
+ *  request starts from.
+ *
+ *  ── The defect this exists for ────────────────────────────────────────────
+ *  Phase two mutates the cached instruments in place, and the cache is
+ *  module-level. In production that is exactly right and costs nothing: each
+ *  request is a fresh invocation, `dbInstrumentsCache` is undefined, and the
+ *  hydration comment above says so.
+ *
+ *  A harness is not a request. `measure_recall.ts` replays hundreds of pairs in
+ *  ONE process, so instrument N+1 is ranked against a corpus that has been
+ *  accumulating real gate rows for N pairs — and an instrument that has its
+ *  gates can be screened OUT, where one still holding the phase-one empty list
+ *  assesses as `unknown` and survives. Recall therefore DECAYS along the run.
+ *  Measured on the tune split, same 300 pairs, same seed, same corpus:
+ *
+ *      replayed first          exact5 26%   regime5 91%
+ *      replayed after 300 others   9%           70%
+ *
+ *  Seventeen points, from position in the run alone. That made every figure
+ *  N-dependent in a way no sampler fix could reach: N=300 read 24/89 and N=600
+ *  read 17/80 on identical code, because the larger run spends more of itself
+ *  in the degraded state. It is the same class of defect as the stride
+ *  sampler — a number that is a property of how it was measured — and it is
+ *  larger.
+ *
+ *  So a harness calls this between pairs and grades what a founder gets: a cold
+ *  corpus, every time. Phase one is NOT undone, because production does not
+ *  redo it per request either; only the lazy phase-two state is. */
+export function resetGateHydration(): void {
+  if (!dbInstrumentsCache) return;
+  // First call captures the baseline. It must happen after phase one and
+  // before any phase two, which is what "call it once before the loop" means.
+  if (!phaseOneGates) {
+    phaseOneGates = new Map(dbInstrumentsCache.map((i) => [i.id, i.gates]));
+    return;
+  }
+  for (const inst of dbInstrumentsCache) {
+    const base = phaseOneGates.get(inst.id);
+    if (base) inst.gates = base;
+  }
+  gatesFetched.clear();
+  gatesResolved.clear();
+}
+
 /**
  * PHASE TWO of hydration: fetch the full gate rows for a handful of
  * instruments and merge them into the cached corpus.

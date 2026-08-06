@@ -45,6 +45,7 @@ from liveness import NOTIFIED_DURATION  # noqa: E402
 from instrument_family import PARENT_MAP, SYNTHETIC_PARENTS, source_to_family  # noqa: E402
 from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source  # noqa: E402
 from nuts_regions import delivery_region, staged_region_mix  # noqa: E402
+from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
@@ -557,10 +558,40 @@ def main() -> None:
     ap.add_argument("--force", action="store_true",
                     help="proceed even if the rebuild would orphan a large share "
                          "of the curated eligibility layer")
+    ap.add_argument("--signals-only", action="store_true",
+                    help="update only the columns the ranker scores on "
+                         "(sector_mix, recipient_region_mix, delivery_region*) "
+                         "and write nothing else; safe to re-run")
+    add_holdout_flags(ap)
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
+    # ── The two columns here that are FITTED SIGNALS, not descriptions ───────
+    #
+    # Most of what this script writes describes the corpus: how many events a
+    # fund has, what it typically pays, who administers it. A founder reads
+    # those and nothing grades them.
+    #
+    # `sector_mix` and `recipient_region_mix` are different in kind. The ranker
+    # SCORES on them -- `sectorFit` in fit.ts and shortlist.ts, and the region
+    # footprint that orders same-name siblings -- and the recall harness grades
+    # that ranking by replaying companies out of the very events table these
+    # are counted from. So each test company was voting once for its own
+    # answer. Measured on the active set before this was closed:
+    #
+    #   95.7% of pairs   the won fund's mix counted the replayed company itself
+    #    5.8% of pairs   that vote was the ONLY reason the won fund showed the
+    #                    founder's sector at all -- a pure answer key
+    #     22%            median share of the won fund's own-sector count that
+    #                    came from recall-set companies
+    #
+    # The holdout removes only the VOTE, never the row: event counts, award
+    # percentiles, totals and every published corpus statistic are untouched,
+    # because those are descriptions and are not graded. See
+    # ETL/lib/recall_holdout.py for why this is a default rather than a flag.
+    holdout = resolve_holdout(args, conn)
+    holdout.report()
     split_targets = {f for f in (
         r[0] for r in conn.execute(
             "SELECT DISTINCT id FROM funding_instruments WHERE id LIKE 'satr%'")) if f}
@@ -575,6 +606,28 @@ def main() -> None:
     # Read from the data rather than listed, for the same reason split_families
     # is: a source that starts publishing programme names should get the
     # granularity automatically, not when somebody remembers to add it.
+    #
+    # ── The contract that buys, and the one extractor that broke it ───────
+    # Reading from the data means this split is only ever as good as the
+    # column's contract, and the contract is narrow: `programme_name` must
+    # name an OFFER -- a thing a founder can apply to. It is not "whatever
+    # label the feed attaches to an award".
+    #
+    # extract_innovate_uk.py mapped GtR's `grantCategory` here, and
+    # grantCategory classifies awards: its 35 values mix competition formats,
+    # phases of one retired programme, government departments and one value
+    # called "Unknown". The split did exactly what it is written to do and
+    # manufactured sixteen rows no founder can apply to, which then sat at
+    # mean sibling class 16.0 with nothing recorded on any facet -- the worst
+    # country in the corpus, and not fixable by fetching text, because the
+    # rows were never funds. See that extractor and
+    # project-mgmt/findings/workstream_t_gb.md.
+    #
+    # The detector already exists and is the one to re-run after adding a
+    # programme split to any source: scripts/measure_sibling_by_country.ts. A
+    # legitimate split makes siblings DISTINGUISHABLE; a classification
+    # dressed as a split leaves every child identical to every other, which is
+    # what a mean class equal to the child count means.
     #
     # Requires MORE THAN ONE distinct programme_name, not just enough rows.
     # Its absence was a real bug, found 2026-08-05 checking Denmark: several
@@ -705,7 +758,11 @@ def main() -> None:
             fam_project_titles[fam][r["project_title"]] += 1
         if r["aid_objective"]:
             fam_aid_objective_votes[fam][r["aid_objective"]] += 1
-        if r["sector_top"]:
+        # The one vote a replayed company must not cast. See the holdout note
+        # in main(): the row still counts everywhere else, so nothing the
+        # corpus publishes about itself moves -- only the graded signal does.
+        leaked_company = r["company_id"] in holdout.ids
+        if r["sector_top"] and not leaked_company:
             fam_sector_votes[fam][r["sector_top"]] += 1
         if r["call_id"] and r["granting_authority"] \
                 and not NOT_AN_APPLYABLE_BODY.match(r["granting_authority"]):
@@ -758,7 +815,11 @@ def main() -> None:
                 c["objectives"][r["aid_objective"]] += 1
             if r["project_title"]:
                 c["titles"][r["project_title"]] += 1
-            if r["sector_top"]:
+            # Same rule one level down. A child inherits its parent's mix when
+            # it has none of its own, so a child whose only sector evidence was
+            # a test company now reads its regime's mix -- which is the honest
+            # answer, not a silent zero.
+            if r["sector_top"] and not leaked_company:
                 c["sectors"][r["sector_top"]] += 1
 
     families = set(fam_events)
@@ -977,7 +1038,13 @@ def main() -> None:
     # emit_region_prior.py needs the identical one to build the artifact the
     # ranker sorts siblings by. Two copies of it would let the column shown to
     # a founder and the score that chose the row describe different corpora.
-    staged = staged_region_mix(conn)
+    #
+    # And the same holdout, for the same reason: emit_region_prior.py excludes
+    # the recall companies and this passed nothing, so the two DID describe
+    # different corpora -- one function, called twice, over two populations.
+    # The docstring promising they could not was true of the attribution and
+    # not of its input.
+    staged = staged_region_mix(conn, holdout.ids)
     regional = 0
     for row in now:
         sa = (row.get("scheme_code") or "").strip()
@@ -1204,6 +1271,54 @@ def main() -> None:
         for k in ("tier", "root_id", "path"):
             row.setdefault(k, None)
         row.setdefault("depth", 0)
+
+    # ── --signals-only: refresh the graded columns and nothing else ──────────
+    #
+    # The recall holdout depends on the recall SETS, which change far more
+    # often than the corpus does. Every time one is added, `sector_mix` and the
+    # region footprint are stale in exactly the way that inflates a number, and
+    # the only way to refresh them was this function's full DELETE-and-INSERT
+    # of funding_instruments -- a rebuild that re-derives 400 columns from
+    # whatever the events table happens to hold today, reconciles the gate
+    # layer, and is documented at the top of this file as something not to run
+    # casually.
+    #
+    # Nobody will do that to close a leak, so the leak stays. This mode makes
+    # the safe action the cheap one: recompute by the SAME code path above --
+    # not a second aggregation that could disagree with it -- and write back
+    # only the four columns the holdout touches. Idempotent, additive, and it
+    # cannot orphan a gate or erase a fetched description.
+    #
+    # Run it after ANY change to a recall set, then re-export and re-publish.
+    if args.signals_only:
+        cols = ("sector_mix", "recipient_region_mix",
+                "delivery_region", "delivery_region_share")
+        for row in now:
+            row.setdefault("recipient_region_mix", None)
+            row.setdefault("delivery_region", None)
+            row.setdefault("delivery_region_share", None)
+        live = {r[0] for r in conn.execute("SELECT id FROM funding_instruments")}
+        before = {r[0]: r[1:] for r in conn.execute(
+            f"SELECT id, {', '.join(cols)} FROM funding_instruments")}
+        touched = [r for r in now if r["id"] in live]
+        changed = sum(1 for r in touched
+                      if before.get(r["id"]) != tuple(r[c] for c in cols))
+        conn.executemany(
+            f"UPDATE funding_instruments SET {', '.join(f'{c} = :{c}' for c in cols)}, "
+            f"updated_at = CURRENT_TIMESTAMP WHERE id = :id", touched)
+        # A row this pass produces that the table does not hold means the two
+        # have diverged for reasons that have nothing to do with the holdout,
+        # and a targeted refresh is the wrong tool for that. Say so; do not
+        # quietly write a partial corpus.
+        absent = [r["id"] for r in now if r["id"] not in live]
+        conn.commit()
+        print(f"signals-only: {changed:,} of {len(touched):,} instruments changed "
+              f"on ({', '.join(cols)})")
+        if absent:
+            print(f"  NOTE: {len(absent):,} rows this pass produces are not in the "
+                  f"table at all; a full rebuild is owed. e.g. {absent[:3]}")
+        conn.close()
+        return
 
     # ── Reconcile, do not wipe ───────────────────────────────────────────────
     # This used to DELETE every non-framework eligibility gate on every run.

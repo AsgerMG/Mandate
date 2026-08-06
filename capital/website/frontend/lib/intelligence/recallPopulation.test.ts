@@ -16,10 +16,15 @@ import { readFileSync } from "fs";
 import path from "path";
 import { describe, expect, it } from "vitest";
 
+import { sampleRecall } from "../../scripts/recallSample";
 import {
-  ACTIVE_RECALL_SET, MIN_PAIRS, partitionByOfferable, sampleRecall, UNGRADED_SHARE,
-  type RecallRow,
+  ACTIVE_RECALL_SET, MIN_PAIRS, namedAncestor, partitionByOfferable,
+  reattributeMissingAnswers, UNGRADED_SHARE, type RecallRow,
 } from "../../scripts/recallSet";
+
+const base: RecallRow = {
+  name: "Co", country: "GB", instrument: "x", mode: "profile", split: "tune",
+};
 
 const rows = JSON.parse(readFileSync(
   path.join(process.cwd(), "lib", "intelligence", ACTIVE_RECALL_SET), "utf8")) as RecallRow[];
@@ -88,6 +93,46 @@ describe("the exclusion", () => {
     // only be excluded by publishability, so the way to cheat is to delete them.
     expect(MIN_PAIRS).toBeGreaterThan(0);
     expect(rows.length).toBeGreaterThanOrEqual(MIN_PAIRS);
+  });
+});
+
+describe("re-attribution of answers whose instrument was deleted", () => {
+  // The ancestor is DERIVED from the id, never listed. A rule that named the
+  // parent would be a patch for one workstream's deletion; this one repairs any
+  // programme split that loses its children.
+  it("reads the parent out of the id, and only the id", () => {
+    expect(namedAncestor("parent__child_ab12")).toBe("parent");
+    expect(namedAncestor("parent__a__b_ab12")).toBe("parent");
+    expect(namedAncestor("no_separator_here")).toBeUndefined();
+  });
+
+  it("re-points a deleted answer at an offerable ancestor, with provenance", () => {
+    const rows = [{ ...base, instrument: "p__gone_1" }];
+    const { rows: out, reattributed } = reattributeMissingAnswers(
+      rows, (id) => id === "p", (id) => id === "p");
+    expect(out[0].instrument).toBe("p");
+    expect(out[0].reattributedFrom).toBe("p__gone_1");
+    expect(reattributed).toHaveLength(1);
+  });
+
+  // Re-pointing an answer at something the founder still cannot be shown
+  // repairs nothing, so the row is left to fall through to the exclusion.
+  it("leaves the row alone when the ancestor is absent or unofferable", () => {
+    const rows = [{ ...base, instrument: "p__gone_1" }];
+    const noAncestor = reattributeMissingAnswers(rows, () => false, () => true);
+    expect(noAncestor.reattributed).toHaveLength(0);
+    expect(noAncestor.rows[0].instrument).toBe("p__gone_1");
+    const notOfferable = reattributeMissingAnswers(
+      rows, (id) => id === "p", () => false);
+    expect(notOfferable.reattributed).toHaveLength(0);
+  });
+
+  it("never touches a row whose instrument still exists", () => {
+    const rows = [{ ...base, instrument: "p__here_1" }];
+    const { rows: out, reattributed } = reattributeMissingAnswers(
+      rows, () => true, () => true);
+    expect(out).toEqual(rows);
+    expect(reattributed).toHaveLength(0);
   });
 });
 

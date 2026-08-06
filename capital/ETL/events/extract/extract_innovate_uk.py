@@ -180,12 +180,49 @@ def fetch_rows() -> list[dict]:
                     "grant_amount_eur": round(grant_gbp / rate, 2),
                     "total_project_cost_eur": round(cost_gbp / rate, 2) if cost_gbp else None,
                     "sector_tags_raw": (proj.get("grantCategory") or "").strip(),
-                    # Innovate UK's own scheme name for the award -- Knowledge
-                    # Transfer Partnership, Feasibility Studies, SBRI. It was
-                    # already read here and kept only as a free-text tag, so
-                    # 17,012 awards sat in one row whose medians differ tenfold
-                    # (SBRI EUR 292,668 against Responsive Strategy EUR 29,083).
-                    "programme_name": (proj.get("grantCategory") or "").strip() or None,
+                    # `programme_name` is deliberately NOT set from
+                    # `grantCategory`, and this is the whole GB story.
+                    #
+                    # populate_funding_instruments.py splits a source into one
+                    # child per distinct programme_name because "the unit a
+                    # founder actually applies to is the programme, and the
+                    # registers name it". That is the column's contract: a
+                    # programme_name must be an OFFER. GtR's grantCategory is a
+                    # CLASSIFICATION OF AN AWARD, and mapping it here made the
+                    # split manufacture sixteen rows that no founder can apply
+                    # to. They sat at mean sibling class 16.0 with zero recorded
+                    # on every facet -- the worst country in the corpus, and
+                    # unfixable by fetching, because the thing was never a fund.
+                    #
+                    # The test is the field's own domain, not any one value:
+                    # across the 330 cached GtR pages grantCategory takes 35
+                    # values, and they are competition FORMATS ("Collaborative
+                    # R&D", "Feasibility Studies", "Demonstrator", "Vouchers"),
+                    # PHASES of one old programme ("GRD Proof of Concept"),
+                    # government DEPARTMENTS ("Legacy Department of Trade &
+                    # Industry"), ORGANISATIONS ("Knowledge Transfer Network"),
+                    # a funding ORIGIN ("EU-Funded") and one value literally
+                    # called "Unknown". A field whose domain mixes formats,
+                    # departments and organisations is classifying awards, not
+                    # naming offers. Confirmed against Innovate UK's own
+                    # application service, where every open competition is a
+                    # specific named thing ("Farming Innovation Programme:
+                    # Feasibility Round 5") and "Feasibility" appears only as a
+                    # format suffix INSIDE that name -- which is exactly what
+                    # grantCategory records.
+                    #
+                    # Nothing is lost: the classification is kept, one line
+                    # above, in `sector_tags_raw`, where a classification
+                    # belongs. What it costs is the per-category award spread
+                    # (SBRI EUR 292,668 against Responsive Strategy EUR 29,083),
+                    # and that was only ever worth having if the categories were
+                    # offers. The rollup keeps the whole award history.
+                    #
+                    # The applicable unit in the UK is the COMPETITION, and this
+                    # API carries no competition identity in any field -- see
+                    # project-mgmt/findings/workstream_t_gb.md for the route to
+                    # real GB depth and what blocks it today.
+                    "programme_name": None,
                     "grant_amount_basis": "iuk_grant_offer_gbp_converted",
                     "raw_source_url": f"https://gtr.ukri.org/projects?ref={pid}",
                 })

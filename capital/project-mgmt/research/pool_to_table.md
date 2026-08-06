@@ -8,6 +8,25 @@ component that ran.
 
 ## Baseline, re-established rather than inherited
 
+> **SUPERSEDED 2026-08-06 by workstream K. Read this block before using any
+> number below it.** Everything in this note was measured at `N=200` with the
+> STRIDE sampler, which `95f5fce` showed aliases against this set's ordering
+> (N=200 gave EXACT@5 36%, N=250 gave 25%, same code), on a harness that
+> `dac300a` showed decays along a run, against a semantic index that was both
+> leaking and 19 hours stale. The *relative* findings below — which arm beat
+> which, on the same sample, in the same run — are unaffected and are why this
+> note is kept. The *levels* are not reproducible.
+>
+> Re-measured: seeded shuffle, holdout, `N=600`, three seeds, leak-free index.
+>
+> | | in pool | EXACT@5 | REGIME@5 |
+> |---|--:|--:|--:|
+> | as published here | 97% | 35% | 89% |
+> | **re-measured** | **75%** | **24%** | **87%** |
+>
+> The pool term is the one that broke, and this note's central claim depends on
+> it — see "Where the remaining loss actually is" at the end.
+
 ```
 cd website/frontend
 SET=__recallSetPlus.json     SPLIT=holdout N=200 npx tsx scripts/measure_recall.ts
@@ -179,6 +198,26 @@ seats. **The entire remaining loss is choosing one leaf out of a median of 75
 delivery bodies of one national regime**, and the only fact measured to separate
 them is the recipient region — `region_routing.md`, 44.2% @1 against a 28.3%
 popularity baseline, rising to 49.4% on the leak-free arm.
+
+> **This conclusion no longer holds as stated (workstream K, 2026-08-06).** It
+> rests entirely on "the won fund is in the pool 98% of the time", and the pool
+> measures **75%** under an unbiased draw — 70% on `profile` mode and **60% on
+> the regime-51+ population**, which is where the median-75 national regimes
+> this paragraph is about actually live.
+>
+> What survives: the *conditional* finding above it is still correct as
+> written, because it was scoped to the 125 cases where the won fund IS in the
+> pool and below the cut. Within that set, 85% still need a reorder rather than
+> lift.
+>
+> What does not: "the ENTIRE remaining loss is choosing one leaf". A quarter of
+> won funds are not in the pool at all, and for the crowded national regimes it
+> is two fifths. Leaf choice is one of two roughly comparable losses now, not
+> the whole of it — and the pool half cannot be reached by any ranking signal.
+>
+> Before re-planning on this: the pool fall is recorded as UNRESOLVED in
+> `project-mgmt/findings/leak_audit_wsK.md`. It is measurably not the leak that
+> workstream closed, and it may be a live regression rather than a true level.
 
 Region is inert in every run above, because `regionScorer` returns `() => 1`
 when no region is answered and the intake asks for it only adaptively. So the

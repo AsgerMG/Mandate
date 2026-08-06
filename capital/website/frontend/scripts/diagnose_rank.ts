@@ -1,9 +1,26 @@
-// The fund reaches the pool 97% of the time and is not in the five rows.
-// WHERE does it sit, and what is above it?
+// The fund reaches the pool, and is not in the five rows. WHERE does it sit,
+// and what is above it?
 //
-// The pool question is closed (SEL-LEAF-CAP, fixed by raising the cap). This is
-// the ranking question, isolated for the first time. No changes -- evidence
-// only, because five weight changes in one session moved nothing.
+// ── The premise below is RETIRED (2026-08-06, workstream K) ────────────────
+// This opened "the fund reaches the pool 97% of the time" and "the pool
+// question is closed (SEL-LEAF-CAP, fixed by raising the cap)". Both are now
+// false and the second is the more expensive of the two:
+//
+//   the 97%   came from a STRIDE-sampled n=200 run. The sampler aliased
+//             against the set's ordering (95f5fce) and the harness decayed
+//             along a run (dac300a). It is not reproducible by any unbiased
+//             draw.
+//   measured  holdout, seeded shuffle, n=600, three seeds, leak-free index:
+//             pool 75%, and 60% on the regime-51+ population that is most of
+//             the corpus.
+//
+// So this script's question is still worth asking, and it is no longer the
+// ONLY question: a quarter of won funds are not in the pool to be ranked. See
+// project-mgmt/findings/leak_audit_wsK.md -- the cause of the fall is recorded
+// as unresolved, and it is measurably not the leak that workstream closed.
+//
+// No changes -- evidence only, because five weight changes in one session
+// moved nothing.
 import { readFileSync } from "fs";
 try {
   for (const l of readFileSync(".env.local", "utf8").split("\n")) {

@@ -69,11 +69,14 @@ try {
 } catch { /* rely on the process environment */ }
 if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
-import { hydrateDbInstruments, loadDbInstruments, publishableInstruments } from "../lib/intelligence/corpus";
-import { computeVerdict } from "../lib/intelligence/pipeline";
 import {
-  assertGradablePopulation, DEFAULT_SEED, isDescribed, loadRecallSet, partitionByOfferable,
-  sampleRecall,
+  hydrateDbInstruments, loadDbInstruments, publishableInstruments, resetGateHydration,
+} from "../lib/intelligence/corpus";
+import { computeVerdict } from "../lib/intelligence/pipeline";
+import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
+import {
+  assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
+  partitionByOfferable, reattributeMissingAnswers,
 } from "./recallSet";
 
 async function main() {
@@ -97,48 +100,29 @@ async function main() {
       : regionMode === "strict"
         ? (r.regionSource === "other_scheme" ? r.region : undefined)
         : r.region || undefined;
-  // Only pairs whose won fund the product may actually offer. A closed scheme
-  // with no successor cannot be returned by retrieval and must not be, so
-  // scoring it as a miss measures the answer key rather than the ranker. The
-  // gate applies the SAME partition from the SAME helper -- a floor calibrated
-  // on one population and verified on another is not a floor.
+  // The SAME repair the gate applies, from the same helper: answers naming an
+  // instrument that was never a fund are re-attributed to the rollup the award
+  // belongs to; answers naming a correctly-closed fund are excluded. A floor
+  // calibrated on one population and verified on another is not a floor.
+  const corpus = loadDbInstruments();
+  assertAncestorConvention(corpus);
+  const inCorpus = new Set(corpus.map((i) => i.id));
   const offerable = new Set(publishableInstruments().map((i) => i.id));
-  const pop = partitionByOfferable(all, (id) => offerable.has(id));
-  assertGradablePopulation(pop, (id) => byId.has(id));
+  const fixed = reattributeMissingAnswers(
+    all, (id) => inCorpus.has(id), (id) => offerable.has(id));
+  const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
+  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
   const set = pop.graded.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
                              && (!process.env.DESCRIBED || described(r))
                              && (regionMode !== "strict" || Boolean(regionOf(r))));
-  const N = Math.min(Number(process.env.N ?? 250), set.length);
-  // A harness that reports 0/0 instead of failing is how a defect survives: an
-  // unparseable N produced NaN, an empty sample and a clean-looking "0/0 (NaN%)"
-  // rather than an error.
-  if (!Number.isFinite(N) || N <= 0) {
-    throw new Error(`N must be a positive number, got ${JSON.stringify(process.env.N)}`);
-  }
   if (!set.length) throw new Error(`no rows match split=${split} mode=${mode ?? "any"}`);
-  // Seeded shuffle, because BOTH of the obvious samplers are biased here.
-  //
-  // Slicing took the head of a mode-grouped list: 66% `project` against a true
-  // population of 16%, which read pool 92% where it was 74% and EXACT@5 49%
-  // where it was 35%. Stride fixed that and introduced a subtler version of the
-  // same fault. The set is strongly ordered -- by mode, by whether the pair was
-  // traced, and by instrument within that -- so `i % step` ALIASES against the
-  // ordering, and the sample you get depends on the step you happened to pick:
-  //
-  //   N=200 (step 14)  EXACT@5 36%   186 distinct instruments
-  //   N=250 (step 11)  EXACT@5 25%   220 distinct instruments
-  //   the two samples share 119 of 200 rows
-  //
-  // Same ranker, same split, same answer key, eleven points apart. Every
-  // cross-run comparison at different N was meaningless, and the published 36%
-  // was a property of step 14 rather than of the product.
-  //
-  // A seeded shuffle is deterministic -- runs stay comparable, which is the
-  // whole reason stride was chosen -- but it cannot align with the file's order
-  // because it does not consult it. SEED= varies it on purpose: if a result
-  // does not survive a change of seed, it was never there. See the CI printed
-  // below; a move smaller than it is noise, not a win.
+  // The sampler lives in `recallSample.ts` and is shared with
+  // check_recall_floor.ts. It used to be inline here, and the gate that fails
+  // the build kept its own STRIDE version -- so the floor and the measurement
+  // it floors were drawing different samples. SEED= varies the draw on
+  // purpose: a result that does not survive a change of seed was never there.
+  const N = Math.min(Number(process.env.N ?? 250), set.length);
   const seed = Number(process.env.SEED ?? DEFAULT_SEED);
   const sample = sampleRecall(set, N, seed);
 
@@ -169,7 +153,14 @@ async function main() {
   const sizeBucket = (n: number) =>
     n <= 1 ? "regime 1 (alone)" : n <= 5 ? "regime 2-5" : n <= 20 ? "regime 6-20"
       : n <= 50 ? "regime 21-50" : "regime 51+";
+  // Every pair graded from a COLD corpus, because that is what a founder
+  // gets: one request, one fresh invocation. Without this the module's
+  // lazily-hydrated gates accumulate across the run and recall decays along
+  // it -- 26% falling to 9% on the same 300 pairs depending only on where in
+  // the run they sat. See resetGateHydration.
+  resetGateHydration();
   for (const t of sample) {
+    resetGateHydration();
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
@@ -223,18 +214,10 @@ async function main() {
     g.n++; if (inPool) g.pool++; if (e5) g.e5++; if (r5) g.r5++;
     byRegime.set(rk, g);
   }
-  // The 95% binomial half-width, printed next to every headline figure so a
-  // change smaller than it cannot be reported as a win. At n=200 and p~0.3 this
-  // is about 6 points: several "improvements" accepted in this project were
-  // inside it, and the seeded shuffle above is what makes the interval mean
-  // anything at all.
-  const ci = (n: number, d: number) => {
-    const p = n / d;
-    return 100 * 1.96 * Math.sqrt((p * (1 - p)) / d);
-  };
   const pc = (n: number, d = stat.done) =>
-    `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${ci(n, d).toFixed(1)})`;
+    `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${halfWidth(n, d).toFixed(1)})`;
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
+              ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
               `${regionMode ? ` region=${regionMode}` : ""}  replayed ${stat.done}`);
   console.log(`  in pool                  ${pc(stat.pool)}`);
