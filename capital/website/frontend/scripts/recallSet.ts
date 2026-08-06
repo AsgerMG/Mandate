@@ -89,10 +89,39 @@ export function announceRecallSet(file: string, rows: RecallRow[], note = ""): v
   warnIfRetired(file);
 }
 
-/** For a harness that knows the set's NAME but not its rows — a fixture, say. */
+/** For a harness that knows the set's NAME but not its rows — a fixture, say.
+ *
+ *  ── Why this shouts, and why it shouts TWICE ───────────────────────────────
+ *  A banner printed when the set is LOADED is separated from the numbers it
+ *  qualifies by the whole run — minutes of output, and on a long replay it has
+ *  scrolled off the screen by the time the figure a human actually copies
+ *  appears. That is the same defect this file was written to fix: a number
+ *  whose provenance is technically on screen somewhere is a number that gets
+ *  quoted without it, which is how "35%" and "22%" were compared for weeks.
+ *
+ *  So the warning is re-printed on process exit, after the results, and goes to
+ *  stderr so it survives `| tail` and `> file` on the stdout the harnesses
+ *  print their tables to. The property to preserve if this is ever rewritten:
+ *  a retired-set figure cannot be read without its retirement notice in view.
+ */
 export function warnIfRetired(file: string): void {
   const why = RETIRED_RECALL_SETS[file];
   if (!why) return;
-  console.log(`  WARNING: ${file} is RETIRED — ${why}.`);
-  console.log(`  Numbers from it are NOT comparable with ${ACTIVE_RECALL_SET}.`);
+  const rule = "!".repeat(74);
+  const banner = [
+    rule,
+    `!! RETIRED RECALL SET: ${file}`,
+    `!! ${why}.`,
+    `!! Numbers from it are NOT comparable with ${ACTIVE_RECALL_SET},`,
+    "!! which is the one active answer key. Do not quote this run as a",
+    "!! headline figure; it is reproducing a published number, nothing else.",
+    rule,
+  ].join("\n");
+  console.error(banner);
+  if (retiredNoticePending) return;
+  retiredNoticePending = true;
+  process.on("exit", () => console.error(banner));
 }
+/** Guards against registering the exit notice once per load in a harness that
+ *  loads more than one set. */
+let retiredNoticePending = false;

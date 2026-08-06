@@ -6,12 +6,11 @@
 // the five have that the won fund lacks" is answered from the numbers rather
 // than from a hypothesis.
 //
-//   SET=__recallSetPlus.json SPLIT=holdout N=200 npx tsx scripts/diagnose_ordering.ts
+//   SPLIT=holdout N=200 npx tsx scripts/diagnose_ordering.ts
 //
 // Nothing here reimplements the ranker. Every scorer is imported from
 // shortlist.ts, so a component printed here is the component that ran.
 import { readFileSync } from "fs";
-import path from "path";
 try {
   for (const line of readFileSync(".env.local", "utf8").split("\n")) {
     const m = line.match(/^([A-Z_]+)=(.*)$/);
@@ -27,6 +26,7 @@ import {
 } from "../lib/intelligence/shortlist";
 import { sectorFit } from "../lib/intelligence/fit";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
+import { loadRecallSet } from "./recallSet";
 import type { DbInstrument } from "../lib/intelligence/corpus";
 
 interface Parts {
@@ -47,9 +47,14 @@ async function main() {
   await hydrateDbInstruments();
   const all0 = loadDbInstruments();
   const byId = new Map(all0.map((i) => [i.id, i]));
-  const setFile = process.env.SET ?? "__recallSetPlus.json";
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", setFile), "utf8")) as any[];
+  // Through `loadRecallSet`, like every other harness: it defaults to the one
+  // active set and prints which answer key produced the numbers below. This
+  // script used to default to `__recallSetPlus.json` and read it directly, so
+  // it was the last place in the tree that could quote a RETIRED set with no
+  // banner -- and Plus is retired for a reason that bites this script hardest:
+  // it carries the unrepaired sibling attribution, and this script exists to
+  // compare the won leaf against its siblings.
+  const { file: setFile, rows: all } = loadRecallSet("ordering diagnosis");
   const split = process.env.SPLIT ?? "holdout";
   const set = all.filter((r) => split === "all" || r.split === split);
   const N = Math.min(Number(process.env.N ?? 200), set.length);
