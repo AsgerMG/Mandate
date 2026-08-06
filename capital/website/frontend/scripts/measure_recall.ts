@@ -116,6 +116,26 @@ async function main() {
   // corrected peer-prior join is the case in point: it costs the rows the
   // ORIGINAL joins could trace and wins far more on the rows they could not.
   const byPop = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  // ── The anti-overfitting axis ──────────────────────────────────────────────
+  // The aggregate is dominated by one shape of company: the won fund sits in a
+  // regime of median 76 siblings (p10 12, p90 103, and only 3% of won funds sit
+  // in a regime of five or fewer -- `project-mgmt/research/target_arithmetic.md`).
+  // A change tuned to that shape can gain three points overall while destroying
+  // the founder whose fund stands nearly alone, and the headline will applaud.
+  //
+  // So report by the size of the group the ranker actually had to order. A
+  // signal that only works on crowds is a signal fitted to this corpus's
+  // distribution, not to what makes a fund the right one -- and it will break
+  // on the next country we load, whose regimes are shaped differently.
+  const byRegime = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  const regimeSize = new Map<string, number>();
+  for (const i of loadDbInstruments()) {
+    const p = (i as any).parentId ?? i.id;
+    regimeSize.set(p, (regimeSize.get(p) ?? 0) + 1);
+  }
+  const sizeBucket = (n: number) =>
+    n <= 1 ? "regime 1 (alone)" : n <= 5 ? "regime 2-5" : n <= 20 ? "regime 6-20"
+      : n <= 50 ? "regime 21-50" : "regime 51+";
   for (const t of sample) {
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
@@ -165,6 +185,10 @@ async function main() {
     const p = byPop.get(popKey) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
     p.n++; if (inPool) p.pool++; if (e5) p.e5++; if (r5) p.r5++;
     byPop.set(popKey, p);
+    const rk = sizeBucket(regimeSize.get(wantRegime) ?? 1);
+    const g = byRegime.get(rk) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    g.n++; if (inPool) g.pool++; if (e5) g.e5++; if (r5) g.r5++;
+    byRegime.set(rk, g);
   }
   const pc = (n: number, d = stat.done) => `${n}/${d} (${(100 * n / d).toFixed(0)}%)`;
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
@@ -179,5 +203,10 @@ async function main() {
                 `  exact5 ${(100*m.e5/m.n).toFixed(0)}%  regime5 ${(100*m.r5/m.n).toFixed(0)}%`);
   for (const [k, m] of byMode) line(`mode=${k}`, m);
   if (byPop.size > 1) for (const [k, m] of byPop) line(k, m);
+  // Ordered smallest group first: the top rows are the founders an
+  // overfitted change abandons, and they are the ones to read first.
+  const order = ["regime 1 (alone)", "regime 2-5", "regime 6-20", "regime 21-50", "regime 51+"];
+  console.log(`  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)`);
+  for (const k of order) { const m = byRegime.get(k); if (m) line(k, m); }
 }
 main();
