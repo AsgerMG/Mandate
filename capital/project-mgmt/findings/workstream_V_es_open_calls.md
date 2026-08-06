@@ -72,7 +72,7 @@ fetchable candidate set before a single detail request is made.
 
 ## The inclusion property
 
-Stated as four clauses, each a field the register publishes, none naming a
+Stated as five clauses, each a field the register publishes, none naming a
 programme, a body, a sector or a scheme code. `--audit` prices each clause with
 a leave-one-out so a clause that stops discriminating is visible rather than
 assumed.
@@ -83,6 +83,16 @@ assumed.
   directa. A direct concession names its recipient inside the instrument, so
   proposing one to a founder who is not that recipient wastes their time by
   construction.
+- **IN SCOPE** — the call's *política de gasto* is one the corpus already
+  publishes instruments under for that country. The register's `finalidad` ids
+  are Spain's budget classification in official order and ids 12-18 are exactly
+  group 4, `actuaciones de carácter económico` — but the admissible set is read
+  off the corpus rather than typed, so no Spanish policy name appears in logic.
+  Measured before adopting, which is what makes it a description rather than a
+  preference: **83 of the 84 existing leaves with a stated policy already sit in
+  the economic block, and none is `Fomento del Empleo`, `Cultura` or any social
+  policy.** Without this clause the harvest admits sports-club and film grants —
+  real money, awarded to real undertakings, and not what this corpus is.
 - **SUBSTANCE** — a stated budget at or above the floor, and at least three
   register facts that tell the call apart from its neighbours (purpose, sector,
   region, regulatory basis, notified measure — deliberately **not** the
