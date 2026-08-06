@@ -223,3 +223,27 @@ and move their class by exactly zero. The honest ceiling for France is below the
 Global scoreboard confirms FR 73/133 and IT unchanged at 47/88.
 Remaining French headroom is 8.01 -> ~1.3, and it is **source-blocked, not
 effort-blocked**.
+
+## 9. The new guard immediately found 10 more invisible rows — in other countries
+
+Running the reconciliation across the whole corpus, not just France:
+
+```
+rows with eligibility_text in SQLite but NOT in Postgres:
+  NL 7, FI 1, DE 1, AT 1
+```
+
+**Ten rows of fetched, loaded, reported-as-done work that the product has never
+seen.** France was not a one-off; it was the largest instance of a pattern that
+was already running.
+
+I have NOT published them. They belong to other workstreams, and publishing
+another agent's rows unasked is the exact failure `publish_scheme_text_scoped.py`
+was written to prevent. Each owner needs one command:
+
+```
+python3 ETL/terms/publish_scheme_text_scoped.py --country NL --country FI
+```
+
+The guard now makes this impossible to miss: any `--write` run scoped to those
+countries fails with the fix printed.
