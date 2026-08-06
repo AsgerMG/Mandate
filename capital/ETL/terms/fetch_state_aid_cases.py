@@ -69,15 +69,52 @@ KEEP = ["caseTitle", "caseOriginalTitle", "caseObjectivesStr", "caseObjectives",
 
 
 def scheme_codes(conn: sqlite3.Connection) -> list[tuple[str, float]]:
-    """Every notified scheme a SATR child sits under, largest first — so a
-    truncated run covers the schemes that carry the most money."""
-    return [(r[0], r[1] or 0.0) for r in conn.execute("""
+    """Every notified scheme an instrument sits under, largest first — so a
+    truncated run covers the schemes that carry the most money.
+
+    Two ways an instrument can name its scheme, and the register's record is
+    worth the same either way:
+
+      - `scheme_code` on the row. SATR children get this from the transparency
+        filing, which is where the column comes from.
+      - `sa_number` in a fetch record, for a row whose `scheme_code` is empty
+        because its source is not SATR. A national call register states the aid
+        measure its calls are made under, and that statement is as good an
+        identity as the filing's — it is the same field, from the member state
+        rather than from the Commission's aggregation of it.
+
+    The second route is read from `found_*.json` rather than from a column
+    because writing `scheme_code` is a different decision with its own
+    consequences (naming, the successor redirect, `live_codes`), and fetching a
+    public case record should not require making it first.
+    """
+    weight: dict[str, float] = {}
+    for sa, eur in conn.execute("""
         SELECT i.scheme_code, MAX(i.total_eur)
         FROM funding_instruments i
         JOIN funding_instruments p ON p.id = i.parent_id
         WHERE p.source_family_bucket = 'state_aid_satr'
           AND i.scheme_code IS NOT NULL AND TRIM(i.scheme_code) <> ''
-        GROUP BY 1 ORDER BY 2 DESC""")]
+        GROUP BY 1"""):
+        weight[sa] = max(weight.get(sa, 0.0), eur or 0.0)
+
+    total = {r[0]: (r[1] or 0.0) for r in
+             conn.execute("SELECT id, total_eur FROM funding_instruments")}
+    src = ROOT / "data" / "raw" / "scheme_enrichment"
+    if src.exists():
+        for f in sorted(src.glob("found_*.json")):
+            try:
+                recs = json.loads(f.read_text())
+            except Exception:
+                continue
+            for rec in recs:
+                sa = (rec.get("sa_number") or "").strip()
+                if not sa:
+                    continue
+                weight[sa] = max(weight.get(sa, 0.0),
+                                 total.get(rec.get("instrument_id"), 0.0))
+
+    return sorted(weight.items(), key=lambda kv: -kv[1])
 
 
 def fetch_case(sa: str) -> dict | None:

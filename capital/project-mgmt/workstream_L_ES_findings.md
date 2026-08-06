@@ -272,3 +272,101 @@ Fixed by adding `scheme_end_date` to `COLUMNS`. The tuple's comment says it is
 "deliberately short" because a wide UPDATE republishes a neighbour's work; that
 reasoning is right and is why the column belongs there specifically — this
 workstream writes it, in `lifetime_facts()`, so it is ours to publish.
+
+## The join key existed, and it was in the register all along
+
+The section above concludes "no join key to the register exists in our own
+data", and that is true and was the wrong place to look. `scheme_code` is `''`
+on all 87 leaves and our raw BDNS award extract carries no `codigoBDNS` — but
+the convocatoria detail payload the text is already composed from carries
+`ayudaEstado`, the notified aid measure the call is made under.
+
+```
+leaves carrying ayudaEstado:   85 of 87   (64 distinct SA numbers)
+already held in cases.json:     0 of 64
+```
+
+`fetch_bdns_convocatorias.py` had declared `sa_number` in every record from the
+start and never filled it. It fills it now. The fetcher was re-run and diffed
+field by field against the previous vintage: zero changes to `status`,
+`eligibility_text`, `scheme_end_date`, `confidence` or `administering_body`.
+
+`fetch_state_aid_cases.py` could not reach these, because it selects SA numbers
+from `scheme_code` on SATR children only. It now also reads `sa_number` out of
+the fetch records, which is general — any national register that states the aid
+measure behind its calls now reaches the case register, with no country or
+scheme id in the logic. 64 Spanish cases fetched, 64 titled.
+
+### What the case register can and cannot say about a call
+
+```
+leaves whose measure has a registered end date:   83 of 85
+of the 18 undated closed calls, now datable:      17
+   ... and the measure had already ended:         15
+```
+
+**Only a PAST measure end date is written, and the asymmetry is the whole
+rule.** A measure that has ended proves the call has ended — a call cannot
+outlive the measure authorising it. A measure still running proves nothing
+about the call, because calls under it open and shut on their own schedules, so
+writing its future date would state a deadline this call does not have on a row
+a founder is shown.
+
+13 leaves have a BDNS call date LATER than their measure's registered end date.
+Not acted on: the call window is the more specific claim and COALESCE keeps it.
+Recorded because it means the two registers disagree at the edges, and anyone
+treating `caseMeasureEndDate` as exact should know that.
+
+## Result, read out of Postgres
+
+```
+                          before      after
+ES eligibility_text          3          11
+ES administering_body       24          85
+ES scheme_end_date           0          82   (80 of them in the past)
+publishable instruments    721         635
+```
+
+Publishable-only sibling class, ES (`measure_sibling_by_country.ts`):
+
+```
+              leaves   nothing   admin_body   elig_text   all three
+before            87      88.0         48.3        88.0        48.3
+after              7       7.0          1.0         1.9         1.0
+```
+
+**Spain's sibling problem is closed, and almost none of it was a text problem.**
+80 of its 93 leaves are convocatorias whose application window shut — the
+product was proposing every one of them as live, because `scheme_end_date` is
+derived from SATR keyed on a `scheme_code` these rows do not have. The 7 that
+survive are separated completely by `administering_body` alone.
+
+That is the transferable finding, and it inverts the workstream's premise. Spain
+was not the corpus's worst text-coverage country. It was the corpus's worst
+LIVENESS-coverage country, and text coverage was the symptom: 3% of Spanish rows
+had eligibility text because 86% of Spanish rows are expired calls that should
+never have been offered text in the first place. **Before fetching prose for a
+country whose sibling class is huge, check what fraction of its leaves the
+corpus can even date.** A register keyed on something the rows do not carry
+gives NULL, and NULL reads as live.
+
+## What is still not right, and is not being papered over
+
+- **3 leaves are calls the register flags shut, gives no dates for, and whose
+  measure is still open.** We know they are closed and cannot say when. Their
+  text stays withheld and they stay publishable. There is no honest date to
+  write and none was invented. They are also plausibly the opposite — a window
+  the register has not published yet ("HUBS 2024-2026", "proyectos estratégicos
+  de I+D 2025-2028") — which is exactly why nothing is asserted.
+- **`has_text()` accepts a `description` alone**, so a record whose prose is
+  withheld still counts as loadable on the strength of a title over 40 chars.
+  It writes no rules, so nothing incorrect reaches a founder, but the loader's
+  "loadable" count overstates. Left alone: it is shared machinery and every
+  other country's numbers are quoted against the current behaviour.
+- **`delivery_region` remains unpopulated and the earlier section is right**
+  about why. But `Ámbito regional` in the composed text is a NUTS id on every
+  live leaf (`ES22`, `ES51`, `ES11`), and the corpus has `catchment_region` /
+  `catchment_regions` / `catchment_source` — the DECLARED catchment, which is
+  exactly the claim `regiones` makes. That is the right home for it and it is
+  the obvious next Spanish move; it belongs to whoever owns the region
+  workstream, not to this one.

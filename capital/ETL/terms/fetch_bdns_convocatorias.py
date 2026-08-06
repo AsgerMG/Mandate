@@ -95,6 +95,28 @@ DELAY_S = 0.7
 # Below this many sectors, the sector list is a real restriction worth reading;
 # at or above it the register is enumerating essentially the whole economy.
 SECTOR_LIST_MAX = 8
+# The Commission's case records, as fetch_state_aid_cases.py leaves them. Read,
+# never written, and absent-file-tolerant: this fetcher's own source is BDNS,
+# and the case register is a second opinion it can do without.
+CASES = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
+
+
+def measure_end(sa: str) -> str | None:
+    """The registered end date of notified measure `sa`, if the case is held.
+
+    `caseMeasureEndDate` arrives as either a string or a one-element list
+    depending on the record, which is why this unwraps rather than indexes --
+    populate_funding_instruments.py carries the same `_one` helper for the same
+    reason.
+    """
+    if not hasattr(measure_end, "_cache"):
+        try:
+            measure_end._cache = json.loads(CASES.read_text())  # type: ignore[attr-defined]
+        except Exception:
+            measure_end._cache = {}  # type: ignore[attr-defined]
+    v = (measure_end._cache.get(sa) or {}).get("caseMeasureEndDate")  # type: ignore[attr-defined]
+    v = v[0] if isinstance(v, list) and v else v
+    return (v or "")[:10] or None
 
 
 def norm(s: str | None) -> str:
@@ -288,6 +310,27 @@ def main() -> None:
                 # than inferred from award recency -- which cannot see it,
                 # since a resolved call keeps paying out for years.
                 end = (d.get("fechaFinSolicitud") or "")[:10] or None
+                sa = (d.get("ayudaEstado") or "").strip() or None
+                # ── When BDNS will not date a call, its measure can ──────────
+                # 18 leaves are calls the register flags shut while giving no
+                # closing date at all, so nothing could tell the corpus they
+                # were over. Their notified measure has a registered end date,
+                # and a call cannot outlive the measure authorising it.
+                #
+                # Only a PAST measure end date is written, and the asymmetry is
+                # the point. A measure that ended proves the call ended. A
+                # measure still running proves nothing about the call -- calls
+                # under it opened and shut on their own schedules -- so writing
+                # its future date would state a deadline this call does not
+                # have, on a row a founder is shown. Where the measure is still
+                # open the call stays undated and its text stays withheld
+                # below: we know it is shut, we cannot say when, and we
+                # therefore publish none of its rules.
+                end_basis = "call" if end else None
+                if not end and sa:
+                    m = measure_end(sa)
+                    if m and m < dt.date.today().isoformat():
+                        end, end_basis = m, "measure"
                 # A call the register says is SHUT and gives no closing date
                 # for is the one state where publishing its rules is unsafe:
                 # the loader's liveness gate judges on scheme_end_date, so with
@@ -312,7 +355,6 @@ def main() -> None:
                 # the corpus they are over. Their SCHEME has a registered end
                 # date, and it bounds the call -- a call cannot outlive the
                 # measure authorising it.
-                sa = (d.get("ayudaEstado") or "").strip() or None
                 rec.update(
                     found=True, status=st, confidence=None if withheld else conf,
                     sa_number=sa,
@@ -325,6 +367,9 @@ def main() -> None:
                     match_basis=f"BDNS codigoBDNS={cod}, title prefix match",
                     note=f"{nspec} discriminating register facts; "
                          f"abierto={d.get('abierto')} fin={d.get('fechaFinSolicitud')}"
+                         + (f"; end date from measure {sa}, which the case "
+                            f"register closed on {end} -- the call cannot "
+                            f"outlive it" if end_basis == "measure" else "")
                          + ("; text withheld: register says closed and gives no "
                             "closing date, so the corpus cannot be told it is over"
                             if withheld else ""),
