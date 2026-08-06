@@ -61,6 +61,15 @@ COLUMNS = (
     # expired rules as current guidance, which is the precise outcome the
     # active-only rule exists to prevent.
     "scheme_end_date",
+    # And ALWAYS beside it. `scheme_end_date` alone is not a fact, it is half of
+    # one: the same column holds a call's application deadline and a State-aid
+    # notification's expiry, and only the basis says which. Publishing the date
+    # without it lands an unlabelled date, which the liveness test reads as a
+    # call deadline and closes -- so shipping one column and not the other would
+    # unpublish every renewed SATR measure in the countries being published,
+    # which is exactly the 306-leaf outage of 2026-08-06. They travel together
+    # or neither travels.
+    "scheme_end_date_basis",
 )
 
 
