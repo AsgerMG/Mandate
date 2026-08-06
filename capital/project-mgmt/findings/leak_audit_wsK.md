@@ -235,6 +235,28 @@ place to change hydration semantics while other workstreams are running. The
 measurements below were re-taken with Postgres idle and with the fallback line
 grepped for explicitly; runs that hit it were discarded rather than reported.
 
+## Stale figures: swept, and the two that were left alone
+
+Corrected in place, each saying what the figure was, what it is, and why:
+
+| file | what was wrong |
+|---|---|
+| `project-mgmt/research/target_arithmetic.md` | The decomposition `36% = 97% x 89% x 40%`. Re-derived to `24% = 75% x 87% x 37%`, and the CONCLUSION changed: the binding factor moved from leaf choice to the pool. |
+| `project-mgmt/research/pool_to_table.md` | "The won fund is in the pool 98% of the time" and "the ENTIRE remaining loss is choosing one leaf". The conditional 85%-reorder finding survives; the headline claim does not. |
+| `project-mgmt/CONTINUE_HERE.md` | Both copies of the `pool 97% / EXACT@5 36% / REGIME@5 89%` headline. |
+| `scripts/diagnose_rank.ts` | "The pool question is closed (SEL-LEAF-CAP, fixed by raising the cap)." It is not closed. |
+| `scripts/measure_sibling_choice.ts` | The same decomposition, as the script's whole rationale. |
+
+**NOT corrected, because this branch may not touch these files:**
+
+| file | the stale text |
+|---|---|
+| `lib/intelligence/sectorPrior.ts` | Line 13 carries `pool 97% x regime@5 89% x right-leaf 40% = EXACT@5 36%`, and lines 86-91 evaluate four scorer variants "against a 36% / 89% baseline" at holdout n=200. The variants were compared against each other in one run, so the KEPT/REJECTED verdicts stand; the levels do not. |
+| `lib/intelligence/shortlist.ts` | Line 51 (`cap 60 -> pool 97%`), line 1517 (`pool recall fell 97% -> 83% when this was a filter`), and lines 1558-1567 (holdout EXACT@5 32%/33%, REGIME@5 87%). Same reading: relative comparisons survive, absolute levels do not. |
+
+Both are on the ranking path and both are being edited by other workstreams
+tonight. Whoever next opens either should re-head the number, not the finding.
+
 ## Corpus movement
 
 Coverage agents are writing eligibility text to FR, ES and SE while this runs.
