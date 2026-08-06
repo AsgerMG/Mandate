@@ -45,6 +45,12 @@ Neither number is wrong; a number quoted without its population is.
 | **`semanticCache.generated.json`** | **DERIVED-CONTAMINATED.** 18 cached description->score maps scored against `instrument_profiles`. Inherits both defects above; must be regenerated after the profile rebuild, not before. |
 | **`profileLeakIndex.generated.json`** | DERIVED. Emitted from `instrument_profiles.profile_text`; correct today, but must be re-emitted with the profiles or `check_recall_leaks.ts` grades a string that is no longer what retrieval scores against — which is the exact gap that artifact exists to close. |
 
+### Examined, leak present, DELIBERATELY not closed
+
+| artifact | verdict |
+|---|---|
+| `award_p50` / `award_n` / `event_count` | LEAKING, BOUNDED, ACCEPTED. `populate_funding_instruments.py` holds out only the four *graded* columns and says event counts and award percentiles are "descriptions and are not graded". **That justification is wrong on the facts** — `awardP50` feeds `ticketFit` in the row sort and `eventCount` is a sort tiebreak, both in `shortlist.ts`. The conclusion still stands, for a different reason: a replayed company contributes one award to a median over `awardN`, `ticketFit` returns a neutral 1 whenever `awardN < AWARD_N_FLOOR`, and one event cannot move a tiebreak over thousands. The leak is real, its magnitude is a rounding error, and closing it would mean re-deriving 400 columns. Recorded rather than fixed — but the *reason* in that comment should be corrected when someone next edits it. |
+
 ### Clean by construction (checked, no change needed)
 
 | artifact | why it cannot carry this leak |
@@ -54,6 +60,8 @@ Neither number is wrong; a number quoted without its population is.
 | `__objectives.json` / `emit_instrument_objectives.py` | Keyed on the GBER article number from the transparency register. What Art. 25(2)(c) permits is EU law, not a fit to our awards. |
 | `regions.generated.ts` | NUTS region names and codes. Geography, not award history. |
 | `evidenceTiers.json` | Tier definitions. No fitting. |
+| `synthesis.py`, `country_map.py`, `coverage_indicator.py` (`website/build/`) | Award-fitted, and correctly so. These are published CORPUS STATISTICS — how much money, which countries — that no harness grades. A real founder is not in the test set, so excluding test companies here would make the site's headline figures wrong to protect a measurement that does not read them. This is the case `--include-recall-set` exists for. |
+| `encode_intensity.py` (`intensity_p50`) | Award-fitted. Read by the brief as a displayed field (`aidIntensity`), not by any scorer, so it cannot vote on rank. Out of the graded shape. |
 
 ### NOT REACHED — stones still unturned
 
