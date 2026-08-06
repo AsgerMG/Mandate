@@ -23,8 +23,15 @@
 //
 // ── What is NOT claimed ───────────────────────────────────────────────────
 // This does not improve the five rows a founder sees, and it was measured
-// trying. See `scripts/measure_sibling_choice.ts` for the numbers and the
-// header of `sectorScorer` for why. It is kept because it is the strongest
+// trying. See `scripts/measure_sibling_choice.ts` for the numbers. Wiring it
+// into `pref` alongside the objective, award and region scorers was tried in
+// four forms (channel-scoped, regime-scoped as a permutation key, regime-scoped
+// as a multiplier, and softened to 1.08) and every one measured at or below
+// baseline -- monotone back toward it, never above. That is a signal harmful
+// WHERE IT WAS PUT rather than mis-tuned: it displaces an ordering better than
+// itself, since production picks the right leaf given the regime ~40% of the
+// time against this signal's 33.1% @3. The wired arm was discarded and is not
+// in the tree. It is kept because it is the strongest
 // within-regime chooser the corpus supports and because it is near-orthogonal to
 // region, which is the property a second separator has to have to be worth
 // anything. Wiring it into the table is a decision for whoever owns the row
