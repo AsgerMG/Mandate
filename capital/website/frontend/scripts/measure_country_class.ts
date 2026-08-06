@@ -22,6 +22,7 @@
 import { readFileSync } from "fs";
 import { Client } from "pg";
 import { isClosed, today } from "../lib/intelligence/liveness";
+import { hasOfferRoute } from "../lib/intelligence/offerRoute";
 for (const line of readFileSync(
   new URL("../../../.env.local", import.meta.url), "utf8").split("\n")) {
   const m = line.match(/^([A-Z_]+)=(.*)$/);
@@ -36,7 +37,7 @@ type Row = {
   eligibility_text: string | null; is_framework: boolean | null;
   scheme_end_date: string | null; scheme_end_date_basis: string | null;
   last_year: number | null; scheme_code: string | null;
-  successor_scheme: string | null;
+  successor_scheme: string | null; route_status: string | null;
 };
 
 /** Not a framework, has no children, and not closed -- where a closed row naming
@@ -60,6 +61,11 @@ function publishable(all: Row[]): Set<string> {
   const out = new Set<string>();
   for (const r of all) {
     if (r.is_framework || hasChildren.has(r.id)) continue;
+    // IMPORTED, for the same reason liveness is: a row that is not an offer is
+    // withheld on a different axis from a row whose window has shut, and a
+    // hand-copy of either is how this script came to report 119 live leaves as
+    // unpublishable.
+    if (!hasOfferRoute({ routeStatus: r.route_status })) continue;
     const revived = closed(r) && r.successor_scheme && !liveCodes.has(r.successor_scheme);
     if (closed(r) && !revived) continue;
     out.add(r.id);
@@ -107,7 +113,7 @@ async function main() {
     SELECT id, parent_id, country, administering_body, delivery_region,
            eligibility_text, is_framework, scheme_end_date,
            scheme_end_date_basis, last_year, scheme_code,
-           successor_scheme
+           successor_scheme, route_status
       FROM funding_instruments`);
   await db.end();
 
