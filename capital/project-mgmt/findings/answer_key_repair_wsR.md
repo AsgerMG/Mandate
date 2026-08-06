@@ -93,16 +93,33 @@ Four things make this the honest form rather than a convenient one:
    alone — it cannot read the query, the company, the sector, or whether the
    ranker gets it right — so it cannot select for pairs that flatter the score.
    Tested in `lib/intelligence/recallPopulation.test.ts`.
-4. **It is guarded two-sidedly, and fatally.** `UNGRADED_SHARE = {min:10,
-   max:33}` in `recallSet.ts`. Above the ceiling, the corpus has moved out from
-   under the key again and the key needs repairing — the alarm that would have
-   caught tonight's drift the day it happened instead of as a red floor nobody
-   could explain. Below the floor, either publishability has regressed and
-   closed funds are being offered again, or someone has pruned the file to
-   raise a score. Both are bugs; neither is a passing build.
+4. **It is guarded, and fatally** — but by two instruments, not one, and getting
+   that split right took a correction mid-session:
+   - `UNGRADED_SHARE.max = 33` is a **staleness ceiling**. Above it, the corpus
+     has moved out from under the key again and the key needs repairing. This is
+     the alarm that would have caught tonight's drift the day it happened,
+     instead of as a red floor nobody could explain.
+   - `MIN_PAIRS = 4700` is the **anti-pruning guard**, and it sits on the file.
+     The first draft put a FLOOR on the ungraded share instead, reasoning that a
+     suspiciously small exclusion meant someone had pruned the set. That was the
+     wrong instrument for the right worry: the exclusion is a pure function of
+     publishability, so it cannot be used to drop inconvenient pairs, and the
+     only way to make this measurement easier is to delete rows — which no share
+     can see. Worse, the floor would have fired on a genuine *improvement*:
+     register successors for those 86 schemes and the exclusion collapses toward
+     zero, failing CI on a corpus that got better.
 
-The band is a staleness alarm on the answer key, **not** a quality floor, and
+The ceiling is a staleness alarm on the answer key, **not** a quality floor, and
 widening it is not a legitimate response to it firing.
+
+A third guard was drafted and then **deleted as wrong**: a 2% fatal cap on the
+ABSENT share, meant to stop anyone measuring across a corpus reload. Measurement
+killed it within the hour — the corpus settled with 16 instruments genuinely
+gone, so 4.0% ABSENT was the state of a *correct* corpus and the cap would have
+failed the build on it. A guard that fails on a correct corpus gets suppressed,
+and then it guards nothing. ABSENT is now reported, and the reload hazard is
+handled by the fingerprint-before-and-after practice at the end of this file,
+because a single read cannot tell a reload in flight from one that finished.
 
 ## The bias this introduces, stated rather than hidden
 
@@ -275,6 +292,180 @@ Consequences:
 Nothing in the above is a criticism of K2's audit, whose leak findings are
 independent of this and stand.
 
+## The SECOND kind of stale answer: 192 pairs that were never funds
+
+Folded in after workstream T landed at `73d52a4`, and it wants a different
+repair from the first.
+
+T established that all 16 of GB's leaves were values of GtR's `grantCategory` —
+competition FORMATS (Collaborative R&D, Feasibility Studies, Vouchers), PHASES
+of a retired programme, government DEPARTMENTS, an organisation, a funding
+origin, and one literally called `Unknown` — mapped into `programme_name`, the
+column the instrument split runs on. The corpus manufactured 16 non-funds, and
+the answer key recorded companies as having "won Collaborative R&D".
+
+**These are not stale. They are wrong**, and the distinction decides the repair:
+
+| | closed schemes | never funds |
+|---|---|---|
+| pairs | 1,008-1,032 | 192 |
+| instruments | 86 (80 ES, 6 FR) | 16 (all GB) |
+| was it ever offerable? | yes | **no** |
+| did the award happen? | yes | **yes** |
+| successor available? | no, 0 of 86 | n/a |
+| repair | **exclude** | **re-attribute** |
+
+For the closed schemes the award is sound and the fund is simply past;
+retrieval is right to withhold it and grading that as a miss grades the key.
+
+For the 16, the award is equally real — the money came from Innovate UK — but
+our object model invented the thing it was attributed to. Excluding them would
+throw away 192 real pairs and quietly cost GB coverage. The rollup they were
+split out of is a real fund with a real quoted application route, and it is
+exactly what a founder should be shown, so **retrieval returning the rollup is a
+genuine hit** and re-attribution is the honest repair.
+
+### Derived from the id, not from a list
+
+The programme split names a child `<parent>__<slug>_<hash>`, so the parent is a
+property of the id itself. Verified against the live corpus rather than assumed:
+
+```
+ids containing "__"           671
+  prefix === parentId         671
+  prefix names an existing row 671
+```
+
+`assertAncestorConvention()` re-checks that on every run and fails the build if
+the naming ever changes, because a derivation this repair depends on must not
+degrade silently. **No country, scheme code or parent id appears anywhere in the
+rule.** A different programme split that loses its children tomorrow is repaired
+by the same line of code.
+
+Re-attribution is refused when the ancestor is missing or is itself unofferable
+— re-pointing an answer at something the founder still cannot be shown repairs
+nothing, so the row falls through to the exclusion instead.
+
+### Reported separately, never netted
+
+Every run of the gate and the harness prints all four populations:
+
+```
+answer key, 4,796 pairs:
+  GRADED          3788 (79.0%)  answer is a fund the product may offer
+    of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+      scored against the rollup the award actually belongs to
+  WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+  ABSENT             0 (0.0%)   names an instrument the corpus no longer holds
+                                and whose ancestor is not offerable either
+```
+
+**The re-attributed 192 are almost certainly the easiest pairs in the set** — a
+single large national rollup is far easier to retrieve than one convocatoria out
+of eighty siblings. That is why they are broken out on their own line rather
+than folded into GRADED. Anyone comparing a figure across this change must know
+that 4.0% of the graded population is now scored against a rollup.
+
 ## Re-derived floors
 
-See `scripts/check_recall_floor.ts` for the derivation kept beside the numbers.
+| | before | after | pinned measurement | direction |
+|---|--:|--:|--:|---|
+| pool | 90 | **93** | 98 | RAISED |
+| EXACT@5 | 15 | **22** | 32 | RAISED |
+| REGIME@5 | 80 | **80** | 87 | unchanged |
+| REGIME@5 original join | 68 | **70** | 85 (n=151) | RAISED |
+| REGIME@5 traced | 82 | **84** | 90 (n=149) | RAISED |
+
+**Nothing was lowered.** The build is green because the question the set asks
+became answerable again, not because the bar moved.
+
+Margins are deliberately not uniform. SEED and N are pinned, so sampling noise
+inside the margin is zero — the same 300 pairs every run — and the margin buys
+exactly one thing: room for the corpus and the index to move. That is measured,
+not assumed. On the SAME pinned sample across tonight's corpus states, the
+traced population moved 98 -> 90 and REGIME@5 moved 90 -> 87, while pool did not
+move at all. So the width goes where the movement is: 10 points under EXACT@5,
+5 under pool.
+
+REGIME@5 could have risen to 82 and was left at 80: 83 is the lowest a seed
+produced, and two points is not a margin.
+
+## The corrected baseline, three seeds
+
+Tune split, n=300, repaired key, Postgres held, corpus fingerprinted before and
+after each individual run:
+
+| seed | corpus clean? | pool | EXACT@5 | REGIME@5 | original join | traced |
+|---|---|--:|--:|--:|--:|--:|
+| 20260806 (pinned) | CLEAN | 98 | 32 | 87 | 85 (n=151) | 90 (n=149) |
+| 7 | CLEAN | 97 | 29 | 83 | 79 (n=164) | 89 (n=136) |
+| 99 | **DIRTY** | 96 | 28 | 83 | 76 (n=157) | 91 (n=143) |
+
+Seed 99 straddled a corpus change and is reported rather than calibrated on.
+
+An earlier three-seed pass at n=600 gave pool 96-98, EXACT@5 28-29, REGIME@5
+86-88 on the previous corpus state; it is consistent, and it straddled the
+1,014 -> 998 reload, so it is not used for calibration either.
+
+**`npm run check` exits 0**, with the corpus verified identical before and after
+the whole run:
+
+```
+ok   pool     98% (floor 93%)
+ok   exact5   29% (floor 22%)
+ok   regime5  87% (floor 80%)
+ok   regime5  83% (floor 70%)  original join, n=151
+ok   regime5  91% (floor 84%)  traced:exact_attribution, n=149
+```
+
+Note EXACT@5 read 29 here against 32 on the pinned calibration run, because the
+corpus moved between them. The margin absorbed it, which is what the margin is
+for.
+
+## Did this fix the ~17-point pool fall workstream S is chasing?
+
+**Yes, and it should be said plainly rather than left to be inferred: it was
+never a fall.**
+
+`check_recall_floor.ts` recorded pool at 94-96 before and 78 on the identical
+pinned sample after, and held the floor at 90 with the build deliberately red.
+Holding it was the right call. But pool did not fall TO 78 — it was CLAMPED at
+78, because 78.5% was the arithmetic ceiling the stale key imposed. Retrieval
+was finding 95.5% of everything it was permitted to find.
+
+Two independent observations that only this explanation accounts for:
+
+1. An index built `--include-recall-set` and one built holdout-clean, at the
+   same moment on the same corpus, **both read pool 78**. Two different indexes
+   cannot agree to three significant figures by chance; they agreed because
+   neither was the binding constraint.
+2. The swing between 97% and 77% on an identical tree with `funding_instruments`
+   byte-identical is reproduced exactly by whether the run held Postgres — the
+   fallback JSON carries zero ES scheme end dates, so through it nothing is
+   closed and the stale key is perfectly valid.
+
+So S's remaining question is not "what took a fifth of the pool away" — nothing
+did. If a residual gap survives against the repaired key, it is a different and
+much smaller question, and it should be re-measured from this baseline rather
+than from 78.
+
+## The corpus would not hold still, and that is now the standing practice
+
+Four distinct movements were observed while this work was done:
+
+| time (UTC) | funding_instruments | note |
+|---|---|---|
+| 21:31 - 21:38 | 1,014 | stable across three reads; first baseline taken here |
+| 21:46 | 998 | 16 rows gone mid-baseline; seeds 7 and 99 straddled it |
+| 21:50 | 998, new hash | contents changed, count did not |
+| 22:20 | **1,076**, profiles still 998 | the two tables out of sync, mid-load |
+
+**A stability check taken only at the START of a run passes and still yields a
+number nobody can reproduce.** Every figure quoted in this file was taken with
+the corpus fingerprinted (row count + SHA-256 over ordered rows) immediately
+before and immediately after the run, and any run whose two prints disagreed is
+labelled DIRTY above rather than quietly averaged in.
+
+That last row is worth its own note: `funding_instruments` at 1,076 while
+`instrument_profiles` still holds 998 means the ranking index describes a corpus
+that no longer exists. A harness run in that window grades a chimera.

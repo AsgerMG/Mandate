@@ -20,7 +20,24 @@ of everything it was permitted to find. It had not regressed at all.
 The key now grades only funds the product may actually offer — a property
 computed from `publishableInstruments()`, not a baked-in list — and excluded
 pairs are retained and reported rather than deleted. **Against the repaired key,
-pool is back at 96-98%.**
+pool is back at 96-98% and `npm run check` is green with every floor RAISED or
+unchanged** (pool 90 -> 93, EXACT@5 15 -> 22, populations 68 -> 70 and 82 -> 84).
+
+A SECOND kind of stale answer was folded in with workstream T: 192 pairs named
+one of the 16 GB "instruments" that were never funds. Those are **re-attributed**
+to the rollup the award actually belongs to, not excluded — the award is real and
+only the object it was attributed to was invented. The ancestor is derived from
+the `<parent>__<child>` id convention (verified 671/671, re-asserted at runtime),
+never from a list. All four populations print on every run:
+
+```
+GRADED 3788 (79.0%)   of which RE-ATTRIBUTED 192 (4.0%)
+WITHHELD 1008 (21.0%)   ABSENT 0 (0.0%)
+```
+
+**The re-attributed 192 are the easiest pairs in the set** — one national rollup
+beats one convocatoria out of eighty siblings — which is exactly why they are on
+their own line rather than folded into the headline.
 
 **Two traps this leaves for anyone reading a pool figure taken tonight:**
 
