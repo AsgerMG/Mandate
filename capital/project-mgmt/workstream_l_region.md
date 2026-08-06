@@ -76,3 +76,114 @@ honest source is the **declared** catchment from the programme's own publication
    while their siblings do — regional agencies, the exact geography case. Repair.
 3. Class C, missing region: collect **declared** catchment, kept distinct from the
    measured footprint already in `delivery_region`.
+
+Baseline scoreboard at the start of this workstream (commit `907cd12`):
+
+```
+administering_body           mean class 19.7  uniq 15%  present 80%
+delivery_region              mean class 30.5  uniq  6%  present 29%
+admin_body + delivery_region mean class 19.3  uniq 19%  present 80%
+ALL THREE J OMITTED          mean class 18.0  uniq 36%
+```
+
+---
+
+## Batch 1 — a hard negative: the body's NAME is not its catchment
+
+The obvious cheap route is to read the granting body's own official name and resolve
+the place in it against the NUTS name register — no fetching, works on all 640 leaves
+that have a body. It is already documented as having failed once here (as a source for
+the *measured* region), so I rebuilt it as a *declared* claim with a general
+morphological rule — stem-prefix matching, so `bayern`/`bayerisches` and
+`wallonie`/`wallonne` match — and, crucially, **scored it against the measured footprint
+on the leaves that have both**, which is the check the first attempt could not run.
+
+It resolves 181 of 640 leaves. Of the 84 where a measured footprint exists to check it
+against, **10 are outright contradictions — a 12% error rate** — and the errors are not
+noise, they are the rule being wrong:
+
+| body | name resolves to | measured | what the name actually was |
+|---|---|---|---|
+| ADEME (France) | FR10 Île-de-France | — | the **country**, in a national agency's title |
+| Finanzamt Aachen-Stadt | DE144 | DEA | a **branch office** of a national administration |
+| POLITECNICO DI MILANO | ITC4C | ITF | the **HQ city** of a national-scope recipient |
+| Conseil régional Hauts-de-France | FR10 | FRE | "France" inside the region's own name |
+| Enterprise Ireland | IE0 | — | the country again |
+
+The generalisable defect, which is why no amount of tuning saves it: **a place name inside
+an organisation's name is not a statement of catchment.** It is sometimes the country,
+sometimes the head office, sometimes the branch, and only sometimes the territory served.
+The four failure modes above are distinct causes, so there is no single threshold that
+removes them, and the false positives are concentrated exactly where the method looked
+most productive — "ADEME (France) → FR10" alone would have written a false Île-de-France
+claim onto 76 leaves.
+
+**Route abandoned. Do not re-attempt it, in either direction.** The probe is
+`scratchpad/probe_bodyname.py`; the numbers above are its output.
+
+## Batch 2 — the source that is actually declared, and is already in the repo
+
+`data/raw/state_aid_cases/cases.json` holds the Commission's own registration for 467 SA
+numbers, including `caseRegions` — the regions the scheme is *registered for*. That is a
+declared catchment in the strict sense: a filed rule about scope, not a history.
+
+It reaches further than expected because **the SA number is nearly a leaf key**: 453 of
+the 797 leaves carry a `scheme_code`, across 377 distinct SA numbers. So the registration
+discriminates siblings rather than describing their shared parent.
+
+```
+leaves with an SA number matched to a case   453   (0 unmatched)
+  case declares a SUB-NATIONAL catchment     163
+  case declares country-wide only            290   <- a declared "no regional claim"
+```
+
+The 290 matter as much as the 163. Today a NULL `delivery_region` means either "serves
+the whole country" or "nobody has looked", and a founder cannot tell those apart. For 290
+leaves the Commission has answered it.
+
+Measured on the scoreboard's own definition, before any vintage repair:
+
+```
+declared catchment alone       mean class 34.1  uniq 11%  present 57%
+measured delivery_region       mean class 30.5  uniq  6%  present 29%
+body + measured                mean class 19.3  uniq 19%  present 80%
+body + measured + declared     mean class 18.9  uniq 26%  present 80%
+```
+
+**+7 points of uniquely-identified leaves from geography alone**, without touching
+`eligibility_text`.
+
+### The vintage trap inside it
+
+Comparing declared against measured looked like 25 contradictions. Nearly all are false:
+the case register writes NUTS in the vintage current when the scheme was notified, and
+the corpus speaks NUTS 2024.
+
+- `Regione Lombardia` declares **IT2**, measures **ITC4** — one place, two vintages.
+- `Centro 2030` declares **PT111…PT15** (28 codes), measures **PT19** — same place.
+- `Autorità di gestione FESR Campania` declares **IT8**, measures **ITF3**.
+
+So the declared value **must be translated to NUTS 2024 before it is stored or compared**,
+or every consumer re-derives the same false disagreement. `nuts_names.json` carries an
+`ids` map (id → name, vintages 2024/2021/2016/2013) which gives old id → name → 2024 id.
+Codes older than 2013 (`IT2`, `IT8` are NUTS 2006/2010) are not in it and are **skipped,
+not guessed**.
+
+### Where it gets written, and why not into `delivery_region`
+
+`delivery_region` is in `BUILT_COLUMNS` of `populate_funding_instruments.py`, i.e. that
+pass **owns** it and a rebuild overwrites it. Columns it does not write are preserved by
+difference (see its "Columns this pass does not compute belong to somebody else" block).
+A declared catchment therefore goes in **new columns**, which makes it survive a rebuild
+by construction *and* keeps the two claims from being merged into one string that no
+reader could take apart:
+
+- `catchment_region` — the declared catchment, one NUTS 2024 id, country-level allowed
+  (unlike `delivery_region`, where a country means "no claim"; here "all of Germany" is
+  itself the answer)
+- `catchment_regions` — JSON array, for a body serving several regions
+- `catchment_source` — where the declaration was read
+
+The brief assumed `delivery_region` was the declared catchment. **It is not**: every one
+of its 232 values comes from `staged_region_mix()` and is a measured footprint. That is
+recorded here rather than silently reconciled.
