@@ -111,3 +111,83 @@ class 1.8 — effectively done) and `Vinnova` n=50 (0% covered, class 48.0).
 
 **Sweden's entire remaining job is the 50-leaf Vinnova regime.** Nothing else in
 SE moves the number.
+
+---
+
+## FINDING 2 (2026-08-06) — the scoreboard counts rows the product cannot show,
+### and it flatters us. Publishable-only, the real number is 25.5, not 18.0.
+
+`publishableInstruments()` drops any instrument whose registered
+`scheme_end_date` has passed (unless the register names a successor we do not
+already hold live), plus frameworks, parents and rows under the data floor.
+293 of 1,014 instruments never reach a founder. `measure_sibling_coverage.ts`
+counts all 1,014.
+
+Restricted to the 721 publishable rows, there are 34 multi-leaf regimes holding
+518 leaves, and the mean sibling class is **25.5, not 18.0**. The all-rows figure
+is optimistic because the closed rows it includes are disproportionately the
+well-covered German ones.
+
+The publishable-only table is a different priority list:
+
+```
+cc    leaves  cov%      none  admin_body  elig_text   ALL3
+FR       105   23%      60.2        54.3       54.3   54.0
+ES        87    0%      87.0        47.4       87.0   47.4
+DE        72   83%      52.0         3.7        2.2    1.1
+SE        56   11%      43.8        43.1       43.0   43.0
+EU        50    0%       7.5         7.5        7.5    7.5
+IT        32   34%      23.6         2.3       11.8    1.3
+CZ        29   14%      29.0         5.1       21.7    4.2
+GB        16    0%      16.0        16.0       16.0   16.0
+```
+
+**Italy is 32 publishable leaves and was already at 1.3.** There was never much
+there. FR (105 @ 54.0), ES (87 @ 47.4) and SE (56 @ 43.0) are the whole problem,
+and GB at 16 @ 16.0 is untouched by every field we record.
+
+---
+
+## BATCH 1 (2026-08-06) — Italy, 21 rows, zero external fetches.
+
+**The text was already on disk and the loader was refusing it.**
+`load_scheme_text.py` gated on the fetch record's free-text `status` field, and
+40 of Italy's 58 uncovered instruments were skipped because an agent had written
+`status: "closed"`. That field describes a CALL (a sportello, a bando window,
+a graduatoria approved), not a scheme. 18 of the 40 are rows the product
+publishes today: the register's `scheme_end_date` is 2026-12-30 or later.
+
+Fixed by making the loader ask the corpus's own liveness question -- the same
+`scheme_end_date` + successor test `publishableInstruments()` applies -- instead
+of trusting the fetch record's prose. A scheme the register says has expired is
+still refused. Also fixed: `--country` was declared but the loop never applied
+it, so any agent running `--write` was loading every other agent's countries.
+Added `--postgres` for a scoped mirror, because `migrate_to_postgres.py` is a
+full truncate + reinsert and would publish four other agents' in-flight SQLite
+edits along with mine.
+
+Result on publishable IT leaves:
+
+```
+                coverage        mean class (ALL3)
+  before          34%                 1.3
+  after           88%                 1.2
+```
+
+**Coverage +54pp bought 0.1 of sibling class.** Exactly what Finding 1 predicted:
+`administering_body` had already taken Italy to 2.3 and there was nowhere left
+to go. Reported as a negative result on purpose -- Italy is finished, and it was
+nearly finished before this batch.
+
+Remaining IT gaps are 4 rows the fetching agent could not find text for
+(mur.gov.it returns 403 to the fetch tool, recorded in the source file and not
+worked around) and 32 rows the register says are closed.
+
+### Data-quality flag for whoever owns liveness, not mine to fix
+18 Italian rows are PUBLISHABLE by `scheme_end_date` while their own source page
+says the money is gone: "Contributi assegnati; 73 imprese in 21 partenariati"
+(SA.119248), "chiusura dello sportello ... a seguito dell'esaurimento delle
+risorse disponibili" (SA.111168), "Graduatoria ... approvata" (SA.109440).
+The SATR end date is the aid measure's legal validity, which outlives the call.
+Founders are being shown these. `deadline` is already captured verbatim in
+`data/raw/scheme_enrichment/found_IT.json` for every one of them.

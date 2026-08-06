@@ -282,9 +282,15 @@ def main() -> None:
                 st = status_of(d)
                 body = ((d.get("organo") or {}).get("nivel3") or "").strip() or None
                 url = f"https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria/{cod}"
+                # The register's word on when this call stopped accepting
+                # applications. Same claim `scheme_end_date` already holds for
+                # SATR children (migration 023), stated by the register rather
+                # than inferred from award recency -- which cannot see it,
+                # since a resolved call keeps paying out for years.
+                end = (d.get("fechaFinSolicitud") or "")[:10] or None
                 rec.update(
                     found=True, status=st, confidence=conf,
-                    eligibility_text=text,
+                    eligibility_text=text, scheme_end_date=end,
                     description=(d.get("descripcion") or r["name"]),
                     scheme_url=url, source_url=url,
                     eligibility_source_url=d.get("urlBasesReguladoras") or url,
