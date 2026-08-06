@@ -188,6 +188,14 @@ def main() -> None:
                         # which of them a given founder can apply to.
                         "delivery_region TEXT", "delivery_region_share DOUBLE PRECISION",
                         "recipient_region_mix TEXT",
+                        # The DECLARED catchment (migration 025): the territory a
+                        # body is registered to serve, from the Commission's own
+                        # case register. Deliberately NOT delivery_region, which is
+                        # the measured award footprint -- a history, not a rule.
+                        # Country-level values are meaningful here and NULL in the
+                        # measured column, so the two cannot share storage.
+                        "catchment_region TEXT", "catchment_regions TEXT",
+                        "catchment_source TEXT",
                         # The scheme's own published page (load_scheme_text.py,
                         # 285 descriptions and 241 eligibility texts across all
                         # 20 in-corpus countries). It reached the embeddings,

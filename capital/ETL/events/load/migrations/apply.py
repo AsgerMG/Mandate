@@ -440,6 +440,16 @@ def apply_024(conn: sqlite3.Connection) -> None:
     print("  applied 024_delivery_region.sql")
 
 
+def apply_025(conn: sqlite3.Connection) -> None:
+    """catchment_region — the territory a body is REGISTERED to serve, which is a
+    rule, as against delivery_region's measured award footprint."""
+    if column_exists(conn, "funding_instruments", "catchment_region"):
+        print("  skip 025 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "025_declared_catchment.sql").read_text())
+    print("  applied 025_declared_catchment.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -462,6 +472,7 @@ MIGRATIONS = {
     "022": apply_022,
     "023": apply_023,
     "024": apply_024,
+    "025": apply_025,
 }
 
 

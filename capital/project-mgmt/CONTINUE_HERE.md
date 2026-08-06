@@ -85,12 +85,49 @@ first.** M reached no treatment number — the baseline table in its report is t
   `workstream-l-it-se`.
 - EU: 11 of 67 covered; `eic` and `innovation_fund` fully resolved to class 1.00.
 
+## 5b. SPAIN IS CLOSED, AND IT WAS NEVER A TEXT PROBLEM (`workstream-l-es2`)
+
+Merged to main by workstream Q; see `project-mgmt/workstream_L_ES_findings.md`
+and `project-mgmt/findings/workstream_Q_merge.md`.
+
+- The previous Spanish result **never left SQLite**, and the scoped publisher
+  could not have carried it anyway: `publish_scheme_text_scoped.py` omitted
+  `scheme_end_date`, the one column that for Spain IS the result. 64 of 87 BDNS
+  leaves are convocatorias whose window shut; publishing prose without that date
+  ships expired rules as current guidance. **The column is now in `COLUMNS`.**
+- **`load_scheme_text.py` is MONOTONIC** — it skips ids that already have text,
+  so a source that WITHDRAWS a claim can never be honoured by re-running it.
+  `retract_unasserted_text.py` closes that: it clears text no fetch record
+  asserts verbatim and leaves rows in no fetch record alone. It caught 18 bad
+  published rows. **If a register changes its mind, the loader will not notice.
+  Run the retraction.**
+- **The join key was never missing.** `fetch_state_aid_cases.py` now reads
+  `sa_number` off fetch records as well as `scheme_code` off SATR children; the
+  BDNS payload carries `ayudaEstado` on 85 of 87 Spanish leaves. That dated 16
+  of the 18 calls BDNS itself refused to date. No country or scheme id in the
+  logic — it is a general fallback.
+- **Only a PAST measure end date is written** (`fetch_bdns_convocatorias.py`).
+  A measure that ended proves the call ended; a measure still running proves
+  nothing about a call, and writing its future date would state a deadline the
+  call does not have. Where the measure is still open the call stays undated and
+  **its text stays withheld** — we know it is shut, we cannot say when.
+- `measure_sibling_by_country.ts` reports coverage publishable-only and
+  per-country, hydrated from Postgres, reusing the real `publishableInstruments()`
+  rather than copying the liveness rule.
+
 ## 6. UNMERGED BRANCHES HOLDING MEASURED WORK — CHECK BEFORE STARTING
 
 `wsG-region`, `wsG-scorer-width` (its `regionPrior.test.ts` is RED),
 `wsJ-representative-chooser`, `wsM-sibling-collapse`, `workstream-l-it-se`,
 `workstream-l-thin`, `workstream-l-no-eu`, `workstream-l-region`. Findings files
 are under `project-mgmt/`.
+
+`workstream-l-fr2` and `workstream-l-es2` are **merged** (the latter by
+workstream Q). **`wsP-liveness` is rewriting the liveness rule itself** — 290
+instruments were marked closed from CALL windows and 163 of them awarded money
+after their supposed end date. Everything in 5b above WRITES `scheme_end_date`,
+so P and this work meet on that column: see the merge note for what P must
+reconcile.
 
 ## 7. FREE WIN, NOT YET TAKEN
 
@@ -155,7 +192,113 @@ would move the class by zero.
 
 ## HISTORY BELOW — THE 36% IN THE NEXT SECTION IS THE ARTIFACT DESCRIBED ABOVE
 
-## THE HONEST HEADLINE
+## STOP: THE 36% NEVER EXISTED, AND 95% EXACT IS NOT REACHABLE
+
+**1. The published EXACT@5 36% was a sampling artifact.** `measure_recall.ts`
+took every Nth row and the recall set is strongly ordered, so the stride ALIASED
+against that ordering. Same code, same split, same answer key:
+
+```
+N=200 (step 14)   EXACT@5 36%    186 distinct instruments
+N=250 (step 11)   EXACT@5 25%    220 distinct instruments   sharing 119 of 200 rows
+```
+
+Fixed in `95f5fce` with a seeded shuffle — equally deterministic, but it cannot
+align with the file's order because it never consults it. Across six
+configurations: **EXACT@5 ~28% +/-6, REGIME@5 ~87%, pool ~97%.** The harness now
+prints the 95% binomial half-width beside every figure, because several accepted
+"improvements" in this project were smaller than it. **Any recall number written
+before `95f5fce` is not comparable to one after it.** Use three seeds
+(`SEED=20260806`, `SEED=7`, `SEED=99`) or n>=600 before believing a move.
+
+**2. The 95% EXACT target is arithmetically out of reach from this corpus.**
+`project-mgmt/research/target_arithmetic.md` has the decomposition:
+
+```
+EXACT@5 = pool 97%  x  regime@5 89%  x  right-leaf-given-regime 40%
+```
+
+The won fund sits in a regime of **median 76 siblings** (p90 103; only 3% sit in
+a regime of five or fewer, none alone). 95% needs the leaf factor at **99%**.
+Measured ceiling for a perfect chooser reading everything recorded: **27% @1 on
+offer facets, 38.8% with the best posterior breaking ties.** Short by 2.5x, and
+that is a bound over the corpus, not a property of an implementation.
+
+**3. But the constraint is COVERAGE, not ranking — and that is actionable.**
+`scripts/measure_sibling_coverage.ts` (commit `d9fed89`) over 53 multi-leaf
+regimes, 797 leaves, where guessing leaves a class of 53.3:
+
+```
+J's six offer facets           mean class 31.3
+administering_body             mean class 19.7   present 80%   uniquely IDs 15%
+eligibility_text (verbatim)    mean class 28.7   present 29%   uniquely IDs 20%
+all three J omitted            mean class 18.0                 uniquely IDs 37%
+```
+
+The two fields that separate best are the two barely collected, and the ceiling
+tracks coverage country by country:
+
+```
+DE 87/121 72% -> 3.8 siblings     NL 16/32 50% -> 3.3     IT 30/88 34% -> 2.2
+FR 24/133 18% -> 48               ES  3/94  3% -> 44      NO 0/74, EU 0/67
+```
+
+**Germany proves the recipe. France and Spain are where the product's whole
+question lives and where we wrote down almost nothing.** The siblings are not
+inherently indistinguishable — we have not recorded what distinguishes them.
+
+## THE PM'S DECISIONS, 2026-08-06 — do not re-litigate
+
+- **Spend the next effort on register coverage, not on ranking.** Ranking work
+  cannot move the ceiling; coverage roughly doubles it where it lands.
+- **When siblings are indistinguishable on record, show ONE row** naming the
+  programme with the delivery bodies as the routing question they are — not
+  three rows, not a guessed leaf presented confidently. This also frees the
+  2 of 5 seats currently spent on siblings we rank wrong anyway.
+- The 95% EXACT target is retired as unreachable. Regime recall near 95% is
+  reachable; exact rises with coverage, not with weights.
+
+## WHAT IS IN FLIGHT (8 workstreams, told to hand in at budget exhaustion)
+
+Each was required to commit WIP and keep a running findings file under
+`project-mgmt/`. **Check for those files and for unmerged branches before
+starting anything** — `wsG-region`, `wsG-scorer-width`, `wsJ-representative-chooser`
+and the workstream M branch all hold measured work that is NOT on main.
+
+- **K** — `sector_mix` CONTAINS THE ANSWER KEY (built over awards including the
+  replayed companies'; worth 1.7-2.8pp). Closing it, and auditing every other
+  award-fitted artifact for the same defect. **Assume unfinished.**
+- **M** — the one-row collapse, gated on indistinguishability rather than on
+  `parent_id`. Must report STRICT and ROW exact side by side.
+- **L-FR, L-ES, L-IT/SE, L-NO/EU, L-THIN, L-REGION** — coverage, split by
+  register so they do not collide on rows.
+
+## MEASURED DEAD ENDS FROM TODAY — do not retry
+
+- **Region as the sibling chooser.** At regime width it scores 13.7% @1 against
+  popularity's 13.7%. Its 44% reputation was a property of 7.4-member same-name
+  groups and does not survive widening. Region as a *fact* (which body serves
+  which territory) is still wanted; region as a *ranking signal* is dead.
+- **Any posterior fitted on award history.** Fit the sector mix to a cut year and
+  test after it: **34.5% @1 in-sample against 10.9% out-of-sample**, floor 6.7%.
+  This is what overfitting looks like here, and it governs the design.
+- **`sectorScorer` wired into `pref`** — four forms, all at or below baseline,
+  monotone back toward it and never above. Harmful where it was PUT, not
+  mis-tuned. Record kept in `lib/intelligence/sectorPrior.ts`.
+- **Naive `parent_id` collapse** — REGIME@5 89->95% but EXACT@5 to 14%, and it
+  hides real options: 38 of 53 multi-member regimes (72%) are heterogeneous.
+
+## ONE LIVE RISK
+
+**The leaf cap is three instruments from binding a third time.** At 90, the
+widest channel/country group is Spanish SATR at **87**. This constant has been
+the single largest loss in the product twice (14 -> 40 -> 90). A structural
+guard is now in `npm run check` (`scripts/check_leaf_cap.ts`) and is proven to
+fire at both 40 and 14, so it will catch the third — but it will fire, and soon.
+
+---
+
+## THE HONEST HEADLINE (SUPERSEDED — the 36% below is the artifact described above)
 
 `SPLIT=holdout N=200 npx tsx scripts/measure_recall.ts` on the composed set
 (the default; every harness now prints which set it used):

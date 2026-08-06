@@ -52,6 +52,15 @@ COLUMNS = (
     "eligibility_fetched_at",
     "administering_body",
     "delivery_region",
+    # Written by load_scheme_text.py's lifetime_facts() pass, so it is this
+    # workstream's column and belongs in this list. It is also the one column
+    # here that REMOVES rows from the product rather than describing them:
+    # publishableInstruments() drops a scheme whose end date has passed. Spain
+    # is the demonstration -- 64 of its 87 BDNS leaves are convocatorias whose
+    # window shut, and publishing the prose without this date ships their
+    # expired rules as current guidance, which is the precise outcome the
+    # active-only rule exists to prevent.
+    "scheme_end_date",
 )
 
 
