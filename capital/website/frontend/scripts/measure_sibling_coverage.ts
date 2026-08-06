@@ -22,8 +22,7 @@ async function main() {
   const { rows } = await db.query(`
     SELECT id, parent_id, country, administering_body, delivery_region,
            capital_type, award_p50, scheme_end_date, is_framework,
-           eligibility_text, eligibility_confidence, name,
-           catchment_region, catchment_regions, catchment_source
+           eligibility_text, eligibility_confidence, name
       FROM funding_instruments`);
 
   const byRegime = new Map<string, any[]>();
@@ -48,15 +47,6 @@ async function main() {
     ["eligibility_text", (r) => h(r.eligibility_text)],
     ["admin_body + delivery_region", (r) => h(r.administering_body) + "|" + h(r.delivery_region)],
     ["ALL THREE J OMITTED", (r) => h(r.administering_body) + "|" + h(r.delivery_region) + "|" + h(r.eligibility_text)],
-    // Workstream L-REGION. delivery_region is the MEASURED award footprint; the
-    // declared catchment is a different claim (which territory the body is
-    // registered to serve) and lives in its own columns, so it is measured on its
-    // own line and never folded into the one above.
-    ["catchment_region (declared)", (r) => h(r.catchment_region)],
-    ["catchment_regions (full set)", (r) => h(r.catchment_regions)],
-    ["BOTH GEOGRAPHIES", (r) => h(r.administering_body) + "|" + h(r.delivery_region) + "|" + h(r.catchment_regions)],
-    ["GEOGRAPHY + eligibility_text", (r) => h(r.administering_body) + "|" + h(r.delivery_region) +
-      "|" + h(r.catchment_regions) + "|" + h(r.eligibility_text)],
   ];
 
   for (const [label, key] of facets) {
