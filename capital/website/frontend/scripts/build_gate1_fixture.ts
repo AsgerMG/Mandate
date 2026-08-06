@@ -31,6 +31,7 @@ try {
 
 import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { loadRecallSet } from "./recallSet";
 import { Client } from "pg";
 
 const SUBSET = Number(process.env.SUBSET ?? 40);
@@ -49,8 +50,7 @@ async function main() {
       .map((r: any) => [r.instrument_id, r.profile_text as string]));
   await pg.end();
 
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
+  const { file: setFile, rows: all } = loadRecallSet("fixture ground truth");
   const split = process.env.SPLIT ?? "holdout";
   const set = all.filter((r) => r.split === split);
   const N = Math.min(Number(process.env.N ?? 80), set.length);
@@ -135,7 +135,13 @@ async function main() {
   try { sha = execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim(); } catch { /* not a checkout */ }
   mkdirSync(OUT_DIR, { recursive: true });
   const out = path.join(OUT_DIR, `gate1_${split}.json`);
-  writeFileSync(out, JSON.stringify({ builtAt: new Date().toISOString(), gate1Sha: sha, split, subsetSize: SUBSET, cases }, null, 1));
+  // The fixture records the answer key it was built from as well as the gate-1
+  // SHA. A gate-2 number is only comparable to another if BOTH match: the
+  // ranker and the ground truth are two independent things a fixture pins.
+  writeFileSync(out, JSON.stringify({
+    builtAt: new Date().toISOString(), gate1Sha: sha, split, subsetSize: SUBSET,
+    recallSet: setFile, recallSetPairs: all.length, cases,
+  }, null, 1));
 
   const inSubset = cases.filter((c) => c.subset.some((s: any) => s.id === c.want)).length;
   const baseline = cases.filter((c) => c.baselineTop5.includes(c.want)).length;

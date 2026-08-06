@@ -65,6 +65,7 @@ try {
 } catch { /* rely on the process environment */ }
 
 import { selectFiveFunds } from "../lib/intelligence/fundSelection";
+import { warnIfRetired } from "./recallSet";
 
 const MODEL = process.env.MODEL ?? "claude-haiku-4-5";
 const SPLIT = process.env.SPLIT ?? "holdout";
@@ -196,6 +197,19 @@ async function parserOnlyGate2(client: Anthropic, pg: any, c: any) {
 
 async function main() {
   const fx = JSON.parse(readFileSync(`fixtures/gate1_${SPLIT}.json`, "utf8"));
+  // The fixture carries its own answer key. A gate-2 number measured against a
+  // different one is not comparable and there is no way to tell from the score,
+  // so the set is named on every run — and a fixture built before the sets were
+  // recorded is named as unknown rather than assumed to be the current one.
+  if (fx.recallSet) {
+    console.log(`recall set: ${fx.recallSet}  ` +
+                `${Number(fx.recallSetPairs ?? 0).toLocaleString()} pairs  ` +
+                `[via fixtures/gate1_${SPLIT}.json, gate1@${fx.gate1Sha}]`);
+    warnIfRetired(fx.recallSet);
+  } else {
+    console.log(`recall set: UNKNOWN — fixtures/gate1_${SPLIT}.json predates set ` +
+                `recording. Rebuild with build_gate1_fixture.ts before quoting it.`);
+  }
   const N = Math.min(Number(process.env.N ?? fx.cases.length), fx.cases.length);
   // Stride the fixture rather than taking the head: the cases are not shuffled
   // and the first ones are easier, which is exactly how the 80%-vs-49% error

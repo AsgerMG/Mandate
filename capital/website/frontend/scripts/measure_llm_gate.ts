@@ -25,7 +25,6 @@
 //   npx tsx scripts/measure_llm_gate.ts            # 30 holdout companies
 //   N=60 MODEL=claude-sonnet-5 npx tsx scripts/measure_llm_gate.ts
 import { readFileSync } from "fs";
-import path from "path";
 import Anthropic from "@anthropic-ai/sdk";
 
 try {
@@ -38,6 +37,7 @@ try {
 import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../lib/intelligence/corpus";
 import { Client } from "pg";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { loadRecallSet } from "./recallSet";
 
 const MODEL = process.env.MODEL ?? "claude-sonnet-5";
 // How many candidates to hand the model. Screen one's whole job in this
@@ -50,8 +50,7 @@ async function main() {
   const insts = loadDbInstruments();
   await hydrateGatesFor(insts.map((i: any) => i.id));
   const byId = new Map(loadDbInstruments().map((i: any) => [i.id, i]));
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
+  const { rows: all } = loadRecallSet();
   const hold = all.filter((r) => r.split === "holdout");
   const N = Math.min(Number(process.env.N ?? 30), hold.length);
   const step = Math.max(1, Math.floor(hold.length / N));

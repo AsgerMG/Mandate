@@ -26,7 +26,6 @@
 //   SPLIT=tune N=60 npx tsx scripts/measure_description_lift.ts
 //   ARM=real npx tsx scripts/measure_description_lift.ts   # one arm only
 import { readFileSync } from "fs";
-import path from "path";
 
 // Same loader as measure_recall.ts: without VOYAGE_KEY and DATABASE_URL this
 // would grade the lexical fallback, not the ranker that ships.
@@ -40,6 +39,7 @@ if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { loadRecallSet } from "./recallSet";
 
 interface Pair {
   name: string; country: string; sector?: string; instrument: string;
@@ -78,9 +78,7 @@ async function rank(t: Pair, description: string | undefined) {
 async function main() {
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
-  const setFile = process.env.SET ?? "__recallSet.json";
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", setFile), "utf8")) as Pair[];
+  const { file: setFile, rows: all } = loadRecallSet() as unknown as { file: string; rows: Pair[] };
   const templates = templateBySector(all);
 
   const split = process.env.SPLIT ?? "holdout";

@@ -69,7 +69,6 @@
 //   npx tsx scripts/measure_funnel_recall.ts
 //   SPLIT=holdout N=120 MODE=profile npx tsx scripts/measure_funnel_recall.ts
 import { readFileSync } from "fs";
-import path from "path";
 
 try {
   for (const line of readFileSync(".env.local", "utf8").split("\n")) {
@@ -83,12 +82,12 @@ import { computeVerdict } from "../lib/intelligence/pipeline";
 import { openFieldsForShortlist, openProjectGatesForShortlist } from "../lib/intelligence/gateReach";
 import { scoreEase } from "../lib/intelligence/ease";
 import type { ProjectAnswer } from "../lib/intelligence/types";
+import { loadRecallSet } from "./recallSet";
 
 async function main() {
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i: any) => [i.id, i]));
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
+  const { rows: all } = loadRecallSet();
 
   const split = process.env.SPLIT ?? "holdout";
   const mode = process.env.MODE;

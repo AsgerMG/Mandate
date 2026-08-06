@@ -27,7 +27,7 @@ import {
 } from "../lib/intelligence/shortlist";
 import { sectorFit } from "../lib/intelligence/fit";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
-import type { DbInstrument } from "../lib/intelligence/types";
+import type { DbInstrument } from "../lib/intelligence/corpus";
 
 interface Parts {
   id: string; rank: number; channel: string; parent: string;

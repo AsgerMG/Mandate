@@ -29,7 +29,6 @@
 // attribution 66.2%. Run it both ways if you doubt it — the difference is the
 // answer key, not the method.
 import { readFileSync } from "fs";
-import path from "path";
 
 try {
   for (const line of readFileSync(".env.local", "utf8").split("\n")) {
@@ -42,6 +41,7 @@ if (process.env.NO_PG) delete process.env.DATABASE_URL;
 import { hydrateDbInstruments, loadDbInstruments, type DbInstrument } from "../lib/intelligence/corpus";
 import { regionScorer } from "../lib/intelligence/shortlist";
 import { regionFootprints } from "../lib/intelligence/regionPrior";
+import { loadRecallSet } from "./recallSet";
 
 interface Pair {
   name: string; instrument: string; split: string;
@@ -74,10 +74,9 @@ async function main() {
     + `  covering ${groupOf.size} leaves`);
   console.log(`  ...with a region footprint ${[...groupOf.keys()].filter((id) => fp[id]).length}`);
 
-  const setFile = process.env.SET ?? "__recallSetRepaired.json";
+  const { file: setFile, rows: loaded } = loadRecallSet();
   const split = process.env.SPLIT ?? "holdout";
-  const pairs = (JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", setFile), "utf8")) as Pair[])
+  const pairs = (loaded as unknown as Pair[])
     .filter((p) => split === "all" || p.split === split);
 
   const rows: { want: string; group: DbInstrument[]; region: string; src: string }[] = [];

@@ -5,7 +5,6 @@
 // the ranking question, isolated for the first time. No changes -- evidence
 // only, because five weight changes in one session moved nothing.
 import { readFileSync } from "fs";
-import path from "path";
 try {
   for (const l of readFileSync(".env.local", "utf8").split("\n")) {
     const m = l.match(/^([A-Z_]+)=(.*)$/); if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
@@ -13,12 +12,12 @@ try {
 } catch { /* env */ }
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { selectInstrumentRows, materialiseInstrumentTable } from "../lib/intelligence/shortlist";
+import { loadRecallSet } from "./recallSet";
 
 async function main() {
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", "__recallSet.json"), "utf8")) as any[];
+  const { rows: all } = loadRecallSet();
   const set = all.filter((r) => r.split === "holdout" && r.mode === (process.env.MODE ?? "profile"));
   const N = Math.min(Number(process.env.N ?? 100), set.length);
   const step = Math.max(1, Math.floor(set.length / N));

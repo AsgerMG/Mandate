@@ -20,11 +20,15 @@
 // being made; `holdout` is not looked at until it is finished. Split by a hash
 // of the COMPANY so one company can never appear on both sides.
 //
+// WHICH SET. The default is the one active set (`scripts/recallSet.ts`), and
+// the banner naming it prints on every run. `SET=` still loads a retired set,
+// loudly, so a published number stays reproducible -- never quietly.
+//
 //   npx tsx scripts/measure_recall.ts                       # holdout, both modes
 //   SPLIT=tune MODE=profile npx tsx scripts/measure_recall.ts
-//   SET=__recallSetEnriched.json npx tsx scripts/measure_recall.ts
-//   SET=__recallSetEnriched.json DESCRIBED=1 npx tsx scripts/measure_recall.ts
-//   SET=__recallSetRepaired.json REGION=any npx tsx scripts/measure_recall.ts
+//   DESCRIBED=1 npx tsx scripts/measure_recall.ts
+//   REGION=any npx tsx scripts/measure_recall.ts
+//   SET=__recallSet.json npx tsx scripts/measure_recall.ts  # retired, says so
 //
 // REGION answers the intake's region question, which no other run does. A real
 // founder always knows where they are; the harness has to recover it from the
@@ -44,15 +48,15 @@
 // the siblings. Region ranks the won leaf first 24.9% of the time against that
 // key and 66.2% against the repaired one -- same rows, same scorer.
 //
-// SET and DESCRIBED exist because the harness has a second, separate defect from
-// the one the modes describe. `__recallSetEnriched.json`
-// (ETL/terms/enrich_recall_set.py) recovers a real, leak-checked description for
-// rows that had none, and marks the pre-existing ones whose description sits
-// verbatim inside the won fund's own profile text -- 46% of the holdout `project`
-// rows. DESCRIBED=1 keeps only rows carrying a leak-free real description, which
-// is the population the product is actually trying to serve.
+// DESCRIBED=1 keeps only rows carrying a leak-free real description, which is
+// the population the product is actually trying to serve. The active set
+// recovers those descriptions from an award under a DIFFERENT regime and
+// re-verifies them against `instrument_profiles.profile_text` in Postgres; a
+// row whose description sits inside the won fund's own profile is excluded
+// rather than counted, because it would grade retrieval on a query copied out
+// of the answer. That defect covered 46% of the old set's holdout `project`
+// rows and is what `check_recall_leaks.ts` now keeps out of CI.
 import { readFileSync } from "fs";
-import path from "path";
 
 // Same loader as trace_pool.ts. Without it an unexported shell measures the
 // LEXICAL fallback while production ranks on embeddings -- the harness would be
@@ -67,20 +71,19 @@ if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { isDescribed, loadRecallSet } from "./recallSet";
 
 async function main() {
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
-  const setFile = process.env.SET ?? "__recallSet.json";
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", setFile), "utf8")) as any[];
+  const { file: setFile, rows: all } = loadRecallSet();
   const split = process.env.SPLIT ?? "holdout";
   const mode = process.env.MODE;
   // A row whose description leaks into the won fund's profile is excluded from
   // the DESCRIBED population rather than counted as described: it would grade
-  // retrieval on a query copied out of the answer.
-  const described = (r: any) => Boolean((r.description ?? "").trim())
-    && r.descriptionSource !== "own_project_title_leaks";
+  // retrieval on a query copied out of the answer. `isDescribed` is shared, so
+  // no two harnesses can disagree about which rows that is.
+  const described = isDescribed;
   // "strict" restricts the POPULATION as well as the answer, because a pair
   // with no leak-free region is not a pair whose region we withhold — it is one
   // we cannot honestly supply, and scoring it as if the founder had refused to
