@@ -252,3 +252,23 @@ overlapping — which was the reason for splitting this workstream off in the fi
 
 Note `eligibility_text` present has moved 29% → 33% during this batch; that is the other
 agents' work landing, not mine. I have not written to it.
+
+---
+
+## Handed in here (budget stop)
+
+**Shipped and in both databases.** Nothing is left uncommitted or in-flight.
+
+Not done, in priority order for whoever picks this up:
+1. **Spain, 88 leaves, still zero geography.** The BDNS API returns `regiones` per
+   convocatoria — a declared catchment — and `fetch_bdns_convocatorias.py` already
+   parses it (`_vals(d, "regiones")`) but deliberately routes it into the eligibility
+   text rather than a column. Mapping those names through `nuts_regions.resolve()` into
+   `catchment_region` is the single largest remaining block and needs no new fetching.
+2. **22 leaves whose declared codes are all pre-2013** (Italian and Portuguese
+   renumberings: IT8, IT91-93, ITA, ITB, PT113-115, PT131-132). Needs a NUTS history
+   file; do not guess them.
+3. **344 leaves have no `scheme_code`** and so no route through the case register.
+   Class A (EU tier, 85) is correctly out of scope. The rest need a per-register source.
+
+**Do not re-attempt** body-name → catchment (batch 1) or region as a ranking signal.
