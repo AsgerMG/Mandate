@@ -25,38 +25,49 @@ try {
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { loadRecallSet } from "./recallSet";
 
-/** TWO sets, because one of them cannot see a third of the funds we show.
+/** ONE set, and the two populations inside it guarded separately.
  *
- *  `__recallSet.json` was traced with joins that can never reach a
- *  programme-split child, so 234 instruments are named by none of its pairs
- *  (see ETL/terms/extend_recall_set.py). Guarding only on it would enshrine
- *  that blind spot in CI: any change that helps those funds costs slots here
- *  and reads as a regression. `__recallSetPlus.json` names 407 instruments and
- *  is where the population the old set cannot see is protected.
+ *  This used to guard `__recallSet.json` and `__recallSetPlus.json` together,
+ *  because the first cannot name a programme-split child and guarding on it
+ *  alone would enshrine that blind spot in CI. That reasoning stands; the two
+ *  files do not. Both carried the unrepaired sibling attribution, under which
+ *  the answer for 24% of pairs is close to a uniform draw over the delivering
+ *  bodies of one notified scheme -- a floor over a random label is a floor over
+ *  noise. The active set fixes the labels, adds the children AND carries the
+ *  leak-free descriptions, so one file now covers what two did.
  *
- *  Both are guarded, and a regression on EITHER fails the build. Neither is
- *  allowed to be the only opinion.
+ *  The blind-spot protection is kept, and made stricter: the two populations
+ *  live inside the one set and are floored SEPARATELY, so a change that buys
+ *  programme children with SATR leaves — or the reverse — fails here instead of
+ *  netting out to a flat headline. That is the trade bf3056d made explicit, and
+ *  it is now measured on one sample rather than inferred across two files.
  *
- *  Floors sit just under the measured numbers, never at an aspiration. The pool
- *  floor is the one correctness floor here rather than a ranking score -- a fund
- *  the writer never sees cannot be advised on at all -- so it is set hard;
- *  EXACT@5 and REGIME@5 sit further below because both carry real sampling
- *  noise.
- *
- *  `__recallSet.json`'s regime floor came DOWN from 85 with the corrected
- *  peer-prior join (bf3056d). That is a deliberate, argued cost: the join gives
- *  the programme children slots this set cannot credit, and the same change
- *  takes the plus set's regime from 74% to 89%. The floor below it is what
- *  stops that cost being paid twice. */
-const SETS = [
-  // Measured on this build, n=150 tune, with the corrected query below:
-  //   __recallSet.json      pool 91  EXACT@5 36  REGIME@5 85
-  //   __recallSetPlus.json  pool 83  EXACT@5 26  REGIME@5 91
-  // Floors sit ~5 points under, the same margin the single-set gate used.
-  { file: "__recallSet.json", floor: { pool: 85, exact5: 30, regime5: 80 } },
-  { file: "__recallSetPlus.json", floor: { pool: 78, exact5: 21, regime5: 85 } },
-];
+ *  Floors sit just under the measured numbers, never at an aspiration. A gate
+ *  set where we wish we were fails on day one, gets ignored, and protects
+ *  nothing. Pool is the one correctness floor rather than a ranking score -- a
+ *  fund the writer never sees cannot be advised on at all -- so it is set
+ *  hard; EXACT@5 and REGIME@5 sit further below because both carry real
+ *  sampling noise, and the per-population figures carry more of it at n<100. */
+/*  Measured on this build (b2273a7), n=150 tune, __recallSetComposed.json:
+ *      pool 95   EXACT@5 25   REGIME@5 91
+ *      REGIME@5  84 on the original join (n=63), 95 on the traced rows (n=87)
+ *  Floors sit ~5 points under, the margin this gate has always used. The old
+ *  floors are NOT carried over: they guarded two different files, and one of
+ *  them (`__recallSet.json`) was found today to be six points below the
+ *  measurement it floors because it graded a founder who typed nothing — a
+ *  path the intake no longer allows. */
+const FLOOR = { pool: 90, exact5: 20, regime5: 85 };
+/** REGIME@5 per population — the operational number, the one a founder feels.
+ *  Wider margins than the headline, and deliberately: these are subsamples of
+ *  the 150, so at n=63 one standard error is already 4.6 points. Two of those
+ *  is the margin, which is what stops the gate flapping on noise while still
+ *  catching a population being traded away. */
+const POPULATION_FLOOR: Record<string, number> = {
+  "original join": 74,
+  "traced:exact_attribution": 88,
+};
 // FIXED, and deliberately not configurable. At n=120 this same build measures
 // 97/31/68 and at n=150 it measures 97/37/75 -- six points of binomial noise on
 // the same code. A gate whose verdict depends on how many pairs you happened to
@@ -80,9 +91,7 @@ async function main() {
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   let anyFailed = false;
-  for (const { file, floor: FLOOR } of SETS) {
-  const all = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", file), "utf8")) as any[];
+  const { file, rows: all } = loadRecallSet("recall floor");
   // Stride, not slice. The set is grouped by mode, so the first N pairs are
   // nearly all `project` -- which measures 63% exact against `profile`'s 22%,
   // and the first draft of this gate read 70% where the true figure is 49%. A
@@ -94,6 +103,7 @@ async function main() {
   const set = tune.filter((_, i) => i % step === 0).slice(0, N);
 
   let pool = 0, exact5 = 0, regime5 = 0;
+  const byPop = new Map<string, { n: number; r5: number }>();
   for (const t of set) {
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
@@ -111,9 +121,14 @@ async function main() {
     const top5 = (v.instrumentTable ?? []).slice(0, 5)
       .map((r: any) => r.instrumentId).filter(Boolean) as string[];
     const wantRegime = byId.get(t.instrument)?.parentId ?? t.instrument;
+    const r5 = top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime);
     if ((v.candidateInstrumentIds ?? []).includes(t.instrument)) pool++;
     if (top5.includes(t.instrument)) exact5++;
-    if (top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime)) regime5++;
+    if (r5) regime5++;
+    const key = t.traced ? `traced:${t.traced}` : "original join";
+    const p = byPop.get(key) ?? { n: 0, r5: 0 };
+    p.n++; if (r5) p.r5++;
+    byPop.set(key, p);
   }
 
   const got = {
@@ -124,11 +139,21 @@ async function main() {
   const failed = (Object.keys(FLOOR) as (keyof typeof FLOOR)[])
     .filter((k) => got[k] < FLOOR[k]);
 
-  console.log(`  ${file}`);
+  console.log(`  ${file}  ${set.length} tune pairs`);
   for (const k of Object.keys(FLOOR) as (keyof typeof FLOOR)[]) {
     const bad = got[k] < FLOOR[k];
     console.log(`    ${bad ? "FAIL" : "ok  "} ${k.padEnd(8)} ${got[k].toFixed(0)}% ` +
                 `(floor ${FLOOR[k]}%)`);
+  }
+  // Per population, because a change that buys one with the other nets out to
+  // a flat headline and this gate exists to catch exactly that.
+  for (const [key, m] of [...byPop].sort()) {
+    const f = POPULATION_FLOOR[key];
+    const pct = (100 * m.r5) / m.n;
+    const bad = f !== undefined && pct < f;
+    if (bad) failed.push(`regime5 on ${key}` as never);
+    console.log(`    ${bad ? "FAIL" : "ok  "} regime5  ${pct.toFixed(0)}% ` +
+                `(floor ${f ?? "-"}%)  ${key}, n=${m.n}`);
   }
   if (failed.length) {
     console.error(`\ncheck_recall_floor: FAILED on ${failed.join(", ")} over ` +
@@ -137,9 +162,8 @@ async function main() {
     console.error("a regression even when every other check is green.");
     anyFailed = true;
   }
-  }
   if (anyFailed) process.exit(1);
-  console.log(`check_recall_floor: ok — ${N} tune pairs per set, all floors met.`);
+  console.log(`check_recall_floor: ok — ${N} tune pairs of ${file}, all floors met.`);
 }
 
 main();
