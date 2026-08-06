@@ -69,7 +69,7 @@ FETCH_RECORDS = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.jso
 EXISTING = ROOT / "data" / "raw" / "bdns_open" / "existing_leaf_details.json"
 
 from harvest_bdns_open_calls import (  # noqa: E402
-    DETAILS, load_details, qualifies, discriminators,
+    load_details, qualifies, admissible_policies,
 )
 
 
@@ -145,7 +145,8 @@ def report(asof: str, min_budget: float) -> None:
           f"({len(by_sa)} SA numbers, {len(by_basis)} regulatory bases)\n")
 
     cached = [r for r in load_details().values() if not r.get("error")]
-    admitted = [r["detail"] for r in cached if qualifies(r["detail"], asof, min_budget)]
+    pol = admissible_policies()
+    admitted = [r["detail"] for r in cached if qualifies(r["detail"], asof, min_budget, pol)]
     print(f"cached details {len(cached)}, admitted by the inclusion property {len(admitted)}\n")
 
     same_call = []       # identical codigoBDNS -- a bug if it fires

@@ -137,6 +137,26 @@ def _norm(s: str | None) -> str:
     return " ".join((s or "").split()).strip().lower()
 
 
+def admissible_policies() -> frozenset[str]:
+    """The spending policies the corpus ALREADY publishes instruments under.
+
+    Read off the stored fetch records for the country's existing leaves, so no
+    Spanish policy name appears anywhere in this file's logic and the set moves
+    on its own if the corpus's scope moves. Same construction as the budget
+    floor in load_bdns_open_calls.py, for the same reason.
+    """
+    import re
+    p = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.json"
+    out = set()
+    for r in json.loads(p.read_text()):
+        m = re.search(r"Finalidad: ([^.]+)\.", r.get("eligibility_text") or "")
+        if m:
+            out.add(m.group(1).strip())
+    if not out:
+        raise SystemExit("no spending policies on the existing leaves -- scope undefined")
+    return frozenset(out)
+
+
 def _descs(d: dict, key: str) -> list[str]:
     return [(x.get("descripcion") or "").strip() for x in (d.get(key) or [])
             if (x.get("descripcion") or "").strip()]
@@ -202,20 +222,49 @@ def has_substance(d: dict, min_budget: float) -> bool:
     return budget >= min_budget and len(discriminators(d)) >= MIN_DISCRIMINATORS
 
 
-CLAUSES = ("open", "undertaking", "scheme", "substance")
+def in_scope(d: dict, policies: frozenset[str]) -> bool:
+    """The state classifies this money the way it classifies what we already hold.
+
+    `descripcionFinalidad` is the call's *política de gasto* -- the line of
+    Spain's budget classification the money is spent under. The register's
+    `finalidad` ids are that classification in its official order, and ids 12-18
+    are exactly group 4, `actuaciones de carácter económico` (agriculture,
+    industry & energy, commerce/tourism/SMEs, transport, infrastructure, R&D&I,
+    other economic).
+
+    But the admissible set is NOT that range typed out. It is read off the
+    corpus's own published inventory for the country, by `admissible_policies`,
+    for the same reason the budget floor is: a rule that admits a category the
+    corpus does not already stand behind is a scope decision in disguise, and a
+    rule that rejects one it does publish contradicts itself.
+
+    Measured on Spain before adopting, which is what makes it a description
+    rather than a preference: 83 of the 84 existing leaves with a stated policy
+    already sit in the economic block, and NONE is `Fomento del Empleo`,
+    `Cultura`, or any social policy. Without this clause the harvest admits
+    sports-club and film grants -- real money, awarded to real undertakings,
+    and not what this corpus is.
+    """
+    return (d.get("descripcionFinalidad") or "").strip() in policies
 
 
-def clauses(d: dict, asof: str, min_budget: float) -> dict[str, bool]:
+CLAUSES = ("open", "undertaking", "scheme", "in_scope", "substance")
+
+
+def clauses(d: dict, asof: str, min_budget: float,
+            policies: frozenset[str] = frozenset()) -> dict[str, bool]:
     return {
         "open": is_open(d, asof),
         "undertaking": is_for_undertakings(d),
         "scheme": is_scheme(d),
+        "in_scope": in_scope(d, policies),
         "substance": has_substance(d, min_budget),
     }
 
 
-def qualifies(d: dict, asof: str, min_budget: float) -> bool:
-    return all(clauses(d, asof, min_budget).values())
+def qualifies(d: dict, asof: str, min_budget: float,
+              policies: frozenset[str] = frozenset()) -> bool:
+    return all(clauses(d, asof, min_budget, policies).values())
 
 
 # ── Stage 1: enumerate ─────────────────────────────────────────────────────
@@ -283,10 +332,18 @@ def enumerate_candidates(since: str, until: str | None, levels: list[str]) -> No
 
 # ── Stage 2: detail ────────────────────────────────────────────────────────
 
+def detail_files() -> list[_Path]:
+    """Every worker's output. Sharded runs write their OWN file rather than
+    appending to a shared one: a detail record is 1-2 kB, well past the size at
+    which concurrent appends are guaranteed not to interleave, and a corrupted
+    line in the middle of a four-hour harvest is not worth the tidiness."""
+    return sorted(OUTDIR.glob("details*.jsonl"))
+
+
 def load_details() -> dict[str, dict]:
     out: dict[str, dict] = {}
-    if DETAILS.exists():
-        for line in DETAILS.read_text().splitlines():
+    for f in detail_files():
+        for line in f.read_text().splitlines():
             if line.strip():
                 try:
                     rec = json.loads(line)
@@ -296,7 +353,7 @@ def load_details() -> dict[str, dict]:
     return out
 
 
-def fetch_details(limit: int | None, order: str) -> None:
+def fetch_details(limit: int | None, order: str, shard: str | None) -> None:
     """Fetch the detail payload for every candidate not already cached.
 
     Newest-first by default: an open window is far likelier on a recently
@@ -308,11 +365,20 @@ def fetch_details(limit: int | None, order: str) -> None:
     have = set(load_details())
     todo = [c for c in cands if str(c["numeroConvocatoria"]) not in have]
     todo.sort(key=lambda c: c.get("fechaRecepcion") or "", reverse=(order != "oldest"))
+    # ── Sharding, so several workers can run without re-fetching each other's
+    # records. The split is on the convocatoria code, not on position in the
+    # list, so a worker's share does not change when another worker's writes
+    # land -- position-based slicing would silently re-fetch and double-append.
+    if shard:
+        i, n = (int(x) for x in shard.split("/"))
+        todo = [c for c in todo if int(c["numeroConvocatoria"]) % n == i]
+        print(f"shard {i}/{n}")
     if limit:
         todo = todo[:limit]
     print(f"{len(cands)} candidates, {len(have)} cached, fetching {len(todo)}")
     ok = err = 0
-    with DETAILS.open("a") as fh:
+    out = OUTDIR / (f"details.s{shard.replace('/', 'of')}.jsonl" if shard else "details.jsonl")
+    with out.open("a") as fh:
         for i, c in enumerate(todo, 1):
             code = str(c["numeroConvocatoria"])
             d = fetch_json(f"{API_BASE}/convocatorias?numConv={code}", timeout=60)
@@ -332,20 +398,22 @@ def fetch_details(limit: int | None, order: str) -> None:
             if i % 100 == 0:
                 print(f"  [{i}/{len(todo)}] ok={ok} err={err}")
             time.sleep(DELAY_S)
-    print(f"{DETAILS}  ok={ok} err={err}")
+    print(f"{out}  ok={ok} err={err}")
 
 
 # ── Stage 3: report ────────────────────────────────────────────────────────
 
 def report(asof: str, min_budget: float) -> None:
+    pol = admissible_policies()
     recs = [r for r in load_details().values() if not r.get("error")]
-    print(f"{len(recs)} detail records cached\n")
+    print(f"{len(recs)} detail records cached")
+    print(f"in-scope spending policies, read off the corpus: {len(pol)}\n")
     n = len(recs)
     passed = {c: 0 for c in CLAUSES}
     all_pass = 0
     by_level: dict[str, int] = {}
     for r in recs:
-        cl = clauses(r["detail"], asof, min_budget)
+        cl = clauses(r["detail"], asof, min_budget, pol)
         for k, v in cl.items():
             passed[k] += bool(v)
         if all(cl.values()):
@@ -367,6 +435,7 @@ def report(asof: str, min_budget: float) -> None:
     for c, fn in (("open", lambda d: is_open(d, asof)),
                   ("undertaking", is_for_undertakings),
                   ("scheme", is_scheme),
+                  ("in_scope", lambda d: in_scope(d, pol)),
                   ("substance", lambda d: has_substance(d, min_budget))):
         pool = [d for d in pool if fn(d)]
         print(f"  + {c:24}  {len(pool)}")
@@ -374,6 +443,7 @@ def report(asof: str, min_budget: float) -> None:
 
 def audit(asof: str, min_budget: float) -> None:
     """What each clause costs, and how far the register's own flag is wrong."""
+    pol = admissible_policies()
     recs = [r for r in load_details().values() if not r.get("error")]
     n = len(recs)
     print(f"{n} detail records\n")
@@ -407,17 +477,17 @@ def audit(asof: str, min_budget: float) -> None:
 
     # ── Leave-one-out: what does each clause actually exclude? ─────────────
     print("\nleave-one-out (rows admitted if this clause were dropped)")
-    base = sum(1 for r in recs if qualifies(r["detail"], asof, min_budget))
+    base = sum(1 for r in recs if qualifies(r["detail"], asof, min_budget, pol))
     for drop in CLAUSES:
         k = 0
         for r in recs:
-            cl = clauses(r["detail"], asof, min_budget)
+            cl = clauses(r["detail"], asof, min_budget, pol)
             del cl[drop]
             k += all(cl.values())
         print(f"  without {drop:12} {k:6}   (+{k - base} over the {base} admitted)")
 
     # ── Does the admitted set discriminate? ───────────────────────────────
-    adm = [r["detail"] for r in recs if qualifies(r["detail"], asof, min_budget)]
+    adm = [r["detail"] for r in recs if qualifies(r["detail"], asof, min_budget, pol)]
     for label, key in (
         ("administering body", lambda d: _norm((d.get("organo") or {}).get("nivel3"))),
         ("finalidad", lambda d: _norm(d.get("descripcionFinalidad"))),
@@ -443,6 +513,7 @@ def main() -> None:
                     help="administrative levels to enumerate (C central, A regional, L local)")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--order", default="newest", choices=["newest", "oldest"])
+    ap.add_argument("--shard", help="i/n -- run several workers over disjoint shares")
     ap.add_argument("--asof", default=dt.date.today().isoformat())
     ap.add_argument("--min-budget", type=float, default=200_000.0)
     args = ap.parse_args()
@@ -450,7 +521,7 @@ def main() -> None:
     if args.enumerate:
         enumerate_candidates(args.since, args.until, args.levels.split(","))
     elif args.detail:
-        fetch_details(args.limit, args.order)
+        fetch_details(args.limit, args.order, args.shard)
     elif args.report:
         report(args.asof, args.min_budget)
     elif args.audit:
