@@ -59,8 +59,25 @@ import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 // EXACT@5 is flat across the sweep, which is the honest reading: this fixes
 // what the WRITER can see, not what the table shows. Those are different jobs
 // -- the pool is a correctness floor, the top five is the ranking problem --
-// and conflating them is what hid this for so long. 40 over 60 because the last
-// 2% costs half again as much payload for nothing measurable.
+// and conflating them is what hid this for so long.
+//
+// ── IT HAS DONE THIS TWICE. IT IS GUARDED NOW. ────────────────────────────
+// The sweep above chose 40. 40 then became binding again as the corpus widened,
+// exactly as 14 had, and cost pool recall 81% -> 98% to undo (82df320). Twice,
+// the same constant, the same silent mechanism: a fund cut HERE is absent from
+// the pool, so every ranking diagnostic downstream reports a healthy ordering
+// over a set that no longer contains the answer.
+//
+// It cannot do it a third time quietly. `scripts/check_leaf_cap.ts` runs in
+// `npm run check` and FAILS the build when any (channel, country) group holds
+// more country-serving leaves than this number. The reasoning is in
+// `lib/intelligence/leafCap.ts`; the test proves the guard fires at both 40 and
+// 14, i.e. it would have caught both real occurrences.
+//
+// Measured 2026-08-06 at 90: the widest group is `state_aid_satr` in ES at 87.
+// HEADROOM IS THREE INSTRUMENTS. The next Spanish state-aid load fails the
+// build, which is the intended behaviour -- raise the cap then, and read
+// check_leaf_cap.ts before doing anything else with this number.
 export const POOL_LEAVES_PER_CHANNEL = 90;
 /** Share of the ranking score from thematic match; the rest is sector intake. */
 export const THEME_WEIGHT = 0.6;
@@ -434,22 +451,27 @@ export const DEFAULT_INSTRUMENTS = [
 // Accelerator) is live, in `awardScorer` against each instrument's own award
 // median, which is the measured version of the same idea.
 
-/**
- * RETIRED as a filter. Ticket size is now a continuous component of the fit
- * score (scaleFit), measured against each instrument's own average award
- * rather than a hand-set band per channel.
- *
- * The old rule removed a whole channel when the founder's ask fell outside a
- * range someone typed once: a large ask deleted the startup-scaled routes
- * outright, a small one deleted the large-scale lane, and neither left a
- * trace. Its own comment described it as a stopgap pending real ticket gates.
- *
- * Always true now. Kept as a function so the call sites read honestly rather
- * than being deleted in a way that hides that this check ever existed.
- */
-export function channelServesBand(_channel: string, _band?: string): boolean {
-  return true;
-}
+// `channelServesBand(channel, band)` stood here, retired to `return true` and
+// still called from four sites, each guarded by an `if (!channelServesBand(...))`
+// branch that could not execute, and each writing a `SEL-BAND` exclusion reason
+// that could never be written. It was deleted with its call sites.
+//
+// Keeping a retired check as an always-true function was meant to let the call
+// sites "read honestly". It does the opposite: four live-looking filters in the
+// channel-admission path, and an exclusion vocabulary (`SEL-BAND`) that the
+// exclusion register advertises and nothing can emit. The history is the honest
+// record, and it is here.
+//
+// What it did: removed a whole channel when the founder's ask fell outside a
+// range someone typed once -- a large ask deleted the startup-scaled routes, a
+// small one deleted the large-scale lane, and neither left a trace. Its own
+// comment called it a stopgap pending real ticket gates.
+//
+// What replaced it, and is live: `awardScorer` scores ticket proximity
+// continuously against each instrument's OWN award median, so the judgement it
+// encoded (a EUR 20M ask should not be answered with EIC Accelerator) survives
+// as a ranking signal instead of a filter. That is the principle stated at the
+// top of fit.ts: a fund should fail to make the cut, not be excluded by a rule.
 
 // Large-scale channels surfaced when the ask is €15M+ even if absent from the
 // field (the field's history skews small; the ask defines the universe).
@@ -1218,12 +1240,7 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
       `no establishment in a covered country (${founderCountries.join(", ")})`);
     return [];
   }
-  const codes = new Set([...fieldChannels].filter((c) => channelServesBand(c, ticketBand)));
-  for (const c of fieldChannels) {
-    if (!channelServesBand(c, ticketBand)) {
-      log?.record("SEL-BAND", c, `ticket band ${ticketBand} outside the hardcoded range for this channel`);
-    }
-  }
+  const codes = new Set(fieldChannels);
   const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;
   if (idx !== undefined && idx >= 3) {
     // A big ticket opens the large-scale lane, but it does not make every
@@ -1283,10 +1300,6 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
       if (!codes.has(c)) log?.record("SEL-CHANNEL-CAP", c, `channel pool already at its cap of ${MIN_CHANNELS_CONSIDERED}`);
       continue;
     }
-    if (!channelServesBand(c, ticketBand)) {
-      log?.record("SEL-BAND", c, `ticket band ${ticketBand} outside the hardcoded range for this channel`);
-      continue;
-    }
     // Only an explicit "no" rules out consortium-heavy channels. Treating
     // "not sure" as a no silently removed Horizon and the EIT KICs for every
     // undecided founder — the same unsure-means-failure mistake fixed in the
@@ -1306,12 +1319,6 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
   // channels still respect the consortium gate.
   const thematicFirst: string[] = [];
   for (const hit of thematicChannelTopUp(description, codes, 2, semantic)) {
-    if (!channelServesBand(hit.channel, ticketBand)) {
-      log?.record("SEL-BAND", hit.channel,
-        `thematic match ${hit.score.toFixed(2)} discarded: ticket band ${ticketBand} outside the hardcoded range`);
-      continue;
-    }
-
     thematicFirst.push(hit.channel);
     codes.add(hit.channel);
   }
@@ -1707,9 +1714,10 @@ export function materialiseInstrumentTable(
   // write EUR 219k cheques, having just asked them how much they needed.
   //
   // Ticket fit did exist, but only in `selectLeafInstruments`, which is close
-  // to inert: POOL_LEAVES_PER_CHANNEL keeps 40 leaves per channel, so nearly
-  // every candidate survives leaf ranking and this sort re-orders them on
-  // theme and sector alone.
+  // to inert: POOL_LEAVES_PER_CHANNEL admits 90 leaves per channel against a
+  // widest real group of 87, so nearly every candidate survives leaf ranking
+  // and this sort re-orders them on theme and sector alone. (The figure in this
+  // comment said 40 for as long as the constant did not.)
   //
   // Scored on ORDER OF MAGNITUDE, reusing the same rule as the leaf scorer: a
   // EUR 20k median is not a route to EUR 1M however well it matches
