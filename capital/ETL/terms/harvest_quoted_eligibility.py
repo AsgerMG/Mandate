@@ -75,6 +75,12 @@ from collections import defaultdict  # noqa: E402
 import psycopg2  # noqa: E402
 import psycopg2.extras  # noqa: E402
 
+# The liveness test is `publishableInstruments()` in corpus.ts, already mirrored
+# once in Python by the scheme-text loader. Imported, never restated: a second
+# copy of this rule is the shape of bug this repo has been bitten by repeatedly.
+_sys.path.insert(0, str(_Path(__file__).resolve().parent))
+from load_scheme_text import live_ids  # noqa: E402
+
 TIERS = json.loads(
     (_Path(ROOT) / "website/frontend/lib/intelligence/evidenceTiers.json").read_text())
 CITED = set(TIERS["cited"]["tiers"])
@@ -181,6 +187,9 @@ def main() -> None:
     ap.add_argument("--regime", action="append", help="parent_id to harvest")
     ap.add_argument("--country", action="append", metavar="CC")
     ap.add_argument("--min-own-share", type=float, default=DEFAULT_OWN_SHARE)
+    ap.add_argument("--publishable-only", action="store_true",
+                    help="skip rows the product cannot show -- regime containers "
+                         "and schemes the register says have closed")
     ap.add_argument("--write", action="store_true")
     ap.add_argument("--postgres", action="store_true",
                     help="mirror to Postgres -- the database the product reads")
@@ -205,6 +214,16 @@ def main() -> None:
     if not scope:
         print("nothing in scope")
         return
+
+    if args.publishable_only:
+        sq = sqlite3.connect(DB)
+        live = live_ids(sq)
+        sq.close()
+        dropped = [i for i in scope if i not in live]
+        for i in sorted(dropped):
+            del scope[i]
+        print(f"{len(dropped)} rows skipped: not publishable "
+              f"(regime container, or the register says the scheme has closed)")
 
     # Siblings are needed whole, not just the ones in scope: a candidate that
     # repeats what a sibling ALREADY says separates nothing either.
