@@ -48,3 +48,6 @@ boilerplate_verdict.json
 # wsN2 worktree: gitignored shared state, symlinked to the main checkout
 data
 .env.local
+
+# Throwaway DB probes. Analysis, not product; the findings go to project-mgmt/.
+website/frontend/scratch/
