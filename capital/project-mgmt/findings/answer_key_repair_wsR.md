@@ -422,6 +422,23 @@ Note EXACT@5 read 29 here against 32 on the pinned calibration run, because the
 corpus moved between them. The margin absorbed it, which is what the margin is
 for.
 
+**Re-verified on a third, materially different corpus state** — 1,076 rows with
+`instrument_profiles` back in sync and `eligibility_embeddings` at 5,694, stable
+across reads at 22:22Z and 22:23Z, fingerprinted identical either side of the
+run:
+
+```
+ok   pool     98% (floor 93%)
+ok   exact5   30% (floor 22%)
+ok   regime5  87% (floor 80%)
+ok   regime5  82% (floor 70%)  original join, n=151
+ok   regime5  91% (floor 84%)  traced:exact_attribution, n=149
+```
+
+The floors therefore hold across THREE distinct corpus states measured tonight
+(1,014 / 998 / 1,076 rows), which is the evidence that the margins are sized for
+the movement this corpus actually exhibits rather than for a single lucky read.
+
 ## Did this fix the ~17-point pool fall workstream S is chasing?
 
 **Yes, and it should be said plainly rather than left to be inferred: it was
