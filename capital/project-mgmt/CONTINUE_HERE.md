@@ -129,9 +129,36 @@ existed to reveal.
    (`"RESOLUCIÓNpor la que se abre la convocatoria..."`). Ranking is sound —
    the eligibility text carries the facts — but this is a memo-quality defect
    and it is the biggest one visible to a Spanish founder.
-5. The degradation policy (serve on fallback, suppress rows whose liveness
-   cannot be confirmed) was chosen by the PM and was in flight. Check whether it
-   is finished or half-built before trusting it.
+5. **Degradation policy — BUILT, WORKS END TO END, and deliberately NOT MERGED.**
+   Branch `workstream-x-degradation`; findings in
+   `project-mgmt/findings/degradation_policy_wsX.md`. The PM chose: on a
+   fallback to the snapshot, serve the request but suppress rows whose
+   open/closed status cannot be confirmed.
+
+   It is not half-built — the rule lives in `liveness.ts` (`unconfirmedOpen`),
+   applied at the single choke point that decides what may be proposed
+   (`publishableInstruments()`), logged per request, surfaced to the founder on
+   both the streamed preview and the finished brief, and asserted by a new
+   `check_degradation.ts` which asks Postgres as referee. That guard caught a
+   real defect in its own first draft: reading closure off raw rows condemned
+   the 7 successor-redirected schemes.
+
+   **Rows suppressed on the fallback path today: 80, not zero** (FR 73, ES 7) —
+   Postgres 817 publishable / 0 suppressed, snapshot 737 / 80. Non-zero **by
+   design**: a staleness clock was rejected because it makes CI fail on the
+   calendar, so the rule withholds regardless of currency. **Founder-visible
+   cost is zero** — all 12 archetypes still show 6 rows; the cost is pool depth
+   for two French archetypes (136→64, 146→74).
+
+   **Why it is not merged, and what to do first:**
+   - `check_hydration_parity` fails — 7 pre-existing differences plus one the
+     branch introduced (its published-row assertion is too strict for backfill:
+     freeing 73 slots legitimately promotes rank-7 rows). The fix is contained.
+     **Do that before merging.**
+   - **It was never opened in a browser.** The suppression notice is visually
+     unverified, and this project's standing rule is that anything a founder
+     reads gets rendered and looked at. `npm run drive`.
+   - EXACT@5 for a French founder on the fallback path is unmeasured.
 
 ## MEASURED DEAD ENDS — do not retry
 
