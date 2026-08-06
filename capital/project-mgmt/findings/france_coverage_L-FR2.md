@@ -43,3 +43,41 @@ Over the 49 ADEME leaves carrying text in SQLite:
 
 This is per-programme text. It passes the test that the ADEME fetch was most at
 risk of failing.
+
+## 3. Landed. Every number below came back out of Postgres.
+
+Published with `publish_scheme_text_scoped.py --country FR` (scoped by country,
+idempotent, never deletes) — not `migrate_to_postgres.py`, whose full
+truncate-reinsert would have carried four other live agents' half-finished
+SQLite rows into the product's read path.
+
+`npx tsx website/frontend/scripts/measure_sibling_coverage.ts`, after:
+
+```
+eligibility_text over 40 chars: 318 of 1014 instruments
+  FR    73/ 133  55%        <- was 24/133 18%
+  IT    47/  88  53%        <- unchanged, as required
+```
+
+Per-country class, both populations (`scripts/measure_country_class.ts FR`,
+added by this workstream — the existing scoreboard prints one global mean and
+no country can see its own number in it):
+
+| population | n | with text | multi-leaf | class body-only | class all-facets |
+|---|---|---|---|---|---|
+| FR all | 133 | 73 (55%) | 128 | 46.3 | **45.4 -> 7.4** |
+| FR **publishable** | 110 | 73 (66%) | 105 | 54.3 | **54.0 -> 7.7** |
+
+The before column is the pre-publish Postgres state replayed by blanking the
+ADEME text, same code path as the after column.
+
+`f4d840f`'s claim of 45.4 -> 7.4 is **confirmed**. It was true of SQLite the
+whole time; it had simply never been true of the store the product reads.
+
+Publishable count measured here is **739**, not the 721 in CONTINUE_HERE —
+the predicate is date-dependent (rows close as dates pass) so the population
+moves. Stated beside every number rather than pinned.
+
+France is programme-fragmented exactly as briefed: `administering_body` alone
+leaves a publishable French founder choosing between **54.3** siblings. Text is
+the only lever, and it took the class to 7.7.
