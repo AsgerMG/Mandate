@@ -28,6 +28,11 @@
  *     (a convocatoria's plazo, an appel a projets' `date_cloture`). Past means
  *     closed, permanently: a call does not reopen, a successor call is a new row.
  *
+ * A third basis was added on 2026-08-07 and is not a kind of DATE at all:
+ * `closed_beneficiary_list` says the participants were fixed by the decision
+ * that created the row, so there is no window and never was one. See the
+ * constant for the evidence.
+ *
  * The tempting single test — "it awarded money after its end date, so it is
  * still alive" — was measured and does NOT separate them. 50 of Spain's 80
  * correctly-closed convocatorias award after their end date, and 3 of the 6
@@ -58,6 +63,31 @@ export const SCHEME_END_BASIS = {
   notifiedDuration: "notified_duration",
   /** This instrument's own application deadline — permanent once passed. */
   callDeadline: "call_deadline",
+  /**
+   * The participants were FIXED by the decision that created this row: aid
+   * approved for a named beneficiary list, with no route in for anyone not
+   * already on it.
+   *
+   * ── Why this is a basis and not a date ────────────────────────────────
+   * The other two bases answer "when did the window shut". This one answers a
+   * prior question — there was never a window. An individual State-aid
+   * approval (IPCEI waves, ad hoc aid, rescue-and-restructuring decisions) is
+   * a finding about aid already allocated to companies the Commission names.
+   * Its `scheme_end_date` is therefore not merely unknown, it is not a
+   * quantity the row has, so this basis closes the row WITHOUT one.
+   *
+   * The evidence is in the rows' own harvested text: "The Member States only
+   * grant support to the beneficiaries listed in recital (248) above and the
+   * funding is not available to all undertakings in a comparable situation."
+   * A row whose own source says that cannot be an application route.
+   *
+   * The money is still real and still reachable — through the NATIONAL scheme
+   * that implements the approval, which is its own row in this corpus (the
+   * German IPCEI-CIS Förderrichtlinie under SA.112879, for one). Dropping the
+   * approval keeps the door and removes the wall with the picture of a door
+   * painted on it.
+   */
+  closedBeneficiaryList: "closed_beneficiary_list",
 } as const;
 
 export type SchemeEndBasis =
@@ -85,6 +115,12 @@ export function today(): string {
  * until their deadlines were loaded.
  */
 export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
+  // Tested BEFORE the date, because this basis is the one case where there is
+  // no date to test: the beneficiary list was closed by the decision itself.
+  // Ordering it after the `!end` guard would make it a no-op on exactly the
+  // rows it exists for.
+  if (row.schemeEndBasis === SCHEME_END_BASIS.closedBeneficiaryList) return true;
+
   const end = row.schemeEndDate ? String(row.schemeEndDate).slice(0, 10) : "";
   if (!end || end >= asOf) return false;
 
@@ -119,8 +155,9 @@ export function closedSql(opts: { col?: string; sqlite?: boolean } = {}): string
     ? `CAST(substr(${c}scheme_end_date, 1, 4) AS INTEGER)`
     : `EXTRACT(year FROM ${c}scheme_end_date::date)::int`;
   return (
-    `(${c}scheme_end_date IS NOT NULL AND ${past}` +
+    `(COALESCE(${c}scheme_end_date_basis, '') = '${SCHEME_END_BASIS.closedBeneficiaryList}'` +
+    ` OR (${c}scheme_end_date IS NOT NULL AND ${past}` +
     ` AND NOT (COALESCE(${c}scheme_end_date_basis, '') = '${SCHEME_END_BASIS.notifiedDuration}'` +
-    ` AND ${c}last_year IS NOT NULL AND ${c}last_year > ${endYear}))`
+    ` AND ${c}last_year IS NOT NULL AND ${c}last_year > ${endYear})))`
   );
 }
