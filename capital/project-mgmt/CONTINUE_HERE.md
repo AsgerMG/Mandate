@@ -1,6 +1,59 @@
 # Start here tomorrow
 
-## LATEST (2026-08-06, late): region routing landed, and it found something worse
+## LATEST (2026-08-06, workstream E): the pool-to-table gap is a LEAF problem
+
+Full write-up: `project-mgmt/research/pool_to_table.md`. This **corrects the
+conclusion in the section below it**, which says the remaining loss is that the
+won fund's group holds no slot in the five. Measured over the 125 holdout cases
+where the won fund is in the pool and below the cut:
+
+| | share |
+|---|--:|
+| regime holds **no** slot in the five → needs LIFT | 15% |
+| regime holds a slot and the won leaf is its best member → needs LIFT | **0%** |
+| regime holds a slot and **siblings outrank the won leaf** → needs REORDER | **85%** |
+
+The regime's best slot is at **median position 2** and a mean of **3.07 of the
+five rows are already siblings of the won fund**. The regime is in the table,
+near the top, holding three of five seats, and the right leaf is in none of
+them. The 61.7% figure below is not wrong, it is about *same-name* groups
+(median 7.4 members); the group that matters is the whole regime by `parent_id`
+— **median 75 members in the pool, won fund at median rank 16 inside it**.
+
+**No signal in the ranker points at the won leaf.** Against the sibling that
+took the group's best slot: theme is against it (higher in 32/106), sectorFit
+ties outright (median difference 0.000, and the five sit saturated at 1.000),
+peer rank is against it in 90/106, eventCount and awardP50 are coin flips. The
+five are the popular, large, frequently-awarded delivery bodies — peer-known
+90% at median rank 2, against the won fund's 55% at median rank 24.
+
+Baseline re-established, holdout n=200, and the two sets agree to the case:
+`__recallSetPlus` and `__recallSetComposed` both **pool 97-98%, EXACT@5 35%,
+REGIME@5 89%**.
+
+**Shipped:** ticket fit was computed in `rowRelevance` and thrown away — dead
+since the commit that added it, hidden because the harness feeds every replay
+the same ticketBand. The two largest ticket bands were returning the identical
+table. 35% → 36%, REGIME unchanged, on both sets (`8f36e35`).
+
+**Reverted, do not retry:** the peer prior fused with the ranker by RRF (30% vs
+35%, both sets — the two signals are orthogonal, so the shipped head/tail split
+is a UNION and fusion rewards the intersection); disabling the sibling
+reassignment (+1pp, but the harness holds `useOfFunds` and `ticketBand`
+constant so that gain is an artifact, and it would delete region routing's
+carrier).
+
+**Re-measured:** the two hard tiers do NOT cost three points. The
+non-startup-ready demotion costs nothing (35% → 34% removed, REGIME flat), and
+`usedInField` is **structurally unmeasurable here** — `matchCompany("TestCo", …)`
+never matches, so it is false for every row of every replay.
+
+**Next:** not another ranking signal. Get the region question ASKED, then widen
+`regionScorer` from the same-`schemeCode` group (median 7.4) to the regime
+(median 75). That is a different comparison from the one `region_routing.md`
+measured and rejected, and must be measured on its own.
+
+## EARLIER (2026-08-06, late): region routing landed, and it found something worse
 
 Full write-up: `project-mgmt/research/region_routing.md`. Three things, in the
 order they should change what you do next.
