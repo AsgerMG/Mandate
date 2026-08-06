@@ -146,3 +146,92 @@ condition they all pass.** Coverage percentage is not the deliverable.
    it for corpus-driven liveness. Both changes are in the working tree together. Publishing is
    done through `ETL/terms/publish_scheme_text_scoped.py`, which is country-scoped so it
    cannot carry a neighbour's uncommitted SQLite row into the live read path.
+
+---
+
+# HANDED IN 2026-08-06 (budget stop, mid-batch 3)
+
+## Final numbers
+
+```
+                        before      after
+EU eligibility_text     0/67        11/67  (16%)
+NO eligibility_text     0/74         1/74  ( 1%)
+EU administering_body   0/67        11/67
+global mean class       18.0        17.9      unique 35.6% -> 38%
+EU-local mean class      8.32         6.97    (11 regimes, 68 leaves)
+```
+
+Regimes taken to **mean class 1.00, fully resolved**: `eic` (5 leaves), `innovation_fund`
+(9 leaves). Untouched: `ipcei` 12, `horizon_eu_partnership` 10, `horizon_eu_pillar_ii` 10,
+`eit` 9, `chips_ju` 3, `edf` 3, three EIT KIC clusters 3/2/2.
+
+Everything claimed here is in SQLite **and published to Postgres** via
+`ETL/terms/publish_scheme_text_scoped.py --country EU --country NO`. Nothing is pending.
+`data/raw/` and `data/db.sqlite` are gitignored, so the fetch record is preserved at
+`project-mgmt/findings/workstream_L_no_eu_fetch_record.json`.
+
+## Was the EU half the fastest win, as expected?
+
+**Half yes, half no — and the "no" half is the more important finding.**
+
+Fast, as predicted: EIC and the Innovation Fund went from zero to fully resolved in two
+batches. The sources are excellent — the IF25 call fiche PDF carries a literal CAPEX
+eligibility table, and the EIC pages state consortium and TRL rules outright. 12 instruments
+in roughly a dozen fetches, no blocks, no CAPTCHAs.
+
+Not fast, and the brief's premise needs correcting: **"EU publishes machine-readable
+eligibility" is true and nearly useless on its own.** Every EU leaf publishes the SAME
+eligibility — legal entity, established in an eligible country, three partners from three
+Member States, 60% ceiling. Harvesting that is trivial and moves the sibling metric by
+exactly zero, because it is identical across siblings by construction. The usable
+discriminator is buried one level down, in the per-topic scope and threshold text, and
+finding it took the slow work: a call-fiche PDF per regime, read to the topic table.
+
+So the EU half is the fastest win **per unit of separation bought**, but not because the
+data is easy to fetch. It is fastest because EU regimes are 3-12 leaves and therefore
+*finishable* — unlike the 48-sibling French regimes, where the same effort resolves nothing.
+
+## What refused
+
+- `eic.ec.europa.eu/eic-investments/eic-fund_en` — 404. Live path is `/eic-fund_en`.
+- `climate.ec.europa.eu/.../competitive-bidding-european-hydrogen-bank_en` — 404. Live path
+  is `.../competitive-bidding_en`.
+- `research-and-innovation.ec.europa.eu/.../institutionalised-european-partnerships_en` — 404.
+- `smart-networks.europa.eu/about/` and `global-health-edctp3.europa.eu/about/...` — 404.
+- `ihi.europa.eu` — TLS failure, "unable to verify the first certificate". **Not retried and
+  not worked around**, per the standing rule. Someone should confirm whether IHI's chain is
+  genuinely misconfigured or this is transient.
+- The IF25 call fiche PDF defeated the fetch tool (binary passthrough). It was recovered by
+  reading the downloaded file with `pdftotext -layout`, which is how the verbatim CAPEX table
+  was obtained. **Worth reusing: the EU call fiches are the best eligibility source in the
+  corpus and they all arrive as PDFs.**
+
+## For whoever picks this up
+
+1. **Do not do Norway on this scoreboard.** 73 of 74 rows are singleton regimes (Finding 1).
+   Its remaining value is memo-side only: NFR programme pages and innovasjonnorge.no would
+   give citable text and application URLs, and the corpus register holds nothing to reuse —
+   Norway is EEA and therefore absent from SATR entirely (`granting_country_iso2='NO'` returns
+   0 rows of 122,814), and its events carry NULL `granting_authority`, `programme_ref` and
+   `raw_source_url`. Everything must come from live fetching. That check cost ten minutes and
+   is the answer to "check the register first".
+2. **The next 20 leaves are the cheapest remaining separation in the whole corpus.**
+   `horizon_eu_partnership` (10) is nine legally distinct Joint Undertakings — Clean Hydrogen,
+   Clean Aviation, EuroHPC, Europe's Rail, EUSPA, GH EDCTP3, IHI, SESAR 3, SNS. Setting
+   `administering_body` to each JU's own legal name resolves that regime almost completely on
+   its own, before any eligibility text. Mandate text for Clean Hydrogen, EuroHPC, Europe's
+   Rail, Clean Aviation and SESAR 3 was already fetched and is quoted in the transcript; it
+   did not reach the DB before the stop.
+3. `horizon_eu_pillar_ii` (10) separates on cluster scope (CL1 health, CL3 security, CL4
+   digital/industry/space, CL5 climate/energy/mobility, CL6 food/bioeconomy, Missions, EIE,
+   CBE, ERC PoC), and the administering agencies genuinely differ (REA / HaDEA / CINEA /
+   ERCEA), so the same administering_body trick pays there too.
+4. **`ipcei` (12) should probably not get eligibility text at all.** IPCEI waves are closed
+   Commission approvals, not open application routes; a founder cannot apply to "IPCEI
+   Batteries". The honest fix is a liveness/closure marking, not eligibility prose — and that
+   is a different workstream's call to make.
+5. Several EIT rows are genuinely dead and should be marked so rather than enriched: EIT
+   Manufacturing ASBL wound down 10 April 2026 (per the Sprint 7 notes), and
+   `eit_digital_vap`, `eit_rawmaterials_portfolio`, `eit_urban_mobility_portfolio` last
+   recorded activity in 2022.
