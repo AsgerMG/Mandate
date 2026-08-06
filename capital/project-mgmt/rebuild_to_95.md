@@ -138,6 +138,20 @@ Keep them distinct (the founder does apply to a specific one) but mark the
 delivery body as a ROUTING attribute so gate 2 can ask "which region are you
 in?" instead of guessing between 14 identical texts.
 
+**(F) DONE 2026-08-06 — and the reason it had always measured flat was the
+answer key, not the signal.** `project-mgmt/research/region_routing.md`.
+`scheme_code = call_id` credits an award to EVERY body delivering that notified
+scheme, so inside a same-name group the shipped label names the right leaf 32%
+of the time against 92% outside one. Against the register's own attribution the
+identical scorer on the identical rows goes 24.9% → 66.2% @1. Shipped:
+`regionPrior.generated.json`, `regionScorer` inside the rank-preserving sibling
+reassignment, the region question offered from measured footprints rather than
+from gates (the groups have none), and the real geographic split handed to gate
+2's question writer. Within-group holdout **44.2% @1 / 91.1% @3 against 28.3%
+popularity**; end to end, paired, 7.5% → 9.2% on those cases and nothing on the
+headline — because a group occupies at most one or two of five slots however
+well it is ordered internally. **The remaining loss is pool-to-table.**
+
 **G. Take `eligibility_embeddings` out of retrieval.** Two boilerplate strings
 are 21% of the index, each replicated across 497 instruments; 284 of 497 SATR
 leaves have zero chunks unique to them. It actively misleads

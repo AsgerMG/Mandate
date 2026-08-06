@@ -1,5 +1,57 @@
 # Start here tomorrow
 
+## LATEST (2026-08-06, late): region routing landed, and it found something worse
+
+Full write-up: `project-mgmt/research/region_routing.md`. Three things, in the
+order they should change what you do next.
+
+**1. The answer key is wrong for the population everyone has been trying to
+fix.** `__recallSet.json` traces awards with `scheme_code = call_id`, which is
+not unique: one notified scheme delivered by fourteen bodies is one SA number
+and fourteen instruments. Against the register's own attribution, the shipped
+label names the right leaf **91.7% of the time outside a same-name group and
+32.2% inside one** — and names *some* sibling 96.1% of the time. For the 24% of
+holdout pairs whose answer sits in such a group the key is close to a uniform
+draw. **That is why region, sector and everything else "measured flat" there.**
+Same rows, same scorer: 24.9% @1 against the shipped key, 66.2% against the
+repaired one. `ETL/terms/repair_recall_attribution.py` →
+`__recallSetRepaired.json` (260 of 1,988 pairs relabelled).
+`__recallSet.json` is untouched.
+
+**2. Two workstreams were writing this tree at once, and single-run numbers
+cannot survive that.** `measure_recall.ts` returned 35%/87% and 31%/74% twice
+each while `peerPrior.generated.json` was being rebuilt, `THEME_SPREAD_FLOOR`
+moved 0.35 → 0.20 and `semanticSeparation` was rewritten underneath it. **Treat
+every single-run end-to-end number from this session as void.** Only two kinds
+survive: within-group results that touch neither artifact, and PAIRED runs where
+both arms sit in one process. Also: commits `5e24f70` and `ed20cd3` used
+`git add -A` and carry files belonging to the other workstream
+(`ETL/terms/attribution.py`, the `emit_peer_prior.py` / `extend_recall_set.py`
+edits, the rebuilt peer prior, `scripts/.tmp/`). Nothing was reverted; it is
+recorded so the history is not misread. `check_recall_floor.ts` is red on
+`__recallSetPlus.json` (exact5 22% vs floor 28%) — that set and those floors
+arrived from the other workstream mid-run, and the region scorer is provably
+inert when no region is answered (it returns `() => 1` into a multiplication),
+so it cannot be the cause.
+
+**3. Region routing works at the job it was given, and the table cannot show
+it.** Within a same-name group, holdout, shipped artifact and shipped scorer
+(`npx tsx scripts/measure_region_routing.ts`): **44.2% @1 and 91.1% @3 against a
+28.3% popularity baseline**, and the leak-free arm — founder region taken only
+from a DIFFERENT notified scheme — reads **49.4%**, i.e. the signal survives
+having its own evidence removed. Paired end to end on those cases it is
+7.5% → 9.2% EXACT@5, 3 rescued and 1 broken. The constraint is not sibling
+availability (7.0 of 7.4 group members reach the pool): the reassignment is
+rank-preserving, so region gives the right door the best slot the GROUP holds,
+and 61.7% of the time the group holds none in the top five. **The remaining
+loss is pool-to-table, not within-group.**
+
+Do not re-flag: `satr_staging.region` as a scheme property (it self-agrees
+94.4% at NUTS-1 across schemes — it is a company property); capping the region
+footprint per company (24.9% → 24.0%); the share form P(region|fund) (54.3% vs
+65.7%); widening the comparison group from a scheme registration to a display
+name (44.2% → 40.1%).
+
 Written 2026-08-06, end of session. **Four workstream agents were still running
 when this was written** — expect uncommitted changes in the tree from them.
 Check `git status` and `git log` first; some of what is described below may
