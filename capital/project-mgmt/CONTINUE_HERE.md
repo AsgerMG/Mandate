@@ -1,4 +1,113 @@
-# Start here tomorrow
+# Start here
+
+Rewritten 2026-08-06 after six workstreams. Everything above the line below is
+current; older sections are history and are marked as such.
+
+## THE HONEST HEADLINE
+
+`SPLIT=holdout N=200 npx tsx scripts/measure_recall.ts` on the composed set
+(the default; every harness now prints which set it used):
+
+```
+pool 97%   EXACT@5 36%   REGIME@5 89%
+  project  n= 39   pool 92%  exact 51%  regime 82%
+  profile  n=161   pool 98%  exact 32%  regime 91%
+```
+
+**Regime is 6 points from target. Exact is the open problem.**
+
+## THE MEASUREMENT IS NOW TRUSTWORTHY — this was the session's real work
+
+Four separate defects were found, each of which had been read for weeks as a
+ranking failure. All four are fixed and guarded:
+
+| set | leaking described rows |
+|---|--:|
+| `__recallSet.json` (was the default) | **151 of 319** |
+| `__recallSetComposed.json` (now default) | **0 of 1,155** |
+
+- **One set**: `__recallSetComposed.json`, 4,796 pairs, **406 instruments
+  nameable** (was 173), 1,155 leak-free descriptions. Composes all three fixes:
+  relabelled leaves, the 299 programme-split children, and clean descriptions.
+- **`scripts/recallSet.ts`** names the one active set; ten harnesses load through
+  it and each prints file, pair count, nameability and leak-free count on every
+  run. `SET=` still loads a retired set but prints a RETIRED banner naming the
+  defect.
+- **`check_recall_leaks.ts` is in `npm run check`**, reading a committed artifact
+  so it needs no database — a guard requiring credentials most machines lack is
+  a guard that reports green. 212 cross-language probes; poison confirmed to
+  exit 1 on both the unit and CI paths.
+- **Floors re-baselined and split by population** (original join 84%/floor 74,
+  traced 95%/floor 88), so a change that buys programme children with SATR
+  leaves now FAILS instead of netting out to a flat headline.
+
+## THE REMAINING LOSS, diagnosed from two directions
+
+Both workstreams reached the same place independently. Over the 125 holdout
+cases where the won fund is in the pool but below the cut:
+
+```
+regime holds NO slot            → needs LIFT      15%
+regime holds a slot, won leaf is its best          0%
+siblings outrank the won leaf   → needs REORDER   85%
+```
+
+The regime is already in the table at **median position 2**, holding a mean of
+**3.07 of the five rows** — and the right leaf is in none of them. Confirmed
+from the other side: **120 of 120 relabelled pairs are sibling-to-sibling inside
+one regime**, so REGIME@5 cannot move by construction and EXACT@5 on that
+population is 3% repaired against 2% unrepaired.
+
+**This is a reorder inside the regime. It is not a lift problem.** Note the
+group that matters is the whole regime by `parent_id` — median **75** members in
+pool, won fund at median rank 16 inside it — not the same-name group (median
+7.4) that earlier notes described.
+
+And **no current signal points at the won leaf**: `sectorFit` is tied outright
+(median difference 0.000; all five saturate at 1.000 against the 0.25 clip),
+peer rank runs against it in 90 of 106 cases, eventCount and awardP50 are coin
+flips.
+
+## NEXT, in order
+
+1. **Make region actually live.** `regionScorer` returns `() => 1` when
+   unanswered and the intake asks region adaptively — so the 44.2% @1
+   within-group result **has never been exercised end to end**. Get the question
+   asked, then widen the comparison from the same-`schemeCode` group (median
+   7.4) to the regime (median 75). That is a different experiment from the one
+   `region_routing.md` rejected.
+2. **Fix `sectorFit` saturation.** The 0.25 clip means the top five all score
+   1.000 — it separates nothing exactly where separation is needed. (The
+   posterior form was reverted in the GLOBAL sort; inside a regime is untested.)
+3. **Derive the leaf cap from the pool.** `POOL_LEAVES_PER_CHANNEL` has now been
+   the single largest loss in the product twice (14 → 40 → 90). Each time the
+   corpus widened it silently became binding again.
+
+## MEASURED DEAD ENDS — do not retry
+
+- Peer prior as an RRF **score** instead of a rank: 30% vs 35%. The two signals
+  are a **union**, not an intersection; RRF rewards the intersection.
+- `sectorFit` → posterior in the **global** sort: 30% vs 32%.
+- Giving gate 2 more fields about the funds: 12/40 against 14/40 knowing none.
+- Gate 2 re-picking rather than refining: 13% vs 47%.
+- The old adaptive round (0 promoted at any question limit); gate-fit ranking on
+  uniform answers; corpus scheme-text enrichment for ranking (23% → 23%).
+- The non-startup-ready demotion costs nothing (35% → 34%); its documented
+  3-point figure does not reproduce. `usedInField` is **structurally
+  unmeasurable** on this harness (`matchCompany("TestCo")` is always false) —
+  its production cost is unknown.
+
+## GATE 2
+
+`veto` is the default and **ties** gate 1 (20/40 exact, 38/40 regime) with 0
+short shortlists and 0 malformed replies, against ~40% of runs previously
+shipping three or four funds. It does not yet beat gate 1. Its interview is
+worth 0pp on a fixture where 33 of 40 companies have no description — that
+measures the floor holding, not the mechanism working.
+
+---
+
+# History below this line
 
 ## THE GROUND TRUTH IS ONE FILE NOW (2026-08-06, workstream F)
 
