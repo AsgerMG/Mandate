@@ -190,7 +190,7 @@ recorded unresolved rather than explained away.
 
 **What is certain.** Pool on the tune split measured 94-96% at `dac300a`
 (18:53 UTC, predecessor's own calibration at n=600 across three seeds). It
-measures 78% now, at the same split, same sampler, same pinned seed. On
+measures 78% now on the pinned tune sample, and 75-76% on holdout at n=600. On
 holdout at n=600 it reads 78-79% across three seeds. The fall is real and it
 is not sampling noise — the three seeds agree to a point.
 
@@ -294,6 +294,40 @@ Corrected in place, each saying what the figure was, what it is, and why:
 
 Both are on the ranking path and both are being edited by other workstreams
 tonight. Whoever next opens either should re-head the number, not the finding.
+
+## The re-baseline
+
+`__recallSetComposed.json`, holdout split (2,817 pairs), seeded shuffle,
+n=600 per seed, leak-free index, `resetGateHydration()` per pair. Taken
+2026-08-06 21:09-21:24 UTC, deliberately close together.
+
+| seed | pool | EXACT@5 | REGIME@5 | CHANNEL@5 |
+|---|--:|--:|--:|--:|
+| 20260806 | 75% | 24% | 87% | 90% |
+| 7 | 76% | 22% | 87% | 90% |
+| 99 | 75% | 23% | 87% | 90% |
+
+**Published baseline: pool 75% +/-3.5, EXACT@5 23% +/-3.4, REGIME@5 87% +/-2.7.**
+REGIME@5 is identical across all three seeds and pool varies by one point, so
+the draw is no longer the dominant term — which is what `95f5fce` and `dac300a`
+were for.
+
+Against the brief's expectation (EXACT@5 ~28 +/-6, REGIME@5 ~87, pool ~97):
+EXACT@5 and REGIME@5 land where expected. **Pool does not, by 22 points** —
+see the open item above.
+
+By population, seed 20260806:
+
+| population | n | pool | EXACT@5 | REGIME@5 |
+|---|--:|--:|--:|--:|
+| mode=project | 118 | 93% | 39% | 79% |
+| mode=profile | 482 | 70% | 20% | 89% |
+| original join | 241 | 94% | 28% | 77% |
+| traced:exact_attribution | 359 | 62% | 21% | 93% |
+| regime 51+ | 359 | 60% | 15% | 94% |
+
+The last row is the one to read: the crowded national regimes are most of the
+corpus, and their pool is 60%.
 
 ## Corpus movement
 

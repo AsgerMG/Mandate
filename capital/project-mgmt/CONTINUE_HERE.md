@@ -15,13 +15,19 @@ pool 75%   EXACT@5 24%   REGIME@5 87%      (+/- ~3.5 at n=600)
   regime 51+  n=359   pool 60%  exact5 15%  regime5 94%   <- most of the corpus
 ```
 
-Three seeds, taken 2026-08-06 21:09-21:25 UTC, n=600 each:
+Three seeds, n=600 each, taken 2026-08-06 21:09-21:24 UTC — close together on
+purpose, because coverage agents were writing eligibility text to FR/ES/SE
+throughout and the corpus moves under a long measurement:
 
 | seed | pool | EXACT@5 | REGIME@5 |
 |---|--:|--:|--:|
 | 20260806 | 75% | 24% | 87% |
 | 7 | 76% | 22% | 87% |
-| 99 | see `findings/leak_audit_wsK.md` | | |
+| 99 | 75% | 23% | 87% |
+
+REGIME@5 is identical on all three and pool varies by one point, so the draw is
+no longer doing the talking — which is the entire point of `95f5fce` and
+`dac300a`.
 
 **The previous headline in this position read `pool 97% / EXACT@5 36% /
 REGIME@5 89%` at n=200.** It is retired, not merely superseded: it was measured
