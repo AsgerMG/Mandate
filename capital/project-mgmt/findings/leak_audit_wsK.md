@@ -1,6 +1,11 @@
 # Award-fitted artifact leak audit (workstream K)
 
-Status: IN PROGRESS. Every artifact carries a verdict, including "not reached".
+Status: COMPLETE for the artifacts named below. Every artifact carries a
+verdict, including the four "not reached" — an audit that says which stones are
+still unturned is worth more than one that quietly stops.
+
+**Read first:** the pool open item, below. It is the largest number that moved
+and it is recorded UNRESOLVED.
 
 ## The property being audited
 
@@ -98,7 +103,7 @@ Named so the next person does not have to rediscover that they were skipped.
 4. **`satr_staging` derived titles/objectives.** Register text, believed clean,
    not verified.
 
-## The two `instrument_profiles` defects
+## The three `instrument_profiles` defects
 
 ### 1. No holdout of any kind
 
