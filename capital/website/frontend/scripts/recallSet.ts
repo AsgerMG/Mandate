@@ -65,6 +65,124 @@ export const isDescribed = (r: RecallRow): boolean =>
   Boolean((r.description ?? "").trim())
   && r.descriptionSource !== "own_project_title_leaks";
 
+/** ── The gradable population ───────────────────────────────────────────────
+ *
+ *  THE PROPERTY: a pair may be graded on retrieval only if the fund it names
+ *  is one the product may currently OFFER. Retrieval that declines to return a
+ *  fund the founder must not be sent to is behaving correctly; scoring that as
+ *  a miss measures the answer key, not the ranker.
+ *
+ *  This is a property, not a register. No country, scheme code or instrument id
+ *  appears here or in any caller. The test is the SAME function the product
+ *  ranks over — `publishableInstruments()` — passed in as a predicate so this
+ *  file stays free of the corpus and the DB. If a scheme reopens, its pairs
+ *  return to the graded population on the next run with no edit here; if one
+ *  closes, they leave it. That self-healing is the point: the defect this fixes
+ *  was an answer key that had a fact about the corpus BAKED INTO IT, and baking
+ *  the correction in the same way would only reschedule the same failure.
+ *
+ *  Ungraded pairs are NOT deleted from the file. They are true award history,
+ *  the corpus can move back, and a set that silently shrinks is a set nobody
+ *  can audit. They are reported as their own population, the way `mode` and
+ *  `traced` already are, so the number is on screen rather than inferred.
+ *
+ *  ── Why this cannot quietly make the set easier ───────────────────────────
+ *  Because the exclusion is computed, a bug that made the corpus unpublishable
+ *  would shrink the graded set to whatever remains and read a flattering score
+ *  over it. So the share is GUARDED, not merely reported: see
+ *  `assertGradablePopulation` and its use in `check_recall_floor.ts`. The
+ *  property is that the exclusion stays a correction, never a filter that
+ *  chooses the pairs it likes. */
+export type GradedPopulation = {
+  graded: RecallRow[];
+  /** Answer exists in the corpus but may not be offered — the correction. */
+  ungraded: RecallRow[];
+};
+
+export function partitionByOfferable(
+  rows: RecallRow[], isOfferable: (instrumentId: string) => boolean,
+): GradedPopulation {
+  const graded: RecallRow[] = [], ungraded: RecallRow[] = [];
+  for (const r of rows) (isOfferable(r.instrument) ? graded : ungraded).push(r);
+  return { graded, ungraded };
+}
+
+/** The share of pairs whose answer the product may no longer offer.
+ *
+ *  Measured 2026-08-06 against Postgres: 1,032 of 4,796 = 21.5%, every one of
+ *  them a scheme a register says has closed with NO successor to redirect to
+ *  (80 Spanish, 6 French). That is the honest state of the key today.
+ *
+ *  The band is wide on purpose. It is not a floor on quality — it is a
+ *  staleness alarm on the ANSWER KEY, and the two failure directions are
+ *  different bugs, so it is two-sided:
+ *
+ *    ABOVE the ceiling  the corpus has moved out from under the key again and
+ *                       the key needs repairing, exactly as it did tonight;
+ *    BELOW the floor    a publishability bug has started offering closed funds,
+ *                       or someone has pruned the file to raise a score.
+ *
+ *  Either way a human looks. What it must never do is let the graded set drift
+ *  quietly, because that drift is invisible in the headline. */
+export const UNGRADED_SHARE = { min: 10, max: 33 };
+
+/** Fails loudly rather than grading a population that has drifted.
+ *  Returns the share so a caller can print it. */
+export function assertGradablePopulation(p: GradedPopulation): number {
+  const total = p.graded.length + p.ungraded.length;
+  const share = total === 0 ? 0 : (100 * p.ungraded.length) / total;
+  const bad = share < UNGRADED_SHARE.min || share > UNGRADED_SHARE.max;
+  console.log(
+    `  gradable population: ${p.graded.length.toLocaleString()} of ` +
+    `${total.toLocaleString()} pairs; ${p.ungraded.length.toLocaleString()} ` +
+    `(${share.toFixed(1)}%) name a fund the product may not offer` +
+    `${bad ? "  <-- OUT OF BAND" : ""}`);
+  if (bad) {
+    console.error(
+      `\nrecall set: ungraded share ${share.toFixed(1)}% is outside ` +
+      `${UNGRADED_SHARE.min}-${UNGRADED_SHARE.max}%.`);
+    console.error(
+      share > UNGRADED_SHARE.max
+        ? "The corpus has moved and the answer key is going stale: pairs now name\n" +
+          "funds that can no longer be offered. Repair the key -- do NOT widen this\n" +
+          "band, and do NOT lower the floors it protects."
+        : "Fewer pairs are excluded than any correct corpus should produce. Either\n" +
+          "publishability has regressed and closed funds are being offered again,\n" +
+          "or the set has been pruned. Both are bugs; neither is a passing build.");
+    process.exit(1);
+  }
+  return share;
+}
+
+/** The default seed. Shared so the gate and the harness draw the SAME sample:
+ *  a floor calibrated on one draw and verified on another is not a floor. */
+export const DEFAULT_SEED = 20260806;
+
+/** Deterministic seeded sample — the draw, in one place.
+ *
+ *  Lifted out of `measure_recall.ts` unchanged (mulberry32 + Fisher-Yates) so
+ *  the gate can share it. BOTH obvious samplers are biased on this file: the
+ *  set is strongly ordered by mode, by whether the pair was traced, and by
+ *  instrument, so slicing takes the head of one mode and `i % step` ALIASES
+ *  against that ordering — same ranker and same key measured eleven points
+ *  apart at two values of N. A shuffle cannot align with an order it never
+ *  consults. Vary SEED to find out whether a result is real. */
+export function sampleRecall<T>(rows: T[], n: number, seed = DEFAULT_SEED): T[] {
+  let s0 = seed >>> 0;
+  const rnd = () => {
+    s0 = (s0 + 0x6D2B79F5) >>> 0;
+    let t = Math.imul(s0 ^ (s0 >>> 15), 1 | s0);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const shuffled = rows.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, Math.min(n, shuffled.length));
+}
+
 /**
  * Load the active recall set — or, with `SET=`, an explicitly named one.
  *

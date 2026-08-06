@@ -69,9 +69,12 @@ try {
 } catch { /* rely on the process environment */ }
 if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
-import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
+import { hydrateDbInstruments, loadDbInstruments, publishableInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
-import { isDescribed, loadRecallSet } from "./recallSet";
+import {
+  assertGradablePopulation, DEFAULT_SEED, isDescribed, loadRecallSet, partitionByOfferable,
+  sampleRecall,
+} from "./recallSet";
 
 async function main() {
   await hydrateDbInstruments();
@@ -94,7 +97,15 @@ async function main() {
       : regionMode === "strict"
         ? (r.regionSource === "other_scheme" ? r.region : undefined)
         : r.region || undefined;
-  const set = all.filter((r) => (split === "all" || r.split === split)
+  // Only pairs whose won fund the product may actually offer. A closed scheme
+  // with no successor cannot be returned by retrieval and must not be, so
+  // scoring it as a miss measures the answer key rather than the ranker. The
+  // gate applies the SAME partition from the SAME helper -- a floor calibrated
+  // on one population and verified on another is not a floor.
+  const offerable = new Set(publishableInstruments().map((i) => i.id));
+  const pop = partitionByOfferable(all, (id) => offerable.has(id));
+  assertGradablePopulation(pop);
+  const set = pop.graded.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
                              && (!process.env.DESCRIBED || described(r))
                              && (regionMode !== "strict" || Boolean(regionOf(r))));
@@ -128,20 +139,8 @@ async function main() {
   // because it does not consult it. SEED= varies it on purpose: if a result
   // does not survive a change of seed, it was never there. See the CI printed
   // below; a move smaller than it is noise, not a win.
-  const seed = Number(process.env.SEED ?? 20260806);
-  let s0 = seed >>> 0;
-  const rnd = () => {
-    s0 = (s0 + 0x6D2B79F5) >>> 0;
-    let t = Math.imul(s0 ^ (s0 >>> 15), 1 | s0);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-  const shuffled = set.slice();
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(rnd() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  const sample = shuffled.slice(0, N);
+  const seed = Number(process.env.SEED ?? DEFAULT_SEED);
+  const sample = sampleRecall(set, N, seed);
 
   const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();

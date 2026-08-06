@@ -23,9 +23,11 @@ try {
   }
 } catch { /* rely on the process environment */ }
 
-import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
+import { hydrateDbInstruments, loadDbInstruments, publishableInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
-import { loadRecallSet } from "./recallSet";
+import {
+  assertGradablePopulation, DEFAULT_SEED, loadRecallSet, partitionByOfferable, sampleRecall,
+} from "./recallSet";
 
 /** ONE set, and the two populations inside it guarded separately.
  *
@@ -68,12 +70,14 @@ const POPULATION_FLOOR: Record<string, number> = {
   "original join": 74,
   "traced:exact_attribution": 88,
 };
-// FIXED, and deliberately not configurable. At n=120 this same build measures
-// 97/31/68 and at n=150 it measures 97/37/75 -- six points of binomial noise on
-// the same code. A gate whose verdict depends on how many pairs you happened to
-// run is not a gate, so the sample is pinned and the floors are calibrated to
-// it. Use `measure_recall.ts` to explore at other sizes.
-const N = 150;
+// FIXED, and deliberately not configurable -- both of them. N was already
+// pinned because the verdict must not depend on how many pairs you happened to
+// run. SEED is pinned for the same reason now that the draw is a shuffle: with
+// both fixed the sample is a constant, so the margin below covers a corpus
+// refresh or an embedding rebuild rather than the draw. Use `measure_recall.ts`,
+// which varies SEED, to find out whether a result is real.
+const N = 300;
+const SEED = DEFAULT_SEED;
 
 async function main() {
   // Semantic ranking needs both. Without them this would grade the LEXICAL
@@ -92,15 +96,32 @@ async function main() {
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   let anyFailed = false;
   const { file, rows: all } = loadRecallSet("recall floor");
-  // Stride, not slice. The set is grouped by mode, so the first N pairs are
-  // nearly all `project` -- which measures 63% exact against `profile`'s 22%,
-  // and the first draft of this gate read 70% where the true figure is 49%. A
-  // floor that samples the easy half is worse than no floor: it passes while
-  // the population it was written to protect regresses. Deterministic, so the
-  // number is comparable between runs.
-  const tune = all.filter((r) => r.split === "tune");
-  const step = Math.max(1, Math.floor(tune.length / N));
-  const set = tune.filter((_, i) => i % step === 0).slice(0, N);
+  // ── Grade only what the product may offer ─────────────────────────────────
+  // A pair whose won fund the register says has closed, with no successor to
+  // redirect to, cannot be returned by retrieval and MUST not be: sending a
+  // founder to a closed scheme costs them real time. Scoring that as a miss
+  // grades the answer key, not the ranker. 21.5% of this file was in that state
+  // on 2026-08-06 -- which alone put pool's ceiling at 78.5% against a floor of
+  // 90 -- and the exclusion is computed from `publishableInstruments()`, the
+  // same function the product ranks over, so it tracks the corpus instead of
+  // going stale the way the baked-in key did. See recallSet.ts for the property.
+  const offerable = new Set(publishableInstruments().map((i) => i.id));
+  const pop = partitionByOfferable(all, (id) => offerable.has(id));
+  // Two-sided, and fatal. This is the alarm that would have caught tonight's
+  // drift the day it happened rather than as a red floor nobody could explain.
+  assertGradablePopulation(pop);
+  // The SAME draw `measure_recall.ts` takes, from the shared helper, at the
+  // pinned seed. It used to be a stride here: the set is strongly ordered by
+  // mode and by whether a pair was traced, and `i % step` aliases against that
+  // ordering, so the gate and the harness it floors were reading different
+  // samples of one set. Sharing the draw is what makes the floors below
+  // reproducible by anyone running `SPLIT=tune N=300 npx tsx
+  // scripts/measure_recall.ts`. SEED is pinned for the reason N is: at n=150 the
+  // draw alone moved figures by six points on identical code, and a gate whose
+  // verdict depends on the draw is not a gate. Vary SEED in the harness, never
+  // here.
+  const tune = pop.graded.filter((r) => r.split === "tune");
+  const set = sampleRecall(tune, N, SEED);
 
   let pool = 0, exact5 = 0, regime5 = 0;
   const byPop = new Map<string, { n: number; r5: number }>();
