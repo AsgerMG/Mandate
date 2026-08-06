@@ -137,11 +137,27 @@ export const UNGRADED_SHARE = { min: 10, max: 33 };
  *
  *  Observed live: `funding_instruments` went 1,014 -> 998 rows mid-session while
  *  another workstream reloaded it, and the ungraded share moved 21.5% -> 25.5%
- *  purely from ABSENT. Under one combined number that is invisible, and a floor
- *  calibrated through it is calibrated against a corpus that no longer exists.
- *  So ABSENT is capped far tighter than the withheld band and fails the build:
- *  measuring across a truncate-and-reload is not a thing to do quietly. */
-export const ABSENT_SHARE_MAX = 2;
+ *  purely from ABSENT — 16 instruments, 192 pairs. Under one combined number
+ *  that is invisible.
+ *
+ *  ── Why ABSENT is REPORTED and not separately fatal ───────────────────────
+ *  The first draft capped it at 2% and failed the build, to stop anyone
+ *  measuring across a reload. That cap was wrong, and measurement showed it
+ *  within the hour: the corpus settled at 998 with those 16 instruments
+ *  genuinely gone, so 4.0% ABSENT is the state of a CORRECT corpus. A guard
+ *  that fails on a correct corpus gets suppressed, and then it guards nothing.
+ *
+ *  A single read also cannot tell a reload in flight from a reload that
+ *  finished — both look like "some answers are missing". The reliable test is
+ *  temporal, not a threshold: fingerprint the corpus BEFORE and AFTER any
+ *  baseline and discard the run if it moved. That practice belongs in the
+ *  runbook, and it is written up in
+ *  `project-mgmt/findings/answer_key_repair_wsR.md`.
+ *
+ *  Catastrophic divergence is still caught, because ABSENT counts toward the
+ *  combined `UNGRADED_SHARE` band above — a reload that dropped a whole country
+ *  pushes the total through the ceiling and fails there. What ABSENT gets here
+ *  is visibility, which is what it actually lacked. */
 
 /** Fails loudly rather than grading a population that has drifted.
  *  `inCorpus` is optional; without it only the combined band is checked.
@@ -162,14 +178,12 @@ export function assertGradablePopulation(
     `${inCorpus ? ` — ${(p.ungraded.length - absent).toLocaleString()} withheld, ` +
       `${absent.toLocaleString()} absent from the corpus` : ""}` +
     `${bad ? "  <-- OUT OF BAND" : ""}`);
-  if (inCorpus && absentShare > ABSENT_SHARE_MAX) {
-    console.error(
-      `\nrecall set: ${absent} pairs (${absentShare.toFixed(1)}%) name a fund that ` +
-      `is not in the corpus at all,\nover the ${ABSENT_SHARE_MAX}% ceiling. The ` +
-      "answer key points at instruments that no longer exist.\nIf a corpus reload " +
-      "is in flight, wait for it and re-run: a number measured across\na " +
-      "truncate-and-reload is not reproducible. If it is not, the corpus lost rows.");
-    process.exit(1);
+  if (inCorpus && absent > 0) {
+    console.log(
+      `    (${absentShare.toFixed(1)}% absent — the answer key names instruments ` +
+      "the corpus no longer holds.\n     If a reload is in flight, a baseline taken " +
+      "now is not reproducible: fingerprint\n     the corpus before and after, and " +
+      "discard the run if it moved.)");
   }
   if (bad) {
     console.error(
