@@ -137,6 +137,25 @@ def _norm(s: str | None) -> str:
     return " ".join((s or "").split()).strip().lower()
 
 
+def budget_floor() -> float:
+    """The smallest stated budget among the instruments the corpus ALREADY
+    publishes for this country.
+
+    Derived, never typed. Admitting a EUR 300k open call while already
+    publishing a EUR 300k closed one is the only non-contradictory position,
+    and the floor moves on its own if the corpus's existing floor moves.
+    """
+    import re
+    p = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.json"
+    buds = [float(m.group(1).replace(",", ""))
+            for r in json.loads(p.read_text())
+            for m in [re.search(r"Presupuesto total: ([\d,]+) EUR",
+                                r.get("eligibility_text") or "")] if m]
+    if not buds:
+        raise SystemExit("no stated budgets on the existing leaves -- floor undefined")
+    return min(buds)
+
+
 def admissible_policies() -> frozenset[str]:
     """The spending policies the corpus ALREADY publishes instruments under.
 
@@ -407,7 +426,8 @@ def report(asof: str, min_budget: float) -> None:
     pol = admissible_policies()
     recs = [r for r in load_details().values() if not r.get("error")]
     print(f"{len(recs)} detail records cached")
-    print(f"in-scope spending policies, read off the corpus: {len(pol)}\n")
+    print(f"scope read off the corpus: {len(pol)} spending policies, "
+          f"budget floor EUR {min_budget:,.0f}\n")
     n = len(recs)
     passed = {c: 0 for c in CLAUSES}
     all_pass = 0
@@ -423,7 +443,7 @@ def report(asof: str, min_budget: float) -> None:
     print("clause pass rates (independent, over all cached details)")
     for c in CLAUSES:
         print(f"  {c:12} {passed[c]:6}  {100*passed[c]/max(n,1):5.1f}%")
-    print(f"\nALL FOUR      {all_pass:6}  {100*all_pass/max(n,1):5.1f}%")
+    print(f"\nALL CLAUSES   {all_pass:6}  {100*all_pass/max(n,1):5.1f}%")
     print("\nqualifying by administrative level")
     for k, v in sorted(by_level.items(), key=lambda kv: -kv[1]):
         print(f"  {k:36} {v}")
@@ -515,17 +535,19 @@ def main() -> None:
     ap.add_argument("--order", default="newest", choices=["newest", "oldest"])
     ap.add_argument("--shard", help="i/n -- run several workers over disjoint shares")
     ap.add_argument("--asof", default=dt.date.today().isoformat())
-    ap.add_argument("--min-budget", type=float, default=200_000.0)
+    ap.add_argument("--min-budget", type=float, default=None,
+                    help="override the floor derived from the corpus (rarely wanted)")
     args = ap.parse_args()
+    floor = args.min_budget if args.min_budget is not None else budget_floor()
 
     if args.enumerate:
         enumerate_candidates(args.since, args.until, args.levels.split(","))
     elif args.detail:
         fetch_details(args.limit, args.order, args.shard)
     elif args.report:
-        report(args.asof, args.min_budget)
+        report(args.asof, floor)
     elif args.audit:
-        audit(args.asof, args.min_budget)
+        audit(args.asof, floor)
     else:
         ap.print_help()
 

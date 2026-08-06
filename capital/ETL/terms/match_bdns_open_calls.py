@@ -69,7 +69,7 @@ FETCH_RECORDS = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.jso
 EXISTING = ROOT / "data" / "raw" / "bdns_open" / "existing_leaf_details.json"
 
 from harvest_bdns_open_calls import (  # noqa: E402
-    load_details, qualifies, admissible_policies,
+    load_details, qualifies, admissible_policies, budget_floor,
 )
 
 
@@ -187,12 +187,12 @@ def main() -> None:
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--refresh-existing", action="store_true")
     ap.add_argument("--asof", default=dt.date.today().isoformat())
-    ap.add_argument("--min-budget", type=float, default=200_000.0)
+    ap.add_argument("--min-budget", type=float, default=None)
     a = ap.parse_args()
     if a.refresh_existing:
         refresh_existing()
     elif a.report:
-        report(a.asof, a.min_budget)
+        report(a.asof, a.min_budget if a.min_budget is not None else budget_floor())
     else:
         ap.print_help()
 

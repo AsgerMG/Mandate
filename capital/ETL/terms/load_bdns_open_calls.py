@@ -77,7 +77,8 @@ import json  # noqa: E402
 import sqlite3  # noqa: E402
 
 from harvest_bdns_open_calls import (  # noqa: E402
-    load_details, clauses, discriminators, admissible_policies, _descs, _norm,
+    load_details, clauses, discriminators, admissible_policies, budget_floor,
+    _descs, _norm,
 )
 from match_bdns_open_calls import load_existing, norm_basis  # noqa: E402
 
@@ -99,29 +100,6 @@ CAPITAL_TYPE = {
     "APORTACIÓN DE FINANCIACIÓN RIESGO": "equity",
     "OTROS INSTRUMENTOS DE AYUDA": "unknown",
 }
-
-
-def budget_floor(conn: sqlite3.Connection) -> float:
-    """The smallest stated budget among the instruments the corpus ALREADY
-    publishes for this country.
-
-    Derived, never typed. Admitting a EUR 300k open call while already
-    publishing a EUR 300k closed one is the only non-contradictory position,
-    and the floor moves on its own if the corpus's existing floor moves. Read
-    out of the stored fetch records, which are where the register's stated
-    budgets for the existing leaves live.
-    """
-    import re
-    from etl_env import ROOT
-    p = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.json"
-    buds = []
-    for r in json.loads(p.read_text()):
-        m = re.search(r"Presupuesto total: ([\d,]+) EUR", r.get("eligibility_text") or "")
-        if m:
-            buds.append(float(m.group(1).replace(",", "")))
-    if not buds:
-        raise SystemExit("no stated budgets on the existing leaves -- floor undefined")
-    return min(buds)
 
 
 def capital_type_of(d: dict) -> tuple[str, str]:
@@ -334,9 +312,7 @@ def main() -> None:
     ap.add_argument("--asof", default=dt.date.today().isoformat())
     a = ap.parse_args()
 
-    conn = sqlite3.connect(DB)
-    floor = budget_floor(conn)
-    conn.close()
+    floor = budget_floor()
     print(f"budget floor, derived from the corpus's own ES inventory: EUR {floor:,.0f}\n")
     rows, revivals, stats = build_rows(a.asof, floor)
     for k in ("cached", "admitted", "dup_call", "same_scheme", "new"):

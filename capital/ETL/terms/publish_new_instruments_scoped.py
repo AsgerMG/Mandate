@@ -104,19 +104,29 @@ def main() -> None:
 
     pg = psycopg2.connect(dsn)
     with pg, pg.cursor() as cur:
-        cur.execute("SELECT column_name FROM information_schema.columns "
+        cur.execute("SELECT column_name, data_type FROM information_schema.columns "
                     "WHERE table_name='funding_instruments'")
-        pg_cols = {r[0] for r in cur.fetchall()}
+        pg_types = dict(cur.fetchall())
+        pg_cols = set(pg_types)
         cols = [c for c in sq_cols if c in pg_cols]
         missing = [c for c in sq_cols if c not in pg_cols]
         if missing:
             print(f"  not published (absent in Postgres): {', '.join(missing)}")
+        # SQLite has no boolean type, so its 0/1 arrives as an integer and
+        # Postgres refuses it. Coerced by reading Postgres's OWN declared type
+        # rather than by naming the column: migrate_to_postgres.py hardcodes
+        # `is_framework` in two places, and the next boolean column would have
+        # to find and fix both.
+        def coerce(r, c):
+            v = r[c]
+            return bool(v) if v is not None and pg_types[c] == "boolean" else v
+
         sets = ", ".join(f"{c} = EXCLUDED.{c}" for c in cols if c != "id")
         cur.executemany(
             f"INSERT INTO funding_instruments ({','.join(cols)}) "
             f"VALUES ({','.join(['%s'] * len(cols))}) "
             f"ON CONFLICT (id) DO UPDATE SET {sets}",
-            [tuple(r[c] for c in cols) for r in rows])
+            [tuple(coerce(r, c) for c in cols) for r in rows])
         cur.executemany(
             "INSERT INTO funding_instrument_sources (instrument_id, source) "
             "VALUES (%s, %s) ON CONFLICT DO NOTHING",
