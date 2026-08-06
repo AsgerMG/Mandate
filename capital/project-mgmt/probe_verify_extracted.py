@@ -52,7 +52,11 @@ _cache: dict[str, str] = {}
 def doc_text(name: str) -> str:
     if name not in _cache:
         p = DOCS / name
-        if not p.exists():
+        # A record naming no document, or naming a directory, is a record with
+        # nothing to verify against -- report it as unreadable and carry on.
+        # Raising here instead made the whole run die on one malformed record,
+        # which is how a checker stops being run at all.
+        if not name or not p.is_file():
             _cache[name] = ""
         elif p.suffix.lower() == ".pdf":
             _cache[name] = subprocess.run(
