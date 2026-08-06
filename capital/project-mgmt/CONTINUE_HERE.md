@@ -71,9 +71,25 @@ ranking failure. All four are fixed and guarded:
   so it needs no database — a guard requiring credentials most machines lack is
   a guard that reports green. 212 cross-language probes; poison confirmed to
   exit 1 on both the unit and CI paths.
-- **Floors re-baselined and split by population** (original join 84%/floor 74,
-  traced 95%/floor 88), so a change that buys programme children with SATR
-  leaves now FAILS instead of netting out to a flat headline.
+- **Floors re-baselined and split by population**, so a change that buys
+  programme children with SATR leaves now FAILS instead of netting out to a
+  flat headline. Re-derived again 2026-08-06 21:24 UTC (workstream K) against
+  the rebuilt leak-free index, same pinned sample (tune, n=300, SEED=20260806):
+
+  | | measured | floor |
+  |---|--:|--:|
+  | pool | 78% | **72%** — a REGRESSION floor, see below |
+  | EXACT@5 | 24% | 15% (raised from 12) |
+  | REGIME@5 | 88% | 80% (raised from 74) |
+  | original join, n=131 | 80% | 68% (raised from 65) |
+  | traced, n=169 | 94% | 82% (raised from 76) |
+
+  **Four of the five floors went UP** — the ranking numbers improved on the
+  identical sample once the index was rebuilt clean. The pool floor went DOWN
+  from 90 to 72 and that is not a re-measurement, it is an unexplained
+  16-point fall being tolerated so the build can run. Raise it back when the
+  cause is found; the header of `check_recall_floor.ts` says what is ruled out
+  and what is not.
 
 ## THE REMAINING LOSS, diagnosed from two directions
 

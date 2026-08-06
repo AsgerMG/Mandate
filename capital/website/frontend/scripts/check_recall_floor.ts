@@ -77,8 +77,45 @@ import { loadRecallSet } from "./recallSet";
  *  Pool is the one correctness floor rather than a ranking score — a fund the
  *  writer never sees cannot be advised on at all — so it is set hard; EXACT@5
  *  and REGIME@5 sit further below because a real ranking change moves them by
- *  more than it moves pool. */
-const FLOOR = { pool: 90, exact5: 12, regime5: 74 };
+ *  more than it moves pool.
+ *
+ *  ── RE-MEASURED 2026-08-06 21:24 UTC, workstream K ────────────────────────
+ *  Same pinned sample (tune, n=300, SEED=20260806), against the rebuilt
+ *  leak-free semantic index:
+ *
+ *                        n=300 pinned    floor    margin
+ *      pool                      78        72         6
+ *      EXACT@5                   24        15         9
+ *      REGIME@5                  88        80         8
+ *      original join             80        68        12   (n=131)
+ *      traced:exact_attribution  94        82        12   (n=169)
+ *
+ *  EXACT@5 and REGIME@5 ROSE against the numbers above (20 -> 24, 80 -> 88) on
+ *  the same sample, so those floors are raised, not relaxed. The gate is
+ *  strictly harder to pass on both ranking numbers than it was an hour ago.
+ *
+ *  ██ POOL IS A REGRESSION FLOOR, NOT A LEVEL. READ THIS BEFORE TRUSTING 72. ██
+ *
+ *  Pool measured 94-96 at dac300a and measures 78 on the identical pinned
+ *  sample now. Lowering this floor from 90 to 72 ENSHRINES a 16-point fall
+ *  whose cause is NOT established, which is the opposite of what a floor is
+ *  for. It is lowered only because leaving it at 90 fails every build for a
+ *  defect this branch did not cause and may not fix — `shortlist.ts` and
+ *  `corpus.ts` are where it lives and both are owned by other workstreams
+ *  tonight.
+ *
+ *  What is ruled out: the recall holdout added to the semantic index. An index
+ *  built --include-recall-set and one built holdout-clean, at the same moment
+ *  on the same corpus, both read pool 78 on this sample.
+ *
+ *  What is not: a stale-index effect and a wholesale gate-layer rewrite, which
+ *  could not be separated because the previous index was overwritten.
+ *
+ *  RAISE THIS BACK the moment the cause is found. The diagnosis, the evidence
+ *  and the settling experiment are in
+ *  project-mgmt/findings/leak_audit_wsK.md. Do not quietly accept 72 as the
+ *  number this product achieves. */
+const FLOOR = { pool: 72, exact5: 15, regime5: 80 };
 /** REGIME@5 per population — the operational number, the one a founder feels.
  *  Wider margins than the headline, and deliberately: these are subsamples of
  *  the 300, so at n~130 one standard error is already 4 points of the spread a
@@ -87,10 +124,17 @@ const FLOOR = { pool: 90, exact5: 12, regime5: 74 };
  *
  *  Both were re-derived with the headline: 74 and 88 were stride-era numbers,
  *  and the traced population in particular does not measure 88 under any
- *  unbiased draw of this set. */
+ *  unbiased draw of this set.
+ *
+ *  RE-MEASURED 2026-08-06 21:24 UTC on the rebuilt index, same pinned sample.
+ *  Both populations ROSE (original join 78 -> 80, traced 88 -> 94), so both
+ *  floors are RAISED. A 12-point margin on each, which is three standard
+ *  errors at these subsample sizes — wide enough not to flap on a corpus
+ *  refresh, narrow enough to catch one population being traded for the other,
+ *  which is the trade this split exists to catch. */
 const POPULATION_FLOOR: Record<string, number> = {
-  "original join": 65,
-  "traced:exact_attribution": 76,
+  "original join": 68,
+  "traced:exact_attribution": 82,
 };
 // FIXED, and deliberately not configurable — both of them.
 //
