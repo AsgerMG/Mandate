@@ -52,23 +52,58 @@ import {
  *  fund the writer never sees cannot be advised on at all -- so it is set
  *  hard; EXACT@5 and REGIME@5 sit further below because both carry real
  *  sampling noise, and the per-population figures carry more of it at n<100. */
-/*  Measured on this build (b2273a7), n=150 tune, __recallSetComposed.json:
- *      pool 95   EXACT@5 25   REGIME@5 91
- *      REGIME@5  84 on the original join (n=63), 95 on the traced rows (n=87)
- *  Floors sit ~5 points under, the margin this gate has always used. The old
- *  floors are NOT carried over: they guarded two different files, and one of
- *  them (`__recallSet.json`) was found today to be six points below the
- *  measurement it floors because it graded a founder who typed nothing — a
- *  path the intake no longer allows. */
-const FLOOR = { pool: 90, exact5: 20, regime5: 85 };
+/*  ── RE-DERIVED against the repaired answer key, 2026-08-06 ────────────────
+ *
+ *  The previous floors were calibrated on a set that still graded retrieval on
+ *  returning funds the product may not offer. When tonight's corpus work
+ *  correctly withdrew 86 closed schemes, 1,032 of 4,796 pairs (21.5%) named an
+ *  answer that had become unpublishable, and pool's CEILING fell to 78.5%
+ *  against a floor of 90. No ranker could have passed. The floor was right and
+ *  the corpus was right; the key was stale, and it is the key that was repaired.
+ *  See `project-mgmt/findings/answer_key_repair_wsR.md`.
+ *
+ *  Measured on the repaired key, tune split, seeded shuffle at the pinned seed,
+ *  n=300, Postgres held and the corpus fingerprinted identical before and after
+ *  the run — with the three-seed n=600 spread beside it, which is what says how
+ *  much of the margin is noise rather than headroom:
+ *
+ *                       n=300 PINNED          n=600, same seed
+ *                       (what these floors guard)
+ *      pool                       98                  97
+ *      EXACT@5                    30                  29
+ *      REGIME@5                   90                  87
+ *      REGIME@5 original join     85  (n=175)         80  (n=332)
+ *      REGIME@5 traced            98  (n=125)         97  (n=268)
+ *
+ *  Seeds 7 and 99 at n=600 are recorded in the findings file rather than here:
+ *  the pass that produced them straddled the 1,014 -> 998 corpus reload, so they
+ *  say the result is seed-insensitive (pool 96-98, REGIME@5 86-88 across three
+ *  seeds) but they are not clean enough to calibrate against. These floors are
+ *  derived from the pinned n=300 column alone, which was measured with the
+ *  corpus verified identical before and after the run.
+ *
+ *  Floors sit ~5 points under the pinned measurement, the margin this gate has
+ *  always used. SEED and N are both pinned, so the residual sampling noise
+ *  inside that margin is ZERO — the same 300 pairs every run — and the margin
+ *  therefore covers a corpus refresh or an embedding rebuild rather than the
+ *  draw. That headroom is not theoretical: `funding_instruments` moved 1,014 ->
+ *  998 rows during this very calibration, and it shifted these figures by up to
+ *  four points.
+ *
+ *  EVERY floor here is RAISED or unchanged. Nothing was lowered to make the
+ *  build green: the build went green because the question the set asks became
+ *  answerable again. */
+const FLOOR = { pool: 93, exact5: 25, regime5: 85 };
 /** REGIME@5 per population — the operational number, the one a founder feels.
  *  Wider margins than the headline, and deliberately: these are subsamples of
- *  the 150, so at n=63 one standard error is already 4.6 points. Two of those
- *  is the margin, which is what stops the gate flapping on noise while still
- *  catching a population being traded away. */
+ *  the 300, so at n=125 one standard error is already ~1.3 points on a 98% rate
+ *  and far more in the middle of the range. The wider margin is what stops the
+ *  gate flapping while still catching a population being traded away — which is
+ *  the whole reason they are floored separately rather than netted into the
+ *  headline. Both raised from 74/88 with the rest. */
 const POPULATION_FLOOR: Record<string, number> = {
-  "original join": 74,
-  "traced:exact_attribution": 88,
+  "original join": 78,
+  "traced:exact_attribution": 92,
 };
 // FIXED, and deliberately not configurable -- both of them. N was already
 // pinned because the verdict must not depend on how many pairs you happened to
