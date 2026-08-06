@@ -66,6 +66,31 @@ async function main() {
       `   field present ${(100 * present / leaves).toFixed(0).padStart(3)}%`);
   }
 
+  // ── The ceiling this implies, which is the number the target is judged on ──
+  //
+  // Mean class size is the wrong summary for a product that shows FIVE rows. A
+  // founder whose residual class holds 3 siblings can be shown all of them; one
+  // whose class holds 60 cannot be helped by any chooser. So report the
+  // DISTRIBUTION, and read the @5 ceiling straight off it: a perfect chooser
+  // puts the won leaf in the five whenever its class fits in the five.
+  {
+    const key = (r: any) => h(r.administering_body) + "|" + h(r.delivery_region) + "|" + h(r.eligibility_text);
+    const sizes: number[] = [];
+    for (const g of groups) {
+      const cls = new Map<string, number>();
+      for (const r of g) cls.set(key(r), (cls.get(key(r)) ?? 0) + 1);
+      for (const r of g) sizes.push(cls.get(key(r))!);
+    }
+    const n = sizes.length;
+    const le = (k: number) => sizes.filter((s) => s <= k).length;
+    console.log(`\nRESIDUAL CLASS SIZE over ${n} leaves in multi-leaf regimes`);
+    console.log(`  alone (=1)   ${(100 * le(1) / n).toFixed(0)}%   <- ceiling @1`);
+    console.log(`  <= 3         ${(100 * le(3) / n).toFixed(0)}%`);
+    console.log(`  <= 5         ${(100 * le(5) / n).toFixed(0)}%   <- CEILING @5, a perfect chooser`);
+    console.log(`  <= 10        ${(100 * le(10) / n).toFixed(0)}%`);
+    console.log(`  > 20         ${(100 * (n - le(20)) / n).toFixed(0)}%   <- unreachable by any chooser`);
+  }
+
   // Coverage of the verbatim text, which is the one that could be extended.
   const withText = rows.filter((r) => r.eligibility_text && String(r.eligibility_text).trim().length > 40);
   console.log(`\neligibility_text over 40 chars: ${withText.length} of ${rows.length} instruments`);
