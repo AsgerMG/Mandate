@@ -104,6 +104,151 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
   return true;
 }
 
+// ── Can we CONFIRM this row is open? ───────────────────────────────────────
+//
+// `isClosed()` answers "what does this corpus say". This half answers the
+// question a founder's request actually turns on: "is what this corpus says
+// about THIS row still worth acting on".
+//
+// ── The defect ────────────────────────────────────────────────────────────
+// `hydrateDbInstruments()` is Postgres-first and falls back to the committed
+// snapshot on any failure — a 2s statement timeout on a loaded database is
+// enough. Measured on the pinned 150-pair sample, 2026-08-06:
+//
+//                     founders shown >=1 closed call in top 5   dead calls in pool
+//   Postgres                       0%                                  1.1
+//   snapshot fallback             26%                                 20.3
+//
+// The whole gap was `scheme_end_date`. 86 application deadlines had been loaded
+// into Postgres since the snapshot was cut; for every one of them the snapshot
+// held `schemeEndDate: null` and went on offering the call. A quarter of
+// founders were pointed at a fund whose window had shut.
+//
+// ── Why this is per row and not a banner ──────────────────────────────────
+// "Am I on the snapshot" is the wrong question — it condemns 817 publishable
+// rows for the sake of 80. The right one is asked of each row: what is its
+// openness actually resting on?
+//
+//   declared_window   an end date that has not passed. The register states the
+//                     window; a store being a few hours behind does not make a
+//                     future date untrue.
+//   observed_renewal  a notified duration expired and aid was granted after it.
+//                     Both facts are on the row.
+//   no_deadline_recorded  nothing declares an end. Openness is inferred from
+//                     the corpus holding no deadline — and THAT is the
+//                     inference a stale store gets wrong, because a deadline
+//                     loaded after the cut is indistinguishable from a fund
+//                     that has none.
+//
+// Only the third is at risk, and only where the register in question publishes
+// deadlines at all. Measured over the corpus: of 390 absence-based open rows,
+// 310 sit in populations where no member has ever carried a call deadline —
+// EIC, Horizon, the EIT KICs, the Baltic development banks. Their absence is
+// the register's steady state, not a gap, and suppressing them would answer a
+// blip by deleting half the product. The other 80 sit in the two populations
+// that DO record deadlines, which are precisely the two the 86 dead calls came
+// from. See `populationRecordsDeadlines`.
+//
+// ── NULL is not "open" ────────────────────────────────────────────────────
+// A store that does not carry `schemeEndBasis` at all cannot be asked any of
+// this: it cannot tell a notified duration from a call deadline, so it cannot
+// tell a deadline-recording population from a steady one either. The 2026-08-06
+// snapshot was exactly that store. An absent field therefore reads as
+// UNCONFIRMED, never as open — the reading that left 80 dead Spanish calls
+// proposable.
+
+/** What a row's openness is resting on. `closed` rows are excluded upstream and
+ *  never reach a founder; the other four are the ways a row can be open. */
+export type OpennessEvidence =
+  | "closed"
+  | "declared_window"
+  | "observed_renewal"
+  | "no_deadline_recorded"
+  | "basis_not_supplied";
+
+export function opennessEvidence(row: LivenessFacts, asOf: string = today()): OpennessEvidence {
+  if (isClosed(row, asOf)) return "closed";
+  const end = row.schemeEndDate ? String(row.schemeEndDate).slice(0, 10) : "";
+  // A future end date closes nothing whatever its basis, so a missing basis is
+  // not an input to this row's verdict and cannot invalidate it.
+  if (end && end >= asOf) return "declared_window";
+  // Past-and-open is only reachable through the notified-duration clause, which
+  // reads the basis; if the store did not supply the field we did not evaluate
+  // that clause, we defaulted through it.
+  if (!("schemeEndBasis" in row) || row.schemeEndBasis === undefined) return "basis_not_supplied";
+  if (end) return "observed_renewal";
+  return "no_deadline_recorded";
+}
+
+/** Where the rows being judged came from. */
+export interface LivenessObservation {
+  /** `postgres` is the register itself — there is nothing fresher to check a
+   *  row against, so every row it supplies is confirmed by definition. Any
+   *  other source is a copy taken at some past instant. */
+  source: "postgres" | "snapshot" | "none";
+  /** Does the register this row was drawn from publish application deadlines
+   *  for rows like it? A property of the CORPUS, not of the row, so the caller
+   *  supplies it — see `populationRecordsDeadlines`. Absent is read as "yes",
+   *  which is the conservative direction. */
+  populationRecordsDeadlines?: boolean;
+}
+
+/**
+ * Why this row's openness cannot be confirmed, or null when it can.
+ *
+ * The returned string is founder-independent and safe to log: it describes the
+ * row and the store, never the applicant.
+ */
+export function unconfirmedOpen(
+  row: LivenessFacts,
+  obs: LivenessObservation,
+  asOf: string = today(),
+): string | null {
+  // The live register. Whatever it says is the freshest answer that exists.
+  if (obs.source === "postgres") return null;
+  switch (opennessEvidence(row, asOf)) {
+    case "closed":
+      // Not shown regardless; the caller has already dropped it.
+      return null;
+    case "declared_window":
+    case "observed_renewal":
+      return null;
+    case "basis_not_supplied":
+      return "the store did not supply scheme_end_date_basis, so the liveness " +
+        "rule was not evaluated — this row is unlabelled, not open";
+    case "no_deadline_recorded":
+      return obs.populationRecordsDeadlines === false
+        ? null
+        : "openness rests on the corpus holding no application deadline, and " +
+          "this row's register does publish them — a deadline loaded since " +
+          "this copy was taken would close it";
+  }
+}
+
+/**
+ * Which populations publish application deadlines at all.
+ *
+ * The unit is whatever `keyOf` returns — in the product, the register a row was
+ * drawn from for one country. A population that has EVER recorded a
+ * `call_deadline` records them; a row in it with none is a row whose window we
+ * may simply not have loaded yet. A population that never has is one where
+ * absence is the steady state.
+ *
+ * Deliberately derived from the corpus rather than listed. Two populations
+ * qualify today and both are ones a call register was loaded into this week; a
+ * list would have to be edited the next time one is, and would be edited late.
+ */
+export function populationRecordsDeadlines<T extends LivenessFacts>(
+  rows: readonly T[],
+  keyOf: (row: T) => string,
+): (row: T) => boolean {
+  const recording = new Set<string>();
+  for (const r of rows) {
+    if (r.schemeEndBasis === SCHEME_END_BASIS.callDeadline) recording.add(keyOf(r));
+  }
+  return (row: T) => recording.has(keyOf(row));
+}
+
 /** SQL for the same predicate, so the Python and SQL consumers do not restate
  *  it in prose. `col` prefixes columns for use inside a JOIN.
  *

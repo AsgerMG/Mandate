@@ -3,7 +3,10 @@
 // and fuzzy-matches competitor names against the corpus.
 import { readFileSync } from "fs";
 import { meetsDataFloor } from "./accessMode";
-import { isClosed, today } from "./liveness";
+import {
+  isClosed, populationRecordsDeadlines, today, unconfirmedOpen,
+  type LivenessObservation,
+} from "./liveness";
 import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
 // Re-exported so existing callers (shortlist, pipeline, scripts) are unchanged.
@@ -290,12 +293,19 @@ export interface CorpusProvenance {
   degraded: boolean;
   instruments: number;
   hydratedAt: string;
+  /** WHEN the store's answer was taken, as opposed to when we read it. For
+   *  Postgres the two are the same instant; for the snapshot it is the
+   *  artifact's `generatedAt`, which is the only thing that distinguishes a
+   *  copy made minutes ago from one made a day before 86 deadlines landed.
+   *  Empty when the artifact carries no stamp — itself a reason not to trust
+   *  an inference drawn from it. */
+  observedAt: string;
   /** The Postgres error, when there was one. */
   error?: string;
 }
 
 let provenance: CorpusProvenance = {
-  source: "none", degraded: false, instruments: 0, hydratedAt: "",
+  source: "none", degraded: false, instruments: 0, hydratedAt: "", observedAt: "",
 };
 
 /** What corpus the current process hydrated, and whether it is the one it asked
@@ -335,10 +345,18 @@ export function requireLiveCorpus(context = "this run"): void {
     `  Fix the connection, or run deliberately without DATABASE_URL and say so.`);
 }
 
+/** When the loaded snapshot was cut, from its own `generatedAt`. "" if the
+ *  artifact is unstamped or was never read. */
+let snapshotGeneratedAt = "";
+
 function loadDbInstrumentsFromJson(): DbInstrument[] | null {
   try {
     const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
-    return (JSON.parse(readFileSync(file, "utf8")) as { records: DbInstrument[] }).records;
+    const parsed = JSON.parse(readFileSync(file, "utf8")) as {
+      generatedAt?: string; records: DbInstrument[];
+    };
+    snapshotGeneratedAt = parsed.generatedAt ?? "";
+    return parsed.records;
   } catch {
     return null;
   }
@@ -365,6 +383,7 @@ export async function hydrateDbInstruments(): Promise<void> {
     provenance = {
       source: "snapshot", degraded: false,
       instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+      observedAt: snapshotGeneratedAt,
     };
     return;
   }
@@ -518,6 +537,8 @@ export async function hydrateDbInstruments(): Promise<void> {
       provenance = {
         source: "postgres", degraded: false,
         instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+        // The register answered just now; the observation IS the read.
+        observedAt: new Date().toISOString(),
       };
     } finally {
       await client.end();
@@ -531,6 +552,7 @@ export async function hydrateDbInstruments(): Promise<void> {
     provenance = {
       source: "snapshot", degraded: true,
       instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+      observedAt: snapshotGeneratedAt,
       error: err instanceof Error ? err.message : String(err),
     };
   }
@@ -720,6 +742,7 @@ export function loadDbInstruments(): DbInstrument[] {
     provenance = {
       source: "snapshot", degraded: Boolean(process.env.DATABASE_URL),
       instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+      observedAt: snapshotGeneratedAt,
       error: "hydrateDbInstruments() was never called; read straight from the snapshot",
     };
   }
@@ -863,6 +886,55 @@ function resolveInheritedGates(all: DbInstrument[]): DbInstrument[] {
   });
 }
 
+/**
+ * The corpus this process is judging liveness against, in the form the rule
+ * wants. Exported so a harness can ask the same question the request path does.
+ */
+export function livenessObservation(): Pick<LivenessObservation, "source"> {
+  return { source: provenance.source };
+}
+
+/**
+ * The register a row was drawn from, for one country.
+ *
+ * This is the unit `populationRecordsDeadlines` groups on, and the grouping is
+ * the whole reason the policy costs 80 rows rather than 390: `state_aid_satr`
+ * as a whole records deadlines, because Spain's convocatorias are in it, but
+ * `state_aid_satr|DE` never has. Country is part of the key because a call
+ * register is loaded per country, and the register is what does or does not
+ * publish a closing date.
+ *
+ * Not `parentId`: 301 development-bank leaves have no parent at all, so a
+ * parent-keyed grouping puts them in one bucket with everything else rootless
+ * and reads a French deadline as evidence about an Estonian scheme.
+ */
+function registerPopulation(i: DbInstrument): string {
+  return `${i.sourceFamilyBucket ?? "?"}|${i.country ?? "?"}`;
+}
+
+/** One row withheld because its openness could not be confirmed. */
+export interface SuppressedRow {
+  id: string;
+  name: string;
+  country: string;
+  reason: string;
+}
+
+let suppressed: SuppressedRow[] = [];
+
+/**
+ * Rows the last `publishableInstruments()` call withheld under the degradation
+ * policy, and why.
+ *
+ * Read by the request path so the founder can be told the count, and by
+ * `scripts/check_degradation.ts` so the policy's cost is a measured number
+ * rather than a claim. Empty on the Postgres path, always — that is the
+ * intended steady state and it should be visible as zero rather than absent.
+ */
+export function suppressedForUnconfirmedLiveness(): readonly SuppressedRow[] {
+  return suppressed;
+}
+
 export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const hasChildren = new Set(
@@ -908,7 +980,14 @@ export function publishableInstruments(): DbInstrument[] {
           // stale one here would delete the row again on the next run.
           schemeEndDate: null }
       : i);
-  return all.filter((i) =>
+  // Which registers publish application deadlines at all, derived from the
+  // corpus in front of us rather than listed. Computed over EVERY row, not
+  // just the publishable ones: a population's closed calls are exactly the
+  // evidence that it records deadlines, and they have already been filtered
+  // out by the time this list is built.
+  const recordsDeadlines = populationRecordsDeadlines(all, registerPopulation);
+  const withheld: SuppressedRow[] = [];
+  const rows = all.filter((i) =>
     !i.isFramework && !hasChildren.has(i.id) &&
     // A scheme the Commission's register says has closed to new applications
     // cannot be PROPOSED, however recently it paid. Measured: 220 of 453 state
@@ -925,7 +1004,41 @@ export function publishableInstruments(): DbInstrument[] {
     // it is a guess, and a guess scored at its midpoint was outranking funds
     // we had actually measured. See meetsDataFloor.
     meetsDataFloor(i))
-    .map(redirect);
+    .map(redirect)
+    // ── THE DEGRADATION POLICY ────────────────────────────────────────────
+    // Everything above answers "what does this corpus say about this fund".
+    // This answers "and can we confirm it", which is a different question the
+    // moment the corpus is a copy rather than the register.
+    //
+    // A 2-second statement timeout on a loaded database drops a real founder's
+    // request onto the committed snapshot. On 2026-08-06 that path showed 26%
+    // of founders at least one fund whose application deadline had passed,
+    // against 0% on Postgres, because 86 deadlines had been loaded since the
+    // snapshot was cut and the snapshot still read `schemeEndDate: null` for
+    // every one of them.
+    //
+    // So a row whose openness cannot be confirmed is WITHHELD. The founder
+    // gets fewer funds, never a dead call: recall degrades on a blip,
+    // correctness does not. It is a filter and not a warning label because a
+    // caveat under a table does not stop anyone applying to the fund above it.
+    //
+    // Suppression is recorded, not silent — `suppressedForUnconfirmedLiveness`
+    // is what lets the brief say how many are missing and lets
+    // check_degradation.ts measure what the policy costs. On the Postgres path
+    // `unconfirmedOpen` returns null for every row and this whole clause is a
+    // no-op; the cost on today's corpus, through the snapshot, is in
+    // project-mgmt/findings/degradation_policy_wsX.md.
+    .filter((i) => {
+      const why = unconfirmedOpen(i, {
+        source: provenance.source,
+        populationRecordsDeadlines: recordsDeadlines(i),
+      }, asOf);
+      if (!why) return true;
+      withheld.push({ id: i.id, name: i.name, country: i.country, reason: why });
+      return false;
+    });
+  suppressed = withheld;
+  return rows;
 }
 
 const bodyUrlCache = new Map<string, Map<string, string>>();
