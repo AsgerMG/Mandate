@@ -91,7 +91,26 @@ are standing programmes rather than formats:
 - Investment Accelerator
 - Launchpad
 
-These are the only GB rows for which fetching eligibility is meaningful.
+These are the only GB rows for which fetching eligibility would have been
+meaningful, and they were still removed with the other twelve. Three reasons,
+in order of weight:
+
+1. **Keeping them means an allowlist of four values out of thirty-five**, which
+   is a register, not a property. The next agent adding a source would have no
+   rule to follow, only a precedent for hand-picking. The standing instruction
+   is the opposite: state the property and a test.
+2. **They are not the unit either.** SBRI is delivered as individual challenge
+   competitions; Launchpad is delivered as regional Launchpad competitions.
+   Keeping them keeps the same category error one level finer, and a founder
+   still cannot apply to the row.
+3. **Their award history is not lost.** It stays on `innovate_uk`, which is the
+   full rollup, so the peer tracing and the statistics read exactly what they
+   read before.
+
+The honest version of what these four deserve is a competition-level load, which
+is described at the end of this file along with what blocks it. Reinstating four
+labels would have looked like coverage while making the corpus harder to reason
+about.
 
 ---
 
