@@ -23,12 +23,8 @@ try {
   }
 } catch { /* rely on the process environment */ }
 
-<<<<<<< HEAD
-import { hydrateDbInstruments, loadDbInstruments, resetGateHydration } from "../lib/intelligence/corpus";
-=======
-import { corpusProvenance, hydrateDbInstruments, loadDbInstruments, requireLiveCorpus }
-  from "../lib/intelligence/corpus";
->>>>>>> workstream-s-variance
+import { corpusProvenance, hydrateDbInstruments, loadDbInstruments, requireLiveCorpus,
+  resetGateHydration } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import { loadRecallSet } from "./recallSet";
