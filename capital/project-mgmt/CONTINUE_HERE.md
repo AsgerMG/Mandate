@@ -79,17 +79,47 @@ existed to reveal.
 
 ## OPEN, IN PRIORITY ORDER
 
-1. **`state_aid_satr`/DE holds 103 leaves against a cap of 90** — 13 candidates
-   cut before ranking for every German founder. Third time this constant has
-   been the largest loss in the product (14 → 40 → 90). **Record pool recall
-   while it is still binding before raising it; that number is unrecoverable
-   afterwards.** In flight, may be unfinished.
-2. **IPCEI publishes *"the funding is not available to all undertakings in a
-   comparable situation"* to founders as eligibility guidance.** Verbatim,
-   correctly attributed, and the wrong KIND of statement — a compatibility
-   finding about aid already granted to a closed beneficiary list. Retraction
-   costs 0.17 of mean class. In flight, may be unfinished. **The general lesson:
-   verbatim-ness was checked, pertinence was not.**
+1. **RAISE THE LEAF CAP — everything needed to do it safely is now in hand.**
+   `state_aid_satr`/DE holds 103 leaves against a cap of 90, so 13 candidates
+   are cut before ranking for every German founder. Third time this constant has
+   been the largest loss in the product (14 → 40 → 90). `check_leaf_cap` is
+   correctly RED.
+
+   **The binding-state baseline was captured before anything moved, which is the
+   part that is unrecoverable afterwards** — holdout, three seeds, Postgres,
+   repaired key, DE at 103 against cap 90:
+
+   ```
+   pool 96/96/97   EXACT@5 29/34/30   REGIME@5 84/86/85
+   ```
+
+   Cost of uncapping entirely, measured: **13 leaves, ~32 KB.** So the payload
+   argument that justified holding the cap does not bite at this size.
+
+   **Correction to a claim inside `check_leaf_cap` itself:** it says
+   `check_payload_budget` bounds the cap from the other side. That is FALSE —
+   that check measures the snapshot minus non-framework gates and is insensitive
+   to the cap. Do not rely on it. Also, the guard's stale-snapshot blindness was
+   fixed by republishing, not by code; `check_corpus_currency` already asserts
+   the membership gap that hid this, so leaf-cap should simply depend on it.
+
+2. **IPCEI — DONE.** All eleven wave leaves lost their `eligibility_text` and are
+   no longer offerable at all: `application_url` NULL on all eleven, median
+   awards €14–127M, and their own text says the money went to a named closed
+   list. Mechanism is a third `scheme_end_date_basis`, `closed_beneficiary_list`,
+   which `isClosed()` reads as closed **without a date**, because the row never
+   had a window — that generalises to any individual aid approval. Publishable
+   817 → 806, mean class 3.4 → 3.6, exactly the +0.17 that was priced. The 1,256
+   events / €131B are retained as evidence. Zero recall pairs affected.
+
+   **STILL OPEN, and it is the same harm one layer down: two of those same
+   quotations are also encoded as `gate_role='filter'` gates, which DO reach
+   founders.** Inert today because the rows are unpublishable, deliberately left
+   alone rather than fixed blind. Fix before anything republishes them.
+
+   The general lesson stands and is now enforced: **verbatim-ness was checked,
+   pertinence was not.** `check_extracted_quotes.ts` is in `npm run check`; a
+   pertinence classifier is committed as WIP but was never run.
 3. **Spain now decays on a clock.** Its 78 new rows carry real deadlines and
    correctly remove themselves. Nothing re-runs the harvest, so without a
    monthly job Spain drifts back toward 13 offerable funds and **no test will
