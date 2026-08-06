@@ -78,3 +78,71 @@ global mean-class terms it is half a sibling.
 Implication for the manager: the 95% exact-scheme target is not reachable by finishing
 this workstream, and nobody should read a 0.5 move as failure here. The ceiling
 (every leaf everywhere perfectly distinct) is mean class 1.0 / unique 100%.
+
+---
+
+## Batch 1-2 — EIC (4 leaves) and Innovation Fund (8 leaves)
+
+Both regimes went to **mean class 1.00 — fully resolved, every leaf uniquely identified.**
+
+```
+EU-containing regimes, 11 regimes / 68 leaves
+  local mean class   8.32  ->  6.97
+  global mean class  18.0  ->  17.9      unique 35.6% -> 38%
+  EU coverage        0/67  ->  11/67     NO 0/74 -> 1/74
+```
+
+Per regime after this batch:
+
+```
+  12 leaves  cov  0  mean class 12.00  ipcei
+  10 leaves  cov  0  mean class 10.00  horizon_eu_partnership
+  10 leaves  cov  0  mean class 10.00  horizon_eu_pillar_ii
+   9 leaves  cov  0  mean class  9.00  eit
+   9 leaves  cov  8  mean class  1.00  innovation_fund      <- resolved
+   5 leaves  cov  4  mean class  1.00  eic                  <- resolved
+   3 leaves  cov  0  mean class  3.00  chips_ju
+   3 leaves  cov  0  mean class  3.00  edf
+   3 / 2 / 2 leaves  the three EIT KIC clusters
+```
+
+### What made them resolve, and the trap next to it
+
+Writing down each leaf's *legal* eligibility would have resolved nothing. All four EIC
+tracks and all seven Innovation Fund lots share the same Horizon/ETS boilerplate — legal
+entity, established in an eligible country, 60% aid ceiling. Copy that onto every sibling
+and coverage goes to 100% while mean class stays at 9.
+
+What separates them is the **one condition each lot does not share**:
+
+| lot | the discriminating condition |
+|---|---|
+| IF LSP / MSP / SSP | CAPEX `>100m` / `20-100m` / `2.5-20m` — pure size bands |
+| IF clean-tech mfg | funds *building the factory*; explicitly excludes *using* the equipment |
+| IF pilots | must **not** yet reach commercial scale — the only lot with a ceiling on maturity |
+| IF battery | planned annual capacity `>= 10 GWh`, and applicant's first commercial EV-cell project **globally** |
+| IF hydrogen bank | not a grant call — an auction paying a fixed premium per verified kg over 10 years |
+| EIC Accelerator | single applicant, TRL 6-8, only track open to mid-caps to 499 staff |
+| EIC Pathfinder | 3-party cross-border consortium, TRL 1-4 |
+| EIC Transition | gated on a **prior EU-funded project** as the source of results |
+| EIC Fund | the only equity track; carries a foreign-control exclusion the grants do not |
+
+The rule this workstream is following: **record the condition a sibling would fail, not the
+condition they all pass.** Coverage percentage is not the deliverable.
+
+### Surprises worth recording
+
+1. **The Innovation Fund's leaf structure is a historical award taxonomy, not a current
+   application menu.** The corpus lots (LSP/MSP/SSP/PLT/MFG/battery/hbank) are the IF23-IF24
+   shape. IF25 restructured to NZT + Heat Auction + Hydrogen Auction. The CAPEX bands
+   survived the restructure, so the texts are still true and still discriminating, but nobody
+   should read these leaves as "calls you can open today". Recorded as `status: recurring`
+   with the round dates in `deadline`, not as open and not as closed.
+2. **The shared loader reads `administering_body`, not `body`.** `found_AT.json` and the
+   other agents' files use `body`; the key the loader consumes is `administering_body`. Twelve
+   EU rows initially loaded prose with a NULL body for that reason. Worth checking whether
+   other countries' files have the same silent miss.
+3. `load_scheme_text.py` gained `--country` (mine) at the same time its owner was rewriting
+   it for corpus-driven liveness. Both changes are in the working tree together. Publishing is
+   done through `ETL/terms/publish_scheme_text_scoped.py`, which is country-scoped so it
+   cannot carry a neighbour's uncommitted SQLite row into the live read path.
