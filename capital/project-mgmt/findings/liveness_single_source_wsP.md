@@ -91,9 +91,79 @@ It is **not** deleted and **not** ignored. It is given the type it always had in
 reality. The column keeps every value it holds; a sibling column records which
 register supplied it, populated at each write site, and one function reads both.
 
+## What changed, measured
+
+Postgres, 2026-08-06 21:06Z, leaves only (not a framework, no children):
+
+```
+closed under the old rule : 306
+closed under the new rule : 187
+reopened                  : 119        newly closed: 0
+publishable               : 633 -> 752
+```
+
+Reopened by country: IT 35 (20,186 awards), DE 31, FR 11, NL 9, AT/PT/IE/BE 5
+each, LU 4, CZ/GR 2, SK/FI/GB/HU/LV 1. Biggest: `Fondo di garanzia per le PMI`
+(SA.57625, 13,892), `Zentrales Innovationsprogramm Mittelstand` (SA.63988,
+2,143), `Crisis Rural Guarantee Programme by AVHGA` (SA.57198, 1,977),
+`Décret wallon sur l'innovation` (SA.52328, 858).
+
+**Both control populations are untouched, as required:**
+
+```
+Spain's bdns leaves : 80 closed before, 80 closed after
+ADEME's 6 calls     :  6 closed before,  6 closed after
+```
+
+## The red `check_recall_floor` is NOT this defect, and this fix will not clear it
+
+I was asked to confirm rather than assume that the failing floor was downstream
+of the closures. It is not.
+
+**1. The recall set cannot see this fix.** Of 4,796 pairs, the number whose
+answer instrument is one of the 119 reopened is **zero**. Pool recall was never
+going to move, and did not:
+
+```
+holdout, same corpus, back to back    old rule   new rule
+  SEED=20260806  pool                    77%        77%
+```
+
+**2. The floor is capped below its own threshold by the answer key.** Replaying
+`check_recall_floor`'s exact 150-pair stride sample: **31 pairs (21%) name an
+answer that is correctly unpublishable** — 28 Spain, 3 France (the ADEME calls).
+
+```
+pool recall CANNOT exceed 79% on that sample. The floor is 90%. Measured: 75%.
+```
+
+So the gate is failing because ~21% of its answers are calls that have since
+closed — Spain's convocatoria fix and France's ADEME fix, both correct. The
+floor is right and the corpus is right; the **answer key** is stale. The remedy
+is to repair the recall set (re-derive or exclude the pairs whose answer is a
+closed call), which is owned elsewhere and deliberately untouched here. **Do not
+lower the floor.**
+
+**3. A caution on any pool number taken tonight.** The same tree, the same
+liveness rule and the same seed read pool 97% at 21:09-21:15Z and 77% at
+21:16-21:22Z. `funding_instruments` was identical across both (1,014 rows, 536
+end dates, 306 past), so the movement is in the retrieval index, which another
+workstream is rebuilding. Three seeds on the current corpus, holdout, n=250:
+
+```
+SEED=20260806  pool 77%  EXACT@5 22%  REGIME@5 85%
+SEED=7         pool 74%  EXACT@5 23%  REGIME@5 89%
+SEED=99        pool 76%  EXACT@5 21%  REGIME@5 83%
+```
+
+EXACT@5 and REGIME@5 are unchanged by this fix within noise (old rule at the
+same seed: 22% / 85%).
+
 ## Status
 
 - [x] cause established and measured
 - [x] proposed test falsified before adoption
-- [ ] single liveness test + basis column
-- [ ] recovery verified on three seeds
+- [x] single liveness test, one projection, CI guard against a sixth copy
+- [x] basis column added, backfilled exactly from the case register
+- [x] 119 leaves reopened, Spain and ADEME provably unaffected
+- [x] three seeds run; the floor's redness traced to the answer key, not to this
