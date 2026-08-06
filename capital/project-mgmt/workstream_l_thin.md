@@ -154,3 +154,105 @@ prose and is the reason its class is 48.
 two distinct strings count as separated. It measures whether we wrote something
 different down, not whether a founder can choose. Treat "perfect coverage"
 deltas above as an upper bound.
+
+## Finding 7 — register-by-register audit sweep (the deliverable)
+
+`inst`=instruments, `leaf`=in a multi-leaf regime, `elig`/`adm`/`reg`=fields
+populated, `fetched`/`closed`/`abst` from `data/raw/scheme_enrichment/found_*.json`,
+`HARVEST`=has quoted gate/clause text but no `eligibility_text`, `hv-leaf`=those
+that are on the scoreboard. Snapshot 2026-08-06; other agents were writing during it.
+
+```
+cc   inst leaf elig  adm  reg fetched closed abst HARVEST hv-leaf  owner
+??     15   15    0    0    0       0      0    0       0       0  unowned
+AT     29   29   21   29    6      29      6    2       2       2  unowned
+BE     22   22    7   22   17      22      9    2       2       2  unowned
+CZ     53   38    5   38   35      38     27    5       3       2  unowned
+DE    121  118   87  118   61     118     25    2       3       2  unowned
+DK     11    6    0    3    0       0      0    0       7       3  unowned
+EE     61   14    4   12    0       8      3    4      12       4  unowned
+ES     94   88    3   24    0      93     87   87       3       1  OWNED
+EU     67   52    4    0    0      12      0    0      61      48  OWNED
+FI     18   15    5   15   13      15      4    9       4       2  unowned
+FR    133  128   24  127   19      52     23    0       7       3  OWNED
+GB     21   21    2    4    0       4      1    2       2       2  unowned
+GR     15   15    2   15    0      15     11   13       2       2  unowned
+HU      8    8    2    8    1       8      3    3       2       2  unowned
+IE     18   12    2   12   10      12      6    8       6       2  unowned
+IT     88   87   47   87   39      87     48    4       3       2  OWNED
+LT      1    0    0    1    0       0      0    0       0       0  unowned
+LU      6    6    5    6    5       6      0    1       1       1  unowned
+LV     34    9    7    9    0       9      5    2      15       2  unowned
+NL     32   30   16   30    6      30     10    3       4       2  unowned
+NO     74    1    0    0    0       0      0    0      17       1  OWNED
+PL      8    0    6    0    0       8      6    1       0       0  unowned
+PT      9    8    1    9    7       9      6    8       2       1  unowned
+SE     63   62   10   61    2      12      1    2       3       2  OWNED
+SK     13   13    1   13   11      13      9   11       2       2  unowned
+```
+
+**What each register already holds, as a result in its own right:**
+
+- **EE** — `data/raw/instrument_docs/eis_*.html` holds 11 fetched Estonian
+  Business & Innovation Agency pages, already cut into verified gates. The EE
+  register holds *more* than `eligibility_text` shows. But 47 of 61 EE
+  instruments are singletons. Riigi Teataja (riigiteataja.ee) was recorded by a
+  prior agent as **client-side rendered** — it defeats a non-browser fetch, and
+  that is why 4 EE records abstained. Not a block to route around; recorded.
+- **CZ** — register is *exhausted*, correctly. All 38 multi-leaf leaves fetched;
+  27 refused by the active-only rule. Docs on disk: `cz_tacr_*`, `cz_mpo_twist_*`,
+  `cz_act_130_2002_*`, `satr_cz_equity_zakonyprolidi_*`. Nothing left to get.
+- **LV** — likumi.lv (the legal-act register) served everything asked of it;
+  7 of 9 multi-leaf leaves already have text. The 25 uncovered LV instruments are
+  all Altum singletons. `instrument_application.url` for them is only
+  `https://altum.lv` / `https://mans.altum.lv` — a portal root, not a scheme page.
+- **GB** — the thinnest register in the corpus and the largest *unowned* prize
+  (delta 0.34). 17 of its 21 leaves are `innovate_uk__*` **award-category labels**
+  ("Study", "Centres", "Collaborative R&D"), derived from UKRI Gateway award data,
+  with `administering_body` NULL on all 17. Two are not instruments at all
+  ("Department for Science, Innovation & Technology", "Legacy Department of Trade
+  & Industry"). Innovate UK publishes eligibility per *competition*, not per
+  award category, so only ~5 of the 17 (KTP, SBRI, Investment Accelerator,
+  Launchpad, Business Connect) have a stable page to fetch. **Not attempted — out
+  of budget.**
+
+## Finding 8 — the harvest that needs no fetching, sized but NOT executed
+
+`eligibility_gates.quote` + `eligibility_clauses.quote` already hold verbatim,
+mechanically-verified, source-attributed eligibility prose for **163 instruments
+whose `eligibility_text` is empty; 90 of them are on the scoreboard.**
+Simulated, against baseline mean 17.89:
+
+```
+harvest ALL countries     mean 17.13   delta 0.76   unique 38.4% -> 45.7%
+harvest EU + NO only      mean 17.46   delta 0.43
+harvest UNOWNED only      mean 17.76   delta 0.13
+harvest EE + CZ + LV      mean 17.88   delta 0.01
+```
+
+**This is the cheapest unclaimed win in the programme: 0.76 of the 17.9, zero
+fetches, zero API spend, no register can block it.** The largest single share is
+**EU (48 on-scoreboard instruments, delta 0.43)** and belongs to the NO/EU agent —
+they should harvest before fetching anything.
+
+Two caveats for whoever executes it:
+1. **Write to sqlite AND Postgres.** `load_scheme_text.py` writes sqlite only;
+   the scoreboard reads Postgres. They are in sync today (Finding 3) and nothing
+   keeps them so.
+2. **Provenance.** Gates carry `source_file` (a local doc in
+   `data/raw/instrument_docs/`), not a URL, so `eligibility_source_url` cannot be
+   filled honestly from gates alone — `data/raw/instrument_docs/MANIFEST.md` and
+   `stage_fetched_text_as_docs.py`'s provenance header are the place to recover it.
+   Set `eligibility_confidence` to a value that names the derivation rather than
+   implying a fresh fetch.
+
+## Status at hand-in
+
+Out of budget, stopped on instruction. **No database writes were made.** That is
+the intended outcome of Finding 6, not an unfinished one: the assignment as
+scoped is worth 0.24 of 18.0, and I did not want to spend the remaining budget
+buying 0.01 in Estonia. Findings 7 and 8 are the deliverable.
+
+**If one thing is picked up from this file:** run the Finding 8 harvest for EU,
+then put every remaining agent-hour on FR, ES and SE, which own 87% of the
+sibling mass.
