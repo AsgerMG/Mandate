@@ -155,3 +155,51 @@ inference.
 - **No join key to the register exists in our own data.** `scheme_code` is the
   empty string on all 87, and `data/raw/bdns/bdns_ayudas.jsonl` carries no
   `codigoBDNS`. Title matching is the only join, and it happens to be perfect.
+
+## Batch 2 — a defect caught in the shared loader, for every register with no `scheme_code`
+
+While this ran, the workstream that owns Italy changed `load_scheme_text.py`'s
+liveness gate from "trust the fetch record's free-text `status`" to "ask the
+corpus: `scheme_end_date` against today, with the successor redirect". That is
+the right test and their reasoning holds — but it is a question **the corpus
+cannot answer for any register whose rows have no `scheme_code`**, because
+`scheme_end_date` is derived from SATR's `caseMeasureEndDate` keyed on exactly
+that. A NULL end date reads as "not expired".
+
+Measured on Spain, with the new gate and before any fix:
+
+```
+$ python3 ETL/terms/load_scheme_text.py --country ES
+loadable: 90 instruments
+   ES  90   (85 of them the fetch record called closed, while the register's
+             end date is still in the future)
+skipped: ... 0 closed or not publishable per the register
+```
+
+**Zero refused.** It would have published the expired rules of 82
+convocatorias, some shut since 2021, as current guidance — the precise outcome
+the active-only rule exists to prevent, arrived at through a change that made
+the gate *more* principled. Not the IT workstream's bug; a gap that only shows
+where the keying assumption fails, and Spain is where it fails hardest.
+
+**Anyone loading a register that is not SATR-keyed should check this before
+`--write`.** Cheap test: `--country XX` and read the "closed or not
+publishable" count. If it is 0 and your fetch records say otherwise, your end
+dates are NULL and the gate is open.
+
+### The fix: an ordered lifetime pass
+
+`load_scheme_text.py` gains `lifetime_facts()`, a first pass that writes
+`administering_body` and `scheme_end_date` through COALESCE and is deliberately
+**not** gated on liveness — the inversion is the point. The active-only rule
+says a closed scheme's RULES must not be shown; it does not say we must stay
+ignorant that it closed. `scheme_end_date` is the column that *removes* a dead
+scheme from what a brief may propose, so withholding it on a closed record is
+what keeps the dead scheme in front of the founder.
+
+It is in the same script rather than its own because correctness depends on
+order — the gate cannot judge a row until the facts it judges on exist — and a
+"run A then B" instruction in two files is the kind of thing that gets
+forgotten once. Report-only runs overlay the pending dates so they judge on the
+same facts a `--write` run would, and the Postgres mirror carries the lifetime
+rows alongside the prose.
