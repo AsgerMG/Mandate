@@ -126,17 +126,51 @@ export function partitionByOfferable(
  *  quietly, because that drift is invisible in the headline. */
 export const UNGRADED_SHARE = { min: 10, max: 33 };
 
+/** A pair can fail to be gradable for two DIFFERENT reasons, and collapsing
+ *  them hides the one that matters.
+ *
+ *    WITHHELD  the fund is in the corpus and the register says it is closed.
+ *              Expected, correct, and the whole subject of this repair.
+ *    ABSENT    the fund is not in the corpus at all. That is not a closed
+ *              scheme, it is an answer key pointing at something that no longer
+ *              exists — either the corpus lost rows or a reload is in flight.
+ *
+ *  Observed live: `funding_instruments` went 1,014 -> 998 rows mid-session while
+ *  another workstream reloaded it, and the ungraded share moved 21.5% -> 25.5%
+ *  purely from ABSENT. Under one combined number that is invisible, and a floor
+ *  calibrated through it is calibrated against a corpus that no longer exists.
+ *  So ABSENT is capped far tighter than the withheld band and fails the build:
+ *  measuring across a truncate-and-reload is not a thing to do quietly. */
+export const ABSENT_SHARE_MAX = 2;
+
 /** Fails loudly rather than grading a population that has drifted.
+ *  `inCorpus` is optional; without it only the combined band is checked.
  *  Returns the share so a caller can print it. */
-export function assertGradablePopulation(p: GradedPopulation): number {
+export function assertGradablePopulation(
+  p: GradedPopulation, inCorpus?: (instrumentId: string) => boolean,
+): number {
   const total = p.graded.length + p.ungraded.length;
   const share = total === 0 ? 0 : (100 * p.ungraded.length) / total;
+  const absent = inCorpus
+    ? p.ungraded.filter((r) => !inCorpus(r.instrument)).length : 0;
+  const absentShare = total === 0 ? 0 : (100 * absent) / total;
   const bad = share < UNGRADED_SHARE.min || share > UNGRADED_SHARE.max;
   console.log(
     `  gradable population: ${p.graded.length.toLocaleString()} of ` +
     `${total.toLocaleString()} pairs; ${p.ungraded.length.toLocaleString()} ` +
     `(${share.toFixed(1)}%) name a fund the product may not offer` +
+    `${inCorpus ? ` — ${(p.ungraded.length - absent).toLocaleString()} withheld, ` +
+      `${absent.toLocaleString()} absent from the corpus` : ""}` +
     `${bad ? "  <-- OUT OF BAND" : ""}`);
+  if (inCorpus && absentShare > ABSENT_SHARE_MAX) {
+    console.error(
+      `\nrecall set: ${absent} pairs (${absentShare.toFixed(1)}%) name a fund that ` +
+      `is not in the corpus at all,\nover the ${ABSENT_SHARE_MAX}% ceiling. The ` +
+      "answer key points at instruments that no longer exist.\nIf a corpus reload " +
+      "is in flight, wait for it and re-run: a number measured across\na " +
+      "truncate-and-reload is not reproducible. If it is not, the corpus lost rows.");
+    process.exit(1);
+  }
   if (bad) {
     console.error(
       `\nrecall set: ungraded share ${share.toFixed(1)}% is outside ` +

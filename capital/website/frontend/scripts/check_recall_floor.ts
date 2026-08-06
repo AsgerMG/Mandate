@@ -109,7 +109,7 @@ async function main() {
   const pop = partitionByOfferable(all, (id) => offerable.has(id));
   // Two-sided, and fatal. This is the alarm that would have caught tonight's
   // drift the day it happened rather than as a red floor nobody could explain.
-  assertGradablePopulation(pop);
+  assertGradablePopulation(pop, (id) => byId.has(id));
   // The SAME draw `measure_recall.ts` takes, from the shared helper, at the
   // pinned seed. It used to be a stride here: the set is strongly ordered by
   // mode and by whether a pair was traced, and `i % step` aliases against that

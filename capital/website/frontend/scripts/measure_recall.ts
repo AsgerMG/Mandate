@@ -104,7 +104,7 @@ async function main() {
   // on one population and verified on another is not a floor.
   const offerable = new Set(publishableInstruments().map((i) => i.id));
   const pop = partitionByOfferable(all, (id) => offerable.has(id));
-  assertGradablePopulation(pop);
+  assertGradablePopulation(pop, (id) => byId.has(id));
   const set = pop.graded.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
                              && (!process.env.DESCRIBED || described(r))
