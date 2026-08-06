@@ -77,4 +77,81 @@ scraping, no LLM, no 403, no CAPTCHA.
 `urlBasesReguladoras`. Composed text runs 400+ chars at `confidence: high`
 (6 discriminating facts) on the leaves sampled.
 
-**And it says the calls are shut.** (running — result below)
+### Result: 87/87 matched, 0 not-found, 0 errors — and 82 of 87 are CLOSED
+
+```
+open=5  closed=82  nomatch=0  error=0
+```
+
+A 100% match rate. The register knows every single leaf, because every leaf
+*is* one of its convocatorias.
+
+### The text is NOT regime boilerplate — it is the best discriminator on the project
+
+Scored on the fetched records before loading anything, over all 87 leaves:
+
+```
+                              mean class   uniquely IDs   distinct values
+full composed text                  1.9         71%            69 / 87
+  same, with the dates stripped     1.9         71%
+organo.nivel3 (admin body)          6.8         17%            32 / 87
+fechaFinSolicitud (end date)        6.2         59%
+"Beneficiarios:" line alone        45.3          2%             6 / 87
+baseline (nothing recorded)        88.0          0%             1 / 87
+```
+
+**88.0 -> 1.9.** Better than Germany's 3.8. And it is not an artefact of the
+per-vintage dates: strip the `Plazo de solicitud` sentence and it is still 1.9.
+
+The one part that IS boilerplate is the beneficiary enumeration — 6 distinct
+values across 87 leaves, mean class 45.3, i.e. it separates almost nothing.
+The fetcher already refuses to count it toward confidence, and that judgement
+is now measured rather than asserted.
+
+**So for Spain the source is right and the recipe works.** Report to the other
+registers: a national call register that serves per-call structured JSON is the
+correct source, and the discriminating fields are purpose / sector / budget /
+window / regulatory basis — *not* the beneficiary-type enumeration, which every
+call in the register shares.
+
+### The blocker is not text. It is that 82 of the 87 leaves are expired calls.
+
+This is the corpus-composition finding the fetcher's own docstring predicted.
+`bdns_es_ayudas` was split by convocatoria title, and a convocatoria is one
+annual call with a submission window of a few weeks. The standing active-only
+rule therefore forbids loading 82 of the 87 texts, and it is right to: those
+rules expired, some of them four years ago.
+
+Loading text alone would have moved ES coverage 3% -> 8% and left the class at
+~80. **The lever is not the text column.**
+
+### The lever: `scheme_end_date`, which is NULL on all 88 ES leaves
+
+The corpus already has the mechanism for this and Spain is simply not using it.
+Migration `023_scheme_lifetime.sql` exists because "payments continue for years
+after a scheme closes to new applicants", and `emit_peer_prior.py` /
+`extend_recall_set.py` both drop rows `WHERE scheme_end_date < date('now')`
+from what a brief may PROPOSE.
+
+That filter is derived from SATR's `caseMeasureEndDate`, keyed on
+`scheme_code` — and every ES BDNS leaf has `scheme_code = ''`, so **not one of
+them ever got an end date, and the product currently believes all 88 expired
+calls are live and proposable.**
+
+BDNS `fechaFinSolicitud` is the same claim in the same words: the last date an
+application may be submitted. Writing it is a fact the register states, not an
+inference.
+
+### What is NOT obtainable, so nobody else should go looking
+
+- **`delivery_region` cannot be populated for ES, by either route.**
+  (a) The register's `regiones` is a *different claim* — where an applicant may
+  be, not where observed recipients are — and it is not a NUTS id, which is
+  what the column holds (`nuts_regions.delivery_region`).
+  (b) The measured route is closed too: `delivery_region` is derived from
+  `satr_staging` keyed `(sa_number, granting_authority)`, ES leaves have no
+  `scheme_code`, and `public_funding_events` **has no region column at all**, so
+  there is no per-leaf region mix to measure. Left NULL.
+- **No join key to the register exists in our own data.** `scheme_code` is the
+  empty string on all 87, and `data/raw/bdns/bdns_ayudas.jsonl` carries no
+  `codigoBDNS`. Title matching is the only join, and it happens to be perfect.
