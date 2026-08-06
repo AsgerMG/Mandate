@@ -137,6 +137,37 @@ shipped semantic index still carries the leaky values. Fixing the SQLite
 columns and the committed JSON without re-embedding left the largest consumer
 on the old numbers.
 
+## A third way a harness can grade something production never has
+
+Found while re-baselining, and it is the same family as `dac300a`.
+
+`hydrateDbInstruments()` sets `statement_timeout = 2000` and, on any failure,
+falls back to the committed `instrument_terms.json`:
+
+```
+Postgres hydration failed, falling back to instrument_terms.json:
+error: canceling statement due to statement timeout
+```
+
+It prints that line and **the run continues and reports a headline number**.
+Two seconds is generous for an idle database and is not generous for one that
+three agents and an embedding rebuild are already using — which is exactly the
+condition a busy night produces. A measurement taken while Postgres is loaded
+can therefore be graded against a different corpus from the one that ships,
+and nothing in the printed result says so.
+
+Checked rather than assumed, 2026-08-06 23:08 CEST: Postgres and SQLite agree
+on **0 of 1,014** rows differing for `sector_mix` and `delivery_region`, so the
+two corpora are in sync today and no number in this file is wrong because of
+it. That is luck, not design — the harness would not have told us if they had
+diverged, and the gate corpus reaches the fallback path differently from
+Postgres.
+
+Not fixed here: `corpus.ts` is on the ranking path and this branch is not the
+place to change hydration semantics while other workstreams are running. The
+measurements below were re-taken with Postgres idle and with the fallback line
+grepped for explicitly; runs that hit it were discarded rather than reported.
+
 ## Corpus movement
 
 Coverage agents are writing eligibility text to FR, ES and SE while this runs.
