@@ -5,6 +5,26 @@ when this was written** — expect uncommitted changes in the tree from them.
 Check `git status` and `git log` first; some of what is described below may
 already have landed.
 
+## FIRST: two workstreams died mid-edit
+
+**A (gate 1 signals) stalled** and **C (corpus data model) lost its connection**,
+both partway through. Neither reported. The tree is SAFE — `NO_PG=1 npm run
+check` is green (tsc, 115 tests, 12 archetypes, payload) — but their work is
+PARTIAL and unverified:
+
+- `lib/intelligence/corpus.ts` carries an uncommitted edit from one of them.
+- Anything either touched is half-done by definition. Do not assume a change
+  found there is complete or correct.
+
+C's last words before dying: *"sibling separation improved only marginally — the
+activity lists are themselves near-identical across siblings"*, i.e. it had
+tried using recipient activity lists to separate the 119 same-name leaves and
+that alone was not enough. A's last words: *"now I have clean attribution"* —
+it had got somewhere on the peer-prior join before stalling.
+
+Re-run both from `project-mgmt/rebuild_to_95.md` rather than trying to salvage
+the fragments.
+
 ## North star
 
 Name the **five specific funds** a founder should apply to, in the memo, with
