@@ -99,14 +99,24 @@ def main() -> None:
     index = load_reference()["index"]
 
     inst = {r["id"]: r for r in conn.execute(
-        "SELECT id, scheme_code, administering_body FROM funding_instruments")}
-    # The notified scheme, as a set of the leaves that deliver it. This is the
-    # `scheme_code = call_id` ambiguity itself, made explicit.
-    by_scheme: dict[str, list[str]] = collections.defaultdict(list)
+        "SELECT id, parent_id, scheme_code, administering_body FROM funding_instruments")}
+    # The notified scheme, as a set of the leaves that deliver it, WITHIN one
+    # regime. This is the `scheme_code = call_id` ambiguity itself, made
+    # explicit — and the parent is part of the key on purpose.
+    #
+    # An SA number can be registered for more than one kind of aid, so the same
+    # (scheme, body) pair exists as both an R&D child and an equity child under
+    # two different regimes. The register names the BODY that signed; it does
+    # not say which regime the corpus filed the award under. Re-attributing
+    # across that line would move a pair to a different family and quietly
+    # rewrite REGIME@5, which is the one number this repair must leave alone:
+    # measured, an unconstrained version read 74% where the constrained one
+    # reads 84% on the identical rows.
+    by_scheme: dict[tuple[str, str], list[str]] = collections.defaultdict(list)
     for i, r in inst.items():
         code = (r["scheme_code"] or "").strip()
         if code:
-            by_scheme[code].append(i)
+            by_scheme[(code, r["parent_id"] or i)].append(i)
     by_sa_body: dict[tuple[str, str], list[str]] = collections.defaultdict(list)
     for i, r in inst.items():
         code = (r["scheme_code"] or "").strip()
@@ -147,7 +157,8 @@ def main() -> None:
         cid = company.get(row["name"])
         labelled = row["instrument"]
         code = (inst[labelled]["scheme_code"] or "").strip() if labelled in inst else ""
-        siblings = set(by_scheme.get(code, [])) if code else set()
+        family = (inst[labelled]["parent_id"] or labelled) if labelled in inst else ""
+        siblings = set(by_scheme.get((code, family), [])) if code else set()
 
         if cid is not None and len(siblings) > 1:
             hits = collections.Counter({k: v for k, v in won[cid].items() if k in siblings})

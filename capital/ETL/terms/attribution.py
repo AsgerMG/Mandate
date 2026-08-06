@@ -85,9 +85,11 @@ class Split:
         # notified scheme delivered by many bodies -- which is why this is a
         # fallback and not the join.
         self.code2inst: dict[str, list[str]] = collections.defaultdict(list)
+        self.inst_scheme_code: dict[str, str] = {}
         for iid, code in conn.execute(
                 "SELECT id, scheme_code FROM funding_instruments"):
             code = (code or "").strip()
+            self.inst_scheme_code[iid] = code
             if code:
                 self.code2inst[code].append(iid)
 
@@ -95,7 +97,7 @@ class Split:
         return self.src2fam.get(source, [])
 
     def credit(self, source: str, programme_name, granting_authority,
-               call_id) -> list[str]:
+               call_id, always_notified_scheme: bool = False) -> list[str]:
         """Every instrument this award is evidence for, best first.
 
         `leaf_for` is exact and often returns nothing: a scheme child exists
@@ -115,9 +117,16 @@ class Split:
              than crediting a rollup a founder cannot apply to.
         """
         leaf = self.leaf_for(source, programme_name, granting_authority, call_id)
-        if leaf:
-            return [leaf]
         by_code = self.code2inst.get((call_id or "").strip(), [])
+        if leaf:
+            # `always_notified_scheme` credits the leaf AND its co-delivered
+            # siblings. That is deliberately WRONG about which body signed --
+            # it is the mis-crediting the exact split exists to remove -- but
+            # every one of those siblings is the same REGIME, and REGIME@5 is
+            # the operational number. Measured, not assumed: see the commit.
+            if always_notified_scheme:
+                return [leaf] + [i for i in by_code if i != leaf]
+            return [leaf]
         if by_code:
             return list(by_code)
         return self.families(source)

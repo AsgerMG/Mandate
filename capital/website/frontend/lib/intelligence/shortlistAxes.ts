@@ -44,6 +44,9 @@
 // GBER objective, none of which the intake collects — is what the next attempt
 // has to attack. Do not re-derive it by rebuilding this.
 
+import { regionNameFor } from "./regions.generated";
+import { deliveryRegionOf, regionFootprints } from "./regionPrior";
+
 /** One candidate as the axis builder needs it. A superset of what the gate-1
  *  fixture stores per subset row, so both the harness and a live shortlist can
  *  be passed straight in. */
@@ -300,16 +303,43 @@ export function computeAxes(funds: AxisFund[], sector?: string | null): Axis[] {
   // The distinct-body count is the evidence, the region question is the form a
   // founder can answer. When 30-odd bodies deliver near-identical national
   // schemes, region IS the discriminator and nothing else in the row is.
+  //
+  // ── The count that was standing in for the measurement ───────────────────
+  // This scored itself on how many distinct BODIES the shortlist names and how
+  // many carry an explicit place gate. Both are proxies and both understate
+  // it, for opposite reasons. Only 148 of 958 instruments carry a
+  // `region_within` gate and the groups that need one have none (ademe 0/75,
+  // vinnova 0/49, satr_fr_rnd 0/42), so the gate term is near zero exactly
+  // where the axis matters most. And a distinct body is not a distinct place:
+  // fourteen bodies deliver the French RDI regime and four of them are
+  // national ministries covering the same ground.
+  //
+  // regionPrior.generated.json makes it measurable instead. Each fund's
+  // delivery region is the most specific NUTS prefix covering a supermajority
+  // of its OWN recipients, so the split below is what a founder's answer would
+  // really eliminate, and the funds with no regional claim are named as such
+  // rather than counted as a fifteenth region.
   const bodies = tally(funds, (f) => (f.body || "").trim() || null);
   const regionGated = funds.filter((f) => f.gateSpecs?.region || f.gateSpecs?.activityCountries).length;
   const bodyInfo = bodies.coverage * splitPower([...bodies.counts.values()]);
+  const delivered = tally(funds, (f) => deliveryRegionOf(f.id) ?? null);
+  const national = funds.filter((f) => regionFootprints()[f.id] && !deliveryRegionOf(f.id)).length;
+  const named = [...delivered.counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)
+    .map(([id, c]) => `${c}x ${regionNameFor(id) ?? id}`).join(" · ");
   push({
     key: "region",
     ask: "Which region / city is the company registered in, and where will the work happen?",
-    split: `${bodies.counts.size} distinct delivery bodies over ${Math.round(bodies.coverage * n)} funds`
-      + (bodies.counts.size ? ` (largest: ${top(bodies.counts, 3)})` : "")
-      + ` · ${regionGated} funds carry an explicit place requirement`,
-    info: Math.max(bodyInfo, regionGated / n), coverage: bodies.coverage,
+    split: delivered.counts.size
+      ? `${delivered.counts.size} distinct delivery regions over `
+        + `${Math.round(delivered.coverage * n)} funds (${named})`
+        + ` · ${national} deliver nationally, so region does not exclude them`
+        + ` · ${bodies.counts.size} distinct bodies · ${regionGated} with an explicit place requirement`
+      : `no fund here has a measured regional footprint · ${bodies.counts.size} distinct delivery bodies`
+        + (bodies.counts.size ? ` (largest: ${top(bodies.counts, 3)})` : "")
+        + ` · ${regionGated} funds carry an explicit place requirement`,
+    // The best of the three readings, not their average: each is a lower bound
+    // on what a region answer removes, and they fail in different places.
+    info: Math.max(bodyInfo, regionGated / n, delivered.info), coverage: bodies.coverage,
   });
 
   // ── EU / national / regional level ───────────────────────────────────────

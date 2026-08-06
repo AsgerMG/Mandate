@@ -144,6 +144,12 @@ QUERY = """
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--notified-scheme-too", action="store_true",
+                    help="credit an award to its exact leaf AND every sibling "
+                         "delivering the same notified scheme")
+    ap.add_argument("--add-only", action="store_true",
+                    help="keep the old crediting bit-for-bit and only ADD the "
+                         "programme children it could never see")
     ap.add_argument("--exclude-recall-set", action="store_true",
                     help="drop every company in __recallSet.json, so a measured "
                          "number is out-of-sample")
@@ -153,12 +159,40 @@ def main() -> None:
     split = Split(conn)
     pairs = []
     unplaceable = 0
-    for name, country, sector, source, prog, body, call in conn.execute(QUERY):
-        credited = split.credit(source, prog, body, call)
-        if credited[:1] != [split.leaf_for(source, prog, body, call)]:
-            unplaceable += 1
-        for iid in credited:
-            pairs.append((name, country, sector, iid))
+    if args.add_only:
+        # THE CONTROL, and the reason it exists: `seen[iid] >= CAP` truncates at
+        # the first CAP rows the scan returns, so WHICH cells a large instrument
+        # lands in is decided by row order. Changing the join changes the order
+        # and therefore moves cells that have nothing to do with the fix. This
+        # mode replays the old crediting in the old order -- every instrument
+        # sharing the notified scheme, then the source map -- so the legacy
+        # instruments' cell counts are bit-identical, and only then appends the
+        # programme children the old join could not see. Any difference it
+        # measures is the addition, not the reshuffle.
+        rows = list(conn.execute(QUERY))
+        for name, country, sector, source, _p, _b, call in rows:
+            for iid in split.code2inst.get((call or "").strip(), []):
+                pairs.append((name, country, sector, iid))
+        for name, country, sector, source, _p, _b, _c in rows:
+            for iid in split.families(source):
+                pairs.append((name, country, sector, iid))
+        for name, country, sector, source, prog, body, call in rows:
+            leaf = split.leaf_for(source, prog, body, call)
+            # A programme child is exactly what the old join could not reach:
+            # its identity is the programme name, so it has no scheme code to
+            # join on. A scheme child already had one and is left alone here.
+            if leaf and not (split.inst_scheme_code.get(leaf) or ""):
+                pairs.append((name, country, sector, leaf))
+            elif leaf is None:
+                unplaceable += 1
+    else:
+        for name, country, sector, source, prog, body, call in conn.execute(QUERY):
+            credited = split.credit(source, prog, body, call,
+                                    always_notified_scheme=args.notified_scheme_too)
+            if credited[:1] != [split.leaf_for(source, prog, body, call)]:
+                unplaceable += 1
+            for iid in credited:
+                pairs.append((name, country, sector, iid))
 
     # Every company in EVERY graded test set, not just the shipped one. The
     # prior is built from award history and the evaluation replays award

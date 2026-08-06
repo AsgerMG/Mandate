@@ -15,7 +15,8 @@
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
 import { readFileSync } from "fs";
 import path from "path";
-import { regionNameFor, regionsOverlap } from "./regions.generated";
+import { regionNameFor } from "./regions.generated";
+import { recipientsIn } from "./regionPrior";
 import { hydrateGatesFor } from "./corpus";
 import { isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
@@ -122,26 +123,6 @@ const OBJECTIVE_MATCH = 1.35;
 // has something to say here, nothing else does.
 const REGION_MATCH = 1.9;
 
-interface RegionFootprint {
-  /** Every award, including the ones the register files at country level. */
-  n: number;
-  /** Resolved NUTS id -> recipients. */
-  mix: Record<string, number>;
-}
-let regionPriorCache: Record<string, RegionFootprint> | undefined;
-function regionPrior(): Record<string, RegionFootprint> {
-  if (regionPriorCache === undefined) {
-    try {
-      regionPriorCache = JSON.parse(readFileSync(
-        path.join(process.cwd(), "lib", "intelligence", "regionPrior.generated.json"),
-        "utf8")) as Record<string, RegionFootprint>;
-    } catch {
-      regionPriorCache = {};
-    }
-  }
-  return regionPriorCache;
-}
-
 /** Rank siblings by whether this founder's region is where the fund's money
  *  has actually gone.
  *
@@ -164,43 +145,75 @@ function regionPrior(): Record<string, RegionFootprint> {
  *  recipients at NUTS-3 and a founder answers at NUTS-1 or 2, so FRD1 must
  *  satisfy a founder in FRD.
  *
+ *  ── The comparison is inside ONE NOTIFIED SCHEME, never across a channel ──
+ *  This is the constraint that makes the signal safe, and it is the same one
+ *  `objectiveScorer` and the sector posterior both needed. Region says
+ *  something precise about leaves that share a registration — they are one
+ *  scheme delivered by many bodies, so their text, their article and their
+ *  cheque size are identical and location is all that is left. Across a whole
+ *  channel it says something much cruder: "which of the country's forty
+ *  schemes has paid most into this region", which is a size prior wearing a
+ *  geography costume, and the largest national bodies win it everywhere. Every
+ *  attempt to apply one of these signals channel-wide has cost points (the
+ *  objective prior, 21; the sector posterior, 2), so this one never leaves its
+ *  scheme. A leaf that shares its registration with nobody here scores 1.
+ *
  *  Returns 1.0 for a leaf with no recorded footprint, so a gap in the register
  *  is never read as an absence of recipients — the same treatment `awardScorer`
- *  gives the 98 funds with no award median. And returns neutral for the whole
- *  group when no leaf in it has any recipient in the founder's region, because
- *  a signal that cannot separate these candidates must not reorder them. */
-function regionScorer(
+ *  gives the 98 funds with no award median. And returns neutral for a group in
+ *  which no leaf has any recipient in the founder's region, because a signal
+ *  that cannot separate those candidates must not reorder them. */
+export function regionScorer(
   leaves: DbInstrument[], region?: string,
 ): (i: DbInstrument) => number {
   const neutral = () => 1;
   if (!region) return neutral;
-  const prior = regionPrior();
-  const here = new Map<string, number>();
+  // The NOTIFIED SCHEME is the unit of comparison. `schemeCode` is that
+  // registration — the SA number the corpus splits a regime on, and what the
+  // 119 same-name leaves share with their siblings.
+  //
+  // Widening it to "same display name in the same country" was tried, because
+  // that is literally the group a founder cannot tell apart on the page: one
+  // national R&D framework registered twice puts fourteen leaves and nine more
+  // under one name, and by scheme code alone the two halves are never compared.
+  // It measures WORSE — within-group @1 fell 44.2% to 40.1%, and on the groups
+  // of three to five that it actually changed, 65.5% to 43.1%. Two
+  // registrations of one regime really are two schemes with two sets of
+  // delivery bodies, and merging them puts a body in competition with awards it
+  // could never have signed. Reverted; recorded so it is not retried.
+  const byScheme = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
-    const fp = prior[l.id];
-    if (!fp) continue;
-    let n = 0;
-    for (const [id, k] of Object.entries(fp.mix)) if (regionsOverlap(id, region)) n += k;
-    here.set(l.id, n);
+    const code = (l.schemeCode ?? "").trim();
+    if (!code) continue;
+    (byScheme.get(code) ?? byScheme.set(code, []).get(code)!).push(l);
   }
-  const known = [...here.values()];
-  // Nobody here has ever paid into this founder's region, or everyone has to
-  // the same degree: either way the region separates nothing.
-  if (known.length < 2 || !known.some((n) => n > 0)) return neutral;
-  const lo = Math.min(...known), hi = Math.max(...known);
-  if (hi === lo) return neutral;
-  // Counts across a sibling group span four orders of magnitude — the French
-  // RDI regime runs from 37 awards to 4,434 — so the multiplier is placed on
-  // the log, and then on the group's own range rather than on an absolute
-  // scale. A leaf's score therefore says where it sits AMONG THESE CANDIDATES,
-  // which is the only comparison being made.
-  const lg = (n: number) => Math.log1p(n);
-  const span = lg(hi) - lg(lo);
-  return (i: DbInstrument) => {
-    const n = here.get(i.id);
-    if (n === undefined) return 1;
-    return Math.pow(REGION_MATCH, 2 * ((lg(n) - lg(lo)) / span) - 1);
-  };
+  const score = new Map<string, number>();
+  for (const group of byScheme.values()) {
+    if (group.length < 2) continue;
+    const here = new Map<string, number>();
+    for (const l of group) {
+      const n = recipientsIn(l.id, region);
+      if (n !== undefined) here.set(l.id, n);
+    }
+    const known = [...here.values()];
+    // Nobody in this scheme has ever paid into the founder's region, or
+    // everyone has to the same degree: either way it separates nothing.
+    if (known.length < 2 || !known.some((n) => n > 0)) continue;
+    const lo = Math.min(...known), hi = Math.max(...known);
+    if (hi === lo) continue;
+    // Counts within one scheme span four orders of magnitude — the French RDI
+    // regime runs from 37 awards to 4,434 — so the multiplier sits on the log,
+    // and then on the group's own range rather than on an absolute scale. A
+    // leaf's score therefore says where it sits among the bodies delivering
+    // ITS scheme, which is the only comparison being made.
+    const lg = (n: number) => Math.log1p(n);
+    const span = lg(hi) - lg(lo);
+    for (const [id, n] of here) {
+      score.set(id, Math.pow(REGION_MATCH, 2 * ((lg(n) - lg(lo)) / span) - 1));
+    }
+  }
+  if (!score.size) return neutral;
+  return (i: DbInstrument) => score.get(i.id) ?? 1;
 }
 
 type Objectives = Record<string, { useOfFunds: string[]; articles: string[] }>;

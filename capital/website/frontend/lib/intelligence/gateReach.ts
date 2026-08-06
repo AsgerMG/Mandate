@@ -6,6 +6,8 @@
 // instruments' worth of requirements.
 import { loadDbInstruments } from "./corpus";
 import { FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
+import { deliveryRegionOf } from "./regionPrior";
+import { regionNameFor } from "./regions.generated";
 
 // Fields already resolved on the deterministic first page — never re-asked
 // adaptively, regardless of how much gate reach they still carry.
@@ -123,6 +125,56 @@ export function openFieldsForShortlist(
         }
       }
       byField.set(field, entry);
+    }
+  }
+
+  // ── Region, which the gate layer cannot see ──────────────────────────────
+  // Everything above is driven by encoded gates, and region is the one field
+  // where that is a dead end rather than a coverage gap: only 148 of 958
+  // instruments carry a `region_within` rule, and the sibling groups where
+  // region is the ONLY discriminator have none at all (ademe 0/75, vinnova
+  // 0/49, satr_fr_rnd 0/42). They are one notified scheme delivered by many
+  // bodies, so they inherit one set of gates by construction. Waiting for the
+  // gate layer to describe them is waiting for an encoding that cannot exist.
+  //
+  // The award record describes them instead. regionPrior.generated.json holds
+  // each fund's measured recipient footprint, so "would knowing the region
+  // narrow this shortlist" is answerable without a single rule being written:
+  // reach is the share of the shortlist that has a regional claim at all, and
+  // distinctness is how many DIFFERENT places those claims point to. A
+  // shortlist of national schemes therefore still scores near zero, which is
+  // correct -- there the question genuinely separates nobody.
+  if (!isAnswered(answers, "region")
+      && (FIELD_ENUM_HINTS.region?.optionsFor?.(answers ?? {}) ?? []).length > 0) {
+    let events = 0;
+    const places = new Set<string>();
+    const examples: { instrument: string; requirement: string }[] = [];
+    for (const inst of shortlist) {
+      const where = deliveryRegionOf(inst.id);
+      if (!where) continue;
+      events += inst.eventCount || 1;
+      places.add(where);
+      if (examples.length < 3) {
+        examples.push({
+          instrument: inst.name,
+          requirement: `its recipients are in ${regionNameFor(where) ?? where}`,
+        });
+      }
+    }
+    if (places.size > 1) {
+      const existing = byField.get("region");
+      byField.set("region", {
+        events: Math.max(events, existing?.events ?? 0),
+        instruments: new Set([...(existing?.instruments ?? []),
+          ...shortlist.filter((i) => deliveryRegionOf(i.id)).map((i) => i.id)]),
+        examples: existing?.examples.length ? existing.examples : examples,
+        // One "demand" per distinct delivery region, so distinctness comes out
+        // as the share of the regional shortlist pointing somewhere different
+        // -- the same quantity the gate path computes, from evidence instead of
+        // from rules.
+        specs: new Set([...(existing?.specs ?? []), ...places]),
+        gateCount: (existing?.gateCount ?? 0) + places.size,
+      });
     }
   }
 
