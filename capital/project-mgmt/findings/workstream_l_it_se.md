@@ -183,6 +183,66 @@ Remaining IT gaps are 4 rows the fetching agent could not find text for
 (mur.gov.it returns 403 to the fetch tool, recorded in the source file and not
 worked around) and 32 rows the register says are closed.
 
+## BATCH 2 — SWEDEN, NOT DONE. Cut off at the point of writing. Read this first.
+
+The source is FOUND, verified, and free. Nothing was written to the DB yet.
+
+Sweden's whole remaining problem is one regime: `vinnova_grant`, 49 publishable
+leaves, every one carrying `administering_body = "Vinnova"`, one delivery
+region, no application URL, no scheme code, no text. Mean class 43.0. It is the
+purest programme-fragmented regime in the corpus.
+
+**Vinnova publishes per-call eligibility in its own CC0 open-data API**, and we
+already use that API for awards (`ETL/events/extract/extract_vinnova.py` reads
+`/api/projekt/` and `/api/program/`). Two registers on the same host were never
+read:
+
+- `https://data.vinnova.se/api/utlysningar/2018-01-01` — 725 calls, HTTP 200,
+  650 KB. Has `DiarienummerProgram`, so it joins straight onto our leaves.
+  `Beskrivning` is thin: only 19 of 49 programmes reach a 150-char description.
+- `https://data.vinnova.se/api/ansokningsomgangar/2018-01-01` — 2,613
+  application rounds, HTTP 200, 4.7 MB. **This is the one.** Each record has
+  `WebTextLista`, a three-entry list keyed `TextID` 1/2/3, which is exactly the
+  three-field card Vinnova shows on every call page:
+
+  ```
+  TextID 1  "Vad kan man söka för?"   what the money is for
+  TextID 2  "Vem kan söka?"           WHO MAY APPLY  <- the eligibility field
+  TextID 3  "Hur mycket kan man söka?" how much
+  ```
+
+  666 rounds carry a non-empty TextID 2 and 662 of those clear 40 characters.
+  It is per-round and genuinely discriminating, not agency boilerplate:
+  "Offentliga aktörer ska vara koordinator..." / "Svenska företag inom
+  flygsektorn med potential att delta..." / "Detta erbjudande riktar sig enbart
+  till de nystartade småföretag som slutrapporterat för sitt steg 1-projekt."
+
+  It also carries `Oppningsdatum` / `Stangningsdatum`, so the active-funds rule
+  can be applied per round rather than guessed, and `LankLista` gives a real
+  URL for `eligibility_source_url`.
+
+### The remaining work, in order
+1. Join `funding_instruments.parent_id='vinnova_grant'` -> programme record
+   (match on `Titel`; all 49 matched exactly, no duplicate titles) ->
+   `Diarienummer` -> utlysningar on `DiarienummerProgram` ->
+   ansokningsomgangar on `DiarienummerUtlysning`.
+2. Per leaf pick the round: prefer one open today by `Stangningsdatum`;
+   otherwise the most recent closed round. Set `eligibility_confidence` high
+   for an open round, medium for a past one — a past round's rules are evidence
+   about the programme, not a promise about the next call.
+3. Write `eligibility_text` = TextID 2 verbatim, `eligibility_source_url` from
+   `LankLista` (fall back to the API record URL), then
+   `load_scheme_text.py --country SE --write --postgres`.
+4. **Re-measure and check the class actually moves.** The risk here is real and
+   specific: several Vinnova programmes have one round each, and the SIP
+   programmes share wording. If TextID 2 turns out near-identical across the SIP
+   family, that family is boilerplate and should be reported as such rather than
+   loaded for the coverage number.
+
+Cached during this session, safe to reuse rather than refetch:
+`.../scratchpad/utl.json` and `.../scratchpad/ansokningsomgangar.json`
+(scratchpad is session-scoped; both refetch in under three minutes).
+
 ### Data-quality flag for whoever owns liveness, not mine to fix
 18 Italian rows are PUBLISHABLE by `scheme_end_date` while their own source page
 says the money is gone: "Contributi assegnati; 73 imprese in 21 partenariati"

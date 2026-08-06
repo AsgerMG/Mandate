@@ -288,16 +288,29 @@ def main() -> None:
                 # than inferred from award recency -- which cannot see it,
                 # since a resolved call keeps paying out for years.
                 end = (d.get("fechaFinSolicitud") or "")[:10] or None
+                # A call the register says is SHUT and gives no closing date
+                # for is the one state where publishing its rules is unsafe:
+                # the loader's liveness gate judges on scheme_end_date, so with
+                # no date to write we cannot make the corpus aware the call is
+                # over, and its expired terms would read as current guidance.
+                # ~19% of the closed leaves are in this state. Withhold the
+                # text; keep the record, so the abstention is visible and
+                # counted rather than looking like a fetch that never happened.
+                withheld = st == "closed" and not end
                 rec.update(
-                    found=True, status=st, confidence=conf,
-                    eligibility_text=text, scheme_end_date=end,
+                    found=True, status=st, confidence=None if withheld else conf,
+                    eligibility_text=None if withheld else text,
+                    scheme_end_date=end,
                     description=(d.get("descripcion") or r["name"]),
                     scheme_url=url, source_url=url,
                     eligibility_source_url=d.get("urlBasesReguladoras") or url,
                     administering_body=body,
                     match_basis=f"BDNS codigoBDNS={cod}, title prefix match",
                     note=f"{nspec} discriminating register facts; "
-                         f"abierto={d.get('abierto')} fin={d.get('fechaFinSolicitud')}",
+                         f"abierto={d.get('abierto')} fin={d.get('fechaFinSolicitud')}"
+                         + ("; text withheld: register says closed and gives no "
+                            "closing date, so the corpus cannot be told it is over"
+                            if withheld else ""),
                 )
                 stats[st] += 1
         except Exception as e:  # a refused or broken record is recorded, not retried differently
