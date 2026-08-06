@@ -193,44 +193,50 @@ n=301 holdout companies, leak-free rows only, both arms in one process.
 
 | | in pool | EXACT@1 | **EXACT@5** | REGIME@5 |
 |---|--:|--:|--:|--:|
-| real description | 93.0% | 11.3% | **33.9%** | 78.1% |
-| canned sector sentence | 85.7% | 8.6% | **21.6%** | 65.4% |
+| real description | 92.7% | 11.3% | **33.6%** | **75.4%** |
+| canned sector sentence | 88.7% | 8.3% | **23.6%** | **65.4%** |
 
-**+12.3pp EXACT@5, +12.7pp REGIME@5**, discordant 54 for / 17 against. It also
-recovers 7pp of *pool* misses — funds that were never candidates at all.
+**+10.0pp EXACT@5, +10.0pp REGIME@5**, discordant 48 for / 18 against
+(McNemar p < 0.001). It also recovers 4pp of *pool* misses.
 
-A second identical run, taken an hour later, read +8.0pp (30.9% vs 22.9%).
-Nothing in this workstream changed between them; `shortlist.ts`, `corpus.ts`
-and `peerPrior.generated.json` did, from parallel work on the same tree. **The
-lift is +8 to +12pp and the absolute levels are not comparable across runs.**
-The paired design is what survives that: both arms always see the same ranker,
-so the direction and the discordant counts held in every run even as the levels
-moved. Anyone quoting a level from this document must re-measure.
+Two earlier identical runs read +12.3pp and +8.0pp. Nothing in this workstream
+changed between them; `shortlist.ts`, `corpus.ts` and `peerPrior.generated.json`
+did, from parallel work on the same tree. **The lift is +8 to +12pp and the
+absolute levels are not comparable across runs.** The paired design is what
+survives that — both arms always see the same ranker — so the direction and the
+discordant counts held in all three while the levels moved. Anyone quoting a
+level from this document must re-measure.
 
 The earlier "79.4% vs 17.2%" compared two different populations (EU programme
 winners against national-scheme winners), not one population two ways. It is
 not this number and should not be used as a target.
 
-### Where the lift is — and where it is not
+### Where the lift is, and where it is exactly zero
 
-Broken out by where the description came from (EXACT@5, n as shown):
+Broken out by where the description came from — and this is the finding that
+should change the plan:
 
-| population | n | real | template | lift |
-|---|--:|--:|--:|--:|
-| EU programme, own project text | 102 | 43.1% | 18.6% | **+24.5pp** |
-| national scheme, recovered text | 196 | 24.5% | 25.0% | **−0.5pp** |
+| population | n | EXACT@5 real vs template | REGIME@5 real vs template |
+|---|--:|--:|--:|
+| EU programme, own project text | 102 | 47.1% vs 20.6% = **+26.5pp** | 64.7% vs 37.3% = **+27.5pp** |
+| national scheme, recovered text | 196 | 26.5% vs 25.0% = **+1.5pp** | 81.1% vs 80.1% = **+1.0pp** |
 
-**A description does not help a national-scheme applicant pick the leaf.** That
-is not a failure of the description; it is finding (F) restated from the other
-side. The 119 same-name SATR leaves sit at 0.947 mean cosine — one notified
-scheme delivered by fourteen regional bodies — and no amount of describing your
-project tells anyone which branch office you apply to. Confirmed by the
-described-only recall run: national rows reach **96% REGIME@5 on 29% EXACT@5**.
-The regime is found almost every time; the leaf is a coin toss among siblings.
+**For a national-scheme applicant, a real description is worth nothing — not
+even at the regime level.** Both halves of that are explained and neither is a
+defect in the description:
 
-So (E) and (F) are not independent. (E) buys the EU population 24pp and buys
-the national population the right regime; only (F) — making the granting
-authority a routing attribute resolved by region — converts that into the leaf.
+- the regime is *already* found without it (80.1% on the canned sentence),
+  because country plus sector plus the peer prior pin it;
+- the leaf cannot be found *with* it, because the 119 same-name SATR leaves sit
+  at 0.947 mean cosine — one notified scheme delivered by fourteen regional
+  bodies. No description tells anyone which branch office they apply to.
+
+So (E) is a large win on the EU population and a null on the national one, and
+the national gap is **entirely** (F): make the granting authority a routing
+attribute resolved by the applicant's region. Until that lands, no amount of
+intake quality will move the 84% of the corpus that is national schemes.
+Sequencing (E) before (F) and expecting the headline to move was the wrong
+read; (E) is now done and the headline will move when (F) does.
 
 ### The test set was leaking, and not where the guard was looking
 

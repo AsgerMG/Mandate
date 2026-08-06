@@ -516,11 +516,11 @@ export function IntelligencePanel() {
                   Measured, paired, same companies both ways, leak-checked
                   (scripts/measure_description_lift.ts, n=301 holdout): a real
                   description puts the fund they actually won in the top five
-                  8-12pp more often than the canned sector sentence does, the
-                  right REGIME 11-13pp more often, and it recovers 7pp of funds
-                  that were never candidates at all. The range is across runs
-                  while other work changed the ranker; the direction held in
-                  every one, 38 cases to 14 on the discordant pairs.
+                  8-12pp more often than the canned sector sentence does, and
+                  +26.5pp on the population that can be pinned at all. The
+                  range is across runs while other work changed the ranker;
+                  the direction held in all three, 48 cases to 18 on the
+                  discordant pairs.
 
                   So: a textarea, a question that asks for the project rather
                   than a tagline, and a live prompt when the answer is too thin

@@ -55,10 +55,25 @@ Gate 2 has **±7pp run-to-run variance at n=40**. Do not chase a 2pp move.
 
 All measured, all in `project-mgmt/research/`:
 
-1. **The query is empty.** Real founder description → **79.4%** top-5 of 58.
-   Canned sector template → **17.2%**. 982 of 1,988 holdout rows carry
-   `description:""`; one string is the query for 179 rows with 87 different
-   correct answers. Biggest single lever, and it is an intake change.
+1. **The query is thin — but it only matters for EU programmes.** Paired
+   measurement, same company / same won fund / same answers, ranked twice,
+   leak-free rows only (n=301 holdout): **+10.0pp overall**. The split is the
+   finding:
+
+   | population | n | EXACT@5 | REGIME@5 |
+   |---|--:|--:|--:|
+   | EU programme, own project text | 102 | 47.1% vs 20.6% = **+26.5pp** | **+27.5pp** |
+   | national scheme, recovered text | 196 | 26.5% vs 25.0% = **+1.5pp** | **+1.0pp** |
+
+   **For a national-scheme applicant a description is worth nothing** — not even
+   at regime level. The regime is already found without it (80.1% from country +
+   sector + peer prior) and the leaf cannot be found with it (119 same-name SATR
+   leaves at 0.947 cosine). Since national schemes are 84% of the corpus, the
+   blocking item for the headline is **region routing (F)**, not intake quality.
+
+   Production DOES ask for a description; it was a one-line optional input with a
+   silent 12-character cutoff below which both matchers returned nothing. Now a
+   three-row textarea with a live nudge and the thresholds as shared constants.
 2. ~~**Gate 2 chooses blind.**~~ **DISPROVEN 2026-08-06.** The information
    hypothesis was mine and it is wrong. Giving the model `award_p50` with its n,
    capital type, delivery body, within-family sector share, and a menu with
@@ -110,14 +125,42 @@ prerequisite for measuring any further ranking work honestly.
 1. **Check the four agents' output** — `git status`, `git log`, and
    `fixtures/pipeline_history.jsonl` for any variant that beat 20/40.
 2. **Land whatever beat the baseline**; revert what did not, and record it above.
-3. **Workstream D is the priority** — a real description is worth more than
-   everything else combined, and it also unblocks honest measurement.
+3. **~~Workstream D is the priority~~ — CORRECTED.** D landed and measured the
+   description's worth as +26.5pp on EU programmes and **+1.5pp on national
+   schemes, which are 84% of the corpus**. The intake is now fixed and that work
+   is done. **The blocking item is region routing (F)** — making the 119
+   same-name SATR leaves distinguishable so gate 2 can ask "which region are you
+   in?" instead of choosing between fourteen identical texts. That is workstream
+   C, still running when this was written.
 4. **Gate 2 is at its floor, not its ceiling — leave it on `veto` until the
    intake improves.** The workstream proved the constraint is upstream: gate 1
    has the right FAMILY in 38 of 38 reachable cases and the right LEAF in 20, so
    the whole remaining problem is choosing between siblings — and the fields that
    separate them (sub-national region, sub-sector, GBER objective) are exactly
    what the intake does not collect. More prompt work cannot reach them.
+
+## The test set was leaking — every project-row number before today is overstated
+
+`__recallSet.json` guarded leakage against `sample_project_titles` (SQLite), but
+retrieval scores against `instrument_profiles.profile_text` (Postgres, built
+separately and rebuilt since). Checked against the real target: **86 of 188
+holdout `project` rows (46%) have their description verbatim inside the profile
+of the fund they are supposed to find.** Of 319 described pairs only 168 are
+honest. Shipped-set described-only EXACT@5 reads 44% against **38% de-leaked**.
+
+`lib/intelligence/__recallSetEnriched.json` (new, via
+`ETL/terms/enrich_recall_set.py`) recovers descriptions from a company's award
+under a DIFFERENT regime, with six guards plus the profile-text check, and
+re-verified at exact / sibling / 8-gram containment: **0 leaks**.
+
+```
+                        shipped   enriched
+leak-free descriptions      168        524
+distinct queries            313        531
+```
+
+`__recallSet.json` is untouched. `measure_recall.ts` gained `SET=` and
+`DESCRIBED=1`. Use the enriched set for anything description-sensitive.
 
 ## Fixture warning
 

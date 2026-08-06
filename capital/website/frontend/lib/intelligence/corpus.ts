@@ -728,7 +728,7 @@ export function publishableInstruments(): DbInstrument[] {
   // way a founder could act on. The award history stays attached to the row
   // because it is the same fund; only the legal identity moved.
   const redirect = (i: DbInstrument): DbInstrument =>
-    (closed(i) && i.successorScheme && !liveCodes.has(i.successorScheme)
+    (false && closed(i) && i.successorScheme && !liveCodes.has(i.successorScheme)
       ? { ...i,
           schemeCode: i.successorScheme,
           name: i.successorTitle?.trim() || i.name,
@@ -749,7 +749,7 @@ export function publishableInstruments(): DbInstrument[] {
     // They stay in the corpus deliberately: a closed scheme is still evidence
     // of what a country funded and who received it, which is what the peer
     // tracing reads. This filter governs what may be PROPOSED, nothing else.
-    (!closed(i) || (Boolean(i.successorScheme) && !liveCodes.has(i.successorScheme as string))) &&
+    !closed(i) &&
     // No amounts and no dates means every scale and liveness judgement about
     // it is a guess, and a guess scored at its midpoint was outranking funds
     // we had actually measured. See meetsDataFloor.
