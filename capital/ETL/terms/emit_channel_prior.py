@@ -22,7 +22,26 @@ Backed off deliberately. A (country, sector) cell with few observations would
 memorise noise, so it falls back to (country) and then to the global shape once
 below MIN_OBS.
 
-Usage: python3 ETL/terms/emit_channel_prior.py
+── Leakage ────────────────────────────────────────────────────────────────
+This is counted from the same events table the recall ground truth is drawn
+from, and `shortlist.ts` reads it while `measure_recall.ts` grades the result.
+So it is the same shape as the peer prior and subject to the same rule: a
+replayed company must not have voted for the channel of the fund it won.
+
+It shipped with no exclusion at all, which was not a decision -- nothing had
+asked the question of this artifact. The rule now lives in
+`ETL/lib/recall_holdout.py` and is on by default here as everywhere else.
+
+The effect is small by construction and that is worth stating rather than
+assuming: a cell is a distribution over four or five channels built from tens
+of thousands of companies, so one company's vote moves it very little, and the
+back-off floor means a cell too thin to absorb the loss is dropped rather than
+skewed. Small is not zero, and "small" was the word used about the peer prior
+too.
+
+Usage:
+  python3 ETL/terms/emit_channel_prior.py                     # leak-free
+  python3 ETL/terms/emit_channel_prior.py --include-recall-set
 """
 from __future__ import annotations
 import sys as _sys
@@ -31,14 +50,19 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib")); break
 from etl_env import DB, ROOT  # noqa: E402
-import collections, json, sqlite3  # noqa: E402
+from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
+import argparse, collections, json, sqlite3  # noqa: E402
 
 OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "channelPrior.generated.json"
 MIN_OBS = 40   # below this a cell is noise; back off rather than memorise it
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    add_holdout_flags(ap)
+    args = ap.parse_args()
     c = sqlite3.connect(DB); c.row_factory = sqlite3.Row
+    holdout = resolve_holdout(args, c)
     # Both joins: funding_instrument_sources cannot express a SATR child, so
     # without the scheme_code arm national schemes vanish entirely -- which is
     # exactly the blind spot this artifact exists to correct.
@@ -62,7 +86,14 @@ def main() -> None:
     bysec: dict = collections.defaultdict(collections.Counter)
     bycountry: dict = collections.defaultdict(collections.Counter)
     glob = collections.Counter()
+    dropped = 0
     for r in c.execute(q):
+        # The company is the unit here -- the query UNIONs to distinct
+        # (company, channel) rows -- so excluding by company id removes the
+        # whole of a test company's vote, not one of its awards.
+        if r["cid"] in holdout.ids:
+            dropped += 1
+            continue
         bysec[(r["cc"], r["st"])][r["ch"]] += 1
         bycountry[r["cc"]][r["ch"]] += 1
         glob[r["ch"]] += 1
@@ -85,6 +116,8 @@ def main() -> None:
     }
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
     print(f"channel prior -> {OUT.relative_to(ROOT)}")
+    holdout.report()
+    print(f"  (company,channel) observations dropped: {dropped:,}")
     print(f"  global: {sorted(payload['global'].items(), key=lambda x: -x[1])[:4]}")
     print(f"  country cells {len(payload['byCountry'])}, country+sector cells {len(payload['byCountrySector'])}")
 

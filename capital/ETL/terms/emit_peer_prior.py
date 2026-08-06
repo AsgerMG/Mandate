@@ -40,17 +40,24 @@ needs a real pattern of recipients rather than a handful.
 
 ── Leakage ────────────────────────────────────────────────────────────────
 The prior is built from award history, and the evaluation replays award
-history, so the two must not share companies. `--exclude-recall-set` drops
-every company in EVERY `__recallSet*.json` before counting, which is what makes
-the 43% an honest out-of-sample number rather than the model reciting its own
-training data. All of them, not the shipped one: a test set added later would
-otherwise grade the model on its own training data and nothing would say so.
-Production keeps them: a real founder is not in the test set.
+history, so the two must not share companies. Every company in EVERY
+`__recallSet*.json` is dropped before counting, which is what makes the 43% an
+honest out-of-sample number rather than the model reciting its own training
+data. All of them, not the shipped one: a test set added later would otherwise
+grade the model on its own training data and nothing would say so.
+
+That rule now lives in `ETL/lib/recall_holdout.py` and is applied BY DEFAULT
+rather than behind `--exclude-recall-set`. Both changes are the same finding:
+this artifact once shipped built without the flag and the evaluation read its
+own answer key for weeks, and the identical idea copied into
+emit_region_prior.py named two sets in a tuple literal and silently stopped
+covering the other three. One definition, discovered not enumerated, on by
+default. `--exclude-recall-set` is still accepted and now says nothing new.
 
 Usage:
   python3 ETL/terms/emit_peer_prior.py                        # report
-  python3 ETL/terms/emit_peer_prior.py --write
-  python3 ETL/terms/emit_peer_prior.py --write --exclude-recall-set
+  python3 ETL/terms/emit_peer_prior.py --write                # leak-free
+  python3 ETL/terms/emit_peer_prior.py --write --include-recall-set
 """
 from __future__ import annotations
 
@@ -69,9 +76,9 @@ import json  # noqa: E402
 import sqlite3  # noqa: E402
 
 from attribution import Split  # noqa: E402
+from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 
 OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "peerPrior.generated.json"
-RECALL_DIR = ROOT / "website" / "frontend" / "lib" / "intelligence"
 
 # Companies per instrument that may feed the prior. See the header: this is
 # what separates "recurs for this kind of company" from "is simply enormous".
@@ -151,9 +158,7 @@ def main() -> None:
     ap.add_argument("--add-only", action="store_true",
                     help="keep the old crediting bit-for-bit and only ADD the "
                          "programme children it could never see")
-    ap.add_argument("--exclude-recall-set", action="store_true",
-                    help="drop every company in __recallSet.json, so a measured "
-                         "number is out-of-sample")
+    add_holdout_flags(ap)
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
@@ -195,14 +200,11 @@ def main() -> None:
             for iid in credited:
                 pairs.append((name, country, sector, iid))
 
-    # Every company in EVERY graded test set, not just the shipped one. The
-    # prior is built from award history and the evaluation replays award
-    # history; if a set is added later and this still reads one file, the new
-    # set grades the model on its own training data and nothing says so.
-    excluded: set[str] = set()
-    if args.exclude_recall_set:
-        for f in sorted(RECALL_DIR.glob("__recallSet*.json")):
-            excluded |= {r["name"] for r in json.loads(f.read_text())}
+    # Every company in EVERY graded test set, not just the shipped one, and
+    # discovered by glob rather than named -- see ETL/lib/recall_holdout.py for
+    # both failures that rule was written from.
+    holdout = resolve_holdout(args)
+    excluded = holdout.names
 
     # Never rank a fund the founder could not be shown anyway.
     #
@@ -246,8 +248,7 @@ def main() -> None:
     print(f"award pairs:            {len(pairs):,}")
     print(f"awards with no exact leaf:  {unplaceable:,} "
           f"(credited to the notified scheme instead)")
-    if excluded:
-        print(f"companies excluded:     {len(excluded):,} (recall set)")
+    holdout.report()
     print(f"unproposable dropped:   {len(unproposable):,}")
     print(f"cells (country,sector): {len(out):,}")
     print(f"instruments represented:{len(seen):,}  (cap {CAP} companies each)")

@@ -7,9 +7,23 @@
 //
 //   pool 97%  x  regime@5 89%  x  right-leaf-given-regime 40%  =  EXACT@5 36%
 //
-// So the leaf choice IS the remaining product, and it is worth measuring on its
-// own rather than only through a global sort where a real within-group gain can
-// be swamped by peer precedence across a 90-fund pool.
+// RE-DERIVED 2026-08-06 (workstream K). Those four numbers came from a
+// STRIDE-sampled n=200 run and are not reproducible under an unbiased draw.
+// On the seeded shuffle, holdout, n=600 across three seeds, leak-free index:
+//
+//   pool 75%  x  regime@5 87%  x  right-leaf-given-regime 37%  =  EXACT@5 24%
+//
+// The leaf choice is still a real product and this script still isolates it
+// honestly. It is no longer the WHOLE remaining product: the pool term fell
+// from an artefactual 97% to a measured 75%, so a quarter of won funds are not
+// in the set this script's question presupposes. Fixing leaf choice is now
+// worth at most 0.75 x 0.87 of what the old arithmetic implied. See
+// project-mgmt/findings/leak_audit_wsK.md; the cause of the pool fall is
+// recorded as unresolved and is measurably NOT the leak that was closed.
+//
+// So the leaf choice is worth measuring on its own rather than only through a
+// global sort where a real within-group gain can be swamped by peer precedence
+// across a 90-fund pool.
 //
 // This script isolates it: restrict to the won fund's own regime (`parent_id`),
 // rank the siblings by one signal, and ask where the leaf that actually paid

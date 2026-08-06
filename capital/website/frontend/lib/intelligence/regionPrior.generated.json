@@ -4256,7 +4256,7 @@
 "FI199": 14,
 "FI19A": 14,
 "FI19B": 160,
-"FI1B1": 584,
+"FI1B1": 576,
 "FI1C1": 102,
 "FI1C2": 5,
 "FI1C5": 12,
@@ -4270,7 +4270,7 @@
 "FI1DB": 24,
 "FI1DC": 15
 },
-"n": 1117
+"n": 1109
 },
 "satr_fi_equity__sa_53571__business_finland_venture_capital_oy": {
 "mix": {
@@ -4293,7 +4293,7 @@
 "FI199": 4,
 "FI19A": 14,
 "FI19B": 53,
-"FI1B1": 169,
+"FI1B1": 166,
 "FI1C1": 40,
 "FI1C2": 3,
 "FI1C5": 12,
@@ -4307,7 +4307,7 @@
 "FI1DB": 8,
 "FI1DC": 5
 },
-"n": 390
+"n": 387
 },
 "satr_fi_rnd__sa_101228__tyo_ja_elinkeinoministerio": {
 "mix": {
@@ -4332,7 +4332,7 @@
 "FI199": 1,
 "FI19A": 2,
 "FI19B": 1,
-"FI1B1": 20,
+"FI1B1": 19,
 "FI1C1": 6,
 "FI1C2": 3,
 "FI1C5": 1,
@@ -4345,7 +4345,7 @@
 "FI1DB": 1,
 "FI1DC": 1
 },
-"n": 46
+"n": 45
 },
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus": {
 "mix": {
@@ -4400,7 +4400,7 @@
 "FI199": 14,
 "FI19A": 14,
 "FI19B": 160,
-"FI1B1": 584,
+"FI1B1": 576,
 "FI1C1": 102,
 "FI1C2": 5,
 "FI1C5": 12,
@@ -4414,7 +4414,7 @@
 "FI1DB": 24,
 "FI1DC": 15
 },
-"n": 1117
+"n": 1109
 },
 "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland": {
 "mix": {
@@ -4446,7 +4446,7 @@
 "FI199": 4,
 "FI19A": 14,
 "FI19B": 53,
-"FI1B1": 169,
+"FI1B1": 166,
 "FI1C1": 40,
 "FI1C2": 3,
 "FI1C5": 12,
@@ -4460,7 +4460,7 @@
 "FI1DB": 8,
 "FI1DC": 5
 },
-"n": 390
+"n": 387
 },
 "satr_fi_rnd__sa_58494__innovaatiorahoituskeskus_business_finland": {
 "mix": {
@@ -4496,52 +4496,52 @@
 },
 "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 1563,
+"FR10": 1540,
 "FR101": 1,
 "FR107": 1,
-"FRB0": 141,
+"FRB0": 139,
 "FRC1": 78,
-"FRC2": 80,
-"FRD1": 41,
+"FRC2": 78,
+"FRD1": 40,
 "FRD2": 68,
 "FRE1": 169,
 "FRE2": 42,
 "FRF1": 94,
 "FRF2": 45,
 "FRF3": 66,
-"FRG0": 176,
+"FRG0": 175,
 "FRH0": 218,
 "FRI1": 160,
 "FRI2": 34,
-"FRI3": 62,
+"FRI3": 60,
 "FRJ1": 158,
-"FRJ2": 191,
+"FRJ2": 189,
 "FRK1": 66,
-"FRK2": 582,
-"FRL0": 352,
+"FRK2": 577,
+"FRL0": 349,
 "FRM0": 18,
 "FRY": 25
 },
-"n": 4431
+"n": 4390
 },
 "satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
-"FR": 49,
-"FR10": 171,
-"FRB0": 21,
+"FR": 47,
+"FR10": 169,
+"FRB0": 20,
 "FRC": 28,
-"FRD": 23,
+"FRD": 19,
 "FRE": 80,
 "FRF": 52,
 "FRG0": 52,
 "FRH0": 21,
-"FRI": 40,
-"FRJ": 80,
-"FRK": 125,
-"FRL0": 49,
+"FRI": 38,
+"FRJ": 74,
+"FRK": 123,
+"FRL0": 43,
 "FRM0": 2
 },
-"n": 793
+"n": 768
 },
 "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances": {
 "mix": {
@@ -4566,7 +4566,7 @@
 },
 "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 34,
+"FR10": 33,
 "FRB0": 2,
 "FRC1": 1,
 "FRC2": 1,
@@ -4588,41 +4588,41 @@
 "FRL0": 8,
 "FRY": 262
 },
-"n": 382
+"n": 381
 },
 "satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 288,
+"FR10": 280,
 "FR101": 14,
 "FR108": 1,
 "FR24": 26,
-"FRC1": 19,
-"FRD1": 22,
+"FRC1": 18,
+"FRD1": 21,
 "FRE2": 39,
 "FRF2": 45,
 "FRG0": 33,
 "FRH0": 31,
 "FRI1": 30,
-"FRJ2": 58,
+"FRJ2": 54,
 "FRJ26": 1,
-"FRK2": 126,
+"FRK2": 125,
 "FRK24": 1,
-"FRL0": 41,
-"FRM0": 2,
+"FRL0": 38,
+"FRM0": 1,
 "FRY20": 2,
 "FRY30": 4
 },
-"n": 783
+"n": 764
 },
 "satr_fr_equity__sa_58995__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 694,
-"FR101": 198,
+"FR10": 683,
+"FR101": 196,
 "FR102": 5,
 "FR103": 4,
-"FR104": 58,
+"FR104": 57,
 "FR105": 41,
-"FR106": 15,
+"FR106": 9,
 "FR107": 9,
 "FR108": 2,
 "FR24": 4,
@@ -4632,7 +4632,7 @@
 "FRB05": 1,
 "FRB06": 8,
 "FRC1": 4,
-"FRC11": 4,
+"FRC11": 3,
 "FRC13": 5,
 "FRC2": 5,
 "FRC21": 4,
@@ -4641,7 +4641,7 @@
 "FRD1": 16,
 "FRD11": 6,
 "FRD2": 16,
-"FRD21": 3,
+"FRD21": 1,
 "FRD22": 16,
 "FRE1": 32,
 "FRE11": 13,
@@ -4652,13 +4652,13 @@
 "FRF1": 9,
 "FRF11": 21,
 "FRF12": 1,
-"FRF2": 36,
+"FRF2": 35,
 "FRF22": 1,
 "FRF23": 4,
 "FRF24": 1,
 "FRF3": 19,
 "FRF31": 6,
-"FRF33": 5,
+"FRF33": 3,
 "FRF34": 1,
 "FRG0": 47,
 "FRG01": 25,
@@ -4684,7 +4684,7 @@
 "FRJ1": 9,
 "FRJ13": 13,
 "FRJ15": 1,
-"FRJ2": 88,
+"FRJ2": 86,
 "FRJ21": 2,
 "FRJ22": 5,
 "FRJ23": 32,
@@ -4692,7 +4692,7 @@
 "FRK": 56,
 "FRK1": 15,
 "FRK14": 4,
-"FRK2": 206,
+"FRK2": 201,
 "FRK21": 1,
 "FRK23": 3,
 "FRK24": 17,
@@ -4705,34 +4705,34 @@
 "FRL04": 7,
 "FRL05": 42,
 "FRL06": 5,
-"FRM0": 3,
+"FRM0": 2,
 "FRY": 2,
 "FRY40": 2
 },
-"n": 2278
+"n": 2244
 },
 "satr_fr_equity__sa_58995__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
 "FR": 36,
-"FR10": 144,
+"FR10": 136,
 "FRB0": 26,
-"FRC": 7,
+"FRC": 5,
 "FRD": 10,
 "FRE": 51,
 "FRF": 30,
-"FRG0": 40,
+"FRG0": 38,
 "FRH0": 21,
-"FRI": 85,
-"FRJ": 95,
+"FRI": 71,
+"FRJ": 93,
 "FRK": 95,
 "FRL0": 18
 },
-"n": 658
+"n": 630
 },
 "satr_fr_equity__sa_59357__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
 "FR": 124,
-"FR10": 47,
+"FR10": 41,
 "FR2": 4,
 "FR4": 5,
 "FR5": 2,
@@ -4740,34 +4740,34 @@
 "FR7": 4,
 "FR8": 6,
 "FRB0": 1,
-"FRC": 10,
+"FRC": 9,
 "FRD": 4,
-"FRE": 15,
-"FRF": 14,
-"FRG0": 20,
+"FRE": 14,
+"FRF": 13,
+"FRG0": 19,
 "FRI": 18,
-"FRJ": 20,
-"FRK": 40,
+"FRJ": 19,
+"FRK": 38,
 "FRL0": 10,
 "FRY": 1
 },
-"n": 347
+"n": 334
 },
 "satr_fr_rnd__sa_111723__caisse_des_depots": {
 "mix": {
-"FR": 88,
+"FR": 87,
 "FR10": 4,
 "FRC": 1,
 "FRJ": 3
 },
-"n": 96
+"n": 95
 },
 "satr_fr_rnd__sa_111723__conseil_regional": {
 "mix": {
 "FRC13": 3,
 "FRE11": 1,
 "FRG02": 2,
-"FRK": 57,
+"FRK": 56,
 "FRK14": 6,
 "FRK21": 4,
 "FRK23": 3,
@@ -4777,7 +4777,7 @@
 "FRK28": 4,
 "FRL06": 1
 },
-"n": 152
+"n": 151
 },
 "satr_fr_rnd__sa_111723__conseil_regional_d_ile_de_france": {
 "mix": {
@@ -4789,81 +4789,81 @@
 },
 "satr_fr_rnd__sa_111723__conseil_regional_hauts_de_france": {
 "mix": {
-"FRE": 20,
+"FRE": 19,
 "FRE1": 11,
 "FRE11": 19,
 "FRE12": 5,
 "FRE22": 2,
 "FRE23": 5
 },
-"n": 62
+"n": 61
 },
 "satr_fr_rnd__sa_111723__conseil_regional_nouvelle_aquitaine": {
 "mix": {
 "FR10": 1,
-"FRI": 233,
+"FRI": 231,
 "FRI1": 1,
 "FRI12": 1,
 "FRI15": 1,
 "FRI31": 1,
 "FRJ23": 1
 },
-"n": 239
+"n": 237
 },
 "satr_fr_rnd__sa_111723__conseil_regional_occitanie": {
 "mix": {
-"FRJ": 37
+"FRJ": 35
 },
-"n": 37
+"n": 35
 },
 "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 1563,
+"FR10": 1540,
 "FR101": 1,
 "FR107": 1,
-"FRB0": 141,
+"FRB0": 139,
 "FRC1": 78,
-"FRC2": 80,
-"FRD1": 41,
+"FRC2": 78,
+"FRD1": 40,
 "FRD2": 68,
 "FRE1": 169,
 "FRE2": 42,
 "FRF1": 94,
 "FRF2": 45,
 "FRF3": 66,
-"FRG0": 176,
+"FRG0": 175,
 "FRH0": 218,
 "FRI1": 160,
 "FRI2": 34,
-"FRI3": 62,
+"FRI3": 60,
 "FRJ1": 158,
-"FRJ2": 191,
+"FRJ2": 189,
 "FRK1": 66,
-"FRK2": 582,
-"FRL0": 352,
+"FRK2": 577,
+"FRL0": 349,
 "FRM0": 18,
 "FRY": 25
 },
-"n": 4431
+"n": 4390
 },
 "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
-"FR": 49,
-"FR10": 171,
-"FRB0": 21,
+"FR": 47,
+"FR10": 169,
+"FRB0": 20,
 "FRC": 28,
-"FRD": 23,
+"FRD": 19,
 "FRE": 80,
 "FRF": 52,
 "FRG0": 52,
 "FRH0": 21,
-"FRI": 40,
-"FRJ": 80,
-"FRK": 125,
-"FRL0": 49,
+"FRI": 38,
+"FRJ": 74,
+"FRK": 123,
+"FRL0": 43,
 "FRM0": 2
 },
-"n": 793
+"n": 768
 },
 "satr_fr_rnd__sa_111723__ministere_des_armees": {
 "mix": {
@@ -4934,18 +4934,18 @@
 },
 "satr_fr_rnd__sa_111723__region_normandie": {
 "mix": {
-"FRD": 41,
+"FRD": 40,
 "FRD22": 1
 },
-"n": 42
+"n": 41
 },
 "satr_fr_rnd__sa_111723__region_pays_de_la_loire": {
 "mix": {
-"FRG0": 44,
+"FRG0": 43,
 "FRG01": 4,
 "FRG03": 1
 },
-"n": 49
+"n": 48
 },
 "satr_fr_rnd__sa_111726__agence_seine_normandie": {
 "mix": {
@@ -5007,41 +5007,41 @@
 "FRD22": 6,
 "FRE21": 3,
 "FRE22": 1,
-"FRF1": 14,
+"FRF1": 12,
 "FRF2": 2,
 "FRF22": 3,
 "FRF23": 5,
 "FRF24": 1,
-"FRF3": 15,
+"FRF3": 14,
 "FRK28": 1
 },
-"n": 105
+"n": 102
 },
 "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
-"FR": 112,
-"FR10": 95,
-"FRB0": 60,
+"FR": 95,
+"FR10": 92,
+"FRB0": 58,
 "FRB03": 2,
 "FRB05": 2,
 "FRB06": 4,
-"FRC": 94,
+"FRC": 83,
 "FRC13": 2,
-"FRD": 65,
-"FRE": 86,
-"FRF": 149,
-"FRG0": 82,
+"FRD": 62,
+"FRE": 78,
+"FRF": 141,
+"FRG0": 77,
 "FRG01": 4,
 "FRG02": 3,
 "FRG03": 3,
 "FRG04": 3,
 "FRG05": 2,
-"FRH0": 90,
+"FRH0": 77,
 "FRH01": 3,
 "FRH02": 2,
 "FRH03": 6,
 "FRH04": 3,
-"FRI": 117,
+"FRI": 113,
 "FRI11": 3,
 "FRI12": 3,
 "FRI14": 1,
@@ -5050,21 +5050,21 @@
 "FRI32": 4,
 "FRI33": 1,
 "FRI34": 1,
-"FRJ": 107,
+"FRJ": 103,
 "FRJ21": 2,
 "FRJ22": 3,
 "FRJ23": 4,
 "FRJ27": 4,
 "FRJ28": 1,
-"FRK": 203,
+"FRK": 188,
 "FRK12": 1,
 "FRK13": 2,
 "FRK14": 5,
 "FRK25": 4,
-"FRL0": 66,
+"FRL0": 64,
 "FRM0": 2
 },
-"n": 1412
+"n": 1317
 },
 "satr_fr_rnd__sa_111728__conseil_regional": {
 "mix": {
@@ -5124,7 +5124,7 @@
 },
 "satr_fr_rnd__sa_111728__region_grand_est": {
 "mix": {
-"FRF": 34,
+"FRF": 33,
 "FRF11": 20,
 "FRF12": 5,
 "FRF2": 1,
@@ -5132,7 +5132,7 @@
 "FRF31": 3,
 "FRF33": 3
 },
-"n": 68
+"n": 67
 },
 "satr_fr_rnd__sa_111938__cnc": {
 "mix": {
@@ -5149,7 +5149,7 @@
 },
 "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
-"FR": 185,
+"FR": 178,
 "FR10": 13,
 "FR101": 2,
 "FR103": 3,
@@ -5165,9 +5165,8 @@
 "FRE1": 1,
 "FRE22": 3,
 "FRF11": 1,
-"FRF23": 1,
 "FRG0": 2,
-"FRG01": 3,
+"FRG01": 2,
 "FRG02": 1,
 "FRG05": 2,
 "FRH0": 1,
@@ -5176,7 +5175,6 @@
 "FRI": 4,
 "FRI12": 4,
 "FRI15": 5,
-"FRI32": 6,
 "FRJ": 4,
 "FRJ22": 1,
 "FRJ23": 24,
@@ -5190,7 +5188,7 @@
 "FRL04": 3,
 "FRM0": 1
 },
-"n": 305
+"n": 290
 },
 "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation": {
 "mix": {
@@ -5220,53 +5218,53 @@
 "FRK": 12,
 "FRK13": 2,
 "FRK21": 2,
-"FRL0": 5,
+"FRL0": 4,
 "FRY": 7,
 "FRY40": 1
 },
-"n": 81
+"n": 80
 },
 "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 288,
+"FR10": 280,
 "FR101": 14,
 "FR108": 1,
 "FR24": 26,
-"FRC1": 19,
-"FRD1": 22,
+"FRC1": 18,
+"FRD1": 21,
 "FRE2": 39,
 "FRF2": 45,
 "FRG0": 33,
 "FRH0": 31,
 "FRI1": 30,
-"FRJ2": 58,
+"FRJ2": 54,
 "FRJ26": 1,
-"FRK2": 126,
+"FRK2": 125,
 "FRK24": 1,
-"FRL0": 41,
-"FRM0": 2,
+"FRL0": 38,
+"FRM0": 1,
 "FRY20": 2,
 "FRY30": 4
 },
-"n": 783
+"n": 764
 },
 "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
 "FR": 19,
 "FR10": 6,
-"FRB0": 5,
-"FRC": 6,
+"FRB0": 4,
+"FRC": 5,
 "FRD": 4,
-"FRE": 13,
-"FRF": 17,
-"FRG0": 13,
-"FRH0": 7,
+"FRE": 12,
+"FRF": 16,
+"FRG0": 11,
+"FRH0": 6,
 "FRI": 17,
 "FRJ": 6,
 "FRK": 19,
-"FRL0": 10
+"FRL0": 8
 },
-"n": 142
+"n": 133
 },
 "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances": {
 "mix": {
@@ -5279,12 +5277,12 @@
 "FRG0": 4,
 "FRH0": 1,
 "FRI1": 5,
-"FRJ2": 10,
+"FRJ2": 9,
 "FRK2": 24,
 "FRL0": 8,
 "FRM0": 1
 },
-"n": 91
+"n": 90
 },
 "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
@@ -5351,7 +5349,6 @@
 },
 "satr_fr_rnd__sa_58973__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
-"FR103": 1,
 "FR8": 1,
 "FRB01": 1,
 "FRB04": 1,
@@ -5385,7 +5382,7 @@
 "FRK2": 1,
 "FRL0": 1
 },
-"n": 63
+"n": 62
 },
 "satr_fr_rnd__sa_58995__caisse_des_depots": {
 "mix": {
@@ -5402,21 +5399,20 @@
 "satr_fr_rnd__sa_58995__conseil_regional": {
 "mix": {
 "FR105": 1,
-"FR7": 1,
 "FRC13": 1,
-"FRK": 34,
+"FRK": 33,
 "FRK13": 2,
 "FRK14": 1,
-"FRK2": 6,
+"FRK2": 5,
 "FRK21": 1,
 "FRK23": 2,
 "FRK24": 23,
 "FRK25": 2,
-"FRK26": 12,
+"FRK26": 11,
 "FRK27": 3,
 "FRK28": 5
 },
-"n": 94
+"n": 90
 },
 "satr_fr_rnd__sa_58995__conseil_regional_nouvelle_aquitaine": {
 "mix": {
@@ -5432,13 +5428,13 @@
 },
 "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 694,
-"FR101": 198,
+"FR10": 683,
+"FR101": 196,
 "FR102": 5,
 "FR103": 4,
-"FR104": 58,
+"FR104": 57,
 "FR105": 41,
-"FR106": 15,
+"FR106": 9,
 "FR107": 9,
 "FR108": 2,
 "FR24": 4,
@@ -5448,7 +5444,7 @@
 "FRB05": 1,
 "FRB06": 8,
 "FRC1": 4,
-"FRC11": 4,
+"FRC11": 3,
 "FRC13": 5,
 "FRC2": 5,
 "FRC21": 4,
@@ -5457,7 +5453,7 @@
 "FRD1": 16,
 "FRD11": 6,
 "FRD2": 16,
-"FRD21": 3,
+"FRD21": 1,
 "FRD22": 16,
 "FRE1": 32,
 "FRE11": 13,
@@ -5468,13 +5464,13 @@
 "FRF1": 9,
 "FRF11": 21,
 "FRF12": 1,
-"FRF2": 36,
+"FRF2": 35,
 "FRF22": 1,
 "FRF23": 4,
 "FRF24": 1,
 "FRF3": 19,
 "FRF31": 6,
-"FRF33": 5,
+"FRF33": 3,
 "FRF34": 1,
 "FRG0": 47,
 "FRG01": 25,
@@ -5500,7 +5496,7 @@
 "FRJ1": 9,
 "FRJ13": 13,
 "FRJ15": 1,
-"FRJ2": 88,
+"FRJ2": 86,
 "FRJ21": 2,
 "FRJ22": 5,
 "FRJ23": 32,
@@ -5508,7 +5504,7 @@
 "FRK": 56,
 "FRK1": 15,
 "FRK14": 4,
-"FRK2": 206,
+"FRK2": 201,
 "FRK21": 1,
 "FRK23": 3,
 "FRK24": 17,
@@ -5521,29 +5517,29 @@
 "FRL04": 7,
 "FRL05": 42,
 "FRL06": 5,
-"FRM0": 3,
+"FRM0": 2,
 "FRY": 2,
 "FRY40": 2
 },
-"n": 2278
+"n": 2244
 },
 "satr_fr_rnd__sa_58995__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
 "FR": 36,
-"FR10": 144,
+"FR10": 136,
 "FRB0": 26,
-"FRC": 7,
+"FRC": 5,
 "FRD": 10,
 "FRE": 51,
 "FRF": 30,
-"FRG0": 40,
+"FRG0": 38,
 "FRH0": 21,
-"FRI": 85,
-"FRJ": 95,
+"FRI": 71,
+"FRJ": 93,
 "FRK": 95,
 "FRL0": 18
 },
-"n": 658
+"n": 630
 },
 "satr_fr_rnd__sa_58995__ministere_des_armees": {
 "mix": {
@@ -5566,7 +5562,7 @@
 "FRH01": 2,
 "FRH02": 1,
 "FRH04": 1,
-"FRI12": 2,
+"FRI12": 1,
 "FRJ21": 1,
 "FRJ23": 6,
 "FRK14": 1,
@@ -5577,12 +5573,11 @@
 "FRL05": 1,
 "FRL06": 1
 },
-"n": 63
+"n": 62
 },
 "satr_fr_rnd__sa_58995__region_grand_est": {
 "mix": {
 "FR10": 1,
-"FR105": 1,
 "FRC21": 1,
 "FRF": 24,
 "FRF1": 3,
@@ -5595,14 +5590,14 @@
 "FRF31": 5,
 "FRF33": 2
 },
-"n": 48
+"n": 47
 },
 "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine": {
 "mix": {
 "FRI": 6,
 "FRI1": 1,
 "FRI11": 6,
-"FRI12": 8,
+"FRI12": 7,
 "FRI13": 6,
 "FRI14": 9,
 "FRI15": 9,
@@ -5614,12 +5609,12 @@
 "FRI32": 3,
 "FRI33": 9
 },
-"n": 66
+"n": 65
 },
 "satr_fr_rnd__sa_59357__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
 "FR": 124,
-"FR10": 47,
+"FR10": 41,
 "FR2": 4,
 "FR4": 5,
 "FR5": 2,
@@ -5627,52 +5622,52 @@
 "FR7": 4,
 "FR8": 6,
 "FRB0": 1,
-"FRC": 10,
+"FRC": 9,
 "FRD": 4,
-"FRE": 15,
-"FRF": 14,
-"FRG0": 20,
+"FRE": 14,
+"FRF": 13,
+"FRG0": 19,
 "FRI": 18,
-"FRJ": 20,
-"FRK": 40,
+"FRJ": 19,
+"FRK": 38,
 "FRL0": 10,
 "FRY": 1
 },
-"n": 347
+"n": 334
 },
 "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
 "FR": 45,
 "FR10": 63,
-"FR2": 12,
+"FR2": 10,
 "FR4": 4,
 "FR5": 7,
 "FR6": 10,
 "FR7": 2,
 "FRA": 1,
 "FRB0": 12,
-"FRC": 36,
+"FRC": 35,
 "FRD": 21,
-"FRE": 47,
+"FRE": 46,
 "FRE1": 11,
-"FRF": 52,
-"FRG0": 29,
-"FRH0": 26,
+"FRF": 48,
+"FRG0": 28,
+"FRH0": 19,
 "FRI": 31,
-"FRJ": 47,
-"FRK": 75,
+"FRJ": 45,
+"FRK": 65,
 "FRL0": 23,
 "FRY": 17
 },
-"n": 571
+"n": 543
 },
 "satr_fr_rnd__sa_59366__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
-"FR": 300,
+"FR": 288,
 "FR10": 24,
 "FR101": 16,
 "FR102": 2,
-"FR103": 23,
+"FR103": 22,
 "FR104": 3,
 "FR105": 7,
 "FR106": 1,
@@ -5704,7 +5699,7 @@
 "FRI14": 1,
 "FRI15": 13,
 "FRI23": 1,
-"FRI32": 7,
+"FRI32": 5,
 "FRJ": 6,
 "FRJ2": 1,
 "FRJ23": 43,
@@ -5723,7 +5718,7 @@
 "FRM0": 2,
 "FRM01": 1
 },
-"n": 529
+"n": 514
 },
 "satr_hu_equity__sa_57198__avhga": {
 "mix": {
@@ -8142,18 +8137,18 @@
 },
 "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem": {
 "mix": {
-"SE110": 147,
+"SE110": 146,
 "SE121": 17,
 "SE122": 1,
 "SE123": 33,
 "SE124": 4,
-"SE125": 10,
+"SE125": 8,
 "SE211": 2,
 "SE212": 2,
 "SE213": 1,
 "SE214": 4,
 "SE221": 1,
-"SE224": 45,
+"SE224": 43,
 "SE231": 7,
 "SE232": 101,
 "SE311": 3,
@@ -8164,7 +8159,7 @@
 "SE331": 11,
 "SE332": 4
 },
-"n": 405
+"n": 400
 },
 "satr_se_rnd__sa_112283__tillvaxtverket": {
 "mix": {
@@ -8220,17 +8215,17 @@
 "SE232": 58,
 "SE311": 4,
 "SE313": 1,
-"SE321": 3,
+"SE321": 2,
 "SE322": 1,
 "SE331": 3,
 "SE332": 4
 },
-"n": 175
+"n": 174
 },
 "satr_se_rnd__sa_60496__vinnova_verket_for_innovationssystem": {
 "mix": {
 "SE110": 19,
-"SE121": 3,
+"SE121": 2,
 "SE123": 5,
 "SE124": 2,
 "SE224": 4,
@@ -8240,7 +8235,7 @@
 "SE321": 1,
 "SE331": 1
 },
-"n": 53
+"n": 52
 },
 "satr_se_rnd__sa_61710__naturvardsverket": {
 "mix": {

@@ -149,9 +149,16 @@ def staged_region_mix(conn, exclude_company_ids: set[int] | None = None,
     would claim it had.
 
     `exclude_company_ids` drops recipients before counting, which is what makes
-    a prior built from this out-of-sample. `populate_funding_instruments.py`
-    passes nothing -- the shipped corpus describes every award it holds -- and
-    `emit_region_prior.py` passes the recall set.
+    a prior built from this out-of-sample. BOTH callers now pass the recall
+    holdout (`ETL/lib/recall_holdout.py`).
+
+    They did not always. `populate_funding_instruments.py` passed nothing on
+    the reasoning that the shipped corpus should describe every award it holds
+    -- true of a description, false of this, because `delivery_region` is a
+    ROUTING signal the product sorts siblings by and the harness grades. One
+    attribution called over two populations is the same divergence the
+    paragraph below says this module exists to prevent; it was simply moved
+    from the function into its argument.
 
     Two callers need this identical attribution, and a copy in each is the
     defect this module exists to prevent: if they ever resolved a region

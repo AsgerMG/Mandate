@@ -38,11 +38,45 @@ NO foreign key to funding_instruments, because migrate_to_postgres.py
 truncate-and-reloads that table with CASCADE and silently destroyed 3,327
 embeddings that way.
 
+THE RECALL HOLDOUT APPLIES HERE, AND DID NOT UNTIL 2026-08-06
+------------------------------------------------------------
+"Projects it has actually funded" and the register-activity line are both
+"what has this fund funded", counted from the same events the recall ground
+truth is drawn from. That is precisely the shape ETL/lib/recall_holdout.py
+governs, and this file had no exclusion of any kind. Measured on
+__recallSetComposed before the fix: 225 of the 319 graded pairs whose won fund
+carries a title section — 70.5% — had their own award inside the document they
+are scored against. This is the PRIMARY ranking signal (shortlist.ts falls back
+to the lexical index only when it is unavailable), so it was also the most
+expensive place to be missing it.
+
+The rule is not restated here; it is imported. See that file's header for why
+exclusion is the default and why the set is discovered by glob rather than
+listed.
+
+The unit of exclusion differs by section, and getting that wrong is a leak:
+
+  activities   the VOTE is removed, never the row — the same reading
+               populate_funding_instruments.py takes of the same rule. A NACE
+               activity is a COUNT, so a held-out company simply stops voting.
+  titles       the TITLE is removed entirely if any held-out company is on it.
+               A title is a STRING, and the string is the answer. Consortium
+               programmes share one title across every partner, so removing
+               only the replayed company's vote leaves its own project title
+               standing in the profile, contributed by a partner. That is a
+               description copied out of the answer, and check_recall_leaks.ts
+               caught exactly three such rows on the first rebuild.
+
+Instrument identity, stated scope, family and region text are untouched,
+because none of them is a count over companies.
+
 Usage:
   python3 ETL/terms/build_instrument_profiles.py status
   python3 ETL/terms/build_instrument_profiles.py run [--limit N] [--rebuild]
   python3 ETL/terms/build_instrument_profiles.py show <instrument_id>
   python3 ETL/terms/build_instrument_profiles.py query "text" [-k 5]
+
+`--include-recall-set` on `run` builds the fuller index and says what it costs.
 """
 from __future__ import annotations
 
@@ -54,6 +88,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB  # noqa: E402
+from recall_holdout import Holdout, add_holdout_flags, resolve_holdout  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -287,8 +322,16 @@ def cmd_classify_titles(args) -> None:
           f"{len(out) - n_scheme} project")
 
 
-def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
-    """Assemble (instrument_id, profile_text, n_titles) for every instrument."""
+def build_profiles(sq: sqlite3.Connection,
+                   holdout: Holdout | None = None) -> list[tuple[str, str, int]]:
+    """Assemble (instrument_id, profile_text, n_titles) for every instrument.
+
+    `holdout` defaults to an EMPTY exclusion rather than to the resolved one,
+    because a default that silently reads five JSON files off disk would make
+    this function's output depend on the filesystem. Callers resolve it; the
+    CLI resolves it by default. See the module header.
+    """
+    holdout = holdout or Holdout(active=False)
     instruments = sq.execute(
         """SELECT id, name, administering_body, country, capital_type,
                   source_family_bucket, sample_project_titles, sector_mix,
@@ -332,20 +375,58 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     # Unclassified instruments are treated as projects (the common case).
     kinds = load_title_kinds(sq)
     titles: dict[str, list[str]] = {}
-    for iid, title, _n in sq.execute(
-        """SELECT fis.instrument_id, e.project_title, COUNT(*) n
+    # Grouped in Python rather than in SQL because the holdout is a per-COMPANY
+    # decision and the old GROUP BY had already collapsed the company away. The
+    # count is what carries the vote, so it is the count that must be taken
+    # over the retained companies only.
+    title_votes: dict[str, Counter] = defaultdict(Counter)
+    title_form: dict[tuple[str, str], str] = {}
+    # A TITLE a held-out company is on is dropped ENTIRELY, not merely deprived
+    # of that company's vote. This is stronger than the reading
+    # populate_funding_instruments.py takes of the same rule, and it has to be,
+    # because a title is not a count -- it is a STRING, and the string is the
+    # answer.
+    #
+    # Found by check_recall_leaks.ts on the first rebuild, which is the whole
+    # reason that guard is in `npm run check`. Vote-removal alone left three
+    # rows whose description sat verbatim in the won fund's profile:
+    #
+    #   LINKOPINGS UNIVERSITET   -> sns_ju
+    #   GOETHE-UNIVERSITAET      -> eic_transition
+    #   SERMA Technologies       -> chips_ju_kdt
+    #
+    # All three are CONSORTIUM programmes, and a consortium shares one project
+    # title across every partner. Dropping the replayed company's own event
+    # therefore removes one vote and leaves the title standing, contributed by
+    # a partner -- so the description was still copied out of the answer. Per-
+    # company exclusion is the right unit for a mix or a median; for a title it
+    # is not, and nothing would have revealed that but the guard.
+    leaked_titles: set[tuple[str, str]] = set()
+    rows_by_title: list[tuple[str, str, str]] = []
+    for iid, title, cid in sq.execute(
+        """SELECT fis.instrument_id, e.project_title, e.company_id
            FROM public_funding_events e
            JOIN funding_instrument_sources fis ON fis.source = e.source
            WHERE e.is_duplicate = 0
-             AND e.project_title IS NOT NULL AND length(trim(e.project_title)) > 8
-           GROUP BY fis.instrument_id, lower(trim(e.project_title))
-           ORDER BY fis.instrument_id, n DESC"""
+             AND e.project_title IS NOT NULL AND length(trim(e.project_title)) > 8"""
     ).fetchall():
         if kinds.get(iid) == "scheme":
             continue
-        lst = titles.setdefault(iid, [])
-        if len(lst) < MAX_TITLES:
-            lst.append(norm_title(title))
+        key = (title or "").lower().strip()
+        if cid in holdout.ids:
+            leaked_titles.add((iid, key))
+        else:
+            rows_by_title.append((iid, key, title))
+    for iid, key, title in rows_by_title:
+        if (iid, key) in leaked_titles:
+            continue
+        title_votes[iid][key] += 1
+        title_form.setdefault((iid, key), title)
+    for iid, votes in title_votes.items():
+        # Ties broken on the title text, so two runs cannot order it
+        # differently and republish a document that has not changed.
+        ordered = sorted(votes.items(), key=lambda kv: (-kv[1], kv[0]))
+        titles[iid] = [norm_title(title_form[(iid, k)]) for k, _ in ordered[:MAX_TITLES]]
 
     # Sectors are deliberately NOT included. The subsector taxonomy is thin (19
     # values, populated on ~12% of companies) and demonstrably mislabels: it
@@ -401,17 +482,25 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     MIN_ACTIVITY_AWARDS = 2
     raw_activities: dict[str, Counter] = defaultdict(Counter)
     baseline: dict[str, Counter] = defaultdict(Counter)
-    for iid, cc, act, n in sq.execute(
-        """SELECT i.id, s.granting_country_iso2, s.sector_nace, COUNT(*) n
+    # Also a count over companies, so also subject to the holdout, and for the
+    # same reason: this line says "what its recipients do", and a replayed
+    # company must not be one of the recipients describing the fund it is
+    # meant to find. Grouped in Python for the reason given at the titles
+    # query. `beneficiary_name` is the fallback where the staging row never
+    # resolved to a company id — an unresolved row is still that company.
+    for iid, cc, act, cid, bname in sq.execute(
+        """SELECT i.id, s.granting_country_iso2, s.sector_nace,
+                  s.company_id, s.beneficiary_name
              FROM funding_instruments i
              JOIN satr_staging s
                ON s.sa_number = i.scheme_code
               AND SUBSTR(COALESCE(s.granting_authority,''), 1, 200) = i.administering_body
             WHERE COALESCE(i.scheme_code,'') <> '' AND i.administering_body IS NOT NULL
-              AND LENGTH(TRIM(COALESCE(s.sector_nace,''))) > 4
-            GROUP BY i.id, s.granting_country_iso2, s.sector_nace"""
+              AND LENGTH(TRIM(COALESCE(s.sector_nace,''))) > 4"""
     ).fetchall():
-        raw_activities[iid][(cc or "", norm_title(act))] += n
+        if cid in holdout.ids or (bname or "") in holdout.names:
+            continue
+        raw_activities[iid][(cc or "", norm_title(act))] += 1
     for iid, counts in raw_activities.items():
         for (cc, act), n in counts.items():
             baseline[cc][act] += n
@@ -605,9 +694,14 @@ def build_profiles(sq: sqlite3.Connection) -> list[tuple[str, str, int]]:
     return out
 
 
-def cmd_status(_args) -> None:
+def cmd_status(args) -> None:
     sq = sqlite3.connect(DB)
-    profiles = build_profiles(sq)
+    # Reports the build that SHIPS. Reporting the include-everything build here
+    # would describe a document nobody embeds, and "which rows this was
+    # computed over" is the hidden variable this workstream exists to close.
+    holdout = resolve_holdout(args, sq)
+    holdout.report()
+    profiles = build_profiles(sq, holdout)
     sq.close()
     with_titles = sum(1 for _, _, n in profiles if n)
     avg = sum(len(t) for _, t, _ in profiles) / max(len(profiles), 1)
@@ -627,7 +721,7 @@ def cmd_status(_args) -> None:
 
 def cmd_show(args) -> None:
     sq = sqlite3.connect(DB)
-    for iid, text, n in build_profiles(sq):
+    for iid, text, n in build_profiles(sq, resolve_holdout(args, sq)):
         if iid == args.instrument_id:
             print(f"--- {iid} ({n} titles, {len(text)} chars) ---\n{text}")
             break
@@ -638,7 +732,9 @@ def cmd_show(args) -> None:
 
 def cmd_run(args) -> None:
     sq = sqlite3.connect(DB)
-    profiles = build_profiles(sq)
+    holdout = resolve_holdout(args, sq)
+    holdout.report()
+    profiles = build_profiles(sq, holdout)
     sq.close()
     pg = connect_pg()
     client = voyage_client()
@@ -724,7 +820,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    sub.add_parser("status").set_defaults(func=cmd_status)
+    st = sub.add_parser("status")
+    add_holdout_flags(st)
+    st.set_defaults(func=cmd_status)
     ct = sub.add_parser("classify-titles",
         help="classify per instrument whether project_title holds projects or aid schemes")
     ct.add_argument("--rebuild", action="store_true")
@@ -733,6 +831,7 @@ def main() -> None:
     r.add_argument("--limit", type=int, default=0)
     r.add_argument("--rebuild", action="store_true",
                    help="delete and rebuild every profile (use after corpus changes)")
+    add_holdout_flags(r)
     r.set_defaults(func=cmd_run)
     s = sub.add_parser("show")
     s.add_argument("instrument_id")
