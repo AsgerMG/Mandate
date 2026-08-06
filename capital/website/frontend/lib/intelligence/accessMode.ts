@@ -19,6 +19,10 @@
 // funds in countries we have not looked at yet; a list of known VC names would
 // not, and would go stale the first time one was added.
 import type { DbInstrument } from "./corpus";
+// ONE liveness vocabulary. The basis constant and `today()` are imported
+// rather than restated so the data floor and `isClosed()` cannot drift apart
+// on what a call deadline is or on what "now" means.
+import { SCHEME_END_BASIS, today } from "./liveness";
 
 export type AccessMode =
   /** Published criteria, submit and be assessed. */
@@ -87,11 +91,49 @@ export function passesCapitalPreference(
  *
  * Measured before adopting: 18 of 724 publishable instruments, and no country
  * loses its last national route.
+ *
+ * ── The register clause, and why it is not a loosening ────────────────────
+ * The two tests above are both AWARD facts, because award history was the only
+ * thing the corpus held. A call register states the same two properties
+ * directly, about a fund that has not paid anything yet: a total budget, and
+ * the exact date applications close. Spain's BDNS is the first such source in
+ * the corpus and by construction it can only ever contain funds with no award
+ * history — its instruments are built from awards, so a currently-open call
+ * cannot be in the award stream. Without this clause, "which five funds should
+ * I apply to" is answered for Spain from 13 rows, all of them found by
+ * accident of having already paid out.
+ *
+ * A register-stated application window that HAS NOT PASSED is a stronger
+ * liveness fact than anything the first two tests accept — it is the fund's own
+ * declaration, where `lastYear` is a proxy the corpus infers, and the floor
+ * already accepts a `lastYear` five years stale. Rejecting a window open today
+ * while accepting an award from 2021 is not conservatism, it is incoherence.
+ *
+ * Deliberately narrow, in three ways:
+ *   - `callDeadline` only. A `notifiedDuration` is a State-aid notification's
+ *     expiry, routinely prolonged, and says nothing about whether anyone can
+ *     apply — see liveness.ts for why the two must never be conflated.
+ *   - FUTURE only. A past call deadline means permanently closed, so this can
+ *     never resurrect anything; `isClosed()` would drop the row regardless, and
+ *     this clause agreeing with it keeps the two from drifting.
+ *   - It grants nothing on SCALE. These rows still have no award median, so
+ *     `awardScorer` gives them 1.0 — the same neutral the corpus already gives
+ *     the 98 instruments without one — and `scaleFit` 0.5 in the memo only.
+ *
+ * Blast radius, measured against Postgres before adoption: of the 41
+ * instruments that fail the first two tests, ZERO have a future call deadline.
+ * The clause admits nothing that exists today and cannot change any country's
+ * pool except through rows a call register puts there deliberately.
  */
 export function meetsDataFloor(inst: DbInstrument): boolean {
   const hasAmounts = (inst.totalEur ?? 0) > 0;
   const hasDate = Boolean(inst.lastYear);
-  return hasAmounts || hasDate;
+  const end = inst.schemeEndDate ? String(inst.schemeEndDate).slice(0, 10) : "";
+  const hasOpenWindow =
+    inst.schemeEndBasis === SCHEME_END_BASIS.callDeadline &&
+    end.length === 10 &&
+    end >= today();
+  return hasAmounts || hasDate || hasOpenWindow;
 }
 
 /**
