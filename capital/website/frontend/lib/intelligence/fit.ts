@@ -28,7 +28,50 @@ import { hasThinEvidence } from "./accessMode";
 import type { DbInstrument } from "./corpus";
 import type { InstrumentAssessment } from "./verdict";
 
-/** Each component scores 0-1. Weights sum to 1. */
+// ── WHAT IN THIS FILE ACTUALLY REACHES THE FOUNDER'S TABLE ────────────────
+// Read this before quoting a weight below as if it ranked anything.
+//
+// `scoreFit` does NOT rank the five funds a founder first sees. It is called
+// from exactly one place in production -- `synthesize()` in the MEMO path
+// (pipeline.ts) -- over `hydratedTable.slice(0, VERDICT_POOL)`, i.e. over rows
+// that screen one has ALREADY ordered and ALREADY cut. `computeVerdict`, which
+// produces the table, never calls it.
+//
+// Screen one orders on `rowRelevance` in shortlist.ts: a blend of the semantic
+// percentile and `sectorFit`, then permuted within each regime by the
+// rank-preserving sibling reassignment. `sectorFit` is the ONLY export of this
+// file on that path.
+//
+//   component     weight   reaches the five a founder first sees?
+//   eligibility     0.24   no
+//   theme           0.16   yes, but as shortlist's own semantic term
+//   sector          0.12   yes, via sectorFit
+//   proximity       0.13   no -- only as a binary country tier inside a channel
+//   scale           0.12   no -- shortlist uses its own awardScorer instead
+//   structure       0.08   no
+//   capital         0.08   no -- only as a filter, in selectLeafInstruments
+//   precedent       0.04   no -- peer precedence is a separate mechanism
+//   liveness        0.03   no -- liveness is a publishability filter upstream
+//
+// So SEVEN of the nine components, carrying 0.72 of the weight documented
+// below, never touch the table. They order the memo's pool, which is a real job
+// and a smaller one than "the fit score".
+//
+// This is documented rather than deleted on purpose: whether any of these
+// components can separate siblings inside one regime -- which is where the
+// entire remaining loss is -- is an open question under active measurement
+// (`scripts/measure_sibling_choice.ts` reads `scaleFit` and `livenessFit`
+// directly for exactly that). Deleting a component because nothing calls it
+// today would delete the candidate before the experiment.
+//
+// What is NOT allowed is describing this as the ranker. That claim is what let
+// a founder-facing ordering be discussed for months in terms of nine weighted
+// components when it ran on two signals.
+
+/** Each component scores 0-1. Weights sum to 1.
+ *
+ *  These weight the MEMO pool, not the founder's table. See the note above:
+ *  seven of the nine never reach screen one. */
 export const FIT_WEIGHTS = {
   eligibility: 0.24,
   theme: 0.16,
@@ -118,6 +161,13 @@ export interface FitInput {
  * Scores 0.5 when the instrument's own scale is unknown — neutral, because an
  * unknown ceiling is not a low one.
  */
+/** REACHES THE MEMO POOL ONLY, via `scoreFit`. Screen one does not use this:
+ *  `selectLeafInstruments` and the sibling reassignment score ticket fit with
+ *  `awardScorer` in shortlist.ts, which is a different function on the same
+ *  idea. Two ticket scorers exist; this is the one the founder's table does NOT
+ *  see. Also read directly by `scripts/measure_sibling_choice.ts`, which is
+ *  testing whether it separates siblings -- do not delete it for want of a
+ *  production caller while that is open. */
 export function scaleFit(inst: DbInstrument, ticketBand?: string): number {
   const target = ticketBand ? TICKET_MIDPOINT[ticketBand] : undefined;
   const typical = typicalAward(inst);
@@ -133,6 +183,11 @@ export function scaleFit(inst: DbInstrument, ticketBand?: string): number {
 /** How recently this instrument actually awarded anything. A scheme silent
  *  for years may be closed, repealed, or between programme periods; we cannot
  *  tell, so it is demoted rather than hidden, and the row says so. */
+/** REACHES THE MEMO POOL ONLY, via `scoreFit`, plus
+ *  `scripts/measure_sibling_choice.ts`. Note the founder's table applies a
+ *  harder version of the same idea upstream and independently:
+ *  `publishableInstruments()` drops a scheme whose registered end date has
+ *  passed, which is a filter, not a demotion. */
 export function livenessFit(inst: DbInstrument, year: number): number {
   if (!inst.lastYear) return 0.5;
   const age = year - inst.lastYear;
@@ -144,6 +199,7 @@ export function livenessFit(inst: DbInstrument, year: number): number {
 /** Whether the shape of the applicant this fund expects matches the founder.
  *  Replaces a per-channel declaration that gave nine differently-structured
  *  programmes in one bucket a single verdict. */
+/** REACHES THE MEMO POOL ONLY, via `scoreFit`. No other caller in the tree. */
 export function structureFit(requiresConsortium?: boolean, consortiumOk?: boolean): number {
   if (!requiresConsortium) return 1;
   if (consortiumOk === true) return 1;
@@ -163,6 +219,18 @@ export function structureFit(requiresConsortium?: boolean, consortiumOk?: boolea
  * bad match, and zeroing it would bury every instrument whose recipients we
  * have not classified.
  */
+/** THE ONE EXPORT OF THIS FILE THAT RANKS THE FOUNDER'S TABLE. Read by
+ *  `selectLeafInstruments` and by `rowRelevance` in shortlist.ts, where it
+ *  carries whatever weight the semantic term leaves it.
+ *
+ *  Its known limitation is a property of the clip below and is measured: inside
+ *  one regime the 0.25 ceiling makes a leaf with 90% of its awards in the
+ *  founder's sector indistinguishable from one with 26%, so it ties at the top
+ *  of the group in most sibling comparisons -- it separates least exactly where
+ *  separation is needed. Across channels the clip is right, because a broad
+ *  fund must not be punished for being broad. Do not "fix" it here without
+ *  reading that measurement; the change belongs in the within-regime
+ *  comparison, not in this function. */
 export function sectorFit(
   mix: Record<string, number> | null | undefined,
   founderSector?: string,
@@ -174,6 +242,9 @@ export function sectorFit(
   return Math.min(1, share / SECTOR_FULL_MATCH_SHARE);
 }
 
+/** REACHES THE MEMO POOL ONLY, via `scoreFit`. No other caller in the tree --
+ *  and it carries the largest single weight below, 0.24, which is the clearest
+ *  case of why the weights table must not be read as the ranking. */
 export function eligibilityFit(a?: InstrumentAssessment): number {
   if (!a) return 0.4;
   switch (a.status) {
@@ -184,6 +255,15 @@ export function eligibilityFit(a?: InstrumentAssessment): number {
   }
 }
 
+/**
+ * The nine-component fit score.
+ *
+ * LIVE, but not where the file's name suggests. One production caller:
+ * `synthesize()` in pipeline.ts, over `hydratedTable.slice(0, VERDICT_POOL)` —
+ * so it orders the pool the WRITER sees, after screen one has already chosen
+ * and cut the rows. It does not decide the five funds on the founder's table.
+ * (Second caller: `scripts/shadow_fit.ts`, a harness.)
+ */
 export function scoreFit(input: FitInput): FitScore {
   const { instrument: inst, assessment, year } = input;
 
@@ -248,6 +328,12 @@ export function scoreFit(input: FitInput): FitScore {
 /**
  * Rank a scored pool, strongest first, hard exclusions removed. The caller
  * cuts; this does not know how many the brief publishes.
+ *
+ * NO PRODUCTION CALLER. The only caller in the tree is
+ * `scripts/shadow_fit.ts`, which is what it is for: comparing what this
+ * ranking WOULD publish against what the shipped path does. Kept for that,
+ * and stated here so nobody reads its existence as evidence that the brief is
+ * ranked this way. If shadow_fit.ts is ever deleted, delete this with it.
  *
  * `displayName` collapses instruments that render as the same institution,
  * keeping the highest-scoring one. Without it a brief publishes one door

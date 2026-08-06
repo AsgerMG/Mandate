@@ -160,6 +160,24 @@ export interface DbInstrument {
   companyCount: number;
   totalEur: number;
   sourceFamilyBucket: string | null;
+  /** WRITE-ONLY. Loaded and `JSON.parse`d for every instrument on every corpus
+   *  load, and read by nothing in the frontend — not the ranker, not the memo,
+   *  not the brief. Kept, with this label on it, for two reasons.
+   *
+   *  Its exclusion from ranking is DELIBERATE and measured, not an oversight:
+   *  see the note in relevance.ts. In this corpus the titles are mostly
+   *  national regulation boilerplate rather than project descriptions, so
+   *  indexing them adds vocabulary that matches everything.
+   *
+   *  And it is load-bearing in the OTHER direction: it was the field the old
+   *  leak guard checked, against SQLite, while retrieval scored against
+   *  `instrument_profiles.profile_text` in Postgres — which is how 46% of
+   *  holdout project rows leaked their answer into their own query undetected.
+   *  Anything that starts reading this for matching must re-open that question
+   *  first (`scripts/check_recall_leaks.ts`).
+   *
+   *  Do not "wire it up" because it looks unused. Either give it a consumer
+   *  deliberately, with that measurement redone, or drop it from the SELECT. */
   sampleProjectTitles: string[] | null;
   /** Real per-fund granting authority (majority vote across events' raw
    *  granting_authority field), e.g. "Bundesamt für Wirtschaft und
