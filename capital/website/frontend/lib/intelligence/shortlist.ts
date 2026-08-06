@@ -182,9 +182,16 @@ export function regionScorer(
   // registrations of one regime really are two schemes with two sets of
   // delivery bodies, and merging them puts a body in competition with awards it
   // could never have signed. Reverted; recorded so it is not retried.
+  // EXPERIMENT (workstream G): the comparison group widened from the notified
+  // scheme (median 7.4 members) to the whole REGIME by parent_id (median 75 in
+  // pool, won fund at median rank 16 inside it). This is a DIFFERENT experiment
+  // from the "same display name, same country" widening rejected above: that
+  // one merged two separate registrations of one regime and put a body in
+  // competition with awards it could never have signed. A regime is the
+  // corpus's own parent/child structure.
   const byScheme = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
-    const code = (l.schemeCode ?? "").trim();
+    const code = l.parentId ?? "";
     if (!code) continue;
     (byScheme.get(code) ?? byScheme.set(code, []).get(code)!).push(l);
   }
