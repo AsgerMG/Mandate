@@ -76,7 +76,7 @@ Named so the next person does not have to rediscover that they were skipped.
 
    Partly turned. The classifier is shown eight titles per instrument, four
    from each end of the "shared by most distinct companies" ordering. Measured
-   2026-08-06 23:0x CEST: **61 of 208 instruments (29.3%) would be shown a
+   2026-08-06 ~23:01 CEST: **61 of 208 instruments (29.3%) would be shown a
    DIFFERENT sample under the holdout.** That is not negligible and it is more
    than "second-order" deserved.
 
@@ -145,7 +145,45 @@ shipped semantic index still carries the leaky values. Fixing the SQLite
 columns and the committed JSON without re-embedding left the largest consumer
 on the old numbers.
 
-## THE OPEN ITEM: pool fell from ~95% to ~78% and I could not fully isolate why
+### 3. Per-company exclusion is the WRONG UNIT for a title (found by the guard)
+
+The first rebuild used the same reading `populate_funding_instruments.py`
+takes — remove the replayed company's vote, keep the row. `npm run check` then
+failed with three rows whose description sat verbatim in the won fund's
+profile:
+
+```
+LINKOPINGS UNIVERSITET   -> sns_ju
+GOETHE-UNIVERSITAET      -> eic_transition
+SERMA Technologies       -> chips_ju_kdt
+```
+
+All three are consortium programmes and all three are
+`descriptionSource: own_project_title`. **A consortium shares one project title
+across every partner**, so dropping the replayed company's own event removes
+one vote and leaves the title standing, contributed by a partner. The
+description is still copied out of the answer.
+
+So the unit of exclusion differs by section, and assuming it did not is what
+produced this:
+
+| section | unit | why |
+|---|---|---|
+| activities | the VOTE | a NACE activity is a COUNT; a held-out company simply stops voting |
+| titles | the TITLE, entirely | a title is a STRING, and the string IS the answer. One surviving copy is the whole leak. |
+
+Nothing was loosened to make the guard pass — the builder was tightened until
+the guard passes honestly. Re-verified independently against the same `squash`
+the guard uses: **0 verbatim-leaking rows over all 4,796 composed pairs.**
+
+Cost of the stricter rule, all 1,014 instruments: mean titles per profile
+4.41 (include-all) -> 4.10; **347 profiles carry a title section either way, none
+emptied**; 260 texts changed.
+
+This is the guard earning its place in `npm run check`. No reasoning found it;
+the test did.
+
+## THE OPEN ITEM: pool fell from ~95% to ~75% and I could not fully isolate why
 
 This is the largest number that moved tonight and the one to read first. It is
 recorded unresolved rather than explained away.
