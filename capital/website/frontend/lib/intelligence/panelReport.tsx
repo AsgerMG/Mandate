@@ -18,7 +18,32 @@ import { fmtEur } from "../format";
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
 import { STATE_OF_PLAY_OFFER } from "./types";
-import type { EligibilityCheck, InstitutionEntry, IntelligenceReport } from "./types";
+import type { EligibilityCheck, InstitutionEntry, IntelligenceReport, WithheldNotice } from "./types";
+
+/**
+ * Funds withheld because their openness could not be confirmed.
+ *
+ * Sits directly under the table's heading, above the first row, because that
+ * is where a reader forms the belief this component exists to correct: that
+ * what follows is the whole answer. In the footer beside the caveats it would
+ * be read after the decision it is meant to inform.
+ *
+ * Deliberately not styled as an error or a warning. Nothing has gone wrong
+ * with the founder's request; a smaller number of funds is the correct answer
+ * to it tonight, and the rule shown here is the reason it can be trusted.
+ * Renders nothing when nothing was withheld.
+ */
+export function WithheldLine({ withheld }: { withheld?: WithheldNotice }) {
+  if (!withheld?.count) return null;
+  return (
+    <p
+      data-withheld={withheld.count}
+      className="mb-3 border-l-2 border-[var(--border)] pl-3 text-[13px] leading-relaxed text-[var(--muted-foreground)] print:text-[9px]"
+    >
+      {withheld.note}
+    </p>
+  );
+}
 
 /** A quiet editorial section title in the house serif — no number, no colour. */
 /** One consistent heading grammar used by every screen of the intake flow
@@ -59,11 +84,15 @@ export function PlaceholderBar({ narrow = false }: { narrow?: boolean }) {
  * the finished Memo. Same component, same layout, so the placeholder cells
  * simply fill in with real text rather than the table re-laying-out.
  */
-export function InstitutionsTable({ institutions, pending = false }: { institutions: InstitutionEntry[]; pending?: boolean }) {
+export function InstitutionsTable(
+  { institutions, pending = false, withheld }:
+  { institutions: InstitutionEntry[]; pending?: boolean; withheld?: WithheldNotice },
+) {
   if (!institutions || institutions.length === 0) return null;
   return (
     <>
       <SectionTitle n="02">Where to target</SectionTitle>
+      <WithheldLine withheld={withheld} />
       <table className="w-full border-collapse text-[14px]">
         <thead>
           <tr className="border-b border-[var(--foreground)] text-left align-bottom">
@@ -610,7 +639,7 @@ export function Memo({ report }: { report: IntelligenceReport }) {
             printed. */}
 
         {/* ── 2. Where to target ───────────────────────────────────────── */}
-        <InstitutionsTable institutions={report.institutions} />
+        <InstitutionsTable institutions={report.institutions} withheld={report.withheld} />
 
         {/* ── 3. Positioning: fitting the current political moment ─────── */}
         <SectionTitle n="03">Positioning</SectionTitle>

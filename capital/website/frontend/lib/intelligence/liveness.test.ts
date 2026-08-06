@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { SCHEME_END_BASIS, closedSql, isClosed } from "./liveness";
+import {
+  SCHEME_END_BASIS, closedSql, isClosed, opennessEvidence,
+  populationRecordsDeadlines, unconfirmedOpen,
+} from "./liveness";
 
 const N = SCHEME_END_BASIS.notifiedDuration;
 const C = SCHEME_END_BASIS.callDeadline;
@@ -70,5 +73,108 @@ describe("liveness", () => {
     expect(closedSql({ col: "f" })).toContain("f.scheme_end_date_basis");
     expect(closedSql()).toContain("current_date");
     expect(closedSql({ sqlite: true })).toContain("date('now')");
+  });
+});
+
+// ── The degradation policy ────────────────────────────────────────────────
+// Written against the corpus state that caused the harm, not against the fixed
+// one: the 2026-08-06 snapshot carried NO schemeEndBasis key on any record and
+// schemeEndDate: null for 86 rows whose deadlines Postgres already held. Every
+// case below is a shape taken from that night.
+describe("unconfirmedOpen", () => {
+  const PG = { source: "postgres" } as const;
+  const SNAP = { source: "snapshot" } as const;
+
+  it("confirms every row the live register supplies", () => {
+    // Postgres IS the register. There is nothing fresher to check it against,
+    // so the policy must be a complete no-op on that path or it becomes a
+    // permanent tax on the healthy case.
+    for (const row of [
+      { schemeEndDate: null, schemeEndBasis: null, lastYear: 2025 },
+      { schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2024 },
+      { schemeEndDate: "2030-01-01", schemeEndBasis: C },
+    ]) {
+      expect(unconfirmedOpen(row, { ...PG, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+    }
+  });
+
+  it("withholds the exact shape of the 86 dead calls", () => {
+    // A Spanish convocatoria as the snapshot held it: no end date, in a
+    // population whose register publishes deadlines. Postgres held
+    // 2025-04-14 / call_deadline for the same row and correctly withheld it.
+    expect(unconfirmedOpen(
+      { schemeEndDate: null, schemeEndBasis: null, lastYear: 2026 },
+      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toContain("no application deadline");
+  });
+
+  it("serves an undated row whose register does not publish deadlines", () => {
+    // 310 of 390 absence-based open rows -- EIC, Horizon, the KICs, the Baltic
+    // development banks. If this ever returns a reason, a Railway blip deletes
+    // half the product, and the policy stops being a floor and becomes an
+    // outage.
+    expect(unconfirmedOpen(
+      { schemeEndDate: null, schemeEndBasis: null, lastYear: 2025 },
+      { ...SNAP, populationRecordsDeadlines: false }, AS_OF)).toBeNull();
+  });
+
+  it("serves a declared future window off a snapshot", () => {
+    // A store being hours behind does not make a future date untrue, and this
+    // is the clause that keeps a freshly loaded open call offerable.
+    expect(unconfirmedOpen(
+      { schemeEndDate: "2030-01-01", schemeEndBasis: C },
+      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+  });
+
+  it("serves an observed renewal off a snapshot", () => {
+    expect(unconfirmedOpen(
+      { schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2024 },
+      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+  });
+
+  it("reads an ABSENT basis field as unconfirmed, never as open", () => {
+    // The 2026-08-06 snapshot exactly: the key is not there at all. A store
+    // that cannot tell a notified duration from a call deadline cannot
+    // classify the populations either, so nothing it says about an undated row
+    // can be acted on. NULL-reads-as-live is what left 80 dead Spanish calls
+    // proposable.
+    const noKey = { schemeEndDate: null, lastYear: 2026 };
+    expect(unconfirmedOpen(noKey, { ...SNAP, populationRecordsDeadlines: false }, AS_OF))
+      .toContain("scheme_end_date_basis");
+    // Distinct from a basis that is present and null, which is a store saying
+    // "no end date is recorded" rather than a store that lost the column.
+    expect(unconfirmedOpen({ ...noKey, schemeEndBasis: null },
+      { ...SNAP, populationRecordsDeadlines: false }, AS_OF)).toBeNull();
+  });
+
+  it("treats an unknown population as deadline-recording", () => {
+    // Absent means "we did not ask", and the safe reading of not having asked
+    // is the conservative one.
+    expect(unconfirmedOpen({ schemeEndDate: null, schemeEndBasis: null },
+      SNAP, AS_OF)).not.toBeNull();
+  });
+
+  it("classifies each way a row can be open", () => {
+    expect(opennessEvidence({ schemeEndDate: "2020-01-01", schemeEndBasis: C }, AS_OF)).toBe("closed");
+    expect(opennessEvidence({ schemeEndDate: "2030-01-01", schemeEndBasis: C }, AS_OF)).toBe("declared_window");
+    expect(opennessEvidence({ schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2024 }, AS_OF)).toBe("observed_renewal");
+    expect(opennessEvidence({ schemeEndDate: null, schemeEndBasis: null }, AS_OF)).toBe("no_deadline_recorded");
+    expect(opennessEvidence({ schemeEndDate: null }, AS_OF)).toBe("basis_not_supplied");
+  });
+});
+
+describe("populationRecordsDeadlines", () => {
+  it("marks a population from any one member carrying a call deadline", () => {
+    const rows = [
+      { pop: "calls|ES", schemeEndDate: "2025-04-14", schemeEndBasis: C },
+      { pop: "calls|ES", schemeEndDate: null, schemeEndBasis: null },
+      { pop: "standing|EU", schemeEndDate: null, schemeEndBasis: null },
+      // A notified duration is NOT a deadline. If this ever marked the
+      // population, every SATR country would qualify and the policy would
+      // withhold 390 rows instead of 80.
+      { pop: "standing|EU", schemeEndDate: "2020-12-30", schemeEndBasis: N },
+    ];
+    const records = populationRecordsDeadlines(rows, (r) => r.pop);
+    expect(records(rows[1])).toBe(true);
+    expect(records(rows[2])).toBe(false);
   });
 });

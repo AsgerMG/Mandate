@@ -10,7 +10,8 @@
 
 async function main() {
   if (process.env.NO_PG) delete process.env.DATABASE_URL;
-  const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
+  const { hydrateDbInstruments, corpusProvenance, publishableInstruments,
+    suppressedForUnconfirmedLiveness } = await import("../lib/intelligence/corpus");
   const { computeVerdict } = await import("../lib/intelligence/pipeline");
   await hydrateDbInstruments();
 
@@ -40,8 +41,28 @@ async function main() {
         verified: (s2 as { verified?: boolean }).verified ?? null,
         sourced: ((s2 as { source?: { file?: string } }).source?.file ?? "") !== "",
       })),
+      // How many funds the degradation policy took off THIS founder's table.
+      // Zero on the Postgres path, always. check_degradation.ts reads it to
+      // report the policy's cost, and check_hydration_parity.ts reads it to
+      // tell a deliberate withholding apart from a hydration bug.
+      withheld: v.withheld?.count ?? 0,
     };
   }
+  // Not per archetype: which corpus this process ranked on, and every row it
+  // withheld. A dump that does not say which store answered is the exact
+  // ambiguity two workstreams spent a night inside.
+  out.__corpus = {
+    provenance: corpusProvenance(),
+    suppressed: suppressedForUnconfirmedLiveness().map((r) => r.id),
+    // Every fund this corpus would let a founder be offered. On the Postgres
+    // run this is the register's own answer to "what may be proposed", which
+    // is what check_degradation.ts holds the fallback path against -- and it
+    // is not the same as "not closed": the successor redirect deliberately
+    // republishes 11 expired registrations under the SA number they were
+    // prolonged as, and a check that read closure off the raw row called all
+    // of those a dead call.
+    publishable: publishableInstruments().map((i) => i.id),
+  };
   process.stdout.write(JSON.stringify(out, null, 1));
 }
 

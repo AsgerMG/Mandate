@@ -19,7 +19,7 @@ import { regionNameFor } from "./regions.generated";
 import { recipientsIn } from "./regionPrior";
 import { hydrateGatesFor } from "./corpus";
 import { isAttributable, isCited } from "./verdict";
-import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
+import { loadDbInstruments, loadFundSnapshot, publishableInstruments, suppressedForUnconfirmedLiveness, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { semanticSeparation } from "./semantic";
 import { TICKET_BANDS } from "./types";
@@ -1232,6 +1232,22 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
     log?.record("SEL-COUNTRY", "*",
       `no establishment in a covered country (${founderCountries.join(", ")})`);
     return [];
+  }
+  // What the degradation policy cost THIS founder.
+  //
+  // publishableInstruments() withholds rows whose openness cannot be confirmed
+  // (liveness.ts), and it has no request context, so the removal is recorded
+  // here where the founder's countries are known. Reporting all of them would
+  // be noise and would also be untrue: 73 of tonight's 80 are French, and a
+  // German founder lost nothing. What is logged is what was actually taken off
+  // this table, and the brief's withheld notice is built from this count.
+  //
+  // Note the order: dbInstrumentsByBucket() below reads the same filtered
+  // corpus, so this is a record of a decision already made, never a second
+  // filter. Nothing here removes anything.
+  for (const r of suppressedForUnconfirmedLiveness()) {
+    if (!instrumentServesCountry(r.country, founderCountries)) continue;
+    log?.record("SEL-UNCONFIRMED-OPEN", r.id, r.reason);
   }
   const codes = new Set(fieldChannels);
   const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;

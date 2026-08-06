@@ -20,6 +20,26 @@
 // equal-ranked siblings resolved differently and a different Dutch scheme
 // reached the founder depending on which store answered.
 //
+// ── The degradation policy changed what "the same" means here ─────────────
+// The two paths are now DELIBERATELY allowed to answer differently, in exactly
+// one direction: a fallback request withholds any row whose openness it cannot
+// confirm (lib/intelligence/liveness.ts). Asserting bare equality after that
+// would fail every run and teach people to ignore this file, which is the
+// death of a guard.
+//
+// So the assertion is restated rather than relaxed, and it is STRONGER at the
+// corpus level than what it replaced:
+//
+//   the set of funds the fallback may offer must differ from the live one by
+//   EXACTLY the rows the policy withheld, and by nothing else
+//
+// A dropped field, a stale value, a gate layer that failed to hydrate, a row
+// the exporter lost -- all of them still show up, now as an UNACCOUNTED
+// difference rather than as one line in a list of expected ones. What is no
+// longer asserted is pool-set equality, because withholding 73 rows promotes
+// others past the per-channel leaf cap; that is bounded instead, by requiring
+// every promoted row to be one the live register would itself have offered.
+//
 // Run after `make eligibility`, when SQLite and Postgres are in step.
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -38,11 +58,20 @@ try {
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 
-type Dump = Record<string, {
+interface Archetype {
   ids: string[];
   rows: { id: string; gatesChecked: number | null; criteria: string[]; structuring: string[] }[];
   screen: { check: string; verified: boolean | null; sourced: boolean }[];
-}>;
+  withheld: number;
+}
+interface CorpusInfo {
+  provenance: { source: string; degraded: boolean; observedAt: string; error?: string };
+  suppressed: string[];
+  publishable: string[];
+}
+type Dump = Record<string, Archetype> & { __corpus?: CorpusInfo };
+/** Archetype keys only. `__corpus` is the run's own provenance, not a founder. */
+const archetypes = (d: Dump) => Object.keys(d).filter((k) => !k.startsWith("__"));
 
 function run(env: Record<string, string>): Dump {
   const out = execFileSync("npx", ["tsx", "scripts/dump_verdicts.ts"], {
@@ -64,7 +93,48 @@ function main() {
   const pg = run({ NO_PG: "" });
   const problems: string[] = [];
 
-  for (const label of Object.keys(json)) {
+  // ── Corpus level: the two stores may differ by the policy and nothing else ─
+  const jc = json.__corpus, pc = pg.__corpus;
+  if (!jc || !pc) {
+    console.error("check_hydration_parity: a run did not report its corpus; " +
+      "dump_verdicts.ts must emit __corpus.");
+    process.exit(1);
+  }
+  if (pc.provenance.source !== "postgres") {
+    // The arm that is supposed to be the live one fell back too, so both sides
+    // are the snapshot and this check would compare it with itself and pass.
+    console.error(`check_hydration_parity: the Postgres arm hydrated from ` +
+      `${pc.provenance.source} (${pc.provenance.error ?? "no error recorded"}). ` +
+      `There is nothing to compare against; refusing to pass.`);
+    process.exit(1);
+  }
+  const pgOfferable = new Set(pc.publishable);
+  const jsonOfferable = new Set(jc.publishable);
+  const suppressed = new Set(jc.suppressed);
+  const inventedByFallback = jc.publishable.filter((id) => !pgOfferable.has(id));
+  if (inventedByFallback.length) {
+    problems.push(
+      `the fallback corpus would offer ${inventedByFallback.length} fund(s) the live ` +
+      `register withholds. That is the harm this whole policy exists to stop.\n` +
+      `      ${inventedByFallback.slice(0, 8).join(", ")}`);
+  }
+  const lostUnaccounted = pc.publishable
+    .filter((id) => !jsonOfferable.has(id) && !suppressed.has(id));
+  if (lostUnaccounted.length) {
+    problems.push(
+      `${lostUnaccounted.length} fund(s) are offerable on Postgres, absent from the ` +
+      `fallback, and NOT among the ${suppressed.size} the degradation policy withheld.\n` +
+      `      A row that disappears for an unrecorded reason is the hydration bug\n` +
+      `      this check exists for -- a dropped column, a stale export, a half-applied\n` +
+      `      reload. Regenerating the snapshot is the usual fix; confirm it is.\n` +
+      `      ${lostUnaccounted.slice(0, 8).join(", ")}`);
+  }
+  if (suppressed.size) {
+    console.log(`  degradation policy withheld ${suppressed.size} row(s) from the fallback ` +
+      `corpus; ${pc.publishable.length} offerable on Postgres, ${jc.publishable.length} on the snapshot`);
+  }
+
+  for (const label of archetypes(json)) {
     const a = json[label], b = pg[label];
     if (!b) {
       problems.push(`${label}: missing from the Postgres run`);
@@ -78,15 +148,34 @@ function main() {
     // and a guard that fails on that trains people to ignore it. What must
     // never differ is the published rows and which funds were considered at
     // all -- both of which this still checks exactly.
+    //
+    // The published rows are compared against the LIVE ranking with the
+    // withheld rows deleted from it, which is precisely what the fallback was
+    // asked to produce. Order is still asserted exactly -- that is what caught
+    // the gate_key collation bug and the missing ORDER BY, and neither of those
+    // has become less possible.
     const shown = (x: string[]) => x.slice(0, DISPLAY_CAP).join("|");
-    const sameShown = shown(a.ids) === shown(b.ids);
-    const sameSet = [...a.ids].sort().join("|") === [...b.ids].sort().join("|");
-    if (!sameShown || !sameSet) {
-      const onlyJson = a.ids.filter((i) => !b.ids.includes(i));
-      const onlyPg = b.ids.filter((i) => !a.ids.includes(i));
+    const pgMinusWithheld = b.ids.filter((i) => !suppressed.has(i));
+    if (shown(a.ids) !== shown(pgMinusWithheld)) {
       problems.push(
-        `${label}: different rows selected\n      only JSON: ${onlyJson.join(", ") || "(order only)"}` +
-        `\n      only PG:   ${onlyPg.join(", ") || "(order only)"}`);
+        `${label}: the published rows differ from the live ranking with the withheld ` +
+        `rows removed\n      fallback: ${shown(a.ids)}\n      live:     ${shown(pgMinusWithheld)}`);
+    }
+    // Pool membership. Losing a row to the policy is expected; losing one to
+    // anything else is not, and a row the fallback ADDS must still be one the
+    // live register would have offered -- freeing 73 slots under the leaf cap
+    // legitimately promotes others, but it can never conjure a fund.
+    const lostFromPool = b.ids.filter((i) => !a.ids.includes(i) && !suppressed.has(i));
+    const gainedInPool = a.ids.filter((i) => !b.ids.includes(i) && !pgOfferable.has(i));
+    if (lostFromPool.length) {
+      problems.push(
+        `${label}: ${lostFromPool.length} fund(s) left the pool for a reason that is not the ` +
+        `degradation policy\n      ${lostFromPool.slice(0, 8).join(", ")}`);
+    }
+    if (gainedInPool.length) {
+      problems.push(
+        `${label}: ${gainedInPool.length} fund(s) entered the fallback pool that the live ` +
+        `register does not offer\n      ${gainedInPool.slice(0, 8).join(", ")}`);
     }
     // gatesChecked is the number that catches the inheritance trap: a child
     // hydrated without its regime evaluates nothing and reads `unknown`.
@@ -110,7 +199,9 @@ function main() {
     for (const p of problems.slice(0, 12)) console.error(`  ${p}`);
     process.exit(1);
   }
-  console.log(`check_hydration_parity: ok — ${Object.keys(json).length} archetypes identical on both paths`);
+  console.log(`check_hydration_parity: ok — ${archetypes(json).length} archetypes agree on both ` +
+    `paths, and the two corpora differ by exactly the ${suppressed.size} row(s) the ` +
+    `degradation policy withheld`);
 }
 
 main();

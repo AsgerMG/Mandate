@@ -935,6 +935,36 @@ export function suppressedForUnconfirmedLiveness(): readonly SuppressedRow[] {
   return suppressed;
 }
 
+/**
+ * What the founder is told, when anything was withheld from THEIR table.
+ *
+ * The count is per request, not the corpus total: 73 of tonight's 80 withheld
+ * rows are French, and telling a German founder that 80 funds are missing
+ * would be both untrue and unreadable. `selectInstrumentRows` records the ones
+ * that would have been in play for this founder and the count comes from that
+ * log, so the sentence and the funnel can never disagree.
+ *
+ * Executive register: a fact and its consequence, no apology, no hedge. It is
+ * NOT a "this list may be out of date" warning — the rows we cannot confirm
+ * are gone from the table, and this says how many. Null when nothing was
+ * withheld, which is the state the Postgres path is always in.
+ */
+export function withheldNotice(count: number): { count: number; note: string } | undefined {
+  if (count <= 0) return undefined;
+  // Says "a published copy" rather than "the register was down", because both
+  // are true of the fallback and only one of them is true of a deliberate
+  // offline run. The founder-facing claim has to hold in both.
+  return {
+    count,
+    note: `${count === 1 ? "One fund is" : `${count} funds are`} not shown: ` +
+      `this brief was built from a published copy of the fund register rather ` +
+      `than the register itself, and ` +
+      `${count === 1 ? "its application window" : "their application windows"} ` +
+      `could not be confirmed against it. We withhold a fund we cannot confirm ` +
+      `is open.`,
+  };
+}
+
 export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const hasChildren = new Set(
