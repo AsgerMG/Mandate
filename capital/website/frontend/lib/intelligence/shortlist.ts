@@ -61,7 +61,7 @@ import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 // -- the pool is a correctness floor, the top five is the ranking problem --
 // and conflating them is what hid this for so long. 40 over 60 because the last
 // 2% costs half again as much payload for nothing measurable.
-export const POOL_LEAVES_PER_CHANNEL = 40;
+export const POOL_LEAVES_PER_CHANNEL = 90;
 /** Share of the ranking score from thematic match; the rest is sector intake. */
 export const THEME_WEIGHT = 0.6;
 /** Weight on thematic match in the ROW sort when a thematic signal exists at
