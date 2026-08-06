@@ -24,24 +24,60 @@ five. Any plan that hopes part of the corpus is easy is wrong about this corpus.
 
 ## The decomposition
 
+> **RE-DERIVED 2026-08-06 23:xx CEST, workstream K. The conclusion below did
+> not survive intact — it got STRONGER, and it moved to a different factor.**
+>
+> As written, this section read:
+>
+> ```
+> EXACT@5  =  P(in pool)  x  P(regime reaches the five)  x  P(right leaf)
+>    36%   =      97%     x           89%                x          40%
+> ```
+>
+> Every one of those four numbers came from a STRIDE-sampled n=200 run.
+> `95f5fce` showed the sampler aliased against the set's ordering (N=200 gave
+> EXACT@5 36%, N=250 gave 25%, same code), and `dac300a` showed the harness
+> additionally decayed along a run. Neither 36% nor 97% is reproducible under
+> an unbiased draw. See the re-baseline below.
+
+Measured on the seeded shuffle, holdout, n=600 per seed, three seeds, on a
+leak-free index — the population is the 2,817 holdout pairs of
+`__recallSetComposed.json`:
+
 ```
 EXACT@5  =  P(in pool)  x  P(regime reaches the five)  x  P(we pick the right leaf)
-   36%   =      97%     x           89%                x          40%
+   24%   =      75%     x           87%                x          37%
 ```
 
-The third factor is derived, not measured directly, and it is the whole
-remaining product. Solving for what 95% needs:
+The third factor is still derived, not measured directly. What changed is
+which factor binds.
 
-| regime@5 | right leaf must be picked |
-|---|--:|
-| 92% | 106%  — impossible |
-| 95% | 103%  — impossible |
-| 97% | 101%  — impossible |
-| 99% |  99% |
+**The pool is now the ceiling, and it was previously assumed closed.**
+`diagnose_rank.ts` still opens with "the pool question is closed (SEL-LEAF-CAP,
+fixed by raising the cap)". It is not closed. EXACT@5 cannot exceed P(in pool)
+however perfect the ranking, so at pool 75% the arithmetic is:
 
-**There is no version of 95% exact that does not require near-perfect regime
-recall AND near-perfect leaf choice inside a median-76 group.** Ranking tweaks
-cannot get there; they move the third factor by single points.
+| target | needs pool of at least | reachable at pool 75%? |
+|---|--:|---|
+| 95% | 95% | no — 20 points short before ranking is considered |
+| 89% | 89% | no |
+| 75% | 75% | only with a PERFECT regime and a PERFECT leaf choice |
+
+**The old conclusion — "no version of 95% exact that does not require
+near-perfect regime recall AND near-perfect leaf choice" — still holds, and is
+now the second-order problem.** The first-order problem is that a quarter of
+won funds never reach the candidate set at all, and no amount of reordering can
+rank a fund that is not there. Ranking tweaks were never going to get to 95%;
+they now cannot get past 75%.
+
+Read `project-mgmt/findings/leak_audit_wsK.md` before acting on this. The pool
+fall from ~95% to ~75% happened between 18:53 and 21:09 UTC on 2026-08-06 and
+its cause is **recorded as unresolved** — it is measurably NOT the leak that
+workstream closed (an index rebuilt with and without the holdout at the same
+moment reads pool 78% both ways), and the two remaining candidates, a stale
+index and a wholesale gate-layer rewrite, could not be separated because the
+previous index was overwritten. Do not build a plan on the 75% until that is
+settled: it may be a regression to fix rather than a ceiling to design around.
 
 ## The structural consequence
 
