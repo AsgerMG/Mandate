@@ -22,6 +22,20 @@
 //
 // Run after `make eligibility`, when SQLite and Postgres are in step.
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+
+// The same `.env.local` preamble every other harness carries, and its absence
+// here was not cosmetic: this check reads DATABASE_URL, found none, and printed
+// "skipped — nothing to compare against" on machines that had the credentials
+// all along. Wired into `npm run check` it would have gone green having done
+// nothing, which is the defect it exists to catch, in the check itself.
+try {
+  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
+    const m = line.match(/^([A-Z_]+)=(.*)$/);
+    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+  }
+} catch { /* rely on the process environment */ }
+
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 
 type Dump = Record<string, {

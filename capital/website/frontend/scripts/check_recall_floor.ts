@@ -23,7 +23,12 @@ try {
   }
 } catch { /* rely on the process environment */ }
 
+<<<<<<< HEAD
 import { hydrateDbInstruments, loadDbInstruments, resetGateHydration } from "../lib/intelligence/corpus";
+=======
+import { corpusProvenance, hydrateDbInstruments, loadDbInstruments, requireLiveCorpus }
+  from "../lib/intelligence/corpus";
+>>>>>>> workstream-s-variance
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import { loadRecallSet } from "./recallSet";
@@ -178,6 +183,14 @@ async function main() {
   }
 
   await hydrateDbInstruments();
+  // The floors are calibrated against the Postgres corpus. Measured against the
+  // committed snapshot the same 150 pairs read 95% pool instead of 72%, so a
+  // run that silently fell back would clear a 90% floor it should have failed —
+  // a gate passing BECAUSE the connection dropped. The credential check above
+  // proves the credentials exist; this proves they were used.
+  requireLiveCorpus("check_recall_floor");
+  const prov = corpusProvenance();
+  console.log(`  corpus=${prov.source} instruments=${prov.instruments}`);
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   let anyFailed = false;
   const { file, rows: all } = loadRecallSet("recall floor");

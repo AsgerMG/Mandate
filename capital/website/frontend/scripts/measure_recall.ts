@@ -69,13 +69,27 @@ try {
 } catch { /* rely on the process environment */ }
 if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
-import { hydrateDbInstruments, loadDbInstruments, resetGateHydration } from "../lib/intelligence/corpus";
+import { corpusProvenance, hydrateDbInstruments, loadDbInstruments, requireLiveCorpus,
+  resetGateHydration } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import { isDescribed, loadRecallSet } from "./recallSet";
 
 async function main() {
   await hydrateDbInstruments();
+  // WHICH CORPUS, asserted rather than assumed.
+  //
+  // hydrateDbInstruments() degrades to public/data/instrument_terms.json on any
+  // Postgres failure and continues. That is right for a founder mid-request and
+  // fatal here: on 2026-08-06 the two corpora read pool 72% and 95% on this very
+  // sample, twenty points apart, because the snapshot predates 86 loaded
+  // application deadlines. Both numbers were reported upward the same night as
+  // if they described one system.
+  //
+  // With NO_PG the URL is deleted above, so this passes and the run is honestly
+  // a snapshot run. What it stops is the run that ASKED for Postgres, quietly
+  // did not get it, and printed a headline anyway.
+  requireLiveCorpus("measure_recall");
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   const { file: setFile, rows: all } = loadRecallSet();
   const split = process.env.SPLIT ?? "holdout";
@@ -199,6 +213,10 @@ async function main() {
   }
   const pc = (n: number, d = stat.done) =>
     `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${halfWidth(n, d).toFixed(1)})`;
+  // The corpus travels with the number, for the same reason the set name does:
+  // a figure pasted out of a terminal has to carry what it was measured on.
+  const prov = corpusProvenance();
+  console.log(`corpus=${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
