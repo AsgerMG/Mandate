@@ -43,7 +43,7 @@ from collections import Counter, defaultdict
 
 from instrument_family import PARENT_MAP, SYNTHETIC_PARENTS, source_to_family  # noqa: E402
 from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source  # noqa: E402
-from nuts_regions import ISO2_TO_NUTS, delivery_region, load_reference, resolve  # noqa: E402
+from nuts_regions import delivery_region, staged_region_mix  # noqa: E402
 
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
@@ -971,21 +971,11 @@ def main() -> None:
     #
     # See nuts_regions.delivery_region for what the resulting id means, and why
     # a national body resolves to NULL rather than to its country.
-    ref = load_reference()
-    nuts_index = ref["index"]
-    staged: dict[tuple[str, str], Counter] = defaultdict(Counter)
-    for sa, ga, cc, region, n in conn.execute("""
-            SELECT sa_number, granting_authority, granting_country_iso2, region, COUNT(*)
-              FROM satr_staging
-             WHERE sa_number IS NOT NULL AND TRIM(sa_number) <> ''
-             GROUP BY 1, 2, 3, 4"""):
-        hit = resolve(region or "", ISO2_TO_NUTS.get(cc or "", cc or ""), nuts_index)
-        # Unresolvable names and whole-country labels both count toward the
-        # denominator without supporting any region. That is the honest
-        # treatment: a body half of whose awards are filed as "Germany" has not
-        # demonstrated a regional focus, and dropping those rows would claim it
-        # had.
-        staged[(sa.strip(), (ga or "")[:200])][hit[0] if hit else ""] += n
+    # The attribution itself lives in nuts_regions.staged_region_mix, because
+    # emit_region_prior.py needs the identical one to build the artifact the
+    # ranker sorts siblings by. Two copies of it would let the column shown to
+    # a founder and the score that chose the row describe different corpora.
+    staged = staged_region_mix(conn)
     regional = 0
     for row in now:
         sa = (row.get("scheme_code") or "").strip()

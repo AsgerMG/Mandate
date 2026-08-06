@@ -130,3 +130,53 @@ def delivery_region(mix: Counter | dict[str, int],
         if n / total >= floor:
             best = (top, n / total)
     return best
+
+
+def staged_region_mix(conn, exclude_company_ids: set[int] | None = None,
+                      ) -> dict[tuple[str, str], Counter]:
+    """(sa_number, granting_authority) -> Counter of recipient NUTS ids.
+
+    A SATR scheme child is exactly one (sa_number, granting_authority) pair in
+    the register, so this is the per-leaf recipient footprint, MEASURED rather
+    than guessed from the body's name. Name-guessing was tried and is wrong in
+    both directions: "Bayerisches Staatsministerium" never contains "Bayern",
+    and "Finanzamt Darmstadt" is a tax office administering a NATIONAL scheme.
+
+    The empty-string key counts awards whose region is unresolvable or recorded
+    only at country level. It is kept, not dropped, because it belongs in the
+    denominator: a body half of whose awards are filed as "Germany" has not
+    demonstrated a regional focus, and dividing by the resolvable subset alone
+    would claim it had.
+
+    `exclude_company_ids` drops recipients before counting, which is what makes
+    a prior built from this out-of-sample. `populate_funding_instruments.py`
+    passes nothing -- the shipped corpus describes every award it holds -- and
+    `emit_region_prior.py` passes the recall set.
+
+    Two callers need this identical attribution, and a copy in each is the
+    defect this module exists to prevent: if they ever resolved a region
+    differently, the artifact the product ranks on and the column it displays
+    would describe different corpora.
+    """
+    index = load_reference()["index"]
+    skip = exclude_company_ids or set()
+    out: dict[tuple[str, str], Counter] = {}
+    resolved: dict[tuple[str, str], str] = {}
+    for cid, sa, ga, cc, region, n in conn.execute("""
+            SELECT company_id, sa_number, granting_authority,
+                   granting_country_iso2, region, COUNT(*)
+              FROM satr_staging
+             WHERE sa_number IS NOT NULL AND TRIM(sa_number) <> ''
+             GROUP BY 1, 2, 3, 4, 5"""):
+        if cid in skip:
+            continue
+        key = (region or "", cc or "")
+        if key not in resolved:
+            hit = resolve(region or "", ISO2_TO_NUTS.get(cc or "", cc or ""), index)
+            # Vintage 0 is NUTS-0 -- a country, which is not a regional claim
+            # about anything -- so it lands in the unresolved bucket with the
+            # names the register writes at level 3 and Eurostat has since
+            # retired.
+            resolved[key] = hit[0] if hit and hit[1] > 0 else ""
+        out.setdefault((sa.strip(), (ga or "")[:200]), Counter())[resolved[key]] += n
+    return out

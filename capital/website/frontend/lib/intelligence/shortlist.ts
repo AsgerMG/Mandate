@@ -15,7 +15,7 @@
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
 import { readFileSync } from "fs";
 import path from "path";
-import { regionNameFor } from "./regions.generated";
+import { regionNameFor, regionsOverlap } from "./regions.generated";
 import { hydrateGatesFor } from "./corpus";
 import { isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, toIso2, type DbInstrument } from "./corpus";
@@ -109,6 +109,99 @@ let priorCache: ChannelPrior | undefined;
 // The counter-weight is NOT a second constant: it is solved per founder so the
 // signal is neutral across the group that carries objectives at all (below).
 const OBJECTIVE_MATCH = 1.35;
+
+// How far the founder's own region may reorder a set of siblings.
+//
+// Larger than OBJECTIVE_MATCH and AWARD_MATCH on purpose, and this is the only
+// place in the file where one signal is deliberately allowed to dominate the
+// others. Where a fund's recipients are is the single strongest discriminator
+// the corpus holds for same-name siblings -- 66.2% @1 against a 22.4% uniform
+// baseline, where the registered objective and the award median are identical
+// across the whole group by construction: they are one notified scheme, so
+// they were notified under one article and pay one kind of cheque. When region
+// has something to say here, nothing else does.
+const REGION_MATCH = 1.9;
+
+interface RegionFootprint {
+  /** Every award, including the ones the register files at country level. */
+  n: number;
+  /** Resolved NUTS id -> recipients. */
+  mix: Record<string, number>;
+}
+let regionPriorCache: Record<string, RegionFootprint> | undefined;
+function regionPrior(): Record<string, RegionFootprint> {
+  if (regionPriorCache === undefined) {
+    try {
+      regionPriorCache = JSON.parse(readFileSync(
+        path.join(process.cwd(), "lib", "intelligence", "regionPrior.generated.json"),
+        "utf8")) as Record<string, RegionFootprint>;
+    } catch {
+      regionPriorCache = {};
+    }
+  }
+  return regionPriorCache;
+}
+
+/** Rank siblings by whether this founder's region is where the fund's money
+ *  has actually gone.
+ *
+ *  ── Why this is not more gates ───────────────────────────────────────────
+ *  The gate-based attempt at region measured flat, and the audit says why:
+ *  only 148 of 958 instruments carry a `region_within` rule and the groups
+ *  that need it most have none — ademe 0/75, vinnova 0/49, satr_fr_rnd 0/42.
+ *  This asks award history instead, exactly as the peer prior does one level
+ *  up, so it needs no encoding at all (ETL/terms/emit_region_prior.py).
+ *
+ *  ── The direction of the question ────────────────────────────────────────
+ *  P(fund | region) — the COUNT of a leaf's recipients in the founder's
+ *  region — not that count as a share of the leaf's own size. The share form
+ *  is the same inversion `sectorFit` makes, and it measures worse here too
+ *  (54.3% @1 against 65.7% on the same rows). A national body that placed 150
+ *  awards in Normandy IS a better answer for a Normandy founder than a
+ *  regional body that placed 42, and the ground truth agrees.
+ *
+ *  Containment is `regionsOverlap`, not string equality: the register reports
+ *  recipients at NUTS-3 and a founder answers at NUTS-1 or 2, so FRD1 must
+ *  satisfy a founder in FRD.
+ *
+ *  Returns 1.0 for a leaf with no recorded footprint, so a gap in the register
+ *  is never read as an absence of recipients — the same treatment `awardScorer`
+ *  gives the 98 funds with no award median. And returns neutral for the whole
+ *  group when no leaf in it has any recipient in the founder's region, because
+ *  a signal that cannot separate these candidates must not reorder them. */
+function regionScorer(
+  leaves: DbInstrument[], region?: string,
+): (i: DbInstrument) => number {
+  const neutral = () => 1;
+  if (!region) return neutral;
+  const prior = regionPrior();
+  const here = new Map<string, number>();
+  for (const l of leaves) {
+    const fp = prior[l.id];
+    if (!fp) continue;
+    let n = 0;
+    for (const [id, k] of Object.entries(fp.mix)) if (regionsOverlap(id, region)) n += k;
+    here.set(l.id, n);
+  }
+  const known = [...here.values()];
+  // Nobody here has ever paid into this founder's region, or everyone has to
+  // the same degree: either way the region separates nothing.
+  if (known.length < 2 || !known.some((n) => n > 0)) return neutral;
+  const lo = Math.min(...known), hi = Math.max(...known);
+  if (hi === lo) return neutral;
+  // Counts across a sibling group span four orders of magnitude — the French
+  // RDI regime runs from 37 awards to 4,434 — so the multiplier is placed on
+  // the log, and then on the group's own range rather than on an absolute
+  // scale. A leaf's score therefore says where it sits AMONG THESE CANDIDATES,
+  // which is the only comparison being made.
+  const lg = (n: number) => Math.log1p(n);
+  const span = lg(hi) - lg(lo);
+  return (i: DbInstrument) => {
+    const n = here.get(i.id);
+    if (n === undefined) return 1;
+    return Math.pow(REGION_MATCH, 2 * ((lg(n) - lg(lo)) / span) - 1);
+  };
+}
 
 type Objectives = Record<string, { useOfFunds: string[]; articles: string[] }>;
 let objectiveCache: Objectives | undefined;
@@ -1051,6 +1144,12 @@ export interface InstrumentTableInput {
   /** What the founder says the money is FOR. Collected on screen one since the
    *  beginning and, until now, matched against nothing. */
   useOfFunds?: string[];
+  /** The founder's NUTS region (regions.generated.ts), when they have been
+   *  asked for it. The one field that can separate the 119 leaves sharing a
+   *  scheme name with a sibling: they are one notified scheme delivered by
+   *  many bodies, so their text, their article and their cheque size are
+   *  identical and only the applicant's location differs. See regionScorer. */
+  founderRegion?: string;
   /** Records every fund this function removes. Optional: callers that do not
    *  care about the funnel need not thread one through. */
   log?: ExclusionLog;
@@ -1407,7 +1506,7 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, log } = input;
+  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = semantic?.size
@@ -1491,13 +1590,20 @@ export function materialiseInstrumentTable(
     const theme = rel.get(id) ?? 0;
     return wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
   };
-  // Re-rank SIBLINGS on registered purpose and award scale.
+  // Re-rank SIBLINGS on registered purpose, award scale and delivery region.
   //
   // Diagnosed rather than guessed: with the pool cap fixed, 57 of 67 ranking
   // misses had a sibling from the SAME channel shown instead. The regime is
-  // right; the scheme is not. Both signals are per-scheme facts that siblings
-  // do not share -- the GBER article a scheme was notified under, and the
-  // median it has actually paid.
+  // right; the scheme is not. All three signals are per-scheme facts that
+  // siblings do not share -- the GBER article a scheme was notified under, the
+  // median it has actually paid, and where its recipients are.
+  //
+  // Region is the one that reaches the hardest case. The other two are, by
+  // construction, silent on a same-name group: fourteen leaves under one
+  // notified regime were notified under one article and write one size of
+  // cheque, so `obj` and `awd` return the same value for all fourteen and the
+  // group falls through to thematic relevance between texts at 0.947 cosine.
+  // Where the recipients are is the only fact that differs.
   //
   // Scoped per channel and normalised to a geometric mean of 1 within each, so
   // a leaf can gain only on its siblings and never on another channel. That
@@ -1532,7 +1638,8 @@ export function materialiseInstrumentTable(
     if (leaves.length < 2) continue;
     const obj = objectiveScorer(leaves.map((l) => l.id), useOfFunds);
     const awd = awardScorer(leaves, input.ticketBand);
-    const pref = (l: DbInstrument) => obj(l.id) * awd(l);
+    const reg = regionScorer(leaves, founderRegion);
+    const pref = (l: DbInstrument) => obj(l.id) * awd(l) * reg(l);
     // Nothing to say about these siblings: leave the channel untouched.
     if (leaves.every((l) => pref(l) === pref(leaves[0]))) continue;
     const slots = leaves.map((l) => baseRelevance(l.id)).sort((a, b) => b - a);

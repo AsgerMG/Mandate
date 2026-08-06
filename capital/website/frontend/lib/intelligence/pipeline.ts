@@ -1369,6 +1369,10 @@ export async function computeVerdict(
     semantic,
     founderSector: (eligibility as { sector?: string } | undefined)?.sector,
     useOfFunds: (eligibility as { useOfFunds?: string[] } | undefined)?.useOfFunds,
+    // Asked adaptively, so it is usually absent — and absent is the neutral
+    // case, not a penalty. When it IS answered it is the only thing that can
+    // tell fourteen leaves of one notified regime apart. See regionScorer.
+    founderRegion: (eligibility as { region?: string } | undefined)?.region,
     log: opts.log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is
@@ -1468,6 +1472,12 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
       capitalSought: req.capitalSought ?? [],
       description: req.description,
     semantic: semanticScores,
+    // The memo ranks the same siblings the fast path does, so it must see the
+    // same discriminator. Without it a founder who told us their region got a
+    // region-aware verdict screen and a region-blind memo, which is the class
+    // of split that once had the two paths ranking on different signals
+    // entirely.
+    founderRegion: req.eligibility?.region,
     log,
   });
   const instrumentTable = applyProfileSignal(

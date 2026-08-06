@@ -41,9 +41,11 @@ needs a real pattern of recipients rather than a handful.
 ── Leakage ────────────────────────────────────────────────────────────────
 The prior is built from award history, and the evaluation replays award
 history, so the two must not share companies. `--exclude-recall-set` drops
-every company in `__recallSet.json` before counting, which is what makes the
-43% an honest out-of-sample number rather than the model reciting its own
-training data. Production keeps them: a real founder is not in the test set.
+every company in EVERY `__recallSet*.json` before counting, which is what makes
+the 43% an honest out-of-sample number rather than the model reciting its own
+training data. All of them, not the shipped one: a test set added later would
+otherwise grade the model on its own training data and nothing would say so.
+Production keeps them: a real founder is not in the test set.
 
 Usage:
   python3 ETL/terms/emit_peer_prior.py                        # report
@@ -65,8 +67,10 @@ import collections  # noqa: E402
 import json  # noqa: E402
 import sqlite3  # noqa: E402
 
+from attribution import Split  # noqa: E402
+
 OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "peerPrior.generated.json"
-RECALL_SET = ROOT / "website" / "frontend" / "lib" / "intelligence" / "__recallSet.json"
+RECALL_DIR = ROOT / "website" / "frontend" / "lib" / "intelligence"
 
 # Companies per instrument that may feed the prior. See the header: this is
 # what separates "recurs for this kind of company" from "is simply enormous".
@@ -87,68 +91,52 @@ CAP = 40
 # own screen has already excluded from the pool.
 KEEP = 30
 
-# National schemes join on the SA number, which lives in call_id. EU programmes
-# join through the source map. Both are needed: joining only through
-# funding_instrument_sources returns PARENT regimes, so no SATR child can ever
-# appear and the prior silently becomes EU-only -- the same defect that once
-# made 63% of the recall set Horizon.
+# ── How an award is credited to a fund ─────────────────────────────────────
+# `attribution.Split` reproduces the ETL's own split -- source -> family, then
+# programme name, then (call_id, granting authority) -- and is shared with
+# `extend_recall_set.py` so the prior and the ground truth cannot disagree about
+# which fund a company won.
 #
-# ── The 227 instruments this join cannot see, and why it still ships ────────
-# `scheme_code = call_id` is not the split `populate_funding_instruments.py`
-# performs, and the gap is not small. That script splits a rollup two ways:
+# It replaced two approximations, both wrong in ways that mattered:
 #
-#   programme child   (fam, programme_name)              scheme_code = ''
-#   scheme child      (fam, call_id, granting_authority) scheme_code = call_id
+#   `scheme_code = call_id`   cannot reach a PROGRAMME child. Such a child's
+#                             identity IS the programme name, so it carries an
+#                             empty scheme_code by construction: 299
+#                             instruments, including four of the five largest
+#                             sibling groups in the corpus (ADEME 75, BDNS 87,
+#                             Vinnova 49, Innovate UK 16), were invisible to the
+#                             strongest ranking signal the product has. And 34
+#                             scheme codes are shared by more than one
+#                             instrument (SA.56245 by 18), so an award credited
+#                             every delivery body of its notified scheme rather
+#                             than the one that signed it.
+#   the source map alone      returns PARENT regimes, which are exactly the
+#                             rollups a founder cannot apply to, and which the
+#                             `unproposable` filter below then throws away. That
+#                             is the defect that once made 63% of the recall set
+#                             Horizon.
 #
-# The 227 PROGRAMME children -- ADEME 75, BDNS 87, Vinnova 49, Innovate UK 16 --
-# carry an EMPTY scheme_code by construction, because their identity IS the
-# programme name. They therefore never join here, and the prior cannot propose
-# them at all. Four of the five largest sibling groups in the corpus are
-# invisible to the strongest ranking signal the product has. Separately,
-# `scheme_code` is shared by more than one instrument in 34 cases (SA.56245 by
-# 18), so an award credits every delivery body of its notified scheme rather
-# than the one that signed it.
+# `Split.credit` widens rather than guesses when the split cannot place an
+# award: a scheme child exists only above MIN_CHILD_EVENTS, so 82% of awards --
+# overwhelmingly SATR -- have no child of their own. Those fall back to every
+# instrument sharing the notified scheme code, which is exactly what the old
+# join did, and only then to the family. So this is a STRICT SUPERSET of the
+# signal that shipped: 723 instruments credited against 491, with nothing
+# dropped. Crediting only the exact leaf and discarding the rest was tried and
+# is much worse -- it places 54k of 308k awards and throws away most of SATR.
 #
-# The corrected attribution was built and measured (2026-08-06), reproducing the
-# ETL split exactly via funding_instrument_sources -> fam, then programme name,
-# then (call_id, granting_authority). It reaches all 227 children and credits
-# 990 instruments instead of 537. On holdout, N=200:
-#
-#   shipped join                          EXACT@5 32%   REGIME@5 87%
-#   exact attribution                     EXACT@5 29%   REGIME@5 81%
-#   exact + order-independent cap         EXACT@5 31%   REGIME@5 81%
-#   exact + credit the notified scheme    EXACT@5 30%   REGIME@5 77%
-#
-# The reason is in the ground truth, not in the ranking: **0 of 1,988 recall
-# pairs name a programme-split child.** `__recallSet.json` is traced from award
-# history that resolves to SATR and EU leaves; ADEME, BDNS, Vinnova and Innovate
-# UK children are never the answer. So every slot the corrected join gives them
-# in a cell's top 30 is taken from a fund the harness CAN credit, and the
-# measurement can only ever read the fix as a loss. Offline confirmation, over
-# twelve build variants (cap by truncation or by scaling, with and without
-# collapsing repeat recipients): making the children visible costs ~15 of 200 on
-# "won fund in the cell's top five" every time, and no cap shape recovers it.
-#
-# This is the same shape as the audit's finding on `national_dev_banks` -- 12%
-# of shown rows, 0% of ground truth. It is a MEASUREMENT gap, not a ranking one,
-# and it must be closed by tracing ADEME/BDNS/Vinnova/Innovate UK awards into
-# the recall set. Until then the corrected join cannot be shipped against a rule
-# that says do not reduce EXACT@5, and shipping it blind would trade a real
-# number for an unobservable one. The working implementation is recorded in this
-# file's history; do not re-derive it from scratch.
-Q_NATIONAL = """
-    SELECT co.canonical_name, co.country, COALESCE(co.sector_top,'other'), i.id
+# WHY THIS COULD NOT SHIP BEFORE. It measured 29% against 32% on
+# `__recallSet.json` -- and the reason was in the ground truth, not the ranking:
+# 0 of 1,988 pairs named a programme-split child, so every slot the corrected
+# join won for those funds was taken from a fund the harness could credit. The
+# measurement could only ever read the fix as a loss. That gap is closed
+# (`extend_recall_set.py`, `__recallSetPlus.json`) and the numbers are in this
+# file's commit.
+QUERY = """
+    SELECT co.canonical_name, co.country, COALESCE(co.sector_top,'other'),
+           e.source, e.programme_name, e.granting_authority, e.call_id
       FROM public_funding_events e
       JOIN companies co ON co.id = e.company_id
-      JOIN funding_instruments i
-        ON i.scheme_code IS NOT NULL AND i.scheme_code <> '' AND i.scheme_code = e.call_id
-     WHERE e.is_duplicate = 0 AND co.country IS NOT NULL
-"""
-Q_EU = """
-    SELECT co.canonical_name, co.country, COALESCE(co.sector_top,'other'), s.instrument_id
-      FROM public_funding_events e
-      JOIN companies co ON co.id = e.company_id
-      JOIN funding_instrument_sources s ON s.source = e.source
      WHERE e.is_duplicate = 0 AND co.country IS NOT NULL
 """
 
@@ -162,11 +150,24 @@ def main() -> None:
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
-    pairs = conn.execute(Q_NATIONAL).fetchall() + conn.execute(Q_EU).fetchall()
+    split = Split(conn)
+    pairs = []
+    unplaceable = 0
+    for name, country, sector, source, prog, body, call in conn.execute(QUERY):
+        credited = split.credit(source, prog, body, call)
+        if credited[:1] != [split.leaf_for(source, prog, body, call)]:
+            unplaceable += 1
+        for iid in credited:
+            pairs.append((name, country, sector, iid))
 
+    # Every company in EVERY graded test set, not just the shipped one. The
+    # prior is built from award history and the evaluation replays award
+    # history; if a set is added later and this still reads one file, the new
+    # set grades the model on its own training data and nothing says so.
     excluded: set[str] = set()
-    if args.exclude_recall_set and RECALL_SET.exists():
-        excluded = {r["name"] for r in json.loads(RECALL_SET.read_text())}
+    if args.exclude_recall_set:
+        for f in sorted(RECALL_DIR.glob("__recallSet*.json")):
+            excluded |= {r["name"] for r in json.loads(f.read_text())}
 
     # Never rank a fund the founder could not be shown anyway.
     #
@@ -178,9 +179,9 @@ def main() -> None:
     #   - closed to new applicants (scheme_end_date in the past);
     #   - a FRAMEWORK record, which is a legal basis and not a fund;
     #   - a regime with children, which is the rollup a founder cannot apply to.
-    # The last two were 10% of all entries in the shipped artifact. Note that
-    # Q_EU joins through the source map and therefore returns exactly those
-    # parent regimes, which is why the share is that high.
+    # The last two were 10% of all entries when the join was the source map,
+    # which returns exactly those parent regimes. Under the corrected
+    # attribution they are only what the split could not place.
     unproposable = {r[0] for r in conn.execute(
         "SELECT id FROM funding_instruments "
         " WHERE (scheme_end_date IS NOT NULL AND scheme_end_date < date('now'))"
@@ -205,6 +206,8 @@ def main() -> None:
             out[f"{country}|{sector}"] = ranked
 
     print(f"award pairs:            {len(pairs):,}")
+    print(f"awards with no exact leaf:  {unplaceable:,} "
+          f"(credited to the notified scheme instead)")
     if excluded:
         print(f"companies excluded:     {len(excluded):,} (recall set)")
     print(f"unproposable dropped:   {len(unproposable):,}")

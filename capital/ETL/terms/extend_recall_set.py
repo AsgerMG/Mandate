@@ -76,6 +76,7 @@ import hashlib  # noqa: E402
 import json  # noqa: E402
 import sqlite3  # noqa: E402
 
+from attribution import Split  # noqa: E402
 from recall_guards import LeakIndex, squash  # noqa: E402
 
 FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
@@ -88,57 +89,6 @@ OUT = FRONTEND / "__recallSetPlus.json"
 # The base set's own cap: no single fund may dominate the measure. Matched
 # exactly so an added row weighs the same as an existing one.
 PAIRS_PER_INSTRUMENT = 12
-# `populate_funding_instruments.py` will not create a child below this, so an
-# instrument under it does not exist and cannot be an answer.
-MIN_CHILD_EVENTS = 40
-
-
-def attribution(conn) -> tuple[dict[str, list[str]], dict, dict, set[str]]:
-    """The ETL split, reproduced as lookups. See the header."""
-    src2fam: dict[str, list[str]] = collections.defaultdict(list)
-    for s, iid in conn.execute("SELECT source, instrument_id FROM funding_instrument_sources"):
-        src2fam[s].append(iid)
-
-    prog_key: dict[tuple[str, str], str] = {}
-    sch_key: dict[tuple[str, str, str], str] = {}
-    for r in conn.execute("SELECT id, parent_id, name, scheme_code FROM funding_instruments"):
-        iid, parent, name, code = r
-        if not parent:
-            continue
-        code = (code or "").strip()
-        name = (name or "")[:200]
-        if code:
-            sch_key[(parent, name, code)] = iid
-        else:
-            prog_key[(parent, name)] = iid
-
-    # A source splits by programme only when it publishes MORE THAN ONE
-    # programme name -- the same test the ETL applies, for the same reason: a
-    # split on a constant produces one child named after its own parent.
-    programme_split = {r[0] for r in conn.execute("""
-        SELECT source FROM public_funding_events
-         WHERE programme_name IS NOT NULL AND programme_name != ''
-         GROUP BY source
-        HAVING COUNT(*) >= ? AND COUNT(DISTINCT programme_name) > 1
-    """, (MIN_CHILD_EVENTS,))}
-    return src2fam, prog_key, sch_key, programme_split
-
-
-def leaf_for(event, src2fam, prog_key, sch_key, programme_split) -> str | None:
-    """The instrument a founder would actually have applied to for this award."""
-    prog = (event["programme_name"] or "").strip()
-    body = (event["granting_authority"] or "")[:200]
-    call = (event["call_id"] or "").strip()
-    for fam in src2fam.get(event["source"], []):
-        if prog and event["source"] in programme_split:
-            hit = prog_key.get((fam, prog[:200]))
-            if hit:
-                return hit
-        if body and call:
-            hit = sch_key.get((fam, body, call))
-            if hit:
-                return hit
-    return None
 
 
 def main() -> None:
@@ -161,7 +111,7 @@ def main() -> None:
               "46% of the existing project rows. Set DATABASE_URL.")
         args.write = False
 
-    src2fam, prog_key, sch_key, programme_split = attribution(conn)
+    split = Split(conn)
 
     # Never make an instrument the right answer if the product may not show it:
     # closed, a legal framework, a regime whose children are the real funds, or
@@ -200,10 +150,11 @@ def main() -> None:
         guards.note_event(
             e["company_id"],
             list(code2inst.get((e["call_id"] or "").strip(), []))
-            + list(src2fam.get(e["source"], [])),
+            + split.families(e["source"]),
             [title, summary])
 
-        leaf = leaf_for(e, src2fam, prog_key, sch_key, programme_split)
+        leaf = split.leaf_for(e["source"], e["programme_name"],
+                              e["granting_authority"], e["call_id"])
         if not leaf or leaf in nameable or leaf in unproposable:
             continue
         co = company.get(e["company_id"])

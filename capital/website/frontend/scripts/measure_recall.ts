@@ -24,6 +24,25 @@
 //   SPLIT=tune MODE=profile npx tsx scripts/measure_recall.ts
 //   SET=__recallSetEnriched.json npx tsx scripts/measure_recall.ts
 //   SET=__recallSetEnriched.json DESCRIBED=1 npx tsx scripts/measure_recall.ts
+//   SET=__recallSetRepaired.json REGION=any npx tsx scripts/measure_recall.ts
+//
+// REGION answers the intake's region question, which no other run does. A real
+// founder always knows where they are; the harness has to recover it from the
+// register (ETL/terms/repair_recall_attribution.py). Two settings, because the
+// provenance changes what the number means:
+//
+//   REGION=strict  only pairs whose region comes from an award under a
+//                  DIFFERENT notified scheme. Cannot be circular, covers ~37%.
+//   REGION=any     also pairs whose region comes from their own award. The two
+//                  agree at NUTS-1 92.1% of the time and rank siblings
+//                  identically, which is what licenses the wider population.
+//
+// That same script also repairs the ANSWER KEY, and without it region cannot be
+// measured at all: `scheme_code = call_id` credits an award to every body
+// delivering that notified scheme, so for the 24% of holdout pairs whose answer
+// sits in a same-name group the shipped label is close to a uniform draw over
+// the siblings. Region ranks the won leaf first 24.9% of the time against that
+// key and 66.2% against the repaired one -- same rows, same scorer.
 //
 // SET and DESCRIBED exist because the harness has a second, separate defect from
 // the one the modes describe. `__recallSetEnriched.json`
@@ -62,9 +81,20 @@ async function main() {
   // retrieval on a query copied out of the answer.
   const described = (r: any) => Boolean((r.description ?? "").trim())
     && r.descriptionSource !== "own_project_title_leaks";
+  // "strict" restricts the POPULATION as well as the answer, because a pair
+  // with no leak-free region is not a pair whose region we withhold — it is one
+  // we cannot honestly supply, and scoring it as if the founder had refused to
+  // answer would mix two different questions into one number.
+  const regionMode = process.env.REGION;
+  const regionOf = (r: any): string | undefined =>
+    !regionMode ? undefined
+      : regionMode === "strict"
+        ? (r.regionSource === "other_scheme" ? r.region : undefined)
+        : r.region || undefined;
   const set = all.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
-                             && (!process.env.DESCRIBED || described(r)));
+                             && (!process.env.DESCRIBED || described(r))
+                             && (regionMode !== "strict" || Boolean(regionOf(r))));
   const N = Math.min(Number(process.env.N ?? 250), set.length);
   // Stride, not the head of the list.
   //
@@ -78,6 +108,11 @@ async function main() {
 
   const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  // The set a row came from, reported separately, because a change can move
+  // one population and not the other and the headline hides that. The
+  // corrected peer-prior join is the case in point: it costs the rows the
+  // ORIGINAL joins could trace and wins far more on the rows they could not.
+  const byPop = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
   for (const t of sample) {
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
@@ -93,6 +128,9 @@ async function main() {
       // for R&D. Schemes registered under Art. 25(2)(b)/(c) should therefore
       // outrank siblings registered for plant (Art. 17) or renewables (Art. 41).
       useOfFunds: ["industrial_research", "experimental_development"],
+      // Where the founder is. Absent unless REGION is set, so every run made
+      // before this stays comparable with every run made after it.
+      region: regionOf(t),
     } as never, {
       targetMarkets: [t.country], capitalSought: ["grant", "loan"],
       // A `profile` pair has no PROJECT text -- national schemes carry none --
@@ -120,16 +158,23 @@ async function main() {
     const m = byMode.get(t.mode) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
     m.n++; if (inPool) m.pool++; if (e5) m.e5++; if (r5) m.r5++;
     byMode.set(t.mode, m);
+    const popKey = t.traced ? `traced:${t.traced}` : "original join";
+    const p = byPop.get(popKey) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    p.n++; if (inPool) p.pool++; if (e5) p.e5++; if (r5) p.r5++;
+    byPop.set(popKey, p);
   }
   const pc = (n: number, d = stat.done) => `${n}/${d} (${(100 * n / d).toFixed(0)}%)`;
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
-              `${process.env.DESCRIBED ? " described-only" : ""}  replayed ${stat.done}`);
+              `${process.env.DESCRIBED ? " described-only" : ""}` +
+              `${regionMode ? ` region=${regionMode}` : ""}  replayed ${stat.done}`);
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);
   console.log(`  same CHANNEL in top 5    ${pc(stat.chan5)}`);
-  for (const [k, m] of byMode) {
-    console.log(`    mode=${k.padEnd(8)} n=${String(m.n).padStart(4)}  pool ${(100*m.pool/m.n).toFixed(0)}%  exact5 ${(100*m.e5/m.n).toFixed(0)}%  regime5 ${(100*m.r5/m.n).toFixed(0)}%`);
-  }
+  const line = (label: string, m: { n: number; pool: number; e5: number; r5: number }) =>
+    console.log(`    ${label.padEnd(26)} n=${String(m.n).padStart(4)}  pool ${(100*m.pool/m.n).toFixed(0)}%` +
+                `  exact5 ${(100*m.e5/m.n).toFixed(0)}%  regime5 ${(100*m.r5/m.n).toFixed(0)}%`);
+  for (const [k, m] of byMode) line(`mode=${k}`, m);
+  if (byPop.size > 1) for (const [k, m] of byPop) line(k, m);
 }
 main();
