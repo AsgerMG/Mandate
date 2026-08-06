@@ -69,26 +69,22 @@ try {
 } catch { /* rely on the process environment */ }
 if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
-import { corpusProvenance, hydrateDbInstruments, loadDbInstruments, requireLiveCorpus,
-  resetGateHydration } from "../lib/intelligence/corpus";
+import {
+  corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
+  requireLiveCorpus, resetGateHydration,
+} from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
-import { isDescribed, loadRecallSet } from "./recallSet";
+import {
+  assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
+  partitionByOfferable, reattributeMissingAnswers,
+} from "./recallSet";
 
 async function main() {
   await hydrateDbInstruments();
-  // WHICH CORPUS, asserted rather than assumed.
-  //
-  // hydrateDbInstruments() degrades to public/data/instrument_terms.json on any
-  // Postgres failure and continues. That is right for a founder mid-request and
-  // fatal here: on 2026-08-06 the two corpora read pool 72% and 95% on this very
-  // sample, twenty points apart, because the snapshot predates 86 loaded
-  // application deadlines. Both numbers were reported upward the same night as
-  // if they described one system.
-  //
-  // With NO_PG the URL is deleted above, so this passes and the run is honestly
-  // a snapshot run. What it stops is the run that ASKED for Postgres, quietly
-  // did not get it, and printed a headline anyway.
+  // A run that asked for Postgres and silently got the committed snapshot grades a
+  // corpus where nothing is closed -- which is exactly how pool read 97% one
+  // minute and 77% the next. Exit rather than report.
   requireLiveCorpus("measure_recall");
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   const { file: setFile, rows: all } = loadRecallSet();
@@ -109,7 +105,19 @@ async function main() {
       : regionMode === "strict"
         ? (r.regionSource === "other_scheme" ? r.region : undefined)
         : r.region || undefined;
-  const set = all.filter((r) => (split === "all" || r.split === split)
+  // The SAME repair the gate applies, from the same helper: answers naming an
+  // instrument that was never a fund are re-attributed to the rollup the award
+  // belongs to; answers naming a correctly-closed fund are excluded. A floor
+  // calibrated on one population and verified on another is not a floor.
+  const corpus = loadDbInstruments();
+  assertAncestorConvention(corpus);
+  const inCorpus = new Set(corpus.map((i) => i.id));
+  const offerable = new Set(publishableInstruments().map((i) => i.id));
+  const fixed = reattributeMissingAnswers(
+    all, (id) => inCorpus.has(id), (id) => offerable.has(id));
+  const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
+  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
+  const set = pop.graded.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
                              && (!process.env.DESCRIBED || described(r))
                              && (regionMode !== "strict" || Boolean(regionOf(r))));
@@ -211,12 +219,12 @@ async function main() {
     g.n++; if (inPool) g.pool++; if (e5) g.e5++; if (r5) g.r5++;
     byRegime.set(rk, g);
   }
-  const pc = (n: number, d = stat.done) =>
-    `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${halfWidth(n, d).toFixed(1)})`;
   // The corpus travels with the number, for the same reason the set name does:
   // a figure pasted out of a terminal has to carry what it was measured on.
   const prov = corpusProvenance();
   console.log(`corpus=${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
+  const pc = (n: number, d = stat.done) =>
+    `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${halfWidth(n, d).toFixed(1)})`;
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
