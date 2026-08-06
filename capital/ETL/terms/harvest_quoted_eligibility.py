@@ -27,13 +27,27 @@ document. Where it holds a filename instead, the column stays NULL and the
 citation remains the gate's own `source_locator`. Inventing a plausible URL
 would be the same lie in a different column.
 
-── The boilerplate gate ───────────────────────────────────────────────────
+── The boilerplate gate, in two layers ────────────────────────────────────
 Filling the column is not the goal; cutting the sibling class is. A regime whose
 leaves all quote the same regime-level document assembles the same text on every
-leaf, and writing it raises coverage while separating nothing. `--min-own-share`
-(default 0.34) requires that the part of a text no sibling also states is large
-enough to be an answer on its own. Below it the row is reported as
-regime-inherited and skipped.
+leaf, and writing it raises coverage while separating nothing.
+
+1. **Shared source document (exact).** A quote whose `source_file` is cited by
+   more than one leaf of the same regime is evidence about the REGIME, not about
+   the leaf, and does not count toward that leaf's own text. This is not a
+   heuristic: all nine Horizon Pillar II clusters cite one file,
+   `horizon_eu_general_annexes_2026_2027.pdf`, so every character they would
+   have contributed is by construction identical across siblings.
+
+2. **Own share (residual).** The same document refetched under two filenames, or
+   a quote with no `source_file` at all, defeats layer 1. So the assembled text
+   must also carry `--min-own-share` (default 0.34) of characters in sentences no
+   sibling states.
+
+Layer 1 catches what layer 2 misses and the reverse: six of the nine Pillar II
+clusters passed the own-share test on 0.46-0.85, because each quotes a DIFFERENT
+excerpt of the one shared annex. Different excerpts of one regime document are
+still one regime document.
 
 Usage:
   python3 ETL/terms/harvest_quoted_eligibility.py --regime horizon_eu_partnership
@@ -206,6 +220,16 @@ def main() -> None:
     all_leaves = [s["id"] for rid in regimes for s in family[rid]]
     quotes = fetch_quotes(cur, all_leaves)
 
+    # Layer 1: source documents cited by more than one leaf of a regime. What
+    # they say is the regime's, whatever the leaf it was filed against.
+    regime_docs: dict[str, set[str]] = {}
+    for rid in regimes:
+        users: dict[str, int] = defaultdict(int)
+        for s in family[rid]:
+            for d in {q["source_file"] for q in quotes.get(s["id"]) or [] if q["source_file"]}:
+                users[d] += 1
+        regime_docs[rid] = {d for d, n in users.items() if n > 1}
+
     # Which quotes are shared across the regime. Computed before assembly,
     # because it decides what each leaf's capped text keeps.
     per_regime_shared: dict[str, set[str]] = {}
@@ -217,17 +241,27 @@ def main() -> None:
         per_regime_shared[rid] = {t for t, n in counts.items() if n > 1}
 
     drafted: dict[str, tuple[str, list[dict]]] = {}
+    inherited: dict[str, str] = {}
     for iid, row in scope.items():
         if norm(row["eligibility_text"]):
             continue
         rid = row["parent_id"] or iid
-        text, used = assemble(quotes.get(iid) or [], per_regime_shared.get(rid))
+        held = quotes.get(iid) or []
+        own = [q for q in held if q["source_file"] not in regime_docs[rid]]
+        if held and not own:
+            inherited[iid] = (f"every quote comes from "
+                              f"{', '.join(sorted(regime_docs[rid] & {q['source_file'] for q in held}))}, "
+                              f"a document its siblings cite too")
+            continue
+        text, used = assemble(own, per_regime_shared.get(rid))
         if len(text) >= MIN_TEXT:
             drafted[iid] = (text, used)
 
     updates = []
     print(f"{len(scope)} instruments in scope, {len(drafted)} carry harvestable "
-          f"cited quote\n")
+          f"cited quote of their own\n")
+    for iid, why in sorted(inherited.items()):
+        print(f"  REGIME-INHERITED  {iid:<24} {why}")
     for iid, (text, used) in sorted(drafted.items()):
         rid = scope[iid]["parent_id"] or iid
         siblings = [drafted[s["id"]][0] if s["id"] in drafted else (s["eligibility_text"] or "")
