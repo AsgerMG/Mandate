@@ -267,6 +267,74 @@ export interface DbInstrument {
 
 let dbInstrumentsCache: DbInstrument[] | null | undefined;
 
+/** WHICH corpus this process is actually ranking on.
+ *
+ *  ── Why a request cannot be allowed to hide this ──────────────────────────
+ *  `hydrateDbInstruments()` degrades to the committed snapshot on any Postgres
+ *  failure and continues, which is right for a founder mid-request and wrong
+ *  for anything that produces a NUMBER. Until this existed there was no way to
+ *  ask, after the fact, which corpus a run had used, and the difference is not
+ *  cosmetic: measured on the pinned 150-pair tune sample on 2026-08-06, the
+ *  Postgres corpus reads pool 72% and the snapshot reads 95%, because the
+ *  snapshot predates 86 loaded application deadlines and carries no
+ *  `schemeEndBasis` at all. Two harnesses spent a night reporting the two
+ *  numbers as if they measured the same system.
+ *
+ *  So the fallback stays — and becomes observable. `requireLiveCorpus()` is
+ *  what turns "observable" into "cannot be measured through". */
+export interface CorpusProvenance {
+  /** "postgres" | "snapshot" | "none" — where the rows in the cache came from. */
+  source: "postgres" | "snapshot" | "none";
+  /** True when DATABASE_URL was set and Postgres was still not the source: the
+   *  run asked for live data, did not get it, and was not told. */
+  degraded: boolean;
+  instruments: number;
+  hydratedAt: string;
+  /** The Postgres error, when there was one. */
+  error?: string;
+}
+
+let provenance: CorpusProvenance = {
+  source: "none", degraded: false, instruments: 0, hydratedAt: "",
+};
+
+/** What corpus the current process hydrated, and whether it is the one it asked
+ *  for. Safe to call before hydration (reports "none"). */
+export function corpusProvenance(): CorpusProvenance {
+  return { ...provenance };
+}
+
+/**
+ * Refuse to produce a number on a corpus the run did not ask for.
+ *
+ * THE RULE: a harness that grades whatever it happens to get is the same defect
+ * as a harness that grades a different system on purpose. If DATABASE_URL is
+ * set, the run wanted live data; getting the snapshot instead must end the run,
+ * not decorate its header.
+ *
+ * Deliberately NOT called from the request path — a founder mid-brief is better
+ * served by a slightly stale table than by an error, and that trade is the whole
+ * reason the fallback exists. It is called by every harness that prints a
+ * figure. Running with no DATABASE_URL at all is still allowed and still
+ * honest: the run then knows it is on the snapshot and says so.
+ */
+export function requireLiveCorpus(context = "this run"): void {
+  const p = corpusProvenance();
+  if (p.source === "none") {
+    throw new Error(
+      `${context}: corpus not hydrated. Call hydrateDbInstruments() before measuring.`);
+  }
+  if (!p.degraded) return;
+  throw new Error(
+    `${context}: DATABASE_URL is set but the corpus came from the committed ` +
+    `snapshot (public/data/instrument_terms.json), not Postgres.\n` +
+    `  Postgres said: ${p.error ?? "(no error recorded)"}\n` +
+    `  The two corpora do NOT agree about which funds are open — on 2026-08-06 ` +
+    `they differed by 20 points of pool recall — so a figure taken here would ` +
+    `not be a figure about the shipping system.\n` +
+    `  Fix the connection, or run deliberately without DATABASE_URL and say so.`);
+}
+
 function loadDbInstrumentsFromJson(): DbInstrument[] | null {
   try {
     const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
@@ -294,6 +362,10 @@ export async function hydrateDbInstruments(): Promise<void> {
   const url = process.env.DATABASE_URL;
   if (!url) {
     dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
+    provenance = {
+      source: "snapshot", degraded: false,
+      instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+    };
     return;
   }
   try {
@@ -443,12 +515,24 @@ export async function hydrateDbInstruments(): Promise<void> {
         deliveryRegionShare: inst.delivery_region_share ?? null,
         gates: gatesByInstrument.get(inst.id) ?? [],
       })));
+      provenance = {
+        source: "postgres", degraded: false,
+        instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+      };
     } finally {
       await client.end();
     }
   } catch (err) {
     console.error("Postgres hydration failed, falling back to instrument_terms.json:", err);
     dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
+    // DEGRADED, and recorded as such. The request still succeeds — that is the
+    // point of the fallback — but anything that turns this corpus into a
+    // published figure can now be made to stop. See requireLiveCorpus().
+    provenance = {
+      source: "snapshot", degraded: true,
+      instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+      error: err instanceof Error ? err.message : String(err),
+    };
   }
 }
 
@@ -580,6 +664,15 @@ export async function hydrateGatesFor(instrumentIds: string[]): Promise<void> {
 export function loadDbInstruments(): DbInstrument[] {
   if (dbInstrumentsCache === undefined) {
     dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
+    // The THIRD way to end up on the snapshot without asking for it: never
+    // calling hydrateDbInstruments() at all. Recorded like the other two, and
+    // degraded whenever DATABASE_URL was available and simply not used — that
+    // is a caller reading a day-old corpus while believing it is live.
+    provenance = {
+      source: "snapshot", degraded: Boolean(process.env.DATABASE_URL),
+      instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
+      error: "hydrateDbInstruments() was never called; read straight from the snapshot",
+    };
   }
   return dbInstrumentsCache ?? [];
 }
