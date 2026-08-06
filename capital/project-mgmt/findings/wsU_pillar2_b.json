@@ -1,0 +1,298 @@
+[
+  {
+    "instrument_id": "horizon_eu_cl5",
+    "found": true,
+    "eligibility_text": "Cluster 5's leaf-level conditions are written per topic in a Technology Readiness Level row and in geographic derogations that no other cluster carries in this combination. 69 topics state an explicit band — \"Activities are expected to achieve TRL 4-5 by the end of the project\" through \"Activities are expected to achieve TRL 7-8 by the end of the project\", each closed by \"see General Annex B. Activities may start at any TRL.\" — and 52 of those 69 require TRL 6 or above, so most CL5 money buys demonstration and first-of-a-kind scale-up, not lab work. Second, and unusually heavy for Pillar II, 61 distinct pages attach an exploitation lock to the grant: \"The granting authority may, up to 4 years after the end of the action, object to a transfer of ownership or to the exclusive licensing of results, as set out in the specific provision of Annex 5.\" (Cluster 6 carries this on 6 pages, Missions on 13.) Third, several topics widen or bend the consortium rule on a sectoral-diplomacy basis. Africa-facing climate topics state \"Due to the scope of this topic, legal entities established in all African Union member states are exceptionally eligible for Union funding.\" together with \"At least 30% of the beneficiaries must be legal entities established in the African Union member states\". Global-climate topics require that \"the consortium must include as beneficiary or associated partner at least three independent legal entities established in three different low or lower/upper-middle-income countries\". An EU-India battery topic runs the other way: \"The project must include at least one work package for coordinated activities with the linked project awarded by the Ministry of Heavy Industry of the Government of India (MHI). Participation of legal entities established in India, which is a third country under Horizon Europe, is only possible as associated partners.\" Fourth, demonstration topics can force public bodies into the consortium: on the rural shared-mobility topic, \"Each proposal must include pilot demonstrations in at least 4 pilot sites\" and \"The pilots must be community-driven, carried out under the lead or with the involvement of rural/local/regional public authorities/administrations and the local transport authorities, and these entities must be included in the consortium as beneficiaries.\" Finally, on ~10 grid, AI-for-energy and connected-vehicle Innovation Action topics: \"entities established in an eligible country but which are directly or indirectly controlled by China or by a legal entity established in China are not eligible to participate in the action.\" Note these are topic-level rules, not a single cluster-wide gate: an applicant must read the topic's own conditions table.",
+    "description": "Collaborative R&D and demonstration grants for decarbonising energy and transport — batteries and energy storage, renewables and grids, renewable fuels, CO2 capture and storage, road/rail/air/waterborne mobility, and the climate science underneath — with each topic naming the technology-readiness band the project must reach by its end.",
+    "administering_body": null,
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026-2027/wp-8-climate-energy-and-mobility_horizon-2026-2027_en.pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_cl5_wp8_climate_energy_mobility_2026_2027.pdf",
+    "quotes": [
+      {
+        "quote": "Activities are expected to achieve TRL 6-8 by the end of the project",
+        "page": 114,
+        "why_discriminating": "CL5 sets a binding TRL band per topic; 52 of 69 banded topics sit at TRL 6 or above, so the cluster funds demonstration-stage work that a lab-stage consortium would fail on maturity grounds"
+      },
+      {
+        "quote": "see General Annex B. Activities may start at any TRL.",
+        "page": 94,
+        "why_discriminating": "the closing half of the TRL row (the pdftotext two-column layout interleaves the row label 'Readiness Level' between the two halves); it fixes the END-of-project maturity, not the entry point"
+      },
+      {
+        "quote": "Activities are expected to achieve TRL 4-5 by the end of the project",
+        "page": 86,
+        "why_discriminating": "the low end of the same band system, showing the range is topic-specific rather than a cluster constant"
+      },
+      {
+        "quote": "The granting authority may, up to 4 years after the end of the action, object to a transfer of ownership or to the exclusive licensing of results, as set out in the specific provision of Annex 5.",
+        "page": 91,
+        "why_discriminating": "appears on 61 distinct CL5 pages versus 6 in Cluster 6 and 13 in Missions; a four-year veto over selling or exclusively licensing project IP is a material term for an industrial applicant"
+      },
+      {
+        "quote": "Due to the scope of this topic, legal entities established in all African Union member states are exceptionally eligible for Union funding.",
+        "page": 75,
+        "why_discriminating": "derogation from the standard eligible-country set; African Union entities become fundable, which is not true across Pillar II generally"
+      },
+      {
+        "quote": "At least 30% of the beneficiaries must be legal entities established in the African Union member states",
+        "page": 75,
+        "why_discriminating": "a hard composition quota — an all-European consortium is ineligible on this topic, the inverse of the usual rule"
+      },
+      {
+        "quote": "For Area A-Global, the consortium must include as beneficiary or associated partner at least three independent legal entities established in three different low or lower/upper-middle-income countries",
+        "page": 56,
+        "why_discriminating": "income-band composition requirement layered on top of the three-country rule; a purely EU consortium fails"
+      },
+      {
+        "quote": "The project must include at least one work package for coordinated activities with the linked project awarded by the Ministry of Heavy Industry of the Government of India (MHI). Participation of legal entities established in India, which is a third country under Horizon Europe, is only possible as associated partners.",
+        "page": 94,
+        "why_discriminating": "a twinned-call obligation to a named third-country ministry, with Indian entities barred from beneficiary status; nothing of this shape exists in the sibling clusters"
+      },
+      {
+        "quote": "Each proposal must include pilot demonstrations in at least 4 pilot sites. The pilot demonstrations must cover 4 different areas across the EU and Associated Countries ensuring geographical balance and diversity of issues addressed",
+        "page": 287,
+        "why_discriminating": "a physical demonstration-footprint requirement — four real sites — that a paper-study consortium cannot satisfy"
+      },
+      {
+        "quote": "The pilots must be community-driven, carried out under the lead or with the involvement of rural/local/regional public authorities/administrations and the local transport authorities, and these entities must be included in the consortium as beneficiaries.",
+        "page": 288,
+        "why_discriminating": "forces named classes of public authority into the consortium as beneficiaries, the CL5 analogue of Cluster 3's Police Authority rule"
+      },
+      {
+        "quote": "In line with the “restriction on control in innovation actions in critical technology areas” delineated in General Annex B of the General Annexes, entities established in an eligible country but which are directly or indirectly controlled by China or by a legal entity established in China are not eligible to participate in the action.",
+        "page": 171,
+        "why_discriminating": "an ownership-control test, not an establishment test: an EU-registered subsidiary of a Chinese parent is excluded from these Innovation Action topics"
+      }
+    ],
+    "body_evidence": null,
+    "notes": "administering_body is NULL. No body is named as running this programme part. Page-reach check across 339 pages: no Executive Agency name appears at all (CINEA 0, HaDEA 0, REA 0, EISMEA 0); 'DG RTD' appears on 1 page; 'Joint Undertaking' on 6 pages, always as a partnership to coordinate with rather than as granting authority. The document's self-reference is the generic 'the granting authority' (63 pages), which names nobody. 'European Commission' appears on 36 pages but almost always inside footnote URLs or policy-document titles; the only agentive uses are the cover line 'European Commission Decision C(2025) 8493 of 11 December 2025' (p1) and the recurring 'The Commission estimates that an EU contribution of around EUR X million...' (94 pages). I judged that too generic to be an attested administering body and left it NULL, matching the treatment in wsU_pillar2_a.json for CL1 and CL3. DEMOTED as non-discriminating: the Copernicus/Galileo/EGNOS data mandate, though it appears on 96 CL5 pages and in 86 of 93 eligibility blocks, also appears on 36 pages in CL1, 36 in CL3, 30 in CL6 and 13 in Missions — it is regime behaviour, not a CL5 property, so it is excluded from eligibility_text. Also demoted: 'Subject to restrictions for the protection of European communication networks' (9 pages, a General Annex B cross-reference) and the JRC zero-funding beneficiary clause (a General Annex B option, present in all clusters). TRL is present in CL6 (43 rows) and Missions (13 rows) too, so the discriminator is not that CL5 has TRL but WHERE its bands sit: 52 of 69 banded CL5 topics require TRL 6+, versus 24 of 43 in CL6 and a top-heavy but tiny 13 in Missions. Funding-rate derogations exist ('The funding rate is 70% of the eligible costs.' p130; 'The funding rate is up to 50% of the eligible costs.' p75) but both sit on Programme Co-fund Action topics where a non-standard rate is normal, so they were not treated as leaf-level discriminators. Cascade funding is rare in CL5 (max EUR 500 000 on the SET Plan co-fund topic, p130). scheme_url is the slug supplied in the brief; it was not fetched (no network access was used)."
+  },
+  {
+    "instrument_id": "horizon_eu_cl6",
+    "found": true,
+    "eligibility_text": "Cluster 6's discriminating condition is the multi-actor approach, and it is an eligibility condition, not an ambition. 40 of the 69 topic conditions tables carry \"The proposals must apply the multi-actor approach. See definition of the multi-actor approach in this work programme part.\" The definition, set out in a dedicated section 'Specific conditions for multi-actor projects', binds the consortium's composition and method: \"A multi-actor project ensures the genuine and sufficient involvement of a targeted array of actors in co-creation, which serves the objectives of the project proposal.\" Topic texts translate this into named practitioner classes: \"Proposals must implement the multi-actor approach, with a consortium based on a balanced mix of relevant actors with complementary knowledge clearly activating advisors, farmers and/or foresters and/or rural actors.\" It also imposes a deliverable no sibling cluster requires: \"the new knowledge and innovation generated by the multi-actor projects must be summarised in an appropriate number of ‘practice abstracts’ in the common EIP-AGRI format for Horizon\". Second, a set of place-based topics require named territorial demonstrators inside the consortium as beneficiaries. Living-lab topics: \"at least five (5) distinct ‘living labs’ linked to regional or local authorities (and possibly together with their public and/or private ecosystem actors operating in their respective territories) must be part of the consortium as beneficiaries, among which at least two (2) living labs must be from different demonstration sites and another three (3) from other and different replication sites. 1 out of the 3 replication sites must be located in Horizon Europe widening countries (including Outermost Regions).\" A rural/urban replication topic goes further: \"at least nine (9) distinct regional or local authorities must be part of the consortium as beneficiaries, among which at least three (3) from different demonstration cities/regions and another six (6) from other and different replication cities/regions.\" Third, geographic derogations are common: \"due to the specific challenge of this topic, in addition to the minimum number of participants set out in the General Annexes, consortia must include at least three independent legal entities established in an African Union member state\"; \"Due to the scope of this topic, legal entities established in Brazil are exceptionally eligible for Union funding.\"; \"All international organisations are exceptionally eligible for funding.\"; and on one topic \"the participation of at least one research institution or relevant public authority from Ukraine in the consortium is mandatory.\" Fourth, two partnership-continuation topics collapse the consortium rule to a single named applicant, e.g. \"The proposal must be submitted by the coordinator of the consortium funded under HORIZON-CL6-2022-GOVERNANCE-01-02 and HORIZON-CL6-2024-GOVERNANCE-01-1: European Partnership for a climate neutral, sustainable and productive Blue Economy.\" These are effectively closed to new entrants.",
+    "description": "Collaborative research and innovation grants for food systems, farming, forestry, fisheries and aquaculture, biodiversity, soil, water, the circular bioeconomy and rural/coastal/urban communities — where on most topics farmers, foresters, fishers, advisors and other end-users must sit inside the consortium as co-creators, not as an advisory board.",
+    "administering_body": null,
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026-2027/wp-9-food-bioeconomy-natural-resources-agriculture-and-environment_horizon-2026-2027_en.pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_cl6_wp9_food_bioeconomy_2026_2027.pdf",
+    "quotes": [
+      {
+        "quote": "The proposals must apply the multi-actor approach. See definition of the multi-actor approach in this work programme part.",
+        "page": 60,
+        "why_discriminating": "an eligibility condition on 40 of 69 CL6 topics; a research-only consortium is ineligible. No other Pillar II cluster makes co-creation with practitioners an eligibility test"
+      },
+      {
+        "quote": "A multi-actor project ensures the genuine and sufficient involvement of a targeted array of actors in co-creation, which serves the objectives of the project proposal.",
+        "page": 17,
+        "why_discriminating": "the binding definition the eligibility row points at; it is what makes the multi-actor rule checkable rather than rhetorical"
+      },
+      {
+        "quote": "Proposals must implement the multi-actor approach, with a consortium based on a balanced mix of relevant actors with complementary knowledge clearly activating advisors, farmers and/or foresters and/or rural actors.",
+        "page": 302,
+        "why_discriminating": "names the practitioner classes that must be inside the consortium — farmers, foresters, advisors, rural actors — which is exactly what a CL1/CL3/CL4 applicant would not have"
+      },
+      {
+        "quote": "the new knowledge and innovation generated by the multi-actor projects must be summarised in an appropriate number of ‘practice abstracts’ in the common EIP-AGRI format for Horizon",
+        "page": 18,
+        "why_discriminating": "a CAP/EIP-AGRI reporting artefact required of every multi-actor project; unique to this cluster"
+      },
+      {
+        "quote": "at least five (5) distinct ‘living labs’ linked to regional or local authorities (and possibly together with their public and/or private ecosystem actors operating in their respective territories) must be part of the consortium as beneficiaries, among which at least two (2) living labs must be from different demonstration sites and another three (3) from other and different replication sites. 1 out of the 3 replication sites must be located in Horizon Europe widening countries (including Outermost Regions).",
+        "page": 193,
+        "why_discriminating": "a numeric territorial-demonstrator quota with a widening-country carve-out; applies to specific living-lab topics, not the whole cluster"
+      },
+      {
+        "quote": "at least nine (9) distinct regional or local authorities must be part of the consortium as beneficiaries, among which at least three (3) from different demonstration cities/regions and another six (6) from other and different replication cities/regions.",
+        "page": 173,
+        "why_discriminating": "nine public authorities as beneficiaries is far beyond the three-entity minimum; a private-sector-only consortium cannot form"
+      },
+      {
+        "quote": "due to the specific challenge of this topic, in addition to the minimum number of participants set out in the General Annexes, consortia must include at least three independent legal entities established in an African Union member state",
+        "page": 128,
+        "why_discriminating": "explicitly stacked on top of the General Annex minimum — the boilerplate three-country rule is a floor, not the test"
+      },
+      {
+        "quote": "Due to the scope of this topic, legal entities established in Brazil are exceptionally eligible for Union funding.",
+        "page": 285,
+        "why_discriminating": "single-country funding derogation; Brazilian entities are normally participable but not fundable"
+      },
+      {
+        "quote": "the participation of at least one research institution or relevant public authority from Ukraine in the consortium is mandatory.",
+        "page": 217,
+        "why_discriminating": "a mandatory named-country participant; a consortium without a Ukrainian partner is ineligible on this topic"
+      },
+      {
+        "quote": "The proposal must be submitted by the coordinator of the consortium funded under HORIZON-CL6-2022-GOVERNANCE-01-02 and HORIZON-CL6-2024-GOVERNANCE-01-1: European Partnership for a climate neutral, sustainable and productive Blue Economy.",
+        "page": 277,
+        "why_discriminating": "derogation from open competition: the applicant is pre-determined as an incumbent coordinator, so the topic is closed to newcomers"
+      },
+      {
+        "quote": "All international organisations are exceptionally eligible for funding.",
+        "page": 53,
+        "why_discriminating": "widens the fundable-entity class beyond the General Annex default on ocean, water and international-cooperation topics"
+      }
+    ],
+    "body_evidence": null,
+    "notes": "administering_body is NULL. Page-reach check across 356 pages: no Executive Agency name appears (CINEA 0, REA 0, HaDEA 0, EISMEA 0); 'DG RTD' on 1 page; 'Joint Undertaking' on 8 pages, only as partnerships to coordinate with. 'the granting authority' appears on 6 pages and names nobody. 'European Commission' appears on 46 pages, overwhelmingly in footnote URLs and policy-document titles; agentive uses are the cover decision line (p1) and 'The Commission estimates...' (108 pages). Left NULL for the same reason as CL5 and consistent with wsU_pillar2_a.json. The multi-actor count is exact: 40 distinct pages carry the eligibility-row instruction 'apply the multi-actor approach. See definition of the multi-actor approach in this work programme part', out of 69 topic eligibility blocks in this part. The definition itself is a standing section at pp.17-18 titled 'Specific conditions for multi-actor projects' — the coordinator may want that whole section, since it lists the thirteen actor classes (researchers, farmers, foresters, aquaculture producers, fishers, advisors, food and bioeconomy businesses, other businesses, consumer associations, local communities, citizens, civil society organisations, government representatives). Honest scoping: the multi-actor rule is topic-level (40 of 69), the living-lab quotas apply to two topics (pp.193, 219), the nine-authority quota to one (p.173), the African Union requirements to three (pp.128, 130, 162), Brazil to one (p.285), Ukraine to one (p.217), and the closed incumbent-coordinator rule to two (pp.277, 306). None of these were upgraded to leaf-level claims. DEMOTED as non-discriminating: Copernicus/Galileo/EGNOS (30 pages here, but 36 in CL1 and 36 in CL3), the JRC zero-funding clause, and 'Subject to restrictions for the protection of European communication networks'. Cascade funding is common but small and uniform (EUR 60 000 on 21 topics, one at EUR 120 000). scheme_url is the slug supplied in the brief; not fetched."
+  },
+  {
+    "instrument_id": "horizon_eu_miss",
+    "found": true,
+    "eligibility_text": "The Missions work programme covers all five EU Missions — \"Adaptation to Climate Change\", \"Cancer\", \"100 Climate-Neutral and Smart cities by 2030\", \"Restore our Ocean and Waters by 2030\" and \"A Soil Deal for Europe\" — plus joint calls between them. Its discriminating conditions are membership conditions: the beneficiary must be, or must come from, a place that has already joined the Mission. The Cities Mission and its joint calls repeatedly require: \"At least three cities, represented by a local authority or by an entity with an explicit consent from the local authority, each from a different Member State or Associated Country, must participate as beneficiaries.\" and \"At least one of the three cities must be one of the 112 cities selected for the EU Mission on Climate-Neutral and Smart Cities\". A two-city variant exists, and a lead/follower variant: \"At least three lead cities, represented by a local authority or by an entity with an explicit consent from the local authority, from different Member States or Associated Countries along with at least three follower cities, must participate ensuring a good geographical balance.\" Joint Cities/Adaptation topics add a charter test: \"Entities from at least four cities, each from a different Member State or Associated Country, must participate as beneficiaries.\" and \"at least one must be a signatory to the Adaptation Mission Charter\" — the Charter being the instrument by which, per this document, \"more than 325 regional and local authorities have committed to working together to transition faster to a climate resilient Europe.\" Demonstration geography is also prescribed: \"Demonstration activities must take place in the territory of at least 3 different regional or local authorities that host cultural heritage, each established in a different Member State or Associated Country.\" and, on a cross-border topic, \"The demonstration areas must span adjacent regions on both sides of a national border.\" The Soil Mission carries CL6-style conditions: \"Proposals must apply the multi-actor approach. See definition of the multi-actor approach in the introduction to this work programme part.\" on 9 topic pages, plus a biogeographic constraint — \"regions: Alpine or Atlantic, i.e., the majority of the living labs of each proposal must be located in one of these two biogeographical regions.\" — and living-lab cascade funding: \"Beneficiaries may provide financial support to third parties to facilitate active involvement of smaller actors (e.g. land managers and owners such as farmers, SMEs or civil societies) in one or more of the living labs of the project.\" One Adaptation topic makes cascade funding compulsory and unusually large: \"Beneficiaries must provide financial support to third parties. The support to third parties can only be provided in the form of grants. The maximum amount to be granted to each third party is EUR 800,000\" — the only 'must' FSTP clause in the part, against 14 'may' clauses.",
+    "description": "Grants that implement five named EU Missions — Adaptation to Climate Change, Cancer, 100 Climate-Neutral and Smart Cities, Restore our Ocean and Waters, and A Soil Deal for Europe — funding demonstration and replication in real territories, where the cities, regions or living labs are beneficiaries of the grant rather than study subjects.",
+    "administering_body": null,
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026-2027/wp-12-missions_horizon-2026-2027_en.pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_miss_wp12_missions_2026_2027.pdf",
+    "quotes": [
+      {
+        "quote": "At least three cities, represented by a local authority or by an entity with an explicit consent from the local authority, each from a different Member State or Associated Country, must participate as beneficiaries.",
+        "page": 156,
+        "why_discriminating": "local authorities must be beneficiaries, not stakeholders; a university-and-industry consortium is ineligible"
+      },
+      {
+        "quote": "At least one of the three cities must be one of the 112 cities selected for the EU Mission on Climate-Neutral and Smart Cities",
+        "page": 156,
+        "why_discriminating": "membership of a closed, pre-selected list of 112 cities is an eligibility gate — the single sharpest Missions-only condition"
+      },
+      {
+        "quote": "At least three lead cities, represented by a local authority or by an entity with an explicit consent from the local authority, from different Member States or Associated Countries along with at least three follower cities, must participate ensuring a good geographical balance.",
+        "page": 149,
+        "why_discriminating": "a six-city lead/follower structure written into eligibility, imposing a replication architecture on the consortium"
+      },
+      {
+        "quote": "Entities from at least four cities, each from a different Member State or Associated Country, must participate as beneficiaries.",
+        "page": 241,
+        "why_discriminating": "the joint-call variant, raising the territorial minimum to four"
+      },
+      {
+        "quote": "at least one must be a signatory to the Adaptation Mission Charter",
+        "page": 241,
+        "why_discriminating": "a pledge-instrument test: eligibility depends on a prior voluntary political commitment made outside the call"
+      },
+      {
+        "quote": "By signing the Mission Charter, more than 325 regional and local authorities have committed to working together to transition faster to a climate resilient Europe.",
+        "page": 32,
+        "why_discriminating": "establishes that the Charter is a real, populated register, so the signatory requirement above is a checkable membership test"
+      },
+      {
+        "quote": "Demonstration activities must take place in the territory of at least 3 different regional or local authorities that host cultural heritage, each established in a different Member State or Associated Country.",
+        "page": 47,
+        "why_discriminating": "prescribes where the work physically happens and what the host territory must contain"
+      },
+      {
+        "quote": "The demonstration areas must span adjacent regions on both sides of a national border.",
+        "page": 57,
+        "why_discriminating": "a geometric condition on the demonstration footprint that no sibling cluster imposes"
+      },
+      {
+        "quote": "Beneficiaries must provide financial support to third parties. The support to third parties can only be provided in the form of grants. The maximum amount to be granted to each third party is EUR 800,000",
+        "page": 52,
+        "why_discriminating": "mandatory cascade funding at EUR 800,000 per third party — the only 'must' FSTP clause in the part; the consortium is obliged to act as a re-granter"
+      },
+      {
+        "quote": "Proposals must apply the multi-actor approach. See definition of the multi-actor approach in the introduction to this work programme part.",
+        "page": 193,
+        "why_discriminating": "the Soil Mission imports Cluster 6's multi-actor eligibility test onto 9 topic pages"
+      },
+      {
+        "quote": "regions: Alpine or Atlantic, i.e., the majority of the living labs of each proposal must be located in one of these two biogeographical regions.",
+        "page": 197,
+        "why_discriminating": "a biogeographic siting constraint on the majority of a project's living labs (row label 'Procedure' is interleaved by the two-column layout before this text)"
+      },
+      {
+        "quote": "Beneficiaries may provide financial support to third parties to facilitate active involvement of smaller actors (e.g. land managers and owners such as farmers, SMEs or civil societies) in one or more of the living labs of the project.",
+        "page": 202,
+        "why_discriminating": "cascade funding is scoped to a named beneficiary class — land managers, farmers, civil society — rather than to companies"
+      }
+    ],
+    "body_evidence": null,
+    "notes": "Covers all five EU Missions plus 'EU Missions\\' Joint Calls' (Cities+NEB+CCRI, Climate+Soil, Climate+Cities+NEB, Soil+Cancer) and a Cross-cutting activities block with four Mission Prizes. administering_body is NULL, but this is the closest call of the four. CINEA reaches 7 distinct pages (37, 46, 55, 242, 244, 245, 248) — six of those are the same footnote, 'Initially established by MIP4Adapt and extended under the contract CINEA/2025/OP/0014', i.e. CINEA named as the contracting party for a support platform, and one is substantive: 'The project retained for granting is expected to hold dedicated exchanges with CINEA and the Mission Secretariat during the preparation of the cascade funding call(s).' (p55). That is CINEA acting like the granting side, but the document never states that CINEA runs the programme, and the full name 'European Climate, Infrastructure and Environment Executive Agency' appears nowhere. Per the page-reach-plus-attestation rule I report NULL rather than infer. 'Mission Secretariat' reaches 5 pages but is an internal function, not a named body. 'DG RTD' 2 pages, 'DG REFORM' 1. Honest scoping: the city/charter conditions are topic-level, concentrated in the Cities Mission (pp.149, 153, 156, 162, 166) and the joint calls (pp.235, 241, 245); the multi-actor requirement is Soil-Mission-only (9 pages); the mandatory EUR 800,000 FSTP is a single Adaptation topic (p52). Cancer Mission topics were checked and carry no additional eligibility condition beyond the General Annex cross-reference plus 'Subject to restrictions for the protection of European communication networks' — that is a genuine finding, not a gap in the search. DEMOTED: Copernicus/Galileo/EGNOS (13 pages here vs 36 in CL1 and CL3). TRL rows exist (13) but are too few to characterise the part. scheme_url is the slug supplied in the brief; not fetched."
+  },
+  {
+    "instrument_id": "horizon_eu_eie",
+    "found": true,
+    "eligibility_text": "European Innovation Ecosystems is the only Pillar II leaf whose eligibility rules are about who represents an ecosystem, and every one of its five 2026-2027 topics derogates from the standard consortium rule. The flagship COFUND topic (European Startup and Scaleup Hubs pilot, EUR 20m to one project) requires: \"A hub must be represented by a single legal entity (for instance an umbrella organisation representing a science and technology park or an innovation cluster or district, an accelerator or a venture builder embedded in an innovation ecosystem) or several legal entities representing the relevant actors of the innovation ecosystem supporting startups\"; \"The consortium should consist of a network of at least ten (10) hubs from at least ten (10) different Member States or Associated Countries.\"; a population-based cap — \"For Member States and Associated Countries with an overall population exceeding 35 million, the participation is limited to two hubs in the given consortium. In addition, at least two (2) participating hub shall be established in a “widening country”.\" (one hub only for countries under 35 million); and a co-financing proof at submission: \"The consortium must provide a single letter of intent at the moment of submission of the proposal indicating the source of the required 50% of complementary funding (e.g. national and/or regional funding, EU funding, or private investments).\" Other topics restrict who may be a beneficiary or coordinator by organisation type: the TTO topic requires \"This action requires the participation, as beneficiaries, of at least three (3) legal entities from at least three (3) different Member States or\" \"Associated Countries that are universities, research and higher education institutions or research technology organisations (RTOs).\" plus \"In addition, at least one (1) legal entity shall be established in a “widening country”.\" The philanthropy topic states \"The coordinator of the project must be a higher education institution, or research technology organisation(s) (RTOs) or a network of such organisations.\" and \"Consortia must include at least three (3) participants from three (3) different member states or associated countries, including higher education institution(s) or RTOs and philanthropy organisation(s) or network of philanthropy organisations.\" Startup Europe imposes an innovation-performance quota: at least 50% of beneficiaries must be established in \"'moderate' or ‘emerging’ innovator countries or regions. The Regional Innovation Scoreboard is taken as a reference, and in the case of entities representing national authorities, the European Innovation Scoreboard.\" Cascade funding is central rather than incidental: \"Beneficiaries may provide financial support to third parties. The support to third parties can only be provided in the form of grants. The maximum amount to be granted to each third party is EUR 60 000.\" on the hubs and Startup Europe topics, and \"The maximum amount to be granted to each third party is EUR 200 000 to ensure the deployment and impact of the project outcomes.\" on the PCP topic. No topic in this part states a TRL.",
+    "description": "Grants that build the plumbing of Europe's startup economy rather than funding startups directly — networks of deep-tech startup and scaleup hubs, technology transfer offices, cross-border acceleration, innovation procurement and philanthropy links — with the money typically passed on to companies as cascade sub-grants of EUR 60,000 to EUR 200,000.",
+    "administering_body": null,
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026-2027/wp-10-european-innovation-ecosystems_horizon-2026-2027_en.pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_eie_wp10_innovation_ecosystems_2026_2027.pdf",
+    "quotes": [
+      {
+        "quote": "A hub must be represented by a single legal entity (for instance an umbrella organisation representing a science and technology park or an innovation cluster or district, an accelerator or a venture builder embedded in an innovation ecosystem) or several legal entities representing the relevant actors of the innovation ecosystem supporting startups",
+        "page": 12,
+        "why_discriminating": "eligibility is defined at the level of an ecosystem 'hub' with a mandated representation structure — a concept absent from every other Pillar II leaf"
+      },
+      {
+        "quote": "The consortium should consist of a network of at least ten (10) hubs from at least ten (10) different Member States or Associated Countries.",
+        "page": 13,
+        "why_discriminating": "ten countries, not three; more than triple the General Annex B minimum"
+      },
+      {
+        "quote": "For Member States and Associated Countries with an overall population exceeding 35 million, the participation is limited to two hubs in the given consortium. In addition, at least two (2) participating hub shall be established in a “widening country”.",
+        "page": 13,
+        "why_discriminating": "a per-country cap keyed to population plus a widening-country floor — an anti-concentration rule with no sibling analogue"
+      },
+      {
+        "quote": "The consortium must provide a single letter of intent at the moment of submission of the proposal indicating the source of the required 50% of complementary funding (e.g. national and/or regional funding, EU funding, or private investments).",
+        "page": 13,
+        "why_discriminating": "50% co-financing must be evidenced at submission; an applicant without secured national/regional/private money cannot file"
+      },
+      {
+        "quote": "This action requires the participation, as beneficiaries, of at least three (3) legal entities from at least three (3) different Member States or",
+        "page": 16,
+        "why_discriminating": "first half of the TTO composition rule (the sentence is split across a page break by footnotes in the pdftotext output); the discriminating half follows"
+      },
+      {
+        "quote": "Associated Countries that are universities, research and higher education institutions or research technology organisations (RTOs).",
+        "page": 17,
+        "why_discriminating": "restricts beneficiary type to academic/RTO organisations — a company-led consortium is ineligible on this topic"
+      },
+      {
+        "quote": "In addition, at least one (1) legal entity shall be established in a “widening country”.",
+        "page": 17,
+        "why_discriminating": "a widening-country participant is an eligibility condition, not a scoring bonus"
+      },
+      {
+        "quote": "'moderate' or ‘emerging’ innovator countries or regions. The Regional Innovation Scoreboard is taken as a reference, and in the case of entities representing national authorities, the European Innovation Scoreboard.",
+        "page": 20,
+        "why_discriminating": "the Startup Europe topic ties at least 50% of beneficiaries to a scoreboard-defined innovation-performance class; consortia drawn from strong-innovator regions fail. Quoted from the page-20 continuation because a footnote splits the sentence at the page break"
+      },
+      {
+        "quote": "The coordinator of the project must be a higher education institution, or research technology organisation(s) (RTOs) or a network of such organisations.",
+        "page": 26,
+        "why_discriminating": "a coordinator-type restriction: an industry or philanthropy body may participate but may not lead"
+      },
+      {
+        "quote": "Consortia must include at least three (3) participants from three (3) different member states or associated countries, including higher education institution(s) or RTOs and philanthropy organisation(s) or network of philanthropy organisations.",
+        "page": 26,
+        "why_discriminating": "requires a philanthropic foundation inside the consortium — and the topic further requires it to meet Philea's 'public-benefit foundation' criteria"
+      },
+      {
+        "quote": "For the purposes of this call, eligible philanthropic organization should meet the criteria set by Philea for “public-benefit foundation”.",
+        "page": 28,
+        "why_discriminating": "outsources an eligibility definition to a private sector body's criteria (no members or shareholders, own endowment, own governing board)"
+      },
+      {
+        "quote": "Beneficiaries may provide financial support to third parties. The support to third parties can only be provided in the form of grants. The maximum amount to be granted to each third party is EUR 60 000.",
+        "page": 20,
+        "why_discriminating": "cascade funding is the delivery mechanism here rather than an add-on — the money reaches startups as EUR 60k sub-grants, so the real beneficiary of the instrument is not the applicant"
+      },
+      {
+        "quote": "The maximum amount to be granted to each third party is EUR 200 000 to ensure the deployment and impact of the project outcomes.",
+        "page": 23,
+        "why_discriminating": "a higher cascade ceiling on the pre-commercial procurement topic, aimed at end-user adoption incentives"
+      },
+      {
+        "quote": "The action aims to pilot a network of around 10-18 ESSHs",
+        "page": 14,
+        "why_discriminating": "confirms the hubs topic funds a single network of 10-18 hubs, i.e. one grant, not a portfolio — an unusual concentration for Pillar II"
+      }
+    ],
+    "body_evidence": null,
+    "notes": "Read in full (35 pages). Five call topics across three calls (HORIZON-EIE-2026-02, 2026-03, 2027-01), all under one destination, CONNECT: European Startup and Scaleup Hubs pilot (COFUND, EUR 20m), TTO 'From lab to market' (CSA, EUR 5m), Startup Europe (CSA, EUR 18m), Reinforcing synergies between experimentation spaces and innovation procurement (PCP, EUR 10m), and Enhancing the involvement of philanthropic organisations (CSA, EUR 6m). Plus seven 'Other actions not subject to calls for proposals' (procurements, EUREKA membership fee, expert contracts). administering_body is NULL. No Executive Agency is named anywhere in the 35 pages (EISMEA 0, HaDEA 0, REA 0, CINEA 0), and the phrase 'the granting authority' does not occur at all. The EIC is referenced constantly, but as a complementary programme and a body to liaise with — 'The National Contact Points for the European Innovation Ecosystems work programme are supported under the EIC work programme.' (p5) — never as the administering body of this part. 'European Commission' reaches 5 pages (1, 4, 5, 14, 16) but pages 4, 5, 14 and 16 are footnote URLs and policy-document titles; the agentive uses are the cover decision line (p1), 'The Commission estimates that an EU contribution of around EUR X million...' (pp.12, 16, 19, 22, 26) and 'the Commission will also launch a study to map and profile the relevant philanthropic organisations' (p28). That is arguably a two-page-plus attestation of the Commission acting as funder, but not of a body named as running the programme, so I left it NULL for consistency with the sibling records. Every one of the five topics derogates from the standard consortium rule — by hub representation and per-country caps, by beneficiary organisation type (universities/RTOs only), by coordinator type, by innovation-scoreboard performance class, or by requiring a philanthropic foundation. No topic states a TRL and no topic invokes Article 22(5) country limits. Two topics are 'Subject to restrictions for the protection of European communication networks' (pp.13, 20). Three topics use lump-sum cost reporting. One quote is split across a page break by footnote text in the pdftotext output and is therefore supplied as two consecutive quotes (pp.16 and 17); the Startup Europe 50% rule is likewise quoted from its page-20 continuation, because the phrase 'At least 50% of the beneficiaries in a consortium must be established in' is followed immediately by footnote text in the extracted stream. scheme_url is the slug supplied in the brief; not fetched."
+  }
+]

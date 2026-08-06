@@ -1,0 +1,221 @@
+[
+  {
+    "instrument_id": "horizon_eu_cl1",
+    "found": true,
+    "eligibility_text": "Cluster 1 Health's discriminating condition runs the opposite way from the security clusters: it widens the eligible-country set rather than narrowing it. On 37 distinct pages the Eligibility conditions row states \"In recognition of the opening of the US National Institutes of Health’s programmes to European researchers, any legal entity established in the United States of America is eligible to receive Union funding.\" On Coordination and Support Action topics the same reciprocity is granted in a narrower form — US entities \"may exceptionally participate as a beneficiary or affiliated entity, and are eligible to receive Union funding\" — paired with a derogation from the standard consortium rule in the other direction: \"Coordinators of projects must be legal entities established in an EU Member State or Associated Country.\" No other Pillar II cluster opens funding eligibility to US entities as a standing rule. Second, the cluster is organised around clinical evidence generation and defines its own unusually broad object: \"In the context of the Health Cluster Work Programme part for 2026-2027, a clinical study covers clinical studies/trials/investigations/cohorts and is defined as any systematic prospective or retrospective collection and analysis of health data obtained from individual patients or healthy persons\" — explicitly wider than Regulation 536/2014, and topics repeatedly note that \"As proposals under this topic are expected to include clinical studies, the use of the template is strongly encouraged\", the template being a dedicated clinical-studies annex in the submission system. Third, many topics carry a binding SSH requirement: \"This topic requires the effective contribution of social sciences and humanities (SSH) disciplines and the involvement of SSH experts\". Fourth, the co-funded European Partnership topics derogate from the standard funding rates: \"The funding rate is 50% of the eligible costs.\" (Rare Diseases) and \"The funding rate is 30% of the eligible costs.\" (Personalised Medicine). Notably, unlike Clusters 3 and 4, this part states no TRL in any topic conditions table (zero TRL rows across 211 pages), and Article 22(5) participation limits appear on only one topic (page 173), so an applicant's country eligibility here is broader than in the security or space clusters, not tighter.",
+    "description": "Collaborative R&I grants for health research that generates clinical evidence — disease prevention and treatment, vaccines and medical countermeasures, health-system transformation, and the tools and cohorts behind them — for consortia that usually run or plan clinical studies.",
+    "administering_body": null,
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026-2027/wp-4-health_horizon-2026-2027_en.pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_cl1_wp4_health_2026_2027.pdf",
+    "quotes": [
+      {
+        "quote": "In recognition of the opening of the US National Institutes of Health’s programmes to European researchers, any legal entity established in the United States of America is eligible to receive Union funding.",
+        "page": 30,
+        "why_discriminating": "US entities are made eligible for Union funding as a standing rule on 37 distinct pages; no other Pillar II cluster grants blanket US funding eligibility"
+      },
+      {
+        "quote": "In recognition of the opening of the US National Institutes of Health’s programmes to European researchers, legal entities established in the United States of America may exceptionally participate as a beneficiary or affiliated entity, and are eligible to receive Union funding.",
+        "page": 33,
+        "why_discriminating": "the CSA-specific form of the NIH reciprocity, which overrides the General Annex B rule that CSA beneficiaries must be established in a Member State or Associated Country"
+      },
+      {
+        "quote": "Coordinators of projects must be legal entities established in an EU Member State or Associated Country.",
+        "page": 33,
+        "why_discriminating": "derogation from the standard consortium rule: General Annex B places no establishment condition on the coordinator specifically; this ring-fences coordination while US entities may be beneficiaries"
+      },
+      {
+        "quote": "In the context of the Health Cluster Work Programme part for 2026-2027, a clinical study covers clinical studies/trials/investigations/cohorts and is defined as any systematic prospective or retrospective collection and analysis of health data obtained from individual patients or healthy persons",
+        "page": 11,
+        "why_discriminating": "the cluster defines its own object of funding as human-subject evidence generation, wider than Regulation 536/2014; no other cluster carries a clinical-study definition"
+      },
+      {
+        "quote": "As proposals under this topic are expected to include clinical studies, the use of the template is strongly encouraged.",
+        "page": 32,
+        "why_discriminating": "triggers a Health-only dedicated clinical-studies annex in the submission system, a submission artefact siblings do not have"
+      },
+      {
+        "quote": "This topic requires the effective contribution of social sciences and humanities (SSH) disciplines and the involvement of SSH experts",
+        "page": 32,
+        "why_discriminating": "a binding topic-level composition requirement on the consortium's disciplinary mix, appearing on ~17 topics in this part"
+      },
+      {
+        "quote": "The funding rate is 50% of the eligible costs.",
+        "page": 86,
+        "why_discriminating": "derogation from the standard action-type funding rates for the co-funded Rare Diseases partnership"
+      },
+      {
+        "quote": "The funding rate is 30% of the eligible costs.",
+        "page": 137,
+        "why_discriminating": "a second, lower derogated rate for the Personalised Medicine partnership; the cluster does not use one uniform rate"
+      },
+      {
+        "quote": "In order to achieve the expected outcomes, and safeguard the Union’s strategic assets, interests, autonomy, or security",
+        "page": 173,
+        "why_discriminating": "Article 22(5) country limitation appears on exactly one Health topic, versus dozens in Clusters 3 and 4 — the scarcity is itself the discriminator"
+      }
+    ],
+    "body_evidence": null,
+    "notes": "administering_body is NULL: no body running the programme is named anywhere in the 211 pages. Candidates were checked by page reach, not frequency — HaDEA: 0 pages; Research Executive Agency: 0; CINEA: 1; Innovative Health Initiative: 1; 'Joint Undertaking': 1. The European Medicines Agency appears on 3 pages but only as a regulator applicants should engage with, never as granting authority. The document's only self-reference is the generic phrase 'the granting authority' (35 pages), which names nobody. Do not fill this from outside knowledge. Two cross-cutting clauses were checked and DEMOTED as non-discriminating: the Copernicus/Galileo/EGNOS mandate appears on 36 pages here, 36 in Cluster 3 and 17 in Cluster 4, so it fails the sibling test; and the destination-level 'Legal entities established in China are not eligible to participate in both Research and Innovation Actions (RIAs) and Innovation Actions (IAs)' appears on 6 pages here and 6 in Cluster 3, so it is regime behaviour, not a Health property. scheme_url is constructed on the same EC pattern as the Cluster 3 URL supplied in the brief (this part self-identifies as 'Part 4'); it was not fetched or verified — no network access was used."
+  },
+  {
+    "instrument_id": "horizon_eu_cl3",
+    "found": true,
+    "eligibility_text": "The discriminating condition in Cluster 3 is a mandatory end-user beneficiary quota written into almost every topic's Eligibility conditions row under \"The following additional eligibility conditions apply:\". Typical wording: \"This topic requires the active involvement, as beneficiaries, of at least 3 Police Authorities 47 from at least 3 different EU Member States or Associated Countries.\" The definition is deliberately narrow: ‘Police Authorities’ means \"public authorities explicitly designated by national law, or other entities legally mandated by the competent national authority, for the prevention, detection and/or investigation of terrorist offences or other criminal offences, specifically excluding police academies, forensic institutes, training facilities as well as border and customs authorities\". The required practitioner class tracks the destination: Police Authorities (2 or 3, on many topics alongside at least 2 Civil Society Organisations or NGOs) for Fighting Crime and Terrorism; \"at least 2 Border or Coast Guard Authorities from at least 2 different EU Member States or Associated Countries\" for Border Management; \"at least 2 Customs Authorities from at least 2 different EU Member States or Associated Countries\"; first responders, medical emergency authorities or authorities in charge of disaster risk for Disaster-Resilient Society; and on PCP/PPI topics \"practitioners and 3 public procurers. These beneficiaries must be from at least 3 different EU Member States or Associated Countries.\" Named practitioners must be declared in the \"Information about security practitioners\" table in the application form. Second, every topic states a TRL band in its conditions table (40 such rows in this part, ranging TRL 4 to TRL 8), e.g. \"Activities are expected to achieve TRL 6-8 by the end of the project\"; the Health work programme states none. Third, on innovation actions in critical technology areas the cluster activates the General Annex control test: \"entities established in an eligible country but which are directly or indirectly controlled by China or by a legal entity established in China are not eligible to participate in the action\" (16 topic tables). Fourth, topic tables carry a Security Sensitive Topics row on classified background and EUCI/SEN results — \"Please refer to the related provisions in section B Security — EU classified and sensitive information of the General Annexes.\" Fifth, the 2026 cybersecurity budget is run by a delegated body: \"The Commission intends to conclude a contribution agreement with the European Cybersecurity Competence Centre (ECCC)\", whose call is limited under Article 22(5) so that participation \"is limited to legal entities established in Member States and Associated Countries\" with entities controlled by a non-eligible country excluded outright.",
+    "description": "Collaborative R&I and innovation grants for civil security technology — fighting crime and terrorism, border and customs control, disaster resilience, infrastructure protection and cybersecurity — where the consortium must include the public authorities who would actually operate the result.",
+    "administering_body": null,
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026-2027/wp-6-civil-security-for-society_horizon-2026-2027_en.pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_cl3_wp6_civil_security_2026_2027.pdf",
+    "quotes": [
+      {
+        "quote": "This topic requires the active involvement, as beneficiaries, of at least 3 Police Authorities 47 from at least 3 different EU Member States or Associated Countries.",
+        "page": 40,
+        "why_discriminating": "no other Pillar II cluster requires named police authorities as beneficiaries; this is a hard gate on consortium composition, not a preference"
+      },
+      {
+        "quote": "In the context of this Destination, ‘Police Authorities’ means public authorities explicitly designated by national law, or other entities legally mandated by the competent national authority, for the prevention, detection and/or investigation of terrorist offences or other criminal offences, specifically excluding police academies, forensic institutes, training facilities as well as border and customs authorities.",
+        "page": 24,
+        "why_discriminating": "the exclusion list is what makes the gate bite — a research institute, police academy or border authority does not count toward the quota"
+      },
+      {
+        "quote": "This topic requires the active involvement, as beneficiaries, of at least 2 Border or Coast Guard Authorities from at least 2 different EU Member States or Associated Countries.",
+        "page": 62,
+        "why_discriminating": "the mandatory practitioner class changes per destination; Border Management topics demand border or coast guard authorities specifically"
+      },
+      {
+        "quote": "This topic requires the active involvement, as beneficiaries, of at least 2 Customs Authorities from at least 2 different EU Member States or Associated Countries.",
+        "page": 72,
+        "why_discriminating": "a third distinct mandatory authority type, showing the requirement is topic-calibrated rather than a single cluster-wide rule"
+      },
+      {
+        "quote": "practitioners and 3 public procurers. These beneficiaries must be from at least 3 different EU Member States or Associated Countries.",
+        "page": 137,
+        "why_discriminating": "PCP/PPI topics stack a practitioner quota on top of the General Annex B public-procurer minimum"
+      },
+      {
+        "quote": "Activities are expected to achieve TRL 6-8 by the end of the project",
+        "page": 30,
+        "why_discriminating": "the cluster states a binding TRL band in 40 topic conditions tables (range TRL 4 to 8); Cluster 1 Health states none at all"
+      },
+      {
+        "quote": "In line with the “restriction on control in innovation actions in critical technology areas” delineated in General Annex B of the General Annexes, entities established in an eligible country but which are directly or indirectly controlled by China or by a legal entity established in China are not eligible to participate in the action.",
+        "page": 29,
+        "why_discriminating": "the General Annex enables this only 'where stated in the specific call/topic conditions'; Cluster 3 activates it on 16 topic tables versus 2 in Cluster 1, and it tests control, not establishment"
+      },
+      {
+        "quote": "Please refer to the related provisions in section B Security — EU classified and sensitive information of the General Annexes.",
+        "page": 25,
+        "why_discriminating": "closes a Security Sensitive Topics row that appears 33 times in this part and never in Cluster 1 — applicants must be able to handle EUCI/SEN classified background and results"
+      },
+      {
+        "quote": "The Commission intends to conclude a contribution agreement with the European Cybersecurity Competence Centre (ECCC) for the implementation of Horizon Europe cybersecurity actions not co-funded by Member States",
+        "page": 155,
+        "why_discriminating": "part of this cluster's budget is executed by a delegated body rather than the Commission, which changes who the applicant contracts with"
+      },
+      {
+        "quote": "topic is limited to legal entities established in Member States and Associated Countries. In order to guarantee the protection of the strategic interests of the Union and its Member States, entities established in an eligible country listed above, but which are directly or indirectly controlled by a non-eligible country or by a non-eligible country entity, shall not participate in the action.",
+        "page": 157,
+        "why_discriminating": "derogation from the standard rule: the ECCC cybersecurity call excludes third-country entities entirely and applies an unconditional control test with no guarantees escape hatch"
+      }
+    ],
+    "body_evidence": null,
+    "notes": "administering_body is NULL. No body is named as running the programme. Page-reach check: Europol 12 pages, Frontex 8, eu-LISA 4, Joint Research Centre 4 — all named as agencies proposals should liaise with or that may observe pilots, never as granting authority. The strongest candidate is the European Cybersecurity Competence Centre (ECCC), spelled out on 3 pages and abbreviated on 14 distinct pages (4, 6, 93, 154, 155, 156, 159, 161, 163, 164, 165, 167, 169, 171), and it IS explicitly entrusted with implementation — but only of the 2026 cybersecurity call (EUR 56.20m), not of the cluster. I have left administering_body NULL rather than attribute the whole instrument to a partial-scope delegate; the coordinator may prefer to record ECCC on a cybersecurity-specific row. DEMOTED as non-discriminating despite appearing in the brief's examples: the Copernicus/Galileo/EGNOS mandate. It appears on 36 pages of this part but also 36 pages of Cluster 1 Health and 17 of Cluster 4, so it fails the sibling test and is not evidence of anything Cluster 3 specific — I have excluded it from eligibility_text. Also demoted: the destination-level blanket 'Legal entities established in China are not eligible' (6 pages here, 6 in Cluster 1, 5 in Cluster 4) which is General Annex B regime behaviour; the topic-level CONTROL test is the discriminating one and is what I kept."
+  },
+  {
+    "instrument_id": "horizon_eu_cl4",
+    "found": true,
+    "eligibility_text": "Cluster 4's discriminating condition is a per-topic patchwork of bespoke eligible-country lists invoked under Article 22(5), replacing the standard Member State or Associated Country test with something narrower or wider depending on the technology. Space topics are the tightest: \"In order to achieve the expected outcomes, and safeguard the Union’s strategic assets, interests, autonomy, or security, participation is limited to legal entities established in Member States, Norway and Iceland.\" One EU Space Surveillance and Tracking topic goes further: \"participation is limited to legal entities established in Member States. Proposals including entities established in countries outside the scope specified in the call/topic/action will be ineligible.\" Digital and semiconductor topics use an intermediate list — \"participation is limited to legal entities established in Member States, Iceland and Norway and the following additional associated countries: Canada, Israel, Republic of Korea, New Zealand, Switzerland, and the United Kingdom.\" Raw-materials topics widen it instead: \"participation in this topic is limited to legal entities established in Member States, associated countries, OECD countries, African Union Member States, MERCOSUR, CARIFORUM, Andean Community and countries with which the EU has concluded strategic partnerships on raw materials\". On restricted topics an ownership test also applies: \"entities established in an eligible country listed above, but which are directly or indirectly controlled by a non-eligible country or by a non-eligible country entity, may not participate in the action unless it can be demonstrated, by means of guarantees positively assessed by their eligible country of establishment\". Second, space topics use a different TRL yardstick entirely: \"The reference TRL definition is the ISO 16290:2013 applicable to the space sector.\" Third, the cluster derogates from the standard consortium rule in both directions: Fast Track to Research and Innovation topics impose a ceiling — \"The following additional eligibility criteria apply: consortia may include a maximum of 6 independent eligible entities as participants.\" — while a quantum inertial-navigation topic drops the three-entity floor entirely: \"The following additional eligibility criteria apply: Proposals must be submitted by a single legal entity (mono-beneficiary CSA) wich is an SME.\" Fourth, one space topic derogates from the standard IA rate: \"This is an Innovation Action (IA) with reduced funding rate (45%).\" A space-security topic also imports the Cluster 3 practitioner mechanic, requiring \"participation, as beneficiaries, of at least two crisis or security practitioner 190 organisations or agencies, established in at least two different EU Member States or Associated Countries.\"",
+    "description": "Collaborative R&I and innovation grants for the EU's technology sovereignty stack — AI, quantum, photonics, semiconductors, advanced materials and manufacturing, circular industry, raw materials and space — where eligibility is gated on where the applicant is established and who ultimately controls it.",
+    "administering_body": "HaDEA",
+    "scheme_url": "https://ec.europa.eu/info/funding-tenders/opportunities/docs/2021-2027/horizon/wp-call/2026-2027/wp-7-digital-industry-and-space_horizon-2026-2027_en.pdf",
+    "confidence": "high",
+    "source_file": "horizon_eu_cl4_wp7_digital_industry_space_2026_2027.pdf",
+    "quotes": [
+      {
+        "quote": "In order to achieve the expected outcomes, and safeguard the Union’s strategic assets, interests, autonomy, or security, participation is limited to legal entities established in Member States, Norway and Iceland.",
+        "page": 193,
+        "why_discriminating": "space topics exclude every Associated Country except Norway and Iceland — UK, Switzerland, Israel, Canada and Korea entities are ineligible, which no sibling cluster does at this scale"
+      },
+      {
+        "quote": "participation is limited to legal entities established in Member States. Proposals including entities established in countries outside the scope specified in the call/topic/action will be ineligible.",
+        "page": 279,
+        "why_discriminating": "the tightest list in Pillar II: EU Member States only, no Associated Countries at all"
+      },
+      {
+        "quote": "participation is limited to legal entities established in Member States, Iceland and Norway and the following additional associated countries: Canada, Israel, Republic of Korea, New Zealand, Switzerland, and the United Kingdom.",
+        "page": 107,
+        "why_discriminating": "a third, intermediate country list — the cluster runs several mutually inconsistent eligible-country sets in the same document, so country eligibility must be read topic by topic"
+      },
+      {
+        "quote": "participation in this topic is limited to legal entities established in Member States, associated countries, OECD countries, African Union Member States, MERCOSUR, CARIFORUM, Andean Community and countries with which the EU has concluded strategic partnerships on raw materials",
+        "page": 87,
+        "why_discriminating": "raw-materials topics WIDEN the country set far beyond the Horizon norm rather than narrowing it; the same cluster does both"
+      },
+      {
+        "quote": "entities established in an eligible country listed above, but which are directly or indirectly controlled by a non-eligible country or by a non-eligible country entity, may not participate in the action unless it can be demonstrated, by means of guarantees positively assessed by their eligible country of establishment",
+        "page": 134,
+        "why_discriminating": "an ownership-and-control test on top of establishment, escapable only via national government guarantees — an administrative step with no analogue in Cluster 1"
+      },
+      {
+        "quote": "The reference TRL definition is the ISO 16290:2013 applicable to the space sector.",
+        "page": 196,
+        "why_discriminating": "space topics measure maturity against a different standard than General Annex B, so a TRL claim written for a non-space topic will not read across"
+      },
+      {
+        "quote": "The following additional eligibility criteria apply: consortia may include a maximum of 6 independent eligible entities as participants.",
+        "page": 72,
+        "why_discriminating": "a consortium CEILING; General Annex B sets only a floor of three, so this is a derogation the standard rule cannot express"
+      },
+      {
+        "quote": "The following additional eligibility criteria apply: Proposals must be submitted by a single legal entity (mono-beneficiary CSA) wich is an SME.",
+        "page": 163,
+        "why_discriminating": "drops the three-entity consortium rule entirely and restricts the applicant to a single SME — a mono-beneficiary derogation (typo 'wich' is in the source)"
+      },
+      {
+        "quote": "This is an Innovation Action (IA) with reduced funding rate (45%).",
+        "page": 279,
+        "why_discriminating": "explicit derogation from the standard 70% Innovation Action rate"
+      },
+      {
+        "quote": "participation, as beneficiaries, of at least two crisis or security practitioner 190 organisations or agencies, established in at least two different EU Member States or Associated Countries.",
+        "page": 289,
+        "why_discriminating": "one space-security topic imports Cluster 3's practitioner-beneficiary mechanic, so a Cluster 4 applicant may need public end-users on the consortium"
+      },
+      {
+        "quote": "notify the granting authority (i.e. DG-CNECT and HaDEA) before the intended transfer or licensing takes place",
+        "page": 105,
+        "why_discriminating": "the document names its own granting authority, which Clusters 1 and 3 never do"
+      }
+    ],
+    "body_evidence": {
+      "name": "HaDEA",
+      "distinct_pages": 22,
+      "pages": [
+        8,
+        105,
+        112,
+        114,
+        119,
+        127,
+        159,
+        161,
+        174,
+        176,
+        177,
+        179,
+        229,
+        233,
+        251,
+        252,
+        255,
+        257,
+        268,
+        269,
+        270,
+        271
+      ]
+    },
+    "notes": "administering_body HaDEA is attested, not inferred. It is named on 22 distinct pages and, critically, is identified in the document's own words as the granting authority: 'notify the granting authority (i.e. DG-CNECT and HaDEA)' on digital and industry topics (pages 105, 112, 114, 119, 127, 159, 161, 174, 176, 179, 251, 252, 255, 257) and 'the granting authority (i.e. DG-DEFIS and HaDEA)' on space topics (pages 229, 233). The full name 'Health and Digital Executive Agency' is NOT spelled out anywhere in the document — only the acronym — so I report the exact attested string 'HaDEA' rather than expanding it from outside knowledge. Note the granting authority is jointly the Commission DG (CNECT for digital/industry, DEFIS for space) and HaDEA; if the coordinator wants a single string, 'HaDEA' is the executive agency and the only non-DG body named. EISMEA appears on 1 page only and was rejected on page reach. Two clauses were checked and DEMOTED: the Copernicus/Galileo/EGNOS mandate (17 pages here, but 36 in Cluster 1 and 36 in Cluster 3 — fails the sibling test) and the destination-level blanket China exclusion (5 pages here, 6 in Cluster 1, 6 in Cluster 3 — General Annex B regime behaviour). The topic-level China CONTROL test appears on only 4 pages here versus 16 in Cluster 3, so it is a Cluster 3 signature rather than a Cluster 4 one and I did not lead with it. scheme_url is constructed on the EC pattern given in the brief (this part self-identifies as 'Part 7'); not fetched or verified — no network access was used."
+  }
+]
