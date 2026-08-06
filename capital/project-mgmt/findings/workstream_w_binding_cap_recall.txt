@@ -1,0 +1,46 @@
+=== SEED=20260806 cap=90 (BINDING) ===
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+corpus=postgres instruments=1076 at 2026-08-06T22:43:52.482Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 250
+  in pool                  239/250 (96% +/-2.5)
+  EXACT scheme in top 5    73/250 (29% +/-5.6)
+  same REGIME in top 5     211/250 (84% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    223/250 (89% +/-3.8)
+    mode=profile               n= 196  pool 96%  exact5 28%  regime5 89%
+    mode=project               n=  54  pool 93%  exact5 35%  regime5 67%
+    regime 1 (alone)           n=  13  pool 100%  exact5 46%  regime5 46%
+    regime 2-5                 n=  16  pool 88%  exact5 44%  regime5 56%
+    regime 6-20                n=  29  pool 93%  exact5 34%  regime5 52%
+    regime 21-50               n=  58  pool 100%  exact5 33%  regime5 84%
+    regime 51+                 n= 134  pool 95%  exact5 23%  regime5 99%
+=== SEED=7 cap=90 (BINDING) ===
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+corpus=postgres instruments=1076 at 2026-08-06T22:46:09.676Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 250
+  in pool                  241/250 (96% +/-2.3)
+  EXACT scheme in top 5    84/250 (34% +/-5.9)
+  same REGIME in top 5     215/250 (86% +/-4.3)   <- the operational number
+  same CHANNEL in top 5    222/250 (89% +/-3.9)
+    mode=profile               n= 185  pool 98%  exact5 31%  regime5 90%
+    mode=project               n=  65  pool 92%  exact5 40%  regime5 74%
+    regime 1 (alone)           n=  19  pool 100%  exact5 47%  regime5 47%
+    regime 2-5                 n=  14  pool 100%  exact5 50%  regime5 64%
+    regime 6-20                n=  21  pool 76%  exact5 38%  regime5 48%
+    regime 21-50               n=  71  pool 100%  exact5 34%  regime5 90%
+    regime 51+                 n= 125  pool 97%  exact5 29%  regime5 98%
+=== SEED=99 cap=90 (BINDING) ===
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+corpus=postgres instruments=1076 at 2026-08-06T22:48:29.596Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 250
+  in pool                  242/250 (97% +/-2.2)
+  EXACT scheme in top 5    75/250 (30% +/-5.7)
+  same REGIME in top 5     213/250 (85% +/-4.4)   <- the operational number
+  same CHANNEL in top 5    221/250 (88% +/-4.0)
+    mode=profile               n= 185  pool 99%  exact5 29%  regime5 91%
+    mode=project               n=  65  pool 91%  exact5 32%  regime5 69%
+    regime 1 (alone)           n=  15  pool 100%  exact5 27%  regime5 27%
+    regime 2-5                 n=   9  pool 78%  exact5 33%  regime5 44%
+    regime 6-20                n=  31  pool 87%  exact5 29%  regime5 61%
+    regime 21-50               n=  71  pool 100%  exact5 39%  regime5 89%
+    regime 51+                 n= 124  pool 98%  exact5 25%  regime5 99%
+ALLDONE
