@@ -180,6 +180,32 @@ the first five.
 
 ## 2. What is computed and never used
 
+> **STATUS 2026-08-06 (workstream I). Most of this section is now CLOSED, and
+> two entries were WRONG by the time anyone acted on them. Verify against the
+> tree before removing anything on the strength of a line below.**
+>
+> | audit entry | state today |
+> |---|---|
+> | `CHANNEL_BANDS`, `PRIOR_WEIGHT_WITH_TEXT`, `PRIOR_WEIGHT_WITHOUT_TEXT`, `fitOf` | deleted before this workstream started |
+> | `LEAVES_PER_CHANNEL`, `MAX_LEAVES_PER_CHANNEL`, `NEAR_TIE_RATIO` | deleted; the flat pool cap is the only cap |
+> | `channelServesBand` + `SEL-BAND` | **deleted here.** It was retired to `return true` and left callable, so four `if (!channelServesBand(…))` branches sat in the channel-admission path and the exclusion register advertised a filter nothing could emit |
+> | `scoreFit` / `rankByFit` / the seven unreached components | **documented, not deleted** — workstream H is measuring whether any of them separates siblings. Every definition now states whether it reaches the founder's table |
+> | `sampleProjectTitles` | still write-only; now labelled as such at the definition, with the reason it must not simply be wired up |
+> | **`awardP25` / `awardP75`** | **NOT dead.** Read by `fundSelection.ts` for the gate-2 candidate rows |
+> | **`companyCount`** | **NOT dead.** Read by `scripts/measure_sibling_choice.ts` |
+> | **`successorScheme` / `successorTitle`** | **NOT dead, and the recall opportunity is TAKEN.** `publishableInstruments()` now redirects: of the 40 closed-with-successor schemes, 29 name a successor already held as an open leaf, and the other 11 are republished under the successor's scheme code and registered title |
+>
+> The lesson for the next reader is the entry count, not any single row: a
+> dead-code inventory decays fast in a tree several workstreams are writing.
+> The three entries above were re-verified by grep against HEAD and would have
+> been wrongly deleted on the audit's authority.
+>
+> §5.1's "the relevance-aware leaf cap is inert" is closed, and the constant
+> that survived it is now guarded: see `scripts/check_leaf_cap.ts`. At a cap of
+> 90 the widest (channel, country) group is 87, so headroom is **three
+> instruments** — the build now fails when it binds instead of recall dropping
+> silently for a third time.
+
 ### 2.1 `fit.ts` — the documented ranker does not rank the five
 `scoreFit()` is called in exactly one place: `synthesize()` in the **memo path**
 (pipeline.ts:823), over `hydratedTable.slice(0, VERDICT_POOL = 18)` — i.e. over
