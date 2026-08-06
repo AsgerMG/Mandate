@@ -64,7 +64,31 @@ def doc_text(name: str) -> str:
 
 
 def flat(s: str) -> str:
-    return re.sub(r"\s+", " ", s or "").strip().lower()
+    """Compare-normalise. Whitespace, quote/dash glyphs, and footnote markers.
+
+    The footnote rule is the one that matters. `pdftotext` renders a superscript
+    reference glued to the word it hangs off -- "Principal Investigators80 whose"
+    -- so a quotation that reads naturally is never byte-equal to its source, and
+    a checker without this rule rejects every honest quote from a footnoted PDF
+    while catching nothing. Only digits fused to the END of a word are dropped,
+    so "EUR 150 000" and "TRL 6-8" survive untouched.
+    """
+    s = re.sub(r"[“”„]", '"', s or "").replace("’", "'")
+    s = re.sub(r"[–—]", "-", s)
+    s = re.sub(r"(?<=[A-Za-z])\d{1,3}\b", "", s)
+    return re.sub(r"\s+", " ", s).strip().lower()
+
+
+def quoted_spans(text: str) -> list[str]:
+    """The spans a text presents as verbatim quotation.
+
+    Split on the quote glyph and keep the odd pieces. Pairing with a regex looks
+    equivalent and is not: `"A" and "B"` lets a greedy or even a lazy pattern
+    match the GAP between two quotations, so the checker reports `" and "` as an
+    unattested quote and buries the real failures under noise.
+    """
+    parts = re.split(r"[\"“”]", text or "")
+    return [p for i, p in enumerate(parts) if i % 2 == 1 and len(p.strip()) >= 25]
 
 
 def main() -> None:
@@ -114,6 +138,19 @@ def main() -> None:
                 problems.append("no quotes offered, so nothing is verifiable")
             for q in missing:
                 problems.append(f"quote NOT in {src}: {flat(q.get('quote',''))[:90]!r}")
+
+        # 1b. MECHANICAL, on the text that actually gets PUBLISHED. Checking the
+        # `quotes` array is not enough: it verifies what the extractor claims to
+        # have read, not what the column will show a founder. Any span the
+        # eligibility_text puts inside double quotes is a claim that the document
+        # says exactly that, so it is held to exactly the same bar. This is the
+        # check that catches an editing pass -- including the coordinator's own
+        # -- silently corrupting a quotation while tidying the prose around it.
+        if text:
+            for span in quoted_spans(r.get("eligibility_text") or ""):
+                if flat(span) not in text:
+                    problems.append(
+                        f"text quotes something NOT in {src}: {flat(span)[:90]!r}")
 
         # 4. BOILERPLATE -- did it quote the shared annex at us?
         shared = flat(doc_text(SHARED))
