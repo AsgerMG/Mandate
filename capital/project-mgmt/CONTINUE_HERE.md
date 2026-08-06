@@ -98,8 +98,35 @@ Verbatim source-attributed prose already sits in `eligibility_gates.quote` /
 `eligibility_clauses.quote` for **163 instruments whose `eligibility_text` is
 empty** (90 on the scoreboard) — worth 0.76 of the mean class with **zero
 fetches and zero spend**. Nobody harvested it because an empty column was read
-as missing text. Trap: `load_scheme_text.py` writes SQLite, the scoreboard reads
-Postgres; they are in sync today and nothing keeps them so.
+as missing text.
+
+~~Trap: `load_scheme_text.py` writes SQLite, the scoreboard reads Postgres.~~
+**That trap fired, on France, and is now closed** (`workstream-l-fr2`). It cost
+a whole night: `f4d840f` loaded 49 ADEME leaves, reported success, and Postgres
+still read 0 a day later. Publishing is now the DEFAULT in `load_scheme_text.py`
+(`--sqlite-only` to opt out, loudly), and **every `--write` run ends by
+reconciling the two stores for the countries in scope and exits 1 if they
+disagree**, printing the fix. A defaulted flag alone would NOT have saved
+France — the rows were already in SQLite, so every later run skipped them as
+"already loaded" and mirrored nothing. See
+`project-mgmt/findings/france_coverage_L-FR2.md`.
+
+Found while testing that: **`has_text()` accepted records whose prose sat in
+`description`, then wrote NULL into `eligibility_text`** — 86 records corpus-wide
+(FR 24, ES 17, BE 13, IT 13, DE 12) counted as "loaded" while adding zero
+coverage. Fixed; they are now reported under their own heading and NOT promoted
+into the coverage column, because they state what a scheme IS, not who may apply.
+**If your country's load ever said "loaded N rows" and coverage did not move,
+this is why — re-check it.**
+
+**France is DONE and does not need another agent.** Publishable coverage 22% ->
+64%, class **54.0 -> 8.01**, and 6 dead ADEME calls unpublished. The remaining
+26 leaves are **source-blocked, not effort-blocked**: ADEME's portal is 403
+Cloudflare (re-verified), `data.ademe.fr`'s 931 datasets hold awards but no
+eligibility catalogue, and the TEE catalogue genuinely lacks them (AVELO,
+ORPLAST, TEXHABI: 0 hits in 223 rows). One untried lead needing a human:
+`aides-territoires.beta.gouv.fr` returns 401, JWT required. **French SATR text
+is worth 0.11 of a sibling — do not fetch it.**
 
 Also unfinished: **Sweden**. Source found and verified but nothing written —
 `data.vinnova.se/api/ansokningsomgangar/`, CC0, `WebTextLista` TextID 2 =
