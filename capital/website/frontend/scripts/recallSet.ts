@@ -113,18 +113,33 @@ export function partitionByOfferable(
  *  them a scheme a register says has closed with NO successor to redirect to
  *  (80 Spanish, 6 French). That is the honest state of the key today.
  *
- *  The band is wide on purpose. It is not a floor on quality — it is a
- *  staleness alarm on the ANSWER KEY, and the two failure directions are
- *  different bugs, so it is two-sided:
+ *  This is a CEILING only, and deliberately. An earlier draft also set a floor,
+ *  on the theory that a suspiciously small exclusion meant someone had pruned
+ *  the set to raise a score. That was the wrong instrument for the right worry.
+ *  The exclusion is a pure function of publishability, so the honest way to make
+ *  the set easier is to prune the FILE — which a share cannot see, and which
+ *  `MIN_PAIRS` below catches exactly. Worse, the floor would have fired on a
+ *  genuine improvement: register successors for those 86 schemes and they become
+ *  publishable through the existing redirect, the exclusion collapses toward
+ *  zero, and CI would have failed on a corpus that got better.
  *
- *    ABOVE the ceiling  the corpus has moved out from under the key again and
- *                       the key needs repairing, exactly as it did tonight;
- *    BELOW the floor    a publishability bug has started offering closed funds,
- *                       or someone has pruned the file to raise a score.
+ *  What remains is a staleness alarm: above the ceiling, the corpus has moved
+ *  out from under the key again and the key needs repairing, exactly as it did
+ *  tonight. Widening this band is not a legitimate response to it firing. */
+export const UNGRADED_SHARE = { max: 33 };
+
+/** The file must not shrink. THIS is the anti-pruning guard.
  *
- *  Either way a human looks. What it must never do is let the graded set drift
- *  quietly, because that drift is invisible in the headline. */
-export const UNGRADED_SHARE = { min: 10, max: 33 };
+ *  `__recallSetComposed.json` holds 4,796 pairs and is committed, so its size is
+ *  a fact about a versioned artifact rather than about the moving corpus — the
+ *  kind of constant it is safe to pin. Deleting pairs is the one edit that
+ *  genuinely makes the measurement easier while leaving every share and every
+ *  floor looking healthy, and it is invisible to all of them.
+ *
+ *  Set just under today's count: a deliberate rebuild of the set updates this
+ *  line as part of the same change, which is precisely the review moment the
+ *  guard exists to force. */
+export const MIN_PAIRS = 4700;
 
 /** A pair can fail to be gradable for two DIFFERENT reasons, and collapsing
  *  them hides the one that matters.
@@ -170,7 +185,7 @@ export function assertGradablePopulation(
   const absent = inCorpus
     ? p.ungraded.filter((r) => !inCorpus(r.instrument)).length : 0;
   const absentShare = total === 0 ? 0 : (100 * absent) / total;
-  const bad = share < UNGRADED_SHARE.min || share > UNGRADED_SHARE.max;
+  const bad = share > UNGRADED_SHARE.max;
   console.log(
     `  gradable population: ${p.graded.length.toLocaleString()} of ` +
     `${total.toLocaleString()} pairs; ${p.ungraded.length.toLocaleString()} ` +
@@ -185,18 +200,22 @@ export function assertGradablePopulation(
       "now is not reproducible: fingerprint\n     the corpus before and after, and " +
       "discard the run if it moved.)");
   }
+  if (total < MIN_PAIRS) {
+    console.error(
+      `\nrecall set: ${total} pairs, under the ${MIN_PAIRS} floor. The answer key ` +
+      "has SHRUNK.\nDeleting pairs is the one edit that makes every score look " +
+      "better while leaving\nevery share and every floor looking healthy. If the " +
+      "set was rebuilt on purpose,\nupdate MIN_PAIRS in the same change and say why.");
+    process.exit(1);
+  }
   if (bad) {
     console.error(
-      `\nrecall set: ungraded share ${share.toFixed(1)}% is outside ` +
-      `${UNGRADED_SHARE.min}-${UNGRADED_SHARE.max}%.`);
+      `\nrecall set: ungraded share ${share.toFixed(1)}% is over the ` +
+      `${UNGRADED_SHARE.max}% ceiling.`);
     console.error(
-      share > UNGRADED_SHARE.max
-        ? "The corpus has moved and the answer key is going stale: pairs now name\n" +
-          "funds that can no longer be offered. Repair the key -- do NOT widen this\n" +
-          "band, and do NOT lower the floors it protects."
-        : "Fewer pairs are excluded than any correct corpus should produce. Either\n" +
-          "publishability has regressed and closed funds are being offered again,\n" +
-          "or the set has been pruned. Both are bugs; neither is a passing build.");
+      "The corpus has moved and the answer key is going stale: pairs now name\n" +
+      "funds that can no longer be offered. Repair the key -- do NOT widen this\n" +
+      "band, and do NOT lower the floors it protects.");
     process.exit(1);
   }
   return share;

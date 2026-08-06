@@ -17,7 +17,7 @@ import path from "path";
 import { describe, expect, it } from "vitest";
 
 import {
-  ACTIVE_RECALL_SET, partitionByOfferable, sampleRecall, UNGRADED_SHARE,
+  ACTIVE_RECALL_SET, MIN_PAIRS, partitionByOfferable, sampleRecall, UNGRADED_SHARE,
   type RecallRow,
 } from "../../scripts/recallSet";
 
@@ -81,10 +81,13 @@ describe("the exclusion", () => {
     expect(both).toEqual([]);
   });
 
-  it("declares a two-sided band, so drift in either direction is caught", () => {
-    expect(UNGRADED_SHARE.min).toBeGreaterThan(0);
+  it("declares a staleness ceiling, and an anti-pruning floor on the FILE", () => {
+    expect(UNGRADED_SHARE.max).toBeGreaterThan(0);
     expect(UNGRADED_SHARE.max).toBeLessThan(100);
-    expect(UNGRADED_SHARE.min).toBeLessThan(UNGRADED_SHARE.max);
+    // The guard that actually catches someone making the set easier: pairs can
+    // only be excluded by publishability, so the way to cheat is to delete them.
+    expect(MIN_PAIRS).toBeGreaterThan(0);
+    expect(rows.length).toBeGreaterThanOrEqual(MIN_PAIRS);
   });
 });
 
