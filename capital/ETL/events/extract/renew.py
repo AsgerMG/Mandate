@@ -106,6 +106,42 @@ def main() -> None:
 
     if failures:
         print("FAILED:", ", ".join(f"{k}(rc={rc})" for k, rc in failures))
+        # ── Why a failed source does not always fail the run ──────────────────
+        # Sources are other people's websites. They 403 behind Cloudflare, they
+        # rate-limit, their TLS expires, they move a path. That is an external
+        # condition and it is not a reason to throw away the sources that DID
+        # publish -- but until now it was: renew.py exited 1 on any failure,
+        # railway_cron.py exits on the first non-zero step, so ONE blocked
+        # source cancelled classification, the sanity check and gap detection
+        # for the whole week.
+        #
+        # Observed 2026-08-06 23:33 UTC: a single source failed and the weekly
+        # refresh stopped there, having ingested nothing downstream.
+        #
+        # So the exit code now says which KIND of failure it was, rather than
+        # only that there was one:
+        #
+        #   0  everything ran
+        #   3  some sources failed, most succeeded -- a PARTIAL refresh. The
+        #      caller should continue with what arrived and surface the list.
+        #   1  most sources failed -- that is not the internet having a bad day,
+        #      it is our pipeline, our credentials or our network being broken,
+        #      and continuing would publish a corpus built from a fraction of
+        #      the data.
+        #
+        # The threshold is a property, not a list: no source is named here, and
+        # a source that starts failing forever shows up as a persistent partial
+        # rather than being quietly tolerated -- `detect_eligibility_gaps.py`
+        # and the coverage gate are what catch that.
+        attempted = len(targets)
+        if len(failures) * 2 <= attempted:
+            print(f"PARTIAL: {len(failures)} of {attempted} source(s) failed; "
+                  f"continuing with the {attempted - len(failures)} that "
+                  f"published. Exit 3.")
+            sys.exit(3)
+        print(f"ABORT: {len(failures)} of {attempted} source(s) failed. That is "
+              f"most of them, so this is a pipeline fault rather than an "
+              f"unreachable source. Exit 1.")
         sys.exit(1)
     if not args.dry_run:
         print("Done. Next: python3 ETL/events/transform/classify_taxonomy.py apply-nace "
