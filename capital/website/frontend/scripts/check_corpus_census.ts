@@ -36,10 +36,21 @@
 //              for a failing ETL step sat on main while Railway ran the image
 //              that contained the bug.
 //
-// Skips only when there is no DATABASE_URL — with nothing to compare against
-// there is no claim to test. Pass --require-db to turn that skip into a
-// failure, which is what the scheduled workflow does: a guard that quietly
-// skips because a secret is missing is the same defect it is here to catch.
+// ── It no longer needs credentials ─────────────────────────────────────────
+// This check only ever needed the database to READ the census. So the census
+// now also publishes itself on the verdict feed (/api/guards), and with no
+// DATABASE_URL this falls back to that feed rather than skipping — which is how
+// it came to run on every pull request without GitHub holding a credential to
+// the production database.
+//
+// The DATABASE_URL path is kept, and preferred where it exists, for one reason:
+// it reads the corpus_census table directly, so it still works on a laptop
+// against a corpus that has not been published anywhere, and it does not depend
+// on the site being up.
+//
+// --require-db forces the direct path. The scheduled workflow used to pass it
+// precisely because a guard that quietly skips for want of a secret is the same
+// defect it is here to catch; it now has nothing to skip for.
 import { execFileSync } from "child_process";
 import { readFileSync } from "fs";
 import path from "path";
@@ -97,6 +108,50 @@ function fingerprintOfCheckout(): string | null {
   }
 }
 
+/** The census as published on the credential-free feed.
+ *
+ *  Same rows, same fields, one HTTP call instead of a connection string — the
+ *  census writes both from the figures it just recorded, so this is not a
+ *  second measurement of the corpus that could disagree with the first. */
+async function rowsFromFeed(): Promise<CensusRow[]> {
+  const reg = JSON.parse(readFileSync(
+    path.join(__dirname, "..", "..", "..", "data", "guard_registry.json"), "utf8"),
+  ) as { feed: { url: string } };
+  const url = `${process.env.GUARD_FEED_URL || reg.feed.url}?guard=census&limit=12`;
+  let res: Response;
+  try {
+    res = await fetch(url, { headers: { accept: "application/json" } });
+  } catch (err) {
+    console.error(`check_corpus_census: FAILED — the verdict feed is unreachable.\n  ${url}\n  ${err}`);
+    process.exit(1);
+  }
+  if (!res.ok) {
+    console.error(`check_corpus_census: FAILED — the verdict feed returned ${res.status}.`);
+    console.error(`  ${url}`);
+    console.error("  Without it there is nothing to compare the site against, and");
+    console.error("  reporting that as a pass is the defect this check exists to catch.");
+    process.exit(1);
+  }
+  const body = (await res.json()) as {
+    guards: Record<string, {
+      status: string; takenAt: string; producedBy: string; codeFingerprint: string;
+      summary: string; metrics: Record<string, unknown>;
+    }[]>;
+  };
+  return (body.guards?.census ?? []).map((r) => ({
+    id: Number((r.metrics as { census_id?: number }).census_id ?? 0),
+    taken_at: new Date(r.takenAt),
+    produced_by: r.producedBy,
+    code_fingerprint: r.codeFingerprint,
+    kpis: (r.metrics as { kpis?: CensusRow["kpis"] }).kpis ?? null,
+    instruments: (r.metrics as { instruments?: CensusRow["instruments"] }).instruments ?? null,
+    coverage: (r.metrics as { coverage?: CensusRow["coverage"] }).coverage ?? null,
+    gate: (r.metrics as { gate?: CensusRow["gate"] }).gate ?? null,
+    run_outcome: String((r.metrics as { run_outcome?: string }).run_outcome ?? "unknown"),
+    errors: ((r.metrics as { errors?: string[] }).errors ?? []),
+  }));
+}
+
 async function main() {
   const url = process.env.DATABASE_URL;
   if (!url) {
@@ -106,8 +161,9 @@ async function main() {
       console.error("  ETL's corpus; skipping it silently is how the drift got to 32 days.");
       process.exit(1);
     }
-    console.log("check_corpus_census: skipped — no DATABASE_URL, nothing to compare against");
-    return;
+    console.log("check_corpus_census: no DATABASE_URL — reading the published census " +
+                "from the verdict feed instead.");
+    return await judge(await rowsFromFeed());
   }
 
   const { Client } = await import("pg");
@@ -131,9 +187,18 @@ async function main() {
   } finally {
     await client.end();
   }
+  return await judge(rows);
+}
 
+/** Everything below is the same judgement whichever source the rows came from.
+ *  One implementation, deliberately: a feed path that judged by slightly
+ *  different rules from the direct path would make the answer depend on which
+ *  machine asked. */
+async function judge(rows: CensusRow[]) {
   if (!rows.length) {
-    console.error("check_corpus_census: FAILED — the census table is empty.");
+    console.error("check_corpus_census: FAILED — no census has ever been recorded.");
+    console.error("  Add the census step to the weekly run, or check that it is still");
+    console.error("  running: ETL/events/extract/railway_cron.py, make verify-cron");
     process.exit(1);
   }
 

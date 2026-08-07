@@ -27,11 +27,22 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: website/frontend/package-lock.json
+      # The code fingerprint a verdict is bound to has exactly one
+      # implementation, in ETL/lib/guard_verdicts.py, and the checks below shell
+      # out to it rather than carrying a second one. A second implementation of
+      # a fingerprint is a fingerprint of two different things the first time
+      # either changes.
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
       - run: npm ci
 
-      # No DATABASE_URL in CI by design: every check runs against the committed
-      # instrument_terms.json snapshot, so CI stays hermetic and cannot be
-      # broken by the state of a live database.
+      # No DATABASE_URL in CI by design, and now by more than convention. The
+      # checks that need the corpus run where the corpus already is and publish
+      # a verdict; the ones below read committed artifacts, or read those
+      # verdicts over plain HTTPS. Handing this workflow a connection string
+      # would widen the blast radius of one compromised job from "can read our
+      # code" to "can read and write every award, company and fund we hold" —
+      # and ETL/schema/check_guard_registry.py fails the build if one comes back.
       - name: Typecheck
         run: npx tsc --noEmit
 
@@ -59,6 +70,63 @@ jobs:
 
       - name: Per-request payload budget
         run: npx tsx scripts/check_payload_budget.ts
+
+      # ── Checks that were in `npm run check` and in no automatic path ───────
+      # Every one of these reads committed artifacts only. They were left out of
+      # CI on the assumption that "needs the corpus" and "cannot run in CI" were
+      # the same set; they are not, and these eight ran only when somebody typed
+      # the command. That is how the fallback corpus reached 205 instruments out
+      # of date on liveness, showing 26% of founders at least one dead call.
+      #
+      # `if: always()` so one failure does not hide the other seven. A run that
+      # stops at the first red tells you one thing about a build that may be
+      # wrong in four ways.
+      - name: Liveness has one definition
+        if: always()
+        run: npx tsx scripts/check_liveness.ts
+      - name: Offer routes are sourced
+        if: always()
+        run: npx tsx scripts/check_offer_route.ts
+      - name: Regions match the NUTS reference
+        if: always()
+        run: npx tsx scripts/check_regions.ts
+      - name: Theme index is not stale
+        if: always()
+        run: npx tsx scripts/check_theme_index.ts
+      - name: Leaf cap headroom
+        if: always()
+        run: npx tsx scripts/check_leaf_cap.ts
+      - name: Client modules reach no server-only import
+        if: always()
+        run: npx tsx scripts/check_client_boundary.ts
+      - name: The recall set does not leak its answers
+        if: always()
+        run: npx tsx scripts/check_recall_leaks.ts
+      # Skips honestly: data/raw/instrument_docs is gitignored, so there is
+      # nothing here to verify a quotation against. Kept in CI anyway — the skip
+      # is one line of output that says so, and its absence from any automatic
+      # path is what let it be forgotten.
+      - name: Quotations match their documents
+        if: always()
+        run: npx tsx scripts/check_extracted_quotes.ts
+
+      # ── The published verdicts ─────────────────────────────────────────────
+      # The guards that cannot run here, asserted without a credential. Reads
+      # the site's /api/guards over HTTPS: has each corpus-side guard published,
+      # is it green, and was it judged on THIS code. Deliberately not --full;
+      # freshness belongs to the scheduled workflow, so the passage of a Sunday
+      # cannot red a branch that did nothing wrong.
+      - name: Guards that need the corpus have green verdicts
+        if: always()
+        run: npx tsx scripts/check_verdicts.ts
+
+      # The site's committed headline figures against what the ETL last
+      # recorded. This used to need DATABASE_URL and therefore ran only in a
+      # scheduled job holding a secret; the census now publishes itself onto the
+      # same feed, so it runs here on every pull request with no credential.
+      - name: Site serves the corpus the ETL produced
+        if: always()
+        run: npx tsx scripts/check_corpus_census.ts
 
       - name: Lint
         run: npx eslint .
@@ -117,12 +185,19 @@ jobs:
       - name: Cross-language constants
         run: python3 ETL/schema/check_cross_language_constants.py
 
-      # What we TRACK and what we OFFER are two populations. Closed schemes stay
-      # in the headline figures and the maps -- the money was spent, and that
-      # history is the asset -- while briefs carry only funds a founder can
-      # apply to today. Skips itself without data/db.sqlite, which is gitignored.
-      - name: Aggregates ignore liveness, briefs do not
-        run: python3 ETL/schema/check_aggregate_independence.py
+      # What we TRACK and what we OFFER are two populations. That check has
+      # MOVED to the weekly Railway cron and is deliberately not here, because
+      # here it could never run: data/db.sqlite is gitignored, so on every run
+      # it has ever had it printed "skipping" and returned 0. It now executes
+      # against the volume-resident corpus and publishes a verdict the frontend
+      # job asserts on without credentials.
+      #
+      # This is the check on that arrangement: every registered guard has
+      # exactly one publisher, every publisher is registered, each verdict is
+      # bound to its own implementation — and no workflow holds a credential of
+      # ours, which is the reason the arrangement exists at all.
+      - name: Every guard has a publisher, and no workflow has a secret
+        run: python3 ETL/schema/check_guard_registry.py
 
   security:
     name: dependency audit

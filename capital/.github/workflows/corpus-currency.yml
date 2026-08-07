@@ -1,34 +1,46 @@
-# Does the website still serve the corpus the ETL produces?
+# Is the weekly refresh still running, and is the site still serving what it
+# produced?
 #
 # ── Why this runs on a clock and not on a push ─────────────────────────────
-# check_corpus_currency.ts and check_corpus_census.ts are correct, and until
-# now they fired nowhere. They live in `npm run check`, which CI does not run;
-# CI runs a hand-picked subset and deliberately has no DATABASE_URL, so both
-# would skip themselves even if it did. The only thing that ever ran them was a
-# person typing the command — which is how the fallback corpus reached 205
-# instruments out of date on liveness, showing 26% of founders at least one
-# dead call.
-#
-# Making them push-triggered would not be enough either. The ETL runs on a
-# clock and the drift starts the moment it does, so a push-triggered guard has
-# a drift window equal to the time until somebody next pushes: measured over
-# this repo's own history that is a median of 1.4 days but it is UNBOUNDED, and
-# the quiet weeks when nobody pushes are exactly the weeks nobody is looking.
-# `python3 ETL/lib/drift_window.py` re-derives both numbers from the git log.
+# The ETL runs on a clock and the drift starts the moment it does, so a
+# push-triggered guard has a drift window equal to the time until somebody next
+# pushes: measured over this repo's own history that is a median of 1.4 days but
+# it is UNBOUNDED, and the quiet weeks when nobody pushes are exactly the weeks
+# nobody is looking. `python3 ETL/lib/drift_window.py` re-derives both numbers
+# from the git log.
 #
 # So this runs on the same clock as the ETL, a few hours behind it.
 #
-# ── Why it does not fix anything ───────────────────────────────────────────
-# It reports and refuses. Publishing means committing regenerated artifacts and
-# pushing, which redeploys the site, and an unattended cron with commit rights
-# to main is a large blast radius to accept in exchange for a few hours of
-# freshness. The artifacts it would push are the headline figures a founder
-# reads. Those get looked at. The fix is one command: `make republish`.
+# ── What changed, and why it matters more than the schedule ────────────────
+# This workflow used to hold `secrets.DATABASE_URL` and connect to the
+# production Postgres — the store that holds every award, company and fund we
+# have. That made a compromised workflow, a compromised action, or a
+# pull_request_target mistake into a data breach rather than a source leak, and
+# it bought only a scheduled check.
+#
+# It no longer holds any credential. The guards that need the corpus run where
+# the corpus already is — inside the weekly Railway container, which has the
+# credentials because it cannot work without them — and publish a verdict to
+# `guard_verdicts`. The site serves those verdicts, without the `detail` column,
+# at /api/guards. This reads that over plain HTTPS.
+#
+#   ETL/events/extract/railway_cron.py    runs the guards, publishes
+#   data/guard_registry.json              the one list both sides read
+#   scripts/check_verdicts.ts             asserts, credential-free
+#
+# ── Why --full here and not in CI ──────────────────────────────────────────
+# `--full` adds the two failures that are about TIME: SILENT (no verdict inside
+# the cadence the verdicts themselves establish — the weekly run has stopped)
+# and STALE (a census was published without this guard's verdict — the run
+# happened with a step missing). Neither belongs on a pull request, where they
+# would red a branch for the passage of a Sunday. Both belong here, because
+# here is the only thing that runs when nobody pushes.
 #
 # ── The one thing it must never do ─────────────────────────────────────────
-# Pass because a secret was missing. `--require-db` turns the local "skip
-# quietly" into a hard failure here, because a guard that reports success
-# having checked nothing is the exact defect it exists to catch.
+# Pass because something was missing. An unreachable feed, an absent verdict and
+# a verdict bound to different code are all hard failures in check_verdicts.ts,
+# for the same reason the DATABASE_URL guard clause used to exist here: a guard
+# that reports success having checked nothing is the defect it exists to catch.
 name: Corpus currency
 
 on:
@@ -45,7 +57,7 @@ permissions:
 
 jobs:
   currency:
-    name: is the site serving the ETL's corpus
+    name: did the guards run, and is the site serving what they saw
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -54,45 +66,27 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: website/frontend/package-lock.json
+      # For the one implementation of the code fingerprint a verdict is bound
+      # to (ETL/lib/guard_verdicts.py). Not for database access; there is none.
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: npm ci
         working-directory: website/frontend
 
-      # Fail before running anything, rather than running everything and having
-      # each check skip itself into a green tick.
-      - name: The database must be reachable
-        env: { DATABASE_URL: '${{ secrets.DATABASE_URL }}' }
-        run: |
-          if [ -z "$DATABASE_URL" ]; then
-            echo "::error::No DATABASE_URL secret. This workflow is the only thing"
-            echo "::error::that compares the site against the ETL's corpus, and without"
-            echo "::error::the secret every check below would skip and report success."
-            exit 1
-          fi
+      # Every registered guard: has it published, is it green, was it judged on
+      # this code, and — the part only a scheduled run can ask — did it publish
+      # THIS week.
+      - name: Every guard has a fresh, green verdict
+        working-directory: website/frontend
+        run: npx tsx scripts/check_verdicts.ts --full
 
-      # What the ETL last recorded about its own corpus, against what the site
-      # serves: headline figures, the run's outcome, the coverage gate's
-      # verdict, and whether the container is even running this code.
+      # The site's committed headline figures against the census the ETL
+      # published. Reads the same feed; no credential.
       - name: Site vs the ETL's census
-        working-directory: website/frontend
-        env: { DATABASE_URL: '${{ secrets.DATABASE_URL }}' }
-        run: npx tsx scripts/check_corpus_census.ts --require-db
-
-      # The other corpus: the committed fund snapshot against live Postgres.
-      # This one already existed and was in no automatic path.
-      - name: Fallback snapshot vs Postgres
         if: always()
         working-directory: website/frontend
-        env: { DATABASE_URL: '${{ secrets.DATABASE_URL }}' }
-        run: npx tsx scripts/check_corpus_currency.ts
-
-      - name: Both stores agree
-        if: always()
-        working-directory: website/frontend
-        env: { DATABASE_URL: '${{ secrets.DATABASE_URL }}' }
-        run: npx tsx scripts/check_hydration_parity.ts
+        run: npx tsx scripts/check_corpus_census.ts
 
       # A failed scheduled run emails whoever owns the repo and is then never
       # seen again. An issue persists, accumulates the evidence, and closes
@@ -103,21 +97,30 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const title = 'Corpus currency: the site is not serving the ETL\'s corpus';
+            const title = 'Corpus currency: a guard is silent, stale or red';
             const body = [
               `The scheduled currency check failed on ${new Date().toISOString().slice(0, 10)}.`,
               '',
               `[Run log](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
               '',
-              'The site serves committed build artifacts and they do not follow the ETL',
-              'on their own. Fix:',
+              'Read the failure word first — the four mean four different things and',
+              'three of them are NOT fixed by republishing:',
+              '',
+              '- **SILENT** — nothing published inside the expected cadence. The weekly',
+              '  run has stopped, or it is no longer publishing. `make verify-cron`.',
+              '- **STALE** — a census was published without this guard\'s verdict, so the',
+              '  run happened with a step missing. `ETL/events/extract/railway_cron.py`.',
+              '- **DEGRADED** — the guard ran and found something wrong. Look at what it',
+              '  guards, not at the guard.',
+              '- **DRIFTED** — the verdict was produced against different code. For a',
+              '  weekly guard the container is behind main (`python3 ETL/lib/verify_cron.py',
+              '  --deploy`); for an on_change guard, re-run it where the credentials are.',
+              '',
+              'Only a STALE headline figure from check_corpus_census is fixed by:',
               '',
               '```',
               'make republish',
               '```',
-              '',
-              'If the failure is DEGRADED or SILENT rather than STALE, do not republish —',
-              'the corpus itself, or the weekly run, is the problem. `make verify-cron`.',
             ].join('\n');
             const { data: open } = await github.rest.issues.listForRepo({
               ...context.repo, state: 'open', labels: 'corpus-currency',
@@ -143,7 +146,7 @@ jobs:
             for (const issue of open) {
               await github.rest.issues.createComment({
                 ...context.repo, issue_number: issue.number,
-                body: 'Resolved: the site serves the corpus the ETL produced.',
+                body: 'Resolved: every guard has a fresh, green verdict taken on this code.',
               });
               await github.rest.issues.update({
                 ...context.repo, issue_number: issue.number, state: 'closed',
