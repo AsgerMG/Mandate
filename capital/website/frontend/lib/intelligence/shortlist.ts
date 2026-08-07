@@ -1837,7 +1837,7 @@ export function materialiseInstrumentTable(
     const base = r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
     return base * ticket;
   };
-  const rowsOut = selections
+  const ranked = selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
         return { ...base, instrument: INSTRUMENT_NAME[base.channel] ?? channelLabel(base.channel) } as InstrumentRow;
@@ -1933,63 +1933,100 @@ export function materialiseInstrumentTable(
       if (pa !== pb) return pa - pb;
       // Total order, so the sort cannot depend on the order rows arrived in.
       return (a.instrumentId ?? "").localeCompare(b.instrumentId ?? "");
-    })
-    // One row per institution NAME. 322 instruments share only 143 display
-    // names, and selectLeafInstruments returns up to two leaves per channel,
-    // so a founder could see "Enterprise Ireland" or "Norges Forskningsrad"
-    // twice in the same table — which reads as a bug even when both rows are
-    // real. Deduped here rather than at the call sites so the preliminary
-    // verdict table and the memo's five institutions can never disagree.
-    // Keep the leaf that can actually say something: the one with the most
-    // ENCODED eligibility rules. First-wins looked right but is not — the sort
-    // above orders by fit and channel priority, which knows nothing about
-    // encoding coverage, so it kept an Enterprise Ireland leaf with zero
-    // encoded rules over a sibling that returned a real "open" verdict.
-    .filter((row, i, all) => {
-      // Names are disambiguated first, so this only drops rows that genuinely
-      // cannot be told apart rather than rows that merely share a body.
-      if (i === 0) distinguishRowNames(all);
-      // Key on the DISTINGUISHED label, not on a freshly recomputed one.
-      // displayInstitutionName rebuilds the name from country + kind + scheme
-      // code and never reads `row.instrument`, so distinguishRowNames' work was
-      // invisible here: rows it had just told apart were still collapsed.
-      const name = row.instrument || displayInstitutionName(row);
-      const peers = all.filter((o) => (o.instrument || displayInstitutionName(o)) === name);
-      if (peers.length === 1) return true;
-      const encodedCount = (r: InstrumentRow) => {
-        const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
-        return inst ? inst.gates.filter(
-          (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
-      };
-      // Rows that genuinely cannot be told apart still collapse, but the
-      // survivor is no longer decided by array position. encodedCount ties in
-      // 70% of SATR cases -- siblings inherit their regime's gates, so the
-      // counts are identical -- and the old reduce kept whichever came first.
-      // Prefer the leaf carrying evidence of its OWN, then the richer one, then
-      // a total order on id so the result cannot depend on hydration sequence.
-      const ownCount = (r: InstrumentRow) => {
-        const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
-        return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
-      };
-      const best = [...peers].sort((a, b) =>
-        (ownCount(b) - ownCount(a))
-        || (encodedCount(b) - encodedCount(a))
-        || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""))[0];
-      const keep = all.indexOf(best) === i;
-      if (!keep) {
-        log?.record("SEL-DUPE-NAME", row.instrumentId ?? row.channel,
-          `another instrument renders under the same institution name with more encoded rules`);
-      }
-      return keep;
     });
+  // One row per institution NAME. 322 instruments share only 143 display
+  // names, and selectLeafInstruments returns up to two leaves per channel,
+  // so a founder could see "Enterprise Ireland" or "Norges Forskningsrad"
+  // twice in the same table — which reads as a bug even when both rows are
+  // real. Resolved here rather than at the call sites so the preliminary
+  // verdict table and the memo's five institutions can never disagree.
+  // Keep the leaf that can actually say something: the one with the most
+  // ENCODED eligibility rules. First-wins looked right but is not — the sort
+  // above orders by fit and channel priority, which knows nothing about
+  // encoding coverage, so it kept an Enterprise Ireland leaf with zero
+  // encoded rules over a sibling that returned a real "open" verdict.
+  //
+  // ── DEMOTED, never dropped ────────────────────────────────────────────────
+  // This was a `.filter()`, and the array it filters is the one the caller
+  // derives `candidateInstrumentIds` from — so a DISPLAY rule was deleting funds
+  // from the writer's pool, where nothing downstream can recover them or even
+  // report their absence. `applyPeerPrecedence` already made exactly this
+  // correction for the notified-scheme repeat forty lines below, on exactly this
+  // reasoning and with the measurement to match (pool 97% -> 83% when that one
+  // was a filter). The two collapses were the same defect and only one of them
+  // had been fixed.
+  //
+  // Measured before changing it, live Postgres corpus, one founder per country
+  // across 22 countries: this rule removed 4 rows in total (DE 1, IT 1, CZ 2)
+  // and 0 in the other 19 markets. It is nearly dead because `administering_body`
+  // now separates siblings — DE's mean same-name class fell 91.8 -> 4.2 — and
+  // `distinguishRowNames` reads that field. What it still catches is a different
+  // thing from what it was written for: two DISTINCT notified schemes (different
+  // SA numbers, different budgets, different granting decisions) that publish
+  // under one shared title. A founder genuinely cannot tell those apart on the
+  // page, so the display rule is right; deleting the second from the universe is
+  // not, because they are two funds.
+  //
+  // Demotion satisfies both. The visible order is UNCHANGED — the losers move to
+  // the very back, past `applyPeerPrecedence`, so every row a founder sees today
+  // is the row they see now — and the pool keeps the fund.
+  distinguishRowNames(ranked);
+  const encodedCount = (r: InstrumentRow) => {
+    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+    return inst ? inst.gates.filter(
+      (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
+  };
+  // Rows that genuinely cannot be told apart still collapse in the TABLE, but
+  // the survivor is not decided by array position. encodedCount ties in 70% of
+  // SATR cases -- siblings inherit their regime's gates, so the counts are
+  // identical -- and the old reduce kept whichever came first. Prefer the leaf
+  // carrying evidence of its OWN, then the richer one, then a total order on id
+  // so the result cannot depend on hydration sequence.
+  const ownCount = (r: InstrumentRow) => {
+    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+    return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
+  };
+  // Key on the DISTINGUISHED label, not on a freshly recomputed one.
+  // displayInstitutionName rebuilds the name from country + kind + scheme code
+  // and never reads `row.instrument`, so distinguishRowNames' work was invisible
+  // here: rows it had just told apart were still collapsed.
+  const labelOf = (r: InstrumentRow) => r.instrument || displayInstitutionName(r);
+  const demoted = new Set<InstrumentRow>();
+  ranked.forEach((row, i) => {
+    const name = labelOf(row);
+    const peers = ranked.filter((o) => labelOf(o) === name);
+    if (peers.length === 1) return;
+    const best = [...peers].sort((a, b) =>
+      (ownCount(b) - ownCount(a))
+      || (encodedCount(b) - encodedCount(a))
+      || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""))[0];
+    if (ranked.indexOf(best) === i) return;
+    demoted.add(row);
+    // The NAME they collided on, and WHICH row survived. Without both, the log
+    // says a collision happened and nothing about whether the two rows were
+    // really indistinguishable -- which is the only question that decides if
+    // this rule is still earning its place.
+    log?.record("SEL-DUPE-NAME", row.instrumentId ?? row.channel,
+      `renders as "${name}", the same label as ${best.instrumentId ?? best.channel}, ` +
+      `which is shown instead; this row is demoted to the back of the pool, not removed`);
+  });
+  const rowsOut = ranked.filter((r) => !demoted.has(r));
   // Peer precedent decides the visible order, last, on the surviving rows.
   // Applied here rather than inside rowRelevance so it can never resurrect a
-  // row the screen excluded or a duplicate the dedupe removed -- it only
+  // row the screen excluded or a duplicate the dedupe demoted -- it only
   // reorders what already qualified.
   // `themeInformative` is already computed above: it is true when the founder's
   // description peaks sharply on a few funds rather than scoring everything
   // alike, which is exactly the "we know what this project is" condition.
-  return applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative);
+  //
+  // The demoted rows are appended AFTER it rather than passed through it, so
+  // they cannot take a visible slot: peer precedence sorts what it is given, and
+  // a duplicate handed to it can land anywhere in the order. Appending keeps the
+  // table byte-identical to the version that dropped them.
+  return [
+    ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative),
+    ...ranked.filter((r) => demoted.has(r)),
+  ];
 }
 
 /**
