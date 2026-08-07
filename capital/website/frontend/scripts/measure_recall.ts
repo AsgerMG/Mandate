@@ -117,11 +117,22 @@ async function main() {
     all, (id) => inCorpus.has(id), (id) => offerable.has(id));
   const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
   assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
+  // COUNTRY= restricts the POPULATION to founders in one market, which is the
+  // only way to get power on a change that can only bind one market at a time.
+  // Selection filters and POOL_LEAVES_PER_CHANNEL are applied per (channel,
+  // country), so a constant that cuts three Spanish candidates moves twelve of
+  // the 250 sampled rows and disappears into the aggregate's +/-2.5. It is a
+  // filter, not a weighting: the headline run stays exactly what it was.
+  const country = process.env.COUNTRY;
   const set = pop.graded.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
+                             && (!country || r.country === country)
                              && (!process.env.DESCRIBED || described(r))
                              && (regionMode !== "strict" || Boolean(regionOf(r))));
-  if (!set.length) throw new Error(`no rows match split=${split} mode=${mode ?? "any"}`);
+  if (!set.length) {
+    throw new Error(
+      `no rows match split=${split} mode=${mode ?? "any"} country=${country ?? "any"}`);
+  }
   // The sampler lives in `recallSample.ts` and is shared with
   // check_recall_floor.ts. It used to be inline here, and the gate that fails
   // the build kept its own STRIDE version -- so the floor and the measurement
@@ -242,6 +253,7 @@ async function main() {
   const pc = (n: number, d = stat.done) =>
     `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${halfWidth(n, d).toFixed(1)})`;
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
+              `${country ? ` country=${country}` : ""}` +
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
               `${regionMode ? ` region=${regionMode}` : ""}  replayed ${stat.done}`);
