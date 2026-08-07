@@ -9,9 +9,9 @@
       "stageMin": 0.15,
       "stageMax": 0.9,
       "stageLabel": "All stages (national aid)",
-      "companies": 87273,
-      "totalEur": 180252981036.42136,
-      "medianTicket": 287462.0,
+      "companies": 87674,
+      "totalEur": 181390090240.54135,
+      "medianTicket": 288521.0,
       "topSector": {
         "name": "Other",
         "companies": 18248
@@ -31,7 +31,7 @@
       "stageMax": 0.95,
       "stageLabel": "Commercial demo \u2192 Scale-up",
       "companies": 303,
-      "totalEur": 111615273155.58,
+      "totalEur": 166046533155.58,
       "medianTicket": 63000000.0,
       "topSector": {
         "name": "Energy & cleantech",
@@ -51,8 +51,8 @@
       "stageMin": 0.25,
       "stageMax": 0.8,
       "stageLabel": "Seed \u2192 Growth",
-      "companies": 52398,
-      "totalEur": 23197869377.669884,
+      "companies": 52426,
+      "totalEur": 23210756151.769882,
       "medianTicket": 57641.5,
       "topSector": {
         "name": "Other",
@@ -60,7 +60,7 @@
       },
       "topCountry": {
         "iso": "FR",
-        "companies": 21399
+        "companies": 21403
       }
     },
     {
@@ -177,7 +177,7 @@
       "stageMin": 0.25,
       "stageMax": 0.65,
       "stageLabel": "Prototype \u2192 Product dev",
-      "companies": 2094,
+      "companies": 2115,
       "totalEur": 3332889894.890002,
       "medianTicket": 590625.0,
       "topSector": {
