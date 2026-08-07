@@ -1,5 +1,16 @@
 # The fallback serves fewer funds, never a dead one
 
+> **SUPERSEDED ON THE RULE AND ON THE TITLE — 2026-08-07, workstream AC.**
+> See `degradation_precision_wsAC.md`. The rule this document describes was
+> measured against the live register and withheld 80 rows to catch **zero**;
+> the precise version withholds 5 and returns the French answer key to
+> baseline. And the title's claim is wider than what was built: on a copy that
+> predates the call-register loads, this policy withholds nothing and 84 closed
+> rows stay offerable — the blunt rule and the precise rule alike, because both
+> infer "this register publishes deadlines" from deadlines present in the copy.
+> §1, §2 and §2a below are still the right history; §1's rule is not the one to
+> ship.
+
 Workstream X, 2026-08-06/07. Branch `workstream-x-degradation`, off `dbfbad58`.
 
 Implements the PM's choice from `corpus_variance_wsS.md` §4: when the live
