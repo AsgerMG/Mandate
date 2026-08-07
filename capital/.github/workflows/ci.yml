@@ -107,6 +107,13 @@ jobs:
       - name: Coverage gate separates loss from dilution
         run: python3 ETL/terms/test_coverage_gate.py
 
+      # The corpus census runs inside the ETL image, which has requirements.txt
+      # and nothing else. It reached production importing pandas three modules
+      # down and recorded a ModuleNotFoundError instead of the corpus figures --
+      # invisibly, because it records a failed block rather than crashing.
+      - name: The census can run in the ETL image
+        run: python3 ETL/schema/check_census_imports.py
+
       - name: Cross-language constants
         run: python3 ETL/schema/check_cross_language_constants.py
 

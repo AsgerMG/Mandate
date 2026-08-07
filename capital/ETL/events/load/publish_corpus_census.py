@@ -118,7 +118,12 @@ def collect() -> tuple[dict, list[str]]:
     out: dict = {"kpis": None, "instruments": None, "coverage": None, "gate": None}
 
     try:
-        from synthesis import compute_kpis  # the one canonical definition
+        # The one canonical definition, imported from the stdlib-only module
+        # rather than from synthesis.py — which cannot be imported here at all,
+        # because it pulls helpers.py and therefore pandas, and the ETL image
+        # has neither. That is not hypothetical: this block's first real run
+        # inside the container recorded exactly that ModuleNotFoundError.
+        from corpus_kpis import compute_kpis
         con = _connect_ro()
         try:
             out["kpis"] = compute_kpis(con)

@@ -189,6 +189,41 @@ This is **stricter**, not looser: the loss test is new and catches a class the
 old gate could not see at all, and the dilution test is the old rule plus an
 extra condition.
 
+## The census would have published nothing, every week, silently
+
+Running it in the real container was the only way this surfaced, and it nearly
+was not run. The first execution inside `python:3.11-slim` recorded:
+
+```
+kpis: ModuleNotFoundError: No module named 'pandas'
+```
+
+`compute_kpis` lived in `synthesis.py`, which opens `from helpers import db,
+to_json, fmt_eur`, and `helpers.py` imports pandas and numpy for charting work
+the KPI queries have nothing to do with. Neither is in `requirements.txt`.
+
+The census catches a failed block and records it rather than crashing — which is
+right, and is what made this dangerous. It would have published a census every
+week **with no corpus figures in it**, and the guard downstream would have failed
+DEGRADED forever for a reason nobody would read down to. The mechanism built to
+end silent failures would have failed silently.
+
+Fixed by moving the canonical definitions to `website/build/lib/corpus_kpis.py`,
+which imports nothing but the standard library; `synthesis.py` re-exports them,
+so there is still exactly one definition and it is now reachable from any
+runtime that has the database. Adding pandas to the ETL image was the
+alternative — a hundred megabytes for a handful of `COUNT(*)`.
+
+Made unrepeatable rather than merely fixed: `ETL/schema/check_census_imports.py`
+walks the census's whole transitive import graph and fails on anything that is
+not the standard library, not in this repository, and not declared in
+`requirements.txt`. It is in CI, and reverting the one-line import makes it fail
+with the two module names.
+
+Verified end to end in a venv built from `requirements.txt` alone — no pandas,
+no numpy — which is the image's environment: every block populated, zero errors,
+and a census row written to Postgres.
+
 ## Railway: three findings, one of them live breakage
 
 **1. `trigger_etl_now.py`'s verification verified nothing.** It read the schedule
@@ -252,6 +287,14 @@ confirmed: a pull that succeeds and leaves the service woken has traded one
   "is the image at least as new as this code" but not "is it this code". The
   census fingerprint is the exact test; the timestamp is the cheap pre-filter
   that works without waiting for a run.
+- **The census has not run inside the Railway container itself.** `railway up`
+  uploads from the linked repository root, not from a worktree, so the
+  verification deploy carried `main` and the run reported the census file
+  missing — which is itself worth knowing. The import graph and the runtime were
+  verified instead in a venv built from `requirements.txt` alone, which is the
+  image's environment. **After merging, deploy and confirm:**
+  `python3 ETL/lib/verify_cron.py --deploy` then `make verify-cron`. The census's
+  own SILENT check catches it if that is forgotten.
 - **Nothing here publishes.** By decision. If the drift window proves too wide
   in practice — watch the census's `taken_at` against the next
   `synthesis.json` commit — the next step is a bot that opens a PR with the
