@@ -30,7 +30,12 @@ async function main() {
   }
 
   if (actual === expected) {
-    const n = expected.split("\n").length - 3;
+    // Count the KEYS, not the lines. "lines minus three" read 1,092 against a
+    // corpus of 1,084 — eight entries wrap — and that eight-too-high figure was
+    // quoted into a brief as the size of the index. The same regex the staleness
+    // diff below uses, so one line cannot report a different number from the
+    // other.
+    const n = [...expected.matchAll(/^ {2}"([^"]+)":/gm)].length;
     console.log(`check_theme_index: ok — ${n} instruments indexed`);
     return;
   }

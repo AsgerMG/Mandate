@@ -112,6 +112,54 @@ import {
  *  EVERY floor here is RAISED or unchanged against the block it replaces
  *  (90/15/80, 68/82). Nothing was lowered. The build is green because the
  *  question the set asks became answerable again, not because the bar moved. */
+/*  ── RE-DERIVATION, 2026-08-07 18:00 UTC: the answer is NO RAISE ──────────
+ *
+ *  The block above was calibrated while a load was in flight and
+ *  `check_corpus_currency` was red, and a raise to 95 / 25 / 83 was left
+ *  outstanding for when both cleared. Both have cleared -- currency green,
+ *  snapshot and Postgres agreeing on every liveness verdict, 1,084 instruments
+ *  on both sides -- so it was re-derived properly. Three seeds, tune split,
+ *  N=300, Postgres asserted, corpus 1,084 and printed on every run,
+ *  17:23-17:49 UTC. Every figure below was measured twice, side by side, on
+ *  either side of a full regeneration of `semanticCache.generated.json`, and
+ *  the two sets are byte-identical on every metric and every stratum:
+ *
+ *                          PINNED (what these floors guard)   seed 7   seed 99
+ *      pool                          98  (293/300)              96      96
+ *      EXACT@5                       30  ( 91/300)              31      28
+ *      REGIME@5                      87  (262/300)              82      83
+ *      REGIME@5 original join        83  (n=151)                76      77
+ *      REGIME@5 traced               91  (n=149)                89      89
+ *
+ *  Against the block above: pool and REGIME@5 UNMOVED on the pinned sample
+ *  (98, 87), EXACT@5 DOWN two (32 -> 30), original join DOWN two (85 -> 83),
+ *  traced UP one (90 -> 91). Nothing rose. So there is nothing to raise a
+ *  floor onto: the margin convention this file has always used, applied to
+ *  today's numbers, lands on the numbers that are already here.
+ *
+ *      pool      5 under pinned = 93, and 3 under the lowest seed (96) = 93.
+ *      EXACT@5  10 under pinned = 20, which is BELOW the 22 in force. Held at
+ *                22, never lowered -- but note it is now the tightest thing in
+ *                this file at 8 points, not the 10 it specifies, because the
+ *                pinned measurement fell rather than the floor rising.
+ *      REGIME@5  7 under pinned = 80. Unchanged, for the same reason as last
+ *                time and more so: the lowest seed is now 82, and 80 is
+ *                already only two under it.
+ *
+ *  ── Why 95 / 25 / 83 is NOT supportable, on the numbers rather than on
+ *     caution ────────────────────────────────────────────────────────────────
+ *      pool 95     3 under pinned and ONE under the lowest seed. The stated
+ *                  margin is 5 and 3.
+ *      EXACT@5 25  5 under pinned, half the stated margin, on the metric this
+ *                  file itself records swinging 20 -> 32 across a single index
+ *                  rebuild -- a twelve-point move against a five-point margin.
+ *      REGIME@5 83 ABOVE the lowest seed. It would have FAILED on seed 7 today
+ *                  (82). A floor that a legitimate reseed fails is the thing
+ *                  the paragraph above was written to prevent.
+ *
+ *  Nothing is lowered and nothing is raised. A floor that moves to accommodate
+ *  a regression is not a floor; a floor that moves onto a measurement that did
+ *  not rise is not a floor either, it is a coin flip with a comment. */
 const FLOOR = { pool: 93, exact5: 22, regime5: 80 };
 /** REGIME@5 per population — the operational number, the one a founder feels.
  *  Wider margins than the headline, and deliberately: these are subsamples of
@@ -128,6 +176,13 @@ const FLOOR = { pool: 93, exact5: 22, regime5: 80 };
  *
  *  Pinned measurements these sit under: original join 85 (n=151), traced 90
  *  (n=149). Lowest either produced across three seeds: 76 and 89.
+ *
+ *  RE-DERIVED AGAIN 2026-08-07 18:00 UTC on three seeds, and again UNCHANGED.
+ *  Pinned now reads original join 83 (n=151) and traced 91 (n=149); lowest
+ *  across the three seeds 76 and 89 -- the same two numbers as before. Raising
+ *  either would take the margin below the EIGHT-POINT move this same pinned
+ *  sample was seen to make across one corpus state, which is the one figure
+ *  these two floors are set against.
  *
  *  `original join` keeps the widest margin of anything here. It is the smaller,
  *  older population and it is the one a change is most likely to trade away for
