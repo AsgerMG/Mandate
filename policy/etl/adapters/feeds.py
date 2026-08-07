@@ -28,6 +28,7 @@ from lxml import etree
 from data.models import DocumentType, Jurisdiction, LifecycleStage
 
 from .base import DocRef, ParsedDocument, RawDocument, SourceAdapter, is_noise_collision
+from .eurlex import _classify_type, celex_from_title
 
 log = structlog.get_logger(__name__)
 
@@ -906,16 +907,29 @@ class FeedAdapter(SourceAdapter):
         item = json.loads(raw.content)
         summary = _strip_html(item.get("summary") or "")
         date = dt.date.fromisoformat(item["date"]) if item.get("date") else None
+        # EUR-Lex feeds carry the act's CELEX in the title and nowhere else.
+        # Populating it here is what admits a feed-ingested act to the CELEX
+        # spine: reclassify_celex_documents, enrich_lifecycle and the summaries
+        # pass all key off `celex`, and all three skipped these documents while
+        # it was NULL. See eurlex.celex_from_title.
+        celex = celex_from_title(item["title"])
+        document_type = self.spec.document_type
+        if celex and document_type is DocumentType.OTHER:
+            # Only fills the gap — a spec that states its own type (the COM
+            # proposals feed says PROPOSAL) keeps it. reclassify_celex_documents
+            # is the authority on CELEX-derived types and runs over these anyway.
+            document_type = _classify_type(celex)
         return ParsedDocument(
             external_id=item["id"],
             title=item["title"],
             jurisdiction=self.spec.jurisdiction,
-            document_type=self.spec.document_type,
+            document_type=document_type,
             lifecycle_stage=self.spec.lifecycle_stage,
             text=f"{item['title']}\n\n{summary}".strip(),
             raw_format="text",
             language=self.spec.language,
             url=item.get("url"),
+            celex=celex,
             date_document=date,
             extra={"channel": self.spec.key},
         )

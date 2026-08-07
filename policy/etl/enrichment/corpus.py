@@ -51,13 +51,21 @@ class Step:
 
 
 def _types(session, **_) -> dict:
-    from .reclassify import reclassify_by_source, reclassify_celex_documents
+    from .reclassify import (
+        backfill_celex_from_title,
+        reclassify_by_source,
+        reclassify_celex_documents,
+    )
 
+    # CELEX recovery FIRST: the two passes below are keyed off `celex`, so a
+    # document whose id is still only in its title is invisible to both.
+    backfilled = backfill_celex_from_title(session)
     celex = reclassify_celex_documents(session)
     source = reclassify_by_source(session)
     return {
         "types_changed": celex["types_changed"] + source["types_changed"],
         "stages_filled": celex["stages_filled"],
+        "celex_filled": backfilled["celex_filled"],
     }
 
 
@@ -96,7 +104,14 @@ def _summaries(session, *, client=None, **_) -> dict:
 #: run; summaries last because they are the only paid step whose cost scales with
 #: corpus size.
 STEPS: tuple[Step, ...] = (
-    Step("types", _types, lambda r: f"{r['types_changed']} document types re-derived"),
+    Step(
+        "types",
+        _types,
+        lambda r: (
+            f"{r['types_changed']} document types re-derived "
+            f"({r['celex_filled']} CELEX ids recovered from titles)"
+        ),
+    ),
     Step("actors", _actors, lambda r: f"{r['actors_created']} named actors extracted"),
     Step(
         "lifecycle",

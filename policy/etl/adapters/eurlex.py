@@ -12,6 +12,7 @@ written against the live public endpoints; network access is required to run it.
 from __future__ import annotations
 
 import datetime as dt
+import re
 import warnings
 from collections.abc import Iterable
 from urllib.parse import quote
@@ -28,6 +29,7 @@ from .base import (
     ParsedDocument,
     RawDocument,
     SourceAdapter,
+    parse_iso_date,
 )
 
 log = structlog.get_logger(__name__)
@@ -51,6 +53,27 @@ CONTENT_ACCEPTS = ["text/html", "application/xhtml+xml"]
 # Human-facing URL stored on the Document for click-through.
 PUBLIC_URL = "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:{celex}"
 
+# EUR-Lex's own RSS feeds prefix every item title with the act's CELEX id:
+#   "CELEX:32026R1881: Regulation (EU) 2026/1881 of the European Parliament…"
+# That title is the ONLY place those feeds expose it — their <link>/<guid> is an
+# opaque CELLAR uuid URL — so parsing it here is what lets a feed-ingested act be
+# typed, dated and lifecycle-enriched like any other EUR-Lex document. Without
+# it all 23 documents in eurlex_oj_l / eurlex_ep_council_legislation sat at
+# `celex IS NULL`, type OTHER: reclassify_celex_documents filters on
+# `celex IS NOT NULL` and enrich_lifecycle on both celex and document_type, so
+# every downstream step skipped them.
+#
+# A CELEX id is a sector digit, a 4-digit year, then a 1-2 letter descriptor and
+# a number — plus, for some acts, a parenthetical suffix ("32023H0120(01)").
+# Sector "E" (EFTA) also occurs live, hence the leading character class.
+_CELEX_IN_TITLE = re.compile(r"^\s*CELEX\s*:\s*([0-9A-Z]{5,}[0-9A-Z()]*)", re.IGNORECASE)
+
+
+def celex_from_title(title: str | None) -> str | None:
+    """The CELEX id a EUR-Lex feed prefixed onto ``title``, or None."""
+    match = _CELEX_IN_TITLE.match(title or "")
+    return match.group(1).upper() if match else None
+
 
 def cellar_content_url(celex: str) -> str:
     """CELLAR_CONTENT_URL with the CELEX percent-encoded. Most CELEX ids are
@@ -60,6 +83,7 @@ def cellar_content_url(celex: str) -> str:
     URI sub-delims so httpx passes them through raw, but Cellar's own server
     requires them percent-encoded."""
     return CELLAR_CONTENT_URL.format(celex=quote(celex, safe=""))
+
 
 # CELEX sector/descriptor heuristics → our document_type vocabulary.
 # CELEX descriptor letter (position 5) encodes the document nature:
@@ -152,6 +176,33 @@ class EurLexAdapter(SourceAdapter):
     sectors: tuple[str, ...] = ("3", "5")
     exclude_noise = True
 
+    def owned_elsewhere(self) -> frozenset[str]:
+        """CELEXes another adapter is the designated owner of, and which this
+        source must therefore not discover.
+
+        ``eurlex_key_acts`` re-ingests its whole curated list on every single
+        run (``for celex in KEY_ACTS``), and the ``uq_document_source_external``
+        constraint is scoped to (source_id, external_id) — so any act this
+        date-scoped discovery also surfaces becomes two Document rows holding
+        byte-identical content, permanently. Verified live 2026-08-07: 16
+        CELEXes duplicated exactly that way (AI Act, GDPR, DSA, DMA, NIS2, CRA,
+        EECC…), 3,290 redundant passages, one distinct content_hash per pair.
+
+        Cleaning the rows up in the database alone would not hold — the curated
+        adapter deterministically regenerates its side on the next refresh — so
+        the guard has to live in discovery, making ``eurlex_key_acts`` the
+        single owner of the canon set. That direction (rather than the reverse)
+        because the curated list is the one that must exist regardless of age;
+        this adapter would only rediscover a canon act while it happens to fall
+        inside the backfill window.
+
+        Imported lazily: ``eurlex_key_acts`` subclasses this adapter, so a
+        module-level import would be circular.
+        """
+        from .eurlex_key_acts import KEY_ACTS
+
+        return frozenset(KEY_ACTS)
+
     def discover(self, since: dt.date | None, cursor: dict | None) -> Iterable[DocRef]:
         since = since or (dt.date.today() - dt.timedelta(days=self.settings.backfill_days))
         query = _build_discovery_query(
@@ -166,8 +217,13 @@ class EurLexAdapter(SourceAdapter):
             params={"query": query, "format": "application/sparql-results+json"},
         )
         bindings = resp.json().get("results", {}).get("bindings", [])
+        owned_elsewhere = self.owned_elsewhere()
+        skipped = 0
         for row in bindings:
             celex = row["celex"]["value"]
+            if celex in owned_elsewhere:
+                skipped += 1
+                continue
             yield DocRef(
                 external_id=celex,
                 url=cellar_content_url(celex),
@@ -178,6 +234,8 @@ class EurLexAdapter(SourceAdapter):
                     "type_uri": row.get("type", {}).get("value"),
                 },
             )
+        if skipped:
+            log.info("skipped_key_acts_owned_celexes", source=self.key, count=skipped)
 
     def fetch(self, ref: DocRef) -> RawDocument:
         resp = self.http.negotiate(ref.url, CONTENT_ACCEPTS, accept_language="eng")
@@ -197,7 +255,7 @@ class EurLexAdapter(SourceAdapter):
         soup = BeautifulSoup(raw.content, "lxml")
         text = _extract_text(soup)
         title = (raw.ref.title or _extract_title(soup) or celex).strip()
-        date = _parse_date(raw.ref.hint.get("date"))
+        date = parse_iso_date(raw.ref.hint.get("date"))
 
         return ParsedDocument(
             external_id=celex,
@@ -332,15 +390,6 @@ def _classify_stage(celex: str) -> LifecycleStage:
     if sector == "3" and _classify_type(celex) is not DocumentType.OTHER:
         return LifecycleStage.IN_FORCE
     return LifecycleStage.UNKNOWN
-
-
-def _parse_date(value: str | None) -> dt.date | None:
-    if not value:
-        return None
-    try:
-        return dt.date.fromisoformat(value[:10])
-    except ValueError:
-        return None
 
 
 class EurLexCaseLawAdapter(EurLexAdapter):

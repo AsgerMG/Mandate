@@ -58,9 +58,11 @@ class HttpClient:
         resp = self._client.get(
             url, headers=headers or None, params=params, follow_redirects=follow_redirects
         )
-        if not follow_redirects and resp.is_redirect:
-            pass  # some servers (eulawlive.com) attach the real body to a 3xx
-        else:
+        # A 3xx is only an error when we asked to follow redirects. Some servers
+        # (eulawlive.com) attach the real feed body to the 3xx itself and serve
+        # only an HTML homepage once a client follows it, so an unfollowed
+        # redirect is a valid response here, not a failure.
+        if follow_redirects or not resp.is_redirect:
             resp.raise_for_status()
         # Politeness: stay well under any source rate limit.
         time.sleep(self._settings.request_delay_seconds)

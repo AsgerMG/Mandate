@@ -193,3 +193,85 @@ def test_classify_pending_only_reads_current_version_text(db_session):
     classify_pending(db_session, client, batch_size=10)
     assert "CURRENT TEXT" in client.messages.calls[0]["messages"][0]["content"]
     assert "STALE TEXT" not in client.messages.calls[0]["messages"][0]["content"]
+
+
+# --- the infinite loop ----------------------------------------------------
+# On 2026-08-02 this pass made ~3,197 API calls against ONE document (id=4437)
+# over 45 minutes, until Anthropic returned 403 — killing the weekly refresh.
+# The model returned 'energy', an out-of-vocabulary slug;
+# parse_classify_response dropped it; the document ended with [] policy_areas
+# and re-matched `~Document.policy_areas.any()` on the very next iteration,
+# forever. Two independent guards now exist, and both are asserted here.
+
+
+def test_classify_tool_is_strict_so_the_enum_is_actually_enforced():
+    """Without `strict`, the input_schema's enum and minItems are advisory —
+    the model may return any string and the whole loop above becomes
+    reachable. `strict` additionally requires additionalProperties: false."""
+    from etl.enrichment.classification import CLASSIFY_TOOL
+
+    assert CLASSIFY_TOOL["strict"] is True
+    assert CLASSIFY_TOOL["input_schema"]["additionalProperties"] is False
+
+
+def test_classify_pending_terminates_when_the_model_returns_a_bad_slug(db_session):
+    """The reproduction, as a test: a document the model cannot classify is
+    attempted ONCE and then left alone — not retried until the API cuts us
+    off. Without the made-progress guard this call never returns."""
+    seed_vocabularies(db_session)
+    source = Source(key="loop", name="loop", jurisdiction=Jurisdiction.EU)
+    db_session.add(source)
+    db_session.flush()
+    doc = _seed_doc(db_session, source.id, "DOC-4437", "Energy grid act", "Grid text.")
+
+    # 'energy' is not in POLICY_AREAS — exactly what production returned.
+    client = _FakeClient([_Resp([_tool_use_block(["energy"], [])])] * 50)
+    n = classify_pending(db_session, client, batch_size=10)
+
+    assert len(client.messages.calls) == 1, "the document was retried"
+    assert n == 1
+    db_session.refresh(doc)
+    assert doc.policy_areas == []  # still untagged, honestly so
+
+
+def test_classify_pending_makes_progress_past_an_unclassifiable_document(db_session):
+    """One bad document must not stop the others being classified, and must
+    not be re-selected once skipped."""
+    seed_vocabularies(db_session)
+    source = Source(key="loop2", name="loop2", jurisdiction=Jurisdiction.EU)
+    db_session.add(source)
+    db_session.flush()
+    bad = _seed_doc(db_session, source.id, "BAD", "Bad", "text")
+    good = _seed_doc(db_session, source.id, "GOOD", "Good", "text")
+
+    client = _FakeClient(
+        [
+            _Resp([_tool_use_block(["energy"], [])]),  # dropped -> untagged
+            _Resp([_tool_use_block(["ai"], [])]),
+        ]
+        + [_Resp([_tool_use_block(["ai"], [])])] * 20
+    )
+    # batch_size=1 forces re-selection between every document, which is where
+    # the old loop span forever.
+    classify_pending(db_session, client, batch_size=1)
+
+    assert len(client.messages.calls) == 2
+    db_session.refresh(bad)
+    db_session.refresh(good)
+    assert bad.policy_areas == []
+    assert [pa.slug for pa in good.policy_areas] == ["ai"]
+
+
+def test_classify_pending_degrades_on_an_unseeded_vocabulary(db_session):
+    """`policy_area_by_slug[s]` raised KeyError mid-loop against an unseeded
+    vocabulary table, discarding the whole batch's work. It must degrade
+    instead."""
+    # Deliberately NOT calling seed_vocabularies.
+    source = Source(key="unseeded", name="unseeded", jurisdiction=Jurisdiction.EU)
+    db_session.add(source)
+    db_session.flush()
+    _seed_doc(db_session, source.id, "DOC-1", "Doc", "text")
+
+    client = _FakeClient([_Resp([_tool_use_block(["ai"], ["manufacturing"])])] * 10)
+    classify_pending(db_session, client, batch_size=10)  # must not raise
+    assert len(client.messages.calls) == 1

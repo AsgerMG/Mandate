@@ -24,9 +24,40 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from data.models import Document, DocumentType, LifecycleStage, Source
-from etl.adapters.eurlex import _classify_stage, _classify_type
+from etl.adapters.eurlex import _classify_stage, _classify_type, celex_from_title
 
 log = structlog.get_logger(__name__)
+
+
+def backfill_celex_from_title(session: Session, *, dry_run: bool = False) -> dict:
+    """Recover the CELEX id from the title of documents ingested without one.
+
+    EUR-Lex's RSS feeds put the CELEX in the title and nowhere machine-readable
+    (the <guid> is an opaque CELLAR uuid). ``FeedAdapter.parse`` now parses it
+    at ingestion, but a feed only carries recent items, so documents already
+    stored would keep ``celex IS NULL`` until — in most cases never — the same
+    item resurfaced. That NULL is load-bearing: ``reclassify_celex_documents``
+    filters on ``celex IS NOT NULL`` and ``enrich_lifecycle`` on celex plus
+    document_type, so those documents get no type, no dates, no lifecycle and
+    no summary.
+
+    Runs first in the ``types`` step so the CELEX pass immediately downstream
+    sees the ids it recovers. Idempotent — it only ever fills a NULL.
+    """
+    rows = session.scalars(select(Document).where(Document.celex.is_(None))).all()
+    filled = 0
+    for doc in rows:
+        celex = celex_from_title(doc.title)
+        if celex is None:
+            continue
+        filled += 1
+        if not dry_run:
+            doc.celex = celex
+    if not dry_run:
+        session.commit()
+    result = {"documents_examined": len(rows), "celex_filled": filled, "dry_run": dry_run}
+    log.info("celex_backfilled", **result)
+    return result
 
 
 def reclassify_celex_documents(session: Session, *, dry_run: bool = False) -> dict:
@@ -110,7 +141,19 @@ _PRESS_SOURCE_KEYS = frozenset(
 )
 
 
-def _classify_by_source(source_key: str, extra: dict | None) -> DocumentType | None:
+# EUR-Lex RSS feeds that publish binding EU law and print the act's CELEX in
+# the item title. Belt and braces for `backfill_celex_from_title`: if a title
+# ever arrives in a shape the CELEX pattern doesn't match, these documents must
+# still not be left as OTHER, where `_DEEPEN_QUOTAS` makes newly published EU
+# acts compete against blog posts instead of sitting in the binding-law tier.
+_CELEX_IN_TITLE_SOURCE_KEYS = frozenset(
+    {"eurlex_oj_l", "eurlex_ep_council_legislation", "eurlex_com_proposals"}
+)
+
+
+def _classify_by_source(
+    source_key: str, extra: dict | None, title: str | None = None
+) -> DocumentType | None:
     """Type for a document with no CELEX to read, or None to leave it alone.
 
     Deliberately reuses signals that already exist rather than introducing a
@@ -119,11 +162,18 @@ def _classify_by_source(source_key: str, extra: dict | None) -> DocumentType | N
     this module's own ``_PRESS_SOURCE_KEYS`` for journalism — which used to live in
     briefing.py and be imported back up into here. Retrieval now filters on
     document_type instead, so this list has exactly one job: typing stragglers.
+
+    For the EUR-Lex feed sources the signal is the title itself, which carries
+    the CELEX — deriving the real type from it beats mapping the whole feed to
+    one guessed type, since these feeds mix regulations, directives and
+    decisions and only the CELEX descriptor tells them apart.
     """
     if (extra or {}).get("kind") == "verbatim_debate":
         return DocumentType.VERBATIM_DEBATE
     if source_key.startswith(_NEWSLETTER_KEY_PREFIXES):
         return DocumentType.NEWSLETTER
+    if source_key in _CELEX_IN_TITLE_SOURCE_KEYS and (celex := celex_from_title(title)):
+        return _classify_type(celex)
     if source_key in _PRESS_SOURCE_KEYS:
         return DocumentType.PRESS
     return None
@@ -144,7 +194,7 @@ def reclassify_by_source(session: Session, *, dry_run: bool = False) -> dict:
     ).all()
     changes: Counter[str] = Counter()
     for doc, source_key in rows:
-        new_type = _classify_by_source(source_key, doc.extra)
+        new_type = _classify_by_source(source_key, doc.extra, doc.title)
         if new_type is not None and new_type != doc.document_type:
             changes[f"{doc.document_type.value} -> {new_type.value}"] += 1
             if not dry_run:
