@@ -99,6 +99,18 @@ function run(env: Record<string, string>): Dump {
 }
 
 function main() {
+  // NO_PG=1 is this repo's "there is no database", and every other script that
+  // can reach Postgres honours it by deleting DATABASE_URL. This one compares
+  // the two stores against each other, so without a database there is nothing
+  // to compare -- the same state as the skip below, reached deliberately rather
+  // than by accident. Honouring it is not a weakening: run with credentials and
+  // without NO_PG, which is how CI and `npm run check` run it, the check is
+  // unchanged and at full strength.
+  if (process.env.NO_PG) {
+    console.log("check_hydration_parity: skipped — NO_PG=1, so there is no live " +
+      "register to compare the snapshot against");
+    return;
+  }
   if (!process.env.DATABASE_URL) {
     console.log("check_hydration_parity: skipped — no DATABASE_URL, nothing to compare against");
     return;
@@ -145,15 +157,39 @@ function main() {
       `      ${lostUnaccounted.slice(0, 8).join(", ")}`);
   }
   // ── The live arm, re-ranked under the fallback's own handicap ─────────────
-  // Nothing withheld means the two stores agree and `pg` already IS the
-  // handicapped run, so the third process is not spawned. That is the steady
-  // state, and it costs nothing here.
+  // Two separate claims are being tested and they must not be allowed to
+  // contaminate each other:
+  //
+  //   1. the two stores hold the same corpus, up to the policy   (above)
+  //   2. given the same corpus, the two paths rank it the same   (below)
+  //
+  // Claim 2 is only meaningful on the rows both stores actually have. When
+  // claim 1 fails, the missing rows shift every pool that contained one and
+  // every screen built from that pool -- measured, 11 absent rows produced 12
+  // further "differences", all of them the same bug wearing a different hat.
+  // A guard that reports one fault thirteen times is a guard people stop
+  // reading, which is precisely the ambiguity this file exists to remove.
+  //
+  // So the live arm is handicapped with BOTH groups: the rows the policy
+  // withheld on purpose, and the rows the fallback is missing for a reason
+  // nobody accounted for. The second group is already a hard failure recorded
+  // above and the run will exit non-zero on it regardless -- including it here
+  // hides nothing, it just makes what follows a statement about RANKING.
+  const handicap = [...jc.suppressed, ...lostUnaccounted];
+  // Nothing to handicap means the two stores agree outright and `pg` already
+  // IS the comparison run, so the third process is not spawned. That is the
+  // steady state, and it costs nothing here.
   let ranked = pg;
-  if (suppressed.size) {
+  if (handicap.length) {
     console.log(`  degradation policy withheld ${suppressed.size} row(s) from the fallback ` +
       `corpus; ${pc.publishable.length} offerable on Postgres, ${jc.publishable.length} on the snapshot`);
+    if (lostUnaccounted.length) {
+      console.log(`  the ranking comparison below additionally holds back the ` +
+        `${lostUnaccounted.length} unaccounted row(s), so it reports ranking faults only. ` +
+        `The unaccounted rows themselves have already failed this check, above.`);
+    }
     const idsFile = join(mkdtempSync(join(tmpdir(), "parity-")), "suppressed.json");
-    writeFileSync(idsFile, JSON.stringify(jc.suppressed));
+    writeFileSync(idsFile, JSON.stringify(handicap));
     ranked = run({ NO_PG: "", SUPPRESS_IDS_FILE: idsFile });
     const rc = ranked.__corpus;
     // If the handicapped arm fell back too, it is the snapshot compared with
@@ -166,11 +202,11 @@ function main() {
     // It must have withheld exactly what it was handed, or the comparison
     // below is against some other corpus than the one we think.
     const withheldByRanked = new Set(rc.suppressed);
-    if (withheldByRanked.size !== suppressed.size ||
-        [...suppressed].some((id) => !withheldByRanked.has(id))) {
+    const missed = handicap.filter((id) => !withheldByRanked.has(id));
+    if (missed.length || withheldByRanked.size !== handicap.length) {
       problems.push(
         `the re-ranked live arm withheld ${withheldByRanked.size} row(s), not the ` +
-        `${suppressed.size} it was given. The suppression override did not take, so the ` +
+        `${handicap.length} it was given. The suppression override did not take, so the ` +
         `ranking below is not the comparison it claims to be.`);
     }
   }
@@ -206,7 +242,8 @@ function main() {
     // the policy is expected; losing one to anything else is not, and a row the
     // fallback ADDS must still be one the live register would itself have
     // offered -- the leaf cap may promote, it may never conjure a fund.
-    const lostFromPool = b.ids.filter((i) => !a.ids.includes(i) && !suppressed.has(i));
+    const held = new Set(handicap);
+    const lostFromPool = b.ids.filter((i) => !a.ids.includes(i) && !held.has(i));
     const gainedInPool = a.ids.filter((i) => !b.ids.includes(i) && !pgOfferable.has(i));
     if (lostFromPool.length) {
       problems.push(

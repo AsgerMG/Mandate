@@ -72,6 +72,19 @@ function run(env: Record<string, string>): Dump {
 }
 
 async function main() {
+  // NO_PG=1 is this repo's "there is no database" -- CI sets it deliberately so
+  // the suite stays hermetic, and every other Postgres-touching script honours
+  // it. This check needs the live register AS ITS REFEREE, so under NO_PG there
+  // is nothing to referee with and running anyway would either compare the
+  // snapshot with itself or reach a database it was told not to. Skipping is
+  // the honest answer; the hard failure below is kept for the case that
+  // actually matters, a deliberate run whose credentials are missing.
+  if (process.env.NO_PG) {
+    console.log("check_degradation: skipped — NO_PG=1, so there is no live " +
+      "register to referee the fallback corpus against. Run without NO_PG, with " +
+      "DATABASE_URL set, to exercise it.");
+    return;
+  }
   if (!process.env.DATABASE_URL) {
     // Not a silent pass. Without the live register there is no referee, and a
     // check that goes green having compared nothing is the defect this file
