@@ -126,9 +126,9 @@ def main() -> None:
           f"matching {len(targets)} deciding gate(s), {len(evaluable)} with a "
           f"value_spec (those can disqualify a founder silently)")
     for instrument_id, gate_key, reason, spec, requirement in targets[:15]:
-        print(f"    {instrument_id}/{gate_key}{'  <- value_spec' if spec else ''}"
-              f"\n      {re.sub(r'\\s+', ' ', requirement)[:110]}"
-              f"\n      {reason}")
+        flat = re.sub(r"\s+", " ", requirement)[:110]
+        print(f"    {instrument_id}/{gate_key}{'  <- value_spec' if spec else ''}\n"
+              f"      {flat}\n      {reason}")
     if len(targets) > 15:
         print(f"    ... and {len(targets) - 15} more")
 
