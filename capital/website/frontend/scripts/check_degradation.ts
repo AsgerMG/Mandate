@@ -41,7 +41,7 @@ import { execFileSync } from "node:child_process";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-const CREDENTIALS = requireCredentials("check_degradation", ["DATABASE_URL"]);
+const CREDENTIALS = requireCredentials("check_degradation", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 import { today } from "../lib/intelligence/liveness";

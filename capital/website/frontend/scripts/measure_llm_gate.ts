@@ -29,7 +29,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-requireCredentials("measure_llm_gate", ["DATABASE_URL", "ANTHROPIC_API_KEY"]);
+requireCredentials("measure_llm_gate", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../lib/intelligence/corpus";
 import { Client } from "pg";

@@ -32,7 +32,7 @@
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-requireCredentials("measure_region_routing", ["DATABASE_URL"]);
+requireCredentials("measure_region_routing", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments, type DbInstrument } from "../lib/intelligence/corpus";
 import { regionScorer } from "../lib/intelligence/shortlist";

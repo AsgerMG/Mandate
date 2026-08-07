@@ -68,7 +68,7 @@ import { join } from "node:path";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-const CREDENTIALS = requireCredentials("check_hydration_parity", ["DATABASE_URL"]);
+const CREDENTIALS = requireCredentials("check_hydration_parity", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 

@@ -49,6 +49,14 @@ jobs:
       - name: Output contracts
         run: npx tsx scripts/check_contracts.ts
 
+      # Credentials load in one place, and a harness that needs them says so.
+      # Free and hermetic — it reads source and runs nothing — and it belongs
+      # in CI rather than only in `npm run check`, because the thing it stops
+      # is somebody pasting the old env preamble back into a NEW script, which
+      # arrives by pull request.
+      - name: One env loader
+        run: npx tsx scripts/check_env_loader.ts
+
       - name: Vocabulary contract
         run: npx tsx scripts/check_vocabularies.ts
         env: { NO_PG: '1' }

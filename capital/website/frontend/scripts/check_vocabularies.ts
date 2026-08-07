@@ -30,7 +30,7 @@ import { readFileSync } from "node:fs";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-requireCredentials("check_vocabularies", ["DATABASE_URL"]);
+requireCredentials("check_vocabularies", ["DATABASE_URL", "VOYAGE_KEY"]);
 // NO_PG=1 scores the local JSON snapshot instead of live Postgres. Without it
 // this check reads production, which lags the local DB until a publish — and
 // then reports fixes as still broken.

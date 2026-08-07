@@ -10,7 +10,7 @@
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-requireCredentials("check_archetypes", ["DATABASE_URL"]);
+requireCredentials("check_archetypes", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 async function main() {
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");

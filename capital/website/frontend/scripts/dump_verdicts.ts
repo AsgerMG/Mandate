@@ -31,7 +31,7 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 // STDOUT IS THE PROTOCOL: the parent JSON.parses it, so nothing here may print.
 // requireCredentials is silent by design for exactly this reason.
 loadEnvLocal();
-const CREDENTIALS = requireCredentials("dump_verdicts", ["DATABASE_URL"]);
+const CREDENTIALS = requireCredentials("dump_verdicts", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 async function main() {
   void CREDENTIALS; // "offline" is legitimate: it is how the JSON arm is run.
