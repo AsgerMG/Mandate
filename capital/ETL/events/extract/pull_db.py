@@ -28,7 +28,15 @@ if __name__ == "__main__":
              str(DB), "--overwrite"]
         ).returncode
     finally:
-        restore()
+        # Waking the service replaces the cron schedule with `sleep infinity`.
+        # A pull that succeeds and leaves the service woken has traded one
+        # db.sqlite for the entire weekly refresh, silently — so the restore is
+        # confirmed from Railway and its failure is fatal here even though the
+        # download worked.
+        restore_problems = restore()
     if rc != 0:
         _sys.exit(f"pull failed (rc={rc})")
+    if restore_problems:
+        _sys.exit("db.sqlite pulled, but the cron schedule was NOT restored. "
+                  "Fix before anything else: python3 ETL/lib/verify_cron.py --deploy")
     print(f"Pulled fresh db.sqlite -> {DB}")

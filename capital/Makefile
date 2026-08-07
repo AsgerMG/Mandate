@@ -12,10 +12,12 @@ DATE    := $(shell date +%Y%m%d)
 BACKUP  := $(HOME)/Wincent-backups
 ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/Wincent-backups
 
-.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility pull-db push news
+.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility pull-db push news republish verify-cron refresh refresh-check
 
 help:
 	@echo "Wincent make targets:"
+	@echo "  make republish   Make the site serve the corpus the ETL produced (pull -> gate -> regenerate)"
+	@echo "  make verify-cron Is the weekly Railway ETL scheduled, deployed, and running this code?"
 	@echo "  make pull-db     Pull the latest db.sqlite from the Railway ETL volume (run before local work)"
 	@echo "  make push        Run cloud-blocked/manual sources locally, then push db.sqlite back to Railway"
 	@echo "  make sources     List every source + how to renew it (ETL/events/extract/renew.py --list)"
@@ -51,6 +53,44 @@ refresh-check:
 
 refresh:
 	python3 ETL/refresh.py
+
+# THE one command that makes the website serve the corpus the ETL produced.
+#
+# The ETL refreshes a Railway-resident db.sqlite every Sunday at 03:00 UTC. The
+# website serves committed build artifacts and does not follow: measured over
+# this repo's own history the median gap was 4.6 days and the worst was 32
+# (`python3 ETL/lib/drift_window.py`). Closing it by hand took a pull, a
+# regeneration, several builders and a commit, remembered in the right order.
+# This is that, in order, with the gate in the middle.
+#
+# It deliberately stops short of the commit. An automated job that pushes to
+# main redeploys the whole site on a cron, and the artifacts it would push are
+# exactly the ones a human should look at — the headline number a founder reads
+# is not a thing to change unattended. So this leaves the diff staged in your
+# working tree and tells you what moved.
+republish:
+	# 1. The ETL's corpus, not last week's copy of it. Wakes the cron service,
+	#    downloads, and confirms the schedule was restored afterwards.
+	python3 ETL/events/extract/pull_db.py
+	# 2. Regenerate everything downstream, THROUGH the coverage gate, which
+	#    stops the chain rather than publishing a corpus that got worse.
+	#    --force because a pull changes db.sqlite, not the raw source files
+	#    refresh.py hashes, so nothing would otherwise look changed.
+	python3 ETL/refresh.py --force
+	# 3. Say what actually moved, so the commit is a decision and not a reflex.
+	@echo ""
+	@echo "── what changed ────────────────────────────────────────────────"
+	@git --no-pager diff --stat -- website/frontend/public/data project-mgmt/coverage_baseline.json
+	@echo ""
+	@echo "Review, then commit and push — Vercel deploys on push:"
+	@echo "  git add website/frontend/public/data project-mgmt"
+	@echo "  git commit -m 'Republish the corpus the ETL produced'"
+
+# Is the weekly refresh going to happen, and will it run this code? Reads the
+# schedule back from Railway rather than trusting the last write -- see
+# ETL/lib/verify_cron.py for the two schedules and why only one of them counts.
+verify-cron:
+	python3 ETL/lib/verify_cron.py
 
 classify:
 	# Re-apply labels the last reload wiped BEFORE spending anything. companies

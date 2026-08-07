@@ -116,6 +116,45 @@ snapshot exits non-zero), `check_corpus_currency`, `check_hydration_parity`
 `check_liveness` (one definition, both languages, fails on a sixth copy), and
 `check_leaf_cap`.
 
+### …and nine of them fired nowhere (workstream AA, 2026-08-07)
+
+`check_hydration_parity` being "in no build step" was not one oversight, it was
+the pattern. **Nine of the seventeen checks in `npm run check` are in no
+automatic path**: CI runs a hand-picked subset, not `npm run check`, and has no
+`DATABASE_URL` by design, so `check_corpus_currency` would skip itself even if
+it did. It had never fired automatically once.
+
+Three things were missing and only one was a check, because **the website's
+committed artifacts could not be compared to the ETL's corpus at all** —
+`db.sqlite` is gitignored and lives on a Railway volume. Measured drift from an
+ETL run to the site catching up: median 4.6 days, worst 32
+(`python3 ETL/lib/drift_window.py`).
+
+- `publish_corpus_census.py` — the ETL records what its corpus contains, plus
+  the run's outcome and a fingerprint of the code that produced it, into
+  Postgres. That is the channel; there was none.
+- `check_corpus_census.ts` — STALE / SILENT / DEGRADED / DRIFTED.
+- `.github/workflows/corpus-currency.yml` — Sunday 08:00 UTC, on the ETL's
+  clock rather than on a push, because a push-triggered guard's window is
+  unbounded in exactly the weeks nobody is looking.
+- **`make republish`** is the one-command fix. Nothing publishes automatically,
+  on purpose — see `project-mgmt/findings/corpus_currency_wsAA.md`.
+
+**The coverage gate was wrong in both directions and is rewritten.** It compared
+shares only: it failed a run in which every axis GAINED ~70 instruments, and it
+could not see a loss that came with a shrinking corpus at all. Now LOSS
+(absolute, against a high-water mark) and DILUTION (share fell *and* nothing was
+gained) are separate tests, asserted from the real baselines in
+`ETL/terms/test_coverage_gate.py`, in CI. **Stricter, not looser.**
+
+**Railway was live-broken and is repaired.** `trigger_etl_now.py`'s "verify"
+grepped `railway status` for the service name and returned the service name.
+The deployed cron manifest said `19 23 * * *` while the instance said
+`0 3 * * 0`, and the service has no repo trigger, so the weekly run was
+executing a bug that had already been fixed on main. `make verify-cron` reads
+both schedules back from the API. **`deploymentRedeploy` cannot fix a schedule**
+— it replays its own baked manifest; only a fresh `railway up` does.
+
 ## FLOORS WENT UP, AND MAY NOT BE LOWERED
 
 `pool 90 → 93, EXACT@5 15 → 22, REGIME@5 80`. Three seeds, tune n=300:

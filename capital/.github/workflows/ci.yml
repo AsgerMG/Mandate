@@ -100,6 +100,20 @@ jobs:
       - name: Encoded rule sanity
         run: python3 ETL/schema/check_spec_sanity.py
 
+      # The gate that refuses to publish a corpus that got worse. It failed a
+      # run in which every axis GAINED instruments, and it could not see a loss
+      # that came with a shrinking corpus at all. Both are asserted from the
+      # committed baselines, so neither can come back.
+      - name: Coverage gate separates loss from dilution
+        run: python3 ETL/terms/test_coverage_gate.py
+
+      # The corpus census runs inside the ETL image, which has requirements.txt
+      # and nothing else. It reached production importing pandas three modules
+      # down and recorded a ModuleNotFoundError instead of the corpus figures --
+      # invisibly, because it records a failed block rather than crashing.
+      - name: The census can run in the ETL image
+        run: python3 ETL/schema/check_census_imports.py
+
       - name: Cross-language constants
         run: python3 ETL/schema/check_cross_language_constants.py
 

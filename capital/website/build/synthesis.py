@@ -17,73 +17,13 @@ SITE_DATA.mkdir(parents=True, exist_ok=True)
 
 
 # ── The single canonical definition of every corpus-wide figure ───────────────
-# THIS is the source of truth. synthesis.json (home page + footer), the
-# /for-companies headline, and the build guardrail all derive their numbers from
-# here. Do not recompute a corpus count anywhere else: import compute_kpis and
-# the guardrail in build_site_data.py will fail the build if a generated file
-# disagrees. Definitions are deliberate, not incidental:
-#   companies  — distinct legal entities AFTER the parent-group merge (dedup
-#                Layer 1); sisters sharing a parent_group collapse to one, else
-#                fall back to the row id. NOT a raw COUNT(*) (which double-counts
-#                un-merged sisters), NOT "companies with an event" (a subset).
-#   events     — non-duplicate rows only (is_duplicate = 0).
-#   capital    — grant + debt, EXCLUDING ipcei_linked tranches (already counted
-#                as ipcei_* ceilings, decision log D-17) and is_duplicate rows
-#                (ADEME also in SATR-FR, migration 009). Single-counted on purpose;
-#                a raw SUM(grant_amount_eur) over-states it by ~€13B.
-# 2026-07-08 country-scope reduction: countries below €1B cumulative public
-# support are outside the corpus (soft-exclude — rows stay in the DB, the read
-# layer filters). The view v_country_public_support (data/views.sql) is the one
-# definition of the threshold; these fragments apply it to the raw-table KPIs
-# that don't go through v_events. NULL/blank-country companies keep counting
-# (they are a data-quality bucket, not an excluded country), so the guard is
-# "not in an explicitly out-of-corpus country" rather than "in corpus".
-_CO_IN_SCOPE = (
-    " (country IS NULL OR country = '' OR country NOT IN"
-    "  (SELECT country FROM v_country_public_support WHERE in_corpus = 0))"
-)
-_EV_IN_SCOPE = (
-    " (company_id IS NULL OR company_id NOT IN"
-    "  (SELECT id FROM companies WHERE country IN"
-    "   (SELECT country FROM v_country_public_support WHERE in_corpus = 0)))"
-)
-
-CANONICAL_KPI_SQL = {
-    "companies":
-        "SELECT COUNT(DISTINCT COALESCE(parent_group, CAST(id AS TEXT))) FROM companies"
-        " WHERE" + _CO_IN_SCOPE,
-    "events":
-        "SELECT COUNT(*) FROM public_funding_events WHERE is_duplicate = 0"
-        " AND" + _EV_IN_SCOPE,
-    "champions":
-        "SELECT COUNT(*) FROM v_company_breadth WHERE n_source_families >= 2",
-    "step_companies":
-        "SELECT COUNT(*) FROM companies WHERE step_flagged = 1"
-        " AND" + _CO_IN_SCOPE,
-    "total_capital_eur_raw":
-        "SELECT COALESCE(SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0)),0)"
-        " FROM public_funding_events WHERE ipcei_linked = 0 AND is_duplicate = 0"
-        " AND" + _EV_IN_SCOPE,
-    "countries":
-        "SELECT COUNT(*) FROM v_country_public_support WHERE in_corpus = 1",
-    "source_families":
-        "SELECT COUNT(DISTINCT source_family) FROM v_events",
-    "sectors":
-        "SELECT COUNT(DISTINCT c.sector_top) FROM v_european_companies c"
-        " JOIN v_events v ON v.company_id = c.id"
-        " WHERE c.sector_top IS NOT NULL AND c.sector_top != ''",
-}
-
-
-def compute_kpis(con) -> dict:
-    """Compute every canonical corpus-wide figure from `con`. The one definition;
-    imported by both the synthesis writer and the build guardrail."""
-    out = {}
-    for key, sql in CANONICAL_KPI_SQL.items():
-        val = con.execute(sql).fetchone()[0]
-        out[key] = float(val) if key == "total_capital_eur_raw" else int(val)
-    return out
-
+# It lives in lib/corpus_kpis.py and is re-exported here, because this module
+# cannot be imported without pandas (helpers.py, above) and the ETL image has
+# no pandas. The corpus census runs in that image and needs these numbers; a
+# second copy of the SQL would have been the third place this repo learned that
+# "keep in sync" is not a mechanism. See lib/corpus_kpis.py for the definitions
+# and why each is what it is.
+from corpus_kpis import CANONICAL_KPI_SQL, compute_kpis  # noqa: E402,F401
 
 # ── Corpus KPIs ───────────────────────────────────────────────────────────────
 def run_synthesis():
