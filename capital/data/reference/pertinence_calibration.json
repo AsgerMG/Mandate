@@ -1,6 +1,7 @@
 {
   "_comment": "Does the pertinence classifier still separate a CONDITION from a REPORT? Every string here is judged by ETL/terms/classify_eligibility_pertinence.py alongside the live corpus, into the same digest-keyed cache, and website/frontend/scripts/check_gate_pertinence.ts asserts the cached verdict equals `expect`. A prompt edit, a model change or a temperature of enthusiasm that stops catching the sentence which caused all of this fails the build.",
   "_why_not_a_word_list": "The four `report` cases that came from the incident are all state-aid selectivity findings, so a checker built only from them would be an enumeration of one lexical family. The controls are chosen to break that: `decision_text_real_condition` is a sentence from the same kind of document, in the same register, that states a genuine condition and must stay `condition`; `budget_and_duration` is a `report` that has nothing to do with selectivity. The property is the KIND of statement, not the vocabulary of state aid.",
+  "_the_three_way_line": "v2 split `report` into `report` and `demand_match` after the binary property judged 40 deciding gates `report` and only about five of them were the defect; the rest stated the size or the channel of the offer, which intake asks the founder to state their counterpart for. The three cases that pin the new line are `ticket_ceiling` and `financing_channel` (must be demand_match, or ~20 correct gates stop deciding) against `budget_and_duration` and `ipcei_hy2use_country_framing` (must stay report, or the carve-out becomes a loophole that readmits the original defect). Delete none of the four: each one is the other's guard rail.",
   "cases": [
     {
       "id": "ipcei_batteries_selectivity",
@@ -29,8 +30,26 @@
     {
       "id": "budget_and_duration",
       "expect": "report",
-      "why": "A REPORT with no selectivity language anywhere in it. True of the instrument, actionable by nobody. Present so the test does not degenerate into a selectivity detector.",
+      "why": "A REPORT with no selectivity language anywhere in it. True of the instrument, actionable by nobody. Present so the test does not degenerate into a selectivity detector -- and, since v2, doing double duty as the control on `demand_match`: this is a fact about MONEY, in euros, and still a report, because nobody is asked what overall budget they would prefer a scheme to have. The offer's shape is wantable; the scheme's administration is not.",
       "text": "The scheme has an estimated overall budget of EUR 150 million and will run until 31 December 2027, with aid awarded in annual tranches by the managing authority."
+    },
+    {
+      "id": "ticket_ceiling",
+      "expect": "demand_match",
+      "why": "v2. Judged `report` by the binary property, and demoting it would have been wrong: `ticketBand` is a question we ask the founder, so this compares the offer against what they said they want. A founder seeking EUR 20m is genuinely not served by this loan. If it flips to `report`, roughly twenty ticket-size gates lose the ability to decide and the brief starts recommending instruments an order of magnitude too small.",
+      "text": "The maximum loan amount is EUR 250,000."
+    },
+    {
+      "id": "financing_channel",
+      "expect": "demand_match",
+      "why": "v2. The same carve-out on a non-numeric axis: `borrowerModel` is an intake question, and this says the money reaches companies through funds rather than directly. An operating company should not be matched to a fund-of-funds vehicle, and this gate is the only thing that says so.",
+      "text": "Invest-NL invests as a limited partner / fund investor into venture capital funds rather than lending or granting directly to companies."
+    },
+    {
+      "id": "ipcei_hy2use_country_framing",
+      "expect": "report",
+      "why": "THE TRAP THAT KEEPS demand_match HONEST, and a live gate: llm_2pass, resolved onto entityCountries, still deciding as of 2026-08-08. It names Member States, and `entityCountries` is something intake asks about -- so a classifier that reasoned 'mentions an intake field, therefore demand_match' would promote a selectivity finding straight back into a filter. It is a statement about aid already granted under 107(3)(b) to undertakings already participating. Mentioning a thing the founder is asked about is not the same as offering them something.",
+      "text": "Aid is granted by the notified Member States to participating undertakings located/operating in those Member States under Article 107(3)(b) TFEU as an IPCEI."
     },
     {
       "id": "post_award_obligation",

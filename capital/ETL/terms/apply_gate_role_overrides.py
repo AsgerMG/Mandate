@@ -79,7 +79,15 @@ def _database_url() -> str | None:
 
 
 def _report_digests() -> dict[str, str]:
-    """digest -> the model's one-line reason, for every text judged a report."""
+    """digest -> the model's one-line reason, for every text judged a report.
+
+    ONLY `report` demotes. `demand_match` -- a fact about the size, form or
+    channel of the offer, which intake asks the founder to state their own
+    counterpart for -- keeps deciding, because what it is compared against is
+    the founder's own declared want. That distinction is the whole of the
+    2026-08-08 property change; see classify_eligibility_pertinence.py for why
+    the binary version would have demoted about twenty correct gates here.
+    """
     if not PERTINENCE.exists():
         print("no eligibility_pertinence.json; only hand overrides will be applied")
         return {}

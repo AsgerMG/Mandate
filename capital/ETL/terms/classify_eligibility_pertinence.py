@@ -32,8 +32,40 @@ is the shape this repo has been bitten by three times; see
 `website/frontend/lib/intelligence/evidenceTiers.json`.
 
 ── The property ───────────────────────────────────────────────────────────
-    A published eligibility string must state a condition an applicant could
-    satisfy, not a finding about someone else's completed grant.
+    A published eligibility string must state something an applicant could act
+    on -- a condition they could satisfy, or an offer they could want -- and
+    not a finding about someone else's completed grant.
+
+── Why there are THREE verdicts and not two (2026-08-08) ──────────────────
+The first version of this asked one binary question: condition, or report? Run
+over the whole corpus it judged 40 deciding gates `report`, and it was right
+about the sentences -- but only about five of them were the defect. The rest
+read like this:
+
+    "The maximum loan amount is EUR 250,000."        -> ticketBand
+    "Invest-NL invests as a limited partner into venture capital funds
+     rather than lending or granting directly to companies." -> borrowerModel
+
+As prose those ARE descriptions of the instrument rather than of the applicant,
+which is what the binary property called a report. But the product deliberately
+matches the shape of the offer against a demand the founder states in intake:
+`ticketBand`, `borrowerModel`, `cofinancingBand` and `developmentStage` are all
+questions we ask them. A founder seeking EUR 20m is genuinely not served by a
+EUR 250k micro-loan, and the gate that says so is doing its job.
+
+Demoting those would have cost real matching precision to fix a defect they are
+not an instance of. So the property gains a third answer, `demand_match`: a fact
+about what the instrument OFFERS, of a kind the applicant is asked to state
+their own counterpart for. It may decide, because what it is compared against is
+the founder's own declared want.
+
+This is a carve-out from `report`, never from `condition`, and it is NOT a
+loophole for "any fact about the money": a total programme budget, a
+disbursement calendar and a legal basis stay reports, because no one is asked
+what budget they would prefer a scheme to have. The calibration file pins both
+sides of that line, including `ipcei_hy2use_country_framing` -- a selectivity
+finding that happens to name countries, which intake DOES ask about, and which
+must still come back `report`.
 
 ── Why this is a model call and not a regex ───────────────────────────────
 The corpus holds text in German, Spanish, French, Italian, Swedish, Estonian,
@@ -101,33 +133,59 @@ MAX_CHARS = 1800
 PRICE_IN, PRICE_OUT = 5.0, 25.0
 SPEND = {"in": 0, "out": 0}
 
+#: Bumped when PROPERTY changes in a way that could move a verdict. The cache
+#: key is a digest of the TEXT, so without this a reworded question would keep
+#: answering with verdicts nobody asked for -- a check that is green on stale
+#: judgements. See REJUDGE for which old answers a bump actually invalidates.
+PROPERTY_VERSION = 2
+#: version -> the verdicts from that version that the CURRENT property could
+#: move, and which must therefore be paid for again. v2 subdivides `report` into
+#: `report` and `demand_match` and does not touch the condition/not-condition
+#: line, so a v1 `condition` is still a v2 `condition` and re-judging 2,533 of
+#: them would buy nothing. Stated as data rather than a comment because the
+#: check enforces it: a verdict left at a version whose answers this table says
+#: are stale FAILS the build.
+REJUDGE: dict[int, set[str]] = {1: {"report"}}
+
 PROPERTY = """\
 A published eligibility text is shown to a founder under the heading "who may \
-apply". It must state CONDITIONS -- things a reader could check about their own \
-company, project or plans to work out whether they qualify.
+apply". Judge what KIND of statement it is, AS A WHOLE, in whatever language it \
+is written.
 
-It must not be a REPORT: a finding, decision or narrative about aid that has \
-already been allocated to parties the document names. A report may be perfectly \
-accurate and still be useless to a founder, because there is nothing in it they \
-could do or be.
+  condition    -- a requirement about the applicant: who may apply, what the \
+project must be, what is excluded, what thresholds apply. A reader can check it \
+against their own company, project or plans. It stays a condition when it is \
+narrow, hard to meet, or stated in the past tense about how the scheme has \
+operated.
 
-Judge the text AS A WHOLE, in whatever language it is written.
+  demand_match -- a fact about what the instrument OFFERS, of a kind an \
+applicant is separately asked to state their own counterpart for: how much \
+money it provides, in what form (grant, loan, equity, guarantee), to what kind \
+of counterparty it provides it, what share of costs it covers, what maturity of \
+company it backs. It says nothing about the applicant's merit, but an applicant \
+who has said what they are looking for can be compared against it and the \
+comparison means something to them -- someone seeking EUR 20 million is \
+genuinely not served by a EUR 250,000 micro-loan.
 
-  condition -- a reader could take something from this about whether THEY \
-qualify: who may apply, what the project must be, what is excluded, what \
-thresholds apply. Some surrounding narrative is fine. A condition stays a \
-condition even when it is narrow, hard to meet, or stated in the past tense \
-about how the scheme has operated.
-  report    -- it describes a decision already taken about named others, or \
-states in substance that the money is not open to applicants at all. Nothing in \
-it is a bar the reader could clear. Typical shapes: a state-aid compatibility \
-or selectivity finding about a closed beneficiary list; a description of what \
-the instrument IS or DOES rather than who may apply to it; an obligation that \
-binds a beneficiary only after an award; a fragment or section heading that \
-states no requirement at all.
+  report       -- a decision, finding or narrative about aid already allocated \
+to parties the document names; a compatibility or selectivity conclusion; an \
+administrative, procedural, legal-basis or budgetary fact about the scheme; a \
+duty that binds a beneficiary only after an award; a fragment or section \
+heading stating no requirement. There is nothing in it the reader could clear \
+and nothing in it for them to want.
 
-If a text mixes both but a founder could still act on part of it, that is \
-"condition". Answer "report" only when there is nothing to act on."""
+The line between demand_match and report is whether the statement is about the \
+SHAPE OF THE OFFER, which an applicant has a preference about, or about the \
+SCHEME'S ADMINISTRATION and decisions already taken, which they do not. A total \
+programme budget, a disbursement calendar, an aid legal basis and a list of \
+chosen beneficiaries are all reports even though they are facts about the \
+money. Mentioning something an applicant is asked about -- a country, a sector, \
+a date -- does not make a finding into a demand_match: if the statement records \
+a decision already taken about named others, it is a report.
+
+If a text mixes kinds and a founder could still act on part of it, prefer \
+"condition". Answer "report" only when there is nothing to act on and nothing \
+to want."""
 
 
 def _load_env() -> None:
@@ -150,6 +208,22 @@ def load_cache() -> dict:
     return json.loads(CACHE.read_text())["verdicts"] if CACHE.exists() else {}
 
 
+def is_stale(entry: dict) -> bool:
+    """Was this answer given to a question we have since changed?
+
+    A verdict carries the PROPERTY_VERSION it was judged under. Entries written
+    before versioning existed are version 1. REJUDGE says which of an old
+    version's answers the current property could actually move; anything else
+    carries forward, because paying again for an answer that cannot change is
+    just spending. Unknown future versions are never stale.
+    """
+    v = entry.get("v", 1)
+    if v >= PROPERTY_VERSION:
+        return False
+    return any(entry["verdict"] in moved
+               for old, moved in REJUDGE.items() if v <= old)
+
+
 def save_cache(cache: dict) -> None:
     CACHE.write_text(json.dumps({
         "_comment": (
@@ -161,6 +235,14 @@ def save_cache(cache: dict) -> None:
             "a verdict: correct the text, or record the case in "
             "data/reference/gate_role_overrides.json where the reasoning lives."),
         "_property": PROPERTY.replace("\n", " "),
+        "_property_version": PROPERTY_VERSION,
+        "_versions": (
+            "Each verdict carries `v`, the property version it was judged under; "
+            "absent means 1. REJUDGE in the classifier declares which of an old "
+            "version's answers the current property could move, and the check "
+            "fails on any that are still carried at a stale version. Without this "
+            "a reworded property would keep answering with verdicts nobody asked "
+            "for, and the build would be green on them."),
         "_model": MODEL,
         "verdicts": cache,
     }, indent=1, sort_keys=True) + "\n")
@@ -220,7 +302,8 @@ def classify(batch: list[str]) -> dict[str, dict]:
                     "type": "object",
                     "properties": {
                         "id": {"type": "string"},
-                        "verdict": {"type": "string", "enum": ["condition", "report"]},
+                        "verdict": {"type": "string",
+                                    "enum": ["condition", "demand_match", "report"]},
                         "reason": {"type": "string"},
                     },
                     "required": ["id", "verdict", "reason"],
@@ -260,12 +343,31 @@ def classify(batch: list[str]) -> dict[str, dict]:
 def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool) -> None:
     """Judge every DISTINCT text in `rows` that has no cached verdict."""
     todo: dict[str, str] = {}
+    stale = 0
     for r in rows:
         d = digest(r["body"])
-        if d not in cache and d not in todo:
+        if d in todo:
+            continue
+        entry = cache.get(d)
+        if entry is None:
             todo[d] = r["body"]
+        elif is_stale(entry):
+            stale += 1
+            todo[d] = r["body"]
+        elif do_classify:
+            # Carried forward: REJUDGE says the current property cannot move
+            # this answer, so it is re-stamped rather than re-paid for. The
+            # stamp is what lets check_gate_pertinence.ts test staleness with a
+            # plain `v == _property_version` and hold no copy of the policy --
+            # one table, in one language, decides re-pay vs re-stamp. Only a
+            # --classify run may stamp: a --report run that laundered the
+            # version without paying would be a green build over stale answers.
+            entry["v"] = PROPERTY_VERSION
     print(f"  {len(rows)} rows, {len(set(digest(r['body']) for r in rows))} distinct texts, "
-          f"{len(todo)} unjudged")
+          f"{len(todo)} to judge ({len(todo) - stale} never judged, "
+          f"{stale} judged under a superseded property)")
+    if do_classify:
+        save_cache(cache)  # persist the re-stamps even if nothing needs judging
     if not (do_classify and todo):
         return
     batch_all = list(todo.values())[:limit] if limit else list(todo.values())
@@ -279,6 +381,7 @@ def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool
                 print(f"  !! no verdict returned for {d}: {body[:60]!r}")
                 continue
             cache[d] = {"verdict": v["verdict"], "reason": v["reason"],
+                        "v": PROPERTY_VERSION,
                         "sample": re.sub(r"\s+", " ", body).strip()[:220]}
         # Persist per chunk: a run cut off mid-way must not discard
         # classifications already paid for.
@@ -326,9 +429,15 @@ def main() -> None:
     print()
     for name, rows, _ in populations:
         judged = [r for r in rows if digest(r["body"]) in cache]
+        kinds: dict[str, int] = {}
+        for r in judged:
+            k = cache[digest(r["body"])]["verdict"]
+            kinds[k] = kinds.get(k, 0) + 1
         reports = [r for r in rows if cache.get(digest(r["body"]), {}).get("verdict") == "report"]
-        print(f"{name}: {len(judged)}/{len(rows)} judged, {len(reports)} are REPORTS "
-              f"about somebody else's grant rather than conditions")
+        print(f"{name}: {len(judged)}/{len(rows)} judged  "
+              + ", ".join(f"{k}={n}" for k, n in sorted(kinds.items())))
+        print(f"  {len(reports)} are REPORTS -- nothing to clear and nothing to want; "
+              f"these may not decide")
         for r in reports:
             note = cache[digest(r["body"])]["reason"]
             decides = " <- HAS value_spec, CAN DECIDE" if r.get("value_spec") else ""

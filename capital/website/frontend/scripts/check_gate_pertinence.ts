@@ -23,10 +23,30 @@
  * for not already having been chosen as one of its beneficiaries.
  *
  * ── The property ──────────────────────────────────────────────────────────
- *     A gate that can decide a verdict must state a condition an applicant
- *     could satisfy — not a finding about someone else's completed grant, not
- *     a description of what the instrument IS, not a duty that binds only
- *     after an award.
+ *     A gate that can decide a verdict must state something an applicant could
+ *     act on — a condition they could satisfy, or an offer they could want —
+ *     and not a finding about someone else's completed grant, a fact about the
+ *     scheme's administration, or a duty that binds only after an award.
+ *
+ * The middle clause is not softness; it was bought with evidence. The first
+ * version of the property was binary, condition or report, and run over the
+ * whole corpus it judged 40 deciding gates `report`. It was right about the
+ * sentences — "The maximum loan amount is EUR 250,000" really is a statement
+ * about the instrument — but only about five of them were this defect. Roughly
+ * twenty stated the SIZE or the CHANNEL of the offer, encoded onto `ticketBand`
+ * and `borrowerModel`, which are questions intake asks the founder. Those gates
+ * compare the offer against what the founder said they wanted, and demoting
+ * them would have cost real matching precision to fix a defect they are not an
+ * instance of.
+ *
+ * So `demand_match` is a carve-out from `report` and never from `condition`,
+ * and it is not a hole for "any fact about the money": a total programme
+ * budget, a disbursement calendar and a legal basis stay reports, because
+ * nobody is asked what budget they would prefer a scheme to have. The
+ * calibration file pins both edges — including a selectivity finding that names
+ * Member States, which intake DOES ask about, and which must still come back
+ * `report`. Mentioning a thing the founder is asked about is not offering them
+ * something.
  *
  * It is a property, not a register: nothing here matches a phrase. The
  * judgement is a model call over the whole string in whatever language it is
@@ -68,7 +88,7 @@ const CACHE = path.join(REPO, "data", "eligibility_pertinence.json");
 const CALIBRATION = path.join(REPO, "data", "reference", "pertinence_calibration.json");
 const SNAPSHOT = path.join(process.cwd(), "public", "data", "instrument_terms.json");
 
-type Verdict = { verdict: string; reason: string; sample?: string };
+type Verdict = { verdict: string; reason: string; sample?: string; v?: number };
 type Gate = { requirement?: string; gateRole?: string; valueSpec?: unknown };
 
 /** Byte-identical to `digest()` in classify_eligibility_pertinence.py. The two
@@ -135,8 +155,16 @@ async function main() {
     process.exitCode = 1;
     return;
   }
-  const cache = (JSON.parse(readFileSync(CACHE, "utf8")).verdicts ?? {}) as
-    Record<string, Verdict>;
+  const cacheFile = JSON.parse(readFileSync(CACHE, "utf8")) as {
+    verdicts?: Record<string, Verdict>; _property_version?: number;
+  };
+  const cache = (cacheFile.verdicts ?? {}) as Record<string, Verdict>;
+  // The property the verdicts below were answers to. A verdict carries the
+  // version it was judged or last reconciled under; the classifier decides
+  // which old answers must be re-paid for and which may simply be re-stamped,
+  // and that policy lives only there. Here it is a plain equality, so this file
+  // holds no copy of a rule that could drift from it.
+  const PROPERTY_VERSION = cacheFile._property_version ?? 1;
 
   // ── 1. The classifier still separates a condition from a report ─────────
   // First, because everything below is only as good as this.
@@ -175,10 +203,12 @@ async function main() {
   }
 
   const unjudged: { d: string; e: { text: string; refs: string[] } }[] = [];
+  const stale: { e: { text: string; refs: string[] }; v: Verdict }[] = [];
   const reports: { e: { text: string; spec: boolean; refs: string[] }; v: Verdict }[] = [];
   for (const [d, e] of seen) {
     const v = cache[d];
     if (!v) { unjudged.push({ d, e }); continue; }
+    if ((v.v ?? 1) !== PROPERTY_VERSION) stale.push({ e, v });
     if (v.verdict === "report") reports.push({ e, v });
   }
 
@@ -197,6 +227,25 @@ async function main() {
           `      ${u.e.refs[0]}\n        ${brief(u.e.text)}`).join("\n") +
         (unjudged.length > 8 ? `\n      … and ${unjudged.length - 8} more` : "") +
         `\n    Run: python3 ETL/terms/classify_eligibility_pertinence.py --classify`,
+    });
+  }
+
+  if (stale.length) {
+    problems.push({
+      axis: "verdict answers a superseded property",
+      detail:
+        `${stale.length} distinct requirement text(s) carry a verdict judged ` +
+        `under an older version of the property than the ${PROPERTY_VERSION} this ` +
+        `corpus is held to, across ` +
+        `${stale.reduce((n, s) => n + s.e.refs.length, 0)} gate(s). The cache is ` +
+        `keyed by the TEXT, so a reworded question keeps answering with verdicts ` +
+        `nobody asked for — green, and meaningless:\n` +
+        stale.slice(0, 8).map((s) =>
+          `      ${s.e.refs[0]}  (v${s.v.v ?? 1}, said "${s.v.verdict}")\n` +
+          `        ${brief(s.e.text)}`).join("\n") +
+        (stale.length > 8 ? `\n      … and ${stale.length - 8} more` : "") +
+        `\n    Run: python3 ETL/terms/classify_eligibility_pertinence.py --classify ` +
+        `— it re-pays for the answers the change could move and re-stamps the rest.`,
     });
   }
 
@@ -233,10 +282,17 @@ async function main() {
   }
 
   const gateCount = snapshot.length + (live?.length ?? 0);
+  const kinds = new Map<string, number>();
+  for (const [d] of seen) {
+    const k = cache[d].verdict;
+    kinds.set(k, (kinds.get(k) ?? 0) + 1);
+  }
+  const breakdown = [...kinds].sort().map(([k, n]) => `${n} ${k}`).join(", ");
   console.log(
     `check_gate_pertinence: ok — ${seen.size} distinct requirement texts across ` +
-    `${gateCount} deciding gate(s) from ${sources}, all judged as conditions an ` +
-    `applicant could satisfy; ${cases.length}/${cases.length} calibration cases correct.`);
+    `${gateCount} deciding gate(s) from ${sources} (${breakdown}), all judged at ` +
+    `property v${PROPERTY_VERSION} as something an applicant could act on; ` +
+    `${cases.length}/${cases.length} calibration cases correct.`);
 }
 
 main().catch((e) => { console.error(e); process.exitCode = 1; });
