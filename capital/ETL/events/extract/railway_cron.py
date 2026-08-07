@@ -33,6 +33,17 @@ STEPS = [
      "--max-cost", "20"],
     [sys.executable, str(ROOT / "ETL/events/load/qa/sanity_check.py")],
     [sys.executable, str(ROOT / "ETL/terms/detect_eligibility_gaps.py")],
+    # Sources that decay on a CALENDAR rather than on a release. renew.py above
+    # refreshes on a content hash, which is the right trigger for a register
+    # that republishes a file and the wrong one for a register whose rows carry
+    # application deadlines: nothing upstream changes, and the inventory still
+    # empties. See refresh_open_calls.py.
+    [sys.executable, str(ROOT / "ETL/terms/refresh_open_calls.py")],
+    # ...and the guard for the failure mode the refresh itself has. A weekly job
+    # that silently stops running reproduces exactly the decay it was added to
+    # prevent. This runs LAST so it judges the state the run actually left, and
+    # it is not partial-tolerant: unexplained decay is a finding, not weather.
+    [sys.executable, str(ROOT / "ETL/terms/check_offerable_decay.py")],
 ]
 
 # renew.py exits 3 when SOME sources failed but most published -- a partial
@@ -44,7 +55,16 @@ STEPS = [
 # detection never ran, so a week of data sat unprocessed because one site
 # blocked us. Exit 1 from renew.py now means MOST sources failed, which is a
 # pipeline fault and should still stop everything.
-PARTIAL_OK = {"renew.py": 3}
+#
+# refresh_open_calls.py exits 3 on the same grounds and for the same reason: a
+# detail fetch that hits its cap, or a naming pass with no API key, still moved
+# the corpus forward and must not cancel the decay guard that follows it.
+#
+# check_offerable_decay.py exits 3 for a fall inside tolerance -- worth saying
+# out loud, not worth failing the week over. Its exit 1 means a country's
+# offerable inventory fell with no corresponding corpus change, which is the
+# defect the whole step exists to surface, so that one is NOT tolerated.
+PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3, "check_offerable_decay.py": 3}
 
 partial = []
 for step in STEPS:
@@ -52,12 +72,15 @@ for step in STEPS:
     result = subprocess.run(step)
     if result.returncode == 0:
         continue
-    tolerated = next((rc for name, rc in PARTIAL_OK.items()
-                      if any(name in part for part in step)), None)
-    if result.returncode == tolerated:
+    matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
+                    if any(name in part for part in step)), None)
+    if matched and result.returncode == matched[1]:
         print(f"=== PARTIAL: {' '.join(step)} (rc={result.returncode}) — "
               f"continuing with what published ===", flush=True)
-        partial.append(step[-2] if len(step) > 1 else step[0])
+        # Name the SCRIPT, not whatever happened to be second-from-last in the
+        # argv. A two-element step reported "python3" as the partial, which is
+        # a summary line that tells nobody which step half-worked.
+        partial.append(matched[0])
         continue
     print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
     sys.exit(result.returncode)
