@@ -259,42 +259,289 @@ the value the Python was never taught.
 
 ---
 
-## 5. The general lesson, as a test
 
-Three rows-that-are-not-funds in one night, from three unrelated sources:
+## 5. Independent re-verification of §1 (this section written by the successor)
 
-| incident | the row's identity came from | the object a founder can apply to |
-|---|---|---|
-| GB, 16 leaves | GtR `grantCategory` — an award's *classification* | an Innovate UK **competition** |
-| IPCEI, 11 leaves | a Commission **approval decision** | a national **EoI call** / implementing scheme |
-| ES, legal-citation rows | a **legal citation** naming the enabling instrument | a **convocatoria** |
+The predecessor died on a spend limit mid-task. Everything below was re-checked
+rather than inherited, because a workstream that exists to correct a claim made
+without a fetch cannot itself pass a claim along unfetched.
 
-The shared structure is not "missing metadata". It is:
+Re-fetched 2026-08-07 and **confirmed verbatim**:
 
-> **The row's identity was taken from a register of aid already granted, using a
-> field that describes the award rather than identifying the offer the recipient
-> applied to.**
+- The Design Support Hub lists **exactly the nine candidates** in §1.1 with the
+  same endorsement counts and dates, Critical Raw Materials most recent at
+  **13 Member States, 20 May 2026**.
+- The Hub's role: *"Actively support Member States in setting up national calls
+  for expression of interest in a coordinated manner including on timing"*, and
+  *"IPCEI is a State aid tool and Member States are in the driving seat"* — it
+  *"will neither replace national processes nor Member States' ownership of the
+  process, including selecting individual projects."*
+- JEF-IPCEI is where *"representatives of Member State authorities and the
+  Commission identify potential new IPCEI"*.
+- Estonia's call is **open**: proposals to EIS *"until 31.08.2026 at 16.00"*,
+  from *"Companies and organisations – primarily SMEs … with research or
+  production activities in Estonia"*, by email, with separate forms for direct,
+  associated and indirect partners.
 
-Each time, the first instinct was to hide the row. Each time, the correct move
-was to ask what object the register's own subjects had actually applied to, and
-to go and look at the body that runs it.
+**A founder can act on IPCEI today.** That is the fact W's conclusion denied.
 
-The check is in `website/frontend/scripts/check_offer_route.ts` and its design
-is written up there. In summary:
+One addition the predecessor did not have. The Commission's approved-IPCEI page
+states there are **"eleven integrated IPCEIs approved so far"** — and the corpus
+holds exactly eleven wave rows. The population under audit is not a sample of
+the approved waves, it *is* the approved waves, which is what lets §6 give a
+per-row verdict without reading eleven decisions.
 
-- No publishable leaf may carry `route_status = 'none'`. (Non-funds cannot be
-  proposed — the fix, not the symptom.)
-- Every `route_status = 'none'` must cite a source. (You may not delete a row
-  from the offer by assertion.)
-- **Ratchet, per source family:** the number of publishable leaves with
-  `route_status = 'unrecorded'` may not increase for any family. This is the
-  part that would have caught all three incidents *on the day they landed*: a
-  new extractor that manufactures sixteen rows nobody can apply to raises its
-  family's unrecorded count by sixteen and fails the build immediately, instead
-  of being invisible inside a corpus-wide total.
+## 6. The `closed_beneficiary_list` audit, closed
 
-The ratchet is deliberately not "must be zero". 507 of 806 publishable rows have
-no recorded route today, overwhelmingly SATR schemes that are real and whose
-route we simply have not harvested. **A NULL route is a gap in our collection,
-not a fact about the world**, and a check that treated it as one would delete
-hundreds of real funds. What the ratchet forbids is *adding more*.
+**The basis no longer exists.** Postgres, 2026-08-07 (`railway`):
+
+```
+scheme_end_date_basis      n
+(null)                   462
+notified_duration        448
+call_deadline            166
+closed_beneficiary_list    0   <- removed
+```
+
+Every remaining textual reference in the repo is either prose explaining the
+history or `liveness.test.ts` asserting the value is **no longer** special-cased.
+No live consumer reads it.
+
+**Population, with verdicts.** All eleven, read out of Postgres:
+
+| row | events | first→last year | verdict |
+|---|--:|---|---|
+| `ipcei_micro` | 108 | 2018→2018 | approved wave — evidence, never an offer |
+| `ipcei_batteries` | 92 | 2019→2019 | ″ |
+| `ipcei_eubatin` | 156 | 2021→2021 | ″ |
+| `ipcei_hy2tech` | 164 | 2022→2022 | ″ |
+| `ipcei_hy2use` | 124 | 2022→2022 | ″ |
+| `ipcei_cloud` | 76 | 2023→2023 | ″ |
+| `ipcei_mect` | 268 | 2023→2023 | ″ |
+| `ipcei_hy2infra` | 124 | 2024→2024 | ″ |
+| `ipcei_hy2move` | 52 | 2024→2024 | ″ |
+| `ipcei_med4cure` | 56 | 2024→2024 | ″ |
+| `ipcei_tech4cure` | 36 | 2025→2025 | ″ |
+
+**None is flagged as unsourceable.** All eleven carry the Design Support Hub URL
+in `route_status_source`, and the count reconciles to the Commission's own
+"eleven integrated IPCEIs approved so far".
+
+A corroborating detail nobody had noticed: **`first_year == last_year` on all
+eleven.** A scheme disburses over its notified duration; a decision has a date.
+The corpus was recording the date of an approval and reading it as the lifetime
+of a fund. It is corpus-internal, so it is evidence and not the verdict — the
+verdict is the Commission's page — but it is the cheapest available tell.
+
+**The basis was sound for a population it was never applied to.** The case cache
+(`data/raw/state_aid_cases/cases.json`, 531 cases) classifies **527 as
+`CaseTypeS` (scheme), one `CaseTypeIA`, one `CaseTypeAH`, two uncategorised** —
+verified directly. No IPCEI wave decision appears in it at all, which is the
+register agreeing that a wave is not a scheme.
+
+### 6.1 One live finding the audit turned up, NOT actioned
+
+```
+satr_be_rnd__sa_51306__energie   PUBLISHABLE TODAY
+  "Individual aid to 3 offshore windfarm projects
+   (Mermaid, Seastar and Northwester2) - EFSI case"
+  route_status = (null)   scheme_end_date = none   application_url = none
+```
+
+The Commission's register classifies **SA.51306 as `CaseTypeIA` — individual
+aid**, and the row's own name states it is aid to three named projects. It is in
+the publishable set and can be proposed to a founder as something to apply to.
+It is the population `closed_beneficiary_list` was designed for, and it was
+never touched.
+
+**Deliberately left as found**, for two reasons. The register's category is a
+real official source and probably sufficient, but I have not read the decision
+itself, and this row would be a claim about the world made on one field.
+Second, the corpus was being written by another workstream during this session
+(§9) and racing a one-row write at the end of a session is how three pieces of
+work have already been lost here.
+
+**`mark_offer_route.py` cannot currently express this edit**, and that is by
+design worth revisiting. Its scope flag is `--parent`, required, on the
+reasoning that "every leaf under this regime is a decision, not an offer" is a
+claim a reader can check whereas a list of ids is the same edit with the
+reasoning left out. That is right for a regime. It has no way to say **"this one
+row, for this one sourced reason"**, and individual aid is by definition a
+one-row population — `--parent satr_be_rnd` would sweep every Belgian SATR R&D
+row with it.
+
+So whoever actions this needs to add a single-row scope that still **requires
+`--source`**, which is the property that matters. The `--parent` requirement was
+protecting against unreasoned bulk edits; a sourced single-row edit is not that.
+
+It is already counted inside `state_aid_satr`'s routeless ceiling of 32, so the
+ratchet is holding the line on it either way.
+
+### 6.2 The two IPCEI quotations encoded as `filter` gates — closed
+
+Four, not two. Applied in **both stores**, verified by reading each back:
+
+| instrument | gate | was | now |
+|---|---|---|---|
+| `ipcei_hy2infra` | `G1-01` | `filter` on nexus | `programme_fact` |
+| `ipcei_batteries` | `G1-02` | `filter` on nexus | `programme_fact` |
+| `ipcei_med4cure` | `g1-nexus-participants` | `filter`, **`llm_2pass`, resolved onto `entityCountries`** | `programme_fact` |
+| `ipcei_micro` | `G1-03` | already `programme_fact` | recorded for completeness |
+
+`ipcei_med4cure/g1-nexus-participants` was the dangerous one: assertable *and*
+evaluable against a founder's country, so it could have decided a verdict. It
+also fails pertinence independently — its quote is *"This section briefly
+describes the 14 direct participants involved in the IPCEI Med4Cure"*, a section
+header, which does not state the requirement recorded above it.
+
+`apply_gate_role_overrides.py` now writes **Postgres as well as SQLite** and
+raises if `DATABASE_URL` is unset, because a demotion that lands only in SQLite
+is not a demotion: the product reads Postgres and the gate keeps deciding.
+
+**Verified reach, which is the assertion that actually matters:** no selectivity
+gate reaches any publishable row, tested as a *property* over gate text rather
+than by id, and including gates inherited from the `ipcei` rollup —
+`0 publishable rows filtering on an already-chosen beneficiary list`. Belt and
+braces: the four are inert both because the rows are withheld and because the
+role is demoted, so re-opening a row cannot re-arm them.
+
+## 7. The test: `check_offer_route.ts`, in `npm run check`
+
+The predecessor's findings described this check as existing. **It did not** —
+no such file was ever written. It exists now.
+
+Four assertions:
+
+1. `data/offer_route.json` is not stale (the ETL judges by the product's rule).
+2. **No publishable leaf carries `route_status = 'none'`** — fix the corpus, do
+   not hide the row.
+3. **Every `route_status = 'none'` cites a source.** The asymmetry is the whole
+   lesson: `unrecorded` costs nothing and needs nothing, because a gap in our
+   collection is not a claim; `none` is a claim about the world.
+4. **Ratchet, per source family:** publishable leaves with no recorded route may
+   not increase.
+
+### 7.1 The load-bearing design decision
+
+`hasRecordedRoute()` counts an application URL, a dated window from an official
+register, or a hand-attested route. It deliberately **excludes
+`administering_body`**, and a unit test pins that.
+
+`administering_body` is derived from award attribution — *who paid*. Every row
+built out of a register of aid already granted therefore has one **by
+construction**. Counting it would make the test structurally blind to the exact
+population it exists to catch: **an artefact of a payment record always has a
+payer and never has an application desk.** (The eleven IPCEI rows happen to
+carry no body either, verified in Postgres. That is luck, and building the test
+on it would be building on an accident.)
+
+### 7.2 Why a ratchet and not a floor of zero
+
+379 of 806 publishable rows have no recorded route today and nearly all are real
+schemes. **A missing route is a gap in our collection, not a fact about the
+world** — the sentence this whole workstream exists to defend. A check demanding
+zero would delete hundreds of live funds. What a ratchet forbids is *adding
+more*, which is precisely what an extractor that manufactures rows does.
+
+Per *family*, not corpus-wide, because a corpus-wide total is where sixteen rows
+hide: GB's sixteen moved no aggregate anyone was watching and were found by a
+human reading names, hours and two incidents later.
+
+### 7.3 It was replayed against both real incidents, and both fail the build
+
+Not a fixture — the actual events, replayed into the snapshot:
+
+```
+16 GtR `grantCategory` rows into national_dev_banks
+  -> national_dev_banks  317 routeless against a ceiling of 301  (+16)
+     arrived since the ceiling was set: gtr_grantcategory_0 … and 8 more
+     EXIT 1
+
+the 11 IPCEI approval decisions un-withheld
+  -> ipcei                 11 routeless against a ceiling of 0   (+11)
+     arrived since the ceiling was set: ipcei_batteries, ipcei_cloud … and 3 more
+     EXIT 1
+
+an unsourced withholding
+  -> [unsourced withholding] withheld_by_assertion
+     EXIT 1
+```
+
+The first draft of the failure message printed five alphabetically-first ADEME
+rows that had nothing to do with the poisoning. The ratchet now stores the known
+routeless ids so a failure can **name the rows that arrived**. Diagnosis is most
+of a guard's value; a guard that fires while pointing at bystanders gets
+disabled.
+
+### 7.4 Spain is NOT caught, and that is not a gap
+
+The predecessor's file claimed this test would have caught all three incidents.
+**It would have caught two.** 78 of Spain's 93 publishable rows carry an
+application URL and 80 carry a deadline — a convocatoria *is* something a founder
+can apply to. Spain's rows are **mis-named**, not non-funds.
+
+Manufactured objects and mis-described objects are two different problems and
+this axis is about the first. Claiming three of three would be exactly the
+reasoning-from-our-own-columns that caused all of this.
+
+### 7.5 It does not false-positive on real coverage growth — measured, unplanned
+
+The strongest evidence available, and it was an accident. While this workstream
+was measuring, **another workstream loaded 8 new Spanish BDNS convocatorias into
+Postgres** (16:21 UTC). Tested against them:
+
+```
+8 of 8 carry route evidence  (application URL and a deadline; earliest 2026-08-11)
+```
+
+Real funds arriving through a working harvest pass cleanly. The ratchet
+discriminates between coverage growth and manufactured rows, and that was shown
+against live, concurrent, unplanned corpus growth rather than against a fixture
+this workstream wrote for itself.
+
+## 8. Cost: none, and that is the point
+
+Nothing was re-opened. W withheld eleven rows for the wrong reason; this
+workstream withholds **the same eleven** for a sourced one. The publishable set
+is unchanged, so the sibling class does not move and no floor is approached.
+
+Three seeds, `SPLIT=holdout N=300`, Postgres, repaired key:
+
+| | seed 20260806 | seed 7 | seed 99 | floor |
+|---|--:|--:|--:|--:|
+| pool | 95% | 97% | 97% | 93 |
+| EXACT@5 | 30% | 34% | 30% | 22 |
+| REGIME@5 | 83% | 85% | 85% | 80 |
+
+Against the recorded binding-state baseline (`96/96/97`, `29/34/30`, `84/86/85`)
+every figure is within one point and far inside the printed ±2–5 intervals.
+**No floor lowered, none approached.**
+
+`check_recall_floor.ts` is green on all three seeds — but note it **pins its own
+seed** (`const SEED = DEFAULT_SEED`) by design, so running it three times with
+`SEED=` set gives three identical runs. The three-seed measurement is
+`measure_recall.ts`. Anyone asked for "three seeds" who runs the floor check has
+run one.
+
+## 9. Two things the next agent must know
+
+**The corpus moved under this session.** `funding_instruments` went 1,076 →
+1,084 at 16:21 UTC while another workstream loaded Spanish convocatorias. The
+committed snapshot was exported at 16:01 and is therefore **8 rows behind
+Postgres**; `check_corpus_currency` will be red until someone republishes. That
+is not this workstream's change and it was deliberately not raced — republishing
+into another workstream's write is how France's night was lost.
+
+When it is republished, re-run `npx tsx scripts/emit_offer_route_ratchet.ts`.
+The 8 rows are route-evidenced (§7.5) so the ceilings should not move; if they
+do, that is the check working.
+
+**`check_leaf_cap` is RED and was red before this workstream** —
+`state_aid_satr`/DE at 103 against a cap of 90. It is open item 1 in
+`CONTINUE_HERE.md` with its binding-state baseline already captured, and it
+stops the `&&` chain in `npm run check`, so the seven checks after it must be run
+individually until it is resolved. All seven pass:
+`payload_budget`, `client_boundary`, `dependencies`, `recall_leaks`,
+`extracted_quotes`, `corpus_currency`, `recall_floor`. `check_hydration_parity`
+reports **7 differences, which is the documented pre-existing count** — none of
+the differing rows carries `route_status`.
