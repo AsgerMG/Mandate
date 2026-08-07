@@ -23,9 +23,17 @@ export default function DocumentPage() {
 
   return (
     <>
+      {/* Points at /documents, not /. This route is still unlinked from
+          anywhere on the site (the register list that used to link here was
+          removed on 2026-07-30 — see the note atop documents/page.tsx), but it
+          is reachable by URL, and "Back to dashboard" → "/" was stale: / has
+          been a marketing landing page with no dashboard since the rebrand.
+          Fixing the link rather than re-linking the route, because the
+          register's removal was deliberate and there is still nothing on
+          /documents that names an individual document to link from. */}
       <div style={{ marginTop: 24 }}>
-        <Link className="back" href="/">
-          ← Back to dashboard
+        <Link className="back" href="/documents">
+          ← Back to the live register
         </Link>
       </div>
 
