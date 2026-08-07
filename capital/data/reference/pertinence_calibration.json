@@ -1,0 +1,60 @@
+{
+  "_comment": "Does the pertinence classifier still separate a CONDITION from a REPORT? Every string here is judged by ETL/terms/classify_eligibility_pertinence.py alongside the live corpus, into the same digest-keyed cache, and website/frontend/scripts/check_gate_pertinence.ts asserts the cached verdict equals `expect`. A prompt edit, a model change or a temperature of enthusiasm that stops catching the sentence which caused all of this fails the build.",
+  "_why_not_a_word_list": "The four `report` cases that came from the incident are all state-aid selectivity findings, so a checker built only from them would be an enumeration of one lexical family. The controls are chosen to break that: `decision_text_real_condition` is a sentence from the same kind of document, in the same register, that states a genuine condition and must stay `condition`; `budget_and_duration` is a `report` that has nothing to do with selectivity. The property is the KIND of statement, not the vocabulary of state aid.",
+  "cases": [
+    {
+      "id": "ipcei_batteries_selectivity",
+      "expect": "report",
+      "why": "The sentence the 2026-08-07 retraction removed from eligibility_text and left encoded as a filter gate. A compatibility finding about aid already granted to a named beneficiary list; it can never be true-or-false OF AN APPLICANT.",
+      "text": "The Member States only grant support to the beneficiaries listed section 2.2.6 and the funding is not available to all undertakings in a comparable situation."
+    },
+    {
+      "id": "ipcei_batteries_gate",
+      "expect": "report",
+      "why": "The same finding as encoded in eligibility_gates.requirement, which is the form that reached verdict.ts::isFilter().",
+      "text": "Only the specific companies listed as Direct Participants (selected via national open and transparent calls) are eligible aid beneficiaries under the notified IPCEI Batteries measures."
+    },
+    {
+      "id": "ipcei_hy2infra_gate",
+      "expect": "report",
+      "why": "Same selectivity finding, different scheme and different wording -- the classifier must generalise past the exact sentence.",
+      "text": "Only pre-selected undertakings listed in the participating Member States' notification and forming part of the Hy2Infra individual projects are eligible aid beneficiaries."
+    },
+    {
+      "id": "ipcei_med4cure_gate",
+      "expect": "report",
+      "why": "The worst of the four: it was llm_2pass and resolved onto entityCountries, so it could have decided a verdict against a founder in the wrong country. Naming six Member States does not make it a condition -- the beneficiaries were already chosen.",
+      "text": "Only the listed direct participants established in the six participating Member States (Slovakia, Hungary, France, Italy, Belgium, Spain) are eligible beneficiaries of the notified aid measures under the IPCEI Med4Cure."
+    },
+    {
+      "id": "budget_and_duration",
+      "expect": "report",
+      "why": "A REPORT with no selectivity language anywhere in it. True of the instrument, actionable by nobody. Present so the test does not degenerate into a selectivity detector.",
+      "text": "The scheme has an estimated overall budget of EUR 150 million and will run until 31 December 2027, with aid awarded in annual tranches by the managing authority."
+    },
+    {
+      "id": "post_award_obligation",
+      "expect": "report",
+      "why": "Binds a beneficiary only AFTER an award, so nothing in it is a bar an applicant could clear before applying. A different failure shape from selectivity, and one that migration 013 measured at ~19% of the llm_cited tier.",
+      "text": "The beneficiary shall submit an annual implementation report to the granting authority within three months of the end of each financial year and shall retain all supporting documents for ten years."
+    },
+    {
+      "id": "decision_text_real_condition",
+      "expect": "condition",
+      "why": "THE DISCRIMINATING CONTROL. Same document type, same legal register, same 'undertakings' vocabulary as the four findings above -- and it states a test an applicant can apply to themselves. A checker that fires on state-aid decision prose fails here.",
+      "text": "Aid may not be granted to undertakings in difficulty within the meaning of the Guidelines on State aid for rescuing and restructuring non-financial undertakings in difficulty, nor to undertakings subject to an outstanding recovery order."
+    },
+    {
+      "id": "narrow_but_satisfiable",
+      "expect": "condition",
+      "why": "Narrow, exclusionary, and phrased as a restriction -- and still a condition, because a reader can check it against their own company. Narrowness is not the property; actionability is.",
+      "text": "Only undertakings active in the primary production of agricultural products and established in the region of Andalusia are eligible to apply."
+    },
+    {
+      "id": "past_tense_scheme_history",
+      "expect": "condition",
+      "why": "Guards the other direction: a condition stated as how the scheme has operated is still a condition. If this flips to `report`, the classifier has started demoting real rules for being written in the wrong tense, which would cost recall rather than protect founders.",
+      "text": "The programme has funded only projects with a total eligible cost above EUR 500 000, and applications below that threshold have not been considered."
+    }
+  ]
+}

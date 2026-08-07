@@ -83,6 +83,10 @@ import os  # noqa: E402
 import re  # noqa: E402
 
 CACHE = ROOT / "data" / "eligibility_pertinence.json"
+#: Known-answer cases, judged in the same pass and into the same cache as the
+#: live corpus so the classifier is measured on exactly the path it runs on.
+#: The check asserts these; see the file's own _why_not_a_word_list.
+CALIBRATION = ROOT / "data" / "reference" / "pertinence_calibration.json"
 MODEL = "claude-opus-5"
 #: Rows per model call. Small enough that one bad row cannot cost a whole
 #: chunk, large enough that the instruction is amortised. Gate requirements are
@@ -92,6 +96,10 @@ CHUNK_GATES = 25
 #: How much of a text the judgement needs. The KIND of statement is settled in
 #: the first paragraph; the rest is more of the same and costs tokens.
 MAX_CHARS = 1800
+#: $/MTok for MODEL, so a run reports its own cost rather than being audited
+#: afterwards from a dashboard.
+PRICE_IN, PRICE_OUT = 5.0, 25.0
+SPEND = {"in": 0, "out": 0}
 
 PROPERTY = """\
 A published eligibility text is shown to a founder under the heading "who may \
@@ -240,6 +248,10 @@ def classify(batch: list[str]) -> dict[str, dict]:
     )
     if res.stop_reason == "refusal":
         raise SystemExit("classifier refused; re-run or reduce the batch")
+    # Printed, not accumulated silently: a run this wide should say what it
+    # cost while it is still cheap to stop it.
+    SPEND["in"] += res.usage.input_tokens
+    SPEND["out"] += res.usage.output_tokens
     text = next(b.text for b in res.content if b.type == "text")
     return {r["id"]: {"verdict": r["verdict"], "reason": r["reason"]}
             for r in json.loads(text)["results"]}
@@ -271,7 +283,9 @@ def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool
         # Persist per chunk: a run cut off mid-way must not discard
         # classifications already paid for.
         save_cache(cache)
-        print(f"  {min(i + chunk, len(batch_all))}/{len(batch_all)}")
+        cost = SPEND["in"] / 1e6 * PRICE_IN + SPEND["out"] / 1e6 * PRICE_OUT
+        print(f"  {min(i + chunk, len(batch_all))}/{len(batch_all)}"
+              f"  (${cost:.2f} so far: {SPEND['in']:,} in / {SPEND['out']:,} out)")
 
 
 def main() -> None:
@@ -286,6 +300,20 @@ def main() -> None:
 
     cache = load_cache()
     populations = []
+    # Calibration first, unconditionally and on every run: a run that judged
+    # 2,500 live strings and never exercised the known answers would report
+    # success without having shown the classifier still works.
+    print("calibration:")
+    cal = [{"ref": c["id"], "body": c["text"], "expect": c["expect"]}
+           for c in json.loads(CALIBRATION.read_text())["cases"]]
+    run(cal, cache, CHUNK_GATES, 0, args.classify)
+    wrong = [c for c in cal
+             if cache.get(digest(c["body"]), {}).get("verdict") not in (None, c["expect"])]
+    for c in wrong:
+        print(f"  !! MISCALIBRATED {c['ref']}: expected {c['expect']}, "
+              f"got {cache[digest(c['body'])]['verdict']} "
+              f"-- {cache[digest(c['body'])]['reason']}")
+
     if args.only in (None, "text"):
         print("eligibility_text:")
         populations.append(("eligibility_text", rows_text(), CHUNK_TEXT))
