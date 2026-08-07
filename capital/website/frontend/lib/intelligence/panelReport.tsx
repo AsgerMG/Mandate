@@ -32,13 +32,23 @@ import type { EligibilityCheck, InstitutionEntry, IntelligenceReport, WithheldNo
  * with the founder's request; a smaller number of funds is the correct answer
  * to it tonight, and the rule shown here is the reason it can be trusted.
  * Renders nothing when nothing was withheld.
+ *
+ * ── Why the sizes are pinned to the table, not to the caveats ─────────────
+ * It is set no smaller than the rows it qualifies: 14px against the table's
+ * 14px on screen, 11px in print against the table's 9.5px. The first printed
+ * proof of this component had it at 9px, which is UNDER the table and one
+ * pixel over the 8px caveats line at the foot of the page -- so on paper the
+ * one sentence that says the table is incomplete was typeset as boilerplate,
+ * next to the boilerplate. Quiet is carried by the muted colour and the hairline
+ * rule; it must never be carried by making the type smaller than the thing it
+ * corrects. A founder who skims the table must not be able to skim past this.
  */
 export function WithheldLine({ withheld }: { withheld?: WithheldNotice }) {
   if (!withheld?.count) return null;
   return (
     <p
       data-withheld={withheld.count}
-      className="mb-3 border-l-2 border-[var(--border)] pl-3 text-[13px] leading-relaxed text-[var(--muted-foreground)] print:text-[9px]"
+      className="mb-3 border-l-2 border-[var(--border)] pl-3 text-[14px] leading-relaxed text-[var(--muted-foreground)] print:text-[11px]"
     >
       {withheld.note}
     </p>
