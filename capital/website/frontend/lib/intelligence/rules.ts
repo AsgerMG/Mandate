@@ -100,9 +100,16 @@ export const EXCLUSION_RULES = {
     disposition: "fit-score",
   },
   "SEL-DUPE-NAME": {
-    stage: "leaf", kind: "fact", recoverable: false,
-    what: "Instrument removed because another instrument renders under the same institution name; the one with more encoded rules is kept.",
-    disposition: "keep",
+    stage: "leaf", kind: "fact", recoverable: true,
+    what: "Instrument demoted to the back of the pool because another instrument renders under the same institution name; the one carrying more of its own encoded rules is shown instead.",
+    disposition: "demote-not-delete",
+    evidence:
+      "It was a deletion, and it was deleting from the array `candidateInstrumentIds` " +
+      "is derived from -- a display rule emptying the writer's pool. Measured one " +
+      "founder per country across 22 markets: it removed 4 rows in total, and the " +
+      "rows it removed were DISTINCT notified schemes sharing one published title, " +
+      "not siblings of one fund. The founder cannot tell them apart on the page; " +
+      "they are still two funds.",
   },
 
   // ── verdict stage ────────────────────────────────────────────────────────
