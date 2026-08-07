@@ -103,6 +103,13 @@ STEPS: list[tuple[str, list[str], bool]] = [
     ("rebuild site data", ["python3", "website/build/build_site_data.py"], False),
     ("coverage report", ["python3", "ETL/terms/coverage_report.py", "--md", "project-mgmt/coverage.md"], False),
     ("coverage dashboard", ["python3", "ETL/terms/coverage_dashboard.py", "--out", "project-mgmt/coverage.html"], False),
+    # LAST. The census is the record of what this corpus contains, and it is
+    # what `check_corpus_census.ts` compares the committed artifacts against.
+    # Recording it here means a local refresh and the weekly Railway run leave
+    # the same kind of trace, so the guard cannot tell them apart and cannot be
+    # satisfied by one while the other is stale.
+    ("record the census",
+     ["python3", "ETL/events/load/publish_corpus_census.py", "--run-outcome", "ok"], False),
 ]
 
 

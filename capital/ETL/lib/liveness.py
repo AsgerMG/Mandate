@@ -50,11 +50,12 @@ NOTIFIED_DURATION: str = _S["basis"]["notifiedDuration"]
 #: ``date_cloture``). Past means closed, permanently.
 CALL_DEADLINE: str = _S["basis"]["callDeadline"]
 
-#: The participants were fixed by the decision that created the row -- aid
-#: approved for a named beneficiary list, with no route in for anyone not
-#: already on it. Closes the row with NO date, because the row never had a
-#: window. See the constant in liveness.ts for the evidence.
-CLOSED_BENEFICIARY_LIST: str = _S["basis"]["closedBeneficiaryList"]
+# A third basis, `closed_beneficiary_list`, existed on 2026-08-07 and was
+# removed the same day. "There is no way into this row" is not a kind of date
+# and does not belong on this axis; it lives in ETL/lib/offer_route.py. Its
+# removal also closed a live divergence: the constant was added here and the
+# row-wise `is_closed()` below was never taught it, so this module and
+# `isClosed()` in TypeScript disagreed about eleven rows.
 
 
 def closed_sql(dialect: str = "sqlite", col: str | None = None) -> str:

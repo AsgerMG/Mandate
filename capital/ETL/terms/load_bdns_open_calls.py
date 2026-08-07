@@ -252,8 +252,28 @@ def write(rows: list[dict]) -> None:
             # Re-runnable: a second harvest of the same call must refresh its
             # window and text, not fail or duplicate. `updated_at` is bumped so
             # a row that stopped being refreshed is visible as stale.
+            #
+            # `name` is the one exception, and it has to be. This loader writes
+            # the register's `descripcion`, which is a LEGAL CITATION on roughly
+            # half these rows, and `name_applicable_object.py` later replaces it
+            # with the fund the citation opens. Refreshing `name` unconditionally
+            # threw that away every single week and re-derived it from scratch,
+            # so a founder-legible name silently reverted to
+            #
+            #   "Convocatoria de 2026 de ayudas para la realización de proyectos
+            #    de I+D+i_Innovacion_Producto_minimis"
+            #
+            # on the first weekly run -- caught by rendering the rows, not by any
+            # test. `name_basis` is NULL exactly when nothing has derived a name
+            # for this row, so it is the precise condition: the register may
+            # still correct a title it has never had improved, and a derived name
+            # is never clobbered by the raw citation it was derived FROM.
             f"ON CONFLICT(id) DO UPDATE SET "
-            + ", ".join(f"{c}=excluded.{c}" for c in COLUMNS if c != "id")
+            + ", ".join(
+                "name=CASE WHEN funding_instruments.name_basis IS NULL "
+                "THEN excluded.name ELSE funding_instruments.name END"
+                if c == "name" else f"{c}=excluded.{c}"
+                for c in COLUMNS if c != "id")
             + ", updated_at=CURRENT_TIMESTAMP", vals)
         n_ins += cur.rowcount
         conn.execute("INSERT OR IGNORE INTO funding_instrument_sources "

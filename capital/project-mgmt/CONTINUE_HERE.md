@@ -33,8 +33,26 @@ artefacts. The applicable object has an application route, a deadline and a body
 that accepts applications — and it is often one level away. For IPCEI it is the
 national call for expression of interest run by each Member State.
 
-If you can express that as a test — *this row represents something a founder can
-apply to* — it would have caught all three. Proposing it is open work.
+**That test is now BUILT and in `npm run check`: `check_offer_route.ts`.** It
+asserts that no publishable leaf is withheld, that every withholding cites a
+source, and — the part with teeth — **a per-source-family ratchet on publishable
+leaves with no recorded application route.** Replayed against the real
+incidents, both fail the build on the day they would have landed: 16 GtR
+`grantCategory` rows take `national_dev_banks` to 317 against a ceiling of 301;
+un-withholding the 11 IPCEI decisions takes `ipcei` to 11 against a ceiling of 0.
+
+**It would have caught TWO of the three, not all three** — the earlier claim of
+three is corrected. Spain's rows are *mis-named*, not non-funds: 78 of its 93
+publishable rows carry an application URL. Manufactured objects and
+mis-described objects are two problems, and this axis is about the first.
+
+It does not false-positive on real coverage growth, shown against unplanned
+concurrent growth rather than a fixture: 8 Spanish convocatorias loaded by
+another workstream mid-session were 8 for 8 route-evidenced and passed cleanly.
+`administering_body` is deliberately NOT counted as route evidence — it is
+derived from *who paid*, so every artefact of an award register has one by
+construction, and counting it would blind the test to exactly the population it
+exists to catch.
 
 ## WHERE THIS LANDED
 
@@ -98,6 +116,45 @@ snapshot exits non-zero), `check_corpus_currency`, `check_hydration_parity`
 `check_liveness` (one definition, both languages, fails on a sixth copy), and
 `check_leaf_cap`.
 
+### …and nine of them fired nowhere (workstream AA, 2026-08-07)
+
+`check_hydration_parity` being "in no build step" was not one oversight, it was
+the pattern. **Nine of the seventeen checks in `npm run check` are in no
+automatic path**: CI runs a hand-picked subset, not `npm run check`, and has no
+`DATABASE_URL` by design, so `check_corpus_currency` would skip itself even if
+it did. It had never fired automatically once.
+
+Three things were missing and only one was a check, because **the website's
+committed artifacts could not be compared to the ETL's corpus at all** —
+`db.sqlite` is gitignored and lives on a Railway volume. Measured drift from an
+ETL run to the site catching up: median 4.6 days, worst 32
+(`python3 ETL/lib/drift_window.py`).
+
+- `publish_corpus_census.py` — the ETL records what its corpus contains, plus
+  the run's outcome and a fingerprint of the code that produced it, into
+  Postgres. That is the channel; there was none.
+- `check_corpus_census.ts` — STALE / SILENT / DEGRADED / DRIFTED.
+- `.github/workflows/corpus-currency.yml` — Sunday 08:00 UTC, on the ETL's
+  clock rather than on a push, because a push-triggered guard's window is
+  unbounded in exactly the weeks nobody is looking.
+- **`make republish`** is the one-command fix. Nothing publishes automatically,
+  on purpose — see `project-mgmt/findings/corpus_currency_wsAA.md`.
+
+**The coverage gate was wrong in both directions and is rewritten.** It compared
+shares only: it failed a run in which every axis GAINED ~70 instruments, and it
+could not see a loss that came with a shrinking corpus at all. Now LOSS
+(absolute, against a high-water mark) and DILUTION (share fell *and* nothing was
+gained) are separate tests, asserted from the real baselines in
+`ETL/terms/test_coverage_gate.py`, in CI. **Stricter, not looser.**
+
+**Railway was live-broken and is repaired.** `trigger_etl_now.py`'s "verify"
+grepped `railway status` for the service name and returned the service name.
+The deployed cron manifest said `19 23 * * *` while the instance said
+`0 3 * * 0`, and the service has no repo trigger, so the weekly run was
+executing a bug that had already been fixed on main. `make verify-cron` reads
+both schedules back from the API. **`deploymentRedeploy` cannot fix a schedule**
+— it replays its own baked manifest; only a fresh `railway up` does.
+
 ## FLOORS WENT UP, AND MAY NOT BE LOWERED
 
 `pool 90 → 93, EXACT@5 15 → 22, REGIME@5 80`. Three seeds, tune n=300:
@@ -135,19 +192,51 @@ existed to reveal.
    fixed by republishing, not by code; `check_corpus_currency` already asserts
    the membership gap that hid this, so leaf-cap should simply depend on it.
 
-2. **IPCEI — DONE.** All eleven wave leaves lost their `eligibility_text` and are
-   no longer offerable at all: `application_url` NULL on all eleven, median
-   awards €14–127M, and their own text says the money went to a named closed
-   list. Mechanism is a third `scheme_end_date_basis`, `closed_beneficiary_list`,
-   which `isClosed()` reads as closed **without a date**, because the row never
-   had a window — that generalises to any individual aid approval. Publishable
-   817 → 806, mean class 3.4 → 3.6, exactly the +0.17 that was priced. The 1,256
-   events / €131B are retained as evidence. Zero recall pairs affected.
+2. **IPCEI — CLOSED, and the earlier entry here was WRONG.** Full write-up:
+   `project-mgmt/findings/workstream_y_ipcei_reversal.md`.
 
-   **STILL OPEN, and it is the same harm one layer down: two of those same
-   quotations are also encoded as `gate_role='filter'` gates, which DO reach
-   founders.** Inert today because the rows are unpublishable, deliberately left
-   alone rather than fixed blind. Fix before anything republishes them.
+   **"IPCEI is closed" is false and is withdrawn.** IPCEI is a LIVE mechanism:
+   the Commission's Design Support Hub lists **nine candidates in the design
+   phase**, most recently Critical Raw Materials endorsed by 13 Member States on
+   **20 May 2026**, and Estonia's expression-of-interest call was **open until
+   31.08.2026**. Re-verified from source 2026-08-07. A founder can act on IPCEI
+   today.
+
+   **The conflation.** An approved WAVE is a Commission decision naming a closed
+   beneficiary list — never an offer. The MECHANISM is live, and the route in is
+   a **national expression-of-interest call run by the founder's own Member
+   State**, then that state's implementing scheme. W's evidence only ever showed
+   the first, and every input to it was a fact about our own columns.
+
+   **The eleven rows stay withheld — what changed is the reason, and the reason
+   is the whole point.** `closed_beneficiary_list` is **deleted**: "there is no
+   way into this row" is not a kind of date. It now lives on its own axis,
+   `route_status` in `lib/intelligence/offerRoute.ts`, deliberately NOT in
+   `BUILT_COLUMNS` so it survives an instrument rebuild — the basis would have
+   been wiped by the next `populate_funding_instruments.py` and the eleven would
+   have come back **offerable and silently**. It also closed a live
+   cross-language divergence: the constant went into the Python and the row-wise
+   `is_closed()` was never taught it.
+
+   **Cost: zero.** Same eleven rows withheld, so publishable is unchanged and
+   the sibling class does not move. Three seeds, holdout n=300, Postgres: pool
+   95/97/97, EXACT@5 30/34/30, REGIME@5 83/85/85 — all floors met, none
+   approached.
+
+   **The gates are FIXED.** Four, not two (`ipcei_hy2infra/G1-01`,
+   `ipcei_batteries/G1-02`, `ipcei_med4cure/g1-nexus-participants`,
+   `ipcei_micro/G1-03`), demoted to `programme_fact` in **both stores** —
+   `apply_gate_role_overrides.py` wrote SQLite only, which is not a demotion
+   when the product reads Postgres. Verified as a property, not by id: **0
+   publishable rows filter on an already-chosen beneficiary list**, inherited
+   gates included.
+
+   **ONE LIVE FINDING, NOT ACTIONED:** `satr_be_rnd__sa_51306__energie`,
+   *"Individual aid to 3 offshore windfarm projects"*, is **publishable today**.
+   The register classifies SA.51306 as `CaseTypeIA` — individual aid. It is the
+   population the deleted basis was actually designed for and was never touched.
+   Left as found on purpose: see §6.1 for why, and note
+   `mark_offer_route.py` has no single-row scope to express it with.
 
    The general lesson stands and is now enforced: **verbatim-ness was checked,
    pertinence was not.** `check_extracted_quotes.ts` is in `npm run check`; a

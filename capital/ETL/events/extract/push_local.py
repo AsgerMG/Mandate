@@ -147,6 +147,7 @@ def main() -> None:
     ap.add_argument("--skip-push", action="store_true", help="don't upload the result")
     args = ap.parse_args()
 
+    restore_problems: list[str] = []
     needs_wake = not (args.skip_pull and args.skip_push)
     if needs_wake and not args.dry_run:
         wake()
@@ -174,8 +175,14 @@ def main() -> None:
             push_db(args.dry_run)
     finally:
         if needs_wake and not args.dry_run:
-            restore()
+            restore_problems = restore()
 
+    if restore_problems:
+        # The push succeeded; the weekly refresh did not survive it. That is
+        # worse than a failed push and must not be reported as "Done."
+        sys.exit("\nPushed, but the cron schedule was NOT restored — the weekly "
+                 "ETL will not run. Repair first:\n"
+                 "  python3 ETL/lib/verify_cron.py --deploy")
     print("\nDone.")
 
 

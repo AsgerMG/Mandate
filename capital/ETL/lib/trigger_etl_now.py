@@ -31,9 +31,10 @@ import time
 from datetime import datetime, timedelta, timezone
 
 from railway_service import (  # noqa: E402
-    ENVIRONMENT_ID, RAILWAY, REAL_CRON_SCHEDULE, REAL_START_COMMAND,
-    SERVICE_ID, SERVICE_NAME, _api,
+    REAL_CRON_SCHEDULE, REAL_START_COMMAND, deploy, deployed_config,
+    set_service_instance,
 )
+from verify_cron import check, restore_and_verify  # noqa: E402
 
 # Minutes ahead to aim the temporary schedule. Needs to cover the API round
 # trip and Railway noticing the new schedule; too tight and the minute passes
@@ -43,43 +44,41 @@ from railway_service import (  # noqa: E402
 LEAD_MINUTES = 9
 
 
-def set_schedule(cron: str, deploy: bool = False) -> None:
-    """Write the schedule, and optionally DEPLOY so Railway picks it up.
+def set_schedule(cron: str) -> None:
+    """Write the schedule AND deploy, because either alone is a no-op or a trap.
 
-    The deploy is not optional in practice and skipping it is why the first
-    attempt at this silently did nothing: `serviceInstanceUpdate` records the
-    new cronSchedule, Railway keeps running the previously deployed
-    configuration, and the temporary minute passes with no run. The logs still
-    ended in `ALL STEPS COMPLETE` -- from the previous Sunday -- so the failure
-    looked exactly like success until the timestamps were checked. Same shape
-    as every other defect found this week: work that reported success having
-    done nothing. `railway_service.wake()` always deployed; this did not.
+    Skipping the deploy is why the first attempt at this silently did nothing:
+    `serviceInstanceUpdate` records the new cronSchedule, Railway keeps running
+    the previously deployed configuration, and the temporary minute passes with
+    no run. The logs still ended in `ALL STEPS COMPLETE` -- from the previous
+    Sunday -- so the failure looked exactly like success until the timestamps
+    were checked.
+
+    It is one function rather than a flag for the same reason: the pair is not
+    optional, and a `deploy=False` default is an invitation to leave the two
+    halves of the configuration disagreeing.
     """
-    _api(
-        "mutation($serviceId: String!, $environmentId: String, "
-        "$input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate("
-        "serviceId: $serviceId, environmentId: $environmentId, input: $input) }",
-        {
-            "serviceId": SERVICE_ID,
-            "environmentId": ENVIRONMENT_ID,
-            "input": {"startCommand": REAL_START_COMMAND, "cronSchedule": cron},
-        },
-    )
-    if deploy:
-        subprocess.run(
-            RAILWAY + ["up", "--service", SERVICE_NAME, "--environment", "production",
-                       "--ci", "--message", f"cron schedule -> {cron} (trigger_etl_now)"],
-            check=True,
-        )
+    set_service_instance(REAL_START_COMMAND, cron)
+    deploy(f"cron schedule -> {cron} (trigger_etl_now)")
 
 
-def current_schedule() -> str:
-    """Read the schedule back from Railway rather than trusting the write."""
-    out = subprocess.run(RAILWAY + ["status"], capture_output=True, text=True)
-    for line in out.stdout.splitlines():
-        if SERVICE_NAME in line:
-            return line.strip()
-    return "(not found)"
+def describe() -> str:
+    """What Railway will actually run, read back from the API.
+
+    The previous version grepped `railway status` for the service name and
+    returned the first matching line -- which is the bare service name printed
+    under "Linked service", containing no schedule at all. It printed
+    `restored: etl-pipeline` and would have printed exactly that had the
+    restore failed completely.
+    """
+    inst = deployed_config()
+    from railway_service import service_instance
+    cfg = service_instance()
+    if not inst:
+        return f"instance {cfg.get('cronSchedule')!r}, no deployment"
+    agree = "" if inst["cronSchedule"] == cfg.get("cronSchedule") else "  DISAGREE"
+    return (f"instance {cfg.get('cronSchedule')!r}, deployed "
+            f"{inst['cronSchedule']!r} ({inst['status']}){agree}")
 
 
 def main() -> int:
@@ -89,9 +88,9 @@ def main() -> int:
     args = ap.parse_args()
 
     if args.restore:
-        set_schedule(REAL_CRON_SCHEDULE, deploy=True)
-        print(f"restored: {current_schedule()}")
-        return 0
+        problems = restore_and_verify("deploy")
+        print(f"restored: {describe()}")
+        return 1 if problems else 0
 
     fire_at = datetime.now(timezone.utc) + timedelta(minutes=LEAD_MINUTES)
     temp = f"{fire_at.minute} {fire_at.hour} * * *"
@@ -99,8 +98,8 @@ def main() -> int:
     print(f"firing   {fire_at:%H:%M} UTC  (temporary schedule '{temp}')")
 
     try:
-        set_schedule(temp, deploy=True)
-        print(f"set:     {current_schedule()}")
+        set_schedule(temp)
+        print(f"set:     {describe()}")
         # Wait past the firing minute, then a little longer so the run is
         # visibly under way before the schedule is put back. Restoring while
         # the container is starting does not kill it -- the run is already
@@ -108,10 +107,20 @@ def main() -> int:
         wait_s = (fire_at - datetime.now(timezone.utc)).total_seconds() + 90
         print(f"waiting  {int(wait_s)}s for the run to start...")
         time.sleep(max(0, wait_s))
-        print(f"after:   {current_schedule()}")
+        print(f"after:   {describe()}")
     finally:
-        set_schedule(REAL_CRON_SCHEDULE, deploy=True)
-        print(f"restored: {current_schedule()}")
+        # The restore is the whole risk, so it is retried and then CONFIRMED
+        # from Railway rather than assumed from a return code. A failed restore
+        # leaves the ETL on a temporary daily schedule -- or on none -- and
+        # nothing else in the system would notice for a week.
+        problems = restore_and_verify("deploy")
+        print(f"restored: {describe()}")
+        if problems:
+            print("\nRESTORE NOT VERIFIED — the weekly refresh may not run:")
+            for p in problems:
+                print(f"  - {p}")
+            print("\n  python3 ETL/lib/verify_cron.py --deploy   to repair by hand")
+            return 1
     return 0
 
 

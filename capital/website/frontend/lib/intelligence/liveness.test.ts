@@ -6,7 +6,6 @@ import {
 
 const N = SCHEME_END_BASIS.notifiedDuration;
 const C = SCHEME_END_BASIS.callDeadline;
-const B = SCHEME_END_BASIS.closedBeneficiaryList;
 const AS_OF = "2026-08-06";
 
 describe("liveness", () => {
@@ -61,23 +60,23 @@ describe("liveness", () => {
       { schemeEndDate: "2021-01-01", schemeEndBasis: "", lastYear: 2026 }, AS_OF)).toBe(true);
   });
 
-  // ── The third basis: closed by the decision, with no date to read ───────
-  it("closes a fixed beneficiary list even with no end date at all", () => {
-    // The IPCEI waves. Every date field is empty because the row never had a
-    // window: the Commission approved aid for companies it names. Tested with
-    // a recent award year too, because these decisions keep disbursing for
-    // years and the money moving is not a door opening.
-    expect(isClosed({ schemeEndBasis: B }, AS_OF)).toBe(true);
-    expect(isClosed(
-      { schemeEndDate: null, schemeEndBasis: B, lastYear: 2025 }, AS_OF)).toBe(true);
-  });
-
-  it("closes a fixed beneficiary list even when the date is in the FUTURE", () => {
-    // The ordering test. `isClosed` returns early on a future date, so a basis
-    // checked after that guard would silently do nothing on any row that also
-    // carries a notified duration. The list being closed outranks the window.
-    expect(isClosed(
-      { schemeEndDate: "2030-01-01", schemeEndBasis: B, lastYear: 2026 }, AS_OF)).toBe(true);
+  // ── The basis that was tried here and does not belong ──────────────────
+  it("does NOT close a row that merely has no date, whatever else it carries", () => {
+    // The IPCEI regression, held down. On 2026-08-07 a third basis,
+    // `closed_beneficiary_list`, was added so that eleven Commission approval
+    // decisions would read as closed WITHOUT a date. The rows deserved to be
+    // withheld; this axis was the wrong place to do it, and doing it here made
+    // the corpus assert that IPCEI is closed -- which is false. Nine IPCEI
+    // candidates are in the design phase and Estonia's call is open until
+    // 31.08.2026.
+    //
+    // "There is no way into this row" is now `route_status` in
+    // ./offerRoute.ts. If a future pass reaches for this axis again to express
+    // it, this test fails: an unknown basis with no date must stay OPEN, and
+    // the withholding must be argued somewhere it can carry a source.
+    expect(isClosed({ schemeEndBasis: "closed_beneficiary_list" }, AS_OF)).toBe(false);
+    expect(isClosed({ schemeEndDate: null, schemeEndBasis: "closed_beneficiary_list",
+                      lastYear: 2025 }, AS_OF)).toBe(false);
   });
 
   it("does not close an ordinary row that merely has no basis", () => {
@@ -95,7 +94,6 @@ describe("liveness", () => {
       expect(sql).toContain("scheme_end_date_basis");
       expect(sql).toContain("last_year");
       expect(sql).toContain(N);
-      expect(sql).toContain(B);
     }
     expect(closedSql({ col: "f" })).toContain("f.scheme_end_date_basis");
     expect(closedSql()).toContain("current_date");
