@@ -15,8 +15,18 @@ request in the exclusion log, the founder is told the count on both the streamed
 preview and the finished brief, and a guard asserts the harm it prevents. Every
 one of those links was exercised against the live database tonight.
 
-**Two things were NOT done and one guard is still red.** See §6 before trusting
-anything here.
+**2026-08-07 update.** Both merge blockers are closed: the parity assertion is
+repaired and proven (§5a, §5b), and the notice has been rendered and looked at,
+which found a real print defect (§3a). `check_degradation` is green with
+credentials.
+
+**It was not merged, and the reason is §2a, not the blockers.** The measurement
+the branch was missing now exists, and it is much worse than this document
+previously claimed: on the degraded path a French founder loses the fund they
+actually won two thirds of the time. "The founder-visible cost is zero" was an
+artifact of measuring table fullness on 12 archetypes that have no right answer.
+Whether that trade is still the one to make is a PM decision. See §6 for what
+remains red and whose it is.
 
 ## 1. The rule, and why it is not "am I on the snapshot"
 
@@ -74,8 +84,14 @@ withholds those 80 on a perfectly current snapshot too. They are the rows whose
 openness rests on a French or Spanish register having published no deadline,
 which is the one inference a copy cannot make safely at any age.
 
-**The founder-visible cost is nevertheless zero.** All 12 archetypes still show
-a full table on the fallback path (`npx tsx scripts/check_degradation.ts`):
+**Re-read 2026-08-07 on the current stores: 817 / 726 / 80, FR 73 ES 7.** The
+suppression count is unchanged. The snapshot is 726 rather than 737 because 11
+IPCEI rows have since been retracted in it; see §7. Steady state is still
+`0 suppressed`, and this is not it — the rule is clock-free, so it withholds
+these 80 on a current copy as readily as a stale one.
+
+**All 12 archetypes still show a full table** on the fallback path
+(`npx tsx scripts/check_degradation.ts`, green 2026-08-07):
 
 ```
                        shown  (live)   pool  (live)   withheld
@@ -93,13 +109,66 @@ Life sciences            6      6       74    146       73
 AgriTech                 6      6       98     98        0
 ```
 
-Eight of twelve lose nothing at all. The cost is **pool depth for the two
-French-facing archetypes** — 136 candidates down to 64, 146 down to 74 — which
-is what the writer reasons over, not what the founder reads. Nobody loses a row
-from their table.
+Eight of twelve lose nothing at all, and nobody loses a row from their table.
 
-If this table ever reads `shown 3 (live 6)`, the policy has started costing what
-it was chosen to avoid, and that is the number to watch.
+**Do not read that as "the founder-visible cost is zero". It is not, and the
+archetype set cannot see the cost.** An earlier draft of this document said it
+was zero on exactly this evidence. §2a is the measurement that was missing.
+
+## 2a. WHAT IT COSTS A FRENCH FOUNDER — the number that matters
+
+The archetype table answers "does the table still have six rows". It does. It
+cannot answer "are they the right six", because an archetype has no known
+right answer. The recall set does: 778 French holdout pairs, each a company and
+the fund it actually won.
+
+Measured on the live register with the ranker handicapped by exactly the 80 rows
+the fallback withholds — `COUNTRY=FR SPLIT=holdout N=600`, three seeds, every
+number out of Postgres (`corpus=postgres instruments=1084`):
+
+```
+                    in pool        EXACT@5        REGIME@5
+seed        base  policy    base policy     base policy
+20260806     98%     31%     16%     7%      78%    25%
+7            98%     32%     16%     7%      79%    27%
+99           98%     32%     17%     7%      79%    26%
+```
+
+**A French founder on the fallback path loses the fund they actually won from
+the pool entirely, about two thirds of the time.** EXACT@5 falls 16% to 7% —
+it more than halves. REGIME@5, the operational number, falls 79% to 26%.
+Identical across three seeds, so this is the policy, not the draw.
+
+The mechanism is not subtle and it is not a ranking effect:
+
+> **488 of the 778 French holdout answers — 63% — are funds this policy
+> withholds.** Almost every one is an ADEME aid scheme.
+
+ADEME sits in `national_dev_banks|FR`, which is one of the two populations the
+rule identifies as deadline-recording, so the whole register is withheld
+wholesale on the fallback. It is also what French founders actually win. The
+table stays full because there are plenty of other French rows to fill it; they
+are simply not the rows that get won.
+
+**Both things are true at once and neither cancels the other.** The policy does
+what it was chosen to do — `check_degradation` is green, no founder on the
+fallback is shown a fund the live register calls closed. And on the degraded
+path it costs a French founder the right answer roughly two thirds of the time.
+"Fewer funds rather than wrong ones" was chosen believing the cost was near
+zero. It is not near zero, and this is a PM decision, not an engineering one.
+
+Two things worth weighing before re-deciding:
+
+* **This only bites when the fallback fires.** On Postgres nothing is withheld
+  and recall is the baseline column. The cheapest way to pay less for this
+  policy is to make the degraded path rarer, not to weaken the policy.
+* **The suppression is not evenly distributed and never will be.** It follows
+  whichever registers publish deadlines. France and Spain today; the next call
+  register loaded joins them automatically.
+
+If the archetype table ever reads `shown 3 (live 6)`, the policy has begun
+costing what it was chosen to avoid as well. That is still the number to watch —
+it is just no longer the only one.
 
 ## 3. What a founder is told
 
@@ -118,6 +187,28 @@ telling a German founder that 80 funds are missing would be untrue and
 unreadable. Carried on the streamed preview as well as the finished brief; the
 preview is on screen for the two to three minutes the writer takes, long enough
 to count rows and conclude that is the answer.
+
+### 3a. Opened in a browser, and what looking found
+
+`/brief/preview/withheld` renders the real `Memo` and the real
+`InstitutionsTable` through the product's own `withheldNotice()`, at the counts
+a real degraded request produces (73 FR, 7 ES) plus 1 for the singular. Nothing
+on that page writes the sentence; it asks the product for it. Checked on screen,
+on the streamed preview above skeleton rows, and in print.
+
+On screen it was right: under the section heading, above the header row, quiet
+left rule, muted serif, no apology and no hedge. Singular and plural both read.
+
+**In print it was not.** The notice was set at `9px` — *under* the 9.5px table it
+qualifies, and one pixel above the 8px caveats line at the foot of the page. On
+paper the one sentence saying the table is incomplete was typeset as
+boilerplate, next to the boilerplate, and a founder skimming the PDF would skim
+past it. Now 14px on screen and 11px in print: **never smaller than the rows it
+corrects.** Quiet is carried by the muted colour and the hairline rule, never by
+making the type smaller than the thing it qualifies.
+
+That defect was invisible to the type checker, the unit tests and the
+client-boundary guard, all of which were green. It took a printer.
 
 ## 4. The guard that fails on the harm
 
@@ -155,53 +246,93 @@ level assertion is **stronger** than what it replaced:
 > rows the policy withheld, and by nothing else
 
 A dropped column, a stale export, a half-applied reload now surfaces as an
-*unaccounted* difference rather than as one line among expected ones. Published
-row **order** is still asserted exactly, against the live ranking with the
-withheld rows removed.
+*unaccounted* difference rather than as one line among expected ones.
 
-## 6. NOT DONE — read this first
+### 5a. The backfill assertion — fixed, and why the first version was wrong
 
-1. **`check_hydration_parity` is RED.** It was already red at my branch point
-   (7 differences on the regenerated snapshot: framework citations on 4
-   archetypes, gate order on 2, `edf_ra`/`edf_da` and the Joint Undertakings on
-   Robotics/AI-B2C). My change adds a second, distinct failure I did not
-   resolve: **the published-row assertion is too strict for backfill.**
-   Withholding 73 rows frees slots under `POOL_LEAVES_PER_CHANNEL`, so a row at
-   rank 7 legitimately becomes rank 6, and `shown(fallback)` then differs from
-   `shown(live minus withheld)` by a row that was never in the live pool at all
-   (AI B2C: `sns_ju`, `horizon_eu_cl5`; AI B2B: `horizon_eu_cl3`). The Robotics
-   `ipcei_*` pool difference looks like the known semantic-float flakiness the
-   file's own header documents, not like my change, but I did not confirm that.
-   **Do not fix this by deleting the assertion.** The honest repair is to compare
-   the fallback's shown rows against the live ranking *re-run with the withheld
-   ids removed from consideration*, which needs a suppression override in
-   `dump_verdicts.ts`.
-2. **The memo was never opened in a browser.** `npm run drive` was not run. The
-   notice compiles, type-checks and passes the client-boundary guard, and the
-   count reaches it through the same log the funnel uses, but **nobody has
-   looked at it on a page.** Given the standing rule, treat the wording and its
-   placement as unverified.
-3. **Not measured with three seeds.** The archetype set is fixed and the
-   suppression is deterministic — it reads no sampler — so seeds do not apply to
-   the numbers above. What is *not* measured is the effect of losing half the
-   French pool on **EXACT@5 for a French founder on the fallback path**. That
-   is a real question and it needs `measure_recall` at n>=600.
+Subtracting the withheld ids from the live ranking after the fact was the wrong
+comparison, and wrong in the direction that gets a guard deleted. Withholding a
+row **frees a slot** under `POOL_LEAVES_PER_CHANNEL`, so the fund behind it is
+promoted into the table — and that fund was never in the live pool, so no amount
+of subtracting can produce it. Three archetypes read as broken while the policy
+worked exactly as designed.
+
+The live arm is now **re-run with those ids out of consideration**
+(`SUPPRESS_IDS_FILE` → `__forceSuppressedForParity`), which is the question the
+fallback was actually asked. Equality is then exact and asserts the promotions
+too — a stronger claim than the subtraction it replaces, not a weaker one. The
+third process is not spawned at all when nothing was withheld.
+
+`NO_PG=1` is now honoured, as every other Postgres-touching script in this repo
+already does. Before this, `NO_PG=1 npm run check` reached Railway through
+`check_hydration_parity` and `check_degradation` — the opposite of what CI says
+`NO_PG` is for. Both are unchanged at full strength when run with credentials.
+
+### 5b. The residual red is TWO stale artifacts, and neither is this policy
+
+Proven, not asserted. With the two staleness sources neutralised, **all 12
+archetypes agree exactly with the live corpus, top 6 and pool set.** Nothing is
+left over for the degradation policy to explain.
+
+1. **Railway Postgres never received the `closed_beneficiary_list` retraction.**
+   Postgres holds **zero** rows with that basis; the snapshot holds 11. So the
+   live register still offers the IPCEI waves that the product retracted. Every
+   `eligibility screen differs (framework citations?)` line is downstream of
+   this — each archetype whose pool is set-equal has an **identical** screen, so
+   the screen was never an independent fault. Robotics' `edf_ra`/`edf_da` is the
+   same thing seen from the other side: 11 IPCEI rows occupy pool slots on
+   Postgres that those two take on the snapshot.
+2. **`semanticCache.generated.json` is stale against live pgvector.**
+   Regenerated, ~996 of 1092 scores move per description and `separation` shifts
+   on all 18. This is what remained after the corpora were made set-identical:
+   same pool membership, different order, on the five archetypes whose top rows
+   the suppression exposes. Swap the fresh cache in and every one of them agrees.
+
+Both are corpus currency, both are already failing `check_corpus_currency` on
+main, which names the fix (`make eligibility`, then
+`build_instrument_profiles.py run`). **Neither was regenerated here on purpose:**
+that is workstream AA's artifact, and rebuilding it inside a policy branch would
+move every recall number under the measurement in §2a.
+
+## 6. STILL RED — read this first
+
+`NO_PG=1 npm run check` **does not go green**, and not because of this branch.
+It stops in the same two places it stops on main, both in lanes this workstream
+was told not to enter:
+
+1. **`check_leaf_cap` exits 1** — `POOL_LEAVES_PER_CHANNEL (90) IS BINDING`,
+   `state_aid_satr DE` holds 103. Byte-identical on main. Workstream Z.
+2. **`check_corpus_currency` exits 1** — Postgres 1084 vs snapshot 1076, the 11
+   IPCEI rows disagreeing on closure, and 8 instruments with no
+   `instrument_profiles` row. Identical on main. Workstream AA. This is the same
+   drift diagnosed in §5b, already caught by the guard built for it.
+
+Everything else in the suite passes on this branch. The one check whose outcome
+this branch changes is `check_hydration_parity`: red on main (where it reached
+Postgres even under `NO_PG=1`), and now a clean skip offline / red with
+credentials on the two §5b causes alone.
+
+`check_degradation` is **green with credentials** — no founder on the fallback
+corpus is offered a fund the live register calls closed. That is the assertion
+this whole workstream exists for, and it holds.
 
 ## The single most useful thing to do next
 
-**Resolve the parity assertion in §6.1**, because until it is green nobody can
-tell a hydration bug from this policy, which is the exact ambiguity the whole
-night was spent removing. It is a contained change to `dump_verdicts.ts` plus
-the one comparison in `check_hydration_parity.ts`. Do it before looking at the
-browser, and before re-deriving any floor.
+**Take the §2a decision.** The engineering is done and its guard is green; what
+is not settled is whether losing a French founder the right answer two thirds of
+the time on the degraded path is the trade the PM meant to make. Everything
+else here is somebody else's queue: republish the corpus (AA) and the two stale
+artifacts stop contaminating parity, and the leaf cap is Z's one-line call.
 
 ## Untouched, as instructed
 
-The recall set (wsR), the leaf cap and IPCEI rows (wsW), and every floor. No
-guard was lowered. `check_corpus_currency` and `check_liveness` are unchanged
-and pass; the liveness projection to `ETL/lib/liveness.py` needs no update,
-because the confidence rule governs the request path and the ETL does not serve
-founders — do not add a seventh copy there.
+The recall set (wsR), the leaf cap (Z), the IPCEI rows (Y2) and the publish
+pipeline (AA). No floor was moved and no guard was lowered — the parity
+assertion was made stricter, not looser, and the two `NO_PG` skips restore a
+repo-wide convention these two files were the only ones breaking. The liveness
+projection to `ETL/lib/liveness.py` still needs no update: the confidence rule
+governs the request path and the ETL does not serve founders. Do not add a
+seventh copy there.
 
 One commit on this branch carries K2's regenerated snapshot
 (`instrument_terms.json`, `themeIndex.generated.ts`, `coverage_baseline.json`),
