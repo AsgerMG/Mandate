@@ -191,6 +191,43 @@ async function main() {
       "  under a bad night, not a tax on a good one.");
   }
 
+  // ── WHAT THIS CHECK DOES NOT COVER ──────────────────────────────────────
+  // Said out loud, in the file, because a guard that overstates its scope is
+  // worse than one that has none: people stop looking.
+  //
+  // Everything above runs against the COMMITTED snapshot, which is republished
+  // on every corpus change and is currently byte-current with Postgres. So the
+  // assertion is exercised only in the state where it cannot fail. The states
+  // where it can are built by scripts/probe_stale_snapshot.ts, and measured
+  // 2026-08-07 they say this:
+  //
+  //   copy                              offered  withheld  DEAD OFFERED
+  //   current                               809         5             0
+  //   stale (no call deadlines loaded)      812         0            84
+  //   no-basis (the 2026-08-06 artifact)    230       381             0
+  //
+  // The middle row is the case the policy was BUILT for, and the policy does
+  // nothing in it — under the old membership rule as well as the current
+  // proportion rule, identically. `populationRecordsDeadlines` infers "this
+  // register publishes deadlines" from deadlines present in the copy, so a
+  // copy stale enough to be dangerous has none and the rule goes quiet exactly
+  // when it is needed. The only clause that ever caught anything is
+  // `basis_not_supplied`, which is a test of the copy's SCHEMA, not its
+  // currency, and it withholds 381 of 814 rows to do it.
+  //
+  // The defence against a deeply stale copy is therefore check_corpus_currency
+  // and check_corpus_census, not this. What the durable fix looks like is in
+  // project-mgmt/findings/degradation_precision_wsAC.md: the corpus records
+  // "no deadline" and "not a deadline-bearing row" in the same NULL, and one
+  // column separating them would make this rule survive staleness.
+  console.log("\nWHAT THIS CHECK DOES NOT COVER");
+  console.log("  It runs against the committed snapshot, which is republished on every");
+  console.log("  corpus change. That is the state where the assertion cannot fail. Run");
+  console.log("  `npx tsx scripts/probe_stale_snapshot.ts` for the states where it can:");
+  console.log("  on a copy predating the call-register loads, the policy withholds");
+  console.log("  nothing and 84 closed rows are offerable. That gap is corpus currency's");
+  console.log("  to close, not this rule's — see degradation_precision_wsAC.md.");
+
   if (problems.length) {
     console.error("\ncheck_degradation: FAILED\n");
     for (const p of problems) console.error(`  - ${p}\n`);
