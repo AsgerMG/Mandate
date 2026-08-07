@@ -113,6 +113,35 @@ a corpus that failed the gate. So the gate's verdict travels with the census
 rather than deciding whether to write it, and everything that actually
 publishes still goes through the real gate in `ETL/refresh.py`.
 
+## The guards were still able to skip themselves into a pass
+
+`check_corpus_currency.ts` and `check_hydration_parity.ts` load credentials from
+`./.env.local` only, relative to `website/frontend`. `DATABASE_URL` is
+documented as living at the **repo root**. On a checkout that has the root file
+and not the frontend one — a fresh worktree, for instance — both printed
+`skipped — nothing to compare against` and exited 0 **on a machine that had the
+credentials all along**. That is the defect they exist to catch, occurring
+inside the checks themselves, and `check_hydration_parity` already carries a
+comment saying this happened once before. Both now read the root file first.
+
+The moment `check_corpus_currency` could actually see the database, it failed:
+
+```
+snapshot generated 2026-08-06T22:41:09+00:00, 1076 records
+postgres 1084 instruments, 1076 embedded profiles, as of 2026-08-07
+
+- 11 of 1084 instruments are OPEN in one corpus and CLOSED in the other
+- 8 live instruments absent from the snapshot
+- 8 instruments have no row in instrument_profiles
+```
+
+**Not fixed here — the eleven are the IPCEI rows, which belong to workstream
+Y2.** Left as found on purpose. It is also the best available evidence for this
+workstream's central claim: a correct guard that fires nowhere finds nothing,
+and this one found live drift within seconds of being able to run. **The first
+scheduled run of the new workflow will fail on this until Y2 lands and somebody
+runs `make republish`. That is the guard working, not the guard misfiring.**
+
 ## The coverage gate was wrong in both directions
 
 The brief reported a false alarm. It is worse than that: the gate compared
