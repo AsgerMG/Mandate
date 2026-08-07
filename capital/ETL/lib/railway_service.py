@@ -83,14 +83,19 @@ def deploy(message: str) -> None:
 
 
 def redeploy(deployment_id: str) -> None:
-    """Re-deploy an EXISTING build so the current instance config takes effect.
+    """Re-issue an existing build. It does NOT pick up a changed schedule.
 
-    The narrow tool for the narrow problem: when the schedule written over the
-    API has not reached the deployed manifest, the fix is to re-issue the
-    deployment, not to upload whatever happens to be in the working tree. That
-    distinction matters — `railway up` from a feature branch would put
-    unreviewed code on the weekly production run in order to correct a cron
-    string.
+    Tried on 2026-08-07 as the minimal repair for a service instance and a
+    deployment that disagreed about the cron schedule, on the assumption that
+    re-issuing the deployment would apply the current config. It does not:
+    `deploymentRedeploy` replays the deployment's OWN baked serviceManifest.
+    The new deployment came up SUCCESS still carrying `19 23 * * *` while the
+    instance said `0 3 * * 0`, so the disagreement survived the repair intact
+    and, had nobody read the manifest back, would have looked repaired.
+
+    Kept, documented, and not used for schedule changes. Only `deploy()` —
+    a fresh upload — rebakes the manifest. Left here so the next person does
+    not spend the same half hour discovering it.
     """
     _api(
         "mutation($id: String!) { deploymentRedeploy(id: $id) { id status } }",
@@ -171,13 +176,41 @@ def wake(timeout_s: int = 180) -> None:
     raise TimeoutError("etl-pipeline didn't reach RUNNING within timeout")
 
 
-def restore() -> None:
-    """Restore the real cron startCommand + schedule and redeploy (idle)."""
-    print("[railway_service] restoring cron schedule...")
-    _set_service_instance(REAL_START_COMMAND, REAL_CRON_SCHEDULE)
-    subprocess.run(
-        RAILWAY + ["up", "--service", SERVICE_NAME, "--environment", "production",
-                   "--ci", "--message", "restore cron schedule (auto)"],
-        check=True,
-    )
-    print("[railway_service] restored.")
+def restore(attempts: int = 3) -> list[str]:
+    """Restore the real cron startCommand + schedule, and CONFIRM it took.
+
+    The restore is the whole risk of every wake/trigger dance in this repo: if
+    it does not happen the weekly refresh stops, and nothing else in the system
+    would notice for a week. It used to be one un-retried `railway up` whose
+    result was never read back — and on 2026-08-07 that is exactly what
+    happened, leaving the service instance saying `0 3 * * 0` while the
+    deployment Railway actually runs still carried a temporary daily schedule.
+
+    So it retries, and then verifies by reading Railway rather than by trusting
+    the write. It returns the remaining problems rather than raising, because
+    every caller invokes it from a `finally` and an exception there would
+    replace the real error with this one. Callers must check the return value.
+    """
+    from verify_cron import check  # local: verify_cron imports this module
+
+    problems: list[str] = []
+    for attempt in range(1, attempts + 1):
+        print(f"[railway_service] restoring cron schedule (attempt {attempt})...")
+        _set_service_instance(REAL_START_COMMAND, REAL_CRON_SCHEDULE)
+        try:
+            deploy("restore cron schedule (auto)")
+        except subprocess.CalledProcessError as exc:
+            print(f"[railway_service] deploy failed: {exc}")
+            time.sleep(10)
+            continue
+        for _ in range(10):
+            time.sleep(10)
+            problems = check()
+            if not problems:
+                print("[railway_service] restored, and confirmed from Railway.")
+                return []
+    print("\n[railway_service] RESTORE NOT CONFIRMED — the weekly ETL may not run:")
+    for p in problems or ["no deployment state could be read"]:
+        print(f"  - {p}")
+    print("  python3 ETL/lib/verify_cron.py --deploy   to repair by hand\n")
+    return problems or ["restore could not be confirmed"]

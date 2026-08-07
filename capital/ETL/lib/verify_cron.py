@@ -134,7 +134,7 @@ def check() -> list[str]:
     return problems
 
 
-def restore_and_verify(mode: str, attempts: int = 3, settle_s: int = 12) -> list[str]:
+def restore_and_verify(mode: str = "deploy", attempts: int = 3, settle_s: int = 12) -> list[str]:
     """Write the real configuration, make it take effect, and confirm from Railway.
 
     Retried, because the failure this exists for is a deploy that did not happen
@@ -142,24 +142,17 @@ def restore_and_verify(mode: str, attempts: int = 3, settle_s: int = 12) -> list
     refresh stops silently. Confirmation is a read from Railway after the write,
     never the write's own return value.
 
-    mode "redeploy" re-issues the existing build so the schedule takes effect
-    without changing what runs; mode "deploy" uploads this working tree.
+    Only mode "deploy" exists, and that is the finding rather than an omission:
+    re-issuing the existing build replays its own baked manifest, so it cannot
+    correct a schedule. See railway_service.redeploy().
     """
-    from railway_service import redeploy, set_service_instance
+    from railway_service import set_service_instance
 
     for attempt in range(1, attempts + 1):
         print(f"\n-- restore attempt {attempt}/{attempts} ({mode})")
         set_service_instance(REAL_START_COMMAND, REAL_CRON_SCHEDULE)
         try:
-            if mode == "deploy":
-                deploy(f"restore weekly schedule {REAL_CRON_SCHEDULE} (verify_cron)")
-            else:
-                dep = deployed_config()
-                if not dep:
-                    print("   nothing to redeploy; falling back to a full deploy")
-                    deploy(f"restore weekly schedule {REAL_CRON_SCHEDULE} (verify_cron)")
-                else:
-                    redeploy(dep["id"])
+            deploy(f"restore weekly schedule {REAL_CRON_SCHEDULE} (verify_cron)")
         except subprocess.CalledProcessError as exc:
             print(f"   {mode} failed: {exc}")
             time.sleep(10)
@@ -176,23 +169,17 @@ def restore_and_verify(mode: str, attempts: int = 3, settle_s: int = 12) -> list
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--redeploy", action="store_true",
-                    help="reconcile the schedule by re-issuing the EXISTING build; "
-                         "changes no code, and is the right repair when only the "
-                         "cron string is wrong")
     ap.add_argument("--deploy", action="store_true",
-                    help="upload this working tree, deploy, and verify — use when "
-                         "the image is behind the code, not merely mis-scheduled")
+                    help="upload this working tree, deploy, and verify. This is "
+                         "the ONLY thing that changes the schedule Railway runs: "
+                         "re-issuing an existing deployment replays its own baked "
+                         "manifest and leaves the disagreement in place — see "
+                         "railway_service.redeploy()")
     ap.add_argument("--json", action="store_true", help="machine-readable result")
     args = ap.parse_args()
 
     print(f"etl-pipeline ({SERVICE_ID[:8]}) in environment {ENVIRONMENT_ID[:8]}")
-    if args.deploy:
-        problems = restore_and_verify("deploy")
-    elif args.redeploy:
-        problems = restore_and_verify("redeploy")
-    else:
-        problems = check()
+    problems = restore_and_verify("deploy") if args.deploy else check()
 
     if args.json:
         print(json.dumps({"ok": not problems, "problems": problems}))
@@ -200,9 +187,9 @@ def main() -> int:
         print(f"\nFAILED: {len(problems)} problem(s) with the weekly ETL.")
         for p in problems:
             print(f"  - {p}")
-        if not (args.deploy or args.redeploy):
-            print("\n  --redeploy  reconcile the schedule with the build already there")
-            print("  --deploy    upload this tree, for when the image is behind the code")
+        if not args.deploy:
+            print("\n  python3 ETL/lib/verify_cron.py --deploy   "
+                  "uploads this tree, redeploys, and confirms it from Railway")
         return 1
     print("\nok — the weekly ETL is scheduled, deployed, and running this code.")
     return 0
