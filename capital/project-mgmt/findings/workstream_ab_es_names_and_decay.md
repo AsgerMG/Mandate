@@ -235,7 +235,25 @@ Run in full on 2026-08-07 against the live register, exit 0:
 
 ES went **93 → 101 offerable**, sibling class unchanged at 1.6.
 
-### Two defects the run exposed in its own scaffolding, both fixed
+### Three defects the run exposed, all fixed
+
+**The weekly load threw the derived names away.** `load_bdns_open_calls.py`
+upserts every column on re-run, including `name` — which it fills with the
+register's `descripcion`, the legal citation. So the second week silently reset
+every founder-legible name back to the citation and asked the model to derive it
+again from scratch. One row came back visibly worse
+(`Convocatoria de 2026 de ayudas para la realización de proyectos de
+I+D+i_Innovacion_Producto_minimis`), and **nothing caught it but rendering the
+rows and looking at them** — no test compares a name to the name it had last
+week.
+
+The upsert now refreshes `name` only when `name_basis IS NULL`, i.e. only where
+nothing has ever derived a name for that row. The register may still correct a
+title it has never had improved, and a derived name is never clobbered by the
+raw citation it was derived FROM. This also makes the outcome stable rather than
+re-decided weekly: whichever way a borderline row lands, it stays there.
+
+**Two more defects, both in the new scaffolding:**
 
 **The cap was hit and reported success.** `fetch_details` exits 0 whether it
 drained the queue or stopped at the limit, so 800 of 922 were fetched and
