@@ -190,6 +190,32 @@ async function main() {
   // ── STALE: do the numbers we serve match the corpus that exists? ─────────
   const file = path.join(process.cwd(), "public", "data", "synthesis.json");
   const served = JSON.parse(readFileSync(file, "utf8")) as Record<string, unknown>;
+
+  // ── UNDATED: can the two readings still be compared at all? ──────────────
+  // The invariant that makes the live read safe to ship is "it can make the
+  // site fresher and provably cannot make it staler", and corpusFigures.ts
+  // enforces it by comparing `generatedAt` against the census's `taken_at`.
+  // That comparison needs a date on BOTH sides. With `generatedAt` absent the
+  // parse yields NaN, the comparison is skipped, and the census wins
+  // unconditionally — so a census taken BEFORE the last `make data` would
+  // quietly replace fresher figures with older ones. The invariant would be
+  // gone and everything would still render.
+  //
+  // Not hypothetical: synthesis.py only learned to stamp the file in this
+  // workstream, so every artifact regenerated from a branch without that change
+  // arrives undated — which is exactly what a merge from main produced while
+  // this was being written.
+  if (typeof served.generatedAt !== "string" || !served.generatedAt
+      || Number.isNaN(Date.parse(served.generatedAt as string))) {
+    problems.push(
+      `UNDATED — synthesis.json carries no usable \`generatedAt\` ` +
+      `(${JSON.stringify(served.generatedAt)}).\n` +
+      `      The render path compares that stamp against the census's taken_at to\n` +
+      `      guarantee the live read can only move the site FORWARDS. Undated, the\n` +
+      `      comparison is skipped and the census wins unconditionally — including a\n` +
+      `      census older than this file. Regenerate it: python3 website/build/synthesis.py`);
+  }
+
   const disagree: string[] = [];
   if (latest.kpis) {
     for (const [key, value] of Object.entries(latest.kpis)) {
@@ -208,7 +234,31 @@ async function main() {
   // the fallback is what founders see when Postgres is unreachable, and a
   // fallback nobody refreshes is a fallback that gets worse every week while
   // reading as healthy. This is the check that keeps the parachute packed.
-  if (disagree.length) {
+  //
+  // But WHICH side is behind has to be established rather than assumed, and
+  // assuming it is the same defect in miniature. Both readings are dated, so
+  // the direction is a fact and not an inference:
+  //
+  //   census newer than the artifact  → the fallback is drifting. The old
+  //                                     reading of this check, and the one that
+  //                                     `make republish` fixes.
+  //   artifact newer than the census  → the ARTIFACT is ahead, which is what a
+  //                                     republish immediately after a corpus
+  //                                     change looks like. `make republish`
+  //                                     would not fix it; it would pull the
+  //                                     ETL's db and undo it. The thing that is
+  //                                     behind is the ETL's own record, and the
+  //                                     honest report says so.
+  //
+  // Getting this backwards is not cosmetic. A guard that names the wrong fix
+  // gets run once, does damage, and is thereafter ignored — which costs more
+  // than having no guard, because everything downstream still reads as covered.
+  const artifactAt = typeof served.generatedAt === "string"
+    ? Date.parse(served.generatedAt) : NaN;
+  const artifactIsAhead = Number.isFinite(artifactAt)
+    && artifactAt > latest.taken_at.getTime();
+
+  if (disagree.length && !artifactIsAhead) {
     problems.push(
       `STALE — the committed synthesis.json does not describe the corpus the ETL\n` +
       `      holds. The live page reads the census, so founders are not seeing these\n` +
@@ -217,6 +267,21 @@ async function main() {
       disagree.map((d) => `        ${d}`).join("\n") +
       `\n      census #${latest.id} taken ${latest.taken_at.toISOString().slice(0, 16)}Z` +
       ` by ${latest.produced_by}, ${ageDays.toFixed(1)} days ago.`);
+  } else if (disagree.length) {
+    problems.push(
+      `BEHIND — the ETL's own record is older than the corpus we publish. The\n` +
+      `      committed synthesis.json (${served.generatedAt}) is a MORE RECENT\n` +
+      `      reading than census #${latest.id} ` +
+      `(${latest.taken_at.toISOString().slice(0, 16)}Z, by ${latest.produced_by}):\n` +
+      disagree.map((d) => `        ${d}`).join("\n") +
+      `\n      The site is serving the newer figures, which is the intended\n` +
+      `      behaviour — the live read may only ever move the site forwards. What\n` +
+      `      is missing is a census over the current corpus, so the LIVE path has\n` +
+      `      something admissible to serve and the site stops depending on the\n` +
+      `      committed fallback.\n` +
+      `      Do NOT run \`make republish\` for this: step 1 pulls the ETL's db and\n` +
+      `      would overwrite the newer corpus with the older one. Let the weekly\n` +
+      `      pipeline run and record its own census.`);
   }
 
   console.log(`  newest census #${latest.id} — ${latest.taken_at.toISOString().slice(0, 16)}Z ` +
@@ -235,8 +300,10 @@ async function main() {
     console.error("  The site's headline figures follow the census on their own (wsAK), but");
     console.error("  only through a census the coverage gate has passed. Anything above means");
     console.error("  either the corpus needs a person, or the committed fallback has drifted.");
-    console.error("\n  Fix (pulls the ETL's db, regenerates, gates, and tells you what to commit):");
-    console.error("    make republish");
+    if (problems.some((p) => p.startsWith("STALE"))) {
+      console.error("\n  Fix (pulls the ETL's db, regenerates, gates, and tells you what to commit):");
+      console.error("    make republish");
+    }
     process.exit(1);
   }
   console.log("check_corpus_census: ok — the site serves the corpus the ETL produced, " +

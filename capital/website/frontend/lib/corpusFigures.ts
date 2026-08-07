@@ -256,6 +256,20 @@ export async function readCorpusFigures(): Promise<CorpusFigures> {
   // Comparing dates rather than assuming a winner is what guarantees this
   // change can only ever move the site forwards.
   const artifactAt = ARTIFACT.generatedAt ? Date.parse(ARTIFACT.generatedAt) : NaN;
+  if (!Number.isFinite(artifactAt)) {
+    // The one state in which the invariant above does NOT hold, said out loud.
+    // An undated artifact cannot be compared, so the census wins by default —
+    // and if that census predates the last `make data`, this render just moved
+    // the site backwards. `check_corpus_census.ts` fails the build on an
+    // undated artifact precisely so this branch is unreachable in a shipped
+    // build; the warning is here for the build that shipped anyway.
+    console.warn(
+      `[corpus] the committed artifact carries no usable generatedAt ` +
+      `(${JSON.stringify(ARTIFACT.generatedAt)}), so it cannot be compared with ` +
+      `census #${chosen.id} (${chosen.taken_at.toISOString()}). Serving the census ` +
+      `unconditionally — this render CANNOT guarantee it is not older than the ` +
+      `artifact it replaced. Regenerate: python3 website/build/synthesis.py`);
+  }
   if (Number.isFinite(artifactAt) && artifactAt > chosen.taken_at.getTime()) {
     return fromArtifact(
       `the committed artifact (${ARTIFACT.generatedAt}) is a more recent reading ` +
