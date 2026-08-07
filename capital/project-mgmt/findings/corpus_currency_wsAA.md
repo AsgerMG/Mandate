@@ -287,6 +287,13 @@ confirmed: a pull that succeeds and leaves the service woken has traded one
   "is the image at least as new as this code" but not "is it this code". The
   census fingerprint is the exact test; the timestamp is the cheap pre-filter
   that works without waiting for a run.
+- **CI's own lint step appears to be red on `main`.** `npx eslint .` — which
+  ci.yml runs and which fails the job on a non-zero exit — reports 126 errors on
+  `main` today, byte-identical to this branch (so nothing here caused it). If
+  that is right, the CI gate has been failing for some time and the new
+  scheduled workflow inherits an audience that has learned to ignore a red tick.
+  Worth confirming and either fixing or scoping the lint step; not touched here
+  because it is 126 unrelated errors in `lib/intelligence` and `scripts`.
 - **The census has not run inside the Railway container itself.** `railway up`
   uploads from the linked repository root, not from a worktree, so the
   verification deploy carried `main` and the run reported the census file
