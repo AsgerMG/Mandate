@@ -92,7 +92,7 @@ async function main() {
   const client = new Client({ connectionString: url, connectionTimeoutMillis: 10_000 });
   await client.connect();
   let live: any[], profileMissing: number, profileOrphan: number, profiles: number;
-  let profileIds: Set<string>;
+  let profileIds: Set<string>, textProfileIds: Set<string>;
   try {
     live = (await client.query(
       `SELECT id, name, scheme_end_date, scheme_end_date_basis, last_year, successor_scheme
@@ -113,6 +113,10 @@ async function main() {
       "SELECT instrument_id FROM instrument_profiles WHERE embedding IS NOT NULL"
     )).rows.map((r: { instrument_id: string }) => r.instrument_id));
     profiles = profileIds.size;
+    textProfileIds = new Set((await client.query(
+      `SELECT instrument_id FROM instrument_profiles
+        WHERE profile_text IS NOT NULL AND btrim(profile_text) <> ''`
+    )).rows.map((r: { instrument_id: string }) => r.instrument_id));
   } finally {
     await client.end();
   }
@@ -171,10 +175,57 @@ async function main() {
       `is ranking funds the corpus no longer contains.`);
   }
 
-  // ── 3. The OFFLINE mirror of the index must answer for the same corpus ────
+  // ── 3. EVERY offline mirror of the index must answer for the same corpus ──
   // Compared on the ID SET, not on a count and not on a mtime. A count matches
   // by coincidence the moment one fund is added and another withdrawn, and a
   // timestamp says when the file was written rather than what is in it.
+  //
+  // Two artifacts are cut from `instrument_profiles` and committed, and BOTH
+  // were found 70 instruments behind on 2026-08-07:
+  //
+  //   semanticCache.generated.json    the SCORES. Every NO_PG check ranks on it.
+  //   profileLeakIndex.generated.json the TEXT. `check_recall_leaks` tests the
+  //                                   recall set against it, so a stale copy
+  //                                   cannot see a description that leaks into
+  //                                   one of the profiles it does not hold --
+  //                                   and a leak inflates every recall figure
+  //                                   taken from the set, silently.
+  //
+  // The second is the more dangerous of the two: it is a guard, and a guard
+  // checking 1,014 of 1,084 profiles reports green over the other 70.
+  const leakFile = path.join(process.cwd(), "lib", "intelligence", "profileLeakIndex.generated.json");
+  let leakIds: Set<string> | null = null;
+  let leakBuiltAt = "";
+  try {
+    const idx = JSON.parse(readFileSync(leakFile, "utf8")) as
+      { profile: Record<string, string>; builtAt?: string };
+    leakIds = new Set(Object.keys(idx.profile ?? {}));
+    leakBuiltAt = idx.builtAt ?? "(unstamped)";
+  } catch {
+    problems.push(`lib/intelligence/profileLeakIndex.generated.json is missing or ` +
+      `unreadable, so check_recall_leaks cannot test the recall set at all.`);
+  }
+  if (leakIds) {
+    // Only profiles with TEXT can be in it: the emitter drops any whose text
+    // squashes to nothing, so the live side of this comparison is the textual
+    // profiles, not every row of the table.
+    const missing = [...textProfileIds].filter((id) => !leakIds.has(id));
+    const extra = [...leakIds].filter((id) => !textProfileIds.has(id));
+    if (missing.length || extra.length) {
+      problems.push(
+        `the committed profile LEAK index holds ${leakIds.size} instruments against ` +
+        `${textProfileIds.size} live\n` +
+        `      (built ${leakBuiltAt}): ${missing.length} live profile(s) it has never seen, ` +
+        `${extra.length} gone.\n` +
+        `      check_recall_leaks therefore reports green over profiles it does not\n` +
+        `      hold. A description that leaks into one of them grades retrieval on a\n` +
+        `      query copied out of the answer, and inflates every recall figure taken\n` +
+        `      from the set — which is the exact defect that artifact exists to catch.\n` +
+        `      Rebuild: DATABASE_URL=... python3 ETL/terms/emit_profile_leak_index.py` +
+        (missing.length ? `\n      e.g. missing ${missing.slice(0, 3).join(", ")}` : ""));
+    }
+  }
+
   const cacheFile = path.join(process.cwd(), "lib", "intelligence", "semanticCache.generated.json");
   let cache: Record<string, { scores?: Record<string, number> } | Record<string, number>> | null = null;
   try {
@@ -219,7 +270,8 @@ async function main() {
   console.log(`  snapshot generated ${snapshot.generatedAt ?? "(unstamped)"}, ` +
               `${snapshot.records.length} records`);
   console.log(`  postgres ${live.length} instruments, ${profiles} embedded profiles, as of ${asOf}`);
-  console.log(`  semantic cache ${cacheDescriptions} descriptions`);
+  console.log(`  semantic cache ${cacheDescriptions} descriptions, ` +
+              `leak index ${leakIds?.size ?? 0} profiles (built ${leakBuiltAt || "-"})`);
 
   if (problems.length) {
     console.error("\ncheck_corpus_currency: FAILED\n");
@@ -237,8 +289,8 @@ async function main() {
     process.exit(1);
   }
   console.log("check_corpus_currency: ok — the snapshot and Postgres agree on every " +
-              "liveness verdict, every instrument is retrievable, and the committed " +
-              "semantic cache scores exactly the live index.");
+              "liveness verdict, every instrument is retrievable, and both committed " +
+              "mirrors of the index (scores, profile text) cover exactly the live one.");
 }
 
 main().catch((err) => {
