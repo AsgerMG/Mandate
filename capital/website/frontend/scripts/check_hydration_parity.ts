@@ -80,6 +80,12 @@ for (const envPath of ["../../.env.local", ".env.local"]) {
 }
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
+// Needs both stores, so it cannot run in CI. It publishes what it decided;
+// check_verdicts.ts asserts on that with no credentials.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "hydration_parity";
+const tape = startTape();
 
 interface Archetype {
   ids: string[];
@@ -106,7 +112,7 @@ function run(env: Record<string, string>): Dump {
   return JSON.parse(out) as Dump;
 }
 
-function main() {
+async function main() {
   // NO_PG=1 is this repo's "there is no database", and every other script that
   // can reach Postgres honours it by deleting DATABASE_URL. This one compares
   // the two stores against each other, so without a database there is nothing
@@ -283,11 +289,32 @@ function main() {
   if (problems.length) {
     console.error(`check_hydration_parity: ${problems.length} difference(s) between the Postgres and JSON paths.`);
     for (const p of problems.slice(0, 12)) console.error(`  ${p}`);
+    await publishVerdict(GUARD, {
+      status: "failed",
+      summary: `${problems.length} difference(s) between the Postgres and JSON paths ` +
+               `over ${archetypes(json).length} archetypes`,
+      metrics: { problems: problems.length, archetypes: archetypes(json).length,
+                 suppressed: suppressed.size },
+      detail: tape(),
+    });
     process.exit(1);
   }
   console.log(`check_hydration_parity: ok — ${archetypes(json).length} archetypes agree on both ` +
     `paths, and the two corpora differ by exactly the ${suppressed.size} row(s) the ` +
     `degradation policy withheld`);
+  await publishVerdict(GUARD, {
+    status: "ok",
+    summary: `${archetypes(json).length} archetypes agree on both paths; the two corpora ` +
+             `differ by exactly the ${suppressed.size} row(s) the degradation policy withheld`,
+    metrics: { problems: 0, archetypes: archetypes(json).length, suppressed: suppressed.size },
+    detail: tape(),
+  });
 }
 
-main();
+main().catch(async (err) => {
+  console.error("check_hydration_parity: FAILED to run —", err);
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
+  process.exit(1);
+});

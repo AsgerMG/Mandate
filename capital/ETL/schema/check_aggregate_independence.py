@@ -26,6 +26,19 @@ So the contract is asserted rather than assumed, from both sides:
      would pass trivially on a corpus where liveness does nothing at all, and
      the test would be measuring its own irrelevance.
 
+── Where this runs, and why that moved ────────────────────────────────────
+It used to sit in CI, where `data/db.sqlite` is gitignored and therefore never
+present. So on every run it has ever had, it printed "skipping" and returned 0:
+a green tick from a check that had not executed a single one of its assertions.
+It now runs in the weekly Railway cron, against the volume-resident corpus, and
+publishes a verdict that CI reads without needing credentials
+(ETL/lib/guard_verdicts.py -> website/frontend/scripts/check_verdicts.ts).
+
+Which makes the absent corpus a FAILURE here rather than a skip. There is no
+longer any legitimate place this runs without one, and "the data was missing"
+and "the assertions held" must not produce the same exit code -- that identity
+is the entire defect being removed.
+
 Run:  python3 ETL/schema/check_aggregate_independence.py
 """
 from __future__ import annotations
@@ -43,8 +56,11 @@ from corpus_kpis import compute_kpis  # noqa: E402
 def main() -> int:
     db = ROOT / "data" / "db.sqlite"
     if not db.exists():
-        print(f"check_aggregate_independence: no {db}, skipping")
-        return 0
+        print(f"check_aggregate_independence: FAILED — no {db}.")
+        print("  This runs against the ETL corpus, on the volume the weekly cron")
+        print("  mounts. Nothing here can be asserted without it, and reporting")
+        print("  that as a pass is what this check spent its whole life doing.")
+        return 2
 
     con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
     before = compute_kpis(con)

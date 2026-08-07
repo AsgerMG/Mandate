@@ -62,6 +62,15 @@ import { loadEnvLocal } from "./loadEnv";
 
 loadEnvLocal();
 
+// This guard needs credentials, so it cannot run in CI. It therefore publishes
+// what it decided (scripts/guardVerdict.ts) and check_verdicts.ts asserts on
+// that without any — including that the verdict was taken on THIS code, so a
+// change to the snapshot or to the liveness rule cannot ship on an old pass.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "corpus_currency";
+const tape = startTape();
+
 import { isClosed, today } from "../lib/intelligence/liveness";
 
 interface SnapshotRecord {
@@ -286,14 +295,36 @@ async function main() {
     console.error("    python3 ETL/terms/build_instrument_profiles.py run");
     console.error("  and re-cut the offline mirror of that index, which is committed:");
     console.error("    npx tsx scripts/emit_semantic_cache.ts");
+    await publishVerdict(GUARD, {
+      status: "failed",
+      summary: `${problems.length} disagreement(s) between the committed snapshot ` +
+               `and Postgres (${live.length} instruments, ${profiles} profiles)`,
+      metrics: { problems: problems.length, snapshotRecords: snapshot.records.length,
+                 liveInstruments: live.length, profiles, profileMissing, profileOrphan },
+      detail: tape(),
+    });
     process.exit(1);
   }
   console.log("check_corpus_currency: ok — the snapshot and Postgres agree on every " +
               "liveness verdict, every instrument is retrievable, and both committed " +
               "mirrors of the index (scores, profile text) cover exactly the live one.");
+  await publishVerdict(GUARD, {
+    status: "ok",
+    summary: `snapshot and Postgres agree on every liveness verdict; ` +
+             `${live.length} instruments, ${profiles} embedded profiles`,
+    metrics: { problems: 0, snapshotRecords: snapshot.records.length,
+               liveInstruments: live.length, profiles, profileMissing, profileOrphan },
+    detail: tape(),
+  });
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("check_corpus_currency: FAILED to run —", err);
+  // 'error', not 'failed': the guard fell over, which is a different claim from
+  // the corpora disagreeing, and publishing it as the latter would send whoever
+  // reads it to look at the wrong thing.
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
   process.exit(1);
 });

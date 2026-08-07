@@ -48,6 +48,13 @@ try {
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 import { today } from "../lib/intelligence/liveness";
+// Needs Postgres as its referee, so it cannot run in CI. It publishes what it
+// decided; check_verdicts.ts asserts on that with no credentials, and holds it
+// to the code it judged.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "degradation";
+const tape = startTape();
 
 interface Archetype { ids: string[]; rows: { id: string }[]; withheld: number }
 /** `__corpus` carries the run's provenance and suppression list; every other
@@ -239,13 +246,30 @@ async function main() {
     console.error("  not classify. Do NOT fix it by regenerating the snapshot: currency is");
     console.error("  necessary and is check_corpus_currency's job, and a corpus that");
     console.error("  happens to be fresh today is not a policy.");
+    await publishVerdict(GUARD, {
+      status: "failed",
+      summary: `${problems.length} archetype(s) offered a fund the live register ` +
+               `calls closed, off the fallback corpus`,
+      metrics: { problems: problems.length, offerable: offerable.size },
+      detail: tape(),
+    });
     process.exit(1);
   }
   console.log("\ncheck_degradation: ok — every fund offered off the fallback corpus is one " +
     "the live register still calls open.");
+  await publishVerdict(GUARD, {
+    status: "ok",
+    summary: "every fund offered off the fallback corpus is one the live register " +
+             "still calls open",
+    metrics: { problems: 0, offerable: offerable.size },
+    detail: tape(),
+  });
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("check_degradation: FAILED to run —", err);
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
   process.exit(1);
 });
