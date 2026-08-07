@@ -99,6 +99,12 @@ export const EXCLUSION_RULES = {
     what: "Instrument ranked below its channel's per-channel leaf limit.",
     disposition: "fit-score",
   },
+  "SEL-UNCONFIRMED-OPEN": {
+    stage: "leaf", kind: "fact", recoverable: false,
+    what: "Instrument withheld because the store that supplied it is a copy of the register rather than the register, and this row's openness rests on that copy holding no application deadline.",
+    disposition: "keep",
+    evidence: "On the fallback corpus 26% of founders were shown at least one fund whose deadline had passed, against 0% on the live register; the whole difference was rows whose deadline had been loaded after the copy was taken.",
+  },
   "SEL-DUPE-NAME": {
     stage: "leaf", kind: "fact", recoverable: false,
     what: "Instrument removed because another instrument renders under the same institution name; the one with more encoded rules is kept.",

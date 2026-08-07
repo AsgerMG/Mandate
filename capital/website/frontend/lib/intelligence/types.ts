@@ -101,6 +101,28 @@ export interface ProfileSignal {
   note: string;
 }
 
+/**
+ * What the founder is told when funds were withheld from their table.
+ *
+ * ── Why a table is not allowed to just get shorter ────────────────────────
+ * The degradation policy withholds any row whose open/closed status cannot be
+ * confirmed (see liveness.ts). A founder reading five rows where there would
+ * have been seven has no way to know the difference, and "here are your funds"
+ * is then a claim we have not earned. The row is still withheld — the notice
+ * is not a substitute for that, and it is emphatically not a "this list may be
+ * out of date" banner over rows we suspect. It says how many are missing and
+ * why, so the reader can decide whether to come back.
+ *
+ * Absent when nothing was withheld. Code-authored, so it cannot be softened,
+ * dropped or embellished by the writer.
+ */
+export interface WithheldNotice {
+  /** How many funds this founder lost. Never zero — the field is absent then. */
+  count: number;
+  /** One sentence, executive register. */
+  note: string;
+}
+
 /** Curated trade-off snapshot parsed from a fund brief's "At a glance" block. */
 export interface FundSnapshot {
   ticket: string;
@@ -371,6 +393,11 @@ export interface IntelligenceReport {
    *  fixed, code-authored Wincent plug appended (never modeled). */
   stateOfPlay: string;
   caveats: string;
+  /** Funds withheld because their open/closed status could not be confirmed.
+   *  Absent when nothing was withheld, which is the normal state. See
+   *  `withheldNotice()` — code-authored, never model-written, and never a
+   *  substitute for withholding the row. */
+  withheld?: WithheldNotice;
   /** Origin of each part of the brief, plus the exclusion counts for this
    *  request. Rendered only under ?trace=1; see provenance.ts. */
   provenance?: {
@@ -996,6 +1023,10 @@ export interface PartialReport {
   self: SelfRecord;
   eligibilityScreen: EligibilityCheck[];
   institutions: InstitutionEntry[];
+  /** Carried on the PREVIEW as well as the finished brief. The preview table
+   *  is on screen for the two to three minutes the writer takes, which is long
+   *  enough for a reader to count the rows and conclude that is the answer. */
+  withheld?: WithheldNotice;
 }
 
 /** Server-sent progress event streamed to the client. */

@@ -18,7 +18,42 @@ import { fmtEur } from "../format";
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
 import { STATE_OF_PLAY_OFFER } from "./types";
-import type { EligibilityCheck, InstitutionEntry, IntelligenceReport } from "./types";
+import type { EligibilityCheck, InstitutionEntry, IntelligenceReport, WithheldNotice } from "./types";
+
+/**
+ * Funds withheld because their openness could not be confirmed.
+ *
+ * Sits directly under the table's heading, above the first row, because that
+ * is where a reader forms the belief this component exists to correct: that
+ * what follows is the whole answer. In the footer beside the caveats it would
+ * be read after the decision it is meant to inform.
+ *
+ * Deliberately not styled as an error or a warning. Nothing has gone wrong
+ * with the founder's request; a smaller number of funds is the correct answer
+ * to it tonight, and the rule shown here is the reason it can be trusted.
+ * Renders nothing when nothing was withheld.
+ *
+ * ── Why the sizes are pinned to the table, not to the caveats ─────────────
+ * It is set no smaller than the rows it qualifies: 14px against the table's
+ * 14px on screen, 11px in print against the table's 9.5px. The first printed
+ * proof of this component had it at 9px, which is UNDER the table and one
+ * pixel over the 8px caveats line at the foot of the page -- so on paper the
+ * one sentence that says the table is incomplete was typeset as boilerplate,
+ * next to the boilerplate. Quiet is carried by the muted colour and the hairline
+ * rule; it must never be carried by making the type smaller than the thing it
+ * corrects. A founder who skims the table must not be able to skim past this.
+ */
+export function WithheldLine({ withheld }: { withheld?: WithheldNotice }) {
+  if (!withheld?.count) return null;
+  return (
+    <p
+      data-withheld={withheld.count}
+      className="mb-3 border-l-2 border-[var(--border)] pl-3 text-[14px] leading-relaxed text-[var(--muted-foreground)] print:text-[11px]"
+    >
+      {withheld.note}
+    </p>
+  );
+}
 
 /** A quiet editorial section title in the house serif — no number, no colour. */
 /** One consistent heading grammar used by every screen of the intake flow
@@ -59,11 +94,15 @@ export function PlaceholderBar({ narrow = false }: { narrow?: boolean }) {
  * the finished Memo. Same component, same layout, so the placeholder cells
  * simply fill in with real text rather than the table re-laying-out.
  */
-export function InstitutionsTable({ institutions, pending = false }: { institutions: InstitutionEntry[]; pending?: boolean }) {
+export function InstitutionsTable(
+  { institutions, pending = false, withheld }:
+  { institutions: InstitutionEntry[]; pending?: boolean; withheld?: WithheldNotice },
+) {
   if (!institutions || institutions.length === 0) return null;
   return (
     <>
       <SectionTitle n="02">Where to target</SectionTitle>
+      <WithheldLine withheld={withheld} />
       <table className="w-full border-collapse text-[14px]">
         <thead>
           <tr className="border-b border-[var(--foreground)] text-left align-bottom">
@@ -610,7 +649,7 @@ export function Memo({ report }: { report: IntelligenceReport }) {
             printed. */}
 
         {/* ── 2. Where to target ───────────────────────────────────────── */}
-        <InstitutionsTable institutions={report.institutions} />
+        <InstitutionsTable institutions={report.institutions} withheld={report.withheld} />
 
         {/* ── 3. Positioning: fitting the current political moment ─────── */}
         <SectionTitle n="03">Positioning</SectionTitle>

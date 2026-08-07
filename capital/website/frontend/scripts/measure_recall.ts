@@ -69,7 +69,7 @@ if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
-  requireLiveCorpus, resetGateHydration,
+  requireLiveCorpus, resetGateHydration, __forceSuppressedForParity,
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
@@ -117,6 +117,8 @@ async function main() {
   assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
   // COUNTRY= restricts the POPULATION to founders in one market, which is the
   // only way to get power on a change that can only bind one market at a time.
+  // The degradation policy is the sharpest case: it withholds rows unevenly by
+  // register, so an aggregate over 22 countries reports it as noise.
   // Selection filters and POOL_LEAVES_PER_CHANNEL are applied per (channel,
   // country), so a constant that cuts three Spanish candidates moves twelve of
   // the 250 sampled rows and disappears into the aggregate's +/-2.5. It is a
@@ -139,6 +141,26 @@ async function main() {
   const N = Math.min(Number(process.env.N ?? 250), set.length);
   const seed = Number(process.env.SEED ?? DEFAULT_SEED);
   const sample = sampleRecall(set, N, seed);
+
+  // ── What the degradation policy COSTS, measured on the live register ──────
+  // SUPPRESS_IDS_FILE names the rows a fallback request withholds, so the
+  // ranker is handicapped exactly as the degraded path handicaps it while
+  // every number still comes out of Postgres. Measuring on the snapshot itself
+  // would trip requireLiveCorpus, and rightly: a corpus where nothing is
+  // closed grades differently for reasons that have nothing to do with this.
+  //
+  // THE ORDER HERE IS THE WHOLE MEASUREMENT. The population above is built
+  // from the UNSUPPRESSED offerable set and is now fixed. Suppressing first
+  // would drop every pair whose answer is one of the withheld funds --
+  // excluded by `reattributeMissingAnswers` as un-offerable -- and the policy
+  // would score as an IMPROVEMENT by deleting the questions it gets wrong.
+  // Those pairs stay in, unanswerable, and the miss is the cost.
+  if (process.env.SUPPRESS_IDS_FILE) {
+    const ids = JSON.parse(readFileSync(process.env.SUPPRESS_IDS_FILE, "utf8")) as string[];
+    __forceSuppressedForParity(ids);
+    console.log(`degradation policy applied: ${ids.length} row(s) withheld from the ranker, ` +
+      `graded against the ${set.length}-row population the live register defines`);
+  }
 
   const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
