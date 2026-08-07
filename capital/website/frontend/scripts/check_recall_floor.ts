@@ -13,15 +13,15 @@
 // Floors sit just under the measured numbers, not at an aspiration. A gate set
 // where we wish we were fails on day one, gets ignored, and then protects
 // nothing. Raise them when the real number rises.
-import { readFileSync } from "fs";
-import path from "path";
+import { ENV_FILES, loadEnvLocal } from "./loadEnv";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+// Repo root AND frontend, from the one loader. This script's own copy read only
+// ./.env.local, so in a fresh worktree -- where the file is gitignored and
+// therefore absent, while the repo-root one is right there -- it took the
+// SKIPPED branch below and exited 0. The floors are the last line in
+// `npm run check`; a green build that never evaluated them is the failure this
+// whole file exists to prevent, happening to the file itself.
+loadEnvLocal();
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
@@ -160,6 +160,11 @@ async function main() {
   // and the deploy path.
   if (!process.env.DATABASE_URL || !process.env.VOYAGE_KEY) {
     console.log("check_recall_floor: SKIPPED — no DATABASE_URL/VOYAGE_KEY.");
+    // Name the files it looked in. The skip is legitimate in CI, which has
+    // neither; on a developer machine it almost always meant the credentials
+    // were sitting in the OTHER .env.local, and the message gave no way to
+    // tell those two cases apart.
+    console.log(`  looked in: ${ENV_FILES.join(", ")} (relative to ${process.cwd()})`);
     console.log("  Floors NOT verified. Run with credentials before shipping a");
     console.log("  ranking change; lexical fallback would grade the wrong system.");
     return;

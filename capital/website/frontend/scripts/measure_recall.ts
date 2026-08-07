@@ -56,17 +56,15 @@
 // rather than counted, because it would grade retrieval on a query copied out
 // of the answer. That defect covered 46% of the old set's holdout `project`
 // rows and is what `check_recall_leaks.ts` now keeps out of CI.
-import { readFileSync } from "fs";
-
-// Same loader as trace_pool.ts. Without it an unexported shell measures the
+// One loader, shared. Without credentials an unexported shell measures the
 // LEXICAL fallback while production ranks on embeddings -- the harness would be
-// grading a different system from the one that ships.
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+// grading a different system from the one that ships. This script's own copy
+// read only ./.env.local, which meant a worktree with credentials at the repo
+// root measured the wrong system and said nothing; `requireLiveCorpus` catches
+// the corpus half of that, not the ranking half.
+import { loadEnvLocal } from "./loadEnv";
+
+loadEnvLocal();
 if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
 import {
