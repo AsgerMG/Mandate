@@ -138,13 +138,34 @@ def main() -> None:
         return
 
     # ── SQLite ───────────────────────────────────────────────────────────────
-    applied = missing = 0
-    for o in overrides:
+    # Pertinence FIRST, hand overrides SECOND, so a curated decision wins over
+    # the classifier. The ordering is the precedence: a human who has read the
+    # gate and its source is a better authority than a model reading one
+    # sentence, and `_kept_as_filters` in the overrides file is exactly that --
+    # rules whose wording hedges a THRESHOLD while stating a real requirement.
+    demoted = 0
+    for instrument_id, gate_key, _reason, _spec, _req in targets:
         cur = conn.execute(
             """UPDATE eligibility_gates
-                 SET gate_role = ?, intake_field_resolved = 'none'
+                 SET gate_role = ?, intake_field_resolved = 'none',
+                     encoding_method = 'pertinence'
+               WHERE instrument_id = ? AND gate_key = ?""",
+            (DEMOTED_ROLE, instrument_id, gate_key))
+        demoted += cur.rowcount
+    applied = missing = 0
+    for o in overrides:
+        # A hand override to `filter` is a decision to KEEP the gate deciding,
+        # so it must not also blank intake_field_resolved -- that would leave
+        # the role saying "this decides" and the resolved field saying "nothing
+        # can evaluate it", which is a demotion wearing a filter's name.
+        cur = conn.execute(
+            """UPDATE eligibility_gates
+                 SET gate_role = ?,
+                     intake_field_resolved = CASE WHEN ? = 'filter'
+                                                  THEN intake_field_resolved
+                                                  ELSE 'none' END
                WHERE instrument_id = ? AND gate_key = ? AND gate_role IS NOT ?""",
-            (o["role"], o["instrument_id"], o["gate_key"], o["role"]))
+            (o["role"], o["role"], o["instrument_id"], o["gate_key"], o["role"]))
         if cur.rowcount:
             applied += 1
         else:
@@ -157,15 +178,6 @@ def main() -> None:
             if not exists:
                 missing += 1
                 print(f"  STALE OVERRIDE: {o['instrument_id']}/{o['gate_key']} no longer exists")
-    demoted = 0
-    for instrument_id, gate_key, _reason, _spec, _req in targets:
-        cur = conn.execute(
-            """UPDATE eligibility_gates
-                 SET gate_role = ?, intake_field_resolved = 'none',
-                     encoding_method = 'pertinence'
-               WHERE instrument_id = ? AND gate_key = ?""",
-            (DEMOTED_ROLE, instrument_id, gate_key))
-        demoted += cur.rowcount
     conn.commit()
     conn.close()
     print(f"sqlite: {applied} hand overrides applied, {missing} stale, "
@@ -181,15 +193,10 @@ def main() -> None:
     import psycopg2  # noqa: PLC0415  -- optional dep, only this path needs it
     pg = psycopg2.connect(url)
     with pg, pg.cursor() as cur:
-        n = 0
-        for o in overrides:
-            cur.execute(
-                """UPDATE eligibility_gates
-                     SET gate_role = %s, intake_field_resolved = 'none'
-                   WHERE instrument_id = %s AND gate_key = %s
-                     AND gate_role IS DISTINCT FROM %s""",
-                (o["role"], o["instrument_id"], o["gate_key"], o["role"]))
-            n += cur.rowcount
+        # Same order as SQLite: pertinence first, hand overrides second, so a
+        # curated decision wins. Two stores that applied the same corrections
+        # in different orders would disagree, which is the failure this script
+        # exists to prevent rather than commit.
         m = 0
         for instrument_id, gate_key, _reason, _spec, _req in targets:
             cur.execute(
@@ -200,19 +207,39 @@ def main() -> None:
                      AND gate_role IS DISTINCT FROM %s""",
                 (DEMOTED_ROLE, instrument_id, gate_key, DEMOTED_ROLE))
             m += cur.rowcount
+        n = 0
+        for o in overrides:
+            cur.execute(
+                """UPDATE eligibility_gates
+                     SET gate_role = %s,
+                         intake_field_resolved = CASE WHEN %s = 'filter'
+                                                      THEN intake_field_resolved
+                                                      ELSE 'none' END
+                   WHERE instrument_id = %s AND gate_key = %s
+                     AND gate_role IS DISTINCT FROM %s""",
+                (o["role"], o["role"], o["instrument_id"], o["gate_key"], o["role"]))
+            n += cur.rowcount
         print(f"postgres: {n} hand overrides applied, {m} demoted on pertinence")
 
         # Reconciled out of Postgres, so the run reports what the PRODUCT sees.
         # Both classes, in one query, because "I applied N updates" is a claim
         # about this process and "0 still decide" is a claim about the corpus.
-        if overrides:
+        # Asked per override against the role it ASKED FOR, not against the
+        # literal string 'filter': an override may legitimately keep a gate
+        # deciding, and a reconciliation that counted those as failures would
+        # have to be ignored, which is how a check stops being read.
+        wrong = []
+        for o in overrides:
             cur.execute(
-                """SELECT count(*) FROM eligibility_gates
-                    WHERE (instrument_id, gate_key) IN %s AND gate_role = 'filter'""",
-                (tuple((o["instrument_id"], o["gate_key"]) for o in overrides),))
-            left = cur.fetchone()[0]
-            print(f"postgres: {left} of {len(overrides)} hand overrides still `filter`"
-                  + ("" if not left else "  <- NOT DEMOTED"))
+                """SELECT gate_role FROM eligibility_gates
+                    WHERE instrument_id = %s AND gate_key = %s""",
+                (o["instrument_id"], o["gate_key"]))
+            row = cur.fetchone()
+            if row and row[0] != o["role"]:
+                wrong.append(f"{o['instrument_id']}/{o['gate_key']} "
+                             f"is {row[0]}, asked for {o['role']}")
+        print(f"postgres: {len(wrong)} of {len(overrides)} hand overrides did not take"
+              + ("" if not wrong else "  <- " + "; ".join(wrong)))
         cur.execute(
             """SELECT count(*) FROM eligibility_gates
                 WHERE (gate_role IS NULL OR gate_role = 'filter')

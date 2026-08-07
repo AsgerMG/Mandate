@@ -93,6 +93,11 @@
    "sample": "Startup must be active in climate/climate-tech thematic sector aligned to Climate-KIC mission",
    "verdict": "condition"
   },
+  "04d9f097855ef3ba": {
+   "reason": "Independence requirement between project parties.",
+   "sample": "Project-responsible party and collaborating partners must be independent of each other, meaning neither can exert controlling influence over the other.",
+   "verdict": "condition"
+  },
   "04da5f67870f6b97": {
    "reason": "SME eligibility requirement for applicants.",
    "sample": "Applicant must be an SME (Altum programmes target SMEs and small companies)",
@@ -128,6 +133,11 @@
    "sample": "Entities subject to measures under EU conditionality Regulation 2020/2092 (e.g. Hungarian public interest trusts) are not eligible in any funded role.",
    "verdict": "condition"
   },
+  "058d2f1dd315f4cf": {
+   "reason": "Exclusion criteria: unlawful aid recovery, undertaking in difficulty.",
+   "sample": "Support cannot be granted to companies that have not fulfilled repayment obligations following an ESA/EU Commission decision declaring aid unlawful and incompatible with the internal market, nor to undertakings in diffic",
+   "verdict": "condition"
+  },
   "059f44db59602358": {
    "reason": "Establishment-country eligibility requirement.",
    "sample": "Applicants must be established in an EU Member State, Associated Country, or other listed eligible country to be eligible for funding.",
@@ -156,6 +166,11 @@
   "069857470b3f5c30": {
    "reason": "States applicant must be SME/innovative company \u2014 checkable status.",
    "sample": "Applicant should be an SME or innovative company scaled for national grant support",
+   "verdict": "condition"
+  },
+  "06fc5de7e608ffe0": {
+   "reason": "SME definition requirement.",
+   "sample": "Applicant must be an SME (per national/EU SME definition)",
    "verdict": "condition"
   },
   "0710b33ca7921f22": {
@@ -211,6 +226,11 @@
   "094255bb27b015ea": {
    "reason": "States who may submit and required establishment.",
    "sample": "Applications for Training and mobility actions or Programme co-fund actions may be submitted by one or more legal entities provided one is established in a Member State or Associated Country.",
+   "verdict": "condition"
+  },
+  "096e6c8f0a713582": {
+   "reason": "Applicant must be a company, alone or in consortium.",
+   "sample": "Applicant must be a company (not an individual) able to receive a grant, single applicant or consortium partner",
    "verdict": "condition"
   },
   "09b2376129435745": {
@@ -363,6 +383,11 @@
    "sample": "Economic interest groupings (AIE) cannot be beneficiaries of these grants.",
    "verdict": "condition"
   },
+  "0e1d461b724fb5b2": {
+   "reason": "Requires Norwegian actor with formal role in EU application.",
+   "sample": "Applicant must be a Norwegian actor with a formal role in an EU application (Horizon Europe or EDF).",
+   "verdict": "condition"
+  },
   "0e56ba258efd8037": {
    "reason": "SME definition thresholds applicant must satisfy.",
    "sample": "Company must fall within the EU Commission's SME definition: fewer than 250 staff, turnover no more than EUR 50 million, or balance sheet total no more than EUR 43 million.",
@@ -478,6 +503,11 @@
    "sample": "Applicant must engage through the EIT Manufacturing KIC programme/network rather than applying to EIT directly",
    "verdict": "condition"
   },
+  "12bc3402cc2a3a21": {
+   "reason": "Defines eligible green/innovation project use.",
+   "sample": "Funds must be used for research, innovation or environmental/green R&D project as defined by Forskningsr\u00e5det programme",
+   "verdict": "condition"
+  },
   "12e6d05816e51cf4": {
    "reason": "Applicant must be startup internationalizing in Europe.",
    "sample": "Applicant must be a startup seeking to internationalize and scale its business in Europe.",
@@ -498,14 +528,34 @@
    "sample": "No consortium participant should account for less than 10% of the project funding, unless holding specific capability/IP, with reduced minimums (3%/10% total) for SMEs doing R&D.",
    "verdict": "condition"
   },
+  "1377a000f877b65e": {
+   "reason": "Defines eligible use of funds/project scope.",
+   "sample": "Funds must be used for R&D, energy research or demonstration projects aligned with programme scope",
+   "verdict": "condition"
+  },
+  "1397bfdeb751470f": {
+   "reason": "Consortium composition requirement: Norwegian SME must be included.",
+   "sample": "All Norwegian Eurostars applications must include a Norwegian SME.",
+   "verdict": "condition"
+  },
   "13998743b533c92a": {
    "reason": "Exclusion of specified Hungarian trusts; reader can check.",
    "sample": "Hungarian public interest trusts established under Hungarian Act IX of 2021, or entities they maintain, are not eligible to participate in any funded role while Council measures remain in force.",
    "verdict": "condition"
   },
+  "139b598f12f7515b": {
+   "reason": "Costs must fall in listed Annex categories; applicant can check spending plan.",
+   "sample": "Funded costs must fall within the categories (a)-(h) listed in the Annex on eligible costs to the IPCEI Communication, covering only R&D&I and FID phase activities.",
+   "verdict": "condition"
+  },
   "13c202554028b3ca": {
    "reason": "Eligibility requirement on application content matching topic.",
    "sample": "Applications will only be considered eligible if their content corresponds, wholly or in part, to the specific topic description for which they are submitted.",
+   "verdict": "condition"
+  },
+  "14345cfcaa60a244": {
+   "reason": "Project must target new product/process/service.",
+   "sample": "The project must have a clear goal of a new product, process or service.",
    "verdict": "condition"
   },
   "147a777fcab697fd": {
@@ -608,6 +658,11 @@
    "sample": "Denmark requires at least one Danish company partner and a minimum share of Danish partner effort to come from Danish business partners.",
    "verdict": "condition"
   },
+  "1736bcb65c6bad05": {
+   "reason": "Eligible-cost scope plus exclusion of mass production/commercial activity.",
+   "sample": "Funds may only cover eligible costs of R&D&I and First Industrial Deployment (FID) activities complying with the Annex to the IPCEI Communication; FID must not cover mass production or commercial activities.",
+   "verdict": "condition"
+  },
   "17511f8392b471d1": {
    "reason": "Country-of-establishment eligibility list.",
    "sample": "Participation is limited to legal entities established in EU Member States, Iceland, Norway, and specific additional associated countries (Canada, Israel, Republic of Korea, New Zealand, Switzerland, United Kingdom) for ",
@@ -618,6 +673,11 @@
    "sample": "Applicant must be a single trading company (not an individual or informal group)",
    "verdict": "condition"
   },
+  "17c4ed43790cdae5": {
+   "reason": "Financial-health threshold the reader can check about their company.",
+   "sample": "Company should not be in financial distress (going concern, losses not exceeding capital thresholds)",
+   "verdict": "condition"
+  },
   "17cc74c365622562": {
    "reason": "Exclusion-situation criteria applicants can self-assess.",
    "sample": "Applicants subject to EU administrative sanctions or in exclusion situations (e.g. bankruptcy, winding up, court-administered affairs) cannot participate.",
@@ -626,6 +686,16 @@
   "17d6d235f38dad86": {
    "reason": "CVR number required at course start.",
    "sample": "Applicant must have a company with a Danish company registration number (CVR number) at the start of the Innofounder course.",
+   "verdict": "condition"
+  },
+  "180824264d6c9d27": {
+   "reason": "Eligible activity requirement.",
+   "sample": "Funds must be used for R&D, innovation or demonstration project activities",
+   "verdict": "condition"
+  },
+  "183ce663e130b92f": {
+   "reason": "SME status requirement.",
+   "sample": "Applicant should be an SME (per applicable definition)",
    "verdict": "condition"
   },
   "183f62e24df422b6": {
@@ -651,6 +721,11 @@
   "18dc3ce600750562": {
    "reason": "SME status and Estonian nationality requirement.",
    "sample": "Applicant must be an SME (Estonian small/medium enterprise)",
+   "verdict": "condition"
+  },
+  "18f46f0167058a64": {
+   "reason": "Exclusion: projects with or able to obtain other financing fall outside target group.",
+   "sample": "Projects that already have other financing, or are considered positioned to obtain other financing, may be assessed as falling outside the target group for FORNY Verifisering, since the scheme is not meant to be an alter",
    "verdict": "condition"
   },
   "1926b6767e04ae2d": {
@@ -693,6 +768,11 @@
    "sample": "The company must have no tax debts.",
    "verdict": "condition"
   },
+  "1a1d30c9d7ee6ccc": {
+   "reason": "Independence requirement between applicant and partners.",
+   "sample": "Project-responsible party and collaboration partners must be independent of each other, i.e. neither can have controlling influence (e.g. majority ownership) over the other.",
+   "verdict": "condition"
+  },
   "1a1f7feaecc412f6": {
    "reason": "Defines eligible applicant types and project nature.",
    "sample": "Applicant must be a public or private entity (single applicant or consortium) with a concrete industrial demonstration project, not an early-stage research effort",
@@ -706,6 +786,11 @@
   "1b34f00881ba6ab4": {
    "reason": "SME/startup requirement excluding large corporates.",
    "sample": "Applicant must be an SME or startup, not a large corporate",
+   "verdict": "condition"
+  },
+  "1b5a537cd206b250": {
+   "reason": "Significant co-financing requirement on the company.",
+   "sample": "Company must provide significant co-financing of the project's eligible costs alongside public aid",
    "verdict": "condition"
   },
   "1b608884d2c15d82": {
@@ -753,6 +838,11 @@
    "sample": "Applicant's sales revenue in the financial year preceding the application must be at least \u20ac30,000 according to its annual report (or accounting statement if no annual report required).",
    "verdict": "condition"
   },
+  "1cbb55733b5c30ba": {
+   "reason": "Eligible activity requirement.",
+   "sample": "Funds must be used for R&D, innovation or research-related project activities",
+   "verdict": "condition"
+  },
   "1cbb68ebf7da31c6": {
    "reason": "Geographic location requirement checkable by applicant.",
    "sample": "The funded project itself must be physically located in an EU Member State, an EEA country (Norway, Iceland, Liechtenstein), or Northern Ireland (electricity-related only).",
@@ -783,6 +873,11 @@
    "sample": "Aid intensity for industrial research shall not exceed 50% of eligible costs, meaning the beneficiary must self-fund at least 50% of eligible costs (before bonuses).",
    "verdict": "condition"
   },
+  "1d827cfef929a195": {
+   "reason": "Project type requirement.",
+   "sample": "Funds must be used for R&D or biotechnology-related research project",
+   "verdict": "condition"
+  },
   "1e422fe49024bc86": {
    "reason": "Co-financing rate requirement on applicant.",
    "sample": "Applicant must provide self-financing (co-financing) of between 20% and 75% depending on activity and company size.",
@@ -801,6 +896,11 @@
   "1e86965790176072": {
    "reason": "Collaboration requirement for RTO leads.",
    "sample": "If the lead organisation is an RTO, it must collaborate with at least two businesses (one SME and one business of any size) with a credible route to market.",
+   "verdict": "condition"
+  },
+  "1ea2e05e6279f227": {
+   "reason": "Legal entity requirement, individuals excluded.",
+   "sample": "Applicant must be a company/legal entity able to receive a grant, not an individual",
    "verdict": "condition"
   },
   "1eb3ade105214602": {
@@ -846,6 +946,11 @@
   "1f9433a8de3a4995": {
    "reason": "Implies applicant must bring private co-investors; actionable despite describing the investor.",
    "sample": "Almi Invest, as a state-owned venture capital company, is required to co-invest alongside independent private co-investors and can never invest alone.",
+   "verdict": "condition"
+  },
+  "1fb6b9aab3a1cecf": {
+   "reason": "Applicant size criterion.",
+   "sample": "Applicant must be an SME or innovative company",
    "verdict": "condition"
   },
   "1fd081d2ae693868": {
@@ -978,6 +1083,11 @@
    "sample": "Guarantee is not issued for projects that are physically completed or fully implemented, except when extending the term of a previously issued Altum guarantee.",
    "verdict": "condition"
   },
+  "23b5aec2b8341329": {
+   "reason": "States criteria partners must meet to participate.",
+   "sample": "Norwegian companies acting as project partners must meet the same criteria as the lead applicant to participate and receive support.",
+   "verdict": "condition"
+  },
   "23ef1e179970c797": {
    "reason": "Size/type criterion: SME or innovative startup.",
    "sample": "Must be an SME or innovative/startup-scaled company",
@@ -1078,6 +1188,11 @@
    "sample": "Applicants must apply within one of the five defined thematic areas: Digital Tech, Digital Industry, Digital Cities, Digital Wellbeing, or Digital Finance.",
    "verdict": "condition"
   },
+  "28ba5e1466dd2b1a": {
+   "reason": "Establishment in Norway required.",
+   "sample": "Company must be registered/established in Norway",
+   "verdict": "condition"
+  },
   "28fc35e3a9ff1b3f": {
    "reason": "Restricts permitted use of funds; checkable against plans.",
    "sample": "Loan funds may not be used for acquisition of company shares or for refinancing of existing loans.",
@@ -1131,6 +1246,11 @@
   "29e1f6a0be45774a": {
    "reason": "Estonian registration requirement for applicant.",
    "sample": "Applicant must be a company registered/operating in Estonia",
+   "verdict": "condition"
+  },
+  "29ea06357f252aaa": {
+   "reason": "Specifies project scope: R&D&I to first industrial deployment, hydrogen chain, spillovers.",
+   "sample": "Funds must finance R&D&I through first industrial deployment within the hydrogen technology value chain, demonstrating market failure and cross-border spillovers",
    "verdict": "condition"
   },
   "2a1be8a066e68b4f": {
@@ -1198,6 +1318,21 @@
    "sample": "Applicant must be a legal entity (company, research organization, or university), not an individual",
    "verdict": "condition"
   },
+  "2c019f2d055c02b3": {
+   "reason": "Requires funds go to R&D or innovation project.",
+   "sample": "Funds must be used for an R&D or innovation project",
+   "verdict": "condition"
+  },
+  "2c2f041225f91e31": {
+   "reason": "Registration and SME status in Norway are checkable applicant criteria.",
+   "sample": "Applicant must be an SME/company registered in Norway",
+   "verdict": "condition"
+  },
+  "2c4433e4cb24774e": {
+   "reason": "Project type requirement.",
+   "sample": "Funds must be used for an R&D or biotech-related research project",
+   "verdict": "condition"
+  },
   "2c880926bf343768": {
    "reason": "EU SME definition and young innovative company requirement.",
    "sample": "Applicant must be an SME (per EU SME definition) and typically a young/newly established innovative company",
@@ -1233,6 +1368,11 @@
    "sample": "Applicant must be a startup or scaleup with an innovative, investable business model, not an individual or purely academic project",
    "verdict": "condition"
   },
+  "2de66fee219a9e84": {
+   "reason": "Eligible applicant type stated.",
+   "sample": "Applicant must be an operating company or research entity (not an individual)",
+   "verdict": "condition"
+  },
   "2df63d397d23fc6b": {
    "reason": "Prior EIC support or Seal of Excellence requirement.",
    "sample": "Applicant must currently be supported by, or have previously been supported by, the EIC Accelerator/SME Instrument, or hold an EIC Seal of Excellence.",
@@ -1248,6 +1388,11 @@
    "sample": "Applicant must be a legal entity operating within the EU innovation ecosystem, typically requiring EU presence or activity",
    "verdict": "condition"
   },
+  "2f4cb892af84439a": {
+   "reason": "Financial distress threshold test.",
+   "sample": "Company should not be in financial distress (loss of over half of capital)",
+   "verdict": "condition"
+  },
   "2f7b7506f09ecb11": {
    "reason": "Exclusion for firms in difficulty/over-indebted.",
    "sample": "Company must not be in financial difficulty / over-indebted (loss of more than half capital typically excluded)",
@@ -1256,6 +1401,11 @@
   "2f91636330802892": {
    "reason": "Capex thresholds per topic are checkable criteria.",
    "sample": "Projects are eligible under this call only if they meet the capital expenditure threshold specified for the relevant topic (e.g. Large-Scale Projects require capex above EUR 100 000 000); Medium-Scale Projects (MSP) have",
+   "verdict": "condition"
+  },
+  "2fb3d35a14b8acb9": {
+   "reason": "Equity threshold with documentation requirement.",
+   "sample": "All Norwegian companies must have at least NOK 500,000 in total equity capital at the time of application, documented by approved annual accounts or auditor/lawyer/accountant statement.",
    "verdict": "condition"
   },
   "2fe332b47900a11e": {
@@ -1358,6 +1508,21 @@
    "sample": "Hungarian public interest trusts established under Hungarian Act IX of 2021 (and entities they maintain) cannot receive EU funding in any funded role.",
    "verdict": "condition"
   },
+  "353b3eed35466c2a": {
+   "reason": "Project must be R&D or international research collaboration.",
+   "sample": "Funds must be used for R&D or international research collaboration project",
+   "verdict": "condition"
+  },
+  "35a1801e4cf78d3a": {
+   "reason": "Scale/ticket-size fit signals whether the reader's project qualifies.",
+   "sample": "Ticket size fits large-scale industrial/mid-cap+ projects, not early-stage tickets",
+   "verdict": "condition"
+  },
+  "35a71c27e615e76d": {
+   "reason": "SME/innovative company size requirement for programme.",
+   "sample": "Applicant should be an SME or innovative company scaled appropriately for the programme",
+   "verdict": "condition"
+  },
   "35b6df6310c19376": {
    "reason": "Legal-entity and non-solo applicant requirement.",
    "sample": "Applicant must be a legal entity (company, university, research org, or public body) acting as coordinator or partner, not a solo applicant",
@@ -1366,6 +1531,11 @@
   "35d40af78308483c": {
    "reason": "Specific NACE exclusion for non-renewable electricity production.",
    "sample": "Support cannot be requested for activities in electricity production from non-renewable energy sources (NACE 35111).",
+   "verdict": "condition"
+  },
+  "35d6a183600f0811": {
+   "reason": "Co-financing obligation stated as eligibility requirement.",
+   "sample": "Must provide significant co-financing of the project's eligible costs",
    "verdict": "condition"
   },
   "360571f1d5c0d35b": {
@@ -1386,6 +1556,11 @@
   "36b4e4c83bb07bb8": {
    "reason": "Explicit financial thresholds.",
    "sample": "The company must meet at least one of three financial thresholds: minimum \u20ac300,000 annual revenue in 2021, minimum \u20ac300,000 revenue in 2022 (through June 30), or \u20ac2,000,000 total funding received.",
+   "verdict": "condition"
+  },
+  "3708b7673b6583c5": {
+   "reason": "Identifies eligible applicant form: single company or research entity applying directly.",
+   "sample": "Applicant is a single company or research entity applying directly (not necessarily a fund/SPV)",
    "verdict": "condition"
   },
   "371c26a831e4eb03": {
@@ -1428,6 +1603,11 @@
    "sample": "Beneficiaries must have previously received public aid for the development of an R&D&I project.",
    "verdict": "condition"
   },
+  "39a838d3e951dbe0": {
+   "reason": "Defines eligible activities and excludes upgrades, mass production, commercial activity.",
+   "sample": "Eligible activities must be R&D&I of major innovative nature or First Industrial Deployment (FID) involving high research/innovation content or fundamentally innovative production processes; regular upgrades, mass produc",
+   "verdict": "condition"
+  },
   "39bed81ef80384ab": {
    "reason": "Requires integrated project of complementary necessary value-chain components.",
    "sample": "The measure must relate to an 'integrated project' consisting of complementary and necessary individual projects across the value chain aiming at the same objective.",
@@ -1446,6 +1626,11 @@
   "3a1ce313fa81e0e9": {
    "reason": "Applicant type requirement excluding solo founders.",
    "sample": "Applicant must be an institutional/consortium entity (not a solo founder or informal team) able to hold a grant agreement",
+   "verdict": "condition"
+  },
+  "3a29fd9240c6e250": {
+   "reason": "Member state nomination into approved health IPCEI value chain required.",
+   "sample": "Company must be nominated by a member state into an approved IPCEI value chain (health/Med4cure)",
    "verdict": "condition"
   },
   "3a2f96664be05425": {
@@ -1508,6 +1693,16 @@
    "sample": "Applications for projects that have already been completed will be rejected; applications for already-started projects assessed case-by-case with no reimbursement for pre-application costs.",
    "verdict": "condition"
   },
+  "3c2f8ef114bbba4d": {
+   "reason": "Nomination and value-chain participation requirements for the company.",
+   "sample": "Company must be nominated through a member state's IPCEI expression-of-interest process and participate in the approved value chain (health/Tech4cure)",
+   "verdict": "condition"
+  },
+  "3c39290a48620570": {
+   "reason": "Applicant must be legal entity, not individual.",
+   "sample": "Applicant must be a company (not an individual) applying as legal entity",
+   "verdict": "condition"
+  },
   "3c432a3a9085fddc": {
    "reason": "Restricts funds to manufacturing-sector innovation \u2014 sectoral eligibility check.",
    "sample": "Funds likely restricted to manufacturing-sector innovation, scale-up, or advanced manufacturing technology development",
@@ -1518,9 +1713,24 @@
    "sample": "The participating university must be a university or higher educational institution in Denmark or abroad officially approved to conduct a PhD programme, and must appoint a university supervisor.",
    "verdict": "condition"
   },
+  "3c516153480ae8b1": {
+   "reason": "States which enterprise sizes may participate, including startups.",
+   "sample": "Participants may be SMEs or large enterprises, but startup companies presenting projects, even if legally qualifying as large enterprises due to ownership, typically face the same resource constraints as SMEs.",
+   "verdict": "condition"
+  },
+  "3cec4e958542b3a7": {
+   "reason": "Requires collaboration across undertakings of different sizes \u2014 project requirement.",
+   "sample": "The project must involve important collaborative interactions including undertakings of different sizes across the consortium.",
+   "verdict": "condition"
+  },
   "3d01d7715348cca5": {
    "reason": "Co-financing/matching requirement the applicant can assess.",
    "sample": "Grant likely requires co-financing or matching funds from the applicant",
+   "verdict": "condition"
+  },
+  "3d1343dfc3e71431": {
+   "reason": "SME thresholds test.",
+   "sample": "Applicant must be an SME (staff/turnover thresholds)",
    "verdict": "condition"
   },
   "3d2f1cbdf02ab82c": {
@@ -1563,6 +1773,11 @@
    "sample": "Entity must be established in an EU member state or Horizon-associated country",
    "verdict": "condition"
   },
+  "3e99438d79c63d88": {
+   "reason": "Applicant must be a company, not individual \u2014 eligibility test.",
+   "sample": "Applicant must be a company (not an individual) undertaking the funded activity",
+   "verdict": "condition"
+  },
   "3e9e7721cf9e3ddc": {
    "reason": "Restricts applicant type to direct company, excluding funds/intermediaries.",
    "sample": "Direct applicant company (not fund or intermediary) applying for a repayable loan",
@@ -1581,6 +1796,11 @@
   "3f14dd0ab8cec86b": {
    "reason": "Eligible project activity requirement.",
    "sample": "Funds must be used for eligible innovation/development or bilateral cooperation project activities",
+   "verdict": "condition"
+  },
+  "3f64e3dc461e2749": {
+   "reason": "Defines fundable research categories and explicit exclusions.",
+   "sample": "Funding may only be applied for research activities characterised as basic research or industrial research; the call does not fund experimental development, operational activities, or commercialisation/marketing measures",
    "verdict": "condition"
   },
   "3f6d75a24e8e54a9": {
@@ -1723,6 +1943,11 @@
    "sample": "The consortium must comprise at least 3 independent partners seeking DTIF funding, including at least one established manufacturing company and one other enterprise, and must include an SME.",
    "verdict": "condition"
   },
+  "4397f856dfb911c8": {
+   "reason": "Project must be R&D/innovation with health focus; checkable use-of-funds condition.",
+   "sample": "Funds must be used for R&D/innovation project (health innovation focus)",
+   "verdict": "condition"
+  },
   "439e87689d329814": {
    "reason": "Exclusion of a defined class of entities readers can check.",
    "sample": "Hungarian public interest trusts under Act IX of 2021 (and entities they maintain) cannot receive EU funding as beneficiaries, affiliated entities or other funded roles.",
@@ -1751,6 +1976,11 @@
   "443ec2f9973971af": {
    "reason": "SME status per national definition is a checkable threshold.",
    "sample": "Applicant must be an SME (small/medium enterprise) per national definition",
+   "verdict": "condition"
+  },
+  "44dbc3db95e5b473": {
+   "reason": "Applicant form requirement.",
+   "sample": "Applicant should be a company (single applicant), not an individual or non-corporate entity",
    "verdict": "condition"
   },
   "44eb3f876d4b3370": {
@@ -1803,9 +2033,19 @@
    "sample": "Project must fit the semiconductor value chain / Chips JU strategic agenda (design, pilot lines, packaging, materials)",
    "verdict": "condition"
   },
+  "46a756b5bf6b46d8": {
+   "reason": "Innovation-beyond-state-of-the-art threshold applicants can assess.",
+   "sample": "Funded R&D&I projects must be of major innovative nature or constitute important added value in R&D&I relative to the state of the art.",
+   "verdict": "condition"
+  },
   "46d648132f17d92a": {
    "reason": "Lists excluded sectors and fossil-fuel projects a reader can check against their activity.",
    "sample": "Support cannot be given to undertakings whose main activity falls under specified excluded EMTAK sectors (agriculture, food/beverage production unless previously unsupported, tobacco, programming/consultancy, finance/ins",
+   "verdict": "condition"
+  },
+  "472730b673221a92": {
+   "reason": "States who may access funding: via partner TTOs, not individual researchers \u2014 an eligibility route.",
+   "sample": "Verification funding is accessed via the main partner TTOs (technology transfer offices) affiliated with research institutions, not directly by individual researchers.",
    "verdict": "condition"
   },
   "473901c4f1eced41": {
@@ -1866,6 +2106,16 @@
   "48b9a8eeb2dacf0b": {
    "reason": "States applicant must be an SME.",
    "sample": "Applicant must be an SME (small/medium enterprise)",
+   "verdict": "condition"
+  },
+  "48dd76986d97aa35": {
+   "reason": "Specifies permitted use, ambition and spillover tests for projects.",
+   "sample": "Funds must go to R&D&I through first industrial deployment within the strategic value chain project, demonstrating ambition beyond state of the art and cross-border spillovers",
+   "verdict": "condition"
+  },
+  "48ed3738d336ee52": {
+   "reason": "Single legal entity applicant requirement, consortium excluded.",
+   "sample": "Applicant must be a single company (not consortium) applying under its own legal entity",
    "verdict": "condition"
   },
   "496773de206f7b35": {
@@ -2073,6 +2323,11 @@
    "sample": "The applicant must be a startup currently engaged in an active fundraising round at pre-seed/seed or Series A stage.",
    "verdict": "condition"
   },
+  "514cc862f5a91253": {
+   "reason": "Applicant must be a company, not an individual.",
+   "sample": "Applicant is a company (not an individual) applying directly, no special entity needed",
+   "verdict": "condition"
+  },
   "515774029d9fc8ab": {
    "reason": "Requires incorporated operating company, excludes individuals.",
    "sample": "Applicant is an operating company/startup, not an individual or unincorporated project",
@@ -2143,6 +2398,11 @@
    "sample": "The applicant bid price (fixed premium in EUR per kg) must not exceed the ceiling price of EUR 4.00/kg of hydrogen produced; bids above this are rejected.",
    "verdict": "condition"
   },
+  "532b8f95c77ba0c3": {
+   "reason": "Describes award size of instrument, not a checkable applicant condition.",
+   "sample": "Ticket size consistent with grant-scale awards, not large growth financing",
+   "verdict": "report"
+  },
   "5379beb448df7e96": {
    "reason": "Project subject-matter requirement.",
    "sample": "Funds must support innovative low-carbon technologies contributing to greenhouse gas emission reduction (e.g. clean tech, energy-intensive industries, renewables, energy storage, CCUS)",
@@ -2173,6 +2433,11 @@
    "sample": "Applicant must be a legal entity established in an EU member state or Horizon-associated country",
    "verdict": "condition"
   },
+  "54245666020c8d3e": {
+   "reason": "Cap tied to applicant category; reader can check applicability.",
+   "sample": "Research organisations without a framework grant may receive a maximum of NOK 500,000 in support from the scheme per year.",
+   "verdict": "condition"
+  },
   "54419b2b70c45880": {
    "reason": "Legal entity establishment requirement stated as eligibility.",
    "sample": "Applicants (beneficiaries and affiliated entities) must be legal entities established in an eligible country, which for this call is any country in the world.",
@@ -2186,6 +2451,11 @@
   "54b5da869d208d57": {
    "reason": "Establishment requirement readers can check against their own country.",
    "sample": "Applicants must be established in an EU Member State, Associated Country, or another eligible country listed in the Annex, or eligibility must otherwise be provided for in the specific call/topic conditions.",
+   "verdict": "condition"
+  },
+  "54c0cb0b175f1959": {
+   "reason": "Project must fit funder mandate.",
+   "sample": "Funds must be used for an R&D, innovation, or research project consistent with Research Council of Norway mandate",
    "verdict": "condition"
   },
   "54d58f3c6736d7cd": {
@@ -2236,6 +2506,16 @@
   "56c904ae49f22810": {
    "reason": "Own-resources financing threshold.",
    "sample": "The company must finance a minimum of 10% of the project with its own resources.",
+   "verdict": "condition"
+  },
+  "578de9d296039275": {
+   "reason": "Geographic registration requirement.",
+   "sample": "Company must be registered/active in Norway",
+   "verdict": "condition"
+  },
+  "579cda6c1a70b17d": {
+   "reason": "Project must show market failure and cross-border spillovers \u2014 project test.",
+   "sample": "Project must demonstrate market failure and significant cross-border EU spillovers, not just national benefit",
    "verdict": "condition"
   },
   "57d20bba6bc0c295": {
@@ -2293,10 +2573,25 @@
    "sample": "Applicant must be active in climate innovation ecosystem within EU/EIT-affiliated countries (EU Member States plus associated Horizon Europe countries)",
    "verdict": "condition"
   },
+  "59fff4310f624457": {
+   "reason": "Requires capability of significant co-financing \u2014 checkable applicant requirement.",
+   "sample": "Project and company must be capable of significant co-financing of eligible costs",
+   "verdict": "condition"
+  },
+  "5a48e471ff816e20": {
+   "reason": "SME/startup requirement excluding large corporates.",
+   "sample": "Applicant must be an SME/startup, not a large corporate",
+   "verdict": "condition"
+  },
   "5a4f800b8a3616e1": {
    "reason": "Describes grant range of instrument, nothing applicant can meet.",
    "sample": "Ticket size within EIT KIC acceleration/grant range",
    "verdict": "report"
+  },
+  "5a566efdc0dcd964": {
+   "reason": "Applicant size criterion.",
+   "sample": "Applicant should be an SME or innovative company (per national promotional agency norms)",
+   "verdict": "condition"
   },
   "5aa6226e4bce0aff": {
    "reason": "Restricts use to electric vehicle acquisition/leasing.",
@@ -2333,9 +2628,24 @@
    "sample": "FID activities funded must concern the development of a new product/service with high research and innovation content and/or a fundamentally innovative production process, not mere regular upgrades of existing facilities",
    "verdict": "condition"
   },
+  "5c8b06c7b6334fc3": {
+   "reason": "SME requirement, large enterprises excluded.",
+   "sample": "Applicant must be an SME or innovative company (not large enterprise)",
+   "verdict": "condition"
+  },
+  "5c94e0da5437b60b": {
+   "reason": "SME leadership requirement with allowed partners.",
+   "sample": "The project must be led by an SME, although research institutes, universities, colleges and large companies may participate as partners.",
+   "verdict": "condition"
+  },
   "5ca6bc54acd36cfe": {
    "reason": "Exclusion of undertakings in difficulty is a checkable bar.",
    "sample": "Aid must not be granted to undertakings in difficulty as defined in the Rescue and Restructuring Guidelines.",
+   "verdict": "condition"
+  },
+  "5cb6e01a64b24703": {
+   "reason": "SME preference/exclusion of large firms.",
+   "sample": "Applicant should be an SME or innovative company (not large enterprise)",
    "verdict": "condition"
   },
   "5d1347f830661ec5": {
@@ -2351,6 +2661,11 @@
   "5d334502dbf579a6": {
    "reason": "Creditworthiness and non-distress requirement.",
    "sample": "Company must not be in financial difficulty / must be creditworthy for guarantee to apply",
+   "verdict": "condition"
+  },
+  "5d59d15bf4d84392": {
+   "reason": "States registration requirement in Norway \u2014 checkable by reader.",
+   "sample": "Applicant must be registered/active in Norway",
    "verdict": "condition"
   },
   "5d81ddca9691bc98": {
@@ -2416,6 +2731,21 @@
   "5f7df0e984f520c5": {
    "reason": "Financial-difficulty exclusion criterion.",
    "sample": "Company should not be in financial difficulty (e.g. losses exceeding half of capital)",
+   "verdict": "condition"
+  },
+  "5ff4e181e1693d2e": {
+   "reason": "States required project scope: aquaculture R&D/innovation \u2014 checkable by reader.",
+   "sample": "Funds must be used for R&D or innovation project within aquaculture/Havbruk-related research scope",
+   "verdict": "condition"
+  },
+  "6036a290769663b8": {
+   "reason": "Location requirement for applicant or project.",
+   "sample": "Applicant must be registered/operating in Norway (or the specific project carried out in Norway)",
+   "verdict": "condition"
+  },
+  "6078c79cbff6c46d": {
+   "reason": "Location/registration requirement.",
+   "sample": "Company must be registered/operating in Norway (or conducting the funded activity there)",
    "verdict": "condition"
   },
   "608472435e59e922": {
@@ -2508,6 +2838,11 @@
    "sample": "Applicants (beneficiaries and affiliated entities) must be legal entities established in one of the eligible countries (EU Member States including OCTs, listed EEA countries, or countries associated to the Digital Europe",
    "verdict": "condition"
   },
+  "6404aa20408805a7": {
+   "reason": "Cross-border consortium requirement.",
+   "sample": "Eurostars projects typically require an international consortium partner (cross-border collaboration)",
+   "verdict": "condition"
+  },
   "64056b451fa1285e": {
    "reason": "Scope restriction on eligible activities/topics the reader can check against their project.",
    "sample": "Funds restricted to R&D/deployment activities scoped to the partnership's specific call topics (global health / EDCTP agenda)",
@@ -2583,6 +2918,11 @@
    "sample": "Grants to food industry businesses under Arctic 2030 are restricted to enterprises in Troms and Finnmark that receive raw materials from primary production in agriculture and reindeer husbandry.",
    "verdict": "condition"
   },
+  "66234ba80e888b07": {
+   "reason": "Use-of-funds/project-type requirement.",
+   "sample": "Funds must be used for an R&D, innovation, or Eurostars-eligible collaborative project",
+   "verdict": "condition"
+  },
   "66edcaa1bf204c35": {
    "reason": "TRL entry threshold and exclusion of pure research.",
    "sample": "Technology must be at TRL 5-6 at entry with a credible path to market, not pure research",
@@ -2596,6 +2936,11 @@
   "66fee7c276630600": {
    "reason": "Restricts eligibility to listed RIS countries/regions.",
    "sample": "Eligible RIS countries and regions for 2025 participation are published on a linked list; only those are eligible.",
+   "verdict": "condition"
+  },
+  "670484470bf37cc3": {
+   "reason": "Specifies permitted use of funds; reader can check project type.",
+   "sample": "Funds must be used for R&D or climate/research-related project activities",
    "verdict": "condition"
   },
   "67094985ea5b2fc5": {
@@ -2618,6 +2963,11 @@
    "sample": "Fund strategy should target investment opportunities in Irish-registered companies subject to Irish taxation with central decision-making locus in Ireland.",
    "verdict": "condition"
   },
+  "6791c665727d2fbf": {
+   "reason": "SME/innovative company applicant requirement.",
+   "sample": "Applicant must be an SME/innovative company (typical for national innovation agency grants)",
+   "verdict": "condition"
+  },
   "67964041cfda82ef": {
    "reason": "Project location requirement.",
    "sample": "The physical project must be located in an EU Member State or an EEA country (Norway, Iceland or Liechtenstein).",
@@ -2636,6 +2986,11 @@
   "6817ca3c5058700c": {
    "reason": "SME status and coordinator requirements for dedicated calls.",
    "sample": "For SME-dedicated calls, all consortium members must be SMEs (as defined in Commission Recommendation 2003/361/EC) or research organisations, and the coordinator must be an SME.",
+   "verdict": "condition"
+  },
+  "6829b92d3fa38cab": {
+   "reason": "Gives EUR 50m turnover threshold defining SME status for exemption.",
+   "sample": "For SME claw-back exemption purposes, SME status is assessed against the EUR 50 million annual turnover threshold under the GBER SME definition.",
    "verdict": "condition"
   },
   "68311dc70890b593": {
@@ -2658,6 +3013,11 @@
    "sample": "Applicant must be active in Life Sciences (drugs, biologics, gene therapies, synthetic biology, drug discovery platforms) or HealthTech (digital health or Medtech).",
    "verdict": "condition"
   },
+  "68bd888300e34425": {
+   "reason": "Use-of-funds requirement.",
+   "sample": "Funds must support R&D, innovation, or scale-up project activity",
+   "verdict": "condition"
+  },
   "68d06a971e691be7": {
    "reason": "Explicit sector exclusion list.",
    "sample": "Companies operating in listed excluded sectors (trading, business consulting, regulated professions, financial/insurance/real estate activities, caf\u00e9s/hotels/restaurants, training bodies, road freight transport, logistic",
@@ -2666,6 +3026,11 @@
   "68e5f4611909df6c": {
    "reason": "Aid amount thresholds applicants can check.",
    "sample": "The public support sought/granted must be between \u20ac75,000 and \u20ac500,000.",
+   "verdict": "condition"
+  },
+  "68e64b20b7f054b1": {
+   "reason": "SME definition eligibility test.",
+   "sample": "The applicant company must fall under the EU definition of a small or medium-sized enterprise (SME).",
    "verdict": "condition"
   },
   "68f77faa470c8c6b": {
@@ -2693,9 +3058,24 @@
    "sample": "Applicant must engage through the EIT Digital programme/network (community membership, partner engagement) rather than apply directly to EIT generically",
    "verdict": "condition"
   },
+  "6a5e2aaf0d388822": {
+   "reason": "Defines eligible applicant category: SME or research organisation.",
+   "sample": "Applicant must be an SME or research-performing organisation",
+   "verdict": "condition"
+  },
+  "6a7e8597be03fdae": {
+   "reason": "Defines required project form (single/integrated project) for aid proposal.",
+   "sample": "Aid proposal must concern a single, clearly defined project or an integrated group of complementary single projects aiming at the same objective (IPCEI).",
+   "verdict": "condition"
+  },
   "6a9e42d190f3c3f1": {
    "reason": "All members must be SMEs per definition.",
    "sample": "For SME-dedicated development action calls, all consortium members must be SMEs as defined in Commission Recommendation 2003/361/EC.",
+   "verdict": "condition"
+  },
+  "6aaf951d858a9016": {
+   "reason": "SME requirement excluding large enterprises.",
+   "sample": "Applicant must be an SME (innovative company), not a large enterprise",
    "verdict": "condition"
   },
   "6ad676e552cc1b43": {
@@ -2728,6 +3108,11 @@
    "sample": "Companies should be registered in Ireland through the Companies Registration Office.",
    "verdict": "condition"
   },
+  "6bbf6e2fd9540b02": {
+   "reason": "Geographic requirement the reader can check.",
+   "sample": "Project activity must be carried out in Norway",
+   "verdict": "condition"
+  },
   "6bc011222fb1fc9a": {
    "reason": "Sector requirement in clean tech/energy transition.",
    "sample": "Applicant must operate in a clean tech / clean energy transition related field.",
@@ -2753,6 +3138,11 @@
    "sample": "Must be a for-profit SME or small mid-cap established in an EU member state or Horizon-associated country",
    "verdict": "condition"
   },
+  "6c79ff45d032e469": {
+   "reason": "Applicant must be operating company.",
+   "sample": "Applicant must be an operating company (not an individual or bare project consortium)",
+   "verdict": "condition"
+  },
   "6c8dc37f527ec88d": {
    "reason": "Legal-entity status requirement for applicants.",
    "sample": "Applicants must be a legal entity (natural or legal person recognised under national, EU, or international law) or an entity without legal personality meeting specific capacity conditions.",
@@ -2766,6 +3156,11 @@
   "6da482ccc5143256": {
    "reason": "Requires operating company, excluding individuals and holding entities.",
    "sample": "Applicant must be an operating company (not an individual or pure holding entity)",
+   "verdict": "condition"
+  },
+  "6da8786a5778b7ee": {
+   "reason": "Registration and Norwegian economic activity requirement, directly verifiable.",
+   "sample": "Applicant must be a company registered in the Norwegian Central Coordinating Register for Legal Entities (Foretaksregisteret) with economic activity in Norway.",
    "verdict": "condition"
   },
   "6e0b43b247180d47": {
@@ -2823,6 +3218,11 @@
    "sample": "Applicant must be a legal entity (company, research org, or consortium partner), not an individual",
    "verdict": "condition"
   },
+  "703fd9201883cb37": {
+   "reason": "Co-financing/match funding requirement is something applicant can plan for.",
+   "sample": "Grant likely requires co-financing or match funding from applicant or partners",
+   "verdict": "condition"
+  },
   "70ab952e99e78005": {
    "reason": "Describes what the instrument is; no checkable applicant criterion beyond acceptance.",
    "sample": "Instrument is direct equity investment; founder must accept a cap-table investor",
@@ -2858,6 +3258,11 @@
    "sample": "Individual founders or executive team members must jointly hold more than 40% of the company's equity before the current fundraising round.",
    "verdict": "condition"
   },
+  "721d2f5c9e5c3f94": {
+   "reason": "Restricts applicants to approved research organisations; joint application rule.",
+   "sample": "Only approved Norwegian research organisations may apply for the framework grant (rammebevilgning); multi-unit organisations must submit one joint application.",
+   "verdict": "condition"
+  },
   "722f2400c48a1945": {
    "reason": "Eligible project type requirement.",
    "sample": "Funds must support an eligible innovation, R&D, scale-up or regional development project",
@@ -2883,6 +3288,11 @@
    "sample": "Company should not be in financial distress / loss of capital situation",
    "verdict": "condition"
   },
+  "72d58d5051868283": {
+   "reason": "Participation in approved value chain via nomination is an entry requirement.",
+   "sample": "Must participate in an approved IPCEI value chain (e.g. microelectronics) nominated via a member state's process",
+   "verdict": "condition"
+  },
   "730de6cd05506b5b": {
    "reason": "Defines eligible uses of funds.",
    "sample": "Funds must be used to develop innovative technologies, processes, products or services, test new materials, or gather knowledge on technological feasibility.",
@@ -2898,9 +3308,19 @@
    "sample": "Debt service coverage ratio (DSCR) must be at least 1.2 (1.4 for real estate developer projects).",
    "verdict": "condition"
   },
+  "73c7ab3215cafa45": {
+   "reason": "Exclusion of undertakings in difficulty \u2014 clear bar to clear.",
+   "sample": "Direct participants must not be undertakings in difficulty as defined under the Rescue and Restructuring Guidelines.",
+   "verdict": "condition"
+  },
   "73d366b7ce6deb5a": {
    "reason": "Pre-establishment applicants allowed with business plan.",
    "sample": "Applicant may apply before company establishment, provided there is a clear business plan.",
+   "verdict": "condition"
+  },
+  "73e0cda1cab3fe0f": {
+   "reason": "Registration requirement with exclusions.",
+   "sample": "Applicant must be a registered company (not an individual or pre-incorporation entity)",
    "verdict": "condition"
   },
   "73e3cc5182c8e2fb": {
@@ -2948,6 +3368,11 @@
    "sample": "For IA and RIA actions covered by the restriction, legal entities established in China are excluded from participation in any capacity.",
    "verdict": "condition"
   },
+  "754949abbb5f896c": {
+   "reason": "Quantified 10% co-participation threshold.",
+   "sample": "User partners must jointly contribute costs equal to at least 10.0% of the amount applied for from the Research Council (the co-participation requirement).",
+   "verdict": "condition"
+  },
   "75a43b393cb27f2a": {
    "reason": "Sector fit requirement for the startup.",
    "sample": "Startup's sector must fit Climate-KIC thematic focus (climate/urban mobility/decarbonisation)",
@@ -2956,6 +3381,11 @@
   "7672913f0b982d9f": {
    "reason": "Applicant must declare stage stream at application.",
    "sample": "Applicant must indicate whether applying under Seed stage or Series A/+ stage as these are evaluated separately.",
+   "verdict": "condition"
+  },
+  "7694028597ee8347": {
+   "reason": "Applicant stage/size criterion.",
+   "sample": "Applicant must be an SME or early-stage innovative company",
    "verdict": "condition"
   },
   "76ea3e12082f8afe": {
@@ -3163,6 +3593,11 @@
    "sample": "For certain space-related topics, participation is restricted more narrowly to legal entities established in Member States, Norway and Iceland only, with entities from other countries deemed ineligible.",
    "verdict": "condition"
   },
+  "7e813a9900ab08da": {
+   "reason": "Applicant form requirement.",
+   "sample": "Applicant must be a single corporate entity (not an individual or informal group)",
+   "verdict": "condition"
+  },
   "7f38cd5ae9418eed": {
    "reason": "Sector and geographic eligibility for applicant or consortium.",
    "sample": "Applicant or consortium must involve entities operating in health innovation sector within EU/Horizon-associated countries",
@@ -3201,6 +3636,16 @@
   "7fd3370c7dbd2df7": {
    "reason": "Insolvency exclusion the reader can check.",
    "sample": "The company must not be subject to compulsory dissolution, bankruptcy, voluntary liquidation, or suspension of payments.",
+   "verdict": "condition"
+  },
+  "7fd49e65ecfcf2a9": {
+   "reason": "Requires specific climate-research project scope under KLIMAFORSK.",
+   "sample": "Funds must go to a specific R&D or climate-research project (KLIMAFORSK is a climate-research programme)",
+   "verdict": "condition"
+  },
+  "808f2377d0973db3": {
+   "reason": "Registration/location requirement in Norway.",
+   "sample": "Entity or activity must be registered/based in Norway",
    "verdict": "condition"
   },
   "80a4ee1732ff130d": {
@@ -3243,9 +3688,19 @@
    "sample": "To be eligible as beneficiaries in Coordination and Support Actions, legal entities must be established in a Member State or Associated Country, unless specific call/topic conditions provide otherwise.",
    "verdict": "condition"
   },
+  "81f7a3d9593beda0": {
+   "reason": "Project purpose requirement: R&D, innovation or scale-up.",
+   "sample": "Funds must go toward an R&D, innovation, or scale-up project",
+   "verdict": "condition"
+  },
   "823e0fab88ee6a81": {
    "reason": "Consortium and topic requirements.",
    "sample": "Must apply as part of a consortium of 3+ independent legal entities from 3+ different member/associated states, responding to a prescriptive call topic",
+   "verdict": "condition"
+  },
+  "82c0d88020022c79": {
+   "reason": "Exclusion with exceptions defining who may apply.",
+   "sample": "Research organisations holding a 2025-27 framework grant (rammebevilgning) cannot submit individual applications to this call, except for EDF applications or extra support for applications including African or Ukrainian ",
    "verdict": "condition"
   },
   "831a3ff6deadc1e4": {
@@ -3258,9 +3713,24 @@
    "sample": "Applicants must have the know-how, qualifications and resources (operational capacity) including sufficient experience in projects of comparable size and nature.",
    "verdict": "condition"
   },
+  "837b60b27427423a": {
+   "reason": "Requires specific R&D/innovation project such as feasibility study.",
+   "sample": "Funds must be used for a specific R&D/innovation project (e.g. feasibility or pilot study)",
+   "verdict": "condition"
+  },
   "838b75a8215ca0fb": {
    "reason": "Turnover/balance-sheet SME thresholds are checkable.",
    "sample": "Applicant must be an SME by turnover/balance sheet thresholds",
+   "verdict": "condition"
+  },
+  "83e03dcdf67994cb": {
+   "reason": "SME/innovative company applicant requirement.",
+   "sample": "Applicant should be an SME or innovative company (per national R&D funding norms)",
+   "verdict": "condition"
+  },
+  "83ebd52eab8935ec": {
+   "reason": "Limits applicants to approved Norwegian research organisations.",
+   "sample": "Only approved Norwegian research organisations may apply for the three-year framework grant (rammebevilgning).",
    "verdict": "condition"
   },
   "8410ea2f31887836": {
@@ -3286,6 +3756,11 @@
   "84792fbe590f39ab": {
    "reason": "Location/headquarters requirement.",
    "sample": "The startup must be headquartered in Germany, or if from another country, have a German base of operations.",
+   "verdict": "condition"
+  },
+  "84f29054cf51b054": {
+   "reason": "Partnership/contract-research requirement checkable by applicant.",
+   "sample": "The lead applicant must carry out the project together with at least one Norwegian company partner or procure contract research from at least one R&D provider.",
    "verdict": "condition"
   },
   "8507f1594b7a800a": {
@@ -3338,6 +3813,11 @@
    "sample": "Applicant must be a venture fund manager applying for EI to invest into their fund, with strategy demonstrating alignment with strategic objectives.",
    "verdict": "condition"
   },
+  "86b7cee51ad90fc3": {
+   "reason": "Use-of-funds requirement for R&D/innovation activity.",
+   "sample": "Funds must be used for R&D, innovation, or related project activity",
+   "verdict": "condition"
+  },
   "86c676ca6c576e8f": {
    "reason": "Operating-company requirement excluding individuals and SPVs.",
    "sample": "Applicant must be an operating company (not an individual or SPV)",
@@ -3356,6 +3836,11 @@
   "87eb35d1e7a7d996": {
    "reason": "Co-financing requirement applicants can plan for.",
    "sample": "Co-financing of total project cost expected, with EU grant covering only a slice of costs (industry/consortium co-funding)",
+   "verdict": "condition"
+  },
+  "87ee90dbedc10b9b": {
+   "reason": "Single operating company applicant requirement.",
+   "sample": "Applicant must be an operating company (single applicant), not an individual or unincorporated entity",
    "verdict": "condition"
   },
   "87f2f3d0ef02c3cc": {
@@ -3383,6 +3868,16 @@
    "sample": "The 'large businesses' category eligible under this instrument is capped at up to 3,000 employees.",
    "verdict": "condition"
   },
+  "88107064c4490a52": {
+   "reason": "Eligible project scope requirement.",
+   "sample": "Funds must be used for R&D, energy/technology demonstration or innovation project aligned with programme scope",
+   "verdict": "condition"
+  },
+  "88465ba1293ed33b": {
+   "reason": "Entity-level structure explicitly framed as mattering for eligibility.",
+   "sample": "Funding lands on a specific legal entity within a consortium; group/entity structure matters for eligibility",
+   "verdict": "condition"
+  },
   "8856b38de2bd3b71": {
    "reason": "UK registration requirement.",
    "sample": "Company must be registered/operating in the UK",
@@ -3391,6 +3886,11 @@
   "88a6961913cad7f2": {
    "reason": "SME thresholds a reader can apply to their own company.",
    "sample": "SMEs are defined per Annex I of Regulation 651/2014: fewer than 250 employees and either annual turnover not exceeding EUR 50 million or annual balance sheet total not exceeding EUR 43 million.",
+   "verdict": "condition"
+  },
+  "88ec152ef3ad2da3": {
+   "reason": "Same cost-share thresholds, checkable.",
+   "sample": "At least 50 percent of total project costs must be covered by the partners in the project; subcontractors cannot exceed 49 percent of total project costs.",
    "verdict": "condition"
   },
   "891d387795eecf55": {
@@ -3421,6 +3921,11 @@
   "89c1219d602850d7": {
    "reason": "SME/startup-scale requirement is an applicant condition.",
    "sample": "Applicant must be an SME (startup-scale)",
+   "verdict": "condition"
+  },
+  "89df99728c1911a7": {
+   "reason": "Specifies eligible applicant entity types and excludes sole proprietorships.",
+   "sample": "The lead applicant must be a private company or a public enterprise carrying out activity of an industrial or commercial nature; sole proprietorships cannot be lead applicants.",
    "verdict": "condition"
   },
   "89f719e5832001f3": {
@@ -3553,9 +4058,24 @@
    "sample": "Applicant should be an early-stage startup/scale-up (typically small ticket, small award size implies small company)",
    "verdict": "condition"
   },
+  "8f2f716f7f620617": {
+   "reason": "Excludes TTOs and NUFs as qualifying partners.",
+   "sample": "Technology transfer offices (TTOs) and Norwegian-registered foreign enterprises (NUF) do not count as a required collaboration partner.",
+   "verdict": "condition"
+  },
+  "8fb94dd49f164a8b": {
+   "reason": "Member state sponsorship and national grant agreement stated as precondition.",
+   "sample": "Requires a member state government to sponsor and co-fund the project; national grant agreement is a precondition",
+   "verdict": "condition"
+  },
   "8fc2cf4f8a50888f": {
    "reason": "Specifies eligible project purpose for use of funds.",
    "sample": "Funds must be used for a specific innovation/development project (e.g. R&D, product development voucher)",
+   "verdict": "condition"
+  },
+  "8fd73c23c06e265c": {
+   "reason": "Financing requirement partners can check.",
+   "sample": "All partners must be able to finance their own part of the project.",
    "verdict": "condition"
   },
   "9014153b07220467": {
@@ -3608,6 +4128,11 @@
    "sample": "Applicant must be a company (not an individual or pre-incorporation entity)",
    "verdict": "condition"
   },
+  "914a14dbcabebe05": {
+   "reason": "Cost eligibility test tied to R&D&I component \u2014 checkable.",
+   "sample": "FID costs are only eligible where industrial deployment follows on from an R&D&I activity and itself contains a very important R&D&I component that is an integral and necessary element for successful implementation.",
+   "verdict": "condition"
+  },
   "9156583c932f64cd": {
    "reason": "Scope exclusion of preclinical studies, with permitted exception.",
    "sample": "Preclinical studies are generally out of scope for these topics, though preparatory activities enabling in-scope clinical studies are permitted.",
@@ -3628,9 +4153,19 @@
    "sample": "The company must have been incorporated after 1 January 2015.",
    "verdict": "condition"
   },
+  "9207440e6fd5032d": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant should be a company (not an individual) applying directly for a research grant",
+   "verdict": "condition"
+  },
   "924c9b7b2a0b2853": {
    "reason": "Exclusion of firms in financial distress.",
    "sample": "Company must not be in financial distress (e.g. losses eroding capital) to qualify for public aid",
+   "verdict": "condition"
+  },
+  "9292b688bc9c0b15": {
+   "reason": "Exclusion of undertakings in difficulty.",
+   "sample": "Applicant companies cannot be an 'undertaking in difficulty'.",
    "verdict": "condition"
   },
   "92fc35c357b4ca49": {
@@ -3642,6 +4177,11 @@
    "reason": "Merely describes funding recipient entity mechanics; no qualifying criterion stated.",
    "sample": "Funding lands on a specific legal entity in the consortium; group structure and subsidiary status matter",
    "verdict": "report"
+  },
+  "93c837daa439b355": {
+   "reason": "Requires students to apply in cooperation with a higher education institution.",
+   "sample": "STUD-ENT funding requires students to apply in cooperation with a higher education institution.",
+   "verdict": "condition"
   },
   "93fdaf11b1245896": {
    "reason": "Criminal conviction exclusion applicable to applicant.",
@@ -3656,6 +4196,11 @@
   "944e5339424c13c6": {
    "reason": "Group size threshold exclusion.",
    "sample": "The company must not belong to a group exceeding the size thresholds (headcount, turnover, balance sheet).",
+   "verdict": "condition"
+  },
+  "9452ef95a1ac37dc": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant must be a company (or research-performing entity), not an individual",
    "verdict": "condition"
   },
   "9498b7464f89942c": {
@@ -3753,6 +4298,11 @@
    "sample": "Investments must be carried out in France and must not have started before acknowledgment of receipt of the complete application file.",
    "verdict": "condition"
   },
+  "97925e0986146f76": {
+   "reason": "Entity-level recipient rule affects whether applicant's structure qualifies.",
+   "sample": "Funding lands on a specific legal entity (often a subsidiary), not a listed parent; group structure and entity records matter",
+   "verdict": "condition"
+  },
   "979c6ebf6cb37432": {
    "reason": "Applicant type and stage/TRL criteria.",
    "sample": "For-profit company or research consortium commercialising deep-tech, not pure research (though Pathfinder itself is earlier-stage, TRL 1-4, than Accelerator)",
@@ -3761,6 +4311,11 @@
   "979c9ed18cbe4fb0": {
    "reason": "Minimum 10% own co-financing requirement.",
    "sample": "The applicant must provide co-financing for the project, with minimum own participation in an investment project of at least 10%.",
+   "verdict": "condition"
+  },
+  "97b7959f138509ab": {
+   "reason": "Project purpose requirement.",
+   "sample": "Funds must be used for an R&D, innovation or research-linked project",
    "verdict": "condition"
   },
   "980e8a3aa8947b1c": {
@@ -3803,6 +4358,16 @@
    "sample": "The partner must be a research and development institution, undertaking or organisation positively evaluated in Estonia, EU or EEA, or one that has participated as a partner in at least one Horizon Europe-funded project.",
    "verdict": "condition"
   },
+  "99bdada2f540657b": {
+   "reason": "Registration and economic activity requirement for partners.",
+   "sample": "Companies acting as collaboration partners must be registered in the Norwegian business register and have economic activity in Norway.",
+   "verdict": "condition"
+  },
+  "99fa2408c03c5c38": {
+   "reason": "Project goal and commercialisation requirement.",
+   "sample": "The project must have a clear goal of a new product, process or service, with market introduction/commercialisation to occur quickly after project completion.",
+   "verdict": "condition"
+  },
   "99fa66c1436e672a": {
    "reason": "Exclusion criterion readers can check against their own supplier status.",
    "sample": "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own/control) are not eligible for actions related to European communication network security.",
@@ -3817,6 +4382,11 @@
    "reason": "Restricts support to thematic innovation/R&D/scale-up activities; checkable scope.",
    "sample": "Funds/support typically restricted to innovation, R&D, or scale-up activities aligned with the specific KIC's thematic focus (e.g. climate, health, digital, energy)",
    "verdict": "condition"
+  },
+  "9a84eb7da19dfbd3": {
+   "reason": "States compatibility framing of aid granted to participating undertakings; describes instrument, no bar to clear.",
+   "sample": "Aid is granted by the notified Member States to participating undertakings located/operating in those Member States under Article 107(3)(b) TFEU as an IPCEI.",
+   "verdict": "report"
   },
   "9aba5b28d71e1383": {
    "reason": "Applicant type requirement.",
@@ -3841,6 +4411,11 @@
   "9b1088d668e8c5d6": {
    "reason": "SME/innovative Spanish company criteria.",
    "sample": "Applicant should be an SME or innovative Spanish company (size/ownership criteria may apply)",
+   "verdict": "condition"
+  },
+  "9b130bc48541eb96": {
+   "reason": "Registration and economic activity requirement.",
+   "sample": "The lead applicant organisation must be registered in the Norwegian business register and have economic activity in Norway.",
    "verdict": "condition"
   },
   "9b719e6418bf7937": {
@@ -3878,9 +4453,19 @@
    "sample": "Company must not be in financial difficulty (e.g. losses exceeding half of share capital)",
    "verdict": "condition"
   },
+  "9c8c4cacf5abf0b3": {
+   "reason": "Project must span R&D&I to first deployment beyond state of the art.",
+   "sample": "Funding must finance R&D&I through first industrial deployment within the declared hydrogen value chain, showing ambition beyond state of the art",
+   "verdict": "condition"
+  },
   "9cac17aee972d532": {
    "reason": "Applicant type and establishment requirements.",
    "sample": "Applicant must be an SME or small mid-cap (or research entity/consortium for Pathfinder) established in an EU member state or Horizon-associated country",
+   "verdict": "condition"
+  },
+  "9d0f96070288f2c1": {
+   "reason": "Beneficiary co-financing requirement with calculation basis.",
+   "sample": "The project must involve important co-financing by the beneficiaries, calculated as the portion of financing need not covered by State aid.",
    "verdict": "condition"
   },
   "9d5ca711e7ede938": {
@@ -3906,6 +4491,11 @@
   "9e03cd04abfff7e4": {
    "reason": "Project must align to strategic research agenda\u2014actionable scope condition.",
    "sample": "Funds must be used for R&D/deployment activities aligned to the EuroHPC partnership's strategic research agenda (HPC/supercomputing topics)",
+   "verdict": "condition"
+  },
+  "9e0ce760a2ae2108": {
+   "reason": "Applicant must be operating company/research entity, excluding holdings and individuals.",
+   "sample": "Applicant must be an operating company/research entity, not a pure holding or individual",
    "verdict": "condition"
   },
   "9e0eb78a138f1882": {
@@ -3958,6 +4548,11 @@
    "sample": "Funds/guarantee tied to working capital or liquidity needs stemming from COVID-19 disruption",
    "verdict": "condition"
   },
+  "a071a28fea0f5a05": {
+   "reason": "States required use of funds: R&D/innovation project activity \u2014 checkable eligibility condition.",
+   "sample": "Funds must support R&D or innovation project activity",
+   "verdict": "condition"
+  },
   "a08be2a09df72874": {
    "reason": "Minimum budget threshold.",
    "sample": "Minimum project budget is EUR 175,000.",
@@ -3983,9 +4578,19 @@
    "sample": "Ticket size fits grant-scale awards typical of this programme (tens of thousands of EUR)",
    "verdict": "condition"
   },
+  "a0d93aa35df78e9c": {
+   "reason": "Grant size range acts as a checkable threshold.",
+   "sample": "Ticket size should fall within the programme's typical grant range for this instrument",
+   "verdict": "condition"
+  },
   "a0ef6068b52d95c5": {
    "reason": "Geographic establishment requirement.",
    "sample": "Companies must be based across the EU and Horizon Europe associated countries to receive support.",
+   "verdict": "condition"
+  },
+  "a0f7ef316a4194ac": {
+   "reason": "Explicit exclusion: undertakings in difficulty ineligible.",
+   "sample": "Beneficiaries must not be undertakings in difficulty as defined in the rescue and restructuring guidelines.",
    "verdict": "condition"
   },
   "a10473e6324869e0": {
@@ -4021,6 +4626,11 @@
   "a19df40663e41a97": {
    "reason": "Consortium composition and 10% budget threshold checkable by applicant.",
    "sample": "At least one knowledge-generating centre (research organisation) must participate in the project, contributing a minimum of 10% of the approved budget.",
+   "verdict": "condition"
+  },
+  "a1a5ce2cdfc35879": {
+   "reason": "Co-financing/matching contribution requirement.",
+   "sample": "Grant funding typically requires co-financing or matching contribution from applicant/other sources",
    "verdict": "condition"
   },
   "a1c6846f29f2c2f1": {
@@ -4078,6 +4688,11 @@
    "sample": "Only projects with capital expenditure above EUR 100 million are eligible under the LSP (Large-Scale Projects) topic.",
    "verdict": "condition"
   },
+  "a3cf4404a48ae5d2": {
+   "reason": "Project theme requirement with example.",
+   "sample": "Funds must be used for R&D, innovation, demonstration or green-transition project (e.g. CLIMIT focuses on carbon capture/climate technology projects)",
+   "verdict": "condition"
+  },
   "a3fb3d9ead290b52": {
    "reason": "Describes what the instrument is; only implicit entity-form requirement, no applicant condition.",
    "sample": "Instrument takes equity or convertible stake, requiring an entity capable of issuing shares",
@@ -4088,9 +4703,19 @@
    "sample": "Applicants must be legal entities established in EuroHPC JU Member States or Participating States (Norway, Iceland) for the microprocessor technology call; entities established outside this scope are ineligible.",
    "verdict": "condition"
   },
+  "a44d91eaf8031398": {
+   "reason": "Direct participants excluded if undertakings in difficulty.",
+   "sample": "Direct participants must not be undertakings in difficulty as defined in the Rescue and Restructuring Guidelines.",
+   "verdict": "condition"
+  },
   "a45549a7c6eadefa": {
    "reason": "Explicit exclusions from consortium participation.",
    "sample": "EU bodies (other than the Joint Research Centre) cannot be part of the consortium; entities subject to EU restrictive measures or EU conditionality measures are not eligible in any capacity.",
+   "verdict": "condition"
+  },
+  "a45756dcbef3273f": {
+   "reason": "Co-financing, government nomination and first-of-a-kind obligations are requirements to meet.",
+   "sample": "Requires significant co-financing by the company and sponsorship/nomination by a national government, plus acceptance of first-of-a-kind and spillover obligations",
    "verdict": "condition"
   },
   "a48c0fde65e78ab2": {
@@ -4153,6 +4778,11 @@
    "sample": "The applicant company's headquarters must be based in the EU 27 or in a Horizon Europe associated country.",
    "verdict": "condition"
   },
+  "a6200e3da8961be6": {
+   "reason": "Ticket size/target participant profile lets a founder check whether their scale fits.",
+   "sample": "Ticket size is very large, targeting mid-cap+/industrial-scale participants, not early-stage startups",
+   "verdict": "condition"
+  },
   "a63340fbba5d98f8": {
    "reason": "Descriptive note on where funding lands and group structure; states no requirement.",
    "sample": "Funding lands on a specific legal entity in the consortium (subsidiary), not a listed parent; group structure matters",
@@ -4191,6 +4821,16 @@
   "a6ce6ca668d8fafa": {
    "reason": "States applicant must be single SME entity for mono-beneficiary CSA topic.",
    "sample": "For a specific quantum navigation CSA topic, proposals must be submitted by a single legal entity that qualifies as an SME (mono-beneficiary CSA).",
+   "verdict": "condition"
+  },
+  "a6d5399d7c698e4e": {
+   "reason": "Undertaking-in-difficulty exclusion.",
+   "sample": "Support cannot be given to undertakings in difficulty in the meaning of EEA law.",
+   "verdict": "condition"
+  },
+  "a6fc882166012e47": {
+   "reason": "Project must be R&D/innovation or maritime-related.",
+   "sample": "Funds must be used for R&D, innovation or maritime/ocean-related development project",
    "verdict": "condition"
   },
   "a6fcec0935e320e7": {
@@ -4238,6 +4878,11 @@
    "sample": "Company, its owners and beneficial owners must not be listed in the Bank of Latvia or other debtor registers.",
    "verdict": "condition"
   },
+  "a8ce3a064697fa72": {
+   "reason": "Investor coverage threshold applicants must demonstrate.",
+   "sample": "EIC STEP Scale Up applicants must demonstrate a pre-qualified investor covering at least 20% of the total financing round, approved by EIC.",
+   "verdict": "condition"
+  },
   "a8de96ce392bb978": {
    "reason": "SME thresholds on staff, turnover, balance sheet.",
    "sample": "Applicant should be an SME (per national/EU SME thresholds on staff, turnover, balance sheet)",
@@ -4268,9 +4913,19 @@
    "sample": "Company must be willing to work with active owners and collaborative development.",
    "verdict": "condition"
   },
+  "a9c1756839cc6de6": {
+   "reason": "Exclusion of undertakings in difficulty is a checkable bar.",
+   "sample": "Participating undertakings must not be undertakings in difficulty as defined in the Rescue and Restructuring Guidelines.",
+   "verdict": "condition"
+  },
   "a9e967292546a603": {
    "reason": "SME size threshold requirement.",
    "sample": "Applicant should be an SME (per size thresholds)",
+   "verdict": "condition"
+  },
+  "aa06564090a27485": {
+   "reason": "Project must be marine/fisheries research \u2014 checkable.",
+   "sample": "Funds must be used for R&D or research-related project (marine/fisheries research focus implied by programme name)",
    "verdict": "condition"
   },
   "aa574ba69ee05bc5": {
@@ -4282,6 +4937,11 @@
    "reason": "Financial distress exclusion checkable by applicant.",
    "sample": "Company should not be in financial distress (losses eroding capital)",
    "verdict": "condition"
+  },
+  "aa6a1b744ea03441": {
+   "reason": "Describes award size, not eligibility criteria a reader could clear.",
+   "sample": "Award ticket is small (grant), consistent with modest per-project funding",
+   "verdict": "report"
   },
   "aa7b4bed1bde98fe": {
    "reason": "Owner guarantee threshold of 10%.",
@@ -4333,9 +4993,19 @@
    "sample": "Undertakings subject to an outstanding recovery order following a Commission decision declaring aid illegal and incompatible are excluded.",
    "verdict": "condition"
   },
+  "ab6e165d2c1e2dde": {
+   "reason": "Use-of-funds restricted to R&D/innovation activity.",
+   "sample": "Funds must be used for R&D or innovation-related project activity",
+   "verdict": "condition"
+  },
   "ab755466e02e28e3": {
    "reason": "Project must align with programme scope; checkable.",
    "sample": "Funds must support an innovation/digitalisation or sector-specific project (e.g. real-time economy) aligned with programme scope",
+   "verdict": "condition"
+  },
+  "abb61e79e50eca8d": {
+   "reason": "Applicant must be a company, excluding individuals and research institutions.",
+   "sample": "Applicant must be a company (not an individual or pure research institution) applying for a grant",
    "verdict": "condition"
   },
   "ac5cc39c4d85adf5": {
@@ -4363,6 +5033,11 @@
    "sample": "The company must contribute at least 15% of the project budget from its own resources.",
    "verdict": "condition"
   },
+  "ac9464791d9bce99": {
+   "reason": "Tells applicant which legal entity in a group must hold the aid; checkable.",
+   "sample": "Aid is granted to a specific legal entity within the consortium (subsidiary), not a listed parent; group structure matters",
+   "verdict": "condition"
+  },
   "ac97dbb3a416492d": {
    "reason": "Undertaking-in-difficulty exclusion with dated exception; checkable.",
    "sample": "The company must not be an 'undertaking in difficulty' as defined in the GBER, with an exception for companies that fell into difficulty only between 1 January 2020 and 31 December 2021.",
@@ -4383,6 +5058,11 @@
    "sample": "Instrument is direct equity investment into the company, so applicant must accept dilution and be structured as an investable company (not sole trader/grant-only entity)",
    "verdict": "condition"
   },
+  "acea3caeac3bbe28": {
+   "reason": "Excludes undertakings in difficulty \u2014 checkable bar.",
+   "sample": "Enterprises classified as 'undertaking in difficulty' cannot expect to receive support for writing Eurostars applications.",
+   "verdict": "condition"
+  },
   "ad04ed137a233def": {
    "reason": "Eligible cost limitation with explicit use exclusions.",
    "sample": "Eligible costs are limited to R&D&I and FID activities as defined in the Annex to the IPCEI Communication, and funds may not be used for mass production or commercial activities.",
@@ -4396,6 +5076,11 @@
   "ae51fea48be1c1a9": {
    "reason": "Ownership-based exclusion criterion.",
    "sample": "Legal entities established outside Russia but more than 50% owned by a Russia-established person/entity are not eligible to participate in any capacity.",
+   "verdict": "condition"
+  },
+  "ae7ce2160671226c": {
+   "reason": "Project must align with programme scope \u2014 checkable.",
+   "sample": "Funds must support an innovation/R&D project aligned with programme scope",
    "verdict": "condition"
   },
   "aea54f2ab9768979": {
@@ -4413,6 +5098,11 @@
    "sample": "The project itself (installation) must be physically located in an EU Member State or EEA country (Norway, Iceland or Liechtenstein).",
    "verdict": "condition"
   },
+  "aecc26ca9654da24": {
+   "reason": "Co-financing requirement applicants can assess, despite hedged wording.",
+   "sample": "Grant likely requires co-financing or matching funds from applicant",
+   "verdict": "condition"
+  },
   "aed80d94ff0255d6": {
    "reason": "Establishment-country eligibility.",
    "sample": "Entities must typically be established in an EU Member State or Horizon Europe associated country to be eligible for funding",
@@ -4423,9 +5113,19 @@
    "sample": "An applicant must have already raised equity from professional investors, have a sustainable business model and business plan, and have solid corporate governance in place.",
    "verdict": "condition"
   },
+  "af2d92525eec7f5e": {
+   "reason": "Applicant must be a company, individuals excluded.",
+   "sample": "Applicant must be a company (single applicant), not an individual",
+   "verdict": "condition"
+  },
   "af2eb150e6c18754": {
    "reason": "Financial distress exclusion threshold.",
    "sample": "Company must not be in financial distress (losses exceeding half of capital)",
+   "verdict": "condition"
+  },
+  "af7aa81f363b7771": {
+   "reason": "Requires specific R&D/marine research project.",
+   "sample": "Funds must be used for a specific R&D/marine research project (Marinforskhav-linked programme)",
    "verdict": "condition"
   },
   "af8daecbb2746f7a": {
@@ -4498,6 +5198,21 @@
    "sample": "The company must be a registered client of one of the listed state development agencies (Enterprise Ireland, IDA Ireland, LEO, \u00dadar\u00e1s na Gaeltachta).",
    "verdict": "condition"
   },
+  "b12c8929be8f38bf": {
+   "reason": "Legal entity in sponsoring member state plus national nomination required.",
+   "sample": "Company must operate a legal entity in a member state sponsoring the IPCEI wave and be nominated through that state's national process",
+   "verdict": "condition"
+  },
+  "b14bdcc13caa7937": {
+   "reason": "Specifies eligible use of funds for R&D/research project.",
+   "sample": "Funds must be used for R&D, innovation, or research-related project activity",
+   "verdict": "condition"
+  },
+  "b17fe18f98253658": {
+   "reason": "SME or innovative company requirement.",
+   "sample": "Applicant should be an SME or innovative company",
+   "verdict": "condition"
+  },
   "b191b28152a3a679": {
    "reason": "Programme-specific application route requirement.",
    "sample": "Applicant must engage through EIT Digital's specific acceleration/investment programme rather than EIT generically",
@@ -4507,6 +5222,11 @@
    "reason": "Location requirement for collaborating partner.",
    "sample": "The collaborating research institute must also be based in the Republic of Ireland.",
    "verdict": "condition"
+  },
+  "b1cc744bfeb66748": {
+   "reason": "Describes the instrument's ticket size, not a requirement the reader could meet.",
+   "sample": "Grant ticket size aligned with small national grant lines rather than large growth financing",
+   "verdict": "report"
   },
   "b1cce3d8ec1c773f": {
    "reason": "TRL range expected of proposals.",
@@ -4526,6 +5246,11 @@
   "b23a5edfafa7db0a": {
    "reason": "Use-of-funds restriction to food innovation activities.",
    "sample": "Funds must be used for food innovation, agrifood startups, or related R&D/commercialization activities",
+   "verdict": "condition"
+  },
+  "b2454baa159a1757": {
+   "reason": "Co-financing requirement applicants can assess.",
+   "sample": "Grant funding typically requires co-financing or matching contribution from applicant",
    "verdict": "condition"
   },
   "b31e64928fda1563": {
@@ -4563,6 +5288,11 @@
    "sample": "If a parent company has controlling influence (owning more than 50%), that parent company must not be more than 5 years old at the time the grant is awarded.",
    "verdict": "condition"
   },
+  "b4885eb3168d0ce6": {
+   "reason": "Use limited to R&D&I/FID; mass production and commercial activity excluded.",
+   "sample": "Funds may only be used for R&D&I and First Industrial Deployment (FID) activities up to the point of stabilised mass production; mass production or commercial activities are excluded from eligible costs.",
+   "verdict": "condition"
+  },
   "b4a06f80f08c50ae": {
    "reason": "SME status requirement.",
    "sample": "Applicant must qualify as SME",
@@ -4583,9 +5313,19 @@
    "sample": "Entities subject to EU restrictive measures under Article 29 TEU/Article 215 TFEU are not eligible to participate in any capacity.",
    "verdict": "condition"
   },
+  "b5403f78882a77bc": {
+   "reason": "Exclusion for non-compliance with recovery order.",
+   "sample": "Support cannot be given to companies that have not complied with a repayment requirement following a prior ESA/EU Commission decision declaring aid unlawful and incompatible with the internal market.",
+   "verdict": "condition"
+  },
   "b540e39dbfba4c9c": {
    "reason": "Average award size lets reader gauge fit of funding need.",
    "sample": "Award ticket size is small, consistent with grant scale (avg ~\u20ac12k per award)",
+   "verdict": "condition"
+  },
+  "b5451ad6a1ef0fdd": {
+   "reason": "Defines eligible capex and excludes operational costs for infrastructure projects.",
+   "sample": "For infrastructure projects (TF1), eligible costs cover only capital expenditures for construction until full operation, excluding operational costs such as supplies, maintenance or refurbishment.",
    "verdict": "condition"
   },
   "b5559b46d05b1e71": {
@@ -4601,6 +5341,11 @@
   "b65f6cff227528ab": {
    "reason": "Excludes firms in financial difficulty \u2014 checkable bar.",
    "sample": "Company must not be in financial difficulty / insolvency-risk (typical for state loan schemes)",
+   "verdict": "condition"
+  },
+  "b66c73e67dd3cb43": {
+   "reason": "Partnering requirement for consortium composition.",
+   "sample": "All Norwegian Eurostars applications must include a Norwegian SME; Norwegian universities, institutes and large companies must partner with a Norwegian SME to participate.",
    "verdict": "condition"
   },
   "b67fde3c26fd2d2b": {
@@ -4621,6 +5366,11 @@
   "b6e251d50d8fc3ca": {
    "reason": "Consortium composition requirement for Czech partners.",
    "sample": "Czech Republic requires the Czech fraction of the consortium to include at least one enterprise and at least one research organisation (Public-Private-Partnership principle).",
+   "verdict": "condition"
+  },
+  "b73e98167178ce91": {
+   "reason": "Applicant must be an incorporated company in a consortium project.",
+   "sample": "Applicant must be a company (specific legal entity) participating in a consortium/integrated project, not an individual or unincorporated project",
    "verdict": "condition"
   },
   "b759ab3d0d69b2d9": {
@@ -4678,14 +5428,34 @@
    "sample": "Company should not be in financial distress / loss position affecting solvency",
    "verdict": "condition"
   },
+  "b8f9ca408865a13e": {
+   "reason": "Selection, sponsorship and co-funding requirements a founder can pursue.",
+   "sample": "Must be selected/nominated through national expression-of-interest process and receive member-state government sponsorship and co-funding",
+   "verdict": "condition"
+  },
+  "b923396e1efcaed3": {
+   "reason": "Specifies eligible use of funds for maritime R&D.",
+   "sample": "Funds must be used for R&D, innovation or maritime-research related project activities",
+   "verdict": "condition"
+  },
   "b927acf14bea54ca": {
    "reason": "Categorical exclusion of a class of entities, checkable by reader.",
    "sample": "Hungarian public interest trusts established under Hungarian Act IX of 2021 (or entities they maintain) are not eligible to participate in any funded role.",
    "verdict": "condition"
   },
+  "b97ea50c8967e93c": {
+   "reason": "Sets which foreign organisations may participate and be funded.",
+   "sample": "Foreign organisations equivalent to Norwegian research organisations may participate and receive funding; other foreign organisations may participate but cannot receive funding.",
+   "verdict": "condition"
+  },
   "b9a0aceabca2bfc7": {
    "reason": "SME plus registration requirement.",
    "sample": "Applicant must be an SME registered in the country",
+   "verdict": "condition"
+  },
+  "b9d2eeb89f24d92f": {
+   "reason": "Financial-distress exclusion is a bar the applicant can check.",
+   "sample": "Company should not be in financial distress (loss-of-capital / insolvency exclusion typical of grant schemes)",
    "verdict": "condition"
   },
   "ba10b8039198cb32": {
@@ -4716,6 +5486,16 @@
   "bb84b03218a6a833": {
    "reason": "Exclusion grounds a reader can check against their own situation.",
    "sample": "Applicants subject to an EU exclusion decision or in situations such as bankruptcy, tax/social security breaches, grave professional misconduct, fraud, corruption or similar cannot participate.",
+   "verdict": "condition"
+  },
+  "bbb0bc753e933d18": {
+   "reason": "States FID qualifying criteria plus explicit exclusion of routine upgrades.",
+   "sample": "Funded First Industrial Deployment (FID) projects must enable a new product/service with high research and innovation content and/or deployment of a fundamentally innovative production process; regular upgrades or newer ",
+   "verdict": "condition"
+  },
+  "bbc594ea39b4e77b": {
+   "reason": "Use-of-funds condition: research or innovation project.",
+   "sample": "Funds must be used for a research or innovation project (R&D activity)",
    "verdict": "condition"
   },
   "bc3a3fdc96bdc69e": {
@@ -4783,6 +5563,21 @@
    "sample": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position ",
    "verdict": "condition"
   },
+  "be096ea80dd48835": {
+   "reason": "Project purpose requirement.",
+   "sample": "Funds must be used for an R&D, innovation, or research-related project",
+   "verdict": "condition"
+  },
+  "be966799e64d98bb": {
+   "reason": "Project must match IKTPLUSS ICT/innovation scope \u2014 checkable.",
+   "sample": "Funds must be used for an R&D, ICT/innovation project matching IKTPLUSS programme scope",
+   "verdict": "condition"
+  },
+  "beceea4dd20e2009": {
+   "reason": "Undertaking-in-difficulty exclusion, checkable by applicant.",
+   "sample": "Support cannot be granted to undertakings in difficulty within the meaning of EEA law.",
+   "verdict": "condition"
+  },
   "bee5640a8fbe4f43": {
    "reason": "Ownership-threshold exclusion checkable by applicant.",
    "sample": "Legal entities established outside Russia that are more than 50% owned by a Russia-established person/entity are not eligible to participate in any capacity.",
@@ -4791,6 +5586,11 @@
   "bf132ad02ed88bee": {
    "reason": "Geographic location requirement for applicant.",
    "sample": "The applicant SME/mid-cap must be located in \u00cele-de-France (registered office or secondary establishment carrying out its R&D there).",
+   "verdict": "condition"
+  },
+  "bfa7728d7f9954bb": {
+   "reason": "Registration/location requirement.",
+   "sample": "Applicant must be a company registered/operating in Norway",
    "verdict": "condition"
   },
   "bfd5ccdcf5f06085": {
@@ -4803,9 +5603,19 @@
    "sample": "Funds must be used for a specific eligible development/export or innovation activity",
    "verdict": "condition"
   },
+  "c05c29ad8c2cd57f": {
+   "reason": "Excludes contract research projects.",
+   "sample": "The project must not be contract research (oppdragsforskning).",
+   "verdict": "condition"
+  },
   "c0e5a5e6188fe722": {
    "reason": "Standard exclusion grounds a reader can verify about themselves.",
    "sample": "Applicants subject to an EU exclusion decision or in defined exclusion situations (bankruptcy, tax/social security breaches, grave professional misconduct, fraud/corruption, etc.) cannot participate.",
+   "verdict": "condition"
+  },
+  "c17cfb9e1d8a96db": {
+   "reason": "Independence requirement between applicant and partners is checkable.",
+   "sample": "The lead applicant and partners must be independent of each other, meaning none can have controlling influence over another.",
    "verdict": "condition"
   },
   "c1828ee8d7cae51d": {
@@ -4818,6 +5628,11 @@
    "sample": "For actions related to EU strategic assets, interests, autonomy or security, participation may be limited to legal entities established only in EU Member States or specific associated/non-associated third countries, and ",
    "verdict": "condition"
   },
+  "c1dd30fc78bcf0b4": {
+   "reason": "Requires at least two Norwegian user partners with own costs.",
+   "sample": "At least two Norwegian collaboration partners (user partners) that are not research organisations are required, each with own costs in the project.",
+   "verdict": "condition"
+  },
   "c1e264a5a8d39a71": {
    "reason": "Sector exclusion for NACE Section K activities.",
    "sample": "Support is not granted to financial and insurance activities (NACE Rev.2 Section K).",
@@ -4826,6 +5641,11 @@
   "c213b9d8a799ced2": {
    "reason": "Geographic location requirement for the project.",
    "sample": "Project must be physically located/implemented in an EU member state (or EEA-EFTA per call)",
+   "verdict": "condition"
+  },
+  "c21ec3a5ed008070": {
+   "reason": "Requires Norwegian SME qualified for Accelerator step 2.",
+   "sample": "For EIC Accelerator PES support, applicants must be Norwegian small and medium-sized enterprises qualified for step 2 of the Accelerator.",
    "verdict": "condition"
   },
   "c2293547fc2160ff": {
@@ -4842,6 +5662,11 @@
    "reason": "Describes budget, duration and award mechanics; states no applicant requirement.",
    "sample": "The scheme has an estimated overall budget of EUR 150 million and will run until 31 December 2027, with aid awarded in annual tranches by the managing authority.",
    "verdict": "report"
+  },
+  "c2bb73020103dda0": {
+   "reason": "SME definition eligibility test.",
+   "sample": "The applicant company must qualify as a small or medium-sized enterprise (SME) under the EU SME definition.",
+   "verdict": "condition"
   },
   "c2d1d20cb0248bb3": {
    "reason": "30% self-financing requirement is checkable by applicant.",
@@ -4863,6 +5688,21 @@
    "sample": "Company should not be in financial distress (e.g. losses exceeding half of share capital)",
    "verdict": "condition"
   },
+  "c4a101cf4c7defb9": {
+   "reason": "Identifies which consortium entity must be the applicant; reader can verify structure.",
+   "sample": "Aid lands on a specific legal entity (often a subsidiary) within the consortium, not a listed parent",
+   "verdict": "condition"
+  },
+  "c4dfef027d6d0077": {
+   "reason": "Requires specific thematic R&D project.",
+   "sample": "Funds must be used for a specific R&D or environmental/thematic research project",
+   "verdict": "condition"
+  },
+  "c4ec0a1312a8688f": {
+   "reason": "Financial-distress exclusion threshold reader can check.",
+   "sample": "Company should not be in financial distress (loss of over half capital) as typical for public grant eligibility",
+   "verdict": "condition"
+  },
   "c524bfae74f1ee91": {
    "reason": "Use-of-funds restriction to R&D.",
    "sample": "Funds must be used for product/technology development (R&D) project",
@@ -4876,6 +5716,11 @@
   "c5586aa5174474b7": {
    "reason": "Consortium composition thresholds a reader can verify.",
    "sample": "Consortia must include at least one independent legal entity established in a Member State and at least two other independent legal entities each established in different Member States or Associated Countries, unless oth",
+   "verdict": "condition"
+  },
+  "c5febafde29e69e3": {
+   "reason": "Requires Norwegian SME per EU definition.",
+   "sample": "For EIC STEP Scale Up PES support, applicants must be Norwegian small and medium-sized enterprises as defined by the EU SME definition.",
    "verdict": "condition"
   },
   "c6290a16cabe5cf7": {
@@ -4903,6 +5748,11 @@
    "sample": "Founders must have completed a public higher education programme, PhD programme, or private higher education programme entitling participants to state education grant (SU), by the start of the Innofounder course, typical",
    "verdict": "condition"
   },
+  "c693385aa98475a3": {
+   "reason": "Applicant type condition, though hedged.",
+   "sample": "Applicant likely a company (possibly with research partners) rather than pure individual",
+   "verdict": "condition"
+  },
   "c6cd8535cca60e65": {
    "reason": "Use-of-funds and location requirement checkable by applicant.",
    "sample": "Funds must be used for startup/early-stage business development activities in Latvia",
@@ -4916,6 +5766,11 @@
   "c6df6c06ef0f11ef": {
    "reason": "Early-stage start-up status is a checkable requirement.",
    "sample": "Applicant must be an early-stage start-up.",
+   "verdict": "condition"
+  },
+  "c6e045861d849c3e": {
+   "reason": "Explicit exclusion of sole proprietorships.",
+   "sample": "Sole proprietorships (enkeltpersonforetak) are not eligible to apply.",
    "verdict": "condition"
   },
   "c6f09057c4d03be8": {
@@ -5013,6 +5868,11 @@
    "sample": "The project's eligible expenditure base must exceed \u20ac150,000.",
    "verdict": "condition"
   },
+  "c9c3c214e835cba4": {
+   "reason": "Registration/location requirement.",
+   "sample": "Company/project must be registered or operating in Norway",
+   "verdict": "condition"
+  },
   "c9ca4b4274bb328b": {
    "reason": "Formal consortium requirement.",
    "sample": "Applicant must be a formal consortium (multiple legal entities) rather than a solo company",
@@ -5028,6 +5888,11 @@
    "sample": "Applicant must be a public-limited or limited liability company or an owner-operated business, constituting the legal entity responsible for the project.",
    "verdict": "condition"
   },
+  "ca0bbb7b49dfd7b4": {
+   "reason": "SME must lead; others may partner.",
+   "sample": "The project must be led by an SME, though research institutes, universities, colleges and large companies may be partners.",
+   "verdict": "condition"
+  },
   "ca3904f7fb8dc619": {
    "reason": "Establishment and ownership-control requirement for applicants.",
    "sample": "Applicant entities must be established in the EU or associated countries, with EU-controlled ownership for participation",
@@ -5036,6 +5901,11 @@
   "ca73bf2d72119d38": {
    "reason": "Numeric SME thresholds applicant can measure against.",
    "sample": "SME status is defined per Annex 1 of Commission Regulation (EU) No 651/2014: fewer than 250 employees and either annual turnover not exceeding \u20ac50 million or annual balance sheet total not exceeding \u20ac43 million.",
+   "verdict": "condition"
+  },
+  "ca8da96d7db9df99": {
+   "reason": "Activity-type requirement for project.",
+   "sample": "Supported activities must fall under the definition of industrial research and/or experimental development.",
    "verdict": "condition"
   },
   "ca96f8cce4c70065": {
@@ -5066,6 +5936,16 @@
   "cb5211524621e0ab": {
    "reason": "Exclusion of undertakings in difficulty with dated derogation \u2014 readers can check own status.",
    "sample": "Undertakings in difficulty are excluded from the scheme, with a derogation for firms not in difficulty on 31 Dec 2019 but which became so between 1 Jan 2020 and 30 June 2021.",
+   "verdict": "condition"
+  },
+  "cb7608cf74f09e56": {
+   "reason": "Cost-share thresholds applicants must meet.",
+   "sample": "At least 50% of total project costs must be covered by the project partners; subcontractors cannot exceed 49% of total project costs.",
+   "verdict": "condition"
+  },
+  "cb80820473c771c5": {
+   "reason": "Thematic requirement: nanotechnology R&D project.",
+   "sample": "Funds must be used for R&D/innovation in nanotechnology or related research project",
    "verdict": "condition"
   },
   "cb82b1d63980dd4f": {
@@ -5103,6 +5983,16 @@
    "sample": "Applicant must be a commercial entity (public or private, single or consortium) able to reach financial close and operate the project, not a research-only or early-stage lab",
    "verdict": "condition"
   },
+  "cc6a0065a757f391": {
+   "reason": "Requires funds go to R&D/innovation project.",
+   "sample": "Funds must go to an R&D or innovation project",
+   "verdict": "condition"
+  },
+  "ccb11b20686d1bbb": {
+   "reason": "Extends eligibility to public enterprises with commercial activity.",
+   "sample": "Public enterprises conducting industrial or commercial activity may also apply as the applicant.",
+   "verdict": "condition"
+  },
   "ccbc06605fcbbe5a": {
    "reason": "Sector alignment requirement.",
    "sample": "Startup must operate in the digital technology sector aligned to EIT Digital's thematic scope",
@@ -5116,6 +6006,11 @@
   "ccf7c30778b96a79": {
    "reason": "Topic-correspondence eligibility rule.",
    "sample": "Applications are only eligible if their content corresponds, wholly or in part, to the topic description under which they are submitted.",
+   "verdict": "condition"
+  },
+  "cd12222b39f52bd3": {
+   "reason": "Specifies eligible research/innovation activity.",
+   "sample": "Funds must be used for R&D, innovation, or research-driven project activity aligned with the Research Council's mandate",
    "verdict": "condition"
   },
   "cd1b8ab0119cf5b2": {
@@ -5156,6 +6051,16 @@
   "cdd433de34fe9307": {
    "reason": "Minimum project cost threshold.",
    "sample": "Support applies only to events (pas\u0101kums) whose total costs exceed EUR 15,000.",
+   "verdict": "condition"
+  },
+  "ce117ca908457e16": {
+   "reason": "Project purpose requirement.",
+   "sample": "Funds must support a research/innovation-related project (Forskningsr\u00e5det mandate)",
+   "verdict": "condition"
+  },
+  "ce27cdbcfc9846f8": {
+   "reason": "Financial-distress threshold (half capital lost) is checkable exclusion.",
+   "sample": "Company must not be in financial distress (loss of over half capital etc.)",
    "verdict": "condition"
   },
   "ce312fd1dd5c6f8d": {
@@ -5211,6 +6116,11 @@
   "cf6fa65be1e7aee3": {
    "reason": "States who is eligible: persons or entities intending to set up SME/mid-cap.",
    "sample": "Natural persons or legal entities intending to set up an SME or mid-cap are eligible applicants.",
+   "verdict": "condition"
+  },
+  "cfadb4e4a0eecb91": {
+   "reason": "Entity-type requirement with exclusion of sole proprietorships.",
+   "sample": "The project-responsible entity must be a private company or a public enterprise engaged in industrial or commercial activity; sole proprietorships cannot be project-responsible.",
    "verdict": "condition"
   },
   "cfe28da3853394df": {
@@ -5283,6 +6193,21 @@
    "sample": "Must apply as part of a cross-border consortium of multiple entities from multiple member states, not as a solo applicant",
    "verdict": "condition"
   },
+  "d211058bc561b8e3": {
+   "reason": "Exclusion criterion regarding unpaid recovery orders.",
+   "sample": "Support cannot be granted to enterprises that have not complied with a repayment order following a prior European Commission/ESA decision declaring aid unlawful and incompatible with the internal market.",
+   "verdict": "condition"
+  },
+  "d21a84c3e1993d99": {
+   "reason": "Requires defined research/innovation commercialization project.",
+   "sample": "Funds must be used for a defined research/innovation project (FORNY commercialization of research)",
+   "verdict": "condition"
+  },
+  "d21f9dbb94eea3c5": {
+   "reason": "Specifies required use of funds: clarifying commercial uncertainty.",
+   "sample": "Funds must be used to clarify uncertainty related to the commercial application of the research, resolving critical unresolved questions that otherwise block further commercialisation.",
+   "verdict": "condition"
+  },
   "d22794f5363d2cfb": {
    "reason": "Limits advisory services to SMEs; readable eligibility.",
    "sample": "Innovation support advisory services under the SMB scheme must be offered to small and medium-sized enterprises.",
@@ -5296,6 +6221,11 @@
   "d2434e32dc223811": {
    "reason": "Financial distress exclusion is a checkable bar.",
    "sample": "Company must not be in financial distress / loss position exceeding capital threshold",
+   "verdict": "condition"
+  },
+  "d28272695e5c4688": {
+   "reason": "Project must sit in approved strategic value chain covering R&D&I to deployment.",
+   "sample": "Funds must finance R&D&I through first industrial deployment within an approved strategic value chain (e.g. microelectronics, batteries, hydrogen, cloud)",
    "verdict": "condition"
   },
   "d3058d73e0daee2f": {
@@ -5363,10 +6293,20 @@
    "sample": "The company must not be defined as an 'undertaking in difficulty'.",
    "verdict": "condition"
   },
+  "d52993903df30e3f": {
+   "reason": "Undertakings must be established in and apply via participating Member States.",
+   "sample": "Aid is granted by the Member States participating in IPCEI ME/CT to undertakings established in and applying via those Member States, governed by national funding agreements.",
+   "verdict": "condition"
+  },
   "d52cb7fe6e71d438": {
    "reason": "Describes what the instrument targets/does, not an applicant requirement.",
    "sample": "Instrument targets defence-related consortia/companies (industry, research bodies) rather than individual borrowers seeking loans",
    "verdict": "report"
+  },
+  "d5859c7bb0198321": {
+   "reason": "Scope exclusion on what costs/activities are not supported.",
+   "sample": "Funding is not intended to finance the entire commercialisation phase and does not support general product and company development.",
+   "verdict": "condition"
   },
   "d5e797378db837aa": {
    "reason": "Despite instrument description, imposes requirement to be equity-compatible entity.",
@@ -5418,6 +6358,11 @@
    "sample": "Loan is provided in supported sectors per programme regulation; agriculture and fisheries sectors are excluded and have separate support programmes; multilevel marketing projects are not financed.",
    "verdict": "condition"
   },
+  "d7a9b2f8d5ff1732": {
+   "reason": "Applicant type requirement with exclusions.",
+   "sample": "Applicant must be an operating company (not an individual or pure research institution) undertaking an R&D/innovation project",
+   "verdict": "condition"
+  },
   "d7ee042b897062d5": {
    "reason": "States registration/operation requirement a reader can check.",
    "sample": "Company must be registered and operating in Norway",
@@ -5451,6 +6396,11 @@
   "d89683de9ce7b255": {
    "reason": "SME definition thresholds on staff/turnover/balance sheet.",
    "sample": "Applicant must be an SME (per EU SME definition, staff/turnover/balance sheet thresholds)",
+   "verdict": "condition"
+  },
+  "d8db0e137841a9b2": {
+   "reason": "FID must be novel product/process; regular upgrades explicitly excluded.",
+   "sample": "FID funding must relate to development of a new product/service with high R&D&I content or deployment of a fundamentally innovative production process; regular upgrades or newer versions of existing products do not quali",
    "verdict": "condition"
   },
   "d8e06afe8a31c7d7": {
@@ -5488,6 +6438,11 @@
    "sample": "Many GBER schemes (esp. those tied to SME R&D&I aid) restrict eligibility to SMEs by EU definition (headcount/turnover/balance sheet)",
    "verdict": "condition"
   },
+  "d9edee1c6cb13b1c": {
+   "reason": "Sponsorship, co-funding and national backing are checkable requirements.",
+   "sample": "Requires member state sponsorship, co-funding, and a national government backing the nomination",
+   "verdict": "condition"
+  },
   "da45747e8bec45cb": {
    "reason": "Eligibility requirement that activity follow R&D&I and contain R&D&I component.",
    "sample": "First industrial deployment activities are only eligible if they follow on from an R&D&I activity and themselves contain an important R&D&I component that is an integral and necessary element of the project's successful ",
@@ -5503,6 +6458,21 @@
    "sample": "Funds must be used for R&D, technology development or innovation projects aligned with programme scope",
    "verdict": "condition"
   },
+  "daacadde6c5a5a75": {
+   "reason": "Defines required project focus (marine R&D).",
+   "sample": "Funds must be used for R&D or research-oriented project activity (marine research focus)",
+   "verdict": "condition"
+  },
+  "dac8d2ceefbe9141": {
+   "reason": "Describes instrument's ticket size, not any requirement on the applicant.",
+   "sample": "Ticket size aligns with grant-scale funding, typically well below the million-euro range per award",
+   "verdict": "report"
+  },
+  "dade19a01c1f4696": {
+   "reason": "Applicant type requirement: legal entity company, not individual.",
+   "sample": "Applicant must be a company (not an individual) applying as a legal entity",
+   "verdict": "condition"
+  },
   "daeae775ca86bd39": {
    "reason": "Project must fall within defined R&D categories.",
    "sample": "The aided part of a research and development project must fall entirely within one or more defined R&D categories: fundamental research, industrial research, experimental development, or feasibility studies.",
@@ -5516,6 +6486,11 @@
   "db24e7807045f14c": {
    "reason": "Sector requirement: clean energy alignment.",
    "sample": "Startup must be active in the clean/sustainable energy sector aligned with InnoEnergy's thematic mission",
+   "verdict": "condition"
+  },
+  "db2e26fb1c99b64b": {
+   "reason": "Use-of-funds condition covering R&D/innovation projects.",
+   "sample": "Funds must be used for R&D, innovation or research project activities",
    "verdict": "condition"
   },
   "db818c1beafaa3c6": {
@@ -5551,6 +6526,11 @@
   "dc58f42dfd9f7c02": {
    "reason": "Project purpose and Latvia location requirement for loan proceeds.",
    "sample": "Loan proceeds must fund a specific business/innovation/development project in Latvia",
+   "verdict": "condition"
+  },
+  "dc5a8cdd66f26a92": {
+   "reason": "Project activity requirement.",
+   "sample": "Funds must be used for R&D or innovation project activity",
    "verdict": "condition"
   },
   "dc7526add27f802b": {
@@ -5608,6 +6588,11 @@
    "sample": "Must participate as part of a consortium aligned to the Clean Aviation partnership roadmap, not as a solo applicant",
    "verdict": "condition"
   },
+  "ddb0d6daed690237": {
+   "reason": "Requires significant company co-financing plus market failure/spillover justification.",
+   "sample": "Project requires significant company co-financing to demonstrate market failure and spillover justification",
+   "verdict": "condition"
+  },
   "ddba6c54ac10efc8": {
    "reason": "Company stage requirement: early-stage.",
    "sample": "Applicant must be an early-stage company.",
@@ -5633,6 +6618,11 @@
    "sample": "Applicants must demonstrate sufficient financial capacity to fund the project, including via a financing plan incorporating the aid received and any additional fundraising or bank financing.",
    "verdict": "condition"
   },
+  "ddeffa5b56c76d1f": {
+   "reason": "Restricts eligible costs to defined activity types; applicant can check spend.",
+   "sample": "Eligible costs are restricted to R&D&I and FID activities (TF2) or infrastructure construction until full operation (TF1), and must comply with the requirements of the Annex to the IPCEI Communication.",
+   "verdict": "condition"
+  },
   "de1120059f67f119": {
    "reason": "SME/startup status requirement.",
    "sample": "Applicant must be an SME/startup scaled entity",
@@ -5641,6 +6631,11 @@
   "de6a1dcc96cfa2ea": {
    "reason": "No tax debt requirement, verifiable by applicant.",
    "sample": "Altum verifies the company has no outstanding tax debt with the State Revenue Service, or has a debt repayment agreement in force and being observed.",
+   "verdict": "condition"
+  },
+  "de918e80a4b61109": {
+   "reason": "Explicit exclusion of research organisations as applicants.",
+   "sample": "Research organisations are not eligible to apply as the applicant.",
    "verdict": "condition"
   },
   "defd3503d9091c13": {
@@ -5681,6 +6676,11 @@
   "e15533ffa8043591": {
    "reason": "Establishment/location requirement for applicants.",
    "sample": "Applicant must be established/operating in Spain (or applicable region) to access national/regional scheme",
+   "verdict": "condition"
+  },
+  "e16381805395ed31": {
+   "reason": "Restricts use of funds to R&D/innovation/demonstration activity.",
+   "sample": "Funds must be used for R&D, innovation or demonstration project activity",
    "verdict": "condition"
   },
   "e19caebd4d5299ce": {
@@ -5763,9 +6763,19 @@
    "sample": "Funds must be used for an innovation/R&D or development project",
    "verdict": "condition"
   },
+  "e497f3651760ae4c": {
+   "reason": "Size/stage eligibility criterion.",
+   "sample": "Applicant should be an SME or innovative company (typically start-up/scale-up scaled)",
+   "verdict": "condition"
+  },
   "e4b12c53bd3cf218": {
    "reason": "Financial distress exclusion the reader can verify.",
    "sample": "Company must not be in financial distress / loss of capital situation typical of loan instruments",
+   "verdict": "condition"
+  },
+  "e4e31bb2416978bb": {
+   "reason": "Eligible project types listed.",
+   "sample": "Funds must be used for an R&D, innovation, dissemination/communication (formidling) or knowledge-transfer project",
    "verdict": "condition"
   },
   "e599a410a897edae": {
@@ -5776,6 +6786,11 @@
   "e599efec47dfff7c": {
    "reason": "Sector exclusions: finance, MLM, real estate.",
    "sample": "Loans are intended for projects that do not operate in the financial and insurance sector, nor for multilevel marketing project realisation, and are not connected with real estate operations (with specified exceptions).",
+   "verdict": "condition"
+  },
+  "e5aafb219e5c4a76": {
+   "reason": "Exclusion of undertakings in difficulty.",
+   "sample": "Companies applying to Eurostars may not be an 'undertaking in difficulty'.",
    "verdict": "condition"
   },
   "e5bbee6970758ce7": {
@@ -5808,6 +6823,11 @@
    "sample": "Applicant must be a small or medium-sized enterprise (SME).",
    "verdict": "condition"
   },
+  "e68203fcb72aabf1": {
+   "reason": "NOK 500,000 equity threshold and documentation.",
+   "sample": "All Norwegian companies must have at least NOK 500,000 in total equity at the time of application, documented via approved annual accounts or, in case of a capital increase, an auditor/lawyer/accountant declaration with ",
+   "verdict": "condition"
+  },
   "e6a6fa5d5560aa30": {
    "reason": "Geographic location and registration requirements.",
    "sample": "Project activities must take place in an EU or EEA member state (Norway, Iceland, Liechtenstein); the applicant company and the company controlling the partner must also be registered in the EU or EEA.",
@@ -5836,6 +6856,11 @@
   "e7567bbd432fd9a4": {
    "reason": "Co-investment requirement on all project participants.",
    "sample": "IFD requires that all project participants co-invest in the project, with financial commitment reflecting each participant's value creation.",
+   "verdict": "condition"
+  },
+  "e75c3df96b3f660a": {
+   "reason": "Applicant must be SME or innovative company \u2014 eligibility criterion.",
+   "sample": "Applicant should be an SME or innovative company (staged by maturity)",
    "verdict": "condition"
   },
   "e76babedcc323975": {
@@ -5968,6 +6993,11 @@
    "sample": "Must apply as part of a consortium (typically 3+ independent legal entities from 3+ member/associated states), not as a solo applicant",
    "verdict": "condition"
   },
+  "eb0dc5b04e86460a": {
+   "reason": "Qualifying project type requirement.",
+   "sample": "Funds must be used for a qualifying R&D, innovation or demonstration project",
+   "verdict": "condition"
+  },
   "eb5eb2ec6e871cf1": {
    "reason": "Exclusion criterion (firm in difficulty) a reader can check against own finances.",
    "sample": "Funding is excluded for companies unable, with their own resources or resources their owners/shareholders and creditors are willing to provide, to stem losses that would lead to near-certain economic disappearance absent",
@@ -6033,6 +7063,11 @@
    "sample": "Applicant must be an SME per EU definition",
    "verdict": "condition"
   },
+  "ee861ee5aaf63a9b": {
+   "reason": "Describes funding size of instrument; no requirement for applicant to meet.",
+   "sample": "Ticket size typically modest, consistent with grant-scale national funding",
+   "verdict": "report"
+  },
   "ee94b219a1211faa": {
    "reason": "Names target group: startup companies.",
    "sample": "The target group for this grant is startup companies (Oppstartsbedrifter).",
@@ -6043,6 +7078,16 @@
    "sample": "Funds must be used for R&D, innovation or technology development projects",
    "verdict": "condition"
   },
+  "eeed47533af33665": {
+   "reason": "Registration requirement.",
+   "sample": "Applicant must be registered/operating in Norway",
+   "verdict": "condition"
+  },
+  "ef1125e65e906ed3": {
+   "reason": "Project-responsible must be approved Norwegian research organisation.",
+   "sample": "The project-responsible organisation must be an approved Norwegian research organisation.",
+   "verdict": "condition"
+  },
   "ef2ca6bd577530db": {
    "reason": "Minimum co-financing share required from borrower.",
    "sample": "Minimum borrower participation (co-financing) in the investment project is at least 10%.",
@@ -6051,6 +7096,11 @@
   "ef2f086e0e4b4811": {
    "reason": "Eligible sector requirement for project.",
    "sample": "The project must be implemented in an eligible economic activity sector.",
+   "verdict": "condition"
+  },
+  "ef4906999a13d653": {
+   "reason": "Company applicant plus R&D project requirement.",
+   "sample": "Applicant must be a company (not an individual) undertaking an R&D or innovation project",
    "verdict": "condition"
   },
   "ef55f559ca946851": {
@@ -6066,6 +7116,11 @@
   "ef6d714761031ec5": {
    "reason": "Project scope and ethical exclusions.",
    "sample": "Projects must focus exclusively on civil applications and must not involve human cloning, heritable genetic modification, or creation of human embryos solely for research.",
+   "verdict": "condition"
+  },
+  "efe7054106ab737e": {
+   "reason": "Role requirement for bonus eligibility; excludes associated partners.",
+   "sample": "African or Ukrainian participants must hold a formal 'beneficiary' role with their own budget in the Horizon Europe application; being an 'Associated Partner' is not sufficient to qualify for the extra PES bonus.",
    "verdict": "condition"
   },
   "f01305e91e4733b0": {
@@ -6163,6 +7218,16 @@
    "sample": "Legal entities established in China are not eligible to participate in any capacity in IA and RIA actions covered by the restriction, absent case-by-case exceptions.",
    "verdict": "condition"
   },
+  "f2d22937806e34a8": {
+   "reason": "Requires project be health-research R&D \u2014 a checkable project condition.",
+   "sample": "Funds must be used for a health/research (helseforskning) R&D project",
+   "verdict": "condition"
+  },
+  "f308e1c7fe35503d": {
+   "reason": "Excludes research institutions from user-partner role.",
+   "sample": "Universities, university colleges and institutes whose main task is research cannot act as the societal or industry actor role (i.e. cannot count as a user partner).",
+   "verdict": "condition"
+  },
   "f326c48357c5bee1": {
    "reason": "Eligibility tied to establishment in listed countries \u2014 checkable.",
    "sample": "Independent legal entities are eligible for EU funding if established in an eligible country (EU Member States including outermost regions and OCTs, Horizon Europe associated countries, or low- and middle-income countrie",
@@ -6171,6 +7236,16 @@
   "f3a2482d6fe29aa7": {
    "reason": "Lists exclusion situations disqualifying an applicant.",
    "sample": "Applicants subject to an EU exclusion decision or in specified exclusion situations (bankruptcy, tax/social security breach, grave professional misconduct, fraud/corruption, deficiencies in EU contract obligations, irreg",
+   "verdict": "condition"
+  },
+  "f3c2421f6287ece7": {
+   "reason": "Project purpose requirement.",
+   "sample": "Funds must support an R&D, innovation or development project",
+   "verdict": "condition"
+  },
+  "f3e3161932a975bc": {
+   "reason": "Four-Member-State and Union-wide benefit thresholds are checkable.",
+   "sample": "The IPCEI must involve a genuine cross-border project with at least four Member States ordinarily participating, and its benefits must extend beyond the financing Member States to the wider Union.",
    "verdict": "condition"
   },
   "f3f5612c7287b0ec": {
@@ -6186,6 +7261,16 @@
   "f4983ae14f6b65dd": {
    "reason": "Use-of-funds restriction to health innovation activities, checkable pre-application.",
    "sample": "Funds must be used for health innovation activities such as R&D, validation, or market access within the health domain",
+   "verdict": "condition"
+  },
+  "f4b409cc19e512ef": {
+   "reason": "Nomination via member state EOI and participation in Hy2use chain required.",
+   "sample": "Company must be nominated through a member state's expression-of-interest process and participate in the approved Hy2use hydrogen value chain",
+   "verdict": "condition"
+  },
+  "f50cc6b3683c7582": {
+   "reason": "Project purpose requirement.",
+   "sample": "Funds must be used for an R&D, innovation or research-oriented project",
    "verdict": "condition"
   },
   "f516e39bd0591147": {
@@ -6207,6 +7292,11 @@
    "reason": "Ownership-based exclusion threshold.",
    "sample": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are also not eligible to participate.",
    "verdict": "condition"
+  },
+  "f67e99965d926e10": {
+   "reason": "Describes grant size characteristic of the instrument; no requirement for applicant.",
+   "sample": "Grant ticket size is small, consistent with early-stage seed/innovation support",
+   "verdict": "report"
   },
   "f6d3d15f081df6ce": {
    "reason": "Project sector eligibility requirement.",
@@ -6258,6 +7348,11 @@
    "sample": "Company must not be in financial difficulty (e.g. losses exceeding half capital)",
    "verdict": "condition"
   },
+  "f8e671dfea54f6ab": {
+   "reason": "Financial distress exclusion checkable by applicant.",
+   "sample": "Company should not be in financial distress (e.g. losses eroding capital) at time of award",
+   "verdict": "condition"
+  },
   "f90d89196a353f0a": {
    "reason": "Nationality-based eligibility exclusion.",
    "sample": "For IA and RIA actions covered, legal entities established in China are not eligible to participate in any capacity, absent case-by-case exceptions.",
@@ -6291,6 +7386,16 @@
   "fa72bf4f523990ef": {
    "reason": "Use-of-funds restriction to R&D/innovation projects.",
    "sample": "Funds must be used for R&D, innovation or development project defined by the specific programme",
+   "verdict": "condition"
+  },
+  "fa9e0d76e84299fa": {
+   "reason": "Defines eligible project activity aligned to mandate.",
+   "sample": "Funds must be used for R&D, innovation, or research-related project activities aligned with Research Council of Norway's mandate",
+   "verdict": "condition"
+  },
+  "fad3017863cee18e": {
+   "reason": "Specifies applicant type: SME or research-performing company.",
+   "sample": "Applicant should be an SME or research-performing company (national innovation agency scale)",
    "verdict": "condition"
   },
   "faf10a1b7e225549": {
@@ -6353,6 +7458,16 @@
    "sample": "Partner enterprises are defined by a relationship where an upstream enterprise holds, alone or jointly with linked enterprises, 25% or more of the capital or voting rights of another enterprise (subject to investor-categ",
    "verdict": "condition"
   },
+  "fd4597c0b1f60551": {
+   "reason": "Ticket-size description of the award; states nothing the reader could meet.",
+   "sample": "Ticket size aligns with small grant scale typical of national research council awards",
+   "verdict": "report"
+  },
+  "fd7130190c48548e": {
+   "reason": "Exclusion of firms in difficulty; checkable.",
+   "sample": "Company must not be in financial distress (standard state-aid solvency condition)",
+   "verdict": "condition"
+  },
   "fd8b1168f9cf648c": {
    "reason": "Requires existing registration (SIRET/K-Bis) at filing.",
    "sample": "The applicant must already be created (have a SIRET number and be able to provide a K-Bis extract) at the time of filing the application.",
@@ -6398,6 +7513,11 @@
    "sample": "Applicant must be a single operating company (not a fund or SPV)",
    "verdict": "condition"
   },
+  "fec8cf517a81d77b": {
+   "reason": "Requires collaborating partner or contract research purchase.",
+   "sample": "The project-responsible party must carry out the project together with at least one collaborating partner (Norwegian company) or purchase contract research from at least one R&D provider.",
+   "verdict": "condition"
+  },
   "fec8e7eb02e6b949": {
    "reason": "Financial distress exclusion checkable by applicant.",
    "sample": "Company should not be in financial distress (e.g. losses exceeding half capital) at time of investment",
@@ -6406,6 +7526,11 @@
   "feedc76092ef00c9": {
    "reason": "Restricts fund use to innovation/tech development activity.",
    "sample": "Funds must be used for innovation/tech-related development activity",
+   "verdict": "condition"
+  },
+  "ff323f8fce82d972": {
+   "reason": "Registration and economic-activity requirement.",
+   "sample": "The project-responsible organisation must be registered in the Norwegian business register and have economic activity in Norway.",
    "verdict": "condition"
   },
   "ffdb5724fdaa6246": {
