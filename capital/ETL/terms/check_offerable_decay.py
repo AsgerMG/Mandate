@@ -146,8 +146,19 @@ def write_baseline(m: dict) -> None:
 
 def check(m: dict, tolerance: float, grace: int) -> int:
     if not BASELINE.exists():
-        print(f"no baseline at {BASELINE}; run --baseline once and commit it")
-        return 3
+        # NOT a warning. A guard with no baseline compares against nothing and
+        # passes forever, which is the failure it exists to prevent wearing the
+        # guard's clothes. It nearly happened on the first commit: `data` is
+        # blanket-gitignored for the worktree symlinks, so the baseline was
+        # written, measured against, and silently never committed. It is
+        # force-tracked now; if it goes missing again, this says so loudly.
+        print(f"NO BASELINE at {BASELINE}.\n"
+              "  This guard cannot judge decay without one and will not pass quietly.\n"
+              "  Run:  python3 ETL/terms/check_offerable_decay.py --baseline\n"
+              "  then: git add -f data/reference/offerable_baseline.json\n"
+              "  (`data` is blanket-gitignored; -f is required and is why this "
+              "check refuses rather than warns)")
+        return 1
     base = json.loads(BASELINE.read_text())
     today = dt.date.fromisoformat(m["as_of"])
     fail: list[str] = []

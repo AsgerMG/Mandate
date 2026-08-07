@@ -103,7 +103,15 @@ def _save(**kw) -> None:
 
 def run(step: list[str], label: str) -> int:
     print(f"=== {label}: {' '.join(step)}", flush=True)
-    return subprocess.run(step).returncode
+    # Unbuffered, because in a cron container every stage's stdout is a pipe and
+    # Python block-buffers a pipe. The detail fetch prints progress every 100
+    # records and emitted NOTHING for ten minutes on the first end-to-end run --
+    # a stalled job and a working one look identical in the log, which is the
+    # same class of invisibility this whole workstream is about. Set on the
+    # environment rather than by editing each stage, so a stage added later is
+    # observable without anybody remembering.
+    env = {**os.environ, "PYTHONUNBUFFERED": "1"}
+    return subprocess.run(step, env=env).returncode
 
 
 def main() -> None:

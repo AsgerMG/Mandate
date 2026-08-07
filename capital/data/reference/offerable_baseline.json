@@ -1,0 +1,107 @@
+{
+ "as_of": "2026-08-07",
+ "clock_sources": {
+  "bdns_es_convocatorias_abiertas": {
+   "last_refreshed": "2026-08-07",
+   "rows": 78
+  }
+ },
+ "countries": {
+  "AT": {
+   "offerable": 21,
+   "total": 29
+  },
+  "BE": {
+   "offerable": 18,
+   "total": 22
+  },
+  "CZ": {
+   "offerable": 49,
+   "total": 53
+  },
+  "DE": {
+   "offerable": 103,
+   "total": 121
+  },
+  "DK": {
+   "offerable": 11,
+   "total": 11
+  },
+  "EE": {
+   "offerable": 60,
+   "total": 61
+  },
+  "ES": {
+   "offerable": 92,
+   "total": 172
+  },
+  "EU": {
+   "offerable": 67,
+   "total": 67
+  },
+  "FI": {
+   "offerable": 13,
+   "total": 18
+  },
+  "FR": {
+   "offerable": 118,
+   "total": 133
+  },
+  "GB": {
+   "offerable": 4,
+   "total": 5
+  },
+  "GR": {
+   "offerable": 7,
+   "total": 15
+  },
+  "HU": {
+   "offerable": 4,
+   "total": 8
+  },
+  "IE": {
+   "offerable": 17,
+   "total": 18
+  },
+  "IT": {
+   "offerable": 70,
+   "total": 88
+  },
+  "LT": {
+   "offerable": 1,
+   "total": 1
+  },
+  "LU": {
+   "offerable": 5,
+   "total": 6
+  },
+  "LV": {
+   "offerable": 33,
+   "total": 34
+  },
+  "NL": {
+   "offerable": 28,
+   "total": 32
+  },
+  "NO": {
+   "offerable": 74,
+   "total": 74
+  },
+  "PL": {
+   "offerable": 8,
+   "total": 8
+  },
+  "PT": {
+   "offerable": 8,
+   "total": 9
+  },
+  "SE": {
+   "offerable": 58,
+   "total": 63
+  },
+  "SK": {
+   "offerable": 5,
+   "total": 13
+  }
+ }
+}
