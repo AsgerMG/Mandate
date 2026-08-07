@@ -862,7 +862,18 @@ export function fundDescriptor(inst: DbInstrument): string {
 function distinguishRowNames(rows: InstrumentRow[]): void {
   const byName = new Map<string, InstrumentRow[]>();
   for (const r of rows) {
-    const n = displayInstitutionName(r);
+    // The label the DEDUPE will collapse on, not a second one computed here.
+    //
+    // This grouped by `displayInstitutionName(r)` while the dedupe keyed on
+    // `r.instrument || displayInstitutionName(r)`. Two functions, two keys: a
+    // row carrying a real published title was grouped by its DERIVED name --
+    // which embeds the notified scheme code and therefore separates it from its
+    // twin -- so the disambiguator saw no collision to resolve, and the dedupe
+    // then collapsed the pair on the title the disambiguator never examined.
+    // Measured live: 4 rows across 22 markets, every one of them two DISTINCT
+    // notified schemes publishing under one title (CZ SA.63670 against
+    // SA.111735, and the DE and IT equivalents).
+    const n = r.instrument || displayInstitutionName(r);
     byName.set(n, [...(byName.get(n) ?? []), r]);
   }
   for (const [name, peers] of byName) {
@@ -900,6 +911,14 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
     // fragment, which is an internal slug and tells a reader nothing.
     const regions = new Set(peers.map((p) => p.deliveryRegion ?? ""));
     const regionDistinguishes = regions.size === peers.length && !regions.has("");
+    // A scheme-code branch was written here, tested the same way body and region
+    // are tested, and REMOVED. Rationale it was written on: peers that collide
+    // on a shared TITLE often carry different notified codes, and a code is a
+    // published identifier where the id fragment below is an internal slug.
+    // Rationale it was removed on: measured across 22 markets after the grouping
+    // key was corrected, it produced a token ZERO times -- the granting body
+    // separates every pair the corpus actually contains. A branch nothing can
+    // emit is the SEL-BAND defect in code rather than in the register.
     for (const r of peers) {
       const token = (bodyDistinguishes ? r.administeringBody : "")
         || (regionDistinguishes && r.deliveryRegion
