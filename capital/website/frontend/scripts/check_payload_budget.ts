@@ -78,7 +78,7 @@ interface Rec {
   country: string;
   isFramework?: boolean;
   sourceFamilyBucket?: string | null;
-  gates?: unknown[];
+  gates?: object[];
 }
 
 /** Worst-case phase-two cost, and the founder who pays it. */
