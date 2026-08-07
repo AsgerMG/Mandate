@@ -1,8 +1,7 @@
 {
   "_comment": "Hand corrections to gate_role, applied after the LLM triage that sets it. A gate here was triaged as a `filter` with a machine-readable value_spec, which means it can DISQUALIFY a founder and remove the fund from their brief silently -- but its own wording does not state a requirement. Found by looking for rules whose text hedges about whether they apply at all ('typically', 'predominantly', 'may also'), then reading each one. The hedging was a way to FIND these; it is deliberately NOT a rule in the pipeline, because a word-matching filter would be exactly the enumerated register this repo forbids and would catch rules that hedge a threshold while stating a real requirement.",
-  "_why_a_file": "encode_gates.py writes gate_role directly from a paid triage pass, so a manual UPDATE would be silently reverted the next time triage runs. This is reapplied after it.",
+  "_why_a_file": "encode_gates.py writes gate_role directly from a paid triage pass, so a manual UPDATE would be silently reverted the next time triage runs. This is reapplied after it. Gates whose requirement is a COMPATIBILITY FINDING about aid already granted belong here too: verbatim and correctly attributed, but the wrong KIND of statement for a column a founder reads as a test they can pass.",
   "_roles": "programme_fact = true of the instrument, says nothing about who qualifies. vague = a real condition we cannot turn into a test. Neither can decide a verdict; both still show on the row.",
-
   "overrides": [
     {
       "instrument_id": "eic_fund",
@@ -43,8 +42,39 @@
       "was": "filter on lossesOverHalfCapital",
       "requirement": "Undertakings in difficulty are excluded from the scheme, except young companies within their first years.",
       "why": "THE WORST OF THE SEVEN. The rule carries an exception for young companies and the value_spec does not encode it, so as a filter it blocks precisely the founders the exception protects -- an early-stage company with accumulated losses, which is most of them. Downgraded until the exception can be encoded rather than dropped."
+    },
+    {
+      "instrument_id": "ipcei_hy2infra",
+      "gate_key": "G1-01",
+      "role": "programme_fact",
+      "was": "filter on nexus (llm_cited)",
+      "requirement": "Only pre-selected undertakings listed in the participating Member States' notification and forming part of the Hy2Infra individual projects are eligible aid beneficiaries.",
+      "why": "A compatibility FINDING about aid already granted to a named beneficiary list, not a condition an applicant can satisfy. Its quote -- 'These measures are granted only to the aid beneficiaries chosen by the participating Member States and listed in section 2.4.2 ... It is not available to all undertakings' -- is the Commission establishing SELECTIVITY under Article 107(1), a test applied to the measure by the assessor, about companies already chosen. It can never be true-or-false OF AN APPLICANT, which is what a filter must be. As a filter it would disqualify every founder who reads it, silently, for not already having been chosen."
+    },
+    {
+      "instrument_id": "ipcei_batteries",
+      "gate_key": "G1-02",
+      "role": "programme_fact",
+      "was": "filter on nexus (llm_cited)",
+      "requirement": "Only the specific companies listed as Direct Participants (selected via national open and transparent calls) are eligible aid beneficiaries under the notified IPCEI Batteries measures.",
+      "why": "The same selectivity finding, and the source of the sentence retracted from eligibility_text on 2026-08-07: 'The Member States only grant support to the beneficiaries listed section 2.2.6 and the funding is not available to all undertakings in a comparable situation.' The retraction removed it from the column a founder reads as 'who may apply' and left it encoded as a filter, which is the same claim in a place that can decide a verdict."
+    },
+    {
+      "instrument_id": "ipcei_med4cure",
+      "gate_key": "g1-nexus-participants",
+      "role": "programme_fact",
+      "was": "filter on nexus (llm_2pass, intake_field_resolved=entityCountries)",
+      "requirement": "Only the listed direct participants established in the six participating Member States (Slovakia, Hungary, France, Italy, Belgium, Spain) are eligible beneficiaries of the notified aid measures under the IPCEI Med4Cure.",
+      "why": "The worst of the four: llm_2pass, so ASSERTABLE, and resolved onto entityCountries, so evaluable -- it could have decided a verdict against a founder in the wrong country. It also fails on pertinence independently of its kind: the quote is 'This section briefly describes the 14 direct participants involved in the IPCEI Med4Cure', a section header, which does not state the requirement written above it."
+    },
+    {
+      "instrument_id": "ipcei_micro",
+      "gate_key": "G1-03",
+      "role": "programme_fact",
+      "was": "already programme_fact -- recorded, not changed",
+      "requirement": "Support is only granted to the specific beneficiaries listed in the decision, not open to all undertakings in a comparable situation.",
+      "why": "Listed so the population is complete and a reader can see the fourth instance. It already carries the inert role and needs no change; it is the same sentence as ipcei_batteries/G1-02, which is how the pattern was found."
     }
   ],
-
   "_kept_as_filters": "satr_de_rnd/g1_nexus_works_in_germany_dns (work must generally be carried out in Germany) and satr_de_rnd/g3_own_contribution_sicherheit (an appropriate own contribution is required) hedge a THRESHOLD, not whether the rule applies. Both are real conditions of the scheme and continue to filter. Note both are regime-level rules extracted from one scheme's document, which is the separate open item."
 }

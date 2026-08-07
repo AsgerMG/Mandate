@@ -38,7 +38,8 @@ def main() -> None:
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
                last_year, scheme_code, scheme_end_date,
-               scheme_end_date_basis, successor_scheme,
+               scheme_end_date_basis, route_status, route_status_source,
+               successor_scheme,
                successor_title, application_url, sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n, delivery_region, delivery_region_share
@@ -131,6 +132,16 @@ def main() -> None:
         # unlabelled date, which the liveness test closes.
         "schemeEndDate": inst["scheme_end_date"],
         "schemeEndBasis": inst["scheme_end_date_basis"],
+        # Whether an application route is known to exist -- a SEPARATE axis from
+        # liveness. Carried here for the same reason the basis is: without it
+        # the snapshot path would propose rows the Postgres path withholds, and
+        # the eleven IPCEI approval decisions are exactly such rows.
+        "routeStatus": inst["route_status"],
+        # Only `none` withholds a row, and only `none` requires a source.
+        # Carried so check_offer_route.ts can refuse an UNSOURCED
+        # withholding: a row is not demoted to a non-fund by assertion,
+        # which is the mistake this whole axis exists to correct.
+        "routeStatusSource": inst["route_status_source"],
         "successorScheme": inst["successor_scheme"],
         "successorTitle": inst["successor_title"],
         # What kind of company this instrument has actually funded. Thematic

@@ -4,6 +4,7 @@
 import { readFileSync } from "fs";
 import { meetsDataFloor } from "./accessMode";
 import { isClosed, today } from "./liveness";
+import { hasOfferRoute } from "./offerRoute";
 import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
 // Re-exported so existing callers (shortlist, pipeline, scripts) are unchanged.
@@ -209,6 +210,17 @@ export interface DbInstrument {
   /** Which register supplied `schemeEndDate`, hence whether its expiry closes
    *  anything: "notified_duration" (renewable) or "call_deadline" (final). */
   schemeEndBasis?: string | null;
+  /** Whether an application route is known to EXIST for this row — a separate
+   *  question from whether the window has shut. "none" means the source says
+   *  there is no way in (aid fixed to a named beneficiary list, or a row whose
+   *  identity is a register artefact); "unrecorded" means we have not sourced
+   *  the route, which is a gap in our collection and NOT grounds to withhold.
+   *  Never test it directly — use `hasOfferRoute()` in ./offerRoute. */
+  routeStatus?: string | null;
+  /** The official source establishing `routeStatus = "none"`. Required for that
+   *  value and only that value: a row is not removed from the offer by
+   *  assertion. `check_offer_route.ts` fails on an unsourced withholding. */
+  routeStatusSource?: string | null;
   /** A linked scheme that is still running, where the closed one was prolonged
    *  under a new SA number rather than simply ending. */
   successorScheme?: string | null;
@@ -389,6 +401,7 @@ export async function hydrateDbInstruments(): Promise<void> {
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
                   scheme_code, scheme_end_date, scheme_end_date_basis,
+                  route_status, route_status_source,
                   successor_scheme, successor_title,
                   application_url, sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
@@ -486,6 +499,8 @@ export async function hydrateDbInstruments(): Promise<void> {
         schemeCode: inst.scheme_code ?? null,
         schemeEndDate: inst.scheme_end_date ?? null,
         schemeEndBasis: inst.scheme_end_date_basis ?? null,
+        routeStatus: inst.route_status ?? null,
+        routeStatusSource: inst.route_status_source ?? null,
         successorScheme: inst.successor_scheme ?? null,
         successorTitle: inst.successor_title ?? null,
         schemeOperators: (() => {
@@ -910,6 +925,12 @@ export function publishableInstruments(): DbInstrument[] {
       : i);
   return all.filter((i) =>
     !i.isFramework && !hasChildren.has(i.id) &&
+    // A row that is not an OFFER cannot be proposed, whatever its dates say.
+    // This is a different question from closure and it is asked separately
+    // because collapsing the two is how eleven IPCEI approval decisions came
+    // to be reported as a closed fund rather than as not a fund. See
+    // lib/intelligence/offerRoute.ts.
+    hasOfferRoute(i) &&
     // A scheme the Commission's register says has closed to new applications
     // cannot be PROPOSED, however recently it paid. Measured: 220 of 453 state
     // aid children sit under a closed scheme and 130 still looked current,
