@@ -159,6 +159,15 @@ eligibility:
 	# matters. Encoding one as `in entityCountries` PASSES everyone the rule
 	# excludes, so this must run before anything publishes.
 	python3 ETL/terms/encode_regions.py run
+	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
+	# from a paid model pass, so every curated demotion above is reverted by the
+	# two lines above it -- and this target then exports and publishes. refresh.py
+	# has always reapplied them; this target never did, so `make eligibility`
+	# silently shipped a corpus in which the IPCEI selectivity findings, and every
+	# other gate demoted for stating something an applicant cannot act on, were
+	# filters again and could disqualify a founder. Runs before the audit so the
+	# audit sees the roles that will actually ship.
+	python3 ETL/terms/apply_gate_role_overrides.py
 	# Audit BEFORE publishing, and quarantine rules their own recipients
 	# contradict, so a wrong rule cannot reach a founder's brief.
 	python3 ETL/terms/audit_encoding_vs_reality.py --quarantine
