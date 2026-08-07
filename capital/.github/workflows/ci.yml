@@ -117,6 +117,13 @@ jobs:
       - name: Cross-language constants
         run: python3 ETL/schema/check_cross_language_constants.py
 
+      # What we TRACK and what we OFFER are two populations. Closed schemes stay
+      # in the headline figures and the maps -- the money was spent, and that
+      # history is the asset -- while briefs carry only funds a founder can
+      # apply to today. Skips itself without data/db.sqlite, which is gitignored.
+      - name: Aggregates ignore liveness, briefs do not
+        run: python3 ETL/schema/check_aggregate_independence.py
+
   security:
     name: dependency audit
     runs-on: ubuntu-latest
