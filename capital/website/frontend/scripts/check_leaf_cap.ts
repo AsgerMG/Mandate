@@ -12,11 +12,43 @@
 // answer, that one says it must be small enough to ship. Neither can be
 // satisfied by quietly editing the other's number.
 //
+// THAT SENTENCE WAS FALSE UNTIL 2026-08-07, and it was false in the file people
+// read before touching the constant. `check_payload_budget.ts` measured phase
+// one only — the whole instrument corpus minus every non-framework gate — which
+// does not depend on this cap by a single byte. The cap could have gone to any
+// number and that check would not have moved. It now measures PHASE TWO as
+// well, which is the half the cap governs (`hydrateGatesFor` over every leaf the
+// pool admits plus the regime each inherits from), and prints what removing the
+// cap entirely would add. So the claim is true now because the other check was
+// changed, not because this comment was.
+//
 // Do NOT satisfy this check by narrowing the corpus, and do not add an
 // exception for the channel that trips it. The channels that trip it are the
 // national ones, which are 91% of the pool universe and, as national schemes,
 // 84% of the corpus by awards — the population the cap has damaged both
 // previous times.
+//
+// ── What this check measures, and what makes that trustworthy ─────────────
+// The committed snapshot, with DATABASE_URL deleted, so two people on two
+// machines get the same verdict. That determinism is NOT a property of reading
+// a file: it is a property of the file agreeing with Postgres, which
+// `check_corpus_currency.ts` asserts — including the membership clause, "N live
+// instrument(s) absent from the snapshot".
+//
+// This matters because it has already failed here. On 2026-08-06 the snapshot
+// was 62 rows behind Postgres, and this guard — written to prevent a third
+// occurrence — reported GREEN at a widest group of 87 (ES) while the third
+// occurrence, 103 in DE, was live in production. A guard that measures a stale
+// artifact is not a guard.
+//
+// The dependency is therefore stated rather than duplicated: `npm run check`
+// runs check_corpus_currency BEFORE this file, and this file does not grow its
+// own currency logic. Two checks asserting the same property in two ways is the
+// duplication that this repo keeps finding as a defect. Under `NO_PG=1` the
+// currency check skips by its own declared contract — with nothing to compare
+// against there is no claim to test — and this reading is then a statement
+// about the committed snapshot alone, which is all a run without a database
+// can honestly make.
 //
 // ── Why the cap is not simply derived from the pool ────────────────────────
 // Deriving it — cap = the widest group, i.e. no cap — was the obvious move and
@@ -26,6 +58,15 @@
 // other direction: a number nobody chose, moving on its own. A constant with a
 // guard is honest about being a choice. A derived value would look principled
 // and would still need exactly this check.
+//
+// That argument was made while the payload cost was unmeasured. It has now been
+// measured — removing the cap entirely costs 45 KB against a 4.1 MB headroom —
+// so the premise "payload is the only thing between a load and an unshippable
+// request" is weaker than it looked. The conclusion still stands, for the
+// reason that survives the measurement: a derived cap cannot be too small, so
+// it cannot fail this check, so nobody ever reads the two paragraphs above
+// again. The constant stays a choice. What the measurement changes is HOW the
+// number is chosen — see POOL_LEAVES_PER_CHANNEL in shortlist.ts.
 import { leafCapVerdict } from "../lib/intelligence/leafCap";
 import { POOL_LEAVES_PER_CHANNEL } from "../lib/intelligence/shortlist";
 
@@ -35,11 +76,12 @@ import { POOL_LEAVES_PER_CHANNEL } from "../lib/intelligence/shortlist";
 const TIGHT = 0.15;
 
 async function main() {
-  // Deterministic by construction: the committed corpus snapshot, never a
-  // laptop's DATABASE_URL, so this cannot report drift that depends on who ran
-  // it — the same reason check_theme_index.ts does it. Verified when this was
-  // written that the two agree exactly (1,014 instruments loaded, 721
-  // publishable, identical worst group), so determinism costs nothing here.
+  // The committed corpus snapshot, never a laptop's DATABASE_URL — the same
+  // reason check_theme_index.ts does it. See the header: this is deterministic
+  // only because check_corpus_currency asserts the snapshot and Postgres agree,
+  // and it read GREEN over a 62-row-stale file once already. Re-verified
+  // 2026-08-07 against Postgres (1,076 instruments, 817 publishable, identical
+  // worst group state_aid_satr/DE at 103) with scripts/probe_leafcap.ts.
   delete process.env.DATABASE_URL;
   const { publishableInstruments } = await import("../lib/intelligence/corpus");
 
