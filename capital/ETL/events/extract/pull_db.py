@@ -45,6 +45,49 @@ _sys.path.insert(0, str(ROOT / "ETL" / "events" / "load"))
 _sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
 
 
+def verify(path: _Path) -> str | None:
+    """Is this actually a whole, readable SQLite database? Returns a problem or None.
+
+    ── Why ────────────────────────────────────────────────────────────────
+    On 2026-08-07 a pull of the volume produced a 427,819,008-byte file whose
+    own header declared 132,367 pages of 4,096 bytes — 542,175,232 bytes. It was
+    21% truncated, it was not reported as an error, and `PRAGMA quick_check`
+    on it says `database disk image is malformed`. The transfer had been
+    interrupted and the file left behind looked like a database.
+
+    The previous version of this script downloaded straight onto data/db.sqlite,
+    so that file would have REPLACED the local corpus. Not a stale copy — an
+    unopenable one, with the original gone. Checked here, on the sidecar, before
+    anything is swapped.
+    """
+    import struct
+
+    try:
+        head = path.open("rb").read(100)
+    except OSError as exc:
+        return f"unreadable: {exc}"
+    if head[:16] != b"SQLite format 3\x00":
+        return "not a SQLite database (bad magic)"
+    page_size = struct.unpack(">H", head[16:18])[0]
+    page_size = 65536 if page_size == 1 else page_size
+    declared = struct.unpack(">I", head[28:32])[0] * page_size
+    actual = path.stat().st_size
+    if declared and actual < declared:
+        return (f"TRUNCATED — the header declares {declared:,} bytes, the file is "
+                f"{actual:,} ({100 * actual / declared:.0f}%). The transfer did not "
+                f"finish.")
+    import sqlite3
+    try:
+        con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+        try:
+            res = con.execute("PRAGMA quick_check(1)").fetchone()[0]
+        finally:
+            con.close()
+    except sqlite3.DatabaseError as exc:
+        return f"unopenable: {exc}"
+    return None if res == "ok" else f"quick_check: {res}"
+
+
 def local_only_rows(local: _Path, incoming: _Path) -> dict[str, dict[str, int]]:
     """Per family, per table, how many rows the LOCAL store holds alone.
 
@@ -117,6 +160,14 @@ def main() -> int:
         return _sys.exit(
             "db.sqlite pulled, but the cron schedule was NOT restored. "
             "Fix before anything else: python3 ETL/lib/verify_cron.py --deploy")
+
+    problem = verify(incoming)
+    if problem:
+        print(f"\nREFUSED — what arrived is not a usable database.\n  {problem}")
+        print(f"  Left at {incoming} for inspection; nothing was overwritten.")
+        print("  Re-run. A transfer this size is interrupted often enough that the "
+              "check\n  matters more than the retry does.")
+        return 2
 
     if not DB.exists():
         incoming.replace(DB)
