@@ -98,14 +98,48 @@ index when an item opens or closes.
   `eval_model` split from `llm_model` (the judge followed the model under test,
   so a swap would have changed the instrument mid-experiment)
 
-**Loose ends from 2026-07-27** — code changed but the corpus didn't follow
+**Loose ends from 2026-07-27** — code changed but the corpus didn't follow.
+*Re-measured 2026-08-07 against production; figures below are current, and the
+detailed entries further down carry the working.*
 - `eurlex_oj_l` is RSS-retention-bound, not cursor-bound — decide whether to
-  replace it with SPARQL-based OJ-L discovery or accept it as a what's-new tap
-- 1,586 documents have no policy-area/sector tags (arrived via targeted backfills)
-- 1,195 documents have no enrichment card (mostly judgments from the backfill)
-- Decide whether `enrich` joins `refresh` (else the card gap recurs every ingest)
-- `adlc_avis` has never run; delete the leaked `t` test-fixture source
-- `summarize._candidates()` does one query per document
+  replace it with SPARQL-based OJ-L discovery or accept it as a what's-new tap.
+  ⬜ **Still open, but sharpened 2026-08-07:** all 23 documents in `eurlex_oj_l` (15) and
+  `eurlex_ep_council_legislation` (8) are typed `OTHER` with `celex IS NULL`,
+  even though the CELEX is sitting in the title string. Not a coverage problem —
+  a parsing one, and it makes those two feeds invisible to every CELEX-keyed pass
+- ✅ **Policy-area/sector tags: closed.** Was 1,586 untagged; now **1 document**
+  (id=4437) has no policy area, and it is the one that triggered the
+  classification infinite loop. 6,795/6,796 tagged
+- ⬜ **Enrichment cards: 94.9% of eligible, not "1,195 missing".** 2,067/2,178
+  enrichable documents have a card; 111 missing, 106 of them PROPOSAL.
+  REGULATION/DIRECTIVE/DECISION are at 100%
+- 🔝 ⬜ **`enrich` does NOT join `refresh` on the cron, and never has** — the
+  entry that said otherwise was factually wrong and hid a production bug. This is
+  the direct cause of 60.6% `lifecycle_stage = UNKNOWN`
+- ⬜ `adlc_avis` has never run (still `last_run_at` NULL, 1 document, confirmed
+  2026-08-07); delete the leaked `t` test-fixture source (still present:
+  `sources(id=83, key='t', name='t')`, `enabled=true`, 0 documents, never run)
+- ⬜ `summarize._candidates()` does one query per document
+
+**Corpus snapshot — 2026-08-07** (measured directly against production; the
+previous figures scattered through this file were up to five weeks stale)
+
+| | |
+|---|---|
+| documents | **6,796** |
+| versions | 7,250 |
+| passages | 112,588 |
+| embedded passages | 110,286 — **100.00% of the 110,229 current-version passages**; the 2,302 gap is entirely on superseded versions, by design |
+| sources | 102 (2 never run, 46 ingested nothing on the last cron) |
+| actors | 510 |
+| `document_actor` links | 999 |
+| enrichment cards | 2,067 |
+| database size | **1,706 MB**, of which `ix_passages_embedding_hnsw` alone is **860 MB — 50% of the entire database** |
+
+That last row is worth sitting with: half the storage bill is one index. It is
+load-bearing (it is what makes retrieval fast), but any conversation about
+corpus growth, hosting cost or a re-embed is really a conversation about it, and
+a dimension change re-pays for all 860 MB.
 
 **Sources not yet built**
 - Germany — `bkarta_news` returns 0 of 30 items: needs entity-based relevance,
@@ -155,20 +189,37 @@ index when an item opens or closes.
       10 docs / 10 versions / 175 passages from live EUR-Lex + Have Your Say
 - ✅ Zero-infra local runner (`scripts/run_local_refresh.py`) + pgvector integration tests
 - 🔄 Run against managed Postgres (Neon) for the persistent/shared corpus
-- ✅ `--full` re-discovery flag + the starved-source bug it fixes (2026-07-27).
+- 🔄 `--full` re-discovery flag + the starved-source bug it fixes (2026-07-27) —
+      **reopened 2026-08-07, it never actually fixed it; see the ❌ note below**.
       `pipeline._since()` returns `last_run_at` once a source has run, so only a
       source's FIRST run ever sees the whole `backfill_days` window. A first run
       that was truncated (`--limit`), crashed partway, or ran while discovery was
       misconfigured leaves its missed history permanently unreachable — every
       later run asks only for what is newer than that partial run. The source
-      then looks healthy: runs daily, no errors, returns almost nothing.
+      then looks healthy: runs on schedule, no errors, returns almost nothing.
       Reproduced deliberately — `regina run eurlex_case_law --limit 200` ingested
       200 and set the cursor, and the next *unlimited* run discovered 0. Same
       mechanism as the `eurlex` incident recorded further down this file, which
       was fixed then by manually nulling `last_run_at`; a manual DB edit is why
       it recurred. `--full` on `run` and `refresh` now ignores the cursor and
       re-discovers the window. Idempotent (dedupe on source+external_id, new
-      version only on content change), so recovery is a supported operation
+      version only on content change), so recovery is a supported operation.
+
+      ❌ **This entry was wrong, and the 2026-08-07 audit is how we found out.**
+      "`--full` … now ignores the cursor" was never true: `full=True` was passed
+      only to `_since()`, which overrides the *date floor*. `source.cursor` was
+      never reset. So for every adapter that carries its high-water mark in the
+      cursor rather than in `since` — `oeil`, `an_verbatim`, `de_verbatim`,
+      `ep_verbatim` and the newsletter families — `regina run <key> --full` was a
+      **silent no-op** that reported a clean run and re-discovered nothing. The
+      documented recovery for cursor starvation could not recover from cursor
+      starvation, which is why 46 of 102 sources were still stranded on
+      2026-08-07 despite this having been "fixed" on 2026-07-27. A real fix
+      (`source.cursor = None` under `full`) was in flight 2026-08-07 —
+      **re-mark this ✅ only after confirming it landed.** Note the shape: the
+      fix, the docstring, `regina run --full`'s help text and README.md all
+      described behaviour the code did not have, and nothing tested it, because
+      the test would have had to assert on a cursor nobody thought to check
 - ✅ EU case law adapter (`eurlex_case_law`, 2026-07-27) — the corpus held ZERO
       judgments because `_build_discovery_query` admitted only CELEX sectors 3
       and 5; sector 6 is case law. A live count found 721 sector-6 works matching
@@ -291,29 +342,78 @@ index when an item opens or closes.
       4-6 passages of the same act in context. Retrieval sees ~1,500-char
       fragments; without this the brief could quote Article 12 accurately while
       having no idea what instrument it was a fragment of.
-- ⬜ **1,195 documents still have no enrichment card** — mostly the ~1,050
-      judgments (and ~145 proposals) that arrived in the case-law `--full`
-      backfill *after* the enrichment run had already computed its candidate set.
-      A sequencing mistake, not a code defect: ingest → embed → enrich is the
-      correct order, and the enrichment run was started while backfills were
-      still in flight. Binding legislation is unaffected and at 100%
-      (regulation 98/98, directive 37/37, decision 175/175, guideline 145/145);
-      the gap is almost entirely case law.
-      Worth doing — a card on a ruling states *what the court held*, which is
+- ⬜ **111 enrichable documents still have no enrichment card** *(was written as
+      "1,195"; re-measured 2026-08-07)* — mostly the judgments and proposals that
+      arrived in the case-law `--full` backfill *after* the enrichment run had
+      already computed its candidate set. A sequencing mistake, not a code defect:
+      ingest → embed → enrich is the correct order, and the enrichment run was
+      started while backfills were still in flight.
+
+      **Which denominator is the honest one.** Two numbers are both true and
+      only one is meaningful:
+
+      | denominator | coverage |
+      |---|---|
+      | `ENRICHABLE_TYPES` — 2,178 docs | **94.9%** (2,067 enriched, 111 missing) |
+      | all documents — 6,796 | 30% |
+
+      **The eligible denominator is the real one.** `ENRICHABLE_TYPES`
+      (`etl/enrichment/summarize.py:47`) deliberately excludes PRESS, NEWSLETTER,
+      VERBATIM_DEBATE, STAFF_WORKING_DOC, BUDGET and OTHER, and `_candidates()`
+      never selects them — so the 4,618 documents outside it are not "missing" a
+      card, they are documents a card would be meaningless for. Summarising a
+      news item into "what this instrument does" produces a worse artefact than
+      the news item. Quoting 30% describes a gap that does not exist and would
+      justify spending real money to close it.
+
+      The remaining 111 break down as **106 PROPOSAL**, 3 GUIDELINE, 2 JUDGMENT.
+      Binding legislation is at **100%**: regulation 98/98, directive 37/37,
+      decision 175/175. Case law is now 1,236/1,238 — the old entry's "the gap is
+      almost entirely case law" was true when written and is no longer.
+      Worth finishing — a card on a ruling states *what the court held*, which is
       exactly the line a brief needs and the hardest thing to recover from a
-      fragment. ~$7 and ~75 minutes at the observed rate. Just
-      `uv run regina enrich` (idempotent; only picks documents with no card, so
-      it never re-pays for the 874 already done).
-- ⬜ **Decide whether `enrich` joins `refresh`.** The other two metadata passes
-      (`reclassify`, `enrich_lifecycle`) run as part of `regina refresh` and so
-      re-derive themselves on the Railway cron; `enrich` is a standalone command
-      only. Consequence: every newly ingested law from here on silently has no
-      card, and the 1,195-document drift above recurs on every ingestion pass.
-      Deliberately not wired in without a decision, because `refresh` runs daily
-      on Railway and this would add recurring paid LLM calls to production.
-      Steady-state cost is small — after a backfill it only touches newly
-      ingested documents, so cents per day — and a per-run cap (~100 documents)
-      would bound a bad day. Recommendation: wire it in with the cap
+      fragment — but it is now cents, not ~$7. Just `uv run regina enrich`
+      (idempotent; only picks documents with no card, so it never re-pays).
+- 🔝 ⬜ **Make the cron actually enrich.** *(Rewritten 2026-08-07 — the entry
+      that stood here was factually wrong in a way that hid a production bug for
+      weeks. Both errors are recorded rather than deleted, because the shape of
+      the mistake is the lesson.)*
+
+      **What it used to say, and why it was false.** It claimed that
+      `reclassify` and `enrich_lifecycle` "run as part of `regina refresh` and so
+      re-derive themselves on the Railway cron". They do not. `enrich_corpus` —
+      which owns every one of those steps — is called from exactly two places,
+      `etl/cli.py:129` (`regina refresh`) and `etl/cli.py:229` (`regina enrich`),
+      **both CLI-only**. The HTTP path, `_run_refresh` in `etl/api.py`, is the
+      *only* automated path, and it calls `embed_pending` and `classify_pending`
+      directly and nothing else. So **types, actors, lifecycle/dates and
+      summaries have never once run on the cron.**
+
+      The false premise mattered more than the missing feature. Because the entry
+      asserted three of the five steps were self-healing on the schedule, the open
+      question looked like a cost trade-off about *summaries only* — when in fact
+      four passes were silently not running at all in production.
+
+      **Measured consequence (2026-08-07):** **4,120 of 6,796 documents (60.6%)
+      sit at `lifecycle_stage = UNKNOWN`.** That is the dashboard's primary axis —
+      "what's moving" is grouped by lifecycle stage — so the single most visible
+      number on the site is derived from a pass that production never runs.
+
+      **Second error, same entry:** it said `refresh` "runs daily on Railway". It
+      runs **weekly — Sundays 05:00 UTC** (`refresh-cron`, decision-log 2026-07-20,
+      confirmed against the live service 2026-08-07). Which cuts the direction the
+      original argument feared: the recurring-cost objection to wiring `enrich` in
+      was ~7× overstated.
+
+      Steady-state cost is small — after a backfill it only touches newly ingested
+      documents, so cents per week — and a per-run cap (~100 documents) would
+      bound a bad day. **Recommendation stands and is now urgent: call
+      `enrich_corpus` from `_run_refresh` with the cap**, so the HTTP and CLI paths
+      cannot drift apart again. A code fix was in flight on 2026-08-07.
+
+      The generalisable bit: the CLI and the API grew two different refreshes, and
+      the test suite exercises `enrich_corpus` — which production does not call.
+      Green tests over a code path production never takes is not coverage.
 - ✅ Commission press adapter — superseded by the generic feed framework
 - ✅ Generic RSS/Atom feed adapter (`feeds.py`) + 20 live-verified channels
       across EU/FR/DE incl. Google News query monitors (paywalled-outlet
@@ -661,15 +761,37 @@ index when an item opens or closes.
       on live corpus: "AI obligations" → AI files; "cybersecurity" → Digital Networks Act)
 - ✅ Optional hosted embedder (Voyage/OpenAI) behind the same interface — DONE
       2026-07-21; production runs voyage-4-large/1024
-- ⬜ Auto-embed as part of `refresh` (currently a separate step)
+- ✅ Auto-embed as part of `refresh` — **done; this entry was stale.** Embedding
+      runs in *both* paths: `enrich_corpus`'s `embeddings` step for the CLI
+      (`etl/cli.py:129`), and `embed_pending` called directly in `_run_refresh`
+      for the API/cron (`etl/api.py`). Verified 2026-08-07: **110,229 of 110,229
+      current-version passages are embedded — 100.00%.** The 2,302 that look
+      unembedded in the raw `passages` count all belong to superseded versions,
+      which `embed_pending` skips by design and retrieval filters out via
+      `is_current`. Notable as the one part of enrichment production *does* run —
+      because it was wired into the HTTP path by hand, separately, rather than
+      through `enrich_corpus` (see "Make the cron actually enrich" above)
 - ✅ LLM enrichment: summary, plain-language "what to expect", what-changes —
       built and run 2026-07-27 (874/874). See the full entry under Milestone 1,
       plus the two open follow-ups there: 1,195 documents added after the run
       still have no card, and `enrich` is not yet part of `refresh`
 - ✅ Citation capture linking each enrichment field to backing passage ids — DONE
       2026-07-27; every `enrichments` row stores `citations.passage_ids`
-- ⬜ Auto-classify policy areas + sectors per document — policy areas cover all
-      4,781 docs, sectors only 1,721 (36%); Phase 2.3 of the plan above
+- 🔄 Auto-classify policy areas + sectors per document — Phase 2.3 of the plan
+      above. **Re-measured 2026-08-07** (the old figures — "all 4,781 docs,
+      sectors only 1,721 (36%)" — predated ~2,000 documents of ingestion):
+      policy areas now cover **6,795 of 6,796**, sectors **2,868 (42.2%)**.
+      Sector coverage below half is expected rather than a gap: a horizontal
+      instrument (GDPR, the AI Act) legitimately has no sector, which is
+      precisely why `classify_pending` filters on `policy_areas` alone.
+      The **single hold-out is document id=4437** ("War and Grease", a
+      NEWSLETTER) — and it is not a rounding error, it is the document that
+      triggered the classification infinite loop: the model kept returning an
+      out-of-vocabulary slug (`energy`), `parse_classify_response` dropped it,
+      the document re-matched the `~policy_areas.any()` filter, and the loop
+      re-attempted it ~3,197 times over 45 minutes on 2026-08-02 until Anthropic
+      returned 403 and took the whole refresh down with it. One untagged document
+      was the visible tip of a total ETL outage. See decision-log 2026-08-07
 
 ## Milestone 3 — Intelligence (RAG)
 
@@ -1897,19 +2019,38 @@ this session conflated them more than once.
       Official Journal L-series is the authoritative feed of newly adopted law, so
       11 documents is a real hole. Try `uv run regina run eurlex_oj_l --full`
       first; if it stays thin the cause is its own filter, not the cursor
-- ⬜ **1,586 documents have no policy-area or sector tags.** Was 198 before the
-      case-law and OEIL backfills; the 1,585 documents those added arrived
-      unclassified because `classify_pending` only runs as part of `refresh`, and
-      the backfills were run as targeted `regina run` commands. Same
-      ingest-then-enrich ordering trap as the enrichment gap above. Billed (Haiku,
-      roughly $2-3). Blocks nothing today, but sector-filtered retrieval — an open
-      item — depends on it
+- ✅ **1,586 documents have no policy-area or sector tags — CLOSED, but read how.**
+      Was 198 before the case-law and OEIL backfills; the 1,585 documents those
+      added arrived unclassified because `classify_pending` only runs as part of
+      `refresh`, and the backfills were run as targeted `regina run` commands.
+      Same ingest-then-enrich ordering trap as the enrichment gap above. Billed
+      (Haiku, roughly $2-3). Blocks nothing today, but sector-filtered retrieval —
+      an open item — depends on it.
+      **Re-measured 2026-08-07: down to 1 document** (id=4437). Worth being
+      precise about *why* it closed, because "the backlog item resolved itself" is
+      the wrong reading: the 2026-08-02 cron did run `classify_pending`, it did
+      work through the backlog — and then it hit id=4437 and looped on that single
+      document until the API cut it off, killing the run before enrichment. The
+      gap closed and the pipeline broke in the same pass. See decision-log
+      2026-08-07
 - ⬜ **`adlc_avis` has never run** (`last_run_at` NULL, 1 document). Registered but
       apparently never exercised; unclear whether it is broken or simply
       low-volume. Worth 10 minutes to find out, given `adlc_decisions` (its
-      sibling) turned out to be one of the more valuable sources in the corpus
+      sibling) turned out to be one of the more valuable sources in the corpus.
+      **Answered 2026-08-07: it is not broken, it does not exist.** There is no
+      `adlc_avis` adapter class — `etl/adapters/__init__.py` imports only
+      `AutoriteConcurrenceAdapter` (`key = "adlc_decisions"`), and `ADAPTERS`
+      contains nothing with that key. So the `sources` row is an orphan: both
+      `regina refresh` and `_run_refresh` iterate `ADAPTERS`, which is why
+      `last_run_at` is still NULL after the 2026-08-02 cron and always will be.
+      Either write the adapter or delete the row — same category as the `t`
+      source below (2 of 102 sources are rows with no adapter behind them)
 - ⬜ **Delete the `t` source.** A test fixture leaked into the production database
-      (0 documents, never run)
+      (0 documents, never run). **Still there, confirmed 2026-08-07:**
+      `sources(id=83, key='t', name='t')`, `enabled = true`, `last_run_at` NULL,
+      0 documents. Cosmetically it inflates the source count the site displays
+      (102 rather than 101) — a live "Coverage" number on a public page counting a
+      test fixture. Worth 30 seconds
 - ⬜ **`summarize._candidates()` does one query per document.** Over the Railway
       proxy that is ~90 seconds of latency before the first API call on an
       874-document run. Harmless (one-time per run, and the run is far slower than

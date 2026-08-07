@@ -38,8 +38,24 @@ specific passage of a specific document version.
 (`etl/enrichment/corpus.py`), whose step order is a correctness constraint rather
 than a preference: dating and actor extraction both filter on `document_type`, so
 they must run after reclassification or they silently skip documents whose type
-hasn't been derived yet. Every step is idempotent, so re-running is always safe
-and only touches what is still missing.
+hasn't been derived yet. Every step is idempotent, so re-running is always safe.
+
+**"Idempotent" does not mean "incremental", and one step is not.** Most steps
+select only the rows still missing what they produce, so a re-run is nearly free.
+`enrich_lifecycle` (`etl/enrichment/lifecycle.py`) is the exception: its query
+selects *every* CELEX-bearing document of a dated type, with **no
+already-enriched filter at all**, and then re-fetches the lot from Cellar over
+SPARQL — on every run, forever, whether or not anything changed. Measured
+2026-08-07: 410 such documents, 397 distinct CELEX codes, batched at
+`_BATCH_SIZE = 150` — so **3 SPARQL round-trips**, plus `HttpClient`'s
+`REQUEST_DELAY_SECONDS` politeness pause on each, every time.
+
+At today's corpus that is cheap, and it is arguably correct rather than a bug:
+Cellar amends end-of-validity when an act is repealed, so yesterday's answer can
+be wrong today and there is nothing to diff against locally. But it scales with
+the whole corpus rather than with what changed, and it makes every enrichment run
+depend on a third party being up — so it is stated here rather than hidden behind
+a blanket "only touches what is still missing".
 
 ## Quickstart
 
@@ -85,9 +101,22 @@ feature, so every claim links back to a specific official source.
 incremental cursor, not a broken adapter: after a source's first run, discovery
 only asks its upstream for what is newer than that run, so a first run that was
 truncated (`--limit`) or crashed partway leaves the missed history permanently
-unreachable. `regina run <key> --full` (or `regina refresh --full`) re-discovers
-the whole backfill window. It's idempotent. See `pipeline._since` for the full
-writeup.
+unreachable. This is not rare — as of 2026-08-07, **46 of 102 sources ingested
+nothing on the last weekly run**, reporting `errors: 0` throughout.
+`regina run <key> --full` (or `regina refresh --full`) re-discovers the whole
+backfill window: it ignores both the date floor *and* `source.cursor`. It's
+idempotent. See `pipeline._since` for the full writeup.
+
+> **⚠ Verify this before relying on it.** Until 2026-08-07, `--full` overrode
+> only the date window (`_since`) and never reset `source.cursor` — so for every
+> adapter that carries its high-water mark in the cursor rather than in `since`
+> (`oeil`, `an_verbatim`, `de_verbatim`, `ep_verbatim` and the newsletter
+> adapters) `regina run <key> --full` was a **silent no-op**: it reported a clean
+> run and re-discovered nothing. The text above describes the intended, fixed
+> behaviour. A fix was in flight on 2026-08-07 and had **not been confirmed as
+> landed** when this was written — if in doubt, run
+> `regina run <key> --full` and check that `discovered` is larger than the
+> previous run's before trusting it.
 
 Schema changes go through Alembic (`uv run alembic upgrade head`); `regina init`
 remains the fresh-install path. Note that SQLAlchemy persists enum *member
@@ -103,6 +132,19 @@ own retrieval shape (`retrieval_stats`) — watch
 actually reasons over contributed exactly one passage. (The all-passage
 `documents_per_passage` is also reported but is floored near 0.5 by the ~50
 single-passage canon stubs, so it cannot detect a collapse.)
+
+🔄 **Discrepancy found 2026-08-07, fix in flight:** at `main` (`etl/cli.py:554`)
+`brief-check` printed `documents_per_passage` to the operator as `depth ratio` —
+the metric this paragraph had just said *cannot detect a collapse*. So at the one
+moment someone is actually watching the numbers, during a run that costs real
+money, they were shown the blind one. A fix switching that line to
+`substantive_documents_per_passage` was in the working tree but **not yet
+committed** when this was written; confirm before relying on `depth ratio`.
+
+Neither metric would have caught the duplicate-canon problem: 16 canon acts are
+stored twice, byte-identical, so both copies retrieve and land at adjacent ranks.
+Breadth halves while the ratio reads healthy, because two documents genuinely did
+contribute two passages. A ratio cannot see that they are the same text.
 
 ### The web app
 

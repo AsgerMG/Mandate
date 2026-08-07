@@ -5,6 +5,158 @@ Each entry: what was decided, the options considered, and why.
 
 ---
 
+## 2026-08-07 — Full audit: the weekly refresh has never once completed
+
+**Decision:** Run a full audit of the live system against its own documentation,
+correct every doc the audit proved wrong, and fix the defects in code separately.
+This entry records what was found. Docs corrected in the same pass: `DEPLOYMENT.md`
+(the verification runbook and the missing `refresh-cron` service), `README.md`
+(two overstated guarantees), `backlog.md` (a false premise plus four stale
+figures), `weekly-audit-pending.md`, `.env.example`.
+
+**Options considered:** fix code first and document after (rejected — the docs
+were actively misleading a debugger *today*, and three of the findings were only
+visible because someone read the docs and the system side by side); file the
+findings as backlog items only (rejected — a wrong runbook is worse than no
+runbook, and two of these would have sent someone debugging a live incident in
+the wrong direction).
+
+**Why it matters that this was found by hand:** every check the project already
+had was green.
+
+### The headline
+
+**`regina refresh` has never completed successfully in production.**
+`GET /api/refresh` reads
+`{"running":false,"last_result":null,"last_finished":"2026-08-02T06:45:12+00:00"}` —
+a `last_finished` with a `null` `last_result` means the run reached the `finally`
+block without ever reaching the last line of the `try`.
+
+The mechanism: `classify_pending` selects documents with no policy areas, and the
+tool schema it uses declared an `enum` **without `"strict": true`**. Without
+`strict` the enum is advisory — the model may return an out-of-vocabulary slug,
+`parse_classify_response` drops it, the document ends up with zero policy areas,
+and it re-matches the `~policy_areas.any()` filter on the very next iteration.
+On document **id=4437** ("War and Grease") the model returned `energy`, which is
+not in `POLICY_AREAS`, and the loop re-attempted that one document **~3,197 times
+over 45 minutes on 2026-08-02** until Anthropic returned 403 and the run died
+mid-enrichment. One unclassifiable newsletter took down the entire ETL.
+
+### Everything else the audit found
+
+1. **46 of 102 sources ran clean and ingested nothing** on the 2026-08-02 cron —
+   `errors: 0` every one. Cursor starvation, as `pipeline._since` has described
+   for weeks. The shape of the data says how long it has been happening: of those
+   46, **28 last ingested on a date somebody ran a backfill by hand** (07-03: 9
+   sources, 07-17: 8, 07-22: 6, 07-13: 3, plus 07-06 and 07-27), **16 last
+   ingested on 2026-07-26** — the *previous* cron, so they have now missed a full
+   cycle — and **2 have never ingested anything at all** (`t` and `adlc_avis`,
+   both `sources` rows with no adapter class behind them). Nearly half the
+   corpus's inputs are stranded, and every one of them reports success.
+2. **Binding legislation has stopped arriving.** The 2026-08-02 cron ingested 429
+   documents and **not one** REGULATION, DIRECTIVE or DECISION — it was 159 PRESS,
+   158 OTHER, 106 OEIL proposals (all from `oeil`), 6 assorted. Worse when you
+   trace it to the source: **`eurlex` has contributed no act since 2026-07-13 and
+   `eurlex_key_acts` none since 2026-07-17**, both hand-run dates. The only acts
+   to arrive since are 1 French competition decision and 2 Ombudsman decisions on
+   07-26. A regulatory-intelligence corpus whose automated path collects news and
+   procedure files but no legislation is failing at the one thing it is for.
+   *(The original audit note put this as "8 acts in 30 days, EUR-Lex contributing
+   one"; that figure could not be reproduced under any denominator tried —
+   `created_at` gives 250 acts in 30 days, `date_document` gives 0 — so it is not
+   relied on here. The per-source statement above is the reproducible one.)*
+3. **23 documents carry their CELEX in the title and `NULL` in the column.** Every
+   document in `eurlex_oj_l` (15) and `eurlex_ep_council_legislation` (8) is typed
+   `OTHER` with `celex IS NULL`, while **21 of the 23 have a title that literally
+   begins `CELEX:32026...`**. The identifier is sitting in the string; nothing
+   parses it out. Those two feeds are therefore invisible to every CELEX-keyed
+   pass — dating, lifecycle, deduplication.
+4. **16 canon acts are stored twice, byte-identical.** AI Act, DSA, GDPR, DMA,
+   NIS2, CRA, Cybersecurity Act, Gigabit Infrastructure Act, EECC, the Digital
+   Omnibus, CADA and others each exist once from `eurlex` and once from
+   `eurlex_key_acts` with the same current-version `content_hash`. **3,290
+   redundant passages, all 3,290 embedded** and indexed. Identical text yields an
+   identical vector, so the two copies necessarily score identically against any
+   query and land at adjacent ranks — the brief spends two of its slots on one
+   instrument, and no diversity heuristic that works on document ids can tell.
+5. **`OVERLAP_CHARS = 200` has never overlapped anything.** The next chunk's start
+   was computed as `max(cur_end - overlap, start)` where `start` is the *next*
+   span's start — always ≥ `cur_end`, so `max()` always picked `start` and the
+   overlap was dead code. Verified across the whole corpus: of 105,342 passage
+   boundaries, 86,594 have a 2-character gap and 18,746 have a 0-character gap.
+   **Not one passage in 112,588 overlaps its neighbour.** A sentence straddling a
+   boundary is whole in neither.
+6. **The cron does not enrich, and never has** — see backlog.md. Types, actors,
+   lifecycle and summaries run only from the CLI. 60.6% of documents sit at
+   `lifecycle_stage = UNKNOWN`, and that is the dashboard's primary axis.
+7. **The weekly audit routine has never been read** (see
+   `weekly-audit-pending.md`), and reads a field that goes stale on failure.
+
+### The pattern, which is the actual lesson
+
+**Every one of these is a silent failure that reported success.** Not one
+produced an error anywhere:
+
+- the **cron goes green** because `curl -fsS -X POST /api/refresh` returns
+  `{"started":true}` immediately — the refresh is a background task, so
+  `curl-exit=0` means "request accepted", never "refresh succeeded";
+- **starved sources report `discovered: N, errors: 0`** — a source stranded on a
+  three-week-old cursor is indistinguishable from a source with nothing new;
+- **the depth metrics cannot see the duplicates** — `documents_per_passage` and
+  `substantive_documents_per_passage` both count *documents*, and two
+  byte-identical copies of the AI Act are two documents, so a brief whose real
+  breadth has halved scores exactly like one whose breadth is intact;
+- **the test suite is green** because it tests `enrich_corpus` — which production
+  does not call;
+- **the register renders `0 live`** for a blocked API exactly as it would for a
+  quiet week.
+
+This is the same lesson as 2026-07-30 ("a path that is never exercised end to end
+is not tested"), reached from several new directions at once. The generalisation:
+this system's failure mode is not crashing, it is **reporting success**. Every
+check it has answers "did the call return?" and none answers "did the work
+happen?".
+
+**And a habit worth naming, because it is ours.** The recurring response to a
+discovered defect here has been *documentation plus a manual recovery command*
+rather than a code-level guard. `pipeline._since` is the cleanest example: a
+**23-line docstring** that names the cursor trap precisely, reproduces it live
+("`regina run eurlex_case_law --limit 200` … the very next unlimited run
+discovered 0"), lists the sources it has already damaged, and prescribes the
+recovery — above a **four-line body that does nothing to prevent any of it**.
+The prose was right, was read, and was useless: the same mechanism then stranded
+46 sources. Worse, the docstring promised `full=True` would "ignore the cursor"
+when the code only ever overrode the date, so `regina run <key> --full` was a
+silent no-op for `oeil`, `an_verbatim`, `de_verbatim`, `ep_verbatim` and the
+newsletter adapters — the documented recovery for cursor starvation could not
+recover from cursor starvation.
+
+**Standing rule from this audit:** when a defect is understood well enough to
+write a paragraph about it, that is the moment to write the guard, not the
+paragraph. If a guard genuinely cannot be written, the doc must say *that* — an
+explanation with no enforcement behind it should be labelled as such, because
+otherwise it reads as a solved problem.
+
+**Deliberately not done in this pass:** no Railway or Vercel configuration was
+touched, and no code was changed. Four items are left as open, dated entries
+where they belong rather than fixed silently — `regina-intel.vercel.app` missing
+from `CORS_ALLOW_ORIGINS` (`DEPLOYMENT.md`), the placeholder
+`contact: you@example.com` in production's `HTTP_USER_AGENT` (`.env.example`,
+`DEPLOYMENT.md`), the leftover `TEST_PING=hello123` on the `Regina` service
+(`DEPLOYMENT.md`), and the `t` test-fixture source still enabled in the
+production registry (`backlog.md`).
+
+**One thing that could not be corrected from here:** the local, gitignored `.env`
+still carries a comment claiming "Local fastembed model (BAAI/bge-small-en-v1.5,
+384-dim) is the only embedder actually implemented right now — leave these
+commented out … a hosted Voyage embedder is on the backlog". That has been false
+since 2026-07-21: `VoyageEmbedder` exists, and **every stored vector is Voyage
+1024-dim**. `.env.example` already says so correctly. Anyone reading their own
+`.env` for guidance should update that block by hand — it advises the exact
+opposite of what production does.
+
+---
+
 ## 2026-07-30 — The wait becomes a designed surface, and `/api/brief` turns out to have been broken
 
 **Decision:** With ~3 minutes accepted as fixed, the brief now streams its text,
