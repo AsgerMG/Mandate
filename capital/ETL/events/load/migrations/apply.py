@@ -1,9 +1,14 @@
-"""Idempotent migration runner.
+"""Idempotent migration runner — for EVERY store, not whichever one you are at.
 
-Usage: python ETL/load/migrations/apply.py 004
+Usage:
+  python3 ETL/events/load/migrations/apply.py all       bring this store up to date
+  python3 ETL/events/load/migrations/apply.py --check   what is pending (exit 1 if any)
+  python3 ETL/events/load/migrations/apply.py 004       one migration, by id
 
-Applies the migration only if its columns/indexes are not already present.
-Logs applied migrations to schema_migrations table (auto-created).
+Applies a migration only if its columns/indexes are not already present, and
+logs it to schema_migrations (auto-created). `all` is the form that matters:
+this repo's schema drift was never a bad migration, it was a migration nobody
+ran against the second store. See apply_all().
 """
 from __future__ import annotations
 
@@ -450,14 +455,24 @@ def apply_024(conn: sqlite3.Connection) -> None:
     print("  applied 024_delivery_region.sql")
 
 
-def apply_025(conn: sqlite3.Connection) -> None:
+def apply_026(conn: sqlite3.Connection) -> None:
     """catchment_region — the territory a body is REGISTERED to serve, which is a
-    rule, as against delivery_region's measured award footprint."""
+    rule, as against delivery_region's measured award footprint.
+
+    Numbered 026, not 025. It was written as a second 025 and its function
+    therefore SHADOWED apply_025 above: `MIGRATIONS["025"]` resolved to this
+    one, and 025_scheme_end_date_basis.sql became unreachable through the
+    runner — on any store that had not already received it by hand, the column
+    whose absence cost 306 of 948 leaves would simply never be created.
+    Renumbering also makes the id somebody stamped into schema_migrations by
+    hand on 2026-08-07 (`026`, with no file behind it anywhere in the repo)
+    into the true record of what was applied.
+    """
     if column_exists(conn, "funding_instruments", "catchment_region"):
-        print("  skip 025 (already applied)")
+        print("  skip 026 (already applied)")
         return
-    conn.executescript((MIG_DIR / "025_declared_catchment.sql").read_text())
-    print("  applied 025_declared_catchment.sql")
+    conn.executescript((MIG_DIR / "026_declared_catchment.sql").read_text())
+    print("  applied 026_declared_catchment.sql")
 
 
 MIGRATIONS = {
@@ -483,28 +498,99 @@ MIGRATIONS = {
     "023": apply_023,
     "024": apply_024,
     "025": apply_025,
+    "026": apply_026,
 }
+
+
+def applied_ids(conn: sqlite3.Connection) -> set[str]:
+    """Every id this store has recorded. Creates the table if absent, so a store
+    that has never been migrated reports an empty set rather than raising."""
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS schema_migrations ("
+        " id TEXT PRIMARY KEY, applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
+    )
+    return {r[0] for r in conn.execute("SELECT id FROM schema_migrations")}
+
+
+def status(conn: sqlite3.Connection) -> tuple[list[str], list[str]]:
+    """(pending, unknown) for this store.
+
+    `unknown` is an id the store has recorded that this runner cannot produce.
+    That is not a curiosity: it means somebody ran the DDL by hand and stamped
+    it, so the change exists in exactly one store and no other store can ever
+    reach the same schema. It is reported, loudly, rather than ignored.
+    """
+    have = applied_ids(conn)
+    pending = [m for m in sorted(MIGRATIONS) if m not in have]
+    unknown = sorted(have - set(MIGRATIONS))
+    return pending, unknown
+
+
+def apply_one(conn: sqlite3.Connection, mig_id: str) -> None:
+    MIGRATIONS[mig_id](conn)
+    conn.execute("INSERT OR REPLACE INTO schema_migrations(id) VALUES (?)", (mig_id,))
+
+
+def apply_all(conn: sqlite3.Connection) -> list[str]:
+    """Bring this store to the checkout's schema. Idempotent, in id order.
+
+    ── Why this exists ────────────────────────────────────────────────────
+    Until it did, a migration reached a store only when a human remembered to
+    run `apply.py <id>` while pointed at that store. In practice that meant the
+    laptop, every time, and the Railway volume never — the corpus census taken
+    inside the container on 2026-08-07 failed its whole coverage block with
+    `no such column: tier`, migration 020, three weeks after it was applied
+    here. Schema changes also ride on ordinary ETL scripts that self-heal with
+    ALTER TABLE (mark_offer_route.py, name_applicable_object.py,
+    merge_companies.py, classify.py), which has the same shape: the schema
+    follows whichever SCRIPT ran, not whichever STORE matters.
+
+    So this is a step a pipeline can run, not a command a person must remember,
+    and railway_cron.py runs it first.
+    """
+    pending, unknown = status(conn)
+    if unknown:
+        print(f"  WARNING: {len(unknown)} id(s) recorded here that this runner "
+              f"does not know: {', '.join(unknown)}")
+        print("  Somebody applied DDL by hand. No other store can reproduce it.")
+    for mig_id in pending:
+        print(f"Applying migration {mig_id}...")
+        apply_one(conn, mig_id)
+    conn.commit()
+    return pending
 
 
 def main() -> None:
     if len(sys.argv) < 2:
-        sys.exit("Usage: python apply.py <migration_id>")
-    mig_id = sys.argv[1]
-    if mig_id not in MIGRATIONS:
-        sys.exit(f"Unknown migration: {mig_id}. Available: {sorted(MIGRATIONS)}")
+        sys.exit("Usage: python apply.py <migration_id> | all | --check")
+    arg = sys.argv[1]
 
     conn = sqlite3.connect(DB_PATH)
     try:
-        if already_applied(conn, mig_id):
-            print(f"Migration {mig_id} already applied — re-running idempotently.")
-        print(f"Applying migration {mig_id}...")
-        MIGRATIONS[mig_id](conn)
-        conn.execute(
-            "INSERT OR REPLACE INTO schema_migrations(id) VALUES (?)",
-            (mig_id,),
-        )
+        if arg == "--check":
+            pending, unknown = status(conn)
+            print(f"{DB_PATH}")
+            print(f"  applied {len(applied_ids(conn))}, pending {len(pending)}"
+                  + (f": {', '.join(pending)}" if pending else ""))
+            if unknown:
+                print(f"  UNKNOWN (hand-applied, unreproducible elsewhere): "
+                      f"{', '.join(unknown)}")
+            sys.exit(1 if (pending or unknown) else 0)
+
+        if arg == "all":
+            applied = apply_all(conn)
+            print(f"Schema up to date ({len(applied)} applied this run"
+                  + (f": {', '.join(applied)}" if applied else "") + ").")
+            return
+
+        if arg not in MIGRATIONS:
+            sys.exit(f"Unknown migration: {arg}. Available: {sorted(MIGRATIONS)}")
+        if already_applied(conn, arg):
+            print(f"Migration {arg} already applied — re-running idempotently.")
+        print(f"Applying migration {arg}...")
+        apply_one(conn, arg)
         conn.commit()
-        print(f"Migration {mig_id} applied.")
+        print(f"Migration {arg} applied.")
     finally:
         conn.close()
 
