@@ -149,12 +149,10 @@ def collect() -> tuple[dict, list[str]]:
             }
         finally:
             con.close()
-        if pending:
-            errors.append(f"schema: {len(pending)} migration(s) pending on this "
-                          f"store: {', '.join(pending)}")
-        if unknown:
-            errors.append(f"schema: {len(unknown)} migration id(s) recorded here "
-                          f"with no file behind them: {', '.join(unknown)}")
+        # Deliberately NOT appended to `errors`. A pending migration is recorded,
+        # and the guard has a SCHEMA class for it; putting it in `errors` too
+        # would additionally raise DEGRADED, which means "this corpus is not fit
+        # to publish" and is a different claim. One fact, one verdict.
     except Exception as exc:  # noqa: BLE001
         errors.append(f"schema: {type(exc).__name__}: {exc}")
 
