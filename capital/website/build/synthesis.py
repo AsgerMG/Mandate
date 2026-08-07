@@ -6,6 +6,7 @@ home page KPI grid and the layout footer depend on.
 
   website/frontend/public/data/synthesis.json
 """
+import datetime as _dt
 import sys
 from pathlib import Path
 
@@ -35,6 +36,17 @@ def run_synthesis():
         con.close()
 
     payload = {
+        # WHEN this reading of the corpus was taken. The site now reads the
+        # headline figures live from `corpus_census` and keeps this artifact as
+        # the fallback for when Postgres is unreachable or the newest censuses
+        # are inadmissible — and it can only choose between the two if both say
+        # when they were observed. Without it the fallback is an undated claim,
+        # and an undated claim cannot be compared to anything: the live path
+        # would have had to either always win (and could then make the site
+        # STALER than it is today, on a census taken before the last
+        # `make data`) or always lose. See lib/corpusFigures.ts.
+        "generated_at": _dt.datetime.now(_dt.timezone.utc).isoformat(
+            timespec="seconds"),
         "companies": k["companies"],
         "events": k["events"],
         "champions": k["champions"],
