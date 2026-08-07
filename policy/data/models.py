@@ -247,6 +247,25 @@ class Passage(Base):
     __tablename__ = "passages"
     __table_args__ = (
         UniqueConstraint("version_id", "ordinal", name="uq_passage_version_ordinal"),
+        # The HNSW index every semantic search rides. Declared here rather than
+        # only created imperatively in init_db(), because an index that exists in
+        # the database but not in Base.metadata is an index `alembic revision
+        # --autogenerate` will propose DROPPING — silently, as one line in a
+        # migration nobody reads closely. `alembic check` failed on exactly that
+        # diff until this was added.
+        #
+        # Must stay byte-identical in effect to what the database already holds:
+        #   CREATE INDEX ix_passages_embedding_hnsw
+        #     ON public.passages USING hnsw (embedding vector_cosine_ops)
+        # i.e. cosine opclass, pgvector's default m/ef_construction (no WITH
+        # clause). Adding build parameters here without also rebuilding the live
+        # index would re-introduce the same drift in the opposite direction.
+        Index(
+            "ix_passages_embedding_hnsw",
+            "embedding",
+            postgresql_using="hnsw",
+            postgresql_ops={"embedding": "vector_cosine_ops"},
+        ),
     )
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)

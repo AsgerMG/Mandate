@@ -48,7 +48,10 @@ _LEGACY_REASONING: tuple[str, ...] = (
     "claude-sonnet-4-5",
     "claude-3-5-sonnet",
     "claude-opus-4-5",
-    "claude-opus-4-1",
+    # claude-opus-4-1 removed 2026-08-07: it retired on 2026-08-05, so an entry
+    # for it can only ever shape a request that is going to 404 anyway. Listing
+    # retired models here is not free — this tuple is prefix-matched, so it grows
+    # into a list nobody can tell is still load-bearing.
 )
 
 # What an effort level means in explicit thinking tokens on a legacy model.

@@ -20,6 +20,7 @@ from etl.intelligence.questions import (
     AI_ROLE_QUESTION,
     COMPETITIVE_CONTEXT_QUESTION,
     EXTRAS_SYSTEM,
+    QUESTIONS_TOOL,
     SIZE_QUESTION,
     build_extras_request,
     generate_questions,
@@ -286,3 +287,55 @@ def test_generate_questions_extras_get_canon_guaranteed_retrieval(db_session):
 
     sent = client.messages.kwargs["messages"][0]["content"]
     assert "32022L2555" in sent  # NIS2 present despite losing the open top-1
+
+
+def test_extras_request_goes_through_the_shaping_layer(monkeypatch):
+    """The scoping-questions call was the one brief-path call site that
+    hand-assembled `model` and `max_tokens` instead of going through
+    reasoning_params — so it was the one site that would not pick up whatever the
+    shaping layer learns about a model generation. An exception is exactly what
+    the layer exists to remove."""
+    from data.config import get_settings
+
+    monkeypatch.setenv("LLM_MODEL", "claude-sonnet-5")
+    get_settings.cache_clear()
+    try:
+        req = build_extras_request(
+            CompanyProfile(name="Acme", uses_ai=True),
+            [{"text": "high-risk AI", "celex": "C1", "title": "T"}],
+            [],
+        )
+        assert req["model"] == "claude-sonnet-5"
+        assert req["thinking"] == {"type": "adaptive", "display": "summarized"}
+        # "low": a scoping judgement over already-retrieved passages, not fresh
+        # synthesis — the same level the revise self-edit uses.
+        assert req["output_config"]["effort"] == "low"
+        # Thinking is drawn from the same max_tokens the tool call has to fit in,
+        # so the old 1500 was a truncation risk the moment the configured model
+        # reached a generation that thinks by default.
+        assert req["max_tokens"] >= 4000
+        # ...and the tool contract is untouched by the shaping.
+        assert req["tools"] == [QUESTIONS_TOOL]
+        assert req["tool_choice"] == {"type": "tool", "name": "propose_scoping_questions"}
+    finally:
+        get_settings.cache_clear()
+
+
+def test_extras_request_stays_legal_on_a_legacy_model(monkeypatch):
+    """The 400 this routing prevents: a legacy model rejects `output_config.effort`
+    and adaptive thinking outright."""
+    from data.config import get_settings
+
+    monkeypatch.setenv("LLM_MODEL", "claude-haiku-4-5")
+    get_settings.cache_clear()
+    try:
+        req = build_extras_request(
+            CompanyProfile(name="Acme", uses_ai=True),
+            [{"text": "high-risk AI", "celex": "C1", "title": "T"}],
+            [],
+        )
+        assert "output_config" not in req
+        assert req.get("thinking", {}).get("type") != "adaptive"
+        assert req["tool_choice"] == {"type": "tool", "name": "propose_scoping_questions"}
+    finally:
+        get_settings.cache_clear()

@@ -33,6 +33,8 @@ from etl.intelligence.briefing import (
     _cap_per_source,
     _cap_precedent,
     _competitive_query,
+    _content_key,
+    _dedupe_content,
     _excerpt,
     _merge_passages,
     _retrieval_stats,
@@ -1762,3 +1764,126 @@ def test_verbatim_debates_are_labelled_from_their_type_not_from_extra():
 
     assert _source_label("EU", "verbatim_debate") == "[EU · Verbatim debate]"
     assert _source_label("EU", "press") == "[EU · Press]"
+
+
+# --- duplicate documents ----------------------------------------------------
+#
+# 16 canon instruments were stored twice, byte for byte, under two source_ids
+# (`eurlex` and `eurlex_key_acts` both ingested them) — AI Act, DSA, GDPR, CRA,
+# NIS2, DMA, EECC and 9 more, 3,290 redundant passages, one distinct
+# content_hash per pair. Deleting the redundant rows is a separate decision;
+# these lock the code-level defence, so retrieval cannot silently lose breadth
+# to duplicate content if it ever reappears.
+
+
+def _copy_of(celex: str, doc_id: int, span: int) -> dict:
+    """One passage of an act, as stored under document ``doc_id``. Two calls with
+    the same ``span`` and different ``doc_id`` are the byte-identical duplicate:
+    same instrument, same characters, different row."""
+    return {
+        "celex": celex,
+        "url": f"http://x/{celex}",
+        "title": celex,
+        "document_id": doc_id,
+        "document_type": "regulation",
+        "char_start": span,
+        "char_end": span + 50,
+        "text": f"{celex} chars {span}",
+        "score": 0.9 - span / 10_000,
+    }
+
+
+def test_duplicate_copies_do_not_burn_a_facets_breadth_slots():
+    """The bug, at the point it actually costs something.
+
+    Identical embeddings put the two copies at ADJACENT ranks, so the
+    per-document cap fills both of the instrument's slots with the same
+    paragraph twice. _merge_passages later collapses them — by which time the
+    slot is spent and the facet contributes one passage where it was budgeted
+    two."""
+    pool = [_copy_of("32016R0679", doc_id, span) for span in (0, 100) for doc_id in (1, 2)]
+
+    # Straight to the cap, as it was: two entries, ONE distinct paragraph.
+    assert len({_content_key(p) for p in _cap_per_document(pool, max_per_doc=2)}) == 1
+
+    # Deduped first: two entries, two distinct paragraphs — the breadth the
+    # facet was budgeted.
+    deduped = _cap_per_document(_dedupe_content(pool), max_per_doc=2)
+    assert len({_content_key(p) for p in deduped}) == 2
+
+
+def test_dedupe_content_keeps_the_best_ranked_copy_and_the_order():
+    a, b = _copy_of("32016R0679", 1, 0), _copy_of("32016R0679", 2, 0)
+    later = _copy_of("32016R0679", 1, 100)
+    kept = _dedupe_content([a, b, later])
+    assert kept == [a, later], "first (best-ranked) copy kept, order preserved"
+
+
+def test_dedupe_content_never_merges_two_real_passages_of_one_act():
+    """The failure mode a too-coarse key would introduce: collapsing an act's
+    distinct paragraphs into one, which is a worse breadth loss than the bug."""
+    spans = [_copy_of("32016R0679", 1, span) for span in (0, 100, 200, 300)]
+    assert len(_dedupe_content(spans)) == 4
+
+
+def test_merge_passages_collapses_an_act_stored_under_two_documents():
+    primary = [_copy_of("32016R0679", 1, 0)]
+    other_copy = [_copy_of("32016R0679", 2, 0)]
+    assert len(_merge_passages(primary, other_copy)) == 1
+
+
+def test_top_document_ids_spends_one_depth_slot_per_instrument():
+    """The most expensive way duplicates hurt: two copies of one act take two of
+    the depth slots, and the instrument that loses the last slot gets no depth at
+    all. Costs a whole instrument, not one passage."""
+    passages = [
+        _copy_of("32016R0679", 1, 0),  # GDPR, copy A
+        _copy_of("32016R0679", 2, 0),  # GDPR, copy B — same text, different row
+        # Ranked strictly below both copies, so it only survives if the two
+        # copies share a slot rather than taking one each.
+        {**_copy_of("32022R2065", 3, 0), "score": 0.5},
+    ]
+    ids = _top_document_ids(passages, limit=2)
+    assert len(ids) == 2
+    assert 3 in ids, "the DSA was crowded out by the GDPR's second copy"
+
+
+def test_retrieval_stats_records_which_instruments_were_retrieved():
+    """Without this, recency coverage is not computable from a stored report —
+    reports keep retrieval_stats, never the passages. See brief_eval/recency.py."""
+    passages = [
+        _copy_of("32016R0679", 1, 0),
+        _copy_of("32016R0679", 2, 0),
+        _copy_of("32022R2065", 3, 0),
+        {"text": "press", "score": 0.5, "char_start": 0, "char_end": 4},  # no celex
+    ]
+    stats = _retrieval_stats(passages, ["profile"])
+    assert stats["retrieved_celex"] == ["32016R0679", "32022R2065"]
+    assert _retrieval_stats([], ["profile"])["retrieved_celex"] == []
+
+
+def test_a_duplicated_instrument_reaches_context_exactly_once(db_session):
+    """End to end against real pgvector: an act seeded twice under two sources —
+    the production shape — must not appear twice in the passage set, and must not
+    cost the other instrument its depth."""
+    ai_text = [
+        "ai obligations and intelligence",
+        "ai risk management system requirements",
+        "ai conformity assessment duties",
+        "ai transparency obligations for providers",
+    ]
+    # Same celex, same text, two source rows: byte-identical duplicates.
+    _seed_deep_doc(db_session, celex="32099R0001", key="eurlex", passages=ai_text)
+    _seed_deep_doc(db_session, celex="32099R0001", key="eurlex_key_acts", passages=ai_text)
+    _seed_deep_doc(db_session, celex="32099R0002", key="other", passages=ai_text)
+    embed_pending(db_session, FakeEmbedder())
+
+    profile = CompanyProfile(name="Acme", uses_ai=True)
+    result = generate_briefing(db_session, FakeEmbedder(), profile, k=5, dry_run=True)
+
+    keys = [_content_key(p) for p in result["passages"]]
+    assert len(keys) == len(set(keys)), "the same paragraph reached context twice"
+    # Both instruments still get depth — the duplicate did not eat the budget.
+    reached = {p.get("celex") for p in result["passages"]}
+    assert {"32099R0001", "32099R0002"} <= reached
+    assert result["retrieval_stats"]["retrieved_celex"] == ["32099R0001", "32099R0002"]
