@@ -27,10 +27,27 @@ CREATE TABLE IF NOT EXISTS brief_records (
   duration_ms                INTEGER,
   code_version               TEXT,
   outcome                    TEXT,
-  outcome_note               TEXT
+  outcome_note               TEXT,
+  exclusions                 JSONB
 );
 CREATE INDEX IF NOT EXISTS brief_records_created_idx ON public.brief_records USING btree (created_at DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS brief_records_pkey ON public.brief_records USING btree (id);
+
+-- ─── corpus_census ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS corpus_census (
+  id                         BIGSERIAL NOT NULL,
+  taken_at                   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  produced_by                TEXT NOT NULL,
+  code_fingerprint           TEXT NOT NULL,
+  kpis                       JSONB,
+  instruments                JSONB,
+  coverage                   JSONB,
+  gate                       JSONB,
+  errors                     JSONB NOT NULL DEFAULT '[]'::jsonb,
+  run_outcome                TEXT NOT NULL DEFAULT 'unknown'::text
+);
+CREATE UNIQUE INDEX IF NOT EXISTS corpus_census_pkey ON public.corpus_census USING btree (id);
+CREATE INDEX IF NOT EXISTS corpus_census_taken_idx ON public.corpus_census USING btree (taken_at DESC);
 
 -- ─── eligibility_clauses ───────────────────────────────────────
 CREATE TABLE IF NOT EXISTS eligibility_clauses (
@@ -142,13 +159,59 @@ CREATE TABLE IF NOT EXISTS funding_instruments (
   sample_project_titles      TEXT,
   created_at                 TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at                 TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  administering_body_share   REAL
+  administering_body_share   REAL,
+  scheme_code                TEXT,
+  application_url            TEXT,
+  sector_mix                 TEXT,
+  scheme_operators           TEXT,
+  award_p25                  DOUBLE PRECISION,
+  award_p50                  DOUBLE PRECISION,
+  award_p75                  DOUBLE PRECISION,
+  award_n                    INTEGER,
+  intensity_p50              DOUBLE PRECISION,
+  intensity_n                INTEGER,
+  tier                       TEXT,
+  root_id                    TEXT,
+  depth                      INTEGER,
+  path                       TEXT,
+  scheme_end_date            TEXT,
+  successor_scheme           TEXT,
+  successor_title            TEXT,
+  delivery_region            TEXT,
+  delivery_region_share      DOUBLE PRECISION,
+  recipient_region_mix       TEXT,
+  description                TEXT,
+  eligibility_text           TEXT,
+  eligibility_source_url     TEXT,
+  eligibility_confidence     TEXT,
+  eligibility_fetched_at     TEXT,
+  catchment_region           TEXT,
+  catchment_regions          TEXT,
+  catchment_source           TEXT,
+  scheme_end_date_basis      TEXT,
+  route_status               TEXT,
+  route_status_source        TEXT,
+  route_status_note          TEXT,
+  name_basis                 TEXT
 );
 CREATE UNIQUE INDEX IF NOT EXISTS funding_instruments_pkey ON public.funding_instruments USING btree (id);
 CREATE INDEX IF NOT EXISTS idx_fi_capital ON public.funding_instruments USING btree (capital_type);
 CREATE INDEX IF NOT EXISTS idx_fi_country ON public.funding_instruments USING btree (country);
 CREATE INDEX IF NOT EXISTS idx_fi_events ON public.funding_instruments USING btree (event_count DESC);
 CREATE INDEX IF NOT EXISTS idx_fi_parent ON public.funding_instruments USING btree (parent_id) WHERE (parent_id IS NOT NULL);
+
+-- ─── instrument_application ────────────────────────────────────
+CREATE TABLE IF NOT EXISTS instrument_application (
+  id                         TEXT NOT NULL,
+  instrument_id              TEXT NOT NULL,
+  channel                    TEXT,
+  timeline                   TEXT,
+  url                        TEXT,
+  quote                      TEXT,
+  source_file                TEXT,
+  updated_at                 TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS instrument_application_pkey ON public.instrument_application USING btree (id);
 
 -- ─── instrument_profiles ───────────────────────────────────────
 CREATE TABLE IF NOT EXISTS instrument_profiles (
