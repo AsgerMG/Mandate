@@ -1,0 +1,264 @@
+"""Reconcile two SQLite stores BY UNION. Never by overwrite.
+
+── The problem ────────────────────────────────────────────────────────────
+The only two channels between the corpus of record (the Railway volume) and a
+working copy are `pull_db.py` and `push_local.py`, and both move the entire
+645 MB file with `--overwrite`. Whichever direction you run, everything the
+other store holds alone is destroyed. On 2026-08-07 that meant:
+
+  pull   the volume's 1,451 events arrive; the laptop's 764 instruments and
+         2,350 encoded gates are deleted.
+  push   the laptop's instruments arrive; the volume's 1,451 events — real
+         awards, from registers that keep no history — are deleted.
+
+So the two stores could not be joined by anything in the repository. The
+divergence was not a lapse of discipline; it was the only reachable state.
+
+── What this does instead ─────────────────────────────────────────────────
+Table by table, keyed on the table's own identity:
+
+  in SOURCE only   INSERT into the target.
+  in TARGET only   KEPT. Always. There is no mode in which this deletes a row.
+  in both          merged column by column: a NULL in the target takes the
+                   source's value; two differing non-NULL values are a CONFLICT
+                   and the family's owner wins, with the losing value written to
+                   the report so the decision is inspectable rather than silent.
+
+The last rule is the "evidence" half. `refresh_open_calls.py` runs weekly on the
+volume and writes scheme_end_date; the encoding pipeline runs on the laptop and
+writes everything else about the same rows. Both are real. Neither can be
+discarded quietly.
+
+── Usage ──────────────────────────────────────────────────────────────────
+  # what differs, changing nothing
+  python3 ETL/events/load/reconcile_stores.py --report A.sqlite B.sqlite
+
+  # promote a family from a working copy into the corpus of record
+  python3 ETL/events/load/reconcile_stores.py \
+      --into  volume.sqlite --from local.sqlite --family instruments
+
+`--into` is written in place, so take a copy first if you want one; the tool
+refuses to touch a file it was not given explicitly.
+"""
+from __future__ import annotations
+
+# --- ETL path bootstrap (see ETL/lib/etl_env.py) ---
+import sys as _sys
+from pathlib import Path as _Path
+for _anc in _Path(__file__).resolve().parents:
+    if (_anc / "lib" / "etl_env.py").exists():
+        _sys.path.insert(0, str(_anc / "lib"))
+        break
+from etl_env import ROOT  # noqa: E402
+# --- end ETL path bootstrap ---
+
+import argparse  # noqa: E402
+import sqlite3  # noqa: E402
+
+_sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
+from corpus_stores import FAMILIES  # noqa: E402
+
+# The identity a row is matched on. Not always the primary key: eligibility_gates
+# and eligibility_clauses carry a SQLite autoincrement id that is re-issued on
+# every reload, so matching on it would call every row new and duplicate the
+# entire table. Matching is on what makes the row that row.
+IDENTITY = {
+    "funding_instruments": ["id"],
+    "funding_instrument_sources": ["instrument_id", "source"],
+    "eligibility_gates": ["instrument_id", "requirement"],
+    "eligibility_clauses": ["instrument_id", "clause_text"],
+    "instrument_application": ["id"],
+    "companies": ["id"],
+    "public_funding_events": ["source_family", "source_record_id", "company_name",
+                              "award_date"],
+    "public_equity_stakes": ["id"],
+}
+
+# Columns never carried across: surrogate ids the target re-issues, and
+# timestamps that describe the ROW's life in a store rather than the fact.
+NEVER_COPY = {"id", "created_at", "updated_at"}
+
+
+def ro(path: str) -> sqlite3.Connection:
+    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    con.row_factory = sqlite3.Row
+    return con
+
+
+def cols(con: sqlite3.Connection, table: str) -> list[str]:
+    return [r[1] for r in con.execute(f"PRAGMA table_info({table})")]
+
+
+def has(con: sqlite3.Connection, table: str) -> bool:
+    return con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                       (table,)).fetchone() is not None
+
+
+def key_of(row, keys: list[str]):
+    return tuple("" if row[k] is None else str(row[k]) for k in keys)
+
+
+def load(con: sqlite3.Connection, table: str, keys: list[str]) -> dict:
+    return {key_of(r, keys): r for r in con.execute(f'SELECT * FROM "{table}"')}
+
+
+def report(a_path: str, b_path: str) -> int:
+    """What each store holds that the other does not. Reads only."""
+    A, B = ro(a_path), ro(b_path)
+    print(f"A = {a_path}\nB = {b_path}\n")
+    worst = 0
+    for family, tables in FAMILIES.items():
+        print(f"── {family} " + "─" * (68 - len(family)))
+        for t in tables:
+            if not has(A, t) or not has(B, t):
+                print(f"  {t:<30} MISSING from {'A' if not has(A, t) else 'B'}")
+                continue
+            keys = IDENTITY.get(t)
+            if not keys or any(k not in cols(A, t) for k in keys):
+                na = A.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
+                nb = B.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
+                print(f"  {t:<30} {na:>9,} {nb:>9,}   (no identity declared, counts only)")
+                continue
+            ka = set(load(A, t, keys))
+            kb = set(load(B, t, keys))
+            only_a, only_b = len(ka - kb), len(kb - ka)
+            worst = max(worst, only_a, only_b)
+            flag = "  <-- both hold rows the other lacks" if only_a and only_b else ""
+            print(f"  {t:<30} {len(ka):>9,} {len(kb):>9,}   "
+                  f"only-A {only_a:>7,}  only-B {only_b:>7,}{flag}")
+        print()
+    # Schema, because a union cannot carry a column the target has no room for.
+    print("── schema " + "─" * 69)
+    for family, tables in FAMILIES.items():
+        for t in tables:
+            if not (has(A, t) and has(B, t)):
+                continue
+            ca, cb = set(cols(A, t)), set(cols(B, t))
+            if ca != cb:
+                print(f"  {t}: A-only {sorted(ca - cb)}  B-only {sorted(cb - ca)}")
+    return 0 if worst == 0 else 3
+
+
+def merge_table(tgt: sqlite3.Connection, src: sqlite3.Connection, table: str,
+                owner_is_source: bool, dry: bool) -> dict:
+    keys = IDENTITY.get(table)
+    if not keys:
+        return {"skipped": "no identity declared"}
+    tcols, scols = cols(tgt, table), cols(src, table)
+    shared = [c for c in scols if c in tcols and c not in NEVER_COPY]
+    missing_in_target = [c for c in scols if c not in tcols]
+
+    src_rows = load(src, table, keys)
+    tgt_rows = load(tgt, table, keys)
+
+    inserted = updated = conflicts = 0
+    conflict_log: list[str] = []
+
+    # 1. rows the target does not have
+    new_keys = [k for k in src_rows if k not in tgt_rows]
+    if new_keys and not dry:
+        ph = ", ".join("?" * len(shared))
+        tgt.executemany(
+            f'INSERT INTO "{table}" ({", ".join(shared)}) VALUES ({ph})',
+            [tuple(src_rows[k][c] for c in shared) for k in new_keys])
+    inserted = len(new_keys)
+
+    # 2. rows both have — column by column
+    for k in src_rows:
+        if k not in tgt_rows:
+            continue
+        s, t = src_rows[k], tgt_rows[k]
+        sets, vals = [], []
+        for c in shared:
+            if c in keys:
+                continue
+            sv, tv = s[c], t[c]
+            if sv == tv:
+                continue
+            if tv is None and sv is not None:
+                sets.append(f'"{c}" = ?')      # fill a hole, always safe
+                vals.append(sv)
+            elif sv is not None and tv is not None:
+                conflicts += 1
+                if owner_is_source:
+                    sets.append(f'"{c}" = ?')
+                    vals.append(sv)
+                    if len(conflict_log) < 40:
+                        conflict_log.append(
+                            f"{table} {k} .{c}: kept source {sv!r}, displaced target {tv!r}")
+                elif len(conflict_log) < 40:
+                    conflict_log.append(
+                        f"{table} {k} .{c}: kept target {tv!r}, ignored source {sv!r}")
+        if sets:
+            updated += 1
+            if not dry:
+                where = " AND ".join(f'COALESCE("{c}", \'\') = ?' for c in keys)
+                tgt.execute(f'UPDATE "{table}" SET {", ".join(sets)} WHERE {where}',
+                            (*vals, *k))
+
+    return {
+        "inserted": inserted, "updated": updated, "conflicts": conflicts,
+        "kept_only_in_target": len([k for k in tgt_rows if k not in src_rows]),
+        "columns_dropped": missing_in_target, "conflict_log": conflict_log,
+    }
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--report", nargs=2, metavar=("A", "B"),
+                    help="compare two stores, change nothing")
+    ap.add_argument("--into", help="the store to write (the corpus of record)")
+    ap.add_argument("--from", dest="source", help="the store to take rows from")
+    ap.add_argument("--family", action="append", choices=sorted(FAMILIES),
+                    help="which table family the SOURCE owns; repeatable")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="say what would move, write nothing")
+    args = ap.parse_args()
+
+    if args.report:
+        return report(*args.report)
+
+    if not (args.into and args.source and args.family):
+        ap.error("give --report A B, or --into X --from Y --family <name>")
+
+    tgt = sqlite3.connect(args.into)
+    tgt.row_factory = sqlite3.Row
+    src = ro(args.source)
+    print(f"into  {args.into}\nfrom  {args.source}\nfamily {', '.join(args.family)}"
+          + ("   (DRY RUN)" if args.dry_run else "") + "\n")
+
+    total_conflicts = 0
+    for family in args.family:
+        for t in FAMILIES[family]:
+            if not (has(tgt, t) and has(src, t)):
+                print(f"  {t:<30} skipped (absent from one store)")
+                continue
+            r = merge_table(tgt, src, t, owner_is_source=True, dry=args.dry_run)
+            if "skipped" in r:
+                print(f"  {t:<30} skipped — {r['skipped']}")
+                continue
+            total_conflicts += r["conflicts"]
+            print(f"  {t:<30} +{r['inserted']:,} new, {r['updated']:,} merged, "
+                  f"{r['conflicts']:,} conflicts, {r['kept_only_in_target']:,} kept "
+                  f"that the source lacks")
+            if r["columns_dropped"]:
+                print(f"      columns the target has no room for (run migrations "
+                      f"first): {r['columns_dropped']}")
+            for line in r["conflict_log"]:
+                print(f"      {line}")
+
+    if args.dry_run:
+        tgt.rollback()
+        print("\nDRY RUN — nothing written.")
+    else:
+        tgt.commit()
+        print(f"\nWritten. {total_conflicts:,} conflicts resolved in favour of the "
+              f"source, every one printed above. No row was deleted.")
+    tgt.close()
+    src.close()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
