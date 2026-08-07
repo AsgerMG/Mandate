@@ -108,7 +108,6 @@ class HaveYourSayAdapter(SourceAdapter):
             url=PUBLIC_URL.format(id=ext),
             date_document=fb_start,
             date_end_validity=fb_end,
-            policy_area_slugs=[],
             extra={
                 "reference": item.get("reference"),
                 "foreseen_act_type": item.get("foreseenActType"),

@@ -29,10 +29,10 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from data.config import get_settings
 from etl.enrichment import Embedder, canon_passages, semantic_search
 
 from .briefing import _CANON_CELEX, _merge_passages
+from .llm import reasoning_params
 from .profile import CompanyProfile
 
 # The answer `id`s deliberately match CompanyProfile field names, so the
@@ -284,7 +284,6 @@ def build_extras_request(
     profile: CompanyProfile, passages: list[dict], already_asked: list[str]
 ) -> dict[str, Any]:
     """Assemble the messages.create(**kwargs) payload for LLM extras (no API call)."""
-    settings = get_settings()
     corpus = "\n\n".join(
         f"[{p.get('celex') or p.get('title')}] {p['text'][:600]}" for p in passages
     )
@@ -303,8 +302,28 @@ def build_extras_request(
         f"Retrieved policy passages:\n{corpus}"
     )
     return {
-        "model": settings.llm_model,
-        "max_tokens": 1500,
+        # Through reasoning_params like every other call site on the brief path,
+        # rather than hand-assembling `model` + `max_tokens`. This was the one
+        # exception, and an exception is exactly what the shaping layer exists to
+        # prevent: it means one call site does not get whatever the layer learns
+        # about a model generation, and the failure shows up as a 400 from the
+        # one place nobody remembered to update.
+        #
+        # "low" because this is a scoping judgement over passages already
+        # retrieved, not fresh synthesis — the same level build_revise_request
+        # uses for its self-edit. On a legacy model that becomes a small explicit
+        # thinking budget; on a 4.6-generation model, adaptive thinking with
+        # effort=low.
+        #
+        # max_tokens raised from 1500. The old value was chosen when this call
+        # sent no thinking configuration at all — but on a 4.6-generation model
+        # omitting `thinking` does not mean "no thinking", and thinking is drawn
+        # from the same max_tokens the tool call has to fit in. 1500 was a
+        # truncation risk the moment the configured model moved to that
+        # generation; 4000 leaves room for the reasoning and a three-question
+        # tool call. It is a ceiling, not a spend: effort=low keeps the actual
+        # usage well under it.
+        **reasoning_params("low", max_tokens=4000),
         "system": EXTRAS_SYSTEM,
         "tools": [QUESTIONS_TOOL],
         "tool_choice": {"type": "tool", "name": "propose_scoping_questions"},

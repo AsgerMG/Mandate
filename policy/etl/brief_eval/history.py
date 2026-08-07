@@ -26,6 +26,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from etl.intelligence.briefing import DEPTH_RATIO_KEY
+
 REPORT_GLOB = "brief-check-*.json"
 DEFAULT_ROOT = Path("exports")
 
@@ -78,10 +80,18 @@ def run_rows(root: Path | str = DEFAULT_ROOT) -> list[dict[str, Any]]:
                 or _mean([b.get("seconds") for b in breakdown.values()]),
                 "passages": _mean([r.get("retrieval_stats", {}).get("passages") for r in results]),
                 "depth": _mean(
-                    [
-                        r.get("retrieval_stats", {}).get("substantive_documents_per_passage")
-                        for r in results
-                    ]
+                    [r.get("retrieval_stats", {}).get(DEPTH_RATIO_KEY) for r in results]
+                ),
+                # Of the acts published in the last 30 days, the share that
+                # reached ANY brief in this run (see recency.py). Recorded from
+                # 2026-08-07; earlier runs render "—", and so does a run whose
+                # briefs predate `retrieval_stats["retrieved_celex"]` — which is
+                # the point of `measurable`, since a real 0.0% and an
+                # unrecordable one are the same number and opposite findings.
+                "recent_pct": (
+                    (report.get("recency") or {}).get("coverage_pct")
+                    if (report.get("recency") or {}).get("measurable", True)
+                    else None
                 ),
                 "documents": corpus.get("documents"),
                 "unembedded": corpus.get("unembedded_passages"),
@@ -114,7 +124,8 @@ def render(rows: list[dict[str, Any]]) -> str:
 
     head = (
         f"{'when':16} {'label':12} {'model':17} {'n':>2} {'score':>5} {'canon!':>6} "
-        f"{'$/brief':>8} {'s/brief':>8} {'passages':>9} {'depth':>6} {'corpus':>7} {'unemb':>6}"
+        f"{'$/brief':>8} {'s/brief':>8} {'passages':>9} {'depth':>6} {'recent%':>7} "
+        f"{'corpus':>7} {'unemb':>6}"
     )
     lines = ["Brief-check run history (oldest first)", "", head, "-" * len(head)]
     for r in rows:
@@ -124,8 +135,8 @@ def render(rows: list[dict[str, Any]]) -> str:
             f"{cell(r['score'], '5.2f'):>5} {cell(r['canon_unresolved'], '6d'):>6} "
             f"{cell(r['usd_per_brief'], '8.3f'):>8} "
             f"{cell(r['seconds_per_brief'], '8.1f'):>8} {cell(r['passages'], '9.1f'):>9} "
-            f"{cell(r['depth'], '6.3f'):>6} {cell(r['documents'], '7d'):>7} "
-            f"{cell(r['unembedded'], '6d'):>6}"
+            f"{cell(r['depth'], '6.3f'):>6} {cell(r['recent_pct'], '7.1f'):>7} "
+            f"{cell(r['documents'], '7d'):>7} {cell(r['unembedded'], '6d'):>6}"
         )
     lines += [
         "",
@@ -136,6 +147,12 @@ def render(rows: list[dict[str, Any]]) -> str:
         "the compliance table nor the out-of-scope appendix after the correction loop —",
         "recorded during generation, deterministic, and the one quality signal here that",
         "needs no model at all.",
+        "",
+        "`recent%` is the share of acts published in the last 30 days that reached ANY",
+        "brief in that run. It was measured once, at 0.0%, and then went unwatched for",
+        "two weeks because it was wired into `brief-improve` and not into `brief-check`.",
+        "A low number is a corpus/retrieval finding, not a prompt one: no wording change",
+        "can cite a passage retrieval never returned.",
         "",
         "`score` is comparable across rows because the judge model is pinned separately",
         "from the model under test — but an LLM judge is not perfectly repeatable and its",

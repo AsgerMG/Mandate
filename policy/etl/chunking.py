@@ -84,10 +84,20 @@ def chunk_text(
         if end - cur_start <= target:
             cur_end = end
         else:
-            chunks.append(_make(ordinal, text, cur_start, cur_end))
+            prev_start, prev_end = cur_start, cur_end
+            chunks.append(_make(ordinal, text, prev_start, prev_end))
             ordinal += 1
-            # start next chunk with overlap back into the previous one
-            cur_start = max(cur_end - overlap, start) if cur_end else start
+            # Start the next chunk `overlap` characters back INTO the one just
+            # emitted, so a sentence straddling the boundary is still whole in
+            # one of them. Clamped to that chunk's own start, so a chunk
+            # shorter than `overlap` rewinds to its beginning rather than into
+            # the chunk before it.
+            #
+            # This previously read `max(cur_end - overlap, start)` — with
+            # `start` being the *next* span's start, which is always >= cur_end,
+            # so max() always picked `start` and OVERLAP_CHARS was dead: real
+            # boundaries had a 2-character gap, never 200 characters of overlap.
+            cur_start = max(prev_end - overlap, prev_start) if overlap > 0 else start
             cur_end = end
 
     if cur_start is not None and cur_end is not None:

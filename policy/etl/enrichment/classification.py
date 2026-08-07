@@ -1,12 +1,18 @@
 """Sector/policy-area tagging via a forced tool-call classification.
 
-``etl/pipeline.py``'s ``_attach_vocab()`` write-path already exists and works
-— it's just never fed a non-empty ``policy_area_slugs``/``sector_slugs`` by
-any adapter's ``ParsedDocument``, so it's a no-op for every document ever
-ingested. Rather than teach every adapter (55+ sources, each with its own
-heuristics) to guess its own tags at parse time, one bulk pass after
-ingestion tags the whole corpus uniformly from one model — mirroring
-``embed_pending()``'s loop-while-untagged-rows-exist pattern.
+This module is the *only* writer of ``Document.policy_areas`` /
+``Document.sectors``. The pipeline briefly had an ``_attach_vocab()``
+write-path fed from ``ParsedDocument``; no adapter ever populated it, so it
+was a no-op for every document ever ingested, and it has been removed (see
+``etl/adapters/base.py``) — had an adapter ever started supplying tags it
+would have overwritten this pass's output on every re-sighting and
+permanently suppressed ``classify_pending``, whose filter is
+``~Document.policy_areas.any()``.
+
+Rather than teach every adapter (55+ sources, each with its own heuristics)
+to guess its own tags at parse time, one bulk pass after ingestion tags the
+whole corpus uniformly from one model — mirroring ``embed_pending()``'s
+loop-while-untagged-rows-exist pattern.
 
 Uses Haiku, not the project's default Sonnet: this is a simple category-
 picking task, not legal reasoning, and cost matters at corpus scale.
@@ -36,8 +42,19 @@ CLASSIFY_TOOL = {
         "Tag a regulatory document with the policy areas and industry sectors "
         "it is most relevant to."
     ),
+    # Without `strict`, the schema below (enum, minItems) is advisory only: the
+    # model is free to return an out-of-vocabulary slug, which
+    # parse_classify_response then drops, leaving the document with zero policy
+    # areas. Reproduced on production document id=4437, where the model returned
+    # 'energy' — not a slug in POLICY_AREAS — and the document re-matched
+    # classify_pending's `~policy_areas.any()` filter forever (~3,197 API calls
+    # on that ONE document over 45 minutes on 2026-08-02, until Anthropic
+    # returned 403). `strict` makes the enum an actual constraint, and requires
+    # additionalProperties: false on every object in the schema.
+    "strict": True,
     "input_schema": {
         "type": "object",
+        "additionalProperties": False,
         "properties": {
             "policy_areas": {
                 "type": "array",
@@ -87,8 +104,10 @@ def build_classify_request(title: str, text: str) -> dict[str, Any]:
 
 def parse_classify_response(content_blocks: list[Any]) -> dict[str, list[str]]:
     """Pull {"policy_areas": [...], "sectors": [...]} out of the tool-call
-    response. Filters against the known slugs defensively — the tool
-    schema's enum should already prevent anything else."""
+    response. Filters against the known slugs defensively — with
+    ``"strict": True`` on the tool the enum is enforced server-side, but this
+    stays as the second line of defence, and callers must still cope with an
+    empty result (see classify_pending's made-progress guard)."""
     for block in content_blocks:
         btype = block.get("type") if isinstance(block, dict) else getattr(block, "type", None)
         if btype != "tool_use":
@@ -104,14 +123,24 @@ def parse_classify_response(content_blocks: list[Any]) -> dict[str, list[str]]:
 
 def classify_pending(session: Session, client: Any, *, batch_size: int = 50) -> int:
     """Classify every Document with no policy_areas tagged yet. Returns the
-    number classified.
+    number of documents attempted.
 
-    Filters on ``policy_areas`` alone (not ``sectors``) for idempotency: the
-    tool schema requires at least one policy area per document, so a
-    classified document always has a non-empty ``policy_areas``, but a
-    correctly-classified horizontal document (GDPR, AI Act) can legitimately
-    end up with zero sectors — filtering on ``sectors`` too would re-classify
-    it forever.
+    Filters on ``policy_areas`` alone (not ``sectors``): a correctly-classified
+    horizontal document (GDPR, AI Act) can legitimately end up with zero
+    sectors, so filtering on ``sectors`` too would re-classify it forever.
+
+    That filter is *not* a guarantee of progress, which is the trap this
+    function was built on. The tool schema asks for at least one policy area,
+    but a schema is only enforced when the tool carries ``"strict": True`` —
+    without it the model can return an out-of-vocabulary slug, which
+    parse_classify_response drops, leaving the document with an empty
+    ``policy_areas`` that re-matches the filter on the very next iteration.
+    ``strict`` is now set (see CLASSIFY_TOOL), but the loop no longer *relies*
+    on it: every document is attempted at most once per run, tracked in
+    ``attempted`` and excluded from later batches, so a document that cannot be
+    classified is skipped and logged rather than retried until the API cuts us
+    off. Re-running the pass retries it, which is the right cadence for a
+    transient model failure.
 
     Whole-document, not per-version: a document's classification (what it's
     about, who it affects) rarely changes across content revisions, unlike
@@ -119,24 +148,42 @@ def classify_pending(session: Session, client: Any, *, batch_size: int = 50) -> 
     """
     policy_area_by_slug = {row.slug: row for row in session.scalars(select(PolicyArea))}
     sector_by_slug = {row.slug: row for row in session.scalars(select(Sector))}
+    attempted: set[int] = set()
     total = 0
+    unresolved = 0
     while True:
-        rows = session.execute(
+        stmt = (
             select(Document, DocumentVersion.text)
             .join(DocumentVersion, DocumentVersion.document_id == Document.id)
             .where(DocumentVersion.is_current.is_(True), ~Document.policy_areas.any())
             .order_by(Document.id)
             .limit(batch_size)
-        ).all()
+        )
+        if attempted:
+            stmt = stmt.where(Document.id.notin_(attempted))
+        rows = session.execute(stmt).all()
         if not rows:
             break
         for doc, text in rows:
+            attempted.add(doc.id)
             request = build_classify_request(doc.title, text or "")
             response = client.messages.create(**request)
             tags = parse_classify_response(response.content)
-            doc.policy_areas = [policy_area_by_slug[s] for s in tags["policy_areas"]]
-            doc.sectors = [sector_by_slug[s] for s in tags["sectors"]]
+            if not tags["policy_areas"]:
+                # No usable policy area came back. The document stays untagged
+                # and is skipped for the rest of this run — never re-selected.
+                unresolved += 1
+                log.warning("classify_no_policy_areas", document_id=doc.id, title=doc.title[:120])
+                continue
+            # .get() rather than [] — an unseeded vocabulary table would
+            # otherwise raise KeyError mid-batch and lose the whole run's work.
+            doc.policy_areas = [
+                row for s in tags["policy_areas"] if (row := policy_area_by_slug.get(s))
+            ]
+            doc.sectors = [row for s in tags["sectors"] if (row := sector_by_slug.get(s))]
         session.commit()
         total += len(rows)
-        log.info("classified_batch", count=len(rows), total=total)
+        log.info("classified_batch", count=len(rows), total=total, unresolved=unresolved)
+    if unresolved:
+        log.warning("classify_unresolved_documents", count=unresolved)
     return total

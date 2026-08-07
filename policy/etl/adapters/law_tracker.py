@@ -29,7 +29,7 @@ import structlog
 
 from data.models import DocumentType, Jurisdiction, LifecycleStage
 
-from .base import DocRef, ParsedDocument, RawDocument, SourceAdapter
+from .base import DocRef, ParsedDocument, RawDocument, SourceAdapter, parse_iso_date
 
 log = structlog.get_logger(__name__)
 
@@ -158,7 +158,7 @@ class LawTrackerAdapter(SourceAdapter):
             raw_format="text",
             language="en",
             url=raw.ref.url,
-            date_document=_parse_date(initiated),
+            date_document=parse_iso_date(initiated),
             extra={"status": status, "cellar_id": item.get("cellarID")},
         )
 
@@ -173,11 +173,3 @@ def _ref_id(reference: str | None) -> str | None:
         return None
     return f"{year}_{number}"
 
-
-def _parse_date(value: str | None) -> dt.date | None:
-    if not value:
-        return None
-    try:
-        return dt.date.fromisoformat(value[:10])
-    except ValueError:
-        return None

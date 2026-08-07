@@ -233,3 +233,159 @@ def test_judgments_sit_in_their_own_small_precedent_tier():
 def test_short_or_malformed_celex_never_raises():
     for celex in ("", "3", "32016", "6"):
         assert _classify_type(celex) is DocumentType.OTHER
+
+
+# --- CELEX recovery for documents already ingested without one -------------
+
+
+def test_backfill_celex_from_title_fills_only_nulls(db_session):
+    """A feed only carries recent items, so documents already stored would keep
+    celex IS NULL essentially forever — and celex IS NULL is what makes
+    reclassify_celex_documents and enrich_lifecycle skip a document entirely."""
+    from data.models import Document, Jurisdiction, Source
+    from etl.enrichment.reclassify import backfill_celex_from_title
+
+    source = Source(key="eurlex_oj_l", name="OJ L", jurisdiction=Jurisdiction.EU)
+    db_session.add(source)
+    db_session.flush()
+    needs_fill = Document(
+        source_id=source.id,
+        external_id="u1",
+        title=(
+            "CELEX:32026R1881: Regulation (EU) 2026/1881 of the European "
+            "Parliament and of the Council"
+        ),
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.OTHER,
+        lifecycle_stage=LifecycleStage.UNKNOWN,
+    )
+    already_set = Document(
+        source_id=source.id,
+        external_id="u2",
+        title="CELEX:32016R0679: GDPR",
+        celex="ALREADY-SET",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.REGULATION,
+        lifecycle_stage=LifecycleStage.IN_FORCE,
+    )
+    no_celex = Document(
+        source_id=source.id,
+        external_id="u3",
+        title="Commission opens consultation on AI",
+        jurisdiction=Jurisdiction.EU,
+        document_type=DocumentType.OTHER,
+        lifecycle_stage=LifecycleStage.UNKNOWN,
+    )
+    db_session.add_all([needs_fill, already_set, no_celex])
+    db_session.commit()
+
+    result = backfill_celex_from_title(db_session)
+    assert result["celex_filled"] == 1
+    db_session.refresh(needs_fill)
+    db_session.refresh(already_set)
+    db_session.refresh(no_celex)
+    assert needs_fill.celex == "32026R1881"
+    assert already_set.celex == "ALREADY-SET"  # never overwritten
+    assert no_celex.celex is None
+
+    # Idempotent.
+    assert backfill_celex_from_title(db_session)["celex_filled"] == 0
+
+
+def test_classify_by_source_types_eurlex_feed_acts_from_the_title():
+    """Belt and braces for the backfill: if a title ever arrives in a shape the
+    CELEX pattern misses, these acts must still not be left as OTHER."""
+    from etl.enrichment.reclassify import _classify_by_source
+
+    assert (
+        _classify_by_source(
+            "eurlex_oj_l", None, "CELEX:32026R1881: Regulation (EU) 2026/1881 of the..."
+        )
+        is DocumentType.REGULATION
+    )
+    assert (
+        _classify_by_source("eurlex_ep_council_legislation", None, "CELEX:32026D1347: Decision")
+        is DocumentType.DECISION
+    )
+    # No parseable CELEX -> left alone rather than guessed at.
+    assert _classify_by_source("eurlex_oj_l", None, "Some untagged headline") is None
+    # Unrelated sources are unaffected.
+    assert _classify_by_source("netzpolitik", None, "CELEX:32026R1881: x") is DocumentType.PRESS
+
+
+# --- duplicate ingestion between eurlex and eurlex_key_acts ----------------
+# Verified live 2026-08-07: 16 CELEXes existed as two Document rows each — one
+# from `eurlex`, one from `eurlex_key_acts` — every pair with exactly ONE
+# distinct content_hash (AI Act ×434 passages, DSA ×333, GDPR ×278…; 3,290
+# redundant passages total). uq_document_source_external never fires because
+# source_id differs. eurlex_key_acts re-ingests all ~55 canon acts on EVERY run
+# (`for celex in KEY_ACTS`), so it is a standing generator: cleaning the rows up
+# in the database alone would be undone by the next refresh.
+
+
+class _FakeResp:
+    def __init__(self, payload):
+        self._payload = payload
+
+    def json(self):
+        return self._payload
+
+
+class _FakeHttp:
+    def __init__(self, celexes):
+        self._celexes = celexes
+        self.calls = 0
+
+    def get(self, url, **kwargs):
+        self.calls += 1
+        return _FakeResp(
+            {
+                "results": {
+                    "bindings": [
+                        {
+                            "celex": {"value": c},
+                            "title": {"value": f"Title for {c}"},
+                            "date": {"value": "2026-07-01"},
+                        }
+                        for c in self._celexes
+                    ]
+                }
+            }
+        )
+
+
+class _Settings:
+    backfill_days = 730
+
+
+def test_eurlex_discovery_skips_celexes_owned_by_key_acts():
+    from etl.adapters.eurlex import EurLexAdapter
+
+    canon = "32024R1689"  # the AI Act — one of the 16 confirmed duplicates
+    assert canon in KEY_ACTS
+    other = "32026R9999"
+
+    http = _FakeHttp([canon, other])
+    adapter = EurLexAdapter(http, _Settings())
+    discovered = [ref.external_id for ref in adapter.discover(dt.date(2026, 1, 1), None)]
+
+    assert canon not in discovered, (
+        "eurlex re-discovered a CELEX eurlex_key_acts deterministically "
+        "re-ingests every run — the duplicate generator is back"
+    )
+    assert other in discovered, "the guard must not suppress ordinary discovery"
+
+
+def test_every_key_act_is_excluded_from_eurlex_discovery():
+    from etl.adapters.eurlex import EurLexAdapter
+
+    http = _FakeHttp(list(KEY_ACTS))
+    adapter = EurLexAdapter(http, _Settings())
+    assert list(adapter.discover(dt.date(2026, 1, 1), None)) == []
+
+
+def test_key_acts_adapter_still_ingests_its_own_curated_list():
+    """The guard makes eurlex_key_acts the SINGLE owner — it must not have
+    silently disowned the canon set as well."""
+    assert "32024R1689" in KEY_ACTS
+    assert EurLexKeyActsAdapter.discover is not None

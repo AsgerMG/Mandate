@@ -400,12 +400,71 @@ def _competitive_query(profile: CompanyProfile) -> str | None:
     )
 
 
+def _content_key(passage: dict) -> tuple[str, Any, Any]:
+    """Identity of the TEXT a passage carries, independent of which document row
+    it happens to have been stored under.
+
+    The corpus has held the same instrument twice, byte for byte, under two
+    ``source_id``s: 16 canon acts (AI Act, DSA, GDPR, CRA, NIS2, DMA, EECC and 9
+    more) were ingested by both the `eurlex` and `eurlex_key_acts` adapters —
+    3,290 redundant passages, one distinct ``content_hash`` per pair. Nothing in
+    retrieval could see it. ``semantic_search`` filters only on ``is_current``
+    and orders by cosine distance; the two copies have identical embeddings, so
+    they land at ADJACENT ranks and a facet with 5 slots spends 2 of them on the
+    same paragraph presented as two documents. Every per-document cap here was
+    blind to it because the ``document_id``s genuinely differ.
+
+    Keyed on ``_doc_key`` (celex, falling back to url then title) plus the
+    character span, so it collapses duplicate rows of one act without ever
+    merging two distinct passages of the same act. ``content_hash`` would be the
+    most direct signal but is a DocumentVersion column the retrieval layer does
+    not select; celex is what the duplicates actually share and is already the
+    identity every cap in this module uses.
+
+    The database-level fix (deleting the redundant rows) is a separate, gated
+    decision. This is the code-level defence, and it has to keep working whether
+    or not that ever happens — duplicates reappear whenever two adapters cover
+    the same act, which is a matter of source configuration, not of a one-off
+    mistake.
+    """
+    return (_doc_key(passage), passage.get("char_start"), passage.get("char_end"))
+
+
+def _dedupe_content(passages: list[dict]) -> list[dict]:
+    """Drop passages whose content is already represented, keeping the first
+    (i.e. best-ranked — every producer here returns best-first).
+
+    Applied to each retrieval result BEFORE selection, which is the only place it
+    can help: _cap_per_document and _select_breadth_first already group by
+    _doc_key, so they treat two copies of an act as one document — but they can
+    still fill that document's slots with the same passage twice, and by the time
+    _merge_passages collapses the duplicate the slot is gone. The facet then
+    contributes 4 distinct passages where it was budgeted 5.
+    """
+    seen: set[tuple[str, Any, Any]] = set()
+    kept: list[dict] = []
+    for p in passages:
+        key = _content_key(p)
+        if key in seen:
+            continue
+        seen.add(key)
+        kept.append(p)
+    return kept
+
+
 def _merge_passages(primary: list[dict], extra: list[dict]) -> list[dict]:
-    """Append extra passages, dropping any already present (same source span)."""
-    seen = {(p.get("url"), p.get("char_start")) for p in primary}
+    """Append extra passages, dropping any already present (same content).
+
+    Keyed on _content_key rather than the ``(url, char_start)`` pair this used
+    previously: url happens to be equal for today's duplicate pairs, but that is
+    an incidental property of two adapters fetching the same EUR-Lex page, not
+    something retrieval should depend on. celex-first survives an adapter that
+    stores a different URL for the same act.
+    """
+    seen = {_content_key(p) for p in primary}
     merged = list(primary)
     for p in extra:
-        key = (p.get("url"), p.get("char_start"))
+        key = _content_key(p)
         if key not in seen:
             seen.add(key)
             merged.append(p)
@@ -611,12 +670,36 @@ def _top_document_ids(passages: list[dict], *, limit: int) -> list[int]:
     not "where is the densest cluster of text". A tier that can't fill its
     quota spills its unused slots to the best remaining candidates of any
     tier, so a thin corpus for one tier costs nothing rather than shrinking
-    the depth pass."""
+    the depth pass.
+
+    One document_id per INSTRUMENT, not per row. Two byte-identical copies of an
+    act (see _content_key) carry different document_ids, so both could be
+    nominated — spending 2 of the 10 depth slots on the same instrument, and then
+    returning 8 identical passages that _merge_passages collapses back to 4. The
+    net cost is a whole instrument's worth of depth, silently, and it is the most
+    expensive way duplicate documents hurt: the breadth loss is one passage, this
+    is one of ten instruments the brief goes deep on."""
     best: dict[int, tuple[float, str]] = {}
+    canonical: dict[str, int] = {}
     for p in passages:
         doc_id = p.get("document_id")
         if doc_id is None:
             continue
+        # Passages arrive best-first, so the first document_id seen for an
+        # instrument is the copy that ranked highest — an arbitrary but stable
+        # choice between rows that hold the same text.
+        #
+        # Only collapse on a REAL shared identity. _doc_key falls back through
+        # celex → url → title and stringifies whatever it lands on, so a passage
+        # carrying none of the three keys on the literal string "None" — and
+        # every such passage would then be treated as the same instrument,
+        # shrinking the depth pass to a single document. Retrieval always
+        # supplies a title, but this function is called with hand-built passage
+        # dicts too, and collapsing unrelated documents is a far worse failure
+        # than missing a dedup.
+        identity = p.get("celex") or p.get("url") or p.get("title")
+        if identity:
+            doc_id = canonical.setdefault(str(identity), doc_id)
         score = p.get("rerank_score", p.get("score", 0.0)) or 0.0
         dtype = (p.get("document_type") or "other").lower()
         if doc_id not in best or score > best[doc_id][0]:
@@ -793,6 +876,16 @@ def build_stakeholder_block(stakeholders: list[dict]) -> str | None:
     return "\n".join(lines)
 
 
+# The depth signal, named once so operator-facing output cannot drift back onto
+# the wrong key. `documents_per_passage` is kept in the stats dict for continuity
+# with older reports, but it is floored near 0.5 by the ~50 single-passage canon
+# stubs every brief carries, so it CANNOT detect a depth collapse — a console
+# that prints it under the label "depth ratio" is reporting a number documented
+# as unable to detect the failure it is there for. history.py and compare.py
+# already read this key; anything new should too.
+DEPTH_RATIO_KEY = "substantive_documents_per_passage"
+
+
 def _retrieval_stats(passages: list[dict], facets: list[str]) -> dict[str, Any]:
     """Shape metrics for the passage set a brief was built on.
 
@@ -803,7 +896,7 @@ def _retrieval_stats(passages: list[dict], facets: list[str]) -> dict[str, Any]:
     to watch — as it approaches 1.0, every document is contributing exactly one
     passage and the brief cannot be anything but a list of names."""
     if not passages:
-        return {"passages": 0, "documents": 0, "facets": facets}
+        return {"passages": 0, "documents": 0, "facets": facets, "retrieved_celex": []}
     scores = [p["score"] for p in passages if p.get("score") is not None]
     reranked = [p["rerank_score"] for p in passages if p.get("rerank_score") is not None]
     stubs = sum(1 for p in passages if p.get("canon_stub"))
@@ -824,9 +917,19 @@ def _retrieval_stats(passages: list[dict], facets: list[str]) -> dict[str, Any]:
         "documents_per_passage": round(len(docs) / len(passages), 3),
         # THE depth signal: 1.0 means every instrument the brief actually
         # reasons over contributed exactly one passage.
-        "substantive_documents_per_passage": (
+        DEPTH_RATIO_KEY: (
             round(len(substantive_docs) / len(substantive), 3) if substantive else None
         ),
+        # Which instruments this brief actually saw, by CELEX. Pure — derived
+        # from the passage set, no query — and carried here because
+        # retrieval_stats is the one part of a brief result that every consumer
+        # (the API response, the brief-check report JSON, the log line) already
+        # persists. Without it, recency coverage — "of the acts published in the
+        # last 30 days, how many reached ANY brief's passages" — is not
+        # computable from a stored report at all, which is why that metric has
+        # been measured exactly once (2026-07-21, at 0/8) and never since. See
+        # etl/brief_eval/recency.py.
+        "retrieved_celex": sorted({p["celex"] for p in passages if p.get("celex")}),
         "max_passages_per_document": (
             max(Counter(_doc_key(p) for p in substantive).values()) if substantive else 0
         ),
@@ -1150,6 +1253,12 @@ def generate_briefing(
         min_score = float(override.get("min_score", _LEGAL_MIN_SCORE))
         facet_k = int(override.get("k", _FACET_K))
         pool = semantic_search(session, embedder, facet_query, k=_RERANK_POOL, min_score=min_score)
+        # Before reranking and before any cap: semantic_search has no
+        # cross-document dedup, so byte-identical copies of one act arrive at
+        # adjacent ranks and would otherwise each consume a slot (see
+        # _dedupe_content). Deduping here also stops the reranker from being
+        # paid to score the same text twice.
+        pool = _dedupe_content(pool)
         # An overridden facet can legitimately return nothing — that is the
         # point of its higher floor, not a failure to route around.
         pool = rerank_passages(reranker, facet_query, pool, top_k=facet_k * 2)
@@ -1176,7 +1285,7 @@ def generate_briefing(
     _emit("retrieving", "Reading the instruments that apply to you in depth")
     deepen_ids = _top_document_ids(breadth, limit=_DEEPEN_DOCUMENTS)
     deep = document_passages(session, embedder, query, deepen_ids, k_per_doc=_DEEPEN_PER_DOCUMENT)
-    passages = _merge_passages(breadth, deep)
+    passages = _merge_passages(breadth, _dedupe_content(deep))
 
     # Guarantee every foundational act a seat in context (see canon_passages'
     # docstring) — this is what lets the Compliance table state "CRA — Out of

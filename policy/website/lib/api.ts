@@ -49,7 +49,10 @@ export type SourceInfo = {
   documents: number;
 };
 
-export type Passage = {
+/** Internal to this module: only ever reached through `BriefResult.passages`,
+ *  never imported by name anywhere in `app/`. Not exported so the client's
+ *  public surface doesn't advertise a type nothing consumes. */
+type Passage = {
   title: string;
   celex: string | null;
   url: string | null;

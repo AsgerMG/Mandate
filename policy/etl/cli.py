@@ -24,7 +24,7 @@ from data.seeds import seed_vocabularies
 
 from .adapters import ADAPTERS, ADAPTERS_BY_KEY
 from .http import HttpClient
-from .pipeline import ensure_source, run_adapter
+from .pipeline import ensure_source, run_adapter, run_all_sources
 
 app = typer.Typer(
     help="Regina — regulatory intelligence analyst. Automated regulatory data collection."
@@ -84,28 +84,24 @@ def refresh(
     """THE TRIGGER: run every enabled adapter and update the whole corpus."""
     settings = get_settings()
     keys = set(only.split(",")) if only else None
-    totals: dict[str, dict] = {}
+
+    def _echo_source(key: str, stats: dict | None) -> None:
+        if stats is None:
+            typer.echo(f"→ {key} …")
 
     with HttpClient(settings) as http, session_scope() as session:
-        for cls in ADAPTERS:
-            if keys and cls.key not in keys:
-                continue
-            adapter = cls(http, settings)
-            source = ensure_source(session, adapter)
-            if not source.enabled:
-                continue
-            typer.echo(f"→ {adapter.key} …")
-            try:
-                totals[adapter.key] = run_adapter(session, adapter, limit=limit, full=full)
-                # Commit per source: a later source's total failure (network
-                # down, DNS blip) must not roll back every source already
-                # ingested in this run — same "one bad thing doesn't abort
-                # the run" principle the pipeline already applies per document.
-                session.commit()
-            except Exception:
-                session.rollback()
-                log.exception("source_run_crashed", source=adapter.key)
-                totals[adapter.key] = {"errors": "source-level failure, see logs"}
+        # One shared collection loop — see pipeline.run_all_sources for why
+        # this must not be a per-entrypoint copy.
+        totals = run_all_sources(
+            session,
+            ADAPTERS,
+            http,
+            settings,
+            keys=keys,
+            limit=limit,
+            full=full,
+            on_source=_echo_source,
+        )
 
     typer.echo("\nRefresh complete:")
     for key, stats in totals.items():
@@ -463,6 +459,7 @@ def brief_check(
     from etl.brief_eval.compare import retrieval_spread
     from etl.brief_eval.cost import BudgetGuard, MeteredClient
     from etl.brief_eval.panel import EVAL_PANEL
+    from etl.brief_eval.recency import recency_from_results
     from etl.brief_eval.rotation import (
         corpus_fingerprint,
         cumulative_spend,
@@ -551,7 +548,7 @@ def brief_check(
         stats = result.get("retrieval_stats", {})
         typer.echo(
             f"  {stats.get('passages')} passages / {stats.get('documents')} docs"
-            f" · depth ratio {stats.get('documents_per_passage')}"
+            f" · depth ratio {stats.get('substantive_documents_per_passage')}"
             f" · {stats.get('canon_stubs')} canon stubs"
             f" · {stats.get('context_chars')} chars"
             f" · {elapsed}s"
@@ -568,6 +565,11 @@ def brief_check(
             "briefing": result.get("briefing"),
             "citations": result.get("citations", []),
             "canon_notes": result.get("canon_notes", []),
+            # Persisted so hinge recurrence can be counted across runs without
+            # re-parsing briefing prose. generate_briefing has always returned
+            # this; dropping it here is why the 2026-07-29 panel had to be
+            # reconstructed by hand (see brief-quality-plan.md Phase 5.2).
+            "unresolved_hinges": result.get("unresolved_hinges", []),
         }
         if repeat > 1:
             spread = retrieval_spread(
@@ -586,6 +588,16 @@ def brief_check(
     # tell whether the two runs are comparable at all (see corpus_fingerprint).
     with session_scope() as session:
         fingerprint = corpus_fingerprint(session)
+        # Did anything published recently actually reach a brief? Measured at
+        # 0/8 on 2026-07-21 and never re-measured, because recency lived only on
+        # the brief-improve path. `measurable` distinguishes "no recent corpus
+        # to hit" from a real zero.
+        recency = recency_from_results(session, results)
+    if recency.get("measurable"):
+        typer.echo(
+            f"\nRecency: {recency['recent_covered']}/{recency['recent_total']} "
+            "acts ingested in the last 30 days reached a brief"
+        )
     if fingerprint["unembedded_passages"]:
         typer.echo(
             f"\n⚠ {fingerprint['unembedded_passages']} passages are unembedded — "
@@ -596,6 +608,7 @@ def brief_check(
 
     payload = {
         "corpus": fingerprint,
+        "recency": recency,
         # The model that actually served the calls, from the responses rather than
         # from config — a fallback or a stale settings cache would otherwise be
         # invisible in a comparison of two models.

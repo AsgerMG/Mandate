@@ -80,6 +80,23 @@ NOISE_EXCLUDE_TERMS = [
 ]
 
 
+def parse_iso_date(value: str | None) -> dt.date | None:
+    """Leading ISO-8601 date out of ``value``, or None if absent/unparseable.
+
+    Shared because three byte-identical private copies had accumulated
+    (etl/adapters/eurlex.py, etl/adapters/law_tracker.py,
+    etl/enrichment/lifecycle.py) — every one of them slicing ``[:10]`` to
+    tolerate a full timestamp, which is exactly the behaviour a caller needs to
+    be able to rely on rather than re-derive.
+    """
+    if not value:
+        return None
+    try:
+        return dt.date.fromisoformat(value[:10])
+    except ValueError:
+        return None
+
+
 def is_noise_collision(text: str) -> bool:
     """True if ``text`` only looks tech-relevant because of one of the
     collision patterns above — callers should treat this as a hard
@@ -126,8 +143,14 @@ class ParsedDocument:
     date_document: dt.date | None = None
     date_in_force: dt.date | None = None
     date_end_validity: dt.date | None = None
-    policy_area_slugs: list[str] = field(default_factory=list)
-    sector_slugs: list[str] = field(default_factory=list)
+    # NOTE: there are deliberately no ``policy_area_slugs`` / ``sector_slugs``
+    # fields here. Policy-area and sector tagging is owned end-to-end by
+    # etl/enrichment/classification.py's bulk pass. The pipeline used to have an
+    # ``_attach_vocab()`` write-path fed from this dataclass; it never fired
+    # (no adapter ever populated it) and was removed rather than left as a
+    # loaded gun: an adapter that started supplying tags would have overwritten
+    # the LLM classification on every re-sighting AND permanently suppressed
+    # ``classify_pending``, whose filter is ``~Document.policy_areas.any()``.
     extra: dict = field(default_factory=dict)
 
 

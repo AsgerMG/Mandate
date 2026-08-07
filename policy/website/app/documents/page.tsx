@@ -25,6 +25,17 @@ import {
 //
 // Both counts remain live-fetched (see website/CLAUDE.md's no-hardcoded-corpus-
 // numbers rule): Coverage from /api/sources, Hot right now per keyword.
+//
+// FETCH_LIMIT is the server's own hard ceiling (/api/documents validates
+// `limit` as le=200), not a display choice. A keyword that actually matches 200+
+// documents therefore comes back truncated, and rendering that as "200 docs"
+// would state a hardcoded ceiling as though it were a measurement — the precise
+// thing the rule above forbids. Any keyword returning exactly FETCH_LIMIT rows
+// is treated as capped and shown as "200+". Not currently reached (highest live
+// count is 121), which is why it stayed invisible.
+// The clean fix is server-side: have /api/documents return a `total` alongside
+// `documents` so the count never depends on the page size. That endpoint is not
+// owned here, so this handles it client-side in the meantime.
 const FETCH_LIMIT = 200;
 
 // Curated, not computed live — like CATEGORY_LABELS, this is an editorial
@@ -62,14 +73,31 @@ function jurisdictionsOf(list: SourceInfo[]): string[] {
   return Array.from(new Set(list.map((s) => s.jurisdiction))).sort();
 }
 
+function reason(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+// Loading, loaded, empty and failed are four different things and this page used
+// to render three of them identically. `.catch(() => null)` on both fetches meant
+// an API outage rendered "0 live" and a permanent "…" — indistinguishable from a
+// slow request or a genuinely empty corpus. That is exactly how the 2026-07-13
+// production incident (every API call blocked) stayed invisible for weeks: the
+// page looked fine. Failure is now a visible, quotable state carrying the real
+// error string, so it is obvious both to a reader and to whoever is debugging.
+type Loadable<T> = { status: "loading" } | { status: "ok"; data: T } | { status: "error"; reason: string };
+
+// A count that came back at the server's page-size ceiling is a floor, not a
+// total — see FETCH_LIMIT above.
+type TopicCount = { count: number; capped: boolean };
+
 export default function RegisterPage() {
-  const [sources, setSources] = useState<SourceInfo[]>([]);
-  const [topicCounts, setTopicCounts] = useState<Record<string, number>>({});
+  const [sources, setSources] = useState<Loadable<SourceInfo[]>>({ status: "loading" });
+  const [topicCounts, setTopicCounts] = useState<Record<string, Loadable<TopicCount>>>({});
 
   useEffect(() => {
     getSources()
-      .then((r) => setSources(r.sources))
-      .catch(() => null);
+      .then((r) => setSources({ status: "ok", data: r.sources }))
+      .catch((err) => setSources({ status: "error", reason: reason(err) }));
   }, []);
 
   // Each topic's keyword variants are queried against the whole corpus and
@@ -79,21 +107,35 @@ export default function RegisterPage() {
       Promise.all(topic.keywords.map((kw) => getDocuments({ q: kw, limit: String(FETCH_LIMIT) })))
         .then((results) => {
           const merged = dedupeById(results.flatMap((r) => r.documents));
-          setTopicCounts((prev) => ({ ...prev, [topic.key]: merged.length }));
+          const capped = results.some((r) => r.documents.length >= FETCH_LIMIT);
+          setTopicCounts((prev) => ({
+            ...prev,
+            [topic.key]: { status: "ok", data: { count: merged.length, capped } },
+          }));
         })
-        .catch(() => null);
+        .catch((err) =>
+          setTopicCounts((prev) => ({
+            ...prev,
+            [topic.key]: { status: "error", reason: reason(err) },
+          }))
+        );
     });
   }, []);
 
   const groupedSources = useMemo(() => {
     const g: Record<SourceCategory, SourceInfo[]> = { law: [], regulator: [], press: [] };
-    for (const s of sources) {
+    if (sources.status !== "ok") return g;
+    for (const s of sources.data) {
       if (!s.enabled) continue;
       g[categoryFor(s.key)].push(s);
     }
     for (const cat of CATEGORY_ORDER) g[cat].sort((a, b) => a.name.localeCompare(b.name));
     return g;
   }, [sources]);
+
+  const topicFailures = HOT_TOPICS.map((t) => topicCounts[t.key]).filter(
+    (s): s is { status: "error"; reason: string } => s?.status === "error"
+  );
 
   return (
     <div className="register-page">
@@ -111,6 +153,22 @@ export default function RegisterPage() {
 
       <section className="section">
         <h2>Coverage</h2>
+        {sources.status === "loading" && (
+          <div className="spinner">Loading sources…</div>
+        )}
+        {sources.status === "error" && (
+          <div className="notice notice-error" role="alert">
+            <strong>Coverage is unavailable.</strong> The register couldn&apos;t reach the API, so
+            the source counts below aren&apos;t being shown rather than being shown as zero.{" "}
+            <span className="failure-reason">{sources.reason}</span>
+          </div>
+        )}
+        {sources.status === "ok" && sources.data.every((s) => !s.enabled) && (
+          <div className="notice" role="status">
+            The API responded, but no sources are currently enabled.
+          </div>
+        )}
+        {sources.status === "ok" && sources.data.some((s) => s.enabled) && (
         <div className="grid">
           {CATEGORY_ORDER.map((cat) => {
             const live = groupedSources[cat];
@@ -143,20 +201,42 @@ export default function RegisterPage() {
             );
           })}
         </div>
+        )}
       </section>
 
       <section className="section">
         <h2>Hot right now</h2>
+        {topicFailures.length > 0 && (
+          <div className="notice notice-error" role="alert">
+            <strong>
+              {topicFailures.length} of {HOT_TOPICS.length} topic counts couldn&apos;t be loaded.
+            </strong>{" "}
+            Those tiles show <em>unavailable</em> rather than a number — a missing count is not a
+            count of zero.{" "}
+            <span className="failure-reason">{topicFailures[0].reason}</span>
+          </div>
+        )}
         <div className="grid topic-grid">
           {HOT_TOPICS.map((topic) => {
-            const count = topicCounts[topic.key];
+            const state = topicCounts[topic.key];
             return (
               <div className="card" key={topic.key}>
                 <h3>{topic.label}</h3>
                 <div className="coverage-badges">
-                  <span className="badge in_force">
-                    {count === undefined ? "…" : `${count} docs`}
-                  </span>
+                  {state === undefined || state.status === "loading" ? (
+                    <span className="badge unknown">…</span>
+                  ) : state.status === "error" ? (
+                    <span className="badge repealed" title={state.reason}>
+                      Unavailable
+                    </span>
+                  ) : (
+                    // "200+" when the server's page-size ceiling was hit: the number
+                    // is a floor, and presenting a floor as an exact count is the bug.
+                    <span className="badge in_force">
+                      {state.data.count}
+                      {state.data.capped ? "+" : ""} docs
+                    </span>
+                  )}
                 </div>
               </div>
             );

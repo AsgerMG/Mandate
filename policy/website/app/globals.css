@@ -87,9 +87,16 @@ main.container { flex: 1 0 auto; width: 100%; }
 
 /* Masthead */
 .masthead { background: var(--paper); border-bottom: 3px double var(--ink); }
+/* padding-top/bottom, never the `padding` shorthand: .masthead-bar and
+   .masthead-dateline both also carry .container, and a shorthand at equal
+   specificity silently zeroes .container's `padding: 0 24px`. That is what put
+   the wordmark 24px left of every other element on the page (and flush against
+   the screen edge on a phone) — nothing overflowed, so the site's
+   scrollWidth === clientWidth responsiveness check never saw it. Same trap
+   applies to .footer-inner below. */
 .masthead-bar {
   display: flex; align-items: baseline; justify-content: space-between;
-  padding: 20px 0 12px; gap: 20px; flex-wrap: wrap;
+  padding-top: 20px; padding-bottom: 12px; gap: 20px; flex-wrap: wrap;
 }
 .masthead-brand a {
   font-family: var(--font-serif); font-size: clamp(19px, 5vw, 25px); font-weight: 600;
@@ -107,7 +114,7 @@ main.container { flex: 1 0 auto; width: 100%; }
 .masthead-cta:hover { background: var(--ink); color: var(--paper) !important; text-decoration: none; }
 .masthead-dateline {
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
-  padding: 7px 0; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); text-transform: uppercase; letter-spacing: 0.12em;
+  padding-top: 7px; padding-bottom: 7px; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); text-transform: uppercase; letter-spacing: 0.12em;
   color: var(--muted); border-top: 1px solid var(--rule);
 }
 
@@ -141,7 +148,9 @@ main.container { flex: 1 0 auto; width: 100%; }
 /* Home: hero text beside a supporting image, text vertically centered
    against it (align-items: center) rather than pinned to the top — so it
    doesn't read as floating awkwardly high or low next to a taller/shorter
-   image. Mirrors About's .lede-row, including resetting flex-basis when the
+   image. About reuses this same .hero-row (see .about-page .hero-row) rather
+   than having its own variant — an earlier `.lede-row` that this comment used
+   to reference no longer exists. Includes resetting flex-basis when the
    direction flips to column below 900px (flex-basis sizes *width* in row
    mode but the same numbers become a *height* once stacked — see
    design-ux-guidelines.md item 9 — leaving it unset here would force the
@@ -203,7 +212,7 @@ main.container { flex: 1 0 auto; width: 100%; }
    "hyper compressed" on a phone. */
 @media (max-width: 640px) {
   .hero { padding: 22px 0 4px; }
-  .masthead-bar { padding: 16px 0 10px; }
+  .masthead-bar { padding-top: 16px; padding-bottom: 10px; }
   .masthead-cta { padding: 7px 12px; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); }
   /* The rightmost dateline item is decorative reinforcement of the brand,
      not information — on a narrow screen it just eats a whole extra line
@@ -311,10 +320,20 @@ main.container { flex: 1 0 auto; width: 100%; }
   padding-bottom: 8px; border-bottom: 1px solid var(--rule);
 }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
-/* Hot-topic tiles carry far less content than a Coverage card (just a label
-   + a live count), so a narrower column fits more per row instead of
-   stretching each tile out to match Coverage's wider minimum. */
-.topic-grid { grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr)); }
+/* Hot-topic tiles used a narrower auto-fill minimum (190px) so more fit per
+   row. At every common desktop width that produced FIVE columns for a curated
+   list of six topics — one orphan tile alone on row 2 — and squeezed the
+   longer labels onto two and three lines.
+   Fixed column counts instead, all of which divide six evenly, so there is no
+   orphan at any width and every label fits on one line. Measured at 1440px:
+   211px tiles / 5+1 rows / two-line titles → 361px tiles / 3+3 / one line.
+   The counts are tied to HOT_TOPICS being a hand-curated six (documents/
+   page.tsx) — revisit them if that list changes length. Breakpoints match
+   where .grid's own auto-fill drops a column, so the two sections stay in
+   step. */
+.topic-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 960px) { .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .topic-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* Card (used for the register's Coverage section) */
 .card {
@@ -323,16 +342,11 @@ main.container { flex: 1 0 auto; width: 100%; }
   transition: border-color 0.15s ease;
 }
 .card:hover { border-color: var(--ink); }
-/* Coverage cards double as the register's category filter (documents/
-   page.tsx) — .on marks the active selection the same way .chip.on does. */
-.card[role="button"] { cursor: pointer; position: relative; }
-.card.on { border-color: var(--ink); background: var(--accent-soft); }
-.card-clear {
-  position: absolute; top: 14px; right: 16px; color: var(--muted); font-weight: 700;
-  font-size: 13px; line-height: 1;
-}
-.card-clear:hover { color: var(--ink); }
-.card.on h3 { padding-right: 20px; }
+/* The click-affordance styles that went with Coverage cards doubling as the
+   register's category filter (.card[role="button"], .card.on, .card-clear and
+   .card.on h3) are gone: the handlers were deleted on 2026-07-30 when the
+   register list they filtered was removed, so they styled a state nothing
+   could ever enter. See the note at the top of documents/page.tsx. */
 .card h3 { font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); margin: 0; line-height: 1.35; font-weight: 600; overflow-wrap: break-word; }
 .card h3 a { color: var(--ink); }
 .card .meta { color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); display: flex; gap: 10px; flex-wrap: wrap; }
@@ -374,7 +388,13 @@ main.container { flex: 1 0 auto; width: 100%; }
   border-radius: var(--radius); padding: 32px; max-width: 720px;
 }
 .field { margin-bottom: 20px; }
-.field label { display: block; font-weight: 700; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin-bottom: 7px;
+/* `.field-label` is the same treatment on a non-<label> element, used wherever
+   the thing being named is a GROUP of controls (the Sectors/Markets chip
+   groups, a scoping question with preset chips) rather than one input. A
+   <label> there would associate with nothing — which is exactly the defect
+   this replaces — so those groups carry role="group" + aria-labelledby
+   pointing at this element instead. */
+.field label, .field .field-label { display: block; font-weight: 700; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin-bottom: 7px;
   text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); }
 .field .hint { color: var(--muted); font-weight: 400; font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); text-transform: none; letter-spacing: 0; }
 input[type="text"], textarea {
@@ -387,12 +407,34 @@ input[type="text"], textarea {
 textarea { min-height: 90px; resize: vertical; }
 input:focus, textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(16, 32, 63, 0.08); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Chips are real <button type="button" aria-pressed> elements (they were
+   <span onClick> until 2026-08-07, which made the whole intake flow
+   impossible to complete without a mouse). The extra declarations are the UA
+   button reset needed to keep the previous geometry exactly: a <button> does
+   not inherit font-family or the body's 1.6 line-height, and carries its own
+   margin and centred text. */
 .chip {
   border: 1px solid var(--rule); background: #fff; border-radius: var(--radius); padding: 7px 14px;
   font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); cursor: pointer; user-select: none; font-weight: 500; color: var(--ink-soft);
+  font-family: var(--font-sans); line-height: 1.6; margin: 0; text-align: left;
 }
 .chip:hover { border-color: var(--ink); }
 .chip.on { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+
+/* Keyboard focus, specified rather than left to the UA default: these are the
+   controls a keyboard user drives the brief with, and the ring has to stay
+   visible on a filled `.on` chip too — hence outline-offset, which draws it on
+   the panel behind the control instead of on the control's own dark fill.
+   --ink on --paper is ~16:1, well past the 3:1 non-text contrast minimum. */
+.chip:focus-visible,
+.btn:focus-visible,
+.ghost-button:focus-visible,
+.option-row:has(input:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+/* Same ring would be invisible against the navy band. */
+.cta-band .btn:focus-visible { outline-color: var(--accent); }
 
 /* Suggested answers for open (text) scoping questions: multi-select preset
    chips above an optional free-text box, so picking one is as fast as a
@@ -423,7 +465,7 @@ textarea.detail { min-height: 56px; }
    tracked style (built for two-word labels like "Company name" and shouty
    stretched over a sentence). Sentence case, still weighted, full ink since
    the question is the primary thing being asked. */
-.question label {
+.question label, .question .field-label {
   font-weight: 600; font-size: clamp(15px, 12.6px + 0.1146vw, 16.3px);
   text-transform: none; letter-spacing: 0; color: var(--ink); margin-bottom: 4px;
 }
@@ -526,6 +568,21 @@ textarea.detail { min-height: 56px; }
   border-radius: var(--radius); padding: 13px 16px; font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); margin-bottom: 18px;
   color: var(--accent-deep);
 }
+/* A failure has to be distinguishable from the amber .notice, which is used for
+   ordinary informational states (dry-run mode, "no sources enabled"). Same box,
+   red-brown ink — borrowed from .badge.repealed so the palette stays the site's. */
+.notice-error {
+  background: #fbf0ec; border-color: #e6c4b8; border-left-color: #92402a; color: #7a3623;
+}
+/* The raw API error, kept on screen rather than only in the console: the
+   2026-07-13 outage was invisible for weeks because nothing user-facing said
+   what had gone wrong. Set quieter than the sentence above it — it's for
+   whoever is debugging, not the reader. */
+.failure-reason {
+  display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em; color: var(--muted); overflow-wrap: anywhere;
+}
+
 .sources { margin-top: 26px; }
 .source-item {
   background: var(--paper); border: 1px solid var(--rule); border-left: 3px solid var(--navy);
@@ -594,7 +651,10 @@ textarea.detail { min-height: 56px; }
 .report-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 
 footer { background: var(--paper); color: var(--muted); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin-top: 70px; border-top: 3px double var(--ink); }
-.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 0; flex-wrap: wrap; }
+/* padding-top/bottom for the same reason as .masthead-bar — .footer-inner is
+   also a .container, and the shorthand was zeroing its 24px side padding, so
+   the footer sat misaligned with body content at every width too. */
+.footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 20px; padding-bottom: 20px; flex-wrap: wrap; }
 .footer-mark { font-family: var(--font-serif); font-weight: 600; color: var(--ink); font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); flex-shrink: 0; }
 
 /* --- The wait (see project-management/brief-ux-plan.md) -------------------
@@ -779,6 +839,14 @@ main.container:has(> .about-page) { display: flex; flex-direction: column; }
 .about-page > * { margin: 0; }
 
 .about-page .hero { padding: 0; }
+/* `.about-page .hero { padding: 0 }` zeroed .hero's own 32px top padding, and
+   `gap` only spaces siblings — so the eyebrow ended up flush under the
+   masthead's double rule (measured 0px at 1440x900, against 32px on
+   /documents), which read as cramped. Restore a leading space using the page's
+   OWN vertical rhythm token rather than a fixed 32px: this page's whole point
+   is fitting one screen, and a viewport-relative value can't be the thing that
+   pushes it over on a short window. */
+.about-page .about-top { padding-top: clamp(14px, 2.4vh, 44px); }
 .about-page .hero-row { gap: clamp(24px, 3vw, 56px); align-items: center; }
 /* Basis equals the paragraph's own max-width, so the column is exactly as wide
    as the text can be — no dead space to push the image away. */

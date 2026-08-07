@@ -482,59 +482,132 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
     return StreamingResponse(event_stream(), media_type="application/x-ndjson")
 
 
+# How long a refresh may go without making any progress before its "running"
+# flag is treated as stale and a new run is allowed to start.
+#
+# The old design acquired a threading.Lock in refresh() and released it in
+# _run_refresh()'s finally — a different function on a different thread. If the
+# background task never started, or the run hung (there is no timeout anywhere
+# and multi-hour runs are normal), `running` stayed True forever and every
+# subsequent weekly cron got {"started": false, "reason": "refresh already
+# running"} until someone restarted the process. A lock whose release depends
+# on code that may never run is not a lock, it's a deadlock waiting to happen.
+#
+# Now the mutex is acquired and released inside the same function and only
+# guards the state dict; whether a run is in progress is answered by a
+# *timestamped* flag that expires. `progress_at` is stamped as each source
+# finishes, so a genuinely long but healthy run is never considered stale —
+# only one that has stopped making progress entirely.
+REFRESH_STALE_AFTER = dt.timedelta(hours=12)
+
 _refresh_lock = threading.Lock()
-_refresh_state: dict = {"running": False, "last_result": None, "last_finished": None}
+_refresh_state: dict = {
+    "running": False,
+    # None = never run; True/False = how the LAST COMPLETED run ended. This
+    # exists because `last_result` alone could not express failure: it was
+    # assigned as the final statement of the try block, so on any exception it
+    # silently kept the PREVIOUS run's totals while `last_finished` advanced —
+    # a failed refresh was indistinguishable from a successful one to the
+    # weekly audit routine, which reads exactly this endpoint.
+    "ok": None,
+    "error": None,
+    "last_result": None,
+    "last_started": None,
+    "last_finished": None,
+    "progress_at": None,
+}
+
+
+def _note_progress() -> None:
+    with _refresh_lock:
+        _refresh_state["progress_at"] = dt.datetime.now(dt.UTC)
+
+
+def _try_start_refresh() -> tuple[bool, str | None]:
+    """Claim the refresh slot. Returns (started, reason_if_not)."""
+    now = dt.datetime.now(dt.UTC)
+    with _refresh_lock:
+        if _refresh_state["running"]:
+            last_seen = _refresh_state["progress_at"] or _refresh_state["last_started"]
+            if last_seen is not None and now - last_seen < REFRESH_STALE_AFTER:
+                return False, "refresh already running"
+            log.warning(
+                "refresh_lock_expired",
+                last_seen=last_seen.isoformat() if last_seen else None,
+                stale_after_hours=REFRESH_STALE_AFTER.total_seconds() / 3600,
+            )
+        _refresh_state.update(
+            running=True,
+            last_started=now,
+            progress_at=now,
+            # A new run's outcome is not yet known — never leave the previous
+            # run's verdict readable as if it described this one.
+            ok=None,
+            error=None,
+            last_result=None,
+        )
+    return True, None
+
+
+def _finish_refresh(*, ok: bool, result: dict, error: str | None) -> None:
+    with _refresh_lock:
+        _refresh_state.update(
+            running=False,
+            ok=ok,
+            error=error,
+            last_result=result,
+            last_finished=dt.datetime.now(dt.UTC),
+        )
 
 
 def _run_refresh() -> None:
     from etl.adapters import ADAPTERS
-    from etl.enrichment import embed_pending
+    from etl.enrichment.corpus import enrich_corpus
     from etl.http import HttpClient
-    from etl.pipeline import ensure_source, run_adapter
+    from etl.pipeline import run_all_sources
+
+    from .intelligence.llm import get_client
 
     settings = get_settings()
     totals: dict[str, dict] = {}
+    error: str | None = None
     try:
         with HttpClient(settings) as http, session_scope() as s:
-            for cls in ADAPTERS:
-                adapter = cls(http, settings)
-                source = ensure_source(s, adapter)
-                if not source.enabled:
-                    continue
-                try:
-                    totals[adapter.key] = run_adapter(s, adapter)
-                    # Commit per source, same as the CLI refresh: one source's
-                    # total failure (e.g. a discover()-time ReadTimeout, which
-                    # run_adapter's per-document guard can't catch) must not
-                    # abort the run or roll back sources already ingested.
-                    s.commit()
-                except Exception:
-                    s.rollback()
-                    log.exception("source_run_crashed", source=adapter.key)
-                    totals[adapter.key] = {"crashed": True}
-        with session_scope() as s:
-            totals["_embedded"] = {"passages": embed_pending(s, _embedder())}
-        if has_api_key():
-            from etl.enrichment import classify_pending
-
-            from .intelligence.llm import get_client
-
-            with session_scope() as s:
-                totals["_classified"] = {"documents": classify_pending(s, get_client())}
-        _refresh_state["last_result"] = totals
-    finally:
-        _refresh_state["last_finished"] = dt.datetime.now(dt.UTC).isoformat()
-        _refresh_state["running"] = False
-        _refresh_lock.release()
+            totals.update(
+                run_all_sources(
+                    s, ADAPTERS, http, settings, on_source=lambda *_: _note_progress()
+                )
+            )
+        # The SAME ordered enrichment pass the CLI runs — the whole point of
+        # etl/enrichment/corpus.py. This path used to call embed_pending and
+        # classify_pending directly, which meant types (reclassify), actors,
+        # lifecycle and summaries had never once run on the Railway cron. The
+        # paid `summaries` step stays opt-in via DEFAULT_STEPS, so the cron
+        # does not silently start paying per document.
+        with HttpClient(settings) as http:
+            totals["_enrichment"] = enrich_corpus(
+                session_scope,
+                http=http,
+                embedder=_embedder(),
+                client=get_client() if has_api_key() else None,
+                on_progress=lambda _line: _note_progress(),
+            )
+    except Exception as exc:
+        # Partial totals are still worth reporting — they say how far the run
+        # got — but `ok` and `error` make it unambiguous that it did not
+        # succeed.
+        error = f"{type(exc).__name__}: {exc}"
+        log.exception("refresh_failed")
+    _finish_refresh(ok=error is None, result=totals, error=error)
 
 
 @app.post("/api/refresh")
 def refresh(
     background: BackgroundTasks, x_refresh_secret: str | None = Header(default=None)
 ) -> dict:
-    """THE TRIGGER, over HTTP: collect from every enabled source, then embed —
-    the corpus augments itself with the newest developments. Non-blocking; poll
-    GET /api/refresh for the outcome.
+    """THE TRIGGER, over HTTP: collect from every enabled source, then run the
+    full ordered enrichment pass — the corpus augments itself with the newest
+    developments. Non-blocking; poll GET /api/refresh for the outcome.
 
     Guarded once REFRESH_SECRET is configured (see data/config.py) — unset
     (the local-dev default) means no auth, matching prior behavior. Set it
@@ -544,16 +617,38 @@ def refresh(
     secret = get_settings().refresh_secret
     if secret and x_refresh_secret != secret:
         raise HTTPException(status_code=403, detail="Invalid or missing refresh secret.")
-    if not _refresh_lock.acquire(blocking=False):
-        return {"started": False, "reason": "refresh already running"}
-    _refresh_state["running"] = True
-    background.add_task(_run_refresh)
+    started, reason = _try_start_refresh()
+    if not started:
+        return {"started": False, "reason": reason}
+    try:
+        background.add_task(_run_refresh)
+    except Exception:
+        # Never leave the slot claimed by a task that was never scheduled.
+        _finish_refresh(ok=False, result={}, error="failed to schedule refresh task")
+        raise
     return {"started": True}
 
 
 @app.get("/api/refresh")
 def refresh_status() -> dict:
-    return _refresh_state
+    """Refresh health, as the weekly audit routine reads it.
+
+    ``ok`` is the verdict on the last COMPLETED run: None = never completed,
+    False = it failed and ``error`` says how. ``last_result`` is whatever the
+    run managed to produce, success or not — never a previous run's totals.
+    """
+    with _refresh_lock:
+        state = dict(_refresh_state)
+    return {
+        **state,
+        "last_started": _iso(state["last_started"]),
+        "last_finished": _iso(state["last_finished"]),
+        "progress_at": _iso(state["progress_at"]),
+    }
+
+
+def _iso(value: dt.datetime | None) -> str | None:
+    return value.isoformat() if value else None
 
 
 @app.post("/api/pdf")

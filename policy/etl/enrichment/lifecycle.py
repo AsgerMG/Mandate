@@ -40,6 +40,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from data.models import Document, DocumentType, LifecycleStage
+from etl.adapters.base import parse_iso_date
 from etl.adapters.eurlex import SPARQL_ENDPOINT
 
 log = structlog.get_logger(__name__)
@@ -81,15 +82,6 @@ def _build_metadata_query(celex_codes: list[str]) -> str:
       OPTIONAL {{ ?work cdm:resource_legal_date_deadline ?deadline . }}
     }}
     """
-
-
-def _parse_date(value: str | None) -> dt.date | None:
-    if not value:
-        return None
-    try:
-        return dt.date.fromisoformat(value[:10])
-    except ValueError:
-        return None
 
 
 def derive_stage(
@@ -136,11 +128,11 @@ def _fold_rows(rows: list[dict]) -> dict[str, dict]:
     for row in rows:
         celex = row["celex"]["value"]
         rec = acc.setdefault(celex, {"eif": set(), "deadlines": set(), "end": None, "flag": None})
-        if (eif := _parse_date(row.get("eif", {}).get("value"))) is not None:
+        if (eif := parse_iso_date(row.get("eif", {}).get("value"))) is not None:
             rec["eif"].add(eif)
-        if (dl := _parse_date(row.get("deadline", {}).get("value"))) is not None:
+        if (dl := parse_iso_date(row.get("deadline", {}).get("value"))) is not None:
             rec["deadlines"].add(dl)
-        if (end := _parse_date(row.get("endvalidity", {}).get("value"))) is not None:
+        if (end := parse_iso_date(row.get("endvalidity", {}).get("value"))) is not None:
             # Keep the earliest real end date; ignore the 9999 sentinel.
             if end < _NO_END_SENTINEL and (rec["end"] is None or end < rec["end"]):
                 rec["end"] = end

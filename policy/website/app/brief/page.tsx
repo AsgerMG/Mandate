@@ -14,13 +14,7 @@ import {
   postBrief,
   postQuestions,
 } from "@/lib/api";
-import {
-  Eta,
-  FALLBACK_EXPECTATION,
-  computeEta,
-  formatExpectation,
-  formatRemaining,
-} from "@/lib/eta";
+import { Eta, FALLBACK_EXPECTATION, computeEta, formatRemaining } from "@/lib/eta";
 import LiveProgress from "./LiveProgress";
 import { drawFaviconDone, drawFaviconProgress, restoreFavicon } from "@/lib/favicon";
 import { Fragment } from "react";
@@ -358,16 +352,23 @@ export default function BriefPage() {
             {step === "profile" && (
               <form className="form" onSubmit={startScoping}>
                 <div className="field">
-                  <label>Company name</label>
-                  <input type="text" value={name} required onChange={(e) => setName(e.target.value)} />
+                  <label htmlFor="company-name">Company name</label>
+                  <input
+                    id="company-name"
+                    type="text"
+                    value={name}
+                    required
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </div>
 
                 <div className="field">
-                  <label>
+                  <label htmlFor="company-description">
                     What does it do?{" "}
                     <span className="hint">— products, business model, how you use data/AI</span>
                   </label>
                   <textarea
+                    id="company-description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="e.g. We provide automated credit-scoring software to consumer lenders across the EU."
@@ -376,32 +377,44 @@ export default function BriefPage() {
 
                 {meta && (
                   <div className="field">
-                    <label>Sectors</label>
-                    <div className="chips">
+                    {/* A chip group has no single control to point `htmlFor` at, so
+                        the label is a plain element naming the group instead — a
+                        <label> that associates with nothing is exactly the bug this
+                        replaces. */}
+                    <span className="field-label" id="sectors-label">
+                      Sectors
+                    </span>
+                    <div className="chips" role="group" aria-labelledby="sectors-label">
                       {meta.sectors.map((s) => (
-                        <span
+                        <button
                           key={s.slug}
+                          type="button"
                           className={`chip ${sectors.includes(s.slug) ? "on" : ""}`}
+                          aria-pressed={sectors.includes(s.slug)}
                           onClick={() => toggle(sectors, s.slug, setSectors)}
                         >
                           {s.name}
-                        </span>
+                        </button>
                       ))}
                     </div>
                   </div>
                 )}
 
                 <div className="field">
-                  <label>Markets</label>
-                  <div className="chips">
+                  <span className="field-label" id="markets-label">
+                    Markets
+                  </span>
+                  <div className="chips" role="group" aria-labelledby="markets-label">
                     {(meta?.jurisdictions ?? ["EU"]).map((j) => (
-                      <span
+                      <button
                         key={j}
+                        type="button"
                         className={`chip ${markets.includes(j) ? "on" : ""}`}
+                        aria-pressed={markets.includes(j)}
                         onClick={() => toggle(markets, j, setMarkets)}
                       >
                         {j}
-                      </span>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -454,86 +467,123 @@ export default function BriefPage() {
                   Skip anything you don&apos;t know — the report will treat it as unconfirmed.
                 </p>
 
-                {currentGroup.questions.map((q) => (
-                  <div className="field question" key={q.id}>
-                    <label>{q.question}</label>
-                    <p className="why">{withEmphasis(q.why_it_matters)}</p>
-                    {q.kind === "text" ? (
-                      q.suggested_answers && q.suggested_answers.length > 0 ? (
-                        <div className="text-with-suggestions">
-                          <div className="chips suggestions">
-                            {q.suggested_answers.map((sugg) => {
-                              const selected = suggestionSelections[q.id] ?? [];
-                              const on = selected.includes(sugg);
-                              return (
-                                <span
-                                  key={sugg}
-                                  className={`chip suggestion ${on ? "on" : ""}`}
-                                  onClick={() => {
-                                    const next = on
-                                      ? selected.filter((x) => x !== sugg)
-                                      : [...selected, sugg];
-                                    setSuggestionSelections({ ...suggestionSelections, [q.id]: next });
-                                    setTextAnswer(q.id, next, detailText[q.id] ?? "");
-                                  }}
-                                >
-                                  {sugg}
-                                </span>
-                              );
-                            })}
-                          </div>
-                          <textarea
-                            className="detail"
-                            value={detailText[q.id] ?? ""}
-                            placeholder={q.placeholder ?? "Anything to add? (optional)"}
-                            onChange={(e) => {
-                              const detail = e.target.value;
-                              setDetailText({ ...detailText, [q.id]: detail });
-                              setTextAnswer(q.id, suggestionSelections[q.id] ?? [], detail);
-                            }}
-                          />
-                        </div>
+                {currentGroup.questions.map((q) => {
+                  const suggestions = q.suggested_answers ?? [];
+                  // A plain text question has exactly one control, so its question
+                  // text can be a real <label htmlFor>. Every other kind names a SET
+                  // of controls (preset chips + a detail box, or a list of options),
+                  // which a <label> cannot do — those use a labelled group instead.
+                  const singleControl = q.kind === "text" && suggestions.length === 0;
+                  const controlId = `q-${q.id}`;
+                  const labelId = `${controlId}-label`;
+                  const whyId = `${controlId}-why`;
+                  return (
+                    <div className="field question" key={q.id}>
+                      {singleControl ? (
+                        <label htmlFor={controlId}>{q.question}</label>
                       ) : (
-                        <textarea
-                          value={(answers[q.id] as string) ?? ""}
-                          placeholder={q.placeholder}
-                          onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
-                        />
-                      )
-                    ) : (
-                      <div className="option-list">
-                        {q.options.map((opt) => {
-                          const current = answers[q.id];
-                          const on =
-                            q.kind === "multi"
-                              ? Array.isArray(current) && current.includes(opt)
-                              : current === opt;
-                          return (
-                            <label key={opt} className={`option-row ${on ? "on" : ""}`}>
-                              <input
-                                type={q.kind === "multi" ? "checkbox" : "radio"}
-                                name={q.id}
-                                checked={on}
-                                onChange={() => {
-                                  if (q.kind === "multi") {
-                                    const cur = Array.isArray(current) ? current : [];
-                                    setAnswers({
-                                      ...answers,
-                                      [q.id]: on ? cur.filter((x) => x !== opt) : [...cur, opt],
-                                    });
-                                  } else {
-                                    setAnswers({ ...answers, [q.id]: opt });
-                                  }
-                                }}
-                              />
-                              <span>{opt}</span>
-                            </label>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                ))}
+                        <span className="field-label" id={labelId}>
+                          {q.question}
+                        </span>
+                      )}
+                      <p className="why" id={whyId}>
+                        {withEmphasis(q.why_it_matters)}
+                      </p>
+                      {q.kind === "text" ? (
+                        suggestions.length > 0 ? (
+                          <div
+                            className="text-with-suggestions"
+                            role="group"
+                            aria-labelledby={labelId}
+                            aria-describedby={whyId}
+                          >
+                            <div className="chips suggestions">
+                              {suggestions.map((sugg) => {
+                                const selected = suggestionSelections[q.id] ?? [];
+                                const on = selected.includes(sugg);
+                                return (
+                                  <button
+                                    key={sugg}
+                                    type="button"
+                                    className={`chip suggestion ${on ? "on" : ""}`}
+                                    aria-pressed={on}
+                                    onClick={() => {
+                                      const next = on
+                                        ? selected.filter((x) => x !== sugg)
+                                        : [...selected, sugg];
+                                      setSuggestionSelections({
+                                        ...suggestionSelections,
+                                        [q.id]: next,
+                                      });
+                                      setTextAnswer(q.id, next, detailText[q.id] ?? "");
+                                    }}
+                                  >
+                                    {sugg}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <textarea
+                              className="detail"
+                              aria-label={`${q.question} — anything to add`}
+                              value={detailText[q.id] ?? ""}
+                              placeholder={q.placeholder ?? "Anything to add? (optional)"}
+                              onChange={(e) => {
+                                const detail = e.target.value;
+                                setDetailText({ ...detailText, [q.id]: detail });
+                                setTextAnswer(q.id, suggestionSelections[q.id] ?? [], detail);
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <textarea
+                            id={controlId}
+                            aria-describedby={whyId}
+                            value={(answers[q.id] as string) ?? ""}
+                            placeholder={q.placeholder}
+                            onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
+                          />
+                        )
+                      ) : (
+                        <div
+                          className="option-list"
+                          role="group"
+                          aria-labelledby={labelId}
+                          aria-describedby={whyId}
+                        >
+                          {q.options.map((opt) => {
+                            const current = answers[q.id];
+                            const on =
+                              q.kind === "multi"
+                                ? Array.isArray(current) && current.includes(opt)
+                                : current === opt;
+                            return (
+                              <label key={opt} className={`option-row ${on ? "on" : ""}`}>
+                                <input
+                                  type={q.kind === "multi" ? "checkbox" : "radio"}
+                                  name={q.id}
+                                  checked={on}
+                                  onChange={() => {
+                                    if (q.kind === "multi") {
+                                      const cur = Array.isArray(current) ? current : [];
+                                      setAnswers({
+                                        ...answers,
+                                        [q.id]: on ? cur.filter((x) => x !== opt) : [...cur, opt],
+                                      });
+                                    } else {
+                                      setAnswers({ ...answers, [q.id]: opt });
+                                    }
+                                  }}
+                                />
+                                <span>{opt}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
                 <div className="wizard-actions">
                   <button
