@@ -73,6 +73,21 @@ import subprocess  # noqa: E402
 
 TERMS = ROOT / "ETL" / "terms"
 STATE = ROOT / "data" / "raw" / "bdns_open" / ".refresh_state.json"
+CANDIDATES = ROOT / "data" / "raw" / "bdns_open" / "candidates.jsonl"
+
+
+def _have_candidates() -> bool:
+    """Is there anything on disk for the load stages to consume?
+
+    `Path.exists()` follows symlinks and returns False for a dangling one,
+    which is the case that produced the first failure: the harvest's files were
+    symlinks into a temporary worktree that had since been deleted, so the path
+    listed but could not be read.
+    """
+    try:
+        return CANDIDATES.exists() and CANDIDATES.stat().st_size > 0
+    except OSError:
+        return False
 SOURCE_TAG = "bdns_es_convocatorias_abiertas"
 COUNTRY = "ES"
 
@@ -192,6 +207,26 @@ def main() -> None:
         if partial_ok:
             print(f"=== PARTIAL: {label} (rc={rc}) -- continuing with what landed", flush=True)
             partial.append(label)
+            # A stage marked partial-ok whose failure makes a LATER must-succeed
+            # stage fail is not partial-ok at all -- it just moves the hard
+            # failure one line down and reports it against the wrong step.
+            #
+            # That is exactly what the first real weekly run did: `enumerate`
+            # went partial, wrote no candidates, and `load` then died on a
+            # missing candidates.jsonl. The census recorded "failed at
+            # refresh_open_calls.py", naming the refresh rather than the fetch
+            # that actually failed, and Railway's logs were gone with the
+            # container by the time anyone looked.
+            #
+            # So when the fetch stages produce nothing, the stages that consume
+            # their output are SKIPPED as part of the same partial. There is
+            # nothing to load; that is not an error, it is a week where the
+            # register gave us nothing new.
+            if label in ("enumerate", "detail") and not _have_candidates():
+                print("=== SKIPPING load/publish/name: no candidates on disk, so "
+                      "there is nothing for them to consume. This is the same "
+                      "partial, not a second failure.", flush=True)
+                break
             continue
         print(f"=== FAILED: {label} (rc={rc})", flush=True)
         _save(last_attempt=dt.datetime.now().isoformat(timespec="seconds"),
