@@ -1,9 +1,22 @@
 """Idempotent migration runner.
 
-Usage: python ETL/load/migrations/apply.py 004
+Usage:
+  python3 ETL/events/load/migrations/apply.py 004     # one migration
+  python3 ETL/events/load/migrations/apply.py --all    # every pending one, in order
+  python3 ETL/events/load/migrations/apply.py --status # what this store is missing
 
-Applies the migration only if its columns/indexes are not already present.
-Logs applied migrations to schema_migrations table (auto-created).
+── Where "already applied" is decided ─────────────────────────────────────
+Not here, and not in `schema_migrations`. Each migration's guard lives in
+ETL/lib/schema_state.py and reads the STORE's own schema for the migration's
+effect, because that is the only answer that survives the way schema actually
+travels in this project: `push_local.py` uploads a whole db.sqlite to the
+Railway volume, carrying that file's `schema_migrations` rows with it, so the
+table describes the machine the file came from rather than the store it is in.
+The census reads the same predicates, so "the volume is missing 019" is one
+fact with one definition rather than two implementations that can disagree.
+
+`schema_migrations` is still written — it is a useful log of when a migration
+ran here — but nothing branches on it.
 """
 from __future__ import annotations
 
@@ -18,34 +31,25 @@ for _anc in _Path(__file__).resolve().parents:
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
-import sqlite3
-import sys
-from pathlib import Path
+import argparse  # noqa: E402
+import sqlite3  # noqa: E402
+import sys  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+from schema_state import (  # noqa: E402
+    DESCRIPTIONS, IDS, column_exists, is_applied, pending, table_exists,
+)
 
 DB_PATH = _ETL_DB
 MIG_DIR = _Path(__file__).resolve().parent
 
 
-def already_applied(conn: sqlite3.Connection, mig_id: str) -> bool:
+def log_applied(conn: sqlite3.Connection, mig_id: str) -> None:
     conn.execute(
         "CREATE TABLE IF NOT EXISTS schema_migrations ("
         " id TEXT PRIMARY KEY, applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)"
     )
-    row = conn.execute(
-        "SELECT 1 FROM schema_migrations WHERE id = ?", (mig_id,)
-    ).fetchone()
-    return row is not None
-
-
-def table_exists(conn: sqlite3.Connection, table: str) -> bool:
-    return conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
-    ).fetchone() is not None
-
-
-def column_exists(conn: sqlite3.Connection, table: str, column: str) -> bool:
-    cols = [r[1] for r in conn.execute(f"PRAGMA table_info({table})")]
-    return column in cols
+    conn.execute("INSERT OR REPLACE INTO schema_migrations(id) VALUES (?)", (mig_id,))
 
 
 def apply_004(conn: sqlite3.Connection) -> None:
@@ -295,9 +299,6 @@ def apply_012(conn: sqlite3.Connection) -> None:
     """'llm_cited' verification tier + eligibility_clauses table (Phase 5:
     comprehensive text-first eligibility research, see
     012_llm_cited_and_clauses.sql for the full rationale)."""
-    if column_exists(conn, "eligibility_gates", "verify_by"):
-        print("  skip 012 (already applied — verify_by exists)")
-        return
     sql = (MIG_DIR / "012_llm_cited_and_clauses.sql").read_text()
     conn.executescript(sql)
     print("  applied 012_llm_cited_and_clauses.sql")
@@ -308,9 +309,6 @@ def apply_013(conn: sqlite3.Connection) -> None:
     eligibility corpus machine-decidable without mutating extractor-owned
     columns (see 013_gate_role_and_resolved_field.sql for the measurements
     that motivated it)."""
-    if column_exists(conn, "eligibility_gates", "gate_role"):
-        print("  skip 013 (already applied — gate_role exists)")
-        return
     sql = (MIG_DIR / "013_gate_role_and_resolved_field.sql").read_text()
     conn.executescript(sql)
     print("  applied 013_gate_role_and_resolved_field.sql")
@@ -320,9 +318,6 @@ def apply_014(conn: sqlite3.Connection) -> None:
     """administering_body_share — how much of an instrument's history the body
     we NAME actually awarded. Without it the frontend rendered a 15%-plurality
     agency as if it were the fund (see the SQL for the measurements)."""
-    if column_exists(conn, "funding_instruments", "administering_body_share"):
-        print("  skip 014 (already applied — administering_body_share exists)")
-        return
     sql = (MIG_DIR / "014_administering_body_share.sql").read_text()
     conn.executescript(sql)
     print("  applied 014_administering_body_share.sql")
@@ -334,9 +329,6 @@ def apply_015(conn: sqlite3.Connection) -> None:
     total_eur is the size of the scheme, not of an award, and the corpus spans
     EUR 16k at p10 to EUR 1.1M at p90 (see the SQL). 92% of events already
     carry an amount; this records what was always derivable."""
-    if column_exists(conn, "funding_instruments", "award_p50"):
-        print("  skip 015 (already applied — award_p50 exists)")
-        return
     sql = (MIG_DIR / "015_award_percentiles.sql").read_text()
     conn.executescript(sql)
     print("  applied 015_award_percentiles.sql")
@@ -348,9 +340,6 @@ def apply_016(conn: sqlite3.Connection) -> None:
     The raw registers name their programmes and the loaders dropped it: 473
     ADEME programmes became one row. See the SQL for why the name is never
     synthesised."""
-    if column_exists(conn, "public_funding_events", "programme_name"):
-        print("  skip 016 (already applied — programme_name exists)")
-        return
     sql = (MIG_DIR / "016_programme_identity.sql").read_text()
     conn.executescript(sql)
     print("  applied 016_programme_identity.sql")
@@ -361,9 +350,6 @@ def apply_017(conn: sqlite3.Connection) -> None:
 
     An entire paid classification pass was destroyed by the next destructive
     reload of companies; see the SQL."""
-    if table_exists(conn, "company_sector_labels"):
-        print("  skip 017 (already applied)")
-        return
     sql = (MIG_DIR / "017_company_sector_labels.sql").read_text()
     conn.executescript(sql)
     print("  applied 017_company_sector_labels.sql")
@@ -372,9 +358,6 @@ def apply_017(conn: sqlite3.Connection) -> None:
 def apply_018(conn: sqlite3.Connection) -> None:
     """intensity_p50 / intensity_n -- realised aid intensity, measured from
     events that carry both a grant and a total project cost."""
-    if column_exists(conn, "funding_instruments", "intensity_p50"):
-        print("  skip 018 (already applied)")
-        return
     sql = (MIG_DIR / "018_realised_intensity.sql").read_text()
     conn.executescript(sql)
     print("  applied 018_realised_intensity.sql")
@@ -382,70 +365,36 @@ def apply_018(conn: sqlite3.Connection) -> None:
 
 def apply_019(conn: sqlite3.Connection) -> None:
     """tier / root_id / depth — the hierarchy, made explicit and filterable."""
-    if column_exists(conn, "funding_instruments", "tier"):
-        print("  skip 019 (already applied)")
-        return
     conn.executescript((MIG_DIR / "019_instrument_hierarchy.sql").read_text())
     print("  applied 019_instrument_hierarchy.sql")
 
 
 def apply_020(conn: sqlite3.Connection) -> None:
     """register_derived — a third evidence tier for register-filed facts."""
-    row = conn.execute(
-        "SELECT sql FROM sqlite_master WHERE name = 'eligibility_gates'").fetchone()
-    if row and "register_derived" in row[0]:
-        print("  skip 020 (already applied)")
-        return
     conn.executescript((MIG_DIR / "020_register_derived_tier.sql").read_text())
     print("  applied 020_register_derived_tier.sql")
 
 
 def apply_021(conn: sqlite3.Connection) -> None:
     """programme_feed name_source — names the feed itself carries."""
-    row = conn.execute(
-        "SELECT sql FROM sqlite_master WHERE name = 'funding_instruments'").fetchone()
-    if row and "programme_feed" in row[0]:
-        print("  skip 021 (already applied)")
-        return
     conn.executescript((MIG_DIR / "021_programme_feed_name_source.sql").read_text())
     print("  applied 021_programme_feed_name_source.sql")
 
 
 def apply_022(conn: sqlite3.Connection) -> None:
     """case_register name_source — the Commission's title for a notified scheme."""
-    row = conn.execute(
-        "SELECT sql FROM sqlite_master WHERE name = 'funding_instruments'").fetchone()
-    if row and "case_register" in row[0]:
-        print("  skip 022 (already applied)")
-        return
     conn.executescript((MIG_DIR / "022_case_register_name_source.sql").read_text())
     print("  applied 022_case_register_name_source.sql")
 
 
 def apply_023(conn: sqlite3.Connection) -> None:
     """scheme_end_date / successor — the register's word on a scheme's lifetime."""
-    if column_exists(conn, "funding_instruments", "scheme_end_date"):
-        print("  skip 023 (already applied)")
-        return
     conn.executescript((MIG_DIR / "023_scheme_lifetime.sql").read_text())
     print("  applied 023_scheme_lifetime.sql")
 
 
-def apply_025(conn: sqlite3.Connection) -> None:
-    """scheme_end_date_basis -- WHICH register supplied the end date, hence
-    whether its expiry closes anything. See the migration's own header."""
-    if column_exists(conn, "funding_instruments", "scheme_end_date_basis"):
-        print("  skip 025 (already applied)")
-        return
-    conn.executescript((MIG_DIR / "025_scheme_end_date_basis.sql").read_text())
-    print("  applied 025_scheme_end_date_basis.sql")
-
-
 def apply_024(conn: sqlite3.Connection) -> None:
     """delivery_region — where a fund's money actually lands, as routing."""
-    if column_exists(conn, "funding_instruments", "delivery_region"):
-        print("  skip 024 (already applied)")
-        return
     conn.executescript((MIG_DIR / "024_delivery_region.sql").read_text())
     print("  applied 024_delivery_region.sql")
 
@@ -453,58 +402,88 @@ def apply_024(conn: sqlite3.Connection) -> None:
 def apply_025(conn: sqlite3.Connection) -> None:
     """catchment_region — the territory a body is REGISTERED to serve, which is a
     rule, as against delivery_region's measured award footprint."""
-    if column_exists(conn, "funding_instruments", "catchment_region"):
-        print("  skip 025 (already applied)")
-        return
     conn.executescript((MIG_DIR / "025_declared_catchment.sql").read_text())
     print("  applied 025_declared_catchment.sql")
 
 
-MIGRATIONS = {
-    "004": apply_004,
-    "005": apply_005,
-    "006": apply_006,
-    "007": apply_007,
-    "008": apply_008,
-    "009": apply_009,
-    "010": apply_010,
-    "011": apply_011,
-    "012": apply_012,
-    "013": apply_013,
-    "014": apply_014,
-    "015": apply_015,
-    "016": apply_016,
-    "017": apply_017,
-    "018": apply_018,
-    "019": apply_019,
-    "020": apply_020,
-    "021": apply_021,
-    "022": apply_022,
-    "023": apply_023,
-    "024": apply_024,
-    "025": apply_025,
-}
+def apply_026(conn: sqlite3.Connection) -> None:
+    """scheme_end_date_basis -- WHICH register supplied the end date, hence
+    whether its expiry closes anything. See the migration's own header.
+
+    Filed as a second `025` until 2026-08-07, which made it unreachable: two
+    `def apply_025` in one module means Python keeps the later one, so
+    `apply.py 025` ran the catchment migration and this SQL could not be
+    applied by the runner at all. That is exactly the failure that put the
+    Railway volume a migration behind, and the reason MIGRATIONS is now derived
+    from schema_state.IDS rather than hand-written — a duplicate key in a dict
+    literal is silent, a duplicate id in the registry is a startup error.
+    """
+    conn.executescript((MIG_DIR / "026_scheme_end_date_basis.sql").read_text())
+    print("  applied 026_scheme_end_date_basis.sql")
+
+
+# Derived from the registry rather than written out again: schema_state.IDS is
+# the list of migrations that exist, and a migration with a guard but no
+# implementation (or the reverse) is a startup error here instead of a
+# surprise on the one store that needed it.
+MIGRATIONS = {i: globals()[f"apply_{i}"] for i in IDS}
+_orphans = [i for i in IDS if f"apply_{i}" not in globals()]
+if _orphans:  # pragma: no cover - structural, fails at import
+    raise RuntimeError(f"schema_state declares {_orphans} with no apply_NNN here")
+
+
+def _run(conn: sqlite3.Connection, mig_id: str) -> None:
+    print(f"Applying migration {mig_id} — {DESCRIPTIONS[mig_id]}")
+    MIGRATIONS[mig_id](conn)
+    log_applied(conn, mig_id)
+    conn.commit()
+    if not is_applied(conn, mig_id):
+        # The migration ran and its own guard still says it did not happen.
+        # Louder than a silent pass: the next reader would take the store for
+        # up to date on the strength of a log row.
+        raise SystemExit(
+            f"Migration {mig_id} ran but its effect is not present in the store. "
+            f"Do not treat this database as migrated.")
+    print(f"Migration {mig_id} applied.")
 
 
 def main() -> None:
-    if len(sys.argv) < 2:
-        sys.exit("Usage: python apply.py <migration_id>")
-    mig_id = sys.argv[1]
-    if mig_id not in MIGRATIONS:
-        sys.exit(f"Unknown migration: {mig_id}. Available: {sorted(MIGRATIONS)}")
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("migration", nargs="?", help="a single migration id, e.g. 019")
+    ap.add_argument("--all", action="store_true",
+                    help="apply every pending migration, in order. This is what "
+                         "the weekly Railway run does against the volume.")
+    ap.add_argument("--status", action="store_true",
+                    help="say what this store is missing and change nothing")
+    args = ap.parse_args()
 
     conn = sqlite3.connect(DB_PATH)
     try:
-        if already_applied(conn, mig_id):
-            print(f"Migration {mig_id} already applied — re-running idempotently.")
-        print(f"Applying migration {mig_id}...")
-        MIGRATIONS[mig_id](conn)
-        conn.execute(
-            "INSERT OR REPLACE INTO schema_migrations(id) VALUES (?)",
-            (mig_id,),
-        )
-        conn.commit()
-        print(f"Migration {mig_id} applied.")
+        missing = pending(conn)
+        if args.status:
+            print(f"store: {DB_PATH}")
+            print(f"  {len(IDS) - len(missing)}/{len(IDS)} migrations present")
+            for m in missing:
+                print(f"  PENDING {m} — {DESCRIPTIONS[m]}")
+            raise SystemExit(1 if missing else 0)
+
+        if args.all:
+            if not missing:
+                print(f"store: {DB_PATH}\n  up to date — all {len(IDS)} migrations present")
+                return
+            print(f"store: {DB_PATH}\n  {len(missing)} pending: {', '.join(missing)}")
+            for m in missing:
+                _run(conn, m)
+            return
+
+        if not args.migration:
+            ap.error("give a migration id, or --all, or --status")
+        if args.migration not in MIGRATIONS:
+            sys.exit(f"Unknown migration: {args.migration}. Available: {list(IDS)}")
+        if is_applied(conn, args.migration):
+            print(f"Migration {args.migration} is already present in this store — "
+                  f"re-running idempotently.")
+        _run(conn, args.migration)
     finally:
         conn.close()
 
