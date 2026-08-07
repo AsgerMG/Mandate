@@ -48,7 +48,139 @@ def gber_articles() -> list[str]:
     return problems
 
 
-CHECKS = {"GBER article codes": gber_articles}
+def census_kpi_keys() -> list[str]:
+    """The corpus figures, named in three places that cannot import each other.
+
+    `corpus_kpis.CANONICAL_KPI_SQL` is THE definition and computes them. Two
+    other lists name them, in two languages, and neither can be generated from
+    the first at the point it is needed:
+
+      corpusCensus.CENSUS_KPI_KEYS   the render path's "is this reading whole?"
+                                     test -- a census missing any of these is
+                                     refused outright
+      coverage_gate.KPI_AXES         the gate's loss test -- a figure not named
+                                     here is a figure the gate has no opinion
+                                     about
+
+    Both failure directions are silent, which is why this is a check and not a
+    comment:
+
+      IN THE DEFINITION, MISSING FROM THE APP -- a KPI added to compute_kpis
+      never reaches CENSUS_KPI_KEYS. The census carries it, the page ignores it,
+      and nothing says so.
+
+      IN THE DEFINITION, MISSING FROM THE GATE -- the figure is published every
+      week with nothing judging whether it got worse. That is precisely the hole
+      census #4 fell through: `sectors` went 11 -> 8 and the gate was silent,
+      because `sectors` was not an axis.
+
+      IN THE APP, MISSING FROM THE DEFINITION -- worse, and the reason this is
+      worth a build failure. `admissibility()` demands every key in
+      CENSUS_KPI_KEYS be present and finite. A key the ETL does not compute can
+      never be present, so EVERY census is inadmissible, forever, and the site
+      falls back to the committed artifact and quietly stops following the
+      database. The live read would look exactly like it does when it works.
+    """
+    py = (ROOT / "website/build/lib/corpus_kpis.py").read_text()
+    ts = (ROOT / "website/frontend/lib/corpusCensus.ts").read_text()
+    gate = (ROOT / "ETL/terms/coverage_gate.py").read_text()
+
+    def block(text: str, opener: str, closer: str) -> set[str]:
+        body = text.split(opener, 1)[1].split(closer, 1)[0]
+        return set(re.findall(r"""["'](\w+)["']""", body))
+
+    computed = block(py, "CANONICAL_KPI_SQL = {", "\n}")
+    served = block(ts, "CENSUS_KPI_KEYS = [", "]")
+    judged = block(gate, "KPI_AXES = (", ")")
+
+    problems = []
+    for name, other, note in (
+        ("served by the site (corpusCensus.CENSUS_KPI_KEYS)", served,
+         "→ a key the ETL never computes makes EVERY census inadmissible, and the\n"
+         "      site falls back to the committed artifact forever without saying why"),
+        ("judged by the coverage gate (coverage_gate.KPI_AXES)", judged,
+         "→ a figure outside the gate can be lost with nothing to stop it reaching\n"
+         "      the home page; this is the hole census #4 fell through"),
+    ):
+        if computed - other:
+            problems.append(f"  computed by corpus_kpis but not {name}: "
+                            f"{sorted(computed - other)}\n    {note}")
+        if other - computed:
+            problems.append(f"  {name} but not computed by corpus_kpis: "
+                            f"{sorted(other - computed)}\n    {note}")
+    return problems
+
+
+def eur_formatting() -> list[str]:
+    """`fmt_eur` (Python, the artifact) and `fmtEur` (TypeScript, the census).
+
+    The same corpus is formatted by whichever half of the codebase happens to
+    read it: synthesis.py bakes `totalCapitalEur` into the committed artifact,
+    and corpusFigures.ts derives it from the census's raw euro sum at render
+    time. If the two ever disagree, the identical corpus reads €408.4B on a
+    live render and something else on a fallback -- and the difference looks
+    like the money moved.
+
+    Compared by BEHAVIOUR on real values, not by reading the source: the
+    magnitude thresholds and decimal places are the contract, and two
+    implementations can satisfy it while looking nothing alike.
+    """
+    import json
+    import random
+    import subprocess
+
+    # Not a list of remembered cases. Three families, so a divergence in a
+    # rounding mode nobody has thought of is still caught:
+    #
+    #  1. Real corpus totals and every magnitude threshold, both sides.
+    #  2. EVERY exact tie at each magnitude's last decimal place -- x.x5 for the
+    #     B/M branches, x.5 for K and units -- which is where two languages'
+    #     rounding conventions can differ at all, and where they DID.
+    #  3. A deterministic pseudo-random sweep across ten orders of magnitude,
+    #     signed, because the interesting failures in float formatting are the
+    #     ones no author would sit down and write out.
+    probes = [
+        408433535420.67, 352852279442.4658, 291_500_000_000.0, 55_710_000_000.0,
+        1e9, 999_999_999.0, 1.4e6, 1e6, 999_999.0, 1e3, 999.0, 0.0, -1.4e9,
+    ]
+    for scale in (1e9, 1e6):          # one decimal shown → ties at x.x5
+        for step in range(10, 100):
+            probes += [scale * (step / 10 + 0.05), -scale * (step / 10 + 0.05)]
+    for scale in (1e3, 1.0):          # no decimals shown → ties at x.5
+        for step in range(1, 100):
+            probes += [scale * (step + 0.5), -scale * (step + 0.5)]
+    rng = random.Random(20260807)
+    probes += [rng.uniform(-1, 1) * 10 ** rng.randint(0, 12) for _ in range(2000)]
+
+    sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
+    from helpers import fmt_eur  # noqa: PLC0415
+
+    node = subprocess.run(
+        ["npx", "tsx", "-e",
+         "import {fmtEur} from './lib/format';"
+         f"console.log(JSON.stringify({json.dumps(probes)}.map(fmtEur)))"],
+        cwd=ROOT / "website" / "frontend",
+        capture_output=True, text=True)
+    if node.returncode != 0:
+        return [f"  could not run the TypeScript half: {node.stderr.strip()[-400:]}"]
+    ts_out = json.loads(node.stdout.strip().splitlines()[-1])
+
+    problems = []
+    for value, got_ts in zip(probes, ts_out):
+        got_py = fmt_eur(value)
+        if got_py != got_ts:
+            problems.append(
+                f"  {value:,.2f} → Python fmt_eur {got_py!r}, TypeScript fmtEur "
+                f"{got_ts!r}\n    → the same corpus would read differently from the "
+                f"artifact and from the census")
+    return problems
+
+
+CHECKS = {
+    "GBER article codes": gber_articles,
+    "corpus KPI names": census_kpi_keys,
+    "EUR formatting": eur_formatting,
+}
 
 
 def main() -> None:
