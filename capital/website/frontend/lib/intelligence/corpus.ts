@@ -217,6 +217,10 @@ export interface DbInstrument {
    *  the route, which is a gap in our collection and NOT grounds to withhold.
    *  Never test it directly — use `hasOfferRoute()` in ./offerRoute. */
   routeStatus?: string | null;
+  /** The official source establishing `routeStatus = "none"`. Required for that
+   *  value and only that value: a row is not removed from the offer by
+   *  assertion. `check_offer_route.ts` fails on an unsourced withholding. */
+  routeStatusSource?: string | null;
   /** A linked scheme that is still running, where the closed one was prolonged
    *  under a new SA number rather than simply ending. */
   successorScheme?: string | null;
@@ -397,7 +401,7 @@ export async function hydrateDbInstruments(): Promise<void> {
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
                   scheme_code, scheme_end_date, scheme_end_date_basis,
-                  route_status,
+                  route_status, route_status_source,
                   successor_scheme, successor_title,
                   application_url, sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
@@ -496,6 +500,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         schemeEndDate: inst.scheme_end_date ?? null,
         schemeEndBasis: inst.scheme_end_date_basis ?? null,
         routeStatus: inst.route_status ?? null,
+        routeStatusSource: inst.route_status_source ?? null,
         successorScheme: inst.successor_scheme ?? null,
         successorTitle: inst.successor_title ?? null,
         schemeOperators: (() => {

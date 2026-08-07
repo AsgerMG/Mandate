@@ -86,6 +86,12 @@ export type RouteStatus = (typeof ROUTE_STATUS)[keyof typeof ROUTE_STATUS];
  *  snapshot and the SQLite rows can all satisfy it. */
 export interface OfferRouteFacts {
   routeStatus?: string | null;
+  /** Where a founder submits. Recorded from the body's own page. */
+  applicationUrl?: string | null;
+  /** A dated window from an official register — a call's deadline, or a
+   *  notified scheme's expiry. Either way the register is holding a window
+   *  open for this row, which a record of past aid never has. */
+  schemeEndDate?: string | null;
 }
 
 /**
@@ -99,6 +105,51 @@ export interface OfferRouteFacts {
  */
 export function hasOfferRoute(row: OfferRouteFacts): boolean {
   return row.routeStatus !== ROUTE_STATUS.none;
+}
+
+/**
+ * Does the corpus record ANYTHING a founder could act on to reach this row?
+ *
+ * This is the measurable half of the axis. `hasOfferRoute()` above says whether
+ * a row may be proposed and is a JUDGEMENT, made once per row by a human
+ * reading an official source. This one is an OBSERVATION over columns we
+ * already hold, and it is what `check_offer_route.ts` ratchets, because a
+ * judgement nobody has made yet cannot fail a build.
+ *
+ * ── The three forms of evidence, and the one deliberately excluded ────────
+ * The PM's formulation is "an application route, a deadline, a body that
+ * accepts applications". Two of those three are counted here:
+ *
+ *   `applicationUrl`  — where you submit. The strongest form.
+ *   `schemeEndDate`   — a dated window an official register is holding open for
+ *                       this row, whether a call's deadline or a notified
+ *                       scheme's expiry. Weaker than a URL, and enough: a
+ *                       register that records a window is describing something
+ *                       still running, which a record of past aid never is.
+ *   `route_status = 'attested'` — a route sourced by hand where neither column
+ *                       can carry it (an email address, a paper form).
+ *
+ * `administering_body` is NOT counted, and that exclusion is the load-bearing
+ * design decision in this file. It is derived from award attribution — WHO
+ * PAID — so every row built out of a register of aid already granted has one by
+ * construction. Counting it would make the test structurally blind to the exact
+ * population it exists to catch: an artefact of a payment record always has a
+ * payer, and never has an application desk. (It happens that the eleven IPCEI
+ * rows carry no body either, verified in Postgres 2026-08-07. That is luck, and
+ * building the test on it would be building on an accident.)
+ *
+ * ── What FAILING this does NOT mean ───────────────────────────────────────
+ * Not that the row is a non-fund. 379 of 806 publishable rows fail it today,
+ * overwhelmingly real schemes whose route we have never harvested. A row that
+ * fails is a row we cannot yet tell apart from an artefact — which is why the
+ * check ratchets the COUNT rather than withholding the rows.
+ */
+export function hasRecordedRoute(row: OfferRouteFacts): boolean {
+  return (
+    row.routeStatus === ROUTE_STATUS.attested ||
+    Boolean(row.applicationUrl) ||
+    Boolean(row.schemeEndDate)
+  );
 }
 
 /** SQL for the same predicate, so Python and SQL consumers do not restate it in
