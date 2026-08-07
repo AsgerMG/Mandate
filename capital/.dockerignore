@@ -9,3 +9,15 @@ website/frontend/out/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Secrets must never be baked into an image. `COPY . .` would otherwise carry
+# .env.local into every layer of a registry image, and the file holds the
+# Anthropic, OpenAI, Voyage and Postgres credentials. Railway injects the real
+# environment at runtime; nothing in the image should need this file.
+.env
+.env.*
+# Worktrees carry a `.git` FILE rather than a directory, which the `.git/`
+# pattern above does not match, and a dangling symlink inside one fails the
+# build with an unhelpful COPY error.
+.git
+.claude/
