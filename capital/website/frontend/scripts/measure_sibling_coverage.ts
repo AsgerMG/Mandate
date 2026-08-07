@@ -7,12 +7,11 @@
 // not among those six -- administering_body, delivery_region and the verbatim
 // eligibility_text -- and J also found that one field it trusted had never been
 // loaded at all. So the bound is only a bound if these add nothing.
-import { readFileSync } from "fs";
 import { Client } from "pg";
-for (const line of readFileSync("/Users/asgermollergrimberg/Wincent/.env.local", "utf8").split("\n")) {
-  const m = line.match(/^([A-Z_]+)=(.*)$/);
-  if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-}
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_sibling_coverage", ["DATABASE_URL"]);
 
 const h = (s: string | null) => (s ? String(s).trim().toLowerCase().slice(0, 400) : "");
 

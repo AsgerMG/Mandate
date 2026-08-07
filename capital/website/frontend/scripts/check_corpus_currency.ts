@@ -58,9 +58,14 @@ import path from "path";
 // The block that used to sit here had been copy-pasted into seven harnesses
 // while thirty-three others still carried the single-path version; see
 // scripts/loadEnv.ts.
-import { loadEnvLocal } from "./loadEnv";
+// And then a DECLARED contract, because the fixed path only made the skip
+// rarer. Without DATABASE_URL and without NO_PG this check now ENDS non-zero
+// rather than printing "skipped" and returning 0 -- which was the exact defect
+// it exists to catch, in itself.
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
+const CREDENTIALS = requireCredentials("check_corpus_currency", ["DATABASE_URL"]);
 
 import { isClosed, today } from "../lib/intelligence/liveness";
 
@@ -76,11 +81,14 @@ interface SnapshotRecord {
 const SHOW = 8;
 
 async function main() {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    console.log("check_corpus_currency: skipped — no DATABASE_URL, nothing to compare against");
+  // The only skip left is the one somebody declared. "No credentials" is no
+  // longer reachable here: it ended the process at the top of the file.
+  if (CREDENTIALS === "offline") {
+    console.log("check_corpus_currency: skipped — NO_PG=1, so there is no live "
+      + "corpus to compare the committed one against");
     return;
   }
+  const url = process.env.DATABASE_URL as string;
 
   const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
   const snapshot = (JSON.parse(readFileSync(file, "utf8")) as {

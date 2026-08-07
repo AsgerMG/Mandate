@@ -4,15 +4,10 @@ import { readFileSync, writeFileSync } from "fs";
 import Anthropic from "@anthropic-ai/sdk";
 import { Client } from "pg";
 
-for (const p of ["/Users/asgermollergrimberg/Wincent/.env.local",
-                 "/Users/asgermollergrimberg/Wincent/website/frontend/.env.local"]) {
-  try {
-    for (const line of readFileSync(p, "utf8").split("\n")) {
-      const m = line.match(/^([A-Z_]+)=(.*)$/);
-      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-    }
-  } catch { /* ignore */ }
-}
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("diag_gate2", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
 const MODEL = process.env.MODEL ?? "claude-haiku-4-5";
 const ROOT = "/Users/asgermollergrimberg/Wincent/website/frontend";

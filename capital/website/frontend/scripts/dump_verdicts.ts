@@ -18,8 +18,23 @@
 // cannot see that promotion and reports it as a parity failure.
 import { readFileSync as readIdsFile } from "node:fs";
 
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+// This file had NO env preamble at all, because its only caller passes its own
+// environment down. That worked and was still wrong: run standalone — which
+// its own usage lines above invite — it read whatever the shell happened to
+// hold, and a shell with nothing produced a full archetype dump off the
+// snapshot with no way to tell. Both arms of check_hydration_parity are built
+// from this output, so a quiet fallback here is a parity check comparing the
+// snapshot with itself.
+//
+// STDOUT IS THE PROTOCOL: the parent JSON.parses it, so nothing here may print.
+// requireCredentials is silent by design for exactly this reason.
+loadEnvLocal();
+const CREDENTIALS = requireCredentials("dump_verdicts", ["DATABASE_URL"]);
+
 async function main() {
-  if (process.env.NO_PG) delete process.env.DATABASE_URL;
+  void CREDENTIALS; // "offline" is legitimate: it is how the JSON arm is run.
   const { hydrateDbInstruments, corpusProvenance, publishableInstruments,
     suppressedForUnconfirmedLiveness,
     __forceSuppressedForParity } = await import("../lib/intelligence/corpus");

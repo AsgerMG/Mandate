@@ -44,20 +44,20 @@ import { execFileSync } from "child_process";
 import { readFileSync } from "fs";
 import path from "path";
 
-// Both env files, repo root first. DATABASE_URL is documented as living at the
-// repo root while most harnesses here read only ./.env.local, so a check run
-// from the frontend on a checkout that has only the root file would skip
-// itself and report that as a pass. CI has neither and must not need them.
-for (const p of ["../../.env.local", ".env.local"]) {
-  try {
-    for (const line of readFileSync(p, "utf8").split("\n")) {
-      const m = line.match(/^([A-Z_]+)=(.*)$/);
-      if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-    }
-  } catch { /* rely on the process environment */ }
-}
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
+loadEnvLocal();
+
+/** The scheduled workflow's belt: even a DECLARED offline run must fail there,
+ *  because that job exists to make the comparison and a skipped comparison is
+ *  the failure it reports on. */
 const REQUIRE_DB = process.argv.includes("--require-db");
+
+// Declared, so "no credentials" ends the process here rather than reaching the
+// skip below. The skip that survives is the one somebody typed: NO_PG=1.
+const CREDENTIALS = REQUIRE_DB
+  ? "live" as const
+  : requireCredentials("check_corpus_census", ["DATABASE_URL"]);
 
 /** Before there is census history to measure, the ETL cadence is weekly and two
  *  missed cycles is unambiguous. Used only for the cold start — once three
@@ -100,13 +100,15 @@ function fingerprintOfCheckout(): string | null {
 async function main() {
   const url = process.env.DATABASE_URL;
   if (!url) {
-    if (REQUIRE_DB) {
-      console.error("check_corpus_census: FAILED — --require-db was given and there");
-      console.error("  is no DATABASE_URL. This check is the only thing that sees the");
-      console.error("  ETL's corpus; skipping it silently is how the drift got to 32 days.");
-      process.exit(1);
-    }
-    console.log("check_corpus_census: skipped — no DATABASE_URL, nothing to compare against");
+    // Only reachable under --require-db, which deliberately bypasses the
+    // credential contract so that this message is the one the workflow shows.
+    console.error("check_corpus_census: FAILED — --require-db was given and there");
+    console.error("  is no DATABASE_URL. This check is the only thing that sees the");
+    console.error("  ETL's corpus; skipping it silently is how the drift got to 32 days.");
+    process.exit(1);
+  }
+  if (CREDENTIALS === "offline") {
+    console.log("check_corpus_census: skipped — NO_PG=1, nothing to compare against");
     return;
   }
 

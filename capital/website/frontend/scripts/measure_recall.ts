@@ -56,18 +56,23 @@
 // rather than counted, because it would grade retrieval on a query copied out
 // of the answer. That defect covered 46% of the old set's holdout `project`
 // rows and is what `check_recall_leaks.ts` now keeps out of CI.
-// One loader, shared. Without credentials an unexported shell measures the
-// LEXICAL fallback while production ranks on embeddings -- the harness would be
-// grading a different system from the one that ships. This script's own copy
-// read only ./.env.local, which meant a worktree with credentials at the repo
-// root measured the wrong system and said nothing; `requireLiveCorpus` catches
-// the corpus half of that, not the ranking half.
+// One loader, shared, and one DECLARED contract. Without credentials an
+// unexported shell measures the LEXICAL fallback while production ranks on
+// embeddings -- the harness would be grading a different system from the one
+// that ships. This script's own copy read only ./.env.local, which meant a
+// worktree with credentials at the repo root measured the wrong system and
+// said nothing; `requireLiveCorpus` catches the corpus half of that, not the
+// ranking half, and catches neither when DATABASE_URL was never set at all
+// (hydration then records source="snapshot", degraded=FALSE, and the guard
+// passes). `requireCredentials` is the half that was missing.
 import { readFileSync } from "fs";
 
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+// Also the one definition of "deliberately offline": it deletes DATABASE_URL
+// under NO_PG, which used to be this file's own next line.
+requireCredentials("measure_recall", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
