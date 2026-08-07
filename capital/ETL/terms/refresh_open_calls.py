@@ -73,21 +73,32 @@ import subprocess  # noqa: E402
 
 TERMS = ROOT / "ETL" / "terms"
 STATE = ROOT / "data" / "raw" / "bdns_open" / ".refresh_state.json"
-CANDIDATES = ROOT / "data" / "raw" / "bdns_open" / "candidates.jsonl"
+RAW = ROOT / "data" / "raw" / "bdns_open"
+# Everything `load` reads. Named here rather than discovered by failure,
+# because both files went missing this week for different reasons and each
+# time the error surfaced against the wrong stage.
+LOAD_INPUTS = (RAW / "candidates.jsonl", RAW / "existing_leaf_details.json")
 
 
-def _have_candidates() -> bool:
-    """Is there anything on disk for the load stages to consume?
+def _load_inputs_ready() -> bool:
+    """Is everything the load stages consume actually readable?
 
     `Path.exists()` follows symlinks and returns False for a dangling one,
-    which is the case that produced the first failure: the harvest's files were
-    symlinks into a temporary worktree that had since been deleted, so the path
-    listed but could not be read.
+    which is one of the two ways this broke: the harvest's files were symlinks
+    into a temporary worktree that had been deleted, so the paths listed and
+    could not be read. The other way was `existing_leaf_details.json` simply
+    never being produced, because the stage that writes it was not in the
+    weekly job at all.
     """
-    try:
-        return CANDIDATES.exists() and CANDIDATES.stat().st_size > 0
-    except OSError:
-        return False
+    for p in LOAD_INPUTS:
+        try:
+            if not (p.exists() and p.stat().st_size > 0):
+                print(f"    missing load input: {p}", flush=True)
+                return False
+        except OSError:
+            print(f"    unreadable load input: {p}", flush=True)
+            return False
+    return True
 SOURCE_TAG = "bdns_es_convocatorias_abiertas"
 COUNTRY = "ES"
 
@@ -145,6 +156,13 @@ def main() -> None:
                        "--enumerate", "--since", since], True),
         ("detail", [py, str(TERMS / "harvest_bdns_open_calls.py"),
                     "--detail", "--limit", str(a.detail_cap)], True),
+        # The overlap gate joins new calls against existing leaves, and that
+        # join needs each existing leaf's convocatoria detail re-read for its
+        # keys. It was never in the weekly job, so `load` died on a file
+        # nothing produced -- twice, reported both times against `load`. It is
+        # partial-ok: a stale join costs a revival, a missing one costs the week.
+        ("refresh-existing", [py, str(TERMS / "match_bdns_open_calls.py"),
+                              "--refresh-existing"], True),
         ("load", [py, str(TERMS / "load_bdns_open_calls.py"), "--write"], False),
         ("publish", [py, str(TERMS / "publish_new_instruments_scoped.py"),
                      "--source", SOURCE_TAG], False),
@@ -222,7 +240,7 @@ def main() -> None:
             # their output are SKIPPED as part of the same partial. There is
             # nothing to load; that is not an error, it is a week where the
             # register gave us nothing new.
-            if label in ("enumerate", "detail") and not _have_candidates():
+            if label in ("enumerate", "detail", "refresh-existing") and not _load_inputs_ready():
                 print("=== SKIPPING load/publish/name: no candidates on disk, so "
                       "there is nothing for them to consume. This is the same "
                       "partial, not a second failure.", flush=True)
