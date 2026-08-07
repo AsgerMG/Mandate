@@ -33,9 +33,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ENTRY = ROOT / "ETL/events/load/publish_corpus_census.py"
 
-# The same directories etl_env.py and web_env.py put on sys.path. A module that
-# resolves to a file under one of these is our own code and is followed.
+# The directories etl_env.py and web_env.py put on sys.path, plus the ones a
+# followed module inserts for itself. A module that resolves to a file under one
+# of these is our own code and is followed.
 SEARCH = [
+    # Not on etl_env's path: publish_corpus_census.py inserts it itself, to read
+    # the store's migration state through the one runner rather than reimplementing
+    # "which migrations does this store have". It is in the image (COPY . .) and
+    # imports only the standard library and etl_env.
+    ROOT / "ETL/events/load/migrations",
     ROOT / "ETL/lib", ROOT / "ETL/terms",
     ROOT / "ETL/events/extract", ROOT / "ETL/events/transform",
     ROOT / "ETL/events/load", ROOT / "ETL/events/load/qa",
