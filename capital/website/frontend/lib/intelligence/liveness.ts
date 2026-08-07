@@ -163,9 +163,46 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
 // 310 sit in populations where no member has ever carried a call deadline —
 // EIC, Horizon, the EIT KICs, the Baltic development banks. Their absence is
 // the register's steady state, not a gap, and suppressing them would answer a
-// blip by deleting half the product. The other 80 sit in the two populations
-// that DO record deadlines, which are precisely the two the 86 dead calls came
-// from. See `populationRecordsDeadlines`.
+// blip by deleting half the product. See `populationRecordsDeadlines`.
+//
+// ── What "the register publishes deadlines" has to MEAN ───────────────────
+// The first version of that test was "has any member ever carried a call
+// deadline", and a single member satisfies it. Measured 2026-08-07 on the
+// republished snapshot, exactly two populations carried any at all:
+//
+//                          rows   carrying a deadline   share
+//   state_aid_satr|ES       174           168           96.6%
+//   national_dev_banks|FR    81             6            7.4%
+//
+// Those are not the same kind of register and the membership test cannot tell
+// them apart. `bdns_es_ayudas` IS a register of convocatorias: a row without a
+// deadline is the 3% we have not finished loading. `ademe_aid` is a catalogue
+// of standing aids — the source pages are the French government's
+// `aides-entreprise` entries, whose eligibility is sectoral and whose windows
+// are open — into which six dated appels à projets happen to fall. Reading
+// those six as evidence about the other seventy withheld the whole ADEME
+// register, and ADEME is what French founders actually win: 488 of 778 French
+// holdout answers were in the withheld set, and EXACTLY ZERO of the 80
+// withheld rows were ones the live register would have refused.
+//
+// So the test is a proportion, not a membership: a population RECORDS
+// deadlines when most of its rows carry one. That is the operational meaning
+// of "records", not a tuned constant — and the corpus reads it at 96.6% and
+// 7.4%, with nothing anywhere near the middle, so where exactly the line sits
+// changes no row. It stays derived from the corpus rather than listed: if
+// ADEME's loader ever starts extracting windows in earnest, that population
+// crosses back on its own and the suppression returns without an edit.
+//
+// ── A window we CLEARED is an answer, not a silence ───────────────────────
+// `publishableInstruments()` republishes a closed registration under its
+// successor and nulls the end date, deliberately: the date belonged to the
+// registration that expired and we do not hold the successor's. That row's
+// openness then rests on the register's own `successor_scheme`, which is a
+// declared fact sitting on the row — not on our corpus happening to hold no
+// deadline. Reading it as absence withheld two Spanish convocatorias that
+// Postgres offers, off a field the product had emptied on purpose. It is the
+// same confusion check_degradation.ts documents from the other side, where
+// reading closure off the raw row called seven redirected schemes dead.
 //
 // ── NULL is not "open" ────────────────────────────────────────────────────
 // A store that does not carry `schemeEndBasis` at all cannot be asked any of
@@ -181,6 +218,7 @@ export type OpennessEvidence =
   | "closed"
   | "declared_window"
   | "observed_renewal"
+  | "successor_registration"
   | "no_deadline_recorded"
   | "basis_not_supplied";
 
@@ -190,6 +228,13 @@ export function opennessEvidence(row: LivenessFacts, asOf: string = today()): Op
   // A future end date closes nothing whatever its basis, so a missing basis is
   // not an input to this row's verdict and cannot invalidate it.
   if (end && end >= asOf) return "declared_window";
+  // A basis with no date is not a state any loader writes — the two columns are
+  // populated together, on all 1,084 rows of the 2026-08-07 corpus. It is the
+  // signature of the successor redirect, which clears the date of a superseded
+  // registration and keeps everything else. Openness then rests on the
+  // register naming a successor, which is ON the row, so a copy holding no
+  // deadline for it is not an inference at all.
+  if (!end && row.successorScheme && row.schemeEndBasis) return "successor_registration";
   // Past-and-open is only reachable through the notified-duration clause, which
   // reads the basis; if the store did not supply the field we did not evaluate
   // that clause, we defaulted through it.
@@ -230,6 +275,7 @@ export function unconfirmedOpen(
       return null;
     case "declared_window":
     case "observed_renewal":
+    case "successor_registration":
       return null;
     case "basis_not_supplied":
       return "the store did not supply scheme_end_date_basis, so the liveness " +
@@ -244,27 +290,54 @@ export function unconfirmedOpen(
 }
 
 /**
- * Which populations publish application deadlines at all.
+ * Which populations publish application deadlines, and therefore where a row
+ * without one is a row we have not finished loading.
+ *
+ * THE PROPERTY:
+ *
+ *   A register records application windows when MOST of its rows carry one.
+ *   Where it does, a member with none is a gap in our copy. Where it does not,
+ *   a member with none is what the register publishes.
  *
  * The unit is whatever `keyOf` returns — in the product, the register a row was
- * drawn from for one country. A population that has EVER recorded a
- * `call_deadline` records them; a row in it with none is a row whose window we
- * may simply not have loaded yet. A population that never has is one where
- * absence is the steady state.
+ * drawn from for one country.
  *
- * Deliberately derived from the corpus rather than listed. Two populations
- * qualify today and both are ones a call register was loaded into this week; a
- * list would have to be edited the next time one is, and would be edited late.
+ * ── Why a proportion and not "has any member ever" ────────────────────────
+ * Membership is satisfied by one row and cannot tell a register of calls from
+ * a catalogue of standing aids that contains a few. On the 2026-08-07 corpus
+ * it read `state_aid_satr|ES` (168 of 174 dated) and `national_dev_banks|FR`
+ * (6 of 81 dated) as the same thing, and withheld all 75 undated French rows
+ * for the sake of six. Nothing the live register would have refused was among
+ * them, and 488 of 778 French holdout answers were.
+ *
+ * A share is not a tuned constant here: "most" IS what "records them" means,
+ * and the two populations sit at 96.6% and 7.4% with the rest of the corpus at
+ * zero, so the reading does not depend on where the line is drawn. `shares()`
+ * exists so a human can look rather than take that on trust — if a population
+ * ever lands near the middle, the answer is to find out what that register
+ * actually is, not to move a number.
+ *
+ * Still derived from the corpus, never listed: a catalogue whose loader starts
+ * extracting windows crosses over on its own, and a list would be edited late.
  */
 export function populationRecordsDeadlines<T extends LivenessFacts>(
   rows: readonly T[],
   keyOf: (row: T) => string,
-): (row: T) => boolean {
-  const recording = new Set<string>();
+): ((row: T) => boolean) & { shares: () => Map<string, { dated: number; total: number }> } {
+  const tally = new Map<string, { dated: number; total: number }>();
   for (const r of rows) {
-    if (r.schemeEndBasis === SCHEME_END_BASIS.callDeadline) recording.add(keyOf(r));
+    const k = keyOf(r);
+    const t = tally.get(k) ?? { dated: 0, total: 0 };
+    t.total++;
+    if (r.schemeEndBasis === SCHEME_END_BASIS.callDeadline) t.dated++;
+    tally.set(k, t);
   }
-  return (row: T) => recording.has(keyOf(row));
+  const records = (row: T) => {
+    const t = tally.get(keyOf(row));
+    return t ? t.dated * 2 > t.total : false;
+  };
+  records.shares = () => new Map(tally);
+  return records;
 }
 
 /** SQL for the same predicate, so the Python and SQL consumers do not restate

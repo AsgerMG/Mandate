@@ -178,28 +178,97 @@ describe("unconfirmedOpen", () => {
       SNAP, AS_OF)).not.toBeNull();
   });
 
+  it("serves a row the successor redirect emptied", () => {
+    // `publishableInstruments()` republishes a superseded registration under
+    // its successor and nulls the end date on purpose. The basis stays, and a
+    // basis with no date is a state no loader writes -- it is the redirect's
+    // signature. Openness rests on `successor_scheme`, which is ON the row, so
+    // the fallback is not inferring anything from our corpus being silent.
+    //
+    // Postgres offers these rows. Withholding them off the snapshot is pure
+    // asymmetry: two Spanish convocatorias, no correctness bought.
+    expect(unconfirmedOpen(
+      { schemeEndDate: null, schemeEndBasis: C, successorScheme: "919463", lastYear: 2026 },
+      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+    // A successor named on a row that still HAS its window changes nothing:
+    // the window is what is being read, and it is still there.
+    expect(unconfirmedOpen(
+      { schemeEndDate: "2020-01-01", schemeEndBasis: C, successorScheme: "919463" },
+      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+  });
+
   it("classifies each way a row can be open", () => {
     expect(opennessEvidence({ schemeEndDate: "2020-01-01", schemeEndBasis: C }, AS_OF)).toBe("closed");
     expect(opennessEvidence({ schemeEndDate: "2030-01-01", schemeEndBasis: C }, AS_OF)).toBe("declared_window");
     expect(opennessEvidence({ schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2024 }, AS_OF)).toBe("observed_renewal");
+    expect(opennessEvidence({ schemeEndDate: null, schemeEndBasis: C, successorScheme: "919463" }, AS_OF))
+      .toBe("successor_registration");
     expect(opennessEvidence({ schemeEndDate: null, schemeEndBasis: null }, AS_OF)).toBe("no_deadline_recorded");
     expect(opennessEvidence({ schemeEndDate: null }, AS_OF)).toBe("basis_not_supplied");
   });
 });
 
 describe("populationRecordsDeadlines", () => {
-  it("marks a population from any one member carrying a call deadline", () => {
+  // THE PROPERTY: a register records application windows when MOST of its rows
+  // carry one. Membership -- "has any member ever" -- cannot tell a register of
+  // calls from a catalogue of standing aids containing a few, and reading them
+  // as the same thing withheld all 75 undated French rows for the sake of six.
+  it("marks a population where a recorded deadline is the norm", () => {
     const rows = [
+      // A register of convocatorias: dated is what it publishes, so the undated
+      // member is one we have not finished loading.
       { pop: "calls|ES", schemeEndDate: "2025-04-14", schemeEndBasis: C },
+      { pop: "calls|ES", schemeEndDate: "2025-07-31", schemeEndBasis: C },
       { pop: "calls|ES", schemeEndDate: null, schemeEndBasis: null },
       { pop: "standing|EU", schemeEndDate: null, schemeEndBasis: null },
-      // A notified duration is NOT a deadline. If this ever marked the
-      // population, every SATR country would qualify and the policy would
-      // withhold 390 rows instead of 80.
+      // A notified duration is NOT a deadline. If this ever counted, every SATR
+      // country would qualify and the policy would withhold hundreds of rows.
       { pop: "standing|EU", schemeEndDate: "2020-12-30", schemeEndBasis: N },
     ];
     const records = populationRecordsDeadlines(rows, (r) => r.pop);
-    expect(records(rows[1])).toBe(true);
-    expect(records(rows[2])).toBe(false);
+    expect(records(rows[2])).toBe(true);
+    expect(records(rows[3])).toBe(false);
+  });
+
+  it("does NOT mark a catalogue that merely contains a few dated calls", () => {
+    // ADEME as the corpus actually holds it: 6 dated appels a projets among 76
+    // standing aids drawn from the same source pages. Under the membership test
+    // this population read as deadline-recording and the whole French register
+    // went, taking 488 of 778 French holdout answers with it.
+    const rows = [
+      ...Array.from({ length: 6 }, () => (
+        { pop: "ademe|FR", schemeEndDate: "2025-06-09", schemeEndBasis: C })),
+      ...Array.from({ length: 70 }, () => (
+        { pop: "ademe|FR", schemeEndDate: null, schemeEndBasis: null })),
+    ];
+    const records = populationRecordsDeadlines(rows, (r) => r.pop);
+    expect(records(rows[70])).toBe(false);
+    // And it crosses back on its own if the loader ever starts extracting
+    // windows in earnest -- derived from the corpus, never listed, so nobody
+    // has to remember to edit it.
+    const dated = rows.map((r, n) => (n < 40
+      ? { ...r, schemeEndDate: "2025-06-09", schemeEndBasis: C } : r));
+    expect(populationRecordsDeadlines(dated, (r) => r.pop)(dated[70])).toBe(true);
+  });
+
+  it("reports the shares it read, so a human can look", () => {
+    const rows = [
+      { pop: "calls|ES", schemeEndDate: "2025-04-14", schemeEndBasis: C },
+      { pop: "calls|ES", schemeEndDate: null, schemeEndBasis: null },
+    ];
+    expect(populationRecordsDeadlines(rows, (r) => r.pop).shares().get("calls|ES"))
+      .toEqual({ dated: 1, total: 2 });
+  });
+
+  it("does not mark a population that is exactly half dated", () => {
+    // The tie goes to serving the row. A register we cannot read as recording
+    // windows is one we have no positive reason to withhold from -- and a
+    // population sitting on the line is a question about what that register IS,
+    // not an invitation to move the line.
+    const rows = [
+      { pop: "half|XX", schemeEndDate: "2025-04-14", schemeEndBasis: C },
+      { pop: "half|XX", schemeEndDate: null, schemeEndBasis: null },
+    ];
+    expect(populationRecordsDeadlines(rows, (r) => r.pop)(rows[1])).toBe(false);
   });
 });

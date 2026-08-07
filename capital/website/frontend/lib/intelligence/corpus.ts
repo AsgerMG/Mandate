@@ -361,9 +361,35 @@ export function requireLiveCorpus(context = "this run"): void {
  *  artifact is unstamped or was never read. */
 let snapshotGeneratedAt = "";
 
+/**
+ * Which committed snapshot the fallback reads. The shipped one, unless a
+ * harness names another.
+ *
+ * HARNESS ONLY, and it announces itself on stderr every time it is used, so it
+ * can never be the quiet reason a number is wrong.
+ *
+ * It exists because the degradation policy's entire claim is about a copy that
+ * has fallen BEHIND the register, and until this there was no way to run the
+ * product against one. The committed snapshot is republished on every corpus
+ * change, so testing against it only ever asks "does the policy hold when the
+ * two stores already agree" — which is the case that cannot fail. The cases
+ * that can are built by `scripts/probe_stale_snapshot.ts`, which strips the
+ * copy back to the states the incident actually passed through.
+ */
+function snapshotPath(): string {
+  const override = process.env.SNAPSHOT_FILE;
+  if (override) {
+    console.error(`corpus: reading the fallback snapshot from ${override} ` +
+      `(SNAPSHOT_FILE), NOT the committed one. Any number from this process is ` +
+      `about that file.`);
+    return override;
+  }
+  return path.join(process.cwd(), "public", "data", "instrument_terms.json");
+}
+
 function loadDbInstrumentsFromJson(): DbInstrument[] | null {
   try {
-    const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
+    const file = snapshotPath();
     const parsed = JSON.parse(readFileSync(file, "utf8")) as {
       generatedAt?: string; records: DbInstrument[];
     };
@@ -912,16 +938,23 @@ export function livenessObservation(): Pick<LivenessObservation, "source"> {
 /**
  * The register a row was drawn from, for one country.
  *
- * This is the unit `populationRecordsDeadlines` groups on, and the grouping is
- * the whole reason the policy costs 80 rows rather than 390: `state_aid_satr`
- * as a whole records deadlines, because Spain's convocatorias are in it, but
- * `state_aid_satr|DE` never has. Country is part of the key because a call
- * register is loaded per country, and the register is what does or does not
- * publish a closing date.
+ * This is the unit `populationRecordsDeadlines` groups on. Country is part of
+ * the key because a call register is loaded per country, and the register is
+ * what does or does not publish a closing date: `state_aid_satr` as a whole
+ * looks like a deadline register because Spain's convocatorias are in it, but
+ * `state_aid_satr|DE` holds none.
  *
  * Not `parentId`: 301 development-bank leaves have no parent at all, so a
  * parent-keyed grouping puts them in one bucket with everything else rootless
  * and reads a French deadline as evidence about an Estonian scheme.
+ *
+ * Finer than this does not exist in the corpus and was checked, because it is
+ * the obvious place to look for the bluntness. Every ADEME row hangs off the
+ * one `ademe_aid` parent at one depth, and the six that carry a call deadline
+ * are drawn from the SAME source pages as forty-three that do not. No tier,
+ * parent, route or provenance field separates a standing aid from an appel a
+ * projets. What separates the two registers is how much of each is dated, and
+ * that is the proportion `populationRecordsDeadlines` now measures.
  */
 function registerPopulation(i: DbInstrument): string {
   return `${i.sourceFamilyBucket ?? "?"}|${i.country ?? "?"}`;
