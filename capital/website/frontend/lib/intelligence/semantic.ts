@@ -118,8 +118,13 @@ let scoreCache: Record<string, CachedMatch> | undefined;
 function loadSemanticCache(): Record<string, CachedMatch> {
   if (scoreCache === undefined) {
     try {
+      // Deliberate require(): this module is imported from a "use client"
+      // boundary, and a top-level `import "fs"` would pull node built-ins into
+      // the client bundle. Both lines need the exemption -- the disable comment
+      // covered only the first, so the second has been failing CI's lint step.
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { readFileSync } = require("fs") as typeof import("fs");
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const path = require("path") as typeof import("path");
       const raw = JSON.parse(readFileSync(
         path.join(process.cwd(), "lib", "intelligence", "semanticCache.generated.json"),
