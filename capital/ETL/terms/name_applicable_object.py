@@ -237,15 +237,23 @@ Otherwise use the substantive purpose clause. Keep the year when the record \
 carries one and the call is annual. Keep the territory when it distinguishes \
 the fund.
 
+KEEP WHAT DISTINGUISHES. A register commonly publishes several calls that share \
+one programme name and differ only by a qualifier -- a sub-line, an aid regime, \
+an eligible sector, an annex, an ordinal. That qualifier is the only thing \
+telling one fund from its neighbour, so carry it into the name whenever the \
+current name or the record states one. Shortening is never worth making two \
+funds indistinguishable.
+
 HARD CONSTRAINT. You may only REUSE words that appear in the RECORD below. Do \
 not translate, expand an acronym, paraphrase, or add any word of your own \
-beyond ordinary connectives. Reordering, dropping words and cutting a span are \
-allowed. If no span of the record names a recognisable object, set \
-applicable_object to the empty string and say so in `note` -- an empty answer \
-is correct and useful, an invented one is not.
+beyond ordinary connectives. Reordering, dropping words, changing letter case \
+and cutting a span are allowed. If no span of the record names a recognisable \
+object, set applicable_object to the empty string and say so in `note` -- an \
+empty answer is correct and useful, an invented one is not.
 
-Answer in the record's own language. Never return a name that is only a body, \
-only a policy area, or only a date."""
+Answer in the record's own language, in ordinary sentence case: registers \
+publish in block capitals and that is typography, not the name. Never return a \
+name that is only a body, only a policy area, or only a date."""
 
 SCHEMA = {
     "type": "object",
@@ -287,6 +295,46 @@ def judge(client, current_name: str, sourced: dict[str, str]) -> dict:
 
 
 # ── The fallback: composed by us, and said so ──────────────────────────────
+
+def sentence_case(s: str) -> str:
+    """Upper-case the first letter and nothing else.
+
+    Registers publish in block capitals and mid-sentence lower case alike; both
+    are typography, not the fund's name. Only the leading character is touched,
+    because any further re-casing would be a claim about which words are proper
+    nouns and this file does not get to make claims about the fund.
+    """
+    s = s.strip()
+    return (s[0].upper() + s[1:]) if s else s
+
+
+def drop_collisions(results: list[dict]) -> None:
+    """Refuse a rename that makes two funds indistinguishable.
+
+    Shortening a citation to its programme name is right until two calls under
+    one programme differ only in the clause being cut -- then the founder gets
+    two identical rows, which is a worse defect than the one being fixed and is
+    exactly what the sibling-class measure exists to catch. So the test is
+    comparative, not absolute: a proposed name may collide only where the names
+    it replaces already collided. Anything else keeps its old name and is
+    reported, because a visible unfixed row beats a silently merged pair.
+    """
+    by_new: dict[str, list[dict]] = {}
+    for r in results:
+        if r.get("new_name"):
+            by_new.setdefault(_fold(r["new_name"]), []).append(r)
+    for _, group in by_new.items():
+        if len(group) < 2:
+            continue
+        if len({_fold(r["name"] or "") for r in group}) == 1:
+            continue  # already indistinguishable; this rename did not cause it
+        for r in group:
+            r["outcome"] = "reverted_collision"
+            r["note"] = (f"would share a name with {len(group) - 1} other row(s) whose "
+                         f"current names differ: {r.pop('new_name')[:80]}")
+            r.pop("new_name_source", None)
+            r.pop("name_basis", None)
+
 
 def compose(sourced: dict[str, str]) -> tuple[str, str]:
     """A name built from register facts when the record names no object.
@@ -400,6 +448,7 @@ def build(country: str, limit: int | None, workers: int) -> list[dict]:
             if not ok:
                 return {**r, "outcome": "rejected_ungrounded",
                         "proposed": proposed, "note": "not in record: " + ", ".join(sorted(missing))}
+            proposed = sentence_case(proposed)
             return {**r, "outcome": "extracted", "new_name": proposed[:400],
                     "new_name_source": "programme_feed",
                     "name_basis": "register_object_clause; fields=" + (v.get("source_fields") or "descripcion"),
@@ -417,6 +466,7 @@ def build(country: str, limit: int | None, workers: int) -> list[dict]:
             out.append(res)
             if i % 20 == 0:
                 print(f"  [{i}/{len(rows)}]", flush=True)
+    drop_collisions(out)
     return out
 
 
@@ -434,7 +484,7 @@ def report(results: list[dict]) -> None:
         print(f"    now: {r['new_name'][:110]}   [{r['new_name_source']}]")
     for r in results:
         if r["outcome"] in ("rejected_ungrounded", "source_unreachable",
-                            "judge_failed", "no_name_available"):
+                            "judge_failed", "no_name_available", "reverted_collision"):
             print(f"\n  !! {r['outcome']}  {r['id'][:40]}  {r.get('note','')[:160]}")
 
 
