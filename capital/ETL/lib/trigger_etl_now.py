@@ -25,10 +25,12 @@ What the run does (ETL/events/extract/railway_cron.py):
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 import time
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from railway_service import (  # noqa: E402
     REAL_CRON_SCHEDULE, REAL_START_COMMAND, deploy, deployed_config,
@@ -42,6 +44,36 @@ from verify_cron import check, restore_and_verify  # noqa: E402
 # The deploy itself takes a few minutes, and the temporary minute must still be
 # in the future when it lands.
 LEAD_MINUTES = 9
+
+# How long a full weekly run may take before we stop waiting for its census row.
+# The Sunday run fetches every AUTO source, classifies, sanity-checks and detects
+# gaps, so this is generous on purpose: restoring early kills the run.
+RUN_TIMEOUT_S = 3600
+
+
+def latest_census_id() -> int | None:
+    """The id of the newest `corpus_census` row, or None if there is none.
+
+    A census row is the only completion signal that survives a redeploy, which
+    is what makes it the right one to wait on. Returns None rather than raising
+    so a missing table or an unreachable database degrades to 'unknown' and the
+    caller warns instead of restoring blind.
+    """
+    url = os.environ.get("DATABASE_URL")
+    if not url:
+        env = Path(__file__).resolve().parents[2] / ".env.local"
+        for line in env.read_text().splitlines() if env.exists() else []:
+            if line.startswith("DATABASE_URL="):
+                url = line.split("=", 1)[1].strip().strip('"').strip("'")
+    if not url:
+        return None
+    try:
+        import psycopg2
+        with psycopg2.connect(url) as conn, conn.cursor() as cur:
+            cur.execute("SELECT max(id) FROM corpus_census")
+            return cur.fetchone()[0]
+    except Exception:
+        return None
 
 
 def set_schedule(cron: str) -> None:
@@ -100,13 +132,36 @@ def main() -> int:
     try:
         set_schedule(temp)
         print(f"set:     {describe()}")
-        # Wait past the firing minute, then a little longer so the run is
-        # visibly under way before the schedule is put back. Restoring while
-        # the container is starting does not kill it -- the run is already
-        # dispatched -- but observing it first is the point.
-        wait_s = (fire_at - datetime.now(timezone.utc)).total_seconds() + 90
-        print(f"waiting  {int(wait_s)}s for the run to start...")
+        # ── Wait for the run to FINISH, not to start ─────────────────────────
+        # This used to sleep 90s past the firing minute and then restore, on the
+        # reasoning that "restoring while the container is starting does not
+        # kill it -- the run is already dispatched". That is WRONG. The restore
+        # is a DEPLOY, and a deploy replaces the running container. The
+        # 2026-08-07 17:20 run was killed by its own restore about a minute in,
+        # and the only reason anyone noticed is that no census row appeared --
+        # the logs had gone too, replaced along with the container, so it looked
+        # like a run that simply left nothing behind.
+        #
+        # The completion signal therefore has to be something the run WRITES,
+        # which a redeploy cannot erase. `corpus_census` is exactly that: the
+        # last step of railway_cron.py publishes a row, and rows outlive
+        # containers.
+        wait_s = (fire_at - datetime.now(timezone.utc)).total_seconds() + 30
+        print(f"waiting  {int(wait_s)}s for the fire minute...")
         time.sleep(max(0, wait_s))
+        before = latest_census_id()
+        print(f"census before the run: {before}")
+        deadline = time.time() + RUN_TIMEOUT_S
+        while time.time() < deadline:
+            now_id = latest_census_id()
+            if now_id is not None and (before is None or now_id > before):
+                print(f"run COMPLETE — census #{now_id} written.")
+                break
+            time.sleep(30)
+        else:
+            print(f"WARNING: no new census within {RUN_TIMEOUT_S}s. The run may "
+                  f"STILL BE GOING, and the restore below will kill it. Check "
+                  f"`railway logs --service etl-pipeline` before re-triggering.")
         print(f"after:   {describe()}")
     finally:
         # The restore is the whole risk, so it is retried and then CONFIRMED
