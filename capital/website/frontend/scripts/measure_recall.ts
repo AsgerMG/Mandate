@@ -62,6 +62,8 @@
 // read only ./.env.local, which meant a worktree with credentials at the repo
 // root measured the wrong system and said nothing; `requireLiveCorpus` catches
 // the corpus half of that, not the ranking half.
+import { readFileSync } from "fs";
+
 import { loadEnvLocal } from "./loadEnv";
 
 loadEnvLocal();
