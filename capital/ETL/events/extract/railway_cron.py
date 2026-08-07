@@ -28,6 +28,15 @@ import sys
 from pathlib import Path
 
 STEPS = [
+    # FIRST, always. This container's store is the corpus of record and until
+    # 2026-08-07 nothing ever migrated it: migrations reached whichever store a
+    # human happened to be pointed at, which was the laptop every time. The
+    # census taken inside this container failed its entire coverage block with
+    # `no such column: tier` — migration 020, three weeks after it was applied
+    # on the laptop — and the four columns that DID exist here were the ones an
+    # ordinary ETL script self-heals with ALTER TABLE on its way past.
+    # See ETL/events/load/migrations/apply.py::apply_all.
+    [sys.executable, str(ROOT / "ETL/events/load/migrations/apply.py"), "all"],
     [sys.executable, str(ROOT / "ETL/events/extract/renew.py"), "--auto"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "apply-nace"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "run",
