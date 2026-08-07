@@ -123,6 +123,11 @@ passes.
   *nearly* identical (`…ahorro y eficiencia…MINIMIS` vs `…ahorro y eficiencia
   energética…`). They remain distinguishable, but a near-collision measure would
   be strictly better.
+- Navarra's rows keep a machine suffix the register itself publishes
+  (`…proyectos de I+D+i_Innovacion_Proceso`). The model judges them as already
+  naming the object, which is defensible — they do — but a founder reads an
+  internal code. Cleaning it means deleting characters the register published,
+  which is a different permission from choosing among them.
 - The 87 pre-existing `bdns_es_ayudas__*` leaves are covered only where they
   carry a `successor_scheme` code. Those without one have no reachable official
   record and were not guessed at.
