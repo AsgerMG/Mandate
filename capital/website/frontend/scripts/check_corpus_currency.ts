@@ -41,12 +41,20 @@
 import { readFileSync } from "fs";
 import path from "path";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+// Both env files, repo root first. Reading only ./.env.local was still a way
+// for this check to skip itself and report that as a pass: a checkout that
+// carries DATABASE_URL at the repo root -- where it is documented to live --
+// and not under website/frontend produced "skipped, nothing to compare
+// against" on a machine that had the credentials all along. Observed again on
+// 2026-08-07 in a fresh worktree. CI has neither file and must not need one.
+for (const envPath of ["../../.env.local", ".env.local"]) {
+  try {
+    for (const line of readFileSync(envPath, "utf8").split("\n")) {
+      const m = line.match(/^([A-Z_]+)=(.*)$/);
+      if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+    }
+  } catch { /* rely on the process environment */ }
+}
 
 import { isClosed, today } from "../lib/intelligence/liveness";
 
