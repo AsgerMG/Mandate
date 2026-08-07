@@ -35,11 +35,36 @@ STEPS = [
     [sys.executable, str(ROOT / "ETL/terms/detect_eligibility_gaps.py")],
 ]
 
+# renew.py exits 3 when SOME sources failed but most published -- a partial
+# refresh. That is the normal weather of scraping other people's websites, and
+# it must not cancel the rest of the run.
+#
+# It used to. On 2026-08-06 one source hit a Cloudflare 403, renew.py exited 1,
+# and this loop stopped there: classification, the sanity check and gap
+# detection never ran, so a week of data sat unprocessed because one site
+# blocked us. Exit 1 from renew.py now means MOST sources failed, which is a
+# pipeline fault and should still stop everything.
+PARTIAL_OK = {"renew.py": 3}
+
+partial = []
 for step in STEPS:
     print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
     result = subprocess.run(step)
-    if result.returncode != 0:
-        print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
-        sys.exit(result.returncode)
+    if result.returncode == 0:
+        continue
+    tolerated = next((rc for name, rc in PARTIAL_OK.items()
+                      if any(name in part for part in step)), None)
+    if result.returncode == tolerated:
+        print(f"=== PARTIAL: {' '.join(step)} (rc={result.returncode}) — "
+              f"continuing with what published ===", flush=True)
+        partial.append(step[-2] if len(step) > 1 else step[0])
+        continue
+    print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
+    sys.exit(result.returncode)
 
+if partial:
+    # Loud, and non-zero, so a scheduled run that half-worked is never read as
+    # a clean one -- but only AFTER every downstream step has had its turn.
+    print(f"=== ALL STEPS RAN, {len(partial)} PARTIAL ===", flush=True)
+    sys.exit(3)
 print("=== ALL STEPS COMPLETE ===", flush=True)

@@ -1,9 +1,220 @@
 # Start here
 
-**Updated 2026-08-06 EVENING. This section corrects two numbers and three
-conclusions that the rest of this file still states in their old form. An agent
-overwrote this once already — if the next section down says "EXACT@5 36%", that
-is the artifact described immediately below, not a result.**
+**Updated 2026-08-07, end of the coverage night. Read this block, then §0
+below. Everything further down is older and partly superseded — if any section
+says "EXACT@5 36%" or "95% is unreachable", both are corrected here.**
+
+## RULE ZERO, ADDED 2026-08-07 AFTER GETTING IT WRONG
+
+**A decision about what a funding instrument IS — whether it exists, whether it
+is open, who may apply, how you apply — must be grounded in the OFFICIAL SOURCE.
+Corpus-internal inference is evidence, never a verdict.** Put this in every
+agent brief that touches corpus truth.
+
+The cost of learning it: IPCEI was reported closed and eleven leaves were
+unpublished, on reasoning that was entirely internal — `application_url` was
+NULL, median awards were €14–127M, and the harvested text named a closed
+beneficiary list. Three plausible signals, all pointing the wrong way. The
+Commission's own page
+(`competition-policy.ec.europa.eu/state-aid/ipcei_en`) describes candidates
+"currently in the IPCEI design phase" and a forum that exists to identify new
+ones. One fetch would have settled it.
+
+**Missing metadata is a gap in our collection, not a fact about the world.**
+
+The same error occurred twice more the same night, which is why it is Rule Zero:
+GB's 16 "funds" were GtR `grantCategory` labels, and Spain's rows are named
+after legal citations. In all three the corpus manufactured or mis-described an
+object and we reasoned from the corpus about itself.
+
+**Separate the register artefact from the thing a founder applies to.** A
+Commission approval decision, a `grantCategory` label and a legal citation are
+artefacts. The applicable object has an application route, a deadline and a body
+that accepts applications — and it is often one level away. For IPCEI it is the
+national call for expression of interest run by each Member State.
+
+If you can express that as a test — *this row represents something a founder can
+apply to* — it would have caught all three. Proposing it is open work.
+
+## WHERE THIS LANDED
+
+The night's question was whether the product can name the five specific funds a
+founder should apply to. It could not, and the reason was never the ranker.
+
+**The measure that matters is the sibling class — how many indistinguishable
+funds a founder is still choosing between after every fact we record.**
+`npx tsx website/frontend/scripts/measure_sibling_coverage.ts`
+
+```
+                        morning        now
+mean sibling class        17.9    →    3.4
+uniquely identified        38%    →    56%
+CEILING @5                ~39%    →    87%
+unreachable (class >20)     9%    →     3%
+```
+
+**The 95%-is-unreachable verdict I recorded earlier is withdrawn.** It was
+computed at class 18 and treated a coverage state as a property of the corpus.
+The ceiling is not a fact about the world; it is a fact about how much of the
+world we have written down, and it moved 48 points in one night.
+
+What moved it, all verified out of Postgres and merged:
+- **France** publishable class 54.0 → 8.01, coverage 22% → 64%.
+- **Sweden** regime class 49.0 → **1.00**, from a free CC0 register.
+- **EU tier finished**, local class 3.24 → 1.82; every regime at 1.00 except
+  `eit`, declined on purpose because it is container rows no founder reads.
+- **Spain offerable 15 → 93**, and the class got *smaller* (2.3 → 1.6).
+- **GB was corpus repair, not coverage**: all 16 "funds" were GtR
+  `grantCategory` labels — formats, phases, departments, one literally
+  `Unknown`. Deleted; `innovate_uk`, which was hiding behind them holding a real
+  application route, is published instead.
+
+## THE FOUR DEFECTS, WHICH ARE ALL ONE DEFECT
+
+Every serious problem tonight was **work that reported success having done
+something other than what it claimed**, and each was invisible to a green build:
+
+1. **The sampler aliased.** Stride against an ordered set: N=200 read EXACT@5
+   36%, N=250 read 25%, same code. Replaced with a seeded shuffle; every figure
+   now prints a 95% interval (~6 points at n=200).
+2. **Two corpora, and nothing said which.** `hydrateDbInstruments()` is
+   Postgres-first and silently falls back to the committed JSON snapshot. They
+   disagreed on liveness for 205 of 998 instruments, entirely in
+   `scheme_end_date`. **On the fallback path 26% of founders were shown at least
+   one dead call; it also hid 119 live funds.** A 2s timeout was enough.
+3. **The answer key was stale.** 1,032 of 4,796 pairs named funds that are
+   correctly unpublishable, clamping pool's *ceiling* at 78.5% against a floor
+   of 90. The "17-point pool collapse" never happened — retrieval was finding
+   95.5% of what it was permitted to find.
+4. **A write path that landed nothing.** `load_scheme_text.py` wrote SQLite
+   while everything read Postgres; France's whole result was invisible for a
+   day. Publishing is now the default and every `--write` run reconciles both
+   stores and exits 1 on disagreement.
+
+**The guards these produced are the durable output of the night**, more than the
+coverage: `requireLiveCorpus` (a run that asked for Postgres and got the
+snapshot exits non-zero), `check_corpus_currency`, `check_hydration_parity`
+(which already existed, was correct, and **was in no build step**),
+`check_liveness` (one definition, both languages, fails on a sixth copy), and
+`check_leaf_cap`.
+
+## FLOORS WENT UP, AND MAY NOT BE LOWERED
+
+`pool 90 → 93, EXACT@5 15 → 22, REGIME@5 80`. Three seeds, tune n=300:
+pool 98/97/96, EXACT@5 32/29/28, REGIME@5 87/83/83.
+
+An agent lowered the pool floor to 72 to get a green build, said plainly that
+this enshrined an unexplained regression, and asked for review. It was reversed.
+**A floor that moves to accommodate a regression is not a floor** — and in this
+case the floor was right and the answer key was wrong, which is exactly what it
+existed to reveal.
+
+## OPEN, IN PRIORITY ORDER
+
+1. **RAISE THE LEAF CAP — everything needed to do it safely is now in hand.**
+   `state_aid_satr`/DE holds 103 leaves against a cap of 90, so 13 candidates
+   are cut before ranking for every German founder. Third time this constant has
+   been the largest loss in the product (14 → 40 → 90). `check_leaf_cap` is
+   correctly RED.
+
+   **The binding-state baseline was captured before anything moved, which is the
+   part that is unrecoverable afterwards** — holdout, three seeds, Postgres,
+   repaired key, DE at 103 against cap 90:
+
+   ```
+   pool 96/96/97   EXACT@5 29/34/30   REGIME@5 84/86/85
+   ```
+
+   Cost of uncapping entirely, measured: **13 leaves, ~32 KB.** So the payload
+   argument that justified holding the cap does not bite at this size.
+
+   **Correction to a claim inside `check_leaf_cap` itself:** it says
+   `check_payload_budget` bounds the cap from the other side. That is FALSE —
+   that check measures the snapshot minus non-framework gates and is insensitive
+   to the cap. Do not rely on it. Also, the guard's stale-snapshot blindness was
+   fixed by republishing, not by code; `check_corpus_currency` already asserts
+   the membership gap that hid this, so leaf-cap should simply depend on it.
+
+2. **IPCEI — DONE.** All eleven wave leaves lost their `eligibility_text` and are
+   no longer offerable at all: `application_url` NULL on all eleven, median
+   awards €14–127M, and their own text says the money went to a named closed
+   list. Mechanism is a third `scheme_end_date_basis`, `closed_beneficiary_list`,
+   which `isClosed()` reads as closed **without a date**, because the row never
+   had a window — that generalises to any individual aid approval. Publishable
+   817 → 806, mean class 3.4 → 3.6, exactly the +0.17 that was priced. The 1,256
+   events / €131B are retained as evidence. Zero recall pairs affected.
+
+   **STILL OPEN, and it is the same harm one layer down: two of those same
+   quotations are also encoded as `gate_role='filter'` gates, which DO reach
+   founders.** Inert today because the rows are unpublishable, deliberately left
+   alone rather than fixed blind. Fix before anything republishes them.
+
+   The general lesson stands and is now enforced: **verbatim-ness was checked,
+   pertinence was not.** `check_extracted_quotes.ts` is in `npm run check`; a
+   pertinence classifier is committed as WIP but was never run.
+3. **Spain now decays on a clock.** Its 78 new rows carry real deadlines and
+   correctly remove themselves. Nothing re-runs the harvest, so without a
+   monthly job Spain drifts back toward 13 offerable funds and **no test will
+   notice**, because a corpus shrinking correctly looks like one shrinking by
+   neglect.
+4. **Spanish rows are named after legal citations, not funds**
+   (`"RESOLUCIÓNpor la que se abre la convocatoria..."`). Ranking is sound —
+   the eligibility text carries the facts — but this is a memo-quality defect
+   and it is the biggest one visible to a Spanish founder.
+5. **Degradation policy — BUILT, WORKS END TO END, and deliberately NOT MERGED.**
+   Branch `workstream-x-degradation`; findings in
+   `project-mgmt/findings/degradation_policy_wsX.md`. The PM chose: on a
+   fallback to the snapshot, serve the request but suppress rows whose
+   open/closed status cannot be confirmed.
+
+   It is not half-built — the rule lives in `liveness.ts` (`unconfirmedOpen`),
+   applied at the single choke point that decides what may be proposed
+   (`publishableInstruments()`), logged per request, surfaced to the founder on
+   both the streamed preview and the finished brief, and asserted by a new
+   `check_degradation.ts` which asks Postgres as referee. That guard caught a
+   real defect in its own first draft: reading closure off raw rows condemned
+   the 7 successor-redirected schemes.
+
+   **Rows suppressed on the fallback path today: 80, not zero** (FR 73, ES 7) —
+   Postgres 817 publishable / 0 suppressed, snapshot 737 / 80. Non-zero **by
+   design**: a staleness clock was rejected because it makes CI fail on the
+   calendar, so the rule withholds regardless of currency. **Founder-visible
+   cost is zero** — all 12 archetypes still show 6 rows; the cost is pool depth
+   for two French archetypes (136→64, 146→74).
+
+   **Why it is not merged, and what to do first:**
+   - `check_hydration_parity` fails — 7 pre-existing differences plus one the
+     branch introduced (its published-row assertion is too strict for backfill:
+     freeing 73 slots legitimately promotes rank-7 rows). The fix is contained.
+     **Do that before merging.**
+   - **It was never opened in a browser.** The suppression notice is visually
+     unverified, and this project's standing rule is that anything a founder
+     reads gets rendered and looked at. `npm run drive`.
+   - EXACT@5 for a French founder on the fallback path is unmeasured.
+
+## MEASURED DEAD ENDS — do not retry
+
+- **The one-row collapse.** Measured across three seeds, it LOST exact recall in
+  every arm that fired (24.7% control vs 20.7% / 20.3%) and moved regime recall
+  not at all. Its premise was structurally impossible: any merge required
+  `administeringBody` to agree, so "one programme behind several doors" could
+  never form a class. The affordance already ships via `schemeOperators`.
+- **Region as a ranking signal** — at regime width 13.7% @1 against
+  popularity's 13.7%. Region as a *fact* is still wanted.
+- **Any posterior fitted on award history** — 34.5% in-sample, 10.9%
+  out-of-sample against a 6.7% floor.
+- **EU eligibility text at programme level** — every EU leaf publishes the same
+  rules; coverage hits 100% with zero separation. The discriminator is one level
+  down in per-topic threshold tables.
+- **Coverage work in body-fragmented countries** (IT, DE, AT, BE) — the
+  `administering_body` column already collapses the class. Italy gained 54pp of
+  text coverage and moved its class by 0.1.
+
+---
+
+**Older sections below. An agent overwrote this file once already — if the next
+section down says "EXACT@5 36%", that is the sampler artifact described above,
+not a result.**
 
 ## 0. THE POOL QUESTION IS CLOSED — it was the answer key, not the ranker
 
