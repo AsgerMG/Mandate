@@ -25,6 +25,7 @@ from etl_env import ROOT  # noqa: E402
 
 import subprocess
 import sys
+from pathlib import Path
 
 STEPS = [
     [sys.executable, str(ROOT / "ETL/events/extract/renew.py"), "--auto"],
@@ -34,6 +35,9 @@ STEPS = [
     [sys.executable, str(ROOT / "ETL/events/load/qa/sanity_check.py")],
     [sys.executable, str(ROOT / "ETL/terms/detect_eligibility_gaps.py")],
 ]
+
+# Recorded after everything above, WHATEVER happened above — see below.
+CENSUS = str(ROOT / "ETL/events/load/publish_corpus_census.py")
 
 # renew.py exits 3 when SOME sources failed but most published -- a partial
 # refresh. That is the normal weather of scraping other people's websites, and
@@ -45,6 +49,38 @@ STEPS = [
 # blocked us. Exit 1 from renew.py now means MOST sources failed, which is a
 # pipeline fault and should still stop everything.
 PARTIAL_OK = {"renew.py": 3}
+
+def census(outcome: str) -> None:
+    """Record what this run left behind, and how the run itself went.
+
+    ── Why it runs even when the pipeline failed ──────────────────────────
+    The website serves committed build artifacts — synthesis.json's headline
+    figures, instrument_terms.json as the fallback fund inventory — and this
+    container cannot publish them. It has no Node, no git credentials and an
+    ephemeral filesystem, and making a weekly cron commit to main would put the
+    whole site's deploy path behind an unattended job. So it does the one thing
+    it can do that nothing else can: it writes down what its corpus contains,
+    in the Postgres the product already reads, so the drift becomes a fact
+    somebody is told rather than one somebody eventually notices.
+
+    That record is only worth having if it is honest about a bad run. A census
+    written only on success would leave the last good week's numbers standing
+    as the newest record after a failure, and the guard downstream would read
+    them and report that all is well — the precise shape of the defect this
+    pipeline keeps producing. So the outcome travels with the census, the
+    census is written whatever happened, and it is written LAST so it describes
+    the corpus as this run actually left it.
+    """
+    print(f"=== RUNNING: census ({outcome}) ===", flush=True)
+    rc = subprocess.run([sys.executable, CENSUS, "--run-outcome", outcome]).returncode
+    if rc != 0:
+        # Never the reason the run fails: the census is the reporting channel,
+        # and a reporting failure must not be able to mask or worsen the thing
+        # it is reporting on. It is loud here, and the guard downstream fails on
+        # a census that is missing or stale.
+        print(f"=== CENSUS FAILED (rc={rc}) — the website cannot see this "
+              f"corpus; run it by hand ===", flush=True)
+
 
 partial = []
 for step in STEPS:
@@ -60,11 +96,14 @@ for step in STEPS:
         partial.append(step[-2] if len(step) > 1 else step[0])
         continue
     print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
+    census(f"failed at {Path(step[1]).name} (rc={result.returncode})")
     sys.exit(result.returncode)
 
 if partial:
     # Loud, and non-zero, so a scheduled run that half-worked is never read as
     # a clean one -- but only AFTER every downstream step has had its turn.
+    census(f"partial: {', '.join(Path(p).name for p in partial)}")
     print(f"=== ALL STEPS RAN, {len(partial)} PARTIAL ===", flush=True)
     sys.exit(3)
+census("ok")
 print("=== ALL STEPS COMPLETE ===", flush=True)

@@ -74,6 +74,7 @@ interface CensusRow {
   instruments: Record<string, number> | null;
   coverage: { instruments: number; complete: number } | null;
   gate: { ok: boolean | null; failures: string[]; notes: string[] } | null;
+  run_outcome: string;
   errors: string[];
 }
 
@@ -125,7 +126,7 @@ async function main() {
     }
     rows = (await client.query(
       `SELECT id, taken_at, produced_by, code_fingerprint, kpis, instruments,
-              coverage, gate, errors
+              coverage, gate, run_outcome, errors
          FROM corpus_census ORDER BY taken_at DESC LIMIT 12`)).rows;
   } finally {
     await client.end();
@@ -172,6 +173,16 @@ async function main() {
       `DEGRADED — census #${latest.id} recorded ${latest.errors.length} error(s):\n` +
       latest.errors.map((e) => `        ${e}`).join("\n"));
   }
+  // The run that produced it. A census written only on a good run would leave
+  // last week's numbers standing as the newest record after a failure, and
+  // everything below would read them and report that all is well.
+  if (/^(failed|partial)/.test(latest.run_outcome)) {
+    problems.push(
+      `DEGRADED — the pipeline that produced census #${latest.id} did not finish ` +
+      `cleanly: "${latest.run_outcome}".\n` +
+      `      Some part of the corpus is not refreshed. Republishing would ship\n` +
+      `      a corpus assembled from a half-run pipeline.`);
+  }
   if (latest.gate && latest.gate.ok === false) {
     problems.push(
       `DEGRADED — the corpus in census #${latest.id} FAILED the coverage gate:\n` +
@@ -214,7 +225,8 @@ async function main() {
   }
 
   console.log(`  newest census #${latest.id} — ${latest.taken_at.toISOString().slice(0, 16)}Z ` +
-              `by ${latest.produced_by}, ${ageDays.toFixed(1)}d old, code ${latest.code_fingerprint}`);
+              `by ${latest.produced_by}, ${ageDays.toFixed(1)}d old, code ${latest.code_fingerprint}, ` +
+              `run ${latest.run_outcome}`);
   if (latest.kpis) {
     console.log(`  ETL corpus  ${latest.kpis.companies?.toLocaleString()} companies · ` +
                 `${latest.kpis.events?.toLocaleString()} events · ${latest.kpis.countries} countries`);

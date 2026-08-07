@@ -72,8 +72,10 @@ CREATE TABLE IF NOT EXISTS corpus_census (
   instruments       JSONB,
   coverage          JSONB,
   gate              JSONB,
+  run_outcome       TEXT NOT NULL DEFAULT 'unknown',
   errors            JSONB NOT NULL DEFAULT '[]'::jsonb
 );
+ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS run_outcome TEXT NOT NULL DEFAULT 'unknown';
 CREATE INDEX IF NOT EXISTS corpus_census_taken_idx
   ON public.corpus_census USING btree (taken_at DESC);
 """
@@ -171,6 +173,11 @@ def main() -> int:
                          "container without a second implementation of the hash")
     ap.add_argument("--produced-by", default=os.environ.get("RAILWAY_SERVICE_NAME", "local"),
                     help="what ran it; defaults to the Railway service name")
+    ap.add_argument("--run-outcome", default="unknown",
+                    help="how the pipeline that produced this corpus went: 'ok', "
+                         "'partial: ...', or 'failed at ...'. Travels WITH the "
+                         "census so a failed run cannot leave last week's good "
+                         "numbers standing as the newest record")
     args = ap.parse_args()
 
     if args.fingerprint:
@@ -179,7 +186,8 @@ def main() -> int:
 
     payload, errors = collect()
     fingerprint = code_fingerprint()
-    print(f"corpus census — code {fingerprint}, produced by {args.produced_by}")
+    print(f"corpus census — code {fingerprint}, produced by {args.produced_by}, "
+          f"run {args.run_outcome}")
     if payload["kpis"]:
         k = payload["kpis"]
         print(f"  {k['companies']:,} companies · {k['events']:,} events · "
@@ -214,12 +222,12 @@ def main() -> int:
             cur.execute(SCHEMA)
             cur.execute(
                 "INSERT INTO corpus_census (produced_by, code_fingerprint, kpis, "
-                "instruments, coverage, gate, errors) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id, taken_at",
+                "instruments, coverage, gate, run_outcome, errors) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id, taken_at",
                 (args.produced_by, fingerprint,
                  json.dumps(payload["kpis"]), json.dumps(payload["instruments"]),
                  json.dumps(payload["coverage"]), json.dumps(payload["gate"]),
-                 json.dumps(errors)))
+                 args.run_outcome, json.dumps(errors)))
             cid, taken = cur.fetchone()
         conn.commit()
     print(f"\nrecorded census #{cid} at {taken:%Y-%m-%d %H:%M} UTC"

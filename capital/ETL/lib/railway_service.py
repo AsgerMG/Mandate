@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import subprocess
 import time
+from datetime import datetime, timezone
 
 PROJECT_ID = "2a61c923-3a29-476e-b725-0f47b3c4ec0e"
 ENVIRONMENT_ID = "64585403-a342-48a0-8253-9936ae262b6c"
@@ -40,7 +41,15 @@ def _api(query: str, variables: dict) -> dict:
     return json.loads(result.stdout)
 
 
-def _set_service_instance(start_command: str | None, cron_schedule: str | None) -> None:
+def set_service_instance(start_command: str | None, cron_schedule: str | None) -> None:
+    """Write the service instance config. This is HALF of a schedule change.
+
+    Railway runs the schedule baked into the latest DEPLOYMENT, not the one in
+    this config, so every caller must follow it with deploy(). Writing one
+    without the other leaves the two disagreeing, which is exactly the state
+    found on 2026-08-07: the instance said the weekly schedule, the deployment
+    said a temporary daily one, and `railway status` showed only the first.
+    """
     _api(
         "mutation($serviceId: String!, $environmentId: String, "
         "$input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate("
@@ -51,6 +60,83 @@ def _set_service_instance(start_command: str | None, cron_schedule: str | None) 
             "input": {"startCommand": start_command, "cronSchedule": cron_schedule},
         },
     )
+
+
+# Kept so existing callers inside this module keep working; new code should use
+# the public name, because "private" hid a function every caller needs.
+_set_service_instance = set_service_instance
+
+
+def deploy(message: str) -> None:
+    """Upload this working tree and deploy it. Raises on failure.
+
+    `check=True` is deliberate and load-bearing: the restore path used to
+    swallow a failed deploy, so the API write landed, the deploy did not, and
+    the weekly refresh was left running a temporary schedule with nothing
+    saying so.
+    """
+    subprocess.run(
+        RAILWAY + ["up", "--service", SERVICE_NAME, "--environment", "production",
+                   "--ci", "--message", message],
+        check=True,
+    )
+
+
+def redeploy(deployment_id: str) -> None:
+    """Re-deploy an EXISTING build so the current instance config takes effect.
+
+    The narrow tool for the narrow problem: when the schedule written over the
+    API has not reached the deployed manifest, the fix is to re-issue the
+    deployment, not to upload whatever happens to be in the working tree. That
+    distinction matters — `railway up` from a feature branch would put
+    unreviewed code on the weekly production run in order to correct a cron
+    string.
+    """
+    _api(
+        "mutation($id: String!) { deploymentRedeploy(id: $id) { id status } }",
+        {"id": deployment_id},
+    )
+
+
+def service_instance() -> dict:
+    """The service instance config as Railway holds it — cron schedule, start
+    command, and the latest deployment. Read back from the API rather than
+    parsed out of `railway status`, whose human output contains the service
+    name on a line of its own and will happily match a grep for it."""
+    data = _api(
+        "query($sid: String!, $eid: String!) { serviceInstance("
+        "serviceId: $sid, environmentId: $eid) { cronSchedule startCommand "
+        "latestDeployment { id status createdAt } } }",
+        {"sid": SERVICE_ID, "eid": ENVIRONMENT_ID},
+    )
+    return data["data"]["serviceInstance"]
+
+
+def deployed_config() -> dict | None:
+    """The schedule and start command actually BAKED INTO the latest deployment.
+
+    This is the one Railway runs. It is only reachable through the deployment's
+    `meta.serviceManifest`, which is why nothing was comparing it.
+    """
+    data = _api(
+        "query($id: String!) { deployments(first: 1, input: {serviceId: $id}) "
+        "{ edges { node { id status createdAt meta } } } }",
+        {"id": SERVICE_ID},
+    )
+    edges = data["data"]["deployments"]["edges"]
+    if not edges:
+        return None
+    node = edges[0]["node"]
+    manifest = (node.get("meta") or {}).get("serviceManifest") or {}
+    deploy_cfg = manifest.get("deploy") or {}
+    return {
+        "id": node["id"],
+        "status": node["status"],
+        "createdAt": datetime.fromisoformat(
+            node["createdAt"].replace("Z", "+00:00")).astimezone(timezone.utc),
+        "cronSchedule": deploy_cfg.get("cronSchedule"),
+        "startCommand": deploy_cfg.get("startCommand"),
+    }
 
 
 def _instance_status() -> str | None:
