@@ -431,8 +431,15 @@ def apply_023(conn: sqlite3.Connection) -> None:
     print("  applied 023_scheme_lifetime.sql")
 
 
-def apply_025(conn: sqlite3.Connection) -> None:
-    """scheme_end_date_basis -- WHICH register supplied the end date, hence
+def apply_025_basis(conn: sqlite3.Connection) -> None:
+    """NAME COLLISION, fixed 2026-08-07: this was `apply_025` and so was the
+    catchment migration below it. Python kept the later definition, so
+    `apply.py 025` has only ever run the catchment one and this file was
+    unreachable through the runner. It reached the corpus anyway --
+    backfill_end_date_basis.py issues its own ALTER -- which is why nothing
+    failed and nobody noticed. Registered below as `025_basis`.
+
+    scheme_end_date_basis -- WHICH register supplied the end date, hence
     whether its expiry closes anything. See the migration's own header."""
     if column_exists(conn, "funding_instruments", "scheme_end_date_basis"):
         print("  skip 025 (already applied)")
@@ -460,6 +467,16 @@ def apply_025(conn: sqlite3.Connection) -> None:
     print("  applied 025_declared_catchment.sql")
 
 
+def apply_026(conn: sqlite3.Connection) -> None:
+    """source_window_policy — does this row's REGISTER state an application
+    window for it, recorded independently of whether a value reached us."""
+    if column_exists(conn, "funding_instruments", "source_window_policy"):
+        print("  skip 026 (already applied)")
+        return
+    conn.executescript((MIG_DIR / "026_source_window_policy.sql").read_text())
+    print("  applied 026_source_window_policy.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -483,6 +500,8 @@ MIGRATIONS = {
     "023": apply_023,
     "024": apply_024,
     "025": apply_025,
+    "025_basis": apply_025_basis,
+    "026": apply_026,
 }
 
 

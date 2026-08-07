@@ -193,6 +193,7 @@ CREATE TABLE IF NOT EXISTS funding_instruments (
   catchment_regions          TEXT,
   catchment_source           TEXT,
   scheme_end_date_basis      TEXT,
+  source_window_policy       TEXT,
   route_status               TEXT,
   route_status_source        TEXT,
   route_status_note          TEXT,
