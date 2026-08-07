@@ -7,12 +7,27 @@
 //
 // Run: npx tsx scripts/dump_verdicts.ts          (Postgres, if DATABASE_URL)
 //      NO_PG=1 npx tsx scripts/dump_verdicts.ts  (JSON fallback)
+//      SUPPRESS_IDS_FILE=/path/ids.json npx tsx scripts/dump_verdicts.ts
+//
+// SUPPRESS_IDS_FILE names a JSON array of instrument ids to withhold on top of
+// whatever the corpus itself withholds. Its only user is
+// check_hydration_parity.ts, and only on the Postgres arm: to check that the
+// fallback ranked correctly you have to give the live corpus the same handicap
+// the fallback had, because withholding a row frees a slot under the leaf cap
+// and legitimately promotes the row behind it. Subtracting after the fact
+// cannot see that promotion and reports it as a parity failure.
+import { readFileSync as readIdsFile } from "node:fs";
 
 async function main() {
   if (process.env.NO_PG) delete process.env.DATABASE_URL;
   const { hydrateDbInstruments, corpusProvenance, publishableInstruments,
-    suppressedForUnconfirmedLiveness } = await import("../lib/intelligence/corpus");
+    suppressedForUnconfirmedLiveness,
+    __forceSuppressedForParity } = await import("../lib/intelligence/corpus");
   const { computeVerdict } = await import("../lib/intelligence/pipeline");
+  if (process.env.SUPPRESS_IDS_FILE) {
+    __forceSuppressedForParity(
+      JSON.parse(readIdsFile(process.env.SUPPRESS_IDS_FILE, "utf8")) as string[]);
+  }
   await hydrateDbInstruments();
 
   const { ARCHETYPES: A, archetypeAnswers } = await import("../lib/intelligence/__archetypes");

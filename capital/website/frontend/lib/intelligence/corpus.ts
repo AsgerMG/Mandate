@@ -923,6 +923,30 @@ export interface SuppressedRow {
 let suppressed: SuppressedRow[] = [];
 
 /**
+ * Ids `publishableInstruments()` must withhold whatever corpus it is reading.
+ *
+ * HARNESS ONLY — the `__` prefix is the same signal `__archetypes` and the
+ * dump's `__corpus` key carry, and the sole caller is `scripts/dump_verdicts.ts`
+ * under an env var no request path sets.
+ *
+ * It exists for one question, which `check_hydration_parity` cannot otherwise
+ * ask. Subtracting the withheld rows from the live ranking AFTER the fact is
+ * not what the fallback did: withholding a row frees a slot under the
+ * per-channel leaf cap, so a fund at rank 7 is promoted into view, and that
+ * fund was never in the live pool to be subtracted from. Comparing the two
+ * that way reports a legitimate promotion as a parity failure, and the only
+ * ways out are to delete the assertion or to give Postgres the same handicap.
+ * This is the handicap: rank the live corpus with these rows out of
+ * CONSIDERATION, and the fallback must then reproduce it exactly, promotions
+ * included. That is a stronger claim than the subtraction it replaces, because
+ * it asserts the backfill too.
+ */
+export function __forceSuppressedForParity(ids: readonly string[]): void {
+  forcedSuppression = new Set(ids);
+}
+let forcedSuppression: ReadonlySet<string> = new Set();
+
+/**
  * Rows the last `publishableInstruments()` call withheld under the degradation
  * policy, and why.
  *
@@ -1059,10 +1083,14 @@ export function publishableInstruments(): DbInstrument[] {
     // no-op; the cost on today's corpus, through the snapshot, is in
     // project-mgmt/findings/degradation_policy_wsX.md.
     .filter((i) => {
-      const why = unconfirmedOpen(i, {
-        source: provenance.source,
-        populationRecordsDeadlines: recordsDeadlines(i),
-      }, asOf);
+      const why = forcedSuppression.has(i.id)
+        // Only ever set by the parity harness, and never on a request path.
+        ? "withheld by the parity harness, so the live corpus is ranked with " +
+          "exactly the rows the fallback could not confirm out of consideration"
+        : unconfirmedOpen(i, {
+          source: provenance.source,
+          populationRecordsDeadlines: recordsDeadlines(i),
+        }, asOf);
       if (!why) return true;
       withheld.push({ id: i.id, name: i.name, country: i.country, reason: why });
       return false;

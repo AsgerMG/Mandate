@@ -35,14 +35,29 @@
 //
 // A dropped field, a stale value, a gate layer that failed to hydrate, a row
 // the exporter lost -- all of them still show up, now as an UNACCOUNTED
-// difference rather than as one line in a list of expected ones. What is no
-// longer asserted is pool-set equality, because withholding 73 rows promotes
-// others past the per-channel leaf cap; that is bounded instead, by requiring
-// every promoted row to be one the live register would itself have offered.
+// difference rather than as one line in a list of expected ones.
+//
+// ── And the ranking is compared under the same handicap, not after it ──────
+// The first draft subtracted the withheld ids from the live ranking and
+// compared that. It was wrong, and wrong in the direction that gets a guard
+// deleted: withholding a row FREES A SLOT under the per-channel leaf cap, so
+// the fund behind it is promoted into the table -- and that fund was never in
+// the live pool, so no amount of subtracting can produce it. The check
+// reported three archetypes as broken when the policy was working exactly as
+// designed.
+//
+// So the live arm is re-run with those same ids out of CONSIDERATION
+// (SUPPRESS_IDS_FILE -> __forceSuppressedForParity), which is the question the
+// fallback was actually asked. Equality is then the honest expectation and it
+// is asserted exactly, promotions included -- a stronger claim than the
+// subtraction it replaces. The third run is skipped entirely when nothing was
+// withheld, which is the steady state both stores should normally be in.
 //
 // Run after `make eligibility`, when SQLite and Postgres are in step.
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 // The same `.env.local` preamble every other harness carries, and its absence
 // here was not cosmetic: this check reads DATABASE_URL, found none, and printed
@@ -129,13 +144,39 @@ function main() {
       `      reload. Regenerating the snapshot is the usual fix; confirm it is.\n` +
       `      ${lostUnaccounted.slice(0, 8).join(", ")}`);
   }
+  // ── The live arm, re-ranked under the fallback's own handicap ─────────────
+  // Nothing withheld means the two stores agree and `pg` already IS the
+  // handicapped run, so the third process is not spawned. That is the steady
+  // state, and it costs nothing here.
+  let ranked = pg;
   if (suppressed.size) {
     console.log(`  degradation policy withheld ${suppressed.size} row(s) from the fallback ` +
       `corpus; ${pc.publishable.length} offerable on Postgres, ${jc.publishable.length} on the snapshot`);
+    const idsFile = join(mkdtempSync(join(tmpdir(), "parity-")), "suppressed.json");
+    writeFileSync(idsFile, JSON.stringify(jc.suppressed));
+    ranked = run({ NO_PG: "", SUPPRESS_IDS_FILE: idsFile });
+    const rc = ranked.__corpus;
+    // If the handicapped arm fell back too, it is the snapshot compared with
+    // itself and every assertion below is vacuous.
+    if (rc?.provenance.source !== "postgres") {
+      console.error(`check_hydration_parity: the re-ranked Postgres arm hydrated from ` +
+        `${rc?.provenance.source ?? "nothing"}; refusing to pass.`);
+      process.exit(1);
+    }
+    // It must have withheld exactly what it was handed, or the comparison
+    // below is against some other corpus than the one we think.
+    const withheldByRanked = new Set(rc.suppressed);
+    if (withheldByRanked.size !== suppressed.size ||
+        [...suppressed].some((id) => !withheldByRanked.has(id))) {
+      problems.push(
+        `the re-ranked live arm withheld ${withheldByRanked.size} row(s), not the ` +
+        `${suppressed.size} it was given. The suppression override did not take, so the ` +
+        `ranking below is not the comparison it claims to be.`);
+    }
   }
 
   for (const label of archetypes(json)) {
-    const a = json[label], b = pg[label];
+    const a = json[label], b = ranked[label];
     if (!b) {
       problems.push(`${label}: missing from the Postgres run`);
       continue;
@@ -149,22 +190,22 @@ function main() {
     // never differ is the published rows and which funds were considered at
     // all -- both of which this still checks exactly.
     //
-    // The published rows are compared against the LIVE ranking with the
-    // withheld rows deleted from it, which is precisely what the fallback was
-    // asked to produce. Order is still asserted exactly -- that is what caught
-    // the gate_key collation bug and the missing ORDER BY, and neither of those
-    // has become less possible.
+    // The published rows are compared against the live corpus RE-RANKED with
+    // the withheld ids out of consideration -- the same question the fallback
+    // was asked, so equality is exact and includes the rows promoted into the
+    // freed slots. Order is still asserted exactly: that is what caught the
+    // gate_key collation bug and the missing ORDER BY, and neither of those has
+    // become less possible.
     const shown = (x: string[]) => x.slice(0, DISPLAY_CAP).join("|");
-    const pgMinusWithheld = b.ids.filter((i) => !suppressed.has(i));
-    if (shown(a.ids) !== shown(pgMinusWithheld)) {
+    if (shown(a.ids) !== shown(b.ids)) {
       problems.push(
-        `${label}: the published rows differ from the live ranking with the withheld ` +
-        `rows removed\n      fallback: ${shown(a.ids)}\n      live:     ${shown(pgMinusWithheld)}`);
+        `${label}: the published rows differ from the live corpus re-ranked without the ` +
+        `withheld rows\n      fallback: ${shown(a.ids)}\n      live:     ${shown(b.ids)}`);
     }
-    // Pool membership. Losing a row to the policy is expected; losing one to
-    // anything else is not, and a row the fallback ADDS must still be one the
-    // live register would have offered -- freeing 73 slots under the leaf cap
-    // legitimately promotes others, but it can never conjure a fund.
+    // Pool membership, against that same re-ranked live run. Losing a row to
+    // the policy is expected; losing one to anything else is not, and a row the
+    // fallback ADDS must still be one the live register would itself have
+    // offered -- the leaf cap may promote, it may never conjure a fund.
     const lostFromPool = b.ids.filter((i) => !a.ids.includes(i) && !suppressed.has(i));
     const gainedInPool = a.ids.filter((i) => !b.ids.includes(i) && !pgOfferable.has(i));
     if (lostFromPool.length) {
