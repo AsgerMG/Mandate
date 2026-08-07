@@ -117,11 +117,22 @@ async function main() {
     all, (id) => inCorpus.has(id), (id) => offerable.has(id));
   const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
   assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
+  // COUNTRY= restricts the POPULATION to founders in one market, which is the
+  // only way to get power on a change that can only bind one market at a time.
+  // Selection filters and POOL_LEAVES_PER_CHANNEL are applied per (channel,
+  // country), so a constant that cuts three Spanish candidates moves twelve of
+  // the 250 sampled rows and disappears into the aggregate's +/-2.5. It is a
+  // filter, not a weighting: the headline run stays exactly what it was.
+  const country = process.env.COUNTRY;
   const set = pop.graded.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
+                             && (!country || r.country === country)
                              && (!process.env.DESCRIBED || described(r))
                              && (regionMode !== "strict" || Boolean(regionOf(r))));
-  if (!set.length) throw new Error(`no rows match split=${split} mode=${mode ?? "any"}`);
+  if (!set.length) {
+    throw new Error(
+      `no rows match split=${split} mode=${mode ?? "any"} country=${country ?? "any"}`);
+  }
   // The sampler lives in `recallSample.ts` and is shared with
   // check_recall_floor.ts. It used to be inline here, and the gate that fails
   // the build kept its own STRIDE version -- so the floor and the measurement
@@ -150,6 +161,18 @@ async function main() {
   // distribution, not to what makes a fund the right one -- and it will break
   // on the next country we load, whose regimes are shaped differently.
   const byRegime = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  // ── The other axis a national corpus can hide a trade behind ───────────────
+  // Every filter and every cap in selection is applied per (channel, COUNTRY):
+  // `instrumentServesCountry` runs before `POOL_LEAVES_PER_CHANNEL`, so a
+  // constant that binds does so in one market at a time. DE held 103 leaves in
+  // `state_aid_satr` against a cap of 90 while ES held 87 and every other
+  // country was far below — one market losing 13 candidates before ranking,
+  // and an aggregate over 22 countries that cannot show it.
+  //
+  // So report by the founder's country as well. A change that lifts the country
+  // it was aimed at and costs another is a trade, and it has to be visible as
+  // one rather than netted out into a single percentage.
+  const byCountry = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
   const regimeSize = new Map<string, number>();
   for (const i of loadDbInstruments()) {
     const p = (i as any).parentId ?? i.id;
@@ -214,6 +237,10 @@ async function main() {
     const p = byPop.get(popKey) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
     p.n++; if (inPool) p.pool++; if (e5) p.e5++; if (r5) p.r5++;
     byPop.set(popKey, p);
+    const ck = t.country || "(none)";
+    const cc = byCountry.get(ck) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    cc.n++; if (inPool) cc.pool++; if (e5) cc.e5++; if (r5) cc.r5++;
+    byCountry.set(ck, cc);
     const rk = sizeBucket(regimeSize.get(wantRegime) ?? 1);
     const g = byRegime.get(rk) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
     g.n++; if (inPool) g.pool++; if (e5) g.e5++; if (r5) g.r5++;
@@ -226,6 +253,7 @@ async function main() {
   const pc = (n: number, d = stat.done) =>
     `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${halfWidth(n, d).toFixed(1)})`;
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
+              `${country ? ` country=${country}` : ""}` +
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
               `${regionMode ? ` region=${regionMode}` : ""}  replayed ${stat.done}`);
@@ -243,5 +271,11 @@ async function main() {
   const order = ["regime 1 (alone)", "regime 2-5", "regime 6-20", "regime 21-50", "regime 51+"];
   console.log(`  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)`);
   for (const k of order) { const m = byRegime.get(k); if (m) line(k, m); }
+  // Largest market first, and every country printed rather than a top-N: the
+  // market a change QUIETLY COSTS is usually a small one, and truncating the
+  // tail is how it would be missed. The n is on every line so a two-row country
+  // is not read as a trend.
+  console.log(`  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)`);
+  for (const [k, m] of [...byCountry].sort((a, b) => b[1].n - a[1].n)) line(k, m);
 }
 main();

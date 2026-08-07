@@ -74,11 +74,75 @@ import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 // `lib/intelligence/leafCap.ts`; the test proves the guard fires at both 40 and
 // 14, i.e. it would have caught both real occurrences.
 //
-// Measured 2026-08-06 at 90: the widest group is `state_aid_satr` in ES at 87.
-// HEADROOM IS THREE INSTRUMENTS. The next Spanish state-aid load fails the
-// build, which is the intended behaviour -- raise the cap then, and read
-// check_leaf_cap.ts before doing anything else with this number.
-export const POOL_LEAVES_PER_CHANNEL = 90;
+// ── IT DID IT A THIRD TIME, AND THIS TIME THE GUARD CAUGHT IT ─────────────
+// 90 was chosen on 2026-08-06 against a widest group of 87 (`state_aid_satr`,
+// ES). HEADROOM WAS THREE INSTRUMENTS. Within a day `state_aid_satr` in DE
+// stood at 103 -- 13 candidates cut before the ranker scored them, for every
+// German founder -- and `check_leaf_cap` went red. That is the first time this
+// constant has been CAUGHT rather than discovered months later, and it is the
+// only reason the raise below could be priced instead of guessed at.
+//
+// ── What the raise actually bought: NOTHING, and that is the finding ──────
+// Holdout, three seeds, 250 pairs each, Postgres (1,076 instruments), same
+// sample, one constant moved. Caps 90 / 103 / 250 produce BYTE-IDENTICAL
+// output on every metric and every stratum -- aggregate, mode, population,
+// regime size, and founder country:
+//
+//   seed        in pool   EXACT@5   REGIME@5   CHANNEL@5
+//   20260806    239/250    71/250    208/250     217/250
+//   7           241/250    83/250    212/250     219/250
+//   99          242/250    75/250    212/250     218/250
+//
+// The reason is a SECOND collapse, downstream of this one and much stronger:
+// the one-row-per-institution-name dedupe at the end of buildInstrumentTable.
+// A German founder's pool holds 81 `satr_de` rows out of 103 publishable
+// leaves, at EVERY cap from 90 upward -- so it is the dedupe, not this cap,
+// that decides how many German siblings reach the ranker today. The 13 leaves
+// this cap was cutting render under institution names already present and lose
+// the dedupe's tie-break (own encoded rules), so they never reached the pool
+// either way. That is a fact about today's corpus, not a structural guarantee:
+// a load whose leaves carry their OWN encoded gates would win those tie-breaks
+// and would reach the pool only if the cap let them through.
+//
+// So this raise is insurance, not a gain, and it is priced as insurance.
+//
+// ── Why 250, and not 104 ──────────────────────────────────────────────────
+// All three previous values were chosen to clear the widest PUBLISHABLE group
+// at the moment of choosing. All three were consumed; 90 lasted a day.
+// Choosing 104 would be the same decision a fourth time.
+//
+// The quantity to clear is not the publishable count, because publishability
+// moves with no data load at all: every leaf already in the database is one
+// liveness repair or one data-floor fix away from being proposable, and those
+// repairs are ordinary weekly work. Read from Postgres 2026-08-07 with
+// `scripts/probe_leafcap_ceiling.ts`:
+//
+//   channel / country        publishable   leaves already in corpus
+//   state_aid_satr  ES                87                        165
+//   state_aid_satr  DE               103                        116
+//   state_aid_satr  IT                67                         85
+//   national_dev_banks  FR            73                         81
+//
+// Spain is 87 today and 165 without one new row being loaded. The ceiling to
+// clear is therefore 165, and 250 is that with half again on top -- headroom
+// stated as a multiple, so the next person can see what it was meant to absorb.
+//
+// ── What it costs, measured rather than assumed ───────────────────────────
+// Earlier values were chosen tight because the payload cost was unknown and
+// `check_payload_budget.ts` was believed to bound it. It did not; it measured
+// phase one, which does not depend on this constant. It now measures phase two
+// and prints the answer on every run. Removing this cap ENTIRELY costs 45 KB of
+// worst-case per-request payload: 3.92 MB to 3.97 MB against an 8 MB budget.
+// Payload is not what this number trades against.
+//
+// ── It is still a ceiling, not a surrender ────────────────────────────────
+// 250 is reachable. Spain's BDNS register holds 647,047 convocatorias and is
+// being loaded from; a group crossing 250 is a real event and this check will
+// fire on it. What it will not do is fire on a Tuesday because eight Spanish
+// deadlines were corrected -- and a guard that cries wolf on routine
+// maintenance gets bumped by one and forgotten, which is the failure mode that
+// produced 90.
+export const POOL_LEAVES_PER_CHANNEL = 250;
 /** Share of the ranking score from thematic match; the rest is sector intake. */
 export const THEME_WEIGHT = 0.6;
 /** Weight on thematic match in the ROW sort when a thematic signal exists at
