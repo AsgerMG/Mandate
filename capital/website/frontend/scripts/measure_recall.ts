@@ -71,7 +71,7 @@ if (process.env.NO_PG) delete process.env.DATABASE_URL;
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
-  requireLiveCorpus, resetGateHydration,
+  requireLiveCorpus, resetGateHydration, __forceSuppressedForParity,
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
@@ -117,11 +117,20 @@ async function main() {
     all, (id) => inCorpus.has(id), (id) => offerable.has(id));
   const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
   assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
+  // COUNTRY=FR grades only founders established there. The degradation policy
+  // is not evenly distributed -- 73 of the 80 rows it withholds are French --
+  // so an aggregate over 22 countries reports it as noise. The market a change
+  // actually lands on is the one to measure it in.
+  const onlyCountry = process.env.COUNTRY;
   const set = pop.graded.filter((r) => (split === "all" || r.split === split)
                              && (!mode || r.mode === mode)
+                             && (!onlyCountry || r.country === onlyCountry)
                              && (!process.env.DESCRIBED || described(r))
                              && (regionMode !== "strict" || Boolean(regionOf(r))));
-  if (!set.length) throw new Error(`no rows match split=${split} mode=${mode ?? "any"}`);
+  if (!set.length) {
+    throw new Error(`no rows match split=${split} mode=${mode ?? "any"}` +
+      `${onlyCountry ? ` country=${onlyCountry}` : ""}`);
+  }
   // The sampler lives in `recallSample.ts` and is shared with
   // check_recall_floor.ts. It used to be inline here, and the gate that fails
   // the build kept its own STRIDE version -- so the floor and the measurement
@@ -130,6 +139,26 @@ async function main() {
   const N = Math.min(Number(process.env.N ?? 250), set.length);
   const seed = Number(process.env.SEED ?? DEFAULT_SEED);
   const sample = sampleRecall(set, N, seed);
+
+  // ── What the degradation policy COSTS, measured on the live register ──────
+  // SUPPRESS_IDS_FILE names the rows a fallback request withholds, so the
+  // ranker is handicapped exactly as the degraded path handicaps it while
+  // every number still comes out of Postgres. Measuring on the snapshot itself
+  // would trip requireLiveCorpus, and rightly: a corpus where nothing is
+  // closed grades differently for reasons that have nothing to do with this.
+  //
+  // THE ORDER HERE IS THE WHOLE MEASUREMENT. The population above is built
+  // from the UNSUPPRESSED offerable set and is now fixed. Suppressing first
+  // would drop every pair whose answer is one of the withheld funds --
+  // excluded by `reattributeMissingAnswers` as un-offerable -- and the policy
+  // would score as an IMPROVEMENT by deleting the questions it gets wrong.
+  // Those pairs stay in, unanswerable, and the miss is the cost.
+  if (process.env.SUPPRESS_IDS_FILE) {
+    const ids = JSON.parse(readFileSync(process.env.SUPPRESS_IDS_FILE, "utf8")) as string[];
+    __forceSuppressedForParity(ids);
+    console.log(`degradation policy applied: ${ids.length} row(s) withheld from the ranker, ` +
+      `graded against the ${set.length}-row population the live register defines`);
+  }
 
   const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
