@@ -69,7 +69,12 @@ def workflow_secrets() -> list[str]:
     """Every `secrets.X` reference in every workflow, except the intrinsic one."""
     out = []
     for wf in sorted(WORKFLOWS.glob("*.y*ml")):
-        for name in re.findall(r"secrets\.([A-Za-z_][A-Za-z0-9_]*)", wf.read_text()):
+        # Comment lines are dropped: a workflow's prose explains why it no
+        # longer holds a secret, and a check that could not tell that apart from
+        # holding one would make writing the explanation impossible.
+        live = "\n".join(ln for ln in wf.read_text().splitlines()
+                         if not ln.lstrip().startswith("#"))
+        for name in re.findall(r"secrets\.([A-Za-z_][A-Za-z0-9_]*)", live):
             if name not in INTRINSIC_SECRETS:
                 out.append(f"{wf.relative_to(ROOT)} reads secrets.{name}")
     return sorted(set(out))
