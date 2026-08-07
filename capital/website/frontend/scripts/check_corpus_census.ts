@@ -43,6 +43,13 @@
 import { execFileSync } from "child_process";
 import { readFileSync } from "fs";
 import path from "path";
+// The SAME predicate the home page uses to decide whether a census may be
+// rendered. This check and lib/corpusFigures.ts do different jobs — the check
+// fails on the NEWEST census because a bad run needs a human, the page skips it
+// and serves the newest good one because a founder needs a number — but they
+// must not disagree about what "bad" means. Importing it is how that is
+// guaranteed rather than intended.
+import { admissibility, type CensusRow } from "../lib/corpusCensus";
 
 // Both env files, repo root first. DATABASE_URL is documented as living at the
 // repo root while most harnesses here read only ./.env.local, so a check run
@@ -64,19 +71,6 @@ const REQUIRE_DB = process.argv.includes("--require-db");
  *  censuses exist the limit is derived from their actual spacing, so a change
  *  of cadence needs no edit here and cannot drift out of step with the cron. */
 const COLD_START_MAX_AGE_DAYS = 15;
-
-interface CensusRow {
-  id: number;
-  taken_at: Date;
-  produced_by: string;
-  code_fingerprint: string;
-  kpis: Record<string, number> | null;
-  instruments: Record<string, number> | null;
-  coverage: { instruments: number; complete: number } | null;
-  gate: { ok: boolean | null; failures: string[]; notes: string[] } | null;
-  run_outcome: string;
-  errors: string[];
-}
 
 /** snake_case → camelCase. The site's JSON and the ETL's SQL name the same
  *  figures in two conventions; deriving the mapping means a KPI added to
@@ -168,26 +162,18 @@ async function main() {
   }
 
   // ── DEGRADED: is the corpus it describes fit to publish? ─────────────────
-  if (latest.errors?.length) {
+  // One predicate, shared with the render path (lib/corpusCensus.ts). A census
+  // the site will not serve and a census this check will not pass are now the
+  // same set by construction, so the two can never drift into the state where
+  // the guard is green and the page is quietly serving last month.
+  const verdict = admissibility(latest);
+  if (!verdict.admissible) {
     problems.push(
-      `DEGRADED — census #${latest.id} recorded ${latest.errors.length} error(s):\n` +
-      latest.errors.map((e) => `        ${e}`).join("\n"));
-  }
-  // The run that produced it. A census written only on a good run would leave
-  // last week's numbers standing as the newest record after a failure, and
-  // everything below would read them and report that all is well.
-  if (/^(failed|partial)/.test(latest.run_outcome)) {
-    problems.push(
-      `DEGRADED — the pipeline that produced census #${latest.id} did not finish ` +
-      `cleanly: "${latest.run_outcome}".\n` +
-      `      Some part of the corpus is not refreshed. Republishing would ship\n` +
-      `      a corpus assembled from a half-run pipeline.`);
-  }
-  if (latest.gate && latest.gate.ok === false) {
-    problems.push(
-      `DEGRADED — the corpus in census #${latest.id} FAILED the coverage gate:\n` +
-      latest.gate.failures.map((f) => `        ${f}`).join("\n") +
-      `\n      Do not republish. The gate is refusing a corpus that got worse.`);
+      `DEGRADED — census #${latest.id} is not fit to publish:\n` +
+      verdict.reasons.map((r) => `        ${r}`).join("\n") +
+      `\n      The site will NOT serve these figures. It is falling back to an\n` +
+      `      older reading, which is the gate working — but the corpus itself\n` +
+      `      still needs looking at, and only a person can do that.`);
   }
 
   // ── DRIFTED: is the container running the committed code? ───────────────
@@ -216,9 +202,18 @@ async function main() {
       if (!same) disagree.push(`${k}: site ${got}, ETL corpus ${value}`);
     }
   }
+  // STALE is no longer "the site is showing the wrong numbers" — since wsAK the
+  // page reads the census directly and synthesis.json is the FALLBACK. It is
+  // still worth failing on, for a reason that only shows up during an outage:
+  // the fallback is what founders see when Postgres is unreachable, and a
+  // fallback nobody refreshes is a fallback that gets worse every week while
+  // reading as healthy. This is the check that keeps the parachute packed.
   if (disagree.length) {
     problems.push(
-      `STALE — synthesis.json does not describe the corpus the ETL holds.\n` +
+      `STALE — the committed synthesis.json does not describe the corpus the ETL\n` +
+      `      holds. The live page reads the census, so founders are not seeing these\n` +
+      `      numbers today — but this file IS what they see when Postgres is\n` +
+      `      unreachable or the newest censuses fail the gate, and it is drifting:\n` +
       disagree.map((d) => `        ${d}`).join("\n") +
       `\n      census #${latest.id} taken ${latest.taken_at.toISOString().slice(0, 16)}Z` +
       ` by ${latest.produced_by}, ${ageDays.toFixed(1)} days ago.`);
@@ -237,8 +232,9 @@ async function main() {
   if (problems.length) {
     console.error("\ncheck_corpus_census: FAILED\n");
     for (const p of problems) console.error(`  - ${p}\n`);
-    console.error("  The site's headline figures are a committed file. They do not follow");
-    console.error("  the ETL on their own, and a founder cannot tell the difference.");
+    console.error("  The site's headline figures follow the census on their own (wsAK), but");
+    console.error("  only through a census the coverage gate has passed. Anything above means");
+    console.error("  either the corpus needs a person, or the committed fallback has drifted.");
     console.error("\n  Fix (pulls the ETL's db, regenerates, gates, and tells you what to commit):");
     console.error("    make republish");
     process.exit(1);

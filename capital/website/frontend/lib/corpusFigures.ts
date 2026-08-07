@@ -280,11 +280,20 @@ export async function readCorpusFigures(): Promise<CorpusFigures> {
     rejected);
 }
 
-/** A one-line dateline for the page: when the corpus behind these figures was
- *  read. Shown rather than logged, because a founder comparing two numbers a
- *  week apart is entitled to know which day each describes — and because a
- *  fallback nobody can see is the one that lasts 32 days. */
+/** The page's own dateline: when the corpus behind these figures was read, and
+ *  whether that reading is the live one.
+ *
+ *  Shown rather than logged, and this is the part that is not decoration. The
+ *  defect this codebase has already shipped is the SILENT degradation: a
+ *  fallback that renders identically to the real thing, so nobody discovers it
+ *  until a founder clicks a dead link. A log line does not fix that, because
+ *  the person who would read the log is not the person looking at the page.
+ *  Two words on the page do.
+ *
+ *  Written for a founder, not for us: "last published" is what a stale artifact
+ *  actually is, and it says the useful thing (this is not today's reading)
+ *  without asking anybody to know what a census is. */
 export function corpusAsOf(p: CorpusProvenance): string {
-  if (!p.observedAt) return "corpus date not recorded";
-  return `corpus as of ${p.observedAt.slice(0, 10)}`;
+  const when = p.observedAt ? p.observedAt.slice(0, 10) : "an unrecorded date";
+  return `corpus as of ${when} · ${p.source === "census" ? "live" : "last published"}`;
 }
