@@ -3,7 +3,7 @@
  "clock_sources": {
   "bdns_es_convocatorias_abiertas": {
    "last_refreshed": "2026-08-07",
-   "rows": 78
+   "rows": 86
   }
  },
  "countries": {
@@ -32,8 +32,8 @@
    "total": 61
   },
   "ES": {
-   "offerable": 92,
-   "total": 172
+   "offerable": 100,
+   "total": 180
   },
   "EU": {
    "offerable": 67,

@@ -107,7 +107,10 @@ founder (the other three are CDTI rows, which were already named after their
 programmes).
 
 **No floor moved.** Pool 93, ES sibling class 1.6 (body+text+date 1.2), measured
-out of Postgres before and after.
+out of Postgres before and after the naming pass. After the first full weekly
+refresh ran (below) it is **101 offerable, class still 1.6**, uniquely
+identified 69% → 71%. `check_archetypes.ts` passes all 12; `check_recall_floor.ts`
+passes.
 
 ### Left open, deliberately
 
@@ -213,6 +216,42 @@ is worth saying, not worth failing the week over) and does **not** tolerate exit
 
 One incidental fix in `railway_cron.py`: the partial summary line reported
 `python3` as the partial step for any two-element argv, which names nothing.
+
+---
+
+## The first end-to-end run of the weekly job
+
+Run in full on 2026-08-07 against the live register, exit 0:
+
+    enumerate  +922 new candidates in the 60-day window (914 of them LOCAL —
+               a level the original harvest had barely reached)
+    detail     800 fetched, 0 errors — and the cap was hit
+    load       92 admitted, 86 new rows, 6 already under a scheme the corpus
+               holds → 2 leaves revived through `successor_scheme`
+               (the SATR-overlap gate doing its job: no duplicate funds)
+    publish    86 instruments + 86 source rows to Postgres
+    name       43 renamed, 3 rejected by the grounding test
+               ("segunda" ×2, "digitalizacion" — all inventions)
+
+ES went **93 → 101 offerable**, sibling class unchanged at 1.6.
+
+### Two defects the run exposed in its own scaffolding, both fixed
+
+**The cap was hit and reported success.** `fetch_details` exits 0 whether it
+drained the queue or stopped at the limit, so 800 of 922 were fetched and
+122 convocatorias were silently left for next week. That is exactly the
+invisible shortfall this workstream exists to eliminate, reproduced by the
+tool built to prevent it. The backlog is now measured in
+`refresh_open_calls.py` from the two files rather than inferred from an exit
+code that cannot carry it, and a remaining backlog is a PARTIAL (exit 3).
+Verified: it reports 122.
+
+**Every stage was silent for ten minutes.** Python block-buffers a pipe, and a
+cron container gives every stage a pipe. The detail fetch prints progress every
+100 records and emitted nothing at all until it finished — a stalled job and a
+working one are indistinguishable in the log. `PYTHONUNBUFFERED=1` is now set on
+the environment of every stage, so a stage added later is observable without
+anybody remembering.
 
 ---
 

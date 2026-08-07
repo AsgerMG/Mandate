@@ -155,9 +155,39 @@ def main() -> None:
         stages = [s for s in stages if s[0] != "name"]
 
     partial: list[str] = []
+
+    def detail_backlog() -> int:
+        """Candidates enumerated but never fetched.
+
+        The cap is enforced INSIDE the harvest, which exits 0 whether it
+        finished the queue or stopped at the limit -- so on the first real run
+        it fetched exactly 800 of 922 and reported complete. 122 convocatorias
+        were left for next week and nothing said so, which is the silent
+        shortfall this whole workstream exists to make impossible. The backlog
+        is therefore measured HERE, from the two files, rather than inferred
+        from an exit code that cannot carry it.
+        """
+        try:
+            _sys.path.insert(0, str(TERMS))
+            import harvest_bdns_open_calls as h  # noqa: PLC0415
+            cands = {json.loads(l)["numeroConvocatoria"]
+                     for l in h.CANDIDATES.read_text().splitlines() if l.strip()}
+            return len(cands - set(h.load_details()))
+        except Exception as e:  # noqa: BLE001 - reported, never fatal
+            print(f"    (backlog unmeasurable: {e})", flush=True)
+            return 0
+
     for label, step, partial_ok in stages:
         rc = run(step, label)
         if rc == 0:
+            if label == "detail":
+                left = detail_backlog()
+                if left:
+                    print(f"=== PARTIAL: detail left {left} candidates unfetched "
+                          f"(cap {a.detail_cap}). Next run resumes from the same "
+                          f"cache; raise --detail-cap if this does not clear.",
+                          flush=True)
+                    partial.append(f"detail(+{left} queued)")
             continue
         if partial_ok:
             print(f"=== PARTIAL: {label} (rc={rc}) -- continuing with what landed", flush=True)
