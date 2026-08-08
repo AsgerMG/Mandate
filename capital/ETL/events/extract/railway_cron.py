@@ -28,13 +28,23 @@ import sys
 from pathlib import Path
 
 STEPS = [
-    # FIRST, always. This container's store is the corpus of record and until
-    # 2026-08-07 nothing ever migrated it: migrations reached whichever store a
-    # human happened to be pointed at, which was the laptop every time. The
-    # census taken inside this container failed its entire coverage block with
-    # `no such column: tier` — migration 020, three weeks after it was applied
-    # on the laptop — and the four columns that DID exist here were the ones an
-    # ordinary ETL script self-heals with ALTER TABLE on its way past.
+    # FIRST, and fatal if it fails.
+    #
+    # Nothing here ever applied migrations, so they reached whichever store a
+    # human happened to be pointed at -- the laptop, every time, and this volume
+    # never. The corpus the weekly cron actually writes ran 9 of the 23
+    # committed migrations. Its funding_instruments had no `tier` column, the
+    # census reads `tier`, so the census recorded a coverage LOSS and half a day
+    # went into hunting for funds that had never gone anywhere. A missing column
+    # is not a smaller corpus, but it reads exactly like one. The four columns
+    # that DID exist here were the ones an ordinary ETL script self-heals with
+    # ALTER TABLE on its way past, which is the same defect wearing a hat: the
+    # schema follows whichever SCRIPT ran, not whichever STORE matters.
+    #
+    # Fatal rather than tolerated, because every step below writes into this
+    # schema and a pipeline that writes a week of data into the wrong shape has
+    # made the problem bigger. Every migration is idempotent, so on an
+    # up-to-date corpus this prints a column of skips and costs a second.
     # See ETL/events/load/migrations/apply.py::apply_all.
     [sys.executable, str(ROOT / "ETL/events/load/migrations/apply.py"), "all"],
     [sys.executable, str(ROOT / "ETL/events/extract/renew.py"), "--auto"],
@@ -77,7 +87,7 @@ STEPS = [
 # fall inside tolerance, and its exit 1 means the defect it exists to surface.
 # That distinction lives in the registry's `tolerate`, so the runner records
 # `ok` for the first and `failed` for the second without this file knowing why.
-GUARDS = ["aggregate_independence", "offerable_decay"]
+GUARDS = ["store_schema", "aggregate_independence", "offerable_decay"]
 RUNNER = str(ROOT / "ETL/lib/guard_verdicts.py")
 
 # Recorded after everything above, WHATEVER happened above — see below.

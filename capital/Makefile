@@ -18,6 +18,8 @@ help:
 	@echo "Wincent make targets:"
 	@echo "  make republish   Make the site serve the corpus the ETL produced (pull -> gate -> regenerate)"
 	@echo "  make verify-cron Is the weekly Railway ETL scheduled, deployed, and running this code?"
+	@echo "  make check-stores One store of record per table, and no schema drift between stores"
+	@echo "  make push-db     Push the local corpus to the volume, having PROVED it loses nothing"
 	@echo "  make pull-db     Pull the latest db.sqlite from the Railway ETL volume (run before local work)"
 	@echo "  make push        Run cloud-blocked/manual sources locally, then push db.sqlite back to Railway"
 	@echo "  make sources     List every source + how to renew it (ETL/events/extract/renew.py --list)"
@@ -70,8 +72,10 @@ refresh:
 # working tree and tells you what moved.
 republish:
 	# 1. The ETL's corpus, not last week's copy of it. Wakes the cron service,
-	#    downloads, and confirms the schedule was restored afterwards.
-	python3 ETL/events/extract/pull_db.py
+	#    downloads, and confirms the schedule was restored afterwards. Via
+	#    pull-db so this shares its union semantics: republishing must not be a
+	#    way to quietly discard local instrument work on the way past.
+	$(MAKE) pull-db
 	# 2. Regenerate everything downstream, THROUGH the coverage gate, which
 	#    stops the chain rather than publishing a corpus that got worse.
 	#    --force because a pull changes db.sqlite, not the raw source files
@@ -89,6 +93,15 @@ republish:
 # Is the weekly refresh going to happen, and will it run this code? Reads the
 # schedule back from Railway rather than trusting the last write -- see
 # ETL/lib/verify_cron.py for the two schedules and why only one of them counts.
+# The two store guards, both halves. Named together because they answer one
+# question -- "is there one corpus, and does everyone agree what shape it is" --
+# and because running only the credential-free half is how the volume stayed 14
+# migrations behind without anything going red.
+.PHONY: check-stores
+check-stores:
+	python3 ETL/schema/check_store_of_record.py
+	python3 ETL/schema/check_store_schema.py --sqlite data/db.sqlite --postgres
+
 verify-cron:
 	python3 ETL/lib/verify_cron.py
 
@@ -249,13 +262,23 @@ backup:
 	python3 ETL/events/load/backup.py
 
 # The broad ETL pipeline (43 funder/registry extractors, classify, sanity)
-# now runs on a weekly Railway cron job against a Railway-resident volume,
-# not locally (see the ETL-to-Railway migration plan) -- this pulls that
-# volume's current db.sqlite down for local interactive work (eligibility
-# research, ad-hoc analysis). Run before any session that needs fresh data;
-# --overwrite replaces the local copy each time, mirroring `git pull`.
+# runs on a weekly Railway cron against a Railway-resident volume, not locally.
+# This brings that corpus down for local interactive work (eligibility research,
+# ad-hoc analysis). Run before any session that needs fresh data.
+#
+# It is a UNION, not an overwrite. It used to be `pull_db.py`, which downloads
+# straight over data/db.sqlite -- correct only while the volume is ahead of the
+# laptop, which is a property nothing established. On 2026-08-07 it was false in
+# the other direction and one `make pull-db` would have replaced 1,088
+# instruments with 322, silently and with no undo. So: fetch to a side file the
+# local corpus is not, then INSERT OR IGNORE the rows the laptop lacks. Rows the
+# laptop already has are left exactly as they are.
+#
+# `pull_db.py` is still there for the case where you genuinely mean to discard
+# local state. Read its header first.
 pull-db:
-	python3 ETL/events/extract/pull_db.py
+	python3 ETL/events/extract/pull_db_side.py /tmp/volume-db.sqlite
+	python3 ETL/lib/merge_volume_into_local.py /tmp/volume-db.sqlite --write
 
 # The other half of the automation split: everything that can't run on
 # Railway (cloud-blocked NETWORK sources + MANUAL sources with a file
@@ -264,3 +287,10 @@ pull-db:
 # ETL/events/extract/push_local.py for exactly what runs and what's excluded.
 push:
 	python3 ETL/events/extract/push_local.py
+
+# The safe half of `push`, on its own: no sources, no LLM spend, just the
+# corpus onto the volume with the superset proof in front of it and a readback
+# behind it. This is the one to reach for after local instrument work.
+.PHONY: push-db
+push-db:
+	python3 ETL/events/extract/push_db_verified.py --write

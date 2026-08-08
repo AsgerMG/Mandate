@@ -439,7 +439,14 @@ def apply_023(conn: sqlite3.Connection) -> None:
 
 def apply_025(conn: sqlite3.Connection) -> None:
     """scheme_end_date_basis -- WHICH register supplied the end date, hence
-    whether its expiry closes anything. See the migration's own header."""
+    whether its expiry closes anything. See the migration's own header.
+
+    Numbered 026, not 025. Two migrations were both written as 025, and because
+    this one is defined ABOVE the other, Python's second `def apply_025` simply
+    replaced it: MIGRATIONS["025"] pointed at declared_catchment and this
+    migration was unreachable through the runner on every database that had not
+    already had it applied by hand. The live corpus records both 025 and 026 in
+    schema_migrations, so 026 is the id it was in fact applied under."""
     if column_exists(conn, "funding_instruments", "scheme_end_date_basis"):
         print("  skip 025 (already applied)")
         return
@@ -691,8 +698,16 @@ def apply_all(conn: sqlite3.Connection) -> list[str]:
         print(f"  WARNING: {len(unknown)} id(s) recorded here that this runner "
               f"does not know: {', '.join(unknown)}")
         print("  Somebody applied DDL by hand. No other store can reproduce it.")
-    for mig_id in pending:
-        print(f"Applying migration {mig_id}...")
+    # Every migration, not just the unstamped ones. A stamp is a RECORD that
+    # something ran, and this repo has stamps that are not true: DDL applied by
+    # hand and stamped after the fact, and ids that moved under stores which had
+    # already recorded them when two workstreams renumbered the same collision.
+    # Trusting the stamp makes those permanent -- the store skips forever and
+    # the column never arrives. Each apply_NNN tests for its own change first,
+    # so this is a column of skips on a current store and a repair on a lying
+    # one. `pending` is still what gets REPORTED, because that is the honest
+    # answer to "what did this store not have".
+    for mig_id in sorted(MIGRATIONS):
         apply_one(conn, mig_id)
     conn.commit()
     return pending
