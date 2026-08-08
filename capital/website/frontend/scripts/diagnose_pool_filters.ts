@@ -15,13 +15,10 @@
 // project has hit three times.
 //
 //   COUNTRIES=DE CHANNEL=state_aid_satr npx tsx scripts/diagnose_pool_filters.ts
-import { readFileSync } from "fs";
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("diagnose_pool_filters", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, publishableInstruments, requireLiveCorpus,
