@@ -364,23 +364,43 @@ const GATE_MATCH = 1.35;
 export function gateFitScorer(
   leaves: DbInstrument[], answers?: EligibilityAnswers,
 ): (i: DbInstrument) => number {
+  // TEMPORARY, WS-AW. Three designs for what a rule should do for a fund with
+  // no siblings, differing ONLY in scope -- every arm uses GATE_MATCH at the
+  // same strength, so a difference between them is attributable to the design
+  // and not to a tuning constant. Removed once measured; the winner ships
+  // unconditionally.
+  //
+  //   regime  shipped: rank inside a regime, skip a group of one
+  //   pool    rank across the whole channel the caller handed us
+  //   both    regime as shipped, times a second ABSOLUTE term on the leaf's
+  //           own pass rate, which is the only term a standalone leaf gets
+  const scope = process.env.GATE_SCOPE ?? "regime";
   const neutral = () => 1;
   if (!answers) return neutral;
+  // Assessed once per leaf, not once per group: `both` reads the same numbers
+  // twice and two assessments of one leaf that could disagree would be a bug
+  // waiting rather than a saving.
+  const fitAll = new Map<string, number>();
+  for (const l of leaves) {
+    const a = assessInstrument(l, answers);
+    // Nothing decidable about this leaf: a gap in our encoding, never
+    // evidence that the founder fails. Same treatment awardScorer gives a
+    // fund with no recorded award median.
+    if (a.checked > 0) fitAll.set(l.id, a.passed / a.checked);
+  }
   const byRegime = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
     const r = (l as { parentId?: string }).parentId ?? l.id;
     (byRegime.get(r) ?? byRegime.set(r, []).get(r)!).push(l);
   }
   const score = new Map<string, number>();
-  for (const group of byRegime.values()) {
+  const groups = scope === "pool" ? [leaves] : [...byRegime.values()];
+  for (const group of groups) {
     if (group.length < 2) continue;
     const fit = new Map<string, number>();
     for (const l of group) {
-      const a = assessInstrument(l, answers);
-      // Nothing decidable about this leaf: a gap in our encoding, never
-      // evidence that the founder fails. Same treatment awardScorer gives a
-      // fund with no recorded award median.
-      if (a.checked > 0) fit.set(l.id, a.passed / a.checked);
+      const f = fitAll.get(l.id);
+      if (f !== undefined) fit.set(l.id, f);
     }
     const known = [...fit.values()];
     if (known.length < 2) continue;
@@ -388,6 +408,15 @@ export function gateFitScorer(
     if (hi === lo) continue;
     for (const [id, f] of fit) {
       score.set(id, Math.pow(GATE_MATCH, 2 * ((f - lo) / (hi - lo)) - 1));
+    }
+  }
+  // The absolute term. No group, no normalisation: 100% of a fund's own rules
+  // cleared is GATE_MATCH and 0% is 1/GATE_MATCH, whatever else is on the
+  // table. A leaf with nothing encoded stays at 1 and is neither rewarded nor
+  // punished, exactly as in the relative term.
+  if (scope === "both") {
+    for (const [id, f] of fitAll) {
+      score.set(id, (score.get(id) ?? 1) * Math.pow(GATE_MATCH, 2 * f - 1));
     }
   }
   if (!score.size) return neutral;
