@@ -29,12 +29,51 @@ its branch. Raise the limit at `claude.ai/settings/usage` and they can continue.
 |---|---|---|---|---|
 | **AK** | Website numbers live from the DB | 80% | headline figures read the ETL corpus at render time | wire the coverage gate so a bad corpus can't reach founders; look at it in a browser, including DB-unreachable |
 | **AF** | Guards without CI credentials | 60% | verdict-publishing pattern generalised | the scheduled workflow, dropping the DB secret entirely |
-| **AE** | 22 German leaves cut pre-cap | 60% | identified the dedupe label that collapses them | re-measure both arms interleaved on the 1,086 corpus |
+| **AE** | 22 German leaves cut pre-cap | done | **21 were tax credits a grant-seeker did not ask for — the filter is right. The 1 was a display rule deleting from the pool; fixed and guarded** | nothing. The capital half is handed to **AR** |
 | **AH** | 36 scripts can measure nothing and exit 0 | 50% | build now fails on a re-pasted env preamble | actually run every converted script — a silent pass converted to a silent pass is worth nothing |
 | **AG** | Explain +€55.6B and −558 companies | 30% | **found a second schema drift: four columns exist only from hand `ALTER`s** | measure which; then decompose the capital jump |
 | **AJ** | Record whether a source publishes windows | 5% | — | the ADEME window fetch and the assignment pass |
 
+## HANDOFF — AE to AR, on the capital filter
+
+AE and AR were both pointed at `passesCapitalPreference` / `instrumentServes
+Capital`. They are asking DIFFERENT questions of it and the answers do not
+collide, so AE took the dedupe half and states its capital findings here as
+input rather than acting on them.
+
+- **AE's question** — under the harness's FIXED `capitalSought=[grant,loan]`,
+  what removes 22 German SATR leaves? **Answer: 21 are `capital_type=
+  tax_credit`** (the Forschungszulage across 18 tax offices, SA.114724, and one
+  CHP surcharge reduction). A founder who ticked Grants and Loans and not Tax
+  credits asked not to be shown these. **The filter is correct. No change.**
+- **AR's question** — under DERIVED per-founder answers, is the filter too
+  strict for the pool points lost between 94% and 91%? Untouched by AE.
+- **What AE hands over, measured, for AR to not re-derive:**
+  1. The harness's fixed constant imposes a **ceiling on `pool` of ~99%** —
+     1.0% of holdout pairs won a `tax_credit` and 0.1% an `equity`, and those
+     pairs are unreachable by the founder's own stated preference before
+     ranking is consulted. `scripts/census_capital_reach.ts` prices it. That
+     point is NOT the ranker's, and AE deliberately did not widen the constant:
+     it is uniform across every pair, which is what makes it leak-free, and
+     moving it moves the population `check_recall_floor.ts` was calibrated on.
+  2. **8 publishable instruments carry `capital_type="unknown"`, which NO intake
+     option maps to**, so they are cut for every founder in every country
+     whatever they tick. This is a distinct defect from "too strict" — it is
+     our missing fact read as the founder's refusal. Guarded as a ratchet by
+     `scripts/check_capital_reach.ts`; the honest fix is upstream in the ETL and
+     is not AR's either unless AR wants it.
+
 ## FOLLOW-UPS left open on purpose (AI)
+
+- **Channel-level removal does not report per instrument.** AE's attribution
+  found 12-13 publishable instruments per market absent from the pool with NO
+  `ExclusionLog` event against their id — every one an EU-wide leaf
+  (`innovation_fund`, `chips_ju`, `edf`, `eib`) in a channel the founder's
+  request never selected. The pool is not wrong; the LOG is silent about a whole
+  stage, so any future attribution that lands on those rows will read as the
+  unattributed-removal defect class and cost someone the same afternoon it cost
+  AE. Worth a channel-stage rule id. Not done here: it is a reporting change to
+  a stage this workstream did not otherwise touch.
 
 - **Two of the eleven retracted rows deserve REPLACEMENT, not just retraction.**
   `satr_de_equity__sa_115337__landwirtschaftliche_rentenbank` named its

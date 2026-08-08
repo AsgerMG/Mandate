@@ -41,6 +41,12 @@
 // 9 unreachable, all `unknown` — 8 EIT KIC leaves and one national development
 // bank scheme carrying 2,835 awards. None of them appears as an answer in the
 // recall set, so this costs no measurable recall; it costs those funds' reach.
+//
+// Re-derived 2026-08-08 on the 1,088 corpus: 8 of 769 publishable, still all
+// `unknown`. The ratchet is lowered to match, which is the whole point of it
+// being a ratchet — the gap closed by one and that one may not come back
+// silently. It closed upstream, in the ETL, which is where this check has
+// always said the fix belongs.
 import { CAPITAL_SOUGHT_TO_DB } from "../lib/intelligence/shortlist";
 
 /** The number of publishable instruments carrying a capital type no intake
@@ -48,7 +54,7 @@ import { CAPITAL_SOUGHT_TO_DB } from "../lib/intelligence/shortlist";
  *  never a target: lower it whenever the data improves, and never raise it to
  *  make a build green — a rise means a new source is landing funds no founder
  *  can reach. */
-const UNREACHABLE_CEILING = 9;
+const UNREACHABLE_CEILING = 8;
 
 async function main() {
   // The committed snapshot, never a laptop's DATABASE_URL — same reason
