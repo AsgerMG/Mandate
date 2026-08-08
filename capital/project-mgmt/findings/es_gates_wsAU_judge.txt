@@ -1,0 +1,31 @@
+layer 1: 596 scheme-text gates checked (ES)
+  unlabelled (no subject/basis in verify_note): 0
+  gate_role IS NULL:                            0
+  PASS — no rule that decides a founder is about a downstream beneficiary, the fund itself, or a bare enumeration.
+
+layer 2: judging 88 encoded rules against their own source text
+  8/88  disputed=0
+  16/88  disputed=0
+  24/88  disputed=0
+  32/88  disputed=0
+  40/88  disputed=0
+  48/88  disputed=2
+  56/88  disputed=2
+  64/88  disputed=2
+  72/88  disputed=4
+  80/88  disputed=5
+  88/88  disputed=5
+
+layer 2: 5 of 88 disputed (6%)
+  151352 [not asserted] Applicant's sector must be classified under 'Other Services'
+      Sectores elegibles lists only 'OTROS SERVICIOS' as a taxonomy facet without stating exclusion of other sectors.
+  151397 [not asserted] The project must fall within Industry and Energy purposes
+      Sectores elegibles lists only 'ACTIVIDADES ARTÍSTICAS, DEPORTIVAS Y DE ENTRETENIMIENTO' as a taxonomy facet, mismatched with stated Industry
+  151525 [not asserted] Project must be located in the region of Comunidad Foral de Navarra (ES22)
+      The region field (ES22) is a taxonomy facet, not a stated geographic exclusion, and rule mismatches to generic Spain.
+  151532 [not asserted] Project activity must be located in the Sevilla region (ES618)
+      Ámbito regional field (ES618) is a taxonomy facet, not an explicit exclusion statement, and rule mismatches to generic Spain.
+  151573 [not asserted] Project must fall within the eligible sectors: administrative and auxiliary services, or o
+      Encoded rule only allows 'other' but text lists two eligible sectors, administrative/auxiliary services and other services, so the encoding 
+
+[dry run] nothing quarantined

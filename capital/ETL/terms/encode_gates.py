@@ -64,6 +64,7 @@ from etl_env import DB  # noqa: E402
 
 import argparse
 import json
+import os
 import sqlite3
 
 import anthropic
@@ -103,6 +104,7 @@ MULTI_VALUE_FIELDS = set(_VOCAB["multiValueFields"])
 
 ROLES = ["filter", "obligation", "programme_fact", "vague"]
 
+<<<<<<< HEAD
 # ── A country field must hold a country ──────────────────────────────────────
 # `entityCountries` and `activityCountries` are free text, so the vocabulary
 # check below cannot see them, and a rule restricting a scheme to named REGIONS
@@ -121,6 +123,67 @@ COUNTRY_FIELDS = ("entityCountries", "activityCountries")
 from nuts_regions import norm as _region_key, subnational_names  # noqa: E402
 
 SUBNATIONAL = subnational_names()
+=======
+# ── country-typed comparators ────────────────────────────────────────────────
+# `entityCountries` and `activityCountries` have no entry in ENUM_VALUES,
+# because their vocabulary is "the countries of Europe" rather than a short
+# hand-written list. The consequence was a hole, not a convenience: the
+# out-of-vocabulary guard below is written `if vocab and ...`, so for exactly
+# these two fields it never ran and ANY string was stored as a live comparator.
+#
+# Measured against Postgres 2026-08-08: 9 encoded rules use a positive operator
+# on a country field with a value no founder can answer. `SATR Gb Equity`
+# carries entityCountries in ["East Midlands", "Eastern", "London", ...] -- the
+# English regions of its scheme, in a field whose answers are countries. A
+# British founder answers "United Kingdom", matches nothing, and the fund is
+# hidden from precisely the population it was written for. Others read
+# in ["EEA"], in ["European Union"], in ["Europe"], in ["Sub-Saharan Africa"],
+# and in ["Slovak Republic"] -- a true rule that failed only because the name
+# map had the country under "Slovakia".
+#
+# THE PROPERTY (not a list of the five strings that happened to break):
+#   A value stored under a country-typed field must NAME A COUNTRY the corpus
+#   recognises, and must be stored under the corpus's own name for it.
+#
+# The test for a value nobody has seen is `europe_scope.name_to_iso2`, which is
+# the same resolver every extractor already uses, reading data/europe_scope.json
+# -- so the vocabulary is read, never restated, and check_country_gates.ts holds
+# the published corpus to the same file.
+#
+# DIRECTION MATTERS, and the asymmetry is deliberate:
+#   positive (in / equals) — an unresolvable value can never be satisfied, so
+#       the rule silently hides the fund. Drop the value; drop the whole spec
+#       if that empties it. No rule beats an unsatisfiable one.
+#   negative (not_in)      — "not_in ['Russia']" excludes a real place that is
+#       simply outside our founder population. Inert, but TRUE, and rewriting
+#       the fund's own rule to make our bookkeeping tidy would be worse than
+#       carrying a clause that never fires. Left exactly as stated.
+COUNTRY_FIELDS = {"entityCountries", "activityCountries"}
+
+
+def canonical_country_values(op: str, values: list[str]) -> tuple[list[str], list[str]]:
+    """Resolve each value to the corpus's own country name.
+
+    Returns (kept, dropped). For a negative operator nothing is ever dropped;
+    resolvable values are still canonicalised so a founder's answer can match.
+    """
+    from europe_scope import COUNTRY_NAMES, name_to_iso2
+
+    kept: list[str] = []
+    dropped: list[str] = []
+    for v in values:
+        iso = name_to_iso2(v)
+        if iso and iso in COUNTRY_NAMES:
+            name = COUNTRY_NAMES[iso]
+            if name not in kept:
+                kept.append(name)
+        elif op == "not_in":
+            if v not in kept:
+                kept.append(v)          # true exclusion of an out-of-scope place
+        else:
+            dropped.append(v)           # unsatisfiable under a positive operator
+    return kept, dropped
+>>>>>>> workstream-au-es-gates
 
 # The founder attributes we actually collect (EligibilityAnswers in types.ts).
 # 'none' is a first-class answer: most gates that look like filters turn out to
@@ -640,6 +703,7 @@ def cmd_encode(args) -> None:
                     skipped += 1
                     continue
 
+<<<<<<< HEAD
             if field in COUNTRY_FIELDS and op in ("in", "not_in", "equals"):
                 key = "allowed" if op in ("in", "not_in") else "value"
                 vals = spec[key] if key == "allowed" else [spec[key]]
@@ -652,6 +716,26 @@ def cmd_encode(args) -> None:
                     skipped += 1
                     continue
                 spec[key] = good if key == "allowed" else good[0]
+=======
+            # A country field carries no ENUM_VALUES entry, so the guard below
+            # skips it entirely. That is the hole COUNTRY_FIELDS closes: the
+            # resolver is the vocabulary here, and it must run FIRST so a spec
+            # emptied by it is dropped rather than stored.
+            if field in COUNTRY_FIELDS and op in ("in", "not_in", "equals"):
+                key = "allowed" if op in ("in", "not_in") else "value"
+                vals = spec[key] if key == "allowed" else [spec[key]]
+                good, bad = canonical_country_values(op, vals)
+                if bad:
+                    print(f"    dropped non-country {field} values {bad} on gate {gid}: "
+                          f"a positive rule no founder answer can satisfy")
+                if not good:
+                    skipped += 1
+                    continue
+                if key == "allowed":
+                    spec["allowed"] = good
+                else:
+                    spec["value"] = good[0]
+>>>>>>> workstream-au-es-gates
 
             vocab = ENUM_VALUES.get(field)
             if vocab and op in ("in", "not_in", "equals"):
@@ -676,6 +760,97 @@ def cmd_encode(args) -> None:
         print(f"  {min(i + ENCODE_CHUNK, len(rows)):,}/{len(rows):,}  encoded={done:,} skipped={skipped:,}")
     conn.close()
     print(f"encode done: {done:,} encoded, {skipped:,} skipped as unencodable.")
+
+
+# ── repair-countries ────────────────────────────────────────────────────────
+def cmd_repair_countries(args) -> None:
+    """Apply the country-value property to specs that were written before it.
+
+    Free -- no model calls. The rule is the same function the encoder now runs
+    at write time, so there is one definition of what a country value may be
+    and a repaired row and a fresh row cannot disagree.
+    """
+    conn = connect()
+    rows = conn.execute(
+        """SELECT id, intake_field_resolved, value_spec, substr(requirement,1,90)
+             FROM eligibility_gates
+            WHERE value_spec IS NOT NULL
+              AND intake_field_resolved IN ('entityCountries','activityCountries')
+            ORDER BY id""").fetchall()
+    fixed = cleared = 0
+    for gid, field, raw, req in rows:
+        spec = json.loads(raw)
+        op = spec.get("op")
+        if op not in ("in", "not_in", "equals"):
+            continue
+        key = "allowed" if op in ("in", "not_in") else "value"
+        vals = spec.get("allowed") if key == "allowed" else [spec.get("value")]
+        vals = [v for v in (vals or []) if v]
+        good, bad = canonical_country_values(op, vals)
+        if good == vals and not bad:
+            continue
+        if not good:
+            # Nothing survives: the rule was entirely about places that are not
+            # countries. Quarantine rather than delete -- the requirement text
+            # is still true and still shown, only the machine verdict stops.
+            print(f"  gate {gid} {field} {op} {vals} -> QUARANTINED\n      {req}")
+            if not args.dry_run:
+                conn.execute(
+                    """UPDATE eligibility_gates
+                          SET value_spec=NULL, encoding_method='quarantined',
+                              verify_note = COALESCE(verify_note || ' | ', '')
+                                            || 'quarantined: country field held no country'
+                        WHERE id=?""", (gid,))
+            cleared += 1
+            continue
+        print(f"  gate {gid} {field} {op} {vals} -> {good}"
+              + (f"  (dropped {bad})" if bad else ""))
+        if key == "allowed":
+            spec["allowed"] = good
+        else:
+            spec["value"] = good[0]
+        if not args.dry_run:
+            conn.execute("UPDATE eligibility_gates SET value_spec=? WHERE id=?",
+                         (json.dumps(spec, ensure_ascii=False), gid))
+        fixed += 1
+    if not args.dry_run:
+        conn.commit()
+    print(f"\n{len(rows)} country-field specs read; {fixed} rewritten, "
+          f"{cleared} quarantined" + (" [dry run]" if args.dry_run else ""))
+
+    # SQLite is the authoring store and the product serves Postgres, so a repair
+    # that stops here has changed nothing a founder can see. Scoped to the rows
+    # this property owns -- country-typed comparators -- and NOT
+    # migrate_to_postgres.py, which is a full truncate and reinsert that would
+    # publish every other workstream's in-flight work alongside this one.
+    if args.publish and not args.dry_run:
+        dsn = os.environ.get("DATABASE_URL")
+        if not dsn:
+            raise SystemExit("DATABASE_URL not set (expected in repo-root .env.local)")
+        import psycopg2
+        # KEYED ON (instrument_id, gate_key), NEVER ON id. The two stores keep
+        # independent surrogate keys -- SQLite's gates run 1..151,047 and
+        # Postgres's 358,457..365,215 -- so an UPDATE ... WHERE id = ? silently
+        # matches nothing, and would match the WRONG ROW if the ranges ever
+        # overlapped. (instrument_id, gate_key) is the natural key both stores
+        # share and the one their unique constraint is built on.
+        out = conn.execute(
+            """SELECT instrument_id, gate_key, value_spec, encoding_method, verify_note
+                 FROM eligibility_gates
+                WHERE intake_field_resolved IN ('entityCountries','activityCountries')
+             """).fetchall()
+        pg = psycopg2.connect(dsn)
+        with pg, pg.cursor() as cur:
+            cur.executemany(
+                """UPDATE eligibility_gates
+                      SET value_spec = %s, encoding_method = %s, verify_note = %s
+                    WHERE instrument_id = %s AND gate_key = %s""",
+                [(s, m, n, iid, gk) for iid, gk, s, m, n in out])
+            touched = cur.rowcount
+        pg.close()
+        print(f"published {len(out)} country-field gates to Postgres "
+              f"(last statement matched {touched})")
+    conn.close()
 
 
 # ── report ──────────────────────────────────────────────────────────────────
@@ -719,6 +894,11 @@ def main() -> None:
         p.add_argument("--country", default=None,
                        help="restrict the pass to one country's instruments")
         p.set_defaults(func=fn)
+    rc = sub.add_parser("repair-countries")
+    rc.add_argument("--dry-run", action="store_true")
+    rc.add_argument("--publish", action="store_true",
+                    help="mirror the repaired country specs into Postgres")
+    rc.set_defaults(func=cmd_repair_countries)
     sub.add_parser("report").set_defaults(func=cmd_report)
     args = ap.parse_args()
     global MODEL
