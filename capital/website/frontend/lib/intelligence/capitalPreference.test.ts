@@ -14,6 +14,7 @@ import { describe, expect, it } from "vitest";
 
 import { DILUTIVE_FOR_TEST, passesCapitalPreference } from "./accessMode";
 import type { DbInstrument } from "./corpus";
+import { scoreFit } from "./fit";
 import {
   CAPITAL_SOUGHT_TO_DB, INDEFINITE_CAPITAL, KNOWN_CAPITAL_TYPES,
   instrumentServesCapital,
@@ -133,6 +134,53 @@ describe("every classification is deliberate", () => {
     for (const option of OPTIONS) {
       expect((CAPITAL_SOUGHT_TO_DB[option] ?? []).length,
         `${option} admits no capital type at all`).toBeGreaterThan(0);
+    }
+  });
+});
+
+describe("the filter and the memo's score read one rule", () => {
+  // `fit.ts` scores a `capital` component and `shortlist.ts` filters on the same
+  // question. They were two readings of one property, and two readings drift:
+  // this branch exists because one of them had already drifted. A comment saying
+  // "kept in step" is the bug, so the agreement is asserted rather than
+  // described — over EVERY capital type in the corpus and every intake option,
+  // so a value added later is covered without being named.
+  //
+  // Admitted-and-penalised is the specific failure this rules out: a fund that
+  // survives selection and then sinks in the memo for the label that let it
+  // through is worse than one cleanly excluded, because nothing looks wrong.
+  const ALL_TYPES = [...KNOWN_CAPITAL_TYPES, ...INDEFINITE_CAPITAL, "a_type_nobody_classified"];
+
+  it("never penalises in the memo what it admitted to the pool", () => {
+    for (const option of OPTIONS) {
+      const wanted = new Set(CAPITAL_SOUGHT_TO_DB[option] ?? []);
+      for (const type of ALL_TYPES) {
+        if (!instrumentServesCapital(type, [option])) continue;
+        const { components } = scoreFit({
+          instrument: inst(type), capitalWanted: wanted, year: 2026,
+        });
+        expect(components.capital,
+          `${type} passes the filter for "${option}" but the memo scores it ` +
+          `${components.capital} — the filter and the score disagree`).toBe(1);
+      }
+    }
+  });
+
+  it("still discriminates: a mismatched definite label scores below 1", () => {
+    // The guard above is satisfied by a score that is always 1. This is the
+    // half that fails if the capital component stops discriminating at all.
+    const mismatched = [...KNOWN_CAPITAL_TYPES].filter(
+      (t) => !(CAPITAL_SOUGHT_TO_DB[OPTIONS[0]] ?? []).includes(t));
+    expect(mismatched.length,
+      "no definite capital type is outside the first option — test is vacuous")
+      .toBeGreaterThan(0);
+    for (const type of mismatched) {
+      const { components } = scoreFit({
+        instrument: inst(type),
+        capitalWanted: new Set(CAPITAL_SOUGHT_TO_DB[OPTIONS[0]] ?? []),
+        year: 2026,
+      });
+      expect(components.capital, `${type} is not what was asked for`).toBeLessThan(1);
     }
   });
 });
