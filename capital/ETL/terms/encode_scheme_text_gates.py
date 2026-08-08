@@ -474,14 +474,14 @@ def cmd_status(args) -> None:
     for role, n, enc in conn.execute(
         """SELECT g.gate_role, COUNT(*), COUNT(g.value_spec)
              FROM eligibility_gates g JOIN funding_instruments fi ON fi.id=g.instrument_id
-            WHERE fi.country=? AND g.encoding_method='scheme_text_extract'
+            WHERE fi.country=? AND g.gate_key LIKE 'scheme_text_%'
             GROUP BY 1 ORDER BY 2 DESC""", (cc,)):
         print(f"  {str(role):16} {n:5}  encoded={enc}")
     print("\nby subject (verify_note):")
     for note, n in conn.execute(
         """SELECT g.verify_note, COUNT(*) FROM eligibility_gates g
              JOIN funding_instruments fi ON fi.id=g.instrument_id
-            WHERE fi.country=? AND g.encoding_method='scheme_text_extract'
+            WHERE fi.country=? AND g.gate_key LIKE 'scheme_text_%'
             GROUP BY 1 ORDER BY 2 DESC""", (cc,)):
         print(f"  {str(note):58} {n:5}")
     conn.close()
@@ -490,6 +490,13 @@ def cmd_status(args) -> None:
 # Columns published for a gate row. Kept explicit rather than SELECT *: the
 # publish is scoped to rows this script owns, so it must never carry a column
 # another pass is mid-way through writing.
+#
+# Rows are identified by GATE_KEY, never by encoding_method. `encode_gates.py
+# encode` sets encoding_method='llm_encode' when it fills in a value_spec, so a
+# provenance-keyed scope loses exactly the rows that gained a comparator --
+# which is to say it publishes everything except the work that mattered. The
+# gate_key is this script's own and nothing else writes it.
+OWNED = "g.gate_key LIKE 'scheme_text_%'"
 PUB_COLS = ["instrument_id", "gate_key", "gate_family", "requirement", "value",
             "value_spec", "intake_field", "quote", "source_file", "source_locator",
             "verification_level", "verify_note", "gate_role",
@@ -511,7 +518,7 @@ def cmd_publish(args) -> None:
     rows = conn.execute(f"""
         SELECT {', '.join('g.' + c for c in PUB_COLS)}
           FROM eligibility_gates g JOIN funding_instruments fi ON fi.id = g.instrument_id
-         WHERE fi.country = ? AND g.encoding_method = 'scheme_text_extract'""",
+         WHERE fi.country = ? AND g.gate_key LIKE 'scheme_text_%'""",
                         (args.country,)).fetchall()
     print(f"{len(rows)} rows to publish for {args.country}")
     if args.dry_run:
