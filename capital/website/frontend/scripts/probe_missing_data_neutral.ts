@@ -52,7 +52,7 @@ async function main() {
   // it could face. This is the population the 0.5 default competes against.
   const scored: number[] = [];
   const withMix = pubs.filter((i) => i.sectorMix && Object.keys(i.sectorMix).length);
-  for (const i of withMix) for (const s of sectors) scored.push(sectorFit(i.sectorMix, s));
+  for (const i of withMix) for (const s of sectors) scored.push(sectorFit(i.sectorMix, s) ?? 0);
   console.log(`\nsectorFit over ${withMix.length} leaves x ${sectors.length} founder sectors ` +
     `= ${scored.length} (leaf, founder) pairs`);
   console.log(`  mean   ${(scored.reduce((a, b) => a + b, 0) / scored.length).toFixed(3)}`);
@@ -74,7 +74,7 @@ async function main() {
     const nomix = inC.filter((i) => !i.sectorMix || !Object.keys(i.sectorMix).length);
     const s: number[] = [];
     for (const i of inC) if (i.sectorMix && Object.keys(i.sectorMix).length) {
-      for (const sec of sectors) s.push(sectorFit(i.sectorMix, sec));
+      for (const sec of sectors) s.push(sectorFit(i.sectorMix, sec) ?? 0);
     }
     rows.push([c, inC.length, nomix.length, s.length ? s.reduce((a, b) => a + b, 0) / s.length : NaN]);
   }

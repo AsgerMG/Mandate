@@ -127,6 +127,13 @@ export interface FitInput {
   assessment?: InstrumentAssessment;
   /** Normalised semantic/lexical relevance for this instrument, 0-1. */
   theme?: number;
+  /** What sector fit scores for an instrument whose funding history we do not
+   *  hold — solved by the CALLER over its own pool with `sectorFitScorer`,
+   *  because the neutral value of an added term is a property of the population
+   *  and not of the instrument. Omitted, it falls back to FALLBACK_UNKNOWN and
+   *  the note two fields up applies here too: 0.5 is not neutral, it is the
+   *  79th percentile. */
+  sectorNeutral?: number;
   /** Founder's ticket band key. */
   ticketBand?: string;
   /** Capital types the founder asked for, already mapped to DB values. */
@@ -211,17 +218,27 @@ export function structureFit(requiresConsortium?: boolean, consortiumOk?: boolea
   return 0.25;
 }
 
+/** Do we hold any sector history for this instrument at all? One predicate, so
+ *  the scorer and every measurement agree about which rows are the blind ones. */
+export function hasSectorHistory(mix: Record<string, number> | null | undefined): boolean {
+  if (!mix) return false;
+  const vs = Object.values(mix);
+  return vs.length > 0 && vs.reduce((a, b) => a + b, 0) > 0;
+}
+
 /**
  * How much of this instrument's funding history sits in the founder's sector.
  *
- * Scores 0.5 when we cannot tell — no mix on record, or no sector from the
- * founder. Neutral rather than zero: an unknown history is not evidence of a
- * bad match, and zeroing it would bury every instrument whose recipients we
- * have not classified.
+ * Returns `null` when we cannot tell — no mix on record, or no sector from the
+ * founder. NOT a number, and that is the whole point: what an unknown should
+ * score is a property of the candidates it is competing against, so this
+ * function cannot answer it and must not pretend to. `sectorFitScorer` below
+ * solves it per founder. See the note there before reintroducing a constant.
  */
 /** THE ONE EXPORT OF THIS FILE THAT RANKS THE FOUNDER'S TABLE. Read by
- *  `selectLeafInstruments` and by `rowRelevance` in shortlist.ts, where it
- *  carries whatever weight the semantic term leaves it.
+ *  `selectLeafInstruments` and by `rowRelevance` in shortlist.ts (through
+ *  `sectorFitScorer`), where it carries whatever weight the semantic term
+ *  leaves it.
  *
  *  Its known limitation is a property of the clip below and is measured: inside
  *  one regime the 0.25 ceiling makes a leaf with 90% of its awards in the
@@ -234,12 +251,91 @@ export function structureFit(requiresConsortium?: boolean, consortiumOk?: boolea
 export function sectorFit(
   mix: Record<string, number> | null | undefined,
   founderSector?: string,
-): number {
-  if (!mix || !founderSector) return 0.5;
-  const total = Object.values(mix).reduce((a, b) => a + b, 0);
-  if (total <= 0) return 0.5;
-  const share = (mix[founderSector] ?? 0) / total;
+): number | null {
+  if (!hasSectorHistory(mix) || !founderSector) return null;
+  const total = Object.values(mix!).reduce((a, b) => a + b, 0);
+  const share = (mix![founderSector] ?? 0) / total;
   return Math.min(1, share / SECTOR_FULL_MATCH_SHARE);
+}
+
+/**
+ * The score for an instrument whose sector history we do not hold — solved over
+ * the candidates it is competing with, not stated as a constant.
+ *
+ * ── The defect this exists to prevent, and it was live ────────────────────
+ * This function's job used to be done by `return 0.5` inside `sectorFit`, under
+ * a docstring that called 0.5 "neutral". The intent was right and the number was
+ * not, and the difference between them is the whole finding of WS-BB.
+ *
+ * This repo has ONE convention for a gap in its own data, restated in four
+ * docstrings: a gap is never read as evidence against the fund. `awardScorer`
+ * returns 1 for a fund with no award median, `regionScorer` returns 1 for a leaf
+ * with no recorded footprint, `gateFitScorer` returns 1 for a leaf whose rules
+ * cannot be decided, `objectiveScorer` returns 1 for a leaf with no registered
+ * objective. All four are MULTIPLIERS, so 1 is the identity of the operation and
+ * "neutral" is exact — the term drops out and the rest of the score decides.
+ *
+ * Sector fit is the one term that is ADDED:
+ *
+ *     fit = wTheme * theme + (1 - wTheme) * sectorFit(mix, founderSector)
+ *
+ * and addition has no constant identity. For an added term the neutral value is
+ * whatever the population it competes against scores, and that is an empirical
+ * quantity, not a choice. Measured over the live corpus (802 publishable leaves
+ * x 11 founder sectors, `scripts/probe_missing_data_neutral.ts`):
+ *
+ *     mean   0.256      median 0.084      p75 0.400
+ *     share of real (leaf, founder) pairs scoring above 0.5:  20.7%
+ *
+ * So `0.5` did not withhold judgement. It placed every fund we know nothing
+ * about at the 79th percentile of the funds we know something about, on the one
+ * component built entirely from award history — a promotion, granted for the
+ * absence of the evidence the component exists to read.
+ *
+ * ── Why this is not a Spanish problem, and why it looked like one ─────────
+ * 94 publishable leaves carry no sector history and all 94 are the sole leaf of
+ * their regime, 88 of them Spanish BDNS convocatorias. That is why the effect
+ * surfaced as "a third of a Spanish founder's five rows are funds that can never
+ * be the answer" (WS-AW). It is not a fact about Spain or about standalone
+ * leaves: two thirds of standalone leaves carry full award history, are scored
+ * on it, and ARE answers. It is a fact about a register that publishes calls
+ * before they have paid anybody, and the next one lands the same way.
+ *
+ * ── Why the answer key cannot see any of this ─────────────────────────────
+ * The recall set is built from awards that were made, so a zero-award leaf can
+ * never be an answer under any ranker — the cross-tabulation is exact, 0 of 88
+ * against 297 of 714 (`scripts/probe_standalone_pool.ts`). EXACT@5 can neither
+ * reward promoting these rows nor punish it. `scripts/measure_evidence_reach.ts`
+ * is the instrument that can.
+ *
+ * ── The property, and what a future change must preserve ──────────────────
+ * A stand-in for data we do not hold must not move the row's rank against the
+ * candidates it competes with. For a multiplicative term that is the constant 1.
+ * For an added term it is the MEAN of the candidates whose data we do hold, and
+ * a constant cannot satisfy it, because the population moves with the corpus.
+ * `lib/intelligence/sectorNeutral.test.ts` states it as a property and
+ * `scripts/check_missing_data_neutral.ts` fails the build if the live corpus
+ * drifts away from it.
+ *
+ * When no candidate has a mix the value is arbitrary: every candidate receives
+ * it, so the term is constant and cannot reorder anything. FALLBACK_UNKNOWN is
+ * what it is only so the number is stable across runs.
+ */
+export const FALLBACK_UNKNOWN = 0.5;
+
+export function sectorFitScorer<T extends { sectorMix?: Record<string, number> | null }>(
+  candidates: readonly T[],
+  founderSector?: string,
+): (i: T | null | undefined) => number {
+  const known: number[] = [];
+  for (const c of candidates) {
+    const s = sectorFit(c.sectorMix, founderSector);
+    if (s !== null) known.push(s);
+  }
+  const neutral = known.length
+    ? known.reduce((a, b) => a + b, 0) / known.length
+    : FALLBACK_UNKNOWN;
+  return (i) => (i ? sectorFit(i.sectorMix, founderSector) : null) ?? neutral;
 }
 
 /** REACHES THE MEMO POOL ONLY, via `scoreFit`. No other caller in the tree --
@@ -286,7 +382,12 @@ export function scoreFit(input: FitInput): FitScore {
     // score for every archetype — identical numbers for a fintech, a govtech
     // and a consumer app — and outranked the founder's own national schemes.
     theme: input.theme ?? UNMATCHED_THEME,
-    sector: sectorFit(inst.sectorMix, input.founderSector),
+    // Same treatment as `theme` directly above, for the same reason and after
+    // the same measurement: an absent record must not inherit a score higher
+    // than a real but weak one. `sectorFit` returns null when it cannot tell,
+    // so this is the ONE place the pool's neutral is applied.
+    sector: sectorFit(inst.sectorMix, input.founderSector)
+      ?? input.sectorNeutral ?? FALLBACK_UNKNOWN,
     proximity: country === "" ? EU_WIDE_PROXIMITY
       : country === "EU" ? EU_WIDE_PROXIMITY
       : input.founderCountries?.has(country) ? HOME_COUNTRY_BONUS

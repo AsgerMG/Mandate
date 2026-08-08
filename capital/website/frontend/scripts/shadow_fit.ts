@@ -30,7 +30,7 @@ async function main() {
   const { ARCHETYPES } = await import("../lib/intelligence/__archetypes");
   const S = await import("../lib/intelligence/shortlist");
   const { assessAll } = await import("../lib/intelligence/verdict");
-  const { scoreFit, rankByFit } = await import("../lib/intelligence/fit");
+  const { scoreFit, rankByFit, sectorFitScorer } = await import("../lib/intelligence/fit");
   const { themeRelevance } = await import("../lib/intelligence/relevance");
   const { ExclusionLog } = await import("../lib/intelligence/exclusions");
   const { instById, CAPITAL_SOUGHT_TO_DB } = S;
@@ -84,10 +84,13 @@ async function main() {
     const capitalWanted = new Set(capitalSought.flatMap((c) => CAPITAL_SOUGHT_TO_DB[c] ?? []));
     const iso = new Set(founderCountries.map((c) => toIso2(c).toUpperCase()).filter(Boolean));
     const maxComparable = 0; // no peer evidence on the deterministic path
+    // Solved over the pool being scored, never a constant -- see sectorFitScorer.
+    const sectorNeutralFor = sectorFitScorer(all, a.sector);
     const scored = all.map((inst) => scoreFit({
       instrument: inst,
       assessment: assessments.get(inst.id),
       theme: theme.get(inst.id),
+      sectorNeutral: sectorNeutralFor(null),
       ticketBand: "b500k_2m5",
       capitalWanted,
       comparableCount: 0,

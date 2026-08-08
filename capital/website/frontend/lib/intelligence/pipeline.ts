@@ -8,7 +8,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
-import { scoreFit } from "./fit";
+import { scoreFit, sectorFitScorer } from "./fit";
 import { instrumentLink } from "./instrumentLink";
 import { assessAll } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
@@ -852,6 +852,13 @@ async function synthesize(
       .map((c) => toIso2(c).toUpperCase()).filter(Boolean));
   const maxComparable = Math.max(0, ...comparableCounts.values());
   const fitById = new Map<string, ReturnType<typeof scoreFit>>();
+  // What sector fit is worth for a fund whose funding history we do not hold,
+  // solved over THIS pool. A constant here would score a blank record above four
+  // fifths of the funds we do hold history for -- see `sectorFitScorer`.
+  const sectorNeutralFor = sectorFitScorer(
+    instrumentTable.map((r) => (r.instrumentId ? instById().get(r.instrumentId) : undefined))
+      .filter((i): i is NonNullable<typeof i> => Boolean(i)),
+    req.eligibility?.sector);
   for (const row of instrumentTable) {
     const inst = row.instrumentId ? instById().get(row.instrumentId) : undefined;
     if (!inst) continue;
@@ -859,6 +866,7 @@ async function synthesize(
       instrument: inst,
       assessment: assessments.get(inst.id),
       theme: semanticScores.get(inst.id),
+      sectorNeutral: sectorNeutralFor(null),
       ticketBand: req.eligibility?.ticketBand,
       capitalWanted,
       comparableCount: comparableCounts.get(inst.id) ?? 0,

@@ -155,7 +155,7 @@ async function main() {
   // it is which KINDS of fact separate a regime and which do not.
   const groups: [string, Record<string, Scorer>][] = [
     ["the founder's SECTOR against the fund's recipients", {
-      "today: clipped sectorFit": (i, c) => sectorFit(i.sectorMix, c.sector),
+      "today: clipped sectorFit": (i, c) => sectorFit(i.sectorMix, c.sector) ?? -1,
       "P(fund|sector)  raw count": (i, c) => count(i, c.sector),
       "P(sector|fund)  unclipped share": (i, c) => share(i, c.sector),
       "share x log1p(count)": (i, c) => sectorWeight(i, c.sector) ?? -1,
@@ -225,7 +225,7 @@ async function main() {
     return t > 0 ? (mix[c.sector] ?? 0) / t : 0;
   };
   const chosen: Record<string, Scorer> = {
-    "today: clipped sectorFit": (i, c) => sectorFit(i.sectorMix, c.sector),
+    "today: clipped sectorFit": (i, c) => sectorFit(i.sectorMix, c.sector) ?? -1,
     "share x log1p(count)": (i, c) => sectorWeight(i, c.sector) ?? -1,
     "...LEAVE-ONE-OUT": (i, c) =>
       looShare(i, c) * Math.log1p(Math.max(0, count(i, c.sector) - (i.id === c.want.id ? 1 : 0))),

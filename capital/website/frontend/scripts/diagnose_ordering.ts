@@ -20,7 +20,7 @@ import { computeVerdict } from "../lib/intelligence/pipeline";
 import {
   THEME_DOMINANT_WEIGHT, awardScorer, objectiveScorer, peerPrior,
 } from "../lib/intelligence/shortlist";
-import { sectorFit } from "../lib/intelligence/fit";
+import { sectorFitScorer } from "../lib/intelligence/fit";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
 import { loadRecallSet } from "./recallSet";
 import type { DbInstrument } from "../lib/intelligence/corpus";
@@ -109,6 +109,9 @@ async function main() {
     const rel = await semanticFundMatch(description ?? "");
     const pool = order.map((id) => byId.get(id)).filter((i): i is DbInstrument => Boolean(i));
     const awd = awardScorer(pool, "b500k_2m5");
+    // Built over the pool, exactly as the row sort builds it, so this
+    // diagnostic shows the score the ranker used and not a second one.
+    const sec_ = sectorFitScorer(pool, t.sector ?? "other");
     const obj = objectiveScorer(pool.map((i) => i.id),
       ["industrial_research", "experimental_development"]);
     const peerRank = new Map(
@@ -123,7 +126,7 @@ async function main() {
       const inst = byId.get(id);
       if (!inst) return undefined;
       const theme = rel.get(id) ?? 0;
-      const sec = sectorFit(inst.sectorMix, t.sector ?? "other");
+      const sec = sec_(inst);
       return {
         id, rank, channel: inst.sourceFamilyBucket ?? "?",
         parent: inst.parentId ?? id,

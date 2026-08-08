@@ -27,7 +27,7 @@ import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
 import { accessMode, passesCapitalPreference } from "./accessMode";
-import { sectorFit } from "./fit";
+import { sectorFit, sectorFitScorer } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 import { resolveNameCollisions } from "./nameCollision";
 
@@ -1372,8 +1372,14 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
   // reordering them cannot change how many rows the channel gets. That is also
   // exactly where the exact-scheme question lives: which of these 50 siblings.
   const objectiveFor = objectiveScorer(candidates.map((i) => i.id), useOfFunds);
+  // Sector share, with the score for a fund we hold no history about SOLVED
+  // over these candidates rather than stated as a constant. See
+  // `sectorFitScorer`: the constant it replaces read 0.5, which is the 79th
+  // percentile of the funds we DO hold history for, so a blank record was worth
+  // more than four fifths of the evidence.
+  const sectorFor = sectorFitScorer(candidates, founderSector);
   const score = (i: DbInstrument) =>
-    (THEME_WEIGHT * rel(i) + (1 - THEME_WEIGHT) * sectorFit(i.sectorMix, founderSector))
+    (THEME_WEIGHT * rel(i) + (1 - THEME_WEIGHT) * sectorFor(i))
     * objectiveFor(i.id);
 
   const sorted = [...candidates].sort((a, b) => {
@@ -2066,10 +2072,18 @@ export function materialiseInstrumentTable(
   // records why it must not be. A reader who checked the top comment and
   // stopped would conclude the prior was live. That is the whole cost of a
   // comment that lies: it is what stops the next person looking.
+  //
+  // ONE scorer for the whole table, built over the rows this founder is
+  // actually being shown, and shared by `baseRelevance` and `rowRelevance`
+  // below. Two builders would be two populations and therefore two different
+  // neutrals for the same fund inside one request.
+  const sectorFor = sectorFitScorer(
+    selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
+    founderSector);
   const baseRelevance = (id: string) => {
     const inst = instById().get(id);
     const theme = rel.get(id) ?? 0;
-    return wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
+    return wTheme * theme + (1 - wTheme) * sectorFor(inst);
   };
   // Re-rank SIBLINGS on registered purpose, award scale and delivery region.
   //
@@ -2161,7 +2175,7 @@ export function materialiseInstrumentTable(
   const rowRelevance = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
     const theme = r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
-    const fit = wTheme * theme + (1 - wTheme) * sectorFit(inst?.sectorMix, founderSector);
+    const fit = wTheme * theme + (1 - wTheme) * sectorFor(inst);
     const ticket = inst ? ticketFit(inst) : 1;
     // The channel prior is deliberately NOT applied here yet. Measured, at
     // three weightings, on the recall set:
