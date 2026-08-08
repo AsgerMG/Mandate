@@ -288,6 +288,33 @@ export function regionScorer(
   // a fact about the CORPUS, not a defect in this function: the way to make
   // region matter more is for more leaves to carry a resolvable notified
   // scheme, which is collection work, not ranking work.
+  //
+  // MEASURED A SECOND TIME, INDEPENDENTLY, AND IT LOST AGAIN — workstreams G
+  // and J, commit ce56b654, which is in this history and shipped nothing.
+  // Different harness, different set, same direction:
+  //
+  //     region unanswered (scorer inert)   EXACT@5 36%   REGIME@5 89%
+  //     grouped by schemeCode (ships)      EXACT@5 34%   REGIME@5 89%
+  //     grouped by parent_id (widened)     EXACT@5 35%   REGIME@5 89%
+  //
+  //   holdout n=200, __recallSetComposed, REGION=any.
+  //
+  // Widening recovers ONE of the two points that answering region costs, and
+  // answering region still loses to not answering it.
+  //
+  // Then the width question asked directly, off the corpus, with no ranker in
+  // the loop. ONE COMMAND, and run it before proposing this a fourth time:
+  //
+  //     WIDTH=regime npx tsx scripts/measure_region_routing.ts
+  //
+  //     group width        n     region @1   popularity @1
+  //     name, 6+ members  139       24.5%        12.9%
+  //     regime, 6+        626       13.7%        13.7%
+  //
+  // At regime width region does not beat POPULARITY AT ALL. The 44-66% @1 this
+  // signal is justified on is a property of the 7.4-member same-name group and
+  // does not survive being carried to the 76-member regime. That is why all
+  // three widenings lost, and it is a fact about the GROUP, not about region.
   const byScheme = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
     const code = (l.schemeCode ?? "").trim();
