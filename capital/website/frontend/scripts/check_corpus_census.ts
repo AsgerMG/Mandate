@@ -35,6 +35,29 @@
 //              nothing redeploys it when main changes. On 2026-08-07 the fix
 //              for a failing ETL step sat on main while Railway ran the image
 //              that contained the bug.
+//   DIVERGED   a DERIVED store holds something the corpus of record does not.
+//              Being behind is ordinary; being AHEAD means a store holds the
+//              only copy of something, and the next sync in either direction
+//              destroys it. See below and website/build/lib/corpus_stores.py.
+//   SCHEMA     a store has migrations pending, or has ids recorded with no file
+//              behind them (somebody ran ALTER by hand), or two stores disagree
+//              about which migrations they have.
+//
+// ── Why DIVERGED is in THIS file and not a new one ─────────────────────────
+// The corpus was found split across two SQLite stores that had drifted in
+// OPPOSITE directions — the volume 1,451 events ahead, the laptop 764
+// instruments and 2,350 gates ahead — with no owner and nothing comparing
+// them. That is the same problem this file already solves one level up
+// (committed artifacts vs the ETL's corpus), and the census is already the
+// channel: it records what a corpus contains and now also WHICH STORE it was
+// read from. A second mechanism beside it would be a second thing to keep in
+// sync, which is the defect this repo keeps paying for.
+//
+// The comparison is DIRECTIONAL and per table family, not an equality over a
+// total. Equality is wrong (the record legitimately runs ahead of every derived
+// store between a Sunday cron and the next pull) and a total is wrong (the two
+// families drift oppositely, so their errors cancel and the aggregate looks
+// calm while both halves are wrong).
 //
 // ── It no longer needs credentials ─────────────────────────────────────────
 // This check only ever needed the database to READ the census. So the census
@@ -130,6 +153,42 @@ function intervalDaysOf(cron: string): number | null {
   return null;
 }
 
+interface CensusRow {
+  id: number;
+  taken_at: Date;
+  produced_by: string;
+  code_fingerprint: string;
+  kpis: Record<string, number> | null;
+  instruments: Record<string, number> | null;
+  coverage: { instruments: number; complete: number } | null;
+  gate: { ok: boolean | null; failures: string[]; notes: string[] } | null;
+  run_outcome: string;
+  errors: string[];
+  store: string;
+  schema_state: { applied: string[]; pending: string[]; unknown: string[] } | null;
+}
+
+interface StoreMap {
+  ofRecord: string;
+  stores: Record<string, string>;
+  families: Record<string, string[]>;
+  familyMeasures: Record<string, string[]>;
+}
+
+/** The ownership map, read from the ONE definition rather than restated here.
+ *  Same pattern as fingerprintOfCheckout() below and for the same reason: a
+ *  second copy of "which store is authoritative" is a second thing that can be
+ *  wrong, in the guard that exists to catch exactly that. */
+function storeMap(): StoreMap | null {
+  try {
+    return JSON.parse(execFileSync("python3",
+      ["../../website/build/lib/corpus_stores.py"],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }));
+  } catch {
+    return null;
+  }
+}
+
 /** snake_case → camelCase. The site's JSON and the ETL's SQL name the same
  *  figures in two conventions; deriving the mapping means a KPI added to
  *  compute_kpis is compared automatically, where a hand-written table of pairs
@@ -215,6 +274,7 @@ async function main() {
   const client = new Client({ connectionString: url, connectionTimeoutMillis: 10_000 });
   await client.connect();
   let rows: CensusRow[];
+  let pgInstruments = 0, pgGates = 0;
   try {
     const exists = (await client.query(
       "SELECT to_regclass('public.corpus_census') IS NOT NULL AS ok")).rows[0].ok;
@@ -227,8 +287,15 @@ async function main() {
     }
     rows = (await client.query(
       `SELECT id, taken_at, produced_by, code_fingerprint, kpis, instruments,
-              coverage, gate, run_outcome, errors
-         FROM corpus_census ORDER BY taken_at DESC LIMIT 12`)).rows;
+              coverage, gate, run_outcome, errors,
+              COALESCE(store, 'unknown') AS store, schema_state
+         FROM corpus_census ORDER BY taken_at DESC LIMIT 40`)).rows;
+    // Postgres is a store too, and it is the one the product actually reads.
+    // It needs no census row: it is right here, so it is asked directly.
+    pgInstruments = Number((await client.query(
+      "SELECT COUNT(*) n FROM funding_instruments")).rows[0].n);
+    pgGates = Number((await client.query(
+      "SELECT COUNT(*) n FROM eligibility_gates")).rows[0].n);
   } finally {
     await client.end();
   }
@@ -247,9 +314,38 @@ async function judge(rows: CensusRow[]) {
     process.exit(1);
   }
 
-  const latest = rows[0];
-  const ageDays = (Date.now() - latest.taken_at.getTime()) / 86_400_000;
   const problems: string[] = [];
+  const map = storeMap();
+  if (!map) {
+    problems.push(
+      `the store ownership map could not be read (website/build/lib/corpus_stores.py).\n` +
+      `      Without it there is no definition of which store is authoritative, so\n` +
+      `      every comparison below is between two stores of equal standing — which\n` +
+      `      is the state this check exists to end.`);
+  }
+  const ofRecord = map?.ofRecord ?? "railway-volume";
+
+  // The newest census PER STORE. Everything below asks a question about a
+  // specific store, and `rows[0]` answers none of them: on 2026-08-07 the
+  // newest census was a laptop probe taken an hour after the pipeline's, so a
+  // check reading rows[0] compared the website against the wrong corpus and
+  // reported that all was well.
+  const newestByStore = new Map<string, CensusRow>();
+  for (const r of rows) if (!newestByStore.has(r.store)) newestByStore.set(r.store, r);
+
+  const record = newestByStore.get(ofRecord);
+  if (!record) {
+    problems.push(
+      `no census has EVER been taken against the corpus of record (${ofRecord}).\n` +
+      `      Stores seen: ${[...newestByStore.keys()].join(", ") || "none"}.\n` +
+      `      Every figure below therefore describes a derived copy. The weekly run\n` +
+      `      records one: ETL/events/extract/railway_cron.py.`);
+  }
+
+  // `latest` means the newest census OF THE STORE OF RECORD, falling back to the
+  // newest of anything only so the remaining checks can still say something.
+  const latest = record ?? rows[0];
+  const ageDays = (Date.now() - latest.taken_at.getTime()) / 86_400_000;
 
   // ── SILENT: has the refresh stopped? ─────────────────────────────────────
   // The question is whether the CRON is still running, so both halves of the
@@ -343,7 +439,8 @@ async function judge(rows: CensusRow[]) {
 
   // ── DRIFTED: is the container running the committed code? ───────────────
   const mine = fingerprintOfCheckout();
-  if (mine && isScheduledProducer(latest.produced_by) && mine !== latest.code_fingerprint) {
+  if (mine && isScheduledProducer(latest.produced_by) && latest.store === ofRecord
+      && mine !== latest.code_fingerprint) {
     problems.push(
       `DRIFTED — census #${latest.id} was produced by code fingerprinted ` +
       `${latest.code_fingerprint}, this checkout is ${mine}.\n` +
@@ -352,7 +449,100 @@ async function judge(rows: CensusRow[]) {
       `        python3 ETL/lib/verify_cron.py --deploy`);
   }
 
+  // ── DIVERGED: does a derived store hold what the record does not? ────────
+  //
+  // The tolerance is stated and it is ZERO, in one direction only. A derived
+  // store BEHIND the record is stale — ordinary, expected between a Sunday cron
+  // and the next pull, and fixed by syncing. A derived store AHEAD of the record
+  // holds the only copy of something: real awards, or an evening of gate
+  // encoding. There is no volume of that which is acceptable, because the next
+  // sync in either direction is a whole-file overwrite and it is destroyed.
+  //
+  // Per family, never in aggregate: on 2026-08-07 the volume was 1,451 events
+  // ahead and the laptop 764 instruments ahead, so any total would have shown
+  // two stores comfortably close together and both halves wrong.
+  if (record) {
+    const measured: Array<[string, string, number, number]> = [];  // family, measure, derived, record
+    for (const [store, row] of newestByStore) {
+      if (store === ofRecord) continue;
+      for (const [family, measures] of Object.entries(map?.familyMeasures ?? {})) {
+        const src = family === "instruments" ? row.instruments : row.kpis;
+        const rec = family === "instruments" ? record.instruments : record.kpis;
+        for (const m of measures) {
+          const a = src?.[m], b = rec?.[m];
+          if (typeof a !== "number" || typeof b !== "number") continue;
+          if (a > b) measured.push([`${store}/${family}`, m, a, b]);
+        }
+      }
+    }
+    // Postgres, asked directly rather than from a census row.
+    if (record.instruments) {
+      if (pgInstruments > (record.instruments.total ?? 0)) {
+        measured.push(["postgres/instruments", "total", pgInstruments,
+                       record.instruments.total ?? 0]);
+      }
+      if (pgGates > (record.instruments.gates ?? 0)) {
+        measured.push(["postgres/instruments", "gates", pgGates,
+                       record.instruments.gates ?? 0]);
+      }
+    }
+    if (measured.length) {
+      problems.push(
+        `DIVERGED — ${measured.length} measure(s) where a DERIVED store is AHEAD of the\n` +
+        `      corpus of record (${ofRecord}). Each is a row that exists in exactly one\n` +
+        `      place, and both sync paths (pull_db.py, push_local.py) move the whole\n` +
+        `      file with --overwrite, so the next sync in either direction destroys it.\n` +
+        measured.map(([where, m, a, b]) =>
+          `        ${where}.${m}: derived ${a.toLocaleString()}, record ${b.toLocaleString()} ` +
+          `(+${(a - b).toLocaleString()} held only by the derived store)`).join("\n") +
+        `\n      Reconcile by union, never by overwrite:\n` +
+        `        python3 ETL/events/load/reconcile_stores.py --help`);
+    }
+  }
+
+  // ── SCHEMA: can every store reach the schema this checkout expects? ──────
+  // Migrations used to reach whichever store a human was pointed at. That was
+  // the laptop every time, and the volume — the corpus of record — was three
+  // weeks behind, which surfaced as `no such column: tier` inside an unrelated
+  // block of the census rather than as a schema problem.
+  const schemaProblems: string[] = [];
+  const seenSets = new Map<string, string>();
+  for (const [store, row] of newestByStore) {
+    const s = row.schema_state;
+    if (!s) {
+      schemaProblems.push(`${store}: census #${row.id} records no schema state ` +
+        `(taken before the census carried one, or the block failed)`);
+      continue;
+    }
+    if (s.pending?.length) {
+      schemaProblems.push(`${store}: ${s.pending.length} migration(s) PENDING — ` +
+        `${s.pending.join(", ")}`);
+    }
+    if (s.unknown?.length) {
+      schemaProblems.push(`${store}: ${s.unknown.length} id(s) recorded with no file ` +
+        `behind them — ${s.unknown.join(", ")}. Applied by hand; no other store ` +
+        `can reproduce it.`);
+    }
+    seenSets.set(store, (s.applied ?? []).join(","));
+  }
+  if (new Set(seenSets.values()).size > 1) {
+    schemaProblems.push(`the stores do not have the same migrations:\n` +
+      [...seenSets].map(([s, ids]) =>
+        `          ${s}: ${ids.split(",").length} applied`).join("\n"));
+  }
+  if (schemaProblems.length) {
+    problems.push(
+      `SCHEMA — a store cannot reach the schema this checkout expects:\n` +
+      schemaProblems.map((p) => `        ${p}`).join("\n") +
+      `\n      Migrations are a pipeline step, not a thing to remember:\n` +
+      `        python3 ETL/events/load/migrations/apply.py all`);
+  }
+
   // ── STALE: do the numbers we serve match the corpus that exists? ─────────
+  // Compared against the census OF THE STORE OF RECORD. Comparing against the
+  // newest census of anything is how the site could be declared current against
+  // a laptop probe while the corpus it is supposed to serve held 1,451 more
+  // events and €55.6B more capital.
   const file = path.join(process.cwd(), "public", "data", "synthesis.json");
   const served = JSON.parse(readFileSync(file, "utf8")) as Record<string, unknown>;
 
@@ -449,13 +639,21 @@ async function judge(rows: CensusRow[]) {
       `      pipeline run and record its own census.`);
   }
 
-  console.log(`  newest census #${latest.id} — ${latest.taken_at.toISOString().slice(0, 16)}Z ` +
-              `by ${latest.produced_by}, ${ageDays.toFixed(1)}d old, code ${latest.code_fingerprint}, ` +
-              `run ${latest.run_outcome}`);
-  if (latest.kpis) {
-    console.log(`  ETL corpus  ${latest.kpis.companies?.toLocaleString()} companies · ` +
-                `${latest.kpis.events?.toLocaleString()} events · ${latest.kpis.countries} countries`);
+  // Every store, side by side, whether or not anything failed. The divergence
+  // was invisible for as long as it was because no output ever put the stores
+  // on the same page.
+  console.log(`  corpus of record: ${ofRecord}`);
+  for (const [store, r] of newestByStore) {
+    const age = ((Date.now() - r.taken_at.getTime()) / 86_400_000).toFixed(1);
+    console.log(
+      `  ${store === ofRecord ? "*" : " "} ${store.padEnd(15)} #${String(r.id).padStart(3)} ` +
+      `${age.padStart(5)}d  ${(r.kpis?.companies ?? 0).toLocaleString()} companies · ` +
+      `${(r.kpis?.events ?? 0).toLocaleString()} events · ` +
+      `${(r.instruments?.total ?? 0).toLocaleString()} instruments · ` +
+      `${(r.instruments?.gates ?? 0).toLocaleString()} gates`);
   }
+  console.log(`    postgres        live       — · — · ${pgInstruments.toLocaleString()} ` +
+              `instruments · ${pgGates.toLocaleString()} gates`);
   console.log(`  site serves ${(served.companies as number)?.toLocaleString()} companies · ` +
               `${(served.events as number)?.toLocaleString()} events · ${served.countries} countries`);
 
@@ -471,8 +669,9 @@ async function judge(rows: CensusRow[]) {
     }
     process.exit(1);
   }
-  console.log("check_corpus_census: ok — the site serves the corpus the ETL produced, " +
-              "the refresh is running, and it is running this code.");
+  console.log("check_corpus_census: ok — the site serves the corpus of record, the " +
+              "refresh is running, it is running this code, every store has the same " +
+              "schema, and no derived store holds a row the record lacks.");
 }
 
 main().catch((err) => {
