@@ -378,6 +378,25 @@ OVERRIDE_NAMES = {
     "eit_manufacturing": "EIT Manufacturing",
     "eit_rawmaterials": "EIT RawMaterials",
     "eit_urban_mobility": "EIT Urban Mobility",
+    # ── Rows that became offerable when their capital type was recorded ─────
+    # These four were unreachable by every founder, so nobody ever read their
+    # names and the deterministic prettifier's output went unexamined: it was
+    # producing "EIT Climate KIC Asa", "EIT Climate KIC Cdr" and "Fr Relance
+    # Industrie" from the source slug. Fixing what a fund IS put those strings
+    # in front of founders for the first time, which makes them this
+    # workstream's problem and not a pre-existing one.
+    #
+    # Named from the programme's own page, same standard as
+    # data/reference/programme_names.json: the name a founder would recognise
+    # and could search for, not an expansion invented here.
+    "eit_climate_kic_asa": "EIT Climate-KIC Amazon Sustainability Accelerator",
+    "eit_climate_kic_cdr": "EIT Climate-KIC Carbon Removal ClimAccelerator",
+    "eit_rawmaterials_portfolio": "EIT RawMaterials equity portfolio",
+    # data.economie.gouv.fr/explore/dataset/plan-de-relance -- "Plan de relance
+    # - Projets industriels". The measures behind these 2,835 awards are the
+    # industrial volet: soutien a l'investissement industriel dans les
+    # territoires, (re)localisation, modernisation des filieres.
+    "fr_relance_industrie": "France Relance — soutien à l'investissement industriel",
 }
 
 # ── Tier 0.5: heuristic gate seeding ────────────────────────────────────────
