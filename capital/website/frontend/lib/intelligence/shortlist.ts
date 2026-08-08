@@ -641,9 +641,56 @@ export const CAPITAL_SOUGHT_TO_DB: Record<string, string[]> = {
   // instrument carried meant the option matched zero funds and the graded
   // fallback then relaxed capital type entirely, discarding the answer.
   recoverable_advance: ["loan"],
-  equity: ["equity", "blended"],
+  // `blended` used to sit here, and it is the reason a founder asking for
+  // "Loans & guarantees" could not be shown a fund that pays nothing else.
+  // See INDEFINITE_CAPITAL below: in this corpus `blended` is not a kind of
+  // capital, it is the record of a vote that did not reach its threshold.
+  equity: ["equity"],
   tax_credit: ["tax_credit"],
 };
+
+/**
+ * Capital-type values that name no kind of capital.
+ *
+ * ── The property ──────────────────────────────────────────────────────────
+ * A stated capital preference may remove a fund only on EVIDENCE THAT THE FUND
+ * DOES NOT PROVIDE WHAT WAS ASKED FOR. `capital_type` is one label chosen by a
+ * majority vote over an instrument's own awards (`family_capital_type`,
+ * ETL/events/load/populate_funding_instruments.py), and three of its values are
+ * not the outcome of that vote but a statement that it produced no answer:
+ *
+ *   blended   no kind reached the 60% threshold. Emitted for ANY unresolved
+ *             mixture, whatever the kinds involved.
+ *   unknown   no award carried a determinable kind, or the row is a synthetic
+ *             rollup with no direct events.
+ *   framework   an EU-law record, not a funding product at all.
+ *
+ * None of them says what the fund pays, so none of them can support removing
+ * it. A filter that reads them as a kind is not being strict, it is treating
+ * its own missing data as a fact about the founder's options.
+ *
+ * ── What this cost, measured ──────────────────────────────────────────────
+ * `blended` was mapped to the EQUITY option and was in `accessMode.DILUTIVE`,
+ * so it took an explicit request for equity to see one at all. All nine
+ * `blended` instruments in the corpus are vote splits with no equity in them;
+ * the largest, at 2,977 awards, split 1,451 loan against 1,526 guarantee — a
+ * country's biggest debt route, offered only to founders who asked for equity
+ * and hidden from every founder who asked for debt. The rest split grant
+ * against loan, or grant against tax credit.
+ *
+ * `unknown` and `framework` (39 instruments) answered to no option at all, so
+ * stating ANY preference removed them for everyone.
+ *
+ * ── Why a set of values and not a list of instruments ─────────────────────
+ * The test is on what the LABEL asserts, so a capital type this file has never
+ * seen behaves correctly without being named: `instrumentServesCapital` cuts
+ * only on a label that names a kind the founder did not ask for, which means a
+ * new enum value nobody has mapped is neutral rather than universally
+ * excluded. That is the failure `unknown` and `framework` were already having.
+ * `check_capital_reach.ts` fails the build if any value in the live corpus
+ * becomes unreachable by every intake option.
+ */
+export const INDEFINITE_CAPITAL = new Set(["blended", "unknown", "framework"]);
 
 // Representative euro value per ticket band, for ranking real DB leaf
 // instruments by proximity to the founder's stated ask, against each
@@ -670,9 +717,22 @@ export function instrumentServesCountry(instrumentCountry: string, founderCountr
 
 export function instrumentServesCapital(instrumentCapitalType: string, capitalSought: string[]): boolean {
   if (!capitalSought.length) return true;
+  // A label that names no kind cannot contradict what the founder asked for.
+  // See INDEFINITE_CAPITAL: this is the difference between "this fund does not
+  // pay grants" and "we did not resolve what this fund pays", which the old
+  // `allowed.has(...)` test collapsed into the same answer.
+  if (INDEFINITE_CAPITAL.has(instrumentCapitalType)) return true;
   const allowed = new Set(capitalSought.flatMap((c) => CAPITAL_SOUGHT_TO_DB[c] ?? []));
+  // An unmapped value is also silence, for the same reason and by the same
+  // rule: it is a kind this file has not learned to place, not a kind the
+  // founder rejected.
+  if (!KNOWN_CAPITAL_TYPES.has(instrumentCapitalType)) return true;
   return allowed.size === 0 || allowed.has(instrumentCapitalType);
 }
+
+/** Every capital type some intake option admits. Derived from the option map
+ *  rather than restated, so the two cannot drift. */
+export const KNOWN_CAPITAL_TYPES = new Set(Object.values(CAPITAL_SOUGHT_TO_DB).flat());
 
 /**
  * What a company like this one would actually receive.
