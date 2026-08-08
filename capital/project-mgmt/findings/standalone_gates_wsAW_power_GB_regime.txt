@@ -1,0 +1,21 @@
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T17:29:47.002Z
+set=__recallSetComposed.json split=holdout country=GB seed=20260806 answers=real  replayed 123
+  founder-specific answers supplied: ticketBand 2/123 (2%)  capital 0/123 (0%)  region 0/123 (0%)
+  in pool                  123/123 (100% +/-0.0)
+  EXACT scheme in top 5    36/123 (29% +/-8.0)
+  same REGIME in top 5     36/123 (29% +/-8.0)   <- the operational number
+  same CHANNEL in top 5    36/123 (29% +/-8.0)
+    mode=profile               n=  37  pool 100%  exact5 49%  regime5 49%
+    mode=project               n=  86  pool 100%  exact5 21%  regime5 21%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n= 123  pool 100%  exact5 29%  regime5 29%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    GB                         n= 123  pool 100%  exact5 29%  regime5 29%

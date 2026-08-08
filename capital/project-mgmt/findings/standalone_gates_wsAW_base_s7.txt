@@ -1,0 +1,35 @@
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T16:53:12.556Z
+set=__recallSetComposed.json split=holdout seed=7 answers=real  replayed 300
+  founder-specific answers supplied: ticketBand 172/300 (57%)  capital 0/300 (0%)  region 152/300 (51%)
+  in pool                  285/300 (95% +/-2.5)
+  EXACT scheme in top 5    90/300 (30% +/-5.2)
+  same REGIME in top 5     255/300 (85% +/-4.0)   <- the operational number
+  same CHANNEL in top 5    264/300 (88% +/-3.7)
+    mode=profile               n= 227  pool 98%  exact5 32%  regime5 91%
+    mode=project               n=  73  pool 85%  exact5 23%  regime5 67%
+    original join              n= 181  pool 92%  exact5 34%  regime5 81%
+    traced:exact_attribution   n= 119  pool 100%  exact5 24%  regime5 91%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  17  pool 100%  exact5 41%  regime5 41%
+    regime 2-5                 n=  11  pool 64%  exact5 27%  regime5 64%
+    regime 6-20                n=  46  pool 85%  exact5 35%  regime5 61%
+    regime 21-50               n=  84  pool 100%  exact5 26%  regime5 86%
+    regime 51+                 n= 142  pool 97%  exact5 30%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  91  pool 98%  exact5 15%  regime5 79%
+    DE                         n=  77  pool 94%  exact5 39%  regime5 94%
+    SE                         n=  46  pool 98%  exact5 26%  regime5 96%
+    IT                         n=  32  pool 94%  exact5 25%  regime5 91%
+    NL                         n=  21  pool 95%  exact5 52%  regime5 95%
+    GB                         n=  17  pool 100%  exact5 41%  regime5 41%
+    ES                         n=  12  pool 67%  exact5 42%  regime5 58%
+    DK                         n=   3  pool 100%  exact5 100%  regime5 100%
+    EE                         n=   1  pool 100%  exact5 0%  regime5 100%

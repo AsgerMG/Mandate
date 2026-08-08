@@ -360,7 +360,51 @@ const GATE_MATCH = 1.35;
  *  for a group whose leaves all fit identically — which is 68% of multi-leaf
  *  regimes, because their leaves inherit one rule set and are therefore
  *  genuinely indistinguishable this way. A signal that cannot separate its
- *  candidates must not reorder them. */
+ *  candidates must not reorder them.
+ *
+ *  ── THIS IS A TIE-BREAKER, NOT AN ELIGIBILITY TEST ────────────────────────
+ *  READ THIS BEFORE ENCODING GATES FOR A REGISTER OF STANDALONE CALLS.
+ *
+ *  A fund that is the sole leaf of its regime gets **no credit here for a
+ *  founder passing its rules and no penalty for failing them**, however many
+ *  rules it carries. That is not an oversight and it is not small: 292 of 807
+ *  publishable leaves (36%) stand alone, and 269 of those carry 940 decidable
+ *  filters this function never reads. It concentrates by market — ES 91%,
+ *  NO 99%, EE 88%, LV 84%, PL/DK/GB/HU 100%, against DE, IT, SE, AT and BE at
+ *  zero — so a corpus-wide average will never show it to you.
+ *
+ *  Making it an absolute test was BUILT AND MEASURED, twice, and both arms
+ *  are on the branch history (`scripts/measure_gate_standalone.ts`,
+ *  `project-mgmt/findings/standalone_gates_wsAW.md`). Holdout, ANSWERS=real,
+ *  three seeds, 900 replays each:
+ *
+ *      scope                      EXACT@5   REGIME@5   standalone stratum
+ *      regime (this)              277/900    760/900   16/47
+ *      the whole channel pool     271/900    758/900   15/47
+ *      regime x an absolute term  278/900    760/900   16/47
+ *
+ *  Pool scoring is worse, and worse ON THE VERY LEAVES IT WAS BUILT FOR. What
+ *  it actually does is visible directly: the standalone share of the five rows
+ *  a founder is shown goes 4.5% -> 8.1% corpus-wide and 32.7% -> 34.5% in
+ *  Spain. It PROMOTES the rows it scores, because across a channel "share of
+ *  rules cleared" is mostly a statement about how much has been encoded — the
+ *  size prior in a new costume, measured at 0.528 percentile for the pure
+ *  documentation-depth null against 0.577 for pass rate itself.
+ *
+ *  The two arms are one signal at two strengths, not two designs: within a
+ *  channel, min-max normalising a pass rate and raising GATE_MATCH to
+ *  (2*rate - 1) are both monotone in the same rate. Nothing at weak, harmful
+ *  at strong. On Spain's WHOLE graded holdout population — n=115, not the
+ *  n=12 a 300-row draw gives it — all three arms are bit-identical: pool 102,
+ *  EXACT@5 42, REGIME@5 86.
+ *
+ *  So: encoding rules for a parent-less fund buys ranking nothing, today, by
+ *  measurement rather than by omission. It still buys the eligibility SCREEN,
+ *  which reads gates per fund and is what a founder actually reads; and the
+ *  route that does move a standalone fund's rank is SELECTION, not this
+ *  function — 76% of a Spanish founder's candidate pool is standalone leaves,
+ *  and how many of them a channel may spend its slots on is decided in
+ *  `selectLeafInstruments`, not here. */
 export function gateFitScorer(
   leaves: DbInstrument[], answers?: EligibilityAnswers,
 ): (i: DbInstrument) => number {
@@ -373,6 +417,10 @@ export function gateFitScorer(
   }
   const score = new Map<string, number>();
   for (const group of byRegime.values()) {
+    // A LEAF WITH NO SIBLINGS SCORES 1, AND ITS OWN ENCODED RULES ARE NEVER
+    // READ BY THIS FUNCTION. That is deliberate and measured -- see the
+    // docstring's last section before encoding gates for a standalone
+    // register.
     if (group.length < 2) continue;
     const fit = new Map<string, number>();
     for (const l of group) {
