@@ -1387,6 +1387,10 @@ export async function computeVerdict(
     // case, not a penalty. When it IS answered it is the only thing that can
     // tell fourteen leaves of one notified regime apart. See regionScorer.
     founderRegion: (eligibility as { region?: string } | undefined)?.region,
+    // The whole answer set, for the within-regime gate check. Everything else
+    // above is one field; this is the only signal that needs all of them,
+    // because it evaluates each leaf's own encoded rules against the founder.
+    eligibility,
     log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is
@@ -1493,6 +1497,9 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     // of split that once had the two paths ranking on different signals
     // entirely.
     founderRegion: req.eligibility?.region,
+    // The memo ranks the same siblings the fast path does, so it must see the
+    // same discriminator -- the same argument the region field carries above.
+    eligibility: req.eligibility,
     log,
   });
   const instrumentTable = applyProfileSignal(
