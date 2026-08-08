@@ -355,9 +355,17 @@ async function main() {
           (bad.length > 10 ? `\n      … and ${bad.length - 10} more` : "") +
           `\n    Unlike a gate there is no inert role to move this to: the column ` +
           `IS the claim. Either the text is replaced with what the official ` +
-          `source says about who may apply, or it is retracted. Retracting ` +
-          `changes what eligibility_embeddings is built from, so re-embed and ` +
-          `re-measure recall rather than editing the column alone.`,
+          `source says about who may apply, or it is retracted — ` +
+          `python3 ETL/terms/retract_unpertinent_text.py --write, which derives ` +
+          `the set from these verdicts and archives what it clears.` +
+          `\n    Retracting changes what INSTRUMENT_PROFILES is built from — not ` +
+          `eligibility_embeddings, which reads gates and clauses only and never ` +
+          `touches this column. instrument_profiles is the primary ranking ` +
+          `signal (build_instrument_profiles.py puts this text in under "Who may ` +
+          `apply, from the scheme's own page"), so rebuild it and re-measure ` +
+          `recall rather than editing the column alone: ` +
+          `build_instrument_profiles.py run --rebuild, then re-cut the two ` +
+          `committed mirrors (emit_profile_leak_index.py, emit_semantic_cache.ts).`,
       });
     }
   }
