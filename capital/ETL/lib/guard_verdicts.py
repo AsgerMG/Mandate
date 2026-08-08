@@ -186,6 +186,15 @@ def run(guard_id: str, dry_run: bool = False) -> int:
     let a guard cancel the week's data; see the comment there.
     """
     g = guard(guard_id)
+    if "command" not in g:
+        # A guard with no `command` publishes its OWN verdict — that is what the
+        # absence of the key MEANS in the registry, not an omission. Driving it
+        # from here would be the second publisher the registry check forbids, so
+        # this refuses and points at the one command that does the right thing.
+        raise SystemExit(
+            f"{guard_id} is not driven from here: it publishes its own verdict, which is\n"
+            f"why data/guard_registry.json gives it no `command`. Run it directly:\n"
+            f"  {g['refresh']}")
     cmd = list(g["command"])
     cwd = ROOT / g.get("cwd", ".")
     if cmd and cmd[0] == "python3":

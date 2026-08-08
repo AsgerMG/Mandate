@@ -57,6 +57,47 @@ export function guardSpec(id: string): GuardSpec {
   return g;
 }
 
+/**
+ * The shortest cadence an OBSERVED spacing is allowed to imply, in days.
+ *
+ * Both freshness readers derive their age limit from how far apart the
+ * verdicts they can see actually are. That is the right shape — it needs no
+ * edit when the cron moves — but it has a degenerate case that has already
+ * fired: publish several verdicts in a burst, which any local proof run does,
+ * and the median gap is ~0.0 days. 2.5 × 0.0 is 0.0, so a census six minutes
+ * old gets reported SILENT. A limit derived from data must still refuse to
+ * derive nonsense from data.
+ *
+ * A day is the floor because nothing here publishes faster than the daily
+ * Vercel build, so a limit under a day cannot describe a real cadence — only a
+ * burst.
+ */
+export const MIN_DERIVED_CADENCE_DAYS = 1;
+
+/**
+ * Was this verdict produced by something that runs on a clock, rather than by
+ * a person at a terminal?
+ *
+ * Only scheduled verdicts may set the cadence: somebody running a guard four
+ * times while debugging is not evidence about how often the cron fires.
+ *
+ * Both readers spelled this `produced_by !== "local"`, and a proof run
+ * labelled `proof-local` walked straight through it — every one of its burst
+ * verdicts counted as scheduled, which is how a 0.0-day cadence got into the
+ * data. The producer is a free-form name (`RAILWAY_SERVICE_NAME`, or `local`
+ * when that is unset), so it cannot be matched against an allow-list of
+ * services without breaking the day somebody renames the Railway service.
+ *
+ * So: a local run is one that SAYS local, anywhere in its name. Both error
+ * directions are now bounded — mistaking a scheduled verdict for a local one
+ * only shrinks the sample, and falling under three drops to the cold-start
+ * limit; mistaking local for scheduled is what MIN_DERIVED_CADENCE_DAYS
+ * catches.
+ */
+export function isScheduledProducer(producedBy: string): boolean {
+  return !/local/i.test(producedBy);
+}
+
 /** The hash this verdict is bound to, from the one implementation. */
 export function fingerprint(id: string): string {
   return execFileSync("python3", [RUNNER, "fingerprint", id],

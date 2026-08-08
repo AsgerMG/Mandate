@@ -24,15 +24,39 @@
 //   SILENT    no verdict at all, or none within the cadence the verdicts
 //             themselves establish. The publisher has stopped. This is the
 //             failure that looks exactly like success.
-//   STALE     the verdict predates the corpus it describes — the weekly run
-//             published a census but this guard's verdict is older than it, so
-//             it did not run this week even though the run happened.
+//   STALE     the verdict predates the corpus it describes. The census dates
+//             the corpus, so a verdict about the corpus taken before the
+//             newest census is a statement about a corpus we no longer hold.
 //   DEGRADED  the verdict says the guard failed.
 //   DRIFTED   the verdict was produced against different code from this
 //             checkout. For a `weekly` guard that means the Railway container
 //             is not running what is committed; for an `on_change` guard it is
 //             the entire enforcement mechanism — change the ranker and merge
 //             without re-running the floors, and this goes red.
+//
+// ── The hole STALE had, and why it was the whole mechanism's hole ──────────
+// STALE was asked only of `weekly` guards. That left the four `on_change` ones
+// resting entirely on DRIFTED — their verdict is bound to a hash of the code
+// they judge, so changing the ranker re-runs the floors. Which is right, and
+// is not enough, because THREE OF THE FOUR DO NOT JUDGE CODE. corpus_currency,
+// hydration_parity and degradation each ask a question about live Postgres:
+// does the committed snapshot still agree with the register, would a founder
+// be shown a fund that has closed. A fund closing changes every one of those
+// answers and changes not one byte of any fingerprinted file. So a green
+// verdict from six months ago covered today's corpus forever, and the guard
+// that was in no automatic path before this workstream would have gone back
+// into one — a guard that cannot go red is the thing we set out to remove.
+//
+// So STALE is now asked of every guard that READS THE CORPUS, whatever its
+// cadence, derived from the registry's `needs` rather than from a list. The
+// property is: A VERDICT ABOUT THE CORPUS IS VOID WHEN THE CORPUS MOVES.
+//
+// That also supplies the clock the on_change guards had no other way to get.
+// They cannot run on a schedule anywhere: the Railway container is
+// python:3.11-slim with no Node and no frontend modules, and CI must never
+// hold DATABASE_URL. But the weekly cron publishes a census, and a census that
+// moves past these verdicts turns them red in the next Sunday workflow. The
+// schedule is borrowed rather than built, and no secret went anywhere.
 //
 // ── Two modes, and why age is not enforced in both ─────────────────────────
 //   default   DEGRADED and DRIFTED and "never published". Run on every PR. It
@@ -48,6 +72,7 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { MIN_DERIVED_CADENCE_DAYS, isScheduledProducer } from "./guardVerdict";
 
 const ROOT = path.join(__dirname, "..", "..", "..");
 const REGISTRY = path.join(ROOT, "data", "guard_registry.json");
@@ -113,7 +138,7 @@ const days = (a: number, b: number) => (a - b) / 86_400_000;
 
 /** The limit derived from how often this guard's verdicts actually arrive. */
 function ageLimit(rows: Row[]): { limit: number; basis: string } {
-  const scheduled = rows.filter((r) => r.producedBy !== "local");
+  const scheduled = rows.filter((r) => isScheduledProducer(r.producedBy));
   if (scheduled.length < 3) {
     return { limit: COLD_START_MAX_AGE_DAYS,
              basis: `cold start, ${scheduled.length} scheduled verdict(s) so far` };
@@ -124,8 +149,26 @@ function ageLimit(rows: Row[]): { limit: number; basis: string } {
   }
   gaps.sort((a, b) => a - b);
   const median = gaps[Math.floor(gaps.length / 2)];
+  if (median < MIN_DERIVED_CADENCE_DAYS) {
+    return { limit: COLD_START_MAX_AGE_DAYS,
+             basis: `observed spacing is ${median.toFixed(2)}d — a burst, not a cadence, `
+                  + `so the cold-start limit stands` };
+  }
   return { limit: 2.5 * median,
            basis: `2.5 × the observed ${median.toFixed(1)}d cadence of the scheduled runs` };
+}
+
+/**
+ * Does this guard's answer depend on the corpus, rather than only on code?
+ *
+ * Read off the registry's `needs` rather than listed, because a list is what
+ * goes stale the first time a guard gains a database. A guard that names a
+ * credential for a store, or the ETL corpus itself, is answering a question
+ * about DATA — and data moves without any file changing, which is exactly what
+ * the code fingerprint cannot see.
+ */
+function readsCorpus(g: Spec): boolean {
+  return g.needs.some((n) => /DATABASE_URL|corpus/i.test(n));
 }
 
 async function main() {
@@ -190,6 +233,10 @@ async function main() {
     if (!FULL) continue;
 
     // ── Freshness, only in --full ──────────────────────────────────────────
+    // SILENT is about a PUBLISHER that has stopped, so it is asked only of the
+    // guards that have a publisher on a clock. An on_change guard is published
+    // by a credentialled run and has no cadence to be late against; holding it
+    // to one would red a branch for the passage of a Sunday.
     if (g.cadence === "weekly") {
       const { limit, basis } = ageLimit(rows);
       if (age > limit) {
@@ -199,18 +246,32 @@ async function main() {
           `longer publishing.\n      That is the failure that reads as success: the last run's ` +
           `logs still\n      end in ALL STEPS COMPLETE. Check it: make verify-cron`);
       }
-      // A run happened — the census says so — and this guard did not publish in
-      // it. The cron completed with a step missing, which no age limit catches
-      // because the guard's own last verdict may still be inside the window.
-      if (newestCensus !== null && g.id !== "census") {
-        const behind = days(newestCensus, Date.parse(latest.takenAt));
-        if (behind > 0.5) {
-          problems.push(
-            `STALE — ${g.id}'s verdict is ${behind.toFixed(1)} days older than the newest ` +
-            `census.\n      The weekly run published a census without publishing this, so the ` +
-            `step\n      is missing from the cron or it failed before reaching it:\n` +
-            `        ETL/events/extract/railway_cron.py`);
-        }
+    }
+
+    // STALE is about the CORPUS having moved out from under a verdict, so it is
+    // asked of every guard whose answer depends on the corpus — weekly or not.
+    // The census dates the corpus; a verdict older than it describes a corpus
+    // we no longer hold. For a weekly guard that means the cron published a
+    // census with a step missing. For an on_change guard it means the funds
+    // changed and nobody re-ran the guard that watches them — the case that had
+    // no failure mode at all, because no fingerprinted file moves when a call
+    // closes.
+    if (newestCensus !== null && g.id !== "census" && readsCorpus(g)) {
+      const behind = days(newestCensus, Date.parse(latest.takenAt));
+      if (behind > 0.5) {
+        problems.push(
+          `STALE — ${g.id}'s verdict is ${behind.toFixed(1)} days older than the newest ` +
+          `census.\n      ${g.why}\n` +
+          (g.cadence === "weekly"
+            ? `      The weekly run published a census without publishing this, so the step\n` +
+              `      is missing from the cron or it failed before reaching it:\n` +
+              `        ETL/events/extract/railway_cron.py`
+            : `      The corpus has moved since this guard last looked at it, and this guard\n` +
+              `      reads the corpus — so its verdict is about funds we no longer hold. No\n` +
+              `      code changed, which is why the fingerprint still matches and why this\n` +
+              `      is the only thing that can catch it. Re-run it where the credentials\n` +
+              `      are (it publishes its own verdict):\n` +
+              `        ${g.refresh}`));
       }
     }
   }

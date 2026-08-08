@@ -54,6 +54,7 @@
 import { execFileSync } from "child_process";
 import { readFileSync } from "fs";
 import path from "path";
+import { MIN_DERIVED_CADENCE_DAYS, isScheduledProducer } from "./guardVerdict";
 
 // Both env files, repo root first. DATABASE_URL is documented as living at the
 // repo root while most harnesses here read only ./.env.local, so a check run
@@ -211,7 +212,14 @@ async function judge(rows: CensusRow[]) {
   // intervals is past any single missed run and short of a second one.
   let limit = COLD_START_MAX_AGE_DAYS;
   let basis = `cold start, no cadence established yet (${rows.length} census(es))`;
-  const scheduled = rows.filter((r) => r.produced_by !== "local");
+  // Both halves of this — what counts as a scheduled producer, and the floor
+  // under a derived cadence — are the shared definitions, not a second copy.
+  // This file had `produced_by !== "local"` and no floor, and the pair of them
+  // fired together on 2026-08-07: a proof run labelled `proof-local` published
+  // five censuses in a burst, every one of them counted as scheduled, the
+  // observed cadence came out at 0.0d, and a census six minutes old was
+  // reported SILENT.
+  const scheduled = rows.filter((r) => isScheduledProducer(r.produced_by));
   if (scheduled.length >= 3) {
     const gaps: number[] = [];
     for (let i = 1; i < scheduled.length; i++) {
@@ -220,8 +228,13 @@ async function judge(rows: CensusRow[]) {
     }
     gaps.sort((a, b) => a - b);
     const median = gaps[Math.floor(gaps.length / 2)];
-    limit = 2.5 * median;
-    basis = `2.5 × the observed ${median.toFixed(1)}d cadence of the scheduled runs`;
+    if (median >= MIN_DERIVED_CADENCE_DAYS) {
+      limit = 2.5 * median;
+      basis = `2.5 × the observed ${median.toFixed(1)}d cadence of the scheduled runs`;
+    } else {
+      basis = `observed spacing is ${median.toFixed(2)}d — a burst, not a cadence, `
+            + `so the cold-start limit stands`;
+    }
   }
   if (ageDays > limit) {
     problems.push(
@@ -257,7 +270,7 @@ async function judge(rows: CensusRow[]) {
 
   // ── DRIFTED: is the container running the committed code? ───────────────
   const mine = fingerprintOfCheckout();
-  if (mine && latest.produced_by !== "local" && mine !== latest.code_fingerprint) {
+  if (mine && isScheduledProducer(latest.produced_by) && mine !== latest.code_fingerprint) {
     problems.push(
       `DRIFTED — census #${latest.id} was produced by code fingerprinted ` +
       `${latest.code_fingerprint}, this checkout is ${mine}.\n` +
