@@ -30,16 +30,38 @@
 //   REGION=any npx tsx scripts/measure_recall.ts
 //   SET=__recallSet.json npx tsx scripts/measure_recall.ts  # retired, says so
 //
+//   POP=region_known REGION=off    npx tsx scripts/measure_recall.ts  # A
+//   POP=region_known REGION=strict npx tsx scripts/measure_recall.ts  # B
+//
 // REGION answers the intake's region question, which no other run does. A real
 // founder always knows where they are; the harness has to recover it from the
 // register (ETL/terms/repair_recall_attribution.py). Two settings, because the
 // provenance changes what the number means:
 //
-//   REGION=strict  only pairs whose region comes from an award under a
-//                  DIFFERENT notified scheme. Cannot be circular, covers ~37%.
-//   REGION=any     also pairs whose region comes from their own award. The two
-//                  agree at NUTS-1 92.1% of the time and rank siblings
+//   REGION=strict  supply only a region derived from an award under a DIFFERENT
+//                  notified scheme. Cannot be circular, covers ~37% of pairs.
+//   REGION=any     also supply a region derived from the pair's own award. The
+//                  two agree at NUTS-1 92.1% of the time and rank siblings
 //                  identically, which is what licenses the wider population.
+//   REGION=off     supply nothing. Same as unset, and sayable out loud, which
+//                  matters when it is one arm of a pair of runs.
+//
+// POP= AND REGION= ARE TWO DIFFERENT KNOBS, AND THEY USED TO BE ONE.
+// `REGION=strict` also restricted the population to pairs holding a leak-free
+// region, so comparing it against a bare run compared two different draws AND
+// two different answer sets, and no arithmetic separates those. wsAX measured
+// EXACT@5 26% -> 33% that way and said plainly in its own findings that the
+// direction was unambiguous and the number was not.
+//
+//   POP=region_known  keep only pairs holding a leak-free region -- the pairs on
+//                     which the question "what does answering region buy?" is
+//                     even askable. It restricts the DRAW and supplies nothing.
+//
+// So the clean A/B is one POP with two REGIONs: the denominator is identical,
+// the sampler sees the same rows in the same order under the same seed, and the
+// only difference between the arms is whether the founder answered. This is the
+// same discipline `ANSWERS=` already follows ("Neither restricts the
+// POPULATION"), applied to the knob that predates it.
 //
 // That same script also repairs the ANSWER KEY, and without it region cannot be
 // measured at all: `scheme_code = call_id` credits an award to every body
@@ -100,16 +122,30 @@ async function main() {
   // retrieval on a query copied out of the answer. `isDescribed` is shared, so
   // no two harnesses can disagree about which rows that is.
   const described = isDescribed;
-  // "strict" restricts the POPULATION as well as the answer, because a pair
-  // with no leak-free region is not a pair whose region we withhold — it is one
-  // we cannot honestly supply, and scoring it as if the founder had refused to
-  // answer would mix two different questions into one number.
+  // The only region a replay may honestly supply: one derived from an award
+  // under a DIFFERENT notified scheme, so the answer cannot be read out of the
+  // fund it is being asked to predict.
+  const leakFreeRegion = (r: any): string | undefined =>
+    r.regionSource === "other_scheme" ? (r.region || undefined) : undefined;
+  // ANSWER SUPPLY ONLY. This used to also restrict the population (see header):
+  // the reasoning was that a pair with no leak-free region is one we cannot
+  // honestly supply rather than one whose region we withhold — which is true,
+  // and is a reason to restrict the DRAW, not to fuse the two into one flag.
+  // POP=region_known now does that half, so both arms can share one draw.
   const regionMode = process.env.REGION;
   const regionOf = (r: any): string | undefined =>
-    !regionMode ? undefined
-      : regionMode === "strict"
-        ? (r.regionSource === "other_scheme" ? r.region : undefined)
+    !regionMode || regionMode === "off" ? undefined
+      : regionMode === "strict" ? leakFreeRegion(r)
         : r.region || undefined;
+  // Restricts the DRAW and supplies nothing, so REGION=off and REGION=strict
+  // over the same POP are the same rows in the same order under the same seed.
+  const popMode = process.env.POP;
+  if (popMode && popMode !== "region_known") {
+    throw new Error(`unknown POP=${popMode} (expected: region_known)`);
+  }
+  if (regionMode && !["off", "strict", "any"].includes(regionMode)) {
+    throw new Error(`unknown REGION=${regionMode} (expected: off, strict, any)`);
+  }
   // ── ANSWERS: stop describing every founder identically ────────────────────
   // Until this existed the replay handed EVERY founder the same ticketBand,
   // capitalSought, consortium, borrowerModel and useOfFunds. Only country,
@@ -158,7 +194,7 @@ async function main() {
                              && (!mode || r.mode === mode)
                              && (!country || r.country === country)
                              && (!process.env.DESCRIBED || described(r))
-                             && (regionMode !== "strict" || Boolean(regionOf(r))));
+                             && (popMode !== "region_known" || Boolean(leakFreeRegion(r))));
   if (!set.length) {
     throw new Error(
       `no rows match split=${split} mode=${mode ?? "any"} country=${country ?? "any"}`);
@@ -246,7 +282,11 @@ async function main() {
     const a = answersFor(t, answerMode);
     if (a.derived.ticket) derived.ticket++;
     if (a.derived.capital) derived.capital++;
-    if (a.derived.region) derived.region++;
+    // Counts what the founder was ACTUALLY handed, from EITHER source. Counting
+    // only `answersFor` would report `region 0%` on a REGION=strict run that
+    // supplied one to every pair, and the arm that reports its own treatment as
+    // absent is the arm nobody can check.
+    if (regionOf(t) ?? a.region) derived.region++;
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
       borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
@@ -314,12 +354,13 @@ async function main() {
               `${country ? ` country=${country}` : ""}` +
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
+              `${popMode ? ` pop=${popMode}` : ""}` +
               `${regionMode ? ` region=${regionMode}` : ""}` +
               `${answerMode !== "off" ? ` answers=${answerMode}` : ""}  replayed ${stat.done}`);
   // How many founders actually got their own answers. A run that says
   // `answers=strict` and derived three of them is reporting the constants with
   // a different label on, and the reader has to be able to see that.
-  if (answerMode !== "off") {
+  if (answerMode !== "off" || derived.region) {
     const pcOf = (n: number) => `${n}/${stat.done} (${(100 * n / stat.done).toFixed(0)}%)`;
     console.log(`  founder-specific answers supplied: ticketBand ${pcOf(derived.ticket)}` +
                 `  capital ${pcOf(derived.capital)}  region ${pcOf(derived.region)}`);
