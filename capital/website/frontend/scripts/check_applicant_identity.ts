@@ -57,6 +57,16 @@ const ROOT = join(__dirname, "..", "..", "..");
 const CACHE = join(ROOT, "data", "applicant_identity.json");
 const CALIBRATION = join(ROOT, "data", "reference", "applicant_identity_calibration.json");
 
+/** One entry of `cases` in the calibration file: the verbatim gate text, the
+ *  verdict it must draw, and the reason the case is held. `why` is not
+ *  decoration — it is what the failure message prints, so a future reader
+ *  learns why the case exists rather than only that it broke. */
+interface CalibrationCase {
+  text: string;
+  expect: string;
+  why: string;
+}
+
 /** Same identity function as the classifier's `digest()`. */
 const digest = (t: string) =>
   createHash("sha256").update(t.replace(/\s+/g, " ").trim()).digest("hex").slice(0, 16);
@@ -76,7 +86,7 @@ async function main() {
   // ── 1. The controls ──────────────────────────────────────────────────────
   const calib = JSON.parse(readFileSync(CALIBRATION, "utf8"));
   let checked = 0;
-  for (const [name, spec] of Object.entries<any>(calib.cases ?? {})) {
+  for (const [name, spec] of Object.entries<CalibrationCase>(calib.cases ?? {})) {
     const got = verdicts[digest(spec.text)];
     if (!got) {
       failures.push(`calibration ${name}: never judged. Run the classifier.`);

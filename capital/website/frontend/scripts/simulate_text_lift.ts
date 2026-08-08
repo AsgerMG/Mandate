@@ -94,7 +94,8 @@ async function main() {
   // ── Overlay the candidates ────────────────────────────────────────────────
   const cands: any[] = JSON.parse(readFileSync(file, "utf8"));
   const after = new Map(before);
-  let applied = 0, tooShort = 0, notFound = 0, unmatched: string[] = [];
+  let applied = 0, tooShort = 0, notFound = 0;
+  const unmatched: string[] = [];
   for (const c of cands) {
     if (c.found === false) { notFound++; continue; }
     const t = String(c.eligibility_text ?? "").trim();

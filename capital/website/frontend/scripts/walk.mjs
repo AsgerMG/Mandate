@@ -15,7 +15,7 @@ const page = targets.find((t) => t.type === "page");
 const ws = new WebSocket(page.webSocketDebuggerUrl);
 await new Promise((r) => (ws.onopen = r));
 let id = 0; const pending = new Map();
-ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) pending.get(m.id)(m.result), pending.delete(m.id); };
+ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m.result); pending.delete(m.id); } };
 const send = (m, p = {}) => new Promise((res) => { pending.set(++id, res); ws.send(JSON.stringify({ id, method: m, params: p })); });
 const PACE = Number(process.env.PACE || 1);
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms * PACE));

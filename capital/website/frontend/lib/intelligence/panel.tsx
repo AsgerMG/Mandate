@@ -23,7 +23,7 @@ import {
 } from "@/lib/intelligence/types";
 
 import { CapitalSelect, InfoDot, MultiChips } from "./panelControls";
-import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
+import { InstitutionsTable, Memo } from "./panelReport";
 
 /** A chip-row single select for band/enum answers. */
 /** Who the handover on screen 2 comes from. One string, because "who is

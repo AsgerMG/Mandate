@@ -12,7 +12,6 @@ async function main() {
   for (const r of (await db.query(
     `SELECT id, eligibility_text, eligibility_source_url, eligibility_confidence, scheme_code, application_url, description FROM funding_instruments WHERE country='FR'`)).rows) meta.set(r.id, r);
   await db.end();
-  const pub = publishableInstruments().filter((r:any)=>r.country==="FR");
   const all = publishableInstruments();
   const byRegime = new Map<string, any[]>();
   for (const r of all) { const p = r.parentId ?? r.id; if(!byRegime.has(p)) byRegime.set(p,[]); byRegime.get(p)!.push(r); }

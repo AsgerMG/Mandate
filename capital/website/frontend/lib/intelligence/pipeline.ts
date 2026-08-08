@@ -10,7 +10,7 @@ import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
 import { scoreFit } from "./fit";
 import { instrumentLink } from "./instrumentLink";
-import { assessAll, VERDICT_RANK } from "./verdict";
+import { assessAll } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
 import { recordUsage } from "./cost";
@@ -51,7 +51,6 @@ import {
   CAPITAL_SOUGHT_TO_DB,
   instById,
   channelLabel,
-  buildInstrumentTable,
   buildInstrumentTableHydrated,
   DISPLAY_CAP,
   displayInstitutionName,

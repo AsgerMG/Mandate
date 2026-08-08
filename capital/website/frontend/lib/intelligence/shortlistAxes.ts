@@ -140,7 +140,7 @@ function band(info: number): Axis["band"] {
 
 /** Tally values, skipping the ones we cannot observe, and report both the
  *  histogram and how much of the shortlist it covered. */
-function tally<T>(funds: AxisFund[], f: (x: AxisFund) => string | null): {
+function tally(funds: AxisFund[], f: (x: AxisFund) => string | null): {
   counts: Map<string, number>; coverage: number; info: number;
 } {
   const counts = new Map<string, number>();

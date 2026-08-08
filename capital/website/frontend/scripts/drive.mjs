@@ -23,7 +23,7 @@ let id = 0;
 const pending = new Map();
 ws.onmessage = (e) => {
   const msg = JSON.parse(e.data);
-  if (msg.id && pending.has(msg.id)) pending.get(msg.id)(msg.result), pending.delete(msg.id);
+  if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg.result); pending.delete(msg.id); }
 };
 const send = (method, params = {}) =>
   new Promise((res) => { pending.set(++id, res); ws.send(JSON.stringify({ id, method, params })); });

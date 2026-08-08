@@ -8,7 +8,7 @@ import { FundingLadder, type Rung } from "@/components/funding-ladder";
 import { Reveal, CountUp } from "@/components/immersive";
 import { ImageSlot } from "@/components/image-slot";
 import { fmtEur } from "@/lib/format";
-import { corpusStats, CORPUS_REVALIDATE_SECONDS } from "@/lib/data";
+import { corpusStats } from "@/lib/data";
 import insightsRaw from "@/public/data/investor_insights.json";
 
 export const metadata: Metadata = {

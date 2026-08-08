@@ -18,7 +18,7 @@ import { recordEvent } from "./telemetry";
 import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
 import { knownFacts } from "./knownFacts";
 import type {
-  EligibilityCheck, GroundedRound, InstrumentRow,
+  EligibilityCheck, InstrumentRow,
   IntelligenceRequest, ProfileSignal, ProjectQuestion,
 } from "./types";
 import type { FundStake, OpenFieldEvidence, ProjectGateEvidence } from "./gateReach";

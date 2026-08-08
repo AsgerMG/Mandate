@@ -18,7 +18,7 @@ requireCredentials("diagnose_ordering", ["DATABASE_URL", "VOYAGE_KEY"]);
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import {
-  THEME_DOMINANT_WEIGHT, awardScorer, objectiveScorer, peerPrior, instById,
+  THEME_DOMINANT_WEIGHT, awardScorer, objectiveScorer, peerPrior,
 } from "../lib/intelligence/shortlist";
 import { sectorFit } from "../lib/intelligence/fit";
 import { semanticFundMatch } from "../lib/intelligence/semantic";

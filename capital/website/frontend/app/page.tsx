@@ -7,7 +7,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import countryMapRaw from "@/public/data/country_map.json";
 import coverageRatingsRaw from "@/public/data/coverage_ratings.json";
-import { corpusStats, CORPUS_REVALIDATE_SECONDS, type Synthesis } from "@/lib/data";
+import { corpusStats, type Synthesis } from "@/lib/data";
 
 // Headline counts come from the single corpus-wide source (lib/data.corpusStats),
 // which also drives the nav, the layout footer and /about-public-capital, so

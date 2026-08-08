@@ -23,7 +23,7 @@ import {
 } from "../lib/intelligence/corpus";
 import { recipientsIn } from "../lib/intelligence/regionPrior";
 import { loadRecallSet, partitionByOfferable, reattributeMissingAnswers } from "./recallSet";
-import { DEFAULT_SEED, sampleRecall } from "./recallSample";
+import { sampleRecall } from "./recallSample";
 
 async function main() {
   await hydrateDbInstruments();

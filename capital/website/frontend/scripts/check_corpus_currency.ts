@@ -86,6 +86,18 @@ interface SnapshotRecord {
   successorScheme?: string | null;
 }
 
+/** One row of the liveness SELECT below, in Postgres' snake_case. Named so the
+ *  columns this check reads are declared in one place: a typo in a field name
+ *  is otherwise `undefined`, and `undefined` reads to `isClosed` as "open". */
+interface LiveRow {
+  id: string;
+  name: string | null;
+  scheme_end_date: string | null;
+  scheme_end_date_basis: string | null;
+  last_year: number | null;
+  successor_scheme: string | null;
+}
+
 /** How many disagreements are worth printing before the point is made. */
 const SHOW = 8;
 
@@ -108,10 +120,10 @@ async function main() {
   const { Client } = await import("pg");
   const client = new Client({ connectionString: url, connectionTimeoutMillis: 10_000 });
   await client.connect();
-  let live: any[], profileMissing: number, profileOrphan: number, profiles: number;
+  let live: LiveRow[], profileMissing: number, profileOrphan: number, profiles: number;
   let profileIds: Set<string>, textProfileIds: Set<string>;
   try {
-    live = (await client.query(
+    live = (await client.query<LiveRow>(
       `SELECT id, name, scheme_end_date, scheme_end_date_basis, last_year, successor_scheme
          FROM funding_instruments ORDER BY id COLLATE "C"`)).rows;
     // Everything the advisor can SHOW, it must be able to FIND. An instrument

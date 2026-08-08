@@ -38,6 +38,7 @@ import {
   requireLiveCorpus, resetGateHydration,
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import type { InstrumentRow } from "../lib/intelligence/types";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
@@ -319,7 +320,7 @@ async function main() {
       description: t.description || t.selfDescription || undefined,
     } as never);
     const top5 = (v.instrumentTable ?? []).slice(0, 5)
-      .map((r: any) => r.instrumentId).filter(Boolean) as string[];
+      .map((r: InstrumentRow) => r.instrumentId).filter(Boolean) as string[];
     const wantRegime = byId.get(t.instrument)?.parentId ?? t.instrument;
     const r5 = top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime);
     if ((v.candidateInstrumentIds ?? []).includes(t.instrument)) pool++;

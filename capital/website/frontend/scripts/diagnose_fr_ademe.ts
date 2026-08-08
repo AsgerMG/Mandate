@@ -22,7 +22,7 @@ async function main() {
   for (const r of g) { const k = key(r); if(!byKey.has(k)) byKey.set(k,[]); byKey.get(k)!.push(r); }
   console.log(`${target}: ${g.length} publishable leaves, ${byKey.size} distinct classes, mean class ${(g.reduce((a,r)=>a+cls.get(key(r))!,0)/g.length).toFixed(1)}\n`);
   const ordered = [...byKey.entries()].sort((a,b)=>b[1].length-a[1].length);
-  for (const [k, members] of ordered) {
+  for (const [, members] of ordered) {
     const m0 = meta.get(members[0].id)||{};
     const t = m0.eligibility_text||"";
     console.log(`--- class of ${members.length} | text ${t.length>40?`${t.length}ch conf=${m0.eligibility_confidence} src=${(m0.eligibility_source_url||"").slice(0,70)}`:"NONE"}`);

@@ -47,7 +47,6 @@ interface Pair {
 async function main() {
   await hydrateDbInstruments();
   const all = loadDbInstruments();
-  const byId = new Map(all.map((i) => [i.id, i]));
   const hasChildren = new Set(all.map((i) => i.parentId).filter(Boolean) as string[]);
 
   // The population: leaves sharing a display NAME with another leaf of the same

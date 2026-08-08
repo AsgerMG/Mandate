@@ -31,6 +31,9 @@ requireCredentials("emit_semantic_cache", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { corpusProvenance, hydrateDbInstruments, requireLiveCorpus } from "../lib/intelligence/corpus";
 import { semanticFundMatch, semanticSeparation } from "../lib/intelligence/semantic";
+// Type-only: the red-team corpus is imported dynamically below so a missing
+// file degrades to an empty list, and the fallback has to have its shape.
+import type { RedTeamCase } from "../lib/intelligence/__redTeam";
 
 export const OUT = path.join(process.cwd(), "lib", "intelligence", "semanticCache.generated.json");
 
@@ -72,10 +75,11 @@ export async function build(): Promise<string> {
   console.log(`  instrument_profiles with an embedding: ${expected.size}`);
 
   const { ARCHETYPES } = await import("../lib/intelligence/__archetypes");
-  const { RED_TEAM } = await import("../lib/intelligence/__redTeam").catch(() => ({ RED_TEAM: [] as any[] }));
+  const { RED_TEAM } = await import("../lib/intelligence/__redTeam")
+    .catch(() => ({ RED_TEAM: [] as RedTeamCase[] }));
   const descriptions = [
-    ...ARCHETYPES.map((a: any) => a.description),
-    ...(RED_TEAM ?? []).map((r: any) => r.description),
+    ...ARCHETYPES.map((a) => a.description),
+    ...(RED_TEAM ?? []).map((r) => r.description),
   ].filter((d): d is string => typeof d === "string" && d.trim().length >= 12);
 
   // `separation` travels with the scores because it cannot be recovered from

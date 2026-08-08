@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Newsreader, Fragment_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
-import { corpusStats, corpusAsOf, CORPUS_REVALIDATE_SECONDS } from "@/lib/data";
+import { corpusStats, corpusAsOf } from "@/lib/data";
 
 // Type system mirrored from regina-intel.vercel.app: Poppins for UI and body,
 // Newsreader for the big editorial headlines, Fragment Mono kept for small

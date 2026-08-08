@@ -25,9 +25,6 @@ import {
 import { isClosed, opennessEvidence, today } from "../lib/intelligence/liveness";
 import { loadRecallSet } from "./recallSet";
 
-interface Snap { id: string; name: string; country: string; sourceFamilyBucket: string | null;
-  schemeEndDate?: string | null; schemeEndBasis?: string | null; lastYear?: number | null; }
-
 async function main() {
   // ── The fallback arm: exactly what a degraded request builds ──────────────
   await hydrateDbInstruments();

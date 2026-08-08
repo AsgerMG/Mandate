@@ -20,7 +20,6 @@ import {
   hydrateDbInstruments, loadDbInstruments, publishableInstruments, requireLiveCorpus,
   resetGateHydration,
 } from "../lib/intelligence/corpus";
-import { regionFootprints } from "../lib/intelligence/regionPrior";
 import { buildInstrumentTableHydrated, regionScorer } from "../lib/intelligence/shortlist";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
@@ -36,7 +35,6 @@ async function main() {
   const corpus = loadDbInstruments();
   const byId = new Map(corpus.map((i) => [i.id, i]));
   const offerable = new Set(publishableInstruments().map((i) => i.id));
-  const fp = regionFootprints();
 
   const byScheme = new Map<string, string[]>();
   for (const i of corpus) {
