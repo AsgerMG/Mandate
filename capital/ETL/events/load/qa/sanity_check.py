@@ -620,17 +620,25 @@ q("""
     UNION ALL
     SELECT 'events with NULL grant_amount_basis', COUNT(*)
     FROM public_funding_events WHERE grant_amount_basis IS NULL
-    UNION ALL
-    SELECT 'events with unknown basis label', COUNT(*)
-    FROM public_funding_events
-    WHERE grant_amount_basis NOT IN (
-        'eic_eu_grant','ipcei_state_aid','eib_debt_commitment',
-        'if_eu_grant','chips_ju_total_public','edf_eu_ceiling',
-        'eit_kic_support','eit_kic_grant','eit_kic_equity',
-        'chp_grant','ihi_grant','eurohpc_grant','kdt_grant',
-        'horizon_eu_grant'
-    )
 """, "DQ: coordinator_only + grant_amount_basis fully populated (all must be 0)")
+
+# The third metric that used to live above -- "events with unknown basis label"
+# -- listed fourteen of the fifty-eight bases this corpus now carries, so it
+# reported forty-four false positives and had stopped being read. The question
+# it was asking is worth asking and is now asked where it can fail a load:
+# `assert_bases_declared()` in populate_funding_instruments.py, against
+# CAPITAL_BY_BASIS, which is the same list the capital type is derived from and
+# therefore cannot go stale separately.
+q("""
+    SELECT grant_amount_basis, COUNT(*) AS events,
+           SUM(CASE WHEN grant_amount_eur IS NULL AND equity_amount_eur IS NULL
+                     AND debt_amount_eur IS NULL THEN 1 ELSE 0 END) AS rows_no_amount
+    FROM public_funding_events
+    GROUP BY grant_amount_basis
+    HAVING rows_no_amount > 0
+    ORDER BY rows_no_amount DESC
+""", "DQ: amount-less rows per basis — these get their capital type from "
+     "CAPITAL_BY_BASIS alone, so an undeclared basis here is an invisible fund")
 
 # Make the basis-incompatibility VISIBLE. If anyone reads this and is
 # tempted to sum across the full table, this report shows the totals are

@@ -460,6 +460,73 @@ def apply_025(conn: sqlite3.Connection) -> None:
     print("  applied 025_declared_catchment.sql")
 
 
+CAPITAL_TYPE_VALUES = (
+    "grant", "loan", "guarantee", "counter_guarantee", "equity", "blended",
+    "tax_credit", "recoverable_advance", "framework", "unknown",
+    # Added by 026. See ETL/events/load/populate_funding_instruments.py.
+    "non_financial", "undetermined",
+)
+
+
+def apply_026(conn: sqlite3.Connection) -> None:
+    """Two capital_type values that separate three states the column collapsed.
+
+    `unknown` was carrying all of "this pays nothing", "the source will not say
+    what it pays" and "we never looked". None of them is reachable by any intake
+    option, so all three funds were removed for every founder in every country,
+    and there was no way to tell a debt we owe from a decision we made.
+
+      non_financial  the programme's OWN page says participants receive support
+                     and no capital -- EIT Digital's Venture Acceleration
+                     Programme, EIT Food's RisingFoodStars. A described object
+                     this product may not offer, because every intake option is
+                     a kind of capital.
+      undetermined   the official source was consulted and does not state the
+                     kind. EIT Climate-KIC's Clean Cities Spain cohort is
+                     ambiguous between a Stage 1 cash grant and a Stage 2
+                     Climate-SAFE, and the cohort page names neither.
+      unknown        we never recorded it. The only one of the three that is a
+                     DEFECT, and now the only one the ratchet in
+                     website/frontend/scripts/check_capital_reach.ts counts.
+
+    SQLite cannot ALTER a CHECK constraint, and 021 rebuilt the whole table to
+    widen `name_source` -- 54 columns ago. Rebuilding again would mean
+    hand-restating a column list that has grown six times since and is the
+    stated reason 021's own comment gives for reading the schema rather than
+    assuming it. So the DDL TEXT is edited in place instead: no data moves, no
+    column list is retyped, nothing can be dropped by omission.
+    """
+    ddl = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='funding_instruments'"
+    ).fetchone()
+    if ddl is None:
+        print("  skip 026 (funding_instruments absent)")
+        return
+    if "'non_financial'" in ddl[0]:
+        print("  skip 026 (already applied)")
+        return
+    old = "'framework','unknown')"
+    if old not in ddl[0]:
+        raise SystemExit(
+            "026: the capital_type CHECK is not in the shape this migration "
+            "expects. Inspect the DDL and update the migration rather than "
+            "loosening it -- a dropped constraint is how an unreachable value "
+            "gets in silently.")
+    new_ddl = ddl[0].replace(old, "'framework','unknown','non_financial','undetermined')")
+    version = conn.execute("PRAGMA schema_version").fetchone()[0]
+    conn.execute("PRAGMA writable_schema=ON")
+    conn.execute(
+        "UPDATE sqlite_master SET sql=? WHERE type='table' AND name='funding_instruments'",
+        (new_ddl,))
+    conn.execute(f"PRAGMA schema_version={version + 1}")
+    conn.execute("PRAGMA writable_schema=OFF")
+    conn.commit()
+    bad = conn.execute("PRAGMA integrity_check").fetchone()[0]
+    if bad != "ok":
+        raise SystemExit(f"026: integrity_check failed after DDL edit: {bad}")
+    print("  applied 026: capital_type gains non_financial, undetermined")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -483,6 +550,7 @@ MIGRATIONS = {
     "023": apply_023,
     "024": apply_024,
     "025": apply_025,
+    "026": apply_026,
 }
 
 

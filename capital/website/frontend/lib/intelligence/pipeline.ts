@@ -349,6 +349,21 @@ export const CAPITAL_TYPE_LABEL: Record<string, string> = {
   // The honest label says the kind is unresolved and where to settle it, rather
   // than guessing. See INDEFINITE_CAPITAL in shortlist.ts.
   blended: "Mixed (kind varies by call)", tax_credit: "Tax credit",
+  // Neither of these should ever reach a founder: `publishableInstruments()`
+  // withholds both by declaration (see offerableAxes.ts), so a row carrying one
+  // is out of the corpus before ranking begins. They are labelled anyway, and
+  // the reason is the same one that made this map load-bearing in the first
+  // place. Every unlabelled value falls through to `CHANNEL_SUPPORT_TYPE`,
+  // which asserts something confident and channel-shaped: `unknown` on the EIT
+  // channel rendered as "Grant + venture support" and on the development-bank
+  // channel as "Loan / guarantee". Both were wrong about the funds this
+  // workstream fixed — the French one is a grant and the EIT RawMaterials one
+  // takes equity — and the fallback would have stated the opposite of each with
+  // no hedge. A silent default that guesses is worse than a value that admits
+  // what it does not know, so the map answers for every value the column can
+  // hold, not only the ones expected to be seen.
+  non_financial: "Support only (no capital)",
+  undetermined: "Kind of capital not stated by the source",
 };
 const CHANNEL_SUPPORT_TYPE: Record<string, string> = {
   national_dev_banks: "Loan / guarantee",

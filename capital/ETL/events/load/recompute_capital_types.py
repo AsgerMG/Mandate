@@ -32,7 +32,7 @@ import sqlite3
 from collections import Counter, defaultdict
 
 from populate_funding_instruments import (  # noqa: E402
-    family_capital_type, row_capital_type, source_to_family,
+    assert_bases_declared, family_capital_type, row_capital_type, source_to_family,
 )
 
 
@@ -43,6 +43,9 @@ def main() -> None:
 
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
+    # Same gate as the full rebuild, for the same reason: this script writes
+    # the same column, so it can strand the same instruments.
+    assert_bases_declared(conn)
 
     votes: dict[str, Counter] = defaultdict(Counter)
     for r in conn.execute(
