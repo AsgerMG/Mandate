@@ -18,7 +18,7 @@ would say on an intake (a harness defect).
 | | share of the loss | |
 |---|---|---|
 | the derived answer is wrong | **66%** | harness defect → **revert** |
-| the filter is wrong | **21%** | code defect → **fixed here**, in part |
+| the filter is wrong | **21%** | code defect → **fixed here** for `blended`; `unknown` is AE's |
 | neither — the answer key names the wrong fund | **13%** | → recorded, France only |
 
 The derived `capitalSought` is the dominant cause and it is reverted. But "the filter
@@ -43,9 +43,10 @@ and attributes each lost pair from the `ExclusionLog` rather than from reading c
 Not one pair on any seed was lost to any other rule — not country, not the leaf cap,
 not a failed gate. Measured on the code as it shipped, which is the right basis for
 diagnosing it; the pool figures are unchanged by the fix in §6 (234 → 224 there and
-234 → 224 in the decomposition below), because the 14 instruments the fix unlocks are
-never the won fund on this population. The fix earns nothing on this metric and was
-not made to.
+234 → 224 in the decomposition below), because the five instruments the fix unlocks
+are never the won fund on this population. The fix earns nothing on this metric and
+was not made to — its blast radius is a national debt programme's reach, not a
+recall number.
 
 The field-level decomposition (new `ANSWERS=ticket` / `ANSWERS=capital` modes) settles
 which answer spends it. Three seeds, holdout, 250 pairs, `in pool`:
@@ -54,13 +55,18 @@ which answer spends it. Three seeds, holdout, 250 pairs, `in pool`:
 |---|---|---|---|
 | off | 234 | 233 | 234 |
 | **ticket** | **234** | **233** | **234** |
-| **capital** | **224** | **221** | (below) |
-| real | 224 | 221 | (below) |
+| **capital** | 224 | 221 | 226 |
+| real | 224 | 221 | 226 |
+
+Derived for roughly half the founders in each arm (ticket 48-52%, capital 46-50%),
+so the effect is not a thin slice: `ticket` reaches as many founders as `capital` and
+still removes nothing.
 
 `ticketBand` costs **exactly zero** pool on every seed — 234/233/234 against
 234/233/234, not "within noise" — and `capitalSought` costs all of it, with `real`
-landing on precisely the same number as `capital` alone. That is the prediction from the code and it is
-now measured rather than asserted: `channelServesBand` was retired to `return true`
+landing on precisely the same number as `capital` alone on all three.
+
+That is the prediction from the code, now measured rather than asserted: `channelServesBand` was retired to `return true`
 and deleted, so ticket size reaches only `awardScorer`/`scaleFit`, which reorder.
 `capitalSought` is the only derived answer wired to a `.filter()`.
 
