@@ -101,6 +101,10 @@ except FileNotFoundError:  # pragma: no cover
 ENUM_VALUES: dict[str, list[str]] = _VOCAB["enumValues"]
 BAND_ORDERS: dict[str, list[str]] = _VOCAB["bandOrders"]
 MULTI_VALUE_FIELDS = set(_VOCAB["multiValueFields"])
+# How each intake field gets answered, and therefore which ones a rule may be
+# keyed to at all. Read, never restated -- see FIELDS below.
+FIELD_REACH: dict[str, str] = _VOCAB["fieldReach"]
+ENCODABLE_FIELDS: list[str] = _VOCAB["encodableFields"]
 
 ROLES = ["filter", "obligation", "programme_fact", "vague"]
 
@@ -183,27 +187,45 @@ def canonical_country_values(op: str, values: list[str]) -> tuple[list[str], lis
 # The founder attributes we actually collect (EligibilityAnswers in types.ts).
 # 'none' is a first-class answer: most gates that look like filters turn out to
 # be decidable by nothing the founder can tell us.
-FIELDS = [
-    "ticketBand", "borrowerModel", "entityCountries", "wouldOpenEntity", "fteBand",
-    "turnoverBand", "balanceBand", "ownerOver25", "institutionalOwner", "nonEuControl",
-    "cofinancingBand", "foundedYear", "lossesOverHalfCapital", "conditionality",
-    "developmentStage", "activityCountries", "consortium", "bankRelationship",
-    "institutionalBacking", "needBy",
-    # Added 2026-07-26 from propose_intake_fields.py: these two were the
-    # highest-yield questions the intake was missing, measured against the 485
-    # filters nothing we asked could decide.
-    "sector", "exclusionFlags",
-    # Split out of `sector` 2026-07-27: what a company BUILDS and what aid law
-    # RESTRICTS are different questions, and merging them made a lending
-    # fintech inherit exclusions written for tobacco.
-    "activities",
-    # Added 2026-07-27. 585 gates on 266 instruments turn on eligible costs and
-    # 59 are hard filters, but with no field to resolve to they were forced onto
-    # developmentStage (16), consortium (10) and cofinancingBand (9), and 12
-    # landed on 'none' -- undecidable only because nobody was asked.
-    "useOfFunds",
-    "none",
-]
+# The founder attributes a rule may be keyed to -- READ from the generated
+# vocabulary, never restated. This was a hand-written list, and there were
+# three of them (here, classify_gates_bulk.py, extract_terms.py). They had
+# already drifted: the other two still lacked sector, exclusionFlags,
+# activities and useOfFunds months after those fields were added, so two of the
+# three extraction passes were hunting for a smaller world than the encoder
+# could store.
+#
+# The list now excludes `unreachable` fields BY CONSTRUCTION, which is the
+# point. A rule keyed to a question nobody is asked is inert: the evaluator
+# looks up answers[spec.field], finds undefined, and returns null for every
+# founder forever. It cannot pass, cannot fail, and cannot rank anything --
+# and it looks exactly like a rule quietly agreeing with everyone. Two fields
+# were in that state when this was written (activityCountries, foundedYear:
+# 103 comparators on 95 instruments), and paying a model to produce more of
+# them is the waste this closes.
+#
+# 'none' stays a first-class answer: most gates that look like filters turn out
+# to be decidable by nothing the founder can tell us, and saying so is a real
+# result rather than a failure to encode.
+FIELDS = list(ENCODABLE_FIELDS)
+
+#: Fields a rule may NOT be keyed to, with the reason, for the refusal message.
+UNREACHABLE_FIELDS = {f for f, via in FIELD_REACH.items() if via == "unreachable"}
+
+
+def refuse_unreachable(field: str, gid: int, what: str) -> bool:
+    """True when `field` is one nothing can answer, with a printed reason.
+
+    Enforced at BOTH writes -- triage, which chooses the field, and encode,
+    which builds the comparator -- because the model picks the field at triage
+    and the encoder trusts it. Stating the allowed set in a prompt is not
+    enforcing it; that lesson is already written twice above this line.
+    """
+    if field in UNREACHABLE_FIELDS:
+        print(f"    refused {what} on gate {gid}: nothing in the intake answers "
+              f"`{field}`, so the rule could never be evaluated")
+        return True
+    return False
 
 
 
@@ -406,6 +428,12 @@ def cmd_triage(args) -> None:
         for r in extract_json(text)["results"]:
             role = r["role"]
             field = r["field"] if role == "filter" else "none"
+            # The model chose this field. A rule filed under something nothing
+            # answers is not a filter in any useful sense -- it is a fact we
+            # cannot test -- so it is re-filed to 'none' rather than stored as
+            # a filter the encoder will then be asked to pay for.
+            if refuse_unreachable(field, r["id"], f"triage to `{field}`"):
+                field = "none"
             conn.execute(
                 """UPDATE eligibility_gates
                    SET gate_role=?, intake_field_resolved=?, encoding_method='llm_triage'
@@ -635,6 +663,13 @@ def cmd_encode(args) -> None:
                 skipped += 1
                 continue
             field = by_id[gid]
+            # Belt and braces with the triage refusal above: this pass can be
+            # run over gates triaged before that guard existed, and the whole
+            # point is that a comparator against an unanswerable field must
+            # never reach the database.
+            if refuse_unreachable(field, gid, "encoding"):
+                skipped += 1
+                continue
             # A founder's answer for these fields is a LIST, so `equals` (a
             # strict string comparison in eligibility.ts) can never be true —
             # it would silently read "unknown" for everyone. The model reaches
@@ -850,6 +885,94 @@ def cmd_repair_countries(args) -> None:
     conn.close()
 
 
+# ── retract-unreachable ─────────────────────────────────────────────────────
+def cmd_retract_unreachable(args) -> None:
+    """Un-encode comparators keyed to a field nothing in the intake answers.
+
+    Free -- no model calls. The set is computed from FIELD_REACH via the
+    generated vocabulary, so this pass and the write-time refusal share one
+    definition of what is answerable and cannot disagree about it.
+
+    QUARANTINE, NEVER DELETE. The gate row, its requirement text, its quote and
+    its locator all stay exactly as extracted -- they are what the fund's own
+    document says and Rule Zero has not changed. Only the machine comparator
+    goes, and it was returning null for every founder anyway, so nothing a
+    founder sees moves. If the intake later gains the question, `encode` can
+    write the spec back from text that never left.
+
+    Also catches a field that is not an intake field in ANY state: the triage
+    model invented `inExclusionConditions`, and a name nothing has ever
+    answered is the same defect with a typo in front of it.
+    """
+    conn = connect()
+    rows = conn.execute(
+        """SELECT id, intake_field_resolved, value_spec, substr(requirement,1,80)
+             FROM eligibility_gates
+            WHERE value_spec IS NOT NULL AND value_spec <> ''
+            ORDER BY id""").fetchall()
+    known = set(FIELD_REACH)
+    by_field: dict[str, int] = {}
+    hit: list[tuple] = []
+    for gid, resolved, raw, req in rows:
+        try:
+            spec = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        field = spec.get("field")
+        # aid_intensity carries no field: statutory arithmetic, not a question.
+        if not field:
+            continue
+        why = None
+        if field not in known:
+            why = f"`{field}` is not an intake field in any version of the product"
+        elif FIELD_REACH.get(field) == "unreachable":
+            why = f"nothing in the intake answers `{field}`"
+        if not why:
+            continue
+        by_field[field] = by_field.get(field, 0) + 1
+        hit.append((gid, field, why, req))
+        print(f"  gate {gid} {field} {spec.get('op')} -> QUARANTINED ({why})\n      {req}")
+        if not args.dry_run:
+            conn.execute(
+                """UPDATE eligibility_gates
+                      SET value_spec=NULL, encoding_method='quarantined',
+                          verify_note = COALESCE(verify_note || ' | ', '')
+                                        || 'quarantined: no intake answer reaches this field'
+                    WHERE id=?""", (gid,))
+    if not args.dry_run:
+        conn.commit()
+    print(f"\n{len(rows)} encoded specs read; {len(hit)} quarantined"
+          + (" [dry run]" if args.dry_run else ""))
+    for f, n in sorted(by_field.items(), key=lambda kv: -kv[1]):
+        print(f"  {f:24} {n:4}")
+
+    # SQLite authors, Postgres serves. Scoped to the rows this property owns,
+    # and never migrate_to_postgres.py, which truncates and reinserts and would
+    # publish every other workstream's in-flight work alongside this one.
+    # Keyed on (instrument_id, gate_key): the two stores keep independent
+    # surrogate ids, so WHERE id = ? matches nothing at best.
+    if args.publish and not args.dry_run and hit:
+        dsn = os.environ.get("DATABASE_URL")
+        if not dsn:
+            raise SystemExit("DATABASE_URL not set (expected in repo-root .env.local)")
+        import psycopg2
+        ids = [h[0] for h in hit]
+        qs = ",".join("?" * len(ids))
+        out = conn.execute(
+            f"""SELECT instrument_id, gate_key, value_spec, encoding_method, verify_note
+                  FROM eligibility_gates WHERE id IN ({qs})""", ids).fetchall()
+        pg = psycopg2.connect(dsn)
+        with pg, pg.cursor() as cur:
+            cur.executemany(
+                """UPDATE eligibility_gates
+                      SET value_spec = %s, encoding_method = %s, verify_note = %s
+                    WHERE instrument_id = %s AND gate_key = %s""",
+                [(s, m, n, iid, gk) for iid, gk, s, m, n in out])
+        pg.close()
+        print(f"published {len(out)} quarantined gates to Postgres")
+    conn.close()
+
+
 # ── report ──────────────────────────────────────────────────────────────────
 def cmd_report(args) -> None:
     conn = connect()
@@ -896,6 +1019,11 @@ def main() -> None:
     rc.add_argument("--publish", action="store_true",
                     help="mirror the repaired country specs into Postgres")
     rc.set_defaults(func=cmd_repair_countries)
+    ru = sub.add_parser("retract-unreachable")
+    ru.add_argument("--dry-run", action="store_true")
+    ru.add_argument("--publish", action="store_true",
+                    help="mirror the quarantined gates into Postgres")
+    ru.set_defaults(func=cmd_retract_unreachable)
     sub.add_parser("report").set_defaults(func=cmd_report)
     args = ap.parse_args()
     global MODEL

@@ -1,0 +1,1042 @@
+[
+ [
+  82,
+  "satr_lv_rnd",
+  "llm_classified_0",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Latvia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  224,
+  "enterprise_ireland_dtif",
+  "llm_classified_2",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Ireland\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  284,
+  "altum_starta_aizdevumi_3_1_1_4",
+  "llm_classified_4",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Latvia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  309,
+  "altum_biomet_na_aizdevumi",
+  "llm_classified_4",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Latvia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  310,
+  "satr_de_rnd",
+  "llm_classified_0",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Germany\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  976,
+  "nfr_bedrehelse",
+  "llm_classified_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Norway\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  994,
+  "satr_sk_rnd",
+  "llm_classified_0",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Slovakia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  1278,
+  "eis_reaalajamajanduse_lahend",
+  "llm_classified_4",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Estonia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  1301,
+  "enterprise_ireland_ip",
+  "llm_classified_2",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Ireland\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  1670,
+  "innovate_uk",
+  "G1-01",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"United Kingdom\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  1674,
+  "innovate_uk",
+  "G1-05",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"United Kingdom\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  1881,
+  "altum_starta_izaugsmes_aizdevu",
+  "g1-registration-age",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 7}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  2105,
+  "htgf_equity",
+  "g3",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 3}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  2194,
+  "innovationsfonden_innofounder",
+  "g2-company-age",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 3}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  2559,
+  "fr_relance_industrie",
+  "g1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  2894,
+  "bpifrance_inov",
+  "g1-work-in-france",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  3171,
+  "innovasjon_norge_grant_sector",
+  "g4",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 35}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  3381,
+  "satr_fr_rnd",
+  "g1_scope_territoire",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  4465,
+  "fondo_di_garanzia",
+  "g1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Italy\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  5022,
+  "de_kfw_erp_foerderkredit_kmu",
+  "g2_min_2_years_active_366",
+  "{\"op\": \"numeric_gte\", \"field\": \"foundedYear\", \"threshold\": 2}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  5918,
+  "enterprise_ireland_rd",
+  "G1-03",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Ireland\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  5919,
+  "enterprise_ireland_rd",
+  "G1-04",
+  "{\"op\": \"numeric_lte\", \"field\": \"activityCountries\", \"threshold\": 50}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  6297,
+  "satr_de_rnd",
+  "g1_nexus_works_in_germany_dns",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Germany\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  6342,
+  "satr_ie_rnd",
+  "g1-ireland-majority",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Ireland\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  6349,
+  "satr_ie_rnd",
+  "g2-startup-eligibility",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 5}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  6731,
+  "enterprise_ireland_dtif",
+  "g1-ireland-project-location",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Ireland\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  9020,
+  "satr_at_equity",
+  "g2-junge-unternehmen",
+  "{\"op\": \"numeric_gte\", \"field\": \"foundedYear\", \"threshold\": 0}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  9046,
+  "satr_at_rnd",
+  "g2_startup_aid_conditions",
+  "{\"op\": \"numeric_gte\", \"field\": \"foundedYear\", \"threshold\": -5}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  9202,
+  "satr_se_rnd",
+  "g1-local-regional-investment",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Sweden\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  13773,
+  "satr_sk_equity",
+  "g1-nexus-territory",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Slovakia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  13777,
+  "satr_sk_equity",
+  "g2-registration-age",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 5}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  16086,
+  "satr_gr_equity",
+  "g1-nexus-greek-market",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Greece\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  16292,
+  "satr_sk_rnd",
+  "g1_project_location",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Slovakia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  18639,
+  "horizon_eu_miss",
+  "g6-exclusion-situations",
+  "{\"op\": \"boolean_false\", \"field\": \"inExclusionConditions\"}",
+  "lossesOverHalfCapital",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  19991,
+  "eit_digital_champions",
+  "g2-company-age",
+  "{\"op\": \"numeric_gte\", \"field\": \"foundedYear\", \"threshold\": 2015}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  19992,
+  "eit_digital_champions",
+  "g2-company-age-footnote",
+  "{\"op\": \"numeric_gte\", \"field\": \"foundedYear\", \"threshold\": 2015}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  20904,
+  "satr_cz_equity",
+  "g1-purpose-territory",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Czechia\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  22406,
+  "innovation_fund_battery",
+  "G1-04",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Germany\", \"France\", \"Italy\", \"Spain\", \"Portugal\", \"Netherlands\", \"Belgium\", \"Luxembourg\", \"Ireland\", \"Denmark\", \"Sweden\", \"Finland\", \"Austria\", \"Poland\", \"Czechia\", \"Slovakia\", \"Hungary\", \"Slovenia\", \"Croatia\", \"Romania\", \"Bulgaria\", \"Greece\", \"Estonia\", \"Latvia\", \"Lithuania\", \"Malta\", \"Cyprus\", \"Norway\", \"Iceland\", \"Liechtenstein\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  22420,
+  "innovation_fund_hbank",
+  "G1-project-location",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Norway\", \"Iceland\", \"Liechtenstein\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  22472,
+  "innovation_fund_mfg",
+  "g1-project-location",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Austria\", \"Belgium\", \"Bulgaria\", \"Croatia\", \"Cyprus\", \"Czechia\", \"Denmark\", \"Estonia\", \"Finland\", \"France\", \"Germany\", \"Greece\", \"Hungary\", \"Ireland\", \"Italy\", \"Latvia\", \"Lithuania\", \"Luxembourg\", \"Malta\", \"Netherlands\", \"Poland\", \"Portugal\", \"Romania\", \"Slovakia\", \"Slovenia\", \"Spain\", \"Sweden\", \"Norway\", \"Iceland\", \"Liechtenstein\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  22490,
+  "innovation_fund_msp",
+  "g1-project-location",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Austria\", \"Belgium\", \"Bulgaria\", \"Croatia\", \"Cyprus\", \"Czechia\", \"Denmark\", \"Estonia\", \"Finland\", \"France\", \"Germany\", \"Greece\", \"Hungary\", \"Ireland\", \"Italy\", \"Latvia\", \"Lithuania\", \"Luxembourg\", \"Malta\", \"Netherlands\", \"Poland\", \"Portugal\", \"Romania\", \"Slovakia\", \"Slovenia\", \"Spain\", \"Sweden\", \"Norway\", \"Iceland\", \"Liechtenstein\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  22505,
+  "innovation_fund_plt",
+  "G1-02",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Austria\", \"Belgium\", \"Bulgaria\", \"Croatia\", \"Cyprus\", \"Czechia\", \"Denmark\", \"Estonia\", \"Finland\", \"France\", \"Germany\", \"Greece\", \"Hungary\", \"Ireland\", \"Italy\", \"Latvia\", \"Lithuania\", \"Luxembourg\", \"Malta\", \"Netherlands\", \"Poland\", \"Portugal\", \"Romania\", \"Slovakia\", \"Slovenia\", \"Spain\", \"Sweden\", \"Norway\", \"Iceland\", \"Liechtenstein\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  22519,
+  "innovation_fund_plt",
+  "G5-04",
+  "{\"op\": \"not_in\", \"field\": \"activityCountries\", \"allowed\": [\"outside EU/EEA\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  24911,
+  "satr_de_equity",
+  "g1_founded",
+  "{\"op\": \"boolean_true\", \"field\": \"foundedYear\"}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  27070,
+  "satr_gb_equity",
+  "g2-startup-age",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 5}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  27593,
+  "altum_starta_aizdevumi_3_1_1_4",
+  "g2-founded-years",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 7}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  32583,
+  "eit_digital_vap",
+  "g1_incorporation_date_2022",
+  "{\"op\": \"numeric_gte\", \"field\": \"foundedYear\", \"threshold\": 2012}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  32589,
+  "eit_digital_vap",
+  "g1_vip_incorporation_2025",
+  "{\"op\": \"numeric_gte\", \"field\": \"foundedYear\", \"threshold\": 2025}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  32615,
+  "eit_health_catapult",
+  "g6",
+  "{\"op\": \"numeric_lte\", \"field\": \"foundedYear\", \"threshold\": 10}",
+  "foundedYear",
+  "filter",
+  "llm_encode",
+  null
+ ],
+ [
+  150713,
+  "ademe_aid__aide_a_l_installation_de_production_de_chaleur_b_5ea921",
+  "scheme_text_4",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150719,
+  "ademe_aid__realisation_d_installations_de_production_de_cha_ae31cf",
+  "scheme_text_4",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150836,
+  "ademe_aid__etude_d_aide_a_la_decision_pour_les_projets_de_g_f05480",
+  "scheme_text_3",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150841,
+  "ademe_aid__etude_de_faisabilite_en_geothermie_de_surface_325624",
+  "scheme_text_3",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150846,
+  "ademe_aid__etude_de_faisabilite_en_geothermie_de_surface_et_f2fdb3",
+  "scheme_text_3",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150881,
+  "ademe_aid__etudes_et_travaux_de_depollution_d_une_friche_fo_32ccc1",
+  "scheme_text_3",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150910,
+  "ademe_aid__reseaux_de_chaleur_renouvelables_jusqu_a_90_de_v_79af55",
+  "scheme_text_4",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150949,
+  "ademe_aid__fonds_tourisme_durable_restaurateurs_hebergeurs__910bbe",
+  "scheme_text_2",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  150967,
+  "ademe_aid__industrialisation_performante_des_produits_bois__6d0c88",
+  "scheme_text_0",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"France\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151049,
+  "bdns_conv_810260",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151055,
+  "bdns_conv_812668",
+  "scheme_text_0",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151062,
+  "bdns_conv_820179",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151068,
+  "bdns_conv_826688",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151075,
+  "bdns_conv_826689",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151081,
+  "bdns_conv_828571",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151088,
+  "bdns_conv_836696",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151095,
+  "bdns_conv_836697",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151181,
+  "bdns_conv_880455",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151187,
+  "bdns_conv_880456",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151194,
+  "bdns_conv_880457",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151201,
+  "bdns_conv_880548",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151208,
+  "bdns_conv_880579",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151215,
+  "bdns_conv_880641",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151222,
+  "bdns_conv_880724",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151229,
+  "bdns_conv_880749",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151237,
+  "bdns_conv_881665",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151244,
+  "bdns_conv_881677",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151249,
+  "bdns_conv_883085",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151255,
+  "bdns_conv_889775",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151262,
+  "bdns_conv_891205",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151269,
+  "bdns_conv_891207",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151274,
+  "bdns_conv_893896",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151289,
+  "bdns_conv_897625",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151296,
+  "bdns_conv_897628",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151303,
+  "bdns_conv_900105",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151442,
+  "bdns_conv_916113",
+  "scheme_text_0",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151449,
+  "bdns_conv_916114",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151457,
+  "bdns_conv_916320",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151463,
+  "bdns_conv_916969",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151469,
+  "bdns_conv_918019",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151476,
+  "bdns_conv_918034",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151484,
+  "bdns_conv_918152",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151491,
+  "bdns_conv_918349",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151497,
+  "bdns_conv_919061",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151503,
+  "bdns_conv_919241",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151510,
+  "bdns_conv_919418",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151517,
+  "bdns_conv_919481",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151584,
+  "bdns_conv_921844",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151590,
+  "bdns_conv_922080",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151596,
+  "bdns_conv_922117",
+  "scheme_text_0",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151605,
+  "bdns_conv_922188",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_exhaustive_list"
+ ],
+ [
+  151613,
+  "bdns_conv_922986",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151619,
+  "bdns_conv_922990",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151626,
+  "bdns_conv_923043",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ],
+ [
+  151639,
+  "bdns_conv_923145",
+  "scheme_text_1",
+  "{\"op\": \"in\", \"field\": \"activityCountries\", \"allowed\": [\"Spain\"]}",
+  "activityCountries",
+  "filter",
+  "llm_encode",
+  "subject=project; basis=stated_requirement"
+ ]
+]
