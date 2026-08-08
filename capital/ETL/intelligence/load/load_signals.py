@@ -13,15 +13,15 @@ Flow (mirrors extract -> transform -> load, see ETL/README.md):
   ETL/extract/news_*.py           BLOCKED — awaiting the curated source registry.
                                   Nothing here scrapes; extractors will write
                                   sources + articles rows when they exist.
-  ETL/transform/classify_relevance.py   gate BEFORE anything else (Haiku batch)
-  ETL/transform/entity_link_articles.py NER + lib/matching against db.sqlite
-  ETL/transform/classify_signals.py     6-type signal taxonomy + impact text
-  ETL/transform/embed_articles.py       chunk + bge-m3 -> sqlite-vec
+  ETL/intelligence/transform/classify_relevance.py   gate BEFORE anything else (Haiku batch)
+  ETL/intelligence/transform/entity_link_articles.py NER + lib/matching against db.sqlite
+  ETL/intelligence/transform/classify_signals.py     6-type signal taxonomy + impact text
+  ETL/intelligence/transform/embed_articles.py       chunk + bge-m3 -> sqlite-vec
 
 Usage:
-  python3 ETL/load/load_signals.py            # ensure schema + run QA (no-op on empty DB)
-  python3 ETL/load/load_signals.py --status   # pipeline stage counts
-  python3 ETL/load/load_signals.py --qa       # QA checks only
+  python3 ETL/intelligence/load/load_signals.py            # ensure schema + run QA (no-op on empty DB)
+  python3 ETL/intelligence/load/load_signals.py --status   # pipeline stage counts
+  python3 ETL/intelligence/load/load_signals.py --qa       # QA checks only
 
 The transform stages are run individually (they submit/collect Anthropic
 batches on their own cadence); this loader owns schema install + QA so `make

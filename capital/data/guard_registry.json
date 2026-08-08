@@ -263,5 +263,80 @@
       "refresh": "python3 ETL/lib/guard_verdicts.py run index_freshness",
       "why": "Everything the advisor may state, it must be able to retrieve. 954 of 5,804 attributable gates across 163 instruments were unembedded when this was found on 2026-08-08, and the shape matters more than the number: this guard was step 16 of ETL/refresh.py, the two embed steps that fix it were 14 and 15, and step 13 was red -- so the fix sat under the failure and the alarm sat under the fix. Registered here it is asserted weekly by check_verdicts.ts without depending on a 23-step chain reaching it. It reads Postgres only and costs nothing; the embed steps it reports on are the paid ones."
     }
-  ]
+  ],
+  "manual_artifacts": {
+    "$why": [
+      "Committed artifacts under website/frontend/lib/intelligence/ that decline one of",
+      "the four properties ETL/schema/check_artifact_reachability.py asserts, each with",
+      "the reason and a date by which the reason must be re-examined. Same arrangement,",
+      "and the same argument, as the `manual` block above: an escape hatch with no clock",
+      "becomes the orphanage.",
+      "",
+      "`waives` names which of `producer`, `regeneration`, `staleness`, `loader` is being",
+      "declined. Declining one does not decline the others -- a pinned fixture still has",
+      "to be watched, and a hand-written contract still has to be read through one loader.",
+      "",
+      "Every entry below was found by the check on the day it was written, 2026-08-08, and",
+      "not one of them was known before that."
+    ],
+    "__recallSet.json": {
+      "waives": [
+        "producer",
+        "regeneration"
+      ],
+      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+      "review": "2026-10-31"
+    },
+    "__recallSetComposed.json": {
+      "waives": [
+        "producer",
+        "regeneration"
+      ],
+      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+      "review": "2026-10-31"
+    },
+    "__recallSetEnriched.json": {
+      "waives": [
+        "regeneration"
+      ],
+      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+      "review": "2026-10-31"
+    },
+    "__recallSetPlus.json": {
+      "waives": [
+        "producer",
+        "regeneration"
+      ],
+      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts. Producer is ETL/terms/extend_recall_set.py, which binds the filename as a CLI default (`--out`) rather than to a written path, so the tie is real but not visible from the source; that is worth fixing when the file is next touched.",
+      "review": "2026-10-31"
+    },
+    "__recallSetRepaired.json": {
+      "waives": [
+        "regeneration"
+      ],
+      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+      "review": "2026-10-31"
+    },
+    "evidenceTiers.json": {
+      "waives": [
+        "producer"
+      ],
+      "reason": "HAND-WRITTEN, and the one place the cited / attributable / inadmissible contract is defined for both languages -- ETL reads it (embed_eligibility.py, harvest_quoted_eligibility.py, check_index_freshness.py) and so does lib/intelligence/verdict.ts. It has no producer because it is a decision, not a derivation; generating it would put the definition back into whichever script wrote it last, which is the drift the single file exists to stop. Correctly has no rebuild path for the same reason.",
+      "review": "2026-11-30"
+    },
+    "offerRouteRatchet.generated.json": {
+      "waives": [
+        "regeneration"
+      ],
+      "reason": "A RATCHET BASELINE. check_offer_route.ts fails when the corpus holds more route-less rows than this file records, so regenerating it automatically would raise the ceiling to whatever today's corpus happens to be and disarm the guard on the same run that broke it -- the one thing a ratchet may never do. Re-set by hand via `npm run offerroute`, deliberately, when the new level is understood.",
+      "review": "2026-10-31"
+    },
+    "semanticCache.generated.json": {
+      "waives": [
+        "loader"
+      ],
+      "reason": "lib/intelligence/semantic.ts is imported from a \"use client\" boundary and loads this with a deliberate `require(\"fs\")`, because a top-level `import \"fs\"` would pull node built-ins into the client bundle (see check_client_boundary.ts). generatedArtifact.ts imports fs at the top level and so cannot be used there without moving the problem. The silence itself is NOT waived: that catch names the file, the cwd and what is lost, exactly as the loader does, and check_corpus_currency.ts fails on an empty cache.",
+      "review": "2026-10-31"
+    }
+  }
 }

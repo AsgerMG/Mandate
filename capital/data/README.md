@@ -21,7 +21,7 @@ they don't define or migrate it.
 The **write side** — `schema.sql` and the numbered `migrations/` (including
 `007_perf_indexes.sql`, the performance indexing) — lives in **`ETL/load/`**. Those are DDL
 applied *by* the load stage and are wired into the ETL path bootstrap
-(`ETL/load/migrations/apply.py` discovers `ETL/lib/etl_env.py` by walking up its ancestors),
+(`ETL/events/load/migrations/apply.py` discovers `ETL/lib/etl_env.py` by walking up its ancestors),
 so they stay with the loaders that run them.
 
 ## Common operations
@@ -31,10 +31,10 @@ so they stay with the loaders that run them.
 sqlite3 data/db.sqlite < data/views.sql        # = make views
 
 # Apply a migration (idempotent):
-python3 ETL/load/migrations/apply.py 007
+python3 ETL/events/load/migrations/apply.py 007
 
 # Back up the DB + caches to local + iCloud:
-make backup                                     # = python3 ETL/load/backup.py
+make backup                                     # = python3 ETL/events/load/backup.py
 ```
 
 `db.sqlite` is never committed (exceeds GitHub's 100MB limit); it is rebuilt by the ETL

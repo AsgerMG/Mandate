@@ -21,9 +21,9 @@ Same submit/collect pattern as classify_taxonomy.py: `submit` fires batches and
 records IDs; `collect` writes verdicts back whenever the batches end.
 
 Usage:
-  python3 ETL/transform/classify_relevance.py status
-  python3 ETL/transform/classify_relevance.py submit [--limit N] [--dry-run]
-  python3 ETL/transform/classify_relevance.py collect
+  python3 ETL/intelligence/transform/classify_relevance.py status
+  python3 ETL/intelligence/transform/classify_relevance.py submit [--limit N] [--dry-run]
+  python3 ETL/intelligence/transform/classify_relevance.py collect
 """
 from __future__ import annotations
 

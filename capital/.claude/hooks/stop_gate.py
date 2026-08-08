@@ -9,6 +9,7 @@ Two checks, both WARN-ONLY (exit 0 always — a gate must never trap the user):
 
 Silent when everything is clean. Never raises.
 """
+import importlib.util
 import re
 import sqlite3
 import sys
@@ -18,25 +19,53 @@ ROOT = Path(__file__).resolve().parents[2]
 DB = ROOT / "data" / "db.sqlite"
 SITE_DATA = ROOT / "website" / "frontend" / "public" / "data"
 METHODOLOGY = ROOT / "project-mgmt" / "methodology.md"
+BUILDER = ROOT / "website" / "build" / "build_site_data.py"
 
-# Keep in sync with website/build/build_site_data.py GENERATED.
-GENERATED = [
-    "coverage_ratings.json",
-    "country_coverage.json",
-    "country_map.json",
-    "instrument_leaderboard.json",
-    "synthesis.json",
-    "investor_insights.json",
-    "companies/manifest.json",
-]
+
+def generated() -> tuple[list[str], str | None]:
+    """The list of generated site-data files, READ FROM THE BUILDER.
+
+    This used to be a copy, under a comment saying "keep in sync with
+    website/build/build_site_data.py GENERATED". It was not in sync, and the
+    standing rule in this repo is that such a comment IS the bug. The two lists
+    disagreed in three places on 2026-08-08:
+
+      * this one named `companies/manifest.json`, which does not exist anywhere
+        in the repo, so the hook reported one MISSING file unconditionally
+        whenever db.sqlite was present -- a warning that is always on, which is
+        a warning nobody reads;
+      * and it was missing `taxonomy.json` and `companies_index.json`, so two
+        files that DO go stale were the two it could never report.
+
+    A hook that cries wolf about a phantom while staying quiet about two real
+    files is worse than no hook. Importing the builder's own dict means the next
+    generated file is covered the moment it is added there.
+
+    Returns (files, error). Never raises: this is a Stop hook and it must not be
+    able to trap the user. But an import failure is REPORTED rather than
+    swallowed -- silently checking nothing is the failure being fixed.
+    """
+    try:
+        sys.path.insert(0, str(BUILDER.parent / "lib"))
+        sys.path.insert(0, str(BUILDER.parent))
+        spec = importlib.util.spec_from_file_location("_bsd", BUILDER)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return list(mod.GENERATED), None
+    except Exception as e:  # noqa: BLE001
+        return [], f"{type(e).__name__}: {e}"
 
 
 def check_freshness() -> list[str]:
     if not DB.exists():
         return []
+    files, err = generated()
+    if err:
+        return [f"(could not read the file list from "
+                f"{BUILDER.relative_to(ROOT)}: {err} — nothing was checked)"]
     db_mtime = DB.stat().st_mtime
     stale = []
-    for fname in GENERATED:
+    for fname in files:
         p = SITE_DATA / fname
         if not p.exists():
             stale.append(f"{fname} (MISSING)")

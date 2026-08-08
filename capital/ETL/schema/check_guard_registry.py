@@ -140,14 +140,30 @@ def main() -> int:
                     f"{gid}: cadence 'weekly', but ETL/events/extract/railway_cron.py "
                     f"does not run it. Nothing publishes it, so check_verdicts.ts will "
                     f"report SILENT every week and there is no command that fixes it")
+        elif "command" in g:
+            # An on_change guard that ETL/lib/guard_verdicts.py DRIVES, the same
+            # arrangement a weekly guard uses -- the only difference is what
+            # triggers it, and this file's question is who publishes it.
+            #
+            # This branch was missing, and the omission read as a rule: it said
+            # an on_change guard must be TypeScript. `index_freshness` is
+            # Python, has a `command`, and names `guard_verdicts.py run
+            # index_freshness` as its own `refresh` line -- and this check went
+            # red on it saying "nothing publishes it", about a guard whose
+            # publisher is named in its own entry. A schema check that is wrong
+            # about a correct registry is the kind of red people learn to step
+            # over, which is how the next real one gets stepped over too.
+            published_by = "guard_verdicts.py"
+            implementation = Path(g["command"][1]).name
         else:
             owners = from_scripts.get(gid, [])
             published_by = owners[0] if len(owners) == 1 else None
             implementation = published_by
             if not owners:
                 problems.append(
-                    f"{gid}: cadence 'on_change', but no script in website/frontend/scripts "
-                    f"declares `const GUARD = \"{gid}\"`. Nothing publishes it")
+                    f"{gid}: cadence 'on_change', but nothing publishes it -- no script in "
+                    f"website/frontend/scripts declares `const GUARD = \"{gid}\"`, and it "
+                    f"declares no `command` for ETL/lib/guard_verdicts.py to run")
             elif len(owners) > 1:
                 problems.append(
                     f"{gid}: published by {len(owners)} scripts ({', '.join(owners)}). "

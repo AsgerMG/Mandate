@@ -257,8 +257,12 @@ STEPS: list[Step] = [
     # It deliberately declares NO `needs`. It is the alarm ON the two steps
     # above, so an embed that fell over is precisely when it must run: it reads
     # the indexes as they actually are and says how far behind they sit.
+    # Run THROUGH guard_verdicts.py rather than directly, so the alarm leaves a
+    # record: `index_freshness` is a registered guard, and check_verdicts.ts
+    # asserts on the published verdict with no credentials. Called directly, the
+    # number lived only in whatever terminal happened to be open.
     Step("index_freshness", "check indexes are fresh",
-         ["python3", "ETL/terms/check_index_freshness.py"],
+         ["python3", "ETL/lib/guard_verdicts.py", "run", "index_freshness"],
          role="report",
          why="The alarm on the two embeds. Depends on nothing on purpose -- a "
              "failed embed is exactly when its number matters."),

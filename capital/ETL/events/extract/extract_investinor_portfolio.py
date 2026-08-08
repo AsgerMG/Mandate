@@ -13,8 +13,8 @@ Country: 'NO' unless data-geography='utlandet' (3 foreign-domiciled) -> ''.
 Matching: exact tier corpus-wide, fuzzy tiers NO-scoped (PFR pattern).
 
 Run:
-  python3 ETL/extract/extract_investinor_portfolio.py --load-db          # fetch live, as_of=today
-  python3 ETL/extract/extract_investinor_portfolio.py <html> <as-of>     # reproducible from a saved page
+  python3 ETL/events/extract/extract_investinor_portfolio.py --load-db          # fetch live, as_of=today
+  python3 ETL/events/extract/extract_investinor_portfolio.py <html> <as-of>     # reproducible from a saved page
 """
 from __future__ import annotations
 
