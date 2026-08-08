@@ -154,11 +154,27 @@ eligibility:
 	python3 ETL/terms/sync_gates_from_yaml.py
 	python3 ETL/terms/encode_gates.py triage
 	python3 ETL/terms/encode_gates.py encode
+	# Text a fetch landed is not a rule until something cuts it into gates.
+	# load_scheme_text.py deliberately stops at `eligibility_text`, so without
+	# this step a collection workstream can raise a market's coverage from 55%
+	# to 74% and change nothing a founder sees -- the ranker scores on gates.
+	# Runs AFTER encode above so the gates it cuts are picked up by the encode
+	# in the next line, and before encode_regions so a sub-national rule it
+	# finds gets the right pass.
+	python3 ETL/terms/encode_scheme_text_gates.py run
+	python3 ETL/terms/encode_gates.py encode --fresh
 	# Sub-national rules get their own pass: encode_gates maps onto a fixed
 	# enum, and region is 449 values of which only the founder's country
 	# matters. Encoding one as `in entityCountries` PASSES everyone the rule
 	# excludes, so this must run before anything publishes.
 	python3 ETL/terms/encode_regions.py run
+	# Two properties on anything cut from scheme text, asserted against the
+	# DATABASE rather than trusted to the code that wrote it. Layer 1 is free
+	# and always runs; it also checks corpus-wide that no country field holds a
+	# sub-national area, which is the same defect encode_regions exists to fix
+	# one field over and which the vocabulary check cannot see (country fields
+	# are free text). A violation FAILS the target rather than warning.
+	python3 ETL/terms/check_gate_subject.py
 	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
 	# from a paid model pass, so every curated demotion above is reverted by the
 	# two lines above it -- and this target then exports and publishes. refresh.py

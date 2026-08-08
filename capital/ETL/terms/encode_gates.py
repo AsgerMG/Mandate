@@ -103,6 +103,25 @@ MULTI_VALUE_FIELDS = set(_VOCAB["multiValueFields"])
 
 ROLES = ["filter", "obligation", "programme_fact", "vague"]
 
+# ── A country field must hold a country ──────────────────────────────────────
+# `entityCountries` and `activityCountries` are free text, so the vocabulary
+# check below cannot see them, and a rule restricting a scheme to named REGIONS
+# was encoded as `activityCountries in ["Provence-Alpes-Cote d'Azur", "Pays de
+# la Loire", ...]`. That is the defect encode_regions.py exists to prevent, one
+# field over: a founder who answers "France" fails a rule that admits them, and
+# the fund is dropped from their brief as conclusively blocked.
+#
+# The test is not "is this a country we know" — Russia and Belarus appear in
+# real exclusion lists and are outside the European scope file, so requiring
+# resolution would delete correct rules. The test is the precise one: does this
+# value name an area INSIDE a country? The NUTS reference is the single source
+# `encode_regions.py` already resolves against, so the two passes cannot
+# disagree about what a region is.
+COUNTRY_FIELDS = ("entityCountries", "activityCountries")
+from nuts_regions import norm as _region_key, subnational_names  # noqa: E402
+
+SUBNATIONAL = subnational_names()
+
 # The founder attributes we actually collect (EligibilityAnswers in types.ts).
 # 'none' is a first-class answer: most gates that look like filters turn out to
 # be decidable by nothing the founder can tell us.
@@ -513,12 +532,20 @@ def cmd_encode(args) -> None:
         # the same wrong rule back.
         extra += (" AND (encoding_method IS NULL OR"
                   " encoding_method NOT IN ('llm_encode', 'quarantined'))")
+    # Scoping a pass to one country is what lets a workstream encode the gates
+    # it just cut without also paying for, and silently changing, every other
+    # market's pending set in the middle of its own before/after measurement.
+    scope, scope_params = "", ()
+    if getattr(args, "country", None):
+        scope = (" AND instrument_id IN (SELECT id FROM funding_instruments"
+                 " WHERE country = ?)")
+        scope_params = (args.country,)
     rows = conn.execute(
         f"""SELECT id, intake_field_resolved, requirement, value
             FROM eligibility_gates
             WHERE {where} AND gate_role='filter'
-              AND intake_field_resolved NOT IN ('none',''){extra}
-            ORDER BY instrument_id, gate_key""", params).fetchall()
+              AND intake_field_resolved NOT IN ('none',''){extra}{scope}
+            ORDER BY instrument_id, gate_key""", params + scope_params).fetchall()
     if args.limit:
         rows = rows[: args.limit]
     print(f"encoding {len(rows):,} filter gates ({MODEL})")
@@ -613,6 +640,19 @@ def cmd_encode(args) -> None:
                     skipped += 1
                     continue
 
+            if field in COUNTRY_FIELDS and op in ("in", "not_in", "equals"):
+                key = "allowed" if op in ("in", "not_in") else "value"
+                vals = spec[key] if key == "allowed" else [spec[key]]
+                good = [v for v in vals if _region_key(v) not in SUBNATIONAL]
+                if len(good) != len(vals):
+                    print(f"    gate {gid}: dropped sub-national values "
+                          f"{sorted(set(vals) - set(good))} from {field} — a region "
+                          f"rule belongs to encode_regions.py, not a country field")
+                if not good:
+                    skipped += 1
+                    continue
+                spec[key] = good if key == "allowed" else good[0]
+
             vocab = ENUM_VALUES.get(field)
             if vocab and op in ("in", "not_in", "equals"):
                 key = "allowed" if op in ("in", "not_in") else "value"
@@ -676,6 +716,8 @@ def main() -> None:
                        help="haiku | sonnet | a full model id")
         p.add_argument("--fresh", action="store_true",
                        help="only gates the encoder has never seen")
+        p.add_argument("--country", default=None,
+                       help="restrict the pass to one country's instruments")
         p.set_defaults(func=fn)
     sub.add_parser("report").set_defaults(func=cmd_report)
     args = ap.parse_args()
