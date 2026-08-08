@@ -99,7 +99,24 @@
 import { existsSync, readFileSync } from "fs";
 import { createHash } from "crypto";
 import path from "path";
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+/** DATABASE_URL is OPTIONAL here, and the distinction is the whole point of the
+ *  prose axis below. The gate axis reads the committed snapshot and is a real
+ *  test with no database at all; the prose axis has no offline corpus to read
+ *  (`instrument_terms.json` deliberately does not carry `eligibility_text` —
+ *  see the header) and therefore makes NO CLAIM rather than a green one when
+ *  there is no connection. That is a narrower measurement, not a weaker
+ *  version of the same one, which is what `optional` is for.
+ *
+ *  Declaring it also hands the "there is no database" decision to the one
+ *  place that owns it: requireCredentials deletes DATABASE_URL when the run is
+ *  deliberately offline, so this file no longer carries its own copy of the
+ *  NO_PG rule. It had one, and a private copy of a policy is how the nineteen
+ *  hand-rolled env preambles drifted in the first place. */
+const CREDENTIALS = requireCredentials(
+  "check_gate_pertinence", [], { optional: ["DATABASE_URL"] });
 
 const REPO = path.resolve(process.cwd(), "../..");
 const CACHE = path.join(REPO, "data", "eligibility_pertinence.json");
@@ -139,15 +156,15 @@ function fromSnapshot(): { ref: string; text: string; spec: boolean }[] {
   return out;
 }
 
-/** The live corpus, or null when there is none to read. `NO_PG=1` is this
- *  repo's "there is no database" and every other script that talks to Postgres
- *  honours it (check_vocabularies deletes the variable the same way); this one
- *  did not, so `NO_PG=1 npm run check` was the only command in the suite that
- *  still opened a connection. */
+/** The live corpus, or null when there is none to read.
+ *
+ *  `NO_PG=1` is this repo's "there is no database" and every script that talks
+ *  to Postgres honours it; this one used to test the variable itself, which
+ *  worked and was still a second copy of the rule. `requireCredentials` above
+ *  has already deleted DATABASE_URL if the run is deliberately offline, so the
+ *  absence of the variable is now the single signal, decided in one place. */
 function databaseUrl(): string | null {
-  loadEnvLocal();
-  if (process.env.NO_PG) return null;
-  return process.env.DATABASE_URL ?? null;
+  return CREDENTIALS === "offline" ? null : process.env.DATABASE_URL ?? null;
 }
 
 /** Gates and prose in one connection. Two round trips to the same database to
