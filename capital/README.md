@@ -49,11 +49,11 @@ make backup        # snapshot data/ (db.sqlite + caches) to ~/Wincent-backups an
 ```
 
 Extractors are per-source and hit external APIs, so run them one at a time, for example
-`python3 ETL/extract/extract_cdti.py --load-db`. They detect duplicates on `(source, call_id)` and
+`python3 ETL/events/extract/extract_cdti.py --load-db`. They detect duplicates on `(source, call_id)` and
 are safe to re-run (see the re-runnability registry in [ETL/README.md](ETL/README.md)). After any
 loader inserts rows, run `make transform` (classify + sanity) — or the steps individually,
-`python3 ETL/transform/classify.py` then `python3 ETL/load/qa/sanity_check.py` — and
-`python3 ETL/load/backup.py` to snapshot the DB to local + iCloud.
+`python3 ETL/events/transform/classify.py` then `python3 ETL/events/load/qa/sanity_check.py` — and
+`python3 ETL/events/load/backup.py` to snapshot the DB to local + iCloud.
 
 ## Verification
 

@@ -14,9 +14,9 @@ This is the load-bearing half of the signals layer: embeddings answer "what is
 semantically similar", these links answer "who is actually involved".
 
 Usage:
-  python3 ETL/transform/entity_link_articles.py status
-  python3 ETL/transform/entity_link_articles.py submit [--limit N] [--dry-run]
-  python3 ETL/transform/entity_link_articles.py collect   # writes mentions + resolves
+  python3 ETL/intelligence/transform/entity_link_articles.py status
+  python3 ETL/intelligence/transform/entity_link_articles.py submit [--limit N] [--dry-run]
+  python3 ETL/intelligence/transform/entity_link_articles.py collect   # writes mentions + resolves
 """
 from __future__ import annotations
 

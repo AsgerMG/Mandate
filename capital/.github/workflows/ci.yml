@@ -265,6 +265,14 @@ jobs:
       - name: Every guard runs somewhere, or says why it does not
         run: python3 ETL/schema/check_guard_reachability.py
 
+      # The same question one layer down, about the DATA. Four artifacts read at
+      # request time on the production ranking path were produced by commands no
+      # pipeline ran and compared against nothing -- peerPrior, the signal worth
+      # 19 points of exact-scheme recall, was measured naming 16 funds the corpus
+      # no longer contained. Credential-free: committed source only.
+      - name: Every committed artifact can be rebuilt, and something watches it
+        run: python3 ETL/schema/check_artifact_reachability.py
+
   security:
     name: dependency audit
     runs-on: ubuntu-latest

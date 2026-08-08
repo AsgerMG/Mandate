@@ -4,8 +4,8 @@
 # Stops only on Ctrl-C; per-country errors are caught and logged.
 #
 # Usage:
-#   ./ETL/extract/run_satr_all.sh                  # run remaining 19 (skip the 6 done)
-#   ./ETL/extract/run_satr_all.sh BG CY GR HU       # specific subset
+#   ./ETL/events/extract/run_satr_all.sh                  # run remaining 19 (skip the 6 done)
+#   ./ETL/events/extract/run_satr_all.sh BG CY GR HU       # specific subset
 #
 # Country order is roughly small-to-large to fail fast on issues.
 
@@ -37,4 +37,4 @@ done
 
 echo "Finished: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo
-echo "Run \`python3 ETL/load/load_satr.py --staging --report\` to consolidate."
+echo "Run \`python3 ETL/events/load/load_satr.py --staging --report\` to consolidate."

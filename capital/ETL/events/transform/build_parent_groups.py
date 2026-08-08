@@ -12,8 +12,8 @@ Risk controls: hard size cap (oversized components are flagged, not merged),
 golden-negative assertions, and full provenance. No DB writes unless --apply.
 
 Usage:
-  python3 ETL/transform/build_parent_groups.py            # dry run + report + CSV
-  python3 ETL/transform/build_parent_groups.py --apply    # write companies.parent_group
+  python3 ETL/events/transform/build_parent_groups.py            # dry run + report + CSV
+  python3 ETL/events/transform/build_parent_groups.py --apply    # write companies.parent_group
 """
 import argparse
 import csv
