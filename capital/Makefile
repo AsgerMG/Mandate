@@ -72,8 +72,10 @@ refresh:
 # working tree and tells you what moved.
 republish:
 	# 1. The ETL's corpus, not last week's copy of it. Wakes the cron service,
-	#    downloads, and confirms the schedule was restored afterwards.
-	python3 ETL/events/extract/pull_db.py
+	#    downloads, and confirms the schedule was restored afterwards. Via
+	#    pull-db so this shares its union semantics: republishing must not be a
+	#    way to quietly discard local instrument work on the way past.
+	$(MAKE) pull-db
 	# 2. Regenerate everything downstream, THROUGH the coverage gate, which
 	#    stops the chain rather than publishing a corpus that got worse.
 	#    --force because a pull changes db.sqlite, not the raw source files
