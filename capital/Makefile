@@ -244,13 +244,23 @@ backup:
 	python3 ETL/events/load/backup.py
 
 # The broad ETL pipeline (43 funder/registry extractors, classify, sanity)
-# now runs on a weekly Railway cron job against a Railway-resident volume,
-# not locally (see the ETL-to-Railway migration plan) -- this pulls that
-# volume's current db.sqlite down for local interactive work (eligibility
-# research, ad-hoc analysis). Run before any session that needs fresh data;
-# --overwrite replaces the local copy each time, mirroring `git pull`.
+# runs on a weekly Railway cron against a Railway-resident volume, not locally.
+# This brings that corpus down for local interactive work (eligibility research,
+# ad-hoc analysis). Run before any session that needs fresh data.
+#
+# It is a UNION, not an overwrite. It used to be `pull_db.py`, which downloads
+# straight over data/db.sqlite -- correct only while the volume is ahead of the
+# laptop, which is a property nothing established. On 2026-08-07 it was false in
+# the other direction and one `make pull-db` would have replaced 1,088
+# instruments with 322, silently and with no undo. So: fetch to a side file the
+# local corpus is not, then INSERT OR IGNORE the rows the laptop lacks. Rows the
+# laptop already has are left exactly as they are.
+#
+# `pull_db.py` is still there for the case where you genuinely mean to discard
+# local state. Read its header first.
 pull-db:
-	python3 ETL/events/extract/pull_db.py
+	python3 ETL/events/extract/pull_db_side.py /tmp/volume-db.sqlite
+	python3 ETL/lib/merge_volume_into_local.py /tmp/volume-db.sqlite --write
 
 # The other half of the automation split: everything that can't run on
 # Railway (cloud-blocked NETWORK sources + MANUAL sources with a file
