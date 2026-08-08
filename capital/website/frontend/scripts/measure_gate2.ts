@@ -15,12 +15,10 @@
 import { readFileSync, appendFileSync, existsSync } from "fs";
 import Anthropic from "@anthropic-ai/sdk";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_gate2", ["ANTHROPIC_API_KEY"]);
 
 const MODEL = process.env.MODEL ?? "claude-sonnet-5";
 const SPLIT = process.env.SPLIT ?? "holdout";

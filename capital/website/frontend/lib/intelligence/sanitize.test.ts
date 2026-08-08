@@ -46,6 +46,36 @@ describe("rejecting what is not offered", () => {
     const out = (sanitizeEligibility({ activities: "tobacco" }) ?? {}) as Record<string, unknown>;
     expect(out.activities).toBeUndefined();
   });
+
+  // ── region ────────────────────────────────────────────────────────────────
+  // THE BUG: `region` was in EligibilityAnswers, in FIELD_ENUM_HINTS and in the
+  // adaptive round's evidence path, and absent from this whitelist. The panel
+  // merged the founder's answer and all three routes dropped it, so 193
+  // `region_within` rules on 163 instruments evaluated as unanswered for every
+  // real request while passing every test — because the bench calls
+  // computeVerdict directly and never comes through here.
+  it("keeps a real NUTS region id", () => {
+    const out = (sanitizeEligibility({ region: "FRD" }) ?? {}) as Record<string, unknown>;
+    expect(out.region).toBe("FRD");
+  });
+
+  it("keeps a NUTS-2 id, which is what most regional schemes are written at", () => {
+    const out = (sanitizeEligibility({ region: "ES51" }) ?? {}) as Record<string, unknown>;
+    expect(out.region).toBe("ES51");
+  });
+
+  // Validated against the generated NUTS reference rather than a shape regex:
+  // "FR99" has the right shape and matches no region, so a `region_within`
+  // rule could never be evaluated on it.
+  it("drops an id the corpus does not know", () => {
+    const out = (sanitizeEligibility({ region: "FR99" }) ?? {}) as Record<string, unknown>;
+    expect(out.region).toBeUndefined();
+  });
+
+  it("drops a region NAME, which is not what the rules match on", () => {
+    const out = (sanitizeEligibility({ region: "Normandie" }) ?? {}) as Record<string, unknown>;
+    expect(out.region).toBeUndefined();
+  });
 });
 
 describe("free text bounds", () => {

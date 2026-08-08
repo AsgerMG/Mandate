@@ -13,15 +13,25 @@
 // Floors sit just under the measured numbers, not at an aspiration. A gate set
 // where we wish we were fails on day one, gets ignored, and then protects
 // nothing. Raise them when the real number rises.
-import { ENV_FILES, loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
-// Repo root AND frontend, from the one loader. This script's own copy read only
-// ./.env.local, so in a fresh worktree -- where the file is gitignored and
-// therefore absent, while the repo-root one is right there -- it took the
-// SKIPPED branch below and exited 0. The floors are the last line in
-// `npm run check`; a green build that never evaluated them is the failure this
-// whole file exists to prevent, happening to the file itself.
+// Repo root AND frontend, from the one loader, and then a DECLARED credential
+// contract rather than a skip.
+//
+// This script's own copy of the env preamble read only ./.env.local, so in a
+// fresh worktree -- where the file is gitignored and therefore absent, while
+// the repo-root one is right there -- it found nothing and took a SKIPPED
+// branch that returned 0. The floors are the last line in `npm run check`; a
+// green build that had never evaluated them is the failure this whole file
+// exists to prevent, happening to the file itself.
+//
+// Fixing the path alone would only have made that rarer. `requireCredentials`
+// is what makes it impossible: without the keys, and without NO_PG to say the
+// run is deliberately offline, this ENDS NON-ZERO. There is no longer a state
+// in which the floors go unevaluated and the build is green.
 loadEnvLocal();
+const CREDENTIALS = requireCredentials(
+  "check_recall_floor", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
@@ -33,6 +43,22 @@ import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers,
 } from "./recallSet";
+// ── The skip below is now survivable, and only because of this ─────────────
+// Skipping loudly and exiting 0 was still exiting 0: `npm run check` reported a
+// green build with the floors never evaluated, and CI -- which has no
+// credentials and never will -- has never once run them. Handing GitHub a
+// DATABASE_URL would fix that by widening a compromised workflow from "can read
+// our code" to "can read and write every award we hold".
+//
+// So this publishes what it measured, bound to a hash of the code it graded,
+// and check_verdicts.ts fails when the ranking code in a checkout is not the
+// code the last published floors were measured on. The skip stays legitimate
+// where it is legitimate; what it can no longer do is let a ranking change
+// merge unmeasured.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "recall_floor";
+const tape = startTape();
 
 /** ONE set, and the two populations inside it guarded separately.
  *
@@ -208,20 +234,26 @@ const N = 300;
 const SEED = DEFAULT_SEED;
 
 async function main() {
-  // Semantic ranking needs both. Without them this would grade the LEXICAL
-  // fallback -- a different system from the one that ships -- and report a
-  // number that looks like a pass. Skipping loudly is the honest failure mode;
-  // the check runs wherever credentials exist, which is every developer machine
-  // and the deploy path.
-  if (!process.env.DATABASE_URL || !process.env.VOYAGE_KEY) {
-    console.log("check_recall_floor: SKIPPED — no DATABASE_URL/VOYAGE_KEY.");
-    // Name the files it looked in. The skip is legitimate in CI, which has
-    // neither; on a developer machine it almost always meant the credentials
-    // were sitting in the OTHER .env.local, and the message gave no way to
-    // tell those two cases apart.
-    console.log(`  looked in: ${ENV_FILES.join(", ")} (relative to ${process.cwd()})`);
-    console.log("  Floors NOT verified. Run with credentials before shipping a");
-    console.log("  ranking change; lexical fallback would grade the wrong system.");
+  // Semantic ranking needs DATABASE_URL and VOYAGE_KEY, and the contract for
+  // both was declared at the top of the file: a run missing either never
+  // reaches here. That is what changed -- this used to print SKIPPED and exit
+  // 0, which is how `npm run check` went green with the floors never evaluated.
+  //
+  // What IS still reachable is the deliberate offline run, and it cannot floor
+  // anything: the lexical fallback is a different system from the one that
+  // ships, so a number taken off it would not be about the ranker these floors
+  // guard. That is a refusal, not a pass. The skip that remains is the one
+  // somebody TYPED, the same precedent check_degradation and
+  // check_hydration_parity already set -- and `npm run check` does not set
+  // NO_PG, so the default path either floors or dies.
+  if (CREDENTIALS === "offline") {
+    console.log("check_recall_floor: skipped — NO_PG=1, so ranking would come "
+      + "from the lexical fallback, which is a different system from the one "
+      + "these floors guard. Run without NO_PG to evaluate them.");
+    // NO verdict is published, deliberately. A verdict saying nothing went
+    // wrong, from a run that measured nothing, is the failure this whole file
+    // exists to prevent. check_verdicts.ts reports recall_floor as SILENT,
+    // STALE or DRIFTED until a run with credentials publishes real numbers.
     return;
   }
 
@@ -330,8 +362,38 @@ async function main() {
     console.error("a regression even when every other check is green.");
     anyFailed = true;
   }
+
+  // The measured numbers travel with the verdict, not just the pass/fail. A
+  // reader without credentials can then see the margin closing before it closes
+  // -- which is the whole point of floors that sit just under the measurement.
+  const metrics: Record<string, unknown> = {
+    n: set.length, seed: SEED, set: file,
+    pool: Number(got.pool.toFixed(1)), exact5: Number(got.exact5.toFixed(1)),
+    regime5: Number(got.regime5.toFixed(1)),
+    floorPool: FLOOR.pool, floorExact5: FLOOR.exact5, floorRegime5: FLOOR.regime5,
+  };
+  for (const [key, m] of byPop) {
+    metrics[`regime5:${key}`] = Number(((100 * m.r5) / m.n).toFixed(1));
+  }
+  await publishVerdict(GUARD, {
+    status: anyFailed ? "failed" : "ok",
+    summary: `pool ${got.pool.toFixed(0)}% (floor ${FLOOR.pool}), ` +
+             `EXACT@5 ${got.exact5.toFixed(0)}% (floor ${FLOOR.exact5}), ` +
+             `REGIME@5 ${got.regime5.toFixed(0)}% (floor ${FLOOR.regime5}) ` +
+             `over ${set.length} tune pairs` +
+             (anyFailed ? ` — FAILED on ${failed.join(", ")}` : ""),
+    metrics,
+    detail: tape(),
+  });
+
   if (anyFailed) process.exit(1);
   console.log(`check_recall_floor: ok — ${N} tune pairs of ${file} at seed ${SEED}, all floors met.`);
 }
 
-main();
+main().catch(async (err) => {
+  console.error("check_recall_floor: FAILED to run —", err);
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
+  process.exit(1);
+});

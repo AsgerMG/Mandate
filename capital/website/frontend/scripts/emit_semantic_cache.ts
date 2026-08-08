@@ -20,9 +20,14 @@ import path from "path";
 // the old values. The guard in `build()` is what makes that impossible; reading
 // BOTH env files is what stops the guard from firing on a worktree that has the
 // credentials at the root, where they are documented to live.
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
+// The same two keys `build()` refuses without, declared where every other
+// harness declares them. The throw in build() stays: it is what stops the
+// emitter grading its own output, and it must hold for a caller that imports
+// build() rather than running this file.
+requireCredentials("emit_semantic_cache", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { corpusProvenance, hydrateDbInstruments, requireLiveCorpus } from "../lib/intelligence/corpus";
 import { semanticFundMatch, semanticSeparation } from "../lib/intelligence/semantic";

@@ -57,6 +57,16 @@ STEPS: list[tuple[str, list[str], bool]] = [
     # one can disqualify a founder silently.
     ("apply gate_role overrides",
      ["python3", "ETL/terms/apply_gate_role_overrides.py"], False),
+    # The same correction one column over: the line above stops a gate
+    # DECIDING, this clears prose shown to a founder under "who may apply" that
+    # states a closed list they cannot join, a cohort already chosen, or the
+    # granting body's own name. Before the export and the publish below, so the
+    # withdrawn sentence never reaches the snapshot -- and it drops the affected
+    # `instrument_profiles` rows itself, because "embed instrument profiles"
+    # below runs INCREMENTALLY and would otherwise skip the very ids whose text
+    # just changed, leaving the retracted sentence ranking founders.
+    ("retract unpertinent eligibility text",
+     ["python3", "ETL/terms/retract_unpertinent_text.py", "--write"], False),
     ("coverage gate", ["python3", "ETL/terms/coverage_gate.py"], False),
     ("export snapshot", ["python3", "website/build/eligibility_export.py"], False),
     ("companies index", ["python3", "website/build/companies_index.py"], False),

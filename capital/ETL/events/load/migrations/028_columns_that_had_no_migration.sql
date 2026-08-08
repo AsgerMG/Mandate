@@ -1,6 +1,6 @@
--- Migration 027: the fifteen columns the corpus has always carried and that no
+-- Migration 028: the fifteen columns the corpus has always carried and that no
 -- migration created.
--- Applied via: python3 ETL/events/load/migrations/apply.py 027
+-- Applied via: python3 ETL/events/load/migrations/apply.py 028
 --
 -- ── What this fixes ────────────────────────────────────────────────────────
 -- A store rebuilt from schema.sql plus every migration in this directory was
@@ -68,7 +68,7 @@
 -- column not in that list is deleted by them. So the columns that historically
 -- arrived BEFORE the rebuilds have to be added before them, and the ones that
 -- arrived after have to be added after, or the replay silently loses ten of
--- them. This file is the first half and 028 is the second. That is not
+-- them. This file is the first half and 029 is the second. That is not
 -- housekeeping: it is the reason a rebuild-from-source and the live corpus were
 -- two different databases in the first place.
 

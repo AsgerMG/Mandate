@@ -330,10 +330,40 @@ function comparableFirmsForChannel(
 // Capital-type -> plain-English "type of support" label. Falls back to a
 // per-channel default when the row didn't resolve to a DB-native leaf with
 // its own capitalType (see selectLeafInstruments).
-const CAPITAL_TYPE_LABEL: Record<string, string> = {
+export const CAPITAL_TYPE_LABEL: Record<string, string> = {
   grant: "Grant", loan: "Loan", guarantee: "Guarantee", counter_guarantee: "Guarantee",
   recoverable_advance: "Recoverable advance", equity: "Equity stake",
-  blended: "Grant + equity (blended)", tax_credit: "Tax credit",
+  // `blended` names no kind of capital. It is what `family_capital_type` emits
+  // when no kind cleared its 60% threshold, so a label asserting grant AND
+  // equity states a composition we did not resolve and, on this corpus, do not
+  // hold: not one publishable blended instrument has an equity award, and the
+  // largest is a national debt programme of 2,977 loan and guarantee awards.
+  //
+  // This column is founder-facing, and until INDEFINITE_CAPITAL landed the
+  // error was hidden: only a founder who ticked equity could see one of these
+  // rows at all. Admitting them to everyone's pool is what makes the label load
+  // -bearing, so it is corrected in the same branch that admitted them —
+  // otherwise the fix would have traded a fund nobody could see for a fund
+  // described wrongly to everyone.
+  //
+  // The honest label says the kind is unresolved and where to settle it, rather
+  // than guessing. See INDEFINITE_CAPITAL in shortlist.ts.
+  blended: "Mixed (kind varies by call)", tax_credit: "Tax credit",
+  // Neither of these should ever reach a founder: `publishableInstruments()`
+  // withholds both by declaration (see offerableAxes.ts), so a row carrying one
+  // is out of the corpus before ranking begins. They are labelled anyway, and
+  // the reason is the same one that made this map load-bearing in the first
+  // place. Every unlabelled value falls through to `CHANNEL_SUPPORT_TYPE`,
+  // which asserts something confident and channel-shaped: `unknown` on the EIT
+  // channel rendered as "Grant + venture support" and on the development-bank
+  // channel as "Loan / guarantee". Both were wrong about the funds this
+  // workstream fixed — the French one is a grant and the EIT RawMaterials one
+  // takes equity — and the fallback would have stated the opposite of each with
+  // no hedge. A silent default that guesses is worse than a value that admits
+  // what it does not know, so the map answers for every value the column can
+  // hold, not only the ones expected to be seen.
+  non_financial: "Support only (no capital)",
+  undetermined: "Kind of capital not stated by the source",
 };
 const CHANNEL_SUPPORT_TYPE: Record<string, string> = {
   national_dev_banks: "Loan / guarantee",
@@ -1387,6 +1417,10 @@ export async function computeVerdict(
     // case, not a penalty. When it IS answered it is the only thing that can
     // tell fourteen leaves of one notified regime apart. See regionScorer.
     founderRegion: (eligibility as { region?: string } | undefined)?.region,
+    // The whole answer set, for the within-regime gate check. Everything else
+    // above is one field; this is the only signal that needs all of them,
+    // because it evaluates each leaf's own encoded rules against the founder.
+    eligibility,
     log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is
@@ -1493,6 +1527,9 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     // of split that once had the two paths ranking on different signals
     // entirely.
     founderRegion: req.eligibility?.region,
+    // The memo ranks the same siblings the fast path does, so it must see the
+    // same discriminator -- the same argument the region field carries above.
+    eligibility: req.eligibility,
     log,
   });
   const instrumentTable = applyProfileSignal(

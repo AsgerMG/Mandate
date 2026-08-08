@@ -29,7 +29,13 @@ CREATE TABLE IF NOT EXISTS funding_instruments (
                                CHECK (capital_type IN (
                                    'grant','loan','guarantee','counter_guarantee',
                                    'equity','blended','tax_credit','recoverable_advance',
-                                   'framework','unknown')),
+                                   'framework','unknown',
+                                   -- 026: three states `unknown` was collapsing.
+                                   -- non_financial = the source says it pays nothing;
+                                   -- undetermined  = the source was asked and will not say;
+                                   -- unknown       = we never recorded it. Only the last
+                                   -- is a defect, and only it is ratcheted.
+                                   'non_financial','undetermined')),
     capital_type_basis     TEXT,
     event_count            INTEGER NOT NULL DEFAULT 0,
     company_count          INTEGER NOT NULL DEFAULT 0,

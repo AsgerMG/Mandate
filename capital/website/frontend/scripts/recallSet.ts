@@ -54,11 +54,102 @@ export type RecallRow = {
   mode: string; split: string;
   descriptionSource?: string; traced?: string;
   region?: string; regionSource?: string;
+  /** This founder's OWN intake answers, derived from the register by
+   *  `ETL/terms/enrich_recall_answers.py`. Every one carries its provenance for
+   *  the same reason `regionSource` does: `other_scheme` cannot have been read
+   *  off the award being predicted, `own_award` can, and a headline that mixes
+   *  them is not a leak-free number. See ANSWERS= in measure_recall.ts. */
+  answerTicketBand?: string; answerTicketSource?: string;
+  answerCapital?: string[]; answerCapitalSource?: string;
   /** Set by `reattributeMissingAnswers` when the recorded answer named an
    *  instrument the corpus no longer holds. Provenance, so a re-attributed hit
    *  is never mistaken for one the key got right on its own. */
   reattributedFrom?: string;
 };
+
+/** The intake answers this founder actually gets, given how leak-free the run
+ *  requires them to be.
+ *
+ *  ONE resolver, shared by every harness, because the population a number is
+ *  measured on has to be the same population the next harness measures. The
+ *  constants are the answers every replay used before this existed, and they
+ *  remain the fallback: a founder we cannot derive an answer for is one who
+ *  keeps the old answer, never one who is dropped, so `ANSWERS=` changes what
+ *  founders are ASKED and never which founders are graded. That is what makes
+ *  the before/after readable as an effect rather than as a change of sample.
+ *
+ *  `strict` uses only `other_scheme` values and lets the rest fall back, rather
+ *  than restricting the population as `REGION=strict` does. Both are honest;
+ *  this one keeps the denominator fixed, which is what a within-run comparison
+ *  needs. */
+export const CONSTANT_ANSWERS = {
+  ticketBand: "b500k_2m5",
+  capitalSought: ["grant", "loan"] as string[],
+} as const;
+
+/** ── Why a mode per FIELD, and why `real` no longer includes capital ──────
+ *
+ *  `real` used to turn on every derived answer at once, and it moved the
+ *  candidate pool four points. Four points of pool is a hard ceiling on
+ *  EXACT@5, so which field spent them is not a detail — and an all-or-nothing
+ *  switch cannot answer it. The two fields cannot even cost the pool in the
+ *  same way: `capitalSought` is a FILTER (`instrumentServesCapital` removes
+ *  instruments before anything ranks them), while `ticketBand` is a SCORE and
+ *  nothing else, since `channelServesBand` was retired to `return true` and
+ *  deleted and `awardScorer`/`scaleFit` only reorder.
+ *
+ *  Measured, three seeds, holdout, 250 pairs (workstream AR):
+ *
+ *    in pool     seed 20260806   seed 7   seed 99
+ *    off               234         233      234
+ *    ticket            234         233      234     <- costs exactly zero
+ *    capital           224         221      226
+ *    real              224         221      226     <- capital is all of it
+ *
+ *  ── capitalSought is DISQUALIFIED as an answer, not merely expensive ──────
+ *  Two thirds of that loss is this derivation being wrong rather than the
+ *  filter. `capital_kind` reads `satr_staging.aid_instrument_text`, and
+ *  `funding_instruments.capital_type` is derived from the SAME column one hop
+ *  away — the circularity `useOfFunds` was excluded for. Worse, the
+ *  `other_scheme` guard does not make the answer NEUTRAL about the won fund,
+ *  it makes it ANTI-CORRELATED: a kind of capital a company took only from the
+ *  fund it won is guaranteed absent from its derived answer, which guarantees
+ *  the filter removes exactly the fund the pair exists to find. And a tax
+ *  credit is not a preference — a company that claimed an R&D credit is
+ *  derived as "wants tax credits" and cut off from every grant programme in
+ *  Europe.
+ *
+ *  So `real` now supplies ticket and region only. `capital` is KEPT as its own
+ *  mode rather than deleted, and the derivation is still written to the set, so
+ *  the finding stays reproducible: a disqualified experiment that can no longer
+ *  be run is one nobody can check.
+ *  See project-mgmt/findings/workstream_ar_capital_filter.md. */
+export type AnswerMode = "off" | "real" | "strict" | "ticket" | "capital";
+
+export function answersFor(r: RecallRow, mode: AnswerMode): {
+  ticketBand: string; capitalSought: string[]; region?: string;
+  derived: { ticket: boolean; capital: boolean; region: boolean };
+} {
+  const ok = (source?: string) =>
+    mode === "real" || mode === "ticket" || mode === "capital" ? Boolean(source)
+      : mode === "strict" ? source === "other_scheme" : false;
+  const ticket = mode !== "capital" && ok(r.answerTicketSource) && r.answerTicketBand;
+  // Only `capital` supplies it now. `real` and `strict` deliberately do not:
+  // see the disqualification above. A run that wants the disqualified answer
+  // has to ask for it by name.
+  const capital = mode === "capital" && ok(r.answerCapitalSource) && r.answerCapital?.length
+    ? r.answerCapital : undefined;
+  // Region rides with the whole-founder modes only. It is neither of the two
+  // fields under test, and leaving it on in a single-field mode would put a
+  // third difference inside a comparison built to isolate one.
+  const region = (mode === "real" || mode === "strict") && ok(r.regionSource) ? r.region : undefined;
+  return {
+    ticketBand: ticket || CONSTANT_ANSWERS.ticketBand,
+    capitalSought: capital ?? CONSTANT_ANSWERS.capitalSought,
+    region,
+    derived: { ticket: Boolean(ticket), capital: Boolean(capital), region: Boolean(region) },
+  };
+}
 
 /** A row whose description may be used as a test query.
  *

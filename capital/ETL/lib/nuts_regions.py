@@ -59,6 +59,37 @@ def load_reference(path: Path | None = None) -> dict:
     return json.loads(p.read_text())
 
 
+REGIONS_FILE = ROOT / "data" / "reference" / "nuts_regions.json"
+
+
+def subnational_names(path: Path | None = None) -> set[str]:
+    """Folded names of areas INSIDE a country.
+
+    One definition, because two consumers need it and a copy in each is the
+    defect this module already exists to prevent: `encode_gates.py` refuses to
+    put one of these on a country field, and `check_gate_subject.py` asserts
+    none ever got there. If the two disagreed, the check would pass a corpus
+    the encoder would have rejected.
+
+    A country's own name is NOT in this set even when it is also a NUTS-1 label.
+    Small member states have a single NUTS-1 region named after the country --
+    Ireland, Luxembourg, Malta, Liechtenstein -- so a naive read of the
+    reference calls `entityCountries in ["Ireland"]` sub-national and would
+    delete correct rules on eight instruments. Anything `name_to_iso2` resolves
+    is a country, whatever the region file also calls it.
+    """
+    p = path or REGIONS_FILE
+    if not p.exists():
+        return set()
+    regions = json.loads(p.read_text())["regions"]
+    return {norm(r["name"]) for rs in regions.values() for r in rs
+            if not name_to_iso2(r["name"])}
+
+
+def is_subnational(value: str, names: set[str] | None = None) -> bool:
+    return norm(value) in (names if names is not None else subnational_names())
+
+
 def resolve(region: str, iso2: str, index: dict) -> tuple[str, int] | None:
     """A published region name -> (NUTS id, the vintage that recognised it).
 

@@ -19,21 +19,26 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from coverage_gate import (  # noqa: E402
-    AXES, TOLERANCE_PP, accept, advance, count_tolerance, evaluate,
+    AXES, KPI_AXES, TOLERANCE_PP, accept, advance, count_tolerance, evaluate,
+    kpi_tolerance,
 )
 
 FAILURES: list[str] = []
 
 
-def state(n: int, complete: int, counts: dict[str, int]) -> dict:
+def state(n: int, complete: int, counts: dict[str, int],
+          kpis: dict[str, float] | None = None) -> dict:
     """A snapshot in the gate's own shape; shares derived, never hand-written."""
-    return {
+    out = {
         "takenAt": "2026-01-01",
         "instruments": n,
         "complete": complete,
         "counts": dict(counts),
         "shares": {a: round(100 * counts[a] / n, 2) for a in AXES},
     }
+    if kpis is not None:
+        out["kpis"] = dict(kpis)
+    return out
 
 
 def expect(label: str, current: dict, baseline: dict, want_ok: bool,
@@ -146,10 +151,80 @@ expect("share fell just over the tolerance, nothing gained", AUG07,
        diluted_baseline(TOLERANCE_PP + 0.1), want_ok=False, want_in="DILUTION  route")
 
 
+# ── 11. The figures on the home page are now inside the gate ───────────────
+# Replayed from corpus_census #3 -> #4 (Railway Postgres, 2026-08-07): the
+# first census ever taken inside the ETL container, against a corpus the site
+# would have published live had nothing been standing in the way.
+CENSUS_3_KPIS = {
+    "companies": 151426, "events": 297933, "champions": 9365,
+    "step_companies": 589, "total_capital_eur_raw": 352852279442.4658,
+    "countries": 23, "source_families": 11, "sectors": 11,
+}
+CENSUS_4_KPIS = {
+    "companies": 150868, "events": 299384, "champions": 9371,
+    "step_companies": 589, "total_capital_eur_raw": 408433535420.67,
+    "countries": 23, "source_families": 11, "sectors": 8,
+}
+KPI_BASE = accept(state(1011, 815, dict(AUG07["counts"]), CENSUS_3_KPIS))
+KPI_NOW = state(1011, 815, dict(AUG07["counts"]), CENSUS_4_KPIS)
+
+# Three of eleven sector families disappeared. That is the one the old gate had
+# no opinion about, because `sectors` was not an axis.
+expect("census #4: three sector families vanished", KPI_NOW, KPI_BASE,
+       want_ok=False, want_in="LOSS  sectors")
+
+# ...and it must not fire on the same run's ordinary movement. Companies fell
+# 558 in 151,426 (0.37%), which is dedup noise, and events and capital ROSE.
+_, kpi_failures, _ = evaluate(KPI_NOW, KPI_BASE)
+for quiet in ("companies", "events", "total_capital_eur_raw", "champions"):
+    if any(f"LOSS  {quiet}" in f for f in kpi_failures):
+        FAILURES.append(f"census #4 replay: should not have fired on {quiet} — "
+                        f"{kpi_failures}")
+
+# The tolerance is proportional with a floor of ONE, not of three. A floor of
+# three -- which is right for the instrument axes, where a regime re-split moves
+# a handful of rows -- would have licensed exactly this sector loss in silence.
+if kpi_tolerance(11) >= 3:
+    FAILURES.append(f"kpi_tolerance(11) = {kpi_tolerance(11)}: a floor that large "
+                    f"licenses losing a quarter of the sector taxonomy")
+
+# Growth is never a loss, on any KPI.
+expect("every figure grew", state(1011, 815, dict(AUG07["counts"]),
+                                  {k: v * 1.1 for k, v in CENSUS_3_KPIS.items()}),
+       KPI_BASE, want_ok=True)
+
+# ── 12. The KPI mark ratchets up only, and cannot be walked down ───────────
+# Same rule as the instrument axes, asserted separately because it is a
+# separate dict: lose just under the tolerance every run and the second run
+# must fail, because the mark did not follow the decline.
+walked = KPI_BASE
+for step in range(1, 4):
+    nxt = state(1011, 815, dict(AUG07["counts"]),
+                {**CENSUS_3_KPIS, "countries": 23 - step})
+    ok, _, _ = evaluate(nxt, walked)
+    if step == 1 and not ok:
+        FAILURES.append("KPI ratchet: a single sub-tolerance step should pass")
+    if step == 2 and ok:
+        FAILURES.append("KPI ratchet: the second step down must fail — the "
+                        "high-water mark is what makes losses non-cumulative")
+    if ok:
+        walked = advance(walked, nxt)
+
+# A baseline written before the KPI axes existed has no KPI mark, and must not
+# be read as a mark of zero (which would pass everything) nor crash.
+LEGACY = {k: v for k, v in KPI_BASE.items() if k != "kpis"}
+LEGACY["highWater"] = {k: v for k, v in KPI_BASE["highWater"].items() if k != "kpis"}
+expect("a legacy baseline with no KPI mark", KPI_NOW, LEGACY, want_ok=True)
+# ...and the mark establishes itself on that first passing run.
+if set(advance(LEGACY, KPI_NOW)["highWater"]["kpis"]) != set(KPI_AXES):
+    FAILURES.append("advance() from a legacy baseline did not establish a KPI mark")
+
+
 if FAILURES:
     print(f"{len(FAILURES)} failure(s):")
     for f in FAILURES:
         print(f"  {f}")
     sys.exit(1)
 print("coverage gate ok — loss is caught under growth and under shrinkage, "
-      "growth that dilutes is not, and tolerated losses cannot accumulate")
+      "growth that dilutes is not, tolerated losses cannot accumulate, and the "
+      "figures on the home page are inside the gate")

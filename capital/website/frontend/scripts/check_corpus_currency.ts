@@ -58,9 +58,23 @@ import path from "path";
 // The block that used to sit here had been copy-pasted into seven harnesses
 // while thirty-three others still carried the single-path version; see
 // scripts/loadEnv.ts.
-import { loadEnvLocal } from "./loadEnv";
+// And then a DECLARED contract, because the fixed path only made the skip
+// rarer. Without DATABASE_URL and without NO_PG this check now ENDS non-zero
+// rather than printing "skipped" and returning 0 -- which was the exact defect
+// it exists to catch, in itself.
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
+const CREDENTIALS = requireCredentials("check_corpus_currency", ["DATABASE_URL"]);
+
+// This guard needs credentials, so it cannot run in CI. It therefore publishes
+// what it decided (scripts/guardVerdict.ts) and check_verdicts.ts asserts on
+// that without any — including that the verdict was taken on THIS code, so a
+// change to the snapshot or to the liveness rule cannot ship on an old pass.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "corpus_currency";
+const tape = startTape();
 
 import { isClosed, today } from "../lib/intelligence/liveness";
 
@@ -76,11 +90,14 @@ interface SnapshotRecord {
 const SHOW = 8;
 
 async function main() {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    console.log("check_corpus_currency: skipped — no DATABASE_URL, nothing to compare against");
+  // The only skip left is the one somebody declared. "No credentials" is no
+  // longer reachable here: it ended the process at the top of the file.
+  if (CREDENTIALS === "offline") {
+    console.log("check_corpus_currency: skipped — NO_PG=1, so there is no live "
+      + "corpus to compare the committed one against");
     return;
   }
+  const url = process.env.DATABASE_URL as string;
 
   const file = path.join(process.cwd(), "public", "data", "instrument_terms.json");
   const snapshot = (JSON.parse(readFileSync(file, "utf8")) as {
@@ -286,14 +303,36 @@ async function main() {
     console.error("    python3 ETL/terms/build_instrument_profiles.py run");
     console.error("  and re-cut the offline mirror of that index, which is committed:");
     console.error("    npx tsx scripts/emit_semantic_cache.ts");
+    await publishVerdict(GUARD, {
+      status: "failed",
+      summary: `${problems.length} disagreement(s) between the committed snapshot ` +
+               `and Postgres (${live.length} instruments, ${profiles} profiles)`,
+      metrics: { problems: problems.length, snapshotRecords: snapshot.records.length,
+                 liveInstruments: live.length, profiles, profileMissing, profileOrphan },
+      detail: tape(),
+    });
     process.exit(1);
   }
   console.log("check_corpus_currency: ok — the snapshot and Postgres agree on every " +
               "liveness verdict, every instrument is retrievable, and both committed " +
               "mirrors of the index (scores, profile text) cover exactly the live one.");
+  await publishVerdict(GUARD, {
+    status: "ok",
+    summary: `snapshot and Postgres agree on every liveness verdict; ` +
+             `${live.length} instruments, ${profiles} embedded profiles`,
+    metrics: { problems: 0, snapshotRecords: snapshot.records.length,
+               liveInstruments: live.length, profiles, profileMissing, profileOrphan },
+    detail: tape(),
+  });
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("check_corpus_currency: FAILED to run —", err);
+  // 'error', not 'failed': the guard fell over, which is a different claim from
+  // the corpora disagreeing, and publishing it as the latter would send whoever
+  // reads it to look at the wrong thing.
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
   process.exit(1);
 });

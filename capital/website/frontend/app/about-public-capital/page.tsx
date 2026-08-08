@@ -8,7 +8,7 @@ import { FundingLadder, type Rung } from "@/components/funding-ladder";
 import { Reveal, CountUp } from "@/components/immersive";
 import { ImageSlot } from "@/components/image-slot";
 import { fmtEur } from "@/lib/format";
-import { corpusStats } from "@/lib/data";
+import { corpusStats, CORPUS_REVALIDATE_SECONDS } from "@/lib/data";
 import insightsRaw from "@/public/data/investor_insights.json";
 
 export const metadata: Metadata = {
@@ -120,7 +120,14 @@ function R({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
   return <Reveal delay={delay}>{children}</Reveal>;
 }
 
-export default function AboutPublicCapitalPage() {
+// Same corpus window as the home page and the footer, from the one constant.
+// Literal, not the imported constant: Next reads segment config statically and
+// fails the whole build on anything it cannot evaluate. Kept in step with
+// CORPUS_REVALIDATE_SECONDS by check_revalidate_literal.ts.
+export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
+
+export default async function AboutPublicCapitalPage() {
+  const corpus = await corpusStats();
   const { stats, concentration, countryMix } = insights;
   const satr = concentration.find((c) => c.id === "state_aid_satr");
   const eic = concentration.find((c) => c.id === "eic");
@@ -191,9 +198,9 @@ export default function AboutPublicCapitalPage() {
                   <Reveal delay={240}>
                     <p>
                       This manual is built on the funding record itself:{" "}
-                      <CountUp value={Number(corpusStats.events)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
+                      <CountUp value={Number(corpus.events)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
                       public awards to{" "}
-                      <CountUp value={Number(corpusStats.companies)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
+                      <CountUp value={Number(corpus.companies)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
                       companies and organisations, 2021 to 2025. It answers four questions in order: what
                       you can get, which door is yours, what the data proves about how winners behave, and
                       in what sequence to raise.

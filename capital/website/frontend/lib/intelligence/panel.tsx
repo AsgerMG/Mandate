@@ -784,7 +784,20 @@ export function IntelligencePanel() {
                       <p className="mb-2 text-xs text-[var(--accent)]">{q.stake}</p>
                     )}
                     <div className="flex flex-wrap gap-2">
-                      {(q.options?.length ? q.options : hint.options).map((o) => {
+                      {/* `optionsFor` before `options`, as FIELD_ENUM_HINTS says
+                          consumers must. This read hint.options only, and for
+                          `region` that list is EMPTY BY DESIGN — a fixed list of
+                          449 European regions is not a question anyone answers,
+                          so the options are derived from the founder's country.
+                          The server supplies model-written labels only when it
+                          could label EVERY derived option (adaptiveRound's
+                          `coversAll`), which for a country with dozens of NUTS
+                          regions essentially never holds. So a region question
+                          rendered as a stem with no buttons: asked, unanswerable,
+                          and silent about it. */}
+                      {(q.options?.length
+                        ? q.options
+                        : hint.optionsFor?.(elig) ?? hint.options).map((o) => {
                         const on = hint.multi
                           ? Array.isArray(current) && current.includes(o.value)
                           : current === o.value;

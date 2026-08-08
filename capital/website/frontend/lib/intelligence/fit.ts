@@ -23,7 +23,7 @@
 // than buried so that saying so is possible. What makes them safe is not that
 // they are right but that every component is recorded per instrument per run,
 // so a bad ranking can be attributed to a component rather than argued about.
-import { BAND_INDEX, TICKET_MIDPOINT, typicalAward } from "./shortlist";
+import { BAND_INDEX, INDEFINITE_CAPITAL, TICKET_MIDPOINT, typicalAward } from "./shortlist";
 import { hasThinEvidence } from "./accessMode";
 import type { DbInstrument } from "./corpus";
 import type { InstrumentAssessment } from "./verdict";
@@ -293,9 +293,15 @@ export function scoreFit(input: FitInput): FitScore {
       : 0,
     scale: scaleFit(inst, input.ticketBand),
     structure: structureFit(input.requiresConsortium, input.consortiumOk),
-    capital: input.capitalWanted?.size
-      ? (input.capitalWanted.has(inst.capitalType) ? 1 : 0.3)
-      : 1,
+    // Neutral, not penalised, when the label names no kind of capital. The
+    // same property the filter applies (INDEFINITE_CAPITAL in shortlist.ts):
+    // `blended`/`unknown`/`framework` record that the majority vote produced no
+    // answer, so scoring them as a mismatch would demote a fund for what WE do
+    // not know about it. Kept in step with the filter deliberately — the two
+    // disagreeing is how a fund survives selection only to sink in the memo.
+    capital: !input.capitalWanted?.size || INDEFINITE_CAPITAL.has(inst.capitalType)
+      ? 1
+      : (input.capitalWanted.has(inst.capitalType) ? 1 : 0.3),
     precedent: input.maxComparable && input.maxComparable > 0
       ? Math.log1p(input.comparableCount ?? 0) / Math.log1p(input.maxComparable)
       : 0,

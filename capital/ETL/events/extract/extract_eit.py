@@ -99,6 +99,149 @@ CALL_TO_SOURCE: dict[str, tuple[str, str]] = {
     "eit_food_rfs_2025":          ("eit_food_rfs_2025",             "2025-06-01"),
 }
 
+# ── What each cohort actually hands out ─────────────────────────────────────
+#
+# ── The fault this replaces ────────────────────────────────────────────────
+# This used to be a four-branch if/elif over source-id PREFIXES with a
+# fall-through: three named programmes were equity, BoostUp was a grant, a row
+# carrying a euro amount was a grant, and everything else got `eit_kic_support`
+# -- a label that names no kind of capital at all. 477 of the 583 EIT events in
+# this corpus took that last branch.
+#
+# Downstream, `unknown` is reachable by no intake option, so eight publishable
+# EIT instruments were removed from the pool of every founder in every country
+# however they answered. Nothing went red. The funds were simply never offered.
+#
+# The fall-through is what made it silent, and it is the thing being removed:
+# a cohort absent from this dict now raises a KeyError at extract time, when
+# somebody is looking at the KIC's page anyway, rather than producing a fund
+# nobody can see.
+#
+# ── Why per COHORT and not per KIC ─────────────────────────────────────────
+# "EIT gives grants" is false and "EIT takes equity" is false. The KICs run
+# both, and which one applies is a property of the cohort year and the stage,
+# not of the KIC:
+#
+#   * EIT Digital paid cash prizes ONCE, in 2021 (EUR 250,000 across three
+#     winners). From 2022 the same competition awards places in an accelerator
+#     and no money at all.
+#   * EIT Urban Mobility's accelerator grant shrank 15,000 -> 5,000 -> 2,500
+#     EUR across cohorts while its "EUR 30,000 worth of support services"
+#     headline stayed fixed. It has signed no SAFEs in any cohort here; the
+#     Techstars SAFE dates from July 2026 and any SAFE flag on a pre-2026 row
+#     would be wrong.
+#   * EIT RawMaterials' startup list reads like a directory and is an EQUITY
+#     PORTFOLIO: "Each featured company has received funding and tailored
+#     support from EIT RawMaterials and forms part of our active equity
+#     portfolio", under a "services-against-equity framework" in which equity
+#     participation is a condition of selection.
+#
+# ── Three traps in the page text, all real ────────────────────────────────
+# Anything reading these pages by keyword gets each of them wrong:
+#   * EIT Health Catapult calls its prize pot an "investment prize fund". It is
+#     promotional wording for a cash prize, not an equity instrument.
+#   * RisingFoodStars cites "$15 million in investment from the EIT Food Impact
+#     Fund" -- a cumulative alumni figure from a separate vehicle, not a
+#     disbursement to that cohort.
+#   * 28DIGITAL publishes an equity portfolio. It comes from its venture-building
+#     tracks, not from the Challenge/Champions or VAP rows here.
+#
+# Sources are cited per entry. Anything not settled by an official page is
+# `eit_kic_undetermined`, which is a real answer and better than a guess: the
+# product withholds those rows deliberately rather than pretending to know.
+COHORT_CAPITAL_BASIS: dict[str, str] = {
+    # ── Cash, equity-free ──────────────────────────────────────────────────
+    # EIT Digital Challenge 2021: "The 3 best companies receive prizes
+    # totalling EUR 250.000", first prize "a cash prize of EUR 100,000".
+    "eit_digital_champions_2021":      "eit_kic_grant",
+    # BoostUp: prize cash, and the only EIT rows that ever carried an amount.
+    "eit_manufacturing_boostup_2021":  "eit_kic_grant",
+    "eit_manufacturing_boostup_2023":  "eit_kic_grant",
+    "eit_manufacturing_boostup_2024":  "eit_kic_grant",
+    # Amazon Sustainability Accelerator, run as an EIT Climate-KIC
+    # ClimAccelerator: "a EUR 12 000 cash grant", programme described as
+    # "equity-free". (eit.europa.eu/our-activities/opportunities/
+    # amazon-sustainability-accelerator)
+    "eit_climate_kic_asa_2024":        "eit_kic_grant",
+    # Carbon Removal ClimAccelerator: "supported the startups financially with
+    # non-dilutive grants" -- stated by ETH Zurich's sus.lab, a programme
+    # co-lead, because climate-kic.org's own cohort pages are silent on the
+    # instrument. Second-party rather than first-party, and recorded as such in
+    # project-mgmt/findings/workstream_av_capital_type.md.
+    "eit_climate_kic_cdr_2022":        "eit_kic_grant",
+    "eit_climate_kic_cdr_2023":        "eit_kic_grant",
+    # EIT Urban Mobility accelerators: a small equity-free grant (EUR 15,000 in
+    # 2021, 5,000 in 2022, 2,500 later) alongside services. Cash, and no stake.
+    "eit_urban_mobility_2022":         "eit_kic_grant",
+    "eit_urban_mobility_2023":         "eit_kic_grant",
+    "eit_urban_mobility_2024":         "eit_kic_grant",
+
+    # ── Equity ─────────────────────────────────────────────────────────────
+    "eit_manufacturing_investments":   "eit_kic_equity",   # investment portfolio
+    "eit_innoenergy_highway_2021":     "eit_kic_equity",   # "equity portfolio"
+    "eit_innoenergy_highway_2022":     "eit_kic_equity",
+    "eit_innoenergy_highway_2023":     "eit_kic_equity",
+    "eit_innoenergy_highway_2024":     "eit_kic_equity",
+    "eit_urban_mobility_portfolio":    "eit_kic_equity",   # startup portfolio
+    # Reclassified from `eit_kic_support`. EIT RawMaterials Start-up Portfolio
+    # 2025 (PDF): "forms part of our active equity portfolio"; Booster call
+    # guidelines: "EIT RawMaterials shall be entitled to acquire interest in the
+    # equity of the venture". The webpage this was harvested from carries none
+    # of that framing, which is why reading the page alone produced no type.
+    "eit_rawmaterials_portfolio":      "eit_kic_equity",
+
+    # ── Support, and no capital ────────────────────────────────────────────
+    # EIT Digital Challenge/Champions from 2022: winners "join the EIT Digital
+    # Accelerator program" / "get access to the EIT Digital Growth Services
+    # programme consisting of 12 months of support". No money.
+    "eit_digital_champions_2022":      "eit_kic_nonfinancial",
+    "eit_digital_champions_2023":      "eit_kic_nonfinancial",
+    "eit_digital_champions_2024":      "eit_kic_nonfinancial",
+    "eit_digital_champions_2025":      "eit_kic_nonfinancial",
+    # EIC/EIT Digital Venture Acceleration Programme: "free access to the
+    # 12-month EIT Digital Accelerator Programme worth EUR 50,000".
+    "eit_digital_vap_2022":            "eit_kic_nonfinancial",
+    # RisingFoodStars is an ASSOCIATION, not a disbursement: mentorship,
+    # workshops, corporate access and "access to EIT Food funding mechanisms".
+    # Members historically paid a fee to join.
+    "eit_food_rfs_2021":               "eit_kic_nonfinancial",
+    "eit_food_rfs_2022":               "eit_kic_nonfinancial",
+    "eit_food_rfs_2023":               "eit_kic_nonfinancial",
+    "eit_food_rfs_2024":               "eit_kic_nonfinancial",
+    "eit_food_rfs_2025":               "eit_kic_nonfinancial",
+    # EIT Health Catapult pays at the FINAL and nowhere else: semi-finalists
+    # "receive high-quality training", the two winners take EUR 30,000 each.
+    # These rows are overwhelmingly semi-finalists -- the cohorts harvested are
+    # the 42, 30 and 29 semi-finalist announcements -- so what the row records
+    # is entry to a training competition, not a payment. 2023 is the exception
+    # and is the winners' announcement.
+    "eit_health_catapult_2021":        "eit_kic_nonfinancial",
+    "eit_health_catapult_2022":        "eit_kic_nonfinancial",
+    "eit_health_catapult_2023":        "eit_kic_grant",
+    "eit_health_catapult_2024":        "eit_kic_nonfinancial",
+    "eit_health_catapult_2025":        "eit_kic_nonfinancial",
+
+    # ── The official source does not say ───────────────────────────────────
+    # Clean Cities Spain ClimAccelerator 2024. The ClimAccelerator format is two
+    # stage: Stage 1 is cash up to EUR 25,000, Stage 2 is a Climate-SAFE -- "a
+    # simple agreement for future equity". The 2024 cohort page names neither
+    # the stage nor the instrument, so this cohort is genuinely ambiguous
+    # between a grant and a convertible. Guessing it grant would be the failure
+    # `passesCapitalPreference` exists to prevent, in the direction that costs a
+    # founder the most.
+    "eit_climate_kic_clean_cities_spain_2024": "eit_kic_undetermined",
+}
+
+_undeclared_cohorts = sorted(
+    {src for src, _ in CALL_TO_SOURCE.values()} - set(COHORT_CAPITAL_BASIS))
+if _undeclared_cohorts:
+    raise SystemExit(
+        "extract_eit: cohort(s) with no capital declaration: "
+        + ", ".join(_undeclared_cohorts)
+        + "\n  Read the KIC's own page for this cohort and add it to "
+          "COHORT_CAPITAL_BASIS.\n  There is no default: the default is what "
+          "made eight funds invisible.")
+
 # Sector fallback — used by classify.py when sector_tags_raw is empty.
 # Import is: `from extract_eit import EIT_KIC_SOURCE_SECTOR`
 EIT_KIC_SOURCE_SECTOR: dict[str, str] = {
@@ -2504,19 +2647,10 @@ def _build_events() -> list[dict]:
          notes, call_key, source_url) in _ALL_RAW_EVENTS:
         src_id, awarded_date = CALL_TO_SOURCE[call_key]
 
-        # grant_amount_basis
-        if src_id.startswith("eit_manufacturing_investments"):
-            basis = "eit_kic_equity"
-        elif src_id.startswith("eit_manufacturing_boostup"):
-            basis = "eit_kic_grant"
-        elif src_id.startswith("eit_innoenergy_highway"):
-            basis = "eit_kic_equity"
-        elif src_id.startswith("eit_urban_mobility_portfolio"):
-            basis = "eit_kic_equity"
-        elif grant_eur is not None:
-            basis = "eit_kic_grant"
-        else:
-            basis = "eit_kic_support"
+        # What kind of capital this cohort received, declared per cohort.
+        # KeyError, deliberately unguarded: a new cohort must state what it
+        # hands out before its rows can load. See COHORT_CAPITAL_BASIS.
+        basis = COHORT_CAPITAL_BASIS[src_id]
 
         slug = re.sub(r"[^a-z0-9]+", "_", company_name.lower()).strip("_")
         # For BoostUp, include region from notes to keep call_ids unique across regions
@@ -2804,9 +2938,31 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
         )
         inserted += 1
 
+    # ── Reconcile the capital basis of rows already loaded ──────────────────
+    # The insert above skips a (source, call_id) it has seen, so on a re-run it
+    # writes nothing at all -- which means correcting a cohort's declaration
+    # would never reach the rows it describes, and the correction would look
+    # applied while the corpus still said the old thing. That is how the
+    # `eit_kic_support` era survived a re-extraction.
+    #
+    # This is NOT a row-by-row patch, which is the thing that gets overwritten
+    # on the next load. It is the opposite: the extractor asserts its own
+    # declaration over its own sources, on every run, so the DECLARATION is what
+    # persists and any manual edit to these rows is the thing that gets
+    # overwritten. Idempotent by construction.
+    corrected = 0
+    for src_id, basis in COHORT_CAPITAL_BASIS.items():
+        cur.execute(
+            "UPDATE public_funding_events SET grant_amount_basis = ? "
+            "WHERE source = ? AND grant_amount_basis IS NOT ?",
+            (basis, src_id, basis))
+        corrected += cur.rowcount
     conn.commit()
     if skipped_dup:
         print(f"  Skipped {skipped_dup} duplicate (source, call_id) pairs")
+    if corrected:
+        print(f"  Reconciled grant_amount_basis on {corrected} existing rows "
+              f"to the per-cohort declaration")
     return inserted
 
 

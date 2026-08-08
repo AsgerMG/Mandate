@@ -12,13 +12,11 @@
 // of POOL_LEAVES_PER_CHANNEL to get the curve.
 //
 //   COUNTRIES=DE,ES,FR,IT npx tsx scripts/probe_pool_cost.ts
-import { readFileSync, writeFileSync } from "fs";
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* environment */ }
+import { writeFileSync } from "fs";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("probe_pool_cost", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, requireLiveCorpus,

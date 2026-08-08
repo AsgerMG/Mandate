@@ -207,6 +207,10 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--limit", type=int, default=0, help="verify only N rules (sampling)")
+    # Scoped for the same reason encode_gates.py encode is: a workstream must be
+    # able to verify the rules it just wrote without paying to re-verify, and
+    # silently move, every other market inside its own before/after.
+    ap.add_argument("--country", default=None)
     ap.add_argument("--model", default="haiku", help="haiku | sonnet | full model id")
     ap.add_argument("--dry-run", action="store_true", help="report without writing")
     ap.add_argument("--fix", action="store_true",
@@ -221,7 +225,17 @@ def main() -> None:
             WHERE g.value_spec IS NOT NULL AND g.gate_role = 'filter'
               AND g.quote IS NOT NULL AND g.quote <> ''
               AND g.verification_level NOT IN ('llm_2pass', 'human_verified')
-            ORDER BY g.instrument_id, g.gate_key""").fetchall()
+              -- Region rules are OUT OF SCOPE for this pass. It reads a spec
+              -- through spec_to_english, which has no rendering for
+              -- region_within, so it reports every regional rule as
+              -- "unsupported" and its --fix re-encodes them onto `in` over
+              -- region NAMES -- a comparator the engine evaluates against NUTS
+              -- ids and can therefore never satisfy. encode_regions.py owns
+              -- this field and is the only pass that may write it.
+              AND g.value_spec NOT LIKE '%region_within%'
+              AND json_extract(g.value_spec, '$.field') IS NOT 'region'
+              AND (? IS NULL OR fi.country = ?)
+            ORDER BY g.instrument_id, g.gate_key""", (args.country, args.country)).fetchall()
     if args.limit:
         # Spread the sample across the corpus rather than taking the first N,
         # which would all come from the same few instruments.

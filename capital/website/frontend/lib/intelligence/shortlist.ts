@@ -18,16 +18,18 @@ import path from "path";
 import { regionNameFor } from "./regions.generated";
 import { recipientsIn } from "./regionPrior";
 import { hydrateGatesFor } from "./corpus";
-import { isAttributable, isCited } from "./verdict";
+import { assessInstrument, isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, suppressedForUnconfirmedLiveness, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { semanticSeparation } from "./semantic";
 import { TICKET_BANDS } from "./types";
+import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
+import { resolveNameCollisions } from "./nameCollision";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
  *
@@ -263,6 +265,29 @@ export function regionScorer(
   // registrations of one regime really are two schemes with two sets of
   // delivery bodies, and merging them puts a body in competition with awards it
   // could never have signed. Reverted; recorded so it is not retried.
+  //
+  // WIDENING TO THE REGIME WAS TRIED AND IT COSTS POINTS. Recorded here with
+  // the scheme-name attempt above, because the case for it looks strong on
+  // reach alone and it will be proposed again. Only 95 of 807 publishable
+  // leaves share a scheme code with a sibling, so this scoping can separate
+  // just 224 of 2,150 graded pairs -- 33 rows of the 300 the headline is
+  // computed on, which is the real reason a signal measured at 66.2% @1 prints
+  // bit-identical totals (`scripts/diagnose_region_reach.ts`). Scoped to the
+  // regime it would reach 927 pairs, 131 of those 300: four times the reach.
+  //
+  // Measured anyway, holdout N=300, three seeds, ANSWERS=real, gate fit on:
+  //
+  //     scheme-scoped (ships)   EXACT@5   92 / 96 / 98
+  //     regime-scoped           EXACT@5   85 / 92 / 96
+  //
+  // Worse on every seed, and worst in the markets region was supposed to serve
+  // (DE 48 -> 42, 48 -> 43, 41 -> 35). A regime can hold a hundred leaves, and
+  // at that width "which body has paid most into this region" stops being
+  // geography and becomes a size prior -- the same failure that cost the
+  // objective prior 21 points and the sector posterior 2. The narrow reach is
+  // a fact about the CORPUS, not a defect in this function: the way to make
+  // region matter more is for more leaves to carry a resolvable notified
+  // scheme, which is collection work, not ranking work.
   const byScheme = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
     const code = (l.schemeCode ?? "").trim();
@@ -292,6 +317,125 @@ export function regionScorer(
     const span = lg(hi) - lg(lo);
     for (const [id, n] of here) {
       score.set(id, Math.pow(REGION_MATCH, 2 * ((lg(n) - lg(lo)) / span) - 1));
+    }
+  }
+  if (!score.size) return neutral;
+  return (i: DbInstrument) => score.get(i.id) ?? 1;
+}
+
+// How far a founder's fit against a leaf's OWN encoded rules may reorder its
+// regime. Sized like OBJECTIVE_MATCH rather than REGION_MATCH: unlike region,
+// this signal is available on most groups, and one that speaks often must
+// speak more quietly than one that speaks rarely and decisively.
+const GATE_MATCH = 1.35;
+
+/** Rank siblings by whether this founder actually CLEARS each leaf's rules.
+ *
+ *  ── Why this is worth having when 'gates do not rank' was already measured ─
+ *  That verdict — won fund 62% pass against pool 63% — was taken on a harness
+ *  that fed every replayed founder IDENTICAL intake answers. A rule can only
+ *  separate two founders who differ, so the measurement had no signal to find.
+ *  Re-measured with per-founder answers (`scripts/measure_gate_separation.ts`,
+ *  ANSWERS=): within-regime top-1 rises from 4.7% to 9.3% against an unchanged
+ *  4.8% uniform baseline, and from 1.5% to 7.5% in regimes of 51+ leaves,
+ *  which is where the leaf choice actually binds.
+ *
+ *  ── Pass RATE, deliberately, and never the count of rules checked ─────────
+ *  83% of gates are inherited from the regime and only 22% of decidable
+ *  filters are a leaf's own, so the leaves that differ from their siblings
+ *  differ largely in how much has been ENCODED about them — and the
+ *  best-documented leaf of a regime is also the one most companies win. That
+ *  makes "how many rules could we check" a size prior in disguise. Measured as
+ *  a null model (`FIT=checked`): +0.5pp against uniform, where the pass-rate
+ *  form gets +4.5pp. So the count is excluded from the score even though it
+ *  correlates with the answer, and only the SHARE the founder clears is used.
+ *
+ *  ── Scoped to the REGIME, never across a channel ──────────────────────────
+ *  The same constraint `regionScorer` and `objectiveScorer` are held to, for
+ *  the same measured reason: applied channel-wide these become priors over
+ *  which programme is biggest, and every attempt at that has cost points. A
+ *  leaf alone in its regime here scores 1.
+ *
+ *  Returns neutral for a leaf whose rules could not be evaluated at all, and
+ *  for a group whose leaves all fit identically — which is 68% of multi-leaf
+ *  regimes, because their leaves inherit one rule set and are therefore
+ *  genuinely indistinguishable this way. A signal that cannot separate its
+ *  candidates must not reorder them.
+ *
+ *  ── THIS IS A TIE-BREAKER, NOT AN ELIGIBILITY TEST ────────────────────────
+ *  READ THIS BEFORE ENCODING GATES FOR A REGISTER OF STANDALONE CALLS.
+ *
+ *  A fund that is the sole leaf of its regime gets **no credit here for a
+ *  founder passing its rules and no penalty for failing them**, however many
+ *  rules it carries. That is not an oversight and it is not small: 292 of 807
+ *  publishable leaves (36%) stand alone, and 269 of those carry 940 decidable
+ *  filters this function never reads. It concentrates by market — ES 91%,
+ *  NO 99%, EE 88%, LV 84%, PL/DK/GB/HU 100%, against DE, IT, SE, AT and BE at
+ *  zero — so a corpus-wide average will never show it to you.
+ *
+ *  Making it an absolute test was BUILT AND MEASURED, twice, and both arms
+ *  are on the branch history (`scripts/measure_gate_standalone.ts`,
+ *  `project-mgmt/findings/standalone_gates_wsAW.md`). Holdout, ANSWERS=real,
+ *  three seeds, 900 replays each:
+ *
+ *      scope                      EXACT@5   REGIME@5   standalone stratum
+ *      regime (this)              277/900    760/900   16/47
+ *      the whole channel pool     271/900    758/900   15/47
+ *      regime x an absolute term  278/900    760/900   16/47
+ *
+ *  Pool scoring is worse, and worse ON THE VERY LEAVES IT WAS BUILT FOR. What
+ *  it actually does is visible directly: the standalone share of the five rows
+ *  a founder is shown goes 4.5% -> 8.1% corpus-wide and 32.7% -> 34.5% in
+ *  Spain. It PROMOTES the rows it scores, because across a channel "share of
+ *  rules cleared" is mostly a statement about how much has been encoded — the
+ *  size prior in a new costume, measured at 0.528 percentile for the pure
+ *  documentation-depth null against 0.577 for pass rate itself.
+ *
+ *  The two arms are one signal at two strengths, not two designs: within a
+ *  channel, min-max normalising a pass rate and raising GATE_MATCH to
+ *  (2*rate - 1) are both monotone in the same rate. Nothing at weak, harmful
+ *  at strong. On Spain's WHOLE graded holdout population — n=115, not the
+ *  n=12 a 300-row draw gives it — all three arms are bit-identical: pool 102,
+ *  EXACT@5 42, REGIME@5 86.
+ *
+ *  So: encoding rules for a parent-less fund buys ranking nothing, today, by
+ *  measurement rather than by omission. It still buys the eligibility SCREEN,
+ *  which reads gates per fund and is what a founder actually reads; and the
+ *  route that does move a standalone fund's rank is SELECTION, not this
+ *  function — 76% of a Spanish founder's candidate pool is standalone leaves,
+ *  and how many of them a channel may spend its slots on is decided in
+ *  `selectLeafInstruments`, not here. */
+export function gateFitScorer(
+  leaves: DbInstrument[], answers?: EligibilityAnswers,
+): (i: DbInstrument) => number {
+  const neutral = () => 1;
+  if (!answers) return neutral;
+  const byRegime = new Map<string, DbInstrument[]>();
+  for (const l of leaves) {
+    const r = (l as { parentId?: string }).parentId ?? l.id;
+    (byRegime.get(r) ?? byRegime.set(r, []).get(r)!).push(l);
+  }
+  const score = new Map<string, number>();
+  for (const group of byRegime.values()) {
+    // A LEAF WITH NO SIBLINGS SCORES 1, AND ITS OWN ENCODED RULES ARE NEVER
+    // READ BY THIS FUNCTION. That is deliberate and measured -- see the
+    // docstring's last section before encoding gates for a standalone
+    // register.
+    if (group.length < 2) continue;
+    const fit = new Map<string, number>();
+    for (const l of group) {
+      const a = assessInstrument(l, answers);
+      // Nothing decidable about this leaf: a gap in our encoding, never
+      // evidence that the founder fails. Same treatment awardScorer gives a
+      // fund with no recorded award median.
+      if (a.checked > 0) fit.set(l.id, a.passed / a.checked);
+    }
+    const known = [...fit.values()];
+    if (known.length < 2) continue;
+    const lo = Math.min(...known), hi = Math.max(...known);
+    if (hi === lo) continue;
+    for (const [id, f] of fit) {
+      score.set(id, Math.pow(GATE_MATCH, 2 * ((f - lo) / (hi - lo)) - 1));
     }
   }
   if (!score.size) return neutral;
@@ -546,9 +690,58 @@ export const CAPITAL_SOUGHT_TO_DB: Record<string, string[]> = {
   // instrument carried meant the option matched zero funds and the graded
   // fallback then relaxed capital type entirely, discarding the answer.
   recoverable_advance: ["loan"],
-  equity: ["equity", "blended"],
+  // `blended` used to sit here, and it is the reason a founder asking for
+  // "Loans & guarantees" could not be shown a fund that pays nothing else.
+  // See INDEFINITE_CAPITAL below: in this corpus `blended` is not a kind of
+  // capital, it is the record of a vote that did not reach its threshold.
+  equity: ["equity"],
   tax_credit: ["tax_credit"],
 };
+
+/**
+ * Capital-type values that name no KIND of capital, only the outcome of a vote.
+ *
+ * ── The property ──────────────────────────────────────────────────────────
+ * A stated capital preference may remove a fund only on EVIDENCE THAT THE FUND
+ * DOES NOT PROVIDE WHAT WAS ASKED FOR. `capital_type` is one label chosen by a
+ * majority vote over an instrument's own awards (`family_capital_type`,
+ * ETL/events/load/populate_funding_instruments.py). `blended` is not an outcome
+ * of that vote — it is what the vote emits when NOTHING reached the 60%
+ * threshold, for any unresolved mixture whatever the kinds involved. It cannot
+ * support removing a fund, because it does not say what the fund pays.
+ *
+ * ── What that cost ────────────────────────────────────────────────────────
+ * `blended` was mapped to the EQUITY option and was in `accessMode.DILUTIVE`,
+ * so it took an explicit request for equity to see one at all. Every `blended`
+ * instrument in the corpus, checked one by one against the split vote the ETL
+ * records beside each label, contains NO equity: 1,451 loan against 1,526
+ * guarantee (2,977 awards, a national debt programme), three grant/loan splits,
+ * two grant/tax-credit splits, two register rows stating loan and grant, one
+ * with no vote. The largest was therefore visible only to founders who asked
+ * for equity — the one thing it does not provide — and hidden from every
+ * founder who asked for the debt it does.
+ *
+ * ── Why `unknown` is NOT here, though it fails the same test ──────────────
+ * It fails a DIFFERENT test. `blended` is a fact we hold and were misreading;
+ * `unknown` is a fact we never recorded, and the two do not have the same safe
+ * default. Workstream AE priced `unknown` (8 publishable instruments, reachable
+ * by no intake option) and declined to admit them for a reason that still
+ * holds: among the untyped instruments are vehicles named "portfolio" and
+ * "investments", and three of their typed siblings carry `equity`. Admitting
+ * them to a grant-seeker's pool could put a cap-table investor in front of
+ * someone who never asked for one, which is precisely what
+ * `passesCapitalPreference` exists to prevent. An unresolved MIXTURE we can
+ * enumerate is safe to admit; an unresolved BLANK is not.
+ *
+ * So `unknown` stays unreachable and stays a ratchet in
+ * `check_capital_reach.ts`, whose own note says the honest fix is upstream in
+ * the ETL. This constant deliberately does not overrule that.
+ *
+ * ── Why a set of values and not a list of instruments ─────────────────────
+ * The test is on what the LABEL asserts, so a capital type this file has never
+ * seen is handled by its own classification rather than by being named here.
+ */
+export const INDEFINITE_CAPITAL = new Set(["blended"]);
 
 // Representative euro value per ticket band, for ranking real DB leaf
 // instruments by proximity to the founder's stated ask, against each
@@ -575,9 +768,24 @@ export function instrumentServesCountry(instrumentCountry: string, founderCountr
 
 export function instrumentServesCapital(instrumentCapitalType: string, capitalSought: string[]): boolean {
   if (!capitalSought.length) return true;
+  // A label that names no kind cannot contradict what the founder asked for.
+  // See INDEFINITE_CAPITAL: this is the difference between "this fund does not
+  // pay grants" and "the vote about what this fund pays produced no answer",
+  // which the old `allowed.has(...)` test collapsed into the same result.
+  //
+  // Note what is deliberately NOT done here: an UNMAPPED value does not get the
+  // same treatment. Making it silence would be the more general-looking rule
+  // and it would disarm `check_capital_reach.ts`, whose whole job is to fail
+  // the build when a new capital type reaches no founder. A value nobody has
+  // classified must be loud, not quietly admitted.
+  if (INDEFINITE_CAPITAL.has(instrumentCapitalType)) return true;
   const allowed = new Set(capitalSought.flatMap((c) => CAPITAL_SOUGHT_TO_DB[c] ?? []));
   return allowed.size === 0 || allowed.has(instrumentCapitalType);
 }
+
+/** Every capital type some intake option admits. Derived from the option map
+ *  rather than restated, so the two cannot drift. */
+export const KNOWN_CAPITAL_TYPES = new Set(Object.values(CAPITAL_SOUGHT_TO_DB).flat());
 
 /**
  * What a company like this one would actually receive.
@@ -859,10 +1067,38 @@ export function fundDescriptor(inst: DbInstrument): string {
  * the capital type. Nothing is invented — every one of those is the fund's own
  * identifier, and where none separates them the dedupe still runs.
  */
+/**
+ * The label a row RENDERS under — the one thing both the disambiguator and the
+ * collapse are allowed to group by.
+ *
+ * It exists because the two used to compute it separately: this spelling, which
+ * reads the row's own published title, against `displayInstitutionName`, which
+ * rebuilds a name from country + kind + scheme code and never looks at
+ * `row.instrument` at all. For a row carrying a real title the two DISAGREE —
+ * the derived name embeds the notified scheme code and so separates twins the
+ * published title merges — and the consequence was a fund deleted from the pool
+ * on a key the disambiguator had never examined. A "keep these two in sync"
+ * comment is the bug in this repo; one exported function is the fix.
+ */
+function rowDisplayLabel(r: InstrumentRow): string {
+  return r.instrument || displayInstitutionName(r);
+}
+
 function distinguishRowNames(rows: InstrumentRow[]): void {
   const byName = new Map<string, InstrumentRow[]>();
   for (const r of rows) {
-    const n = displayInstitutionName(r);
+    // The label the DEDUPE will collapse on, not a second one computed here.
+    //
+    // This grouped by `displayInstitutionName(r)` while the dedupe keyed on
+    // `r.instrument || displayInstitutionName(r)`. Two functions, two keys: a
+    // row carrying a real published title was grouped by its DERIVED name --
+    // which embeds the notified scheme code and therefore separates it from its
+    // twin -- so the disambiguator saw no collision to resolve, and the dedupe
+    // then collapsed the pair on the title the disambiguator never examined.
+    // Measured live: 4 rows across 22 markets, every one of them two DISTINCT
+    // notified schemes publishing under one title (CZ SA.63670 against
+    // SA.111735, and the DE and IT equivalents).
+    const n = rowDisplayLabel(r);
     byName.set(n, [...(byName.get(n) ?? []), r]);
   }
   for (const [name, peers] of byName) {
@@ -900,6 +1136,14 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
     // fragment, which is an internal slug and tells a reader nothing.
     const regions = new Set(peers.map((p) => p.deliveryRegion ?? ""));
     const regionDistinguishes = regions.size === peers.length && !regions.has("");
+    // A scheme-code branch was written here, tested the same way body and region
+    // are tested, and REMOVED. Rationale it was written on: peers that collide
+    // on a shared TITLE often carry different notified codes, and a code is a
+    // published identifier where the id fragment below is an internal slug.
+    // Rationale it was removed on: measured across 22 markets after the grouping
+    // key was corrected, it produced a token ZERO times -- the granting body
+    // separates every pair the corpus actually contains. A branch nothing can
+    // emit is the SEL-BAND defect in code rather than in the register.
     for (const r of peers) {
       const token = (bodyDistinguishes ? r.administeringBody : "")
         || (regionDistinguishes && r.deliveryRegion
@@ -1255,6 +1499,12 @@ export interface InstrumentTableInput {
    *  many bodies, so their text, their article and their cheque size are
    *  identical and only the applicant's location differs. See regionScorer. */
   founderRegion?: string;
+  /** Everything the founder actually answered, for the ONE thing that needs
+   *  the whole answer set rather than a single field: checking each leaf's own
+   *  encoded rules against them. Read only in `materialiseInstrumentTable`,
+   *  where gates are already in memory — selection above must stay gate-free.
+   *  See `gateFitScorer`. */
+  eligibility?: EligibilityAnswers;
   /** Records every fund this function removes. Optional: callers that do not
    *  care about the funnel need not thread one through. */
   log?: ExclusionLog;
@@ -1613,7 +1863,7 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, log } = input;
+  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, eligibility, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = semantic?.size
@@ -1768,7 +2018,11 @@ export function materialiseInstrumentTable(
     const obj = objectiveScorer(leaves.map((l) => l.id), useOfFunds);
     const awd = awardScorer(leaves, input.ticketBand);
     const reg = regionScorer(leaves, founderRegion);
-    const pref = (l: DbInstrument) => obj(l.id) * awd(l) * reg(l);
+    // What the founder actually clears, per leaf. The fourth per-scheme fact
+    // siblings do not share, and the only one built from the fund's own
+    // eligibility TEXT rather than from its award history. See gateFitScorer.
+    const gate = gateFitScorer(leaves, eligibility);
+    const pref = (l: DbInstrument) => obj(l.id) * awd(l) * reg(l) * gate(l);
     // Nothing to say about these siblings: leave the channel untouched.
     if (leaves.every((l) => pref(l) === pref(leaves[0]))) continue;
     const slots = leaves.map((l) => baseRelevance(l.id)).sort((a, b) => b - a);
@@ -1853,7 +2107,7 @@ export function materialiseInstrumentTable(
     const base = r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
     return base * ticket;
   };
-  const rowsOut = selections
+  const ranked = selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
         return { ...base, instrument: INSTRUMENT_NAME[base.channel] ?? channelLabel(base.channel) } as InstrumentRow;
@@ -1949,63 +2203,99 @@ export function materialiseInstrumentTable(
       if (pa !== pb) return pa - pb;
       // Total order, so the sort cannot depend on the order rows arrived in.
       return (a.instrumentId ?? "").localeCompare(b.instrumentId ?? "");
-    })
-    // One row per institution NAME. 322 instruments share only 143 display
-    // names, and selectLeafInstruments returns up to two leaves per channel,
-    // so a founder could see "Enterprise Ireland" or "Norges Forskningsrad"
-    // twice in the same table — which reads as a bug even when both rows are
-    // real. Deduped here rather than at the call sites so the preliminary
-    // verdict table and the memo's five institutions can never disagree.
-    // Keep the leaf that can actually say something: the one with the most
-    // ENCODED eligibility rules. First-wins looked right but is not — the sort
-    // above orders by fit and channel priority, which knows nothing about
-    // encoding coverage, so it kept an Enterprise Ireland leaf with zero
-    // encoded rules over a sibling that returned a real "open" verdict.
-    .filter((row, i, all) => {
-      // Names are disambiguated first, so this only drops rows that genuinely
-      // cannot be told apart rather than rows that merely share a body.
-      if (i === 0) distinguishRowNames(all);
-      // Key on the DISTINGUISHED label, not on a freshly recomputed one.
-      // displayInstitutionName rebuilds the name from country + kind + scheme
-      // code and never reads `row.instrument`, so distinguishRowNames' work was
-      // invisible here: rows it had just told apart were still collapsed.
-      const name = row.instrument || displayInstitutionName(row);
-      const peers = all.filter((o) => (o.instrument || displayInstitutionName(o)) === name);
-      if (peers.length === 1) return true;
-      const encodedCount = (r: InstrumentRow) => {
-        const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
-        return inst ? inst.gates.filter(
-          (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
-      };
-      // Rows that genuinely cannot be told apart still collapse, but the
-      // survivor is no longer decided by array position. encodedCount ties in
-      // 70% of SATR cases -- siblings inherit their regime's gates, so the
-      // counts are identical -- and the old reduce kept whichever came first.
-      // Prefer the leaf carrying evidence of its OWN, then the richer one, then
-      // a total order on id so the result cannot depend on hydration sequence.
-      const ownCount = (r: InstrumentRow) => {
-        const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
-        return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
-      };
-      const best = [...peers].sort((a, b) =>
-        (ownCount(b) - ownCount(a))
-        || (encodedCount(b) - encodedCount(a))
-        || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""))[0];
-      const keep = all.indexOf(best) === i;
-      if (!keep) {
-        log?.record("SEL-DUPE-NAME", row.instrumentId ?? row.channel,
-          `another instrument renders under the same institution name with more encoded rules`);
-      }
-      return keep;
     });
+  // One row per institution NAME. 322 instruments share only 143 display
+  // names, and selectLeafInstruments returns up to two leaves per channel,
+  // so a founder could see "Enterprise Ireland" or "Norges Forskningsrad"
+  // twice in the same table — which reads as a bug even when both rows are
+  // real. Resolved here rather than at the call sites so the preliminary
+  // verdict table and the memo's five institutions can never disagree.
+  // Keep the leaf that can actually say something: the one with the most
+  // ENCODED eligibility rules. First-wins looked right but is not — the sort
+  // above orders by fit and channel priority, which knows nothing about
+  // encoding coverage, so it kept an Enterprise Ireland leaf with zero
+  // encoded rules over a sibling that returned a real "open" verdict.
+  //
+  // ── DEMOTED, never dropped ────────────────────────────────────────────────
+  // This was a `.filter()`, and the array it filters is the one the caller
+  // derives `candidateInstrumentIds` from — so a DISPLAY rule was deleting funds
+  // from the writer's pool, where nothing downstream can recover them or even
+  // report their absence. `applyPeerPrecedence` already made exactly this
+  // correction for the notified-scheme repeat forty lines below, on exactly this
+  // reasoning and with the measurement to match (pool 97% -> 83% when that one
+  // was a filter). The two collapses were the same defect and only one of them
+  // had been fixed.
+  //
+  // Measured before changing it, live Postgres corpus, one founder per country
+  // across 22 countries: this rule removed 4 rows in total (DE 1, IT 1, CZ 2)
+  // and 0 in the other 19 markets. It is nearly dead because `administering_body`
+  // now separates siblings — DE's mean same-name class fell 91.8 -> 4.2 — and
+  // `distinguishRowNames` reads that field. What it still catches is a different
+  // thing from what it was written for: two DISTINCT notified schemes (different
+  // SA numbers, different budgets, different granting decisions) that publish
+  // under one shared title. A founder genuinely cannot tell those apart on the
+  // page, so the display rule is right; deleting the second from the universe is
+  // not, because they are two funds.
+  //
+  // Demotion satisfies both. The visible order is UNCHANGED — the losers move to
+  // the very back, past `applyPeerPrecedence`, so every row a founder sees today
+  // is the row they see now — and the pool keeps the fund.
+  //
+  // The collapse itself lives in `nameCollision.ts`, extracted so the invariant
+  // above is a TEST rather than a comment: `visible + demoted === input` fails
+  // the moment anyone turns this back into a `.filter()`, which is exactly the
+  // simplification a reader without the history would reach for.
+  distinguishRowNames(ranked);
+  const encodedCount = (r: InstrumentRow) => {
+    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+    return inst ? inst.gates.filter(
+      (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
+  };
+  // Rows that genuinely cannot be told apart still collapse in the TABLE, but
+  // the survivor is not decided by array position. encodedCount ties in 70% of
+  // SATR cases -- siblings inherit their regime's gates, so the counts are
+  // identical -- and the old reduce kept whichever came first. Prefer the leaf
+  // carrying evidence of its OWN, then the richer one, then a total order on id
+  // so the result cannot depend on hydration sequence.
+  const ownCount = (r: InstrumentRow) => {
+    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+    return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
+  };
+  // ONE label function, passed to both the disambiguator and the collapse.
+  // displayInstitutionName rebuilds the name from country + kind + scheme code
+  // and never reads `row.instrument`, so while these were two functions the
+  // disambiguator's work was invisible here and rows it had just told apart
+  // were still collapsed. Two functions, two keys, was the whole defect.
+  const collision = resolveNameCollisions(ranked, rowDisplayLabel,
+    (a, b) => (ownCount(b) - ownCount(a))
+      || (encodedCount(b) - encodedCount(a))
+      || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""));
+  for (const { row, kept, label: name } of collision.collisions) {
+    // The NAME they collided on, and WHICH row survived. Without both, the log
+    // says a collision happened and nothing about whether the two rows were
+    // really indistinguishable -- which is the only question that decides if
+    // this rule is still earning its place.
+    log?.record("SEL-DUPE-NAME", row.instrumentId ?? row.channel,
+      `renders as "${name}", the same label as ${kept.instrumentId ?? kept.channel}, ` +
+      `which is shown instead; this row is demoted to the back of the pool, not removed`);
+  }
+  const rowsOut = collision.visible;
   // Peer precedent decides the visible order, last, on the surviving rows.
   // Applied here rather than inside rowRelevance so it can never resurrect a
-  // row the screen excluded or a duplicate the dedupe removed -- it only
+  // row the screen excluded or a duplicate the dedupe demoted -- it only
   // reorders what already qualified.
   // `themeInformative` is already computed above: it is true when the founder's
   // description peaks sharply on a few funds rather than scoring everything
   // alike, which is exactly the "we know what this project is" condition.
-  return applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative);
+  //
+  // The demoted rows are appended AFTER it rather than passed through it, so
+  // they cannot take a visible slot: peer precedence sorts what it is given, and
+  // a duplicate handed to it can land anywhere in the order. Appending keeps the
+  // table byte-identical to the version that dropped them.
+  return [
+    ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative),
+    ...collision.demoted,
+  ];
 }
 
 /**

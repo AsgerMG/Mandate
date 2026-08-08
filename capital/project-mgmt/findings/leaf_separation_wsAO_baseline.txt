@@ -1,0 +1,75 @@
+##### SEED=20260806
+(node:52854) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T08:19:59.894Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 300
+  in pool                  283/300 (94% +/-2.6)
+  EXACT scheme in top 5    75/300 (25% +/-4.9)
+  same REGIME in top 5     247/300 (82% +/-4.3)   <- the operational number
+  same CHANNEL in top 5    262/300 (87% +/-3.8)
+    mode=profile               n= 222  pool 97%  exact5 25%  regime5 88%
+    mode=project               n=  78  pool 86%  exact5 26%  regime5 67%
+    traced:exact_attribution   n= 132  pool 100%  exact5 23%  regime5 87%
+    original join              n= 168  pool 90%  exact5 26%  regime5 79%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  18  pool 100%  exact5 28%  regime5 28%
+    regime 2-5                 n=  11  pool 73%  exact5 45%  regime5 55%
+    regime 6-20                n=  40  pool 78%  exact5 18%  regime5 48%
+    regime 21-50               n=  86  pool 100%  exact5 27%  regime5 86%
+    regime 51+                 n= 145  pool 97%  exact5 24%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+##### SEED=7
+(node:55084) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T08:23:10.162Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 300
+  in pool                  281/300 (94% +/-2.8)
+  EXACT scheme in top 5    88/300 (29% +/-5.2)
+  same REGIME in top 5     254/300 (85% +/-4.1)   <- the operational number
+  same CHANNEL in top 5    265/300 (88% +/-3.6)
+    mode=profile               n= 227  pool 96%  exact5 30%  regime5 90%
+    mode=project               n=  73  pool 85%  exact5 26%  regime5 68%
+    original join              n= 181  pool 90%  exact5 31%  regime5 80%
+    traced:exact_attribution   n= 119  pool 100%  exact5 26%  regime5 92%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  17  pool 100%  exact5 53%  regime5 53%
+    regime 2-5                 n=  11  pool 64%  exact5 27%  regime5 64%
+    regime 6-20                n=  46  pool 85%  exact5 33%  regime5 54%
+    regime 21-50               n=  84  pool 100%  exact5 25%  regime5 86%
+    regime 51+                 n= 142  pool 94%  exact5 28%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+##### SEED=99
+(node:57283) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T08:26:23.340Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 300
+  in pool                  281/300 (94% +/-2.8)
+  EXACT scheme in top 5    93/300 (31% +/-5.2)
+  same REGIME in top 5     256/300 (85% +/-4.0)   <- the operational number
+  same CHANNEL in top 5    263/300 (88% +/-3.7)
+    mode=profile               n= 219  pool 96%  exact5 31%  regime5 91%
+    mode=project               n=  81  pool 88%  exact5 32%  regime5 70%
+    traced:exact_attribution   n= 140  pool 100%  exact5 28%  regime5 91%
+    original join              n= 160  pool 88%  exact5 34%  regime5 80%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  12  pool 100%  exact5 33%  regime5 33%
+    regime 2-5                 n=  15  pool 93%  exact5 33%  regime5 47%
+    regime 6-20                n=  43  pool 79%  exact5 35%  regime5 58%
+    regime 21-50               n=  87  pool 100%  exact5 37%  regime5 90%
+    regime 51+                 n= 143  pool 94%  exact5 26%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)

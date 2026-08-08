@@ -30,8 +30,35 @@ export type AccessMode =
   /** Selected and negotiated with, on commercial terms. */
   | "invest";
 
-/** Capital types that are dilutive by construction. */
-const DILUTIVE = new Set(["equity", "blended"]);
+/**
+ * Capital types that are dilutive by construction.
+ *
+ * ── Why `blended` is not one of them ───────────────────────────────────────
+ * It was, and the reasoning was that a blended instrument carries an equity
+ * component. Nothing in the corpus carries that meaning. `blended` is what
+ * `family_capital_type` emits when no kind reached its 60% threshold — a
+ * statement about a VOTE, not about capital, and it is emitted for any
+ * unresolved mixture whatever the kinds involved.
+ *
+ * Every `blended` instrument in the corpus, checked one by one against the
+ * split vote the ETL records beside each label: 1,451 loan / 1,526 guarantee;
+ * three grant / loan splits; two grant / tax-credit splits; two register rows
+ * stating loan and grant; one with no vote at all. Not one equity award among
+ * them. Treating the label as dilution took the largest of them — a national
+ * debt programme with 2,977 awards — and made it visible only to founders who
+ * asked for equity, which is the one thing it does not provide, while hiding
+ * it from every founder who asked for the debt it does.
+ *
+ * The protective intent is intact and is why `equity` stays: silence is still
+ * not consent to dilution. What changed is that the guard now fires on a label
+ * that asserts dilution, rather than on one that asserts nothing.
+ */
+const DILUTIVE = new Set(["equity"]);
+
+/** The dilution set, for the tests that pin the property above. Exported so
+ *  `capitalPreference.test.ts` tests the set the code uses rather than a copy
+ *  of it — a copy would keep passing after this one changed. */
+export const DILUTIVE_FOR_TEST: ReadonlySet<string> = DILUTIVE;
 
 /**
  * Gate language that describes an INVESTOR rather than a grantor.

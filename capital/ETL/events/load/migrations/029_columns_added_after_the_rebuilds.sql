@@ -1,8 +1,8 @@
--- Migration 028: the second half of 027 -- the funding_instruments columns that
+-- Migration 029: the second half of 028 -- the funding_instruments columns that
 -- no migration created and that must be added AFTER 021/022.
--- Applied via: python3 ETL/events/load/migrations/apply.py 028
+-- Applied via: python3 ETL/events/load/migrations/apply.py 029
 --
--- See 027's header for the whole finding. The split exists because 021 and 022
+-- See 028's header for the whole finding. The split exists because 021 and 022
 -- rebuild funding_instruments from a fixed column list and delete anything not
 -- on it; these ten columns were added to the live database by self-healing ETL
 -- scripts at some point after those rebuilds ran, so this is where they belong.

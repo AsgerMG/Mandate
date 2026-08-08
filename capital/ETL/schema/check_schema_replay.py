@@ -3,8 +3,8 @@
 ── The failure this exists to stop ────────────────────────────────────────
 On 2026-08-07 the weekly census recorded `coverage: OperationalError: no such
 column: tier`. That was migration 019 never reaching the Railway volume, and it
-is fixed: the cron applies migrations now, and ETL/lib/schema_state.py answers
-"does this store have migration N" from the store's own schema.
+is fixed: the cron applies migrations now, `apply.py all` exists, and every
+apply_NNN tests for its own change before running.
 
 Underneath it was a second, quieter drift. Replaying schema.sql plus every
 migration in ETL/events/load/migrations into an empty database did not produce
@@ -12,7 +12,8 @@ this project's schema. It produced an error, three times over:
 
     012  no such column: c.parent_group     (data/views.sql selects it)
     021  no such column: scheme_code        (the rebuild SELECTs it)
-    then, silently, ten columns short
+    then, silently, ten columns short -- 021 and 022 rebuild
+         funding_instruments from a fixed column list and delete the rest
 
 Fifteen columns of the live corpus were created by no committed statement at
 all. Eleven by ETL scripts that ALTER themselves a column on first run;
@@ -48,8 +49,6 @@ for _anc in _Path(__file__).resolve().parents:
 import sqlite3  # noqa: E402
 import tempfile  # noqa: E402
 
-import schema_state  # noqa: E402
-
 ROOT = _Path(__file__).resolve().parents[2]
 SCHEMA = ROOT / "ETL/events/load/schema.sql"
 
@@ -57,43 +56,54 @@ SCHEMA = ROOT / "ETL/events/load/schema.sql"
 def main() -> int:
     import apply as runner  # noqa: PLC0415 — needs the path bootstrap above
 
+    order = runner.run_order()
     with tempfile.TemporaryDirectory() as tmp:
         path = _Path(tmp) / "replay.sqlite"
         con = sqlite3.connect(path)
         try:
             con.executescript(SCHEMA.read_text())
             con.commit()
-            print(f"schema.sql replayed into an empty store: "
-                  f"{len(schema_state.pending(con))} migrations pending")
-            for mig in schema_state.pending(con):
+            print(f"schema.sql replayed into an empty store; "
+                  f"{len(order)} migrations to apply")
+            for mig in order:
                 try:
                     runner.MIGRATIONS[mig](con)
                     con.commit()
                 except sqlite3.Error as exc:
-                    print(f"\nFAILED at migration {mig} — "
-                          f"{schema_state.DESCRIPTIONS[mig]}\n  {exc}\n\n"
+                    print(f"\nFAILED at migration {mig}\n  {exc}\n\n"
                           f"The committed DDL cannot rebuild this project's "
-                          f"schema. Either the migration is out of order in "
-                          f"schema_state.MIGRATIONS, or it reads a column that "
-                          f"no committed statement creates — which means that "
-                          f"column exists only in the databases somebody has "
-                          f"already ALTERed by hand.")
+                          f"schema. Either the migration runs out of order -- "
+                          f"see _RUN_BEFORE in apply.py -- or it reads a column "
+                          f"that no committed statement creates, which means "
+                          f"that column exists only in the databases somebody "
+                          f"has already ALTERed by hand.")
                     return 1
-            still = schema_state.pending(con)
-            if still:
-                # Every migration ran and its own effect is not there. 021 and
-                # 022 rebuild funding_instruments from a fixed column list and
-                # DELETE anything not on it, so a column added too early is
-                # dropped again without an error anywhere.
-                print(f"\nFAILED: every migration ran and {len(still)} of them "
-                      f"are still not present: {', '.join(still)}\n"
-                      f"  A later migration is deleting an earlier one's "
-                      f"columns. Check the order in schema_state.MIGRATIONS.")
+            live = {r[1] for r in con.execute(
+                "PRAGMA table_info(funding_instruments)")}
+            # 021 and 022 rebuild funding_instruments from a fixed column list
+            # and DELETE anything not on it, so a column added too early is
+            # dropped again with no error anywhere. Nothing else in this file
+            # would notice.
+            declared = set()
+            for name in ("028_columns_that_had_no_migration.sql",
+                         "029_columns_added_after_the_rebuilds.sql",
+                         "030_source_window_policy.sql"):
+                for line in (runner.MIG_DIR / name).read_text().splitlines():
+                    parts = line.split()
+                    if len(parts) > 5 and parts[:2] == ["ALTER", "TABLE"] \
+                            and parts[2] == "funding_instruments":
+                        declared.add(parts[5])
+            lost = sorted(declared - live)
+            if lost:
+                print(f"\nFAILED: {len(lost)} column(s) were added and then "
+                      f"deleted again by a later migration's table rebuild: "
+                      f"{', '.join(lost)}.\n  Move them to a migration that "
+                      f"runs after 022.")
                 return 1
             tables = con.execute(
                 "SELECT count(*) FROM sqlite_master WHERE type='table'").fetchone()[0]
-            print(f"all {len(schema_state.IDS)} migrations replay clean — "
-                  f"{tables} tables built from committed DDL alone.")
+            print(f"all {len(order)} migrations replay clean — {tables} tables "
+                  f"built from committed DDL alone.")
             return 0
         finally:
             con.close()

@@ -28,6 +28,25 @@ import sys
 from pathlib import Path
 
 STEPS = [
+    # FIRST, and fatal if it fails.
+    #
+    # Nothing here ever applied migrations, so they reached whichever store a
+    # human happened to be pointed at -- the laptop, every time, and this volume
+    # never. The corpus the weekly cron actually writes ran 9 of the 23
+    # committed migrations. Its funding_instruments had no `tier` column, the
+    # census reads `tier`, so the census recorded a coverage LOSS and half a day
+    # went into hunting for funds that had never gone anywhere. A missing column
+    # is not a smaller corpus, but it reads exactly like one. The four columns
+    # that DID exist here were the ones an ordinary ETL script self-heals with
+    # ALTER TABLE on its way past, which is the same defect wearing a hat: the
+    # schema follows whichever SCRIPT ran, not whichever STORE matters.
+    #
+    # Fatal rather than tolerated, because every step below writes into this
+    # schema and a pipeline that writes a week of data into the wrong shape has
+    # made the problem bigger. Every migration is idempotent, so on an
+    # up-to-date corpus this prints a column of skips and costs a second.
+    # See ETL/events/load/migrations/apply.py::apply_all.
+    [sys.executable, str(ROOT / "ETL/events/load/migrations/apply.py"), "all"],
     [sys.executable, str(ROOT / "ETL/events/extract/renew.py"), "--auto"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "apply-nace"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "run",
@@ -40,12 +59,36 @@ STEPS = [
     # application deadlines: nothing upstream changes, and the inventory still
     # empties. See refresh_open_calls.py.
     [sys.executable, str(ROOT / "ETL/terms/refresh_open_calls.py")],
-    # ...and the guard for the failure mode the refresh itself has. A weekly job
-    # that silently stops running reproduces exactly the decay it was added to
-    # prevent. This runs LAST so it judges the state the run actually left, and
-    # it is not partial-tolerant: unexplained decay is a finding, not weather.
-    [sys.executable, str(ROOT / "ETL/terms/check_offerable_decay.py")],
 ]
+
+# ── The guards that can only run here ──────────────────────────────────────
+# These need `data/db.sqlite`, which is gitignored and lives on the volume this
+# container mounts. No CI job may read it, and giving GitHub Actions credentials
+# to reach it would widen a compromised workflow from "can read our code" to
+# "can read and write every award, company and fund we hold". So they run where
+# the data already is, and publish a verdict anything can read
+# (ETL/lib/guard_verdicts.py; website/frontend/scripts/check_verdicts.ts).
+#
+# `check_offerable_decay.py` was already a step above. It has moved here rather
+# than being duplicated: same command, same tolerated exit code (declared once,
+# in data/guard_registry.json), now with its result written down instead of
+# living only in a Railway log nobody opens.
+#
+# ── Why a failing guard does NOT stop the run ──────────────────────────────
+# Deliberate, and the opposite of what the steps above do. A guard is a REPORT.
+# Aborting here would skip the census — which is the only record of what this
+# week's corpus contains — in order to signal a problem that the guard has
+# already recorded and that check_verdicts.ts will fail on within hours. The run
+# would go dark precisely when there was something to see. So every guard runs,
+# every verdict is published, the run's exit code reflects that a guard failed,
+# and nothing downstream is denied the evidence.
+#
+# The one exception is deliberate too: check_offerable_decay.py's exit 3 means a
+# fall inside tolerance, and its exit 1 means the defect it exists to surface.
+# That distinction lives in the registry's `tolerate`, so the runner records
+# `ok` for the first and `failed` for the second without this file knowing why.
+GUARDS = ["store_schema", "aggregate_independence", "offerable_decay"]
+RUNNER = str(ROOT / "ETL/lib/guard_verdicts.py")
 
 # Recorded after everything above, WHATEVER happened above — see below.
 CENSUS = str(ROOT / "ETL/events/load/publish_corpus_census.py")
@@ -62,13 +105,8 @@ CENSUS = str(ROOT / "ETL/events/load/publish_corpus_census.py")
 #
 # refresh_open_calls.py exits 3 on the same grounds and for the same reason: a
 # detail fetch that hits its cap, or a naming pass with no API key, still moved
-# the corpus forward and must not cancel the decay guard that follows it.
-#
-# check_offerable_decay.py exits 3 for a fall inside tolerance -- worth saying
-# out loud, not worth failing the week over. Its exit 1 means a country's
-# offerable inventory fell with no corresponding corpus change, which is the
-# defect the whole step exists to surface, so that one is NOT tolerated.
-PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3, "check_offerable_decay.py": 3}
+# the corpus forward and must not cancel the guards that follow it.
+PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3}
 
 def census(outcome: str) -> None:
     """Record what this run left behind, and how the run itself went.
@@ -102,6 +140,20 @@ def census(outcome: str) -> None:
               f"corpus; run it by hand ===", flush=True)
 
 
+def guards() -> list[str]:
+    """Run every corpus-side guard and publish each verdict. Returns the ones
+    that failed; never raises, and never short-circuits — a guard that fell over
+    must not stop the guard after it from being recorded."""
+    failed = []
+    for gid in GUARDS:
+        rc = subprocess.run([sys.executable, RUNNER, "run", gid]).returncode
+        if rc != 0:
+            print(f"=== GUARD FAILED: {gid} (rc={rc}) — recorded, not fatal; the "
+                  f"census below still runs ===", flush=True)
+            failed.append(gid)
+    return failed
+
+
 partial = []
 for step in STEPS:
     print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
@@ -119,14 +171,32 @@ for step in STEPS:
         partial.append(matched[0])
         continue
     print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
+    # No guards on this path, deliberately. The pipeline stopped part-way, so
+    # the corpus is half-built and a guard's verdict on it would be a true
+    # statement about a state that never ships. The census still goes out
+    # carrying the failure, and check_verdicts.ts then reports every guard as
+    # STALE against it -- which is the accurate description of what happened.
     census(f"failed at {Path(step[1]).name} (rc={result.returncode})")
     sys.exit(result.returncode)
 
-if partial:
-    # Loud, and non-zero, so a scheduled run that half-worked is never read as
-    # a clean one -- but only AFTER every downstream step has had its turn.
-    census(f"partial: {', '.join(Path(p).name for p in partial)}")
-    print(f"=== ALL STEPS RAN, {len(partial)} PARTIAL ===", flush=True)
+# Guards BEFORE the census, so the census stays the last thing written and keeps
+# dating the run. A guard failure does not stop this: see GUARDS above.
+failed_guards = guards()
+
+# The census describes THE PIPELINE's outcome, and a failing guard is not a
+# pipeline outcome. Folding one into the other would make check_corpus_census.ts
+# report "some part of the corpus is not refreshed" about a run in which every
+# source refreshed perfectly and a guard found something wrong with the result —
+# a true alarm with a false description, which is how alarms get muted. The
+# guard's own verdict already carries that claim, on its own channel.
+census(f"partial: {', '.join(Path(p).name for p in partial)}" if partial else "ok")
+
+if partial or failed_guards:
+    # Loud, and non-zero, so a scheduled run that half-worked or that ended with
+    # a red guard is never read as a clean one -- but only AFTER every
+    # downstream step, every guard and the census have had their turn.
+    print(f"=== ALL STEPS RAN — {len(partial)} partial, "
+          f"{len(failed_guards)} guard(s) failed: "
+          f"{', '.join(failed_guards) or 'none'} ===", flush=True)
     sys.exit(3)
-census("ok")
 print("=== ALL STEPS COMPLETE ===", flush=True)

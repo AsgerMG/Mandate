@@ -1,0 +1,78 @@
+corpus=postgres instruments=1088  multi-leaf regimes=52 leaves=780  labelled=780
+
+====================================================================================
+CEILING FOR A PERFECT ANSWER, all multi-leaf leaves
+====================================================================================
+question                     mean class   alone   <=5 (CEILING@5)     >20
+nothing asked (today)              48.9      0%                8%     66%
+money, shipped bands               34.5      3%               17%     51%
+money, finer low end               27.1      5%               24%     49%
+where you are (region)             27.7     16%               39%     43%
+what it pays for (stage)           47.6      6%               14%     66%
+what you are (who)                 46.7      8%               18%     65%
+technology / measure               10.8     39%               64%     20%
+money(fine) + region               15.1     23%               51%     27%
+money(fine) + tech                  7.5     47%               74%     14%
+region + tech                       4.4     54%               86%      5%
+all three                           3.4     64%               90%      4%
+
+Same table restricted to FULLY LABELLED regimes (ademe_aid, bdns_es_ayudas, chips_ju, edf, eic, eis_digitaliseerimise_teekaa, eis_ettev_tja_teadus_ja_aren, eis_ettev_tjate_k_berturvali, eit, eit_climate_kic, eit_digital, eit_manufacturing, horizon_eu_partnership, horizon_eu_pillar_ii, innovation_fund, innovationsfonden_innobooster, innovationsfonden_innoexplorer, innovationsfonden_innofounder, ipcei, satr_at_equity, satr_at_rnd, satr_be_equity, satr_be_rnd, satr_cz_equity, satr_cz_rnd, satr_de_equity, satr_de_rnd, satr_ee_rnd, satr_fi_equity, satr_fi_rnd, satr_fr_equity, satr_fr_rnd, satr_gb_equity, satr_gb_rnd, satr_gr_equity, satr_gr_rnd, satr_hu_equity, satr_hu_rnd, satr_ie_equity, satr_ie_rnd, satr_it_equity, satr_it_rnd, satr_lu_rnd, satr_lv_equity, satr_lv_rnd, satr_nl_equity, satr_nl_rnd, satr_pt_rnd, satr_se_rnd, satr_sk_equity, satr_sk_rnd, vinnova_grant)
+question                     mean class   alone   <=5 (CEILING@5)     >20
+nothing asked (today)              48.9      0%                8%     66%
+money, shipped bands               34.5      3%               17%     51%
+money, finer low end               27.1      5%               24%     49%
+where you are (region)             27.7     16%               39%     43%
+what it pays for (stage)           47.6      6%               14%     66%
+what you are (who)                 46.7      8%               18%     65%
+technology / measure               10.8     39%               64%     20%
+money(fine) + region               15.1     23%               51%     27%
+money(fine) + tech                  7.5     47%               74%     14%
+region + tech                       4.4     54%               86%      5%
+all three                           3.4     64%               90%      4%
+
+====================================================================================
+CEILING@5 PER REGIME (share of leaves whose residual class fits in five rows)
+====================================================================================
+regime                     n      nothing     money,     money,      where       what  technolog        all
+satr_de_rnd              103           0%         0%         2%        57%         1%        50%        94%
+bdns_es_ayudas            88           0%         0%         0%         0%         0%        58%        60%
+ademe_aid                 76           0%         5%         5%         7%         3%        91%       100%
+satr_it_rnd               68           0%         4%        12%        49%         0%        50%        87%
+vinnova_grant             50           0%         2%        10%         0%         0%        64%        72%
+satr_fr_rnd               43           0%         5%         7%        44%         0%        30%        60%
+satr_cz_rnd               35           0%         0%         0%        40%         0%        57%       100%
+satr_nl_rnd               28           0%         4%        11%        25%         0%        64%       100%
+satr_at_rnd               23           0%        22%        22%        26%         0%        35%       100%
+satr_it_equity            19           0%        16%        68%        42%         5%        63%       100%
+satr_be_rnd               17           0%        35%        35%       100%         0%        35%       100%
+satr_de_equity            15           0%         0%        40%        53%         0%       100%       100%
+ipcei                     12           0%       100%        33%         0%       100%       100%       100%
+satr_se_rnd               12           0%        25%        33%        25%         8%       100%       100%
+satr_fi_rnd               11           0%        36%        36%       100%         0%        36%       100%
+horizon_eu_partnership    10           0%        20%        20%         0%        10%       100%       100%
+
+legend: nothing=nothing asked (today), money,=money, shipped bands, money,=money, finer low end, where=where you are (region), what=what it pays for (stage), technolog=technology / measure, all=all three
+
+====================================================================================
+REGION NULL MODEL — is it the region, or is it having been written down?
+====================================================================================
+key                                          mean class   alone     <=5
+region: full (gates+footprint+catchment)           27.7     16%     39%
+region: encoded gate VALUE only                    35.5      6%     23%
+NULL: merely HAS a region gate                     38.2      1%     12%
+region: footprint+catchment only                   28.8     14%     36%
+
+====================================================================================
+REACH: regimes where the question CHANGES anything, and the leaves in them
+====================================================================================
+question                      regimes moved  leaves in them  countries
+money, shipped bands                     29             684         16
+money, finer low end                     36             731         19
+where you are (region)                   32             559         18
+what it pays for (stage)                 23             317         13
+what you are (who)                       40             703         20
+technology / measure                     37             729         19
+money(fine) + region                     42             751         21
+money(fine) + tech                       44             763         20
+region + tech                            44             760         21
+all three                                45             765         21

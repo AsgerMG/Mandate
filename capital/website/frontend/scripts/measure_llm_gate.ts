@@ -24,15 +24,12 @@
 //
 //   npx tsx scripts/measure_llm_gate.ts            # 30 holdout companies
 //   N=60 MODEL=claude-sonnet-5 npx tsx scripts/measure_llm_gate.ts
-import { readFileSync } from "fs";
 import Anthropic from "@anthropic-ai/sdk";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_llm_gate", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../lib/intelligence/corpus";
 import { Client } from "pg";

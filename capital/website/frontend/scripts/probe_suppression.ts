@@ -5,18 +5,18 @@
 // answer the one question the archetype table cannot: of the rows the policy
 // withholds, how many are rows a French founder actually WON, and would the
 // live register have called any of them closed?
-import { readFileSync, writeFileSync } from "fs";
+import { writeFileSync } from "fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
 // The live-register arm below reconnects deliberately with LIVE_URL, so the
 // fallback arm can be forced onto the snapshot without losing the referee.
+// Captured BEFORE the contract, which deletes DATABASE_URL under NO_PG — the
+// referee must survive the offline declaration, or this probe compares the
+// snapshot against itself.
 const LIVE_URL = process.env.DATABASE_URL;
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+requireCredentials("probe_suppression", ["DATABASE_URL"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,

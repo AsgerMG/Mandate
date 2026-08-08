@@ -1,11 +1,16 @@
 import { describe, it, expect } from "vitest";
 import {
-  SCHEME_END_BASIS, closedSql, isClosed, opennessEvidence,
-  populationRecordsDeadlines, unconfirmedOpen,
+  SCHEME_END_BASIS, SOURCE_WINDOW_POLICY, closedSql, contradictsDeclaredPolicy,
+  isClosed, opennessEvidence, unconfirmedOpen,
 } from "./liveness";
 
 const N = SCHEME_END_BASIS.notifiedDuration;
 const C = SCHEME_END_BASIS.callDeadline;
+/** The register states a window for objects like this one, so an absence in
+ *  our copy is OUR gap. */
+const W = SOURCE_WINDOW_POLICY.publishesWindow;
+/** The register has no window field at all. Its silence is not our gap. */
+const NW = SOURCE_WINDOW_POLICY.publishesNoWindow;
 const AS_OF = "2026-08-06";
 
 describe("liveness", () => {
@@ -119,7 +124,7 @@ describe("unconfirmedOpen", () => {
       { schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2024 },
       { schemeEndDate: "2030-01-01", schemeEndBasis: C },
     ]) {
-      expect(unconfirmedOpen(row, { ...PG, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+      expect(unconfirmedOpen({ ...row, sourceWindowPolicy: W }, PG, AS_OF)).toBeNull();
     }
   });
 
@@ -128,8 +133,9 @@ describe("unconfirmedOpen", () => {
     // population whose register publishes deadlines. Postgres held
     // 2025-04-14 / call_deadline for the same row and correctly withheld it.
     expect(unconfirmedOpen(
-      { schemeEndDate: null, schemeEndBasis: null, lastYear: 2026 },
-      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toContain("no application deadline");
+      { schemeEndDate: null, schemeEndBasis: null, lastYear: 2026,
+        sourceWindowPolicy: W },
+      SNAP, AS_OF)).toContain("does state one");
   });
 
   it("serves an undated row whose register does not publish deadlines", () => {
@@ -138,22 +144,24 @@ describe("unconfirmedOpen", () => {
     // half the product, and the policy stops being a floor and becomes an
     // outage.
     expect(unconfirmedOpen(
-      { schemeEndDate: null, schemeEndBasis: null, lastYear: 2025 },
-      { ...SNAP, populationRecordsDeadlines: false }, AS_OF)).toBeNull();
+      { schemeEndDate: null, schemeEndBasis: null, lastYear: 2025,
+        sourceWindowPolicy: NW },
+      SNAP, AS_OF)).toBeNull();
   });
 
   it("serves a declared future window off a snapshot", () => {
     // A store being hours behind does not make a future date untrue, and this
     // is the clause that keeps a freshly loaded open call offerable.
     expect(unconfirmedOpen(
-      { schemeEndDate: "2030-01-01", schemeEndBasis: C },
-      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+      { schemeEndDate: "2030-01-01", schemeEndBasis: C, sourceWindowPolicy: W },
+      SNAP, AS_OF)).toBeNull();
   });
 
   it("serves an observed renewal off a snapshot", () => {
     expect(unconfirmedOpen(
-      { schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2024 },
-      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+      { schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2024,
+        sourceWindowPolicy: W },
+      SNAP, AS_OF)).toBeNull();
   });
 
   it("reads an ABSENT basis field as unconfirmed, never as open", () => {
@@ -162,20 +170,20 @@ describe("unconfirmedOpen", () => {
     // classify the populations either, so nothing it says about an undated row
     // can be acted on. NULL-reads-as-live is what left 80 dead Spanish calls
     // proposable.
-    const noKey = { schemeEndDate: null, lastYear: 2026 };
-    expect(unconfirmedOpen(noKey, { ...SNAP, populationRecordsDeadlines: false }, AS_OF))
-      .toContain("scheme_end_date_basis");
+    const noKey = { schemeEndDate: null, lastYear: 2026, sourceWindowPolicy: NW };
+    expect(unconfirmedOpen(noKey, SNAP, AS_OF)).toContain("scheme_end_date_basis");
     // Distinct from a basis that is present and null, which is a store saying
     // "no end date is recorded" rather than a store that lost the column.
-    expect(unconfirmedOpen({ ...noKey, schemeEndBasis: null },
-      { ...SNAP, populationRecordsDeadlines: false }, AS_OF)).toBeNull();
+    expect(unconfirmedOpen({ ...noKey, schemeEndBasis: null }, SNAP, AS_OF)).toBeNull();
   });
 
-  it("treats an unknown population as deadline-recording", () => {
-    // Absent means "we did not ask", and the safe reading of not having asked
-    // is the conservative one.
+  it("withholds a row nobody has asked about", () => {
+    // NULL is not neutral and must never be read as `publishes_no_window`. A
+    // fresh corpus and an unclassified one look identical from inside the rule,
+    // so defaulting here would restore the exact defect the column replaces --
+    // an unexamined absence taken for a fact -- and would do it invisibly.
     expect(unconfirmedOpen({ schemeEndDate: null, schemeEndBasis: null },
-      SNAP, AS_OF)).not.toBeNull();
+      SNAP, AS_OF)).toContain("no source has been asked");
   });
 
   it("serves a row the successor redirect emptied", () => {
@@ -188,13 +196,15 @@ describe("unconfirmedOpen", () => {
     // Postgres offers these rows. Withholding them off the snapshot is pure
     // asymmetry: two Spanish convocatorias, no correctness bought.
     expect(unconfirmedOpen(
-      { schemeEndDate: null, schemeEndBasis: C, successorScheme: "919463", lastYear: 2026 },
-      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+      { schemeEndDate: null, schemeEndBasis: C, successorScheme: "919463",
+        lastYear: 2026, sourceWindowPolicy: W },
+      SNAP, AS_OF)).toBeNull();
     // A successor named on a row that still HAS its window changes nothing:
     // the window is what is being read, and it is still there.
     expect(unconfirmedOpen(
-      { schemeEndDate: "2020-01-01", schemeEndBasis: C, successorScheme: "919463" },
-      { ...SNAP, populationRecordsDeadlines: true }, AS_OF)).toBeNull();
+      { schemeEndDate: "2020-01-01", schemeEndBasis: C, successorScheme: "919463",
+        sourceWindowPolicy: W },
+      SNAP, AS_OF)).toBeNull();
   });
 
   it("classifies each way a row can be open", () => {
@@ -208,67 +218,66 @@ describe("unconfirmedOpen", () => {
   });
 });
 
-describe("populationRecordsDeadlines", () => {
-  // THE PROPERTY: a register records application windows when MOST of its rows
-  // carry one. Membership -- "has any member ever" -- cannot tell a register of
-  // calls from a catalogue of standing aids containing a few, and reading them
-  // as the same thing withheld all 75 undated French rows for the sake of six.
-  it("marks a population where a recorded deadline is the norm", () => {
-    const rows = [
-      // A register of convocatorias: dated is what it publishes, so the undated
-      // member is one we have not finished loading.
-      { pop: "calls|ES", schemeEndDate: "2025-04-14", schemeEndBasis: C },
-      { pop: "calls|ES", schemeEndDate: "2025-07-31", schemeEndBasis: C },
-      { pop: "calls|ES", schemeEndDate: null, schemeEndBasis: null },
-      { pop: "standing|EU", schemeEndDate: null, schemeEndBasis: null },
-      // A notified duration is NOT a deadline. If this ever counted, every SATR
-      // country would qualify and the policy would withhold hundreds of rows.
-      { pop: "standing|EU", schemeEndDate: "2020-12-30", schemeEndBasis: N },
-    ];
-    const records = populationRecordsDeadlines(rows, (r) => r.pop);
-    expect(records(rows[2])).toBe(true);
-    expect(records(rows[3])).toBe(false);
+describe("source window policy", () => {
+  const SNAP = { source: "snapshot" } as const;
+  const AS_OF_ = "2026-08-06";
+
+  // THE PROPERTY, and the whole reason this is a column rather than a tally:
+  // the fact is about the REGISTER and is recorded at ETL time, so a copy
+  // carries it however far behind it has fallen. The rule it replaced derived
+  // it from the rows in hand, which meant a copy with no deadlines in it read
+  // every register as publishing none -- so the safeguard withheld nothing on
+  // exactly the corpus it exists for.
+  it("survives a copy that has lost every deadline", () => {
+    // The same Spanish convocatoria before and after the deadlines are
+    // stripped. Under the old rule the stripped copy re-classified its whole
+    // population as one that publishes nothing and offered the row. Here the
+    // stripping cannot touch the answer, because the answer is not in the
+    // dates.
+    const loaded = { schemeEndDate: "2025-04-14", schemeEndBasis: C,
+                     sourceWindowPolicy: W };
+    const stripped = { schemeEndDate: null, schemeEndBasis: null,
+                       sourceWindowPolicy: W };
+    expect(unconfirmedOpen(loaded, SNAP, AS_OF_)).toBeNull();
+    expect(unconfirmedOpen(stripped, SNAP, AS_OF_)).toContain("does state one");
   });
 
-  it("does NOT mark a catalogue that merely contains a few dated calls", () => {
-    // ADEME as the corpus actually holds it: 6 dated appels a projets among 76
-    // standing aids drawn from the same source pages. Under the membership test
-    // this population read as deadline-recording and the whole French register
-    // went, taking 488 of 778 French holdout answers with it.
-    const rows = [
-      ...Array.from({ length: 6 }, () => (
-        { pop: "ademe|FR", schemeEndDate: "2025-06-09", schemeEndBasis: C })),
-      ...Array.from({ length: 70 }, () => (
-        { pop: "ademe|FR", schemeEndDate: null, schemeEndBasis: null })),
-    ];
-    const records = populationRecordsDeadlines(rows, (r) => r.pop);
-    expect(records(rows[70])).toBe(false);
-    // And it crosses back on its own if the loader ever starts extracting
-    // windows in earnest -- derived from the corpus, never listed, so nobody
-    // has to remember to edit it.
-    const dated = rows.map((r, n) => (n < 40
-      ? { ...r, schemeEndDate: "2025-06-09", schemeEndBasis: C } : r));
-    expect(populationRecordsDeadlines(dated, (r) => r.pop)(dated[70])).toBe(true);
+  it("serves a register whose silence is its own", () => {
+    // The 310 absence-based open rows that must NOT be withheld -- EIC,
+    // Horizon, the KICs, the Baltic development banks. Their registers publish
+    // awards and have no window field, so no copy of any age is missing one.
+    // If this ever returns a reason, a Railway blip deletes half the product.
+    for (const policy of [NW, SOURCE_WINDOW_POLICY.declaresOpenEnded]) {
+      expect(unconfirmedOpen(
+        { schemeEndDate: null, schemeEndBasis: null, sourceWindowPolicy: policy },
+        SNAP, AS_OF_)).toBeNull();
+    }
   });
 
-  it("reports the shares it read, so a human can look", () => {
-    const rows = [
-      { pop: "calls|ES", schemeEndDate: "2025-04-14", schemeEndBasis: C },
-      { pop: "calls|ES", schemeEndDate: null, schemeEndBasis: null },
-    ];
-    expect(populationRecordsDeadlines(rows, (r) => r.pop).shares().get("calls|ES"))
-      .toEqual({ dated: 1, total: 2 });
+  it("does not read an unrecognised value as an answer", () => {
+    // A writer that invents a fourth value is writing something the product
+    // cannot match, and matching loosely here would silently offer rows.
+    expect(unconfirmedOpen(
+      { schemeEndDate: null, schemeEndBasis: null, sourceWindowPolicy: "probably_not" },
+      SNAP, AS_OF_)).not.toBeNull();
   });
 
-  it("does not mark a population that is exactly half dated", () => {
-    // The tie goes to serving the row. A register we cannot read as recording
-    // windows is one we have no positive reason to withhold from -- and a
-    // population sitting on the line is a question about what that register IS,
-    // not an invitation to move the line.
-    const rows = [
-      { pop: "half|XX", schemeEndDate: "2025-04-14", schemeEndBasis: C },
-      { pop: "half|XX", schemeEndDate: null, schemeEndBasis: null },
-    ];
-    expect(populationRecordsDeadlines(rows, (r) => r.pop)(rows[1])).toBe(false);
+  it("flags a declaration its own corpus contradicts", () => {
+    // The failure mode a per-feed declaration has and a derived proportion does
+    // not: a feed starts publishing windows and the declaration goes stale. It
+    // is a CHECK and not a rule, so it can only ever fire on evidence that is
+    // present -- a thin copy proves nothing rather than accusing wrongly.
+    expect(contradictsDeclaredPolicy(
+      { schemeEndDate: "2025-04-14", schemeEndBasis: C, sourceWindowPolicy: NW })).toBe(true);
+    expect(contradictsDeclaredPolicy(
+      { schemeEndDate: "2025-04-14", schemeEndBasis: C, sourceWindowPolicy: W })).toBe(false);
+    // A notified duration is not a window, and reading it as one would accuse
+    // every SATR country of a stale declaration.
+    expect(contradictsDeclaredPolicy(
+      { schemeEndDate: "2020-12-30", schemeEndBasis: N, sourceWindowPolicy: NW })).toBe(false);
+    // Nothing to contradict on a copy that carries no dates -- which is the
+    // point: falsification survives staleness, derivation does not.
+    expect(contradictsDeclaredPolicy(
+      { schemeEndDate: null, schemeEndBasis: null, sourceWindowPolicy: NW })).toBe(false);
   });
 });

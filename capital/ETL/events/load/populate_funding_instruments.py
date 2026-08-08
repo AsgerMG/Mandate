@@ -50,16 +50,181 @@ from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
 # ── Capital-type inference cascade ──────────────────────────────────────────
-# (1) known equity/loan/guarantee grant_amount_basis values, by keyword.
-EQUITY_BASES = {
-    "htgf_equity", "almi_invest_equity", "eic_fund_equity_unpublished",
-    "tesi_equity", "cdp_vc_equity", "eit_kic_equity", "coparion_equity",
-    "ndb_equity", "invest_nl_equity", "enterprise_ireland_equity",
-    "eifo_round_marker", "bpifrance_fond",
+#
+# ── The fault this shape exists to prevent ─────────────────────────────────
+# This cascade used to enumerate EQUITY / LOAN / GUARANTEE / DEBT bases and
+# nothing else, and concluded "grant" only from a POPULATED EURO AMOUNT. There
+# was no GRANT_BASES. So a source that publishes WHO it funded but not HOW MUCH
+# — which is most registers of non-monetary or redacted awards — produced rows
+# with no capital type at all, and the label `unknown`.
+#
+# That is Rule Zero's error written into code: a missing amount is a gap in our
+# collection, and it was being read as an absent fact about the instrument.
+# 15,137 event rows carried `unknown` for that reason alone, from bases whose
+# own label says `grant` — `fr_innov_grant` (2,887 rows), `horizon_eu_grant`
+# (8,078), `ihi_grant` (727). Most families outvoted their amount-less rows, so
+# the damage surfaced only where 100% of a family's rows lacked amounts: nine
+# publishable instruments no founder could ever be shown, because no intake
+# option maps to `unknown` and the capital filter removed them for everyone.
+#
+# ── The property, and why the mapping is TOTAL ────────────────────────────
+# A `grant_amount_basis` says where a number came from, and by construction it
+# also says what kind of instrument produced it — that is what makes the two
+# safe to record in one column. So the mapping from basis to capital kind is
+# DECLARED, once, here, and it is TOTAL: `assert_bases_declared()` fails the
+# load when the events table contains a basis this dict does not mention.
+#
+# A new source can therefore no longer land funds that nobody can reach. It
+# lands a build failure naming the basis and asking what the source hands out
+# — which is a question with an official answer, unlike "why is this fund
+# missing", which is the question the old shape produced six months later.
+#
+# `None` is a real and necessary declaration, not a hole: it means THIS BASIS
+# NAMES NO KIND, decide the row from `aid_instrument` or the amounts. State-aid
+# registers are the case — `satr_aid_element` is the aid element of a grant, a
+# loan or a guarantee alike, and the register's own `aid_instrument` code is
+# both present and more authoritative.
+#
+# ── Why the declaration outranks the amounts, and not the other way round ──
+# The amount columns are a PAYLOAD, not a kind. `cdti_loan` records its loans
+# in `grant_amount_eur` and `ndb_guarantee` records guarantees in
+# `debt_amount_eur`; reading the kind off whichever column is populated calls
+# both of them wrong. The declaration is checked first for the same reason
+# `aid_instrument` is checked before it: a statement about the instrument beats
+# an inference from a number.
+CAPITAL_BY_BASIS: dict[str, str | None] = {
+    # ── Equity, incl. convertibles ─────────────────────────────────────────
+    # A stake, or an instrument that becomes one. This is the direction where a
+    # wrong call costs a founder the most — it puts a cap-table investor in
+    # front of someone who never asked for one — so nothing is here on the
+    # strength of its label alone.
+    "htgf_equity": "equity",
+    "almi_invest_equity": "equity",
+    "eic_fund_equity_unpublished": "equity",
+    "tesi_equity": "equity",
+    "cdp_vc_equity": "equity",
+    "coparion_equity": "equity",
+    "ndb_equity": "equity",
+    "invest_nl_equity": "equity",
+    "enterprise_ireland_equity": "equity",
+    "eifo_round_marker": "equity",
+    "bpifrance_fond": "equity",
+    # EIT KIC venture arms. See extract_eit.py: the KICs run BOTH equity
+    # portfolios and equity-free accelerators, and which one a cohort belongs
+    # to is a per-cohort fact read off the KIC's own page, not a property of
+    # "EIT".
+    "eit_kic_equity": "equity",
+    # SPRIND holds stakes and lends convertibly under SPRINDFG s.1(4)(1)-(2):
+    # "Beteiligungen ... erwerben" and "Darlehen einschliesslich Wandeldarlehen
+    # vergeben". Dilutive, and the only SPRIND facet that is.
+    "sprind_equity_convertible": "equity",
+
+    # ── Debt ───────────────────────────────────────────────────────────────
+    "ndb_loan_commitment": "loan",
+    "bdns_loan_aid_element": "loan",
+    "cdti_loan": "loan",
+    "eib_debt_commitment": "loan",
+    "ndb_guarantee": "guarantee",
+
+    # ── Grant: non-dilutive cash, nothing repaid, no stake ─────────────────
+    # The set that did not exist. Every one of these is a basis whose source
+    # hands out grants; where the source also publishes amounts the old cascade
+    # already reached the same answer from the numbers, so declaring it changes
+    # nothing for those rows and rescues the amount-less ones.
+    "horizon_eu_grant": "grant",
+    "eic_eu_grant": "grant",
+    "if_eu_grant": "grant",
+    "edf_eu_ceiling": "grant",
+    "chips_ju_total_public": "grant",
+    "kdt_grant": "grant",
+    "chp_grant": "grant",
+    "ihi_grant": "grant",
+    "eurohpc_grant": "grant",
+    "euspa_grant": "grant",
+    "edctp3_grant": "grant",
+    "clean_aviation_grant": "grant",
+    "eu_rail_grant": "grant",
+    "sesar_grant": "grant",
+    "sns_grant": "grant",
+    "ipcei_state_aid": "grant",
+    "ipcei_satr_granted": "grant",
+    "ademe_grant": "grant",
+    "bdns_grant": "grant",
+    "cdti_grant": "grant",
+    "innofond_grant": "grant",
+    "innosuisse_project_grant_total": "grant",
+    "tacr_public_support_total": "grant",
+    "iuk_grant_offer_gbp_converted": "grant",
+    "ndb_grant": "grant",
+    "ndb_grant_total_award": "grant",
+    # Enterprise Ireland's Commercialisation Fund, Innovation Partnership and
+    # DTIF are grants. The RD&I Fund is the exception and its Terms of Reference
+    # say so: "Funding will normally be in the form of an RD&I grant but may be
+    # offered in the form of equity or a Convertible loan note (CLN), at the
+    # discretion of Enterprise Ireland". The trigger is qualitative, so it
+    # cannot be encoded as a threshold, and the four rows sharing this basis are
+    # one event each and fail the data floor -- none is publishable today. If
+    # `enterprise_ireland_rd` ever becomes offerable it must NOT be presented as
+    # flatly non-dilutive; split the basis then, with the ToR as the source.
+    "enterprise_ireland_grant": "grant",
+    "eit_kic_grant": "grant",
+    # SPRIND. Challenges and Validierung are pre-commercial procurement --
+    # "vorkommerzielle Auftragsvergabe", with "das gesamte geistige Eigentum ...
+    # bei den Teams" -- and F&E Foerderung is a Zuwendung. The legal forms
+    # differ; the founder-facing property this vocabulary is organised by does
+    # not. All three are cash that is never repaid and takes no stake, which is
+    # what the intake's "Grants -- non-dilutive, no payback" option asks for.
+    # The legal distinction stays visible in the basis label itself.
+    "sprind_challenge_funke": "grant",
+    "sprind_validation_study": "grant",
+    "sprind_grant": "grant",
+    "sprind_rd_grant": "grant",
+    # France Relance industrial measures, harvested from the Ministry's own
+    # open dataset (data.economie.gouv.fr/explore/dataset/plan-de-relance), and
+    # the single largest instrument this defect was hiding: 2,835 awards, every
+    # one amount-less because the dataset publishes no amount column at all.
+    # The DGE measure sheet for the two dominant measures states the form
+    # outright -- "Subvention : jusqu'a 60% selon taille, maturite..." and "Le
+    # financement apporte par l'Etat est sous forme de subvention" -- and the
+    # Cour des comptes records that repayable advances and equity were
+    # considered for exactly these measures and NOT retained. See
+    # project-mgmt/findings/workstream_av_capital_type.md.
+    "fr_innov_grant": "grant",
+
+    # ── Support, and no capital ───────────────────────────────────────────
+    # The programme's own page says participants receive services, coaching or
+    # membership and no money. Real objects, correctly described, and not
+    # something this product may offer under a capital heading -- withheld at
+    # the corpus boundary, by declaration, in
+    # website/frontend/lib/intelligence/offerableAxes.ts.
+    "eit_kic_nonfinancial": "non_financial",
+
+    # ── Consulted the official source; it does not say ────────────────────
+    # Distinct from `unknown`, which means nobody looked. This is a finished
+    # piece of work with a negative result, and conflating the two would make
+    # the debt uncountable: the ratchet can only go to zero if the honest
+    # unknowables are not sitting inside it.
+    "eit_kic_undetermined": "undetermined",
+    # RETIRED. Replaced per cohort by extract_eit.py, which reconciles its own
+    # rows on every run. Kept declared so a corpus loaded before that ran
+    # produces a withheld row rather than halting an unrelated load -- and
+    # `undetermined` is the truthful reading of the old label, which asserted
+    # support of an unstated kind.
+    "eit_kic_support": "undetermined",
+
+    # ── The basis names no kind; decide from aid_instrument or amounts ─────
+    # NOT an omission. A state-aid register's aid element is the aid element of
+    # whatever instrument was notified, and the register says which in its own
+    # `aid_instrument` column, which `row_capital_type` consults first.
+    "satr_aid_element": None,
+    "satr_nominal_amount": None,
+    "sudop_aid_element": None,
+    # Spain's BDNS residual bucket: the register itself declined to classify
+    # these, so neither can we.
+    "bdns_other": None,
+    # SPRIND's own residual facet, one row. Same reasoning.
+    "sprind_other": None,
 }
-LOAN_BASES = {"ndb_loan_commitment", "bdns_loan_aid_element", "cdti_loan"}
-GUARANTEE_BASES = {"ndb_guarantee"}
-DEBT_BASES = {"eib_debt_commitment"}
 
 # (2) SATR's own aid_instrument codes (GBER-derived, government-assigned —
 # more authoritative than the basis label when present).
@@ -92,14 +257,18 @@ SATR_INSTRUMENT_MAP = {
 def row_capital_type(basis: str | None, aid_instrument: str | None,
                       grant_eur: float | None, equity_eur: float | None,
                       debt_eur: float | None) -> str:
+    """What kind of capital this one award was, in order of authority.
+
+    The order is the point. A statement about the instrument -- the register's
+    own aid_instrument code, then our declared basis -- outranks an inference
+    from which euro column happens to be populated, because the euro columns
+    are a payload and several sources put a loan in `grant_amount_eur`.
+    """
     if aid_instrument and aid_instrument in SATR_INSTRUMENT_MAP:
         return SATR_INSTRUMENT_MAP[aid_instrument]
-    if basis in EQUITY_BASES:
-        return "equity"
-    if basis in LOAN_BASES or basis in DEBT_BASES:
-        return "loan"
-    if basis in GUARANTEE_BASES:
-        return "guarantee"
+    declared = CAPITAL_BY_BASIS.get(basis) if basis is not None else None
+    if declared is not None:
+        return declared
     populated = [t for t, v in
                  (("grant", grant_eur), ("equity", equity_eur), ("loan", debt_eur))
                  if v and v > 0]
@@ -107,13 +276,55 @@ def row_capital_type(basis: str | None, aid_instrument: str | None,
         return populated[0]
     if len(populated) > 1:
         return "blended"
+    # Reached only by a row with no aid_instrument, a basis DECLARED to name no
+    # kind (or none at all), and no amounts. That is a genuine collection gap
+    # and `unknown` is the honest word for it. It is not reachable by any
+    # intake option and the product withholds such a row deliberately -- see
+    # website/frontend/lib/intelligence/offerableAxes.ts.
     return "unknown"
+
+
+def assert_bases_declared(conn) -> None:
+    """Every grant_amount_basis in the events table must be declared above.
+
+    The load FAILS rather than producing instruments no founder can reach. A
+    new source arriving with an undeclared basis is the exact event that
+    stranded nine instruments, and it is silent by nature: the rows load, the
+    instrument builds, the build stays green, and the fund is simply never in
+    anybody's pool. Failing here turns that into one question with an official
+    answer -- what does this source hand out?
+    """
+    found = {r[0] for r in conn.execute(
+        "SELECT DISTINCT grant_amount_basis FROM public_funding_events") if r[0]}
+    undeclared = sorted(found - set(CAPITAL_BY_BASIS))
+    if undeclared:
+        raise SystemExit(
+            "populate_funding_instruments: undeclared grant_amount_basis "
+            f"value(s): {', '.join(undeclared)}\n"
+            "  Every basis must state what kind of capital its source hands "
+            "out, in CAPITAL_BY_BASIS.\n"
+            "  Go to the source's own page and answer: grant, loan, guarantee, "
+            "equity, tax_credit,\n  non_financial (support but no capital), or "
+            "None if the basis names no kind and the\n  row's aid_instrument / "
+            "amounts must decide. Do NOT guess -- an instrument typed wrong "
+            "in\n  the equity direction puts a cap-table investor in front of a "
+            "founder who never asked."
+        )
 
 
 def family_capital_type(counter: Counter) -> tuple[str, str]:
     """Majority vote across a family's per-row capital types. Returns
     (capital_type, basis note). 'blended' if no type clears 60% and more
-    than one real type is present."""
+    than one real KIND OF CAPITAL is present.
+
+    `non_financial` and `undetermined` vote like any other value -- they are
+    recorded facts about the programme, not absences -- but they may not
+    produce `blended`. `blended` is read downstream as "a mixture of kinds of
+    capital, so no stated preference can rule it out", and it is admitted to
+    every founder's pool on that reading. A split between "pays a grant" and
+    "pays nothing" is not that: it is a family we cannot describe in one word,
+    and the honest word for that is `undetermined`, which is withheld.
+    """
     total = sum(counter.values())
     if total == 0:
         return "unknown", "no rows"
@@ -124,7 +335,11 @@ def family_capital_type(counter: Counter) -> tuple[str, str]:
     if top_n / total >= 0.6:
         return top_type, f"majority row vote ({top_n}/{total})"
     if len(real) > 1:
-        return "blended", f"split vote {dict(real)}"
+        kinds = {k: v for k, v in real.items()
+                 if k not in ("non_financial", "undetermined")}
+        if len(kinds) == len(real):
+            return "blended", f"split vote {dict(real)}"
+        return "undetermined", f"split vote across capital and non-capital {dict(real)}"
     return top_type, f"majority row vote ({top_n}/{total})"
 
 
@@ -163,6 +378,25 @@ OVERRIDE_NAMES = {
     "eit_manufacturing": "EIT Manufacturing",
     "eit_rawmaterials": "EIT RawMaterials",
     "eit_urban_mobility": "EIT Urban Mobility",
+    # ── Rows that became offerable when their capital type was recorded ─────
+    # These four were unreachable by every founder, so nobody ever read their
+    # names and the deterministic prettifier's output went unexamined: it was
+    # producing "EIT Climate KIC Asa", "EIT Climate KIC Cdr" and "Fr Relance
+    # Industrie" from the source slug. Fixing what a fund IS put those strings
+    # in front of founders for the first time, which makes them this
+    # workstream's problem and not a pre-existing one.
+    #
+    # Named from the programme's own page, same standard as
+    # data/reference/programme_names.json: the name a founder would recognise
+    # and could search for, not an expansion invented here.
+    "eit_climate_kic_asa": "EIT Climate-KIC Amazon Sustainability Accelerator",
+    "eit_climate_kic_cdr": "EIT Climate-KIC Carbon Removal ClimAccelerator",
+    "eit_rawmaterials_portfolio": "EIT RawMaterials equity portfolio",
+    # data.economie.gouv.fr/explore/dataset/plan-de-relance -- "Plan de relance
+    # - Projets industriels". The measures behind these 2,835 awards are the
+    # industrial volet: soutien a l'investissement industriel dans les
+    # territoires, (re)localisation, modernisation des filieres.
+    "fr_relance_industrie": "France Relance — soutien à l'investissement industriel",
 }
 
 # ── Tier 0.5: heuristic gate seeding ────────────────────────────────────────
@@ -567,6 +801,12 @@ def main() -> None:
 
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
+    # Before anything is written: does every source in the events table say
+    # what kind of capital it hands out? A basis nobody has declared builds an
+    # instrument carrying `unknown`, which no intake option can reach, which
+    # means a fund no founder can ever be shown -- silently, and with a green
+    # build. See CAPITAL_BY_BASIS.
+    assert_bases_declared(conn)
     # ── The two columns here that are FITTED SIGNALS, not descriptions ───────
     #
     # Most of what this script writes describes the corpus: how many events a

@@ -73,9 +73,21 @@ CREATE TABLE IF NOT EXISTS corpus_census (
   coverage          JSONB,
   gate              JSONB,
   run_outcome       TEXT NOT NULL DEFAULT 'unknown',
-  errors            JSONB NOT NULL DEFAULT '[]'::jsonb
+  errors            JSONB NOT NULL DEFAULT '[]'::jsonb,
+  store             TEXT NOT NULL DEFAULT 'unknown',
+  schema_state      JSONB
 );
 ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS run_outcome TEXT NOT NULL DEFAULT 'unknown';
+-- WHICH STORE this census describes. produced_by says who RAN it, which is a
+-- different question and was being asked in its place: three of the first five
+-- censuses were taken against the same laptop file under three different
+-- produced_by labels, and the guard's test for "the scheduled ETL" was
+-- `produced_by != 'local'`. See website/build/lib/corpus_stores.py.
+ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS store TEXT NOT NULL DEFAULT 'unknown';
+-- The migrations this store has, so schema drift travels on the SAME channel as
+-- everything else rather than surfacing as `no such column: tier` inside an
+-- unrelated block, three weeks late.
+ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS schema_state JSONB;
 CREATE INDEX IF NOT EXISTS corpus_census_taken_idx
   ON public.corpus_census USING btree (taken_at DESC);
 """
@@ -115,7 +127,34 @@ def collect() -> tuple[dict, list[str]]:
     why rather than aborting the census. A census is the report; refusing to
     file it because one section failed is how the outage stays invisible."""
     errors: list[str] = []
-    out: dict = {"kpis": None, "instruments": None, "coverage": None, "gate": None}
+    out: dict = {"kpis": None, "instruments": None, "coverage": None, "gate": None,
+                 "schema_state": None}
+
+    try:
+        # Which migrations this store actually has. Read through the runner so
+        # there is one definition of "the schema this checkout expects", and
+        # recorded per store so the guard can see WHICH store is behind rather
+        # than only that something is.
+        _sys.path.insert(0, str(ROOT / "ETL" / "events" / "load" / "migrations"))
+        from apply import status as _mig_status  # noqa: PLC0415
+        con = sqlite3.connect(DB)  # needs write access: status() creates the table
+        try:
+            pending, unknown = _mig_status(con)
+            con.commit()
+            out["schema_state"] = {
+                "applied": sorted(r[0] for r in con.execute(
+                    "SELECT id FROM schema_migrations")),
+                "pending": pending,
+                "unknown": unknown,
+            }
+        finally:
+            con.close()
+        # Deliberately NOT appended to `errors`. A pending migration is recorded,
+        # and the guard has a SCHEMA class for it; putting it in `errors` too
+        # would additionally raise DEGRADED, which means "this corpus is not fit
+        # to publish" and is a different claim. One fact, one verdict.
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"schema: {type(exc).__name__}: {exc}")
 
     try:
         # The one canonical definition, imported from the stdlib-only module
@@ -178,6 +217,12 @@ def main() -> int:
                          "container without a second implementation of the hash")
     ap.add_argument("--produced-by", default=os.environ.get("RAILWAY_SERVICE_NAME", "local"),
                     help="what ran it; defaults to the Railway service name")
+    ap.add_argument("--store", default=None,
+                    help="WHICH STORE was read. Derived from the environment by "
+                         "default and that is the form to use — see "
+                         "website/build/lib/corpus_stores.py. The override exists "
+                         "only for a deliberate probe of a store from somewhere "
+                         "else, e.g. a pulled copy read from a worktree.")
     ap.add_argument("--run-outcome", default="unknown",
                     help="how the pipeline that produced this corpus went: 'ok', "
                          "'partial: ...', or 'failed at ...'. Travels WITH the "
@@ -189,9 +234,13 @@ def main() -> int:
         print(code_fingerprint())
         return 0
 
+    from corpus_stores import OF_RECORD, store_id
+    store = args.store or store_id()
+
     payload, errors = collect()
     fingerprint = code_fingerprint()
     print(f"corpus census — code {fingerprint}, produced by {args.produced_by}, "
+          f"store {store}{' (OF RECORD)' if store == OF_RECORD else ' (derived)'}, "
           f"run {args.run_outcome}")
     if payload["kpis"]:
         k = payload["kpis"]
@@ -227,16 +276,49 @@ def main() -> int:
             cur.execute(SCHEMA)
             cur.execute(
                 "INSERT INTO corpus_census (produced_by, code_fingerprint, kpis, "
-                "instruments, coverage, gate, run_outcome, errors) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id, taken_at",
+                "instruments, coverage, gate, run_outcome, errors, store, "
+                "schema_state) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                "RETURNING id, taken_at",
                 (args.produced_by, fingerprint,
                  json.dumps(payload["kpis"]), json.dumps(payload["instruments"]),
                  json.dumps(payload["coverage"]), json.dumps(payload["gate"]),
-                 args.run_outcome, json.dumps(errors)))
+                 args.run_outcome, json.dumps(errors), store,
+                 json.dumps(payload["schema_state"])))
             cid, taken = cur.fetchone()
         conn.commit()
     print(f"\nrecorded census #{cid} at {taken:%Y-%m-%d %H:%M} UTC"
           + (f" WITH {len(errors)} error(s)" if errors else ""))
+
+    # ── ...and the same fact as a verdict, on the one feed ──────────────────
+    # The census predates the verdict channel and had its own table and its own
+    # reader. Both stay: the census carries more than a verdict has room for,
+    # and check_corpus_census.ts still reads it where credentials exist. But a
+    # reader WITHOUT credentials can only see the feed, and a channel that
+    # covers every guard except the one that dates all the others is not a
+    # channel. So the census also publishes as `census`, from the figures it
+    # just recorded — not from a second measurement of the corpus, which would
+    # be a second thing to keep in step.
+    _sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+    from guard_verdicts import guard, guard_fingerprint, publish
+
+    gate = payload.get("gate") or {}
+    degraded = bool(errors) or gate.get("ok") is False \
+        or args.run_outcome.startswith(("failed", "partial"))
+    k = payload.get("kpis") or {}
+    summary = (f"{k.get('companies', '?')} companies, {k.get('events', '?')} events, "
+               f"{k.get('countries', '?')} countries; gate {gate.get('ok')}; "
+               f"run {args.run_outcome}"
+               + (f"; {len(errors)} error(s)" if errors else ""))
+    publish("census", "failed" if degraded else "ok", summary,
+            {"kpis": payload.get("kpis"), "instruments": payload.get("instruments"),
+             "coverage": payload.get("coverage"), "gate": gate,
+             "run_outcome": args.run_outcome, "errors": errors,
+             "census_id": cid},
+            json.dumps({**payload, "errors": errors}, default=str),
+            # The census's own fingerprint IS the guard's, asserted equal by
+            # ETL/schema/check_census_imports.py.
+            guard_fingerprint(guard("census")), args.produced_by)
     return 0
 
 

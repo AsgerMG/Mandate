@@ -176,6 +176,7 @@ COUNTRY_NAME_TO_ISO2: dict[str, str] = {
     "romania": "RO",
     "schweiz": "CH",
     "serbia": "RS",
+    "slovak republic": "SK",
     "slovakia": "SK",
     "slovenia": "SI",
     "spain": "ES",

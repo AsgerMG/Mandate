@@ -1,0 +1,82 @@
+corpus=postgres instruments=1088
+multi-leaf regimes 52  holding 780 leaves
+
+====================================================================================================
+PER-REGIME SEPARATION. mean = siblings still in play once the axis is known (1.0 = perfect)
+====================================================================================================
+regime                     n   capital_typ  ticketBand       award administeri delivery_re catchment_r scheme_code  sector_mix   decidable eligibility        name
+satr_de_rnd              103          69.6        67.3        52.9         4.3        23.8        42.5         4.0        24.1        44.8        11.1         1.2
+bdns_es_ayudas            88          69.8        61.8        47.8         6.8        88.0        88.0        88.0        15.5        86.0        78.3         1.0
+ademe_aid                 76          76.0        68.3        31.9        74.0        76.0        76.0        76.0        34.5        43.1         1.6         1.0
+satr_it_rnd               68          62.3        41.2        34.5         4.3        20.6        30.0         1.1        17.3        46.4        15.8         1.2
+vinnova_grant             50          50.0        48.0        34.2        48.0        50.0        50.0        50.0         8.7        48.0         1.0         1.0
+satr_fr_rnd               43          43.0        22.3        19.7         6.0        15.7        41.0         5.8        10.7        27.2        13.2         5.8
+satr_cz_rnd               35          35.0        19.9        17.5         7.6        27.6         8.3         1.0         8.3        14.3        27.6         1.1
+satr_nl_rnd               28          26.1        15.2        13.9        14.6        17.6        16.0         1.0         6.1        16.0         2.8         1.0
+satr_at_rnd               23          23.0        15.2        12.0         5.5        14.4        14.3         1.0         5.0        14.3         2.9         1.1
+satr_it_equity            19          12.7        13.9         7.0         4.8         8.6         9.0         1.0         7.8        15.3         4.3         1.1
+satr_be_rnd               17          13.5         8.3         6.9         7.4         7.4         7.0         1.0         3.5         7.0         7.6         1.5
+satr_de_equity            15          13.1        15.0         5.7         3.7         7.5         5.1         1.0         6.6         6.1         2.6         1.1
+ipcei                     12          10.2         3.7         6.2        12.0        12.0        12.0        12.0         3.8         1.0        12.0         1.0
+satr_se_rnd               12          12.0         7.5         6.2         3.2         8.5        10.2         1.0         4.0        10.2         2.3         1.5
+satr_fi_rnd               11          11.0         5.4         5.5         6.1         5.0         5.4         1.2         3.5         5.4         3.9         1.5
+horizon_eu_partnership    10           8.2         6.6         4.6         1.0        10.0        10.0        10.0         1.8         3.0         1.0         1.0
+horizon_eu_pillar_ii      10           8.2         8.2         4.2         5.2        10.0        10.0        10.0         1.4         1.0         1.0         1.0
+satr_ie_rnd               10          10.0         5.8         5.2         4.4         5.4         6.6         1.4         6.6         6.6         6.6         1.4
+satr_sk_rnd               10          10.0         8.2         4.2         1.8         8.2         5.2         1.0         5.4         6.6         8.2         1.0
+innovation_fund            9           7.2         2.6         3.2         4.6         9.0         9.0         9.0         7.2         1.0         1.2         1.0
+
+legend: capital_typ=capital_type, ticketBand=ticketBand (shipped), award=award decade (log10), administeri=administering_body, delivery_re=delivery_region, catchment_r=catchment_regions, scheme_code=scheme_code, sector_mix=sector_mix argmax (11), decidable=decidable gate signature, eligibility=eligibility_text, name=name (upper bound)
+
+====================================================================================================
+AGGREGATE over all multi-leaf leaves
+====================================================================================================
+axis                          mean class   alone     <=5   distinct/regime  present
+capital_type                        41.4      2%     12%               1.5     100%
+ticketBand (shipped)                34.5      3%     17%               1.8      97%
+award decade (log10)                25.0      3%     23%               2.1      97%
+administering_body                  14.8     19%     53%               5.2      93%
+delivery_region                     30.8      6%     28%               2.7      30%
+catchment_regions                   34.5      8%     25%               2.6      55%
+scheme_code                         22.6     52%     61%               8.6      58%
+sector_mix argmax (11)              13.0      8%     36%               3.5      98%
+decidable gate signature            31.7     20%     34%               4.1      85%
+eligibility_text                    15.4     40%     61%               7.6      54%
+name (upper bound)                   1.4     87%     98%              13.8     100%
+
+====================================================================================================
+BEST NON-NAME AXIS PER REGIME (>=6 leaves) — is it always technology?
+====================================================================================================
+regime                       n  best axis                    mean    <=5   runner-up                    mean
+satr_de_rnd                103  scheme_code                   4.0    83%   administering_body            4.3
+bdns_es_ayudas              88  administering_body            6.8    57%   sector_mix argmax (11)       15.5
+ademe_aid                   76  eligibility_text              1.6   100%   award decade (log10)         31.9
+satr_it_rnd                 68  scheme_code                   1.1   100%   administering_body            4.3
+vinnova_grant               50  eligibility_text              1.0   100%   sector_mix argmax (11)        8.7
+satr_fr_rnd                 43  scheme_code                   5.8    56%   administering_body            6.0
+satr_cz_rnd                 35  scheme_code                   1.0   100%   administering_body            7.6
+satr_nl_rnd                 28  scheme_code                   1.0   100%   eligibility_text              2.8
+satr_at_rnd                 23  scheme_code                   1.0   100%   eligibility_text              2.9
+satr_it_equity              19  scheme_code                   1.0   100%   eligibility_text              4.3
+satr_be_rnd                 17  scheme_code                   1.0   100%   sector_mix argmax (11)        3.5
+satr_de_equity              15  scheme_code                   1.0   100%   eligibility_text              2.6
+ipcei                       12  decidable gate signature      1.0   100%   ticketBand (shipped)          3.7
+satr_se_rnd                 12  scheme_code                   1.0   100%   eligibility_text              2.3
+satr_fi_rnd                 11  scheme_code                   1.2   100%   sector_mix argmax (11)        3.5
+horizon_eu_partnership      10  administering_body            1.0   100%   eligibility_text              1.0
+horizon_eu_pillar_ii        10  decidable gate signature      1.0   100%   eligibility_text              1.0
+satr_ie_rnd                 10  scheme_code                   1.4   100%   administering_body            4.4
+satr_sk_rnd                 10  scheme_code                   1.0   100%   administering_body            1.8
+innovation_fund              9  decidable gate signature      1.0   100%   eligibility_text              1.2
+eit                          9  decidable gate signature      2.3   100%   capital_type                  7.2
+satr_fr_equity               9  scheme_code                   1.4   100%   eligibility_text              3.4
+satr_gr_rnd                  9  scheme_code                   1.0   100%   sector_mix argmax (11)        2.6
+satr_pt_rnd                  8  delivery_region               2.0   100%   administering_body            2.5
+satr_ee_rnd                  7  scheme_code                   1.0   100%   eligibility_text              1.9
+satr_lv_rnd                  6  scheme_code                   1.0   100%   eligibility_text              1.7
+satr_at_equity               6  scheme_code                   1.0   100%   sector_mix argmax (11)        2.0
+satr_gr_equity               6  scheme_code                   1.0   100%   award decade (log10)          3.0
+satr_hu_rnd                  6  scheme_code                   1.0   100%   award decade (log10)          2.0
+satr_lu_rnd                  6  scheme_code                   1.0   100%   eligibility_text              1.0
+
+leaves won by axis: [('scheme_code', 449), ('eligibility_text', 126), ('administering_body', 98), ('decidable gate signature', 40), ('delivery_region', 8)]

@@ -21,6 +21,20 @@ the census's whole transitive import graph must resolve to the standard library,
 to modules inside this repository, or to a distribution actually declared in
 requirements.txt. Nothing else may creep in through a helper three levels down.
 
+── The same applies to everything else the container publishes ────────────
+`ETL/lib/guard_verdicts.py` runs the corpus-side guards inside the same image
+and writes their verdicts to the same Postgres. It is checked here for the same
+reason and by the same walk: an import it picks up three modules down fails in
+the container, at 03:00 on a Sunday, and the only symptom is a verdict that
+never appears.
+
+── And the fingerprint must stay ONE function ─────────────────────────────
+`guard_verdicts.fingerprint` generalises `publish_corpus_census.code_fingerprint`
+and its docstring claims that, over the census's own paths, it reproduces that
+function exactly. Two hashes that are supposed to be equal and are only believed
+to be equal is how the census would start reading DRIFTED against itself, on a
+week when nothing had drifted. So it is asserted, not believed.
+
 Usage: python3 ETL/schema/check_census_imports.py
 """
 from __future__ import annotations
@@ -31,11 +45,23 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ENTRY = ROOT / "ETL/events/load/publish_corpus_census.py"
+# Everything the ETL image is expected to execute for the reporting channel.
+# One walk, both entry points: the census, and the runner that publishes the
+# corpus-side guards' verdicts alongside it.
+ENTRIES = [
+    ROOT / "ETL/events/load/publish_corpus_census.py",
+    ROOT / "ETL/lib/guard_verdicts.py",
+]
 
-# The same directories etl_env.py and web_env.py put on sys.path. A module that
-# resolves to a file under one of these is our own code and is followed.
+# The directories etl_env.py and web_env.py put on sys.path, plus the ones a
+# followed module inserts for itself. A module that resolves to a file under one
+# of these is our own code and is followed.
 SEARCH = [
+    # Not on etl_env's path: publish_corpus_census.py inserts it itself, to read
+    # the store's migration state through the one runner rather than reimplementing
+    # "which migrations does this store have". It is in the image (COPY . .) and
+    # imports only the standard library and etl_env.
+    ROOT / "ETL/events/load/migrations",
     ROOT / "ETL/lib", ROOT / "ETL/terms",
     ROOT / "ETL/events/extract", ROOT / "ETL/events/transform",
     ROOT / "ETL/events/load", ROOT / "ETL/events/load/qa",
@@ -91,13 +117,38 @@ def top_level_imports(path: Path) -> set[str]:
     return names
 
 
+def one_fingerprint() -> list[str]:
+    """The generalised hash must equal the one it generalises.
+
+    Imported rather than re-derived: if either implementation moves, this fails
+    to import and says so, which is the outcome we want from a check whose whole
+    subject is two things that must not diverge.
+    """
+    sys.path.insert(0, str(ROOT / "ETL/lib"))
+    sys.path.insert(0, str(ROOT / "ETL/events/load"))
+    import json
+
+    from guard_verdicts import guard_fingerprint  # noqa: E402
+    from publish_corpus_census import code_fingerprint  # noqa: E402
+
+    reg = json.loads((ROOT / "data/guard_registry.json").read_text())
+    census = next(g for g in reg["guards"] if g["id"] == "census")
+    generic, specific = guard_fingerprint(census), code_fingerprint()
+    if generic != specific:
+        return [f"guard_verdicts.fingerprint over {census['code']} gives {generic}, "
+                f"publish_corpus_census.code_fingerprint gives {specific}.\n"
+                f"    The census would read DRIFTED against a container running "
+                f"exactly this code. Make one call the other."]
+    return []
+
+
 def main() -> int:
     declared = declared_distributions()
     stdlib = set(sys.stdlib_module_names) | {"__future__"}
 
     seen: set[Path] = set()
-    queue = [ENTRY]
-    offenders: list[str] = []
+    queue = list(ENTRIES)
+    offenders: list[str] = one_fingerprint()
     while queue:
         path = queue.pop()
         if path in seen:
@@ -118,7 +169,7 @@ def main() -> int:
                     f"in requirements.txt")
 
     print(f"census import graph: {len(seen)} module(s) reachable from "
-          f"{ENTRY.relative_to(ROOT)}")
+          + ", ".join(str(e.relative_to(ROOT)) for e in ENTRIES))
     if offenders:
         print("\nFAILED — the census cannot run in the ETL image:")
         for o in sorted(set(offenders)):
