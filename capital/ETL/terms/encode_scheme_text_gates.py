@@ -87,11 +87,12 @@ names. Work is keyed on the NORMALISED TEXT, so one call is read once and its
 gates are written to every alias. Cheaper, and it makes the duplication
 measurable instead of inventing three rule sets where one exists.
 
-Usage:
-  python3 ETL/terms/encode_scheme_text_gates.py plan    --country FR
-  python3 ETL/terms/encode_scheme_text_gates.py run     --country FR [--limit N] [--dry-run]
-  python3 ETL/terms/encode_scheme_text_gates.py publish --country FR
-  python3 ETL/terms/encode_scheme_text_gates.py status  --country FR
+Usage (no --country means every market, which is what `make eligibility` wants;
+--country scopes a run so a workstream can measure its own before and after):
+  python3 ETL/terms/encode_scheme_text_gates.py plan
+  python3 ETL/terms/encode_scheme_text_gates.py run     [--country FR] [--limit N] [--dry-run]
+  python3 ETL/terms/encode_scheme_text_gates.py publish [--country FR]
+  python3 ETL/terms/encode_scheme_text_gates.py status  [--country FR]
 """
 from __future__ import annotations
 
@@ -268,7 +269,7 @@ def connect() -> sqlite3.Connection:
     return conn
 
 
-def work_rows(conn: sqlite3.Connection, country: str, redo: bool) -> list[sqlite3.Row]:
+def work_rows(conn: sqlite3.Connection, country: str | None, redo: bool) -> list[sqlite3.Row]:
     """Instruments with text and nothing cut from it yet.
 
     `redo` re-reads instruments this script has already processed (matched on
@@ -280,10 +281,10 @@ def work_rows(conn: sqlite3.Connection, country: str, redo: bool) -> list[sqlite
     return conn.execute(f"""
         SELECT fi.id, fi.name, fi.eligibility_text, fi.eligibility_source_url
           FROM funding_instruments fi
-         WHERE fi.country = ? AND fi.is_framework = 0
+         WHERE (? IS NULL OR fi.country = ?) AND fi.is_framework = 0
            AND fi.eligibility_text IS NOT NULL
            AND length(trim(fi.eligibility_text)) > 40{extra}
-         ORDER BY fi.id""", (country,)).fetchall()
+         ORDER BY fi.id""", (country, country)).fetchall()
 
 
 def group_by_text(rows: list[sqlite3.Row]) -> dict[str, list[sqlite3.Row]]:
@@ -298,7 +299,7 @@ def cmd_plan(args) -> None:
     rows = work_rows(conn, args.country, args.redo)
     groups = group_by_text(rows)
     dupes = {k: v for k, v in groups.items() if len(v) > 1}
-    print(f"{len(rows)} {args.country} instruments carry unencoded eligibility text")
+    print(f"{len(rows)} {args.country or 'ALL'} instruments carry unencoded eligibility text")
     print(f"{len(groups)} distinct texts -> {len(groups)} model calls "
           f"({len(rows) - len(groups)} rows are aliases of another call)")
     if dupes:
@@ -456,7 +457,7 @@ def cmd_run(args) -> None:
 
 def cmd_status(args) -> None:
     conn = connect()
-    cc = args.country
+    cc = args.country or "FR"
     has_text = ("FROM funding_instruments fi WHERE fi.country=? AND fi.is_framework=0 "
                 "AND fi.eligibility_text IS NOT NULL AND length(fi.eligibility_text)>0")
     queries = [
@@ -518,9 +519,9 @@ def cmd_publish(args) -> None:
     rows = conn.execute(f"""
         SELECT {', '.join('g.' + c for c in PUB_COLS)}
           FROM eligibility_gates g JOIN funding_instruments fi ON fi.id = g.instrument_id
-         WHERE fi.country = ? AND g.gate_key LIKE 'scheme_text_%'""",
-                        (args.country,)).fetchall()
-    print(f"{len(rows)} rows to publish for {args.country}")
+         WHERE (? IS NULL OR fi.country = ?) AND g.gate_key LIKE 'scheme_text_%'""",
+                        (args.country, args.country)).fetchall()
+    print(f"{len(rows)} rows to publish for {args.country or 'ALL'}")
     if args.dry_run:
         print("[dry run] nothing written")
         return
@@ -546,7 +547,10 @@ def main() -> None:
     for name, fn in (("plan", cmd_plan), ("run", cmd_run),
                      ("status", cmd_status), ("publish", cmd_publish)):
         p = sub.add_parser(name)
-        p.add_argument("--country", default="FR")
+        # No default country: `make eligibility` must convert every market's
+        # text, not the one a workstream happened to be looking at. --country
+        # scopes a run for measurement, exactly as it does on encode_gates.
+        p.add_argument("--country", default=None)
         p.add_argument("--limit", type=int, default=0)
         p.add_argument("--dry-run", action="store_true")
         p.add_argument("--redo", action="store_true",
