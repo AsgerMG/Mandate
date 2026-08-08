@@ -74,7 +74,22 @@ const TOKENS = (s: string) => s.toLowerCase().match(/[a-z0-9]+/g) ?? [];
  * Options alone were not enough: the same TRL question phrased once as bands
  * and once as a yes/no has two different answer spaces but is still the same
  * question, and a live round shipped both.
+ *
+ * ── NOT CALLED. This is a live defect, not dead code ──────────────────────
+ * Nothing consults this function, so the deduplication it describes is NOT
+ * running: two phrasings of one question can still both be published, which
+ * costs the founder one of about five questions and is the exact failure the
+ * docstring above says was observed. Same class as the four answers lost in
+ * `project-mgmt/findings/2026-08-08_wsBL_discarded_answers.md` — a documented
+ * mechanism that is present, correct and unreached.
+ *
+ * Left in place rather than restored HERE because restoring it changes which
+ * questions a founder is asked, which is the adaptive round's own measured
+ * surface (workstreams AY/BH) and needs a model-calling run to verify. It is
+ * suppressed at the site, with the reason, rather than deleted: deleting it
+ * would delete the only thing pointing at the defect.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- see above: the dedupe is unreached, and the finding lives with the code
 function topicSignature(q: { question: string; options: string[] }, ownWords: Set<string>): Set<string> {
   const out = new Set<string>();
   for (const t of [...TOKENS(q.question), ...q.options.flatMap(TOKENS)]) {
@@ -188,6 +203,15 @@ export async function planAdaptiveScreen(
     .map((s2) => `  ${s2.name} (${s2.country}) still turns on:\n` +
       s2.open.map((o) => `    - ${o.requirement}`).join("\n"))
     .join("\n");
+  // Built for the round-2 schema (50d6e300) and never placed in it, so the
+  // model is not constrained to the gate keys actually in play the way it is
+  // constrained to `fieldNames` on the line below. Kept, and suppressed with
+  // the reason, because the likely cause is the recorded gotcha that array
+  // `minItems`/`maxItems` in an Anthropic structured-output schema returns a
+  // 400 — which would make this a workaround someone stopped halfway through
+  // rather than an oversight. Resolving it means a live round-2 call, which
+  // belongs to the workstream that owns this file.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- see above
   const gateKeys = projectGates.map((g) => `${g.instrumentId}::${g.gateKey}`);
   const fieldNames = enumFields.map((f) => f.field);
 

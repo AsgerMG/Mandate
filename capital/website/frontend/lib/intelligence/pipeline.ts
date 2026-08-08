@@ -55,7 +55,6 @@ import {
   DISPLAY_CAP,
   displayInstitutionName,
   founderCountryList,
-  instrumentServesCapital,
   tableInputFromAnswers,
   VERDICT_POOL,
 } from "./shortlist";
@@ -829,9 +828,13 @@ async function synthesize(
     row.lastAwardYear !== undefined &&
     thisYear - row.lastAwardYear > STALE_AFTER_YEARS;
 
-  const capitalMismatch = (row: InstrumentRow) =>
-    Boolean(row.capitalType) && (req.capitalSought?.length ?? 0) > 0 &&
-    !instrumentServesCapital(row.capitalType as string, req.capitalSought as string[]);
+  // A `capitalMismatch` predicate stood here, computed for every row and read
+  // by nothing since "Phase 4: the score selects, the writer writes"
+  // (8a078c98). Confirmed superseded rather than dropped: the judgement it
+  // made is the `capital` component of scoreFit (fit.ts, weight 0.08 —
+  // 1 when the founder's capital kinds include the row's, 0.3 when they do
+  // not), which is the same rule as a continuous term instead of a boolean.
+  // Deleted; the comment below already claimed it had moved.
   // ── Ranked by fit ────────────────────────────────────────────────────────
   // One continuous score, every component recorded (fit.ts). This replaces a
   // sort over verdict rank, staleness, capital mismatch and an ease score,
