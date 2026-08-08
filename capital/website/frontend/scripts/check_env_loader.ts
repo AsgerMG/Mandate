@@ -204,6 +204,44 @@ function reads(body: string, key: string): boolean {
 
 const CREDENTIAL_REACHERS = credentialReachers();
 
+/**
+ * Files under scripts/ that exist to be imported by other scripts, and that do
+ * no work when they are.
+ *
+ * A harness is a thing that RUNS and measures; a shared module is a thing a
+ * harness calls. Only the first can measure the wrong system, which is what P2
+ * and P3 are about. Derived from two facts together rather than listed:
+ *
+ *   imported by at least one other file under scripts/, and
+ *   no top-level entry point — nothing that executes on import.
+ *
+ * Both are needed. "Imported by something" alone would let a harness excuse
+ * itself by being importable; requiring that it also runs nothing means the
+ * moment it grows a `main()` call it is a harness again.
+ */
+function sharedModules(): Set<string> {
+  const files = walk("scripts");
+  const known = new Set(files.map((f) => path.resolve(f)));
+  const imported = new Set<string>();
+  for (const f of files) {
+    const body = code(readFileSync(f, "utf8"));
+    for (const m of body.matchAll(/(?:from|import\()\s*["'](\.[^"']+)["']/g)) {
+      const dep = resolveImport(path.resolve(f), m[1], known);
+      if (dep && dep !== path.resolve(f)) imported.add(dep);
+    }
+  }
+  // A top-level call that executes on import: `main()`, `main().catch(...)`,
+  // `void main()`, `run()`, or an `if (require.main === module)` / argv guard.
+  const ENTRY = /^\s*(?:void\s+|await\s+)?(?:main|run|build)\s*\(\s*\)|^\s*if\s*\(\s*(?:require\.main|process\.argv\[1\])/m;
+  const shared = new Set<string>();
+  for (const abs of imported) {
+    if (!ENTRY.test(code(readFileSync(abs, "utf8")))) shared.add(abs);
+  }
+  return shared;
+}
+
+const SHARED_MODULES = sharedModules();
+
 const files = [
   ...walk("scripts"), ...walk("lib"), ...walk("app"), ...walk("components"),
   // Loose harnesses at the frontend root, e.g. .memo_harness.ts.
@@ -233,7 +271,21 @@ for (const file of files) {
 
   // P2 and P3 are about harnesses. lib/ and app/ are the request path, which
   // is supposed to degrade rather than fail a founder mid-brief.
-  if (!rel.startsWith("scripts" + path.sep) || rel === LOADER) continue;
+  if (!rel.startsWith("scripts" + path.sep)) continue;
+
+  // Nor are they about SHARED MODULES under scripts/ — a file whose job is to
+  // be imported by harnesses rather than to measure anything itself. loadEnv.ts
+  // is one and used to be named here as a special case; guardVerdict.ts is
+  // another, and a third would have been a third special case. So it is derived
+  // instead: a file that other scripts import, and that runs nothing when
+  // imported, is a library.
+  //
+  // This cannot be used to dodge the property. A harness declares credentials
+  // because it MEASURES with them, and measuring is the top-level work these
+  // files do not do — the moment one grows an entry point it is a harness again
+  // and the test below applies. What a shared module reads on its callers'
+  // behalf stays the callers' obligation, and they are all here too.
+  if (SHARED_MODULES.has(path.resolve(file))) continue;
 
   const read = CREDENTIALS.filter((k) => reads(body, k));
 

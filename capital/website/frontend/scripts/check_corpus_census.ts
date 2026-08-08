@@ -36,10 +36,21 @@
 //              for a failing ETL step sat on main while Railway ran the image
 //              that contained the bug.
 //
-// Skips only when there is no DATABASE_URL — with nothing to compare against
-// there is no claim to test. Pass --require-db to turn that skip into a
-// failure, which is what the scheduled workflow does: a guard that quietly
-// skips because a secret is missing is the same defect it is here to catch.
+// ── It no longer needs credentials ─────────────────────────────────────────
+// This check only ever needed the database to READ the census. So the census
+// now also publishes itself on the verdict feed (/api/guards), and with no
+// DATABASE_URL this falls back to that feed rather than skipping — which is how
+// it came to run on every pull request without GitHub holding a credential to
+// the production database.
+//
+// The DATABASE_URL path is kept, and preferred where it exists, for one reason:
+// it reads the corpus_census table directly, so it still works on a laptop
+// against a corpus that has not been published anywhere, and it does not depend
+// on the site being up.
+//
+// --require-db forces the direct path. The scheduled workflow used to pass it
+// precisely because a guard that quietly skips for want of a secret is the same
+// defect it is here to catch; it now has nothing to skip for.
 import { execFileSync } from "child_process";
 import { readFileSync } from "fs";
 import path from "path";
@@ -50,6 +61,10 @@ import path from "path";
 // must not disagree about what "bad" means. Importing it is how that is
 // guaranteed rather than intended.
 import { admissibility, type CensusRow } from "../lib/corpusCensus";
+// "Was this produced by a clock or by a person?", from the one definition both
+// freshness readers call. See DRIFTED below for the question it answers here,
+// and the SILENT block for why that question is NOT the one SILENT asks.
+import { isScheduledProducer } from "./guardVerdict";
 
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
@@ -61,16 +76,28 @@ loadEnvLocal();
 const REQUIRE_DB = process.argv.includes("--require-db");
 
 /** How many missed cycles SILENT tolerates before it wakes somebody. Two and a
- *  half is past any single skipped run and short of a second one. Once three
- *  censuses exist the interval is derived from their actual spacing, so a
- *  change of cadence needs no edit here. */
+ *  half is past any single skipped run and short of a second one. It multiplies
+ *  the DECLARED schedule below rather than an observed spacing — see SILENT for
+ *  why measuring this table's own cadence was abandoned — so a change of cadence
+ *  needs no edit here either. */
 const MISSED_CYCLES_TOLERATED = 2.5;
 
-// Declared, so "no credentials" ends the process here rather than reaching the
-// skip below. The skip that survives is the one somebody typed: NO_PG=1.
+// DATABASE_URL is OPTIONAL here, and this is the only check in the repo where
+// that is an honest thing to say. Without it this reads the same census rows
+// from /api/guards, written by the same publisher from the same figures — one
+// record behind two doors, not a weaker measurement. That is precisely what
+// lets this run on every pull request without GitHub holding a credential to
+// the production database. Declaring it keeps check_env_loader satisfied; what
+// it stops being is a reason to abort.
+//
+// This is the ONE exemption. Everywhere else the declaration still ends the
+// process, because the sweep that introduced it exists for check_recall_floor
+// printing SKIPPED and exiting 0 — a green build with the floors never
+// evaluated. An exemption is only honest where a second door onto the SAME
+// record exists, and here one does.
 const CREDENTIALS = REQUIRE_DB
   ? "live" as const
-  : requireCredentials("check_corpus_census", ["DATABASE_URL"]);
+  : requireCredentials("check_corpus_census", [], { optional: ["DATABASE_URL"] });
 
 /** The producer name a census carries when the SCHEDULED pipeline wrote it.
  *
@@ -122,19 +149,66 @@ function fingerprintOfCheckout(): string | null {
   }
 }
 
+/** The census as published on the credential-free feed.
+ *
+ *  Same rows, same fields, one HTTP call instead of a connection string — the
+ *  census writes both from the figures it just recorded, so this is not a
+ *  second measurement of the corpus that could disagree with the first. */
+async function rowsFromFeed(): Promise<CensusRow[]> {
+  const reg = JSON.parse(readFileSync(
+    path.join(__dirname, "..", "..", "..", "data", "guard_registry.json"), "utf8"),
+  ) as { feed: { url: string } };
+  const url = `${process.env.GUARD_FEED_URL || reg.feed.url}?guard=census&limit=12`;
+  let res: Response;
+  try {
+    res = await fetch(url, { headers: { accept: "application/json" } });
+  } catch (err) {
+    console.error(`check_corpus_census: FAILED — the verdict feed is unreachable.\n  ${url}\n  ${err}`);
+    process.exit(1);
+  }
+  if (!res.ok) {
+    console.error(`check_corpus_census: FAILED — the verdict feed returned ${res.status}.`);
+    console.error(`  ${url}`);
+    console.error("  Without it there is nothing to compare the site against, and");
+    console.error("  reporting that as a pass is the defect this check exists to catch.");
+    process.exit(1);
+  }
+  const body = (await res.json()) as {
+    guards: Record<string, {
+      status: string; takenAt: string; producedBy: string; codeFingerprint: string;
+      summary: string; metrics: Record<string, unknown>;
+    }[]>;
+  };
+  return (body.guards?.census ?? []).map((r) => ({
+    id: Number((r.metrics as { census_id?: number }).census_id ?? 0),
+    taken_at: new Date(r.takenAt),
+    produced_by: r.producedBy,
+    code_fingerprint: r.codeFingerprint,
+    kpis: (r.metrics as { kpis?: CensusRow["kpis"] }).kpis ?? null,
+    instruments: (r.metrics as { instruments?: CensusRow["instruments"] }).instruments ?? null,
+    coverage: (r.metrics as { coverage?: CensusRow["coverage"] }).coverage ?? null,
+    gate: (r.metrics as { gate?: CensusRow["gate"] }).gate ?? null,
+    run_outcome: String((r.metrics as { run_outcome?: string }).run_outcome ?? "unknown"),
+    errors: ((r.metrics as { errors?: string[] }).errors ?? []),
+  }));
+}
+
 async function main() {
   const url = process.env.DATABASE_URL;
   if (!url) {
-    // Only reachable under --require-db, which deliberately bypasses the
-    // credential contract so that this message is the one the workflow shows.
-    console.error("check_corpus_census: FAILED — --require-db was given and there");
-    console.error("  is no DATABASE_URL. This check is the only thing that sees the");
-    console.error("  ETL's corpus; skipping it silently is how the drift got to 32 days.");
-    process.exit(1);
-  }
-  if (CREDENTIALS === "offline") {
-    console.log("check_corpus_census: skipped — NO_PG=1, nothing to compare against");
-    return;
+    if (REQUIRE_DB) {
+      console.error("check_corpus_census: FAILED — --require-db was given and there");
+      console.error("  is no DATABASE_URL. This check is the only thing that sees the");
+      console.error("  ETL's corpus; skipping it silently is how the drift got to 32 days.");
+      process.exit(1);
+    }
+    // Including under NO_PG=1, which says "there is deliberately no database" —
+    // and there is not. The feed is an HTTPS read of what the census already
+    // published, so honouring NO_PG here means taking this door, not skipping
+    // the comparison. A skip would be the thing this check reports on.
+    console.log(`check_corpus_census: no DATABASE_URL (${CREDENTIALS}) — reading the ` +
+                "published census from the verdict feed instead.");
+    return await judge(await rowsFromFeed());
   }
 
   const { Client } = await import("pg");
@@ -158,9 +232,18 @@ async function main() {
   } finally {
     await client.end();
   }
+  return await judge(rows);
+}
 
+/** Everything below is the same judgement whichever source the rows came from.
+ *  One implementation, deliberately: a feed path that judged by slightly
+ *  different rules from the direct path would make the answer depend on which
+ *  machine asked. */
+async function judge(rows: CensusRow[]) {
   if (!rows.length) {
-    console.error("check_corpus_census: FAILED — the census table is empty.");
+    console.error("check_corpus_census: FAILED — no census has ever been recorded.");
+    console.error("  Add the census step to the weekly run, or check that it is still");
+    console.error("  running: ETL/events/extract/railway_cron.py, make verify-cron");
     process.exit(1);
   }
 
@@ -193,6 +276,21 @@ async function main() {
   // and take the interval from the DECLARED schedule rather than from observed
   // spacing — this table cannot be kept clean enough to measure, and the cron
   // is a fact we already hold in one place.
+  //
+  // wsAF reached the same incident from the other side and fixed it in place:
+  // `isScheduledProducer` for the population, and a MIN_DERIVED_CADENCE_DAYS
+  // floor so a burst could never imply a 0.0d cadence. Both are kept and both
+  // are still load-bearing — the predicate below at DRIFTED, the floor in
+  // check_verdicts.ts, which is the other freshness reader and DOES still derive
+  // its limit from observed spacing. What is gone from THIS file is the
+  // derivation itself, so there is no longer a spacing here for a floor to
+  // stand under. The floor was not dropped; the thing it protected was.
+  //
+  // SILENT deliberately does not use `isScheduledProducer` for its population.
+  // The two are asking different questions and the looser one would be wrong
+  // here: "not named local" would count a census from a renamed or unrelated
+  // service as evidence the cron fired, which is the fails-open shape this
+  // whole block exists to remove. SILENT needs the Railway service BY NAME.
   const scheduled = rows.filter((r) => r.produced_by === SCHEDULED_PRODUCER);
   const newestScheduled = scheduled[0];
   const interval = intervalDaysOf(SCHEDULED_CRON);
@@ -245,7 +343,7 @@ async function main() {
 
   // ── DRIFTED: is the container running the committed code? ───────────────
   const mine = fingerprintOfCheckout();
-  if (mine && latest.produced_by !== "local" && mine !== latest.code_fingerprint) {
+  if (mine && isScheduledProducer(latest.produced_by) && mine !== latest.code_fingerprint) {
     problems.push(
       `DRIFTED — census #${latest.id} was produced by code fingerprinted ` +
       `${latest.code_fingerprint}, this checkout is ${mine}.\n` +

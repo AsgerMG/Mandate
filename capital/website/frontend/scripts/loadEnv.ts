@@ -169,12 +169,38 @@ export function isDeliberatelyOffline(): boolean {
  * a model-calling bench costs real money, and "it starts up and finds its
  * credentials" is the whole claim being checked.
  *
- * @param context  the harness name, for the message
- * @param keys     env vars this harness cannot honestly run without
- * @throws when the run is not offline and a declared key is missing
+ * ── `optional`, and the very narrow thing it is for ────────────────────────
+ * A key the harness will USE if it is there and can honestly answer the same
+ * question without. It exists for exactly one shape, and the test is strict:
+ *
+ *     the credential-free path must answer the SAME question from the SAME
+ *     source — not a weaker approximation of it.
+ *
+ * `check_corpus_census` is the case. With DATABASE_URL it reads the
+ * `corpus_census` table; without it, it reads the same rows over HTTPS from
+ * /api/guards, which the census publisher wrote from the same figures in the
+ * same transaction. Neither is a fallback measurement; they are one record
+ * behind two doors, which is what lets that check run on every pull request
+ * without GitHub holding a database credential.
+ *
+ * This is NOT for "measure whatever I have credentials for". That is the defect
+ * this whole file exists to remove, and it is still a `keys` entry. If the
+ * degraded path answers a DIFFERENT question — the lexical index instead of
+ * pgvector, the committed snapshot instead of the register — it is required,
+ * not optional, however inconvenient that is.
+ *
+ * Declaring a key here still satisfies check_env_loader: it is accounted for.
+ * What it stops being is a reason to abort.
+ *
+ * @param context   the harness name, for the message
+ * @param keys      env vars this harness cannot honestly run without
+ * @param optional  env vars it uses when present, having an equally true path
+ *                  without them
+ * @throws when the run is not offline and a required key is missing
  */
 export function requireCredentials(
   context: string, keys: readonly string[],
+  { optional = [] as readonly string[] } = {},
 ): CredentialState {
   const state: CredentialState = isDeliberatelyOffline() ? "offline" : "live";
   if (state === "offline") {
@@ -186,10 +212,12 @@ export function requireCredentials(
     : keys.filter((k) => !process.env[k]);
 
   if (process.env.ENV_SELFTEST) {
-    const have = keys.filter((k) => Boolean(process.env[k]));
+    const have = [...keys, ...optional].filter((k) => Boolean(process.env[k]));
     console.log(
       `${context}: credentials=${state}`
-      + ` needs=[${keys.join(",")}] have=[${have.join(",")}]`
+      + ` needs=[${keys.join(",")}]`
+      + (optional.length ? ` optional=[${optional.join(",")}]` : "")
+      + ` have=[${have.join(",")}]`
       + (missing.length ? ` MISSING=[${missing.join(",")}]` : "")
       + `\n  ${envSearchSummary()}`);
     process.exit(missing.length ? 1 : 0);
