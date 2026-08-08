@@ -128,6 +128,27 @@ STEPS: list[Step] = [
          ["python3", "ETL/events/transform/classify_taxonomy.py", "restore"],
          role="build", needs=("instruments",),
          why="Puts the labels back on the rows the rebuild above just replaced."),
+    # ── The rows the truncate above deletes and does not put back ──────────
+    # `funding_instruments` is not owned by one script. The step above rebuilds
+    # it from awards; `load_bdns_open_calls.py` adds Spain's open convocatorias,
+    # which have no awards at all and therefore cannot be re-derived from them.
+    # That loader runs in railway_cron.py (inside refresh_open_calls.py) and had
+    # never run here -- so THIS chain deleted 88 funds on every run and then its
+    # own coverage gate, five steps later, correctly refused to publish the
+    # result. Measured 2026-08-08: 1,088 instruments in, 998 out, gate FAIL
+    # "933 instruments, down from a high of 1021".
+    #
+    # That is the second reason this chain has never completed, under the one
+    # everybody was looking at, and it is the same defect as the census and the
+    # guard policy: two pipelines, one table, different beliefs about who owns
+    # it. The loader, not the harvest, because a refresh must be able to put the
+    # rows back from what is already on disk; refresh_open_calls.py stays where
+    # it is and keeps the harvest weekly.
+    Step("open_calls", "reload open calls",
+         ["python3", "ETL/terms/load_bdns_open_calls.py", "--write"],
+         role="build", needs=("instruments",),
+         why="Re-adds the register rows the rebuild's truncate removed and cannot "
+             "re-derive. Before the coverage gate, so the gate judges the whole corpus."),
     # Must follow "rebuild instruments", not precede it: seed_inventory_gates
     # rewrites `requirement` on every run via ON CONFLICT DO UPDATE, so an
     # encoder that ran first would have its statutory sentence replaced by the
@@ -192,8 +213,8 @@ STEPS: list[Step] = [
     Step("coverage_gate", "coverage gate",
          ["python3", "ETL/terms/coverage_gate.py"],
          role="gate",
-         needs=("instruments", "article_ceilings", "regions_encode", "gate_roles",
-                "retract_text", "applicant_identity"),
+         needs=("instruments", "open_calls", "article_ceilings", "regions_encode",
+                "gate_roles", "retract_text", "applicant_identity"),
          why="THE decision to publish. Everything that publishes names it in `needs`, "
              "so a red gate still stops the snapshot, the Postgres publish and the "
              "embeddings -- and only those."),
@@ -413,6 +434,24 @@ def main() -> None:
     args = ap.parse_args()
 
     moved, added, removed = source_state.changed()
+    # ── Is this the real data directory? ──────────────────────────────────
+    # source_state hashes `data/raw`, and a directory that is not there reads
+    # exactly like every source emptying at once. The first step below then
+    # TRUNCATES funding_instruments, so getting this wrong is not a bad report,
+    # it is a destroyed corpus -- and the shared `data/db.sqlite` is symlinked
+    # into every agent worktree, where `data/raw` is not.
+    #
+    # A threshold rather than a list, for renew.py's reason: some sources really
+    # do go away, but most of them going away in one run is not the internet
+    # having a bad day, it is the wrong working directory.
+    known = len(source_state.previous())
+    if known and len(removed) * 2 > known:
+        raise SystemExit(
+            f"REFUSING TO RUN: {len(removed)} of {known} known sources are absent from "
+            f"{source_state.RAW}. That is most of them, so this is the wrong data "
+            f"directory rather than a corpus that emptied -- and the first step below "
+            f"truncates funding_instruments in {source_state.STATE.parent / 'db.sqlite'}, "
+            f"which every worktree shares. Run this from the repository root.")
     if moved or added or removed:
         for label, names in (("changed", moved), ("new", added), ("gone", removed)):
             if names:
