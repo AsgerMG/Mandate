@@ -141,6 +141,90 @@ exclusion onto real funds. Where a beneficiary restriction IS loaded it comes
 from the description's own prose ("Bénéficiaires : Entreprises de recyclage des
 déchets"), which is the source asserting it, not a taxonomy inferring it.
 
+## 5. The route that actually reached ADEME's own words: the public archive
+
+ADEME's portals are 403 behind Cloudflare and that stands — nothing here went
+past it. But the Internet Archive holds public captures of those same public
+pages and serves them from `web.archive.org`, a different host with no block.
+Reading an archive of a public page is not impersonating a browser past a 403.
+
+CDX enumeration over `agirpourlatransition.ademe.fr` (~20k URLs) located the
+programme pages without guessing at slugs, and the raw
+`/web/<timestamp>id_/<url>` form parses cleanly. **25 of the 26 came back, all
+15 programme families covered**, and every one carried ADEME's own
+"Êtes-vous concerné ?" block — a literal statement of who may apply, written
+per call:
+
+    ESPR forestry   six named NAF codes (0210Z, 0220Z, 0240Z, 01610A…) plus
+                    mandatory PEFC/FSC certification
+    TEXHABI         metteurs sur le marché and fabricants of clothing textiles,
+                    all sizes, all écoconception maturities
+    DECARB IND      >1,000 tCO2eq/yr abated, >EUR 3M investment, <EUR 30M aid
+    AVELO 2.2       communes, EPCI, départements, Pays, PNR, pôles
+                    métropolitains, syndicats mixtes — territories under
+                    250,000 inhabitants, core city under 100,000
+
+The one gap is `AAP PNA`, which is the Ministère de l'Agriculture's programme
+with ADEME merely operating it; its cahier des charges is on a ministry host,
+and ADEME's own "Alimentation durable" calls are DIFFERENT instruments that
+must not be mapped onto this row.
+
+Only the four relais / actions-ponctuelles rows share a paragraph in the
+archive, and that is correct — they are one standing dispositif. Those four take
+their text from aides-territoires instead, which holds a separate page per
+dispositif and does distinguish them (relais funds a salaried chargé de
+mission; actions ponctuelles funds one-off animation, communication and
+training).
+
+### Why this replaced a batch that was already loaded
+
+An earlier batch of 25, drawn from state catalogues and republishers
+(`les-aides.fr`, `mesaidespubliques.infogreffe.fr`, a regional cluster site),
+was loaded first and reached mean class 1.8. The archive batch was worth only
+1.8 -> 1.7 on the metric, which on its own would not justify a rewrite. It was
+rewritten anyway, for two reasons that are not about the metric:
+
+1. **It corrected a founder-facing error I had introduced.** The republished
+   text for *Accompagnement des agriculteurs face au changement climatique*
+   describes accompanying farmers, and under the heading "who may apply" that
+   reads as "farmers may apply". ADEME's own page says the eligible structures
+   are `les organismes de conseil` — the applicant is the advisory body and the
+   farmer is the final beneficiary. The same trap sits on *PACTE Entreprises*.
+
+2. **It unblocked the row that had been adjudicated out.** PACTE was dropped
+   from the first load precisely because no sourced text for the AMI itself had
+   been reached; the archive has it verbatim ("Cet AMI s'adresse à tout type de
+   structures (personnes morales) en mesure de déployer … les missions exposées
+   dans l'AMI"), so all 26 now carry text.
+
+Rule Zero is the tiebreak: what a fund IS comes from the official source, and
+between a republisher and the body's own page the body's own page wins even
+when the scoreboard is indifferent. Every `source_url` is the `web.archive.org`
+URL actually read, with the capture date recorded. Nothing was laundered into a
+live `ademe.fr` link.
+
+## 6. Result, read back out of Postgres
+
+    country   leaves   body+region+text mean class   uniquely identified
+    FR before   101              8.1                        41%
+    FR after    101              1.7                        62%
+
+    FR eligibility_text coverage   57% -> 83%
+    FR ceiling@5                   68% -> 94%   (the measured maximum)
+    ALL mean class                 2.9 -> 1.6
+
+France was the floor of every market at 8.1. It now sits ahead of the
+Netherlands (2.1) and Czechia (4.4) and just behind Italy (1.5) and Germany
+(1.3). The 94% is not a partial result: it is the ceiling this regime has, and
+the remaining 6% is one textless class of 6 in `satr_fr_rnd`, where French SATR
+text was already measured at 0.11 of a sibling and is not worth fetching.
+
+All 26 texts passed the pertinence guard as `condition` —
+`classify_eligibility_pertinence.py` judged 0 of them reports, so nothing was
+retracted.
+
+## 7. Sources ruled out
+
 - **No other corpus column can separate these leaves.** All 75 `ademe_aid`
   rows have `delivery_region`, `catchment_region`, `catchment_regions` and
   `recipient_region_mix` NULL, and all 75 are `capital_type = grant`. Two of
