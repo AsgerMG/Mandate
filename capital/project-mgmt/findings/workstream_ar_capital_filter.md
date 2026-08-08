@@ -41,7 +41,11 @@ and attributes each lost pair from the `ExclusionLog` rather than from reading c
 | 99 | 234/250 (93.6%) | 226/250 (90.4%) | 11 | 3 | **SEL-CAPITAL ×11** |
 
 Not one pair on any seed was lost to any other rule — not country, not the leaf cap,
-not a failed gate.
+not a failed gate. Measured on the code as it shipped, which is the right basis for
+diagnosing it; the pool figures are unchanged by the fix in §6 (234 → 224 there and
+234 → 224 in the decomposition below), because the 14 instruments the fix unlocks are
+never the won fund on this population. The fix earns nothing on this metric and was
+not made to.
 
 The field-level decomposition (new `ANSWERS=ticket` / `ANSWERS=capital` modes) settles
 which answer spends it, seed 20260806:
