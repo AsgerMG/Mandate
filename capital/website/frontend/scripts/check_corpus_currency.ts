@@ -255,6 +255,93 @@ async function main() {
     }
   }
 
+  // ── 3b. The four RANKING artifacts must answer for the live corpus ───────
+  //
+  // `semanticCache` and `profileLeakIndex` above are mirrors of the retrieval
+  // index. These four are different and, until 2026-08-08, unwatched: they are
+  // read by `shortlist.ts` and `regionPrior.ts` AT REQUEST TIME, on the path a
+  // real founder goes down, and NOTHING compared them to anything. Their
+  // producers were on no path either — five commands somebody had to remember.
+  //
+  // Measured the day the check was written: `peerPrior` named 16 instruments
+  // the corpus no longer contained. Those 16 cost no rank directly (an id with
+  // no row simply never matches), and that is exactly why this is worth
+  // checking rather than trusting: the artifact was provably built against a
+  // different corpus, and the direction that DOES cost — funds published since,
+  // which the peer signal cannot see at all — leaves no trace to find. An id
+  // that is gone is the only observable end of a drift that is symmetric.
+  //
+  // Tested on the ID SET for the same reason section 3 gives: a count matches
+  // by coincidence the first time one fund is added and another withdrawn, and
+  // an mtime says when a file was written rather than what is in it.
+  const liveIds = new Set(live.map((r) => r.id as string));
+  const readArtifact = (name: string): unknown | null => {
+    try {
+      return JSON.parse(readFileSync(
+        path.join(process.cwd(), "lib", "intelligence", name), "utf8"));
+    } catch (e) {
+      problems.push(
+        `lib/intelligence/${name} is missing or unreadable ` +
+        `(${e instanceof Error ? e.message : String(e)}).\n` +
+        `      shortlist.ts falls back to the neutral value for it, which is not a\n` +
+        `      degraded ranking but a different one — see lib/intelligence/generatedArtifact.ts.`);
+      return null;
+    }
+  };
+  // (artifact, where the instrument ids live, what the ranker loses when stale)
+  const RANKING: [string, "keys" | "values", string][] = [
+    ["peerPrior.generated.json", "values",
+     "peer precedence, the signal that took exact-scheme recall from 24% to 43%"],
+    ["regionPrior.generated.json", "keys",
+     "the regional footprint that routes a founder to funds that pay in their region"],
+    ["__objectives.json", "keys",
+     "the registered-purpose re-rank"],
+  ];
+  for (const [name, where, loses] of RANKING) {
+    const doc = readArtifact(name) as Record<string, unknown> | null;
+    if (!doc) continue;
+    const ids = where === "keys"
+      ? new Set(Object.keys(doc))
+      : new Set(Object.values(doc).flat() as string[]);
+    // The emptiness floor, for the reason workstream BF's audit records: on
+    // 2026-08-08 two guards reported full headroom over 0 instruments because a
+    // bare catch had turned "not where I looked" into "nothing there". An
+    // artifact that names no instrument at all passes every set comparison
+    // below trivially, which is the most reassuring result this can print and
+    // the least true.
+    if (!ids.size) {
+      problems.push(
+        `lib/intelligence/${name} names NO instrument. Every comparison below\n` +
+        `      passes trivially on it, and the ranker loses ${loses}.\n` +
+        `      Rebuild: python3 ETL/refresh.py  (or the emitter named in its header)`);
+      continue;
+    }
+    const gone = [...ids].filter((id) => !liveIds.has(id));
+    if (gone.length) {
+      problems.push(
+        `lib/intelligence/${name} names ${gone.length} instrument(s) of ${ids.size} that\n` +
+        `      the corpus no longer contains, so it was built against a corpus that has\n` +
+        `      since moved. The observable half is harmless; the unobservable half is\n` +
+        `      every fund published since, which this artifact cannot see — and that is\n` +
+        `      ${loses}.\n` +
+        `      Rebuild: python3 ETL/refresh.py\n` +
+        `      e.g. ${gone.slice(0, 3).join(", ")}`);
+    }
+  }
+  // channelPrior carries no instrument ids — its keys are country|sector cells
+  // and its values are channel codes, and `channel` is derived in db.sqlite and
+  // does not exist as a column in Postgres, so there is nothing here to compare
+  // it against. It gets the emptiness floor and nothing more, which is an
+  // honest half-check rather than a re-implementation of the emitter's rules.
+  const cp = readArtifact("channelPrior.generated.json") as
+    { global?: object; byCountry?: object; byCountrySector?: object } | null;
+  if (cp && !Object.keys(cp.byCountrySector ?? {}).length) {
+    problems.push(
+      `lib/intelligence/channelPrior.generated.json holds NO (country, sector) cell.\n` +
+      `      shortlist.ts backs off to the global shape for every founder, which is the\n` +
+      `      EU-over-national composition bias the prior exists to correct.`);
+  }
+
   const cacheFile = path.join(process.cwd(), "lib", "intelligence", "semanticCache.generated.json");
   let cache: Record<string, { scores?: Record<string, number> } | Record<string, number>> | null = null;
   try {

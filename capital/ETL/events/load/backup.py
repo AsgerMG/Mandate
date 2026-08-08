@@ -6,9 +6,9 @@ database is never the single point of failure. Replaces the old Makefile
 ``backup`` recipe (now a thin wrapper around this script).
 
 Usage:
-  python3 ETL/load/backup.py            # gzip db + tar data/, copy to local + iCloud
-  python3 ETL/load/backup.py --dry-run  # print what would happen, touch nothing
-  python3 ETL/load/backup.py --no-icloud
+  python3 ETL/events/load/backup.py            # gzip db + tar data/, copy to local + iCloud
+  python3 ETL/events/load/backup.py --dry-run  # print what would happen, touch nothing
+  python3 ETL/events/load/backup.py --no-icloud
 """
 from __future__ import annotations
 

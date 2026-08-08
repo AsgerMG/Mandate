@@ -13,8 +13,7 @@
 //
 // The boundary is deliberate — WHICH FUNDS QUALIFY lives here; HOW THE MEMO IS
 // WRITTEN stays in pipeline.ts. Nothing in this file makes a model call.
-import { readFileSync } from "fs";
-import path from "path";
+import { loadGenerated } from "./generatedArtifact";
 import { regionNameFor } from "./regions.generated";
 import { recipientsIn } from "./regionPrior";
 import { hydrateGatesFor } from "./corpus";
@@ -474,13 +473,7 @@ let objectiveCache: Objectives | undefined;
 
 function objectives(): Objectives {
   if (objectiveCache === undefined) {
-    try {
-      objectiveCache = JSON.parse(readFileSync(
-        path.join(process.cwd(), "lib", "intelligence", "__objectives.json"),
-        "utf8")) as Objectives;
-    } catch {
-      objectiveCache = {};
-    }
+    objectiveCache = loadGenerated<Objectives>("__objectives.json", {});
   }
   return objectiveCache;
 }
@@ -584,13 +577,8 @@ export function objectiveScorer(
 
 function channelPrior(country?: string, sector?: string): Record<string, number> {
   if (priorCache === undefined) {
-    try {
-      priorCache = JSON.parse(readFileSync(
-        path.join(process.cwd(), "lib", "intelligence", "channelPrior.generated.json"),
-        "utf8")) as ChannelPrior;
-    } catch {
-      priorCache = { global: {}, byCountry: {}, byCountrySector: {} };
-    }
+    priorCache = loadGenerated<ChannelPrior>(
+      "channelPrior.generated.json", { global: {}, byCountry: {}, byCountrySector: {} });
   }
   const cc = toIso2(country ?? "");
   return (sector ? priorCache.byCountrySector[`${cc}|${sector}`] : undefined)
@@ -1891,13 +1879,8 @@ let peerPriorCache: Record<string, string[]> | undefined;
 export function peerPrior(country?: string, sector?: string): string[] {
   if (!country || !sector) return [];
   if (peerPriorCache === undefined) {
-    try {
-      peerPriorCache = JSON.parse(readFileSync(
-        path.join(process.cwd(), "lib", "intelligence", "peerPrior.generated.json"),
-        "utf8")) as Record<string, string[]>;
-    } catch {
-      peerPriorCache = {};
-    }
+    peerPriorCache = loadGenerated<Record<string, string[]>>(
+      "peerPrior.generated.json", {});
   }
   return peerPriorCache[`${toIso2(country)}|${sector}`] ?? [];
 }

@@ -59,6 +59,14 @@ STEPS = [
     # application deadlines: nothing upstream changes, and the inventory still
     # empties. See refresh_open_calls.py.
     [sys.executable, str(ROOT / "ETL/terms/refresh_open_calls.py")],
+    # France's half of the same problem, and it decays the same way. The ADEME
+    # file we ingest is an AWARD file with no application window in it, so every
+    # ADEME deadline the corpus holds came from a second read of a catalogue
+    # page -- and `scheme_end_date` is rebuilt from the extractors on every
+    # load, so those reads have to be re-taken after one. Left to itself the
+    # corpus offers a French founder appels a projets that shut in 2024.
+    # See ETL/terms/fetch_ademe_windows.py.
+    [sys.executable, str(ROOT / "ETL/terms/fetch_ademe_windows.py"), "--write"],
 ]
 
 # ── The guards that can only run here ──────────────────────────────────────
@@ -106,7 +114,12 @@ CENSUS = str(ROOT / "ETL/events/load/publish_corpus_census.py")
 # refresh_open_calls.py exits 3 on the same grounds and for the same reason: a
 # detail fetch that hits its cap, or a naming pass with no API key, still moved
 # the corpus forward and must not cancel the guards that follow it.
-PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3}
+#
+# fetch_ademe_windows.py is the third: it reads ADEME's own catalogue pages
+# through a public archive, and a handful of 503s from that archive is ordinary
+# weather. The windows it did read are written; the next run takes the rest.
+PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3,
+              "fetch_ademe_windows.py": 3}
 
 def census(outcome: str) -> None:
     """Record what this run left behind, and how the run itself went.

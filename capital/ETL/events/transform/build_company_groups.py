@@ -16,7 +16,7 @@ Guards:
 Reset-then-tag: clears all existing keys first, so re-runs are reproducible
 from the current companies table. Requires migration 006.
 
-Usage: python3 ETL/transform/build_company_groups.py
+Usage: python3 ETL/events/transform/build_company_groups.py
 """
 
 import sqlite3

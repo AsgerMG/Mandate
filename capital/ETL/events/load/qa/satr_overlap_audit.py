@@ -278,7 +278,7 @@ def main():
         # Quick check that staging is populated
         n = conn.execute("SELECT COUNT(*) FROM satr_staging").fetchone()[0]
         if n == 0:
-            sys.exit("satr_staging is empty. Run `python ETL/load/load_satr.py --staging` first.")
+            sys.exit("satr_staging is empty. Run `python ETL/events/load/load_satr.py --staging` first.")
         print(f"satr_staging: {n:,} rows\n")
         print("Running overlap audit per NDB...\n")
         results = []

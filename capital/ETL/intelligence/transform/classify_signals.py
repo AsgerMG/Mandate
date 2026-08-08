@@ -26,9 +26,9 @@ Message Batches. Note: Sonnet 5 enables adaptive thinking by default — it is
 explicitly disabled here so the structured output keeps the whole budget.
 
 Usage:
-  python3 ETL/transform/classify_signals.py status
-  python3 ETL/transform/classify_signals.py submit [--limit N] [--dry-run]
-  python3 ETL/transform/classify_signals.py collect
+  python3 ETL/intelligence/transform/classify_signals.py status
+  python3 ETL/intelligence/transform/classify_signals.py submit [--limit N] [--dry-run]
+  python3 ETL/intelligence/transform/classify_signals.py collect
 """
 from __future__ import annotations
 

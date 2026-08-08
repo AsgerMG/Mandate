@@ -8,7 +8,7 @@
   "state_aid_satr": 0.7388,
   "chips_ju": 0.0137,
   "edf": 0.0019,
-  "horizon_eu_partnership": 0.033,
+  "horizon_eu_partnership": 0.0329,
   "innovation_fund": 0.0023,
   "ipcei": 0.003
  },
@@ -65,14 +65,14 @@
    "ipcei": 0.0039
   },
   "DK": {
-   "eic": 0.105,
+   "eic": 0.1066,
    "eit": 0.016,
-   "horizon_eu_pillar_ii": 0.6886,
+   "horizon_eu_pillar_ii": 0.6874,
    "state_aid_satr": 0.0089,
-   "chips_ju": 0.0374,
+   "chips_ju": 0.0373,
    "edf": 0.0089,
-   "horizon_eu_partnership": 0.1139,
-   "innovation_fund": 0.0196,
+   "horizon_eu_partnership": 0.1137,
+   "innovation_fund": 0.0195,
    "ipcei": 0.0018
   },
   "EE": {
@@ -189,11 +189,11 @@
    "chips_ju": 0.0123
   },
   "NL": {
-   "eic": 0.0392,
+   "eic": 0.0394,
    "eit": 0.0052,
    "horizon_eu_partnership": 0.0434,
    "horizon_eu_pillar_ii": 0.2412,
-   "state_aid_satr": 0.6384,
+   "state_aid_satr": 0.6383,
    "chips_ju": 0.0264,
    "edf": 0.0005,
    "innovation_fund": 0.0028,
@@ -1271,13 +1271,13 @@
    "state_aid_satr": 0.8403
   },
   "NL|semiconductors_electronics": {
-   "chips_ju": 0.3409,
-   "eic": 0.1288,
+   "chips_ju": 0.3396,
+   "eic": 0.1321,
    "eit": 0.0038,
-   "horizon_eu_partnership": 0.0644,
-   "horizon_eu_pillar_ii": 0.2273,
-   "ipcei": 0.0076,
-   "state_aid_satr": 0.2273
+   "horizon_eu_partnership": 0.0642,
+   "horizon_eu_pillar_ii": 0.2264,
+   "ipcei": 0.0075,
+   "state_aid_satr": 0.2264
   },
   "NL|software_data_ai": {
    "chips_ju": 0.029,

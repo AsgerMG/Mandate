@@ -54,7 +54,7 @@ DATA_PROCESSED = DATA / "processed"
 # News/signals layer: qualitative, forward-looking corpus (articles, entity
 # links, signals, embeddings) lives in its OWN file so its rebuild cadence
 # never touches the events DB the site build depends on. Joined at query time
-# via ATTACH DATABASE (see ETL/load/load_signals.py).
+# via ATTACH DATABASE (see ETL/intelligence/load/load_signals.py).
 SIGNALS_DB = DATA / "signals.sqlite"
 
 # Backup destinations (mirrors the historical Makefile `backup` target).

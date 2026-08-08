@@ -80,7 +80,8 @@ SOURCES: list[Source] = [
     # ---- National NDB / state-aid registers ----------------------------------
     Source("satr", "extract_satr", "SATR — EU State Aid Transparency Register", "NETWORK",
            [], "webgate.ec.europa.eu transparency",
-           "two-step: run_satr_all.sh then ETL/load/load_satr.py --staging --apply"),
+           "two-step: bash ETL/events/extract/run_satr_all.sh, then "
+           "python3 ETL/events/load/load_satr.py --staging --apply"),
     Source("bdns", "extract_bdns", "Spain BDNS / SNPSAP state aid", "AUTO",
            ["--load-db"], "infosubvenciones.es/bdnstrans/api",
            "use infosubvenciones mirror (hacienda.gob.es is WAF/IP-blocked)"),

@@ -209,15 +209,31 @@ async function main() {
         `${rc?.provenance.source ?? "nothing"}; refusing to pass.`);
       process.exit(1);
     }
-    // It must have withheld exactly what it was handed, or the comparison
-    // below is against some other corpus than the one we think.
-    const withheldByRanked = new Set(rc.suppressed);
-    const missed = handicap.filter((id) => !withheldByRanked.has(id));
-    if (missed.length || withheldByRanked.size !== handicap.length) {
+    // The override must have TAKEN, or the comparison below is against some
+    // other corpus than the one we think.
+    //
+    // The property is "none of the handed ids is offerable here", not "the arm
+    // withheld exactly as many rows as it was handed". Those look the same and
+    // are not: `suppressedForUnconfirmedLiveness` reports the rows the LIVENESS
+    // RULE withheld, and a handed id that the live register does not offer
+    // anyway -- closed, unpublishable, absent -- is never withheld, because
+    // there was nothing to withhold. Withholding it is a no-op and the ranking
+    // is still exactly the question the fallback was asked.
+    //
+    // Asserted as equality, this fired the moment the two stores were brought
+    // into step: 19 of 34 handed ids had stopped being offerable on Postgres,
+    // the arm reported 15, and the check called a correct run broken. That is a
+    // guard failing for a reason its own subject cannot fix, which is how a
+    // guard gets muted -- and it is strictly WEAKER than what is asserted here,
+    // because a count can match while the wrong rows are held.
+    const rankedOfferable = new Set(rc.publishable);
+    const notHeld = handicap.filter((id) => rankedOfferable.has(id));
+    if (notHeld.length) {
       problems.push(
-        `the re-ranked live arm withheld ${withheldByRanked.size} row(s), not the ` +
-        `${handicap.length} it was given. The suppression override did not take, so the ` +
-        `ranking below is not the comparison it claims to be.`);
+        `the re-ranked live arm still offers ${notHeld.length} of the ${handicap.length} ` +
+        `row(s) it was handed. The suppression override did not take, so the ranking ` +
+        `below is not the comparison it claims to be.\n` +
+        `      ${notHeld.slice(0, 8).join(", ")}`);
     }
   }
 
