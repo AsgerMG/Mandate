@@ -38,9 +38,41 @@ Only facts the register states about the COMPANY and a real founder would know
 about themselves without being told:
 
     ticketBand    the median award this company has actually received. A
-                  founder knows the size of cheque they are asking for.
-    capitalSought the kinds of capital it has actually taken. A founder knows
-                  whether they want a grant, a loan or equity.
+                  founder knows the size of cheque they are asking for. STILL
+                  IN USE: measured to cost the candidate pool exactly zero
+                  (234 against 234 on the same 250 pairs) and to gain exact
+                  recall, which is what a non-circular discriminator looks
+                  like. Ticket size reaches no filter -- `channelServesBand`
+                  was retired and deleted -- so it can only reorder.
+    capitalSought the kinds of capital it has actually taken.
+
+── capitalSought is DISQUALIFIED as an answer (workstream AR) ──────────────
+It is still derived, and still written, so the finding stays reproducible under
+`ANSWERS=capital`. It is no longer supplied by `ANSWERS=real`. It cost the
+candidate pool four points on every seed, and on the full holdout population
+two thirds of that loss is this derivation being wrong rather than the filter:
+
+  - It has the circularity `useOfFunds` was excluded for. `capital_kind` reads
+    `satr_staging.aid_instrument_text`; `funding_instruments.capital_type` is
+    derived from the SAME column one hop away. The answer and the thing it is
+    matched against come from one field, and `ANSWERS=capital` duly raises
+    EXACT@5 while cutting the pool -- the signature of a self-grading signal.
+  - The `other_scheme` guard makes it worse, not better. Excluding the won
+    scheme does not make the answer NEUTRAL about the won fund, it makes it
+    ANTI-CORRELATED: any kind of capital a company took only from the fund it
+    won is guaranteed absent from its derived answer, which guarantees the
+    filter removes exactly the fund the pair exists to find. Leak-proofing that
+    produces a negative leak.
+  - A tax credit is not a preference. A company that claimed an R&D credit is
+    derived as "wants tax credits" and thereby cut off from every grant
+    programme in Europe. That is most of Germany's loss.
+  - Receipts are not intent. The intake asks what capital a founder WANTS;
+    1,419 of the 1,890 derivable rows collapse to ["grant"] alone, where the
+    constant was ["grant","loan"]. The narrowing is the whole effect.
+
+See project-mgmt/findings/workstream_ar_capital_filter.md. Reviving it needs a
+derivation of INTENT rather than of receipts, and one that does not read the
+column the corpus labels funds from.
 
 `useOfFunds` is deliberately NOT derived. It would come from the register's
 `objectives_text`, which is a statement about the SCHEME rather than about the

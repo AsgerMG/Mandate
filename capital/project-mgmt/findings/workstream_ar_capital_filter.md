@@ -59,10 +59,13 @@ now measured rather than asserted: `channelServesBand` was retired to `return tr
 and deleted, so ticket size reaches only `awardScorer`/`scaleFit`, which reorder.
 `capitalSought` is the only derived answer wired to a `.filter()`.
 
-**So `ticketBand` is kept and `capitalSought` is reverted.** Ticket is also the one
-that earns its EXACT@5: +10 pairs at zero pool cost, from a quantity that is not
-circular (a company's median award is a fact about the company; a fund's award median
-is a fact about the fund). Capital's +12 is not credit the ranker earned — see §3.
+**So `ticketBand` is kept and `capitalSought` is reverted.** Ticket is kept because it
+costs nothing and is not circular — a company's median award is a fact about the
+company, a fund's award median is a fact about the fund, and the two are different
+quantities — not because it gains: on EXACT@5 it is flat (+10 on seed 20260806 against
+an anomalous `off` run, −2 on seed 7). Capital's EXACT@5 gain is not credit the ranker
+earned; raising exact recall while cutting the pool is the signature of a self-grading
+signal, and §3 shows where the self-grading comes from.
 
 ---
 
