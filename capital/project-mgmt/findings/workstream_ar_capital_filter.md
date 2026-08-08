@@ -283,10 +283,68 @@ so on the day the filter began admitting `blended` the census still reported tho
 instruments as reachable by nobody. It now asks the function, as the guard does.
 Two readings of one property was the defect; there is now one.
 
-The memo's `capital` fit component was moved to the same rule, so the filter and the
-score cannot disagree.
+The memo's `capital` fit component was moved to the same rule, and the two are now
+**asserted** to agree over every capital type and every intake option rather than
+described as agreeing — the failure being ruled out is admitted-and-penalised, a
+fund that survives selection and then sinks in the memo for the label that let it
+through, which looks like nothing at all. Three readings of one property existed
+when this branch opened (filter, memo score, census) and one had already drifted.
+
+The founder-facing label was the fourth. `supportTypeLabel` rendered `blended` as
+"Grant + equity (blended)" in the brief's centrepiece table — a composition the
+label explicitly did not resolve and that no publishable blended instrument holds.
+Harmless while only equity-seekers could see the row; load-bearing the moment the
+filter admitted those funds to everyone. Corrected in the same branch, because
+otherwise the fix trades a fund nobody could see for a fund described wrongly to
+everyone.
 
 **Reverted.** The `capitalSought` derivation. `ticketBand` stays.
+
+---
+
+## 6a. The revert, measured on the shipped code — three seeds, holdout, 250 pairs
+
+`measure_recall.ts`, `corpus=postgres instruments=1088`. `real` is what ships:
+`ticketBand` and region derived per founder, `capitalSought` constant.
+
+| seed | arm | in pool | EXACT@5 | REGIME@5 |
+|---|---|---|---|---|
+| 20260806 | off | 235 (94%) | 64 (26%) | 206 (82%) |
+| 20260806 | **real** | **235 (94%)** | **73 (29%)** | **207 (83%)** |
+| 7 | off | 237 (95%) | 69 (28%) | 209 (84%) |
+| 7 | **real** | **237 (95%)** | **73 (29%)** | **210 (84%)** |
+| 99 | off | 238 (95%) | 78 (31%) | 213 (85%) |
+| 99 | **real** | **238 (95%)** | **81 (32%)** | **212 (85%)** |
+
+**Pool is identical to the pair on all three seeds.** The 94% → 91% loss the
+workstream was opened on is gone, and it is gone for the reason §1 predicted rather
+than by luck: the only derived answer wired to a `.filter()` is the one reverted.
+Floors (93 / 22 / 80) are met with margin on every seed and none was touched.
+`check_recall_floor.ts` on its own pinned seed: pool 97%, exact5 30%, regime5 86%.
+
+EXACT@5 rises +3, +4, +3. Each is inside its own ±5.6 interval and none of them is a
+result on its own; three-for-three in the same direction, on a pool that did not
+move, is what makes it a signal rather than the §8 variance. This is the shape a
+non-circular answer should have, and the opposite of `capitalSought`'s, which raised
+EXACT@5 while cutting the pool.
+
+Where it lands is the more useful reading:
+
+| country | n (seed 20260806) | EXACT@5 off → real | across all three seeds |
+|---|---|---|---|
+| DE | 51 | 27% → **41%** | +14, +7, +4 |
+| FR | 74 | 18% → 18% | +0, +1, +0 |
+| IT | 30 | 23% → 20% | −3, −9, +3 |
+
+Germany gains on every seed and France gains on none — which is §4's finding
+arriving independently. France's ceiling is not a ranking problem that a better
+founder answer can lift, because 13.6% of its pairs name one of two funds for one
+real programme with no record of which paid. Italy's sign flips with the seed; at
+n≈30 that is noise, not a regression. By regime size the gain sits in the crowded
+regimes (21-50 and 51+), which is where a pool is worth anything.
+
+Full output, all six runs with every stratum:
+`project-mgmt/findings/workstream_ar_capital_filter_recall.txt`.
 
 ---
 
