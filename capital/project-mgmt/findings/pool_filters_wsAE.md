@@ -160,7 +160,7 @@ of its own encoded gates. Measured before changing anything, one founder per
 country:
 
 ```
-DE 1    IT 1    CZ 2    the other 19 markets   0
+DE 1    IT 1    CZ 2    the other 20 markets   0
 ```
 
 Four rows in total. `distinguishRowNames` runs first and now separates almost
@@ -230,7 +230,10 @@ TABLE diff, DE IT CZ FR ES NO   IDENTICAL
 POOL   DE 103 -> 104   IT 87 -> 88   CZ 67 -> 69   FR/ES/NO unchanged
 ```
 
-The pool gains the fund and the visible order is untouched.
+The pool gains the fund and the visible order is untouched. Those three pool
+deltas were re-measured on the 1,088 corpus with the same script run against
+both trees and came back identical -- see section 4, where the sweep is
+extended to all 23 markets and the other 20 are shown not to move.
 
 The demotion is kept even though the key fix now leaves it dormant. It is the
 INVARIANT — *a display rule may not delete from the universe* — and it is the
@@ -270,7 +273,7 @@ One market's table changes, and it changes by gaining a fund:
 CZ   before   5. SA.111780 "…instalace nad 1MW"      6. SA.111730 "…alternativní paliva"
      after    5. SA.63670  "…instalace do 1MW · MINISTERSTVO ŽIVOTNÍHO PROSTŘEDÍ ČR, …"
               6. SA.111780 "…instalace nad 1MW · Ministerstvo životního prostředí"
-DE, IT, and the other 19 markets: table unchanged, pool +1 / +1 / 0.
+DE, IT, and the other 20 markets: table unchanged, pool +1 / +1 / 0.
 ```
 
 Verified by dumping the rendered label of every visible row from both trees
@@ -283,9 +286,131 @@ a `·` token, so the layout carries labels longer than this one before the chang
 
 ---
 
-## 4. Measured recall, three seeds, interleaved
+## 4. Measured, both arms interleaved on one corpus
 
-<!--RECALL-->
+The corpus moved under this workstream twice, so **every number below is a pair
+of runs on the same 1,088-instrument Postgres corpus**, base immediately
+followed by after, using the SAME diagnostic script against both trees. Raw
+records are committed beside this file (`_recall_base.txt`, `_recall_after.txt`,
+`_sweep_base.txt`, `_sweep_after.txt`).
+
+### The dedupe, per market: 4 rows recovered, nothing else moves
+
+`diagnose_pool_filters.ts` across all 23 markets holding publishable
+instruments, one founder each, both arms:
+
+```
+mkt   publishable   pool base -> after   SEL-DUPE-NAME base -> after
+CZ         92            67 -> 69  +2            2 -> 0
+DE        148           103 -> 104  +1           1 -> 0
+IT        112            87 -> 88  +1            1 -> 0
+the other 20 markets      unchanged              0 -> 0
+TOTAL                  1226 -> 1230  +4          4 -> 0
+```
+
+**The recovered rows are exactly the rows the rule deleted, and nothing else
+changed anywhere.** That is the whole claim of the change, measured rather than
+argued: `SEL-DUPE-NAME` fired four times and now fires zero times, because the
+shared label key lets `distinguishRowNames` separate the pairs before anything
+collapses them.
+
+### Recall, three seeds, holdout, N=250
+
+`measure_recall.ts`, `SPLIT=holdout`, `SEED=20260806 / 7 / 99`, `corpus=postgres
+instruments=1088` printed by all six runs.
+
+```
+                    seed 20260806        seed 7            seed 99
+  in pool           234 -> 235  +     233 -> 237  +     234 -> 238  +
+                     94% -> 94%        93% -> 95%        94% -> 95%
+  EXACT@5            62 ->  62          69 ->  69         78 ->  75  -
+                     25% -> 25%        28% -> 28%        31% -> 30%
+  REGIME@5          206 -> 206         208 -> 208        213 -> 213
+                     82% -> 82%        83% -> 83%        85% -> 85%
+```
+
+**Pool is up on all three seeds and down on none: +1, +4, +4 pairs.**
+**REGIME@5 — the operational number — is identical on all three, to the pair.**
+
+**EXACT@5 is unchanged on two seeds and loses three pairs on the third**, and
+that is stated rather than averaged away. It is well inside the interval
+(±5.7pp at this N), but it is not nothing and it has a mechanism: rows that were
+previously DELETED on a title collision are now separated and both shown, so an
+extra row competes for the five visible slots and can displace an exact answer.
+The trade is +9 pool pairs across the three seeds against −3 exact pairs on one
+of them, with the regime number untouched — a wider universe at no cost to the
+operational metric. Two of three seeds show literally zero movement in EXACT@5,
+which is what a change of this size should look like.
+
+### By founder country — the axis a per-country filter hides behind
+
+Pool, base → after:
+
+```
+                        seed 20260806      seed 7        seed 99
+  DE   (n=51/51/46)      86 -> 88  +     88 -> 92  +    83 -> 90  +
+  IT   (n=30/26/32)      93 -> 93        92 -> 96  +    88 -> 91  +
+  FR   (n=74/78/79)      97 -> 97        98 -> 98       98 -> 98
+  SE, NL, ES, GB, EE, DK          unchanged on every seed
+```
+
+**DE gains on all three seeds**, which is the market the brief said this bites
+hardest, and IT on two. **France — the worst market at 16-18% EXACT and the
+largest single country in the population — does not move on any seed, in pool or
+in EXACT.** Nothing is taken from it to pay for DE. No country's pool falls on
+any seed.
+
+### By regime-size stratum — the overfitting axis
+
+Pool, base → after:
+
+```
+                        seed 20260806      seed 7        seed 99
+  regime 1 (alone)      100 -> 100      100 -> 100     100 -> 100
+  regime 2-5             75 -> 75        67 -> 67       92 -> 92
+  regime 6-20            74 -> 74        85 -> 85       79 -> 79
+  regime 21-50          100 -> 100      100 -> 100     100 -> 100
+  regime 51+             96 -> 97  +     93 -> 97  +    93 -> 97  +
+```
+
+The entire gain sits in `regime 51+` on every seed, and that is the prediction
+the mechanism makes rather than a result explained after the fact: a title
+collision requires two schemes publishing under one name, which only happens in
+the crowded national regimes. **No stratum loses on any seed** — including the
+founder whose fund stands nearly alone, the one an overfitted change abandons.
+
+### By population
+
+Pool, base → after:
+
+```
+                        seed 20260806      seed 7        seed 99
+  mode=profile           97 -> 98  +     96 -> 98  +    96 -> 98  +
+  mode=project           83 -> 83        85 -> 85       88 -> 88
+  original join          89 -> 89        89 -> 91  +    88 -> 91  +
+  traced                100 -> 100      100 -> 100     100 -> 100
+```
+
+`original join` — the smaller, older population the floors keep a wide margin
+for, and the one a change is most likely to trade away — gains on two seeds and
+loses on none. `mode=project` is unchanged because project pairs are EU
+programmes and the collision is a national-scheme phenomenon.
+
+### Floors
+
+```
+                 floor    worst observed AFTER the change
+  pool             93            95   (237/250, seed 7)
+  EXACT@5          22            25   (62/250, seed 20260806)
+  REGIME@5         80            82   (206/250, seed 20260806)
+```
+
+**All three hold with margin, and none was lowered.** `check_recall_floor.ts`
+pins its own seed and passes.
+
+One thing the baseline itself says, worth recording because it is not this
+workstream's to fix: on seed 7 the BASE pool is 93% — exactly on the floor, with
+no margin at all. The change moves it to 95%.
 
 ---
 
@@ -325,9 +450,35 @@ will spend the same afternoon AE did establishing that this instance is benign.
 Worth a channel-stage rule id. Not done here: it is a reporting change to a
 stage this workstream did not otherwise touch.
 
-**`npm run check` was red on main before this branch and is now green.** Three
-scripts from other workstreams (`diagnose_region_drop`, `diagnose_region_reach`,
-`measure_gate_separation`) failed `check_env_loader`, and because the chain is
-serial, **every check after it had stopped running — including
-`check_recall_floor`**. The floors had not been evaluated on main since. Fixed
-here only because this workstream could not otherwise verify its own floors.
+**`check_env_loader` was red on main and is green here.** Three scripts from
+other workstreams (`diagnose_region_drop`, `diagnose_region_reach`,
+`measure_gate_separation`) read `DATABASE_URL`/`VOYAGE_KEY` through the import
+graph and declared nothing. Because `npm run check` is a serial `&&` chain,
+**every check after it had stopped running** — which on main includes
+`check_recall_floor`. Fixed here only because this workstream could not
+otherwise verify its own floors, and the fix is three declarations.
+
+### The build state this branch actually leaves, stated exactly
+
+`npm run check` does NOT go green, and none of what stops it belongs to AE. Each
+was run individually against this branch and against main at `425119ed`, and
+each fails **identically on both**:
+
+```
+                          this branch   main 425119ed
+  check_corpus_census        FAILED        FAILED      census #6 degraded / behind (AG, AK)
+  check_dependencies         FAILED        FAILED
+  check_gate_pertinence      FAILED        FAILED
+  check_hydration_parity     FAILED        FAILED
+  check_env_loader             ok          FAILED      <- fixed here
+  check_recall_floor           ok           ---        <- never reached on main
+  everything else              ok            ok
+```
+
+`check_recall_floor` run directly against this branch: **pool 97% (floor 93),
+exact5 30% (floor 22), regime5 86% (floor 80)**, plus both population floors —
+all met, none lowered. `npx vitest run`: 241 tests, 19 files, all pass.
+
+This is recorded rather than quietly worked around because "the build was
+already red" is exactly how a real regression gets attributed to whoever merges
+next.
