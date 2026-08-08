@@ -29,6 +29,12 @@ export interface CompetitorRecord {
   /** First / last event year across the group, 0 when no dated event. */
   firstYear: number;
   lastYear: number;
+  /** NUTS region (level 1-2) the State Aid Transparency Register places this
+   *  company in, "" when it does not place it. A DEFAULT for the intake's
+   *  region question, never an assertion: a registered address is not always
+   *  where the work happens, so the founder is shown where it came from and
+   *  their edit wins. Present for 46.5% of the index. */
+  region: string;
   /** True when the name was found in our database; false = no public funding traced. */
   matched: boolean;
 }
@@ -901,6 +907,25 @@ export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = 
     note: "the control is the top-level `country` select; withIncorporationCountry " +
           "folds it in server-side so all three routes get it from one place",
   },
+  // MOVED HERE FROM `adaptive`, which is the whole of workstream AZ's part A.
+  //
+  // Asked adaptively it reached a minority of founders — wsAO measured a region
+  // supplied for 46% of graded pairs — and it is the most decisive question the
+  // intake has: 181 encoded, official region filters on 155 leaves across 19
+  // regimes, and the ONLY field whose demands differ between siblings across
+  // the eight largest fund families. A perfect answer takes the share of leaves
+  // narrowable to five rows from 8% to 39%.
+  //
+  // Its options are DERIVED from the founder's country rather than fixed, so
+  // FIELD_ENUM_HINTS.region.options is empty by design and only `optionsFor`
+  // can answer it. Sampled explicitly for the same reason: check_gate_field_reach
+  // FAILS on a field it cannot probe rather than skipping it, because the
+  // fields with no enumerable list are precisely the ones that have broken.
+  //
+  // FIRST_PAGE_FIELDS is derived from this table and `openFieldsForShortlist`
+  // skips anything in it, so this one line is also what stops the adaptive
+  // round asking again for something the first screen already collected.
+  region: { via: "first_page", sample: "FRD" },
 
   // ── Offered by the grounded adaptive round ──────────────────────────────
   activities: { via: "adaptive" },
@@ -917,10 +942,6 @@ export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = 
   needBy: { via: "adaptive" },
   turnoverBand: { via: "adaptive" },
   balanceBand: { via: "adaptive" },
-  // Its options are DERIVED from the founder's country rather than fixed, so
-  // FIELD_ENUM_HINTS.region.options is empty by design and only `optionsFor`
-  // can answer it. Sampled explicitly for the same reason.
-  region: { via: "adaptive", sample: "FRD" },
 
   // ── Computed from another answer ────────────────────────────────────────
   lossesOverHalfCapital: {
