@@ -13,7 +13,15 @@
 //   2  a company's past awards are not what a founder would SAY on the intake,
 //      so the derived answers are wrong                     -> a harness defect
 //
-// They have opposite fixes, so guessing is not an option.
+// They have opposite fixes, so guessing is not an option. A THIRD turned up
+// once the register was keyed correctly and neither suspect explains it:
+//
+//   0  a fund here is a scheme AS DELIVERED BY ONE BODY, and 21 (scheme, body)
+//      pairs are split again into a grant fund and a loan fund in two different
+//      regimes. The answer key does not say which one paid, so it can name the
+//      sibling the company did not win -> an ANSWER-KEY defect. The founder is
+//      routed correctly and only the metric misses. The constant answers hid
+//      this completely, because ["grant","loan"] admitted both siblings.
 //
 // ── How this separates them ────────────────────────────────────────────────
 // Same population, same sampler, same seeds and the same `computeVerdict` as
@@ -28,11 +36,14 @@
 //
 //   DID THIS FUND PAY THIS COMPANY THE KIND OF CAPITAL IT ASKED FOR?
 //
-// The register answers that per award. If yes, the fund serves the founder and
-// we cut it anyway: cause 1, and the encoding is at fault. If the fund has
-// never paid that kind to anyone, the founder was asking for something it does
-// not offer, and the question moves to whether a founder would really have
-// asked: cause 2.
+// The register answers that per award, keyed on (company, scheme, GRANTING
+// BODY) so one sibling's awards are never read as the other's. If a sibling
+// carries what the founder asked for, the founder reaches it and the key is
+// simply pointing at the wrong id: cause 0. If this fund itself paid that kind
+// and no sibling carries it, the fund serves the founder and we cut it anyway:
+// cause 1, and the encoding is at fault. If nothing under this scheme and body
+// pays it, the founder was asking for something that is not there, and the
+// question moves to whether a founder would really have asked: cause 2.
 //
 //   npx tsx scripts/diagnose_capital_pool.ts
 //   SEED=7 N=250 npx tsx scripts/diagnose_capital_pool.ts
@@ -68,10 +79,12 @@ interface AwardFacts {
   vote: { kind: string; agreed: number; total: number; kinds: string[] };
   /** whether any per-award capital record exists for this fund at all */
   hasAwardRecord: boolean;
-  /** kinds this company was paid UNDER this scheme */
+  /** kinds this company was paid by THIS BODY under THIS scheme */
   ownKinds: string[];
-  /** kinds this scheme has paid ANYONE */
+  /** kinds this body has paid ANYONE under this scheme */
   schemeKinds: string[];
+  /** capital types carried by OTHER funds built from the same scheme and body */
+  siblingKinds: string[];
   /** kinds this company took anywhere EXCEPT this scheme */
   elsewhereKinds: string[];
 }
@@ -80,6 +93,8 @@ interface AwardFacts {
  *  finding — every `blended` instrument in the corpus is a vote that failed to
  *  reach its threshold, not a fund with an equity component. */
 const DILUTIVE_KINDS = new Set(["equity"]);
+
+interface Strat { n: number; flip: number; defect: number; harness: number; answerKey: number }
 
 function registerFacts(pairs: { name: string; instrument: string }[]): Map<string, AwardFacts> {
   const out = new Map<string, AwardFacts>();
@@ -171,7 +186,7 @@ async function main() {
   const flipRule = new Map<string, number>();
   const cause = new Map<string, number>();
   const examples = new Map<string, string[]>();
-  const byCountry = new Map<string, { n: number; flip: number; defect: number; harness: number }>();
+  const byCountry = new Map<string, Strat>();
   const regimeSize = new Map<string, number>();
   for (const i of corpus) {
     const p = (i as { parentId?: string }).parentId ?? i.id;
@@ -180,11 +195,12 @@ async function main() {
   const sizeBucket = (n: number) =>
     n <= 1 ? "regime 1 (alone)" : n <= 5 ? "regime 2-5" : n <= 20 ? "regime 6-20"
       : n <= 50 ? "regime 21-50" : "regime 51+";
-  const byRegime = new Map<string, { n: number; flip: number; defect: number; harness: number }>();
-  const bump = (m: Map<string, { n: number; flip: number; defect: number; harness: number }>,
-    k: string, f: boolean, d: boolean, h: boolean) => {
-    const e = m.get(k) ?? { n: 0, flip: 0, defect: 0, harness: 0 };
-    e.n++; if (f) e.flip++; if (d) e.defect++; if (h) e.harness++; m.set(k, e);
+  const byRegime = new Map<string, Strat>();
+  const bump = (m: Map<string, Strat>,
+    k: string, f: boolean, d: boolean, h: boolean, a: boolean) => {
+    const e = m.get(k) ?? { n: 0, flip: 0, defect: 0, harness: 0, answerKey: 0 };
+    e.n++; if (f) e.flip++; if (d) e.defect++; if (h) e.harness++; if (a) e.answerKey++;
+    m.set(k, e);
   };
 
   let poolOff = 0, poolReal = 0, flips = 0, gains = 0;
@@ -198,7 +214,7 @@ async function main() {
     if (inOff && !inReal) flips++;
     if (!inOff && inReal) gains++;
 
-    let defect = false, harness = false;
+    let defect = false, harness = false, answerKey = false;
     if (inOff && !inReal) {
       const ev = real.log.all().filter((e) => e.subject === t.instrument);
       const ids = ev.length ? [...new Set(ev.map((e) => e.ruleId))] : ["UNRECORDED"];
@@ -224,9 +240,31 @@ async function main() {
         // was unanimous, plausible, and entirely an artefact. So: no default,
         // a missing record is its own bucket, and `assertFactsCoverage` below
         // makes a lookup failure fatal rather than quiet.
+        // A fund in this corpus is a scheme AS DELIVERED BY ONE BODY, and for
+        // 21 (scheme, body) pairs the loader splits even that into a grant fund
+        // and a loan fund, in two different regimes. So there is a THIRD thing
+        // that can put a pair here, and it is neither suspect: the answer key
+        // can name the wrong sibling. The founder is routed correctly, the
+        // product does nothing wrong, and the metric still scores a miss --
+        // which the constant answers hid, because ["grant","loan"] admitted
+        // both siblings and never made the two distinguishable.
+        //
+        // This has to be tested BEFORE the code-defect branches. Keyed on the
+        // scheme alone, one sibling's awards read as the other's, and the grant
+        // fund looks like "a fund that paid this company a loan" -- a filter
+        // defect that is not there. That is the reading the first version of
+        // this file produced.
+        const siblingServes = f?.siblingKinds
+          .some((k) => { const o = DB_TO_INTAKE.get(k); return o !== undefined && asked.has(o); });
         let key: string;
         if (!f) {
           key = "3. UNDECIDABLE: no record found for this pair at all";
+        } else if (siblingServes && f.ownKinds.some((k) => asked.has(k))) {
+          key = "0. ANSWER KEY: this company was paid a kind a SIBLING fund of the same scheme and body carries, and the key names the other sibling. The founder is routed correctly; only the metric misses";
+          answerKey = true;
+        } else if (siblingServes) {
+          key = "0. ANSWER KEY (weaker): a sibling of the same scheme and body carries the kind asked for, so the founder reaches it under a different id";
+          answerKey = true;
         } else if (!rollupOpt) {
           key = `1. CODE DEFECT: capital_type "${rollup}" answers to no intake option, so this fund is cut for EVERY founder who states any preference`;
           defect = true;
@@ -234,18 +272,15 @@ async function main() {
           key = "1. CODE DEFECT: a vote that failed its threshold is labelled blended, which only a founder asking for EQUITY can reach -- and nothing in it dilutes";
           defect = true;
         } else if (f.ownKinds.some((k) => asked.has(k))) {
-          key = "1. CODE DEFECT: this fund paid THIS company a kind it asked for; the single rollup label denies it";
+          key = "1. CODE DEFECT: this body paid THIS company a kind it asked for under this scheme, and no sibling fund carries it";
           defect = true;
         } else if (f.schemeKinds.some((k) => asked.has(k))) {
-          key = "1. CODE DEFECT: this fund pays that kind to OTHER companies; the single rollup label denies it";
+          key = "1. CODE DEFECT: this body pays that kind to OTHER companies under this scheme, and no sibling fund carries it";
           defect = true;
         } else if (f.vote.kind === "lossy") {
           key = "1. CODE DEFECT (kind not nameable): the label's own vote denies some of this fund's awards, so it cannot be read as a statement of what the fund pays";
           defect = true;
         } else if (f.hasAwardRecord || f.vote.kind === "unanimous") {
-          // Positive evidence that the fund pays only what its label says:
-          // either every award voted the same way, or the register lists this
-          // scheme's kinds and none of them is the one asked for.
           key = f.ownKinds.length && !f.ownKinds.some((k) => f.elsewhereKinds.includes(k))
             ? "2. HARNESS DEFECT: the kind this fund paid was taken ONLY here, so excluding the won scheme GUARANTEES the derived answer contradicts it"
             : "2. HARNESS DEFECT: the fund really pays only what its label says; the founder's derived answer is what is wrong";
@@ -258,15 +293,16 @@ async function main() {
         if (ex.length < 5) {
           ex.push(`${t.instrument} [${rollup}] asked=${[...asked].join("+")}` +
             ` vote=${f ? f.vote.kind + (f.vote.total ? ` ${f.vote.agreed}/${f.vote.total}` : "") : "-"}` +
-            ` paidHere=${f?.ownKinds.join("+") || "-"} schemePays=${f?.schemeKinds.join("+") || "-"}` +
+            ` paidHere=${f?.ownKinds.join("+") || "-"} bodyPays=${f?.schemeKinds.join("+") || "-"}` +
+            ` siblings=${f?.siblingKinds.join("+") || "-"}` +
             ` src=${(t as { answerCapitalSource?: string }).answerCapitalSource}`);
           examples.set(key, ex);
         }
       }
     }
-    bump(byCountry, t.country || "(none)", inOff && !inReal, defect, harness);
+    bump(byCountry, t.country || "(none)", inOff && !inReal, defect, harness, answerKey);
     const wantRegime = byId.get(t.instrument)?.parentId ?? t.instrument;
-    bump(byRegime, sizeBucket(regimeSize.get(wantRegime) ?? 1), inOff && !inReal, defect, harness);
+    bump(byRegime, sizeBucket(regimeSize.get(wantRegime) ?? 1), inOff && !inReal, defect, harness, answerKey);
   }
 
   const prov = corpusProvenance();
@@ -286,9 +322,9 @@ async function main() {
     console.log(`    ${String(n).padStart(4)}  ${k}`);
     for (const e of examples.get(k) ?? []) console.log(`          ${e}`);
   }
-  const line = (label: string, m: { n: number; flip: number; defect: number; harness: number }) =>
+  const line = (label: string, m: Strat) =>
     console.log(`    ${label.padEnd(26)} n=${String(m.n).padStart(4)}  lost ${m.flip}` +
-      `  of which code-defect ${m.defect}  harness ${m.harness}`);
+      `  of which answer-key ${m.answerKey}  code-defect ${m.defect}  harness ${m.harness}`);
   console.log(`\n  by FOUNDER COUNTRY`);
   for (const [k, m] of [...byCountry].sort((a, b) => b[1].n - a[1].n)) if (m.flip) line(k, m);
   console.log(`  by SIZE OF THE GROUP THE RANKER HAD TO ORDER`);
