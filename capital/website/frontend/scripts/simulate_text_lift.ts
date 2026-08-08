@@ -20,10 +20,14 @@
 //
 //   npx tsx scripts/simulate_text_lift.ts <candidates.json> [FR]
 //
-// candidates.json is an array of {name, found, eligibility_text, source_url}
-// -- the shape the fetch agents emit. Rows with found:false, or text at or
-// under the 40-char floor load_scheme_text.py enforces, are ignored exactly as
-// that loader would ignore them.
+// candidates.json is an array of {instrument_id | name, found, eligibility_text,
+// source_url} -- BOTH the shape ETL/terms/load_scheme_text.py consumes
+// (`instrument_id`) and the looser shape a fetch agent emits while it still
+// only knows the scheme by its title (`name`). Scoring the loader's own key is
+// the point: a dry run that blessed a file the loader then matched to
+// different rows would be worse than no dry run. Rows with found:false, or text
+// at or under the 40-char floor that loader enforces, are ignored exactly as it
+// would ignore them.
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 import { readFileSync } from "fs";
 
@@ -74,11 +78,13 @@ async function main() {
   await db.connect();
   const before = new Map<string, string>();
   const idByName = new Map<string, string[]>();
+  const knownIds = new Set<string>();
   for (const r of (await db.query(
     `SELECT id, name, eligibility_text FROM funding_instruments`)).rows) {
     if (r.eligibility_text && String(r.eligibility_text).length > MIN_TEXT_LEN) {
       before.set(r.id, r.eligibility_text);
     }
+    knownIds.add(r.id);
     const k = String(r.name ?? "").trim();
     if (!idByName.has(k)) idByName.set(k, []);
     idByName.get(k)!.push(r.id);
@@ -93,8 +99,16 @@ async function main() {
     if (c.found === false) { notFound++; continue; }
     const t = String(c.eligibility_text ?? "").trim();
     if (t.length <= MIN_TEXT_LEN) { tooShort++; continue; }
-    const ids = idByName.get(String(c.name ?? "").trim());
-    if (!ids?.length) { unmatched.push(String(c.name)); continue; }
+    // instrument_id is the loader's key and wins when present; name is the
+    // fallback for a batch an agent produced before ids were resolved. A name
+    // is NOT unique in this corpus, so it deliberately fans out to every row
+    // carrying it -- the same fan-out a name-keyed load would cause, which is
+    // exactly the risk a dry run should show rather than hide.
+    const cid = String(c.instrument_id ?? "").trim();
+    const ids = cid
+      ? (knownIds.has(cid) ? [cid] : [])
+      : (idByName.get(String(c.name ?? "").trim()) ?? []);
+    if (!ids.length) { unmatched.push(cid || String(c.name)); continue; }
     for (const id of ids) { after.set(id, t); applied++; }
   }
 
