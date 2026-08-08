@@ -43,12 +43,8 @@ CREATE TABLE IF NOT EXISTS corpus_census (
   instruments                JSONB,
   coverage                   JSONB,
   gate                       JSONB,
-<<<<<<< HEAD
-  errors                     JSONB NOT NULL DEFAULT '[]'::jsonb
-=======
   errors                     JSONB NOT NULL DEFAULT '[]'::jsonb,
   run_outcome                TEXT NOT NULL DEFAULT 'unknown'::text
->>>>>>> workstream-aa-corpus-currency
 );
 CREATE UNIQUE INDEX IF NOT EXISTS corpus_census_pkey ON public.corpus_census USING btree (id);
 CREATE INDEX IF NOT EXISTS corpus_census_taken_idx ON public.corpus_census USING btree (taken_at DESC);
@@ -196,13 +192,29 @@ CREATE TABLE IF NOT EXISTS funding_instruments (
   route_status               TEXT,
   route_status_source        TEXT,
   route_status_note          TEXT,
-  name_basis                 TEXT
+  name_basis                 TEXT,
+  source_window_policy       TEXT
 );
 CREATE UNIQUE INDEX IF NOT EXISTS funding_instruments_pkey ON public.funding_instruments USING btree (id);
 CREATE INDEX IF NOT EXISTS idx_fi_capital ON public.funding_instruments USING btree (capital_type);
 CREATE INDEX IF NOT EXISTS idx_fi_country ON public.funding_instruments USING btree (country);
 CREATE INDEX IF NOT EXISTS idx_fi_events ON public.funding_instruments USING btree (event_count DESC);
 CREATE INDEX IF NOT EXISTS idx_fi_parent ON public.funding_instruments USING btree (parent_id) WHERE (parent_id IS NOT NULL);
+
+-- ─── guard_verdicts ────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS guard_verdicts (
+  id                         BIGSERIAL NOT NULL,
+  guard                      TEXT NOT NULL,
+  status                     TEXT NOT NULL,
+  taken_at                   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  produced_by                TEXT NOT NULL,
+  code_fingerprint           TEXT NOT NULL,
+  summary                    TEXT NOT NULL DEFAULT ''::text,
+  metrics                    JSONB NOT NULL DEFAULT '{}'::jsonb,
+  detail                     TEXT NOT NULL DEFAULT ''::text
+);
+CREATE INDEX IF NOT EXISTS guard_verdicts_guard_taken_idx ON public.guard_verdicts USING btree (guard, taken_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS guard_verdicts_pkey ON public.guard_verdicts USING btree (id);
 
 -- ─── instrument_application ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS instrument_application (
