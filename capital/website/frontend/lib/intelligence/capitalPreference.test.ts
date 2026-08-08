@@ -15,6 +15,7 @@ import { describe, expect, it } from "vitest";
 import { DILUTIVE_FOR_TEST, passesCapitalPreference } from "./accessMode";
 import type { DbInstrument } from "./corpus";
 import { scoreFit } from "./fit";
+import { CAPITAL_TYPE_LABEL } from "./pipeline";
 import {
   CAPITAL_SOUGHT_TO_DB, INDEFINITE_CAPITAL, KNOWN_CAPITAL_TYPES,
   instrumentServesCapital,
@@ -162,6 +163,33 @@ describe("the filter and the memo's score read one rule", () => {
         expect(components.capital,
           `${type} passes the filter for "${option}" but the memo scores it ` +
           `${components.capital} — the filter and the score disagree`).toBe(1);
+      }
+    }
+  });
+
+  it("never DESCRIBES to the founder a kind the label did not resolve", () => {
+    // The third reading of the same property, and the one with a founder on the
+    // other end of it: `supportTypeLabel` puts a "type of support" string in the
+    // brief's centrepiece table. An indefinite label may not be rendered as a
+    // specific kind of capital, because that states a composition nobody
+    // resolved. Tested against the definite labels themselves rather than a
+    // word list, so a kind added later is covered: whatever `equity` and the
+    // rest are called, an indefinite type may not be called that or contain it.
+    //
+    // This became load-bearing only when the filter began admitting these funds
+    // to every founder's pool. Before that the wrong description was invisible,
+    // which is exactly why it survived.
+    const definite = [...KNOWN_CAPITAL_TYPES]
+      .map((t) => CAPITAL_TYPE_LABEL[t]).filter(Boolean);
+    expect(definite.length, "no definite label to compare against — test is vacuous")
+      .toBeGreaterThan(0);
+    for (const type of INDEFINITE_CAPITAL) {
+      const label = CAPITAL_TYPE_LABEL[type];
+      if (!label) continue;
+      for (const d of definite) {
+        expect(label.toLowerCase().includes(d.toLowerCase()),
+          `"${label}" describes ${type} as "${d}", a kind its own label never ` +
+          `resolved`).toBe(false);
       }
     }
   });

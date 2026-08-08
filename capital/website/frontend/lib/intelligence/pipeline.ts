@@ -330,10 +330,25 @@ function comparableFirmsForChannel(
 // Capital-type -> plain-English "type of support" label. Falls back to a
 // per-channel default when the row didn't resolve to a DB-native leaf with
 // its own capitalType (see selectLeafInstruments).
-const CAPITAL_TYPE_LABEL: Record<string, string> = {
+export const CAPITAL_TYPE_LABEL: Record<string, string> = {
   grant: "Grant", loan: "Loan", guarantee: "Guarantee", counter_guarantee: "Guarantee",
   recoverable_advance: "Recoverable advance", equity: "Equity stake",
-  blended: "Grant + equity (blended)", tax_credit: "Tax credit",
+  // `blended` names no kind of capital. It is what `family_capital_type` emits
+  // when no kind cleared its 60% threshold, so a label asserting grant AND
+  // equity states a composition we did not resolve and, on this corpus, do not
+  // hold: not one publishable blended instrument has an equity award, and the
+  // largest is a national debt programme of 2,977 loan and guarantee awards.
+  //
+  // This column is founder-facing, and until INDEFINITE_CAPITAL landed the
+  // error was hidden: only a founder who ticked equity could see one of these
+  // rows at all. Admitting them to everyone's pool is what makes the label load
+  // -bearing, so it is corrected in the same branch that admitted them —
+  // otherwise the fix would have traded a fund nobody could see for a fund
+  // described wrongly to everyone.
+  //
+  // The honest label says the kind is unresolved and where to settle it, rather
+  // than guessing. See INDEFINITE_CAPITAL in shortlist.ts.
+  blended: "Mixed (kind varies by call)", tax_credit: "Tax credit",
 };
 const CHANNEL_SUPPORT_TYPE: Record<string, string> = {
   national_dev_banks: "Loan / guarantee",
