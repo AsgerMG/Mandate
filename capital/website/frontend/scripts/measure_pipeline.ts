@@ -57,12 +57,10 @@ import { readFileSync, appendFileSync, writeFileSync } from "fs";
 import Anthropic from "@anthropic-ai/sdk";
 import { Client } from "pg";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_pipeline", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
 import { selectFiveFunds } from "../lib/intelligence/fundSelection";
 import { warnIfRetired } from "./recallSet";

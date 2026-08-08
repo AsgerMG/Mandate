@@ -37,14 +37,11 @@
 // one more constant to lower under pressure, and the assertion above is the
 // one that must never bend.
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+const CREDENTIALS = requireCredentials("check_degradation", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 import { today } from "../lib/intelligence/liveness";
@@ -86,20 +83,15 @@ async function main() {
   // snapshot with itself or reach a database it was told not to. Skipping is
   // the honest answer; the hard failure below is kept for the case that
   // actually matters, a deliberate run whose credentials are missing.
-  if (process.env.NO_PG) {
+  if (CREDENTIALS === "offline") {
     console.log("check_degradation: skipped — NO_PG=1, so there is no live " +
       "register to referee the fallback corpus against. Run without NO_PG, with " +
       "DATABASE_URL set, to exercise it.");
     return;
   }
-  if (!process.env.DATABASE_URL) {
-    // Not a silent pass. Without the live register there is no referee, and a
-    // check that goes green having compared nothing is the defect this file
-    // exists to catch, in the file itself.
-    console.error("check_degradation: cannot run — no DATABASE_URL, so there is " +
-      "no live register to check the fallback corpus against.");
-    process.exit(1);
-  }
+  // The "cannot run — no DATABASE_URL" branch that used to sit here now lives
+  // in requireCredentials, above, for every harness at once. This file had
+  // already got that judgement right by hand; thirty-six others had not.
 
   // The degraded path, built exactly as a request that lost Postgres would.
   const fallback = run({ NO_PG: "1" });

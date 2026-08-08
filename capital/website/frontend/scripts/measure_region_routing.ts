@@ -28,15 +28,11 @@
 // scorer on the same rows reads 24.9% @1 and against the register's own
 // attribution 66.2%. Run it both ways if you doubt it — the difference is the
 // answer key, not the method.
-import { readFileSync } from "fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_region_routing", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments, type DbInstrument } from "../lib/intelligence/corpus";
 import { regionScorer } from "../lib/intelligence/shortlist";

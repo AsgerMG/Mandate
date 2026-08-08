@@ -56,20 +56,25 @@ import { readFileSync } from "fs";
 import path from "path";
 import { MIN_DERIVED_CADENCE_DAYS, isScheduledProducer } from "./guardVerdict";
 
-// Both env files, repo root first. DATABASE_URL is documented as living at the
-// repo root while most harnesses here read only ./.env.local, so a check run
-// from the frontend on a checkout that has only the root file would skip
-// itself and report that as a pass. CI has neither and must not need them.
-for (const p of ["../../.env.local", ".env.local"]) {
-  try {
-    for (const line of readFileSync(p, "utf8").split("\n")) {
-      const m = line.match(/^([A-Z_]+)=(.*)$/);
-      if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-    }
-  } catch { /* rely on the process environment */ }
-}
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
+loadEnvLocal();
+
+/** The scheduled workflow's belt: even a DECLARED offline run must fail there,
+ *  because that job exists to make the comparison and a skipped comparison is
+ *  the failure it reports on. */
 const REQUIRE_DB = process.argv.includes("--require-db");
+
+// DATABASE_URL is OPTIONAL here, and this is the only check in the repo where
+// that is an honest thing to say. Without it this reads the same census rows
+// from /api/guards, written by the same publisher from the same figures — one
+// record behind two doors, not a weaker measurement. That is precisely what
+// lets this run on every pull request without GitHub holding a credential to
+// the production database. Declaring it keeps check_env_loader satisfied; what
+// it stops being is a reason to abort.
+const CREDENTIALS = REQUIRE_DB
+  ? "live" as const
+  : requireCredentials("check_corpus_census", [], { optional: ["DATABASE_URL"] });
 
 /** Before there is census history to measure, the ETL cadence is weekly and two
  *  missed cycles is unambiguous. Used only for the cold start — once three
@@ -162,8 +167,12 @@ async function main() {
       console.error("  ETL's corpus; skipping it silently is how the drift got to 32 days.");
       process.exit(1);
     }
-    console.log("check_corpus_census: no DATABASE_URL — reading the published census " +
-                "from the verdict feed instead.");
+    // Including under NO_PG=1, which says "there is deliberately no database" —
+    // and there is not. The feed is an HTTPS read of what the census already
+    // published, so honouring NO_PG here means taking this door, not skipping
+    // the comparison. A skip would be the thing this check reports on.
+    console.log(`check_corpus_census: no DATABASE_URL (${CREDENTIALS}) — reading the ` +
+                "published census from the verdict feed instead.");
     return await judge(await rowsFromFeed());
   }
 

@@ -12,14 +12,11 @@
 //
 //   npx tsx scripts/diagnose_pool_miss.ts            # profile mode, n=120
 //   MODE=project N=60 npx tsx scripts/diagnose_pool_miss.ts
-import { readFileSync } from "fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("diagnose_pool_miss", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { selectInstrumentRows, materialiseInstrumentTable } from "../lib/intelligence/shortlist";
