@@ -66,12 +66,12 @@ wrong one.
 
 ## What changed
 
-- **027** and **028** add all fifteen columns. Two migrations, not one, because
+- **028** and **029** add all fifteen columns. Two migrations, not one, because
   021/022 delete anything not in their rebuild list: what arrived before the
   rebuilds must be added before them and what arrived after, after.
-- **027 runs out of numeric order**, between 011 and 012. `schema_state.
-  MIGRATIONS` is an ordered tuple and always was; the id now records when a
-  migration was *written* and the position records when it must *run*.
+- **028 runs out of numeric order**, between 011 and 012. `_RUN_BEFORE` in
+  apply.py is the exception list: an id records when a migration was *written*
+  and its position records when it must *run*.
 - **008** finally has a `.sql` file. It was the one migration that existed only
   as Python inside `apply.py`, which is why `via_fund` and `instrument_class`
   read as unexplained hand-ALTERs to everything that asks what committed DDL
@@ -81,8 +81,6 @@ wrong one.
   the whole file on the first error, so a store holding *some* of a migration's
   columns — precisely what a hand ALTER leaves behind — could never be finished
   by the runner.
-- **`apply.py --db`**: the runner can be pointed at a store other than the
-  laptop's. There is more than one store and only one of them is `etl_env.DB`.
 - **`ETL/schema/check_schema_replay.py`**, wired into CI: builds a store from
   committed DDL alone and fails if the replay does not complete, or if it
   completes with a migration's own effect missing. It needs no corpus and no
@@ -91,7 +89,6 @@ wrong one.
 
 After this the replay differs from the live corpus by exactly:
 
-- `funding_instruments.source_window_policy` — workstream BE task 2's column.
 - three tables: `company_sector_llm`, `satr_staging`, `instrument_application`.
 
 ## Three tables deliberately left out
@@ -109,9 +106,17 @@ owning script, not to copy the DDL.
 **`check_store_schema.py`'s declared-schema reader has a false negative.** It
 counts a rebuild migration's `CREATE TABLE ... _new` as declaring a column, so
 the four hand-ALTERed columns never appeared in `schema_debt.json`. The debt list
-recorded 17 entries and the true figure was 21. 027/028 clear 13 of them
-(11 columns + `via_fund` + `instrument_class`); when AS merges, its budget must
-fall from 17 to 4 — the three tables above and `source_window_policy`.
+recorded 17 entries and the true figure was 21. 028/029/030 and 008's new .sql
+clear fourteen of them, and `schema_debt.json` falls from 17 to 3 — the three
+tables above, deliberately. The false negative is left standing and recorded in
+that file: replaying the DDL is what catches it, which is what
+`check_schema_replay.py` does.
+
+**AG's `ETL/lib/schema_state.py` is deleted, not merged.** Main solved the same
+problem first, and differently: `apply.py` gained `all`, `--ids` and a
+source-reading id guard, and `publish_corpus_census.py` imports `apply.status()`
+directly. A third definition of "does this store have migration N" is the defect
+that file was written to stop.
 
 **`check_corpus_census` is red on SILENT, and the threshold is degenerate.** It
 infers the expected cadence from the censuses themselves, and six censuses were
