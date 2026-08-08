@@ -99,6 +99,27 @@ import sqlite3  # noqa: E402
 SRC_DIR = REPO_ROOT / "data" / "raw" / "scheme_enrichment"
 MIN_TEXT_LEN = 40
 
+#: A fetch record may carry a STRUCTURED beneficiary facet copied off a
+#: register's own taxonomy -- a tick-list of "commune / EPCI / entreprise". This
+#: loader reads prose and never that field, and the omission is deliberate
+#: rather than an oversight, so it is named here and reported per run instead of
+#: being silently dropped.
+#:
+#: A register's facet describes the register's AUDIENCE, not the fund's rule.
+#: aides-territoires is the measured case: 114 of its 145 ADEME entries carry an
+#: identical five-item beneficiary string, and not one of its 14 distinct
+#: variants contains `entreprise` at all, because it is a catalogue built for
+#: collectivités. `Innov Eau` -- a France 2030 call aimed squarely at companies
+#: and laboratories -- is tagged there as Commune / Département / EPCI.
+#:
+#: So the facet supports "open to collectivités" and NEVER "closed to
+#: companies". Writing it as an eligibility claim would encode an exclusion the
+#: source never asserted, and would silently drop founders from funds they can
+#: actually have -- the failure being invisible, because the row would still be
+#: published and merely never match. A restriction reaches the corpus only when
+#: the source's own PROSE asserts it.
+FACET_FIELD = "beneficiary_types"
+
 
 def has_text(rec: dict) -> bool:
     """Does the record carry usable ELIGIBILITY prose? Liveness is asked separately.
@@ -431,6 +452,7 @@ def main() -> None:
     desc_only = collections.Counter()
     updates: list[tuple] = []
     skipped_no_id = skipped_bad = skipped_dup = skipped_closed = 0
+    facet_seen: collections.Counter = collections.Counter()
 
     for cc, recs in source_files():
         for rec in recs:
@@ -454,6 +476,8 @@ def main() -> None:
             elig = (rec.get("eligibility_text") or "").strip()
             url = (rec.get("scheme_url") or rec.get("source_url") or "").strip() or None
             conf = (rec.get("confidence") or "").strip() or None
+            if rec.get(FACET_FIELD):
+                facet_seen[cc] += 1
             updates.append((desc or None, elig or None, url, conf, iid))
             per_country[cc] += 1
             if (rec.get("status") or "").lower() == "closed":
@@ -465,6 +489,13 @@ def main() -> None:
                 f"while the register's end date is still in the future)"
                 if over_status[cc] else "")
         print(f"   {cc}  {n}{note}")
+    if facet_seen:
+        print(f"ignored `{FACET_FIELD}` on {sum(facet_seen.values())} records "
+              f"({', '.join(f'{c} {n}' for c, n in facet_seen.most_common())}). "
+              f"A register's beneficiary facet describes that register's AUDIENCE, "
+              f"not the fund's rule: it supports 'open to collectivites' and never "
+              f"'closed to companies'. Only the source's own prose asserts a "
+              f"restriction. See FACET_FIELD.")
     print(f"skipped: {skipped_bad} not-usable (abstained/too short), "
           f"{skipped_closed} closed or not publishable per the register, "
           f"{skipped_dup} already loaded, {skipped_no_id} missing instrument_id")
