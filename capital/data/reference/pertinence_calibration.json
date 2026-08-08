@@ -34,6 +34,12 @@
       "text": "The scheme has an estimated overall budget of EUR 150 million and will run until 31 December 2027, with aid awarded in annual tranches by the managing authority."
     },
     {
+      "id": "closed_named_list_of_applicants",
+      "expect": "report",
+      "why": "v3, AND A REAL REGRESSION THIS CAUGHT. Verbatim from a live Latvian gate. The v2 property judged it `condition`, reasoning that a reader 'can check whether they are a listed centre' -- which is true, and the answer is no, and it is no for every reader who will ever see it. It is the IPCEI defect wearing the grammar of a requirement: 'may only be submitted by' looks like a rule about applicants, and names eight companies. This case exists because the four IPCEI cases did NOT catch it: they are all state-aid decision prose about aid already granted, and this is a call page telling you who may apply. A condition must DISCRIMINATE -- be true of some readers and false of others. If this flips to `condition`, the classifier has stopped testing that and is back to testing grammar.",
+      "text": "Project applications may only be submitted by a closed, named list of eight competence centres (limited liability companies), such as 'LEO pētījumu centrs', the Latvian Food Competence Centre, the IT Competence Centre, the Forestry Sector Competence Centre, the Mechanical Engineering Competence Centre, the Pharmacy/Biomedicine/Medical Technology Competence Centre, ETKC, and VMKC."
+    },
+    {
       "id": "ticket_ceiling",
       "expect": "demand_match",
       "why": "v2. Judged `report` by the binary property, and demoting it would have been wrong: `ticketBand` is a question we ask the founder, so this compares the offer against what they said they want. A founder seeking EUR 20m is genuinely not served by this loan. If it flips to `report`, roughly twenty ticket-size gates lose the ability to decide and the brief starts recommending instruments an order of magnitude too small.",

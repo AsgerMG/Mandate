@@ -67,6 +67,30 @@ sides of that line, including `ipcei_hy2use_country_framing` -- a selectivity
 finding that happens to name countries, which intake DOES ask about, and which
 must still come back `report`.
 
+── What v3 fixed, and how it was caught (2026-08-08) ──────────────────────
+Rewriting the property to add `demand_match` moved a line nobody meant to move.
+The v2 run promoted a live Latvian gate --
+
+    "Project applications may only be submitted by a closed, named list of
+     eight competence centres ... 'LEO petijumu centrs', the Latvian Food
+     Competence Centre, the IT Competence Centre, ..."
+
+-- from `report` to `condition`, because "a reader can check whether they are a
+listed centre". They can. The answer is no. It is no for every reader who will
+ever see it, which is the original defect in the grammar of a requirement, and
+the four IPCEI calibration cases did not catch it because they are decision
+prose about aid already granted and this is a call page saying who may apply.
+
+So v3 states the thing that was implicit all along and is the real property:
+
+    A condition DISCRIMINATES. It is true of some readers and false of others.
+    A statement whose answer is the same for every possible applicant is not a
+    condition, whatever grammatical form it takes.
+
+That is why the classifier is versioned. The regression was invisible in the
+diff, invisible in the calibration set as it then stood, and showed up only
+because the run was read row by row against the corpus it had just judged.
+
 ── Why this is a model call and not a regex ───────────────────────────────
 The corpus holds text in German, Spanish, French, Italian, Swedish, Estonian,
 Czech and more, from statutes, call pages, decisions and guidance notes. Every
@@ -137,15 +161,25 @@ SPEND = {"in": 0, "out": 0}
 #: key is a digest of the TEXT, so without this a reworded question would keep
 #: answering with verdicts nobody asked for -- a check that is green on stale
 #: judgements. See REJUDGE for which old answers a bump actually invalidates.
-PROPERTY_VERSION = 2
+PROPERTY_VERSION = 3
 #: version -> the verdicts from that version that the CURRENT property could
-#: move, and which must therefore be paid for again. v2 subdivides `report` into
-#: `report` and `demand_match` and does not touch the condition/not-condition
-#: line, so a v1 `condition` is still a v2 `condition` and re-judging 2,533 of
-#: them would buy nothing. Stated as data rather than a comment because the
-#: check enforces it: a verdict left at a version whose answers this table says
-#: are stale FAILS the build.
-REJUDGE: dict[int, set[str]] = {1: {"report"}}
+#: move, and which must therefore be paid for again. Stated as data rather than
+#: a comment because the check enforces it: a verdict left at a version whose
+#: answers this table says are stale FAILS the build.
+#:
+#: v2 subdivided `report` into `report` and `demand_match` without touching the
+#: condition/not-condition line, so a v1 `condition` was still a v2 `condition`
+#: and re-judging 2,533 of them would have bought nothing.
+#:
+#: v3 moves that line, so everything at v2 is stale. The v2 run demoted the
+#: IPCEI findings correctly but promoted a Latvian gate reading "applications
+#: may only be submitted by a closed, named list of eight competence centres"
+#: from `report` to `condition`, on the reasoning that a reader "can check
+#: whether they are a listed centre". They can, and the answer is no, and it is
+#: no for every reader -- which is the original defect wearing the grammar of a
+#: requirement. v3 states the discrimination test that rules it out.
+REJUDGE: dict[int, set[str]] = {1: {"report"},
+                                2: {"condition", "demand_match", "report"}}
 
 PROPERTY = """\
 A published eligibility text is shown to a founder under the heading "who may \
@@ -157,6 +191,12 @@ project must be, what is excluded, what thresholds apply. A reader can check it 
 against their own company, project or plans. It stays a condition when it is \
 narrow, hard to meet, or stated in the past tense about how the scheme has \
 operated.
+                  A condition DISCRIMINATES: it is true of some readers and \
+false of others. A requirement stated as a list of NAMED parties -- particular \
+companies, named centres, an enumerated set of beneficiaries -- is not a \
+condition however checkable the list looks, because no reader can come to be one \
+of them and the answer is therefore the same for everyone. Being told to check \
+whether you are on a closed list is not a test you can pass. Those are reports.
 
   demand_match -- a fact about what the instrument OFFERS, of a kind an \
 applicant is separately asked to state their own counterpart for: how much \
