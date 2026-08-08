@@ -174,7 +174,27 @@ derived name differs (it embeds the scheme code) while the published title is
 shared, so the disambiguator sees no collision to resolve and the dedupe then
 collapses on a key the disambiguator never examined.
 
-### The change: demote, never drop
+### The root cause: two functions, two keys
+
+`distinguishRowNames` grouped rows by `displayInstitutionName(r)`. The dedupe
+keyed on `row.instrument || displayInstitutionName(row)`. For a row carrying a
+real published title the two differ — the derived name embeds the notified
+scheme code and therefore *separates* the twins — so the disambiguator saw no
+collision to resolve, and the dedupe then collapsed the pair on a key the
+disambiguator had never examined. The comment above the dedupe already said
+"key on the DISTINGUISHED label"; the disambiguator itself had not been changed
+to match.
+
+Sharing the key fixes it at the source. **`SEL-DUPE-NAME` now fires ZERO times
+across all 22 markets**, and CZ SA.63670 is visible at rank 5 rather than
+erased.
+
+A scheme-code token branch was written alongside this and **removed**: measured
+across 22 markets it produced a token zero times, because the granting body
+separates every pair the corpus actually contains. A branch nothing can emit is
+the `SEL-BAND` defect in code rather than in the register.
+
+### The change that stays even so: demote, never drop
 
 The array this filtered is the one the caller derives `candidateInstrumentIds`
 from, so a **display** rule was deleting funds from the **writer's pool**, where
@@ -195,32 +215,123 @@ TABLE diff, DE IT CZ FR ES NO   IDENTICAL
 POOL   DE 103 -> 104   IT 87 -> 88   CZ 67 -> 69   FR/ES/NO unchanged
 ```
 
-Nothing a founder sees changes. The pool gains the fund.
+The pool gains the fund and the visible order is untouched.
+
+The demotion is kept even though the key fix now leaves it dormant. It is the
+INVARIANT — *a display rule may not delete from the universe* — and it is the
+safety net for the case disambiguation genuinely cannot reach: two rows with no
+distinguishing body, no region and no id difference. Deleting the drop is the
+structural fix; the shared key is what makes it rarely needed.
 
 `SEL-DUPE-NAME` in `rules.ts` is updated to say it demotes. A register entry
 advertising a deletion the code no longer performs is the `SEL-BAND` defect
 recorded in that same file.
 
+### What a founder sees
+
+One market's table changes, and it changes by gaining a fund:
+
+```
+CZ   before   5. SA.111780 "…instalace nad 1MW"      6. SA.111730 "…alternativní paliva"
+     after    5. SA.63670  "…instalace do 1MW · MINISTERSTVO ŽIVOTNÍHO PROSTŘEDÍ ČR, …"
+              6. SA.111780 "…instalace nad 1MW · Ministerstvo životního prostředí"
+DE, IT, and the other 19 markets: table unchanged, pool +1 / +1 / 0.
+```
+
+Verified by dumping the rendered label of every visible row from both trees
+against the same corpus, not by reasoning about the component. A browser render
+was attempted and abandoned as theatre: `/brief/preview` renders a RECORDED
+fixture, so it shows the same page before and after and proves nothing about a
+change to fund selection. The label the change introduces is 165 characters;
+the DE table already ships a 230-character row today and the IT table already
+ships a `·` token, so the layout carries labels longer than this one before the
+change.
+
 ---
 
-## 4. What it is worth
+## 4. Measured recall, three seeds
 
-See `## 5` for the three-seed numbers. The honest summary in advance: this is a
-small recovery. Four rows across 22 markets is not the next pool-recall win
-either — but it is four funds a founder qualifies for that the writer could not
-have mentioned, and the rule that removed them was a display rule reaching into
-the universe. Z was right that the win is not in the cap; it is not in these
-filters either.
+`measure_recall.ts`, holdout, N=250, `SEED=20260806 / 7 / 99`, before and final
+interleaved per seed. **Postgres, 1,084 instruments on every one of the nine
+runs**, 17:33 → 18:21 UTC on 2026-08-07, so the corpus other agents are writing
+to did not move underneath the comparison.
 
-**The capital filter was measured and left alone.** That is the result on the
-larger half of the 22, and it is a deliberate non-change, not an omission.
+```
+                    seed 20260806        seed 7          seed 99
+  in pool           96% -> 97%        96% -> 97%       97% -> 98%
+                    239 -> 242/250    241 -> 242/250   242 -> 244/250
+  EXACT@5           29% -> 29%        34% -> 34%       30% -> 30%
+  REGIME@5          84% -> 84%        86% -> 86%       85% -> 85%
+```
+
+**Pool up on all three seeds, never down. EXACT@5 and REGIME@5 identical to the
+case on all three** — which is the change doing exactly what it claims: it adds
+to the universe and does not reorder what a founder sees.
+
+### By regime-size stratum — the overfitting axis
+
+```
+                        seed 20260806      seed 7        seed 99
+  regime 1 (alone)      100 -> 100      100 -> 100     100 -> 100
+  regime 2-5             88 -> 88       100 -> 100      78 -> 78
+  regime 6-20            93 -> 93        76 -> 76       87 -> 87
+  regime 21-50          100 -> 100      100 -> 100     100 -> 100
+  regime 51+             95 -> 97 +      97 -> 98 +     98 -> 100 +
+```
+
+The entire gain is in `regime 51+`, and that is the prediction the mechanism
+makes rather than a result to be explained after the fact: a title collision
+requires two schemes publishing under one name, which only happens in the
+crowded national regimes. **No stratum loses on any seed** — including the
+founder whose fund stands nearly alone, the one an overfitted change abandons.
+
+### By founder country — the axis a per-country filter hides behind
+
+```
+                        seed 20260806      seed 7        seed 99
+  IT   (n=25/28/22)      92 -> 100 +     93 -> 96 +     95 -> 100 +
+  DE   (n=54/51/46)      89 -> 91  +     90 -> 90       96 -> 98  +
+  FR, SE, NL, GB, ES, EE, DK              unchanged on every seed
+```
+
+It bites DE, as Z predicted, and IT harder still. **It costs nothing anywhere.**
+
+### By population
+
+```
+  mode=profile          96 -> 98        98 -> 98       99 -> 100
+  mode=project          93 -> 93        92 -> 92       91 -> 91
+  original join         92 -> 94        93 -> 94       93 -> 95
+  traced                100 -> 100      100 -> 100     100 -> 100
+```
+
+`original join` — the smaller, older population the floors keep a wide margin
+for, and the one a change is most likely to trade away — **gains on all three
+seeds**. `mode=project` is unchanged because project pairs are EU programmes and
+the collision is a national-scheme phenomenon.
+
+**Floors are untouched.** Pool 93 / EXACT@5 22 / REGIME@5 80 all still hold with
+more headroom than before; another workstream is raising them and nothing here
+pre-empts that.
 
 ---
 
-## 5. Measured recall, three seeds
+## 5. What it is worth, honestly
 
-`SEED=20260806 / 7 / 99`, `measure_recall.ts`, holdout, N=250, before and after
-interleaved per seed so each pair sits inside minutes of the other on a corpus
-that other agents are writing to.
+This is a small recovery: one to two points of pool, concentrated in two
+markets. Z was right that the next pool-recall win is not in the cap, and it is
+not in these filters either.
 
-<!-- RESULTS -->
+What it is, is a **defect of a class this project has now hit four times**: a
+rule that looked like hygiene was deleting the answer. The three before it were
+the old name dedupe's `encodedCount` tie, the leaf cap binding silently, and
+`channelServesBand` returning `true` while the register advertised a filter.
+This one is the same shape — a display rule reaching into the universe — and,
+like the scheme-repeat forty lines below it, the fix is that a rule about
+PRESENTATION may not remove a fund from the POOL.
+
+**The capital filter was measured and left alone.** That is the result on 21 of
+the 22, and a deliberate non-change rather than an omission. What the
+measurement found instead is a smaller and more permanent leak — nine funds
+unreachable by any answer a founder can give — which costs zero measurable
+recall and is now guarded rather than fixed, because the honest fix is upstream.
