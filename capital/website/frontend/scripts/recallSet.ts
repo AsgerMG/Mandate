@@ -87,17 +87,37 @@ export const CONSTANT_ANSWERS = {
   capitalSought: ["grant", "loan"] as string[],
 } as const;
 
-export type AnswerMode = "off" | "real" | "strict";
+/** ── Why a mode per FIELD, and not only per provenance ────────────────────
+ *
+ *  `real` turns on every derived answer at once, and the first run that used
+ *  it moved the candidate pool three points. Three points of pool is a hard
+ *  ceiling on EXACT@5, so the question of WHICH field spent them is not a
+ *  detail — and an all-or-nothing switch cannot answer it.
+ *
+ *  The two fields also cannot cost the pool in the same way. `capitalSought`
+ *  is a FILTER: `instrumentServesCapital` removes instruments from the channel
+ *  before anything ranks them. `ticketBand` is a SCORE and nothing else --
+ *  `channelServesBand` was retired to `return true` and deleted, and
+ *  `awardScorer`/`scaleFit` only reorder. So the prediction is that
+ *  `ticket` costs the pool exactly zero and can only move EXACT@5, while every
+ *  point of pool belongs to `capital`. That is a prediction the harness has to
+ *  be able to falsify, which is what these two modes are for. */
+export type AnswerMode = "off" | "real" | "strict" | "ticket" | "capital";
 
 export function answersFor(r: RecallRow, mode: AnswerMode): {
   ticketBand: string; capitalSought: string[]; region?: string;
   derived: { ticket: boolean; capital: boolean; region: boolean };
 } {
   const ok = (source?: string) =>
-    mode === "real" ? Boolean(source) : mode === "strict" ? source === "other_scheme" : false;
-  const ticket = ok(r.answerTicketSource) && r.answerTicketBand;
-  const capital = ok(r.answerCapitalSource) && r.answerCapital?.length ? r.answerCapital : undefined;
-  const region = ok(r.regionSource) ? r.region : undefined;
+    mode === "real" || mode === "ticket" || mode === "capital" ? Boolean(source)
+      : mode === "strict" ? source === "other_scheme" : false;
+  const ticket = mode !== "capital" && ok(r.answerTicketSource) && r.answerTicketBand;
+  const capital = mode !== "ticket" && ok(r.answerCapitalSource) && r.answerCapital?.length
+    ? r.answerCapital : undefined;
+  // Region rides with the whole-founder modes only. It is neither of the two
+  // fields under test, and leaving it on in a single-field mode would put a
+  // third difference inside a comparison built to isolate one.
+  const region = (mode === "real" || mode === "strict") && ok(r.regionSource) ? r.region : undefined;
   return {
     ticketBand: ticket || CONSTANT_ANSWERS.ticketBand,
     capitalSought: capital ?? CONSTANT_ANSWERS.capitalSought,
