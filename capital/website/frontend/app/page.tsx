@@ -13,7 +13,10 @@ import { corpusStats, CORPUS_REVALIDATE_SECONDS, type Synthesis } from "@/lib/da
 // which also drives the nav, the layout footer and /about-public-capital, so
 // every page shows the same number — and now the same number as the ETL's own
 // record of its corpus, rather than whatever was last committed.
-export const revalidate = CORPUS_REVALIDATE_SECONDS;
+// Literal, not the imported constant: Next reads segment config statically and
+// fails the whole build on anything it cannot evaluate. check_revalidate_literal.ts
+// keeps this in step with CORPUS_REVALIDATE_SECONDS.
+export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 

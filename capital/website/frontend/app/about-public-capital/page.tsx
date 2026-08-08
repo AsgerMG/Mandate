@@ -121,7 +121,10 @@ function R({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
 }
 
 // Same corpus window as the home page and the footer, from the one constant.
-export const revalidate = CORPUS_REVALIDATE_SECONDS;
+// Literal, not the imported constant: Next reads segment config statically and
+// fails the whole build on anything it cannot evaluate. Kept in step with
+// CORPUS_REVALIDATE_SECONDS by check_revalidate_literal.ts.
+export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 
 export default async function AboutPublicCapitalPage() {
   const corpus = await corpusStats();

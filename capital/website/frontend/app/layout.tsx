@@ -19,7 +19,11 @@ const fragmentMono = Fragment_Mono({ subsets: ["latin"], weight: "400", variable
 // How long a figure may be out of date. Every page that states one exports the
 // same window, from the one constant, so the site cannot end up with a fresh
 // footer and a stale home page.
-export const revalidate = CORPUS_REVALIDATE_SECONDS;
+// Next requires a segment config to be a literal it can read statically --
+// an imported constant makes the whole build fail with "Invalid segment
+// configuration export". Kept in step with CORPUS_REVALIDATE_SECONDS by
+// check_revalidate_literal.ts rather than by anybody remembering.
+export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 
 // `generateMetadata` rather than a `metadata` const: the description quotes the
 // company count, and a const is evaluated at module load, where nothing can be
