@@ -57,7 +57,16 @@ async function main() {
   const groups = new Map<string, DbInstrument[]>();
   for (const i of all) {
     if (i.isFramework || hasChildren.has(i.id)) continue;
-    const k = `${i.name}|${i.country ?? ""}`;
+    // WIDTH= chooses the comparison group. `name` is the same-name group this
+    // file was written for (median 7.4 members); `regime` is the whole family
+    // by parent_id (median 75 in pool), which is the group the pool-to-table
+    // diagnosis says actually matters. Measured side by side because a result
+    // established on one is not a result on the other -- and the answer is that
+    // it does not survive: `regionScorer`'s comment carries the numbers and the
+    // three widenings they killed.
+    const k = process.env.WIDTH === "regime"
+      ? (i.parentId ?? i.id)
+      : `${i.name}|${i.country ?? ""}`;
     (groups.get(k) ?? groups.set(k, []).get(k)!).push(i);
   }
   const groupOf = new Map<string, DbInstrument[]>();
