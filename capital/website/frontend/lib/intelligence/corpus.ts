@@ -7,6 +7,7 @@ import {
   isClosed, populationRecordsDeadlines, today, unconfirmedOpen,
   type LivenessObservation,
 } from "./liveness";
+import { isWithheldByPolicy } from "./offerableAxes";
 import { hasOfferRoute } from "./offerRoute";
 import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
@@ -1097,6 +1098,19 @@ export function publishableInstruments(): DbInstrument[] {
     // to be reported as a closed fund rather than as not a fund. See
     // lib/intelligence/offerRoute.ts.
     hasOfferRoute(i) &&
+    // A row carrying a value this product has DECIDED not to offer — an
+    // accelerator whose own page says it hands out coaching and no money, or a
+    // cohort whose source will not say whether it pays a grant or takes a
+    // convertible. See offerableAxes.ts for the declaration and the reason.
+    //
+    // Withheld HERE rather than left to the capital filter, and the difference
+    // is not cosmetic. `instrumentServesCapital` rejecting one of these looks
+    // identical to it rejecting a tax credit for a founder who asked for
+    // grants: a preference being honoured. It is not. It is our editorial
+    // judgement wearing the founder's answer, and it is the exact confusion
+    // that let nine funds sit invisible for months while every check stayed
+    // green. A decision we made should be recorded where we made it.
+    !isWithheldByPolicy(i) &&
     // A scheme the Commission's register says has closed to new applications
     // cannot be PROPOSED, however recently it paid. Measured: 220 of 453 state
     // aid children sit under a closed scheme and 130 still looked current,

@@ -120,6 +120,24 @@ export const OFFERABLE_AXES: OfferableAxis[] = [
           "and offering it under a capital heading would answer a question the " +
           "founder did not ask",
       },
+      // Withheld: we ASKED the official source and it does not say. The EIT
+      // ClimAccelerator format is two-stage — Stage 1 is cash up to EUR 25,000,
+      // Stage 2 is a Climate-SAFE, "a simple agreement for future equity" — and
+      // the Clean Cities Spain 2024 cohort page names neither the stage nor the
+      // instrument. Between a grant and a convertible is exactly the ambiguity
+      // a founder cannot be exposed to on a guess.
+      //
+      // Distinct from `unknown`, and the distinction is what makes the ratchet
+      // mean anything: a finished piece of work with a negative result is not a
+      // debt, and leaving it inside the gap count would put a floor under the
+      // number that no amount of upstream work could remove.
+      undetermined: {
+        policy: "withhold",
+        reason:
+          "the official source was consulted and does not state what this pays; " +
+          "where the plausible answers span grant and equity, offering it on a " +
+          "guess risks dilution nobody asked for",
+      },
       // ── Gap: we never recorded what this fund pays ─────────────────────
       // NOT a property of the fund. `instrumentServesCapital` is right to
       // refuse it — a founder who ticked Grants and Loans should not be handed
