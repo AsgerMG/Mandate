@@ -123,6 +123,12 @@ async function main() {
   const json = run({ NO_PG: "1" });
   const pg = run({ NO_PG: "" });
   const problems: string[] = [];
+  // Counted across archetypes, because the DIRECTION is the diagnosis. Checks
+  // present only in the live register and absent from the fallback are one
+  // thing -- a snapshot whose gate layer was exported before the last encoding
+  // run -- and the reverse is another. Reported once at the end rather than
+  // guessed at per archetype.
+  let screenOnlyLive = 0, screenOnlyFallback = 0;
 
   // ── Corpus level: the two stores may differ by the policy and nothing else ─
   const jc = json.__corpus, pc = pg.__corpus;
@@ -267,18 +273,75 @@ async function main() {
       if (ra.gatesChecked !== rb.gatesChecked) {
         problems.push(`${label} / ${ra.id}: gatesChecked ${ra.gatesChecked} vs ${rb.gatesChecked}`);
       }
+      // SAY WHICH, and never guess. Both of these messages used to name one
+      // cause -- "(gate order)" and "(framework citations?)" -- for any
+      // difference at all, and both guesses were wrong the first time they
+      // fired in anger. WS-AW recorded this file as "disagrees on a
+      // bdns_es_ayudas gate order"; the two stores were not ordering the same
+      // criteria differently, Postgres published NONE and the snapshot
+      // published two. A guard that misattributes its own failure costs the
+      // next reader the time it was built to save.
       if (ra.criteria.join("|") !== rb.criteria.join("|")) {
-        problems.push(`${label} / ${ra.id}: published criteria differ (gate order)`);
+        const sameSet = ra.criteria.length === rb.criteria.length &&
+          [...ra.criteria].sort().join("|") === [...rb.criteria].sort().join("|");
+        problems.push(
+          `${label} / ${ra.id}: published criteria differ — ` +
+          (sameSet
+            ? `same ${ra.criteria.length} criteria in a different ORDER`
+            : `fallback publishes ${ra.criteria.length}, live publishes ${rb.criteria.length}`));
       }
     }
     if (JSON.stringify(a.screen) !== JSON.stringify(b.screen)) {
-      problems.push(`${label}: eligibility screen differs (framework citations?)`);
+      const key = (s: { check: string; verified: boolean | null; sourced: boolean }) =>
+        `${s.check}|${s.verified}|${s.sourced}`;
+      const A = a.screen.map(key), B = b.screen.map(key);
+      const onlyFallback = A.filter((x) => !B.includes(x));
+      const onlyLive = B.filter((x) => !A.includes(x));
+      problems.push(
+        `${label}: eligibility screen differs — ` +
+        (onlyFallback.length === 0 && onlyLive.length === 0
+          ? `same ${A.length} checks in a different ORDER`
+          : `${onlyFallback.length} check(s) only in the fallback, ` +
+            `${onlyLive.length} only in the live register`) +
+        (onlyLive.length
+          ? `\n      live-only e.g. ${onlyLive[0].slice(0, 90)}`
+          : "") +
+        (onlyFallback.length
+          ? `\n      fallback-only e.g. ${onlyFallback[0].slice(0, 90)}`
+          : ""));
+      screenOnlyLive += onlyLive.length;
+      screenOnlyFallback += onlyFallback.length;
     }
   }
 
   if (problems.length) {
     console.error(`check_hydration_parity: ${problems.length} difference(s) between the Postgres and JSON paths.`);
     for (const p of problems.slice(0, 12)) console.error(`  ${p}`);
+    // ── The one-line diagnosis, so the next reader does not have to derive it ─
+    // A screen difference that is almost entirely one-directional is not a
+    // ranking or hydration defect at all: it is an export that has not been
+    // run. `check_corpus_currency` passes in that state, because it compares
+    // INSTRUMENTS and liveness verdicts and does not compare the gate layer --
+    // so the snapshot can be certified current while telling a founder a
+    // different set of things they must satisfy. Say so here, where the failure
+    // actually surfaces.
+    if (screenOnlyLive > 4 * Math.max(1, screenOnlyFallback)) {
+      console.error(
+        `\n  DIAGNOSIS: the live register carries ${screenOnlyLive} eligibility check(s) ` +
+        `the\n  committed snapshot does not, against ${screenOnlyFallback} the other way. ` +
+        `That is a\n  STALE GATE EXPORT, not a hydration defect: gates were encoded into ` +
+        `Postgres and\n  public/data/instrument_terms.json was not rebuilt from it. Re-export ` +
+        `the gate\n  layer (\`make eligibility\`), then run this again.\n` +
+        `\n  It is NOT caught by check_corpus_currency, which asserts the two stores ` +
+        `agree on\n  every instrument and every liveness verdict and says nothing about ` +
+        `gates.`);
+    } else if (screenOnlyFallback > 4 * Math.max(1, screenOnlyLive)) {
+      console.error(
+        `\n  DIAGNOSIS: the committed snapshot carries ${screenOnlyFallback} check(s) the ` +
+        `live\n  register does not. Gates were REMOVED from Postgres (a quarantine, a ` +
+        `reload)\n  without the snapshot following. The snapshot is the one shipping to ` +
+        `founders on\n  a degraded request, so this direction is the more urgent of the two.`);
+    }
     await publishVerdict(GUARD, {
       status: "failed",
       summary: `${problems.length} difference(s) between the Postgres and JSON paths ` +

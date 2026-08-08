@@ -56,6 +56,7 @@ const CHECKS = [
   ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
   ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],
   ["leaf cap headroom", ["npx", "tsx", "scripts/check_leaf_cap.ts"]],
+  ["missing-data neutral", ["npx", "tsx", "scripts/check_missing_data_neutral.ts"]],
   ["capital reach", ["npx", "tsx", "scripts/check_capital_reach.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
   ["quotations match documents", ["npx", "tsx", "scripts/check_extracted_quotes.ts"]],
