@@ -1,5 +1,18 @@
 // WHAT SHOULD A RULE DO FOR A FUND THAT HAS NO SIBLINGS?
 //
+// ANSWERED, WS-AW: nothing, and the reason is measured rather than assumed.
+// Scoring a standalone leaf on its own rules PROMOTES it -- the standalone
+// share of the five rows shown goes 4.5% -> 8.1% -- and costs recall, because
+// across a channel "share of rules cleared" is largely a statement about how
+// much has been encoded. Section 2 below is where that shows: the pure
+// documentation-depth null model scores 0.528 against pass rate's 0.577, and
+// in Spain the null BEATS it. `project-mgmt/findings/standalone_gates_wsAW.md`
+// has the end-to-end arms; the docstring on `gateFitScorer` has the summary.
+//
+// The script is kept because sections 1 and 4 are the questions to ask BEFORE
+// paying to encode a register, and because the conclusion is a property of
+// this corpus that a new load can change.
+//
 // `gateFitScorer` opens with `if (group.length < 2) continue` over a REGIME.
 // It is a tie-breaker inside a family, and nothing else. WS-AU established the
 // consequence on one market: all 88 Spanish BDNS convocatorias are parent-less
@@ -227,6 +240,65 @@ async function main() {
                 ` ${(b.sep ? b.sepPctSum / b.sep : 0).toFixed(3).padStart(8)}` +
                 ` ${pct(b.sepTop1, Math.max(1, b.sep)).padStart(9)}`);
   }
+
+  if (process.env.REACH) await reach(pubs, scoreable, holdout, mode);
+}
+
+/** ── 4. REACH ─────────────────────────────────────────────────────────────
+ *
+ *  The question every arm's flat result forces. A scorer can only reorder what
+ *  selection hands it, so before concluding anything about how a standalone
+ *  leaf SHOULD be scored, count how often one is on the table at all.
+ *
+ *  Structural, never a list of ids: a leaf is standalone if it is the sole
+ *  publishable leaf of its regime. The same predicate `gateFitScorer` applies.
+ *
+ *  REACH=1 npx tsx scripts/measure_gate_standalone.ts */
+async function reach(
+  pubs: { id: string; country: string }[],
+  scoreable: (id: string) => boolean,
+  holdout: RecallRow[],
+  mode: AnswerMode,
+): Promise<void> {
+  const { computeVerdict } = await import("../lib/intelligence/pipeline");
+  const { sampleRecall } = await import("./recallSample");
+  const N = Math.min(Number(process.env.REACH_N ?? 120), holdout.length);
+  const sample = sampleRecall(holdout, N, Number(process.env.SEED ?? 20260806));
+  const { resetGateHydration } = await import("../lib/intelligence/corpus");
+  const by = new Map<string, { n: number; pool: number; poolAlone: number; t5: number; t5Alone: number }>();
+  for (const t of sample) {
+    resetGateHydration();
+    const a = answersFor(t, mode);
+    const v = await computeVerdict("TestCo", t.country, {
+      entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
+      borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
+      useOfFunds: ["industrial_research", "experimental_development"], region: a.region,
+    } as never, {
+      targetMarkets: [t.country], capitalSought: a.capitalSought,
+      description: t.description || t.selfDescription || undefined,
+    } as never);
+    const pool = (v.candidateInstrumentIds ?? []) as string[];
+    const top5 = ((v.instrumentTable ?? []) as { instrumentId?: string }[])
+      .slice(0, 5).map((r) => r.instrumentId).filter((x): x is string => Boolean(x));
+    for (const k of ["ALL", t.country || "(none)"]) {
+      const b = by.get(k) ?? { n: 0, pool: 0, poolAlone: 0, t5: 0, t5Alone: 0 };
+      b.n++; b.pool += pool.length; b.poolAlone += pool.filter((id) => !scoreable(id)).length;
+      b.t5 += top5.length; b.t5Alone += top5.filter((id) => !scoreable(id)).length;
+      by.set(k, b);
+    }
+  }
+  console.log(`\n4. REACH -- does a standalone leaf ever get on the table?  (n=${N} founders replayed)`);
+  console.log(`  ${"bucket".padEnd(12)} ${"n".padStart(5)} ${"pool".padStart(7)}` +
+              ` ${"alone".padStart(7)} ${"share".padStart(7)}  ${"top5".padStart(6)}` +
+              ` ${"alone".padStart(6)} ${"share".padStart(7)}`);
+  for (const [k, b] of [...by].sort((x, y) => (x[0] === "ALL" ? -1 : y[0] === "ALL" ? 1 : y[1].n - x[1].n))) {
+    if (b.n < 5 && k !== "ALL") continue;
+    console.log(`  ${k.padEnd(12)} ${String(b.n).padStart(5)}` +
+                ` ${(b.pool / b.n).toFixed(1).padStart(7)} ${(b.poolAlone / b.n).toFixed(1).padStart(7)}` +
+                ` ${pct(b.poolAlone, b.pool).padStart(7)}  ${(b.t5 / b.n).toFixed(1).padStart(6)}` +
+                ` ${(b.t5Alone / b.n).toFixed(2).padStart(6)} ${pct(b.t5Alone, b.t5).padStart(7)}`);
+  }
+  void pubs;
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

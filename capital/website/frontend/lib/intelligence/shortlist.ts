@@ -360,47 +360,75 @@ const GATE_MATCH = 1.35;
  *  for a group whose leaves all fit identically — which is 68% of multi-leaf
  *  regimes, because their leaves inherit one rule set and are therefore
  *  genuinely indistinguishable this way. A signal that cannot separate its
- *  candidates must not reorder them. */
+ *  candidates must not reorder them.
+ *
+ *  ── THIS IS A TIE-BREAKER, NOT AN ELIGIBILITY TEST ────────────────────────
+ *  READ THIS BEFORE ENCODING GATES FOR A REGISTER OF STANDALONE CALLS.
+ *
+ *  A fund that is the sole leaf of its regime gets **no credit here for a
+ *  founder passing its rules and no penalty for failing them**, however many
+ *  rules it carries. That is not an oversight and it is not small: 292 of 807
+ *  publishable leaves (36%) stand alone, and 269 of those carry 940 decidable
+ *  filters this function never reads. It concentrates by market — ES 91%,
+ *  NO 99%, EE 88%, LV 84%, PL/DK/GB/HU 100%, against DE, IT, SE, AT and BE at
+ *  zero — so a corpus-wide average will never show it to you.
+ *
+ *  Making it an absolute test was BUILT AND MEASURED, twice, and both arms
+ *  are on the branch history (`scripts/measure_gate_standalone.ts`,
+ *  `project-mgmt/findings/standalone_gates_wsAW.md`). Holdout, ANSWERS=real,
+ *  three seeds, 900 replays each:
+ *
+ *      scope                      EXACT@5   REGIME@5   standalone stratum
+ *      regime (this)              277/900    760/900   16/47
+ *      the whole channel pool     271/900    758/900   15/47
+ *      regime x an absolute term  278/900    760/900   16/47
+ *
+ *  Pool scoring is worse, and worse ON THE VERY LEAVES IT WAS BUILT FOR. What
+ *  it actually does is visible directly: the standalone share of the five rows
+ *  a founder is shown goes 4.5% -> 8.1% corpus-wide and 32.7% -> 34.5% in
+ *  Spain. It PROMOTES the rows it scores, because across a channel "share of
+ *  rules cleared" is mostly a statement about how much has been encoded — the
+ *  size prior in a new costume, measured at 0.528 percentile for the pure
+ *  documentation-depth null against 0.577 for pass rate itself.
+ *
+ *  The two arms are one signal at two strengths, not two designs: within a
+ *  channel, min-max normalising a pass rate and raising GATE_MATCH to
+ *  (2*rate - 1) are both monotone in the same rate. Nothing at weak, harmful
+ *  at strong. On Spain's WHOLE graded holdout population — n=115, not the
+ *  n=12 a 300-row draw gives it — all three arms are bit-identical: pool 102,
+ *  EXACT@5 42, REGIME@5 86.
+ *
+ *  So: encoding rules for a parent-less fund buys ranking nothing, today, by
+ *  measurement rather than by omission. It still buys the eligibility SCREEN,
+ *  which reads gates per fund and is what a founder actually reads; and the
+ *  route that does move a standalone fund's rank is SELECTION, not this
+ *  function — 76% of a Spanish founder's candidate pool is standalone leaves,
+ *  and how many of them a channel may spend its slots on is decided in
+ *  `selectLeafInstruments`, not here. */
 export function gateFitScorer(
   leaves: DbInstrument[], answers?: EligibilityAnswers,
 ): (i: DbInstrument) => number {
-  // TEMPORARY, WS-AW. Three designs for what a rule should do for a fund with
-  // no siblings, differing ONLY in scope -- every arm uses GATE_MATCH at the
-  // same strength, so a difference between them is attributable to the design
-  // and not to a tuning constant. Removed once measured; the winner ships
-  // unconditionally.
-  //
-  //   regime  shipped: rank inside a regime, skip a group of one
-  //   pool    rank across the whole channel the caller handed us
-  //   both    regime as shipped, times a second ABSOLUTE term on the leaf's
-  //           own pass rate, which is the only term a standalone leaf gets
-  const scope = process.env.GATE_SCOPE ?? "regime";
   const neutral = () => 1;
   if (!answers) return neutral;
-  // Assessed once per leaf, not once per group: `both` reads the same numbers
-  // twice and two assessments of one leaf that could disagree would be a bug
-  // waiting rather than a saving.
-  const fitAll = new Map<string, number>();
-  for (const l of leaves) {
-    const a = assessInstrument(l, answers);
-    // Nothing decidable about this leaf: a gap in our encoding, never
-    // evidence that the founder fails. Same treatment awardScorer gives a
-    // fund with no recorded award median.
-    if (a.checked > 0) fitAll.set(l.id, a.passed / a.checked);
-  }
   const byRegime = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
     const r = (l as { parentId?: string }).parentId ?? l.id;
     (byRegime.get(r) ?? byRegime.set(r, []).get(r)!).push(l);
   }
   const score = new Map<string, number>();
-  const groups = scope === "pool" ? [leaves] : [...byRegime.values()];
-  for (const group of groups) {
+  for (const group of byRegime.values()) {
+    // A LEAF WITH NO SIBLINGS SCORES 1, AND ITS OWN ENCODED RULES ARE NEVER
+    // READ BY THIS FUNCTION. That is deliberate and measured -- see the
+    // docstring's last section before encoding gates for a standalone
+    // register.
     if (group.length < 2) continue;
     const fit = new Map<string, number>();
     for (const l of group) {
-      const f = fitAll.get(l.id);
-      if (f !== undefined) fit.set(l.id, f);
+      const a = assessInstrument(l, answers);
+      // Nothing decidable about this leaf: a gap in our encoding, never
+      // evidence that the founder fails. Same treatment awardScorer gives a
+      // fund with no recorded award median.
+      if (a.checked > 0) fit.set(l.id, a.passed / a.checked);
     }
     const known = [...fit.values()];
     if (known.length < 2) continue;
@@ -408,15 +436,6 @@ export function gateFitScorer(
     if (hi === lo) continue;
     for (const [id, f] of fit) {
       score.set(id, Math.pow(GATE_MATCH, 2 * ((f - lo) / (hi - lo)) - 1));
-    }
-  }
-  // The absolute term. No group, no normalisation: 100% of a fund's own rules
-  // cleared is GATE_MATCH and 0% is 1/GATE_MATCH, whatever else is on the
-  // table. A leaf with nothing encoded stays at 1 and is neither rewarded nor
-  // punished, exactly as in the relative term.
-  if (scope === "both") {
-    for (const [id, f] of fitAll) {
-      score.set(id, (score.get(id) ?? 1) * Math.pow(GATE_MATCH, 2 * f - 1));
     }
   }
   if (!score.size) return neutral;

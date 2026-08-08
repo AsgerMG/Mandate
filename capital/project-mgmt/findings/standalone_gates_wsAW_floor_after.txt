@@ -1,0 +1,17 @@
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions  [recall floor]
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+  corpus=postgres instruments=1088
+  __recallSetComposed.json  300 tune pairs
+    ok   pool     97% (floor 93%)
+    ok   exact5   30% (floor 22%)
+    ok   regime5  86% (floor 80%)
+    ok   regime5  85% (floor 70%)  original join, n=160
+    ok   regime5  88% (floor 84%)  traced:exact_attribution, n=140
+  [verdict] recall_floor = ok published as #67, code 7afc12807f87f0d9
+check_recall_floor: ok — 300 tune pairs of __recallSetComposed.json at seed 20260806, all floors met.
