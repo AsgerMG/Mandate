@@ -104,7 +104,6 @@ MULTI_VALUE_FIELDS = set(_VOCAB["multiValueFields"])
 
 ROLES = ["filter", "obligation", "programme_fact", "vague"]
 
-<<<<<<< HEAD
 # ── A country field must hold a country ──────────────────────────────────────
 # `entityCountries` and `activityCountries` are free text, so the vocabulary
 # check below cannot see them, and a rule restricting a scheme to named REGIONS
@@ -123,8 +122,8 @@ COUNTRY_FIELDS = ("entityCountries", "activityCountries")
 from nuts_regions import norm as _region_key, subnational_names  # noqa: E402
 
 SUBNATIONAL = subnational_names()
-=======
-# ── country-typed comparators ────────────────────────────────────────────────
+
+# ── ...and it must be OUR name for that country ──────────────────────────────
 # `entityCountries` and `activityCountries` have no entry in ENUM_VALUES,
 # because their vocabulary is "the countries of Europe" rather than a short
 # hand-written list. The consequence was a hole, not a convenience: the
@@ -158,9 +157,6 @@ SUBNATIONAL = subnational_names()
 #       simply outside our founder population. Inert, but TRUE, and rewriting
 #       the fund's own rule to make our bookkeeping tidy would be worse than
 #       carrying a clause that never fires. Left exactly as stated.
-COUNTRY_FIELDS = {"entityCountries", "activityCountries"}
-
-
 def canonical_country_values(op: str, values: list[str]) -> tuple[list[str], list[str]]:
     """Resolve each value to the corpus's own country name.
 
@@ -183,7 +179,6 @@ def canonical_country_values(op: str, values: list[str]) -> tuple[list[str], lis
         else:
             dropped.append(v)           # unsatisfiable under a positive operator
     return kept, dropped
->>>>>>> workstream-au-es-gates
 
 # The founder attributes we actually collect (EligibilityAnswers in types.ts).
 # 'none' is a first-class answer: most gates that look like filters turn out to
@@ -703,28 +698,31 @@ def cmd_encode(args) -> None:
                     skipped += 1
                     continue
 
-<<<<<<< HEAD
+            # A country field carries no ENUM_VALUES entry, so the vocabulary
+            # guard below skips it entirely. That is the hole COUNTRY_FIELDS
+            # closes, and it takes TWO passes, in this order:
+            #
+            #   1. sub-national names are dropped whatever the operator. A
+            #      region in a country field is a mis-encoding in both
+            #      directions, and it belongs to encode_regions.py.
+            #   2. what survives is resolved to the corpus's own country name,
+            #      dropping anything a positive operator could never satisfy.
+            #
+            # Pass 1 must lead: canonical_country_values KEEPS an unresolvable
+            # value under `not_in` as a true exclusion, which would let
+            # "not_in ['Bretagne']" through as if it named a country.
+            #
+            # Both run before the spec is stored, so a spec emptied by either is
+            # dropped rather than written.
             if field in COUNTRY_FIELDS and op in ("in", "not_in", "equals"):
                 key = "allowed" if op in ("in", "not_in") else "value"
                 vals = spec[key] if key == "allowed" else [spec[key]]
-                good = [v for v in vals if _region_key(v) not in SUBNATIONAL]
-                if len(good) != len(vals):
+                national = [v for v in vals if _region_key(v) not in SUBNATIONAL]
+                if len(national) != len(vals):
                     print(f"    gate {gid}: dropped sub-national values "
-                          f"{sorted(set(vals) - set(good))} from {field} — a region "
+                          f"{sorted(set(vals) - set(national))} from {field} — a region "
                           f"rule belongs to encode_regions.py, not a country field")
-                if not good:
-                    skipped += 1
-                    continue
-                spec[key] = good if key == "allowed" else good[0]
-=======
-            # A country field carries no ENUM_VALUES entry, so the guard below
-            # skips it entirely. That is the hole COUNTRY_FIELDS closes: the
-            # resolver is the vocabulary here, and it must run FIRST so a spec
-            # emptied by it is dropped rather than stored.
-            if field in COUNTRY_FIELDS and op in ("in", "not_in", "equals"):
-                key = "allowed" if op in ("in", "not_in") else "value"
-                vals = spec[key] if key == "allowed" else [spec[key]]
-                good, bad = canonical_country_values(op, vals)
+                good, bad = canonical_country_values(op, national)
                 if bad:
                     print(f"    dropped non-country {field} values {bad} on gate {gid}: "
                           f"a positive rule no founder answer can satisfy")
@@ -735,7 +733,6 @@ def cmd_encode(args) -> None:
                     spec["allowed"] = good
                 else:
                     spec["value"] = good[0]
->>>>>>> workstream-au-es-gates
 
             vocab = ENUM_VALUES.get(field)
             if vocab and op in ("in", "not_in", "equals"):
