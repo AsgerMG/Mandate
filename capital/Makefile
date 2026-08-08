@@ -18,6 +18,8 @@ help:
 	@echo "Wincent make targets:"
 	@echo "  make republish   Make the site serve the corpus the ETL produced (pull -> gate -> regenerate)"
 	@echo "  make verify-cron Is the weekly Railway ETL scheduled, deployed, and running this code?"
+	@echo "  make check-stores One store of record per table, and no schema drift between stores"
+	@echo "  make push-db     Push the local corpus to the volume, having PROVED it loses nothing"
 	@echo "  make pull-db     Pull the latest db.sqlite from the Railway ETL volume (run before local work)"
 	@echo "  make push        Run cloud-blocked/manual sources locally, then push db.sqlite back to Railway"
 	@echo "  make sources     List every source + how to renew it (ETL/events/extract/renew.py --list)"
@@ -89,6 +91,15 @@ republish:
 # Is the weekly refresh going to happen, and will it run this code? Reads the
 # schedule back from Railway rather than trusting the last write -- see
 # ETL/lib/verify_cron.py for the two schedules and why only one of them counts.
+# The two store guards, both halves. Named together because they answer one
+# question -- "is there one corpus, and does everyone agree what shape it is" --
+# and because running only the credential-free half is how the volume stayed 14
+# migrations behind without anything going red.
+.PHONY: check-stores
+check-stores:
+	python3 ETL/schema/check_store_of_record.py
+	python3 ETL/schema/check_store_schema.py --sqlite data/db.sqlite --postgres
+
 verify-cron:
 	python3 ETL/lib/verify_cron.py
 
@@ -248,3 +259,10 @@ pull-db:
 # ETL/events/extract/push_local.py for exactly what runs and what's excluded.
 push:
 	python3 ETL/events/extract/push_local.py
+
+# The safe half of `push`, on its own: no sources, no LLM spend, just the
+# corpus onto the volume with the superset proof in front of it and a readback
+# behind it. This is the one to reach for after local instrument work.
+.PHONY: push-db
+push-db:
+	python3 ETL/events/extract/push_db_verified.py --write

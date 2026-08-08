@@ -431,14 +431,21 @@ def apply_023(conn: sqlite3.Connection) -> None:
     print("  applied 023_scheme_lifetime.sql")
 
 
-def apply_025(conn: sqlite3.Connection) -> None:
+def apply_026(conn: sqlite3.Connection) -> None:
     """scheme_end_date_basis -- WHICH register supplied the end date, hence
-    whether its expiry closes anything. See the migration's own header."""
+    whether its expiry closes anything. See the migration's own header.
+
+    Numbered 026, not 025. Two migrations were both written as 025, and because
+    this one is defined ABOVE the other, Python's second `def apply_025` simply
+    replaced it: MIGRATIONS["025"] pointed at declared_catchment and this
+    migration was unreachable through the runner on every database that had not
+    already had it applied by hand. The live corpus records both 025 and 026 in
+    schema_migrations, so 026 is the id it was in fact applied under."""
     if column_exists(conn, "funding_instruments", "scheme_end_date_basis"):
-        print("  skip 025 (already applied)")
+        print("  skip 026 (already applied)")
         return
-    conn.executescript((MIG_DIR / "025_scheme_end_date_basis.sql").read_text())
-    print("  applied 025_scheme_end_date_basis.sql")
+    conn.executescript((MIG_DIR / "026_scheme_end_date_basis.sql").read_text())
+    print("  applied 026_scheme_end_date_basis.sql")
 
 
 def apply_024(conn: sqlite3.Connection) -> None:
@@ -483,13 +490,42 @@ MIGRATIONS = {
     "023": apply_023,
     "024": apply_024,
     "025": apply_025,
+    "026": apply_026,
 }
+
+
+def apply_one(conn: sqlite3.Connection, mig_id: str) -> None:
+    if already_applied(conn, mig_id):
+        print(f"Migration {mig_id} already applied — re-running idempotently.")
+    print(f"Applying migration {mig_id}...")
+    MIGRATIONS[mig_id](conn)
+    conn.execute("INSERT OR REPLACE INTO schema_migrations(id) VALUES (?)", (mig_id,))
+    conn.commit()
+    print(f"Migration {mig_id} applied.")
 
 
 def main() -> None:
     if len(sys.argv) < 2:
-        sys.exit("Usage: python apply.py <migration_id>")
+        sys.exit("Usage: python apply.py <migration_id>|all")
     mig_id = sys.argv[1]
+
+    # `all`, because until it existed there was no way to bring a database up to
+    # date except to name 23 migrations by hand, and so nothing did. The volume
+    # the weekly cron writes had run 9 of them; its funding_instruments had no
+    # `tier` column, the census read `tier`, and the missing column was reported
+    # for half a day as a coverage LOSS. Every migration here is idempotent by
+    # construction, so applying all of them to an up-to-date database is a no-op
+    # that prints 23 skips.
+    if mig_id == "all":
+        conn = sqlite3.connect(DB_PATH)
+        try:
+            for mid in sorted(MIGRATIONS):
+                apply_one(conn, mid)
+        finally:
+            conn.close()
+        print(f"All {len(MIGRATIONS)} migrations applied to {DB_PATH}.")
+        return
+
     if mig_id not in MIGRATIONS:
         sys.exit(f"Unknown migration: {mig_id}. Available: {sorted(MIGRATIONS)}")
 

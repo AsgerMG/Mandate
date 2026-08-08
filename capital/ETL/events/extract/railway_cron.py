@@ -28,6 +28,18 @@ import sys
 from pathlib import Path
 
 STEPS = [
+    # FIRST, and fatal if it fails. Nothing here applied migrations, so the
+    # corpus on the volume ran 9 of the 23 committed ones while the laptop ran
+    # all of them. Its funding_instruments had no `tier` column; the census
+    # reads `tier`; the census therefore recorded a coverage LOSS, and half a
+    # day went into looking for funds that had never gone anywhere. A missing
+    # column is not a smaller corpus but it reads exactly like one.
+    #
+    # Fatal rather than tolerated: every step below writes into this schema, and
+    # a pipeline that writes a week of data into the wrong shape has made the
+    # problem bigger, not smaller. Every migration is idempotent, so on an
+    # up-to-date corpus this prints a column of skips and costs a second.
+    [sys.executable, str(ROOT / "ETL/events/load/migrations/apply.py"), "all"],
     [sys.executable, str(ROOT / "ETL/events/extract/renew.py"), "--auto"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "apply-nace"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "run",
@@ -68,7 +80,7 @@ STEPS = [
 # fall inside tolerance, and its exit 1 means the defect it exists to surface.
 # That distinction lives in the registry's `tolerate`, so the runner records
 # `ok` for the first and `failed` for the second without this file knowing why.
-GUARDS = ["aggregate_independence", "offerable_decay"]
+GUARDS = ["store_schema", "aggregate_independence", "offerable_decay"]
 RUNNER = str(ROOT / "ETL/lib/guard_verdicts.py")
 
 # Recorded after everything above, WHATEVER happened above — see below.

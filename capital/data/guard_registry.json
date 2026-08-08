@@ -55,42 +55,93 @@
     {
       "id": "census",
       "cadence": "weekly",
-      "needs": ["etl corpus (data/db.sqlite)", "DATABASE_URL"],
-      "code": ["ETL", "website/build"],
-      "code_suffixes": [".py"],
+      "needs": [
+        "etl corpus (data/db.sqlite)",
+        "DATABASE_URL"
+      ],
+      "code": [
+        "ETL",
+        "website/build"
+      ],
+      "code_suffixes": [
+        ".py"
+      ],
       "refresh": "python3 ETL/events/load/publish_corpus_census.py",
       "why": "What the ETL corpus contains, and how the run that produced it went. Everything below is judged against the newest one."
     },
     {
+      "id": "store_schema",
+      "cadence": "weekly",
+      "needs": [
+        "etl corpus (data/db.sqlite)",
+        "DATABASE_URL"
+      ],
+      "code": [
+        "ETL/schema/check_store_schema.py",
+        "ETL/schema/schema_debt.json",
+        "ETL/events/load/schema.sql",
+        "ETL/events/load/migrations",
+        "ETL/schema/postgres_schema.sql"
+      ],
+      "code_suffixes": [
+        ".py",
+        ".sql",
+        ".json"
+      ],
+      "command": [
+        "python3",
+        "ETL/schema/check_store_schema.py",
+        "--sqlite",
+        "data/db.sqlite",
+        "--postgres"
+      ],
+      "refresh": "python3 ETL/lib/guard_verdicts.py run store_schema",
+      "why": "Two stores of the same table must have the same columns. The volume's funding_instruments had no `tier` while the laptop's did -- the volume had run 9 of 23 committed migrations -- and because the census reads `tier`, a missing COLUMN was reported for half a day as a coverage LOSS. It runs here rather than in CI because it is a question about live stores, and it runs INSIDE the container so the corpus it reads is the one the cron actually writes."
+    },
+    {
       "id": "aggregate_independence",
       "cadence": "weekly",
-      "needs": ["etl corpus (data/db.sqlite)"],
+      "needs": [
+        "etl corpus (data/db.sqlite)"
+      ],
       "code": [
         "ETL/schema/check_aggregate_independence.py",
         "website/build/lib/corpus_kpis.py"
       ],
-      "command": ["python3", "ETL/schema/check_aggregate_independence.py"],
+      "command": [
+        "python3",
+        "ETL/schema/check_aggregate_independence.py"
+      ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run aggregate_independence",
       "why": "Liveness must not reach the headline figures, and must move the offerable set. It was in CI, where data/db.sqlite is gitignored, so it printed 'skipping' and returned 0 on every run it has ever had."
     },
     {
       "id": "offerable_decay",
       "cadence": "weekly",
-      "needs": ["etl corpus (data/db.sqlite)"],
+      "needs": [
+        "etl corpus (data/db.sqlite)"
+      ],
       "code": [
         "ETL/terms/check_offerable_decay.py",
         "ETL/lib/liveness.py",
         "data/reference/offerable_baseline.json"
       ],
-      "command": ["python3", "ETL/terms/check_offerable_decay.py"],
-      "tolerate": [3],
+      "command": [
+        "python3",
+        "ETL/terms/check_offerable_decay.py"
+      ],
+      "tolerate": [
+        3
+      ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run offerable_decay",
       "why": "A country's offerable inventory falling with no corresponding corpus change. Already a cron step; publishing its verdict is what makes the result readable without credentials."
     },
     {
       "id": "corpus_currency",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL"],
+      "needs": [
+        "DATABASE_URL"
+      ],
       "code": [
         "website/frontend/scripts/check_corpus_currency.ts",
         "website/frontend/lib/intelligence/liveness.ts",
@@ -103,7 +154,9 @@
     {
       "id": "hydration_parity",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL"],
+      "needs": [
+        "DATABASE_URL"
+      ],
       "code": [
         "website/frontend/scripts/check_hydration_parity.ts",
         "website/frontend/lib/intelligence",
@@ -115,7 +168,9 @@
     {
       "id": "degradation",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL"],
+      "needs": [
+        "DATABASE_URL"
+      ],
       "code": [
         "website/frontend/scripts/check_degradation.ts",
         "website/frontend/lib/intelligence",
@@ -127,7 +182,10 @@
     {
       "id": "recall_floor",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL", "VOYAGE_KEY"],
+      "needs": [
+        "DATABASE_URL",
+        "VOYAGE_KEY"
+      ],
       "code": [
         "website/frontend/scripts/check_recall_floor.ts",
         "website/frontend/scripts/recallSet.ts",

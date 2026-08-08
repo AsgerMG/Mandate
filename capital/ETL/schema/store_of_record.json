@@ -1,0 +1,78 @@
+{
+  "$why": [
+    "Which store is authoritative for each table. ONE definition, read by",
+    "ETL/schema/check_store_of_record.py, which holds the code to it.",
+    "",
+    "The decision: Postgres is the store of record; the laptop is a disposable",
+    "client and the Railway volume is where the weekly cron happens to keep its",
+    "working file. Anything else is a cache or a transport.",
+    "",
+    "`store` is where the AUTHORITATIVE copy lives TODAY, not where it should.",
+    "An aspiration recorded here would be a lie the checker enforces against the",
+    "code; the honest value is what the write path actually does, and the",
+    "ratchet is what moves it. Changing a table to `postgres` fails until its",
+    "write path stops reading SQLite -- which is the point.",
+    "",
+    "not_postgres_budget is the count of tables whose `store` is sqlite. A",
+    "`postgres-derived` table is recomputed wholesale in Postgres and is not",
+    "counted: the question for it is where its INPUTS live, which derived_from",
+    "records and the input's own entry answers.",
+    "It is the migration, counted. It may only go DOWN, and the checker fails",
+    "both if it grows and if it is left too high after a table moves.",
+    "",
+    "`replacers` are the modules that can overwrite a whole store. That is a",
+    "capability, and a module acquiring it without appearing here fails the",
+    "check. `proves_superset` says whether it establishes that the replacement",
+    "loses nothing BEFORE writing. Two of them do not, and are the reason a",
+    "single mistyped command on 2026-08-07 could have destroyed either 1,457",
+    "events or 766 instruments."
+  ],
+
+  "not_postgres_budget": 11,
+
+  "tables": {
+    "brief_records":              {"store": "postgres", "why": "written by the product at request time; never existed in SQLite"},
+    "corpus_census":              {"store": "postgres", "why": "the weekly cron's record of what its corpus held; publish_corpus_census.py reads SQLite and writes here, which is a REPORT about a store rather than a copy of one"},
+    "event_log":                  {"store": "postgres", "why": "product telemetry"},
+    "guard_verdicts":             {"store": "postgres", "why": "guard results, published from wherever the guard can run and read without credentials"},
+    "request_log":                {"store": "postgres", "why": "product telemetry"},
+    "eligibility_embeddings":     {"store": "postgres-derived", "derived_from": ["eligibility_gates"], "why": "pgvector index of what a fund DEMANDS. Recomputed wholesale in Postgres; no SQLite representation. Never conflated with instrument_profiles."},
+    "instrument_profiles":        {"store": "postgres-derived", "derived_from": ["funding_instruments"], "why": "pgvector index of what a fund FUNDS. Recomputed wholesale, so its store question is really funding_instruments' -- which is still sqlite, and is why this is not simply `postgres`."},
+
+    "funding_instruments":        {"store": "sqlite", "blocked_by": "migrate_to_postgres.py TRUNCATEs and reloads it from data/db.sqlite on every publish, so the laptop is authoritative in fact. Stage 3 of the migration."},
+    "funding_instrument_sources": {"store": "sqlite", "blocked_by": "same publish path as funding_instruments"},
+    "eligibility_gates":          {"store": "sqlite", "blocked_by": "same publish path; ~30 ETL/terms scripts write it through a SQLite connection"},
+    "eligibility_clauses":        {"store": "sqlite", "blocked_by": "same publish path"},
+    "instrument_application":     {"store": "sqlite", "blocked_by": "same publish path"},
+
+    "companies":                  {"store": "sqlite", "blocked_by": "no Postgres representation at all. The events corpus is 150k+ companies and 300k+ events behind 43 extractors; stage 4, and the largest."},
+    "public_funding_events":      {"store": "sqlite", "blocked_by": "no Postgres representation; read through data/views.sql, which is SQLite-only SQL"},
+    "public_equity_stakes":       {"store": "sqlite", "blocked_by": "no Postgres representation"},
+    "private_funding_events":     {"store": "sqlite", "blocked_by": "no Postgres representation; empty today"},
+    "classify_audit":             {"store": "sqlite", "blocked_by": "no Postgres representation; the classifier's own audit trail"},
+    "company_sector_labels":      {"store": "sqlite", "blocked_by": "no Postgres representation"}
+  },
+
+  "replacers": {
+    "ETL/events/extract/push_db_verified.py": {
+      "proves_superset": true,
+      "why": "proves the local corpus is a superset of the volume, table by table and key by key, from both files at the moment it runs, and reads the volume back afterwards"
+    },
+    "ETL/events/extract/pull_db_side.py": {
+      "proves_superset": false,
+      "why": "downloads to a path the caller names and REFUSES when that path is the local corpus, so it cannot replace a store of record even though it holds the flag"
+    },
+    "ETL/events/extract/pull_db.py": {
+      "proves_superset": false,
+      "why": "downloads the volume straight over data/db.sqlite with --overwrite. Correct only while the volume is ahead of the laptop, which is not a property anything checks. Superseded for the pull direction by pull_db_side.py + merge_volume_into_local.py."
+    },
+    "ETL/events/extract/push_local.py": {
+      "proves_superset": false,
+      "why": "ends in a bare upload --overwrite of the laptop corpus onto the volume. Superseded by push_db_verified.py, which does the same transfer with the proof in front of it."
+    },
+    "ETL/terms/migrate_to_postgres.py": {
+      "proves_superset": false,
+      "why": "TRUNCATEs the five product tables and reloads them from SQLite. This is the publish path that makes the laptop authoritative for them; it is not a bug to be fixed in place but the thing stages 2-3 of the migration remove."
+    }
+  }
+}
