@@ -1,0 +1,24 @@
+cut=2023  leaves with >= 8 awards on BOTH sides: 274 (of 1088 instruments)
+
+attribute                                  agrees  naive floor   margin      n
+------------------------------------------------------------------------------
+sector_top argmax (11)                        68%          45%     +23%    274
+subsector argmax (94)                         59%          45%     +14%    273
+recipient country                             99%          99%      +0%    274
+ticketBand of median award (shipped 5)        81%          72%      +8%    272
+award band, finer low end (6)                 70%          56%     +14%    272
+award decade (log10)                          83%          79%      +5%    272
+
+regime                   leaves     sector_top   subsector   recipient  ticketBand       award       award
+vinnova_grant                32            56%         72%        100%        100%         66%         66%
+ademe_aid                    30            77%         67%        100%        100%         90%         93%
+satr_de_rnd                  29            83%         55%        100%         59%         52%         86%
+bdns_es_ayudas               22            64%         50%        100%         91%         91%        100%
+satr_it_rnd                  17            76%         56%        100%         71%         65%         82%
+satr_be_rnd                  10            70%         50%        100%         80%         80%         80%
+satr_it_equity                8            88%         75%        100%        100%         62%         62%
+satr_nl_rnd                   8            88%         62%        100%         75%         75%         75%
+satr_fr_rnd                   7            57%         29%        100%         57%         43%         86%
+satr_at_rnd                   6            33%         50%        100%         50%         50%         83%
+
+legend: sector_top=sector_top argmax (11), subsector=subsector argmax (94), recipient=recipient country, ticketBand=ticketBand of median award (shipped 5), award=award band, finer low end (6), award=award decade (log10)
