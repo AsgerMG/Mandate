@@ -43,12 +43,8 @@ CREATE TABLE IF NOT EXISTS corpus_census (
   instruments                JSONB,
   coverage                   JSONB,
   gate                       JSONB,
-<<<<<<< HEAD
-  errors                     JSONB NOT NULL DEFAULT '[]'::jsonb
-=======
   errors                     JSONB NOT NULL DEFAULT '[]'::jsonb,
   run_outcome                TEXT NOT NULL DEFAULT 'unknown'::text
->>>>>>> workstream-aa-corpus-currency
 );
 CREATE UNIQUE INDEX IF NOT EXISTS corpus_census_pkey ON public.corpus_census USING btree (id);
 CREATE INDEX IF NOT EXISTS corpus_census_taken_idx ON public.corpus_census USING btree (taken_at DESC);

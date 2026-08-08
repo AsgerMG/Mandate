@@ -359,6 +359,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "05cb8fcd1ac0ee53": {
+   "reason": "Beneficiary type, eligible actions and selection criteria, plus 55% aid rate.",
+   "sample": "Aide - \u00ab Investissements dans les \u00e9quipements de recyclage des d\u00e9chets \u00bb, mis en place par l'ADEME. B\u00e9n\u00e9ficiaires : Entreprises de recyclage des d\u00e9chets, souhaitant structurer de nouvelles fili\u00e8res et am\u00e9liorer les perfo",
+   "v": 3,
+   "verdict": "condition"
+  },
   "05e13082861d439a": {
    "reason": "Exclusion for unrepaid rescue aid or ongoing restructuring plan.",
    "sample": "Applicant must not have received rescue aid not yet repaid, or be subject to an ongoing restructuring plan under restructuring aid.",
@@ -560,6 +566,12 @@
   "0909165d82b02de8": {
    "reason": "Requires measure not started before decision; checkable timing condition.",
    "sample": "Support may not be given for a measure that has already started before a funding decision has been made.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "091870ff55d41d6a": {
+   "reason": "Prerequisites like sch\u00e9ma directeur cyclable, exclusion of past beneficiaries, axis-4-only ineligibility.",
+   "sample": "Territoires cibles : \u00ab Les territoires peu denses et/ou ruraux ; Les villes moyennes ; Les p\u00e9riph\u00e9ries des communaut\u00e9s urbaines, d\u2019agglom\u00e9ration ou des m\u00e9tropoles \u00bb. \u00c9ligibilit\u00e9 des territoires : \u00ab Une collectivit\u00e9 qui a",
    "v": 3,
    "verdict": "condition"
   },
@@ -1751,6 +1763,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "18704467437af368": {
+   "reason": "Excludes CEP and Conseillers France R\u00e9nov profiles; lists beneficiary categories.",
+   "sample": "Vous souhaitez contribuer au d\u00e9ploiement des politiques de l'ADEME ? Les aides aux relais pourront vous permettre de recruter un poste de charg\u00e9 de mission pour des projets structurants pour le territoire ! Voici des exe",
+   "v": 3,
+   "verdict": "condition"
+  },
   "188867e077361310": {
    "reason": "Consortium composition threshold: three independent enterprises, at least one SME.",
    "sample": "For innovation projects, subsidy is only granted to three or more mutually independent enterprises collaborating under one cooperation agreement, of which at least one must be an SME.",
@@ -1862,6 +1880,12 @@
   "1a1f7feaecc412f6": {
    "reason": "Applicant entity type and concrete demonstration project requirement.",
    "sample": "Applicant must be a public or private entity (single applicant or consortium) with a concrete industrial demonstration project, not an early-stage research effort",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1a24a7bf0c4bf5b4": {
+   "reason": "Eligible structure types, consortium requirement for volet A3, excluded volet combinations.",
+   "sample": "Appel \u00e0 projets \u00ab Structuration de fili\u00e8res, valorisation et gestion durable de la haie \u00bb, op\u00e9r\u00e9 par l\u2019ADEME dans le cadre du Pacte en faveur de la haie. Il s\u2019adresse aux \u00ab structures d\u2019accompagnement ayant la comp\u00e9tence",
    "v": 3,
    "verdict": "condition"
   },
@@ -2321,6 +2345,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "208eb5016b1ab424": {
+   "reason": "Explicit eligibility criteria, beneficiary type (public/private legal person, excluding individuals), eligible actions.",
+   "sample": "Aide - \u00ab Actions en faveur de la transition \u00e9cologique \u00bb, mis en place par l'ADEME. Objectif : soutien aux projets qui permettent de faire \u00e9voluer les mentalit\u00e9s, comportements et actes d'achats, dans tous les domaines d",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2094d084dc6d11e8": {
    "reason": "Eligible entity types, sector competence, German establishment requirement.",
    "sample": "Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft, insbesondere juristische Personen des Privatrechts und unternehmerisch t\u00e4tige Personengesellschaften; besondere Ber\u00fccksichtigung findet dabei die Beteiligun",
@@ -2555,6 +2585,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2405c2947745fd35": {
+   "reason": "Defines eligible applicant types, location in listed communes, and project sustainability criteria \u2014 checkable requirements.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cet appel \u00e0 projet s\u2019adresse \u00e0 tout type d\u2019acteurs assimil\u00e9s \u00e0 : des TPE et PME au sens communautaire (soit qui exercent r\u00e9guli\u00e8rement une activit\u00e9 \u00e9conomique) quels que soient leur code NAF et leur ",
+   "v": 3,
+   "verdict": "condition"
+  },
   "240f16530ec3fa14": {
    "reason": "Exclusion of high-risk suppliers from participation roles.",
    "sample": "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own/control) are not eligible to participate as beneficiaries, affiliated entities, or associated partners in actions ",
@@ -2600,6 +2636,12 @@
   "24d7938da59b8095": {
    "reason": "Eligible activity defined with explicit exclusion of hydrogen-derived electricity.",
    "sample": "Promotion of renewable energy or renewable hydrogen is eligible, except for electricity produced from renewable hydrogen.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "24e0f4e9d75f7450": {
+   "reason": "Targets bois/biosourc\u00e9 sector actors with defined project types and submission deadline.",
+   "sample": "AAP SCB (Industrialisation de produits et syst\u00e8mes constructifs bois et autres biosourc\u00e9s), op\u00e9r\u00e9 par l\u2019ADEME dans le cadre de France 2030 / strat\u00e9gie d\u2019acc\u00e9l\u00e9ration \u00ab Ville durable et b\u00e2timents innovants \u00bb. Il vise \u00e0 so",
    "v": 3,
    "verdict": "condition"
   },
@@ -2798,6 +2840,12 @@
   "27d09dead14850ad": {
    "reason": "Swedish SMEs/academia preparing an international call application \u2014 checkable status.",
    "sample": "Svenska sm\u00e5 och medelstora f\u00f6retag (SMF), akt\u00f6rer inom akademi, forskningsinstitut, offentlig sektor eller civilsamh\u00e4lle som f\u00f6rbereder en ans\u00f6kan till en internationell forsknings- och innovationsutlysning.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "27d216ab3d589843": {
+   "reason": "Lists eligible beneficiary categories (ETF, coop\u00e9ratives, exploitants) despite budget/history narrative; reader can check eligibility.",
+   "sample": "Le dispositif ESPR (Exploitation foresti\u00e8re et Sylviculture Performantes et R\u00e9silientes) comporte deux volets : Volet 1, \u00ab structurer le maillon de l\u2019exploitation foresti\u00e8re en accompagnant des d\u00e9marches collectives inno",
    "v": 3,
    "verdict": "condition"
   },
@@ -3314,6 +3362,12 @@
   "2fe6269455a8e15c": {
    "reason": "Ownership/independence criteria for SME status; applicant assesses own control structure.",
    "sample": "Ownership/control criteria may apply for SME status (independence from larger groups)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "301198c2faf2ffb0": {
+   "reason": "Defines thematic project priorities the applicant's project must address; checkable project scope.",
+   "sample": "Cet appel \u00e0 projet ambitionne d'anticiper la transition hydrique en int\u00e9grant l'enjeu \u00ab eau \u00bb dans France 2030, et il contribuera \u00e0 soutenir l'innovation en France suivant les axes suivants : Agir en amont sur la gestion",
    "v": 3,
    "verdict": "condition"
   },
@@ -4253,6 +4307,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "3df1a1c95744aeef": {
+   "reason": "Restricts applicants to wood transformation/prefabrication firms; checkable activity criterion.",
+   "sample": "\u00cates-vous concern\u00e9 ? Entreprises de premi\u00e8re et/ou seconde transformation du bois, de pr\u00e9fabrication ou d\u2019assemblage, seules ou en collaboration, notamment avec des laboratoires de recherches (non obligatoire).",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3df51b47e13b2e92": {
    "reason": "Prerequisite: completed digital maturity test and roadmap before applying.",
    "sample": "To apply for support, the economic operator must first have completed a digital maturity test and received a digital development roadmap, on the basis of which further digital-transformation investments may be made.",
@@ -4925,6 +4985,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4696ffdf1c7db445": {
+   "reason": "Names eligible applicant types plus explicit exclusion of eco-organisme adherents.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cette aide s'adresse aux entreprises, aux collectivit\u00e9s responsables d\u2019une activit\u00e9 de restauration et aux syndicats professionnels pour les diagnostics, et aux associations. Les projets des metteurs",
+   "v": 3,
+   "verdict": "condition"
+  },
   "469eb9dfc2dbb335": {
    "reason": "Project scope requirement against value chain/strategic agenda.",
    "sample": "Project must fit the semiconductor value chain / Chips JU strategic agenda (design, pilot lines, packaging, materials)",
@@ -5126,6 +5192,12 @@
   "4906d4e971e487ca": {
    "reason": "Large firms/non-economic legal persons, Spain, named sectors, R&D purpose: checkable applicant criteria.",
    "sample": "Beneficiarios: GRAN EMPRESA; PERSONAS JUR\u00cdDICAS QUE NO DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES - ESPA\u00d1A. Finalidad: Investigaci\u00f3n, desarrollo e innovaci\u00f3n. Sectores elegibles: ACTIVIDADES ADMINISTRATIVAS Y S",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "493adf180a0710d3": {
+   "reason": "Restricted to PME, enumerates eligible axes and explicitly ineligible dossier types.",
+   "sample": "Le dispositif de l'ADEME \u2013 ORPLAST (Objectif Recyclage PLASTiques) vise \u00e0 soutenir financi\u00e8rement l'int\u00e9gration de mati\u00e8res plastiques recycl\u00e9es par les plasturgistes ou transformateurs qui effectuent la transformation d",
    "v": 3,
    "verdict": "condition"
   },
@@ -5468,6 +5540,12 @@
   "4deff54b79e45e2f": {
    "reason": "Turnover threshold applicant can check against own accounts.",
    "sample": "SME qualification requires that the undertaking's annual turnover does not exceed EUR 50 million, per the EU SME definition.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4df2deca2566641c": {
+   "reason": "Specifies eligible applicants: companies alone or collaborating; EPIC case-by-case \u2014 applicant-checkable.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cet appel \u00e0 projets (AAP) est destin\u00e9 aux entreprises seules ou en collaboration, notamment avec des organismes de recherche (non obligatoire). Pour les EPIC, EPCA etc, l\u2019\u00e9ligibilit\u00e9 sera analys\u00e9e au",
    "v": 3,
    "verdict": "condition"
   },
@@ -6416,6 +6494,12 @@
   "5a5a658901926c05": {
    "reason": "Restricts proposers to state universities/MUR research bodies and mandates Hub&Spoke partnership structure.",
    "sample": "I soggetti proponenti possono essere esclusivamente Universita' statali ed Enti Pubblici di Ricerca vigilati dal MUR. Le proposte devono prevedere la creazione di partenariati estesi organizzati secondo una struttura di ",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5a86a230c0a7d831": {
+   "reason": "Targets farmers, lists eligible modules and eligible project stages plus zone and deadline.",
+   "sample": "L\u2019action vise l\u2019accompagnement climat des agriculteurs via des parcours d\u2019accompagnement (\u00e0 l\u2019\u00e9chelle de l\u2019exploitation) comprenant un diagnostic individuel, un plan d\u2019action et un suivi de l\u2019exploitation, selon plusieur",
    "v": 3,
    "verdict": "condition"
   },
@@ -8399,6 +8483,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "761af92383e5623c": {
+   "reason": "Restricted to PME plasturgistes, eligible axes and explicit ineligibility exclusions.",
+   "sample": "Le dispositif de l'ADEME \u2013 ORPLAST (Objectif Recyclage PLASTiques) vise \u00e0 soutenir financi\u00e8rement l'int\u00e9gration de mati\u00e8res plastiques recycl\u00e9es par les plasturgistes ou transformateurs qui effectuent la transformation d",
+   "v": 3,
+   "verdict": "condition"
+  },
   "761eb7b6cb049db2": {
    "reason": "Ownership threshold applicant can check against own shareholder composition.",
    "sample": "The company must be at least 50% owned by persons with difficulty accessing the labour market.",
@@ -8957,6 +9047,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "7ee3739430ab98a1": {
+   "reason": "Requires project located on national territory and linked to wood sector \u2014 checkable eligibility.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cet appel \u00e0 projets est r\u00e9serv\u00e9 aux projets situ\u00e9s sur le territoire national (d\u00e9partements-r\u00e9gions d'outre-mer (DROM) et collectivit\u00e9s d'outre-mer (COM) inclus), en lien avec les entreprises de la f",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7eee8f1840fb07e9": {
    "reason": "Regional eligibility: firms outside AT12 not eligible.",
    "sample": "Registered with the European Commission as applying in AT12. A company established outside those regions is not eligible under this scheme.",
@@ -9008,6 +9104,12 @@
   "7f611bec959d98ab": {
    "reason": "SME size eligibility requirement about applicant.",
    "sample": "Applicant must be an SME (size-scaled eligibility typical of national promotional banks)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7f62a9840d1ea548": {
+   "reason": "Defines eligible advisory structures and final beneficiary as agricultural SME.",
+   "sample": "\u00cates-vous concern\u00e9 ? Les structures \u00e9ligibles dans le cadre de cet appel \u00e0 projets sont les organismes de conseil . Elles peuvent \u00eatre publiques, associatives et/ou priv\u00e9es (ex : chambres d\u2019agriculture, coop\u00e9rative agric",
    "v": 3,
    "verdict": "condition"
   },
@@ -9257,6 +9359,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "82b5cafb51dec3eb": {
+   "reason": "Beneficiary list (public bodies) and eligible study, plus 80% subsidy rate.",
+   "sample": "Le contexte environnemental et social favorise l'\u00e9mergence de nouveaux mod\u00e8les de d\u00e9veloppement, parmi lesquels l'\u00e9conomie de la fonctionnalit\u00e9 et de la coop\u00e9ration. Elle \u00e9tablit une nouvelle relation entre l'offre et la",
+   "v": 3,
+   "verdict": "condition"
+  },
   "82c0d88020022c79": {
    "reason": "Exclusion rule with exceptions applicants can check against their own status.",
    "sample": "Research organisations holding a 2025-27 framework grant (rammebevilgning) cannot submit individual applications to this call, except for EDF applications or extra support for applications including African or Ukrainian ",
@@ -9446,6 +9554,12 @@
   "8582f36208674143": {
    "reason": "Enumerates eligible applicant categories readers can match themselves against.",
    "sample": "Eligible applicants are universities and non-university education/research institutions, commercial enterprises, non-profit organisations, local authorities, and other bodies such as foundations, associations and federat",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "85aaf8235b2c18df": {
+   "reason": "Thresholds on emissions reduction, investment size and aid request checkable by applicant.",
+   "sample": "\u00cates-vous concern\u00e9 ? Ce dispositif s\u2019adresse \u00e0 tout site industriel et \u00e0 des projets permettant une r\u00e9duction d\u2019\u00e9missions de GES sup\u00e9rieure \u00e0 1 000 tCO\u2082eq par an \u00e0 iso-production au p\u00e9rim\u00e8tre de l\u2019entreprise industrielle",
    "v": 3,
    "verdict": "condition"
   },
@@ -10613,6 +10727,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "9517f76f6582c570": {
+   "reason": "Volet-specific selection requirements and 'seuls les projets d'envergure nationale' restrict who may apply.",
+   "sample": "Appel \u00e0 projets 2024-2025 \u00ab vers la strat\u00e9gie nationale pour l\u2019alimentation, la nutrition et le climat (SNANC) \u00bb. Trois volets : Volet 1 \u00ab \u00e9mergence de nouveaux Projets Alimentaires Territoriaux \u00bb - \u00ab La s\u00e9lection des no",
+   "v": 3,
+   "verdict": "condition"
+  },
   "9530805872400144": {
    "reason": "Valuation threshold gating larger tickets; applicant can check own valuation.",
    "sample": "Scale-up companies with a valuation exceeding \u20ac500 million are eligible for financing above \u20ac50 million.",
@@ -11321,6 +11441,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "9d77159ed4846381": {
+   "reason": "Beneficiary categories (commune, EPCI, EPL) and eligible action types are checkable by reader.",
+   "sample": "Vous souhaitez contribuer au d\u00e9ploiement des politiques de l'ADEME ? Les aides aux relais pourront vous permettre de recruter un poste de charg\u00e9 de mission ! Voici des exemples de profils de postes : animateur fili\u00e8re Bo",
+   "v": 3,
+   "verdict": "condition"
+  },
   "9d796931671b8043": {
    "reason": "Cost-share offered up to 50 percent of company's project costs.",
    "sample": "Applicants may apply for support to cover up to 50 percent of each company's costs in the project.",
@@ -11522,6 +11648,12 @@
   "a03a49074a0e9254": {
    "reason": "Restricts eligible use of funds to COVID working-capital needs; applicant can check purpose.",
    "sample": "Funds/guarantee tied to working capital or liquidity needs stemming from COVID-19 disruption",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a03ea47be03da2ba": {
+   "reason": "Sector restriction to textile/apparel firms; all sizes and maturity levels admitted.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cet appel \u00e0 projets (AAP) s'adresse aux entreprises du secteur textile pour l'habillement : Metteurs sur le march\u00e9 d'articles d'habillement concern\u00e9s par la r\u00e9glementation d'affichage environnemental",
    "v": 3,
    "verdict": "condition"
   },
@@ -11969,6 +12101,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a5d50da69acbbdc6": {
+   "reason": "Applicant must be plastics processor incorporating recycled material; company size open.",
+   "sample": "\u00cates-vous concern\u00e9 ? L'aide s'adresse aux plasturgistes et transformateurs souhaitant incorporer de la mati\u00e8re plastique recycl\u00e9e dans les produits (premi\u00e8re incorporation ou augmentation). Cette \u00e9dition 3 de l'appel \u00e0 p",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a5f2c38486251836": {
    "reason": "Financial resource capacity requirement with stated exemptions.",
    "sample": "Applicants must have stable and sufficient financial resources, and organisations participating in several projects must have sufficient capacity to implement all of them; financial capacity check is skipped for public b",
@@ -12008,6 +12146,12 @@
   "a65f2174a1166ce8": {
    "reason": "Excludes applicants controlled by shareholders with recently ceased similar activity.",
    "sample": "Companies controlled (per art. 2359 civil code) by controlling shareholders whose similar prior activity ceased in the 12 months preceding the application are not eligible.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a6751e5c5c73191a": {
+   "reason": "Despite legal narrative, states beneficiary categories and eligible studies/investments plus aid rates.",
+   "sample": "La loi relative \u00e0 la lutte contre le gaspillage et \u00e0 l'\u00e9conomie circulaire (Loi AGEC), promulgu\u00e9e le 10 f\u00e9vrier 2020, et la loi portant lutte contre le d\u00e9r\u00e8glement climatique et renforcement de la r\u00e9silience face \u00e0 ses e",
    "v": 3,
    "verdict": "condition"
   },
@@ -12154,6 +12298,12 @@
    "sample": "The amount applied for must be within the specific lower and upper IFD investment limits stated in the call text.",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "a8ae2e8b825b20c1": {
+   "reason": "Geographic targeting plus exclusion of prior programme beneficiaries; checkable by reader.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cet appel \u00e0 projets s'adresse aux territoires de France m\u00e9tropolitaine et d'outre-mer. Il cible tout particuli\u00e8rement : les territoires peu denses et/ou ruraux les villes moyennes les p\u00e9riph\u00e9ries des",
+   "v": 3,
+   "verdict": "condition"
   },
   "a8c2139ba7836641": {
    "reason": "States size and form of offer; applicant can compare funding need.",
@@ -13271,6 +13421,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "b6b963f2ce2bbb8f": {
+   "reason": "Eligible action types and beneficiary categories a reader can check against themselves.",
+   "sample": "Vous souhaitez contribuer au d\u00e9ploiement des politiques de l'ADEME ? Les aides aux actions ponctuelles pourront financer vos actions ponctuelles d'animation, de communication et/ou de formation. Voici quelques exemples d",
+   "v": 3,
+   "verdict": "condition"
+  },
   "b6bda8c185c4f136": {
    "reason": "Project start date after 2020 limits eligible R&D work.",
    "sample": "The research allowance can only be claimed for R&D work that began, or was commissioned, after 1 January 2020.",
@@ -13370,6 +13526,12 @@
   "b82cd28caccb0720": {
    "reason": "Establishment and control requirements for intermediaries and beneficiaries.",
    "sample": "Under the defence equity facility, both financial intermediaries and final beneficiaries must be established in the EU or EDF Associated Countries and must not be controlled by entities from non-associated third countrie",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b84f3b4384315341": {
+   "reason": "Population thresholds, eligible entity types, exclusion of prior AVELO beneficiaries.",
+   "sample": "Vous \u00eates une collectivit\u00e9 territoriale, une intercommunalit\u00e9 ou un syndicat souhaitant encourager la pratique du v\u00e9lo sur votre territoire. Territoires \u00e9ligibles : les territoires de moins de 250 000 habitants dont \u00ab la",
    "v": 3,
    "verdict": "condition"
   },
@@ -13697,6 +13859,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "bdbd33275a479252": {
+   "reason": "Applicant type: firms of any size and research organisations interested in functionality economy \u2014 checkable.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cette aide s'adresse aux entreprises de toutes tailles et organisations de recherche publiques ou priv\u00e9es int\u00e9ress\u00e9es par le mod\u00e8le offert par l\u2019\u00e9conomie de la fonctionnalit\u00e9 et de la coop\u00e9ration.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "bdd39d05414ffbaf": {
    "reason": "Exclusion of publicly listed companies; reader can check own group status.",
    "sample": "The recipient must not be a listed (publicly quoted) company at group level, per the definition in Article 2(76) of Regulation 651/2014.",
@@ -13766,6 +13934,12 @@
   "bf4e8b3a66715c8d": {
    "reason": "Project must be R&D/innovation; checkable use-of-funds condition.",
    "sample": "Funds must be used for R&D, innovation, or technology development project",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "bf53efaba44f07c0": {
+   "reason": "Population thresholds, geographic and entity-type eligibility criteria checkable by territory.",
+   "sample": "Le pr\u00e9sent AAP s\u2019adresse aux territoires de moins de 250 000 habitants dont la ville centre fait moins de 100 000 habitants tels que : - Les territoires peu denses et/ou ruraux - Les p\u00e9riph\u00e9ries de communaut\u00e9s d\u2019agglom\u00e9r",
    "v": 3,
    "verdict": "condition"
   },
@@ -14339,6 +14513,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "c76023d1cd1b649e": {
+   "reason": "Open to legal entities able to deliver stated missions; regional coverage expectations \u2014 checkable requirement.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cet AMI (Appel \u00e0 manifestation d'int\u00e9r\u00eat) s\u2019adresse \u00e0 tout type de structures (personnes morales) en mesure de d\u00e9ployer une ou l\u2019ensemble des missions expos\u00e9es dans l'AMI. L\u2019ADEME appr\u00e9ciera les doss",
+   "v": 3,
+   "verdict": "condition"
+  },
   "c76642359e1f008b": {
    "reason": "Headcount/turnover thresholds testable by applicant.",
    "sample": "Applicant must be an SME (within EU SME definition: staff headcount and turnover/balance sheet thresholds)",
@@ -14687,6 +14867,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "cc4f7bc3ca6e0ab5": {
+   "reason": "Specifies eligible company types, textile sector, project axes and one-axis-per-application rule \u2014 checkable requirements.",
+   "sample": "Pr\u00e9sentation du dispositif : \u00ab Aider les professionnels du secteur du textile d\u2019habillement \u00e0 progresser en mati\u00e8re d\u2019\u00e9coconception et de gains environnementaux. \u00bb A qui s\u2019adresse le dispositif ? \u2014 Entreprises \u00e9ligibles ",
+   "v": 3,
+   "verdict": "condition"
+  },
   "cc635dfc24ca5ea2": {
    "reason": "Defines eligible applicant type and maturity.",
    "sample": "Applicant must be a commercial entity (public or private, single or consortium) able to reach financial close and operate the project, not a research-only or early-stage lab",
@@ -14834,6 +15020,12 @@
   "cdae7d6ff3bc4652": {
    "reason": "Exclusion for outstanding recovery order; applicant can verify own status.",
    "sample": "The applicant must not be subject to an outstanding EU State-aid recovery order, including at the level of its group of related companies.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "cdb6a13122e81b0a": {
+   "reason": "Location, NAF codes, turnover share and sustainability certification requirements.",
+   "sample": "\u00cates-vous concern\u00e9 ? Les b\u00e9n\u00e9ficiaires de ce dispositif sont les entreprises situ\u00e9es en France m\u00e9tropolitaine ou dans un DOM : Ayant une activit\u00e9 de sylviculture et/ou d\u2019exploitation foresti\u00e8re ou de sciage, caract\u00e9ris\u00e9e",
    "v": 3,
    "verdict": "condition"
   },
@@ -15215,6 +15407,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "d23cba7ba9e745d9": {
+   "reason": "TPE/PME in eligible rural communes, project types, plus 50% and \u20ac200k funding terms.",
+   "sample": "Le Fonds Tourisme Durable vise \u00ab de soutenir des op\u00e9rateurs du tourisme (TPE/PME situ\u00e9es en zone rurale) dans leur d\u00e9marche de transition vers un tourisme durable \u00bb. L\u2019appel \u00e0 projets \u00ab Formes \u00e9mergentes de tourisme \u00bb so",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d23d4b25150d272a": {
    "reason": "States what the financing covers (investment or working capital needs).",
    "sample": "Wallimage finances company needs linked to creation or development, whether related to investments or working capital.",
@@ -15254,6 +15452,12 @@
   "d286a53c949474d3": {
    "reason": "Firm-in-difficulty exclusion applicant can check.",
    "sample": "Applicant must not be in financial difficulty (excluded from GBER aid) at time of award",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "d296c597b411c6dc": {
+   "reason": "Lists eligible NAF codes, entity types and collective project requirement \u2014 checkable applicant criteria.",
+   "sample": "\u00cates-vous concern\u00e9 ? Les b\u00e9n\u00e9ficiaires sont des personnes morales publics ou priv\u00e9es d\u00e9finis comme suit : Ayant une activit\u00e9 caract\u00e9ris\u00e9e notamment par les codes NAF suivant : 3511Z : Production d\u2019\u00e9lectricit\u00e9 (lien avec ",
    "v": 3,
    "verdict": "condition"
   },
@@ -16115,6 +16319,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "de0001f7f8dc6c5a": {
+   "reason": "SME status, location, NAF codes, turnover and certification requirements checkable.",
+   "sample": "\u00cates-vous concern\u00e9 ? Les b\u00e9n\u00e9ficiaires \u00e9ligibles sont les PME situ\u00e9es en France m\u00e9tropolitaine ou dans un DOM : Ayant une activit\u00e9 de sylviculture et/ou d\u2019exploitation foresti\u00e8re ou de sciage, caract\u00e9ris\u00e9es notamment par",
+   "v": 3,
+   "verdict": "condition"
+  },
   "de01c6ed06b73c80": {
    "reason": "Co-financing capability from non-public funds is an applicant requirement.",
    "sample": "Enterprise applicants must demonstrate the ability to co-finance the project from non-public funds.",
@@ -16631,6 +16841,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e6704f092edbdf47": {
+   "reason": "Requires validated cycling plan, coherent action programme, excludes prior AVELO beneficiaries.",
+   "sample": "Vous \u00eates une collectivit\u00e9 territoriale, une intercommunalit\u00e9 ou un syndicat souhaitant encourager la pratique du v\u00e9lo sur votre territoire en d\u00e9ployant une politique cyclable ambitieuse ? [...] Seules les collectivit\u00e9s ",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e672396169ebd502": {
    "reason": "Selectivity finding about named listed beneficiaries; no reader can join the list.",
    "sample": "The Member States only grant support to the beneficiaries listed section 2.2.6 and the funding is not available to all undertakings in a comparable situation.",
@@ -16925,6 +17141,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e98f45dc29a3bade": {
+   "reason": "Restricts to enterprises, excludes collectivit\u00e9s, sets minimum investment thresholds and national territory.",
+   "sample": "\u00ab La fili\u00e8re for\u00eat-bois est un secteur strat\u00e9gique pour l\u2019atteinte des objectifs de la transition vers une \u00e9conomie d\u00e9carbon\u00e9e \u00e0 2050. \u00bb L\u2019appel \u00e0 projets vise \u00e0 am\u00e9liorer la valorisation des ressources bois des territoi",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e998c08af1410c25": {
    "reason": "Financial-health exclusion the applicant can check against its accounts.",
    "sample": "Company should not be in financial distress (loss of over half share capital)",
@@ -17099,6 +17321,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "eb6c93bcb8238692": {
+   "reason": "Targets recycling firms structuring new streams; also states 55% funding rate \u2014 actionable condition.",
+   "sample": "\u00cates-vous concern\u00e9 ? L\u2019aide s\u2019adresse aux entreprises de recyclage des d\u00e9chets, souhaitant structurer de nouvelles fili\u00e8res et am\u00e9liorer les performances de recyclage. [Le d\u00e9tail de l\u2019aide] Pour aider les fili\u00e8res \u00e0 d\u00e9ve",
+   "v": 3,
+   "verdict": "condition"
+  },
   "eb74d3f341c78768": {
    "reason": "Requires financial prerequisites for exploitation and continued operations.",
    "sample": "Applicant must have the financial prerequisites for commercial exploitation of the project's results and for continuing operations after the project ends.",
@@ -17150,6 +17378,12 @@
   "ec6a6fef89f1394f": {
    "reason": "States which applicant types (homeowners, business users) may apply; reader can check themselves.",
    "sample": "De Investeringssubsidie duurzame energie en energiebesparing (ISDE) is er voor woningeigenaren en zakelijke gebruikers. [...] Zakelijke gebruikers zijn bijvoorbeeld bedrijven, overheden, verenigingen, woningbouwcorporati",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "eca51f142f7a5f01": {
+   "reason": "Same territorial targeting and exclusion criteria; applicant can verify eligibility.",
+   "sample": "\u00cates-vous concern\u00e9 ? Cet appel \u00e0 projets s'adresse aux territoires de France m\u00e9tropolitaine et d'outre-mer. Il cible tout particuli\u00e8rement les territoires peu denses et/ou ruraux, les villes moyennes et les p\u00e9riph\u00e9ries d",
    "v": 3,
    "verdict": "condition"
   },
@@ -17246,6 +17480,12 @@
   "ede63d51c4f75b0d": {
    "reason": "Any-size firms in specified sectors making large investments; sector/project test.",
    "sample": "Eligible are enterprises of any size intending to carry out large-scale investments in the industrial, agro-industrial, or environmental protection sectors.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "edff5d13eaf2bd93": {
+   "reason": "Site location, GES reduction >1000 tCO2, investment and aid thresholds are checkable applicant requirements.",
+   "sample": "Pr\u00e9sentation du dispositif : \u00ab L\u2019appel \u00e0 projets DECARB IND lanc\u00e9 par l\u2019ADEME vise \u00e0 diminuer les \u00e9missions de Gaz \u00e0 Effet de Serre (GES) des sites industriels. \u00bb Entreprises \u00e9ligibles : \u00ab Cet AAP s\u2019adresse \u00e0 tout site i",
    "v": 3,
    "verdict": "condition"
   },
