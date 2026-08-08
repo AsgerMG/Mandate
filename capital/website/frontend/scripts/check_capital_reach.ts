@@ -1,108 +1,140 @@
-// Fails the build when a capital type in the corpus is neither offered to
-// anyone nor deliberately declared to name no kind of capital.
+// Can a founder reach this fund by answering the intake at all?
 //
-// ── The failure this exists to stop ────────────────────────────────────────
-// `instrumentServesCapital` decides whether a founder's stated capital
-// preference removes a fund. It cuts on a label that names a kind the founder
-// did not ask for, and it stays silent on a label that names no kind at all —
-// which is the correct reading, and also means an UNCLASSIFIED value is
-// silently neutral. Neutral is the safe default for a founder, and it is the
-// dangerous one for us: the filter simply stops discriminating on that value
-// and nothing goes red.
+// ── The property ───────────────────────────────────────────────────────────
+// `instrumentServesCapital` excludes an instrument whose `capital_type` is not
+// among the DB values the founder's chosen intake options map to. That is a
+// filter on a RECORDED FACT, and as such it is correct: a founder who ticked
+// Grants and Loans should not be handed a tax credit they did not ask for.
 //
-// The opposite default is what shipped, and it was worse. `unknown`,
-// `framework` and `blended` answered to no intake option, so `allowed.has(...)`
-// was false for all three and any founder who stated a preference lost every
-// instrument carrying one — 39 funds removed for everybody, plus a national
-// debt programme of 2,977 awards that only an equity request could reach.
+// It stops being correct the moment the fact is missing. An instrument whose
+// capital type we never recorded carries the value `unknown`, no intake option
+// maps to it, and it is therefore removed for EVERY founder in EVERY country
+// however they answer — five options ticked or one. The founder expressed no
+// preference against it; we simply have no fact, and the filter reads our
+// silence as their refusal.
 //
-// So neither default is safe on its own. What makes it safe is that every
-// value must be classified ON PURPOSE: mapped to an option, or declared
-// indefinite. This check is the thing that forces the choice, at the moment a
-// new value first appears in the corpus rather than whenever someone notices a
-// fund is missing.
+// So the property this guards, stated as a property and not as a list:
 //
-// ── Why it reads the live corpus ───────────────────────────────────────────
-// The enum is declared in the migration, but what matters is which values are
-// actually ON instruments a founder can be shown: a value in the CHECK
-// constraint that no row carries has never routed anybody, and a value the
-// migration forgot but the loader writes is exactly the case that must fail.
-// So the population is `publishableInstruments()`, the same function the
-// product ranks over.
+//   Every capital_type carried by a publishable instrument must be reachable by
+//   at least one intake option. Absence of a recorded fact is not a mismatch.
 //
-//   npx tsx scripts/check_capital_reach.ts
-import { loadEnvLocal } from "./loadEnv";
-
-loadEnvLocal();
-
-import {
-  hydrateDbInstruments, publishableInstruments, corpusProvenance,
-} from "../lib/intelligence/corpus";
-import {
-  CAPITAL_SOUGHT_TO_DB, INDEFINITE_CAPITAL, KNOWN_CAPITAL_TYPES,
-  instrumentServesCapital,
-} from "../lib/intelligence/shortlist";
+// It is deliberately not "no instrument may carry `unknown`". A new source that
+// introduces `mezzanine` or `convertible` tomorrow fails this check the same
+// way, without anybody having thought of the word in advance — which is the
+// only kind of check worth having, because the values that will hurt are the
+// ones nobody enumerated.
+//
+// ── Why a ratchet and not a hard zero ──────────────────────────────────────
+// The gap is real today and the honest fix is upstream: record the capital type
+// in the ETL, where the fund's own documents can settle it. Guessing in the
+// filter would be worse than the bug — three of the eleven EIT vehicles in this
+// corpus that ARE typed carry `equity`, and two of the untyped ones are named
+// "portfolio" and "investments", so admitting `unknown` to a grant-seeker's
+// pool could put a cap-table investor in front of someone who never asked for
+// one. That is the exact failure `passesCapitalPreference` exists to prevent.
+//
+// A ratchet says the true thing without pretending it is fixed: the gap is
+// known, it is this size, and it may not grow. Fixing the DATA lowers the
+// number; a new unreachable capital type raises it and fails the build.
+//
+// ── What `INDEFINITE_CAPITAL` does and does not change about this ──────────
+// Workstream AR made `blended` reachable by every intake option, and that does
+// NOT weaken the paragraph above. The two values fail this check for opposite
+// reasons. `blended` is a fact we hold and were misreading: it is what the vote
+// emits when nothing clears its threshold, its kinds are recorded beside it,
+// and all five publishable ones are enumerated as loan/guarantee, grant/loan or
+// grant/tax-credit -- no equity, so admitting them cannot surprise anyone with
+// dilution. `unknown` is a fact we never recorded, so there is nothing to
+// enumerate and no safe default, which is exactly why it stays here.
+//
+// An unresolved MIXTURE we can enumerate is safe to admit. An unresolved BLANK
+// is not.
+//
+// Reachability is therefore asked of `instrumentServesCapital` ITSELF, one
+// intake option at a time, rather than of a set of mapped values recomputed
+// here. The two are not the same question and the difference is the whole
+// point: `blended` is not in `CAPITAL_SOUGHT_TO_DB` and IS reachable, and a
+// check that inspected the map instead of the function would have counted it
+// as stranded and failed a build over a fund every founder can now see.
+//
+// Measured 2026-08-07 against Postgres (1,084 instruments, 814 publishable):
+// 9 unreachable, all `unknown` — 8 EIT KIC leaves and one national development
+// bank scheme carrying 2,835 awards. None of them appears as an answer in the
+// recall set, so this costs no measurable recall; it costs those funds' reach.
+//
+// Re-derived 2026-08-08 on the 1,088 corpus: 8 of 769 publishable, still all
+// `unknown`. The ratchet is lowered to match, which is the whole point of it
+// being a ratchet — the gap closed by one and that one may not come back
+// silently. It closed upstream, in the ETL, which is where this check has
+// always said the fix belongs.
+import { instrumentServesCapital } from "../lib/intelligence/shortlist";
 import { CAPITAL_OPTIONS } from "../lib/intelligence/types";
 
+/** The number of publishable instruments carrying a capital type no intake
+ *  option maps to, on the corpus this was last re-derived against. A CEILING,
+ *  never a target: lower it whenever the data improves, and never raise it to
+ *  make a build green — a rise means a new source is landing funds no founder
+ *  can reach. */
+const UNREACHABLE_CEILING = 8;
+
 async function main() {
-  await hydrateDbInstruments();
-  const prov = corpusProvenance();
-  const insts = publishableInstruments();
-  const counts = new Map<string, number>();
-  for (const i of insts) counts.set(i.capitalType, (counts.get(i.capitalType) ?? 0) + 1);
+  // The committed snapshot, never a laptop's DATABASE_URL — same reason
+  // check_leaf_cap.ts does it, and it is trustworthy for the same reason:
+  // check_corpus_currency.ts asserts the snapshot and Postgres agree, and runs
+  // before this in `npm run check`.
+  delete process.env.DATABASE_URL;
+  const { publishableInstruments } = await import("../lib/intelligence/corpus");
 
+  const stranded = new Map<string, { n: number; sample: string[] }>();
+  const pub = publishableInstruments();
   const options = CAPITAL_OPTIONS.map((o) => o.value);
-  const problems: string[] = [];
-
-  for (const [type, n] of [...counts].sort((a, b) => b[1] - a[1])) {
-    const mapped = KNOWN_CAPITAL_TYPES.has(type);
-    const indefinite = INDEFINITE_CAPITAL.has(type);
-    if (mapped && indefinite) {
-      problems.push(
-        `${type} (${n} instruments) is BOTH mapped to an intake option and declared ` +
-        `indefinite. It cannot be both: the first says the label names this kind of ` +
-        `capital, the second says it names none.`);
-      continue;
-    }
-    if (!mapped && !indefinite) {
-      problems.push(
-        `${type} (${n} instruments) is classified NOWHERE. It answers to no option in ` +
-        `CAPITAL_SOUGHT_TO_DB and is not in INDEFINITE_CAPITAL, so instrumentServesCapital ` +
-        `treats it as silence and the founder's capital preference stops discriminating ` +
-        `on it. Decide which it is: map it to the option whose label describes what these ` +
-        `funds pay, or declare it indefinite because it names no kind of capital.`);
-    }
+  for (const i of pub) {
+    const t = i.capitalType || "(empty)";
+    // Reachable = SOME single answer to the capital question admits it. One
+    // option at a time, never the whole set at once: a fund only reachable by
+    // ticking every box is not reachable by any founder who has a preference.
+    if (options.some((o) => instrumentServesCapital(t, [o]))) continue;
+    const e = stranded.get(t) ?? { n: 0, sample: [] };
+    e.n++;
+    if (e.sample.length < 4) e.sample.push(i.id);
+    stranded.set(t, e);
   }
+  const total = [...stranded.values()].reduce((a, b) => a + b.n, 0);
 
-  // Whatever the classification, the promise has to hold at the level a
-  // founder experiences: some answer to the capital question must be able to
-  // reach every fund. A value that no option admits and that is not indefinite
-  // is a fund nobody can be shown, which is the failure that motivated this.
-  for (const [type, n] of counts) {
-    const reachable = options.some((o) => instrumentServesCapital(type, [o]));
-    if (!reachable) {
-      problems.push(
-        `${type} (${n} instruments) is unreachable: no single answer to the capital ` +
-        `question admits it, so these funds are removed for every founder who states ` +
-        `a preference at all.`);
-    }
-  }
-
-  console.log(`corpus=${prov.source} instruments=${insts.length}`);
-  console.log(`capital types in the publishable corpus:`);
-  for (const [type, n] of [...counts].sort((a, b) => b[1] - a[1])) {
-    const how = INDEFINITE_CAPITAL.has(type) ? "indefinite (names no kind)"
-      : Object.entries(CAPITAL_SOUGHT_TO_DB)
-        .filter(([, v]) => v.includes(type)).map(([k]) => k).join(", ") || "UNCLASSIFIED";
-    console.log(`  ${type.padEnd(20)} ${String(n).padStart(5)}  ${how}`);
-  }
-
-  if (problems.length) {
-    console.error(`\ncheck_capital_reach FAILED (${problems.length}):`);
-    for (const p of problems) console.error(`  - ${p}`);
+  if (total > UNREACHABLE_CEILING) {
+    console.error(
+      `check_capital_reach: ${total} publishable instruments carry a capital ` +
+      `type no intake option maps to (ceiling ${UNREACHABLE_CEILING}).\n` +
+      `  These are removed from the pool of every founder in every country, ` +
+      `whatever\n  they tick, because CAPITAL_SOUGHT_TO_DB has no route to the ` +
+      `value they carry:\n` +
+      [...stranded].sort((a, b) => b[1].n - a[1].n).map(([t, e]) =>
+        `    ${String(e.n).padStart(4)}  capital_type="${t}"   e.g. ` +
+        e.sample.join(", ")).join("\n") +
+      `\n\n  Fix the DATA, not the filter: record the capital type upstream so ` +
+      `the\n  instrument states what it is. Where a new source legitimately ` +
+      `introduces a\n  new capital type, add it to CAPITAL_SOUGHT_TO_DB under ` +
+      `the intake option a\n  founder would tick to ask for it. Do NOT raise ` +
+      `the ceiling to pass: a rise\n  means funds are landing that no founder ` +
+      `can be shown.`);
     process.exit(1);
   }
-  console.log(`\nOK — every capital type is classified on purpose and reachable.`);
+
+  console.log(
+    `check_capital_reach: ok — ${total} of ${pub.length} publishable ` +
+    `instruments unreachable by any intake option (ceiling ${UNREACHABLE_CEILING}).`);
+  if (total) {
+    console.log(
+      `  Known gap, not a pass mark. ` +
+      [...stranded].map(([t, e]) => `${e.n} x "${t}"`).join(", ") +
+      `. Every one is removed for every founder in every country. The fix is ` +
+      `upstream in the ETL.`);
+  }
+  if (total < UNREACHABLE_CEILING) {
+    console.log(
+      `  The data has improved since the ceiling was set. Lower ` +
+      `UNREACHABLE_CEILING to ${total} so the gain cannot be given back.`);
+  }
 }
 
-main();
+main().catch((e) => { console.error(e); process.exit(1); });

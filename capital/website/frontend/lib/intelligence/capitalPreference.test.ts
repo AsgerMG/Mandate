@@ -35,15 +35,32 @@ describe("a label that names no kind cannot remove a fund", () => {
     }
   });
 
-  it("admits a capital type no option has been mapped to", () => {
-    // The case this is really for is the NEXT enum value, added by a loader
-    // before anyone updates the option map. It must behave like silence, not
-    // like a contradiction — which is the bug `unknown` and `framework` were
-    // already having, invisibly, for every founder who stated a preference.
+  it("does NOT extend that to a capital type nobody has classified", () => {
+    // The tempting generalisation, and the wrong one. An UNRECORDED capital
+    // type is not an unresolved mixture: there is nothing to enumerate, so
+    // there is no evidence it is safe to show. Among the instruments carrying
+    // `unknown` are vehicles named "portfolio" and "investments" whose typed
+    // siblings carry equity, and admitting those to a grant-seeker is the exact
+    // harm `passesCapitalPreference` exists to prevent (workstream AE).
+    //
+    // Keeping them excluded is also what keeps `check_capital_reach.ts` armed:
+    // if an unclassified value were silently admitted, the ratchet that counts
+    // funds no founder can reach would count zero forever.
     const unseen = "a_capital_type_no_option_has_been_mapped_to";
     expect(KNOWN_CAPITAL_TYPES.has(unseen)).toBe(false);
+    expect(INDEFINITE_CAPITAL.has(unseen)).toBe(false);
     for (const option of OPTIONS) {
-      expect(instrumentServesCapital(unseen, [option])).toBe(true);
+      expect(instrumentServesCapital(unseen, [option])).toBe(false);
+    }
+  });
+
+  it("keeps `unknown` unreachable, which is workstream AE's ratchet", () => {
+    // Pinned rather than assumed. This test exists because the first version of
+    // the change made `unknown` reachable, which would have re-opened the harm
+    // above and silently disarmed the ratchet at the same time.
+    expect(INDEFINITE_CAPITAL.has("unknown")).toBe(false);
+    for (const option of OPTIONS) {
+      expect(instrumentServesCapital("unknown", [option])).toBe(false);
     }
   });
 

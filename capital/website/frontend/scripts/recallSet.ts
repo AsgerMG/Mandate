@@ -87,21 +87,43 @@ export const CONSTANT_ANSWERS = {
   capitalSought: ["grant", "loan"] as string[],
 } as const;
 
-/** ── Why a mode per FIELD, and not only per provenance ────────────────────
+/** ── Why a mode per FIELD, and why `real` no longer includes capital ──────
  *
- *  `real` turns on every derived answer at once, and the first run that used
- *  it moved the candidate pool three points. Three points of pool is a hard
- *  ceiling on EXACT@5, so the question of WHICH field spent them is not a
- *  detail — and an all-or-nothing switch cannot answer it.
+ *  `real` used to turn on every derived answer at once, and it moved the
+ *  candidate pool four points. Four points of pool is a hard ceiling on
+ *  EXACT@5, so which field spent them is not a detail — and an all-or-nothing
+ *  switch cannot answer it. The two fields cannot even cost the pool in the
+ *  same way: `capitalSought` is a FILTER (`instrumentServesCapital` removes
+ *  instruments before anything ranks them), while `ticketBand` is a SCORE and
+ *  nothing else, since `channelServesBand` was retired to `return true` and
+ *  deleted and `awardScorer`/`scaleFit` only reorder.
  *
- *  The two fields also cannot cost the pool in the same way. `capitalSought`
- *  is a FILTER: `instrumentServesCapital` removes instruments from the channel
- *  before anything ranks them. `ticketBand` is a SCORE and nothing else --
- *  `channelServesBand` was retired to `return true` and deleted, and
- *  `awardScorer`/`scaleFit` only reorder. So the prediction is that
- *  `ticket` costs the pool exactly zero and can only move EXACT@5, while every
- *  point of pool belongs to `capital`. That is a prediction the harness has to
- *  be able to falsify, which is what these two modes are for. */
+ *  Measured, three seeds, holdout, 250 pairs (workstream AR):
+ *
+ *    in pool     seed 20260806   seed 7   seed 99
+ *    off               234         233      234
+ *    ticket            234         233      234     <- costs exactly zero
+ *    capital           224         221      226
+ *    real              224         221      226     <- capital is all of it
+ *
+ *  ── capitalSought is DISQUALIFIED as an answer, not merely expensive ──────
+ *  Two thirds of that loss is this derivation being wrong rather than the
+ *  filter. `capital_kind` reads `satr_staging.aid_instrument_text`, and
+ *  `funding_instruments.capital_type` is derived from the SAME column one hop
+ *  away — the circularity `useOfFunds` was excluded for. Worse, the
+ *  `other_scheme` guard does not make the answer NEUTRAL about the won fund,
+ *  it makes it ANTI-CORRELATED: a kind of capital a company took only from the
+ *  fund it won is guaranteed absent from its derived answer, which guarantees
+ *  the filter removes exactly the fund the pair exists to find. And a tax
+ *  credit is not a preference — a company that claimed an R&D credit is
+ *  derived as "wants tax credits" and cut off from every grant programme in
+ *  Europe.
+ *
+ *  So `real` now supplies ticket and region only. `capital` is KEPT as its own
+ *  mode rather than deleted, and the derivation is still written to the set, so
+ *  the finding stays reproducible: a disqualified experiment that can no longer
+ *  be run is one nobody can check.
+ *  See project-mgmt/findings/workstream_ar_capital_filter.md. */
 export type AnswerMode = "off" | "real" | "strict" | "ticket" | "capital";
 
 export function answersFor(r: RecallRow, mode: AnswerMode): {
@@ -112,7 +134,10 @@ export function answersFor(r: RecallRow, mode: AnswerMode): {
     mode === "real" || mode === "ticket" || mode === "capital" ? Boolean(source)
       : mode === "strict" ? source === "other_scheme" : false;
   const ticket = mode !== "capital" && ok(r.answerTicketSource) && r.answerTicketBand;
-  const capital = mode !== "ticket" && ok(r.answerCapitalSource) && r.answerCapital?.length
+  // Only `capital` supplies it now. `real` and `strict` deliberately do not:
+  // see the disqualification above. A run that wants the disqualified answer
+  // has to ask for it by name.
+  const capital = mode === "capital" && ok(r.answerCapitalSource) && r.answerCapital?.length
     ? r.answerCapital : undefined;
   // Region rides with the whole-founder modes only. It is neither of the two
   // fields under test, and leaving it on in a single-field mode would put a

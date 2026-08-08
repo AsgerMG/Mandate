@@ -48,17 +48,18 @@ never the won fund on this population. The fix earns nothing on this metric and 
 not made to.
 
 The field-level decomposition (new `ANSWERS=ticket` / `ANSWERS=capital` modes) settles
-which answer spends it, seed 20260806:
+which answer spends it. Three seeds, holdout, 250 pairs, `in pool`:
 
-| answers | derived for | in pool | EXACT@5 | REGIME@5 |
-|---|---|---|---|---|
-| off | — | 234 | 53 | 201 |
-| **ticket** | 130/250 founders | **234** | 63 | 205 |
-| **capital** | 126/250 founders | **224** | 65 | 199 |
-| real | both | 224 | 76 | 199 |
+| answers | seed 20260806 | seed 7 | seed 99 |
+|---|---|---|---|
+| off | 234 | 233 | 234 |
+| **ticket** | **234** | **233** | **234** |
+| **capital** | **224** | **221** | (below) |
+| real | 224 | 221 | (below) |
 
-`ticketBand` costs **exactly zero** pool — 234 against 234, not "within noise" —
-and `capitalSought` costs all of it. That is the prediction from the code and it is
+`ticketBand` costs **exactly zero** pool on every seed — 234/233/234 against
+234/233/234, not "within noise" — and `capitalSought` costs all of it, with `real`
+landing on precisely the same number as `capital` alone. That is the prediction from the code and it is
 now measured rather than asserted: `channelServesBand` was retired to `return true`
 and deleted, so ticket size reaches only `awardScorer`/`scaleFit`, which reorder.
 `capitalSought` is the only derived answer wired to a `.filter()`.
@@ -80,11 +81,42 @@ instrument's own awards (`family_capital_type`,
 `ETL/events/load/populate_funding_instruments.py`). Three of its values are not the
 outcome of that vote; they record that it produced no answer:
 
-| value | what it means | publishable instruments | what the filter did |
-|---|---|---|---|
-| `blended` | nothing reached the 60% threshold | 5 | mapped to the **equity** option and listed as **dilutive** |
-| `unknown` | no determinable kind, or a synthetic rollup | 9 | answered to no option — removed for everyone |
-| `framework` | an EU-law record, not a funding product | 0 (8 in corpus) | same |
+| value | what it means | publishable | what the filter did | owner |
+|---|---|---|---|---|
+| `blended` | nothing reached the 60% threshold | 5 | mapped to the **equity** option and listed as **dilutive** | **fixed here** |
+| `unknown` | no determinable kind, or a synthetic rollup | 8 | answered to no option — removed for everyone | **AE**, left as a ratchet |
+| `framework` | an EU-law record, not a funding product | 0 | same | AE's ratchet |
+
+### The boundary with workstream AE, which found the same family and split it correctly
+
+AE reached `unknown` first, priced it (8 publishable instruments reachable by no
+intake option), guarded it with `check_capital_reach.ts`, and deliberately did **not**
+admit them — for a reason that survives scrutiny and that I initially got wrong.
+Among the untyped instruments are vehicles named "portfolio" and "investments", and
+three of their typed siblings carry `equity`. Admitting an untyped fund to a
+grant-seeker's pool could put a cap-table investor in front of someone who never asked
+for one, which is exactly what `passesCapitalPreference` exists to prevent.
+
+My first version of this change made `unknown` reachable and would have reintroduced
+that. It is reverted. The two cases are not the same defect:
+
+- **`blended` is a fact we hold and were misreading.** Its kinds are enumerable, and
+  all five publishable ones are enumerated: two Spanish register rows stating
+  *PRÉSTAMO* + *SUBVENCIÓN*, one Norwegian loan/guarantee split, two Belgian
+  grant/tax-credit splits. **None contains equity**, so admitting them cannot
+  surprise anyone with dilution.
+- **`unknown` is a fact we never recorded.** There is nothing to enumerate, so there
+  is no safe default, and the honest fix is upstream in the ETL — which is what AE's
+  ratchet says and what this workstream does not overrule.
+
+An unresolved MIXTURE we can enumerate is safe to admit. An unresolved BLANK is not.
+
+**Residual, stated rather than discovered later:** a future `blended` instrument with
+an equity MINORITY (under 60%, so the vote fails and the label lands on `blended`)
+would now be shown to a founder who did not ask for equity. Today that set is empty
+and verified empty against every publishable blended instrument's recorded split.
+Closing it needs `capital_type_basis` on the corpus read path, which is the same
+change §7.2 needs and is not made here.
 
 ### `blended`, checked one by one against the vote the ETL records beside each label
 

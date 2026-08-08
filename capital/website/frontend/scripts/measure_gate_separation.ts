@@ -30,8 +30,12 @@
 //
 //   npx tsx scripts/measure_gate_separation.ts
 //   ANSWERS=real npx tsx scripts/measure_gate_separation.ts
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
+// Declared, not assumed: this harness ranks on pgvector when the keys are
+// present and on the lexical fallback when they are not, and the two are
+// different systems. check_env_loader P4 derives this from the import graph.
+requireCredentials("measure_gate_separation", ["DATABASE_URL"]);
 
 import {
   hydrateDbInstruments, hydrateGatesFor, loadDbInstruments, publishableInstruments,
