@@ -25,17 +25,11 @@
 //   SET=__recallSetEnriched.json npx tsx scripts/measure_description_lift.ts
 //   SPLIT=tune N=60 npx tsx scripts/measure_description_lift.ts
 //   ARM=real npx tsx scripts/measure_description_lift.ts   # one arm only
-import { readFileSync } from "fs";
 
-// Same loader as measure_recall.ts: without VOYAGE_KEY and DATABASE_URL this
-// would grade the lexical fallback, not the ranker that ships.
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_description_lift", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";

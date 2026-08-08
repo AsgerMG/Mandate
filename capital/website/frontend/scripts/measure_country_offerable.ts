@@ -29,11 +29,10 @@
 //
 //   npx tsx scripts/measure_country_offerable.ts ES
 //   npx tsx scripts/measure_country_offerable.ts ES --without bdns_es_convocatorias_abiertas
-import { readFileSync } from "fs";
-for (const line of readFileSync(new URL("../../../.env.local", import.meta.url), "utf8").split("\n")) {
-  const m = line.match(/^([A-Z_]+)=(.*)$/);
-  if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-}
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_country_offerable", ["DATABASE_URL"]);
 import { Client } from "pg";
 import { hydrateDbInstruments, publishableInstruments, type DbInstrument } from "../lib/intelligence/corpus";
 

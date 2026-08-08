@@ -55,31 +55,28 @@
 //
 // Run after `make eligibility`, when SQLite and Postgres are in step.
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
+import { writeFileSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-// The same `.env.local` preamble every other harness carries, and its absence
-// here was not cosmetic: this check reads DATABASE_URL, found none, and printed
-// "skipped — nothing to compare against" on machines that had the credentials
-// all along. Wired into `npm run check` it would have gone green having done
-// nothing, which is the defect it exists to catch, in the check itself.
-// Both env files, repo root first. Reading only ./.env.local was still a way
-// for this check to skip itself and report that as a pass: a checkout that
-// carries DATABASE_URL at the repo root -- where it is documented to live --
-// and not under website/frontend produced "skipped, nothing to compare
-// against" on a machine that had the credentials all along. Observed again on
-// 2026-08-07 in a fresh worktree. CI has neither file and must not need one.
-for (const envPath of ["../../.env.local", ".env.local"]) {
-  try {
-    for (const line of readFileSync(envPath, "utf8").split("\n")) {
-      const m = line.match(/^([A-Z_]+)=(.*)$/);
-      if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-    }
-  } catch { /* rely on the process environment */ }
-}
+// The env preamble this file was missing entirely until 2026-08-07, now from
+// the one shared loader -- plus the DECLARED contract, which is the half that
+// actually closes the hole. This check read DATABASE_URL, found none, printed
+// "skipped -- nothing to compare against" and returned 0 on machines that had
+// the credentials all along. Wired into `npm run check` it went green having
+// done nothing, which is the defect it exists to catch, in itself.
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+const CREDENTIALS = requireCredentials("check_hydration_parity", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
+// Needs both stores, so it cannot run in CI. It publishes what it decided;
+// check_verdicts.ts asserts on that with no credentials.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "hydration_parity";
+const tape = startTape();
 
 interface Archetype {
   ids: string[];
@@ -106,7 +103,7 @@ function run(env: Record<string, string>): Dump {
   return JSON.parse(out) as Dump;
 }
 
-function main() {
+async function main() {
   // NO_PG=1 is this repo's "there is no database", and every other script that
   // can reach Postgres honours it by deleting DATABASE_URL. This one compares
   // the two stores against each other, so without a database there is nothing
@@ -114,13 +111,12 @@ function main() {
   // than by accident. Honouring it is not a weakening: run with credentials and
   // without NO_PG, which is how CI and `npm run check` run it, the check is
   // unchanged and at full strength.
-  if (process.env.NO_PG) {
+  // The only skip left is the DECLARED one. "No DATABASE_URL" used to be a
+  // second, identical-looking exit from this same point, and it was the one
+  // nobody chose; it now ends the process at the top of the file instead.
+  if (CREDENTIALS === "offline") {
     console.log("check_hydration_parity: skipped — NO_PG=1, so there is no live " +
       "register to compare the snapshot against");
-    return;
-  }
-  if (!process.env.DATABASE_URL) {
-    console.log("check_hydration_parity: skipped — no DATABASE_URL, nothing to compare against");
     return;
   }
 
@@ -283,11 +279,32 @@ function main() {
   if (problems.length) {
     console.error(`check_hydration_parity: ${problems.length} difference(s) between the Postgres and JSON paths.`);
     for (const p of problems.slice(0, 12)) console.error(`  ${p}`);
+    await publishVerdict(GUARD, {
+      status: "failed",
+      summary: `${problems.length} difference(s) between the Postgres and JSON paths ` +
+               `over ${archetypes(json).length} archetypes`,
+      metrics: { problems: problems.length, archetypes: archetypes(json).length,
+                 suppressed: suppressed.size },
+      detail: tape(),
+    });
     process.exit(1);
   }
   console.log(`check_hydration_parity: ok — ${archetypes(json).length} archetypes agree on both ` +
     `paths, and the two corpora differ by exactly the ${suppressed.size} row(s) the ` +
     `degradation policy withheld`);
+  await publishVerdict(GUARD, {
+    status: "ok",
+    summary: `${archetypes(json).length} archetypes agree on both paths; the two corpora ` +
+             `differ by exactly the ${suppressed.size} row(s) the degradation policy withheld`,
+    metrics: { problems: 0, archetypes: archetypes(json).length, suppressed: suppressed.size },
+    detail: tape(),
+  });
 }
 
-main();
+main().catch(async (err) => {
+  console.error("check_hydration_parity: FAILED to run —", err);
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
+  process.exit(1);
+});

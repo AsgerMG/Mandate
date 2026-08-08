@@ -18,16 +18,14 @@
 //
 //   npx tsx scripts/build_gate1_fixture.ts            # 80 holdout companies
 //   N=200 SPLIT=tune npx tsx scripts/build_gate1_fixture.ts
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
+import { writeFileSync, mkdirSync } from "fs";
 import { execSync } from "child_process";
 import path from "path";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("build_gate1_fixture", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";

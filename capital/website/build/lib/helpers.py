@@ -1,5 +1,6 @@
 """Shared helpers for the website build layer. Read-only DB access, palette,
 formatters, JSON export. (Originally the Sprint 9 EDA helpers.)"""
+import decimal
 import json
 import math
 import sqlite3
@@ -76,18 +77,45 @@ def df(query: str, params=None) -> pd.DataFrame:
 
 
 # ── Formatters ──────────────────────────────────────────────────────────────
+def _half_up(value: float, places: int) -> str:
+    """Format to `places` decimals, rounding ties AWAY FROM ZERO.
+
+    Not cosmetic, and not Python's default. `f"{x:.0f}"` rounds ties to EVEN
+    (2.5 → '2', 3.5 → '4'), which is a statistical convention nobody here
+    chose; JavaScript's `toFixed` rounds ties away from zero (2.5 → '3',
+    -2.5 → '-3'). Both format the SAME corpus:
+
+        synthesis.py    bakes totalCapitalEur into the committed artifact
+        corpusFigures.ts  derives it from the census at render time
+
+    so on any value landing exactly on a tie the identical corpus read €2K from
+    one path and €3K from the other, and the difference looked like the money
+    moved. 5,707 of the 637,940 numbers in the committed data sit on such a tie.
+
+    `Decimal(float)` is the exact binary value the double holds — the same one
+    `toFixed` inspects — so this agrees with JavaScript everywhere, not just on
+    ties. `ETL/schema/check_cross_language_constants.py` asserts it by running
+    both halves.
+    """
+    quantum = decimal.Decimal(1).scaleb(-places)
+    d = decimal.Decimal(value).quantize(quantum, rounding=decimal.ROUND_HALF_UP)
+    return f"{d:.{places}f}"
+
+
 def fmt_eur(value) -> str:
     """Humanise EUR amounts: 1_400_000 → '€1.4M'."""
     if value is None or (isinstance(value, float) and math.isnan(value)):
         return "N/A"
     value = float(value)
+    if math.isinf(value):
+        return "N/A"
     if abs(value) >= 1e9:
-        return f"€{value/1e9:.1f}B"
+        return f"€{_half_up(value/1e9, 1)}B"
     if abs(value) >= 1e6:
-        return f"€{value/1e6:.1f}M"
+        return f"€{_half_up(value/1e6, 1)}M"
     if abs(value) >= 1e3:
-        return f"€{value/1e3:.0f}K"
-    return f"€{value:.0f}"
+        return f"€{_half_up(value/1e3, 0)}K"
+    return f"€{_half_up(value, 0)}"
 
 
 def fmt_pct(value) -> str:

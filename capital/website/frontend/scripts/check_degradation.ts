@@ -37,17 +37,21 @@
 // one more constant to lower under pressure, and the assertion above is the
 // one that must never bend.
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+const CREDENTIALS = requireCredentials("check_degradation", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 import { today } from "../lib/intelligence/liveness";
+// Needs Postgres as its referee, so it cannot run in CI. It publishes what it
+// decided; check_verdicts.ts asserts on that with no credentials, and holds it
+// to the code it judged.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "degradation";
+const tape = startTape();
 
 interface Archetype { ids: string[]; rows: { id: string }[]; withheld: number }
 /** `__corpus` carries the run's provenance and suppression list; every other
@@ -79,20 +83,15 @@ async function main() {
   // snapshot with itself or reach a database it was told not to. Skipping is
   // the honest answer; the hard failure below is kept for the case that
   // actually matters, a deliberate run whose credentials are missing.
-  if (process.env.NO_PG) {
+  if (CREDENTIALS === "offline") {
     console.log("check_degradation: skipped — NO_PG=1, so there is no live " +
       "register to referee the fallback corpus against. Run without NO_PG, with " +
       "DATABASE_URL set, to exercise it.");
     return;
   }
-  if (!process.env.DATABASE_URL) {
-    // Not a silent pass. Without the live register there is no referee, and a
-    // check that goes green having compared nothing is the defect this file
-    // exists to catch, in the file itself.
-    console.error("check_degradation: cannot run — no DATABASE_URL, so there is " +
-      "no live register to check the fallback corpus against.");
-    process.exit(1);
-  }
+  // The "cannot run — no DATABASE_URL" branch that used to sit here now lives
+  // in requireCredentials, above, for every harness at once. This file had
+  // already got that judgement right by hand; thirty-six others had not.
 
   // The degraded path, built exactly as a request that lost Postgres would.
   const fallback = run({ NO_PG: "1" });
@@ -239,13 +238,30 @@ async function main() {
     console.error("  not classify. Do NOT fix it by regenerating the snapshot: currency is");
     console.error("  necessary and is check_corpus_currency's job, and a corpus that");
     console.error("  happens to be fresh today is not a policy.");
+    await publishVerdict(GUARD, {
+      status: "failed",
+      summary: `${problems.length} archetype(s) offered a fund the live register ` +
+               `calls closed, off the fallback corpus`,
+      metrics: { problems: problems.length, offerable: offerable.size },
+      detail: tape(),
+    });
     process.exit(1);
   }
   console.log("\ncheck_degradation: ok — every fund offered off the fallback corpus is one " +
     "the live register still calls open.");
+  await publishVerdict(GUARD, {
+    status: "ok",
+    summary: "every fund offered off the fallback corpus is one the live register " +
+             "still calls open",
+    metrics: { problems: 0, offerable: offerable.size },
+    detail: tape(),
+  });
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error("check_degradation: FAILED to run —", err);
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
   process.exit(1);
 });

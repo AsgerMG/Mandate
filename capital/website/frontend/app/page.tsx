@@ -7,20 +7,29 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import countryMapRaw from "@/public/data/country_map.json";
 import coverageRatingsRaw from "@/public/data/coverage_ratings.json";
-import { corpusStats } from "@/lib/data";
+import { corpusStats, CORPUS_REVALIDATE_SECONDS, type Synthesis } from "@/lib/data";
 
-// Headline counts come from the single corpus-wide source (lib/data.corpusStats
-// → synthesis.json), which also drives the layout footer and /about-public-capital,
-// so every page shows the same number.
-const synth = corpusStats;
+// Headline counts come from the single corpus-wide source (lib/data.corpusStats),
+// which also drives the nav, the layout footer and /about-public-capital, so
+// every page shows the same number — and now the same number as the ETL's own
+// record of its corpus, rather than whatever was last committed.
+export const revalidate = CORPUS_REVALIDATE_SECONDS;
 
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
-// Parse "€296.9B" into a number + suffix so the headline figure can count up.
-const capMatch = synth.totalCapitalEur.match(/([\d.]+)\s*([^\d.\s]*)/);
-const capValue = capMatch ? parseFloat(capMatch[1]) : 0;
-const capSuffix = capMatch ? capMatch[2] : "";
-const capDecimals = capValue % 1 !== 0 ? 1 : 0;
+/** Parse "€296.9B" into a number + suffix so the headline figure can count up.
+ *  Derived per render rather than at module load: the figure is no longer a
+ *  constant, and a module-level parse would have frozen the first value the
+ *  process ever saw for the life of the serverless instance. */
+function capitalParts(synth: Synthesis) {
+  const capMatch = synth.totalCapitalEur.match(/([\d.]+)\s*([^\d.\s]*)/);
+  const capValue = capMatch ? parseFloat(capMatch[1]) : 0;
+  return {
+    capValue,
+    capSuffix: capMatch ? capMatch[2] : "",
+    capDecimals: capValue % 1 !== 0 ? 1 : 0,
+  };
+}
 
 /** One cell of a side KPI matrix. */
 function MatrixCell({ value, label }: { value: ReactNode; label: string }) {
@@ -60,7 +69,9 @@ const countryData = Object.fromEntries(
     .map(([iso2, d]) => [iso2, { ...d, coverageRating: coverageRatings[iso2] }])
 );
 
-export default function Home() {
+export default async function Home() {
+  const synth = await corpusStats();
+  const { capValue, capSuffix, capDecimals } = capitalParts(synth);
   return (
     <div>
       {/* ── Cold open: headline left, Brussels right — the editorial split. ── */}

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { corpusStats } from "@/lib/data";
 
 // The former /for-companies page is now two: the narrative case
 // (/about-public-capital) as a plain text link, and the interactive tool
@@ -17,7 +16,17 @@ const MOBILE_LINKS = [
   { href: "/brief", label: "Get your brief" },
 ];
 
-export function NavBar() {
+/** The country count arrives as a PROP, not as an import.
+ *
+ *  It used to be `import { corpusStats } from "@/lib/data"` — legal while that
+ *  was a static JSON import, and impossible now that the figures are read from
+ *  the corpus census at render time: a "use client" component cannot await, and
+ *  `lib/data.ts` reaches `pg` (check_client_boundary.ts is the guard that would
+ *  have caught the bundling attempt). The server layout does the one read and
+ *  hands the number down, which also keeps the masthead and the footer showing
+ *  the same corpus — they are now two consumers of one value rather than two
+ *  readers of one file. */
+export function NavBar({ countries }: { countries: number }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   // A link is active when the current path is, or sits beneath, its href.
@@ -96,7 +105,7 @@ export function NavBar() {
         {/* Fixed 2rem height, not padding-derived, so --nav-h stays exact. */}
         <div className="wrap flex h-8 items-center justify-between">
           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-            Europe · {corpusStats.countries}-country edition
+            Europe · {countries}-country edition
           </span>
           <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)] sm:inline">
             State-backed capital intelligence

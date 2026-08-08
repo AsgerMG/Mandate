@@ -11,12 +11,10 @@
 //
 //   npx tsx scripts/show_es_rows.ts <decisions.json> <out.html>
 import { readFileSync, writeFileSync } from "node:fs";
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* CI has no .env.local */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("show_es_rows", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 // A Spanish founder, described the way the intake describes one. Not an
 // archetype from __benchCompanies (none is Spanish) -- a profile stated here so

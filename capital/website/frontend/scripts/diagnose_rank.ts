@@ -21,12 +21,10 @@
 //
 // No changes -- evidence only, because five weight changes in one session
 // moved nothing.
-import { readFileSync } from "fs";
-try {
-  for (const l of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = l.match(/^([A-Z_]+)=(.*)$/); if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* env */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("diagnose_rank", ["DATABASE_URL", "VOYAGE_KEY"]);
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { selectInstrumentRows, materialiseInstrumentTable } from "../lib/intelligence/shortlist";
 import { loadRecallSet } from "./recallSet";

@@ -10,13 +10,11 @@
  *
  * Run: npx tsx scripts/questions_bench.ts [--only "AI B2C,GovTech"]
  */
-import { readFileSync, writeFileSync } from "node:fs";
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the environment */ }
+import { writeFileSync } from "node:fs";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("questions_bench", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
 async function main() {
   const onlyArg = process.argv.indexOf("--only");

@@ -54,11 +54,57 @@ export type RecallRow = {
   mode: string; split: string;
   descriptionSource?: string; traced?: string;
   region?: string; regionSource?: string;
+  /** This founder's OWN intake answers, derived from the register by
+   *  `ETL/terms/enrich_recall_answers.py`. Every one carries its provenance for
+   *  the same reason `regionSource` does: `other_scheme` cannot have been read
+   *  off the award being predicted, `own_award` can, and a headline that mixes
+   *  them is not a leak-free number. See ANSWERS= in measure_recall.ts. */
+  answerTicketBand?: string; answerTicketSource?: string;
+  answerCapital?: string[]; answerCapitalSource?: string;
   /** Set by `reattributeMissingAnswers` when the recorded answer named an
    *  instrument the corpus no longer holds. Provenance, so a re-attributed hit
    *  is never mistaken for one the key got right on its own. */
   reattributedFrom?: string;
 };
+
+/** The intake answers this founder actually gets, given how leak-free the run
+ *  requires them to be.
+ *
+ *  ONE resolver, shared by every harness, because the population a number is
+ *  measured on has to be the same population the next harness measures. The
+ *  constants are the answers every replay used before this existed, and they
+ *  remain the fallback: a founder we cannot derive an answer for is one who
+ *  keeps the old answer, never one who is dropped, so `ANSWERS=` changes what
+ *  founders are ASKED and never which founders are graded. That is what makes
+ *  the before/after readable as an effect rather than as a change of sample.
+ *
+ *  `strict` uses only `other_scheme` values and lets the rest fall back, rather
+ *  than restricting the population as `REGION=strict` does. Both are honest;
+ *  this one keeps the denominator fixed, which is what a within-run comparison
+ *  needs. */
+export const CONSTANT_ANSWERS = {
+  ticketBand: "b500k_2m5",
+  capitalSought: ["grant", "loan"] as string[],
+} as const;
+
+export type AnswerMode = "off" | "real" | "strict";
+
+export function answersFor(r: RecallRow, mode: AnswerMode): {
+  ticketBand: string; capitalSought: string[]; region?: string;
+  derived: { ticket: boolean; capital: boolean; region: boolean };
+} {
+  const ok = (source?: string) =>
+    mode === "real" ? Boolean(source) : mode === "strict" ? source === "other_scheme" : false;
+  const ticket = ok(r.answerTicketSource) && r.answerTicketBand;
+  const capital = ok(r.answerCapitalSource) && r.answerCapital?.length ? r.answerCapital : undefined;
+  const region = ok(r.regionSource) ? r.region : undefined;
+  return {
+    ticketBand: ticket || CONSTANT_ANSWERS.ticketBand,
+    capitalSought: capital ?? CONSTANT_ANSWERS.capitalSought,
+    region,
+    derived: { ticket: Boolean(ticket), capital: Boolean(capital), region: Boolean(region) },
+  };
+}
 
 /** A row whose description may be used as a test query.
  *

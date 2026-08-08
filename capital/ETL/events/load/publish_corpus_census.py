@@ -237,6 +237,36 @@ def main() -> int:
         conn.commit()
     print(f"\nrecorded census #{cid} at {taken:%Y-%m-%d %H:%M} UTC"
           + (f" WITH {len(errors)} error(s)" if errors else ""))
+
+    # ── ...and the same fact as a verdict, on the one feed ──────────────────
+    # The census predates the verdict channel and had its own table and its own
+    # reader. Both stay: the census carries more than a verdict has room for,
+    # and check_corpus_census.ts still reads it where credentials exist. But a
+    # reader WITHOUT credentials can only see the feed, and a channel that
+    # covers every guard except the one that dates all the others is not a
+    # channel. So the census also publishes as `census`, from the figures it
+    # just recorded — not from a second measurement of the corpus, which would
+    # be a second thing to keep in step.
+    _sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+    from guard_verdicts import guard, guard_fingerprint, publish
+
+    gate = payload.get("gate") or {}
+    degraded = bool(errors) or gate.get("ok") is False \
+        or args.run_outcome.startswith(("failed", "partial"))
+    k = payload.get("kpis") or {}
+    summary = (f"{k.get('companies', '?')} companies, {k.get('events', '?')} events, "
+               f"{k.get('countries', '?')} countries; gate {gate.get('ok')}; "
+               f"run {args.run_outcome}"
+               + (f"; {len(errors)} error(s)" if errors else ""))
+    publish("census", "failed" if degraded else "ok", summary,
+            {"kpis": payload.get("kpis"), "instruments": payload.get("instruments"),
+             "coverage": payload.get("coverage"), "gate": gate,
+             "run_outcome": args.run_outcome, "errors": errors,
+             "census_id": cid},
+            json.dumps({**payload, "errors": errors}, default=str),
+            # The census's own fingerprint IS the guard's, asserted equal by
+            # ETL/schema/check_census_imports.py.
+            guard_fingerprint(guard("census")), args.produced_by)
     return 0
 
 
