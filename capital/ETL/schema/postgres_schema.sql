@@ -44,7 +44,15 @@ CREATE TABLE IF NOT EXISTS corpus_census (
   coverage                   JSONB,
   gate                       JSONB,
   errors                     JSONB NOT NULL DEFAULT '[]'::jsonb,
-  run_outcome                TEXT NOT NULL DEFAULT 'unknown'::text
+  run_outcome                TEXT NOT NULL DEFAULT 'unknown'::text,
+  -- WHICH STORE this census read, and what it could reach of the committed
+  -- migrations. Written by publish_corpus_census.py, which also self-heals them
+  -- with ADD COLUMN IF NOT EXISTS -- so until the next weekly run they existed
+  -- only in that script, and check_corpus_census.ts failed outright reading a
+  -- column no committed DDL declared. Declared here so the committed-DDL half
+  -- of check_store_schema.py accounts for them.
+  store                      TEXT NOT NULL DEFAULT 'unknown'::text,
+  schema_state               JSONB
 );
 CREATE UNIQUE INDEX IF NOT EXISTS corpus_census_pkey ON public.corpus_census USING btree (id);
 CREATE INDEX IF NOT EXISTS corpus_census_taken_idx ON public.corpus_census USING btree (taken_at DESC);

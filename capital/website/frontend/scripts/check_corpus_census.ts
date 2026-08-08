@@ -270,10 +270,30 @@ async function main() {
       console.error("  the weekly run: ETL/events/extract/railway_cron.py");
       process.exit(1);
     }
+    // `store` and `schema_state` are created by publish_corpus_census.py with
+    // ADD COLUMN IF NOT EXISTS, which means they arrive when the WRITER next
+    // runs -- on the weekly cron. Selecting them unconditionally made this
+    // check fail outright with `column "store" does not exist` on every machine
+    // between the commit and the next Sunday. That is the repo's oldest shape:
+    // a reader that assumes what only a writer creates. So ask first. A store
+    // that cannot be named is bucketed as "unknown" downstream, which is the
+    // honest reading of a census taken before anyone recorded where it came
+    // from -- not a reason to refuse to look at the corpus at all.
+    const cols = new Set((await client.query(
+      `SELECT column_name FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'corpus_census'`
+    )).rows.map((r: { column_name: string }) => r.column_name));
+    const storeCol = cols.has("store")
+      ? "COALESCE(store, 'unknown') AS store" : "'unknown' AS store";
+    const schemaCol = cols.has("schema_state") ? "schema_state" : "NULL AS schema_state";
+    if (!cols.has("store") || !cols.has("schema_state")) {
+      console.log("check_corpus_census: note — corpus_census predates the store/schema " +
+                  "columns. The store-aware classes cannot fire until the ETL has " +
+                  "published once more; everything else is judged normally.");
+    }
     rows = (await client.query(
       `SELECT id, taken_at, produced_by, code_fingerprint, kpis, instruments,
-              coverage, gate, run_outcome, errors,
-              COALESCE(store, 'unknown') AS store, schema_state
+              coverage, gate, run_outcome, errors, ${storeCol}, ${schemaCol}
          FROM corpus_census ORDER BY taken_at DESC LIMIT 40`)).rows;
     // Postgres is a store too, and it is the one the product actually reads.
     // It needs no census row: it is right here, so it is asked directly.
@@ -328,12 +348,33 @@ async function judge(rows: CensusRow[], pg: { instruments: number; gates: number
   }
 
   const record = newestByStore.get(ofRecord);
-  if (!record) {
+
+  // COLD START, and the distinction matters enough to spend a branch on.
+  //
+  // `store` was added to corpus_census after these rows were written, so every
+  // census taken before it defaults to 'unknown' — not because anyone failed to
+  // record the store, but because at the time there was nothing to record it
+  // with. Demanding a census against the corpus of record before the writer has
+  // ever run once asks for evidence that cannot exist yet, and a check that
+  // fails for a reason nobody can act on this week is a check people learn to
+  // skip. That is the failure mode this file was rewritten to escape.
+  //
+  // So: while NO census anywhere carries a store, this is a note. The moment one
+  // does — the first weekly run after this lands — the absence of one against
+  // the record becomes a real finding again, because from then on it means the
+  // cron is writing somewhere other than the store we believe it writes to.
+  // The guard arms itself; nobody has to remember to re-arm it.
+  const anyStoreLabelled = rows.some((r) => r.store && r.store !== "unknown");
+  if (!record && anyStoreLabelled) {
     problems.push(
       `no census has EVER been taken against the corpus of record (${ofRecord}).\n` +
       `      Stores seen: ${[...newestByStore.keys()].join(", ") || "none"}.\n` +
       `      Every figure below therefore describes a derived copy. The weekly run\n` +
       `      records one: ETL/events/extract/railway_cron.py.`);
+  } else if (!record) {
+    console.log(`check_corpus_census: note — no census yet carries a store label, so ` +
+                `the corpus of record (${ofRecord}) has none to compare against. The ` +
+                `next weekly run records the first; this becomes a failure from then on.`);
   }
 
   // `latest` means the newest census OF THE STORE OF RECORD, falling back to the
@@ -514,8 +555,21 @@ async function judge(rows: CensusRow[], pg: { instruments: number; gates: number
   for (const [store, row] of newestByStore) {
     const s = row.schema_state;
     if (!s) {
-      schemaProblems.push(`${store}: census #${row.id} records no schema state ` +
-        `(taken before the census carried one, or the block failed)`);
+      // Two different facts wear the same shape here, and the message already
+      // conceded it: a census that PREDATES the column, and one that had the
+      // column and failed to fill it. Only the second is a problem. A row with
+      // no store label is from before either column existed, so there was
+      // nothing it could have recorded — failing on it makes the check red for
+      // a week for a reason no one can act on, and a check that is red for a
+      // reason no one can act on stops being read.
+      const predatesTheColumn = !row.store || row.store === "unknown";
+      if (predatesTheColumn) {
+        console.log(`check_corpus_census: note — census #${row.id} (${store}) predates ` +
+                    `the schema_state column; nothing to check for it.`);
+      } else {
+        schemaProblems.push(`${store}: census #${row.id} records no schema state — ` +
+          `the census had the column and the block that fills it did not run`);
+      }
       continue;
     }
     if (s.pending?.length) {
