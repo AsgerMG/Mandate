@@ -38,7 +38,8 @@ def main() -> None:
                event_count, company_count, total_eur, source_family_bucket,
                sample_project_titles, administering_body, administering_body_share,
                last_year, scheme_code, scheme_end_date,
-               scheme_end_date_basis, route_status, route_status_source,
+               scheme_end_date_basis, source_window_policy,
+               route_status, route_status_source,
                successor_scheme,
                successor_title, application_url, sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
@@ -132,6 +133,13 @@ def main() -> None:
         # unlabelled date, which the liveness test closes.
         "schemeEndDate": inst["scheme_end_date"],
         "schemeEndBasis": inst["scheme_end_date_basis"],
+        # Does the register that publishes this row state an application window
+        # for it? Carried for the same reason the basis is, and for a stronger
+        # one: this is the ONLY field on the row that survives the copy going
+        # stale intact, so it is the only thing that can tell "this fund has no
+        # deadline" from "this copy has not loaded one yet". Dropping it here
+        # would hand the fallback back the ambiguity the column exists to end.
+        "sourceWindowPolicy": inst["source_window_policy"],
         # Whether an application route is known to exist -- a SEPARATE axis from
         # liveness. Carried here for the same reason the basis is: without it
         # the snapshot path would propose rows the Postgres path withholds, and

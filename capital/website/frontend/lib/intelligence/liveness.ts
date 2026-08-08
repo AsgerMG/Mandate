@@ -81,6 +81,55 @@ export const SCHEME_END_BASIS = {
 export type SchemeEndBasis =
   (typeof SCHEME_END_BASIS)[keyof typeof SCHEME_END_BASIS];
 
+/**
+ * Does the register that publishes this instrument state an application window
+ * for it? Recorded per row when the extractor runs, from what the SOURCE
+ * publishes — never from whether a value reached us.
+ *
+ * The distinction the whole degradation policy needs is between two things the
+ * corpus otherwise records in the same NULL: "this row has no closing date"
+ * and "this row is not the kind of thing that has one". Only the first is a
+ * gap a stale copy can be wrong about.
+ *
+ * ── The unit is the OBJECT WE HOLD, not the agency ────────────────────────
+ * Vinnova is the case that forces this. `data.vinnova.se` publishes
+ * `Stangningsdatum` on every `ansokningsomgang` — so "does Vinnova publish
+ * closing dates" is yes. But our 50 Swedish rows are PROGRAMMES, and a round
+ * closing does not close the programme it ran under; a new round opens under
+ * the same row. The register states no window for the object we hold, and
+ * `load_vinnova_call_eligibility.py` already refuses to write one for exactly
+ * that reason. Answering about the agency instead of about the row would
+ * withhold fifty live programmes to protect against a date that was never a
+ * claim about them. This is the same separation Rule Zero draws between the
+ * register artefact and the thing a founder applies to.
+ */
+export const SOURCE_WINDOW_POLICY = {
+  /** The register states a closing date for objects of this kind. A row of
+   *  ours carrying none is therefore a gap in OUR copy, and a copy taken
+   *  before the window was loaded cannot be told from a fund that has none. */
+  publishesWindow: "publishes_window",
+  /** The register's record for objects of this kind has no closing date in it
+   *  at all. Its silence is the register's and not ours, so no copy of any
+   *  age is missing anything. */
+  publishesNoWindow: "publishes_no_window",
+  /** The register carries the window field and states, for THIS object, that
+   *  there is no closing date. A statement, not a silence — the same class of
+   *  evidence as `declared_window`, and it decays the same way. */
+  declaresOpenEnded: "declares_open_ended",
+} as const;
+
+export type SourceWindowPolicy =
+  (typeof SOURCE_WINDOW_POLICY)[keyof typeof SOURCE_WINDOW_POLICY];
+
+/** The two values under which a row with no loaded window is still confirmable:
+ *  in both, the register itself accounts for the absence. Anything else — a
+ *  window-publishing register, or no recorded answer at all — leaves the
+ *  absence unexplained, which is the state a stale copy manufactures. */
+export function windowAbsenceIsTheRegisters(policy?: string | null): boolean {
+  return policy === SOURCE_WINDOW_POLICY.publishesNoWindow ||
+    policy === SOURCE_WINDOW_POLICY.declaresOpenEnded;
+}
+
 /** The minimum a row must expose to be judged. Deliberately narrow, so the
  *  Postgres rows, the JSON snapshot and the SQLite rows can all satisfy it. */
 export interface LivenessFacts {
@@ -88,6 +137,10 @@ export interface LivenessFacts {
   schemeEndBasis?: string | null;
   lastYear?: number | null;
   successorScheme?: string | null;
+  /** See `SOURCE_WINDOW_POLICY`. On the ROW and not on the observation,
+   *  deliberately: an observation is computed from the corpus in hand, and
+   *  anything computed from the corpus in hand is what self-cancelled. */
+  sourceWindowPolicy?: string | null;
 }
 
 export function today(): string {
@@ -159,39 +212,50 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
 //                     that has none.
 //
 // Only the third is at risk, and only where the register in question publishes
-// deadlines at all. Measured over the corpus: of 390 absence-based open rows,
-// 310 sit in populations where no member has ever carried a call deadline —
-// EIC, Horizon, the EIT KICs, the Baltic development banks. Their absence is
-// the register's steady state, not a gap, and suppressing them would answer a
-// blip by deleting half the product. See `populationRecordsDeadlines`.
+// application windows at all. Where it does not, absence is the register's
+// steady state and suppressing it would answer a blip by deleting half the
+// product. That fact — does this row's register state a closing date for it —
+// is `sourceWindowPolicy`, and it is the axis this whole half turns on.
 //
-// ── What "the register publishes deadlines" has to MEAN ───────────────────
-// The first version of that test was "has any member ever carried a call
-// deadline", and a single member satisfies it. Measured 2026-08-07 on the
-// republished snapshot, exactly two populations carried any at all:
+// ── Why that fact may NOT be read off the copy ────────────────────────────
+// Two versions of it were built and both were read off the rows in front of
+// us: first "has any member of this population ever carried a call deadline",
+// then "do MOST members carry one". The second is strictly better on a current
+// corpus — it separates a register of convocatorias from a catalogue that
+// contains a few, which the membership test could not — and both are
+// SELF-CANCELLING, for a reason no amount of refining the proportion fixes:
 //
-//                          rows   carrying a deadline   share
-//   state_aid_satr|ES       174           168           96.6%
-//   national_dev_banks|FR    81             6            7.4%
+//     a copy stale enough to be dangerous has no deadlines in it, so every
+//     population reads as one that does not publish them, and the rule that
+//     exists for exactly that copy withholds nothing.
 //
-// Those are not the same kind of register and the membership test cannot tell
-// them apart. `bdns_es_ayudas` IS a register of convocatorias: a row without a
-// deadline is the 3% we have not finished loading. `ademe_aid` is a catalogue
-// of standing aids — the source pages are the French government's
-// `aides-entreprise` entries, whose eligibility is sectoral and whose windows
-// are open — into which six dated appels à projets happen to fall. Reading
-// those six as evidence about the other seventy withheld the whole ADEME
-// register, and ADEME is what French founders actually win: 488 of 778 French
-// holdout answers were in the withheld set, and EXACTLY ZERO of the 80
-// withheld rows were ones the live register would have refused.
+// Measured, 2026-08-07, on the copy pushed back to the shape it had before the
+// call registers were loaded: 812 rows offered, 0 withheld, 84 of them closed
+// according to the live register. Identical under both versions. The clause
+// that did fire was `basis_not_supplied`, which is a test of the copy's SCHEMA
+// and not of its currency, and it withheld 381 of 814 rows to do it.
 //
-// So the test is a proportion, not a membership: a population RECORDS
-// deadlines when most of its rows carry one. That is the operational meaning
-// of "records", not a tuned constant — and the corpus reads it at 96.6% and
-// 7.4%, with nothing anywhere near the middle, so where exactly the line sits
-// changes no row. It stays derived from the corpus rather than listed: if
-// ADEME's loader ever starts extracting windows in earnest, that population
-// crosses back on its own and the suppression returns without an edit.
+// ── So the fact is recorded, not inferred ─────────────────────────────────
+// `source_window_policy` is written per row AT ETL TIME from what the register
+// publishes, independently of whether a value came back. A copy carries it
+// however far behind it has fallen, which is the property "derived from the
+// rows present" can never have. See `SOURCE_WINDOW_POLICY` below for the three
+// values and ETL/terms/assign_source_window_policy.py for how each row gets
+// one; data/reference/source_window_policy.json holds the per-feed evidence.
+//
+// Establishing it meant reading the registers rather than our own columns, and
+// the answer contradicted what the proportion had inferred. The proportion read
+// `national_dev_banks|FR` at 7.4% dated and concluded ADEME is a catalogue of
+// standing aids. ADEME's register says otherwise: of 107 dispositifs on the
+// Transition Écologique des Entreprises portal — the source page every one of
+// our ADEME rows already cites — 86 state a `Date de fin de l'aide`, and 38 of
+// those dates have already passed. The open-data extract we ingest carries a
+// `date_cloture` column that is empty for 93 of them. Absence in our copy was
+// never the register being silent; it was the extract being thin, on the one
+// population the proportion had cleared BECAUSE our copy was thin.
+//
+// That is why the policy may not be derived from loaded values at any grain.
+// The two are the same mistake at different resolutions.
 //
 // ── A window we CLEARED is an answer, not a silence ───────────────────────
 // `publishableInstruments()` republishes a closed registration under its
@@ -206,11 +270,19 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
 //
 // ── NULL is not "open" ────────────────────────────────────────────────────
 // A store that does not carry `schemeEndBasis` at all cannot be asked any of
-// this: it cannot tell a notified duration from a call deadline, so it cannot
-// tell a deadline-recording population from a steady one either. The 2026-08-06
-// snapshot was exactly that store. An absent field therefore reads as
-// UNCONFIRMED, never as open — the reading that left 80 dead Spanish calls
+// this: it cannot tell a notified duration from a call deadline. The
+// 2026-08-06 snapshot was exactly that store. An absent field therefore reads
+// as UNCONFIRMED, never as open — the reading that left 80 dead Spanish calls
 // proposable.
+//
+// The same holds, and matters more, for `sourceWindowPolicy`. A row with no
+// recorded answer is not a row whose register is silent; it is a row nobody has
+// asked about. Reading NULL as "publishes no window" would restore the exact
+// defect this column replaces — an unexamined absence taken for a fact — and
+// would do it invisibly, because a fresh corpus and an unclassified one look
+// identical from inside the rule. `check_liveness.ts` fails the build when a
+// publishable row carries no policy, so the unclassified state is loud rather
+// than expensive.
 
 /** What a row's openness is resting on. `closed` rows are excluded upstream and
  *  never reach a founder; the other four are the ways a row can be open. */
@@ -243,17 +315,18 @@ export function opennessEvidence(row: LivenessFacts, asOf: string = today()): Op
   return "no_deadline_recorded";
 }
 
-/** Where the rows being judged came from. */
+/** Where the rows being judged came from.
+ *
+ *  It carried a second field until 2026-08-07 — `populationRecordsDeadlines`,
+ *  supplied by the caller from a tally over the corpus in hand. That is gone,
+ *  and its absence is the point: an observation is by definition computed from
+ *  the copy, so any fact placed here is a fact the copy can destroy. The one
+ *  the rule needs now lives on the ROW, as `sourceWindowPolicy`. */
 export interface LivenessObservation {
   /** `postgres` is the register itself — there is nothing fresher to check a
    *  row against, so every row it supplies is confirmed by definition. Any
    *  other source is a copy taken at some past instant. */
   source: "postgres" | "snapshot" | "none";
-  /** Does the register this row was drawn from publish application deadlines
-   *  for rows like it? A property of the CORPUS, not of the row, so the caller
-   *  supplies it — see `populationRecordsDeadlines`. Absent is read as "yes",
-   *  which is the conservative direction. */
-  populationRecordsDeadlines?: boolean;
 }
 
 /**
@@ -281,63 +354,51 @@ export function unconfirmedOpen(
       return "the store did not supply scheme_end_date_basis, so the liveness " +
         "rule was not evaluated — this row is unlabelled, not open";
     case "no_deadline_recorded":
-      return obs.populationRecordsDeadlines === false
-        ? null
-        : "openness rests on the corpus holding no application deadline, and " +
-          "this row's register does publish them — a deadline loaded since " +
-          "this copy was taken would close it";
+      // The one clause a stale copy can be wrong about, and the only one that
+      // reads `sourceWindowPolicy`. Both confirming values are STATEMENTS by
+      // the register about the absence; anything else leaves it unexplained.
+      if (windowAbsenceIsTheRegisters(row.sourceWindowPolicy)) return null;
+      return row.sourceWindowPolicy
+        ? "openness rests on this copy holding no application deadline, and " +
+          "this row's register does state one for funds like it — a window " +
+          "loaded since this copy was taken would close it"
+        : "no source has been asked whether this row's register states an " +
+          "application window, so an absent deadline here means nothing " +
+          "either way";
   }
 }
 
 /**
- * Which populations publish application deadlines, and therefore where a row
- * without one is a row we have not finished loading.
+ * Rows whose recorded policy their own corpus contradicts.
  *
- * THE PROPERTY:
+ * `populationRecordsDeadlines()` stood here until 2026-08-07 and DERIVED the
+ * policy from the rows: a register was taken to publish windows when most of
+ * its rows carried one. That is the self-cancelling form — a stale copy has no
+ * dates, so it reads every register as silent — and it is now recorded at ETL
+ * time instead. This is what remains of reading the corpus, and the direction
+ * is the whole difference:
  *
- *   A register records application windows when MOST of its rows carry one.
- *   Where it does, a member with none is a gap in our copy. Where it does not,
- *   a member with none is what the register publishes.
+ *   the copy may FALSIFY a declaration. It may never SUPPLY one.
  *
- * The unit is whatever `keyOf` returns — in the product, the register a row was
- * drawn from for one country.
+ * A row declared `publishes_no_window` that nonetheless carries a call
+ * deadline is a contradiction with exactly one honest reading — the
+ * declaration is stale, because some loader has started writing windows for
+ * that feed since it was made. That is the failure mode a per-feed declaration
+ * has and a derived proportion does not, so it gets a test.
  *
- * ── Why a proportion and not "has any member ever" ────────────────────────
- * Membership is satisfied by one row and cannot tell a register of calls from
- * a catalogue of standing aids that contains a few. On the 2026-08-07 corpus
- * it read `state_aid_satr|ES` (168 of 174 dated) and `national_dev_banks|FR`
- * (6 of 81 dated) as the same thing, and withheld all 75 undated French rows
- * for the sake of six. Nothing the live register would have refused was among
- * them, and 488 of 778 French holdout answers were.
+ * Falsification survives staleness for the same reason derivation does not: it
+ * can only ever fire on evidence that IS present. A thin copy produces no false
+ * accusations, it just proves nothing — which is the correct behaviour for a
+ * check, and the fatal one for a rule.
  *
- * A share is not a tuned constant here: "most" IS what "records them" means,
- * and the two populations sit at 96.6% and 7.4% with the rest of the corpus at
- * zero, so the reading does not depend on where the line is drawn. `shares()`
- * exists so a human can look rather than take that on trust — if a population
- * ever lands near the middle, the answer is to find out what that register
- * actually is, not to move a number.
- *
- * Still derived from the corpus, never listed: a catalogue whose loader starts
- * extracting windows crosses over on its own, and a list would be edited late.
+ * `declares_open_ended` is deliberately not tested this way. It is a per-ROW
+ * statement, so a sibling carrying a date contradicts nothing; only the row's
+ * own date would, and a row with both is `declared_window` and never reaches
+ * this axis.
  */
-export function populationRecordsDeadlines<T extends LivenessFacts>(
-  rows: readonly T[],
-  keyOf: (row: T) => string,
-): ((row: T) => boolean) & { shares: () => Map<string, { dated: number; total: number }> } {
-  const tally = new Map<string, { dated: number; total: number }>();
-  for (const r of rows) {
-    const k = keyOf(r);
-    const t = tally.get(k) ?? { dated: 0, total: 0 };
-    t.total++;
-    if (r.schemeEndBasis === SCHEME_END_BASIS.callDeadline) t.dated++;
-    tally.set(k, t);
-  }
-  const records = (row: T) => {
-    const t = tally.get(keyOf(row));
-    return t ? t.dated * 2 > t.total : false;
-  };
-  records.shares = () => new Map(tally);
-  return records;
+export function contradictsDeclaredPolicy<T extends LivenessFacts>(row: T): boolean {
+  return row.sourceWindowPolicy === SOURCE_WINDOW_POLICY.publishesNoWindow &&
+    row.schemeEndBasis === SCHEME_END_BASIS.callDeadline;
 }
 
 /** SQL for the same predicate, so the Python and SQL consumers do not restate

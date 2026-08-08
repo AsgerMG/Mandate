@@ -4,7 +4,7 @@
 import { readFileSync } from "fs";
 import { meetsDataFloor } from "./accessMode";
 import {
-  isClosed, populationRecordsDeadlines, today, unconfirmedOpen,
+  isClosed, today, unconfirmedOpen,
   type LivenessObservation,
 } from "./liveness";
 import { hasOfferRoute } from "./offerRoute";
@@ -213,6 +213,12 @@ export interface DbInstrument {
   /** Which register supplied `schemeEndDate`, hence whether its expiry closes
    *  anything: "notified_duration" (renewable) or "call_deadline" (final). */
   schemeEndBasis?: string | null;
+  /** Does the register that publishes this row state an application window for
+   *  it? Recorded at ETL time from the SOURCE, never from whether a value
+   *  reached us — which is what lets it survive on a copy that has fallen
+   *  behind. Never read it directly: `unconfirmedOpen()` in ./liveness is the
+   *  only consumer, and the three values are `SOURCE_WINDOW_POLICY` there. */
+  sourceWindowPolicy?: string | null;
   /** Whether an application route is known to EXIST for this row — a separate
    *  question from whether the window has shut. "none" means the source says
    *  there is no way in (aid fixed to a named beneficiary list, or a row whose
@@ -446,6 +452,7 @@ export async function hydrateDbInstruments(): Promise<void> {
                   sample_project_titles, administering_body,
                   administering_body_share, last_year,
                   scheme_code, scheme_end_date, scheme_end_date_basis,
+                  source_window_policy,
                   route_status, route_status_source,
                   successor_scheme, successor_title,
                   application_url, sector_mix, scheme_operators,
@@ -544,6 +551,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         schemeCode: inst.scheme_code ?? null,
         schemeEndDate: inst.scheme_end_date ?? null,
         schemeEndBasis: inst.scheme_end_date_basis ?? null,
+        sourceWindowPolicy: inst.source_window_policy ?? null,
         routeStatus: inst.route_status ?? null,
         routeStatusSource: inst.route_status_source ?? null,
         successorScheme: inst.successor_scheme ?? null,
@@ -935,30 +943,21 @@ export function livenessObservation(): Pick<LivenessObservation, "source"> {
   return { source: provenance.source };
 }
 
-/**
- * The register a row was drawn from, for one country.
+/*
+ * `registerPopulation()` stood here and grouped rows by source family and
+ * country, so `populationRecordsDeadlines()` could work out which registers
+ * publish application windows by counting how many of their rows carried one.
+ * Both are gone. The grouping was never the problem — the counting was: it
+ * derived a property of the REGISTER from the contents of the COPY, so the
+ * staler the copy the more registers it read as publishing nothing, which is
+ * backwards. The fact now arrives on the row as `sourceWindowPolicy`, written
+ * by ETL/terms/assign_source_window_policy.py from the sources themselves.
  *
- * This is the unit `populationRecordsDeadlines` groups on. Country is part of
- * the key because a call register is loaded per country, and the register is
- * what does or does not publish a closing date: `state_aid_satr` as a whole
- * looks like a deadline register because Spain's convocatorias are in it, but
- * `state_aid_satr|DE` holds none.
- *
- * Not `parentId`: 301 development-bank leaves have no parent at all, so a
- * parent-keyed grouping puts them in one bucket with everything else rootless
- * and reads a French deadline as evidence about an Estonian scheme.
- *
- * Finer than this does not exist in the corpus and was checked, because it is
- * the obvious place to look for the bluntness. Every ADEME row hangs off the
- * one `ademe_aid` parent at one depth, and the six that carry a call deadline
- * are drawn from the SAME source pages as forty-three that do not. No tier,
- * parent, route or provenance field separates a standing aid from an appel a
- * projets. What separates the two registers is how much of each is dated, and
- * that is the proportion `populationRecordsDeadlines` now measures.
+ * Worth keeping the reason the key was that shape, because the next person to
+ * need a population key will meet it again: not `parentId`, because 301
+ * development-bank leaves have no parent and would land in one bucket with
+ * everything else rootless.
  */
-function registerPopulation(i: DbInstrument): string {
-  return `${i.sourceFamilyBucket ?? "?"}|${i.country ?? "?"}`;
-}
 
 /** One row withheld because its openness could not be confirmed. */
 export interface SuppressedRow {
@@ -1082,12 +1081,6 @@ export function publishableInstruments(): DbInstrument[] {
           // stale one here would delete the row again on the next run.
           schemeEndDate: null }
       : i);
-  // Which registers publish application deadlines at all, derived from the
-  // corpus in front of us rather than listed. Computed over EVERY row, not
-  // just the publishable ones: a population's closed calls are exactly the
-  // evidence that it records deadlines, and they have already been filtered
-  // out by the time this list is built.
-  const recordsDeadlines = populationRecordsDeadlines(all, registerPopulation);
   const withheld: SuppressedRow[] = [];
   const rows = all.filter((i) =>
     !i.isFramework && !hasChildren.has(i.id) &&
@@ -1141,10 +1134,11 @@ export function publishableInstruments(): DbInstrument[] {
         // Only ever set by the parity harness, and never on a request path.
         ? "withheld by the parity harness, so the live corpus is ranked with " +
           "exactly the rows the fallback could not confirm out of consideration"
-        : unconfirmedOpen(i, {
-          source: provenance.source,
-          populationRecordsDeadlines: recordsDeadlines(i),
-        }, asOf);
+        // Nothing about the corpus in hand is passed in. The one fact this
+        // needs beyond the row is where the row is being read FROM; the rest
+        // travels on the row, because a fact computed here would be computed
+        // from the copy under suspicion.
+        : unconfirmedOpen(i, { source: provenance.source }, asOf);
       if (!why) return true;
       withheld.push({ id: i.id, name: i.name, country: i.country, reason: why });
       return false;
