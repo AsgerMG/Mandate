@@ -12,8 +12,16 @@
 #
 #   scripts/agent-worktree.sh wsBD-my-workstream [base-branch]
 #
-# Remove it when the branch merges:
+# Remove YOUR OWN worktree when YOUR branch merges -- and only your own:
 #   git worktree remove --force .claude/worktrees/wsBD-my-workstream
+#
+# NEVER remove a worktree you did not create. Another agent's worktree may hold
+# uncommitted work that exists nowhere else, and --force bypasses git's
+# dirty-tree protection silently. On 2026-08-08 an agent force-removed two
+# worktrees belonging to other workstreams; the committed work survived only
+# because both branches happened to be merged already. Cleaning up someone
+# else's tree is not tidiness, it is an unrecoverable delete of work you cannot
+# see.
 set -euo pipefail
 
 NAME="${1:?usage: agent-worktree.sh <branch-name> [base]}"
