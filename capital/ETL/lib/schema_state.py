@@ -100,6 +100,21 @@ MIGRATIONS: tuple[tuple[str, str, object], ...] = (
     ("011", "funding_instruments + eligibility_gates",
      lambda c: table_exists(c, "funding_instruments")
      and table_exists(c, "eligibility_gates")),
+    # 027 out of numeric order, and that is the point: an id records when a
+    # migration was WRITTEN and a position records when it must RUN.
+    #
+    # It has to be here and nowhere else. data/views.sql selects
+    # companies.parent_group and 012 rebuilds the views, so a store built from
+    # committed DDL alone dies at 012 with `no such column: c.parent_group`;
+    # 021 SELECTs funding_instruments.scheme_code while rebuilding the table, so
+    # it dies there too. And it needs funding_instruments to exist, so it cannot
+    # move earlier than 011. Its other half is 028, at the end, because 021 and
+    # 022 DELETE any column not in the rebuild's list.
+    ("027", "columns that had no migration, part 1 (scheme_code, parent_group)",
+     lambda c: _all_columns(c, "funding_instruments",
+                            ("scheme_code", "application_url", "sector_mix",
+                             "scheme_operators"))
+     and _all_columns(c, "companies", ("parent_group", "sector_rule"))),
     ("012", "llm_cited tier + eligibility_clauses",
      lambda c: column_exists(c, "eligibility_gates", "verify_by")),
     ("013", "gate_role + intake_field_resolved + encoding_method",
@@ -136,6 +151,13 @@ MIGRATIONS: tuple[tuple[str, str, object], ...] = (
     # are simply already done.
     ("026", "scheme_end_date_basis",
      lambda c: column_exists(c, "funding_instruments", "scheme_end_date_basis")),
+    # route_status is the predicate because it is the one the product reads.
+    ("028", "columns that had no migration, part 2 (route_status, name_basis)",
+     lambda c: _all_columns(c, "funding_instruments",
+                            ("route_status", "route_status_source",
+                             "route_status_note", "name_basis", "description",
+                             "eligibility_text", "eligibility_source_url",
+                             "eligibility_confidence", "eligibility_fetched_at"))),
 )
 
 IDS = tuple(m[0] for m in MIGRATIONS)

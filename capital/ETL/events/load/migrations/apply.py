@@ -52,6 +52,36 @@ def log_applied(conn: sqlite3.Connection, mig_id: str) -> None:
     conn.execute("INSERT OR REPLACE INTO schema_migrations(id) VALUES (?)", (mig_id,))
 
 
+def run_sql(conn: sqlite3.Connection, filename: str) -> None:
+    """Execute a migration's .sql, statement by statement, tolerating only
+    `duplicate column name`.
+
+    `executescript` aborts the whole file on the first error, and most of the
+    migrations here are a run of bare `ALTER TABLE ... ADD COLUMN`. A store that
+    has some of a migration's columns and not the rest -- which is what a hand
+    ALTER, or a script that self-heals one column, actually leaves behind -- can
+    therefore never be finished by the runner: the first ALTER raises, the rest
+    never run, and the store stays half-migrated for as long as anybody keeps
+    running the migration and reading the same error.
+
+    Skipping exactly one error class keeps that from being a dead end without
+    hiding anything: a column that is already there is the outcome the statement
+    was asking for. Every other error still aborts.
+    """
+    sql = (MIG_DIR / filename).read_text()
+    body = "\n".join(line.split("--")[0] for line in sql.splitlines())
+    for statement in (s.strip() for s in body.split(";")):
+        if not statement:
+            continue
+        try:
+            conn.execute(statement)
+        except sqlite3.OperationalError as exc:
+            if "duplicate column name" not in str(exc):
+                raise
+            print(f"  skip (already present): {' '.join(statement.split())[:70]}")
+    print(f"  applied {filename}")
+
+
 def apply_004(conn: sqlite3.Connection) -> None:
     """SATR columns + indexes on public_funding_events."""
     targets = [
@@ -155,76 +185,12 @@ def apply_007(conn: sqlite3.Connection) -> None:
 def apply_008(conn: sqlite3.Connection) -> None:
     """Sprint 19 equity layer: public_equity_stakes table + instrument_class.
 
-    - public_equity_stakes: positions, not funding events. One row per
-      (company, holding institution, as-of date). Stakes NEVER sum with
-      grants/loans — that is the whole point of a separate table.
-      disclosure_level is the unit of analysis for the disclosure scorecard.
-    - instrument_class on public_funding_events: labels already-loaded rows
-      that are equity-class instruments (SATR PRVRISKFIN risk finance, BDNS
-      participative loans, EIC Fund positions, NDB co-invest rounds) so the
-      grant channel can exclude them and the equity signal is queryable.
+    The DDL is in 008_equity_stakes_and_instrument_class.sql. It was restated in
+    Python here until 2026-08-08, and only here, which is why both of its
+    columns read as unexplained hand-ALTERs to everything that answers "what
+    does committed DDL create" -- see the file's own header.
     """
-    conn.execute("""
-        CREATE TABLE IF NOT EXISTS public_equity_stakes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            company_id INTEGER NOT NULL REFERENCES companies(id),
-            holder TEXT NOT NULL,
-            holder_type TEXT NOT NULL CHECK (holder_type IN (
-                'eu_instrument','ndb','state_vc','regional_agency',
-                'sovereign_fund','other')),
-            stake_pct_min REAL,
-            stake_pct_max REAL,
-            ticket_eur REAL,
-            as_of DATE,
-            first_seen DATE,
-            exited INTEGER NOT NULL DEFAULT 0,
-            source TEXT NOT NULL,
-            raw_source_url TEXT,
-            disclosure_level TEXT NOT NULL CHECK (disclosure_level IN (
-                'name_only','pct_range','pct_exact','amount')),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE (company_id, holder, source, as_of)
-        )
-    """)
-    print("  CREATE TABLE IF NOT EXISTS public_equity_stakes")
-    indexes = [
-        ("idx_pes_company",
-         "CREATE INDEX IF NOT EXISTS idx_pes_company "
-         "ON public_equity_stakes(company_id)"),
-        ("idx_pes_holder",
-         "CREATE INDEX IF NOT EXISTS idx_pes_holder "
-         "ON public_equity_stakes(holder)"),
-        ("idx_pes_disclosure",
-         "CREATE INDEX IF NOT EXISTS idx_pes_disclosure "
-         "ON public_equity_stakes(disclosure_level)"),
-    ]
-    for name, sql in indexes:
-        print(f"  CREATE INDEX IF NOT EXISTS {name}")
-        conn.execute(sql)
-
-    # via_fund (2026-06-11, PFR extraction): NULL = direct holding by the
-    # institution; non-NULL = look-through LP exposure via the named private
-    # fund (PFR Ventures publishes its full look-through portfolio — unique
-    # among European FoFs). Look-through stakes NEVER compare with direct.
-    if not column_exists(conn, "public_equity_stakes", "via_fund"):
-        print("  ADD COLUMN via_fund")
-        conn.execute("ALTER TABLE public_equity_stakes ADD COLUMN via_fund TEXT")
-    else:
-        print("  skip via_fund (exists)")
-
-    if not column_exists(conn, "public_funding_events", "instrument_class"):
-        print("  ADD COLUMN instrument_class")
-        conn.execute(
-            "ALTER TABLE public_funding_events ADD COLUMN instrument_class TEXT"
-        )
-    else:
-        print("  skip instrument_class (exists)")
-    conn.execute(
-        "CREATE INDEX IF NOT EXISTS idx_pfe_instrument_class "
-        "ON public_funding_events(instrument_class) "
-        "WHERE instrument_class IS NOT NULL"
-    )
-    print("  CREATE INDEX IF NOT EXISTS idx_pfe_instrument_class")
+    run_sql(conn, "008_equity_stakes_and_instrument_class.sql")
 
 
 def apply_009(conn: sqlite3.Connection) -> None:
@@ -422,6 +388,25 @@ def apply_026(conn: sqlite3.Connection) -> None:
     print("  applied 026_scheme_end_date_basis.sql")
 
 
+def apply_027(conn: sqlite3.Connection) -> None:
+    """The columns that only ever existed because an ETL script ALTERed them in
+    on itself, or because somebody typed ALTER. Part 1 of 2 — see the
+    migration's own header for the list, for the split, and for the three tables
+    that are deliberately not in it.
+
+    Runs through run_sql rather than executescript on purpose: every store this
+    will meet already has SOME of these columns, because the scripts that add
+    them run at different times.
+    """
+    run_sql(conn, "027_columns_that_had_no_migration.sql")
+
+
+def apply_028(conn: sqlite3.Connection) -> None:
+    """Part 2 of 027: the funding_instruments columns that must land after the
+    021/022 table rebuilds, which delete anything not in their column list."""
+    run_sql(conn, "028_columns_added_after_the_rebuilds.sql")
+
+
 # Derived from the registry rather than written out again: schema_state.IDS is
 # the list of migrations that exist, and a migration with a guard but no
 # implementation (or the reverse) is a startup error here instead of a
@@ -455,8 +440,14 @@ def main() -> None:
                          "the weekly Railway run does against the volume.")
     ap.add_argument("--status", action="store_true",
                     help="say what this store is missing and change nothing")
+    ap.add_argument("--db", default=None,
+                    help="the store to act on. Defaults to etl_env.DB. There is "
+                         "more than one store in this project and only one of "
+                         "them is the laptop's, which is how the volume ended up "
+                         "9 of 23 migrations behind.")
     args = ap.parse_args()
 
+    DB_PATH = _Path(args.db) if args.db else _ETL_DB
     conn = sqlite3.connect(DB_PATH)
     try:
         missing = pending(conn)

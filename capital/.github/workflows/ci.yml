@@ -117,6 +117,14 @@ jobs:
       - name: Cross-language constants
         run: python3 ETL/schema/check_cross_language_constants.py
 
+      # Fifteen columns of the live corpus were created by no committed
+      # statement -- four of them by somebody typing ALTER at a prompt -- so
+      # replaying schema.sql plus every migration into an empty database did not
+      # produce this project's schema, it produced `no such column: scheme_code`.
+      # Needs no corpus and no credentials: it builds the store it checks.
+      - name: The schema can be rebuilt from its own migrations
+        run: python3 ETL/schema/check_schema_replay.py
+
       # What we TRACK and what we OFFER are two populations. Closed schemes stay
       # in the headline figures and the maps -- the money was spent, and that
       # history is the asset -- while briefs carry only funds a founder can
