@@ -309,19 +309,72 @@ export function sectorFit(
  * is the instrument that can.
  *
  * ── The property, and what a future change must preserve ──────────────────
- * A stand-in for data we do not hold must not move the row's rank against the
+ * A stand-in for data we do not hold must not move the row's RANK against the
  * candidates it competes with. For a multiplicative term that is the constant 1.
- * For an added term it is the MEAN of the candidates whose data we do hold, and
- * a constant cannot satisfy it, because the population moves with the corpus.
+ * For an added term no constant can satisfy it, because the population moves
+ * with the corpus, so the stand-in must be solved from the candidates.
  * `lib/intelligence/sectorNeutral.test.ts` states it as a property and
  * `scripts/check_missing_data_neutral.ts` fails the build if the live corpus
  * drifts away from it.
+ *
+ * ── MEAN or MEDIAN, decided by the guard rather than by taste ─────────────
+ * WS-BB shipped the MEAN and left the question open in
+ * `check_missing_data_neutral.ts`: mean-imputation leaves the fund's expected
+ * SCORE equal to the population's, the median leaves its expected RANK equal,
+ * they coincide on a symmetric population and this one is heavily right-skewed.
+ * That check fired, exactly as its author said it would, and named the two
+ * sectors where the skew is extreme:
+ *
+ *     space             mean stand-in 0.020 → 91st percentile of 673 leaves
+ *     defense_security  mean stand-in 0.029 → 88th
+ *
+ * Read that carefully, because it is the ORIGINAL DEFECT at one tenth the size.
+ * In a sector where nine leaves in ten have never funded anything, the mean is
+ * dragged above the entire mode by the handful of specialists, and a fund we
+ * hold no history for is once again promoted over the funds we do — for the
+ * absence of the evidence the term exists to read.
+ *
+ * So the statistic is the MEDIAN. The property names RANK, and the median is
+ * the rank-preserving statistic by construction.
+ *
+ * The obvious objection is that a median of zero BURIES the unknown, which is
+ * the failure the original 0.5 was defending against and which this repo's
+ * one convention forbids — a gap is never read as evidence against the fund.
+ * It does not, and the reason is TIES. If 91% of the population scores exactly
+ * 0, an unknown scoring 0 is not last, it is tied with the mode: the term takes
+ * the same value for it and for the 91%, so it drops out of the comparison
+ * exactly as a multiplier's 1 does. That is the neutrality property, reached
+ * for an added term. Where the population really does hold history — every
+ * sibling-grouped leaf in the corpus — the median is a real number and the
+ * unknown sits mid-field.
  *
  * When no candidate has a mix the value is arbitrary: every candidate receives
  * it, so the term is constant and cannot reorder anything. FALLBACK_UNKNOWN is
  * what it is only so the number is stable across runs.
  */
 export const FALLBACK_UNKNOWN = 0.5;
+
+/** The three arms of the WS-BB2 measurement, and the ONLY reason this is a
+ *  switch: `constant` is what shipped before WS-BB, `mean` is what WS-BB wrote,
+ *  `median` is what ships. Every other input is held identical, so a difference
+ *  between two runs is the statistic and not a second change smuggled alongside
+ *  it. Unset — which is every request the product ever serves — is `median`.
+ *
+ *  Read once at module load, never per call, so a measurement cannot drift
+ *  mid-run. `scripts/measure_recall.ts` and `scripts/measure_evidence_reach.ts`
+ *  print it. */
+export type SectorNeutralArm = "constant" | "mean" | "median";
+export const SECTOR_NEUTRAL_ARM: SectorNeutralArm =
+  (["constant", "mean", "median"] as const).find(
+    (a) => a === process.env.SECTOR_NEUTRAL_ARM) ?? "median";
+
+/** The median of an already-sorted, non-empty array. Even lengths take the
+ *  midpoint, which is the standard definition and matters here only for tiny
+ *  candidate pools. */
+function medianOfSorted(xs: readonly number[]): number {
+  const mid = xs.length >> 1;
+  return xs.length % 2 ? xs[mid] : (xs[mid - 1] + xs[mid]) / 2;
+}
 
 export function sectorFitScorer<T extends { sectorMix?: Record<string, number> | null }>(
   candidates: readonly T[],
@@ -332,9 +385,15 @@ export function sectorFitScorer<T extends { sectorMix?: Record<string, number> |
     const s = sectorFit(c.sectorMix, founderSector);
     if (s !== null) known.push(s);
   }
-  const neutral = known.length
-    ? known.reduce((a, b) => a + b, 0) / known.length
-    : FALLBACK_UNKNOWN;
+  let neutral: number;
+  if (!known.length || SECTOR_NEUTRAL_ARM === "constant") {
+    neutral = FALLBACK_UNKNOWN;
+  } else if (SECTOR_NEUTRAL_ARM === "mean") {
+    neutral = known.reduce((a, b) => a + b, 0) / known.length;
+  } else {
+    known.sort((a, b) => a - b);
+    neutral = medianOfSorted(known);
+  }
   return (i) => (i ? sectorFit(i.sectorMix, founderSector) : null) ?? neutral;
 }
 

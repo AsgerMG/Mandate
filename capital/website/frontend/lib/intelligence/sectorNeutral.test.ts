@@ -58,7 +58,7 @@ describe("sectorFit reports that it cannot tell, rather than guessing", () => {
 });
 
 describe("the stand-in is solved from the candidates, not stated", () => {
-  it("scores the mean of the candidates whose history we DO hold", () => {
+  it("scores the MEDIAN of the candidates whose history we DO hold", () => {
     const pool = [
       leaf({ [SECTOR]: 0, [OTHER]: 100 }),   // 0.0
       leaf({ [SECTOR]: 5, [OTHER]: 95 }),    // 0.2
@@ -67,7 +67,34 @@ describe("the stand-in is solved from the candidates, not stated", () => {
       leaf(null),                            // the fund we know nothing about
     ];
     const score = sectorFitScorer(pool, SECTOR);
-    expect(score(pool[4])).toBeCloseTo((0.0 + 0.2 + 0.4 + 1.0) / 4, 6);
+    // Median of [0, 0.2, 0.4, 1.0] is 0.3. The MEAN is 0.4, and the two are
+    // pulled apart by the single 1.0 — which is the whole reason the statistic
+    // is the median and not the mean, at four candidates as at 673.
+    expect(score(pool[4])).toBeCloseTo(0.3, 6);
+    expect(score(pool[4])).not.toBeCloseTo((0.0 + 0.2 + 0.4 + 1.0) / 4, 6);
+  });
+
+  it("is not dragged over the mode by a few specialists — THE SKEW CASE", () => {
+    // Why the median and not the mean, in the shape the corpus actually has.
+    // `check_missing_data_neutral` fired on exactly this: for `space`, nine
+    // leaves in ten have never funded anything in the sector, and the mean of
+    // the population sat at its 91st percentile. Mean-imputation is unbiased in
+    // SCORE and, on a population this skewed, a promotion in RANK — the
+    // original 0.5 defect at one tenth the size.
+    const mode = Array.from({ length: 9 }, () => leaf({ [SECTOR]: 0, [OTHER]: 100 }));
+    const specialist = leaf({ [SECTOR]: 60, [OTHER]: 40 });      // 1.0
+    const unknown = leaf(null);
+    const score = sectorFitScorer([...mode, specialist, unknown], SECTOR);
+
+    // The mean would be 0.1, which outranks every one of the nine.
+    expect(score(unknown)).toBe(0);
+    // TIED with the mode, not buried below it: the term takes the same value
+    // for the unknown and for the nine, so it drops out of the comparison
+    // exactly as a multiplier's 1 does. That is neutrality for an ADDED term,
+    // and it is why a median of zero is not "evidence against the fund".
+    expect(mode.every((m) => score(m) === score(unknown))).toBe(true);
+    // And the fund that really does have the history still beats it.
+    expect(score(specialist)).toBeGreaterThan(score(unknown));
   });
 
   it("MOVES WITH THE POPULATION — which no constant can do", () => {
