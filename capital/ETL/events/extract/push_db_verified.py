@@ -222,6 +222,7 @@ def main() -> int:
             return 0
 
         print(f"\n=== {local} -> volume ===")
+        uploaded = _counts(local)
         upload(local)
 
         print(f"\n=== volume -> {readback} (confirming the upload landed) ===")
@@ -232,7 +233,7 @@ def main() -> int:
             for p in back:
                 print(f"  - {p}")
             return 1
-        if not _same_shape(local, readback):
+        if not _same_shape(uploaded, readback):
             print("\nUPLOAD DID NOT LAND: the volume's row counts do not match "
                   "the file that was uploaded.")
             return 1
@@ -260,22 +261,32 @@ def _verified_size(p: _Path) -> int:
     return n
 
 
-def _same_shape(a: _Path, b: _Path) -> bool:
-    """Row counts equal on every table -- superset in both directions."""
-    ca = sqlite3.connect(f"file:{a}?mode=ro", uri=True)
-    cb = sqlite3.connect(f"file:{b}?mode=ro", uri=True)
-    ta, tb = _tables(ca, "main"), _tables(cb, "main")
-    ok = ta == tb
+def _counts(p: _Path) -> dict[str, int]:
+    con = sqlite3.connect(f"file:{p}?mode=ro", uri=True)
+    out = {t: con.execute(f'SELECT count(*) FROM "{t}"').fetchone()[0]
+           for t in _tables(con, "main")}
+    con.close()
+    return out
+
+
+def _same_shape(uploaded: dict[str, int], b: _Path) -> bool:
+    """Every table's row count, as it was AT UPLOAD, equal on the volume.
+
+    The first version re-read the local file here instead. That is wrong, and
+    visibly so within an hour of writing it: another job appended to
+    data/db.sqlite between the upload and the readback, which would have made a
+    correct transfer report UPLOAD DID NOT LAND. What was uploaded is a fact
+    about a moment, so it is measured at that moment and carried.
+    """
+    got = _counts(b)
+    ok = set(uploaded) == set(got)
     if not ok:
-        print(f"  tables differ: only-uploaded={sorted(ta - tb)} only-volume={sorted(tb - ta)}")
-    for t in sorted(ta & tb):
-        na = ca.execute(f'SELECT count(*) FROM "{t}"').fetchone()[0]
-        nb = cb.execute(f'SELECT count(*) FROM "{t}"').fetchone()[0]
-        if na != nb:
+        print(f"  tables differ: only-uploaded={sorted(set(uploaded) - set(got))} "
+              f"only-volume={sorted(set(got) - set(uploaded))}")
+    for t in sorted(set(uploaded) & set(got)):
+        if uploaded[t] != got[t]:
             ok = False
-            print(f"  {t}: uploaded {na:,}, volume {nb:,}")
-    ca.close()
-    cb.close()
+            print(f"  {t}: uploaded {uploaded[t]:,}, volume {got[t]:,}")
     return ok
 
 
