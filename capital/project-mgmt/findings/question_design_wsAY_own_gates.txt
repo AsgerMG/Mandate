@@ -1,0 +1,49 @@
+corpus=postgres gates=7355 decidable filters=2777
+decidable filters on a leaf of a multi-leaf regime, NOT inherited: 428
+
+Which intake field the leaf's OWN decidable filters resolve to
+field                       gates   share  leaves  regimes
+----------------------------------------------------------
+region                        181     42%     155       19
+consortium                     51     12%      31        9
+entityCountries                33      8%      16        5
+developmentStage               29      7%      21        8
+sector                         25      6%      21        6
+exclusionFlags                 25      6%      18        4
+useOfFunds                     23      5%      20        6
+ticketBand                     13      3%      11        5
+nonEuControl                   10      2%       9        4
+cofinancingBand                 8      2%       7        3
+lossesOverHalfCapital           7      2%       7        1
+borrowerModel                   5      1%       5        2
+conditionality                  4      1%       4        2
+ownerOver25                     4      1%       4        2
+turnoverBand                    3      1%       3        2
+fteBand                         2      0%       2        1
+institutionalBacking            2      0%       2        2
+needBy                          1      0%       1        1
+wouldOpenEntity                 1      0%       1        1
+activities                      1      0%       1        1
+
+Top fields per regime (leaf-own decidable filters)
+  horizon_eu_pillar_ii         64  entityCountries 23, consortium 18, exclusionFlags 8, nonEuControl 6
+  satr_de_rnd                  46  region 46
+  innovation_fund              44  exclusionFlags 15, developmentStage 12, ticketBand 7, useOfFunds 5
+  ipcei                        42  useOfFunds 13, lossesOverHalfCapital 7, cofinancingBand 6, consortium 5
+  satr_cz_rnd                  32  region 32
+  horizon_eu_partnership       23  consortium 13, entityCountries 6, turnoverBand 1, cofinancingBand 1
+  ademe_aid                    21  sector 10, region 5, entityCountries 2, consortium 1
+  satr_be_rnd                  19  region 19
+  eit                          15  sector 6, developmentStage 4, useOfFunds 2, consortium 1
+  satr_it_rnd                  11  region 11
+  edf                          10  consortium 7, nonEuControl 2, sector 1
+  satr_nl_rnd                  10  region 10
+  eit_climate_kic               9  developmentStage 4, sector 3, ticketBand 2
+  satr_sk_rnd                   9  region 9
+
+0 leaf-own decidable filters resolve to NO intake field.
+These are official conditions the intake cannot currently ask about.
+
+Most common gate_key among them:
+
+A sample of their requirement text:
