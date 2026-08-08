@@ -226,10 +226,127 @@ def cmd_run(args) -> None:
     conn.close()
 
 
+# ── refile-from-text ────────────────────────────────────────────────────────
+# FREE — no model calls. The complement of cmd_run: where that asks a model to
+# resolve a region NAME written in the fund's own language, this handles the
+# case where the fund has already written the NUTS CODE down and we widened it
+# anyway.
+#
+# ── What it found ─────────────────────────────────────────────────────────
+# 40 comparators read `activityCountries in ["Spain"]` over requirement text
+# that says "Project must be located in Catalonia (ES51)". Two failures on top
+# of each other, and each hid the other:
+#
+#   * the field. Nothing in the intake answers `activityCountries`, so the rule
+#     evaluated to null for every founder and could not be contradicted.
+#   * the value. Widened from a region to the whole country, so had anyone ever
+#     answered it, the rule would have admitted every Spanish founder — the
+#     precise inversion encode_regions.py was written to prevent, arriving
+#     through a field that pass does not police.
+#
+# Inertness is what let the second one sit there. A rule that never fires is a
+# rule nothing can prove wrong.
+#
+# ── Why this is deterministic and Rule Zero-clean ─────────────────────────
+# No judgement is exercised. The NUTS id is IN THE FUND'S OWN TEXT, and it is
+# accepted only when it is a real id belonging to the instrument's own country
+# — so a stray token cannot become a geography rule. Anything needing a
+# name-to-id resolution is left for `run`, which is the pass that owns that
+# judgement and pays a model for it.
+NUTS_IN_TEXT = re.compile(r"\(([A-Z]{2}\d{0,2}[A-Z0-9]?)\)|\b([A-Z]{2}\d[A-Z0-9]?)\b")
+
+#: Fields a geography rule gets mis-filed ONTO. Region rules land here because
+#: these are the only geography fields the generic encoder knows about.
+_WIDENED_FIELDS = ("activityCountries", "entityCountries")
+
+
+def cmd_refile_from_text(args) -> None:
+    conn = sqlite3.connect(DB)
+    ref = json.load(open(NUTS_PATH))["regions"]
+    valid_by_iso = {iso: {r["id"] for r in rs} for iso, rs in ref.items()}
+
+    rows = conn.execute("""
+        SELECT g.id, g.instrument_id, f.country, g.value_spec, g.requirement,
+               COALESCE(g.quote, '')
+          FROM eligibility_gates g
+          JOIN funding_instruments f ON f.id = g.instrument_id
+         WHERE g.value_spec IS NOT NULL AND g.value_spec <> ''
+           AND f.country IS NOT NULL AND length(f.country) = 2
+           AND (? IS NULL OR f.country = ?)
+         ORDER BY g.id""", (args.country, args.country)).fetchall()
+
+    moved = 0
+    touched: list[int] = []
+    for gid, inst, cc, raw, req, quote in rows:
+        try:
+            spec = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        if spec.get("field") not in _WIDENED_FIELDS:
+            continue
+        valid = valid_by_iso.get(cc, set())
+        if not valid:
+            continue
+        found = sorted({m for pair in NUTS_IN_TEXT.findall(f"{req or ''} {quote}")
+                        for m in pair if m and m in valid})
+        if not found:
+            continue
+        new = json.dumps({"op": "region_within", "field": "region", "allowed": found})
+        print(f"  gate {gid} ({inst[:28]}) {spec.get('field')} "
+              f"{spec.get('allowed') or spec.get('value')} -> region_within {found}\n"
+              f"      {(req or '')[:78]}")
+        moved += 1
+        touched.append(gid)
+        if not args.dry_run:
+            conn.execute("""
+                UPDATE eligibility_gates
+                   SET value_spec = ?, intake_field_resolved = 'region',
+                       gate_role = 'filter',
+                       verify_note = COALESCE(verify_note || ' | ', '')
+                                     || 'refiled to region: NUTS id present in the source text',
+                       updated_at = CURRENT_TIMESTAMP
+                 WHERE id = ?""", (new, gid))
+    if not args.dry_run:
+        conn.commit()
+    print(f"\n{len(rows)} encoded specs read; {moved} re-filed to region_within"
+          + (" [dry run]" if args.dry_run else ""))
+
+    # SQLite authors, Postgres serves. Scoped to the rows this pass touched, and
+    # keyed on (instrument_id, gate_key) — the two stores keep independent
+    # surrogate ids, so WHERE id = ? matches nothing.
+    if args.publish and not args.dry_run and touched:
+        dsn = os.environ.get("DATABASE_URL")
+        if not dsn:
+            raise SystemExit("DATABASE_URL not set (expected in repo-root .env.local)")
+        import psycopg2
+        qs = ",".join("?" * len(touched))
+        out = conn.execute(
+            f"""SELECT instrument_id, gate_key, value_spec, intake_field_resolved,
+                       gate_role, verify_note
+                  FROM eligibility_gates WHERE id IN ({qs})""", touched).fetchall()
+        pg = psycopg2.connect(dsn)
+        with pg, pg.cursor() as cur:
+            cur.executemany(
+                """UPDATE eligibility_gates
+                      SET value_spec = %s, intake_field_resolved = %s,
+                          gate_role = %s, verify_note = %s
+                    WHERE instrument_id = %s AND gate_key = %s""",
+                [(s, f, r, n, iid, gk) for iid, gk, s, f, r, n in out])
+        pg.close()
+        print(f"published {len(out)} re-filed gates to Postgres")
+    conn.close()
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("status").set_defaults(fn=cmd_status)
+    rf = sub.add_parser("refile-from-text")
+    rf.add_argument("--dry-run", action="store_true")
+    rf.add_argument("--country", default=None)
+    rf.add_argument("--publish", action="store_true",
+                    help="mirror the re-filed gates into Postgres")
+    rf.set_defaults(fn=cmd_refile_from_text)
     r = sub.add_parser("run")
     r.add_argument("--limit", type=int, default=0)
     r.add_argument("--dry-run", action="store_true")

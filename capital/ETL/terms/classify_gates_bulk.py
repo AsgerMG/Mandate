@@ -38,13 +38,13 @@ import time
 
 GATE_FAMILIES = ["G1_nexus", "G2_size_ownership", "G3_financial",
                   "G4_borrower_model", "G5_use_of_funds", "G6_conditionality"]
-INTAKE_FIELDS = [
-    "ticketBand", "borrowerModel", "entityCountries", "wouldOpenEntity",
-    "fteBand", "turnoverBand", "balanceBand", "ownerOver25", "institutionalOwner",
-    "nonEuControl", "cofinancingBand", "foundedYear", "lossesOverHalfCapital",
-    "conditionality", "developmentStage", "activityCountries", "consortium",
-    "bankRelationship", "institutionalBacking", "needBy", "none",
-]
+# READ from the generated vocabulary, never restated. This was a hand-written
+# copy of encode_gates.FIELDS, and it had drifted: it still lacked sector,
+# exclusionFlags, activities and useOfFunds long after the encoder gained them,
+# so this pass was hunting for a smaller world than the encoder could store.
+# `unreachable` fields are excluded by construction -- a rule keyed to a
+# question nobody is asked can never be evaluated.
+from encode_gates import ENCODABLE_FIELDS as INTAKE_FIELDS  # noqa: E402
 
 MODEL = "claude-sonnet-5"
 BRIEFS = ROOT / "website" / "frontend" / "fund-processes"

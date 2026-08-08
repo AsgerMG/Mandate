@@ -27,6 +27,7 @@ import {
   CONDITIONALITY_VALUES,
   MAX_DESCRIPTION_CHARS,
 } from "./types";
+import { regionNameFor } from "./regions.generated";
 
 const CAPITAL_TYPE_VALUES: readonly CapitalType[] = CAPITAL_OPTIONS.map((o) => o.value);
 const COMPANY_TYPE_VALUES: readonly CompanyTypeValue[] = COMPANY_TYPE_OPTIONS.map((o) => o.value);
@@ -67,6 +68,23 @@ function pickStringList(v: unknown, max = 60, maxLen = 60): string[] | undefined
   if (!Array.isArray(v)) return undefined;
   const out = v.filter((x): x is string => typeof x === "string" && x.length > 0 && x.length <= maxLen).slice(0, max);
   return out.length ? out : undefined;
+}
+
+/**
+ * A NUTS region id, validated against the generated reference rather than a
+ * regex — `regionNameFor` returns null for anything the corpus does not know,
+ * which is the same table `regionsOverlap` matches against, so an id that
+ * survives here is an id a `region_within` rule can actually be evaluated on.
+ *
+ * NOT value-checked against a fixed list in VOCABULARY, because there isn't
+ * one: the options are derived per founder from their country
+ * (FIELD_ENUM_HINTS.region.optionsFor), which is exactly why this field was
+ * missing here for as long as it has existed. See the note on the call site.
+ */
+function pickRegion(v: unknown): string | undefined {
+  if (typeof v !== "string") return undefined;
+  const s = v.trim();
+  return s && regionNameFor(s) ? s : undefined;
 }
 
 function pickYear(v: unknown): number | undefined {
@@ -132,6 +150,26 @@ export function sanitizeEligibility(raw: unknown): EligibilityAnswers | undefine
     activities: pickEnumList(b.activities, ACTIVITY_VALUES),
     useOfFunds: pickEnumList(b.useOfFunds, USE_OF_FUNDS_VALUES),
     exclusionFlags: pickEnumList(b.exclusionFlags, EXCLUSION_VALUES),
+    // ── The field the adaptive round asks and the sanitiser used to eat ────
+    // `region` has been part of EligibilityAnswers, FIELD_ENUM_HINTS and the
+    // adaptive round's evidence path the whole time, and it was never listed
+    // here — so the panel merged the founder's answer, posted it, and this
+    // whitelist dropped it on every one of the three routes. `isAnswered`
+    // then read false, so the round asked it AGAIN, and the founder answered
+    // a question whose answer we had already thrown away twice.
+    //
+    // It stayed invisible for the same reason the stale sector list did: the
+    // bench does not come through here. check_archetypes and dump_verdicts
+    // call computeVerdict directly, __archetypes.ts sets region, and region
+    // matching duly passed its unit tests.
+    //
+    // It is not a small field. 193 encoded `region_within` rules on 163
+    // instruments, and — measured across the eight largest sibling families —
+    // region is the ONLY field whose demands differ between siblings at all
+    // (satr_de_rnd: 14 distinct region specs across 103 leaves, against ONE
+    // distinct activities spec and two exclusionFlags). It is the discriminator
+    // the ranker was missing, and it was being discarded at the door.
+    region: pickRegion(b.region),
   };
   // The undertaking-in-difficulty test is now one line of the exclusions
   // checklist rather than its own question, but eligibility.ts's framework

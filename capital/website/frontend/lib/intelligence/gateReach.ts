@@ -5,35 +5,32 @@
 // are genuinely still open for THIS founder, not a blind sweep of 320
 // instruments' worth of requirements.
 import { loadDbInstruments } from "./corpus";
-import { FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
+import { FIELD_ENUM_HINTS, FIRST_PAGE_FIELDS, type EligibilityAnswers } from "./types";
 import { deliveryRegionOf } from "./regionPrior";
 import { regionNameFor } from "./regions.generated";
 
 // Fields already resolved on the deterministic first page — never re-asked
-// adaptively, regardless of how much gate reach they still carry.
-// lossesOverHalfCapital is listed because it is now answered as one line of
-// the exclusions checklist rather than as its own alarming question, and
-// derived from it server-side (see sanitizeEligibility).
-const FIRST_PAGE_FIELDS = new Set([
-  // Shrunk from 11 to 5 on 2026-07-29. The first screen now asks only what is
-  // needed to BUILD a shortlist at all — where you are, what you build, how
-  // big you are, how much you want, how far along you are. Everything else
-  // moved into the adaptive round, where it is asked only when a fund on THIS
-  // founder's shortlist actually turns on it.
-  //
-  // The trade is deliberate: an eleven-question opener asks every founder about
-  // co-financing, consortia and exclusion flags whether or not a single fund in
-  // front of them cares. Four of those questions gate fewer than 50 instruments
-  // each, so most people were answering them for nothing. A shorter opener that
-  // earns its follow-ups is a funnel; a long one is an interrogation.
-  // useOfFunds stays on the first screen despite the shrink: it decides 58
-  // filters, more than any other single field, and "what would the money pay
-  // for" is a leading question about the project rather than a follow-up.
-  // Demoted, it was reaching only 2 founders in 12 because it competes for six
-  // adaptive slots against fields that gate far less.
-  "entityCountries", "sector", "useOfFunds", "fteBand", "ticketBand",
-  "developmentStage",
-]);
+// adaptively, regardless of how much gate reach they still carry. The set is
+// now DERIVED from FIELD_REACH in types.ts, which is the one declaration of
+// how every intake field gets answered; it used to be a second hand-kept list
+// of the same fact, sitting one import away from the first.
+//
+// Shrunk from 11 to 5 on 2026-07-29. The first screen now asks only what is
+// needed to BUILD a shortlist at all — where you are, what you build, how big
+// you are, how much you want, how far along you are. Everything else moved
+// into the adaptive round, where it is asked only when a fund on THIS
+// founder's shortlist actually turns on it.
+//
+// The trade is deliberate: an eleven-question opener asks every founder about
+// co-financing, consortia and exclusion flags whether or not a single fund in
+// front of them cares. Four of those questions gate fewer than 50 instruments
+// each, so most people were answering them for nothing. A shorter opener that
+// earns its follow-ups is a funnel; a long one is an interrogation.
+// useOfFunds stays on the first screen despite the shrink: it decides 58
+// filters, more than any other single field, and "what would the money pay
+// for" is a leading question about the project rather than a follow-up.
+// Demoted, it was reaching only 2 founders in 12 because it competes for six
+// adaptive slots against fields that gate far less.
 
 export interface OpenFieldEvidence {
   field: string;

@@ -774,6 +774,145 @@ export function fieldSeverity(field: string): FieldSeverity {
   return FIELD_SEVERITY[field as keyof EligibilityAnswers] ?? "choice";
 }
 
+/**
+ * How a value gets onto this field — the answer path, declared once.
+ *
+ * ── The defect this exists to make impossible ─────────────────────────────
+ * A rule keyed to a question nobody is asked is INERT. `evaluateSpec` reads
+ * `answers[spec.field]`, finds `undefined`, and returns null; null renders as
+ * "not assessable" and never as a blocker. So the rule cannot pass, cannot
+ * fail, and cannot rank anything — and it looks exactly like a rule that is
+ * quietly agreeing with everyone. Measured against Postgres 2026-08-08, that
+ * was true of 296 encoded comparators on 254 instruments.
+ *
+ * The failure is not that the rule is wrong. It is that we paid a model to
+ * read a fund's own text, extract a real requirement, and store it somewhere
+ * nothing will ever look. Inertness also HIDES incorrectness: `foundedYear`
+ * accumulated nine specs holding an AGE ("no older than 3 years") and three
+ * holding a YEAR ("incorporated after 2015") in the same numeric field,
+ * because nothing ever answered it and so nothing ever contradicted it.
+ *
+ * ── Why a declaration rather than a search ────────────────────────────────
+ * "Is this field asked?" cannot be answered by grepping the form: the first
+ * page is a `"use client"` component, the adaptive round picks its fields at
+ * runtime from live gate evidence, and two fields are computed server-side
+ * from other answers. There is no single place to look — so there is a single
+ * place to SAY, and `check_gate_field_reach.ts` holds the saying to the doing:
+ * every `adaptive` claim is verified against FIELD_ENUM_HINTS, and every claim
+ * of any kind is verified against `sanitizeEligibility`, which is the one
+ * whitelist standing between a real request and the evaluator.
+ *
+ * Keyed on `keyof EligibilityAnswers`, so the compiler refuses a new intake
+ * field until someone has said how it gets answered. A field added without an
+ * answer path is the whole defect; making it a type error is the fix.
+ */
+export interface FieldReachability {
+  /**
+   *  first_page  — a control on the opening form sets it.
+   *  adaptive    — FIELD_ENUM_HINTS offers it and the grounded round may ask it.
+   *  derived     — computed server-side from another answer; never asked.
+   *  constant    — pinned to one value for every founder. Reachable, and rules
+   *                on it really do evaluate; they just always evaluate the same
+   *                way. Legitimate, but it is a product decision and it should
+   *                be visible as one rather than read as a question.
+   *  unreachable — nothing can put a value here. Encoding against it is waste.
+   */
+  via: "first_page" | "adaptive" | "derived" | "constant" | "unreachable";
+  /**
+   * One value a founder could really give, used to probe `sanitizeEligibility`
+   * end to end.
+   *
+   * Optional ONLY because most fields have an enumerable vocabulary the probe
+   * can draw from by itself. It is required in practice for the fields that
+   * do not, and that is deliberate: `check_vocabularies.ts` skips any field
+   * whose `values` list is empty (`if (!vocab.values.length) continue`), and
+   * those are PRECISELY the fields that broke — `region` was asked, answered,
+   * and dropped by the sanitiser for as long as the field has existed, with a
+   * green build the whole time. A guard must not skip its own hard cases, so
+   * the reach check FAILS on a field it cannot probe instead of passing it.
+   */
+  sample?: unknown;
+  note?: string;
+}
+
+export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = {
+  // ── Asked on the opening form ───────────────────────────────────────────
+  sector: { via: "first_page" },
+  useOfFunds: { via: "first_page" },
+  fteBand: { via: "first_page" },
+  ticketBand: { via: "first_page" },
+  developmentStage: { via: "first_page" },
+  entityCountries: {
+    via: "first_page",
+    sample: ["France"],
+    note: "the control is the top-level `country` select; withIncorporationCountry " +
+          "folds it in server-side so all three routes get it from one place",
+  },
+
+  // ── Offered by the grounded adaptive round ──────────────────────────────
+  activities: { via: "adaptive" },
+  exclusionFlags: { via: "adaptive" },
+  consortium: { via: "adaptive" },
+  cofinancingBand: { via: "adaptive" },
+  conditionality: { via: "adaptive" },
+  wouldOpenEntity: { via: "adaptive" },
+  ownerOver25: { via: "adaptive" },
+  institutionalOwner: { via: "adaptive" },
+  nonEuControl: { via: "adaptive" },
+  bankRelationship: { via: "adaptive" },
+  institutionalBacking: { via: "adaptive" },
+  needBy: { via: "adaptive" },
+  turnoverBand: { via: "adaptive" },
+  balanceBand: { via: "adaptive" },
+  // Its options are DERIVED from the founder's country rather than fixed, so
+  // FIELD_ENUM_HINTS.region.options is empty by design and only `optionsFor`
+  // can answer it. Sampled explicitly for the same reason.
+  region: { via: "adaptive", sample: "FRD" },
+
+  // ── Computed from another answer ────────────────────────────────────────
+  lossesOverHalfCapital: {
+    via: "derived",
+    note: "one line of the exclusions checklist; sanitizeEligibility derives it " +
+          "from exclusionFlags so the framework check and 153 gates keep working",
+  },
+
+  // ── Pinned, not asked ───────────────────────────────────────────────────
+  borrowerModel: {
+    via: "constant",
+    note: "panel.tsx pins 'operating'. The lender/intermediary routing the other " +
+          "values unlock is out of scope for this tool's lean-founder persona, " +
+          "and an operating company is what such a founder truthfully is — so " +
+          "these rules evaluate correctly, they simply always evaluate the same way.",
+  },
+
+  // ── Nothing can answer these ────────────────────────────────────────────
+  // Listed so the failure is DECLARED rather than discovered. The reach check
+  // still fails on encoded comparators against them; this field only records
+  // that we know, so nobody re-derives the finding from scratch.
+  activityCountries: {
+    via: "unreachable",
+    sample: ["Spain"],
+    note: "no control, no FIELD_ENUM_HINTS entry, no derivation. 86 comparators " +
+          "on 80 instruments, 84 of them a positive `in [<one country>]`.",
+  },
+  foundedYear: {
+    via: "unreachable",
+    sample: 2021,
+    note: "no control, no hint, no derivation. Worse than inert: its 17 specs " +
+          "mix AGE thresholds with CALENDAR YEARS in one numeric field, so the " +
+          "day it is answered, nine funds start false-blocking young companies.",
+  },
+};
+
+/** Fields resolved on the opening form — never re-asked adaptively.
+ *  DERIVED from FIELD_REACH so the two cannot disagree; this was a second
+ *  hand-maintained list of the same fact. */
+export const FIRST_PAGE_FIELDS: ReadonlySet<string> = new Set(
+  Object.entries(FIELD_REACH)
+    .filter(([, r]) => r.via === "first_page")
+    .map(([f]) => f),
+);
+
 /** The fixed founder-facing options for every EligibilityAnswers field that's
  *  deferred off the first page (Phase 3B) and eligible for the grounded
  *  adaptive round (Phase 3C) — excludes free-text/numeric fields

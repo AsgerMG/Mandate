@@ -137,7 +137,6 @@ def check_invariants(conn: sqlite3.Connection, country: str | None) -> int:
         return 1
     print("  PASS — no rule that decides a founder is about a downstream "
           "beneficiary, the fund itself, or a bare enumeration.")
-<<<<<<< HEAD
     return check_spec_geography(conn, country)
 
 
@@ -195,8 +194,6 @@ def check_spec_geography(conn: sqlite3.Connection, country: str | None) -> int:
         return 1
     print("  PASS — every country field holds countries, every region rule uses "
           "region_within.")
-=======
->>>>>>> workstream-au-es-gates
     return 0
 
 
