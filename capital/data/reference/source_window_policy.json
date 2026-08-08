@@ -1,0 +1,98 @@
+{
+ "$note": [
+  "Does a source REGISTER publish an application window, independently of whether",
+  "a value came back for any given row? A property of the register, not of our",
+  "copy -- inferring it from windows PRESENT in the copy is what made the earlier",
+  "safeguard self-cancelling: a copy stale enough to be dangerous has none, so it",
+  "withheld nothing on exactly the corpus it existed to protect.",
+  "",
+  "RECONSTRUCTED 2026-08-09 from funding_instruments.source_window_policy in",
+  "Railway Postgres. The original was written by a workstream, never force-added",
+  "past the `data` gitignore, and lost with its worktree -- it exists in no branch",
+  "and no commit. assign_source_window_policy.py failed on every machine while the",
+  "definition survived only as values in one database. That is the orphan shape",
+  "this repo keeps finding, in its purest form.",
+  "",
+  "Keyed family -> country, because one family can publish windows in one register",
+  "and not another. Where a family/country carried both values the majority won,",
+  "and every such split is recorded below rather than smoothed away."
+ ],
+ "$reconstructed_at": "2026-08-09",
+ "$mixed_at_reconstruction": [
+  "national_dev_banks/FR: {'publishes_no_window': 4, 'publishes_window': 77} -> publishes_window"
+ ],
+ "policies": {
+  "(none)": {
+   "(none)": "publishes_no_window",
+   "EU": "publishes_no_window"
+  },
+  "chips_ju": {
+   "EU": "publishes_no_window"
+  },
+  "edf": {
+   "EU": "publishes_no_window"
+  },
+  "eib": {
+   "EU": "publishes_no_window"
+  },
+  "eic": {
+   "EU": "publishes_no_window"
+  },
+  "eit": {
+   "EU": "publishes_no_window"
+  },
+  "horizon_eu_partnership": {
+   "EU": "publishes_no_window"
+  },
+  "horizon_eu_pillar_ii": {
+   "EU": "publishes_no_window"
+  },
+  "innovation_fund": {
+   "EU": "publishes_no_window",
+   "NO": "publishes_no_window"
+  },
+  "ipcei": {
+   "EU": "publishes_no_window"
+  },
+  "national_dev_banks": {
+   "CZ": "publishes_no_window",
+   "DE": "publishes_no_window",
+   "DK": "publishes_no_window",
+   "EE": "publishes_no_window",
+   "ES": "publishes_no_window",
+   "EU": "publishes_no_window",
+   "FI": "publishes_no_window",
+   "FR": "publishes_window",
+   "GB": "publishes_no_window",
+   "IE": "publishes_no_window",
+   "IT": "publishes_no_window",
+   "LV": "publishes_no_window",
+   "NL": "publishes_no_window",
+   "NO": "publishes_no_window",
+   "SE": "publishes_no_window"
+  },
+  "state_aid_satr": {
+   "AT": "publishes_no_window",
+   "BE": "publishes_no_window",
+   "CZ": "publishes_no_window",
+   "DE": "publishes_no_window",
+   "EE": "publishes_no_window",
+   "ES": "publishes_window",
+   "FI": "publishes_no_window",
+   "FR": "publishes_no_window",
+   "GB": "publishes_no_window",
+   "GR": "publishes_no_window",
+   "HU": "publishes_no_window",
+   "IE": "publishes_no_window",
+   "IT": "publishes_no_window",
+   "LT": "publishes_no_window",
+   "LU": "publishes_no_window",
+   "LV": "publishes_no_window",
+   "NL": "publishes_no_window",
+   "PL": "publishes_no_window",
+   "PT": "publishes_no_window",
+   "SE": "publishes_no_window",
+   "SK": "publishes_no_window"
+  }
+ }
+}
