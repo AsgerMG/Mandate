@@ -130,7 +130,7 @@ def load_nuts() -> dict[str, list[dict]]:
     return json.loads(NUTS_PATH.read_text())["regions"]
 
 
-def candidates(conn: sqlite3.Connection) -> list[tuple]:
+def candidates(conn: sqlite3.Connection, country: str | None = None) -> list[tuple]:
     rows = conn.execute("""
         SELECT g.id, g.instrument_id, g.gate_key, g.requirement, g.value_spec,
                f.country
@@ -138,8 +138,9 @@ def candidates(conn: sqlite3.Connection) -> list[tuple]:
           JOIN funding_instruments f ON f.id = g.instrument_id
          WHERE (g.gate_role IS NULL OR g.gate_role = 'filter')
            AND f.country IS NOT NULL AND length(f.country) = 2
+           AND (? IS NULL OR f.country = ?)
          ORDER BY g.instrument_id, g.gate_key
-    """).fetchall()
+    """, (country, country)).fetchall()
     return [r for r in rows if CANDIDATE.search(r[3] or "")]
 
 
@@ -164,7 +165,7 @@ def cmd_status(_args) -> None:
 def cmd_run(args) -> None:
     conn = sqlite3.connect(DB)
     nuts = load_nuts()
-    rows = candidates(conn)
+    rows = candidates(conn, getattr(args, "country", None))
     if args.limit:
         rows = rows[: args.limit]
     print(f"resolving {len(rows):,} candidate gates ({MODEL})")
@@ -232,6 +233,10 @@ def main() -> None:
     r = sub.add_parser("run")
     r.add_argument("--limit", type=int, default=0)
     r.add_argument("--dry-run", action="store_true")
+    # Scoped for the same reason encode_gates.py encode is: a workstream must be
+    # able to fix the region rules it just created without also paying for, and
+    # silently moving, every other market inside its own before/after.
+    r.add_argument("--country", default=None)
     r.set_defaults(fn=cmd_run)
     args = ap.parse_args()
     args.fn(args)

@@ -137,6 +137,63 @@ def check_invariants(conn: sqlite3.Connection, country: str | None) -> int:
         return 1
     print("  PASS — no rule that decides a founder is about a downstream "
           "beneficiary, the fund itself, or a bare enumeration.")
+    return check_spec_geography(conn, country)
+
+
+# ── PROPERTY 3 — a spec must be readable by the engine that runs it ─────────
+# Not specific to scheme text, so it runs over every gate. Both halves are the
+# same failure: a comparator the engine parses and evaluates against the wrong
+# vocabulary, which reads as a confident verdict and is silently always false.
+#
+#   * A COUNTRY field holding a REGION name. `activityCountries in
+#     ["Provence-Alpes-Cote d'Azur", ...]` fails the French founder it was
+#     written to admit, and `verdict.ts` treats a failing cited structural rule
+#     as conclusive, so the fund is dropped from their brief entirely.
+#   * A REGION field carrying anything but `region_within`. Region matching is
+#     hierarchical over NUTS ids; an `in` over region NAMES never matches the
+#     id a founder's answer resolves to.
+def check_spec_geography(conn: sqlite3.Connection, country: str | None) -> int:
+    from nuts_regions import norm as region_key, subnational_names
+
+    subnational = subnational_names()
+    if not subnational:
+        print("  (no NUTS reference; geography check skipped)")
+        return 0
+
+    scope, params = "", ()
+    if country:
+        scope, params = " AND fi.country = ?", (country,)
+    rows = conn.execute(f"""
+        SELECT g.id, g.instrument_id, g.value_spec, substr(g.requirement, 1, 70) AS req
+          FROM eligibility_gates g
+          JOIN funding_instruments fi ON fi.id = g.instrument_id
+         WHERE g.value_spec IS NOT NULL AND g.gate_role = 'filter'{scope}""",
+                        params).fetchall()
+    bad: list[str] = []
+    for r in rows:
+        try:
+            spec = json.loads(r["value_spec"])
+        except (json.JSONDecodeError, TypeError):
+            bad.append(f"  gate {r['id']}: value_spec is not JSON")
+            continue
+        field, op = spec.get("field"), spec.get("op")
+        vals = spec.get("allowed") or ([spec["value"]] if "value" in spec else [])
+        if field in ("entityCountries", "activityCountries"):
+            inside = [v for v in vals if region_key(str(v)) in subnational]
+            if inside:
+                bad.append(f"  gate {r['id']} ({r['instrument_id']}): {field} holds "
+                           f"sub-national {inside} — {r['req']}")
+        if field == "region" and op != "region_within":
+            bad.append(f"  gate {r['id']} ({r['instrument_id']}): region field with "
+                       f"op={op}, only region_within is evaluable — {r['req']}")
+    print(f"\nlayer 1b: {len(rows)} encoded filters checked for spec geography")
+    if bad:
+        print("FAIL — a comparator the engine cannot evaluate as written:")
+        for line in bad[:40]:
+            print(line)
+        return 1
+    print("  PASS — every country field holds countries, every region rule uses "
+          "region_within.")
     return 0
 
 

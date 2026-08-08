@@ -103,6 +103,25 @@ MULTI_VALUE_FIELDS = set(_VOCAB["multiValueFields"])
 
 ROLES = ["filter", "obligation", "programme_fact", "vague"]
 
+# ── A country field must hold a country ──────────────────────────────────────
+# `entityCountries` and `activityCountries` are free text, so the vocabulary
+# check below cannot see them, and a rule restricting a scheme to named REGIONS
+# was encoded as `activityCountries in ["Provence-Alpes-Cote d'Azur", "Pays de
+# la Loire", ...]`. That is the defect encode_regions.py exists to prevent, one
+# field over: a founder who answers "France" fails a rule that admits them, and
+# the fund is dropped from their brief as conclusively blocked.
+#
+# The test is not "is this a country we know" — Russia and Belarus appear in
+# real exclusion lists and are outside the European scope file, so requiring
+# resolution would delete correct rules. The test is the precise one: does this
+# value name an area INSIDE a country? The NUTS reference is the single source
+# `encode_regions.py` already resolves against, so the two passes cannot
+# disagree about what a region is.
+COUNTRY_FIELDS = ("entityCountries", "activityCountries")
+from nuts_regions import norm as _region_key, subnational_names  # noqa: E402
+
+SUBNATIONAL = subnational_names()
+
 # The founder attributes we actually collect (EligibilityAnswers in types.ts).
 # 'none' is a first-class answer: most gates that look like filters turn out to
 # be decidable by nothing the founder can tell us.
@@ -620,6 +639,19 @@ def cmd_encode(args) -> None:
                           f"name the specific flag, not the sentinel")
                     skipped += 1
                     continue
+
+            if field in COUNTRY_FIELDS and op in ("in", "not_in", "equals"):
+                key = "allowed" if op in ("in", "not_in") else "value"
+                vals = spec[key] if key == "allowed" else [spec[key]]
+                good = [v for v in vals if _region_key(v) not in SUBNATIONAL]
+                if len(good) != len(vals):
+                    print(f"    gate {gid}: dropped sub-national values "
+                          f"{sorted(set(vals) - set(good))} from {field} — a region "
+                          f"rule belongs to encode_regions.py, not a country field")
+                if not good:
+                    skipped += 1
+                    continue
+                spec[key] = good if key == "allowed" else good[0]
 
             vocab = ENUM_VALUES.get(field)
             if vocab and op in ("in", "not_in", "equals"):
