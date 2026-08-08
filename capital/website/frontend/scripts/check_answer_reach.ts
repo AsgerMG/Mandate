@@ -58,7 +58,27 @@
  * and a founder in a country with one scheme cannot be re-ranked. Requiring
  * every answer to move every profile would fail correct code. Requiring that
  * the question be capable of moving anything is the weakest claim that still
- * catches all four defects above — each of them moved nothing, anywhere, ever.
+ * catches all five defects above — each of them moved nothing, anywhere, ever.
+ *
+ * ── Two things this check got wrong, kept because they will recur ─────────
+ * IT GRADED THE WRONG CORPUS. `hydrateGatesFor` sets statement_timeout=2000
+ * and swallows the error, so one call for all 1,088 instruments returns
+ * cleanly having fetched NOTHING whenever the database is busy — while
+ * `corpusProvenance()` still reads "postgres", because the instruments loaded
+ * and only their gates did not. The first run under `npm run check` reported
+ * eight founder-facing defects, in four seconds instead of four minutes, none
+ * of them real. Hence the chunking below, and hence the post-condition, which
+ * is the part that matters: neither the chunking nor the retry is trusted.
+ *
+ * ITS VERDICT MOVED WITH SOMEONE ELSE'S DATA LOAD. The first probe used three
+ * hand-written founders, and on one day's corpus five gate-driven fields
+ * separated a sibling somewhere in their three tables while on the next day's
+ * three did not — no code change between, just an unrelated load moving ~5% of
+ * the corpus in and out of "offerable". A guard whose verdict flips like that
+ * gets disabled. So the population is twelve real companies from the recall
+ * set, and the build-failing claim is scoped to the fields threaded as NAMED
+ * inputs, whose scorers are global multipliers: their behaviour is a property
+ * of the code rather than of which funds happen to sit in one founder's pool.
  *
  * DATABASE_URL is OPTIONAL: with no corpus this checks nothing and says so.
  */
@@ -362,7 +382,7 @@ async function main() {
     }
     // "Read by the screen" is proved one of two ways, and the second is the
     // one that stops this check failing on its own coverage rather than on the
-    // product. Three probe founders see three tables; a field whose two
+    // product. Twelve probe founders see twelve tables; a field whose two
     // comparators sit on two instruments none of them was shown moves nothing
     // HERE while being read for every founder who IS shown one. So an encoded
     // comparator counts as proof of use — `evaluateEligibility` runs the

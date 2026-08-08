@@ -215,24 +215,26 @@ the `region` / memo-drift shape. The two guards together cover the class.
 
 `measure_recall.ts`, holdout, N=300, three seeds. Floors 93 / 22 / 80.
 
+On the shipped default (`consortium=yes`), final batch:
+
 | seed | pool | EXACT@5 | REGIME@5 |
 |---|---|---|---|
-| 20260806 | 95% | 26% | 82% |
+| 20260806 | 96% | 29% | 86% |
 | 7 | 97% | 28% | 82% |
 | 99 | 98% | 29% | 83% |
 
 Within the documented baseline (94-97 / 26-31 / 82-86) and clear of every
-floor. `check_recall_floor` green (98 / 29 / 86 against 93 / 22 / 80). Per
+floor. `check_recall_floor` green: 98 / 29 / 86 against 93 / 22 / 80. Per
 country and per regime-size stratum unchanged.
 
-Seeds 7 and 99 read 2-3 points of pool higher than the baseline captured at
-the start of this workstream, and that is a corpus movement rather than an
-effect: `WITHHELD` in the answer key went from 23.3% to 28.0% while these ran,
-because other workstreams were loading. **Every before/after below is therefore
-a same-corpus pair**, re-measured together. A pair taken across that shift said
-the change traded one population for another; measured properly, it does not.
-That is a general hazard when several workstreams share one Postgres, and it is
-the reason to distrust any A/B whose two arms were not run back to back.
+**The corpus moved three times while this workstream ran.** `WITHHELD` in the
+answer key went from 23.3% to 28.0%, and the per-stratum counts changed under
+every batch, because other workstreams were loading against the same Postgres.
+Pool alone drifted 95% → 98% with no code change. So **every before/after below
+is a same-corpus pair**, verified by its per-stratum counts being identical
+across the two arms. A pair taken across one of those shifts read as a
+population trade; measured properly, it is not. Distrust any A/B on this repo
+whose two arms were not run back to back.
 
 ### The consortium change had to be measured separately, and here is why
 

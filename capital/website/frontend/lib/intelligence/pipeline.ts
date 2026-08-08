@@ -866,8 +866,14 @@ async function synthesize(
       founderCountries: founderIso,
       requiresConsortium: inst.gates.some(
         (g: { requirement: string }) => /consorti|at least three|3\+ partners|multi-partner/i.test(g.requirement)),
-      consortiumOk: req.eligibility?.consortium === "yes" ? true
-        : req.eligibility?.consortium === "no" ? false : undefined,
+      // The SAME derivation the row sort uses. Written out by hand here and
+      // by hand again in the table builder, the two copies disagreed about
+      // what silence means: this one read an unanswered founder as `undefined`
+      // (correct, and `structureFit` scores it 0.6, neutral) while the table
+      // builder's `!== "no"` read the same silence as a confident `true`. One
+      // answer, two mappings, and the one on the path to the five rows was the
+      // wrong one.
+      consortiumOk: tableInputFromAnswers(req.eligibility).consortiumOk,
       founderSector: req.eligibility?.sector,
       year: new Date().getFullYear(),
     }));
