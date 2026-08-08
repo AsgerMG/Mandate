@@ -9,8 +9,12 @@
 // with the founder's region and once without, and reports where the two orders
 // stop differing. Reasoning about the code got as far as three candidate
 // collapses; only running it says which one binds.
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
+// Declared, not assumed: this harness ranks on pgvector when the keys are
+// present and on the lexical fallback when they are not, and the two are
+// different systems. check_env_loader P4 derives this from the import graph.
+requireCredentials("diagnose_region_drop", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   hydrateDbInstruments, loadDbInstruments, publishableInstruments, requireLiveCorpus,

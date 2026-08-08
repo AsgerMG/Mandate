@@ -11,8 +11,12 @@
 // and contrasts it with the reach the same signal would have if it were scoped
 // to the REGIME, which is the unit the leaf-choice problem is actually posed in
 // and the unit gateFitScorer uses.
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
+// Declared, not assumed: this harness ranks on pgvector when the keys are
+// present and on the lexical fallback when they are not, and the two are
+// different systems. check_env_loader P4 derives this from the import graph.
+requireCredentials("diagnose_region_reach", ["DATABASE_URL"]);
 
 import {
   hydrateDbInstruments, loadDbInstruments, publishableInstruments, requireLiveCorpus,

@@ -1,0 +1,144 @@
+(node:88340) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+corpus=postgres instruments=1088 at 2026-08-08T11:00:06.254Z
+POOL_LEAVES_PER_CHANNEL=250
+capitalSought=grant+loan
+
+AT/*: publishable=65 in pool=42 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=728 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+BE/*: publishable=61 in pool=36 missing=25
+  attribution of the missing:
+     13  SEL-CAPITAL
+     12  (NO EVENT RECORDED)
+  whole-request rule counts: SEL-COUNTRY=734 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+CZ/*: publishable=92 in pool=69 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=701 SEL-CAPITAL=24
+
+DE/*: publishable=148 in pool=104 missing=44
+  attribution of the missing:
+     32  SEL-CAPITAL
+     12  (NO EVENT RECORDED)
+  whole-request rule counts: SEL-COUNTRY=645 SEL-CAPITAL=45 SEL-NATIONAL-EMPTY=2
+
+DK/*: publishable=52 in pool=29 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=741 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+EE/*: publishable=101 in pool=77 missing=24
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     12  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=693 SEL-CAPITAL=24
+
+ES/*: publishable=148 in pool=123 missing=25
+  attribution of the missing:
+     13  SEL-CAPITAL
+     12  (NO EVENT RECORDED)
+  whole-request rule counts: SEL-COUNTRY=647 SEL-CAPITAL=24
+
+FI/*: publishable=55 in pool=30 missing=25
+  attribution of the missing:
+     13  SEL-CAPITAL
+     12  (NO EVENT RECORDED)
+  whole-request rule counts: SEL-COUNTRY=740 SEL-CAPITAL=24
+
+FR/*: publishable=150 in pool=126 missing=24
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     12  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=643 SEL-CAPITAL=25
+
+GB/*: publishable=47 in pool=24 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=746 SEL-CAPITAL=24
+
+GR/*: publishable=51 in pool=26 missing=25
+  attribution of the missing:
+     13  SEL-CAPITAL
+     12  (NO EVENT RECORDED)
+  whole-request rule counts: SEL-COUNTRY=744 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+HU/*: publishable=47 in pool=24 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=746 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+IE/*: publishable=54 in pool=31 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=739 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+IT/*: publishable=112 in pool=88 missing=24
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     12  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=681 SEL-CAPITAL=25 SEL-NATIONAL-EMPTY=2
+
+LT/*: publishable=46 in pool=22 missing=24
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     12  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=748 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=4
+
+LU/*: publishable=49 in pool=26 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=744 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+LV/*: publishable=76 in pool=51 missing=25
+  attribution of the missing:
+     13  SEL-CAPITAL
+     12  (NO EVENT RECORDED)
+  whole-request rule counts: SEL-COUNTRY=719 SEL-CAPITAL=24
+
+NL/*: publishable=70 in pool=46 missing=24
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     12  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=723 SEL-CAPITAL=25 SEL-NATIONAL-EMPTY=2
+
+NO/*: publishable=119 in pool=94 missing=25
+  attribution of the missing:
+     13  (NO EVENT RECORDED)
+     12  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=676 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+PL/*: publishable=53 in pool=30 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=740 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+PT/*: publishable=52 in pool=29 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=741 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
+SE/*: publishable=101 in pool=78 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=692 SEL-CAPITAL=24
+
+SK/*: publishable=48 in pool=25 missing=23
+  attribution of the missing:
+     12  (NO EVENT RECORDED)
+     11  SEL-CAPITAL
+  whole-request rule counts: SEL-COUNTRY=745 SEL-CAPITAL=24 SEL-NATIONAL-EMPTY=2
+
