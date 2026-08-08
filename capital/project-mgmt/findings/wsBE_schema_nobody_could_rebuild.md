@@ -7,11 +7,12 @@ Workstream BE, task 1. Closes the open half of workstream AG.
 The census failure that started this — `coverage: OperationalError: no such
 column: tier` — was migration 019 never reaching the Railway volume. The volume
 had run 9 of 23 migrations because `railway_cron.py` applied none and `apply.py`
-accepted one id at a time. Workstream AS fixed the cron and added
-`check_store_schema.py`; workstream AG made `ETL/lib/schema_state.py` the one
-definition of "does this store have migration N", judged from the store's own
-schema rather than from a `schema_migrations` table that travels with an
-uploaded file. Both stand. Nothing here re-litigates them.
+accepted one id at a time. Workstream AS fixed the cron, added `apply.py all`
+and `--ids`, and added `check_store_schema.py`; the census now imports
+`apply.status()` so a store's pending migrations travel on the same channel as
+its figures. All of that is on main and stands. Nothing here re-litigates it.
+AG's parallel answer, `ETL/lib/schema_state.py`, is deleted — see the last
+section.
 
 ## The open half: AG's last message
 
