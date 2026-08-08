@@ -105,22 +105,14 @@ loadEnvLocal();
 requireCredentials("measure_sibling_choice", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
-  hydrateDbInstruments, loadDbInstruments, publishableInstruments, type DbInstrument,
+  hydrateDbInstruments, hydrateGatesFor, type DbInstrument,
 } from "../lib/intelligence/corpus";
 import { sectorFit, scaleFit, livenessFit } from "../lib/intelligence/fit";
 import { awardScorer, regionScorer } from "../lib/intelligence/shortlist";
 import { sectorScorer, sectorWeight } from "../lib/intelligence/sectorPrior";
-import { loadRecallSet } from "./recallSet";
+import { buildRegimeCases, sizeQuantiles, type RegimeCase } from "./regimeCases";
 
-interface Case {
-  want: DbInstrument;
-  group: DbInstrument[];
-  sector: string;
-  country: string;
-  mode: string;
-  region?: string;
-  regionSource?: string;
-}
+type Case = RegimeCase;
 
 /** Raw recipient count in the founder's sector: P(fund | sector) up to a
  *  constant, since the normaliser is the same for every member of the group. */
@@ -142,38 +134,17 @@ const BAND = "b500k_2m5";
 
 async function main() {
   await hydrateDbInstruments();
-  const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
-  // Siblings are drawn from the PUBLISHABLE set, because that is the universe
-  // the pool draws from: grading against leaves the product can never show
-  // would measure a chooser nobody will run.
-  const regimes = new Map<string, DbInstrument[]>();
-  for (const i of publishableInstruments()) {
-    if (!i.parentId) continue;
-    (regimes.get(i.parentId) ?? regimes.set(i.parentId, []).get(i.parentId)!).push(i);
-  }
-  const regimeOf = new Map<string, DbInstrument[]>();
-  for (const g of regimes.values()) if (g.length > 1) for (const i of g) regimeOf.set(i.id, g);
-
-  const { file, rows } = loadRecallSet();
-  const split = process.env.SPLIT ?? "holdout";
-  const narrow = process.env.COUNTRY !== "0";
-  const cases: Case[] = [];
-  let alone = 0;
-  for (const r of rows as unknown as Record<string, string>[]) {
-    if (split !== "all" && r.split !== split) continue;
-    const want = byId.get(r.instrument);
-    let g = want ? regimeOf.get(want.id) : undefined;
-    if (!want || !g || !r.sector) { alone++; continue; }
-    // The pool only ever holds leaves that serve the founder's country, so a
-    // chooser graded against foreign siblings is graded on a group it will
-    // never see.
-    if (narrow) g = g.filter((i) => !i.country || i.country === "EU" || i.country === r.country);
-    if (g.length < 2 || !g.some((i) => i.id === want.id)) { alone++; continue; }
-    cases.push({ want, group: g, sector: r.sector, country: r.country, mode: r.mode,
-                 region: r.region, regionSource: r.regionSource });
-  }
-  const sizes = cases.map((c) => c.group.length).sort((a, b) => a - b);
-  const q = (p: number) => sizes[Math.floor(p * (sizes.length - 1))];
+  const { file, split, narrow, cases, alone } = buildRegimeCases();
+  const q = sizeQuantiles(cases);
+  // ── The two eligibility rows below were grading an EMPTY ARRAY ────────────
+  // The Postgres path loads FRAMEWORK gates only (corpus.ts, "PHASE ONE"), and
+  // no leaf graded here is a framework, so `i.gates` was `[]` for every one of
+  // them. That is why "eligibility (encoded filter gates)" and "structure (own
+  // gate count)" both returned exactly the id tie-break baseline: not a signal
+  // that fails to separate, a signal that was never loaded. 852 of the 1,006
+  // non-framework instruments carry an own value-spec gate. Any reading of
+  // those two rows taken before this call is void.
+  await hydrateGatesFor([...new Set(cases.flatMap((c) => c.group.map((i) => i.id)))]);
   console.log(`\nset=${file} split=${split} country-narrowed=${narrow}`);
   console.log(`  cases ${cases.length}  (${alone} skipped: no sector, or won fund alone in its regime here)`);
   console.log(`  regime size  p10 ${q(0.1)}  median ${q(0.5)}  p90 ${q(0.9)}`);

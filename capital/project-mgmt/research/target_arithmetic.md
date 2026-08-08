@@ -79,6 +79,86 @@ index and a wholesale gate-layer rewrite, could not be separated because the
 previous index was overwritten. Do not build a plan on the 75% until that is
 settled: it may be a regression to fix rather than a ceiling to design around.
 
+## The third factor has a ceiling, and it is 39%
+
+Added 2026-08-06 by workstream J. Two corrections to the figures above, then
+the result they were needed for.
+
+**The 36% is void.** It was the old stride sampler aliasing against the set's
+ordering. On the seeded shuffle (`95f5fce`), three seeds:
+
+```
+             seed 20260806   seed 7   seed 99
+pool               97%         96%      96%
+EXACT@5            27%         30%      26%     (+/-5.5 at n=250)
+REGIME@5           86%         91%      85%
+```
+
+So the decomposition reads `28% = 96% x 87% x 33%`, and the half-width is 6
+points — a 2-3 point move is not a result.
+
+**The third factor cannot be raised past ~39%, and that is arithmetic rather
+than a prediction.** `scripts/measure_offer_separability.ts` asks what a
+chooser built on the leaf's own OFFER can reach — capital type, award
+magnitude at ticket-band resolution, registered GBER article, registered
+purpose, own encoded gates, closing date — without building one. Two siblings
+that record the same values on all six cannot be told apart by any chooser
+reading them, however perfectly the founder answers, so the size of that
+indistinguishable class bounds every such chooser at once. Holdout, n=2,786,
+mean regime 53.3 members:
+
+```
+offer facets, all six          27.0% @1   42.1% @3    mean class 31.3
++ sector ranked inside class   38.8% @1   55.9% @3    upper bound on a hybrid
+```
+
+The second line is the highest number available: a perfect founder, perfectly
+matched, with the strongest measured posterior breaking the remaining ties. It
+is 39% against the 99% the table above requires. **95% EXACT@5 is not
+reachable with the facts this corpus holds** — not by a better ranker, and not
+by a better chooser.
+
+The same arithmetic prices the collapse. One row per regime buys about six
+points of regime@5, so collapsed EXACT@5 tops out at `0.96 x 0.93 x 0.388 =
+35%` against today's 28% +/-6 — a gain that needs the oracle to be real. At
+any realistic fraction of it the collapse loses, which is what workstream G
+measured directly (12 exact points spent for 5 regime points) and why it
+refused to ship it. That refusal stands.
+
+## What binds is register coverage, not the mechanism
+
+The mechanism is sound where the data exists. Of the six facets, the two
+registered ones carry the signal, and they are on record for a third of
+leaves. On cases whose won leaf has a registered basis the oracle is **52.8%**
+against **20.6%** for the same cases with the register removed, and coverage
+predicts the outcome country by country:
+
+```
+ES  0% registered -> oracle 11%   (class 44)      DE  87% -> 53%   (class 3.8)
+FR 35%            -> oracle 15%   (class 48)      IT  91% -> 62%   (class 2.2)
+SE 17%            -> oracle 17%   (class 40)      NL  88% -> 67%   (class 3.3)
+```
+
+Spain is 24% of the graded holdout and has no registered objective at all. So
+the leverage is an ETL job — extend the objective/article extraction to the
+registers that have none — and not a modelling one. It still does not reach
+95%: complete coverage puts the ceiling near 53% before the hybrid, and the
+target needs 99%.
+
+Two things this chooser is NOT exposed to, recorded because both were asked:
+
+- **A cut year cannot break it.** Five of the six facets are properties of the
+  registration, true of a scheme that has never paid anyone. Only award
+  magnitude is fitted to history, and it is worth 3.0 points of the 27.0%
+  (registration facts alone: 24.0%). There is nothing here to collapse the way
+  the sector posterior collapsed 34.5% -> 10.9%.
+- **It was never gradeable end to end.** `__recallSetComposed.json` carries
+  `name, country, sector, instrument, description, mode, split` and no founder
+  intake — no `ticketBand`, no `capitalSought`, no `useOfFunds`. An
+  offer-against-intake chooser has no answers to match against, and the only
+  available source for them is the amount of the award being predicted. The
+  oracle above exists because it is the one leak-free way to bound the idea.
+
 ## The structural consequence
 
 Workstream E measured that among the 125 holdout cases where the won fund is in
