@@ -68,10 +68,20 @@ async function main() {
   const sample = sampleRecall(pop, Math.min(N, pop.length), Number(process.env.SEED ?? 20260806));
   const mode = (process.env.ANSWERS ?? "real") as AnswerMode;
 
+  /** Every instrument the ACTIVE SET can name, anywhere, for anyone — not just
+   *  this sample and not just this country. A leaf outside it cannot be scored
+   *  right or wrong by EXACT@5 under any ranker, so its presence on a founder's
+   *  table is evidence about the KEY and not about retrieval. */
+  const nameable = new Set(rows.map((r) => r.instrument));
+
   type B = { n: number; pool: number; poolBlind: number; poolAlone: number;
              t5: number; t5Blind: number; t5Alone: number };
   const mk = (): B => ({ n: 0, pool: 0, poolBlind: 0, poolAlone: 0, t5: 0, t5Blind: 0, t5Alone: 0 });
   const by = new Map<string, B>();
+  /** How often each standalone leaf is actually SHOWN. The aggregate share says
+   *  a third of the table is standalone; only the roster says whether that is a
+   *  defect or a gap in the key, and the two look identical in a percentage. */
+  const shownAlone = new Map<string, number>();
 
   for (const t of sample) {
     resetGateHydration();
@@ -97,6 +107,9 @@ async function main() {
       b.t5Blind += top5.filter(blind).length;
       b.t5Alone += top5.filter((id) => standalone(id)).length;
       by.set(k, b);
+    }
+    for (const id of top5) {
+      if (standalone(id)) shownAlone.set(id, (shownAlone.get(id) ?? 0) + 1);
     }
   }
 
@@ -128,6 +141,32 @@ async function main() {
     `   x${(inTable / Math.max(1e-9, inPool)).toFixed(2)}`);
   console.log(`    (x1 is a uniform draw. Above 1 the sort PROMOTES a fund for the` +
     ` data we do not hold about it.)`);
+
+  // ── THE ROSTER, which is the section that settles the question ────────────
+  // A share cannot distinguish "the ranker is showing rows that can never be
+  // right" from "the answer key cannot name the rows the ranker is right about".
+  // Both read as "a third of the table is standalone and none of it is ever an
+  // answer". Naming the leaves separates them in one glance, because a leaf with
+  // a thousand awards on record that the key never names is a fact about the KEY.
+  const roster = [...shownAlone].sort((a, b) => b[1] - a[1]);
+  const slots = roster.reduce((s, [, n]) => s + n, 0);
+  console.log(`\n  WHICH STANDALONE LEAVES ARE ACTUALLY SHOWN — ${slots} row-slot(s) of ` +
+    `${all.t5}, ${roster.length} distinct leaf/leaves`);
+  console.log(`  ${"instrument".padEnd(30)} ${"shown".padStart(5)} ${"cc".padStart(3)}` +
+    ` ${"awards".padStart(7)}  can the key name it?`);
+  for (const [id, n] of roster.slice(0, 20)) {
+    const i = byId.get(id);
+    console.log(`  ${id.padEnd(30)} ${String(n).padStart(5)} ${String(i?.country ?? "").padStart(3)}` +
+      ` ${String(i?.eventCount ?? 0).padStart(7)}  ${nameable.has(id) ? "yes" : "NO"}`);
+  }
+  const unnameable = roster.filter(([id]) => !nameable.has(id));
+  const unnameableAwards = unnameable.reduce((s, [id]) => s + (byId.get(id)?.eventCount ?? 0), 0);
+  if (unnameable.length) {
+    console.log(`\n    ${unnameable.length} of ${roster.length} carry ${unnameableAwards} awards ` +
+      `between them and are NEVER an answer\n    anywhere in the active set. For those rows ` +
+      `EXACT@5 is not measuring retrieval; it is\n    reporting the coverage of the key. ` +
+      `Fixing selection cannot move them.`);
+  }
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
