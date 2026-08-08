@@ -119,6 +119,53 @@ best of any large market. The 88 do not even enter that measurement, being
 parent-less. Corpus-wide sibling coverage is unchanged: mean class 2.5, ceiling
 @5 88%.
 
+## What it bought, measured
+
+`SPLIT=holdout N=300`, three seeds, before and after. Raw counts, not just
+percentages, because the percentages round away the movement.
+
+| seed | | pool | EXACT@5 | REGIME@5 | **ES** n | ES pool | ES exact5 | ES regime5 |
+|---|---|---|---|---|---|---|---|---|
+| 20260806 | before | 284/300 | 77/300 | 247/300 | 20 | 85% | 25% | 70% |
+| 20260806 | after | 284/300 | 77/300 | 247/300 | 20 | 85% | 25% | 70% |
+| 7 | before | 285/300 | 87/300 | 256/300 | 12 | 67% | 42% | 58% |
+| 7 | after | 285/300 | 85/300 | 254/300 | 12 | 67% | 42% | 58% |
+| 99 | before | 285/300 | 93/300 | 257/300 | 12 | 75% | 25% | 50% |
+| 99 | after | 285/300 | 94/300 | 259/300 | 12 | 75% | 25% | 50% |
+
+**Spain is bit-identical on every metric, on all three seeds.** Not "within
+noise" — the same integers.
+
+Corpus-wide across 900 replays: EXACT@5 257 → 256 (−1), REGIME@5 760 → 760 (0).
+
+**Attribution caveat, stated because it cuts against the tidy story.** The
+after-run contains *two* changes, not one: the Spanish conversion **and** the
+country-gate repair, which touches nine markets. So the ±2 swings on seeds 7 and
+99 belong to the repair, not to Spain. Spain's own rows moved nothing, which is
+the cleaner claim and the one the table supports.
+
+`check_recall_floor.ts` after: pool 97% (floor 93), exact5 30% (floor 22),
+regime5 86% (floor 80) — **all floors met**, published as verdict #44.
+
+**The ES stratum is too small to have detected a gain anyway**: n = 20, 12, 12.
+At n=12 a 95% interval on exact5 is roughly ±25pp. Any honest Spain-specific
+claim from this recall set — in either direction — would have been unsupportable.
+That is a limitation of the instrument, and it applies equally to the French
+numbers this workstream was asked to compare against: the "18/15/20% vs
+17/15/17%" that reportedly showed no movement is well inside noise at n≈87.
+
+## An independent reading disputes almost none of it
+
+`check_gate_subject.py --judge --country ES` (layer 2 — the model is shown the
+fund's text and the derived rule, never the label it is testing) disputed
+**5 of 88, 6%**, against France's 8 of 41 (20%). **4 were quarantined.**
+
+That low rate is itself the finding: *the rules are faithful to the text.*
+Fidelity was never the problem. The problems are that the text is ours and the
+rows cannot be scored. Two of the four quarantined rules are the region facet
+being read as `in ['Spain']` — the judge's own words: "rule mismaps to country
+Spain".
+
 ## The one thing in this text that is worth having
 
 `Ámbito regional` is real, register-stated, and takes 25 distinct values across
@@ -221,14 +268,25 @@ deserves its own measurement.
 ## Recommendation
 
 1. **Keep** the country-field guard, the repair, and `check_country_gates.ts`.
-   That is the workstream's real yield and it is market-independent.
-2. **Do not treat ES gate coverage 11 → 99 as progress.** Retract or retain the
-   88 rows' gates on their merits, but the metric that made them look valuable
-   is measuring the wrong thing. If they are retained, the `equals ['other']`
-   sector rules should go: they are hard blocks derived from a residual bucket.
-3. **Route `Ámbito regional` to `catchment_regions`** as a separate workstream.
-   It is the only part of this text with genuine, unused discriminating power.
-4. **Stop converting text→gates for parent-less rows generally.** The
-   `group.length < 2` skip in `gateFitScorer` means the work cannot be scored,
-   in any market. That check should probably be made loud: a conversion pass
-   ought to refuse, or at least warn, when its target rows have no siblings.
+   That is the workstream's real yield and it is market-independent: 31 rules
+   that had never fired now fire, in the direction their own source states.
+2. **Keep the 88 rows' gates, minus the 4 quarantined.** Retention is the
+   evidence-led call, not enthusiasm: layer 2 disputes only 6%, recall is
+   unchanged, and the country rules do stop a German founder being shown a
+   Catalan grant. But **do not read ES coverage 11 → 99 as progress** — that
+   metric counts rows, and the ranker counts siblings.
+3. **Route `Ámbito regional` to `catchment_regions`** as its own workstream with
+   its own before/after. It is the only part of this text with genuine unused
+   discriminating power, and unlike gates it feeds a facet the ranker reads.
+4. **`plan` now answers this before any money is spent** — shipped in this
+   branch. It reports what fraction of the target rows `gateFitScorer` can ever
+   score, using the scorer's own regime key:
+
+       ES   SCOREABLE BY THE RANKER: 5 of 99 (5%)
+       FR   SCOREABLE BY THE RANKER: 99 of 99 (100%)
+
+   That single number is the whole difference between this workstream and AT's,
+   and it was free and knowable in advance. It is a property of the ranker, not
+   a note about Spain: the next register publishing standalone calls hits it too.
+5. **Grow the ES recall stratum before making any Spain-specific claim.** At
+   n=12–20 the instrument cannot see a real effect of plausible size.
