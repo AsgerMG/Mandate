@@ -135,7 +135,20 @@ function loadSemanticCache(): Record<string, CachedMatch> {
           ? (v as CachedMatch)
           : { scores: v as Record<string, number> },
       ]));
-    } catch {
+    } catch (e) {
+      // Loud, for the reason generatedArtifact.ts exists: an empty cache is not
+      // a smaller cache, it is every offline check ranking on scores of 0 —
+      // which the ranker cannot tell apart from "thematically wrong". This
+      // module cannot USE that loader (a top-level `import "fs"` would reach a
+      // "use client" boundary; hence the require() above and the declared
+      // waiver in data/guard_registry.json), but the silence is not part of the
+      // waiver.
+      console.error(
+        `semantic: could not read lib/intelligence/semanticCache.generated.json `
+        + `(cwd ${process.cwd()}): ${e instanceof Error ? e.message : String(e)}. `
+        + `Every NO_PG score in this process is 0 because the file was not read, `
+        + `NOT because the corpus is thematically unrelated. `
+        + `Re-cut it: npx tsx scripts/emit_semantic_cache.ts`);
       scoreCache = {};
     }
   }

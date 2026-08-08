@@ -12,8 +12,7 @@
 // the evidence that the register's region is a fact about the COMPANY (94.4%
 // self-agreement at NUTS-1 across companies holding awards under more than one
 // scheme) rather than about the scheme.
-import { readFileSync } from "fs";
-import path from "path";
+import { loadGenerated } from "./generatedArtifact";
 import { regionsOverlap } from "./regions.generated";
 
 export interface RegionFootprint {
@@ -31,13 +30,8 @@ let cache: Record<string, RegionFootprint> | undefined;
  *  recipients" — every caller must treat the two differently. */
 export function regionFootprints(): Record<string, RegionFootprint> {
   if (cache === undefined) {
-    try {
-      cache = JSON.parse(readFileSync(
-        path.join(process.cwd(), "lib", "intelligence", "regionPrior.generated.json"),
-        "utf8")) as Record<string, RegionFootprint>;
-    } catch {
-      cache = {};
-    }
+    cache = loadGenerated<Record<string, RegionFootprint>>(
+      "regionPrior.generated.json", {});
   }
   return cache;
 }

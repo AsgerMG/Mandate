@@ -15,8 +15,8 @@ Design (see project-mgmt/plans/sprint_20_taxonomy_reclassification.md):
     that scores Tier 1 against NACE-grounded labels before the full run.
 
 Usage:
-  python3 ETL/transform/classify_taxonomy.py vocab            # print + validate the taxonomy
-  python3 ETL/transform/classify_taxonomy.py bakeoff --n 200  # accuracy + cost projection
+  python3 ETL/events/transform/classify_taxonomy.py vocab            # print + validate the taxonomy
+  python3 ETL/events/transform/classify_taxonomy.py bakeoff --n 200  # accuracy + cost projection
 """
 from __future__ import annotations
 

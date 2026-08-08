@@ -263,6 +263,13 @@ also provoked red.
 
 ## Sequenced, not attempted
 
+> **Worked by workstream BK, 2026-08-08 — see `wsBK_orphan_closeout.md`.**
+> Closed: 3 (one guard policy across both entry points), 5 and 6 (regeneration
+> and staleness for the production-path artifacts, plus the structural guard
+> `check_artifact_reachability.py`), and most of 8. Items 1, 2 and 4 went to
+> workstream BH and item 9 to BJ. Item 7 is still open, deliberately.
+
+
 In priority order. None is a large refactor; all were left because they need a
 decision or a credentialled runner, not because they are hard.
 
