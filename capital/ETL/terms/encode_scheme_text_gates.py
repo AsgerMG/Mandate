@@ -293,6 +293,46 @@ def group_by_text(rows: list[sqlite3.Row]) -> dict[str, list[sqlite3.Row]]:
     return groups
 
 
+def scoreable(conn: sqlite3.Connection, rows: list[sqlite3.Row]) -> tuple[int, int]:
+    """How many of these rows can `gateFitScorer` ever score? (scoreable, total)
+
+    WHY THIS IS THE FIRST QUESTION, not a footnote.
+
+    `gateFitScorer` (shortlist.ts) groups leaves by `parent_id ?? id` and opens
+    with `if (group.length < 2) continue`. It is a SIBLING discriminator: it
+    ranks the leaves of one regime against each other and does nothing else. A
+    row with no siblings is a group of one and is skipped, so a gate written to
+    it is never evaluated by the ranker, however good the gate is.
+
+    Spain's 88 BDNS convocatorias were all parent-less -- deliberately and
+    correctly, since they come from dozens of bodies under dozens of regulatory
+    bases and inventing a parent would assert a regime that does not exist. Every
+    one of their 596 gates and 88 comparators is therefore unscoreable. The work
+    was sound, passed every check, and could not move a number.
+
+    So the plan states this before any money is spent. It is a fact about the
+    ranker, tested against the rows in front of it, and it holds for any market:
+    the next register that publishes standalone calls will hit it too.
+    """
+    ids = [r["id"] for r in rows]
+    if not ids:
+        return 0, 0
+    qs = ",".join("?" * len(ids))
+    # The regime key is exactly the scorer's: parent_id when there is one, else
+    # the row's own id. Read from the same column the ranker reads.
+    sizes = dict(conn.execute(
+        f"""SELECT COALESCE(parent_id, id) AS regime, COUNT(*)
+              FROM funding_instruments
+             WHERE COALESCE(parent_id, id) IN (
+                   SELECT COALESCE(parent_id, id) FROM funding_instruments
+                    WHERE id IN ({qs}))
+             GROUP BY 1""", ids).fetchall())
+    keys = dict(conn.execute(
+        f"SELECT id, COALESCE(parent_id, id) FROM funding_instruments "
+        f"WHERE id IN ({qs})", ids).fetchall())
+    return sum(1 for i in ids if sizes.get(keys.get(i), 0) > 1), len(ids)
+
+
 def cmd_plan(args) -> None:
     conn = connect()
     rows = work_rows(conn, args.country, args.redo)
@@ -301,6 +341,19 @@ def cmd_plan(args) -> None:
     print(f"{len(rows)} {args.country} instruments carry unencoded eligibility text")
     print(f"{len(groups)} distinct texts -> {len(groups)} model calls "
           f"({len(rows) - len(groups)} rows are aliases of another call)")
+
+    n_ok, n_all = scoreable(conn, rows)
+    print(f"\nSCOREABLE BY THE RANKER: {n_ok} of {n_all} "
+          f"({100 * n_ok / max(1, n_all):.0f}%)")
+    if n_ok == 0:
+        print("  NONE of these rows has a sibling. gateFitScorer skips groups of")
+        print("  one, so every gate cut here would be written, checked, published")
+        print("  -- and never evaluated. Spend nothing until they have a regime,")
+        print("  or route the text somewhere the ranker reads (see")
+        print("  encode_declared_catchment.py for the catchment route).")
+    elif n_ok < n_all:
+        print(f"  {n_all - n_ok} rows are parent-less and cannot be scored on gates;")
+        print("  the estimate below still bills for their text.")
     if dupes:
         print("\naliased calls (one rule set, several names):")
         for v in sorted(dupes.values(), key=lambda g: -len(g)):
