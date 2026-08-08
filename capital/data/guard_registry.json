@@ -51,6 +51,48 @@
       "`next dev`; nothing in an automatic path may need that override."
     ]
   },
+  "manual": {
+    "$why": [
+      "Guards that run only when a human types the command, each with the reason",
+      "it cannot be wired and a date by which that reason must be re-examined.",
+      "Read by ETL/schema/check_guard_reachability.py, which fails the build on a",
+      "check_* module that is in neither an automatic path nor this block -- and",
+      "fails again once a `review` date passes, so the block cannot quietly become",
+      "the place orphans are kept.",
+      "",
+      "Every entry below was found by an audit on 2026-08-08, not by a failure.",
+      "Two of them were RED at the moment they were found, which is the cost of",
+      "the arrangement they are recording.",
+      "",
+      "`npm run check` is not an automatic path. It is the command whose serial",
+      "chain stopped at link 14 of 27 all week."
+    ],
+    "check_applicant_identity": {
+      "reason": "Needs DATABASE_URL, which no workflow of ours may hold, so it cannot go in CI as-is; it belongs in the verdict channel as an `on_change` guard and does not yet publish one. RED when found on 2026-08-08: 5 of 578 published eligibility texts describe a population that cannot apply, so a founder is routed to a fund that will reject them at the end. Free to run -- the paid judgement is cached in data/applicant_identity.json.",
+      "review": "2026-09-30"
+    },
+    "check_index_freshness": {
+      "reason": "Needs DATABASE_URL. Reachable today only from ETL/refresh.py, which is itself only reachable by a human typing `make refresh` -- and which hard-stops at step 13 on a guard that is red, so steps 14-23 including this one have not run. RED when found on 2026-08-08: 954 of 5804 attributable gates are unembedded, so the advisor can state facts it cannot retrieve. Belongs on the weekly cron next to the embed steps that fix it.",
+      "review": "2026-09-30"
+    },
+    "check_gate_pertinence": {
+      "reason": "Needs DATABASE_URL. Known-red on main (266 gates awaiting classification) and already routed to a person, so wiring it now would only add a second copy of a failure somebody is already holding. Becomes an `on_change` registry guard once the backlog clears.",
+      "review": "2026-09-30"
+    },
+    "check_country_gates": {
+      "reason": "Declares DATABASE_URL `optional` and prints 'nothing to check' without it, so putting it in CI would buy a green step that reads nothing -- the precise defect the verdict channel exists to remove. Green when run against Postgres on 2026-08-08. Must become an `on_change` registry guard rather than a CI step.",
+      "review": "2026-09-30"
+    },
+    "check_gate_field_reach": {
+      "reason": "Same shape as check_country_gates: DATABASE_URL is `optional` and its absence yields a vacuous pass, so CI is the wrong home and the verdict channel is the right one. Green when run against Postgres on 2026-08-08 (3061 comparators over 23 fields).",
+      "review": "2026-09-30"
+    },
+    "check_gate_subject": {
+      "reason": "Needs DATABASE_URL and runs inside `make eligibility`, the publish target it guards; there is no automatic publish for it to attach to. Its layer-1 assertions are free, so it is a candidate for the weekly cron rather than a permanent manual.",
+      "review": "2026-09-30"
+    }
+  },
+
   "guards": [
     {
       "id": "census",

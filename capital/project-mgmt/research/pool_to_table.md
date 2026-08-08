@@ -126,7 +126,7 @@ the comment block describing a ticket term in the row sort described code that
 never ran. `measure_recall.ts` feeds every replay the same ticketBand, which is
 why nothing caught it.
 
-Observed directly instead (`scripts/check_ticket_effect.ts`, 12 profiles, mean
+Observed directly instead (`scripts/measure_ticket_effect.ts`, 12 profiles, mean
 `awardP50` of the five shown rows):
 
 | | b2m5_15m | b15m_50m | gt50m |

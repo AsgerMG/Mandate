@@ -1,0 +1,106 @@
+// `npm run check` — every check runs, and you are told about all of them.
+//
+// ── What this replaces, and why ────────────────────────────────────────────
+// This was a 27-link `&&` chain in package.json. `&&` stops at the first
+// non-zero, so the command reported exactly one problem per run and silently
+// skipped everything after it. On 2026-08-08 the 14th link (check_corpus_census)
+// was red, which meant thirteen checks had not executed at all:
+//
+//   check_verdicts, check_leaf_cap, check_capital_reach, check_payload_budget,
+//   check_client_boundary, check_dependencies, check_env_loader,
+//   check_recall_leaks, check_extracted_quotes, check_gate_pertinence,
+//   check_degradation, check_hydration_parity, check_recall_floor
+//
+// Four of those run nowhere else. check_recall_floor is the one that had just
+// been fixed so it could not skip itself and exit 0 — and it had been sitting
+// behind a red link ever since, not running for a different reason. That is the
+// same defect the CI workflow fixed months earlier with `if: always()`, still
+// live in the command humans actually type.
+//
+// ── The rule ───────────────────────────────────────────────────────────────
+// A check suite reports on the BUILD, not on the first thing wrong with it.
+// Every check runs; failures accumulate; the summary at the end is the whole
+// picture. `--bail` restores the old behaviour for a tight edit loop, and is
+// deliberately not the default: the default is the one people run before they
+// push.
+//
+// Order still matters and is preserved — the cheap hermetic checks come first,
+// so a typo surfaces in seconds rather than after the corpus-reading ones.
+//
+// ── Working directory ──────────────────────────────────────────────────────
+// Always website/frontend, whatever the caller's cwd. Several checks resolve
+// the corpus from `process.cwd()/public/data`, and from the repo root they load
+// ZERO instruments and pass — check_capital_reach reported "ok — every value
+// carried by the 0 publishable instruments is reachable" when run from one
+// directory up. A suite that can pass by being invoked from the wrong place is
+// not a suite.
+import { spawnSync } from "child_process";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const FRONTEND = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+/** Ordered: hermetic and fast first, corpus- and network-reading last. */
+const CHECKS = [
+  ["typecheck", ["npx", "tsc", "--noEmit"]],
+  ["unit tests", ["npx", "vitest", "run"]],
+  ["segment config is a literal", ["npx", "tsx", "scripts/check_revalidate_literal.ts"]],
+  ["output contracts", ["npx", "tsx", "scripts/check_contracts.ts"]],
+  ["vocabulary contract", ["npx", "tsx", "scripts/check_vocabularies.ts"]],
+  ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
+  ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],
+  ["payload budget", ["npx", "tsx", "scripts/check_payload_budget.ts"]],
+  ["archetype regression", ["npx", "tsx", "scripts/check_archetypes.ts"]],
+  ["liveness has one definition", ["npx", "tsx", "scripts/check_liveness.ts"]],
+  ["offer routes are sourced", ["npx", "tsx", "scripts/check_offer_route.ts"]],
+  ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
+  ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],
+  ["leaf cap headroom", ["npx", "tsx", "scripts/check_leaf_cap.ts"]],
+  ["capital reach", ["npx", "tsx", "scripts/check_capital_reach.ts"]],
+  ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
+  ["quotations match documents", ["npx", "tsx", "scripts/check_extracted_quotes.ts"]],
+  ["dependency audit", ["npx", "tsx", "scripts/check_dependencies.ts"]],
+  ["country gates", ["npx", "tsx", "scripts/check_country_gates.ts"]],
+  ["gate field reach", ["npx", "tsx", "scripts/check_gate_field_reach.ts"]],
+  ["gate pertinence", ["npx", "tsx", "scripts/check_gate_pertinence.ts"]],
+  ["applicant identity", ["npx", "tsx", "scripts/check_applicant_identity.ts"]],
+  ["corpus currency", ["npx", "tsx", "scripts/check_corpus_currency.ts"]],
+  ["site serves the ETL's corpus", ["npx", "tsx", "scripts/check_corpus_census.ts"]],
+  ["degradation policy", ["npx", "tsx", "scripts/check_degradation.ts"]],
+  ["both stores agree", ["npx", "tsx", "scripts/check_hydration_parity.ts"]],
+  ["recall floor", ["npx", "tsx", "scripts/check_recall_floor.ts"]],
+  // LAST, and check_guard_registry.py asserts that it stays last: it is what
+  // closes the loop on the corpus-side guards this machine cannot run itself.
+  ["published verdicts", ["npx", "tsx", "scripts/check_verdicts.ts"]],
+];
+
+const bail = process.argv.includes("--bail");
+const only = process.argv.find((a) => a.startsWith("--only="))?.slice(7);
+
+const results = [];
+for (const [label, argv] of CHECKS) {
+  if (only && !argv.join(" ").includes(only) && !label.includes(only)) continue;
+  process.stdout.write(`\n[1m── ${label}[0m\n`);
+  const t0 = Date.now();
+  const r = spawnSync(argv[0], argv.slice(1), { cwd: FRONTEND, stdio: "inherit" });
+  // A signal (or a missing binary) yields status null. That is a failure, and
+  // reporting it as 0 would be this file's own version of the bug it fixes.
+  const code = r.status === null ? 1 : r.status;
+  results.push({ label, code, ms: Date.now() - t0 });
+  if (code !== 0 && bail) break;
+}
+
+const failed = results.filter((r) => r.code !== 0);
+process.stdout.write(`\n[1m── summary[0m\n`);
+for (const r of results) {
+  const mark = r.code === 0 ? "[32m ok [0m" : "[31mFAIL[0m";
+  process.stdout.write(`  ${mark}  ${r.label.padEnd(34)} ${(r.ms / 1000).toFixed(1)}s\n`);
+}
+if (failed.length) {
+  process.stdout.write(
+    `\n[31m${failed.length} of ${results.length} failed:[0m `
+    + `${failed.map((f) => f.label).join(", ")}\n`
+    + `Every check ran. This is the whole list, not the first item on it.\n`);
+  process.exit(1);
+}
+process.stdout.write(`\n[32mall ${results.length} checks passed[0m\n`);

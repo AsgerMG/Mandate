@@ -177,11 +177,35 @@ def main() -> int:
                             f"in the registry. Its verdict would be written and never read")
 
     # 6. The loop has to close somewhere a person will see it.
+    #
+    # The list of checks used to be a 27-link `&&` chain in package.json's
+    # `check` script and now lives in scripts/run_checks.mjs, because `&&`
+    # stopped the whole suite at the first failure and thirteen checks —
+    # check_verdicts among them — had not been running at all. So this reads the
+    # runner, and asserts the stronger property the old prose already claimed:
+    # check_verdicts is not merely present, it is LAST. It refreshes the
+    # verdicts every credential-free path then depends on, so a check that ran
+    # before it read the previous run's answers.
     check = json.loads(PACKAGE.read_text())["scripts"].get("check", "")
-    if "check_verdicts" not in check:
-        problems.append("`npm run check` no longer runs check_verdicts.ts. That is the "
-                        "step where a machine WITH credentials refreshes the verdicts "
-                        "the credential-free paths depend on")
+    runner = ROOT / "website" / "frontend" / "scripts" / "run_checks.mjs"
+    if "run_checks" not in check:
+        problems.append("`npm run check` no longer runs scripts/run_checks.mjs, which "
+                        "is where the list of checks lives. If the list moved again, "
+                        "move this assertion with it — the thing being protected is "
+                        "that SOME automatic-to-a-human command still ends in "
+                        "check_verdicts")
+    elif not runner.exists():
+        problems.append(f"`npm run check` runs {runner.name}, which does not exist")
+    else:
+        ordered = re.findall(r'scripts/(check_\w+)\.ts', runner.read_text())
+        if "check_verdicts" not in ordered:
+            problems.append("run_checks.mjs no longer runs check_verdicts.ts. That is "
+                            "the step where a machine WITH credentials refreshes the "
+                            "verdicts the credential-free paths depend on")
+        elif ordered[-1] != "check_verdicts":
+            problems.append(f"run_checks.mjs ends in {ordered[-1]}, not check_verdicts. "
+                            f"check_verdicts refreshes the verdicts the checks before "
+                            f"it read, so it has to be last or they read stale ones")
 
     # 7. And the reason for all of it.
     for held in workflow_secrets():

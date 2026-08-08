@@ -114,6 +114,13 @@ jobs:
       - name: Client modules reach no server-only import
         if: always()
         run: npx tsx scripts/check_client_boundary.ts
+      # Reads the committed snapshot and deletes DATABASE_URL on its way past,
+      # so it needs no credential and never has. It was in `npm run check` and
+      # nowhere else -- and at position 17 of a 27-link `&&` chain whose 14th
+      # link is red, so it had not run at all.
+      - name: Every intake value reaches some publishable fund
+        if: always()
+        run: npx tsx scripts/check_capital_reach.ts
       - name: The recall set does not leak its answers
         if: always()
         run: npx tsx scripts/check_recall_leaks.ts
@@ -249,6 +256,14 @@ jobs:
       # ours, which is the reason the arrangement exists at all.
       - name: Every guard has a publisher, and no workflow has a secret
         run: python3 ETL/schema/check_guard_registry.py
+
+      # The other direction, and the one nothing could see. The check above
+      # asserts that every REGISTERED guard has a publisher; it is blind to a
+      # check_* module that was never registered, never added to a workflow and
+      # never added to the cron -- which on 2026-08-08 was eight of them, two
+      # red at the moment they were found. Reads committed source only.
+      - name: Every guard runs somewhere, or says why it does not
+        run: python3 ETL/schema/check_guard_reachability.py
 
   security:
     name: dependency audit

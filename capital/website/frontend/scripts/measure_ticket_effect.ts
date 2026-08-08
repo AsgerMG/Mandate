@@ -1,15 +1,22 @@
 // Does the founder's ticket band change what they are shown?
 //
+// Renamed from `check_ticket_effect` on 2026-08-08. It prints a table and
+// asserts nothing -- there is no threshold here and no exit code that means
+// "wrong" -- so the `check_` prefix made a measurement indistinguishable from a
+// guard in every listing, and an audit for guards that never run had to open it
+// to find out which it was. `measure_*` is what this repo calls the other
+// eighteen scripts that do exactly this.
+//
 // `measure_recall.ts` cannot answer this: it feeds every replay the same
 // `ticketBand`, so a signal that discriminates BY ticket is invisible to it.
 // The question has to be asked directly -- vary the one field, hold everything
 // else, and look at the size of cheque the shown funds actually write.
 //
-//   npx tsx scripts/check_ticket_effect.ts
+//   npx tsx scripts/measure_ticket_effect.ts
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-requireCredentials("check_ticket_effect", ["DATABASE_URL", "VOYAGE_KEY"]);
+requireCredentials("measure_ticket_effect", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";

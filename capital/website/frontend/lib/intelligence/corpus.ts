@@ -402,7 +402,22 @@ function loadDbInstrumentsFromJson(): DbInstrument[] | null {
     };
     snapshotGeneratedAt = parsed.generatedAt ?? "";
     return parsed.records;
-  } catch {
+  } catch (e) {
+    // Loud, because the commonest cause is not "there is no snapshot" but "I
+    // looked in the wrong place": snapshotPath() resolves from process.cwd(),
+    // so a harness invoked from the repo root instead of website/frontend gets
+    // null here, then an empty corpus, and then a green pass over nothing.
+    // check_capital_reach reported "ok — every value carried by the 0
+    // publishable instruments is reachable" that way on 2026-08-08.
+    //
+    // Still null rather than a throw: at runtime this is the Postgres-failure
+    // fallback and a loud degradation beats an outage. The line below is what
+    // turns a silent zero into something a person can read.
+    console.error(
+      `corpus: no fallback snapshot at ${snapshotPath()} `
+      + `(cwd ${process.cwd()}): ${e instanceof Error ? e.message : String(e)}. `
+      + `Any count taken from this process is 0 because the file was not found, `
+      + `NOT because the corpus is empty.`);
     return null;
   }
 }
