@@ -27,7 +27,7 @@ its branch. Raise the limit at `claude.ai/settings/usage` and they can continue.
 | # | Workstream | Approx | What it has | What remains |
 |---|---|---|---|---|
 | **AK** | Website numbers live from the DB | 80% | headline figures read the ETL corpus at render time | wire the coverage gate so a bad corpus can't reach founders; look at it in a browser, including DB-unreachable |
-| **AI** | Gate pertinence | 70% | **found a second path to production that drops gate fixes** (`make eligibility`) | apply on the Postgres side; audit corpus-wide for quotes that are accurate but unactionable |
+| **AI** | Gate pertinence | 90% | retraction applied and read back out of Postgres (0 report-judged gates can still decide, 3 had a `value_spec`); **prose was the unguarded column — 10 more live rows, incl. a cohort of already-selected start-ups**; `NO_PG` now honoured | 1,359 texts still answer the v2 property — needs ~$3.30 of API credit and one `--classify` run; then a decision on the 10 prose rows (retracting means a re-embed) |
 | **AF** | Guards without CI credentials | 60% | verdict-publishing pattern generalised | the scheduled workflow, dropping the DB secret entirely |
 | **AE** | 22 German leaves cut pre-cap | 60% | identified the dedupe label that collapses them | re-measure both arms interleaved on the 1,086 corpus |
 | **AH** | 36 scripts can measure nothing and exit 0 | 50% | build now fails on a re-pasted env preamble | actually run every converted script — a silent pass converted to a silent pass is worth nothing |
