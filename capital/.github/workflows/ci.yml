@@ -57,6 +57,13 @@ jobs:
       # The job is already named "contracts" for the vocabulary one; this is
       # the other half, and without it a contract can name a dead schema field
       # or leave a hard rule unenforced with nothing to notice.
+      # A Next segment config must be a literal. `export const revalidate =
+      # SOME_CONSTANT` fails the whole production build with a message naming
+      # no file -- three pages carried it, so fixing two changed nothing, and
+      # every Vercel deploy failed until someone read the logs.
+      - name: Segment config is a literal
+        run: npx tsx scripts/check_revalidate_literal.ts
+
       - name: Output contracts
         run: npx tsx scripts/check_contracts.ts
 
