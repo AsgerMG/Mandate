@@ -342,6 +342,19 @@ def cmd_plan(args) -> None:
     print(f"{len(rows)} {args.country or 'ALL'} instruments carry unencoded eligibility text")
     print(f"{len(groups)} distinct texts -> {len(groups)} model calls "
           f"({len(rows) - len(groups)} rows are aliases of another call)")
+
+    n_ok, n_all = scoreable(conn, rows)
+    print(f"\nSCOREABLE BY THE RANKER: {n_ok} of {n_all} "
+          f"({100 * n_ok / max(1, n_all):.0f}%)")
+    if n_ok == 0:
+        print("  NONE of these rows has a sibling. gateFitScorer skips groups of")
+        print("  one, so every gate cut here would be written, checked, published")
+        print("  -- and never evaluated. Spend nothing until they have a regime,")
+        print("  or route the text somewhere the ranker reads (see")
+        print("  encode_declared_catchment.py for the catchment route).")
+    elif n_ok < n_all:
+        print(f"  {n_all - n_ok} rows are parent-less and cannot be scored on gates;")
+        print("  the estimate below still bills for their text.")
     if dupes:
         print("\naliased calls (one rule set, several names):")
         for v in sorted(dupes.values(), key=lambda g: -len(g)):
