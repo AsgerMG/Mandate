@@ -71,6 +71,24 @@
  *      that exists only in the other decide a founder's verdict unseen; this
  *      repo has been bitten by exactly that (see check_corpus_currency.ts).
  *
+ * ── Why it checks the PROSE too, and why only against Postgres ────────────
+ * The 2026-08-06 incident happened in `funding_instruments.eligibility_text`,
+ * not in a gate. The retraction fixed the eleven IPCEI rows and the gate test
+ * above fixed the gates, and between them they left the column the incident
+ * actually occurred in unguarded — the same mistake one level up: gates were
+ * checked, prose was not. Eleven OTHER live rows were sitting in it, found only
+ * by running the classifier over the whole corpus rather than over IPCEI:
+ * two whose entire "who may apply" is an institution's name, two narrating a
+ * cohort of start-ups already selected, and one enumerating eight named Latvian
+ * competence centres.
+ *
+ * Prose is checked against Postgres ONLY, and that is forced rather than
+ * chosen: `instrument_terms.json` does not carry `eligibility_text` and must
+ * not — it is a client-facing payload under a budget (check_payload_budget),
+ * and 1,088 eligibility texts do not belong in the browser. The product reads
+ * that column live. So there is no offline copy to hold to anything, and under
+ * `NO_PG=1` this axis makes no claim rather than a green one.
+ *
  * ── What it deliberately does NOT cover ───────────────────────────────────
  * The truth, the currency, or the ownership of the sentence. A faithful
  * quotation of the right KIND of thing, attached to the wrong instrument, still
@@ -121,24 +139,49 @@ function fromSnapshot(): { ref: string; text: string; spec: boolean }[] {
   return out;
 }
 
-async function fromPostgres(): Promise<{ ref: string; text: string; spec: boolean }[] | null> {
+/** The live corpus, or null when there is none to read. `NO_PG=1` is this
+ *  repo's "there is no database" and every other script that talks to Postgres
+ *  honours it (check_vocabularies deletes the variable the same way); this one
+ *  did not, so `NO_PG=1 npm run check` was the only command in the suite that
+ *  still opened a connection. */
+function databaseUrl(): string | null {
   loadEnvLocal();
-  const url = process.env.DATABASE_URL;
+  if (process.env.NO_PG) return null;
+  return process.env.DATABASE_URL ?? null;
+}
+
+/** Gates and prose in one connection. Two round trips to the same database to
+ *  ask one question about two columns would be two chances to check one and
+ *  forget the other — which is precisely the history this file documents. */
+async function fromPostgres(): Promise<
+  { gates: { ref: string; text: string; spec: boolean }[];
+    prose: { ref: string; text: string }[] } | null
+> {
+  const url = databaseUrl();
   if (!url) return null;
   const { Client } = await import("pg");
   const client = new Client({ connectionString: url, connectionTimeoutMillis: 4000 });
   await client.connect();
   try {
-    const res = await client.query(
+    const g = await client.query(
       `SELECT instrument_id, gate_key, requirement, value_spec
          FROM eligibility_gates
         WHERE (gate_role IS NULL OR gate_role = 'filter')
           AND coalesce(requirement, '') <> ''`);
-    return res.rows.map((r) => ({
-      ref: `${r.instrument_id}/${r.gate_key}`,
-      text: r.requirement as string,
-      spec: Boolean(r.value_spec),
-    }));
+    // Same threshold the classifier judges on, so the two populations cannot
+    // disagree about which strings are long enough to make a claim.
+    const p = await client.query(
+      `SELECT id, eligibility_text
+         FROM funding_instruments
+        WHERE length(coalesce(eligibility_text, '')) > 40`);
+    return {
+      gates: g.rows.map((r) => ({
+        ref: `${r.instrument_id}/${r.gate_key}`,
+        text: r.requirement as string,
+        spec: Boolean(r.value_spec),
+      })),
+      prose: p.rows.map((r) => ({ ref: r.id as string, text: r.eligibility_text as string })),
+    };
   } finally {
     await client.end();
   }
@@ -194,7 +237,7 @@ async function main() {
   const live = await fromPostgres();
   const sources = live ? "committed snapshot + Postgres" : "committed snapshot only";
   const seen = new Map<string, { text: string; spec: boolean; refs: string[] }>();
-  for (const g of [...snapshot, ...(live ?? [])]) {
+  for (const g of [...snapshot, ...(live?.gates ?? [])]) {
     const d = digest(g.text);
     const e = seen.get(d) ?? { text: g.text, spec: false, refs: [] };
     e.spec = e.spec || g.spec;
@@ -273,6 +316,52 @@ async function main() {
     });
   }
 
+  // ── 3. The column the incident actually happened in ─────────────────────
+  // Prose cannot disqualify anyone by itself, so this is a weaker harm than a
+  // filter gate — and it is the ORIGINAL one. A founder reading "the 16
+  // start-ups joining the second edition" under "who may apply" is being told
+  // about a cohort that was chosen without them.
+  if (live) {
+    const proseSeen = new Map<string, { text: string; refs: string[] }>();
+    for (const r of live.prose) {
+      const d = digest(r.text);
+      const e = proseSeen.get(d) ?? { text: r.text, refs: [] };
+      if (!e.refs.includes(r.ref)) e.refs.push(r.ref);
+      proseSeen.set(d, e);
+    }
+    const bad: { e: { text: string; refs: string[] }; v?: Verdict }[] = [];
+    for (const [d, e] of proseSeen) {
+      const v = cache[d];
+      if (!v || (v.v ?? 1) !== PROPERTY_VERSION || v.verdict === "report") bad.push({ e, v });
+    }
+    if (bad.length) {
+      const reported = bad.filter((b) => b.v?.verdict === "report");
+      problems.push({
+        axis: "published eligibility prose states something an applicant cannot act on",
+        detail:
+          `${bad.length} of ${proseSeen.size} distinct eligibility_text value(s) in ` +
+          `Postgres are unjudged, judged under a superseded property, or judged ` +
+          `REPORT` +
+          (reported.length
+            ? ` — ${reported.length} of them REPORT, shown to a founder under ` +
+              `"who may apply"`
+            : ``) + `:\n` +
+          bad.slice(0, 10).map((b) =>
+            `      ${b.e.refs[0]}` +
+            `${b.e.refs.length > 1 ? `  (+${b.e.refs.length - 1} more instrument(s))` : ""}` +
+            `\n        ${brief(b.e.text)}` +
+            `\n        ${b.v ? `${b.v.verdict} (v${b.v.v ?? 1}): ${b.v.reason}` : "NO VERDICT"}`
+          ).join("\n") +
+          (bad.length > 10 ? `\n      … and ${bad.length - 10} more` : "") +
+          `\n    Unlike a gate there is no inert role to move this to: the column ` +
+          `IS the claim. Either the text is replaced with what the official ` +
+          `source says about who may apply, or it is retracted. Retracting ` +
+          `changes what eligibility_embeddings is built from, so re-embed and ` +
+          `re-measure recall rather than editing the column alone.`,
+      });
+    }
+  }
+
   for (const p of problems) console.log(`  - [${p.axis}] ${p.detail}`);
   if (problems.length) {
     console.log(`\n${problems.length} pertinence problem(s) — the product may be ` +
@@ -281,7 +370,7 @@ async function main() {
     return;
   }
 
-  const gateCount = snapshot.length + (live?.length ?? 0);
+  const gateCount = snapshot.length + (live?.gates.length ?? 0);
   const kinds = new Map<string, number>();
   for (const [d] of seen) {
     const k = cache[d].verdict;
@@ -292,7 +381,11 @@ async function main() {
     `check_gate_pertinence: ok — ${seen.size} distinct requirement texts across ` +
     `${gateCount} deciding gate(s) from ${sources} (${breakdown}), all judged at ` +
     `property v${PROPERTY_VERSION} as something an applicant could act on; ` +
-    `${cases.length}/${cases.length} calibration cases correct.`);
+    `${cases.length}/${cases.length} calibration cases correct. ` +
+    (live
+      ? `${live.prose.length} published eligibility_text value(s) judged too.`
+      : `eligibility_text NOT checked — it is not in the snapshot and there is ` +
+        `no database here, so this run makes no claim about the prose.`));
 }
 
 main().catch((e) => { console.error(e); process.exitCode = 1; });
