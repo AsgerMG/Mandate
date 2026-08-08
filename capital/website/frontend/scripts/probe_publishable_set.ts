@@ -4,15 +4,11 @@
 //
 //   npx tsx scripts/probe_publishable_set.ts            # Postgres
 //   NO_PG=1 npx tsx scripts/probe_publishable_set.ts    # the committed snapshot
-import { readFileSync } from "fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("probe_publishable_set", ["DATABASE_URL"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, publishableInstruments,

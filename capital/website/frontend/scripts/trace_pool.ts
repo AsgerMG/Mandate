@@ -18,18 +18,11 @@
  * to the lexical fallback, which is a DIFFERENT pool -- always confirm a
  * thematic mismatch against the live path before treating it as a bug.
  */
-import { readFileSync } from "node:fs";
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
-// Local secrets when present. CI has no .env.local and must not need one:
-// the checks below run against the committed JSON snapshot, so a missing file
-// is a normal condition, not an error.
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* no local env — rely on the process environment */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("trace_pool", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 async function main() {
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");

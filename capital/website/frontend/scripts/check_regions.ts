@@ -6,10 +6,20 @@
 // that exists in one place and not the other does not throw, it just silently
 // stops matching, and a regional scheme quietly reverts to being offered
 // nationwide — the exact bug the region field was added to fix.
+//
+// Hermetic ON PURPOSE, and it says so below rather than merely happening to be:
+// this compares a committed generated module against committed reference data,
+// so two people must get the same answer whatever either of them has in the
+// environment. It imports `toIso2` from corpus.ts, which is a pure string
+// function — but corpus.ts is also where DATABASE_URL is read, and "the pure
+// helper I imported cannot possibly open a connection" is exactly the reasoning
+// that has to stop being made by hand.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { REGIONS_BY_COUNTRY, regionOptions } from "../lib/intelligence/regions.generated";
 import { toIso2 } from "../lib/intelligence/corpus";
+
+delete process.env.DATABASE_URL;
 
 const ROOT = join(__dirname, "..", "..", "..");
 const ref = JSON.parse(
