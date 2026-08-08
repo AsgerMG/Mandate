@@ -1,0 +1,55 @@
+ademe_aid: 75 leaves, 0 already re-labelled, 75 to do
+  12/75 (in 7683 out 1284)
+  24/75 (in 5607 out 2518)
+  36/75 (in 8405 out 1297)
+  48/75 (in 10210 out 1342)
+  60/75 (in 9560 out 1401)
+  72/75 (in 10867 out 1371)
+  75/75 (in 3113 out 622)
+
+==============================================================================
+REPRODUCIBILITY OF THE ADEME LABELLING  (n=75 leaves labelled twice)
+==============================================================================
+  exact string agreement           60%   (45/75)
+  primary_axis agreement           88%   (66/75)
+  left unlabelled, pass 1 / 2        6 / 6
+  distinct labels, pass 1 / 2       54 / 56
+
+  CEILING@5 pass 1                 92%
+  CEILING@5 pass 2                 92%
+  movement                          0%
+
+  The ceiling is the number that matters; a paraphrase that separates the
+  regime identically is not a disagreement.
+
+  first disagreements (30 total):
+    AAP PNA
+       1: sustainable food, nutrition and climate projects
+       2: sustainable food / territorial food projects
+    Développer le Vélotourisme
+       1: bicycle parking and charging equipment
+       2: bicycle parking and charging
+    Gestion des biodéchets des acteurs économiques
+       1: biowaste management and valorisation
+       2: biowaste management
+    Appel à projets - Industrialisation de Produits et S
+       1: wood and biobased construction products
+       2: wood and biobased construction systems
+    AVELO 2
+       1: cycling
+       2: cycling mobility
+    Industrialisation Performante des Produits Bois (IPP
+       1: wood products manufacturing
+       2: wood product industrialisation
+    Soutien à l’économie de la fonctionnalité et de la c
+       1: functional and cooperation economy business model
+       2: functionality and cooperation economy
+    Études et travaux de dépollution d'une friche - Fond
+       1: brownfield remediation
+       2: brownfield soil remediation
+    AVELO 2.2
+       1: cycling mobility policy
+       2: cycling mobility
+    AVELO 3 - 1ᵉʳ relevé
+       1: cycling mobility policy
+       2: cycling mobility

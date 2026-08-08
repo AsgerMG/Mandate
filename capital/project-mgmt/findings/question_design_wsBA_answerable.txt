@@ -1,0 +1,90 @@
+corpus=postgres  multi-leaf regimes=52  leaves=780  labelled=780 (100%)
+
+============================================================================================
+LABEL CARDINALITY — a label naming ONE leaf is the fund catalogue, not a question
+============================================================================================
+regime                   leaves  labels  singletons  leaves/label  names
+satr_de_rnd                 103      47          44          2.19     96
+bdns_es_ayudas               88      35          25          2.51     87
+ademe_aid                    76      53          41          1.43     76
+satr_it_rnd                  68      30          27          2.27     63
+vinnova_grant                50      32          32          1.56     50
+satr_fr_rnd                  43      11           9          3.91     19
+satr_cz_rnd                  35      16          13          2.19     33
+satr_nl_rnd                  28      12           9          2.33     28
+satr_at_rnd                  23       8           8          2.88     22
+satr_it_equity               19       8           5          2.38     18
+satr_be_rnd                  17       5           4          3.40     14
+satr_de_equity               15       8           5          1.88     14
+ipcei                        12      10           9          1.20     12
+satr_se_rnd                  12       6           5          2.00     10
+
+============================================================================================
+TECHNOLOGY NULL MODEL — is it the technology, or is it having been named?
+============================================================================================
+key                                           mean class   alone     <=5
+tech: free-text label VALUE                         10.8     39%     64%
+NULL: merely HAS a label                            27.9      2%     16%
+name (upper bound, cheating)                         1.4     87%     98%
+
+============================================================================================
+THE CURVE — ceiling@5 against the size of the list a founder is shown
+============================================================================================
+vocabulary        mean class   alone     <=5    ademe <=5  vinnova <=5
+top 5                   21.1      5%     27%          12%           6%
+top 10                  17.6      7%     32%          17%          12%
+top 15                  16.3      9%     36%          24%          14%
+top 20                  15.3     10%     40%          29%          20%
+top 30                  14.0     11%     43%          39%          22%
+top 50                  13.0     14%     49%          47%          26%
+top 100                 11.9     17%     54%          63%          38%
+free text (327)         10.8     39%     64%          91%          64%
+
+============================================================================================
+PER REGIME — region vs technology, at free text and at a 20-option list
+============================================================================================
+regime                     n   region  tech(free)  tech(20)  rgn+tech20  labelled
+satr_de_rnd              103      57%         50%       17%         66%      100%
+bdns_es_ayudas            88       0%         58%       22%         22%      100%
+ademe_aid                 76       7%         91%       29%         34%      100%
+satr_it_rnd               68      49%         50%       22%         63%      100%
+vinnova_grant             50       0%         64%       20%         20%      100%
+satr_fr_rnd               43      44%         30%       12%         60%      100%
+satr_cz_rnd               35      40%         57%       57%        100%      100%
+satr_nl_rnd               28      25%         64%       64%        100%      100%
+satr_at_rnd               23      26%         35%       35%         57%      100%
+satr_it_equity            19      42%         63%       63%        100%      100%
+satr_be_rnd               17     100%         35%       35%        100%      100%
+satr_de_equity            15      53%        100%       27%         60%      100%
+ipcei                     12       0%        100%       42%         42%      100%
+satr_se_rnd               12      25%        100%      100%        100%      100%
+satr_fi_rnd               11     100%         36%       36%        100%      100%
+horizon_eu_partnership    10       0%        100%       20%         20%      100%
+
+============================================================================================
+PROJECT vs COMPANY — the same text, the same vocabulary size, two questions
+============================================================================================
+vocabulary        technology <=5   sector <=5  ademe tech  ademe sector
+top 10                       28%          19%         17%           17%
+top 15                       33%          20%         24%           18%
+top 20                       35%          21%         29%           20%
+top 30                       38%          22%         39%           24%
+
+============================================================================================
+REACHABILITY — leaves carrying ANY decidable comparator the answer could meet
+============================================================================================
+regime                     n  any filter gate  region gate  tech-shaped gate
+satr_de_rnd              103              103           35               103
+bdns_es_ayudas            88               88            0                88
+ademe_aid                 76               19            5                11
+satr_it_rnd               68               68           12                68
+vinnova_grant             50                1            0                 0
+satr_fr_rnd               43               43            8                43
+satr_cz_rnd               35               35           32                35
+satr_nl_rnd               28               28            6                28
+satr_at_rnd               23               23            4                23
+satr_it_equity            19               19            1                19
+satr_be_rnd               17               17           13                17
+satr_de_equity            15               15            5                15
+ipcei                     12               12            0                12
+satr_se_rnd               12               12            0                12
