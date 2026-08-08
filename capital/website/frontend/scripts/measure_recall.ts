@@ -171,6 +171,15 @@ async function main() {
   const N = Math.min(Number(process.env.N ?? 250), set.length);
   const seed = Number(process.env.SEED ?? DEFAULT_SEED);
   const sample = sampleRecall(set, N, seed);
+  // "none" means the founder has not been asked yet, which is every founder on
+  // the instant path. Anything else must be a real answer, so a typo cannot
+  // quietly become "unanswered" and read as a result.
+  const consortiumEnv = process.env.CONSORTIUM ?? "yes";
+  if (!["yes", "no", "unsure", "none"].includes(consortiumEnv)) {
+    throw new Error(`CONSORTIUM must be yes|no|unsure|none, got "${consortiumEnv}"`);
+  }
+  const consortiumAnswer =
+    consortiumEnv === "none" ? undefined : consortiumEnv as "yes" | "no" | "unsure";
 
   // ── What the degradation policy COSTS, measured on the live register ──────
   // SUPPRESS_IDS_FILE names the rows a fallback request withholds, so the
@@ -249,7 +258,17 @@ async function main() {
     if (a.derived.region) derived.region++;
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
-      borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
+      borrowerModel: "operating", ticketBand: a.ticketBand,
+      // Pinned to "yes" for every founder since this harness was written, and
+      // therefore INVISIBLE to it: a field held constant across the population
+      // cannot move a number measured over that population, which is the same
+      // trap that hid ticketBand ("the number stayed flat" was true and meant
+      // nothing). CONSORTIUM=none replays the founder this product actually
+      // meets on a first pass -- `consortium` is asked in the ADAPTIVE round,
+      // so on the instant path nobody has answered it -- and is the only way
+      // to see what the unanswered case costs. Default unchanged, so every
+      // number published before this stays reproducible.
+      consortium: consortiumAnswer,
       // What the money is for, and the one field here that could leak.
       //
       // Setting it from the won scheme's registered objective would make the
@@ -315,7 +334,12 @@ async function main() {
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
               `${regionMode ? ` region=${regionMode}` : ""}` +
-              `${answerMode !== "off" ? ` answers=${answerMode}` : ""}  replayed ${stat.done}`);
+              `${answerMode !== "off" ? ` answers=${answerMode}` : ""}` +
+              // On the banner because it changes what the number MEANS, and a
+              // run that replayed unanswered founders must not be mistaken for
+              // one that replayed consortium-ready ones.
+              `${consortiumEnv !== "yes" ? ` consortium=${consortiumEnv}` : ""}` +
+              `  replayed ${stat.done}`);
   // How many founders actually got their own answers. A run that says
   // `answers=strict` and derived three of them is reporting the constants with
   // a different label on, and the reader has to be able to see that.
