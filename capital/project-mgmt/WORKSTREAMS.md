@@ -21,18 +21,38 @@ its branch. Raise the limit at `claude.ai/settings/usage` and they can continue.
 | COV | Coverage push | sibling class down, ceiling up | 17.9 → 3.6; @5 ceiling 39% → 85% |
 | CAP | Leaf cap no longer silently binding | cap raised, baseline captured first | 90 → 250, headroom 147 |
 | KEY | Answer key and artifacts trustworthy | leak index + semantic cache rebuilt | 0 leaks over 1,084 profiles |
+| AI | Nothing a founder is judged by is a report about someone else | both columns judged at one property, build fails on an unjudged or stale one | 2,573 texts / 8,488 deciding gates at v3, 13/13 calibration; gates 4,251 → 4,244; prose 563 → 552; recall flat on 3 seeds |
 
 ## IN FLIGHT — all stalled on the spend limit
 
 | # | Workstream | Approx | What it has | What remains |
 |---|---|---|---|---|
 | **AK** | Website numbers live from the DB | 80% | headline figures read the ETL corpus at render time | wire the coverage gate so a bad corpus can't reach founders; look at it in a browser, including DB-unreachable |
-| **AI** | Gate pertinence | 70% | **found a second path to production that drops gate fixes** (`make eligibility`) | apply on the Postgres side; audit corpus-wide for quotes that are accurate but unactionable |
 | **AF** | Guards without CI credentials | 60% | verdict-publishing pattern generalised | the scheduled workflow, dropping the DB secret entirely |
 | **AE** | 22 German leaves cut pre-cap | 60% | identified the dedupe label that collapses them | re-measure both arms interleaved on the 1,086 corpus |
 | **AH** | 36 scripts can measure nothing and exit 0 | 50% | build now fails on a re-pasted env preamble | actually run every converted script — a silent pass converted to a silent pass is worth nothing |
 | **AG** | Explain +€55.6B and −558 companies | 30% | **found a second schema drift: four columns exist only from hand `ALTER`s** | measure which; then decompose the capital jump |
 | **AJ** | Record whether a source publishes windows | 5% | — | the ADEME window fetch and the assignment pass |
+
+## FOLLOW-UPS left open on purpose (AI)
+
+- **Two of the eleven retracted rows deserve REPLACEMENT, not just retraction.**
+  `satr_de_equity__sa_115337__landwirtschaftliche_rentenbank` named its
+  applicant classes in a parenthetical — "(Landwirtinnen und Landwirte,
+  Lohnunternehmerinnen und Lohnunternehmer, Maschinenring, Naturschutzverband)"
+  — inside a sentence whose main clause is procedural, and
+  `innovasjon_norge_grant_regional` buried "må bedriften ivareta prinsipper for
+  ansvarlig næringsliv" in a page of state-aid administration. The classifier
+  called both reports and it is defensible on the sentence AS A WHOLE, which is
+  the property. But `narrow_but_satisfiable` in the calibration set says a
+  restriction to a named TRADE is a condition, so these two sit close to that
+  line. Retraction is the safe half of the fix; the source pages are cited on
+  both rows and the honest end state is prose taken from them. Do not settle it
+  by hand-editing a verdict.
+- **The two Altum rows had the granting body's name in the eligibility column
+  and `administering_body` NULL.** The retraction cleared the wrong-column
+  value; it did not populate the right one, because what a fund IS comes from
+  the official source and not from our own mis-filed column.
 
 ## HOLDING, deliberately
 

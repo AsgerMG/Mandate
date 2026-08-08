@@ -159,6 +159,28 @@ eligibility:
 	# matters. Encoding one as `in entityCountries` PASSES everyone the rule
 	# excludes, so this must run before anything publishes.
 	python3 ETL/terms/encode_regions.py run
+	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
+	# from a paid model pass, so every curated demotion above is reverted by the
+	# two lines above it -- and this target then exports and publishes. refresh.py
+	# has always reapplied them; this target never did, so `make eligibility`
+	# silently shipped a corpus in which the IPCEI selectivity findings, and every
+	# other gate demoted for stating something an applicant cannot act on, were
+	# filters again and could disqualify a founder. Runs before the audit so the
+	# audit sees the roles that will actually ship.
+	python3 ETL/terms/apply_gate_role_overrides.py
+	# The same correction, one column over. apply_gate_role_overrides makes a
+	# gate stop DECIDING; this clears prose that decides nothing but is still
+	# shown to a founder under "who may apply" while stating a closed list they
+	# cannot join, a cohort already chosen, or the granting body's own name.
+	# Here rather than later for two reasons: it must land in SQLite BEFORE the
+	# export and migrate_to_postgres below, and before
+	# `build_instrument_profiles.py run --rebuild` at the end of this target,
+	# which builds the primary ranking index straight out of this column. A
+	# retraction applied after that point would be invisible to the ranker --
+	# the withdrawn sentence would go on deciding what a founder is shown while
+	# no longer being shown to them. The set is derived from the pertinence
+	# verdicts, never a list of ids, so it also catches the next one.
+	python3 ETL/terms/retract_unpertinent_text.py --write
 	# Audit BEFORE publishing, and quarantine rules their own recipients
 	# contradict, so a wrong rule cannot reach a founder's brief.
 	python3 ETL/terms/audit_encoding_vs_reality.py --quarantine
