@@ -85,8 +85,24 @@ async function main() {
   delete process.env.DATABASE_URL;
   const { publishableInstruments } = await import("../lib/intelligence/corpus");
 
+  // Same floor, same reason, as check_capital_reach: "no group exceeds the cap"
+  // is trivially true of no groups, and this printed "ok — cap 250, widest group
+  // 0 ((none) (none)), headroom 250 across 0 channels" when started from the
+  // repo root, where the snapshot path does not resolve. Headroom measured on an
+  // empty corpus is the most reassuring number this check can print and the
+  // least true one.
+  const pub = publishableInstruments();
+  if (!pub.length) {
+    console.error(
+      `check_leaf_cap: FAILED — 0 publishable instruments, so every group is\n`
+      + `  under the cap by having no members. Run from website/frontend: the\n`
+      + `  snapshot resolves from process.cwd()/public/data.\n`
+      + `  cwd was ${process.cwd()}`);
+    process.exit(1);
+  }
+
   const { groups, over, worst, headroom } =
-    leafCapVerdict(publishableInstruments(), POOL_LEAVES_PER_CHANNEL);
+    leafCapVerdict(pub, POOL_LEAVES_PER_CHANNEL);
 
   if (over.length) {
     console.error(

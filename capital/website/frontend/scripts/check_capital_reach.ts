@@ -66,6 +66,27 @@ async function main() {
   const { publishableInstruments } = await import("../lib/intelligence/corpus");
   const pub = publishableInstruments();
 
+  // An empty corpus satisfies "every value is reachable" vacuously, and this
+  // check printed exactly that on 2026-08-08: "ok — every value carried by the
+  // 0 publishable instruments is reachable". Nothing was wrong with the corpus;
+  // the process had been started from the repo root, and the snapshot path
+  // resolves from process.cwd(), so the file was simply not where it looked.
+  //
+  // A guard whose pass condition is satisfied by having no input is not a
+  // guard. The floor is deliberately a bare non-zero rather than a tuned
+  // number: this check owns whether the values are REACHABLE, and
+  // check_corpus_census owns how many rows there should be. A second opinion on
+  // the count here would be a second definition of the corpus size.
+  if (!pub.length) {
+    console.error(
+      `check_capital_reach: FAILED — 0 publishable instruments.\n`
+      + `  Every axis is vacuously reachable in an empty corpus, so this would\n`
+      + `  otherwise pass having checked nothing. Run from website/frontend: the\n`
+      + `  snapshot resolves from process.cwd()/public/data.\n`
+      + `  cwd was ${process.cwd()}`);
+    process.exit(1);
+  }
+
   const failures: string[] = [];
   const notes: string[] = [];
 
