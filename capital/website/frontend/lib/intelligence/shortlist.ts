@@ -22,7 +22,7 @@ import { assessInstrument, isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, suppressedForUnconfirmedLiveness, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { semanticSeparation } from "./semantic";
-import { TICKET_BANDS } from "./types";
+import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
@@ -428,10 +428,20 @@ function objectives(): Objectives {
  *  reordered internally, which is all the register entitles us to do. */
 // Geometric midpoint of each ticket band, in euros. Bands span an order of
 // magnitude, so the geometric centre is the honest representative.
-const BAND_MID: Record<string, number> = {
-  lt500k: 250_000, b500k_2m5: 1_118_000, b2m5_15m: 6_124_000,
-  b15m_50m: 27_386_000, gt50m: 100_000_000,
-};
+//
+// DERIVED from the band edges rather than listed. The hand-written table this
+// replaced held exactly these values for the five bands that then existed —
+// sqrt(lo*hi), with the unbounded top band at twice its floor and the bottom
+// band, whose floor is 0 and whose geometric mean is therefore undefined, at
+// half its ceiling. Rebanding a list like that means recomputing five numbers
+// by hand and hoping; deriving it means the edges are the only thing to get
+// right, and `check_ticket_effect.ts` re-proves the arithmetic against the
+// shipped values.
+const BAND_MID: Record<string, number> = Object.fromEntries(
+  TICKET_BANDS.map((b) => {
+    const lo = bandFloorEur(b.value) ?? 0;
+    return [b.value, b.maxEur == null ? lo * 2 : lo === 0 ? b.maxEur / 2 : Math.sqrt(lo * b.maxEur)];
+  }));
 const AWARD_N_FLOOR = 5;
 const AWARD_MATCH = 1.35;
 
@@ -698,10 +708,29 @@ export const INDEFINITE_CAPITAL = new Set(["blended"]);
 // Representative euro value per ticket band, for ranking real DB leaf
 // instruments by proximity to the founder's stated ask, against each
 // instrument's own historical total_eur/event_count average award.
-export const TICKET_MIDPOINT: Record<string, number> = {
-  lt500k: 250_000, b500k_2m5: 1_500_000, b2m5_15m: 8_000_000,
-  b15m_50m: 32_000_000, gt50m: 75_000_000,
-};
+//
+// The ARITHMETIC midpoint, and deliberately not the geometric one above: this
+// feeds `scaleFit`'s Gaussian over log-decades and the pool's proximity sort,
+// where the old hand-written table sat near the arithmetic centre of each band
+// (EUR 1.5M for 500k-2.5M, EUR 32M for 15M-50M). Deriving it moves two of the
+// five old values by under 10% — 8.75M for 8M, 32.5M for 32M — which is under
+// a twentieth of a decade on a scale that measures in decades. Measured on
+// three seeds before and after: pool and EXACT@5 did not move.
+export const TICKET_MIDPOINT: Record<string, number> = Object.fromEntries(
+  TICKET_BANDS.map((b) => {
+    const lo = bandFloorEur(b.value) ?? 0;
+    return [b.value, b.maxEur == null ? lo * 1.5 : (lo + b.maxEur) / 2];
+  }));
+
+/** A ticket at or above this opens the large-scale lane (IPCEI, InvestEU,
+ *  Innovation Fund). A EURO THRESHOLD, never a position in the band list: it
+ *  used to be `BAND_INDEX[band] >= 3`, which meant "EUR 15M and up" only for as
+ *  long as the list had exactly five entries with `b15m_50m` fourth. Splitting
+ *  the low end into three would have silently redefined it as "EUR 500K and
+ *  up" and handed every EUR 600k grant applicant IPCEI Cloud. */
+export const LARGE_SCALE_MIN_EUR = 15_000_000;
+export const opensLargeScaleLane = (ticketBand?: string): boolean =>
+  ticketBand ? (bandFloorEur(ticketBand) ?? 0) >= LARGE_SCALE_MIN_EUR : false;
 
 /** Which countries' national instruments should be in play: explicit
  *  targetMarkets (where the founder wants to RAISE) wins when given, else
@@ -1516,8 +1545,7 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
     log?.record("SEL-UNCONFIRMED-OPEN", r.id, r.reason);
   }
   const codes = new Set(fieldChannels);
-  const idx = ticketBand ? BAND_INDEX[ticketBand] : undefined;
-  if (idx !== undefined && idx >= 3) {
+  if (opensLargeScaleLane(ticketBand)) {
     // A big ticket opens the large-scale lane, but it does not make every
     // large-scale fund relevant. Unconditionally adding these handed a
     // consumer neobank IPCEI Tech4cure (health) and IPCEI Cloud, and handed a

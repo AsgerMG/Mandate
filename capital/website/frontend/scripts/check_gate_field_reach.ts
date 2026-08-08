@@ -171,8 +171,42 @@ async function main() {
     byField.set(field, e);
   }
 
+  // ── A band comparator may not carry its own copy of the band order ────────
+  // `band_max`/`band_min` specs used to embed the band list as it stood when
+  // the rule was encoded. Rebanding `ticketBand` turned all 33 of them stale in
+  // one commit, and a stale order fails in the worst available way: `indexOf`
+  // returns -1 for a band the snapshot predates, `comparePosition` returns
+  // null, and the rule reads "not assessable" for every founder forever.
+  //
+  // That is precisely the shape this check was built to find. `region` sat
+  // inert for months — 193 rules on 163 instruments — and the inertness is what
+  // let 41 of them be filed against the wrong field and never contradicted. A
+  // rule that never fires is a rule nothing can prove wrong, so the duplicate
+  // that can silently disable one is refused rather than kept in sync.
+  // comparator.ts reads BAND_ORDERS; ETL/terms/reband_ticket_gates.py drops
+  // these.
+  const frozenOrder: { id: unknown; instrument: string; bands: number }[] = [];
+  for (const r of rows) {
+    let spec: { op?: string; order?: unknown };
+    try {
+      spec = typeof r.value_spec === "string" ? JSON.parse(r.value_spec) : r.value_spec;
+    } catch { continue; }
+    if ((spec.op === "band_max" || spec.op === "band_min") && Array.isArray(spec.order)) {
+      frozenOrder.push({
+        id: r.id, instrument: String(r.name ?? r.instrument_id), bands: spec.order.length });
+    }
+  }
+
   const failures: string[] = [];
   const noted: string[] = [];
+  if (frozenOrder.length) {
+    failures.push(
+      `  FROZEN BAND ORDER — ${frozenOrder.length} band comparator(s) carry their own copy\n` +
+      `      of the band list, which the vocabulary can outgrow without anything failing.\n` +
+      `      e.g. gate ${frozenOrder[0].id} (${frozenOrder[0].instrument.slice(0, 40)}), ` +
+      `${frozenOrder[0].bands} bands\n` +
+      `      → run: python3 ETL/terms/reband_ticket_gates.py`);
+  }
   const evPct = (n: number) => `${((100 * n) / Number(totalEvents)).toFixed(1)}% of events`;
   const where = (e: Row) =>
     `${e.field}: ${e.specs} comparators on ${e.instruments.size} instruments, ${evPct(e.events)}\n` +

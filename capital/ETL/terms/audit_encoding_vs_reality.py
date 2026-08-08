@@ -119,22 +119,12 @@ def recipients_sector(conn: sqlite3.Connection, iid: str) -> Counter:
             GROUP BY 1""", (iid,))})
 
 
-# The ticket bands, in order, with their upper bounds in EUR. Mirrors
-# TICKET_BANDS in types.ts via data/vocabularies.json -- the boundaries are
-# read there so this cannot drift from what the intake offers.
-_VOCAB = json.loads((_Path(__file__).resolve().parents[2] / "data" / "vocabularies.json").read_text())
-TICKET_ORDER: list[str] = _VOCAB["bandOrders"]["ticketBand"]
-TICKET_UPPER = {
-    "lt500k": 500_000, "b500k_2m5": 2_500_000, "b2m5_15m": 15_000_000,
-    "b15m_50m": 50_000_000, "gt50m": float("inf"),
-}
-
-
-def band_of_award(eur: float) -> str:
-    for band in TICKET_ORDER:
-        if eur <= TICKET_UPPER[band]:
-            return band
-    return TICKET_ORDER[-1]
+# The ticket bands, in order, with their upper bounds in EUR -- now genuinely
+# read from data/vocabularies.json rather than only claimed to be. The five
+# hardcoded numbers that used to sit here were directly beneath a comment
+# saying they could not drift.
+from ticket_bands import BAND_ORDER as TICKET_ORDER  # noqa: E402
+from ticket_bands import band_of_eur as band_of_award  # noqa: E402,F401
 
 
 def recipients_ticket(conn: sqlite3.Connection, iid: str) -> Counter:

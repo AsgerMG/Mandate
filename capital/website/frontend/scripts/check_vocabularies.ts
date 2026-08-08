@@ -166,12 +166,38 @@ async function main() {
   }
 
   // ── Ticket bands: every band should have instruments near its midpoint ────
-  const bandValues = (TICKET_BANDS as readonly { value: string }[]).map((b) => b.value);
+  const bandValues = (TICKET_BANDS as readonly { value: string; maxEur: number | null }[])
+    .map((b) => b.value);
   for (const b of bandValues) {
     if (!/^b|^gt|^lt/.test(b)) {
       problems.push({ axis: "ticket", detail: `band "${b}" does not follow the b*/gt*/lt* convention` });
     }
   }
+
+  // ── The band edges must actually partition the number line ────────────────
+  // Bands are the one vocabulary where the VALUES are not the whole contract:
+  // an amount has to land in exactly one of them. A gap swallows every founder
+  // whose ask falls in it, an overlap makes `bandForEur` depend on declaration
+  // order, and an unbounded band anywhere but last makes every band after it
+  // unreachable. None of the three is visible in the value list alone.
+  const bounds = (TICKET_BANDS as readonly { value: string; maxEur: number | null }[]);
+  bounds.forEach((b, i) => {
+    const last = i === bounds.length - 1;
+    if (b.maxEur == null && !last) {
+      problems.push({ axis: "ticket",
+        detail: `band "${b.value}" is unbounded above but is not last — every band after it is unreachable` });
+    }
+    if (b.maxEur != null && last) {
+      problems.push({ axis: "ticket",
+        detail: `the last band "${b.value}" stops at EUR ${b.maxEur} — an ask above it lands in no band at all` });
+    }
+    const prev = i > 0 ? bounds[i - 1].maxEur : 0;
+    if (b.maxEur != null && prev != null && b.maxEur <= prev) {
+      problems.push({ axis: "ticket",
+        detail: `band "${b.value}" ends at EUR ${b.maxEur}, at or below where "${bounds[i - 1].value}" ends (EUR ${prev}) — the bands are not ascending` });
+    }
+  });
+
 
   const byAxis = new Map<string, Problem[]>();
   for (const p of problems) byAxis.set(p.axis, [...(byAxis.get(p.axis) ?? []), p]);

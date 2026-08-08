@@ -642,15 +642,68 @@ export const EXCLUSION_OPTIONS = [
 ] as const;
 export type ExclusionValue = (typeof EXCLUSION_OPTIONS)[number]["value"];
 
-/** Scale bands: which instrument universe the ask opens (advisory_pipeline §B2). */
+/** Scale bands: which instrument universe the ask opens (advisory_pipeline §B2).
+ *
+ *  BANDED FOR EUROPE, NOT FOR VENTURE CAPITAL. The scale this replaced spent
+ *  four of its five bands above EUR 500k and one band on everything below it —
+ *  and everything below it is most of the national grant corpus. Measured on
+ *  the live register: 706 of the 892 instruments carrying a usable award median
+ *  sit inside the old `lt500k`, against 32 spread across its four upper bands.
+ *  The question was asking a founder to place themselves on a scale whose
+ *  resolution was almost entirely where almost nothing is.
+ *
+ *  Splitting the low end into three takes ceiling@5 — the share of leaves whose
+ *  residual class fits the five rows we render — from 17% to 26% on this
+ *  question alone, and from 48% to 53% combined with region (wsAZ, wsAY §4).
+ *  It also survives the test that killed subsector: the band a fund's early
+ *  awards imply agrees with the band its later awards imply 70% of the time
+ *  against a 56% floor, because award percentiles are register facts rather
+ *  than a posterior fitted to history (wsAY §3).
+ *
+ *  THE TOP EDGE IS DELIBERATELY LEFT ALONE. wsAY's scheme also collapsed
+ *  `b15m_50m` and `gt50m` into one `gt15m`. Three encoded comparators are
+ *  written against that edge and two are `band_max b15m_50m`, which under a
+ *  collapsed top would mean "at most the highest band" — no constraint at all,
+ *  admitting every founder. Keeping the split costs no ceiling (it gains 2pp)
+ *  and keeps those three rules meaning what their funds wrote down.
+ *
+ *  `maxEur` is the EXCLUSIVE upper bound, and it is the single definition of
+ *  where these edges are. Everything that needs a number per band — the
+ *  geometric midpoint the row sort ranks on, the arithmetic midpoint the pool
+ *  selects on, the large-scale lane's threshold, and the Python that bands a
+ *  register award — derives from it rather than restating it. Three hand-kept
+ *  copies of these boundaries existed before this and the ETL's and the app's
+ *  had already stopped agreeing about anything below EUR 500k. */
 export const TICKET_BANDS = [
-  { value: "lt500k", label: "Under €500K", hint: "vouchers, micro-grants, de minimis schemes" },
-  { value: "b500k_2m5", label: "€500K – €2.5M", hint: "innovation grants, guaranteed loans" },
-  { value: "b2m5_15m", label: "€2.5M – €15M", hint: "blended finance, venture debt" },
-  { value: "b15m_50m", label: "€15M – €50M", hint: "EIB growth capital, Innovation Fund, IPCEI" },
-  { value: "gt50m", label: "Over €50M", hint: "large-scale project finance, IPCEI waves" },
+  { value: "lt25k", label: "Under €25K", maxEur: 25_000,
+    hint: "innovation vouchers, de minimis micro-grants" },
+  { value: "b25k_100k", label: "€25K – €100K", maxEur: 100_000,
+    hint: "feasibility studies, small national grants" },
+  { value: "b100k_500k", label: "€100K – €500K", maxEur: 500_000,
+    hint: "regional innovation grants, soft loans" },
+  { value: "b500k_2m5", label: "€500K – €2.5M", maxEur: 2_500_000,
+    hint: "innovation grants, guaranteed loans" },
+  { value: "b2m5_15m", label: "€2.5M – €15M", maxEur: 15_000_000,
+    hint: "blended finance, venture debt" },
+  { value: "b15m_50m", label: "€15M – €50M", maxEur: 50_000_000,
+    hint: "EIB growth capital, Innovation Fund, IPCEI" },
+  { value: "gt50m", label: "Over €50M", maxEur: null,
+    hint: "large-scale project finance, IPCEI waves" },
 ] as const;
 export type TicketBand = (typeof TICKET_BANDS)[number]["value"];
+
+/** Inclusive lower bound of a band, in euros — the previous band's exclusive
+ *  upper bound, and 0 for the first. Derived so that adding or moving a band
+ *  cannot leave a gap or an overlap behind. */
+export const bandFloorEur = (value: string): number | undefined => {
+  const i = TICKET_BANDS.findIndex((b) => b.value === value);
+  return i < 0 ? undefined : i === 0 ? 0 : TICKET_BANDS[i - 1].maxEur ?? undefined;
+};
+
+/** Which band an amount in euros falls in. The one implementation; the Python
+ *  half reads the same edges out of `data/vocabularies.json`. */
+export const bandForEur = (eur: number): TicketBand | undefined =>
+  TICKET_BANDS.find((b) => b.maxEur == null || eur < b.maxEur)?.value;
 
 /** Who ends up owing the money — routes between entirely different funnels. */
 export const BORROWER_MODELS = [

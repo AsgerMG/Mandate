@@ -47,7 +47,7 @@ import {
 } from "./corpus";
 import {
   applyProfileSignal,
-  BAND_INDEX,
+  opensLargeScaleLane,
   CAPITAL_SOUGHT_TO_DB,
   instById,
   channelLabel,
@@ -592,8 +592,7 @@ async function synthesize(
   if (sectorTop === "semiconductors_electronics") topics.add("chips");
   if (sectorTop === "energy_cleantech") topics.add("eit_kics");
   if (req.companyType === "Deep-tech breakthrough") topics.add("step");
-  const bandIdx = req.eligibility?.ticketBand ? BAND_INDEX[req.eligibility.ticketBand] : undefined;
-  if (bandIdx !== undefined && bandIdx >= 3) {
+  if (opensLargeScaleLane(req.eligibility?.ticketBand)) {
     topics.add("scale_capital");
     topics.add("investeu");
     topics.add("ipcei");
