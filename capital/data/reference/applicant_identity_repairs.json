@@ -1,0 +1,64 @@
+{
+ "$why": [
+  "What to do about a published eligibility_text judged `beneficiary_not_applicant`",
+  "by ETL/terms/classify_applicant_identity.py -- text that describes the people a",
+  "scheme is FOR while somebody else is the entity that submits and signs.",
+  "",
+  "This file is DATA, not the rule. The rule is the property in the classifier and",
+  "the test is website/frontend/scripts/check_applicant_identity.ts, both derived",
+  "per text. A row lands here only after the property has already condemned it, and",
+  "ETL/terms/repair_applicant_identity.py FAILS if a condemned row has no entry --",
+  "so this cannot become the place a defect goes quiet. It is the repair log, not",
+  "the detector.",
+  "",
+  "Two actions, and the choice between them is not a matter of taste:",
+  "",
+  "  replace  -- the funder publishes its own statement of who submits. Take it,",
+  "              verbatim, and put it first. `text` must be the body's own words",
+  "              (translation of the body's own words is fine, and is what the",
+  "              corpus already stores for several countries); the only editorial",
+  "              addition permitted is a structural label naming which population a",
+  "              block is about, because that is what makes the two tiers visible.",
+  "              `source_url` is where those words are published.",
+  "",
+  "  retract  -- the funder publishes no applicant test at all, or publishes one we",
+  "              cannot read at source. Withdraw the claim. A blank `who may apply`",
+  "              is a gap; a confident sentence about the wrong population is a",
+  "              founder who spends weeks and is rejected at the end. Retraction is",
+  "              archived to data/retracted_eligibility_text.json like every other.",
+  "",
+  "Never invent an applicant. If the source does not say who submits, `retract` is",
+  "the answer, and `why` says so."
+ ],
+ "repairs": {
+  "altum_garantijas_3_1_1_1_pas_k": {
+   "action": "replace",
+   "source_url": "https://www.altum.lv/pakalpojumi/biznesam/kredita-garantijas/",
+   "confidence": "high",
+   "why": "ALTUM's own guarantee page states the applicant in one sentence and the corpus already encodes it as gate g1-channel ('Applicant must apply via a financier (bank or leasing company), not directly to Altum'). The published text buried that sentence under 1,400 characters about what the guaranteed company gets, so read as a `who may apply` block it named the borrower. The financier's sentence now leads, and the borrower conditions are labelled as what they are.",
+   "text": "Kas iesniedz pieteikumu: Pieteikumu garantijai sagatavo un iesniedz finansētājs – banka vai līzinga kompānija, pievienojot finansētāja un uzņēmuma sagatavotos dokumentus. Par kredīta garantijas piesaisti prasiet savā bankā (SEB banka; Swedbank, Swedbank līzings; Luminor Bank, Luminor līzings Latvija; Citadele Banka; Rietumu Banka; BluOr Bank; Magnetiq Bank; Industra Bank; Reģionālā Investīciju Banka; OP finance; Signet Bank; Bigbank). Nosacījumi garantējamajam aizņēmējam: Kredīta garantiju var saņemt Latvijā reģistrēti saimnieciskās darbības veicēji – juridiskas personas. Garantiju nevar saņemt un pagarināt, ja saimnieciskās darbības veicējam ir Valsts ieņēmumu dienesta administrēto nodokļu (nodevu) parāds, kas kopsummā pārsniedz 150 euro, izņemot, ja tam ir piešķirts nodokļu maksājuma samaksas termiņa pagarinājums vai Valsts ieņēmumu dienests ir pieņēmis lēmumu par nokavēto nodokļu maksājumu labprātīgu izpildi, vai ir noslēgts vienošanās līgums. Garantiju neizsniedz šādās nozarēs: lauksaimniecības produktu primārā ražošana; zvejniecības produktu primārā ražošana un akvakultūra; finanšu un apdrošināšanas darbības; azartspēles un derības; tabakas izstrādājumu ražošana un tirdzniecība; ieroču, munīcijas un alkohola tirdzniecība; operācijas ar nekustamo īpašumu. Garantija tiek izsniegta kā de minimis atbalsts saskaņā ar 13.12.2023. Regulu (ES) Nr. 2023/2831 vai saskaņā ar 17.06.2014. Regulas (ES) Nr. 651/2014 14. vai 41. pantu."
+  },
+  "altum_garantijas_pilna_cikla_u": {
+   "action": "replace",
+   "source_url": "https://www.altum.lv/pakalpojumi/biznesam/kredita-garantijas/",
+   "confidence": "high",
+   "why": "Same ALTUM product page as the row above, captured in English (https://www.altum.lv/en/services/enterprises/credit-guarantees/), and the English capture simply omits the sentence naming who submits -- which is why this row read as a plain company test. The sentence is taken from the Latvian original of the same page and translated, as the rest of this row's text already is.",
+   "text": "Who submits the application: The application for the guarantee is prepared and submitted by the financier – a bank or a leasing company – attaching the documents prepared by the financier and by the company. Ask your own bank about arranging a credit guarantee. Conditions on the company being guaranteed: Altum's credit guarantee serves as additional security for the company's liabilities to the bank. The credit guarantee is issued to companies that have insufficient collateral to obtain a loan or to obtain a loan of the required amount, but have a transparent financial history and a positive creditworthiness. Up to 80% of the principal amount of financing; up to EUR 25 million; up to 10 years. For guarantees submitted until 30.06.2026 the premium rate is 0% per year; for guarantees of EUR 5,000,000 the premium rate is applied according to the price list. ALTUM guarantee is not a guarantee within the meaning of the Civil Code of the Republic of Latvia, but state support in the form of a financial instrument (guarantee) for the receipt of a financial service in case of insufficient collateral; the obligation of ALTUM to be liable to the Financier for the unpaid principal amount does not exempt the Merchant (including the Guarantors) from the obligation to repay the full amount of the Financial Service Agreement."
+  },
+  "innovasjon_norge_grant_cluster": {
+   "action": "replace",
+   "source_url": "https://www.innovasjonnorge.no/tjeneste/bedriftsnettverk",
+   "confidence": "high",
+   "why": "Two defects in one row. The published text opened with a paragraph about Klyngeprogrammet Norwegian Innovation Clusters -- under which the applicant is the cluster organisation and the SMEs named are the population it must serve at reduced prices -- and that paragraph appears NOWHERE in this row's recorded source (data/raw/instrument_docs/innovasjon_norge_grant_cluster_bedriftsnettverk.html contains no occurrence of `klyngeprogram`, `Norwegian Innovation Clusters` or `reduserte priser`). Every one of this row's gates was cut from the Bedriftsnettverk page, which is a scheme companies apply to themselves: Målgruppe `Alle bedrifter`, addressed to the reader as `Har bedriften din vekstambisjoner`. The text is replaced with what that source actually asserts.",
+   "text": "Bedriftsnettverk. Har bedriften din vekstambisjoner og ønsker å realisere disse i samarbeid med andre bedrifter? Vi kan tilby faglig veiledning, og finansiering til etablering og utvikling av bedriftsnettverk-prosjekter. Et kommersielt, strategisk og markedsrettet samarbeid vil bidra til å styrke innovasjonsevnen og konkurransekraften i bedriftene. Målgruppe: Alle bedrifter. Søknadstype: Næringsutvikling og innovasjon. Søknadsfrist: Løpende. Hvor mye: Inntil 1 million kroner per år. Viktige forutsetninger for støtte: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv og ha et bevisst forhold til egen bærekraftsrisiko. Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket; det er fem generelle vilkår for statsstøtte som må ivaretas, og gruppeunntaksregelverket (GBER) er en del av statsstøtteregelverket. Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig støtte til prosjektet."
+  },
+  "satr_gb_equity__sa_39065__mhclg": {
+   "action": "retract",
+   "why": "The scheme document publishes no applicant test, because the scheme has no applicants. Its point 4, `Organisations permitted to award aid under the Scheme`, names one body: The Department for Communities and Local Government. What was published in the `who may apply` column was Specific Condition 2, a reproduction of GBER Article 21(6) on follow-on investments, which binds the financial intermediary and the independent private investor providing the risk finance -- not an SME reading it. The document's own point 7 puts the duration at `From 1.7.2014 to 31.12.2020`, so there is also nothing to apply to. Replacing this would mean inventing an applicant the source does not name."
+  },
+  "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland": {
+   "action": "retract",
+   "why": "The published text was a medium-confidence paraphrase asserting that `any Irish business located within a community applying for the grant could potentially benefit`, and then that it `isn't designed specifically for individual Irish businesses`. SEAI accepts Communities Energy Grant applications only through registered Project Coordinators, who assemble a group of beneficiaries -- which is what this row's `description` column already records and which retraction does not touch. It is retracted rather than replaced because seai.ie serves a bot challenge to every route tried (page, overview, coordinator pages, and both CEG guidelines PDFs all returned 403), so SEAI's own applicant wording could not be read at source, and a `who may apply` block we could not verify is exactly the claim this repair exists to remove."
+  }
+ }
+}

@@ -67,6 +67,23 @@ STEPS: list[tuple[str, list[str], bool]] = [
     # just changed, leaving the retracted sentence ranking founders.
     ("retract unpertinent eligibility text",
      ["python3", "ETL/terms/retract_unpertinent_text.py", "--write"], False),
+    # A third axis on the same column, and the only one whose failure is
+    # invisible to the founder until the end. The line above asks whether the
+    # text is the right KIND of statement; this asks WHOSE test it states. A
+    # two-tier scheme passes the first honestly -- "the programme supports
+    # SMEs" names a checkable population and discriminates between readers --
+    # and routes a founder to a fund only their bank, their cluster
+    # organisation or a registered coordinator may apply to. Same position and
+    # same reasons as the retraction: before the export and the publish, and it
+    # drops its own `instrument_profiles` rows because the embed below is
+    # incremental.
+    #
+    # It STOPS the run if a condemned row has no repair on file. That is
+    # deliberate and it is the one place in this chain where stopping is right:
+    # the answer is not in the repo, it is on the funder's page, and continuing
+    # would publish the text to founders for another week.
+    ("repair applicant identity",
+     ["python3", "ETL/terms/repair_applicant_identity.py", "--write"], False),
     ("coverage gate", ["python3", "ETL/terms/coverage_gate.py"], False),
     ("export snapshot", ["python3", "website/build/eligibility_export.py"], False),
     ("companies index", ["python3", "website/build/companies_index.py"], False),

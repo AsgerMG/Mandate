@@ -67,14 +67,6 @@
       "`npm run check` is not an automatic path. It is the command whose serial",
       "chain stopped at link 14 of 27 all week."
     ],
-    "check_applicant_identity": {
-      "reason": "Needs DATABASE_URL, which no workflow of ours may hold, so it cannot go in CI as-is; it belongs in the verdict channel as an `on_change` guard and does not yet publish one. RED when found on 2026-08-08: 5 of 578 published eligibility texts describe a population that cannot apply, so a founder is routed to a fund that will reject them at the end. Free to run -- the paid judgement is cached in data/applicant_identity.json.",
-      "review": "2026-09-30"
-    },
-    "check_index_freshness": {
-      "reason": "Needs DATABASE_URL. Reachable today only from ETL/refresh.py, which is itself only reachable by a human typing `make refresh` -- and which hard-stops at step 13 on a guard that is red, so steps 14-23 including this one have not run. RED when found on 2026-08-08: 954 of 5804 attributable gates are unembedded, so the advisor can state facts it cannot retrieve. Belongs on the weekly cron next to the embed steps that fix it.",
-      "review": "2026-09-30"
-    },
     "check_gate_pertinence": {
       "reason": "Needs DATABASE_URL. Known-red on main (266 gates awaiting classification) and already routed to a person, so wiring it now would only add a second copy of a failure somebody is already holding. Becomes an `on_change` registry guard once the backlog clears.",
       "review": "2026-09-30"
@@ -92,21 +84,31 @@
       "review": "2026-09-30"
     }
   },
-
   "guards": [
     {
       "id": "census",
       "cadence": "weekly",
-      "needs": ["etl corpus (data/db.sqlite)", "DATABASE_URL"],
-      "code": ["ETL", "website/build"],
-      "code_suffixes": [".py"],
+      "needs": [
+        "etl corpus (data/db.sqlite)",
+        "DATABASE_URL"
+      ],
+      "code": [
+        "ETL",
+        "website/build"
+      ],
+      "code_suffixes": [
+        ".py"
+      ],
       "refresh": "python3 ETL/events/load/publish_corpus_census.py",
       "why": "What the ETL corpus contains, and how the run that produced it went. Everything below is judged against the newest one."
     },
     {
       "id": "store_schema",
       "cadence": "weekly",
-      "needs": ["etl corpus (data/db.sqlite)", "DATABASE_URL"],
+      "needs": [
+        "etl corpus (data/db.sqlite)",
+        "DATABASE_URL"
+      ],
       "code": [
         "ETL/schema/check_store_schema.py",
         "ETL/schema/schema_debt.json",
@@ -114,42 +116,65 @@
         "ETL/events/load/migrations",
         "ETL/schema/postgres_schema.sql"
       ],
-      "code_suffixes": [".py", ".sql", ".json"],
-      "command": ["python3", "ETL/schema/check_store_schema.py",
-                  "--sqlite", "data/db.sqlite", "--postgres"],
+      "code_suffixes": [
+        ".py",
+        ".sql",
+        ".json"
+      ],
+      "command": [
+        "python3",
+        "ETL/schema/check_store_schema.py",
+        "--sqlite",
+        "data/db.sqlite",
+        "--postgres"
+      ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run store_schema",
       "why": "Two stores of the same table must have the same columns. The volume's funding_instruments had no `tier` while the laptop's did -- the volume had run 9 of the 23 committed migrations -- and because the census reads `tier`, a missing COLUMN was reported for half a day as a coverage LOSS. It runs here rather than in CI because it is a question about LIVE stores, and it runs inside the container so the corpus it reads is the one the cron actually writes."
     },
     {
       "id": "aggregate_independence",
       "cadence": "weekly",
-      "needs": ["etl corpus (data/db.sqlite)"],
+      "needs": [
+        "etl corpus (data/db.sqlite)"
+      ],
       "code": [
         "ETL/schema/check_aggregate_independence.py",
         "website/build/lib/corpus_kpis.py"
       ],
-      "command": ["python3", "ETL/schema/check_aggregate_independence.py"],
+      "command": [
+        "python3",
+        "ETL/schema/check_aggregate_independence.py"
+      ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run aggregate_independence",
       "why": "Liveness must not reach the headline figures, and must move the offerable set. It was in CI, where data/db.sqlite is gitignored, so it printed 'skipping' and returned 0 on every run it has ever had."
     },
     {
       "id": "offerable_decay",
       "cadence": "weekly",
-      "needs": ["etl corpus (data/db.sqlite)"],
+      "needs": [
+        "etl corpus (data/db.sqlite)"
+      ],
       "code": [
         "ETL/terms/check_offerable_decay.py",
         "ETL/lib/liveness.py",
         "data/reference/offerable_baseline.json"
       ],
-      "command": ["python3", "ETL/terms/check_offerable_decay.py"],
-      "tolerate": [3],
+      "command": [
+        "python3",
+        "ETL/terms/check_offerable_decay.py"
+      ],
+      "tolerate": [
+        3
+      ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run offerable_decay",
       "why": "A country's offerable inventory falling with no corresponding corpus change. Already a cron step; publishing its verdict is what makes the result readable without credentials."
     },
     {
       "id": "corpus_currency",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL"],
+      "needs": [
+        "DATABASE_URL"
+      ],
       "code": [
         "website/frontend/scripts/check_corpus_currency.ts",
         "website/frontend/lib/intelligence/liveness.ts",
@@ -162,7 +187,9 @@
     {
       "id": "hydration_parity",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL"],
+      "needs": [
+        "DATABASE_URL"
+      ],
       "code": [
         "website/frontend/scripts/check_hydration_parity.ts",
         "website/frontend/lib/intelligence",
@@ -174,7 +201,9 @@
     {
       "id": "degradation",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL"],
+      "needs": [
+        "DATABASE_URL"
+      ],
       "code": [
         "website/frontend/scripts/check_degradation.ts",
         "website/frontend/lib/intelligence",
@@ -186,7 +215,10 @@
     {
       "id": "recall_floor",
       "cadence": "on_change",
-      "needs": ["DATABASE_URL", "VOYAGE_KEY"],
+      "needs": [
+        "DATABASE_URL",
+        "VOYAGE_KEY"
+      ],
       "code": [
         "website/frontend/scripts/check_recall_floor.ts",
         "website/frontend/scripts/recallSet.ts",
@@ -195,6 +227,41 @@
       ],
       "refresh": "cd website/frontend && npx tsx scripts/check_recall_floor.ts",
       "why": "Does retrieval still find the fund a company actually won. Skips itself without credentials and exits 0, so a ranking change has always been able to merge with the floors never evaluated. The fingerprint above is what closes that."
+    },
+    {
+      "id": "applicant_identity",
+      "cadence": "on_change",
+      "needs": [
+        "DATABASE_URL"
+      ],
+      "code": [
+        "website/frontend/scripts/check_applicant_identity.ts",
+        "data/applicant_identity.json",
+        "data/reference/applicant_identity_calibration.json",
+        "data/reference/applicant_identity_repairs.json",
+        "ETL/terms/repair_applicant_identity.py"
+      ],
+      "refresh": "cd website/frontend && npx tsx scripts/check_applicant_identity.ts",
+      "why": "No published `who may apply` block may state a population that cannot apply. Five did when this guard was found on 2026-08-08: two Latvian guarantee schemes the borrower's bank submits, an Innovasjon Norge row whose text was a cluster-programme paragraph its own recorded source never asserted, a closed English risk-finance scheme delivered through financial intermediaries, and an Irish community scheme applied for by registered project coordinators. A founder matched on any of them spends the effort and is rejected at the end, which is worse than never being shown the fund. It says FAILS THE BUILD in its own header and had been wired into nothing since the day it was written."
+    },
+    {
+      "id": "index_freshness",
+      "cadence": "on_change",
+      "needs": [
+        "DATABASE_URL"
+      ],
+      "code": [
+        "ETL/terms/check_index_freshness.py",
+        "ETL/terms/embed_eligibility.py",
+        "ETL/terms/build_instrument_profiles.py",
+        "website/frontend/lib/intelligence/evidenceTiers.json"
+      ],
+      "command": [
+        "python3",
+        "ETL/terms/check_index_freshness.py"
+      ],
+      "refresh": "python3 ETL/lib/guard_verdicts.py run index_freshness",
+      "why": "Everything the advisor may state, it must be able to retrieve. 954 of 5,804 attributable gates across 163 instruments were unembedded when this was found on 2026-08-08, and the shape matters more than the number: this guard was step 16 of ETL/refresh.py, the two embed steps that fix it were 14 and 15, and step 13 was red -- so the fix sat under the failure and the alarm sat under the fix. Registered here it is asserted weekly by check_verdicts.ts without depending on a 23-step chain reaching it. It reads Postgres only and costs nothing; the embed steps it reports on are the paid ones."
     }
   ]
 }

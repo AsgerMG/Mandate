@@ -43,15 +43,29 @@
  *      is not a passing text — that is how a green build comes to have
  *      evaluated nothing.
  *
+ * ── Where it runs ─────────────────────────────────────────────────────────
+ * It needs DATABASE_URL, because the claim is about the PUBLISHED column, and
+ * no workflow of ours may hold that credential. So it runs wherever the
+ * credential already is and publishes what it decided; `check_verdicts.ts`
+ * asserts on that with none, weekly, and holds it to the code it judged. That
+ * is the same arrangement as the four other Postgres-side guards, and it is
+ * the reason this file is no longer in `manual` — it spent its whole life
+ * there, having never run, while five funds were routed to founders who could
+ * not apply to them.
+ *
  *   npx tsx scripts/check_applicant_identity.ts
  */
 import { createHash } from "crypto";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { publishVerdict, startTape } from "./guardVerdict";
 
 loadEnvLocal();
 requireCredentials("check_applicant_identity", ["DATABASE_URL"]);
+
+const GUARD = "applicant_identity";
+const tape = startTape();
 
 const ROOT = join(__dirname, "..", "..", "..");
 const CACHE = join(ROOT, "data", "applicant_identity.json");
@@ -144,14 +158,47 @@ async function main() {
 
   const summary = Object.entries(counts).sort()
     .map(([k, v]) => `${k}=${v}`).join("  ");
+  const metrics = {
+    published: rows.length,
+    calibration: checked,
+    cannot_apply: counts["beneficiary_not_applicant"] ?? 0,
+    unjudged: unjudged.length,
+    stale: stale.length,
+  };
   if (failures.length) {
     console.error(`check_applicant_identity: FAILED\n`);
     for (const f of failures) console.error(`  - ${f}\n`);
     console.error(`  ${rows.length} published texts, ${checked} calibration cases`);
+    // The summary is served publicly at /api/guards, so it says what a founder
+    // is exposed to, not how many assertions tripped.
+    await publishVerdict(GUARD, {
+      status: "failed",
+      summary: metrics.cannot_apply
+        ? `${metrics.cannot_apply} published eligibility text(s) describe a ` +
+          `population that cannot apply to the fund`
+        : `${failures.length} problem(s) in the applicant-identity corpus ` +
+          `(${metrics.unjudged} unjudged, ${metrics.stale} judged at a superseded property)`,
+      metrics,
+      detail: tape(),
+    });
     process.exit(1);
   }
   console.log(
     `check_applicant_identity: ok — ${rows.length} published texts state the ` +
     `applicant's own test (${summary}); ${checked} calibration cases hold`);
+  await publishVerdict(GUARD, {
+    status: "ok",
+    summary: `all ${rows.length} published eligibility texts state the applicant's ` +
+             `own test; ${checked} calibration cases hold`,
+    metrics,
+    detail: tape(),
+  });
 }
-main();
+
+main().catch(async (err) => {
+  console.error("check_applicant_identity: FAILED to run —", err);
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
+  process.exit(1);
+});

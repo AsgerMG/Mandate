@@ -24,9 +24,75 @@ delete process.env.DATABASE_URL;
 const ROOT = join(__dirname, "..", "..", "..");
 const ref = JSON.parse(
   readFileSync(join(ROOT, "data", "reference", "nuts_regions.json"), "utf8"),
-) as { regions: Record<string, { id: string; name: string }[]> };
+) as { regions: Record<string, { id: string; level: number; name: string }[]> };
 
 const problems: string[] = [];
+// Disagreements between the reference file and the register it derives from.
+// Kept apart from `problems` because the remedy is a different command, and
+// deciding which by grepping the message text is how the wrong one gets
+// printed the first time somebody rewords a string.
+const upstream: string[] = [];
+
+// ── The reference against ITS source, before anything is compared to it ───
+// Everything below asks whether the generated module still matches
+// nuts_regions.json. Nothing asked whether nuts_regions.json still matches
+// Eurostat: it arrived in one commit with its provenance in prose and no way
+// to produce it again, so a hand-edit to it would propagate through
+// emit_regions.py and come out the far end green. Region is now the most
+// load-bearing signal the product has, and 449 unreproducible rows decide what
+// a founder is shown.
+//
+// `ETL/terms/emit_nuts_regions.py` is the regenerator, and `--check` diffs
+// against the real CSV. It cannot run here, because that CSV lives under
+// data/raw/, which is gitignored — a CI step that reads gitignored data is a
+// step that prints "skipping" and returns 0 forever.
+//
+// So the CI-side assertion is against the OTHER committed derivative of the
+// same download: nuts_names.json carries every NUTS id with the newest vintage
+// that still held it, built by `audit_region_claims.py --refresh-reference`.
+// Two files derived from one register must agree about that register. This
+// catches a hand-edit to either, needs no network and no raw data, and is
+// exact rather than a spot check — the 2024 level-1/2 ids in one must be
+// precisely the ids in the other.
+const names = JSON.parse(
+  readFileSync(join(ROOT, "data", "reference", "nuts_names.json"), "utf8"),
+) as { current_vintage: number; ids: Record<string, [string, number]> };
+
+const refIds = new Set(Object.values(ref.regions).flat().map((r) => r.id));
+const sourceIds = new Set(
+  Object.entries(names.ids)
+    .filter(([id, [, vintage]]) =>
+      vintage === names.current_vintage && (id.length === 3 || id.length === 4))
+    .map(([id]) => id),
+);
+for (const id of [...refIds].sort()) {
+  if (!sourceIds.has(id)) {
+    upstream.push(
+      `${id}: in nuts_regions.json but not a NUTS ${names.current_vintage} level-1/2 ` +
+      `id in nuts_names.json — one of the two has been hand-edited`);
+  }
+}
+for (const id of [...sourceIds].sort()) {
+  if (!refIds.has(id)) {
+    upstream.push(
+      `${id} "${names.ids[id][0]}": a NUTS ${names.current_vintage} level-1/2 region ` +
+      `missing from nuts_regions.json, so nothing can be encoded against it`);
+  }
+}
+for (const rows of Object.values(ref.regions)) {
+  for (const r of rows) {
+    // Level is the id length past the country prefix. Everything downstream
+    // matches by prefix and would resolve the wrong region if it were not.
+    if (r.level !== r.id.length - 2) {
+      upstream.push(`${r.id}: level ${r.level} does not match the id length`);
+    }
+    const src = names.ids[r.id];
+    if (src && src[0].trim() !== r.name) {
+      upstream.push(`${r.id}: named "${r.name}" in nuts_regions.json, ` +
+                    `"${src[0].trim()}" in nuts_names.json`);
+    }
+  }
+}
 
 // Eurostat does not use ISO codes for two members: NUTS writes EL for Greece
 // and UK for the United Kingdom. The generator normalises to ISO2, so this
@@ -112,11 +178,26 @@ if (uncovered.length) {
     `outside the NUTS classification, so regional rules there stay unevaluable: ${uncovered.join(", ")}`);
 }
 
+// Two different faults with two different remedies, reported separately.
+// Upstream first: a wrong reference makes the module wrong by construction, so
+// regenerating the module against it would only propagate the error.
+if (upstream.length) {
+  console.error(
+    "check_regions: the reference data disagrees with the NUTS register it is derived from —\n" +
+    "  rebuild it with `python3 ETL/terms/emit_nuts_regions.py --check` (then --write),\n" +
+    "  then `python3 ETL/terms/emit_regions.py` so the module follows");
+  for (const p of upstream.slice(0, 12)) console.error(`  ${p}`);
+  if (upstream.length > 12) console.error(`  ... and ${upstream.length - 12} more`);
+}
 if (problems.length) {
   console.error("check_regions: generated module is stale — run `python3 ETL/terms/emit_regions.py`");
   for (const p of problems.slice(0, 12)) console.error(`  ${p}`);
-  process.exit(1);
+  if (problems.length > 12) console.error(`  ... and ${problems.length - 12} more`);
 }
+if (upstream.length || problems.length) process.exit(1);
 
 const total = Object.values(REGIONS_BY_COUNTRY).reduce((n, r) => n + r.length, 0);
-console.log(`check_regions: ok — ${total} regions across ${Object.keys(REGIONS_BY_COUNTRY).length} countries`);
+console.log(
+  `check_regions: ok — ${total} regions across ${Object.keys(REGIONS_BY_COUNTRY).length} ` +
+  `countries, and the ${refIds.size} reference ids are exactly NUTS ` +
+  `${names.current_vintage} levels 1-2`);

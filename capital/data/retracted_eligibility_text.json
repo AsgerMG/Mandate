@@ -21,6 +21,30 @@
    "text": "AS “Attīstības finanšu institūcija Altum”"
   },
   {
+   "id": "altum_garantijas_3_1_1_1_pas_k",
+   "country": "LV",
+   "retracted_on": "2026-08-08",
+   "digest": "23f501a807bbc352",
+   "verdict": "beneficiary_not_applicant",
+   "property_version": 1,
+   "reason": "Text says the bank/leasing financier prepares and submits; described population is guaranteed companies, not applicants.",
+   "text": "Pieteikumu garantijai sagatavo un iesniedz finansētājs – banka vai līzinga kompānija, pievienojot finansētāja un uzņēmuma sagatavotos dokumentus. Kredīta garantiju var saņemt Latvijā reģistrēti saimnieciskās darbības veicēji – juridiskas personas. Līdz 80% no finansējuma pamatsummas Līdz 250 tūkt. EUR 80% no finansējuma pamatsummas Ja ar esošo nodrošinājumu nepietiek bankas aizdevumam, iespējams, var līdzēt garantija Ar garantiju nodrošina Investīciju aizdevumu Apgrozāmo līdzekļu aizdevumu Finanšu līzingu un faktoringu Konkursu, avansa maksājumu, izpildes vai garantijas laika garantijas u.c. projektiem, kas ir fiziski pabeigti vai pilnībā īstenoti, izņemot, ja tiek pagarināts ALTUM iepriekš izsniegtas garantijas termiņš lauksaimniecības produktu primārā ražošana zvejniecības produktu primārā ražošana un akvakultūra finanšu un apdrošināšanas darbības azartspēles un derības tabakas izstrādājumu ražošana un tirdzniecība ieroču, munīcijas un alkohola tirdzniecība operācijas ar nekustamo īpašumu kravas autotransporta līdzekļu iegāde komersantiem, kas veic komercpārvadājumus ar autotransportu Garantija tiek izsniegta kā de minimis atbalsts saskaņā ar Komisijas 18.12.2013. regulu (ES) Nr. 1407/2013. tas atbilst maksātnespējas procedūras ierosināšanas kritērijiem ar tiesas spriedumu ir pasludināts maksātnespējas process, tiek īstenots tiesiskās aizsardzības process vai ārpustiesas tiesiskās aizsardzības process ar tiesas spriedumu ir sākta bankrota procedūra, piemērota sanācija vai mierizlīgums Garantiju nevar sniegt un pagarināt, ja saimnieciskās darbības veicējam ir Valsts ieņēmumu dienesta administrēto nodokļu (nodevu) parāds, kas kopsummā pārsniedz 150 euro Deklarācija par komercsabiedrības kvalifikāciju mazās un vidējās komercsabiedrības kategorijai Apliecinājums kredītu garantijām Veidlapa par sniedzamo informāciju de minimis atbalsta uzskaitei un piešķiršanai no 01.07.2019",
+   "repair": "replace",
+   "repair_source_url": "https://www.altum.lv/pakalpojumi/biznesam/kredita-garantijas/"
+  },
+  {
+   "id": "altum_garantijas_pilna_cikla_u",
+   "country": "LV",
+   "retracted_on": "2026-08-08",
+   "digest": "7e31368112b08b64",
+   "verdict": "beneficiary_not_applicant",
+   "property_version": 1,
+   "reason": "Describes companies with insufficient collateral receiving the guarantee; the financier submits the guarantee application.",
+   "text": "The credit guarantee is issued to companies that have insufficient collateral to obtain a loan or to obtain a loan of the required amount, but have a transparent financial history and a positive creditworthiness. Up to EUR 25 million Annual interest of 0 % for guarantees submitted until 30.06.2026. the premium rate is 0% per year. For guarantees of EUR 5 000 000 , the premium rate shall be applied according to the price list . Up to 80% of the principal amount of financing ALTUM guarantee is not a guarantee within the meaning of the Civil Code of the Republic of Latvia, but state support in the form of a financial instrument (guarantee) for the receipt of a financial service in case of insufficient collateral the obligation of ALTUM assumed by the ALTUM Guarantee to be liable to the Financier for the unpaid principal amount of the Financial Service Agreement does not exempt the Merchant (including the Guarantors) from the obligation to repay the full amount of the Financial Service Agreement and incidental payments received in full",
+   "repair": "replace",
+   "repair_source_url": "https://www.altum.lv/pakalpojumi/biznesam/kredita-garantijas/"
+  },
+  {
    "id": "eit_climate_kic_asa",
    "country": "EU",
    "retracted_on": "2026-08-08",
@@ -49,6 +73,18 @@
    "property_version": 3,
    "reason": "Programme narrative, phases, portfolio description, funding amounts and deadlines; no applicant eligibility test.",
    "text": "EIT RawMaterials Accelerator aims to catch and mentor start-ups to rapidly become suppliers to, and perhaps future partners of, the EIT RawMaterials network. The first cohort is invited to submit applications by 8 April 2022, 17:00 CET . The support includes individual and group coaching, funding and anchoring start-ups in their local and national ecosystems. At the same time, we open up introductions to the EIT RawMaterials community partners on a pan-European level. Explore Europe’s leading start-ups in raw and advanced materials innovation. Each featured company has received funding and tailored support from EIT RawMaterials and forms part of our active equity portfolio. the funding amount for Phase 1 is EUR 10 000, while for Phase 2 and Phase 3 will be a combined amount of EUR 80 000 while for Phase 2 and Phase 3 will be a combined amount of EUR 80 000 The programme comprises three phases – Explore, Build and Grow. We often co-invest with other investors, further strengthening the network and increasing the potential for success. PHASE 1: EXPLORE build proof of concept and discover your market niche (3 months); PHASE 2: BUILD validate customer needs and verify business assumptions while identifying criteria for market entry (6 months); PHASE 3: GROW tailor your business for launch through market entry, raising financing and expansion of your team (6 months). Application deadline: 08 April 2022 . For more details, please visit the dedicated website. These ventures undergo rigorous assessments to ensure they meet high standards in sustainability, scalability, and innovation."
+  },
+  {
+   "id": "innovasjon_norge_grant_cluster",
+   "country": "NO",
+   "retracted_on": "2026-08-08",
+   "digest": "4d625c9e51d59f6f",
+   "verdict": "beneficiary_not_applicant",
+   "property_version": 1,
+   "reason": "Target group stated as established SMEs receiving subsidised cluster services; the cluster organisation is the actual applicant.",
+   "text": "Målgruppe Alle bedrifter Søknadsfrist Løpende Klyngeprogrammet Norwegian Innovation Clusters (NIC) er et tilbud til etablerte bedrifter som ønsker å samarbeide om innovasjon og utfordringer knyttet til vekst for å styrke nasjonal og internasjonal konkurransekraft. Tjenestene skal tilbys små og mellomstore bedrifter med et støtteelement, slik at bedriftene får dem til reduserte priser. Hvor mye Inntil 1 million kroner per år Vi kan tilby faglig veiledning, og finansiering til etablering og utvikling av bedriftsnettverk-prosjekter. For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv og ha et bevisst forhold til egen bærekraftsrisiko. Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket. Det er fem generelle vilkår for statsstøtte som må ivaretas . Gruppeunntaksregelverket (GBER) er en del av statsstøtteregelverket og er en samling med artikler/støttehjemler som gir oss mulighet til å gi bedrifter støtte i ulike saker. Finansieringsordninger hos oss er meldt til EFTAs overvåkingsorgan, ESA. Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig støtte til prosjektet. I tilfelle slik annen offentlig støtte, herunder SkatteFunn, likevel blir mottatt etter at vårt tilbud er gitt, og til dekning av de samme kostnadene, vil tilskuddet fra oss kunne bli redusert tilsvarende eller bortfalle. Logg inn Gå til Min side for å starte eller fortsette søknad. Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søknaden. Dette er ikke til hinder for at bedriften kan motta annen offentlig støtte til andre prosjektkostnader enn de vi har lagt til grunn.",
+   "repair": "replace",
+   "repair_source_url": "https://www.innovasjonnorge.no/tjeneste/bedriftsnettverk"
   },
   {
    "id": "innovasjon_norge_grant_regional",
@@ -81,6 +117,30 @@
    "text": "Die Antragstellung für die Gewährung eines Zuschusses erfolgt durch den Zuschussempfangenden (Landwirtinnen und Landwirte, Lohnunternehmerinnen und Lohnunternehmer, Maschinenring, Naturschutzverband) im Portal der Rentenbank. Die Restfinanzierung muss nicht mit einem Darlehen finanziert werden. Gleichwohl bietet die Rentenbank eine Refinanzierung zu Premiumkonditionen an."
   },
   {
+   "id": "satr_gb_equity__sa_39065__mhclg",
+   "country": "GB",
+   "retracted_on": "2026-08-08",
+   "digest": "4239106bc3a9a653",
+   "verdict": "beneficiary_not_applicant",
+   "property_version": 1,
+   "reason": "Describes SMEs/start-ups receiving risk finance via intermediaries; aid awarded by department, not by them.",
+   "text": "1. Title: The English Aid for access to finance for SMEs State Aid Scheme (the \"Scheme\"). 3. Regions: East Midlands; Eastern; London; North East; North West; South East; South West; West Midlands; and Yorkshire and the Humber. 4. Organisations permitted to award aid under the Scheme: The Department for Communities and Local Government.\n\n[Specific Condition - Risk finance aid] 2. Eligible undertakings: The risk finance aid may also cover follow-on investments made in eligible undertakings, including after the 7 year period mentioned in point 5(b), if the following cumulative conditions are fulfilled:- (a) The total amount of risk finance mentioned in point 9 is not exceeded; (b) The possibility of follow-on investments was foreseen in the original business plan; (c) The undertaking receiving follow-on investments has not become linked, within the meaning of Article 3(3) of Annex I with another undertaking other than the financial intermediary or the independent private investor providing risk finance under the measure, unless the new entity fulfils the conditions of the SME definition. 4. Excluded undertakings: See GBER Article 1. Aid intensity: Large Enterprises - Not applicable; Medium/Small Enterprises - 40%-90% subject to form of investment. Notification threshold: EUR 15 million per eligible undertaking under any risk finance measure.\n\n[Specific Condition - Aid for start ups] 2. Eligible undertakings: Eligible undertakings shall be unlisted enterprises up to five years following their registration, which have not yet distributed profits and have not been formed through a merger. For eligible undertakings that are not subject to registration the five years eligibility period may be considered to start from the moment when the enterprise either starts its economic activity or is liable to tax for its economic activity. 4. Excluded undertakings: See GBER Article 1. Notification thresholds: loans up to EUR 1m (EUR 1.5m in Art 107(3)(c) areas or EUR 2m in Art 107(3)(a) areas); guarantees up to EUR 1.5m (EUR 2.25m/EUR 3m); grants up to EUR 0.4m (EUR 0.6m/EUR 0.8m); doubled for small and innovative enterprises.",
+   "repair": "retract",
+   "repair_source_url": null
+  },
+  {
+   "id": "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland",
+   "country": "IE",
+   "retracted_on": "2026-08-08",
+   "digest": "4bd778a76c7d3e8c",
+   "verdict": "beneficiary_not_applicant",
+   "property_version": 1,
+   "reason": "Describes Irish businesses in a community who may benefit, expressly not the targeted applicants.",
+   "text": "Any Irish business located within a community applying for the grant could potentially benefit from the initiative; however, the grant isn't designed specifically for individual Irish businesses and isn't targeted towards specific business types. Eligibility is subject to terms and conditions.",
+   "repair": "retract",
+   "repair_source_url": null
+  },
+  {
    "id": "satr_lv_rnd__sa_103894__centrala_finansu_un_ligumu_agentura",
    "country": "LV",
    "retracted_on": "2026-08-08",
@@ -111,5 +171,5 @@
    "text": "uchazečem organizační složka státu nebo organizační jednotka ministerstva, zabývající se výzkumem a vývojem, a dále právnická osoba nebo fyzická osoba, která se uchází o poskytnutí podpory příjemcem uchazeč, v jehož prospěch bylo o poskytnutí podpory poskytovatelem rozhodnuto realizována na základě smlouvy o poskytnutí podpory podle tohoto zákona, popřípadě na základě rozhodnutí o poskytnutí podpory (§ 9 odst. 5 a 6), je-li příjemce organizační složkou státu nebo organizační jednotkou ministerstva, zabývající se výzkumem a vývojem a to až do celkové výše 2,5 % prostředků poskytovatele na výzkum, vývoj a inovace v daném kalendářním roce, s výjimkou nákladů orgánů hrazených podle písmene f) Celkové uznané náklady projektu a s tím související výše podpory projektu nemohou být za celou dobu řešení navýšeny či poníženy o více než 50 % z hodnot uvedených ve Smlouvě, jak o nich poskytovatel rozhodl při vyhodnocení veřejné soutěže ve výzkumu, vývoji a inovacích / výzvě. na základě paušální sazby, tzv. metodou „flat rate“, do výše 25 % ze součtu skutečně vykázaných osobních nákladů a ostatních přímých nákladů projektu daného příjemce v příslušném roce smluvním výzkumem 42 ) výzkum prováděný jménem podniku podle přímo použitelného předpisu Evropské unie 43 ) , k jehož provádění je využívána výzkumná organizace 44 ) nebo výzkumná infrastruktura 40 ) , přičemž podnik vlastní výsledky výzkumných činností, nese riziko neúspěchu a za obdržené služby poskytne výzkumné organizaci nebo výzkumné infrastruktuře přiměřenou odměnu Podporu lze poskytnout jen v rozsahu a za podmínek stanovených tímto zákonem, předpisy Evropské unie 7a ) a v souladu s Rámcem pro státní podporu výzkumu, vývoje a inovací 45 ) , a to jako účelovou nebo institucionální podporu. způsobilými náklady takové náklady nebo výdaje ve výzkumu, vývoji a inovacích, které mohou být příjemcem vynaloženy na činnosti ve výzkumu, vývoji a inovacích, nebo v souvislosti s nimi Účelovou podporu lze poskytnout na a) grantový projekt, ve kterém příjemce cíle a způsoby řešení v základním výzkumu stanovuje sám ve skupině grantových projektů vyhlášené poskytovatelem je poskytovatel oprávněn vyloučit návrhy projektů podané hlavním příjemcem (ať již se bude hlásit do veřejné soutěže / výzvy v roli uchazeče či dalšího účastníka) do veřejných soutěží, výzev nebo nabídky podané do veřejných zakázek ve výzkumu, vývoji a inovacích. Toto vyloučení může trvat až 3 roky podle písmene j) se odvádí 100 % podpory vynaložené na náklady vzniklé v době, kdy příjemce podmínky způsobilosti nesplňoval Platnost Smlouvy je ukončena po 5 letech ode dne ukončení řešení projektu, pokud se smluvní strany nedohodnou na změně této doby . Stanovené smluvní pokuty nezahrnují náhradu škody a aplikují se nad rámec dalších sankcí vyplývajících z právních předpisů nebo z pravidel poskytnutí podpory. Hlavní příjemce je povinen umožnit poskytovateli či jím pověřeným osobám provádět komplexní kontrolu podle tohoto článku a zpřístupnit svou účetní evidenci související přímo či nepřímo s projektem podle ustanovení § 8 odst. 1 ZPVV, a to kdykoliv v průběhu řešení projektu nebo do dvou let od ukončení účinnosti Smlouvy, a poskytnout mu při ní potřebnou součinnost. Pokud hlavní příjemce předpokládá, že nebude schopen splnit některou z výše uvedených povinností, je oprávněn nejpozději do lhůty jejího splnění podat žádost o změnu projektu v souladu s čl. 22, anebo doručit poskytovateli písemné vyjádření o nemožnosti jejího splnění v důsledku vyšší moci nebo domnělého porušení povinností poskytovatelem. Jednotlivé smluvní pokuty stanovené podle tohoto článku se sčítají, maximálně však do výše odpovídající maximální výši podpory pro projekt na celou dobu řešení stanoveného ve Smlouvě."
   }
  ],
- "_comment": "Eligibility prose withdrawn from the product because it stated nothing an applicant could act on. Written by ETL/terms/retract_unpertinent_text.py. This is the audit record, not a source: nothing reads it back into the corpus. It exists so a retraction can be reviewed after the column is empty, and so re-publishing a withdrawn claim is a visible act."
+ "_comment": "Eligibility prose withdrawn from the product. Written by ETL/terms/retract_unpertinent_text.py (text that stated nothing an applicant could act on) and by ETL/terms/repair_applicant_identity.py (text that stated somebody else's test -- those rows carry `repair`, which is `retract` if nothing replaced them and `replace` if the funder's own applicant block did). This is the audit record, not a source: nothing reads it back into the corpus. It exists so a withdrawal can be reviewed after the column has changed, and so re-publishing a withdrawn claim is a visible act."
 }
