@@ -621,6 +621,12 @@ export function IntelligencePanel() {
                   </span>
                 )}
               </label>
+              {/* Country and region share a column and read as one "where are
+                  you" block. They stay SEPARATE labels: two selects inside one
+                  label leaves the caption ambiguous, so clicking "Incorporated
+                  in" can focus the region control and a screen reader announces
+                  the wrong question. */}
+              <div className="space-y-4">
               <label className="block text-sm">
                 <span className={fieldLabel}>
                   Incorporated in
@@ -637,55 +643,55 @@ export function IntelligencePanel() {
                   ))}
                 </select>
               </label>
-            </div>
-
-            {/* Region sits immediately under the country because it is the same
-                question at a finer grain, and because it only exists once a
-                country is chosen. Hidden entirely for countries the NUTS table
-                does not cover (GB, MD and the non-EU entries in COUNTRIES) —
-                an empty select is worse than no question. */}
-            {regionChoices.length > 0 && (
-              <label className="block text-sm">
-                <span className={fieldLabel}>
-                  Region
-                  <InfoDot>
-                    Where the establishment that would run this project sits.
-                    Regional bodies run a large share of Europe&rsquo;s national
-                    schemes and most of them fund only their own region, so this
-                    is what separates funds that otherwise look identical.
-                  </InfoDot>
-                </span>
-                <select
-                  value={elig.region ?? ""}
-                  onChange={(e) => {
-                    // The founder has taken ownership of this field. Nothing
-                    // derived may write it again for the rest of the session.
-                    setRegionTouched(true);
-                    setRegionPrefill(null);
-                    setElig((p) => ({ ...p, region: e.target.value || undefined }));
-                  }}
-                  className={inputCls + (elig.region ? "" : " text-[var(--muted-foreground)]")}>
-                  <option value="" className="bg-[var(--paper)] text-[var(--foreground-soft)]">
-                    Select…
-                  </option>
-                  {regionChoices.map((r) => (
-                    <option key={r.value} value={r.value}
-                      className="bg-[var(--paper)] text-[var(--foreground)]">{r.label}</option>
-                  ))}
-                </select>
-                {/* Where the answer came from, stated plainly. A default whose
-                    origin is invisible reads as something the founder typed,
-                    and a registered address is often not where the work will
-                    happen — so the correction has to be the obvious move, not
-                    a thing they would only do if they distrusted us. */}
-                {regionPrefill && !regionTouched && (
-                  <span className="mt-1 block text-xs text-[var(--muted-foreground)]">
-                    From {regionPrefill.matchedName}&rsquo;s registered address.
-                    Change it if the work happens elsewhere.
-                  </span>
+                {/* Hidden entirely for countries the NUTS table does not cover
+                    (GB, MD and the non-EU entries in COUNTRIES) — an empty
+                    select is worse than no question. */}
+                {regionChoices.length > 0 && (
+                  <label className="block text-sm">
+                    <span className={fieldLabel}>
+                      Region
+                      <InfoDot>
+                        Where the establishment that would run this project sits.
+                        Regional bodies run a large share of Europe&rsquo;s
+                        national schemes and most fund only their own region, so
+                        this is what separates funds that otherwise look
+                        identical.
+                      </InfoDot>
+                    </span>
+                    <select
+                      value={elig.region ?? ""}
+                      onChange={(e) => {
+                        // The founder has taken ownership of this field. Nothing
+                        // derived may write it again for the rest of the session.
+                        setRegionTouched(true);
+                        setRegionPrefill(null);
+                        setElig((p) => ({ ...p, region: e.target.value || undefined }));
+                      }}
+                      className={inputCls + (elig.region ? "" : " text-[var(--muted-foreground)]")}>
+                      <option value="" className="bg-[var(--paper)] text-[var(--foreground-soft)]">
+                        Select…
+                      </option>
+                      {regionChoices.map((r) => (
+                        <option key={r.value} value={r.value}
+                          className="bg-[var(--paper)] text-[var(--foreground)]">{r.label}</option>
+                      ))}
+                    </select>
+                    {/* Where the answer came from, stated plainly. A default
+                        whose origin is invisible reads as something the founder
+                        typed, and a registered address is often not where the
+                        work will happen — so correcting it has to be the
+                        obvious move, not something they would only do if they
+                        distrusted us. */}
+                    {regionPrefill && !regionTouched && (
+                      <span className="mt-1 block text-xs leading-snug text-[var(--muted-foreground)]">
+                        From {regionPrefill.matchedName}&rsquo;s registered
+                        address. Change it if the work happens elsewhere.
+                      </span>
+                    )}
+                  </label>
                 )}
-              </label>
-            )}
+              </div>
+            </div>
 
             {/* ── The eight questions, chosen on evidence, not habit ──────────
                 Ranked by how many instruments each field actually gates in the
