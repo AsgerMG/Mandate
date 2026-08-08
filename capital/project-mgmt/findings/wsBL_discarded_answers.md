@@ -9,7 +9,7 @@ list, and the reason they were not is the finding under the findings.
 
 ## The class
 
-Four times this month an answer a founder gave was collected, threaded through
+Five times this month an answer a founder gave was collected, threaded through
 the code, and read by nothing on the path that decides what they are shown.
 
 | | what was lost | how it looked |
@@ -18,6 +18,7 @@ the code, and read by nothing on the path that decides what they are shown.
 | `ticketFit` | founders asking for >EUR 50M and <EUR 500k were shown the identical five rows | computed, named, and left out of the returned expression |
 | `consortiumOk` | nothing | destructured in `selectInstrumentRows` and read by nothing there |
 | `prior` | nothing | computed every request under a comment saying it was applied |
+| `sector`, `useOfFunds` | the MEMO ranked without either, while the instant verdict ranked with both | two hand-maintained copies of one object literal, and one had drifted |
 
 Every one was invisible *because the value was present*. None is detectable by
 reading a signature, an import or a destructure. `ticketFit` was one token from
@@ -127,7 +128,8 @@ where all five of these lived.
 
 `ANSWER_USE` is keyed on `keyof EligibilityAnswers`, so the compiler refuses a
 new intake field until someone classifies it. The check then **proves** the
-claim rather than trusting it: for three probe founders it builds the published
+claim rather than trusting it: for twelve probe founders — real companies drawn
+from the recall set by the shared seeded shuffle — it builds the published
 table under every legal answer to each field, through the production mapping
 and the production entry point, and a `ranks: true` that moves no row for any
 founder **fails the build**.
@@ -147,20 +149,50 @@ the funds themselves demand in their encoded comparators.
 **Measured result, 23 collected fields (2 more are declared unreachable and
 belong to the reach check):**
 
-- **11 move the published rows**: `ticketBand`, `sector`, `useOfFunds`,
-  `region`, `entityCountries`, `consortium`, `activities`, `exclusionFlags`,
-  `fteBand`, `lossesOverHalfCapital`, `borrowerModel`.
-- **12 do not**, and each now carries a written reason. The pattern is
-  structural, not a wiring bug: `gateFitScorer` re-ranks only *within* a group
-  of same-regime siblings and only when two of them disagree, so a field with
-  single-digit comparators spread across regimes with no siblings has nothing
-  to separate. These are the SME-status, ownership and commitment questions,
-  and what they produce is a blocker with a cure — the part of the brief a
-  founder can act on.
+- **6 declared `ranks: true` and proved**: `ticketBand`, `sector`, `useOfFunds`,
+  `region`, `consortium`, `entityCountries`. That is exactly the set
+  `tableInputFromAnswers` routes as a named input, plus the country — and
+  exactly where all five defects lived, which is not a coincidence: a named
+  input is a thing one call site can pass and another can forget. If a key is
+  dropped from that mapping again, the field stops being provable and the build
+  goes red.
+- **17 declared `ranks: false`**, each with a written reason. Several of them
+  demonstrably do change the five rows — `activities` and `exclusionFlags`
+  block funds, and a blocked fund leaves the table — but they are not held to
+  the strong claim, for a reason recorded below.
 
-The honest limit: the existential is over three probe founders. A field that
-ranks only for founders unlike them will read as memo-only. The guard catches
-total discard, which is what all five defects were.
+### Two things the guard got wrong first, and what they cost
+
+**It graded the wrong corpus.** The first run under `npm run check` reported
+eight founder-facing defects in four seconds. `hydrateGatesFor` sets
+`statement_timeout = 2000` and swallows the error, so asking it for all 1,088
+instruments at once returns cleanly having fetched *nothing* whenever the
+database is busy — while `corpusProvenance()` still says `postgres`, because
+the instruments had loaded and only their gates had not. The check now
+hydrates in chunks, and then **proves** it landed against a count taken
+straight from Postgres. A guard that grades a half-loaded corpus is worse than
+no guard: it is a red build nobody can reproduce, and the fix people reach for
+is to disable it.
+
+**Its verdict flipped with someone else's data load.** The first probe used
+three hand-written founders. On one day's corpus five gate-driven fields
+separated a sibling somewhere in their three tables; on the next day's — after
+an unrelated load moved ~5% of the corpus in and out of "offerable" — three of
+them did not. So the probe population is now **twelve real companies drawn from
+the recall set by the shared seeded shuffle**, and the strong, build-failing
+claim is scoped to the named inputs, whose scorers are global multipliers and
+whose behaviour is a property of the code rather than of which funds happen to
+be in one founder's pool. The weaker claim the guard *can* hold for everything
+else — the answer must be READ, by the screen or by an encoded rule — is still
+enough to catch a total discard, which is what all five defects were.
+
+**And the signature had to model the drop.** Production ranks a pool of 18,
+assesses it, and removes the funds the founder conclusively fails. Comparing
+raw rankings would have reported the two largest encoded axes in the corpus,
+`activities` and `exclusionFlags` (1,289 comparators between them), as moving
+nothing — they are blockers, and blocking happens after the sort. The
+signature is the ranked rows with the failed ones removed: the names on the
+page.
 
 ### `no-unused-vars` is an error in `lib/` — computed and discarded
 
@@ -186,11 +218,21 @@ the `region` / memo-drift shape. The two guards together cover the class.
 | seed | pool | EXACT@5 | REGIME@5 |
 |---|---|---|---|
 | 20260806 | 95% | 26% | 82% |
-| 7 | 95% | 29% | 85% |
-| 99 | 95% | 31% | 86% |
+| 7 | 97% | 28% | 82% |
+| 99 | 98% | 29% | 83% |
 
 Within the documented baseline (94-97 / 26-31 / 82-86) and clear of every
-floor. Per-country and per-regime-size strata unchanged.
+floor. `check_recall_floor` green (98 / 29 / 86 against 93 / 22 / 80). Per
+country and per regime-size stratum unchanged.
+
+Seeds 7 and 99 read 2-3 points of pool higher than the baseline captured at
+the start of this workstream, and that is a corpus movement rather than an
+effect: `WITHHELD` in the answer key went from 23.3% to 28.0% while these ran,
+because other workstreams were loading. **Every before/after below is therefore
+a same-corpus pair**, re-measured together. A pair taken across that shift said
+the change traded one population for another; measured properly, it does not.
+That is a general hazard when several workstreams share one Postgres, and it is
+the reason to distrust any A/B whose two arms were not run back to back.
 
 ### The consortium change had to be measured separately, and here is why
 
@@ -202,28 +244,27 @@ reason.
 
 So `measure_recall` gains `CONSORTIUM=yes|no|unsure|none` (default unchanged,
 so every previously published number stays reproducible). `none` replays the
-founder this product actually meets on a first pass: `consortium` is adaptive,
-so on the instant path **nobody has answered it**.
+founder this product actually meets on a first pass: `consortium` is asked in
+the adaptive round, so on the instant path **nobody has answered it**.
 
-Seed 20260806, N=300, holdout:
+`yes` reproduces what the old `!== "no"` mapping did for an unanswered founder
+(a confident `true`, no demotion). `none` is the new tri-state (`undefined`,
+consortium-required rows demoted). Same corpus, back to back, N=300, holdout:
 
-| | pool | EXACT@5 | REGIME@5 |
-|---|---|---|---|
-| `consortium=yes` (= the old mapping's behaviour for an unanswered founder) | 95% | 26% | 82% |
-| `consortium=none` (the new tri-state: unanswered demotes consortium rows) | 95% | **28%** | 82% |
+| seed | | pool | EXACT@5 | REGIME@5 |
+|---|---|---|---|---|
+| 7 | old behaviour (`yes`) | 97% | 28% | 82% |
+| 7 | **new tri-state (`none`)** | 97% | **31%** | **84%** |
+| 99 | old behaviour (`yes`) | 98% | 29% | 83% |
+| 99 | **new tri-state (`none`)** | 98% | **31%** | **84%** |
+| 20260806 | old behaviour (`yes`) | 95% | 26% | 82% |
+| 20260806 | **new tri-state (`none`)** | 95% | **28%** | 82% |
 
-Net: EXACT@5 +2, REGIME@5 flat, pool flat. Per regime-size stratum the trade is
-much larger than the net: standalone regimes 28→67% EXACT (n=18), regimes 6-20
-23→13% EXACT and 48→28% REGIME (n=40). That is the population-trade shape this
-repo has rejected before — except here it is the *correct semantics* being
-restored rather than a signal being added, and the net is positive on EXACT and
-neutral on REGIME.
-
-**If the remaining seeds do not hold, the tri-state stays anyway and the demote
-is what should be revisited**: `undefined !== "no"` was never a decision. It
-was JavaScript truthiness standing in for one.
-
----
+**EXACT@5 +2 to +3, REGIME@5 +0 to +2, pool unchanged, on all three seeds.**
+Not a trade: better or level on every headline, every seed. Reading a
+consortium question nobody answered as a confident yes was costing two to three
+points of exact recall for every founder on the instant path, which is all of
+them.
 
 ## What I did not do, and why
 

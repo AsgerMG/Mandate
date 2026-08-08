@@ -951,57 +951,62 @@ export type AnswerUse =
   | { ranks: false; reason: string };
 
 export const ANSWER_USE: Record<keyof EligibilityAnswers, AnswerUse> = {
-  // ── Ranks the rows ──────────────────────────────────────────────────────
-  ticketBand: { ranks: true, via: "awardScorer as the `ticket` multiplier in rowRelevance, plus its own encoded comparators via gateFitScorer" },
+  // ── Threaded to the ranker as a named input, and proved to move rows ─────
+  //
+  // This is exactly the set `tableInputFromAnswers` routes, plus the country.
+  // It is also exactly where all four of the lost answers lived, which is not
+  // a coincidence: a named input is a thing one call site can pass and another
+  // can forget. The guard's failing claim is scoped here on purpose — if a key
+  // is dropped from that mapping again, the field's `ranks: true` stops being
+  // provable and the build goes red.
+  ticketBand: { ranks: true, via: "awardScorer, as the `ticket` multiplier on every row's score in rowRelevance" },
   sector: { ranks: true, via: "sectorFit, which is (1 - wTheme) of every row's base score" },
-  useOfFunds: { ranks: true, via: "objectiveScorer in the sibling reassignment" },
-  region: { ranks: true, via: "regionScorer, the one signal that separates same-name siblings" },
-  consortium: { ranks: true, via: "tableInputFromAnswers -> consortiumOk -> the demote predicate in the row sort; 83 comparators on 54 instruments via gateFitScorer" },
-  activities: { ranks: true, via: "611 encoded comparators on 598 instruments, read by gateFitScorer" },
-  exclusionFlags: { ranks: true, via: "678 encoded comparators on 626 instruments, read by gateFitScorer" },
-  fteBand: { ranks: true, via: "147 encoded comparators on 112 instruments, read by gateFitScorer" },
-  lossesOverHalfCapital: { ranks: true, via: "153 encoded comparators on 125 instruments, read by gateFitScorer" },
-  borrowerModel: { ranks: true, via: "99 encoded comparators on 94 instruments, read by gateFitScorer" },
-  entityCountries: { ranks: true, via: "founderCountryList -> the establishment screen in selectInstrumentRows, then instrumentServesCountry on every leaf. It is the coarsest signal in the product: change the country and the whole table changes" },
+  useOfFunds: { ranks: true, via: "objectiveScorer, in the within-regime sibling reassignment" },
+  region: { ranks: true, via: "regionScorer, the one signal that separates leaves of one notified scheme delivered by many bodies" },
+  consortium: { ranks: true, via: "tableInputFromAnswers -> consortiumOk -> the `demote` predicate in the row sort. 83 comparators on 54 instruments also reach gateFitScorer" },
+  entityCountries: { ranks: true, via: "founderCountryList -> the establishment screen in selectInstrumentRows, then instrumentServesCountry on every leaf. The coarsest signal in the product: change the country and the whole table changes" },
 
-  // ── Collected, and read by the eligibility screen rather than the sort ───
+  // ── Collected, and read by the eligibility screen ────────────────────────
   //
-  // Not a lesser class, and not an oversight: these are the SME-status,
-  // ownership, financing and commitment questions, and what they produce is a
-  // blocker with a cure — "you fail this, here is what would change it" —
-  // which is the part of the brief a founder can act on. What they do not do
-  // is move a row up the table, and the reason is structural rather than a
-  // wiring bug: `gateFitScorer` re-ranks only WITHIN a group of same-regime
-  // siblings, and only when two of them disagree on the founder's answers. A
-  // field carrying single-digit comparators, spread across regimes that have
-  // no siblings, has nothing to separate.
+  // Not a lesser class. These are the SME-status, ownership, activity,
+  // exclusion and commitment questions, and what they produce is a blocker
+  // with a cure — "you fail this, here is what would change it" — which is the
+  // part of the brief a founder can act on. A blocked fund is then dropped
+  // from the table, so several of these DO change the five rows in practice.
   //
-  // Measured, not assumed: `check_answer_reach.ts` builds the published table
-  // for three founders under every legal answer to each of these and none of
-  // them moved a row. Written down here so the next person does not read the
-  // comparator counts and conclude the ranking is using them.
-  //
-  // A `ranks: false` is not a way out of the guard. The field must still be
-  // read by something the founder sees, and the check proves that too.
-  developmentStage: { ranks: false, reason: "63 comparators, but they gate whole programmes (TRL floors) rather than separating siblings of one regime, so they read as blockers on the screen" },
-  cofinancingBand: { ranks: false, reason: "39 comparators. A co-financing floor is a condition of the same scheme for everyone who reaches it, so it never distinguishes two siblings" },
-  turnoverBand: { ranks: false, reason: "25 comparators, all SME-definition thresholds shared by every leaf of a regime" },
-  balanceBand: { ranks: false, reason: "4 comparators, same SME definition as turnoverBand" },
-  nonEuControl: { ranks: false, reason: "17 comparators, mostly EDF/defence ownership conditions that gate a channel rather than order it" },
-  ownerOver25: { ranks: false, reason: "14 comparators, part of the linked-enterprise half of the SME test" },
-  institutionalOwner: { ranks: false, reason: "2 comparators, the other half of the linked-enterprise test" },
+  // They are not declared `ranks: true` for a reason worth keeping: whether
+  // any given one separates two funds depends on which instruments happen to
+  // be in this founder's pool, so the observation flips as the corpus moves.
+  // `check_answer_reach.ts` was watched doing exactly that — five of these
+  // moved rows on one day's corpus and three on the next day's, with no code
+  // change between. A claim the guard would fail the build on has to be a
+  // claim about the code. So the strong claim stays with the named inputs
+  // above, and these carry the weaker one the guard can actually hold: the
+  // answer must be READ, by the screen or by an encoded rule.
+  activities: { ranks: false, reason: "611 comparators on 598 instruments — the largest encoded axis in the corpus, and it is an EXCLUSION axis: it blocks funds rather than ordering them" },
+  exclusionFlags: { ranks: false, reason: "678 comparators on 626 instruments, the GBER and de minimis exclusions. Blocks rather than orders, and a blocked fund leaves the table" },
+  lossesOverHalfCapital: { ranks: false, reason: "153 comparators. The undertaking-in-difficulty test: a hard bar on the screen, with no cure that is ours to offer" },
+  fteBand: { ranks: false, reason: "147 comparators, the headcount half of the SME definition" },
+  borrowerModel: { ranks: false, reason: "99 comparators, and pinned to 'operating' for every founder (see FIELD_REACH) — so it evaluates correctly and always the same way" },
+  developmentStage: { ranks: false, reason: "63 comparators. TRL floors gate whole programmes rather than separating siblings of one regime" },
+  cofinancingBand: { ranks: false, reason: "39 comparators. A co-financing floor is a condition of the same scheme for everyone who reaches it" },
+  turnoverBand: { ranks: false, reason: "25 comparators, the turnover half of the SME definition" },
+  nonEuControl: { ranks: false, reason: "17 comparators, mostly EDF and defence ownership conditions" },
+  ownerOver25: { ranks: false, reason: "14 comparators, the linked-enterprise half of the SME test" },
   institutionalBacking: { ranks: false, reason: "12 comparators; it also feeds the memo's framing of what kind of raise this is" },
   bankRelationship: { ranks: false, reason: "8 comparators on guarantee instruments, where having a lender is a precondition to applying at all" },
-  wouldOpenEntity: { ranks: false, reason: "4 comparators; its real job is the CURE on an establishment blocker — it is what turns 'you are not eligible' into 'you would be, if'" },
   conditionality: { ranks: false, reason: "7 comparators. It is the founder's stated willingness, which belongs in the memo's advice rather than in a score" },
-  needBy: { ranks: false, reason: "2 comparators. Timing is served by the deadline/liveness layer (offerRoute.ts), not by the row sort" },
+  balanceBand: { ranks: false, reason: "4 comparators, the balance-sheet half of the SME definition" },
+  wouldOpenEntity: { ranks: false, reason: "4 comparators, and its real job is the CURE on an establishment blocker — it is what turns 'you are not eligible' into 'you would be, if'" },
+  institutionalOwner: { ranks: false, reason: "2 comparators, the public-body half of the linked-enterprise test" },
+  needBy: { ranks: false, reason: "2 comparators. Timing is served by the deadline and liveness layer (offerRoute.ts), not by the row sort" },
 
   // ── Nothing can answer these ────────────────────────────────────────────
   // Declared unreachable in FIELD_REACH, so they are out of check_answer_reach's
-  // scope by construction and check_gate_field_reach owns them. Kept here
-  // because the Record is exhaustive and silence would be the wrong answer.
+  // scope by construction and check_gate_field_reach owns them. Present because
+  // the Record is exhaustive, and silence would be the wrong answer.
   activityCountries: { ranks: false, reason: "unreachable (FIELD_REACH): no control, no adaptive hint, no derivation. Its comparators were quarantined by workstream AX" },
-  foundedYear: { ranks: false, reason: "unreachable (FIELD_REACH), and its specs mix ages with calendar years in one numeric field. Quarantined by workstream AX" },
+  foundedYear: { ranks: false, reason: "unreachable (FIELD_REACH), and its specs mixed ages with calendar years in one numeric field. Quarantined by workstream AX" },
 };
 
 /** Fields resolved on the opening form — never re-asked adaptively.

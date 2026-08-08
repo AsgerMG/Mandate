@@ -68,48 +68,38 @@ loadEnvLocal();
 const CREDENTIALS = requireCredentials(
   "check_answer_reach", [], { optional: ["DATABASE_URL"] });
 
-/** Founders that differ in the ways the corpus differs: a big market with
- *  many regional schemes, a smaller one, and an EU-programme-shaped ask. Three
- *  rather than one because "no answer to this question moves any founder" is
- *  the claim being tested, and one founder cannot support it. */
-const PROFILES = [
-  {
-    name: "FR deeptech",
-    country: "France",
-    description:
-      "We design and manufacture solid-state battery cells for electric vehicles, " +
-      "with a pilot line near Grenoble and a first industrial plant planned.",
-    capitalSought: ["grant", "loan"],
-  },
-  {
-    name: "DE software",
-    country: "Germany",
-    description:
-      "We build machine-learning software that plans and optimises freight " +
-      "routing for logistics operators across Europe.",
-    capitalSought: ["grant"],
-  },
-  {
-    name: "ES health",
-    country: "Spain",
-    description:
-      "We run clinical validation of an AI diagnostic for early detection of " +
-      "cardiovascular disease from routine ECG data.",
-    capitalSought: ["grant", "equity"],
-  },
-] as const;
+/**
+ * How many founders the probe runs over.
+ *
+ * They are DRAWN FROM THE RECALL SET, not written here — real companies with
+ * real countries, sectors and self-descriptions, sampled by the same seeded
+ * shuffle every other harness uses, so this check and the recall numbers speak
+ * about the same population.
+ *
+ * The first cut of this used three hand-written founders and was wrong for a
+ * reason worth recording: on a Tuesday's corpus five gate-driven fields
+ * separated a sibling somewhere in their three tables, and on Wednesday's —
+ * after an unrelated load moved 5% of the corpus in or out of "offerable" —
+ * two of them did not. A guard whose verdict flips with someone else's data
+ * load is a guard that gets disabled. Twelve founders spread across the
+ * markets the product actually serves is enough for "no answer to this
+ * question moves anybody" to be a statement about the code.
+ */
+const PROBE_FOUNDERS = 12;
 
 async function main() {
   const { ANSWER_USE, FIELD_ENUM_HINTS, FIELD_REACH } =
     await import("../lib/intelligence/types");
   const { VOCABULARY } = await import("../lib/intelligence/vocabulary");
-  const { hydrateDbInstruments, hydrateGatesFor, loadDbInstruments } =
+  const { hydrateDbInstruments, hydrateGatesFor, loadDbInstruments, requireLiveCorpus } =
     await import("../lib/intelligence/corpus");
   const { buildInstrumentTableHydrated, tableInputFromAnswers, DISPLAY_CAP } =
     await import("../lib/intelligence/shortlist");
   const { evaluateEligibility } = await import("../lib/intelligence/eligibility");
   const { founderCountryList } = await import("../lib/intelligence/shortlist");
   const { semanticFundMatch } = await import("../lib/intelligence/semantic");
+  const { loadRecallSet, isDescribed } = await import("./recallSet");
+  const { sampleRecall, DEFAULT_SEED } = await import("./recallSample");
   type Answers = import("../lib/intelligence/types").EligibilityAnswers;
 
   const fields = Object.keys(ANSWER_USE) as (keyof Answers)[];
@@ -121,29 +111,86 @@ async function main() {
   }
 
   await hydrateDbInstruments();
+  // A Postgres timeout falls back to the committed snapshot SILENTLY, and this
+  // check cannot survive that: the snapshot carries a subset of the encoded
+  // comparators, so eight fields that demonstrably move rows against the live
+  // corpus moved none against the fallback and the run reported eight
+  // founder-facing defects that did not exist. Observed the first time this
+  // ran under `npm run check`, four seconds instead of four minutes. A guard
+  // that grades a different corpus from the one that ships is worse than no
+  // guard, so this exits loudly rather than reporting.
+  requireLiveCorpus("check_answer_reach");
   // Every gate in memory before the first build, so two builds of the same
   // profile differ ONLY in the answer under test. Production hydrates lazily
   // per request; a fully warm corpus is the stronger test, because a field
   // that cannot move a row with every rule loaded certainly cannot move one
   // with a subset.
-  await hydrateGatesFor(loadDbInstruments().map((i) => i.id));
-
-  // What the CORPUS demands on each field, and how much of it. Two uses:
-  // candidate answers for fields the product has no fixed vocabulary for, and
-  // the evidence that a memo-only field is read at all.
+  //
+  // IN CHUNKS, and then PROVED. `hydrateGatesFor` sets statement_timeout=2000
+  // and swallows the error, so asking it for all 1,088 instruments at once
+  // returns cleanly having fetched nothing whenever the database is busy —
+  // and every gate-driven field then reads as a defect. That is exactly what
+  // happened the first time this ran under `npm run check`: eight fields
+  // reported as broken, in four seconds instead of four minutes, against a
+  // corpus whose provenance still said "postgres" because the instruments had
+  // loaded and only their gates had not.
+  // ── Ground truth, straight from Postgres ─────────────────────────────────
+  // What the CORPUS demands on each field. Read by its own query rather than
+  // counted off the in-memory instruments, because the in-memory count is
+  // exactly what a partial hydration corrupts — and this number is also the
+  // POST-CONDITION the hydration below is held to.
   const encoded = new Map<string, { specs: number; values: string[] }>();
-  for (const inst of loadDbInstruments()) {
-    for (const g of inst.gates as { valueSpec?: unknown }[]) {
-      const spec = g.valueSpec as
-        { field?: string; allowed?: unknown[]; value?: unknown } | undefined;
-      if (!spec?.field) continue;
-      const e = encoded.get(spec.field) ?? { specs: 0, values: [] };
-      e.specs += 1;
-      for (const v of spec.allowed ?? (spec.value === undefined ? [] : [spec.value])) {
-        if (typeof v === "string" && !e.values.includes(v)) e.values.push(v);
-      }
-      encoded.set(spec.field, e);
+  const { Client } = await import("pg");
+  const db = new Client({ connectionString: process.env.DATABASE_URL });
+  await db.connect();
+  const gateRows = await db.query<{ instrument_id: string; value_spec: string }>(
+    `SELECT instrument_id, value_spec FROM eligibility_gates
+      WHERE value_spec IS NOT NULL AND value_spec <> ''`);
+  const instrumentsWithSpecs = new Set<string>();
+  for (const r of gateRows.rows) {
+    let spec: { field?: string; allowed?: unknown[]; value?: unknown };
+    try {
+      spec = typeof r.value_spec === "string" ? JSON.parse(r.value_spec) : r.value_spec;
+    } catch { continue; }
+    if (!spec.field) continue;
+    instrumentsWithSpecs.add(r.instrument_id);
+    const e = encoded.get(spec.field) ?? { specs: 0, values: [] };
+    e.specs += 1;
+    for (const v of spec.allowed ?? (spec.value === undefined ? [] : [spec.value])) {
+      if (typeof v === "string" && !e.values.includes(v)) e.values.push(v);
     }
+    encoded.set(spec.field, e);
+  }
+  await db.end();
+
+  // ── Hydrate, in chunks, and PROVE it landed ──────────────────────────────
+  // `hydrateGatesFor` sets statement_timeout=2000 and swallows the error, so
+  // asking it for all 1,088 instruments at once returns cleanly having fetched
+  // NOTHING whenever the database is busy. That happened the first time this
+  // ran under `npm run check`: eight gate-driven fields reported as
+  // founder-facing defects, in four seconds instead of four minutes, against a
+  // corpus whose provenance still read "postgres" because the instruments had
+  // loaded and only their gates had not.
+  //
+  // Chunking keeps each query inside the 2s budget; retrying covers a busy
+  // moment; and the post-condition is the part that matters, because neither
+  // of the first two is allowed to be trusted. A guard that grades a
+  // half-loaded corpus is worse than no guard.
+  const ids = loadDbInstruments().map((i) => i.id);
+  const hydratedCount = () => loadDbInstruments().filter(
+    (inst) => (inst.gates as { valueSpec?: unknown }[]).some((g) => g.valueSpec)).length;
+  const want = [...instrumentsWithSpecs].filter((id) => ids.includes(id)).length;
+  for (let attempt = 1; attempt <= 5 && hydratedCount() < want; attempt++) {
+    for (let i = 0; i < ids.length; i += 50) await hydrateGatesFor(ids.slice(i, i + 50));
+  }
+  if (hydratedCount() < want) {
+    console.error(`check_answer_reach: gate hydration is incomplete — ` +
+      `${hydratedCount()} of ${want} instruments carrying an encoded comparator ` +
+      `have their gates in memory. Postgres says one thing and the ranker would ` +
+      `see another, so every gate-driven field would read as a defect. Exiting ` +
+      `rather than reporting; re-run when the database is less busy.`);
+    process.exitCode = 1;
+    return;
   }
 
   /** Every legal answer to this question, as a founder could give it. Drawn
@@ -171,13 +218,46 @@ async function main() {
     // Deterministic, and capped: a 30-option multi-select does not need 30
     // builds to show that answering it can move a row. The cap only ever makes
     // this check STRICTER (fewer chances to prove a claim), never laxer.
-    return out.slice(0, 8);
+    return out.slice(0, 12);
   };
 
-  const rowSig = (rows: { instrumentId?: string; instrument: string }[]) =>
-    rows.slice(0, DISPLAY_CAP).map((r) => r.instrumentId ?? r.instrument).join("|");
-  const screenSig = (checks: { check: string; status: string; finding: string }[]) =>
+  // WHAT THE FOUNDER IS SHOWN, which is not the same as what the ranker
+  // returns. Production assesses the ranked pool and then DROPS the funds the
+  // founder conclusively fails — that is the whole reason VERDICT_POOL is 18
+  // against a display cap of 6. A probe that compared raw rankings would
+  // therefore report the two largest encoded axes in the corpus, `activities`
+  // and `exclusionFlags` (1,289 comparators between them), as moving nothing:
+  // they are blockers, and blocking happens after the sort.
+  //
+  // So the signature is the ranked rows with the conclusively-failed ones
+  // removed, in order — the five names on the page.
+  const BLOCKED = new Set(["not_met", "likely_not_met"]);
+  const publishedSig = (
+    rows: { instrumentId?: string; instrument: string }[],
+    checks: { instrumentId?: string; status: string }[],
+  ) => {
+    const blocked = new Set(checks
+      .filter((c) => c.instrumentId && BLOCKED.has(c.status))
+      .map((c) => c.instrumentId!));
+    return rows.filter((r) => !r.instrumentId || !blocked.has(r.instrumentId))
+      .slice(0, DISPLAY_CAP).map((r) => r.instrumentId ?? r.instrument).join("|");
+  };
+  const screenSig = (checks: { check: string; status: string }[]) =>
     checks.map((c) => `${c.check}:${c.status}`).join("|");
+
+  // The probe population: real companies, drawn by the shared seeded shuffle.
+  // Described rows only — a founder who typed nothing cannot exercise the
+  // semantic half of the ranking, and half the scorers would go untested.
+  const { rows: recall } = loadRecallSet("answer reach");
+  const PROFILES = sampleRecall(
+    recall.filter((r) => isDescribed(r) && r.country), PROBE_FOUNDERS, DEFAULT_SEED,
+  ).map((r) => ({
+    name: `${r.name} (${r.country}/${r.sector ?? "other"})`,
+    country: r.country,
+    sector: r.sector,
+    description: (r.description || r.selfDescription || "") as string,
+    capitalSought: ["grant", "loan"] as string[],
+  }));
 
   // One table build, through the production entry and the production mapping.
   const build = async (p: (typeof PROFILES)[number], sem: Map<string, number>,
@@ -188,27 +268,25 @@ async function main() {
       // select, folded into entityCountries server-side by
       // withIncorporationCountry. Mirrored here, or the probe would hold the
       // founder's country fixed while varying entityCountries and conclude
-      // that the country answer changes nothing.
-      // targetMarkets is deliberately empty: it is a separate request field,
-      // and leaving the profile's own country in it would re-add the country
-      // the probe is trying to vary.
+      // that the country answer changes nothing. targetMarkets is left empty
+      // for the same reason: it would re-add the country under test.
       founderCountries: founderCountryList(
-        answers?.entityCountries?.[0] ?? p.country, [],
-        answers?.entityCountries),
+        answers?.entityCountries?.[0] ?? p.country, [], answers?.entityCountries),
       capitalSought: [...p.capitalSought],
       description: p.description,
       semantic: sem,
       ...tableInputFromAnswers(answers),
     });
     const ids = rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
-    return { rows: rowSig(rows), screen: screenSig(evaluateEligibility(answers, ids)) };
+    const checks = evaluateEligibility(answers, ids);
+    return { rows: publishedSig(rows, checks), screen: screenSig(checks) };
   };
 
   // Baseline answers: a real founder's screen-one answers, so the probe moves
   // ONE field against a populated profile rather than against emptiness.
   const baseFor = (p: (typeof PROFILES)[number]): Answers => ({
     entityCountries: [p.country],
-    sector: "other",
+    sector: p.sector ?? "other",
     activities: ["none"],
     borrowerModel: "operating",
     ticketBand: "b500k_2m5",
@@ -216,8 +294,16 @@ async function main() {
     useOfFunds: ["industrial_research"],
   });
 
-  const semByProfile = new Map<string, Map<string, number>>();
-  for (const p of PROFILES) semByProfile.set(p.name, await semanticFundMatch(p.description));
+  // Embeddings and reference tables computed ONCE per founder: the reference
+  // is the same for every field, and rebuilding it per field turned 12 builds
+  // into 276 of the identical table.
+  const sems: Map<string, number>[] = [];
+  const refs: { rows: string; screen: string }[] = [];
+  for (const p of PROFILES) {
+    const sem = await semanticFundMatch(p.description);
+    sems.push(sem);
+    refs.push(await build(p, sem, baseFor(p)));
+  }
 
   // A field nothing can ANSWER is not this check's business: it is
   // check_gate_field_reach's, which fails the build on any comparator keyed to
@@ -229,10 +315,9 @@ async function main() {
   for (const field of collected) {
     let rows = false, screen = false, how = "";
     outer:
-    for (const p of PROFILES) {
-      const sem = semByProfile.get(p.name)!;
+    for (const [pi, p] of PROFILES.entries()) {
+      const sem = sems[pi], ref = refs[pi];
       const base = baseFor(p);
-      const ref = await build(p, sem, base);
       for (const value of answersToTry(field, base)) {
         const probe = { ...base, [field]: value } as Answers;
         const got = await build(p, sem, probe);
