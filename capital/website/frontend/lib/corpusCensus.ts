@@ -59,6 +59,18 @@ export interface CensusRow {
   gate: { ok: boolean | null; failures?: string[]; notes?: string[] } | null;
   run_outcome: string;
   errors: string[] | null;
+  /** WHICH STORE this census read — derived from the environment by
+   *  publish_corpus_census.py, not labelled by hand. Optional because rows
+   *  written before the column existed do not carry it, and because the
+   *  verdict-feed path reconstructs a row from published metrics.
+   *  See website/build/lib/corpus_stores.py for why the store, not the
+   *  producer, is the fact: three censuses taken against the SAME laptop file
+   *  carried three different producer labels. */
+  store?: string;
+  /** What this store could and could not reach of the committed migrations.
+   *  `unknown` is an id the store records that the runner cannot produce — DDL
+   *  applied by hand, which no other store can reproduce. */
+  schema_state?: { applied: string[]; pending: string[]; unknown: string[] } | null;
 }
 
 export interface Admissibility {

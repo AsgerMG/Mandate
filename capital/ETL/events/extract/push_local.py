@@ -79,11 +79,20 @@ def run(cmd: list[str], dry: bool) -> int:
 
 
 def pull_db(dry: bool) -> None:
-    print("=== Pulling fresh Railway DB ===")
-    cmd = ["npx", "--yes", "@railway/cli", "volume", "files",
-           "--volume", "etl-pipeline-volume", "download", "/db.sqlite",
-           str(DB), "--overwrite"]
-    rc = run(cmd, dry)
+    """Delegated to pull_db.py rather than repeated here.
+
+    This function used to be its own copy of the download, with the same
+    `--overwrite` onto data/db.sqlite — so the safety added to pull_db.py would
+    have applied to `make pull-db` and not to the push cycle, which is the same
+    deletion by a different route. One implementation, one refusal.
+    """
+    print("=== Pulling the corpus of record ===")
+    rc = run([sys.executable, str(ROOT / "ETL/events/extract/pull_db.py")], dry)
+    if rc == 2:
+        sys.exit("\nThe pull refused: this machine holds rows the corpus of record "
+                 "does not.\nResolve as it instructs, then re-run. Pushing on top of "
+                 "this would\noverwrite the record with a store that is "
+                 "simultaneously ahead and behind.")
     if rc != 0:
         sys.exit(f"pull failed (rc={rc}) -- aborting before touching local data")
 
@@ -129,7 +138,23 @@ def run_manual_inbox(dry: bool) -> list[str]:
     return failures
 
 
-def push_db(dry: bool) -> None:
+def push_db(dry: bool, skipped_pull: bool) -> None:
+    """Upload the local store over the corpus of record.
+
+    Safe only because the pull above is the same file plus this run's additions.
+    With --skip-pull it is not: the local copy may be days behind the weekly
+    cron, and this upload would delete every award the volume gathered since —
+    from registers that republish a current file and keep no history, so those
+    rows have no second copy anywhere in the world. The combination is refused
+    rather than documented.
+    """
+    if skipped_pull and not dry:
+        sys.exit("\nREFUSED: --skip-push is missing and --skip-pull was given.\n"
+                 "  This would upload a local copy of unknown age over the corpus of\n"
+                 "  record, deleting whatever the weekly cron has gathered since it\n"
+                 "  was taken. Either drop --skip-pull, or add --skip-push, or\n"
+                 "  reconcile explicitly:\n"
+                 "    python3 ETL/events/load/reconcile_stores.py --report <record> <local>")
     print("\n=== Pushing db.sqlite back to the Railway volume ===")
     cmd = ["npx", "--yes", "@railway/cli", "volume", "files",
            "--volume", "etl-pipeline-volume", "upload",
@@ -172,7 +197,7 @@ def main() -> None:
                   f"progress is still progress; re-run to retry the failed ones).")
 
         if not args.skip_push:
-            push_db(args.dry_run)
+            push_db(args.dry_run, skipped_pull=args.skip_pull)
     finally:
         if needs_wake and not args.dry_run:
             restore_problems = restore()

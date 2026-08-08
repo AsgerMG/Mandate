@@ -200,6 +200,34 @@ jobs:
       - name: Cross-language constants
         run: python3 ETL/schema/check_cross_language_constants.py
 
+      # Every table has ONE declared authoritative store, the count still owned
+      # by SQLite may only fall, and no module may rebuild a Postgres-owned
+      # table out of a SQLite connection. That last rule is what stops
+      # "Postgres is the source of truth" from being a sentence the code
+      # contradicts: moving a table's declaration fails until its write path
+      # has actually moved.
+      # Every migration id resolves to exactly one function and one file.
+      # MIGRATIONS is a hand-written dict, and two functions with the same name
+      # are collapsed by Python without a word -- so the dict stays well-formed
+      # while one migration silently ceases to exist. That happened four times
+      # in one week, twice while it was being fixed and twice more while the
+      # fixes were being merged. `--ids` reads committed source only, so it
+      # needs no corpus and no credentials, which is what CI has.
+      - name: Every migration id is reachable
+        run: python3 ETL/events/load/migrations/apply.py --ids
+
+      - name: One store of record per table
+        run: python3 ETL/schema/check_store_of_record.py
+
+      # Committed DDL must account for every column in every store. The
+      # BETWEEN-STORES half needs the corpus and DATABASE_URL, which CI has
+      # neither of by design, so it runs on the weekly cron and publishes a
+      # verdict; this is the half that reads committed files only. It found a
+      # git conflict marker sitting inside ETL/schema/postgres_schema.sql --
+      # the file the step above asserts the EXISTENCE of.
+      - name: Committed DDL accounts for every column
+        run: python3 ETL/schema/check_store_schema.py
+
       # What we TRACK and what we OFFER are two populations. That check has
       # MOVED to the weekly Railway cron and is deliberately not here, because
       # here it could never run: data/db.sqlite is gitignored, so on every run

@@ -62,6 +62,23 @@
       "why": "What the ETL corpus contains, and how the run that produced it went. Everything below is judged against the newest one."
     },
     {
+      "id": "store_schema",
+      "cadence": "weekly",
+      "needs": ["etl corpus (data/db.sqlite)", "DATABASE_URL"],
+      "code": [
+        "ETL/schema/check_store_schema.py",
+        "ETL/schema/schema_debt.json",
+        "ETL/events/load/schema.sql",
+        "ETL/events/load/migrations",
+        "ETL/schema/postgres_schema.sql"
+      ],
+      "code_suffixes": [".py", ".sql", ".json"],
+      "command": ["python3", "ETL/schema/check_store_schema.py",
+                  "--sqlite", "data/db.sqlite", "--postgres"],
+      "refresh": "python3 ETL/lib/guard_verdicts.py run store_schema",
+      "why": "Two stores of the same table must have the same columns. The volume's funding_instruments had no `tier` while the laptop's did -- the volume had run 9 of the 23 committed migrations -- and because the census reads `tier`, a missing COLUMN was reported for half a day as a coverage LOSS. It runs here rather than in CI because it is a question about LIVE stores, and it runs inside the container so the corpus it reads is the one the cron actually writes."
+    },
+    {
       "id": "aggregate_independence",
       "cadence": "weekly",
       "needs": ["etl corpus (data/db.sqlite)"],

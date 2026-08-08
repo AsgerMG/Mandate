@@ -1,0 +1,49 @@
+{
+  "$why": [
+    "Columns and tables that exist in a live store and that no committed DDL",
+    "creates. Every one was an ALTER run by hand against a database, so a store",
+    "rebuilt from source is a DIFFERENT database from the one in production --",
+    "which is how the volume ended up 14 migrations behind the laptop without",
+    "anything noticing until the census read a column that was not there.",
+    "",
+    "This is a DEBT LIST, not a permission list. ETL/schema/check_store_schema.py",
+    "fails on anything not recorded here, and fails again once an entry stops",
+    "being true, so the only direction it can move is down. Clearing an entry",
+    "means writing its migration into ETL/events/load/migrations/ and lowering",
+    "'budget' by one.",
+    "",
+    "'budget' is the count of entries below. It is stated separately on purpose:",
+    "deleting an entry without lowering it, or lowering it without deleting an",
+    "entry, both fail."
+  ],
+  "budget": 17,
+  "tables_without_ddl": [
+    "company_sector_llm",
+    "instrument_application",
+    "satr_staging"
+  ],
+  "columns_without_ddl": {
+    "companies": [
+      "parent_group",
+      "sector_rule"
+    ],
+    "funding_instruments": [
+      "description",
+      "eligibility_confidence",
+      "eligibility_fetched_at",
+      "eligibility_source_url",
+      "eligibility_text",
+      "name_basis",
+      "route_status",
+      "route_status_note",
+      "route_status_source",
+      "source_window_policy"
+    ],
+    "public_equity_stakes": [
+      "via_fund"
+    ],
+    "public_funding_events": [
+      "instrument_class"
+    ]
+  }
+}
