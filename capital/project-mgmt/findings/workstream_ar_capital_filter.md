@@ -93,6 +93,13 @@ outcome of that vote; they record that it produced no answer:
 | `unknown` | no determinable kind, or a synthetic rollup | 8 | answered to no option — removed for everyone | **AE**, left as a ratchet |
 | `framework` | an EU-law record, not a funding product | 0 | same | AE's ratchet |
 
+The `unknown` count is **8 on the snapshot and 9 on Postgres** (807 publishable live,
+769 on the snapshot), and the two are not in conflict: the snapshot withholds 80 rows
+by design (workstream AL), and the ninth is one of them. `check_capital_reach.ts`
+reads the snapshot deliberately, so its ratchet of 8 is measured against the
+population it guards. Anyone re-deriving the ceiling against a live `DATABASE_URL`
+will see 9 and should not raise the ratchet to match.
+
 ### The boundary with workstream AE, which found the same family and split it correctly
 
 AE reached `unknown` first, priced it (8 publishable instruments reachable by no
@@ -150,7 +157,9 @@ described a fund that does not exist under that label.
 
 This defect is **live in the product and independent of the harness**, which is why
 "the filter is right" would have been the wrong conclusion. It barely registers on
-this recall population only because those 14 instruments are rarely the won fund.
+this recall population only because those 5 instruments are rarely the won fund.
+(5, not 14: the earlier figure counted the `unknown` instruments this branch ended
+up not admitting.)
 
 ### How far the vote reaches beyond those nine
 
@@ -248,21 +257,31 @@ founders whose fund has 50 siblings, where the pool is worth the most.
 
 ## 6. What changed
 
-**Shipped.** `blended`, `unknown` and `framework` no longer remove anything.
+**Shipped.** `blended` no longer removes anything, and is no longer `DILUTIVE`.
+`unknown` and `framework` are **unchanged** — still reachable by no option, still
+AE's ratchet. An earlier draft of this branch admitted all three; that half is
+reverted, for the reason in §2, and this paragraph is what the code does.
 
 > **The property.** A founder's stated capital preference removes a fund only on
 > evidence that the fund does not provide what was asked for. A label recording that
 > a vote produced no answer is silence, and a filter must not read silence as
 > contradiction.
 
-Stated as a property, so a capital type nobody has seen yet is covered: an unmapped
-value is silence too, rather than universally excluded — which is the failure
-`unknown` and `framework` were already having, invisibly. Silence is the safe default
-for a founder and the dangerous one for us, because the filter simply stops
-discriminating and nothing goes red. So `check_capital_reach.ts` fails the build
-unless **every** capital type in the live corpus is classified on purpose. The unit
-tests were mutation-checked: restoring `blended` to `DILUTIVE`, or dropping the
-indefinite test, fails two of nine.
+The property is applied to labels we can enumerate the kinds behind, which today is
+`blended` alone. An **unmapped** value is deliberately *not* given the same
+treatment, and that asymmetry is the point: making silence the universal default
+would disarm `check_capital_reach.ts`, whose whole job is to fail the build when a
+new capital type reaches no founder. Silence is the safe default for a founder and
+the dangerous one for us — the filter simply stops discriminating and nothing goes
+red. So a value nobody has classified stays loud. The unit tests were
+mutation-checked: restoring `blended` to `DILUTIVE`, or dropping the indefinite
+test, fails two of nine.
+
+`census_capital_reach.ts` asked the wrong question until this step: it computed
+reachability from `CAPITAL_SOUGHT_TO_DB` rather than from `instrumentServesCapital`,
+so on the day the filter began admitting `blended` the census still reported those 5
+instruments as reachable by nobody. It now asks the function, as the guard does.
+Two readings of one property was the defect; there is now one.
 
 The memo's `capital` fit component was moved to the same rule, so the filter and the
 score cannot disagree.

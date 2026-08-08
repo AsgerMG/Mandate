@@ -50,10 +50,31 @@ async function main() {
   for (const [k, n] of [...capCount].sort((a, b) => b[1] - a[1])) {
     console.log(`  ${String(n).padStart(5)}  ${k}`);
   }
-  const known = new Set(Object.values(CAPITAL_SOUGHT_TO_DB).flat());
-  const unreachable = [...capCount].filter(([k]) => !known.has(k));
-  console.log(`  capital_type values NO intake option maps to: ` +
+  // Reachability is asked of `instrumentServesCapital` ITSELF, one intake
+  // option at a time — never of `CAPITAL_SOUGHT_TO_DB` recomputed here. The two
+  // stopped being the same question when workstream AR added
+  // `INDEFINITE_CAPITAL`: `blended` is in no option's mapped values and IS
+  // reachable by all of them, so the map-based test reported the corpus's
+  // largest debt programme as stranded from every founder on the same day the
+  // filter began admitting it. `check_capital_reach.ts` asks the function for
+  // exactly this reason, and a census that answered differently from the guard
+  // would be the more dangerous of the two — nothing fails when a diagnostic
+  // lies.
+  //
+  // One option at a time, not the whole set: a fund reachable only by a founder
+  // who ticks every box is reachable by no founder who has a preference.
+  const options = CAPITAL_OPTIONS.map((o) => o.value);
+  const unreachable = [...capCount].filter(
+    ([k]) => !options.some((o) => instrumentServesCapital(k, [o])));
+  console.log(`  capital_type values NO intake option can reach: ` +
     (unreachable.length ? unreachable.map(([k, n]) => `${k} (${n})`).join(", ") : "none"));
+  const indefinite = [...capCount].filter(
+    ([k]) => !new Set(Object.values(CAPITAL_SOUGHT_TO_DB).flat()).has(k)
+      && options.some((o) => instrumentServesCapital(k, [o])));
+  if (indefinite.length) {
+    console.log(`  ...and reachable by EVERY option because the label names no ` +
+      `kind of capital: ` + indefinite.map(([k, n]) => `${k} (${n})`).join(", "));
+  }
 
   // Per country, the share of publishable instruments the harness constant hides.
   const HARNESS = ["grant", "loan"];
