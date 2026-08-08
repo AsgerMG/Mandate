@@ -1,0 +1,141 @@
+{
+  "$schema_note": [
+    "ONE definition of which guards must have a published verdict, read by both",
+    "languages. Python publishes from ETL/lib/guard_verdicts.py; TypeScript reads",
+    "it in website/frontend/scripts/check_verdicts.ts. A second copy of this list",
+    "would drift the first time either side gained a guard, which is the defect",
+    "this repo keeps finding (see ETL/schema/check_cross_language_constants.py).",
+    "",
+    "Fields:",
+    "  id        the verdict's key. Stable; renaming one loses its history.",
+    "  cadence   'weekly'    the ETL cron publishes it, so it can be LATE:",
+    "                        SILENT is enforced against the observed spacing.",
+    "            'on_change' a credentialled run publishes it. It has no clock to",
+    "                        be late against, so SILENT is not enforced. It goes",
+    "                        red two other ways: DRIFTED when the code it judges",
+    "                        changes, and STALE when the CORPUS moves past it.",
+    "  needs     what the guard cannot run without, and LOAD-BEARING: a guard",
+    "            that names a store here is answering a question about DATA, so",
+    "            its verdict is void once the corpus moves, whatever its cadence.",
+    "            Three of the four on_change guards judge live Postgres and no",
+    "            fingerprinted file changes when a call closes, so without this",
+    "            their verdicts would have covered today's corpus forever.",
+    "            Derived from, not duplicated -- do not add a 'reads_corpus' flag",
+    "            that can disagree with the credentials the guard actually needs.",
+    "  code      repo-relative paths whose content the verdict is bound to. A",
+    "            verdict produced against a different hash of these is DRIFTED.",
+    "            For a weekly guard this is what makes 'the container is running",
+    "            last week's code' visible; for an on_change guard it is the",
+    "            whole enforcement mechanism.",
+    "  refresh   the exact command that produces a fresh verdict. Printed in the",
+    "            failure, because a guard that says 'stale' without saying how to",
+    "            fix it gets muted.",
+    "  command   present only where ETL/lib/guard_verdicts.py drives the guard",
+    "            and publishes for it. A guard that publishes its OWN verdict",
+    "            (the TypeScript ones do, because they have real figures to",
+    "            carry) has no command here: two ways to publish one verdict is",
+    "            two things to keep in step.",
+    "  tolerate  exit codes that mean 'worth saying out loud, not worth failing",
+    "            over'. Named per guard, never inferred from the number.",
+    "  code_suffixes  narrows what a named directory contributes to the hash."
+  ],
+  "feed": {
+    "url": "https://euro-inv-tracker.vercel.app/api/guards",
+    "$why": [
+      "Where a reader without credentials gets the verdicts. The site already",
+      "holds DATABASE_URL because the product cannot work without it; that is a",
+      "credential we cannot avoid having. A DATABASE_URL secret in GitHub",
+      "Actions is one we can, and it would widen a compromised workflow from",
+      "'can read our code' to 'can read and write every award we hold'.",
+      "Override with GUARD_FEED_URL to point at a preview deployment or a local",
+      "`next dev`; nothing in an automatic path may need that override."
+    ]
+  },
+  "guards": [
+    {
+      "id": "census",
+      "cadence": "weekly",
+      "needs": ["etl corpus (data/db.sqlite)", "DATABASE_URL"],
+      "code": ["ETL", "website/build"],
+      "code_suffixes": [".py"],
+      "refresh": "python3 ETL/events/load/publish_corpus_census.py",
+      "why": "What the ETL corpus contains, and how the run that produced it went. Everything below is judged against the newest one."
+    },
+    {
+      "id": "aggregate_independence",
+      "cadence": "weekly",
+      "needs": ["etl corpus (data/db.sqlite)"],
+      "code": [
+        "ETL/schema/check_aggregate_independence.py",
+        "website/build/lib/corpus_kpis.py"
+      ],
+      "command": ["python3", "ETL/schema/check_aggregate_independence.py"],
+      "refresh": "python3 ETL/lib/guard_verdicts.py run aggregate_independence",
+      "why": "Liveness must not reach the headline figures, and must move the offerable set. It was in CI, where data/db.sqlite is gitignored, so it printed 'skipping' and returned 0 on every run it has ever had."
+    },
+    {
+      "id": "offerable_decay",
+      "cadence": "weekly",
+      "needs": ["etl corpus (data/db.sqlite)"],
+      "code": [
+        "ETL/terms/check_offerable_decay.py",
+        "ETL/lib/liveness.py",
+        "data/reference/offerable_baseline.json"
+      ],
+      "command": ["python3", "ETL/terms/check_offerable_decay.py"],
+      "tolerate": [3],
+      "refresh": "python3 ETL/lib/guard_verdicts.py run offerable_decay",
+      "why": "A country's offerable inventory falling with no corresponding corpus change. Already a cron step; publishing its verdict is what makes the result readable without credentials."
+    },
+    {
+      "id": "corpus_currency",
+      "cadence": "on_change",
+      "needs": ["DATABASE_URL"],
+      "code": [
+        "website/frontend/scripts/check_corpus_currency.ts",
+        "website/frontend/lib/intelligence/liveness.ts",
+        "website/frontend/public/data/instrument_terms.json",
+        "website/frontend/lib/intelligence/semanticCache.generated.json"
+      ],
+      "refresh": "cd website/frontend && npx tsx scripts/check_corpus_currency.ts",
+      "why": "The committed fund snapshot against live Postgres: liveness agreement, profile coverage, and whether the semantic cache every NO_PG check ranks on is the real index."
+    },
+    {
+      "id": "hydration_parity",
+      "cadence": "on_change",
+      "needs": ["DATABASE_URL"],
+      "code": [
+        "website/frontend/scripts/check_hydration_parity.ts",
+        "website/frontend/lib/intelligence",
+        "website/frontend/public/data/instrument_terms.json"
+      ],
+      "refresh": "cd website/frontend && npx tsx scripts/check_hydration_parity.ts",
+      "why": "The two stores must produce the same brief. Every other check runs NO_PG=1, so the whole suite is green regardless of what Postgres holds."
+    },
+    {
+      "id": "degradation",
+      "cadence": "on_change",
+      "needs": ["DATABASE_URL"],
+      "code": [
+        "website/frontend/scripts/check_degradation.ts",
+        "website/frontend/lib/intelligence",
+        "website/frontend/public/data/instrument_terms.json"
+      ],
+      "refresh": "cd website/frontend && npx tsx scripts/check_degradation.ts",
+      "why": "No fund a founder is shown on the fallback corpus may be one the live register says has closed. Measured at 26% of founders before the policy landed."
+    },
+    {
+      "id": "recall_floor",
+      "cadence": "on_change",
+      "needs": ["DATABASE_URL", "VOYAGE_KEY"],
+      "code": [
+        "website/frontend/scripts/check_recall_floor.ts",
+        "website/frontend/scripts/recallSet.ts",
+        "website/frontend/scripts/recallSample.ts",
+        "website/frontend/lib/intelligence"
+      ],
+      "refresh": "cd website/frontend && npx tsx scripts/check_recall_floor.ts",
+      "why": "Does retrieval still find the fund a company actually won. Skips itself without credentials and exits 0, so a ranking change has always been able to merge with the floors never evaluated. The fingerprint above is what closes that."
+    }
+  ]
+}

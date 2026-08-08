@@ -13,15 +13,25 @@
 // Floors sit just under the measured numbers, not at an aspiration. A gate set
 // where we wish we were fails on day one, gets ignored, and then protects
 // nothing. Raise them when the real number rises.
-import { readFileSync } from "fs";
-import path from "path";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+// Repo root AND frontend, from the one loader, and then a DECLARED credential
+// contract rather than a skip.
+//
+// This script's own copy of the env preamble read only ./.env.local, so in a
+// fresh worktree -- where the file is gitignored and therefore absent, while
+// the repo-root one is right there -- it found nothing and took a SKIPPED
+// branch that returned 0. The floors are the last line in `npm run check`; a
+// green build that had never evaluated them is the failure this whole file
+// exists to prevent, happening to the file itself.
+//
+// Fixing the path alone would only have made that rarer. `requireCredentials`
+// is what makes it impossible: without the keys, and without NO_PG to say the
+// run is deliberately offline, this ENDS NON-ZERO. There is no longer a state
+// in which the floors go unevaluated and the build is green.
+loadEnvLocal();
+const CREDENTIALS = requireCredentials(
+  "check_recall_floor", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
@@ -33,6 +43,22 @@ import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers,
 } from "./recallSet";
+// ── The skip below is now survivable, and only because of this ─────────────
+// Skipping loudly and exiting 0 was still exiting 0: `npm run check` reported a
+// green build with the floors never evaluated, and CI -- which has no
+// credentials and never will -- has never once run them. Handing GitHub a
+// DATABASE_URL would fix that by widening a compromised workflow from "can read
+// our code" to "can read and write every award we hold".
+//
+// So this publishes what it measured, bound to a hash of the code it graded,
+// and check_verdicts.ts fails when the ranking code in a checkout is not the
+// code the last published floors were measured on. The skip stays legitimate
+// where it is legitimate; what it can no longer do is let a ranking change
+// merge unmeasured.
+import { publishVerdict, startTape } from "./guardVerdict";
+
+const GUARD = "recall_floor";
+const tape = startTape();
 
 /** ONE set, and the two populations inside it guarded separately.
  *
@@ -112,6 +138,54 @@ import {
  *  EVERY floor here is RAISED or unchanged against the block it replaces
  *  (90/15/80, 68/82). Nothing was lowered. The build is green because the
  *  question the set asks became answerable again, not because the bar moved. */
+/*  ── RE-DERIVATION, 2026-08-07 18:00 UTC: the answer is NO RAISE ──────────
+ *
+ *  The block above was calibrated while a load was in flight and
+ *  `check_corpus_currency` was red, and a raise to 95 / 25 / 83 was left
+ *  outstanding for when both cleared. Both have cleared -- currency green,
+ *  snapshot and Postgres agreeing on every liveness verdict, 1,084 instruments
+ *  on both sides -- so it was re-derived properly. Three seeds, tune split,
+ *  N=300, Postgres asserted, corpus 1,084 and printed on every run,
+ *  17:23-17:49 UTC. Every figure below was measured twice, side by side, on
+ *  either side of a full regeneration of `semanticCache.generated.json`, and
+ *  the two sets are byte-identical on every metric and every stratum:
+ *
+ *                          PINNED (what these floors guard)   seed 7   seed 99
+ *      pool                          98  (293/300)              96      96
+ *      EXACT@5                       30  ( 91/300)              31      28
+ *      REGIME@5                      87  (262/300)              82      83
+ *      REGIME@5 original join        83  (n=151)                76      77
+ *      REGIME@5 traced               91  (n=149)                89      89
+ *
+ *  Against the block above: pool and REGIME@5 UNMOVED on the pinned sample
+ *  (98, 87), EXACT@5 DOWN two (32 -> 30), original join DOWN two (85 -> 83),
+ *  traced UP one (90 -> 91). Nothing rose. So there is nothing to raise a
+ *  floor onto: the margin convention this file has always used, applied to
+ *  today's numbers, lands on the numbers that are already here.
+ *
+ *      pool      5 under pinned = 93, and 3 under the lowest seed (96) = 93.
+ *      EXACT@5  10 under pinned = 20, which is BELOW the 22 in force. Held at
+ *                22, never lowered -- but note it is now the tightest thing in
+ *                this file at 8 points, not the 10 it specifies, because the
+ *                pinned measurement fell rather than the floor rising.
+ *      REGIME@5  7 under pinned = 80. Unchanged, for the same reason as last
+ *                time and more so: the lowest seed is now 82, and 80 is
+ *                already only two under it.
+ *
+ *  ── Why 95 / 25 / 83 is NOT supportable, on the numbers rather than on
+ *     caution ────────────────────────────────────────────────────────────────
+ *      pool 95     3 under pinned and ONE under the lowest seed. The stated
+ *                  margin is 5 and 3.
+ *      EXACT@5 25  5 under pinned, half the stated margin, on the metric this
+ *                  file itself records swinging 20 -> 32 across a single index
+ *                  rebuild -- a twelve-point move against a five-point margin.
+ *      REGIME@5 83 ABOVE the lowest seed. It would have FAILED on seed 7 today
+ *                  (82). A floor that a legitimate reseed fails is the thing
+ *                  the paragraph above was written to prevent.
+ *
+ *  Nothing is lowered and nothing is raised. A floor that moves to accommodate
+ *  a regression is not a floor; a floor that moves onto a measurement that did
+ *  not rise is not a floor either, it is a coin flip with a comment. */
 const FLOOR = { pool: 93, exact5: 22, regime5: 80 };
 /** REGIME@5 per population — the operational number, the one a founder feels.
  *  Wider margins than the headline, and deliberately: these are subsamples of
@@ -128,6 +202,13 @@ const FLOOR = { pool: 93, exact5: 22, regime5: 80 };
  *
  *  Pinned measurements these sit under: original join 85 (n=151), traced 90
  *  (n=149). Lowest either produced across three seeds: 76 and 89.
+ *
+ *  RE-DERIVED AGAIN 2026-08-07 18:00 UTC on three seeds, and again UNCHANGED.
+ *  Pinned now reads original join 83 (n=151) and traced 91 (n=149); lowest
+ *  across the three seeds 76 and 89 -- the same two numbers as before. Raising
+ *  either would take the margin below the EIGHT-POINT move this same pinned
+ *  sample was seen to make across one corpus state, which is the one figure
+ *  these two floors are set against.
  *
  *  `original join` keeps the widest margin of anything here. It is the smaller,
  *  older population and it is the one a change is most likely to trade away for
@@ -153,15 +234,26 @@ const N = 300;
 const SEED = DEFAULT_SEED;
 
 async function main() {
-  // Semantic ranking needs both. Without them this would grade the LEXICAL
-  // fallback -- a different system from the one that ships -- and report a
-  // number that looks like a pass. Skipping loudly is the honest failure mode;
-  // the check runs wherever credentials exist, which is every developer machine
-  // and the deploy path.
-  if (!process.env.DATABASE_URL || !process.env.VOYAGE_KEY) {
-    console.log("check_recall_floor: SKIPPED — no DATABASE_URL/VOYAGE_KEY.");
-    console.log("  Floors NOT verified. Run with credentials before shipping a");
-    console.log("  ranking change; lexical fallback would grade the wrong system.");
+  // Semantic ranking needs DATABASE_URL and VOYAGE_KEY, and the contract for
+  // both was declared at the top of the file: a run missing either never
+  // reaches here. That is what changed -- this used to print SKIPPED and exit
+  // 0, which is how `npm run check` went green with the floors never evaluated.
+  //
+  // What IS still reachable is the deliberate offline run, and it cannot floor
+  // anything: the lexical fallback is a different system from the one that
+  // ships, so a number taken off it would not be about the ranker these floors
+  // guard. That is a refusal, not a pass. The skip that remains is the one
+  // somebody TYPED, the same precedent check_degradation and
+  // check_hydration_parity already set -- and `npm run check` does not set
+  // NO_PG, so the default path either floors or dies.
+  if (CREDENTIALS === "offline") {
+    console.log("check_recall_floor: skipped — NO_PG=1, so ranking would come "
+      + "from the lexical fallback, which is a different system from the one "
+      + "these floors guard. Run without NO_PG to evaluate them.");
+    // NO verdict is published, deliberately. A verdict saying nothing went
+    // wrong, from a run that measured nothing, is the failure this whole file
+    // exists to prevent. check_verdicts.ts reports recall_floor as SILENT,
+    // STALE or DRIFTED until a run with credentials publishes real numbers.
     return;
   }
 
@@ -270,8 +362,38 @@ async function main() {
     console.error("a regression even when every other check is green.");
     anyFailed = true;
   }
+
+  // The measured numbers travel with the verdict, not just the pass/fail. A
+  // reader without credentials can then see the margin closing before it closes
+  // -- which is the whole point of floors that sit just under the measurement.
+  const metrics: Record<string, unknown> = {
+    n: set.length, seed: SEED, set: file,
+    pool: Number(got.pool.toFixed(1)), exact5: Number(got.exact5.toFixed(1)),
+    regime5: Number(got.regime5.toFixed(1)),
+    floorPool: FLOOR.pool, floorExact5: FLOOR.exact5, floorRegime5: FLOOR.regime5,
+  };
+  for (const [key, m] of byPop) {
+    metrics[`regime5:${key}`] = Number(((100 * m.r5) / m.n).toFixed(1));
+  }
+  await publishVerdict(GUARD, {
+    status: anyFailed ? "failed" : "ok",
+    summary: `pool ${got.pool.toFixed(0)}% (floor ${FLOOR.pool}), ` +
+             `EXACT@5 ${got.exact5.toFixed(0)}% (floor ${FLOOR.exact5}), ` +
+             `REGIME@5 ${got.regime5.toFixed(0)}% (floor ${FLOOR.regime5}) ` +
+             `over ${set.length} tune pairs` +
+             (anyFailed ? ` — FAILED on ${failed.join(", ")}` : ""),
+    metrics,
+    detail: tape(),
+  });
+
   if (anyFailed) process.exit(1);
   console.log(`check_recall_floor: ok — ${N} tune pairs of ${file} at seed ${SEED}, all floors met.`);
 }
 
-main();
+main().catch(async (err) => {
+  console.error("check_recall_floor: FAILED to run —", err);
+  await publishVerdict(GUARD, {
+    status: "error", summary: `the guard could not complete: ${err}`, detail: tape(),
+  });
+  process.exit(1);
+});

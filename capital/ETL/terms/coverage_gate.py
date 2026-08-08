@@ -70,6 +70,9 @@ import sqlite3  # noqa: E402
 from etl_env import DB, ROOT  # noqa: E402
 from coverage_report import AXES, build  # noqa: E402
 
+_sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
+from corpus_kpis import compute_kpis  # noqa: E402
+
 BASELINE = ROOT / "project-mgmt" / "coverage_baseline.json"
 
 # How far a SHARE may fall before dilution is worth stopping for. Only ever
@@ -89,6 +92,47 @@ def count_tolerance(baseline_count: int) -> int:
     return max(COUNT_TOLERANCE_FLOOR, round(COUNT_TOLERANCE_SHARE * baseline_count))
 
 
+# ── The headline figures, which this gate could not see until now ────────────
+# The gate judged the INSTRUMENT corpus -- the funds and their coverage axes --
+# and nothing else. The figures a founder actually reads on the home page
+# (companies, events, euros, countries, sectors) went straight from
+# corpus_kpis.py onto the page with nothing standing between them, and that was
+# survivable only while a human had to run `make data` and would presumably
+# notice. The site now reads them live from the census, so the last human in the
+# path is gone and the only thing left to notice is this.
+#
+# Which is not a hypothetical omission. Census #4, 2026-08-07, the first ever
+# taken inside the Railway container:
+#
+#     companies 151,426 -> 150,868      sectors 11 -> 8
+#     events    297,933 -> 299,384      capital EUR 352.9B -> 408.4B
+#
+# Three of the eleven sector families vanished. The gate as it stood had no
+# opinion, because none of those numbers was an axis.
+#
+# Only LOSS applies. There is no dilution analogue for a KPI: `companies` has no
+# denominator to be diluted against, and "we recorded more events than last
+# week" is the corpus working.
+KPI_AXES = (
+    "companies", "events", "champions", "step_companies",
+    "total_capital_eur_raw", "countries", "source_families", "sectors",
+)
+
+# A KPI's tolerance is PROPORTIONAL ONLY -- no floor.
+#
+# The instrument axes carry a floor of three because a parent/child re-split of
+# one regime legitimately moves a handful of rows, and 3-in-900 is noise. The
+# KPIs have no such mechanism, and two of them are small: `sectors` is 11 and
+# `countries` is 23, so a floor of three would license losing 27% of the sector
+# taxonomy without a word. Census #4 lost exactly three sectors. The same 0.5%
+# that is generous on 151,426 companies is strict where it needs to be.
+KPI_TOLERANCE_SHARE = 0.005
+
+
+def kpi_tolerance(mark: float) -> float:
+    return max(1.0, KPI_TOLERANCE_SHARE * abs(mark))
+
+
 def snapshot(conn: sqlite3.Connection) -> dict:
     s = build(conn)["summary"]
     n = s["instruments"]
@@ -98,6 +142,11 @@ def snapshot(conn: sqlite3.Connection) -> dict:
         "complete": s["complete"],
         "shares": {a: round(100 * s["axes"][a] / n, 2) for a in AXES},
         "counts": {a: s["axes"][a] for a in AXES},
+        # THE canonical definitions, imported rather than restated. corpus_kpis
+        # is stdlib-only precisely so it can be reached from here and from the
+        # census inside the ETL image; a lookalike query in this file would be
+        # the fourth time this repo learned that lesson.
+        "kpis": compute_kpis(conn),
     }
 
 
@@ -111,9 +160,16 @@ def _high_water(baseline: dict) -> dict:
     """
     hw = baseline.get("highWater")
     if hw:
-        return hw
+        # `kpis` is absent from every mark written before the KPI axes existed.
+        # Absent means "no mark", which means "not judged" -- the same reading
+        # the per-axis loop already gives a missing axis. It establishes itself
+        # on the first passing run rather than inventing a mark from a single
+        # observation, because a mark invented from one reading would fail the
+        # NEXT run on any legitimate movement.
+        return {**hw, "kpis": hw.get("kpis", {})}
     return {"counts": dict(baseline.get("counts", {})),
-            "complete": baseline.get("complete", 0)}
+            "complete": baseline.get("complete", 0),
+            "kpis": {}}
 
 
 def evaluate(current: dict, baseline: dict) -> tuple[bool, list[str], list[str]]:
@@ -137,6 +193,18 @@ def evaluate(current: dict, baseline: dict) -> tuple[bool, list[str], list[str]]
             failures.append(
                 f"LOSS  {axis}: {now} instruments, down from a high of {mark} "
                 f"(tolerance {tol}). Something the corpus knew, it no longer knows.")
+
+    # ── LOSS, on the figures the site publishes ─────────────────────────────
+    for kpi in KPI_AXES:
+        mark = hw.get("kpis", {}).get(kpi)
+        now = current.get("kpis", {}).get(kpi)
+        if mark is None or now is None:
+            continue
+        tol = kpi_tolerance(mark)
+        if mark - now > tol:
+            failures.append(
+                f"LOSS  {kpi}: {now:,.0f}, down from a high of {mark:,.0f} "
+                f"(tolerance {tol:,.0f}). This is a figure on the home page.")
 
     mark_complete = hw.get("complete")
     if mark_complete is not None:
@@ -187,6 +255,8 @@ def advance(baseline: dict, current: dict) -> dict:
             "counts": {a: max(hw["counts"].get(a, 0), current["counts"][a])
                        for a in AXES},
             "complete": max(hw.get("complete", 0), current["complete"]),
+            "kpis": {k: max(hw.get("kpis", {}).get(k, 0), v)
+                     for k, v in current.get("kpis", {}).items()},
         },
     }
 
@@ -195,7 +265,8 @@ def accept(current: dict) -> dict:
     """A deliberately re-set baseline: the mark comes down to today."""
     return {**current,
             "highWater": {"counts": dict(current["counts"]),
-                          "complete": current["complete"]}}
+                          "complete": current["complete"],
+                          "kpis": dict(current.get("kpis", {}))}}
 
 
 def _report(current: dict, baseline: dict, failures: list[str], notes: list[str]) -> None:
@@ -210,6 +281,15 @@ def _report(current: dict, baseline: dict, failures: list[str], notes: list[str]
         dc = current["counts"][a] - baseline.get("counts", {}).get(a, 0)
         print(f"   {a:14}{current['shares'][a]:6.1f}%  ({d:+.1f}pp)   "
               f"{current['counts'][a]:5d}  ({dc:+d}, high {hw['counts'].get(a, 0)})")
+    kpis = current.get("kpis") or {}
+    if kpis:
+        print("   the figures on the home page:")
+        for k in KPI_AXES:
+            if k not in kpis:
+                continue
+            mark = hw.get("kpis", {}).get(k)
+            mark_s = f"high {mark:,.0f}" if mark is not None else "no mark yet"
+            print(f"   {k:24}{kpis[k]:>18,.0f}   ({mark_s})")
     for n in notes:
         print(f"\n   growth, not regression — {n}")
 

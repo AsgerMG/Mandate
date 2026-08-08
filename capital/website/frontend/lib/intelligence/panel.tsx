@@ -935,7 +935,7 @@ export function IntelligencePanel() {
             {livePartial && (
               <div className="mt-6 border-t border-[var(--border)] pt-6">
                 <div className="border border-[var(--border)] bg-[var(--paper)] px-5 py-5 sm:px-7 sm:py-6 text-[15px] leading-relaxed text-[var(--foreground)]" style={serif}>
-                  <InstitutionsTable institutions={livePartial.institutions} pending />
+                  <InstitutionsTable institutions={livePartial.institutions} withheld={livePartial.withheld} pending />
                 </div>
               </div>
             )}

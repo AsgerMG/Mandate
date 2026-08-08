@@ -56,28 +56,33 @@
 // rather than counted, because it would grade retrieval on a query copied out
 // of the answer. That defect covered 46% of the old set's holdout `project`
 // rows and is what `check_recall_leaks.ts` now keeps out of CI.
+// One loader, shared, and one DECLARED contract. Without credentials an
+// unexported shell measures the LEXICAL fallback while production ranks on
+// embeddings -- the harness would be grading a different system from the one
+// that ships. This script's own copy read only ./.env.local, which meant a
+// worktree with credentials at the repo root measured the wrong system and
+// said nothing; `requireLiveCorpus` catches the corpus half of that, not the
+// ranking half, and catches neither when DATABASE_URL was never set at all
+// (hydration then records source="snapshot", degraded=FALSE, and the guard
+// passes). `requireCredentials` is the half that was missing.
 import { readFileSync } from "fs";
 
-// Same loader as trace_pool.ts. Without it an unexported shell measures the
-// LEXICAL fallback while production ranks on embeddings -- the harness would be
-// grading a different system from the one that ships.
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+// Also the one definition of "deliberately offline": it deletes DATABASE_URL
+// under NO_PG, which used to be this file's own next line.
+requireCredentials("measure_recall", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
-  requireLiveCorpus, resetGateHydration,
+  requireLiveCorpus, resetGateHydration, __forceSuppressedForParity,
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
-  assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
-  partitionByOfferable, reattributeMissingAnswers,
+  answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
+  partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
 } from "./recallSet";
 
 async function main() {
@@ -105,6 +110,29 @@ async function main() {
       : regionMode === "strict"
         ? (r.regionSource === "other_scheme" ? r.region : undefined)
         : r.region || undefined;
+  // ── ANSWERS: stop describing every founder identically ────────────────────
+  // Until this existed the replay handed EVERY founder the same ticketBand,
+  // capitalSought, consortium, borrowerModel and useOfFunds. Only country,
+  // sector and the description varied. That is adequate for measuring
+  // retrieval and disqualifying for measuring any DISCRIMINATOR: a signal
+  // whose job is to tell two founders apart cannot register on a population
+  // described identically.
+  //
+  // Two shipped conclusions rest on that flaw. "Gates do not rank" (won fund
+  // 62% pass vs pool 63%) was measured with every founder answering the same
+  // questions the same way, so the gates were being asked to separate rows
+  // that had nothing to separate. "Ticket fit changes nothing" has the same
+  // shape and the row sort's own comment says so.
+  //
+  //   ANSWERS=real    per-founder ticketBand, capitalSought and region from
+  //                   either provenance
+  //   ANSWERS=strict  only values derived from an award under a DIFFERENT
+  //                   notified scheme, which cannot be circular
+  //
+  // Neither restricts the POPULATION: a founder we cannot derive an answer for
+  // keeps the constant. The denominator is therefore identical to the baseline
+  // run and the difference is an effect, not a change of sample.
+  const answerMode = (process.env.ANSWERS ?? "off") as AnswerMode;
   // The SAME repair the gate applies, from the same helper: answers naming an
   // instrument that was never a fund are re-attributed to the rollup the award
   // belongs to; answers naming a correctly-closed fund are excluded. A floor
@@ -119,6 +147,8 @@ async function main() {
   assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
   // COUNTRY= restricts the POPULATION to founders in one market, which is the
   // only way to get power on a change that can only bind one market at a time.
+  // The degradation policy is the sharpest case: it withholds rows unevenly by
+  // register, so an aggregate over 22 countries reports it as noise.
   // Selection filters and POOL_LEAVES_PER_CHANNEL are applied per (channel,
   // country), so a constant that cuts three Spanish candidates moves twelve of
   // the 250 sampled rows and disappears into the aggregate's +/-2.5. It is a
@@ -141,6 +171,26 @@ async function main() {
   const N = Math.min(Number(process.env.N ?? 250), set.length);
   const seed = Number(process.env.SEED ?? DEFAULT_SEED);
   const sample = sampleRecall(set, N, seed);
+
+  // ── What the degradation policy COSTS, measured on the live register ──────
+  // SUPPRESS_IDS_FILE names the rows a fallback request withholds, so the
+  // ranker is handicapped exactly as the degraded path handicaps it while
+  // every number still comes out of Postgres. Measuring on the snapshot itself
+  // would trip requireLiveCorpus, and rightly: a corpus where nothing is
+  // closed grades differently for reasons that have nothing to do with this.
+  //
+  // THE ORDER HERE IS THE WHOLE MEASUREMENT. The population above is built
+  // from the UNSUPPRESSED offerable set and is now fixed. Suppressing first
+  // would drop every pair whose answer is one of the withheld funds --
+  // excluded by `reattributeMissingAnswers` as un-offerable -- and the policy
+  // would score as an IMPROVEMENT by deleting the questions it gets wrong.
+  // Those pairs stay in, unanswerable, and the miss is the cost.
+  if (process.env.SUPPRESS_IDS_FILE) {
+    const ids = JSON.parse(readFileSync(process.env.SUPPRESS_IDS_FILE, "utf8")) as string[];
+    __forceSuppressedForParity(ids);
+    console.log(`degradation policy applied: ${ids.length} row(s) withheld from the ranker, ` +
+      `graded against the ${set.length}-row population the live register defines`);
+  }
 
   const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
@@ -187,11 +237,19 @@ async function main() {
   // it -- 26% falling to 9% on the same 300 pairs depending only on where in
   // the run they sat. See resetGateHydration.
   resetGateHydration();
+  const derived = { ticket: 0, capital: 0, region: 0 };
   for (const t of sample) {
     resetGateHydration();
+    // This founder's own answers where the register supports them, and the
+    // constants everywhere else. `answersFor` is shared with every other
+    // harness so two of them can never disagree about what a founder said.
+    const a = answersFor(t, answerMode);
+    if (a.derived.ticket) derived.ticket++;
+    if (a.derived.capital) derived.capital++;
+    if (a.derived.region) derived.region++;
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
-      borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
+      borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
       // What the money is for, and the one field here that could leak.
       //
       // Setting it from the won scheme's registered objective would make the
@@ -203,11 +261,11 @@ async function main() {
       // for R&D. Schemes registered under Art. 25(2)(b)/(c) should therefore
       // outrank siblings registered for plant (Art. 17) or renewables (Art. 41).
       useOfFunds: ["industrial_research", "experimental_development"],
-      // Where the founder is. Absent unless REGION is set, so every run made
-      // before this stays comparable with every run made after it.
-      region: regionOf(t),
+      // Where the founder is. Absent unless REGION or ANSWERS is set, so every
+      // run made before this stays comparable with every run made after it.
+      region: regionOf(t) ?? a.region,
     } as never, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+      targetMarkets: [t.country], capitalSought: a.capitalSought,
       // A `profile` pair has no PROJECT text -- national schemes carry none --
       // but a real founder still describes themselves on screen one. Passing
       // nothing modelled a founder who typed nothing, which no founder does,
@@ -256,7 +314,16 @@ async function main() {
               `${country ? ` country=${country}` : ""}` +
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
-              `${regionMode ? ` region=${regionMode}` : ""}  replayed ${stat.done}`);
+              `${regionMode ? ` region=${regionMode}` : ""}` +
+              `${answerMode !== "off" ? ` answers=${answerMode}` : ""}  replayed ${stat.done}`);
+  // How many founders actually got their own answers. A run that says
+  // `answers=strict` and derived three of them is reporting the constants with
+  // a different label on, and the reader has to be able to see that.
+  if (answerMode !== "off") {
+    const pcOf = (n: number) => `${n}/${stat.done} (${(100 * n / stat.done).toFixed(0)}%)`;
+    console.log(`  founder-specific answers supplied: ticketBand ${pcOf(derived.ticket)}` +
+                `  capital ${pcOf(derived.capital)}  region ${pcOf(derived.region)}`);
+  }
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);

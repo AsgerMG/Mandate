@@ -1,32 +1,52 @@
 {
- "takenAt": "2026-08-07",
- "instruments": 1019,
+ "takenAt": "2026-08-08",
+ "instruments": 1021,
  "complete": 816,
  "shares": {
-  "eligibility": 88.13,
-  "funds": 91.27,
+  "eligibility": 87.95,
+  "funds": 91.09,
   "where": 100.0,
-  "amount": 83.51,
-  "route": 89.11,
-  "live": 89.6
+  "amount": 83.35,
+  "route": 88.93,
+  "live": 89.42
  },
  "counts": {
   "eligibility": 898,
   "funds": 930,
-  "where": 1019,
+  "where": 1021,
   "amount": 851,
   "route": 908,
   "live": 913
+ },
+ "kpis": {
+  "companies": 151426,
+  "events": 299384,
+  "champions": 9371,
+  "step_companies": 589,
+  "total_capital_eur_raw": 408433535420.6861,
+  "countries": 23,
+  "source_families": 11,
+  "sectors": 11
  },
  "highWater": {
   "counts": {
    "eligibility": 898,
    "funds": 930,
-   "where": 1019,
+   "where": 1021,
    "amount": 851,
    "route": 908,
    "live": 913
   },
-  "complete": 816
+  "complete": 816,
+  "kpis": {
+   "companies": 151426,
+   "events": 299384,
+   "champions": 9371,
+   "step_companies": 589,
+   "total_capital_eur_raw": 408433535420.6861,
+   "countries": 23,
+   "source_families": 11,
+   "sectors": 11
+  }
  }
 }

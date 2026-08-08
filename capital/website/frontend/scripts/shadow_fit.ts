@@ -18,14 +18,10 @@
  * Run: npx tsx scripts/shadow_fit.ts
  *      npx tsx scripts/shadow_fit.ts --verbose
  */
-import { readFileSync } from "node:fs";
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* no local env — the JSON snapshot is enough for this check */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("shadow_fit", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 const PUBLISHED = 5;
 

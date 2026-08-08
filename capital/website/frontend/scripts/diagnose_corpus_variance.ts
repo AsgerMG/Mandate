@@ -32,14 +32,11 @@
 // Determinism: 8 runs, sequential and concurrent, on one corpus state produced
 // byte-identical pool, ranking AND exclusion counts. Retrieval does not vary.
 // The corpus underneath it does.
-import { readFileSync } from "fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("diagnose_corpus_variance", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { ExclusionLog } from "../lib/intelligence/exclusions";

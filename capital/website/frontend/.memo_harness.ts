@@ -1,5 +1,16 @@
 // Scratch harness: run the full memo pipeline from the CLI (no dev server).
-// Usage, from website/frontend:  npx tsx --env-file=.env.local .memo_harness.ts
+// Usage, from website/frontend:  npx tsx .memo_harness.ts
+//
+// Credentials come from the shared loader rather than tsx's --env-file, which
+// named ONE file and named the wrong one: DATABASE_URL is documented to live
+// at the repo root, and website/frontend/.env.local is gitignored, so the
+// documented invocation failed outright on any fresh checkout.
+import { loadEnvLocal, requireCredentials } from "./scripts/loadEnv";
+
+loadEnvLocal();
+requireCredentials("memo_harness",
+  ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
+
 import { runIntelligence } from "./lib/intelligence/pipeline";
 import type { ProgressEvent } from "./lib/intelligence/types";
 

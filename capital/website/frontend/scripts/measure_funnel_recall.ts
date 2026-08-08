@@ -68,14 +68,11 @@
 //
 //   npx tsx scripts/measure_funnel_recall.ts
 //   SPLIT=holdout N=120 MODE=profile npx tsx scripts/measure_funnel_recall.ts
-import { readFileSync } from "fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_funnel_recall", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";

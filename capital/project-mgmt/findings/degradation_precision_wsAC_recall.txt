@@ -1,0 +1,254 @@
+Workstream AC — FR holdout recall, three arms x three seeds, 2026-08-07.
+COUNTRY=FR SPLIT=holdout N=600, every run out of Postgres (corpus=postgres instruments=1084).
+blunt  = SUPPRESS_IDS_FILE with the 80 rows the membership rule withholds
+precise = SUPPRESS_IDS_FILE with the 5 rows the proportion rule withholds
+
+════════ base_20260806
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1084 at 2026-08-07T17:44:24.547Z
+set=__recallSetComposed.json split=holdout country=FR seed=20260806  replayed 600
+  in pool                  589/600 (98% +/-1.1)
+  EXACT scheme in top 5    99/600 (17% +/-3.0)
+  same REGIME in top 5     476/600 (79% +/-3.2)   <- the operational number
+  same CHANNEL in top 5    516/600 (86% +/-2.8)
+    mode=profile               n= 567  pool 100%  exact5 16%  regime5 82%
+    mode=project               n=  33  pool 67%  exact5 24%  regime5 33%
+    traced:exact_attribution   n= 402  pool 100%  exact5 15%  regime5 95%
+    original join              n= 198  pool 94%  exact5 19%  regime5 47%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 27%  regime5 27%
+    regime 6-20                n=  43  pool 88%  exact5 28%  regime5 47%
+    regime 21-50               n= 140  pool 100%  exact5 16%  regime5 49%
+    regime 51+                 n= 402  pool 100%  exact5 15%  regime5 95%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 98%  exact5 17%  regime5 79%
+
+════════ base_7
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1084 at 2026-08-07T17:50:35.714Z
+set=__recallSetComposed.json split=holdout country=FR seed=7  replayed 600
+  in pool                  588/600 (98% +/-1.1)
+  EXACT scheme in top 5    100/600 (17% +/-3.0)
+  same REGIME in top 5     484/600 (81% +/-3.2)   <- the operational number
+  same CHANNEL in top 5    521/600 (87% +/-2.7)
+    mode=profile               n= 566  pool 100%  exact5 17%  regime5 84%
+    mode=project               n=  34  pool 65%  exact5 15%  regime5 29%
+    traced:exact_attribution   n= 396  pool 100%  exact5 16%  regime5 95%
+    original join              n= 204  pool 94%  exact5 18%  regime5 52%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 20%  regime5 27%
+    regime 6-20                n=  41  pool 85%  exact5 22%  regime5 44%
+    regime 21-50               n= 148  pool 100%  exact5 16%  regime5 57%
+    regime 51+                 n= 396  pool 100%  exact5 16%  regime5 95%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 98%  exact5 17%  regime5 81%
+
+════════ base_99
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1084 at 2026-08-07T17:55:57.929Z
+set=__recallSetComposed.json split=holdout country=FR seed=99  replayed 600
+  in pool                  589/600 (98% +/-1.1)
+  EXACT scheme in top 5    103/600 (17% +/-3.0)
+  same REGIME in top 5     483/600 (81% +/-3.2)   <- the operational number
+  same CHANNEL in top 5    523/600 (87% +/-2.7)
+    mode=profile               n= 566  pool 100%  exact5 17%  regime5 83%
+    mode=project               n=  34  pool 68%  exact5 21%  regime5 38%
+    traced:exact_attribution   n= 397  pool 100%  exact5 16%  regime5 95%
+    original join              n= 203  pool 95%  exact5 19%  regime5 52%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  12  pool 58%  exact5 25%  regime5 33%
+    regime 6-20                n=  47  pool 87%  exact5 30%  regime5 49%
+    regime 21-50               n= 144  pool 100%  exact5 15%  regime5 55%
+    regime 51+                 n= 397  pool 100%  exact5 16%  regime5 95%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 98%  exact5 17%  regime5 81%
+
+════════ blunt_20260806
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 80 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T17:44:29.908Z
+set=__recallSetComposed.json split=holdout country=FR seed=20260806  replayed 600
+  in pool                  187/600 (31% +/-3.7)
+  EXACT scheme in top 5    47/600 (8% +/-2.2)
+  same REGIME in top 5     160/600 (27% +/-3.5)   <- the operational number
+  same CHANNEL in top 5    179/600 (30% +/-3.7)
+    mode=profile               n= 567  pool 29%  exact5 7%  regime5 26%
+    mode=project               n=  33  pool 67%  exact5 30%  regime5 42%
+    traced:exact_attribution   n= 402  pool 0%  exact5 0%  regime5 0%
+    original join              n= 198  pool 94%  exact5 24%  regime5 81%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 33%  regime5 40%
+    regime 6-20                n=  43  pool 88%  exact5 33%  regime5 65%
+    regime 21-50               n= 140  pool 100%  exact5 20%  regime5 90%
+    regime 51+                 n= 402  pool 0%  exact5 0%  regime5 0%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 31%  exact5 8%  regime5 27%
+
+════════ blunt_7
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 80 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T17:50:36.918Z
+set=__recallSetComposed.json split=holdout country=FR seed=7  replayed 600
+  in pool                  192/600 (32% +/-3.7)
+  EXACT scheme in top 5    45/600 (8% +/-2.1)
+  same REGIME in top 5     170/600 (28% +/-3.6)   <- the operational number
+  same CHANNEL in top 5    186/600 (31% +/-3.7)
+    mode=profile               n= 566  pool 30%  exact5 6%  regime5 27%
+    mode=project               n=  34  pool 65%  exact5 29%  regime5 47%
+    traced:exact_attribution   n= 396  pool 0%  exact5 0%  regime5 0%
+    original join              n= 204  pool 94%  exact5 22%  regime5 83%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 33%  regime5 40%
+    regime 6-20                n=  41  pool 85%  exact5 29%  regime5 68%
+    regime 21-50               n= 148  pool 100%  exact5 19%  regime5 92%
+    regime 51+                 n= 396  pool 0%  exact5 0%  regime5 0%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 32%  exact5 8%  regime5 28%
+
+════════ blunt_99
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 80 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T17:55:54.912Z
+set=__recallSetComposed.json split=holdout country=FR seed=99  replayed 600
+  in pool                  192/600 (32% +/-3.7)
+  EXACT scheme in top 5    47/600 (8% +/-2.2)
+  same REGIME in top 5     166/600 (28% +/-3.6)   <- the operational number
+  same CHANNEL in top 5    186/600 (31% +/-3.7)
+    mode=profile               n= 566  pool 30%  exact5 6%  regime5 26%
+    mode=project               n=  34  pool 68%  exact5 32%  regime5 50%
+    traced:exact_attribution   n= 397  pool 0%  exact5 0%  regime5 0%
+    original join              n= 203  pool 95%  exact5 23%  regime5 82%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  12  pool 58%  exact5 33%  regime5 42%
+    regime 6-20                n=  47  pool 87%  exact5 32%  regime5 64%
+    regime 21-50               n= 144  pool 100%  exact5 19%  regime5 91%
+    regime 51+                 n= 397  pool 0%  exact5 0%  regime5 0%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 32%  exact5 8%  regime5 28%
+
+════════ precise_20260806
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 5 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T17:56:47.176Z
+set=__recallSetComposed.json split=holdout country=FR seed=20260806  replayed 600
+  in pool                  589/600 (98% +/-1.1)
+  EXACT scheme in top 5    99/600 (17% +/-3.0)
+  same REGIME in top 5     476/600 (79% +/-3.2)   <- the operational number
+  same CHANNEL in top 5    516/600 (86% +/-2.8)
+    mode=profile               n= 567  pool 100%  exact5 16%  regime5 82%
+    mode=project               n=  33  pool 67%  exact5 24%  regime5 33%
+    traced:exact_attribution   n= 402  pool 100%  exact5 15%  regime5 95%
+    original join              n= 198  pool 94%  exact5 19%  regime5 47%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 27%  regime5 27%
+    regime 6-20                n=  43  pool 88%  exact5 28%  regime5 47%
+    regime 21-50               n= 140  pool 100%  exact5 16%  regime5 49%
+    regime 51+                 n= 402  pool 100%  exact5 15%  regime5 95%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 98%  exact5 17%  regime5 79%
+
+════════ precise_7
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 5 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T18:02:20.396Z
+set=__recallSetComposed.json split=holdout country=FR seed=7  replayed 600
+  in pool                  588/600 (98% +/-1.1)
+  EXACT scheme in top 5    96/600 (16% +/-2.9)
+  same REGIME in top 5     484/600 (81% +/-3.2)   <- the operational number
+  same CHANNEL in top 5    521/600 (87% +/-2.7)
+    mode=profile               n= 566  pool 100%  exact5 16%  regime5 84%
+    mode=project               n=  34  pool 65%  exact5 15%  regime5 29%
+    traced:exact_attribution   n= 396  pool 100%  exact5 15%  regime5 95%
+    original join              n= 204  pool 94%  exact5 18%  regime5 52%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 20%  regime5 27%
+    regime 6-20                n=  41  pool 85%  exact5 22%  regime5 44%
+    regime 21-50               n= 148  pool 100%  exact5 16%  regime5 57%
+    regime 51+                 n= 396  pool 100%  exact5 15%  regime5 95%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 98%  exact5 16%  regime5 81%
+
+════════ precise_99
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 5 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T18:08:03.144Z
+set=__recallSetComposed.json split=holdout country=FR seed=99  replayed 600
+  in pool                  589/600 (98% +/-1.1)
+  EXACT scheme in top 5    103/600 (17% +/-3.0)
+  same REGIME in top 5     483/600 (81% +/-3.2)   <- the operational number
+  same CHANNEL in top 5    523/600 (87% +/-2.7)
+    mode=profile               n= 566  pool 100%  exact5 17%  regime5 83%
+    mode=project               n=  34  pool 68%  exact5 21%  regime5 38%
+    traced:exact_attribution   n= 397  pool 100%  exact5 16%  regime5 95%
+    original join              n= 203  pool 95%  exact5 19%  regime5 52%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  12  pool 58%  exact5 25%  regime5 33%
+    regime 6-20                n=  47  pool 87%  exact5 30%  regime5 49%
+    regime 21-50               n= 144  pool 100%  exact5 15%  regime5 55%
+    regime 51+                 n= 397  pool 100%  exact5 16%  regime5 95%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 600  pool 98%  exact5 17%  regime5 81%
+

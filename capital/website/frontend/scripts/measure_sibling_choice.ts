@@ -98,15 +98,11 @@
 // baseline. Seven of nine documented weights carry 0.72 of `FIT_WEIGHTS` and
 // none of them tells two siblings apart. Whatever else those components are
 // for, they are not for this.
-import { readFileSync } from "fs";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_sibling_choice", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   hydrateDbInstruments, loadDbInstruments, publishableInstruments, type DbInstrument,

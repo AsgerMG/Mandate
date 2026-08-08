@@ -7,13 +7,10 @@
 //                 rows from the second number into the first WITHOUT any load.
 //   register      state-aid case numbers known to the register for that country,
 //                 which is the size of the loadable universe.
-import { readFileSync } from "fs";
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("probe_leafcap_ceiling", ["DATABASE_URL"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,

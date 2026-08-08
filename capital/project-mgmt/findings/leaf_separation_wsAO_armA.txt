@@ -1,0 +1,186 @@
+##### armA(no gate fit) ANSWERS=real SEED=20260806
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T08:53:11.649Z
+set=__recallSetComposed.json split=holdout seed=20260806 answers=real  replayed 300
+  founder-specific answers supplied: ticketBand 157/300 (52%)  capital 153/300 (51%)  region 139/300 (46%)
+  in pool                  272/300 (91% +/-3.3)
+  EXACT scheme in top 5    83/300 (28% +/-5.1)
+  same REGIME in top 5     242/300 (81% +/-4.5)   <- the operational number
+    mode=profile               n= 222  pool 92%  exact5 28%  regime5 86%
+    mode=project               n=  78  pool 86%  exact5 27%  regime5 67%
+    traced:exact_attribution   n= 132  pool 100%  exact5 23%  regime5 87%
+    original join              n= 168  pool 83%  exact5 31%  regime5 76%
+    regime 1 (alone)           n=  18  pool 100%  exact5 28%  regime5 28%
+    regime 2-5                 n=  11  pool 73%  exact5 45%  regime5 55%
+    regime 6-20                n=  40  pool 63%  exact5 30%  regime5 50%
+    regime 21-50               n=  86  pool 99%  exact5 28%  regime5 86%
+    regime 51+                 n= 145  pool 94%  exact5 26%  regime5 94%
+    FR                         n=  87  pool 91%  exact5 17%  regime5 76%
+    DE                         n=  60  pool 87%  exact5 35%  regime5 90%
+    SE                         n=  52  pool 96%  exact5 25%  regime5 94%
+    IT                         n=  37  pool 84%  exact5 27%  regime5 86%
+    NL                         n=  20  pool 95%  exact5 50%  regime5 90%
+    ES                         n=  20  pool 85%  exact5 25%  regime5 70%
+    GB                         n=  18  pool 100%  exact5 28%  regime5 28%
+    EE                         n=   5  pool 100%  exact5 60%  regime5 60%
+    DK                         n=   1  pool 100%  exact5 100%  regime5 100%
+##### armA(no gate fit) ANSWERS=real SEED=7
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T08:56:27.072Z
+set=__recallSetComposed.json split=holdout seed=7 answers=real  replayed 300
+  founder-specific answers supplied: ticketBand 172/300 (57%)  capital 167/300 (56%)  region 152/300 (51%)
+  in pool                  268/300 (89% +/-3.5)
+  EXACT scheme in top 5    89/300 (30% +/-5.2)
+  same REGIME in top 5     253/300 (84% +/-4.1)   <- the operational number
+    mode=profile               n= 227  pool 91%  exact5 31%  regime5 89%
+    mode=project               n=  73  pool 85%  exact5 26%  regime5 68%
+    original join              n= 181  pool 82%  exact5 32%  regime5 79%
+    traced:exact_attribution   n= 119  pool 100%  exact5 26%  regime5 92%
+    regime 1 (alone)           n=  17  pool 100%  exact5 53%  regime5 53%
+    regime 2-5                 n=  11  pool 64%  exact5 27%  regime5 64%
+    regime 6-20                n=  46  pool 70%  exact5 35%  regime5 57%
+    regime 21-50               n=  84  pool 94%  exact5 24%  regime5 85%
+    regime 51+                 n= 142  pool 94%  exact5 29%  regime5 99%
+    FR                         n=  91  pool 89%  exact5 14%  regime5 77%
+    DE                         n=  77  pool 88%  exact5 40%  regime5 95%
+    SE                         n=  46  pool 98%  exact5 26%  regime5 96%
+    IT                         n=  32  pool 81%  exact5 22%  regime5 88%
+    NL                         n=  21  pool 90%  exact5 43%  regime5 86%
+    GB                         n=  17  pool 100%  exact5 53%  regime5 53%
+    ES                         n=  12  pool 67%  exact5 42%  regime5 58%
+    DK                         n=   3  pool 100%  exact5 100%  regime5 100%
+    EE                         n=   1  pool 100%  exact5 0%  regime5 100%
+##### armA(no gate fit) ANSWERS=real SEED=99
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T08:59:35.591Z
+set=__recallSetComposed.json split=holdout seed=99 answers=real  replayed 300
+  founder-specific answers supplied: ticketBand 150/300 (50%)  capital 144/300 (48%)  region 132/300 (44%)
+  in pool                  273/300 (91% +/-3.2)
+  EXACT scheme in top 5    97/300 (32% +/-5.3)
+  same REGIME in top 5     250/300 (83% +/-4.2)   <- the operational number
+    mode=profile               n= 219  pool 92%  exact5 32%  regime5 88%
+    mode=project               n=  81  pool 88%  exact5 32%  regime5 70%
+    traced:exact_attribution   n= 140  pool 100%  exact5 28%  regime5 91%
+    original join              n= 160  pool 83%  exact5 36%  regime5 76%
+    regime 1 (alone)           n=  12  pool 100%  exact5 33%  regime5 33%
+    regime 2-5                 n=  15  pool 93%  exact5 33%  regime5 47%
+    regime 6-20                n=  43  pool 74%  exact5 35%  regime5 58%
+    regime 21-50               n=  87  pool 94%  exact5 37%  regime5 86%
+    regime 51+                 n= 143  pool 93%  exact5 29%  regime5 97%
+    FR                         n=  98  pool 90%  exact5 17%  regime5 79%
+    SE                         n=  64  pool 100%  exact5 41%  regime5 97%
+    DE                         n=  54  pool 85%  exact5 39%  regime5 94%
+    IT                         n=  37  pool 84%  exact5 41%  regime5 89%
+    NL                         n=  16  pool 100%  exact5 50%  regime5 81%
+    GB                         n=  12  pool 100%  exact5 33%  regime5 33%
+    ES                         n=  12  pool 75%  exact5 25%  regime5 50%
+    DK                         n=   4  pool 100%  exact5 75%  regime5 75%
+    EE                         n=   3  pool 100%  exact5 0%  regime5 33%
+##### armA(no gate fit) ANSWERS=strict SEED=20260806
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T09:02:47.650Z
+set=__recallSetComposed.json split=holdout seed=20260806 answers=strict  replayed 300
+  founder-specific answers supplied: ticketBand 74/300 (25%)  capital 75/300 (25%)  region 64/300 (21%)
+  in pool                  275/300 (92% +/-3.1)
+  EXACT scheme in top 5    76/300 (25% +/-4.9)
+  same REGIME in top 5     241/300 (80% +/-4.5)   <- the operational number
+    mode=profile               n= 222  pool 94%  exact5 25%  regime5 85%
+    mode=project               n=  78  pool 86%  exact5 27%  regime5 67%
+    traced:exact_attribution   n= 132  pool 100%  exact5 23%  regime5 87%
+    original join              n= 168  pool 85%  exact5 27%  regime5 75%
+    regime 1 (alone)           n=  18  pool 100%  exact5 28%  regime5 28%
+    regime 2-5                 n=  11  pool 73%  exact5 45%  regime5 55%
+    regime 6-20                n=  40  pool 75%  exact5 23%  regime5 48%
+    regime 21-50               n=  86  pool 100%  exact5 27%  regime5 86%
+    regime 51+                 n= 145  pool 92%  exact5 23%  regime5 94%
+    FR                         n=  87  pool 97%  exact5 17%  regime5 76%
+    DE                         n=  60  pool 82%  exact5 27%  regime5 88%
+    SE                         n=  52  pool 96%  exact5 25%  regime5 94%
+    IT                         n=  37  pool 86%  exact5 24%  regime5 86%
+    NL                         n=  20  pool 95%  exact5 45%  regime5 90%
+    ES                         n=  20  pool 85%  exact5 25%  regime5 70%
+    GB                         n=  18  pool 100%  exact5 28%  regime5 28%
+    EE                         n=   5  pool 100%  exact5 60%  regime5 60%
+    DK                         n=   1  pool 100%  exact5 100%  regime5 100%
+##### armA(no gate fit) ANSWERS=strict SEED=7
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T09:05:56.769Z
+set=__recallSetComposed.json split=holdout seed=7 answers=strict  replayed 300
+  founder-specific answers supplied: ticketBand 76/300 (25%)  capital 76/300 (25%)  region 63/300 (21%)
+  in pool                  270/300 (90% +/-3.4)
+  EXACT scheme in top 5    82/300 (27% +/-5.0)
+  same REGIME in top 5     250/300 (83% +/-4.2)   <- the operational number
+    mode=profile               n= 227  pool 92%  exact5 28%  regime5 88%
+    mode=project               n=  73  pool 85%  exact5 26%  regime5 68%
+    original join              n= 181  pool 83%  exact5 28%  regime5 77%
+    traced:exact_attribution   n= 119  pool 100%  exact5 26%  regime5 92%
+    regime 1 (alone)           n=  17  pool 100%  exact5 53%  regime5 53%
+    regime 2-5                 n=  11  pool 64%  exact5 27%  regime5 64%
+    regime 6-20                n=  46  pool 78%  exact5 28%  regime5 50%
+    regime 21-50               n=  84  pool 96%  exact5 24%  regime5 85%
+    regime 51+                 n= 142  pool 91%  exact5 26%  regime5 99%
+    FR                         n=  91  pool 93%  exact5 14%  regime5 77%
+    DE                         n=  77  pool 83%  exact5 29%  regime5 91%
+    SE                         n=  46  pool 98%  exact5 26%  regime5 96%
+    IT                         n=  32  pool 88%  exact5 28%  regime5 88%
+    NL                         n=  21  pool 90%  exact5 43%  regime5 86%
+    GB                         n=  17  pool 100%  exact5 53%  regime5 53%
+    ES                         n=  12  pool 67%  exact5 42%  regime5 58%
+    DK                         n=   3  pool 100%  exact5 100%  regime5 100%
+    EE                         n=   1  pool 100%  exact5 0%  regime5 100%
+##### armA(no gate fit) ANSWERS=strict SEED=99
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T09:10:05.290Z
+set=__recallSetComposed.json split=holdout seed=99 answers=strict  replayed 300
+  founder-specific answers supplied: ticketBand 70/300 (23%)  capital 71/300 (24%)  region 55/300 (18%)
+  in pool                  275/300 (92% +/-3.1)
+  EXACT scheme in top 5    98/300 (33% +/-5.3)
+  same REGIME in top 5     252/300 (84% +/-4.1)   <- the operational number
+    mode=profile               n= 219  pool 93%  exact5 33%  regime5 89%
+    mode=project               n=  81  pool 88%  exact5 32%  regime5 70%
+    traced:exact_attribution   n= 140  pool 100%  exact5 28%  regime5 91%
+    original join              n= 160  pool 84%  exact5 37%  regime5 78%
+    regime 1 (alone)           n=  12  pool 100%  exact5 33%  regime5 33%
+    regime 2-5                 n=  15  pool 93%  exact5 33%  regime5 47%
+    regime 6-20                n=  43  pool 79%  exact5 37%  regime5 58%
+    regime 21-50               n=  87  pool 95%  exact5 38%  regime5 87%
+    regime 51+                 n= 143  pool 92%  exact5 28%  regime5 98%
+    FR                         n=  98  pool 92%  exact5 17%  regime5 80%
+    SE                         n=  64  pool 100%  exact5 41%  regime5 97%
+    DE                         n=  54  pool 83%  exact5 37%  regime5 96%
+    IT                         n=  37  pool 86%  exact5 43%  regime5 89%
+    NL                         n=  16  pool 100%  exact5 56%  regime5 81%
+    GB                         n=  12  pool 100%  exact5 33%  regime5 33%
+    ES                         n=  12  pool 75%  exact5 25%  regime5 50%
+    DK                         n=   4  pool 100%  exact5 75%  regime5 75%
+    EE                         n=   3  pool 100%  exact5 0%  regime5 33%

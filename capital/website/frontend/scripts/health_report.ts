@@ -18,13 +18,10 @@
  * Exits non-zero when something needs attention, so it can be a cron or a
  * status check rather than something someone remembers to look at.
  */
-import { readFileSync } from "node:fs";
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("health_report", ["DATABASE_URL"]);
 
 /** Above this share of requests failing outright, something is broken. */
 const ERROR_RATE_ALERT = 0.05;

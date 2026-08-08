@@ -36,12 +36,10 @@ import { FIELD_ENUM_HINTS } from "../lib/intelligence/types";
 import { checkBrief } from "../lib/intelligence/briefChecks";
 import type { ProjectAnswer, ProjectQuestion } from "../lib/intelligence/types";
 
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("funnel_bench", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
 const OUT = "memo-bench";
 const HISTORY = `${OUT}/funnel-history.json`;

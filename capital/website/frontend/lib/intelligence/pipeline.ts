@@ -42,6 +42,7 @@ import {
   loadSignalsDigest,
   matchCompany,
   toIso2,
+  withheldNotice,
   type DigestItem,
 } from "./corpus";
 import {
@@ -75,6 +76,7 @@ import {
   type IntelligenceRequest,
   type ProgressEvent,
   type SelfRecord,
+  type WithheldNotice,
 } from "./types";
 
 // The whole pipeline runs on cheap, fast models, guided by the Opus-authored
@@ -910,6 +912,7 @@ async function synthesize(
   // rows that then collapse to five.
   emit({ type: "partial", data: {
     self, eligibilityScreen, institutions: institutions.slice(0, BRIEF_INSTITUTION_CAP),
+    withheld: withheldNotice(log.countsByRule()["SEL-UNCONFIRMED-OPEN"] ?? 0),
   } });
   const seenRowKeys = new Set<string>();
   const rowKeys = baseRows.map((row) => {
@@ -1320,6 +1323,12 @@ export interface VerdictResult {
   instrumentTable: InstrumentRow[];
   selfMatched: boolean;
   candidateInstrumentIds: string[];
+  /** Funds withheld because their openness could not be confirmed against the
+   *  live register. Absent when none were, which is the normal state. The fast
+   *  path carries it for the same reason the memo does: this screen is the
+   *  first thing a founder acts on, and a table that is quietly two rows short
+   *  is the version of it that costs them a week. */
+  withheld?: WithheldNotice;
 }
 
 export async function computeVerdict(
@@ -1333,6 +1342,11 @@ export async function computeVerdict(
     log?: ExclusionLog;
   } = {},
 ): Promise<VerdictResult> {
+  // A recorder always exists here, whether or not the caller wanted the funnel.
+  // The withheld count is read back off it, and a founder being told how many
+  // funds are missing cannot depend on whether the call site passed an
+  // optional argument.
+  const log = opts.log ?? new ExclusionLog();
   const selfRecord = matchCompany(company, country);
   const targetSub =
     selfRecord.matched && !isGenericSubsector(selfRecord.subsector) ? selfRecord.subsector : "";
@@ -1373,7 +1387,11 @@ export async function computeVerdict(
     // case, not a penalty. When it IS answered it is the only thing that can
     // tell fourteen leaves of one notified regime apart. See regionScorer.
     founderRegion: (eligibility as { region?: string } | undefined)?.region,
-    log: opts.log,
+    // The whole answer set, for the within-regime gate check. Everything else
+    // above is one field; this is the only signal that needs all of them,
+    // because it evaluates each leaf's own encoded rules against the founder.
+    eligibility,
+    log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is
   // model-free, not IO-free: its eligibility screen renders the source
@@ -1390,6 +1408,7 @@ export async function computeVerdict(
     instrumentTable: candidates.slice(0, DISPLAY_CAP),
     selfMatched: selfRecord.matched,
     candidateInstrumentIds: candidateIds,
+    withheld: withheldNotice(log.countsByRule()["SEL-UNCONFIRMED-OPEN"] ?? 0),
   };
 }
 
@@ -1478,6 +1497,9 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     // of split that once had the two paths ranking on different signals
     // entirely.
     founderRegion: req.eligibility?.region,
+    // The memo ranks the same siblings the fast path does, so it must see the
+    // same discriminator -- the same argument the region field carries above.
+    eligibility: req.eligibility,
     log,
   });
   const instrumentTable = applyProfileSignal(
@@ -1511,6 +1533,9 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
       company: req.company,
       generatedAt: new Date().toISOString(),
       ...report,
+      // Code-authored and appended AFTER the writer's fields, so nothing the
+      // model returns can overwrite, soften or omit it.
+      withheld: withheldNotice(log.countsByRule()["SEL-UNCONFIRMED-OPEN"] ?? 0),
       // Where each part came from, plus what was removed on the way. Always
       // emitted, rendered only under ?trace=1 — the cost is a few hundred
       // bytes and it is the difference between "why is this fund missing"
