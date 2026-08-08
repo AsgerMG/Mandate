@@ -51,12 +51,26 @@ Declaring a guard `manual` is a real answer -- some guards cost money, and
 some need a credential no automatic runner should hold. It is just not an
 answer anybody can give by accident, which is the whole difference.
 
+── Why a manual declaration expires ───────────────────────────────────────
+An escape hatch with no clock becomes the orphanage. "Declared manual, with a
+reason" is one honest sentence away from "orphaned, with an excuse", and the
+difference is invisible six weeks later when the reason has stopped being
+true. So a manual entry carries a `review` date and this check FAILS once it
+passes -- the same shape as the reviewed exceptions register in
+website/frontend/scripts/check_dependencies.ts, and for the same reason: a
+suppression nobody is forced to revisit is a suppression that outlives its
+justification.
+
+Reviewing costs one of three edits: wire the guard up, move the date and say
+what changed, or delete the guard. All three are better than the silence.
+
 Usage: python3 ETL/schema/check_guard_reachability.py
 """
 from __future__ import annotations
 
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -120,7 +134,13 @@ def main() -> int:
 
     sources = {name: uncommented(p.read_text()) if p.exists() else ""
                for name, p in AUTOMATIC.items()}
+    # The registry counts as an automatic path only through its `guards` array.
+    # The `manual` block lives in the same file and names every orphan in it, so
+    # reading the file whole would mark each one reachable BY ITS OWN
+    # DECLARATION -- a check that goes green because you told it something is
+    # broken. Only the array that actually causes a verdict to be published.
     missing_paths = [n for n, p in AUTOMATIC.items() if not p.exists()]
+    sources["guard_registry.json"] = json.dumps(registry.get("guards", []))
 
     problems: list[str] = []
     reachable, declared = 0, 0
@@ -141,7 +161,9 @@ def main() -> int:
             continue
         if stem in manual:
             declared += 1
-            reason = manual[stem]
+            entry = manual[stem]
+            reason = entry.get("reason") if isinstance(entry, dict) else None
+            review = entry.get("review") if isinstance(entry, dict) else None
             if not isinstance(reason, str) or len(reason.strip()) < 20:
                 problems.append(
                     f"{rel}\n"
@@ -151,6 +173,28 @@ def main() -> int:
                     f"      that from being an accident -- what it costs, or which "
                     f"credential no\n"
                     f"      automatic runner may hold.")
+                continue
+            try:
+                due = date.fromisoformat(str(review))
+            except ValueError:
+                problems.append(
+                    f"{rel}\n"
+                    f"      is declared `manual` with no usable `review` date "
+                    f"({review!r}).\n"
+                    f"      Manual declarations expire on purpose -- see the module "
+                    f"docstring.\n"
+                    f"      Use YYYY-MM-DD.")
+                continue
+            if due < date.today():
+                problems.append(
+                    f"{rel}\n"
+                    f"      was declared `manual` for review by {due.isoformat()}, which "
+                    f"has passed.\n"
+                    f"      The reason on file: {reason.strip()}\n"
+                    f"      Wire it into an automatic path, move the date and say what\n"
+                    f"      changed, or delete the guard. Leaving it is the one option "
+                    f"this\n"
+                    f"      check exists to remove.")
             continue
         problems.append(
             f"{rel}\n"

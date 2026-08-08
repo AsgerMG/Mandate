@@ -2086,7 +2086,7 @@ export function materialiseInstrumentTable(
     // number either way -- which is exactly what the original commit said about
     // its own change, and then the number stayed flat for the other reason too.
     //
-    // Observed directly instead (`scripts/check_ticket_effect.ts`, 12 profiles,
+    // Observed directly instead (`scripts/measure_ticket_effect.ts`, 12 profiles,
     // mean awardP50 of the five shown rows):
     //
     //                    b2m5_15m   b15m_50m      gt50m
