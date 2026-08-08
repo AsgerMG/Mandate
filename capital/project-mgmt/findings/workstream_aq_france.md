@@ -94,6 +94,34 @@ Newly ruled out by this workstream:
   651 each), but the column holds exactly two values across all of them —
   `OUI` and `NON`. It is a boolean, not a case number. Nothing to follow.
 
+## 4. The unlock: aides-territoires' API is 401. Its WEB PAGES are public.
+
+The standing record said `aides-territoires.beta.gouv.fr/api/aids/` returns 401
+with a JWT required from interactive signup, and the brief carried it forward as
+the one lead that needs a human. That is true of the API and only of the API.
+The site itself is a public catalogue, served without authentication, and it can
+simply be read. No credential was used, no auth was worked around, and the 401
+was never touched.
+
+That distinction was worth 10 of the 26 rows on the first pass, and the text it
+returns is exactly the right kind. Measured with `simulate_text_lift.ts` on
+those 10:
+
+    batch distinctness   10 distinct texts over 10 leaves — perfect
+    FR mean class        8.1 -> 4.1
+    FR ceiling@5         68% -> 78%
+    FR leaves in classes >20   26% -> 0%
+
+It discriminates because it states the beneficiary TYPE, and the types really
+differ: "Aides aux relais" and "Aides aux actions ponctuelles" come back
+collectivité / EPCI / établissement public / association, while "Investissements
+de recyclage des déchets (dont ORPLAST régénération)" and ORPLAST Édition 3 come
+back entreprises only. Those are the rows a founder most needs told apart,
+because half of this regime is not open to a company at all.
+
+The generalisable lesson is not about France. A 401 on `/api/` was recorded
+against the whole HOST, and the host's public HTML was never tried.
+
 - **No other corpus column can separate these leaves.** All 75 `ademe_aid`
   rows have `delivery_region`, `catchment_region`, `catchment_regions` and
   `recipient_region_mix` NULL, and all 75 are `capital_type = grant`. Two of
