@@ -652,6 +652,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "380f8588d9c27898": {
+   "reason": "Describes businesses with growth ambitions seeking network funding; they apply and sign directly.",
+   "sample": "Bedriftsnettverk. Har bedriften din vekstambisjoner og \u00f8nsker \u00e5 realisere disse i samarbeid med andre bedrifter? Vi kan tilby faglig veiledning, og finansiering til etablering og utvikling av bedriftsnettverk-prosjekter.",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "390a39f1874ecb15": {
    "reason": "Aerospace-sector industrial firms meeting turnover thresholds; they submit the application themselves.",
    "sample": "Possono beneficiare del finanziamento le imprese che svolgono in via prevalente attivita' industriali nel settore aerospaziale, ovvero che nei due esercizi precedenti la presentazione della domanda abbiano registrato un ",
@@ -1978,6 +1984,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "a5a7afd9a75fa559": {
+   "reason": "Explicitly states the financier bank/leasing company submits; borrower company conditions are context, so applicant test stated.",
+   "sample": "Kas iesniedz pieteikumu: Pieteikumu garantijai sagatavo un iesniedz finans\u0113t\u0101js \u2013 banka vai l\u012bzinga komp\u0101nija, pievienojot finans\u0113t\u0101ja un uz\u0146\u0113muma sagatavotos dokumentus. Par kred\u012bta garantijas piesaisti prasiet sav\u0101 ban",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "a5d50da69acbbdc6": {
    "reason": "Plastics processors/converters incorporating recycled plastic; SMEs and large firms are the applicants.",
    "sample": "\u00cates-vous concern\u00e9 ? L'aide s'adresse aux plasturgistes et transformateurs souhaitant incorporer de la mati\u00e8re plastique recycl\u00e9e dans les produits (premi\u00e8re incorporation ou augmentation). Cette \u00e9dition 3 de l'appel \u00e0 p",
@@ -2335,6 +2347,12 @@
   "c322c2d95cb2191d": {
    "reason": "Companies, universities, research institutions are the applicants.",
    "sample": "Zuwendungsempf\u00e4nger Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Hochschulen und Forschungseinrichtungen. Zum Zeitpunkt der Auszahlung einer gew\u00e4hrten Zuwendung wird das Vorhandensein einer Betrie",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "c3afcc78593915f6": {
+   "reason": "States financier prepares and submits application; guaranteed company's conditions given as accompanying context, not sole subject.",
+   "sample": "Who submits the application: The application for the guarantee is prepared and submitted by the financier \u2013 a bank or a leasing company \u2013 attaching the documents prepared by the financier and by the company. Ask your own",
    "v": 1,
    "verdict": "applicant"
   },
