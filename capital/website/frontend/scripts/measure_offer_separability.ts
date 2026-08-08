@@ -65,6 +65,7 @@ import {
   hydrateDbInstruments, hydrateGatesFor, type DbInstrument,
 } from "../lib/intelligence/corpus";
 import { TICKET_BANDS } from "../lib/intelligence/types";
+import { isClosed } from "../lib/intelligence/liveness";
 import { buildRegimeCases, sizeQuantiles, type RegimeCase } from "./regimeCases";
 
 /** Upper edge of each ticket band, in euros; the last is open-ended. A founder
@@ -117,8 +118,12 @@ const FACETS: [string, string, Facet][] = [
   // Whether it is still open. publishableInstruments() already drops closed
   // schemes, so this is expected to separate nothing — reported anyway, because
   // "we checked and it was already handled" is a finding and an assumption is not.
+  // `isClosed` and not a date comparison: an end date is a call deadline OR a
+  // notified duration, and only the first closes the row. Comparing the column
+  // to a clock is a SECOND liveness rule that hides live schemes, which is what
+  // `check_liveness` exists to catch.
   ["open", "still open to applications",
-    (i) => i.schemeEndDate ? (i.schemeEndDate < new Date().toISOString().slice(0, 10) ? "closed" : "open") : undefined],
+    (i) => i.schemeEndDate ? (isClosed(i) ? "closed" : "open") : undefined],
   // Encoded eligibility. `measure_sibling_choice` grades this as a COUNT of
   // gates and gets the guessing baseline, but a count is not what a gate is
   // for: two leaves are told apart by WHICH intake field each one screens on

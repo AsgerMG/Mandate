@@ -93,6 +93,27 @@ input rather than acting on them.
   value; it did not populate the right one, because what a fund IS comes from
   the official source and not from our own mis-filed column.
 
+## RESOLVED BRANCHES — workstream BG, 2026-08-08
+
+Four branches carried measured work that had never landed. An unmerged branch is
+an orphan: real measurement that no longer runs, cannot regress, and gets
+silently re-derived next month. All four are now closed, and nothing was
+deleted before it was pushed.
+
+| branch | resolution | where the finding lives now |
+|---|---|---|
+| `workstream-l-thin` | **merged whole** | `findings/workstream_l_thin.md` — EE/CZ/LV are the best-separated countries in the corpus (class 1.2 / 1.6 / 5.6); FR+ES+SE hold 87% of the sibling mass; an unclaimed 0.76 that needs no fetches |
+| `wsJ-representative-chooser` | **merged, minus its ranker change** | `regimeCases.ts` (one within-regime population), the empty-gate-array defect fix, `measure_offer_separability.ts`; its 27%/39% ceiling is marked CORRECTED in `research/target_arithmetic.md` |
+| `wsG-region` + `wsG-scorer-width` | **archived, finding kept** | `findings/region_as_ranking_signal_wsG.md`, the `regionScorer` comment, and a `WIDTH=` flag on `measure_region_routing.ts`. Tag `archive/wsG-region` |
+| `wsM-sibling-collapse` | **archived, finding kept** | `findings/sibling_collapse_wsM.md` and a DO-NOT-COLLAPSE block at the line in `materialiseInstrumentTable` both attempts edited. Tag `archive/wsM-sibling-collapse` |
+
+**The pattern the four share, and the reason this was worth a workstream:**
+three independent attempts to widen a per-scheme signal past its scheme all lost
+points, and two independent attempts to collapse a regime onto one row both lost
+points. Each was retried because the previous refusal lived on a branch. They
+are now recorded at the line a fourth attempt would edit, with the one command
+that re-checks the premise.
+
 ## HOLDING, deliberately
 
 - **Do not deploy €408.4B to the site.** The site ships €352.9B / 297,933 events.
