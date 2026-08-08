@@ -365,6 +365,21 @@ regimes (21-50 and 51+), which is where a pool is worth anything.
 Full output, all six runs with every stratum:
 `project-mgmt/findings/workstream_ar_capital_filter_recall.txt`.
 
+### The gate, so the next reader does not attribute someone else's red to this
+
+`npm run check` on this branch: `tsc`, 254 unit tests, and every capital-related
+guard pass, including `check_capital_reach` (8 of 769, ceiling 8) and
+`check_recall_floor` (97 / 30 / 86). Three checks fail, and all three fail
+**identically on `main`**, verified by running them there:
+
+- `check_corpus_census` — the ETL census is DEGRADED and BEHIND the published
+  corpus. Workstream AG.
+- `check_dependencies` — a HIGH advisory on `nanoid` with no exception registered.
+- `check_hydration_parity` — one Spanish instrument, gate order differs between the
+  Postgres and JSON paths.
+
+The one red this branch DID own is fixed above and was `check_vocabularies`.
+
 ---
 
 ## 7. Recommended next, not done here
