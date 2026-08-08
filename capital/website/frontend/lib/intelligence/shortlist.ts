@@ -18,11 +18,12 @@ import path from "path";
 import { regionNameFor } from "./regions.generated";
 import { recipientsIn } from "./regionPrior";
 import { hydrateGatesFor } from "./corpus";
-import { isAttributable, isCited } from "./verdict";
+import { assessInstrument, isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, suppressedForUnconfirmedLiveness, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { semanticSeparation } from "./semantic";
 import { TICKET_BANDS } from "./types";
+import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
 import { accessMode, passesCapitalPreference } from "./accessMode";
@@ -263,6 +264,29 @@ export function regionScorer(
   // registrations of one regime really are two schemes with two sets of
   // delivery bodies, and merging them puts a body in competition with awards it
   // could never have signed. Reverted; recorded so it is not retried.
+  //
+  // WIDENING TO THE REGIME WAS TRIED AND IT COSTS POINTS. Recorded here with
+  // the scheme-name attempt above, because the case for it looks strong on
+  // reach alone and it will be proposed again. Only 95 of 807 publishable
+  // leaves share a scheme code with a sibling, so this scoping can separate
+  // just 224 of 2,150 graded pairs -- 33 rows of the 300 the headline is
+  // computed on, which is the real reason a signal measured at 66.2% @1 prints
+  // bit-identical totals (`scripts/diagnose_region_reach.ts`). Scoped to the
+  // regime it would reach 927 pairs, 131 of those 300: four times the reach.
+  //
+  // Measured anyway, holdout N=300, three seeds, ANSWERS=real, gate fit on:
+  //
+  //     scheme-scoped (ships)   EXACT@5   92 / 96 / 98
+  //     regime-scoped           EXACT@5   85 / 92 / 96
+  //
+  // Worse on every seed, and worst in the markets region was supposed to serve
+  // (DE 48 -> 42, 48 -> 43, 41 -> 35). A regime can hold a hundred leaves, and
+  // at that width "which body has paid most into this region" stops being
+  // geography and becomes a size prior -- the same failure that cost the
+  // objective prior 21 points and the sector posterior 2. The narrow reach is
+  // a fact about the CORPUS, not a defect in this function: the way to make
+  // region matter more is for more leaves to carry a resolvable notified
+  // scheme, which is collection work, not ranking work.
   const byScheme = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
     const code = (l.schemeCode ?? "").trim();
@@ -292,6 +316,77 @@ export function regionScorer(
     const span = lg(hi) - lg(lo);
     for (const [id, n] of here) {
       score.set(id, Math.pow(REGION_MATCH, 2 * ((lg(n) - lg(lo)) / span) - 1));
+    }
+  }
+  if (!score.size) return neutral;
+  return (i: DbInstrument) => score.get(i.id) ?? 1;
+}
+
+// How far a founder's fit against a leaf's OWN encoded rules may reorder its
+// regime. Sized like OBJECTIVE_MATCH rather than REGION_MATCH: unlike region,
+// this signal is available on most groups, and one that speaks often must
+// speak more quietly than one that speaks rarely and decisively.
+const GATE_MATCH = 1.35;
+
+/** Rank siblings by whether this founder actually CLEARS each leaf's rules.
+ *
+ *  ── Why this is worth having when 'gates do not rank' was already measured ─
+ *  That verdict — won fund 62% pass against pool 63% — was taken on a harness
+ *  that fed every replayed founder IDENTICAL intake answers. A rule can only
+ *  separate two founders who differ, so the measurement had no signal to find.
+ *  Re-measured with per-founder answers (`scripts/measure_gate_separation.ts`,
+ *  ANSWERS=): within-regime top-1 rises from 4.7% to 9.3% against an unchanged
+ *  4.8% uniform baseline, and from 1.5% to 7.5% in regimes of 51+ leaves,
+ *  which is where the leaf choice actually binds.
+ *
+ *  ── Pass RATE, deliberately, and never the count of rules checked ─────────
+ *  83% of gates are inherited from the regime and only 22% of decidable
+ *  filters are a leaf's own, so the leaves that differ from their siblings
+ *  differ largely in how much has been ENCODED about them — and the
+ *  best-documented leaf of a regime is also the one most companies win. That
+ *  makes "how many rules could we check" a size prior in disguise. Measured as
+ *  a null model (`FIT=checked`): +0.5pp against uniform, where the pass-rate
+ *  form gets +4.5pp. So the count is excluded from the score even though it
+ *  correlates with the answer, and only the SHARE the founder clears is used.
+ *
+ *  ── Scoped to the REGIME, never across a channel ──────────────────────────
+ *  The same constraint `regionScorer` and `objectiveScorer` are held to, for
+ *  the same measured reason: applied channel-wide these become priors over
+ *  which programme is biggest, and every attempt at that has cost points. A
+ *  leaf alone in its regime here scores 1.
+ *
+ *  Returns neutral for a leaf whose rules could not be evaluated at all, and
+ *  for a group whose leaves all fit identically — which is 68% of multi-leaf
+ *  regimes, because their leaves inherit one rule set and are therefore
+ *  genuinely indistinguishable this way. A signal that cannot separate its
+ *  candidates must not reorder them. */
+export function gateFitScorer(
+  leaves: DbInstrument[], answers?: EligibilityAnswers,
+): (i: DbInstrument) => number {
+  const neutral = () => 1;
+  if (!answers) return neutral;
+  const byRegime = new Map<string, DbInstrument[]>();
+  for (const l of leaves) {
+    const r = (l as { parentId?: string }).parentId ?? l.id;
+    (byRegime.get(r) ?? byRegime.set(r, []).get(r)!).push(l);
+  }
+  const score = new Map<string, number>();
+  for (const group of byRegime.values()) {
+    if (group.length < 2) continue;
+    const fit = new Map<string, number>();
+    for (const l of group) {
+      const a = assessInstrument(l, answers);
+      // Nothing decidable about this leaf: a gap in our encoding, never
+      // evidence that the founder fails. Same treatment awardScorer gives a
+      // fund with no recorded award median.
+      if (a.checked > 0) fit.set(l.id, a.passed / a.checked);
+    }
+    const known = [...fit.values()];
+    if (known.length < 2) continue;
+    const lo = Math.min(...known), hi = Math.max(...known);
+    if (hi === lo) continue;
+    for (const [id, f] of fit) {
+      score.set(id, Math.pow(GATE_MATCH, 2 * ((f - lo) / (hi - lo)) - 1));
     }
   }
   if (!score.size) return neutral;
@@ -1255,6 +1350,12 @@ export interface InstrumentTableInput {
    *  many bodies, so their text, their article and their cheque size are
    *  identical and only the applicant's location differs. See regionScorer. */
   founderRegion?: string;
+  /** Everything the founder actually answered, for the ONE thing that needs
+   *  the whole answer set rather than a single field: checking each leaf's own
+   *  encoded rules against them. Read only in `materialiseInstrumentTable`,
+   *  where gates are already in memory — selection above must stay gate-free.
+   *  See `gateFitScorer`. */
+  eligibility?: EligibilityAnswers;
   /** Records every fund this function removes. Optional: callers that do not
    *  care about the funnel need not thread one through. */
   log?: ExclusionLog;
@@ -1613,7 +1714,7 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, log } = input;
+  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, eligibility, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = semantic?.size
@@ -1768,7 +1869,11 @@ export function materialiseInstrumentTable(
     const obj = objectiveScorer(leaves.map((l) => l.id), useOfFunds);
     const awd = awardScorer(leaves, input.ticketBand);
     const reg = regionScorer(leaves, founderRegion);
-    const pref = (l: DbInstrument) => obj(l.id) * awd(l) * reg(l);
+    // What the founder actually clears, per leaf. The fourth per-scheme fact
+    // siblings do not share, and the only one built from the fund's own
+    // eligibility TEXT rather than from its award history. See gateFitScorer.
+    const gate = gateFitScorer(leaves, eligibility);
+    const pref = (l: DbInstrument) => obj(l.id) * awd(l) * reg(l) * gate(l);
     // Nothing to say about these siblings: leave the channel untouched.
     if (leaves.every((l) => pref(l) === pref(leaves[0]))) continue;
     const slots = leaves.map((l) => baseRelevance(l.id)).sort((a, b) => b - a);
