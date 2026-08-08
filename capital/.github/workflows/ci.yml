@@ -216,6 +216,14 @@ jobs:
       - name: Every migration id is reachable
         run: python3 ETL/events/load/migrations/apply.py --ids
 
+      # Fifteen columns of the live corpus were created by no committed
+      # statement -- four of them by somebody typing ALTER at a prompt -- so
+      # replaying schema.sql plus every migration into an empty database did not
+      # produce this project's schema, it produced `no such column: scheme_code`.
+      # Needs no corpus and no credentials: it builds the store it checks.
+      - name: The schema can be rebuilt from its own migrations
+        run: python3 ETL/schema/check_schema_replay.py
+
       - name: One store of record per table
         run: python3 ETL/schema/check_store_of_record.py
 

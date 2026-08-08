@@ -25,6 +25,7 @@
  * Run: npx tsx scripts/check_liveness.ts
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
+import { SOURCE_WINDOW_POLICY } from "../lib/intelligence/liveness";
 import { join, relative, resolve } from "node:path";
 
 interface Problem { axis: string; detail: string; }
@@ -85,6 +86,54 @@ async function main() {
           "the product hides. Run: npx tsx scripts/emit_liveness.ts"
         : "data/liveness.json is missing — ETL/lib/liveness.py cannot start. " +
           "Run: npx tsx scripts/emit_liveness.ts",
+    });
+  }
+
+  // ── Every publishable row has been ASKED about its register ─────────────
+  // `sourceWindowPolicy` is the one fact the degradation policy cannot derive,
+  // and NULL is not neutral: the product reads it as "nobody has asked" and
+  // withholds the row from every fallback copy. So an unanswered row is not
+  // dangerous, it is invisible — a fresh corpus and an unclassified one look
+  // identical from inside the rule, and a whole feed can arrive silently
+  // un-offerable. This makes that state loud instead of expensive.
+  //
+  // Read off the committed snapshot rather than a database, so it runs in CI.
+  try {
+    const snap = JSON.parse(readFileSync(
+      resolve(process.cwd(), "public/data/instrument_terms.json"), "utf8")) as
+      { records: { id: string; isFramework?: boolean; parentId?: string | null;
+                   sourceWindowPolicy?: string | null }[] };
+    const parents = new Set(snap.records.map((r) => r.parentId).filter(Boolean));
+    const unanswered = snap.records.filter((r) =>
+      !r.isFramework && !parents.has(r.id) && !r.sourceWindowPolicy);
+    if (unanswered.length) {
+      problems.push({
+        axis: "source window policy",
+        detail: `${unanswered.length} publishable rows carry no sourceWindowPolicy ` +
+          `(${unanswered.slice(0, 5).map((r) => r.id).join(", ")}${
+            unanswered.length > 5 ? ", …" : ""}). Nobody has asked whether their ` +
+          `register states an application window, so every fallback copy withholds ` +
+          `them. Declare their feed in data/reference/source_window_policy.json and ` +
+          `run: python3 ETL/terms/assign_source_window_policy.py --write`,
+      });
+    }
+    const vocabulary = new Set(Object.values(SOURCE_WINDOW_POLICY) as string[]);
+    const invalid = snap.records.filter((r) =>
+      r.sourceWindowPolicy && !vocabulary.has(r.sourceWindowPolicy));
+    if (invalid.length) {
+      problems.push({
+        axis: "source window policy",
+        detail: `${invalid.length} rows carry a sourceWindowPolicy outside the ` +
+          `vocabulary (${[...new Set(invalid.map((r) => r.sourceWindowPolicy))].join(", ")}). ` +
+          `The product matches on exact values, so an unrecognised one reads as ` +
+          `NULL and withholds the row.`,
+      });
+    }
+  } catch {
+    problems.push({
+      axis: "source window policy",
+      detail: "public/data/instrument_terms.json could not be read, so the " +
+        "degradation policy's one recorded input could not be checked.",
     });
   }
 

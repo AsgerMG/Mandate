@@ -1,0 +1,47 @@
+-- Does the register that publishes this row state an application window for it?
+--
+-- 025 recorded what KIND of date `scheme_end_date` holds. This records
+-- something the corpus had no way to say at all: whether a row's SOURCE states
+-- a closing date for funds like it, independently of whether one reached us.
+--
+-- Until now "this fund has no application deadline" and "we have not loaded
+-- this fund's application deadline" were the same NULL. That conflation is why
+-- the degradation policy could not do its job. The policy withholds a row from
+-- a founder when a request falls back to the committed snapshot and the row's
+-- openness rests on our holding no deadline for it -- but it had to work out
+-- which registers publish deadlines by COUNTING how many of their rows carried
+-- one, and a copy stale enough to be dangerous carries none. Measured
+-- 2026-08-07 on the copy pushed back to its pre-call-register shape: 812 rows
+-- offered, 0 withheld, 84 of them closed according to the live register. The
+-- safeguard did nothing in precisely the state it exists for.
+--
+--   publishes_window     the register states a closing date for objects of this
+--     kind (a BDNS convocatoria's `fechaFinSolicitud`, the `Date de fin de
+--     l'aide` on every Transition Ecologique des Entreprises dispositif page).
+--     A row of ours carrying none is a gap in OUR copy, so on a copy it cannot
+--     be confirmed open.
+--   publishes_no_window  the register's record for objects of this kind has no
+--     closing date in it at all -- the Commission's state-aid case register
+--     publishes `caseMeasureEndDate` and nothing else; CORDIS, the EIB project
+--     list and every national award file publish awards. Their silence is the
+--     register's and not ours, so no copy of any age is missing anything.
+--   declares_open_ended  the register carries the field and states, for THIS
+--     object, that there is no closing date. A statement, not a silence.
+--
+-- The unit is the OBJECT WE HOLD, not the agency. data.vinnova.se publishes
+-- `Stangningsdatum` on every application round, but our Swedish rows are
+-- PROGRAMMES and a round closing does not close the programme it ran under, so
+-- those rows are publishes_no_window. Answering about the agency would withhold
+-- fifty live programmes over a date that was never a claim about them.
+--
+-- NULL means nobody has asked, and is NOT read as publishes_no_window. An
+-- unexamined absence taken for a fact is the whole defect being corrected here,
+-- and reading NULL that way would reintroduce it invisibly -- a fresh corpus
+-- and an unclassified one look identical from inside the rule. check_liveness.ts
+-- fails the build when a publishable row carries no policy.
+--
+-- Written by ETL/terms/assign_source_window_policy.py from the per-feed
+-- evidence in data/reference/source_window_policy.json. Read by
+-- unconfirmedOpen() in website/frontend/lib/intelligence/liveness.ts, which is
+-- the only consumer.
+ALTER TABLE funding_instruments ADD COLUMN source_window_policy TEXT;

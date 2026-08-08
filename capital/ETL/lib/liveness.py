@@ -50,6 +50,30 @@ NOTIFIED_DURATION: str = _S["basis"]["notifiedDuration"]
 #: ``date_cloture``). Past means closed, permanently.
 CALL_DEADLINE: str = _S["basis"]["callDeadline"]
 
+# ── Does the register that publishes this row state a window for it? ────────
+# Written by ETL/terms/assign_source_window_policy.py from data/reference/
+# source_window_policy.json, read by the product's degradation policy. The
+# names come from the projection rather than being spelled here, for the reason
+# the module docstring gives: a hand-copied vocabulary is a vocabulary that
+# will drift, and this one decides whether a founder sees a fund at all.
+
+#: The register states a closing date for objects of this kind, so a row of
+#: ours carrying none is a gap in OUR copy.
+PUBLISHES_WINDOW: str = _S["sourceWindowPolicy"]["publishesWindow"]
+
+#: The register's record for objects of this kind has no closing date in it at
+#: all. No copy of any age is missing anything.
+PUBLISHES_NO_WINDOW: str = _S["sourceWindowPolicy"]["publishesNoWindow"]
+
+#: The register carries the field and states, for THIS object, that there is no
+#: closing date.
+DECLARES_OPEN_ENDED: str = _S["sourceWindowPolicy"]["declaresOpenEnded"]
+
+#: Every value the column may hold. A writer that invents a fourth is writing a
+#: value the product will read as "nobody asked", which withholds the row.
+SOURCE_WINDOW_POLICIES: frozenset[str] = frozenset(
+    _S["sourceWindowPolicy"].values())
+
 # A third basis, `closed_beneficiary_list`, existed on 2026-08-07 and was
 # removed the same day. "There is no way into this row" is not a kind of date
 # and does not belong on this axis; it lives in ETL/lib/offer_route.py. Its

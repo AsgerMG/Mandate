@@ -14,36 +14,36 @@
     "",
     "'budget' is the count of entries below. It is stated separately on purpose:",
     "deleting an entry without lowering it, or lowering it without deleting an",
-    "entry, both fail."
+    "entry, both fail.",
+    "",
+    "2026-08-08: 17 -> 3. Migrations 028, 029 and 030 create the fourteen",
+    "columns, and 008 finally has the .sql file it never had, which is why",
+    "public_equity_stakes.via_fund and public_funding_events.instrument_class",
+    "were on this list at all -- they were a migration nobody could see, not a",
+    "hand ALTER.",
+    "",
+    "The list also MISSED four: scheme_code, application_url, sector_mix and",
+    "scheme_operators, which no committed statement created and which were the",
+    "only genuine hand-ALTERs among the fifteen. They are declared by 021's and",
+    "022's table rebuilds -- `CREATE TABLE funding_instruments_new (... )` --",
+    "and then SELECTed out of the table being rebuilt, so a reader of the DDL",
+    "sees them created while every store built from source dies at 021 without",
+    "them. Reading a rebuild's CREATE as a declaration is a false negative this",
+    "check still has; ETL/schema/check_schema_replay.py is what catches it, by",
+    "replaying the DDL instead of reading it.",
+    "",
+    "The three that remain are tables, and they are staying. Each is created by",
+    "CREATE TABLE IF NOT EXISTS in the single script that both creates and",
+    "consumes it, so its DDL is committed and there is exactly one copy of it.",
+    "Restating a twenty-nine-column staging table in a migration would be a",
+    "second definition of the same table. If they should move, the move is to",
+    "make this check read the owning script -- not to copy the DDL."
   ],
-  "budget": 17,
+  "budget": 3,
   "tables_without_ddl": [
     "company_sector_llm",
     "instrument_application",
     "satr_staging"
   ],
-  "columns_without_ddl": {
-    "companies": [
-      "parent_group",
-      "sector_rule"
-    ],
-    "funding_instruments": [
-      "description",
-      "eligibility_confidence",
-      "eligibility_fetched_at",
-      "eligibility_source_url",
-      "eligibility_text",
-      "name_basis",
-      "route_status",
-      "route_status_note",
-      "route_status_source",
-      "source_window_policy"
-    ],
-    "public_equity_stakes": [
-      "via_fund"
-    ],
-    "public_funding_events": [
-      "instrument_class"
-    ]
-  }
+  "columns_without_ddl": {}
 }

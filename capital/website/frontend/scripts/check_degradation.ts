@@ -205,27 +205,29 @@ async function main() {
   //   stale (no call deadlines loaded)      812         0            84
   //   no-basis (the 2026-08-06 artifact)    230       381             0
   //
-  // The middle row is the case the policy was BUILT for, and the policy does
-  // nothing in it — under the old membership rule as well as the current
-  // proportion rule, identically. `populationRecordsDeadlines` infers "this
-  // register publishes deadlines" from deadlines present in the copy, so a
-  // copy stale enough to be dangerous has none and the rule goes quiet exactly
-  // when it is needed. The only clause that ever caught anything is
-  // `basis_not_supplied`, which is a test of the copy's SCHEMA, not its
-  // currency, and it withholds 381 of 814 rows to do it.
+  // The middle row WAS the case the policy was built for and did nothing in.
+  // `populationRecordsDeadlines` inferred "this register publishes deadlines"
+  // from deadlines present in the copy, so a copy stale enough to be dangerous
+  // had none and the rule went quiet exactly when it was needed. The only
+  // clause that ever fired was `basis_not_supplied`, a test of the copy's
+  // SCHEMA rather than its currency, and it withheld 381 of 814 rows to do it.
   //
-  // The defence against a deeply stale copy is therefore check_corpus_currency
-  // and check_corpus_census, not this. What the durable fix looks like is in
-  // project-mgmt/findings/degradation_precision_wsAC.md: the corpus records
-  // "no deadline" and "not a deadline-bearing row" in the same NULL, and one
-  // column separating them would make this rule survive staleness.
+  // Closed 2026-08-08. The fact is now RECORDED per row at ETL time as
+  // `source_window_policy` -- see lib/intelligence/liveness.ts and
+  // data/reference/source_window_policy.json -- so a copy carries it however
+  // far behind it has fallen. Re-measured the same day:
+  //
+  //   copy                                 offered  withheld  DEAD OFFERED
+  //   stale (no call deadlines loaded)        644       163             0
+  //
+  // 94 of those 163 are rows the live register refuses: 78 Spanish, 16 French.
   console.log("\nWHAT THIS CHECK DOES NOT COVER");
   console.log("  It runs against the committed snapshot, which is republished on every");
   console.log("  corpus change. That is the state where the assertion cannot fail. Run");
   console.log("  `npx tsx scripts/probe_stale_snapshot.ts` for the states where it can:");
-  console.log("  on a copy predating the call-register loads, the policy withholds");
-  console.log("  nothing and 84 closed rows are offerable. That gap is corpus currency's");
-  console.log("  to close, not this rule's — see degradation_precision_wsAC.md.");
+  console.log("  on a copy predating the call-register loads it now withholds 163 rows,");
+  console.log("  94 of which the live register refuses, and offers no dead call at all.");
+  console.log("  That is source_window_policy doing the work the derived rule could not.");
 
   if (problems.length) {
     console.error("\ncheck_degradation: FAILED\n");

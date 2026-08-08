@@ -19,7 +19,7 @@
  */
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { SCHEME_END_BASIS, closedSql } from "../lib/intelligence/liveness";
+import { SCHEME_END_BASIS, SOURCE_WINDOW_POLICY, closedSql } from "../lib/intelligence/liveness";
 
 export const OUT = resolve(process.cwd(), "../../data/liveness.json");
 
@@ -32,6 +32,12 @@ export function build(): string {
       "still open' reads one definition rather than five that must be kept " +
       "in sync.",
     basis: SCHEME_END_BASIS,
+    /** Does the register that publishes this instrument state an application
+     *  window for it? Projected because the ETL is what WRITES the column —
+     *  assign_source_window_policy.py must spell the values the product reads,
+     *  and a second copy of three string literals is how the last cross-store
+     *  vocabulary drifted. */
+    sourceWindowPolicy: SOURCE_WINDOW_POLICY,
     /** SQL for `this row is closed`, per dialect. Both are generated from the
      *  same function, so a change to the rule cannot reach one store only. */
     closedSql: {
