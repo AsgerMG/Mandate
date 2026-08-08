@@ -3,6 +3,19 @@
 //   npx tsx scripts/measure_offer_separability.ts
 //   SPLIT=all npx tsx scripts/measure_offer_separability.ts
 //
+// ── THE 27% / 39% THIS PRINTS IS NOT THE CORPUS'S CEILING ─────────────────
+// Corrected 2026-08-08. The class this sizes is indistinguishable ON THESE SIX
+// FACETS. Three recorded columns are missing from them -- administering_body,
+// delivery_region and the verbatim eligibility_text -- and they separate
+// better: keyed on all three, `measure_sibling_coverage.ts` measures mean class
+// 18.0 against the 31.3 here, over the same population. So this is a bound on a
+// chooser that reads only the offer, and a FLOOR on the bound for a chooser
+// that reads what the corpus actually holds. The method is still the point --
+// a ceiling computed off the corpus, needing no answers and no fitting, bounds
+// every such chooser at once -- but do not quote the number as the ceiling.
+// See project-mgmt/research/target_arithmetic.md and
+// project-mgmt/findings/leaf_separation_wsAO.md.
+//
 // ── Why this runs before any chooser is built ─────────────────────────────
 // Every within-regime signal measured so far is a posterior over award
 // history: who a fund has PAID. Sector reaches 14.7% @1 and then collapses

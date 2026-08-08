@@ -2319,6 +2319,28 @@ export function materialiseInstrumentTable(
   // they cannot take a visible slot: peer precedence sorts what it is given, and
   // a duplicate handed to it can land anywhere in the order. Appending keeps the
   // table byte-identical to the version that dropped them.
+  //
+  // ── DO NOT COLLAPSE SIBLING ROWS HERE ─────────────────────────────────────
+  // This is the line a "one row per regime, so the five rows are five distinct
+  // programmes" change edits, and it has been built twice. Both lost, and the
+  // second one built the page and looked at it. Full record in
+  // project-mgmt/findings/sibling_collapse_wsM.md and
+  // .../region_as_ranking_signal_wsG.md; code in tags archive/wsM-sibling-collapse
+  // and archive/wsG-region. The three things to know before starting a third:
+  //
+  //   * MEASURED. Four collapse policies, three seeds, holdout n=200: STRICT
+  //     EXACT@5 off 24.7 / strict 20.7 / sector 20.3 / name 23.7, while REGIME@5
+  //     does not move (87.7 / 89.0 / 88.0 / 88.0). The freed seats buy no regime
+  //     the founder did not already have.
+  //   * THE PREMISE IS FALSE. "One programme behind several doors" cannot form a
+  //     class, because every workable key requires `administeringBody` to AGREE
+  //     and the doors are the bodies. 100% of merged classes are DISTINCTLY
+  //     NAMED calls of one agency -- 50 ADEME calls from bicycle tourism to
+  //     biomass heat under one row. That affordance already ships, on the right
+  //     key, as `schemeOperators` in panelReport.tsx.
+  //   * IT IS A REORDER OR IT IS NOTHING. `computeVerdict` derives
+  //     `candidateInstrumentIds` from this same array; a version that dropped
+  //     the absorbed rows took in-pool 97% -> 16%.
   return [
     ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative),
     ...collision.demoted,

@@ -81,6 +81,30 @@ settled: it may be a regression to fix rather than a ceiling to design around.
 
 ## The third factor has a ceiling, and it is 39%
 
+> **CORRECTED 2026-08-08 (workstream BG). Do not quote 27% or 39% as the
+> current bound.** The class below is indistinguishable *on the six facets
+> workstream J read*, and three recorded columns are not among them:
+> `administering_body`, `delivery_region` and the verbatim `eligibility_text`.
+> They separate better than the six. Keyed on all three,
+> `scripts/measure_sibling_coverage.ts` measures **mean class 18.0** against the
+> **31.3** below over the same multi-leaf population — the class J bounded is
+> roughly twice the size of the real one, so 27% is a floor on the bound and not
+> the bound. Workstream AO then measured the same thing from the ranking side:
+> gate fit reads as a non-signal only when the harness describes every founder
+> identically, and once founders differ it lifts within-regime top-1 to +4.5pp
+> over chance, +6.0pp in the 51+ regimes where the leaf choice actually binds
+> (`findings/leaf_separation_wsAO.md`).
+>
+> **What survives the correction, and it is most of the section.** The METHOD is
+> right and worth reusing: a class size computed off the corpus needs no founder
+> answers and no fitting, so it bounds every chooser reading those columns at
+> once. The two conclusions that do not depend on the exact number also stand —
+> *register coverage, not mechanism, is what binds*, and *95% EXACT@5 is not
+> reachable with the facts this corpus holds*, since 18.0 is still a long way
+> from the ~99% leaf factor the target requires. What is void is any use of 27%
+> or 39% as a hard ceiling on a chooser, and any decision made because a
+> proposal scored below them.
+
 Added 2026-08-06 by workstream J. Two corrections to the figures above, then
 the result they were needed for.
 

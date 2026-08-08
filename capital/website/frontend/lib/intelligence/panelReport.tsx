@@ -170,6 +170,14 @@ export function InstitutionsTable(
                     that IS a granting body, listing the other bodies on the
                     same regime reads as nonsense — a Normandy row citing
                     Nouvelle-Aquitaine and Grand Est as its operators. */}
+                {/* This IS the "one programme behind several doors, shown
+                    once" affordance, on the only key that can express it: one
+                    NOTIFIED SCHEME delivered by several bodies. Workstream M
+                    rebuilt it as a row collapse over `parent_id` before
+                    finding it here, and that collapse merges distinctly named
+                    calls of one agency instead -- 50 ADEME calls under one
+                    row. If this ever stops rendering, someone will rebuild it
+                    the wrong way again. See findings/sibling_collapse_wsM.md. */}
                 {!pending && r.schemeCode && r.institution.includes(r.schemeCode)
                   && operatorsOtherThan(r).length > 0 && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
