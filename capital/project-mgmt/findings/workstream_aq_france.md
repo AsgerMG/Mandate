@@ -112,15 +112,34 @@ those 10:
     FR ceiling@5         68% -> 78%
     FR leaves in classes >20   26% -> 0%
 
-It discriminates because it states the beneficiary TYPE, and the types really
-differ: "Aides aux relais" and "Aides aux actions ponctuelles" come back
-collectivité / EPCI / établissement public / association, while "Investissements
-de recyclage des déchets (dont ORPLAST régénération)" and ORPLAST Édition 3 come
-back entreprises only. Those are the rows a founder most needs told apart,
-because half of this regime is not open to a company at all.
-
 The generalisable lesson is not about France. A 401 on `/api/` was recorded
 against the whole HOST, and the host's public HTML was never tried.
+
+### Which FIELD on that page is the payload, measured
+
+Two agents reached these pages independently and read different parts of them.
+That accident is the most useful control this workstream got, because both
+batches could be scored against each other on the same rows:
+
+    the page's DESCRIPTION prose   10 distinct / 10 leaves   8.1 -> 4.1, ceiling 78%
+    the page's Bénéficiaires block  3 distinct /  5 leaves   8.1 -> 5.9, ceiling 73%
+
+The description is the payload: 145 of 145 ADEME entries carry a unique one,
+median 1333 characters, with real restrictions in it — *Aides aux relais*
+explicitly excludes Conseillers en Énergie Partagés and Conseillers France
+Rénov.
+
+**The structured `Bénéficiaires` tag must NOT be loaded, and my first reading of
+it was wrong.** 114 of 145 entries carry the identical five-item string, and
+every one of the 14 distinct variants contains public-body categories only —
+the taxonomy has no `entreprise`, no `association`, no `exploitant agricole`
+value at all, because aides-territoires is a catalogue *for* collectivités.
+*Innov Eau* proves the trap: a France 2030 call aimed at companies, tagged here
+Commune / Département / EPCI. So the tag means "open to collectivités" and
+never "closed to companies", and a batch built on it would have written a false
+exclusion onto real funds. Where a beneficiary restriction IS loaded it comes
+from the description's own prose ("Bénéficiaires : Entreprises de recyclage des
+déchets"), which is the source asserting it, not a taxonomy inferring it.
 
 - **No other corpus column can separate these leaves.** All 75 `ademe_aid`
   rows have `delivery_region`, `catchment_region`, `catchment_regions` and
