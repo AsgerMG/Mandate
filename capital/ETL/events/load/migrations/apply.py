@@ -3,6 +3,7 @@
 Usage:
   python3 ETL/events/load/migrations/apply.py all       bring this store up to date
   python3 ETL/events/load/migrations/apply.py --check   what is pending (exit 1 if any)
+  python3 ETL/events/load/migrations/apply.py --ids     ids reachable? (no store needed)
   python3 ETL/events/load/migrations/apply.py 004       one migration, by id
 
 Applies a migration only if its columns/indexes are not already present, and
@@ -715,7 +716,7 @@ def apply_all(conn: sqlite3.Connection) -> list[str]:
 
 def main() -> None:
     if len(sys.argv) < 2:
-        sys.exit("Usage: python apply.py <migration_id> | all | --check")
+        sys.exit("Usage: python apply.py <migration_id> | all | --check | --ids")
     arg = sys.argv[1]
 
     # Before any store is opened. An unreachable migration is not a lint issue:
@@ -726,6 +727,16 @@ def main() -> None:
         for b in broken:
             print(f"MIGRATION TABLE BROKEN: {b}", file=sys.stderr)
         sys.exit(1)
+
+    # `--ids` is that check ALONE, touching no store and needing no corpus.
+    # It exists so CI can run it. CI has no data/db.sqlite -- the file is
+    # gitignored -- so `--check` there would connect to an empty database,
+    # report 27 pending and fail every build; the guard would then be removed
+    # and the collision it catches would go back to being invisible. This is
+    # the half that reads only committed source, which is exactly what CI holds.
+    if arg == "--ids":
+        print(f"{len(MIGRATIONS)} migrations, every id reachable exactly once.")
+        return
 
     conn = sqlite3.connect(DB_PATH)
     try:

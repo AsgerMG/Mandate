@@ -153,21 +153,6 @@ function intervalDaysOf(cron: string): number | null {
   return null;
 }
 
-interface CensusRow {
-  id: number;
-  taken_at: Date;
-  produced_by: string;
-  code_fingerprint: string;
-  kpis: Record<string, number> | null;
-  instruments: Record<string, number> | null;
-  coverage: { instruments: number; complete: number } | null;
-  gate: { ok: boolean | null; failures: string[]; notes: string[] } | null;
-  run_outcome: string;
-  errors: string[];
-  store: string;
-  schema_state: { applied: string[]; pending: string[]; unknown: string[] } | null;
-}
-
 interface StoreMap {
   ofRecord: string;
   stores: Record<string, string>;
@@ -267,7 +252,7 @@ async function main() {
     // the comparison. A skip would be the thing this check reports on.
     console.log(`check_corpus_census: no DATABASE_URL (${CREDENTIALS}) — reading the ` +
                 "published census from the verdict feed instead.");
-    return await judge(await rowsFromFeed());
+    return await judge(await rowsFromFeed(), null);
   }
 
   const { Client } = await import("pg");
@@ -299,14 +284,14 @@ async function main() {
   } finally {
     await client.end();
   }
-  return await judge(rows);
+  return await judge(rows, { instruments: pgInstruments, gates: pgGates });
 }
 
 /** Everything below is the same judgement whichever source the rows came from.
  *  One implementation, deliberately: a feed path that judged by slightly
  *  different rules from the direct path would make the answer depend on which
  *  machine asked. */
-async function judge(rows: CensusRow[]) {
+async function judge(rows: CensusRow[], pg: { instruments: number; gates: number } | null) {
   if (!rows.length) {
     console.error("check_corpus_census: FAILED — no census has ever been recorded.");
     console.error("  Add the census step to the weekly run, or check that it is still");
@@ -330,8 +315,17 @@ async function judge(rows: CensusRow[]) {
   // newest census was a laptop probe taken an hour after the pipeline's, so a
   // check reading rows[0] compared the website against the wrong corpus and
   // reported that all was well.
+  // `store` is optional on CensusRow because rows predating the column do not
+  // carry it and the feed path reconstructs a row without it. An unnamed store
+  // is bucketed as "unknown" rather than dropped: a census whose store cannot be
+  // identified is exactly the condition this block exists to surface, and
+  // silently discarding it would restore the bug — comparing the site against
+  // whichever corpus happened to be newest.
   const newestByStore = new Map<string, CensusRow>();
-  for (const r of rows) if (!newestByStore.has(r.store)) newestByStore.set(r.store, r);
+  for (const r of rows) {
+    const st = r.store ?? "unknown";
+    if (!newestByStore.has(st)) newestByStore.set(st, r);
+  }
 
   const record = newestByStore.get(ofRecord);
   if (!record) {
@@ -466,8 +460,14 @@ async function judge(rows: CensusRow[]) {
     for (const [store, row] of newestByStore) {
       if (store === ofRecord) continue;
       for (const [family, measures] of Object.entries(map?.familyMeasures ?? {})) {
-        const src = family === "instruments" ? row.instruments : row.kpis;
-        const rec = family === "instruments" ? record.instruments : record.kpis;
+        // Indexed by a measure name read from the store map at runtime, so the
+        // narrow key union on kpis cannot be used here. Widened to a lookup that
+        // may miss; a miss is skipped by the typeof test on the next line, which
+        // is also what happens when a KPI is added to one family and not the map.
+        const src = (family === "instruments" ? row.instruments : row.kpis) as
+          Record<string, number> | null | undefined;
+        const rec = (family === "instruments" ? record.instruments : record.kpis) as
+          Record<string, number> | null | undefined;
         for (const m of measures) {
           const a = src?.[m], b = rec?.[m];
           if (typeof a !== "number" || typeof b !== "number") continue;
@@ -475,14 +475,18 @@ async function judge(rows: CensusRow[]) {
         }
       }
     }
-    // Postgres, asked directly rather than from a census row.
-    if (record.instruments) {
-      if (pgInstruments > (record.instruments.total ?? 0)) {
-        measured.push(["postgres/instruments", "total", pgInstruments,
+    // Postgres, asked directly rather than from a census row -- it publishes
+    // no census because it is right here. Only on the credentialled path: the
+    // feed carries what the census RECORDED, and Postgres's live row counts are
+    // not among them. Skipping the arm is honest; inventing a zero for it would
+    // report every instrument in the product as a divergence.
+    if (pg && record.instruments) {
+      if (pg.instruments > (record.instruments.total ?? 0)) {
+        measured.push(["postgres/instruments", "total", pg.instruments,
                        record.instruments.total ?? 0]);
       }
-      if (pgGates > (record.instruments.gates ?? 0)) {
-        measured.push(["postgres/instruments", "gates", pgGates,
+      if (pg.gates > (record.instruments.gates ?? 0)) {
+        measured.push(["postgres/instruments", "gates", pg.gates,
                        record.instruments.gates ?? 0]);
       }
     }
@@ -652,8 +656,10 @@ async function judge(rows: CensusRow[]) {
       `${(r.instruments?.total ?? 0).toLocaleString()} instruments · ` +
       `${(r.instruments?.gates ?? 0).toLocaleString()} gates`);
   }
-  console.log(`    postgres        live       — · — · ${pgInstruments.toLocaleString()} ` +
-              `instruments · ${pgGates.toLocaleString()} gates`);
+  if (pg) {
+    console.log(`    postgres        live       — · — · ${pg.instruments.toLocaleString()} ` +
+                `instruments · ${pg.gates.toLocaleString()} gates`);
+  }
   console.log(`  site serves ${(served.companies as number)?.toLocaleString()} companies · ` +
               `${(served.events as number)?.toLocaleString()} events · ${served.countries} countries`);
 
