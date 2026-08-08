@@ -76,8 +76,8 @@ import {
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
-  assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
-  partitionByOfferable, reattributeMissingAnswers,
+  answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
+  partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
 } from "./recallSet";
 
 async function main() {
@@ -105,6 +105,29 @@ async function main() {
       : regionMode === "strict"
         ? (r.regionSource === "other_scheme" ? r.region : undefined)
         : r.region || undefined;
+  // ── ANSWERS: stop describing every founder identically ────────────────────
+  // Until this existed the replay handed EVERY founder the same ticketBand,
+  // capitalSought, consortium, borrowerModel and useOfFunds. Only country,
+  // sector and the description varied. That is adequate for measuring
+  // retrieval and disqualifying for measuring any DISCRIMINATOR: a signal
+  // whose job is to tell two founders apart cannot register on a population
+  // described identically.
+  //
+  // Two shipped conclusions rest on that flaw. "Gates do not rank" (won fund
+  // 62% pass vs pool 63%) was measured with every founder answering the same
+  // questions the same way, so the gates were being asked to separate rows
+  // that had nothing to separate. "Ticket fit changes nothing" has the same
+  // shape and the row sort's own comment says so.
+  //
+  //   ANSWERS=real    per-founder ticketBand, capitalSought and region from
+  //                   either provenance
+  //   ANSWERS=strict  only values derived from an award under a DIFFERENT
+  //                   notified scheme, which cannot be circular
+  //
+  // Neither restricts the POPULATION: a founder we cannot derive an answer for
+  // keeps the constant. The denominator is therefore identical to the baseline
+  // run and the difference is an effect, not a change of sample.
+  const answerMode = (process.env.ANSWERS ?? "off") as AnswerMode;
   // The SAME repair the gate applies, from the same helper: answers naming an
   // instrument that was never a fund are re-attributed to the rollup the award
   // belongs to; answers naming a correctly-closed fund are excluded. A floor
@@ -209,11 +232,19 @@ async function main() {
   // it -- 26% falling to 9% on the same 300 pairs depending only on where in
   // the run they sat. See resetGateHydration.
   resetGateHydration();
+  const derived = { ticket: 0, capital: 0, region: 0 };
   for (const t of sample) {
     resetGateHydration();
+    // This founder's own answers where the register supports them, and the
+    // constants everywhere else. `answersFor` is shared with every other
+    // harness so two of them can never disagree about what a founder said.
+    const a = answersFor(t, answerMode);
+    if (a.derived.ticket) derived.ticket++;
+    if (a.derived.capital) derived.capital++;
+    if (a.derived.region) derived.region++;
     const v = await computeVerdict("TestCo", t.country, {
       entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
-      borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
+      borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
       // What the money is for, and the one field here that could leak.
       //
       // Setting it from the won scheme's registered objective would make the
@@ -225,11 +256,11 @@ async function main() {
       // for R&D. Schemes registered under Art. 25(2)(b)/(c) should therefore
       // outrank siblings registered for plant (Art. 17) or renewables (Art. 41).
       useOfFunds: ["industrial_research", "experimental_development"],
-      // Where the founder is. Absent unless REGION is set, so every run made
-      // before this stays comparable with every run made after it.
-      region: regionOf(t),
+      // Where the founder is. Absent unless REGION or ANSWERS is set, so every
+      // run made before this stays comparable with every run made after it.
+      region: regionOf(t) ?? a.region,
     } as never, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+      targetMarkets: [t.country], capitalSought: a.capitalSought,
       // A `profile` pair has no PROJECT text -- national schemes carry none --
       // but a real founder still describes themselves on screen one. Passing
       // nothing modelled a founder who typed nothing, which no founder does,
@@ -278,7 +309,16 @@ async function main() {
               `${country ? ` country=${country}` : ""}` +
               ` seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only" : ""}` +
-              `${regionMode ? ` region=${regionMode}` : ""}  replayed ${stat.done}`);
+              `${regionMode ? ` region=${regionMode}` : ""}` +
+              `${answerMode !== "off" ? ` answers=${answerMode}` : ""}  replayed ${stat.done}`);
+  // How many founders actually got their own answers. A run that says
+  // `answers=strict` and derived three of them is reporting the constants with
+  // a different label on, and the reader has to be able to see that.
+  if (answerMode !== "off") {
+    const pcOf = (n: number) => `${n}/${stat.done} (${(100 * n / stat.done).toFixed(0)}%)`;
+    console.log(`  founder-specific answers supplied: ticketBand ${pcOf(derived.ticket)}` +
+                `  capital ${pcOf(derived.capital)}  region ${pcOf(derived.region)}`);
+  }
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);
