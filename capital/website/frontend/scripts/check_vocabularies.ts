@@ -117,12 +117,27 @@ async function main() {
       });
     }
   }
-  const unreachableCapital = [...dbCapital].filter(
-    (c) => c !== "framework" && c !== "unknown" &&
-      !Object.values(CAPITAL_MAP).some((t) => t.includes(c as string)));
-  for (const c of unreachableCapital) {
-    problems.push({ axis: "capital", detail: `corpus capital type "${c}" is reachable by no intake option` });
-  }
+  // The OTHER direction — "is every corpus capital type reachable by some
+  // option?" — is deliberately NOT asked here. It belongs to
+  // check_capital_reach.ts, which owns it and ratchets it, and asking it twice
+  // is what this block used to get wrong in both possible ways at once:
+  //
+  //   1. It tested the MAP (`CAPITAL_MAP` contains the value) rather than the
+  //      FUNCTION (`instrumentServesCapital` admits it). Those stopped being
+  //      the same question when INDEFINITE_CAPITAL landed: a label that names
+  //      no kind of capital is reachable by every option precisely BECAUSE no
+  //      option maps to it. This check duly went red over a fund that every
+  //      founder can now see, having been green while that same fund was
+  //      hidden from all but one.
+  //   2. It exempted the genuinely unreachable values by NAME. A register of
+  //      two strings cannot notice a third, so the day a new source lands an
+  //      unreachable capital type this would have reported it — and the day
+  //      someone added it to the exemption list to get a green build, it would
+  //      have stopped. That is a ratchet's job, and there is a ratchet.
+  //
+  // One question, one owner. What stays here is the direction only this script
+  // can answer: every intake OPTION must reach something, checked above.
+  // See project-mgmt/findings/workstream_ar_capital_filter.md section 6.
 
   // ── Sector: the intake vocabulary must be the corpus vocabulary ──────────
   // Read from the instrument corpus's own company taxonomy via a sample of

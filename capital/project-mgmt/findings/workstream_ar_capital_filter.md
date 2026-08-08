@@ -277,11 +277,30 @@ red. So a value nobody has classified stays loud. The unit tests were
 mutation-checked: restoring `blended` to `DILUTIVE`, or dropping the indefinite
 test, fails two of nine.
 
-`census_capital_reach.ts` asked the wrong question until this step: it computed
-reachability from `CAPITAL_SOUGHT_TO_DB` rather than from `instrumentServesCapital`,
-so on the day the filter began admitting `blended` the census still reported those 5
-instruments as reachable by nobody. It now asks the function, as the guard does.
-Two readings of one property was the defect; there is now one.
+**Four places read "is this fund reachable?" and three of them read it from the
+MAP.** That is the same defect as the one under investigation, one level up, and it
+left this branch's build RED until it was found:
+
+| reader | asked | result |
+|---|---|---|
+| `instrumentServesCapital` | the function | correct — this is the fix |
+| `check_capital_reach.ts` | the function, per option | correct, and says why in its own comment |
+| `census_capital_reach.ts` | `CAPITAL_SOUGHT_TO_DB` | reported the 5 admitted funds as reachable by nobody |
+| `check_vocabularies.ts` | `CAPITAL_SOUGHT_TO_DB` | **failed the build** over a fund every founder can now see |
+
+`blended` is reachable by every option *because* no option maps to it, so a
+map-based test inverts on exactly the value the fix is about. `check_capital_reach`
+predicted this failure in prose — "a check that inspected the map instead of the
+function would have counted it as stranded and failed a build" — and two scripts
+were doing it while that sentence sat in the repo.
+
+The census now asks the function. `check_vocabularies` no longer asks the question
+at all: it belongs to `check_capital_reach.ts`, which owns and ratchets it. That
+block was also exempting the genuinely unreachable values **by name** (`framework`,
+`unknown`), a two-string register that cannot notice a third and that anyone could
+have made green by appending to. One question, one owner; what stays in
+`check_vocabularies` is the direction only it can answer, that every intake OPTION
+reaches something.
 
 The memo's `capital` fit component was moved to the same rule, and the two are now
 **asserted** to agree over every capital type and every intake option rather than
