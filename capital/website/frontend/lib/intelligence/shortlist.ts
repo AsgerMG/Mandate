@@ -1537,6 +1537,68 @@ export interface InstrumentTableInput {
   log?: ExclusionLog;
 }
 
+/** The answer-derived half of an InstrumentTableInput: every key this table
+ *  takes from what the founder said, and nothing the request supplies (the
+ *  peers' channels, the free text, the vector scores). */
+export type AnswerDerivedInput =
+  Pick<InstrumentTableInput,
+    "ticketBand" | "consortiumOk" | "founderSector" | "useOfFunds" |
+    "founderRegion" | "eligibility">;
+
+/**
+ * The ONE mapping from what a founder answered to what ranks their rows.
+ *
+ * ── Why a function and not an object literal at each call site ────────────
+ * There were two literals — one in `computeVerdict`, one in the memo — and
+ * they had drifted. The memo's copy passed `ticketBand`, `consortiumOk`,
+ * `founderRegion` and `eligibility`, and did NOT pass `founderSector` or
+ * `useOfFunds`. Both of those are asked on the FIRST PAGE, before a founder
+ * sees anything, and both rank: `sector` is `1 - wTheme` of every row's score
+ * through `sectorFit`, and `useOfFunds` is the whole of `objectiveScorer` in
+ * the sibling reassignment. So the instant verdict ranked on the founder's
+ * sector and what the money was for, and THE MEMO — the thing that actually
+ * ships to them — ranked on neither. Nothing failed; the memo simply used the
+ * neutral value, which is indistinguishable from a founder who declined to
+ * answer.
+ *
+ * That is the same defect as `region`, `ticketFit` and the `prior`, in its
+ * duplication form: the answer was collected, threaded to one caller, and
+ * dropped by the other. A second copy of a mapping is a copy that will drift,
+ * and the drift is silent because every field is optional by design.
+ *
+ * So there is one mapping, and both paths call it. A new intake field added to
+ * `EligibilityAnswers` forces a decision in `ANSWER_USE` (types.ts) and is
+ * proved by `check_answer_reach.ts`; it can no longer be routed to one path
+ * and forgotten on the other, because there is only one path.
+ */
+export function tableInputFromAnswers(
+  e: EligibilityAnswers | undefined,
+): AnswerDerivedInput {
+  return {
+    ticketBand: e?.ticketBand,
+    // Tri-state, and the middle state is the point. `consortium` is asked in
+    // the ADAPTIVE round, so on a first pass it is almost always unanswered —
+    // and the previous mapping, `e?.consortium !== "no"`, turned unanswered
+    // into a confident `true` for every founder who had not been asked yet.
+    // The one place `consortiumOk` is read (the `demote` predicate in the row
+    // sort) then behaved as though every founder had declared themselves
+    // consortium-ready. See ANSWER_USE.consortium for what the measurement
+    // says the unanswered case should do.
+    consortiumOk: e?.consortium === "yes" ? true
+      : e?.consortium === "no" ? false : undefined,
+    founderSector: e?.sector,
+    useOfFunds: e?.useOfFunds,
+    // Asked adaptively, so usually absent — and absent is the neutral case,
+    // not a penalty. When it IS answered it is the only thing that can tell
+    // fourteen leaves of one notified regime apart. See regionScorer.
+    founderRegion: e?.region,
+    // The whole answer set, for the one signal that needs all of them rather
+    // than a single field: each leaf's own encoded rules, checked against this
+    // founder. See gateFitScorer.
+    eligibility: e,
+  };
+}
+
 /** One chosen row before its gates are known: the channel-level facts, plus
  *  the instrument it resolved to (null when only a channel-level row is
  *  honest). Deliberately gate-free, so selection cannot depend on them. */
@@ -1554,8 +1616,15 @@ export interface RowSelection {
  * an empty array, not an error.
  */
 export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[] {
+  // `consortiumOk` is NOT destructured here, and that is the fact rather than
+  // an omission: selection admits consortium-heavy channels for everyone and
+  // lets the row sort in materialiseInstrumentTable demote them (see the
+  // DEFAULT_INSTRUMENTS loop below, and `demote` in that sort). It used to be
+  // pulled out of `input` here and read by nothing — a threaded, destructured,
+  // entirely inert answer, which is exactly the shape that hid `region` and
+  // `ticketFit`.
   const {
-    fieldChannels, ticketBand, consortiumOk, description, semantic, founderSector, log,
+    fieldChannels, ticketBand, description, semantic, founderSector, log,
     founderCountries = [], capitalSought = [],
   } = input;
   // Establishment is the first condition of every instrument in this corpus:
@@ -1986,11 +2055,17 @@ export function materialiseInstrumentTable(
   // is under a point.
   const spread = semanticSeparation(description);
   const themeInformative = spread === undefined || spread >= THEME_SPREAD_FLOOR;
-  // The prior belongs HERE, not only in channel ordering. Ordering decides
-  // which channels are considered; this sort decides the five rows, and it
-  // overrides that order completely -- so applying the prior upstream alone
-  // changed nothing (73% -> 73%).
-  const prior = channelPrior(founderCountries?.[0], founderSector);
+  // THE CHANNEL PRIOR IS NOT APPLIED IN THIS FUNCTION. It is applied once, in
+  // selectInstrumentRows, to decide which channels are considered; the row
+  // sort below deliberately does not see it. The measurements are at the head
+  // of `rowRelevance`, where the term would go.
+  //
+  // What stood here was `const prior = channelPrior(...)` under a comment
+  // beginning "The prior belongs HERE" — computed on every request, read by
+  // nothing, and directly contradicted forty lines later by the comment that
+  // records why it must not be. A reader who checked the top comment and
+  // stopped would conclude the prior was live. That is the whole cost of a
+  // comment that lies: it is what stops the next person looking.
   const baseRelevance = (id: string) => {
     const inst = instById().get(id);
     const theme = rel.get(id) ?? 0;

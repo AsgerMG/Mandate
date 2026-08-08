@@ -55,33 +55,41 @@ const eslintConfig = defineConfig([
     rules: { "@typescript-eslint/no-explicit-any": "error" },
   },
 
-  // ── The five warnings that are deliberately still here ────────────────────
-  // `no-unused-vars` is a warning in eslint-config-next and stays one. Errors
-  // are now zero and CI is green; these five survive on purpose, because each
-  // is a finding rather than a tidy-up, and deleting the line would delete the
-  // only thing pointing at it. In lib/intelligence/, which other workstreams
-  // are inside — do not batch these, take them one at a time:
+  // ── A computed value nothing reads is an ERROR in lib/ ────────────────────
+  // These five were listed here as warnings-with-a-note, one line each, on the
+  // reasoning that "each is a finding rather than a tidy-up". Three of them
+  // then turned out to be founder-facing defects (see project-mgmt/findings/
+  // 2026-08-08_wsBL_discarded_answers.md), and the fourth week in a row of the
+  // same class went by. A warning in a list of warnings is a note nobody is
+  // required to read; the note was right and it changed nothing.
   //
-  //   1. shortlist.ts:~1993  `prior` — `channelPrior()` is computed and never
-  //      used. That is CORRECT and deliberate (commit dc046911: the prior
-  //      trades national regime recall 64->100% against EU 77->15%), but the
-  //      comment above it reads as though it were applied. Fix the COMMENT,
-  //      not the code; make it a do-not-reapply note. Smallest of the five.
-  //   2. shortlist.ts:~1558  `consortiumOk` — destructured out of
-  //      InstrumentTableInput and never read in selectInstrumentRows. An
-  //      intake answer the founder gives that row selection does not use.
-  //      Either it feeds the selection or it should stop being threaded in.
-  //   3. pipeline.ts:~831  `capitalMismatch` — residue of "Phase 4: the score
-  //      selects, the writer writes" (8a078c98). The comment eight lines below
-  //      says capital mismatch moved into scoreFit; confirm that, then delete.
-  //   4. adaptiveRound.ts:~191  `gateKeys` — built for the round-2 schema in
-  //      50d6e300 and never placed in it. Check against the memo'd gotcha that
-  //      array minItems/maxItems 400s an Anthropic structured-output schema:
-  //      this may be what was dropped to work around it.
-  //   5. adaptiveRound.ts:~78  `topicSignature` — a whole documented function
-  //      that dedupes two phrasings of the same question. Its doc comment says
-  //      "a live round shipped both", so the defect it prevents is real and
-  //      the prevention is not running. Largest, and the one worth a measure.
+  // So it is an error in `lib/`, which is the shipped product. The rule is
+  // cheap and it catches the exact shape three of this month's defects had:
+  // `prior` computed and dropped, `consortiumOk` destructured and dropped,
+  // `ticketFit` computed one token from being used. It cannot catch the fourth
+  // shape — an answer that reaches a scorer nothing consults — which is what
+  // `check_answer_reach.ts` is for. The two together cover the class.
+  //
+  // Not `scripts/`: a diagnostic harness that pulls six columns and prints two
+  // is doing its job, and erroring on it would only teach people to disable
+  // the rule.
+  //
+  // Suppressing it stays possible and is meant to cost something: an inline
+  // disable with the reason at the site. That is strictly better than a
+  // warning, because the reason ends up where the next reader is standing
+  // rather than in a config file they will never open.
+  {
+    files: ["lib/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": ["error", {
+        // The one exemption: pulling a key out to drop it, `const { _dropped,
+        // ...report } = body`, is a deliberate discard and reads as one.
+        varsIgnorePattern: "^_",
+        argsIgnorePattern: "^_",
+        ignoreRestSiblings: true,
+      }],
+    },
+  },
 ]);
 
 export default eslintConfig;

@@ -55,7 +55,7 @@ import {
   DISPLAY_CAP,
   displayInstitutionName,
   founderCountryList,
-  instrumentServesCapital,
+  tableInputFromAnswers,
   VERDICT_POOL,
 } from "./shortlist";
 import {
@@ -828,9 +828,13 @@ async function synthesize(
     row.lastAwardYear !== undefined &&
     thisYear - row.lastAwardYear > STALE_AFTER_YEARS;
 
-  const capitalMismatch = (row: InstrumentRow) =>
-    Boolean(row.capitalType) && (req.capitalSought?.length ?? 0) > 0 &&
-    !instrumentServesCapital(row.capitalType as string, req.capitalSought as string[]);
+  // A `capitalMismatch` predicate stood here, computed for every row and read
+  // by nothing since "Phase 4: the score selects, the writer writes"
+  // (8a078c98). Confirmed superseded rather than dropped: the judgement it
+  // made is the `capital` component of scoreFit (fit.ts, weight 0.08 —
+  // 1 when the founder's capital kinds include the row's, 0.3 when they do
+  // not), which is the same rule as a continuous term instead of a boolean.
+  // Deleted; the comment below already claimed it had moved.
   // ── Ranked by fit ────────────────────────────────────────────────────────
   // One continuous score, every component recorded (fit.ts). This replaces a
   // sort over verdict rank, staleness, capital mismatch and an ease score,
@@ -1404,22 +1408,15 @@ export async function computeVerdict(
   const semantic = await semanticFundMatch(opts.description ?? "");
   const candidates = await buildInstrumentTableHydrated({
     fieldChannels,
-    ticketBand: eligibility?.ticketBand,
-    consortiumOk: eligibility?.consortium !== "no",
     founderCountries,
     capitalSought: opts.capitalSought ?? [],
     description: opts.description,
     semantic,
-    founderSector: (eligibility as { sector?: string } | undefined)?.sector,
-    useOfFunds: (eligibility as { useOfFunds?: string[] } | undefined)?.useOfFunds,
-    // Asked adaptively, so it is usually absent — and absent is the neutral
-    // case, not a penalty. When it IS answered it is the only thing that can
-    // tell fourteen leaves of one notified regime apart. See regionScorer.
-    founderRegion: (eligibility as { region?: string } | undefined)?.region,
-    // The whole answer set, for the within-regime gate check. Everything else
-    // above is one field; this is the only signal that needs all of them,
-    // because it evaluates each leaf's own encoded rules against the founder.
-    eligibility,
+    // Everything the founder answered, mapped in ONE place shared with the
+    // memo path below. Written out field by field here and field by field
+    // there, the two copies drifted and the memo lost `founderSector` and
+    // `useOfFunds`. See tableInputFromAnswers.
+    ...tableInputFromAnswers(eligibility),
     log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is
@@ -1513,22 +1510,17 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     ...dbPeers.flatMap((r) => r.channels),
   ]);
   const hydratedTable = await buildInstrumentTableHydrated({
-      fieldChannels,
-      ticketBand: req.eligibility?.ticketBand,
-      consortiumOk: req.eligibility?.consortium !== "no",
-      founderCountries: founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
-      capitalSought: req.capitalSought ?? [],
-      description: req.description,
+    fieldChannels,
+    founderCountries: founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
+    capitalSought: req.capitalSought ?? [],
+    description: req.description,
     semantic: semanticScores,
     // The memo ranks the same siblings the fast path does, so it must see the
-    // same discriminator. Without it a founder who told us their region got a
-    // region-aware verdict screen and a region-blind memo, which is the class
-    // of split that once had the two paths ranking on different signals
-    // entirely.
-    founderRegion: req.eligibility?.region,
-    // The memo ranks the same siblings the fast path does, so it must see the
-    // same discriminator -- the same argument the region field carries above.
-    eligibility: req.eligibility,
+    // same answers. It did not: this literal was maintained by hand alongside
+    // the one in computeVerdict and had lost `founderSector` and `useOfFunds`,
+    // so the memo ranked as if the founder had declined to say what they build
+    // or what the money was for — two of the six questions on screen one.
+    ...tableInputFromAnswers(req.eligibility),
     log,
   });
   const instrumentTable = applyProfileSignal(

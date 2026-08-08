@@ -62,6 +62,10 @@ const CHECKS = [
   ["dependency audit", ["npx", "tsx", "scripts/check_dependencies.ts"]],
   ["country gates", ["npx", "tsx", "scripts/check_country_gates.ts"]],
   ["gate field reach", ["npx", "tsx", "scripts/check_gate_field_reach.ts"]],
+  // Immediately after it, because it is the other half of the same question:
+  // reach says an answer arrives, this says something then does anything with
+  // it. Four answers were lost in the gap between the two in one week.
+  ["answers reach the ranker", ["npx", "tsx", "scripts/check_answer_reach.ts"]],
   ["gate pertinence", ["npx", "tsx", "scripts/check_gate_pertinence.ts"]],
   ["applicant identity", ["npx", "tsx", "scripts/check_applicant_identity.ts"]],
   ["corpus currency", ["npx", "tsx", "scripts/check_corpus_currency.ts"]],

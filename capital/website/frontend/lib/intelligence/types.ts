@@ -904,6 +904,111 @@ export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = 
   },
 };
 
+/**
+ * What the code does with the answer once it has it.
+ *
+ * ── The question FIELD_REACH does not ask ─────────────────────────────────
+ * FIELD_REACH says an answer can REACH the evaluator. It cannot say anything
+ * about whether the evaluator, or the ranker, or anything else, then DOES
+ * something with it — and that next step is where four separate answers were
+ * lost in one week:
+ *
+ *   region       reached the panel, was merged, and was dropped one line
+ *                before the sanitiser. 193 rules on 163 funds never fired.
+ *   ticketBand   reached `rowRelevance`, was turned into a `ticket` multiplier,
+ *                and was left out of the returned expression — by the commit
+ *                named "Make ticketBand actually affect what a founder is
+ *                shown".
+ *   consortium   reached `selectInstrumentRows` as `consortiumOk`, was
+ *                destructured, and was read by nothing in that function.
+ *   sector and   reached `computeVerdict`'s table and NOT the memo's, because
+ *   useOfFunds   the two call sites hand-maintained the same object literal
+ *                and one had lost two keys. Both are asked on screen one.
+ *
+ * All four were invisible precisely because the value was PRESENT: threaded,
+ * destructured, computed, named. Only the last mile showed nothing consumed
+ * it. So the last mile is what gets declared and what gets tested.
+ *
+ * ── The rule ──────────────────────────────────────────────────────────────
+ *     An answer the intake collects must be read by the code that RANKS —
+ *     or be declared collected-for-the-memo-only, with a reason.
+ *
+ * Keyed on `keyof EligibilityAnswers`, so the compiler refuses a new intake
+ * field until someone has said which it is. `check_answer_reach.ts` then holds
+ * the saying to the doing: it builds the published table both ways, through
+ * the production mapping, and a `ranks: true` that moves no row for any probe
+ * founder FAILS THE BUILD. A `ranks: false` is not the free direction either —
+ * the field must still move `evaluateEligibility`, which is what "collected
+ * for the memo" means. A field that moves nothing at all is a question we ask
+ * a founder and an answer we throw away.
+ */
+export type AnswerUse =
+  /** `via` names the mechanism, so a reader can go and look at it. It is
+   *  documentation; the proof is the differential test. */
+  | { ranks: true; via: string }
+  /** Collected on purpose and not used for ranking. The reason is required
+   *  and is the whole value of the declaration. */
+  | { ranks: false; reason: string };
+
+export const ANSWER_USE: Record<keyof EligibilityAnswers, AnswerUse> = {
+  // ── Threaded to the ranker as a named input, and proved to move rows ─────
+  //
+  // This is exactly the set `tableInputFromAnswers` routes, plus the country.
+  // It is also exactly where all four of the lost answers lived, which is not
+  // a coincidence: a named input is a thing one call site can pass and another
+  // can forget. The guard's failing claim is scoped here on purpose — if a key
+  // is dropped from that mapping again, the field's `ranks: true` stops being
+  // provable and the build goes red.
+  ticketBand: { ranks: true, via: "awardScorer, as the `ticket` multiplier on every row's score in rowRelevance" },
+  sector: { ranks: true, via: "sectorFit, which is (1 - wTheme) of every row's base score" },
+  useOfFunds: { ranks: true, via: "objectiveScorer, in the within-regime sibling reassignment" },
+  region: { ranks: true, via: "regionScorer, the one signal that separates leaves of one notified scheme delivered by many bodies" },
+  consortium: { ranks: true, via: "tableInputFromAnswers -> consortiumOk -> the `demote` predicate in the row sort. 83 comparators on 54 instruments also reach gateFitScorer" },
+  entityCountries: { ranks: true, via: "founderCountryList -> the establishment screen in selectInstrumentRows, then instrumentServesCountry on every leaf. The coarsest signal in the product: change the country and the whole table changes" },
+
+  // ── Collected, and read by the eligibility screen ────────────────────────
+  //
+  // Not a lesser class. These are the SME-status, ownership, activity,
+  // exclusion and commitment questions, and what they produce is a blocker
+  // with a cure — "you fail this, here is what would change it" — which is the
+  // part of the brief a founder can act on. A blocked fund is then dropped
+  // from the table, so several of these DO change the five rows in practice.
+  //
+  // They are not declared `ranks: true` for a reason worth keeping: whether
+  // any given one separates two funds depends on which instruments happen to
+  // be in this founder's pool, so the observation flips as the corpus moves.
+  // `check_answer_reach.ts` was watched doing exactly that — five of these
+  // moved rows on one day's corpus and three on the next day's, with no code
+  // change between. A claim the guard would fail the build on has to be a
+  // claim about the code. So the strong claim stays with the named inputs
+  // above, and these carry the weaker one the guard can actually hold: the
+  // answer must be READ, by the screen or by an encoded rule.
+  activities: { ranks: false, reason: "611 comparators on 598 instruments — the largest encoded axis in the corpus, and it is an EXCLUSION axis: it blocks funds rather than ordering them" },
+  exclusionFlags: { ranks: false, reason: "678 comparators on 626 instruments, the GBER and de minimis exclusions. Blocks rather than orders, and a blocked fund leaves the table" },
+  lossesOverHalfCapital: { ranks: false, reason: "153 comparators. The undertaking-in-difficulty test: a hard bar on the screen, with no cure that is ours to offer" },
+  fteBand: { ranks: false, reason: "147 comparators, the headcount half of the SME definition" },
+  borrowerModel: { ranks: false, reason: "99 comparators, and pinned to 'operating' for every founder (see FIELD_REACH) — so it evaluates correctly and always the same way" },
+  developmentStage: { ranks: false, reason: "63 comparators. TRL floors gate whole programmes rather than separating siblings of one regime" },
+  cofinancingBand: { ranks: false, reason: "39 comparators. A co-financing floor is a condition of the same scheme for everyone who reaches it" },
+  turnoverBand: { ranks: false, reason: "25 comparators, the turnover half of the SME definition" },
+  nonEuControl: { ranks: false, reason: "17 comparators, mostly EDF and defence ownership conditions" },
+  ownerOver25: { ranks: false, reason: "14 comparators, the linked-enterprise half of the SME test" },
+  institutionalBacking: { ranks: false, reason: "12 comparators; it also feeds the memo's framing of what kind of raise this is" },
+  bankRelationship: { ranks: false, reason: "8 comparators on guarantee instruments, where having a lender is a precondition to applying at all" },
+  conditionality: { ranks: false, reason: "7 comparators. It is the founder's stated willingness, which belongs in the memo's advice rather than in a score" },
+  balanceBand: { ranks: false, reason: "4 comparators, the balance-sheet half of the SME definition" },
+  wouldOpenEntity: { ranks: false, reason: "4 comparators, and its real job is the CURE on an establishment blocker — it is what turns 'you are not eligible' into 'you would be, if'" },
+  institutionalOwner: { ranks: false, reason: "2 comparators, the public-body half of the linked-enterprise test" },
+  needBy: { ranks: false, reason: "2 comparators. Timing is served by the deadline and liveness layer (offerRoute.ts), not by the row sort" },
+
+  // ── Nothing can answer these ────────────────────────────────────────────
+  // Declared unreachable in FIELD_REACH, so they are out of check_answer_reach's
+  // scope by construction and check_gate_field_reach owns them. Present because
+  // the Record is exhaustive, and silence would be the wrong answer.
+  activityCountries: { ranks: false, reason: "unreachable (FIELD_REACH): no control, no adaptive hint, no derivation. Its comparators were quarantined by workstream AX" },
+  foundedYear: { ranks: false, reason: "unreachable (FIELD_REACH), and its specs mixed ages with calendar years in one numeric field. Quarantined by workstream AX" },
+};
+
 /** Fields resolved on the opening form — never re-asked adaptively.
  *  DERIVED from FIELD_REACH so the two cannot disagree; this was a second
  *  hand-maintained list of the same fact. */
