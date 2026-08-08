@@ -50,16 +50,12 @@
 //
 // This number cannot be argued with by building a better chooser. It is a
 // property of the corpus.
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+requireCredentials("measure_offer_separability", ["DATABASE_URL", "VOYAGE_KEY"]);
+
 import { readFileSync } from "fs";
-
-try {
-  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
-    if (m) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-  }
-} catch { /* rely on the process environment */ }
-if (process.env.NO_PG) delete process.env.DATABASE_URL;
-
 import path from "path";
 import {
   hydrateDbInstruments, hydrateGatesFor, type DbInstrument,
