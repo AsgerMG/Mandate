@@ -66,11 +66,40 @@ for (const p of ["../../.env.local", ".env.local"]) {
 
 const REQUIRE_DB = process.argv.includes("--require-db");
 
-/** Before there is census history to measure, the ETL cadence is weekly and two
- *  missed cycles is unambiguous. Used only for the cold start — once three
- *  censuses exist the limit is derived from their actual spacing, so a change
- *  of cadence needs no edit here and cannot drift out of step with the cron. */
-const COLD_START_MAX_AGE_DAYS = 15;
+/** How many missed cycles SILENT tolerates before it wakes somebody. Two and a
+ *  half is past any single skipped run and short of a second one. */
+const MISSED_CYCLES_TOLERATED = 2.5;
+
+/** The producer name a census carries when the SCHEDULED pipeline wrote it.
+ *
+ *  publish_corpus_census.py defaults `--produced-by` to `$RAILWAY_SERVICE_NAME`,
+ *  which is set only inside the Railway container — so this name identifies a
+ *  census taken by the cron and by nothing else. Asserted against
+ *  `ETL/lib/railway_service.SERVICE_NAME` by check_cross_language_constants.py;
+ *  renaming the service without updating this would otherwise make every
+ *  scheduled census invisible here, and SILENT would fire forever. */
+const SCHEDULED_PRODUCER = "etl-pipeline";
+
+/** The schedule that service is deployed with, and the one `verify_cron.py`
+ *  restores when something writes over it. Asserted against
+ *  `railway_service.REAL_CRON_SCHEDULE` by the same check, so a change of
+ *  cadence on Railway cannot leave this guard measuring against the old one. */
+const SCHEDULED_CRON = "0 3 * * 0";
+
+/** Days between two runs of a cron expression.
+ *
+ *  Deliberately narrow: it understands the two shapes this repo actually
+ *  deploys and returns null for everything else rather than guessing. A wrong
+ *  interval here is a guard that either never fires or always does, and both
+ *  end with somebody ignoring it — so an unrecognised schedule falls back to a
+ *  stated assumption instead of a confident wrong number. */
+function intervalDaysOf(cron: string): number | null {
+  const [, , dom, month, dow] = cron.trim().split(/\s+/);
+  if (month !== "*") return null;
+  if (dom === "*" && dow === "*") return 1;                    // daily
+  if (dom === "*" && /^[0-6]$/.test(dow)) return 7;            // one named weekday
+  return null;
+}
 
 /** snake_case → camelCase. The site's JSON and the ETL's SQL name the same
  *  figures in two conventions; deriving the mapping means a KPI added to
@@ -136,29 +165,63 @@ async function main() {
   const problems: string[] = [];
 
   // ── SILENT: has the refresh stopped? ─────────────────────────────────────
-  // The limit is the cadence the censuses themselves establish. Two and a half
-  // intervals is past any single missed run and short of a second one.
-  let limit = COLD_START_MAX_AGE_DAYS;
-  let basis = `cold start, no cadence established yet (${rows.length} census(es))`;
-  const scheduled = rows.filter((r) => r.produced_by !== "local");
-  if (scheduled.length >= 3) {
-    const gaps: number[] = [];
-    for (let i = 1; i < scheduled.length; i++) {
-      gaps.push((scheduled[i - 1].taken_at.getTime() - scheduled[i].taken_at.getTime())
-        / 86_400_000);
-    }
-    gaps.sort((a, b) => a - b);
-    const median = gaps[Math.floor(gaps.length / 2)];
-    limit = 2.5 * median;
-    basis = `2.5 × the observed ${median.toFixed(1)}d cadence of the scheduled runs`;
-  }
-  if (ageDays > limit) {
+  // The question is whether the CRON is still running, so both halves of the
+  // test — which censuses count, and how old is too old — have to be about the
+  // scheduled run and nothing else.
+  //
+  // Both halves used to be wrong, in the same way and for the same reason: the
+  // population was chosen by what a producer is NOT called
+  // (`produced_by !== "local"`), and the limit was inferred from that
+  // population's spacing. Selecting by exclusion fails open — every name that
+  // was not literally "local" was counted as a weekly run — so the censuses
+  // taken by hand while this workstream was being built ("proof-local",
+  // "image-equivalent", minutes apart) became the observed cadence, the limit
+  // collapsed to 0.1 days, and the guard failed on main against a corpus that
+  // was fine. A guard that cries wolf is retired by the people it wakes.
+  //
+  // The mirror image is the dangerous one and it was equally live: `ageDays`
+  // was measured on the newest census of ANY origin, so one census run by hand
+  // held the guard green while the cron was dead — the exact failure SILENT
+  // exists to catch, defeated by the act of investigating it.
+  //
+  // So: name the scheduled producer positively (it is the Railway service, and
+  // `publish_corpus_census.py` stamps that name from $RAILWAY_SERVICE_NAME),
+  // and take the interval from the DECLARED schedule rather than from observed
+  // spacing — this table cannot be kept clean enough to measure, and the cron
+  // is a fact we already hold in one place.
+  const scheduled = rows.filter((r) => r.produced_by === SCHEDULED_PRODUCER);
+  const newestScheduled = scheduled[0];
+  const interval = intervalDaysOf(SCHEDULED_CRON);
+  const limit = interval !== null
+    ? MISSED_CYCLES_TOLERATED * interval
+    : MISSED_CYCLES_TOLERATED * 7;
+  const basis = interval !== null
+    ? `${MISSED_CYCLES_TOLERATED} × the ${interval}d schedule ${SCHEDULED_CRON}`
+    : `${MISSED_CYCLES_TOLERATED} × an assumed weekly schedule — ${SCHEDULED_CRON} is ` +
+      `not a shape this check can read, so the interval is a guess`;
+
+  if (!newestScheduled) {
     problems.push(
-      `SILENT — the newest census is ${ageDays.toFixed(1)} days old, past a limit of ` +
-      `${limit.toFixed(1)}d (${basis}).\n` +
-      `      The weekly refresh has stopped, or it is no longer recording. That is\n` +
-      `      the failure that reads as success: the last run's logs still end in\n` +
-      `      ALL STEPS COMPLETE. Check the Railway cron: python3 ETL/lib/verify_cron.py`);
+      `SILENT — no census in the last ${rows.length} was produced by ` +
+      `"${SCHEDULED_PRODUCER}".\n` +
+      `      Every reading on record was taken by hand. The scheduled refresh has\n` +
+      `      never recorded, or the service was renamed — and a hand-run census is\n` +
+      `      not evidence the cron is alive, which is why it no longer counts as\n` +
+      `      one. Check it: python3 ETL/lib/verify_cron.py`);
+  } else {
+    const scheduledAge =
+      (Date.now() - newestScheduled.taken_at.getTime()) / 86_400_000;
+    if (scheduledAge > limit) {
+      problems.push(
+        `SILENT — the newest SCHEDULED census (#${newestScheduled.id}, by ` +
+        `${SCHEDULED_PRODUCER}) is ${scheduledAge.toFixed(1)} days old, past a limit of ` +
+        `${limit.toFixed(1)}d (${basis}).\n` +
+        `      The weekly refresh has stopped, or it is no longer recording. That is\n` +
+        `      the failure that reads as success: the last run's logs still end in\n` +
+        `      ALL STEPS COMPLETE. Censuses taken by hand since do not count here —\n` +
+        `      they say a person looked, not that the pipeline ran.\n` +
+        `      Check the Railway cron: python3 ETL/lib/verify_cron.py`);
+    }
   }
 
   // ── DEGRADED: is the corpus it describes fit to publish? ─────────────────

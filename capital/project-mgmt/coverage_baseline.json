@@ -1,5 +1,5 @@
 {
- "takenAt": "2026-08-07",
+ "takenAt": "2026-08-08",
  "instruments": 1021,
  "complete": 816,
  "shares": {
@@ -18,6 +18,16 @@
   "route": 908,
   "live": 913
  },
+ "kpis": {
+  "companies": 151426,
+  "events": 299384,
+  "champions": 9371,
+  "step_companies": 589,
+  "total_capital_eur_raw": 408433535420.6861,
+  "countries": 23,
+  "source_families": 11,
+  "sectors": 11
+ },
  "highWater": {
   "counts": {
    "eligibility": 898,
@@ -27,6 +37,16 @@
    "route": 908,
    "live": 913
   },
-  "complete": 816
+  "complete": 816,
+  "kpis": {
+   "companies": 151426,
+   "events": 299384,
+   "champions": 9371,
+   "step_companies": 589,
+   "total_capital_eur_raw": 408433535420.6861,
+   "countries": 23,
+   "source_families": 11,
+   "sectors": 11
+  }
  }
 }
