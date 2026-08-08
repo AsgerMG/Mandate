@@ -156,6 +156,27 @@ checks that file with `test -f`, so nothing had ever read it. Regenerating it
 also recovered `funding_instruments.source_window_policy` and the whole
 `guard_verdicts` table, both of which the stale snapshot had lost.
 
+The `store_schema` verdict is published and green: verdict #32, 2026-08-08 11:25
+UTC, code `629c7d5d49aeb722`.
+
+### Found while registering it, and not this workstream's to fix
+
+**The guard feed is 404 in production.** `website/frontend/app/api/guards/route.ts`
+is on `main` (commit `61878e0a`) and `https://euro-inv-tracker.vercel.app/api/guards`
+returns 404 while the site itself returns 200 — Vercel has not deployed `main`
+since that commit. `check_verdicts.ts` therefore fails for every branch, at
+feed-read time, before it examines a single guard:
+
+> This is the only channel between the guards that hold credentials and anything
+> that does not.
+
+So every verdict published by every guard — the census, the three cron guards,
+the four frontend ones, and now `store_schema` — is currently unreadable by
+anything without `DATABASE_URL`. This predates and is independent of this
+workstream (the failure happens before the registry is consulted, so it is
+identical with and without the new guard), but it means the enforcement channel
+this repo has built is dark until the site is deployed.
+
 ---
 
 ## 5. The finding that outlives this workstream: no store is rebuildable
