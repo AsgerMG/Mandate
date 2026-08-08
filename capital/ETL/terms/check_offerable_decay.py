@@ -119,12 +119,24 @@ def measure() -> dict:
         # because of its name. `updated_at` is bumped by every upsert the
         # harvest performs, so it is the freshness of the JOB, not of the
         # register -- which is exactly the thing that can silently stop.
+        #
+        # The join is LEFT, and that is the whole promise. This limb was
+        # written to cover "a second register that starts publishing deadlines
+        # on the day it lands", and an inner join quietly narrowed that to
+        # registers whose leaves happen to be listed in
+        # funding_instrument_sources. ADEME is exactly the case: that table maps
+        # only the parent regime (one row, `ademe_aid` -> `ademe_aid`), the
+        # parent carries no end date, and so 46 French call deadlines -- the
+        # largest clock-decaying population outside Spain -- were watched by
+        # nothing at all. Falling back to `root_id` groups a regime's leaves
+        # under the regime, which is the unit a refresh job runs on anyway.
         fresh = c.execute(
-            "SELECT s.source, COUNT(*), MAX(i.updated_at) "
-            "FROM funding_instrument_sources s "
-            "JOIN funding_instruments i ON i.id = s.instrument_id "
+            "SELECT COALESCE(s.source, i.root_id, i.id) AS source, COUNT(*), "
+            "       MAX(i.updated_at) "
+            "FROM funding_instruments i "
+            "LEFT JOIN funding_instrument_sources s ON s.instrument_id = i.id "
             "WHERE COALESCE(i.scheme_end_date_basis,'') = %s "
-            "GROUP BY s.source ORDER BY s.source", (CALL_DEADLINE,)).fetchall()
+            "GROUP BY 1 ORDER BY 1", (CALL_DEADLINE,)).fetchall()
     return {
         "as_of": dt.date.today().isoformat(),
         "countries": {r[0]: {"offerable": r[1], "total": r[2]} for r in counts},
