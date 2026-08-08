@@ -56,13 +56,18 @@ import {
   partitionByOfferable, reattributeMissingAnswers,
 } from "./recallSet";
 
-/** What the register says a given company was actually paid, per scheme.
+/** What the record says a fund actually pays. See ETL/terms/recall_capital_facts.py.
  *
- *  Read through the SAME derivation the answers were built with
- *  (`enrich_recall_answers.capital_kind`), invoked rather than reimplemented:
- *  a second copy of that mapping here could disagree with the one that wrote
- *  the answers, and this script's whole job is to compare the two honestly. */
+ *  Three independent records, because `capital_type` is one value chosen by a
+ *  majority vote and the losing kinds are discarded — so the label alone can
+ *  never answer "does this fund pay grants". */
 interface AwardFacts {
+  /** the single rolled-up `capital_type` */
+  label: string | null;
+  /** what the vote behind that label was: unanimous | lossy | split | unknown */
+  vote: { kind: string; agreed: number; total: number; kinds: string[] };
+  /** whether any per-award capital record exists for this fund at all */
+  hasAwardRecord: boolean;
   /** kinds this company was paid UNDER this scheme */
   ownKinds: string[];
   /** kinds this scheme has paid ANYONE */
@@ -70,6 +75,11 @@ interface AwardFacts {
   /** kinds this company took anywhere EXCEPT this scheme */
   elsewhereKinds: string[];
 }
+
+/** Capital types that dilute. `blended` is deliberately NOT here: see the
+ *  finding — every `blended` instrument in the corpus is a vote that failed to
+ *  reach its threshold, not a fund with an equity component. */
+const DILUTIVE_KINDS = new Set(["equity"]);
 
 function registerFacts(pairs: { name: string; instrument: string }[]): Map<string, AwardFacts> {
   const out = new Map<string, AwardFacts>();
@@ -80,7 +90,36 @@ function registerFacts(pairs: { name: string; instrument: string }[]): Map<strin
   for (const [k, v] of Object.entries(JSON.parse(raw) as Record<string, AwardFacts>)) {
     out.set(k, v);
   }
+  assertFactsCoverage(pairs, out);
   return out;
+}
+
+/**
+ * Every pair must resolve, or the run stops.
+ *
+ * Not a nicety. A lookup that quietly misses does not produce a missing
+ * number, it produces a CONFIDENT WRONG ONE: an unresolved pair has no capital
+ * record, no record looks exactly like "this fund does not pay that", and the
+ * verdict lands on the harness. The first run of this script read 14 of 14
+ * lost pairs as harness defects for precisely that reason -- a NUL byte in the
+ * key -- and the output gave no sign of it, because "every fund cut was one
+ * the founder had not asked for" is a perfectly sensible-looking finding.
+ *
+ * The record for a fund we hold nothing about is `hasAwardRecord: false`, which
+ * is a real answer. A key that does not resolve at all is a broken join, and
+ * there is no honest way to score one.
+ */
+function assertFactsCoverage(
+  pairs: { name: string; instrument: string }[], facts: Map<string, AwardFacts>,
+): void {
+  const missing = pairs.filter((p) => !facts.has(`${p.name} ${p.instrument}`));
+  if (!missing.length) return;
+  throw new Error(
+    `register lookup resolved ${pairs.length - missing.length}/${pairs.length} pairs. ` +
+    `A pair that does not resolve is a broken join, and it would be scored as ` +
+    `"this fund does not pay that" -- i.e. as evidence for one of the two ` +
+    `hypotheses under test. First unresolved: ${missing.slice(0, 3)
+      .map((p) => `${p.name} ${p.instrument}`).join(" | ")}`);
 }
 
 /** The intake option a DB `capital_type` answers to, or undefined when the
@@ -166,33 +205,60 @@ async function main() {
       for (const id of ids) flipRule.set(id, (flipRule.get(id) ?? 0) + 1);
       if (ids.includes("SEL-CAPITAL")) {
         const want = byId.get(t.instrument);
-        const f = facts.get(`${t.name} ${t.instrument}`)
-          ?? { ownKinds: [], schemeKinds: [], elsewhereKinds: [] };
+        const f = facts.get(`${t.name} ${t.instrument}`);
         const asked = new Set(real.answers.capitalSought);
         const rollup = want?.capitalType ?? "(none)";
         const rollupOpt = DB_TO_INTAKE.get(rollup);
+        // ── The three-way split, and why the third bucket exists ───
+        // A two-way split between "code defect" and "harness defect" has to put
+        // every fund we hold no per-award capital record for into one of them,
+        // and it lands in "harness": no record means no kind to match, which
+        // reads exactly like "this fund does not pay that". That is absence of
+        // evidence counted AS evidence, in favour of one of the two hypotheses
+        // this script exists to separate.
+        //
+        // It is not hypothetical. The first run of this file reported 14 of 14
+        // lost pairs as harness defects, on funds whose award record it had
+        // simply failed to look up -- a NUL byte in the lookup key meant every
+        // `facts.get` missed and fell through to an empty default. The reading
+        // was unanimous, plausible, and entirely an artefact. So: no default,
+        // a missing record is its own bucket, and `assertFactsCoverage` below
+        // makes a lookup failure fatal rather than quiet.
         let key: string;
-        if (!rollupOpt) {
-          key = `1. CODE DEFECT: capital_type "${rollup}" answers to no intake option, so this fund is cut for EVERY founder who states a preference`;
+        if (!f) {
+          key = "3. UNDECIDABLE: no record found for this pair at all";
+        } else if (!rollupOpt) {
+          key = `1. CODE DEFECT: capital_type "${rollup}" answers to no intake option, so this fund is cut for EVERY founder who states any preference`;
+          defect = true;
+        } else if (f.vote.kind === "split" && !f.vote.kinds.some((k) => DILUTIVE_KINDS.has(k))) {
+          key = "1. CODE DEFECT: a vote that failed its threshold is labelled blended, which only a founder asking for EQUITY can reach -- and nothing in it dilutes";
           defect = true;
         } else if (f.ownKinds.some((k) => asked.has(k))) {
-          key = "1. CODE DEFECT: this fund paid THIS company a kind it asked for; the single rollup type hid it";
+          key = "1. CODE DEFECT: this fund paid THIS company a kind it asked for; the single rollup label denies it";
           defect = true;
         } else if (f.schemeKinds.some((k) => asked.has(k))) {
-          key = "1. CODE DEFECT: this fund pays that kind to OTHER companies; the single rollup type hid it";
+          key = "1. CODE DEFECT: this fund pays that kind to OTHER companies; the single rollup label denies it";
           defect = true;
-        } else if (f.ownKinds.length && !f.ownKinds.some((k) => f.elsewhereKinds.includes(k))) {
-          key = "2. HARNESS DEFECT: the kind this fund paid was taken ONLY here, so excluding the won scheme GUARANTEES the answer contradicts it";
+        } else if (f.vote.kind === "lossy") {
+          key = "1. CODE DEFECT (kind not nameable): the label's own vote denies some of this fund's awards, so it cannot be read as a statement of what the fund pays";
+          defect = true;
+        } else if (f.hasAwardRecord || f.vote.kind === "unanimous") {
+          // Positive evidence that the fund pays only what its label says:
+          // either every award voted the same way, or the register lists this
+          // scheme's kinds and none of them is the one asked for.
+          key = f.ownKinds.length && !f.ownKinds.some((k) => f.elsewhereKinds.includes(k))
+            ? "2. HARNESS DEFECT: the kind this fund paid was taken ONLY here, so excluding the won scheme GUARANTEES the derived answer contradicts it"
+            : "2. HARNESS DEFECT: the fund really pays only what its label says; the founder's derived answer is what is wrong";
           harness = true;
         } else {
-          key = "2. HARNESS DEFECT: the fund never pays this kind; the founder's derived answer is what is wrong";
-          harness = true;
+          key = `3. UNDECIDABLE: no per-award capital record for this fund (vote=${f.vote.kind})`;
         }
         cause.set(key, (cause.get(key) ?? 0) + 1);
         const ex = examples.get(key) ?? [];
         if (ex.length < 5) {
-          ex.push(`${t.instrument} [${want?.capitalType}] asked=${[...asked].join("+")}` +
-            ` paidHere=${f.ownKinds.join("+") || "-"} schemePays=${f.schemeKinds.join("+") || "-"}` +
+          ex.push(`${t.instrument} [${rollup}] asked=${[...asked].join("+")}` +
+            ` vote=${f ? f.vote.kind + (f.vote.total ? ` ${f.vote.agreed}/${f.vote.total}` : "") : "-"}` +
+            ` paidHere=${f?.ownKinds.join("+") || "-"} schemePays=${f?.schemeKinds.join("+") || "-"}` +
             ` src=${(t as { answerCapitalSource?: string }).answerCapitalSource}`);
           examples.set(key, ex);
         }
