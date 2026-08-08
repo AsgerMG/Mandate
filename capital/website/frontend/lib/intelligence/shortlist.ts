@@ -264,6 +264,29 @@ export function regionScorer(
   // registrations of one regime really are two schemes with two sets of
   // delivery bodies, and merging them puts a body in competition with awards it
   // could never have signed. Reverted; recorded so it is not retried.
+  //
+  // WIDENING TO THE REGIME WAS TRIED AND IT COSTS POINTS. Recorded here with
+  // the scheme-name attempt above, because the case for it looks strong on
+  // reach alone and it will be proposed again. Only 95 of 807 publishable
+  // leaves share a scheme code with a sibling, so this scoping can separate
+  // just 224 of 2,150 graded pairs -- 33 rows of the 300 the headline is
+  // computed on, which is the real reason a signal measured at 66.2% @1 prints
+  // bit-identical totals (`scripts/diagnose_region_reach.ts`). Scoped to the
+  // regime it would reach 927 pairs, 131 of those 300: four times the reach.
+  //
+  // Measured anyway, holdout N=300, three seeds, ANSWERS=real, gate fit on:
+  //
+  //     scheme-scoped (ships)   EXACT@5   92 / 96 / 98
+  //     regime-scoped           EXACT@5   85 / 92 / 96
+  //
+  // Worse on every seed, and worst in the markets region was supposed to serve
+  // (DE 48 -> 42, 48 -> 43, 41 -> 35). A regime can hold a hundred leaves, and
+  // at that width "which body has paid most into this region" stops being
+  // geography and becomes a size prior -- the same failure that cost the
+  // objective prior 21 points and the sector posterior 2. The narrow reach is
+  // a fact about the CORPUS, not a defect in this function: the way to make
+  // region matter more is for more leaves to carry a resolvable notified
+  // scheme, which is collection work, not ranking work.
   const byScheme = new Map<string, DbInstrument[]>();
   for (const l of leaves) {
     const code = (l.schemeCode ?? "").trim();

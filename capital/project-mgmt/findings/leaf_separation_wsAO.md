@@ -77,6 +77,36 @@ reproduces the baseline exactly at 75/300.
 Most replayed founders were being handed an ask an order of magnitude above
 their own, into a ranker that multiplies rows by ticket fit.
 
+### What describing founders honestly does to the headline
+
+Holdout, N=300, three seeds, no ranking change — only the answers:
+
+| | pool | EXACT@5 | REGIME@5 |
+|---|---|---|---|
+| `off` (baseline) | 94 / 94 / 94 | 25 / 29 / 31 | 82 / 85 / 85 |
+| `strict` (leak-free) | 92 / 90 / 92 | 25 / 27 / 33 | 80 / 83 / 84 |
+| `real` (both provenances) | **91 / 89 / 91** | 28 / 30 / 32 | 81 / 84 / 83 |
+
+EXACT@5 moves by less than its own interval — the answers alone are not a
+ranking fix. **Pool is the row that matters here, and it falls 3–5 points on
+every seed, which is outside noise.** The cause is `capitalSought`: the
+constant `["grant", "loan"]` was generous, and a founder whose register history
+shows only grants now asks only for grants, so `passesCapitalPreference` and
+`instrumentServesCapital` drop instruments they went on to win.
+
+Two readings, and the evidence does not yet separate them:
+
+- **The filter is too strict.** Founders demonstrably win capital types they
+  would not have named up front, and a hard capital filter costs real recall.
+- **The derived answer overstates the preference.** Past awards are evidence of
+  what a company *received*, not of what it would *ask for*. Someone who has
+  only held grants may still want a loan.
+
+Either way it is a live finding about the shipped selection path and it is
+worth its own workstream. It is *not* a reason to prefer the old constants: a
+harness that avoids the question by describing everyone identically was hiding
+this, not avoiding it.
+
 ---
 
 ## 3. What gates can and cannot do, structurally
@@ -169,7 +199,64 @@ nothing in this workstream changes that.
 
 ---
 
-## 5. Where the region answer actually goes
+## 5. Wiring it in: what the leaf chooser is actually worth
+
+`gateFitScorer` joins objective, award and region in the existing sibling
+reassignment. Holdout, N=300, three seeds, `ANSWERS=real`, the only difference
+between arms being the scorer:
+
+| seed | EXACT@5 without | with | Δ | pool | REGIME@5 |
+|---|--:|--:|--:|---|---|
+| 20260806 | 83 | **92** | **+9** | 272 → 272 | 242 → 242 |
+| 7 | 89 | **96** | **+7** | 268 → 268 | 253 → 253 |
+| 99 | 97 | **98** | **+1** | 273 → 273 | 250 → 250 |
+
+**Pool and REGIME@5 are identical, pair for pair, on every seed.** That is the
+design working exactly as intended: the reassignment is rank-preserving, so the
+chooser can only change *which sibling holds a slot*, never which programme
+does. It is a leaf chooser and nothing else — which is the one factor wsAM
+measured as binding.
+
+On the shipped path (`ANSWERS=off`, constant answers) it is inert — 74/88/93
+against a baseline of 75/88/93, with pool and REGIME@5 unchanged. All floors
+clear (pool 94 ≥ 93, EXACT@5 25/29/31 ≥ 22, REGIME@5 82/85/85 ≥ 80).
+
+**`ANSWERS=off` is the unrealistic condition, not the realistic one.**
+Production asks `ticketBand` on the first screen and `region` adaptively; it is
+the *harness* that was inventing a founder who answers everything identically.
+So the `real` column is the better estimate of what a founder gets, and the
+`off` column is a no-regression check.
+
+### Who it helps, and who it does not
+
+Per-country EXACT@5, `ANSWERS=real`, without → with, across the three seeds:
+
+| country | seed 20260806 | seed 7 | seed 99 |
+|---|---|---|---|
+| **DE** (n 54–77) | 35 → **48** | 40 → **48** | 39 → **41** |
+| **NL** (n 16–21) | 50 → **60** | 43 → **48** | 50 → 50 |
+| **FR** (n 87–98) | 17 → **16** | 14 → 14 | 17 → 17 |
+| SE, IT, ES, GB, EE | unchanged | unchanged | unchanged |
+| mode=profile | 28 → 32 | 31 → 34 | 32 → 33 |
+| mode=project | 27 → 26 | 26 → 26 | 32 → 32 |
+
+**This is a German and Dutch improvement and it does nothing for France.** FR
+is 31% of graded holdout pairs, the worst-served market on every seed, and it
+moves by at most one pair in the wrong direction. By the standard this
+workstream was set — a change that helps the aggregate and not France has not
+addressed the problem — **this does not address the problem.** It is floor-safe
+and free (no market is harmed, REGIME@5 cannot move by construction), so it is
+worth keeping, but it must not be reported as the fix.
+
+The magnitude deserves the same honesty. wsAM put the recoverable gap at ~62
+points and the arithmetic needs P(right leaf | regime in five) to go from 30%
+to 50% for EXACT@5 to reach 40%. This moves the headline about **2 points**. It
+is the first thing to make that factor move at all; it is not the thing that
+closes it.
+
+---
+
+## 6. Where the region answer actually goes
 
 `REGION=any` prints numbers bit-identical to no region at all, on every
 headline, mode, regime bucket and country. The natural reading is that the
@@ -203,18 +290,38 @@ holdout graded pairs                             2,150
 invisible against ±4.9, which is why a live, correctly-built, measured-at-66%
 signal reads as a dead one.
 
-The scope is the defect, not the wiring. `regionScorer` compares within a
-`schemeCode` because that group is provably one scheme delivered by many
-bodies. That reasoning is sound and the code's recorded caution is real — a
-previous widening to "same display name in the same country" measured *worse*
-(44.2% → 40.1% @1). But that widening merged two separate registrations. The
-**regime** is the corpus's own family unit, the unit REGIME@5 is measured on,
-and the unit `gateFitScorer` uses. Widening to it is a different change from
-the one that failed, and it multiplies the addressable population by four.
+### The obvious fix was measured, and it is worse
+
+Widening the comparison from the notified scheme to the **regime** quadruples
+the reach and looked like the answer. Holdout, N=300, three seeds,
+`ANSWERS=real`, gate fit on, nothing else changed:
+
+| scoping | EXACT@5 | DE |
+|---|---|---|
+| **scheme code** (ships) | **92 / 96 / 98** | 48 / 48 / 41 |
+| regime | 85 / 92 / 96 | 42 / 43 / 35 |
+
+Worse on every seed, and worst in exactly the market region was supposed to
+serve. A regime can hold a hundred leaves, and at that width "which body has
+paid most into this region" stops being geography and becomes a size prior —
+the same failure that cost the objective prior 21 points and the sector
+posterior 2. This is the third recorded attempt to widen a per-scheme signal
+beyond its scheme and the third to lose points; the finding is now in the
+comment beside the other two so it is not tried a fourth time.
+
+**So there is no code fix here.** The narrow reach is a fact about the corpus,
+not a defect in the function: only 95 of 807 publishable leaves carry a scheme
+code they share with a sibling. The way to make the region answer matter more
+is for more leaves to carry a resolvable notified scheme — collection work, not
+ranking work.
+
+The honest answer to "the intake asks for region and nothing changes" is
+therefore: **it does change something, for the 10% of founders it can, and it
+is correctly built.** What it cannot do is show up in a 300-row aggregate.
 
 ---
 
-## 6. What was changed
+## 7. What was changed
 
 - `ETL/terms/enrich_recall_answers.py` — derives per-founder `ticketBand` and
   `capitalSought` from the register, with provenance, reporting any
@@ -231,6 +338,25 @@ the one that failed, and it multiplies the addressable population by four.
   reassignment beside objective, award and region.
 
 ---
+
+## 8. What this changes about what to do next
+
+1. **The gate corpus is worth ranking on, and it is capped low.** 83% of gates
+   are inherited and 68% of multi-leaf regimes give every leaf an identical
+   rule set. The chooser can only ever act on the third of regimes where a leaf
+   carries rules of its *own*. Encoding leaf-specific eligibility — not more
+   gates in general — is what raises that ceiling.
+2. **France still needs data, not ranking.** Two independent measurements now
+   say so: gate fit lifts FR by +0.1pp where it lifts DE by +3.9pp, and the
+   end-to-end run moves FR by at most one pair. wsAM's recommendation stands
+   unchanged and this workstream does not substitute for it.
+3. **The capital filter costs pool recall** once founders state a real
+   preference (94% → 91% on every seed). That is a shipped-path question about
+   `passesCapitalPreference` and it is untouched here.
+4. **Stop measuring discriminators with constant answers.** Two conclusions
+   have now been overturned by fixing the harness rather than the product.
+   `ANSWERS=` should be on any run that claims a signal about the founder does
+   or does not work.
 
 ## Reproducing this
 
