@@ -29,6 +29,7 @@ import type { ExclusionLog } from "./exclusions";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
+import { resolveNameCollisions } from "./nameCollision";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
  *
@@ -954,6 +955,23 @@ export function fundDescriptor(inst: DbInstrument): string {
  * the capital type. Nothing is invented — every one of those is the fund's own
  * identifier, and where none separates them the dedupe still runs.
  */
+/**
+ * The label a row RENDERS under — the one thing both the disambiguator and the
+ * collapse are allowed to group by.
+ *
+ * It exists because the two used to compute it separately: this spelling, which
+ * reads the row's own published title, against `displayInstitutionName`, which
+ * rebuilds a name from country + kind + scheme code and never looks at
+ * `row.instrument` at all. For a row carrying a real title the two DISAGREE —
+ * the derived name embeds the notified scheme code and so separates twins the
+ * published title merges — and the consequence was a fund deleted from the pool
+ * on a key the disambiguator had never examined. A "keep these two in sync"
+ * comment is the bug in this repo; one exported function is the fix.
+ */
+function rowDisplayLabel(r: InstrumentRow): string {
+  return r.instrument || displayInstitutionName(r);
+}
+
 function distinguishRowNames(rows: InstrumentRow[]): void {
   const byName = new Map<string, InstrumentRow[]>();
   for (const r of rows) {
@@ -968,7 +986,7 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
     // Measured live: 4 rows across 22 markets, every one of them two DISTINCT
     // notified schemes publishing under one title (CZ SA.63670 against
     // SA.111735, and the DE and IT equivalents).
-    const n = r.instrument || displayInstitutionName(r);
+    const n = rowDisplayLabel(r);
     byName.set(n, [...(byName.get(n) ?? []), r]);
   }
   for (const [name, peers] of byName) {
@@ -2110,6 +2128,11 @@ export function materialiseInstrumentTable(
   // Demotion satisfies both. The visible order is UNCHANGED — the losers move to
   // the very back, past `applyPeerPrecedence`, so every row a founder sees today
   // is the row they see now — and the pool keeps the fund.
+  //
+  // The collapse itself lives in `nameCollision.ts`, extracted so the invariant
+  // above is a TEST rather than a comment: `visible + demoted === input` fails
+  // the moment anyone turns this back into a `.filter()`, which is exactly the
+  // simplification a reader without the history would reach for.
   distinguishRowNames(ranked);
   const encodedCount = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
@@ -2126,31 +2149,25 @@ export function materialiseInstrumentTable(
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
     return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
   };
-  // Key on the DISTINGUISHED label, not on a freshly recomputed one.
+  // ONE label function, passed to both the disambiguator and the collapse.
   // displayInstitutionName rebuilds the name from country + kind + scheme code
-  // and never reads `row.instrument`, so distinguishRowNames' work was invisible
-  // here: rows it had just told apart were still collapsed.
-  const labelOf = (r: InstrumentRow) => r.instrument || displayInstitutionName(r);
-  const demoted = new Set<InstrumentRow>();
-  ranked.forEach((row, i) => {
-    const name = labelOf(row);
-    const peers = ranked.filter((o) => labelOf(o) === name);
-    if (peers.length === 1) return;
-    const best = [...peers].sort((a, b) =>
-      (ownCount(b) - ownCount(a))
+  // and never reads `row.instrument`, so while these were two functions the
+  // disambiguator's work was invisible here and rows it had just told apart
+  // were still collapsed. Two functions, two keys, was the whole defect.
+  const collision = resolveNameCollisions(ranked, rowDisplayLabel,
+    (a, b) => (ownCount(b) - ownCount(a))
       || (encodedCount(b) - encodedCount(a))
-      || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""))[0];
-    if (ranked.indexOf(best) === i) return;
-    demoted.add(row);
+      || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""));
+  for (const { row, kept, label: name } of collision.collisions) {
     // The NAME they collided on, and WHICH row survived. Without both, the log
     // says a collision happened and nothing about whether the two rows were
     // really indistinguishable -- which is the only question that decides if
     // this rule is still earning its place.
     log?.record("SEL-DUPE-NAME", row.instrumentId ?? row.channel,
-      `renders as "${name}", the same label as ${best.instrumentId ?? best.channel}, ` +
+      `renders as "${name}", the same label as ${kept.instrumentId ?? kept.channel}, ` +
       `which is shown instead; this row is demoted to the back of the pool, not removed`);
-  });
-  const rowsOut = ranked.filter((r) => !demoted.has(r));
+  }
+  const rowsOut = collision.visible;
   // Peer precedent decides the visible order, last, on the surviving rows.
   // Applied here rather than inside rowRelevance so it can never resurrect a
   // row the screen excluded or a duplicate the dedupe demoted -- it only
@@ -2165,7 +2182,7 @@ export function materialiseInstrumentTable(
   // table byte-identical to the version that dropped them.
   return [
     ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative),
-    ...ranked.filter((r) => demoted.has(r)),
+    ...collision.demoted,
   ];
 }
 
