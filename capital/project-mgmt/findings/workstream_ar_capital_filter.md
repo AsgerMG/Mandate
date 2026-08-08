@@ -306,6 +306,18 @@ score cannot disagree.
    founder's table it is still a hard filter, which is why a wrong label erases a
    fund instead of demoting it. With the mix persisted this becomes a safe swap.
 4. **`pipeline.ts:802` `capitalMismatch` is dead code** — defined, never called.
+5. **Type the `unknown` instruments upstream — explicitly OUT of this workstream's
+   scope, and here is the decision rather than an omission.** They are handed on, not
+   dropped: the question this branch was given was whether a FILTER was too strict,
+   and the answer for `unknown` is that the filter is behaving correctly on a fact we
+   never recorded. Nothing in the retrieval code can fix a missing fact, and the two
+   things code could do — admit them, or leave them out — are respectively unsafe
+   (their typed siblings carry `equity`) and what already happens. So the work is an
+   ETL change against the funds' own documents, it is guarded meanwhile by
+   `check_capital_reach.ts`'s ratchet, and it costs this population no measurable
+   recall: none of them appears as an answer in the recall set. What it costs is
+   those funds' reach to every founder in every country, which is why it should not
+   sit unowned.
 
 ---
 
