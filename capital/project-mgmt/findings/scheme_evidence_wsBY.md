@@ -19,7 +19,7 @@
 > | number | what it means | source |
 > |--:|---|---|
 > | **65.9% EXACT@5** ("66%") | the honest maximum under FULL founder information, keyed on DEMAND CLASS rather than wording | `rich_intake_wsCC.md` |
-> | **58.3%** | the plannable figure — a greedy chooser bounds any question-selection policy and saturates here | `rich_intake_wsCC.md` |
+> | **58.3%** | the plannable figure — a greedy chooser bounds any question-selection policy and saturates here. ⚠ **CEILING@5, not EXACT@5. Do not subtract it from 65.9%**; its like-for-like partner is 65.0% CEIL@5 | `rich_intake_wsCC.md`, corrected by wsCP |
 > | 43.1% | superseded in turn: conditioned on TODAY'S FIXED INTAKE, so it bounds today's product, not the target | `intake_headroom_wsCA.md` |
 >
 > **The rest of this document stands.** The measured result — that both free

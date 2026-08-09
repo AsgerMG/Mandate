@@ -1,5 +1,49 @@
 # With everything a founder could truthfully say, the ceiling is 66%, not 95%
 
+> ## ⚠ THE HEADLINE REPRODUCES EXACTLY. FOUR THINGS ABOUT IT ARE NOT WHAT THIS PAGE SAYS.
+>
+> wsCP re-ran `_wscc_ceiling.ts` and `_wscc_exact_bound.ts` on `59df3f83` and
+> every figure below came back bit-for-bit — 65.9 / 62.7 / 47.9 / 77.6, the
+> whole CEIL@5 table, the τ-sweep and the greedy saturation at 58.3
+> (`number_audit_wsCP_wscc_ceiling.txt`,
+> `number_audit_wsCP_wscc_exact_bound.txt`). Reproducibility is not the
+> question; 85.5% reproduces exactly too. These four are:
+>
+> **1. 58.3% and 65.9% ARE NOT THE SAME METRIC, and this document pairs them in
+> its own headline.** 58.3% is CEILING@5 over the 605 leaves in multi-leaf
+> regimes with singletons dropped; its partner on the same table is **65.0%**.
+> 65.9% is a pair-weighted EXACT@5 bound over 6,587 pairs of which 1,694
+> (25.7%) are siblingless and credited under every arm. §7 of this document
+> states that these two must not be quoted against each other. **There is no
+> EXACT@5-weighted greedy run anywhere** — `_wscc_exact_bound.ts` has no budget
+> block — so "the plannable number at the ceiling's own metric" does not exist.
+>
+> **2. About seven of 65.9's points are a literal.** `_wscc_exact_bound.ts:30`:
+> `POOL = Number(process.env.POOL_RATE ?? 0.93)`, commented "quoted rather than
+> re-derived". 65.9 = 70.9 × 0.93. The measured pool today is 94%.
+>
+> **3. The headline reads HOLDOUT.** `SPLIT` defaults to `""` and line 98 keeps
+> every row, so it is computed over tune AND holdout together. §8's "tuning is
+> on tune, holdout is not touched" is true of the pilot only.
+>
+> **4. The circularity repair reaches 29 of 731 demand classes.** Gates with no
+> embedding fall back to normalised-text identity in an id space offset by
+> 1,000,000 (`_wscc_demand.ts:72-78`). Decoding the cached label file: **702 of
+> the 731 clusters are that fallback**, 29 are genuine voyage-3.5 canopies. For
+> the unembedded quarter of the corpus the "demand class" IS the normalised
+> requirement sentence — the exact key §4 retracts as circular — and those are
+> the classes carrying the separating power, because the 29 are shared by
+> nearly everything. §4's claim that two funds demanding the same thing in
+> different words collapse holds for the 29 and not for the 702.
+>
+> Also: the TODAY arm is keyed on `delivery_region` alone while every arm
+> compared against it adds `capital_type` (`_wscc_ceiling.ts:235` vs `:237ff`,
+> `_wscc_exact_bound.ts:73` vs `:59,:83`). The baseline is keyed on strictly
+> fewer fields than the arms, so every "gain over today" here is inflated by an
+> unmeasured amount. And **§8 shipped with its `RESULT_PLACEHOLDER` intact** —
+> the pilot that would have validated the mechanism end to end never ran, and
+> no `.txt` artifact of any kind was committed for this workstream.
+
 **Workstream CC · 2026-08-09 · isolated worktree off `wsCB-encoding-lift` at `10a07f96`.**
 
 Reproduce. Steps 1–3 are FREE (Postgres, disk, and the corpus's own already-paid

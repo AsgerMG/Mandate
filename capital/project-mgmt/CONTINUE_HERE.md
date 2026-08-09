@@ -22,6 +22,13 @@
 >   `research/target_arithmetic.md`; they are stale here too.
 >
 > Nothing below this banner should be quoted as a ceiling or as headroom.
+>
+> **wsCP re-verified all of it on 2026-08-09 (`59df3f83`).** The ceiling
+> figures reproduce exactly and are still not what they are quoted as:
+> **58.3% is CEILING@5 and 65.9% is EXACT@5**, different metrics over different
+> populations, so the difference between them is not headroom either. And three
+> of the four wsCI autopsy buckets were measured before the ranker could be
+> attested and are corrected in `findings/gap_autopsy_wsCI.md`.
 
 **Updated 2026-08-07, end of the coverage night. Read this block, then §0
 below. Everything further down is older and partly superseded — if any section

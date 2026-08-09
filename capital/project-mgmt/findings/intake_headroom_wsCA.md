@@ -4,6 +4,23 @@
 
 > ## ⚠ 43.1% IS RETRACTED AS THE FOUNDER-REACHABLE CEILING
 >
+> ## ⚠ AND IT IS NOW ALSO RETRACTED AS A NUMBER (wsCP, 2026-08-09)
+>
+> Re-run on `59df3f83`, `PUBLISHABLE=/tmp/pub.json npx tsx scripts/_wsca_founder.ts`
+> (`number_audit_wsCP_wsca_founder.txt`):
+>
+> | this document | today |
+> |---|---|
+> | every intake field at once, matchable **31.4%** | **40.3%** |
+> | + region and capital type off the corpus **43.1%** | **51.7%** |
+> | the identity ceiling **85.5%** | 85.5% — reproduces exactly, and is still circular |
+>
+> `organisationType` became a real intake field after this ran (wsCH,
+> `af5c0bf4`), so the key is wider than it was. **Do not quote 43.1% as "still
+> correct as the bound on today's product"** — that sentence was in
+> `RESUME_HERE.md` until wsCP removed it. Reproducibility is not validity, and
+> 85.5% reproducing exactly while remaining circular is the proof.
+>
 > **Retracted 2026-08-09, same day, by wsCC (`6cab7a7d`). Reason: CONDITIONED
 > ON A FIXED INTAKE.** 43.1% is the ceiling reachable through *today's* intake
 > fields and their comparators as encoded today. It bounds today's product; it

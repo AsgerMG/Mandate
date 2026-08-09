@@ -1,5 +1,36 @@
 # The residual is a TOPIC residual, the topic cannot be asked, and 95% is not reachable.
 
+> ## ⚠ TWO CLAIMS IN THE REPRODUCE BLOCK BELOW ARE FALSE (wsCP, 2026-08-09)
+>
+> **"Every replay printed `ranker: all N request(s) on EMBEDDING`" — no.**
+> `question_design_wsCK_probe.txt:7` prints **`ranker: nothing ranked`**.
+> `_wsck_probe.ts:49` passes no `description`, so `semanticFundMatch` returns
+> early without touching the tally and every `rankerUsed` call site drops to
+> the lexical index. **The control that licenses §4's "+0.0 is a real null, not
+> a dead flag" therefore exercised the LEXICAL ranker, while the measurement it
+> licenses (`_wsck_money.ts`) ran on EMBEDDING.** The probe does not exercise
+> the path the null was measured on.
+>
+> **"reproduced the shipped baseline exactly: 26.4% tune, 24.0% holdout" — no.**
+> wsCI published 26.8 / 24.8 for the identical command, seed and corpus. It did
+> not reproduce; it drifted by two pairs. wsCK's own two scripts also disagree
+> with each other on the same draw (26.8% in `money_tune.txt` against 26.4% in
+> `base_tune.txt`). A ±1-pair drift on N=250 is ±0.4 points, and several
+> conclusions in this repo turn on differences that small.
+>
+> **91.6% itself stands** — it is a membership test on the candidate list, it is
+> guarded by an assertion that genuinely executes, and the arithmetic checks.
+> But it is the pool ceiling for a founder who is `"TestCo"`, always in a
+> consortium, always wanting €500k–2.5M of grant-or-loan for industrial
+> research, with region withheld and 18 of 23 intake fields never supplied.
+> §2 concedes this for `capitalSought` and for nothing else.
+>
+> Two further gaps: `_wsck_residual.ts:143-146` promises an assertion against
+> the autopsy's class distribution and **the file contains no such assertion**,
+> while computing over all 1,088 instruments rather than the publishable set the
+> autopsy uses. And §2's table silently drops the `BODY administering body` row,
+> which scores +21.2 / +23.6 — third highest, above two rows that are shown.
+
 **Workstream CK · 2026-08-09 · isolated worktree off `main` at `7190de32`.**
 
 Reproduce (FREE — Postgres reads plus Voyage embeds, no model calls, nothing

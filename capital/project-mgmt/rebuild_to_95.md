@@ -29,8 +29,9 @@ measured below is separation of IDENTITY, not of MATCHABILITY — a founder can
 only be matched on a condition they can state and be tested against. Measuring
 it that way, wsCC (2026-08-09, `findings/rich_intake_wsCC.md`) puts the honest
 maximum at **65.9% EXACT@5** under full founder information, **58.3%**
-plannable. The table below still shows correctly which fields separate
-siblings; it does not license a 95% target.
+plannable. ⚠ 58.3% is CEILING@5 and 65.9% is EXACT@5 — different metrics over different populations, so do not subtract them. The like-for-like partner of 58.3 is 65.0% CEIL@5; no EXACT@5-weighted greedy run exists (wsCP, `RESUME_HERE.md`).
+The table below still shows correctly which fields separate siblings; it does
+not license a 95% target.
 
 This is the finding that makes 95% credible. Across 35 sibling groups of >=3
 (721 instruments):
