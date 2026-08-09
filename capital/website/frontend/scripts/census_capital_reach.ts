@@ -98,7 +98,7 @@ async function main() {
   const inCorpus = new Set(corpus.map((i) => i.id));
   const fixed = reattributeMissingAnswers(all, (id) => inCorpus.has(id), (id) => offerable.has(id));
   const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
-  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
+  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length, file);
 
   for (const split of ["tune", "holdout"]) {
     const rows = pop.graded.filter((r) => r.split === split);

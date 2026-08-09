@@ -100,6 +100,30 @@ DEFAULT_OUT = "__recallSetPlus.json"
 # exactly so an added row weighs the same as an existing one.
 PAIRS_PER_INSTRUMENT = 12
 
+# ── `traced`: which mechanism placed this award, and why it is TWO values ───
+# Every harness in the repo reports and floors by `traced`, on the stated
+# principle that two repairs netted into one number is how the second one goes
+# unnoticed. These two are as different as any pair already separated there:
+#
+#   exact_attribution  the ETL's split placed the award on a CHILD -- a
+#                      programme or scheme row under a regime. The child exists
+#                      because the register named it and it cleared
+#                      MIN_CHILD_EVENTS.
+#   childless_family   the split placed nothing, and the family the source maps
+#                      to has no children, so the family IS the door the founder
+#                      applies to. CDTI, Innovate UK, Bpifrance's innovation
+#                      line. 199 of the 782 leaves the product offers.
+#
+# They also behave differently under the metrics, which is the practical reason
+# the label must not be shared: a childless family is its own regime, so
+# REGIME@5 and EXACT@5 are the SAME question for it and there is no sibling
+# credit to be had. Filing these under `exact_attribution` moved that
+# population's peer-prior canary from 98.3% to 70.5% against a floor of 95 --
+# not a regression, a different population wearing an existing population's
+# name and inheriting a floor calibrated on it.
+TRACED_EXACT = "exact_attribution"
+TRACED_DOOR = "childless_family"
+
 
 def grams(s: str, k: int = 8) -> set[str]:
     w = s.split()
@@ -241,8 +265,21 @@ def main() -> None:
             + split.families(e["source"]),
             [title, summary])
 
-        leaf = split.leaf_for(e["source"], e["programme_name"],
-                              e["granting_authority"], e["call_id"])
+        # `door_for`, not `leaf_for`. The difference is 199 of the 782 leaves the
+        # product offers: `leaf_for` can only return a CHILD, so every family
+        # that was never split -- which is to say every national innovation
+        # agency we hold as one row, CDTI, Innovate UK, Bpifrance's innovation
+        # line -- returned None here and could never become an answer. That is
+        # the hole workstream BB2 found by measuring what a Spanish founder is
+        # shown: six CDTI programmes filling every standalone row-slot on the
+        # table, and the key naming none of them.
+        #
+        # `door_for` still refuses an award it cannot place on ONE fund, which is
+        # the property a test pair needs. See its docstring for both refusals.
+        exact = split.leaf_for(e["source"], e["programme_name"],
+                               e["granting_authority"], e["call_id"])
+        leaf = exact or split.door_for(e["source"], e["programme_name"],
+                                       e["granting_authority"], e["call_id"])
         if not leaf or leaf in nameable or leaf in unproposable:
             continue
         co = company.get(e["company_id"])
@@ -257,7 +294,11 @@ def main() -> None:
         best_text = max([summary, title], key=len)
         if prev is None or len(best_text) > len(prev["text"]):
             cand[leaf][key] = {"co": co, "text": best_text,
-                               "kind": "summary" if best_text == summary else "title"}
+                               "kind": "summary" if best_text == summary else "title",
+                               # HOW the award was placed, carried onto the pair
+                               # as `traced`. Two mechanisms, two populations --
+                               # see TRACED_* below.
+                               "traced": TRACED_EXACT if exact else TRACED_DOOR}
     conn.close()
 
     print(f"leaves the base set cannot name, with awards: {len(cand):,}")
@@ -310,7 +351,7 @@ def main() -> None:
                 "split": split,
                 "selfDescription": template[sector],
                 "descriptionSource": "own_award_text" if desc else "none",
-                "traced": "exact_attribution",
+                "traced": c["traced"],
             })
             kept += 1
         stats["leaves contributing"] += 1 if kept else 0

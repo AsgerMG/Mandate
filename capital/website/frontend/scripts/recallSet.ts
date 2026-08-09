@@ -12,14 +12,70 @@
 // run. A number pasted out of a terminal now carries its own provenance.
 //
 // ── The active set ─────────────────────────────────────────────────────────
-// `__recallSetComposed.json` is the composition of all four fixes:
+// `__recallSetDoors.json` is `__recallSetComposed.json` — itself the
+// composition of
 //   Enriched  leak-free descriptions recovered from a DIFFERENT regime
 //   Repaired  260 pairs relabelled to the leaf the transparency register
 //             actually confirms (`scheme_code = call_id` is not unique)
 //   Plus      2,808 pairs for the 299 programme-split children no join in the
 //             original set could reach
-// plus the re-test a composition forces: repairing an answer re-opens every
-// leak question that was closed against the old answer.
+// plus the re-test a composition forces (repairing an answer re-opens every
+// leak question that was closed against the old answer) — extended once more
+// with the population all four of those still could not name:
+//   Doors     2,299 pairs for the 255 funds that are a FAMILY WITH NO CHILDREN.
+//
+// ── Why that last one is not a fifth patch on the same join ───────────────
+// Every fix above widened which CHILD an award could be credited to.
+// `Split.leaf_for` builds its lookups from rows that HAVE a parent, so it can
+// only ever return a child — and a family that was never split is not a rollup
+// above the funds, it IS the fund. CDTI's six programmes, Innovate UK,
+// Bpifrance's innovation line, Innovationsfonden's Erhvervsforsker: all
+// childless families, all offered to founders every day, and no join in any of
+// the four sets could name one of them.
+//
+// Workstream BB2 found it from the other end, by measuring what a Spanish
+// founder is actually shown: every standalone row-slot on their table was a
+// CDTI programme and the key named none of them. 17 of the 18 standalone leaves
+// a founder sees carried 21,632 awards between them and were never an answer
+// anywhere in the active set. `EXACT@5 30%` was a statement about 278 nameable
+// instruments while the product offered 782.
+//
+// The trap that makes this worth a paragraph: while the key was blind, ANY
+// change that suppressed standalone funds read as a free accuracy win — and it
+// would have taken CDTI Neotec off a Spanish founder's table. Two workstreams
+// went hunting for a "crowding out" defect before BB2 established the funds
+// were right and the key was blind.
+//
+// Coverage of the population the product actually offers, from
+// `ETL/terms/audit_answer_key_reach.py` against live Postgres, 2026-08-09:
+//   782 offerable leaves
+//   499  63.8%  the key can name it        (was 278, 35.5%)
+//   195  24.9%  awards exist, none placeable on this leaf — see below
+//    88  11.3%  no award in the corpus names it at all
+//
+// ── What remains unmeasurable, and why it is not a to-do ──────────────────
+// Those two remainders are different, and neither is closed by more effort on
+// the key.
+//
+// NO AWARD NAMES IT (88). The key is built from awards that were made. A leaf
+// with zero awards on record cannot be an answer under any ranker, so its
+// absence carries no information about retrieval. 88 of these are the BDNS
+// convocatorias — open Spanish calls we hold before anyone has won one.
+//
+// AWARDS, NO EXACT DOOR (195). The larger one, and the one to state plainly.
+// `populate_funding_instruments.py` only creates a child above
+// `MIN_CHILD_EVENTS`, so most awards under a split regime have no child of
+// their own: measured over 309,926 non-duplicate awards, only 11.4% resolve to
+// an exact child and another 43.1% to a childless family. 32.0% resolve no
+// further than the NOTIFIED SCHEME, which one register shares across as many as
+// eighteen delivering bodies. A test pair needs exactly one right answer, and
+// "one of these eighteen" is not one. Those 195 leaves are gradable at REGIME
+// level and are not gradable at EXACT level, and that is a fact about what the
+// registers publish rather than a gap in this file. It is the same fact behind
+// the 10-case ranking regression on 2026-08-08.
+//
+// A key that covers 499 of 782 with the other 283 named and explained is worth
+// more than one that quietly implies it covers all of them.
 //
 // ── The retired ones ───────────────────────────────────────────────────────
 // Kept on disk because published numbers refer to them, and no number should
@@ -29,7 +85,7 @@
 import { readFileSync } from "fs";
 import path from "path";
 
-export const ACTIVE_RECALL_SET = "__recallSetComposed.json";
+export const ACTIVE_RECALL_SET = "__recallSetDoors.json";
 
 /** file -> the defect that retired it. */
 export const RETIRED_RECALL_SETS: Record<string, string> = {
@@ -45,6 +101,11 @@ export const RETIRED_RECALL_SETS: Record<string, string> = {
   "__recallSetPlus.json":
     "built on Enriched, so it carries the unrepaired sibling attribution: for " +
     "the 24% of pairs in a same-name group the label is close to a uniform draw",
+  "__recallSetComposed.json":
+    "names 278 of the 782 leaves the product offers, and the 504 it misses are " +
+    "not random — they are every fund we hold as a family that was never split, " +
+    "including the national innovation agencies of Spain, Britain and France. " +
+    "A number from it describes 35% of the product",
 };
 
 export type RecallRow = {
@@ -306,7 +367,7 @@ export const UNGRADED_SHARE = { max: 33 };
 
 /** The file must not shrink. THIS is the anti-pruning guard.
  *
- *  `__recallSetComposed.json` holds 4,796 pairs and is committed, so its size is
+ *  `__recallSetDoors.json` holds 7,095 pairs and is committed, so its size is
  *  a fact about a versioned artifact rather than about the moving corpus — the
  *  kind of constant it is safe to pin. Deleting pairs is the one edit that
  *  genuinely makes the measurement easier while leaving every share and every
@@ -314,8 +375,10 @@ export const UNGRADED_SHARE = { max: 33 };
  *
  *  Set just under today's count: a deliberate rebuild of the set updates this
  *  line as part of the same change, which is precisely the review moment the
- *  guard exists to force. */
-export const MIN_PAIRS = 4700;
+ *  guard exists to force. Raised 4,700 -> 7,000 with the doors extension, which
+ *  is exactly that review moment happening: the set GREW by 2,299 pairs, so the
+ *  guard is re-pinned under the new size and still catches a deletion. */
+export const MIN_PAIRS = 7000;
 
 /** A pair can fail to be gradable for two DIFFERENT reasons, and collapsing
  *  them hides the one that matters.
@@ -352,10 +415,30 @@ export const MIN_PAIRS = 4700;
 
 /** Fails loudly rather than grading a population that has drifted.
  *  `inCorpus` is optional; without it only the combined band is checked.
- *  Returns the share so a caller can print it. */
+ *  Returns the share so a caller can print it.
+ *
+ *  ── `file`, and the guard that ate the thing it was protecting ────────────
+ *  `MIN_PAIRS` is pinned to the ACTIVE set's committed size, and this function
+ *  applied it to whatever set it was handed. So the moment the active set grew,
+ *  every `SET=` replay of a retired one exited 1 — 4,796 pairs "under the 7,000
+ *  floor, the answer key has SHRUNK" — and the retired sets exist for exactly
+ *  one purpose, which is that a published number stays reproducible. The
+ *  anti-pruning guard had made four published baselines unreproducible in a
+ *  single edit, and it did it by working as written.
+ *
+ *  The size floor is a claim about ONE artifact: the active key must not be
+ *  quietly pruned. A retired set is already frozen at a size its own retirement
+ *  notice records, and nobody raises a score by pruning a file no headline comes
+ *  from. So the floor is scoped to the active set and the retired ones are
+ *  reported and let through — which is also the honest reading of the rule this
+ *  repo works to, since lowering `MIN_PAIRS` to let a replay run would have been
+ *  weakening a floor to go green.
+ *
+ *  `file` defaults to the active set so a caller that does not pass one gets the
+ *  strict behaviour, never the lenient one. */
 export function assertGradablePopulation(
   p: GradedPopulation, inCorpus?: (instrumentId: string) => boolean,
-  reattributed = 0,
+  reattributed = 0, file: string = ACTIVE_RECALL_SET,
 ): number {
   const total = p.graded.length + p.ungraded.length;
   const share = total === 0 ? 0 : (100 * p.ungraded.length) / total;
@@ -394,12 +477,19 @@ export function assertGradablePopulation(
       "and after, and discard the run\n     if it moved.)");
   }
   if (total < MIN_PAIRS) {
-    console.error(
-      `\nrecall set: ${total} pairs, under the ${MIN_PAIRS} floor. The answer key ` +
-      "has SHRUNK.\nDeleting pairs is the one edit that makes every score look " +
-      "better while leaving\nevery share and every floor looking healthy. If the " +
-      "set was rebuilt on purpose,\nupdate MIN_PAIRS in the same change and say why.");
-    process.exit(1);
+    if (file !== ACTIVE_RECALL_SET) {
+      console.log(
+        `    (${total.toLocaleString()} pairs, under the ${MIN_PAIRS} floor — ` +
+        `expected: ${file} is retired\n     and frozen at its own size. The floor ` +
+        "guards the ACTIVE key against pruning.)");
+    } else {
+      console.error(
+        `\nrecall set: ${total} pairs, under the ${MIN_PAIRS} floor. The answer key ` +
+        "has SHRUNK.\nDeleting pairs is the one edit that makes every score look " +
+        "better while leaving\nevery share and every floor looking healthy. If the " +
+        "set was rebuilt on purpose,\nupdate MIN_PAIRS in the same change and say why.");
+      process.exit(1);
+    }
   }
   if (bad) {
     console.error(
