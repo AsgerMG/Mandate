@@ -21,7 +21,11 @@ import { assessInstrument, isAttributable, isCited } from "./verdict";
 import { loadDbInstruments, loadFundSnapshot, publishableInstruments, suppressedForUnconfirmedLiveness, toIso2, type DbInstrument } from "./corpus";
 import { themeRelevance, thematicChannelTopUp, RELEVANCE_FLOOR } from "./relevance";
 import { instrumentServesCapital, instrumentServesCountry } from "./capitalPreference";
-import { semanticSeparation } from "./semantic";
+// `rankerUsed` is the ONE definition of which of the two ranking systems is
+// deciding an ordering. It used to be an inline `semantic?.size` ternary in the
+// four places below, which is why a harness could measure the lexical ranker
+// and report about it in the embedding ranker's words. See semantic.ts.
+import { semanticSeparation, rankerUsed } from "./semantic";
 import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
@@ -1287,8 +1291,8 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
   // nothing thematic leaves the existing ordering untouched.
   // Semantic (instrument_profiles) is the primary signal; the lexical index is
   // the offline fallback when VOYAGE_KEY/Postgres is unavailable.
-  const relevance = semantic?.size
-    ? semantic
+  const relevance = rankerUsed(semantic) === "embedding"
+    ? semantic!
     : themeRelevance(description, candidates.map((i) => i.id));
   const rel = (i: DbInstrument) => {
     const r = relevance.get(i.id) ?? 0;
@@ -1638,7 +1642,8 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
     // threshold on. The instant verdict path is model-free by contract, so it
     // keeps the old scale-only behaviour and the memo corrects it — a rough
     // preliminary read is honest, an erratic one is not.
-    const largeScaleRel = semantic?.size ? semantic : new Map<string, number>();
+    const largeScaleRel = rankerUsed(semantic) === "embedding"
+      ? semantic! : new Map<string, number>();
     for (const c of LARGE_SCALE_TOPUP) {
       if (largeScaleRel.size) {
         const best = Math.max(
@@ -1710,8 +1715,8 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
   // Semantic where we have it, lexical otherwise -- the same signal the leaf
   // ranking uses, so a channel cannot be ordered by one measure and its leaves
   // by another.
-  const channelRelevance = semantic?.size
-    ? semantic
+  const channelRelevance = rankerUsed(semantic) === "embedding"
+    ? semantic!
     : themeRelevance(description ?? "", [...dbInstrumentsByBucket().values()]
         .flat().map((i) => i.id));
   const relevanceFor = (id: string) => channelRelevance.get(id) ?? 0;
@@ -1914,8 +1919,8 @@ export function materialiseInstrumentTable(
   const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, eligibility, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
-  const rel = semantic?.size
-    ? semantic
+  const rel = rankerUsed(semantic) === "embedding"
+    ? semantic!
     : themeRelevance(description ?? "",
         selections.map((s) => s.leaf?.id).filter((id): id is string => Boolean(id)));
   // The same blend the leaf ranking uses, not thematic relevance alone.

@@ -102,6 +102,50 @@ export function separationOf(similarities: number[]): number | undefined {
   return vals.reduce((a, b) => a + ((b - mean) / sd) ** 3, 0) / n;
 }
 
+/**
+ * WHICH RANKER ordered a table — and the ONE place that decides it.
+ *
+ * The choice is made by `semantic?.size`, and it was made in four separate
+ * expressions inside shortlist.ts. That is not a style problem. On 2026-08-09
+ * `check_answer_reach` was found to have graded the LEXICAL ranker — it
+ * declared DATABASE_URL as its only credential, so a run without VOYAGE_KEY
+ * got an empty score map from `semanticFundMatch`, every one of those four
+ * expressions fell through to `themeRelevance`, and the check reported its
+ * verdict about a ranker the product does not serve **in words identical to
+ * the ones it uses about the real one**. Both runs printed
+ *
+ *     6 proved to rank, 17 declared memo-only
+ *     PASS — every question we ask changes something a founder sees.
+ *
+ * and they disagreed about two fields underneath.
+ *
+ * The missing key was the trigger; the defect was that no harness could SAY
+ * which system it had measured, because the branch that decides it was an
+ * inline ternary with no name. So the predicate has a name and one home, the
+ * ranker branches on it, and a harness asks the same function the ranker asked
+ * rather than re-deriving the answer from the environment — which is what
+ * "confirm it from the output, not from the environment" needs to be true.
+ */
+export type Ranker = "embedding" | "lexical";
+
+/** The ranker that will order a table built with this semantic score map. */
+export function rankerUsed(
+  semantic?: ReadonlyMap<string, number> | null,
+): Ranker {
+  return semantic && semantic.size ? "embedding" : "lexical";
+}
+
+/** What each ranker IS, for any harness that has to name what it measured.
+ *  One sentence, and the two are not interchangeable in it. */
+export const RANKER_DESCRIPTION: Record<Ranker, string> = {
+  embedding:
+    "EMBEDDING — pgvector over instrument_profiles, query embedded by Voyage "
+    + "(VOYAGE_KEY). This is the ranker the memo ships on.",
+  lexical:
+    "LEXICAL — relevance.ts, IDF over gate text. The offline fallback. "
+    + "Measurably worse and NOT the system a founder is served by.",
+};
+
 interface CachedMatch { scores: Record<string, number>; separation?: number }
 
 /** Committed scores for the fixed descriptions our checks use. Read lazily so a
