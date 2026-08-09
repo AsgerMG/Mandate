@@ -125,6 +125,41 @@ or two awards.
 
 ---
 
+## 2b. For workstream BP — which awards are placeable, measured
+
+BP is extending the answer key and hits the same wall from the other side. The
+answer key can only NAME a fund where `Split.leaf_for` succeeds, so this is the
+ceiling on what BP can write, and it is much lower than a rate suggests:
+
+**Today, as the corpus actually stands: 241 leaves ever receive a placed award,
+across 7 of 22 countries.**
+
+    ES 87   FR 79   SE 49   DE 18   EE 4   DK 3   IT 1
+
+**Fifteen countries have zero placeable leaves.** Germany at 18, Italy at 1 —
+these are not thin markets, they are markets where the split is off. The answer
+key cannot name a single fund in Czechia, the Netherlands, Austria, Belgium,
+Finland, Greece, Ireland, Portugal, Hungary, Poland, Slovakia, Latvia,
+Lithuania, Luxembourg or the UK, and no amount of key-writing changes that.
+
+With `split_families` fixed and the corpus rebuilt: **663 leaves across 22
+countries**, every one with 5+ placed awards.
+
+    FR 124  DE 116  IT 86  ES 83  SE 63  CZ 37  NL 32  AT 29  BE 21  FI 16
+    SK 13   GR 13   EE 12  IE 10  LV 8   PT 7   HU 6   DK 6   LU 6   GB 4  PL 2  LT 2
+
+**BP should not treat the current placeable set as the ceiling.** The three
+biggest gaps in answer-key coverage — DE, IT and the whole of central Europe —
+are not a data problem and not a key-writing problem; they are this one column.
+Extending the key against today's corpus would encode a 7-country ceiling into
+the ground truth and make the eventual fix measure as churn.
+
+Everything outside SATR and the 20 programme-split sources (Horizon, Innovate
+UK, `fr_relance` — 43.4% of awards) is genuinely unnameable at leaf grain and
+should stay a regime-level pair.
+
+---
+
 ## 3. The register of consumers, and what each one loses
 
 Canonical definition: `ETL/terms/attribution.py` (`Split.leaf_for`, `Split.credit`).
