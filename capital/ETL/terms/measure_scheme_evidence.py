@@ -113,6 +113,24 @@ def main() -> None:
     pg.close()
     print(f"instruments {len(rows)} (Postgres)")
 
+    # PUBLISHABLE=<ids.json> restricts everything below to the rows the product
+    # may actually offer. A leaf the founder is never shown is not a leaf the
+    # ranker chose, and counting it inflates the class a chooser is credited
+    # with ordering. The list comes from `dump_publishable_ids.ts`, which reads
+    # the SAME liveness rule the product does -- it is not re-implemented here,
+    # because a second definition of "open" would be free to drift from the one
+    # that ships.
+    pub_path = os.environ.get("PUBLISHABLE")
+    if pub_path:
+        raw = json.loads(Path(pub_path).read_text())
+        ids = raw if isinstance(raw, list) else raw.get("ids") or raw.get("instruments")
+        keep = {i if isinstance(i, str) else i.get("id") for i in ids}
+        if not keep:
+            sys.exit(f"PUBLISHABLE={pub_path} yielded no ids. An empty allow-list "
+                     "would silently measure nothing, so this is a hard failure.")
+        rows = [r for r in rows if r["id"] in keep]
+        print(f"  restricted to PUBLISHABLE: {len(rows)} rows")
+
     evidence_less = {r["id"] for r in rows if r["own_quoted"] == 0}
     print(f"evidence-less (no gate quoting a document of their own): {len(evidence_less)}")
 
@@ -302,6 +320,49 @@ def main() -> None:
     print("\n-- leaves still in a class LARGER THAN FIVE after every recorded fact --")
     print(f"  {sum(stuck.values())} of {leaves}; by country: "
           + ", ".join(f"{c} {n}" for c, n in stuck.most_common(12)))
+
+    # ── AIMING STEP 3 ────────────────────────────────────────────────────
+    # A costed fetch has to name the rows it would buy. Two disjoint
+    # populations matter and they need different answers:
+    #   (a) evidence-less AND carrying an SA number -- the register reaches
+    #       them, and has already given them everything it holds;
+    #   (b) evidence-less with NO SA number -- no free source reaches them at
+    #       all, so they are the only rows a paid fetch could be the FIRST
+    #       evidence for.
+    print("\n-- the evidence-less 477, split by whether any free source reaches them --")
+    with_sa = [r for r in rows if r["id"] in evidence_less
+               and (r["scheme_code"] or "").strip()]
+    without_sa = [r for r in rows if r["id"] in evidence_less
+                  and not (r["scheme_code"] or "").strip()]
+    for label, pop in (("reached by the register (has an SA number)", with_sa),
+                       ("NOT reached by any free source", without_sa)):
+        by_c = Counter(r["country"] or "??" for r in pop)
+        txt = Counter(bool(r["eligibility_text"] and len(r["eligibility_text"]) > 40)
+                      for r in pop)
+        print(f"  {label}: {len(pop)}")
+        print(f"    by country: " + ", ".join(f"{c} {n}" for c, n in by_c.most_common(10)))
+        print(f"    already carry eligibility_text > 40 chars: {txt[True]}"
+              f"   carry none: {txt[False]}")
+    ml = {r["id"] for g in groups for r in g}
+    un_ml = [r for r in without_sa if r["id"] in ml]
+    print(f"    of the un-reached, sitting in a MULTI-LEAF regime (where a"
+          f" discriminator would pay): {len(un_ml)}")
+    print("      by country: " + ", ".join(
+        f"{c} {n}" for c, n in Counter(r["country"] or "??" for r in un_ml).most_common(10)))
+
+    # The sharpest target a paid fetch could have: the leaves a founder still
+    # cannot tell from five or more siblings after every free fact is in.
+    print("\n-- THE ACTUAL TARGET: leaves in a class > 5 at baseline + scheme_code --")
+    tgt: list[dict] = []
+    for g in groups:
+        cnt = Counter(ref_key(r) for r in g)
+        tgt += [r for r in g if cnt[ref_key(r)] > 5]
+    print(f"  {len(tgt)} leaves, by country: " + ", ".join(
+        f"{c} {n}" for c, n in Counter(r["country"] or "??" for r in tgt).most_common(10)))
+    print("  by regime: " + ", ".join(
+        f"{p} {n}" for p, n in Counter(r["parent_id"] or r["id"] for r in tgt).most_common(8)))
+    print(f"  of these, already carrying eligibility_text > 40 chars: "
+          f"{sum(1 for r in tgt if r['eligibility_text'] and len(r['eligibility_text']) > 40)}")
 
 
 if __name__ == "__main__":
