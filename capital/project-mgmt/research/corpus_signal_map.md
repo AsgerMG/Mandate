@@ -4,6 +4,29 @@ Written 2026-08-06. Every number here comes from `data/db.sqlite` read-only and
 from scripts kept in the session scratchpad; the method is stated beside each
 figure so it can be re-run and disagreed with.
 
+> **RE-MEASURED 2026-08-09 ON THE ANSWER KEY THAT SHIPS — READ THIS BEFORE
+> ACTING ON §2 OR §5.** Everything below was measured WITHIN A SIBLING GROUP,
+> against `__recallSetComposed.json`, which could not name a childless family at
+> all. Workstream BU re-scored every signal over the pool the product actually
+> ranks, on `__recallSetDoors.json` (611 funds, 28 countries), holdout, N=600.
+> Two of this note's conclusions do not survive the move:
+>
+> 1. **§2's central lever is structurally inert on a third of the offer.** The
+>    within-regime posterior is applied as a rank-preserving permutation, and a
+>    family nobody split IS its own regime — permuting a group of one is the
+>    identity. Measured: 17.9 against 17.9 on `traced:childless_family`, and 8.9
+>    +/-3.3 against 12.9 +/-3.9 where it does have siblings to move. 233 of the
+>    funds the product offers have no sibling for a sibling-choice lever to
+>    choose between.
+> 2. **§5 Tier 1 item 1, un-clipping `sectorFit`, was shipped as an arm and
+>    measured end to end: EXACT@5 21 -> 22 (+/-3.3, not a difference) at a cost of
+>    REGIME@5 73 -> 67 and 98% -> 83% on the population that has siblings.**
+>
+> What DOES survive: sector is the strongest instrument-side signal, and size
+> columns are worthless — worse than worthless, they measure BELOW a shuffle.
+> Full table, half-widths and leak status:
+> `project-mgmt/findings/signal_remeasure_wsBU.md`.
+
 The question this answers: **the shortlist has the right fund 95% of the time
 and the top five has it 25-50% of the time. What information in the corpus
 could close that gap, and could a founder plausibly supply the matching half of

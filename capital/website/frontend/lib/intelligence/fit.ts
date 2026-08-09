@@ -255,8 +255,56 @@ export function sectorFit(
   if (!hasSectorHistory(mix) || !founderSector) return null;
   const total = Object.values(mix!).reduce((a, b) => a + b, 0);
   const share = (mix![founderSector] ?? 0) / total;
-  return Math.min(1, share / SECTOR_FULL_MATCH_SHARE);
+  return SECTOR_CLIP_ARM === "off"
+    ? share
+    : Math.min(1, share / SECTOR_FULL_MATCH_SHARE);
 }
+
+/** ── The clip, as an ARM rather than as an argument ────────────────────────
+ *
+ *  The docstring above says the ceiling ties the top of a sibling group and
+ *  points at a measurement. Workstream BU turned that into a switch, because
+ *  "do not fix this without reading the measurement" is not something a reader
+ *  can act on and a constant nobody can vary is a constant nobody can test.
+ *
+ *  `off` divides by nothing: the raw share, which is what the clip destroys
+ *  above 0.25. Measured alone over the pool, EXACT@5 with ties resolved by
+ *  expectation (`scripts/measure_signal_power.ts`, N=600, seed 20260806):
+ *
+ *      arm          tune                holdout
+ *      clipped      16.3 +/-2.0         15.7 +/-2.0
+ *      unclipped    18.8 +/-3.1         18.1 +/-3.1
+ *
+ *  Both gaps sit INSIDE the half-widths and neither is a difference.
+ *
+ *  ── AND END TO END IT IS NEGATIVE, WHICH IS THE POINT OF THE ARM ─────────
+ *  Replayed through the product's own ranking (`measure_recall.ts`, N=600,
+ *  holdout, same seed) the standalone gain does not survive contact with the
+ *  table, and two other metrics pay for it:
+ *
+ *                       clipped (ships)    unclipped
+ *      EXACT@5           127/600  21 +/-3.3   131/600  22 +/-3.3
+ *      REGIME@5          438/600  73 +/-3.6   400/600  67 +/-3.8
+ *      CHANNEL@5         553/600  92 +/-2.2   514/600  86 +/-2.8
+ *      REGIME@5 on traced:exact_attribution  98%  ->  83%
+ *
+ *  Four cases in six hundred, inside the half-width, bought with six points of
+ *  REGIME@5 and fifteen on the population that has siblings at all. The clip is
+ *  doing exactly what the docstring above says it does -- stopping a narrow fund
+ *  from beating a broad one ACROSS channels -- and removing it scatters the
+ *  table off the right regime. Same trade `objectiveScorer` was moved out of the
+ *  row sort to avoid.
+ *
+ *  So the arm defaults to the shipped behaviour and stays, so the question is
+ *  re-askable at a larger N without anyone editing a constant back and forth --
+ *  which is how a measured decision turns into a remembered one.
+ *  See project-mgmt/findings/signal_remeasure_wsBU.md.
+ *
+ *  Read once at module load, never per call, for the same reason
+ *  `SECTOR_NEUTRAL_ARM` is: a measurement must not be able to drift mid-run. */
+export type SectorClipArm = "on" | "off";
+export const SECTOR_CLIP_ARM: SectorClipArm =
+  process.env.SECTOR_CLIP_ARM === "off" ? "off" : "on";
 
 /**
  * The score for an instrument whose sector history we do not hold — solved over
