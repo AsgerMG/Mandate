@@ -60,7 +60,23 @@ REFERENCE = ROOT / "data/reference/source_window_policy.json"
 # narrowest and wins; `source_family_bucket` is the widest and loses. Order here
 # is the only precedence there is, so a per-row declaration cannot be shadowed
 # by the family it sits in.
-MATCH_KEYS = ("id", "id_prefix", "root_id", "source_family_bucket")
+#
+# `country` is a match key because A FAMILY DOES NOT HAVE ONE ANSWER, and the
+# omission cost a red build. Whether a register states an application window is
+# a property of the register, and one family is many registers: `state_aid_satr`
+# publishes windows in ES -- all 175 Spanish rows -- and in none of the other
+# twenty countries it covers; `national_dev_banks` publishes them in FR and
+# nowhere else. The reference file was reconstructed on 2026-08-09 keyed
+# (family, country) because that is what the recovered values actually said, and
+# this tuple could not express it, so `load_declarations` raised
+# KeyError('declarations') on every machine from that day and no row loaded
+# since was ever asked about its register.
+#
+# Folding country away would have meant smoothing ES into the other twenty to
+# make the script run, which is losing a true distinction to clear a red check.
+# Ranked narrower than `source_family_bucket` and wider than `root_id`, so a
+# family/country declaration beats a family-wide one and a named row beats both.
+MATCH_KEYS = ("id", "id_prefix", "root_id", "country", "source_family_bucket")
 
 
 def load_declarations() -> list[dict]:
