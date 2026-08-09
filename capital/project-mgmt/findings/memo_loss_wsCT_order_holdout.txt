@@ -1,0 +1,50 @@
+(node:35105) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T22:04:47.087Z
+ranker: all 250 request(s) on EMBEDDING
+set=__recallSetDoors.json split=holdout replayed 250
+published cap 6, writer cap 7, shipping arm ORDER_ARM=verdict
+
+── MEMO@k, BOTH ORDERS OVER THE SAME POOL ──
+  k     fit                  pool                 verdict              
+  1     7/250 (2.8% +/-2.0)  12/250 (4.8% +/-2.6) 12/250 (4.8% +/-2.6) 
+  3     28/250 (11.2% +/-3.9)28/250 (11.2% +/-3.9)28/250 (11.2% +/-3.9)
+  5     42/250 (16.8% +/-4.6)44/250 (17.6% +/-4.7)46/250 (18.4% +/-4.8)
+  6     49/250 (19.6% +/-4.9)54/250 (21.6% +/-5.1)55/250 (22.0% +/-5.1)  <- PUBLISHED
+  7     58/250 (23.2% +/-5.2)59/250 (23.6% +/-5.3)60/250 (24.0% +/-5.3)
+
+  MEMO@6: pool - fit = +2.0 pts (5 pairs)
+    the fit re-sort moves the won leaf OUT of the first 6 20 times, INTO it 15 times, against pool
+
+  MEMO@6: verdict - fit = +2.4 pts (6 pairs)
+    the fit re-sort moves the won leaf OUT of the first 6 21 times, INTO it 15 times, against verdict
+
+── WHERE THE DIFFERENCE LANDS ──
+  21 pairs across 14 regimes and 7 countries
+    bdns_es_ayudas                                     4
+    satr_it_rnd                                        2
+    satr_de_rnd                                        2
+    horizon_eu_pillar_ii                               2
+    ademe_aid                                          2
+    satr_de_equity                                     1
+    satr_se_rnd                                        1
+    eis_digitaliseerimise_teekaa                       1
+  largest single regime holds 4 of 21
+
+── OFF-COUNTRY ROWS IN THE PUBLISHED 6 (lower is better) ──
+  fit    0 row(s) across 0/250 founders
+  pool   0 row(s) across 0/250 founders
+  verdict 0 row(s) across 0/250 founders
+
+── WHAT THE PUBLISHED 6 ARE MADE OF, by encoded verdict ──
+  fit    open 1499 (99.9%)   one_blocker 1 (0.1%)
+  pool   open 1443 (96.2%)   one_blocker 35 (2.3%)   unknown 22 (1.5%)
+  verdict open 1500 (100.0%)

@@ -23,7 +23,9 @@
 
 /** Every op the encoder may emit. Adding one here is the ONLY place it needs
  *  adding — that is the point of this file existing. */
+import { toIso2 } from "./countryCodes";
 import { regionsOverlap } from "./regions.generated";
+import { fieldValueDomain } from "./types";
 import { BAND_ORDERS } from "./vocabulary";
 
 export type ValueSpec =
@@ -59,6 +61,38 @@ export const NON_ANSWERS: ReadonlySet<string> = new Set([
 const norm = (s: string) => s.trim().toLowerCase();
 
 /**
+ * The key two values are compared ON, given what the field's values NAME.
+ *
+ * ── Why this is not `norm` for every field ────────────────────────────────
+ * `region_within` already refuses to compare NUTS ids as strings, because
+ * "FRD" and "FRD1" name the same place. Country is the identical shape and had
+ * no equivalent: the corpus encodes "must be established in X" with the
+ * country's English NAME (307 filters on 248 instruments, live), the intake
+ * control emits English names too — and every other producer of an answer on
+ * that field, every harness in this repo included, emits ISO2. Compared as
+ * strings, `["Denmark"]` is FALSE for `["DK"]`. `entityCountries` is
+ * structural and those gates are cited, so one false is conclusive and the
+ * fund is deleted for a founder who is Danish.
+ *
+ * Widening is confined to fields whose domain SAYS its values are countries
+ * (`FIELD_VALUE_DOMAIN`, types.ts). A blanket "try toIso2 on everything" is
+ * unsafe in a way worth writing down: `toIso2` uppercases any two-letter
+ * string, so it maps the perfectly ordinary answer "no" onto Norway, and a
+ * yes/no field would start matching an allowed value of "Norway". The domain
+ * is declared per field and the compiler demands one for every intake field.
+ *
+ * Falls back to the plain normalised string whenever EITHER side fails to
+ * resolve, so an unrecognised value keeps exactly its previous behaviour and
+ * this can only ever equate two designations of one country.
+ */
+function comparisonKeys(field: string | undefined, value: string): string[] {
+  const plain = norm(value);
+  if (!field || fieldValueDomain(field) !== "country") return [plain];
+  const iso = toIso2(value);
+  return iso ? [plain, `iso:${iso}`] : [plain];
+}
+
+/**
  * Does the founder's answer hit any of `allowed`?
  *
  * Handles both shapes an answer arrives in. Several intake fields are
@@ -66,18 +100,24 @@ const norm = (s: string) => s.trim().toLowerCase();
  * version handled only strings — which made the single most common encoded
  * gate, "must be established in <country>", silently return "unknown" for
  * every founder, because their answer is an array.
+ *
+ * `field` is optional and its absence means `token`: string equality, the
+ * behaviour every caller had before domains existed.
  */
-export function matchesAny(answer: unknown, allowed: readonly string[]): boolean | null {
-  const wanted = new Set(allowed.map(norm));
+export function matchesAny(
+  answer: unknown, allowed: readonly string[], field?: string,
+): boolean | null {
+  const wanted = new Set(allowed.flatMap((a) => comparisonKeys(field, a)));
+  const hits = (a: string) => comparisonKeys(field, a).some((k) => wanted.has(k));
   if (typeof answer === "string") {
     if (!answer.trim() || NON_ANSWERS.has(norm(answer))) return null;
-    return wanted.has(norm(answer));
+    return hits(answer);
   }
   if (Array.isArray(answer)) {
     const vals = answer.filter(
       (a): a is string => typeof a === "string" && Boolean(a.trim()) && !NON_ANSWERS.has(norm(a)),
     );
-    return vals.length ? vals.some((a) => wanted.has(norm(a))) : null;
+    return vals.length ? vals.some(hits) : null;
   }
   return null;
 }
@@ -189,7 +229,7 @@ export function evaluateSpec(spec: ValueSpec, answer: unknown): boolean | null {
       return p ? p.a >= p.b : null;
     }
     case "in":
-      return spec.allowed ? matchesAny(answer, spec.allowed) : null;
+      return spec.allowed ? matchesAny(answer, spec.allowed, spec.field) : null;
     case "region_within": {
       if (!spec.allowed?.length) return null;
       const vals = (Array.isArray(answer) ? answer : [answer])
@@ -199,12 +239,15 @@ export function evaluateSpec(spec: ValueSpec, answer: unknown): boolean | null {
     }
     case "not_in": {
       if (!spec.allowed) return null;
-      const hit = matchesAny(answer, spec.allowed);
+      const hit = matchesAny(answer, spec.allowed, spec.field);
       return hit === null ? null : !hit;
     }
     case "equals":
+      // Same widening as `in`, for the same reason: `equals` is the
+      // single-valued form of the same comparison and a country field encoded
+      // either way must not depend on which one the encoder chose.
       return typeof answer === "string" && spec.value !== undefined
-        ? norm(answer) === norm(spec.value)
+        ? matchesAny(answer, [spec.value], spec.field) ?? false
         : null;
     case "boolean_true":
       return answer === "yes" ? true : answer === "no" ? false : null;

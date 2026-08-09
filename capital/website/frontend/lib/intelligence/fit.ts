@@ -31,11 +31,25 @@ import type { InstrumentAssessment } from "./verdict";
 // ── WHAT IN THIS FILE ACTUALLY REACHES THE FOUNDER'S TABLE ────────────────
 // Read this before quoting a weight below as if it ranked anything.
 //
-// `scoreFit` does NOT rank the five funds a founder first sees. It is called
-// from exactly one place in production -- `synthesize()` in the MEMO path
-// (pipeline.ts) -- over `hydratedTable.slice(0, VERDICT_POOL)`, i.e. over rows
-// that screen one has ALREADY ordered and ALREADY cut. `computeVerdict`, which
-// produces the table, never calls it.
+// ██ AS OF 2026-08-09 `scoreFit` ORDERS NOTHING A FOUNDER READS. ██
+//
+// It is still CALLED in production -- `orderMemoCandidates` (memoCandidates.ts)
+// scores every candidate and attaches the breakdown to it -- but the memo's
+// order is `ORDER_ARM`, and that is `verdict`. Measured over one pool, the
+// re-sort this score used to perform moved the won leaf OUT of the published
+// six 21 times for 12 in; see the measurement written at ORDER_ARM.
+//
+// Before that it did not rank the five funds a founder first sees either. Its
+// one production caller ordered `hydratedTable.slice(0, VERDICT_POOL)` -- rows
+// screen one had ALREADY ordered and ALREADY cut. `computeVerdict`, which
+// produces the table, has never called it.
+//
+// Two claims in this file were stale and are corrected here rather than left
+// to be quoted: the caller has been `orderMemoCandidates` and not
+// `synthesize()` since wsCR lifted the ordering out (pipeline.ts kept a dead
+// `import { scoreFit }` for the whole of that time), and `scoreFit` no longer
+// decides an order at all. Both are the same lesson the file already teaches
+// about the weights table: what a function is FOR is not what calls it.
 //
 // Screen one orders on `rowRelevance` in shortlist.ts: a blend of the semantic
 // percentile and `sectorFit`, then permuted within each regime by the
@@ -449,11 +463,14 @@ export function eligibilityFit(a?: InstrumentAssessment): number {
 /**
  * The nine-component fit score.
  *
- * LIVE, but not where the file's name suggests. One production caller:
- * `synthesize()` in pipeline.ts, over `hydratedTable.slice(0, VERDICT_POOL)` —
- * so it orders the pool the WRITER sees, after screen one has already chosen
- * and cut the rows. It does not decide the five funds on the founder's table.
- * (Second caller: `scripts/shadow_fit.ts`, a harness.)
+ * CALLED in production, but it no longer ORDERS anything a founder reads.
+ * `orderMemoCandidates` (memoCandidates.ts) scores every memo candidate with
+ * it and attaches the breakdown to the candidate, which is worth keeping —
+ * a recorded per-component score is how a bad ranking gets attributed instead
+ * of argued about. What reads it as a sort key is `ORDER_ARM === "fit"`, and
+ * that arm does not ship. See the note at the top of this file and the
+ * measurement at ORDER_ARM.
+ * (Other caller: `scripts/shadow_fit.ts`, a harness.)
  */
 export function scoreFit(input: FitInput): FitScore {
   const { instrument: inst, assessment, year } = input;
