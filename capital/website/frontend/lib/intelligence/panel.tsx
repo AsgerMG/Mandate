@@ -739,45 +739,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   </label>
                 )}
 
-                {/* ── What kind of organisation are you ────────────────────
-                    The largest demand in the corpus the intake never asked:
-                    484 filter gates on 370 publishable instruments, and 28 of
-                    the 36 multi-leaf regimes hold siblings demanding DIFFERENT
-                    kinds. Not a size question — see organisationType.ts for
-                    the property and why `fteBand` is a different one.
-
-                    It sits in the "where are you" column with country and
-                    region because it is the same class of fact: something the
-                    register already knows about the entity, not a position the
-                    founder has to take. And like region, it ARRIVES ANSWERED —
-                    read straight off the name in the first field, because
-                    company law requires the legal form to be in it. That is
-                    what pays for the question. The origin is stated on screen
-                    and the founder's edit wins outright. ── */}
-                {ORGANISATION_TYPE_ARM === "on" && (
-                  <div className="text-sm">
-                    <span className={fieldLabel}>
-                      What kind of organisation
-                      <InfoDot>
-                        Hundreds of schemes are open only to certain kinds of
-                        body — some fund companies, some only municipalities or
-                        universities, some also the self-employed. It is not a
-                        size question: we ask team size separately.
-                      </InfoDot>
-                    </span>
-                    <Chips options={[...ORGANISATION_TYPE_OPTIONS]}
-                      value={elig.organisationType}
-                      onPick={(v) => { setOrgTypeTouched(true);
-                        setElig((p) => ({ ...p, organisationType: v })); }} />
-                    {orgTypePrefill && !orgTypeTouched
-                      && elig.organisationType === orgTypePrefill && (
-                      <span className="mt-1 block text-xs leading-snug text-[var(--muted-foreground)]">
-                        From the legal form in your company name. Change it if
-                        that is not what you are.
-                      </span>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
 
@@ -880,7 +841,49 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   { value: "50-249", label: "50–249" }, { value: "250+", label: "250+" },
                 ]} value={elig.fteBand} onPick={(v) => setElig((p) => ({ ...p, fteBand: v }))} />
               </div>
-              
+              {/* ── What kind of organisation are you ────────────────────
+                  The largest demand in the corpus the intake never asked:
+                  484 filter gates on 370 publishable instruments, and 28 of
+                  the 36 multi-leaf regimes hold siblings demanding DIFFERENT
+                  kinds. Not a size question — see organisationType.ts for
+                  the property and why `fteBand` is a different one.
+
+                  It sits BESIDE TEAM SIZE, which is deliberate on a screen
+                  where the two are the questions most easily confused: seeing
+                  them as two controls is the clearest possible statement that
+                  they are two questions. It went in the narrow country column
+                  first and the five labels wrapped to two lines each; a
+                  question a founder has to read twice has already failed.
+
+                  Like region, it ARRIVES ANSWERED —
+                  read straight off the name in the first field, because
+                  company law requires the legal form to be in it. That is
+                  what pays for the question. The origin is stated on screen
+                  and the founder's edit wins outright. ── */}
+              {ORGANISATION_TYPE_ARM === "on" && (
+                <div className="text-sm">
+                  <span className={fieldLabel}>
+                    What kind of organisation
+                    <InfoDot>
+                      Hundreds of schemes are open only to certain kinds of
+                      body — some fund companies, some only municipalities or
+                      universities, some also the self-employed. It is not a
+                      size question: we ask team size separately.
+                    </InfoDot>
+                  </span>
+                  <Chips options={[...ORGANISATION_TYPE_OPTIONS]}
+                    value={elig.organisationType}
+                    onPick={(v) => { setOrgTypeTouched(true);
+                      setElig((p) => ({ ...p, organisationType: v })); }} />
+                  {orgTypePrefill && !orgTypeTouched
+                    && elig.organisationType === orgTypePrefill && (
+                    <span className="mt-1 block text-xs leading-snug text-[var(--muted-foreground)]">
+                      From the legal form in your company name. Change it if
+                      that is not what you are.
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="text-sm">
