@@ -264,6 +264,13 @@ async function main() {
       for (const k of [RANDOM, ...Object.keys(SIGNALS), SHIPPED_SCORE, REGIME_PERMUTED]) {
         record(k, 0);
       }
+      // Recorded with `won: -1` rather than dropped, so the blend scores the
+      // SAME denominator this table does. A fitter handed only the pairs whose
+      // answer survived selection would report a number conditional on pool
+      // reach while calling it EXACT@5.
+      if (process.env.FEATURES_OUT) {
+        features.push({ pop: popKey, pool: pool.length, won: -1, x: [] });
+      }
       continue;
     }
     inPool++;
