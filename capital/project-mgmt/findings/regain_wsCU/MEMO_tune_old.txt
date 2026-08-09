@@ -8,3 +8,73 @@ recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 
     WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
     ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
                             and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T22:19:46.620Z
+ranker: all 490 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 250
+  founder intake — 23 askable fields, identity=anonymous own-history=withheld capital=pinned answers=off consortium=yes
+    DERIVED   entityCountries      set  250/250 (100%)  own  250/250 (100%)  companies.country
+    DERIVED   organisationType     set    0/250 (  0%)  own    0/250 (  0%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set    0/250 (  0%)  own    0/250 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  250/250 (100%)  own  250/250 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  250/250 (100%)  own    0/250 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  250/250 (100%)  own    0/250 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  250/250 (100%)  own    0/250 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  250/250 (100%)  own    0/250 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    PINNED    capitalSought                            set 250/250 (100%)  the old harness filter — removes every tax-credit and equity fund
+published cap under test: BRIEF_LIMITS.institutionsMax=6, writer cap 7
+  tier 1 (usedInField) live for the won leaf's own channel on 0/250 (0.0% +/-0.0) of pairs — peers only, never this founder
+
+── THE INSTANT SCREEN ──
+  SCREEN@5  66/250 (26.4% +/-5.5)
+  SCREEN@6  75/250 (30.0% +/-5.7)
+  gain of the sixth row on the screen: +3.6 pts (9 pairs)
+
+── THE MEMO'S CANDIDATE ORDER (what the cut actually cuts) ──
+  MEMO@1   8/250 (3.2% +/-2.2)
+  MEMO@2   18/250 (7.2% +/-3.2)
+  MEMO@3   23/250 (9.2% +/-3.6)
+  MEMO@4   26/250 (10.4% +/-3.8)
+  MEMO@5   32/250 (12.8% +/-4.1)
+  MEMO@6   39/250 (15.6% +/-4.5)
+  MEMO@7   43/250 (17.2% +/-4.7)   <- writer cap
+  gain of the sixth row in the memo: +2.8 pts (7 pairs)
+  ██ MEMO@6 15.6% against SCREEN@6 30.0% — the memo keeps 52% of what the screen got right
+
+  memo order depth: min 0 p25 4 median 9 max 18
+  founders whose memo order even HAS a sixth row: 180/250 (72.0%)
+
+── WHERE THE GAIN LANDS (memo rank exactly 6) ──
+  7 pairs across 7 distinct regimes and 7 countries
+    business_finland                                   1
+    satr_it_rnd                                        1
+    tacr_ck                                            1
+    nfr_dip                                            1
+    eis_rohetoetus_roheauditi_l                        1
+    sudop_regional_inv                                 1
+    satr_nl_rnd                                        1
+  largest single regime holds 1 of 7 (14%)
+
+── WHERE THE MEMO LOSES A LEAF THE POOL HELD (wsCT owns the fix) ──
+  won leaf inside the memo pool (top 18):        123/250 (49.2% +/-6.2)
+  ...and inside its first six BEFORE the re-sort: 75/250 (30.0% +/-5.7)
+  ...and inside the memo order after re-sort/drop: 39/250 (15.6% +/-4.5)
+  in the pool but absent from the memo order: 58
+    VER-BLOCKED                           58
+  the fit re-sort moves the won leaf OUT of the top six 49 times, INTO it 13 times
+
+  screen and memo agree on the won leaf's rank in 11/41 pairs where both contain it
