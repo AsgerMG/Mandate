@@ -383,6 +383,16 @@ export interface ReplayedFounder {
   };
   /** The askable fields this row actually carried a value for. */
   supplied: IntakeField[];
+  /** ── The distinction a single "supplied" count destroys ─────────────────
+   *  `answersFor` falls back to `CONSTANT_ANSWERS.ticketBand` for a founder it
+   *  cannot derive a band for, on purpose: the denominator must not move with
+   *  the answer mode. So `ticketBand` is PRESENT on 100% of rows and derived
+   *  from this company on far fewer, and a disclosure reporting only the first
+   *  would say "100% derived" about a field that is mostly the old constant
+   *  wearing a new label. That is the failure `measure_recall`'s own
+   *  `founder-specific answers supplied:` line was added to prevent, and it
+   *  belongs in the shared disclosure rather than in one harness. */
+  ownAnswer: IntakeField[];
 }
 
 /** One replayed founder, built ONLY from declared dispositions.
@@ -440,6 +450,18 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
     },
     supplied: (ASKABLE_FIELDS as IntakeField[])
       .filter((f) => eligibility[f] !== undefined),
+    // Only where the value came from THIS COMPANY. `sector` and
+    // `entityCountries` are read off the row, which is this company's own
+    // register record; `ticketBand` counts only when `answersFor` derived it
+    // rather than falling back; `region` only when one was actually resolved;
+    // `organisationType` only when the name carried a designator.
+    ownAnswer: ([
+      ["sector", Boolean(r.sector)],
+      ["entityCountries", Boolean(r.country)],
+      ["ticketBand", a.derived.ticket],
+      ["region", Boolean(region)],
+      ["organisationType", Boolean(org)],
+    ] as [IntakeField, boolean][]).filter(([, ok]) => ok).map(([f]) => f),
   };
 }
 
@@ -447,17 +469,24 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
 export class IntakeTally {
   private n = 0;
   private hits = new Map<IntakeField, number>();
+  private own = new Map<IntakeField, number>();
   add(f: ReplayedFounder): void {
     this.n++;
     for (const k of f.supplied) this.hits.set(k, (this.hits.get(k) ?? 0) + 1);
+    for (const k of f.ownAnswer) this.own.set(k, (this.own.get(k) ?? 0) + 1);
   }
   /** The lines a run prints. Withheld fields are printed too — a gap nobody
    *  can see on screen is the gap that gets pinned to a constant next time. */
   lines(policy: FounderPolicy): string[] {
     const out: string[] = [];
+    // TWO numbers, never one. `set` is how many founders carried a value at
+    // all; `own` is how many carried THEIR OWN. Where they differ, the gap is
+    // the constant fallback, and a reader has to be able to see it.
     const pct = (k: IntakeField) => {
-      const h = this.hits.get(k) ?? 0;
-      return `${String(h).padStart(4)}/${this.n} (${this.n ? Math.round((100 * h) / this.n) : 0}%)`;
+      const h = this.hits.get(k) ?? 0, o = this.own.get(k) ?? 0;
+      const p = (x: number) => `${this.n ? Math.round((100 * x) / this.n) : 0}%`;
+      return `set ${String(h).padStart(4)}/${this.n} (${p(h).padStart(4)})  `
+        + `own ${String(o).padStart(4)}/${this.n} (${p(o).padStart(4)})`;
     };
     out.push(`  founder intake — ${ASKABLE_FIELDS.length} askable fields, `
       + `identity=${policy.identity} own-history=${policy.ownHistory} `
@@ -468,7 +497,7 @@ export class IntakeTally {
       (x, y) => order[INTAKE_SOURCE[x].supply] - order[INTAKE_SOURCE[y].supply] || x.localeCompare(y))) {
       const d = INTAKE_SOURCE[f];
       if (d.supply === "withheld") {
-        out.push(`    WITHHELD  ${f.padEnd(20)}      -   ${d.why.split(".")[0]}`);
+        out.push(`    WITHHELD  ${f.padEnd(20)} ${"-".padStart(38)}  ${d.why.split(".")[0]}`);
       } else if (d.supply === "derived") {
         out.push(`    DERIVED   ${f.padEnd(20)} ${pct(f)}  ${d.from.split(",")[0]}`);
       } else if (d.supply === "pinned") {
@@ -476,7 +505,8 @@ export class IntakeTally {
       }
     }
     out.push(`    ${policy.capital === "withheld" ? "WITHHELD  " : "PINNED    "}`
-      + `capitalSought        ${policy.capital === "withheld" ? "    -" : `${this.n}/${this.n}`}   `
+      + `capitalSought        ${(policy.capital === "withheld"
+        ? "-" : `set ${this.n}/${this.n} (100%)`).padStart(38)}  `
       + `${policy.capital === "withheld"
         ? "no leak-free derivation of INTENT exists; empty is the neutral value"
         : "the old harness filter — removes every tax-credit and equity fund"}`);
