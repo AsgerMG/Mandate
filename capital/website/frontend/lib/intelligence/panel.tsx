@@ -865,6 +865,13 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                 the rest of the session — asked once, not nagged. */}
             {!descriptionSkipped && !preparing && Boolean(company.trim())
               && description.trim().length < USEFUL_DESCRIPTION_CHARS && (
+              /* contract: "about half as often" is the measured description lift,
+                 not a manner of speaking. scripts/measure_description_lift.ts,
+                 paired and leak-checked on the enriched holdout: EXACT@5 is
+                 48.9% with the founder's own description and 21.3% with the
+                 canned sector sentence, so skipping the box lands the right
+                 fund 44% as often. A product measurement, not a corpus figure
+                 — it moves when the ranker moves, not when the ETL runs. */
               <p className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 px-4 py-3 text-xs leading-relaxed text-[var(--muted-foreground)]">
                 Without a description we can still screen you on country, sector
                 and size — but the shortlist is then built from what companies
