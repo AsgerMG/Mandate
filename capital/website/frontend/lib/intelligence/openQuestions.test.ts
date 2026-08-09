@@ -77,6 +77,30 @@ describe("openFitScorer", () => {
     expect(score(siblings[1])).toBe(1);
   });
 
+  it("does not demote a sibling whose answer came back unknown", async () => {
+    // ── THE TEST THAT WAS MISSING, AND WHY ───────────────────────────────
+    // The all-unknown case above passes even on a scorer that counts
+    // `unknown` as a failure: every leaf then scores 0, min-max sees no
+    // spread, and the group is skipped. Verified by mutating the scorer to
+    // `if (v === undefined) continue` — all seven of the other tests stayed
+    // green over the exact defect they exist to catch.
+    //
+    // The defect only shows when ONE sibling settles and another does not,
+    // which is the common case in a real round: a founder answers about the
+    // fund in front of them and says nothing that settles the other's rule.
+    // If silence is scored as a failure, THAT is the fund that gets hidden.
+    const openFitScorer = await scorerWith("on");
+    const score = openFitScorer(siblings, [
+      { key: key(R_ADVANCE), verdict: "meets" },
+      { key: key(R_OBJECTIVE), verdict: "unknown" },
+    ]);
+    // One leaf is settled and the other is not, so there is nothing to
+    // compare: the settled one has no counterpart and the group is left
+    // alone. Neither may move.
+    expect(score(siblings[0])).toBe(1);
+    expect(score(siblings[1])).toBe(1);
+  });
+
   it("scores a leaf with no judged requirement at exactly 1", async () => {
     const openFitScorer = await scorerWith("on");
     const three = [...siblings, leaf("c", "regime", ["Something else entirely that nobody was asked about here"])];

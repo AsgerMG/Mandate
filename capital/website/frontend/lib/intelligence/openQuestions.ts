@@ -190,6 +190,13 @@ export function openFitScorer<T extends { id: string; parentId?: string | null; 
 
   const score = new Map<string, number>();
   for (const group of byRegime.values()) {
+    // Stated for the reader, not load-bearing: the `known.length < 2` check
+    // below already makes a single-leaf regime unscorable, and removing this
+    // line changes no behaviour (verified by mutation — every test stayed
+    // green). It stays because "this scorer only ever reorders siblings" is
+    // the property the whole safety argument rests on, and a property that is
+    // only implied by an interaction two lines apart is one a later edit can
+    // remove without noticing.
     if (group.length < 2) continue;
     const fit = new Map<string, number>();
     for (const l of group) {
