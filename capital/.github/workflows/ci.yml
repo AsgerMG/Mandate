@@ -74,6 +74,15 @@ jobs:
       - name: Rendered numbers come from the corpus
         run: npx tsx scripts/check_rendered_numbers.ts
 
+      # The same property for the numbers the owner plans on rather than the
+      # ones a visitor reads. Three headline figures were retracted in one day
+      # and two had been reported twice before anyone caught them; all three
+      # were written into a planning document with the run that produced them
+      # kept nowhere. Hermetic, self-testing, and it fails when a published
+      # figure and its committed recomputation disagree.
+      - name: Published figures name where they came from
+        run: npx tsx scripts/check_published_figures.ts
+
       # Credentials load in one place, and a harness that needs them says so.
       # Free and hermetic — it reads source and runs nothing — and it belongs
       # in CI rather than only in `npm run check`, because the thing it stops

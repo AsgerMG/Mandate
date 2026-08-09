@@ -1,0 +1,18 @@
+recall set lib/intelligence/__recallSetDoors.json: 7095 pairs, 6587 whose won fund is publishable (92.8%)
+of those, 1694 (25.7%) are a fund with NO SIBLINGS — trivially alone under every arm
+
+PAIR-WEIGHTED upper bound on EXACT@5
+(a perfect chooser, x the measured pool rate 93% — funds the product never shows cannot be picked)
+arm                                         class<=5  x pool =  EXACT@5 CEILING
+TODAY: the six fields that already rank        51.5%            47.9%
+RICH-CRISP  C1+C2                              67.4%            62.7%
+RICH FULL   C1+C2+F                            70.9%            65.9%
+[circular] verbatim eligibility_text           83.4%            77.6%
+
+for comparison, the product SHIPS EXACT@5 25% on this set.
+
+UNWEIGHTED over all 895 publishable instruments (each fund once)
+TODAY: the six fields that already rank        59.4%
+RICH-CRISP  C1+C2                              73.0%
+RICH FULL   C1+C2+F                            76.3%
+[circular] verbatim eligibility_text           83.8%

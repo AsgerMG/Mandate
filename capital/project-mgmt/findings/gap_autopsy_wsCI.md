@@ -1,5 +1,43 @@
 # The fifteen points are not lost anywhere. They were never a pool problem.
 
+> ## ⚠ THREE OF THE FOUR BUCKETS IN §1 ARE CORRECTED. THE FOURTH STANDS.
+>
+> The holdout run this document publishes was made at **15:00Z**, two hours
+> BEFORE `rankerTallyLine` existed (`fd27cec0`, 17:15Z), and
+> `gap_autopsy_wsCI_holdout.txt` has no `ranker:` line at all. It is the one
+> condition §6 of this same document tells every OTHER number to be read
+> under, never applied to its own headline.
+>
+> Re-run by wsCP on `59df3f83`, same command, same seed, same corpus, on an
+> idle machine with `ranker: all 247 request(s) on EMBEDDING` on screen
+> (`number_audit_wsCP_autopsy_holdout.txt`):
+>
+> | bucket | published here | recomputed | |
+> |---|--:|--:|---|
+> | 1 never in the pool | 3.7% | **1.6%** | `CHANNEL_BACKFILL` now ships on |
+> | 2 cut before the table | 7.4% | 7.4% | unchanged — and see below |
+> | 3 ranked below five | 41.5% | **44.2%** | |
+> | 4 unwinnable | 47.3% | **46.8%** | |
+> | EXACT@5 holdout | 24.8% | **24.0%** | |
+>
+> **Bucket 2 is not a product defect at all.** All 14 of its misses fire
+> `SEL-CAPITAL` against `CONSTANT_ANSWERS.capitalSought = ["grant","loan"]`
+> (`recallSet.ts:242`) — a constant the harness pins, not a preference a
+> founder stated. §1 below describes it as "the founder asked for grants and
+> loans". There is no founder in this replay. 7.4% of the loss is the harness
+> declining tax-credit and equity instruments on its own behalf.
+>
+> **Bucket 4 measures gate-extraction coverage as much as indistinguishability.**
+> `residualClassSizes` keys on `value_spec` where `gate_role='filter'` and
+> returns `""` for a fund with no matchable gate on a field, so an
+> under-extracted fund collapses into a large class and is scored "unwinnable".
+>
+> **§2 and §3 are not reproducible.** The three-line block below (96.4% / 77.6%
+> / 26.8%), the median-53 figure, the 83.2% regime headroom and the eight-row
+> permutation table are printed by NO committed script. They were computed
+> ad-hoc off the `OUT=` dump and never captured. The reproduce block above does
+> not regenerate them.
+
 **Workstream CI · 2026-08-09 · isolated worktree off `main` at `a5903573`.**
 
 Reproduce (FREE — one Voyage embed and one Postgres read per pair, no model

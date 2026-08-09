@@ -1,0 +1,89 @@
+instruments 1088, publishable 895, multi-leaf regimes 36, leaves 605
+filter gates 3595; demand clusters at TAU 0.72: 731
+
+SPLIT of the filter population  (MODEL LABELS /tmp/wscc_cluster_labels.json)
+class   gates  clusters  instruments  already encoded
+C1       2232       355          838       1433 (64%)
+U         591        36          536        506 (86%)
+C2        414       134          238        159 (38%)
+F         358       206          242        157 (44%)
+
+UNENCODED filter gates (value_spec IS NULL): 1340
+  C1       799  59.6%
+  C2       255  19.0%
+  F        201  15.0%
+  U         85  6.3%
+
+=== CEILING@5 on wsCA's population, so the numbers compose with 40.0 / 43.1 / 62.0 / 85.5 ===
+arm                                                         mean   alone   CEIL@5  gain/today  regimes  top share
+nothing asked                                              50.50    0.0%     7.6%       -32.4        0          -
+TODAY: the six fields that already rank                    26.19   18.2%    40.0%        +0.0        0          -
++ every mapped field's comparator (wsCA 43.1)              19.14   27.8%    51.7%       +11.7       11        25%
+RICH-CRISP-ENUM  C1 demands, at demand granularity         17.23   30.9%    53.1%       +13.1       12        20%
+RICH-BESPOKE     C2 demands, at demand granularity         20.72   25.6%    47.1%        +7.1       12        38%
+RICH-FUZZY       F  demands, at demand granularity         26.53   17.9%    42.3%        +2.3       10        18%
+RICH-CRISP  C1+C2                                          14.67   40.0%    60.0%       +20.0       13        25%
+RICH FULL   C1+C2+F  — THE CEILING UNDER A RICH PROFILE    14.19   42.0%    65.0%       +25.0       14        22%
+  [circular, for reference] verbatim requirement text      12.96   56.4%    70.1%       +30.1       14        25%
+  [circular, for reference] verbatim eligibility_text      11.69   54.7%    76.0%       +36.0       14        26%
+
+what the founder must SAY to earn each arm:
+  nothing asked                                          —
+  TODAY: the six fields that already rank                the six first-page answers
+  + every mapped field's comparator (wsCA 43.1)          every one of today's 25 fields, answered perfectly
+  RICH-CRISP-ENUM  C1 demands, at demand granularity     every printable attribute of the company: size, money, place, stage, status
+  RICH-BESPOKE     C2 demands, at demand granularity     every number about the project in the scheme's own units
+  RICH-FUZZY       F  demands, at demand granularity     prose about the technology, the plan and the money
+  RICH-CRISP  C1+C2                                      attributes + bespoke numbers
+  RICH FULL   C1+C2+F  — THE CEILING UNDER A RICH PROFILE everything a founder or their VC could truthfully say
+  [circular, for reference] verbatim requirement text    the fund's own sentence, word for word — a founder cannot state this
+  [circular, for reference] verbatim eligibility_text    the fund's whole eligibility page — a founder cannot state this
+
+=== GRANULARITY SWEEP — the ceiling as a function of how coarsely two demands are
+    allowed to mean the same thing. TAU -> 1 is the circular verbatim reading. ===
+TAU      clusters   RICH FULL CEIL@5
+verbatim      1966              69.9%
+0.95         1743              68.9%
+0.90         1402              67.9%
+0.85         1074              67.8%
+0.80          832              68.3%
+0.75          749              67.3%
+0.72          731              65.0%
+0.70          717              60.7%
+0.65          708              56.2%
+0.60          705              55.4%
+
+=== QUESTION BUDGET — ceiling if the profile answers only the k demand clusters
+    that the most funds ask about (ranked by instrument reach, never by fund name) ===
+    k   CEIL@5  cumulative share of filter gates covered
+    1    33.1%        15.6%
+    2    40.5%        32.8%
+    3    43.0%        36.7%
+    5    44.1%        41.5%
+    8    48.9%        47.7%
+   12    50.9%        52.7%
+   20    56.9%        58.8%
+   30    57.7%        62.1%
+   50    57.9%        64.7%
+   80    58.3%        66.4%
+  150    58.7%        68.4%
+  300    58.7%        72.6%
+  695    65.0%        83.6%
+
+=== BUDGET, GREEDY — the upper bound on any question-selection policy ===
+candidate demand classes reaching >=3 instruments: 52 of 695
+    k  greedy CEIL@5   (reach-ranked, for comparison)
+    1   38.7%
+    2   41.8%
+    3   44.1%
+    5   47.8%
+    8   51.7%
+   10   53.4%
+   15   57.7%
+   20   58.3%
+   25   58.3%
+   30   58.3%
+
+NOTE ON DENOMINATOR: 605 of 895 publishable instruments sit in a multi-leaf
+regime; the other 290 are their own regime and are trivially "alone". A ceiling of C on
+the 605 is a ceiling of (290 + 605*C/100)/895 over the whole offer.

@@ -4,7 +4,7 @@
 > than argued.** wsCC (2026-08-09, `findings/rich_intake_wsCC.md`): under FULL
 > founder information — not today's six questions — the honest maximum is
 > **65.9% EXACT@5**, and the number any question-selection policy can plan
-> against is **58.3%**. Bound by pool reach (−7) and by 29 points of funds that
+> against is **58.3%**. ⚠ **58.3% is CEILING@5 and 65.9% is EXACT@5 — different metrics over different populations; do not subtract them.** Its like-for-like partner is 65.0% CEIL@5. No EXACT@5-weighted greedy run exists. See RESUME_HERE.md. Bound by pool reach (−7) and by 29 points of funds that
 > stay genuinely indistinguishable after everything a founder can truthfully
 > say. **Plan against 58%, never against 95%.**
 >
