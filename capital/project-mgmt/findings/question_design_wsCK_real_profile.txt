@@ -1,0 +1,48 @@
+(node:24662) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6779 (95.5%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+draw verified row-for-row against /tmp/wsck/tune.json (250 pairs)
+SPACE=profile: 1088/1088 instruments carry a topic vector (0 would be un-labellable)
+described founders in this draw: 57/250 (23%) — the other 193 answer no topic question and are excluded
+
+SPLIT=tune  described N=57  base EXACT@5 35.1%   (the same pairs, shipped order)
+
+   K   agreement   PARTITION EXACT@5      FILTER EXACT@5   winners the filter blocks
+   4        49%           31.6% (-3.5)           26.3% (-8.8)        29  50.9% of the draw
+   8        21%           21.1% (-14.0)           10.5% (-24.6)        45  78.9% of the draw
+  16        26%           19.3% (-15.8)           10.5% (-24.6)        42  73.7% of the draw
+  24         9%           28.1% (-7.0)            7.0% (-28.1)        52  91.2% of the draw
+  32        11%           28.1% (-7.0)           10.5% (-24.6)        51  89.5% of the draw
+  48        16%           33.3% (-1.8)           12.3% (-22.8)        48  84.2% of the draw
+  64        14%           28.1% (-7.0)           10.5% (-24.6)        49  86.0% of the draw
+  96         4%           26.3% (-8.8)            3.5% (-31.6)        55  96.5% of the draw
+ 128         9%           31.6% (-3.5)            8.8% (-26.3)        52  91.2% of the draw
+
+WINNERS A K=16 FILTER WOULD BLOCK (named, because a rate hides which ones)
+   CONSIGLIO NAZIONALE DELLE RICERCHE (IT) -> sns_ju
+   ROOFLINEAI GMBH (DE) -> satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung
+   BOURNEMOUTH UNIVERSITY (GB) -> innovate_uk
+   DEMCON SYNC BIOSYSTEMS BV (NL) -> eic_transition
+   ASTAZERO AB (SE) -> vinnova_grant__sip_drive_sweden_1c1174
+   ACEON BATTERY SOLAR TECHNOLOGY (GB) -> innovate_uk
+   HUTCHINSON (FR) -> satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai
+   CHALMERS TEKNISKA HÖGSKOLA AB (SE) -> vinnova_grant__sip_swedish_mining_innovation_0fc479
+   ERASMUS UNIVERSITAIR MEDISCH CENTRUM ROTTERDAM (NL) -> ihi
+   RIJKSINSTITUUT VOOR VOLKSGEZONDHEID EN MILIEU (NL) -> horizon_eu_cl6
+   AMORPHIQ (GB) -> innovate_uk
+   AGROCLIMATE SWEDEN AB (SE) -> vinnova_grant__innovativa_startups_programniva_a36873
+   ACTUATION LAB (GB) -> innovate_uk
+   BRIGHT DAY GRAPHENE AB (SE) -> vinnova_grant__sip_bioinnovation_132127
+   21 12 COMMUNICATIONS (GB) -> innovate_uk
+   KUNGLIGA TEKNISKA HÖGSKOLAN (SE) -> vinnova_grant__excellenskluster_for_banbrytande_teknik_fc496f
+   GÖTEBORGS KOMMUN (SE) -> vinnova_grant__innovationsprojekt_for_offentlig_verksamhet_b32a9b
+   ALLIHOP AB (SE) -> vinnova_grant__innovationer_for_ett_hallbart_mobilitetssystem_5bf35a
+   HANDELSHÖGSKOLAN I STOCKHOLM (SE) -> vinnova_grant__artificiell_intelligens_3277e6
+   SOCIETE FINANCIERE BERT (FR) -> satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai

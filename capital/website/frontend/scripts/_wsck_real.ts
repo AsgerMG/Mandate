@@ -146,12 +146,38 @@ async function main() {
     `SELECT id, name, description FROM funding_instruments ORDER BY id`);
   await db.end();
 
-  const cacheFile = process.env.EMB ?? "/tmp/wsck/emb.json";
-  if (!existsSync(cacheFile)) throw new Error(`missing ${cacheFile} — run _wsck_topic.ts first`);
-  const vecs = JSON.parse(readFileSync(cacheFile, "utf8")) as Record<string, number[]>;
-  const missing = rows.filter((r) => !vecs[r.id]);
-  if (missing.length) throw new Error(`${missing.length} instruments missing from the topic space`);
-  const ids = rows.map((r) => r.id);
+  // ── which side of the bridge the FUND stands on ──────────────────────────
+  // SPACE=source  the call's own name and description, from the source page.
+  // SPACE=profile the production index: what the fund FUNDS, built from the
+  //               project titles it awarded. semantic.ts documents why this is
+  //               the space a company description can be matched in at all, so
+  //               a topic question that fails in `source` and works in `profile`
+  //               is a fact about the bridge and not about the question.
+  const space = process.env.SPACE ?? "source";
+  if (!["source", "profile"].includes(space)) throw new Error(`unknown SPACE=${space}`);
+  let vecs: Record<string, number[]>;
+  if (space === "profile") {
+    const db2 = new Client({ connectionString: process.env.DATABASE_URL });
+    await db2.connect();
+    const p = await db2.query<{ instrument_id: string; embedding: string }>(
+      `SELECT instrument_id, embedding::text AS embedding FROM instrument_profiles`);
+    await db2.end();
+    vecs = {};
+    for (const r of p.rows) vecs[r.instrument_id] = norm(JSON.parse(r.embedding) as number[]);
+    if (!p.rows.length) throw new Error("instrument_profiles is empty — the profile space does not exist");
+  } else {
+    const cacheFile = process.env.EMB ?? "/tmp/wsck/emb.json";
+    if (!existsSync(cacheFile)) throw new Error(`missing ${cacheFile} — run _wsck_topic.ts first`);
+    vecs = JSON.parse(readFileSync(cacheFile, "utf8")) as Record<string, number[]>;
+  }
+  // A fund with no vector cannot be topic-labelled at all. Reported, never
+  // silently dropped: an unlabelled fund in the pool is one a topic partition
+  // pushes to the back for every founder, which is the shape of a hidden fund.
+  const covered = rows.filter((r) => vecs[r.id]);
+  console.log(`SPACE=${space}: ${covered.length}/${rows.length} instruments carry a topic vector` +
+    ` (${rows.length - covered.length} would be un-labellable)`);
+  if (covered.length < rows.length * 0.5) throw new Error(`SPACE=${space} covers under half the corpus`);
+  const ids = covered.map((r) => r.id);
   const X = ids.map((i) => vecs[i]);
 
   // ── the founder side: their own leak-free words, embedded as a QUERY ──────
