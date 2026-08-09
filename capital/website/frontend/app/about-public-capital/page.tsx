@@ -274,8 +274,9 @@ export default async function AboutPublicCapitalPage() {
                   <Src n={2} />. The conviction tier (Innovation Fund {fmtEur(inf?.medianTicket)},
                   IPCEI {fmtEur(ipcei?.medianTicket)}) is not an application you fire off; it is a
                   multi-year positioning project that behaves like a state-underwritten growth round
-                  when it lands. Stegra carried {VERIFIED_AWARDS.stegraInnovationFund} from the
-                  Innovation Fund into its green-steel buildout; Porsche&apos;s Cellforce drew{" "}
+                  when it lands. Stegra carried {VERIFIED_AWARDS.stegraInnovationFund}{" "}
+                  from the Innovation Fund into its green-steel buildout; Porsche&apos;s Cellforce
+                  drew{" "}
                   {VERIFIED_AWARDS.cellforceBatteryAid} of granted battery aid; Multiverse
                   Computing stacked {VERIFIED_AWARDS.multiverseChannels} channels before its
                   2025 mega-round.

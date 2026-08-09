@@ -167,8 +167,8 @@ const STEPS: Step[] = [
         </P>
         <P>
           When one lands it behaves like a {b("state-underwritten growth round")}. Stegra
-          carried {VERIFIED_AWARDS.stegraInnovationFund} from the Innovation Fund into its
-          green-steel buildout; Porsche&apos;s Cellforce drew{" "}
+          carried {VERIFIED_AWARDS.stegraInnovationFund}{" "}
+          from the Innovation Fund into its green-steel buildout; Porsche&apos;s Cellforce drew{" "}
           {VERIFIED_AWARDS.cellforceBatteryAid} of granted battery aid.
         </P>
       </div>
