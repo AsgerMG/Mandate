@@ -103,6 +103,59 @@ function bandOrderFor(field: string, frozen?: readonly string[]): readonly strin
   return BAND_ORDERS[field] ?? frozen ?? [];
 }
 
+/**
+ * WHEN a frozen band order can still change how a rule evaluates — which is the
+ * only thing about it worth failing a build over.
+ *
+ * `bandOrderFor` above already decided this and the answer is derived from it
+ * rather than restated, so the guard and the evaluator cannot drift. There are
+ * exactly two dangerous states and one harmless one:
+ *
+ *   "load-bearing"  the vocabulary has NO order for this field, so the frozen
+ *                   snapshot IS the order the rule is judged on, and nothing
+ *                   maintains it. This is `region`'s shape: inert or wrong, and
+ *                   no way to tell which.
+ *   "contradicts"   the vocabulary HAS an order and the snapshot disagrees with
+ *                   it. The live order wins, so the rule is now judged on a
+ *                   scale its author did not write it against and its bound may
+ *                   have moved meaning underneath it. This is `lt500k`'s shape,
+ *                   where rebanding silently tightened a rule twentyfold.
+ *   null            the vocabulary has an order and the snapshot agrees with it.
+ *                   Dead bytes. `bandOrderFor` never reads them, and deleting
+ *                   them changes no founder's answer.
+ *
+ * ── Why this is not "no spec may carry an order" ──────────────────────────
+ * That is what `check_gate_field_reach` asserted until 2026-08-09, and it was
+ * red on 222 comparators — every one of them on a field WITH a live order and
+ * byte-identical to it, i.e. provably unread and provably correct. The remedy
+ * it printed, `reband_ticket_gates.py`, filters to `field = 'ticketBand'` and
+ * could never have cleared a single one of them; a check whose stated fix
+ * cannot make it pass is a check that gets deleted by the next person to see it
+ * red. And the property it was reaching for had already been TRUE for months:
+ * the danger was real when the snapshot was the only order there was, and it
+ * stopped being real the day `bandOrderFor` learned to prefer the vocabulary.
+ *
+ * Nothing that could mis-evaluate a founder's answer stops failing here. Two
+ * states that could and were being conflated with the harmless one now fail
+ * separately, with the reasons that tell them apart. Note in particular that
+ * comparator.ts's own docstring claimed `check_vocabularies.ts` fails the build
+ * on a disagreeing snapshot: it does not, and never has — that claim is why
+ * "contradicts" was believed to be covered.
+ */
+export type FrozenOrderRisk = "load-bearing" | "contradicts";
+
+export function frozenOrderRisk(spec: {
+  op?: string; field?: string; order?: unknown;
+}): FrozenOrderRisk | null {
+  if (spec.op !== "band_max" && spec.op !== "band_min") return null;
+  const frozen = spec.order;
+  if (!Array.isArray(frozen)) return null;
+  const live = BAND_ORDERS[spec.field ?? ""];
+  if (!live) return "load-bearing";
+  return live.length === frozen.length
+    && live.every((b, i) => b === frozen[i]) ? null : "contradicts";
+}
+
 /** Position of `answer` in an ordered band list, or null if either end is
  *  unrecognised — an unknown band is unanswerable, never a failure. */
 function comparePosition(

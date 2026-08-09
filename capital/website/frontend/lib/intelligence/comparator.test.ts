@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { evaluateSpec, matchesAny, NON_ANSWERS, type ValueSpec } from "./comparator";
+import {
+  evaluateSpec, frozenOrderRisk, matchesAny, NON_ANSWERS, type ValueSpec,
+} from "./comparator";
+import { BAND_ORDERS } from "./vocabulary";
 import { TICKET_BANDS, bandFloorEur, bandForEur } from "./types";
 import { LARGE_SCALE_MIN_EUR, opensLargeScaleLane } from "./shortlist";
 
@@ -121,12 +124,61 @@ describe("a stale frozen band order cannot disable a rule", () => {
   });
 
   it("still honours a frozen order for a field the vocabulary does not band", () => {
-    // developmentStage has no BAND_ORDERS entry, so the spec's own list is the
-    // only order there is and must keep working.
-    const order = ["research", "prototype", "pilot_customers", "scaling_revenue"];
-    const s: ValueSpec = { op: "band_max", field: "developmentStage", maxAllowed: "prototype", order };
-    expect(evaluateSpec(s, "research")).toBe(true);
-    expect(evaluateSpec(s, "scaling_revenue")).toBe(false);
+    // The premise here USED to name developmentStage as "a field the vocabulary
+    // does not band". It does band it — BAND_ORDERS has carried a
+    // developmentStage entry for some time — so this test passed while
+    // exercising the live-order path and asserting nothing about the fallback
+    // it is named for. A field the vocabulary genuinely does not band is the
+    // only way to reach `frozen`, so the case is built from one.
+    const order = ["seed", "series_a", "series_b"];
+    const s: ValueSpec = { op: "band_max", field: "roundBand", maxAllowed: "series_a", order };
+    expect(BAND_ORDERS.roundBand).toBeUndefined();
+    expect(evaluateSpec(s, "seed")).toBe(true);
+    expect(evaluateSpec(s, "series_b")).toBe(false);
+  });
+});
+
+/**
+ * The frozen band order, and the only two states of it worth failing a build on.
+ *
+ * `check_gate_field_reach` used to fail on the mere PRESENCE of an `order` key
+ * and was red on 222 comparators, every one of them on a field with a live
+ * order and byte-identical to it — unread by `bandOrderFor` and correct anyway.
+ * These are the cases that replaced it, and they are here rather than in the
+ * check so the property is proved without a database.
+ */
+describe("frozenOrderRisk", () => {
+  it("is silent when the snapshot agrees with the live vocabulary", () => {
+    // Dead bytes: bandOrderFor prefers BAND_ORDERS, so this copy is never read
+    // and deleting it changes no founder's answer. This is all 222 of them.
+    expect(frozenOrderRisk({
+      op: "band_max", field: "fteBand", order: [...BAND_ORDERS.fteBand],
+    })).toBeNull();
+  });
+
+  it("fails a snapshot that is LOAD-BEARING — no live order for the field", () => {
+    // Nothing maintains it, and a value it predates makes the rule unassessable
+    // for every founder forever. `region`'s shape.
+    expect(frozenOrderRisk({
+      op: "band_min", field: "roundBand", order: ["seed", "series_a"],
+    })).toBe("load-bearing");
+  });
+
+  it("fails a snapshot that CONTRADICTS the live order", () => {
+    // The live order wins, so the rule is judged on a scale its author did not
+    // write it against. `lt500k`'s shape: rebanding tightened a rule twentyfold.
+    expect(frozenOrderRisk({
+      op: "band_max", field: "fteBand", order: ["1-9", "10-49"],
+    })).toBe("contradicts");
+    // Same members, different order, is still a different scale.
+    expect(frozenOrderRisk({
+      op: "band_max", field: "fteBand", order: [...BAND_ORDERS.fteBand].reverse(),
+    })).toBe("contradicts");
+  });
+
+  it("says nothing about specs that carry no order, or no band", () => {
+    expect(frozenOrderRisk({ op: "band_max", field: "fteBand" })).toBeNull();
+    expect(frozenOrderRisk({ op: "in", field: "fteBand", order: ["x"] })).toBeNull();
   });
 });
 

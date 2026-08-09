@@ -123,6 +123,7 @@ async function main() {
   const { FIELD_REACH, FIELD_ENUM_HINTS } = await import("../lib/intelligence/types");
   const { VOCABULARY } = await import("../lib/intelligence/vocabulary");
   const { sanitizeEligibility } = await import("../lib/intelligence/sanitize");
+  const { frozenOrderRisk } = await import("../lib/intelligence/comparator");
 
   const url = CREDENTIALS === "offline" ? null : process.env.DATABASE_URL ?? null;
   if (!url) {
@@ -171,41 +172,76 @@ async function main() {
     byField.set(field, e);
   }
 
-  // ── A band comparator may not carry its own copy of the band order ────────
-  // `band_max`/`band_min` specs used to embed the band list as it stood when
-  // the rule was encoded. Rebanding `ticketBand` turned all 33 of them stale in
-  // one commit, and a stale order fails in the worst available way: `indexOf`
-  // returns -1 for a band the snapshot predates, `comparePosition` returns
-  // null, and the rule reads "not assessable" for every founder forever.
+  // ── A band comparator may not be judged on an order nothing maintains ─────
+  // `band_max`/`band_min` specs embed the band list as it stood when the rule
+  // was encoded, and a snapshot the rule is actually judged on fails in the
+  // worst available way: `indexOf` returns -1 for a band it predates,
+  // `comparePosition` returns null, and the rule reads "not assessable" for
+  // every founder forever. Inert, and therefore never contradicted — which is
+  // the same shape as `region`, where 193 rules sat inert long enough for 41 of
+  // them to be filed against the wrong field with nothing to notice.
   //
-  // That is precisely the shape this check was built to find. `region` sat
-  // inert for months — 193 rules on 163 instruments — and the inertness is what
-  // let 41 of them be filed against the wrong field and never contradicted. A
-  // rule that never fires is a rule nothing can prove wrong, so the duplicate
-  // that can silently disable one is refused rather than kept in sync.
-  // comparator.ts reads BAND_ORDERS; ETL/terms/reband_ticket_gates.py drops
-  // these.
-  const frozenOrder: { id: unknown; instrument: string; bands: number }[] = [];
+  // WHICH SNAPSHOTS THOSE ARE is decided by `frozenOrderRisk` in comparator.ts,
+  // derived from the same `bandOrderFor` the evaluator uses, so the guard and
+  // the evaluator cannot disagree about it. Two dangerous states, and they are
+  // reported apart because their fixes are different:
+  //
+  //   load-bearing  no live BAND_ORDERS entry for the field, so the snapshot IS
+  //                 the scale and nobody maintains it.
+  //   contradicts   a live entry exists and the snapshot disagrees; the live
+  //                 order wins, so the rule is judged on a scale its author did
+  //                 not write it against and its bound may have moved meaning.
+  //
+  // WHAT THIS DELIBERATELY STOPPED FAILING ON, on 2026-08-09: a snapshot that
+  // agrees with the live vocabulary. This clause used to fail on the mere
+  // PRESENCE of an `order` key, and was red on 222 comparators — all six of
+  // their fields have a live order, and all 222 copies are byte-identical to
+  // it, so `bandOrderFor` never reads one and deleting them all would change no
+  // founder's answer. The remedy it printed, `reband_ticket_gates.py`, filters
+  // to `field = 'ticketBand'` and could not have cleared a single one. A check
+  // that is permanently red on provably inert, provably correct data, with a
+  // prescribed fix that cannot make it pass, is a check that gets switched off
+  // — and it would have taken the two real states above with it.
+  const frozenOrder: {
+    id: unknown; instrument: string; field: string; risk: string; bands: number;
+  }[] = [];
   for (const r of rows) {
-    let spec: { op?: string; order?: unknown };
+    let spec: { op?: string; field?: string; order?: unknown };
     try {
       spec = typeof r.value_spec === "string" ? JSON.parse(r.value_spec) : r.value_spec;
     } catch { continue; }
-    if ((spec.op === "band_max" || spec.op === "band_min") && Array.isArray(spec.order)) {
+    const risk = frozenOrderRisk(spec);
+    if (risk) {
       frozenOrder.push({
-        id: r.id, instrument: String(r.name ?? r.instrument_id), bands: spec.order.length });
+        id: r.id, instrument: String(r.name ?? r.instrument_id),
+        field: spec.field ?? "(none)", risk,
+        bands: Array.isArray(spec.order) ? spec.order.length : 0 });
     }
   }
 
   const failures: string[] = [];
   const noted: string[] = [];
-  if (frozenOrder.length) {
+  for (const risk of ["load-bearing", "contradicts"] as const) {
+    const hits = frozenOrder.filter((f) => f.risk === risk);
+    if (!hits.length) continue;
+    const fieldsHit = [...new Set(hits.map((f) => f.field))];
     failures.push(
-      `  FROZEN BAND ORDER — ${frozenOrder.length} band comparator(s) carry their own copy\n` +
-      `      of the band list, which the vocabulary can outgrow without anything failing.\n` +
-      `      e.g. gate ${frozenOrder[0].id} (${frozenOrder[0].instrument.slice(0, 40)}), ` +
-      `${frozenOrder[0].bands} bands\n` +
-      `      → run: python3 ETL/terms/reband_ticket_gates.py`);
+      `  FROZEN BAND ORDER (${risk}) — ${hits.length} band comparator(s) on ` +
+      `${fieldsHit.join(", ")}\n` +
+      (risk === "load-bearing"
+        ? `      carry the ONLY band order they are judged on, and the ` +
+          `vocabulary has none for that field. Nothing maintains it; a value ` +
+          `the snapshot predates makes the rule unassessable for everyone, ` +
+          `forever.\n      Fix: give the field a BAND_ORDERS entry in ` +
+          `lib/intelligence/vocabulary.ts, then drop the snapshots.`
+        : `      disagree with the live BAND_ORDERS for their field. The live ` +
+          `order wins, so each rule is now judged on a scale its author did ` +
+          `not write it against and its bound may mean something else.\n` +
+          `      Fix: re-read each bound against the live order before ` +
+          `dropping the snapshot — this is where rebanding silently tightened ` +
+          `a rule twentyfold.`) +
+      `\n      e.g. gate ${hits[0].id} (${hits[0].instrument.slice(0, 40)}), ` +
+      `${hits[0].bands} bands`);
   }
   const evPct = (n: number) => `${((100 * n) / Number(totalEvents)).toFixed(1)}% of events`;
   const where = (e: Row) =>
