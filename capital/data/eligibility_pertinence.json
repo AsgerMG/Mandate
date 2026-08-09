@@ -179,6 +179,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "03448718baeb7ebc": {
+   "reason": "Requires core team of three or more capable actors.",
+   "sample": "Applicant must be a core team of three or more actors capable of building an innovation platform.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "034965737fba5828": {
    "reason": "Eligible applicant types plus exclusion of individuals.",
    "sample": "Klimatklivet is aimed at municipalities, regions, companies and organisations across Sweden; private individuals cannot apply.",
@@ -383,6 +389,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "0643a18dc8d4551b": {
+   "reason": "Applicant must offer test/demo infrastructure or run accelerator \u2014 checkable capability.",
+   "sample": "Applicant must either offer test and demo infrastructure, or run an established accelerator and/or business development programme",
+   "v": 3,
+   "verdict": "condition"
+  },
   "065802ddf69042b6": {
    "reason": "Financial distress exclusion threshold applicant can verify.",
    "sample": "Company must not be in financial distress (losses exceeding half of subscribed capital)",
@@ -395,9 +407,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "067ace82ca637400": {
+   "reason": "Project purpose restriction to RDI.",
+   "sample": "The project must be for research, development and innovation purposes",
+   "v": 3,
+   "verdict": "condition"
+  },
   "067d72b2bcc4e543": {
    "reason": "Eligible recipient types plus exclusions (insolvency, recovery order) checkable by applicant.",
    "sample": "3 Zuwendungsempf\u00e4nger Zuwendungsempf\u00e4nger k\u00f6nnen Unternehmen der gewerblichen Wirtschaft mit Sitz, einer Niederlassung oder Betriebsst\u00e4tte in Deutschland sowie staatliche und nicht staatliche Hochschulen, Forschungseinri",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "068172982bbdd413": {
+   "reason": "Regional location requirement",
+   "sample": "The project must be carried out in the region of Castilla y Le\u00f3n (ES41).",
    "v": 3,
    "verdict": "condition"
   },
@@ -446,6 +470,12 @@
   "06c801b9b8e5fb8f": {
    "reason": "Sector eligibility plus requirement of need-owner partner.",
    "sample": "Offentlig och ideell sektor, n\u00e4ringsliv och forskningsorganisationer. Projektet ska ha minst tv\u00e5 parter varav en projektpart ska vara behovs\u00e4gare. Med behovs\u00e4gare menar vi den akt\u00f6r som har nytta av l\u00f6sningen och som ska",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "06ca71bf830e94cb": {
+   "reason": "Minimum investment size threshold applying to the applicant's project.",
+   "sample": "Project investments must exceed 3 million euros.",
    "v": 3,
    "verdict": "condition"
   },
@@ -527,15 +557,33 @@
    "v": 3,
    "verdict": "condition"
   },
+  "086fe909c66e374c": {
+   "reason": "Applicant status requirement including self-employed; checkable.",
+   "sample": "Applicant must be a large enterprise, an SME, or a self-employed individual carrying out an economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "088bd65332783113": {
    "reason": "Undertaking-in-difficulty exclusion with dated exception \u2014 applicant can check status.",
    "sample": "Aid is not granted to undertakings in difficulty as defined by Article 2(18) AGVO, with a limited exception for firms that became distressed only between 1 Jan 2020 and 31 Dec 2021.",
    "v": 3,
    "verdict": "condition"
   },
+  "089447edea90e8bc": {
+   "reason": "Project must meet five sustainability principles \u2014 checkable merit condition.",
+   "sample": "Project must demonstrate it fits within a sustainable and responsible tourism approach meeting 5 specified principles",
+   "v": 3,
+   "verdict": "condition"
+  },
   "08b1cecfd8dc0106": {
    "reason": "Financial capacity requirement on participants.",
    "sample": "Grants may be awarded only to participants that can demonstrate sufficient financial capacity to perform their activity throughout the duration of the action, checked via Participant Register documents.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "08d20cd5b40ef970": {
+   "reason": "Sector eligibility requirement.",
+   "sample": "Applicant's economic activity must fall within the eligible sectors: Other Services, or Transportation and Storage.",
    "v": 3,
    "verdict": "condition"
   },
@@ -548,6 +596,12 @@
   "08d7802093a08585": {
    "reason": "GBER Article 2(18) difficulty test excludes qualifying applicants.",
    "sample": "Companies meeting the criteria of an \"undertaking in difficulty\" under Article 2(18) of the GBER are excluded from GBER-based funding.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "08fef4f8b179f319": {
+   "reason": "Geographic location requirement on project.",
+   "sample": "The project must be located within the defined geographic scope (France, code PAYS-99100)",
    "v": 3,
    "verdict": "condition"
   },
@@ -587,6 +641,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "09308790834c258e": {
+   "reason": "Region-specific eligibility of study types, with exclusion \u2014 checkable.",
+   "sample": "In Provence-Alpes-C\u00f4te d'Azur and Nouvelle-Aquitaine, only potential and feasibility studies are eligible; preliminary design (avant-projet) studies are excluded",
+   "v": 3,
+   "verdict": "condition"
+  },
   "0936d108b38399e1": {
    "reason": "Lists eligible applicant types plus Vienna establishment requirement.",
    "sample": "Eligible are entrepreneurs, business founders, associations, and research or education institutions that have an active establishment in Vienna or plan to establish one.",
@@ -620,6 +680,12 @@
   "0992743c1ef02572": {
    "reason": "Requires SME registration or VAT-holding professional, with sector exclusions.",
    "sample": "Il Fondo e' rivolto a: micro, piccole e medie imprese (PMI) iscritte al Registro delle Imprese; professionisti titolari di partita IVA. Sono ammissibili i soggetti di tutti i settori economici, con limitate eccezioni qua",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0992b46920ecf71a": {
+   "reason": "Regional location requirement.",
+   "sample": "Project activity must take place in the Castilla-La Mancha region (ES42)",
    "v": 3,
    "verdict": "condition"
   },
@@ -779,6 +845,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "0b293b37f179f55c": {
+   "reason": "Minimum three project partners requirement.",
+   "sample": "Project must include at least three project partners",
+   "v": 3,
+   "verdict": "condition"
+  },
   "0b298d066351d0fd": {
    "reason": "Mid-caps must meet an additional criterion \u2014 checkable extra requirement.",
    "sample": "Firms with more than 250 employees (mid-caps) are eligible only if they meet at least one additional criterion, such as being an innovation/R&D-driven or fast-growing enterprise, or targeting convergence regions.",
@@ -833,6 +905,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "0bc3187b9d23c08b": {
+   "reason": "Applicant type requirement",
+   "sample": "Applicant must be a PYME (SME) or a natural person carrying out an economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "0be60ae9a030b9b2": {
    "reason": "Requires each partner to contribute minimum 20% cash \u2014 checkable obligation on applicant.",
    "sample": "Each company partner must pay a minimum of 20% of the project costs in cash irrespective of company size or research category.",
@@ -848,6 +926,12 @@
   "0bf6b9f72433d5ae": {
    "reason": "Requires single company willing to accept equity dilution.",
    "sample": "Applicant must be a single company willing to take equity investment (cap-table dilution)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0bfa8432a8d5f790": {
+   "reason": "Requires Swedish branch or place of business \u2014 applicant-checkable.",
+   "sample": "Applicant must have a branch or place of business in Sweden to receive funding",
    "v": 3,
    "verdict": "condition"
   },
@@ -869,9 +953,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "0c6a4ecb004efba8": {
+   "reason": "Enumerates eligible applicant categories.",
+   "sample": "Applicant must be a large enterprise, a legal entity not carrying out economic activity, an SME, or a natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "0c800ff477e5b4e4": {
    "reason": "Requires single-company applicant, excluding consortia.",
    "sample": "Applicant is a single company (not consortium) applying to a national programme",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0c9045cf5e5b8230": {
+   "reason": "Minimum two partner organisations requirement.",
+   "sample": "The project must involve at least 2 partner organisations",
    "v": 3,
    "verdict": "condition"
   },
@@ -896,6 +992,18 @@
   "0d63b911dd56d882": {
    "reason": "Incorporation and location requirement with documentary evidence.",
    "sample": "Applicant must already be incorporated and operating in an EU/Horizon Europe or Horizon Europe associated country, evidenced by an incorporation certificate.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0daac2ce6035d768": {
+   "reason": "Project must include three need-owner organisations \u2014 threshold condition.",
+   "sample": "The project must include at least three need-owner organisations",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0dc19a96068f90df": {
+   "reason": "Project must be located in Sevilla; checkable.",
+   "sample": "Project activity must be located in the Sevilla region (ES618)",
    "v": 3,
    "verdict": "condition"
   },
@@ -962,6 +1070,12 @@
   "0e7a1a1a936e440c": {
    "reason": "Applicant must be single corporate entity \u2014 checkable eligibility.",
    "sample": "Single corporate applicant (not an individual or informal consortium)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0e94e2d525dc7b5f": {
+   "reason": "Project must be agricultural/agro-food \u2014 sector condition.",
+   "sample": "Project must be in agricultural activity or agro-food industries",
    "v": 3,
    "verdict": "condition"
   },
@@ -1073,6 +1187,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "102268c2859c8b4c": {
+   "reason": "Counterparty type/size the instrument serves, not a merit test.",
+   "sample": "Applicant must be a large enterprise, SME, or natural person carrying out an economic activity",
+   "v": 3,
+   "verdict": "demand_match"
+  },
   "10245d5f4b401600": {
    "reason": "Limits R&D beneficiaries to SMEs and small mid-caps; size eligibility test.",
    "sample": "For R&D projects specifically, beneficiaries may be SMEs and small companies with mid-size market capitalisation.",
@@ -1103,6 +1223,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "10a323be26175443": {
+   "reason": "Location requirement checkable by applicant.",
+   "sample": "Project/activity must be located in Galicia (ES11)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "10b7032c9ac96aa8": {
    "reason": "Mono-beneficiary for-profit requirement excludes research institutions and consortia.",
    "sample": "Applicant must be a single for-profit company (mono-beneficiary), not a research institution or consortium",
@@ -1124,6 +1250,12 @@
   "10df62f4a73ad2d7": {
    "reason": "Requirement about applicant's ongoing economic activity.",
    "sample": "The applicant's economic activity must not have ended or been suspended.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "10fd9449000d1d7a": {
+   "reason": "Applicant type/economic activity requirement.",
+   "sample": "Applicant must be a large enterprise, SME or self-employed individual carrying out an economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -1204,6 +1336,12 @@
    "sample": "Funds must go to first-of-a-kind net-zero/decarbonisation demonstration capex, mature enough to reach financial close in ~4 years",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "11bef9dc5b84606a": {
+   "reason": "Project must be a specific accommodation establishment type.",
+   "sample": "Project must be a tourist accommodation or other short-stay accommodation establishment",
+   "v": 3,
+   "verdict": "condition"
   },
   "11c8eadc76f33b48": {
    "reason": "Defines eligible applicant categories; reader checks whether they fall inside.",
@@ -1571,6 +1709,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "15d1541280986aac": {
+   "reason": "Sector requirement on manufacturing activity of project.",
+   "sample": "Project must be in computer/electronic/optical product manufacturing or other manufacturing industries",
+   "v": 3,
+   "verdict": "condition"
+  },
   "15daf9e6d5ff4699": {
    "reason": "Eligibility per funding object: SMEs, large firms only in consortium/critical technologies \u2014 checkable conditions.",
    "sample": "4 Zuwendungsempf\u00e4nger Zuwendungsberechtigt sind in allen F\u00f6rdergegenst\u00e4nden KMU, sowie a) Im F\u00f6rdergegenstand Th\u00fcringen FuE individuell wirtschaftsnahe Forschungseinrichtungen sowie, sofern es sich um Vorhaben handelt, w",
@@ -1637,6 +1781,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "16b0b9d137f97d1c": {
+   "reason": "Applicant category requirement, checkable by reader.",
+   "sample": "Applicant must be an innovation actor such as an incubator, science park or cluster organisation",
+   "v": 3,
+   "verdict": "condition"
+  },
   "16b255808cd84dc9": {
    "reason": "Financial-difficulty exclusion threshold, checkable.",
    "sample": "Company must not be in financial difficulty / losses exceeding half of capital excluded",
@@ -1658,6 +1808,12 @@
   "1736bcb65c6bad05": {
    "reason": "Eligible cost scope restricts project activities; mass production excluded.",
    "sample": "Funds may only cover eligible costs of R&D&I and First Industrial Deployment (FID) activities complying with the Annex to the IPCEI Communication; FID must not cover mass production or commercial activities.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "174f30b213ff4cc7": {
+   "reason": "Location requirement (Basque Country).",
+   "sample": "The project/activity must be located in the Basque Country (ES21)",
    "v": 3,
    "verdict": "condition"
   },
@@ -1688,6 +1844,12 @@
   "17a0cde3878ee8f1": {
    "reason": "Requires single trading company; excludes individuals/informal groups.",
    "sample": "Applicant must be a single trading company (not an individual or informal group)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "17b134308ad87533": {
+   "reason": "Requires single lead applicant for collective projects \u2014 structural condition.",
+   "sample": "Collective projects must be coordinated by a single lead applicant who submits the sole application on behalf of the group",
    "v": 3,
    "verdict": "condition"
   },
@@ -1907,6 +2069,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "1a809b1c5ad28b44": {
+   "reason": "Requires prior feasibility or opportunity/sizing study before applying.",
+   "sample": "Project must have undergone a prior feasibility study, or an opportunity note followed by a sizing note from the project manager",
+   "v": 3,
+   "verdict": "condition"
+  },
   "1aa880dbc4d6408d": {
    "reason": "Canary Islands SMEs/self-employed in specified service sectors; reader can verify fit.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES70 - CANARIAS. Finalidad: Comercio, Turismo y Pymes. Sectores elegibles: OTROS SERVICIOS; TRANSPORTE Y ALMACENAMIENTO. Tipo d",
@@ -1985,6 +2153,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "1b95004b0bd8f2dc": {
+   "reason": "Sector classification requirement",
+   "sample": "Applicant's sector must be classified under 'Other Services'",
+   "v": 3,
+   "verdict": "condition"
+  },
   "1ba079bde7ae16cc": {
    "reason": "Minimum 50% governance score threshold applicant must pass.",
    "sample": "Applicants must pass a Stage 1 Governance assessment scoring at least 50% or be excluded from the process.",
@@ -2021,6 +2195,18 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "1c3f40717475784c": {
+   "reason": "Activity exclusion checkable against project type.",
+   "sample": "Project must not be public works activities carried out on mobile construction sites",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1c504689d4333fe8": {
+   "reason": "Project must fall in specified NAF industry sections.",
+   "sample": "Project must be in the industry sector (NAF sections B, C, D, E)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "1c61b851661c31b6": {
    "reason": "Single UK-registered company requirement excluding individuals and foreign branches.",
    "sample": "Applicant must be a single UK-registered company (not an individual or foreign branch)",
@@ -2042,6 +2228,18 @@
   "1ca336a03044e0cc": {
    "reason": "Project merit test: results must be usable per agency assessment.",
    "sample": "Aid may only be granted if the Swedish Energy Agency assesses that the results can be put to use.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1ca842e5778518d7": {
+   "reason": "Project purpose restriction to industry and energy.",
+   "sample": "The project must fall within Industry and Energy purposes",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1caa2bc8974d25d3": {
+   "reason": "Requires engaging a need-owner with testing ambition \u2014 checkable project requirement.",
+   "sample": "The applicant organisation must engage a 'behovs\u00e4gare' (need-owner) in the project's development work who has a clear ambition to test and use the solution the project intends to develop.",
    "v": 3,
    "verdict": "condition"
   },
@@ -2096,6 +2294,12 @@
   "1cf6481b22b8b29e": {
    "reason": "Capacity threshold of 400 kW gates the remuneration scheme.",
    "sample": "Wind installations with a nominal electrical capacity of 400 kW or more receive remuneration under the market premium scheme.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1cfad2a3e43ac7d4": {
+   "reason": "Regional location requirement.",
+   "sample": "Project activity must be located in the Principado de Asturias region",
    "v": 3,
    "verdict": "condition"
   },
@@ -2177,6 +2381,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "1e872854d501d5d4": {
+   "reason": "Excluded use of funds for Conseillers France r\u00e9nov position.",
+   "sample": "Applicant cannot use this scheme to fund a Conseillers France r\u00e9nov position",
+   "v": 3,
+   "verdict": "condition"
+  },
   "1ea2e05e6279f227": {
    "reason": "Legal-entity eligibility requirement excluding individuals.",
    "sample": "Applicant must be a company/legal entity able to receive a grant, not an individual",
@@ -2192,6 +2402,12 @@
   "1ec8e0e9075b8012": {
    "reason": "SME qualification requirement.",
    "sample": "Applicant must qualify as an SME",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1ed43b0ff99499ad": {
+   "reason": "Minimum two collaborating parties \u2014 project composition requirement.",
+   "sample": "Project must involve at least two project parties collaborating, e.g. in a geographically defined area",
    "v": 3,
    "verdict": "condition"
   },
@@ -2228,6 +2444,12 @@
   "1f488e389cc5f132": {
    "reason": "Project must align with call topics.",
    "sample": "Project must align with the JU's annual Work Programme call topics",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1f4ec9a514e9bec5": {
+   "reason": "Minimum of three renewable heat projects \u2014 threshold on applicant.",
+   "sample": "Applicant must have a minimum of 3 renewable heat installation projects",
    "v": 3,
    "verdict": "condition"
   },
@@ -2435,6 +2657,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "21980dcfa8838574": {
+   "reason": "Location requirement (Bizkaia).",
+   "sample": "Project/activity must be located in Bizkaia (ES213)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "21a7e1d21c985c9f": {
    "reason": "Regional registration requirement excluding companies established elsewhere.",
    "sample": "Registered with the European Commission as applying in NL34, NL41, NL42. A company established outside those regions is not eligible under this scheme.",
@@ -2513,6 +2741,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "22a7ac7a7b778505": {
+   "reason": "Applicant must be an enterprise, alone or collaborating.",
+   "sample": "Applicant must be a company (enterprise), applying alone or in collaboration with others",
+   "v": 3,
+   "verdict": "condition"
+  },
   "22acf20ffe493f4e": {
    "reason": "Defines qualifying cooperation partner and required cooperation agreement; applicant can check.",
    "sample": "A cooperation partner may be an enterprise or a research and knowledge dissemination organisation with whom the applicant has concluded a cooperation agreement to jointly implement the project.",
@@ -2555,9 +2789,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2367e2205291e010": {
+   "reason": "Geographic location requirement for project",
+   "sample": "Project must be located in Ceuta (ES63)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2399abe473c63c38": {
    "reason": "Requires applicant to secure private co-investors alongside Tesi.",
    "sample": "Investment typically requires co-investment from private investors alongside Tesi",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "239a4df2bcd80ca7": {
+   "reason": "Requires activity located in Spain.",
+   "sample": "Project activity must take place in Spain",
    "v": 3,
    "verdict": "condition"
   },
@@ -2606,6 +2852,12 @@
   "2457863ec14a78df": {
    "reason": "Implies co-financing/matching obligation the applicant must meet.",
    "sample": "Award tied to national programme conditions (e.g. co-financing or matching requirements)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "245d3259646c67d3": {
+   "reason": "Location requirement (Ceuta).",
+   "sample": "Project activity must take place in the regional scope of Ceuta (ES630)",
    "v": 3,
    "verdict": "condition"
   },
@@ -2693,6 +2945,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "255fbbeae8ecdb36": {
+   "reason": "Use-of-funds requirement checkable against planned project.",
+   "sample": "Funds must be used for recycling investments",
+   "v": 3,
+   "verdict": "condition"
+  },
   "258269afb87b62b0": {
    "reason": "60% maritime off-taker supply requirement with off-taker definition.",
    "sample": "For the MARITIME topic, projects must supply at least 60% of their expected total production volume to off-takers belonging to the maritime sector; fuel traders/intermediaries and virtual agreements do not qualify as off",
@@ -2711,9 +2969,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "258f92260132f5b6": {
+   "reason": "Requires applicant be SME or large enterprise \u2014 checkable company attribute.",
+   "sample": "Applicant must be a Small/Medium Enterprise or a Large Enterprise",
+   "v": 3,
+   "verdict": "condition"
+  },
   "25973696b3aa12cd": {
    "reason": "Restricts to industrial sectors B-E with geography and window; checkable by applicant.",
    "sample": "Eligibilit\u00e9 Sectorielle : Industrie Secteurs principalement concern\u00e9s par le dispositif : B|C|D|E Eligibilit\u00e9 en fonction du nombre de salari\u00e9s: Toutes tailles P\u00e9rim\u00e8tre g\u00e9ographique (codes catalogue) : PAYS-99100. Fen\u00eat",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "25bc5805226d69f5": {
+   "reason": "Requirement on project content: preparing an international call application.",
+   "sample": "The funded activity must be preparation of an application to an international research and innovation call.",
    "v": 3,
    "verdict": "condition"
   },
@@ -2771,6 +3041,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2695eec05d8c287c": {
+   "reason": "Eligible sector requirement for project.",
+   "sample": "Project must be in the manufacturing industry or other services sectors",
+   "v": 3,
+   "verdict": "condition"
+  },
   "269b0561462df48c": {
    "reason": "Eligible applicants with German establishment plus exclusions (recovery order, difficulty, insolvency) \u2014 checkable.",
    "sample": "3 Zuwendungsempf\u00e4nger Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland. Antr\u00e4ge von kleinen und mittleren Unternehmen (KMU) sowie Start-ups sind au",
@@ -2789,6 +3065,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "26dfe16edd947281": {
+   "reason": "Excludes territories previously funded \u2014 checkable exclusion.",
+   "sample": "Territories that already benefited from the AVELO or AVELO 2 CEE programmes are not eligible.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "26fa1506122efbcd": {
+   "reason": "Country location requirement",
+   "sample": "The project must be located in Spain",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2722c4b1fe4d2af3": {
    "reason": "Explicit SME size thresholds for borrowers.",
    "sample": "Borrowers must be SMEs per the EU Commission definition: at most 250 employees, at most EUR 50 million annual turnover, or at most EUR 43 million annual balance sheet total.",
@@ -2798,6 +3086,18 @@
   "2724c3f630c1ec81": {
    "reason": "Applicant must be an industrial enterprise investing in listed themes; checkable project requirements.",
    "sample": "Artikel 4.6.2. Subsidieverstrekking. 1. De minister verstrekt op aanvraag subsidie aan een onderneming voor investeringen in een project dat past binnen \u00e9\u00e9n of meer thema's in bijlage 4.6.2 en dat betrekking heeft op: a.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "272fb60455db9148": {
+   "reason": "Numeric threshold on partners and companies in consortium.",
+   "sample": "The consortium must have at least three project partners, of which at least two must be companies",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "273dbe702b8d0fb8": {
+   "reason": "Regional operating requirement for applicant.",
+   "sample": "Applicant must operate in the Hauts-de-France region",
    "v": 3,
    "verdict": "condition"
   },
@@ -2849,6 +3149,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "27db4aa9b8ae928a": {
+   "reason": "Requires two industrial companies in Swedish manufacturing \u2014 checkable.",
+   "sample": "Project consortium must include at least two industrial companies within Swedish manufacturing industry",
+   "v": 3,
+   "verdict": "condition"
+  },
   "27e678ca9ad78514": {
    "reason": "Requires being project party in programme office plus new actors \u2014 checkable applicant requirement.",
    "sample": "Utlysningen \u00e4r \u00f6ppen att s\u00f6ka f\u00f6r akt\u00f6r som \u00e4r projektpart i ett av Impact Innovations programkontor tillsammans med, f\u00f6r programmet, nya akt\u00f6rer fr\u00e5n civilsamh\u00e4lle, offentlig sektor, n\u00e4ringsliv och akademi.",
@@ -2858,6 +3164,12 @@
   "27e738605e2d61bf": {
    "reason": "Excludes undertakings in difficulty and natural persons; limits to SMEs/small mid-caps.",
    "sample": "Die spezifischen F\u00f6rderbestimmungen legen f\u00fcr die jeweiligen F\u00f6rderprogramme fest, wer eine Zuwendung erhalten kann. Unternehmen in Schwierigkeiten k\u00f6nnen abweichend von Art. 7 Abs. 1 Buchst. d der Verordnung (EU) 2021/1",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "282e3a1655d730b8": {
+   "reason": "Activity must take place in specified region; checkable.",
+   "sample": "Project activity must take place in the Basque Country (Pa\u00eds Vasco) region",
    "v": 3,
    "verdict": "condition"
   },
@@ -2936,6 +3248,18 @@
   "29575a547ff84784": {
    "reason": "Exclusion of undertakings in difficulty \u2014 applicant-level test.",
    "sample": "The company must not be an undertaking in difficulty.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "29641d483943a946": {
+   "reason": "Requires applicant be plastics transformer incorporating recycled material.",
+   "sample": "Applicant must be a plastics processor/transformer wishing to incorporate recycled plastic material into products",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "29691aadb86ed292": {
+   "reason": "Requires validated cycling master plan or alternative justification.",
+   "sample": "Only local authorities with a cycling master plan (sch\u00e9ma directeur cyclable) validated by their deliberative bodies can apply for aid under axes 1, 2 and 3, unless they instead seek funding to produce such a plan or jus",
    "v": 3,
    "verdict": "condition"
   },
@@ -3029,6 +3353,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2a580a1c881c3f77": {
+   "reason": "Applicant type/size eligibility.",
+   "sample": "Applicant must be a legal person not carrying out economic activity, an SME, or a natural person carrying out economic activity.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2a6c249405b2d4ff": {
+   "reason": "Density and population thresholds for project location; checkable.",
+   "sample": "For mainland France, the project must be located in rural communes with intermediate, low or very low density (per INSEE 2020 grid) and with fewer than 30,000 inhabitants; all overseas territory communes are eligible",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2a9f319d9b2dca9f": {
    "reason": "Legal-entity requirement checkable by applicant.",
    "sample": "Applicant must be a company/legal entity (not an individual) able to receive a grant",
@@ -3050,6 +3386,12 @@
   "2adb2234979a9910": {
    "reason": "Project must be carried out in France \u2014 territorial requirement.",
    "sample": "The scheme applies to the whole national territory of France (project must be carried out in France).",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2ae73a231de43511": {
+   "reason": "Requires specific transport activity sectors; verifiable by applicant.",
+   "sample": "The applicant's activity must be in passenger transport intermediation, other land passenger transport, or rail passenger transport (taxi-related transport activities).",
    "v": 3,
    "verdict": "condition"
   },
@@ -3131,9 +3473,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2bf354054514b608": {
+   "reason": "Threshold of three participating organizations in collaboration.",
+   "sample": "Project must be a collaboration with at least three participating organizations",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2c019f2d055c02b3": {
    "reason": "Requires funds used for R&D or innovation project.",
    "sample": "Funds must be used for an R&D or innovation project",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2c2c6f6ff7aad458": {
+   "reason": "Lists eligible applicant categories, checkable against own legal status.",
+   "sample": "Applicant must be a company, a local authority responsible for a catering activity, a professional union (for diagnostics), or an association",
    "v": 3,
    "verdict": "condition"
   },
@@ -3146,6 +3500,12 @@
   "2c4433e4cb24774e": {
    "reason": "Project must be R&D or biotech research; checkable project scope.",
    "sample": "Funds must be used for an R&D or biotech-related research project",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2c593d836d92c188": {
+   "reason": "Applicant type/size eligibility requirement.",
+   "sample": "Applicant must be a large enterprise or a legal person not carrying out economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -3203,6 +3563,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2d73ba323661fcad": {
+   "reason": "Location requirement for the project.",
+   "sample": "The project must be located in France (including overseas departments and communities).",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2d7bce00c3f155dc": {
    "reason": "Entity type and business-model requirement, excludes individuals and academic projects.",
    "sample": "Applicant must be a startup or scaleup with an innovative, investable business model, not an individual or purely academic project",
@@ -3257,6 +3623,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2e279ff704cef10b": {
+   "reason": "Capacity and competence requirement on applicant organisation.",
+   "sample": "Applicant organisation must have the competence and capacity to carry out projects contributing to the programme's goals",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2e310b198be24887": {
    "reason": "Applicant co-financing or in-kind contribution requirement.",
    "sample": "Project likely requires co-financing or in-kind contribution from applicant per Research Council of Norway grant rules",
@@ -3293,6 +3665,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2f0b1667382cac2e": {
+   "reason": "Must apply with new actors from listed sectors.",
+   "sample": "Applicant must apply together with new actors, for the programme, from civil society, public sector, business, or academia.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2f0f17b1b07a65ff": {
    "reason": "Project scope requirement: activities must be R&D/innovation.",
    "sample": "Funds must be used for R&D/innovation project activities",
@@ -3308,6 +3686,12 @@
   "2f2a4b3a36f67884": {
    "reason": "Legal entity with EU presence requirement.",
    "sample": "Applicant must be a legal entity operating within the EU innovation ecosystem, typically requiring EU presence or activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2f3a9f0c81ad4d43": {
+   "reason": "Certification requirement on applicant.",
+   "sample": "Applicant must be engaged in a certification scheme attesting to the sustainability of its forestry activities (PEFC, FSC, QualiTerritoires - ETF Gestion Durable or equivalent)",
    "v": 3,
    "verdict": "condition"
   },
@@ -3362,6 +3746,24 @@
   "2fe6269455a8e15c": {
    "reason": "Ownership/independence criteria for SME status; applicant assesses own control structure.",
    "sample": "Ownership/control criteria may apply for SME status (independence from larger groups)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2feb2f97854f3377": {
+   "reason": "Sector requirement.",
+   "sample": "Project must be in the telecommunications sector",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2ff4a22af324bd3b": {
+   "reason": "Project location requirement, verifiable by applicant.",
+   "sample": "The project/activity must be located in the region of Catalu\u00f1a (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3001349488a33172": {
+   "reason": "Consortium must include organisation from participating countries.",
+   "sample": "The project consortium must include at least one organisation from at least one of the other four participating countries.",
    "v": 3,
    "verdict": "condition"
   },
@@ -3455,6 +3857,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "30fa06dee11a73d4": {
+   "reason": "Turnover threshold test on applicant's activity \u2014 checkable requirement.",
+   "sample": "If applicant does not have one of the listed NAF codes, at least 50% of turnover must come from forest exploitation or silviculture activities",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3108ba0789e2e380": {
    "reason": "Requires an eligible project type; checkable against applicant's plans.",
    "sample": "Funds must support an eligible investment/development project (e.g., regional economic development, innovation, or transition project)",
@@ -3515,6 +3923,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "3215e4dd78816676": {
+   "reason": "Employee-count threshold on applicant.",
+   "sample": "Applicant must have between 3 and 249 employees",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3219b4fd290512a6": {
    "reason": "Project must have started after specified date.",
    "sample": "The research allowance may only be claimed for R&D projects whose work began, or whose commissioning order was placed, after 1 January 2020.",
@@ -3557,11 +3971,23 @@
    "v": 3,
    "verdict": "condition"
   },
+  "32c97df93c68f1d6": {
+   "reason": "Applicant must be operator established in France.",
+   "sample": "Applicant must be an operator active or being created, established in France",
+   "v": 3,
+   "verdict": "condition"
+  },
   "32d1453497c7f0fc": {
    "reason": "States size and grant form of the offer; matched against sought amount.",
    "sample": "Ticket size consistent with grant scale of this programme (tens to low hundreds of thousands EUR)",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "32d514705af1ef87": {
+   "reason": "Participant count plus value-chain and company requirement.",
+   "sample": "Project must have at least two participants forming a coherent value chain, including at least one company",
+   "v": 3,
+   "verdict": "condition"
   },
   "32d81779dfccc56a": {
    "reason": "Size, turnover and listing thresholds the applicant checks against itself.",
@@ -3596,6 +4022,12 @@
   "33a5a912c7024c99": {
    "reason": "Project must be deep tech at TRL 1-4 with high ambition.",
    "sample": "Projects must address deep tech at low technology readiness levels (TRL 1-4) with high scientific/technological ambition and risk.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "33a7facb83b184e9": {
+   "reason": "Prior-programme exclusion applicable to reader's territory.",
+   "sample": "Territories that already benefited from the AVELO / AVELO 2 CEE programmes are not eligible",
    "v": 3,
    "verdict": "condition"
   },
@@ -3665,6 +4097,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "350bbe7d03eff257": {
+   "reason": "Minimum five organisations from stated sectors.",
+   "sample": "Project group must consist of at least five organisations from public sector, civil society, business or academia.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3533669311cf2819": {
    "reason": "Exclusion of a checkable category of entities from funding eligibility.",
    "sample": "Hungarian public interest trusts established under Hungarian Act IX of 2021 (and entities they maintain) cannot receive EU funding in any funded role.",
@@ -3680,6 +4118,12 @@
   "353f4add93824df7": {
    "reason": "Requires minimum three renewable heat installation projects and no prior commitments.",
    "sample": "Eligibilit\u00e9 Sectorielle : Tous secteurs d\u2019activit\u00e9 Secteurs principalement concern\u00e9s par le dispositif : A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U Eligibilit\u00e9 en fonction du nombre de salari\u00e9s: Toutes tailles Autres cond",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "357a26fbd6572578": {
+   "reason": "Geographic location requirement for beneficiary territory.",
+   "sample": "The beneficiary territory must be located in metropolitan France or in the overseas departments/regions defined by Article 73 of the Constitution",
    "v": 3,
    "verdict": "condition"
   },
@@ -3803,6 +4247,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "36d18ac901d15f6f": {
+   "reason": "Sector requirement: company in aviation/aeronautics.",
+   "sample": "Applicant must be a company operating in the aviation/aeronautics field",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "36fd5c49f567bc3f": {
+   "reason": "No prior start or firm commitments \u2014 project condition.",
+   "sample": "The project for which aid is requested must not have started and must not have led to any firm commitments (signed contract, signed order, accepted quote, etc.)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3708b7673b6583c5": {
    "reason": "Applicant must be a single company or research entity applying directly.",
    "sample": "Applicant is a single company or research entity applying directly (not necessarily a fund/SPV)",
@@ -3821,9 +4277,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "373c04de43fc80e1": {
+   "reason": "Location in Spain required.",
+   "sample": "Project must take place in Spain",
+   "v": 3,
+   "verdict": "condition"
+  },
   "37552733ab309a71": {
    "reason": "Requires lead investor secured \u2014 applicant can check.",
    "sample": "Companies must be fundraising and have secured a lead investor to be eligible for investment.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3764658a53e44d00": {
+   "reason": "Project location within listed regions.",
+   "sample": "The project must be located in one of the listed French regions",
    "v": 3,
    "verdict": "condition"
   },
@@ -3839,6 +4307,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "37a6b94088ae3887": {
+   "reason": "Legal-entity and capability requirement for applicant.",
+   "sample": "Applicant must be a legal entity (personne morale) capable of carrying out one or all missions described in the AMI",
+   "v": 3,
+   "verdict": "condition"
+  },
   "37abf74cb811aa96": {
    "reason": "States kind and maturity of company the scheme backs, not applicant merit.",
    "sample": "Scheme targets SMEs and early-stage/innovative starters, per GBER SME aid categories",
@@ -3848,6 +4322,12 @@
   "37b77612e4caf537": {
    "reason": "Defines required pilot-stage technology demonstration scope.",
    "sample": "Pilot projects must demonstrate an innovative, deep decarbonisation or net carbon removal technology in an operational environment before full-scale deployment, focused on testing/validating at pilot scale, not large-sca",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "37cd8ce8b7fb07f2": {
+   "reason": "Alternative eligible activity: processing/marketing of agricultural products.",
+   "sample": "Applicant may alternatively qualify if active in the processing and marketing of agricultural products",
    "v": 3,
    "verdict": "condition"
   },
@@ -3863,6 +4343,12 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "37e132401cd6b73e": {
+   "reason": "List of excluded business types applicant can check itself against.",
+   "sample": "Applicant must not be a bike rental/repair business, thermal/thalassotherapy establishment, commercial zone, artisan village, gift shop, entertainment venue, cinema, arcade, casino, temporary/itinerant event, regional/na",
+   "v": 3,
+   "verdict": "condition"
+  },
   "37fa5770d3b8e3b1": {
    "reason": "Hub representation, ten-country consortium, population caps, co-financing letter \u2014 all applicant-checkable requirements.",
    "sample": "European Innovation Ecosystems is the only Pillar II leaf whose eligibility rules are about who represents an ecosystem, and every one of its five 2026-2027 topics derogates from the standard consortium rule. The flagshi",
@@ -3875,6 +4361,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "380f8588d9c27898": {
+   "reason": "Requires growth ambitions, network cooperation, responsible-business principles and disclosure of other public aid.",
+   "sample": "Bedriftsnettverk. Har bedriften din vekstambisjoner og \u00f8nsker \u00e5 realisere disse i samarbeid med andre bedrifter? Vi kan tilby faglig veiledning, og finansiering til etablering og utvikling av bedriftsnettverk-prosjekter.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "381f4e3e7da1984d": {
    "reason": "Describes instrument form and counterparty type (funds, not companies).",
    "sample": "Invest-NL invests as a limited partner / fund investor into venture capital funds rather than lending or granting directly to companies.",
@@ -3884,6 +4376,12 @@
   "38248669add0f71a": {
    "reason": "Requires durable market activity as enterprise.",
    "sample": "Applicants must be economically and durably active on the market as an enterprise.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3845cbb8ec325f53": {
+   "reason": "Applicant status requirement",
+   "sample": "Applicant must be an SME or a self-employed individual carrying out an economic activity.",
    "v": 3,
    "verdict": "condition"
   },
@@ -3911,6 +4409,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "38c969c1ef79e622": {
+   "reason": "Sector requirement.",
+   "sample": "The project's sector must be wholesale/retail trade or other services.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "38f3825d02ed6bfc": {
+   "reason": "Location requirement discriminating among applicants.",
+   "sample": "The project/activity must be located in the Comunidad Valenciana region (ES52)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "390a39f1874ecb15": {
    "reason": "Aerospace sector prevalence and turnover share thresholds by firm size.",
    "sample": "Possono beneficiare del finanziamento le imprese che svolgono in via prevalente attivita' industriali nel settore aerospaziale, ovvero che nei due esercizi precedenti la presentazione della domanda abbiano registrato un ",
@@ -3935,6 +4445,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "393b5ed8f354d918": {
+   "reason": "Population thresholds for targeted territory \u2014 checkable.",
+   "sample": "The territory targeted by the project must have fewer than 250,000 inhabitants, with a central city of fewer than 100,000 inhabitants",
+   "v": 3,
+   "verdict": "condition"
+  },
   "394b923b04f26f45": {
    "reason": "Prior public aid receipt is a checkable applicant prerequisite.",
    "sample": "Beneficiaries must have previously received public aid for the development of an R&D&I project.",
@@ -3944,6 +4460,12 @@
   "396824229110b60c": {
    "reason": "Sector scope plus requirement that operation not have begun \u2014 checkable.",
    "sample": "Eligibilit\u00e9 Sectorielle : Tous secteurs d\u2019activit\u00e9 Secteurs principalement concern\u00e9s par le dispositif : C|D|E|Q Eligibilit\u00e9 en fonction du nombre de salari\u00e9s: Toutes tailles Autres conditions d'\u00e9ligibilit\u00e9 : - L'op\u00e9rati",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3968b8e57aacbb2c": {
+   "reason": "Regional location requirement",
+   "sample": "The project must be located in the Andalusia region (ES61)",
    "v": 3,
    "verdict": "condition"
   },
@@ -3980,6 +4502,12 @@
   "39ca45bf72016f27": {
    "reason": "SME/midcap definitions, project-leader requirements, cost eligibility rules the applicant must satisfy.",
    "sample": "The beneficiary authorizes an accountable project leader who is in an employment relationship with the beneficiary or holds a position of responsibility in the company. A person disqualified from the practice of commerci",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "39e966aa3697a24f": {
+   "reason": "Project type/field requirement.",
+   "sample": "Project must be experimental research and development in natural sciences and engineering",
    "v": 3,
    "verdict": "condition"
   },
@@ -4121,6 +4649,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "3b90aaf50b666a46": {
+   "reason": "Sector requirement the applicant can check against own project.",
+   "sample": "Project must be in the extractive industries (mining) sector, within Industry and Energy purpose",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3ba5d26dfae03f1c": {
    "reason": "Excludes municipalities and their own utility entities; reader can check own legal status.",
    "sample": "Municipalities and their own-operator/utility entities (Regie- und Eigenbetriebe) are not eligible to apply.",
@@ -4184,6 +4718,12 @@
   "3c485741d9c760e2": {
    "reason": "Requirement on partner university's accreditation and supervisor appointment.",
    "sample": "The participating university must be a university or higher educational institution in Denmark or abroad officially approved to conduct a PhD programme, and must appoint a university supervisor.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3c48f10aad073069": {
+   "reason": "Consortium must include Swedish organisation.",
+   "sample": "The project consortium must include at least one organisation from Sweden.",
    "v": 3,
    "verdict": "condition"
   },
@@ -4301,6 +4841,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "3dc1fa2e4cf8bb80": {
+   "reason": "Project cost must fall within stated floor and ceiling.",
+   "sample": "Total cost of operations must be between \u20ac100k (\u20ac25k in Corsica and overseas territories) and \u20ac3M",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3dd34ab9de169343": {
    "reason": "Numeric cost-efficiency threshold the applicant's proposal must meet or be rejected.",
    "sample": "The cost efficiency ratio must be equal to or lower than 200 EUR per tonne CO2-eq, otherwise the score is zero and the proposal is rejected.",
@@ -4316,6 +4862,12 @@
   "3df51b47e13b2e92": {
    "reason": "Prerequisite: completed digital maturity test and roadmap before applying.",
    "sample": "To apply for support, the economic operator must first have completed a digital maturity test and received a digital development roadmap, on the basis of which further digital-transformation investments may be made.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3df77b697a89dcbf": {
+   "reason": "Prior diagnostic prerequisite the applicant must have obtained.",
+   "sample": "Applicant must have received a Fonds Tourisme Durable diagnostic with one of the programme's partners before applying",
    "v": 3,
    "verdict": "condition"
   },
@@ -4403,6 +4955,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "3f01ab25432d090a": {
+   "reason": "Location requirement.",
+   "sample": "Project must be located in Galicia (ES11).",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3f14dd0ab8cec86b": {
    "reason": "Eligible project activity requirement checkable against plans.",
    "sample": "Funds must be used for eligible innovation/development or bilateral cooperation project activities",
@@ -4436,6 +4994,12 @@
   "3f9fd096356b17e9": {
    "reason": "Founders count and owner-founder requirement.",
    "sample": "Applicant may apply for a course covering 1, 2, or 3 founders, each of whom must be an owner-founder of the company.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3fa4a12bb63a2f42": {
+   "reason": "Location requirement (Canary Islands).",
+   "sample": "The economic activity must be carried out in the Canary Islands region (ES70).",
    "v": 3,
    "verdict": "condition"
   },
@@ -4478,6 +5042,18 @@
   "3ff3017658391692": {
    "reason": "Excluded EMTAK sectors, property ownership duration, quotation rules and ineligible costs are checkable requirements.",
    "sample": "Toetust ei saa anda ettev\u00f5tjatele, kelle p\u00f5hitegevus vastab j\u00e4rgmisele EMTAKi jaole, alajaole v\u00f5i grupile: peab ehitis ja selle alune maa olema taotleja omandis v\u00f5i peab taotleja kasuks olema seatud hoonestus\u00f5igus, isikl",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3ff3824af7007662": {
+   "reason": "Activity/NAF-code sector requirement for applicant.",
+   "sample": "Applicant must operate in forestry, forest exploitation, or sawmilling activities, typically identified by specific NAF codes",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "40230f09babdb05e": {
+   "reason": "Maximum employee threshold on applicant.",
+   "sample": "Applicant must have at most 10 employees.",
    "v": 3,
    "verdict": "condition"
   },
@@ -4559,6 +5135,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "413778d4f13b2fea": {
+   "reason": "Applicant status requirement (enterprise size or natural person).",
+   "sample": "Applicant must be a large enterprise, SME, or natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "413ab44e91848bb8": {
    "reason": "Size-based eligibility: SME or innovative company.",
    "sample": "Applicant must be an SME or innovative company (size-based eligibility typical of national promotional agencies)",
@@ -4568,6 +5150,12 @@
   "41449a0847b9fce0": {
    "reason": "Extends eligibility to listed institution types with recognised sector competence.",
    "sample": "Universities, non-university research institutions, associations, clubs, foundations, municipal business associations, education providers, regional authorities, municipal associations, and other public-law bodies with r",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "415015972aef57a9": {
+   "reason": "Applicant sector/NAF code requirement.",
+   "sample": "Applicant must be active in forestry, forest exploitation or sawing, typically identified by one of the listed NAF codes",
    "v": 3,
    "verdict": "condition"
   },
@@ -4685,6 +5273,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4246e069416efa0d": {
+   "reason": "Ownership and SIRET registration requirements.",
+   "sample": "The operators must own their business (fonds de commerce) and hold a SIRET number",
+   "v": 3,
+   "verdict": "condition"
+  },
   "426d1433ed2b8113": {
    "reason": "Cross-border consortium size threshold applicants can check.",
    "sample": "Must be part of a cross-border consortium of multiple entities from multiple member states (typically 3+ entities across 3+ states)",
@@ -4709,9 +5303,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "42bfafbfcb6509e9": {
+   "reason": "Eligible applicant legal-form requirement",
+   "sample": "Applicant must be a PYME (SME) or a legal entity not carrying out economic activity, or a natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "42c56e5468a15a5b": {
    "reason": "Quantified turnover-growth threshold the firm can verify.",
    "sample": "To qualify as a fast-growing enterprise by turnover growth, a firm must show average annualised turnover growth greater than 10% per year over a three-year period.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "42cb837bb926f322": {
+   "reason": "Exclusion with carve-out concerning project nature.",
+   "sample": "Project must not be a waste incinerator of any type, unless the incinerator is integrated into an industrial production site",
    "v": 3,
    "verdict": "condition"
   },
@@ -4724,6 +5330,12 @@
   "4306a5d5b459b754": {
    "reason": "SMEs/individuals in Bizkaia, innovative business project area: checkable conditions.",
    "sample": "Beneficiarios: PERSONAS F\u00cdSICAS QUE NO DESARROLLAN ACTIVIDAD ECON\u00d3MICA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES213 - Bizkaia. Finalidad: Industria y Energ\u00eda. Sectores elegibles: 1",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "43211d2735b34a9a": {
+   "reason": "Location requirement",
+   "sample": "Project activity must be located in the Alicante/Alacant region (ES521)",
    "v": 3,
    "verdict": "condition"
   },
@@ -4763,6 +5375,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4389d818faee11e9": {
+   "reason": "Specifies eligible applicant types and excludes universities \u2014 checkable.",
+   "sample": "Applicant must be a company, public organisation, or research institute outside universities and higher education institutions.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "4397f856dfb911c8": {
    "reason": "Project must be R&D with health innovation focus.",
    "sample": "Funds must be used for R&D/innovation project (health innovation focus)",
@@ -4796,6 +5414,12 @@
   "43cf5e3bdc464efc": {
    "reason": "Investment must deploy R&D results with documentation and IP rights settled.",
    "sample": "Po\u017cyczka Rozwojowa jest przeznaczona na realizacj\u0119 inwestycji, kt\u00f3ra dotyczy wdro\u017cenia nowego lub znacznie zmodyfikowanego produktu lub procesu b\u0119d\u0105cych efektem prac badawczo-rozwojowych. Wymagane jest dostarczenie opisu",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "43d0176730e84067": {
+   "reason": "Project type requirement: one-off awareness/communication/animation action.",
+   "sample": "Project must be a one-off action related to awareness/training, communication, or animation supporting ADEME policy deployment",
    "v": 3,
    "verdict": "condition"
   },
@@ -5069,6 +5693,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "47708b0fca79bb6c": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant must be a SME or a natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "47867ad6e70785e4": {
+   "reason": "Sector eligibility requirement.",
+   "sample": "The project must belong to one of the listed eligible sectors (arts/entertainment, agriculture/forestry/fishing, manufacturing, extractive industries, energy supply, telecom/IT services, or transport/storage)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "479959541acc56bd": {
    "reason": "Requires commercial/demonstration scale, not early research.",
    "sample": "Project must be at commercial/demonstration scale, not early research \u2014 typically mid-cap+ capex ticket",
@@ -5120,6 +5756,12 @@
   "4836da308062e6e5": {
    "reason": "Requires Flemish establishment, five-year exploitation, SME size thresholds; excludes VZWs \u2014 checkable by applicant.",
    "sample": "Een onderneming die een exploitatiezetel heeft in het Vlaamse Gewest kan in aanmerking komen voor de ecologiepremie+. Als een onderneming nog geen vestiging in het Vlaamse Gewest heeft bij steunaanvraag, moet ze deze heb",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "483db695c7069a0b": {
+   "reason": "Applicant must be SME or natural person taxi operator; checkable.",
+   "sample": "Applicant must be an SME or a natural person carrying out an economic activity (taxi operators).",
    "v": 3,
    "verdict": "condition"
   },
@@ -5198,6 +5840,12 @@
   "493adf180a0710d3": {
    "reason": "Restricted to PME, enumerates eligible axes and explicitly ineligible dossier types.",
    "sample": "Le dispositif de l'ADEME \u2013 ORPLAST (Objectif Recyclage PLASTiques) vise \u00e0 soutenir financi\u00e8rement l'int\u00e9gration de mati\u00e8res plastiques recycl\u00e9es par les plasturgistes ou transformateurs qui effectuent la transformation d",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "493c944f1a2130e6": {
+   "reason": "Restricts funded activity to transport/storage, taxi subsidies; checkable sector scope.",
+   "sample": "Funds must support activities in the transport and storage sector, specifically taxi transport subsidies",
    "v": 3,
    "verdict": "condition"
   },
@@ -5309,9 +5957,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4ab166c08d2dc211": {
+   "reason": "Exclusion: no dividends distributed \u2014 checkable applicant fact.",
+   "sample": "Applicant must not have distributed any profit/dividends.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "4acad071ae00ec84": {
    "reason": "Exclusion based on applicant's country association status; checkable by reader.",
    "sample": "Legal entities established in countries without a concluded or legally effective Horizon Europe Association Agreement may not be selected for CAJU membership.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4ae2389ec77ed321": {
+   "reason": "Regional location requirement.",
+   "sample": "The project must be located in the Arag\u00f3n region (ES24).",
    "v": 3,
    "verdict": "condition"
   },
@@ -5356,6 +6016,12 @@
    "sample": "Subsidy is granted, on application, to an enterprise (onderneming) investing in a qualifying project.",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "4b85d6b1b5aaa299": {
+   "reason": "Regional location requirement checkable by applicant.",
+   "sample": "Project must be located in the Catalonia region (Spain)",
+   "v": 3,
+   "verdict": "condition"
   },
   "4b9c2f2cef96e7d5": {
    "reason": "Excludes named vehicle purchases from support; project-level test.",
@@ -5429,9 +6095,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4c7cde7598dcb58b": {
+   "reason": "Project location requirement.",
+   "sample": "The project must be located in metropolitan France or an overseas territory",
+   "v": 3,
+   "verdict": "condition"
+  },
   "4c92661578e02c74": {
    "reason": "Project activity must be R&D/innovation related.",
    "sample": "Funds must be used for R&D or innovation-related project activities",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4c969fa319580189": {
+   "reason": "Applicant legal-form/size eligibility test.",
+   "sample": "Applicant must be a legal entity without economic activity, or an SME or natural person carrying out economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -5468,6 +6146,12 @@
   "4cdafe6566906752": {
    "reason": "Financial distress exclusion for equity support; checkable.",
    "sample": "Company should not be in financial distress (e.g. losses eroding capital) to qualify for state equity support",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4cee99ea418a905c": {
+   "reason": "Requires applicant be Swedish aktiebolag \u2014 checkable legal-form requirement.",
+   "sample": "Applicant must be a Swedish limited company (aktiebolag)",
    "v": 3,
    "verdict": "condition"
   },
@@ -5525,6 +6209,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4d8dc83df486f34a": {
+   "reason": "Project must be located in Galicia.",
+   "sample": "Project activity must be located in Galicia (ES11)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "4d94d96eb64fcc77": {
    "reason": "Individual applicants must be SMEs \u2014 checkable size requirement.",
    "sample": "For individually submitted applications under 'Qualifica\u00e7\u00e3o e Internacionaliza\u00e7\u00e3o das PME', beneficiaries must be SMEs.",
@@ -5555,9 +6245,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4e470420d4635870": {
+   "reason": "Applicant sector-of-operation requirement.",
+   "sample": "Applicant must operate in retail or wholesale trade intermediation activities",
+   "v": 3,
+   "verdict": "condition"
+  },
   "4e5756b8c72d6b29": {
    "reason": "Defines required FID activity scope and excludes mass production.",
    "sample": "FID activities must cover the upscaling of pilot facilities or first-in-kind equipment through the testing phase and bringing batch production to scale, but must not correspond to mass production or commercial activities",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4e5a5e9b16176d50": {
+   "reason": "Sector requirement (livestock production) for the project.",
+   "sample": "Project must be in the livestock production sector",
    "v": 3,
    "verdict": "condition"
   },
@@ -5576,6 +6278,12 @@
   "4e83d7e73466dd2c": {
    "reason": "Location in Territoires d'industrie and \u20ac400k minimum spend \u2014 checkable thresholds.",
    "sample": "Eligibilit\u00e9 Sectorielle : Industrie Secteurs principalement concern\u00e9s par le dispositif : B|C|D|E Eligibilit\u00e9 en fonction du nombre de salari\u00e9s: Toutes tailles Autres conditions d'\u00e9ligibilit\u00e9 : - Situ\u00e9 sur l\u2019un des 183 t",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4e906a22f4e3d289": {
+   "reason": "Eligibility restricted to national/interregional structuring projects; checkable scale requirement.",
+   "sample": "For volets 2 and 3, only structuring projects of national or interregional scale are eligible",
    "v": 3,
    "verdict": "condition"
   },
@@ -5609,6 +6317,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "4f0640925cae6abd": {
+   "reason": "Requires headquarters in Catalonia; checkable applicant attribute.",
+   "sample": "Applicant must have registered or operating headquarters in Catalonia",
+   "v": 3,
+   "verdict": "condition"
+  },
   "4f11b86b0ab5772d": {
    "reason": "Legal entity establishment requirement.",
    "sample": "Applicants (beneficiaries and affiliated entities) must be legal entities (public or private bodies) established in an eligible country; any country in the world is eligible for participation.",
@@ -5624,6 +6338,12 @@
   "4f23ea672cb20206": {
    "reason": "Incentive-effect timing requirement checkable against project start date.",
    "sample": "Aid may not be given to a measure that has already started before the funding decision was made.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4f2afa3994da1d2e": {
+   "reason": "SME status requirement on applicant.",
+   "sample": "Applicant must be a small or medium-sized enterprise (SME)",
    "v": 3,
    "verdict": "condition"
   },
@@ -5723,6 +6443,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "502539b20852c4ea": {
+   "reason": "Narrow activity requirement tying listed NAF codes to hedge wood.",
+   "sample": "For NAF codes 3511Z and 0240Z, the applicant's activity must be specifically linked to wood sourced from hedges",
+   "v": 3,
+   "verdict": "condition"
+  },
   "502ab8bddafe6feb": {
    "reason": "Geographic establishment requirement with explicit exclusion of firms outside the region.",
    "sample": "Registered with the European Commission as applying in NL41. A company established outside those regions is not eligible under this scheme.",
@@ -5783,6 +6509,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "50ac99b85bb45805": {
+   "reason": "Project location must be Catalonia; checkable.",
+   "sample": "Project must be located in the Catalonia region (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "50b25dd88bf8f99a": {
+   "reason": "Requires a Swedish company among partners.",
+   "sample": "At least one project partner must be a Swedish company",
+   "v": 3,
+   "verdict": "condition"
+  },
   "50b627ede3638dac": {
    "reason": "Eligible activity scope plus explicit exclusions applicant can check.",
    "sample": "Funds may only be used for activities corresponding to the specific topic description, such as innovative low-carbon technologies, CCS/CCU, energy storage, or renewable energy installations, and must exclude activities t",
@@ -5792,6 +6530,12 @@
   "50cb12f9d3a3112f": {
    "reason": "Limited to SMEs/self-employed in Murcia with stated purpose; reader can check own fit.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES62 - REGION DE MURCIA. Finalidad: Otras actuaciones de car\u00e1cter econ\u00f3mico. Sectores elegibles: 16 sectores (sin restricci\u00f3n s",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "50cf12c063258dbe": {
+   "reason": "Requires international collaboration with another Eurostars country.",
+   "sample": "The project must be an international collaboration with at least one other Eurostars country.",
    "v": 3,
    "verdict": "condition"
   },
@@ -5816,6 +6560,12 @@
   "50f826c9eaffb2e6": {
    "reason": "Project-purpose requirement on use of funds.",
    "sample": "Funds must be used for R&D, innovation, demonstration or scale-up project activities",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "51157aad68c66554": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant must be a large enterprise, an SME, or a natural person carrying out an economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -5882,6 +6632,12 @@
   "51f1562a47093601": {
    "reason": "Micro-enterprise thresholds checkable against own staff and turnover.",
    "sample": "To qualify as a micro-enterprise, the enterprise must employ fewer than 10 persons and have annual turnover and/or annual balance sheet total not exceeding EUR 2 million.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "51f3ad2200a9181d": {
+   "reason": "Applicant status requirement",
+   "sample": "Applicant must be an SME or self-employed individual carrying out an economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -5993,9 +6749,21 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "534cb19ac303f7e3": {
+   "reason": "Requires existing installation be stopped/defective \u2014 checkable project state.",
+   "sample": "The existing solar thermal installation must be completely stopped, have very low productivity (below 50% of expected output), or show serious operational defects",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5350aa8ca5d14b52": {
    "reason": "Basque region, retail/content sectors, individuals and SMEs: testable eligibility.",
    "sample": "Beneficiarios: PERSONAS F\u00cdSICAS QUE NO DESARROLLAN ACTIVIDAD ECON\u00d3MICA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES21 - PAIS VASCO. Finalidad: Comercio, Turismo y Pymes. Sectores eleg",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "53559a40d51c0538": {
+   "reason": "Location requirement.",
+   "sample": "Project must be located in the Galicia region (ES11)",
    "v": 3,
    "verdict": "condition"
   },
@@ -6101,6 +6869,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "54611911b8c56aee": {
+   "reason": "Explicit exclusion of individuals and State departments.",
+   "sample": "Individuals and State departments are excluded from applying",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "546bb75c96a93d09": {
+   "reason": "Coordinator must be municipality, region or agency.",
+   "sample": "The coordinating applicant must be a municipality, municipal association, region, or government agency.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5492b77770f393ed": {
    "reason": "Legal-form requirement about applicant, checkable against own status.",
    "sample": "Applicant must be a company (single legal entity), not an individual or informal team",
@@ -6191,6 +6971,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5584decc197d5d1b": {
+   "reason": "Company maturity/size of counterparty served by the instrument.",
+   "sample": "Applicant must be an SME or a natural person carrying out an economic activity",
+   "v": 3,
+   "verdict": "demand_match"
+  },
   "55881d7a364bffe6": {
    "reason": "Excludes mass production/post-KPI costs from eligibility \u2014 project cost test.",
    "sample": "FID phase must not cover mass production or commercial activities; costs after mass-production-readiness KPIs are met are excluded from eligible costs.",
@@ -6215,6 +7001,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "55e5efed0293aeb6": {
+   "reason": "Sector restriction to water sector.",
+   "sample": "Project must fall within the water abstraction, treatment and distribution sector",
+   "v": 3,
+   "verdict": "condition"
+  },
   "55e94012235dfcfe": {
    "reason": "SME/innovative status requirement about the applicant.",
    "sample": "Applicant should be an SME or innovative company scaled to national programme criteria",
@@ -6224,6 +7016,12 @@
   "55f0bc2b13d9fb11": {
    "reason": "Establishment in Austria requirement, despite mention of granting authority.",
    "sample": "Must be established/operating in Austria (national scheme, granting authority is Austrian: FFG/aws)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5614e2d952f749a1": {
+   "reason": "Exclusion based on audit renewal deadline threshold \u2014 checkable.",
+   "sample": "Sites with fewer than 250 employees of large enterprises are excluded if their regulatory energy audit renewal deadline is less than 1 year away",
    "v": 3,
    "verdict": "condition"
   },
@@ -6263,6 +7061,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "56923828fd5c6e64": {
+   "reason": "Regional location requirement for the project.",
+   "sample": "Project must be located in the Andaluc\u00eda region (ES61)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "56bf0b514664dde6": {
+   "reason": "Requires university/HEI actor in consortium.",
+   "sample": "Project consortium must include at least one actor from a university or higher education institution",
+   "v": 3,
+   "verdict": "condition"
+  },
   "56c904ae49f22810": {
    "reason": "Own-resource co-financing threshold applicant must satisfy.",
    "sample": "The company must finance a minimum of 10% of the project with its own resources.",
@@ -6272,6 +7082,12 @@
   "5721f4de52e71a41": {
    "reason": "Country-of-establishment and ownership-control restrictions any applicant can test against itself.",
    "sample": "For this reason, participation is limited to legal entities established in Member States, Iceland and Norway and the following additional associated countries: Canada, Israel, Republic of Korea, New Zealand, Switzerland,",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "57477450fb3d1a8f": {
+   "reason": "Location requirement",
+   "sample": "Project/activity must be located in the region of Catalonia (ES51)",
    "v": 3,
    "verdict": "condition"
   },
@@ -6359,9 +7175,27 @@
    "v": 3,
    "verdict": "condition"
   },
+  "58a3e64af91ecf41": {
+   "reason": "Applicant-type requirement, testable against own status.",
+   "sample": "Applicant must be a large enterprise, SME, or individual carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "58d5ff36f39a97a1": {
    "reason": "SME requirement with narrow exception for JTF-financed large enterprises.",
    "sample": "Beneficiaries of the 'Inova\u00e7\u00e3o Produtiva' intervention must be SMEs (large enterprises only eligible for JTF-financed operations under approved Territorial Just Transition Plans).",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "58e0b14f89e448e2": {
+   "reason": "Requires need-owning participant benefiting from results.",
+   "sample": "At least one participant with a clear need for and benefit from the results must take part in the innovation project",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "58e2059f6ff1e825": {
+   "reason": "Company age ceiling \u2014 applicant-checkable threshold.",
+   "sample": "Applicant company must be no more than 10 years old.",
    "v": 3,
    "verdict": "condition"
   },
@@ -6443,6 +7277,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "59e919b96cd23488": {
+   "reason": "Applicant type/size requirement checkable against own status",
+   "sample": "Applicant must be an SME or a natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "59f759b035152ff0": {
    "reason": "Requires climate activity and location in eligible countries.",
    "sample": "Applicant must be active in climate innovation ecosystem within EU/EIT-affiliated countries (EU Member States plus associated Horizon Europe countries)",
@@ -6464,6 +7304,12 @@
   "5a11d759f665aa25": {
    "reason": "SME definition plus exclusions of foreign, holding, financial, public entities\u2014checkable eligibility.",
    "sample": "\u03a0\u03bf\u03bb\u03cd \u039c\u03b9\u03ba\u03c1\u03ad\u03c2, \u039c\u03b9\u03ba\u03c1\u03ad\u03c2 \u03ba\u03b1\u03b9 \u039c\u03b5\u03c3\u03b1\u03af\u03b5\u03c2 \u0395\u03c0\u03b9\u03c7\u03b5\u03b9\u03c1\u03ae\u03c3\u03b5\u03b9\u03c2 (\u039c\u03bc\u0395), \u03cc\u03c0\u03c9\u03c2 \u03bf\u03c1\u03af\u03b6\u03bf\u03bd\u03c4\u03b1\u03b9 \u03c3\u03c4\u03bf \u03a0\u03b1\u03c1\u03ac\u03c1\u03c4\u03b7\u03bc\u03b1 \u0399 \u03c4\u03bf\u03c5 \u0393\u03b5\u03bd\u03b9\u03ba\u03bf\u03cd \u0391\u03c0\u03b1\u03bb\u03bb\u03b1\u03ba\u03c4\u03b9\u03ba\u03bf\u03cd \u039a\u03b1\u03bd\u03bf\u03bd\u03b9\u03c3\u03bc\u03bf\u03cd (\u0393\u0391\u039a/GBER), \u03b5\u03be\u03b1\u03b9\u03c1\u03bf\u03c5\u03bc\u03ad\u03bd\u03c9\u03bd \u03b1\u03bb\u03bb\u03bf\u03b4\u03b1\u03c0\u03ce\u03bd \u03b5\u03c4\u03b1\u03b9\u03c1\u03b5\u03b9\u03ce\u03bd \u03ba\u03b1\u03b9 \u03c5\u03c0\u03bf\u03ba\u03b1\u03c4\u03b1\u03c3\u03c4\u03b7\u03bc\u03ac\u03c4\u03c9\u03bd \u03c4\u03bf\u03c5\u03c2. \u0394\u03b5\u03bd \u03b5\u03af\u03bd\u03b1\u03b9 \u03b5\u03c0\u03b9\u03bb\u03ad\u03be\u03b9\u03bc\u03b5\u03c2 \u03b5\u03c4\u03b1\u03b9\u03c1\u03af\u03b5\u03c2 ",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5a1799158bcd64ff": {
+   "reason": "Project must aim at R&D&I; checkable project-purpose requirement.",
+   "sample": "Project must be aimed at research, development and innovation",
    "v": 3,
    "verdict": "condition"
   },
@@ -6497,6 +7343,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5a743de00606af53": {
+   "reason": "Requires project fall in a thematic purpose area; checkable against own project.",
+   "sample": "Project must fall within the Industry and Energy purpose area",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5a86a230c0a7d831": {
    "reason": "Targets farmers, lists eligible modules and eligible project stages plus zone and deadline.",
    "sample": "L\u2019action vise l\u2019accompagnement climat des agriculteurs via des parcours d\u2019accompagnement (\u00e0 l\u2019\u00e9chelle de l\u2019exploitation) comprenant un diagnostic individuel, un plan d\u2019action et un suivi de l\u2019exploitation, selon plusieur",
@@ -6512,6 +7364,12 @@
   "5aa6226e4bce0aff": {
    "reason": "Purpose restriction to electric vehicle acquisition/leasing.",
    "sample": "Funds/guarantee must support acquisition or leasing of electric vehicles (green transition project)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5ad877027bc71ec8": {
+   "reason": "Distance threshold from cycle route \u2014 checkable.",
+   "sample": "Applicant's establishment must be located less than 5 km from a cycle route",
    "v": 3,
    "verdict": "condition"
   },
@@ -6635,6 +7493,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5c277fe6fa889467": {
+   "reason": "Project must not have started or been committed before application.",
+   "sample": "The project for which funding is requested must not have already started or given rise to firm commitments (signed contract, order, or accepted quote) before applying",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5c3151e182223cea": {
    "reason": "Only lead applicant of a partnership may apply \u2014 applicant-status requirement.",
    "sample": "Subsidy under this scheme can only be requested by a lead applicant (penvoerder) on behalf of a partnership (samenwerkingsverband).",
@@ -6692,6 +7556,12 @@
   "5cbe7ee56f0dfce0": {
    "reason": "Aid for reindustrialisation and industrial activity in difficulty in Catalonia \u2014 applicant situation test.",
    "sample": "Beneficiarios: GRAN EMPRESA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES51 - CATALU\u00d1A. Finalidad: Industria y Energ\u00eda. Sectores elegibles: 39 sectores (sin restricci\u00f3n sectorial efect",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5cc0c2ee7b6e734a": {
+   "reason": "Geographic location requirement the applicant can check.",
+   "sample": "Project must be located in the C\u00e1ceres region (ES432)",
    "v": 3,
    "verdict": "condition"
   },
@@ -6809,6 +7679,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5eb0987fb48a93ee": {
+   "reason": "Regional location requirement.",
+   "sample": "Project activity must be located in the Basque Country (ES21) region",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5eb2af1e977c7e8d": {
    "reason": "Undertaking-in-difficulty exclusion applies to applicant's own status.",
    "sample": "Applicant must not be an undertaking in difficulty, where required under State aid rules.",
@@ -6818,6 +7694,12 @@
   "5eddfa4e46e07803": {
    "reason": "Private legal entity registered in Estonia \u2014 checkable status requirement.",
    "sample": "Applicant must be a private legal entity registered in the Estonian Business Register.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5edf43bb74132b0e": {
+   "reason": "Location requirement for project activity.",
+   "sample": "Project activity must be located in the Comunidad Foral de Navarra region.",
    "v": 3,
    "verdict": "condition"
   },
@@ -6857,6 +7739,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5f3cd7f6a317e3e8": {
+   "reason": "Applicant must be municipality/region with company or research partner.",
+   "sample": "Applicant must be a municipality or region acting together with at least one company or research/innovation actor",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5f41945054e89cf2": {
    "reason": "Consortium size, autonomy, Spanish incorporation and SME participation requirements the applicant can check.",
    "sample": "Beneficiarios: Agrupaciones constituidas por un m\u00ednimo de tres y un m\u00e1ximo de seis empresas, al menos dos de ellas aut\u00f3nomas entre s\u00ed. Las empresas deben estar v\u00e1lidamente constituidas en Espa\u00f1a. En el consorcio debe par",
@@ -6872,6 +7760,12 @@
   "5f5c853b98d2b807": {
    "reason": "Applicant must be an incorporated company.",
    "sample": "Applicant must be a company (not an individual or unincorporated entity)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5f5e61a328066438": {
+   "reason": "Balance sheet ceiling on applicant.",
+   "sample": "Applicant must have a balance sheet total of at most 10 MSEK.",
    "v": 3,
    "verdict": "condition"
   },
@@ -6929,11 +7823,23 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5ffda4cde9ec8981": {
+   "reason": "States kind/size of counterparty financed rather than merit test.",
+   "sample": "Applicant must be a large enterprise, an SME, or a natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "demand_match"
+  },
   "6023f2b9bb3056c2": {
    "reason": "Describes maturity/stage and project phases the instrument funds; applicant states counterpart need.",
    "sample": "Domestic industrial scaleup companies require capital for development, piloting, production scaling, and commercialization; industrial projects are for project development and construction phases.",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "602533c15a41b22f": {
+   "reason": "Project purpose/sector requirement (Industry and Energy, R&D).",
+   "sample": "The project must fall within the Industry and Energy purpose, in the R&D sector",
+   "v": 3,
+   "verdict": "condition"
   },
   "6036a290769663b8": {
    "reason": "Geographic registration/activity requirement on applicant.",
@@ -7001,6 +7907,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "610a9509fcfe9d44": {
+   "reason": "Sector eligibility requirement.",
+   "sample": "Applicant's sector must be Other Services or Transport and Storage (travel agency related activity)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6122440c2aca230c": {
    "reason": "SME size thresholds, \u00cele-de-France establishment, ecological axis, sector exclusions\u2014all checkable by reader.",
    "sample": "B\u00e9n\u00e9ficiaires : les petites et moyennes entreprises (PME), employant entre 5 et 250 salari\u00e9s, dont le chiffre d'affaires n'exc\u00e8de pas 50 M\u20ac ou dont le bilan total n'exc\u00e8de pas 43 M\u20ac, ayant au moins 1 \u00e9tablissement en \u00cele",
@@ -7028,6 +7940,12 @@
   "6175eba9c030ec0d": {
    "reason": "Exclusion of firms under outstanding recovery order; applicant can check own status.",
    "sample": "Undertakings subject to an outstanding recovery order following a prior Commission decision declaring French aid illegal and incompatible are excluded.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6181daea845f165f": {
+   "reason": "Project purpose must be RDI.",
+   "sample": "Project purpose must be research, development and innovation",
    "v": 3,
    "verdict": "condition"
   },
@@ -7121,6 +8039,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "62955c6f5165020a": {
+   "reason": "Applicant must be local authority promoting cycling \u2014 checkable.",
+   "sample": "Applicant must be a local authority (collectivit\u00e9 territoriale, intercommunalit\u00e9 or syndicat) seeking to promote cycling in its territory",
+   "v": 3,
+   "verdict": "condition"
+  },
   "62a131101281a519": {
    "reason": "Project timing requirement: completed projects rejected, pre-submission costs not reimbursable; checkable against own plans.",
    "sample": "Applications for projects that have already been completed will be rejected; applications for already-started projects are assessed case-by-case, with costs before submission normally not reimbursable.",
@@ -7211,6 +8135,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "63b1da34fb47aae2": {
+   "reason": "Project purpose requirement: R&D&I activities.",
+   "sample": "Project must be aimed at research, development and innovation activities",
+   "v": 3,
+   "verdict": "condition"
+  },
   "63ec2b3f1a667f93": {
    "reason": "Eligible-country establishment requirement for beneficiaries and affiliates.",
    "sample": "Applicants (beneficiaries and affiliated entities) must be legal entities established in one of the eligible countries (EU Member States including OCTs, listed EEA countries, or countries associated to the Digital Europe",
@@ -7234,6 +8164,12 @@
    "sample": "Funding lands on a specific legal entity within the consortium; group/subsidiary structure matters",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "649667d563e0769d": {
+   "reason": "Swedish company requirement.",
+   "sample": "Applicant must be a Swedish company",
+   "v": 3,
+   "verdict": "condition"
   },
   "64a4c0dfd5faa06e": {
    "reason": "Requires association membership; page limits and contribution ceilings applicants must respect.",
@@ -7262,6 +8198,12 @@
   "64d18bb9c8518de7": {
    "reason": "Minimum composition rule for specific action types.",
    "sample": "Applications for Training and mobility actions and Programme co-fund actions may be submitted by one or more legal entities provided one is established in a Member State or Associated Country.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "64e9b2bdb2c6bb67": {
+   "reason": "Regional location requirement",
+   "sample": "The project must be located in the Catalonia region (ES51)",
    "v": 3,
    "verdict": "condition"
   },
@@ -7313,15 +8255,33 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6565370b9edac009": {
+   "reason": "Enumerates eligible legal categories of applicant, not named parties.",
+   "sample": "Applicant must be a commune, intercommunality/pays, department, public establishment (including state services), or local public enterprise (Sem, Spl, SemOp)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "656e1063ff7d3a44": {
    "reason": "Applicant must be freelancer or commercial enterprise; checkable status.",
    "sample": "The applicant must be a freelance professional or run a commercial enterprise.",
    "v": 3,
    "verdict": "condition"
   },
+  "6579aa00c5032fef": {
+   "reason": "Location requirement: project in Spain.",
+   "sample": "Project must be located in Spain",
+   "v": 3,
+   "verdict": "condition"
+  },
   "65906754935fd172": {
    "reason": "Financial-distress exclusion \u2014 checkable financial state of applicant.",
    "sample": "Company must not be in financial distress (loss-making beyond capital thresholds) to be bankable for debt",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6591d862ea8cbeb2": {
+   "reason": "Geographic eligibility requirement.",
+   "sample": "Project activity must be located in the region of Galicia (ES11)",
    "v": 3,
    "verdict": "condition"
   },
@@ -7487,9 +8447,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "672fd76133b09fdb": {
+   "reason": "Activity location requirement",
+   "sample": "The applicant's activity must be located in the Region of Murcia",
+   "v": 3,
+   "verdict": "condition"
+  },
   "675049b5149bf5a2": {
    "reason": "Regional establishment requirement excluding companies outside DED/DED2.",
    "sample": "Registered with the European Commission as applying in DED, DED2. A company established outside those regions is not eligible under this scheme.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6759eb60fc476d0f": {
+   "reason": "Eligible regions enumerated \u2014 applicant can check own location.",
+   "sample": "The project must be located in one of the eligible regions: Provence-Alpes-C\u00f4te d'Azur, Nouvelle-Aquitaine, La R\u00e9union, Bourgogne-Franche-Comt\u00e9, or Auvergne-Rh\u00f4ne-Alpes",
    "v": 3,
    "verdict": "condition"
   },
@@ -7607,6 +8579,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "68b1341dca67eb2f": {
+   "reason": "Project location in France \u2014 checkable condition.",
+   "sample": "The project must be located in France (metropolitan/overseas territory code PAYS-99100)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "68b377dd3ab1e14a": {
    "reason": "Sector activity requirement, true of some applicants only.",
    "sample": "Applicant must be active in Life Sciences (drugs, biologics, gene therapies, synthetic biology, drug discovery platforms) or HealthTech (digital health or Medtech).",
@@ -7691,6 +8669,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "69ba86e4f6155154": {
+   "reason": "Eligible applicant type with specified technical competence.",
+   "sample": "Applicant may alternatively qualify as a territorial engineering structure with technical support/facilitation competence in hedge biomass valorisation or intra-plot agroforestry",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6a0a326f4ef10090": {
+   "reason": "Activity must take place in Galicia; locational condition.",
+   "sample": "Project activity must take place in the Galicia region of Spain",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6a23f4b50cd5dca5": {
    "reason": "Consortium must include association member for listed topics.",
    "sample": "Applicant consortium must include at least one partner that is a member of Hydrogen Europe or Hydrogen Europe Research for specific listed topics (e.g. HORIZON-JU-CLEANH2-2026-03-03, 04-02, 06-01, 06-02).",
@@ -7745,6 +8735,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6af9d832b115446b": {
+   "reason": "Requires consortium rather than single applicant; checkable applicant-structure requirement.",
+   "sample": "Applicant must be part of a consortium of actors (not a single applicant)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6b01d61e4f432acd": {
    "reason": "Requires direct application by company/consortium, excludes fund route.",
    "sample": "Applicant is a single company (or consortium) applying directly, not via an investment fund",
@@ -7784,6 +8780,18 @@
   "6b584b3dcc4982ce": {
    "reason": "Sector exclusions checkable against applicant's NACE activity.",
    "sample": "Guarantee is not issued for activities in excluded sectors including primary agricultural production, fisheries/aquaculture, financial and insurance activities, gambling and betting, tobacco manufacturing/trade, weapons/",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6b5a6eac355a939c": {
+   "reason": "SME status requirement \u2014 checkable applicant size.",
+   "sample": "Applicant must be an SME (PME)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6b6f98a897e4749f": {
+   "reason": "Requires at least three Swedish consortium parties.",
+   "sample": "Applicant consortium must consist of at least three Swedish parties",
    "v": 3,
    "verdict": "condition"
   },
@@ -7871,6 +8879,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6c75a860808b973b": {
+   "reason": "Applicant status requirement: SME or self-employed.",
+   "sample": "Applicant must be an SME or a self-employed individual/natural person carrying out an economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6c79ff45d032e469": {
    "reason": "Applicant-type requirement excluding individuals and bare consortia.",
    "sample": "Applicant must be an operating company (not an individual or bare project consortium)",
@@ -7913,9 +8927,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6d4c04ac9f70cee8": {
+   "reason": "Sector requirement: manufacturing industry.",
+   "sample": "Project must fall within the manufacturing industry sector",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6d68eb9a21fa5272": {
    "reason": "Excludes undertakings in difficulty; status test applicant can check.",
    "sample": "Companies in difficulty as defined by GBER Article 2(18) are excluded from funding.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6d9dceed4609e417": {
+   "reason": "Requires Swedish and American partners in consortium \u2014 checkable composition rule.",
+   "sample": "Applicant consortium must include at least one Swedish actor and one American actor.",
    "v": 3,
    "verdict": "condition"
   },
@@ -7937,9 +8963,27 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6db6b37e2521fe71": {
+   "reason": "List of eligible sectors project must fall within.",
+   "sample": "Project must fall within eligible sectors: support activities for extractive industries, extraction of metal ores, manufacturing industry, other extractive industries, water supply/sanitation/waste management/decontamina",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6db8b11e9dc889de": {
    "reason": "Requires stable establishment in France; applicant-checkable location requirement.",
    "sample": "Eligible companies must have a stable establishment in France.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6de4edf628a90b3f": {
+   "reason": "Project purpose requirement (RDI).",
+   "sample": "Project must be for research, development and innovation purposes",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6de59c63f512d37f": {
+   "reason": "Purpose area and manufacturing sector requirement.",
+   "sample": "Project must fall within the Industry and Energy purpose area, specifically manufacturing industry sector.",
    "v": 3,
    "verdict": "condition"
   },
@@ -8066,6 +9110,12 @@
   "6f960913ca742be6": {
    "reason": "Restricts beneficiaries to SMEs per Annex III definition.",
    "sample": "Eligible final beneficiaries of aid covering prospecting costs are SMEs as defined in Annex III of the scheme.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6f98aa2f59cb65dd": {
+   "reason": "Applicant activity must fall in listed sectors; checkable requirement.",
+   "sample": "Applicant's activity must fall within one of the listed eligible sectors (arts/sports/entertainment, agriculture/forestry/fishing, manufacturing, extractive industries, energy supply, telecommunications/IT, transport and",
    "v": 3,
    "verdict": "condition"
   },
@@ -8213,6 +9263,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "71f09988523f9686": {
+   "reason": "Size threshold: fewer than 50 employees.",
+   "sample": "Applicant must be a small or micro enterprise with fewer than 50 employees",
+   "v": 3,
+   "verdict": "condition"
+  },
   "720b61b9dab1746b": {
    "reason": "Excludes applicants under outstanding recovery order; reader can check own status.",
    "sample": "Aid cannot be granted to a recipient subject to an outstanding recovery order following a European Commission decision declaring aid illegal and incompatible with the internal market.",
@@ -8294,6 +9350,12 @@
   "73055130f5f09302": {
    "reason": "Consortium composition requirement checkable against applicant's partners.",
    "sample": "Varje projektkonsortium m\u00e5ste omfatta minst en organisation fr\u00e5n Sverige och minst en organisation fr\u00e5n n\u00e5got/n\u00e5gon av de \u00f6vriga fyra deltagarl\u00e4nderna.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7308607f1d72eeb2": {
+   "reason": "Legal-entity requirement with exclusions for individuals and State departments.",
+   "sample": "Applicant must be a public or private legal entity (not an individual or a State department)",
    "v": 3,
    "verdict": "condition"
   },
@@ -8441,6 +9503,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "74e09c40b57970a5": {
+   "reason": "Project purpose requirement (reindustrialisation) the applicant can match.",
+   "sample": "The project must relate to industrial reindustrialisation and maintenance of industrial activity, within the Industry and Energy field",
+   "v": 3,
+   "verdict": "condition"
+  },
   "74e6662a1dad7af8": {
    "reason": "SMEs in less-developed regions; applicant-checkable location and size condition.",
    "sample": "Pmi situate nelle regioni meno sviluppate. Il 25% delle risorse e' destinato ai programmi proposti dalle micro e piccole imprese.",
@@ -8456,6 +9524,12 @@
   "754949abbb5f896c": {
    "reason": "Co-participation threshold of 10% imposed on applicants.",
    "sample": "User partners must jointly contribute costs equal to at least 10.0% of the amount applied for from the Research Council (the co-participation requirement).",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "754ac4d8e37edad5": {
+   "reason": "Project location in Galicia required; checkable.",
+   "sample": "Project must be located in the region of Galicia (ES11)",
    "v": 3,
    "verdict": "condition"
   },
@@ -8477,9 +9551,27 @@
    "v": 3,
    "verdict": "condition"
   },
+  "75ae565a3abceb22": {
+   "reason": "Project must be collective with two or more partners; checkable threshold.",
+   "sample": "Project must be a collective initiative involving at least two project partners/leads",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "76003a8b7d5cfed5": {
+   "reason": "SME definition requirement on applicant.",
+   "sample": "Applicant must be a TPE/PME (SME) in the EU sense, i.e. regularly exercising an economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7605f573555ca8d6": {
    "reason": "Regional eligibility restriction excluding companies outside DE2.",
    "sample": "Registered with the European Commission as applying in DE2. A company established outside those regions is not eligible under this scheme.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "760a03d8306043af": {
+   "reason": "Requires Swedish manufacturing company in consortium.",
+   "sample": "At least one Swedish company with manufacturing in Sweden must be part of the consortium",
    "v": 3,
    "verdict": "condition"
   },
@@ -8489,15 +9581,39 @@
    "v": 3,
    "verdict": "condition"
   },
+  "761cfbcd30f2e2ee": {
+   "reason": "Consortium must contain at least two companies.",
+   "sample": "Applicant must be a consortium containing at least two companies",
+   "v": 3,
+   "verdict": "condition"
+  },
   "761eb7b6cb049db2": {
    "reason": "Ownership threshold applicant can check against own shareholder composition.",
    "sample": "The company must be at least 50% owned by persons with difficulty accessing the labour market.",
    "v": 3,
    "verdict": "condition"
   },
+  "7656263de9b97bc6": {
+   "reason": "Establishment must hold specific tourism classification \u2014 checkable.",
+   "sample": "Applicant establishment must be classified as a H\u00f4tel de tourisme, Camping, R\u00e9sidence de tourisme, Village de vacances or Auberge collective under Atout France's classification standards",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "76704042a5a7ebdc": {
+   "reason": "Minimum two project partners \u2014 checkable threshold.",
+   "sample": "Application must include at least two project partners",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7672913f0b982d9f": {
    "reason": "Applicant must declare Seed or Series A stage track.",
    "sample": "Applicant must indicate whether applying under Seed stage or Series A/+ stage as these are evaluated separately.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "76840a93879c9307": {
+   "reason": "Funding purpose requirement checkable by applicant.",
+   "sample": "Purpose of funding must be research, development and innovation",
    "v": 3,
    "verdict": "condition"
   },
@@ -8597,6 +9713,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "787961c43c27414d": {
+   "reason": "Location requirement in specified metropolitan France area.",
+   "sample": "Project must be located in the specified geographic area (metropolitan France, catalogue code PAYS-99100)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7888573597c925d9": {
    "reason": "Exclusion of firms in difficulty, checkable by applicant.",
    "sample": "No aid under the decree may be granted to a firm in difficulty within the meaning of EU State aid rescue and restructuring guidelines.",
@@ -8606,6 +9728,18 @@
   "78935b86a41b4f9c": {
    "reason": "Legal form requirement (able to issue shares) checkable by applicant.",
    "sample": "Equity investment requires a company (not sole trader/individual) able to issue shares",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "789dd9a37646e63f": {
+   "reason": "Requires research institute actor in consortium.",
+   "sample": "Project consortium must include at least one actor from a research institute",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "78b10988c916657a": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant must be a SME or a natural person carrying out an economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -8735,6 +9869,18 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "7a36c0b0b79bd366": {
+   "reason": "Numeric threshold of at least 10 partners in consortium.",
+   "sample": "The consortium must consist of at least 10 project partners",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7a3f3bf9935e1137": {
+   "reason": "Enumerated eligible applicant categories a reader can match.",
+   "sample": "Applicant must be one of: SME, academic actor, research institute, public sector body, or civil society organisation.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7a61ef36edd81c9f": {
    "reason": "Contractors eligible only if meeting guideline requirements; applicant-testable.",
    "sample": "Contractors are eligible applicants only if they meet the requirements and obligations of the funding guideline, in particular Annex 2.",
@@ -8780,6 +9926,12 @@
   "7ab4e1bdc078e3ab": {
    "reason": "Undertaking-in-difficulty exclusion, checkable against applicant's own accounts.",
    "sample": "Applicant must not be an 'undertaking in difficulty' (e.g. losses exceeding half of subscribed capital) per GBER exclusions",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7abfb74d2312dc2f": {
+   "reason": "Requires project be freight/passenger transport activity.",
+   "sample": "Project must be a freight or passenger transport activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -8903,6 +10055,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "7c6960ea9a4f2a77": {
+   "reason": "Fuel volume threshold checkable by applicant.",
+   "sample": "The station must sell less than 2,500 m3 of fuel (all light vehicle fuel types combined) per year",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7c8a294d35be5adf": {
    "reason": "SME credit-access framework, grant instrument, unrestricted sectors \u2014 describes what is offered.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES11 - GALICIA. Finalidad: Industria y Energ\u00eda. Sectores elegibles: 22 sectores (sin restricci\u00f3n sectorial efectiva). Tipo de c",
@@ -8924,6 +10082,12 @@
   "7cd4eb49e40a54f2": {
    "reason": "Exclusion of firms in difficulty with capital-loss criterion; self-checkable.",
    "sample": "Firms in difficulty (losses eroding more than half of subscribed capital) generally excluded from GBER R&D&I aid",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7cdb6f63f3d06679": {
+   "reason": "Minimum expenditure threshold the project must meet.",
+   "sample": "Project must have a minimum expenditure base of \u20ac400,000, except in Corsica and Overseas territories",
    "v": 3,
    "verdict": "condition"
   },
@@ -8999,6 +10163,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "7dd4c0bdd5a9a261": {
+   "reason": "No prior start/commitments \u2014 project condition.",
+   "sample": "The project for which aid is requested must not have started or resulted in firm commitments (signed contract, order, accepted quote, etc.) before applying",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7e08818b2a3c1555": {
    "reason": "Requires Norwegian company partner and minimum business effort share.",
    "sample": "Norway requires at least one Norwegian company partner and a minimum share of Norwegian partner effort to come from business partners.",
@@ -9068,6 +10238,12 @@
   "7f38cd5ae9418eed": {
    "reason": "Sector and geographic requirement on applicant or consortium.",
    "sample": "Applicant or consortium must involve entities operating in health innovation sector within EU/Horizon-associated countries",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7f3f7c3b43d79535": {
+   "reason": "Project sector requirement: extractive/mining.",
+   "sample": "Project must relate to the extractive/mining industry sector",
    "v": 3,
    "verdict": "condition"
   },
@@ -9197,6 +10373,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "803dd364d1006f55": {
+   "reason": "Eligible applicant type: local authority or grouping.",
+   "sample": "Applicant may alternatively qualify as a local/territorial authority or grouping thereof",
+   "v": 3,
+   "verdict": "condition"
+  },
   "803ef3b7c486d38d": {
    "reason": "Norwegian firms as partners in EEA-grant projects in named countries; joint piloting requirement is actionable.",
    "sample": "M\u00e5lgruppe Alle bedrifter Norske bedrifter kan delta som partner i prosjekter st\u00f8ttet av E\u00d8S-midler (EEA Grants), og bidra til sosial og \u00f8konomisk utvikling i Europa. Innovasjon Norge forvalter programmene gjennom v\u00e5re ko",
@@ -9227,9 +10409,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "8098a77adc8566ca": {
+   "reason": "Requires applicant be company in specified wood transformation activities.",
+   "sample": "Applicant must be a company involved in first and/or second wood transformation, prefabrication, or assembly",
+   "v": 3,
+   "verdict": "condition"
+  },
   "80a4ee1732ff130d": {
    "reason": "Restricts funded activity to R&D, innovation or industrial researcher collaboration.",
    "sample": "Funds must be used for R&D, innovation, or industrial researcher (erhvervsforsker) collaboration project",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "80c539dfafbfa2c1": {
+   "reason": "Threshold: three public sector organisations in project group.",
+   "sample": "At least three of the project group's organisations must be from the public sector.",
    "v": 3,
    "verdict": "condition"
   },
@@ -9272,6 +10466,18 @@
   "8166a2847ac94707": {
    "reason": "Establishment requirement (EU, 75% to Latvia) checkable by applicant.",
    "sample": "Support is granted to business operators established in the European Union, with at least 75% of each fund's total investment volume directed to business operators established in the Republic of Latvia.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "816b533bf967225c": {
+   "reason": "Applicant status plus taxi/transport sector requirement.",
+   "sample": "Applicant must be an SME or self-employed individual carrying out an economic activity in the taxi/transport sector",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "819440ff8d3e61a0": {
+   "reason": "Prior-beneficiary exclusion applicant can check against itself.",
+   "sample": "Applicants must not have already been beneficiaries of the AVELO \u2013 PRO INNO 26 programme",
    "v": 3,
    "verdict": "condition"
   },
@@ -9473,9 +10679,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "84225777c06eea26": {
+   "reason": "Requires applicant's activity in specified retail sectors; checkable eligibility test.",
+   "sample": "Applicant's activity must fall within retail trade of motor vehicles/motorcycles parts and accessories or non-specialized retail trade",
+   "v": 3,
+   "verdict": "condition"
+  },
   "8428515280bd60a3": {
    "reason": "SME status and Irish registration are checkable applicant requirements.",
    "sample": "Applicant must be an SME (per EU SME definition) registered in Ireland",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "84375ddd48f86b4f": {
+   "reason": "Applicant category requirement.",
+   "sample": "Applicant must be a natural person without economic activity, an SME, or a natural person carrying out economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -9503,6 +10721,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "849f5cd57f5dfeec": {
+   "reason": "Regional location requirement.",
+   "sample": "Project must be located in the regions of Lleida or Tarragona",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "84a7791603a12d65": {
+   "reason": "Requires Swedish place of operation.",
+   "sample": "Applicant must have an establishment (place of operation) in Sweden",
+   "v": 3,
+   "verdict": "condition"
+  },
   "84bfbfe75138b91d": {
    "reason": "Minimum average sales revenue threshold over two years.",
    "sample": "The average sales revenue of the applicant in the last two financial years must be at least EUR 200,000.",
@@ -9512,6 +10742,12 @@
   "84d0c02818ae002b": {
    "reason": "SME or innovative company status requirement.",
    "sample": "Applicant must be an SME or innovative company per national programme rules",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "84d24ed033575a59": {
+   "reason": "Excludes grid energy producers; applicant-checkable.",
+   "sample": "Project must not be an industrial entity producing energy for networks (electricity, gas, etc.)",
    "v": 3,
    "verdict": "condition"
   },
@@ -9563,6 +10799,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "85b158b68dc750ab": {
+   "reason": "Requires applicant be a research-based growth company.",
+   "sample": "Applicant must be a research-based growth company",
+   "v": 3,
+   "verdict": "condition"
+  },
   "85ba6ccfd000add9": {
    "reason": "Project activity type and Ireland location requirement.",
    "sample": "Funds must support innovation, R&D, or scale-up/export-growth project activity based in Ireland",
@@ -9596,6 +10838,18 @@
   "85fdcecde55f9148": {
    "reason": "Registration, revenue threshold, tax debt, no bankruptcy \u2014 checkable applicant requirements.",
    "sample": "Eesti \u00e4riregistris registreeritud era\u00f5iguslik juriidiline isik. Taotleja p\u00f5hitegevusalal peab olema Eestis v\u00e4hemalt 200 000 eurot [m\u00fc\u00fcgitulu]. Kaks eraldi taotlusvooru: t\u00f6\u00f6tleva t\u00f6\u00f6stuse/kaevandamise sektor ning teised s",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "860cbd00b8fdfe2f": {
+   "reason": "Geographic requirement on project location the reader can check.",
+   "sample": "Project must be located in one of the listed French regions",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "861db765a82f0de0": {
+   "reason": "Collaboration requirement on applicant, though vague.",
+   "sample": "Applicant must collaborate with relevant actors.",
    "v": 3,
    "verdict": "condition"
   },
@@ -9653,6 +10907,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "86c0296f1328835a": {
+   "reason": "Eligible sector list applicant must match; discriminating and checkable.",
+   "sample": "Applicant's sector must be one of the listed eligible sectors (arts/sports/entertainment, agriculture/forestry/fishing, manufacturing, extractive industries, energy supply, telecom/IT, transport and storage)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "86c676ca6c576e8f": {
    "reason": "Operating company requirement excluding individuals/SPVs.",
    "sample": "Applicant must be an operating company (not an individual or SPV)",
@@ -9668,6 +10928,12 @@
   "870de5d1b88e1138": {
    "reason": "Enumerates eligible applicant categories with co-financing and accounting requirements the reader can check.",
    "sample": "Uchaze\u010dem, respektive p\u0159\u00edjemcem podpory na projekt podle z\u00e1kona o podpo\u0159e v\u00fdzkumu, experiment\u00e1ln\u00edho v\u00fdvoje a inovac\u00ed, R\u00e1mce a Na\u0159\u00edzen\u00ed, mohou b\u00fdt: \u25cf Organizace pro v\u00fdzkum a \u0161\u00ed\u0159en\u00ed znalost\u00ed \u2013 pr\u00e1vnick\u00e9 osoby, kter\u00e9 spl\u0148uj",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "8711e96de3bcfc11": {
+   "reason": "Sectoral exclusions the reader can check against their project.",
+   "sample": "Project must not be in tertiary activities, agriculture (except agri-food industry), fishing/aquaculture, mobile-site public works, waste incinerators (unless integrated into an industrial site), or grid energy productio",
    "v": 3,
    "verdict": "condition"
   },
@@ -9803,6 +11069,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "88664eb0dc2d8959": {
+   "reason": "Applicant type and non-ETS status requirement.",
+   "sample": "Applicant must be an industrial site belonging to an SME or a Large Enterprise not subject to the EU-ETS directive",
+   "v": 3,
+   "verdict": "condition"
+  },
   "88a6961913cad7f2": {
    "reason": "SME size thresholds applicant can verify against own figures.",
    "sample": "SMEs are defined per Annex I of Regulation 651/2014: fewer than 250 employees and either annual turnover not exceeding EUR 50 million or annual balance sheet total not exceeding EUR 43 million.",
@@ -9860,6 +11132,12 @@
   "8957b0f71b4d13cb": {
    "reason": "SME size criteria requirement.",
    "sample": "Applicant must be an SME (or innovative company) per EU/French size criteria",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "8970e6275978d062": {
+   "reason": "Requires at least one Swedish participating company.",
+   "sample": "At least one of the participating companies must be Swedish",
    "v": 3,
    "verdict": "condition"
   },
@@ -9970,6 +11248,12 @@
    "sample": "Funds must go to first-of-a-kind net-zero/decarbonisation demonstration capex (here: maritime clean technology under Hydrogen Bank auction) at meaningful scale and maturity toward financial close",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "8a8ea3a526defd0c": {
+   "reason": "Use-of-funds requirement: protected rental housing under general regime.",
+   "sample": "Funds must finance publicly protected housing developments for rental or use-transfer under the general regime",
+   "v": 3,
+   "verdict": "condition"
   },
   "8a92b9bb367901a7": {
    "reason": "Location in Groot-Rijnmond and fit with Annex 3 descriptions are project tests.",
@@ -10127,6 +11411,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "8c6a78173ad36247": {
+   "reason": "Turnover ceiling on applicant.",
+   "sample": "Applicant must have net turnover of at most 10 MSEK.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "8c8e1e8ec46f5b40": {
    "reason": "Beneficiary types and listed industrial/extractive sectors in Spain are checkable requirements.",
    "sample": "Beneficiarios: GRAN EMPRESA; PERSONAS JUR\u00cdDICAS QUE NO DESARROLLAN ACTIVIDAD ECON\u00d3MICA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES - ESPA\u00d1A. Finalidad: Industria y Energ\u00eda. Sectores ",
@@ -10187,6 +11477,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "8cf70029e620e499": {
+   "reason": "Location in Catalonia required; checkable condition.",
+   "sample": "Project/activity must be located in Catalonia (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "8d1c18f91d057d9a": {
    "reason": "Maximum loan size per borrower; amount of offer applicant compares to need.",
    "sample": "The maximum loan amount for one business operator and its group of related persons is up to EUR 1,500,000.",
@@ -10235,6 +11531,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "8dd1c9d4cc2b7adc": {
+   "reason": "Geographic scope requirement on project location.",
+   "sample": "Project must be located within the specified geographic scope (France, catalogue code PAYS-99100)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "8dda120bb329f32b": {
    "reason": "Eligibility restricted to SMEs by size thresholds despite descriptive phrasing.",
    "sample": "Many GBER schemes (Art. 25 R&D&I, SME aid) restrict eligibility to SMEs by headcount/turnover/balance sheet",
@@ -10265,6 +11567,12 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "8e4119481d34dfae": {
+   "reason": "Project must be located in stated region; checkable.",
+   "sample": "Project activity must be located in the region of Catalu\u00f1a (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "8e487c5745a1ecac": {
    "reason": "Project must benefit SMEs \u2014 checkable project requirement.",
    "sample": "The project must benefit SMEs.",
@@ -10277,6 +11585,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "8e69882d1f8735fc": {
+   "reason": "Eligibility conditioned on energy audit compliance and size \u2014 checkable.",
+   "sample": "Sites with fewer than 250 employees belonging to large enterprises are eligible only if up to date with regulatory energy audit obligations",
+   "v": 3,
+   "verdict": "condition"
+  },
   "8e6e877799b73164": {
    "reason": "Procedural State-aid notification requirement on granting authority, not applicant merit.",
    "sample": "Where EU State-aid rules require individual notification for a project, funding may only be granted after European Commission approval.",
@@ -10286,6 +11600,12 @@
   "8e84de0d8cc5849b": {
    "reason": "Operational capacity requirement assessed against applicant.",
    "sample": "Applicants must have the know-how, qualifications and resources (operational capacity) to implement their tasks in the project, assessed via the Implementation award criterion.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "8ea7e654e454dda1": {
+   "reason": "Location requirement (Catalu\u00f1a).",
+   "sample": "The project must be located/carried out in the region of Catalu\u00f1a (ES51)",
    "v": 3,
    "verdict": "condition"
   },
@@ -10382,6 +11702,12 @@
   "904274b040751a19": {
    "reason": "Eligible applicant types, German establishment requirement, pre-competitive high-risk R&D consortium project criteria.",
    "sample": "3 Zuwendungsempf\u00e4nger Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Hochschulen und au\u00dferuniversit\u00e4re Forschungseinrichtungen. Zum Zeitpunkt der Auszahlung einer gew\u00e4hrten Zuwendung wird das Vorhan",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "90428335f071634a": {
+   "reason": "Project must not have started \u2014 checkable project requirement.",
+   "sample": "The project for which funding is requested must not have started and must not have given rise to any firm commitments (signed contract, order, or accepted quote) before applying",
    "v": 3,
    "verdict": "condition"
   },
@@ -10607,6 +11933,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "934ea789e2d819d3": {
+   "reason": "Requires applicant to operate an industrial site.",
+   "sample": "Applicant must operate an industrial site.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "9377a3d90ba13c07": {
    "reason": "States which legal entity receives funding; shape of recipient, not merit test.",
    "sample": "Funding lands on a specific legal entity in the consortium; group structure and subsidiary status matter",
@@ -10640,6 +11972,12 @@
   "93fdde27d99fb57e": {
    "reason": "Legal establishment and R&D&I activity requirement for applicant.",
    "sample": "Applicant must be a legally established entity carrying out R&D&I activity, applying via the CDTI procedure under this order.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "94060fa8cb785512": {
+   "reason": "Regional location requirement checkable by applicant.",
+   "sample": "Project must be located in one of the specified French regions/territories",
    "v": 3,
    "verdict": "condition"
   },
@@ -10760,6 +12098,12 @@
   "954a8953a4427838": {
    "reason": "Norwegian SME required, equity threshold, project limits, SME definition \u2014 clear applicant tests.",
    "sample": "Det er krav om &aring; ha med en norsk SMB i alle Eurostars-s&oslash;knader med norske deltakere. Norske SMB-er og andre norske partnere kan kun sende inn &eacute;n prosjekts&oslash;knad per s&oslash;knadsrunde og til en",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "955c3c80756f527b": {
+   "reason": "Regional location requirement the applicant can verify.",
+   "sample": "Project/activity must be located in the Catalonia region (ES51)",
    "v": 3,
    "verdict": "condition"
   },
@@ -10943,6 +12287,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "9761a017c15300ae": {
+   "reason": "Sectoral purpose requirement: industry and energy.",
+   "sample": "Project must relate to Industry and Energy purposes",
+   "v": 3,
+   "verdict": "condition"
+  },
   "97624e61b99db3e1": {
    "reason": "Headcount threshold under 500 including affiliates; verifiable applicant criterion.",
    "sample": "Other mid-sized companies are eligible if, including affiliated or partner companies, they employ fewer than 500 people at the time of application.",
@@ -11105,6 +12455,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "99c2f4905df7a927": {
+   "reason": "Requires coordinator to apply jointly with companies/public bodies \u2014 checkable consortium requirement.",
+   "sample": "The coordinator must apply together with companies and/or public sector organizations",
+   "v": 3,
+   "verdict": "condition"
+  },
   "99fa2408c03c5c38": {
    "reason": "Project must target new product/service with rapid commercialisation; project test.",
    "sample": "The project must have a clear goal of a new product, process or service, with market introduction/commercialisation to occur quickly after project completion.",
@@ -11141,6 +12497,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "9a5a7e875a72e2d8": {
+   "reason": "Eligible sector restriction.",
+   "sample": "Project must operate in eligible sectors: programming/broadcasting/news agencies and content distribution activities, or retail trade",
+   "v": 3,
+   "verdict": "condition"
+  },
   "9a5d3f19b74bcc43": {
    "reason": "Requires applicant's willingness to cooperate in networking project.",
    "sample": "Funding requires the applicant's fundamental willingness to cooperate with a possibly planned networking and transfer project.",
@@ -11150,6 +12512,12 @@
   "9a6d35432269227a": {
    "reason": "Thematic restriction on eligible activities the applicant can check.",
    "sample": "Funds/support typically restricted to innovation, R&D, or scale-up activities aligned with the specific KIC's thematic focus (e.g. climate, health, digital, energy)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "9a7d22d572b85fd6": {
+   "reason": "Operating region requirement",
+   "sample": "Applicant must operate in the Aragon region (ES24)",
    "v": 3,
    "verdict": "condition"
   },
@@ -11279,6 +12647,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "9bb4df59490f39b4": {
+   "reason": "Exclusion of eco-organisation member market operators; applicant can check.",
+   "sample": "Projects by market operators (metteurs en march\u00e9) who are members of a packaging eco-organisation are not eligible",
+   "v": 3,
+   "verdict": "condition"
+  },
   "9bbd577855b163a0": {
    "reason": "Tax and social compliance requirement checkable by applicant.",
    "sample": "Applicants must be up to date with their social security and tax obligations.",
@@ -11351,6 +12725,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "9c7ecba63789cf31": {
+   "reason": "Regional location requirement.",
+   "sample": "Project must take place in the region of Catalonia (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "9c8c4cacf5abf0b3": {
    "reason": "Project scope and ambition-beyond-state-of-the-art requirement, testable against own plans.",
    "sample": "Funding must finance R&D&I through first industrial deployment within the declared hydrogen value chain, showing ambition beyond state of the art",
@@ -11384,6 +12764,18 @@
   "9cd7544065a38be6": {
    "reason": "Requires specific contractual collaboration form for joint projects.",
    "sample": "Joint projects must be implemented through a network contract or other contractual collaboration forms such as a partnership agreement or consortium.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "9cec115539647f07": {
+   "reason": "Applicant-type eligibility requirement, checkable against own legal status.",
+   "sample": "Applicant must be a large enterprise, SME, or individual carrying out an economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "9cf7d6074d860630": {
+   "reason": "Location requirement",
+   "sample": "Project activity must take place in the Canary Islands region (ES70)",
    "v": 3,
    "verdict": "condition"
   },
@@ -11462,6 +12854,12 @@
   "9d85df27e84ba3b2": {
    "reason": "Mentions equity form but imposes legal-entity/cap-table requirement; actionable condition.",
    "sample": "Instrument is equity co-investment, requires a company (not natural person) with a cap table",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "9db43cb258e78389": {
+   "reason": "Regional location requirement.",
+   "sample": "Project must be located in the Basque Country (ES21)",
    "v": 3,
    "verdict": "condition"
   },
@@ -11560,6 +12958,12 @@
    "sample": "uchaze\u010dem organiza\u010dn\u00ed slo\u017eka st\u00e1tu nebo organiza\u010dn\u00ed jednotka ministerstva, zab\u00fdvaj\u00edc\u00ed se v\u00fdzkumem a v\u00fdvojem, a d\u00e1le pr\u00e1vnick\u00e1 osoba nebo fyzick\u00e1 osoba, kter\u00e1 se uch\u00e1z\u00ed o poskytnut\u00ed podpory p\u0159\u00edjemcem uchaze\u010d, v jeho\u017e pros",
    "v": 3,
    "verdict": "report"
+  },
+  "9eee09351bb2e9cd": {
+   "reason": "Describes SME/self-employed counterparty the offer targets.",
+   "sample": "Applicant must be an SME or a self-employed individual carrying out an economic activity",
+   "v": 3,
+   "verdict": "demand_match"
   },
   "9f055d05d94f3158": {
    "reason": "Eligible applicant persons undertaking specified measures.",
@@ -11699,6 +13103,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a0d13af0398b0f52": {
+   "reason": "Excludes standalone tertiary premises \u2014 applicant-checkable exclusion.",
+   "sample": "Standalone tertiary-activity premises (with no industrial site) are not eligible for this scheme",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a0d21ca6e98362a2": {
    "reason": "Grant-scale ticket size, matched against applicant's funding need.",
    "sample": "Ticket size fits grant-scale awards typical of this programme (tens of thousands of EUR)",
@@ -11792,6 +13202,12 @@
   "a14a8945663d6175": {
    "reason": "Applicant categories with licence, location and proof-of-need requirements.",
    "sample": "Zuwendungen f\u00fcr Linienbusse k\u00f6nnen grunds\u00e4tzlich Nahverkehrsunternehmen gew\u00e4hrt werden, die in Baden-W\u00fcrttemberg Linienverkehre nach \u00a7 42, \u00a7 43 Satz 1 Nr. 2 oder \u00a7 44 PBefG betreiben oder im Besitz einer entsprechenden L",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a14b64c77606ac07": {
+   "reason": "Applicant location requirement.",
+   "sample": "Applicant must be a company located in metropolitan France or in a French overseas department (DOM)",
    "v": 3,
    "verdict": "condition"
   },
@@ -11891,6 +13307,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a2499158625c68c4": {
+   "reason": "Location requirement.",
+   "sample": "Project/activity must be located in the region of Galicia (ES11)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a26f9bd6dfbaf7ce": {
    "reason": "Co-financing share describes cost coverage of the grant.",
    "sample": "Grant likely requires co-financing from the applicant",
@@ -11912,6 +13334,12 @@
   "a2cd6288c3639bec": {
    "reason": "Public-ownership 25% threshold disqualifies SME status; checkable exclusion.",
    "sample": "An enterprise cannot qualify as SME if 25% or more of its capital or voting rights are directly or indirectly controlled by one or more public bodies.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a2f63312b67125ca": {
+   "reason": "50% turnover threshold from forestry \u2014 checkable.",
+   "sample": "If applicant does not have one of the listed NAF codes, at least 50% of its turnover must come from forestry or forest exploitation activities",
    "v": 3,
    "verdict": "condition"
   },
@@ -11984,6 +13412,12 @@
   "a45549a7c6eadefa": {
    "reason": "Excludes EU bodies and sanctioned entities from participating.",
    "sample": "EU bodies (other than the Joint Research Centre) cannot be part of the consortium; entities subject to EU restrictive measures or EU conditionality measures are not eligible in any capacity.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a456ef405c531fca": {
+   "reason": "Requires project location in listed regions \u2014 checkable.",
+   "sample": "The project must be located in one of the listed French regions or overseas territories",
    "v": 3,
    "verdict": "condition"
   },
@@ -12089,6 +13523,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a5a7afd9a75fa559": {
+   "reason": "Checkable applicant requirements: Latvian registered legal person, no tax debt over EUR 150, excluded sectors.",
+   "sample": "Kas iesniedz pieteikumu: Pieteikumu garantijai sagatavo un iesniedz finans\u0113t\u0101js \u2013 banka vai l\u012bzinga komp\u0101nija, pievienojot finans\u0113t\u0101ja un uz\u0146\u0113muma sagatavotos dokumentus. Par kred\u012bta garantijas piesaisti prasiet sav\u0101 ban",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a5a7fdc1e4bfeeb5": {
+   "reason": "Minimum partner organizations threshold for the project.",
+   "sample": "Project must have at least two partner organizations",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a5b52f9d4a7dcc90": {
    "reason": "Exclusion of undertakings in crisis \u2014 checkable applicant status.",
    "sample": "Companies in crisis, as defined in applicable regulation, cannot be beneficiaries.",
@@ -12124,6 +13570,12 @@
    "sample": "Ticket size is very large, targeting mid-cap+/industrial-scale participants, not early-stage startups",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "a62198bd167d5d87": {
+   "reason": "Applicant legal form/size requirement.",
+   "sample": "Applicant must be a large enterprise or a legal entity not carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
   },
   "a628a1afe42c9465": {
    "reason": "SME/non-SME consortium constellations and Berlin location requirement.",
@@ -12197,6 +13649,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a6d85668b573be85": {
+   "reason": "Project sector requirement (wood exploitation), checkable.",
+   "sample": "Project must be in the wood exploitation sector",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a6ee7f20721ec92d": {
    "reason": "Micro-enterprise, legal form, ownership share and management requirements are checkable.",
    "sample": "Antragsberechtigt f\u00fcr die F\u00f6rderphase II sind ausschlie\u00dflich kleine technologieorientierte Unternehmen der gewerblichen Wirtschaft in der Rechtsform einer Kapitalgesellschaft mit Unternehmenssitz, Niederlassung oder Betr",
@@ -12251,6 +13709,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a78c5484e80b9161": {
+   "reason": "Project must be in eligible commune \u2014 location condition.",
+   "sample": "Project must be located in a commune eligible for the Fonds Tourisme Durable",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a7d28f1762e543d9": {
    "reason": "Excludes double-funded activities; applicant checks own funding history.",
    "sample": "Subsidy is refused if the applicant wants to use the subsidy for an activity for which a government body or the European Commission has already provided subsidy.",
@@ -12299,9 +13763,21 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "a8a9b948748491d1": {
+   "reason": "Applicant status requirement.",
+   "sample": "Applicant must be an SME or a natural person carrying out an economic activity.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a8ae2e8b825b20c1": {
    "reason": "Geographic targeting plus exclusion of prior programme beneficiaries; checkable by reader.",
    "sample": "\u00cates-vous concern\u00e9 ? Cet appel \u00e0 projets s'adresse aux territoires de France m\u00e9tropolitaine et d'outre-mer. Il cible tout particuli\u00e8rement : les territoires peu denses et/ou ruraux les villes moyennes les p\u00e9riph\u00e9ries des",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a8bd828ce01f276e": {
+   "reason": "Geographic eligibility requirement checkable against project location.",
+   "sample": "Project must be located in one of the listed eligible French regions/territories",
    "v": 3,
    "verdict": "condition"
   },
@@ -12338,6 +13814,12 @@
   "a8de96ce392bb978": {
    "reason": "SME thresholds on staff, turnover, balance sheet are checkable.",
    "sample": "Applicant should be an SME (per national/EU SME thresholds on staff, turnover, balance sheet)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a902be4642546d8b": {
+   "reason": "Geographic location requirement the reader can test against their project.",
+   "sample": "Project activity must be located in the Basque Country (ES21)",
    "v": 3,
    "verdict": "condition"
   },
@@ -12410,6 +13892,12 @@
   "a9adcbf8cdcf032e": {
    "reason": "Requires private ownership, viable concept, lack of collateral and alternative financing.",
    "sample": "Gef\u00f6rdert werden Unternehmen der gewerblichen Wirtschaft, die sich ganz oder mehrheitlich in privater Hand befinden, mit einem wirtschaftlich tragf\u00e4higen Unternehmenskonzept, denen ausreichende bank\u00fcbliche Sicherheiten f",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a9bfc0d134a7e660": {
+   "reason": "Applicant must be forestry landowner enterprise in sector A.",
+   "sample": "Applicant must be a forestry landowner enterprise operating in sector A",
    "v": 3,
    "verdict": "condition"
   },
@@ -12611,6 +14099,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "abc89cd4ab9b5ee1": {
+   "reason": "Location requirement.",
+   "sample": "Project must be located in the region of Galicia (Spain)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "abcf18ed0cc74777": {
    "reason": "Mandatory collaboration partner or R&D purchase requirement.",
    "sample": "The project-responsible must carry out the project with at least one Norwegian company collaboration partner or purchase R&D services from at least one R&D provider.",
@@ -12629,6 +14123,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "abf304a0cc8fe657": {
+   "reason": "Applicant type requirement: Swedish innovation actor.",
+   "sample": "Applicant must be a Swedish innovation actor (e.g. incubator, science park, cluster organisation)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ac44edd0da3bbf3c": {
+   "reason": "Technology-domain activity requirement on applicant.",
+   "sample": "Applicant must be active in AI, Edge AI, mobile connectivity (5G, 6G), resilience, cybersecurity, physical AI, or robotics",
+   "v": 3,
+   "verdict": "condition"
+  },
   "ac5cc39c4d85adf5": {
    "reason": "Exclusion of Korea-established entities; checkable.",
    "sample": "Legal entities established in the Republic of Korea are not eligible to receive IHI JU funding for topics where so specified.",
@@ -12638,6 +14144,12 @@
   "ac610bd1206f2b28": {
    "reason": "Sector exclusion list applicant can check against own activity.",
    "sample": "Excluded activities include trading/reselling, business consultancy, regulated professions, finance/insurance/real estate, hospitality and catering, training organisations, road freight transport, logistics, digital serv",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ac68c0b2be8bebdd": {
+   "reason": "Financial threshold: turnover/equity versus requested funding.",
+   "sample": "The applicant company's net turnover or equity must correspond to at least half of the requested funding amount.",
    "v": 3,
    "verdict": "condition"
   },
@@ -12716,6 +14228,12 @@
   "ad04ed137a233def": {
    "reason": "Eligible-cost limitation and use restriction applicable to applicant's project.",
    "sample": "Eligible costs are limited to R&D&I and FID activities as defined in the Annex to the IPCEI Communication, and funds may not be used for mass production or commercial activities.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ad181e2df159619b": {
+   "reason": "Regional location requirement",
+   "sample": "Project must be located in the region of Andaluc\u00eda (Spain)",
    "v": 3,
    "verdict": "condition"
   },
@@ -12893,6 +14411,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "af90b9682ad73a48": {
+   "reason": "Consortium size and diversity threshold the applicant can verify.",
+   "sample": "Applicant must be part of a project consortium consisting of at least three parties from at least two different categories of actors",
+   "v": 3,
+   "verdict": "condition"
+  },
   "afa19cfda2436fa9": {
    "reason": "Incorporation country requirement.",
    "sample": "The applicant company must be incorporated in an EU27 country or a Horizon Europe Associated Country.",
@@ -12908,6 +14432,12 @@
   "afcf1bc2154802e0": {
    "reason": "Requires co-financing and GHG avoidance case from applicant.",
    "sample": "Requires matched private co-financing and a demonstrable GHG emission avoidance case",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "afd4eca288bbe542": {
+   "reason": "Nationality and organisation-type requirement for applicant.",
+   "sample": "Applicant must be a Swedish entity (SME, academia, research institute, public sector or civil society).",
    "v": 3,
    "verdict": "condition"
   },
@@ -12950,6 +14480,12 @@
   "b020c5c487a15b3b": {
    "reason": "SME status plus location in named less-developed regions; checkable requirement.",
    "sample": "PMI nei territori delle regioni meno sviluppate (Basilicata, Calabria, Campania, Molise, Puglia, Sicilia e Sardegna). Il 25% delle risorse e' destinato ai programmi proposti dalle micro e piccole imprese.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b022756faa3f77b4": {
+   "reason": "Swedish legal entity requirement about applicant.",
+   "sample": "Applicant must be a Swedish legal entity",
    "v": 3,
    "verdict": "condition"
   },
@@ -13019,6 +14555,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "b0e504a8e14aed56": {
+   "reason": "Project type and location requirement",
+   "sample": "The project (housing rehabilitation) must be located in the Catalonia region (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b0f98263008c3592": {
+   "reason": "States ceiling on aid amount available; applicant compares own funding need.",
+   "sample": "The aid request must be less than 30 million euros.",
+   "v": 3,
+   "verdict": "demand_match"
+  },
   "b0fa41898fe9dc6e": {
    "reason": "Project must be non-routine technical step-up; project requirement.",
    "sample": "The project must involve resolution of a technical challenge, be non-routine, or represent a 'step-up' for the company in RD&I capability.",
@@ -13040,6 +14588,12 @@
   "b116109bcb98b4cc": {
    "reason": "Client status with development agencies is attainable applicant requirement.",
    "sample": "The company must be a registered client of one of the listed state development agencies (Enterprise Ireland, IDA Ireland, LEO, \u00dadar\u00e1s na Gaeltachta).",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b124a61ce92ca8f6": {
+   "reason": "Project must be carried out in named region; checkable location test.",
+   "sample": "The project must be carried out in the region of Comunidad Foral de Navarra (ES22)",
    "v": 3,
    "verdict": "condition"
   },
@@ -13157,6 +14711,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "b2cc45e2e70caa5d": {
+   "reason": "Location requirement, checkable against applicant's project.",
+   "sample": "Project must be located in Catalonia (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "b31e64928fda1563": {
    "reason": "Eligible project type requirement (innovation, R&D, internationalization).",
    "sample": "Funds must support an innovation, R&D, or internationalization project",
@@ -13166,6 +14726,24 @@
   "b334487c2d74c1ea": {
    "reason": "Applicant type and project stage requirement, excluding research-only entities.",
    "sample": "Applicant must be a company/consortium running a commercial-scale demonstration project, not a research-only entity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b33b9645c7cbee3a": {
+   "reason": "Applicant must be SME need-owner using infrastructures.",
+   "sample": "Applicant must be a small or medium-sized enterprise (SME) that is the need-owner wanting to use infrastructures",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b33e13783dea2ebb": {
+   "reason": "Applicant type eligibility list, checkable against own status.",
+   "sample": "Applicant must be either a natural person not engaged in economic activity, an SME, or a natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b3692cc78794f34c": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant must be a large enterprise, SME, or a natural person carrying out an economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -13217,11 +14795,23 @@
    "v": 3,
    "verdict": "condition"
   },
+  "b44d8215e75a5d2f": {
+   "reason": "Eligible-sector requirement.",
+   "sample": "Project must fall within the eligible sectors: administrative and auxiliary services, or other services",
+   "v": 3,
+   "verdict": "condition"
+  },
   "b460db024c9f79d1": {
    "reason": "Describes financing forms (loans, guarantees, equity) and company stages served; shape of the offer.",
    "sample": "We offer co-financing to Danish companies from initial sale to scaling, to change of ownership, and expansions abroad etc. With a broad palette of both loans, guarantees and equity capital solutions we are ready to help ",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "b4743a12e05fca50": {
+   "reason": "Coordinator location requirement, checkable against applicant.",
+   "sample": "The project coordinator must be based in Sweden.",
+   "v": 3,
+   "verdict": "condition"
   },
   "b4885eb3168d0ce6": {
    "reason": "Limits use of funds to R&D&I/FID, excluding mass production; checkable scope.",
@@ -13238,6 +14828,12 @@
   "b4a4428891a8ca0e": {
    "reason": "Lists eligible applicant categories such as homeowners and cooperatives.",
    "sample": "Other eligible applicant categories are owners of single-family homes, associations of unit owners, and housing cooperatives; the exact circle of applicants is further specified per sub-programme.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b4a676fb3a0dda2f": {
+   "reason": "Location requirement in Catalonia; reader can verify.",
+   "sample": "Project activity must be located in the region of Catalonia (ES51)",
    "v": 3,
    "verdict": "condition"
   },
@@ -13382,6 +14978,12 @@
   "b66c73e67dd3cb43": {
    "reason": "Norwegian SME partner mandatory for universities and large firms; consortium requirement.",
    "sample": "All Norwegian Eurostars applications must include a Norwegian SME; Norwegian universities, institutes and large companies must partner with a Norwegian SME to participate.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b675fb0b6f7dd2f8": {
+   "reason": "Requires two annual financial reports \u2014 checkable applicant requirement.",
+   "sample": "Applicant must be able to present at least 2 annual financial reports",
    "v": 3,
    "verdict": "condition"
   },
@@ -13559,6 +15161,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "b87e6a7885bc8fcc": {
+   "reason": "Project scope must fall within ADEME intervention fields.",
+   "sample": "The project's scope must fall within ADEME's fields of intervention",
+   "v": 3,
+   "verdict": "condition"
+  },
   "b88f91b10ad80582": {
    "reason": "Age threshold: commercial-register entry no older than five years.",
    "sample": "The company's registration in the commercial register must not be older than five years.",
@@ -13595,6 +15203,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "b8e366f9841a1874": {
+   "reason": "Applicant must be independent station with specified NAF code.",
+   "sample": "Applicant must be an independent fuel-distribution station (NAF 47.30Z) selling road fuel",
+   "v": 3,
+   "verdict": "condition"
+  },
   "b8f9ca408865a13e": {
    "reason": "Requires selection through national EoI and state sponsorship/co-funding.",
    "sample": "Must be selected/nominated through national expression-of-interest process and receive member-state government sponsorship and co-funding",
@@ -13616,6 +15230,12 @@
   "b927acf14bea54ca": {
    "reason": "Exclusion of a defined legal category of entities, checkable by reader.",
    "sample": "Hungarian public interest trusts established under Hungarian Act IX of 2021 (or entities they maintain) are not eligible to participate in any funded role.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "b933f63f741759f2": {
+   "reason": "Regional location requirement.",
+   "sample": "The project must be located in the region of Bizkaia (ES213).",
    "v": 3,
    "verdict": "condition"
   },
@@ -13643,9 +15263,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "b9c5a926fc98f395": {
+   "reason": "Regional location requirement (Canary Islands).",
+   "sample": "The project activity must take place in the Canary Islands region (ES70)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "b9d2eeb89f24d92f": {
    "reason": "Undertaking-in-difficulty exclusion applicant can verify.",
    "sample": "Company should not be in financial distress (loss-of-capital / insolvency exclusion typical of grant schemes)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ba097c01d24167d8": {
+   "reason": "Carbon-leakage sector exposure requirement, checkable by applicant.",
+   "sample": "Applicant must belong to an industrial sector or subsector exposed to significant carbon leakage risk during 2021-2030",
    "v": 3,
    "verdict": "condition"
   },
@@ -13664,6 +15296,12 @@
   "ba33bf20b85cf7b3": {
    "reason": "Hungarian establishment requirement checkable by the company.",
    "sample": "Company must be established/operating in Hungary under a national or regional scheme",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ba3f9d2b4f7fb6d1": {
+   "reason": "Sector eligibility requirement checkable by applicant",
+   "sample": "Project's sector must be Other Services or Transport and Storage",
    "v": 3,
    "verdict": "condition"
   },
@@ -13700,6 +15338,18 @@
   "bb35b96661b76006": {
    "reason": "Consortium/cohort participation requirement for applicants.",
    "sample": "Participation may require joining a consortium, accelerator cohort, or EIT Food network program",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "bb3f738296ae4c88": {
+   "reason": "Applicant entity type requirement",
+   "sample": "Applicant must be either a legal entity not carrying out economic activity, or an SME/individual carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "bb680b73778141f8": {
+   "reason": "Consortium composition requirement for applicant.",
+   "sample": "Applicant must be a consortium of companies, universities, university colleges, research institutes and other relevant legal entities",
    "v": 3,
    "verdict": "condition"
   },
@@ -13748,6 +15398,12 @@
   "bbddf886aee9364f": {
    "reason": "Legal form, insolvency, Austrian establishment and value-added requirements checkable by applicant.",
    "sample": "F\u00f6rderungswerbende k\u00f6nnen nur au\u00dferhalb der \u00f6sterreichischen Bundesverwaltung stehende nat\u00fcrliche oder juristische Personen bzw. Personengesellschaften sein. Nicht antragslegitimiert sind Gesellschaften b\u00fcrgerlichen Rech",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "bc245010e6e3ba53": {
+   "reason": "Applicant must hold project/building owner role undertaking works.",
+   "sample": "Applicant must be a project owner (Ma\u00eetre d'Ouvrage) or building owner undertaking investment and works",
    "v": 3,
    "verdict": "condition"
   },
@@ -13835,6 +15491,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "bd79d81fea2de4a7": {
+   "reason": "Sector requirement",
+   "sample": "Project must be in the retail trade sector",
+   "v": 3,
+   "verdict": "condition"
+  },
   "bd812553eb32f89e": {
    "reason": "Requires activity in listed NACE sectors.",
    "sample": "Applicant's main or secondary activity must be in one of the specified NACE sectors (arts, entertainment, recreation, related professional/technical or equipment rental activities).",
@@ -13901,6 +15563,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "be9ea21f38941e05": {
+   "reason": "Consortium composition requirement: three actors including a research actor \u2014 checkable by applicant.",
+   "sample": "Technical innovation projects must be applied for by at least three actors, of which at least one must be a research actor.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "beceea4dd20e2009": {
    "reason": "Undertakings-in-difficulty exclusion is a checkable applicant condition.",
    "sample": "Support cannot be granted to undertakings in difficulty within the meaning of EEA law.",
@@ -13940,6 +15608,12 @@
   "bf53efaba44f07c0": {
    "reason": "Population thresholds, geographic and entity-type eligibility criteria checkable by territory.",
    "sample": "Le pr\u00e9sent AAP s\u2019adresse aux territoires de moins de 250 000 habitants dont la ville centre fait moins de 100 000 habitants tels que : - Les territoires peu denses et/ou ruraux - Les p\u00e9riph\u00e9ries de communaut\u00e9s d\u2019agglom\u00e9r",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "bf688cbde82dc4eb": {
+   "reason": "Applicant nationality/legal-seat requirement, checkable and discriminating.",
+   "sample": "Applicant must be a Swedish organisation",
    "v": 3,
    "verdict": "condition"
   },
@@ -13991,9 +15665,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "c031bc5d794a5c92": {
+   "reason": "Defines eligible applicant types (SME, natural person, non-economic entity).",
+   "sample": "Applicant must be a legal entity not carrying out economic activity, an SME, or a natural person carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "c0394093b62545f0": {
    "reason": "Eligible-activity use-of-funds requirement applicant can check.",
    "sample": "Funds must be used for a specific eligible development/export or innovation activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c04380fc279d6ddb": {
+   "reason": "Applicant must be legal organization within specified water system.",
+   "sample": "Applicant must be a legal organization within the 'source to coast' water system, e.g. public sector, industry, research organizations, institutes or civil society",
    "v": 3,
    "verdict": "condition"
   },
@@ -14099,6 +15785,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "c1cdcf261bed1be5": {
+   "reason": "Applicant type/size eligibility.",
+   "sample": "Applicant must be a large enterprise, a legal entity not conducting economic activity, an SME, or a natural person conducting economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "c1d7e127a93584d7": {
    "reason": "Specifies minimum partner types for pre-studies; checkable.",
    "sample": "F\u00f6rstudier - minst tv\u00e5 industrif\u00f6retag inom svensk tillverkningsindustri; - minst en akt\u00f6r fr\u00e5n universitet eller h\u00f6gskola; - minst en akt\u00f6r fr\u00e5n forskningsinstitut.",
@@ -14164,6 +15856,18 @@
    "sample": "The scheme has an estimated overall budget of EUR 150 million and will run until 31 December 2027, with aid awarded in annual tranches by the managing authority.",
    "v": 3,
    "verdict": "report"
+  },
+  "c2a020396dd411ee": {
+   "reason": "Eligible sector list applicant can check",
+   "sample": "Project must belong to one of the eligible sectors: professional/scientific/technical activities, wholesale and retail trade, hospitality, or other services",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c2ab55a370b6289c": {
+   "reason": "Prior-stage participation prerequisite; applicant can check own project history.",
+   "sample": "Only projects that have had a UDI collaboration project (step 2) can apply to Implementation projects (step 3)",
+   "v": 3,
+   "verdict": "condition"
   },
   "c2b2459e0c688cc5": {
    "reason": "Same recovery-order exclusion applied to applicant; discriminates between readers.",
@@ -14249,6 +15953,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "c3afcc78593915f6": {
+   "reason": "Requires insufficient collateral plus transparent history and positive creditworthiness; checkable despite offer terms and legal notes.",
+   "sample": "Who submits the application: The application for the guarantee is prepared and submitted by the financier \u2013 a bank or a leasing company \u2013 attaching the documents prepared by the financier and by the company. Ask your own",
+   "v": 3,
+   "verdict": "condition"
+  },
   "c3ef2dd0cde504f9": {
    "reason": "Establishment in DEG region required; excludes others.",
    "sample": "Registered with the European Commission as applying in DEG. A company established outside those regions is not eligible under this scheme.",
@@ -14327,9 +16037,33 @@
    "v": 3,
    "verdict": "condition"
   },
+  "c56be487fd97f025": {
+   "reason": "Coordinator must be university or institute \u2014 eligibility condition.",
+   "sample": "The main applicant (coordinator) must be a university, university college, or research institute",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c5a5b5db54378426": {
+   "reason": "Sector eligibility requirement.",
+   "sample": "Applicant must operate in one of the eligible sectors: Other Services, or Transport and Storage.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c5aca1adad44bf45": {
+   "reason": "Applicant-type requirement (SME or self-employed).",
+   "sample": "Applicant must be an SME or a self-employed individual carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
   "c5e712aa0e159e4a": {
    "reason": "Exclusion of export-linked aid; applicant can check own project against it.",
    "sample": "Aid directly tied to export activity is excluded \u2014 aid linked to exported quantities and aid financing the establishment or operation of a distribution network or other current expenditure linked to export activity.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c5fa10e089bd6366": {
+   "reason": "Requires specific legal form and NAF activity codes; checkable and discriminating.",
+   "sample": "Applicant must be a public or private legal entity active under one of the specified NAF codes linked to hedge wood valorisation",
    "v": 3,
    "verdict": "condition"
   },
@@ -14348,6 +16082,12 @@
   "c60973b1c2d2937a": {
    "reason": "Excludes statutory monopoly holders unless project outside monopoly area.",
    "sample": "Companies holding a statutory absolute monopoly within Flanders (or a substantial part of it) are not eligible for support for their projects, unless the project falls outside the monopoly's implementation area.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c61346cf670ce611": {
+   "reason": "Requires consortium including a needs-owner company \u2014 checkable applicant composition.",
+   "sample": "Applicant must be a consortium of at least two project parties, including at least one company (needs-owner) collaborating with other relevant actors",
    "v": 3,
    "verdict": "condition"
   },
@@ -14390,6 +16130,12 @@
   "c660689b7a0b4af6": {
    "reason": "Founder education requirement, minimum 120 ECTS.",
    "sample": "Founders must have completed a public higher education programme, PhD programme, or private higher education programme entitling participants to state education grant (SU), by the start of the Innofounder course, typical",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c66953cf74b35329": {
+   "reason": "Applicant type/size eligibility.",
+   "sample": "Applicant must be a large enterprise, SME, or a natural person carrying out economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -14474,6 +16220,12 @@
   "c6f3317f7f97cc18": {
    "reason": "Describes offer shape: minority equity, EUR 2\u201310m tickets, syndicated Series A/B, no new-company investments.",
    "sample": "Tesi remains a market-driven minority investor, with no predefined sectoral or thematic restrictions. We aim to grow new high-tech companies in Finland and enable them to scale up with domestic capital. Investments are a",
+   "v": 3,
+   "verdict": "demand_match"
+  },
+  "c6f6c3ba55dfc91d": {
+   "reason": "Describes company size of counterparty backed by the instrument.",
+   "sample": "Applicant must be a large enterprise (gran empresa)",
    "v": 3,
    "verdict": "demand_match"
   },
@@ -14633,6 +16385,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "c94dc7ab407073e1": {
+   "reason": "Coordinator must be specified organisation type \u2014 eligibility condition.",
+   "sample": "The coordinator must be a municipality, a municipal association, or a civil society organisation",
+   "v": 3,
+   "verdict": "condition"
+  },
   "c95aac673ede659d": {
    "reason": "Funding-stage maturity requirement excluding large corporates.",
    "sample": "Applicant must be an early-to-growth stage company (typically pre-seed through Series A/B), not a large corporate",
@@ -14789,6 +16547,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "cb3f7e052bed8f11": {
+   "reason": "Regional location requirement (Catalonia).",
+   "sample": "Project must take place in the Catalonia region (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "cb5211524621e0ab": {
    "reason": "Exclusion of undertakings in difficulty with dated derogation; reader checks own financial status.",
    "sample": "Undertakings in difficulty are excluded from the scheme, with a derogation for firms not in difficulty on 31 Dec 2019 but which became so between 1 Jan 2020 and 30 June 2021.",
@@ -14804,6 +16568,12 @@
   "cb7608cf74f09e56": {
    "reason": "Cost-coverage and subcontracting limits constrain the applicant's project budget.",
    "sample": "At least 50% of total project costs must be covered by the project partners; subcontractors cannot exceed 49% of total project costs.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "cb7fa7c131abea1f": {
+   "reason": "States permitted applicant configurations, a checkable eligibility rule.",
+   "sample": "Applicant may apply alone or in collaboration with other actors",
    "v": 3,
    "verdict": "condition"
   },
@@ -14858,6 +16628,12 @@
   "cc365a891ec991c1": {
    "reason": "Excludes natural persons with sole-trader exception; legal-form test.",
    "sample": "Natural persons are not eligible to participate, except self-employed persons/sole traders without separate legal personality.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "cc44397a232f3c0e": {
+   "reason": "Housing project must be located in Catalonia; checkable.",
+   "sample": "The project (housing development) must be located in Catalonia (ES51)",
    "v": 3,
    "verdict": "condition"
   },
@@ -14933,9 +16709,21 @@
    "v": 3,
    "verdict": "report"
   },
+  "ccb8313b3e2bfc0a": {
+   "reason": "Location requirement in Spain.",
+   "sample": "Project activity must be located in Spain",
+   "v": 3,
+   "verdict": "condition"
+  },
   "ccbc06605fcbbe5a": {
    "reason": "Sector requirement checkable against applicant's activity.",
    "sample": "Startup must operate in the digital technology sector aligned to EIT Digital's thematic scope",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ccbe2339625aade4": {
+   "reason": "Eligible applicant types: Swedish university or approved fund manager.",
+   "sample": "The application must be submitted by a Swedish university, university college, or other Swedish organisation approved as a fund manager by VR.",
    "v": 3,
    "verdict": "condition"
   },
@@ -14963,6 +16751,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "cd194788ecd34d52": {
+   "reason": "Excludes funding CEP relay posts; applicant can check project purpose.",
+   "sample": "Applicant cannot use this scheme to fund a Conseillers en \u00c9nergie Partag\u00e9s (CEP) relay position, as this is handled by a separate dedicated programme",
+   "v": 3,
+   "verdict": "condition"
+  },
   "cd1b8ab0119cf5b2": {
    "reason": "Financial-difficulty exclusion plus viability test applicant can assess.",
    "sample": "Innovate UK is unable to award organisations considered to be in financial difficulty and will conduct financial viability and eligibility tests.",
@@ -14972,6 +16766,12 @@
   "cd31930c4b6d7000": {
    "reason": "Excludes projects where an established partner takes over the idea; checkable project requirement.",
    "sample": "Innoexplorer must not fund activities where an already established company/collaborative partner is intended to take over the entrepreneurial idea; the main objective must be starting a new business.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "cd4e8fbab160077b": {
+   "reason": "Quantified GHG reduction threshold the project must achieve; checkable by applicant.",
+   "sample": "Project must achieve a reduction in GHG emissions greater than 1,000 tCO2eq per year at constant production for the industrial site.",
    "v": 3,
    "verdict": "condition"
   },
@@ -15002,6 +16802,12 @@
   "cd8da0f9052b5562": {
    "reason": "Requires incorporated company undertaking innovation/R&D project.",
    "sample": "Applicant must be a company (not an individual or unincorporated project) undertaking an innovation/R&D project",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "cd97f243c321b159": {
+   "reason": "Use-of-funds requirement on project content and area.",
+   "sample": "Funds must be used for infrastructure to provide 5G mobile communications in areas without 4G/5G signal",
    "v": 3,
    "verdict": "condition"
   },
@@ -15058,6 +16864,12 @@
    "sample": "Only the listed direct participants established in the six participating Member States (Slovakia, Hungary, France, Italy, Belgium, Spain) are eligible beneficiaries of the notified aid measures under the IPCEI Med4Cure.",
    "v": 3,
    "verdict": "report"
+  },
+  "ce42b871f051908f": {
+   "reason": "Location requirement.",
+   "sample": "Project must be carried out in the Galicia region (ES11)",
+   "v": 3,
+   "verdict": "condition"
   },
   "ce43818d1a16c863": {
    "reason": "SME status is a checkable applicant attribute.",
@@ -15116,6 +16928,12 @@
   "cf11777ecbe9476b": {
    "reason": "High-risk supplier exclusion, checkable by applicant.",
    "sample": "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own/control) are not eligible in actions concerning European communication network technologies.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "cf140dfcc146242e": {
+   "reason": "Location requirement among listed regions.",
+   "sample": "Project must be located in one of the listed Spanish regions",
    "v": 3,
    "verdict": "condition"
   },
@@ -15221,6 +17039,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "d0167e62ddd22b61": {
+   "reason": "Geographic scope requirement for project location.",
+   "sample": "The project must be located within the geographic scope defined by the catalogue code (France)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d01731a17ab6a6ea": {
    "reason": "Requires legal-person competence and at least two parties incl. Swedish company.",
    "sample": "Organisationer (juridiska personer) som har kompetens och f\u00f6rm\u00e5ga att genomf\u00f6ra projekt som bidrar till att programmets resultat- och effektm\u00e5l uppn\u00e5s. Ans\u00f6kan ska inneh\u00e5lla minst tv\u00e5 projektparter, varav minst ett svens",
@@ -15260,6 +17084,12 @@
   "d0493ab3d87e6d1a": {
    "reason": "Sector eligibility with exclusions the applicant can test.",
    "sample": "Eligible subjects span all economic sectors, with limited exceptions such as financial and insurance activities.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "d04b9a8ec6a9b3a0": {
+   "reason": "Sector/purpose requirement checkable by applicant.",
+   "sample": "Project must relate to trade, tourism and SME competitiveness within the 'other services' sector",
    "v": 3,
    "verdict": "condition"
   },
@@ -15443,6 +17273,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "d27e2983ad2544a8": {
+   "reason": "Sector eligibility requirement.",
+   "sample": "Applicant's business must operate in one of the listed eligible sectors (arts/sports/entertainment, agriculture/forestry/fishing, manufacturing, extractive industries, energy supply, telecom/IT/information services, tran",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d28272695e5c4688": {
    "reason": "Project must sit in approved value chain and R&D&I-to-FID scope; checkable.",
    "sample": "Funds must finance R&D&I through first industrial deployment within an approved strategic value chain (e.g. microelectronics, batteries, hydrogen, cloud)",
@@ -15527,6 +17363,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "d37200e589307b91": {
+   "reason": "Permitted applicant constellations \u2014 checkable eligibility statement.",
+   "sample": "Applicant may apply alone or in consortium with e.g. companies, academia or institutes",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d38af68a193e3b03": {
    "reason": "States typical funding ticket size per partner \u2014 shape of the offer.",
    "sample": "Company's share of project funding (ticket) typically falls in the low hundreds of thousands to a few million euros per partner",
@@ -15584,6 +17426,12 @@
   "d4544e16d54d0807": {
    "reason": "Agricultural de minimis, Catalonia, climate-emergency-affected firms \u2014 checkable applicant criteria.",
    "sample": "Beneficiarios: GRAN EMPRESA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES51 - CATALU\u00d1A. Finalidad: Otras actuaciones de car\u00e1cter econ\u00f3mico. Sectores elegibles: 20 sectores (sin restric",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "d473b757483aff1b": {
+   "reason": "Financial threshold under EUR 10 million turnover/balance sheet.",
+   "sample": "Applicant must have annual turnover or balance sheet total of less than EUR 10 million",
    "v": 3,
    "verdict": "condition"
   },
@@ -15701,6 +17549,12 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "d6546135a8e97ecd": {
+   "reason": "Requires applicant hold sustainability certification \u2014 checkable applicant requirement.",
+   "sample": "Applicant must be engaged in a certification scheme attesting to sustainability of forestry activities (e.g. PEFC, FSC, QualiTerritoires-ETF Gestion Durable or equivalent)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d679dc9313269392": {
    "reason": "Geographic location requirement for the investment.",
    "sample": "The investment must be located within support area 1, 2 or 3.",
@@ -15710,6 +17564,12 @@
   "d68860768fd12b49": {
    "reason": "Legal-entity requirement, establishment country unrestricted; still checkable applicant status.",
    "sample": "Applicants must be legal entities (public or private bodies) established in any country in the world (eligible countries are unrestricted).",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "d69be30eb3c7fb6b": {
+   "reason": "Sector eligibility/targeting statement readers can check against their sector.",
+   "sample": "All sectors of activity are eligible, but the scheme mainly targets sectors A|B|C|D|E|F|G|H|I|L",
    "v": 3,
    "verdict": "condition"
   },
@@ -15773,6 +17633,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "d7c0a4e34c53fc1f": {
+   "reason": "Applicant's activity must be in listed regions \u2014 checkable.",
+   "sample": "Applicant's activity must be located in one of the listed French regions/territories",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d7ee042b897062d5": {
    "reason": "Registration and operation in Norway is a checkable applicant requirement.",
    "sample": "Company must be registered and operating in Norway",
@@ -15782,6 +17648,12 @@
   "d7f53285e8abc683": {
    "reason": "Must be small and unquoted; listing status checkable.",
    "sample": "Eligible recipients must be small unquoted undertakings (not listed on the official stock exchange list, excluding alternative trading platforms).",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "d808a317907ad886": {
+   "reason": "Specifies eligible applicant type (advisory body of any status).",
+   "sample": "Applicant must be an advisory body (conseil), public, associative or private",
    "v": 3,
    "verdict": "condition"
   },
@@ -15800,6 +17672,12 @@
   "d8148d585b584017": {
    "reason": "Requires borrower be an incorporated company, excluding individuals and pre-incorporation teams.",
    "sample": "Instrument is a loan, requiring a company borrower entity (not a natural person or pre-incorporation team)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "d82546a682eca9b8": {
+   "reason": "Sector exclusion applying to project.",
+   "sample": "Project must not be in the fisheries and aquaculture sectors",
    "v": 3,
    "verdict": "condition"
   },
@@ -15863,6 +17741,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "d913dfa1f0880fec": {
+   "reason": "Geographic location requirement the applicant can check against project site.",
+   "sample": "Project activity must be located in Catalonia (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d91469b190f000f9": {
    "reason": "Risk-finance aid aimed at unlisted young SMEs \u2014 maturity of company backed.",
    "sample": "Risk-finance commercialisation aid targets an unlisted micro, small or medium enterprise that has either not operated in any market, operated less than 7 years since first commercial sale, or needs initial risk-finance i",
@@ -15923,6 +17807,18 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "d9e0efa9c6ece821": {
+   "reason": "Sector and activity requirement.",
+   "sample": "Project must be in the agriculture, livestock, forestry and fishing sector (forest fire prevention activities)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "d9e3b4b3eacaaac0": {
+   "reason": "Coordinator must have participated in preceding step \u2014 checkable eligibility criterion.",
+   "sample": "The coordinator must have been part of the preceding step (UDI step 2)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d9e815f2e3ca354c": {
    "reason": "States instrument form (loan) matched against applicant's financing preference.",
    "sample": "Instrument is a loan, so applicant must be able to take on debt financing (not seeking pure equity/grant)",
@@ -15935,9 +17831,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "da00fb86c0ba4d97": {
+   "reason": "Regional location requirement.",
+   "sample": "Project must be located in the region of Lleida (ES513)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "da0970db492358bb": {
    "reason": "Programme sector requirement plus excluded sectors.",
    "sample": "Programmes must be aimed at manufacturing activities or business services activities to be eligible; activities in sectors excluded under GBER Article 13 or under Article 7(1) of Regulation (EU) 1058/2021 are not eligibl",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "da252aea85176a26": {
+   "reason": "Requires participants to form coherent value chain.",
+   "sample": "Project participants must form a coherent value chain",
    "v": 3,
    "verdict": "condition"
   },
@@ -15980,6 +17888,18 @@
   "da912326fd970396": {
    "reason": "Exclusion of firms in difficulty, checkable by applicant.",
    "sample": "Company must not be in financial distress (loss of over half capital) typical for public grant eligibility",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "da974e79b84bb239": {
+   "reason": "Nationality and size requirement on applicant.",
+   "sample": "Applicant must be a Swedish small or medium-sized enterprise (SME)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "da9f7ddc3b0067ee": {
+   "reason": "Project must be located in Catalonia; locational condition.",
+   "sample": "The project must be located in Catalonia (ES51)",
    "v": 3,
    "verdict": "condition"
   },
@@ -16199,6 +18119,12 @@
    "v": 3,
    "verdict": "report"
   },
+  "dcfe66187228c11f": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant must be an SME or self-employed individual (aut\u00f3nomo) carrying out an economic activity.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "dd03a2fa046ab9f9": {
    "reason": "Project must contribute to Svalbard business development; checkable project requirement.",
    "sample": "Business development grants for Svalbard require the project to contribute to business development on Svalbard.",
@@ -16247,6 +18173,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "dd6bd0e1e482ba7c": {
+   "reason": "Requires applicant be a deeptech research-based company; testable against own business.",
+   "sample": "Applicant must be a deeptech company basing its business on innovative development and application of the latest advances in research and advanced technology",
+   "v": 3,
+   "verdict": "condition"
+  },
   "dd7e48df2a3d76cd": {
    "reason": "SME size status requirement.",
    "sample": "Applicant must be an SME (startup-scaled)",
@@ -16262,6 +18194,12 @@
   "dd82fa4e6ce03633": {
    "reason": "Requires consortium participation aligned to roadmap.",
    "sample": "Must participate as part of a consortium aligned to the Clean Aviation partnership roadmap, not as a solo applicant",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "dd8b4b9f62acb37d": {
+   "reason": "Sector linkage requirement for applicant.",
+   "sample": "The applicant must be linked to companies in the wood/timber industry sector.",
    "v": 3,
    "verdict": "condition"
   },
@@ -16385,6 +18323,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "dea46883f0874bb3": {
+   "reason": "Legal-form requirement for applicant.",
+   "sample": "Applicant must be a Swedish limited company (aktiebolag).",
+   "v": 3,
+   "verdict": "condition"
+  },
   "dec211d0f0dbaac1": {
    "reason": "Extends eligibility to VAT-registered professionals; reader can verify status.",
    "sample": "Professionals holding a VAT number are also eligible.",
@@ -16412,6 +18356,12 @@
   "df5db6261bef4666": {
    "reason": "Consortium composition, leader must be enterprise, max three members, R&D task per partner.",
    "sample": "Przedsi\u0119biorstwa (M\u015aP lub du\u017ce, w tym te o statusie small mid-caps i mid-caps) w konsorcjum z innymi przedsi\u0119biorstwami, organizacjami badawczymi lub organizacjami pozarz\u0105dowymi. Liderem konsorcjum mo\u017ce by\u0107 wy\u0142\u0105cznie prz",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "df682690d9ed8bcf": {
+   "reason": "Sector requirement: apparel textile company.",
+   "sample": "Applicant must be a company in the clothing/apparel textile sector",
    "v": 3,
    "verdict": "condition"
   },
@@ -16481,6 +18431,12 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "e0d1131d17d4fae2": {
+   "reason": "Applicant type categories enumerated, checkable against own status.",
+   "sample": "Applicant must be a commune, intercommunality/pays, department, public establishment (including state services), or local public enterprise (SEM, SPL, SemOp)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e0dcf177cdeab6fb": {
    "reason": "Requires economic activity and German establishment.",
    "sample": "Aid recipients are companies carrying out an economic activity, regardless of legal form, with an establishment in the Federal Republic of Germany.",
@@ -16492,6 +18448,18 @@
    "sample": "The funding beneficiary must have an operating site or establishment in Austria at the time of payout of the aid.",
    "v": 3,
    "verdict": "condition"
+  },
+  "e11648dfe61d9c4c": {
+   "reason": "Regional location requirement.",
+   "sample": "Project activity must be located in the Madrid region",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "e124967910e41144": {
+   "reason": "States size/type of borrower backed, matching applicant's own profile.",
+   "sample": "Applicant must be a large enterprise, SME, or self-employed individual carrying out an economic activity",
+   "v": 3,
+   "verdict": "demand_match"
   },
   "e15533ffa8043591": {
    "reason": "Geographic establishment requirement applicable to applicant.",
@@ -16547,6 +18515,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e1d8b64247efacf5": {
+   "reason": "Regional location requirement for activity.",
+   "sample": "Project/activity must be located in the Valencia region (ES523)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e1d9de475419a082": {
    "reason": "Defines eligible and excluded activities for round III.",
    "sample": "Round III (planned) is targeted at heating pipeline construction; renovation and construction of heat production equipment is not eligible in this round.",
@@ -16574,6 +18548,12 @@
   "e22c9ae17cea8871": {
    "reason": "Use-of-funds restriction to specified project type; applicant can check.",
    "sample": "Funds tied to a specific national programme/project (creative economy infrastructure) rather than general use",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "e28f913249444f6b": {
+   "reason": "Location requirement (Ceuta).",
+   "sample": "Project/activity must be located in the autonomous city of Ceuta (ES63).",
    "v": 3,
    "verdict": "condition"
   },
@@ -16655,6 +18635,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e3c29ffd335fe3fd": {
+   "reason": "Geographic location requirement checkable against applicant's project.",
+   "sample": "Project activity must be located in France",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e3c8d2f6a6461cb7": {
    "reason": "Italian registration requirement, checkable by reader.",
    "sample": "Company must be registered/operating in Italy (CDP is Italy's national promotional institution)",
@@ -16679,9 +18665,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e40db3f55907b4ed": {
+   "reason": "Regional location requirement.",
+   "sample": "Project must be located in the region of Comunidad Foral de Navarra (ES22)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e421fa1d830bc040": {
    "reason": "Foreign partners' costs ineligible; constrains consortium budgeting.",
    "sample": "Foreign partners may participate in a consortium, but their project-related expenses are not eligible for funding under this measure.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "e470386e3af5eb7e": {
+   "reason": "Requires civil society organisation partner \u2014 checkable consortium condition.",
+   "sample": "At least one civil society organisation (including social enterprises) must be included as a project partner",
    "v": 3,
    "verdict": "condition"
   },
@@ -16751,11 +18749,23 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e52b83fc43a7d7df": {
+   "reason": "Geographic scope requirement on project.",
+   "sample": "The project must be located within the defined geographic scope (France)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e52e8f68ce82ea2b": {
    "reason": "Window backs start-up maturity stage; applicant compares own stage.",
    "sample": "Funds under the Early Stage window support start-up companies.",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "e57a1af075c78005": {
+   "reason": "Sector-of-activity requirement checkable by applicant.",
+   "sample": "Applicant's activity must be in retail sale of motor vehicles/motorcycles and parts, or non-specialized retail trade",
+   "v": 3,
+   "verdict": "condition"
   },
   "e599a410a897edae": {
    "reason": "Restricts FSTP recipients to specified entity types, a checkable applicant category.",
@@ -16802,6 +18812,12 @@
   "e60cbb17f269106b": {
    "reason": "Fund managers must show Irish geographic focus, seed-stage 50%+ strategy, leverage and 50% score minimum.",
    "sample": "EI are now seeking Expressions of Interest (EoI) from venture fund managers that have alignment with both the strategic objectives and the evaluation criteria set out further in this document. Applicants must indicate wh",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "e619717e4b7ffd62": {
+   "reason": "Applicant type requirement.",
+   "sample": "Applicant must be an SME or a self-employed individual (natural person) carrying out an economic activity.",
    "v": 3,
    "verdict": "condition"
   },
@@ -16955,6 +18971,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e7656b3ecd99a726": {
+   "reason": "Project purpose-area requirement",
+   "sample": "The project must fall within the Industry and Energy purpose area",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e76babedcc323975": {
    "reason": "Sector, size and founding-year constraints on applicant.",
    "sample": "Likely targets startups/SMEs (early-stage) in the agrifood sector, possibly with size or founding-year constraints",
@@ -17075,15 +19097,33 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e9017ea5fa15fda1": {
+   "reason": "Regional location requirement on project.",
+   "sample": "Project must be located in the Catalonia region",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e91862c8261d5fc8": {
    "reason": "Project must be pre-competitive R&D with high technical risk.",
    "sample": "Funded are pre-competitive R&D projects characterised by high scientific-technical risk.",
    "v": 3,
    "verdict": "condition"
   },
+  "e92b1c0778f8e148": {
+   "reason": "Activity must occur in Galicia; locational requirement.",
+   "sample": "The activity must take place in Galicia (ES11).",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e92c34f9c60e2692": {
    "reason": "Requires applicant be operating company doing R&D.",
    "sample": "Applicant must be an operating company (not an individual or bare project) undertaking R&D/innovation activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "e9353aca460ab8f5": {
+   "reason": "Applicant must be one of listed structure types \u2014 checkable legal form.",
+   "sample": "The applicant must be a type of local territorial structure: commune, EPCI, d\u00e9partement, Pays, PNR, P\u00f4le M\u00e9tropolitain, or a mobility/SCoT joint syndicate",
    "v": 3,
    "verdict": "condition"
   },
@@ -17126,6 +19166,12 @@
   "e97b9b661d0a8db8": {
    "reason": "Project sector must match supported sectors \u2014 checkable project requirement.",
    "sample": "Projects must correspond to sectors supported under state aid regulation.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "e981fc3a278b61a5": {
+   "reason": "Applicant must be SME or self-employed; status test.",
+   "sample": "Applicant must be an SME or self-employed individual carrying out economic activity",
    "v": 3,
    "verdict": "condition"
   },
@@ -17183,6 +19229,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e9e6f730d5fcf927": {
+   "reason": "Project must be specified charging-infrastructure investment.",
+   "sample": "Project must be an investment in electric vehicle charging infrastructure at the station",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e9ef7cb25c76f0c5": {
    "reason": "Requires novelty of product/process; applicant can test own project against it.",
    "sample": "FID activities funded must concern development of a new product/service with high R&D&I content and/or deployment of a fundamentally innovative production process, and must not be a regular upgrade or newer version of an",
@@ -17225,6 +19277,12 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "ea5c9256bd9a93a8": {
+   "reason": "Applicant must be recycling company; sectoral condition.",
+   "sample": "Applicant must be a waste recycling company",
+   "v": 3,
+   "verdict": "condition"
+  },
   "ea6b1d9a7df52cbe": {
    "reason": "Requires registration in Estonian business registry; discriminates by location.",
    "sample": "The programme is open to all companies registered in the Estonian business registry, regardless of size or years of operation.",
@@ -17234,6 +19292,12 @@
   "ea728b4e20d18ff4": {
    "reason": "Project maturity/timing requirement: completed projects rejected, no retroactive costs.",
    "sample": "Applications for projects that have already been completed will be rejected; ongoing projects are assessed case-by-case with no retroactive cost reimbursement.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ea72ac2bd84a573c": {
+   "reason": "Sector and purpose requirement on the project; checkable by reader.",
+   "sample": "The project must be in the construction sector, aimed at housing access and building rehabilitation",
    "v": 3,
    "verdict": "condition"
   },
@@ -17567,6 +19631,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "ef46f8694076c99f": {
+   "reason": "Sector requirement (retail trade) applicable to reader's own project.",
+   "sample": "Project must be in the retail trade sector or similar assimilated services",
+   "v": 3,
+   "verdict": "condition"
+  },
   "ef4906999a13d653": {
    "reason": "Applicant must be company with R&D/innovation project.",
    "sample": "Applicant must be a company (not an individual) undertaking an R&D or innovation project",
@@ -17771,6 +19841,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f13ab3275d6cd0f1": {
+   "reason": "Minimum collector surface thresholds the project must meet.",
+   "sample": "The installed solar thermal collector surface area must be at least 25 m\u00b2 in mainland France or 10 m\u00b2 in overseas territories (DOM-TOM)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f14763d67aaa2c71": {
    "reason": "Narrative about programme delivery and 12 already-selected start-ups; no requirement to clear.",
    "sample": "The programme is delivered by Universidad Polit\u00e9cnica de Madrid, with support from EIT Climate-KIC. the Clean Cities Spain ClimAccelerator welcomes 12 new European start-ups with innovative solutions for transforming cit",
@@ -17840,6 +19916,12 @@
   "f23e62d8bf43856c": {
    "reason": "Tax status and income-category requirements on claimants.",
    "sample": "Eligible claimants are taxpayers under German income tax or corporate tax law who earn income under specified categories, are not tax-exempt, and meet the law's conditions.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f24211e69fd4983d": {
+   "reason": "Requires proof of co-financing capacity by applicant.",
+   "sample": "Applicant must be able to demonstrate it can cover its share of the project financing",
    "v": 3,
    "verdict": "condition"
   },
@@ -17963,6 +20045,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f3d500871326f079": {
+   "reason": "Requires a need-owner industry partner in the project \u2014 checkable by applicant.",
+   "sample": "At least one project partner must be a 'need owner' from industry or business",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f3e3161932a975bc": {
    "reason": "Project must be cross-border with four Member States and Union-wide benefits.",
    "sample": "The IPCEI must involve a genuine cross-border project with at least four Member States ordinarily participating, and its benefits must extend beyond the financing Member States to the wider Union.",
@@ -17975,9 +20063,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f4203dd758124f8f": {
+   "reason": "Applicant location requirement.",
+   "sample": "Applicant must be located in metropolitan France or an overseas department (DOM)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f420ce38984aa07a": {
    "reason": "Consortium requirement excluding solo applicants.",
    "sample": "Must apply as part of a cross-border consortium (not solo founders)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f451e641fbbb3691": {
+   "reason": "Regional location requirement for project.",
+   "sample": "Project activity must take place in the Basque Country (ES21)",
    "v": 3,
    "verdict": "condition"
   },
@@ -18005,6 +20105,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f513aac02acbadae": {
+   "reason": "Project location requirement.",
+   "sample": "Project must be located in metropolitan France or overseas territories.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f516e39bd0591147": {
    "reason": "Bankruptcy/liquidation exclusion checkable about the applicant.",
    "sample": "Applicant must not be bankrupt or in compulsory liquidation, and no liquidation decision must have been made against it.",
@@ -18014,6 +20120,12 @@
   "f517e61951a33b56": {
    "reason": "Pre-money valuation ceiling applicable to applicant company.",
    "sample": "The applicant company's pre-money valuation must not exceed \u20ac50,000,000.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f51a0c053241ea70": {
+   "reason": "Consortium must include energy-intensive industrial company; checkable composition rule.",
+   "sample": "At least one consortium member must be an energy-intensive industrial company",
    "v": 3,
    "verdict": "condition"
   },
@@ -18044,6 +20156,12 @@
   "f5c073ec32d88d2f": {
    "reason": "Ownership-share exclusion applicant can verify.",
    "sample": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are also not eligible to participate.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f5c3b4c80d79322d": {
+   "reason": "Minimum two applicant actors \u2014 a checkable project requirement.",
+   "sample": "Social innovation projects must be applied for by at least two actors.",
    "v": 3,
    "verdict": "condition"
   },
@@ -18080,6 +20198,12 @@
   "f6d3d15f081df6ce": {
    "reason": "Project sector must fall within supported framework\u2014checkable project requirement.",
    "sample": "Project must fall within the sectors supported under the applicable State aid framework.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f6fd9bbbc0cc987b": {
+   "reason": "Eligible applicant categories enumerated by type, checkable.",
+   "sample": "Applicant must be a commune, intercommunality/pays, department, public establishment (including State services), or local public enterprise (Sem, Spl, SemOp)",
    "v": 3,
    "verdict": "condition"
   },
@@ -18143,6 +20267,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f835575ccdbef3ad": {
+   "reason": "Geographic requirement checkable against applicant's project location.",
+   "sample": "Project activity must take place in Galicia (ES11)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f8467668ce1c5d68": {
    "reason": "Targets SMEs wanting to use infrastructures \u2014 checkable size and intent.",
    "sample": "Utlysningen riktar sig till sm\u00e5 och medelstora f\u00f6retag (behovs\u00e4gare) som vill anv\u00e4nda infrastrukturer (tj\u00e4nsteut\u00f6vare).",
@@ -18152,6 +20282,12 @@
   "f849ca6376cc6478": {
    "reason": "Specifies who must present proposals (PI from national research sector).",
    "sample": "Proposals for industrial research and experimental development must be presented by individual researchers (Principal Investigator) belonging to the national public or private research sector.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f85faa639aba6dae": {
+   "reason": "Eligible sector restriction on project.",
+   "sample": "Project must fall within programming/broadcasting/news agency content distribution activities or retail trade",
    "v": 3,
    "verdict": "condition"
   },
@@ -18182,6 +20318,12 @@
   "f8a7eb12416758ec": {
    "reason": "Financial-difficulty exclusion testable against applicant's capital losses.",
    "sample": "Company must not be in financial difficulty (e.g. losses exceeding half capital)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f8d091a5bb31fa24": {
+   "reason": "Requires existing partner status in programme office \u2014 applicant-checkable.",
+   "sample": "Applicant must already be a project partner in one of Impact Innovation's programme offices.",
    "v": 3,
    "verdict": "condition"
   },
@@ -18263,6 +20405,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "fa2cce661557fe5a": {
+   "reason": "Capacity for Singapore collaboration \u2014 checkable applicant capability.",
+   "sample": "Applicant must have capacity to establish collaboration with actors based in Singapore",
+   "v": 3,
+   "verdict": "condition"
+  },
   "fa41fbc7259db5d5": {
    "reason": "Turnover threshold, registration, excluded sectors, no tax debt, not in difficulty \u2014 checkable requirements.",
    "sample": "toetust ei kohaldata j\u00e4rgmistele sektoritele taotluse esitamisele eelneva kahe majandusaasta keskmine m\u00fc\u00fcgitulu vastavalt \u00e4riregistrile esitatud majandusaasta aruannetele peab taotleja p\u00f5hitegevusalal olema Eestis v\u00e4hema",
@@ -18296,6 +20444,12 @@
   "fa9e0d76e84299fa": {
    "reason": "Project must align with R&D/innovation mandate; checkable project requirement.",
    "sample": "Funds must be used for R&D, innovation, or research-related project activities aligned with Research Council of Norway's mandate",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "fac209cee005af6c": {
+   "reason": "Location requirement",
+   "sample": "Project activity must take place in the Regi\u00f3n de Murcia (ES620)",
    "v": 3,
    "verdict": "condition"
   },
@@ -18344,6 +20498,12 @@
   "fb3c97b82e2fcaed": {
    "reason": "Sector fit with urban mobility mission \u2014 checkable applicant attribute.",
    "sample": "Startup's sector/activity must fit EIT Urban Mobility's thematic mission (urban mobility innovation)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "fb4990b23a691033": {
+   "reason": "Applicant's sector/NAF activity requirement.",
+   "sample": "Applicant must operate in restaurant and/or tourist accommodation activities, social tourism structures (with association NAF code), or agritourism (with agricultural NAF code)",
    "v": 3,
    "verdict": "condition"
   },
@@ -18593,9 +20753,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "fee1ece9874d78e9": {
+   "reason": "Locational eligibility requirement for the activity.",
+   "sample": "The activity must be located in the Catalonia region (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
   "feedc76092ef00c9": {
    "reason": "Use-of-funds activity requirement.",
    "sample": "Funds must be used for innovation/tech-related development activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ff0b6c4523887266": {
+   "reason": "Location requirement in Ceuta",
+   "sample": "Project must be located in the autonomous city of Ceuta (ES63)",
    "v": 3,
    "verdict": "condition"
   },
