@@ -47,6 +47,13 @@ const CHECKS = [
   ["segment config is a literal", ["npx", "tsx", "scripts/check_revalidate_literal.ts"]],
   ["output contracts", ["npx", "tsx", "scripts/check_contracts.ts"]],
   ["rendered numbers", ["npx", "tsx", "scripts/check_rendered_numbers.ts"]],
+  // Its sibling one level up: `check_rendered_numbers` says no number a VISITOR
+  // reads may be an unsourced literal, and this says no number the OWNER PLANS
+  // ON may be. Same hermetic class -- two committed trees, no credentials,
+  // sub-second -- and it sits here rather than beside the recall floor because
+  // the figures it watches are precisely the ones quoted in rooms where the
+  // floor has not been run.
+  ["published figures", ["npx", "tsx", "scripts/check_published_figures.ts"]],
   ["vocabulary contract", ["npx", "tsx", "scripts/check_vocabularies.ts"]],
   ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],
