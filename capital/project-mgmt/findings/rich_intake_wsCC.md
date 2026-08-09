@@ -276,3 +276,114 @@ table uses the conservative 93%; at 94% every figure rises by ~0.7.
 founder information is 65.9%, and the fully circular reading — the fund's entire
 eligibility page handed to a perfect chooser — is 77.6%.**
 
+
+---
+
+## 8. The pilot — does a model reading a rich profile actually move EXACT@5?
+
+A ceiling is an upper bound under a *perfect* chooser, and wsBU has already
+measured that no ranker attains its bound. So the ceiling above is not a
+forecast, and step 4 tests the mechanism end to end rather than asserting it.
+
+`_wscc_pilot.ts`, two arms over one pool so nothing differs but the ordering:
+
+- **A — SHIPPED**: the product's own five, unchanged.
+- **B — RICH PROFILE**: the top-20 of the shipped ordering, re-ordered by
+  `claude-sonnet-5` scoring each fund's **C2 + F** demands — the ones no
+  comparator can decide — against a synthesised rich founder profile. A fund the
+  judge did not see keeps a neutral score, so nothing is demoted for our silence.
+
+### Leaks, which is where a result like this gets invented
+
+87% of recall-set descriptions once sat inside the won fund's own project
+titles, and 1,573 of 1,920 began with the instrument's name. A profile
+synthesised from a leaking description hands the judge the answer.
+
+- The profile is built **only** from (company name, country, sector,
+  description), and the population is restricted to `isDescribed`, which already
+  excludes the leaking rows.
+- The profile prompt forbids naming any funder, grant, programme or scheme.
+- Every synthesised profile is then tested against **all 891 publishable fund
+  names and their 5,517 8-grams** — not against the ones this run happened to
+  draw — and dropped if it matches either.
+- **The guard is proved to fail before any pair is scored**: the run poisons a
+  profile with a real fund name and exits 1 if the guard stays silent. It fires.
+- `check_recall_leaks.ts` on the active set: *ok — 1,366 described rows, 0 leaks
+  at exact / 8-gram / sibling, 222 squash probes agree.*
+
+Tuning is on `tune`. Holdout is not touched.
+
+### Result
+
+RESULT_PLACEHOLDER
+
+---
+
+## 9. What to do, in order of measured effect
+
+**1. Encode the C1 text we already hold — 939 unencoded filter gates.**
++10.0 points of ceiling (43.1 → 53.1), no founder cost, no fetch cost, no new
+question. This is the same shape as the region work, which is the one thing in
+this project's history that moved a ceiling. It is wsCB's brief and this
+workstream confirms it is the largest single lever.
+
+**2. Add ONE first-page question: what kind of organisation are you.**
+The largest demand cluster in the corpus — 619 gates on 384 publishable
+instruments — asks whether the applicant is a company, a sole trader, a local
+authority, a public body, a university, a research institute, or an association.
+It is crisp, every founder knows it instantly, and **no intake field carries it.**
+It is the only genuinely unasked C1 property of any size, and wsCA missed it by
+reading the bucket as SME status.
+
+**3. Lift the enum constraint in stage 2 — but size the expectation correctly.**
+`openFieldsForShortlist` drops every C2 and F requirement before stage 2 sees
+them, and the coordinator's diagnosis of the mechanism is exactly right. The
+prize is **459 gates on ~300 instruments and 5.0 points of ceiling** (60.0 →
+65.0), not thirty. It is worth doing — it is the only route to those five points
+and there is no encoder pass that can ever reach them — but it must not be sold
+as closing the wsCA gap.
+
+**4. Nothing above gets past ~57% with a question budget a founder will
+complete** (§6). Plan against 57%, not 65%.
+
+**What NOT to re-propose**, each now measured rather than argued: any headroom
+claim resting on 85.5% or on 62.0% (both circular, §4); a technology question as
+a *ranking* lever (wsBA, wsCA §5, and RICH-FUZZY's +2.3 alone here); an encoder
+pass over the C2 or F populations (no fixed answer set can exist — §3); and the
+95% target itself (§7).
+
+---
+
+## 10. What was changed
+
+Five read-only harnesses under `website/frontend/scripts/`. **No product code.**
+
+- `_wscc_demand.ts` — the demand taxonomy, from the corpus's own gate
+  embeddings. Exports `canopy`, `loadGates`, `readPub` so the others share one
+  clustering rather than three copies of it.
+- `_wscc_ceiling.ts` — the crisp/fuzzy split, the ceiling under a rich profile,
+  the granularity sweep that recovers the circular number at τ→1, and the
+  question-budget curve.
+- `_wscc_classify.ts` — the C1/C2/F/U labelling, cached by text hash so a re-run
+  is free. **$0.26.**
+- `_wscc_exact_bound.ts` — the same key re-weighted by recall-set pairs, so the
+  ceiling can be quoted against EXACT@5 without swapping denominators.
+- `_wscc_pilot.ts` — the end-to-end test, with the leak guard.
+
+`python3 -m compileall -q ETL/` clean. `npx tsc --noEmit` clean.
+`check_recall_leaks.ts` **ok** — 1,366 described rows, 0 leaks at exact /
+8-gram / sibling, 222 squash probes agree.
+`check_recall_floor.ts` **ok** — pool 94% (floor 89), EXACT@5 25% (floor 15),
+REGIME@5 76% (floor 69), and the three per-population floors. **No floor
+touched, no floor lowered.**
+
+**Guards proved to fail rather than assumed green:**
+
+- the pilot's leak guard fires on a deliberately poisoned profile and the run
+  exits 1 if it does not — verified by running it;
+- an empty `PUBLISHABLE` allow-list exits 1 rather than measuring nothing;
+- a missing allow-list file exits 1;
+- an empty `DATABASE_URL` exits 1 rather than falling back to SQLite.
+
+No check added here reads gitignored data. No rule, prompt, threshold or weight
+in any of the five files names a fund, a country or a sector.
