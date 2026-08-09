@@ -38,7 +38,8 @@ type Dump = {
    *  are exactly the dumps this script now refuses. */
   ranker?: string;
   signals: string[];
-  rows: { pop: string; pool: number; won: number; x: number[][] }[];
+  rows: { pop: string; pool: number; won: number; x: number[][];
+          shipped?: 0 | 1; regime?: string }[];
 };
 
 const TOP = 5;
@@ -92,21 +93,23 @@ function rankNormalise(col: number[]): number[] {
   return out;
 }
 
-type Pool = { x: number[][]; won: number; pop: string };
+type Pool = { x: number[][]; won: number; pop: string; shipped: number; regime: string };
 
 /** A pair whose won fund never reached the pool. It is not droppable: no
  *  ordering of the pool can find a fund selection removed, so it is a MISS for
  *  every blend, and a run that quietly excluded it would report a number
  *  conditional on pool reach under the name EXACT@5. */
-type Missed = { pop: string };
+type Missed = { pop: string; shipped: number; regime: string };
 
 function prepare(d: Dump): { pools: Pool[]; missed: Missed[] } {
   const f = d.signals.length;
-  const missed = d.rows.filter((r) => r.won < 0 || r.x.length <= 1).map((r) => ({ pop: r.pop }));
+  const missed = d.rows.filter((r) => r.won < 0 || r.x.length <= 1)
+    .map((r) => ({ pop: r.pop, shipped: r.shipped ?? 0, regime: r.regime ?? "?" }));
   const pools = d.rows.filter((r) => r.won >= 0 && r.x.length > 1).map((r) => {
     const cols: number[][] = [];
     for (let j = 0; j < f; j++) cols.push(rankNormalise(r.x.map((c) => c[j])));
-    return { x: r.x.map((_c, i) => cols.map((col) => col[i])), won: r.won, pop: r.pop };
+    return { x: r.x.map((_c, i) => cols.map((col) => col[i])), won: r.won, pop: r.pop,
+      shipped: r.shipped ?? 0, regime: r.regime ?? "?" };
   });
   return { pools, missed };
 }
@@ -204,6 +207,71 @@ function main() {
   console.log(`  EXACT@5 blended, on ${hold.split} (the reported number):        ${pc(testHits)}`);
   const rnd = [...testPools.map((p) => Math.min(1, TOP / p.x.length)), ...test.missed.map(() => 0)];
   console.log(`  random baseline on the same pools:                             ${pc(rnd)}`);
+
+  // ── Against the ranker that SHIPS, on the same founders ──────────────────
+  //
+  // Two marginal half-widths printed beside each other answer "could these two
+  // populations differ". The question is whether the SAME founders do better,
+  // and only a paired statistic answers that. Every arm here shares a draw and
+  // a pool precisely so this comparison is available; wsBU's dump discarded the
+  // one column it needed, so its "+1.5 against half-widths of ±3.4 and ±3.3"
+  // was the conservative reading of an unpaired proxy for a paired question.
+  //
+  // The per-pair difference is `blend hit expectation - shipped hit`, in
+  // [-1,1]; its mean is the delta and its own sd gives the interval. Where the
+  // blend is 0/1 too this reduces to the McNemar count exactly.
+  const shippedHits = [...testPools.map((p) => p.shipped), ...test.missed.map((m) => m.shipped)];
+  const diffs = testHits.map((h, i) => h - shippedHits[i]);
+  const dmean = diffs.reduce((a, b) => a + b, 0) / diffs.length;
+  console.log(`\n  SHIPPED (the product's own five), same founders:               ${pc(shippedHits)}`);
+  console.log(`  PAIRED delta blend - shipped:                                  ` +
+    `${(100 * dmean).toFixed(1)} +/-${halfWidthOf(diffs).toFixed(1)} points`);
+  // Concentration beside the gain, as the standing rule requires. A regime is
+  // the answer's own parent, so "one regime" means the blend learned a family.
+  const regimes = [...testPools.map((p) => p.regime), ...test.missed.map((m) => m.regime)];
+  const gain = new Map<string, number>(), loss = new Map<string, number>();
+  diffs.forEach((d, i) => {
+    if (d > 0.001) gain.set(regimes[i], (gain.get(regimes[i]) ?? 0) + d);
+    if (d < -0.001) loss.set(regimes[i], (loss.get(regimes[i]) ?? 0) - d);
+  });
+  const share = (m: Map<string, number>) => {
+    const tot = [...m.values()].reduce((a, b) => a + b, 0);
+    const top = [...m].sort((a, b) => b[1] - a[1]).slice(0, 3);
+    return `${m.size} regime(s), largest ${top.map(([k, v]) =>
+      `${k} ${(100 * v / (tot || 1)).toFixed(0)}%`).join(", ") || "none"}`;
+  };
+  console.log(`  gains  spread over ${share(gain)}`);
+  console.log(`  losses spread over ${share(loss)}`);
+
+  // ── Does it reach the MISSES, or does it just re-win what was already won ──
+  //
+  // A delta is a net. wsCM measured the misses as scattered — median rank 22,
+  // only 3 of 73 at rank 6, and a median gap of 24.4% of the fifth row's score
+  // — so the question a positive delta has to answer is whether it CROSSES a
+  // gap that size or merely shuffles the pairs already inside the five. The
+  // 2x2 and the rank of the won fund under the blend say which.
+  const blendRank = (p: Pool, weights: number[]): number => {
+    const z = p.x.map((row) => row.reduce((a, v, j) => a + v * weights[j], 0));
+    return z.filter((v) => v > z[p.won]).length + 1;
+  };
+  let bothHit = 0, blendOnly = 0, shippedOnly = 0, neither = 0;
+  const rescuedRanks: number[] = [];
+  const stillMissedRanks: number[] = [];
+  testPools.forEach((p, i) => {
+    const b = testHits[i] > 0.5, s = p.shipped === 1;
+    if (b && s) bothHit++; else if (b) blendOnly++; else if (s) shippedOnly++; else neither++;
+    if (!s) (b ? rescuedRanks : stillMissedRanks).push(blendRank(p, w));
+  });
+  const med = (v: number[]) => (v.length
+    ? [...v].sort((a, b) => a - b)[v.length >> 1] : NaN);
+  console.log(`\n  ON THE SAME FOUNDERS, blend x shipped:` +
+    `  both ${bothHit}   blend only ${blendOnly}   shipped only ${shippedOnly}` +
+    `   neither ${neither}`);
+  console.log(`  of the ${shippedOnly + neither} the product MISSED, the blend puts ` +
+    `${blendOnly} in the five (${(100 * blendOnly / (shippedOnly + neither)).toFixed(0)}%)`);
+  console.log(`  won fund's rank under the blend, on the pairs the product missed: ` +
+    `median ${med([...rescuedRanks, ...stillMissedRanks])} ` +
+    `(rescued ${rescuedRanks.length}, still missed median ${med(stillMissedRanks)})`);
 
   const allPops = [...testPools.map((p) => p.pop), ...test.missed.map((m) => m.pop)];
   const allBase = [...testPools.map((p) => Math.min(1, TOP / p.x.length)), ...test.missed.map(() => 0)];

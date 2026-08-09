@@ -226,6 +226,17 @@ async function main() {
   // measurement above never depends on a file existing.
   const features: {
     pop: string; pool: number; won: number; x: number[][];
+    /** Did the PRODUCT put the won fund in its five, for this same pair?
+     *  Carried per pair so the blend can be compared with the shipped ranker
+     *  PAIRWISE. Two marginal half-widths beside each other answer "could these
+     *  two populations differ"; the question here is whether the SAME founders
+     *  do better, and only a paired count can answer it. Every arm in this file
+     *  shares a draw precisely so that comparison is available, and until now
+     *  the dump threw away the one column that needed it. */
+    shipped: 0 | 1;
+    /** The regime the answer belongs to, for the concentration rule: a gain
+     *  that is seven leaves in one regime is not a ranking result. */
+    regime: string;
   }[] = [];
 
   // ── WHICH RANKER THESE NUMBERS ARE ABOUT ──────────────────────────────────
@@ -290,7 +301,13 @@ async function main() {
       // answer survived selection would report a number conditional on pool
       // reach while calling it EXACT@5.
       if (process.env.FEATURES_OUT) {
-        features.push({ pop: popKey, pool: pool.length, won: -1, x: [] });
+        features.push({
+          pop: popKey, pool: pool.length, won: -1, x: [],
+          // The won fund never reached the pool, so it cannot be in the five
+          // either -- but it is read off the table rather than assumed.
+          shipped: top5.includes(t.instrument) ? 1 : 0,
+          regime: String(byId.get(t.instrument)?.parentId ?? t.instrument),
+        });
       }
       continue;
     }
@@ -365,6 +382,8 @@ async function main() {
     if (process.env.FEATURES_OUT) {
       features.push({
         pop: popKey, pool: pool.length,
+        shipped: top5.includes(t.instrument) ? 1 : 0,
+        regime: String(byId.get(t.instrument)?.parentId ?? t.instrument),
         won: pool.findIndex((p) => p.id === t.instrument),
         // Transposed to candidate-major, which is what a fitter wants.
         x: pool.map((_p, ci) => featureRow.map((col) => col[ci])),
