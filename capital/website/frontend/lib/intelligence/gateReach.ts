@@ -8,6 +8,10 @@ import { loadDbInstruments } from "./corpus";
 import { FIELD_ENUM_HINTS, FIRST_PAGE_FIELDS, type EligibilityAnswers } from "./types";
 import { deliveryRegionOf } from "./regionPrior";
 import { regionNameFor } from "./regions.generated";
+import {
+  MIN_SUBSTANTIVE_LEN, normaliseRequirement, requirementClassOf,
+  OPEN_QUESTION_ARM, OPEN_QUESTION_BUDGET,
+} from "./openQuestions";
 
 // Fields already resolved on the deterministic first page — never re-asked
 // adaptively, regardless of how much gate reach they still carry. The set is
@@ -233,12 +237,11 @@ export function openFieldsForShortlist(
 // intakeField. 3,991 of 4,018 gates carry substantive text, covering all 322
 // instruments and 100% of corpus euros, so there is no coverage cliff here.
 
-/** Requirement text is only worth a question above this length. Below it the
- *  text is almost always a restatement of the enum it maps to ("Must be an
- *  SME"); above it, it tends to carry real project detail. Tuned so the EIC
- *  TRL gate (89 chars) survives even though developmentStage is answered on
- *  the first page. */
-const MIN_SUBSTANTIVE_LEN = 60;
+// MIN_SUBSTANTIVE_LEN and normaliseRequirement moved to openQuestions.ts and
+// are imported at the top of this file. They used to be declared here and
+// again, verbatim, in the emitter that classifies the same sentences — the
+// exact "keep in sync" shape this repo has been burned by three times. One
+// declaration, three readers.
 
 export interface ProjectGateEvidence {
   /** Stable dedupe key: normalised requirement text. */
@@ -259,9 +262,6 @@ export interface ProjectGateEvidence {
   score: number;
 }
 
-function normaliseRequirement(s: string): string {
-  return s.toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
-}
 
 /**
  * How much a gate family tells us about what the company actually DOES.
@@ -425,6 +425,192 @@ export function openProjectGatesForShortlist(
   }
   for (const cand of overflow) {
     if (picked.length >= opts.limit) break;
+    picked.push(cand);
+  }
+  return picked;
+}
+
+// ── Open questions (wsCD) ──────────────────────────────────────────────────
+//
+// Everything above can only ask about a requirement that already has a fixed
+// answer set. This asks about the ones that never will: requirements whose
+// satisfaction is a judgement about what THIS project is, classified
+// `judgeable` by `emit_open_question_class.ts`. See `openQuestions.ts` for the
+// property, the test that decides it, and the two structural guarantees that
+// stop a wrong judgement from becoming a rejection.
+
+export interface OpenQuestionCandidate {
+  /** `normaliseRequirement` of the gate text. The judgement key. */
+  key: string;
+  /** Verbatim requirement text — what the question must be written FROM, and
+   *  what the judge reads the founder's answer against. Never shown as an
+   *  option: a phrase lifted from a legal text fails Q-1. */
+  requirement: string;
+  /** Highest-ranked carrier, the citation anchor. */
+  instrumentId: string;
+  instrumentName: string;
+  gateKey: string;
+  locator?: string;
+  /** The regime (parent, or the leaf itself) whose siblings this splits. */
+  regimeId: string;
+  /** Leaves in that regime, and how many of them carry this requirement. */
+  regimeSize: number;
+  carriers: number;
+  /** How much answering this would separate THIS founder's shortlist. */
+  score: number;
+}
+
+/**
+ * Rank the open questions worth a slot on THIS founder's screen, and cap them.
+ *
+ * ── Why the ranking is about SIBLINGS and not about reach ─────────────────
+ * The answer to an open question lands in `openFitScorer`, which is multiplied
+ * into `pref` in `materialiseInstrumentTable`. That site is rank-preserving:
+ * a channel keeps its multiset of row scores and only the assignment among its
+ * siblings changes. So a requirement carried by EVERY sibling of a regime
+ * cannot move anything, however much of the shortlist it reaches, and a
+ * requirement carried by NO sibling group at all is worth exactly zero. Reach
+ * is the wrong quantity here; the right one is how evenly the requirement
+ * splits the sibling groups that are actually in play.
+ *
+ * That is the same lesson `openFieldsForShortlist` learned when it stopped
+ * sorting on `reachPct` — a question everyone answers identically carries no
+ * information — applied to the site where this particular answer lands.
+ *
+ * ── Why there is a budget at all ──────────────────────────────────────────
+ * "95% if we ask forty things" is not a product. The screen's whole purpose is
+ * to keep stage 2 to the few questions that matter, so open questions are
+ * capped and must compete: `OPEN_QUESTION_BUDGET` of the screen's six slots,
+ * one per regime, so the questions asked point at DIFFERENT forks rather than
+ * three ways of asking about the same one.
+ *
+ * Returns [] with the arm off, so nothing downstream needs to know about it.
+ */
+export function openQuestionsForShortlist(
+  rankedInstrumentIds: string[],
+  answers: EligibilityAnswers | undefined,
+  opts: { budget?: number } = {},
+): OpenQuestionCandidate[] {
+  void answers; // an open question is about the PROJECT; no intake field settles it
+  if (OPEN_QUESTION_ARM !== "on") return [];
+  const budget = opts.budget ?? OPEN_QUESTION_BUDGET;
+  if (budget <= 0) return [];
+
+  const rankOf = new Map(rankedInstrumentIds.map((id, i) => [id, i]));
+  const shortlist = loadDbInstruments().filter((i) => rankOf.has(i.id));
+  if (!shortlist.length) return [];
+
+  // Group the shortlist the way the scorer will: by regime. A leaf standing
+  // alone in its regime is skipped here for the same reason the scorer skips
+  // it — nothing it carries can reorder anything.
+  const byRegime = new Map<string, typeof shortlist>();
+  for (const inst of shortlist) {
+    const r = inst.parentId ?? inst.id;
+    (byRegime.get(r) ?? byRegime.set(r, []).get(r)!).push(inst);
+  }
+
+  interface Acc {
+    requirement: string; instrumentId: string; instrumentName: string;
+    gateKey: string; locator?: string; regimeId: string;
+    regimeSize: number; carriers: number; bestRank: number; score: number;
+  }
+  const best = new Map<string, Acc>();
+
+  for (const [regimeId, group] of byRegime) {
+    if (group.length < 2) continue;
+    // How high this regime sits for this founder. A fork between two funds
+    // nobody would pursue is worth little; a fork at the top of the table is
+    // the question an analyst would actually ask.
+    const regimeRank = Math.min(...group.map((i) => rankOf.get(i.id) ?? 999));
+    const weight = 1 / (1 + regimeRank);
+
+    const carriers = new Map<string, { n: number; anchor: typeof group[number]; gate: { id: string; requirement: string; source?: { locator?: string } } }>();
+    for (const inst of group) {
+      const seen = new Set<string>();
+      for (const gate of inst.gates) {
+        if (gate.gateRole && gate.gateRole !== "filter") continue;
+        const req = gate.requirement?.trim();
+        if (!req || req.length < MIN_SUBSTANTIVE_LEN) continue;
+        // The whole point of the module: only requirements that are fuzzy BY
+        // NATURE. A threshold nobody has encoded is an encoding debt, and
+        // asking a founder to answer it in prose is worse than a comparator.
+        if (requirementClassOf(req) !== "judgeable") continue;
+        const key = normaliseRequirement(req);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const prev = carriers.get(key);
+        if (prev) {
+          prev.n += 1;
+          if ((rankOf.get(inst.id) ?? 999) < (rankOf.get(prev.anchor.id) ?? 999)) {
+            prev.anchor = inst;
+            prev.gate = gate as never;
+          }
+        } else {
+          carriers.set(key, { n: 1, anchor: inst, gate: gate as never });
+        }
+      }
+    }
+
+    for (const [key, c] of carriers) {
+      const p = c.n / group.length;
+      // Parabolic split: 1.0 where the requirement halves the regime, 0 where
+      // every sibling carries it (or none does). A demand every sibling makes
+      // separates nobody, which is exactly the case this must score at zero.
+      const split = 4 * p * (1 - p);
+      if (split <= 0) continue;
+      const score = split * weight;
+      const prev = best.get(key);
+      if (prev && prev.score >= score) {
+        // Same sentence, another regime: keep the better fork but let the
+        // score accumulate, because a requirement that splits two regimes is
+        // worth more than one that splits one.
+        prev.score += score;
+        continue;
+      }
+      best.set(key, {
+        requirement: c.gate.requirement.trim(),
+        instrumentId: c.anchor.id,
+        instrumentName: c.anchor.name,
+        gateKey: c.gate.id,
+        locator: c.gate.source?.locator || undefined,
+        regimeId,
+        regimeSize: group.length,
+        carriers: c.n,
+        bestRank: regimeRank,
+        score: (prev?.score ?? 0) + score,
+      });
+    }
+  }
+
+  const scored = [...best.entries()]
+    .map(([key, a]) => ({
+      key,
+      requirement: a.requirement,
+      instrumentId: a.instrumentId,
+      instrumentName: a.instrumentName,
+      gateKey: a.gateKey,
+      locator: a.locator,
+      regimeId: a.regimeId,
+      regimeSize: a.regimeSize,
+      carriers: a.carriers,
+      score: Math.round(a.score * 1000) / 1000,
+    }))
+    .sort((a, b) => b.score - a.score || a.key.localeCompare(b.key));
+
+  // One question per regime, so the budget buys coverage of DIFFERENT forks
+  // rather than three phrasings of one. Overflow backfills only if there are
+  // fewer distinct regimes than slots.
+  const picked: OpenQuestionCandidate[] = [];
+  const usedRegimes = new Set<string>();
+  const overflow: OpenQuestionCandidate[] = [];
+  for (const cand of scored) {
+    if (picked.length >= budget) break;
+    if (usedRegimes.has(cand.regimeId)) { overflow.push(cand); continue; }
+    usedRegimes.add(cand.regimeId);
+    picked.push(cand);
+  }
+  for (const cand of overflow) {
+    if (picked.length >= budget) break;
     picked.push(cand);
   }
   return picked;

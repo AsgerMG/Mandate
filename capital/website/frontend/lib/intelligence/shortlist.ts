@@ -34,6 +34,7 @@ import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 import { resolveNameCollisions } from "./nameCollision";
+import { openFitScorer, type OpenJudgement } from "./openQuestions";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
  *
@@ -1483,6 +1484,12 @@ export interface InstrumentTableInput {
    *  where gates are already in memory — selection above must stay gate-free.
    *  See `gateFitScorer`. */
   eligibility?: EligibilityAnswers;
+  /** What a model concluded about the founder's own prose, judged against the
+   *  verbatim text of requirements no comparator can decide (wsCD). Already
+   *  DECIDED before it arrives — this path never calls a model. Empty, absent,
+   *  or arm-off all mean the same thing: the ranking is untouched. See
+   *  `openFitScorer`. */
+  openJudgements?: OpenJudgement[];
   /** Records every fund this function removes. Optional: callers that do not
    *  care about the funnel need not thread one through. */
   log?: ExclusionLog;
@@ -1916,7 +1923,7 @@ export function materialiseInstrumentTable(
   selections: RowSelection[],
   input: InstrumentTableInput,
 ): InstrumentRow[] {
-  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, eligibility, log } = input;
+  const { consortiumOk, semantic, description, founderSector, founderCountries, useOfFunds, ticketBand, founderRegion, eligibility, openJudgements, log } = input;
   // Same signal the leaf ranking uses, so a row cannot be ordered by one
   // measure and the leaf inside it by another.
   const rel = rankerUsed(semantic) === "embedding"
@@ -2089,7 +2096,13 @@ export function materialiseInstrumentTable(
     // siblings do not share, and the only one built from the fund's own
     // eligibility TEXT rather than from its award history. See gateFitScorer.
     const gate = gateFitScorer(leaves, eligibility);
-    const pref = (l: DbInstrument) => obj(l.id) * awd(l) * reg(l) * gate(l);
+    // The fifth per-scheme fact siblings do not share: what the founder said,
+    // in their own words, about requirements no comparator can decide. Neutral
+    // 1 with the arm off, with no judgements, and for any leaf whose judged
+    // requirements came back `unknown` -- so it can only ever act where a
+    // founder actually answered something that settled something.
+    const open = openFitScorer(leaves, openJudgements);
+    const pref = (l: DbInstrument) => obj(l.id) * awd(l) * reg(l) * gate(l) * open(l);
     // Nothing to say about these siblings: leave the channel untouched.
     if (leaves.every((l) => pref(l) === pref(leaves[0]))) continue;
     const slots = leaves.map((l) => baseRelevance(l.id)).sort((a, b) => b - a);
