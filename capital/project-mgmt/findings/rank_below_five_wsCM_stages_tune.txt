@@ -1,0 +1,53 @@
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6779 (95.5%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T17:35:23.277Z
+ranker: all 247 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 250
+
+EXACT@5 67/250 (26.8% +/-5.5)
+
+WHAT PUT THE WON LEAF BELOW FIVE  (183 misses, ALL of them,
+  winnable or not -- the mechanism is a fact about the code, not about the ceiling)
+  score                   158  86.3% of misses
+  peer-reorder             16  8.7% of misses
+  absent                    9  4.9% of misses
+
+THE WON LEAF'S RANK, STAGE BY STAGE (misses in the pool only)
+  after the row SORT       median 33   in top five: 16
+  after the name COLLAPSE  median 33   in top five: 16
+  after PEER PRECEDENCE    median 26   in top five: 0
+  if the SCORE alone ranked median 36   in top five: 14
+
+HOW OFTEN THE SCORE'S TOP FIVE IS NOT THE PUBLISHED FIVE
+  the won leaf crossed the five-row line between the sort and the page: 59/250
+  won leaf had >=1 row above it that it BEAT on the score: 0/250  (median NaN such rows)
+
+IS BUCKET 3 REALLY BUCKET 4?  cross tab of MECHANISM against WINNABILITY
+  cause                  class<=5   class>5
+  score                      61        97
+  peer-reorder               12         4
+  absent                      9         0
+
+  WINNABLE misses that were in the pool (wsCI's bucket 3): 73
+    the ranker gives the won leaf a score it SHARES with other rows: 0 (0%)   median tie group 0
+    the ranker gives it a score of its OWN: 73  <- a reordering CAN reach these and only these
+    how far below the fifth row's score it sits, as a fraction of it:  median 24.4%   p25 1.4%
+    within 5% of the fifth row's score: 22   within 20%: 34
+
+WHICH BRANCH OF PEER PRECEDENCE THE FOUNDER TOOK
+  specific     47 replays   EXACT@5 10/47 (21.3%)   score keeps 3 of the five seats
+  flat        203 replays   EXACT@5 57/203 (28.1%)   score keeps 1 of the five seats
+  won leaf sits below >=1 row it OUTSCORED, in the published order: 190/250   (median 7 such rows)
+
+REGIME CONCENTRATION per cause (a cause that is one regime is not a finding)
+  score                  158 across 45 regime(s), largest 19% -- bdns_es_ayudas:30 ademe_aid:27 vinnova_grant:17
+  peer-reorder           16 across 13 regime(s), largest 19% -- vinnova_grant:3 horizon_eu_pillar_ii:2 altum_la_ar_ka:1
+  absent                 9 across 4 regime(s), largest 67% -- satr_de_rnd:6 eit_rawmaterials:1 edf:1
+
+per-pair -> /tmp/wsCM/stages_tune.json
