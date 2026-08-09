@@ -138,9 +138,13 @@ Two corrections to what was recorded here, both worth keeping:
   `(instrument_id, gate_key)` — which holds exactly, 7,471 distinct pairs across
   7,471 rows — would have broken. Gates and clauses were therefore excluded:
   every row they had to offer was a duplicate.
-- The counts recorded here as 151,426 / 151,915 were wrong in absolute terms;
-  the true pair was 163,538 / 164,029. The **delta** was right, which is why it
-  went unnoticed, and is a reason to re-measure rather than re-quote.
+- The pair recorded here as 151,426 / 151,915 is **correct, and is not the
+  table**. It is the census's IN-SCOPE company count; the raw `companies` table
+  read 163,538 / 164,029. Two counts, both right, twelve thousand apart, and
+  nothing beside either said which one it was — so this section now says. 489
+  of the 491 arriving companies are in scope, which is why both deltas agree.
+  I mis-read this myself on the first pass and wrote that the recorded figure
+  was wrong; a number quoted without its definition is how that happens.
 
 `ETL/lib/check_id_collisions.py` now runs **in front of** the merge, not beside
 it, and there is no override flag: asked for all five tables it exits 1 and

@@ -5,6 +5,10 @@ eligibility work is written to the laptop and published to Postgres. Nothing
 reconciled the two, so they diverged in OPPOSITE directions and each ended up
 holding what the other lacked.
 
+Counts here are RAW TABLE counts. The census reports companies IN SCOPE, which
+is about twelve thousand fewer, and the two have been quoted side by side in the
+same paragraph before now. Say which one you mean.
+
 Measured at one instant (`diff_stores.py`), volume against laptop:
 
     public_funding_events   311,355 / 309,898   volume-only 1,457   laptop-only 0
