@@ -70,6 +70,9 @@ def main() -> None:
          GROUP BY source
         HAVING COUNT(*) >= ? AND COUNT(DISTINCT programme_name) > 1
     """, (MIN_CHILD_EVENTS,))}
+    # The production definition, called rather than restated -- an inline copy
+    # of this query in main() is exactly how the helper drifted from its caller
+    # in the first place.
     split_targets = split_families(conn)
     print(f"programme-split sources {len(programme_split)}, "
           f"SATR split families {len(split_targets)}")

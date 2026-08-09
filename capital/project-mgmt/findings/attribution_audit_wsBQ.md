@@ -30,98 +30,117 @@ awards", which was true at a different corpus.
 
 ---
 
-## 1. Did it decay, or was it never there? — IT DECAYED, and the cause is in code
+## 1. Did it decay, or was it never there? — IT DECAYED, and it is stale, not broken
 
-Not a corpus load, not a source that stopped publishing scheme codes, not a join
-key that moved. A one-column refactor.
+> **Correction, same session.** My first answer to this was wrong and is worth
+> recording rather than quietly replacing. I found that `split_families()`
+> selects `source_family_bucket` — a channel label identical for all 35 SATR
+> rollups — where its caller compares rollup ids, concluded the scheme split had
+> been dead since 2026-07-30, and wrote it up as the cause. It is a real defect
+> (§4) but it is **not** the cause: `main()` never called that function. It used
+> its own inline copy of the query, with the correct column, introduced in the
+> same commit. I caught it by grepping my own conclusion before finishing.
+> The lesson is narrow and worth keeping: I read the helper and inferred the
+> call site instead of reading it.
 
-`populate_funding_instruments.py` decides whether an award gets a scheme child:
+The actual cause is duller and better news.
 
-```python
-elif fam in split_targets and r["granting_authority"] and r["call_id"]:
-```
+**The instrument layer is STALE. The derivation is fine; it has not been run.**
 
-`fam` is `source_to_family(event.source)` → a rollup id, `satr_be_rnd`.
-`split_targets` is `split_families(conn)`. On **2026-07-30 20:34, commit
-64f82e79**, subject *"All 22 countries, down to the schemes founders apply to"*,
-the hardcoded `SPLIT_FAMILIES = {"satr_fr_rnd", "satr_fr_equity"}` was replaced
-by a query — which selected the wrong column:
+Replaying `populate_funding_instruments.py`'s real child derivation against
+today's events, using the definition `main()` actually uses:
 
-```sql
-SELECT DISTINCT source_family_bucket FROM funding_instruments WHERE id LIKE 'satr\_%'
-```
+| | children | awards placed |
+|---|---|---|
+| what the derivation forms **today** | **671** | **128,707** |
+| what `funding_instruments` **holds** | 697 | 35,224 |
+| in both | 241 | |
 
-`source_family_bucket` is `'state_aid_satr'` for **all 35 rollups**. So
-`split_targets` became `{'state_aid_satr'}`, an id was tested against a channel
-label, the two sets were disjoint, and the membership test was never true again.
+The table holds 697 children and only **241 of them are keys today's events
+still produce**. The other 456 are keyed to an older event set. 430 children the
+derivation forms do not exist at all.
 
-**The rollout that was meant to widen the split switched it off** — for all 22
-countries, including the two France had proven it on forty minutes earlier
-(4835a3ae, 19:54 the same evening).
+The corpus moved and the children did not follow. `corpus_census` records the
+move precisely — events 297,933 → 299,384 and total capital €352.9B → €408.4B
+between census 6 (2026-08-07 22:07) and census 7 (2026-08-08 22:11) — and
+records why the children did not follow:
 
-This is the same defect class as Spain's SA numbers: the right query against the
-wrong column, failing silently because a smaller result set looks exactly like
-thinner data.
+    census 7  run_outcome: failed at rebuild instruments (+1 more); 22 skipped
+    census 8  failed at rebuild instruments (+1 more); 23 skipped
+    census 9  partial: corpus restored by hand after workstream BM's chain
+              proofs; no pipeline run has yet completed end to end
 
-Nothing failed. There was no error, no gate, no verdict. The first visible
-symptom arrived ten days later as ten graded cases in a different module.
+**Three consecutive pipeline runs failed at the rebuild step**, so the events
+advanced under an instrument layer that stopped being regenerated. That is the
+whole of it. Nothing about the sources changed, no join key moved, no publisher
+stopped emitting scheme codes.
 
-### The hazard that was still live
+### Proven by running it
 
-`populate_funding_instruments.py` main() does `DELETE FROM funding_instruments`
-and reinserts. The corpus still holds **453 SATR scheme children carrying 97,032
-events** that today's derivation would no longer produce — relics of the last
-run before the regression.
+I copied the corpus to scratch (never the shared one — the worktree symlink was
+restored afterwards and the shared store still reads 1,088 instruments) and ran
+the rebuild. **It succeeds.** It does not fail at all; the pipeline failures were
+environmental, and one clean run is the entire repair:
 
-They survive **only because "rebuild instruments" has failed on the last three
-pipeline runs** (`corpus_census` 7, 8, 9, all `run_outcome: failed at rebuild
-instruments`). The next successful run deletes them and takes placement **down**,
-11.5% → 10.3%, with no signal anywhere. A broken pipeline step was the only
-thing holding the corpus up.
+| | before | after a clean rebuild |
+|---|---|---|
+| awards placed on an exact leaf | 35,224 (11.5%) | **128,708 (41.9%)** |
+| distinct leaves receiving a placed award | 241 | **671** |
+| countries with ≥1 placeable leaf | **7** of 22 | **22** of 22 |
+
+So the answer to the question worth most: **repairable, and cheaply.** Not a
+source problem, not a licensing problem, not a modelling problem. One pipeline
+step that has to complete.
+
+### What that run also costs, and why it is not a free click
+
+The same rebuild takes `funding_instruments` 1,088 → 998 and reconciles away
+**629 curated gates**. `main()` does `DELETE FROM funding_instruments` and
+reinserts, so this is a real corpus change with a real blast radius, and it
+moves the population every floor is calibrated on. It needs its own workstream
+with `check_peer_prior_canary.ts` and `check_recall_floor` on either side of it —
+not a step tacked onto this audit. Sized here so that workstream starts with the
+numbers rather than deriving them again.
 
 ---
 
-## 2. How much is recoverable — 93,483 awards, and the fix is one column
+## 2. How much is recoverable — 93,483 awards, by running one step
 
-Measured by replaying the child derivation against today's events under both
-value spaces, then diffing against what `funding_instruments` holds:
+Placement goes **11.5% → 41.9%** on a clean rebuild, measured above rather than
+projected. That is **93,483 more awards** placed on **430 children that should
+exist and do not**. The largest single one is 13,892 awards under
+`satr_it_equity` / Banca del Mezzogiorno MedioCredito Centrale S.p.A. / SA.57625
+— a real granting body running a real notified scheme, currently invisible to
+every consumer in §3.
 
-| | children kept | awards placed |
-|---|---|---|
-| shipped `split_families` (channel label) | 218 | 31,675 |
-| what the corpus actually holds (relics) | 697 | 35,224 |
-| **rollup ids — the documented intent** | **671** | **128,707** |
-
-430 children the rebuild would create do not exist, and they place **93,483
-awards**. Placement goes **11.5% → ~41.9%**. The largest single one is 13,892
-awards under `satr_it_equity` / Banca del Mezzogiorno MedioCredito Centrale /
-SA.57625 — a real granting body running a real notified scheme, currently
-invisible.
-
-Nothing here is guessed. Every recovered award is placed on a leaf keyed by the
-`(granting_authority, call_id)` pair **the source itself published**; the fix
-restores a comparison, it does not invent a name.
+Nothing here is guessed. Every recovered award lands on a leaf keyed by the
+`(granting_authority, call_id)` pair **the source itself published**. The repair
+restores a rebuild, it does not invent a name.
 
 ### What is genuinely unplaceable — 133,621 awards (43.4%), by design
 
 | population | awards | share | placeable? |
 |---|---|---|---|
-| SATR, complete `(authority, call_id)` key | 122,814 | 39.9% | **yes** — this is the recoverable mass |
-| programme-split sources | 51,096 | 16.6% | mostly already placed (ADEME etc.) |
-| everything else | 133,621 | 43.4% | **no** — the design creates no child for them |
+| SATR with a complete `(authority, call_id)` key | 122,814 | 39.9% | **yes** — this is the recoverable mass |
+| programme-split sources (20 of them) | 51,096 | 16.6% | mostly already placed (ADEME etc.) |
+| everything else | 133,621 | 43.4% | **no** — the split forms no key for them |
 
-That last row is Horizon (`horizon_eu_cl4/5/6_*`), Innovate UK, `fr_relance`. They
-publish a `call_id` and **no granting authority and no programme name**: 123,261
-awards are `prog=0 body=0 call=1`. The split only ever forms a key from a
-programme name or an (authority, call) pair, so these can never get a leaf. That
-is not a defect and not repairable by a better join — **the source never said
-who signed**. They correctly fall back to the notified scheme under
-`Split.credit`, which is what that fallback is for.
+That last row is Horizon (`horizon_eu_cl4/5/6_*`), Innovate UK and `fr_relance`.
+They publish a `call_id` and **no granting authority and no programme name**:
+123,261 awards are exactly `prog=0 body=0 call=1`. The split only ever forms a
+key from a programme name or an (authority, call) pair, so these can never carry
+a leaf. That is not a defect and no better join recovers it — **the source never
+said who signed.** They fall back to the notified scheme under `Split.credit`,
+which is what that fallback is for.
 
-So: **~93k recoverable, ~134k structural, and the remainder is threshold.** Only
-9,418 awards sit on keys below `MIN_CHILD_EVENTS = 40`, spread over 955 keys —
-lowering the floor buys almost nothing and would publish children built on one
-or two awards.
+### And the part that is neither — the threshold
+
+Only **9,418 awards** sit on keys below `MIN_CHILD_EVENTS = 40`, spread thinly
+over 955 keys (145 of them single-award). Lowering the floor buys almost nothing
+and would publish children built on one or two awards. Leave it.
+
+**So: ~93k recoverable by running the pipeline, ~134k structural, ~9k not worth
+buying.**
 
 ---
 
@@ -142,17 +161,21 @@ key cannot name a single fund in Czechia, the Netherlands, Austria, Belgium,
 Finland, Greece, Ireland, Portugal, Hungary, Poland, Slovakia, Latvia,
 Lithuania, Luxembourg or the UK, and no amount of key-writing changes that.
 
-With `split_families` fixed and the corpus rebuilt: **663 leaves across 22
-countries**, every one with 5+ placed awards.
+After a clean rebuild — measured, on the rebuilt copy, not projected:
+**671 leaves across all 22 countries.**
 
-    FR 124  DE 116  IT 86  ES 83  SE 63  CZ 37  NL 32  AT 29  BE 21  FI 16
-    SK 13   GR 13   EE 12  IE 10  LV 8   PT 7   HU 6   DK 6   LU 6   GB 4  PL 2  LT 2
+    FR 127  DE 116  ES 87  IT 86  SE 62  CZ 37  NL 31  AT 29  BE 21  FI 15
+    SK 13   GR 13   EE 12  IE 10  LV 7   PT 7   LU 6   DK 6   HU 6   GB 4  LT 1  PL 1
 
-**BP should not treat the current placeable set as the ceiling.** The three
-biggest gaps in answer-key coverage — DE, IT and the whole of central Europe —
-are not a data problem and not a key-writing problem; they are this one column.
-Extending the key against today's corpus would encode a 7-country ceiling into
-the ground truth and make the eventual fix measure as churn.
+**BP should not treat the current placeable set as the ceiling.** The biggest
+gaps in what the answer key can name — DE at 18, IT at 1, and the whole of
+central Europe at zero — are not thin markets and not a key-writing problem.
+They are one pipeline step that has not completed. Extending the key against
+today's corpus would encode a 7-country ceiling into the ground truth, and the
+eventual rebuild would then measure as churn rather than as the gain it is —
+which is the exact failure `attribution.py`'s own header records, where a
+corrected join could only read as a loss because the ground truth could not name
+the funds it won.
 
 Everything outside SATR and the 20 programme-split sources (Horizon, Innovate
 UK, `fr_relance` — 43.4% of awards) is genuinely unnameable at leaf grain and
@@ -215,28 +238,43 @@ Cleared, checked: `corpus.ts` and `shortlist.ts` do **no read-time attribution**
 
 ## 4. What was changed here, and what deliberately was not
 
-**Changed:** `split_families()` returns rollup ids (the docstring's own claim,
-and what the hardcoded set it replaced always held), plus
-`ETL/events/load/test_split_value_space.py` — the guard, in the peer-prior
-canary's shape: credential-free in-memory fixture, milliseconds, in CI on every
-PR, where the corpus never runs. It asserts the **property** — the set used as a
-membership test must be drawn from the same value space as the values tested
-against it, since disjoint means dead — not this query's column name, which the
-next refactor would rename its way around. It fails on the shipped code and
-passes on the fix.
+**Changed — one duplicated definition removed, and a guard for the class.**
+`split_families()` was introduced in commit 64f82e79 *alongside an inline copy of
+the same query in `main()`*, and the two were never the same query: `main()`
+selected `id`, the helper selected `source_family_bucket`, a channel label
+identical for all 35 rollups. Nothing called the helper, so nothing failed — it
+sat for ten days as a correct-looking function that would have silently switched
+the scheme split off for all 22 countries the first time anyone wired it in.
+Per this repo's own rule, a second definition of a rule is the defect: `main()`
+now calls `split_families()`, and there is one. **Verified behaviour-identical**
+— the rebuild produces the same 671 children and 998 rows either way.
 
-**Not changed, deliberately:** no rebuild, no artifact regenerated, no floor
-re-measured, `peerPrior` untouched (canary re-run: all four populations above
-their floors, unchanged). The fix is **inert until
-`populate_funding_instruments.py` next runs**, and that run moves the corpus from
-218 to 671 children — enough to need the canary and `check_recall_floor` around
-it, and enough that it should be its own workstream with its own before/after.
-Note it must be run with `--exclude-recall-set` semantics preserved downstream,
-and that `rebuild instruments` is currently failing for an unrelated reason that
-has to be cleared first.
+`ETL/events/load/test_split_value_space.py` is the guard, in the peer-prior
+canary's shape: credential-free in-memory fixture, milliseconds, wired into CI's
+python job on every PR, where the corpus never runs. It asserts the **property**
+— the set used as a membership test must be drawn from the same value space as
+the values tested against it, since disjoint means dead — not this query's column
+name, which the next refactor would rename its way around. It fails on the
+pre-fix helper and passes now.
 
-**No award was placed on a leaf the source did not name.** Every recovered child
-is keyed on a `(granting_authority, call_id)` pair the publisher published.
+**Not changed, deliberately: the corpus.** No rebuild published, no artifact
+regenerated, no floor re-measured. `peerPrior` untouched — canary re-run, all
+four populations above their floors, unchanged. The rebuild was run only on a
+private scratch copy; the worktree symlink was restored and the shared store
+still reads 1,088 instruments.
+
+**The follow-on, sized so it starts with numbers rather than deriving them:** run
+`populate_funding_instruments.py` and republish. It takes placement 11.5% → 41.9%
+and instruments 1,088 → 998, and it reconciles away **629 curated gates**. That
+is a real corpus change that moves the population every floor is calibrated on,
+so it needs `check_peer_prior_canary.ts` and `check_recall_floor` on either side,
+`--exclude-recall-set` preserved on every artifact regenerated after it, and
+`emit_channel_prior` / `build_instrument_profiles` (§3) re-emitted — they read the
+child layer that is about to triple.
+
+**No award was placed on a leaf the source did not name**, and none is proposed
+to be. Every recovered child is keyed on a `(granting_authority, call_id)` pair
+the publisher published.
 
 ## Reproduce
 

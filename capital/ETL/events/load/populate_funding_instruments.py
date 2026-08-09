@@ -462,20 +462,28 @@ def split_families(conn) -> set[str]:
     would go stale silently: the new country would simply never get the
     granularity, which looks exactly like a country we have thin data for.
 
-    RETURNS ROLLUP IDS, because that is what the caller compares. The one
-    caller tests `source_to_family(event.source) in split_families(conn)`, and
-    `source_to_family` yields ids like `satr_be_rnd`. Between 2026-07-30 and
-    2026-08-09 this selected `source_family_bucket` instead, which is the
-    channel label `'state_aid_satr'` -- the SAME string for all 35 rollups. The
-    membership test compared an id against a channel and was therefore never
-    true again: the scheme arm of the split became dead code for all 22
-    countries, including the two France had just proven it on. Nothing failed;
-    the split simply stopped happening, and 97,032 awards' worth of scheme
-    children stopped being rebuilt.
+    RETURNS ROLLUP IDS, because that is what the caller compares: `main()` tests
+    `source_to_family(event.source) in split_targets`, and `source_to_family`
+    yields ids like `satr_be_rnd`.
 
-    So the value space is the contract here, not the column, and
-    `test_split_value_space.py` asserts the two sides still share one rather
-    than asserting this query's text.
+    THIS FUNCTION HAD DRIFTED FROM ITS ONLY CALLER, in the way this repo has a
+    rule about. Commit 64f82e79 introduced it AND an inline copy of the same
+    query in `main()`, in the same commit -- and the two were never the same
+    query. `main()` selected `id`; this selected `source_family_bucket`, which
+    is the channel label `'state_aid_satr'`, the SAME string for all 35 rollups.
+    So this one returned a set that could never intersect the ids the caller
+    tests, while `main()` used its own copy and worked.
+
+    Nothing failed, because nothing called this. A second definition of a rule
+    is a defect the moment it exists, and this one was born wrong: it sat for
+    ten days as a correct-looking helper that would have silently switched the
+    scheme split off for all 22 countries the first time anyone wired it in.
+
+    There is now one definition and `main()` calls it. `test_split_value_space.py`
+    asserts the PROPERTY that made the drift dangerous -- that the set used as a
+    membership test is drawn from the same value space as the values tested
+    against it, since disjoint means dead -- rather than this query's column
+    name, which the next refactor would rename its way around.
     """
     return {r[0] for r in conn.execute(
         "SELECT DISTINCT id FROM funding_instruments "
@@ -848,9 +856,10 @@ def main() -> None:
     # ETL/lib/recall_holdout.py for why this is a default rather than a flag.
     holdout = resolve_holdout(args, conn)
     holdout.report()
-    split_targets = {f for f in (
-        r[0] for r in conn.execute(
-            "SELECT DISTINCT id FROM funding_instruments WHERE id LIKE 'satr%'")) if f}
+    # ONE definition, in split_families(). This was an inline copy of that
+    # query, introduced in the same commit as the function it duplicates, and
+    # already selecting a different column from it. See split_families().
+    split_targets = split_families(conn)
 
     # ── The second split dimension: the PROGRAMME ──────────────────────────
     # A state-aid rollup splits by (granting body, notified scheme), because
