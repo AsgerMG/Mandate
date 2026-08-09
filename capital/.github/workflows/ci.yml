@@ -124,6 +124,15 @@ jobs:
       - name: The recall set does not leak its answers
         if: always()
         run: npx tsx scripts/check_recall_leaks.ts
+      # The one ranking signal CI can actually see. `check_recall_floor` needs
+      # DATABASE_URL and VOYAGE_KEY, so it has never run here and never will;
+      # a regenerated peer prior cost ten graded cases and stayed green through
+      # roughly fifteen merges because compile and typecheck were the only
+      # things watching. This grades the committed prior against the committed
+      # answer key in under a second, with no credential.
+      - name: The peer prior still carries the funds companies won
+        if: always()
+        run: npx tsx scripts/check_peer_prior_canary.ts
       # Skips honestly: data/raw/instrument_docs is gitignored, so there is
       # nothing here to verify a quotation against. Kept in CI anyway — the skip
       # is one line of output that says so, and its absence from any automatic

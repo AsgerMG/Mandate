@@ -59,6 +59,12 @@ const CHECKS = [
   ["missing-data neutral", ["npx", "tsx", "scripts/check_missing_data_neutral.ts"]],
   ["capital reach", ["npx", "tsx", "scripts/check_capital_reach.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
+  // Hermetic, sub-second, and it reads the same answer key the recall floor
+  // grades on. It sits HERE rather than beside the floor because it is the
+  // cheap half of the same question: the floor needs credentials, takes three
+  // and a half minutes and is skipped in CI, and a regenerated peer prior cost
+  // ten graded cases while every check that actually ran stayed green.
+  ["peer prior canary", ["npx", "tsx", "scripts/check_peer_prior_canary.ts"]],
   ["quotations match documents", ["npx", "tsx", "scripts/check_extracted_quotes.ts"]],
   ["dependency audit", ["npx", "tsx", "scripts/check_dependencies.ts"]],
   ["country gates", ["npx", "tsx", "scripts/check_country_gates.ts"]],

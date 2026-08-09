@@ -1873,6 +1873,17 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
 //
 // The ranker keeps the top slot because it catches 26 cases peer misses; peer
 // fills the rest because it catches 32 the ranker misses. Neither dominates.
+//
+// ── What a cell's ORDER means, which is not what it used to mean ──────────
+// Entries alternate between two kinds of evidence: awards the ETL split placed
+// on this exact fund, and awards it could only place on the notified scheme
+// they were delivered under. `emit_peer_prior.py` ranks the two separately and
+// interleaves them, so the front of a cell is half of each however the corpus
+// moves. Before that, one blended count ranked them together, and when the
+// share of unplaceable awards rose to 55% on a routine reload, the rollups took
+// the visible slots from the specific funds and a CORRECT regeneration of this
+// artifact cost ten graded cases. `check_peer_prior_canary.ts` now scores every
+// rebuild against the answer key in under a second.
 let peerPriorCache: Record<string, string[]> | undefined;
 
 /** Exported for the ordering diagnostic; see `awardScorer`. */

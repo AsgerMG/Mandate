@@ -54,10 +54,19 @@ emit_region_prior.py named two sets in a tuple literal and silently stopped
 covering the other three. One definition, discovered not enumerated, on by
 default. `--exclude-recall-set` is still accepted and now says nothing new.
 
+── Regenerating this is not free ──────────────────────────────────────────
+The artifact is a rendering of a corpus that moves, so a correct rebuild can
+still be a ranking regression -- one did, and cost ten graded cases. The two
+kinds of evidence are therefore ranked separately (see INTERLEAVE) so the shape
+of a cell no longer depends on what fraction of the corpus happens to be
+placeable, and `npx tsx scripts/check_peer_prior_canary.ts` scores the rebuilt
+file against the answer key in under a second with no credentials. RUN IT.
+
 Usage:
   python3 ETL/terms/emit_peer_prior.py                        # report
   python3 ETL/terms/emit_peer_prior.py --write                # leak-free
   python3 ETL/terms/emit_peer_prior.py --write --include-recall-set
+  python3 ETL/terms/emit_peer_prior.py --unattributable blended   # the control
 """
 from __future__ import annotations
 
@@ -72,6 +81,7 @@ from liveness import closed_sql  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
+import itertools  # noqa: E402
 import json  # noqa: E402
 import sqlite3  # noqa: E402
 
@@ -94,10 +104,64 @@ OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "peerPrior.genera
 # to prevent. Reverted. If this is revisited, the fix is a per-cell floor on
 # distinct recipients, not a different cap shape.
 CAP = 40
-# Ranked funds kept per cell. The table shows five and the ranker holds one
-# slot, so four are consumed; the rest are headroom for funds the founder's
-# own screen has already excluded from the pool.
+# Ranked funds kept per cell PER KIND OF EVIDENCE -- see INTERLEAVE below. The
+# table shows five and the ranker holds one slot, so four are consumed; the rest
+# are headroom for funds the founder's own screen has already excluded from the
+# pool.
 KEEP = 30
+
+# ── What an award that cannot be placed on a leaf is allowed to do ─────────
+#
+# THE FAILURE THIS ENCODES. This file is regenerated from the corpus, and on
+# 2026-08-08 a correct regeneration cost ten cases: `check_recall_floor` fell to
+# 81.8% on `traced:exact_attribution` against an 84 floor. Nothing about the
+# generator had changed and the artifact was a faithful rendering of the corpus
+# -- `emit_peer_prior.py --write` reproduces the committed file. What moved was
+# the corpus underneath it: 272,307 of 492,319 award pairs no longer resolve to
+# an exact leaf, so `Split.credit` widened them to the notified scheme, and
+# those rollups took 34% -> 44% of the prior's slots and pushed out the ADEME
+# and EIS leaves the answer key names.
+#
+# So the defect is not the artifact and not the corpus. It is that this file
+# RANKED TWO KINDS OF EVIDENCE IN ONE COLUMN. "Company X won ADEME's
+# autoconsommation aid" and "company Y won something under SA.56245, delivered
+# by one of eighteen bodies, we cannot tell which" were both a +1, and the
+# second kind is now nine awards in ten. A count that mixes them measures how
+# much of the corpus is unplaceable, not what companies like this one win.
+#
+# THE PROPERTY. Exact and inferred evidence are ranked SEPARATELY and neither
+# may monopolise the cell. `KEEP` entries of each kind, alternating, so the top
+# of every cell is half exact leaves and half notified-scheme inference however
+# the placement rate moves. A future corpus that places 5% of awards or 95% of
+# them produces the same shape here, which is exactly what the regenerate-on-
+# refresh cycle needs and what a single blended count could never give.
+#
+# MEASURED, by `website/frontend/scripts/check_peer_prior_canary.ts` over two
+# committed JSONs -- the share of answer-key pairs whose REGIME appears in the
+# first five entries of their own `country|sector` cell, tune split, n=1,161
+# and n=818, no sampling and no credentials:
+#
+#                              exact_attribution   original join
+#     pre-merge artifact             97.4               71.9
+#     blended count (the bug)        92.7               79.3
+#     exact-first, then inferred     98.7               69.3
+#     INTERLEAVED                    98.3               81.3
+#     inferred dropped entirely      94.0               52.9
+#
+# Dropping is the wrong shape and the table says why: only 241 leaves exist
+# corpus-wide, 113 of them unproposable, so 185 of 260 cells would hold nothing
+# at all. Exact-first fixes the population that regressed and spends the other
+# one to do it. Interleaving is the only row that beats the PRE-MERGE artifact
+# on the population that broke and on the one that did not, at once.
+#
+# Confirmed on the graded metric, `check_recall_floor` at its pinned seed:
+# REGIME@5 on traced:exact_attribution 82% -> 94% (floor 84), original join
+# 86% -> 89% (floor 70), headline 84% -> 91%, EXACT@5 27% -> 29%, pool 98%
+# unmoved. Three seeds in the commit message.
+INTERLEAVE = "interleave"
+EXACT_FIRST = "exact-first"
+BLENDED = "blended"
+DROP = "drop"
 
 # ── How an award is credited to a fund ─────────────────────────────────────
 # `attribution.Split` reproduces the ETL's own split -- source -> family, then
@@ -158,11 +222,21 @@ def main() -> None:
     ap.add_argument("--add-only", action="store_true",
                     help="keep the old crediting bit-for-bit and only ADD the "
                          "programme children it could never see")
+    ap.add_argument("--unattributable", default=INTERLEAVE,
+                    choices=[INTERLEAVE, EXACT_FIRST, BLENDED, DROP],
+                    help="how an award with no exact leaf may rank against one "
+                         "that has one; see the block above the constants. The "
+                         "three non-default values are the controls the default "
+                         "was measured against, kept so the next corpus refresh "
+                         "can re-measure rather than re-argue.")
     add_holdout_flags(ap)
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
     split = Split(conn)
+    # (name, country, sector, instrument, exact) -- `exact` is the whole point:
+    # it is what lets the two kinds of evidence be ranked in separate columns
+    # instead of summed into one. See INTERLEAVE.
     pairs = []
     unplaceable = 0
     if args.add_only:
@@ -178,27 +252,33 @@ def main() -> None:
         rows = list(conn.execute(QUERY))
         for name, country, sector, source, _p, _b, call in rows:
             for iid in split.code2inst.get((call or "").strip(), []):
-                pairs.append((name, country, sector, iid))
+                pairs.append((name, country, sector, iid, False))
         for name, country, sector, source, _p, _b, _c in rows:
             for iid in split.families(source):
-                pairs.append((name, country, sector, iid))
+                pairs.append((name, country, sector, iid, False))
         for name, country, sector, source, prog, body, call in rows:
             leaf = split.leaf_for(source, prog, body, call)
             # A programme child is exactly what the old join could not reach:
             # its identity is the programme name, so it has no scheme code to
             # join on. A scheme child already had one and is left alone here.
             if leaf and not (split.inst_scheme_code.get(leaf) or ""):
-                pairs.append((name, country, sector, leaf))
+                pairs.append((name, country, sector, leaf, True))
             elif leaf is None:
                 unplaceable += 1
     else:
         for name, country, sector, source, prog, body, call in conn.execute(QUERY):
+            leaf = split.leaf_for(source, prog, body, call)
             credited = split.credit(source, prog, body, call,
                                     always_notified_scheme=args.notified_scheme_too)
-            if credited[:1] != [split.leaf_for(source, prog, body, call)]:
+            if leaf is None:
                 unplaceable += 1
             for iid in credited:
-                pairs.append((name, country, sector, iid))
+                # An award is EXACT evidence only for the one instrument the
+                # split actually placed it on. Under --notified-scheme-too the
+                # co-delivered siblings ride along on the same award and are
+                # inference, not placement, which is the distinction the whole
+                # ranking below turns on.
+                pairs.append((name, country, sector, iid, iid == leaf))
 
     # Every company in EVERY graded test set, not just the shipped one, and
     # discovered by glob rather than named -- see ETL/lib/recall_holdout.py for
@@ -229,29 +309,74 @@ def main() -> None:
         "    OR id IN (SELECT parent_id FROM funding_instruments "
         "               WHERE parent_id IS NOT NULL)")}
 
+    # ONE cap across both columns, deliberately. CAP is a statement about an
+    # instrument -- "at most forty companies of yours may speak for you" -- and
+    # it would stop being one if a fund could spend forty as a placed leaf and
+    # forty more as an inferred sibling. It also keeps the scan-order fragility
+    # documented at CAP to exactly the size it already was.
     seen: collections.Counter = collections.Counter()
-    prior: dict[tuple[str, str], collections.Counter] = collections.defaultdict(collections.Counter)
-    for name, country, sector, iid in pairs:
+    exact_cells: dict[tuple[str, str], collections.Counter] = \
+        collections.defaultdict(collections.Counter)
+    inferred_cells: dict[tuple[str, str], collections.Counter] = \
+        collections.defaultdict(collections.Counter)
+    # Which (cell, instrument) an award was actually PLACED on, tracked
+    # separately from the ranking columns so the share reported at the end
+    # means the same thing under every policy -- including BLENDED, which by
+    # construction files everything in one column.
+    placed_anywhere: set[tuple[tuple[str, str], str]] = set()
+    for name, country, sector, iid, is_exact in pairs:
         if name in excluded or iid in unproposable:
+            continue
+        if args.unattributable == DROP and not is_exact:
             continue
         if seen[iid] >= CAP:
             continue
         seen[iid] += 1
-        prior[(country, sector)][iid] += 1
+        if is_exact:
+            placed_anywhere.add(((country, sector), iid))
+        column = exact_cells if is_exact or args.unattributable == BLENDED \
+            else inferred_cells
+        column[(country, sector)][iid] += 1
 
     out: dict[str, list[str]] = {}
-    for (country, sector), counter in prior.items():
-        ranked = [iid for iid, _ in counter.most_common(KEEP)]
+    inferred_slots = total_slots = 0
+    for cell in set(exact_cells) | set(inferred_cells):
+        exact = [iid for iid, _ in exact_cells[cell].most_common(KEEP)]
+        placed = set(exact)
+        inferred = [iid for iid, _ in inferred_cells[cell].most_common(KEEP)
+                    if iid not in placed]
+        if args.unattributable == INTERLEAVE:
+            # Alternate, so neither kind of evidence can take the visible slots
+            # from the other however the corpus's placement rate moves. Whichever
+            # column runs out first, the rest of the other simply follows.
+            ranked = [iid for pair in itertools.zip_longest(exact, inferred)
+                      for iid in pair if iid is not None]
+        else:
+            # BLENDED puts everything in `exact` by construction above, so this
+            # one branch is also the legacy single-column behaviour.
+            ranked = exact + inferred
         if ranked:
-            out[f"{country}|{sector}"] = ranked
+            out[f"{cell[0]}|{cell[1]}"] = ranked
+            total_slots += len(ranked)
+            inferred_slots += sum(1 for iid in ranked
+                                  if (cell, iid) not in placed_anywhere)
 
     print(f"award pairs:            {len(pairs):,}")
     print(f"awards with no exact leaf:  {unplaceable:,} "
-          f"(credited to the notified scheme instead)")
+          f"({args.unattributable})")
     holdout.report()
     print(f"unproposable dropped:   {len(unproposable):,}")
     print(f"cells (country,sector): {len(out):,}")
     print(f"instruments represented:{len(seen):,}  (cap {CAP} companies each)")
+    # How much of this artifact is inference rather than placement. It is 88%
+    # under BLENDED today, and it was a far smaller share on the corpus this
+    # file was calibrated against -- that RISE, on a regeneration nobody had
+    # changed, is the whole regression. Printed every run so the next corpus
+    # move is visible in the generator's own output before a floor has to catch
+    # it. Under INTERLEAVE the number is descriptive rather than dangerous: the
+    # top of a cell alternates regardless of what this reads.
+    print(f"slots held by inference:{inferred_slots:,} of {total_slots:,} "
+          f"({100 * inferred_slots / max(total_slots, 1):.0f}%)")
 
     if not args.write:
         print("\n[report only] --write to persist")

@@ -215,6 +215,25 @@ const FLOOR = { pool: 93, exact5: 22, regime5: 80 };
  *  older population and it is the one a change is most likely to trade away for
  *  the traced rows — which is precisely why the two are floored separately
  *  rather than netted into the headline. */
+/*  ── THE SEED PINS THE DRAW, NOT THE POPULATION ───────────────────────────
+ *
+ *  Worth stating because the block above leans on "the same 300 pairs every
+ *  run" and these two floors do not get that guarantee. The 300 are pinned. How
+ *  they DIVIDE between these two populations is not: `partitionByOfferable` and
+ *  `reattributeMissingAnswers` decide which pairs are gradable at all, and both
+ *  are functions of `publishableInstruments()` and therefore of `today()`. A
+ *  fund closing overnight moves pairs out of the graded set without touching
+ *  the seed.
+ *
+ *  It has already happened, by six pairs each way: these floors were calibrated
+ *  on 149 traced / 151 original join, and today's identical seed and N produce
+ *  143 / 157. So a per-population percentage here is a ratio whose DENOMINATOR
+ *  drifts, and at n~150 six pairs is four points of headline movement available
+ *  without any ranking change at all. The margins above are wide enough to
+ *  absorb that -- they were set against an eight-point corpus move -- but a
+ *  reader comparing today's n to the calibration block's n should expect them
+ *  to differ, and should not read a moved percentage as a moved ranker until
+ *  the n is checked. */
 const POPULATION_FLOOR: Record<string, number> = {
   "original join": 70,
   "traced:exact_attribution": 84,
