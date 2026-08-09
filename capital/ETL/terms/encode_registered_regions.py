@@ -42,7 +42,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, require_reference  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -140,7 +140,14 @@ def main() -> None:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    cases = json.loads(CASES.read_text()) if CASES.exists() else {}
+    # NOT `if CASES.exists() else {}`. This pass DELETES a region filter
+    # whenever the register does not name a sub-national restriction, so an
+    # absent register reads as "no scheme restricts anything" and wipes the
+    # layer. It did, on 2026-08-09: 141 correct filters, exit code 0.
+    require_reference(
+        CASES, "This pass removes a scheme's region filter when the register "
+               "does not restrict it, so an empty register deletes every filter.")
+    cases = json.loads(CASES.read_text())
     offered = offered_codes()
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row

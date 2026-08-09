@@ -1,9 +1,9 @@
 {
- "takenAt": "2026-08-08",
+ "takenAt": "2026-08-09",
  "instruments": 1021,
  "complete": 816,
  "shares": {
-  "eligibility": 87.95,
+  "eligibility": 89.42,
   "funds": 91.09,
   "where": 100.0,
   "amount": 83.35,
@@ -11,7 +11,7 @@
   "live": 89.42
  },
  "counts": {
-  "eligibility": 898,
+  "eligibility": 913,
   "funds": 930,
   "where": 1021,
   "amount": 851,
@@ -30,7 +30,7 @@
  },
  "highWater": {
   "counts": {
-   "eligibility": 898,
+   "eligibility": 913,
    "funds": 930,
    "where": 1021,
    "amount": 851,

@@ -222,6 +222,23 @@ jobs:
       - name: The split's target set is in the caller's value space
         run: python3 ETL/events/load/test_split_value_space.py
 
+      # `funding_instruments` has two provenances: rows aggregated from events,
+      # and rows other scripts insert additively for funds that have paid out
+      # nothing we hold (open calls, hand-curated frameworks). The rebuild read
+      # "not in my output" as "disappeared" and deleted 90 of the second kind
+      # plus 629 gates encoded from their own published eligibility text. The
+      # 20%-of-curated guard did not fire; 629 of 7,471 is 8%.
+      - name: A rebuild deletes only the instrument rows it authored
+        run: python3 ETL/events/load/test_external_instrument_ownership.py
+
+      # The same class again, one column over and far more expensive: the split
+      # keyed a child on `name` while the ETL renamed 430 of 453 children to the
+      # Commission's registered scheme title. Placement read 11.5% instead of
+      # 41.9% and seven countries instead of 22, and it looked like decay rather
+      # than a dead join for a week.
+      - name: The split's key is not a name something else rewrites
+        run: python3 ETL/terms/test_split_key_is_not_a_name.py
+
       # The corpus census runs inside the ETL image, which has requirements.txt
       # and nothing else. It reached production importing pandas three modules
       # down and recorded a ModuleNotFoundError instead of the corpus figures --
