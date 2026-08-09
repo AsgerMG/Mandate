@@ -123,6 +123,27 @@ function ceil5(groups: Row[][], key: (r: Row) => string) {
 
   // ── the split ─────────────────────────────────────────────────────────────
   const labels: Record<string, string> | null = LABELS ? JSON.parse(readFileSync(LABELS, "utf8")) : null;
+  // ── A LABEL FILE IS KEYED ON CLUSTER IDS, AND CLUSTER IDS ARE A FUNCTION OF
+  //    TAU. Re-running with a different TAU and the same labels silently looks
+  //    up ids that mean something else and falls through to the structural
+  //    proxy for the rest — which produces a plausible table that is not
+  //    measuring what it says. Caught once, in this workstream, on a TAU=0.80
+  //    sensitivity run. So: refuse rather than print it.
+  //
+  //    The granularity sweep further down is NOT affected and is the right
+  //    place to ask this question: it varies only the KEY's granularity and
+  //    holds the class assignment fixed at the TAU the labels were built at.
+  if (labels) {
+    const known = new Set(Object.keys(labels));
+    const seen = new Set(cid.map(String));
+    const hit = [...seen].filter((c) => known.has(c)).length / seen.size;
+    if (hit < 0.98) {
+      console.error(`LABELS were built at a different TAU: only ${(100 * hit).toFixed(0)}% of the ` +
+        `${seen.size} cluster ids at TAU=${TAU} appear in ${LABELS}. Re-run _wscc_classify.ts at ` +
+        `this TAU, or drop LABELS to use the structural proxy. Refusing to print a mixed table.`);
+      process.exit(1);
+    }
+  }
   const structural = (r: GateRow) =>
     (r.field !== "none" && (ENUMS.has(r.field) || GEO_ENUM.has(r.field))) ? "C1" : "C2F";
   const classOf = (r: GateRow): string => {

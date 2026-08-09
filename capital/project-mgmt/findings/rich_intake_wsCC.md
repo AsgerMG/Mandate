@@ -198,6 +198,30 @@ brief asked for:
   page, word for word. **A founder cannot state either.** These are printed as
   the circular reference and must never be quoted as headroom.
 
+### How sensitive is 65.0% to the one knob?
+
+τ is the only knob and it is swept, never fitted. Holding the class assignment
+fixed and varying only how coarsely two demands may mean the same thing:
+
+```
+tau 0.60  55.4%     tau 0.75  67.3%
+tau 0.70  60.7%     tau 0.80  68.3%
+tau 0.72  65.0%  <- reported     tau 0.90  67.9%
+                    verbatim  69.9%  <- circular
+```
+
+**So the headline is 65% and the defensible range is 65–68%**, converging on
+the circular verbatim reading of ~70% as τ→1. Every figure in this finding uses
+τ=0.72, the more conservative end. It does not change any conclusion: 95% is
+above every row of that sweep, including the circular one.
+
+*A trap found while checking this, now guarded.* A label file is keyed on
+cluster ids, and cluster ids are a function of τ. Re-running `_wscc_ceiling.ts`
+at a different τ with labels built at 0.72 silently looks up ids that mean
+something else and falls through to the structural proxy for the rest — it
+prints a plausible table that is not measuring what it says. It now **refuses**:
+verified to exit 1 at τ=0.80 and to stay quiet at τ=0.72.
+
 **No gain here is one regime.** RICH FULL's +25.0 is 14 regimes with a
 top-regime share of 22% — the opposite shape from wsCA's `fteBand`, whose +1.7
 was 7 leaves in one regime. C2 alone is the most concentrated arm at 38% and is
