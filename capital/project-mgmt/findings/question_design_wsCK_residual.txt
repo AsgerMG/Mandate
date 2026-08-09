@@ -1,0 +1,47 @@
+instruments 1088
+residual classes of size > 1: 78, holding 598 leaves
+  class sizes: median 3, max 87
+
+WHAT A PERFECT ANSWER TO ONE FACT WOULD LEAVE
+  a leaf's class is the siblings it CANNOT be told apart from.
+  "<=5" is the share of leaves a five-row page could then hold.
+
+  fact                            answerable  mean class   alone    <=5   present
+  TOPIC   call title words        yes              1.4     78%    98%      98%
+  WINDOW  closing date            yes             22.0     17%    56%      61%
+  WINDOW  source policy           yes             29.8      0%    25%     100%
+  WINDOW  route status            yes             29.8      0%    25%       0%
+  MONEY   capital type            yes             26.6      3%    28%     100%
+  MONEY   intensity band 10pt     yes             29.8      0%    25%       0%
+  SHAPE   framework flag          no              29.8      0%    25%     100%
+  BODY    administering body      no              16.8     13%    52%      85%
+  BODY    application url         no              29.8      0%    25%       0%
+
+  --- CIRCULAR: computed from the awards, and the answer key's award is one ---
+  MONEY   award magnitude         yes             15.3      8%    40%      99%
+  WINDOW  active years            yes              3.4     34%    81%     100%
+  TOPIC   sector mix              yes              1.0     98%   100%      99%
+  TOPIC   sample titles           yes              1.3     83%    99%      98%
+  --- do not quote a circular line as a reachable bound (wsBY, retracted) ---
+
+WHAT EACH CLASS NEEDS DISTINGUISHED (non-circular, founder-answerable facts only)
+  facts that split the class          classes   leaves   % of leaves
+  TOPIC+WINDOW                            33      201       33.6%
+  TOPIC                                   25      150       25.1%
+  MONEY+TOPIC+WINDOW                      11      137       22.9%
+  MONEY+TOPIC                              4       99       16.6%
+  WINDOW                                   3        6        1.0%
+  (NOTHING SPLITS IT)                      2        5        0.8%
+
+REGIME CONCENTRATION of the residual (a residual that is one programme is not a finding)
+  36 regime(s); largest 15% of leaves
+    bdns_es_ayudas                                   87  14.5%
+    satr_de_rnd                                      84  14.0%
+    ademe_aid                                        66  11.0%
+    satr_it_rnd                                      56  9.4%
+    vinnova_grant                                    48  8.0%
+    satr_fr_rnd                                      35  5.9%
+    satr_cz_rnd                                      31  5.2%
+    satr_nl_rnd                                      21  3.5%
+
+wsCJ T/C/S over the residual leaves: T 56 (9.4%)  C 26 (4.3%)  S 516 (86.3%)

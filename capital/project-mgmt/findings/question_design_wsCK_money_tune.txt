@@ -1,0 +1,26 @@
+(node:21300) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6779 (95.5%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+set=__recallSetDoors.json split=tune N=250
+  a ticket band can be derived for 75 (30%), of which LEAK-FREE (from a different scheme's award) 33
+  … 50/250
+  … 100/250
+  … 150/250
+  … 200/250
+  … 250/250
+ranker: all 300 request(s) on EMBEDDING
+
+PAIRED TICKET TEST — same draw, same fund, one difference
+  WHOLE DRAW (ties from the constant included) n= 250  constant  26.8%  derived  26.8%  =   +0.0 +/-5.5   discordant 0 for / 0 against
+  band actually differs from the constant      n=  54  constant  29.6%  derived  29.6%  =   +0.0 +/-12.2   discordant 0 for / 0 against
+  ...of those, LEAK-FREE (other_scheme)        n=  21  constant  23.8%  derived  23.8%  =   +0.0 +/-18.2   discordant 0 for / 0 against
+  ...of those, from the WON award (circular)   n=  33  constant  33.3%  derived  33.3%  =   +0.0 +/-16.1   discordant 0 for / 0 against
+
+WINNERS THE TRUTHFUL ANSWER PUSHES OFF THE TABLE  0  (0.0% of those who answer differently)
