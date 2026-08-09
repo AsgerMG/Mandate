@@ -9,6 +9,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { describe, expect, it } from "vitest";
 
+import { ACTIVE_RECALL_SET } from "../../scripts/recallSet";
 import { checkSquashProbes, grams, makeLeakDetector, squash } from "./recallLeaks";
 import type { LeakIndexFile, LeakRow } from "./recallLeaks";
 
@@ -16,7 +17,12 @@ const read = (f: string) =>
   JSON.parse(readFileSync(path.join(process.cwd(), "lib", "intelligence", f), "utf8"));
 
 const idx = read("profileLeakIndex.generated.json") as LeakIndexFile;
-const rows = read("__recallSetComposed.json") as LeakRow[];
+// The ACTIVE set, imported rather than named. The docstring above says this
+// suite poisons "the REAL active recall set", and it named a file instead — so
+// the day the active set changed, the one suite asserting the detector can
+// return red would have gone on poisoning a retired file and passing. The
+// comment was the specification; the literal was the bug.
+const rows = read(ACTIVE_RECALL_SET) as LeakRow[];
 const detect = makeLeakDetector(idx);
 
 /** A fund that has a profile AND at least one sibling with one — the case the

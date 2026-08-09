@@ -20,9 +20,15 @@ loadEnvLocal();
 requireCredentials("dump_publishable_ids", ["DATABASE_URL"]);
 
 async function main() {
-  const { hydrateDbInstruments, publishableInstruments, corpusProvenance } =
-    await import("../lib/intelligence/corpus");
+  const { hydrateDbInstruments, publishableInstruments, corpusProvenance,
+          requireLiveCorpus } = await import("../lib/intelligence/corpus");
   await hydrateDbInstruments();
+  // Printing the provenance was not enough. A Postgres timeout falls back to
+  // the committed snapshot SILENTLY, and the snapshot has nothing closed — so
+  // the dump would name hundreds of funds the product will not show, and every
+  // Python-side census built on it would read a flattering coverage. The
+  // provenance line is for the reader; this is for the machine.
+  requireLiveCorpus("dump_publishable_ids");
   const provenance = corpusProvenance();
   const ids = publishableInstruments().map((i) => i.id);
   const out = process.argv[2] ?? "/tmp/publishable_ids.json";

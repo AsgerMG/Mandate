@@ -93,11 +93,16 @@ class Split:
         # it is the behaviour with the bug.
         self.prog_key: dict[tuple[str, str], str] = {}
         self.sch_key: dict[tuple[str, str, str], str] = {}
+        # A family that was split. `door_for` needs the complement of this set --
+        # the families that are themselves the fund -- and it is the same one
+        # `publishableInstruments()` uses to decide what may be shown.
+        self.has_children: set[str] = set()
         for iid, parent, name, code in conn.execute(
                 "SELECT id, parent_id, name, scheme_code FROM funding_instruments"):
             if not parent:
                 continue
             self.child_ids.add(iid)
+            self.has_children.add(parent)
             code = (code or "").strip()
             name = (name or "")[:200]
             if code:
@@ -167,9 +172,57 @@ class Split:
             return list(by_code)
         return self.families(source)
 
+    def door_for(self, source: str, programme_name, granting_authority,
+                 call_id) -> str | None:
+        """The instrument a founder would have applied to — INCLUDING the case
+        where that instrument is a family.
+
+        ── The blind spot this closes ────────────────────────────────────────
+        `leaf_for` builds `prog_key` and `sch_key` from rows WITH a parent, so it
+        can only ever return a CHILD. That was fine for its original caller and
+        wrong as a definition of "the door": a family with no children is not a
+        rollup above the funds, it IS the fund. `publishableInstruments()` offers
+        it, the shortlist shows it, and the founder applies to it. `cdti_idi`,
+        `cdti_neotec`, `innovate_uk` and Bpifrance's innovation line are all
+        childless families, and `leaf_for` returns None for every one of their
+        awards — 199 of the 782 leaves the product offers, 17,012 awards behind
+        `innovate_uk` alone.
+
+        The ground truth was built on `leaf_for`, so those 199 funds could never
+        be an answer, and EXACT@5 was silently a statement about the subset that
+        could. The PRIOR never had this hole: `credit()` already falls back to
+        `families()`, so the ranker has always been able to learn these funds
+        while the key could not grade them. That asymmetry is exactly what made
+        promoting them measure as a loss.
+
+        ── Why this refuses rather than guesses, in two cases ────────────────
+        A FAMILY WITH CHILDREN is a regime. An award the split could not place
+        under it belongs to some child we did not build (below
+        `MIN_CHILD_EVENTS`) or to a body the register did not name. Crediting the
+        regime would make the right answer a row the founder cannot apply to.
+        AMBIGUITY: one source in the corpus maps to 88 childless families at
+        once. "Which of these 88 did this award come from" has no answer, and a
+        test pair needs exactly one, so it is refused.
+
+        Both refusals leave `None`, which the caller must treat as "no honest
+        pair exists" — never as a licence to pick something close."""
+        leaf = self.leaf_for(source, programme_name, granting_authority, call_id)
+        if leaf:
+            return leaf
+        fams = self.src2fam.get(source, [])
+        if len(fams) == 1 and fams[0] not in self.has_children:
+            return fams[0]
+        return None
+
     def leaf_for(self, source: str, programme_name, granting_authority,
                  call_id) -> str | None:
-        """The instrument a founder would have applied to. None if unplaceable."""
+        """The instrument a founder would have applied to, WHEN IT IS A CHILD.
+
+        Returns None for a childless family even though that family is a real
+        door — see `door_for`, which is the complete test. Kept narrow because
+        `emit_peer_prior.py` reads it as the first, most specific step of a
+        widening chain and `credit()` already handles the family case below it.
+        """
         prog = (programme_name or "").strip()
         body = (granting_authority or "")[:200]
         call = (call_id or "").strip()

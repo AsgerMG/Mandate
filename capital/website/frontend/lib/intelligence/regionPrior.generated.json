@@ -34,12 +34,12 @@
 "AT130": 250,
 "AT21": 26,
 "AT22": 151,
-"AT31": 122,
+"AT31": 120,
 "AT32": 30,
 "AT33": 32,
 "AT34": 29
 },
-"n": 707
+"n": 705
 },
 "satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft": {
 "mix": {
@@ -236,12 +236,12 @@
 "AT130": 250,
 "AT21": 26,
 "AT22": 151,
-"AT31": 122,
+"AT31": 120,
 "AT32": 30,
 "AT33": 32,
 "AT34": 29
 },
-"n": 707
+"n": 705
 },
 "satr_at_rnd__sa_112286__osterreichische_forschungsforderungsgesellschaft": {
 "mix": {
@@ -301,9 +301,9 @@
 },
 "satr_at_rnd__sa_115611__amt_der_niederosterreichischen_landesregierung_a": {
 "mix": {
-"AT12": 56
+"AT12": 55
 },
-"n": 56
+"n": 55
 },
 "satr_at_rnd__sa_41223__kommunalkredit_public_consulting_gmbh_kpc": {
 "mix": {
@@ -364,8 +364,8 @@
 "BE224": 2,
 "BE241": 4,
 "BE242": 1,
-"BE3": 248,
-"BE310": 167,
+"BE3": 243,
+"BE310": 160,
 "BE323": 41,
 "BE328": 16,
 "BE329": 5,
@@ -385,7 +385,7 @@
 "BE352": 64,
 "BE353": 1
 },
-"n": 1077
+"n": 1065
 },
 "satr_be_equity__sa_60506__wallimage_sa": {
 "mix": {
@@ -413,9 +413,9 @@
 },
 "satr_be_rnd__sa_108206__vlaio": {
 "mix": {
-"BE2": 699
+"BE2": 697
 },
-"n": 699
+"n": 697
 },
 "satr_be_rnd__sa_108207__vlaio": {
 "mix": {
@@ -480,8 +480,8 @@
 "BE224": 2,
 "BE241": 4,
 "BE242": 1,
-"BE3": 248,
-"BE310": 167,
+"BE3": 243,
+"BE310": 160,
 "BE323": 41,
 "BE328": 16,
 "BE329": 5,
@@ -501,7 +501,7 @@
 "BE352": 64,
 "BE353": 1
 },
-"n": 1077
+"n": 1065
 },
 "satr_be_rnd__sa_60033__vlaio": {
 "mix": {
@@ -1322,9 +1322,9 @@
 },
 "satr_de_rnd__sa_101541__investitionsbank_berlin": {
 "mix": {
-"DE300": 72
+"DE300": 71
 },
-"n": 72
+"n": 71
 },
 "satr_de_rnd__sa_102084__unb_amprion": {
 "mix": {
@@ -1367,7 +1367,7 @@
 "satr_de_rnd__sa_102344__ministerium_fur_wirtschaft_arbeit_und_tourismus": {
 "mix": {
 "DE11": 4,
-"DE111": 12,
+"DE111": 11,
 "DE112": 7,
 "DE113": 3,
 "DE114": 2,
@@ -1384,13 +1384,13 @@
 "DE125": 2,
 "DE126": 2,
 "DE127": 1,
-"DE128": 5,
+"DE128": 4,
 "DE129": 1,
 "DE12A": 2,
 "DE12B": 1,
 "DE13": 1,
 "DE131": 6,
-"DE132": 2,
+"DE132": 1,
 "DE133": 2,
 "DE134": 1,
 "DE136": 2,
@@ -1408,7 +1408,7 @@
 "DE148": 2,
 "DE149": 2
 },
-"n": 115
+"n": 112
 },
 "satr_de_rnd__sa_103196__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": {
 "mix": {
@@ -1427,7 +1427,7 @@
 "DE40": 19,
 "DE50": 5,
 "DE600": 13,
-"DE71": 25,
+"DE71": 22,
 "DE72": 9,
 "DE73": 10,
 "DE80": 2,
@@ -1435,14 +1435,14 @@
 "DE92": 22,
 "DE93": 5,
 "DE94": 32,
-"DEA1": 56,
+"DEA1": 54,
 "DEA2": 40,
 "DEA3": 34,
 "DEA4": 9,
 "DEA5": 35,
 "DEB1": 13,
 "DEB2": 8,
-"DEB3": 8,
+"DEB3": 6,
 "DEC0": 18,
 "DED2": 12,
 "DED4": 2,
@@ -1451,7 +1451,7 @@
 "DEF0": 8,
 "DEG0": 8
 },
-"n": 602
+"n": 595
 },
 "satr_de_rnd__sa_103212__bayerisches_staatsministerium_fur_wirtschaft_lan": {
 "mix": {
@@ -1556,7 +1556,7 @@
 },
 "satr_de_rnd__sa_103809__projekttrager_im_dlr": {
 "mix": {
-"DE11": 8,
+"DE11": 6,
 "DE111": 1,
 "DE112": 1,
 "DE115": 1,
@@ -1618,13 +1618,13 @@
 "DEE03": 1,
 "DEF09": 1
 },
-"n": 107
+"n": 105
 },
 "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme": {
 "mix": {
 "DE1": 6,
 "DE2": 11,
-"DE300": 8,
+"DE300": 7,
 "DE7": 7,
 "DE9": 4,
 "DEA": 16,
@@ -1634,7 +1634,7 @@
 "DEF0": 2,
 "DEG0": 2
 },
-"n": 64
+"n": 63
 },
 "satr_de_rnd__sa_105973__nrw_bank": {
 "mix": {
@@ -1674,7 +1674,7 @@
 "DED2D": 1,
 "DED2E": 19,
 "DED2F": 10,
-"DED41": 83,
+"DED41": 82,
 "DED42": 43,
 "DED43": 33,
 "DED44": 13,
@@ -1683,7 +1683,7 @@
 "DED52": 8,
 "DED53": 4
 },
-"n": 386
+"n": 385
 },
 "satr_de_rnd__sa_106076__sachsen_sab": {
 "mix": {
@@ -2073,10 +2073,8 @@
 },
 "satr_de_rnd__sa_111712__projekttrager_julich": {
 "mix": {
-"DE11": 1,
-"DE111": 2,
+"DE111": 1,
 "DE300": 1,
-"DEA11": 1,
 "DEA13": 1,
 "DEA16": 1,
 "DEA19": 1,
@@ -2096,7 +2094,7 @@
 "DEA51": 2,
 "DEA52": 3
 },
-"n": 29
+"n": 26
 },
 "satr_de_rnd__sa_111857__bundesministerium_fur_wirtschaft_und_energie": {
 "mix": {
@@ -2208,7 +2206,7 @@
 "DE71A": 3,
 "DE71B": 1,
 "DE71C": 2,
-"DE71E": 2,
+"DE71E": 1,
 "DE72": 2,
 "DE721": 3,
 "DE722": 15,
@@ -2223,7 +2221,7 @@
 "DE735": 2,
 "DE736": 1
 },
-"n": 101
+"n": 100
 },
 "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung": {
 "mix": {
@@ -2232,7 +2230,7 @@
 "DE217": 1,
 "DEC01": 2
 },
-"n": 54
+"n": 53
 },
 "satr_de_rnd__sa_112200__ministerium_fur_wirtschaft_arbeit_energie_und_ve": {
 "mix": {
@@ -2240,10 +2238,10 @@
 "DEC02": 10,
 "DEC03": 2,
 "DEC04": 4,
-"DEC05": 9,
+"DEC05": 8,
 "DEC06": 5
 },
-"n": 37
+"n": 36
 },
 "satr_de_rnd__sa_112200__nbank": {
 "mix": {
@@ -2261,7 +2259,6 @@
 "DE938": 3,
 "DE942": 1,
 "DE943": 2,
-"DE944": 2,
 "DE946": 4,
 "DE947": 7,
 "DE948": 8,
@@ -2271,7 +2268,7 @@
 "DE94E": 6,
 "DE94H": 4
 },
-"n": 111
+"n": 109
 },
 "satr_de_rnd__sa_112241__bayerisches_staatsministerium_fur_wirtschaft_lan": {
 "mix": {
@@ -2280,11 +2277,11 @@
 "DE22": 7,
 "DE23": 5,
 "DE24": 3,
-"DE25": 28,
+"DE25": 27,
 "DE26": 12,
 "DE27": 7
 },
-"n": 124
+"n": 123
 },
 "satr_de_rnd__sa_112392__nbank": {
 "mix": {
@@ -2342,7 +2339,6 @@
 "DEA52": 1,
 "DEB15": 1,
 "DEB33": 1,
-"DEB34": 1,
 "DEB3J": 1,
 "DED21": 3,
 "DED51": 2,
@@ -2350,7 +2346,7 @@
 "DEF04": 1,
 "DEG03": 1
 },
-"n": 88
+"n": 87
 },
 "satr_de_rnd__sa_112915__bundesministerium_fur_verkehr_und_digitale_infra": {
 "mix": {
@@ -2394,7 +2390,7 @@
 },
 "satr_de_rnd__sa_113000__projekttrager_julich": {
 "mix": {
-"DE11": 2,
+"DE11": 1,
 "DE112": 1,
 "DE136": 1,
 "DE212": 1,
@@ -2428,7 +2424,7 @@
 "DEA29": 2,
 "DEA2A": 4,
 "DEA2C": 3,
-"DEA2D": 36,
+"DEA2D": 35,
 "DEA3": 2,
 "DEA31": 4,
 "DEA32": 3,
@@ -2458,17 +2454,17 @@
 "DEA5C": 2,
 "DED2": 1
 },
-"n": 218
+"n": 216
 },
 "satr_de_rnd__sa_113239__sachsen_sab": {
 "mix": {
 "DED2C": 6,
 "DED2D": 2,
-"DED41": 9,
+"DED41": 7,
 "DED51": 37,
 "DED52": 1
 },
-"n": 55
+"n": 53
 },
 "satr_de_rnd__sa_113242__investitionsbank_des_landes_brandenburg": {
 "mix": {
@@ -2584,7 +2580,7 @@
 "DE114": 1,
 "DE115": 4,
 "DE116": 1,
-"DE118": 3,
+"DE118": 2,
 "DE119": 3,
 "DE11A": 2,
 "DE11B": 3,
@@ -2718,7 +2714,7 @@
 "DE937": 1,
 "DE939": 2,
 "DE93B": 1,
-"DE943": 13,
+"DE943": 11,
 "DE944": 4,
 "DE945": 1,
 "DE946": 3,
@@ -2748,7 +2744,7 @@
 "DEA2A": 2,
 "DEA2B": 1,
 "DEA2C": 3,
-"DEA2D": 31,
+"DEA2D": 30,
 "DEA31": 1,
 "DEA33": 1,
 "DEA34": 3,
@@ -2776,7 +2772,7 @@
 "DEB21": 1,
 "DEB25": 2,
 "DEB32": 3,
-"DEB34": 2,
+"DEB34": 1,
 "DEB35": 2,
 "DEB3A": 1,
 "DEB3D": 2,
@@ -2825,7 +2821,7 @@
 "DEG0R": 3,
 "DEG0V": 2
 },
-"n": 849
+"n": 844
 },
 "satr_de_rnd__sa_114724__fa_fur_korperschaften_iv": {
 "mix": {
@@ -2835,7 +2831,7 @@
 },
 "satr_de_rnd__sa_114724__finanzamt_munchen_abt_3": {
 "mix": {
-"DE21": 49,
+"DE21": 48,
 "DE212": 2,
 "DE21C": 1,
 "DE21H": 2,
@@ -2853,7 +2849,7 @@
 "DE279": 1,
 "DE27B": 1
 },
-"n": 68
+"n": 67
 },
 "satr_de_rnd__sa_114738__tuv_rheinland_forschungs_und_innovationsmanageme": {
 "mix": {
@@ -2966,7 +2962,7 @@
 "DED2D": 3,
 "DED2E": 12,
 "DED2F": 7,
-"DED41": 44,
+"DED41": 41,
 "DED42": 17,
 "DED43": 17,
 "DED44": 6,
@@ -2975,7 +2971,7 @@
 "DED52": 2,
 "DED53": 1
 },
-"n": 190
+"n": 187
 },
 "satr_de_rnd__sa_115248__projekttrager_julich": {
 "mix": {
@@ -2984,7 +2980,7 @@
 "DE132": 1,
 "DE136": 1,
 "DE147": 1,
-"DE212": 3,
+"DE212": 2,
 "DE219": 1,
 "DE21B": 1,
 "DE21H": 1,
@@ -3016,7 +3012,7 @@
 "DEA1D": 3,
 "DEA1E": 5,
 "DEA1F": 4,
-"DEA2": 7,
+"DEA2": 6,
 "DEA22": 5,
 "DEA23": 31,
 "DEA26": 2,
@@ -3026,7 +3022,7 @@
 "DEA2A": 7,
 "DEA2B": 2,
 "DEA2C": 10,
-"DEA2D": 55,
+"DEA2D": 54,
 "DEA31": 1,
 "DEA32": 10,
 "DEA33": 10,
@@ -3058,7 +3054,7 @@
 "DED41": 1,
 "DEG03": 1
 },
-"n": 372
+"n": 369
 },
 "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung": {
 "mix": {
@@ -3074,7 +3070,6 @@
 "DE26B": 1,
 "DE300": 2,
 "DE50": 1,
-"DE71": 1,
 "DE717": 1,
 "DE718": 1,
 "DE92": 1,
@@ -3082,7 +3077,7 @@
 "DED2": 2,
 "DEG01": 2
 },
-"n": 38
+"n": 37
 },
 "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz": {
 "mix": {
@@ -3116,7 +3111,7 @@
 "DE145": 1,
 "DE147": 3,
 "DE149": 2,
-"DE2": 7,
+"DE2": 6,
 "DE212": 15,
 "DE213": 1,
 "DE215": 1,
@@ -3125,7 +3120,6 @@
 "DE21H": 4,
 "DE21J": 2,
 "DE21K": 3,
-"DE21L": 2,
 "DE21N": 2,
 "DE222": 1,
 "DE22B": 1,
@@ -3225,7 +3219,6 @@
 "DEB32": 1,
 "DEB35": 1,
 "DEB3H": 1,
-"DEC01": 1,
 "DED": 6,
 "DED2": 1,
 "DED21": 6,
@@ -3255,7 +3248,7 @@
 "DEG0J": 1,
 "DEG0T": 1
 },
-"n": 366
+"n": 362
 },
 "satr_de_rnd__sa_118481__l_bank_baden_wurttemberg": {
 "mix": {
@@ -3420,144 +3413,141 @@
 },
 "satr_de_rnd__sa_56245__fa_fur_korperschaften_ii": {
 "mix": {
-"DE300": 82
+"DE300": 68
 },
-"n": 82
+"n": 68
 },
 "satr_de_rnd__sa_56245__fa_fur_korperschaften_iv": {
 "mix": {
-"DE300": 118
+"DE300": 105
 },
-"n": 118
+"n": 105
 },
 "satr_de_rnd__sa_56245__finanzamt_aachen_stadt": {
 "mix": {
-"DEA": 54
-},
-"n": 54
-},
-"satr_de_rnd__sa_56245__finanzamt_aschaffenburg": {
-"mix": {
-"DE26": 43
-},
-"n": 43
-},
-"satr_de_rnd__sa_56245__finanzamt_darmstadt": {
-"mix": {
-"DE600": 1,
-"DE71": 8,
-"DE711": 18,
-"DE716": 13,
-"DE71B": 5,
-"DE71C": 1
-},
-"n": 46
-},
-"satr_de_rnd__sa_56245__finanzamt_erlangen": {
-"mix": {
-"DE24": 14,
-"DE25": 49
-},
-"n": 63
-},
-"satr_de_rnd__sa_56245__finanzamt_freiburg_stadt": {
-"mix": {
-"DE13": 42
+"DEA": 42
 },
 "n": 42
 },
+"satr_de_rnd__sa_56245__finanzamt_aschaffenburg": {
+"mix": {
+"DE26": 29
+},
+"n": 29
+},
+"satr_de_rnd__sa_56245__finanzamt_darmstadt": {
+"mix": {
+"DE71": 6,
+"DE711": 13,
+"DE716": 9,
+"DE71B": 5
+},
+"n": 33
+},
+"satr_de_rnd__sa_56245__finanzamt_erlangen": {
+"mix": {
+"DE25": 21
+},
+"n": 21
+},
+"satr_de_rnd__sa_56245__finanzamt_freiburg_stadt": {
+"mix": {
+"DE13": 26
+},
+"n": 26
+},
 "satr_de_rnd__sa_56245__finanzamt_furstenfeldbruck": {
 "mix": {
-"DE21C": 17,
+"DE21C": 10,
 "DE21H": 1,
-"DE21L": 25
+"DE21L": 20
 },
-"n": 43
+"n": 31
 },
 "satr_de_rnd__sa_56245__finanzamt_gie_en": {
 "mix": {
-"DE7": 7,
+"DE7": 6,
 "DE712": 1,
-"DE71E": 7,
-"DE72": 7,
-"DE721": 9,
-"DE722": 14,
-"DE723": 6,
+"DE71E": 5,
+"DE72": 4,
+"DE721": 8,
+"DE722": 11,
+"DE723": 4,
 "DE724": 7
 },
-"n": 58
+"n": 46
 },
 "satr_de_rnd__sa_56245__finanzamt_heidelberg": {
 "mix": {
-"DE12": 54,
+"DE12": 42,
 "DE125": 5,
 "DE128": 1
 },
-"n": 60
+"n": 48
 },
 "satr_de_rnd__sa_56245__finanzamt_heilbronn": {
 "mix": {
-"DE11": 51,
+"DE11": 39,
 "DE12": 1
 },
-"n": 52
+"n": 40
 },
 "satr_de_rnd__sa_56245__finanzamt_munchen_abt_3": {
 "mix": {
 "DE2": 1,
 "DE21": 17,
-"DE212": 492,
+"DE212": 473,
 "DE216": 1,
 "DE21F": 1,
-"DE21H": 55,
+"DE21H": 51,
 "DE227": 1,
 "DE232": 1,
 "DE271": 1,
 "DE279": 1
 },
-"n": 571
+"n": 548
 },
 "satr_de_rnd__sa_56245__finanzamt_offenburg": {
 "mix": {
 "DE12": 1,
-"DE13": 41
+"DE13": 29
 },
-"n": 42
+"n": 30
 },
 "satr_de_rnd__sa_56245__finanzamt_stuttgart_korperschaften": {
 "mix": {
-"DE11": 100
+"DE11": 87
 },
-"n": 100
+"n": 87
 },
 "satr_de_rnd__sa_56245__finanzamt_wiesbaden": {
 "mix": {
-"DE7": 24,
-"DE712": 3,
-"DE714": 18,
+"DE7": 20,
+"DE712": 1,
+"DE714": 13,
 "DE71A": 1,
 "DE71D": 2,
 "DEA1": 1
 },
-"n": 60
+"n": 48
 },
 "satr_de_rnd__sa_56245__finanzverwaltung_niedersachsen": {
 "mix": {
-"DE91": 52,
-"DE911": 8,
+"DE91": 51,
+"DE911": 7,
 "DE913": 2,
 "DE916": 1,
 "DE918": 6,
 "DE91A": 2,
 "DE91B": 1,
 "DE91C": 3,
-"DE92": 65,
+"DE92": 63,
 "DE922": 4,
 "DE923": 1,
 "DE925": 1,
 "DE926": 2,
 "DE927": 2,
-"DE929": 26,
+"DE929": 25,
 "DE93": 31,
 "DE931": 1,
 "DE932": 5,
@@ -3567,7 +3557,7 @@
 "DE938": 1,
 "DE939": 1,
 "DE93B": 1,
-"DE94": 89,
+"DE94": 82,
 "DE943": 3,
 "DE944": 8,
 "DE945": 1,
@@ -3580,25 +3570,25 @@
 "DE94E": 8,
 "DE94F": 1
 },
-"n": 352
+"n": 340
 },
 "satr_de_rnd__sa_56245__mfw_sl": {
 "mix": {
 "DE712": 1,
-"DEC01": 39,
+"DEC01": 29,
 "DEC02": 3,
-"DEC04": 4,
-"DEC05": 4,
+"DEC04": 2,
+"DEC05": 2,
 "DEC06": 1
 },
-"n": 52
+"n": 38
 },
 "satr_de_rnd__sa_56245__zentralfinanzamt_nurnberg": {
 "mix": {
-"DE25": 27,
-"DE254": 19
+"DE25": 20,
+"DE254": 12
 },
-"n": 46
+"n": 32
 },
 "satr_de_rnd__sa_62312__nrw_bank": {
 "mix": {
@@ -3645,7 +3635,7 @@
 "DE138": 1,
 "DE141": 1,
 "DE144": 1,
-"DE2": 36,
+"DE2": 35,
 "DE211": 6,
 "DE212": 26,
 "DE21E": 1,
@@ -3667,7 +3657,7 @@
 "DE712": 6,
 "DE714": 2,
 "DE731": 2,
-"DE9": 8,
+"DE9": 7,
 "DE911": 3,
 "DE912": 1,
 "DE913": 3,
@@ -3706,7 +3696,7 @@
 "DEF03": 2,
 "DEG03": 1
 },
-"n": 349
+"n": 347
 },
 "satr_de_rnd__sa_63144__bundesministerium_fur_wirtschaft_und_klimaschutz": {
 "mix": {
@@ -3867,7 +3857,7 @@
 "DE50": 2,
 "DE501": 2,
 "DE600": 8,
-"DE7": 7,
+"DE7": 6,
 "DE711": 2,
 "DE712": 5,
 "DE715": 3,
@@ -3899,7 +3889,7 @@
 "DE925": 1,
 "DE929": 6,
 "DE933": 1,
-"DE943": 5,
+"DE943": 3,
 "DE947": 4,
 "DE94D": 3,
 "DE94F": 2,
@@ -3981,11 +3971,11 @@
 "DEG0M": 1,
 "DEG0U": 1
 },
-"n": 503
+"n": 499
 },
 "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz": {
 "mix": {
-"DE1": 343,
+"DE1": 339,
 "DE11": 3,
 "DE111": 2,
 "DE113": 2,
@@ -3999,7 +3989,7 @@
 "DE12": 2,
 "DE122": 1,
 "DE124": 2,
-"DE125": 2,
+"DE125": 1,
 "DE126": 1,
 "DE127": 1,
 "DE128": 2,
@@ -4019,10 +4009,10 @@
 "DE144": 1,
 "DE147": 2,
 "DE148": 2,
-"DE2": 273,
+"DE2": 269,
 "DE212": 12,
 "DE213": 1,
-"DE21C": 2,
+"DE21C": 1,
 "DE21D": 1,
 "DE21F": 1,
 "DE21G": 2,
@@ -4053,7 +4043,7 @@
 "DE275": 1,
 "DE279": 1,
 "DE27E": 1,
-"DE300": 114,
+"DE300": 113,
 "DE40": 48,
 "DE404": 2,
 "DE406": 2,
@@ -4064,7 +4054,7 @@
 "DE40E": 1,
 "DE50": 13,
 "DE600": 31,
-"DE7": 79,
+"DE7": 78,
 "DE711": 2,
 "DE714": 1,
 "DE716": 2,
@@ -4082,7 +4072,7 @@
 "DE80J": 2,
 "DE80M": 1,
 "DE80O": 1,
-"DE9": 98,
+"DE9": 97,
 "DE911": 4,
 "DE912": 1,
 "DE91B": 1,
@@ -4096,7 +4086,7 @@
 "DE939": 1,
 "DE947": 1,
 "DE949": 1,
-"DEA": 342,
+"DEA": 339,
 "DEA1": 2,
 "DEA14": 1,
 "DEA15": 1,
@@ -4139,7 +4129,7 @@
 "DEB32": 2,
 "DEB34": 1,
 "DEB3H": 1,
-"DEC0": 12,
+"DEC0": 11,
 "DEC01": 3,
 "DED": 223,
 "DED21": 4,
@@ -4172,7 +4162,7 @@
 "DEG0Q": 1,
 "DEG0T": 1
 },
-"n": 2112
+"n": 2095
 },
 "satr_de_rnd__sa_64509__projekttrager_julich": {
 "mix": {
@@ -4219,9 +4209,9 @@
 },
 "satr_de_rnd__sa_64558__investitionsbank_berlin": {
 "mix": {
-"DE300": 102
+"DE300": 98
 },
-"n": 102
+"n": 98
 },
 "satr_de_rnd__sa_64601__ministerium_fur_wirtschaft_arbeit_und_tourismus": {
 "mix": {
@@ -4252,12 +4242,12 @@
 "satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland": {
 "mix": {
 "FI196": 19,
-"FI198": 37,
+"FI198": 36,
 "FI199": 14,
 "FI19A": 14,
 "FI19B": 160,
-"FI1B1": 576,
-"FI1C1": 102,
+"FI1B1": 572,
+"FI1C1": 100,
 "FI1C2": 5,
 "FI1C5": 12,
 "FI1C6": 20,
@@ -4265,12 +4255,12 @@
 "FI1D5": 6,
 "FI1D7": 10,
 "FI1D8": 1,
-"FI1D9": 84,
+"FI1D9": 83,
 "FI1DA": 6,
 "FI1DB": 24,
 "FI1DC": 15
 },
-"n": 1109
+"n": 1101
 },
 "satr_fi_equity__sa_53571__business_finland_venture_capital_oy": {
 "mix": {
@@ -4293,8 +4283,8 @@
 "FI199": 4,
 "FI19A": 14,
 "FI19B": 53,
-"FI1B1": 166,
-"FI1C1": 40,
+"FI1B1": 163,
+"FI1C1": 39,
 "FI1C2": 3,
 "FI1C5": 12,
 "FI1C6": 7,
@@ -4307,7 +4297,7 @@
 "FI1DB": 8,
 "FI1DC": 5
 },
-"n": 387
+"n": 383
 },
 "satr_fi_rnd__sa_101228__tyo_ja_elinkeinoministerio": {
 "mix": {
@@ -4349,7 +4339,7 @@
 },
 "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus": {
 "mix": {
-"FI1": 24,
+"FI1": 23,
 "FI196": 1,
 "FI198": 5,
 "FI199": 3,
@@ -4364,7 +4354,7 @@
 "FI1DB": 10,
 "FI1DC": 5
 },
-"n": 75
+"n": 74
 },
 "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus": {
 "mix": {
@@ -4396,12 +4386,12 @@
 "satr_fi_rnd__sa_112229__innovaatiorahoituskeskus_business_finland": {
 "mix": {
 "FI196": 19,
-"FI198": 37,
+"FI198": 36,
 "FI199": 14,
 "FI19A": 14,
 "FI19B": 160,
-"FI1B1": 576,
-"FI1C1": 102,
+"FI1B1": 572,
+"FI1C1": 100,
 "FI1C2": 5,
 "FI1C5": 12,
 "FI1C6": 20,
@@ -4409,12 +4399,12 @@
 "FI1D5": 6,
 "FI1D7": 10,
 "FI1D8": 1,
-"FI1D9": 84,
+"FI1D9": 83,
 "FI1DA": 6,
 "FI1DB": 24,
 "FI1DC": 15
 },
-"n": 1109
+"n": 1101
 },
 "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland": {
 "mix": {
@@ -4424,7 +4414,7 @@
 "FI19A": 5,
 "FI19B": 10,
 "FI1B1": 14,
-"FI1C1": 7,
+"FI1C1": 6,
 "FI1C2": 3,
 "FI1C6": 3,
 "FI1C7": 4,
@@ -4436,7 +4426,7 @@
 "FI1DB": 2,
 "FI1DC": 3
 },
-"n": 73
+"n": 72
 },
 "satr_fi_rnd__sa_58492__innovaatiorahoituskeskus_business_finland": {
 "mix": {
@@ -4446,8 +4436,8 @@
 "FI199": 4,
 "FI19A": 14,
 "FI19B": 53,
-"FI1B1": 166,
-"FI1C1": 40,
+"FI1B1": 163,
+"FI1C1": 39,
 "FI1C2": 3,
 "FI1C5": 12,
 "FI1C6": 7,
@@ -4460,19 +4450,19 @@
 "FI1DB": 8,
 "FI1DC": 5
 },
-"n": 387
+"n": 383
 },
 "satr_fi_rnd__sa_58494__innovaatiorahoituskeskus_business_finland": {
 "mix": {
 "FI198": 2,
 "FI19B": 9,
-"FI1B1": 67,
+"FI1B1": 66,
 "FI1C1": 3,
 "FI1C6": 3,
 "FI1D9": 3,
 "FI1DB": 2
 },
-"n": 89
+"n": 88
 },
 "satr_fi_rnd__sa_61856__innovaatiorahoituskeskus_business_finland": {
 "mix": {
@@ -4496,7 +4486,7 @@
 },
 "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 1540,
+"FR10": 1532,
 "FR101": 1,
 "FR107": 1,
 "FRB0": 139,
@@ -4504,25 +4494,25 @@
 "FRC2": 78,
 "FRD1": 40,
 "FRD2": 68,
-"FRE1": 169,
+"FRE1": 165,
 "FRE2": 42,
 "FRF1": 94,
 "FRF2": 45,
 "FRF3": 66,
-"FRG0": 175,
+"FRG0": 173,
 "FRH0": 218,
 "FRI1": 160,
 "FRI2": 34,
 "FRI3": 60,
-"FRJ1": 158,
+"FRJ1": 157,
 "FRJ2": 189,
 "FRK1": 66,
-"FRK2": 577,
-"FRL0": 349,
+"FRK2": 571,
+"FRL0": 348,
 "FRM0": 18,
 "FRY": 25
 },
-"n": 4390
+"n": 4368
 },
 "satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
@@ -4531,17 +4521,17 @@
 "FRB0": 20,
 "FRC": 28,
 "FRD": 19,
-"FRE": 80,
-"FRF": 52,
+"FRE": 76,
+"FRF": 48,
 "FRG0": 52,
 "FRH0": 21,
 "FRI": 38,
 "FRJ": 74,
-"FRK": 123,
+"FRK": 116,
 "FRL0": 43,
 "FRM0": 2
 },
-"n": 768
+"n": 753
 },
 "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances": {
 "mix": {
@@ -4592,31 +4582,31 @@
 },
 "satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 280,
+"FR10": 269,
 "FR101": 14,
 "FR108": 1,
-"FR24": 26,
+"FR24": 25,
 "FRC1": 18,
 "FRD1": 21,
-"FRE2": 39,
-"FRF2": 45,
-"FRG0": 33,
-"FRH0": 31,
-"FRI1": 30,
-"FRJ2": 54,
+"FRE2": 38,
+"FRF2": 42,
+"FRG0": 32,
+"FRH0": 30,
+"FRI1": 29,
+"FRJ2": 52,
 "FRJ26": 1,
-"FRK2": 125,
+"FRK2": 122,
 "FRK24": 1,
-"FRL0": 38,
+"FRL0": 36,
 "FRM0": 1,
 "FRY20": 2,
 "FRY30": 4
 },
-"n": 764
+"n": 738
 },
 "satr_fr_equity__sa_58995__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 683,
+"FR10": 672,
 "FR101": 196,
 "FR102": 5,
 "FR103": 4,
@@ -4630,7 +4620,7 @@
 "FRB01": 1,
 "FRB04": 11,
 "FRB05": 1,
-"FRB06": 8,
+"FRB06": 7,
 "FRC1": 4,
 "FRC11": 3,
 "FRC13": 5,
@@ -4661,25 +4651,24 @@
 "FRF33": 3,
 "FRF34": 1,
 "FRG0": 47,
-"FRG01": 25,
+"FRG01": 24,
 "FRG02": 4,
-"FRG03": 1,
 "FRG04": 3,
-"FRG05": 5,
+"FRG05": 4,
 "FRH0": 63,
 "FRH01": 3,
 "FRH02": 3,
 "FRH03": 13,
 "FRH04": 5,
 "FRI": 3,
-"FRI1": 59,
-"FRI12": 24,
+"FRI1": 56,
+"FRI12": 23,
 "FRI15": 4,
 "FRI2": 1,
 "FRI23": 1,
 "FRI3": 3,
 "FRI31": 2,
-"FRI32": 13,
+"FRI32": 11,
 "FRJ": 21,
 "FRJ1": 9,
 "FRJ13": 13,
@@ -4688,28 +4677,27 @@
 "FRJ21": 2,
 "FRJ22": 5,
 "FRJ23": 32,
-"FRJ28": 1,
-"FRK": 56,
+"FRK": 51,
 "FRK1": 15,
 "FRK14": 4,
-"FRK2": 201,
+"FRK2": 191,
 "FRK21": 1,
 "FRK23": 3,
-"FRK24": 17,
+"FRK24": 16,
 "FRK25": 3,
 "FRK26": 29,
 "FRK27": 2,
 "FRK28": 10,
-"FRL0": 77,
+"FRL0": 72,
 "FRL03": 4,
 "FRL04": 7,
-"FRL05": 42,
+"FRL05": 40,
 "FRL06": 5,
 "FRM0": 2,
 "FRY": 2,
 "FRY40": 2
 },
-"n": 2244
+"n": 2199
 },
 "satr_fr_equity__sa_58995__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
@@ -4718,16 +4706,16 @@
 "FRB0": 26,
 "FRC": 5,
 "FRD": 10,
-"FRE": 51,
+"FRE": 47,
 "FRF": 30,
 "FRG0": 38,
 "FRH0": 21,
 "FRI": 71,
 "FRJ": 93,
-"FRK": 95,
+"FRK": 91,
 "FRL0": 18
 },
-"n": 630
+"n": 622
 },
 "satr_fr_equity__sa_59357__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
@@ -4755,12 +4743,12 @@
 },
 "satr_fr_rnd__sa_111723__caisse_des_depots": {
 "mix": {
-"FR": 87,
+"FR": 86,
 "FR10": 4,
 "FRC": 1,
 "FRJ": 3
 },
-"n": 95
+"n": 94
 },
 "satr_fr_rnd__sa_111723__conseil_regional": {
 "mix": {
@@ -4801,14 +4789,14 @@
 "satr_fr_rnd__sa_111723__conseil_regional_nouvelle_aquitaine": {
 "mix": {
 "FR10": 1,
-"FRI": 231,
+"FRI": 230,
 "FRI1": 1,
 "FRI12": 1,
 "FRI15": 1,
 "FRI31": 1,
 "FRJ23": 1
 },
-"n": 237
+"n": 236
 },
 "satr_fr_rnd__sa_111723__conseil_regional_occitanie": {
 "mix": {
@@ -4818,7 +4806,7 @@
 },
 "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 1540,
+"FR10": 1532,
 "FR101": 1,
 "FR107": 1,
 "FRB0": 139,
@@ -4826,25 +4814,25 @@
 "FRC2": 78,
 "FRD1": 40,
 "FRD2": 68,
-"FRE1": 169,
+"FRE1": 165,
 "FRE2": 42,
 "FRF1": 94,
 "FRF2": 45,
 "FRF3": 66,
-"FRG0": 175,
+"FRG0": 173,
 "FRH0": 218,
 "FRI1": 160,
 "FRI2": 34,
 "FRI3": 60,
-"FRJ1": 158,
+"FRJ1": 157,
 "FRJ2": 189,
 "FRK1": 66,
-"FRK2": 577,
-"FRL0": 349,
+"FRK2": 571,
+"FRL0": 348,
 "FRM0": 18,
 "FRY": 25
 },
-"n": 4390
+"n": 4368
 },
 "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
@@ -4853,17 +4841,17 @@
 "FRB0": 20,
 "FRC": 28,
 "FRD": 19,
-"FRE": 80,
-"FRF": 52,
+"FRE": 76,
+"FRF": 48,
 "FRG0": 52,
 "FRH0": 21,
 "FRI": 38,
 "FRJ": 74,
-"FRK": 123,
+"FRK": 116,
 "FRL0": 43,
 "FRM0": 2
 },
-"n": 768
+"n": 753
 },
 "satr_fr_rnd__sa_111723__ministere_des_armees": {
 "mix": {
@@ -4917,7 +4905,7 @@
 "satr_fr_rnd__sa_111723__region_grand_est": {
 "mix": {
 "FRC": 2,
-"FRF": 83,
+"FRF": 81,
 "FRF1": 2,
 "FRF11": 1,
 "FRF12": 2,
@@ -4930,7 +4918,7 @@
 "FRF33": 8,
 "FRF34": 2
 },
-"n": 117
+"n": 115
 },
 "satr_fr_rnd__sa_111723__region_normandie": {
 "mix": {
@@ -5087,11 +5075,11 @@
 },
 "satr_fr_rnd__sa_111728__conseil_regional_d_ile_de_france": {
 "mix": {
-"FR10": 88,
+"FR10": 87,
 "FR101": 3,
 "FRG05": 1
 },
-"n": 92
+"n": 91
 },
 "satr_fr_rnd__sa_111728__conseil_regional_nouvelle_aquitaine": {
 "mix": {
@@ -5168,7 +5156,7 @@
 "FRG0": 2,
 "FRG01": 2,
 "FRG02": 1,
-"FRG05": 2,
+"FRG05": 1,
 "FRH0": 1,
 "FRH03": 1,
 "FRH04": 2,
@@ -5188,12 +5176,12 @@
 "FRL04": 3,
 "FRM0": 1
 },
-"n": 290
+"n": 289
 },
 "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation": {
 "mix": {
-"FR10": 9,
-"FRB0": 2,
+"FR10": 7,
+"FRB0": 1,
 "FRB06": 1,
 "FRC": 3,
 "FRD": 2,
@@ -5210,43 +5198,43 @@
 "FRI": 4,
 "FRI15": 1,
 "FRI33": 1,
-"FRJ": 8,
+"FRJ": 4,
 "FRJ22": 1,
 "FRJ23": 1,
 "FRJ26": 1,
 "FRJ28": 1,
-"FRK": 12,
+"FRK": 9,
 "FRK13": 2,
 "FRK21": 2,
-"FRL0": 4,
-"FRY": 7,
+"FRL0": 3,
+"FRY": 6,
 "FRY40": 1
 },
-"n": 80
+"n": 68
 },
 "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 280,
+"FR10": 269,
 "FR101": 14,
 "FR108": 1,
-"FR24": 26,
+"FR24": 25,
 "FRC1": 18,
 "FRD1": 21,
-"FRE2": 39,
-"FRF2": 45,
-"FRG0": 33,
-"FRH0": 31,
-"FRI1": 30,
-"FRJ2": 54,
+"FRE2": 38,
+"FRF2": 42,
+"FRG0": 32,
+"FRH0": 30,
+"FRI1": 29,
+"FRJ2": 52,
 "FRJ26": 1,
-"FRK2": 125,
+"FRK2": 122,
 "FRK24": 1,
-"FRL0": 38,
+"FRL0": 36,
 "FRM0": 1,
 "FRY20": 2,
 "FRY30": 4
 },
-"n": 764
+"n": 738
 },
 "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
@@ -5406,29 +5394,29 @@
 "FRK2": 5,
 "FRK21": 1,
 "FRK23": 2,
-"FRK24": 23,
+"FRK24": 22,
 "FRK25": 2,
 "FRK26": 11,
 "FRK27": 3,
 "FRK28": 5
 },
-"n": 90
+"n": 89
 },
 "satr_fr_rnd__sa_58995__conseil_regional_nouvelle_aquitaine": {
 "mix": {
 "FR6": 1,
-"FRI": 74,
-"FRI1": 4,
+"FRI": 73,
+"FRI1": 3,
 "FRI12": 4,
 "FRI13": 1,
 "FRI2": 2,
 "FRI23": 1
 },
-"n": 87
+"n": 85
 },
 "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances": {
 "mix": {
-"FR10": 683,
+"FR10": 672,
 "FR101": 196,
 "FR102": 5,
 "FR103": 4,
@@ -5442,7 +5430,7 @@
 "FRB01": 1,
 "FRB04": 11,
 "FRB05": 1,
-"FRB06": 8,
+"FRB06": 7,
 "FRC1": 4,
 "FRC11": 3,
 "FRC13": 5,
@@ -5473,25 +5461,24 @@
 "FRF33": 3,
 "FRF34": 1,
 "FRG0": 47,
-"FRG01": 25,
+"FRG01": 24,
 "FRG02": 4,
-"FRG03": 1,
 "FRG04": 3,
-"FRG05": 5,
+"FRG05": 4,
 "FRH0": 63,
 "FRH01": 3,
 "FRH02": 3,
 "FRH03": 13,
 "FRH04": 5,
 "FRI": 3,
-"FRI1": 59,
-"FRI12": 24,
+"FRI1": 56,
+"FRI12": 23,
 "FRI15": 4,
 "FRI2": 1,
 "FRI23": 1,
 "FRI3": 3,
 "FRI31": 2,
-"FRI32": 13,
+"FRI32": 11,
 "FRJ": 21,
 "FRJ1": 9,
 "FRJ13": 13,
@@ -5500,28 +5487,27 @@
 "FRJ21": 2,
 "FRJ22": 5,
 "FRJ23": 32,
-"FRJ28": 1,
-"FRK": 56,
+"FRK": 51,
 "FRK1": 15,
 "FRK14": 4,
-"FRK2": 201,
+"FRK2": 191,
 "FRK21": 1,
 "FRK23": 3,
-"FRK24": 17,
+"FRK24": 16,
 "FRK25": 3,
 "FRK26": 29,
 "FRK27": 2,
 "FRK28": 10,
-"FRL0": 77,
+"FRL0": 72,
 "FRL03": 4,
 "FRL04": 7,
-"FRL05": 42,
+"FRL05": 40,
 "FRL06": 5,
 "FRM0": 2,
 "FRY": 2,
 "FRY40": 2
 },
-"n": 2244
+"n": 2199
 },
 "satr_fr_rnd__sa_58995__ministere_de_la_transition_ecologique_et_solidai": {
 "mix": {
@@ -5530,16 +5516,16 @@
 "FRB0": 26,
 "FRC": 5,
 "FRD": 10,
-"FRE": 51,
+"FRE": 47,
 "FRF": 30,
 "FRG0": 38,
 "FRH0": 21,
 "FRI": 71,
 "FRJ": 93,
-"FRK": 95,
+"FRK": 91,
 "FRL0": 18
 },
-"n": 630
+"n": 622
 },
 "satr_fr_rnd__sa_58995__ministere_des_armees": {
 "mix": {
@@ -5711,14 +5697,14 @@
 "FRK14": 1,
 "FRK2": 1,
 "FRK21": 1,
-"FRK24": 2,
+"FRK24": 1,
 "FRL0": 3,
 "FRL03": 1,
 "FRL04": 7,
 "FRM0": 2,
 "FRM01": 1
 },
-"n": 514
+"n": 513
 },
 "satr_hu_equity__sa_57198__avhga": {
 "mix": {
@@ -5868,12 +5854,12 @@
 "IE042": 26,
 "IE051": 6,
 "IE052": 15,
-"IE053": 35,
-"IE061": 151,
+"IE053": 34,
+"IE061": 150,
 "IE062": 28,
 "IE063": 6
 },
-"n": 274
+"n": 272
 },
 "satr_ie_rnd__sa_111052__enterprise_ireland": {
 "mix": {
@@ -5973,7 +5959,7 @@
 "ITC4": 14,
 "ITF1": 10,
 "ITF2": 2,
-"ITF3": 115,
+"ITF3": 113,
 "ITF4": 8,
 "ITF5": 1,
 "ITG1": 7,
@@ -5985,7 +5971,7 @@
 "ITI3": 2,
 "ITI4": 11
 },
-"n": 228
+"n": 226
 },
 "satr_it_equity__sa_101256__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
@@ -6002,9 +5988,9 @@
 "ITC": 12,
 "ITC1": 80,
 "ITC3": 14,
-"ITC4": 164,
+"ITC4": 162,
 "ITF": 7,
-"ITF1": 41,
+"ITF1": 39,
 "ITF3": 332,
 "ITF4": 96,
 "ITF5": 4,
@@ -6021,7 +6007,7 @@
 "ITI3": 20,
 "ITI4": 75
 },
-"n": 1355
+"n": 1345
 },
 "satr_it_equity__sa_103469__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
 "mix": {
@@ -6069,9 +6055,9 @@
 },
 "satr_it_equity__sa_104688__regione_lombardia_dg_ricerca_innovazione_univers": {
 "mix": {
-"ITC4": 162
+"ITC4": 160
 },
-"n": 162
+"n": 160
 },
 "satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
 "mix": {
@@ -6148,7 +6134,7 @@
 "ITF": 14,
 "ITF1": 253,
 "ITF2": 36,
-"ITF3": 1003,
+"ITF3": 1002,
 "ITF4": 476,
 "ITF5": 75,
 "ITF6": 115,
@@ -6159,14 +6145,14 @@
 "ITH2": 150,
 "ITH3": 1643,
 "ITH4": 282,
-"ITH5": 1329,
+"ITH5": 1328,
 "ITI": 26,
 "ITI1": 1018,
 "ITI2": 229,
 "ITI3": 371,
 "ITI4": 1148
 },
-"n": 13847
+"n": 13845
 },
 "satr_it_equity__sa_60788__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
@@ -6217,7 +6203,7 @@
 "ITF": 6,
 "ITF1": 24,
 "ITF2": 2,
-"ITF3": 71,
+"ITF3": 69,
 "ITF4": 26,
 "ITF6": 14,
 "ITG1": 41,
@@ -6231,7 +6217,7 @@
 "ITI3": 14,
 "ITI4": 46
 },
-"n": 518
+"n": 516
 },
 "satr_it_equity__sa_60797__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
@@ -6284,7 +6270,7 @@
 "ITC4": 14,
 "ITF1": 10,
 "ITF2": 2,
-"ITF3": 115,
+"ITF3": 113,
 "ITF4": 8,
 "ITF5": 1,
 "ITG1": 7,
@@ -6296,12 +6282,12 @@
 "ITI3": 2,
 "ITI4": 11
 },
-"n": 228
+"n": 226
 },
 "satr_it_rnd__sa_102218__ministero_dell_universita_e_della_ricerca_direzi": {
 "mix": {
 "ITC1": 16,
-"ITC4": 34,
+"ITC4": 30,
 "ITF2": 1,
 "ITF3": 6,
 "ITF4": 14,
@@ -6311,7 +6297,7 @@
 "ITI1": 3,
 "ITI4": 22
 },
-"n": 115
+"n": 111
 },
 "satr_it_rnd__sa_102227__ministero_dell_universita_e_della_ricerca_direzi": {
 "mix": {
@@ -6398,9 +6384,9 @@
 "ITC": 12,
 "ITC1": 80,
 "ITC3": 14,
-"ITC4": 164,
+"ITC4": 162,
 "ITF": 7,
-"ITF1": 41,
+"ITF1": 39,
 "ITF3": 332,
 "ITF4": 96,
 "ITF5": 4,
@@ -6417,7 +6403,7 @@
 "ITI3": 20,
 "ITI4": 75
 },
-"n": 1355
+"n": 1345
 },
 "satr_it_rnd__sa_103131__ministero_della_transizione_ecologica_dipartimen": {
 "mix": {
@@ -6505,22 +6491,22 @@
 },
 "satr_it_rnd__sa_104688__regione_lombardia_dg_ricerca_innovazione_univers": {
 "mix": {
-"ITC4": 162
+"ITC4": 160
 },
-"n": 162
+"n": 160
 },
 "satr_it_rnd__sa_106168__agenzia_delle_entrate": {
 "mix": {
 "ITF1": 57,
-"ITF2": 13,
-"ITF3": 212,
-"ITF4": 74,
+"ITF2": 12,
+"ITF3": 209,
+"ITF4": 73,
 "ITF5": 13,
-"ITF6": 26,
+"ITF6": 24,
 "ITG1": 126,
 "ITG2": 15
 },
-"n": 536
+"n": 529
 },
 "satr_it_rnd__sa_106430__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
@@ -6534,11 +6520,11 @@
 "ITG2": 6,
 "ITH2": 4,
 "ITH4": 6,
-"ITH5": 29,
+"ITH5": 25,
 "ITI1": 3,
 "ITI4": 16
 },
-"n": 131
+"n": 127
 },
 "satr_it_rnd__sa_106978__finpiemonte_s_p_a": {
 "mix": {
@@ -6551,12 +6537,12 @@
 "ITC1": 1,
 "ITC4": 4,
 "ITF3": 2,
-"ITH5": 18,
+"ITH5": 16,
 "ITI2": 2,
 "ITI3": 2,
 "ITI4": 3
 },
-"n": 32
+"n": 30
 },
 "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0": {
 "mix": {
@@ -6835,9 +6821,9 @@
 },
 "satr_it_rnd__sa_118856__regione_emilia_romagna_giunta_regionale_direzion": {
 "mix": {
-"ITH5": 36
+"ITH5": 34
 },
-"n": 36
+"n": 34
 },
 "satr_it_rnd__sa_119109__ministero_della_transizione_ecologica_direzione_": {
 "mix": {
@@ -6899,7 +6885,7 @@
 "satr_it_rnd__sa_47037__ministero_dell_istruzione_dell_universita_e_dell": {
 "mix": {
 "ITC3": 2,
-"ITC4": 2,
+"ITC4": 1,
 "ITF": 2,
 "ITF1": 3,
 "ITF2": 2,
@@ -6912,7 +6898,7 @@
 "ITH5": 4,
 "ITI4": 9
 },
-"n": 163
+"n": 162
 },
 "satr_it_rnd__sa_47037__ministero_dell_universita_e_della_ricerca_direzi": {
 "mix": {
@@ -6970,21 +6956,19 @@
 "satr_it_rnd__sa_49781__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
 "ITC1": 2,
-"ITC3": 2,
-"ITC4": 15,
-"ITF1": 9,
-"ITF3": 23,
+"ITC4": 13,
+"ITF1": 8,
+"ITF3": 21,
 "ITG1": 10,
-"ITG2": 4,
+"ITG2": 2,
 "ITH3": 4,
-"ITH5": 18,
+"ITH5": 14,
 "ITI": 2,
 "ITI1": 16,
-"ITI2": 2,
 "ITI3": 8,
-"ITI4": 10
+"ITI4": 8
 },
-"n": 143
+"n": 114
 },
 "satr_it_rnd__sa_51460__provincia_autonoma_di_bolzano_ripartizione_innov": {
 "mix": {
@@ -7051,9 +7035,9 @@
 },
 "satr_it_rnd__sa_55956__autorita_di_gestione_fesr_campania": {
 "mix": {
-"ITF3": 57
+"ITF3": 55
 },
-"n": 57
+"n": 55
 },
 "satr_it_rnd__sa_58192__agenzia_delle_entrate": {
 "mix": {
@@ -7063,17 +7047,16 @@
 "ITF4": 5,
 "ITF6": 4,
 "ITG1": 4,
-"ITI2": 1,
 "ITI3": 2,
 "ITI4": 9
 },
-"n": 47
+"n": 46
 },
 "satr_it_rnd__sa_60776__regione_puglia_dipartimento_sviluppo_economico_i": {
 "mix": {
-"ITF4": 311
+"ITF4": 309
 },
-"n": 311
+"n": 309
 },
 "satr_it_rnd__sa_60788__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
@@ -7106,9 +7089,9 @@
 "ITC1": 5,
 "ITC4": 8,
 "ITF1": 12,
-"ITF2": 4,
+"ITF2": 2,
 "ITF3": 17,
-"ITF4": 8,
+"ITF4": 6,
 "ITF5": 2,
 "ITF6": 1,
 "ITG1": 12,
@@ -7121,7 +7104,7 @@
 "ITI3": 4,
 "ITI4": 7
 },
-"n": 90
+"n": 86
 },
 "satr_it_rnd__sa_60795__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
@@ -7132,7 +7115,7 @@
 "ITF": 6,
 "ITF1": 24,
 "ITF2": 2,
-"ITF3": 71,
+"ITF3": 69,
 "ITF4": 26,
 "ITF6": 14,
 "ITG1": 41,
@@ -7146,7 +7129,7 @@
 "ITI3": 14,
 "ITI4": 46
 },
-"n": 518
+"n": 516
 },
 "satr_it_rnd__sa_60800__ministero_delle_imprese_e_del_made_in_italy_dire": {
 "mix": {
@@ -7341,20 +7324,20 @@
 "NL365": 2,
 "NL366": 14,
 "NL411": 6,
-"NL414": 47,
+"NL414": 44,
 "NL415": 2,
 "NL416": 2,
 "NL421": 5,
 "NL423": 2
 },
-"n": 197
+"n": 194
 },
 "satr_nl_rnd__sa_108830__provincie_noord_brabant": {
 "mix": {
-"NL41": 269,
+"NL41": 268,
 "NL411": 1
 },
-"n": 270
+"n": 269
 },
 "satr_nl_rnd__sa_109578__ministerie_van_economische_zaken_en_klimaat": {
 "mix": {
@@ -7600,7 +7583,7 @@
 "NL32B": 2,
 "NL34": 2,
 "NL350": 4,
-"NL36": 8,
+"NL36": 7,
 "NL361": 4,
 "NL366": 3,
 "NL41": 5,
@@ -7610,7 +7593,7 @@
 "NL42": 4,
 "NL423": 3
 },
-"n": 118
+"n": 116
 },
 "satr_nl_rnd__sa_116015__ministerie_van_economische_zaken_en_klimaat": {
 "mix": {
@@ -7845,7 +7828,7 @@
 "NL366": 40,
 "NL41": 4,
 "NL411": 15,
-"NL414": 19,
+"NL414": 18,
 "NL415": 6,
 "NL416": 11,
 "NL42": 3,
@@ -7853,7 +7836,7 @@
 "NL422": 5,
 "NL423": 10
 },
-"n": 351
+"n": 350
 },
 "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat": {
 "mix": {
@@ -7963,7 +7946,7 @@
 "satr_pt_rnd__sa_41942__centro_2030": {
 "mix": {
 "PT170": 2,
-"PT191": 27,
+"PT191": 25,
 "PT192": 41,
 "PT193": 44,
 "PT194": 5,
@@ -7972,28 +7955,28 @@
 "PT1D1": 14,
 "PT1D2": 6
 },
-"n": 157
+"n": 155
 },
 "satr_pt_rnd__sa_41942__compete_2030": {
 "mix": {
-"PT112": 48,
+"PT112": 44,
 "PT119": 18,
 "PT11A": 162,
 "PT11B": 4,
-"PT11D": 16,
+"PT11D": 10,
 "PT170": 30,
-"PT191": 56,
+"PT191": 48,
 "PT192": 20,
-"PT193": 76,
+"PT193": 74,
 "PT194": 12,
-"PT195": 12,
+"PT195": 10,
 "PT1C3": 2,
 "PT1C4": 14,
 "PT1D1": 21,
 "PT1D2": 14,
 "PT1D3": 28
 },
-"n": 533
+"n": 511
 },
 "satr_pt_rnd__sa_41942__lisboa_2020": {
 "mix": {
@@ -8028,7 +8011,7 @@
 "PT193": 5,
 "PT194": 2,
 "PT195": 2,
-"PT196": 4,
+"PT196": 2,
 "PT1C1": 4,
 "PT1C2": 4,
 "PT1C3": 1,
@@ -8037,7 +8020,7 @@
 "PT1D2": 4,
 "PT1D3": 2
 },
-"n": 59
+"n": 57
 },
 "satr_se_rnd__sa_101867__naturvardsverket": {
 "mix": {
@@ -8148,9 +8131,9 @@
 "SE213": 1,
 "SE214": 4,
 "SE221": 1,
-"SE224": 43,
-"SE231": 7,
-"SE232": 101,
+"SE224": 41,
+"SE231": 6,
+"SE232": 100,
 "SE311": 3,
 "SE312": 3,
 "SE313": 4,
@@ -8159,7 +8142,7 @@
 "SE331": 11,
 "SE332": 4
 },
-"n": 400
+"n": 396
 },
 "satr_se_rnd__sa_112283__tillvaxtverket": {
 "mix": {
@@ -8212,7 +8195,7 @@
 "SE221": 6,
 "SE224": 10,
 "SE231": 1,
-"SE232": 58,
+"SE232": 57,
 "SE311": 4,
 "SE313": 1,
 "SE321": 2,
@@ -8220,7 +8203,7 @@
 "SE331": 3,
 "SE332": 4
 },
-"n": 174
+"n": 173
 },
 "satr_se_rnd__sa_60496__vinnova_verket_for_innovationssystem": {
 "mix": {
