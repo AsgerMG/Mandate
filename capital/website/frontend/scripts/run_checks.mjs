@@ -84,6 +84,12 @@ const CHECKS = [
   // -- and a guard against that must not be behind a link that needs a database.
   ["a winner is never screened out", ["npx", "tsx", "scripts/check_winner_not_blocked.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
+  // The other half of "the number describes the product": the set may be
+  // leak-free and still be graded on a founder who does not exist. This fails
+  // when a harness answers the intake on the founder's behalf, which is how
+  // `usedInField` — tier 1 of the row sort — came to be false on every row of
+  // every EXACT@5 this repo has published. Hermetic, sub-second, no database.
+  ["harness answers as the founder", ["npx", "tsx", "scripts/check_harness_intake.ts"]],
   // Hermetic, sub-second, and it reads the same answer key the recall floor
   // grades on. It sits HERE rather than beside the floor because it is the
   // cheap half of the same question: the floor needs credentials, takes three

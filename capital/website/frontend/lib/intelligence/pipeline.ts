@@ -1394,6 +1394,25 @@ export async function computeVerdict(
     /** Optional funnel recorder. The fast path is model-free but not
      *  exclusion-free: most of what never reaches a founder is removed here. */
     log?: ExclusionLog;
+    /** ── A LEAK CONTROL FOR REPLAY HARNESSES. Production never sets it. ────
+     *
+     *  `usedInField` is tier 1 of the row sort, above the entire score, and it
+     *  is true for a channel when either this founder's OWN traced awards or
+     *  their peers' awards used it. For a founder that is correct and is the
+     *  point of the signal.
+     *
+     *  For a harness replaying a real company against the fund it actually
+     *  won, the founder's own history CONTAINS THE ANSWER, and tier 1 is the
+     *  most valuable place in the ordering to be handed one. `"withheld"`
+     *  drops the founder's own channels and keeps their peers', which is
+     *  exactly what production does for a founder who is not in the corpus —
+     *  most startups. Identity, subsector, peers and the eligibility screen
+     *  are untouched.
+     *
+     *  Default `"corpus"`, so nothing about the shipped path changes. See
+     *  scripts/founderIntake.ts for why removing only the WON channel would be
+     *  worse than either. */
+    ownHistory?: "corpus" | "withheld";
   } = {},
 ): Promise<VerdictResult> {
   // A recorder always exists here, whether or not the caller wanted the funnel.
@@ -1408,7 +1427,7 @@ export async function computeVerdict(
     ? findPeersBySubsector(targetSub, { country, limit: 4, exclude: [company] })
     : [];
   const fieldChannels = new Set<string>([
-    ...(selfRecord.matched ? selfRecord.channels : []),
+    ...(selfRecord.matched && opts.ownHistory !== "withheld" ? selfRecord.channels : []),
     ...dbPeers.flatMap((r) => r.channels),
   ]);
   const founderCountries = founderCountryList(country, opts.targetMarkets, eligibility?.entityCountries);

@@ -40,6 +40,7 @@ import {
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import type { InstrumentRow } from "../lib/intelligence/types";
 import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
+import { founderIntake, founderPolicyFromEnv, IntakeTally } from "./founderIntake";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
@@ -490,20 +491,32 @@ async function main() {
   // verdict, which is what a red build needs in order to be attributable.
   resetRankerTally();
   resetGateHydration();
+  // ── WHO this gate replays, and why it is no longer written here ──────────
+  //
+  // This literal used to be eight constants inlined at this call site, and the
+  // shared resolver was one import away and unreachable from it. That is how a
+  // gate that fails the build came to grade a founder who does not exist:
+  // `"TestCo"` matches nothing, so `usedInField` — TIER 1 OF THE ROW SORT —
+  // was false on every row of every run this repo has published, while
+  // `capitalSought: ["grant","loan"]` removed every tax-credit and equity fund
+  // before ranking and that exclusion was reported to the owner as a corpus
+  // gap. See scripts/founderIntake.ts for the field-by-field leak argument.
+  //
+  // `check_harness_intake.ts` now fails the build if this call site grows its
+  // own intake literal again.
+  const policy = founderPolicyFromEnv();
+  const tally = new IntakeTally();
   for (const t of set) {
     resetGateHydration();
-    const v = await computeVerdict("TestCo", t.country, {
-      entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
-      borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
-      useOfFunds: ["industrial_research", "experimental_development"],
-    } as never, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+    const f = founderIntake(t, policy);
+    tally.add(f);
+    const v = await computeVerdict(f.company, f.country, f.eligibility as never, {
+      ...f.opts,
       // Same query `measure_recall.ts` builds, including the sector template
       // fallback. Passing nothing modelled a founder who typed a description
       // and left it blank, which the intake no longer permits -- and it made
       // this gate grade itself on a path that does not ship, reading EXACT@5
       // six points below the measurement it is supposed to floor.
-      description: t.description || t.selfDescription || undefined,
     } as never);
     const top5 = (v.instrumentTable ?? []).slice(0, 5)
       .map((r: InstrumentRow) => r.instrumentId).filter(Boolean) as string[];
@@ -527,6 +540,10 @@ async function main() {
     .filter((k) => got[k] < FLOOR[k]);
 
   console.log(`  ${rankerTallyLine()}`);
+  // WHICH FOUNDER produced these numbers, field by field, on the same screen as
+  // the verdict. A floor is a claim about a population, and a reader who cannot
+  // see what that population was asked cannot check the claim.
+  for (const line of tally.lines(policy)) console.log(line);
   console.log(`  ${file}  ${set.length} tune pairs`);
   for (const k of Object.keys(FLOOR) as (keyof typeof FLOOR)[]) {
     const bad = got[k] < FLOOR[k];
