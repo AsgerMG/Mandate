@@ -38,7 +38,7 @@
 // A gate with none of the three is FUZZY: hand it to the model-judged round.
 //
 // Read-only. No writes, no model calls, no gitignored inputs.
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { Client } from "pg";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
@@ -335,6 +335,19 @@ const PRECEDENT_FLOOR = 0.35;
   console.log("field".padEnd(22) + cols.map((c) => c.replace(/^(CRISP|FUZZY|REFILE|REFUSED)-/, (m) => m[0]).slice(0, 9).padStart(10)).join(""));
   for (const [f, m] of [...perF].sort((a, b) => [...b[1].values()].reduce((x, y) => x + y, 0) - [...a[1].values()].reduce((x, y) => x + y, 0))) {
     console.log(f.padEnd(22) + cols.map((c) => String(m.get(c) ?? "").padStart(10)).join(""));
+  }
+
+  // EMIT — hand the classification to the adjudication harness, which samples
+  // it stratified by class. Written to a scratch path, never into the repo and
+  // never into a store: this file is read-only about the corpus.
+  if (process.env.EMIT) {
+    const out = pub.map((r) => {
+      const c = classify(r);
+      return { id: Number(r.id), iid: r.iid, cls: c.cls, why: c.why, field: r.field,
+        text: String(r.text).replace(/\s+/g, " ").trim().slice(0, 400) };
+    });
+    writeFileSync(process.env.EMIT, JSON.stringify(out, null, 1));
+    console.log(`\nemitted ${out.length} classified gates -> ${process.env.EMIT}`);
   }
 
   // Samples, so the split can be checked by eye rather than believed.
