@@ -206,6 +206,16 @@ jobs:
       - name: Coverage gate separates loss from dilution
         run: python3 ETL/terms/test_coverage_gate.py
 
+      # A membership test between two disjoint vocabularies is dead code, and
+      # dead code in the middle of the split is invisible: it does not fail, it
+      # just stops splitting. `split_families()` returned channel labels while
+      # the caller compared rollup ids, so the SATR scheme split was off for all
+      # 22 countries for ten days and the only symptom was a placement rate in
+      # another module. Credential-free fixture, milliseconds, so it runs here
+      # where the corpus cannot.
+      - name: The split's target set is in the caller's value space
+        run: python3 ETL/events/load/test_split_value_space.py
+
       # The corpus census runs inside the ETL image, which has requirements.txt
       # and nothing else. It reached production importing pandas three modules
       # down and recorded a ModuleNotFoundError instead of the corpus figures --
