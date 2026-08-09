@@ -63,6 +63,12 @@ const CHECKS = [
   // cannot pass by having nothing to read. It sits among the cheap checks
   // rather than beside the corpus-reading ones for exactly that reason.
   ["a filter can admit someone", ["npx", "tsx", "scripts/check_comparator_admits.ts"]],
+  // Same hermetic class: committed snapshot plus committed artifact, no
+  // credentials, sub-second. It ratchets how many in-scope requirements have no
+  // judgement, which is the only way a growing corpus can silently stop being
+  // askable -- an unclassified requirement is never offered as a question and
+  // reads exactly like "there was nothing worth asking".
+  ["open questions still cover the corpus", ["npx", "tsx", "scripts/check_open_question_class.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
   // Hermetic, sub-second, and it reads the same answer key the recall floor
   // grades on. It sits HERE rather than beside the floor because it is the
