@@ -1,0 +1,38 @@
+tune dump   ranker: all 1175 request(s) on EMBEDDING
+holdout dump ranker: all 1182 request(s) on EMBEDDING
+founder     identity=real own-history=withheld capital=withheld answers=off consortium=yes
+blend: fitted on tune (584 pools, 16 unreachable), reported on holdout (588 pools, 12 unreachable), set=__recallSetDoors.json
+  weights (within-pool percentile rank, conditional logit):
+    proximity (home country)                 3.602
+    sector share (unclipped)                 2.518
+    semantic (founder's text)                1.529
+    award median                             -0.814
+    eligibility (encoded gates)              -0.678
+    award scale fit                          0.616
+    event count                              0.588
+    total EUR                                0.488
+    collaborative prior (peer)               0.337
+    sector count (posterior)                 -0.229
+    recency (last award year)                0.213
+    sector share (shipped, clipped)          0.163
+    company count                            -0.120
+    encoded gate count                       -0.074
+
+  EXACT@5 blended, on tune (FITTED HERE — not a result): 27.2% +/-3.6
+  EXACT@5 blended, on holdout (the reported number):        27.8% +/-3.6
+  random baseline on the same pools:                             5.7% +/-0.3
+
+  SHIPPED (the product's own five), same founders:               22.2% +/-3.3
+  PAIRED delta blend - shipped:                                  5.7 +/-3.5 points
+  gains  spread over 20 regime(s), largest vinnova_grant 20%, satr_de_rnd 15%, satr_it_rnd 12%
+  losses spread over 19 regime(s), largest horizon_eu_pillar_ii 18%, satr_it_rnd 13%, edf 10%
+
+  ON THE SAME FOUNDERS, blend x shipped:  both 93   blend only 74   shipped only 40   neither 381
+  McNemar on the 114 discordant pairs: z = 3.2  (|z| > 1.96 is outside its own noise)
+  of the 421 the product MISSED, the blend puts 74 in the five (18%)
+  won fund's rank under the blend, on the pairs the product missed: median 19 (rescued 74, still missed median 23)
+
+  by population:
+    original join                n= 205  blend 30.2% +/-6.3   baseline 5.1% +/-0.3
+    traced:childless_family      n= 145  blend 22.8% +/-6.8   baseline 6.6% +/-0.6
+    traced:exact_attribution     n= 250  blend 28.8% +/-5.6   baseline 5.7% +/-0.6
