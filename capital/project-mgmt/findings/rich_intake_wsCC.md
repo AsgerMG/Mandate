@@ -381,9 +381,16 @@ touched, no floor lowered.**
 
 - the pilot's leak guard fires on a deliberately poisoned profile and the run
   exits 1 if it does not — verified by running it;
-- an empty `PUBLISHABLE` allow-list exits 1 rather than measuring nothing;
-- a missing allow-list file exits 1;
-- an empty `DATABASE_URL` exits 1 rather than falling back to SQLite.
+- an empty `PUBLISHABLE` allow-list exits 1 rather than measuring nothing —
+  *"allow-list is EMPTY — refusing to measure nothing"*;
+- a **missing** allow-list file exits 1 with a named refusal rather than an
+  ENOENT stack trace. It exited 1 before this change too, by crashing; an
+  unreadable guard is one review away from being "fixed" into a silent
+  fall-through to the whole corpus, so it was made explicit;
+- an empty `DATABASE_URL` exits 1 via the shared `requireCredentials`, rather
+  than falling back to SQLite.
+
+All three were run and observed, not asserted.
 
 No check added here reads gitignored data. No rule, prompt, threshold or weight
 in any of the five files names a fund, a country or a sector.

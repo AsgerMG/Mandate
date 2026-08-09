@@ -110,7 +110,14 @@ export async function loadGates(db: Client, ids: Set<string> | null) {
 
 export function readPub(): Set<string> | null {
   if (!PUB) return null;
-  const ids = new Set<string>(JSON.parse(readFileSync(PUB, "utf8")).map(String));
+  // A named refusal, not a stack trace: the failure mode that once deleted 141
+  // correct filters and exited 0 was a guard that silently measured nothing, and
+  // an ENOENT buried in a Node trace is only one review away from the same
+  // thing. Both branches are asserted to fire; see the finding.
+  let raw: string;
+  try { raw = readFileSync(PUB, "utf8"); }
+  catch { console.error(`PUBLISHABLE allow-list not readable at ${PUB} — refusing to measure the whole corpus by accident`); process.exit(1); }
+  const ids = new Set<string>(JSON.parse(raw).map(String));
   if (ids.size === 0) { console.error("PUBLISHABLE allow-list is EMPTY — refusing to measure nothing"); process.exit(1); }
   return ids;
 }
