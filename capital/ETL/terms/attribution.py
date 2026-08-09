@@ -39,9 +39,12 @@ import collections
 # module's own constant rather than restated, so a change there cannot leave
 # this one silently stale.
 try:  # pragma: no cover - import shape depends on which block is on sys.path
-    from populate_funding_instruments import MIN_CHILD_EVENTS
-except ImportError:
+    from populate_funding_instruments import (
+        MIN_CHILD_EVENTS, child_slug, _name_digest,
+    )
+except ImportError:  # pragma: no cover
     MIN_CHILD_EVENTS = 40
+    child_slug = _name_digest = None
 
 
 class Split:
@@ -53,15 +56,48 @@ class Split:
                 "SELECT source, instrument_id FROM funding_instrument_sources"):
             self.src2fam[source].append(iid)
 
-        # Keyed on the child's own identity fields rather than on a rebuilt id.
-        # The id is a slug plus a digest of the name; reproducing it here would
-        # be a second copy of a string-munging routine that must never drift.
+        # ── Key on the id the ETL built, never on the name it displays ──────
+        #
+        # THE DEFECT THIS REPLACES, measured 2026-08-09. This used to key a
+        # child on `(parent_id, name, scheme_code)` and look it up with the
+        # award's `granting_authority`, on the strength of
+        # `populate_funding_instruments.py` constructing a scheme child as
+        # `name=authority`. Forty lines later that same pass does:
+        #
+        #     row["name"] = title ; row["name_source"] = "case_register"
+        #
+        # for every child carrying an SA number — 430 of 453 — replacing the
+        # granting body with the Commission's registered scheme title. So the
+        # lookup asked for "Amt der Niederösterreichischen Landesregierung" and
+        # the map held "Allgemeine Richtlinie für NÖ Förderungen…". Two value
+        # spaces, one membership test, and the test can never succeed: exactly
+        # the shape of the `split_families()` defect one column over.
+        #
+        # It is not visible as an error. Placement simply reads 11.5% instead of
+        # 41.9%, 241 leaves instead of 671, and SEVEN countries instead of 22 —
+        # and it looked for a week like a layer that had gone stale, because a
+        # rebuild run in an agent worktree (where `data/raw/state_aid_cases/`
+        # is gitignored and absent) skips the rename and "repairs" it.
+        #
+        # THE PROPERTY. A join key must be a field nothing renames. `name` is a
+        # display column with four writers (the split, the case register,
+        # programme_names.json, apply_override_names.py); the ID is what the
+        # ETL keys on, is asserted stable across runs by `child_slug`'s own
+        # docstring, and is the thing the reconcile step tests. So this
+        # reproduces the id — by IMPORTING the ETL's own two helpers, so there
+        # is one definition and it cannot drift — and asks whether the corpus
+        # holds it. Nothing here reads a name.
+        self.child_ids: set[str] = set()
+        # Retained only as the fallback for a corpus whose ETL helpers are not
+        # importable (see the try/except above); it is the old behaviour, and
+        # it is the behaviour with the bug.
         self.prog_key: dict[tuple[str, str], str] = {}
         self.sch_key: dict[tuple[str, str, str], str] = {}
         for iid, parent, name, code in conn.execute(
                 "SELECT id, parent_id, name, scheme_code FROM funding_instruments"):
             if not parent:
                 continue
+            self.child_ids.add(iid)
             code = (code or "").strip()
             name = (name or "")[:200]
             if code:
@@ -139,11 +175,31 @@ class Split:
         call = (call_id or "").strip()
         for fam in self.src2fam.get(source, []):
             if prog and source in self.programme_split:
-                hit = self.prog_key.get((fam, prog[:200]))
+                hit = self._child_id(f"{fam}__{child_slug(prog)}_{_name_digest(prog)}") \
+                    if child_slug else None
+                if hit is None:
+                    hit = self.prog_key.get((fam, prog[:200]))
                 if hit:
                     return hit
             if body and call:
-                hit = self.sch_key.get((fam, body, call))
+                # The award's own two published fields, in the order the ETL
+                # composes them. `granting_authority` un-truncated: the id is
+                # built from the full string, and `body` above is clipped to
+                # 200 for the legacy name lookup only.
+                hit = self._child_id(
+                    f"{fam}__{child_slug(call)}__{child_slug(granting_authority or '')}"
+                ) if child_slug else None
+                if hit is None:
+                    hit = self.sch_key.get((fam, body, call))
                 if hit:
                     return hit
         return None
+
+    def _child_id(self, candidate: str) -> str | None:
+        """The candidate id, if the corpus actually holds it as a child.
+
+        Membership, not construction: a child below `MIN_CHILD_EVENTS` is never
+        built, so an id that reconstructs perfectly and is not in the table
+        means there is no such fund — which is a `None`, not a guess.
+        """
+        return candidate if candidate in self.child_ids else None

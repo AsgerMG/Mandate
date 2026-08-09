@@ -797,6 +797,44 @@ def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict
     return n
 
 
+def externally_owned(conn: sqlite3.Connection, produced: set[str]) -> set[str]:
+    """Instrument rows this pass did not derive and therefore may not delete.
+
+    THE FAILURE THIS ENCODES. `funding_instruments` has two provenances. This
+    pass AGGREGATES it from `public_funding_events` — every row it makes is a
+    fund some award was paid out of. Other scripts INSERT into the same table
+    additively from registers of funds that have paid out nothing we hold:
+    `harvest_bdns_open_calls.py` writes 88 live Spanish convocatorias, each with
+    a fetched `eligibility_text` and gates extracted from it, and two Italian
+    frameworks were hand-curated straight in. All of them carry zero events, by
+    construction and permanently — an OPEN call has no award history yet.
+
+    The reconcile below deletes gates whose instrument "disappeared". It read
+    disappearance as "not in this pass's output", which is true of every one of
+    those rows on every run. So a routine rebuild deleted 90 real instruments
+    and 629 gates encoded from their own published text — not stale rows, not
+    duplicates the split collapses, just rows this pass was never the author of.
+
+    THE PROPERTY, not the id prefix. Matching `bdns_conv_%` would be a register
+    of today's one importer, and the next one would be deleted the day it
+    landed. What holds without knowing any importer is: this pass derives
+    instruments FROM events, and it is the only writer of `event_count`, so a
+    row it does not produce AND that carries no events cannot ever have been its
+    output. It belongs to whoever inserted it, and this pass has nothing to say
+    about whether it is still current.
+
+    A row that DID come from events and no longer does keeps its stale positive
+    count, is not returned here, and is still reconciled away — which is the
+    behaviour the reconcile exists for.
+    """
+    return {
+        iid for iid, in conn.execute(
+            "SELECT id FROM funding_instruments "
+            " WHERE COALESCE(event_count, 0) = 0")
+        if iid not in produced
+    }
+
+
 # The 8 existing framework YAML records — seeded as is_framework=1 rows with
 # no events of their own. sync_gates_from_yaml.py attaches their gates.
 FRAMEWORK_INSTRUMENTS = [
@@ -1598,7 +1636,15 @@ def main() -> None:
     # runs, so a wipe was never necessary: gates whose instrument survives are
     # still correctly attached. Only genuinely orphaned gates -- instrument no
     # longer produced by this pass -- are removed.
-    surviving = {r["id"] for r in now}
+    produced = {r["id"] for r in now}
+    # Union, never overwrite. `produced` is what this pass authored; `external`
+    # is what somebody else did (see `externally_owned`). Survival is the union,
+    # so a rebuild refreshes its own rows and leaves everyone else's alone.
+    external = externally_owned(conn, produced)
+    surviving = produced | external
+    if external:
+        print(f"  external: {len(external):,} instrument rows this pass does not "
+              f"derive (zero events) are kept, not reconciled")
     # Read gates WITHOUT joining funding_instruments. An inner join only sees
     # gates whose instrument still exists, so anything orphaned by an earlier
     # run stays invisible and survives every subsequent reconcile -- which is
@@ -1669,8 +1715,19 @@ def main() -> None:
             if any(v is not None for v in r[1:])
         }
 
-    conn.execute("DELETE FROM funding_instrument_sources")
-    conn.execute("DELETE FROM funding_instruments")
+    # Scoped to the rows this pass authors. An unscoped DELETE here was the
+    # other half of the same fault as the reconcile above: even with its gates
+    # spared, an externally owned instrument was still deleted and the gates
+    # went with it on the next FK cascade. A temp table rather than an inlined
+    # `NOT IN (...)` so the statement does not grow with the importer.
+    conn.execute("CREATE TEMP TABLE IF NOT EXISTS _external (id TEXT PRIMARY KEY)")
+    conn.execute("DELETE FROM _external")
+    conn.executemany("INSERT INTO _external (id) VALUES (?)",
+                     [(i,) for i in sorted(external)])
+    conn.execute("DELETE FROM funding_instrument_sources "
+                 " WHERE instrument_id NOT IN (SELECT id FROM _external)")
+    conn.execute("DELETE FROM funding_instruments "
+                 " WHERE id NOT IN (SELECT id FROM _external)")
 
     # Defaulted here rather than at each construction site: `now` is built in
     # three places (families, children, frameworks), so a key added to one is
@@ -1697,7 +1754,10 @@ def main() -> None:
         assignment = ", ".join(f"{c} = ?" for c in foreign)
         restored = conn.executemany(
             f"UPDATE funding_instruments SET {assignment} WHERE id = ?",
-            [(*vals, iid) for iid, vals in preserved.items() if iid in surviving],
+            # `produced`, not `surviving`: an externally owned row was never
+            # deleted, so its text was never at risk and rewriting it would
+            # only overstate what this restore did.
+            [(*vals, iid) for iid, vals in preserved.items() if iid in produced],
         ).rowcount
         print(f"  preserved {restored:,} rows of text this pass does not own "
               f"({', '.join(foreign)})")

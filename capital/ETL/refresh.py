@@ -144,11 +144,25 @@ STEPS: list[Step] = [
     # it. The loader, not the harvest, because a refresh must be able to put the
     # rows back from what is already on disk; refresh_open_calls.py stays where
     # it is and keeps the harvest weekly.
+    #
+    # ── 2026-08-09: the deletion is fixed at source, and this step stays ────
+    # `populate_funding_instruments.externally_owned` now spares every row this
+    # pass did not derive, so the truncate no longer removes these 88 and this
+    # step no longer restores anything. It stays because it is the loader, and
+    # a refresh should reload the register from disk.
+    #
+    # Worth recording WHY the restore was never sufficient on its own: it puts
+    # back the instrument ROW and its `eligibility_text`, and nothing puts back
+    # the 596 gates cut from that text by `encode_scheme_text_gates.py`, which
+    # this chain does not run at all. So every run between 2026-08-08 and the
+    # fix looked whole to the coverage gate while having silently discarded a
+    # layer of paid LLM encoding. A workaround downstream of a delete can
+    # restore what it knows about; it cannot know about the rest.
     Step("open_calls", "reload open calls",
          ["python3", "ETL/terms/load_bdns_open_calls.py", "--write"],
          role="build", needs=("instruments",),
-         why="Re-adds the register rows the rebuild's truncate removed and cannot "
-             "re-derive. Before the coverage gate, so the gate judges the whole corpus."),
+         why="Reloads the open-call register from disk. No longer load-bearing for "
+             "the rebuild's truncate, which now spares rows it does not own."),
     # Must follow "rebuild instruments", not precede it: seed_inventory_gates
     # rewrites `requirement` on every run via ON CONFLICT DO UPDATE, so an
     # encoder that ran first would have its statutory sentence replaced by the

@@ -82,6 +82,41 @@ for _rel in (
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+def require_reference(path, why: str):
+    """A reference file that is absent must stop the run, not read as empty.
+
+    THE FAILURE THIS ENCODES, 2026-08-09. `data/raw/` is gitignored, so it
+    exists in the primary checkout and in NO agent worktree — and every
+    worktree symlinks the shared `data/db.sqlite`, so a script run there reads
+    a real corpus and a missing register. Three scripts handled that with
+
+        cases = json.loads(CASES.read_text()) if CASES.exists() else {}
+
+    and `encode_registered_regions.py run`, executed from a worktree against
+    the shared corpus, read the Commission's case register as EMPTY, concluded
+    that none of 453 notified schemes restricts its region, and DELETED 141
+    correct `registered_region` filters. It printed a clean report and exited 0.
+    A filter that is removed does not fail; it puts a Paris company in front of
+    a Normandy-only scheme, which is the exact harm that encoding exists to
+    prevent.
+
+    "Absent" and "empty" are different claims about the world and only one of
+    them licenses a delete. Anything that REWRITES or DELETES from a reference
+    file must call this; a purely additive read may still choose to skip.
+    """
+    path = Path(path)
+    if not path.exists():
+        raise SystemExit(
+            f"REFUSING TO RUN: {path} is missing.\n"
+            f"    {why}\n"
+            "    An absent reference file is not an empty one. This path is "
+            "under data/raw or data/reference, both gitignored in part, so the "
+            "usual cause is running from an agent worktree — which shares the "
+            "real db.sqlite and has none of the inputs. Run from the repository "
+            "root, or symlink the directory in.")
+    return path
+
+
 # Backwards-compatible aliases for scripts that used these local names.
 DB_PATH = DB
 BASE_DIR = ROOT
@@ -98,4 +133,5 @@ __all__ = [
     "SIGNALS_DB",
     "BACKUP_LOCAL",
     "BACKUP_ICLOUD",
+    "require_reference",
 ]
