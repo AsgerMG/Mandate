@@ -53,6 +53,7 @@ const CHECKS = [
   ["payload budget", ["npx", "tsx", "scripts/check_payload_budget.ts"]],
   ["archetype regression", ["npx", "tsx", "scripts/check_archetypes.ts"]],
   ["liveness has one definition", ["npx", "tsx", "scripts/check_liveness.ts"]],
+  ["openness is evidenced", ["npx", "tsx", "scripts/check_window_evidence.ts"]],
   ["offer routes are sourced", ["npx", "tsx", "scripts/check_offer_route.ts"]],
   ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
   ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],

@@ -74,8 +74,19 @@ export const EXCLUSION_RULES = {
   },
   "SEL-CHANNEL-CAP": {
     stage: "channel", kind: "opinion", recoverable: false,
-    what: "Default channel not added because the pool had already reached its channel cap.",
+    what: "Channel not added because the pool had already reached its channel cap.",
     disposition: "fit-score",
+  },
+  "SEL-CHANNEL-NOT-SELECTED": {
+    stage: "channel", kind: "opinion", recoverable: false,
+    what: "Channel left out of the pool although a slot was free, because a condition attached to the route it would have entered by was not met.",
+    disposition: "fit-score",
+    evidence:
+      "This register opens 'every removal reports here', and a channel that " +
+      "reached none of the admission routes reported nothing at all: it was " +
+      "simply never iterated. A replay of 500 recall pairs found 8 whose won " +
+      "fund was absent for that reason and carried no exclusion event, so the " +
+      "question 'why is this programme not here' had no answer in the record.",
   },
 
   // ── leaf stage ───────────────────────────────────────────────────────────
