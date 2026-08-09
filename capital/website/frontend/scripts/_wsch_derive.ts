@@ -156,10 +156,26 @@ export function detect(requirement: string): Detected {
   if (STATUS.test(t)) return { types, sizeOnly: false, slotHit: false };
   const hay = slots.length ? slots.join(" || ") : "";
   for (const f of FAMILIES) if (hay && f.any.test(hay)) types.add(f.key);
+  // ── A SIZE WORD IS ALSO A KIND WORD, and missing that hides funds ───────
+  // "Applicant must be an SME or a natural person carrying out an economic
+  // activity" was read as sole-trader-only, because "SME" is a size term and
+  // nothing else in the sentence named a company. So a founder answering
+  // "company" — which every SME is — would have been REJECTED by a gate that
+  // plainly admits them. That is the Innovate UK defect exactly: a rule
+  // demanding a value the qualifying applicant cannot select.
+  //
+  // The property resolves it without a special case. An SME and a large
+  // enterprise are the SAME constitutional kind at two sizes: the size is
+  // fteBand's business, and the kind the sentence has named is `company`. So
+  // any enterprise-size term admits `company`, and the threshold it carries is
+  // left where it belongs.
+  if (hay && SIZE.test(hay)) types.add("company");
   // The corpus's explicit negative, folded into the kinds it admits. See
   // NON_ECONOMIC above for why this is not a sixth option.
   if (hay && NON_ECONOMIC.test(hay)) for (const k of NON_ECONOMIC_KINDS) types.add(k);
-  const sizeOnly = types.size === 0 && SIZE.test(hay);
+  // `sizeOnly` now means: the sentence names a size and NOTHING ELSE about the
+  // kind — the pure fteBand case, kept as the control arm in _wsch_ceiling.
+  const sizeOnly = SIZE.test(hay) && types.size === 1 && types.has("company");
   return { types, sizeOnly, slotHit };
 }
 
