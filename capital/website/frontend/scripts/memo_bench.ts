@@ -41,7 +41,7 @@ const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean
 
 /**
  * The brief's documented shape (types.ts IntelligenceReport): bottomLine
- * bullets, UP TO five institutions, one positioning paragraph, one
+ * bullets, up to `BRIEF_LIMITS.institutionsMax` institutions, one positioning paragraph, one
  * stateOfPlay paragraph, caveats — with the three prose parts inside a ~700
  * word budget. Asserted on every bench run: quality regressions here are
  * invisible to the deterministic checks and only show up by measuring output.
@@ -55,15 +55,20 @@ function checkMemoShape(r: Record<string, unknown>): string[] {
   const longest = Math.max(0, ...bl.map(words));
   if (longest > BRIEF_LIMITS.bulletWords) out.push(`longest bullet ${longest}w (want <=${BRIEF_LIMITS.bulletWords})`);
   const nInst = ((r.institutions as unknown[]) ?? []).length;
-  // Max 5, min 2. Fewer than 2 is only defensible for a business the law
-  // excludes from most aid, so it is flagged for a human to judge, not failed.
-  if (nInst > 5) out.push(`institutions ${nInst} (max 5)`);
+  // The cap is read, never retyped. It was `nInst > 5` -- a literal five three
+  // lines above the comment explaining that hardcoded caps here go stale the
+  // moment a contract changes one, and it duly did: the first six-row brief
+  // this harness ever produced was reported as a SHAPE violation of a limit the
+  // product had already raised.
+  if (nInst > BRIEF_LIMITS.institutionsMax) {
+    out.push(`institutions ${nInst} (max ${BRIEF_LIMITS.institutionsMax})`);
+  }
   // Fewer than two is allowed: the brief ships what is real rather than
   // padding to a minimum with routes the founder cannot act on. Only an empty
   // table is a failure.
   else if (nInst === 0) out.push("institutions 0 (empty table)");
   const body = words(bl.join(" ")) + words(r.positioning) + words(r.stateOfPlay);
-  if (body > 700) out.push(`body ${body}w (want <=700)`);
+  if (body > BRIEF_LIMITS.bodyWords) out.push(`body ${body}w (want <=${BRIEF_LIMITS.bodyWords})`);
   if (!String(r.caveats ?? "").trim()) out.push("caveats missing");
   // Caps come from BRIEF_LIMITS, which the contracts and the live checks also
   // read. Hardcoded here they went stale the moment a contract changed one:
