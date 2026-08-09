@@ -1,0 +1,60 @@
+### tune
+(node:73883) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+==============================================================================
+0  WHAT THE OFFICIAL SOURCE ACTUALLY DECLARES
+==============================================================================
+  instruments                                        1088
+  with an EC case register catchment                 427  39.2%
+  ...of which narrower than the whole country        141  13.0%
+  the rest are country-wide or silent, and a screen cannot act on either.
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6779 (95.5%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+
+==============================================================================
+1  THE GUARD — would the screen block a company from a fund it WON?
+==============================================================================
+  pairs with a leak-free region AND an official catchment  582
+  pairs the register is silent about (kept, never removed) 133
+  VERIFIED WINNERS THE SCREEN WOULD BLOCK                  15  2.6%
+      BYLOGIX SOCIETA' A RESPONSABILITA' LIMITATA (IT, ITI) -> satr_it_rnd__sa_115378__finpiemonte_s_p_a
+      Siemens (DE, BE2) -> satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz
+      CULTIMATE FOODS (DE, DE3) -> satr_de_rnd__sa_103582__nbank
+      Siemens (DE, BE2) -> satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz
+      Siemens (DE, BE2) -> satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung
+      Global Climate Changer GmbH (DE, DE3) -> satr_de_rnd__sa_113239__sachsen_sab
+      V.M.C. S.P.A. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      The Makers Food GmbH (DE, DE3) -> satr_de_rnd__sa_114510__nrw_bank
+      ConstantinTelevision GmbH (DE, DE2) -> satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg
+      W&B Television GmbH (DE, DE3) -> satr_de_equity__sa_118637__lfa_forderbank_bayern
+      sus.raw GmbH (DE, DEA) -> satr_de_rnd__sa_110061__vdi_vde_innovation_und_technik
+      J & W S.R.L. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      Siemens Energy Global GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_64558__investitionsbank_berlin
+      H2 MOBILITY Deutschland GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+      Mint Hydrogen Germany GmbH (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+
+==============================================================================
+2  THE ORACLE — what the screen is worth even if it were sound
+==============================================================================
+  join asserted: 250 dump rows match the sample row for row
+  pairs in the draw with a leak-free region  29/250
+  base EXACT@5                              67/250 = 26.8%
+  with the official catchment screen        69/250 = 27.6%   delta 0.8
+  draws where the screen removed the WON leaf 1
+
+### holdout
+(node:73924) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+2  THE ORACLE — what the screen is worth even if it were sound
+==============================================================================
+  join asserted: 250 dump rows match the sample row for row
+  pairs in the draw with a leak-free region  31/250
+  base EXACT@5                              60/250 = 24.0%
+  with the official catchment screen        61/250 = 24.4%   delta 0.4
+  draws where the screen removed the WON leaf 3

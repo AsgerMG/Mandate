@@ -1,0 +1,85 @@
+### tune
+==============================================================================
+1  IS THE SIBLING RELATION TERRITORIAL AT ALL?
+==============================================================================
+instruments 1088, of which in a multi-leaf family 780
+  T  territorial (same notified scheme, several named bodies)  76  7.0%
+  C  catalogue   (several calls, one or no named body)         295  27.1%
+  S  scheme-level (sole door of its own notified scheme)       717  65.9%
+
+TERRITORIAL CLUSTERS: 19, holding 76 doors
+  satr_fr_rnd           30 doors
+  satr_de_rnd           26 doors
+  satr_it_rnd            6 doors
+  satr_fr_equity         4 doors
+  satr_ie_rnd            4 doors
+  satr_pt_rnd            4 doors
+  satr_fi_rnd            2 doors
+
+==============================================================================
+2  WHERE THE TERRITORY OF A DOOR COMES FROM  (Rule Zero)
+==============================================================================
+  (a) OFFICIALLY STATED  the notification's own catchment separates them   0  0.0%
+  (b) INFERABLE          only our award footprint separates them, decisively 12  15.8%
+  (c) AMBIGUOUS          nothing we hold separates them                     64  84.2%
+  ambiguous   2 doors  satr_de_rnd / SA.112919  deliv=0 share>=0.6:0
+  ambiguous   2 doors  satr_fr_equity / SA.111723  deliv=0 share>=0.6:0
+  ambiguous   2 doors  satr_fr_equity / SA.58995  deliv=0 share>=0.6:0
+  ambiguous   2 doors  satr_fr_rnd / SA.40391  deliv=0 share>=0.6:0
+  ambiguous   2 doors  satr_ie_rnd / SA.111052  deliv=1 share>=0.6:2
+  ambiguous   2 doors  satr_ie_rnd / SA.59867  deliv=1 share>=0.6:2
+  ambiguous   2 doors  satr_it_rnd / SA.107368  deliv=1 share>=0.6:1
+  ambiguous   2 doors  satr_it_rnd / SA.110595  deliv=0 share>=0.6:0
+  ambiguous   2 doors  satr_it_rnd / SA.47037  deliv=0 share>=0.6:0
+  ambiguous   4 doors  satr_fr_rnd / SA.111726  deliv=1 share>=0.6:1
+  ambiguous   5 doors  satr_fr_rnd / SA.111728  deliv=4 share>=0.6:4
+  ambiguous   7 doors  satr_fr_rnd / SA.58995  deliv=3 share>=0.6:3
+  ambiguous  12 doors  satr_fr_rnd / SA.111723  deliv=8 share>=0.6:8
+  ambiguous  18 doors  satr_de_rnd / SA.56245  deliv=13 share>=0.6:18
+  inferable   2 doors  satr_de_rnd / SA.101541  deliv=2 share>=0.6:2
+  inferable   2 doors  satr_de_rnd / SA.112200  deliv=2 share>=0.6:2
+  inferable   2 doors  satr_de_rnd / SA.114724  deliv=2 share>=0.6:2
+  inferable   2 doors  satr_fi_rnd / SA.111546  deliv=2 share>=0.6:2
+  inferable   4 doors  satr_pt_rnd / SA.41942  deliv=4 share>=0.6:4
+
+==============================================================================
+3  THE ORACLE BOUND — what a PERFECT address→door lookup is worth
+==============================================================================
+  base (shipped order)                                  67/250 = 26.8%   delta   0.0
+  ORACLE  perfect door inside TERRITORIAL clusters      68/250 = 27.2%   delta   0.4
+  over-credit  every (regime, scheme_code) group, incl. blank 157/250 = 62.8%   delta  36.0
+  ceiling of ANY permutation whatever  (1 per regime)  202/250 = 80.8%   delta  54.0
+
+  The gap between line 2 and line 3 is entirely CATALOGUE collapse: rows
+  that share no notified scheme identifier and are fused only by treating
+  a blank `scheme_code` as a join key. An address cannot choose among a
+  body's own calls, so line 3 is not reachable by any address question.
+
+==============================================================================
+4  WHAT THE MISSES ARE MADE OF
+==============================================================================
+   94   51.4%  C catalogue    <- an address cannot act
+   38   20.8%  standalone leaf, no siblings
+   31   16.9%  S scheme-level <- a catchment SCREEN could act, not a door
+   20   10.9%  T territorial  <- an address could act
+
+### holdout (oracle only)
+3  THE ORACLE BOUND — what a PERFECT address→door lookup is worth
+==============================================================================
+  base (shipped order)                                  60/250 = 24.0%   delta   0.0
+  ORACLE  perfect door inside TERRITORIAL clusters      60/250 = 24.0%   delta   0.0
+  over-credit  every (regime, scheme_code) group, incl. blank 142/250 = 56.8%   delta  32.8
+  ceiling of ANY permutation whatever  (1 per regime)  188/250 = 75.2%   delta  51.2
+
+  The gap between line 2 and line 3 is entirely CATALOGUE collapse: rows
+  that share no notified scheme identifier and are fused only by treating
+  a blank `scheme_code` as a join key. An address cannot choose among a
+  body's own calls, so line 3 is not reachable by any address question.
+
+==============================================================================
+4  WHAT THE MISSES ARE MADE OF
+==============================================================================
+   87   45.8%  C catalogue    <- an address cannot act
+   47   24.7%  standalone leaf, no siblings
+   34   17.9%  S scheme-level <- a catchment SCREEN could act, not a door
+   22   11.6%  T territorial  <- an address could act

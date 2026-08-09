@@ -1,0 +1,66 @@
+(node:69385) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6779 (95.5%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T16:30:41.310Z
+ranker: all 247 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune seed=20260806 replayed 250
+
+EXACT@5 67/250 (26.8% +/-5.5)
+ceiling on this draw: 120/250 (48.0%)  <- pairs whose residual class fits five rows
+
+THE LOSS: 183 misses (73.2 points of the 250-pair draw)
+
+bucket                                     misses   % of loss   % of draw
+1  NEVER IN THE POOL   (a screen or a gate removed it)     1        0.5%        0.4%
+2  CUT BEFORE THE TABLE(leaf cap / collapse / dedupe)     8        4.4%        3.2%
+3  RANKED BELOW FIVE   (on the table, lost on score)    73       39.9%       29.2%
+4  UNWINNABLE          (residual class > 5)   101       55.2%       40.4%
+   ACTIONABLE (1+2+3)                         82       44.8%       32.8%
+
+BY RULE (what actually fired), winnable misses only
+  RANK                           73   
+  SEL-CAPITAL                     8   Instrument deprioritised because its capital type is not among those the founder asked for
+  NO-EVENT/channel-absent         1   
+
+CROSS TAB — mechanism regardless of winnability (the precedence made visible)
+  mechanism              winnable  unwinnable
+  1 never in the pool          1           0
+  2 cut before the table       8           0
+  3 ranked below five         73         101
+
+INSIDE BUCKET 3 — the two failures a single label was hiding
+  overall candidate rank of the won leaf
+    rank 6 (just off)      3  4% of bucket 3
+    rank 7-10             11  15% of bucket 3
+    rank 11-20            19  26% of bucket 3
+    rank 21-50            29  40% of bucket 3
+    rank 51+              11  15% of bucket 3
+  lost to its OWN SIBLINGS (regime rank > 1)         32  44%   <- a within-regime rule could reach these
+  lost to OTHER PROGRAMMES (regime rank 1)           41  56%   <- only a better cross-regime score reaches these
+  a sibling of the won leaf IS on the published five 22  30%   <- right programme, wrong door
+  median candidate pool the ranker had to order:  77
+
+REGIME CONCENTRATION per bucket (a bucket that is one regime is not a finding)
+  bucket 1: 1 miss(es) across 1 regime(s), largest 100% -- edf:1
+  bucket 2: 8 miss(es) across 3 regime(s), largest 75% -- satr_de_rnd:6 eit_rawmaterials:1 tesi_equity:1
+  bucket 3: 73 miss(es) across 49 regime(s), largest 7% -- vinnova_grant:5 horizon_eu_partnership:4 horizon_eu_pillar_ii:4 eic:3
+  bucket 4: 101 miss(es) across 9 regime(s), largest 31% -- bdns_es_ayudas:31 ademe_aid:25 vinnova_grant:15 satr_fr_rnd:14
+
+WORKED EXAMPLES
+  [1] edf_da  founder in IT  regime edf  class 1  rank -
+      NO-EVENT/channel-absent: channel edf never reached the table
+  [2] satr_de_rnd__sa_56245__finanzamt_erlangen  founder in DE  regime satr_de_rnd  class 2  rank -
+      SEL-CAPITAL: capital type tax_credit not among those sought
+  [3] sns_ju  founder in IT  regime horizon_eu_partnership  class 5  rank 11
+      RANK: candidate rank 11 of 92
+  [4] satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung  founder in DE  regime satr_de_rnd  class 38  rank 28
+      class>5: residual class 38 among publishable siblings
+
+per-pair verdicts -> /tmp/wscj/tune_base.json
