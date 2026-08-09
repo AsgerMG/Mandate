@@ -30,6 +30,8 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
   return res;
 }
 import { semanticFundMatch } from "./semantic";
+import { BRIEF_LIMITS } from "./briefChecks";
+import { orderMemoCandidates, WRITER_CANDIDATE_CAP } from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
 import { assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
@@ -148,36 +150,22 @@ function deDash(s: string): string {
     .trim();
 }
 
-// The brief's "5 institutions to target" table is deliberately tighter than
-// the preliminary verdict's DISPLAY_CAP — a lean founder gets a shortlist,
-// not a menu.
-const BRIEF_INSTITUTION_CAP = 5;
+// How many rows the brief publishes. NOT a second literal: it is the same
+// number `checkBrief` enforces as FUND-2 and the same number the writer is
+// told in `contracts/brief/02-funds.md`, because a cut and the check on that
+// cut holding separate copies of one constant is the defect that shipped a
+// sixth row into the screen and dropped it from the memo for months.
+//
+// It was 5 while `DISPLAY_CAP` was 6, so the preliminary verdict was strictly
+// MORE generous than the paid memo: the screen built, screened and rendered a
+// row the brief then discarded. That was never a decision, it was two
+// constants that had never been read side by side.
+const BRIEF_INSTITUTION_CAP = BRIEF_LIMITS.institutionsMax;
 /** Below this the brief reads as a non-answer, so the writer may not reject its
  *  way past it. The corpus itself may still supply fewer — a genuinely excluded
  *  business (tobacco, gambling, weapons) has fewer real doors, and padding the
  *  table would mean offering funds it cannot use. */
 const BRIEF_INSTITUTION_MIN = 2;
-/** How many candidates the WRITER is shown. Comfortably more than the five
- *  that ship, because the brief's shape is FIVE institutions and three
- *  successive filters thin the pool before the writer sees it: off-theme
- *  large-scale channels, duplicate institution names, conclusively blocked
- *  funds. Three of the first six real memos shipped four or three rows. More
- *  than the five that ship, so
- *  it can discard the ones it can see are hopeless and still leave a full
- *  table. Reading real memos, four of Neura Robotics' five institutions were
- *  "one thing in the way" and three told the founder to skip them — the
- *  verdict engine only counts ENCODED rules, so a fund can be plainly wrong on
- *  stage or theme and still score as one small obstacle away. The writer can
- *  see that; it just had no way to act on it. */
-// Lowered from 9. The writer must return a note per candidate, and a
-// candidate it never mentions is dropped silently — it cannot be published
-// without model-written copy, and filling that in from a template is what put
-// three "Verify eligibility directly with the fund" rows in Nortal's brief.
-// At 9 it started omitting: Aleph Alpha came back covering 5 of 9, losing two
-// Horizon clusters and two Innovation Fund routes with no judgement attached.
-// Only 5 are ever published and ranking upstream already put the best first,
-// so 7 is ample headroom for a disqualification or two while staying inside
-// what the writer reliably covers.
 /** Used when the writer returns an empty caveat. Mirrors the wording the
  *  prompt asks for: committed amounts, uneven coverage, absence is not proof. */
 const DEFAULT_CAVEAT =
@@ -185,7 +173,6 @@ const DEFAULT_CAVEAT =
   "cash; coverage varies by country and instrument, and absence from the " +
   "database is not proof that no funding was received.";
 
-const WRITER_CANDIDATE_CAP = 7;
 /** "€2.5M EIC · €1.8M dev banks" — the top doors, with figures where known. */
 function fundingBreakdown(channelAmounts: ChannelAmount[]): string {
   return channelAmounts
@@ -779,164 +766,10 @@ async function synthesize(
   // rather than simply the best-fitting ones. Fit ordering (exact country,
   // then ticket proximity, then event count) survives as the tie-break: rows
   // with no ease signal at all keep their original position.
-  const comparableCounts = new Map<string, number>();
-  for (const row of instrumentTable) {
-    if (!row.instrumentId) continue;
-    comparableCounts.set(
-      row.instrumentId,
-      [...records, ...dbPeers].filter((r) => r.matched && r.channels.includes(row.channel)).length,
-    );
-  }
-  const easeById = scoreEase(
-    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
-    req.eligibility,
-    req.projectAnswers,
-    comparableCounts,
-    eligibilityScreen,
-    // Demote national schemes the founder cannot actually use. A German
-    // company was being handed an Estonian equity scheme at rank 2, which the
-    // writer then had to apologise for in the row itself.
-    new Set(
-      founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries)
-        .map((c) => toIso2(c))
-        .filter(Boolean)
-        .map((c) => c.toUpperCase()),
-    ),
-  );
-  // Qualification comes before ease. A door that is open, or one thing away
-  // from open, outranks a door that merely scores well — and a door that is
-  // conclusively shut is dropped rather than ranked, because a roster of
-  // rejections is not advice.
-  const assessments = assessAll(
-    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
-    req.eligibility,
-  );
-  // A scheme with no award on record for years may be closed, repealed or
-  // simply between programme periods — we cannot tell which, and neither can
-  // the founder. Three years is deliberately generous: EU programme periods
-  // have real gaps and the register lags, so a tighter window would flag live
-  // schemes.
-  //
-  // A MISSING date is explicitly NOT stale, though the first version of this
-  // treated it as such. 51 instruments carry no dated award, and they include
-  // Bpifrance, EIFO, KfW and Almi — loaded as placeholder-level records rather
-  // than per-award rows. That is a gap in our ingestion, not evidence a
-  // national development bank has stopped lending, and demoting them would
-  // have pushed Silvr's single best route down the table. Absence of evidence
-  // is not evidence of absence.
-  const STALE_AFTER_YEARS = 3;
-  const thisYear = new Date().getFullYear();
-  const isStale = (row: InstrumentRow) =>
-    row.lastAwardYear !== undefined &&
-    thisYear - row.lastAwardYear > STALE_AFTER_YEARS;
-
-  // A `capitalMismatch` predicate stood here, computed for every row and read
-  // by nothing since "Phase 4: the score selects, the writer writes"
-  // (8a078c98). Confirmed superseded rather than dropped: the judgement it
-  // made is the `capital` component of scoreFit (fit.ts, weight 0.08 —
-  // 1 when the founder's capital kinds include the row's, 0.3 when they do
-  // not), which is the same rule as a continuous term instead of a boolean.
-  // Deleted; the comment below already claimed it had moved.
-  // ── Ranked by fit ────────────────────────────────────────────────────────
-  // One continuous score, every component recorded (fit.ts). This replaces a
-  // sort over verdict rank, staleness, capital mismatch and an ease score,
-  // each of which was a separate rule expressing part of the same judgement.
-  //
-  // The two hard exclusions still live in the score itself and are the only
-  // things that remove a fund outright: a conclusively failed encoded gate,
-  // and a national scheme in a country the founder cannot draw on. Everything
-  // else moves a row down the list, which is the whole point: a fund now fails
-  // to make the cut instead of being vetoed.
-  const capitalWanted = new Set(
-    (req.capitalSought ?? []).flatMap((c) => CAPITAL_SOUGHT_TO_DB[c] ?? []));
-  const founderIso = new Set(
-    founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries)
-      .map((c) => toIso2(c).toUpperCase()).filter(Boolean));
-  const maxComparable = Math.max(0, ...comparableCounts.values());
-  const fitById = new Map<string, ReturnType<typeof scoreFit>>();
-  // What sector fit is worth for a fund whose funding history we do not hold,
-  // solved over THIS pool. A constant here would score a blank record above four
-  // fifths of the funds we do hold history for -- see `sectorFitScorer`.
-  const sectorNeutralFor = sectorFitScorer(
-    instrumentTable.map((r) => (r.instrumentId ? instById().get(r.instrumentId) : undefined))
-      .filter((i): i is NonNullable<typeof i> => Boolean(i)),
-    req.eligibility?.sector);
-  for (const row of instrumentTable) {
-    const inst = row.instrumentId ? instById().get(row.instrumentId) : undefined;
-    if (!inst) continue;
-    fitById.set(inst.id, scoreFit({
-      instrument: inst,
-      assessment: assessments.get(inst.id),
-      theme: semanticScores.get(inst.id),
-      sectorNeutral: sectorNeutralFor(null),
-      ticketBand: req.eligibility?.ticketBand,
-      capitalWanted,
-      comparableCount: comparableCounts.get(inst.id) ?? 0,
-      maxComparable,
-      founderCountries: founderIso,
-      requiresConsortium: inst.gates.some(
-        (g: { requirement: string }) => /consorti|at least three|3\+ partners|multi-partner/i.test(g.requirement)),
-      // The SAME derivation the row sort uses. Written out by hand here and
-      // by hand again in the table builder, the two copies disagreed about
-      // what silence means: this one read an unanswered founder as `undefined`
-      // (correct, and `structureFit` scores it 0.6, neutral) while the table
-      // builder's `!== "no"` read the same silence as a confident `true`. One
-      // answer, two mappings, and the one on the path to the five rows was the
-      // wrong one.
-      consortiumOk: tableInputFromAnswers(req.eligibility).consortiumOk,
-      founderSector: req.eligibility?.sector,
-      year: new Date().getFullYear(),
-    }));
-  }
-  const rankedByEase = instrumentTable
-    .map((row, i) => ({
-      row, i,
-      ease: row.instrumentId ? easeById.get(row.instrumentId) : undefined,
-      fit: row.instrumentId ? fitById.get(row.instrumentId) : undefined,
-      assessment: row.instrumentId ? assessments.get(row.instrumentId) : undefined,
-    }))
-    .sort((a, b) => {
-      // Rows with no score at all (no DB-native instrument behind them) keep
-      // their incoming order at the back rather than tying at zero.
-      const fa = a.fit?.score ?? -1, fb = b.fit?.score ?? -1;
-      if (fa !== fb) return fb - fa;
-      return a.i - b.i;
-    });
-
-  // Never show a founder a fund they cannot access — no exceptions, no
-  // backfill. A short table of real options beats a padded one, and a fund
-  // that is conclusively shut is time the founder does not get back. In
-  // practice the table stays full: `unknown` counts as accessible, and most
-  // instruments carry no encoded filter yet.
-  // One row per institution NAME, not per instrument id. 322 instruments
-  // share only 143 display names, so two leaves of the same body can both
-  // survive ranking and the founder sees "Enterprise Ireland" twice in one
-  // table — once open, once not assessable — which reads as a broken brief.
-  // Ranking already put the better row first, so first-wins is the right rule.
-  const droppedBlocked = rankedByEase.filter((r) => r.assessment?.status === "blocked").length;
-  const seenNames = new Set<string>();
-  const beforeWriterCap = rankedByEase
-    .filter((r) => {
-      if (r.assessment?.status !== "blocked") return true;
-      log.record("VER-BLOCKED", r.row.instrumentId ?? r.row.channel,
-        `${r.assessment.blockers.length} encoded eligibility filters conclusively fail`);
-      return false;
-    })
-    .filter((r) => {
-      const name = displayInstitutionName(r.row);
-      if (seenNames.has(name)) {
-        log.record("SEL-DUPE-NAME", r.row.instrumentId ?? r.row.channel,
-          "a higher-ranked instrument already renders under this institution name");
-        return false;
-      }
-      seenNames.add(name);
-      return true;
-    });
-  for (const r of beforeWriterCap.slice(WRITER_CANDIDATE_CAP)) {
-    log.record("SEL-LEAF-CAP", r.row.instrumentId ?? r.row.channel,
-      `ranked below the ${WRITER_CANDIDATE_CAP}-candidate cap shown to the writer`);
-  }
-  const baseRows = beforeWriterCap.slice(0, WRITER_CANDIDATE_CAP).map((r) => r.row);
+  const { toWriter, easeById, assessments, droppedBlocked, isStale } = orderMemoCandidates({
+    instrumentTable, req, records, dbPeers, eligibilityScreen, semanticScores, log,
+  });
+  const baseRows = toWriter.map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
     const id = baseRows[idx].instrumentId;
     const a = id ? assessments.get(id) : undefined;

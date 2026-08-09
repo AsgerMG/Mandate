@@ -20,7 +20,7 @@
  * Run: npx tsx scripts/check_contracts.ts
  */
 import { loadContracts, briefContracts } from "../lib/intelligence/contracts";
-import { CHECK_RULE_IDS } from "../lib/intelligence/briefChecks";
+import { BRIEF_LIMITS, CHECK_RULE_IDS } from "../lib/intelligence/briefChecks";
 import { QUESTION_RULE_IDS } from "../lib/intelligence/questionChecks";
 import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types";
 
@@ -92,6 +92,51 @@ function main() {
         problems.push({ axis: "unenforced", detail: `${c.file}: ${m[1]} is (hard) but nothing checks it` });
       }
     }
+  }
+
+  // ── A cap the writer is TOLD must be the cap the code CUTS to ───────────
+  // The contract text is the writer's prompt verbatim (assembleWriterInstructions),
+  // so a row cap written here is an independent copy of a number that also
+  // lives in `BRIEF_LIMITS` and, through it, in the pipeline's cut. Three
+  // copies of five sat in this repo with nothing comparing them, which is how
+  // the instant screen came to build and render a sixth row that the memo
+  // silently discarded.
+  //
+  // Stated as a property, not a register: ANY contract rule that writes "at
+  // most <n> rows" is claiming the published row cap, whatever the section, so
+  // a rule added tomorrow is held to the same tie with no edit here.
+  const NUMBER_WORDS: Record<string, number> = {
+    zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6,
+    seven: 7, eight: 8, nine: 9, ten: 10,
+  };
+  let capStated = 0;
+  for (const c of contracts) {
+    for (const line of c.body.split("\n")) {
+      const m = line.match(/^-\s+([A-Z]+-B?\d+)\s+\(\w+\)\s+At most ([a-z]+|\d+) rows\b/i);
+      if (!m) continue;
+      capStated++;
+      const stated = NUMBER_WORDS[m[2].toLowerCase()] ?? Number(m[2]);
+      if (!Number.isFinite(stated)) {
+        problems.push({ axis: "row-cap", detail: `${c.file}: ${m[1]} states a row cap this check cannot read ("${m[2]}")` });
+      } else if (stated !== BRIEF_LIMITS.institutionsMax) {
+        problems.push({
+          axis: "row-cap",
+          detail: `${c.file}: ${m[1]} tells the writer at most ${stated} rows, ` +
+            `but BRIEF_LIMITS.institutionsMax (which the pipeline cuts to and ` +
+            `checkBrief enforces) is ${BRIEF_LIMITS.institutionsMax}`,
+        });
+      }
+    }
+  }
+  // A tie nothing is tied to is not a guard. If the sentence is reworded out
+  // of existence the number stops being stated to the writer at all, and this
+  // check would go green while the prompt lost its cap.
+  if (capStated !== 1) {
+    problems.push({
+      axis: "row-cap",
+      detail: `expected exactly one contract rule to state the published row cap, found ${capStated}. ` +
+        `Zero means the writer is never told it; more than one means two copies again.`,
+    });
   }
 
   // ── A rule states a property; it does not enumerate cases ──────────────
