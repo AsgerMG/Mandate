@@ -365,7 +365,15 @@ Tuning is on `tune`. Holdout is not touched.
 
 ### Result
 
-RESULT_PLACEHOLDER
+⚠ **NEVER FILLED IN.** This section shipped with its `RESULT_PLACEHOLDER`
+literal intact, so the end-to-end pilot result was not recorded. Flagged
+2026-08-09 by the wsCN audit rather than back-filled, because inventing a
+number here is exactly the failure this document exists to correct.
+
+**Nothing in this document depends on it.** The headline ceiling (65.9%), the
+greedy bound (58.3%) and the τ-sweep all come from `_wscc_ceiling.ts` and
+`_wscc_exact_bound.ts` in §§2–7 and are reproducible from the commands at the
+top. Whoever next runs the pilot should write the result here.
 
 ---
 

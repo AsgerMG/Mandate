@@ -18,6 +18,15 @@ profile mode regime       76%      97%
 Holdout, n=150. Regime-level is effectively at target. Exact-scheme nearly
 doubled.
 
+⚠ **Two corrections to the table above, both from 2026-08-09.**
+1. **The 95% target column is not reachable.** wsCC measured the honest maximum
+   at **65.9% EXACT@5** under full founder information, **58.3%** plannable
+   (`findings/rich_intake_wsCC.md`). The gap between 40% and 95% must not be
+   read as headroom.
+2. **The 40% is not what the product ships.** EXACT@5 on the current corpus and
+   key is **25%**. Regime-level remains the OVERRULED recommendation (owner,
+   2026-08-03) and is not the target regardless of how near it sits.
+
 ## What was wrong for four attempts
 
 Corpus enrichment, the adaptive round, gate-fit ranking and region all measured

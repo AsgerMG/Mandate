@@ -24,6 +24,14 @@ wrong.
 
 ## The information to pin the exact fund EXISTS
 
+⚠ **"The finding that makes 95% credible" is retracted.** The separation
+measured below is separation of IDENTITY, not of MATCHABILITY — a founder can
+only be matched on a condition they can state and be tested against. Measuring
+it that way, wsCC (2026-08-09, `findings/rich_intake_wsCC.md`) puts the honest
+maximum at **65.9% EXACT@5** under full founder information, **58.3%**
+plannable. The table below still shows correctly which fields separate
+siblings; it does not license a 95% target.
+
 This is the finding that makes 95% credible. Across 35 sibling groups of >=3
 (721 instruments):
 
@@ -176,6 +184,13 @@ what ANY method can score on this test set at ~64%. This does not mean the
 product cannot reach 95% — it means the test set must gain real descriptions
 alongside change (E), or it will keep reporting the intake's emptiness as a
 ranking failure.
+
+⚠ **The escape clause in that last sentence has been closed by measurement.**
+wsCC gave a perfect chooser full founder information — the premise this
+paragraph appeals to — and the ceiling came out at 65.9%, which is close to the
+~64% cap noted here rather than far above it. The test set's thinness was
+therefore not what was hiding a route to 95%; there is no such route.
+`findings/rich_intake_wsCC.md`.
 
 ---
 

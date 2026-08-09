@@ -179,6 +179,13 @@ Shipped as an ARM rather than as a change: `SECTOR_CLIP_ARM=off` in `fit.ts`,
 defaulting to today's behaviour. End-to-end on the product's own ranking, N=600
 holdout, seed 20260806:
 
+> **The arm was DELETED on 2026-08-09 (wsCN flag audit).** The numbers below are
+> the reason: the direction is settled and structural, not a question of N, so
+> the switch was a branch nobody could ever justify flipping. `sectorFit` now
+> always clips, and the unclipped share remains re-measurable with no env var as
+> its own standalone arm in `measure_signal_power.ts` ("sector share
+> (unclipped)"). The reasoning is preserved in the comment that replaced it.
+
 ```
                           clipped (ships)   unclipped (SECTOR_CLIP_ARM=off)
 in pool                    555/600  93%       555/600  93%

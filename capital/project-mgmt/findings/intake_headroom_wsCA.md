@@ -2,6 +2,42 @@
 
 **Workstream CA · 2026-08-09 · isolated worktree off `main` at `a6b19294`.**
 
+> ## ⚠ 43.1% IS RETRACTED AS THE FOUNDER-REACHABLE CEILING
+>
+> **Retracted 2026-08-09, same day, by wsCC (`6cab7a7d`). Reason: CONDITIONED
+> ON A FIXED INTAKE.** 43.1% is the ceiling reachable through *today's* intake
+> fields and their comparators as encoded today. It bounds today's product; it
+> does not bound the target, because the target was restated the same day as
+> **95% assuming FULL founder information**. A ceiling measured on the questions
+> we happen to ask cannot answer a question about the questions we could ask.
+>
+> **What replaced it:** **65.9% EXACT@5 ("66%")** — the honest maximum under
+> full founder information, keyed on DEMAND CLASS rather than on wording, so
+> two funds demanding the same thing in different words collapse and are not
+> credited. The plannable figure is **58.3%**: a greedy chooser bounds any
+> question-selection policy and saturates there by fifteen questions. See
+> `rich_intake_wsCC.md`. 95% is not reachable and was never reachable.
+>
+> **This document's own retraction of 85.5% stands** (§2) and is confirmed by
+> wsCC. 43.1% was a genuine repair of a circular number; it was then superseded
+> by a wider one, which is a different failure and a milder one.
+>
+> ### One substantive finding below is WRONG, not merely superseded
+>
+> §1 and §4 conclude that every remaining intake question is worth **+2.0** of
+> ceiling between them, and that there is no next question to ask. **That is
+> contradicted by measurement.** wsCH (`a9c9753`) measured ORGANISATION TYPE —
+> company vs sole trader vs commune vs university vs association, 619 gates on
+> 384 instruments — at **CEIL@5 40.0 → 51.7 (+11.7)** on *this document's own
+> population and key*, spread over 12 regimes with a largest share of 15%. It
+> is crisp, instantly answerable, and no intake field carried it. This
+> workstream missed it by reading that bucket as SME status.
+>
+> So read §1/§4's "+2.0" and "there is no next question" as applying only to
+> the fields this workstream enumerated, **not** as a general result about
+> intake questions. The wsCH figure is recorded in commit `a9c9753` only; no
+> findings document carries it.
+
 Reproduce (every harness is FREE — Postgres and disk, no model calls):
 
 ```
@@ -28,6 +64,15 @@ the ranker (wsBU) nor the corpus (wsBY) binding. Find the next region question.
 The founder-reachable ceiling is **43.1%**, not 85.5%. The six intake fields
 that already rank reach **40.0%** of it. Every remaining question in the intake,
 answered perfectly and wired in, is worth **+2.0**.
+
+⚠ **Both claims in that paragraph have since been qualified — see the banner
+at the top.** 43.1% is retracted as *the* founder-reachable ceiling because it
+is conditioned on today's fixed intake; under full founder information the
+figure is 65.9% (`rich_intake_wsCC.md`). And "+2.0 for everything remaining"
+holds only for the fields enumerated here: organisation type, which this
+workstream did not test as its own field, measured **+11.7** on this same
+population and key (wsCH, `a9c9753`). The one claim that survives intact is
+that the sixty points were never there.
 
 ---
 
@@ -184,10 +229,16 @@ Laid out end to end, on one population:
 nothing asked                                          7.6%
 the six fields that already rank                      40.0%   <- where the product's questions have got to
 + all seventeen memo-only fields wired in             42.0%
-+ region and capital type read off the corpus         43.1%   <- the founder-reachable CEILING
++ region and capital type read off the corpus         43.1%   <- TODAY'S-INTAKE ceiling (RETRACTED as "the" ceiling)
                                                      ------
 the product ships                        EXACT@5      25%
-the IDENTITY ceiling wsBY reported                    85.5%   <- requires verbatim text no founder can state
+the IDENTITY ceiling wsBY reported                    85.5%   <- RETRACTED, circular: verbatim text no founder can state
+
+superseding this ladder, wsCC (rich_intake_wsCC.md), keyed on DEMAND CLASS:
++ organisation type, on this same key (wsCH)          51.7%   <- +11.7, the question this workstream missed
+full founder information, honest maximum              65.9%   <- "66%", the current ceiling of record
+what any question-selection policy can plan for       58.3%   <- greedy, saturates by ~15 questions
+the fully circular reading, for reference only        77.6%   <- never quote this as headroom
 ```
 
 **Expected end-to-end effect on EXACT@5 of the best available question: zero,

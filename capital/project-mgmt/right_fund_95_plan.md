@@ -1,5 +1,16 @@
 # Getting the right fund in front of the founder, 95% of the time
 
+> ⚠ **The 95% in this title is not achievable, and that is now measured rather
+> than argued.** wsCC (2026-08-09, `findings/rich_intake_wsCC.md`): under FULL
+> founder information — not today's six questions — the honest maximum is
+> **65.9% EXACT@5**, and the number any question-selection policy can plan
+> against is **58.3%**. Bound by pool reach (−7) and by 29 points of funds that
+> stay genuinely indistinguishable after everything a founder can truthfully
+> say. **Plan against 58%, never against 95%.**
+>
+> The plan below is kept for its route and its reasoning, both of which are
+> still useful; its target is not. Do not quote a headroom figure from it.
+
 Written 2026-08-03. Every number measured by `scripts/measure_recall.ts`, which
 replays real recipients from our own corpus. Re-measure before believing any
 claim here.

@@ -1,5 +1,12 @@
 # The route to 95%: allocate slots by where funding actually comes from
 
+> ⚠ **There is no route to 95%.** wsCC (2026-08-09,
+> `findings/rich_intake_wsCC.md`) measured the ceiling under full founder
+> information at **65.9% EXACT@5**, with **58.3%** the bound on any
+> question-selection policy. 95% is not reachable and was never reachable.
+> The slot-allocation argument below stands on its own merits — it is about
+> where to spend five rows — but its target is retired.
+
 Written 2026-08-03, after Phases 0–2a. Every number measured; re-measure with
 `SPLIT=holdout npx tsx scripts/measure_recall.ts`.
 
