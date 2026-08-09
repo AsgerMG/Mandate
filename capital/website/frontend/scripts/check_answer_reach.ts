@@ -80,13 +80,54 @@
  * inputs, whose scorers are global multipliers: their behaviour is a property
  * of the code rather than of which funds happen to sit in one founder's pool.
  *
+ * IT GRADED THE WRONG RANKER, and this is the one that cost something. The
+ * declaration below named DATABASE_URL alone. `semanticFundMatch` returns an
+ * EMPTY map when VOYAGE_KEY is absent, and an empty map is precisely the
+ * condition on which the ranker falls through to the lexical index — so a run
+ * without the key graded whether intake answers reach a ranker the product does
+ * not serve, and printed its verdict in words character-for-character identical
+ * to the real one's:
+ *
+ *     6 proved to rank, 17 declared memo-only
+ *     PASS — every question we ask changes something a founder sees.
+ *
+ * Re-measured 2026-08-09 against both, same corpus, same seed, same twelve
+ * founders. Two of the twenty-three fields disagree, in opposite directions:
+ * `fteBand` moved the published rows lexically and does not under embeddings,
+ * `turnoverBand` the reverse. Neither is in the `ranks: true` set, so the
+ * build-failing claim survived — but "how this memo-only field is read" was
+ * recorded backwards for two of them, and nothing in the output could have
+ * revealed it.
+ *
+ * The missing key was the trigger. The DEFECT was that the two systems produced
+ * the same words, so the fix is not only to demand the key: this check now
+ * OBSERVES which ranker ordered each probe founder's table, through the same
+ * `rankerUsed()` the ranker itself branches on, prints it on every run, and
+ * refuses to report a verdict about a table the lexical index ordered.
+ *
  * DATABASE_URL is OPTIONAL: with no corpus this checks nothing and says so.
+ * VOYAGE_KEY is NOT, whenever there is a corpus — see the declaration.
  */
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials, isDeliberatelyOffline } from "./loadEnv";
 
 loadEnvLocal();
+/**
+ * Whether this run has a corpus to grade — and therefore whether it is about to
+ * rank anything at all.
+ *
+ * The credential declaration is CONDITIONAL on it, rather than VOYAGE_KEY being
+ * demanded later at the point of use, for a reason that was itself a hole:
+ * `ENV_SELFTEST=1` is this repo's documented way to verify a harness finds its
+ * credentials without paying for the run, and it EXITS INSIDE THE FIRST
+ * `requireCredentials` call. A second declaration further down is therefore
+ * invisible to it — so the self-test printed `needs=[]` and exited 0 on a
+ * machine with no VOYAGE_KEY, which is the same false green one layer up.
+ * A harness gets one declaration, and it has to be the true one.
+ */
+const HAS_CORPUS = !isDeliberatelyOffline() && Boolean(process.env.DATABASE_URL);
 const CREDENTIALS = requireCredentials(
-  "check_answer_reach", [], { optional: ["DATABASE_URL"] });
+  "check_answer_reach", HAS_CORPUS ? ["VOYAGE_KEY"] : [],
+  { optional: ["DATABASE_URL"] });
 
 /**
  * How many founders the probe runs over.
@@ -117,7 +158,8 @@ async function main() {
     await import("../lib/intelligence/shortlist");
   const { evaluateEligibility } = await import("../lib/intelligence/eligibility");
   const { founderCountryList } = await import("../lib/intelligence/shortlist");
-  const { semanticFundMatch } = await import("../lib/intelligence/semantic");
+  const { semanticFundMatch, rankerUsed, RANKER_DESCRIPTION } =
+    await import("../lib/intelligence/semantic");
   const { loadRecallSet, isDescribed } = await import("./recallSet");
   const { sampleRecall, DEFAULT_SEED } = await import("./recallSample");
   type Answers = import("../lib/intelligence/types").EligibilityAnswers;
@@ -125,24 +167,12 @@ async function main() {
   const fields = Object.keys(ANSWER_USE) as (keyof Answers)[];
 
   if (CREDENTIALS === "offline" || !process.env.DATABASE_URL) {
-    console.log("check_answer_reach: no DATABASE_URL, nothing to check " +
-                `(${fields.length} intake fields declared)`);
+    // Even the do-nothing exit names a ranker, because "graded nothing" and
+    // "graded something" must never be two readings of one sentence.
+    console.log("check_answer_reach: RANKER GRADED = none — no DATABASE_URL, " +
+                `nothing to check (${fields.length} intake fields declared)`);
     return;
   }
-
-  // Past here the corpus is live and semanticFundMatch() is on the path, so
-  // VOYAGE_KEY stops being something this run can do without. Without it
-  // embedQuery returns null, every score map is empty, and buildInstrumentTable
-  // falls through to the LEXICAL index — so the check would grade whether
-  // answers reach a ranker the product does not use, and report a pass or a
-  // failure about it in the same words. That is the half-contract this file's
-  // own guard (check_env_loader P3) exists to refuse, and it was live: the
-  // declaration above named DATABASE_URL alone.
-  //
-  // Required rather than optional, deliberately: `optional` is for a key whose
-  // absence still answers the SAME question from the SAME source, and the
-  // lexical index is a different source giving a different answer.
-  requireCredentials("check_answer_reach", ["VOYAGE_KEY"]);
 
   await hydrateDbInstruments();
   // A Postgres timeout falls back to the committed snapshot SILENTLY, and this
@@ -339,6 +369,47 @@ async function main() {
     refs.push(await build(p, sem, baseFor(p)));
   }
 
+  // ── WHICH RANKER DID THIS RUN ACTUALLY GRADE ─────────────────────────────
+  // OBSERVED, not inferred from the environment. `rankerUsed` is the function
+  // the ranker itself branches on (semantic.ts), asked here about the very maps
+  // that were passed into the builds above — so this is a reading of what
+  // happened, not a second theory about what should have.
+  //
+  // Holding the credential is NOT the same claim, and the gap is not
+  // hypothetical: `semanticFundMatch` also returns an empty map for a
+  // description under MIN_MATCHABLE_DESCRIPTION_CHARS, on a Voyage timeout, on
+  // a non-200, and on any pgvector error — each of which it logs and swallows,
+  // because the memo must never die of a slow vector query. Every one of those
+  // silently ranks that founder lexically with VOYAGE_KEY sitting right there.
+  //
+  // So a partial run is refused rather than reported. Eleven embedding founders
+  // and one lexical one is not "mostly the right answer": it is a verdict
+  // averaged over two different systems, which is the defect this check was
+  // caught in, one order of magnitude smaller and correspondingly harder to see.
+  const rankers = sems.map((s) => rankerUsed(s));
+  const graded = new Set(rankers);
+  const SHIPS = "embedding" as const;
+  console.log(`\n  RANKER GRADED: ${[...graded].join(" + ").toUpperCase()} — ` +
+              `${rankers.filter((r) => r === SHIPS).length} of ${rankers.length} ` +
+              `probe founders ranked by embeddings, observed via rankerUsed() on ` +
+              `the score maps this run built its tables from.`);
+  console.log(`    ${RANKER_DESCRIPTION[SHIPS]}`);
+  if (graded.size !== 1 || !graded.has(SHIPS)) {
+    console.error(
+      `\ncheck_answer_reach: THIS RUN DID NOT GRADE THE RANKER THAT SHIPS.\n` +
+      PROFILES.map((p, i) => `    ${rankers[i].padEnd(9)} ${p.name}`)
+        .filter((_, i) => rankers[i] !== SHIPS).join("\n") + "\n" +
+      `    ${RANKER_DESCRIPTION.lexical}\n` +
+      `  A verdict computed here would be a statement about the offline\n` +
+      `  fallback, and this check has no vocabulary for saying so: every\n` +
+      `  sentence below is written about the ranker the memo serves. On\n` +
+      `  2026-08-09 it printed exactly those sentences about the lexical index\n` +
+      `  for want of a VOYAGE_KEY, and two fields' reach was recorded\n` +
+      `  backwards. Exiting rather than reporting.`);
+    process.exitCode = 1;
+    return;
+  }
+
   // A field nothing can ANSWER is not this check's business: it is
   // check_gate_field_reach's, which fails the build on any comparator keyed to
   // one. Probing it here would report a second copy of that finding as if it
@@ -421,7 +492,12 @@ async function main() {
         : `${enc!.specs} encoded comparator(s), on no probe founder's table`}`);
   }
 
-  console.log(`check_answer_reach: ${collected.length} of ${fields.length} intake ` +
+  // The ranker is named in the headline, not only in the section above, because
+  // the headline is the line that gets pasted into a commit message and a
+  // finding. Two runs of this check against two different systems produced the
+  // same headline once already.
+  console.log(`\ncheck_answer_reach [ranker: ${SHIPS}]: ${collected.length} of ` +
+              `${fields.length} intake ` +
               `fields are collected (the rest are declared unreachable and belong ` +
               `to check_gate_field_reach); ${PROFILES.length} probe founders; ` +
               `${proved.length} proved to rank, ${declared.length} declared memo-only`);
@@ -440,12 +516,13 @@ async function main() {
     }
   }
   if (failures.length) {
-    console.error(`\n  ${failures.length} field(s) whose answer goes nowhere:\n` +
-                  failures.join("\n"));
+    console.error(`\n  FAIL [ranker: ${SHIPS}] — ${failures.length} field(s) whose ` +
+                  `answer goes nowhere:\n` + failures.join("\n"));
     process.exitCode = 1;
     return;
   }
-  console.log("  PASS — every question we ask changes something a founder sees.");
+  console.log(`  PASS [ranker: ${SHIPS}] — every question we ask changes something ` +
+              `a founder sees, under the ranker the memo ships on.`);
 }
 
 main().catch((e) => { console.error(e); process.exitCode = 1; });

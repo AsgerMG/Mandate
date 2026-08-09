@@ -277,3 +277,41 @@ them.
   needs a live adaptive round to verify.
 - **Did not re-apply the channel prior.** Three measurements say not to. The
   note now sits where the temptation is.
+
+---
+
+## Re-graded 2026-08-09 (wsBX): the measurement above was taken off the wrong ranker
+
+Everything above was measured by `check_answer_reach`, which declared
+`DATABASE_URL` as its only credential. `semanticFundMatch` returns an **empty
+map** with no `VOYAGE_KEY`, and an empty map is exactly the condition on which
+the ranker falls through to the **lexical** index. So a run without the key
+graded whether intake answers reach a ranker the product does not serve — and
+said so in words character-for-character identical to the real one's.
+
+Re-run against both, same corpus, same seed, same twelve founders. **Both PASS,
+both print the same headline**, and the counts above (6 proved to rank, 17
+memo-only, and the same six field names) are confirmed against the ranker that
+ships. Underneath, two of twenty-three fields disagree, in opposite directions:
+
+| field | lexical | embedding | |
+|---|---|---|---|
+| `fteBand` | rows **yes** | rows **no** (screen only) | dropped a claim |
+| `turnoverBand` | rows **no** (screen only) | rows **yes** | gained one |
+
+Both are `ranks: false`, so the build-failing claim was never affected and no
+question was added or removed on the strength of a wrong reading. What was
+recorded backwards is **how two memo-only fields are read** — and nothing in the
+output could have revealed it. Seven more fields kept their verdict but changed
+which founder and which value witnessed it, which is the noise you would expect
+from two different orderings and is not a finding.
+
+**What changed so this cannot recur.** The branch deciding which ranker orders a
+table was an inline `semantic?.size` ternary in four expressions in
+`shortlist.ts` — no name, so no harness could report one. It is now
+`rankerUsed()` in `semantic.ts`, one definition, and the check **observes** it on
+the maps it built its own tables from, names it in the headline, the PASS line,
+the FAIL line and the no-corpus exit, and refuses to report when any probe
+founder was ordered lexically. Holding the credential is the weaker claim:
+`semanticFundMatch` also returns empty on a short description, a Voyage timeout,
+a non-200 and any pgvector error, each swallowed so the memo survives.
