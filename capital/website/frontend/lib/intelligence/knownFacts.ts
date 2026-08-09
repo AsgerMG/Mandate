@@ -13,7 +13,7 @@
 //
 // A stage that re-asks a settled fact is now a bug in one place rather than an
 // omission repeated in three.
-import { BORROWER_MODELS, SECTOR_OPTIONS, TICKET_BANDS, USE_OF_FUNDS_OPTIONS } from "./types";
+import { BORROWER_MODELS, ORGANISATION_TYPE_OPTIONS, SECTOR_OPTIONS, TICKET_BANDS, USE_OF_FUNDS_OPTIONS } from "./types";
 import type { EligibilityAnswers, IntelligenceRequest } from "./types";
 
 const label = (options: readonly { value: string; label: string }[], v?: string) =>
@@ -35,6 +35,11 @@ export function knownFacts(
     req.country ? `Incorporated in: ${req.country}` : "",
     req.companyType ? `Self-described type: ${req.companyType}` : "",
     // The three that were missing and that the question stage most needed.
+    // The kind of body, which decides who may apply at all. Kept beside the
+    // company line and NOT beside team size, because a model that reads them
+    // together starts treating "SME" as an organisation type, which is the
+    // exact confusion that lost this demand for a year.
+    e?.organisationType ? `Kind of organisation: ${label(ORGANISATION_TYPE_OPTIONS, e.organisationType)}` : "",
     e?.sector ? `Sector: ${label(SECTOR_OPTIONS, e.sector)}` : "",
     e?.developmentStage ? `Development stage: ${e.developmentStage.replace(/_/g, " ")}` : "",
     e?.useOfFunds?.length

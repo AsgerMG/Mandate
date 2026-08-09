@@ -12,6 +12,7 @@ import {
   type EligibilityAnswers,
   type ProfileSignal,
   type TicketBand,
+  ORGANISATION_TYPE_OPTIONS,
   SECTOR_OPTIONS,
   ACTIVITY_OPTIONS,
   USE_OF_FUNDS_OPTIONS,
@@ -49,6 +50,7 @@ const NEED_BY_VALUES = NEED_BY_BANDS;
 // every real request through /api/intelligence had its sector silently dropped
 // while the bench, which calls the pipeline directly, saw nothing wrong.
 const SECTOR_VALUES = SECTOR_OPTIONS.map((o) => o.value);
+const ORGANISATION_TYPE_VALUES = ORGANISATION_TYPE_OPTIONS.map((o) => o.value) as readonly string[];
 const ACTIVITY_VALUES = ACTIVITY_OPTIONS.map((o) => o.value);
 const USE_OF_FUNDS_VALUES = USE_OF_FUNDS_OPTIONS.map((o) => o.value);
 const EXCLUSION_VALUES = EXCLUSION_OPTIONS.map((o) => o.value);
@@ -145,6 +147,7 @@ export function sanitizeEligibility(raw: unknown): EligibilityAnswers | undefine
     institutionalBacking: pickEnum(b.institutionalBacking, YES_NO_UNSURE),
     needBy: pickEnum(b.needBy, NEED_BY_VALUES),
     sector: pickEnum(b.sector, SECTOR_VALUES),
+    organisationType: pickEnum(b.organisationType, ORGANISATION_TYPE_VALUES),
     // Was missing entirely, so the whole activities axis was discarded before
     // it could gate anything — the axis that carries most GBER exclusions.
     activities: pickEnumList(b.activities, ACTIVITY_VALUES),

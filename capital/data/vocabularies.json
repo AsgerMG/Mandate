@@ -14,6 +14,13 @@
       "defense_security",
       "other"
     ],
+    "organisationType": [
+      "company",
+      "sole_trader",
+      "research_org",
+      "public_body",
+      "nonprofit"
+    ],
     "activities": [
       "none",
       "financial_services",
@@ -204,6 +211,7 @@
   ],
   "fieldReach": {
     "sector": "first_page",
+    "organisationType": "staged",
     "useOfFunds": "first_page",
     "fteBand": "first_page",
     "ticketBand": "first_page",
@@ -246,6 +254,7 @@
     "lossesOverHalfCapital",
     "needBy",
     "nonEuControl",
+    "organisationType",
     "ownerOver25",
     "region",
     "sector",

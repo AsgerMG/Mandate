@@ -31,6 +31,7 @@ import {
   EXCLUSION_OPTIONS,
   FTE_BANDS,
   NEED_BY_BANDS,
+  ORGANISATION_TYPE_OPTIONS,
   SECTOR_OPTIONS,
   TICKET_BANDS,
   TURNOVER_BANDS,
@@ -55,6 +56,11 @@ const YES_NO_UNSURE = ["yes", "no", "unsure"];
  *  free-form or numeric and cannot be enum-encoded. */
 export const VOCABULARY: Record<string, FieldVocabulary> = {
   sector: { values: SECTOR_OPTIONS.map((o) => o.value), ordered: false, multi: false },
+  // Deliberately UNORDERED. Nothing about a commune sits between a company and
+  // a university, and an ordered field is evaluated by POSITION — a band_max
+  // spec against an order invented here would decide real gates on an
+  // arbitrary sequence.
+  organisationType: { values: ORGANISATION_TYPE_OPTIONS.map((o) => o.value), ordered: false, multi: false },
   activities: { values: ACTIVITY_OPTIONS.map((o) => o.value), ordered: false, multi: true },
   useOfFunds: { values: USE_OF_FUNDS_OPTIONS.map((o) => o.value), ordered: false, multi: true },
   exclusionFlags: { values: EXCLUSION_OPTIONS.map((o) => o.value), ordered: false, multi: true },

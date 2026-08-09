@@ -105,6 +105,7 @@ function eligibilityContext(e?: EligibilityAnswers, targetMarkets?: string[]): s
     targetMarkets?.length ? `Target markets for public capital: ${targetMarkets.join(", ")}` : "",
     e?.entityCountries?.length ? `Entities/establishments in: ${e.entityCountries.join(", ")}` : "",
     e?.wouldOpenEntity ? `Would open a local entity where required: ${e.wouldOpenEntity}` : "",
+    e?.organisationType ? `Kind of organisation: ${e.organisationType.replace(/_/g, " ")}` : "",
     e?.fteBand ? `Team size: ${e.fteBand} FTE` : "",
     e?.turnoverBand ? `Turnover: ${e.turnoverBand}` : "",
     e?.ownerOver25 === "yes" ? "Has an owner holding 25% or more (SME test needs the linked-enterprise check)" : "",

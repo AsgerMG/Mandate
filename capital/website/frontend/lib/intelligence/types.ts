@@ -551,6 +551,35 @@ export interface IntelligenceRequest {
  * What a company BUILDS and what aid law RESTRICTS are different questions:
  * see ACTIVITY_OPTIONS.
  */
+/**
+ * WHAT KIND OF ORGANISATION THE APPLICANT IS.
+ *
+ * The single largest demand in the corpus that no intake field carried: 484
+ * filter gates on 370 publishable instruments turn on the constitutional kind
+ * of the applicant, and 28 of the 36 multi-leaf regimes hold siblings that
+ * demand DIFFERENT kinds. Knowing it lifts CEILING@5 from 40.0 to 51.6 across
+ * twelve regimes with the largest holding 16% of the gained leaves.
+ *
+ * The property, the three tests that decide an unseen case, and why SME status
+ * is NOT this question, are in lib/intelligence/organisationType.ts. Read them
+ * before adding an option: the corpus decides what belongs here, not intuition.
+ *
+ * Five options and not six. The corpus also distinguishes "a legal person not
+ * carrying out an economic activity", and that fails the INVARIANCE test —
+ * trading is something an entity starts and stops, so it is a status and not a
+ * kind. It is also the one item here a founder cannot answer instantly. It is
+ * carried as a DEMAND instead: such a gate admits the three kinds that are
+ * typically non-economic.
+ */
+export const ORGANISATION_TYPE_OPTIONS = [
+  { value: "company", label: "A company", hint: "any incorporated business — GmbH, Ltd, SAS, AB, S.r.l., Oy" },
+  { value: "sole_trader", label: "Sole trader or self-employed", hint: "you trade in your own name, with no company" },
+  { value: "research_org", label: "University or research institute", hint: "including technology centres and RTOs" },
+  { value: "public_body", label: "Public body or local authority", hint: "a municipality, region, agency or other public-law body" },
+  { value: "nonprofit", label: "Association, foundation or cooperative", hint: "constituted for a purpose other than distributing profit" },
+] as const;
+export type OrganisationTypeValue = (typeof ORGANISATION_TYPE_OPTIONS)[number]["value"];
+
 export const SECTOR_OPTIONS = [
   { value: "software_data_ai", label: "Software, AI, data or cloud" },
   { value: "health_life_sciences", label: "Health, medtech, pharma or biotech" },
@@ -754,6 +783,10 @@ export interface EligibilityAnswers {
   bankRelationship?: "yes" | "no" | "unsure"; // a bank that would lend if guaranteed
   institutionalBacking?: "yes" | "no" | "unsure"; // VC/institutional investors aboard or anchoring
   needBy?: string;             // "asap_weeks" | "months_6" | "months_18" | "flexible"
+  /** ORGANISATION_TYPE_OPTIONS value — the constitutional kind of the
+   *  applicant entity. NOT its size: see organisationType.ts for the property
+   *  and the three tests, and for why `fteBand` is a different question. */
+  organisationType?: string;
   /** SECTOR_OPTIONS value — what the company builds. Asked directly. */
   sector?: string;
   /** USE_OF_FUNDS_OPTIONS values — what the money would be spent on. Decides
@@ -813,6 +846,7 @@ export const FIELD_SEVERITY: Record<keyof EligibilityAnswers, FieldSeverity> = {
   institutionalOwner: "structural",
   nonEuControl: "structural",
   sector: "structural",
+  organisationType: "structural",
   region: "structural",
   foundedYear: "structural",
   developmentStage: "structural",
@@ -879,7 +913,20 @@ export interface FieldReachability {
    *                be visible as one rather than read as a question.
    *  unreachable — nothing can put a value here. Encoding against it is waste.
    */
-  via: "first_page" | "adaptive" | "derived" | "constant" | "unreachable";
+  via: "first_page" | "adaptive" | "derived" | "constant" | "unreachable" | "staged";
+  /**
+   * REQUIRED for `via: "staged"`, and meaningless otherwise. Names the
+   * environment variable whose value is "on" when the field is really asked.
+   *
+   * `staged` is the honest reading of a field that is fully wired, encodable
+   * by the ETL, and behind a default-OFF arm: nobody is asked it yet, so
+   * `check_answer_reach`'s rule — every question we ask must change something
+   * a founder sees — has nothing to bite on. That is an exemption, so it is
+   * made to expire: the checks read this env var, and the moment it says "on"
+   * the field is graded as a first-page field like any other. A staged field
+   * that is switched on without earning its comparators goes red.
+   */
+  armEnv?: string;
   /**
    * One value a founder could really give, used to probe `sanitizeEligibility`
    * end to end.
@@ -900,6 +947,14 @@ export interface FieldReachability {
 export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = {
   // ── Asked on the opening form ───────────────────────────────────────────
   sector: { via: "first_page" },
+  // ── Wired, encodable, and not yet asked ─────────────────────────────────
+  // The control exists on the opening form and renders only when the arm is
+  // on. It is `staged` rather than `first_page` because no gate in the corpus
+  // resolves to it yet: the ETL triage pass that would point the 484
+  // organisation-type gates at this field writes to Railway Postgres and needs
+  // approval. Until it runs, asking the question would change nothing a
+  // founder sees, and `check_answer_reach` is right to say so.
+  organisationType: { via: "staged", armEnv: "NEXT_PUBLIC_ORGANISATION_TYPE_ARM" },
   useOfFunds: { via: "first_page" },
   fteBand: { via: "first_page" },
   ticketBand: { via: "first_page" },
@@ -1060,6 +1115,7 @@ export const ANSWER_USE: Record<keyof EligibilityAnswers, AnswerUse> = {
   // claim about the code. So the strong claim stays with the named inputs
   // above, and these carry the weaker one the guard can actually hold: the
   // answer must be READ, by the screen or by an encoded rule.
+  organisationType: { ranks: false, reason: "484 filter gates on 370 publishable instruments demand a constitutional kind, and none of them resolves to this field YET — the triage pass that would point them here writes to Railway Postgres and is awaiting approval. Declared `staged` in FIELD_REACH so no founder is asked it in the meantime" },
   activities: { ranks: false, reason: "611 comparators on 598 instruments — the largest encoded axis in the corpus, and it is an EXCLUSION axis: it blocks funds rather than ordering them" },
   exclusionFlags: { ranks: false, reason: "678 comparators on 626 instruments, the GBER and de minimis exclusions. Blocks rather than orders, and a blocked fund leaves the table" },
   lossesOverHalfCapital: { ranks: false, reason: "153 comparators. The undertaking-in-difficulty test: a hard bar on the screen, with no cure that is ours to offer" },
