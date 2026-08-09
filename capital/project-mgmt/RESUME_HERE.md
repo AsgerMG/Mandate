@@ -109,21 +109,45 @@ verified and merged. Verify, do not trust.
 
 ## Not done, and needing a decision
 
-**The two-way store divergence.** Laptop vs the SQLite volume: gates 7,471 vs
-6,401 (**1,070**, real work), companies 151,426 vs 151,915 (**489**). Postgres
-is byte-current with the laptop — the divergence is with the VOLUME.
+**The two-way store divergence — CLOSED 2026-08-09 (wsCN).** Merged, laptop ←
+volume, scoped to two tables. Backups first (Postgres 12 tables / 18,841 rows to
+iCloud, and a `.backup` of the SQLite store), both verified by re-read.
 
-Two hazards recorded by wsCF:
-- both stores allocate `companies.id` from the SAME AUTOINCREMENT counter since
-  the 08-08 fork, and `merge_volume_into_local.py` keys on `id` alone — a
-  collided row is **silently skipped** and the count-only after-check cannot
-  see it. Safe only while the laptop inserts no company: **run no extractor
-  before merging**.
-- the volume's 489 companies come from a partial run with a red gate, so expect
-  unclassified `sector_top`.
+    companies              163,538 -> 164,029  (+491)
+    public_funding_events  311,355 -> 311,399  (+44: ADEME 42, Spanish BDNS 2)
+    eligibility_gates        7,471 ->   7,471  unchanged, as required
+    funding_instruments      1,088 ->   1,088
+    eligibility_clauses        893 ->     893
 
-Sequence is in the `wsCF` merge commit (`54e7bd6e`). **Avoid `make pull-db`**
-(chains to `--write`) and **`make eligibility`** (TRUNCATEs Postgres).
+`integrity_check` ok, zero events pointing at a company that does not exist, and
+all 491 arriving companies carry unclassified `sector_top` — exactly as wsCF
+predicted from the partial run behind them. **Nothing was pushed to Postgres**,
+which still reads 7,471 / 1,088 / 893.
+
+Two corrections to what was recorded here, both worth keeping:
+
+- **The counter hazard never bit.** Zero id collisions on every table. The
+  laptop had inserted no company since **2026-08-02**, six days before the fork,
+  so the volume's ids 215,305..215,795 were never issued twice. The store itself
+  says so, which is better evidence than the instruction "run no extractor
+  first" — and it is the reason that instruction held.
+- **The real hazard was the mirror image, and nobody had named it.** Of the 174
+  gates and 14 clauses on offer, **all 188 already existed here under a
+  DIFFERENT id**. `id NOT IN` calls those new, so they would have been inserted,
+  the count would have risen by exactly the expected amount, and the natural key
+  `(instrument_id, gate_key)` — which holds exactly, 7,471 distinct pairs across
+  7,471 rows — would have broken. Gates and clauses were therefore excluded:
+  every row they had to offer was a duplicate.
+- The counts recorded here as 151,426 / 151,915 were wrong in absolute terms;
+  the true pair was 163,538 / 164,029. The **delta** was right, which is why it
+  went unnoticed, and is a reason to re-measure rather than re-quote.
+
+`ETL/lib/check_id_collisions.py` now runs **in front of** the merge, not beside
+it, and there is no override flag: asked for all five tables it exits 1 and
+names the 188. Scope with `--only`, do not argue with it.
+
+**Still avoid `make pull-db`** (chains straight to `--write`, unscoped) and
+**`make eligibility`** (TRUNCATEs Postgres).
 
 Also open: nothing ENFORCES a coverage-gate run before `eligibility_export.py`.
 
