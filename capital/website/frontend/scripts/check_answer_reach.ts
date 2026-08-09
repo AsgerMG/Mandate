@@ -130,6 +130,20 @@ async function main() {
     return;
   }
 
+  // Past here the corpus is live and semanticFundMatch() is on the path, so
+  // VOYAGE_KEY stops being something this run can do without. Without it
+  // embedQuery returns null, every score map is empty, and buildInstrumentTable
+  // falls through to the LEXICAL index — so the check would grade whether
+  // answers reach a ranker the product does not use, and report a pass or a
+  // failure about it in the same words. That is the half-contract this file's
+  // own guard (check_env_loader P3) exists to refuse, and it was live: the
+  // declaration above named DATABASE_URL alone.
+  //
+  // Required rather than optional, deliberately: `optional` is for a key whose
+  // absence still answers the SAME question from the SAME source, and the
+  // lexical index is a different source giving a different answer.
+  requireCredentials("check_answer_reach", ["VOYAGE_KEY"]);
+
   await hydrateDbInstruments();
   // A Postgres timeout falls back to the committed snapshot SILENTLY, and this
   // check cannot survive that: the snapshot carries a subset of the encoded

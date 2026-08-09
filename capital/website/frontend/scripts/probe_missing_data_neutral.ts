@@ -24,6 +24,14 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 requireCredentials("probe_missing_data_neutral", ["DATABASE_URL"]);
 
+// This probe needs the live corpus and does NOT rank: it calls sectorFit(),
+// which is arithmetic over a leaf's own sector mix, and never touches the
+// embedding path. fit.ts nonetheless sits downstream of semantic.ts in the
+// module graph, so "it does not use VOYAGE_KEY" was a hope rather than a fact.
+// Destroying the key makes it a fact, and makes the number below identical on a
+// machine that holds the key and one that does not.
+delete process.env.VOYAGE_KEY;
+
 import {
   hydrateDbInstruments, loadDbInstruments, publishableInstruments, requireLiveCorpus,
 } from "../lib/intelligence/corpus";

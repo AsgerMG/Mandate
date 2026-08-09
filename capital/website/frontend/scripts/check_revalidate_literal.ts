@@ -25,11 +25,19 @@
 import { readFileSync, readdirSync, statSync } from "fs";
 import path from "path";
 
-import { loadEnvLocal } from "./loadEnv";
-
-loadEnvLocal();
-
 import { CORPUS_REVALIDATE_SECONDS } from "../lib/corpusFigures";
+
+// This check reads SOURCE TEXT and one compile-time constant. It opens no
+// database and asks the corpus nothing, so it loaded credentials it never used
+// and reached DATABASE_URL through corpusFigures.ts, whose loader sits in a
+// function this file never calls.
+//
+// Destroying the variable rather than declaring it is the stronger of the two
+// statements check_env_loader accepts, and it is the true one here: the run is
+// pinned offline instead of merely expected to stay that way. It also keeps the
+// check runnable on a pull request with no credentials, which a `requireCredentials`
+// declaration would not.
+delete process.env.DATABASE_URL;
 
 const APP = path.join(process.cwd(), "app");
 const SEGMENT_KEYS = [
