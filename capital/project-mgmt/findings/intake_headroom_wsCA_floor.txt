@@ -1,0 +1,15 @@
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+  corpus=postgres instruments=1088
+  __recallSetDoors.json  300 tune pairs
+    ok   pool     94% (floor 89%)
+    ok   exact5   25% (floor 15%)
+    ok   regime5  76% (floor 69%)
+         ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+    ok   regime5  83% (floor 70%)  original join, n=92
+    ok   regime5  31% (floor 21%)  traced:childless_family, n=72
+    ok   regime5  96% (floor 88%)  traced:exact_attribution, n=136
+  [verdict] recall_floor = ok published as #203, code bf79459995b0b6e1
+check_recall_floor: ok — 300 tune pairs of __recallSetDoors.json at seed 20260806, all floors met.
