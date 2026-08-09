@@ -331,10 +331,21 @@ class. Those differ in **granularity as well as in coverage**, and a real
 comparator collapses distinct sentences onto one spec — wsCB measured that
 collapse at **0.31 across all fields**, and at 0.04 on `lossesOverHalfCapital`,
 0.07 on `consortium`, 0.11 on `fteBand`. So +10.0 is an upper bound and the
-realistic figure is materially lower; `_wscb_realistic.ts` is the harness that
-simulates the encoder with its own output and should be the number quoted to
-the owner, not this one. This is the same trap as 85.5%, one level down, and it
-is flagged here so it is not re-inflated later. This is the same shape as the region work, which is the one thing in
+realistic figure is materially lower. `_wscb_realistic.ts` measures it rather
+than guessing: it simulates the encoder **with the encoder's own output** —
+each unencoded gate gets the spec the corpus already carries for the most
+similar text on the same field — and on the reachable, cited tranches it reads
+
+```
+verbatim upper bound                     +16.0   (40.0 -> 56.0)
+simulated, loose similarity floor 0.20    +7.6   (40.0 -> 47.6)
+simulated, strict similarity floor 0.35   +5.6   (40.0 -> 45.6)   <- quote this one
+```
+
+**So the number to give the owner for step 1 is about +6, not +10**, and its
+concentration is healthy (34 leaves over 6 regimes, top-regime share 32%). This
+is the same trap as 85.5%, one level down, and it is flagged here so it is not
+re-inflated later. This is the same shape as the region work, which is the one thing in
 this project's history that moved a ceiling. It is wsCB's brief and this
 workstream confirms it is the largest single lever.
 
