@@ -180,7 +180,7 @@ async function main() {
   const fixed = reattributeMissingAnswers(
     all, (id) => inCorpus.has(id), (id) => offerable.has(id));
   const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
-  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
+  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length, setFile);
   // COUNTRY= restricts the POPULATION to founders in one market, which is the
   // only way to get power on a change that can only bind one market at a time.
   // The degradation policy is the sharpest case: it withholds rows unevenly by

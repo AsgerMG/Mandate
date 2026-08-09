@@ -91,10 +91,50 @@ const regime = (id: string) => namedAncestor(id) ?? id;
  *  rather than a wider margin.
  *
  *  Raise them when the measurement rises. Never lower them to accommodate a
- *  regeneration. */
+ *  regeneration.
+ *
+ *  ── A THIRD population, 2026-08-09, and what it caught on arrival ────────
+ *  `childless_family` is the answer key's new coverage of the 199 offerable
+ *  leaves that are a family nobody split -- CDTI, Innovate UK, Bpifrance's
+ *  innovation line. It arrived wearing `exact_attribution`'s label, and this
+ *  check is what said so: that population read 98.3 -> 70.5 against a floor of
+ *  95, on an artifact nobody had touched. Nothing had regressed. A different
+ *  population had inherited a floor calibrated on another one. The pairs now
+ *  carry their own `traced` value and `exact_attribution` reads 98.0 again.
+ *
+ *  This is the case for floors PER POPULATION rather than a headline, made by
+ *  the check itself, on its first encounter with a population that did not
+ *  exist when it was written.
+ *
+ *  ── It also priced the leak, which is the number worth remembering ───────
+ *  The new key adds 2,018 companies no fitted artifact had ever excluded, and
+ *  `ETL/lib/recall_holdout.py` discovers recall sets by glob -- so the fix is
+ *  to REBUILD, and this check prices what the rebuild was worth:
+ *
+ *                              in cell        regime@5      (tune split)
+ *      childless_family      88.4 -> 63.3   29.9 -> 24.7
+ *      exact_attribution     39.8 -> 39.7   98.0 -> 99.5
+ *      original join         66.9 -> 66.9   81.3 -> 78.9
+ *
+ *  Twenty-five points of in-cell share on the new population was the test
+ *  companies voting for their own answers. Measuring the new key against the
+ *  old artifact would have published that as coverage.
+ *
+ *  ── Why 24.7 is not a bad number ─────────────────────────────────────────
+ *  It looks like a collapse next to 99.5 and it is not comparable to it. A
+ *  childless family IS its own regime, so regime@5 and exact@5 are the same
+ *  question for it and there is no sibling credit to be had: read against the
+ *  EXACT column, which is the like-for-like one, these funds land 24.7 where
+ *  `exact_attribution` lands 14.4. The population the key was blind to is the
+ *  one the prior places best. */
 const FLOOR: Record<string, number> = {
-  "exact_attribution": 95,   // measured 98.3 on the shipped artifact
-  "original join": 78,       // measured 81.3
+  "exact_attribution": 95,   // measured 98.3 on the shipped artifact, 99.5 today
+  "original join": 78,       // measured 81.3, 78.9 today — see the leak table
+  // Measured 24.7 on the compliant artifact. Same 3-point margin as the other
+  // two, which is a wider RELATIVE margin here and appropriately so: this is a
+  // population three days old, on funds whose award history has never been
+  // inside a fitted artifact before.
+  "childless_family": 21,
 };
 
 type Cell = Record<string, string[]>;

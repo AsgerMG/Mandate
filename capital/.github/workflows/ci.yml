@@ -194,6 +194,12 @@ jobs:
       - name: Country resolution
         run: python3 ETL/lib/test_europe_scope.py
 
+      # Which fund an award is credited to decides what the answer key can
+      # name, and a wrong credit reads as recall rather than as an error. Runs
+      # on an in-memory corpus, so it needs no database.
+      - name: Award attribution
+        run: python3 ETL/terms/test_attribution.py
+
       # A spec can be syntactically valid, pass the vocabulary check, and still
       # mean the opposite of its source document.
       - name: Encoded rule sanity

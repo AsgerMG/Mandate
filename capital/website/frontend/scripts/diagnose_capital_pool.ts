@@ -157,7 +157,7 @@ async function main() {
   const fixed = reattributeMissingAnswers(
     all, (id) => inCorpus.has(id), (id) => offerable.has(id));
   const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
-  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length);
+  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length, setFile);
   const split = process.env.SPLIT ?? "holdout";
   const set = pop.graded.filter((r) => split === "all" || r.split === split);
   const N = Math.min(Number(process.env.N ?? 250), set.length);
