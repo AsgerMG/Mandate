@@ -37,6 +37,7 @@ import { sectorFit, sectorFitScorer } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
+import { recordFacts, recordPeerBranch, recordStage } from "./tableTrace";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
  *
@@ -1917,7 +1918,8 @@ function applyPeerPrecedence(
   descriptionIsSpecific = false,
 ): InstrumentRow[] {
   const ranked = peerPrior(country, sector);
-  if (rows.length < 3 || !ranked.length) return rows;
+  if (rows.length < 3 || !ranked.length) { recordPeerBranch("none"); return rows; }
+  recordPeerBranch(descriptionIsSpecific ? "specific" : "flat");
   // A founder with a real project keeps the ranker's order for the top rows;
   // peer precedence only fills behind them.
   if (descriptionIsSpecific) {
@@ -2256,6 +2258,14 @@ export function materialiseInstrumentTable(
     const base = r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
     return base * ticket;
   };
+  // Tier 2 of the row comparator, hoisted out of it so the diagnostic in
+  // tableTrace.ts reads THE comparator's own predicate rather than a second
+  // copy of it. A "keep this in sync" duplicate of a sort key is the same
+  // defect class as the two tableInputFromAnswers literals that lost the memo
+  // two of the six intake answers.
+  const fitDemoted = (r: InstrumentRow) =>
+    r.fit !== "" && r.fit !== "startup_ready" &&
+    !(r.fit === "consortium_institutional" && consortiumOk);
   const ranked = selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
@@ -2321,10 +2331,7 @@ export function materialiseInstrumentTable(
       if (a.usedInField !== b.usedInField) return a.usedInField ? -1 : 1;
       // Startup-ready capital next, unless the founder is consortium-ready
       // (then consortium/institutional rows aren't artificially demoted).
-      const demote = (r: InstrumentRow) =>
-        r.fit !== "" && r.fit !== "startup_ready" &&
-        !(r.fit === "consortium_institutional" && consortiumOk);
-      const da = demote(a), db = demote(b);
+      const da = fitDemoted(a), db = fitDemoted(b);
       if (da !== db) return da ? 1 : -1;
       // Thematic fit to THIS founder, then the hand-ordered list as a stable
       // fallback.
@@ -2394,6 +2401,16 @@ export function materialiseInstrumentTable(
   // above is a TEST rather than a comment: `visible + demoted === input` fails
   // the moment anyone turns this back into a `.filter()`, which is exactly the
   // simplification a reader without the history would reach for.
+  // Observation only, and off unless a diagnostic armed it. See tableTrace.ts.
+  recordStage("sorted", ranked.map((r) => r.instrumentId ?? r.channel));
+  recordFacts(ranked.map((r) => ({
+    id: r.instrumentId ?? r.channel,
+    channel: r.channel,
+    usedInField: Boolean(r.usedInField),
+    fitDemoted: fitDemoted(r),
+    relevance: rowRelevance(r),
+    schemeCode: (r.schemeCode ?? "").trim(),
+  })));
   distinguishRowNames(ranked);
   const encodedCount = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
@@ -2429,6 +2446,7 @@ export function materialiseInstrumentTable(
       `which is shown instead; this row is demoted to the back of the pool, not removed`);
   }
   const rowsOut = collision.visible;
+  recordStage("collapsed", rowsOut.map((r) => r.instrumentId ?? r.channel));
   // Peer precedent decides the visible order, last, on the surviving rows.
   // Applied here rather than inside rowRelevance so it can never resurrect a
   // row the screen excluded or a duplicate the dedupe demoted -- it only
@@ -2473,6 +2491,7 @@ export function materialiseInstrumentTable(
   // rather than merely intended, because there is nothing left downstream that
   // could read the new name and act on it.
   if (ROW_IDENTITY_ARM === "door") nameRowsAsDoors(out);
+  recordStage("final", out.map((r) => r.instrumentId ?? r.channel));
   return out;
 }
 
