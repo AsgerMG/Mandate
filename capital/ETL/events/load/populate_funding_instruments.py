@@ -461,10 +461,26 @@ def split_families(conn) -> set[str]:
     A hardcoded list would go stale the moment a country is added, and it
     would go stale silently: the new country would simply never get the
     granularity, which looks exactly like a country we have thin data for.
+
+    RETURNS ROLLUP IDS, because that is what the caller compares. The one
+    caller tests `source_to_family(event.source) in split_families(conn)`, and
+    `source_to_family` yields ids like `satr_be_rnd`. Between 2026-07-30 and
+    2026-08-09 this selected `source_family_bucket` instead, which is the
+    channel label `'state_aid_satr'` -- the SAME string for all 35 rollups. The
+    membership test compared an id against a channel and was therefore never
+    true again: the scheme arm of the split became dead code for all 22
+    countries, including the two France had just proven it on. Nothing failed;
+    the split simply stopped happening, and 97,032 awards' worth of scheme
+    children stopped being rebuilt.
+
+    So the value space is the contract here, not the column, and
+    `test_split_value_space.py` asserts the two sides still share one rather
+    than asserting this query's text.
     """
     return {r[0] for r in conn.execute(
-        "SELECT DISTINCT source_family_bucket FROM funding_instruments "
-        "WHERE id LIKE 'satr\\_%' ESCAPE '\\' AND source_family_bucket IS NOT NULL")}
+        "SELECT DISTINCT id FROM funding_instruments "
+        "WHERE id LIKE 'satr\\_%' ESCAPE '\\' "
+        "  AND (parent_id IS NULL OR parent_id = '')")}
 
 
 # Every column this pass DERIVES from the events corpus, in insert order. Named
