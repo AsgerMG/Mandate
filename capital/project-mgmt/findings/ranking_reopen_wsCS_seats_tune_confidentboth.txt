@@ -1,0 +1,38 @@
+(node:67957) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T20:44:17.005Z
+ranker: all 594 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune seed=20260806 PEER_FILL=confident-both replayed 600
+
+EXACT@5 147/600 (24.5% +/-3.4)
+
+SEATS THE SCORE KEPT  (peer precedence ran on 600/600; the rest had no peer prior or too short a table)
+    0 seat(s)   332 founders  EXACT@5 27.1% +/-4.8
+    1 seat(s)   157 founders  EXACT@5 21.0% +/-6.4
+    2 seat(s)    41 founders  EXACT@5 31.7% +/-14.2
+    3 seat(s)    26 founders  EXACT@5 19.2% +/-15.1
+    4 seat(s)    16 founders  EXACT@5 6.3% +/-11.9
+    5 seat(s)    10 founders  EXACT@5 0.0% +/-0.0
+    6 seat(s)     5 founders  EXACT@5 20.0% +/-35.1
+    7 seat(s)     2 founders  EXACT@5 0.0% +/-0.0
+    8 seat(s)     1 founders  EXACT@5 100.0% +/-0.0
+   14 seat(s)    10 founders  EXACT@5 30.0% +/-28.4
+  branch flat      n= 482  EXACT@5 25.1% +/-3.9  seats min 0 median 0 max 14
+  branch specific  n= 118  EXACT@5 22.0% +/-7.5  seats min 0 median 1 max 8
+
+PAIRED against /tmp/wsCS_head.json (arm head), same draw pair for pair:
+  head 24.5%  ->  confident-both 24.5%   delta 0.0 points
+  seat count differs on 472/600 founders (79%)
+  discordant 44: +22 / -22
+  gains over 12 regime(s): innovate_uk x5, satr_de_rnd x3, ademe_aid x2
+  losses over 10 regime(s): horizon_eu_pillar_ii x5, vinnova_grant x5, bdns_es_ayudas x3
+
+  -> /tmp/wsCS_confboth.json
