@@ -1,0 +1,242 @@
+(node:96165) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T21:16:59.741Z
+ranker: all 245 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 250
+won leaf inside the memo pool (top 18): 123/250
+
+██ VER-BLOCKED on a fund the register says the company WON: 58 ██
+
+── SURVIVES REAL ANSWERS? (the confound, resolved per case) ──
+  YES — defect: rule, evidence or attribution     55  94.8%
+  NO  — artefact of an invented answer (-> one_blocker)   3  5.2%
+
+── HOW THE BLOCK WAS REACHED ──
+  one CITED STRUCTURAL failure (the documented rule)  55  94.8%
+  >=2 blockers of any tier (condemns uncited)      3  5.2%
+
+── DECIDING FIELD(S) ──
+  entityCountries                                 51  87.9%
+  sector                                           3  5.2%
+  entityCountries+ticketBand                       2  3.4%
+  entityCountries+sector                           1  1.7%
+  consortium+entityCountries+ticketBand            1  1.7%
+
+── EVIDENCE TIER OF THE DECIDING GATE(S) ──
+  llm_2pass                                       51  87.9%
+  llm_cited                                        3  5.2%
+  llm_classified                                   2  3.4%
+  llm_2pass+llm_cited                              1  1.7%
+  llm_2pass+llm_classified                         1  1.7%
+
+── CONCENTRATION ──
+  58 blocks across 18 regimes and 11 countries
+    satr_de_rnd                                       17
+    ademe_aid                                         10
+    bdns_es_ayudas                                     7
+    satr_fr_rnd                                        6
+    eis_turismisektori_tarkvarad                       3
+    innovate_uk                                        2
+    eis_ettev_tjate_k_berturvali                       2
+    altum_mikro_aizdevumi_3_1_1_4_                     1
+
+── EVERY CASE (all 58, not a sample) ──
+  DEFECT  bdns_es_ayudas__convocatoria_2023_ayudas_para_el_desarrollo_de_p_082079 ES  pool#15  ARTICA PFMS, S.L
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Beneficiary entities must have their own legal personality and have tax reside
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must be established/operating in Spain (or applicable region) to acc
+  DEFECT  eis_turismisektori_tarkvarad       EE  pool# 3  AKTSIASELTS PÜHAJÄRVE PUHKEK
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a legal entity registered in Estonia, an Estonian public aut
+        useOfFunds         choice     CITED   llm_cited             Grant may be used for software licence purchase (once), one-off software integ
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Estonia
+  DEFECT  satr_de_rnd__sa_102084__unb_amprion DE  pool# 5  Windpark Quellendorf Eins Gm
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  ademe_aid__aides_au_reemploi_des_emballages_et_des_contenan_f44876 FR  pool# 8  1989 BREWING
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  artefact altum_mikro_aizdevumi_3_1_1_4_     LV  pool#13  ASIMET,SIA
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Latvia
+        ticketBand         choice     uncited llm_classified        Ticket size fits micro-loan band (small, tens of thousands per award given tot
+  DEFECT  ademe_aid__soutien_aux_investissements_pour_le_reemploi_reu_7dd7c2 FR  pool#13  ASSOCIATION AIDE ACCUEIL AMI
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  ademe_aid__avelo_3_1er_releve_a3d166 FR  pool# 3  CA DU PAYS NORD MARTINIQUE
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  ademe_aid__avelo_2_2_843741        FR  pool# 6  CA REDON AGGLOMERATION
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz DE  pool#14  Surface Concept GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  ademe_aid__pacte_industrie_parcours_accompagnement_et_compe_91b526 FR  pool# 4  ALLTUB FRANCE
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung DE  pool# 5  Merkle CAE Solutions GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme DE  pool#17  Luxoft GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  eis_turismisektori_tarkvarad       EE  pool#17  AS WASA
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a legal entity registered in Estonia, an Estonian public aut
+        sector             structural CITED   llm_cited            *STANDS*  Applicant must be a tourism service provider as defined by the listed tourism 
+        useOfFunds         choice     CITED   llm_cited             Grant may be used for software licence purchase (once), one-off software integ
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Estonia
+  DEFECT  satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan DE  pool#17  Erhart GmbH u. Sven Erhart E
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  innovate_uk                        GB  pool# 3  AILSEVAX
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Lead organisation must be UK registered (SME to work alone, or business of any
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Collaborating project team members must be UK registered organisations of spec
+        ticketBand         choice     CITED   llm_2pass             Projects of 6 to 18 months must have total eligible project costs between £100
+        ticketBand         choice     CITED   llm_2pass             Projects of 19 to 24 months must have total eligible project costs between £10
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in the UK
+  DEFECT  bdns_es_ayudas__ayudas_para_realizar_proyectos_de_i_d_convocator_8d491e ES  pool#11  AGIL PACKAGING SYSTEM SL
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Beneficiary entities must have their own legal personality and have tax reside
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must be established/operating in Spain (or applicable region) to acc
+  DEFECT  satr_de_rnd__sa_112005__wibank     DE  pool# 4  Heitec Heisskanaltechnik Gmb
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  ademe_aid__financement_des_equipements_de_reemploi_reutilis_7312f8 FR  pool# 7  ASS ARTOIS TERNOIS RECUPERAT
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  satr_de_rnd__sa_111857__bundesministerium_fur_wirtschaft_und_energie DE  pool# 6  Energie-Wende-Garching GmbH 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  eis_ettev_tjate_k_berturvali__ettevotjate_kuberturvalisuse_tostmine_31f180 EE  pool# 8  AKTSIASELTS VALDEK
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a company entered in the Estonian Commercial Register with b
+        useOfFunds         choice     CITED   llm_cited             Eligible activities include proof of concept, prototyping and testing, develop
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Estonia
+  DEFECT  ademe_aid__extension_et_creation_de_reseaux_de_chaleur_ou_d_d23dcb FR  pool#16  CANNES BOCCA ENERGIES
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  satr_de_rnd__sa_114510__nrw_bank   DE  pool# 2  nerou GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  ademe_aid__audit_et_rehabilitation_d_installations_solaires_42621c FR  pool# 8  CA PORNIC AGGLO PAYS DE RETZ
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  ademe_aid__avelo_2_e9473c          FR  pool# 4  CA DES DEUX BAIES EN MONTREU
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  bdns_es_ayudas__convocatoria_en_2024_de_ayudas_a_proyectos_indus_909271 ES  pool# 1  ALJAOLIVA,S.L.
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Beneficiary entities must have their own legal personality and have tax reside
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must be established/operating in Spain (or applicable region) to acc
+  DEFECT  satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung DE  pool# 2  FORTecH Software GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  artefact bpifrance_innovup_leader_idf       FR  pool# 3  2SPARK- SYFADIS
+        consortium         choice     CITED   llm_2pass             Only individual projects carried by a single company are eligible (no consorti
+        ticketBand         choice     CITED   llm_2pass             The public support sought/granted must be between €75,000 and €500,000.
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  nfr_pes                            NO  pool# 3  AGOPRENE
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a Norwegian actor with a formal role in an EU application (H
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Only approved Norwegian research organisations may apply for the framework gra
+        ticketBand         choice     CITED   llm_2pass             Research organisations without a framework grant may receive a maximum of NOK 
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/active in Norway
+  DEFECT  ademe_aid__etudes_pour_une_installation_hydroelectrique_66ec9b FR  pool# 8  2M PRODUCTION ELECTRIQUE
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Scheme applies to the whole national territory (France); aid is granted to pub
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  bpifrance_inov                     FR  pool# 5  ACTILITY
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a company registered in France in the commercial and compani
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in France
+  DEFECT  satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank DE  pool# 2  Allgemeine Deutsche  Schiffs
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung DE  pool# 2  ASML Berlin GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  innovationsfonden_grand_solutions  DK  pool# 7  ALK-ABELLÓ A/S
+        entityCountries    structural CITED   llm_2pass            *STANDS*  The main applicant must be a Danish legal entity, though other legal entities 
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/active in Denmark
+  DEFECT  altum_mvu_ia_3_1_1_7_un_13_1_1     LV  pool# 8  ARBOR RRK,SIA
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a Latvian business (komersants) obtaining an innovation asse
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Latvia
+  DEFECT  innovate_uk                        GB  pool# 3  BOURNEMOUTH UNIVERSITY
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Lead organisation must be UK registered (SME to work alone, or business of any
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Collaborating project team members must be UK registered organisations of spec
+        ticketBand         choice     CITED   llm_2pass             Projects of 6 to 18 months must have total eligible project costs between £100
+        ticketBand         choice     CITED   llm_2pass             Projects of 19 to 24 months must have total eligible project costs between £10
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in the UK
+  DEFECT  eit_manufacturing_boostup          AT  pool# 8  Convergent Information Techn
+        sector             structural CITED   llm_cited            *STANDS*  Applicant must offer a solution in the realm of manufacturing technologies.
+  DEFECT  satr_de_rnd__sa_110630__bundesanstalt_fur_landwirtschaft_und_ernahrung DE  pool# 1  Quh-Lab Lebensmittelsicherhe
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  vinnova_grant__avancerad_digitalisering_eb7eab SE  pool#11  ASTAZERO AB
+        sector             structural CITED   llm_cited            *STANDS*  At least one consortium member must be an energy-intensive industrial company
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Sweden
+  DEFECT  satr_de_rnd__sa_112200__nbank      DE  pool#10  KH Segelken GmbH & Co.KG
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai FR  pool# 4  EOLIENNES COURCOME - BOA0032
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Aid cannot require the beneficiary to have its registered seat in France, but 
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must have operations or establishment in France (national/regional s
+  DEFECT  satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai FR  pool# 2  CAP SOLAR 45 - BOA0031778
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Aid cannot require the beneficiary to have its registered seat in France, but 
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must have operations or establishment in France (national/regional s
+  DEFECT  eis_ettev_tjate_k_berturvali__ettevotjate_kuberturvalisuse_tostmine_31f180 EE  pool#17  AKTSIASELTS WRIS
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a company entered in the Estonian Commercial Register with b
+        useOfFunds         choice     CITED   llm_cited             Eligible activities include proof of concept, prototyping and testing, develop
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Estonia
+  DEFECT  bdns_es_ayudas__convocatoria_de_ayudas_para_la_realizacion_de_pr_41b43b ES  pool# 4  ASOCIACION DE DAÑO CEREBRAL 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Beneficiary entities must have their own legal personality and have tax reside
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must be established/operating in Spain (or applicable region) to acc
+  artefact eis_turismisektori_tootearen       EE  pool# 5  ANDRIUS OSAÜHING
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Estonia
+        ticketBand         choice     uncited llm_classified        Ticket size fits grant-scale awards typical of this programme (tens of thousan
+  DEFECT  satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances FR  pool# 2  ENLAPS
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Aid cannot require the beneficiary to have its registered seat in France, but 
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must have operations or establishment in France (national/regional s
+  DEFECT  eis_turismisektori_tarkvarad       EE  pool# 3  BALTIC BEACH HOLDING OÜ
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must be a legal entity registered in Estonia, an Estonian public aut
+        useOfFunds         choice     CITED   llm_cited             Grant may be used for software licence purchase (once), one-off software integ
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Estonia
+  DEFECT  satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation FR  pool# 1  CHAMBRE D AGRICULTURE 69
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Aid cannot require the beneficiary to have its registered seat in France, but 
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must have operations or establishment in France (national/regional s
+  DEFECT  satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle DE  pool# 6  Sägewerk Bachmann GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  bdns_es_ayudas__convocatoria_de_subvenciones_en_regimen_de_concu_8fe339 ES  pool# 2  AVANT COMPOUNDING S.L.
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Beneficiary entities must have their own legal personality and have tax reside
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must be established/operating in Spain (or applicable region) to acc
+  DEFECT  satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung DE  pool# 5  BLACK SEMICONDUCTOR
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai FR  pool# 2  SAS SUD TRADING COMPANY - BO
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Aid cannot require the beneficiary to have its registered seat in France, but 
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must have operations or establishment in France (national/regional s
+  DEFECT  satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz DE  pool# 8  OptWare GmbH
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  bdns_es_ayudas__convocatoria_programa_ayuda_a_las_actuaciones_de_803bcf ES  pool# 6  C.P. AVDA DE MADRID 7
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Beneficiary entities must have their own legal personality and have tax reside
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must be established/operating in Spain (or applicable region) to acc
+  DEFECT  satr_de_rnd__sa_111857__bundesministerium_fur_wirtschaft_und_energie DE  pool# 7  50HERTZ TRANSMISSION
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Eligible applicants for the security research programme include civil society 
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Applicant must have or plan to have a business establishment, branch, or non-e
+  DEFECT  satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg IT  pool# 5  TERMINIO FRUTTA E ALIMENTARI
+        sector             structural CITED   llm_cited            *STANDS*  Programmes must be aimed at manufacturing activities or business services acti
+        useOfFunds         choice     CITED   llm_cited             Eligible projects are investment programmes using Transition 4.0 enabling tech
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be established/operating in Italy under the national or regional 
+  DEFECT  satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances FR  pool#11  GADS
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Aid cannot require the beneficiary to have its registered seat in France, but 
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must have operations or establishment in France (national/regional s
+  DEFECT  bdns_es_ayudas__segunda_convocatoria_para_la_concesion_de_ayudas_35e30a ES  pool# 9  AVANZA SPAIN, SL
+        entityCountries    structural CITED   llm_2pass            *STANDS*  Beneficiary entities must have their own legal personality and have tax reside
+        entityCountries    structural uncited llm_classified       *STANDS*  Applicant must be established/operating in Spain (or applicable region) to acc
+  DEFECT  innovationsfonden_erhvervsforsker  DK  pool# 6  AGF A/S
+        entityCountries    structural CITED   llm_2pass            *STANDS*  The company must have a branch with an independent CVR number geographically l
+        entityCountries    structural uncited llm_classified       *STANDS*  Company must be registered/operating in Denmark
+
+wrote /tmp/wsct_blocks_tune.json
