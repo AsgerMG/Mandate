@@ -37,6 +37,7 @@ import { sectorFit, sectorFitScorer } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
+import { recordFacts, recordPeerBranch, recordStage } from "./tableTrace";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
  *
@@ -1490,6 +1491,33 @@ export const LARGE_SCALE_RELEVANCE_FLOOR = 0.5;
  *  and so the flag can never become a per-founder behaviour. */
 export const SIBLING_SCOPE = process.env.SIBLING_SCOPE === "regime" ? "regime" : "channel";
 
+/** How the two near-orthogonal ranking signals split the visible seats when the
+ *  founder's description does not discriminate — see the block inside
+ *  `applyPeerPrecedence`.
+ *
+ *  `head`      the score leads, the peer prior fills every seat behind it.
+ *              Today's behaviour, and the default. Score 1 seat of 5.
+ *  `alternate` the two take seats in turn, score first. Score 3 of 5.
+ *  `all`       the peer prior takes every seat, the score none.
+ *
+ *  Three points and not two, because a single arm either side of the shipped
+ *  split says which way to move and a pair says whether it is a local optimum
+ *  at all. An unknown value THROWS rather than being read as the default: an
+ *  arm that silently falls back to shipped reports "no effect" and is
+ *  indistinguishable from a flag that never arrived.
+ *
+ *  Read once at module scope, exactly as SIBLING_SCOPE, so the two arms cannot
+ *  differ within one request and the flag can never become a per-founder
+ *  behaviour. A flag that silently does not ARRIVE reports "no effect" for both
+ *  arms, which is the shape of every false null in this project's history, so
+ *  it is asserted to reach the module before either arm is believed. */
+export const PEER_FILL = ((): "head" | "alternate" | "all" => {
+  const v = process.env.PEER_FILL;
+  if (v === undefined || v === "" || v === "head") return "head";
+  if (v === "alternate" || v === "all") return v;
+  throw new Error(`unknown PEER_FILL=${v} (expected: head, alternate, all)`);
+})();
+
 /** Inputs to the instrument table. Was seven positional parameters, which one
  *  call site rendered as a single unreadable line of bare values; the object
  *  also gives the exclusion log somewhere to live without an eighth. */
@@ -1905,7 +1933,7 @@ export function peerPrior(country?: string, sector?: string): string[] {
  *  every row the peer prior knows about follows in peer order, and anything
  *  left keeps its original relative position. Nothing is added or removed --
  *  a fund the founder's own screen excluded can never re-enter here. */
-function applyPeerPrecedence(
+export function applyPeerPrecedence(
   rows: InstrumentRow[], country?: string, sector?: string,
   /** How much the founder's own words already tell us. Peer precedence answers
    *  "what do companies like this win", which is the best available signal when
@@ -1917,7 +1945,8 @@ function applyPeerPrecedence(
   descriptionIsSpecific = false,
 ): InstrumentRow[] {
   const ranked = peerPrior(country, sector);
-  if (rows.length < 3 || !ranked.length) return rows;
+  if (rows.length < 3 || !ranked.length) { recordPeerBranch("none"); return rows; }
+  recordPeerBranch(descriptionIsSpecific ? "specific" : "flat");
   // A founder with a real project keeps the ranker's order for the top rows;
   // peer precedence only fills behind them.
   if (descriptionIsSpecific) {
@@ -1932,6 +1961,63 @@ function applyPeerPrecedence(
   const known = rest.filter((r) => r.instrumentId && rankOf.has(r.instrumentId))
     .sort((a, b) => (rankOf.get(a.instrumentId!) ?? 1e9) - (rankOf.get(b.instrumentId!) ?? 1e9));
   const unknown = rest.filter((r) => !r.instrumentId || !rankOf.has(r.instrumentId));
+  // ── How many of the five seats each signal gets, and why it is a flag ─────
+  //
+  // This branch hands the SCORE one seat and the PEER PRIOR the other four,
+  // and then puts every peer-known row ahead of every peer-unknown one however
+  // well the unknown scored. That is a strict tier between two signals the
+  // block above measures as EQUAL in isolation (ranker 24%, peer 27%,
+  // union 45%) — and wsBU re-measured the same equality on the Doors key,
+  // leak-free, n=600: collaborative prior 21.2 +/- 3.3 against the shipped
+  // ranker's 21.2 +/- 3.3.
+  //
+  // wsCM measured the consequence on the shipped path, tune split, n=250: the
+  // won leaf sits below at least one row it OUTSCORED in 190 of 250 published
+  // orders, median seven such rows. And 81% of founders take THIS branch, so
+  // for four founders in five the score chooses one row of the five.
+  //
+  // `alternate` is the union the comment above already names, spelled as an
+  // order: the two lists take seats in turn, score first, each row taken once.
+  // It is a PROPERTY rather than a tuned constant — two signals of equal
+  // measured strength split the seats evenly — and it names no fund, country,
+  // sector or channel, so there is nothing in it to overfit to a regime.
+  //
+  // Default `head`, which is today's behaviour bit for bit. Nothing a founder
+  // sees changes until this constant does.
+  const fill: InstrumentRow[] = [];
+  if (PEER_FILL === "all") {
+    // No reserved seat for the score at all. `lead` re-enters here through the
+    // peer lists, so no row is dropped -- the pool is unchanged and only the
+    // ORDER differs, which is the invariant every arm on this path must keep.
+    const all = [lead, ...rest];
+    const k = all.filter((r) => r.instrumentId && rankOf.has(r.instrumentId))
+      .sort((a, b) => (rankOf.get(a.instrumentId!) ?? 1e9) - (rankOf.get(b.instrumentId!) ?? 1e9));
+    fill.push(...k, ...all.filter((r) => !r.instrumentId || !rankOf.has(r.instrumentId)));
+  } else if (PEER_FILL === "alternate") {
+    const taken = new Set<InstrumentRow>();
+    const byScore = rest;                 // `rows` arrives in score order
+    const byPeer = [...known, ...unknown]; // peer order, then the rest
+    let i = 0, j = 0;
+    // Score first, because the ranker's own top row is the one signal we know
+    // is about THIS founder rather than about founders like them.
+    for (let turn = 0; fill.length < rest.length; turn++) {
+      const src = turn % 2 === 0 ? byScore : byPeer;
+      const cur = turn % 2 === 0 ? i : j;
+      let k = cur;
+      while (k < src.length && taken.has(src[k])) k++;
+      if (turn % 2 === 0) i = k; else j = k;
+      if (k >= src.length) {
+        // One list is exhausted; drain the other in its own order rather than
+        // stopping, so no row is silently dropped from the pool.
+        for (const r of turn % 2 === 0 ? byPeer : byScore) if (!taken.has(r)) { taken.add(r); fill.push(r); }
+        break;
+      }
+      taken.add(src[k]);
+      fill.push(src[k]);
+    }
+  } else {
+    fill.push(...known, ...unknown);
+  }
   // One row per NOTIFIED SCHEME in the visible order.
   //
   // The dedupe above keys on display NAME, which is enough while ranking is
@@ -1949,7 +2035,7 @@ function applyPeerPrecedence(
   const seenScheme = new Set<string>();
   const firsts: InstrumentRow[] = [];
   const repeats: InstrumentRow[] = [];
-  for (const r of [lead, ...known, ...unknown]) {
+  for (const r of PEER_FILL === "all" ? fill : [lead, ...fill]) {
     const code = (r.schemeCode ?? "").trim();
     if (code && seenScheme.has(code)) { repeats.push(r); continue; }
     if (code) seenScheme.add(code);
@@ -2256,6 +2342,14 @@ export function materialiseInstrumentTable(
     const base = r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
     return base * ticket;
   };
+  // Tier 2 of the row comparator, hoisted out of it so the diagnostic in
+  // tableTrace.ts reads THE comparator's own predicate rather than a second
+  // copy of it. A "keep this in sync" duplicate of a sort key is the same
+  // defect class as the two tableInputFromAnswers literals that lost the memo
+  // two of the six intake answers.
+  const fitDemoted = (r: InstrumentRow) =>
+    r.fit !== "" && r.fit !== "startup_ready" &&
+    !(r.fit === "consortium_institutional" && consortiumOk);
   const ranked = selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
@@ -2321,10 +2415,7 @@ export function materialiseInstrumentTable(
       if (a.usedInField !== b.usedInField) return a.usedInField ? -1 : 1;
       // Startup-ready capital next, unless the founder is consortium-ready
       // (then consortium/institutional rows aren't artificially demoted).
-      const demote = (r: InstrumentRow) =>
-        r.fit !== "" && r.fit !== "startup_ready" &&
-        !(r.fit === "consortium_institutional" && consortiumOk);
-      const da = demote(a), db = demote(b);
+      const da = fitDemoted(a), db = fitDemoted(b);
       if (da !== db) return da ? 1 : -1;
       // Thematic fit to THIS founder, then the hand-ordered list as a stable
       // fallback.
@@ -2394,6 +2485,16 @@ export function materialiseInstrumentTable(
   // above is a TEST rather than a comment: `visible + demoted === input` fails
   // the moment anyone turns this back into a `.filter()`, which is exactly the
   // simplification a reader without the history would reach for.
+  // Observation only, and off unless a diagnostic armed it. See tableTrace.ts.
+  recordStage("sorted", ranked.map((r) => r.instrumentId ?? r.channel));
+  recordFacts(ranked.map((r) => ({
+    id: r.instrumentId ?? r.channel,
+    channel: r.channel,
+    usedInField: Boolean(r.usedInField),
+    fitDemoted: fitDemoted(r),
+    relevance: rowRelevance(r),
+    schemeCode: (r.schemeCode ?? "").trim(),
+  })));
   distinguishRowNames(ranked);
   const encodedCount = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
@@ -2429,6 +2530,7 @@ export function materialiseInstrumentTable(
       `which is shown instead; this row is demoted to the back of the pool, not removed`);
   }
   const rowsOut = collision.visible;
+  recordStage("collapsed", rowsOut.map((r) => r.instrumentId ?? r.channel));
   // Peer precedent decides the visible order, last, on the surviving rows.
   // Applied here rather than inside rowRelevance so it can never resurrect a
   // row the screen excluded or a duplicate the dedupe demoted -- it only
@@ -2473,6 +2575,7 @@ export function materialiseInstrumentTable(
   // rather than merely intended, because there is nothing left downstream that
   // could read the new name and act on it.
   if (ROW_IDENTITY_ARM === "door") nameRowsAsDoors(out);
+  recordStage("final", out.map((r) => r.instrumentId ?? r.channel));
   return out;
 }
 
