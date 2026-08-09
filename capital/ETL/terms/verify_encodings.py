@@ -49,6 +49,8 @@ import sqlite3
 
 import anthropic
 
+from encode_gates import emittable_ops, refuse_unemittable
+
 MODELS = {"haiku": "claude-haiku-4-5-20251001", "sonnet": "claude-sonnet-5"}
 CHUNK = 15
 
@@ -339,6 +341,16 @@ def main() -> None:
                                 WHERE id = ?""", (gid,))
                     dropped += 1
                     continue
+                # This pass takes `field` from the model, unconstrained, and its
+                # own op enum has no `region_within` — so it could write the
+                # exact comparator wsBT found on gate 151670, an `in` against
+                # `region` that no NUTS answer can ever satisfy. The refusal is
+                # encode_gates.py's, imported rather than restated, and it reads
+                # THIS module's schema, so it lifts by itself the day the enum
+                # gains the operator.
+                if refuse_unemittable(field, gid, "re-encode", emittable_ops(REENCODE_SCHEMA)):
+                    kept_bad += 1
+                    continue
                 vocab = ENUM_VALUES.get(field)
                 if vocab:
                     good = [v for v in vals if v in vocab]
@@ -358,7 +370,9 @@ def main() -> None:
                     if not vals or vals[0] not in order:
                         kept_bad += 1
                         continue
-                    spec["order"] = order
+                    # No frozen copy of the band list: comparator.ts reads the
+                    # live BAND_ORDERS, and a snapshot here can only go stale
+                    # and turn the rule inert. `order` validates, never travels.
                     spec["maxAllowed" if op == "band_max" else "minAllowed"] = vals[0]
                 if not args.dry_run:
                     conn.execute(

@@ -257,16 +257,23 @@ def refuse_unreachable(field: str, gid: int, what: str) -> bool:
 SINGLE_OPERATOR_FIELDS = {"region": "region_within"}
 
 
-def emittable_ops() -> frozenset[str]:
-    """The operators this encoder's output schema permits the model to return."""
-    return frozenset(
-        ENCODE_SCHEMA["properties"]["results"]["items"]["properties"]["op"]["enum"])
+def emittable_ops(schema: dict | None = None) -> frozenset[str]:
+    """The operators an encoder's output schema permits the model to return.
+
+    Takes the schema so the OTHER model-driven encoders can be held to the same
+    property against their own enums — verify_encodings.py and
+    reextract_dropped.py both take `field` from the model and both had no
+    guard, which is one orphan per encoder rather than one for the repo.
+    """
+    s = ENCODE_SCHEMA if schema is None else schema
+    return frozenset(s["properties"]["results"]["items"]["properties"]["op"]["enum"])
 
 
-def refuse_unemittable(field: str, gid: int, what: str) -> bool:
+def refuse_unemittable(field: str, gid: int, what: str,
+                       ops: frozenset[str] | None = None) -> bool:
     """True when `field` needs an operator this encoder cannot emit."""
     op = SINGLE_OPERATOR_FIELDS.get(field)
-    if op and op not in emittable_ops():
+    if op and op not in (emittable_ops() if ops is None else ops):
         print(f"    refused {what} on gate {gid}: `{field}` is only evaluable "
               f"through `{op}`, which this encoder cannot emit — encode_regions.py "
               f"owns it")
@@ -745,11 +752,19 @@ def cmd_encode(args) -> None:
                 # — band_max reads `maxAllowed`, band_min reads `minAllowed`,
                 # equals reads `value`. Emitting the wrong key produces a spec
                 # the engine parses but silently evaluates to "unknown".
+                #
+                # The band list itself is NOT written into the spec. It used to
+                # be, and a frozen copy can only go stale: rebanding ticketBand
+                # turned all 33 of them inert in one commit, `indexOf` returning
+                # -1 for a band the snapshot predated. comparator.ts reads the
+                # live BAND_ORDERS, so the copy has no reader and one failure
+                # mode. `order` is still validated against here — a banded op on
+                # a field with no band order is dropped below.
                 order = BAND_ORDERS.get(by_id[gid], [])
                 if op == "band_max":
-                    spec["maxAllowed"], spec["order"] = r["values"][0], order
+                    spec["maxAllowed"] = r["values"][0]
                 elif op == "band_min":
-                    spec["minAllowed"], spec["order"] = r["values"][0], order
+                    spec["minAllowed"] = r["values"][0]
                 else:
                     spec["value"] = r["values"][0]
                 # A banded op against a field with no band order can never be
