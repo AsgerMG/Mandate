@@ -21,3 +21,11 @@ __pycache__/
 # build with an unhelpful COPY error.
 .git
 .claude/
+
+# A database backup must no more enter an image than a credential does. This
+# directory is 123 MB of verified Postgres dumps (ETL/lib/backup_postgres.py),
+# untracked and, until now, matched by nothing here -- so `COPY . .` would have
+# baked it into every layer, more than doubling a 77 MB build context and
+# putting a full copy of the corpus in a registry. Railway mounts the real data
+# on a volume; nothing in this image should ever read a backup.
+postgres-backup/
