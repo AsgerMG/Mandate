@@ -421,6 +421,7 @@ export function computeAxes(funds: AxisFund[], sector?: string | null): Axis[] {
 }
 
 const GATE_FIELD_ASKS: Record<string, string> = {
+  organisationType: "What kind of organisation is the applicant — a company, a sole trader, a university, a public body, or an association?",
   fteBand: "How many people work for you?",
   turnoverBand: "What was last year's turnover?",
   balanceBand: "What is on the balance sheet?",

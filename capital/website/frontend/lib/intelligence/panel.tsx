@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CAPITAL_OPTIONS,
+  ORGANISATION_TYPE_OPTIONS,
   SECTOR_OPTIONS,
   USE_OF_FUNDS_OPTIONS,
   FIELD_ENUM_HINTS,
@@ -24,6 +25,7 @@ import {
 
 import { CapitalSelect, InfoDot, MultiChips } from "./panelControls";
 import { regionOptions } from "./regions.generated";
+import { ORGANISATION_TYPE_ARM, prefillOrganisationType } from "./organisationType";
 import { toIso2 } from "./countryCodes";
 import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
 
@@ -196,6 +198,10 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   const [regionTouched, setRegionTouched] = useState(false);
   const [regionPrefill, setRegionPrefill] = useState<
     { label: string; matchedName: string } | null>(null);
+  // Same safety property, one field over. `orgTypeTouched` latches on the
+  // founder's first pick and nothing may write over it afterwards.
+  const [orgTypeTouched, setOrgTypeTouched] = useState(false);
+  const [orgTypePrefill, setOrgTypePrefill] = useState<string | null>(null);
   // targetMarkets left the first screen (34 instruments, heavy multi-select);
   // founderCountryList falls back to the incorporation country.
 
@@ -282,6 +288,19 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     }, 400);
     return () => { cancelled = true; clearTimeout(t); };
   }, [company, country, regionTouched]);
+
+  // The organisation-type pre-fill, which needs no network call at all: the
+  // legal form is IN the name the founder is typing, because company law
+  // requires it to be. Synchronous, so the answer appears as they type rather
+  // than a moment later, and it stops writing the instant they pick anything.
+  useEffect(() => {
+    if (ORGANISATION_TYPE_ARM !== "on" || orgTypeTouched) return;
+    const guess = prefillOrganisationType(company);
+    setOrgTypePrefill(guess);
+    // A name with no designator is the common, legitimate case — a sole trader
+    // declares none. Clear rather than keep a stale guess from an older name.
+    setElig((p) => (p.organisationType === guess ? p : { ...p, organisationType: guess ?? undefined }));
+  }, [company, orgTypeTouched]);
 
   // The founder's own country decides which regions exist. `toIso2` is what
   // bridges the country select's full English names to the NUTS table's ISO2
@@ -718,6 +737,46 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                       </span>
                     )}
                   </label>
+                )}
+
+                {/* ── What kind of organisation are you ────────────────────
+                    The largest demand in the corpus the intake never asked:
+                    484 filter gates on 370 publishable instruments, and 28 of
+                    the 36 multi-leaf regimes hold siblings demanding DIFFERENT
+                    kinds. Not a size question — see organisationType.ts for
+                    the property and why `fteBand` is a different one.
+
+                    It sits in the "where are you" column with country and
+                    region because it is the same class of fact: something the
+                    register already knows about the entity, not a position the
+                    founder has to take. And like region, it ARRIVES ANSWERED —
+                    read straight off the name in the first field, because
+                    company law requires the legal form to be in it. That is
+                    what pays for the question. The origin is stated on screen
+                    and the founder's edit wins outright. ── */}
+                {ORGANISATION_TYPE_ARM === "on" && (
+                  <div className="text-sm">
+                    <span className={fieldLabel}>
+                      What kind of organisation
+                      <InfoDot>
+                        Hundreds of schemes are open only to certain kinds of
+                        body — some fund companies, some only municipalities or
+                        universities, some also the self-employed. It is not a
+                        size question: we ask team size separately.
+                      </InfoDot>
+                    </span>
+                    <Chips options={[...ORGANISATION_TYPE_OPTIONS]}
+                      value={elig.organisationType}
+                      onPick={(v) => { setOrgTypeTouched(true);
+                        setElig((p) => ({ ...p, organisationType: v })); }} />
+                    {orgTypePrefill && !orgTypeTouched
+                      && elig.organisationType === orgTypePrefill && (
+                      <span className="mt-1 block text-xs leading-snug text-[var(--muted-foreground)]">
+                        From the legal form in your company name. Change it if
+                        that is not what you are.
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

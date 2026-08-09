@@ -415,7 +415,37 @@ async function main() {
   // one. Probing it here would report a second copy of that finding as if it
   // were a new one, and the two checks would drift into disagreeing about the
   // same fact. Reach first, then use.
-  const collected = fields.filter((f) => FIELD_REACH[f]?.via !== "unreachable");
+  // A STAGED field is wired, encodable and behind a default-OFF arm: nobody is
+  // asked it, so the rule "every question we ask changes something a founder
+  // sees" has nothing to bite on. That is an exemption, and an exemption that
+  // cannot expire is how a guard rots — so it is keyed to the ARM ITSELF. The
+  // moment the arm says "on", the field is graded exactly like a first-page
+  // field, and a staged field switched on before it has earned any comparator
+  // fails here rather than shipping a question that changes nothing.
+  //
+  // The declaration is also checked, not trusted: `staged` without an `armEnv`
+  // is an exemption with no expiry date and is refused outright.
+  const stagedOff: string[] = [];
+  for (const f of fields) {
+    const reach = FIELD_REACH[f];
+    if (reach?.via !== "staged") continue;
+    if (!reach.armEnv) {
+      console.error(`\n  FAIL — ${String(f)} is declared \`staged\` with no \`armEnv\`. ` +
+        `A staged field is exempt from this check only while its arm is off, so it ` +
+        `must name the arm. Without one the exemption never expires.`);
+      process.exitCode = 1;
+      return;
+    }
+    if (process.env[reach.armEnv] !== "on") stagedOff.push(String(f));
+  }
+  const collected = fields.filter((f) =>
+    FIELD_REACH[f]?.via !== "unreachable" && !stagedOff.includes(String(f)));
+  if (stagedOff.length) {
+    console.log(`\ncheck_answer_reach: ${stagedOff.length} field(s) STAGED and not asked — ` +
+      stagedOff.map((f) => `${f} (arm ${FIELD_REACH[f as keyof typeof FIELD_REACH].armEnv}=off)`).join(", ") +
+      `\n  Wired and encodable, exempt only until the arm goes on. Re-run with the ` +
+      `arm set to "on" to grade them.`);
+  }
   const moves = new Map<keyof Answers, { rows: boolean; screen: boolean; how: string }>();
   for (const field of collected) {
     let rows = false, screen = false, how = "";

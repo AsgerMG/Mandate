@@ -394,6 +394,23 @@ Available attributes:
   borrowerModel         who ends up owing (operating company / lender / originator / fund manager)
   entityCountries       where a legal entity exists
   wouldOpenEntity       willing to incorporate somewhere new
+  organisationType      the CONSTITUTIONAL KIND of the applicant entity, one
+                        of: company, sole_trader, research_org, public_body,
+                        nonprofit. Use it when the rule turns on WHAT KIND OF
+                        BODY may apply.
+                        NOT A SIZE QUESTION. "must be an SME", "not a large
+                        enterprise", "fewer than 250 employees" are fteBand or
+                        turnoverBand rules, however the sentence is worded --
+                        an SME and a large enterprise are the same kind of
+                        body at two sizes. TEST: if two applicants of the same
+                        kind could sit on opposite sides of the rule by
+                        differing only in headcount, turnover, age, place or
+                        sector, it is NOT this field.
+                        A rule that admits a legal person "not carrying out an
+                        economic activity" is an organisationType rule
+                        admitting research_org, public_body and nonprofit --
+                        trading is a status an entity starts and stops, so it
+                        is never an option on its own.
   fteBand               headcount band
   turnoverBand          revenue band
   balanceBand           balance-sheet total band
