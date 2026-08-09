@@ -21,7 +21,23 @@ import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
 import { OPEN_QUESTION_ARM, type OpenJudgement } from "./openQuestions";
 
-const client = new Anthropic();
+// ── Constructed LAZILY, and that is not a style choice ────────────────────
+// `new Anthropic()` resolves credentials at CONSTRUCTION. Built at module
+// scope it runs during import, and ESM imports are hoisted above every
+// statement in the importing file — so a harness whose first line is
+// `loadEnvLocal()` has already constructed this client without a key. The
+// first live run of measure_open_questions.ts failed exactly that way: 120
+// rows of "Could not resolve authentication method", every judgement empty,
+// and a clean-looking +0.0 at every budget underneath it.
+//
+// Under Next.js the environment is present before any module loads, so this
+// changes nothing in production. It is what makes the module usable from a
+// script at all.
+let clientCache: Anthropic | undefined;
+function client(): Anthropic {
+  if (!clientCache) clientCache = new Anthropic();
+  return clientCache;
+}
 
 /** The model that reads a founder's own prose. Same one the memo writer uses:
  *  this is a judgement about language, not a classification task. */
@@ -55,12 +71,20 @@ const SCHEMA = {
         type: "object",
         additionalProperties: false,
         properties: {
-          id: { type: "string" },
+          // ── NOT called "id", and that is the whole point ────────────────
+          // `fence()` wraps each founder answer in `<answer N id="nonce">`, so
+          // a schema field called `id` sitting next to it is an attractive
+          // nuisance: the model dutifully echoed the FENCE NONCE back as the
+          // item id, every lookup missed, and five of six judgements were
+          // dropped in silence under a clean-looking run. An integer named
+          // after the label it points at cannot be confused with an attribute
+          // on a tag.
+          item: { type: "integer" },
           verdict: { type: "string", enum: ["meets", "fails", "unknown"] },
           confident: { type: "boolean" },
           why: { type: "string" },
         },
-        required: ["id", "verdict", "confident", "why"],
+        required: ["item", "verdict", "confident", "why"],
       },
     },
   },
@@ -115,14 +139,14 @@ export async function judgeOpenAnswers(
   }
 
   const block = usable.map((it, n) =>
-    `[${n}]\n` +
+    `ITEM ${n}\n` +
     `REQUIREMENT (verbatim, from the fund's own document):\n"${it.requirement.replace(/\s+/g, " ").slice(0, 900)}"\n` +
     `WE ASKED: ${it.answer.question.replace(/\s+/g, " ").slice(0, 300)}\n` +
     fence(`answer ${n}`, it.answer.answer.slice(0, 1200)),
   ).join("\n\n");
 
   try {
-    const res = billed(await client.messages.create({
+    const res = billed(await client().messages.create({
       model: JUDGE_MODEL,
       max_tokens: 1800,
       thinking: { type: "disabled" },
@@ -165,22 +189,29 @@ export async function judgeOpenAnswers(
           `## The answers\n${block}\n\n` +
           `"why" is at most fifteen words, quoting or closely paraphrasing the ` +
           `founder's own answer so they could check it.\n\n` +
-          `Return ONLY the JSON object for the schema, one entry per id.`,
+          `Return ONLY the JSON object for the schema, one entry per ITEM. ` +
+          `"item" is the integer from the "ITEM n" heading — never an id you ` +
+          `find inside the answer block, which is not yours to read.`,
       }],
     }), JUDGE_MODEL);
 
     const text = res.content
       .filter((b): b is Anthropic.TextBlock => b.type === "text")
       .map((b) => b.text).join("");
+    if (process.env.OPEN_JUDGE_DEBUG) console.error("RAW:", text.slice(0,1500));
     const parsed = extractJson<{
-      items: { id: string; verdict: string; confident: boolean; why: string }[];
+      items: { item: number; verdict: string; confident: boolean; why: string }[];
     }>(text);
 
     const out: JudgedOpenAnswer[] = [];
+    // A judgement that cannot be tied back to the requirement it judged is a
+    // silently discarded answer, which is the wsBL failure class. Counted and
+    // said out loud rather than dropped.
+    let unmatched = 0;
     for (const item of parsed.items ?? []) {
-      const idx = Number(String(item.id).replace(/[^0-9]/g, ""));
-      const src = usable[idx];
-      if (!src) continue;
+      const idx = Number(item.item);
+      const src = Number.isInteger(idx) ? usable[idx] : undefined;
+      if (!src) { unmatched += 1; continue; }
       let verdict: OpenJudgement["verdict"] =
         item.verdict === "meets" || item.verdict === "fails" ? item.verdict : "unknown";
       // THE ASYMMETRY, ENFORCED IN CODE. The prompt asks for it; this is what
@@ -193,6 +224,11 @@ export async function judgeOpenAnswers(
         confident: item.confident === true,
         why: (item.why ?? "").trim().slice(0, 120),
       });
+    }
+    if (unmatched) {
+      console.error(`openJudge: ${unmatched} of ${(parsed.items ?? []).length} `
+        + `judgements could not be matched to the requirement they judged, and `
+        + `were dropped. The founder answered and nothing read it.`);
     }
     return out;
   } catch (err) {
