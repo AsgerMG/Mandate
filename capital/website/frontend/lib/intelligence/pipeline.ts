@@ -8,7 +8,6 @@ import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
-import { scoreFit, sectorFitScorer } from "./fit";
 import { instrumentLink } from "./instrumentLink";
 import { assessAll } from "./verdict";
 import { isWatchOnly } from "./watchOnly";

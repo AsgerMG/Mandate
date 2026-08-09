@@ -20,7 +20,7 @@
 // and the semantic scores); nothing here reaches the network.
 import { scoreEase, type EaseScore } from "./ease";
 import { scoreFit, sectorFitScorer } from "./fit";
-import { assessAll, type InstrumentAssessment } from "./verdict";
+import { assessAll, VERDICT_RANK, type InstrumentAssessment } from "./verdict";
 import {
   CAPITAL_SOUGHT_TO_DB,
   displayInstitutionName,
@@ -57,6 +57,36 @@ import type {
  *  worse. Raising it trades a measured omission risk for an unmeasured one. */
 export const WRITER_CANDIDATE_CAP = 7;
 
+/** ── WHICH ORDER SHIPS, and the measurement that decided it ────────────────
+ *
+ *  `fit` shipped until 2026-08-09 and had never been compared with anything,
+ *  because "do not re-sort" was not a thing the code could express. wsCR
+ *  measured it moving the won leaf OUT of the published six 49 times for 13
+ *  in. A re-sort that loses four for every one it gains is not a re-sort.
+ *
+ *  All three arms, ONE replay, one pool, tune n=250 seed 20260806,
+ *  `ranker: all 245 request(s) on EMBEDDING` (`scripts/_wsct_order.ts`):
+ *
+ *    MEMO@6        fit 24.0%      pool 28.8%      verdict 27.6%
+ *    off-country rows in the published six    0          0          0
+ *    published rows that are `open`        100%      95.4%       100%
+ *
+ *  `pool` scores highest and is NOT what ships. It buys its last 1.2 points by
+ *  publishing rows carrying an obstacle or no assessable verdict at all — 4.6%
+ *  of published rows — and in this product a wrongly-shown row costs more than
+ *  a missing one. `verdict` keeps the whole of that quality (100% `open`,
+ *  byte-identical to `fit` on that measure) and takes 3.6 of the 4.8 points.
+ *
+ *  What it drops is the seven components of `scoreFit` that fit.ts itself
+ *  records as never reaching the founder's table and that nothing has ever
+ *  measured against the shortlist's own ranking. What it keeps is the single
+ *  judgement this product has written a principle about: qualification first.
+ *
+ *  Regime concentration, as the standing rule requires: the 21 pairs the
+ *  re-sort was demoting are spread over 14 regimes and 11 countries, largest
+ *  regime 4. There is no programme carrying this. */
+export const ORDER_ARM: MemoOrderArm = "verdict";
+
 /** One candidate, with every score the ordering consulted still attached --
  *  the caller needs the assessment and the ease line to build the row. */
 export interface MemoCandidate {
@@ -84,6 +114,19 @@ export interface MemoCandidateOrder {
   isStale: (row: InstrumentRow) => boolean;
 }
 
+/** Which order the memo's candidates are drawn in.
+ *
+ *  `pool`    the order the pool arrived in — the shortlist's own ranking, the
+ *            ONE ordering in this product that has ever been measured end to
+ *            end.
+ *  `fit`     re-sort the whole pool on `scoreFit`, nine weighted components.
+ *  `verdict` qualification first, then the pool's order inside each band. The
+ *            one judgement `scoreFit` made that this product has ever stated a
+ *            principle about, without the seven components it never measured.
+ *
+ *  See ORDER_ARM below for what decides between them. */
+export type MemoOrderArm = "pool" | "fit" | "verdict";
+
 export interface MemoCandidateInput {
   /** The pool, already ranked and cut to VERDICT_POOL. */
   instrumentTable: InstrumentRow[];
@@ -93,6 +136,9 @@ export interface MemoCandidateInput {
   eligibilityScreen: EligibilityCheck[];
   semanticScores: Map<string, number>;
   log: ExclusionLog;
+  /** Defaults to what ships. A harness passes both to compare them over ONE
+   *  pool; nothing in production passes it. */
+  order?: MemoOrderArm;
 }
 
 /**
@@ -100,6 +146,7 @@ export interface MemoCandidateInput {
  */
 export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrder {
   const { instrumentTable, req, records, dbPeers, eligibilityScreen, semanticScores, log } = input;
+  const arm = input.order ?? ORDER_ARM;
   const comparableCounts = new Map<string, number>();
   for (const row of instrumentTable) {
     if (!row.instrumentId) continue;
@@ -217,10 +264,18 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
       assessment: row.instrumentId ? assessments.get(row.instrumentId) : undefined,
     }))
     .sort((a, b) => {
-      // Rows with no score at all (no DB-native instrument behind them) keep
-      // their incoming order at the back rather than tying at zero.
-      const fa = a.fit?.score ?? -1, fb = b.fit?.score ?? -1;
-      if (fa !== fb) return fb - fa;
+      // The pool's own order is the tie-break in every arm and the whole of
+      // one of them, so it is the last line rather than three copies.
+      if (arm === "verdict") {
+        const va = VERDICT_RANK[a.assessment?.status ?? "unknown"];
+        const vb = VERDICT_RANK[b.assessment?.status ?? "unknown"];
+        if (va !== vb) return va - vb;
+      } else if (arm === "fit") {
+        // Rows with no score at all (no DB-native instrument behind them) keep
+        // their incoming order at the back rather than tying at zero.
+        const fa = a.fit?.score ?? -1, fb = b.fit?.score ?? -1;
+        if (fa !== fb) return fb - fa;
+      }
       return a.i - b.i;
     });
 
