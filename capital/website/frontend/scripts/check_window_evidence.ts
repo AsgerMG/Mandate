@@ -53,15 +53,21 @@ import {
 } from "../lib/intelligence/corpus";
 import { SOURCE_WINDOW_POLICY } from "../lib/intelligence/liveness";
 
-/** The PUBLISHABLE population as measured on 2026-08-09 against live Postgres:
- *  166 of 895, from 169 rows in the corpus (three of them are not offerable).
+/** The PUBLISHABLE population as measured against live Postgres.
  *
  *  A CEILING, never a target. It may be lowered by loading the windows the
- *  registers state — 41 of the 169 are stated OPEN and 33 stated CLOSED, so
- *  most of it is closable — and it may never be raised to make a build green.
- *  Raising it is the one edit to this file that needs an argument in the commit
- *  message. */
-const BASELINE_UNVERIFIED = Number(process.env.WINDOW_BASELINE ?? 166);
+ *  registers state, and it may never be raised to make a build green. Raising
+ *  it is the one edit to this file that needs an argument in the commit
+ *  message.
+ *
+ *  166 -> 89 on 2026-08-09 (wsCO2), when the owner approved loading the dates.
+ *  74 rows gained a window the register states, 58 of them already past, and
+ *  the 4 Bpifrance award lists stopped claiming a window their file never had.
+ *  What is LEFT is deliberate: a row whose register answers with no date at all
+ *  keeps no declaration and stays here, because "we do not know" is a
+ *  legitimate state and this number falling to zero would mean we had started
+ *  inventing answers. */
+const BASELINE_UNVERIFIED = Number(process.env.WINDOW_BASELINE ?? 89);
 
 const EVIDENCE = resolve(__dirname, "../../../project-mgmt/findings/wsCO_window_register.json");
 
