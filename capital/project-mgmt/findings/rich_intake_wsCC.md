@@ -270,8 +270,34 @@ many funds ask about them — never by fund name.
 **Twenty questions buys 56.9%. The next 130 buy 1.8 points. The last 8 points
 require the remaining 545 demand classes — one per scheme, in its own units.**
 
-That is the practical ceiling, and it is the number to plan against: **a
-rich intake a founder would actually complete reaches about 57%, not 65%.**
+### Is that an artefact of ranking questions by reach? No.
+
+Reach is the obvious ordering and not the best one, so the curve is bracketed
+from above by a **greedy** chooser — at each step, take the demand class that
+adds most CEIL@5. Greedy is the upper bound on *any* question-selection policy.
+Candidates are restricted to demand classes reaching **at least 3 instruments**:
+a class on one fund can only ever separate that fund, and admitting it would let
+greedy spend the budget memorising the corpus. **Only 52 of 695 classes qualify.**
+
+| k | greedy (best possible policy) | reach-ranked |
+|--:|--:|--:|
+| 5 | 47.8% | 44.1% |
+| 10 | 53.4% | — |
+| 15 | 57.7% | — |
+| **20** | **58.3%** | 56.9% |
+| 25 | 58.3% | — |
+| 30 | **58.3%** — saturated | 57.7% |
+
+**Greedy beats reach-ranked by 1.4 points and then stops improving at fifteen
+questions.** The ordering barely matters; the limit is the corpus. Every one of
+the remaining ~6.7 points up to 65.0% lives in demand classes that reach fewer
+than three instruments — one threshold per scheme, in that scheme's own units,
+which is precisely the question wsBA disqualified and wsCA re-disqualified.
+
+That is the practical ceiling, and it is the number to plan against: **a rich
+intake a founder would actually complete reaches about 58%, not 65% — and no
+cleverer choice of questions moves it, because the best possible choice was
+measured and it saturates at 58.3%.**
 
 ---
 

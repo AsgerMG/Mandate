@@ -332,6 +332,61 @@ function ceil5(groups: Row[][], key: (r: Row) => string) {
       `        ${(100 * covered / filters.length).toFixed(1)}%`);
   }
 
+  // ── Is the budget curve an artefact of ranking clusters by REACH? ─────────
+  // Reach is the obvious ordering and it is not the best one. A greedy chooser
+  // — at each step take the cluster that adds most CEIL@5 — is the upper bound
+  // on ANY question-selection policy, so it brackets the reach curve from
+  // above. If the two are close, the budget finding is about the corpus; if
+  // greedy is far higher, it is about the ordering and a better policy exists.
+  //
+  // Greedy is a SELECTION over demand classes the corpus already contains. It
+  // is not fitted to a founder, a fund, a country or a sector, and it is
+  // reported as a bound rather than shipped as a rule.
+  {
+    console.log("\n=== BUDGET, GREEDY — the upper bound on any question-selection policy ===");
+    const perCluster = new Map<number, Set<string>>();
+    for (const r of filters) {
+      if (klass.get(r) === "U") continue;
+      const c = clusterOf.get(r)!;
+      (perCluster.get(c) ?? perCluster.set(c, new Set()).get(c)!).add(r.iid);
+    }
+    const chosen: number[] = [];
+    const pick = new Set<number>();
+    const evaluate = (set: Set<number>) => {
+      const per = new Map<string, Set<number>>();
+      for (const r of filters) {
+        const c = clusterOf.get(r)!;
+        if (klass.get(r) === "U" || !set.has(c)) continue;
+        (per.get(r.iid) ?? per.set(r.iid, new Set()).get(r.iid)!).add(c);
+      }
+      return ceil5(groups, (row) => {
+        const s = per.get(String(row.id));
+        return (s ? [...s].sort((a, b) => a - b).join(",") : "") + "|" + geoCap(row);
+      }).at5;
+    };
+    // Only clusters that reach more than a handful of instruments are
+    // candidates: a cluster on one fund can only ever separate that fund, and
+    // admitting it would let greedy spend the budget memorising the corpus.
+    const cands = [...perCluster.entries()].filter(([, s]) => s.size >= 3).map(([c]) => c);
+    console.log(`candidate demand classes reaching >=3 instruments: ${cands.length} of ${perCluster.size}`);
+    console.log("k".padStart(5) + "  greedy CEIL@5   (reach-ranked, for comparison)");
+    const reachCurve: Record<number, number> = { 1: 33.1, 5: 44.1, 10: 0, 20: 56.9, 30: 57.7 };
+    void reachCurve;
+    for (let k = 1; k <= 30; k++) {
+      let best = -1, bestV = -1;
+      for (const c of cands) {
+        if (pick.has(c)) continue;
+        pick.add(c);
+        const v = evaluate(pick);
+        pick.delete(c);
+        if (v > bestV) { bestV = v; best = c; }
+      }
+      pick.add(best); chosen.push(best);
+      if ([1, 2, 3, 5, 8, 10, 15, 20, 25, 30].includes(k))
+        console.log(String(k).padStart(5) + `   ${bestV.toFixed(1)}%`);
+    }
+  }
+
   // ── The whole publishable offer, not only the contested half ──────────────
   const singles = pop.length - leaves;
   console.log(`\nNOTE ON DENOMINATOR: ${leaves} of ${pop.length} publishable instruments sit in a multi-leaf`);
