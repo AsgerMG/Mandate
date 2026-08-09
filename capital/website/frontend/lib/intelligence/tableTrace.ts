@@ -59,6 +59,19 @@ export interface RowFacts {
  *  ONE and the peer prior fills the other four. */
 let peerBranch: "specific" | "flat" | "none" = "none";
 
+/** How many leading seats the SCORE kept in this table.
+ *
+ *  Fixed on every shipped arm — 1 on the flat branch, 3 on the specific one —
+ *  and a function of the table under `PEER_FILL=confident`. Recorded because a
+ *  null result on that arm has two completely different readings: the seat
+ *  count moved and the page did not care, or the seat count never moved at all.
+ *  Without this the two are indistinguishable, and the second is the shape of
+ *  every false null in this project's history.
+ *
+ *  -1 means peer precedence did not run for this founder (no prior, or a table
+ *  too short), which is not the same as it running and awarding zero seats. */
+let scoreSeatsHeld = -1;
+
 let active = false;
 let stages: TableStage[] = [];
 let facts: RowFacts[] = [];
@@ -74,10 +87,15 @@ export function traceReset(): void {
   stages = [];
   facts = [];
   peerBranch = "none";
+  scoreSeatsHeld = -1;
 }
 
 export function recordPeerBranch(b: "specific" | "flat" | "none"): void {
   if (active) peerBranch = b;
+}
+
+export function recordScoreSeats(n: number): void {
+  if (active) scoreSeatsHeld = n;
 }
 
 export function recordStage(name: string, ids: string[]): void {
@@ -90,6 +108,7 @@ export function recordFacts(f: RowFacts[]): void {
 
 export function readTrace(): {
   stages: TableStage[]; facts: RowFacts[]; peerBranch: "specific" | "flat" | "none";
+  scoreSeats: number;
 } {
-  return { stages, facts, peerBranch };
+  return { stages, facts, peerBranch, scoreSeats: scoreSeatsHeld };
 }

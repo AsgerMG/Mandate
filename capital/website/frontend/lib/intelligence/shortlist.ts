@@ -38,7 +38,7 @@ import { sectorFit, sectorFitScorer } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
-import { recordFacts, recordPeerBranch, recordStage } from "./tableTrace";
+import { recordFacts, recordPeerBranch, recordScoreSeats, recordStage } from "./tableTrace";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
  *
@@ -2143,6 +2143,7 @@ export function applyPeerPrecedence(
     const seats = PEER_FILL === "confident-both"
       ? scoreSeats(rows.map((r) => scoreOf!(r)))
       : 3;
+    recordScoreSeats(seats);
     const head = rows.slice(0, seats);
     const tail = rows.slice(seats).sort((a, b) =>
       (rankOfP.get(a.instrumentId ?? "") ?? 1e9) - (rankOfP.get(b.instrumentId ?? "") ?? 1e9));
@@ -2156,6 +2157,7 @@ export function applyPeerPrecedence(
   const seats = PEER_FILL === "all" ? 0
     : confident ? scoreSeats(rows.map((r) => scoreOf!(r)))
       : 1;
+  recordScoreSeats(seats);
   const lead = rows.slice(0, seats);
   const rest = rows.slice(seats);
   const known = rest.filter((r) => r.instrumentId && rankOf.has(r.instrumentId))
