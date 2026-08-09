@@ -72,9 +72,25 @@ export interface BriefLimits {
  * one idea per bullet — the 700-word body budget still bounds the section, so
  * this cannot quietly become a wall.
  */
+/**
+ * ── `institutionsMax`: why it is 6, and why it is the only copy ────────────
+ *
+ * It was 5 while the instant screen's `DISPLAY_CAP` was, and still is, 6. The
+ * screen therefore already BUILT, screened and rendered a sixth row, and the
+ * memo threw it away: the fund a company actually won is inside six ranked
+ * rows meaningfully more often than inside five. Raised to 6 by an explicit
+ * product decision — the promise the brief makes is now six doors, not five.
+ *
+ * This is the ONLY place the number lives. `pipeline.ts` imports it for the
+ * cut, `contracts/brief/02-funds.md` states it in words to the writer, and
+ * `scripts/check_contracts.ts` fails the build when those words and this
+ * number disagree. Before that there were three independent literal fives —
+ * here, `BRIEF_INSTITUTION_CAP` in pipeline.ts, and the contract prose — with
+ * nothing in the repo comparing any of them.
+ */
 export const BRIEF_LIMITS: BriefLimits = {
   bulletMin: 4, bulletMax: 5, bulletWords: 40,
-  institutionsMax: 5,
+  institutionsMax: 6,
   positioningWords: 200,
   stateOfPlayWords: 200,
   bodyWords: 700,

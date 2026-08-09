@@ -30,6 +30,7 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
   return res;
 }
 import { semanticFundMatch } from "./semantic";
+import { BRIEF_LIMITS } from "./briefChecks";
 import { ExclusionLog } from "./exclusions";
 import { assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
@@ -148,10 +149,17 @@ function deDash(s: string): string {
     .trim();
 }
 
-// The brief's "5 institutions to target" table is deliberately tighter than
-// the preliminary verdict's DISPLAY_CAP — a lean founder gets a shortlist,
-// not a menu.
-const BRIEF_INSTITUTION_CAP = 5;
+// How many rows the brief publishes. NOT a second literal: it is the same
+// number `checkBrief` enforces as FUND-2 and the same number the writer is
+// told in `contracts/brief/02-funds.md`, because a cut and the check on that
+// cut holding separate copies of one constant is the defect that shipped a
+// sixth row into the screen and dropped it from the memo for months.
+//
+// It was 5 while `DISPLAY_CAP` was 6, so the preliminary verdict was strictly
+// MORE generous than the paid memo: the screen built, screened and rendered a
+// row the brief then discarded. That was never a decision, it was two
+// constants that had never been read side by side.
+const BRIEF_INSTITUTION_CAP = BRIEF_LIMITS.institutionsMax;
 /** Below this the brief reads as a non-answer, so the writer may not reject its
  *  way past it. The corpus itself may still supply fewer — a genuinely excluded
  *  business (tobacco, gambling, weapons) has fewer real doors, and padding the
@@ -185,7 +193,7 @@ const DEFAULT_CAVEAT =
   "cash; coverage varies by country and instrument, and absence from the " +
   "database is not proof that no funding was received.";
 
-const WRITER_CANDIDATE_CAP = 7;
+export const WRITER_CANDIDATE_CAP = 7;
 /** "€2.5M EIC · €1.8M dev banks" — the top doors, with figures where known. */
 function fundingBreakdown(channelAmounts: ChannelAmount[]): string {
   return channelAmounts

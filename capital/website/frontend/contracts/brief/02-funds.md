@@ -7,7 +7,8 @@ evidence: [institutions, processes, eligibilityScreen, projectAnswers]
 
 ## Purpose
 
-The five doors worth walking through, and the first step at each. This section
+The doors worth walking through, and the first step at each. The row cap is
+stated once, in FUND-2, and nowhere else in this contract. This section
 IS the eligibility statement: a fund appears here because the founder can go
 after it, so nothing else in the brief needs to argue that case separately.
 
@@ -31,7 +32,12 @@ reporting, not prose to publish. Say what the row is and let it stand.
 
 - FUND-1 (hard) At least one row publishes. An empty table is never the answer
   while any door is open.
-- FUND-2 (hard) At most five rows.
+- FUND-2 (hard) At most six rows.
+
+  This number is generated from `BRIEF_LIMITS.institutionsMax`, which is also
+  what the cut in the pipeline slices to and what the check enforces.
+  `scripts/check_contracts.ts` fails the build if this sentence and that
+  constant disagree, so it can never quietly become the writer's own number.
 - FUND-3 (hard) No two rows say the same thing. The test: **would the reader
   learn anything from the second one they did not learn from the first?** Two
   rows resolving to one institution under one legal basis fail it, and so do
@@ -76,7 +82,7 @@ reporting, not prose to publish. Say what the row is and let it stand.
   still runs.
 - FUND-12 (soft) Rows are not ranked in the brief and must not be described as
   first, best or strongest relative to each other. The bottom line names the
-  first move; the table presents five open doors.
+  first move; the table presents the open doors that were found.
 - FUND-13 (soft) When a row carries `registeredPurpose`, say what the scheme is
   registered to fund in its own statutory terms rather than in a general
   description of the body that runs it. "Notified under Art. 25(2)(b), so it

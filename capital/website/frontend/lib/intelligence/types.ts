@@ -246,7 +246,7 @@ export interface InstrumentRow {
   profileNote?: string;
 }
 
-/** One row of the "5 institutions to target" table — the brief's
+/** One row of the "institutions to target" table — the brief's
  *  centrepiece. institution/channel/supportType/ticket/comparableFirms are
  *  finalised in code from the same ranking (buildInstrumentTable) and DB
  *  evidence (records/dbPeers) the old memo used; only whyEligible and
@@ -387,7 +387,9 @@ export interface IntelligenceReport {
    *  founder should care, which funds
    *  are the right step, what the commercial payoff looks like. */
   bottomLine: string[];
-  /** Up to 5 rows: the institutions/funds to target, best first. Never fewer
+  /** Up to `BRIEF_LIMITS.institutionsMax` rows (the ONE copy of that number:
+   *  never restate it here), the institutions/funds to target, best first.
+   *  Never fewer
    *  than 2 unless the company genuinely has fewer real doors — a tobacco or
    *  gambling business is excluded from most state aid by law, and padding the
    *  table would mean offering funds it cannot use. */

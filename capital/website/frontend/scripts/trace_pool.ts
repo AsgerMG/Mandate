@@ -27,6 +27,8 @@ requireCredentials("trace_pool", ["DATABASE_URL", "VOYAGE_KEY"]);
 async function main() {
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
   const P = await import("../lib/intelligence/shortlist");
+  const { WRITER_CANDIDATE_CAP } = await import("../lib/intelligence/pipeline");
+  const { BRIEF_LIMITS } = await import("../lib/intelligence/briefChecks");
   const { assessAll } = await import("../lib/intelligence/verdict");
   const { semanticFundMatch } = await import("../lib/intelligence/semantic");
   await hydrateDbInstruments();
@@ -55,7 +57,10 @@ async function main() {
       const n = P.displayInstitutionName(r);
       if (seen.has(n)) return false; seen.add(n); return true;
     });
-    console.log(`${t.company.padEnd(16)} pool=${String(table.length).padEnd(3)} alive=${String(alive.length).padEnd(3)} deduped=${String(deduped.length).padEnd(3)} -> writer=${Math.min(deduped.length, 9)}`);
+    // The writer cap, read from the pipeline rather than typed again here.
+    // This line said 9 while the constant had been 7 for months, so the trace
+    // reported a funnel two rows wider than the one that actually runs.
+    console.log(`${t.company.padEnd(16)} pool=${String(table.length).padEnd(3)} alive=${String(alive.length).padEnd(3)} deduped=${String(deduped.length).padEnd(3)} -> writer=${Math.min(deduped.length, WRITER_CANDIDATE_CAP)} -> published<=${BRIEF_LIMITS.institutionsMax}`);
     for (const r of table) {
       const st = r.instrumentId ? a.get(r.instrumentId)?.status : "-";
       console.log(`             ${String(r.channel).padEnd(24)} ${P.displayInstitutionName(r).slice(0,42).padEnd(43)} ${st}`);
