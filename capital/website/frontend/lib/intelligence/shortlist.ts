@@ -1478,6 +1478,18 @@ export const VERDICT_POOL = 18;
  *  semantic neighbourhood, not a top match. */
 export const LARGE_SCALE_RELEVANCE_FLOOR = 0.5;
 
+/** Which leaves the sibling re-rank may permute score slots among — the whole
+ *  CHANNEL, or one NOTIFIED SCHEME within it. See the block at `byChannel`.
+ *
+ *  A flag, and defaulted to today's behaviour, because it changes what a
+ *  founder is shown and the standing rule is that nothing does that before it
+ *  is measured end to end. `SIBLING_SCOPE=regime` is the arm; every number
+ *  published before this stays reproducible without setting anything.
+ *
+ *  Read once at module scope so the two arms cannot differ within one request,
+ *  and so the flag can never become a per-founder behaviour. */
+export const SIBLING_SCOPE = process.env.SIBLING_SCOPE === "regime" ? "regime" : "channel";
+
 /** Inputs to the instrument table. Was seven positional parameters, which one
  *  call site rendered as a single unreadable line of bare values; the object
  *  also gives the exclusion log somewhere to live without an eighth. */
@@ -2089,11 +2101,41 @@ export function materialiseInstrumentTable(
   // a leaf can gain only on its siblings and never on another channel. That
   // constraint is the whole design: applied globally these become channel
   // priors (objective coverage IS state aid) and cost 21 points when tried.
+  // ── What "sibling" means here, and why the scope is a flag ────────────────
+  //
+  // The paragraph above says the reassignment leaves regime-level composition
+  // unchanged by construction. It does not: the group is the CHANNEL, and
+  // `state_aid_satr` holds dozens of notified schemes, so a leaf of one scheme
+  // can be handed a score slot another scheme's leaf earned. Only CHANNEL-level
+  // composition is preserved. The prose and the code were describing two
+  // different invariants.
+  //
+  // wsCI measured which of the two the founder actually feels. Replaying the
+  // tune split through this path: the won leaf is in the pool 96.4% of the
+  // time, its NOTIFIED SCHEME reaches the published five 77.6% of the time, and
+  // the exact leaf 26.8%. The whole residual is the choice of DOOR inside one
+  // scheme, over a median of 53 candidate siblings — and those siblings are
+  // siblings by `parentId`, not by channel.
+  //
+  // So `regime` is the scope this rule was written for, and `channel` is the
+  // scope it got. Both are kept, selected by one constant, because the change
+  // alters what a founder is shown and the direction is a measurement rather
+  // than an argument: scoping tighter is a smaller permutation, which can only
+  // help if the score slots the channel earns are informative about which
+  // scheme should hold them, and can only hurt if they are not.
+  //
+  // A property, not a register: a score slot may be reassigned only among
+  // leaves the founder cannot tell apart. The test for an unseen corpus is
+  // whether two leaves in one group are two doors to one notified scheme or
+  // two different schemes.
   const byChannel = new Map<string, RowSelection[]>();
   for (const sel of selections) {
-    const list = byChannel.get(sel.base.channel) ?? [];
+    const key = SIBLING_SCOPE === "regime"
+      ? `${sel.base.channel}::${sel.leaf?.parentId ?? sel.leaf?.id ?? ""}`
+      : sel.base.channel;
+    const list = byChannel.get(key) ?? [];
     list.push(sel);
-    byChannel.set(sel.base.channel, list);
+    byChannel.set(key, list);
   }
   // Rank-PRESERVING, which is the part that took three attempts to get right.
   //
