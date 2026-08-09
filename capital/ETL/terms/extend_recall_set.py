@@ -29,12 +29,23 @@ founder would actually have applied to:
     source -> fam (funding_instrument_sources)
     then (fam, programme_name)                  if the source is programme-split
     then (fam, granting_authority, call_id)     if the family is scheme-split
-    else the family itself
+    then the family itself                      IF IT HAS NO CHILDREN
+    else nothing -- no honest pair exists
 
 then emits pairs for every leaf the base set cannot name. The rule is stated
 over the CORPUS, not over a list of funds: any instrument that award history
 can credit and the ground truth can never name is a blind spot, whichever
 register it came from. Nothing here names a fund, a family or a country.
+
+── The fourth line was written here before it was true ────────────────────
+"else the family itself" described this file's intent from the day it was
+written, and the code called `Split.leaf_for`, which cannot return a family at
+all. So 199 of the 782 leaves the product offers -- every national innovation
+agency we hold as a single row -- were skipped by a `continue`, silently, and
+the key that resulted was quoted as the product's accuracy for weeks.
+`Split.door_for` is that fourth line, implemented, with its own refusals: a
+family that HAS children is a regime and gets nothing, and a source that maps to
+several childless families is ambiguous and gets nothing. See its docstring.
 
 ── The description, and the leak that matters ─────────────────────────────
 Unlike `enrich_recall_set.py`, which recovers text from a DIFFERENT regime,
@@ -276,6 +287,13 @@ def main() -> None:
         #
         # `door_for` still refuses an award it cannot place on ONE fund, which is
         # the property a test pair needs. See its docstring for both refusals.
+        #
+        # `leaf_for` is asked FIRST and separately, and the redundant second call
+        # inside `door_for` is deliberate: what is wanted here is not just the
+        # answer but WHICH mechanism produced it, and the alternative -- having
+        # `door_for` return a (leaf, how) tuple -- would put a second definition
+        # of "was this exact" in the caller's hands. Two dict lookups per award
+        # is the cheaper of the two costs.
         exact = split.leaf_for(e["source"], e["programme_name"],
                                e["granting_authority"], e["call_id"])
         leaf = exact or split.door_for(e["source"], e["programme_name"],
@@ -297,7 +315,7 @@ def main() -> None:
                                "kind": "summary" if best_text == summary else "title",
                                # HOW the award was placed, carried onto the pair
                                # as `traced`. Two mechanisms, two populations --
-                               # see TRACED_* below.
+                               # see TRACED_* at the top of this file.
                                "traced": TRACED_EXACT if exact else TRACED_DOOR}
     conn.close()
 

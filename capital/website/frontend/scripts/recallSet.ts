@@ -11,7 +11,13 @@
 // therefore prints the file, the pair count and what the set can name, on every
 // run. A number pasted out of a terminal now carries its own provenance.
 //
-// ── The active set ─────────────────────────────────────────────────────────
+// ── The active set, and the staged one ─────────────────────────────────────
+// ACTIVE is `__recallSetComposed.json`. STAGED is `__recallSetDoors.json`,
+// which is built, leak-checked and measured but deliberately not switched on —
+// see the comment on `ACTIVE_RECALL_SET` for whose decision that is and what it
+// costs. Everything below describes Doors, because it is the thing a reader
+// needs to understand in order to decide about it.
+//
 // `__recallSetDoors.json` is `__recallSetComposed.json` — itself the
 // composition of
 //   Enriched  leak-free descriptions recovered from a DIFFERENT regime
@@ -22,7 +28,9 @@
 // plus the re-test a composition forces (repairing an answer re-opens every
 // leak question that was closed against the old answer) — extended once more
 // with the population all four of those still could not name:
-//   Doors     2,299 pairs for the 255 funds that are a FAMILY WITH NO CHILDREN.
+//   Doors     2,299 pairs for 255 funds the four above could not name —
+//             2,035 pairs on 233 leaves that are a FAMILY WITH NO CHILDREN,
+//             plus 264 on 22 children the extender had simply not reached yet.
 //
 // ── Why that last one is not a fifth patch on the same join ───────────────
 // Every fix above widened which CHILD an award could be credited to.
@@ -85,7 +93,33 @@
 import { readFileSync } from "fs";
 import path from "path";
 
-export const ACTIVE_RECALL_SET = "__recallSetDoors.json";
+/** ── HELD, not chosen: this is still `Composed`, and `Doors` is on disk ────
+ *
+ *  `__recallSetDoors.json` is built, leak-checked, measured on three seeds and
+ *  committed. It is NOT active, by a coordinator decision taken while workstream
+ *  BQ was establishing that the child-attribution layer is stale: the rebuild
+ *  step has been failing since 2026-08-07 (`corpus_census` rows 7, 8 and 9 all
+ *  read `failed at rebuild instruments`), so only 241 of 697 child rows are
+ *  still valid keys, and a key extended onto that layer would measure the
+ *  rebuild as churn.
+ *
+ *  That reasoning binds 22 of the 255 leaves Doors adds. It does not bind the
+ *  other 233, and this was measured rather than argued: replaying the ETL's own
+ *  split against today's events, exactly ONE of the 233 childless families
+ *  Doors names would acquire a child under the rebuild and stop being an
+ *  offerable leaf. The other 232 are unaffected, because the reason `leaf_for`
+ *  cannot reach them is that they have no children for the split to key on --
+ *  which is the one property a child rebuild cannot change.
+ *
+ *  So the switch below is one line, the evidence for flipping it is in
+ *  `project-mgmt/findings/answer_key_coverage_wsBP.md`, and the honest cost of
+ *  NOT flipping it is that every number this repo publishes about EXACT@5 keeps
+ *  describing 278 of the 782 funds the product offers. */
+export const ACTIVE_RECALL_SET = "__recallSetComposed.json";
+/** What `ACTIVE_RECALL_SET` becomes when the hold lifts. Named rather than
+ *  written into a comment, so the staged set is discoverable by grep and so
+ *  nothing has to be remembered about which file was meant. */
+export const STAGED_RECALL_SET = "__recallSetDoors.json";
 
 /** file -> the defect that retired it. */
 export const RETIRED_RECALL_SETS: Record<string, string> = {
@@ -101,11 +135,6 @@ export const RETIRED_RECALL_SETS: Record<string, string> = {
   "__recallSetPlus.json":
     "built on Enriched, so it carries the unrepaired sibling attribution: for " +
     "the 24% of pairs in a same-name group the label is close to a uniform draw",
-  "__recallSetComposed.json":
-    "names 278 of the 782 leaves the product offers, and the 504 it misses are " +
-    "not random — they are every fund we hold as a family that was never split, " +
-    "including the national innovation agencies of Spain, Britain and France. " +
-    "A number from it describes 35% of the product",
 };
 
 export type RecallRow = {
@@ -367,7 +396,7 @@ export const UNGRADED_SHARE = { max: 33 };
 
 /** The file must not shrink. THIS is the anti-pruning guard.
  *
- *  `__recallSetDoors.json` holds 7,095 pairs and is committed, so its size is
+ *  `__recallSetComposed.json` holds 4,796 pairs and is committed, so its size is
  *  a fact about a versioned artifact rather than about the moving corpus — the
  *  kind of constant it is safe to pin. Deleting pairs is the one edit that
  *  genuinely makes the measurement easier while leaving every share and every
@@ -375,10 +404,14 @@ export const UNGRADED_SHARE = { max: 33 };
  *
  *  Set just under today's count: a deliberate rebuild of the set updates this
  *  line as part of the same change, which is precisely the review moment the
- *  guard exists to force. Raised 4,700 -> 7,000 with the doors extension, which
- *  is exactly that review moment happening: the set GREW by 2,299 pairs, so the
- *  guard is re-pinned under the new size and still catches a deletion. */
-export const MIN_PAIRS = 7000;
+ *  guard exists to force.
+ *
+ *  It tracks whichever set is ACTIVE. It went to 7,000 with the doors extension
+ *  and back to 4,700 when that extension was held, and both moves are the review
+ *  moment working: the number is not a fact about the corpus, it is a pin under
+ *  one committed artifact, and the artifact changed. When `STAGED_RECALL_SET`
+ *  becomes active this goes to 7,000 in the same commit. */
+export const MIN_PAIRS = 4700;
 
 /** A pair can fail to be gradable for two DIFFERENT reasons, and collapsing
  *  them hides the one that matters.
