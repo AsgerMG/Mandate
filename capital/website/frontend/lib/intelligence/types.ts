@@ -873,6 +873,79 @@ export function fieldSeverity(field: string): FieldSeverity {
 }
 
 /**
+ * WHAT KIND OF THING this field's values name — so a comparator can compare
+ * the things rather than the spellings.
+ *
+ * ── The property ──────────────────────────────────────────────────────────
+ *   Two designations of the SAME thing must produce the same verdict.
+ *
+ * `region` has had this since `region_within`: NUTS ids are a hierarchy, so
+ * "FRD" and "FRD1" name the same place at two levels and the comparator was
+ * taught to say so. Country was never given the equivalent, and it has exactly
+ * the same shape: "Denmark", "denmark" and "DK" are one country, and until now
+ * `in`/`not_in` compared them as strings. A gate encoded `["Denmark"]` was
+ * FALSE for an answer of "DK" — and `entityCountries` is structural, so one
+ * false is conclusive and the fund is deleted for a founder who is Danish.
+ *
+ * That is not a hypothetical: it is what `check_comparator_admits` was written
+ * for after the identical bug on `region` ("Applicant must be a Swedish
+ * company" encoded as `in region ["Sweden"]`, compared against a NUTS id), and
+ * it cannot see this one, because it derives a field's candidate answers from
+ * the values the spec itself names. "Denmark" is a candidate that makes the
+ * gate true, so the gate looks satisfiable — while the control a founder
+ * actually uses may hand it something else entirely.
+ *
+ * ── Why a declared domain and not a list of field names in the comparator ──
+ * A set of country-ish field names inside comparator.ts is a register: the
+ * next country-valued field added to the intake defaults to string equality
+ * with nobody deciding, and it defaults in the direction that hides funds.
+ * Keyed on `keyof EligibilityAnswers` like `FIELD_SEVERITY`, so the compiler
+ * refuses a new intake field until someone has said what its values name. That
+ * is the test for the unseen case; the values below are just today's answers.
+ *
+ * `token` means the values are an opaque vocabulary this product defines
+ * (`grant`, `software_data_ai`, `50-249`) — two spellings of one of those IS a
+ * defect in the vocabulary, not something a comparator should paper over.
+ */
+export type FieldValueDomain = "country" | "region" | "token";
+
+export const FIELD_VALUE_DOMAIN: Record<keyof EligibilityAnswers, FieldValueDomain> = {
+  entityCountries: "country",
+  activityCountries: "country",
+  region: "region",
+
+  activities: "token",
+  exclusionFlags: "token",
+  lossesOverHalfCapital: "token",
+  fteBand: "token",
+  turnoverBand: "token",
+  balanceBand: "token",
+  ownerOver25: "token",
+  institutionalOwner: "token",
+  nonEuControl: "token",
+  sector: "token",
+  organisationType: "token",
+  foundedYear: "token",
+  developmentStage: "token",
+  borrowerModel: "token",
+  wouldOpenEntity: "token",
+  consortium: "token",
+  cofinancingBand: "token",
+  conditionality: "token",
+  useOfFunds: "token",
+  needBy: "token",
+  bankRelationship: "token",
+  institutionalBacking: "token",
+  ticketBand: "token",
+};
+
+/** Unknown fields are `token`: string equality, the behaviour every field had
+ *  before this existed. Widening a comparison is a decision, never a default. */
+export function fieldValueDomain(field: string): FieldValueDomain {
+  return FIELD_VALUE_DOMAIN[field as keyof EligibilityAnswers] ?? "token";
+}
+
+/**
  * How a value gets onto this field — the answer path, declared once.
  *
  * ── The defect this exists to make impossible ─────────────────────────────

@@ -208,3 +208,82 @@ describe("the ticket bands partition the number line", () => {
     expect(opensLargeScaleLane(undefined)).toBe(false);
   });
 });
+
+describe("a country field compares COUNTRIES, not spellings", () => {
+  // THE BUG this closes. Every country-valued filter in the corpus is encoded
+  // with the English name (307 `in` filters on 248 instruments, plus 29
+  // `not_in`), and every producer of an answer on that field other than the
+  // panel's own select emits ISO2. Compared as strings, "Denmark" is false for
+  // "DK" — and `entityCountries` is structural and those gates are cited, so
+  // ONE false is conclusive: `blocked`, and blocked never reaches the founder.
+  // The fund is deleted for exactly the founders it admits.
+  //
+  // The same shape as the `region`/"Sweden" bug check_comparator_admits was
+  // written for, and invisible to it, because that check draws a field's
+  // candidate answers from the values the spec itself names.
+  const inDenmark: ValueSpec = { op: "in", field: "entityCountries", allowed: ["Denmark"] };
+
+  it("accepts the same country under either designation", () => {
+    expect(evaluateSpec(inDenmark, ["Denmark"])).toBe(true);
+    expect(evaluateSpec(inDenmark, ["DK"])).toBe(true);
+    expect(evaluateSpec(inDenmark, ["dk"])).toBe(true);
+    expect(evaluateSpec(inDenmark, "DK")).toBe(true);
+  });
+
+  it("works in the other direction too, so the encoder's choice cannot matter", () => {
+    const iso: ValueSpec = { op: "in", field: "entityCountries", allowed: ["DK"] };
+    expect(evaluateSpec(iso, ["Denmark"])).toBe(true);
+    expect(evaluateSpec(iso, ["DK"])).toBe(true);
+  });
+
+  it("still rejects a DIFFERENT country — this widens, it does not open", () => {
+    expect(evaluateSpec(inDenmark, ["SE"])).toBe(false);
+    expect(evaluateSpec(inDenmark, ["Sweden"])).toBe(false);
+    expect(evaluateSpec(inDenmark, ["Sweden", "DK"])).toBe(true);
+  });
+
+  it("tightens not_in symmetrically, because that is the same fix", () => {
+    // A rule saying "not established in the United Kingdom" must catch a
+    // founder who answered "GB". Getting this wrong is the opposite harm —
+    // publishing a fund the founder is excluded from — and one fix closes both.
+    const notGb: ValueSpec = { op: "not_in", field: "entityCountries", allowed: ["United Kingdom"] };
+    expect(evaluateSpec(notGb, ["GB"])).toBe(false);
+    expect(evaluateSpec(notGb, ["United Kingdom"])).toBe(false);
+    expect(evaluateSpec(notGb, ["FR"])).toBe(true);
+  });
+
+  it("equals is the single-valued form of the same comparison", () => {
+    const eq: ValueSpec = { op: "equals", field: "entityCountries", value: "Estonia" };
+    expect(evaluateSpec(eq, "EE")).toBe(true);
+    expect(evaluateSpec(eq, "Estonia")).toBe(true);
+    expect(evaluateSpec(eq, "LV")).toBe(false);
+  });
+
+  it("a NON-country field is untouched, and that is the point of the domain", () => {
+    // The unsafe version of this fix is "try toIso2 on every value". toIso2
+    // uppercases any two-letter string, so "no" becomes NO becomes Norway: a
+    // yes/no answer would start satisfying an allowed value of "Norway". The
+    // domain is declared per field precisely so this cannot happen.
+    const yn: ValueSpec = { op: "in", field: "consortium", allowed: ["Norway"] };
+    expect(evaluateSpec(yn, "no")).toBe(false);
+    const sector: ValueSpec = { op: "in", field: "sector", allowed: ["Ireland"] };
+    expect(evaluateSpec(sector, "IE")).toBe(false);
+  });
+
+  it("an unresolvable value keeps exactly its old behaviour", () => {
+    // "Ukraine non-government controlled" is a real allowed value in the
+    // corpus and names no ISO2. It must still compare as a string rather than
+    // silently becoming a match for nothing or for everything.
+    const odd: ValueSpec = {
+      op: "in", field: "entityCountries", allowed: ["Ukraine non-government controlled"],
+    };
+    expect(evaluateSpec(odd, ["Ukraine non-government controlled"])).toBe(true);
+    expect(evaluateSpec(odd, ["UA"])).toBe(false);
+    expect(evaluateSpec(odd, ["Ukraine"])).toBe(false);
+  });
+
+  it("a non-answer is still unanswered, never a failure", () => {
+    expect(evaluateSpec(inDenmark, ["unsure"])).toBeNull();
+    expect(evaluateSpec(inDenmark, [])).toBeNull();
+  });
+});
