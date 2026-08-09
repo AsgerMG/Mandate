@@ -41,6 +41,22 @@
 // founder's text at all — every other signal here is instrument-side metadata
 // and cannot leak a description it never sees.
 //
+// ── WHO IS REPLAYED (wsCU) ────────────────────────────────────────────────
+// Every figure this file produced before 2026-08-09 — the eighteen-arm signal
+// table AND the dumps the blend was fitted on — described a founder called
+// `"TestCo"` who asked for grants-or-loans and left 18 of the 23 askable
+// intake fields blank, because this file wrote its own intake literal at the
+// `computeVerdict` call site. Three of the arms here are not neutral to that:
+// `SHIPPED (the product's own five)` is the shipped row sort, whose TIER 1 is
+// `usedInField`, and `usedInField` was false on every row a founder who
+// matches nothing can produce. So the blend was being compared against a
+// shipped arm with its top tier switched off, and no reader could tell.
+//
+// The founder now comes from `founderIntake(row, policy)` — one resolver,
+// shared with `check_recall_floor.ts` and `measure_recall.ts`, with a declared
+// leak argument per field — and the full intake is printed beside the table
+// and carried inside the feature dump.
+//
 // FREE. No model calls beyond the Voyage query embedding the ranker already
 // makes per description, which is the same cost as `measure_recall.ts`.
 //
@@ -64,10 +80,13 @@ import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic"
 import { semanticFundMatch } from "../lib/intelligence/semantic";
 import { peerPrior, THEME_WEIGHT } from "../lib/intelligence/shortlist";
 import { assessAll } from "../lib/intelligence/verdict";
+import {
+  founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
+} from "./founderIntake";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
-  answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
-  partitionByOfferable, reattributeMissingAnswers, type AnswerMode, type RecallRow,
+  assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
+  partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
 } from "./recallSet";
 
 /** The cut the product publishes. Five funds, which is the whole product. */
@@ -258,21 +277,26 @@ async function main() {
   // The tally is reset here rather than at import so hydration's own queries
   // cannot count, and printed beside the corpus banner. A run that does not
   // print `all N request(s) on EMBEDDING` is not evidence.
+  // ── WHO is replayed, from the ONE resolver ────────────────────────────────
+  // This file inlined its own intake until wsCU: `"TestCo"`, a pinned
+  // `capitalSought` and 18 askable fields never supplied. Two of the fourteen
+  // features here are the ranker's own output and one arm IS the shipped five,
+  // so every number this file has ever produced — including the blend fitted
+  // off its dumps — described a founder who does not exist and a `usedInField`
+  // that was false on every row. `founderIntake` is now the only thing that
+  // decides what the replayed founder said, and it is the same resolver the
+  // floor gate and `measure_recall.ts` use, so the blend and the EXACT@5 it is
+  // compared against describe the same population.
+  const policy: FounderPolicy = { ...founderPolicyFromEnv(), answers: answerMode };
+  const tally = new IntakeTally();
   resetRankerTally();
   resetGateHydration();
   for (const t of sample) {
     resetGateHydration();
-    const a = answersFor(t, answerMode);
-    const eligibilityAnswers = {
-      entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
-      borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
-      useOfFunds: ["industrial_research", "experimental_development"],
-      region: a.region,
-    };
-    const v = await computeVerdict("TestCo", t.country, eligibilityAnswers as never, {
-      targetMarkets: [t.country], capitalSought: a.capitalSought,
-      description: t.description || t.selfDescription || undefined,
-    } as never);
+    const f = founderIntake(t, policy);
+    tally.add(f);
+    const v = await computeVerdict(f.company, f.country, f.eligibility as never,
+      { ...f.opts } as never);
     const poolIds: string[] = v.candidateInstrumentIds ?? [];
     const top5 = (v.instrumentTable ?? []).slice(0, TOP)
       .map((r: { instrumentId?: string }) => r.instrumentId).filter(Boolean) as string[];
@@ -313,15 +337,19 @@ async function main() {
     }
     inPool++;
 
-    const semantic = await semanticFundMatch(t.description || t.selfDescription || undefined);
+    // The SAME query the verdict above ranked on, taken off the resolver
+    // rather than rebuilt from the row: two copies of "what the founder typed"
+    // is how the `semantic` arm and `shipped pool score` could come to describe
+    // different text from the pool they are scored over.
+    const semantic = await semanticFundMatch(f.opts.description);
     const ranked = peerPrior(t.country, t.sector);
     const ctx: SignalCtx = {
       pool,
       founderSector: t.sector,
       founderCountries: new Set([toIso2(t.country)].filter(Boolean).map((c) => c.toUpperCase())),
-      ticketBand: a.ticketBand,
+      ticketBand: f.eligibility.ticketBand,
       theme: semantic,
-      eligibility: assessAll(poolIds, eligibilityAnswers as never) as never,
+      eligibility: assessAll(poolIds, f.eligibility as never) as never,
       peerRank: new Map(ranked.map((id, i) => [id, i])),
       year,
     };
@@ -398,6 +426,11 @@ async function main() {
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""} seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only (leak-free descriptions)" : ""}` +
               `${answerMode !== "off" ? ` answers=${answerMode}` : ""}  replayed ${sample.length}`);
+  // WHICH FOUNDER these signals were measured on, field by field, on the same
+  // screen as the table. Two of the fourteen arms are the ranker's own output
+  // and one IS the shipped five, so the intake is part of what every figure
+  // below is a claim about -- and until wsCU it was a literal nobody printed.
+  for (const line of tally.lines(policy)) console.log(line);
   poolSizes.sort((x, y) => x - y);
   console.log(`  pool: median ${poolSizes[poolSizes.length >> 1]} candidates, ` +
               `won fund in pool ${inPool}/${sample.length} ` +
@@ -434,6 +467,17 @@ async function main() {
       // offline hours later and its input is the only place the ranker can
       // still be named. A dump is evidence about whichever ranker filled it.
       ranker: attestation,
+      // ── WHO the dump is about, carried for the same reason the ranker is ──
+      // The blend is fitted offline hours later and its input is the only
+      // place the FOUNDER can still be named. wsCS's +5.0 was fitted on two
+      // dumps of `"TestCo"` with a pinned `capitalSought` and `usedInField`
+      // false on every row — and nothing in the files said so, so the blend
+      // could not know it was beating a shipped arm with its top tier
+      // switched off. `fit_signal_blend` now refuses a pair of dumps that
+      // disagree about this, and says which founder it fitted.
+      founder: `identity=${policy.identity} own-history=${policy.ownHistory} `
+        + `capital=${policy.capital} answers=${policy.answers} `
+        + `consortium=${policy.consortium ?? "(unanswered)"}`,
       signals: Object.keys(SIGNALS), rows: features,
     }));
     console.log(`  features -> ${process.env.FEATURES_OUT} (${features.length} pairs)`);
