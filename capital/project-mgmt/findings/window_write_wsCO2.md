@@ -25,16 +25,19 @@ So the authoritative source was asked instead — the per-slug TEE endpoint and
 the dispositif page, which `ETL/terms/fetch_ademe_windows.py` already reads and
 wsBI already proved. Free, public, no model call.
 
-**21 of those 39 are CLOSED.** `Tremplin pour la transition écologique des PME`
-2025-10-16. `Infrastructures de recharge pour les véhicules électriques`
-2024-12-31. `Fonds vert - Territoires d'industrie en transition` 2025-12-31.
-`Renouvellement Forestier` 2024-05-31 — a row the CSV filed as
-`register_states_none`, i.e. as having no window at all.
+**8 of those 39 are CLOSED** — `Tremplin pour la transition écologique des PME`
+2025-10-16, `Infrastructures de recharge pour les véhicules électriques`
+2024-12-31, `Fonds vert - Territoires d'industrie en transition` 2025-12-31, and
+five more. 14 are genuinely open on a stated future date, and 17 the page cannot
+settle either. A ninth, `Renouvellement Forestier` (2024-05-31), the CSV filed
+as `register_states_none` — as having no window at all.
 
-Had the approved write gone in as written, those 21 would have been marked
-**open-ended on our own authority**, on the strength of a blank cell. That is a
-worse row than the one being fixed: a `no_deadline_recorded` row is at least
-honest about resting on silence, and `declares_open_ended` is a claim.
+Had the approved write gone in as written, those **9 shut funds would have been
+marked open-ended on our own authority**, on the strength of a blank cell. That
+is a worse row than the one being fixed: a `no_deadline_recorded` row is at
+least honest about resting on silence, and `declares_open_ended` is a claim.
+The other 31 would have been given the same claim with no more evidence behind
+it — right by luck in 14 cases, unfalsifiable in 17.
 
 ## Every ADEME row is dated, so nothing here rests on our copy
 
@@ -126,9 +129,9 @@ EMBEDDING`. No floor added, removed, raised or lowered.
 
 ## Do not re-propose
 
-- **reading an empty `date_cloture` in the TEE CSV as an open-ended aid.** 21 of
-  the 39 rows it would have covered are shut according to their own dispositif
-  page.
+- **reading an empty `date_cloture` in the TEE CSV as an open-ended aid.** 9 of
+  the 43 rows it would have covered are shut according to their own dispositif
+  page, and 20 more it cannot speak to at all.
 - **letting a shared page assert a future window.** It is wsBI's ORMAT error,
   and the reload that emptied `scheme_end_date` is what re-opened the door to it.
 - **closing a row on `abierto=false`.** conv 748315 falsifies it.
