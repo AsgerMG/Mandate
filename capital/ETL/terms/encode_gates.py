@@ -228,6 +228,50 @@ def refuse_unreachable(field: str, gid: int, what: str) -> bool:
     return False
 
 
+# ── ...and a region rule belongs to the pass that can write one ──────────────
+# The country guard above stops a REGION reaching a country field. This is its
+# mirror, and it was open until a Swedish rule went through it: "Applicant must
+# be a Swedish company" was resolved to `region` and encoded as
+# `{"op":"in","field":"region","allowed":["Sweden"]}`. A founder answers region
+# as a NUTS code ("SE11"), `matchesAny` compares strings, and the rule is
+# unsatisfiable — the fund is hidden from exactly the founders it admits.
+#
+# The defect is not that one value; it is structural, and that is why this is a
+# refusal rather than a repair. `region` is evaluable through ONE operator:
+# `region_within` in comparator.ts, the only branch that calls `regionsOverlap`
+# and so the only one that understands a hierarchy of codes. That operator is
+# not in ENCODE_SCHEMA's enum. **This encoder therefore cannot emit an
+# evaluable region spec at all** — every region spec it writes is inert by
+# construction, whatever the model returns and however correct the requirement.
+#
+# THE PROPERTY:
+#   A comparator may only be written by a pass that can express the field's
+#   evaluable operator. `region` is owned by encode_regions.py, which resolves
+#   names onto the official classification and emits `region_within`.
+#
+# The emittable set is READ from ENCODE_SCHEMA rather than restated, so adding
+# `region_within` to the schema is all it takes to lift the refusal — the two
+# cannot drift into disagreeing about what this encoder can say.
+
+#: Field -> the operator that makes it evaluable, where exactly one does.
+SINGLE_OPERATOR_FIELDS = {"region": "region_within"}
+
+
+def emittable_ops() -> frozenset[str]:
+    """The operators this encoder's output schema permits the model to return."""
+    return frozenset(
+        ENCODE_SCHEMA["properties"]["results"]["items"]["properties"]["op"]["enum"])
+
+
+def refuse_unemittable(field: str, gid: int, what: str) -> bool:
+    """True when `field` needs an operator this encoder cannot emit."""
+    op = SINGLE_OPERATOR_FIELDS.get(field)
+    if op and op not in emittable_ops():
+        print(f"    refused {what} on gate {gid}: `{field}` is only evaluable "
+              f"through `{op}`, which this encoder cannot emit — encode_regions.py "
+              f"owns it")
+        return True
+    return False
 
 
 def connect() -> sqlite3.Connection:
@@ -668,6 +712,15 @@ def cmd_encode(args) -> None:
             # point is that a comparator against an unanswerable field must
             # never reach the database.
             if refuse_unreachable(field, gid, "encoding"):
+                skipped += 1
+                continue
+            # Refused HERE and not at triage, deliberately. `region` is the
+            # right answer to "what decides this rule", and encode_regions.py
+            # finds its candidates by requirement text, so re-filing it to
+            # 'none' upstream would throw away a true label without helping
+            # anyone. What must not happen is a spec: this encoder cannot emit
+            # `region_within`, so anything it wrote here would be inert.
+            if refuse_unemittable(field, gid, "encoding"):
                 skipped += 1
                 continue
             # A founder's answer for these fields is a LIST, so `equals` (a
