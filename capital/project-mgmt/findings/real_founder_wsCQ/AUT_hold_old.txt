@@ -1,0 +1,90 @@
+(node:95174) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T21:15:39.543Z
+ranker: all 250 request(s) on EMBEDDING
+  founder intake — 23 askable fields, identity=anonymous own-history=withheld capital=pinned answers=off consortium=yes
+    DERIVED   entityCountries      set  250/250 (100%)  own  250/250 (100%)  companies.country
+    DERIVED   organisationType     set    0/250 (  0%)  own    0/250 (  0%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set    0/250 (  0%)  own    0/250 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  250/250 (100%)  own  250/250 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  250/250 (100%)  own    0/250 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  250/250 (100%)  own    0/250 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  250/250 (100%)  own    0/250 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  250/250 (100%)  own    0/250 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    PINNED    capitalSought                            set 250/250 (100%)  the old harness filter — removes every tax-credit and equity fund
+set=__recallSetDoors.json split=holdout seed=20260806 replayed 250
+
+EXACT@5 56/250 (22.4% +/-5.2)
+ceiling on this draw: 131/250 (52.4%)  <- pairs whose residual class fits five rows
+ORACLE CAP  232/250 (92.8%)  <- the won leaf is in the candidate pool at all; no question can beat this
+
+THE LOSS: 194 misses (77.6 points of the 250-pair draw)
+
+bucket                                     misses   % of loss   % of draw
+1  NEVER IN THE POOL   (a screen or a gate removed it)     2        1.0%        0.8%
+2  CUT BEFORE THE TABLE(leaf cap / collapse / dedupe)    15        7.7%        6.0%
+3  RANKED BELOW FIVE   (on the table, lost on score)    72       37.1%       28.8%
+4  UNWINNABLE          (residual class > 5)   105       54.1%       42.0%
+   ACTIONABLE (1+2+3)                         89       45.9%       35.6%
+
+BY RULE (what actually fired), winnable misses only
+  RANK                           72   
+  SEL-CAPITAL                    15   Instrument deprioritised because its capital type is not among those the founder asked for
+  SEL-CHANNEL-CAP                 2   Channel not added because the pool had already reached its channel cap.
+
+CROSS TAB — mechanism regardless of winnability (the precedence made visible)
+  mechanism              winnable  unwinnable
+  1 never in the pool          2           0
+  2 cut before the table      15           1
+  3 ranked below five         72         104
+
+INSIDE BUCKET 3 — the two failures a single label was hiding
+  overall candidate rank of the won leaf
+    rank 6 (just off)      2  3% of bucket 3
+    rank 7-10             13  18% of bucket 3
+    rank 11-20            18  25% of bucket 3
+    rank 21-50            28  39% of bucket 3
+    rank 51+              11  15% of bucket 3
+  lost to its OWN SIBLINGS (regime rank > 1)         35  49%   <- a within-regime rule could reach these
+  lost to OTHER PROGRAMMES (regime rank 1)           37  51%   <- only a better cross-regime score reaches these
+  a sibling of the won leaf IS on the published five 27  38%   <- right programme, wrong door
+  median candidate pool the ranker had to order:  89
+
+REGIME CONCENTRATION per bucket (a bucket that is one regime is not a finding)
+  bucket 1: 2 miss(es) across 2 regime(s), largest 50% -- edf:1 horizon_eu_partnership:1
+  bucket 2: 15 miss(es) across 3 regime(s), largest 87% -- satr_de_rnd:13 eit_innoenergy:1 eit_urban_mobility:1
+  bucket 3: 72 miss(es) across 43 regime(s), largest 13% -- satr_de_rnd:9 satr_it_rnd:7 horizon_eu_partnership:5 horizon_eu_pillar_ii:4
+  bucket 4: 105 miss(es) across 7 regime(s), largest 30% -- bdns_es_ayudas:31 ademe_aid:22 vinnova_grant:20 satr_de_rnd:13
+
+WORKED EXAMPLES
+  [1] edf_ra  founder in FR  regime edf  class 1  rank -
+      SEL-CHANNEL-CAP: channel pool already at its cap of 7
+  [2] eit_innoenergy_highway  founder in UA  regime eit_innoenergy  class 1  rank -
+      SEL-CAPITAL: an investor rather than a grantor, and the founder did not ask for equity
+  [3] ademe_aid__etudes_pour_une_installation_hydroelectrique_66ec9b  founder in FR  regime ademe_aid  class 1  rank 8
+      RANK: candidate rank 8 of 111
+  [4] vinnova_grant__innovativa_startups_programniva_a36873  founder in SE  regime vinnova_grant  class 17  rank 20
+      class>5: residual class 17 among publishable siblings

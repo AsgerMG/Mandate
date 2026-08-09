@@ -254,7 +254,76 @@ const tape = startTape();
  *  every seed for the arithmetic reason above. `exact5 22` looks survivable at
  *  24-25 — and it is the floor whose margin this session was asked to
  *  investigate, so it gets its own block below rather than a clause here. */
-const FLOOR = { pool: 89, exact5: 15, regime5: 69 };
+/*  ── RE-DERIVED AGAINST THE REAL FOUNDER, 2026-08-09 (workstream CQ) ──────
+ *
+ *  ██ THE EXAM DID NOT GET EASIER. THE CANDIDATE STOPPED BEING FICTIONAL. ██
+ *
+ *  Every floor above was calibrated on a founder called `"TestCo"` who asked
+ *  for grants-or-loans and left 18 of the 23 askable intake fields blank,
+ *  because this file inlined eight constants instead of calling the shared
+ *  resolver. `scripts/founderIntake.ts` replaces that literal: the founder is
+ *  now the real company, with their OWN award history withheld so the tier-1
+ *  `usedInField` signal cannot be set by the award being predicted, and
+ *  `capitalSought` is withheld rather than pinned to a two-value FILTER.
+ *
+ *  ── What actually moved, and it is one metric ─────────────────────────────
+ *  Three seeds, tune split, N=300, live Postgres, 1,088 instruments, and
+ *  `ranker: all N request(s) on EMBEDDING` on every one of the twelve runs
+ *  below (`project-mgmt/findings/real_founder_wsCQ/`):
+ *
+ *                    REAL FOUNDER (what ships)      "TestCo" + pinned filter
+ *                  20260806    s7     s99         20260806    s7     s99
+ *      pool           97       98      97            94       95      95
+ *      EXACT@5        26       23      25            26       24      26
+ *      REGIME@5       73       71      72            73       72      72
+ *
+ *  POOL IS THE ONLY THING THAT MOVED, and it moved because the harness stopped
+ *  removing funds. `capitalSought: ["grant","loan"]` runs through
+ *  `instrumentServesCapital`, which removes every tax-credit and every equity
+ *  instrument BEFORE anything ranks. That was not a preference a founder
+ *  stated; it was the test declining funds on its own behalf, and it was
+ *  reported to the owner as a corpus gap.
+ *
+ *  EXACT@5 and REGIME@5 are flat to the seed. That is the finding, not a
+ *  disappointment: the real founder is a bigger pool and the same ranking.
+ *
+ *  ── The margins, by the convention this file has always used ──────────────
+ *  pool 92   RAISED from 89. 5 under pinned (97) = 92; 3 under the lowest seed
+ *            (97) = 94; the convention requires BOTH, so the binding one is 92.
+ *            Pool is still the one correctness floor -- a fund the writer never
+ *            sees cannot be advised on -- and it is still the most stable thing
+ *            here, spanning 97-98 across three seeds against 94-95 before.
+ *  exact5 15 HELD, and nothing was lowered. 10 under pinned (26) would be 16,
+ *            but the seed spread widened DOWNWARD (24-26 before, 23-26 now) and
+ *            the Doors derivation spaced this floor 9 under its lowest seed;
+ *            23 - 9 = 14, which is BELOW the 15 in force. So 15 stands, and it
+ *            is now 8 points under the pinned figure rather than the 10 the
+ *            convention specifies -- the same note the previous block had to
+ *            write, for the same reason: the floor did not rise, the spread
+ *            moved under it.
+ *  regime5 69 HELD. 7 under pinned (73) = 66 and 3 under the lowest seed (71) =
+ *            68, both BELOW the 69 in force, so the convention lands under the
+ *            floor and the floor stays. ██ IT IS NOW ONLY 2 UNDER THE LOWEST
+ *            SEED, where the convention asks for 3. ██ That is not this
+ *            workstream's doing -- the old harness reads 73/72/72 on the same
+ *            three seeds, so REGIME@5 is indifferent to the whole change -- it
+ *            is the corpus moving under the Doors block's pinned 76. Watch it.
+ *
+ *  ── Why the pool raise is not a ratchet onto a lucky run ──────────────────
+ *  Because the OLD harness also rises on today's corpus (94/95/95 against the
+ *  Doors block's 94/95/95 -- unmoved), so the three points are attributable to
+ *  the harness change and to nothing else. The A/B is on file: withholding
+ *  `capitalSought` alone, with everything else held at the old values, moves
+ *  pool 94 -> 97 on the pinned seed and EXACT@5 not at all (26 -> 25).
+ *
+ *  ── The one number that is NOT a floor and matters more ───────────────────
+ *  The oracle cap -- the share of pairs whose won leaf is in the pool at all,
+ *  the bound no question can beat -- is 94.0% under the old harness and 96.4%
+ *  under the real founder on the same tune draw. wsCK's 91.6% was the holdout
+ *  version of the same quantity, measured on the fictional founder. See
+ *  `_wsci_autopsy.ts`, which prints it beside the intake disclosure so the cap
+ *  and the founder it belongs to can never again be read apart. */
+const FLOOR = { pool: 92, exact5: 15, regime5: 69 };
 /*  ── THE `exact5` ZERO-MARGIN FLAG, ANSWERED FROM THE VERDICT TABLE ───────
  *
  *  Workstream BR left this open: `exact5` passed at 22 against a floor of 22,
@@ -383,8 +452,62 @@ const FLOOR = { pool: 89, exact5: 15, regime5: 69 };
  *  regime5 and its exact5 are the same number to the case (31 and 31 on all
  *  three seeds). It is the only population here whose floor cannot be passed
  *  with a sibling. */
+/*  ── RE-DERIVED AGAINST THE REAL FOUNDER, 2026-08-09 (workstream CQ) ──────
+ *
+ *  Same twelve runs as the headline block, read per population. Pinned seed
+ *  first, then the lowest any of the three produced, then the old harness's
+ *  lowest on the identical draws — because the question for every one of these
+ *  is whether the number moved because of the harness or because of the corpus,
+ *  and only the third column answers it.
+ *
+ *      regime5 by population      pinned  lowest of 3   OLD harness, lowest
+ *      original join                86        86 (n=90)       85
+ *      traced:exact_attribution     89        89 (n=110)      88
+ *      traced:childless_family      38        28 (n=81)       28
+ *
+ *  original join 78   RAISED from 70. Two standard errors at this population's
+ *                     n, against the lowest seed, exactly as before: at 86 on
+ *                     n=90, 1 SE is 3.7 points, so two is 7.3 and the
+ *                     convention lands on 78.7. Cross-checked against the one
+ *                     thing wider than the SE — this file records the traced
+ *                     population moving EIGHT points across a single corpus
+ *                     state — and 86 - 8 is 78 as well, so both constraints
+ *                     agree. Note the old harness reads 85 on the same draws:
+ *                     the rise from the Doors block's 79 is the CORPUS, not
+ *                     this workstream, and the floor is being raised onto a
+ *                     measurement that rose for a reason nobody here caused.
+ *  traced:exact_attribution 88  HELD, and this is the entry to watch.
+ *                     ██ The convention would put it at 83 (2 SE = 6.0 at 89 on
+ *                     n=110), which is BELOW the 88 in force, so nothing is
+ *                     lowered and 88 stands — with NO MARGIN AT ALL. ██ It was
+ *                     raised to 88 when the lowest seed was 93; the lowest seed
+ *                     is now 89, and TWO CONSECUTIVE RUNS OF THIS GATE on the
+ *                     identical commit, seed and corpus read 89 and then 88.
+ *                     The floor is sitting on its own measurement.
+ *
+ *                     The old harness reads 88 on the same draws, so the
+ *                     closure is a corpus move and not the founder change —
+ *                     indeed the real founder is a point BETTER on this
+ *                     population. Recorded rather than fixed, because the two
+ *                     available fixes are both wrong: lowering it is what this
+ *                     file exists to refuse, and re-deriving it upward on a
+ *                     measurement that fell would be the coin flip with a
+ *                     comment that the 2026-08-07 block names. When this goes
+ *                     red — and on that spread it will — the finding is that
+ *                     the canary population has drifted, not that the ranker
+ *                     regressed, and the next re-derivation has to be made with
+ *                     three fresh seeds rather than off the red run.
+ *  traced:childless_family 21  HELD. 2 SE is 10 points at 28 on n=81, which
+ *                     lands on 18, below the 21 in force. Held, and therefore
+ *                     tighter than the convention by 3. The pinned seed reads
+ *                     38 and the other two read 28 — a ten-point spread on the
+ *                     population the previous block called "the most stable
+ *                     figure in this file" at 31/31/31. It is not stable any
+ *                     more, and the instruction that block left ("TIGHTEN IT
+ *                     once there is history") is hereby withdrawn: there is
+ *                     history now and it says the opposite. */
 const POPULATION_FLOOR: Record<string, number> = {
-  "original join": 70,
+  "original join": 78,
   "traced:exact_attribution": 88,
   "traced:childless_family": 21,
 };
