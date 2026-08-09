@@ -33,7 +33,21 @@
   "in FR and nowhere else. Folding country away would have had to smooth one of",
   "those into the other -- losing a true distinction to make a script run. The",
   "script's MATCH_KEYS gained `country` instead, ranked narrower than",
-  "source_family_bucket so a family/country declaration beats a family-wide one."
+  "source_family_bucket so a family/country declaration beats a family-wide one.",
+  "",
+  "WINDOWS LOADED 2026-08-09 (wsCO2), on the owner's approval of workstream",
+  "CO's finding. Every per-id declaration below carries `closed_on`, which is",
+  "a date the REGISTER states for that object, quoted in `closed_note`. None",
+  "is a heuristic and none is an inference: a row whose register answers with",
+  "no date at all is left with no declaration and stays unknown, because",
+  "'we do not know' is a legitimate state and asserting either openness or",
+  "closure without evidence is the defect.",
+  "",
+  "The 39 TEE rows whose data.gouv.fr CSV row has an empty `date_cloture`",
+  "were NOT read as open-ended. That column is the thin index liveness.ts",
+  "already documents -- empty for 93 of the 107 dispositifs whose pages state",
+  "a closing date -- so its silence is our copy's, one level up. They were",
+  "asked of the per-slug TEE endpoint and the dispositif page instead."
  ],
  "$reconstructed_at": "2026-08-09",
  "$mixed_at_reconstruction": [
@@ -197,8 +211,8 @@
     "source_family_bucket": "national_dev_banks",
     "country": "FR"
    },
-   "policy": "publishes_window",
-   "source": "reconstructed from funding_instruments.source_window_policy in Railway Postgres, 2026-08-09"
+   "policy": "publishes_no_window",
+   "source": "GRAIN RESTORED 2026-08-09 (wsCO2). The 2026-08-09 reconstruction smoothed {'publishes_no_window': 4, 'publishes_window': 77} to publishes_window, which made four Bpifrance AWARD LISTS assert a window their file has never carried. The window-publishing objects under this family/country are named by root_id below, which is the grain the reconstruction could not express."
   },
   {
    "match": {
@@ -423,6 +437,686 @@
    },
    "policy": "publishes_no_window",
    "source": "reconstructed from funding_instruments.source_window_policy in Railway Postgres, 2026-08-09"
+  },
+  {
+   "match": {
+    "root_id": "ademe_aid"
+   },
+   "policy": "publishes_window",
+   "source": "wsCO2 2026-08-09: The TEE catalogue states a closing date for a dispositif: 86 of the 107 pages our rows cite carry one and 38 have passed. A row of ours holding none is a gap in OUR copy."
+  },
+  {
+   "match": {
+    "root_id": "fr_relance_industrie"
+   },
+   "policy": "publishes_window",
+   "source": "wsCO2 2026-08-09: France Relance published its call windows; wsBE recorded the closure here for exactly this reason."
+  },
+  {
+   "match": {
+    "id": "ademe_aid__aap_decarb_ind_pdr_fdi_43019f"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-03-07",
+   "closed_note": "archive insertDate=2024-03-07 (capture 2026-03-17) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/decarbonation-de-lindustrie-decarb-ind",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__accompagnement_des_agriculteurs_face_au_changeme_f5dc88"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-09-11",
+   "closed_note": "archive insertDate=2024-09-11 (capture 2026-05-29) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/accompagnement-des-agriculteurs-face-au-changement-climatique-action-accompagnement-individualise-laction-climat-et-sols",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__aide_aux_etudes_de_faisabilite_pour_de_l_autocon_9f367a"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-12-31",
+   "closed_note": "tee fin de validité=2025-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-photovoltaique-ademe",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__appel_a_projets_industrialisation_de_produits_et_11ddd3"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-05-15",
+   "closed_note": "archive insertDate=2023-05-15 (capture 2026-05-29) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/appel-projets-industrialisation-de-produits-et-systemes-constructifs-bois-et-autres-biosources-scb",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__appel_a_projets_objectif_recyclage_plastiques_or_b162d5"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2022-09-15",
+   "closed_note": "archive insertDate=2022-09-15 (capture 2026-06-07) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/appel-projets-objectif-recyclage-plastiques-orplast-edition-3",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-07-09",
+   "closed_note": "tee: ouverture=- cloture=2024-07-09 [a page shared with siblings states 2024-10-07; the per-object record is preferred]",
+   "source": "TEE catalogue on data.gouv.fr, asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__audit_energetique_en_industrie_54a6fb"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/audit-energetique-en-industrie",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__audit_et_rehabilitation_d_installations_solaires_42621c"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-rehabilitation-solaires-thermiques-collectives",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__avelo_3_2nd_releve_28bfd4"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-07-18",
+   "closed_note": "archive insertDate=2024-07-18 (capture 2026-06-06) -- https://agirpourlatransition.ademe.fr/collectivites/aides-financieres/catalogue/aap/avelo-3-2n-releve",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__contrat_chaleur_renouvelable_9b8378"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/investissement-contrat-chaleur-renouvelable",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__developper_le_velotourisme_64b22e"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-10-31",
+   "closed_note": "tee fin de validité=2025-10-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/investissement-velotourisme",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-07-09",
+   "closed_note": "tee: ouverture=- cloture=2024-07-09 [a page shared with siblings states 2024-10-07; the per-object record is preferred]",
+   "source": "TEE catalogue on data.gouv.fr, asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__ecoconception_textile_d_habillement_texhabi_3ff5cf"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-06-30",
+   "closed_note": "archive insertDate=2025-06-30 (capture 2026-02-19) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/ecoconception-textile-dhabillement-texhabi",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__ecosystemes_des_vehicules_lourds_electriques_202_395214"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-07-09",
+   "closed_note": "tee: ouverture=- cloture=2024-07-09 [a page shared with siblings states 2024-10-07; the per-object record is preferred]",
+   "source": "TEE catalogue on data.gouv.fr, asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__espr_volet_2_exploitation_forestiere_et_sylvicul_81b2a9"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-07-24",
+   "closed_note": "archive insertDate=2024-07-24 (capture 2026-05-29) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/exploitation-forestiere-et-sylviculture-performantes-et-resilientes-volet-2",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__etude_associee_a_une_demarche_ou_un_projet_d_eco_fd7a02"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-economie-de-la-fonctionnalite",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__etude_de_faisabilite_d_installation_solaire_ther_ccbfd5"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-solaire-thermique",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__etudes_de_faisabilite_de_performance_energetique_a0bb01"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-performance-energetique-en-industrie",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__etudes_de_faisabilite_pour_de_l_autoconsommation_10bcef"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-12-31",
+   "closed_note": "tee fin de validité=2025-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-photovoltaique-ademe",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__etudes_et_travaux_de_depollution_d_une_friche_fo_32ccc1"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-friches-polluees",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__etudes_pour_une_installation_hydroelectrique_66ec9b"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-hydroelectricite",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-methanisation",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__exploitation_forestiere_et_sylviculture_performa_a2e420"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-04-14",
+   "closed_note": "archive insertDate=2023-04-14 (capture 2026-06-06) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/exploitation-forestiere-et-sylviculture-performantes-volet-2-investissements-materiels-et-immateriels",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__extension_et_creation_de_reseaux_de_chaleur_ou_d_d23dcb"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/investissement-reseaux-de-chaleur-ou-de-froid",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__fonds_economie_circulaire_ormat_2023_objectif_re_9e5e82"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-06-09",
+   "closed_note": "tee: ouverture=- cloture=2025-06-09",
+   "source": "TEE catalogue on data.gouv.fr, asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__fonds_economie_circulaire_ormat_2024_objectif_re_ce1d79"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-06-09",
+   "closed_note": "tee: ouverture=- cloture=2025-06-09",
+   "source": "TEE catalogue on data.gouv.fr, asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__fonds_economie_circulaire_ormat_2025_objectif_re_ddb43d"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-06-09",
+   "closed_note": "tee: ouverture=- cloture=2025-06-09",
+   "source": "TEE catalogue on data.gouv.fr, asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__fonds_tourisme_durable_formes_emergentes_de_tour_4bbd71"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-10-25",
+   "closed_note": "archive insertDate=2023-10-25 (capture 2026-06-07) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/fonds-tourisme-durable-formes-emergentes-de-tourisme",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__fonds_tourisme_durable_restaurateurs_hebergeurs__910bbe"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-07-31",
+   "closed_note": "tee fin de validité=2024-07-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/fonds-tourisme-durable",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__fonds_vert_territoires_d_industrie_en_transition_f74bbe"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-12-31",
+   "closed_note": "tee fin de validité=2025-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/fond-vert-territoires-d-industrie",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__industrialisation_performante_des_produits_bois__6d0c88"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-04-24",
+   "closed_note": "archive insertDate=2025-04-24 (capture 2026-05-29) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/industrialisation-performante-des-produits-bois-ippb",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__industrie_zero_fossile_volet_3_decarb_flash_96ff6f"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2027-02-15",
+   "closed_note": "tee fin de validité=2027-02-15 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/decarb-flash-2025-2027",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__infrastructures_de_recharge_pour_les_vehicules_e_3a1708"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-12-31",
+   "closed_note": "tee fin de validité=2024-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/investissement-recharge-vehicules-electriques",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__innov_eau_ec2654"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-01-13",
+   "closed_note": "archive insertDate=2025-01-13 (capture 2026-06-07) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/innov-eau",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__investissements_de_recyclage_des_dechets_dont_or_2bc04f"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2022-11-04",
+   "closed_note": "archive insertDate=2022-11-04 (capture 2026-02-19) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/2022/investissements-de-recyclage-des-dechets-dont-orplast-regeneration",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__pacte_entreprises_phase_de_depot_93b45f"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-11-15",
+   "closed_note": "archive insertDate=2025-11-15 (capture 2026-02-19) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/pacte-entreprises-phase-de-depot",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__pacte_industrie_parcours_accompagnement_et_compe_91b526"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/pacte-industrie",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__pdr_aap_orplast_3_09cfb6"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2022-09-15",
+   "closed_note": "archive insertDate=2022-09-15 (capture 2026-06-07) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/appel-projets-objectif-recyclage-plastiques-orplast-edition-3",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__projets_de_recherche_developpement_ou_innovation_637877"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-12-31",
+   "closed_note": "tee fin de validité=2025-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-projet-de-recherche",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__reemploi_reduction_et_substitution_des_emballage_0fbd20"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/aides-au-reemploi-des-emballages",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__renouvellement_forestier_523b42"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-05-31",
+   "closed_note": "tee fin de validité=2024-05-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/investissement-renouvellement-forestier",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__soutien_a_l_economie_de_la_fonctionnalite_et_de__ab202b"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-12-31",
+   "closed_note": "archive insertDate=2024-12-31 (capture 2026-03-17) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/2024/soutien-leconomie-de-la-fonctionnalite-et-de-la-cooperation",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__soutien_aux_etudes_et_diagnostics_pour_le_reempl_033978"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-12-31",
+   "closed_note": "tee fin de validité=2026-12-31 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/etude-reemploi-reutilisation-reparation",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__structuration_de_filieres_de_valorisation_durabl_cfacf8"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-09-30",
+   "closed_note": "archive insertDate=2024-09-30 (capture 2026-06-06) -- https://agirpourlatransition.ademe.fr/entreprises/aides-financieres/catalogue/aap/structuration-de-filieres-de-valorisation-durable-de-la-haie",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "ademe_aid__tremplin_pour_la_transition_ecologique_des_pme_30a2b3"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-10-16",
+   "closed_note": "tee fin de validité=2025-10-16 -- https://mission-transition-ecologique.beta.gouv.fr/aides-entreprise/tremplin",
+   "source": "ADEME dispositif page, read 2026-08-09 by ETL/terms/fetch_ademe_windows.py; provenance in data/raw/ademe_windows/readings.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__ayudas_al_autoconsumo_y_al_almacenamiento_con_fu_12358d"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-12-31",
+   "closed_note": "bdns: conv 742237 of 2 edition(s), abierto=false inicio=2021-11-02 fin=2023-12-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__ayudas_para_la_transformacion_de_flotas_activida_bdcb7e"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-04-30",
+   "closed_note": "bdns: conv 617781 of 1 edition(s), abierto=false inicio=2022-05-02 fin=2024-04-30",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__ayudas_para_realizar_proyectos_de_i_d_convocator_4c4a7c"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-04-14",
+   "closed_note": "bdns: conv 806671 of 1 edition(s), abierto=false inicio=2025-03-04 fin=2025-04-14",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__consolidacion_de_la_cadena_de_valor_empresarial__1b060f"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-04-23",
+   "closed_note": "bdns: conv 895062 of 6 edition(s), abierto=false inicio=2026-04-01 fin=2026-04-23",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__convocatoria_correspondiente_a_2024_de_las_ayuda_ebebf8"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-07-26",
+   "closed_note": "bdns: conv 769768 of 1 edition(s), abierto=false inicio=2024-07-08 fin=2024-07-26",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__convocatoria_correspondiente_a_2025_de_las_ayuda_d7477e"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-07-31",
+   "closed_note": "bdns: conv 844867 of 1 edition(s), abierto=false inicio=2025-07-11 fin=2025-07-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__convocatoria_prestamo_participativo_en_coinversi_bdfb8e"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2027-12-31",
+   "closed_note": "bdns: conv 748315 of 1 edition(s), abierto=false inicio=2024-03-14 fin=2027-12-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__idi_proyectos_de_i_d_i_orientados_al_mercado_reg_e7b82d"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2026-09-30",
+   "closed_note": "bdns: conv 898738 of 5 edition(s), abierto=false inicio=- fin=2026-09-30",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_cin_1502_2021_de_27_de_diciembre_por_la_qu_441cc0"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2022-02-09",
+   "closed_note": "bdns: conv 602450 of 1 edition(s), abierto=false inicio=2022-01-19 fin=2022-02-09",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_cin_533_2022_de_6_de_junio_por_la_que_se_a_55ae26"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2022-07-05",
+   "closed_note": "bdns: conv 625814 of 1 edition(s), abierto=false inicio=2022-06-14 fin=2022-07-05",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_de_11_de_agosto_de_2021_por_la_que_se_efec_9125db"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2021-08-26",
+   "closed_note": "bdns: conv 579341 of 1 edition(s), abierto=false inicio=2021-08-17 fin=2021-08-26",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_de_19_de_abril_de_2021_por_la_que_se_aprue_8c2798"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2021-05-18",
+   "closed_note": "bdns: conv 556877 of 1 edition(s), abierto=false inicio=2021-04-27 fin=2021-05-18",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_de_25_09_2019_de_la_consejeria_de_desarrol_072b39"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-06-30",
+   "closed_note": "bdns: conv 475407 of 1 edition(s), abierto=false inicio=2019-10-08 fin=2023-06-30",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_de_26_de_diciembre_de_2023_por_la_que_se_a_de376b"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-02-20",
+   "closed_note": "bdns: conv 731694 of 1 edition(s), abierto=false inicio=2024-01-30 fin=2024-02-20",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_de_28_de_diciembre_de_2022_por_la_que_se_a_7039d6"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-03-07",
+   "closed_note": "bdns: conv 662592 of 1 edition(s), abierto=false inicio=2023-02-13 fin=2023-03-07",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_de_9_de_diciembre_de_2024_por_la_que_se_ap_46f956"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-02-05",
+   "closed_note": "bdns: conv 801945 of 1 edition(s), abierto=false inicio=2025-01-15 fin=2025-02-05",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__orden_ted_1211_2022_de_1_de_diciembre_por_la_que_b3ebf8"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-01-23",
+   "closed_note": "bdns: conv 664774 of 1 edition(s), abierto=false inicio=2022-12-08 fin=2023-01-23",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__programa_para_actuaciones_de_autoconsumo_y_almac_1f5394"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-12-31",
+   "closed_note": "bdns: conv 599248 of 1 edition(s), abierto=false inicio=- fin=2023-12-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__proyectos_estrategicos_en_cooperacion_reg_ue_651_8514db"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-07-08",
+   "closed_note": "bdns: conv 838861 of 5 edition(s), abierto=false inicio=2025-06-17 fin=2025-07-08",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__proyectos_estrategicos_en_cooperacion_reg_ue_651_ae442b"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-07-08",
+   "closed_note": "bdns: conv 838861 of 5 edition(s), abierto=false inicio=2025-06-17 fin=2025-07-08",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__rehabilitacion_energetica_en_edificios_pree_2020_41a69b"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2021-07-31",
+   "closed_note": "bdns: conv 720852 of 1 edition(s), abierto=false inicio=2020-11-16 fin=2021-07-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__resolucion_de_20_de_diciembre_de_2023_de_la_pres_fdf5be"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2024-02-13",
+   "closed_note": "bdns: conv 731572 of 1 edition(s), abierto=false inicio=2024-01-23 fin=2024-02-13",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__resolucion_de_21_de_diciembre_de_2022_de_la_pres_c77e1c"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-02-21",
+   "closed_note": "bdns: conv 663059 of 1 edition(s), abierto=false inicio=2023-01-31 fin=2023-02-21",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__resolucion_de_28_de_septiembre_de_2021_de_la_age_a40337"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2023-12-31",
+   "closed_note": "bdns: conv 585653 of 1 edition(s), abierto=false inicio=- fin=2023-12-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__resolucion_de_30_de_noviembre_de_2020_de_la_pres_434c3b"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2021-02-16",
+   "closed_note": "bdns: conv 536207 of 1 edition(s), abierto=false inicio=2021-01-26 fin=2021-02-16",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__resolucion_de_9_de_diciembre_de_2021_de_la_presi_ddb54c"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2022-02-23",
+   "closed_note": "bdns: conv 597629 of 1 edition(s), abierto=false inicio=2022-02-02 fin=2022-02-23",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__segunda_convocatoria_del_programa_de_ayudas_para_6101a3"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2018-12-31",
+   "closed_note": "bdns: conv 377556 of 1 edition(s), abierto=false inicio=2018-02-04 fin=2018-12-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__subvenciones_para_el_apoyo_a_la_implementacion_d_4cce22"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2021-12-15",
+   "closed_note": "bdns: conv 789068 of 1 edition(s), abierto=false inicio=2021-10-22 fin=2021-12-15",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
+  },
+  {
+   "match": {
+    "id": "bdns_es_ayudas__subvenciones_para_proyectos_empresariales_en_zon_d16020"
+   },
+   "policy": "publishes_window",
+   "closed_on": "2025-07-31",
+   "closed_note": "bdns: conv 842562 of 1 edition(s), abierto=false inicio=- fin=2025-07-31",
+   "source": "BDNS transparency API (infosubvenciones.es), asked 2026-08-09; verbatim in project-mgmt/findings/wsCO_window_register.json"
   }
  ]
 }

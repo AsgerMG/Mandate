@@ -1,0 +1,169 @@
+75 ademe_aid leaves in Postgres
+
+  [ 1/75] tee      2026-12-31  Aide au financement d’une étude de faisabilité de ré
+  [ 2/75] tee      2025-12-31  Aide aux études de faisabilité pour de l’autoconsomm
+  [ 3/75] tee      2026-12-31  Aide à l’installation de production de chaleur bioma
+  [ 4/75] tee      2024-10-07  Appel à projets - Véhicules lourds électriques 2024 
+  [ 5/75] tee      2026-12-31  Audit et réhabilitation d'installations solaires the
+  [ 6/75] tee      2026-12-31  Audit énergétique en industrie
+  [ 7/75] tee      2026-12-31  Contrat Chaleur Renouvelable
+  [ 8/75] tee      2024-10-07  Dispositif de soutien PME - Véhicules lourds électri
+  [ 9/75] tee      2025-10-31  Développer le Vélotourisme
+  [10/75] tee      2026-12-31  Extension et création de réseaux de chaleur ou de fr
+  [11/75] tee      2026-12-31  Financement des équipements de réemploi, réutilisati
+  [12/75] tee      2026-12-31  Financement des études de faisabilité des projets de
+  [13/75] tee      2024-07-31  Fonds Tourisme Durable – Restaurateurs & hébergeurs,
+  [14/75] tee      2025-12-31  Fonds vert - Territoires d’industrie en transition é
+  [15/75] tee      2026-12-31  Fonds Économie Circulaire - ORMAT 2023 (Objectif Rec
+  [16/75] tee      2026-12-31  Fonds Économie Circulaire - ORMAT 2024 (Objectif Rec
+  [17/75] tee      2026-12-31  Fonds Économie Circulaire - ORMAT 2025 (Objectif Rec
+  [18/75] tee         --     Gestion des biodéchets des acteurs économiques
+  [19/75] tee      2027-02-15  Industrie Zéro Fossile Volet 3 (DECARB FLASH)
+  [20/75] tee      2024-12-31  Infrastructures de recharge pour les véhicules élect
+  [21/75] tee      2026-12-31  Installations de production de chaleur et de froid r
+  [22/75] tee      2026-12-31  Installations de production de chaleur et de froid à
+  [23/75] tee      2026-12-31  PACTE Industrie - Parcours Accompagnement et Compéte
+  [24/75] tee      2025-12-31  Projets de Recherche, Développement ou Innovation (R
+  [25/75] tee         --     Prototypes de l'eXtrême Défi
+  [26/75] tee      2024-05-31  Renouvellement Forestier
+  [27/75] tee      2026-12-31  Réalisation d'installations de production de chaleur
+  [28/75] tee      2026-12-31  Réemploi, réduction et substitution des emballages e
+  [29/75] tee      2026-12-31  Réseaux de chaleur renouvelables : jusqu'à 90 % de v
+  [30/75] tee         --     Soutenir le tri à la source et la valorisation des b
+  [31/75] tee      2026-12-31  Soutien aux investissements pour le réemploi-réutili
+  [32/75] tee      2026-12-31  Soutien aux études et diagnostics pour le réemploi-r
+  [33/75] tee      2025-10-16  Tremplin pour la transition écologique des PME
+  [34/75] tee      2024-10-07  Écosystèmes des véhicules lourds électriques 2023
+  [35/75] tee      2026-12-31  Étude associée à une démarche ou un projet d’économi
+  [36/75] tee      2026-12-31  Étude d'aide à la décision pour les projets de géoth
+  [37/75] tee      2026-12-31  Étude de faisabilité d'installation solaire thermiqu
+  [38/75] tee      2026-12-31  Étude de faisabilité en géothermie de surface
+  [39/75] tee      2026-12-31  Étude de faisabilité en géothermie de surface et aér
+  [40/75] tee      2026-12-31  Études de faisabilité de performance énergétique ou 
+  [41/75] tee      2026-12-31  Études de faisabilité des projets de chaufferie biom
+  [42/75] tee      2025-12-31  Études de faisabilité pour de l’autoconsommation éle
+  [43/75] tee      2026-12-31  Études de faisabilité pour l'installation de récupér
+  [44/75] tee      2026-12-31  Études d’écoconception des produits et des services
+  [45/75] tee      2026-12-31  Études d’écoconception des produits et des services 
+  [46/75] tee      2026-12-31  Études et travaux de dépollution d'une friche - Fond
+  [47/75] tee      2026-12-31  Études pour une installation hydroélectrique
+  [48/75] tee      2026-12-31  Études préalables à la construction d’une installati
+  [49/75] tee      2026-12-31  Études sur les réseaux de chaleur ou de froid alimen
+  [50/75] archive  2024-03-07  AAP DECARB IND (PDR-FDI)
+  [52/75] archive     --     AVELO 2
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2F20220117%2Favelo-22022-25&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [53/75] archive     --     AVELO 2.2
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fcollectivites%2Faides-financieres%2Fcatalogue%2Faap%2Favelo-3-1r-releve&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: The read operation timed out
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fcollectivites%2Faides-financieres%2Fcatalogue%2Faap%2Favelo-3-1r-releve&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fcollectivites%2Faides-financieres%2Fcatalogue%2Faap%2Favelo-3-1r-releve&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [54/75] archive     --     AVELO 3 - 1ᵉʳ relevé
+  [55/75] archive  2024-07-18  AVELO 3 - 2ⁿᵈ relevé
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Faccompagnement-des-agriculteurs-face-au-changement-climatique-action-accompagnement-individualise-laction-climat-et-sols&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [56/75] archive  2024-09-11  Accompagnement des agriculteurs face au changement c
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2F2024%2Faides-au-reemploi-des-emballages-et-des-contenants&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2F2024%2Faides-au-reemploi-des-emballages-et-des-contenants&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2F2024%2Faides-au-reemploi-des-emballages-et-des-contenants&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: The read operation timed out
+  [58/75] archive     --     Aides au réemploi des emballages et des contenants
+  [62/75] archive  2023-05-15  Appel à projets - Industrialisation de Produits et S
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Fappel-projets-objectif-recyclage-plastiques-orplast-edition-3&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [63/75] archive  2022-09-15  Appel à projets - Objectif Recyclage PLASTiques (ORP
+  [64/75] archive  2024-07-24  ESPR – Volet 2 : Exploitation forestière et Sylvicul
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Fexploitation-forestiere-et-sylviculture-performantes-et-resilientes-volet-2&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: The read operation timed out
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Fexploitation-forestiere-et-sylviculture-performantes-et-resilientes-volet-2&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Fexploitation-forestiere-et-sylviculture-performantes-et-resilientes-volet-2&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [65/75] archive     --     Exploitation Forestière et Sylviculture Performantes
+  [66/75] archive  2023-04-14  Exploitation forestière et sylviculture performantes
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Ffonds-tourisme-durable-formes-emergentes-de-tourisme&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Ffonds-tourisme-durable-formes-emergentes-de-tourisme&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [67/75] archive  2023-10-25  Fonds Tourisme Durable - Formes Émergentes de Touris
+  [68/75] archive  2025-04-24  Industrialisation Performante des Produits Bois (IPP
+  [69/75] archive  2025-01-13  Innov Eau
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2F2022%2Finvestissements-de-recyclage-des-dechets-dont-orplast-regeneration&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [70/75] archive  2022-11-04  Investissements de recyclage des déchets (dont ORPLA
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Fpacte-entreprises-phase-de-depot&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: HTTP Error 503: Service Unavailable
+  [71/75] archive  2025-11-15  PACTE Entreprises : Phase de dépôt
+    fetch_text error https://web.archive.org/cdx/search/cdx?url=https%3A%2F%2Fagirpourlatransition.ademe.fr%2Fentreprises%2Faides-financieres%2Fcatalogue%2Faap%2Fappel-projets-objectif-recyclage-plastiques-orplast-edition-3&output=json&filter=statuscode%3A200&limit=-1&fl=timestamp: The read operation timed out
+  [72/75] archive  2022-09-15  PDR - AAP ORPLAST 3
+  [73/75] archive  2024-12-31  Soutien à l’économie de la fonctionnalité et de la c
+  [74/75] archive  2024-09-30  Structuration de filières de valorisation durable de
+  [75/75] archive  2025-06-30  Écoconception textile d'habillement - TEXHABI
+read 67, fetch failed 3, no reader for the cited host 5
+    no reader  agriculture.gouv.fr                           AAP PNA
+    no reader  aides-territoires.beta.gouv.fr                Actions en faveur de la transition écologiqu
+    no reader  aides-territoires.beta.gouv.fr                Aides aux actions en faveur de la transition
+    no reader  aides-territoires.beta.gouv.fr                Aides aux actions ponctuelles
+    no reader  aides-territoires.beta.gouv.fr                Aides aux relais
+    fetch fail ademe_aid__avelo_3_1er_releve_a3d166
+    fetch fail ademe_aid__aides_au_reemploi_des_emballages_et_des_contenan_f44876
+    fetch fail ademe_aid__exploitation_forestiere_et_sylviculture_performa_416bcf
+
+62 window(s) to write:
+    2024-03-07  closed (was none)     cap 2026-03-17 AAP DECARB IND (PDR-FDI)
+    2024-09-11  closed (was none)     cap 2026-05-29 Accompagnement des agriculteurs face au changeme
+    2026-12-31  open   (was none)                    Aide à l’installation de production de chaleur b
+    2026-12-31  open   (was none)                    Aide au financement d’une étude de faisabilité d
+    2025-12-31  closed (was none)                    Aide aux études de faisabilité pour de l’autocon
+    2023-05-15  closed (was none)     cap 2026-05-29 Appel à projets - Industrialisation de Produits 
+    2022-09-15  closed (was none)     cap 2026-06-07 Appel à projets - Objectif Recyclage PLASTiques 
+    2024-10-07  closed (was none)                    Appel à projets - Véhicules lourds électriques 2
+    2026-12-31  open   (was none)                    Audit énergétique en industrie
+    2026-12-31  open   (was none)                    Audit et réhabilitation d'installations solaires
+    2024-07-18  closed (was none)     cap 2026-06-06 AVELO 3 - 2ⁿᵈ relevé
+    2026-12-31  open   (was none)                    Contrat Chaleur Renouvelable
+    2025-10-31  closed (was none)                    Développer le Vélotourisme
+    2024-10-07  closed (was none)                    Dispositif de soutien PME - Véhicules lourds éle
+    2025-06-30  closed (was none)     cap 2026-02-19 Écoconception textile d'habillement - TEXHABI
+    2024-10-07  closed (was none)                    Écosystèmes des véhicules lourds électriques 202
+    2024-07-24  closed (was none)     cap 2026-05-29 ESPR – Volet 2 : Exploitation forestière et Sylv
+    2026-12-31  open   (was none)                    Étude associée à une démarche ou un projet d’éco
+    2026-12-31  open   (was none)                    Étude d'aide à la décision pour les projets de g
+    2026-12-31  open   (was none)                    Étude de faisabilité d'installation solaire ther
+    2026-12-31  open   (was none)                    Étude de faisabilité en géothermie de surface
+    2026-12-31  open   (was none)                    Étude de faisabilité en géothermie de surface et
+    2026-12-31  open   (was none)                    Études d’écoconception des produits et des servi
+    2026-12-31  open   (was none)                    Études d’écoconception des produits et des servi
+    2026-12-31  open   (was none)                    Études de faisabilité de performance énergétique
+    2026-12-31  open   (was none)                    Études de faisabilité des projets de chaufferie 
+    2025-12-31  closed (was none)                    Études de faisabilité pour de l’autoconsommation
+    2026-12-31  open   (was none)                    Études de faisabilité pour l'installation de réc
+    2026-12-31  open   (was none)                    Études et travaux de dépollution d'une friche - 
+    2026-12-31  open   (was none)                    Études pour une installation hydroélectrique
+    2026-12-31  open   (was none)                    Études préalables à la construction d’une instal
+    2026-12-31  open   (was none)                    Études sur les réseaux de chaleur ou de froid al
+    2023-04-14  closed (was none)     cap 2026-06-06 Exploitation forestière et sylviculture performa
+    2026-12-31  open   (was none)                    Extension et création de réseaux de chaleur ou d
+    2026-12-31  open   (was none)                    Financement des équipements de réemploi, réutili
+    2026-12-31  open   (was none)                    Financement des études de faisabilité des projet
+    2026-12-31  open   (was none)                    Fonds Économie Circulaire - ORMAT 2023 (Objectif
+    2026-12-31  open   (was none)                    Fonds Économie Circulaire - ORMAT 2024 (Objectif
+    2026-12-31  open   (was none)                    Fonds Économie Circulaire - ORMAT 2025 (Objectif
+    2023-10-25  closed (was none)     cap 2026-06-07 Fonds Tourisme Durable - Formes Émergentes de To
+    2024-07-31  closed (was none)                    Fonds Tourisme Durable – Restaurateurs & héberge
+    2025-12-31  closed (was none)                    Fonds vert - Territoires d’industrie en transiti
+    2025-04-24  closed (was none)     cap 2026-05-29 Industrialisation Performante des Produits Bois 
+    2027-02-15  open   (was none)                    Industrie Zéro Fossile Volet 3 (DECARB FLASH)
+    2024-12-31  closed (was none)                    Infrastructures de recharge pour les véhicules é
+    2025-01-13  closed (was none)     cap 2026-06-07 Innov Eau
+    2026-12-31  open   (was none)                    Installations de production de chaleur et de fro
+    2026-12-31  open   (was none)                    Installations de production de chaleur et de fro
+    2022-11-04  closed (was none)     cap 2026-02-19 Investissements de recyclage des déchets (dont O
+    2025-11-15  closed (was none)     cap 2026-02-19 PACTE Entreprises : Phase de dépôt
+    2026-12-31  open   (was none)                    PACTE Industrie - Parcours Accompagnement et Com
+    2022-09-15  closed (was none)     cap 2026-06-07 PDR - AAP ORPLAST 3
+    2025-12-31  closed (was none)                    Projets de Recherche, Développement ou Innovatio
+    2026-12-31  open   (was none)                    Réalisation d'installations de production de cha
+    2026-12-31  open   (was none)                    Réemploi, réduction et substitution des emballag
+    2024-05-31  closed (was none)                    Renouvellement Forestier
+    2026-12-31  open   (was none)                    Réseaux de chaleur renouvelables : jusqu'à 90 % 
+    2024-12-31  closed (was none)     cap 2026-03-17 Soutien à l’économie de la fonctionnalité et de 
+    2026-12-31  open   (was none)                    Soutien aux études et diagnostics pour le réempl
+    2026-12-31  open   (was none)                    Soutien aux investissements pour le réemploi-réu
+    2024-09-30  closed (was none)     cap 2026-06-06 Structuration de filières de valorisation durabl
+    2025-10-16  closed (was none)                    Tremplin pour la transition écologique des PME
+
+13 not written:
+      8  no reading
+      3  tee: page states no closing date
+      2  archive: page states no closing date
+
+dry run: nothing written
