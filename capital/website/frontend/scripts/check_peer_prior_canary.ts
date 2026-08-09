@@ -35,10 +35,25 @@ import { ACTIVE_RECALL_SET, namedAncestor, type RecallRow } from "./recallSet";
 const DIR = path.join(__dirname, "..", "lib", "intelligence");
 const PRIOR = "peerPrior.generated.json";
 
-/** The visible slots. `applyPeerPrecedence` fills the table from the front of
- *  the cell, so an answer sitting at rank 40 is in the artifact and not in the
- *  founder's five. Both are measured; only the second is floored, because it is
- *  the one that moved when the artifact broke. */
+/** The measurement window, deliberately TIGHTER than anything that ships.
+ *
+ *  `applyPeerPrecedence` fills the table from the front of the cell, so an
+ *  answer sitting at rank 40 is in the artifact and not on the founder's page.
+ *  Both are measured; only the second is floored, because it is the one that
+ *  moved when the artifact broke.
+ *
+ *  ── Why this is 5 while the product now shows 6 ───────────────────────────
+ *  It read "the founder's five", which was true of the memo and never true of
+ *  the instant screen (`DISPLAY_CAP` has been 6 throughout), and is now true of
+ *  neither: `BRIEF_LIMITS.institutionsMax` is 6.
+ *
+ *  It stays 5, and the floors below are NOT re-derived, for a reason that is
+ *  the opposite of inertia. Widening the window can only ADD hits, so every
+ *  floor here would pass more easily at 6 than at 5 — a canary re-derived onto
+ *  a wider window is a canary loosened without a single number moving, which is
+ *  precisely the "floor that moves to accommodate" this file already warns
+ *  about. Read it as: the artifact must keep the answer inside FIVE slots, and
+ *  the sixth the product publishes is headroom this guard refuses to spend. */
 const VISIBLE = 5;
 
 /** Regime, by the SAME derivation `reattributeMissingAnswers` uses -- the id

@@ -254,6 +254,24 @@ const tape = startTape();
  *  24-25 — and it is the floor whose margin this session was asked to
  *  investigate, so it gets its own block below rather than a clause here. */
 const FLOOR = { pool: 89, exact5: 15, regime5: 69 };
+/*  ── `exact5` after the brief began publishing SIX rows ────────────────────
+ *
+ *  Not re-derived, and the "5" in the name is not now stale. These floors are
+ *  measured on `computeVerdict().instrumentTable` — the INSTANT SCREEN, whose
+ *  `DISPLAY_CAP` was 6 before this change and is 6 after it. Nothing this file
+ *  reads moved when `BRIEF_LIMITS.institutionsMax` went 5 -> 6, because the
+ *  memo's published table is a DIFFERENT ordering over a DIFFERENT pool and
+ *  this guard has never touched it (wsCR measured the two side by side: they
+ *  agree on the won leaf's rank in 11 of 41 pairs that contain it).
+ *
+ *  So the honest statement of what `exact5` floors is "the ranker still puts
+ *  the won leaf in the screen's first five", which is a claim about the SORT
+ *  and not about a promise to a founder. Re-deriving it onto six rows would
+ *  widen the window and could only raise the number — a loosening dressed as
+ *  an update. The floor stays where it was measured, on the population it was
+ *  measured on. What the change does expose is that no floor in this repo
+ *  guards the memo's own row order at all; that gap is wsCR's finding to
+ *  report, not a number to invent here. */
 /*  ── THE `exact5` ZERO-MARGIN FLAG, ANSWERED FROM THE VERDICT TABLE ───────
  *
  *  Workstream BR left this open: `exact5` passed at 22 against a floor of 22,
