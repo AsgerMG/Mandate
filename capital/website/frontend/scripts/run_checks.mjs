@@ -83,6 +83,15 @@ const CHECKS = [
   // territorial screen removing a fund from a company the register says WON it
   // -- and a guard against that must not be behind a link that needs a database.
   ["a winner is never screened out", ["npx", "tsx", "scripts/check_winner_not_blocked.ts"]],
+  // The SAME property one stage later, and the stage that actually ships. The
+  // line above watches the territorial screen, which is not shipped and whose
+  // debt is 15. This one watches the encoded-gate drop inside the memo's own
+  // candidate order, which IS shipped, and which was deleting the won fund for
+  // 62% of the answer key until the comparator was taught that "Denmark" and
+  // "DK" are one country. Same hermetic class: committed snapshot, committed
+  // answer key, no credentials.
+  ["a winner is never gated out of the memo",
+    ["npx", "tsx", "scripts/check_winner_not_gated.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
   // Hermetic, sub-second, and it reads the same answer key the recall floor
   // grades on. It sits HERE rather than beside the floor because it is the
