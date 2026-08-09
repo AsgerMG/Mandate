@@ -101,10 +101,29 @@ export const FAMILIES: { key: string; any: RegExp; note: string }[] = [
   { key: "nonprofit",
     any: /\b(?:associations?\b|associaz|associaci|asbl\b|non-?profit|not-?for-?profit|foundation|fondation|fondazione|stiftung|charit|voluntary organi[sz]|\bngo\b|civil society|co-?operative|mutual societ|social enterprise|trust established)/,
     note: "an entity constituted for a purpose other than distributing profit" },
-  { key: "noneconomic_legal_person",
-    any: /\blegal person not carrying out (?:an )?economic|non-?economic (?:legal )?(?:person|entit|activit)|legal entit(?:y|ies) not (?:carrying|engaged)/,
-    note: "a legal person constituted without an economic activity" },
 ];
+
+/**
+ * THE ONE FOLD, and it is made BY THE PROPERTY rather than for convenience.
+ *
+ * The corpus draws a sixth distinction — "a legal person NOT carrying out an
+ * economic activity" — and it is tempting to make it a sixth option. It fails
+ * test (1), INVARIANCE: whether an entity carries on an economic activity is a
+ * fact about what it is currently DOING, and it starts and stops. A university
+ * that begins selling services becomes an undertaking without being
+ * reconstituted. It is therefore a status, not a constitutional kind, and it is
+ * also the one thing on this list a founder cannot answer instantly — it is a
+ * state-aid lawyer's question with a form control's face on.
+ *
+ * So it is not an option. It is a DEMAND, and it is expressed in the kinds it
+ * admits: the constitutional kinds that are typically non-economic. The error
+ * this can make is admitting a non-profit that does trade — which shows a
+ * founder a fund they may not qualify for, rather than hiding one from a
+ * founder who does. That is the direction this repo has always chosen, because
+ * a hidden fund is the harm and a shown one is a wasted click.
+ */
+const NON_ECONOMIC = /\blegal person not carrying out (?:an )?economic|non-?economic (?:legal )?(?:person|entit|activit)|legal entit(?:y|ies) not (?:carrying|engaged)/;
+const NON_ECONOMIC_KINDS = ["research_org", "public_body", "nonprofit"];
 
 /** Tokens that say the sentence is about SIZE, TERRITORY, ACTIVITY or STATUS,
  *  i.e. a demand some OTHER intake field already carries. Present so that the
@@ -137,10 +156,9 @@ export function detect(requirement: string): Detected {
   if (STATUS.test(t)) return { types, sizeOnly: false, slotHit: false };
   const hay = slots.length ? slots.join(" || ") : "";
   for (const f of FAMILIES) if (hay && f.any.test(hay)) types.add(f.key);
-  // The corpus's explicit negative: "a legal person NOT carrying out economic
-  // activity" names the non-economic kind and simultaneously EXCLUDES it from
-  // `company`, which is why it is its own family rather than a company variant.
-  if (types.has("noneconomic_legal_person")) types.delete("company");
+  // The corpus's explicit negative, folded into the kinds it admits. See
+  // NON_ECONOMIC above for why this is not a sixth option.
+  if (hay && NON_ECONOMIC.test(hay)) for (const k of NON_ECONOMIC_KINDS) types.add(k);
   const sizeOnly = types.size === 0 && SIZE.test(hay);
   return { types, sizeOnly, slotHit };
 }
