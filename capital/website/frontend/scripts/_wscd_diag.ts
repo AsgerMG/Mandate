@@ -76,6 +76,24 @@ async function main() {
   console.log(`  holding any judgeable requirement  : ${regimesWithJudgeable}`);
   console.log(`  where one SPLITS the siblings      : ${regimesSplit} (${splitPairs} splitting texts)`);
 
+  // ── The bound on the DEFAULT arm ────────────────────────────────────────
+  // openFitScorer needs TWO siblings with a judged requirement before it can
+  // compare anything (`known.length < 2`). A splitting requirement gives only
+  // ONE side a judgement, so the split it was selected for is invisible unless
+  // the OTHER siblings carry judgeable requirements of their own. This counts
+  // the regimes where they do -- the whole population the default arm can ever
+  // act on.
+  let bothSidesJudgeable = 0;
+  for (const [, group] of multi) {
+    const withJudgeable = group.filter((inst) => inst.gates.some((g) =>
+      (!g.gateRole || g.gateRole === "filter")
+      && (g.requirement ?? "").trim().length >= MIN_SUBSTANTIVE_LEN
+      && requirementClassOf((g.requirement ?? "").trim()) === "judgeable"));
+    if (withJudgeable.length >= 2) bothSidesJudgeable += 1;
+  }
+  console.log(`  with >=2 siblings each carrying one : ${bothSidesJudgeable}  `
+    + `<- the only regimes the DEFAULT absence arm can act on`);
+
   // How much of the corpus a judgeable requirement reaches at all, ignoring
   // siblings: the number an absolute (non-sibling) site could see.
   const anyJudgeable = pool.filter((i) => i.gates.some((g) =>
