@@ -135,6 +135,60 @@ export function rankerUsed(
   return semantic && semantic.size ? "embedding" : "lexical";
 }
 
+/** ── How many requests each ranker actually served ────────────────────────
+ *
+ *  `rankerUsed` answers the question for ONE request. Nothing counted it over a
+ *  RUN, and that gap has a measured cost: `check_recall_floor.ts` was run twice
+ *  on the same commit, same seed and same corpus on 2026-08-09 and returned
+ *  `regime5 87%` (FAILED, floor 88) and then `regime5 96%` (ok) on the same
+ *  136-row slice. The first run shared the machine with a 250-pair harness; the
+ *  second ran alone. `semanticFundMatch` has a 3s connect and a 3s statement
+ *  timeout and returns an EMPTY MAP on any failure, at which point every
+ *  `rankerUsed` call site silently drops to the lexical index — the one
+ *  `RANKER_DESCRIPTION` calls "measurably worse and NOT the system a founder is
+ *  served by".
+ *
+ *  So a run can rank some pairs on embeddings and some on lexical, average the
+ *  two, and print a single number with nothing on screen to say so. That is a
+ *  build gate going red for a reason that is not a regression, which this repo
+ *  has already paid for once ("a gate that cannot find its credentials must not
+ *  be the same colour as a gate that passed").
+ *
+ *  This is the counting half. It records, it never decides: no caller's
+ *  behaviour changes, and a harness that does not read the tally is exactly as
+ *  it was. `requireLiveCorpus` and `requireCredentials` catch the two states
+ *  where the WHOLE run took the fallback; this is the one they cannot see,
+ *  where PART of it did.
+ *
+ *  Counted in `semanticFundMatch`, which is called exactly once per request, so
+ *  the tally is a count of REQUESTS and not of the four `rankerUsed` call sites
+ *  each request makes. A cache hit is counted too: it is still a request served
+ *  by the embedding ranker. */
+const tally: Record<Ranker, number> = { embedding: 0, lexical: 0 };
+
+/** Zero the tally. Call at the start of a run that is going to report it. */
+export function resetRankerTally(): void {
+  tally.embedding = 0;
+  tally.lexical = 0;
+}
+
+/** Requests served by each ranker since the last reset. */
+export function rankerTally(): Readonly<Record<Ranker, number>> {
+  return { ...tally };
+}
+
+/** One line naming what actually ranked, for a harness banner. Says nothing
+ *  reassuring when the run is clean and says it loudly when it is not. */
+export function rankerTallyLine(): string {
+  const { embedding, lexical } = tally;
+  const n = embedding + lexical;
+  if (!n) return "ranker: nothing ranked";
+  if (!lexical) return `ranker: all ${n} request(s) on EMBEDDING`;
+  return `ranker: ${embedding}/${n} on EMBEDDING, ${lexical} FELL BACK TO LEXICAL` +
+    ` -- this run averages two different systems and the number is not comparable` +
+    ` with a clean one. ${RANKER_DESCRIPTION.lexical}`;
+}
+
 /** What each ranker IS, for any harness that has to name what it measured.
  *  One sentence, and the two are not interchangeable in it. */
 export const RANKER_DESCRIPTION: Record<Ranker, string> = {
@@ -239,9 +293,14 @@ export async function semanticFundMatch(
   description: string | undefined,
 ): Promise<Map<string, number>> {
   const desc = description?.trim();
+  // NOT counted in the tally, on purpose. A request with nothing long enough to
+  // embed never asked the embedding ranker for anything, so it is not a
+  // fallback — and counting it as one would make `rankerTallyLine` shout on
+  // every profile-mode replay, which is how a warning stops being read. The
+  // tally counts requests that ASKED, and how many of those got an answer.
   if (!desc || desc.length < MIN_MATCHABLE_DESCRIPTION_CHARS) return new Map();
   const cached = cache.get(desc);
-  if (cached) return cached;
+  if (cached) { tally.embedding += 1; return cached; }
 
   const url = process.env.DATABASE_URL;
   if (!url) {
@@ -259,15 +318,16 @@ export async function semanticFundMatch(
     // still returns empty and falls through to the lexical index, which is the
     // honest degradation for a real founder on a cold fallback.
     const hit = loadSemanticCache()[desc];
-    if (!hit) return new Map();
+    if (!hit) { tally.lexical += 1; return new Map(); }
     if (hit.separation !== undefined) separation.set(desc, hit.separation);
+    tally.embedding += 1;
     return new Map(Object.entries(hit.scores));
   }
 
   const out = new Map<string, number>();
   try {
     const vec = await embedQuery(desc);
-    if (!vec) return out;
+    if (!vec) { tally.lexical += 1; return out; }
     const { Client } = await import("pg");
     const client = new Client({ connectionString: url, connectionTimeoutMillis: 3000 });
     await client.connect();
@@ -329,8 +389,13 @@ export async function semanticFundMatch(
     }
   } catch (err) {
     console.error("semantic fund match failed, falling back to lexical:", err);
+    tally.lexical += 1;
     return new Map();
   }
+  // An empty result is a fallback even without a thrown error: every
+  // `rankerUsed` call site tests `semantic.size`, so zero rows and a timeout
+  // are the same thing downstream and have to be the same thing here.
+  if (out.size) tally.embedding += 1; else tally.lexical += 1;
   cache.set(desc, out);
   return out;
 }

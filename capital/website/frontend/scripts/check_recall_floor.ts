@@ -39,6 +39,7 @@ import {
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import type { InstrumentRow } from "../lib/intelligence/types";
+import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
@@ -470,6 +471,24 @@ async function main() {
     const prov = corpusProvenance();
     console.log(`  corpus=${prov.source} instruments=${prov.instruments}`);
   }
+  // WHICH RANKER produced these numbers, counted rather than assumed.
+  //
+  // This gate returned `regime5 87%` (FAILED, floor 88) and then `regime5 96%`
+  // (ok) on the SAME commit, the same seed and the same corpus on 2026-08-09.
+  // The first run shared the machine with another 250-pair harness.
+  // `semanticFundMatch` has a 3s connect and a 3s statement timeout and returns
+  // an empty map on any failure, at which point every `rankerUsed` call site
+  // drops to the lexical index -- so a run can average two ranking systems and
+  // print one number. `requireLiveCorpus` and `requireCredentials` cannot see
+  // it: both were satisfied in both runs.
+  //
+  // Reported, and deliberately NOT made a failure condition. Turning it into
+  // one would put a new red light in `npm run check` in the same commit that
+  // discovered the phenomenon, before anyone knows how often it fires on a
+  // quiet machine -- and a gate nobody can predict is the gate that gets
+  // scrolled past. The line is on screen at the moment somebody reads the
+  // verdict, which is what a red build needs in order to be attributable.
+  resetRankerTally();
   resetGateHydration();
   for (const t of set) {
     resetGateHydration();
@@ -507,6 +526,7 @@ async function main() {
   const failed = (Object.keys(FLOOR) as (keyof typeof FLOOR)[])
     .filter((k) => got[k] < FLOOR[k]);
 
+  console.log(`  ${rankerTallyLine()}`);
   console.log(`  ${file}  ${set.length} tune pairs`);
   for (const k of Object.keys(FLOOR) as (keyof typeof FLOOR)[]) {
     const bad = got[k] < FLOOR[k];
