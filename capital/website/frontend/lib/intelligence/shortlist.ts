@@ -26,7 +26,7 @@ import { instrumentServesCapital, instrumentServesCountry } from "./capitalPrefe
 // four places below, which is why a harness could measure the lexical ranker
 // and report about it in the embedding ranker's words. See semantic.ts.
 import { semanticSeparation, rankerUsed } from "./semantic";
-import { ROW_IDENTITY_ARM } from "./rowIdentity";
+import { nameableBody, withDoor } from "./rowIdentity";
 import { doorLabel } from "./doorLabel";
 import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
@@ -1103,7 +1103,17 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
     // separates them: Region Normandie versus Caisse des Depots, under the same
     // notified regime.
     peers.sort((a, b) => (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""));
-    const bodies = new Set(peers.map((p) => p.administeringBody ?? ""));
+    // Whether the body SEPARATES these peers is a question about the column,
+    // so it is asked of the column. Whether a body may be PRINTED is a question
+    // about evidence, so it is asked of `nameableBody` — per peer, below.
+    //
+    // Those are two different questions and collapsing them into one broke the
+    // labels when it was tried: two of a twelve-leaf scheme's bodies are
+    // ministries and are refused, so a group test on `nameableBody` failed for
+    // the whole group and sent all twelve rows to the id-slug fallback. Seen by
+    // running it, not by reading it.
+    const named = new Map(peers.map((p) => [p, nameableBody(p)]));
+    const bodies = new Set(peers.map((p) => (p.administeringBody ?? "").trim()));
     const bodyDistinguishes = bodies.size === peers.length && !bodies.has("");
     // Where the body does not separate them, WHERE THE MONEY GOES often does,
     // and it is the thing a founder can act on: fourteen leaves share the
@@ -1121,8 +1131,19 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
     // separates every pair the corpus actually contains. A branch nothing can
     // emit is the SEL-BAND defect in code rather than in the register.
     for (const r of peers) {
-      const token = (bodyDistinguishes ? r.administeringBody : "")
-        || (regionDistinguishes && r.deliveryRegion
+      // A BODY is printed through the one function that prints bodies, so this
+      // row and the question rendered under it cannot spell one door two ways.
+      // The other tokens are not doors -- a region, an id fragment, a notified
+      // code, a capital type -- and carry no `via`, because `via` is a claim
+      // about who granted the money and none of them says that.
+      //
+      // A peer whose body separates it but which the register will not let us
+      // NAME (a ministry, a scattered or unmeasured vote) falls through to
+      // those: it still has to be told apart from its peers, and it is simply
+      // never told apart by a claim we cannot support.
+      const body = bodyDistinguishes ? named.get(r) : null;
+      if (body) { r.instrument = withDoor(name, body); continue; }
+      const token = (regionDistinguishes && r.deliveryRegion
              ? regionNameFor(r.deliveryRegion) ?? r.deliveryRegion : "")
         || (r.instrumentId ?? "").slice(prefix.length).replace(/^_+/, "").replace(/_/g, " ")
         || r.schemeCode
@@ -2569,12 +2590,21 @@ export function materialiseInstrumentTable(
     ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative),
     ...collision.demoted,
   ];
-  // LAST, and behind a default-OFF arm. A door-level row is a LABEL change:
-  // it renames, it never reorders, never demotes and never touches the pool.
-  // Running it here — after the order is final — is what makes that checkable
-  // rather than merely intended, because there is nothing left downstream that
-  // could read the new name and act on it.
-  if (ROW_IDENTITY_ARM === "door") nameRowsAsDoors(out);
+  // LAST, and unconditional. A door label is a LABEL change: it renames, it
+  // never reorders, never demotes and never touches the pool. Running it here —
+  // after the order is final — is what makes that checkable rather than merely
+  // intended, because there is nothing left downstream that could read the new
+  // name and act on it. It stays last for that reason and must not be moved
+  // earlier: before the collapse it would change the dedupe key, and a label
+  // rule that changes which funds survive is no longer a label rule.
+  //
+  // This ran behind `ROW_IDENTITY_ARM=door`, default off, so it never ran. See
+  // rowIdentity.ts for why the arm was deleted rather than flipped: the ranking
+  // question it appeared to hold open is a structural zero, and the label is a
+  // defect fix rather than an experiment.
+  nameRowsAsDoors(out);
+  // wsCM's stage tape, kept across the arm deletion: it is what showed the
+  // score keeps one seat and the peer prior fills four.
   recordStage("final", out.map((r) => r.instrumentId ?? r.channel));
   return out;
 }

@@ -33,7 +33,7 @@
 // population rather than the path.
 //
 // ── WHAT IT MEASURED, 2026-08-09 (wsCD2) ─────────────────────────────────
-// tune, n=120, seed 20260806, live Postgres, OPEN_ABSENCE_ARM=neutral:
+// tune, n=120, seed 20260806, live Postgres:
 //
 //   K=0  30.0%   K=1  30.0% (+0.0)   K=2  30.0% (+0.0)
 //                K=3  30.0% (+0.0)   K=4  30.0% (+0.0)   K=6  30.0% (+0.0)
@@ -53,12 +53,15 @@
 // all; `known.length < 2` and `hi === lo` then leave the group alone. 235 of
 // 235 settled verdicts landed exactly there.
 //
-// The 213 confident `fails` are the reason NOT to reach for OPEN_ABSENCE_ARM
-// =pass to unblock this. Under "pass" every one of them would demote the fund
-// that carries the requirement and promote the sibling whose rules have
-// simply never been encoded — a promotion granted for an absence, on prose
-// the founder never wrote as an answer to that question. That is the shape of
-// the harm that hid Innovate UK, at 213 occurrences per 120 briefs.
+// The 213 confident `fails` are the reason the obvious unblock — scoring the
+// SILENT sibling as "not ruled out" — was measured, rejected and DELETED
+// (`OPEN_ABSENCE_ARM=pass`, removed 2026-08-09). Under it every one of those
+// 213 would demote the fund that carries the requirement and promote the
+// sibling whose rules have simply never been encoded — a promotion granted for
+// an absence, on prose the founder never wrote as an answer to that question.
+// That is the shape of the harm that hid Innovate UK, at 213 occurrences per
+// 120 briefs. Do not rebuild it; the guard is the one-sided-split test in
+// `openQuestions.test.ts`.
 //
 //   cd website/frontend
 //   npx tsx scripts/measure_open_questions.ts                 # tune, N=120
@@ -142,8 +145,7 @@ async function main() {
   const { graded, ungraded } = partitionByOfferable(eligible, (id) => offerable.has(id));
   const sample = sampleRecall(graded, Math.min(N, graded.length), seed);
 
-  console.log(`set ${file} | split ${split} | ANSWERS=${answerMode} | seed ${seed} `
-    + `| OPEN_ABSENCE_ARM=${process.env.OPEN_ABSENCE_ARM ?? "neutral"}`);
+  console.log(`set ${file} | split ${split} | ANSWERS=${answerMode} | seed ${seed}`);
   console.log(`corpus=${corpusProvenance().source} | classes: ${cls.classified}/${cls.candidates} `
     + `classified by ${cls.model} at ${cls.generatedAt}`);
   console.log(`described+gradable ${graded.length} (ungradable ${ungraded.length}), sampling ${sample.length}\n`);

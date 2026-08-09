@@ -49,14 +49,48 @@
 // the whole instrument.
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 
-/** ── The arm ───────────────────────────────────────────────────────────────
- *  `scheme` is today's product and the default. `door` is the body-level row.
+// ── THE LABEL SHIPS. DOOR-LEVEL *RANKING* DOES NOT ────────────────────────
+//
+// There was a `ROW_IDENTITY_ARM=door` switch here, default off. It was deleted
+// on 2026-08-09 because it was a switch over a settled question in one
+// direction and a parked bug fix in the other, and neither is an A/B.
+//
+// The RANKING half is a structural zero and must not be re-proposed. wsCG2
+// measured it directly: the SATR loader already materialises one instrument per
+// (regime, scheme, body), so every multi-leaf notified scheme has exactly as
+// many distinct bodies as it has leaves (SA.56245 18/18, SA.111723 12/12), and
+// leaves sharing a scheme with the SAME body number 0. `doorKey` is therefore a
+// re-derivation of the leaf id: DOOR@5 equals EXACT@5 to the pair on every
+// population measured (tune 27/27, holdout 24/24, region-known 22/22). wsCI §3
+// reproduced it from the other side — every door-keyed permutation of the
+// published five is exactly inert. There is nothing here to measure again.
+//
+// The LABEL half is a different claim and ships on its own merits. It is not a
+// ranking rule: it renames and never reorders, demotes or touches the pool. It
+// exists because a founder shown one leaf of a twelve-body scheme reads the
+// bare regime title -- a rulebook eleven other bodies publish under -- and
+// because the table and the question beneath it were spelling one leaf two
+// ways. A fix behind a switch nothing could flip is a fix that never runs.
+
+/** The connective, in one place so the label, the memo and the checks agree.
+ *  `via` and not "apply to": see the evidence standard at the top of this file. */
+export const VIA = "via";
+
+/**
+ * THE ONE SPELLING OF A DOOR, wherever a body is printed beside a name.
  *
- *  Read once at module load, never per call, for the same reason
- *  `SECTOR_CLIP_ARM` is: a measurement must not be able to drift mid-run. */
-export type RowIdentityArm = "scheme" | "door";
-export const ROW_IDENTITY_ARM: RowIdentityArm =
-  process.env.ROW_IDENTITY_ARM === "door" ? "door" : "scheme";
+ * Both places that name a fund by its granting body call this: the instrument
+ * table (`distinguishRowNames`, and `nameRowsAsDoors` after it) and the
+ * question rendered underneath it (`gateReach`). One function rather than a
+ * comment asking three call sites to agree — this repo has now hit "two
+ * functions, two keys" three times and the fix was one exported function every
+ * time.
+ *
+ * `VIA` and not "apply to": see the evidence standard at the top of this file.
+ */
+export function withDoor(name: string, body: string): string {
+  return `${name} · ${VIA} ${body}`;
+}
 
 /** The margin the majority vote must clear before the winner is a door. */
 export const BODY_SHARE_FLOOR = 0.75;
@@ -129,7 +163,3 @@ export function doorKey(
   if (!body || !scheme) return `leaf::${id}`;
   return `door::${scheme}::${body.toLowerCase()}`;
 }
-
-/** The connective, in one place so the label, the memo and the checks agree.
- *  `via` and not "apply to": see the evidence standard at the top of this file. */
-export const VIA = "via";

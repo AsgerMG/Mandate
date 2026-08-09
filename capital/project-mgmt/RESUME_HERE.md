@@ -13,12 +13,39 @@ EXACT@5, Doors key, tune split, seed 20260806, live Postgres, 1,088 instruments.
 2026-08-09 and it invalidates every ceiling measured before it. A ceiling
 measured on today's six questions bounds today's product, not the target.
 
-| measurement | figure | what it really conditioned on |
-|---|--:|---|
-| wsBY | 85.5% | verbatim `eligibility_text` — **circular**, RETRACTED |
-| wsCA | 43.1% | today's intake fields, matchable column only |
-| wsCA | 62.0% | requirement *present* — text with no comparator |
-| ships | 25% | EXACT@5 |
+**ANSWERED, later the same day, by wsCC (`6cab7a7d`): the honest maximum under
+full founder information is 65.9% EXACT@5 — "66%". 95% is not reachable, and
+was never reachable.** The table below is the retraction chain that got there;
+the live number is the last row of it.
+
+| measurement | figure | what it really conditioned on | status |
+|---|--:|---|---|
+| wsBY | 85.5% | verbatim `eligibility_text` | **RETRACTED — circular.** Gates are extracted from that text, so all 23 intake fields measure +0.0 against it |
+| wsCA | 43.1% | today's intake fields, matchable column only | **RETRACTED as *the* ceiling — conditioned on a fixed intake.** Still correct as the bound on today's product |
+| wsCA | 62.0% | requirement *present* — text with no comparator | **RETRACTED — circular**, the same trap one level down (`rich_intake_wsCC.md` §4) |
+| wsCH | 51.7% | wsCA's key + organisation type | a **raise**, not a retraction: +11.7 on wsCA's own population. Recorded in commit `a9c9753` only |
+| **wsCC** | **65.9%** | **FULL founder information, keyed on DEMAND CLASS not wording** | **CURRENT CEILING OF RECORD** |
+| wsCC | 58.3% | greedy chooser — bounds any question-selection policy | **the plannable number. Plan against this** |
+| wsCC | 77.6% | the fund's whole eligibility page to a perfect chooser | circular; printed only as a reference. **Never quote as headroom** |
+| ships | 25% | EXACT@5 | — |
+
+**Why 66% can be trusted where 85.5% could not:** the key is DEMAND CLASS, so
+two funds demanding the same thing in different words collapse and are not
+credited. Setting the collapse threshold to 1 recovers the circular 70.1% — a
+check that the repair does what it claims.
+
+**What binds it:** pool reach (−7) and sibling indistinguishability under full
+information (−29). Twenty-nine points is funds that stay genuinely identical
+after everything a founder can say. wsCG2/wsCJ then measured the two obvious
+attacks on that residue at **zero**: a door-level row recovers none of it
+(`46d2dc63` — the leaf already IS the door), and address→door lookup has an
+oracle bound of +0.4 tune / +0.0 holdout (`address_door_wsCJ.md`). wsCD2
+measured the open-question arm at **exactly zero** (`a903b923`).
+
+⚠ **A measurement caveat that touches every recall number above.** wsCI
+(`e7f06813`) found `check_recall_floor` silently averaging two ranking systems
+when `semanticFundMatch` times out under load. Any recall figure measured on a
+loaded machine before 2026-08-09 may be an average of two rankers.
 
 ## Closed by measurement — do NOT reopen
 
@@ -50,14 +77,22 @@ encoding.
 
 ## Agents in flight — each commits as it goes; branches survive a cutoff
 
-- `wsCC-rich-intake` — the ceiling under a full founder profile, and a straight
-  answer on whether 95% is reachable.
-- `wsCD-open-questions` — BUILDS the open-question path in stage 2, behind a
-  flag default OFF, with a **question-budget curve**: EXACT@5 as a function of
-  how many questions are asked. "95% if we ask forty things" is not a product.
-- `wsCE-crisp-encoding` — splits the 1,855 into crisp (deserves a comparator)
-  vs fuzzy (hand to wsCD). Building on `wsCB-encoding-lift` (1 commit, not
-  merged) which holds the reconciliation harness.
+**⚠ All three below have since MERGED. Their answers, so this list is not read
+as an open question:**
+
+- `wsCC-rich-intake` — **MERGED `6cab7a7d`.** The ceiling under a full founder
+  profile is **65.9% ("66%")**; the plannable number is 58.3%. **95% is not
+  reachable.** `rich_intake_wsCC.md`.
+- `wsCD-open-questions` — **MERGED `3394cc14`, then wsCD2 `807df94c`.** The
+  question-budget curve is **flat**: the open-question arm buys **exactly
+  zero**, because 235 of 235 settled verdicts landed where the scorer cannot
+  read them — a design contradiction, not a tuning failure. The arm is inert
+  below K=3 and ships default OFF.
+- `wsCE-crisp-encoding` — **MERGED `be84adc0`.** The separation is in the
+  **fuzzy** half, not the crisp one: reader-fuzzy buys +6.4 over 196 gates and
+  11 regimes against +3.0 for reader-crisp over 65 gates and 5. The
+  recommendation is **not to spend on the crisp half**. wsCE has no findings
+  document — its numbers live in commits `e782533a` and `be84adc0` only.
 
 If a branch exists with commits ahead of main, it is finished work waiting to be
 verified and merged. Verify, do not trust.
@@ -74,21 +109,49 @@ verified and merged. Verify, do not trust.
 
 ## Not done, and needing a decision
 
-**The two-way store divergence.** Laptop vs the SQLite volume: gates 7,471 vs
-6,401 (**1,070**, real work), companies 151,426 vs 151,915 (**489**). Postgres
-is byte-current with the laptop — the divergence is with the VOLUME.
+**The two-way store divergence — CLOSED 2026-08-09 (wsCN).** Merged, laptop ←
+volume, scoped to two tables. Backups first (Postgres 12 tables / 18,841 rows to
+iCloud, and a `.backup` of the SQLite store), both verified by re-read.
 
-Two hazards recorded by wsCF:
-- both stores allocate `companies.id` from the SAME AUTOINCREMENT counter since
-  the 08-08 fork, and `merge_volume_into_local.py` keys on `id` alone — a
-  collided row is **silently skipped** and the count-only after-check cannot
-  see it. Safe only while the laptop inserts no company: **run no extractor
-  before merging**.
-- the volume's 489 companies come from a partial run with a red gate, so expect
-  unclassified `sector_top`.
+    companies              163,538 -> 164,029  (+491)
+    public_funding_events  311,355 -> 311,399  (+44: ADEME 42, Spanish BDNS 2)
+    eligibility_gates        7,471 ->   7,471  unchanged, as required
+    funding_instruments      1,088 ->   1,088
+    eligibility_clauses        893 ->     893
 
-Sequence is in the `wsCF` merge commit (`54e7bd6e`). **Avoid `make pull-db`**
-(chains to `--write`) and **`make eligibility`** (TRUNCATEs Postgres).
+`integrity_check` ok, zero events pointing at a company that does not exist, and
+all 491 arriving companies carry unclassified `sector_top` — exactly as wsCF
+predicted from the partial run behind them. **Nothing was pushed to Postgres**,
+which still reads 7,471 / 1,088 / 893.
+
+Two corrections to what was recorded here, both worth keeping:
+
+- **The counter hazard never bit.** Zero id collisions on every table. The
+  laptop had inserted no company since **2026-08-02**, six days before the fork,
+  so the volume's ids 215,305..215,795 were never issued twice. The store itself
+  says so, which is better evidence than the instruction "run no extractor
+  first" — and it is the reason that instruction held.
+- **The real hazard was the mirror image, and nobody had named it.** Of the 174
+  gates and 14 clauses on offer, **all 188 already existed here under a
+  DIFFERENT id**. `id NOT IN` calls those new, so they would have been inserted,
+  the count would have risen by exactly the expected amount, and the natural key
+  `(instrument_id, gate_key)` — which holds exactly, 7,471 distinct pairs across
+  7,471 rows — would have broken. Gates and clauses were therefore excluded:
+  every row they had to offer was a duplicate.
+- The pair recorded here as 151,426 / 151,915 is **correct, and is not the
+  table**. It is the census's IN-SCOPE company count; the raw `companies` table
+  read 163,538 / 164,029. Two counts, both right, twelve thousand apart, and
+  nothing beside either said which one it was — so this section now says. 489
+  of the 491 arriving companies are in scope, which is why both deltas agree.
+  I mis-read this myself on the first pass and wrote that the recorded figure
+  was wrong; a number quoted without its definition is how that happens.
+
+`ETL/lib/check_id_collisions.py` now runs **in front of** the merge, not beside
+it, and there is no override flag: asked for all five tables it exits 1 and
+names the 188. Scope with `--only`, do not argue with it.
+
+**Still avoid `make pull-db`** (chains straight to `--write`, unscoped) and
+**`make eligibility`** (TRUNCATEs Postgres).
 
 Also open: nothing ENFORCES a coverage-gate run before `eligibility_export.py`.
 

@@ -12,10 +12,11 @@ import { deliveryRegionOf } from "./regionPrior";
 // names on one screen. See doorLabel.ts -- and note it is the SAME function the
 // table calls, not a second spelling of the same intention.
 import { doorLabelFor } from "./doorLabel";
-import { ROW_IDENTITY_ARM } from "./rowIdentity";
-/** The fund's name as the founder will see it in the table above the question. */
-const shownName = (inst: DbInstrument) =>
-  ROW_IDENTITY_ARM === "door" ? doorLabelFor(inst) : inst.name;
+/** The fund's name as the founder will see it in the table above the question.
+ *  Unconditional: a question that cites a fund by a name the table above it does
+ *  not use is the defect this exists to make impossible, and a fix behind a
+ *  switch is a fix that never runs. */
+const shownName = (inst: DbInstrument) => doorLabelFor(inst);
 import { regionNameFor } from "./regions.generated";
 import {
   MIN_SUBSTANTIVE_LEN, normaliseRequirement, requirementClassOf,
@@ -131,7 +132,7 @@ export function openFieldsForShortlist(
         entry.events += inst.eventCount || 1;
         entry.instruments.add(inst.id);
         if (entry.examples.length < 3 && gate.requirement) {
-          entry.examples.push({ instrument: inst.name, requirement: gate.requirement });
+          entry.examples.push({ instrument: shownName(inst), requirement: gate.requirement });
         }
       }
       byField.set(field, entry);
@@ -166,7 +167,7 @@ export function openFieldsForShortlist(
       places.add(where);
       if (examples.length < 3) {
         examples.push({
-          instrument: inst.name,
+          instrument: shownName(inst),
           requirement: `its recipients are in ${regionNameFor(where) ?? where}`,
         });
       }
@@ -680,7 +681,7 @@ export function stakesByFund(
       if (open.length >= 4) break;
     }
     if (open.length) {
-      out.push({ instrumentId: inst.id, name: inst.name, country: inst.country, open });
+      out.push({ instrumentId: inst.id, name: shownName(inst), country: inst.country, open });
     }
   }
   return out;

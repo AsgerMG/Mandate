@@ -25,27 +25,22 @@ const leaf = (id: string, parentId: string | null, gates: string[]): Leaf =>
   ({ id, parentId, gates: gates.map((r) => ({ requirement: r, gateRole: "filter" })) });
 
 /** The arm is read at module load, so every arrangement needs a fresh import.
- *  That is the same discipline SECTOR_CLIP_ARM follows: a measurement must not
- *  be able to drift mid-run. */
-async function scorerWith(arm: "on" | "off", absence: "neutral" | "pass" = "neutral") {
+ *  That is the same discipline SECTOR_NEUTRAL_ARM follows: a measurement must
+ *  not be able to drift mid-run. */
+async function scorerWith(arm: "on" | "off") {
   vi.resetModules();
   process.env.OPEN_QUESTION_ARM = arm;
-  process.env.OPEN_ABSENCE_ARM = absence;
   const mod = await import("./openQuestions");
   return mod.openFitScorer as typeof import("./openQuestions").openFitScorer;
 }
 
 const ORIGINAL = process.env.OPEN_QUESTION_ARM;
-const ORIGINAL_ABSENCE = process.env.OPEN_ABSENCE_ARM;
 beforeEach(() => {
   delete process.env.OPEN_QUESTION_ARM;
-  delete process.env.OPEN_ABSENCE_ARM;
 });
 afterEach(() => {
   if (ORIGINAL === undefined) delete process.env.OPEN_QUESTION_ARM;
   else process.env.OPEN_QUESTION_ARM = ORIGINAL;
-  if (ORIGINAL_ABSENCE === undefined) delete process.env.OPEN_ABSENCE_ARM;
-  else process.env.OPEN_ABSENCE_ARM = ORIGINAL_ABSENCE;
   vi.resetModules();
 });
 
@@ -149,32 +144,30 @@ describe("openFitScorer", () => {
     expect(on(siblings, judgements)(siblings[0])).not.toBe(1);
   });
 
-  it("leaves a one-sided split alone under the default absence arm, and acts on it under pass", async () => {
-    // ── The structural limit this arm exists for ─────────────────────────
+  it("leaves a ONE-SIDED SPLIT alone, and never promotes the silent sibling", async () => {
+    // ── The structural limit, pinned so it cannot be quietly worked around ─
     // A question is chosen because it SPLITS a regime: some siblings demand
     // it, others do not. When the founder's answer settles it, only the
-    // demanding side has a judgement — so under the default there is one
-    // scored leaf, no comparison, and the group is left exactly as it was.
-    // The signal cannot act on the split it was selected for.
+    // demanding side has a judgement — so there is one scored leaf, no
+    // comparison, and the group is left exactly as it was. The signal cannot
+    // act on the split it was selected for, and wsCD2 measured that: 235 of
+    // 235 settled verdicts landed here, EXACT@5 +0.0 at every budget.
+    //
+    // The obvious unblock — score the SILENT sibling as "not ruled out" — was
+    // built as `OPEN_ABSENCE_ARM=pass` and deleted. The same run returned 213
+    // confident `fails` against 22 `meets`, so it would have promoted a fund
+    // whose rules were merely never encoded, 213 times per 120 briefs. This
+    // test is the guard: the silent sibling must never come out above 1.
     const split: Leaf[] = [
       leaf("demands", "regime", [R_ADVANCE]),
       leaf("silent", "regime", ["A rule about something nobody was asked about in this round at all"]),
     ];
     const judgements = [{ key: key(R_ADVANCE), verdict: "fails" as const }];
 
-    const neutral = await scorerWith("on", "neutral");
-    const n = neutral(split, judgements);
-    expect(n(split[0])).toBe(1);
-    expect(n(split[1])).toBe(1);
-
-    // Under "pass", the sibling that demands nothing on this point outranks
-    // the one the founder's own answer rules out. That is the semantics the
-    // question was asked under — AND it is a promotion granted for an
-    // absence, which is why it is a separate arm and not the default.
-    const pass = await scorerWith("on", "pass");
-    const p = pass(split, judgements);
-    expect(p(split[0])).toBeLessThan(1);
-    expect(p(split[1])).toBeGreaterThan(1);
+    const score = await scorerWith("on");
+    const s = score(split, judgements);
+    expect(s(split[0])).toBe(1);
+    expect(s(split[1])).toBe(1);
   });
 
   it("ignores judgements about a gate that is not a filter", async () => {

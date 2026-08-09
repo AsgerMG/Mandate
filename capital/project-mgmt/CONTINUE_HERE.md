@@ -1,5 +1,28 @@
 # Start here
 
+> ## ⚠ THIS FILE IS SUPERSEDED ON EVERY CEILING NUMBER IT STATES — read `RESUME_HERE.md` first
+>
+> Two days of measurement (wsBY → wsCA → wsCC, 2026-08-09) settled the ceiling
+> question this file argues with itself about. **The ceiling of record is
+> 65.9% EXACT@5 ("66%") under full founder information, keyed on demand class
+> rather than wording; the plannable number is 58.3%; 95% is NOT reachable and
+> was never reachable** (`findings/rich_intake_wsCC.md`).
+>
+> Specifically, in this file:
+> - **`CEILING @5 ~39% → 87%` below is RETRACTED as circular.** It keys on
+>   verbatim `eligibility_text`, and every encoded gate is extracted from that
+>   text, so the key absorbs in advance anything a question could add. The same
+>   defect retired wsBY's 85.5% (`scheme_evidence_wsBY.md`).
+> - **"The 95%-is-unreachable verdict I recorded earlier is withdrawn" is
+>   itself withdrawn.** It was withdrawn on the strength of that circular
+>   ceiling. 95% is unreachable, for a better-founded reason than the original:
+>   sibling indistinguishability under full information costs 29 points and
+>   pool reach costs 7.
+> - The "27% @1 / 38.8%" ceilings further down are marked CORRECTED in
+>   `research/target_arithmetic.md`; they are stale here too.
+>
+> Nothing below this banner should be quoted as a ceiling or as headroom.
+
 **Updated 2026-08-07, end of the coverage night. Read this block, then §0
 below. Everything further down is older and partly superseded — if any section
 says "EXACT@5 36%" or "95% is unreachable", both are corrected here.**
@@ -67,14 +90,25 @@ funds a founder is still choosing between after every fact we record.**
                         morning        now
 mean sibling class        17.9    →    3.4
 uniquely identified        38%    →    56%
-CEILING @5                ~39%    →    87%
+CEILING @5                ~39%    →    87%     <- ⚠ RETRACTED, circular key
 unreachable (class >20)     9%    →     3%
 ```
+
+⚠ **The 87% is retracted.** It is a sibling-class ceiling on a key containing
+verbatim `eligibility_text`; gates are extracted from that text, so the key
+cannot be used to score what a question would buy. Replaced by 65.9% under
+full founder information, keyed on demand class (`findings/rich_intake_wsCC.md`).
 
 **The 95%-is-unreachable verdict I recorded earlier is withdrawn.** It was
 computed at class 18 and treated a coverage state as a property of the corpus.
 The ceiling is not a fact about the world; it is a fact about how much of the
 world we have written down, and it moved 48 points in one night.
+
+⚠ **That withdrawal is itself withdrawn (2026-08-09).** It rested on the
+circular 87% above. The ceiling *is* partly a fact about the world: wsCC
+measured 29 points of it as funds that remain genuinely indistinguishable after
+everything a founder can truthfully say, which no amount of writing-down moves.
+95% is not reachable.
 
 What moved it, all verified out of Postgres and merged:
 - **France** publishable class 54.0 → 8.01, coverage 22% → 64%.

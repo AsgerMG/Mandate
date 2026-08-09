@@ -69,6 +69,12 @@ const CHECKS = [
   // askable -- an unclassified requirement is never offered as a question and
   // reads exactly like "there was nothing worth asking".
   ["open questions still cover the corpus", ["npx", "tsx", "scripts/check_open_question_class.ts"]],
+  // Same hermetic class again: the committed answer key plus a committed cut of
+  // the declared catchments, no credentials. It sits among the cheap checks
+  // because the property it watches is the most expensive one to get wrong -- a
+  // territorial screen removing a fund from a company the register says WON it
+  // -- and a guard against that must not be behind a link that needs a database.
+  ["a winner is never screened out", ["npx", "tsx", "scripts/check_winner_not_blocked.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
   // Hermetic, sub-second, and it reads the same answer key the recall floor
   // grades on. It sits HERE rather than beside the floor because it is the

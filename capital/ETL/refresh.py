@@ -303,6 +303,19 @@ STEPS: list[Step] = [
          ["npx", "tsx", "scripts/check_hydration_parity.ts"],
          role="report", needs=("snapshot", "postgres"),
          why="Diffs the two stores it has just seen written. Reads only."),
+    # The offline cut of the regions each scheme's OWN notification declares.
+    # `catchment_regions` reaches no export -- instrument_terms.json has never
+    # carried it -- so without this step the one guard that can prove a
+    # territorial screen does not remove a fund from a company that WON it
+    # would need DATABASE_URL, and a guard that needs a credential is a guard
+    # that skips on CI and in every pull request. `needs=("postgres",)` because
+    # it reads the column from the store that publish has just filled.
+    Step("official_catchments", "cut declared catchments offline",
+         ["npx", "tsx", "scripts/emit_official_catchments.ts"],
+         role="build", needs=("postgres",),
+         why="What check_winner_not_blocked.ts reads, with no credentials. "
+             "Stale means the blocked-winner ratchet is judging a corpus that "
+             "has moved."),
     Step("embed_profiles", "embed instrument profiles",
          ["python3", "ETL/terms/build_instrument_profiles.py", "run"],
          role="build", needs=("postgres",), paid=True,

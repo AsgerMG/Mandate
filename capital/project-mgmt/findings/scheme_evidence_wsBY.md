@@ -2,6 +2,32 @@
 
 **Workstream BY · 2026-08-09 · isolated worktree off `main` at `728df518`.**
 
+> ## ⚠ THE 85.5% CEILING IN THIS DOCUMENT IS RETRACTED
+>
+> **Retracted 2026-08-09 by wsCA (`813e79af`) and wsCC (`6cab7a7d`). Reason:
+> CIRCULAR.** The key includes verbatim `eligibility_text`, and every encoded
+> gate is *extracted from that text*. Conditioning on the text therefore
+> absorbs in advance anything a gate — or a question — could add, which is why
+> wsCA measured **+0.0 for all 23 intake fields** against it. 85.5% is an
+> IDENTITY ceiling: it counts a leaf as "alone" whenever its text is unique,
+> not whenever a founder could be matched to it. §4 below already flagged this
+> as a caveat; it is stronger than a caveat, and no question can be scored
+> against this number at all.
+>
+> **What replaced it:**
+>
+> | number | what it means | source |
+> |--:|---|---|
+> | **65.9% EXACT@5** ("66%") | the honest maximum under FULL founder information, keyed on DEMAND CLASS rather than wording | `rich_intake_wsCC.md` |
+> | **58.3%** | the plannable figure — a greedy chooser bounds any question-selection policy and saturates here | `rich_intake_wsCC.md` |
+> | 43.1% | superseded in turn: conditioned on TODAY'S FIXED INTAKE, so it bounds today's product, not the target | `intake_headroom_wsCA.md` |
+>
+> **The rest of this document stands.** The measured result — that both free
+> per-scheme sources add **+0.0** separation, structurally, because a field is
+> constant inside a leaf's own cell — is unaffected by the retraction and is
+> still the reason not to spend on per-scheme facts. Only the *ceiling* number
+> and the "sixty points of headroom" arithmetic built on it are withdrawn.
+
 Reproduce (both sources are FREE — HTTP and disk, no model calls):
 
 ```
@@ -50,11 +76,18 @@ the key `measure_sibling_coverage.ts` already uses, so the numbers compose:
 
 | key | mean class | alone | **@5 ceiling** |
 |---|--:|--:|--:|
-| baseline (admin_body \| delivery_region \| eligibility_text) | 7.80 | 61.3% | **85.5%** |
+| baseline (admin_body \| delivery_region \| eligibility_text) | 7.80 | 61.3% | **85.5%** ⚠RETRACTED |
 | baseline + `scheme_code` — already in the corpus | 7.33 | 81.0% | **88.1%** |
 | baseline + every case-register field | 7.33 | 80.7% | **88.1%** |
 | baseline + every SATR field | 7.33 | 81.0% | **88.1%** |
-| baseline + case + SATR together | 7.33 | 81.0% | **88.1%** |
+| baseline + case + SATR together | 7.33 | 81.0% | **88.1%** ⚠RETRACTED |
+
+⚠ **Every `@5 ceiling` value in this table is retracted as circular** (see the
+banner at the top): they all sit on a key containing verbatim
+`eligibility_text`. The `mean class` and `alone` columns, and the **differences
+between rows**, are unaffected — the finding this table exists to prove is that
+every added field moves the ceiling by **+0.0**, and a circular key does not
+manufacture a difference where there is none.
 
 On top of `baseline + scheme_code`, **+0.0 for every one of**: `caseTitle`,
 `caseObjectivesStr`, `caseAidInstruments`, `caseRegions`, `caseMeasureEndDate`,
@@ -152,6 +185,15 @@ evidence for is the one population already measured as having no document.
 
 ## 4. The ceiling is not what is binding, and that is the finding
 
+> ⚠ **The "sixty points of headroom" in this section is RETRACTED — the points
+> were never there.** wsCA (`e6b5d95e`) measured the founder-reachable ceiling
+> on this same population and metric: nothing asked 7.6%, the six fields that
+> already rank 40.0%. The real gap against a shipped 25% is about **fifteen
+> points, not sixty**, and wsCI (`e7f06813`) then found most of those fifteen
+> are unwinnable — 47.3% of the loss is a residual class larger than five.
+> The paragraph below is preserved as written; read the numbers in it as
+> withdrawn and the *direction* of the finding as intact.
+
 The @5 ceiling on the shipped population is **85.5%** before any fetch, against
 a shipped **EXACT@5 of 25%**. Sixty points of headroom sit under a ceiling the
 corpus already permits, and wsBU has just measured that no ranking signal —
@@ -198,8 +240,13 @@ What to do with the free sources instead, in order:
    multi-leaf leaves, +0.0 separation. The five recovered fields are now in the
    cache and cost nothing to keep, but nothing should be built on them. This
    is recorded so the next workstream does not re-derive it.
-3. **Stop looking for the answer in per-scheme facts.** The ceiling is 85.5%
-   and the product is at 25%. The gap is not in what the corpus records about
+3. **Stop looking for the answer in per-scheme facts.** ~~The ceiling is 85.5%~~
+   — **retracted as circular; the ceiling a founder can actually reach is
+   65.9% under full information (`rich_intake_wsCC.md`), and 40.0% under the
+   questions already asked (`intake_headroom_wsCA.md`)** —
+   and the product is at 25%. The recommendation itself is unchanged, and is
+   in fact strengthened: a smaller true ceiling leaves even less to win from
+   per-scheme facts. The gap is not in what the corpus records about
    the fund; it is in what the product knows about the founder, and wsAO already
    measured that describing founders honestly rather than identically moved
    three signals from inert to live.

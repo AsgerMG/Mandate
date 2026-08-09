@@ -111,23 +111,37 @@ export function requirementClassOf(requirement: string): RequirementClass | unde
   return k === "encodable" || k === "judgeable" || k === "unaskable" ? k : undefined;
 }
 
-/** Provenance, for a harness that must say what it measured over. */
+/** Provenance, for a harness that must say what it measured over.
+ *
+ *  ── `classified` is COUNTED, never read out of the header ─────────────────
+ *  It used to be `classCache.classified`, a number the emitter wrote about
+ *  itself. A header is a claim; `classes` is the thing the product actually
+ *  consults, and the two can disagree without either being malformed. An audit
+ *  deleted 250 rows from `classes` and this still reported `1146/1146
+ *  classified`, so `check_open_question_class.ts`'s non-vacuity assertion —
+ *  `if (!stats.classified)`, whose entire job is to catch an artifact that
+ *  loaded as `{}` — could not see an emptied map at all.
+ *
+ *  So it is derived from the map: the only number that cannot be true while the
+ *  thing it describes is empty. `candidates` stays a header field on purpose —
+ *  it counts what was SENT to the classifier, which is not in the file and
+ *  cannot be recovered from it. */
 export function openQuestionClassStats(): {
   generatedAt: string; model: string; candidates: number; classified: number; failedBatches: number;
 } {
-  classes();
+  const judged = classes();
   return {
     generatedAt: classCache?.generatedAt ?? "",
     model: classCache?.model ?? "",
     candidates: classCache?.candidates ?? 0,
-    classified: classCache?.classified ?? 0,
+    classified: Object.keys(judged).length,
     failedBatches: classCache?.failedBatches ?? 0,
   };
 }
 
 // ── The arm ────────────────────────────────────────────────────────────────
 //
-// Default OFF, exactly as SECTOR_CLIP_ARM is, so the measurement is
+// Default OFF, exactly as SECTOR_NEUTRAL_ARM is, so the measurement is
 // reproducible without being live. Read at module load and never per call: a
 // measurement must not be able to drift mid-run.
 //
@@ -138,35 +152,32 @@ export type OpenQuestionArm = "on" | "off";
 export const OPEN_QUESTION_ARM: OpenQuestionArm =
   process.env.OPEN_QUESTION_ARM === "on" ? "on" : "off";
 
-/**
- * What a sibling that carries NONE of the judged requirements should count as.
- *
- * ── Why this is a knob and not a decision ─────────────────────────────────
- * A question is chosen precisely because it SPLITS a regime: some siblings
- * demand it and some do not. So when the founder's answer settles it, exactly
- * one side of the split has a judgement and the other side has nothing — and
- * `known.length < 2` then skips the whole group. The signal is structurally
- * unable to act on the split it was selected for.
- *
- *   "neutral" (default, and what ships): a sibling with no judged requirement
- *      gets no entry. If fewer than two siblings are judged, the group is left
- *      exactly as it was. Nothing is ever promoted for an absence.
- *
- *   "pass": a sibling with no judged requirement counts as not ruled out
- *      (fit 1), so a fund that demands nothing on this point outranks a
- *      sibling the founder's own answer rules out. That is the semantics the
- *      question was asked under — but it PROMOTES A FUND FOR AN ABSENCE, and
- *      this repo has shipped that failure twice (see
- *      `check_missing_data_neutral.ts`, whose asymmetric band exists for it).
- *      Under "pass", a fund that has simply never had its rules encoded rises
- *      against a sibling whose rules ARE encoded and were honestly answered.
- *
- * Both are measured. Neither is turned on by default, because "pass" is a
- * product decision about which error to prefer, not a tuning choice.
- */
-export type OpenAbsenceArm = "neutral" | "pass";
-export const OPEN_ABSENCE_ARM: OpenAbsenceArm =
-  process.env.OPEN_ABSENCE_ARM === "pass" ? "pass" : "neutral";
+// ── A SIBLING THAT CARRIES NONE OF THE JUDGED REQUIREMENTS SCORES NOTHING.
+//    Do not re-introduce `OPEN_ABSENCE_ARM=pass` ───────────────────────────
+//
+// There was a second arm here. A question is chosen precisely because it SPLITS
+// a regime: some siblings demand it and some do not. So when the founder's
+// answer settles it, exactly one side of the split has a judgement and the
+// other has nothing, and `known.length < 2` below skips the whole group. The
+// signal is structurally unable to act on the split it was selected for.
+// `pass` was the attempt to unblock that by scoring the silent sibling as "not
+// ruled out" (fit 1).
+//
+// It was deleted on 2026-08-09, on measurement (wsCD2, tune n=120, seed
+// 20260806, live Postgres, the parent arm ON): the judge returned 213 confident
+// `fails` against 22 `meets`. Under `pass` every one of those 213 would demote
+// the fund that CARRIES the requirement and promote the sibling whose rules
+// have simply never been encoded — a promotion granted for an absence, 213
+// times per 120 briefs. That is the shape of the harm that hid Innovate UK, and
+// this repo has shipped it twice already (see `check_missing_data_neutral.ts`,
+// whose asymmetric band exists for exactly it).
+//
+// So it is not a tuning choice that awaits a bigger N. It is a product decision
+// about which error to prefer, it was taken, and the direction this repo picks
+// every time is: never promote a fund for a gap in our own data. The structural
+// limit stays honestly stated rather than worked around — see the one-sided
+// split test in `openQuestions.test.ts`, and findings-of-record in the wsCD2
+// merge commit.
 
 /** How many open questions stage 2 may ask, at most. The screen's own cap is
  *  6 questions total; open questions compete for those slots and must not
@@ -248,12 +259,12 @@ export function openFitScorer<T extends { id: string; parentId?: string | null; 
         judged += 1;
         if (v === "meets") met += 1;
       }
+      // The other side of the split gets NO ENTRY, so the group is usually
+      // skipped by `known.length < 2` below. That is the structural limit of
+      // this signal and it is deliberate: the alternative is scoring an absence
+      // as a pass, which promotes a fund for never having had its rules
+      // encoded. See the note above the budget.
       if (judged > 0) fit.set(l.id, met / judged);
-      // The other side of the split. See OPEN_ABSENCE_ARM: under "neutral"
-      // this leaf simply has no entry and the group is usually skipped; under
-      // "pass" it counts as not ruled out, which is the semantics the question
-      // was asked under and also a promotion for an absence.
-      else if (OPEN_ABSENCE_ARM === "pass") fit.set(l.id, 1);
     }
     const known = [...fit.values()];
     if (known.length < 2) continue;

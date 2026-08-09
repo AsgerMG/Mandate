@@ -18,7 +18,7 @@ its branch. Raise the limit at `claude.ai/settings/usage` and they can continue.
 | — | One blocked source can't kill the week | `renew.py` 3=partial / 1=abort | ADEME 403 no longer stops the chain |
 | ES | Spain offerable and legible | names are funds, weekly re-run, decay guard | 182 ES rows; refresh exits 0, both stores reconciled |
 | DEG | Degradation policy shipped | no dead call shown, no recall cost | FR EXACT@5 17% vs blunt 8%; suppression 80→5 |
-| COV | Coverage push | sibling class down, ceiling up | 17.9 → 3.6; @5 ceiling 39% → 85% |
+| COV | Coverage push | sibling class down, ceiling up | 17.9 → 3.6; ~~@5 ceiling 39% → 85%~~ ⚠ **the ceiling half is RETRACTED — circular key (verbatim `eligibility_text`); see `findings/rich_intake_wsCC.md`, ceiling of record 65.9%.** The sibling-class movement stands |
 | CAP | Leaf cap no longer silently binding | cap raised, baseline captured first | 90 → 250, headroom 147 |
 | KEY | Answer key and artifacts trustworthy | leak index + semantic cache rebuilt | 0 leaks over 1,084 profiles |
 | AI | Nothing a founder is judged by is a report about someone else | both columns judged at one property, build fails on an unjudged or stale one | 2,573 texts / 8,488 deciding gates at v3, 13/13 calibration; gates 4,251 → 4,244; prose 563 → 552; recall flat on 3 seeds |

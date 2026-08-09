@@ -24,7 +24,7 @@
 // Ambiguity is a property of the REGISTER, not of the five rows this founder
 // happened to draw, so that is where it is measured.
 import { loadDbInstruments, type DbInstrument } from "./corpus";
-import { VIA, nameableBody, type BodyBearing } from "./rowIdentity";
+import { withDoor, nameableBody, type BodyBearing } from "./rowIdentity";
 
 /** Notified schemes the corpus holds more than one leaf for: the schemes whose
  *  title, alone, does not identify a fund a founder could approach. */
@@ -66,8 +66,23 @@ export function doorLabel(name: string, x: BodyBearing): string {
   const body = nameableBody(x);
   // Appending a body the name already carries is the failure a reader would
   // blame on the register rather than on us.
-  if (!body || name.includes(body)) return name;
-  return `${name} · ${VIA} ${body}`;
+  //
+  // "Already carries it" is asked of the FLATTENED name, not of the literal
+  // one. The table's fallback token is an id fragment, so a row can arrive here
+  // reading "... · caisse des depots" — the same body, unaccented and
+  // lowercased — and a literal `includes` says no. Seen on a rendered French
+  // shortlist, printing "· caisse des depots · via Caisse des Dépôts": the
+  // claim twice, in two spellings, which is worse than either alone.
+  if (!body || flatten(name).includes(flatten(body))) return name;
+  return withDoor(name, body);
+}
+
+/** Accent- and case-insensitive, punctuation-flattened, for the containment
+ *  test above only. Never for display: this is how two spellings are compared,
+ *  not how either is shown. */
+function flatten(s: string): string {
+  return s.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ").trim();
 }
 
 /** The same rule from a corpus instrument, for callers holding a leaf rather

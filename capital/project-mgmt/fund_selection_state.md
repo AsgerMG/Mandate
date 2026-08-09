@@ -135,9 +135,20 @@ Measured flat and **not worth retrying** for exact-scheme ranking:
 - sub-national region (no leak-free ground-truth founder region exists)
 
 Also settled: **exact-scheme 95% is not reachable by ranking.** Even scoring the
-entire ~58-fund pool tops out at 88%, and the pool ceiling is 94%. The target
+entire ~58-fund pool tops out at 88%, and the pool ceiling is 94%. ~~The target
 that is both reachable and honest is **regime-level**, and gate 1 is already at
-95% there.
+95% there.~~
+
+⚠ **The regime-level recommendation in the struck sentence was OVERRULED by the
+owner on 2026-08-03 and must not be re-proposed. The target remains EXACT
+scheme in the top five.** The conclusion above it — that 95% is unreachable —
+survives, but the reason recorded here is the weaker one. The current reason is
+wsCC (`findings/rich_intake_wsCC.md`, 2026-08-09): under FULL founder
+information the honest maximum is **65.9% EXACT@5**, bound by pool reach (−7)
+and by 29 points of funds that stay genuinely indistinguishable after
+everything a founder can say. That is a property of the corpus, not of the
+ranker, so "not reachable by ranking" understates it: it is not reachable by
+asking the founder more either.
 
 ## Next
 
