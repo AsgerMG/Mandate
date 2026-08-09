@@ -415,8 +415,10 @@ prize is **459 gates on ~300 instruments and 5.0 points of ceiling** (60.0 →
 and there is no encoder pass that can ever reach them — but it must not be sold
 as closing the wsCA gap.
 
-**4. Nothing above gets past ~57% with a question budget a founder will
-complete** (§6). Plan against 57%, not 65%.
+**4. Nothing above gets past ~58% with a question budget a founder will
+complete** (§6), and that is not a policy failure — the best possible choice of
+twenty questions was measured and it saturates at 58.3%. **Plan against 58%,
+not 65%, and never against 95%.**
 
 **What NOT to re-propose**, each now measured rather than argued: any headroom
 claim resting on 85.5% or on 62.0% (both circular, §4); a technology question as
