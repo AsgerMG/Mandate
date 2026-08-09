@@ -60,6 +60,7 @@ import {
 } from "../lib/intelligence/corpus";
 import { eligibilityFit, livenessFit, scaleFit, sectorFit } from "../lib/intelligence/fit";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
 import { peerPrior, THEME_WEIGHT } from "../lib/intelligence/shortlist";
 import { assessAll } from "../lib/intelligence/verdict";
@@ -227,6 +228,26 @@ async function main() {
     pop: string; pool: number; won: number; x: number[][];
   }[] = [];
 
+  // ── WHICH RANKER THESE NUMBERS ARE ABOUT ──────────────────────────────────
+  // Every arm below is scored over the pool `computeVerdict` built, and the
+  // `semantic` arm plus `shipped pool score` read the embedding index directly.
+  // `semanticFundMatch` returns an EMPTY MAP on a 3s connect or statement
+  // timeout, at which point the pool score and every `rankerUsed` call site
+  // inside the verdict drop to the lexical index — silently, and the run still
+  // prints one number.
+  //
+  // That is not hypothetical here. The four `signal_remeasure_wsBU_*` artifacts
+  // this file is being re-run to replace were all produced BEFORE
+  // `rankerTallyLine` existed (wsCP audit, 2026-08-09), in the window where
+  // `check_recall_floor` returned 87% and then 96% on identical inputs because
+  // a loaded machine had averaged the two rankers. So the conclusion those
+  // artifacts carry — "nothing beats the shipped ranker" — was measured on a
+  // ranker nobody can now name.
+  //
+  // The tally is reset here rather than at import so hydration's own queries
+  // cannot count, and printed beside the corpus banner. A run that does not
+  // print `all N request(s) on EMBEDDING` is not evidence.
+  resetRankerTally();
   resetGateHydration();
   for (const t of sample) {
     resetGateHydration();
@@ -352,7 +373,9 @@ async function main() {
   }
 
   const prov = corpusProvenance();
+  const attestation = rankerTallyLine();
   console.log(`corpus=${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
+  console.log(attestation);
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""} seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only (leak-free descriptions)" : ""}` +
               `${answerMode !== "off" ? ` answers=${answerMode}` : ""}  replayed ${sample.length}`);
@@ -388,6 +411,10 @@ async function main() {
   if (process.env.FEATURES_OUT) {
     writeFileSync(process.env.FEATURES_OUT, JSON.stringify({
       set: setFile, split, seed, n: sample.length,
+      // The attestation travels WITH the features, because the blend is fitted
+      // offline hours later and its input is the only place the ranker can
+      // still be named. A dump is evidence about whichever ranker filled it.
+      ranker: attestation,
       signals: Object.keys(SIGNALS), rows: features,
     }));
     console.log(`  features -> ${process.env.FEATURES_OUT} (${features.length} pairs)`);

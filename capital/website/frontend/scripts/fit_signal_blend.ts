@@ -33,11 +33,46 @@ import { readFileSync } from "fs";
 
 type Dump = {
   set: string; split: string; seed: number; n: number;
+  /** The `rankerTallyLine()` of the run that produced this dump. Optional in
+   *  the type because dumps cut before 2026-08-09 do not carry one — and those
+   *  are exactly the dumps this script now refuses. */
+  ranker?: string;
   signals: string[];
   rows: { pop: string; pool: number; won: number; x: number[][] }[];
 };
 
 const TOP = 5;
+
+/** A dump whose `semantic` and `shipped pool score` columns came from the
+ *  embedding index, whole.
+ *
+ *  Two of the fourteen features are the ranker's own output, so a dump filled
+ *  while `semanticFundMatch` was timing out holds two columns that are part
+ *  embedding and part zero — and a conditional logit fitted on that learns a
+ *  weight for a signal that does not exist in production. The blend cannot
+ *  detect this itself: it never sees a database, only a file. So it is checked
+ *  where it is knowable, which is at the file.
+ *
+ *  This is why the check is here and not left to the reader. wsBU's published
+ *  22.7% blend was fitted on two dumps produced before any attestation existed;
+ *  nothing about the number said which ranker it described, and the same
+ *  ambiguity had already moved `check_recall_floor` by nine points. */
+const CLEAN_RANKER = /^ranker: all \d+ request\(s\) on EMBEDDING$/;
+
+function requireAttestation(path: string, d: Dump): void {
+  if (!d.ranker) {
+    throw new Error(
+      `${path} carries no ranker attestation. It was produced before ` +
+      "measure_signal_power.ts recorded one, so nothing in it can say whether " +
+      "the semantic columns came from the embedding index or from a timeout. " +
+      "Re-cut it: FEATURES_OUT=... npx tsx scripts/measure_signal_power.ts");
+  }
+  if (!CLEAN_RANKER.test(d.ranker.trim())) {
+    throw new Error(
+      `${path} did not rank cleanly on embeddings: "${d.ranker.trim()}". ` +
+      "A blend fitted on this averages two different ranking systems.");
+  }
+}
 
 /** Within-pool percentile rank, ties at the mid-rank. Ties get the SAME value
  *  on purpose: a feature that cannot tell two candidates apart must not be
@@ -130,6 +165,8 @@ function main() {
       `TUNE and HOLDOUT are both split=${tune.split}. The blend must be fitted on ` +
       "one split and reported on the other; that is what the split is for.");
   }
+  requireAttestation(tunePath, tune);
+  requireAttestation(holdPath, hold);
   if (tune.set !== hold.set) throw new Error(`different answer keys: ${tune.set} vs ${hold.set}`);
   if (tune.signals.join("|") !== hold.signals.join("|")) {
     throw new Error("the two dumps were produced by different signal sets");
@@ -146,6 +183,10 @@ function main() {
     ...missed.map(() => 0),
   ];
 
+  // Both attestations, not one line: the two dumps are separate runs on
+  // separate machine load, and it is the pair that has to be clean.
+  console.log(`tune dump   ${tune.ranker}`);
+  console.log(`holdout dump ${hold.ranker}`);
   console.log(`blend: fitted on ${tune.split} (${trainPools.length} pools, ` +
               `${train.missed.length} unreachable), reported on ${hold.split} ` +
               `(${testPools.length} pools, ${test.missed.length} unreachable), set=${tune.set}`);
