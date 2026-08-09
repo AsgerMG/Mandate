@@ -1,371 +1,375 @@
 {
-  "$schema_note": [
-    "ONE definition of which guards must have a published verdict, read by both",
-    "languages. Python publishes from ETL/lib/guard_verdicts.py; TypeScript reads",
-    "it in website/frontend/scripts/check_verdicts.ts. A second copy of this list",
-    "would drift the first time either side gained a guard, which is the defect",
-    "this repo keeps finding (see ETL/schema/check_cross_language_constants.py).",
-    "",
-    "Fields:",
-    "  id        the verdict's key. Stable; renaming one loses its history.",
-    "  cadence   'weekly'    the ETL cron publishes it, so it can be LATE:",
-    "                        SILENT is enforced against the observed spacing.",
-    "            'on_change' a credentialled run publishes it. It has no clock to",
-    "                        be late against, so SILENT is not enforced. It goes",
-    "                        red two other ways: DRIFTED when the code it judges",
-    "                        changes, and STALE when the CORPUS moves past it.",
-    "  needs     what the guard cannot run without, and LOAD-BEARING: a guard",
-    "            that names a store here is answering a question about DATA, so",
-    "            its verdict is void once the corpus moves, whatever its cadence.",
-    "            Three of the four on_change guards judge live Postgres and no",
-    "            fingerprinted file changes when a call closes, so without this",
-    "            their verdicts would have covered today's corpus forever.",
-    "            Derived from, not duplicated -- do not add a 'reads_corpus' flag",
-    "            that can disagree with the credentials the guard actually needs.",
-    "  code      repo-relative paths whose content the verdict is bound to. A",
-    "            verdict produced against a different hash of these is DRIFTED.",
-    "            For a weekly guard this is what makes 'the container is running",
-    "            last week's code' visible; for an on_change guard it is the",
-    "            whole enforcement mechanism.",
-    "  refresh   the exact command that produces a fresh verdict. Printed in the",
-    "            failure, because a guard that says 'stale' without saying how to",
-    "            fix it gets muted.",
-    "  command   present only where ETL/lib/guard_verdicts.py drives the guard",
-    "            and publishes for it. A guard that publishes its OWN verdict",
-    "            (the TypeScript ones do, because they have real figures to",
-    "            carry) has no command here: two ways to publish one verdict is",
-    "            two things to keep in step.",
-    "  tolerate  exit codes that mean 'worth saying out loud, not worth failing",
-    "            over'. Named per guard, never inferred from the number.",
-    "  code_suffixes  narrows what a named directory contributes to the hash."
+ "$schema_note": [
+  "ONE definition of which guards must have a published verdict, read by both",
+  "languages. Python publishes from ETL/lib/guard_verdicts.py; TypeScript reads",
+  "it in website/frontend/scripts/check_verdicts.ts. A second copy of this list",
+  "would drift the first time either side gained a guard, which is the defect",
+  "this repo keeps finding (see ETL/schema/check_cross_language_constants.py).",
+  "",
+  "Fields:",
+  "  id        the verdict's key. Stable; renaming one loses its history.",
+  "  cadence   'weekly'    the ETL cron publishes it, so it can be LATE:",
+  "                        SILENT is enforced against the observed spacing.",
+  "            'on_change' a credentialled run publishes it. It has no clock to",
+  "                        be late against, so SILENT is not enforced. It goes",
+  "                        red two other ways: DRIFTED when the code it judges",
+  "                        changes, and STALE when the CORPUS moves past it.",
+  "  needs     what the guard cannot run without, and LOAD-BEARING: a guard",
+  "            that names a store here is answering a question about DATA, so",
+  "            its verdict is void once the corpus moves, whatever its cadence.",
+  "            Three of the four on_change guards judge live Postgres and no",
+  "            fingerprinted file changes when a call closes, so without this",
+  "            their verdicts would have covered today's corpus forever.",
+  "            Derived from, not duplicated -- do not add a 'reads_corpus' flag",
+  "            that can disagree with the credentials the guard actually needs.",
+  "  code      repo-relative paths whose content the verdict is bound to. A",
+  "            verdict produced against a different hash of these is DRIFTED.",
+  "            For a weekly guard this is what makes 'the container is running",
+  "            last week's code' visible; for an on_change guard it is the",
+  "            whole enforcement mechanism.",
+  "  refresh   the exact command that produces a fresh verdict. Printed in the",
+  "            failure, because a guard that says 'stale' without saying how to",
+  "            fix it gets muted.",
+  "  command   present only where ETL/lib/guard_verdicts.py drives the guard",
+  "            and publishes for it. A guard that publishes its OWN verdict",
+  "            (the TypeScript ones do, because they have real figures to",
+  "            carry) has no command here: two ways to publish one verdict is",
+  "            two things to keep in step.",
+  "  tolerate  exit codes that mean 'worth saying out loud, not worth failing",
+  "            over'. Named per guard, never inferred from the number.",
+  "  code_suffixes  narrows what a named directory contributes to the hash."
+ ],
+ "feed": {
+  "url": "https://euro-inv-tracker.vercel.app/api/guards",
+  "$why": [
+   "Where a reader without credentials gets the verdicts. The site already",
+   "holds DATABASE_URL because the product cannot work without it; that is a",
+   "credential we cannot avoid having. A DATABASE_URL secret in GitHub",
+   "Actions is one we can, and it would widen a compromised workflow from",
+   "'can read our code' to 'can read and write every award we hold'.",
+   "Override with GUARD_FEED_URL to point at a preview deployment or a local",
+   "`next dev`; nothing in an automatic path may need that override."
+  ]
+ },
+ "manual": {
+  "$why": [
+   "Guards that run only when a human types the command, each with the reason",
+   "it cannot be wired and a date by which that reason must be re-examined.",
+   "Read by ETL/schema/check_guard_reachability.py, which fails the build on a",
+   "check_* module that is in neither an automatic path nor this block -- and",
+   "fails again once a `review` date passes, so the block cannot quietly become",
+   "the place orphans are kept.",
+   "",
+   "Every entry below was found by an audit on 2026-08-08, not by a failure.",
+   "Two of them were RED at the moment they were found, which is the cost of",
+   "the arrangement they are recording.",
+   "",
+   "`npm run check` is not an automatic path. It is the command whose serial",
+   "chain stopped at link 14 of 27 all week."
   ],
-  "feed": {
-    "url": "https://euro-inv-tracker.vercel.app/api/guards",
-    "$why": [
-      "Where a reader without credentials gets the verdicts. The site already",
-      "holds DATABASE_URL because the product cannot work without it; that is a",
-      "credential we cannot avoid having. A DATABASE_URL secret in GitHub",
-      "Actions is one we can, and it would widen a compromised workflow from",
-      "'can read our code' to 'can read and write every award we hold'.",
-      "Override with GUARD_FEED_URL to point at a preview deployment or a local",
-      "`next dev`; nothing in an automatic path may need that override."
-    ]
+  "check_gate_pertinence": {
+   "reason": "Needs DATABASE_URL. Known-red on main (266 gates awaiting classification) and already routed to a person, so wiring it now would only add a second copy of a failure somebody is already holding. Becomes an `on_change` registry guard once the backlog clears.",
+   "review": "2026-09-30"
   },
-  "manual": {
-    "$why": [
-      "Guards that run only when a human types the command, each with the reason",
-      "it cannot be wired and a date by which that reason must be re-examined.",
-      "Read by ETL/schema/check_guard_reachability.py, which fails the build on a",
-      "check_* module that is in neither an automatic path nor this block -- and",
-      "fails again once a `review` date passes, so the block cannot quietly become",
-      "the place orphans are kept.",
-      "",
-      "Every entry below was found by an audit on 2026-08-08, not by a failure.",
-      "Two of them were RED at the moment they were found, which is the cost of",
-      "the arrangement they are recording.",
-      "",
-      "`npm run check` is not an automatic path. It is the command whose serial",
-      "chain stopped at link 14 of 27 all week."
-    ],
-    "check_gate_pertinence": {
-      "reason": "Needs DATABASE_URL. Known-red on main (266 gates awaiting classification) and already routed to a person, so wiring it now would only add a second copy of a failure somebody is already holding. Becomes an `on_change` registry guard once the backlog clears.",
-      "review": "2026-09-30"
-    },
-    "check_country_gates": {
-      "reason": "Declares DATABASE_URL `optional` and prints 'nothing to check' without it, so putting it in CI would buy a green step that reads nothing -- the precise defect the verdict channel exists to remove. Green when run against Postgres on 2026-08-08. Must become an `on_change` registry guard rather than a CI step.",
-      "review": "2026-09-30"
-    },
-    "check_gate_field_reach": {
-      "reason": "Same shape as check_country_gates: DATABASE_URL is `optional` and its absence yields a vacuous pass, so CI is the wrong home and the verdict channel is the right one. Green when run against Postgres on 2026-08-08 (3061 comparators over 23 fields).",
-      "review": "2026-09-30"
-    },
-    "check_gate_subject": {
-      "reason": "Needs DATABASE_URL and runs inside `make eligibility`, the publish target it guards; there is no automatic publish for it to attach to. Its layer-1 assertions are free, so it is a candidate for the weekly cron rather than a permanent manual.",
-      "review": "2026-09-30"
-    }
+  "check_country_gates": {
+   "reason": "Declares DATABASE_URL `optional` and prints 'nothing to check' without it, so putting it in CI would buy a green step that reads nothing -- the precise defect the verdict channel exists to remove. Green when run against Postgres on 2026-08-08. Must become an `on_change` registry guard rather than a CI step.",
+   "review": "2026-09-30"
   },
-  "guards": [
-    {
-      "id": "census",
-      "cadence": "weekly",
-      "needs": [
-        "etl corpus (data/db.sqlite)",
-        "DATABASE_URL"
-      ],
-      "code": [
-        "ETL",
-        "website/build"
-      ],
-      "code_suffixes": [
-        ".py"
-      ],
-      "refresh": "python3 ETL/events/load/publish_corpus_census.py",
-      "why": "What the ETL corpus contains, and how the run that produced it went. Everything below is judged against the newest one."
-    },
-    {
-      "id": "store_schema",
-      "cadence": "weekly",
-      "needs": [
-        "etl corpus (data/db.sqlite)",
-        "DATABASE_URL"
-      ],
-      "code": [
-        "ETL/schema/check_store_schema.py",
-        "ETL/schema/schema_debt.json",
-        "ETL/events/load/schema.sql",
-        "ETL/events/load/migrations",
-        "ETL/schema/postgres_schema.sql"
-      ],
-      "code_suffixes": [
-        ".py",
-        ".sql",
-        ".json"
-      ],
-      "command": [
-        "python3",
-        "ETL/schema/check_store_schema.py",
-        "--sqlite",
-        "data/db.sqlite",
-        "--postgres"
-      ],
-      "refresh": "python3 ETL/lib/guard_verdicts.py run store_schema",
-      "why": "Two stores of the same table must have the same columns. The volume's funding_instruments had no `tier` while the laptop's did -- the volume had run 9 of the 23 committed migrations -- and because the census reads `tier`, a missing COLUMN was reported for half a day as a coverage LOSS. It runs here rather than in CI because it is a question about LIVE stores, and it runs inside the container so the corpus it reads is the one the cron actually writes."
-    },
-    {
-      "id": "aggregate_independence",
-      "cadence": "weekly",
-      "needs": [
-        "etl corpus (data/db.sqlite)"
-      ],
-      "code": [
-        "ETL/schema/check_aggregate_independence.py",
-        "website/build/lib/corpus_kpis.py"
-      ],
-      "command": [
-        "python3",
-        "ETL/schema/check_aggregate_independence.py"
-      ],
-      "refresh": "python3 ETL/lib/guard_verdicts.py run aggregate_independence",
-      "why": "Liveness must not reach the headline figures, and must move the offerable set. It was in CI, where data/db.sqlite is gitignored, so it printed 'skipping' and returned 0 on every run it has ever had."
-    },
-    {
-      "id": "offerable_decay",
-      "cadence": "weekly",
-      "needs": [
-        "etl corpus (data/db.sqlite)"
-      ],
-      "code": [
-        "ETL/terms/check_offerable_decay.py",
-        "ETL/lib/liveness.py",
-        "data/reference/offerable_baseline.json"
-      ],
-      "command": [
-        "python3",
-        "ETL/terms/check_offerable_decay.py"
-      ],
-      "tolerate": [
-        3
-      ],
-      "refresh": "python3 ETL/lib/guard_verdicts.py run offerable_decay",
-      "why": "A country's offerable inventory falling with no corresponding corpus change. Already a cron step; publishing its verdict is what makes the result readable without credentials."
-    },
-    {
-      "id": "corpus_marks",
-      "cadence": "weekly",
-      "needs": [
-        "etl corpus (data/db.sqlite)"
-      ],
-      "code": [
-        "ETL/schema/check_corpus_marks.py",
-        "ETL/lib/corpus_marks.py",
-        "ETL/events/load/migrations/031_corpus_run_marks.sql"
-      ],
-      "code_suffixes": [
-        ".py",
-        ".sql"
-      ],
-      "command": [
-        "python3",
-        "ETL/schema/check_corpus_marks.py"
-      ],
-      "refresh": "python3 ETL/lib/guard_verdicts.py run corpus_marks",
-      "why": "Did the run that built this corpus finish every step it started. The other guards ask what the corpus CONTAINS and whether its schema is right; a half-refreshed corpus answers both perfectly well, and the coverage gate passed three censuses in a row that describe runs which failed. The outcome of a run is a property of the corpus that run produced, and it was being kept in a different store from the corpus -- so it did not survive `make pull-db`, and a partial volume became a publishable-looking laptop corpus with nothing left to say otherwise. The mark now lives in db.sqlite and travels with the file."
-    },
-    {
-      "id": "corpus_currency",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "website/frontend/scripts/check_corpus_currency.ts",
-        "website/frontend/lib/intelligence/liveness.ts",
-        "website/frontend/public/data/instrument_terms.json",
-        "website/frontend/lib/intelligence/semanticCache.generated.json"
-      ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_corpus_currency.ts",
-      "why": "The committed fund snapshot against live Postgres: liveness agreement, profile coverage, and whether the semantic cache every NO_PG check ranks on is the real index."
-    },
-    {
-      "id": "hydration_parity",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "website/frontend/scripts/check_hydration_parity.ts",
-        "website/frontend/lib/intelligence",
-        "website/frontend/public/data/instrument_terms.json"
-      ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_hydration_parity.ts",
-      "why": "The two stores must produce the same brief. Every other check runs NO_PG=1, so the whole suite is green regardless of what Postgres holds."
-    },
-    {
-      "id": "degradation",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "website/frontend/scripts/check_degradation.ts",
-        "website/frontend/lib/intelligence",
-        "website/frontend/public/data/instrument_terms.json"
-      ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_degradation.ts",
-      "why": "No fund a founder is shown on the fallback corpus may be one the live register says has closed. Measured at 26% of founders before the policy landed."
-    },
-    {
-      "id": "recall_floor",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL",
-        "VOYAGE_KEY"
-      ],
-      "code": [
-        "website/frontend/scripts/check_recall_floor.ts",
-        "website/frontend/scripts/recallSet.ts",
-        "website/frontend/scripts/recallSample.ts",
-        "website/frontend/lib/intelligence"
-      ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_recall_floor.ts",
-      "why": "Does retrieval still find the fund a company actually won. Skips itself without credentials and exits 0, so a ranking change has always been able to merge with the floors never evaluated. The fingerprint above is what closes that."
-    },
-    {
-      "id": "applicant_identity",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "website/frontend/scripts/check_applicant_identity.ts",
-        "data/applicant_identity.json",
-        "data/reference/applicant_identity_calibration.json",
-        "data/reference/applicant_identity_repairs.json",
-        "ETL/terms/repair_applicant_identity.py"
-      ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_applicant_identity.ts",
-      "why": "No published `who may apply` block may state a population that cannot apply. Five did when this guard was found on 2026-08-08: two Latvian guarantee schemes the borrower's bank submits, an Innovasjon Norge row whose text was a cluster-programme paragraph its own recorded source never asserted, a closed English risk-finance scheme delivered through financial intermediaries, and an Irish community scheme applied for by registered project coordinators. A founder matched on any of them spends the effort and is rejected at the end, which is worse than never being shown the fund. It says FAILS THE BUILD in its own header and had been wired into nothing since the day it was written."
-    },
-    {
-      "id": "index_freshness",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "ETL/terms/check_index_freshness.py",
-        "ETL/terms/embed_eligibility.py",
-        "ETL/terms/build_instrument_profiles.py",
-        "website/frontend/lib/intelligence/evidenceTiers.json"
-      ],
-      "command": [
-        "python3",
-        "ETL/terms/check_index_freshness.py"
-      ],
-      "refresh": "python3 ETL/lib/guard_verdicts.py run index_freshness",
-      "why": "Everything the advisor may state, it must be able to retrieve. 954 of 5,804 attributable gates across 163 instruments were unembedded when this was found on 2026-08-08, and the shape matters more than the number: this guard was step 16 of ETL/refresh.py, the two embed steps that fix it were 14 and 15, and step 13 was red -- so the fix sat under the failure and the alarm sat under the fix. Registered here it is asserted weekly by check_verdicts.ts without depending on a 23-step chain reaching it. It reads Postgres only and costs nothing; the embed steps it reports on are the paid ones."
-    }
-  ],
-  "manual_artifacts": {
-    "$why": [
-      "Committed artifacts under website/frontend/lib/intelligence/ that decline one of",
-      "the four properties ETL/schema/check_artifact_reachability.py asserts, each with",
-      "the reason and a date by which the reason must be re-examined. Same arrangement,",
-      "and the same argument, as the `manual` block above: an escape hatch with no clock",
-      "becomes the orphanage.",
-      "",
-      "`waives` names which of `producer`, `regeneration`, `staleness`, `loader` is being",
-      "declined. Declining one does not decline the others -- a pinned fixture still has",
-      "to be watched, and a hand-written contract still has to be read through one loader.",
-      "",
-      "Every entry below was found by the check on the day it was written, 2026-08-08, and",
-      "not one of them was known before that."
-    ],
-    "__recallSet.json": {
-      "waives": [
-        "producer",
-        "regeneration"
-      ],
-      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
-      "review": "2026-10-31"
-    },
-    "__recallSetComposed.json": {
-      "waives": [
-        "producer",
-        "regeneration"
-      ],
-      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
-      "review": "2026-10-31"
-    },
-    "__recallSetEnriched.json": {
-      "waives": [
-        "regeneration"
-      ],
-      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
-      "review": "2026-10-31"
-    },
-    "__recallSetPlus.json": {
-      "waives": [
-        "producer",
-        "regeneration"
-      ],
-      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts. Producer is ETL/terms/extend_recall_set.py, which binds the filename as a CLI default (`--out`) rather than to a written path, so the tie is real but not visible from the source; that is worth fixing when the file is next touched.",
-      "review": "2026-10-31"
-    },
-    "__recallSetRepaired.json": {
-      "waives": [
-        "regeneration"
-      ],
-      "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
-      "review": "2026-10-31"
-    },
-    "evidenceTiers.json": {
-      "waives": [
-        "producer"
-      ],
-      "reason": "HAND-WRITTEN, and the one place the cited / attributable / inadmissible contract is defined for both languages -- ETL reads it (embed_eligibility.py, harvest_quoted_eligibility.py, check_index_freshness.py) and so does lib/intelligence/verdict.ts. It has no producer because it is a decision, not a derivation; generating it would put the definition back into whichever script wrote it last, which is the drift the single file exists to stop. Correctly has no rebuild path for the same reason.",
-      "review": "2026-11-30"
-    },
-    "offerRouteRatchet.generated.json": {
-      "waives": [
-        "regeneration"
-      ],
-      "reason": "A RATCHET BASELINE. check_offer_route.ts fails when the corpus holds more route-less rows than this file records, so regenerating it automatically would raise the ceiling to whatever today's corpus happens to be and disarm the guard on the same run that broke it -- the one thing a ratchet may never do. Re-set by hand via `npm run offerroute`, deliberately, when the new level is understood.",
-      "review": "2026-10-31"
-    },
-    "semanticCache.generated.json": {
-      "waives": [
-        "loader"
-      ],
-      "reason": "lib/intelligence/semantic.ts is imported from a \"use client\" boundary and loads this with a deliberate `require(\"fs\")`, because a top-level `import \"fs\"` would pull node built-ins into the client bundle (see check_client_boundary.ts). generatedArtifact.ts imports fs at the top level and so cannot be used there without moving the problem. The silence itself is NOT waived: that catch names the file, the cwd and what is lost, exactly as the loader does, and check_corpus_currency.ts fails on an empty cache.",
-      "review": "2026-10-31"
-    },
-    "openQuestionClass.generated.json": {
-      "waives": [
-        "regeneration"
-      ],
-      "reason": "Rebuilding it costs real model spend (1,146 sentences, USD 0.86 on claude-sonnet-5), and the arm it feeds -- OPEN_QUESTION_ARM -- is default OFF, so today it changes nothing a founder sees. Putting it on `make refresh` would bill every corpus refresh for a signal nobody is reading yet. It is not unwatched: check_open_question_class.ts ratchets how many in-scope requirements have no judgement, so drift against the corpus turns the build red rather than going quiet. Wire it into the rebuild path in the same change that turns the arm on, and delete this entry then.",
-      "review": "2026-11-09"
-    }
+  "check_gate_field_reach": {
+   "reason": "Same shape as check_country_gates: DATABASE_URL is `optional` and its absence yields a vacuous pass, so CI is the wrong home and the verdict channel is the right one. Green when run against Postgres on 2026-08-08 (3061 comparators over 23 fields).",
+   "review": "2026-09-30"
+  },
+  "check_answer_reach": {
+   "reason": "Third of the same shape as check_country_gates and check_gate_field_reach: DATABASE_URL is `optional` and its absence yields a vacuous pass, so a CI step would buy a green tick over a run that graded nothing. It is worse than the other two if wired, because it also refuses to report a verdict about a table the LEXICAL index ordered -- so in CI, where there is no VOYAGE_KEY, the one thing it exists to observe is the one thing it cannot see. Runs in `npm run check` against the corpus, which is where it is meaningful. Declared manual rather than wired on 2026-08-09; ETL/schema/check_guard_reachability.py was RED on main naming it, alongside three genuinely hermetic checks that were wired the same day.",
+   "review": "2026-09-30"
+  },
+  "check_gate_subject": {
+   "reason": "Needs DATABASE_URL and runs inside `make eligibility`, the publish target it guards; there is no automatic publish for it to attach to. Its layer-1 assertions are free, so it is a candidate for the weekly cron rather than a permanent manual.",
+   "review": "2026-09-30"
   }
+ },
+ "guards": [
+  {
+   "id": "census",
+   "cadence": "weekly",
+   "needs": [
+    "etl corpus (data/db.sqlite)",
+    "DATABASE_URL"
+   ],
+   "code": [
+    "ETL",
+    "website/build"
+   ],
+   "code_suffixes": [
+    ".py"
+   ],
+   "refresh": "python3 ETL/events/load/publish_corpus_census.py",
+   "why": "What the ETL corpus contains, and how the run that produced it went. Everything below is judged against the newest one."
+  },
+  {
+   "id": "store_schema",
+   "cadence": "weekly",
+   "needs": [
+    "etl corpus (data/db.sqlite)",
+    "DATABASE_URL"
+   ],
+   "code": [
+    "ETL/schema/check_store_schema.py",
+    "ETL/schema/schema_debt.json",
+    "ETL/events/load/schema.sql",
+    "ETL/events/load/migrations",
+    "ETL/schema/postgres_schema.sql"
+   ],
+   "code_suffixes": [
+    ".py",
+    ".sql",
+    ".json"
+   ],
+   "command": [
+    "python3",
+    "ETL/schema/check_store_schema.py",
+    "--sqlite",
+    "data/db.sqlite",
+    "--postgres"
+   ],
+   "refresh": "python3 ETL/lib/guard_verdicts.py run store_schema",
+   "why": "Two stores of the same table must have the same columns. The volume's funding_instruments had no `tier` while the laptop's did -- the volume had run 9 of the 23 committed migrations -- and because the census reads `tier`, a missing COLUMN was reported for half a day as a coverage LOSS. It runs here rather than in CI because it is a question about LIVE stores, and it runs inside the container so the corpus it reads is the one the cron actually writes."
+  },
+  {
+   "id": "aggregate_independence",
+   "cadence": "weekly",
+   "needs": [
+    "etl corpus (data/db.sqlite)"
+   ],
+   "code": [
+    "ETL/schema/check_aggregate_independence.py",
+    "website/build/lib/corpus_kpis.py"
+   ],
+   "command": [
+    "python3",
+    "ETL/schema/check_aggregate_independence.py"
+   ],
+   "refresh": "python3 ETL/lib/guard_verdicts.py run aggregate_independence",
+   "why": "Liveness must not reach the headline figures, and must move the offerable set. It was in CI, where data/db.sqlite is gitignored, so it printed 'skipping' and returned 0 on every run it has ever had."
+  },
+  {
+   "id": "offerable_decay",
+   "cadence": "weekly",
+   "needs": [
+    "etl corpus (data/db.sqlite)"
+   ],
+   "code": [
+    "ETL/terms/check_offerable_decay.py",
+    "ETL/lib/liveness.py",
+    "data/reference/offerable_baseline.json"
+   ],
+   "command": [
+    "python3",
+    "ETL/terms/check_offerable_decay.py"
+   ],
+   "tolerate": [
+    3
+   ],
+   "refresh": "python3 ETL/lib/guard_verdicts.py run offerable_decay",
+   "why": "A country's offerable inventory falling with no corresponding corpus change. Already a cron step; publishing its verdict is what makes the result readable without credentials."
+  },
+  {
+   "id": "corpus_marks",
+   "cadence": "weekly",
+   "needs": [
+    "etl corpus (data/db.sqlite)"
+   ],
+   "code": [
+    "ETL/schema/check_corpus_marks.py",
+    "ETL/lib/corpus_marks.py",
+    "ETL/events/load/migrations/031_corpus_run_marks.sql"
+   ],
+   "code_suffixes": [
+    ".py",
+    ".sql"
+   ],
+   "command": [
+    "python3",
+    "ETL/schema/check_corpus_marks.py"
+   ],
+   "refresh": "python3 ETL/lib/guard_verdicts.py run corpus_marks",
+   "why": "Did the run that built this corpus finish every step it started. The other guards ask what the corpus CONTAINS and whether its schema is right; a half-refreshed corpus answers both perfectly well, and the coverage gate passed three censuses in a row that describe runs which failed. The outcome of a run is a property of the corpus that run produced, and it was being kept in a different store from the corpus -- so it did not survive `make pull-db`, and a partial volume became a publishable-looking laptop corpus with nothing left to say otherwise. The mark now lives in db.sqlite and travels with the file."
+  },
+  {
+   "id": "corpus_currency",
+   "cadence": "on_change",
+   "needs": [
+    "DATABASE_URL"
+   ],
+   "code": [
+    "website/frontend/scripts/check_corpus_currency.ts",
+    "website/frontend/lib/intelligence/liveness.ts",
+    "website/frontend/public/data/instrument_terms.json",
+    "website/frontend/lib/intelligence/semanticCache.generated.json"
+   ],
+   "refresh": "cd website/frontend && npx tsx scripts/check_corpus_currency.ts",
+   "why": "The committed fund snapshot against live Postgres: liveness agreement, profile coverage, and whether the semantic cache every NO_PG check ranks on is the real index."
+  },
+  {
+   "id": "hydration_parity",
+   "cadence": "on_change",
+   "needs": [
+    "DATABASE_URL"
+   ],
+   "code": [
+    "website/frontend/scripts/check_hydration_parity.ts",
+    "website/frontend/lib/intelligence",
+    "website/frontend/public/data/instrument_terms.json"
+   ],
+   "refresh": "cd website/frontend && npx tsx scripts/check_hydration_parity.ts",
+   "why": "The two stores must produce the same brief. Every other check runs NO_PG=1, so the whole suite is green regardless of what Postgres holds."
+  },
+  {
+   "id": "degradation",
+   "cadence": "on_change",
+   "needs": [
+    "DATABASE_URL"
+   ],
+   "code": [
+    "website/frontend/scripts/check_degradation.ts",
+    "website/frontend/lib/intelligence",
+    "website/frontend/public/data/instrument_terms.json"
+   ],
+   "refresh": "cd website/frontend && npx tsx scripts/check_degradation.ts",
+   "why": "No fund a founder is shown on the fallback corpus may be one the live register says has closed. Measured at 26% of founders before the policy landed."
+  },
+  {
+   "id": "recall_floor",
+   "cadence": "on_change",
+   "needs": [
+    "DATABASE_URL",
+    "VOYAGE_KEY"
+   ],
+   "code": [
+    "website/frontend/scripts/check_recall_floor.ts",
+    "website/frontend/scripts/recallSet.ts",
+    "website/frontend/scripts/recallSample.ts",
+    "website/frontend/lib/intelligence"
+   ],
+   "refresh": "cd website/frontend && npx tsx scripts/check_recall_floor.ts",
+   "why": "Does retrieval still find the fund a company actually won. Skips itself without credentials and exits 0, so a ranking change has always been able to merge with the floors never evaluated. The fingerprint above is what closes that."
+  },
+  {
+   "id": "applicant_identity",
+   "cadence": "on_change",
+   "needs": [
+    "DATABASE_URL"
+   ],
+   "code": [
+    "website/frontend/scripts/check_applicant_identity.ts",
+    "data/applicant_identity.json",
+    "data/reference/applicant_identity_calibration.json",
+    "data/reference/applicant_identity_repairs.json",
+    "ETL/terms/repair_applicant_identity.py"
+   ],
+   "refresh": "cd website/frontend && npx tsx scripts/check_applicant_identity.ts",
+   "why": "No published `who may apply` block may state a population that cannot apply. Five did when this guard was found on 2026-08-08: two Latvian guarantee schemes the borrower's bank submits, an Innovasjon Norge row whose text was a cluster-programme paragraph its own recorded source never asserted, a closed English risk-finance scheme delivered through financial intermediaries, and an Irish community scheme applied for by registered project coordinators. A founder matched on any of them spends the effort and is rejected at the end, which is worse than never being shown the fund. It says FAILS THE BUILD in its own header and had been wired into nothing since the day it was written."
+  },
+  {
+   "id": "index_freshness",
+   "cadence": "on_change",
+   "needs": [
+    "DATABASE_URL"
+   ],
+   "code": [
+    "ETL/terms/check_index_freshness.py",
+    "ETL/terms/embed_eligibility.py",
+    "ETL/terms/build_instrument_profiles.py",
+    "website/frontend/lib/intelligence/evidenceTiers.json"
+   ],
+   "command": [
+    "python3",
+    "ETL/terms/check_index_freshness.py"
+   ],
+   "refresh": "python3 ETL/lib/guard_verdicts.py run index_freshness",
+   "why": "Everything the advisor may state, it must be able to retrieve. 954 of 5,804 attributable gates across 163 instruments were unembedded when this was found on 2026-08-08, and the shape matters more than the number: this guard was step 16 of ETL/refresh.py, the two embed steps that fix it were 14 and 15, and step 13 was red -- so the fix sat under the failure and the alarm sat under the fix. Registered here it is asserted weekly by check_verdicts.ts without depending on a 23-step chain reaching it. It reads Postgres only and costs nothing; the embed steps it reports on are the paid ones."
+  }
+ ],
+ "manual_artifacts": {
+  "$why": [
+   "Committed artifacts under website/frontend/lib/intelligence/ that decline one of",
+   "the four properties ETL/schema/check_artifact_reachability.py asserts, each with",
+   "the reason and a date by which the reason must be re-examined. Same arrangement,",
+   "and the same argument, as the `manual` block above: an escape hatch with no clock",
+   "becomes the orphanage.",
+   "",
+   "`waives` names which of `producer`, `regeneration`, `staleness`, `loader` is being",
+   "declined. Declining one does not decline the others -- a pinned fixture still has",
+   "to be watched, and a hand-written contract still has to be read through one loader.",
+   "",
+   "Every entry below was found by the check on the day it was written, 2026-08-08, and",
+   "not one of them was known before that."
+  ],
+  "__recallSet.json": {
+   "waives": [
+    "producer",
+    "regeneration"
+   ],
+   "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+   "review": "2026-10-31"
+  },
+  "__recallSetComposed.json": {
+   "waives": [
+    "producer",
+    "regeneration"
+   ],
+   "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+   "review": "2026-10-31"
+  },
+  "__recallSetEnriched.json": {
+   "waives": [
+    "regeneration"
+   ],
+   "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+   "review": "2026-10-31"
+  },
+  "__recallSetPlus.json": {
+   "waives": [
+    "producer",
+    "regeneration"
+   ],
+   "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts. Producer is ETL/terms/extend_recall_set.py, which binds the filename as a CLI default (`--out`) rather than to a written path, so the tie is real but not visible from the source; that is worth fixing when the file is next touched.",
+   "review": "2026-10-31"
+  },
+  "__recallSetRepaired.json": {
+   "waives": [
+    "regeneration"
+   ],
+   "reason": "A PINNED holdout, not a build product. Its whole value is that it does not move: every recall figure this repo has published is a measurement against this exact set, so putting it on `make refresh` would silently re-cut the ground truth under the floors (pool 93 / EXACT@5 22 / REGIME@5 80) and make a run's number incomparable with the run before it. Re-cut deliberately, by a person, with the effect measured and written down. Staleness IS watched: check_recall_floor.ts reports ABSENT pairs -- answers naming an instrument the corpus no longer holds -- on its own line every run, through the one loader scripts/recallSet.ts.",
+   "review": "2026-10-31"
+  },
+  "evidenceTiers.json": {
+   "waives": [
+    "producer"
+   ],
+   "reason": "HAND-WRITTEN, and the one place the cited / attributable / inadmissible contract is defined for both languages -- ETL reads it (embed_eligibility.py, harvest_quoted_eligibility.py, check_index_freshness.py) and so does lib/intelligence/verdict.ts. It has no producer because it is a decision, not a derivation; generating it would put the definition back into whichever script wrote it last, which is the drift the single file exists to stop. Correctly has no rebuild path for the same reason.",
+   "review": "2026-11-30"
+  },
+  "offerRouteRatchet.generated.json": {
+   "waives": [
+    "regeneration"
+   ],
+   "reason": "A RATCHET BASELINE. check_offer_route.ts fails when the corpus holds more route-less rows than this file records, so regenerating it automatically would raise the ceiling to whatever today's corpus happens to be and disarm the guard on the same run that broke it -- the one thing a ratchet may never do. Re-set by hand via `npm run offerroute`, deliberately, when the new level is understood.",
+   "review": "2026-10-31"
+  },
+  "semanticCache.generated.json": {
+   "waives": [
+    "loader"
+   ],
+   "reason": "lib/intelligence/semantic.ts is imported from a \"use client\" boundary and loads this with a deliberate `require(\"fs\")`, because a top-level `import \"fs\"` would pull node built-ins into the client bundle (see check_client_boundary.ts). generatedArtifact.ts imports fs at the top level and so cannot be used there without moving the problem. The silence itself is NOT waived: that catch names the file, the cwd and what is lost, exactly as the loader does, and check_corpus_currency.ts fails on an empty cache.",
+   "review": "2026-10-31"
+  },
+  "openQuestionClass.generated.json": {
+   "waives": [
+    "regeneration"
+   ],
+   "reason": "Rebuilding it costs real model spend (1,146 sentences, USD 0.86 on claude-sonnet-5), and the arm it feeds -- OPEN_QUESTION_ARM -- is default OFF, so today it changes nothing a founder sees. Putting it on `make refresh` would bill every corpus refresh for a signal nobody is reading yet. It is not unwatched: check_open_question_class.ts ratchets how many in-scope requirements have no judgement, so drift against the corpus turns the build red rather than going quiet. Wire it into the rebuild path in the same change that turns the arm on, and delete this entry then.",
+   "review": "2026-11-09"
+  }
+ }
 }
