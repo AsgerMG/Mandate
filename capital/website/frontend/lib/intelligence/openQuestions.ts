@@ -138,6 +138,36 @@ export type OpenQuestionArm = "on" | "off";
 export const OPEN_QUESTION_ARM: OpenQuestionArm =
   process.env.OPEN_QUESTION_ARM === "on" ? "on" : "off";
 
+/**
+ * What a sibling that carries NONE of the judged requirements should count as.
+ *
+ * ── Why this is a knob and not a decision ─────────────────────────────────
+ * A question is chosen precisely because it SPLITS a regime: some siblings
+ * demand it and some do not. So when the founder's answer settles it, exactly
+ * one side of the split has a judgement and the other side has nothing — and
+ * `known.length < 2` then skips the whole group. The signal is structurally
+ * unable to act on the split it was selected for.
+ *
+ *   "neutral" (default, and what ships): a sibling with no judged requirement
+ *      gets no entry. If fewer than two siblings are judged, the group is left
+ *      exactly as it was. Nothing is ever promoted for an absence.
+ *
+ *   "pass": a sibling with no judged requirement counts as not ruled out
+ *      (fit 1), so a fund that demands nothing on this point outranks a
+ *      sibling the founder's own answer rules out. That is the semantics the
+ *      question was asked under — but it PROMOTES A FUND FOR AN ABSENCE, and
+ *      this repo has shipped that failure twice (see
+ *      `check_missing_data_neutral.ts`, whose asymmetric band exists for it).
+ *      Under "pass", a fund that has simply never had its rules encoded rises
+ *      against a sibling whose rules ARE encoded and were honestly answered.
+ *
+ * Both are measured. Neither is turned on by default, because "pass" is a
+ * product decision about which error to prefer, not a tuning choice.
+ */
+export type OpenAbsenceArm = "neutral" | "pass";
+export const OPEN_ABSENCE_ARM: OpenAbsenceArm =
+  process.env.OPEN_ABSENCE_ARM === "pass" ? "pass" : "neutral";
+
 /** How many open questions stage 2 may ask, at most. The screen's own cap is
  *  6 questions total; open questions compete for those slots and must not
  *  crowd out the fields that already rank. See `selectOpenQuestions`. */
@@ -219,6 +249,11 @@ export function openFitScorer<T extends { id: string; parentId?: string | null; 
         if (v === "meets") met += 1;
       }
       if (judged > 0) fit.set(l.id, met / judged);
+      // The other side of the split. See OPEN_ABSENCE_ARM: under "neutral"
+      // this leaf simply has no entry and the group is usually skipped; under
+      // "pass" it counts as not ruled out, which is the semantics the question
+      // was asked under and also a promotion for an absence.
+      else if (OPEN_ABSENCE_ARM === "pass") fit.set(l.id, 1);
     }
     const known = [...fit.values()];
     if (known.length < 2) continue;

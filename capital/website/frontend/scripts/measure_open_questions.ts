@@ -114,7 +114,8 @@ async function main() {
   const { graded, ungraded } = partitionByOfferable(eligible, (id) => offerable.has(id));
   const sample = sampleRecall(graded, Math.min(N, graded.length), seed);
 
-  console.log(`set ${file} | split ${split} | ANSWERS=${answerMode} | seed ${seed}`);
+  console.log(`set ${file} | split ${split} | ANSWERS=${answerMode} | seed ${seed} `
+    + `| OPEN_ABSENCE_ARM=${process.env.OPEN_ABSENCE_ARM ?? "neutral"}`);
   console.log(`corpus=${corpusProvenance().source} | classes: ${cls.classified}/${cls.candidates} `
     + `classified by ${cls.model} at ${cls.generatedAt}`);
   console.log(`described+gradable ${graded.length} (ungradable ${ungraded.length}), sampling ${sample.length}\n`);
@@ -124,7 +125,7 @@ async function main() {
   // The safety claim, measured rather than argued.
   let poolChanged = 0, screenChanged = 0, movedRows = 0;
   const verdictCount = { meets: 0, fails: 0, unknown: 0 };
-  let asked = 0, rowsWithAnyQuestion = 0, done = 0;
+  let asked = 0, rowsWithAnyQuestion = 0, done = 0, settled = 0, oneSided = 0;
   const perRegime = new Map<string, { flips: number; n: number }>();
 
   const { eur, calls } = await withCostTracking(async () => {
@@ -173,7 +174,19 @@ async function main() {
           },
         }));
         judged = await judgeOpenAnswers(items, t.description ?? undefined);
-        for (const j of judged) verdictCount[j.verdict] += 1;
+        const byKey = new Map(candidates.map((c) => [c.key, c]));
+        for (const j of judged) {
+          verdictCount[j.verdict] += 1;
+          // Where a settled verdict LANDS. A question is selected because it
+          // splits a regime, so a settled verdict always lands on a splitting
+          // requirement -- but under the default absence arm the other side of
+          // the split has no judgement, so the group is skipped. This counts
+          // how often that one-sidedness is what stops the signal.
+          if (j.verdict === "meets" || j.verdict === "fails") {
+            const c = byKey.get(j.key);
+            if (c) { settled += 1; if (c.carriers < c.regimeSize) oneSided += 1; }
+          }
+        }
       }
 
       for (const k of BUDGETS) {
@@ -233,6 +246,8 @@ async function main() {
     + `(${(100 * rowsWithAnyQuestion / done).toFixed(1)}%)`);
   console.log(`  mean questions offered per row (cap ${MAX_BUDGET}): ${(asked / done).toFixed(2)}`);
   console.log(`  judged verdicts: ${JSON.stringify(verdictCount)}`);
+  console.log(`  settled verdicts (meets|fails): ${settled}, of which on a `
+    + `one-sided split: ${oneSided}`);
 
   console.log(`\n── the safety claim ──`);
   console.log(`  rows where a fund LEFT the pool:        ${poolChanged}   (must be 0)`);
