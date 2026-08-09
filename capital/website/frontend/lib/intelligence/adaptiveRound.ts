@@ -415,8 +415,11 @@ export async function planAdaptiveScreen(
           `3-5 options, leaving each option's "value" empty.\n` +
           `- For source "open": write the whole question and return an EMPTY ` +
           `options array. Copy the ref exactly. Ask one thing, answerable in ` +
-          `two or three sentences from memory. Never spend more than two of ` +
-          `the screen's slots on these.\n\n` +
+          `two or three sentences from memory. When Pool D is not empty you ` +
+          `MUST include at least one and at most two of them: these are the ` +
+          `only questions on the screen that can resolve a requirement no ` +
+          `checkbox will ever settle, and a screen without one leaves that ` +
+          `fund's biggest condition untested.\n\n` +
           `Return ONLY the JSON object for the schema.`,
       }],
     }), INTAKE_MODEL);
@@ -444,7 +447,17 @@ export async function planAdaptiveScreen(
       if (!hasBody || seenRefs.has(q.ref)) continue;
       // The cap is enforced HERE, not asked for in the prompt: a budget a
       // model may round up is not a budget.
-      if (fields.length + written.length >= SCREEN_QUESTION_CAP) break;
+      //
+      // The same argument the other way for Pool D. Asked to spend "no more
+      // than two" slots on open questions, the model spent ZERO on a live
+      // screen that had three good candidates in front of it -- it prefers a
+      // question it can write options for, every time. A floor a model may
+      // round DOWN is not a floor either, so one slot is RESERVED whenever
+      // open candidates exist: a non-open question may not take the last seat
+      // while an open one is still waiting for it.
+      const reserved = openQuestions.length && !written.some((w) => w.openText) ? 1 : 0;
+      const seats = SCREEN_QUESTION_CAP - (q.source === "open" ? 0 : reserved);
+      if (fields.length + written.length >= seats) continue;
       const options = (q.options ?? [])
         .map((o) => deDash(String(o?.label ?? "").trim()))
         .filter(Boolean)
