@@ -89,20 +89,35 @@ Ausfuhrkontrolle" — was harvested already. That is why `caseTitle` and SATR's
 `aid_measure_title` score identically to the bare SA number: they are it,
 spelled out.
 
-### Five fields the cache had dropped, checked rather than assumed
+### Five fields the cache had dropped — fetched, and they die too
 
-`fetch_state_aid_cases.py` keeps 14 of the record's 48 metadata fields. Read
-against a live record, five of the dropped ones are not plumbing —
-`caseSectors` (NACE scope), `casePrimaryLaws`, `caseSecondaryLaws`,
-`caseMeasureStartDate`, `caseNotificationDate`. `caseSectors` in particular is
-the only unused register field that is **founder-testable**: a founder has a
-sector; an SA number is an identifier they can never match on.
-`fetch_case_extra_fields.py` collects them, free. They are still SA-keyed, so
-the structural argument above applies to them unchanged.
+`fetch_state_aid_cases.py` keeps 14 of the record's 48 metadata fields on the
+judgement that the rest is search-engine plumbing. Read against a live record,
+five of the dropped ones are not plumbing: `caseSectors` (NACE scope),
+`casePrimaryLaws`, `caseSecondaryLaws`, `caseMeasureStartDate`,
+`caseNotificationDate`. `caseSectors` in particular is the only unused register
+field that is **founder-testable** — a founder has a sector; an SA number is an
+identifier they can never match on — so it was worth a free fetch rather than
+an argument. `fetch_case_extra_fields.py` collected all five for all 531 cached
+SA numbers:
 
-**The record carries no prose and no documents.** On a live fetch, `summary`,
-`content` and `children` are all empty and `url` is the europa.eu index page.
-There is no eligibility text in this source to find.
+```
+caseSectors            31 / 531   5.8%      casePrimaryLaws     22 / 531   4.1%
+caseMeasureStartDate  497 / 531  93.6%      caseSecondaryLaws   20 / 531   3.8%
+caseNotificationDate  401 / 531  75.5%
+```
+
+`caseSectors` reaches **2.0% of publishable multi-leaf leaves** — the two
+largest sibling groups in the corpus, SA.56245 (18 leaves) and SA.111723 (14),
+both carry an empty array. And all five measure **+0.0** over
+`baseline + scheme_code`, exactly like the rest. The one founder-testable field
+the register still held is both too sparse to matter and structurally unable to
+separate.
+
+**The record carries no prose and no documents.** Checked on four cases
+(SA.63177, SA.56245, SA.111723, SA.107952): `summary`, `content` and `children`
+are empty on every one, and `url` is the europa.eu index page. There is no
+eligibility text in this source to find.
 
 ---
 
@@ -178,12 +193,11 @@ What to do with the free sources instead, in order:
    exhausted, now with the separation measurement the 2026-08-04 note asserted
    but did not have. `measure_scheme_evidence.py` is the reproduction, so the
    next workstream does not pay to re-derive it.
-2. **`caseSectors` is worth loading, but as a GATE and not as a separator.** It
-   is a founder-testable NACE scope from the official source, on rows that today
-   carry no own-document evidence at all — Rule Zero material. It will not move
-   the sibling class (measured: 0.0), and on wsBU's numbers a gate signal is
-   worth 1.3, so it should be justified as honesty about what a fund IS, not as
-   accuracy. Seeding it needs a declared `gate_role`; NULL is not neutral.
+2. **Do not load `caseSectors` either.** It was the one candidate worth a free
+   fetch and the fetch answered it: 31 of 531 cases, 2.0% of publishable
+   multi-leaf leaves, +0.0 separation. The five recovered fields are now in the
+   cache and cost nothing to keep, but nothing should be built on them. This
+   is recorded so the next workstream does not re-derive it.
 3. **Stop looking for the answer in per-scheme facts.** The ceiling is 85.5%
    and the product is at 25%. The gap is not in what the corpus records about
    the fund; it is in what the product knows about the founder, and wsAO already
@@ -196,4 +210,12 @@ What to do with the free sources instead, in order:
   corpus or `PUBLISHABLE=<ids.json>`, refusing to run on an empty allow-list.
 - `ETL/terms/fetch_case_extra_fields.py` — tops the case cache up with the five
   per-scheme fields the first pass dropped; POST-not-GET, exact `reference`
-  match, merges rather than replaces, records the attempt either way.
+  match, merges rather than replaces, records the attempt either way so a
+  re-run resumes instead of re-paying. Run to completion: 531/531.
+
+No product code changed. `python3 -m compileall -q ETL/` clean, `npx tsc
+--noEmit` clean, `check_recall_floor.ts` **ok** — pool 94% (floor 89), EXACT@5
+25% (floor 15), REGIME@5 76% (floor 69), and the three per-population floors.
+Guards proved to fail, not assumed: an empty `PUBLISHABLE` allow-list exits 1
+rather than silently measuring nothing, a missing file exits 1, and an empty
+`DATABASE_URL` exits 1 rather than falling back to SQLite.

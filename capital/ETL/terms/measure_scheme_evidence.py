@@ -219,9 +219,15 @@ def main() -> None:
     candidates: list[tuple[str, object]] = [
         ("scheme_code (SA number)", lambda r: h(r["scheme_code"])),
     ]
+    # The last five are the fields `fetch_state_aid_cases.py` dropped as
+    # plumbing and `fetch_case_extra_fields.py` went back for. `caseSectors`
+    # is the interesting one -- the only unused register field a FOUNDER can
+    # be tested against -- so it is measured rather than argued about.
     for f in ("caseTitle", "caseObjectivesStr", "caseAidInstruments", "caseRegions",
               "caseMeasureEndDate", "caseAidCategory", "caseSimplifiedProcedure",
-              "caseInitiationDate", "caseLinks"):
+              "caseInitiationDate", "caseLinks",
+              "caseSectors", "casePrimaryLaws", "caseSecondaryLaws",
+              "caseMeasureStartDate", "caseNotificationDate"):
         candidates.append((f"case: {f}", (lambda f: lambda r: case_key(r, f))(f)))
     for f in satr_fields:
         candidates.append((f"satr: {f}", (lambda f: lambda r: satr_key(r, f))(f)))
