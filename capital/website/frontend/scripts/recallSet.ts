@@ -11,12 +11,17 @@
 // therefore prints the file, the pair count and what the set can name, on every
 // run. A number pasted out of a terminal now carries its own provenance.
 //
-// ── The active set, and the staged one ─────────────────────────────────────
-// ACTIVE is `__recallSetComposed.json`. STAGED is `__recallSetDoors.json`,
-// which is built, leak-checked and measured but deliberately not switched on —
-// see the comment on `ACTIVE_RECALL_SET` for whose decision that is and what it
-// costs. Everything below describes Doors, because it is the thing a reader
-// needs to understand in order to decide about it.
+// ── The active set, and the one it reverts to ──────────────────────────────
+// ACTIVE is `__recallSetDoors.json`, switched on 2026-08-09 by PM decision
+// after workstream BR's attribution rebuild cleared the last hold. STAGED is
+// `__recallSetComposed.json` — what every figure published before that date was
+// measured against, and what the switch reverses to. Everything below describes
+// Doors, because it is the set that now grades everything.
+//
+// ██ ONE METRIC CHANGED MEANING ACROSS THAT SWITCH AND DID NOT CHANGE NAME. ██
+// REGIME@5 is not comparable with any figure from before it. See
+// `REGIME_AT_5_NOT_COMPARABLE` below; EXACT@5 is the metric to quote across it,
+// and it went UP.
 //
 // `__recallSetDoors.json` is `__recallSetComposed.json` — itself the
 // composition of
@@ -115,11 +120,71 @@ import path from "path";
  *  `project-mgmt/findings/answer_key_coverage_wsBP.md`, and the honest cost of
  *  NOT flipping it is that every number this repo publishes about EXACT@5 keeps
  *  describing 278 of the 782 funds the product offers. */
-export const ACTIVE_RECALL_SET = "__recallSetComposed.json";
-/** What `ACTIVE_RECALL_SET` becomes when the hold lifts. Named rather than
- *  written into a comment, so the staged set is discoverable by grep and so
- *  nothing has to be remembered about which file was meant. */
-export const STAGED_RECALL_SET = "__recallSetDoors.json";
+/*  ── THE HOLD LIFTED, 2026-08-09 (workstream BS) ──────────────────────────
+ *
+ *  ACTIVE is now Doors. The PM approved the switch on the evidence above and
+ *  on one blocker clearing: workstream BR's attribution rebuild (8523da9f)
+ *  took placement 11.5% -> 41.9%, leaves 241 -> 671, and countries with a
+ *  placeable leaf 7 -> 22, while leaving instruments at 1,088 and gates at
+ *  7,471. The 22 leaves the paragraph above says BQ's staleness argument binds
+ *  are no longer stale, so nothing is left holding the line at Composed.
+ *
+ *  ██ REGIME@5 IS NOT COMPARABLE ACROSS THIS SWITCH. ██  See the block on
+ *  `REGIME_AT_5_NOT_COMPARABLE` below before quoting any REGIME figure against
+ *  one measured before today.
+ *
+ *  Composed is NOT retired. It is the set every published figure before today
+ *  was measured on, so it stays loadable by name via `SET=` and is deliberately
+ *  absent from `RETIRED_RECALL_SETS` — a retired set prints a defect, and
+ *  Composed's coverage is a limit, not a defect. `STAGED_RECALL_SET` now names
+ *  it, which keeps the switch a one-line reversal in the direction it came
+ *  from: swap the two constants and every harness follows. */
+export const ACTIVE_RECALL_SET = "__recallSetDoors.json";
+/** The set `ACTIVE_RECALL_SET` reverts TO, and previously the one it became.
+ *  Named rather than written into a comment, so the other side of the switch is
+ *  discoverable by grep and so nothing has to be remembered about which file
+ *  was meant. Reversibility is the point of having this constant at all. */
+export const STAGED_RECALL_SET = "__recallSetComposed.json";
+
+/** ── REGIME@5 MEANS SOMETHING DIFFERENT UNDER DOORS ───────────────────────
+ *
+ *  Stated at the definition, because every REGIME@5 figure quoted in this repo
+ *  before 2026-08-09 was measured against `__recallSetComposed.json`, and a
+ *  number that changes meaning without saying so is how a metric stops being
+ *  read.
+ *
+ *  REGIME@5 credits a hit when any of the top five rows shares the won fund's
+ *  named ancestor. Under Composed, the key could only name 278 of 782 offerable
+ *  funds, and it named them almost entirely as programme-split CHILDREN —
+ *  `Split.leaf_for` only ever returned a child. A child's regime is its family,
+ *  so the metric was asking "did we return any sibling of the winner?", and the
+ *  answer got easier the more siblings the winner had. Sibling-group size was
+ *  therefore a large part of what the 91% measured, and every hit on a
+ *  many-child family was substantially free.
+ *
+ *  Doors adds the 233 offerable leaves that are a FAMILY NOBODY SPLIT — CDTI,
+ *  Innovate UK, Bpifrance's innovation line. A childless family IS its own
+ *  regime. For those pairs REGIME@5 and EXACT@5 are the SAME QUESTION, there is
+ *  no sibling credit available, and the free hits are gone.
+ *
+ *  So REGIME@5 falls ~21 points on the switch and THE FALL IS THE POINT. It is
+ *  not a ranking regression and no ranking change caused it: the metric stopped
+ *  paying for sibling-group size. Two consequences for anyone reading a number:
+ *
+ *    1. NEVER compare a REGIME@5 measured under Doors with one measured under
+ *       Composed. They are different questions. The comparison is not "worse",
+ *       it is undefined.
+ *    2. EXACT@5 IS comparable, and is the metric to quote across the switch. It
+ *       asks the same question of both keys; what changed is only how much of
+ *       the product it can ask it about — 278 funds, now 499.
+ *
+ *  The floors in `check_recall_floor.ts` are re-derived against Doors for this
+ *  reason and carry the same note. */
+export const REGIME_AT_5_NOT_COMPARABLE =
+  "REGIME@5 under __recallSetDoors.json is not comparable with any figure " +
+  "measured under __recallSetComposed.json: a childless family is its own " +
+  "regime, so the metric no longer pays sibling-group-size credit. Quote " +
+  "EXACT@5 across the switch. See recallSet.ts.";
 
 /** file -> the defect that retired it. */
 export const RETIRED_RECALL_SETS: Record<string, string> = {
@@ -409,9 +474,12 @@ export const UNGRADED_SHARE = { max: 33 };
  *  It tracks whichever set is ACTIVE. It went to 7,000 with the doors extension
  *  and back to 4,700 when that extension was held, and both moves are the review
  *  moment working: the number is not a fact about the corpus, it is a pin under
- *  one committed artifact, and the artifact changed. When `STAGED_RECALL_SET`
- *  becomes active this goes to 7,000 in the same commit. */
-export const MIN_PAIRS = 4700;
+ *  one committed artifact, and the artifact changed.
+ *
+ *  2026-08-09: Doors is active and holds 7,095 pairs, so this goes to 7,000 in
+ *  the same commit as the switch — which is the line above being honoured, not
+ *  a floor being moved. */
+export const MIN_PAIRS = 7000;
 
 /** A pair can fail to be gradable for two DIFFERENT reasons, and collapsing
  *  them hides the one that matters.
@@ -513,8 +581,8 @@ export function assertGradablePopulation(
     if (file !== ACTIVE_RECALL_SET) {
       console.log(
         `    (${total.toLocaleString()} pairs, under the ${MIN_PAIRS} floor — ` +
-        `expected: ${file} is retired\n     and frozen at its own size. The floor ` +
-        "guards the ACTIVE key against pruning.)");
+        `expected: ${file} is not the active key\n     and is frozen at its own ` +
+        "size. The floor guards the ACTIVE key against pruning.)");
     } else {
       console.error(
         `\nrecall set: ${total} pairs, under the ${MIN_PAIRS} floor. The answer key ` +

@@ -59,6 +59,11 @@ import json  # noqa: E402
 import sqlite3  # noqa: E402
 
 from attribution import Split  # noqa: E402
+# Which key SHIPS is read from `scripts/recallSet.ts`, in the same spirit as
+# `offerable_ids` below reading the offerable set from the product rather than
+# restating it. A default filename here is a second definition of the active
+# set, and it went stale on 2026-08-09 when the constant moved to Doors.
+from recall_holdout import active_recall_set  # noqa: E402
 
 FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
 
@@ -89,7 +94,7 @@ def offerable_ids(path: _Path) -> set[str]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--set", default="__recallSetComposed.json")
+    ap.add_argument("--set", default=active_recall_set())
     ap.add_argument("--publishable", default="/tmp/publishable_ids.json",
                     help="output of scripts/dump_publishable_ids.ts")
     args = ap.parse_args()

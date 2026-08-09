@@ -73,6 +73,40 @@ INTEL_DIR = ROOT / "website" / "frontend" / "lib" / "intelligence"
 RECALL_GLOB = "__recallSet*.json"
 
 
+# The ONE place that says which set is active is `scripts/recallSet.ts`, and it
+# says so for a reason recorded at length in that file: four sets accumulated in
+# one session and every harness named its own default, which is how two numbers
+# measured against different answer keys were quoted side by side for weeks.
+#
+# Python had no way to ask, so `enrich_recall_answers.py` and
+# `audit_answer_key_reach.py` each hard-coded a filename -- a second definition,
+# and one that goes stale silently the first time the constant moves. It moved on
+# 2026-08-09 (Composed -> Doors) and both would have kept generating against the
+# retired key with nothing on screen to say so.
+#
+# So it is READ, not copied. A regex over one exported constant is a small price
+# for there being exactly one answer to "which key ships".
+ACTIVE_SET_DECL = ROOT / "website" / "frontend" / "scripts" / "recallSet.ts"
+
+
+def active_recall_set(decl: Path | None = None) -> str:
+    """The basename of `ACTIVE_RECALL_SET`, read from the TypeScript that owns it.
+
+    Raises rather than guessing: a caller that silently fell back to a
+    hard-coded name would reintroduce exactly the drift this exists to remove.
+    """
+    import re
+    src = (decl or ACTIVE_SET_DECL).read_text()
+    m = re.search(r'^export const ACTIVE_RECALL_SET\s*=\s*"([^"]+)"',
+                  src, re.MULTILINE)
+    if not m:
+        raise SystemExit(
+            f"recall_holdout: no ACTIVE_RECALL_SET in {decl or ACTIVE_SET_DECL}. "
+            "That constant is the single definition of which answer key ships; "
+            "if it moved or was renamed, this reader moves with it.")
+    return m.group(1)
+
+
 def recall_set_files(intel_dir: Path | None = None) -> list[Path]:
     """Every recall set on disk, active and retired alike.
 

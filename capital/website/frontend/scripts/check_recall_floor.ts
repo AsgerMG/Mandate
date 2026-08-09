@@ -42,7 +42,7 @@ import type { InstrumentRow } from "../lib/intelligence/types";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
-  partitionByOfferable, reattributeMissingAnswers,
+  partitionByOfferable, reattributeMissingAnswers, REGIME_AT_5_NOT_COMPARABLE,
 } from "./recallSet";
 // ── The skip below is now survivable, and only because of this ─────────────
 // Skipping loudly and exiting 0 was still exiting 0: `npm run check` reported a
@@ -187,7 +187,113 @@ const tape = startTape();
  *  Nothing is lowered and nothing is raised. A floor that moves to accommodate
  *  a regression is not a floor; a floor that moves onto a measurement that did
  *  not rise is not a floor either, it is a coin flip with a comment. */
-const FLOOR = { pool: 93, exact5: 22, regime5: 80 };
+/*  ── RE-DERIVED AGAINST DOORS, 2026-08-09 (workstream BS) ─────────────────
+ *
+ *  ██ ALL THREE NUMBERS BELOW GO DOWN, AND NONE OF THEM IS A LOOSENING. ██
+ *  Read this block before quoting one of them as a lowered bar.
+ *
+ *  `ACTIVE_RECALL_SET` is now `__recallSetDoors.json`. The floors these replace
+ *  (93 / 22 / 80) were calibrated against `__recallSetComposed.json`, WHICH NO
+ *  LONGER SHIPS. Keeping them would not be strictness, it would be a gate
+ *  measured on one exam applied to a different one.
+ *
+ *  ── What changed about the exam ───────────────────────────────────────────
+ *  Measured out of Postgres today, both keys against the same corpus:
+ *  Composed names 390 of the 895 funds the product may offer, in 9 countries;
+ *  Doors names 611, in 28. The funds it adds are the ones `Split.leaf_for`
+ *  could never return — a FAMILY NOBODY SPLIT is the fund, and it has no child
+ *  to be returned as. CDTI, Innovate UK, Bpifrance.
+ *
+ *  ── The two metrics move in OPPOSITE directions, and that is the finding ──
+ *  Same corpus, same peer prior, same three seeds, tune split, N=300, live
+ *  Postgres asserted, 1,088 instruments printed on every run:
+ *
+ *                        seed 20260806   seed 7   seed 99
+ *      pool     Composed       97           99       97
+ *               DOORS          94           95       95
+ *      EXACT@5  Composed       20           21       22
+ *               DOORS          25           24       25
+ *      REGIME@5 Composed       91           92       90
+ *               DOORS          76           76       72
+ *
+ *  EXACT@5 IS THE COMPARABLE METRIC AND IT WENT UP, on every seed, while the
+ *  key got harder. Retrieval is BETTER on the 221 funds the old key was blind
+ *  to than on the ones it could see. REGIME@5 fell 15-18 points and that fall
+ *  is the point, not a regression: a childless family is its own regime, so for
+ *  those pairs REGIME@5 and EXACT@5 are the same question and there is no
+ *  sibling credit to be had. See `REGIME_AT_5_NOT_COMPARABLE` in recallSet.ts,
+ *  and see it in this run's own output — `regime 1 (alone)` reads exact5 ==
+ *  regime5 to the case, `regime 51+` reads exact5 14% against regime5 99%.
+ *
+ *  So a REGIME@5 floor of 80 under Doors would not be a strict version of the
+ *  old gate. It would be a gate that fails on arithmetic, every run, forever,
+ *  for a reason that has nothing to do with ranking — and a gate that cannot
+ *  pass gets muted, which is this file's own stated failure mode.
+ *
+ *  ── The margins, by the convention this file has always used ──────────────
+ *  Unchanged convention, new measurements. Pinned figures first, then the
+ *  lowest any of the three seeds produced.
+ *
+ *  pool 89   5 under pinned (94), and 3 under the lowest seed (94) would give
+ *            91; the convention requires BOTH, so the binding one is 89. Pool
+ *            is still the one correctness floor — a fund the writer never sees
+ *            cannot be advised on — and it is still the most stable thing here,
+ *            spanning 94-95 across three seeds.
+ *  exact5 15 10 under pinned (25), the widest, unchanged in width and for the
+ *            unchanged reason: this metric swings hardest on an index rebuild,
+ *            and this file records it moving 20 -> 32 across one. The three
+ *            seeds span 24-25, so 15 is 9 under the lowest.
+ *  regime5 69 7 under pinned (76), and 3 under the lowest seed (72). Both
+ *            constraints the convention states are satisfied at 69, which is
+ *            why it is 69 and not 70.
+ *
+ *  ── Why the old floors are not simply kept as a stricter bar ──────────────
+ *  Because two of the three would be FALSE, not strict. `regime5 80` fails on
+ *  every seed for the arithmetic reason above. `exact5 22` looks survivable at
+ *  24-25 — and it is the floor whose margin this session was asked to
+ *  investigate, so it gets its own block below rather than a clause here. */
+const FLOOR = { pool: 89, exact5: 15, regime5: 69 };
+/*  ── THE `exact5` ZERO-MARGIN FLAG, ANSWERED FROM THE VERDICT TABLE ───────
+ *
+ *  Workstream BR left this open: `exact5` passed at 22 against a floor of 22,
+ *  no margin at all, and asked whether that was the rebuild's cost or noise.
+ *
+ *  ██ NEITHER. It is the graded POPULATION growing by 39% in one step. ██
+ *
+ *  `guard_verdicts` in Postgres holds twelve consecutive `recall_floor` runs
+ *  from that night, all on the Composed key at the pinned seed, all N=300.
+ *  Sorted by the size of the graded population rather than by time, they are
+ *  perfectly bimodal:
+ *
+ *      GRADED 3,452 (72.0%)   seven runs, 00:11-02:00   pool 98   exact5 29, 29,
+ *                                                       29, 29, 29, 29, 28.7
+ *      GRADED 4,796 (100.0%)  five runs,  02:11-02:34   pool 97   exact5 22, 22,
+ *                                                       22, 22, 22.3
+ *
+ *  Within a population the number is a CONSTANT to the decimal across repeated
+ *  runs. Across the boundary it moves seven points. What crossed that boundary
+ *  was not the ranker: 1,344 pairs — 28% of the key — stopped being WITHHELD as
+ *  "closed with no successor" and became gradable, because BR's rebuild made
+ *  their answers offerable again. pool moved 98 -> 97 and REGIME@5 moved
+ *  91.3 -> 91.7 across the same instant.
+ *
+ *  So the exam got 39% longer and the newly admitted questions are harder on
+ *  EXACT@5 specifically. That is the hazard the block below this one already
+ *  names — "the seed pins the draw, not the population" — happening at full
+ *  scale: the pinned draw is a constant only while the set it draws FROM is.
+ *  The 10-point margin was licensed by "the same 300 pairs every run", and that
+ *  premise had quietly stopped holding.
+ *
+ *  ██ THE PLAIN VERDICT: the zero-margin pass was green by luck, and it was
+ *  never evidence about the ranker. A floor calibrated on 3,452 pairs was being
+ *  read against a measurement on 4,796. ██
+ *
+ *  It also did not stay green. On today's corpus the same Composed key at the
+ *  pinned seed reads EXACT@5 20 — BELOW the floor of 22 that it passed at
+ *  02:34. Nothing about the ranker moved; the population moved again. That is
+ *  the closing argument for re-deriving rather than inheriting: a floor whose
+ *  denominator drifts is not a floor, and the answer is a floor derived on the
+ *  population that actually ships, which is what `FLOOR` above now is. */
 /** REGIME@5 per population — the operational number, the one a founder feels.
  *  Wider margins than the headline, and deliberately: these are subsamples of
  *  the 300, so at n~130 one standard error is already 4 points of the spread a
@@ -234,9 +340,51 @@ const FLOOR = { pool: 93, exact5: 22, regime5: 80 };
  *  reader comparing today's n to the calibration block's n should expect them
  *  to differ, and should not read a moved percentage as a moved ranker until
  *  the n is checked. */
+/*  ── RE-DERIVED AGAINST DOORS, 2026-08-09 — and here ONE GOES UP ──────────
+ *
+ *  THREE populations now, because Doors carries one the old key could not name
+ *  at all. Measured with the headline above, same runs:
+ *
+ *      regime5 by population       seed 20260806   seed 7   seed 99
+ *      original join                   83 (n=92)   85 (81)  79 (89)
+ *      traced:exact_attribution        96 (136)    99 (135) 93 (130)
+ *      traced:childless_family         31 (72)     31 (84)  31 (81)
+ *
+ *  Margin convention, unchanged: two standard errors at THIS population's n,
+ *  which is what stops the gate flapping on a legitimate reseed, taken against
+ *  the lowest seed rather than the pinned one.
+ *
+ *  original join 70   UNCHANGED. Lowest seed 79 at n=89; 1 SE is 4.3 points, so
+ *                     two is 8.6 and the convention lands on 70 — the number
+ *                     already in force. It is not raised: n has fallen from
+ *                     ~131 to ~89 because Doors moves pairs into the two traced
+ *                     populations, and a smaller n is a wider SE, not a tighter
+ *                     one. Widest relative margin of the three, as before.
+ *  traced:exact_attribution 88  RAISED from 84. Lowest seed 93 at n=130, 1 SE
+ *                     is 2.2 points; 5 under the lowest seed is the same
+ *                     spacing the previous derivation used (floor 84 under a
+ *                     lowest seed of 89). This is the population whose canary
+ *                     floor was re-derived DOWN today, and raising the
+ *                     acceptance floor on it is the counterweight: the cheap
+ *                     check got a better metric, and the expensive check got a
+ *                     higher bar on the same rows.
+ *  traced:childless_family 21  NEW, and provisional. 31 on all three seeds — the
+ *                     most stable figure in this file — but n~78 makes 1 SE 5.2
+ *                     points, so the convention's two lands on 21. That is the
+ *                     widest relative margin here and it is deliberate: these
+ *                     funds entered a fitted ranking artifact four days ago and
+ *                     there is no history of how they move under a corpus
+ *                     reload. TIGHTEN IT once there is. Do not read 21 as a
+ *                     statement that 21 would be acceptable.
+ *
+ *  Note what this population is: a childless family IS its own regime, so its
+ *  regime5 and its exact5 are the same number to the case (31 and 31 on all
+ *  three seeds). It is the only population here whose floor cannot be passed
+ *  with a sibling. */
 const POPULATION_FLOOR: Record<string, number> = {
   "original join": 70,
-  "traced:exact_attribution": 84,
+  "traced:exact_attribution": 88,
+  "traced:childless_family": 21,
 };
 // FIXED, and deliberately not configurable — both of them.
 //
@@ -364,6 +512,11 @@ async function main() {
     const bad = got[k] < FLOOR[k];
     console.log(`    ${bad ? "FAIL" : "ok  "} ${k.padEnd(8)} ${got[k].toFixed(0)}% ` +
                 `(floor ${FLOOR[k]}%)`);
+    // The caveat travels with the number, on the same screen and in the
+    // `detail` this run publishes to `guard_verdicts`. Every REGIME@5 in that
+    // table before today was measured on a different key, and a reader
+    // comparing rows has no other way to find that out.
+    if (k === "regime5") console.log(`         ^ ${REGIME_AT_5_NOT_COMPARABLE}`);
   }
   // Per population, because a change that buys one with the other nets out to
   // a flat headline and this gate exists to catch exactly that.

@@ -102,7 +102,12 @@ import sqlite3  # noqa: E402
 import statistics  # noqa: E402
 
 INTEL = ROOT / "website" / "frontend" / "lib" / "intelligence"
-DEFAULT_FROM = "__recallSetComposed.json"
+# Read from `scripts/recallSet.ts`, never restated. This was the literal
+# "__recallSetComposed.json" until 2026-08-09, when the active key became Doors
+# and this line would have gone on enriching a key that no longer ships.
+from recall_holdout import active_recall_set  # noqa: E402
+
+DEFAULT_FROM = active_recall_set()
 
 # The intake's own ticket bands, read from the vocabulary contract rather than
 # restated. This file decides which band every graded founder is recorded as
