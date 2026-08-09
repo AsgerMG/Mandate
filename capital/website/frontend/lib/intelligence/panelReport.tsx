@@ -541,7 +541,13 @@ function TracePanel({ report }: { report: IntelligenceReport }) {
   );
 }
 
-export function Memo({ report }: { report: IntelligenceReport }) {
+export function Memo({ report, corpusWindow }: {
+  report: IntelligenceReport;
+  /** The years the corpus covers, e.g. "2021 to 2025". Handed down from
+   *  app/brief/page.tsx via IntelligencePanel: this footer used to state
+   *  "2021–2025" as a literal, on the one artifact a founder keeps. */
+  corpusWindow: string;
+}) {
   const self = report.self;
   // Debug view, opt-in per request. Read from the URL rather than held in
   // state: it must survive a reload and never leak into a normal session.
@@ -679,7 +685,7 @@ export function Memo({ report }: { report: IntelligenceReport }) {
         <div className="mt-12 border-t border-[var(--border)] pt-4 print:mt-6 print:pt-2">
           <p className="text-[12px] leading-relaxed text-[var(--muted-foreground)] print:text-[8px]">{report.caveats}</p>
           <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] print:hidden">
-            Wincent · the state-backed capital record of European companies, 2021–2025
+            Wincent · the state-backed capital record of European companies, {corpusWindow}
           </p>
         </div>
       </div>

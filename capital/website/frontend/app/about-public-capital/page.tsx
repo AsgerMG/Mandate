@@ -354,6 +354,11 @@ export default async function AboutPublicCapitalPage() {
                   value={`${stats.conviction.pct}%`}
                   label="Share of conviction-tier (IPCEI / Innovation Fund) companies that climbed up from smaller grants. The top floor selects for strategic relevance, not grant pedigree: position in a declared value chain."
                 />
+                {/* corpus: the cohort window is not editorial. It is fixed in
+                    website/build/investor_insights.py, which selects EIC awards
+                    with CAST(event_year AS INT) <= 2022 so the cohort has had
+                    time to win again. The percentage beside it is derived; the
+                    years describe the query that produced it. */}
                 <Stat
                   value={`${stats.eicCohort.pct}%`}
                   label="Share of 2021 to 2022 EIC winners that later won from another channel. Labels and wins compound across channels, not just within them."
@@ -454,6 +459,9 @@ export default async function AboutPublicCapitalPage() {
 
           {/* ── 5. What's coming ───────────────────────────────────── */}
           <Chapter className="py-20 sm:py-28">
+            {/* external: the window is the EU's next multiannual financial
+                framework, 2028-2034, read from today. Source [3] below. It is a
+                fact about the EU budget cycle, not about this corpus. */}
             <ChapterHead
               kicker="5 · What is coming for you, 2026 to 2034"
               title="The same policy shifts investors track, read as openings and traps."

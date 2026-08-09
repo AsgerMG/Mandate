@@ -151,9 +151,12 @@ const COUNTRIES = [
 export interface IntelligencePanelProps {
   /** Companies in the funding record, from `corpusStats()` on the server. */
   corpusCompanies: number;
+  /** The years the corpus covers, e.g. "2021 to 2025", from `corpusProse()`.
+   *  The memo footer states it, and stated it as a literal until now. */
+  corpusWindow: string;
 }
 
-export function IntelligencePanel({ corpusCompanies }: IntelligencePanelProps) {
+export function IntelligencePanel({ corpusCompanies, corpusWindow }: IntelligencePanelProps) {
   // Rebuilt only when the census moves, which is weekly at most.
   const STEP_CHATTER = useMemo(() => stepChatter(corpusCompanies), [corpusCompanies]);
   // ── Screen machine: intake (form + a live, continuously-updating preview
@@ -779,6 +782,10 @@ export function IntelligencePanel({ corpusCompanies }: IntelligencePanelProps) {
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
                   How much are you looking for?
+                  {/* contract: the two figures are band edges from TICKET_BANDS
+                      (lib/intelligence/types.ts — b15m_50m and b100k_500k), the
+                      vocabulary contract this control is built from, not claims
+                      about the corpus. They move when a band moves. */}
                   <InfoDot>
                     Scale routes everything: a EUR 20M+ build-out lives in a
                     different instrument universe than a EUR 300K grant.
@@ -1097,7 +1104,7 @@ export function IntelligencePanel({ corpusCompanies }: IntelligencePanelProps) {
         )}
       </div>
 
-      {report && <Memo key={report.generatedAt} report={report} />}
+      {report && <Memo key={report.generatedAt} report={report} corpusWindow={corpusWindow} />}
     </section>
   );
 }

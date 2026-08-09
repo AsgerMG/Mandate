@@ -13,6 +13,7 @@
 // Never reachable in production — see the notFound() below.
 import { notFound } from "next/navigation";
 import { Memo } from "@/lib/intelligence/panelReport";
+import { corpusProse } from "@/lib/corpusProse";
 import fixture from "@/lib/intelligence/__fixtures/report.json";
 import type { IntelligenceReport } from "@/lib/intelligence/types";
 
@@ -25,7 +26,7 @@ export default function BriefPreviewPage() {
   if (process.env.NODE_ENV === "production") notFound();
   return (
     <main className="wrap py-8">
-      <Memo report={fixture as unknown as IntelligenceReport} />
+      <Memo report={fixture as unknown as IntelligenceReport} corpusWindow={corpusProse().awardWindow} />
     </main>
   );
 }

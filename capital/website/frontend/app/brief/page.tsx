@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { IntelligencePanel } from "@/lib/intelligence/panel";
 import { corpusStats } from "@/lib/data";
+import { corpusProse } from "@/lib/corpusProse";
 
 export const metadata: Metadata = {
   title: "Get your state-backed capital brief | Wincent",
@@ -18,6 +19,7 @@ export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 
 export default async function BriefPage() {
   const { companies } = await corpusStats();
+  const { awardWindow } = corpusProse();
   return (
     <section className="relative flex min-h-[calc(100svh-var(--nav-h))] flex-col overflow-hidden bg-[var(--background)] pt-16 pb-6 sm:pt-20">
       <div
@@ -33,7 +35,7 @@ export default async function BriefPage() {
           /about-public-capital. Anchored to the shared offset instead. */}
       <div className="relative flex flex-1 items-start">
         <div className="wrap">
-          <IntelligencePanel corpusCompanies={companies} />
+          <IntelligencePanel corpusCompanies={companies} corpusWindow={awardWindow} />
         </div>
       </div>
       <div className="relative flex justify-center pt-4 pb-2">

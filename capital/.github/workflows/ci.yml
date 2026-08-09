@@ -67,6 +67,13 @@ jobs:
       - name: Output contracts
         run: npx tsx scripts/check_contracts.ts
 
+      # No number a visitor reads is a literal the corpus does not produce.
+      # Hermetic: TypeScript source plus two COMMITTED artifacts, no database
+      # and no credentials, so it cannot pass by finding nothing to read — and
+      # it self-tests its own detector on every run before it judges the site.
+      - name: Rendered numbers come from the corpus
+        run: npx tsx scripts/check_rendered_numbers.ts
+
       # Credentials load in one place, and a harness that needs them says so.
       # Free and hermetic — it reads source and runs nothing — and it belongs
       # in CI rather than only in `npm run check`, because the thing it stops

@@ -133,7 +133,7 @@ function buildSteps({ nationalAwardPct }: ChannelsGraphProps): Step[] {
     content: (
       <div>
         {kicker("Step back")}
-        {head("That is only half of the machine.")}
+        {head("That is only one of the two roads.")}
         <P>
           Roughly {nationalAwardPct}% of the awards we traced stay national, on those two rails. But
           the other road, the money pooled at EU level, funds the largest and most strategic bets on
@@ -151,8 +151,8 @@ function buildSteps({ nationalAwardPct }: ChannelsGraphProps): Step[] {
         {kicker("The European road")}
         {head("European funds: money pooled in Brussels.")}
         <P>
-          These are the pots the EU manages centrally, on behalf of every member state, spent through
-          a handful of big instruments:
+          These are the pots the EU manages centrally, on behalf of every member state, spent
+          through big, centrally managed instruments:
         </P>
         <P>
           {b("Horizon Europe")}, the research engine, in three pillars. The {b("EIC")}, which writes
