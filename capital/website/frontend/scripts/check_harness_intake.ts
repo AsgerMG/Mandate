@@ -147,8 +147,11 @@ const replays = (src: string): boolean => {
     && /\.\/recallSet|\.\/founderIntake|loadRecallSet/.test(src);
 };
 
-/** Held to the property outright: their numbers are published and floored. */
-const STRICT = new Set(["check_recall_floor.ts", "measure_recall.ts"]);
+/** Held to the property outright: their numbers are published and floored.
+ *  `_wsci_autopsy.ts` is here because its bucket 2 WAS the pinned
+ *  `capitalSought` — 100% `SEL-CAPITAL` — published as a product finding. */
+const STRICT = new Set(["check_recall_floor.ts", "measure_recall.ts", "_wsci_autopsy.ts",
+  "_wscm_tiers.ts"]);
 
 /** ── The ratchet ──────────────────────────────────────────────────────────
  *  file -> the number of intake keys it inlined when this guard was written.
@@ -156,10 +159,8 @@ const STRICT = new Set(["check_recall_floor.ts", "measure_recall.ts"]);
 const RATCHET: Record<string, number> = {
   "_wscc_pilot.ts": 9,
   "_wscd2_reach.ts": 8,
-  "_wsci_autopsy.ts": 9,
   "_wsck_money.ts": 7,
   "_wscm_stages.ts": 9,
-  "_wscm_tiers.ts": 9,
   "build_gate1_fixture.ts": 8,
   "diagnose_capital_pool.ts": 9,
   "diagnose_corpus_variance.ts": 8,

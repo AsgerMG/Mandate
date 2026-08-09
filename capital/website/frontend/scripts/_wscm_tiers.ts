@@ -27,10 +27,13 @@ import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import { readTrace, traceOn, traceReset } from "../lib/intelligence/tableTrace";
+import {
+  founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
+} from "./founderIntake";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import {
-  answersFor, assertAncestorConvention, assertGradablePopulation, loadRecallSet,
-  partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
+  assertAncestorConvention, assertGradablePopulation, loadRecallSet,
+  partitionByOfferable, reattributeMissingAnswers,
 } from "./recallSet";
 
 async function main() {
@@ -51,6 +54,8 @@ async function main() {
 
   traceOn();
   resetRankerTally();
+  const policy: FounderPolicy = founderPolicyFromEnv();
+  const tally = new IntakeTally();
   let rowsSeen = 0, usedInFieldTrue = 0, fitDemotedTrue = 0;
   let adjTier1 = 0, adjTier2 = 0, adjScore = 0, adjTie = 0;
   let tablesWithBothTier1 = 0, tablesWithBothTier2 = 0;
@@ -58,14 +63,18 @@ async function main() {
   for (const t of sample) {
     resetGateHydration();
     traceReset();
-    const a = answersFor(t, (process.env.ANSWERS ?? "off") as AnswerMode);
-    await computeVerdict("TestCo", t.country, {
-      entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
-      borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
-      useOfFunds: ["industrial_research", "experimental_development"], region: a.region,
-    } as never, {
-      targetMarkets: [t.country], capitalSought: a.capitalSought,
-      description: t.description || t.selfDescription || undefined, log: new ExclusionLog(),
+    // ── THE FOUNDER, and why this file is the one that proves the point ────
+    // This harness measures `usedInField` — tier 1 of the comparator, above
+    // the entire score — and it replayed `"TestCo"`, which matches nothing in
+    // the corpus. So the tier it exists to measure was structurally false on
+    // every row, and its own headline ("true on 0 of 3,810 rows") was a
+    // property of the harness rather than of the product. It now replays the
+    // real company with that company's OWN award history withheld, so the flag
+    // can be true from peers and can never be true from the answer.
+    const f = founderIntake(t, policy);
+    tally.add(f);
+    await computeVerdict(f.company, f.country, f.eligibility as never, {
+      ...f.opts, log: new ExclusionLog(),
     } as never);
     const { facts } = readTrace();
     rowsSeen += facts.length;
@@ -85,6 +94,7 @@ async function main() {
     }
   }
   console.log(rankerTallyLine());
+  for (const line of tally.lines(policy)) console.log(line);
   console.log(`\n${sample.length} tables, ${rowsSeen} rows`);
   console.log(`  usedInField true on ${usedInFieldTrue} rows (${(100 * usedInFieldTrue / rowsSeen).toFixed(1)}%)` +
     `   tables where it VARIES: ${tablesWithBothTier1}/${sample.length}`);

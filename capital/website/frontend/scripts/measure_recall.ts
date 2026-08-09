@@ -102,6 +102,16 @@ import {
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { doorKey } from "../lib/intelligence/rowIdentity";
+// ── WHICH RANKER produced these numbers, counted rather than assumed ───────
+// `check_recall_floor.ts` has printed this since fd27cec0 and THIS FILE, the
+// harness it floors and the one every published EXACT@5 comes out of, did not.
+// `semanticFundMatch` has a 3s connect and a 3s statement timeout and returns
+// an empty map on any failure, at which point every `rankerUsed` call site
+// drops to the lexical index -- so a run can average two ranking systems and
+// print one number. wsCP retracted three figures on exactly that, including
+// wsCK's own control, which printed `ranker: nothing ranked` and was never
+// read. A number from this script without the attestation is not evidence.
+import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import {
   founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
 } from "./founderIntake";
@@ -326,6 +336,7 @@ async function main() {
     regionOverride: (r) => regionOf(r),
   };
   const tally = new IntakeTally();
+  resetRankerTally();
   for (const t of sample) {
     resetGateHydration();
     const a = answersFor(t, answerMode);
@@ -413,6 +424,7 @@ async function main() {
   }
   // The whole intake, supplied AND withheld, on the same screen as the number.
   for (const line of tally.lines(policy)) console.log(line);
+  console.log(`  ${rankerTallyLine()}`);
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);
