@@ -550,6 +550,12 @@ def apply_030(conn: sqlite3.Connection) -> None:
     run_sql(conn, "030_source_window_policy.sql")
 
 
+def apply_031(conn: sqlite3.Connection) -> None:
+    """corpus_run_marks -- how the run that built this store went, IN the store,
+    so the fact survives every copy of the file."""
+    run_sql(conn, "031_corpus_run_marks.sql")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -578,6 +584,7 @@ MIGRATIONS = {
     "028": apply_028,
     "029": apply_029,
     "030": apply_030,
+    "031": apply_031,
 }
 
 

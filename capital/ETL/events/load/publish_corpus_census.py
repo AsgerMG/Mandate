@@ -237,6 +237,33 @@ def main() -> int:
     from corpus_stores import OF_RECORD, store_id
     store = args.store or store_id()
 
+    # ── What the RUNNER says, and what the CORPUS remembers ─────────────────
+    # `--run-outcome` is one runner's account of one run. It is true and it is
+    # not enough: it does not survive a copy of the file. `make pull-db` brings
+    # the volume's rows to a laptop and `refresh.py` then records `ok` about a
+    # corpus half of which was assembled by a run that stopped — which is
+    # exactly the state census #10 described and nothing on the volume itself
+    # said. So the store is asked too, and the census records the WORSE of the
+    # two. It can never be cleaner than either.
+    #
+    # This is the whole enforcement path. `corpusCensus.ts::admissibility`
+    # already refuses any run_outcome that is not literally 'ok', and both the
+    # guard and the home page call it, so nothing downstream can acknowledge the
+    # corpus without acknowledging this. No new consumer contract, no second
+    # vocabulary — see ETL/lib/corpus_marks.py::summarise.
+    _sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+    import corpus_marks  # noqa: PLC0415
+
+    stale_steps, marks_unknown = corpus_marks.unresolved()
+    run_outcome = corpus_marks.worse_of(args.run_outcome,
+                                        corpus_marks.summarise(stale_steps))
+    if run_outcome != args.run_outcome:
+        print(f"  the store itself records unfinished work: {run_outcome} "
+              f"(the runner said '{args.run_outcome}')")
+    if marks_unknown:
+        print(f"  (unfinished-step marks unavailable: {marks_unknown})")
+    args.run_outcome = run_outcome
+
     payload, errors = collect()
     fingerprint = code_fingerprint()
     print(f"corpus census — code {fingerprint}, produced by {args.produced_by}, "

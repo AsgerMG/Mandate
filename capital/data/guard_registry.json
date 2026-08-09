@@ -170,6 +170,28 @@
       "why": "A country's offerable inventory falling with no corresponding corpus change. Already a cron step; publishing its verdict is what makes the result readable without credentials."
     },
     {
+      "id": "corpus_marks",
+      "cadence": "weekly",
+      "needs": [
+        "etl corpus (data/db.sqlite)"
+      ],
+      "code": [
+        "ETL/schema/check_corpus_marks.py",
+        "ETL/lib/corpus_marks.py",
+        "ETL/events/load/migrations/031_corpus_run_marks.sql"
+      ],
+      "code_suffixes": [
+        ".py",
+        ".sql"
+      ],
+      "command": [
+        "python3",
+        "ETL/schema/check_corpus_marks.py"
+      ],
+      "refresh": "python3 ETL/lib/guard_verdicts.py run corpus_marks",
+      "why": "Did the run that built this corpus finish every step it started. The other guards ask what the corpus CONTAINS and whether its schema is right; a half-refreshed corpus answers both perfectly well, and the coverage gate passed three censuses in a row that describe runs which failed. The outcome of a run is a property of the corpus that run produced, and it was being kept in a different store from the corpus -- so it did not survive `make pull-db`, and a partial volume became a publishable-looking laptop corpus with nothing left to say otherwise. The mark now lives in db.sqlite and travels with the file."
+    },
+    {
       "id": "corpus_currency",
       "cadence": "on_change",
       "needs": [
