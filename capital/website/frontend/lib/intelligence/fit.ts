@@ -240,7 +240,7 @@ export function hasSectorHistory(mix: Record<string, number> | null | undefined)
  *  `sectorFitScorer`), where it carries whatever weight the semantic term
  *  leaves it.
  *
- *  Its known limitation is a property of the clip below and is measured: inside
+ *  Its known limitation is a property of the clip and is measured: inside
  *  one regime the 0.25 ceiling makes a leaf with 90% of its awards in the
  *  founder's sector indistinguishable from one with 26%, so it ties at the top
  *  of the group in most sibling comparisons -- it separates least exactly where
@@ -255,32 +255,25 @@ export function sectorFit(
   if (!hasSectorHistory(mix) || !founderSector) return null;
   const total = Object.values(mix!).reduce((a, b) => a + b, 0);
   const share = (mix![founderSector] ?? 0) / total;
-  return SECTOR_CLIP_ARM === "off"
-    ? share
-    : Math.min(1, share / SECTOR_FULL_MATCH_SHARE);
+  return Math.min(1, share / SECTOR_FULL_MATCH_SHARE);
 }
 
-/** ── The clip, as an ARM rather than as an argument ────────────────────────
+/** ── THE CLIP IS SETTLED. Do not re-introduce it as an arm ────────────────
  *
- *  The docstring above says the ceiling ties the top of a sibling group and
- *  points at a measurement. Workstream BU turned that into a switch, because
- *  "do not fix this without reading the measurement" is not something a reader
- *  can act on and a constant nobody can vary is a constant nobody can test.
+ *  There was a `SECTOR_CLIP_ARM=off` switch here that returned the raw share
+ *  instead. It was deleted on 2026-08-09 because the question it existed to
+ *  keep open is answered, and answered against it.
  *
- *  `off` divides by nothing: the raw share, which is what the clip destroys
- *  above 0.25. Measured alone over the pool, EXACT@5 with ties resolved by
- *  expectation (`scripts/measure_signal_power.ts`, N=600, seed 20260806):
+ *  Measured ALONE over the pool, EXACT@5 with ties resolved by expectation
+ *  (`scripts/measure_signal_power.ts`, N=600, seed 20260806) the unclipped
+ *  share looks marginally better and is not a difference:
  *
  *      arm          tune                holdout
  *      clipped      16.3 +/-2.0         15.7 +/-2.0
  *      unclipped    18.8 +/-3.1         18.1 +/-3.1
  *
- *  Both gaps sit INSIDE the half-widths and neither is a difference.
- *
- *  ── AND END TO END IT IS NEGATIVE, WHICH IS THE POINT OF THE ARM ─────────
- *  Replayed through the product's own ranking (`measure_recall.ts`, N=600,
- *  holdout, same seed) the standalone gain does not survive contact with the
- *  table, and two other metrics pay for it:
+ *  END TO END IT IS NEGATIVE, and that is the finding. Replayed through the
+ *  product's own ranking (`measure_recall.ts`, N=600, holdout, same seed):
  *
  *                       clipped (ships)    unclipped
  *      EXACT@5           127/600  21 +/-3.3   131/600  22 +/-3.3
@@ -288,23 +281,18 @@ export function sectorFit(
  *      CHANNEL@5         553/600  92 +/-2.2   514/600  86 +/-2.8
  *      REGIME@5 on traced:exact_attribution  98%  ->  83%
  *
- *  Four cases in six hundred, inside the half-width, bought with six points of
- *  REGIME@5 and fifteen on the population that has siblings at all. The clip is
- *  doing exactly what the docstring above says it does -- stopping a narrow fund
- *  from beating a broad one ACROSS channels -- and removing it scatters the
- *  table off the right regime. Same trade `objectiveScorer` was moved out of the
- *  row sort to avoid.
+ *  Four cases in six hundred, inside the half-width on the metric it targets,
+ *  bought with six points of REGIME@5, six of CHANNEL@5 and fifteen on the
+ *  population that has siblings at all. The reason is structural rather than a
+ *  question of N: the clip is what stops a narrow fund beating a broad one
+ *  ACROSS channels, so removing it scatters the table off the right regime.
+ *  Same trade `objectiveScorer` was moved out of the row sort to avoid. A
+ *  larger N can only sharpen a +0.7 that is already paid for many times over.
  *
- *  So the arm defaults to the shipped behaviour and stays, so the question is
- *  re-askable at a larger N without anyone editing a constant back and forth --
- *  which is how a measured decision turns into a remembered one.
- *  See project-mgmt/findings/signal_remeasure_wsBU.md.
- *
- *  Read once at module load, never per call, for the same reason
- *  `SECTOR_NEUTRAL_ARM` is: a measurement must not be able to drift mid-run. */
-export type SectorClipArm = "on" | "off";
-export const SECTOR_CLIP_ARM: SectorClipArm =
-  process.env.SECTOR_CLIP_ARM === "off" ? "off" : "on";
+ *  The unclipped share is still MEASURABLE without this switch: it is its own
+ *  standalone arm in `measure_signal_power.ts` ("sector share (unclipped)"),
+ *  computed inline from `sectorMix`, so re-asking the standalone question costs
+ *  nothing and needs no env var. See findings/signal_remeasure_wsBU.md. */
 
 /**
  * The score for an instrument whose sector history we do not hold — solved over

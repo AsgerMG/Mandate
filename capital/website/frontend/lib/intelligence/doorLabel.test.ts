@@ -11,6 +11,7 @@ vi.mock("./corpus", () => ({
 }));
 
 import { doorLabel, __resetAmbiguousSchemes } from "./doorLabel";
+import { withDoor } from "./rowIdentity";
 
 const CDC = { administeringBody: "Caisse des Dépôts", administeringBodyShare: 1 };
 
@@ -46,12 +47,35 @@ describe("doorLabel", () => {
       .toBe("Régime cadre RDI");
   });
 
-  // `distinguishRowNames` already appends the body when two siblings collide in
-  // one table, and it runs first. Both firing is the normal case, not the edge.
+  // ── ONE SCREEN NAMES ONE LEAF ONE WAY ────────────────────────────────────
+  // Two places print a body: the table (`distinguishRowNames`, which fires when
+  // two DRAWN rows collide) and the question underneath it (`gateReach`, which
+  // fires on the register's own ambiguity). They used to spell it differently —
+  // "X · Body" against "X · via Body" — so one screen named one leaf two ways
+  // even with both firing. The fix is that neither builds the string: both call
+  // `withDoor`. This test fails the moment either grows its own spelling.
+  it("prints a body in exactly the spelling the table prints", () => {
+    expect(doorLabel("Régime cadre RDI", { ...CDC, schemeCode: "SA.111723" }))
+      .toBe(withDoor("Régime cadre RDI", "Caisse des Dépôts"));
+  });
+
+  // `distinguishRowNames` runs FIRST, so the row reaching this function may
+  // already carry its body. Both firing is the normal case, not the edge.
   it("does not append a body the name already carries", () => {
-    const once = doorLabel("Régime cadre RDI · Caisse des Dépôts",
-      { ...CDC, schemeCode: "SA.111723" });
-    expect(once).toBe("Régime cadre RDI · Caisse des Dépôts");
+    const fromTheTable = withDoor("Régime cadre RDI", "Caisse des Dépôts");
+    expect(doorLabel(fromTheTable, { ...CDC, schemeCode: "SA.111723" }))
+      .toBe(fromTheTable);
+  });
+
+  // Found by rendering a real French shortlist, not by reading the code. When
+  // the table's body branch does not fire, its fallback token is an id
+  // fragment — the same body, flattened — and a literal containment test does
+  // not recognise it. The row then read "· caisse des depots · via Caisse des
+  // Dépôts": the same claim twice, in two spellings.
+  it("does not append a body the name already carries in a FLATTENED spelling", () => {
+    expect(doorLabel("Régime cadre RDI · caisse des depots",
+      { ...CDC, schemeCode: "SA.111723" }))
+      .toBe("Régime cadre RDI · caisse des depots");
   });
 
   it("is idempotent, so a second pass cannot double the claim", () => {

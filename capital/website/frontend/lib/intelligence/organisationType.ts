@@ -93,7 +93,7 @@ export function prefillOrganisationType(name: string | undefined | null): string
 
 /**
  * THE ARM. Default OFF, the same shape as OPEN_QUESTION_ARM and
- * SECTOR_CLIP_ARM, and read at module load so a measurement cannot drift
+ * SECTOR_NEUTRAL_ARM, and read at module load so a measurement cannot drift
  * mid-run.
  *
  * "on" changes exactly one thing a founder can see: the opening form gains the
