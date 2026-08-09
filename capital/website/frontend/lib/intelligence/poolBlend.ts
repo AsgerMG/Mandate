@@ -176,15 +176,23 @@ export const BLEND_WEIGHTS: Record<string, number> = {
   "encoded gate count": 0.006,
 };
 
-// The reconciliation the record-not-array shape exists for. A signal added to
-// the table above without a refit would otherwise be served at weight 0 and
-// nothing would say so; a signal renamed would silently drop out of the score
-// while every published figure kept its old name. Both fail at import.
-{
-  const signals = Object.keys(BLEND_SIGNALS).sort();
-  const weights = Object.keys(BLEND_WEIGHTS).sort();
-  const missing = signals.filter((k) => !(k in BLEND_WEIGHTS));
-  const extra = weights.filter((k) => !(k in BLEND_SIGNALS));
+/** The reconciliation the record-not-array shape exists for.
+ *
+ *  A signal added to the table above without a refit would otherwise be served
+ *  at weight 0 and nothing would say so; a signal renamed would silently drop
+ *  out of the score while every published figure kept its old name. Both fail
+ *  at import, below.
+ *
+ *  Exported and taking its two arguments rather than closing over the module's
+ *  own constants, so a test can PROVE it fails. A guard nobody has watched fail
+ *  is a comment. */
+export function reconcileBlendColumns(
+  signalNames: readonly string[], weightNames: readonly string[],
+): void {
+  const weights = new Set(weightNames);
+  const signals = new Set(signalNames);
+  const missing = signalNames.filter((k) => !weights.has(k));
+  const extra = weightNames.filter((k) => !signals.has(k));
   if (missing.length || extra.length) {
     throw new Error(
       "poolBlend: the fitted weights and the signal table disagree. " +
@@ -196,6 +204,8 @@ export const BLEND_WEIGHTS: Record<string, number> = {
       "scripts/fit_signal_blend.ts.");
   }
 }
+
+reconcileBlendColumns(Object.keys(BLEND_SIGNALS), Object.keys(BLEND_WEIGHTS));
 
 /** Whether the blended pool score orders the founder's table.
  *
@@ -220,11 +230,17 @@ export const BLEND_WEIGHTS: Record<string, number> = {
  *  on a misspelling is how a flag that never arrived gets reported as "no
  *  effect" in both arms, which is the shape of every false null in this
  *  project's history. */
-export const POOL_BLEND = ((): "off" | "on" | "pure" => {
-  const v = process.env.POOL_BLEND ?? "off";
-  if (v === "off" || v === "on" || v === "pure") return v;
-  throw new Error(`unknown POOL_BLEND=${v} (expected: off, on, pure)`);
-})();
+export type PoolBlendArm = "off" | "on" | "pure";
+
+/** Exported so a test can watch the throw happen. See `reconcileBlendColumns`:
+ *  a guard nobody has proved can fail is a comment with a `throw` in it. */
+export function parsePoolBlend(v: string | undefined): PoolBlendArm {
+  const s = v ?? "off";
+  if (s === "off" || s === "on" || s === "pure") return s;
+  throw new Error(`unknown POOL_BLEND=${s} (expected: off, on, pure)`);
+}
+
+export const POOL_BLEND: PoolBlendArm = parsePoolBlend(process.env.POOL_BLEND);
 
 /** Within-pool percentile rank, ties at the mid-rank.
  *
