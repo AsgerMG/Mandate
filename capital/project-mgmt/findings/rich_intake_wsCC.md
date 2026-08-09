@@ -322,8 +322,19 @@ RESULT_PLACEHOLDER
 ## 9. What to do, in order of measured effect
 
 **1. Encode the C1 text we already hold — 939 unencoded filter gates.**
-+10.0 points of ceiling (43.1 → 53.1), no founder cost, no fetch cost, no new
-question. This is the same shape as the region work, which is the one thing in
+**Up to** +10.0 points of ceiling (43.1 → 53.1), no founder cost, no fetch cost,
+no new question.
+
+*Why "up to", stated rather than buried.* The 43.1% arm keys on the
+`value_spec` a comparator actually emits; the 53.1% arm keys on the demand
+class. Those differ in **granularity as well as in coverage**, and a real
+comparator collapses distinct sentences onto one spec — wsCB measured that
+collapse at **0.31 across all fields**, and at 0.04 on `lossesOverHalfCapital`,
+0.07 on `consortium`, 0.11 on `fteBand`. So +10.0 is an upper bound and the
+realistic figure is materially lower; `_wscb_realistic.ts` is the harness that
+simulates the encoder with its own output and should be the number quoted to
+the owner, not this one. This is the same trap as 85.5%, one level down, and it
+is flagged here so it is not re-inflated later. This is the same shape as the region work, which is the one thing in
 this project's history that moved a ceiling. It is wsCB's brief and this
 workstream confirms it is the largest single lever.
 
