@@ -32,6 +32,34 @@
 // those there is nothing for a judge to read, and scoring them would grade the
 // population rather than the path.
 //
+// ── WHAT IT MEASURED, 2026-08-09 (wsCD2) ─────────────────────────────────
+// tune, n=120, seed 20260806, live Postgres, OPEN_ABSENCE_ARM=neutral:
+//
+//   K=0  30.0%   K=1  30.0% (+0.0)   K=2  30.0% (+0.0)
+//                K=3  30.0% (+0.0)   K=4  30.0% (+0.0)   K=6  30.0% (+0.0)
+//
+//   judged verdicts: meets 22, fails 213, unknown 485
+//   settled (meets|fails): 235, of which on a ONE-SIDED SPLIT: 235 — all of them
+//   pool changed 0, screen changed 0, top-5 reordered 0
+//   120 model calls, EUR 1.685, EUR 0.0140 per brief
+//
+// THE CURVE HAS NO KNEE BECAUSE IT HAS NO RISE, and the reason is structural
+// rather than a weakness of the simulated answer. `_wscd2_reach.ts` computes,
+// with no model call, the share of rows the scorer CAN move under the most
+// favourable verdict assignment that exists: 0.0% at K=1 and K=2, 4.2% at
+// K=3, 45.0% at K=6. A question is selected precisely because it SPLITS a
+// regime, and the selector takes one question per regime, so the founder's
+// answer lands on the demanding side and the other side has no judgement at
+// all; `known.length < 2` and `hi === lo` then leave the group alone. 235 of
+// 235 settled verdicts landed exactly there.
+//
+// The 213 confident `fails` are the reason NOT to reach for OPEN_ABSENCE_ARM
+// =pass to unblock this. Under "pass" every one of them would demote the fund
+// that carries the requirement and promote the sibling whose rules have
+// simply never been encoded — a promotion granted for an absence, on prose
+// the founder never wrote as an answer to that question. That is the shape of
+// the harm that hid Innovate UK, at 213 occurrences per 120 briefs.
+//
 //   cd website/frontend
 //   npx tsx scripts/measure_open_questions.ts                 # tune, N=120
 //   SPLIT=holdout N=200 npx tsx scripts/measure_open_questions.ts
