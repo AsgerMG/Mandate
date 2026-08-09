@@ -104,7 +104,8 @@ import { computeVerdict } from "../lib/intelligence/pipeline";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
   answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
-  partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
+  partitionByOfferable, reattributeMissingAnswers, REGIME_AT_5_NOT_COMPARABLE,
+  type AnswerMode,
 } from "./recallSet";
 
 async function main() {
@@ -392,6 +393,14 @@ async function main() {
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);
+  // The caveat travels WITH the number, on the same screen, because that is the
+  // only place it can be read at the moment somebody copies the figure. A
+  // REGIME@5 measured under Doors and one measured under Composed are answers
+  // to different questions -- see `REGIME_AT_5_NOT_COMPARABLE` in recallSet.ts.
+  // The per-regime-size breakdown below is the same fact in numbers: `regime 1
+  // (alone)` reads exact5 == regime5 exactly, because a standalone fund is its
+  // own regime and there is no sibling credit to be had.
+  console.log(`    ^ ${REGIME_AT_5_NOT_COMPARABLE}`);
   console.log(`  same CHANNEL in top 5    ${pc(stat.chan5)}`);
   const line = (label: string, m: { n: number; pool: number; e5: number; r5: number }) =>
     console.log(`    ${label.padEnd(26)} n=${String(m.n).padStart(4)}  pool ${(100*m.pool/m.n).toFixed(0)}%` +
