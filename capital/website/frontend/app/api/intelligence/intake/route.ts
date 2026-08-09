@@ -3,6 +3,7 @@ import { hydrateDbInstruments, hydrateGatesFor } from "@/lib/intelligence/corpus
 import {
   distinctFamilyCount,
   openFieldsForShortlist,
+  openQuestionsForShortlist,
   stakesByFund,
   openProjectGatesForShortlist,
 } from "@/lib/intelligence/gateReach";
@@ -97,6 +98,10 @@ export async function POST(request: NextRequest) {
     // shortlist's own requirement text. Budget is 8-10 total, so the generic
     // side is capped tighter than the old 8 to make room.
     const genericFields = openFields.slice(0, GENERIC_QUESTION_CAP);
+    // wsCD: the requirements no comparator can decide, ranked by how much
+    // answering would separate THIS founder's siblings and capped by the arm's
+    // own budget. Empty with the arm off, which is the shipped state.
+    const openQuestions = openQuestionsForShortlist(candidateIds, eligibility);
     const projectGates = openProjectGatesForShortlist(candidateIds, eligibility, {
       deprioritiseFields: genericFields.map((f) => f.field),
       limit: PROJECT_QUESTION_CAP,
@@ -125,7 +130,7 @@ export async function POST(request: NextRequest) {
         // What each of those funds still turns on, so a question can be chosen
         // because it decides between them rather than because a field has
         // high coverage.
-        stakesByFund(candidateIds, eligibility)),
+        stakesByFund(candidateIds, eligibility), openQuestions),
       body.wantProfileSignal ? inferProfileSignal(req) : Promise.resolve(null),
     ]);
 
