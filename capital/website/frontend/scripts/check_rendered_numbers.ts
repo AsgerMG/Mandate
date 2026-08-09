@@ -9,54 +9,66 @@
 //              to this check by construction, because a literal is the only
 //              thing it can see.
 //   ATTRIBUTED a literal about the world outside the corpus, carrying a source
-//              on the spot: a `<Src n={…} />` citation, or a provenance line
-//              (`external:` / `corpus:`) in the comment immediately above it.
+//              on the spot: a `<Src n={…} />` footnote in the same element, a
+//              `url:` in the same object, or a provenance comment attached to
+//              the node (`external:` / `corpus:` / `contract:`).
 //
-// Anything else fails. That is the whole rule, and it is a PROPERTY, not a
-// register: this file contains no list of known-bad numbers and no allowlist of
-// known-good ones. A figure written tomorrow is covered the day it is typed.
+// Anything else fails. It is a PROPERTY, not a register: there is no list of
+// known-bad numbers here and no allowlist of known-good ones.
 //
-// ── Why it is not "compare against a list of the right numbers" ────────────
-// A list would have to be maintained, and the thing being maintained is exactly
-// the thing that drifted. The defect this exists for was eight literals — the
-// worst of them "146,911 companies", five thousand out of date and rendered on
-// the same screen as the live footer figure that contradicted it. A guard
-// holding the right value for each of those eight would have needed updating on
-// the same schedule as the bug.
+// ── The blind spot this version closes ─────────────────────────────────────
+// The first version was green while the sentence it existed to protect was
+// unguarded. Replacing `{prose.awardWindow}` on /about-public-capital with a
+// hardcoded "2021 to 2025" exited 0; so did replacing `{prose.nationalAwardPct}%`
+// with "91%". The patterns were fine — the same literals in a nearby caption
+// were caught. The EXTRACTOR was wrong: it found JSX text with
+// `>([^<>{}]{4,})<`, so any sentence interrupted by an expression was bounded
+// by `}` or `{` and was dropped whole. Interpolation is what a derived figure
+// looks like, so the detector was blindest exactly where the numbers live.
 //
-// ── What counts as a quantity, and what counts as visitor-facing ───────────
-// Both are tests, not enumerations:
+// A second, larger hole sat beside it: attribution cleared any literal within
+// eight lines of a footnote. On /about-public-capital that was 188 of 581
+// lines. Both are fixed in `scripts/lib/renderedNumbers.ts` — the extractor now
+// asks the TypeScript parser what JSX text is, and attribution is scoped to the
+// element, object or comment it belongs to rather than to a span of lines.
 //
-//   VISITOR-FACING  a JSX text run (between `>` and `<`, with no expression in
-//                   it), or a string literal that reads as English prose — four
-//                   or more purely alphabetic word tokens. The second clause is
-//                   what catches `"Matching names against 146,911 companies…"`,
-//                   which was a string in an array, not JSX.
+// ── COVERAGE: the measurement that makes the verdict mean something ────────
+// A guard that cannot see part of the site is decorative there, and nothing
+// said so. So every run now measures, per module, how many lines of visitor
+// text the detector REACHED against how many an independent line-at-a-time
+// measure says EXIST (`proseBearingLines`, which shares no code with the
+// extractor — that is the point of it).
 //
-//   QUANTITY        a thousands-separated integer, a bare integer of four
-//                   digits or more, a euro amount, a percentage, a year range,
-//                   or an English quantity word ("a third", "three quarters",
-//                   "two dozen") standing within a few words of a noun the
-//                   corpus counts. The noun set is DERIVED from the committed
-//                   artifacts' own keys and labels, plus the reader-facing
-//                   plurals of what those keys count.
+// The number is printed every run. The enforcement is not the number, because
+// a threshold is a thing people lower: it is that NO MISSED LINE MAY CONTAIN A
+// QUANTITY. A coverage gap on a line of code is harmless; a coverage gap on a
+// line with a figure on it is the bug this file exists for, and there the
+// requirement is total.
 //
 // ── Hermetic, and it cannot pass by having nothing to read ─────────────────
-// It reads TypeScript source and two committed JSON artifacts. It opens no
-// database, needs no credentials, and touches nothing gitignored — the failure
-// mode where a check's input is absent and it exits 0 having measured nothing
-// is the one that deleted 141 correct filters last week. Five assertions below
-// (`assertNotVacuous`) fail the check outright if the walk found no pages, too
-// few files, too little text, or no quantities at all anywhere.
+// TypeScript source plus two COMMITTED artifacts. No database, no credentials,
+// nothing gitignored. Six assertions fail it outright if the walk found no
+// pages, too few modules, too little text, no quantities anywhere, a collapsed
+// vocabulary, or collapsed coverage.
 //
 // ── It proves itself on every run ──────────────────────────────────────────
-// `selfTest()` runs the detector over two synthetic paragraphs — one carrying a
-// bare corpus figure, one carrying the same figure with a citation — and fails
-// the check if the first is not flagged or the second is. A guard that has
-// never been seen red is not a guard; this one is seen red, on purpose, every
-// time it runs.
+// `selfTest()` runs the detector over synthetic modules — including one built
+// as the exact interpolated-paragraph shape that defeated the last version —
+// and fails the check before it judges the site if any of them come out wrong.
 import { readFileSync, existsSync } from "fs";
 import path from "path";
+import ts from "typescript";
+import {
+  parse,
+  visitorTextRuns,
+  quantitiesIn,
+  isAttributed,
+  lineOfMatch,
+  coverageOf,
+  proseBearingLines,
+  NUMERIC_PATTERNS,
+  type TextRun,
+} from "./lib/renderedNumbers";
 
 const CWD = process.cwd();
 const APP = path.join(CWD, "app");
@@ -77,50 +89,7 @@ const ARTIFACTS = [
   "public/data/investor_insights.json",
 ];
 
-// ── Reading source without reading comments ──────────────────────────────────
-
-/** Blank out comments and JSX-attribute regions IN PLACE, preserving every
- *  offset so a match index still maps to a line in the original file.
- *
- *  Comments are blanked because this file's own prose is full of the numbers it
- *  forbids, and so is every module it reads: `corpusProse.ts` documents "146,911"
- *  as the defect it fixed. A guard that could not tell a comment from a claim
- *  would have made the fix unshippable. */
-function blankComments(src: string): string {
-  const out = src.split("");
-  let i = 0;
-  let inStr: string | null = null;
-  while (i < src.length) {
-    const c = src[i];
-    const n = src[i + 1];
-    if (inStr) {
-      if (c === "\\") { i += 2; continue; }
-      if (c === inStr) inStr = null;
-      i++;
-      continue;
-    }
-    if (c === '"' || c === "'" || c === "`") { inStr = c; i++; continue; }
-    if (c === "/" && n === "/") {
-      while (i < src.length && src[i] !== "\n") { out[i] = " "; i++; }
-      continue;
-    }
-    if (c === "/" && n === "*") {
-      while (i < src.length && !(src[i] === "*" && src[i + 1] === "/")) {
-        if (src[i] !== "\n") out[i] = " ";
-        i++;
-      }
-      out[i] = " "; out[i + 1] = " ";
-      i += 2;
-      continue;
-    }
-    i++;
-  }
-  return out.join("");
-}
-
-const lineOf = (src: string, index: number) => src.slice(0, index).split("\n").length;
-
-// ── The import walk: which files can a visitor's eyes reach ──────────────────
+// ── Which modules a visitor's eyes can reach ─────────────────────────────────
 
 function resolveImport(spec: string, from: string): string | null {
   let base: string;
@@ -133,15 +102,18 @@ function resolveImport(spec: string, from: string): string | null {
   return existsSync(base) && base.endsWith(".tsx") ? base : null;
 }
 
-/** Does this module put text on a screen? Property, not a directory rule: a
- *  module that returns JSX renders; a rules/prompt module does not, and its
- *  strings reach a founder only through a model, where a literal is not a
- *  claim this check can adjudicate. */
-function rendersJsx(src: string): boolean {
-  return /return\s*\(?\s*</.test(src) || /=>\s*\(?\s*</.test(src) || /<[A-Za-z][\w.]*[\s/>]/.test(src);
-}
-
-function reachableRenderingFiles(): string[] {
+/**
+ * Every local module reachable from the three pages.
+ *
+ * EVERY one, with no "does this render?" filter. The previous version had one,
+ * a regex that also matched `Record<string, number>` — so it included
+ * `corpusFigures.ts` by accident and would have excluded it by design, and
+ * neither outcome was reasoned about. A prose string can reach a screen from
+ * anywhere (the statutory thresholds a founder reads on /brief live in
+ * `types.ts`, which contains no JSX at all), so the honest scope is the whole
+ * reachable graph. A module with no visitor text simply yields no runs.
+ */
+function reachableModules(): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
   const queue = ENTRY_POINTS.map((p) => path.join(CWD, p));
@@ -149,26 +121,25 @@ function reachableRenderingFiles(): string[] {
     const file = queue.shift()!;
     if (seen.has(file) || !existsSync(file)) continue;
     seen.add(file);
+    out.push(file);
     const src = readFileSync(file, "utf8");
-    if (rendersJsx(src)) out.push(file);
-    const blanked = blankComments(src);
-    for (const m of blanked.matchAll(/from\s+["']([^"']+)["']/g)) {
+    for (const m of src.matchAll(/from\s+["']([^"']+)["']/g)) {
       const r = resolveImport(m[1], file);
       if (r && !/\.test\.tsx?$/.test(r)) queue.push(r);
     }
   }
-  return out;
+  return out.sort();
 }
 
 // ── The corpus's own vocabulary, derived ─────────────────────────────────────
 
 /** Reader-facing plurals of what the corpus counts.
  *
- *  These are not a register of forbidden phrases — they are the English words a
- *  sentence uses for the things `corpus_kpis.py` counts, and they exist because
- *  an artifact key is `sourceFamilies` while a founder reads "channels". The
- *  derived half (below) covers the keys themselves and every instrument label
- *  the builders publish, so a new channel is in scope the day it is loaded. */
+ *  Not a register of forbidden phrases — the English words a sentence uses for
+ *  the things `corpus_kpis.py` counts, needed because an artifact key is
+ *  `sourceFamilies` while a founder reads "channels". The derived half below
+ *  covers the keys themselves, so a new figure is in scope the day it is
+ *  published. */
 const READER_NOUNS = [
   "award", "awards", "company", "companies", "event", "events", "instrument",
   "instruments", "country", "countries", "authority", "authorities", "channel",
@@ -180,17 +151,14 @@ const READER_NOUNS = [
 function corpusNouns(): Set<string> {
   const nouns = new Set(READER_NOUNS);
   for (const rel of ARTIFACTS) {
-    const p = path.join(CWD, rel);
-    const raw = readFileSync(p, "utf8");
+    const raw = readFileSync(path.join(CWD, rel), "utf8");
     if (raw.trim().length === 0) throw new Error(`${rel} is empty`);
     const collect = (o: unknown): void => {
       if (Array.isArray(o)) { o.forEach(collect); return; }
       if (o && typeof o === "object") {
         for (const [k, v] of Object.entries(o)) {
-          // camelCase and snake_case keys, split into words.
-          // KEYS only, four letters or more. An earlier version also harvested
-          // string VALUES, which put "the" in the noun set and made every
-          // "half of the …" a magnitude claim about the corpus.
+          // KEYS only, four letters or more. Harvesting string VALUES put "the"
+          // in the noun set and made every "half of the …" a corpus claim.
           for (const w of k.replace(/([a-z])([A-Z])/g, "$1 $2").split(/[\s_]+/)) {
             if (w.length >= 4) nouns.add(w.toLowerCase());
           }
@@ -203,26 +171,7 @@ function corpusNouns(): Set<string> {
   return nouns;
 }
 
-// ── What a quantity looks like ───────────────────────────────────────────────
-
-/** Magnitudes only a corpus reaches, money, shares, and windows. */
-const NUMERIC_PATTERNS: [RegExp, string][] = [
-  [/\d{1,3}(?:,\d{3})+/g, "a thousands-separated count"],
-  
-  [/(?<![\w.])\d{4,}(?![\w.])/g, "an integer of four digits or more"],
-  [/(?:€|EUR)\s?\d[\d.,]*\s?(?:bn|m|k|B|M|K|billion|million)?/gi, "a euro amount"],
-  [/\d+(?:\.\d+)?\s?%/g, "a percentage"],
-  [/(?:19|20)\d{2}\s*(?:to|–|—|-)\s*(?:19|20)\d{2}/g, "a year range"],
-];
-
-/** English quantity words. A closed class in the language, not a list of this
- *  site's numbers: any of them standing next to a noun the corpus counts is a
- *  magnitude claim about the corpus written out in letters. "three quarters of
- *  the awards" is the same assertion as "72% of the awards". */
-const QUANTITY_WORDS =
-  /\b(?:a |one |two |three |four |several |half a |)?(?:half|thirds?|quarters?|fifths?|dozens?|handful|majority|minority)\b/gi;
-
-const NEAR_WORDS = 6;
+// ── Scanning ─────────────────────────────────────────────────────────────────
 
 interface Finding {
   file: string;
@@ -232,178 +181,183 @@ interface Finding {
   why: string;
 }
 
-/** Does the source carry attribution for the literal on this line?
- *
- *  Two forms, both meaning "this number came from outside the corpus and here
- *  is where": a `<Src n={…} />` footnote within the same paragraph, or a
- *  provenance line in the comment block above (`external:` for the world,
- *  `corpus:` for a figure verified by query and deliberately frozen). */
-function isAttributed(rawLines: string[], line: number): boolean {
-  const from = Math.max(0, line - 8);
-  const to = Math.min(rawLines.length, line + 4);
-  const window = rawLines.slice(from, to).join("\n");
-  return /<Src\s+n=\{/.test(window)
-      // A cited source list: the URL sitting beside the figure names where it
-      // came from as surely as a footnote marker does.
-      || /\burl\s*:\s*["']https?:/.test(window)
-      // An explicit provenance line. Three words, because a figure has three
-      // honest origins: the corpus (verified by query, deliberately frozen),
-      // the world outside it (a publication, a regulation), or a contract this
-      // repo itself defines (the vocabulary, the ticket bands).
-      || /\b(external|corpus|contract)\s*:/i.test(window);
-}
-
-/** Is this string literal English prose a visitor reads, rather than a class
- *  name, a URL, a SQL fragment or an id? Four or more purely alphabetic word
- *  tokens is the test — Tailwind strings never have them, sentences always do. */
-function readsAsProse(s: string): boolean {
-  const words = s.split(/\s+/).filter((w) => /^[A-Za-z][A-Za-z']*$/.test(w));
-  return words.length >= 4;
-}
-
-/** Every stretch of text a visitor can read in this source, with its line. */
-function visitorText(src: string): { text: string; line: number }[] {
-  const blanked = blankComments(src);
-  const out: { text: string; line: number }[] = [];
-  // JSX text runs: between > and <, containing no expression and no markup.
-  for (const m of blanked.matchAll(/>([^<>{}]{4,})</g)) {
-    if (/\S/.test(m[1])) out.push({ text: m[1], line: lineOf(src, m.index!) });
-  }
-  // Prose held in string and template literals (the /brief chatter lived here).
-  for (const m of blanked.matchAll(/"([^"\\\n]{8,})"|'([^'\\\n]{8,})'|`([^`\\\n]{8,}?)`/g)) {
-    const body = m[1] ?? m[2] ?? m[3];
-    if (body && readsAsProse(body)) out.push({ text: body, line: lineOf(src, m.index!) });
-  }
-  return out;
-}
-
-function scanFile(file: string, nouns: Set<string>): Finding[] {
-  const src = readFileSync(file, "utf8");
-  const rawLines = src.split("\n");
+function scan(file: string, src: string, sf: ts.SourceFile, nouns: Set<string>) {
   const rel = path.relative(CWD, file);
   const findings: Finding[] = [];
+  const runs: TextRun[] = visitorTextRuns(sf);
+  let quantities = 0;
   const seen = new Set<string>();
 
-  for (const { text, line } of visitorText(src)) {
-    const hits: [string, string][] = [];
-    for (const [re, why] of NUMERIC_PATTERNS) {
-      for (const m of text.matchAll(re)) hits.push([m[0], why]);
-    }
-    for (const m of text.matchAll(QUANTITY_WORDS)) {
-      // Only a magnitude claim if it stands near something the corpus counts.
-      const after = text.slice(m.index! + m[0].length).split(/\s+/).slice(0, NEAR_WORDS);
-      const before = text.slice(0, m.index!).split(/\s+/).slice(-NEAR_WORDS);
-      const near = [...before, ...after].map((w) => w.toLowerCase().replace(/[^a-z]/g, ""));
-      if (near.some((w) => w.length >= 4 && nouns.has(w))) {
-        hits.push([m[0].trim(), "a quantity word beside something the corpus counts"]);
-      }
-    }
-    for (const [quantity, why] of hits) {
-      if (isAttributed(rawLines, line)) continue;
-      const key = `${rel}:${line}:${quantity}`;
+  for (const run of runs) {
+    for (const hit of quantitiesIn(run.text, nouns)) {
+      quantities += 1;
+      if (isAttributed(sf, run.node)) continue;
+      const line = lineOfMatch(sf, run, hit.at);
+      const key = `${rel}:${line}:${hit.quantity}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      findings.push({ file: rel, line, text: text.trim().replace(/\s+/g, " ").slice(0, 120), quantity, why });
+      findings.push({
+        file: rel,
+        line,
+        quantity: hit.quantity,
+        why: hit.why,
+        text: run.text.trim().replace(/\s+/g, " ").slice(0, 130),
+      });
     }
   }
-  return findings;
+  return { findings, runs: runs.length, quantities };
 }
 
 // ── Proving the detector works, on every run ─────────────────────────────────
 
-const SELFTEST_BAD = `
-export function Bad() {
+/** The shape that defeated the previous version: a sentence shattered by two
+ *  components and three `{" "}` separators, with a bare corpus figure in the
+ *  middle of it. If this comes back clean, the extractor has regressed to a
+ *  state in which the site scan below means nothing. */
+const FIXTURE_INTERPOLATED = `
+export function P({ corpus }: { corpus: C }) {
   return (
     <p>
-      We assembled 146,911 companies across those channels, 2020 to 2025, and roughly
-      three quarters of the awards stay national.
+      This manual is built on the funding record itself:{" "}
+      <CountUp value={Number(corpus.events)} className="tabular-nums" />{" "}
+      public awards to{" "}
+      <CountUp value={Number(corpus.companies)} className="tabular-nums" />{" "}
+      companies and organisations, 2021 to 2025. It answers four questions.
     </p>
   );
 }`;
 
-const SELFTEST_GOOD = `
-export function Good() {
+/** The same paragraph done right — every figure an expression. Nothing here
+ *  may be flagged, or the check punishes the fix. */
+const FIXTURE_DERIVED = `
+export function P({ corpus, prose }: { corpus: C; prose: Q }) {
   return (
     <p>
-      We assembled {n.toLocaleString()} companies across those channels, and the EU budget
-      for 2028 to 2034 allocates EUR 234bn<Src n={3} /> to the Competitiveness Fund.
+      This manual is built on the funding record itself:{" "}
+      <CountUp value={Number(corpus.events)} className="tabular-nums" />{" "}
+      public awards to{" "}
+      <CountUp value={Number(corpus.companies)} className="tabular-nums" />{" "}
+      companies and organisations, {prose.awardWindow}. It answers four questions.
     </p>
+  );
+}`;
+
+/** A cited figure inside one paragraph, and a bare one in the NEXT paragraph.
+ *  The footnote must clear the first and must not reach the second — that
+ *  second assertion is the whole of the line-window bug. */
+const FIXTURE_ATTRIBUTION = `
+export function P() {
+  return (
+    <div>
+      <p>
+        The EU budget for 2028 to 2034 allocates EUR 234bn<Src n={3} /> to the fund.
+      </p>
+      <p>
+        We assembled 146,911 companies across those channels.
+      </p>
+    </div>
   );
 }`;
 
 function selfTest(nouns: Set<string>): string[] {
   const problems: string[] = [];
-  const scan = (src: string) => {
-    const tmp = path.join(CWD, ".selftest.tsx");
-    // No file is written: scanFile reads, so inline the same pipeline instead.
-    const rawLines = src.split("\n");
+
+  const flagged = (name: string, src: string) => {
+    const sf = parse(name, src);
     const out: string[] = [];
-    for (const { text, line } of visitorText(src)) {
-      for (const [re] of NUMERIC_PATTERNS) {
-        for (const m of text.matchAll(re)) if (!isAttributed(rawLines, line)) out.push(m[0]);
-      }
-      for (const m of text.matchAll(QUANTITY_WORDS)) {
-        const after = text.slice(m.index! + m[0].length).split(/\s+/).slice(0, NEAR_WORDS);
-        const before = text.slice(0, m.index!).split(/\s+/).slice(-NEAR_WORDS);
-        const near = [...before, ...after].map((w) => w.toLowerCase().replace(/[^a-z]/g, ""));
-        if (near.some((w) => w.length >= 4 && nouns.has(w)) && !isAttributed(rawLines, line)) {
-          out.push(m[0].trim());
-        }
+    for (const run of visitorTextRuns(sf)) {
+      for (const hit of quantitiesIn(run.text, nouns)) {
+        if (!isAttributed(sf, run.node)) out.push(hit.quantity);
       }
     }
-    void tmp;
     return out;
   };
 
-  const bad = scan(SELFTEST_BAD);
-  if (!bad.some((q) => q.includes("146,911"))) {
-    problems.push("the detector did not flag a bare corpus count in prose");
-  }
-  if (!bad.some((q) => /2020\s*to\s*2025/.test(q))) {
-    problems.push("the detector did not flag a hardcoded corpus year window");
-  }
-  if (!bad.some((q) => /quarters?/i.test(q))) {
-    problems.push("the detector did not flag a quantity word beside a corpus noun");
+  const bad = flagged("fixture-interpolated.tsx", FIXTURE_INTERPOLATED);
+  if (!bad.some((q) => /2021\s*to\s*2025/.test(q))) {
+    problems.push(
+      "the detector did not flag a hardcoded corpus year window inside an " +
+      "INTERPOLATED paragraph — this is the exact blind spot this version fixes, " +
+      "so the site scan below would be worthless");
   }
 
-  const good = scan(SELFTEST_GOOD);
+  const good = flagged("fixture-derived.tsx", FIXTURE_DERIVED);
   if (good.length) {
+    problems.push(`the detector flagged a derived figure: ${good.join(", ")}`);
+  }
+
+  const attr = flagged("fixture-attribution.tsx", FIXTURE_ATTRIBUTION);
+  if (attr.some((q) => /234/.test(q))) {
+    problems.push("a footnoted figure was flagged; <Src> is not clearing its own element");
+  }
+  if (!attr.some((q) => q === "146,911")) {
     problems.push(
-      `the detector flagged an attributed or derived figure: ${good.join(", ")}`);
+      "a bare corpus count in the paragraph AFTER a footnote was cleared. " +
+      "Attribution is leaking outside the element it belongs to — the line-window " +
+      "bug that made a third of /about-public-capital unguarded");
+  }
+
+  // Coverage must be complete on a paragraph that is nothing but visitor text.
+  const cov = coverageOf("fixture-interpolated.tsx", FIXTURE_INTERPOLATED,
+                         parse("fixture-interpolated.tsx", FIXTURE_INTERPOLATED));
+  if (cov.expected < 1) {
+    problems.push("the coverage ground truth found no visitor text in a paragraph of it");
+  }
+  if (cov.missed.length) {
+    problems.push(
+      `the extractor missed ${cov.missed.length} line(s) of a paragraph that is ` +
+      `entirely visitor text (lines ${cov.missed.join(", ")})`);
   }
   return problems;
 }
 
 // ── Refusing to pass vacuously ───────────────────────────────────────────────
 
-function assertNotVacuous(files: string[], texts: number, quantities: number, nouns: Set<string>) {
+function fail(msg: string): never {
+  console.error(`check_rendered_numbers: FAILED\n\n  ${msg}\n`);
+  process.exit(1);
+}
+
+function assertNotVacuous(o: {
+  files: number; runs: number; quantities: number; nouns: number;
+  expected: number; reached: number;
+}) {
   const missing = ENTRY_POINTS.filter((p) => !existsSync(path.join(CWD, p)));
   if (missing.length) {
     fail(`the site's pages are not where this check looks: ${missing.join(", ")} missing. ` +
          `Run from website/frontend. A check that cannot find the site passes it.`);
   }
   if (!existsSync(APP)) fail(`no app/ directory under ${CWD}`);
-  if (files.length < 10) {
-    fail(`the import walk reached only ${files.length} rendering module(s). The three ` +
-         `pages mount more than that; the walk is broken, and a broken walk exits 0.`);
+  if (o.files < 15) {
+    fail(`the import walk reached only ${o.files} module(s). The three pages mount ` +
+         `more than that; the walk is broken, and a broken walk exits 0.`);
   }
-  if (texts < 200) {
-    fail(`only ${texts} stretches of visitor text were extracted from ${files.length} ` +
+  if (o.runs < 200) {
+    fail(`only ${o.runs} stretches of visitor text were extracted from ${o.files} ` +
          `modules. The extractor is not reading the pages.`);
   }
-  if (quantities < 1) {
-    fail(`the detector found no quantity of any kind, attributed or not, anywhere on the ` +
-         `site. The site states figures on every page; the patterns are broken.`);
+  if (o.quantities < 1) {
+    fail(`the detector found no quantity of any kind, attributed or not, anywhere on ` +
+         `the site. The site states figures on every page; the patterns are broken.`);
   }
-  if (nouns.size < 50) {
-    fail(`the corpus vocabulary derived from ${ARTIFACTS.join(", ")} has only ${nouns.size} ` +
-         `words. The artifacts did not load.`);
+  if (o.nouns < 50) {
+    fail(`the corpus vocabulary derived from ${ARTIFACTS.join(", ")} has only ` +
+         `${o.nouns} words. The artifacts did not load.`);
   }
-}
-
-function fail(msg: string): never {
-  console.error(`check_rendered_numbers: FAILED\n\n  ${msg}\n`);
-  process.exit(1);
+  if (o.expected < 200) {
+    fail(`the coverage ground truth found only ${o.expected} line(s) of visitor text ` +
+         `across the whole site. It is not measuring anything, so the coverage figure ` +
+         `below would be a number with no denominator.`);
+  }
+  // A coarse net under the precise rule. The ENFORCEMENT is "no missed line
+  // carries a quantity"; this catches an extractor that has collapsed
+  // wholesale, where that rule might pass by finding nothing at all.
+  const pct = (100 * o.reached) / o.expected;
+  if (pct < 90) {
+    fail(`the detector reaches only ${pct.toFixed(1)}% of the site's visitor text ` +
+         `(${o.reached} of ${o.expected} lines). It saw 98% when this was written. ` +
+         `Something has stopped being read; find it rather than lowering this.`);
+  }
 }
 
 // ── Run ──────────────────────────────────────────────────────────────────────
@@ -424,21 +378,53 @@ function main() {
          `nothing:\n    - ${selfProblems.join("\n    - ")}`);
   }
 
-  const files = reachableRenderingFiles();
-  let texts = 0;
-  let quantitiesSeen = 0;
+  const files = reachableModules();
   const findings: Finding[] = [];
-  for (const f of files) {
-    const src = readFileSync(f, "utf8");
-    const runs = visitorText(src);
-    texts += runs.length;
-    for (const { text } of runs) {
-      for (const [re] of NUMERIC_PATTERNS) quantitiesSeen += [...text.matchAll(re)].length;
+  const blind: { file: string; line: number; text: string }[] = [];
+  let runs = 0, quantities = 0, expected = 0, reached = 0;
+  const perModule: { rel: string; expected: number; reached: number }[] = [];
+
+  for (const file of files) {
+    const src = readFileSync(file, "utf8");
+    const sf = parse(file, src);
+    const s = scan(file, src, sf, nouns);
+    findings.push(...s.findings);
+    runs += s.runs;
+    quantities += s.quantities;
+
+    const cov = coverageOf(file, src, sf);
+    expected += cov.expected;
+    reached += cov.reached;
+    const rel = path.relative(CWD, file);
+    perModule.push({ rel, expected: cov.expected, reached: cov.reached });
+
+    // The rule that matters: a line of visitor text the extractor did not read
+    // is only a problem where a number could hide — and there it is total.
+    const lines = src.split("\n");
+    for (const l of cov.missed) {
+      const text = lines[l - 1] ?? "";
+      if (NUMERIC_PATTERNS.some(([re]) => new RegExp(re.source, re.flags).test(text))) {
+        blind.push({ file: rel, line: l, text: text.trim().slice(0, 120) });
+      }
     }
-    findings.push(...scanFile(f, nouns));
   }
 
-  assertNotVacuous(files, texts, quantitiesSeen, nouns);
+  assertNotVacuous({ files: files.length, runs, quantities, nouns: nouns.size, expected, reached });
+
+  const pct = (100 * reached) / expected;
+
+  if (blind.length) {
+    console.error(`check_rendered_numbers: FAILED\n`);
+    console.error(
+      `  ${blind.length} line(s) carry a figure that the detector cannot read.\n` +
+      `  These are BLIND SPOTS, not violations: the guard would pass a hardcoded\n` +
+      `  number written here, which is how "2021 to 2025" survived on\n` +
+      `  /about-public-capital while every check was green.\n`);
+    for (const b of blind) console.error(`    ${b.file}:${b.line}\n      ${b.text}`);
+    console.error(
+      `\n  Fix the EXTRACTOR (scripts/lib/renderedNumbers.ts), not the line.\n`);
+    process.exit(1);
+  }
 
   if (findings.length) {
     console.error(`check_rendered_numbers: FAILED\n`);
@@ -455,17 +441,31 @@ function main() {
       `    IT IS A CORPUS FIGURE   derive it. lib/corpusProse.ts holds the prose\n` +
       `                            quantities; lib/data.corpusStats() holds the KPIs.\n` +
       `                            A "use client" module takes it as a prop.\n` +
-      `    IT IS NOT              attribute it. Add a <Src n={…} /> footnote, or a\n` +
-      `                            provenance line (external: … / corpus: …) in the\n` +
-      `                            comment above it, naming where the figure is from.\n`);
+      `    IT IS NOT              attribute it. Add a <Src n={…} /> footnote in the\n` +
+      `                            same element, a url: in the same object, or a\n` +
+      `                            provenance comment (external: / corpus: /\n` +
+      `                            contract: …) attached to the node.\n`);
     process.exit(1);
   }
 
+  if (process.argv.includes("--coverage")) {
+    for (const m of perModule.sort((a, b) => a.rel.localeCompare(b.rel))) {
+      const p = m.expected ? (100 * m.reached) / m.expected : 100;
+      console.log(`  ${String(m.reached).padStart(4)}/${String(m.expected).padEnd(4)} ` +
+                  `${p.toFixed(0).padStart(3)}%  ${m.rel}`);
+    }
+  }
+
   console.log(
-    `check_rendered_numbers: ok — ${quantitiesSeen} quantity(ies) across ${texts} stretches ` +
-    `of visitor text in ${files.length} rendering modules, and every one of them is either ` +
-    `derived from the corpus or attributed to a source outside it. ` +
-    `(self-test passed: the detector flags a bare corpus figure and clears a cited one.)`);
+    `check_rendered_numbers: ok — ${quantities} quantity(ies) across ${runs} stretches ` +
+    `of visitor text in ${files.length} reachable modules, and every one is either ` +
+    `derived from the corpus or attributed to a source outside it.\n` +
+    `  coverage ${reached}/${expected} lines = ${pct.toFixed(1)}% of the site's visitor ` +
+    `text is reachable by the detector; no unreached line carries a figure. ` +
+    `(--coverage for the per-module table.)\n` +
+    `  self-test passed: it flags a bare figure inside an interpolated paragraph, ` +
+    `clears the derived one, and does not let a footnote clear the next paragraph.`);
 }
 
+void proseBearingLines;
 main();
