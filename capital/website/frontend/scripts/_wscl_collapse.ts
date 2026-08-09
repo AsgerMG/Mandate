@@ -64,6 +64,7 @@ import {
   catalogueKey, classify, groupEditions, type Inst, type Kind,
   livenessFacts, loadCorpus, pct, THETAS,
 } from "./_wscl_recurrence";
+import { loadSourcePages, pageGroups } from "./_wscl_sourcepage";
 
 interface Pair { want: string; hit: boolean; pool?: [string, string, string][] }
 
@@ -117,6 +118,7 @@ async function main() {
   await db.connect();
   const rows = await loadCorpus(db);
   const byId = new Map(rows.map((r) => [r.id, r]));
+  const urlOf = await loadSourcePages(db);
 
   const family = new Map<string, Inst[]>();
   for (const r of rows) {
@@ -217,6 +219,32 @@ async function main() {
         `${band[0]}..${band[band.length - 1]} (median ${band[Math.floor(band.length / 2)]})` +
         `   MARGIN over placebo median ${(((credited - band[Math.floor(band.length / 2)]) / pairs.length) * 100).toFixed(1)} pts`);
     }
+    // ── The register's own identity test, and the conjunction ─────────────
+    // The name test is a judgement about prose; the PAGE test is the register
+    // saying two rows are one object. Neither is safe alone — the page test's
+    // largest group is a gazette index and its survivors still include a
+    // Vinnova form endpoint shared by five unrelated programmes — so the line
+    // that matters is the CONJUNCTION: two independent representations of
+    // identity agreeing. A conjunction is the conservative direction for a
+    // collapse and it is the only one where a wrong group needs two independent
+    // mistakes.
+    const pg = pageGroups(rows, urlOf);
+    const pageKey = (id: string) => pg.groupOf.get(id) ?? id;
+    line("register's PAGE alone (index-guarded, NOT safe on its own)",
+      exactAt5(pairs, pageKey).hit, pairs.length, base);
+    for (const theta of [0.5, 0.7]) {
+      const gr = groupEditions(rows, theta);
+      const both = new Map<string, string>();
+      for (const r of rows) {
+        const a = gr.groupOf.get(r.id) ?? r.id, b = pageKey(r.id);
+        both.set(r.id, `${a}&&${b}`);
+      }
+      const sizes = new Map<string, number>();
+      for (const v of both.values()) sizes.set(v, (sizes.get(v) ?? 0) + 1);
+      const collapsed = [...sizes.values()].filter((n) => n > 1).reduce((a, n) => a + n, 0);
+      line(`CONJUNCTION page AND name(theta ${theta.toFixed(2)}) — ${collapsed} rows collapsed`,
+        exactAt5(pairs, (id) => both.get(id) ?? id).hit, pairs.length, base);
+    }
     // wsCJ's over-credit line, reproduced as the ceiling of ANY catalogue collapse.
     const nsKey = (id: string) => {
       const r = byId.get(id);
@@ -313,6 +341,57 @@ async function main() {
     console.log(`  founders shown >=1 UNVERIFIED-WINDOW row           ${withUnverified}/${pairs.length} (${pct(withUnverified, pairs.length)})` +
       `   slots ${unverifiedSlots}/${slots} (${pct(unverifiedSlots, slots)})`);
   }
+
+  // ── §5 WHAT SEPARATES TWO SIMULTANEOUSLY-OPEN CALLS FROM ONE BODY ───────
+  console.log("\n" + "=".repeat(78));
+  console.log("5  WHAT SEPARATES TWO LIVE CALLS FROM THE SAME BODY: TOPIC, OR THE WINDOW?");
+  console.log("=".repeat(78));
+  console.log("Taken over every pair of LIVE rows inside one catalogue (same regime, same");
+  console.log("body). `same subject` is the conjunction of §2 — the register cites one page");
+  console.log("AND the names agree — so a pair called one programme here has two independent");
+  console.log("reasons to be.\n");
+  const { rows: appRows } = await db.query<{ instrument_id: string; timeline: string | null }>(
+    `SELECT instrument_id, timeline FROM instrument_application`);
+  const timeline = new Map<string, string | null>();
+  for (const a of appRows) if (a.timeline) timeline.set(a.instrument_id, a.timeline);
+
+  const pgFinal = pageGroups(rows, urlOf);
+  const grFinal = groupEditions(rows, 0.5);
+  const live = rows.filter((r) => !isClosed(livenessFacts(r)));
+  const byCat = new Map<string, Inst[]>();
+  for (const r of live) { const k = catalogueKey(r); (byCat.get(k) ?? byCat.set(k, []).get(k)!).push(r); }
+  let pairsTot = 0, sameSubject = 0, diffSubject = 0;
+  let sameSubjWindowBoth = 0, sameSubjWindowNeither = 0, sameSubjTimeline = 0;
+  const catalogues = [...byCat.entries()].filter(([, v]) => v.length > 1);
+  for (const [, members] of catalogues) {
+    for (let i = 0; i < members.length; i++) {
+      for (let j = i + 1; j < members.length; j++) {
+        const a = members[i], b = members[j];
+        pairsTot++;
+        const same = (pgFinal.groupOf.get(a.id) === pgFinal.groupOf.get(b.id))
+          && (grFinal.groupOf.get(a.id) === grFinal.groupOf.get(b.id));
+        if (!same) { diffSubject++; continue; }
+        sameSubject++;
+        const wa = Boolean(a.scheme_end_date), wb = Boolean(b.scheme_end_date);
+        if (wa && wb) sameSubjWindowBoth++;
+        else if (!wa && !wb) sameSubjWindowNeither++;
+        if (timeline.has(a.id) && timeline.has(b.id)) sameSubjTimeline++;
+      }
+    }
+  }
+  console.log(`catalogues holding more than one LIVE row      ${catalogues.length}`);
+  console.log(`pairs of live rows inside one catalogue        ${pairsTot}`);
+  console.log(`  separated by SUBJECT (two genuine doors)     ${diffSubject}  ${pct(diffSubject, pairsTot)}`);
+  console.log(`  SAME SUBJECT — one programme, twice          ${sameSubject}  ${pct(sameSubject, pairsTot)}`);
+  console.log(`     ... and BOTH carry a declared window, so the window separates them` +
+    `   ${sameSubjWindowBoth}  ${pct(sameSubjWindowBoth, sameSubject)}`);
+  console.log(`     ... and NEITHER carries one, so NOTHING WE HOLD separates them` +
+    `        ${sameSubjWindowNeither}  ${pct(sameSubjWindowNeither, sameSubject)}`);
+  console.log(`     ... and both carry an application timeline in instrument_application` +
+    `  ${sameSubjTimeline}  ${pct(sameSubjTimeline, sameSubject)}`);
+  console.log(`\ncoverage of the window field over the whole live corpus:` +
+    ` ${live.filter((r) => r.scheme_end_date).length}/${live.length} rows carry a date,` +
+    ` ${timeline.size} rows in the corpus carry an application timeline.`);
 
   await db.end();
 }
