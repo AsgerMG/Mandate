@@ -101,6 +101,7 @@ import {
   requireLiveCorpus, resetGateHydration, __forceSuppressedForParity,
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { doorKey } from "../lib/intelligence/rowIdentity";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
   answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
@@ -238,7 +239,28 @@ async function main() {
       `graded against the ${set.length}-row population the live register defines`);
   }
 
-  const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, done: 0 };
+  const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, door5: 0, doorable: 0, done: 0 };
+  // ── DOOR@5: the metric for "a row is a scheme VIA A BODY" ─────────────────
+  //
+  // EXACT@5 asks whether the exact leaf is on the page. REGIME@5 asks only
+  // whether SOMETHING from the right programme is, which is why it reads 87%
+  // and means little to a founder facing 76 siblings. DOOR@5 sits between them,
+  // and unlike REGIME@5 it is a claim a founder can act on: the page shows this
+  // scheme, reached through the body that granted the money.
+  //
+  // Credit is NEVER free. `doorKey` returns the leaf's own id whenever the
+  // register does not support naming a body, so a pair whose won fund has no
+  // nameable body scores DOOR@5 exactly when it scores EXACT@5. `doorable`
+  // counts the pairs on which the two questions can differ at all -- without it
+  // a reader cannot tell a real gain from a shift in the denominator.
+  const doorOf = (id: string) => {
+    const i = byId.get(id);
+    return i ? doorKey(i.id, (i as any).parentId ?? null, i as any) : `leaf::${id}`;
+  };
+  // Where the gain lands, by regime. A body-level row that buys three points
+  // out of one programme is fitted to that programme, and this is the line that
+  // says so before anyone quotes the headline.
+  const doorGainByRegime = new Map<string, number>();
   const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
   // The set a row came from, reported separately, because a change can move
   // one population and not the other and the headline hides that. The
@@ -342,12 +364,20 @@ async function main() {
     const e5 = top5.includes(t.instrument);
     const r5 = top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime);
     const c5 = top5.some((id) => byId.get(id)?.sourceFamilyBucket === want?.sourceFamilyBucket);
+    const wantDoor = doorOf(t.instrument);
+    const doorable = wantDoor.startsWith("door::");
+    const d5 = top5.some((id) => doorOf(id) === wantDoor);
 
     stat.done++;
     if (inPool) stat.pool++;
     if (e5) stat.exact5++;
     if (r5) stat.regime5++;
     if (c5) stat.chan5++;
+    if (doorable) stat.doorable++;
+    if (d5) stat.door5++;
+    if (d5 && !e5) {
+      doorGainByRegime.set(wantRegime, (doorGainByRegime.get(wantRegime) ?? 0) + 1);
+    }
     const m = byMode.get(t.mode) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
     m.n++; if (inPool) m.pool++; if (e5) m.e5++; if (r5) m.r5++;
     byMode.set(t.mode, m);
@@ -401,6 +431,20 @@ async function main() {
   // (alone)` reads exact5 == regime5 exactly, because a standalone fund is its
   // own regime and there is no sibling credit to be had.
   console.log(`    ^ ${REGIME_AT_5_NOT_COMPARABLE}`);
+  console.log(`  same DOOR in top 5       ${pc(stat.door5)}   <- scheme VIA the granting body`);
+  console.log(`    of which could differ from EXACT at all: ${stat.doorable}/${stat.done}` +
+    ` (${(100 * stat.doorable / stat.done).toFixed(0)}% of pairs have a nameable body);` +
+    ` DOOR - EXACT = ${stat.door5 - stat.exact5} pairs`);
+  {
+    // Concentration, printed WITH the gain and never separately. A gain of n
+    // points is a different fact depending on whether it came from twenty
+    // programmes or from one, and only this line can tell them apart.
+    const gains = [...doorGainByRegime.entries()].sort((a, b) => b[1] - a[1]);
+    const total = gains.reduce((a, [, n]) => a + n, 0);
+    const topShare = total ? (100 * (gains[0]?.[1] ?? 0) / total).toFixed(0) : "0";
+    console.log(`    gain concentration: ${total} pair(s) across ${gains.length} regime(s),` +
+      ` largest ${topShare}% -- ${gains.slice(0, 5).map(([k, n]) => `${k}:${n}`).join(" ") || "(none)"}`);
+  }
   console.log(`  same CHANNEL in top 5    ${pc(stat.chan5)}`);
   const line = (label: string, m: { n: number; pool: number; e5: number; r5: number }) =>
     console.log(`    ${label.padEnd(26)} n=${String(m.n).padStart(4)}  pool ${(100*m.pool/m.n).toFixed(0)}%` +
