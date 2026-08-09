@@ -56,7 +56,7 @@
 //   npx tsx scripts/dump_publishable_ids.ts /tmp/pub.json
 //   PUBLISHABLE=/tmp/pub.json npx tsx scripts/emit_open_question_class.ts
 import { readFileSync, writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, sep } from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 import { Client } from "pg";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
@@ -216,8 +216,19 @@ async function main() {
 
   // $3/MTok in, $15/MTok out at list price for the writer model.
   const cost = (inTok / 1e6) * 3 + (outTok / 1e6) * 15;
-  const path = resolve(process.cwd(), OPEN_QUESTION_CLASS_PATH);
-  writeFileSync(path, JSON.stringify({
+  // The literal filename is bound HERE, in the file that writes it, and then
+  // written. Importing the constant alone is not enough: nothing in the source
+  // would then tie this script to that file, and an artifact whose producer
+  // cannot be found from the source is one nobody inheriting the repo can
+  // rebuild. `check_artifact_reachability.py` enforces exactly that shape. The
+  // assertion below is what keeps the local literal from drifting away from
+  // the shared constant the readers use.
+  const OUT = resolve(process.cwd(), "lib", "intelligence", "openQuestionClass.generated.json");
+  if (!OUT.endsWith(OPEN_QUESTION_CLASS_PATH.replace(/\//g, sep))) {
+    throw new Error(`emit_open_question_class: writing ${OUT}, but readers load `
+      + `${OPEN_QUESTION_CLASS_PATH}. The two must be the same file.`);
+  }
+  writeFileSync(OUT, JSON.stringify({
     generatedAt: new Date().toISOString(),
     model: MODEL,
     // What the classifier was run over, so a later reader can tell a class
@@ -230,7 +241,7 @@ async function main() {
 
   console.log(`\n${JSON.stringify(counts)}`);
   console.log(`unclassified: ${entries.length - Object.keys(out).length} (failed batches: ${failed})`);
-  console.log(`-> ${path}`);
+  console.log(`-> ${OUT}`);
   console.log(`model spend: ${inTok} in / ${outTok} out tokens = $${cost.toFixed(2)}`);
 }
 
