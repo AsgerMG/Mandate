@@ -32,6 +32,7 @@ import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
+import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
@@ -1490,6 +1491,25 @@ export const LARGE_SCALE_RELEVANCE_FLOOR = 0.5;
  *  and so the flag can never become a per-founder behaviour. */
 export const SIBLING_SCOPE = process.env.SIBLING_SCOPE === "regime" ? "regime" : "channel";
 
+/** Whether a free channel slot may be offered to a channel outside
+ *  `DEFAULT_INSTRUMENTS`. See the BACKFILL block in `selectInstrumentRows`.
+ *
+ *  Same shape and same reason as `SIBLING_SCOPE` above: a flag, read once at
+ *  module scope, so the two arms cannot differ within a request and so every
+ *  number published before this stays reproducible by setting one variable.
+ *  `CHANNEL_BACKFILL=off` is the before-arm.
+ *
+ *  An unrecognised value THROWS rather than being read as "off". A silent
+ *  default on a misspelling is how a flag that never arrived gets reported as
+ *  "no effect" in both arms. */
+export const CHANNEL_BACKFILL = (() => {
+  const v = process.env.CHANNEL_BACKFILL ?? "on";
+  if (v !== "on" && v !== "off") {
+    throw new Error(`unknown CHANNEL_BACKFILL=${v} (expected: on, off)`);
+  }
+  return v;
+})();
+
 /** Inputs to the instrument table. Was seven positional parameters, which one
  *  call site rendered as a single unreadable line of bare values; the object
  *  also gives the exclusion log somewhere to live without an eighth. */
@@ -1738,26 +1758,6 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
     thematicFirst.push(hit.channel);
     codes.add(hit.channel);
   }
-  // Thematic matches lead the list. Callers slice to DISPLAY_CAP (6) before the
-  // memo ever sees the table, and a top-up appended last was being truncated
-  // away — so the channel was correctly identified and then silently dropped.
-  // Channels are ordered by how well they fit THIS founder, not by a fixed list.
-  //
-  // DEFAULT_INSTRUMENTS is a priority order -- national_dev_banks, state_aid_satr,
-  // eic, horizon_eu_pillar_ii, eit -- and rows are taken channel by channel, two
-  // per channel, against a display cap of six. The first three channels
-  // therefore consumed every row and Horizon Pillar II could never reach the
-  // table for ANY founder.
-  //
-  // Measured by replaying real recipients: across 47 cases where the right fund
-  // was in the pool but not shown, it was horizon_eu_pillar_ii in 39 of them,
-  // while Horizon appeared in 3 of 282 shown rows. Only 2 of 282 shown rows were
-  // even in the same channel as the fund the company actually won.
-  //
-  // So the remaining channels are sorted by their best leaf's score for this
-  // founder. Thematic top-ups still lead: they were identified because the
-  // founder's own words point at them, which is a stronger claim than a
-  // score comparison across channels.
   // Semantic where we have it, lexical otherwise -- the same signal the leaf
   // ranking uses, so a channel cannot be ordered by one measure and its leaves
   // by another.
@@ -1788,6 +1788,89 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
   // on every ETL run, and a country whose funding really does come from EU
   // programmes still gets EU rows because that is what its own data says.
   const prior = channelPrior(founderCountries[0], founderSector);
+  // Blended fit: the score that already decides which admitted channel outranks
+  // which, lifted out of the sort below so the backfill and the ordering cannot
+  // disagree about what "fits this founder better" means.
+  const blendedFit = (c: string) =>
+    Math.round(((1 - PRIOR_WEIGHT) * channelScore(c)
+                + PRIOR_WEIGHT * (prior[c] ?? 0)) * 1e6);
+
+  // ── BACKFILL: the cap decides which channels are considered, not the list ──
+  //
+  // The property. `MIN_CHANNELS_CONSIDERED` is a statement about how many
+  // channels a founder's pool may draw on. Until here it was not enforcing that
+  // at all: the only loop that could add a channel to fill a free slot iterated
+  // `DEFAULT_INSTRUMENTS`, five hand-picked codes. A channel outside that list
+  // could reach a founder ONLY through their peers' history, the large-ticket
+  // lane, or a thematic top-up with two slots and a similarity floor. When none
+  // of those fired, the channel was absent while slots sat empty — excluded for
+  // not being on a list rather than for fitting worse than the channel that took
+  // its place.
+  //
+  // So: any slot still free after peers, the lane, the defaults and the top-up
+  // is offered to the channels still outside the pool, ordered by the SAME
+  // blended fit that orders the pool itself. This names no channel, no country
+  // and no sector, and the test for an unseen case is direct — give the corpus a
+  // `source_family_bucket` nobody has written code for and it competes for a
+  // free slot on the next request, with no change here.
+  //
+  // Two things it deliberately does not do.
+  //
+  // A channel an explicit rule refused THIS REQUEST does not get a second
+  // chance: `SEL-LARGE-SCALE` withheld it for failing a thematic floor and
+  // `SEL-FIT-CONSORTIUM` for a structural mismatch, and a backfill that
+  // reinstated them would silently repeal both. Read off the log by STAGE, so a
+  // channel-stage rule added later is honoured without being named here.
+  //
+  // And the large-ticket channels stay shut when the lane is shut. They are
+  // surfaced by ASK, not by fit — that is the whole point of
+  // `opensLargeScaleLane` — and letting them in through a free slot would put a
+  // €15M+ vehicle in front of a founder asking for €500k, which is the exact
+  // failure the lane's relevance floor was added to stop.
+  const refusedThisRequest = new Set(
+    (log?.all() ?? [])
+      .filter((e) => EXCLUSION_RULES[e.ruleId].stage === "channel")
+      .map((e) => e.subject),
+  );
+  const laneShut = !opensLargeScaleLane(ticketBand);
+  const waiting = CHANNEL_BACKFILL === "off" ? [] : [...dbInstrumentsByBucket().keys()]
+    .filter((c) => !codes.has(c))
+    .sort((a, b) => blendedFit(b) - blendedFit(a));
+  for (const c of waiting) {
+    if (refusedThisRequest.has(c)) continue;          // its rule already reported
+    if (laneShut && LARGE_SCALE_TOPUP.includes(c)) {
+      log?.record("SEL-CHANNEL-NOT-SELECTED", c,
+        "large-ticket channel, and the founder's ask does not open the large-scale lane");
+      continue;
+    }
+    if (codes.size >= MIN_CHANNELS_CONSIDERED) {
+      log?.record("SEL-CHANNEL-CAP", c,
+        `channel pool already at its cap of ${MIN_CHANNELS_CONSIDERED}`);
+      continue;
+    }
+    codes.add(c);
+  }
+
+  // Thematic matches lead the list. Callers slice to DISPLAY_CAP (6) before the
+  // memo ever sees the table, and a top-up appended last was being truncated
+  // away — so the channel was correctly identified and then silently dropped.
+  // Channels are ordered by how well they fit THIS founder, not by a fixed list.
+  //
+  // DEFAULT_INSTRUMENTS is a priority order -- national_dev_banks, state_aid_satr,
+  // eic, horizon_eu_pillar_ii, eit -- and rows are taken channel by channel, two
+  // per channel, against a display cap of six. The first three channels
+  // therefore consumed every row and Horizon Pillar II could never reach the
+  // table for ANY founder.
+  //
+  // Measured by replaying real recipients: across 47 cases where the right fund
+  // was in the pool but not shown, it was horizon_eu_pillar_ii in 39 of them,
+  // while Horizon appeared in 3 of 282 shown rows. Only 2 of 282 shown rows were
+  // even in the same channel as the fund the company actually won.
+  //
+  // So the remaining channels are sorted by their best leaf's score for this
+  // founder. Thematic top-ups still lead: they were identified because the
+  // founder's own words point at them, which is a stronger claim than a
+  // score comparison across channels.
   const rest = [...codes].filter((c) => !thematicFirst.includes(c));
   rest.sort((a, b) => {
     // Rounded, for the reason given on the row sort: the offline path reads
@@ -1795,11 +1878,9 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
     // between the two stores.
     // Thematic fit BLENDED with the prior. Neither alone: fit alone is what
     // inverted the table, and the prior alone would hand every founder the same
-    // channels regardless of what they build.
-    const sc = (x: string) =>
-      Math.round(((1 - PRIOR_WEIGHT) * channelScore(x)
-                  + PRIOR_WEIGHT * (prior[x] ?? 0)) * 1e6);
-    const d = sc(b) - sc(a);
+    // channels regardless of what they build. `blendedFit` is that expression,
+    // named once above so the backfill selects on the same measure this orders on.
+    const d = blendedFit(b) - blendedFit(a);
     if (d !== 0) return d;
     // Stable fallback: the hand-ordered default list, so a founder whose
     // description says nothing thematic sees exactly what they saw before.
