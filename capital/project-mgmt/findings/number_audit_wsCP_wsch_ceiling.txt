@@ -1,0 +1,16 @@
+publishable 895; multi-leaf regimes 36; leaves 605; filter gates 3595
+
+arm                                              mean   alone   CEIL@5   gain  regimes  top share
+nothing asked                                   50.50    0.0%     7.6%  -32.4        0          -
+TODAY: the six fields that already rank         26.19   18.2%    40.0%   +0.0        0          -
+TODAY + size-only demand (the wsCA reading)     24.71   21.0%    44.6%   +4.6        7        29%
+TODAY + ORGANISATION TYPE                       20.17   27.4%    51.7%  +11.7       12        15%
+every mapped field's comparator (43.1 arm)      19.14   27.8%    51.7%  +11.7       11        25%
+every mapped field + ORGANISATION TYPE          16.33   35.0%    57.9%  +17.9       13        21%
+
+RESIDUAL SIBLING CLASS (how many funds a founder is still choosing between)
+  TODAY: the six fields that already rank      mean 26.19   <=1 18%   <=3 31%   <=5 40%
+  TODAY + ORGANISATION TYPE                    mean 20.17   <=1 27%   <=3 46%   <=5 52%
+
+regimes whose siblings demand DIFFERENT organisation types: 28 of 36 (497 leaves)
+publishable instruments carrying an organisation-type demand: 417 of 895 (47%)
