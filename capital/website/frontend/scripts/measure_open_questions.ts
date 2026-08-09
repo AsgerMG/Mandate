@@ -41,11 +41,26 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 requireCredentials("measure_open_questions", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
-// The arm must be ON for the whole process, and it is read at module load, so
-// it is set BEFORE the first import of anything that reads it. A harness that
-// imported first and set second would measure the shipped ranker and say it
-// had measured the new one.
-process.env.OPEN_QUESTION_ARM = "on";
+// The arm must be ON for the whole process, and it is read at module load.
+//
+// THIS CANNOT BE SET FROM INSIDE THE SCRIPT. ESM `import` statements are
+// hoisted and evaluated before any statement in the module body, so an
+// assignment here runs AFTER `openQuestions.ts` has already read the variable
+// and latched "off" -- and the harness then measures the shipped ranker while
+// reporting that it measured the new one. It did exactly that on its first
+// run, and reported +0.0 at every budget with a straight face.
+//
+// So the arm is required from the environment and the run refuses without it.
+// A measurement that can silently grade the wrong system is worse than no
+// measurement.
+if (process.env.OPEN_QUESTION_ARM !== "on") {
+  console.error(
+    "measure_open_questions: run with OPEN_QUESTION_ARM=on.\n"
+    + "  The arm is read at module load and cannot be set from inside this "
+    + "file: ESM imports are hoisted, so the modules under test would already "
+    + "have latched 'off' and every budget would read +0.0.");
+  process.exit(1);
+}
 
 import {
   hydrateDbInstruments, hydrateGatesFor, loadDbInstruments, publishableInstruments,
