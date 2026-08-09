@@ -27,7 +27,7 @@ requireCredentials("trace_pool", ["DATABASE_URL", "VOYAGE_KEY"]);
 async function main() {
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
   const P = await import("../lib/intelligence/shortlist");
-  const { WRITER_CANDIDATE_CAP } = await import("../lib/intelligence/pipeline");
+  const { WRITER_CANDIDATE_CAP } = await import("../lib/intelligence/memoCandidates");
   const { BRIEF_LIMITS } = await import("../lib/intelligence/briefChecks");
   const { assessAll } = await import("../lib/intelligence/verdict");
   const { semanticFundMatch } = await import("../lib/intelligence/semantic");
