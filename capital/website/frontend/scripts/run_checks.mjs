@@ -58,6 +58,10 @@ const CHECKS = [
   ["leaf cap headroom", ["npx", "tsx", "scripts/check_leaf_cap.ts"]],
   ["missing-data neutral", ["npx", "tsx", "scripts/check_missing_data_neutral.ts"]],
   ["capital reach", ["npx", "tsx", "scripts/check_capital_reach.ts"]],
+  // Hermetic: the corpus snapshot is committed, so this runs everywhere and
+  // cannot pass by having nothing to read. It sits among the cheap checks
+  // rather than beside the corpus-reading ones for exactly that reason.
+  ["a filter can admit someone", ["npx", "tsx", "scripts/check_comparator_admits.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
   // Hermetic, sub-second, and it reads the same answer key the recall floor
   // grades on. It sits HERE rather than beside the floor because it is the
