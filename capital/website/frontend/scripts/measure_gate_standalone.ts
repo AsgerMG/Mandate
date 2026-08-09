@@ -52,7 +52,12 @@
 //   ANSWERS=real FIT=checked npx tsx scripts/measure_gate_standalone.ts
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
-requireCredentials("measure_gate_standalone", ["DATABASE_URL"]);
+// VOYAGE_KEY belongs here beside DATABASE_URL because this harness calls
+// computeVerdict(), and computeVerdict() awaits semanticFundMatch() before it
+// ranks anything (lib/intelligence/pipeline.ts). Without the key that call
+// returns an empty map and the ordering this file measures gate signal against
+// is the lexical one — a different ranker, reported in the same numbers.
+requireCredentials("measure_gate_standalone", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   hydrateDbInstruments, hydrateGatesFor, loadDbInstruments, publishableInstruments,

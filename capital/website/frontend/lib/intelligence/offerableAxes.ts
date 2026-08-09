@@ -56,8 +56,7 @@
 // Declaring a gap therefore costs something — it is counted, printed and
 // capped — while declaring a withhold does not, which is the right way round.
 import type { DbInstrument } from "./corpus";
-import { instrumentServesCapital } from "./shortlist";
-import { instrumentServesCountry } from "./shortlist";
+import { instrumentServesCapital, instrumentServesCountry } from "./capitalPreference";
 import { CAPITAL_OPTIONS } from "./types";
 
 export type UnofferablePolicy =
