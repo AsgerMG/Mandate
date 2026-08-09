@@ -1282,6 +1282,13 @@ export interface ProjectQuestion {
   /** Verbatim requirement text the question was phrased from. */
   quote: string;
   locator?: string;
+  /** wsCD: this question has no fixed answer set and is answered in the
+   *  founder's own words. The interface renders a text box instead of options,
+   *  and `options` is empty by construction. */
+  openText?: boolean;
+  /** wsCD: the judgement key (normalised requirement text) the answer will be
+   *  read against. Present only on open questions. */
+  openKey?: string;
 }
 
 /** A founder's answer to one ProjectQuestion. Writer context and ease-scoring
@@ -1290,6 +1297,12 @@ export interface ProjectQuestion {
  *  round 2 rather than from a fund's requirement text. The split matters at
  *  read time: these answers may shape positioning and never eligibility. */
 export const COMMERCIAL_ANSWER_PREFIX = "commercial::";
+
+/** questionId prefix marking an answer as prose written against a requirement
+ *  no comparator can decide (wsCD). Like the commercial prefix, the split
+ *  matters at read time: these are judged by a model and may only ever reorder
+ *  siblings, never decide a legal eligibility verdict. */
+export const OPEN_ANSWER_PREFIX = "open::";
 
 export interface ProjectAnswer {
   questionId: string;
@@ -1300,6 +1313,9 @@ export interface ProjectAnswer {
   gateKey: string;
   quote: string;
   locator?: string;
+  /** wsCD: set on prose answers, so the judge knows which verbatim
+   *  requirement to read this against without re-deriving it from the text. */
+  openKey?: string;
 }
 
 /** One themed adaptive round — Phase 3C generates exactly one at a time,

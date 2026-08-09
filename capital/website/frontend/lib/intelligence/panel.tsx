@@ -421,7 +421,12 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     for (const q of round?.projectQuestions ?? []) {
       const choice = projectPicks[q.id];
       const free = projectFreeText[q.id]?.trim();
-      const answer = choice === NONE_OF_THESE ? (free || NONE_OF_THESE) : (choice || free);
+      // An open question has no options, so its answer is only ever the prose
+      // box. Reading `choice` for one would produce an empty answer and drop
+      // it silently, which is the whole class of defect wsBL catalogued.
+      const answer = q.openText
+        ? free
+        : choice === NONE_OF_THESE ? (free || NONE_OF_THESE) : (choice || free);
       if (!answer) continue;
       picked.push({
         questionId: q.id,
@@ -432,6 +437,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         gateKey: q.gateKey,
         quote: q.quote,
         locator: q.locator,
+        openKey: q.openKey,
       });
     }
     const allProjectAnswers = [...projectAnswers, ...picked];
@@ -1003,6 +1009,19 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                           {q.instrumentName} requires: &ldquo;{q.quote}&rdquo;
                         </p>
                         )}
+                        {q.openText ? (
+                          // No options by construction: this requirement has
+                          // no fixed answer set and never will, because the
+                          // answer is a description of the project. Two or
+                          // three sentences, judged against the quote above.
+                          <textarea
+                            value={projectFreeText[q.id] ?? ""}
+                            onChange={(e) => setProjectFreeText((prev) => ({ ...prev, [q.id]: e.target.value }))}
+                            rows={3}
+                            placeholder="Two or three sentences, in your own words."
+                            className={inputCls + " mt-1 resize-y"}
+                          />
+                        ) : (
                         <div className="flex flex-wrap gap-2">
                           {opts.map((o) => {
                             const on = picked === o;
@@ -1021,7 +1040,8 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                             );
                           })}
                         </div>
-                        {picked === NONE_OF_THESE && (
+                        )}
+                        {!q.openText && picked === NONE_OF_THESE && (
                           <input
                             value={projectFreeText[q.id] ?? ""}
                             onChange={(e) => setProjectFreeText((prev) => ({ ...prev, [q.id]: e.target.value }))}

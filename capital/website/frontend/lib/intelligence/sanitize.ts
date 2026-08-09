@@ -261,6 +261,11 @@ export function sanitizeProjectAnswers(raw: unknown): import("./types").ProjectA
       gateKey: pickString(b.gateKey, 120) ?? "",
       quote: pickString(b.quote, 600) ?? "",
       locator: pickString(b.locator, 160),
+      // wsCD. A prose answer names the requirement it will be judged against.
+      // Whitelisted like every other string, and it can only ever be looked
+      // UP in the corpus's own set of judgeable keys -- a client that invents
+      // one matches nothing and changes nothing.
+      openKey: pickString(b.openKey, 140),
     }];
   }).slice(0, 12);
   return out.length ? out : undefined;

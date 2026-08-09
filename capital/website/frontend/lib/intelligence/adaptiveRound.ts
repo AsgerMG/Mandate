@@ -15,13 +15,13 @@ import { loadAgentInstructions } from "./corpus";
 import { recordUsage } from "./cost";
 import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
-import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
+import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS, OPEN_ANSWER_PREFIX, type EligibilityAnswers } from "./types";
 import { knownFacts } from "./knownFacts";
 import type {
   EligibilityCheck, InstrumentRow,
   IntelligenceRequest, ProfileSignal, ProjectQuestion,
 } from "./types";
-import type { FundStake, OpenFieldEvidence, ProjectGateEvidence } from "./gateReach";
+import type { FundStake, OpenFieldEvidence, OpenQuestionCandidate, ProjectGateEvidence } from "./gateReach";
 
 const client = new Anthropic();
 
@@ -191,11 +191,16 @@ export async function planAdaptiveScreen(
    *  lets a question be chosen the way an analyst chooses one: because its
    *  answer sends this founder to a different fund. */
   stakes: FundStake[] = [],
+  /** wsCD. Requirements that are fuzzy BY NATURE — no fixed answer set exists
+   *  for them and none ever will, because the answer is a description of the
+   *  project. Already budgeted and ranked by `openQuestionsForShortlist`;
+   *  empty with the arm off. */
+  openQuestions: OpenQuestionCandidate[] = [],
 ): Promise<PlannedScreen | null> {
   const facts = knownFacts(req, req.eligibility,
     "## What the founder has ALREADY told us. Never ask any of this again.");
   const enumFields = openFields.filter((f) => FIELD_ENUM_HINTS[f.field]);
-  if (!enumFields.length && !projectGates.length && !req.description) return null;
+  if (!enumFields.length && !projectGates.length && !openQuestions.length && !req.description) return null;
 
   const candidateBlock = candidates.slice(0, 8)
     .map((c) => `  - ${c.name} (${c.country}, ${c.supportType})`).join("\n");
@@ -228,7 +233,7 @@ export async function planAdaptiveScreen(
           properties: {
             // Which pool this question came from, so the caller can rebuild it
             // with the right grounding without guessing.
-            source: { type: "string", enum: ["field", "gate", "commercial"] },
+            source: { type: "string", enum: ["field", "gate", "commercial", "open"] },
             /** field name, gate key, or commercial topic */
             ref: { type: "string" },
             /** For source "gate" and "commercial" only: the whole question. */
@@ -273,6 +278,13 @@ export async function planAdaptiveScreen(
     `    Requirement, verbatim: "${g.requirement}"`).join("\n\n");
 
   const commercialBlock = COMMERCIAL_TOPICS.map((t) => `  ref "${t}"`).join("\n");
+
+  // Pool D. The ref is the JUDGEMENT key, not a gate id: two funds quoting the
+  // same framework sentence are one demand and must produce one question.
+  const openBlock = openQuestions.map((o) =>
+    `  ref "open::${o.key}" (${o.instrumentName}, splits ${o.carriers} of ` +
+    `${o.regimeSize} sibling funds)\n` +
+    `    Requirement, verbatim: "${o.requirement}"`).join("\n\n");
 
   try {
     const res = billed(await client.messages.create({
@@ -330,6 +342,21 @@ export async function planAdaptiveScreen(
           `award would buy. You write both question and options. Ask about ` +
           `THIS company in the founder's words, never about the category in ` +
           `general.\n${commercialBlock}\n\n` +
+          (openBlock
+            ? `## Pool D: requirements with NO fixed answer set (source "open")\n` +
+              `These state a condition whose satisfaction is a judgement about ` +
+              `what this company's project actually IS or DOES, measured ` +
+              `against a standard the text states but never quantifies. No ` +
+              `list of options can hold the answer, so you write the QUESTION ` +
+              `ONLY and leave "options" empty: the founder answers in a ` +
+              `sentence or two of their own prose, and a reader judges those ` +
+              `words against the requirement.\n` +
+              `Ask for the SUBSTANCE the requirement turns on, in the ` +
+              `founder's own vocabulary, never for the requirement's own words ` +
+              `back. A question that works here is one a founder could answer ` +
+              `about their own project without having read anything.\n` +
+              `${openBlock}\n\n`
+            : "") +
           `## How to choose\n` +
           `- Aim to USE the full six when six sharp questions exist, and stop ` +
           `early only when they genuinely do not. Cutting to two is not ` +
@@ -385,7 +412,14 @@ export async function planAdaptiveScreen(
           `which of them applies; if they are yes and no, ask something ` +
           `answerable yes or no.\n` +
           `- For source "gate" and "commercial": write the whole question and ` +
-          `3-5 options, leaving each option's "value" empty.\n\n` +
+          `3-5 options, leaving each option's "value" empty.\n` +
+          `- For source "open": write the whole question and return an EMPTY ` +
+          `options array. Copy the ref exactly. Ask one thing, answerable in ` +
+          `two or three sentences from memory. When Pool D is not empty you ` +
+          `MUST include at least one and at most two of them: these are the ` +
+          `only questions on the screen that can resolve a requirement no ` +
+          `checkbox will ever settle, and a screen without one leaves that ` +
+          `fund's biggest condition untested.\n\n` +
           `Return ONLY the JSON object for the schema.`,
       }],
     }), INTAKE_MODEL);
@@ -402,6 +436,7 @@ export async function planAdaptiveScreen(
     }>(text);
 
     const gateByKey = new Map(projectGates.map((g) => [`${g.instrumentId}::${g.gateKey}`, g]));
+    const openByRef = new Map(openQuestions.map((o) => [`${OPEN_ANSWER_PREFIX}${o.key}`, o]));
     const seenRefs = new Set<string>();
     const fields: { field: string; question: string; stake?: string; options?: { value: string; label: string }[] }[] = [];
     const written: ProjectQuestion[] = [];
@@ -412,7 +447,17 @@ export async function planAdaptiveScreen(
       if (!hasBody || seenRefs.has(q.ref)) continue;
       // The cap is enforced HERE, not asked for in the prompt: a budget a
       // model may round up is not a budget.
-      if (fields.length + written.length >= SCREEN_QUESTION_CAP) break;
+      //
+      // The same argument the other way for Pool D. Asked to spend "no more
+      // than two" slots on open questions, the model spent ZERO on a live
+      // screen that had three good candidates in front of it -- it prefers a
+      // question it can write options for, every time. A floor a model may
+      // round DOWN is not a floor either, so one slot is RESERVED whenever
+      // open candidates exist: a non-open question may not take the last seat
+      // while an open one is still waiting for it.
+      const reserved = openQuestions.length && !written.some((w) => w.openText) ? 1 : 0;
+      const seats = SCREEN_QUESTION_CAP - (q.source === "open" ? 0 : reserved);
+      if (fields.length + written.length >= seats) continue;
       const options = (q.options ?? [])
         .map((o) => deDash(String(o?.label ?? "").trim()))
         .filter(Boolean)
@@ -461,6 +506,21 @@ export async function planAdaptiveScreen(
           stake: deDash((q.stake ?? "").trim()) || undefined, options,
           instrumentId: g.instrumentId, instrumentName: g.instrumentName,
           gateKey: g.gateKey, quote: g.requirement, locator: g.locator,
+        });
+      } else if (q.source === "open" && openByRef.has(q.ref)) {
+        // No option floor. An open question has no options by construction,
+        // and requiring two here is exactly what would silently drop every one
+        // of them. The grounding is unchanged: instrument, gate key and
+        // verbatim quote all ride along, so the citation the founder reads and
+        // the sentence the judge reads are the same sentence.
+        const o = openByRef.get(q.ref)!;
+        seenRefs.add(q.ref);
+        written.push({
+          id: q.ref, question: deDash(q.question.trim()),
+          stake: deDash((q.stake ?? "").trim()) || undefined, options: [],
+          instrumentId: o.instrumentId, instrumentName: o.instrumentName,
+          gateKey: o.gateKey, quote: o.requirement, locator: o.locator,
+          openText: true, openKey: o.key,
         });
       } else if (q.source === "commercial" && options.length >= 2) {
         seenRefs.add(q.ref);

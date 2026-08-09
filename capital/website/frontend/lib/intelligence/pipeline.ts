@@ -58,6 +58,8 @@ import {
   tableInputFromAnswers,
   VERDICT_POOL,
 } from "./shortlist";
+import type { OpenJudgement } from "./openQuestions";
+import { judgeOpenAnswers } from "./openJudge";
 import {
   BORROWER_MODELS,
   COMMERCIAL_ANSWER_PREFIX,
@@ -1383,6 +1385,11 @@ export async function computeVerdict(
   eligibility: EligibilityAnswers | undefined,
   opts: {
     targetMarkets?: string[]; capitalSought?: string[]; description?: string;
+    /** Verdicts a model already reached about the founder's own prose, read
+     *  against requirements no comparator can decide (wsCD). ALREADY DECIDED:
+     *  this path stays model-free and zero-cost, exactly as before. Absent,
+     *  empty, or arm-off all leave the ranking bit-identical. */
+    openJudgements?: OpenJudgement[];
     /** Optional funnel recorder. The fast path is model-free but not
      *  exclusion-free: most of what never reaches a founder is removed here. */
     log?: ExclusionLog;
@@ -1430,6 +1437,7 @@ export async function computeVerdict(
     // there, the two copies drifted and the memo lost `founderSector` and
     // `useOfFunds`. See tableInputFromAnswers.
     ...tableInputFromAnswers(eligibility),
+    openJudgements: opts.openJudgements,
     log,
   });
   // Phase two of hydration, on the FAST path too. computeVerdict is
@@ -1522,12 +1530,29 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     ...records.flatMap((r) => (r.matched ? r.channels : [])),
     ...dbPeers.flatMap((r) => r.channels),
   ]);
+  // wsCD. The founder's prose answers to requirements no comparator can
+  // decide, read against the verbatim text they were written from. One model
+  // call, billed through recordUsage like every other. Returns [] with the arm
+  // off, on any failure, and when nothing was answered in prose -- and an
+  // empty list leaves the ranking bit-identical, so this cannot be the reason
+  // a memo differs from the screen the founder just saw.
+  const openJudgements = await judgeOpenAnswers(
+    (req.projectAnswers ?? [])
+      .filter((a) => a.openKey && a.quote && a.answer)
+      .map((a) => ({
+        key: a.openKey!,
+        requirement: a.quote,
+        answer: { key: a.openKey!, question: a.question, answer: a.answer },
+      })),
+    req.description,
+  );
   const hydratedTable = await buildInstrumentTableHydrated({
     fieldChannels,
     founderCountries: founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
     capitalSought: req.capitalSought ?? [],
     description: req.description,
     semantic: semanticScores,
+    openJudgements,
     // The memo ranks the same siblings the fast path does, so it must see the
     // same answers. It did not: this literal was maintained by hand alongside
     // the one in computeVerdict and had lost `founderSector` and `useOfFunds`,

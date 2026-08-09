@@ -67,6 +67,11 @@ const COST: Record<string, string> = {
   "channelPrior.generated.json":
     "channel composition is unweighted, which is the EU-over-national bias this "
     + "prior exists to correct",
+  "openQuestionClass.generated.json":
+    "no requirement is known to be fuzzy rather than merely unencoded, so the "
+    + "open-question path asks nothing and stage 2 falls back to enum-answered "
+    + "fields only — which is the shipped behaviour, so this one degrades to a "
+    + "correct product rather than a wrong one",
 };
 
 /**

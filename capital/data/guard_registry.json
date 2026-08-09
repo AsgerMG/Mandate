@@ -359,6 +359,13 @@
       ],
       "reason": "lib/intelligence/semantic.ts is imported from a \"use client\" boundary and loads this with a deliberate `require(\"fs\")`, because a top-level `import \"fs\"` would pull node built-ins into the client bundle (see check_client_boundary.ts). generatedArtifact.ts imports fs at the top level and so cannot be used there without moving the problem. The silence itself is NOT waived: that catch names the file, the cwd and what is lost, exactly as the loader does, and check_corpus_currency.ts fails on an empty cache.",
       "review": "2026-10-31"
+    },
+    "openQuestionClass.generated.json": {
+      "waives": [
+        "regeneration"
+      ],
+      "reason": "Rebuilding it costs real model spend (1,146 sentences, USD 0.86 on claude-sonnet-5), and the arm it feeds -- OPEN_QUESTION_ARM -- is default OFF, so today it changes nothing a founder sees. Putting it on `make refresh` would bill every corpus refresh for a signal nobody is reading yet. It is not unwatched: check_open_question_class.ts ratchets how many in-scope requirements have no judgement, so drift against the corpus turns the build red rather than going quiet. Wire it into the rebuild path in the same change that turns the arm on, and delete this entry then.",
+      "review": "2026-11-09"
     }
   }
 }
