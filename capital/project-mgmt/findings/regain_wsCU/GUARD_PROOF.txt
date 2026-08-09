@@ -1,0 +1,37 @@
+=== wsCU: proving the founder attestation in fit_signal_blend can FAIL ===
+
+--- (a) a PRE-wsCU dump, carrying no founder line at all: must be REFUSED ---
+    throw new Error(
+          ^
+
+Error: /tmp/pf_hold_nofounder.json carries no founder attestation. It was produced before measure_signal_power.ts replayed founders through `founderIntake`, so it describes `"TestCo"` with a pinned capitalSought and `usedInField` false on every row — including the SHIPPED column this script pairs against. Re-cut it: FEATURES_OUT=... npx tsx scripts/measure_signal_power.ts
+    at requireFounder (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCU-regain/website/frontend/scripts/fit_signal_blend.ts:97:11)
+    at main (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCU-regain/website/frontend/scripts/fit_signal_blend.ts:203:23)
+    at z (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCU-regain/website/frontend/scripts/fit_signal_blend.ts:348:1)
+    at Object.<anonymous> (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCU-regain/website/frontend/scripts/fit_signal_blend.ts:348:6)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object.transformer (/Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-CeSc3Ioe.cjs:9:3619)
+
+--- (b) two dumps that replayed DIFFERENT founders: must be REFUSED ---
+    throw new Error(
+          ^
+
+Error: the two dumps replayed different founders:
+  /tmp/pf_tune.json: identity=real own-history=withheld capital=withheld answers=off consortium=yes
+  /tmp/pf_hold_mismatch.json: identity=anonymous own-history=withheld capital=pinned answers=off consortium=yes
+Weights fitted on one intake and reported on another describe a different population from the number.
+    at main (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCU-regain/website/frontend/scripts/fit_signal_blend.ts:205:11)
+    at z (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCU-regain/website/frontend/scripts/fit_signal_blend.ts:348:1)
+
+--- (c) both dumps anonymous: LEGAL, but must shout ---
+founder     identity=anonymous own-history=withheld capital=pinned answers=off consortium=yes
+  ██ identity=anonymous — the founder matches nothing, so `usedInField`, TIER 1 of the SHIPPED row sort this blend is paired against, is false on every row. The delta below flatters the blend. Not a headline.
+
+--- (d) the real pair, clean: must be ACCEPTED and say who ---
+tune dump   ranker: all 30 request(s) on EMBEDDING
+holdout dump ranker: all 30 request(s) on EMBEDDING
+founder     identity=real own-history=withheld capital=withheld answers=off consortium=yes
+  McNemar on the 1 discordant pairs: z = 1.0  (|z| > 1.96 is outside its own noise)
+
+--- (e) and the pre-existing split guard still fires (control) ---
+Error: TUNE and HOLDOUT are both split=tune. The blend must be fitted on one split and reported on the other; that is what the split is for.

@@ -1,0 +1,39 @@
+tune dump   ranker: all 1154 request(s) on EMBEDDING
+holdout dump ranker: all 1148 request(s) on EMBEDDING
+founder     identity=anonymous own-history=withheld capital=pinned answers=off consortium=yes
+  ██ identity=anonymous — the founder matches nothing, so `usedInField`, TIER 1 of the SHIPPED row sort this blend is paired against, is false on every row. The delta below flatters the blend. Not a headline.
+blend: fitted on tune (563 pools, 37 unreachable), reported on holdout (554 pools, 46 unreachable), set=__recallSetDoors.json
+  weights (within-pool percentile rank, conditional logit):
+    proximity (home country)                 3.343
+    sector share (unclipped)                 2.751
+    semantic (founder's text)                1.499
+    eligibility (encoded gates)              -0.815
+    total EUR                                0.540
+    award median                             -0.533
+    event count                              0.424
+    collaborative prior (peer)               0.346
+    award scale fit                          0.331
+    recency (last award year)                0.240
+    company count                            -0.165
+    sector share (shipped, clipped)          -0.118
+    encoded gate count                       -0.070
+    sector count (posterior)                 -0.067
+
+  EXACT@5 blended, on tune (FITTED HERE — not a result): 25.7% +/-3.5
+  EXACT@5 blended, on holdout (the reported number):        27.8% +/-3.6
+  random baseline on the same pools:                             5.6% +/-0.3
+
+  SHIPPED (the product's own five), same founders:               23.0% +/-3.4
+  PAIRED delta blend - shipped:                                  4.8 +/-3.3 points
+  gains  spread over 18 regime(s), largest vinnova_grant 22%, bdns_es_ayudas 12%, satr_it_rnd 12%
+  losses spread over 20 regime(s), largest horizon_eu_pillar_ii 18%, satr_it_rnd 16%, edf 11%
+
+  ON THE SAME FOUNDERS, blend x shipped:  both 100   blend only 67   shipped only 38   neither 349
+  McNemar on the 105 discordant pairs: z = 2.8  (|z| > 1.96 is outside its own noise)
+  of the 387 the product MISSED, the blend puts 67 in the five (17%)
+  won fund's rank under the blend, on the pairs the product missed: median 18 (rescued 67, still missed median 21)
+
+  by population:
+    original join                n= 205  blend 30.2% +/-6.3   baseline 5.4% +/-0.3
+    traced:childless_family      n= 145  blend 21.4% +/-6.7   baseline 6.6% +/-0.6
+    traced:exact_attribution     n= 250  blend 29.6% +/-5.7   baseline 5.3% +/-0.6

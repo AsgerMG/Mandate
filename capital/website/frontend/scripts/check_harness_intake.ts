@@ -149,9 +149,15 @@ const replays = (src: string): boolean => {
 
 /** Held to the property outright: their numbers are published and floored.
  *  `_wsci_autopsy.ts` is here because its bucket 2 WAS the pinned
- *  `capitalSought` — 100% `SEL-CAPITAL` — published as a product finding. */
+ *  `capitalSought` — 100% `SEL-CAPITAL` — published as a product finding.
+ *
+ *  `measure_signal_power.ts` joined them in wsCU: it is the source of the
+ *  eighteen-arm signal table AND of the two feature dumps the blended ranker
+ *  is fitted on, and one of its arms IS the shipped five — so a `"TestCo"`
+ *  intake there made every blend-versus-shipped comparison a comparison
+ *  against a row sort whose tier 1 could not fire. */
 const STRICT = new Set(["check_recall_floor.ts", "measure_recall.ts", "_wsci_autopsy.ts",
-  "_wscm_tiers.ts"]);
+  "_wscm_tiers.ts", "measure_signal_power.ts"]);
 
 /** ── The ratchet ──────────────────────────────────────────────────────────
  *  file -> the number of intake keys it inlined when this guard was written.
@@ -171,7 +177,6 @@ const RATCHET: Record<string, number> = {
   "measure_funnel_recall.ts": 8,
   "measure_gate_standalone.ts": 9,
   "measure_open_questions.ts": 8,
-  "measure_signal_power.ts": 9,
 };
 
 function selfTest(): void {

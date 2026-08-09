@@ -37,6 +37,10 @@ type Dump = {
    *  the type because dumps cut before 2026-08-09 do not carry one — and those
    *  are exactly the dumps this script now refuses. */
   ranker?: string;
+  /** The founder policy of the run that produced this dump. Optional in the
+   *  type because dumps cut before wsCU do not carry one — and those are
+   *  exactly the dumps this script now refuses. */
+  founder?: string;
   signals: string[];
   rows: { pop: string; pool: number; won: number; x: number[][];
           shipped?: 0 | 1; regime?: string }[];
@@ -73,6 +77,31 @@ function requireAttestation(path: string, d: Dump): void {
       `${path} did not rank cleanly on embeddings: "${d.ranker.trim()}". ` +
       "A blend fitted on this averages two different ranking systems.");
   }
+}
+
+/** ── WHICH FOUNDER the two dumps replayed, and that it was the same one ────
+ *
+ *  The paired delta below is `blend - shipped` on the SAME founders, and
+ *  `shipped` is the product's own row sort, whose tier 1 is `usedInField`. A
+ *  dump cut with an anonymous founder has that tier false on every row, so the
+ *  blend is being compared against a handicapped opponent — which is precisely
+ *  how wsCS's +5.0 came to be measured, with nothing in either file able to say
+ *  so. Fitting on one founder and reporting on another is worse still: the
+ *  weights would describe a different population from the number.
+ *
+ *  So the policy travels with the features, both dumps must state it, and they
+ *  must agree. It is PRINTED rather than constrained to one value: measuring
+ *  the leak arm deliberately is legitimate, being unable to see it is not. */
+function requireFounder(path: string, d: Dump): string {
+  if (!d.founder) {
+    throw new Error(
+      `${path} carries no founder attestation. It was produced before ` +
+      "measure_signal_power.ts replayed founders through `founderIntake`, so it " +
+      'describes `"TestCo"` with a pinned capitalSought and `usedInField` false ' +
+      "on every row — including the SHIPPED column this script pairs against. " +
+      "Re-cut it: FEATURES_OUT=... npx tsx scripts/measure_signal_power.ts");
+  }
+  return d.founder.trim();
 }
 
 /** Within-pool percentile rank, ties at the mid-rank. Ties get the SAME value
@@ -170,6 +199,14 @@ function main() {
   }
   requireAttestation(tunePath, tune);
   requireAttestation(holdPath, hold);
+  const tuneFounder = requireFounder(tunePath, tune);
+  const holdFounder = requireFounder(holdPath, hold);
+  if (tuneFounder !== holdFounder) {
+    throw new Error(
+      `the two dumps replayed different founders:\n  ${tunePath}: ${tuneFounder}\n` +
+      `  ${holdPath}: ${holdFounder}\nWeights fitted on one intake and reported ` +
+      "on another describe a different population from the number.");
+  }
   if (tune.set !== hold.set) throw new Error(`different answer keys: ${tune.set} vs ${hold.set}`);
   if (tune.signals.join("|") !== hold.signals.join("|")) {
     throw new Error("the two dumps were produced by different signal sets");
@@ -190,6 +227,17 @@ function main() {
   // separate machine load, and it is the pair that has to be clean.
   console.log(`tune dump   ${tune.ranker}`);
   console.log(`holdout dump ${hold.ranker}`);
+  // One line, because both dumps must agree on it or the run above threw.
+  console.log(`founder     ${tuneFounder}`);
+  if (/identity=anonymous/.test(tuneFounder)) {
+    console.log("  ██ identity=anonymous — the founder matches nothing, so `usedInField`, "
+      + "TIER 1 of the SHIPPED row sort this blend is paired against, is false on every "
+      + "row. The delta below flatters the blend. Not a headline.");
+  }
+  if (/own-history=corpus/.test(tuneFounder)) {
+    console.log("  ██ own-history=corpus — THE LEAK ARM. The founder's own award history, "
+      + "which contains the award being predicted, is switched on. Do not publish this.");
+  }
   console.log(`blend: fitted on ${tune.split} (${trainPools.length} pools, ` +
               `${train.missed.length} unreachable), reported on ${hold.split} ` +
               `(${testPools.length} pools, ${test.missed.length} unreachable), set=${tune.set}`);
@@ -264,9 +312,18 @@ function main() {
   });
   const med = (v: number[]) => (v.length
     ? [...v].sort((a, b) => a - b)[v.length >> 1] : NaN);
+  // McNemar on the DISCORDANT pairs only, which is the whole of the evidence
+  // about a paired 0/1 comparison: the pairs both arms get right and the pairs
+  // both get wrong say nothing about which is better. Printed rather than left
+  // to be computed by hand off the 2x2, because wsCS's headline z was, and a
+  // statistic nobody can see recomputed is a statistic nobody checks.
+  const disc = blendOnly + shippedOnly;
+  const z = disc ? (blendOnly - shippedOnly) / Math.sqrt(disc) : 0;
   console.log(`\n  ON THE SAME FOUNDERS, blend x shipped:` +
     `  both ${bothHit}   blend only ${blendOnly}   shipped only ${shippedOnly}` +
     `   neither ${neither}`);
+  console.log(`  McNemar on the ${disc} discordant pairs: z = ${z.toFixed(1)}` +
+    `  (|z| > 1.96 is outside its own noise)`);
   console.log(`  of the ${shippedOnly + neither} the product MISSED, the blend puts ` +
     `${blendOnly} in the five (${(100 * blendOnly / (shippedOnly + neither)).toFixed(0)}%)`);
   console.log(`  won fund's rank under the blend, on the pairs the product missed: ` +
