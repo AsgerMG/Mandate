@@ -66,6 +66,8 @@ export const BODY_SHARE_FLOOR = 0.75;
 export interface BodyBearing {
   administeringBody?: string | null;
   administeringBodyShare?: number | null;
+  /** The notified scheme. Part of the identity, not decoration -- see doorKey. */
+  schemeCode?: string | null;
 }
 
 /**
@@ -91,20 +93,41 @@ export function nameableBody(x: BodyBearing): string | null {
 }
 
 /**
- * The identity of the row this leaf belongs to.
+ * The identity of the row this leaf belongs to: THE SCHEME, VIA THE BODY.
  *
- * Under `scheme` this is the leaf itself, so nothing merges and nothing is
- * credited that is not exact. Under `door` two leaves are the same row when
- * they are the same notified regime reached through the same named body -- and
- * ONLY then: a leaf with no nameable body falls back to its own id and can
- * never be credited by a sibling.
+ * Two leaves are the same row when they are the same NOTIFIED SCHEME reached
+ * through the same named body -- and only then. A leaf with no nameable body
+ * falls back to its own id and can never be credited by a sibling.
+ *
+ * ── The scheme half is `schemeCode`, AND ITS ABSENCE IS NOT A FALLBACK ────
+ * The first cut of this fell back to the parent regime where no notified code
+ * existed. It read +22 points of DOOR@5 and the concentration line printed
+ * beside it said what that really was: 55 of the 65 gained pairs came from
+ * `ademe_aid` and `vinnova_grant`, two regimes whose leaves carry NO notified
+ * code and ONE granting body each. The key had merged an agency's entire call
+ * portfolio into a single row -- 75 distinctly named ADEME calls, from bicycle
+ * tourism to biomass heat, credited as one answer. That is the identical
+ * failure workstream M's row collapse was rejected for
+ * (findings/sibling_collapse_wsM.md), rebuilt inside a metric where it scores
+ * as a win instead of showing up on the page.
+ *
+ * So a leaf with no notified scheme code is its OWN door, always. The parent is
+ * never the scheme half. Two consequences, both intended: an agency's calls
+ * stay separate rows, and the metric can only pay where a public register
+ * actually says "these awards are one scheme, granted by this body".
+ *
+ * Even with a code the regime is never the key: `satr_fr_rnd` holds 42 leaves
+ * across 17 notified schemes, and a key on the regime would call
+ * SA.111723-via-Grand-Est and SA.59366-via-Grand-Est one row. Two schemes, two
+ * budgets, two granting decisions.
  */
 export function doorKey(
-  id: string, parentId: string | null | undefined, x: BodyBearing,
+  id: string, _parentId: string | null | undefined, x: BodyBearing,
 ): string {
   const body = nameableBody(x);
-  if (!body) return `leaf::${id}`;
-  return `door::${parentId ?? id}::${body.toLowerCase()}`;
+  const scheme = x.schemeCode?.trim();
+  if (!body || !scheme) return `leaf::${id}`;
+  return `door::${scheme}::${body.toLowerCase()}`;
 }
 
 /** The connective, in one place so the label, the memo and the checks agree.
