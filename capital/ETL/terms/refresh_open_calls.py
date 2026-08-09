@@ -49,6 +49,13 @@ Naming is included because a row loaded this week and named next week is a row
 a founder reads as a legal citation for a week -- which is the defect this
 workstream exists to remove, reintroduced on a timer.
 
+An exit code, though, is read once and then it is gone. Each stage therefore
+also writes its outcome into the CORPUS (ETL/lib/corpus_marks.py), beside the
+rows it wrote, so "the detail fetch left 122 behind" survives the container, the
+pull and every copy after it -- and so the census can name the stage rather than
+this file. `check_corpus_marks.py` refuses to publish a corpus holding an
+unresolved one.
+
 Usage:
   python3 ETL/terms/refresh_open_calls.py            # the weekly run
   python3 ETL/terms/refresh_open_calls.py --dry-run  # print the plan only
@@ -70,6 +77,8 @@ import datetime as dt  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import subprocess  # noqa: E402
+
+import corpus_marks  # noqa: E402
 
 TERMS = ROOT / "ETL" / "terms"
 STATE = ROOT / "data" / "raw" / "bdns_open" / ".refresh_state.json"
@@ -125,6 +134,12 @@ def _state() -> dict:
 def _save(**kw) -> None:
     STATE.parent.mkdir(parents=True, exist_ok=True)
     STATE.write_text(json.dumps({**_state(), **kw}, indent=1))
+
+
+#: Stage marks are prefixed so they cannot collide with the one `railway_cron.py`
+#: opens for this script as a whole. Both are wanted: the outer one says the
+#: refresh did not finish, the inner ones say WHICH STAGE.
+MARK = "open calls: "
 
 
 def run(step: list[str], label: str) -> int:
@@ -211,7 +226,24 @@ def main() -> None:
             return 0
 
     for label, step, partial_ok in stages:
-        rc = run(step, label)
+        # ── Which STAGE, not just which script ──────────────────────────────
+        # This file's own header records the defect and did not fix it: the
+        # census said "failed at refresh_open_calls.py", naming the refresh
+        # rather than the fetch that actually failed, and Railway's logs were
+        # gone with the container by the time anyone looked. `.refresh_state.json`
+        # holds the answer and lives on the volume, which is the one place
+        # nothing off the container can read.
+        #
+        # The stage outcome therefore goes into the CORPUS, next to the rows the
+        # stage wrote, where it survives the container, `make pull-db`, and every
+        # copy after that. On 2026-08-09 census #10 recorded
+        # `partial: refresh_open_calls.py` and there was no way, from anywhere
+        # outside the container, to learn which of the five stages that meant.
+        with corpus_marks.mark(MARK + label, "refresh_open_calls.py") as report:
+            rc = run(step, label)
+            report(corpus_marks.OK if rc == 0 else
+                   corpus_marks.PARTIAL if partial_ok else corpus_marks.FAILED,
+                   f"rc={rc}")
         if rc == 0:
             if label == "detail":
                 left = detail_backlog()
@@ -221,6 +253,14 @@ def main() -> None:
                           f"cache; raise --detail-cap if this does not clear.",
                           flush=True)
                     partial.append(f"detail(+{left} queued)")
+                    # A cap reached is a real shortfall in the corpus, not a
+                    # note about this process: the rows are not there. Recorded
+                    # against the stage that has them, with the number, so the
+                    # next reader does not have to guess how big it was.
+                    corpus_marks.close_mark(
+                        MARK + label, corpus_marks.PARTIAL,
+                        f"{left} candidates enumerated and never fetched "
+                        f"(cap {a.detail_cap})")
             continue
         if partial_ok:
             print(f"=== PARTIAL: {label} (rc={rc}) -- continuing with what landed", flush=True)

@@ -102,7 +102,16 @@ import subprocess  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 
 from etl_env import ROOT  # noqa: E402
+import corpus_marks  # noqa: E402
 import source_state  # noqa: E402
+
+
+# Minted once, exported into the environment, and inherited by every subprocess
+# below — including the mark check, which uses it to tell this run's own
+# in-flight steps from the ones the store arrived carrying. See
+# ETL/lib/corpus_marks.py.
+RUN_ID = corpus_marks.run_id()
+RUNNER = "refresh.py"
 
 
 @dataclass(frozen=True)
@@ -224,11 +233,29 @@ STEPS: list[Step] = [
          role="build", needs=("retract_text",),
          why="Same column, same reasons; a condemned row with no repair on file "
              "must not reach the snapshot."),
+    # ── Was this corpus FINISHED? ─────────────────────────────────────────
+    # A different question from the one below, and the reason this step exists
+    # at all: `coverage_gate` passed censuses #7, #8 and #9, every one of which
+    # describes a run that failed. A half-refreshed corpus answers "does it know
+    # less than it did" perfectly well.
+    #
+    # It reads the marks the RUNNERS leave in the store, which is what makes it
+    # work across the copy: `make republish` pulls the volume and merges it here,
+    # and until now nothing came with those rows to say the run that produced
+    # them stopped part way. Its own run is excluded by id, so it judges the
+    # state the store ARRIVED in and not refresh.py's own progress through it.
+    Step("corpus_marks", "unfinished steps",
+         ["python3", "ETL/schema/check_corpus_marks.py", "--ignore-run", RUN_ID],
+         role="gate",
+         why="Refuses a corpus whose last run opened a step and never closed it. "
+             "Named in coverage_gate's `needs`, so a red mark stops exactly what "
+             "a red gate stops and nothing else."),
     Step("coverage_gate", "coverage gate",
          ["python3", "ETL/terms/coverage_gate.py"],
          role="gate",
          needs=("instruments", "open_calls", "article_ceilings", "regions_encode",
-                "gate_roles", "retract_text", "applicant_identity"),
+                "gate_roles", "retract_text", "applicant_identity",
+                "corpus_marks"),
          why="THE decision to publish. Everything that publishes names it in `needs`, "
              "so a red gate still stops the snapshot, the Postgres publish and the "
              "embeddings -- and only those."),
@@ -510,7 +537,15 @@ def main() -> None:
             continue
 
         print(f"\n-- {s.label}")
-        rc = subprocess.run(s.argv, cwd=_cwd_for(s.argv)).returncode
+        # The mark is opened and COMMITTED before the step runs, so a run that
+        # is killed here leaves the store saying a step began writing to it and
+        # never finished. A `report` never reached — an exception, an OOM, a
+        # Railway redeploy — is the open mark, and that is the design.
+        with corpus_marks.mark(s.label, RUNNER) as report:
+            rc = subprocess.run(s.argv, cwd=_cwd_for(s.argv)).returncode
+            report(corpus_marks.OK if rc == 0 else
+                   corpus_marks.PARTIAL if rc in s.tolerate else
+                   corpus_marks.FAILED, f"exit {rc}")
         if rc == 0:
             out.ran.append(s.label)
             continue

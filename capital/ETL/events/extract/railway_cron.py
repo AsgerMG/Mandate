@@ -27,6 +27,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+_sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+import corpus_marks  # noqa: E402
+
 STEPS = [
     # FIRST, and fatal if it fails.
     #
@@ -48,9 +51,38 @@ STEPS = [
     # See ETL/events/load/migrations/apply.py::apply_all.
     [sys.executable, str(ROOT / "ETL/events/load/migrations/apply.py"), "all"],
     [sys.executable, str(ROOT / "ETL/events/extract/renew.py"), "--auto"],
+    # ── The step this loop has never had, and the whole reason `sectors` is 8 ──
+    #
+    # `renew.py --auto` reloads `companies` destructively and re-issues the
+    # surrogate id, so every sector label written into that table is gone by the
+    # time the classifier below starts. `classify_taxonomy.py` has said so in
+    # cmd_persist's own docstring since the day it was written -- "run after any
+    # labelling; restore runs after any load" -- and `make classify` and
+    # `ETL/refresh.py` both do it. This loop, the only runner that actually
+    # performs the load, did neither.
+    #
+    # What that costs is measurable and was measured. Of the eleven sector
+    # families the home page names, the three smallest exist ONLY under labels
+    # this pair carries; what the container can re-derive unaided is
+    # apply-nace's families plus the programme heuristic's, and that union is
+    # exactly eight. Census #4 and census #10 -- the only two ever taken inside
+    # this container -- both recorded eight. Every census taken against a store
+    # this loop had not rebuilt recorded eleven.
+    #
+    # Two workstreams read that as a symptom of `refresh_open_calls.py` because
+    # the two facts co-occur perfectly in the record. They co-occur because both
+    # are things that only happen HERE, not because either causes the other:
+    # `refresh_open_calls.py` writes Spanish convocatorias into
+    # funding_instruments and cannot touch a company's sector.
+    [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "restore"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "apply-nace"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "run",
      "--max-cost", "20"],
+    # ...and the other half. Without it this container pays for LLM labels every
+    # week and throws them away on the next load, which is the loss recorded in
+    # cmd_persist: eight batches submitted, eight collected, no row carrying
+    # sector_taxonomy_method='llm' today.
+    [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "persist"],
     [sys.executable, str(ROOT / "ETL/events/load/qa/sanity_check.py")],
     [sys.executable, str(ROOT / "ETL/terms/detect_eligibility_gaps.py")],
     # Sources that decay on a CALENDAR rather than on a release. renew.py above
@@ -95,7 +127,13 @@ STEPS = [
 # fall inside tolerance, and its exit 1 means the defect it exists to surface.
 # That distinction lives in the registry's `tolerate`, so the runner records
 # `ok` for the first and `failed` for the second without this file knowing why.
-GUARDS = ["store_schema", "aggregate_independence", "offerable_decay"]
+#
+# `corpus_marks` is the newest and asks the one question none of the others do:
+# did this run finish what it started. It is deliberately run AFTER the steps
+# and without excluding this run's own id, because by then every step above has
+# closed its mark and an unclosed or non-ok one is the finding.
+GUARDS = ["store_schema", "aggregate_independence", "offerable_decay",
+          "corpus_marks"]
 RUNNER = str(ROOT / "ETL/lib/guard_verdicts.py")
 
 # Recorded after everything above, WHATEVER happened above — see below.
@@ -170,12 +208,27 @@ def guards() -> list[str]:
 partial = []
 for step in STEPS:
     print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
-    result = subprocess.run(step)
+    # The step's own name plus its subcommand, because three of these steps are
+    # the same script with different arguments and one mark for all three would
+    # say nothing. `Path(step[1]).name` alone reported "python3" once already,
+    # for the same reason, three lines further down.
+    label = " ".join([Path(step[1]).name] + [a for a in step[2:]
+                                             if not a.startswith("-")][:1])
+    # Opened and committed BEFORE the step runs, into the corpus itself, so a
+    # container that dies here leaves the store saying a step began writing to
+    # it and never finished. That is the fact that used to exist only as an exit
+    # code in a log Railway deletes with the container.
+    with corpus_marks.mark(label, "railway_cron.py") as report:
+        result = subprocess.run(step)
+        matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
+                        if any(name in part for part in step)), None)
+        tolerated = bool(matched) and result.returncode == matched[1]
+        report(corpus_marks.OK if result.returncode == 0 else
+               corpus_marks.PARTIAL if tolerated else corpus_marks.FAILED,
+               f"rc={result.returncode}")
     if result.returncode == 0:
         continue
-    matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
-                    if any(name in part for part in step)), None)
-    if matched and result.returncode == matched[1]:
+    if tolerated:
         print(f"=== PARTIAL: {' '.join(step)} (rc={result.returncode}) — "
               f"continuing with what published ===", flush=True)
         # Name the SCRIPT, not whatever happened to be second-from-last in the
