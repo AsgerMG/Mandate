@@ -60,6 +60,7 @@ import {
 } from "../lib/intelligence/corpus";
 import { eligibilityFit, livenessFit, scaleFit, sectorFit } from "../lib/intelligence/fit";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
 import { peerPrior, THEME_WEIGHT } from "../lib/intelligence/shortlist";
 import { assessAll } from "../lib/intelligence/verdict";
@@ -225,8 +226,39 @@ async function main() {
   // measurement above never depends on a file existing.
   const features: {
     pop: string; pool: number; won: number; x: number[][];
+    /** Did the PRODUCT put the won fund in its five, for this same pair?
+     *  Carried per pair so the blend can be compared with the shipped ranker
+     *  PAIRWISE. Two marginal half-widths beside each other answer "could these
+     *  two populations differ"; the question here is whether the SAME founders
+     *  do better, and only a paired count can answer it. Every arm in this file
+     *  shares a draw precisely so that comparison is available, and until now
+     *  the dump threw away the one column that needed it. */
+    shipped: 0 | 1;
+    /** The regime the answer belongs to, for the concentration rule: a gain
+     *  that is seven leaves in one regime is not a ranking result. */
+    regime: string;
   }[] = [];
 
+  // ── WHICH RANKER THESE NUMBERS ARE ABOUT ──────────────────────────────────
+  // Every arm below is scored over the pool `computeVerdict` built, and the
+  // `semantic` arm plus `shipped pool score` read the embedding index directly.
+  // `semanticFundMatch` returns an EMPTY MAP on a 3s connect or statement
+  // timeout, at which point the pool score and every `rankerUsed` call site
+  // inside the verdict drop to the lexical index — silently, and the run still
+  // prints one number.
+  //
+  // That is not hypothetical here. The four `signal_remeasure_wsBU_*` artifacts
+  // this file is being re-run to replace were all produced BEFORE
+  // `rankerTallyLine` existed (wsCP audit, 2026-08-09), in the window where
+  // `check_recall_floor` returned 87% and then 96% on identical inputs because
+  // a loaded machine had averaged the two rankers. So the conclusion those
+  // artifacts carry — "nothing beats the shipped ranker" — was measured on a
+  // ranker nobody can now name.
+  //
+  // The tally is reset here rather than at import so hydration's own queries
+  // cannot count, and printed beside the corpus banner. A run that does not
+  // print `all N request(s) on EMBEDDING` is not evidence.
+  resetRankerTally();
   resetGateHydration();
   for (const t of sample) {
     resetGateHydration();
@@ -269,7 +301,13 @@ async function main() {
       // answer survived selection would report a number conditional on pool
       // reach while calling it EXACT@5.
       if (process.env.FEATURES_OUT) {
-        features.push({ pop: popKey, pool: pool.length, won: -1, x: [] });
+        features.push({
+          pop: popKey, pool: pool.length, won: -1, x: [],
+          // The won fund never reached the pool, so it cannot be in the five
+          // either -- but it is read off the table rather than assumed.
+          shipped: top5.includes(t.instrument) ? 1 : 0,
+          regime: String(byId.get(t.instrument)?.parentId ?? t.instrument),
+        });
       }
       continue;
     }
@@ -344,6 +382,8 @@ async function main() {
     if (process.env.FEATURES_OUT) {
       features.push({
         pop: popKey, pool: pool.length,
+        shipped: top5.includes(t.instrument) ? 1 : 0,
+        regime: String(byId.get(t.instrument)?.parentId ?? t.instrument),
         won: pool.findIndex((p) => p.id === t.instrument),
         // Transposed to candidate-major, which is what a fitter wants.
         x: pool.map((_p, ci) => featureRow.map((col) => col[ci])),
@@ -352,7 +392,9 @@ async function main() {
   }
 
   const prov = corpusProvenance();
+  const attestation = rankerTallyLine();
   console.log(`corpus=${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
+  console.log(attestation);
   console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""} seed=${seed}` +
               `${process.env.DESCRIBED ? " described-only (leak-free descriptions)" : ""}` +
               `${answerMode !== "off" ? ` answers=${answerMode}` : ""}  replayed ${sample.length}`);
@@ -388,6 +430,10 @@ async function main() {
   if (process.env.FEATURES_OUT) {
     writeFileSync(process.env.FEATURES_OUT, JSON.stringify({
       set: setFile, split, seed, n: sample.length,
+      // The attestation travels WITH the features, because the blend is fitted
+      // offline hours later and its input is the only place the ranker can
+      // still be named. A dump is evidence about whichever ranker filled it.
+      ranker: attestation,
       signals: Object.keys(SIGNALS), rows: features,
     }));
     console.log(`  features -> ${process.env.FEATURES_OUT} (${features.length} pairs)`);

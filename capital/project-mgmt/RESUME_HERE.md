@@ -116,8 +116,15 @@ obscure ones:
   [ok number_audit_wsCP_autopsy_holdout.txt]. Part of the move is real
   (`CHANNEL_BACKFILL` now ships on), and none of it was visible.
 - `signal_remeasure_wsBU_*` — all four. This is what **"ranking is closed, do
-  not reopen"** rests on. The conclusion may well hold; the evidence for it
-  cannot say which ranker it graded.
+  not reopen"** rested on. **RE-RUN WITH ATTESTATION (wsCS).** Every one of the
+  eighteen single-signal arms lands within its own half-width of where wsBU put
+  it, so that half of the conclusion is now a confirmed null
+  [ok ranking_reopen_wsCS_holdout.txt]. The BLEND half does not survive, and not
+  because the number was wrong: wsBU compared two MARGINAL intervals for a
+  question that is paired. Paired, on the same 600 founders, the blend beats the
+  shipped ranker by **+5.0 ±3.4 points** over 21 regimes
+  [ok ranking_reopen_wsCS_blend.txt]. See `ranking_reopen_wsCS.md` for what that
+  is an upper bound on.
 - `intake_headroom_wsCA_floor.txt`, `workstream_ar_capital_filter_recall.txt`,
   `standalone_gates_wsAW_*` (15 files), `leaf_separation_wsAO_*`, `pool_filters_wsAE_*`.
 
@@ -128,8 +135,22 @@ where it came from.
 
 ## Closed by measurement — do NOT reopen
 
-- **Ranking.** Nothing beats the shipped ranker outside its half-width
-  (N=600, holdout, leak-free, baseline 5.6). `signal_remeasure_wsBU.md`.
+- **Ranking, ONE SIGNAL AT A TIME.** No single signal beats the shipped ranker
+  outside its half-width — eighteen arms, N=600, holdout, leak-free, baseline
+  5.6%, every run attesting the embedding ranker
+  [ok ranking_reopen_wsCS_holdout.txt]. Re-measured by wsCS because wsBU's
+  evidence could not name the ranker it graded; the conclusion held.
+  **A BLEND of the same signals is NOT closed** — see above and
+  `ranking_reopen_wsCS.md`.
+- **Rebalancing the seats between the score and the peer prior**, including
+  making the split depend on how confident the score is. Fixed splits closed by
+  wsCM; the confidence-dependent version measures −0.2 points on holdout with
+  the seat count provably changing for 55% of founders
+  [ok ranking_reopen_wsCS_seats_holdout_confident.txt]. The mechanism: the more
+  sharply the score separates its top rows, the LESS often the won fund is on
+  the page (0 seats 25.0%, 3 seats 18.6%
+  [ok ranking_reopen_wsCS_seats_holdout_confident.txt]), so scaling the score's authority with
+  its own certainty pushes on the wrong end. `ranking_reopen_wsCS.md` §4.
 - **Per-fund evidence.** Every case-register and SATR field is **+0.0**,
   structurally — constant inside a leaf's own cell. `scheme_evidence_wsBY.md`.
 - **New intake questions given today's encoding.** No next region question;

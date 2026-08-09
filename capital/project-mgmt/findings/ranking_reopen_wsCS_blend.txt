@@ -1,0 +1,36 @@
+tune dump   ranker: all 1154 request(s) on EMBEDDING
+holdout dump ranker: all 1148 request(s) on EMBEDDING
+blend: fitted on tune (563 pools, 37 unreachable), reported on holdout (554 pools, 46 unreachable), set=__recallSetDoors.json
+  weights (within-pool percentile rank, conditional logit):
+    proximity (home country)                 3.490
+    sector share (unclipped)                 2.514
+    semantic (founder's text)                1.469
+    award median                             -0.799
+    eligibility (encoded gates)              -0.749
+    award scale fit                          0.644
+    event count                              0.531
+    total EUR                                0.407
+    collaborative prior (peer)               0.319
+    recency (last award year)                0.231
+    sector share (shipped, clipped)          0.154
+    company count                            -0.120
+    sector count (posterior)                 -0.099
+    encoded gate count                       -0.072
+
+  EXACT@5 blended, on tune (FITTED HERE — not a result): 26.3% +/-3.5
+  EXACT@5 blended, on holdout (the reported number):        28.0% +/-3.6
+  random baseline on the same pools:                             5.6% +/-0.3
+
+  SHIPPED (the product's own five), same founders:               23.0% +/-3.4
+  PAIRED delta blend - shipped:                                  5.0 +/-3.4 points
+  gains  spread over 21 regime(s), largest vinnova_grant 22%, satr_it_rnd 12%, bdns_es_ayudas 10%
+  losses spread over 20 regime(s), largest horizon_eu_pillar_ii 18%, satr_it_rnd 13%, edf 10%
+
+  ON THE SAME FOUNDERS, blend x shipped:  both 99   blend only 69   shipped only 39   neither 347
+  of the 386 the product MISSED, the blend puts 69 in the five (18%)
+  won fund's rank under the blend, on the pairs the product missed: median 18 (rescued 69, still missed median 22)
+
+  by population:
+    original join                n= 205  blend 29.8% +/-6.3   baseline 5.4% +/-0.3
+    traced:childless_family      n= 145  blend 23.4% +/-6.9   baseline 6.6% +/-0.6
+    traced:exact_attribution     n= 250  blend 29.2% +/-5.6   baseline 5.3% +/-0.6
