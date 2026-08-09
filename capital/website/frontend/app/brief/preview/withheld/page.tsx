@@ -32,6 +32,7 @@ import { InstitutionsTable, Memo } from "@/lib/intelligence/panelReport";
 import { withheldNotice } from "@/lib/intelligence/corpus";
 import fixture from "@/lib/intelligence/__fixtures/report.json";
 import type { IntelligenceReport } from "@/lib/intelligence/types";
+import { corpusProse } from "@/lib/corpusProse";
 
 export const metadata = { title: "Withheld notice preview" };
 
@@ -78,7 +79,7 @@ export default function WithheldPreviewPage() {
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
             Finished brief, {count} withheld
           </p>
-          <Memo report={{ ...report, withheld: withheldNotice(count) }} />
+          <Memo report={{ ...report, withheld: withheldNotice(count) }} corpusWindow={corpusProse().awardWindow} />
         </section>
       ))}
     </main>

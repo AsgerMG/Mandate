@@ -82,13 +82,23 @@ export function Chips({
 
 // Rotating engagement lines per pipeline step — shown with the elapsed timer so
 // a three-minute generation never looks stalled.
-const STEP_CHATTER: Record<string, string[]> = {
+//
+// A FUNCTION of the corpus, not a constant. The querying_db line used to read
+// "Matching names against 146,911 companies in the funding record…" — a literal
+// that was five thousand companies out of date and, worse, contradicted by the
+// footer of the very page it renders on, which reads the live census. A founder
+// watching a three-minute progress panel could see both numbers at once.
+//
+// The count arrives as a prop from app/brief/page.tsx (a server component
+// calling corpusStats()), because this module is "use client" and cannot read
+// the census itself. See lib/data.ts.
+const stepChatter = (companies: number): Record<string, string[]> => ({
   discovering: [
     "Searching the open web for comparable companies…",
     "Reading recent coverage of your space…",
   ],
   querying_db: [
-    "Matching names against 146,911 companies in the funding record…",
+    `Matching names against ${companies.toLocaleString()} companies in the funding record…`,
     "Tracing grants, state aid and public capital per comparable…",
   ],
   generating: [
@@ -98,7 +108,7 @@ const STEP_CHATTER: Record<string, string[]> = {
     "Writing the funder map with honest trade-offs…",
     "Checking every figure against the database…",
   ],
-};
+});
 
 const STEPS: { key: PipelineStep; label: string }[] = [
   { key: "discovering", label: "Finding & researching comparable companies" },
@@ -135,7 +145,20 @@ const COUNTRIES = [
   "United Kingdom",
 ];
 
-export function IntelligencePanel() {
+/** What the panel needs from the corpus. One field, and a named interface
+ *  rather than a bare number, so the next figure this screen states arrives the
+ *  same way instead of as the next literal. */
+export interface IntelligencePanelProps {
+  /** Companies in the funding record, from `corpusStats()` on the server. */
+  corpusCompanies: number;
+  /** The years the corpus covers, e.g. "2021 to 2025", from `corpusProse()`.
+   *  The memo footer states it, and stated it as a literal until now. */
+  corpusWindow: string;
+}
+
+export function IntelligencePanel({ corpusCompanies, corpusWindow }: IntelligencePanelProps) {
+  // Rebuilt only when the census moves, which is weekly at most.
+  const STEP_CHATTER = useMemo(() => stepChatter(corpusCompanies), [corpusCompanies]);
   // ── Screen machine: intake (form + a live, continuously-updating preview
   // panel side by side) → adaptive[0..n] → running (with the same preview
   // panel now fed by the real pipeline) → report. There is no separate
@@ -759,6 +782,10 @@ export function IntelligencePanel() {
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
                   How much are you looking for?
+                  {/* contract: the two figures are band edges from TICKET_BANDS
+                      (lib/intelligence/types.ts — b15m_50m and b100k_500k), the
+                      vocabulary contract this control is built from, not claims
+                      about the corpus. They move when a band moves. */}
                   <InfoDot>
                     Scale routes everything: a EUR 20M+ build-out lives in a
                     different instrument universe than a EUR 300K grant.
@@ -1077,7 +1104,7 @@ export function IntelligencePanel() {
         )}
       </div>
 
-      {report && <Memo key={report.generatedAt} report={report} />}
+      {report && <Memo key={report.generatedAt} report={report} corpusWindow={corpusWindow} />}
     </section>
   );
 }

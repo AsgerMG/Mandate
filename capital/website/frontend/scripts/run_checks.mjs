@@ -46,6 +46,7 @@ const CHECKS = [
   ["unit tests", ["npx", "vitest", "run"]],
   ["segment config is a literal", ["npx", "tsx", "scripts/check_revalidate_literal.ts"]],
   ["output contracts", ["npx", "tsx", "scripts/check_contracts.ts"]],
+  ["rendered numbers", ["npx", "tsx", "scripts/check_rendered_numbers.ts"]],
   ["vocabulary contract", ["npx", "tsx", "scripts/check_vocabularies.ts"]],
   ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],

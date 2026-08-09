@@ -641,6 +641,9 @@ export type ActivityValue = (typeof ACTIVITY_OPTIONS)[number]["value"];
 export const EXCLUSION_OPTIONS = [
   { value: "none", label: "None of these apply" },
   { value: "insolvency", label: "In bankruptcy, insolvency or winding-up" },
+  // external: GBER (Reg. 651/2014) Art. 2(18)(a) — an undertaking in difficulty
+  // is one whose accumulated losses exceed half its subscribed share capital.
+  // A statutory threshold, not a figure from this corpus.
   { value: "losses_over_half_capital", label: "Accumulated losses exceed half our share capital" },
   { value: "recovery_order", label: "Under an unpaid EU state-aid recovery order" },
   { value: "sanctions", label: "Subject to EU sanctions or an exclusion decision" },
@@ -1186,6 +1189,8 @@ export const FIELD_ENUM_HINTS: Record<string, {
     { value: "depends", label: "Depends on the terms" },
     { value: "no", label: "No" },
   ] },
+  // external: Commission Recommendation 2003/361/EC Art. 3 — 25% is the
+  // linked/partner-enterprise threshold that decides SME status. Statutory.
   ownerOver25: { multi: false,
     stem: "Does any single shareholder own more than 25% of your company?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
@@ -1194,10 +1199,15 @@ export const FIELD_ENUM_HINTS: Record<string, {
     stem: "Is an institutional investor or corporate on your cap table?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
+  // external: "majority-owned or controlled" is the ownership-and-control test
+  // used by the EU FDI screening regulation (2019/452) and by the EDF's
+  // eligibility rules. Statutory language, not a corpus quantity.
   nonEuControl: { multi: false,
     stem: "Is your company majority-owned or controlled from outside the EU?", options: [
     { value: "yes", label: "Yes" }, { value: "no", label: "No" }, { value: "unsure", label: "Not sure" },
   ] },
+  // external: the same GBER Art. 2(18)(a) undertaking-in-difficulty test as
+  // EXCLUSION_OPTIONS above, asked as a question.
   lossesOverHalfCapital: { multi: false,
     stem: "Have your accumulated losses exceeded half of your share capital?",
     coveredBy: "exclusionFlags", options: [

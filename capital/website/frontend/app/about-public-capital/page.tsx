@@ -9,6 +9,8 @@ import { Reveal, CountUp } from "@/components/immersive";
 import { ImageSlot } from "@/components/image-slot";
 import { fmtEur } from "@/lib/format";
 import { corpusStats } from "@/lib/data";
+import { corpusProse } from "@/lib/corpusProse";
+import { VERIFIED_AWARDS } from "@/lib/verifiedAwards";
 import insightsRaw from "@/public/data/investor_insights.json";
 
 export const metadata: Metadata = {
@@ -128,6 +130,10 @@ export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 
 export default async function AboutPublicCapitalPage() {
   const corpus = await corpusStats();
+  // The prose figures. Every one of these was a literal until now, and three of
+  // them restated a quantity this same page already rendered live a few
+  // sections away — see lib/corpusProse.ts.
+  const prose = corpusProse();
   const { stats, concentration, countryMix } = insights;
   const satr = concentration.find((c) => c.id === "state_aid_satr");
   const eic = concentration.find((c) => c.id === "eic");
@@ -201,7 +207,7 @@ export default async function AboutPublicCapitalPage() {
                       <CountUp value={Number(corpus.events)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
                       public awards to{" "}
                       <CountUp value={Number(corpus.companies)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
-                      companies and organisations, 2021 to 2025. It answers four questions in order: what
+                      companies and organisations, {prose.awardWindow}. It answers four questions in order: what
                       you can get, which door is yours, what the data proves about how winners behave, and
                       in what sequence to raise.
                     </p>
@@ -220,7 +226,15 @@ export default async function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── The Ladder: the pinned, camera-driven overture ─────── */}
-          <FundingLadder signal={signalRungs} conviction={convictionRungs} />
+          {/* Every figure the ladder's prose states, handed down. It is a
+              "use client" module and lib/corpusProse.ts imports ~700 KB of
+              artifacts, so the scalars travel as props, not the module. */}
+          <FundingLadder
+            signal={signalRungs}
+            conviction={convictionRungs}
+            convictionClimbPct={prose.convictionClimbPct}
+            nationalAwardPct={prose.nationalAwardPct}
+          />
 
           {/* ── 1. The menu (the ladder, measured precisely) ───────── */}
           <Chapter className="py-20 sm:py-28">
@@ -260,9 +274,12 @@ export default async function AboutPublicCapitalPage() {
                   <Src n={2} />. The conviction tier (Innovation Fund {fmtEur(inf?.medianTicket)},
                   IPCEI {fmtEur(ipcei?.medianTicket)}) is not an application you fire off; it is a
                   multi-year positioning project that behaves like a state-underwritten growth round
-                  when it lands. Stegra carried EUR 250m from the Innovation Fund into its green-steel
-                  buildout; Porsche&apos;s Cellforce drew EUR 57m of granted battery aid; Multiverse
-                  Computing stacked eight channels before its 2025 mega-round.
+                  when it lands. Stegra carried {VERIFIED_AWARDS.stegraInnovationFund}{" "}
+                  from the Innovation Fund into its green-steel buildout; Porsche&apos;s Cellforce
+                  drew{" "}
+                  {VERIFIED_AWARDS.cellforceBatteryAid} of granted battery aid; Multiverse
+                  Computing stacked {VERIFIED_AWARDS.multiverseChannels} channels before its
+                  2025 mega-round.
                 </p>
               </div>
             </R>
@@ -273,7 +290,7 @@ export default async function AboutPublicCapitalPage() {
             <ChapterHead
               kicker="2 · Which door is yours"
               title="Your address decides your funnel."
-              caption="Three quarters of all awards are national, and every country routes them differently."
+              caption={`${prose.nationalAwardPct}% of all awards are national, and every country routes them differently.`}
             />
             <R>
               <Finding n={2}>
@@ -288,7 +305,7 @@ export default async function AboutPublicCapitalPage() {
               <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5">
                 <p className="mb-1 text-sm font-semibold">How each country&apos;s awards split across the three public layers</p>
                 <p className="mb-3 text-xs text-[var(--muted-foreground)]">
-                  Top 12 countries by award count, shares of awards.
+                  Top {prose.countryMixRows} countries by award count, shares of awards.
                 </p>
                 <CountryMixChart rows={countryMix} />
               </div>
@@ -338,6 +355,11 @@ export default async function AboutPublicCapitalPage() {
                   value={`${stats.conviction.pct}%`}
                   label="Share of conviction-tier (IPCEI / Innovation Fund) companies that climbed up from smaller grants. The top floor selects for strategic relevance, not grant pedigree: position in a declared value chain."
                 />
+                {/* corpus: the cohort window is not editorial. It is fixed in
+                    website/build/investor_insights.py, which selects EIC awards
+                    with CAST(event_year AS INT) <= 2022 so the cohort has had
+                    time to win again. The percentage beside it is derived; the
+                    years describe the query that produced it. */}
                 <Stat
                   value={`${stats.eicCohort.pct}%`}
                   label="Share of 2021 to 2022 EIC winners that later won from another channel. Labels and wins compound across channels, not just within them."
@@ -348,8 +370,9 @@ export default async function AboutPublicCapitalPage() {
             <R delay={120}>
               <div className="prose-article mt-6 max-w-3xl space-y-4 leading-relaxed text-[var(--foreground)]">
                 <p>
-                  Rule three deserves emphasis because it contradicts the folklore. Only a third of the
-                  companies in Europe&apos;s biggest instruments arrived via the grant escalator; the
+                  Rule three deserves emphasis because it contradicts the folklore. Only{" "}
+                  {prose.convictionClimbPct}% of the companies in Europe&apos;s biggest instruments
+                  arrived via the grant escalator; the
                   rest were selected because they sit in a value chain the EU has declared strategic:
                   batteries, hydrogen, semiconductors, cloud, defence, medical supply. If that is you,
                   say so in every application, collect the labels that prove it (STEP seal, Seal of
@@ -437,6 +460,9 @@ export default async function AboutPublicCapitalPage() {
 
           {/* ── 5. What's coming ───────────────────────────────────── */}
           <Chapter className="py-20 sm:py-28">
+            {/* external: the window is the EU's next multiannual financial
+                framework, 2028-2034, read from today. Source [3] below. It is a
+                fact about the EU budget cycle, not about this corpus. */}
             <ChapterHead
               kicker="5 · What is coming for you, 2026 to 2034"
               title="The same policy shifts investors track, read as openings and traps."
@@ -491,7 +517,8 @@ export default async function AboutPublicCapitalPage() {
                   <p>
                     TechEU<Src n={5} />, the EIC Fund and national VC arms are scaling direct equity.
                     Public money on the cap table can anchor a round, but the UK Future Fund&apos;s
-                    record (a third of its unselective portfolio already insolvent) shows public
+                    record ({prose.futureFundDeadPct}% of its unselective portfolio insolvent as of{" "}
+                    {prose.futureFundAsOf}) shows public
                     co-investment is not validation unless the institution selects. Choose public
                     co-investors the way you choose VCs: by what their portfolio says about them.
                   </p>
