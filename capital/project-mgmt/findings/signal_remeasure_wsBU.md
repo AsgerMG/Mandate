@@ -179,7 +179,37 @@ Shipped as an ARM rather than as a change: `SECTOR_CLIP_ARM=off` in `fit.ts`,
 defaulting to today's behaviour. End-to-end on the product's own ranking, N=600
 holdout, seed 20260806:
 
-<!-- CLIP_ARM_RESULT -->
+```
+                          clipped (ships)   unclipped (SECTOR_CLIP_ARM=off)
+in pool                    555/600  93%       555/600  93%
+EXACT@5                    127/600  21 ±3.3   131/600  22 ±3.3
+REGIME@5                   438/600  73 ±3.6   400/600  67 ±3.8
+CHANNEL@5                  553/600  92 ±2.2   514/600  86 ±2.8
+
+EXACT@5 by population      clipped              unclipped
+  original join                 21%                 20%
+  childless family              22%                 24%
+  exact attribution             20%                 21%
+REGIME@5, exact attribution     98%                 83%
+```
+
+**Measured effect on EXACT@5: +4 cases in 600, +0.7 points against a ±3.3
+half-width. It is not a difference and it does not ship.** And the run says
+plainly why it should not: un-clipping costs **6 points of REGIME@5 (73 → 67)
+and 6 of CHANNEL@5 (92 → 86)**, and on the exact-attribution population REGIME@5
+falls **98% → 83%**. The clip is doing the job its docstring claims — stopping a
+narrow fund from beating a broad one ACROSS channels — and removing it buys a
+point of exact recall by scattering the table off the right regime entirely.
+That trade is the same one `objectiveScorer` was moved out of the row sort to
+avoid.
+
+So the most promising lever on the table is worth nothing, and this is the
+useful part of the result: it was the cheapest change available, it pointed the
+right way on both splits and in the blend's weights, and end to end it is inside
+the noise on the metric it targets while clearly negative on two others. The arm
+stays in `fit.ts` so the next person can re-ask at a larger N without editing a
+constant back and forth.
+
 
 **2. Nothing else on this table is worth an intake question.** Every candidate
 that would need one — award scale (a ticket question, already asked), recency,

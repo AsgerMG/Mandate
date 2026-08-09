@@ -1,0 +1,46 @@
+(node:57070) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6779 (95.5%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T09:40:21.483Z
+set=__recallSetDoors.json split=holdout seed=20260806  replayed 600
+  in pool                  555/600 (93% +/-2.1)
+  EXACT scheme in top 5    131/600 (22% +/-3.3)
+  same REGIME in top 5     400/600 (67% +/-3.8)   <- the operational number
+    ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+  same CHANNEL in top 5    514/600 (86% +/-2.8)
+    mode=profile               n= 503  pool 93%  exact5 19%  regime5 67%
+    mode=project               n=  97  pool 89%  exact5 35%  regime5 67%
+    traced:exact_attribution   n= 280  pool 93%  exact5 21%  regime5 83%
+    traced:childless_family    n= 156  pool 94%  exact5 24%  regime5 26%
+    original join              n= 164  pool 91%  exact5 20%  regime5 77%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n= 169  pool 95%  exact5 32%  regime5 32%
+    regime 2-5                 n=  20  pool 85%  exact5 50%  regime5 60%
+    regime 6-20                n=  49  pool 84%  exact5 14%  regime5 45%
+    regime 21-50               n=  89  pool 100%  exact5 25%  regime5 91%
+    regime 51+                 n= 273  pool 91%  exact5 14%  regime5 85%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 147  pool 97%  exact5 13%  regime5 56%
+    ES                         n=  98  pool 98%  exact5 17%  regime5 92%
+    DE                         n=  85  pool 67%  exact5 15%  regime5 93%
+    NO                         n=  57  pool 100%  exact5 14%  regime5 14%
+    SE                         n=  50  pool 98%  exact5 30%  regime5 94%
+    EE                         n=  35  pool 97%  exact5 26%  regime5 26%
+    IT                         n=  30  pool 97%  exact5 20%  regime5 83%
+    GB                         n=  22  pool 100%  exact5 82%  regime5 86%
+    NL                         n=  21  pool 95%  exact5 29%  regime5 90%
+    LV                         n=  19  pool 95%  exact5 21%  regime5 21%
+    CZ                         n=  15  pool 100%  exact5 20%  regime5 20%
+    PL                         n=   9  pool 100%  exact5 89%  regime5 100%
+    DK                         n=   5  pool 100%  exact5 60%  regime5 60%
+    FI                         n=   4  pool 25%  exact5 25%  regime5 25%
+    PT                         n=   1  pool 100%  exact5 100%  regime5 100%
+    BE                         n=   1  pool 0%  exact5 0%  regime5 0%
+    LT                         n=   1  pool 0%  exact5 0%  regime5 0%
