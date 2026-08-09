@@ -51,3 +51,9 @@ data
 
 # Throwaway DB probes. Analysis, not product; the findings go to project-mgmt/.
 website/frontend/scratch/
+
+# wsCF: verified Postgres dumps from ETL/lib/backup_postgres.py. 123 MB today
+# and growing every time it runs. Never a commit, and -- because `railway up`
+# honours .gitignore -- never an upload either. See .dockerignore for the other
+# half: the image build must not bake a database backup into a layer.
+postgres-backup/
