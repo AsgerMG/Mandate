@@ -78,8 +78,8 @@ import { eligibilityFit, livenessFit, scaleFit, sectorFit } from "../lib/intelli
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
+import { BLEND_SIGNALS, type BlendContext } from "../lib/intelligence/poolBlend";
 import { peerPrior, THEME_WEIGHT } from "../lib/intelligence/shortlist";
-import { assessAll } from "../lib/intelligence/verdict";
 import {
   founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
 } from "./founderIntake";
@@ -131,53 +131,26 @@ function halfWidthOf(a: Acc): number {
 
 /** Every signal a founder's pool can be ordered by, as one table.
  *
+ *  ── IT LIVES IN `lib/intelligence/poolBlend.ts` NOW, AND THAT IS THE POINT ──
+ *
+ *  This table used to be defined here, privately. `fit_signal_blend.ts` fitted
+ *  a conditional logit over its columns, and wsCV then had to SHIP that fit —
+ *  at which point a private harness table would have become two copies of
+ *  fourteen scorers with a "keep in sync" comment between them. In this repo
+ *  that is not a hypothetical risk: two `tableInputFromAnswers` literals lost
+ *  the memo two of its six intake answers, and two definitions of a row's
+ *  display label collapsed rows the disambiguator had just told apart.
+ *
+ *  So the definition moved to the library and the harness imports it. A weight
+ *  fitted on a column is now, by construction, a weight served on that same
+ *  column, and adding a signal is one edit rather than two that must agree.
+ *
  *  A signal is a pure function of (candidate, founder) and is scored over the
  *  pool the product actually built, so nothing here can invent a candidate the
  *  ranker never considered. `null` means the signal has no opinion about this
  *  candidate and the caller substitutes the pool's own median — the same
  *  convention `sectorFitScorer` establishes for a gap in our data. */
-type SignalCtx = {
-  pool: { id: string; inst: import("../lib/intelligence/corpus").DbInstrument }[];
-  founderSector?: string;
-  founderCountries: Set<string>;
-  ticketBand?: string;
-  theme: Map<string, number>;
-  eligibility: Map<string, { status: string }>;
-  peerRank: Map<string, number>;
-  year: number;
-};
-
-const SIGNALS: Record<string, (i: SignalCtx["pool"][number]["inst"], c: SignalCtx) => number | null> = {
-  // ── the four the prior study named ──────────────────────────────────────
-  "sector share (shipped, clipped)": (i, c) => sectorFit(i.sectorMix, c.founderSector),
-  "collaborative prior (peer)": (i, c) => c.peerRank.has(i.id) ? -c.peerRank.get(i.id)! : null,
-  "event count": (i) => i.eventCount,
-  "recency (last award year)": (i, c) => livenessFit(i, c.year),
-  // ── the same bytes read the other way ───────────────────────────────────
-  // Ranking by the RAW COUNT of a fund's awards in the founder's sector is
-  // ranking by the posterior P(fund | sector) across the pool: the denominator
-  // is the same for every candidate, so it cannot change an order. No new
-  // column, no new question — the clip and the per-fund normalisation are the
-  // only difference from the row above.
-  "sector count (posterior)": (i, c) =>
-    c.founderSector && i.sectorMix ? (i.sectorMix[c.founderSector] ?? 0) : null,
-  "sector share (unclipped)": (i, c) => {
-    if (!c.founderSector || !i.sectorMix) return null;
-    const total = Object.values(i.sectorMix).reduce((a, b) => a + b, 0);
-    return total > 0 ? (i.sectorMix[c.founderSector] ?? 0) / total : null;
-  },
-  // ── everything else the corpus can offer per candidate ──────────────────
-  "semantic (founder's text)": (i, c) => c.theme.get(i.id) ?? null,
-  "award scale fit": (i, c) => scaleFit(i, c.ticketBand),
-  "proximity (home country)": (i, c) =>
-    !i.country || i.country === "EU" ? 0.45 : c.founderCountries.has(i.country) ? 1 : 0,
-  "eligibility (encoded gates)": (i, c) =>
-    eligibilityFit(c.eligibility.get(i.id) as never),
-  "company count": (i) => i.companyCount,
-  "total EUR": (i) => i.totalEur,
-  "award median": (i) => i.awardP50 ?? null,
-  "encoded gate count": (i) => i.gates.length,
-};
+const SIGNALS = BLEND_SIGNALS;
 
 /** A pool ordered by nothing at all. The baseline, computed on the same pools
  *  as every arm above rather than remembered from another population. */
@@ -343,13 +316,17 @@ async function main() {
     // different text from the pool they are scored over.
     const semantic = await semanticFundMatch(f.opts.description);
     const ranked = peerPrior(t.country, t.sector);
-    const ctx: SignalCtx = {
-      pool,
+    const ctx: BlendContext = {
       founderSector: t.sector,
-      founderCountries: new Set([toIso2(t.country)].filter(Boolean).map((c) => c.toUpperCase())),
+      // The raw country, not a pre-normalised set: `proximityFit` applies
+      // `toIso2` itself, because production hands it whatever the intake
+      // supplied. Normalising here as well would leave the harness comparing
+      // codes while production compared names, which is exactly the class of
+      // defect wsCT found in `entityCountries`.
+      founderCountries: [t.country].filter(Boolean),
       ticketBand: f.eligibility.ticketBand,
       theme: semantic,
-      eligibility: assessAll(poolIds, f.eligibility as never) as never,
+      eligibility: f.eligibility as never,
       peerRank: new Map(ranked.map((id, i) => [id, i])),
       year,
     };
