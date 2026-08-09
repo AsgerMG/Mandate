@@ -4,9 +4,18 @@
 // corpus. This is what grounds the adaptive round (Phase 3C) in gates that
 // are genuinely still open for THIS founder, not a blind sweep of 320
 // instruments' worth of requirements.
-import { loadDbInstruments } from "./corpus";
+import { loadDbInstruments, type DbInstrument } from "./corpus";
 import { FIELD_ENUM_HINTS, FIRST_PAGE_FIELDS, type EligibilityAnswers } from "./types";
 import { deliveryRegionOf } from "./regionPrior";
+// ONE name for a fund, wherever the page names it. The table appended the
+// granting body and this file did not, so a founder read one leaf under two
+// names on one screen. See doorLabel.ts -- and note it is the SAME function the
+// table calls, not a second spelling of the same intention.
+import { doorLabelFor } from "./doorLabel";
+import { ROW_IDENTITY_ARM } from "./rowIdentity";
+/** The fund's name as the founder will see it in the table above the question. */
+const shownName = (inst: DbInstrument) =>
+  ROW_IDENTITY_ARM === "door" ? doorLabelFor(inst) : inst.name;
 import { regionNameFor } from "./regions.generated";
 import {
   MIN_SUBSTANTIVE_LEN, normaliseRequirement, requirementClassOf,
@@ -354,7 +363,7 @@ export function openProjectGatesForShortlist(
           if (rank < prev.bestRank) {
             prev.bestRank = rank;
             prev.instrumentId = inst.id;
-            prev.instrumentName = inst.name;
+            prev.instrumentName = shownName(inst);
             prev.gateKey = gate.id;
           }
         }
@@ -364,7 +373,7 @@ export function openProjectGatesForShortlist(
         requirement: req,
         quote: gate.quote || req,
         instrumentId: inst.id,
-        instrumentName: inst.name,
+        instrumentName: shownName(inst),
         gateKey: gate.id,
         gateFamily: gate.gateFamily,
         locator: gate.source?.locator || undefined,
@@ -570,7 +579,7 @@ export function openQuestionsForShortlist(
       best.set(key, {
         requirement: c.gate.requirement.trim(),
         instrumentId: c.anchor.id,
-        instrumentName: c.anchor.name,
+        instrumentName: shownName(c.anchor),
         gateKey: c.gate.id,
         locator: c.gate.source?.locator || undefined,
         regimeId,

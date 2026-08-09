@@ -26,6 +26,8 @@ import { instrumentServesCapital, instrumentServesCountry } from "./capitalPrefe
 // four places below, which is why a harness could measure the lexical ranker
 // and report about it in the embedding ranker's words. See semantic.ts.
 import { semanticSeparation, rankerUsed } from "./semantic";
+import { ROW_IDENTITY_ARM } from "./rowIdentity";
+import { doorLabel } from "./doorLabel";
 import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
@@ -1128,6 +1130,31 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
       if (token) r.instrument = `${name} \u00b7 ${token}`;
     }
   }
+}
+
+/**
+ * Name every row by THE DOOR IT IS, not merely by the scheme it belongs to.
+ *
+ * ── The defect, seen on the page rather than in a metric ──────────────────
+ * `distinguishRowNames` appends the granting body only when two rows COLLIDE
+ * IN THIS TABLE. SA.111723 has twelve leaves and twelve different bodies, and a
+ * founder is normally shown exactly ONE of them — so nothing collides, nothing
+ * is appended, and the row renders as the bare 130-character regime title
+ * "Régime cadre exempté de notification ... (RDI) pour la période 2024-2026".
+ * That row scores EXACT@5 as a hit and tells the founder nothing they can act
+ * on: it names a rulebook, and eleven other bodies publish under it.
+ *
+ * The rule itself is `doorLabel`, shared with `gateReach` — which named the
+ * same leaf a second way in the question under the table. See doorLabel.ts.
+ *
+ * ── Rank-preserving, by construction ──────────────────────────────────────
+ * This only rewrites `instrument`. It runs AFTER `distinguishRowNames` and
+ * after the collapse, so it cannot create or resolve a collision, cannot demote
+ * a row, and cannot change what is in the pool. A label change must be able to
+ * fail visibly and not silently, which is why it is the last thing that happens.
+ */
+export function nameRowsAsDoors(rows: InstrumentRow[]): void {
+  for (const r of rows) r.instrument = doorLabel(r.instrument, r);
 }
 
 /**
@@ -2394,10 +2421,17 @@ export function materialiseInstrumentTable(
   //   * IT IS A REORDER OR IT IS NOTHING. `computeVerdict` derives
   //     `candidateInstrumentIds` from this same array; a version that dropped
   //     the absorbed rows took in-pool 97% -> 16%.
-  return [
+  const out = [
     ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative),
     ...collision.demoted,
   ];
+  // LAST, and behind a default-OFF arm. A door-level row is a LABEL change:
+  // it renames, it never reorders, never demotes and never touches the pool.
+  // Running it here — after the order is final — is what makes that checkable
+  // rather than merely intended, because there is nothing left downstream that
+  // could read the new name and act on it.
+  if (ROW_IDENTITY_ARM === "door") nameRowsAsDoors(out);
+  return out;
 }
 
 /**
