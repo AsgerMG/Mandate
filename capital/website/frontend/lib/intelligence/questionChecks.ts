@@ -122,7 +122,16 @@ export function checkQuestions(input: QuestionCheckInput): QuestionViolation[] {
       }
     }
     // Q-3: an option set the founder cannot choose between is a wasted question.
-    if (q.options.length < 2) {
+    //
+    // An OPEN question is exempt, and the exemption is narrow on purpose: it
+    // applies only where `openText` says the question was written from a
+    // requirement that has no fixed answer set and never will (wsCD). Those
+    // carry no options BY CONSTRUCTION, so flagging them would report the
+    // design as a defect -- and the obvious way to make the report green
+    // would be to invent options for a question whose whole point is that
+    // none exist. A question that merely FORGOT its options still fails here,
+    // because it does not carry the flag.
+    if (!q.openText && q.options.length < 2) {
       v.push({ ruleId: "Q-3", detail: `only ${q.options.length} option(s): ${q.question.slice(0, 60)}` });
     }
     for (const o of q.options) {
