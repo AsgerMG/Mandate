@@ -28,25 +28,35 @@ because one old band is now three, so it becomes the `in` that says the same
 thing. This is the inversion wsAX exists to stop, arriving through a vocabulary
 change instead of an encoding one.
 
+BOTH STORES, and this was a bug. The first version read and wrote Postgres
+alone. SQLite is the AUTHORING store — website/build/eligibility_export.py
+builds instrument_terms.json from it, and every scoped publisher in ETL/terms
+writes SQLite and mirrors — so a migration applied to Postgres only would be
+carried right back over by the next export, and the site's fallback corpus
+would keep serving the retired band names in the meantime. wsBT found three of
+these still rejecting every founder who answered the question. So SQLite is
+migrated first and Postgres is mirrored from it on (instrument_id, gate_key),
+the two stores keeping independent surrogate ids.
+
 Idempotent: re-running finds nothing to do. The pre-state of every row it
 touches is written to project-mgmt/findings/, keyed by gate id, as wsAX did.
 
     python3 ETL/terms/reband_ticket_gates.py --dry-run
-    python3 ETL/terms/reband_ticket_gates.py
+    python3 ETL/terms/reband_ticket_gates.py [--publish]
 """
 from __future__ import annotations
 
 import argparse
 import json
 import os
+import sqlite3
 import sys
 from pathlib import Path
 
 import psycopg2
-import psycopg2.extras
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
-from etl_env import ROOT  # noqa: E402
+from etl_env import DB, ROOT  # noqa: E402
 from ticket_bands import BAND_ORDER  # noqa: E402
 
 BEFORE = ROOT / "project-mgmt" / "findings" / "reband_ticket_gates_wsAZ_before.json"
@@ -103,35 +113,35 @@ def remap(spec: dict) -> tuple[dict, list[str]]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--publish", action="store_true",
+                    help="mirror the migrated comparators into Postgres")
     args = ap.parse_args()
 
     if not REPLACEMENTS:
         print(f"nothing to do: the vocabulary no longer splits {RETIRED}")
         return 0
 
-    db = psycopg2.connect(os.environ["DATABASE_URL"])
-    cur = db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("""
-        SELECT id, instrument_id, value_spec
+    conn = sqlite3.connect(DB)
+    rows = conn.execute("""
+        SELECT id, instrument_id, gate_key, value_spec
           FROM eligibility_gates
-         WHERE value_spec IS NOT NULL
-           AND value_spec::jsonb->>'field' = 'ticketBand'
+         WHERE value_spec IS NOT NULL AND value_spec <> ''
+           AND json_extract(value_spec, '$.field') = 'ticketBand'
          ORDER BY id
-    """)
-    rows = [dict(r) for r in cur.fetchall()]
+    """).fetchall()
 
     before: dict[str, dict] = {}
     changes: list[tuple] = []
-    for r in rows:
-        spec = json.loads(r["value_spec"])
+    for gid, iid, gkey, raw in rows:
+        spec = json.loads(raw)
         new, notes = remap(spec)
         if not notes:
             continue
-        before[str(r["id"])] = {"instrument_id": r["instrument_id"], "value_spec": spec}
-        changes.append((r["id"], r["instrument_id"], spec, new, notes))
+        before[str(gid)] = {"instrument_id": iid, "value_spec": spec}
+        changes.append((gid, iid, gkey, spec, new, notes))
 
     print(f"ticketBand comparators: {len(rows)}   to migrate: {len(changes)}")
-    for gid, iid, old, new, notes in changes:
+    for gid, iid, _gkey, old, new, notes in changes:
         print(f"\n  {iid}  (gate {gid})")
         print(f"    was: {json.dumps(old, sort_keys=True)}")
         print(f"    now: {json.dumps(new, sort_keys=True)}")
@@ -147,11 +157,24 @@ def main() -> int:
 
     BEFORE.parent.mkdir(parents=True, exist_ok=True)
     BEFORE.write_text(json.dumps(before, indent=2, sort_keys=True) + "\n")
-    for gid, _iid, _old, new, _notes in changes:
-        cur.execute("UPDATE eligibility_gates SET value_spec = %s WHERE id = %s",
-                    (json.dumps(new, sort_keys=True), gid))
-    db.commit()
-    print(f"\nmigrated {len(changes)} comparator(s); pre-state in {BEFORE}")
+    for gid, _iid, _gkey, _old, new, _notes in changes:
+        conn.execute(
+            "UPDATE eligibility_gates SET value_spec = ?, updated_at = CURRENT_TIMESTAMP"
+            " WHERE id = ?", (json.dumps(new, sort_keys=True), gid))
+    conn.commit()
+    print(f"\nmigrated {len(changes)} comparator(s) in SQLite; pre-state in {BEFORE}")
+
+    if args.publish:
+        db = psycopg2.connect(os.environ["DATABASE_URL"])
+        with db, db.cursor() as cur:
+            cur.executemany(
+                "UPDATE eligibility_gates SET value_spec = %s"
+                " WHERE instrument_id = %s AND gate_key = %s",
+                [(json.dumps(new, sort_keys=True), iid, gkey)
+                 for _gid, iid, gkey, _old, new, _notes in changes])
+        db.close()
+        print(f"published {len(changes)} comparator(s) to Postgres")
+    conn.close()
     return 0
 
 

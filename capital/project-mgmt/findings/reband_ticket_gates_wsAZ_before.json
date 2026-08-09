@@ -1,185 +1,5 @@
 {
-  "358662": {
-    "instrument_id": "eis_v_ikese_ja_keskmise_suur",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "lt500k",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "358757": {
-    "instrument_id": "ipcei_batteries",
-    "value_spec": {
-      "field": "ticketBand",
-      "minAllowed": "b15m_50m",
-      "op": "band_min",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "358889": {
-    "instrument_id": "eis_turismisektori_tootearen",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "lt500k",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "358996": {
-    "instrument_id": "eit_climate_kic_asa",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b500k_2m5",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359012": {
-    "instrument_id": "nfr_pes",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b500k_2m5",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359129": {
-    "instrument_id": "innovation_fund_hbank",
-    "value_spec": {
-      "field": "ticketBand",
-      "minAllowed": "b15m_50m",
-      "op": "band_min",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359161": {
-    "instrument_id": "horizon_eu_cl6",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b2m5_15m",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359186": {
-    "instrument_id": "altum_mikro_aizdevumi_3_1_1_4_",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "lt500k",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359244": {
-    "instrument_id": "eit_climate_kic_clean_cities_spain",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b500k_2m5",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359285": {
-    "instrument_id": "nfr_innoffarena",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b500k_2m5",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359373": {
-    "instrument_id": "nfr_pes2020",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b500k_2m5",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359419": {
-    "instrument_id": "nfr_forny20",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "lt500k",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359457": {
+  "1001": {
     "instrument_id": "nfr_intsamarbeid",
     "value_spec": {
       "field": "ticketBand",
@@ -194,7 +14,19 @@
       ]
     }
   },
-  "359506": {
+  "10334": {
+    "instrument_id": "altum_anm_kepa",
+    "value_spec": {
+      "allowed": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m"
+      ],
+      "field": "ticketBand",
+      "op": "in"
+    }
+  },
+  "1050": {
     "instrument_id": "ipcei_mect",
     "value_spec": {
       "field": "ticketBand",
@@ -209,7 +41,7 @@
       ]
     }
   },
-  "359526": {
+  "1070": {
     "instrument_id": "innovation_fund_battery",
     "value_spec": {
       "field": "ticketBand",
@@ -224,7 +56,7 @@
       ]
     }
   },
-  "359624": {
+  "1168": {
     "instrument_id": "eis_ettev_tete_digip_rde_toe",
     "value_spec": {
       "field": "ticketBand",
@@ -239,212 +71,7 @@
       ]
     }
   },
-  "359831": {
-    "instrument_id": "innovation_fund_hbank_2024_maritime",
-    "value_spec": {
-      "field": "ticketBand",
-      "minAllowed": "b15m_50m",
-      "op": "band_min",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "359973": {
-    "instrument_id": "nfr_formidling",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "lt500k",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360062": {
-    "instrument_id": "nfr_nyskapning",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b500k_2m5",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360085": {
-    "instrument_id": "innovate_uk",
-    "value_spec": {
-      "allowed": [
-        "lt500k"
-      ],
-      "field": "ticketBand",
-      "op": "in"
-    }
-  },
-  "360086": {
-    "instrument_id": "innovate_uk",
-    "value_spec": {
-      "allowed": [
-        "lt500k"
-      ],
-      "field": "ticketBand",
-      "op": "in"
-    }
-  },
-  "360204": {
-    "instrument_id": "altum_starta_izaugsmes_aizdevu",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "lt500k",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360329": {
-    "instrument_id": "eis_ida_viru_v_ike_ja_keskmi",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b2m5_15m",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360347": {
-    "instrument_id": "eis_rakendusuuringute_toetus",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b2m5_15m",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360543": {
-    "instrument_id": "nfr_pes",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "lt500k",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360600": {
-    "instrument_id": "bpifrance_innovup_leader_idf",
-    "value_spec": {
-      "field": "ticketBand",
-      "minAllowed": "lt500k",
-      "op": "band_min",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360601": {
-    "instrument_id": "bpifrance_innovup_leader_idf",
-    "value_spec": {
-      "field": "ticketBand",
-      "op": "equals",
-      "value": "lt500k"
-    }
-  },
-  "360618": {
-    "instrument_id": "bpifrance_inov",
-    "value_spec": {
-      "field": "ticketBand",
-      "minAllowed": "b500k_2m5",
-      "op": "band_min",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "360890": {
-    "instrument_id": "enterprise_ireland_dtif",
-    "value_spec": {
-      "field": "ticketBand",
-      "minAllowed": "b500k_2m5",
-      "op": "band_min",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "361014": {
-    "instrument_id": "satr_at_equity",
-    "value_spec": {
-      "field": "ticketBand",
-      "maxAllowed": "b15m_50m",
-      "op": "band_max",
-      "order": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m",
-        "b15m_50m",
-        "gt50m"
-      ]
-    }
-  },
-  "361117": {
-    "instrument_id": "altum_anm_kepa",
-    "value_spec": {
-      "allowed": [
-        "lt500k",
-        "b500k_2m5",
-        "b2m5_15m"
-      ],
-      "field": "ticketBand",
-      "op": "in"
-    }
-  },
-  "361237": {
+  "12479": {
     "instrument_id": "satr_it_equity",
     "value_spec": {
       "field": "ticketBand",
@@ -459,7 +86,22 @@
       ]
     }
   },
-  "361311": {
+  "1375": {
+    "instrument_id": "innovation_fund_hbank_2024_maritime",
+    "value_spec": {
+      "field": "ticketBand",
+      "minAllowed": "b15m_50m",
+      "op": "band_min",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "14871": {
     "instrument_id": "satr_hu_rnd",
     "value_spec": {
       "field": "ticketBand",
@@ -474,7 +116,132 @@
       ]
     }
   },
-  "361936": {
+  "150692": {
+    "instrument_id": "ademe_aid__aap_decarb_ind_pdr_fdi_43019f",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b2m5_15m",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "1517": {
+    "instrument_id": "nfr_formidling",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "lt500k",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "1606": {
+    "instrument_id": "nfr_nyskapning",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b500k_2m5",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "1679": {
+    "instrument_id": "innovate_uk",
+    "value_spec": {
+      "allowed": [
+        "lt500k"
+      ],
+      "field": "ticketBand",
+      "op": "in"
+    }
+  },
+  "1680": {
+    "instrument_id": "innovate_uk",
+    "value_spec": {
+      "allowed": [
+        "lt500k"
+      ],
+      "field": "ticketBand",
+      "op": "in"
+    }
+  },
+  "1885": {
+    "instrument_id": "altum_starta_izaugsmes_aizdevu",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "lt500k",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "2024": {
+    "instrument_id": "eis_ida_viru_v_ike_ja_keskmi",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b2m5_15m",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "2042": {
+    "instrument_id": "eis_rakendusuuringute_toetus",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b2m5_15m",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "206": {
+    "instrument_id": "eis_v_ikese_ja_keskmise_suur",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "lt500k",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "22409": {
     "instrument_id": "innovation_fund_battery",
     "value_spec": {
       "field": "ticketBand",
@@ -489,7 +256,7 @@
       ]
     }
   },
-  "362070": {
+  "24912": {
     "instrument_id": "satr_de_equity",
     "value_spec": {
       "field": "ticketBand",
@@ -504,7 +271,22 @@
       ]
     }
   },
-  "362172": {
+  "2717": {
+    "instrument_id": "nfr_pes",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "lt500k",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "27493": {
     "instrument_id": "altum_covid_19_kr_zes_aizdevum",
     "value_spec": {
       "allowed": [
@@ -515,7 +297,7 @@
       "op": "in"
     }
   },
-  "362239": {
+  "27595": {
     "instrument_id": "altum_starta_aizdevumi_3_1_1_4",
     "value_spec": {
       "allowed": [
@@ -526,7 +308,60 @@
       "op": "in"
     }
   },
-  "362442": {
+  "2883": {
+    "instrument_id": "bpifrance_innovup_leader_idf",
+    "value_spec": {
+      "field": "ticketBand",
+      "minAllowed": "lt500k",
+      "op": "band_min",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "2884": {
+    "instrument_id": "bpifrance_innovup_leader_idf",
+    "value_spec": {
+      "field": "ticketBand",
+      "op": "equals",
+      "value": "lt500k"
+    }
+  },
+  "2901": {
+    "instrument_id": "bpifrance_inov",
+    "value_spec": {
+      "field": "ticketBand",
+      "minAllowed": "b500k_2m5",
+      "op": "band_min",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "301": {
+    "instrument_id": "ipcei_batteries",
+    "value_spec": {
+      "field": "ticketBand",
+      "minAllowed": "b15m_50m",
+      "op": "band_min",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "32614": {
     "instrument_id": "eit_health_catapult",
     "value_spec": {
       "field": "ticketBand",
@@ -541,11 +376,176 @@
       ]
     }
   },
-  "364860": {
-    "instrument_id": "ademe_aid__aap_decarb_ind_pdr_fdi_43019f",
+  "433": {
+    "instrument_id": "eis_turismisektori_tootearen",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "lt500k",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "540": {
+    "instrument_id": "eit_climate_kic_asa",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b500k_2m5",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "556": {
+    "instrument_id": "nfr_pes",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b500k_2m5",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "673": {
+    "instrument_id": "innovation_fund_hbank",
+    "value_spec": {
+      "field": "ticketBand",
+      "minAllowed": "b15m_50m",
+      "op": "band_min",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "6738": {
+    "instrument_id": "enterprise_ireland_dtif",
+    "value_spec": {
+      "field": "ticketBand",
+      "minAllowed": "b500k_2m5",
+      "op": "band_min",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "705": {
+    "instrument_id": "horizon_eu_cl6",
     "value_spec": {
       "field": "ticketBand",
       "maxAllowed": "b2m5_15m",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "730": {
+    "instrument_id": "altum_mikro_aizdevumi_3_1_1_4_",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "lt500k",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "788": {
+    "instrument_id": "eit_climate_kic_clean_cities_spain",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b500k_2m5",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "829": {
+    "instrument_id": "nfr_innoffarena",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b500k_2m5",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "9022": {
+    "instrument_id": "satr_at_equity",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b15m_50m",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "917": {
+    "instrument_id": "nfr_pes2020",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "b500k_2m5",
+      "op": "band_max",
+      "order": [
+        "lt500k",
+        "b500k_2m5",
+        "b2m5_15m",
+        "b15m_50m",
+        "gt50m"
+      ]
+    }
+  },
+  "963": {
+    "instrument_id": "nfr_forny20",
+    "value_spec": {
+      "field": "ticketBand",
+      "maxAllowed": "lt500k",
       "op": "band_max",
       "order": [
         "lt500k",

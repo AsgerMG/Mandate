@@ -44,6 +44,7 @@ import sqlite3
 import anthropic
 
 from extract_terms import _norm as norm, load_doc   # same parser as the original pass
+from encode_gates import emittable_ops, refuse_unemittable
 from verify_encodings import BAND_ORDERS, ENUM_VALUES, MODELS, REENCODE_SCHEMA
 
 REEXTRACT_SCHEMA = REENCODE_SCHEMA
@@ -175,6 +176,12 @@ def main() -> None:
             if op == "none":
                 still_none += 1
                 continue
+            # Same refusal, same source: this pass also takes `field` from the
+            # model and its schema (REENCODE_SCHEMA, shared with
+            # verify_encodings.py) cannot express `region_within`.
+            if refuse_unemittable(field, gid, "re-extract", emittable_ops(REENCODE_SCHEMA)):
+                rejected += 1
+                continue
             vocab = ENUM_VALUES.get(field)
             if vocab:
                 vals = [v for v in vals if v in vocab]
@@ -200,7 +207,7 @@ def main() -> None:
                 if not vals or vals[0] not in order:
                     rejected += 1
                     continue
-                spec["order"] = order
+                # No frozen copy of the band list — see verify_encodings.py.
                 spec["maxAllowed" if op == "band_max" else "minAllowed"] = vals[0]
             if not args.dry_run:
                 conn.execute(
