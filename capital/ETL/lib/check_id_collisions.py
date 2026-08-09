@@ -66,28 +66,55 @@ IDENTITY: list[tuple[str, str, list[str]]] = [
     # What a company IS: a name in a country. Not its sector, which is
     # classifier output and legitimately differs between the stores.
     ("companies", "id", ["canonical_name", "country"]),
-    # A scheme, its country, and who administers it. Not event_count/total_eur,
-    # which are recomputed aggregates.
-    ("funding_instruments", "id", ["name", "country", "administering_body"]),
+    # NOT `name`. The first run of this file reported 26 instruments as
+    # collisions on the strength of it, and every one was the same scheme under
+    # two spellings of its own title -- `apply_override_names.py` rewrites this
+    # column and `name_basis`/`name_source` record that it did. A column our own
+    # pipeline rewrites cannot establish what a row IS.
+    # Note also that `funding_instruments.id` is TEXT and derived from the source
+    # register; neither store's `sqlite_sequence` carries a row for this table,
+    # so the forked-counter failure mode is structurally absent here. The tuple
+    # stays as a cross-check, not because an id could be reissued.
+    ("funding_instruments", "id", ["country", "administering_body"]),
     # An award: which register it came from, its number there, and what it was
     # for. `company_id` is deliberately absent -- see the header.
     ("public_funding_events", "id",
      ["source", "project_number", "project_title", "grant_amount_eur"]),
-    # A requirement. `instrument_id` IS included: without it gate_key repeats
-    # across instruments by design, and the tuple would be too weak to mean
-    # anything. The caveat is real and is printed in the verdict.
-    ("eligibility_gates", "id", ["instrument_id", "gate_key", "requirement", "value"]),
-    ("eligibility_clauses", "id", ["instrument_id", "clause_type", "clause_key", "text"]),
+    # (instrument_id, gate_key) and nothing else, because it is measurably a
+    # natural key: 7,471 pairs across 7,471 laptop rows, 6,401 across 6,401
+    # volume rows, no duplicate on either side.
+    # NOT `requirement` or `value`. The first run reported 270 collisions on
+    # them; every one was a gate whose requirement prose the GBER encoder had
+    # rewritten on one side only. Same gate, same instrument, better sentence.
+    ("eligibility_gates", "id", ["instrument_id", "gate_key"]),
+    ("eligibility_clauses", "id", ["instrument_id", "clause_type", "clause_key"]),
 ]
 
 
 def _norm(expr: str) -> str:
-    """Trim and case-fold text for comparison; leave NULL as NULL.
+    """Trim and case-fold for comparison. NULL stays NULL, deliberately.
 
     `lower(trim(x))` on a number is a no-op in SQLite's type system, so this is
     safe to apply to the amount column too.
     """
-    return f"lower(trim(coalesce({expr}, char(1))))"
+    return f"lower(trim({expr}))"
+
+
+def _differs(col: str) -> str:
+    """True only when BOTH sides carry a value and the values disagree.
+
+    A NULL on one side is an ABSENT CLAIM, not a different one. The first run of
+    this file did not make that distinction and reported 87 instruments as
+    colliding because the laptop held no `administering_body` and the volume
+    held one -- the same scheme, described by one store and not the other.
+    That is the divergence working as intended.
+
+    merge_volume_into_local.py makes exactly this distinction in its own header
+    ("a missing value and a zero are different claims"); a check placed in front
+    of it that did not would be arguing with the thing it guards.
+    """
+    return (f"(m.{col} IS NOT NULL AND v.{col} IS NOT NULL "
+            f"AND {_norm('m.' + col)} <> {_norm('v.' + col)})")
 
 
 def _shared(con: sqlite3.Connection, table: str) -> set[str]:
@@ -116,23 +143,40 @@ def audit(con: sqlite3.Connection) -> tuple[int, int, list[str]]:
             notes.append(f"{table}: identity weakened to {cols} "
                          f"(missing {[c for c in ident if c not in shared]})")
 
-        same = " AND ".join(f"{_norm('m.' + c)} = {_norm('v.' + c)}" for c in cols)
+        differs = " OR ".join(_differs(c) for c in cols)
         idt = ", ".join(cols)
 
         # 1. Same id, different thing. The merge skips these silently.
         n_coll = con.execute(
             f"SELECT count(*) FROM main.{table} m JOIN vol.{table} v "
-            f"USING ({key}) WHERE NOT ({same})").fetchone()[0]
+            f"USING ({key}) WHERE {differs}").fetchone()[0]
 
         # 2. Same thing, different ids. The merge inserts these twice. Counted
         #    over volume rows the merge WOULD insert, because a volume row the
         #    merge skips cannot become a duplicate.
+        #
+        #    Restricted to rows whose identity is FULLY populated on both sides.
+        #    Equality here is a hash lookup over the whole table, and a
+        #    NULL-tolerant version would be a correlated scan of 163k rows per
+        #    candidate. Rows excluded by that restriction are counted and
+        #    reported rather than quietly dropped -- an unchecked row that is
+        #    not announced is how a guard comes to mean less than it says.
         vsel = ", ".join(_norm("v." + c) for c in cols)
         msel = ", ".join(_norm("m." + c) for c in cols)
+        vfull = " AND ".join(f"v.{c} IS NOT NULL" for c in cols)
+        mfull = " AND ".join(f"m.{c} IS NOT NULL" for c in cols)
         n_alias = con.execute(
             f"SELECT count(*) FROM vol.{table} v "
+            f"WHERE v.{key} NOT IN (SELECT {key} FROM main.{table}) AND {vfull} "
+            f"AND ({vsel}) IN (SELECT {msel} FROM main.{table} m WHERE {mfull})"
+        ).fetchone()[0]
+        n_skipped = con.execute(
+            f"SELECT count(*) FROM vol.{table} v "
             f"WHERE v.{key} NOT IN (SELECT {key} FROM main.{table}) "
-            f"AND ({vsel}) IN (SELECT {msel} FROM main.{table} m)").fetchone()[0]
+            f"AND NOT ({vfull})").fetchone()[0]
+        if n_skipped:
+            notes.append(f"{table}: {n_skipped:,} incoming rows have an incomplete "
+                         f"identity and were NOT alias-checked")
 
         collisions += n_coll
         aliases += n_alias
@@ -147,7 +191,7 @@ def audit(con: sqlite3.Connection) -> tuple[int, int, list[str]]:
                     f"SELECT m.{key}, {', '.join('m.' + c for c in cols)}, "
                     f"{', '.join('v.' + c for c in cols)} "
                     f"FROM main.{table} m JOIN vol.{table} v USING ({key}) "
-                    f"WHERE NOT ({same}) LIMIT 5"):
+                    f"WHERE {differs} LIMIT 5"):
                 print(f"  {'':24s}     id={row[0]}  laptop={row[1:1+len(cols)]}  "
                       f"volume={row[1+len(cols):]}")
 
@@ -174,6 +218,11 @@ def self_test() -> int:
     # ALIAS: one company, two ids
     con.execute("INSERT INTO main.companies VALUES (3, 'Twice Oy', 'DK')")
     con.execute("INSERT INTO vol.companies  VALUES (9, 'Twice Oy', 'DK')")
+    # ABSENT CLAIM, not a different one: one store describes it, the other does
+    # not. Must be silent. Getting this wrong is what made the first real run
+    # report 87 false collisions, so it is asserted rather than assumed.
+    con.execute("INSERT INTO main.companies VALUES (4, 'Sparse Oy', NULL)")
+    con.execute("INSERT INTO vol.companies  VALUES (4, 'Sparse Oy', 'NO')")
 
     global IDENTITY
     keep = IDENTITY

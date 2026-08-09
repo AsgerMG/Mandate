@@ -25,6 +25,28 @@ this must not walk that back. Columns the volume does not have are left NULL
 rather than defaulted, because a missing value and a zero are different claims.
 
     python3 ETL/lib/merge_volume_into_local.py <volume.sqlite> [--write]
+    python3 ETL/lib/merge_volume_into_local.py <volume.sqlite> --only companies
+
+── Keying on `id` alone is only safe when somebody has checked ───────────────
+This file's whole correctness rests on `id` meaning the same thing in both
+stores, and for a long time nothing established that. It is not free:
+
+  * both stores draw from the SAME `sqlite_sequence` counters, forked 2026-08-08,
+    so an id issued after the fork was handed out twice -- and `INSERT OR IGNORE`
+    would skip the volume's row while the after-check below reported the exact
+    count a clean merge produces;
+  * a row already here under a DIFFERENT id is not skipped, it is inserted a
+    second time, and the count goes up by precisely the expected amount.
+
+The after-check compares row COUNTS, and a count is the one thing that looks
+right in both cases. So the check now runs IN FRONT of the merge rather than
+beside it: `check_id_collisions.py` compares rows, and this refuses to write
+unless it passes for the tables actually being merged. There is no override
+flag. If it refuses, the answer is to scope the merge with `--only`, not to
+argue with it -- on 2026-08-09 it correctly refused a five-table merge in which
+every one of the 174 gates and 14 clauses on offer was a duplicate of a row
+already here, under a different id, which would have broken a natural key
+(instrument_id, gate_key) that had held exactly across 7,471 rows.
 """
 from __future__ import annotations
 
@@ -54,6 +76,41 @@ def main() -> int:
     if not vol.exists():
         return print(f"no such file: {vol}", file=sys.stderr) or 1
 
+    only = None
+    for i, a in enumerate(sys.argv):
+        if a == "--only" and i + 1 < len(sys.argv):
+            only = [t.strip() for t in sys.argv[i + 1].split(",") if t.strip()]
+    tables = [(t, k) for t, k in MERGE if only is None or t in only]
+    if only:
+        unknown = set(only) - {t for t, _ in MERGE}
+        if unknown:
+            return print(f"--only names no such table: {sorted(unknown)}",
+                         file=sys.stderr) or 2
+        print(f"scoped to {', '.join(t for t, _ in tables)}\n")
+
+    # The check in front of the merge, not beside it. Scoped to the same tables,
+    # because refusing on a table this run will not touch would teach people to
+    # reach for an override -- and there is deliberately no override.
+    import check_id_collisions  # noqa: E402
+    audit_con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+    audit_con.execute("ATTACH DATABASE ? AS vol", (str(vol),))
+    keep = check_id_collisions.IDENTITY
+    check_id_collisions.IDENTITY = [
+        row for row in keep if row[0] in {t for t, _ in tables}]
+    try:
+        print("id-collision audit (rows, not counts):")
+        coll, alias, notes = check_id_collisions.audit(audit_con)
+    finally:
+        check_id_collisions.IDENTITY = keep
+        audit_con.close()
+    for n in notes:
+        print(f"  NOTE  {n}")
+    if coll or alias:
+        print(f"\nREFUSING: {coll:,} id collision(s), {alias:,} alias(es). Keying on\n"
+              f"  `id` is not safe for this set. Narrow it with --only.")
+        return 1
+    print()
+
     con = sqlite3.connect(DB)
     # Plain path, not a file: URI -- ATTACH only honours URIs when the
     # connection was opened with uri=True, and it fails opaquely otherwise.
@@ -61,10 +118,10 @@ def main() -> int:
     con.execute("ATTACH DATABASE ? AS vol", (str(vol),))
 
     before = {t: con.execute(f"SELECT count(*) FROM main.{t}").fetchone()[0]
-              for t, _ in MERGE}
+              for t, _ in tables}
 
     plan = []
-    for table, key in MERGE:
+    for table, key in tables:
         vcols = {r[1] for r in con.execute(f"PRAGMA vol.table_info({table})")}
         lcols = [r[1] for r in con.execute(f"PRAGMA main.table_info({table})")]
         if not vcols:
@@ -98,7 +155,7 @@ def main() -> int:
 
     print("\nAFTER — every table must be a superset:")
     ok = True
-    for table, _ in MERGE:
+    for table, _ in tables:
         after = con.execute(f"SELECT count(*) FROM main.{table}").fetchone()[0]
         delta = after - before[table]
         flag = "" if after >= before[table] else "   LOST ROWS"
