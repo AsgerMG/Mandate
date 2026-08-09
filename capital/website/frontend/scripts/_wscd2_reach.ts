@@ -31,6 +31,30 @@
 // a reachable row still needs the judge to actually settle the keys that way,
 // and needs the movement to be in the right direction.
 //
+// ── WHAT IT MEASURED, 2026-08-09 ──────────────────────────────────────────
+// tune split, n=120, seed 20260806, live Postgres. Share of rows the scorer
+// CAN move, under the most favourable verdict assignment that exists:
+//
+//   K       1       2       3       4       6
+//   neutral 0.0%    0.0%    4.2%   10.0%   45.0%     <- the arm that ships
+//   pass  100.0%  100.0%  100.0%  100.0%  100.0%
+//
+// Six questions are offered on 100% of rows, so `offered` is not the binding
+// constraint at any budget: the selector always has something to ask, and the
+// SCORER is what cannot act on the answer.
+//
+// The mechanism is the histogram this script prints: of the leaves carrying a
+// selected key, 1,080 carry exactly ONE and 19 carry two. `openQuestionsForShortlist`
+// deliberately takes one question per regime ("so the budget buys coverage of
+// DIFFERENT forks"), so every carrier inside a regime receives the SAME key,
+// computes the SAME fit, and `hi === lo` skips the group. Neutral can only act
+// where the budget overflows a second key into a regime — which never happens
+// below K=3, and is still rare at K=6.
+//
+// So under the shipping absence arm there is no knee below the full six-slot
+// screen budget, and the ceiling even there is 45% of rows able to move AT
+// ALL, in either direction. That is the honest bound, and it was free.
+//
 // Read-only. Postgres and disk. NO model calls.
 //
 //   cd website/frontend
