@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import countryMapRaw from "@/public/data/country_map.json";
 import coverageRatingsRaw from "@/public/data/coverage_ratings.json";
 import { corpusStats, type Synthesis } from "@/lib/data";
+import { corpusProse } from "@/lib/corpusProse";
 
 // Headline counts come from the single corpus-wide source (lib/data.corpusStats),
 // which also drives the nav, the layout footer and /about-public-capital, so
@@ -74,6 +75,11 @@ const countryData = Object.fromEntries(
 
 export default async function Home() {
   const synth = await corpusStats();
+  // The sentences, from the corpus too. Until now the prose on this page said
+  // "2020 to 2025" while /about-public-capital said "2021 to 2025" about the
+  // same corpus, and "two dozen national authorities" when the register carries
+  // 22 — three literals nobody could have noticed going wrong.
+  const prose = corpusProse();
   const { capValue, capSuffix, capDecimals } = capitalParts(synth);
   return (
     <div>
@@ -174,7 +180,11 @@ export default async function Home() {
             </Chapter>
 
             {/* Chapter 2 — The channels graph: the pinned, camera-driven anchor */}
-            <ChannelsGraph />
+            {/* The graph states the national/EU split in words. It is a
+                "use client" module, so the figure is handed down rather than
+                imported — the artifacts corpusProse() reads are ~700 KB and
+                have no business in a browser bundle. */}
+            <ChannelsGraph nationalAwardPct={prose.nationalAwardPct} />
 
             {/* Chapter 3 — We tried to track it: the KPIs */}
             <Chapter className="py-24 sm:py-32">
@@ -190,9 +200,10 @@ export default async function Home() {
                   </Reveal>
                   <Reveal delay={160}>
                     <p className="mt-5 max-w-xl leading-relaxed text-[var(--foreground-soft)]">
-                      We assembled every company we could find across those channels, 2020 to 2025:
-                      the main EU instruments, the national development banks, and the EU State Aid
-                      Transparency Register covering two dozen national authorities.
+                      We assembled every company we could find across those channels,{" "}
+                      {prose.awardWindow}: the main EU instruments, the national development banks,
+                      and the EU State Aid Transparency Register covering{" "}
+                      {prose.nationalAuthorities} national authorities.
                     </p>
                   </Reveal>
                 </div>

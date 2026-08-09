@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IntelligencePanel } from "@/lib/intelligence/panel";
+import { corpusStats } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Get your state-backed capital brief | Wincent",
@@ -8,7 +9,15 @@ export const metadata: Metadata = {
     "Enter your company and get a one-page brief: which comparable companies have drawn European public capital, through which instruments, and a prioritised to-do list for your own raise.",
 };
 
-export default function BriefPage() {
+// The progress panel states the size of the funding record while it works, and
+// the layout footer states it too. Both now read the same census, so the two
+// figures on one screen cannot disagree — they did, by five thousand companies.
+// Literal, not the imported constant: Next reads segment config statically.
+// check_revalidate_literal.ts keeps this in step with CORPUS_REVALIDATE_SECONDS.
+export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
+
+export default async function BriefPage() {
+  const { companies } = await corpusStats();
   return (
     <section className="relative flex min-h-[calc(100svh-var(--nav-h))] flex-col overflow-hidden bg-[var(--background)] pt-16 pb-6 sm:pt-20">
       <div
@@ -24,7 +33,7 @@ export default function BriefPage() {
           /about-public-capital. Anchored to the shared offset instead. */}
       <div className="relative flex flex-1 items-start">
         <div className="wrap">
-          <IntelligencePanel />
+          <IntelligencePanel corpusCompanies={companies} />
         </div>
       </div>
       <div className="relative flex justify-center pt-4 pb-2">

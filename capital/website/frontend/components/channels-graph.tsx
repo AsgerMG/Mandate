@@ -6,7 +6,7 @@
 // programmes. Overview -> State aid -> Development banks -> (out) -> European
 // funds -> (out) -> converge on the public anchor.
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 const ACCENT = "#7f5820";
 type Channel = "aid" | "bank" | "eu" | null;
@@ -42,7 +42,26 @@ const P = ({ children }: { children: ReactNode }) => (
 );
 const b = (t: string) => <span className="text-[var(--foreground)]">{t}</span>;
 
-const STEPS: Step[] = [
+/** What the narrative needs from the corpus.
+ *
+ *  One field today, and a props object rather than a bare number on purpose:
+ *  the steps below are the site's longest stretch of prose about the shape of
+ *  the machine, and the next figure that gets stated in it should arrive the
+ *  same way rather than as the second literal. */
+export interface ChannelsGraphProps {
+  /** Share of traced awards that stay on the national road, whole percent.
+   *  Derived in `lib/corpusProse.ts`; passed rather than imported because this
+   *  is a "use client" module and the artifacts behind it are ~700 KB. */
+  nationalAwardPct: number;
+}
+
+/** The steps, as a function of the corpus rather than a constant.
+ *
+ *  This was `const STEPS: Step[]`, which is what made "Roughly three quarters"
+ *  a literal: a module-scope array cannot see a prop. Every reference to it is
+ *  inside the component, so making it a call costs nothing. */
+function buildSteps({ nationalAwardPct }: ChannelsGraphProps): Step[] {
+  return [
   {
     key: "overview",
     cam: "overview",
@@ -116,9 +135,9 @@ const STEPS: Step[] = [
         {kicker("Step back")}
         {head("That is only half of the machine.")}
         <P>
-          Roughly three quarters of the awards we traced stay national, on those two rails. But the
-          other road, the money pooled at EU level, funds the largest and most strategic bets on the
-          whole continent. Follow it to Brussels.
+          Roughly {nationalAwardPct}% of the awards we traced stay national, on those two rails. But
+          the other road, the money pooled at EU level, funds the largest and most strategic bets on
+          the whole continent. Follow it to Brussels.
         </P>
       </div>
     ),
@@ -165,7 +184,8 @@ const STEPS: Step[] = [
       </div>
     ),
   },
-];
+  ];
+}
 
 // ── Graph geometry ────────────────────────────────────────────────────────────
 function Node({
@@ -353,7 +373,11 @@ function Graph({ channel }: { channel: Channel }) {
 }
 
 // ── The pinned, camera-driven section ─────────────────────────────────────────
-export function ChannelsGraph() {
+export function ChannelsGraph(props: ChannelsGraphProps) {
+  // Rebuilt only when the figure moves, which is once a week at most. The
+  // steps hold JSX, so an unmemoised call would rebuild the whole narrative on
+  // every scroll tick that advances `active`.
+  const STEPS = useMemo(() => buildSteps(props), [props.nationalAwardPct]);  // eslint-disable-line react-hooks/exhaustive-deps
   const [active, setActive] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const [vb, setVb] = useState<number[]>([...CAM.overview]);

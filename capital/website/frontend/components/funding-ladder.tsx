@@ -10,6 +10,10 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { fmtEur } from "@/lib/format";
+// One definition of the two named awards, shared with /about-public-capital,
+// which stated the same two euro figures independently. See the module for why
+// these stay literals and what verified them.
+import { VERIFIED_AWARDS } from "@/lib/verifiedAwards";
 
 const ACCENT = "#7f5820";
 
@@ -46,11 +50,28 @@ const CAM = {
   signal: [35, 600, 570, 400],
 } as const;
 
+/** Everything the narrative states, handed in rather than typed into it.
+ *
+ *  The rung ticket sizes already arrived this way. The two shares did not:
+ *  "Only about a third of the companies on the top floor climbed there" and
+ *  "three quarters of all awards are national" were literals in prose, and the
+ *  first of them restates `stats.conviction.pct`, which /about-public-capital
+ *  renders live in a Stat tile two sections further down. Two statements of one
+ *  quantity, one of which followed the corpus and one of which did not. */
+export interface LadderFigures {
+  signal: Rung[];
+  conviction: Rung[];
+  /** Share of conviction-tier companies that climbed from smaller grants. */
+  convictionClimbPct: number;
+  /** Share of traced awards that stay on the national road, whole percent. */
+  nationalAwardPct: number;
+}
+
 interface Step {
   key: string;
   cam: keyof typeof CAM;
   tier: Tier;
-  content: (r: { signal: Rung[]; conviction: Rung[] }) => ReactNode;
+  content: (r: LadderFigures) => ReactNode;
 }
 
 const kicker = (t: string) => (
@@ -115,14 +136,14 @@ const STEPS: Step[] = [
     key: "gap",
     cam: "gap",
     tier: "gap",
-    content: () => (
+    content: ({ convictionClimbPct }) => (
       <div>
         {kicker("The missing middle")}
         {head("There is no escalator up.")}
         <P>
-          Only about a {b("third")} of the companies on the top floor climbed there from smaller
-          grants. The rest were selected outright, because they sit in a value chain the EU has
-          declared strategic: batteries, hydrogen, chips, cloud, defence.
+          Only {b(`${convictionClimbPct}%`)} of the companies on the top floor climbed there from
+          smaller grants. The rest were selected outright, because they sit in a value chain the EU
+          has declared strategic: batteries, hydrogen, chips, cloud, defence.
         </P>
         <P>
           So the gap is not crossed by stacking small wins. It is crossed by being{" "}
@@ -146,8 +167,9 @@ const STEPS: Step[] = [
         </P>
         <P>
           When one lands it behaves like a {b("state-underwritten growth round")}. Stegra
-          carried EUR 250m from the Innovation Fund into its green-steel buildout; Porsche&apos;s
-          Cellforce drew EUR 57m of granted battery aid.
+          carried {VERIFIED_AWARDS.stegraInnovationFund} from the Innovation Fund into its
+          green-steel buildout; Porsche&apos;s Cellforce drew{" "}
+          {VERIFIED_AWARDS.cellforceBatteryAid} of granted battery aid.
         </P>
       </div>
     ),
@@ -176,13 +198,14 @@ const STEPS: Step[] = [
     key: "door",
     cam: "overview",
     tier: null,
-    content: () => (
+    content: ({ nationalAwardPct }) => (
       <div>
         {kicker("Your move")}
         {head("Which door is even open to you.")}
         <P>
-          Which floor you can reach depends first on {b("where you are registered")}: three
-          quarters of all awards are national, and every country routes them differently.
+          Which floor you can reach depends first on {b("where you are registered")}:{" "}
+          {nationalAwardPct}% of all awards are national, and every country routes them
+          differently.
         </P>
         <P>Follow the door that fits your address. That is the next chapter.</P>
       </div>
@@ -378,7 +401,8 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
 }
 
 // ── The pinned, camera-driven section ─────────────────────────────────────────
-export function FundingLadder({ signal, conviction }: { signal: Rung[]; conviction: Rung[] }) {
+export function FundingLadder(figures: LadderFigures) {
+  const { signal, conviction } = figures;
   const [active, setActive] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
   const [vb, setVb] = useState<number[]>([...CAM.overview]);
@@ -413,7 +437,6 @@ export function FundingLadder({ signal, conviction }: { signal: Rung[]; convicti
   }, [active]);
 
   const tier = STEPS[active].tier;
-  const rungs = { signal, conviction };
   const svg = (
     <svg viewBox={vb.join(" ")} className="h-full w-full" role="img" aria-label="Climbing Europe's public funding stack, floor by floor">
       <Ladder tier={tier} signal={signal} conviction={conviction} />
@@ -437,7 +460,7 @@ export function FundingLadder({ signal, conviction }: { signal: Rung[]; convicti
                   }
                   aria-hidden={active !== i}
                 >
-                  <div className="w-full">{s.content(rungs)}</div>
+                  <div className="w-full">{s.content(figures)}</div>
                 </div>
               ))}
             </div>
@@ -457,7 +480,7 @@ export function FundingLadder({ signal, conviction }: { signal: Rung[]; convicti
         <div className="wrap">
           {STEPS.map((s, i) => (
             <div key={s.key} data-i={i} className="py-16">
-              {s.content(rungs)}
+              {s.content(figures)}
             </div>
           ))}
         </div>
