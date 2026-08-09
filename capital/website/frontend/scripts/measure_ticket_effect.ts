@@ -21,7 +21,12 @@ requireCredentials("measure_ticket_effect", ["DATABASE_URL", "VOYAGE_KEY"]);
 import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 
-const BANDS = ["lt500k", "b500k_2m5", "b2m5_15m", "b15m_50m", "gt50m"];
+import { TICKET_BANDS } from "../lib/intelligence/types";
+
+// Derived, never listed: a hand-written copy here would keep sweeping the bands
+// the intake USED to offer, and would report a clean sweep across a scale no
+// founder is shown any more.
+const BANDS = TICKET_BANDS.map((b) => b.value);
 
 async function main() {
   await hydrateDbInstruments();

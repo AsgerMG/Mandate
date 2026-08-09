@@ -57,7 +57,9 @@
       "job_commitments"
     ],
     "ticketBand": [
-      "lt500k",
+      "lt25k",
+      "b25k_100k",
+      "b100k_500k",
       "b500k_2m5",
       "b2m5_15m",
       "b15m_50m",
@@ -140,7 +142,9 @@
   },
   "bandOrders": {
     "ticketBand": [
-      "lt500k",
+      "lt25k",
+      "b25k_100k",
+      "b100k_500k",
       "b500k_2m5",
       "b2m5_15m",
       "b15m_50m",
@@ -180,6 +184,15 @@
       "months_18",
       "flexible"
     ]
+  },
+  "bandBounds": {
+    "lt25k": 25000,
+    "b25k_100k": 100000,
+    "b100k_500k": 500000,
+    "b500k_2m5": 2500000,
+    "b2m5_15m": 15000000,
+    "b15m_50m": 50000000,
+    "gt50m": null
   },
   "multiValueFields": [
     "activities",

@@ -24,10 +24,14 @@
 /** Every op the encoder may emit. Adding one here is the ONLY place it needs
  *  adding — that is the point of this file existing. */
 import { regionsOverlap } from "./regions.generated";
+import { BAND_ORDERS } from "./vocabulary";
 
 export type ValueSpec =
-  | { op: "band_max"; field: string; maxAllowed: string; order: string[] }
-  | { op: "band_min"; field: string; minAllowed: string; order: string[] }
+  /** `order` is a STALE SNAPSHOT, kept only for specs written before the band
+   *  list became the single source. The live order comes from `BAND_ORDERS`;
+   *  see `bandOrderFor`. */
+  | { op: "band_max"; field: string; maxAllowed: string; order?: string[] }
+  | { op: "band_min"; field: string; minAllowed: string; order?: string[] }
   | { op: "in"; field: string; allowed: string[] }
   | { op: "not_in"; field: string; allowed: string[] }
   /** Region containment. NUTS ids are hierarchical, so a rule naming Normandie
@@ -78,6 +82,27 @@ export function matchesAny(answer: unknown, allowed: readonly string[]): boolean
   return null;
 }
 
+/** The band order to compare on: the LIVE vocabulary for a field that has one,
+ *  and only otherwise whatever the spec froze into itself.
+ *
+ *  Every `band_max`/`band_min` spec in the corpus carries its own copy of the
+ *  band list, written at encode time. That copy is a snapshot, and rebanding
+ *  `ticketBand` — splitting the old `lt500k`, which held 706 of 892 instruments
+ *  — turned all 33 of them stale at once. The failure is silent and it is the
+ *  wrong kind of silent: `indexOf` returns -1 for a band the snapshot predates,
+ *  `comparePosition` returns null, and the rule reads as "not assessable" for
+ *  every founder forever. That is the exact shape wsAX found `region` in, where
+ *  193 rules on 163 instruments had been inert long enough for the encodings
+ *  underneath them to quietly go wrong, because a rule that never fires is a
+ *  rule nothing can prove wrong.
+ *
+ *  So the vocabulary wins over the snapshot. `check_vocabularies.ts` fails the
+ *  build if a spec's frozen order disagrees with the live one, rather than
+ *  letting the two coexist. */
+function bandOrderFor(field: string, frozen?: readonly string[]): readonly string[] {
+  return BAND_ORDERS[field] ?? frozen ?? [];
+}
+
 /** Position of `answer` in an ordered band list, or null if either end is
  *  unrecognised — an unknown band is unanswerable, never a failure. */
 function comparePosition(
@@ -101,11 +126,13 @@ function comparePosition(
 export function evaluateSpec(spec: ValueSpec, answer: unknown): boolean | null {
   switch (spec.op) {
     case "band_max": {
-      const p = comparePosition(spec.order, answer, spec.maxAllowed);
+      const p = comparePosition(
+        bandOrderFor(spec.field, spec.order), answer, spec.maxAllowed);
       return p ? p.a <= p.b : null;
     }
     case "band_min": {
-      const p = comparePosition(spec.order, answer, spec.minAllowed);
+      const p = comparePosition(
+        bandOrderFor(spec.field, spec.order), answer, spec.minAllowed);
       return p ? p.a >= p.b : null;
     }
     case "in":

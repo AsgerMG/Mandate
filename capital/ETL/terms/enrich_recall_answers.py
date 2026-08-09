@@ -104,24 +104,11 @@ import statistics  # noqa: E402
 INTEL = ROOT / "website" / "frontend" / "lib" / "intelligence"
 DEFAULT_FROM = "__recallSetComposed.json"
 
-# The intake's own ticket bands, as (exclusive upper bound, value). Mirrors
-# TICKET_BANDS in website/frontend/lib/intelligence/types.ts -- the vocabulary
-# contract generates the option LIST into Python, but not the euro edges, which
-# live only in the labels. Kept here as the one place this file reads them.
-TICKET_BANDS = [
-    (500_000, "lt500k"),
-    (2_500_000, "b500k_2m5"),
-    (15_000_000, "b2m5_15m"),
-    (50_000_000, "b15m_50m"),
-    (float("inf"), "gt50m"),
-]
-
-
-def ticket_band(amount: float) -> str:
-    for edge, value in TICKET_BANDS:
-        if amount < edge:
-            return value
-    return TICKET_BANDS[-1][1]
+# The intake's own ticket bands, read from the vocabulary contract rather than
+# restated. This file decides which band every graded founder is recorded as
+# having asked for, so a copy here that lagged a rebanding would grade the new
+# scale against answers derived on the old one.
+from ticket_bands import band_of_eur as ticket_band  # noqa: E402,F401
 
 
 # The register's aid-instrument text -> the intake's capitalSought option.

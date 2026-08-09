@@ -18,7 +18,7 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { BAND_ORDERS, MULTI_VALUE_FIELDS, VOCABULARY } from "../lib/intelligence/vocabulary";
-import { FIELD_REACH } from "../lib/intelligence/types";
+import { FIELD_REACH, TICKET_BANDS } from "../lib/intelligence/types";
 
 export const OUT = resolve(process.cwd(), "../../data/vocabularies.json");
 
@@ -38,6 +38,21 @@ export function build(): string {
         .map(([k, v]) => [k, v.values]),
     ),
     bandOrders: BAND_ORDERS,
+    // ── Where the ticket bands actually cut, in euros ───────────────────────
+    // `bandOrders` gives Python the NAMES in order, which is enough to compare
+    // two bands and not enough to put an amount into one. So three separate
+    // Python files each kept their own copy of the boundaries —
+    // audit_encoding_vs_reality.TICKET_UPPER, enrich_recall_answers.TICKET_BANDS,
+    // and _wsay_ceilings.SHIPPED_BANDS — and the recall harness's copy is what
+    // decides which band every graded founder is recorded as having asked for.
+    // A rebanding that updated the app and missed one of those would grade the
+    // new scale against answers derived on the old one and report the
+    // difference as an effect.
+    //
+    // `maxEur` is the EXCLUSIVE upper bound; null means unbounded above.
+    bandBounds: Object.fromEntries(
+      TICKET_BANDS.map((b) => [b.value, b.maxEur]),
+    ),
     multiValueFields: [...MULTI_VALUE_FIELDS].sort(),
     // ── How each field gets answered, projected from FIELD_REACH ────────────
     // The ETL had THREE hand-copied lists of the intake fields — encode_gates

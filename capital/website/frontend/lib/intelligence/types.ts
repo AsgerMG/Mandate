@@ -29,6 +29,12 @@ export interface CompetitorRecord {
   /** First / last event year across the group, 0 when no dated event. */
   firstYear: number;
   lastYear: number;
+  /** NUTS region (level 1-2) the State Aid Transparency Register places this
+   *  company in, "" when it does not place it. A DEFAULT for the intake's
+   *  region question, never an assertion: a registered address is not always
+   *  where the work happens, so the founder is shown where it came from and
+   *  their edit wins. Present for 46.5% of the index. */
+  region: string;
   /** True when the name was found in our database; false = no public funding traced. */
   matched: boolean;
 }
@@ -642,15 +648,68 @@ export const EXCLUSION_OPTIONS = [
 ] as const;
 export type ExclusionValue = (typeof EXCLUSION_OPTIONS)[number]["value"];
 
-/** Scale bands: which instrument universe the ask opens (advisory_pipeline §B2). */
+/** Scale bands: which instrument universe the ask opens (advisory_pipeline §B2).
+ *
+ *  BANDED FOR EUROPE, NOT FOR VENTURE CAPITAL. The scale this replaced spent
+ *  four of its five bands above EUR 500k and one band on everything below it —
+ *  and everything below it is most of the national grant corpus. Measured on
+ *  the live register: 706 of the 892 instruments carrying a usable award median
+ *  sit inside the old `lt500k`, against 32 spread across its four upper bands.
+ *  The question was asking a founder to place themselves on a scale whose
+ *  resolution was almost entirely where almost nothing is.
+ *
+ *  Splitting the low end into three takes ceiling@5 — the share of leaves whose
+ *  residual class fits the five rows we render — from 17% to 26% on this
+ *  question alone, and from 48% to 53% combined with region (wsAZ, wsAY §4).
+ *  It also survives the test that killed subsector: the band a fund's early
+ *  awards imply agrees with the band its later awards imply 70% of the time
+ *  against a 56% floor, because award percentiles are register facts rather
+ *  than a posterior fitted to history (wsAY §3).
+ *
+ *  THE TOP EDGE IS DELIBERATELY LEFT ALONE. wsAY's scheme also collapsed
+ *  `b15m_50m` and `gt50m` into one `gt15m`. Three encoded comparators are
+ *  written against that edge and two are `band_max b15m_50m`, which under a
+ *  collapsed top would mean "at most the highest band" — no constraint at all,
+ *  admitting every founder. Keeping the split costs no ceiling (it gains 2pp)
+ *  and keeps those three rules meaning what their funds wrote down.
+ *
+ *  `maxEur` is the EXCLUSIVE upper bound, and it is the single definition of
+ *  where these edges are. Everything that needs a number per band — the
+ *  geometric midpoint the row sort ranks on, the arithmetic midpoint the pool
+ *  selects on, the large-scale lane's threshold, and the Python that bands a
+ *  register award — derives from it rather than restating it. Three hand-kept
+ *  copies of these boundaries existed before this and the ETL's and the app's
+ *  had already stopped agreeing about anything below EUR 500k. */
 export const TICKET_BANDS = [
-  { value: "lt500k", label: "Under €500K", hint: "vouchers, micro-grants, de minimis schemes" },
-  { value: "b500k_2m5", label: "€500K – €2.5M", hint: "innovation grants, guaranteed loans" },
-  { value: "b2m5_15m", label: "€2.5M – €15M", hint: "blended finance, venture debt" },
-  { value: "b15m_50m", label: "€15M – €50M", hint: "EIB growth capital, Innovation Fund, IPCEI" },
-  { value: "gt50m", label: "Over €50M", hint: "large-scale project finance, IPCEI waves" },
+  { value: "lt25k", label: "Under €25K", maxEur: 25_000,
+    hint: "innovation vouchers, de minimis micro-grants" },
+  { value: "b25k_100k", label: "€25K – €100K", maxEur: 100_000,
+    hint: "feasibility studies, small national grants" },
+  { value: "b100k_500k", label: "€100K – €500K", maxEur: 500_000,
+    hint: "regional innovation grants, soft loans" },
+  { value: "b500k_2m5", label: "€500K – €2.5M", maxEur: 2_500_000,
+    hint: "innovation grants, guaranteed loans" },
+  { value: "b2m5_15m", label: "€2.5M – €15M", maxEur: 15_000_000,
+    hint: "blended finance, venture debt" },
+  { value: "b15m_50m", label: "€15M – €50M", maxEur: 50_000_000,
+    hint: "EIB growth capital, Innovation Fund, IPCEI" },
+  { value: "gt50m", label: "Over €50M", maxEur: null,
+    hint: "large-scale project finance, IPCEI waves" },
 ] as const;
 export type TicketBand = (typeof TICKET_BANDS)[number]["value"];
+
+/** Inclusive lower bound of a band, in euros — the previous band's exclusive
+ *  upper bound, and 0 for the first. Derived so that adding or moving a band
+ *  cannot leave a gap or an overlap behind. */
+export const bandFloorEur = (value: string): number | undefined => {
+  const i = TICKET_BANDS.findIndex((b) => b.value === value);
+  return i < 0 ? undefined : i === 0 ? 0 : TICKET_BANDS[i - 1].maxEur ?? undefined;
+};
+
+/** Which band an amount in euros falls in. The one implementation; the Python
+ *  half reads the same edges out of `data/vocabularies.json`. */
+export const bandForEur = (eur: number): TicketBand | undefined =>
+  TICKET_BANDS.find((b) => b.maxEur == null || eur < b.maxEur)?.value;
 
 /** Who ends up owing the money — routes between entirely different funnels. */
 export const BORROWER_MODELS = [
@@ -848,6 +907,25 @@ export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = 
     note: "the control is the top-level `country` select; withIncorporationCountry " +
           "folds it in server-side so all three routes get it from one place",
   },
+  // MOVED HERE FROM `adaptive`, which is the whole of workstream AZ's part A.
+  //
+  // Asked adaptively it reached a minority of founders — wsAO measured a region
+  // supplied for 46% of graded pairs — and it is the most decisive question the
+  // intake has: 181 encoded, official region filters on 155 leaves across 19
+  // regimes, and the ONLY field whose demands differ between siblings across
+  // the eight largest fund families. A perfect answer takes the share of leaves
+  // narrowable to five rows from 8% to 39%.
+  //
+  // Its options are DERIVED from the founder's country rather than fixed, so
+  // FIELD_ENUM_HINTS.region.options is empty by design and only `optionsFor`
+  // can answer it. Sampled explicitly for the same reason: check_gate_field_reach
+  // FAILS on a field it cannot probe rather than skipping it, because the
+  // fields with no enumerable list are precisely the ones that have broken.
+  //
+  // FIRST_PAGE_FIELDS is derived from this table and `openFieldsForShortlist`
+  // skips anything in it, so this one line is also what stops the adaptive
+  // round asking again for something the first screen already collected.
+  region: { via: "first_page", sample: "FRD" },
 
   // ── Offered by the grounded adaptive round ──────────────────────────────
   activities: { via: "adaptive" },
@@ -864,10 +942,6 @@ export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = 
   needBy: { via: "adaptive" },
   turnoverBand: { via: "adaptive" },
   balanceBand: { via: "adaptive" },
-  // Its options are DERIVED from the founder's country rather than fixed, so
-  // FIELD_ENUM_HINTS.region.options is empty by design and only `optionsFor`
-  // can answer it. Sampled explicitly for the same reason.
-  region: { via: "adaptive", sample: "FRD" },
 
   // ── Computed from another answer ────────────────────────────────────────
   lossesOverHalfCapital: {

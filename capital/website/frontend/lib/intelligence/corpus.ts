@@ -20,9 +20,13 @@ export { toIso2 };
 //   5 per-channel EUR [[channel, eur], ...] (desc), 6 firstYear, 7 lastYear,
 //   8 sector_top, 9 subsector (two-tier taxonomy; drive DB-native peer discovery),
 //   10 entity_type (keep research orgs / public bodies out of peer lists)
+//   11 NUTS region id (level 1-2) from the register's beneficiary field, "" when
+//      it does not place the company. Pre-fills the intake's region question;
+//      see website/build/companies_index.py for why it is level 1-2 and why it
+//      is constrained to the company's own country.
 type IndexRow = [
   string, string, string, string, number, [string, number][], number, number,
-  string, string, string,
+  string, string, string, string,
 ];
 
 interface IndexFile {
@@ -1244,6 +1248,7 @@ export function matchCompany(name: string, countryHint?: string): CompetitorReco
     channelAmounts: [],
     firstYear: 0,
     lastYear: 0,
+    region: "",
     matched: false,
   };
   if (!q) return unmatched;
@@ -1329,6 +1334,7 @@ export function matchCompany(name: string, countryHint?: string): CompetitorReco
     channelAmounts: best[5].map(([channel, eur]) => ({ channel, eur })),
     firstYear: best[6],
     lastYear: best[7],
+    region: best[11] || "",
     matched: true,
   };
 }
@@ -1395,6 +1401,7 @@ export function findPeersBySubsector(
     euCapitalEur: r[4],
     channels: r[5].map(([c]) => c),
     channelAmounts: r[5].map(([channel, eur]) => ({ channel, eur })),
+    region: r[11] || "",
     firstYear: r[6],
     lastYear: r[7],
     matched: true,

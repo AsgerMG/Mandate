@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CAPITAL_OPTIONS,
   SECTOR_OPTIONS,
@@ -23,7 +23,9 @@ import {
 } from "@/lib/intelligence/types";
 
 import { CapitalSelect, InfoDot, MultiChips } from "./panelControls";
-import { InstitutionsTable, Memo } from "./panelReport";
+import { regionOptions } from "./regions.generated";
+import { toIso2 } from "./countryCodes";
+import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
 
 /** A chip-row single select for band/enum answers. */
 /** Who the handover on screen 2 comes from. One string, because "who is
@@ -155,6 +157,22 @@ export function IntelligencePanel() {
   // screen — the lender/intermediary routing it unlocks is out of scope for
   // this tool's lean-founder persona.
   const [elig, setElig] = useState<EligibilityAnswers>({ borrowerModel: "operating" });
+  // ── The region question, and why it is on this screen ─────────────────────
+  // It was asked adaptively, which meant most founders were never asked at all
+  // — wsAO measured a region supplied for 46% of graded pairs. It is also the
+  // single most decisive thing we can ask: 181 encoded, official region filters
+  // on 155 leaves, and the ONLY field whose demands differ between siblings
+  // across the eight largest fund families. `exclusionFlags` and `activities`,
+  // the two most-encoded fields in the whole corpus at 1,289 comparators, are
+  // identical across every leaf of the families they cover — asking about them
+  // eliminates nobody.
+  //
+  // `regionTouched` is the whole safety property of the pre-fill. Once the
+  // founder has changed the select, nothing may overwrite it: a later company
+  // lookup that disagrees is a guess losing to an answer.
+  const [regionTouched, setRegionTouched] = useState(false);
+  const [regionPrefill, setRegionPrefill] = useState<
+    { label: string; matchedName: string } | null>(null);
   // targetMarkets left the first screen (34 instruments, heavy multi-select);
   // founderCountryList falls back to the incorporation country.
 
@@ -205,6 +223,49 @@ export function IntelligencePanel() {
     const rot = setInterval(() => setChatter((c) => c + 1), 7000);
     return () => { clearInterval(tick); clearInterval(rot); };
   }, [running]);
+
+  // ── Pre-fill the region from the registered address, once there is enough
+  // to look one up. Debounced because it fires as the founder types a name.
+  //
+  // It never fights the founder: it writes only while `regionTouched` is false,
+  // and the moment they pick anything themselves it stops writing for good. A
+  // stale in-flight response cannot land after an edit either — `cancelled`
+  // closes that race, which otherwise reappears exactly when someone corrects a
+  // wrong pre-fill quickly, i.e. when being wrong matters most.
+  useEffect(() => {
+    if (regionTouched) return;
+    const name = company.trim();
+    if (!name || !country) { setRegionPrefill(null); return; }
+    let cancelled = false;
+    const t = setTimeout(() => {
+      fetch("/api/intelligence/region", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ company: name, country }),
+      })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (cancelled || regionTouched) return;
+          if (d?.region) {
+            setElig((p) => ({ ...p, region: d.region }));
+            setRegionPrefill({ label: d.label, matchedName: d.matchedName });
+          } else {
+            setRegionPrefill(null);
+          }
+        })
+        // A failed pre-fill is a question the founder answers themselves, which
+        // is exactly where they were before this existed.
+        .catch(() => { /* leave the field empty */ });
+    }, 400);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [company, country, regionTouched]);
+
+  // The founder's own country decides which regions exist. `toIso2` is what
+  // bridges the country select's full English names to the NUTS table's ISO2
+  // keys; without it this list is empty and the question renders as a select
+  // with nothing in it.
+  const regionChoices = useMemo(
+    () => regionOptions([toIso2(country)].filter(Boolean)), [country]);
 
   const allCapital = capitalSought.length === CAPITAL_OPTIONS.length;
   const toggleCapital = (value: string) =>
@@ -560,6 +621,12 @@ export function IntelligencePanel() {
                   </span>
                 )}
               </label>
+              {/* Country and region share a column and read as one "where are
+                  you" block. They stay SEPARATE labels: two selects inside one
+                  label leaves the caption ambiguous, so clicking "Incorporated
+                  in" can focus the region control and a screen reader announces
+                  the wrong question. */}
+              <div className="space-y-4">
               <label className="block text-sm">
                 <span className={fieldLabel}>
                   Incorporated in
@@ -576,6 +643,54 @@ export function IntelligencePanel() {
                   ))}
                 </select>
               </label>
+                {/* Hidden entirely for countries the NUTS table does not cover
+                    (GB, MD and the non-EU entries in COUNTRIES) — an empty
+                    select is worse than no question. */}
+                {regionChoices.length > 0 && (
+                  <label className="block text-sm">
+                    <span className={fieldLabel}>
+                      Region
+                      <InfoDot>
+                        Where the establishment that would run this project sits.
+                        Regional bodies run a large share of Europe&rsquo;s
+                        national schemes and most fund only their own region, so
+                        this is what separates funds that otherwise look
+                        identical.
+                      </InfoDot>
+                    </span>
+                    <select
+                      value={elig.region ?? ""}
+                      onChange={(e) => {
+                        // The founder has taken ownership of this field. Nothing
+                        // derived may write it again for the rest of the session.
+                        setRegionTouched(true);
+                        setRegionPrefill(null);
+                        setElig((p) => ({ ...p, region: e.target.value || undefined }));
+                      }}
+                      className={inputCls + (elig.region ? "" : " text-[var(--muted-foreground)]")}>
+                      <option value="" className="bg-[var(--paper)] text-[var(--foreground-soft)]">
+                        Select…
+                      </option>
+                      {regionChoices.map((r) => (
+                        <option key={r.value} value={r.value}
+                          className="bg-[var(--paper)] text-[var(--foreground)]">{r.label}</option>
+                      ))}
+                    </select>
+                    {/* Where the answer came from, stated plainly. A default
+                        whose origin is invisible reads as something the founder
+                        typed, and a registered address is often not where the
+                        work will happen — so correcting it has to be the
+                        obvious move, not something they would only do if they
+                        distrusted us. */}
+                    {regionPrefill && !regionTouched && (
+                      <span className="mt-1 block text-xs leading-snug text-[var(--muted-foreground)]">
+                        From {regionPrefill.matchedName}&rsquo;s registered
+                        address. Change it if the work happens elsewhere.
+                      </span>
+                    )}
+                  </label>
+                )}
+              </div>
             </div>
 
             {/* ── The eight questions, chosen on evidence, not habit ──────────
