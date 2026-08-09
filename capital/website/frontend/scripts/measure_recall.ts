@@ -102,6 +102,19 @@ import {
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { doorKey } from "../lib/intelligence/rowIdentity";
+// ── WHICH RANKER produced these numbers, counted rather than assumed ───────
+// `check_recall_floor.ts` has printed this since fd27cec0 and THIS FILE, the
+// harness it floors and the one every published EXACT@5 comes out of, did not.
+// `semanticFundMatch` has a 3s connect and a 3s statement timeout and returns
+// an empty map on any failure, at which point every `rankerUsed` call site
+// drops to the lexical index -- so a run can average two ranking systems and
+// print one number. wsCP retracted three figures on exactly that, including
+// wsCK's own control, which printed `ranker: nothing ranked` and was never
+// read. A number from this script without the attestation is not evidence.
+import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
+import {
+  founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
+} from "./founderIntake";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
   answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
@@ -306,11 +319,26 @@ async function main() {
   // the run they sat. See resetGateHydration.
   resetGateHydration();
   const derived = { ticket: 0, capital: 0, region: 0 };
+  // ── WHO is replayed, resolved in ONE place shared with the gate ──────────
+  // This call site used to build its own intake literal, and so did
+  // `check_recall_floor.ts`, and the two had already drifted: the gate pinned
+  // `ticketBand: "b500k_2m5"` where this one passed `a.ticketBand`, so
+  // `ANSWERS=` could not reach the floor at all. `founderIntake` is now the
+  // only thing that decides what a replayed founder said, which is what makes
+  // the floor and the measurement it floors describe the same population.
+  const policy: FounderPolicy = {
+    ...founderPolicyFromEnv(),
+    answers: answerMode,
+    consortium: consortiumAnswer,
+    // REGION= is a knob older than `answersFor` and it supplies a region
+    // outside it. Threaded in rather than duplicated, so the disclosure counts
+    // what the founder was ACTUALLY handed from either source.
+    regionOverride: (r) => regionOf(r),
+  };
+  const tally = new IntakeTally();
+  resetRankerTally();
   for (const t of sample) {
     resetGateHydration();
-    // This founder's own answers where the register supports them, and the
-    // constants everywhere else. `answersFor` is shared with every other
-    // harness so two of them can never disagree about what a founder said.
     const a = answersFor(t, answerMode);
     if (a.derived.ticket) derived.ticket++;
     if (a.derived.capital) derived.capital++;
@@ -319,41 +347,15 @@ async function main() {
     // supplied one to every pair, and the arm that reports its own treatment as
     // absent is the arm nobody can check.
     if (regionOf(t) ?? a.region) derived.region++;
-    const v = await computeVerdict("TestCo", t.country, {
-      entityCountries: [t.country], sector: t.sector ?? "other", activities: ["none"],
-      borrowerModel: "operating", ticketBand: a.ticketBand,
-      // Pinned to "yes" for every founder since this harness was written, and
-      // therefore INVISIBLE to it: a field held constant across the population
-      // cannot move a number measured over that population, which is the same
-      // trap that hid ticketBand ("the number stayed flat" was true and meant
-      // nothing). CONSORTIUM=none replays the founder this product actually
-      // meets on a first pass -- `consortium` is asked in the ADAPTIVE round,
-      // so on the instant path nobody has answered it -- and is the only way
-      // to see what the unanswered case costs. Default unchanged, so every
-      // number published before this stays reproducible.
-      consortium: consortiumAnswer,
-      // What the money is for, and the one field here that could leak.
-      //
-      // Setting it from the won scheme's registered objective would make the
-      // objective signal grade itself -- the same shape as the project-title
-      // leak that read 90% and was really 10%.
-      // UNIFORM across every pair, which is what makes it leak-free: a constant
-      // cannot carry information about which scheme won. It also matches the
-      // modal founder this product serves -- someone seeking innovation funding
-      // for R&D. Schemes registered under Art. 25(2)(b)/(c) should therefore
-      // outrank siblings registered for plant (Art. 17) or renewables (Art. 41).
-      useOfFunds: ["industrial_research", "experimental_development"],
-      // Where the founder is. Absent unless REGION or ANSWERS is set, so every
-      // run made before this stays comparable with every run made after it.
-      region: regionOf(t) ?? a.region,
-    } as never, {
-      targetMarkets: [t.country], capitalSought: a.capitalSought,
+    const f = founderIntake(t, policy);
+    tally.add(f);
+    const v = await computeVerdict(f.company, f.country, f.eligibility as never, {
+      ...f.opts,
       // A `profile` pair has no PROJECT text -- national schemes carry none --
       // but a real founder still describes themselves on screen one. Passing
       // nothing modelled a founder who typed nothing, which no founder does,
       // and made the mode untestable: semantic matching never ran, so profile
       // richness could not affect it either way.
-      description: t.description || t.selfDescription || undefined,
     } as never);
     const pool: string[] = v.candidateInstrumentIds ?? [];
     const top5 = (v.instrumentTable ?? []).slice(0, 5)
@@ -420,6 +422,9 @@ async function main() {
     console.log(`  founder-specific answers supplied: ticketBand ${pcOf(derived.ticket)}` +
                 `  capital ${pcOf(derived.capital)}  region ${pcOf(derived.region)}`);
   }
+  // The whole intake, supplied AND withheld, on the same screen as the number.
+  for (const line of tally.lines(policy)) console.log(line);
+  console.log(`  ${rankerTallyLine()}`);
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);

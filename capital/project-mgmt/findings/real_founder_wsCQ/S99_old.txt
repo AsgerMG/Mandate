@@ -1,0 +1,74 @@
+(node:78179) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T20:57:02.126Z
+set=__recallSetDoors.json split=tune seed=99  replayed 300
+  founder intake — 23 askable fields, identity=anonymous own-history=withheld capital=pinned answers=off consortium=yes
+    DERIVED   entityCountries      set  300/300 (100%)  own  300/300 (100%)  companies.country
+    DERIVED   organisationType     set    0/300 (  0%)  own    0/300 (  0%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set    0/300 (  0%)  own    0/300 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  300/300 (100%)  own  300/300 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  300/300 (100%)  own    0/300 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  300/300 (100%)  own    0/300 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  300/300 (100%)  own    0/300 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  300/300 (100%)  own    0/300 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    PINNED    capitalSought                            set 300/300 (100%)  the old harness filter — removes every tax-credit and equity fund
+  ranker: all 298 request(s) on EMBEDDING
+  in pool                  285/300 (95% +/-2.5)
+  EXACT scheme in top 5    77/300 (26% +/-4.9)
+  same REGIME in top 5     215/300 (72% +/-5.1)   <- the operational number
+    ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+  same DOOR in top 5       77/300 (26% +/-4.9)   <- scheme VIA the granting body
+    of which could differ from EXACT at all: 69/300 (23% of pairs have a nameable body); DOOR - EXACT = 0 pairs
+    gain concentration: 0 pair(s) across 0 regime(s), largest 0% -- (none)
+  same CHANNEL in top 5    268/300 (89% +/-3.5)
+    mode=profile               n= 235  pool 95%  exact5 24%  regime5 70%
+    mode=project               n=  65  pool 95%  exact5 31%  regime5 77%
+    traced:childless_family    n=  81  pool 94%  exact5 27%  regime5 28%
+    traced:exact_attribution   n= 112  pool 94%  exact5 26%  regime5 90%
+    original join              n= 107  pool 97%  exact5 24%  regime5 85%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  83  pool 96%  exact5 36%  regime5 36%
+    regime 2-5                 n=   9  pool 67%  exact5 33%  regime5 33%
+    regime 6-20                n=  36  pool 94%  exact5 28%  regime5 64%
+    regime 21-50               n=  65  pool 100%  exact5 26%  regime5 97%
+    regime 51+                 n= 107  pool 93%  exact5 16%  regime5 90%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  54  pool 98%  exact5 15%  regime5 59%
+    DE                         n=  48  pool 81%  exact5 21%  regime5 94%
+    SE                         n=  47  pool 100%  exact5 32%  regime5 96%
+    NO                         n=  36  pool 97%  exact5 22%  regime5 22%
+    ES                         n=  33  pool 100%  exact5 21%  regime5 94%
+    IT                         n=  26  pool 96%  exact5 8%  regime5 85%
+    EE                         n=  13  pool 100%  exact5 15%  regime5 15%
+    GB                         n=  10  pool 100%  exact5 100%  regime5 100%
+    NL                         n=   9  pool 100%  exact5 44%  regime5 100%
+    LV                         n=   7  pool 100%  exact5 29%  regime5 29%
+    CZ                         n=   5  pool 100%  exact5 80%  regime5 80%
+    DK                         n=   4  pool 100%  exact5 50%  regime5 50%
+    FI                         n=   2  pool 50%  exact5 50%  regime5 50%
+    PL                         n=   2  pool 100%  exact5 50%  regime5 50%
+    LT                         n=   2  pool 0%  exact5 0%  regime5 0%
+    PT                         n=   2  pool 100%  exact5 50%  regime5 50%

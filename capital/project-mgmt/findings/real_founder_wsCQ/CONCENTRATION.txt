@@ -1,0 +1,38 @@
+# Regime and country concentration of the pool / oracle-cap gain (workstream CQ)
+# Same draws, same seed, one difference: the harness answers as the real founder.
+
+TUNE  N=300 seed 20260806, pool by country
+  DE      n=  53  pool  81% ->  96%  (+15)
+  CZ      n=  10  pool 100% -> 100%  (+0)
+  EE      n=  26  pool  96% ->  96%  (+0)
+  ES      n=  38  pool  95% ->  95%  (+0)
+  FR      n=  47  pool  98% ->  98%  (+0)
+  IT      n=  23  pool  91% ->  91%  (+0)
+  NL      n=  13  pool 100% -> 100%  (+0)
+  NO      n=  28  pool 100% -> 100%  (+0)
+  SE      n=  39  pool 100% -> 100%  (+0)
+
+HOLDOUT N=300 seed 20260806, pool by country
+  DE      n=  51  pool  67% -> 100%  (+33)
+  EE      n=  18  pool 100% -> 100%  (+0)
+  ES      n=  48  pool 100% -> 100%  (+0)
+  FR      n=  61  pool  98% ->  98%  (+0)
+  GB      n=  14  pool 100% -> 100%  (+0)
+  IT      n=  23  pool  96% ->  96%  (+0)
+  NL      n=  13  pool 100% -> 100%  (+0)
+  NO      n=  24  pool 100% -> 100%  (+0)
+  SE      n=  32  pool 100% -> 100%  (+0)
+
+TUNE  N=300 seed 20260806, pool by SIZE OF THE REGIME the won leaf sits in
+  regime 1 (alone)    n=  88  pool  94% ->  94%  (+0)
+  regime 2-5          n=  13  pool  85% ->  85%  (+0)
+  regime 21-50        n=  64  pool 100% -> 100%  (+0)
+  regime 51+          n= 112  pool  93% -> 100%  (+7)
+  regime 6-20         n=  23  pool  87% ->  87%  (+0)
+
+READ IT AS: the entire pool gain is ONE MARKET and ONE SHAPE OF REGIME.
+The pinned capitalSought=[grant,loan] removed every tax_credit instrument,
+and this corpus's tax credits are overwhelmingly one country's, sitting in
+regimes of 51+ leaves. So the oracle cap rises while EXACT@5 does not: the
+funds readmitted land in residual classes no intake answer can separate,
+which is bucket 4. The cap is honest and the headroom under it is not new.
