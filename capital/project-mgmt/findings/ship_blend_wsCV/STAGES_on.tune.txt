@@ -1,0 +1,53 @@
+(node:39763) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-10T00:25:22.589Z
+ranker: all 245 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 250
+
+EXACT@5 62/250 (24.8% +/-5.4)
+
+WHAT PUT THE WON LEAF BELOW FIVE  (188 misses, ALL of them,
+  winnable or not -- the mechanism is a fact about the code, not about the ceiling)
+  score                   149  79.3% of misses
+  peer-reorder             24  12.8% of misses
+  absent                   15  8.0% of misses
+
+THE WON LEAF'S RANK, STAGE BY STAGE (misses in the pool only)
+  after the row SORT       median 25   in top five: 24
+  after the name COLLAPSE  median 25   in top five: 24
+  after PEER PRECEDENCE    median 26   in top five: 0
+  if the SCORE alone ranked median 25   in top five: 24
+
+HOW OFTEN THE SCORE'S TOP FIVE IS NOT THE PUBLISHED FIVE
+  the won leaf crossed the five-row line between the sort and the page: 55/250
+  won leaf had >=1 row above it that it BEAT on the score: 0/250  (median NaN such rows)
+
+IS BUCKET 3 REALLY BUCKET 4?  cross tab of MECHANISM against WINNABILITY
+  cause                  class<=5   class>5
+  score                      81        68
+  peer-reorder               11        13
+  absent                     15         0
+
+  WINNABLE misses that were in the pool (wsCI's bucket 3): 92
+    the ranker gives the won leaf a score it SHARES with other rows: 0 (0%)   median tie group 0
+    the ranker gives it a score of its OWN: 92  <- a reordering CAN reach these and only these
+    how far below the fifth row's score it sits, as a fraction of it:  median 34.4%   p25 9.8%
+    within 5% of the fifth row's score: 19   within 20%: 36
+
+WHICH BRANCH OF PEER PRECEDENCE THE FOUNDER TOOK
+  specific     47 replays   EXACT@5 11/47 (23.4%)   score keeps 3 of the five seats
+  flat        203 replays   EXACT@5 51/203 (25.1%)   score keeps 1 of the five seats
+  won leaf sits below >=1 row it OUTSCORED, in the published order: 187/250   (median 9 such rows)
+
+REGIME CONCENTRATION per cause (a cause that is one regime is not a finding)
+  score                  149 across 49 regime(s), largest 15% -- vinnova_grant:22 bdns_es_ayudas:20 satr_de_rnd:15
+  peer-reorder           24 across 13 regime(s), largest 17% -- satr_de_rnd:4 vinnova_grant:3 ademe_aid:3
+  absent                 15 across 7 regime(s), largest 40% -- satr_de_rnd:6 innovation_fund:3 eit_innoenergy:2

@@ -8,3 +8,46 @@ recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 
     WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
     ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
                             and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-10T00:20:17.433Z
+ranker: all 245 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 250
+
+EXACT@5 69/250 (27.6% +/-5.5)
+
+WHAT PUT THE WON LEAF BELOW FIVE  (181 misses, ALL of them,
+  winnable or not -- the mechanism is a fact about the code, not about the ceiling)
+  score                   146  80.7% of misses
+  peer-reorder             20  11.0% of misses
+  absent                   15  8.3% of misses
+
+THE WON LEAF'S RANK, STAGE BY STAGE (misses in the pool only)
+  after the row SORT       median 29   in top five: 20
+  after the name COLLAPSE  median 29   in top five: 20
+  after PEER PRECEDENCE    median 27   in top five: 0
+  if the SCORE alone ranked median 30   in top five: 20
+
+HOW OFTEN THE SCORE'S TOP FIVE IS NOT THE PUBLISHED FIVE
+  the won leaf crossed the five-row line between the sort and the page: 61/250
+  won leaf had >=1 row above it that it BEAT on the score: 0/250  (median NaN such rows)
+
+IS BUCKET 3 REALLY BUCKET 4?  cross tab of MECHANISM against WINNABILITY
+  cause                  class<=5   class>5
+  score                      74        72
+  peer-reorder               13         7
+  absent                     15         0
+
+  WINNABLE misses that were in the pool (wsCI's bucket 3): 87
+    the ranker gives the won leaf a score it SHARES with other rows: 0 (0%)   median tie group 0
+    the ranker gives it a score of its OWN: 87  <- a reordering CAN reach these and only these
+    how far below the fifth row's score it sits, as a fraction of it:  median 33.8%   p25 5.2%
+    within 5% of the fifth row's score: 21   within 20%: 35
+
+WHICH BRANCH OF PEER PRECEDENCE THE FOUNDER TOOK
+  specific     47 replays   EXACT@5 12/47 (25.5%)   score keeps 3 of the five seats
+  flat        203 replays   EXACT@5 57/203 (28.1%)   score keeps 1 of the five seats
+  won leaf sits below >=1 row it OUTSCORED, in the published order: 180/250   (median 8 such rows)
+
+REGIME CONCENTRATION per cause (a cause that is one regime is not a finding)
+  score                  146 across 47 regime(s), largest 14% -- bdns_es_ayudas:21 vinnova_grant:21 satr_de_rnd:17
+  peer-reorder           20 across 15 regime(s), largest 15% -- satr_it_rnd:3 nfr_petromaks2:2 bdns_es_ayudas:2
+  absent                 15 across 7 regime(s), largest 40% -- satr_de_rnd:6 innovation_fund:3 eit_innoenergy:2
