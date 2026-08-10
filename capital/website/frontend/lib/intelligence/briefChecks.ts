@@ -194,6 +194,14 @@ export function checkBrief(
     ["positioning", report.positioning],
     ["state of play", report.stateOfPlay],
     ...institutions.map((r) => [`next step for ${r.institution}`, r.nextStep] as const),
+    // The curated route is the ONE line on a row that is an instruction rather
+    // than an assessment, which makes it the last place a dead end may stand.
+    // It is corpus text and not the writer's, so a violation here is a DATA
+    // defect and reads as one -- which is the point. A real Dutch brief
+    // published four rows, two of them provincial schemes, all saying
+    // "Application submitted to the Minister": the parent regime's route,
+    // inherited by children that do not share it.
+    ...institutions.map((r) => [`application route for ${r.institution}`, r.applicationChannel] as const),
   ] as const) {
     if (directsAtDepartment(text)) {
       v.push({ ruleId: "FUND-7", detail: `${where} sends the founder at a government department` });

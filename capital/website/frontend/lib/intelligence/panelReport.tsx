@@ -136,8 +136,33 @@ export function InstitutionsTable(
   //
   // So both are stated once and then referred back to. Nothing is dropped and
   // no row loses information it uniquely held.
+  //   STATUTORY TERMS. Found by rendering the fixed table and LOOKING at it,
+  //     which is the only reason it was found at all. Three of six rows of a
+  //     real German brief carried the SAME GBER Art. 25 bullets word for word --
+  //     the intensity ceilings, the EUR 200,000 de minimis cap, the AGVO
+  //     maxima -- because those are STATUTORY: they are a property of the
+  //     article, identical for every scheme notified under it, which is exactly
+  //     what makes them worth publishing and exactly what makes publishing them
+  //     six times a waste of the page. Between them these bullets were the
+  //     single largest thing on the row.
+  //
+  // A shared fact is stated on the row that first carries it, and later rows
+  // count what they are not repeating. Deduped BULLET BY BULLET rather than
+  // block by block, so a row that genuinely adds a term still shows that term:
+  // nothing a row uniquely holds is ever suppressed.
   const firstWithRoute = new Map<string, number>();
   const firstWithPeers = new Map<string, number>();
+  const firstWithBullet = new Map<string, number>();
+  institutions.forEach((r, i) => {
+    for (const c of [...(r.judgementCriteria ?? []), ...(r.structuringNotes ?? [])]) {
+      if (!firstWithBullet.has(c)) firstWithBullet.set(c, i);
+    }
+  });
+  const firstSaid = (xs: string[] | undefined, i: number) =>
+    (xs ?? []).filter((c) => firstWithBullet.get(c) === i);
+  const repeatedCount = (r: InstitutionEntry, i: number) =>
+    [...(r.judgementCriteria ?? []), ...(r.structuringNotes ?? [])]
+      .filter((c) => firstWithBullet.get(c) !== i).length;
   institutions.forEach((r, i) => {
     const route = r.applicationChannel?.trim();
     if (route && !firstWithRoute.has(route)) firstWithRoute.set(route, i);
@@ -267,22 +292,29 @@ export function InstitutionsTable(
                     evaluable cited rule at all, this is the only thing the
                     fund has told us about who it says yes to, and it used to
                     reach nobody. */}
-                {!pending && !!r.judgementCriteria?.length && (
+                {!pending && !!firstSaid(r.judgementCriteria, i).length && (
                   <ul className="mt-1 list-disc pl-4 text-[12px] text-[var(--muted-foreground)]">
-                    {r.judgementCriteria.map((c) => <li key={c}>{c}</li>)}
+                    {firstSaid(r.judgementCriteria, i).map((c) => <li key={c}>{c}</li>)}
                   </ul>
                 )}
                 {/* How the money is shaped. Labelled, and kept apart from the
                     criteria above: "you fund half of it" and "you must be an
                     SME" are both true and constrain different things, and a
                     founder who runs them together plans the wrong project. */}
-                {!pending && !!r.structuringNotes?.length && (
+                {!pending && !!firstSaid(r.structuringNotes, i).length && (
                   <div className="mt-1 text-[12px] text-[var(--muted-foreground)]">
                     <span className="uppercase tracking-wide text-[10px]">How the money works</span>
                     <ul className="list-disc pl-4">
-                      {r.structuringNotes.map((c) => <li key={c}>{c}</li>)}
+                      {firstSaid(r.structuringNotes, i).map((c) => <li key={c}>{c}</li>)}
                     </ul>
                   </div>
+                )}
+                {!pending && repeatedCount(r, i) > 0 && (
+                  <span className="mt-1 block text-[12px] italic text-[var(--muted-foreground)]">
+                    {repeatedCount(r, i) === 1
+                      ? "One further term is the same as above."
+                      : `${repeatedCount(r, i)} further terms are the same as above.`}
+                  </span>
                 )}
                 {/* The structuring number, stated from both sides: a founder
                     plans around what they must fund themselves at least as
@@ -374,11 +406,7 @@ export function InstitutionsTable(
                   firstWithPeers.get(r.comparableFirms.map((f) => f.name).join("|")) === i ? (
                     r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
                   ) : (
-                    <span className="text-[var(--muted-foreground)]">
-                      The same firms as above. They are the peers we traced to
-                      public funding, not evidence that this particular fund
-                      backed them
-                    </span>
+                    <span className="text-[var(--muted-foreground)]">The same firms as above</span>
                   )
                 ) : (
                   <span className="text-[var(--muted-foreground)]">None traced yet</span>
@@ -388,6 +416,19 @@ export function InstitutionsTable(
           ))}
         </tbody>
       </table>
+      {/* Said ONCE, under the table, rather than in every cell that repeats.
+          The first draft put the scope on each repeated cell and it read as
+          three lines of muted apology inside a narrow column. The claim
+          belongs to the column, so it is stated where the column ends. */}
+      {institutions.some((r, i) =>
+        r.comparableFirms.length > 0
+        && firstWithPeers.get(r.comparableFirms.map((f) => f.name).join("|")) !== i) && (
+        <p className="mt-2 text-[12px] text-[var(--muted-foreground)]">
+          Comparable firms are the peers whose public funding we traced. They are
+          named against every route they drew on, so the same names recur; that is
+          not evidence a particular fund backed them.
+        </p>
+      )}
     </>
   );
 }
