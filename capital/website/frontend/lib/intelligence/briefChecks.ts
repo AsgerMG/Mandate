@@ -102,6 +102,33 @@ export interface BriefLimits {
  * requires: 7 pairs on tune across 5 regimes and 5 countries, largest regime 2
  * (29%). No single programme is carrying it.
  *
+ * ── WHAT SEVEN ROWS ACTUALLY READ LIKE, having rendered two and read them ──
+ *
+ * `npm run bench -- --sample 2` at these caps, Neura Robotics and SMART
+ * Photonics, both seven rows, both writers covering 7 and 8 of 8 candidates.
+ *
+ * The head is good and better than it was. Neura's first row is now Innovation
+ * Fund SSP — the fund its own bottom line calls the standout move — where the
+ * six-row render of the same company published four Horizon clusters, ERC POC
+ * and EIC Transition and never showed SSP at all.
+ *
+ * The tail is a catalogue in both. Neura's rows 4-7 are four Horizon clusters
+ * and ERC POC carrying one ticket string, one variation on "screening is open"
+ * and one variation on "search the portal and find partners". SMART Photonics'
+ * rows 4-7 are four Dutch regional schemes whose `whyEligible` is the same
+ * sentence four times with the region swapped, and whose `nextStep` is
+ * "contact the office to open a dossier" four times.
+ *
+ * THAT IS FUND-3, AND IT IS NOT A ROW-COUNT DEFECT. It is present at six —
+ * the six-row Neura render spent four of six slots on one programme — so the
+ * seventh row lengthens an existing catalogue rather than creating one, and it
+ * pays for itself in the metric that matters. But it is the reason the eighth
+ * row should NOT be bought next. The lever that is actually binding is not the
+ * cap: it is that rows sharing one legal basis and one action are still four
+ * rows, and until FUND-3's test is enforced on that shape, buying length buys
+ * repetition. The curve says the accuracy is there; the page says it cannot be
+ * carried yet.
+ *
  * WHAT IT COSTS. `WRITER_CANDIDATE_CAP` had to rise with it, or the writer
  * would have been shown exactly as many candidates as publish and any single
  * declined note would have shortened the table. `check_contracts.ts` now fails
