@@ -94,6 +94,35 @@ function alternate(rows: Row[], branch: Tape["branch"]): Row[] {
   return [...firsts, ...repeats];
 }
 
+/** The shipped fill with the prior's REACH capped.
+ *
+ *  Today every row the prior has heard of outranks every row it has not — a
+ *  fund sitting fortieth in the cell is promoted over the score's best unknown
+ *  row on the strength of being in the list at all. The cell is ranked, so
+ *  depth is information the fill throws away: this keeps the promotion for the
+ *  prior's first `depth` entries and leaves everything else in score order.
+ *
+ *  A per-ROW conditioning rather than a per-founder one, and the parameter is a
+ *  position in a ranked list, not a fund, a country or a sector. */
+function cappedFill(rows: Row[], branch: Tape["branch"], seats: number, depth: number): Row[] {
+  if (branch === "none" || rows.length < 3) return rows;
+  const k = Math.max(0, Math.min(seats, rows.length));
+  const lead = rows.slice(0, k);
+  const rest = rows.slice(k);
+  const known = rest.filter((r) => r.peer >= 0 && r.peer < depth).sort((a, b) => a.peer - b.peer);
+  const promoted = new Set(known);
+  const unknown = rest.filter((r) => !promoted.has(r));
+  const seen = new Set<string>();
+  const firsts: Row[] = [], repeats: Row[] = [];
+  for (const r of [...lead, ...known, ...unknown]) {
+    const c = r.scheme.trim();
+    if (c && seen.has(c)) { repeats.push(r); continue; }
+    if (c) seen.add(c);
+    firsts.push(r);
+  }
+  return [...firsts, ...repeats];
+}
+
 /** RECIPROCAL RANK FUSION of the two orderings.
  *
  *  The shipped fill is not a 1:4 seat split, it is a strict TIER: every row the
@@ -220,6 +249,15 @@ function main() {
     }
   }
 
+  // ── 2c. THE PRIOR'S REACH, capped ───────────────────────────────────────
+  console.log(`\nPRIOR DEPTH CAP — the prior promotes only its first N entries`);
+  for (const d of [1, 2, 3, 5, 8, 13, 21, 1e9]) {
+    const f = (t: Tape) => cappedFill(rowsOf(t), t.branch, t.branch === "specific" ? 3 : 1, d);
+    const m = mcnemar(tapes, f, shipped);
+    console.log(line(d === 1e9 ? "no cap (= shipped)" : `depth <= ${d}`, tally(tapes, f)) +
+      `   vs shipped +${m.ab}/-${m.ba} z=${m.z.toFixed(2)}`);
+  }
+
   // ── 3. WHAT EACH SIGNAL KNOWS, on its own ───────────────────────────────
   // The two extremes of the sweep, as a 2x2. This is the "near-orthogonal"
   // claim in the peer-prior comment, re-measured on the shipped path rather
@@ -310,6 +348,71 @@ function main() {
   const scored = Object.entries(feats).map(([k, f]) => [k, auc(disc, f)] as [string, number])
     .sort((a, b) => Math.abs(b[1] - 0.5) - Math.abs(a[1] - 0.5));
   for (const [k, v] of scored) console.log(`    ${k.padEnd(34)} ${v.toFixed(3)}`);
+
+  // ── 5b. WHAT THE PRIOR ACTUALLY KNOWS ───────────────────────────────────
+  // Where the won leaf sits IN THE CELL, split by which signal was right. If
+  // the prior is right because it holds the answer near the front, depth is
+  // the thing it knows; if it is right at depth 30, the fill is winning by
+  // sheer coverage and there is nothing to condition on.
+  const wantPeer = (t: Tape) => {
+    const i = t.collapsed.indexOf(t.want);
+    return i < 0 ? null : t.peerRank[i];
+  };
+  const wantScoreRank = (t: Tape) => {
+    const i = reorder(rowsOf(t), t.branch, 999).findIndex((r) => r.id === t.want);
+    return i < 0 ? null : i + 1;
+  };
+  const q = (xs: number[], p: number) =>
+    xs.length ? [...xs].sort((a, b) => a - b)[Math.min(xs.length - 1, Math.floor(xs.length * p))] : NaN;
+  console.log(`\nWHERE THE WON LEAF SITS IN EACH LIST, by which signal was right`);
+  for (const [name, g] of [
+    ["only the peer prior right", disc.filter((t) => label(t) === 0)],
+    ["only the score right", disc.filter((t) => label(t) === 1)],
+    ["both right", tapes.filter((t) => grade(t, scoreOnly(t)).exact && grade(t, peerOnly(t)).exact)],
+    ["neither right", tapes.filter((t) => !grade(t, scoreOnly(t)).exact && !grade(t, peerOnly(t)).exact)],
+  ] as [string, Tape[]][]) {
+    const pr = g.map(wantPeer).filter((x): x is number => x !== null && x >= 0);
+    const unseen = g.filter((t) => wantPeer(t) === -1).length;
+    const sr = g.map(wantScoreRank).filter((x): x is number => x !== null);
+    console.log(`  ${name.padEnd(28)} n=${String(g.length).padStart(3)}   ` +
+      `peer rank of the won leaf: median ${q(pr, 0.5)} p90 ${q(pr, 0.9)}  ` +
+      `never in the cell ${unseen}/${g.length}   |   score rank: median ${q(sr, 0.5)} p90 ${q(sr, 0.9)}`);
+  }
+
+  // ── 5c. A ROUTER, EVALUATED HONESTLY ────────────────────────────────────
+  // An AUC on the whole tape is a fit. The only question that matters is
+  // whether a threshold CHOSEN on founders it has not seen still beats the
+  // fixed split, so every feature gets a two-fold: pick the threshold and the
+  // direction on one half, score it on the other, and report the pooled result
+  // against the shipped split on exactly the same rows.
+  console.log(`\nA ROUTER, CROSS-VALIDATED. Threshold fitted on one half, scored on the other.`);
+  console.log(`  Shipped scores ${tally(tapes, shipped).e}/${tapes.length} on the same rows.`);
+  const hash = (s: string) => { let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) | 0; return Math.abs(h); };
+  const foldOf = (t: Tape) => hash(t.want + t.country + t.sector) % 2;
+  const routed = (t: Tape, f: (x: Tape) => number, thr: number, dir: 1 | -1) =>
+    (dir * f(t) > dir * thr ? scoreOnly(t) : shipped(t));
+  const results: [string, number, string][] = [];
+  for (const [name, f] of Object.entries(feats)) {
+    let hits = 0;
+    const chosen: string[] = [];
+    for (const fold of [0, 1]) {
+      const fit = tapes.filter((t) => foldOf(t) === fold);
+      const evalOn = tapes.filter((t) => foldOf(t) !== fold);
+      let best = { e: -1, thr: 0, dir: 1 as 1 | -1 };
+      const cand = [...new Set(fit.map(f))].sort((a, b) => a - b);
+      for (const thr of cand) for (const dir of [1, -1] as const) {
+        const e = fit.filter((t) => grade(t, routed(t, f, thr, dir)).exact).length;
+        if (e > best.e) best = { e, thr, dir };
+      }
+      hits += evalOn.filter((t) => grade(t, routed(t, f, best.thr, best.dir)).exact).length;
+      chosen.push(`${best.dir > 0 ? ">" : "<"}${best.thr.toFixed(3)}`);
+    }
+    results.push([name, hits, chosen.join(" / ")]);
+  }
+  for (const [name, hits, thr] of results.sort((a, b) => b[1] - a[1])) {
+    console.log(`    ${name.padEnd(34)} EXACT ${String(hits).padStart(3)}/${tapes.length} ` +
+      `${pct(hits, tapes.length).padStart(6)}   thresholds ${thr}`);
+  }
 
   // ── 6. THE BRANCH SPLIT, both ways ──────────────────────────────────────
   console.log(`\nBY BRANCH — the 81% and the 19% separately, under each extreme`);
