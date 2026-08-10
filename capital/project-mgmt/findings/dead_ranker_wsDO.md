@@ -228,12 +228,28 @@ Two paths build a fund table and cut it differently:
                                                             -> institutionsMax = 7
 ```
 
-They diverge *after* the shared builder, and they rank differently: the screen
-shows the pool's own order cut at 6; the memo re-sorts on `ORDER_ARM`, drops
-blocked rows, collapses display names, and cuts twice more. **Two paths that rank
-differently is the defect that let a ranker's output be discarded before the
-memo** — a founder can read a table on screen one and a differently-ordered table
-in the brief, built from the same request.
+They diverge *after* the shared builder. Read from the code
+(`pipeline.ts:1505-1535` against `pipeline.ts:1628-1660` and
+`memoCandidates.ts`), the memo does **four** things the screen does not:
+
+| after `buildInstrumentTableHydrated` | screen (`computeVerdict`) | memo (`runIntelligence`) |
+|---|---|---|
+| conclusively blocked rows dropped (`VER-BLOCKED`) | **no** | yes, `accessiblePool` |
+| one row per institution name (`SEL-DUPE-NAME`) | **no** | yes, in `orderMemoCandidates` |
+| re-sorted | **no** — pool order | yes, `ORDER_ARM = verdict` |
+| cut | `.slice(0, DISPLAY_CAP)` = 6 | 18 → 8 → 7 |
+
+So the two surfaces disagree about **membership**, not only order: the instant
+table can show a founder a door that is conclusively shut and the same
+institution twice, and the brief built from the same request drops both. That is
+the whole defect in one line — **a founder's instant read and their memo are
+built from different tables, and every recall figure this repo has published was
+measured on the left-hand column while the founder acts on the right-hand one.**
+
+**Two paths that rank differently is also the defect that let a ranker's output
+be discarded before the memo**: a selector placed on the screen path (wsDD)
+reordered a table the memo path rebuilds from scratch, so its ranking never
+survived to a published word.
 
 ### The design
 
@@ -281,10 +297,20 @@ computed once.
 - Neither keeps a sort. `VERDICT_POOL = 18` stops being a second cut and becomes
   what it always meant: how deep the selector is allowed to read.
 
-**What this makes checkable.** With one order there is one thing to measure. The
-prefix property — *screen one's six are the first six of the memo's order* —
-becomes a check rather than a hope, and a check that fails loudly is exactly what
-was missing when the two paths drifted.
+**What this makes checkable, and it is the point.** With one order there is one
+thing to measure, and the property is a *prefix* property:
+
+> **screen one's six rows are the first six of the memo's order, always.**
+
+That is one assertion over one array and it fails loudly. Nothing of the kind was
+possible before, which is why the two paths drifted for months in the open: with
+two orderings there was no statement that could be false. Note what it also buys
+— every recall figure this repo publishes is measured on the screen path, so once
+the prefix property holds, those figures are finally figures about the memo too.
+
+The three merged stages each get the same treatment: `VER-BLOCKED` and
+`SEL-DUPE-NAME` are recorded once, on the shared path, so the exclusion log
+explains both surfaces instead of one.
 
 **The floors are untouched by construction.** The selector is a pure reorder of
 rows the shipped path already built and already cleared: it adds nothing, removes
@@ -303,11 +329,31 @@ wsDL is routing the selector's order into the memo. The moment that lands:
    is the only production caller. Deleting it removes nine component computations
    per pool row per memo request that nothing reads, and takes `FIT_WEIGHTS`,
    `structureFit`, and `MemoCandidate.fit` with it.
-3. **The two paths can be merged**, because the thing that made them different —
-   a second ordering opinion applied on only one of them — is gone.
+3. **`profileNote` and `applyProfileSignal` can go** — the field is dead and the
+   function is its only writer, and the one production call site is the same
+   `pipeline.ts` hunk. See §5.
+4. **The two paths can be merged**, because the thing that made them different —
+   a second ordering opinion applied on only one of them — is gone. With no
+   second sort, `computeVerdict` and `synthesize` differ only in where they cut,
+   and a difference in a cut is a parameter, not a path.
 
 Until then, `scoreFit` stays called and stays useless, and that is a deliberate,
-recorded state rather than an oversight.
+recorded state rather than an oversight. **Both deferred items are blocked on one
+hunk in one file, and both are one commit each once it is free.**
+
+### The order of operations, so nobody merges this backwards
+
+1. wsDL lands the selector's order on the memo path. *(in flight)*
+2. Delete `ORDER_ARM`'s `fit` branch and the `scoreFit` scoring loop. Prove
+   `check_recall_floor` reads the same three numbers.
+3. Move `accessiblePool` and the display-name collapse ahead of the fork, so both
+   surfaces see the same rows.
+4. Add the prefix check. It must fail before step 3 and pass after — a check that
+   has never been watched to fail is a comment.
+5. Delete `profileNote` and `applyProfileSignal`.
+
+Steps 2, 3 and 5 are deletions. Step 4 is the only thing added, and it is what
+stops the two paths ever drifting again.
 
 ---
 
