@@ -122,7 +122,28 @@ export function checkBrief(
   }
 
   // ── the funds ──────────────────────────────────────────────────────────
-  if (institutions.length === 0) v.push({ ruleId: "FUND-1", detail: "no institutions published" });
+  // ── FUND-1, both halves ─────────────────────────────────────────────────
+  // "At least one row publishes. An empty table is never the answer WHILE ANY
+  // DOOR IS OPEN." The check only ever saw the first sentence, and it could
+  // only see it in a bench script: `checkBrief` runs in no build gate and in no
+  // route, so an empty table shipped, was noticed by a human rendering the
+  // page, and cost nothing anywhere in the suite.
+  //
+  // The second sentence is the one that decides what an empty table MEANS. An
+  // empty table with no explanation is silence, which is never acceptable. An
+  // empty table that says how many funds were considered and which of their own
+  // requirements ruled every one of them out is a real answer to a founder who
+  // genuinely has no route today, and it tells them what would change it.
+  if (institutions.length === 0) {
+    const nd = report.noDoors;
+    if (!nd) {
+      v.push({ ruleId: "FUND-1", detail: "empty table with no explanation: the brief says nothing at all" });
+    } else if (!nd.ruledOutBy.length) {
+      v.push({ ruleId: "FUND-1", detail: `empty table over ${nd.considered} funds with no requirement named as the reason` });
+    } else if (nd.considered === 0) {
+      v.push({ ruleId: "FUND-1", detail: "empty table and nothing was even considered: the pool never built" });
+    }
+  }
   if (institutions.length > BRIEF_LIMITS.institutionsMax) {
     v.push({ ruleId: "FUND-2", detail: `${institutions.length} rows (max ${BRIEF_LIMITS.institutionsMax})` });
   }

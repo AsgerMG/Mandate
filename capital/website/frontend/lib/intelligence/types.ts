@@ -419,6 +419,12 @@ export interface IntelligenceReport {
    *  `withheldNotice()` — code-authored, never model-written, and never a
    *  substitute for withholding the row. */
   withheld?: WithheldNotice;
+  /** Present ONLY when the table is empty: how many funds were considered and
+   *  which of their own requirements ruled every one of them out. FUND-1 says
+   *  an empty table is never the answer while any door is open; where none is,
+   *  this is what the brief says instead. Code-authored, model-free, and the
+   *  thing `checkBrief` demands before it will accept an empty table. */
+  noDoors?: NoDoors;
   /** Origin of each part of the brief, plus the exclusion counts for this
    *  request. Rendered only under ?trace=1; see provenance.ts. */
   provenance?: {
@@ -451,6 +457,13 @@ export const STATE_OF_PLAY_OFFER =
  * instructions describe a retired report shape for weeks without anything
  * noticing.
  */
+/** Why a founder has no doors, in the funds' own words. Built by
+ *  `explainNoDoors` in memoCandidates.ts. */
+export interface NoDoors {
+  considered: number;
+  ruledOutBy: { requirement: string; field?: string; funds: number }[];
+}
+
 export const REPORT_SCHEMA_FIELDS: string[] = [
   "bottomLine", "institutionNotes", "positioning", "stateOfPlay", "caveats",
 ];

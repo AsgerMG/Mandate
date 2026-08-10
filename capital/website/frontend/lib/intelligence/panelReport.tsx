@@ -18,7 +18,7 @@ import { fmtEur } from "../format";
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
 import { STATE_OF_PLAY_OFFER } from "./types";
-import type { EligibilityCheck, InstitutionEntry, IntelligenceReport, WithheldNotice } from "./types";
+import type { EligibilityCheck, InstitutionEntry, IntelligenceReport, NoDoors, WithheldNotice } from "./types";
 
 /**
  * Funds withheld because their openness could not be confirmed.
@@ -95,10 +95,46 @@ export function PlaceholderBar({ narrow = false }: { narrow?: boolean }) {
  * simply fill in with real text rather than the table re-laying-out.
  */
 export function InstitutionsTable(
-  { institutions, pending = false, withheld }:
-  { institutions: InstitutionEntry[]; pending?: boolean; withheld?: WithheldNotice },
+  { institutions, pending = false, withheld, noDoors }:
+  { institutions: InstitutionEntry[]; pending?: boolean; withheld?: WithheldNotice;
+    noDoors?: NoDoors },
 ) {
-  if (!institutions || institutions.length === 0) return null;
+  // ── An empty table said NOTHING, and shipped ────────────────────────────
+  // This returned null. A founder whose table came back empty was handed a
+  // brief with no section 02 at all -- no rows and no reason -- and nothing in
+  // the product could tell that apart from a founder for whom the section was
+  // simply not built yet. Where no door is open the brief has to say so and say
+  // what would change it, in the funds' own words.
+  if (!institutions || institutions.length === 0) {
+    if (!noDoors) return null;
+    return (
+      <>
+        <SectionTitle n="02">Where to target</SectionTitle>
+        <p className="text-[14px]">
+          Nothing here is open to you today. We ranked {noDoors.considered} funds against your
+          answers and every one of them is ruled out by a requirement it states itself.
+        </p>
+        <ul className="mt-2 list-disc pl-5 text-[14px]">
+          {/* Deliberately NOT bound as the single letter the row loops use:
+              rowToEntry.test.ts reads every dotted field off that identifier as
+              a field an institution row must carry, and it duly failed on this
+              one. The guard is right; the variable name is what changes. */}
+          {noDoors.ruledOutBy.map((reason) => (
+            <li key={reason.requirement} className="mt-1">
+              {reason.requirement}{" "}
+              <span className="text-[var(--muted-foreground)]">
+                ({reason.funds} {reason.funds === 1 ? "fund" : "funds"})
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-2 text-[14px]">
+          Change one of those and the table changes with it. Where a requirement is about how you
+          apply rather than who you are, a partner who meets it can carry the application.
+        </p>
+      </>
+    );
+  }
   // ── SAY A SHARED FACT ONCE ────────────────────────────────────────────────
   // A six-row brief was rendered and read (wsCX). Four of the six carried a
   // word-for-word identical "How to apply", and all six carried the identical
@@ -779,7 +815,8 @@ export function Memo({ report, corpusWindow }: {
             printed. */}
 
         {/* ── 2. Where to target ───────────────────────────────────────── */}
-        <InstitutionsTable institutions={report.institutions} withheld={report.withheld} />
+        <InstitutionsTable institutions={report.institutions} withheld={report.withheld}
+          noDoors={report.noDoors} />
 
         {/* ── 3. Positioning: fitting the current political moment ─────── */}
         <SectionTitle n="03">Positioning</SectionTitle>

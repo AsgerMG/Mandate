@@ -36,6 +36,7 @@ import type {
   EligibilityCheck,
   IntelligenceRequest,
   InstrumentRow,
+  NoDoors,
 } from "./types";
 
 /** How many candidates the WRITER is shown, ahead of the cut to
@@ -130,6 +131,48 @@ export function accessiblePool(
       `${a.blockers.length} encoded eligibility filters conclusively fail`);
     return false;
   });
+}
+
+/**
+ * Why a founder has no doors, in the funds' own words.
+ *
+ * FUND-1 says an empty table is never the answer WHILE ANY DOOR IS OPEN. The
+ * converse is the case this exists for: where no door is open, the brief has to
+ * say so and say what would change it. Silence is the one answer that is never
+ * acceptable, and silence is what shipped -- a brief with an empty table, no
+ * explanation, and a console line about a branch that cannot be reached.
+ *
+ * The requirement text is VERBATIM from the fund's own encoded gate, never a
+ * paraphrase and never our own words for it. That is the same standing rule
+ * that governs the route: what a fund requires comes from the fund.
+ */
+export function explainNoDoors(
+  rows: InstrumentRow[],
+  eligibility: EligibilityAnswers | undefined,
+): NoDoors {
+  const assessed = assessAll(
+    rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    eligibility);
+  const byRequirement = new Map<string, { requirement: string; field?: string; funds: number }>();
+  for (const r of rows) {
+    const a = r.instrumentId ? assessed.get(r.instrumentId) : undefined;
+    if (a?.status !== "blocked") continue;
+    // One row cannot be counted twice for the same requirement, or a fund with
+    // two phrasings of one rule reads as two reasons.
+    const seen = new Set<string>();
+    for (const b of a.blockers) {
+      const key = b.requirement.trim().toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const cur = byRequirement.get(key);
+      if (cur) cur.funds += 1;
+      else byRequirement.set(key, { requirement: b.requirement, field: b.field, funds: 1 });
+    }
+  }
+  return {
+    considered: rows.length,
+    ruledOutBy: [...byRequirement.values()].sort((a, b) => b.funds - a.funds).slice(0, 5),
+  };
 }
 
 /** One candidate, with every score the ordering consulted still attached --
