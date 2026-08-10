@@ -29,6 +29,8 @@
 //   npx tsx scripts/_wsda_rows.ts /tmp/wscw_tape.tune.json
 import { readFileSync } from "fs";
 
+import { mcnemar as mcnemarPaired } from "./mcnemar";
+
 interface Tape {
   want: string; wantRegime: string; wantChannel: string;
   country: string; sector: string; mode: string;
@@ -163,15 +165,15 @@ function tally(tapes: Tape[], order: (t: Tape) => Row[]) {
 const line = (name: string, s: { e: number; r: number; c: number; n: number }) =>
   `  ${name.padEnd(34)} EXACT ${String(s.e).padStart(3)}/${s.n} ${pct(s.e, s.n).padStart(6)}` +
   ` +/-${hw(s.e, s.n).toFixed(1).padStart(4)}   REGIME ${pct(s.r, s.n).padStart(6)}   CHANNEL ${pct(s.c, s.n).padStart(6)}`;
-function mcnemar(tapes: Tape[], a: (t: Tape) => Row[], b: (t: Tape) => Row[]) {
-  let ab = 0, ba = 0;
-  for (const t of tapes) {
-    const x = grade(t, a(t)).exact, y = grade(t, b(t)).exact;
-    if (x && !y) ab++; else if (!x && y) ba++;
-  }
-  const n = ab + ba;
-  return { ab, ba, z: n ? (Math.abs(ab - ba) - 1) / Math.sqrt(n) : 0 };
-}
+/** THE STATISTIC CHANGED HERE, on purpose. This file used to define its own
+ *  McNemar as `(|ab - ba| - 1) / sqrt(n)` -- unsigned, Yates-corrected -- while
+ *  `fit_signal_blend.ts` defined the same name as `(ab - ba) / sqrt(n)`. Two
+ *  statistics, one name, quoted against each other. `scripts/mcnemar.ts` is now
+ *  the only definition and it is SIGNED and UNCORRECTED, so a z printed below
+ *  carries the direction and is comparable with every other z in the repo. Any
+ *  arm whose verdict moves because of the change says so on its own line. */
+const mcnemar = (tapes: Tape[], a: (t: Tape) => Row[], b: (t: Tape) => Row[]) =>
+  mcnemarPaired(tapes, (t) => grade(t, a(t)).exact, (t) => grade(t, b(t)).exact);
 const q = (xs: number[], p: number) =>
   xs.length ? [...xs].sort((a, b) => a - b)[Math.min(xs.length - 1, Math.floor(xs.length * p))] : NaN;
 
@@ -287,7 +289,11 @@ function main() {
   for (const [n, s] of scored.slice(0, 12)) {
     const m = mcnemar(tapes, (t) => arm(t, n.split(" ")[0], Number(n.match(/off=(\S+)/)![1]),
       Number(n.match(/cap=(\S+)/)![1])), shipped);
-    console.log(line(n, s) + `   vs shipped +${m.ab}/-${m.ba} z=${m.z.toFixed(2)}`);
+    // z is SIGNED now: +2.1 means this arm beat shipped, -2.1 means it lost.
+    // `p` is the exact binomial and is the one to read below 25 discordants,
+    // which most of these arms are.
+    console.log(line(n, s) + `   vs shipped +${m.ab}/-${m.ba} z=${m.z >= 0 ? "+" : ""}` +
+      `${m.z.toFixed(2)} p=${m.p < 0.001 ? "<.001" : m.p.toFixed(3)}`);
   }
 
   // ── 3. WHAT BLOCKS THE SCORE'S EXCLUSIVE WINS ───────────────────────────

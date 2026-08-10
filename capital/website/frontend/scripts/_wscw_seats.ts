@@ -16,6 +16,8 @@
 //   npx tsx scripts/_wscw_seats.ts /tmp/wscw_tape.tune.json
 import { readFileSync } from "fs";
 
+import { mcnemar as mcnemarPaired } from "./mcnemar";
+
 interface Tape {
   want: string; wantRegime: string; wantChannel: string;
   country: string; sector: string; mode: string;
@@ -190,17 +192,19 @@ const line = (name: string, s: { e: number; r: number; c: number; n: number }) =
   `  ${name.padEnd(30)} EXACT ${String(s.e).padStart(3)}/${s.n} ${pct(s.e, s.n).padStart(6)}` +
   ` +/-${hw(s.e, s.n).toFixed(1).padStart(4)}   REGIME ${pct(s.r, s.n).padStart(6)}   CHANNEL ${pct(s.c, s.n).padStart(6)}`;
 
-/** McNemar over a paired arm, which is the only honest test on one tape. */
-function mcnemar(tapes: Tape[], a: (t: Tape) => Row[], b: (t: Tape) => Row[]) {
-  let ab = 0, ba = 0;
-  for (const t of tapes) {
-    const x = grade(t, a(t)).exact, y = grade(t, b(t)).exact;
-    if (x && !y) ab++; else if (!x && y) ba++;
-  }
-  const n = ab + ba;
-  const z = n ? (Math.abs(ab - ba) - 1) / Math.sqrt(n) : 0;
-  return { ab, ba, z };
-}
+/** McNemar over a paired arm, which is the only honest test on one tape.
+ *
+ *  THE STATISTIC CHANGED HERE, on purpose: this file's own copy was unsigned
+ *  and Yates-corrected while `fit_signal_blend.ts` used the same NAME for the
+ *  signed uncorrected form, so a z from one was being read against a z from the
+ *  other. `scripts/mcnemar.ts` is the single definition; see its header for why
+ *  the signed form won. Every z below now carries a sign -- positive means the
+ *  arm beat shipped -- and an exact p-value, which is the statistic that
+ *  actually applies at the discordant counts these arms produce. */
+const mcnemar = (tapes: Tape[], a: (t: Tape) => Row[], b: (t: Tape) => Row[]) =>
+  mcnemarPaired(tapes, (t) => grade(t, a(t)).exact, (t) => grade(t, b(t)).exact);
+const zp = (m: { z: number; p: number }) =>
+  `z=${m.z >= 0 ? "+" : ""}${m.z.toFixed(2)} p=${m.p < 0.001 ? "<.001" : m.p.toFixed(3)}`;
 
 function main() {
   const file = process.argv[2] ?? "/tmp/wscw_tape.json";
@@ -237,7 +241,7 @@ function main() {
     const s = tally(tapes, f);
     const m = mcnemar(tapes, f, shipped);
     console.log(line(k === 999 ? "score alone (no peer order)" : `${k} seat(s), both branches`, s) +
-      `   vs shipped +${m.ab}/-${m.ba} z=${m.z.toFixed(2)}`);
+      `   vs shipped +${m.ab}/-${m.ba} ${zp(m)}`);
   }
   {
     const f = (t: Tape) => alternate(rowsOf(t), t.branch);
@@ -255,7 +259,7 @@ function main() {
       const f = (t: Tape) => rrf(rowsOf(t), t.branch, k0, w);
       const m = mcnemar(tapes, f, shipped);
       console.log(line(`RRF k0=${k0} wPeer=${w}`, tally(tapes, f)) +
-        `   vs shipped +${m.ab}/-${m.ba} z=${m.z.toFixed(2)}`);
+        `   vs shipped +${m.ab}/-${m.ba} ${zp(m)}`);
     }
   }
 
@@ -265,7 +269,7 @@ function main() {
     const f = (t: Tape) => cappedFill(rowsOf(t), t.branch, t.branch === "specific" ? 3 : 1, d);
     const m = mcnemar(tapes, f, shipped);
     console.log(line(d === 1e9 ? "no cap (= shipped)" : `depth <= ${d}`, tally(tapes, f)) +
-      `   vs shipped +${m.ab}/-${m.ba} z=${m.z.toFixed(2)}`);
+      `   vs shipped +${m.ab}/-${m.ba} ${zp(m)}`);
   }
 
   // ── 3. WHAT EACH SIGNAL KNOWS, on its own ───────────────────────────────
