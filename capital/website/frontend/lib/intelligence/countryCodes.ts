@@ -36,6 +36,13 @@ const COUNTRY_ISO: Record<string, string> = {
   kosovo: "XK",
 };
 
+/** Every spelling of a country this corpus recognises. Exported so a check can
+ *  ask "does this text name a country?" against the SAME vocabulary the
+ *  matcher uses, rather than against a second list that drifts from it. */
+export function countryNames(): string[] {
+  return Object.keys(COUNTRY_ISO);
+}
+
 export function toIso2(country?: string): string {
   if (!country) return "";
   const c = country.trim().toLowerCase();
