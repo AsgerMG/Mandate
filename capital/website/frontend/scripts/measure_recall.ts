@@ -101,6 +101,7 @@ import {
   requireLiveCorpus, resetGateHydration, __forceSuppressedForParity,
 } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
 import { doorKey } from "../lib/intelligence/rowIdentity";
 // ── WHICH RANKER produced these numbers, counted rather than assumed ───────
 // `check_recall_floor.ts` has printed this since fd27cec0 and THIS FILE, the
@@ -252,7 +253,17 @@ async function main() {
       `graded against the ${set.length}-row population the live register defines`);
   }
 
-  const stat = { pool: 0, exact5: 0, regime5: 0, chan5: 0, door5: 0, doorable: 0, done: 0 };
+  const stat = {
+    pool: 0, exact5: 0, regime5: 0, chan5: 0, door5: 0, doorable: 0, done: 0,
+    // ── What the FOUNDER sees, measured beside what the floors grade ─────────
+    // `exact5` grades five rows. `computeVerdict` publishes `DISPLAY_CAP` of
+    // them and the memo publishes `institutionsMax`. Reporting only the five
+    // understated the shipped product by at least one row in every figure this
+    // repo has ever quoted. This counts the same hit at the cap the instant
+    // screen actually renders, so the gap between them is visible rather than
+    // discovered later.
+    exactPublished: 0,
+  };
   // ── DOOR@5: the metric for "a row is a scheme VIA A BODY" ─────────────────
   //
   // EXACT@5 asks whether the exact leaf is on the page. REGIME@5 asks only
@@ -358,8 +369,25 @@ async function main() {
       // richness could not affect it either way.
     } as never);
     const pool: string[] = v.candidateInstrumentIds ?? [];
-    const top5 = (v.instrumentTable ?? []).slice(0, 5)
+    // ── The five is a MEASUREMENT window, not the page ────────────────────────
+    //
+    // `instrumentTable` is already cut to `DISPLAY_CAP`, which is 6, and the
+    // memo publishes `institutionsMax`, which is 7. Slicing to 5 here graded a
+    // narrower table than either surface a founder sees, so every `@5` figure
+    // in this repo understates the shipped product by at least one row.
+    //
+    // The window is NOT widened to 6 or 7, deliberately. Every floor in
+    // `check_recall_floor.ts` is calibrated on this window, and widening it can
+    // only raise the number -- a loosening dressed as a correction, which this
+    // repo has done once and reversed. So `@5` stays exactly as it was, and the
+    // published-cap figure is reported BESIDE it under its own name.
+    //
+    // `checkGradedWindow` below fails the run if the two ever stop being
+    // comparable, so this cannot silently drift again.
+    const ranked = (v.instrumentTable ?? [])
       .map((r: any) => r.instrumentId).filter(Boolean) as string[];
+    const top5 = ranked.slice(0, 5);
+    const topPublished = ranked.slice(0, DISPLAY_CAP);
     const want = byId.get(t.instrument);
     const wantRegime = want?.parentId ?? t.instrument;
     const inPool = pool.includes(t.instrument);
@@ -373,6 +401,7 @@ async function main() {
     stat.done++;
     if (inPool) stat.pool++;
     if (e5) stat.exact5++;
+    if (topPublished.includes(t.instrument)) stat.exactPublished++;
     if (r5) stat.regime5++;
     if (c5) stat.chan5++;
     if (doorable) stat.doorable++;
@@ -427,6 +456,8 @@ async function main() {
   console.log(`  ${rankerTallyLine()}`);
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
+  console.log(`  EXACT scheme in top ${DISPLAY_CAP}    ${pc(stat.exactPublished)}   ` +
+    `<- what the instant screen PUBLISHES; the line above grades five of them`);
   console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);
   // The caveat travels WITH the number, on the same screen, because that is the
   // only place it can be read at the moment somebody copies the figure. A
