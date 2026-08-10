@@ -170,25 +170,29 @@ export interface DbInstrument {
   companyCount: number;
   totalEur: number;
   sourceFamilyBucket: string | null;
-  /** WRITE-ONLY. Loaded and `JSON.parse`d for every instrument on every corpus
-   *  load, and read by nothing in the frontend — not the ranker, not the memo,
-   *  not the brief. Kept, with this label on it, for two reasons.
-   *
-   *  Its exclusion from ranking is DELIBERATE and measured, not an oversight:
-   *  see the note in relevance.ts. In this corpus the titles are mostly
-   *  national regulation boilerplate rather than project descriptions, so
-   *  indexing them adds vocabulary that matches everything.
-   *
-   *  And it is load-bearing in the OTHER direction: it was the field the old
-   *  leak guard checked, against SQLite, while retrieval scored against
-   *  `instrument_profiles.profile_text` in Postgres — which is how 46% of
-   *  holdout project rows leaked their answer into their own query undetected.
-   *  Anything that starts reading this for matching must re-open that question
-   *  first (`scripts/check_recall_leaks.ts`).
-   *
-   *  Do not "wire it up" because it looks unused. Either give it a consumer
-   *  deliberately, with that measurement redone, or drop it from the SELECT. */
-  sampleProjectTitles: string[] | null;
+  // ── `sampleProjectTitles` WAS HERE, AND IS GONE ON PURPOSE ────────────────
+  //
+  // It held real award titles. It was SELECTed and `JSON.parse`d for every
+  // instrument on every corpus load, and read by NOTHING — not the ranker, not
+  // the memo, not the brief. Its own comment said "do not wire it up because it
+  // looks unused" and offered two ways out; this takes the second, and drops it
+  // from the SELECT.
+  //
+  // The reason it could not simply be left alone: a founder's request must not
+  // be able to read what that founder won, and this was the answer sitting on
+  // `DbInstrument`, one property access from any module in the path. Its own
+  // note recorded the precedent — the old leak guard checked THIS field in
+  // SQLite while retrieval scored against `instrument_profiles.profile_text` in
+  // Postgres, and 46% of holdout project rows leaked their answer into their
+  // own query undetected for weeks.
+  //
+  // Its exclusion from RANKING was already deliberate and measured (see
+  // relevance.ts: in this corpus the titles are mostly national regulation
+  // boilerplate, so indexing them matches everything). Nothing about that
+  // changes. What changes is that the field is no longer loaded at all, so the
+  // question cannot be reopened by accident — only by someone re-adding it to
+  // the SELECT, which `scripts/check_answer_not_reachable.ts` now fails the
+  // build for.
   /** Real per-fund granting authority (majority vote across events' raw
    *  granting_authority field), e.g. "Bundesamt für Wirtschaft und
    *  Ausfuhrkontrolle" — null when no dominant authority is on record.
@@ -504,7 +508,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         client.query(
           `SELECT id, parent_id, name, country, capital_type, is_framework,
                   event_count, company_count, total_eur, source_family_bucket,
-                  sample_project_titles, administering_body,
+                  administering_body,
                   administering_body_share, last_year,
                   scheme_code, scheme_end_date, scheme_end_date_basis,
                   source_window_policy,
@@ -599,7 +603,6 @@ export async function hydrateDbInstruments(): Promise<void> {
         companyCount: inst.company_count,
         totalEur: Number(inst.total_eur),
         sourceFamilyBucket: inst.source_family_bucket,
-        sampleProjectTitles: inst.sample_project_titles ? JSON.parse(inst.sample_project_titles) : null,
         administeringBody: inst.administering_body ?? null,
         administeringBodyShare: inst.administering_body_share ?? null,
         lastYear: inst.last_year ?? null,

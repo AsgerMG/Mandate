@@ -106,6 +106,12 @@ const CHECKS = [
   ["a winner is never gated out of the memo",
     ["npx", "tsx", "scripts/check_winner_not_gated.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
+  // The other direction of the same property. The line above stops the ANSWER
+  // KEY containing the question; this stops a founder's REQUEST being able to
+  // read the answer. Both were needed: the answer key sits in the same
+  // directory the memo path imports from.
+  ["request path cannot reach the answer",
+   ["npx", "tsx", "scripts/check_answer_not_reachable.ts"]],
   // The other half of "the number describes the product": the set may be
   // leak-free and still be graded on a founder who does not exist. This fails
   // when a harness answers the intake on the founder's behalf, which is how
