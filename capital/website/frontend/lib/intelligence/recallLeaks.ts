@@ -27,7 +27,9 @@
 //             the operational number — away for free.
 //
 // Deliberately pure: no fs, no pg. The artifact is passed in, so this module
-// can be unit-tested on a poisoned row without touching the corpus.
+// can be unit-tested on a poisoned row without touching the corpus. (`crypto`
+// is a hash and reads nothing; see `digest` below for why one is needed.)
+import { createHash } from "crypto";
 
 /** Comparison form: accent-free, punctuation-free, single-spaced lowercase.
  *
@@ -65,8 +67,18 @@ export type LeakIndexFile = {
   profile: Record<string, string>;
   /** instrument id -> parent id. Absent means the instrument has no parent. */
   parent: Record<string, string>;
+  /** instrument id -> its own name, squashed. Answer instruments only. */
+  name?: Record<string, string>;
+  /** instrument id -> its notified scheme code, squashed. */
+  code?: Record<string, string>;
+  /** instrument id -> digests of EVERY project title the corpus credits to it.
+   *  Digests rather than text: this artifact is committed, and award prose is
+   *  an answer-bearing source. */
+  ownTitles?: Record<string, string[]>;
   /** [raw, what Python's squash() produced] — the cross-language contract. */
   squashProbes?: [string, string][];
+  /** [squashed, what Python's digest() produced] — the same contract again. */
+  digestProbes?: [string, string][];
 };
 
 export type LeakRow = {
@@ -74,7 +86,43 @@ export type LeakRow = {
   instrument: string;
   description?: string;
   descriptionSource?: string;
+  /** Set by ETL/terms/rebuild_recall_descriptions.py. See BORROWED_CONTRACT. */
+  descriptionRebuilt?: boolean;
 };
+
+/** ── The stronger contract a REBUILT description signs ──────────────────────
+ *
+ *  Three of the checks in `makeLeakDetector` compare a description against
+ *  `profile_text`, which is built from up to FORTY SAMPLED award titles per
+ *  fund. That is a sample of the fund's own words, not all of them, and it is
+ *  the right bar for a description drawn from the company's own award under the
+ *  fund being predicted (`own_award_text`) — those rows declare that provenance
+ *  and are graded knowing it.
+ *
+ *  A description rebuilt from ANOTHER REGIME declares something stronger: that
+ *  it could have been written without knowing the answer, because it belongs to
+ *  a different programme entirely. Three ways that claim can be false which the
+ *  profile checks cannot see:
+ *
+ *    names it     the fund's own name appears in the text
+ *    codes it     the fund's notified scheme code appears in the text
+ *    own title    the text IS a project title of an award under the won fund —
+ *                 the same string reaching two regimes, which is exactly what
+ *                 "it belongs to another regime" denies
+ *
+ *  The build-time guards in ETL/terms/recall_guards.py refuse all three. This
+ *  is the regression test, on the committed artifact, with no database — and it
+ *  is scoped to rows that made the cross-regime claim rather than applied to
+ *  every described row, because applying it to `own_award_text` would fail 843
+ *  rows on a provenance they never claimed to have. */
+export const BORROWED_CONTRACT =
+  "a description rebuilt from another regime must not name the won fund, its " +
+  "scheme code, or reproduce one of its own award titles";
+
+/** True for a row whose description claims cross-regime provenance. */
+export const isBorrowed = (r: LeakRow): boolean =>
+  Boolean(r.descriptionRebuilt)
+  || Boolean(r.descriptionSource?.startsWith("cross_regime"));
 
 /** Rows whose description is already known and marked as leaking are excluded
  *  from the measured population by every harness, so they are not a finding
@@ -115,6 +163,11 @@ export function makeLeakDetector(idx: LeakIndexFile) {
     return false;
   };
 
+  const ownTitles = new Map<string, Set<string>>();
+  for (const [id, digests] of Object.entries(idx.ownTitles ?? {})) {
+    ownTitles.set(id, new Set(digests));
+  }
+
   return function leakReason(row: LeakRow): string | null {
     if (!isLive(row)) return null;
     const n = squash(row.description ?? "");
@@ -132,8 +185,47 @@ export function makeLeakDetector(idx: LeakIndexFile) {
       if (ps.includes(n)) return `verbatim in a SIBLING's profile (${s})`;
       if (shares(dg, s)) return `8-gram shared with a SIBLING's profile (${s})`;
     }
+    // The three above are the bar for ANY description. A rebuilt one signed a
+    // stronger contract; see BORROWED_CONTRACT.
+    if (!isBorrowed(row)) return null;
+    const fundName = idx.name?.[won] ?? "";
+    // Short names would match by accident — `distinctive_tokens` in the Python
+    // guard ignores tokens under five characters for the same reason — so the
+    // whole-name test needs a name long enough to be the fund and not a word.
+    if (fundName.length >= 8 && n.includes(fundName)) {
+      return "names the won fund, and claims to come from another regime";
+    }
+    const code = idx.code?.[won] ?? "";
+    if (code.length >= 3 && n.includes(code)) {
+      return "contains the won fund's scheme code";
+    }
+    if (ownTitles.get(won)?.has(digest(n))) {
+      return "IS a project title of an award under the won fund";
+    }
     return null;
   };
+}
+
+/** The digest `emit_profile_leak_index.py` ships title fingerprints as.
+ *
+ *  MUST agree with `digest()` in ETL/terms/recall_guards.py character for
+ *  character. The artifact carries probes and `checkDigestProbes` fails the
+ *  build on any disagreement — the same contract `squash` already has, for the
+ *  same reason: two implementations of one function is how a guard silently
+ *  stops catching things. */
+export const digest = (squashed: string): string =>
+  createHash("sha1").update(squashed, "utf8").digest("hex").slice(0, 12);
+
+/** Every digest probe the artifact carries, re-derived here. */
+export function checkDigestProbes(idx: LeakIndexFile): string[] {
+  const bad: string[] = [];
+  for (const [squashed, want] of idx.digestProbes ?? []) {
+    const got = digest(squashed);
+    if (got !== want) {
+      bad.push(`${JSON.stringify(squashed.slice(0, 60))}\n    python ${want}\n    ts     ${got}`);
+    }
+  }
+  return bad;
 }
 
 /** Every probe the artifact carries, re-squashed here. Any disagreement means

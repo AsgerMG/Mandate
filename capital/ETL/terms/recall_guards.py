@@ -39,6 +39,7 @@ and sharing one tells us nothing.
 from __future__ import annotations
 
 import collections
+import hashlib
 import json
 import os
 import re
@@ -69,6 +70,36 @@ def norm(s: str) -> str:
 
 def squash(s: str) -> str:
     return re.sub(r"\s+", " ", norm(s))
+
+
+# Eight words is the unit: long enough that two independent texts do not share
+# one by chance, short enough to catch a text quoted into a profile with a word
+# changed. MUST match GRAM in website/frontend/lib/intelligence/recallLeaks.ts.
+GRAM = 8
+
+
+def _grams(squashed: str, k: int = GRAM) -> set[str]:
+    w = [t for t in squashed.split(" ") if t]
+    if not w:
+        return set()
+    return {" ".join(w[i:i + k]) for i in range(max(len(w) - k + 1, 1))}
+
+
+def digest(s: str) -> str:
+    """A short, stable fingerprint of an ALREADY-SQUASHED string.
+
+    Used where a guard has to ship a set of strings to a credential-free check
+    without shipping the strings themselves. `profileLeakIndex.generated.json`
+    is committed and `check_answer_not_reachable.ts` treats award prose as an
+    answer-bearing source, so the fund's own project titles travel as digests:
+    the check can still ask "is this description one of them" and the artifact
+    still carries no award title anyone could read.
+
+    sha1 because both languages have it natively and the artifact carries
+    probes that fail the build if the two implementations ever disagree. It is
+    a fingerprint, not a secret.
+    """
+    return hashlib.sha1(s.encode("utf-8")).hexdigest()[:12]
 
 
 def distinctive_tokens(names: list[str], corpus_freq: dict[str, int],
@@ -168,6 +199,27 @@ class LeakIndex:
         n = squash(text)
         return bool(p and n and n in p)
 
+    def shares_gram(self, text: str, won: str) -> bool:
+        """Eight consecutive words in common with the won fund's profile.
+
+        THE GAP THIS CLOSES. `in_profile` asks for whole-string containment, and
+        `check_recall_leaks.ts` has always asked the weaker, stricter question
+        too -- eight words shared is enough that the string is QUOTING the
+        profile rather than coinciding with it. So the build-time guard could
+        pass a text the check-time guard then failed, and it did: the first run
+        of the description rebuild produced two rows that were verbatim-clean
+        and shared an 8-gram, and the only thing that caught them was CI.
+
+        A build guard weaker than the check it feeds is a build guard that
+        hands somebody a red build with no way to have known. Same unit, same
+        window, same normaliser as recallLeaks.ts.
+        """
+        n = squash(text)
+        p = self.profile_text.get(won) or ""
+        if not n or not p:
+            return False
+        return bool(_grams(n) & _grams(p))
+
     def siblings_of(self, iid: str) -> list[str]:
         if self._kids is None:
             self._kids = collections.defaultdict(list)
@@ -175,6 +227,14 @@ class LeakIndex:
                 self._kids[i["parent_id"] or other].append(other)
         parent = self.inst.get(iid, {}).get("parent_id") or iid
         return [s for s in self._kids.get(parent, ()) if s != iid]
+
+    def shares_sibling_gram(self, text: str, won: str) -> bool:
+        n = squash(text)
+        if not n:
+            return False
+        g = _grams(n)
+        return any(g & _grams(self.profile_text.get(s, ""))
+                   for s in self.siblings_of(won) if self.profile_text.get(s))
 
     def in_sibling_profile(self, text: str, won: str) -> bool:
         """Inside the profile of a fund that shares the won fund's parent.
@@ -242,8 +302,12 @@ class LeakIndex:
             return "is a fund's own sample title"
         if self.in_profile(text, won):
             return "appears in the won fund's profile text"
+        if self.shares_gram(text, won):
+            return "shares an 8-gram with the won fund's profile text"
         if self.in_sibling_profile(text, won):
             return "appears in a SIBLING's profile text"
+        if self.shares_sibling_gram(text, won):
+            return "shares an 8-gram with a SIBLING's profile text"
         if self.instrument_share(text) > MAX_INSTRUMENT_SHARE:
             return "names a funding line, not a project"
         if self.names_the_fund(text, won):

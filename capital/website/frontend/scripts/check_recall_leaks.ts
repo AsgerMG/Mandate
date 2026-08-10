@@ -23,7 +23,10 @@
 import { readFileSync } from "fs";
 import path from "path";
 
-import { checkSquashProbes, makeLeakDetector } from "../lib/intelligence/recallLeaks";
+import {
+  BORROWED_CONTRACT, checkDigestProbes, checkSquashProbes, isBorrowed,
+  makeLeakDetector,
+} from "../lib/intelligence/recallLeaks";
 import type { LeakIndexFile, LeakRow } from "../lib/intelligence/recallLeaks";
 import { loadRecallSet } from "./recallSet";
 
@@ -49,15 +52,41 @@ function main() {
     process.exit(1);
   }
 
+  const digestDrift = checkDigestProbes(idx);
+  if (digestDrift.length) {
+    console.error(`\ncheck_recall_leaks: FAILED — digest() has drifted from ` +
+                  `ETL/terms/recall_guards.py on ${digestDrift.length} probe(s):`);
+    for (const d of digestDrift.slice(0, 5)) console.error(`  ${d}`);
+    console.error("\nThe own-title check compares fingerprints. If the two " +
+                  "implementations disagree it compares nothing and passes.");
+    process.exit(1);
+  }
+
   const leakReason = makeLeakDetector(idx);
   const leaks: { row: LeakRow; why: string }[] = [];
-  let checked = 0;
+  let checked = 0, borrowed = 0;
   for (const r of rows as unknown as LeakRow[]) {
     if (!(r.description ?? "").trim()) continue;
     if (r.descriptionSource === "own_project_title_leaks") continue;
     checked++;
+    if (isBorrowed(r)) borrowed++;
     const why = leakReason(r);
     if (why) leaks.push({ row: r, why });
+  }
+
+  // ── Anti-vacuity ──────────────────────────────────────────────────────────
+  // The three extra checks a borrowed description signs up to run only on rows
+  // that claim cross-regime provenance. A set that carries none of them would
+  // report green on a contract it never tested — and the artifact could lose
+  // the fields those checks read without anything noticing, since a missing
+  // record reads as "no name, no code, no titles" and matches nothing.
+  const armed = Object.keys(idx.ownTitles ?? {}).length;
+  if (borrowed > 0 && armed === 0) {
+    console.error(`\ncheck_recall_leaks: FAILED — ${file} carries ${borrowed} ` +
+      `cross-regime description(s) and the leak index carries NO own-title ` +
+      `index.\n${BORROWED_CONTRACT}.\nRebuild it: ` +
+      `python3 ETL/terms/emit_profile_leak_index.py`);
+    process.exit(1);
   }
 
   if (leaks.length) {
@@ -78,6 +107,12 @@ function main() {
   console.log(`check_recall_leaks: ok — ${checked.toLocaleString()} described rows, ` +
               `0 leaks at exact / 8-gram / sibling, ` +
               `${(idx.squashProbes ?? []).length} squash probes agree.`);
+  console.log(`  of those, ${borrowed.toLocaleString()} claim cross-regime ` +
+              `provenance and additionally carry no fund name, no scheme code ` +
+              `and no own award title\n  (${armed.toLocaleString()} instruments ` +
+              `indexed, ${Object.values(idx.ownTitles ?? {})
+                .reduce((n, t) => n + t.length, 0).toLocaleString()} titles, ` +
+              `${(idx.digestProbes ?? []).length} digest probes agree).`);
 }
 
 main();

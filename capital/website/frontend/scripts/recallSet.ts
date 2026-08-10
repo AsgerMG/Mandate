@@ -139,12 +139,66 @@ import path from "path";
  *  Composed's coverage is a limit, not a defect. `STAGED_RECALL_SET` now names
  *  it, which keeps the switch a one-line reversal in the direction it came
  *  from: swap the two constants and every harness follows. */
-export const ACTIVE_RECALL_SET = "__recallSetDoors.json";
+/*  ── THE FOUNDER WHO SAID NOTHING, 2026-08-10 (workstream DH) ─────────────
+ *
+ *  ██ FOUR FOUNDERS IN FIVE REACHED EVERY MODEL IN THIS REPO WITH NOTHING TO
+ *  SAY, AND EVERY MODEL ARM MEASURED SO FAR RAN UNDER THAT CONDITION. ██
+ *
+ *  `__recallSetDoors.json` carries 7,095 pairs and 1,366 usable descriptions.
+ *  The other 5,729 render in the selector prompt as the literal string
+ *  `(no description on file)` (fundSelection.ts) and reach the RANKER as one of
+ *  ELEVEN canned sector sentences via `selfDescription`. "Model 15% against
+ *  shipped 27%" is therefore not two rankers compared: it is a judge with no
+ *  case file against a ranker that never needed one.
+ *
+ *  `__recallSetDescribed.json` is Doors with those 5,729 re-sourced by
+ *  ETL/terms/rebuild_recall_descriptions.py from each company's OWN award prose
+ *  under a DIFFERENT regime than the fund being predicted — the same rule that
+ *  produced the good pairs already in Doors, and the same guards, now including
+ *  an 8-gram test the build side did not previously have.
+ *
+ *  ── The number that matters, and it is not the one that was expected ──────
+ *  532 of 5,729 could be rebuilt. Not 4,960.
+ *
+ *  The feasibility estimate that licensed this work counted companies with
+ *  prose "under a different PROGRAMME than the answer" and got 86.6%. Measured
+ *  at the level the leak guard actually works at — the REGIME — it is 10.1%:
+ *
+ *      5,729  needed a description
+ *        814  the company has no award text anywhere in the corpus
+ *      4,112  every text-bearing award they have is in the WON FUND'S OWN
+ *             REGIME. A sibling programme shares the scheme name, which is the
+ *             exact string that leaked the first time.
+ *        225  blocked by a string guard (a fund's own sample title, an 8-gram,
+ *             a funding-line name, too short to embed)
+ *        578  usable — of which 46 lost their text to the reuse cap
+ *
+ *  Relaxing provenance buys nothing, and this was measured rather than assumed:
+ *  admitting any award outside the won fund's immediate family moves 578 to
+ *  578, because the source-map join resolves a national award to its FAMILY,
+ *  which is the won fund's own ancestor. Admitting siblings is the only
+ *  relaxation with any yield, and admitting siblings is the leak.
+ *
+ *  ██ SO THE CEILING ON A DESCRIBED FOUNDER IS 1,898 PAIRS (26.8%), NOT 7,095,
+ *  AND NO AMOUNT OF WORK ON THIS KEY MOVES IT. ██ The remaining 5,197 stay
+ *  blank and say so. Nothing is synthesised: a description written from a
+ *  sector and a country is a fabricated founder, which is how this repo
+ *  acquired a fictional one the first time.
+ *
+ *  A headline about described founders must be taken over `isDescribed()` and
+ *  must say so. `announceRecallSet` prints the distribution on every run for
+ *  that reason — count, median length, share rebuilt, share still blank — the
+ *  same way `ranker:` is printed, and for the same reason.
+ *
+ *  Doors is NOT retired: it is what every figure before today was measured on,
+ *  its descriptions were a LIMIT and not a defect, and `STAGED_RECALL_SET`
+ *  names it so the switch stays a one-line reversal. */
+export const ACTIVE_RECALL_SET = "__recallSetDescribed.json";
 /** The set `ACTIVE_RECALL_SET` reverts TO, and previously the one it became.
  *  Named rather than written into a comment, so the other side of the switch is
  *  discoverable by grep and so nothing has to be remembered about which file
  *  was meant. Reversibility is the point of having this constant at all. */
-export const STAGED_RECALL_SET = "__recallSetComposed.json";
+export const STAGED_RECALL_SET = "__recallSetDoors.json";
 
 /** ── REGIME@5 MEANS SOMETHING DIFFERENT UNDER DOORS ───────────────────────
  *
@@ -208,6 +262,12 @@ export type RecallRow = {
   description?: string; selfDescription?: string;
   mode: string; split: string;
   descriptionSource?: string; traced?: string;
+  /** Set by ETL/terms/rebuild_recall_descriptions.py on a description recovered
+   *  from an award under a DIFFERENT regime than the fund being predicted. It
+   *  is a stronger provenance claim than `own_award_text` and it is CHECKED as
+   *  one: see BORROWED_CONTRACT in lib/intelligence/recallLeaks.ts. */
+  descriptionRebuilt?: boolean;
+  descriptionFrom?: string;
   region?: string; regionSource?: string;
   /** This founder's OWN intake answers, derived from the register by
    *  `ETL/terms/enrich_recall_answers.py`. Every one carries its provenance for
@@ -626,7 +686,42 @@ export function announceRecallSet(file: string, rows: RecallRow[], note = ""): v
     `recall set: ${file}  ${rows.length.toLocaleString()} pairs, ` +
     `${nameable} instruments nameable, ${described.toLocaleString()} leak-free ` +
     `descriptions${note ? `  [${note}]` : ""}`);
+  console.log(`  ${describedTallyLine(rows)}`);
   warnIfRetired(file);
+}
+
+/** ── WHAT THE FOUNDERS IN THIS RUN ACTUALLY SAID ──────────────────────────
+ *
+ *  Printed on every load, beside the pair count, for the reason `ranker:` is
+ *  printed beside every recall figure: a number measured on founders who said
+ *  nothing is a different number, and nothing on screen used to say which kind
+ *  it was. 5,729 of 7,095 pairs — four in five — reached every model this repo
+ *  has measured carrying only a name, a country, a sector and four dropdown
+ *  answers, and no banner mentioned it.
+ *
+ *  BLANK IS NOT ZERO INFORMATION, IT IS ELEVEN SENTENCES. A row with no
+ *  description falls back to `selfDescription`, one of eleven canned sector
+ *  strings, so more than a thousand founders query with the identical string
+ *  against dozens of different right answers. That is why the blank share is
+ *  reported as its own number rather than folded into "described": it is the
+ *  ceiling on what any ranking method can do here.
+ *
+ *  MEDIAN, not mean. The distribution is bimodal — a project title is ~120
+ *  characters and a summary runs to the 1,200-character cap — so a mean
+ *  describes neither population. */
+export function describedTallyLine(rows: RecallRow[]): string {
+  const described = rows.filter(isDescribed);
+  const lens = described.map((r) => (r.description ?? "").length).sort((a, b) => a - b);
+  const median = lens.length ? lens[Math.floor(lens.length / 2)] : 0;
+  const rebuilt = described.filter(
+    (r) => r.descriptionRebuilt || (r.descriptionSource ?? "").startsWith("cross_regime")).length;
+  const blank = rows.length - described.length;
+  const pct = (n: number) => rows.length ? `${Math.round((100 * n) / rows.length)}%` : "0%";
+  return `descriptions: ${described.length.toLocaleString()} (${pct(described.length)}) ` +
+    `with one, median ${median} chars; ${rebuilt.toLocaleString()} ` +
+    `(${pct(rebuilt)}) recovered from another regime; ` +
+    `${blank.toLocaleString()} (${pct(blank)}) STILL BLANK — those founders ` +
+    "query with one of eleven canned sector sentences";
 }
 
 /** For a harness that knows the set's NAME but not its rows — a fixture, say.

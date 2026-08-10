@@ -53,7 +53,7 @@ import json  # noqa: E402
 import os  # noqa: E402
 import sqlite3  # noqa: E402
 
-from recall_guards import squash  # noqa: E402
+from recall_guards import digest, squash  # noqa: E402
 
 FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
 OUT = FRONTEND / "profileLeakIndex.generated.json"
@@ -83,6 +83,51 @@ def main() -> None:
     conn = sqlite3.connect(DB)
     parent = {r[0]: r[1] for r in conn.execute(
         "SELECT id, parent_id FROM funding_instruments")}
+
+    # ── What a REBUILT description must additionally not contain ────────────
+    # `profile_text` is built from up to 40 SAMPLED award titles per fund, so
+    # the three checks above see a sample of the fund's own words and not all
+    # of them. A description recovered from another regime is supposed to be
+    # independent of the won fund entirely, which is a stronger claim and needs
+    # a stronger test:
+    #
+    #   name / code   the fund's own name and its notified scheme code. The
+    #                 build-time guard (`names_the_fund`) already refuses these,
+    #                 but a guard that only runs at build time is a guard nobody
+    #                 can re-run on a committed artifact.
+    #   own titles    EVERY project title the corpus can credit to the fund, not
+    #                 the 40 in its profile. The cross-regime rule says the text
+    #                 belongs to another regime; the same string appearing on an
+    #                 award under THIS one falsifies that, and only a full title
+    #                 index can see it.
+    #
+    # Titles are emitted only for instruments some recall set actually names —
+    # a fund that is never an answer cannot be leaked into — and as 12-hex
+    # digests rather than text, because this artifact is committed and the whole
+    # point of it is that it carries no award prose a request path could read.
+    names = {i: (n or "") for i, n in conn.execute(
+        "SELECT id, name FROM funding_instruments")}
+    codes = {i: (c or "").strip() for i, c in conn.execute(
+        "SELECT id, scheme_code FROM funding_instruments")}
+    answers: set[str] = set()
+    for f in PROBE_SOURCES:
+        for r in json.loads(f.read_text()):
+            answers.add(r["instrument"])
+    src2inst: dict[str, list[str]] = {}
+    for s, iid in conn.execute(
+            "SELECT source, instrument_id FROM funding_instrument_sources"):
+        src2inst.setdefault(s, []).append(iid)
+    code2inst: dict[str, list[str]] = {}
+    for iid, code in codes.items():
+        if code:
+            code2inst.setdefault(code, []).append(iid)
+    own: dict[str, set[str]] = {}
+    for source, call_id, title in conn.execute(
+            "SELECT source, call_id, project_title FROM public_funding_events "
+            "WHERE is_duplicate = 0 AND COALESCE(project_title, '') <> ''"):
+        for iid in code2inst.get((call_id or "").strip(), []) + src2inst.get(source, []):
+            if iid in answers:
+                own.setdefault(iid, set()).add(digest(squash(title)))
     conn.close()
 
     # ── probes: every non-ASCII character that can reach the comparison ──────
@@ -119,7 +164,18 @@ def main() -> None:
         "probeChars": len(chars),
         "parent": {k: v for k, v in parent.items() if v},
         "profile": profiles,
+        # Squashed, and only for instruments some recall set names: the check
+        # asks whether a description CONTAINS one of these, and a fund nobody
+        # can win is a fund nobody can leak.
+        "name": {i: squash(names[i]) for i in sorted(answers)
+                 if i in names and squash(names[i])},
+        "code": {i: squash(codes[i]) for i in sorted(answers)
+                 if codes.get(i) and squash(codes[i])},
+        "ownTitles": {i: sorted(t) for i, t in sorted(own.items())},
         "squashProbes": probes,
+        # The same cross-language contract squashProbes enforces, for the
+        # digest: [squashed input, what Python produced].
+        "digestProbes": [[p[1], digest(p[1])] for p in probes[:40]],
     }
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=0) + "\n")
     print(f"wrote {OUT}")
@@ -127,6 +183,10 @@ def main() -> None:
     print(f"  distinct non-ASCII chars      {len(chars):,} probed in context")
     print(f"  whole-string probes           {len(probes) - len(chars):,}")
     print(f"  descriptions scanned          {described:,}")
+    print(f"  answer instruments named       {len(answers):,} across "
+          f"{len(PROBE_SOURCES)} recall sets")
+    print(f"  own project titles digested   {sum(len(t) for t in own.values()):,} "
+          f"over {len(own):,} instruments")
     print(f"  size                          {OUT.stat().st_size / 1e6:.2f} MB")
 
 

@@ -10,7 +10,9 @@ import path from "path";
 import { describe, expect, it } from "vitest";
 
 import { ACTIVE_RECALL_SET } from "../../scripts/recallSet";
-import { checkSquashProbes, grams, makeLeakDetector, squash } from "./recallLeaks";
+import {
+  checkDigestProbes, checkSquashProbes, digest, grams, makeLeakDetector, squash,
+} from "./recallLeaks";
 import type { LeakIndexFile, LeakRow } from "./recallLeaks";
 
 const read = (f: string) =>
@@ -124,5 +126,62 @@ describe("a deliberately poisoned row is caught", () => {
   it("does not fire on a row whose leak the set already records", () => {
     expect(detect({ ...base, description: idx.profile[won],
                     descriptionSource: "own_project_title_leaks" })).toBeNull();
+  });
+});
+
+// ── The three rules only a REBUILT description signs up to ─────────────────
+// Proved red here as well as on the file, because the planted-leak run that
+// proved them is a thing somebody did once and this is a thing that runs every
+// time. Each rule is isolated on a hand-built index: on the real corpus a
+// planted fund name is usually also inside that fund's profile, so the 8-gram
+// rule fires first and the new rule is never exercised.
+describe("a rebuilt description carries a stricter contract", () => {
+  const only = makeLeakDetector({
+    parent: {},
+    profile: { leaf: "we support demonstration projects in floating offshore wind" },
+    name: { leaf: "programa de innovacion industrial" },
+    code: { leaf: "sa 999999" },
+    ownTitles: { leaf: [digest(squash("A hydrogen electrolyser demonstrator for the steel industry"))] },
+  });
+  const rebuilt = (description: string): LeakRow =>
+    ({ instrument: "leaf", description, descriptionSource: "cross_regime_summary",
+       descriptionRebuilt: true });
+  const own = (description: string): LeakRow =>
+    ({ instrument: "leaf", description, descriptionSource: "own_award_text" });
+
+  it("catches the won fund's own name", () => {
+    expect(only(rebuilt("We make sensors under the Programa de Innovación Industrial.")))
+      .toContain("names the won fund");
+  });
+
+  it("catches the won fund's scheme code", () => {
+    expect(only(rebuilt("Aid received under SA.999999 for our pilot line.")))
+      .toContain("scheme code");
+  });
+
+  it("catches a project title of an award under the won fund", () => {
+    expect(only(rebuilt("A hydrogen electrolyser demonstrator for the steel industry!")))
+      .toContain("project title");
+  });
+
+  it("passes an honest cross-regime summary", () => {
+    expect(only(rebuilt("We build cryogenic pumps for liquefied gas terminals."))).toBeNull();
+  });
+
+  // The scoping IS the property, not a convenience. `own_award_text` rows are
+  // sourced from the company's own award UNDER the won fund and declare it, so
+  // their description being one of that fund's titles is their stated
+  // provenance rather than a broken claim. Applying the rebuilt contract to
+  // them would fail 843 rows on a promise they never made.
+  it("leaves a row that never claimed cross-regime provenance alone", () => {
+    expect(only(own("A hydrogen electrolyser demonstrator for the steel industry!"))).toBeNull();
+    expect(only(own("We make sensors under the Programa de Innovación Industrial."))).toBeNull();
+  });
+});
+
+describe("digest agrees with the Python guards", () => {
+  it("reproduces every probe the artifact carries", () => {
+    expect(idx.digestProbes?.length ?? 0).toBeGreaterThan(10);
+    expect(checkDigestProbes(idx)).toEqual([]);
   });
 });
