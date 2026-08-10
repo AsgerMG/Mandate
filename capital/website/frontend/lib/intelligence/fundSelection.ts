@@ -1,5 +1,13 @@
 // GATE 2 — choose the five specific funds, out of the ~58 gate 1 hands over.
 //
+// ── NOT ON THE REQUEST PATH. Read the prompts here as lab apparatus ───────
+// `selectFiveFunds` is imported by scripts/measure_pipeline.ts and by nothing
+// in lib/ or app/. The fund order a founder actually receives is a
+// deterministic score; no model reorders it at request time. That is WHY
+// contracts/selection/fund-selection.md is declared unrouted in contracts.ts:
+// its rules describe this module, and a rule that reaches no request-time
+// prompt has to say so rather than be discovered inside one.
+//
 // ── What this module is, and what the measurement forced it to become ──────
 // The old gate 2 scored 35% against gate 1's own deterministic 50% on the same
 // 40 cases. The diagnosis was that it was choosing BLIND, not badly: it saw
@@ -551,6 +559,24 @@ export async function vetoOnly(
     ? questions.map((q) => `Q: ${q.q}\nA: ${answers.get(q.id) ?? "not sure"}`).join("\n")
     : "(no interview was run)";
 
+  // ── The sentence that used to end this prompt, and why it is gone ────────
+  // It read: "the order is not yours to change and it is better than your
+  // guess." The first half is a mechanical fact -- the loop below rebuilds the
+  // picks in the ranker's order regardless of what comes back -- and it stays.
+  //
+  // The second half was a conclusion drawn from an instrumentation failure. It
+  // rests on this module's own measurement, and that measurement ran on a
+  // fixture where 33 of 40 companies carried NO DESCRIPTION: the founder
+  // simulator answered "not sure" and there was nothing for judgement to bite
+  // on. A model told its judgement is worse than a prior, on evidence that its
+  // judgement was never given anything to work with, is being taught to defer
+  // by an artifact of the harness.
+  //
+  // What replaces it is the shape used by the withinFamilies prompt above and
+  // worth preserving: state the BASE RATE, then the condition under which the
+  // model's own reading overrides it. "Every configuration allowed to re-rank
+  // measured below the ranker" is a fact about the measurements. "Your reading
+  // of this company is worthless" is not, and was never measured.
   const { value, retries } = await askJson<{ disqualified: { i: number; why: string }[] }>(
     client, model,
 `An empirical ranker has already ordered these funds by how often companies like this one actually won them. That order stands. Your only job is to strike out the ones this company plainly CANNOT get.
@@ -566,7 +592,7 @@ ${qa}
 FUNDS, in the ranker's order
 ${head.map((f, i) => renderRow(i, f, sector, share, distinctive(f), evidence?.get(f.id))).join("\n")}
 
-Strike a fund out ONLY when something the company told you plainly fails a requirement that fund states, or when its typical cheque is an order of magnitude away from what they need. Do not strike one out because another looks better, because it is unfamiliar, or because you would have ordered them differently — the order is not yours to change and it is better than your guess.
+Strike a fund out ONLY when something the company told you plainly fails a requirement that fund states, or when its typical cheque is an order of magnitude away from what they need. Do not strike one out because another looks better, because it is unfamiliar, or because you would have ordered them differently. The order is fixed in code: whatever you return, the funds left standing keep the ranker's order, so a preference has nowhere to go. Every configuration that has been allowed to re-rank has measured below the ranker on the same companies. What a strike is FOR is the one thing the ranker never saw: something this company has told you that plainly fails a requirement printed in front of you.
 
 If nothing disqualifies anything, return an empty list. That is the expected answer and it is not a failure.
 
