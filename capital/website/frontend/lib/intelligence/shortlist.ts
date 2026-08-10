@@ -1880,10 +1880,11 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
   // Two things it deliberately does not do.
   //
   // A channel an explicit rule refused THIS REQUEST does not get a second
-  // chance: `SEL-LARGE-SCALE` withheld it for failing a thematic floor and
-  // `SEL-FIT-CONSORTIUM` for a structural mismatch, and a backfill that
-  // reinstated them would silently repeal both. Read off the log by STAGE, so a
-  // channel-stage rule added later is honoured without being named here.
+  // chance: `SEL-LARGE-SCALE` withheld it for failing a thematic floor, and a
+  // backfill that reinstated it would silently repeal the rule. Read off the log
+  // by STAGE, so a channel-stage rule added later is honoured without being
+  // named here -- which is why deleting `SEL-FIT-CONSORTIUM`, once named here
+  // too, changed nothing at this site.
   //
   // And the large-ticket channels stay shut when the lane is shut. They are
   // surfaced by ASK, not by fit — that is the whole point of
